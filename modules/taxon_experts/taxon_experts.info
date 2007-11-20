@@ -1,0 +1,6 @@
+; $Id: taxon_experts.module, v 1.0 2007/05/02, Andreas Kohlbecker - http://www.bgbm.org/BioDivInf/default.htm $
+name = EDIT - Taxonomic Experts Database
+package = EDIT
+description = "A online information service on  taxonomic experts, their expertise and ongoing and planned taxonomic research projects. This module is brought to you by the European Distributed Institute of Taxonomy - EDIT"
+version = 5.x-1.0
+dependencies = noderef_parent

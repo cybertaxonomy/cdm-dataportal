@@ -1,0 +1,392 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ * Provides a "country presence" node type
+ */
+
+/**
+ * Implementation of hook_node_info()
+ */
+function countrypresence_node_info() {
+  // Return an array since a module can define multiple node types
+  return array(
+  'countrypresence'  =>  array(
+     'name'  =>  t('Country Presence'),
+     'module'  =>  'countrypresence',
+     'description'  =>  t('Enables a map of countries to be drawn for an object'),
+     'has_title'  =>  TRUE,
+     'title_label'  =>  t('Object'),
+     'has_body'  =>  FALSE
+   )
+  );
+}
+
+/**
+ * Implementation of hook_menu()
+ */
+function countrypresence_menu($may_cache) {
+  $items=array();
+  
+  // Do not cache this menu item during the development of this module
+  if (!$may_cache) {
+    $items[] = array(
+      'path'  =>  'node/add/countrypresence',
+      'title'  =>  t('Country Presence'),
+      'access'  =>  user_access('create country presence')
+    );
+  }
+  $items[] = array('path'  =>  'admin/content/countrypresence/import',
+    'title'  =>  t('Import'),
+    'access'  =>  user_access('create countrypresence content')||user_access('administer nodes'),
+    'callback'  =>  'countrypresence_import');
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm()
+ */
+function countrypresence_perm() {
+  return array('create country presence', 'edit country presence', 'edit own country presence');
+}
+
+/**
+ * Implementation of hook_access()
+ */
+function countrypresence_access($op, $node) {
+  global $user;
+  
+  if ($op=='create') {
+    return (user_access('create country presence'));
+  }
+  
+  if ($op == 'update' || $op == 'delete') {
+    return ((user_access('edit own country presence') && ($user->uid == $node->uid))||user_access('edit country presence'));
+  }
+  if ($op == 'view') {
+    return true;
+  }
+}
+
+/**
+ * Implementation of hook_form()
+ */
+function countrypresence_form($node) {
+  // Get metadata for this node type
+  // (we use it for labeling title and body fields)
+  // We defined this in joke_node_info()
+  $type = node_get_types('type', $node);
+  
+  $form['title'] = array(
+   '#type'  =>  'textfield',
+   '#title'  =>  check_plain($type->title_label),
+   '#default_value'  =>  $node->title
+  );
+  
+  $africa = array(3 => "Algeria", 5 => "Angola", 19 => "Benin", 24 => "Botswana", 28 => "Burkina Faso", 29 => "Burundi", 32 => "Cameroon", 34 => "Cape Verde", 35 => "Central African Republic", 36 => "Chad", 40 => "Comoros", 41 => "Congo", 48 => "Djibouti", 52 => "Egypt", 54 => "Equatorial Guinea", 55 => "Eritrea", 57 => "Ethiopia", 65 => "Gabon", 66 => "Gambia", 70 => "Ghana", 77 => "Guinea-Bissau", 76 => "Guinea", 93 => "Ivory Coast", 99 => "Kenya", 100 => "Kerguelen Islands", 109 => "Lesotho", 110 => "Liberia", 111 => "Libya", 117 => "Madagascar", 118 => "Malawi", 121 => "Mali", 124 => "Mauritania", 125 => "Mauritius", 130 => "Morocco", 130 => "Morocco", 131 => "Mozambique", 133 => "Namibia", 140 => "Nigeria", 139 => "Niger", 151 => "Portugal", 154 => "Reunion", 157 => "Rwanda", 159 => "Sao Tome and Principe", 161 => "Senegal", 162 => "Seychelles", 163 => "Sierra Leone", 168 => "Somalia", 169 => "South Africa", 170 => "Spain", 175 => "Sudan", 178 => "Swaziland", 184 => "Tanzania", 186 => "Togo", 189 => "Tunisia", 193 => "Uganda", 203 => "Western Sahara", 207 => "Democratic Republic of Congo", 208 => "Zambia", 209 => "Zimbabwe");
+  $asia = array(1 => "Afghanistan", 9 => "Armenia", 12 => "Azerbaijan", 14 => "Bahrain", 15 => "Bangladesh", 21 => "Bhutan", 26 => "Brunei", 31 => "Cambodia", 38 => "China", 45 => "Cyprus", 67 => "Gaza Strip", 68 => "Georgia", 81 => "Hong Kong", 84 => "India", 85 => "Indonesia", 86 => "Iran", 87 => "Iraq", 91 => "Israel", 96 => "Japan", 97 => "Jordan", 98 => "Kazakhstan", 104 => "Kuwait", 105 => "Kyrgyzstan", 106 => "Laos", 108 => "Lebanon", 115 => "Macau", 119 => "Malaysia", 120 => "Maldives", 129 => "Mongolia", 132 => "Myanmar [Burma]", 134 => "Nepal", 102 => "North Korea", 143 => "Oman", 144 => "Pakistan", 146 => "Papua New Guinea", 149 => "Philippines", 153 => "Qatar", 156 => "Russia", 160 => "Saudi Arabia", 164 => "Singapore", 103 => "South Korea", 171 => "Sri Lanka", 181 => "Syria", 182 => "Taiwan", 183 => "Tajikistan", 185 => "Thailand", 190 => "Turkey", 191 => "Turkmenistan", 195 => "United Arab Emirates", 199 => "Uzbekistan", 202 => "Vietnam", 205 => "Yemen");
+  $europe = array(2 => "Albania", 4 => "Andorra", 11 => "Austria", 17 => "Belgium", 17 => "Belgium", 23 => "Bosnia and Herzegovina", 27 => "Bulgaria", 30 => "Byelarus", 43 => "Croatia", 46 => "Czech Republic", 47 => "Denmark", 56 => "Estonia", 59 => "Faroe Islands", 61 => "Finland", 62 => "France", 62 => "France", 69 => "Germany", 71 => "Greece", 82 => "Hungary", 83 => "Iceland", 89 => "Ireland", 90 => "Isle of Man", 92 => "Italy", 92 => "Italy", 95 => "Jan Mayen", 107 => "Latvia", 112 => "Liechtenstein", 113 => "Lithuania", 114 => "Luxembourg", 114 => "Luxembourg", 116 => "Macedonia", 122 => "Malta", 127 => "Moldova", 128 => "Monaco", 135 => "Netherlands", 142 => "Norway", 150 => "Poland", 151 => "Portugal", 155 => "Romania", 158 => "San Marino", 165 => "Slovakia", 166 => "Slovenia", 170 => "Spain", 177 => "Svalbard", 179 => "Sweden", 180 => "Switzerland", 194 => "Ukraine", 196 => "United Kingdom", 206 => "Serbia and Montenegro");
+  $namerica = array(7 => "Antigua / Barbuda", 13 => "Bahamas", 16 => "Barbados", 18 => "Belize", 20 => "Bermuda", 33 => "Canada", 42 => "Costa Rica", 44 => "Cuba", 49 => "Dominica", 50 => "Dominican Republic", 53 => "El Salvador", 72 => "Greenland", 73 => "Grenada", 74 => "Guadalupe", 75 => "Guatemala", 79 => "Haiti", 80 => "Honduras", 94 => "Jamaica", 123 => "Martinique", 126 => "Mexico", 138 => "Nicaragua", 145 => "Panama", 152 => "Puerto Rico", 172 => "St. Kitts and Nevis", 173 => "St. Lucia", 174 => "St. Vincent and the Grenadines", 188 => "Trinidad and Tobago", 192 => "Turks and Caicos Islands", 197 => "United States of America");
+  $oceania = array(10 => "Australia", 60 => "Fiji", 64 => "French Polynesia", 101 => "Kiribati", 136 => "New Caledonia", 137 => "New Zealand", 141 => "Northern Mariana Islands", 146 => "Papua New Guinea", 167 => "Solomon Islands", 187 => "Tonga", 197 => "United States", 200 => "Vanuatu", 204 => "Western Samoa");
+  $samerica = array(8 => "Argentina", 22 => "Bolivia", 25 => "Brazil", 37 => "Chile", 39 => "Colombia", 51 => "Ecuador", 58 => "Falkland Islands", 63 => "French Guiana", 78 => "Guyana", 147 => "Paraguay", 148 => "Peru", 176 => "Suriname", 198 => "Uruguay", 201 => "Venezuela");
+
+  $form['africa'] = array(
+    '#type'  =>  'fieldset',
+    '#title'  =>  'Africa',
+    '#collapsible'  =>  TRUE,
+    '#collapsed'  =>  TRUE
+  );
+  $form['africa']['countries'] = array(
+    '#title'  =>  t('Countries'),
+    '#type'  =>  'checkboxes',
+    '#DANGEROUS_SKIP_CHECK'  =>  TRUE,
+    '#options'  =>  $africa,
+    '#default_value'  =>  $node->countries
+  );  
+  $form['asia'] = array(
+    '#type'  =>  'fieldset',
+    '#title'  =>  'Asia',
+    '#collapsible'  =>  TRUE,
+    '#collapsed'  =>  TRUE
+  );
+  $form['asia']['countries'] = array(
+    '#title'  =>  t('Countries'),
+    '#type'  =>  'checkboxes',
+    '#DANGEROUS_SKIP_CHECK'  =>  TRUE,
+    '#options'  =>  $asia,
+    '#default_value'  =>  $node->countries
+  );
+  $form['europe'] = array(
+    '#type'  =>  'fieldset',
+    '#title'  =>  'Europe',
+    '#collapsible'  =>  TRUE,
+    '#collapsed'  =>  TRUE
+  );
+  $form['europe']['countries'] = array(
+    '#title'  =>  t('Countries'),
+    '#type'  =>  'checkboxes',
+    '#DANGEROUS_SKIP_CHECK'  =>  TRUE,
+    '#options'  =>  $europe,
+    '#default_value'  =>  $node->countries
+  );
+  $form['namerica'] = array(
+    '#type'  =>  'fieldset',
+    '#title'  =>  'North America',
+    '#collapsible'  =>  TRUE,
+    '#collapsed'  =>  TRUE
+  );
+  $form['namerica']['countries'] = array(
+    '#title'  =>  t('Countries'),
+    '#type'  =>  'checkboxes',
+    '#DANGEROUS_SKIP_CHECK'  =>  TRUE,
+    '#options'  =>  $namerica,
+    '#default_value'  =>  $node->countries
+  );
+  $form['oceania'] = array(
+    '#type'  =>  'fieldset',
+    '#title'  =>  'Oceania',
+    '#collapsible'  =>  TRUE,
+    '#collapsed'  =>  TRUE
+  );
+  $form['oceania']['countries'] = array(
+    '#title'  =>  t('Countries'),
+    '#type'  =>  'checkboxes',
+    '#DANGEROUS_SKIP_CHECK'  =>  TRUE,
+    '#options'  =>  $oceania,
+    '#default_value'  =>  $node->countries
+  );
+  $form['samerica'] = array(
+    '#type'  =>  'fieldset',
+    '#title'  =>  'South America',
+    '#collapsible'  =>  TRUE,
+    '#collapsed'  =>  TRUE
+  );
+  $form['samerica']['countries'] = array(
+    '#title'  =>  t('Countries'),
+    '#type'  =>  'checkboxes',
+    '#DANGEROUS_SKIP_CHECK'  =>  TRUE,
+    '#options'  =>  $samerica,
+    '#default_value'  =>  $node->countries
+  );
+  $form['submit'] = array(
+    '#type'  =>  'submit',
+    '#value'  =>  t('Import'),
+  );
+  return $form;
+}
+
+/**
+ * Implementation of hook_insert()
+ */
+function countrypresence_insert($node) {
+  foreach ($node->countries as $country) {
+    if ($country!==0)
+    db_query('INSERT INTO {countrypresence} (vid, country_id) VALUES (%d, %d)', $node->vid, $country);
+  }
+  db_query('INSERT INTO {content_type_countrypresence} (vid, nid) VALUES (%d, %d)', $node->vid, $node->nid);
+}
+/**
+ * Implementation of hook_load()
+ */
+function countrypresence_load($node) {
+  $result = db_query('SELECT country_id FROM {countrypresence} WHERE vid = %d', $node->vid);
+  while ($object = db_fetch_object($result)) {
+    $node->countries[$object->country_id]=$object->country_id;
+  }
+}
+/**
+ * Implementation of hook_update()
+ */
+function countrypresence_update($node) {
+  if ($node->revision) {
+    countrypresence_insert($node);
+  }
+  else {
+    db_query('DELETE FROM {countrypresence} WHERE vid = %d', $node->vid);
+    foreach ($node->countries as $country) {
+      if ($country!==0)
+      db_query("INSERT INTO {countrypresence} (vid, country_id) VALUES (%d, %d)", $node->vid, $country);
+    }
+  }
+}
+/**
+ * Implementation of hook_delete()
+ */
+function countrypresence_delete(&$node) {
+  db_query('DELETE FROM {countrypresence} WHERE vid IN (SELECT vid FROM {content_type_countrypresence} WHERE nid = %d)', $node->nid);
+  db_query('DELETE FROM {content_type_countrypresence} WHERE nid = %d', $node->nid);
+}
+
+/**
+ * Implementation of hook_view()
+ */
+function countrypresence_view($node, $teaser = FALSE, $page=FALSE) {
+  if (!$teaser) {
+    // Use Drupal's default node view.
+    $node = node_prepare($node, $teaser);
+    
+    $node->content['gmap'] = array(
+      '#value'  =>  theme('countrypresence_gmap', $node)
+    );
+  }
+  if ($teaser) {
+    // Use Drupal's default node view.
+    $node = node_prepare($node, $teaser);// FIXME
+  }
+  return $node;
+}
+function theme_countrypresence_gmap($node) {
+  $apikey = variable_get("googlemap_api_key", "");
+  $output ='';
+  if (isset($node->countries[156])&&$node->countries[156]==156) {
+    $output .='<p class="error">Unfortunately Russia is displaying incorrectly on this page.  We hope to fix this soon.</p>';
+  }
+  $output .= '<div id="map"></div><p>Maps are created using <a href="http://www.gdal.org/ogr/ogr2ogr.html">ogr2ogr</a>, and the excellent <a href="http://www.casa.ucl.ac.uk/software/googlemapcreator.asp">Google maps creator</a></p>
+<script type="text/javascript"
+    src="http://maps.google.com/maps?file=api&v=2&key='. $apikey .'">
+</script>
+<script type="text/javascript" 
+    src="/sites/all/modules/countrypresence/googleMapCreator.php?countries=';
+  $output_string = "";
+  if (isset($node->countries)&&count($node->countries)>0) {
+    foreach ($node->countries as $country) {
+      if ($output_string!="")
+        $output_string .=",";
+      $output_string .=$country; 
+    }
+  }
+  $output .= $output_string .'&apikey='. $apikey .'">';
+  $output .='
+</script>
+<script type="text/javascript">
+    load();
+</script>';
+  return $output;
+}
+
+// Import Portion (Taken and edited from a previously created module).
+/**
+ * Menu callback for the import page.
+ */
+function countrypresence_import() {
+  return drupal_get_form('countrypresence_import_form');
+}
+
+/**
+ * Imports the actual file.
+ */
+function countrypresence_import_form_validate($form_id, $form_values) {
+  if ($file = file_check_upload('data')) {
+    $fd = fopen($file->filepath, "rb");
+    $info = fstat($fd);
+    $len = $info["size"];
+    $text = fread($fd, $len);
+    fclose($fd);
+    if (!$fd)
+      form_set_error('data', t('Import failed: file %filename cannot be read.', array('%filename'  =>  $file->filename)));      
+    else 
+      countrypresence_parse($text);
+  }
+  else
+    form_set_error('data', t('Vocabulary import failed: file was not uploaded.'));
+}
+/**
+ * Builds the import form.
+ */
+function countrypresence_import_form() {
+  $form['data'] = array(
+    '#type'  =>  'file',
+    '#title'  =>  t('File to import'),
+    '#description'  =>  t('Click "Browse..." to select a file to upload.'),
+    '#required'  =>  FALSE
+  );
+  $form['submit'] = array(
+    '#type'  =>  'submit',
+    '#value'  =>  t('Import'),
+  );
+  $form['#attributes'] = array('enctype'  =>  'multipart/form-data');
+  return $form;
+}
+
+function countrypresence_parse($text) {
+  // Let's parse the file.  This relies on the first line being the countries (and their codes in Brakets),
+  // with the first column being the specimen names (for each of which a new node will be created).
+  
+  // Firstly we need to know the next available "nid" and "vid", these are incremented for each node.
+  // Let's first get the lowest value for "tid", upon which we will build all the
+  // other values.
+  $sql = "SELECT `id` FROM {sequences} WHERE `name`='node_nid';";
+  $result = db_query($sql);
+  $nid = db_fetch_object($result);
+  $nid = $nid->id+1;
+  $sql = "SELECT `id` FROM {sequences} WHERE `name`='node_revisions_vid';";
+  $result = db_query($sql);
+  $vid = db_fetch_object($result);
+  $vid = $vid->id+1;
+  
+  $lines = preg_split("/[\n\r]+/", $text);
+  $num_lines = count($lines);
+
+  $countries = split(",", $lines[0]);
+  $num_countries = count($countries);
+  for ($i=1;$i<$num_countries;$i++) {
+    $open_bracket_pos = strpos($countries[$i], "(")+1;
+    $close_bracket_pos = strpos($countries[$i], ")");
+    $countries[$i] = substr($countries[$i], $open_bracket_pos, $close_bracket_pos-$open_bracket_pos);   
+  }
+  // All of the lines must have the same number of parts as the first line (possibly with one less
+  // as the final part could be missing. (i.e. name,1,1,1, - would split to "name","1","1","1" , only
+  // four parts as opposed to five).
+  
+  // We need to add data to the following tables:
+  // node
+  // node_revisions
+  // content_field_[continent]*7
+  // For each, therefore we need an SQL statement.
+  
+  // SQL:
+  // node - INSERT INTO node (nid,vid,type,title,uid,created,changed) VALUES ( -- FILLED IN BELOW --);
+  // node_revisions - INSERT INTO node_revisions (nid,vid,uid,title,timestamp) VALUES ( -- FILLED IN BELOW --);
+  // countrypresence - INSERT INTO {countrypresence} (vid,country_id) VALUES ";
+  // content_type_countrypresence - INSERT INTO content_type_countrypresence (nid,vid) VALUES ( -- FILLED IN BELOW --);
+  $sql_statements = array();
+  $sql_statements['node'] = "INSERT INTO {node} (nid,vid,type,title,uid,created,changed) VALUES ";
+  $sql_statements['revisions']="INSERT INTO {node_revisions} (nid,vid,uid,title,timestamp) VALUES ";
+  $sql_statements['countrypresence']="INSERT INTO {countrypresence} (vid,country_id) VALUES ";
+  $sql_statements['content_type_countrypresence']="INSERT INTO {content_type_countrypresence} (nid,vid) VALUES ";
+  global $user;
+  for ($i=1;$i<$num_lines;$i++) {
+    // Split each subsequent line by "," and check it has the right number of parts
+    $line_parts = split(",", $lines[$i]);
+    $sql_statements['node'] .="($nid,$vid,'countrypresence','". $line_parts[0] ."',". $user->uid .",". time() .",". time() ."),";
+    $sql_statements['revisions'] .="($nid,$vid,". $user->uid .",'". $line_parts[0] ."',". time() ."),";
+    $sql_statements['content_type_countrypresence'] .="($nid,$vid),";
+    for ($j=1;$j<$num_countries;$j++) {
+      // Next add the data to each of the fields tables, this relies on the data being present in the 
+      // headers of the file.
+      if (isset($line_parts[$j]) && trim($line_parts[$j])==1) {// Check the value is set
+        // The value is set, check against the country_data array to see what SQL to add
+        $sql_statements['countrypresence'] .="($vid,". $countries[$j] ."),";
+      }
+    }
+    // increase nid and vid;
+    $nid ++;
+    $vid ++;
+  }
+  // Check that each SQL ends with a "," if not, ignore it, if it does, replace with ";" and execute.
+  $sql ="";
+  foreach ($sql_statements as $sql_statement) {
+    if (substr($sql_statement, -1)==",")
+      db_query(substr($sql_statement, 0, -1) .";");
+  }
+  // Finally update the sequence table
+  $sql = "UPDATE {sequences} SET `id`=$nid WHERE `name`='node_nid';";
+  db_query($sql);
+  $sql = "UPDATE {sequences} SET `id`=$vid WHERE `name`='node_revisions_vid';";
+  db_query($sql);
+  
+  // Send the user to the last of the imports
+  drupal_goto("node/". ($nid-1));
+}

@@ -1,0 +1,5 @@
+; $Id$
+name = Country Presence
+description = Provides a country presence data type which is plotted on a Google Map.
+version = "$Name$"
+package = "Edit"

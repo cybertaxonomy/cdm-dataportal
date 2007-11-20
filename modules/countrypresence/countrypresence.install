@@ -1,0 +1,26 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install
+ */
+function countrypresence_install() {
+  drupal_set_message(t('Country Presence module - INSTALLED!'));
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      db_query("CREATE TABLE {countrypresence} (
+       vid int unsigned NOT NULL default '0',
+       country_id int unsigned NOT NULL default '0',
+       PRIMARY KEY (vid, country_id)       
+      );");
+      break;    
+  }
+}
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function countrypresence_uninstall() {
+  db_query('DROP TABLE {countrypresence}');  
+}

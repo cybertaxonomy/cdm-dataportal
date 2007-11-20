@@ -1,0 +1,79 @@
+### Eclipse Workspace Patch 1.0
+#P cck_field_perms
+Index: cck_field_perms.module
+===================================================================
+RCS file: /cvs/drupal-contrib/contributions/modules/cck_field_perms/cck_field_perms.module,v
+retrieving revision 1.3.2.27
+diff -u -r1.3.2.27 cck_field_perms.module
+--- cck_field_perms.module	27 Aug 2007 21:25:36 -0000	1.3.2.27
++++ cck_field_perms.module	7 Nov 2007 18:51:24 -0000
+@@ -81,8 +81,9 @@
+           if ($disallowed_fields) {
+             foreach ($disallowed_fields[$type] as $disallowed_field => $value ) {
+               if ($value == 0) {continue; }
+-              if (!(user_access(_cfp_content_to_readable($type, $disallowed_field, "view")))) {     
+-                $node->$disallowed_field['#access'] = false;
++              if (!(user_access(_cfp_content_to_readable($type, $disallowed_field, "view")))) { 
++                $field_array = &$node->$disallowed_field;       
++                $field_array['#access'] = false;
+                 $node->content[$disallowed_field]['#access'] = false;                   
+               }   
+             }
+@@ -112,6 +113,20 @@
+ }
+ 
+ 
++/**
++ * Implemenation of hook views_pre_view
++ */
++function cck_field_perms_views_pre_view(&$view, $items){
++  foreach($view->field as $idx => $field){
++    $field_name = substr($field['field'], 0, ( strlen($field['field']) - strlen('_value')) );
++    if(!cck_field_perms_access(null, $field_name, 'view')){
++      unset($view->field[$idx]);
++      unset($view->table_header[$idx]);
++    }
++  }
++}
++
++
+ /* ********************************************* */
+ /* CFP functions */
+ /* ********************************************* */
+@@ -237,6 +252,36 @@
+ }
+ 
+ 
++function cck_field_perms_access($type, $field_name, $verb){
++  
++  global $disallowed;
++  if(!isset($disallowed)){
++    $disallowed = unserialize(variable_get('cfp_values', null));
++    if(!$disallowed) {
++      $disallowed = array();
++    }
++  }
++  if(!$type){
++    // -------------- hack for missing admin option to set permissions on fields per view
++    foreach($disallowed as $fields){
++      if( isset($fields[$field_name]) && $fields[$field_name] != 0) {
++        // return false if access to this field is denied for at least one content type
++        if(!user_access(_cfp_content_to_readable($type, $field_name, $verb))){
++          return false;
++        }
++      }
++    }
++    // -----------------------------------------------------------------------------------
++  } else {
++    if( isset($disallowed[$type][$field_name]) &&  $disallowed[$type][$field_name] != 0 ) {
++      return user_access(_cfp_content_to_readable($type, $field_name, $verb));
++    }
++  }
++  return true;
++}
++
++
++
+ /* ************************ */
+ /* ADMIN Functions */
+ /* ************************ */

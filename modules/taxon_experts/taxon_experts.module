@@ -1,0 +1,242 @@
+<?php
+// $Id $
+
+// include the module specific template extention for this module
+require_once('template.taxon_experts.php');
+
+/**
+ * @file
+ * A online information service on  taxonomic experts, their expertise
+ * and ongoing and planned taxonomic research projects.
+ * This module is brought to you by the European Distributed Institute of Taxonomy - EDIT
+ *
+ * @author Berlin, BGBM, Andreas Kohlbecker 2007 - http://www.bgbm.org/BioDivInf/default.htm
+ */
+
+/**
+ * @param $display_options: e.g.: array(
+ *    12 => array('term_path'=> true, 'notes'=>'$node->field_taxon_notes'),
+ *    10 => array('term_path'=> true, 'notes'=>'$node->field_geo_notes',))
+ */
+function theme_expertdb_interest_categories($taxonomies, $display_options = array(), $table = true){
+
+  static $vocab_labels = array(
+    'expertdb_taxomony' => 'Field of Expertise',
+    'expertdb_georegions' => 'Geographic Region',
+    'expertdb_environment' => 'Environment',
+    'expertdb_activity' => 'Taxonomic Activity',
+    'expertdb_methods' => 'Methodology',
+  );
+
+
+  $terms = array();
+  foreach($taxonomies as $tid => $term){
+    $terms[$term->vid][] = $term;
+  }
+  if($table){
+    $rows = array();
+    foreach($terms as $vid => $term_items){
+      $vocab = taxonomy_get_vocabulary($vid);
+
+      $header_cell = array('data'=>t($vocab_labels[$vocab->name]).':', 'header'=>true, 'class'=>'category');
+      $terms_cell = array('data'=>'', 'class'=>'term');
+      
+      $show_term_path = isset($display_options[$vid]['term_path']);
+      
+      foreach($term_items as $t){
+        // calculate path from root term to $t if desired                
+        if($show_term_path){
+          $p_terms = taxonomy_get_parents_all($t->tid);
+        } else {
+          $p_terms = array($t);
+        }
+        $term_path = '';
+        while($item = array_pop($p_terms)){
+          $term_path .= $item->name.(count($p_terms) ? ' -&gt; ':'');
+        }
+        // create table cell
+        $terms_cell['data'] .= '<span class="term" title="'.$t->description.'">'.$term_path.'</span>';
+      }
+      // append notes
+      if($display_options[$vid]['notes']){
+        $terms_cell['data'] .= '<span class="notes">'.$display_options[$vid]['notes'].'</span>'; 
+      }
+      
+      $rows[] = array($header_cell, $terms_cell);
+    }
+    return theme('table', null, $rows, array('class'=>'interest_data'));
+
+  } else {
+    $output = '';
+    foreach($terms as $vid => $term_items){
+      $vocab = taxonomy_get_vocabulary($vid);
+      $output .= '<div class="field taxonomy">';
+      $output .= '<div class="field-label field-label-category">'.t($vocab_labels[$vocab->name]).'</div>';
+      $output .= '<div class="field-items field-items-terms">';
+      foreach($term_items as $t){
+        $output .= '<span class="field-item field-item-term" title="'.$t->description.'">'.$t->name.'</span>';
+      }
+      $output .= '</div></div>';
+    }
+    return $output;
+  }
+}
+
+
+
+/**
+ * Display the nodes of a view as a table and add an edit & delete links to each row.
+ * An additional add link will be added as last row to the table.
+ * see theme_views_view_list for a definition of $type
+ */
+function theme_views_view_optable($view, $nodes, $type, $add_op_link = null, $operations = array()) {
+
+  $rows[] = array();
+  $fields = _views_get_fields();
+  foreach ($nodes as $node) {
+    $row = array();
+    foreach ($view->field as $field) {
+      $cell['data'] = views_theme_field('views_handle_field', $field['queryname'], $fields, $field, $node, $view);
+      $cell['class'] = "view-field view-field-$field[queryname]";
+      $row[] = $cell;
+    }
+    if( count($operations) || $add_op_link ){
+      // add links for the edit & delete operations
+      $cell['data'] = '';
+      if(in_array('view', $operations)){
+        $cell['data'] .= l(t('View'), "node/$node->nid").'&nbsp;';
+      }
+      if(in_array('edit', $operations)){
+        $cell['data'] .= l(t('Edit'), "node/$node->nid/edit", null, drupal_get_destination()).'&nbsp;';
+      }
+      if(in_array('delete', $operations)){
+        $cell['data'] .= l(t('Delete'), "node/$node->nid/delete", null, drupal_get_destination());
+      }
+      $cell['class'] = "view-field view-field-operations";
+      $row[] = $cell;  
+    }
+    $rows[] = $row;
+  }
+
+  if($add_op_link){
+    // fill empty fields
+    $row = array();
+    foreach ($view->field as $field) {
+      $cell['data'] = '';
+      $cell['class'] = "view-field view-field-empty";
+      $row[] = $cell;
+    }
+    // append add link as last cell
+    $cell['data'] = $add_op_link;
+    $cell['class'] = "view-field view-field-operations";
+    $row[] = $cell;
+
+    $rows[] = $row;
+  }
+
+  $header = $view->table_header;
+  if(count($operations)){
+    $header[] = array('data'=>t('Operations'));    
+  }
+
+  return theme('table', $header, $rows);
+}
+
+
+function theme_date_lifespan($field, $dates, $node = NULL) {
+    
+      $date1 = $dates['value']['formatted'];
+      $date2 = $dates['value2']['formatted'];
+      if (empty($date1) && empty($date2)) {
+        return '';
+      }
+      elseif ($date1 == $date2 || empty($date2)) {
+        return '<div class="date_lifespan">*<span class="date-display-single">'. $date1 .'</span></div>';
+      }
+      else {
+        return '<div class="date_lifespan">*<span class="date-display-single">'. $date1 .'</span>'
+        .'<span class="date-display-separator"> - </span>'
+        .'&dagger;<span class="date-display-end">'. $date2 .'</span></div>';
+      }
+}
+
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $rows
+ * @param unknown_type $cell array e.g:
+ * 			$cell = array( 
+ *               'empty' =>  array( 
+ * 					'data'  => '',
+ * 					'class' => 'view-field view-field-operations'),
+ *               'addcell' =>  array( 
+ * 					'data'  => $add_op_link,
+ * 					'class' => 'view-field view-field-operations'));
+ * 
+ * @param integer $position in which column to put the cell in, 
+ * 			defaults to the last cell, 
+ * 			if $position > last column the cell will be put into the last column
+ * 
+ * Usage example:
+ *     if($add_op_link){
+      $lastrow_cells = array( 
+                'empty' =>  array( 
+  					'data'  => '',
+  					'class' => 'view-field view-field-empty'),
+                'addcell' =>  array( 
+  					'data'  => $add_op_link,
+  					'class' => 'view-field view-field-operations')
+      );
+      _add_as_last_row($rows, $lastrow_cells);
+    }
+ */
+function _add_as_last_row(&$rows, $cells, $position = false){
+  
+    $row = array();
+    foreach ($rows[0] as $idx => $field) {
+        $row[] = $cell['empty'];
+    }
+    
+    if($position){
+      // put cell in position
+      $row[$position] = $cells['addcell'];
+    } else {
+      // append add link as last cell
+      $row[count($row)-1] = $cells['addcell'];
+    }
+    $rows[] = $row;
+}
+
+
+function _autotitle_expertsdb_address(&$node){
+  $contact_nid = $node->field_parent_contact[0]['nid'];
+  $contact_node = node_load($contact_nid);
+  print 'Address for '.$contact_node->title;  
+}
+
+/**
+ * Alternative link rendering to point to the user account of the node author 
+ * instead of ponting to the node itself
+ * 
+ * used for view search_person 
+ */
+function taxon_experts_handler_user_link($fieldinfo, $fielddata, $value, $data){
+  if ($fielddata['options'] == 'nolink') {
+    return check_plain($value);
+  }
+  $node = node_load($data->nid);
+  return l($value, "user/$node->uid");
+}
+
+
+function _taxon_experts_get_profile_nid($type){
+    if(arg(0) == 'user'){
+      $profile_node = node_load(array('type'=>$type, 'uid'=>arg(1)));
+      return $profile_node->nid;
+    } else {
+      return arg(1);
+    }
+}
+
+
