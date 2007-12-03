@@ -1,0 +1,125 @@
+<?php
+// $Id: cdm_dataportal.module $
+
+//TODO if required  outsource all theme functions and uncomment next line
+//require_once('cdm_dataportal.theme.php');
+
+/* ====================== hook implementations ====================== */ 
+
+/**
+ * Implementation of hook_help
+ * Display help and module information
+ * @param section which section of the site we're displaying help
+ * @return help text for section
+ */
+function cdm_dataportal_help($section='') {
+
+    $out = '';
+    switch ($section) {
+        case "admin/modules#description":
+            $out = t("The dataportal publishes CDM data hosted in a CommunityStore on the web.");
+            break;
+    }
+    return $out;
+}
+
+
+/**
+ * Implementation of hook_perm
+ * Valid permissions for this module
+ * @return array An array of valid permissions for the portfolio module
+ */
+function cdm_dataportal_perm() {
+    return array(
+    	'administer cdm_dataportal',
+        'cdm_dataportal view notes',
+        //TODO which else permission are required? -> check the WP6 requirements document
+	);
+}
+
+
+/**
+ * Implementation of hook_menu
+ */
+function cdm_dataportal_menu($may_cache) {
+  $items = array();
+  if ($may_cache) {
+    
+    $items[] = array(
+      'path' => 'admin/settings/cdm_dataportal',
+      'title' => t('CDM Dataportal'),
+      'description' => t('Setting for the CDM Dataportal'),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_dataportal_settings',
+      'type' => MENU_NORMAL_ITEM,
+    );
+    
+    $items[] = array(
+	    'path' => 'cdm_dataportal/names',
+	    'callback' => 'cdm_dataportal_view_names',
+	    'access' => true,
+	    'type' => MENU_CALLBACK, 
+	    );
+	    // optional callback arguments: page 
+	    
+	$items[] = array(
+	    'path' => 'cdm_dataportal/taxon',
+	    'callback' => 'cdm_dataportal_view_taxon',
+	    'access' => true,
+	    'type' => MENU_CALLBACK, 
+	    // expected callback arguments: name_uuid
+	    );
+	    
+  }
+  return $items;
+}
+
+
+/* ====================== menu callback functions ====================== */
+
+/**
+ * Generate main administration form.
+ *
+ * @return
+ *   An array containing form items to place on the module settings page.
+ */
+function cdm_dataportal_settings(){
+
+   //TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
+   
+   $form['cdm_webservice_url'] =  array(
+    '#type' => 'textfield',
+    '#title'         => t('CDM Store Webservice'),
+    '#default_value' => variable_get('cdm_webservice_url', 'none'),
+    '#description'   => t('The URL to Webservice of the CDM Store which is to be published.'),
+    );
+    
+   return $form;
+}
+
+/**
+ * Displays a list of the known taxonomic names. Long lists are split up into multiple pages
+ *
+ * @param String $page page number to diplay defaults to page 1
+ * @param boolean $hide_unaccepted whether to hide nams which are not accepted by the current view
+ */
+function cdm_dataportal_view_names($page = 1, $hide_unaccepted = false ){
+  
+
+}
+
+/**
+ * The taxon page gives detailed information on a taxon, it shows:
+ *  - Taxon name
+ *  - Full list of synonyms homotypic synonyms on top, followed by the heterotypic and finally followed by misapplied names. The list is historically ordered.
+ *  - All facts associated with the very taxon concept and taxon name. 
+ *
+ * @param $name_uuid the $name_uuid of the taxon name 
+ */
+function cdm_dataportal_view_taxon($name_uuid){
+  
+}
+ 
+
+/* ====================== theme functions ====================== */

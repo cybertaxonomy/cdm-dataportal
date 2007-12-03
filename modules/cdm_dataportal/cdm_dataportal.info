@@ -1,0 +1,5 @@
+; $Id: cdm_dataportal.module, v0.1 2007/03/12, Andreas Kohlbecker & Dave Taylor - http://dev.e-taxonomy.eu/trac/wiki/CdmDataportal $
+name = "CDM Dataportal"
+description = "The dataportal publishes CDM data hosted in a CommunityStore on the web."
+version = 0.1-5.x
+package = "CDM"
