@@ -106,7 +106,10 @@ function cdm_dataportal_settings(){
  */
 function cdm_dataportal_view_names($page = 1, $hide_unaccepted = false ){
   
-
+    $names = cdm_ws_list_names($page = 1, $hide_unaccepted);
+    $out = theme('cdm_dataportal_widget_names_list', $hide_unaccepted);
+    $out .= theme('cdm_dataportal_names_list', $names, $page);
+    return $out;
 }
 
 /**

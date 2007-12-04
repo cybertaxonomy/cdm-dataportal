@@ -1,8 +1,10 @@
 * text=auto !eol
 module_patches/cck_field_perms/cck_field_perms-views0.1.patch -text
 module_patches/nodefamily/nodefamily_create-others-nodes.patch -text
+modules/cdm_dataportal/cdm/cdm_api.php -text
 modules/cdm_dataportal/cdm_dataportal.info -text
 modules/cdm_dataportal/cdm_dataportal.module -text
+modules/cdm_dataportal/cdm_dataportal.theme.php -text
 modules/countrypresence/country-earth.dbf -text
 modules/countrypresence/country-earth.prj -text
 modules/countrypresence/country-earth.shp -text
