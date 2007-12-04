@@ -101,6 +101,7 @@ function cdm_dataportal_settings(){
 /**
  * Displays a list of the known taxonomic names. Long lists are split up into multiple pages
  *
+ * TODO: parameters are still preliminar
  * @param String $page page number to diplay defaults to page 1
  * @param boolean $hide_unaccepted whether to hide nams which are not accepted by the current view
  */
