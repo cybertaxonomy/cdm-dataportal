@@ -25,17 +25,40 @@ function cdm_taggedtext2html(array $taggedText, $tag = 'span'){
 }
 
 /**
+ * Loads the XML response for the given url from the CDM Data Store Webservice.
+ * The XML is turned into a object wich is retuned. Incase of an error a 
+ * approriate watchdog message is generated and the function returns false.
+ * 
+ * 
+ *
+ * @param String $url the relative url of the web service call. 
+ *        Relative means relative to the web service base url which is stored in cdm_webservice_url
+ * @return An object or false
+ */
+function cdm_ws_load($url){
+
+  $obj = simplexml_load_file(variable_get('cdm_webservice_url', '').$url);
+  if(!$obj){
+    $backtrace = debug_backtrace();
+    watchdog('CDM', $backtrace[1]['function'].' - failed to load '.$url, WATCHDOG_ERROR);
+  }
+  return $obj;
+}
+
+/**
  * The whatis service returns the type 
  * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter. 
  * 
  *
  * @param unknown_type $uuid
- * @return false if the cdm store has no matching instance. An associative array with the following key, value pairs:
- *   - 'cdmName': name of the cdm class as returned by Class.getName()
- *   - ' 
+ * @return false if the cdm store contains no matching instance. An associative array with the following key-value pairs:
+ *   - 'cdmName':       name of the cdm class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.model.taxon.Taxon
+ *   - 'cdmSimpleName': simple name of the cdm class as returned by Class.getSimpleName(), e.g. Taxon
+ *   - 'dtoName':       name of the DTO class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.dto.TaxonTO
+ *   - 'dtoSimpleName': simple name of the TDO class as returned by Class.getSimpleName(), e.g. TaxonTO
  */
 function cdm_ws_whatis($uuid){
-  
+  return cdm_ws_load("whatis/?uuid=$uuid");
 }
 
 /**
@@ -45,13 +68,7 @@ function cdm_ws_whatis($uuid){
  * @return a NameTO instance or false 
  */
 function cdm_ws_get_nameTO($uuid){
-  
-  $url = variable_get('cdm_webservice_url', '')."name/?uuid=$uuid";
-  $name = simplexml_load_file(url);
-  if(!$name){
-    watchdog('CDM', "cdm_get_nameTO() - failed to load $url", WATCHDOG_ERROR);
-  }
-  return $name;
+  return cdm_ws_load("name/?uuid=$uuid");
 }
 
 /**
@@ -60,6 +77,6 @@ function cdm_ws_get_nameTO($uuid){
  * @param unknown_type $page
  * @param unknown_type $hide_unaccepted
  */
-function cdm_ws_list_names($page = 1, $hide_unaccepted){
+function cdm_ws_nameTO_list($page = 1, $hide_unaccepted){
    
 }
