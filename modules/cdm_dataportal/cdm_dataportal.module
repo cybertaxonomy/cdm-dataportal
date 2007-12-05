@@ -1,5 +1,5 @@
 <?php
-// $Id: cdm_dataportal.module $
+// $Id$
 
 //TODO if required  outsource all theme functions and uncomment next line
 //require_once('cdm_dataportal.theme.php');
