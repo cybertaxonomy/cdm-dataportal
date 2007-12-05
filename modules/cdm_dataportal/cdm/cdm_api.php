@@ -12,10 +12,11 @@
  */
 
 /**
- * Enter description here...
+ * Converts an array of TagedText items into a sequence of corresponding html tags whereas 
+ * each item will provided with a class attribute which set to the key of the TaggedText item.
  *
- * @param unknown_type $tag
- * @return unknown
+ * @param TaggedText $tag
+ * @return String of HTML 
  */
 function cdm_taggedtext2html(array $taggedText, $tag = 'span'){
    foreach($taggedText as $class=>$value){
@@ -78,6 +79,6 @@ function cdm_ws_get_name($uuid){
  * @param unknown_type $page
  * @param unknown_type $hide_unaccepted
  */
-function cdm_ws_name_list($page = 1, $hide_unaccepted){
+function cdm_ws_name_list($page = 1, $onlyAccepted){
    
 }

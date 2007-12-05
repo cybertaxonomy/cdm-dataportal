@@ -1,8 +1,7 @@
 <?php
 // $Id$
 
-//TODO if required  outsource all theme functions and uncomment next line
-//require_once('cdm_dataportal.theme.php');
+require_once('cdm_dataportal.theme.php');
 
 /* ====================== hook implementations ====================== */ 
 
@@ -78,6 +77,18 @@ function cdm_dataportal_menu($may_cache) {
 }
 
 
+/**
+ * Implementation of hook_validate()
+ *
+ * @param $element
+ */
+function cdm_webservice_url_validate($element){
+  if (!str_endsWith($element['#value'], $str_end)) {
+      form_set_error('cdm_webservice_url', t("The URL to the CDM Web Service must end with a slash: '/'."));
+    }
+}
+
+
 /* ====================== menu callback functions ====================== */
 
 /**
@@ -95,10 +106,13 @@ function cdm_dataportal_settings(){
     '#title'         => t('CDM Store Webservice'),
     '#default_value' => variable_get('cdm_webservice_url', 'none'),
     '#description'   => t('The URL to Webservice of the CDM Store which is to be published.'),
+     // #validate is set by default in form.inc#L334 to cdm_webservice_url_validate, if 
+    '#validate'      => array('_cdm_form_validate_endswith' => array('/', 'cdm_webservice_url')),
     );
     
    return $form;
 }
+
 
 /**
  * Displays a list of the known taxonomic names. Long lists are split up into multiple pages
@@ -120,6 +134,7 @@ function cdm_dataportal_view_names($page = 1, $onlyAccepted = false ){
     return $out;
 }
 
+
 /**
  * The taxon page gives detailed information on a taxon, it shows:
  *  - Taxon name
@@ -134,6 +149,42 @@ function cdm_dataportal_view_taxon($name_uuid){
   return theme('cdm_name', $name);
   // END of dummy implementation
 }
- 
 
-/* ====================== theme functions ====================== */
+
+/* ====================== other functions ====================== */
+
+
+/**
+ * @param $str the string to truncate
+ * @param $len the maximun length
+ * @param $appendix an optional appendix.
+ *
+ * @return the string truncated to the specified length or the original string as given as parameter.
+ * if an appendix has been defined the resulting string
+ * will have the specified length inculding the the appendix.
+ */
+function str_trunk(&$str, $len, $appendix=''){
+    if(strlen($str) >= $len )
+    return  substr($str, 0, $len - strlen($appendix)).$appendix;
+    else
+    return $str;
+}
+
+/**
+ * @param string $str
+ * @param string $sub
+ * @return boolean
+ */
+function str_beginsWith( $str, $sub ) {
+    return ( substr( $str, 0, strlen( $sub ) ) === $sub );
+}
+
+/**
+ * 
+ * @param string $str
+ * @param string $sub
+ * @return boolean
+ */
+function str_endsWith( $str, $sub ) {
+    return ( substr( $str, strlen( $str ) - strlen( $sub ) ) === $sub );
+}
