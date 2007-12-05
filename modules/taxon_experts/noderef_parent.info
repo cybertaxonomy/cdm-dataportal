@@ -1,4 +1,4 @@
-; $Id: noderef_parent.module, v 1.0 2007/05/02, Andreas Kohlbecker - http://www.bgbm.org/BioDivInf/default.htm $
+; $Id$
 name = Node Reference Parent
 package = CCK
 description = "A CCK widget which is not editable but filled with default data only. It is used to simulate 1:n relationships between parent and child nodes."

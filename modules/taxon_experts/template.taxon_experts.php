@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 /**
 function _init_vocabulary_tids(){
   //FIXME: execute this during module installation
