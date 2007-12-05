@@ -2,8 +2,10 @@
 <NameTO>
 	<uuid>987129837</uuid>
 	<fullname>Acanthocephalus Kar. &amp; Kir.</fullname>
-	<taggedName tag="name">Acanthocephalus</taggedName>
-	<taggedName tag="authors">Kar. &amp; Kir."</taggedName>
+	<taggedName>
+		<TaggedText tag="name">Acanthocephalus"</TaggedText>
+		<TaggedText tag="authors">Kar. &amp; Kir."</TaggedText>
+	</taggedName>
 	<nomenclaturalReference>
 		in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842
 	</nomenclaturalReference>
