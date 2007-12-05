@@ -26,6 +26,30 @@ function cdm_taggedtext2html(array $taggedText, $tag = 'span'){
 }
 
 /**
+ * @return string
+ * @param string $url
+ * @desc Return string content from a remote file
+ * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
+*/
+function get_content($url)
+{
+    $ch = curl_init();
+
+    curl_setopt ($ch, CURLOPT_URL, $url);
+    curl_setopt ($ch, CURLOPT_HEADER, 0);
+
+    ob_start();
+
+    curl_exec ($ch);
+    curl_close ($ch);
+    $string = ob_get_contents();
+
+    ob_end_clean();
+   
+    return $string;    
+}
+
+/**
  * Loads the XML response for the given url from the CDM Data Store Webservice.
  * The XML is turned into a object wich is retuned. Incase of an error a 
  * approriate watchdog message is generated and the function returns false.
@@ -38,13 +62,24 @@ function cdm_taggedtext2html(array $taggedText, $tag = 'span'){
  */
 function cdm_ws_load($url){
 
-  $obj = simplexml_load_file(variable_get('cdm_webservice_url', '').$url);
+  if(variable_get('cdm_webservice_isStub', 0)){
+    $url = urlencode($url);
+  }
+  
+  //TODO get_content() requires the php curl extension to be installed, maybe we should chose an other function
+  $data = get_content($url);
+  
+
+  
   if(!$obj){
     $backtrace = debug_backtrace();
     watchdog('CDM', $backtrace[1]['function'].' - failed to load '.$url, WATCHDOG_ERROR);
   }
+  $obj->ws_url = $url;
+  
   return $obj;
 }
+
 
 /**
  * The whatis service returns the type 

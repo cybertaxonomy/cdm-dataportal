@@ -76,6 +76,31 @@ function cdm_dataportal_menu($may_cache) {
   return $items;
 }
 
+/**
+ * Implementation of hook_block()
+ * 
+ * Provides the following blocks:
+ *  0: list of links useful during development
+ *
+ * @param String $op
+ * @param int $delta
+ */
+function cdm_dataportal_block($op='list', $delta=0) {
+  // listing of blocks, such as on the admin/block page
+  if ($op == "list") {
+    $block[0]["info"] = t("CDM DataPortal DevLinks");
+    return $block;
+  }
+  else if ($op == 'view') {
+    switch($delta){
+      case 0:
+        $block['subject'] = t('CDM DataPortal DevLinks');
+        $block['content'] = '<ul><li>'.l('Taxon Page', 'cdm_dataportal/taxon/uuid').'</li><li>'.l('Name List', 'cdm_dataportal/names').'</li></ul>';
+        return $block;
+    }
+  }
+}
+
 
 /**
  * Implementation of hook_validate()
@@ -83,7 +108,7 @@ function cdm_dataportal_menu($may_cache) {
  * @param $element
  */
 function cdm_webservice_url_validate($element){
-  if (!str_endsWith($element['#value'], $str_end)) {
+  if (!str_endsWith($element['#value'], '/')) {
       form_set_error('cdm_webservice_url', t("The URL to the CDM Web Service must end with a slash: '/'."));
     }
 }
@@ -100,17 +125,29 @@ function cdm_webservice_url_validate($element){
 function cdm_dataportal_settings(){
 
    //TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
-   
-   $form['cdm_webservice_url'] =  array(
+    $form['cdm_webservice'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('CDM Web Servic'),
+      '#collapsible' => FALSE,
+      '#collapsed' => TRUE,
+    );
+  
+   $form['cdm_webservice']['cdm_webservice_url'] =  array(
     '#type' => 'textfield',
-    '#title'         => t('CDM Store Webservice'),
-    '#default_value' => variable_get('cdm_webservice_url', 'none'),
-    '#description'   => t('The URL to Webservice of the CDM Store which is to be published.'),
-     // #validate is set by default in form.inc#L334 to cdm_webservice_url_validate, if 
-    '#validate'      => array('_cdm_form_validate_endswith' => array('/', 'cdm_webservice_url')),
+    '#title'         => t('CDM Web Service URL'),
+    '#description'   => t('The URL of CDM Webservice which delivers the data to be published.'),
+    '#default_value' => variable_get('cdm_webservice_url', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm/ws_stub/xml/'),
     );
     
-   return $form;
+    $form['cdm_webservice']['cdm_webservice_isStub'] =  array(
+    '#type' => 'checkbox',
+    '#title'         => t('Use Web Service Stub'),
+    '#default_value' => variable_get('cdm_webservice_isStub', 1),
+    '#description'   => t('Use a static web service stub. Only for development. For further information please refer to the ')
+                      .l('ws_stub/README.txt', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm/ws_stub/README.txt', array('target'=>'_blank')),
+    );
+   
+   return system_settings_form($form);
 }
 
 
@@ -143,9 +180,9 @@ function cdm_dataportal_view_names($page = 1, $onlyAccepted = false ){
  *
  * @param $name_uuid the $name_uuid of the taxon name 
  */
-function cdm_dataportal_view_taxon($name_uuid){
+function cdm_dataportal_view_taxon($uuid){
   //FIXME this is a dummy implementation
-  $name = cdm_ws_get_name();
+  $name = cdm_ws_get_name($uuid);
   return theme('cdm_name', $name);
   // END of dummy implementation
 }

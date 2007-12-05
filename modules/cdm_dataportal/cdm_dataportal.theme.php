@@ -28,9 +28,17 @@ function tagNameParts($name, $numOfNameTokens){
  *  
  * @param NameTO $nameTO the taxon name
  */
-function theme_cdm_name(NameTO $nameTO){
+function theme_cdm_name($nameTO){
     //TODO: how to respect the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase ?
-    return cdm_taggedtext2html($nameTO->taggedName, 'span');
+    $out = '<h2>Dummy content</h2>';
+    if($nameTO){
+       $out .= '<pre>'.print_r($nameTO, true).'</pre>';
+      $out .= '<div>'.$nameTO->ws_url.'</div>';
+      //$out .= '<div>'.cdm_taggedtext2html($nameTO->taggedName).'</div>';
+    } else {
+      $out .= '<div>Item not found</div>';
+    }
+    return $out;
 }
 
 /**
