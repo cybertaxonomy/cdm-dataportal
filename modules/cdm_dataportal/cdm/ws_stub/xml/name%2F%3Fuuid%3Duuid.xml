@@ -3,8 +3,8 @@
 	<uuid>987129837</uuid>
 	<fullname>Acanthocephalus Kar. &amp; Kir.</fullname>
 	<taggedName>
-		<TaggedText tag="name">Acanthocephalus"</TaggedText>
-		<TaggedText tag="authors">Kar. &amp; Kir."</TaggedText>
+		<TaggedText name='tag'>Acanthocephalus"</TaggedText>
+		<TaggedText authors='tag'>Kar. &amp; Kir."</TaggedText>
 	</taggedName>
 	<nomenclaturalReference>
 		in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842
