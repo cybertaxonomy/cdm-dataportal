@@ -63,19 +63,20 @@ function get_content($url)
 function cdm_ws_load($url){
 
   if(variable_get('cdm_webservice_isStub', 0)){
-    $url = urlencode($url);
+    $url = urlencode(urlencode($url)).'.xml';
   }
-  
+  $url = variable_get('cdm_webservice_url', '').$url;
   //TODO get_content() requires the php curl extension to be installed, maybe we should chose an other function
   $data = get_content($url);
   
-
+  $obj = simplexml_load_string($data);
   
   if(!$obj){
     $backtrace = debug_backtrace();
     watchdog('CDM', $backtrace[1]['function'].' - failed to load '.$url, WATCHDOG_ERROR);
   }
   $obj->ws_url = $url;
+  $obj->data = $data;
   
   return $obj;
 }
