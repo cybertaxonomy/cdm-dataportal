@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 /**
  * @file
@@ -21,6 +22,20 @@ function cdm_taggedtext2html(array $taggedText, $tag = 'span'){
      $out .= '<'.$tag.' class="'.$class.'">'.$value.'</ '.$tag.'>';
    }
    return $out;
+}
+
+/**
+ * The whatis service returns the type 
+ * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter. 
+ * 
+ *
+ * @param unknown_type $uuid
+ * @return false if the cdm store has no matching instance. An associative array with the following key, value pairs:
+ *   - 'cdmName': name of the cdm class as returned by Class.getName()
+ *   - ' 
+ */
+function cdm_ws_whatis($uuid){
+  
 }
 
 /**
