@@ -4,6 +4,7 @@ module_patches/nodefamily/nodefamily_create-others-nodes.patch -text
 modules/cdm_dataportal/cdm/cdm_api.php -text
 modules/cdm_dataportal/cdm/ws_stub/README.txt -text
 modules/cdm_dataportal/cdm/ws_stub/xml/name%2F%3Fuuid%3Duuid.xml -text
+modules/cdm_dataportal/cdm/ws_stub/xml/name;uuid=uuid.xml -text
 modules/cdm_dataportal/cdm_dataportal.info -text
 modules/cdm_dataportal/cdm_dataportal.module -text
 modules/cdm_dataportal/cdm_dataportal.theme.php -text
