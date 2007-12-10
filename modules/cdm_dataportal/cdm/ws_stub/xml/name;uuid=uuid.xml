@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<name DTOclass="NameTO">
+<root DTOclass="NameTO">
 	<uuid>987129837</uuid>
 	<fullname>Acanthocephalus Kar. &amp; Kir.</fullname>
 	<taggedName>
@@ -14,4 +14,4 @@
 			<title>in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842</title>
 			<year>1842</year>
 	</nomenclaturalReference>
-</name>
+</root>
