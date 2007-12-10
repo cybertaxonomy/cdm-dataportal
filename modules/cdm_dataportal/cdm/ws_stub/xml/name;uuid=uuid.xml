@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root DTOclass="NameTO">
+<root dtoclass="NameTO">
 	<uuid>987129837</uuid>
 	<fullname>Acanthocephalus Kar. &amp; Kir.</fullname>
 	<taggedName>
@@ -10,8 +10,23 @@
 		<tag>authors</tag>
 		<text>Kar. &amp; Kir.</text>
 	</taggedName>
-	<nomenclaturalReference DTOclass="ReferenceTO">
-			<title>in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842</title>
+	<nameRelation dtoclass="NameRelationshipTO">
+		<type></type>
+		<ruleConsidered></ruleConsidered>
+		<refname_uuid></refname_uuid>
+		<refname_fullname></refname_fullname>
+		<refname_taggedName></refname_taggedName>
+	</nameRelation>
+	<nameRelation dtoclass="NameRelationshipTO">
+		<type></type>
+		<ruleConsidered></ruleConsidered>
+		<refname_uuid></refname_uuid>
+		<refname_fullname></refname_fullname>
+		<refname_taggedName></refname_taggedName>
+	</nameRelation>
+	<nomenclaturalReference dtoclass="NomenclaturalReferenceTO">
+			<citation>in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842</citation>
+			<microreference></microreference>
 			<year>1842</year>
 	</nomenclaturalReference>
 </root>
