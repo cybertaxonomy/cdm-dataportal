@@ -6,7 +6,7 @@ RCS file: /cvs/drupal-contrib/contributions/modules/nodefamily/nodefamily.module
 retrieving revision 1.19.2.14
 diff -u -r1.19.2.14 nodefamily.module
 --- nodefamily/nodefamily.module	4 Oct 2007 08:53:48 -0000	1.19.2.14
-+++ nodefamily/nodefamily.module	12 Nov 2007 16:41:57 -0000
++++ nodefamily/nodefamily.module	10 Dec 2007 09:37:36 -0000
 @@ -31,6 +31,15 @@
    return $items;
  }
@@ -39,7 +39,7 @@ diff -u -r1.19.2.14 nodefamily.module
 -        if ($node->nid && user_access('administer nodes')) {
 +        // adjust uid if $node->nid && user_access('create others nodes'):
 +        // since node_submit() is not aware of 'create others nodes'!!
-+        if (!$node->nid && user_access('create others nodes')) {
++        if (!$node->nid && $node->type != 'usernode' && user_access('create others nodes')) {
 +          if ($account = user_load(array('name' => $node->name))) {
 +            $node->uid = $account->uid;
 +          }
