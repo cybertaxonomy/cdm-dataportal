@@ -11,6 +11,9 @@
  *  - all webservice access methods are prefixed with cdm_ws
  */
 
+require_once ('xml2json.php');
+
+
 /**
  * Converts an array of TagedText items into a sequence of corresponding html tags whereas 
  * each item will provided with a class attribute which set to the key of the TaggedText item.
@@ -64,16 +67,15 @@ function get_content_curl($url)
     return $string;    
 }
 
-function cdm_load_string_xml($xml_str){
-  
-  $array = xml2array($xml_str);
-  $obj = (object)$array;
-  return $obj;
-}
 
-function cdm_load_string_json($json_str){
-  //TODO implement
-  watchdog('CDM', ' cdm_load_json UNIMPLEMENTED', WATCHDOG_ERROR);
+function cdm_load_obj($datastr){
+  // if the webservice deilvers XML convert it into json
+  if(variable_get('cdm_webservice_type', 'xml') == 'xml'){
+    $datastr = xml2json::transformXmlStringToJson($datastr);  
+  }
+  $json = new Services_JSON();
+  $obj = $json->decode($datastr);
+  return $obj;
 }
 
 /**
@@ -97,15 +99,13 @@ function cdm_ws_load($path){
   
   if(function_exists('curl_init')){
     // use the CURL lib if installed it is supposed to be 20x faster
-    $data = get_content_curl($url);
+    $datastr = get_content_curl($url);
   } else {
     //TODO implement get_content_fsockopen();
-    $data = get_content_fsockopen($url);
+    $datastr = get_content_fsockopen($url);
   }
-  
-  $obj_load_function = 'cdm_load_string_'.variable_get('cdm_webservice_type', 'xml');
-  
-  if( !($obj = $obj_load_function($data, 'stdClass')) ){
+   
+  if( !($obj = cdm_load_obj($datastr)) ){
     $backtrace = debug_backtrace();
     watchdog('CDM', $backtrace[1]['function'].' - failed to load '.$url, WATCHDOG_ERROR);
   }
@@ -140,7 +140,9 @@ function cdm_ws_whatis($uuid){
  * @return a NameTO instance or false 
  */
 function cdm_ws_get_name($uuid){
-  return cdm_ws_load("name?uuid=$uuid");
+  $obj = cdm_ws_load("name?uuid=$uuid");
+  return $obj->NameTO;
+  
 }
 
 /**
