@@ -30,17 +30,15 @@ function theme_cdm_name($nameTO){
     //TODO: how to respect the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase ?
     $out = '<h2>Dummy content</h2>';
     
-    $testo->fld = array('a'=>'A', 'b'=>'B');
-    $tfld = $testo->fld; 
-    
     if($nameTO){
-      foreach($nameTO->taggedName as $ti){
+      /*foreach($nameTO->taggedName as $ti){
         $out .= $ti->tag.'=&gt;'.$ti->text.'<br />';
       }
       $tn = $nameTO->taggedName;
       $out .= '<pre>'.print_r($nameTO, true).'</pre>';
-      $out .= '<div>'.$nameTO->ws_url.'</div>';
-      $out .= '<div>'.cdm_taggedtext2html($tn).'</div>';
+      $out .= '<div>'.$nameTO->ws_url.'</div>';*/
+      
+      $out .= '<div>'.cdm_taggedtext2html($nameTO->taggedName).'</div>';
     } else {
       $out .= '<div>Item not found</div>';
     }
