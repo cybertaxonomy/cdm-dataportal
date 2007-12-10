@@ -11,6 +11,9 @@
 		<text>Kar. &amp; Kir.</text>
 	</taggedName>
 	<nomenclaturalReference>
-		in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842
+		<ReferenceTO>
+			<title>in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842</title>
+			<year>1842</year>
+		</ReferenceTO>
 	</nomenclaturalReference>
 </NameTO>
