@@ -1,5 +1,6 @@
 ; $Id$
 name = "CDM Dataportal"
 description = "The dataportal publishes CDM data hosted in a CommunityStore on the web."
-version = 0.1-5.x
+version = 5.x-0.1
 package = "CDM"
+dependencies = cdm_api

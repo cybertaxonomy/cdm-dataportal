@@ -1,0 +1,251 @@
+<?php
+// $Id: cdm_api.php 1012 2007-12-05 17:58:45Z a.kohlbecker $
+
+/**
+ * @file
+ * Functions which are required or useful when accessing and processing CDM Data Store Webservices
+ * 
+ * Naming conventions:
+ * ----------------------
+ * 
+ *  - all webservice access methods are prefixed with cdm_ws
+ */
+
+/**
+ * Converts an array of TagedText items into a sequence of corresponding html tags whereas 
+ * each item will provided with a class attribute which set to the key of the TaggedText item.
+ * 
+ * @param array $taggedtxt
+ * @param String $tag
+ * @return String of HTML 
+ */
+function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span'){
+   foreach($taggedtxt as $tt){
+     $out .= '<'.$tag.' class="'.$tt->class.'">'.$tt->value.'</ '.$tag.'>';
+   }
+   return $out;
+}
+
+function cdm_encode_stub($path, $fileextension){
+  return str_replace('&',',', str_replace('?',';',$path)).'.'.$fileextension;
+}
+
+function cdm_decode_stub($path){
+  
+  // remove fileextension
+  $path = substr_replace($path, '', strrpos($path, '.'));
+  
+  return str_replace(',','&', str_replace(';','?',$path));
+}
+
+/**
+ * Return string content from a remote file
+ * 
+ * @param string $url
+ * @return string
+ * 
+ * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
+*/
+function get_content_curl($url)
+{
+    $ch = curl_init();
+
+    curl_setopt ($ch, CURLOPT_URL, $url);
+    curl_setopt ($ch, CURLOPT_HEADER, 0);
+
+    ob_start();
+
+    curl_exec ($ch);
+    curl_close ($ch);
+    $string = ob_get_contents();
+
+    ob_end_clean();
+   
+    return $string;    
+}
+
+function cdm_load_string_xml($xml_str){
+  
+  $array = xml2array($xml_str);
+  $obj = (object)$array;
+  return $obj;
+}
+
+function cdm_load_string_json($json_str){
+  //TODO implement
+  watchdog('CDM', ' cdm_load_json UNIMPLEMENTED', WATCHDOG_ERROR);
+}
+
+/**
+ * Loads the XML or JSON response for the given url from the CDM Data Store Webservice.
+ * The XML is turned into a object wich is retuned. Incase of an error a 
+ * approriate watchdog message is generated and the function returns false.
+ * 
+ * //TODO are we going to support JSON services? Then implement a parser! 'cdm_webservice_type' = 'json' in that case
+ *
+ * @param String $url the relative url of the web service call. 
+ *        Relative means relative to the web service base url which is stored in cdm_webservice_url
+ * @return An object or false
+ */
+function cdm_ws_load($path){
+
+  if(variable_get('cdm_webservice_isStub', 0)){
+    $path = cdm_encode_stub($path, variable_get('cdm_webservice_type', 'xml'));
+  }
+  
+  $url = variable_get('cdm_webservice_url', '').$path;
+  
+  if(function_exists('curl_init')){
+    // use the CURL lib if installed it is supposed to be 20x faster
+    $data = get_content_curl($url);
+  } else {
+    //TODO implement get_content_fsockopen();
+    $data = get_content_fsockopen($url);
+  }
+  
+  $obj_load_function = 'cdm_load_string_'.variable_get('cdm_webservice_type', 'xml');
+  
+  if( !($obj = $obj_load_function($data, 'stdClass')) ){
+    $backtrace = debug_backtrace();
+    watchdog('CDM', $backtrace[1]['function'].' - failed to load '.$url, WATCHDOG_ERROR);
+  }
+  
+  $obj->ws_url = $url;
+  $obj->data = $data;
+  return $obj;
+}
+
+
+/**
+ * The whatis service returns the type 
+ * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter. 
+ * 
+ *
+ * @param unknown_type $uuid
+ * @return false if the cdm store contains no matching instance. 
+ * An associative array with the following key-value pairs:
+ *   - 'cdmName':       name of the cdm class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.model.taxon.Taxon
+ *   - 'cdmSimpleName': simple name of the cdm class as returned by Class.getSimpleName(), e.g. Taxon
+ *   - 'dtoName':       name of the DTO class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.dto.TaxonTO
+ *   - 'dtoSimpleName': simple name of the TDO class as returned by Class.getSimpleName(), e.g. TaxonTO
+ */
+function cdm_ws_whatis($uuid){
+  return cdm_ws_load("whatis?uuid=$uuid");
+}
+
+/**
+ * load a name from the CDM Webservice
+ *
+ * @param String $uuid
+ * @return a NameTO instance or false 
+ */
+function cdm_ws_get_name($uuid){
+  return cdm_ws_load("name?uuid=$uuid");
+}
+
+/**
+ * load a list of names from the CDM Webservice
+ *
+ * @param unknown_type $page
+ * @param unknown_type $hide_unaccepted
+ */
+function cdm_ws_name_list($page = 1, $onlyAccepted){
+   
+}
+
+
+/**
+ * xml2array function from http://www.bin-co.com/php/scripts/xml2array/
+ * 
+ * add utf8_decode at line 33 for utf8 support:
+ *    
+ *    if(isset($value)) $result['value'] = utf8_decode($value);
+ *
+ * @param unknown_type $contents
+ * @param unknown_type $get_attributes
+ * @return unknown
+ */
+function xml2array($contents, $get_attributes=1) {
+    if(!$contents) return array();
+
+    if(!function_exists('xml_parser_create')) {
+        //print "'xml_parser_create()' function not found!";
+        return array();
+    }
+    //Get the XML parser of PHP - PHP must have this module for the parser to work
+    $parser = xml_parser_create();
+    xml_parser_set_option( $parser, XML_OPTION_CASE_FOLDING, 0 );
+    xml_parser_set_option( $parser, XML_OPTION_SKIP_WHITE, 1 );
+    xml_parse_into_struct( $parser, $contents, $xml_values );
+    xml_parser_free( $parser );
+
+    if(!$xml_values) return;//Hmm...
+
+    //Initializations
+    $xml_array = array();
+    $parents = array();
+    $opened_tags = array();
+    $arr = array();
+
+    $current = &$xml_array;
+
+    //Go through the tags.
+    foreach($xml_values as $data) {
+        unset($attributes,$value);//Remove existing values, or there will be trouble
+        extract($data);//We could use the array by itself, but this cooler.
+
+        $result = '';
+        if($get_attributes) {//The second argument of the function decides this.
+            $result = array();
+            if(isset($value)) $result['value'] = $value;
+
+            //Set the attributes too.
+            if(isset($attributes)) {
+                foreach($attributes as $attr => $val) {
+                    if($get_attributes == 1) $result['attr'][$attr] = $val; //Set all the attributes in a array called 'attr'
+                    /**  :TODO: should we change the key name to '_attr'? Someone may use the tagname 'attr'. Same goes for 'value' too */
+                }
+            }
+        } elseif(isset($value)) {
+            $result = $value;
+        }
+
+        //See tag status and do the needed.
+        if($type == "open") {//The starting of the tag '<tag>'
+            $parent[$level-1] = &$current;
+
+            if(!is_array($current) or (!in_array($tag, array_keys($current)))) { //Insert New tag
+                $current[$tag] = $result;
+                $current = &$current[$tag];
+
+            } else { //There was another element with the same tag name
+                if(isset($current[$tag][0])) {
+                    array_push($current[$tag], $result);
+                } else {
+                    $current[$tag] = array($current[$tag],$result);
+                }
+                $last = count($current[$tag]) - 1;
+                $current = &$current[$tag][$last];
+            }
+
+        } elseif($type == "complete") { //Tags that ends in 1 line '<tag />'
+            //See if the key is already taken.
+            if(!isset($current[$tag])) { //New Key
+                $current[$tag] = $result;
+
+            } else { //If taken, put all things inside a list(array)
+                if((is_array($current[$tag]) and $get_attributes == 0)//If it is already an array...
+                        or (isset($current[$tag][0]) and is_array($current[$tag][0]) and $get_attributes == 1)) {
+                    array_push($current[$tag],$result); // ...push the new element into that array.
+                } else { //If it is not an array...
+                    $current[$tag] = array($current[$tag],$result); //...Make it an array using using the existing value and the new value
+                }
+            }
+
+        } elseif($type == 'close') { //End of tag '</tag>'
+            $current = &$parent[$level-1];
+        }
+    }
+
+    return($xml_array);
+} 
