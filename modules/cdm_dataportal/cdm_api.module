@@ -20,11 +20,14 @@ require_once ('xml2json.php');
  * 
  * @param array $taggedtxt
  * @param String $tag
+ * @param String $glue the string by which the chained text tokens are concatenated together. 
+ *       Default is a blak character
  * @return String of HTML 
  */
-function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span'){
+function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '){
+  $out = '';
    foreach($taggedtxt as $tt){
-     $out .= '<'.$tag.' class="'.$tt->class.'">'.$tt->value.'</ '.$tag.'>';
+     $out .= (strlen($out) > 0 ? $glue : '').'<'.$tag.' class="'.$tt->tag.'">'.$tt->text.'</ '.$tag.'>';
    }
    return $out;
 }
@@ -75,7 +78,7 @@ function cdm_load_obj($datastr){
   }
   $json = new Services_JSON();
   $obj = $json->decode($datastr);
-  return $obj;
+  return $obj->root;
 }
 
 /**
@@ -141,7 +144,7 @@ function cdm_ws_whatis($uuid){
  */
 function cdm_ws_get_name($uuid){
   $obj = cdm_ws_load("name?uuid=$uuid");
-  return $obj->NameTO;
+  return $obj;
   
 }
 
