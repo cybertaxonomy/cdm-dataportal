@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<NameTO>
+<name DTOclass="NameTO">
 	<uuid>987129837</uuid>
 	<fullname>Acanthocephalus Kar. &amp; Kir.</fullname>
 	<taggedName>
@@ -10,10 +10,8 @@
 		<tag>authors</tag>
 		<text>Kar. &amp; Kir.</text>
 	</taggedName>
-	<nomenclaturalReference>
-		<ReferenceTO>
+	<nomenclaturalReference DTOclass="ReferenceTO">
 			<title>in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842</title>
 			<year>1842</year>
-		</ReferenceTO>
 	</nomenclaturalReference>
-</NameTO>
+</name>
