@@ -1,8 +1,6 @@
 <?php
 // $Id$
 
-require_once('cdm/cdm_api.php');
-
 function tagNameParts($name, $numOfNameTokens){
     
     $out = '<span class="name">';
