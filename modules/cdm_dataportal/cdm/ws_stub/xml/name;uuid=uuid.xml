@@ -11,17 +11,17 @@
 		<text>Kar. &amp; Kir.</text>
 	</taggedName>
 	<nameRelation dtoclass="NameRelationshipTO">
-		<type></type>
+		<type>dummy</type>
 		<ruleConsidered></ruleConsidered>
 		<refname_uuid></refname_uuid>
-		<refname_fullname></refname_fullname>
+		<refname_fullname>Harpocarpus Endl., Gen. Pl. Suppl. 3: 70. 1843</refname_fullname>
 		<refname_taggedName></refname_taggedName>
 	</nameRelation>
 	<nameRelation dtoclass="NameRelationshipTO">
-		<type></type>
+		<type>dummy</type>
 		<ruleConsidered></ruleConsidered>
 		<refname_uuid></refname_uuid>
-		<refname_fullname></refname_fullname>
+		<refname_fullname>Harpachaena Bunge, Del. Sem. Hort. Dorpater: 6. 1845</refname_fullname>
 		<refname_taggedName></refname_taggedName>
 	</nameRelation>
 	<nomenclaturalReference dtoclass="NomenclaturalReferenceTO">
