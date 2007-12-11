@@ -1,6 +1,18 @@
 <?php
 // $Id$
 
+/*
+ * @file
+ * cdm_dataportal
+ * 
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+
 require_once('cdm_dataportal.theme.php');
 
 /* ====================== hook implementations ====================== */ 
@@ -71,6 +83,12 @@ function cdm_dataportal_menu($may_cache) {
 	    'type' => MENU_CALLBACK, 
 	    // expected callback arguments: name_uuid
 	    );
+	$items[] = array(
+      'path' => 'cdm/xml2json',
+      'callback' => 'cdm_view_xml2json',
+      'access' => true,
+      'type' => MENU_CALLBACK, 
+      );
 	    
   }
   return $items;
@@ -95,7 +113,11 @@ function cdm_dataportal_block($op='list', $delta=0) {
     switch($delta){
       case 0:
         $block['subject'] = t('CDM DataPortal DevLinks');
-        $block['content'] = '<ul><li>'.l('Taxon Page', 'cdm_dataportal/taxon/uuid').'</li><li>'.l('Name List', 'cdm_dataportal/names').'</li></ul>';
+        $block['content'] = '<ul>
+        <li>'.l('Taxon Page', 'cdm_dataportal/taxon/987129837-stub').'</li>
+        <li>'.l('Name List', 'cdm_dataportal/names').'</li>
+        <li>'.l('xml2json', 'cdm/xml2json/namelist;startwith=A.xml').'</li>
+        </ul>';
         return $block;
     }
   }
@@ -187,6 +209,13 @@ function cdm_dataportal_view_taxon($uuid){
   // END of dummy implementation
 }
 
+
+function cdm_view_xml2json(){
+  $file = arg(2);
+  $datastr = get_content(variable_get('cdm_webservice_url', '').$file);
+  return  xml2json::transformXmlStringToJson($datastr);
+
+}
 
 /* ====================== other functions ====================== */
 

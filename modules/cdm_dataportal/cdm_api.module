@@ -9,8 +9,14 @@
  * ----------------------
  * 
  *  - all webservice access methods are prefixed with cdm_ws
+ *
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 require_once ('xml2json.php');
 
 
@@ -52,7 +58,7 @@ function cdm_decode_stub($path){
  * 
  * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
 */
-function get_content_curl($url)
+function _get_content_curl($url)
 {
     $ch = curl_init();
 
@@ -70,6 +76,19 @@ function get_content_curl($url)
     return $string;    
 }
 
+function _get_content_fsockopen($url){
+  //FIXME implement get_content_fsockopen($url);
+}
+
+function get_content($url){
+  if(function_exists('curl_init')){
+
+    // use the CURL lib if installed it is supposed to be 20x faster
+    return _get_content_curl($url);
+  } else {
+    return _get_content_fsockopen($url);
+  }
+}
 
 function cdm_load_obj($datastr){
   // if the webservice deilvers XML convert it into json
@@ -98,15 +117,7 @@ function cdm_ws_load($path){
     $path = cdm_encode_stub($path, variable_get('cdm_webservice_type', 'xml'));
   }
   
-  $url = variable_get('cdm_webservice_url', '').$path;
-  
-  if(function_exists('curl_init')){
-    // use the CURL lib if installed it is supposed to be 20x faster
-    $datastr = get_content_curl($url);
-  } else {
-    //TODO implement get_content_fsockopen();
-    $datastr = get_content_fsockopen($url);
-  }
+  $datastr = get_content(variable_get('cdm_webservice_url', '').$path);
    
   if( !($obj = cdm_load_obj($datastr)) ){
     $backtrace = debug_backtrace();
