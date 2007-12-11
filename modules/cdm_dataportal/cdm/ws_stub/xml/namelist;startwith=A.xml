@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<root>
 <name array="true">
   <uuid>987129837-stub</uuid>
   <fullname>Acanthocephalus amplexifolius Kar. &amp; Kir.</fullname>
@@ -46,3 +47,4 @@
       </name>
   </nameRelation>
 </name>
+</root>
