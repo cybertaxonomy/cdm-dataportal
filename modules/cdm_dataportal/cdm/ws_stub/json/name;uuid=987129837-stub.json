@@ -1,0 +1,66 @@
+{
+   "root":{
+      "uuid":"987129837-stub",
+      "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+      "taggedName":[
+         {
+            "tag":"name",
+            "text":"Acanthocephalus amplexifolius"
+         },
+         {
+            "tag":"authors",
+            "text":"Kar. & Kir."
+         }
+      ],
+      "nameRelation":[
+         {
+            "type":"synonym of",
+            "ruleConsidered":"",
+            "name":{
+            	"uuid":"987129823-stub",
+            	"fullname":"Acanthocephalus Kar. & Kir.",
+            	"taggedName":[
+			         {
+			            "tag":"name",
+			            "text":"Acanthocephalus amplexifolius"
+			         },
+			         {
+			            "tag":"authors",
+			            "text":"Kar. & Kir."
+			         }
+				],
+				"nomref_fullcitation":"in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842",
+				"nomref_taggedcitation":[
+					 {
+			            "tag":"inref",
+			            "text":"in"
+			         },
+			         {
+			            "tag":"title",
+			            "text":"Bull. Soc. Imp. Naturalistes Moscou"
+			         },
+			         {
+			            "tag":"section",
+			            "text":"15: 127."
+			         },
+			         {
+			            "tag":"year",
+			            "text":"1842"
+			         },
+				],
+				"nomref_media":[
+					"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus001.png",
+					"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus002.png",
+				],
+				"nomref_uuid": "776736-stub",
+				 
+        	}
+		},
+      ],
+      "nomenclaturalReference":{
+         "citation":"in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842",
+         "microreference":"",
+         "year":"1842"
+      }
+   }
+}
