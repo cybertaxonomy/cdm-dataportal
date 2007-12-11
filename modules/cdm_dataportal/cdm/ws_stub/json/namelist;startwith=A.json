@@ -1,68 +1,59 @@
 {
-  "root":
-	[
-    {
-      "uuid":"987129837-stub",
-      "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
-      "taggedName":[
-         {
-            "tag":"name",
-            "text":"Acanthocephalus amplexifolius"
-         },
-         {
-            "tag":"authors",
-            "text":"Kar. & Kir."
-         }
-      ],
-      "nomref_uuid": "776736-stub",
-      "nomref_fullcitation":"in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842",
-      "nomref_media":[
-        "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus001.png",
-        "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus002.png",
-      ],
-    },
-
-
-    {
-      "uuid":"9871293456-stub",
-      "fullname":Acanthocephalus benthamianus var. laevis Vassilcz. ",
-      "taggedName":[
-         {
-            "tag":"name",
-            "text":"Acanthocephalus benthamianus var. laevis"
-         },
-         {
-            "tag":"authors",
-            "text":"Vassilcz"
-         }
-      ],
-      "nameRelations":
-      [
-        {
-          "type":"synonym of",
-          "ruleConsidered":"",
-          "name":{
-          "uuid":"987129823-stub",
-          "fullname":"Acanthocephalus benthamianus Regel",
-          "taggedName":
-          [
+   "name":[
+      {
+         "uuid":"987129837-stub",
+         "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+         "taggedName":[
             {
-              "tag":"name",
-              "text":"Acanthocephalus benthamianus"
+               "tag":"name",
+               "text":"Acanthocephalus amplexifolius"
             },
             {
-              "tag":"authors",
-              "text":"Regel"
+               "tag":"authors",
+               "text":"Kar. & Kir."
             }
-          ],
-          "nomref_fullcitation":"Descr. Pl. Nov. Rar. Fedtsch.: 47. 1882",
-          "nomref_media":
-          [
-  	         "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_benthamianus.png"
-          ],
-          "nomref_uuid": "776736-stub"
-        }
-      ]
-		}
-  ]
+         ],
+         "nomref_uuid":"776736-stub",
+         "nomref_fullcitation":"in Bull. Soc. Imp. Naturalistes Moscou 15: 127. 1842",
+         "nomref_media":[
+            "http:\/\/wp5.e-taxonomy.eu\/dataportal\/cichorieae\/media\/protolog\/png\/Acanthocephalus001.png",
+            "http:\/\/wp5.e-taxonomy.eu\/dataportal\/cichorieae\/media\/protolog\/png\/Acanthocephalus002.png"
+         ]
+      },
+      {
+         "uuid":"9871293456-stub",
+         "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
+         "taggedName":[
+            {
+               "tag":"name",
+               "text":"Acanthocephalus benthamianus var. laevis"
+            },
+            {
+               "tag":"authors",
+               "text":"Vassilcz."
+            }
+         ],
+         "nameRelation":{
+            "type":"synonym of",
+            "ruleConsidered":"",
+            "name":{
+               "uuid":"987129823-stub",
+               "fullname":"Acanthocephalus benthamianus Regel",
+               "taggedName":[
+                  {
+                     "tag":"name",
+                     "text":"Acanthocephalus benthamianus"
+                  },
+                  {
+                     "tag":"authors",
+                     "text":"Regel"
+                  }
+               ],
+               "nomref_uuid":"776736-stub",
+               "nomref_fullcitation":"Descr. Pl. Nov. Rar. Fedtsch.: 47. 1882",
+               "nomref_media":"http:\/\/wp5.e-taxonomy.eu\/dataportal\/cichorieae\/media\/protolog\/png\/Acanthocephalus_benthamianus.png"
+            }
+         }
+      }
+   ]
 }
