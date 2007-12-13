@@ -115,7 +115,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
         $block['subject'] = t('CDM DataPortal DevLinks');
         $block['content'] = '<ul>
         <li>'.l('Taxon Page', 'cdm_dataportal/taxon/987129837-stub').'</li>
-        <li>'.l('Name List', 'cdm_dataportal/names').'</li>
+        <li>'.l('Name List - page1 of A', 'cdm_dataportal/names/A/1').'</li>
         <li>'.l('xml2json', 'cdm/xml2json/namelist;startwith=A.xml').'</li>
         </ul>';
         return $block;
@@ -129,8 +129,8 @@ function cdm_dataportal_block($op='list', $delta=0) {
  *
  * @param $element
  */
-function cdm_webservice_url_validate($element){
-  if (!str_endsWith($element['#value'], '/')) {
+function cdm_dataportal_settings_validate($form_id, $form_values){
+  if (!str_endsWith($form_values['cdm_webservice_url'], '/')) {
       form_set_error('cdm_webservice_url', t("The URL to the CDM Web Service must end with a slash: '/'."));
     }
 }
@@ -168,7 +168,18 @@ function cdm_dataportal_settings(){
     '#description'   => t('Use a static web service stub. Only for development. For further information please refer to the ')
                       .l('ws_stub/README.txt', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm/ws_stub/README.txt', array('target'=>'_blank')),
     );
-   
+    
+    $form['cdm_webservice']['cdm_webservice_type'] =  array(
+    '#type' => 'select',
+    '#title'         => t('Web Service Type'),
+    '#default_value' => variable_get('cdm_webservice_type', 'xml'),
+    '#options' => array(
+        'xml' => t('XML'),
+        'json' => t('JSON'),
+      ),
+    '#description'   => t('The response data type of the web service.'),
+     );
+
    return system_settings_form($form);
 }
 
@@ -180,16 +191,16 @@ function cdm_dataportal_settings(){
  * @param String $page page number to diplay defaults to page 1
  * @param boolean $hide_unaccepted whether to hide nams which are not accepted by the current view
  */
-function cdm_dataportal_view_names($page = 1, $onlyAccepted = false ){
+function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted = false ){
   
-    $names = cdm_ws_name_list($page = 1, $onlyAccepted);
+    $taxonSTOs = cdm_ws_name_list($beginsWith, $page, $onlyAccepted, $_SESSION['cdm']['namelist_pagesize']);
     /*   
      * FIXME the filter for accepted names will be form element, thus this widget 
      * should be generated via form api!
      */
-    $out = theme('cdm_dataportal_widget_filter_accepted', $onlyAccepted);
-    $out .= theme('cdm_dataportal_widget_names_list', $names, $page);
-    $out .= theme('cdm_dataportal_names_list', $names, $page);
+    //$out  = theme('cdm_dataportal_widget_filter_accepted', $onlyAccepted);
+    //$out .= theme('cdm_dataportal_widget_names_list', $names, $page);
+    $out .= theme('cdm_dataportal_names_list', $taxonSTOs);
     return $out;
 }
 
@@ -197,7 +208,9 @@ function cdm_dataportal_view_names($page = 1, $onlyAccepted = false ){
 /**
  * The taxon page gives detailed information on a taxon, it shows:
  *  - Taxon name
- *  - Full list of synonyms homotypic synonyms on top, followed by the heterotypic and finally followed by misapplied names. The list is historically ordered.
+ *  - Full list of synonyms homotypic synonyms on top, followed by the 
+ *    heterotypic and finally followed by misapplied names. 
+ *    The list is ordered historically.
  *  - All facts associated with the very taxon concept and taxon name. 
  *
  * @param $name_uuid the $name_uuid of the taxon name 

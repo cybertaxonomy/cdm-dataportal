@@ -97,7 +97,7 @@ function theme_cdm_taxon(TaxonTO $taxon, $noSecundum = true ,$enclosingTag = 'sp
  *
  * @param TaxonTO $taxon
  */
-function theme_cdm_taxon_link(TaxonTO $taxon, $fragment = '', $showNomRef = false){
+function theme_cdm_taxon_link($taxonTO, $fragment = '', $showNomRef = false){
     
     if($fragment){
         $fragment = '#'.$fragment;
@@ -116,6 +116,19 @@ function theme_cdm_taxon_link(TaxonTO $taxon, $fragment = '', $showNomRef = fals
 	return $out;
 }
 
+
+function theme_cdm_dataportal_names_list($taxonSTOs){
+  $out = '<ul class="cdm_names">';
+  foreach($taxonSTOs as $taxon){
+    /*if($taxon->isAccepted){
+      $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
+    } else {*/
+      $out .= '<li>'.theme('cdm_name', $taxon->name).'</li>';
+    //}
+  }
+  $out .= '</ul>';
+  
+}
 //TODO: port everything below
 
 /**

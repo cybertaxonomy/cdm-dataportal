@@ -1,0 +1,23 @@
+/**
+ *  serialisation of TaxonSTO
+ */
+{
+  "root":{
+    "name":{
+      "uuid":"987129837-stub",
+      "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+      "taggedName":[
+        {
+          "tag":"name",
+          "text":"Acanthocephalus amplexifolius"
+        },
+        {
+          "tag":"authors",
+          "text":"Kar. & Kir."
+        }
+      ]
+    },
+    "sec_uuid":"776736-stub",
+    "isAccepted":true
+  }
+}
