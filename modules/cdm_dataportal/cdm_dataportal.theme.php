@@ -46,8 +46,8 @@ function theme_cdm_name($nameTO){
       $tn = $nameTO->taggedName;
       $out .= '<pre>'.print_r($nameTO, true).'</pre>';
       $out .= '<div>'.$nameTO->ws_url.'</div>';*/
-      
-      $out .= '<div>'.cdm_taggedtext2html($nameTO->taggedName).'</div>';
+      $out .= '<div>'.cdm_taggedtext2html($nameTO->fullname).'</div>';
+      //$out .= '<div>'.cdm_taggedtext2html($nameTO->taggedName).'</div>';
     } else {
       $out .= '<div>Item not found</div>';
     }

@@ -39,7 +39,7 @@ function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '){
 }
 
 function cdm_encode_stub($path, $fileextension){
-  return str_replace('&',',', str_replace('?',';',$path)).'.'.$fileextension;
+  return variable_get('cdm_webservice_type', 'xml').'/'.str_replace('&',',', str_replace('?',';',$path)).'.'.$fileextension;
 }
 
 function cdm_decode_stub($path){
@@ -98,6 +98,7 @@ function cdm_load_obj($datastr){
   $json = new Services_JSON();
   $obj = $json->decode($datastr);
   return $obj->root;
+  //return $obj;
 }
 
 /**
@@ -115,7 +116,7 @@ function cdm_ws_load($file, $parameters){
   
   $pstr = '';
   foreach($parameters as $key=>$value){
-    $pstr .= (strlen($pstr == 0 ? '?' : '&')).$key.'='.urlencode($value);
+    $pstr .= (strlen($pstr == 0) ? '?' : '&').$key.'='.urlencode($value);
   }
   $file .= $pstr;
   
@@ -123,15 +124,15 @@ function cdm_ws_load($file, $parameters){
     $file = cdm_encode_stub($file, variable_get('cdm_webservice_type', 'xml'));
   }
   
-  $datastr = get_content(variable_get('cdm_webservice_url', '').$file);
+  $url = variable_get('cdm_webservice_url', '').$file;
+  
+  $datastr = get_content($url);
    
   if( !($obj = cdm_load_obj($datastr)) ){
     $backtrace = debug_backtrace();
-    watchdog('CDM', $backtrace[1]['function'].' - failed to load '.$url, WATCHDOG_ERROR);
+    watchdog('CDM', $backtrace[1]['function'].' - failed to load '.$file, WATCHDOG_ERROR);
   }
   
-  $obj->ws_url = $url;
-  $obj->data = $data;
   return $obj;
 }
 
@@ -179,5 +180,6 @@ function cdm_ws_name_list($beginsWith, $page, $onlyAccepted = false, $pagesize =
                 'page'       =>$page,
               ) 
           );
+   return $obj;
 }
 
