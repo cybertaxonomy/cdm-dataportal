@@ -1,0 +1,82 @@
+/**
+ * list of taxa serialised as TaxonSTO,
+ * related taxa and type designations for accepted taxa 
+ * have to be retrieved by additional service requests
+ */ 
+{
+  "root":[
+    {
+      "name":{
+        "uuid":"90000001-stub",
+        "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus amplexifolius"
+          },
+          {
+            "tag":"authors",
+            "text":"Kar. & Kir."
+          }
+        ]
+      },
+      "sec_uuid":"1001-stub",
+      "isAccepted":true
+    },
+    {
+      "name":{
+        "uuid":"90000002-stub",
+        "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus amplexifolius"
+          },
+          {
+            "tag":"authors",
+            "text":"Vassilcz."
+          }
+        ]
+      },
+      "sec_uuid":"1001-stub",
+      "isAccepted":true
+    },
+    {
+      "name":{
+        "uuid":"90000003-stub",
+        "fullname":"Acanthocephalus benthamianus Regel",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus benthamianus"
+          },
+          {
+            "tag":"authors",
+            "text":"Regel"
+          }
+        ]
+      },
+      "sec_uuid":"1002-stub",
+      "isAccepted":true
+    },
+    {
+      "name":{
+        "uuid":"90000004-stub",
+        "fullname":"Aetheorhiza bulbosa subsp. microcephala Rech. f.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Aetheorhiza bulbosa subsp. microcephala"
+          },
+          {
+            "tag":"authors",
+            "text":"Rech. f."
+          }
+        ]
+      },
+      "sec_uuid":"1002-stub",
+      "isAccepted":false
+    }
+  ]
+}
+
