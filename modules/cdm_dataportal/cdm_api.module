@@ -33,7 +33,7 @@ require_once ('xml2json.php');
 function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '){
   $out = '';
    foreach($taggedtxt as $tt){
-     $out .= (strlen($out) > 0 ? $glue : '').'<'.$tag.' class="'.$tt->tag.'">'.$tt->text.'</ '.$tag.'>';
+     $out .= (strlen($out) > 0 ? $glue : '').'<'.$tag.' class="'.$tt->tag.'">'.$tt->text.'</'.$tag.'>';
    }
    return $out;
 }
@@ -116,7 +116,7 @@ function cdm_ws_load($file, $parameters){
   
   $pstr = '';
   foreach($parameters as $key=>$value){
-    $pstr .= (strlen($pstr == 0) ? '?' : '&').$key.'='.urlencode($value);
+    $pstr .= ( strlen($pstr) == 0 ? '?' : '&').$key.'='.urlencode($value);
   }
   $file .= $pstr;
   
@@ -181,5 +181,21 @@ function cdm_ws_name_list($beginsWith, $page, $onlyAccepted = false, $pagesize =
               ) 
           );
    return $obj;
+}
+
+function cdm_ws_get_reference($uuid){
+   $obj = cdm_ws_load('reference', array('uuid'=>$uuid));
+   return $obj;
+}
+
+
+function cdm_ws_get_taxon($name_uuid, $sec_uuid){
+   $obj = cdm_ws_load('taxon', array('uuid'=>$name_uuid, 'sec_uuid'=>$sec_uuid));
+   return $obj;
+}
+
+function cdm_ws_get_typedesignation($name_uuid){
+  $obj = cdm_ws_load('type', array('uuid'=>$name_uuid));
+  return $obj;
 }
 

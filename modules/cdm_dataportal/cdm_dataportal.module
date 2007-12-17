@@ -79,6 +79,7 @@ function cdm_dataportal_menu($may_cache) {
 	$items[] = array(
 	    'path' => 'cdm_dataportal/taxon',
 	    'callback' => 'cdm_dataportal_view_taxon',
+	    'callback arguments' => 'cdm_dataportal_settings',
 	    'access' => true,
 	    'type' => MENU_CALLBACK, 
 	    // expected callback arguments: name_uuid
@@ -215,11 +216,18 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
  *
  * @param $name_uuid the $name_uuid of the taxon name 
  */
-function cdm_dataportal_view_taxon($uuid){
-  //FIXME this is a dummy implementation
-  $name = cdm_ws_get_name($uuid);
-  return theme('cdm_name', $name);
-  // END of dummy implementation
+function cdm_dataportal_view_taxon($name_uuid, $sec_uuid){
+ 
+  $taxon = cdm_ws_get_taxon($name_uuid, $sec_uuid);
+  $typeref = cdm_ws_get_typedesignation($name_uuid);
+  
+  
+  drupal_set_title($taxon->name->fullname.' '.theme('cdm_typedesignation', $typeref));
+  //TODO retrieve complete synonymy and other data 
+  
+  $out = theme('cdm_taxon', $taxon); 
+  return $out;
+
 }
 
 
@@ -231,6 +239,10 @@ function cdm_view_xml2json(){
 }
 
 /* ====================== other functions ====================== */
+
+function create_taxon_menu_path($name_uuid, $sec_uuid){
+  return 'cdm_dataportal/taxon/'.$name_uuid.'/'.$sec_uuid;
+}
 
 
 /**

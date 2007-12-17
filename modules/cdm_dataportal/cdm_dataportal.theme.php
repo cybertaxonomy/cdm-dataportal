@@ -36,20 +36,17 @@ function tagNameParts($name, $numOfNameTokens){
  * @param NameTO $nameTO the taxon name
  */
 function theme_cdm_name($nameTO){
-    //TODO: how to respect the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase ?
-    $out = '<h2>Dummy content</h2>';
-    
+    //TODO: how to take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
+    $class = ($nameTO->sec_uuid ? 'taxon' : 'taxonname');  
+  
     if($nameTO){
-      /*foreach($nameTO->taggedName as $ti){
-        $out .= $ti->tag.'=&gt;'.$ti->text.'<br />';
+      if(!$nameTO->taggedName || !count($nameTO->taggedName)){
+        $out .= '<div class="'.$class.'">'.$nameTO->fullname.'</div>';
+      } else {
+        $out .= '<div class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName).'</div>';
       }
-      $tn = $nameTO->taggedName;
-      $out .= '<pre>'.print_r($nameTO, true).'</pre>';
-      $out .= '<div>'.$nameTO->ws_url.'</div>';*/
-      $out .= '<div>'.cdm_taggedtext2html($nameTO->fullname).'</div>';
-      //$out .= '<div>'.cdm_taggedtext2html($nameTO->taggedName).'</div>';
     } else {
-      $out .= '<div>Item not found</div>';
+      $out .= '<div class="error">Invalid NameTO</div>';
     }
     return $out;
 }
@@ -68,18 +65,23 @@ function theme_cdm_name($nameTO){
  * 
  * usage: taxon_detail, theme_ptname_link
  */
-function theme_cdm_taxon(TaxonTO $taxon, $noSecundum = true ,$enclosingTag = 'span', $showNomRef = false){
+function theme_cdm_taxon($taxonTO, $noSecundum = true ,$enclosingTag = 'span', $showNomRef = false){
 
-    /* TODO: port me
+    
     $refSecundum = false;
-    if(!$noSecundum && $taxon->ref){
-        $refSecundum = str_trunk($ptaxon->ref, 40, '...');
+    if(!$noSecundum){  
+      $ref_sec = cdm_ws_get_reference($taxonTO->sec_uuid);
+      if($ref_sec){
+        $refSecundum = str_trunk($ref_sec->fullcitation, 40, '...');
+      }
     }
-	*/
-    $out = theme('cdm_name', $taxon)
-	    .($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>': '')
-	    .$ptaxon->namePhrase;
-    /* TODO: port me
+    
+    $out  = theme('cdm_name', $taxonTO->name);
+	  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>': '');
+	  //TODO:   .$ptaxon->namePhrase; 
+	  
+	  
+    /* TODO: port me if really required
     if($showNomRef){
         $out .= (str_beginsWith($ptaxon->nomRef, 'in') || trim($ptaxon->nomRef) == '' ? '&nbsp;':',&nbsp;').theme('cdm_nomRef',$taxon);
     }
@@ -97,20 +99,21 @@ function theme_cdm_taxon(TaxonTO $taxon, $noSecundum = true ,$enclosingTag = 'sp
  *
  * @param TaxonTO $taxon
  */
-function theme_cdm_taxon_link($taxonTO, $fragment = '', $showNomRef = false){
+function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
     
     if($fragment){
         $fragment = '#'.$fragment;
     }
 
     if(!$taxon->isAccepted) { 
-        $out = 'ERROR: theme_cdm_taxon_link() not accepted ptname; status:'.$taxon->status.$out;
+        $out = 'ERROR: theme_cdm_taxon_link() - taxon is not accepted';
     }
     
-    $out = l(theme('cdm_taxon', $taxon, true, false), 'taxon', array('class'=>'accepted'), "uuid=$taxon->uuid", $fragment);
+    $name_html = theme('cdm_taxon', $taxonTO, true, false);
+    $out = l($name_html, create_taxon_menu_path($taxonTO->name->uuid, $taxonTO->sec_uuid), array('class'=>'accepted'), '', $fragment, FALSE, TRUE);
     
     if($showNomRef){
-       $out .=' '.theme('cdm_nomRef', $ptaxon);
+       $out .=' '.theme('cdm_nomRef', $taxonTO);
     }
 	
 	return $out;
@@ -120,15 +123,64 @@ function theme_cdm_taxon_link($taxonTO, $fragment = '', $showNomRef = false){
 function theme_cdm_dataportal_names_list($taxonSTOs){
   $out = '<ul class="cdm_names">';
   foreach($taxonSTOs as $taxon){
-    /*if($taxon->isAccepted){
+    if($taxon->isAccepted){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
-    } else {*/
-      $out .= '<li>'.theme('cdm_name', $taxon->name).'</li>';
-    //}
+    } else {
+      $out .= '<li >'.theme('cdm_name', $taxon->name).'</li>';
+    }
   }
   $out .= '</ul>';
+  return $out;
+}
+
+
+function theme_cdm_fullreference($referenceTO){
+  return $referenceTO->citation.' : '.$referenceTO->microReference;
+}
+
+/**
+ * method signatutre of old portal version:
+ *  ($nameId, $cssClass = '', $togglebox = false, $separator = '<br />' , $enclosingTag = 'li')
+ * 
+ *
+ * @param unknown_type $nameId
+ * @param unknown_type $cssClass
+ * @param unknown_type $togglebox
+ * @param unknown_type $separator
+ * @param unknown_type $enclosingTag
+ * @return unknown
+ */
+function theme_cdm_typedesignation($referenceTO, $cssClass = '', $togglebox = false, $separator = '<br />' , $enclosingTag = 'li'){
+  
+  $typeref_citation = theme('cdm_fullreference', $referenceTO);
+  
+  //TODO implement new Lightbox using jQuery (drupal standard js framework) or moofx if we decide to use that lib instead:
+  if( count($referenceTO->media_uri) > 0 ){
+    //preliminar implementation:
+    return l($typeref_citation, $referenceTO->media_uri[0]->value, array('target'=>'protoloque'), NULL, NULL, TRUE);
+  } else {
+    return $typeref_citation;
+  }
+  /*if(count($referenceTO->media) > 0){
+    $out = ''; 
+    foreach($typeDesignations as $td){
+      
+      if(strlen($out) > 0){
+        $out .= $separator.chr(10);
+      }
+      $out .= $td['TypeStatus'].' - '.html_entity_decode($td['TypePhrase']);
+    }
+    
+    if($togglebox){
+       $out = '<div class="tbox_toggler">&nbsp;</div><div class="tbox_content">'.$out.'</div>';
+    } 
+    return '<'.$enclosingTag.' class="type_designation'.($cssClass ? ' '.$cssClass : '' ).'">'
+      .$out.'</'.$enclosingTag.'>'.chr(10);
+    
+  }*/
   
 }
+
 //TODO: port everything below
 
 /**
@@ -362,28 +414,6 @@ function render_nomRef($ptname){
     
 }
 
-function renderTypeDesignations($nameId, $cssClass = '', $togglebox = false, $separator = '<br />' , $enclosingTag = 'li'){
-  
-  $typeDesignations = getTypeDesignations($nameId);
-
-  if(count($typeDesignations) > 0){
-    $out = ''; 
-    foreach($typeDesignations as $td){
-      
-      if(strlen($out) > 0){
-        $out .= $separator.chr(10);
-      }
-      $out .= $td['TypeStatus'].' - '.html_entity_decode($td['TypePhrase']);
-    }
-    
-    if($togglebox){
-       $out = '<div class="tbox_toggler">&nbsp;</div><div class="tbox_content">'.$out.'</div>';
-    } 
-    return '<'.$enclosingTag.' class="type_designation'.($cssClass ? ' '.$cssClass : '' ).'">'
-  		.$out.'</'.$enclosingTag.'>'.chr(10);
-    
-  }
-}
 
 /**
  * render a numeric pager
