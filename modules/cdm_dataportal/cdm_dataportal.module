@@ -115,7 +115,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
       case 0:
         $block['subject'] = t('CDM DataPortal DevLinks');
         $block['content'] = '<ul>
-        <li>'.l('Taxon Page', 'cdm_dataportal/taxon/987129837-stub').'</li>
+        <li>'.l('A Taxon Page', 'cdm_dataportal/taxon/90000001-stub/1001-stub').'</li>
         <li>'.l('Name List - page1 of A', 'cdm_dataportal/names/A/1').'</li>
         <li>'.l('xml2json', 'cdm/xml2json/namelist;startwith=A.xml').'</li>
         </ul>';
