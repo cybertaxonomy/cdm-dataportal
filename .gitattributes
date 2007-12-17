@@ -6,6 +6,7 @@ modules/cdm_dataportal/cdm/ws_stub/json/name;uuid=987129837-stub.json -text
 modules/cdm_dataportal/cdm/ws_stub/json/namelist;beginswith=A;page=1.json -text
 modules/cdm_dataportal/cdm/ws_stub/json/taxon;uuid=90000001-stub,sec_uuid=1001-stub.json -text
 modules/cdm_dataportal/cdm/ws_stub/json/taxon;uuid=9871129837-stub.json -text
+modules/cdm_dataportal/cdm/ws_stub/json/type;uuid=90000001-stub.json -text
 modules/cdm_dataportal/cdm_api.info -text
 modules/cdm_dataportal/cdm_api.module -text
 modules/cdm_dataportal/cdm_dataportal.info -text
