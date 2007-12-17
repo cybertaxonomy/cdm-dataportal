@@ -1,0 +1,24 @@
+/**
+ *  serialisation of taxon&uuid=90000001-stub&sec_uuid=1001-stub
+ * 
+ */
+{
+  "root":{
+    "name":{
+        "uuid":"90000001-stub",
+        "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus amplexifolius"
+          },
+          {
+            "tag":"authors",
+            "text":"Kar. & Kir."
+          }
+        ]
+      },
+      "sec_uuid":"1001-stub",
+      "isAccepted":true
+  }
+}
