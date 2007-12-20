@@ -123,7 +123,7 @@ function theme_cdm_dynabox($label, $content_url, $enclosingtag = 'li'){
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url));
   $out .= '<li class="dynabox">';
   $out .= '<div class="dynabox_label"><span class="dynabox_toggler" style="cursor: pointer; float: left;">+</span> '.$label.'</div>';
-  $out .= '<div class="dynabox_content" title="'.$cdm_proxy_url.'"><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/loading.gif" style="display:none;"></div>';
+  $out .= '<div class="dynabox_content" title="'.$cdm_proxy_url.'"><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/loading_circle_grey_16.gif" style="display:none;"></div>';
   return $out;
 }
 
