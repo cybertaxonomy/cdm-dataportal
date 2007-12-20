@@ -3,4 +3,4 @@ name = "CDM Dataportal"
 description = "The dataportal publishes CDM data hosted in a CommunityStore on the web."
 version = 5.x-0.1
 package = "CDM"
-dependencies = cdm_api
+dependencies = cdm_api jquery_update

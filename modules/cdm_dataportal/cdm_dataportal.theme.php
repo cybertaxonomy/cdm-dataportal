@@ -119,14 +119,24 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
 	return $out;
 }
 
+function theme_cdm_dynabox($label, $content_url, $enclosingtag = 'li'){
+  $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url));
+  $out .= '<li class="dynabox">';
+  $out .= '<div class="dynabox_label"><span class="dynabox_toggler" style="cursor: pointer; float: left;">+</span> '.$label.'</div>';
+  $out .= '<div class="dynabox_content" title="'.$cdm_proxy_url.'"><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/loading.gif" style="display:none;"></div>';
+  return $out;
+}
 
 function theme_cdm_dataportal_names_list($taxonSTOs){
+  
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/cdm_dynabox.js');
+  
   $out = '<ul class="cdm_names">';
   foreach($taxonSTOs as $taxon){
     if($taxon->isAccepted){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
     } else {
-      $out .= '<li >'.theme('cdm_name', $taxon->name).'</li>';
+      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_ws_get_accepted_url($taxon->name->uuid, $taxon->sensu));
     }
   }
   $out .= '</ul>';

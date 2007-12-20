@@ -13,8 +13,10 @@ modules/cdm_dataportal/cdm_api.module -text
 modules/cdm_dataportal/cdm_dataportal.info -text
 modules/cdm_dataportal/cdm_dataportal.module -text
 modules/cdm_dataportal/cdm_dataportal.theme.php -text
+modules/cdm_dataportal/cdm_dynabox.js -text
 modules/cdm_dataportal/json/JSON.php -text
 modules/cdm_dataportal/json/LICENSE -text
+modules/cdm_dataportal/loading.gif -text
 modules/cdm_dataportal/xml2json.php -text
 modules/countrypresence/country-earth.dbf -text
 modules/countrypresence/country-earth.prj -text
