@@ -79,7 +79,6 @@ function cdm_dataportal_menu($may_cache) {
 	$items[] = array(
 	    'path' => 'cdm_dataportal/taxon',
 	    'callback' => 'cdm_dataportal_view_taxon',
-	    'callback arguments' => 'cdm_dataportal_settings',
 	    'access' => true,
 	    'type' => MENU_CALLBACK, 
 	    // expected callback arguments: name_uuid

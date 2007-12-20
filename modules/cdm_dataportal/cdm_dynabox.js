@@ -11,7 +11,7 @@
 
 Drupal.cdm_dynaboxAutoAttach = function () {
 
-  $('li.dynabox').find('.dynabox_content').hide();
+  $('li.dynabox').find('.dynabox_content').hide().click(function(event){event.stopPropagation();});
   $('li.dynabox').click(
     function () {
       var dynabox_content = $(this).toggleClass("dynabox_expanded").find('.dynabox_content').slideToggle("fast");
@@ -26,7 +26,7 @@ Drupal.cdm_dynaboxAutoAttach = function () {
       }
       
     });
-    $('li.dynabox> span').click(function(){return false;});
+    $('li.dynabox> span').click(function(event){event.stopPropagation();});
 }
 
 
