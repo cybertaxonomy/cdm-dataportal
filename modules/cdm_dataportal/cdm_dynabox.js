@@ -3,7 +3,7 @@
 /**
  * Expected dom structure:
  *  <li class="dynabox">
-      <div class="dynabox_label"><span class="dynabox_toggler">+</span>Lable Text</div>
+      <div class="dynabox_label"><span class="label">Lable Text</span>
       <ul class="dynabox_content"><li> ...... </li></ul>
     </li>
  */
@@ -20,13 +20,13 @@ Drupal.cdm_dynaboxAutoAttach = function () {
       
       if(url != undefined){
         dynabox_content.removeAttr('title').find('.loading').css( 'display', 'block');
-	      $.getJSON(url, function(jsonObj){
-          var taxonSTO = jsonObj.root;
-          dynabox_content.find('.loading').remove().end().append(taxonSTO.name.fullname);
+	      $.get(url, function(html){
+          dynabox_content.find('.loading').remove().end().append(html);
         });
       }
       
     });
+    $('li.dynabox> span').click(function(){return false;});
 }
 
 

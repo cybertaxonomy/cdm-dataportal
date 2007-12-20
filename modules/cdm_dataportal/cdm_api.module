@@ -126,8 +126,14 @@ function cdm_api_menu($may_cache) {
   return $items;
 }
 
-function proxy_content($url){
-  print get_content(urldecode($url));
+function proxy_content($url, $theme = null){
+  $data = get_content(urldecode($url));
+  
+  if(!$theme){
+    print $data;
+  } else {
+    print theme($theme, cdm_load_obj($data));
+  }
 }
 
 function cdm_load_obj($datastr){

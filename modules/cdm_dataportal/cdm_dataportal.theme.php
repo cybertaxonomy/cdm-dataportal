@@ -119,8 +119,8 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
 	return $out;
 }
 
-function theme_cdm_dynabox($label, $content_url, $enclosingtag = 'li'){
-  $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url));
+function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
+  $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
   $out .= '<li class="dynabox"><span class="label">'.$label.'</span>';
   $out .= '<ul class="dynabox_content" title="'.$cdm_proxy_url.'"><li><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/loading_circle_grey_16.gif" style="display:none;"></li></ul>';
   return $out;
@@ -136,7 +136,7 @@ function theme_cdm_dataportal_names_list($taxonSTOs){
     if($taxon->isAccepted){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
     } else {
-      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_ws_get_accepted_url($taxon->name->uuid, $taxon->sensu));
+      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_ws_get_accepted_url($taxon->name->uuid, $taxon->sensu), 'cdm_taxon_link');
     }
   }
   $out .= '</ul>';
