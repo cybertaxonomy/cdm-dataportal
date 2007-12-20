@@ -1,0 +1,20 @@
+@CHARSET "ISO-8859-1";
+
+ul.cdm_names, ul.cdm_names li{
+	 background-image: none;
+}
+
+ul li.dynabox{
+  background-image: url('btn_expand.gif');
+  cursor: pointer;
+}
+
+ul li.dynabox_expanded{
+  background-image: url('btn_collapse.gif');
+  cursor: pointer;
+}
+
+
+ul li.dynabox .label{
+ cursor: default;
+}

@@ -121,17 +121,17 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
 
 function theme_cdm_dynabox($label, $content_url, $enclosingtag = 'li'){
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url));
-  $out .= '<li class="dynabox">';
-  $out .= '<div class="dynabox_label"><span class="dynabox_toggler" style="cursor: pointer; float: left;">+</span> '.$label.'</div>';
-  $out .= '<div class="dynabox_content" title="'.$cdm_proxy_url.'"><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/loading_circle_grey_16.gif" style="display:none;"></div>';
+  $out .= '<li class="dynabox"><span class="label">'.$label.'</span>';
+  $out .= '<ul class="dynabox_content" title="'.$cdm_proxy_url.'"><li><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/loading_circle_grey_16.gif" style="display:none;"></li></ul>';
   return $out;
 }
 
 function theme_cdm_dataportal_names_list($taxonSTOs){
   
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/cdm_dynabox.js');
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_datportal.css');
   
-  $out = '<ul class="cdm_names">';
+  $out = '<ul class="cdm_names" style="background-image: none;">';
   foreach($taxonSTOs as $taxon){
     if($taxon->isAccepted){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';

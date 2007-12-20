@@ -1,6 +1,8 @@
 * text=auto !eol
 module_patches/cck_field_perms/cck_field_perms-views0.1.patch -text
 module_patches/nodefamily/nodefamily_create-others-nodes.patch -text
+modules/cdm_dataportal/btn_collapse.gif -text
+modules/cdm_dataportal/btn_expand.gif -text
 modules/cdm_dataportal/cdm/ws_stub/README.txt -text
 modules/cdm_dataportal/cdm/ws_stub/json/accepted;uuid=90000004-stub,sec_uuid=.json -text
 modules/cdm_dataportal/cdm/ws_stub/json/name;uuid=987129837-stub.json -text
@@ -13,6 +15,7 @@ modules/cdm_dataportal/cdm_api.module -text
 modules/cdm_dataportal/cdm_dataportal.info -text
 modules/cdm_dataportal/cdm_dataportal.module -text
 modules/cdm_dataportal/cdm_dataportal.theme.php -text
+modules/cdm_dataportal/cdm_datportal.css -text
 modules/cdm_dataportal/cdm_dynabox.js -text
 modules/cdm_dataportal/json/JSON.php -text
 modules/cdm_dataportal/json/LICENSE -text

@@ -4,18 +4,18 @@
  * Expected dom structure:
  *  <li class="dynabox">
       <div class="dynabox_label"><span class="dynabox_toggler">+</span>Lable Text</div>
-      <div class="dynabox_content"> ...... </div>
+      <ul class="dynabox_content"><li> ...... </li></ul>
     </li>
  */
 
 
 Drupal.cdm_dynaboxAutoAttach = function () {
 
-  $('li.dynabox').find('div.dynabox_content').hide();
-  $('li.dynabox').find('div.dynabox_label> span.dynabox_toggler').click(
+  $('li.dynabox').find('.dynabox_content').hide();
+  $('li.dynabox').click(
     function () {
-      var dynabox_content = jQuery($(this).parents('.dynabox')[0]).find('div.dynabox_content');
-      dynabox_content.slideToggle("fast");
+      var dynabox_content = $(this).toggleClass("dynabox_expanded").find('.dynabox_content').slideToggle("fast");
+
       var url = dynabox_content.attr('title');
       
       if(url != undefined){
