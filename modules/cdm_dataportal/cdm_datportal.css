@@ -5,12 +5,12 @@ ul.cdm_names, ul.cdm_names li{
 }
 
 ul li.dynabox{
-  background-image: url('btn_expand.gif');
+  background-image: url('images/btn_expand.gif');
   cursor: pointer;
 }
 
 ul li.dynabox_expanded{
-  background-image: url('btn_collapse.gif');
+  background-image: url('images/btn_collapse.gif');
   cursor: pointer;
 }
 

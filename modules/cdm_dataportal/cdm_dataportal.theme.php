@@ -122,13 +122,13 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
 function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
   $out .= '<li class="dynabox"><span class="label">'.$label.'</span>';
-  $out .= '<ul class="dynabox_content" title="'.$cdm_proxy_url.'"><li><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/loading_circle_grey_16.gif" style="display:none;"></li></ul>';
+  $out .= '<ul class="dynabox_content" title="'.$cdm_proxy_url.'"><li><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/images/loading_circle_grey_16.gif" style="display:none;"></li></ul>';
   return $out;
 }
 
 function theme_cdm_dataportal_names_list($taxonSTOs){
   
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/cdm_dynabox.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_datportal.css');
   
   $out = '<ul class="cdm_names" style="background-image: none;">';
@@ -164,13 +164,23 @@ function theme_cdm_typedesignation($referenceTO, $cssClass = '', $togglebox = fa
   
   $typeref_citation = theme('cdm_fullreference', $referenceTO);
   
-  //TODO implement new Lightbox using jQuery (drupal standard js framework) or moofx if we decide to use that lib instead:
+  $module_path = drupal_get_path('module', 'cdm_dataportal');
+  drupal_add_js($module_path.'/js/jquery_lightbox/js/jlightbox.uncompressed.js');
+  drupal_add_css($module_path.'/js/jquery_lightbox/css/jlightbox.css', 'module', 'screen');
+  
   if( count($referenceTO->media_uri) > 0 ){
-    //preliminar implementation:
-    return l($typeref_citation, $referenceTO->media_uri[0]->value, array('target'=>'protoloque'), NULL, NULL, TRUE);
+    //jQuery Lightbox: $attributes = array('class'=>'lightbox-enabled', 'rel'=>'lightbox-myGroup');
+    // module/jlightbox: 
+    $attributes = array('rel'=>'lightbox[protologues]');
+    $out = l($typeref_citation, $referenceTO->media_uri[0]->value, $attributes, NULL, NULL, TRUE);
+    //$attributes['style'] = 'display: none;';
+    for($i = 1;  $i < count($referenceTO->media_uri); $i++) {
+    	$out .= l('', $referenceTO->media_uri[$i]->value, $attributes, NULL, NULL, TRUE);
+    }
   } else {
-    return $typeref_citation;
+    $out =  $typeref_citation;
   }
+  return $out;
   /*if(count($referenceTO->media) > 0){
     $out = ''; 
     foreach($typeDesignations as $td){
