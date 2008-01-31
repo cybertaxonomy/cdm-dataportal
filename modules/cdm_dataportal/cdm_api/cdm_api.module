@@ -1,0 +1,277 @@
+<?php
+// $Id: cdm_api.php 1012 2007-12-05 17:58:45Z a.kohlbecker $
+
+/**
+ * @file
+ * Functions which are required or useful when accessing and processing CDM Data Store Webservices
+ * 
+ * Naming conventions:
+ * ----------------------
+ * 
+ *  - all webservice access methods are prefixed with cdm_ws
+ *
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+require_once ('xml2json.php');
+
+
+/**
+ * Converts an array of TagedText items into a sequence of corresponding html tags whereas 
+ * each item will provided with a class attribute which set to the key of the TaggedText item.
+ * 
+ * @param array $taggedtxt
+ * @param String $tag
+ * @param String $glue the string by which the chained text tokens are concatenated together. 
+ *       Default is a blak character
+ * @return String of HTML 
+ */
+function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '){
+  $out = '';
+   foreach($taggedtxt as $tt){
+     $out .= (strlen($out) > 0 ? $glue : '').'<'.$tag.' class="'.$tt->tag.'">'.$tt->text.'</'.$tag.'>';
+   }
+   return $out;
+}
+
+function cdm_encode_stub($path, $fileextension){
+  return variable_get('cdm_webservice_type', 'xml').'/'.str_replace('&',',', str_replace('?',';',$path)).'.'.$fileextension;
+}
+
+function cdm_decode_stub($path){
+  
+  // remove fileextension
+  $path = substr_replace($path, '', strrpos($path, '.'));
+  
+  return str_replace(',','&', str_replace(';','?',$path));
+}
+
+function cdm_compose_url($file, $parameters){
+  $pstr = '';
+  foreach($parameters as $key=>$value){
+    $pstr .= ( strlen($pstr) == 0 ? '?' : '&').$key.'='.urlencode($value);
+  }
+  $file .= $pstr;
+  
+  if(variable_get('cdm_webservice_isStub', 0)){
+    $file = cdm_encode_stub($file, variable_get('cdm_webservice_type', 'xml'));
+  }
+  
+  $url = variable_get('cdm_webservice_url', '').$file; 
+  return $url;
+}
+
+/**
+ * Return string content from a remote file
+ * 
+ * @param string $url
+ * @return string
+ * 
+ * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
+*/
+function _get_content_curl($url)
+{
+    $ch = curl_init();
+
+    curl_setopt ($ch, CURLOPT_URL, $url);
+    curl_setopt ($ch, CURLOPT_HEADER, 0);
+
+    ob_start();
+
+    curl_exec ($ch);
+    curl_close ($ch);
+    $string = ob_get_contents();
+
+    ob_end_clean();
+   
+    return $string;    
+}
+
+function _get_content_fsockopen($url){
+  //FIXME implement get_content_fsockopen($url);
+}
+
+function get_content($url){
+
+  if(function_exists('curl_init')){
+
+    // use the CURL lib if installed it is supposed to be 20x faster
+    return _get_content_curl($url);
+  } else {
+    return _get_content_fsockopen($url);
+  }
+}
+
+
+/**
+ * Implementation of hook_menu()
+ */
+function cdm_api_menu($may_cache) {
+  $items = array();
+  if ($may_cache) {
+    
+   $items[] = array(
+      'path' => 'cdm_api/proxy',
+      'callback' => 'proxy_content',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+      );
+    
+  }
+  
+  return $items;
+}
+
+function proxy_content($url, $theme = null){
+  $data = get_content(urldecode($url));
+  
+  if(!$theme){
+    print $data;
+  } else {
+    print theme($theme, cdm_load_obj($data));
+  }
+}
+
+function cdm_load_obj($datastr){
+  // if the webservice deilvers XML convert it into json
+  if(variable_get('cdm_webservice_type', 'xml') == 'xml'){
+    $datastr = xml2json::transformXmlStringToJson($datastr);  
+  }
+  $json = new Services_JSON();
+  $obj = $json->decode($datastr);
+  return $obj->root;
+}
+
+/**
+ * Loads the XML or JSON response for the given url from the CDM Data Store Webservice.
+ * The XML is turned into a object which is returned. In case of an error a 
+ * appropriate watchdog message is generated and the function returns false.
+ * 
+ * @param String $url the relative url of the web service call. 
+ *        Relative means relative to the web service base url which is stored in cdm_webservice_url
+ * @return An object or false
+ */
+function cdm_ws_load($url){
+  
+  $datastr = get_content($url);
+   
+  if( !($obj = cdm_load_obj($datastr)) ){
+    $backtrace = debug_backtrace();
+    watchdog('CDM', $backtrace[1]['function'].' - failed to load '.$file, WATCHDOG_ERROR);
+  }
+  
+  return $obj;
+}
+
+
+/* ------------------------------------------------------------------------- */
+
+// -------- whatis
+
+function cdm_ws_whatis_url($uuid){
+  return cdm_compose_url("whatis", array('uuid'=>$uuid));
+}
+
+/**cdm_ws_whatis
+ * The whatis service returns the type 
+ * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter. 
+ * 
+ *
+ * @param unknown_type $uuid
+ * @return false if the cdm store contains no matching instance. 
+ * An associative array with the following key-value pairs:
+ *   - 'cdmName':       name of the cdm class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.model.taxon.Taxon
+ *   - 'cdmSimpleName': simple name of the cdm class as returned by Class.getSimpleName(), e.g. Taxon
+ *   - 'dtoName':       name of the DTO class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.dto.TaxonTO
+ *   - 'dtoSimpleName': simple name of the TDO class as returned by Class.getSimpleName(), e.g. TaxonTO
+ */
+function cdm_ws_whatis($uuid){
+  $url = cdm_ws_whatis_url($uuid);
+  return cdm_ws_load($url);
+}
+
+// -------- get_name
+
+function cdm_ws_get_name_url($uuid){
+  return cdm_compose_url("name", array('uuid'=>$uuid));
+}
+/**
+ * load a name from the CDM Webservice
+ *
+ * @param String $uuid
+ * @return a NameTO instance or false 
+ */
+function cdm_ws_get_name($uuid){
+  $uri = cdm_ws_get_name_url($uuid);
+  $obj = cdm_ws_load($url);
+  return $obj;
+  
+}
+
+// -------- name_list
+function cdm_ws_name_list_url($beginsWith, $page, $onlyAccepted = false, $pagesize = 20){
+  //TODO: fully implement
+  return cdm_compose_url('namelist', array(
+                'beginswith' =>$beginsWith,
+                'page'       =>$page,
+              ) 
+          );
+}
+
+/**
+ * load a list of names from the CDM Webservice
+ *
+ * cdm_ws_name_list($beginsWith, $page, $onlyAccepted, $_SESSION['cdm']['namelist_pagesize']);
+ */
+function cdm_ws_name_list($beginsWith, $page, $onlyAccepted = false, $pagesize = 20){
+    //TODO: fully implement
+   $url = cdm_ws_name_list_url($beginsWith, $page, $onlyAccepted = false, $pagesize = 20);
+   $obj = cdm_ws_load($url);
+   return $obj;
+}
+
+// -------- get_reference
+function cdm_ws_get_reference_url($uuid){
+   return cdm_compose_url('reference', array('uuid'=>$uuid));
+}
+
+function cdm_ws_get_reference($uuid){
+   $url = cdm_ws_get_reference_url('reference', array('uuid'=>$uuid));
+   $obj = cdm_ws_load($url);
+   return $obj;
+}
+
+// -------- get_taxon
+
+function cdm_ws_get_taxon_url($name_uuid, $sec_uuid){
+  return cdm_compose_url('taxon', array('uuid'=>$name_uuid, 'sec_uuid'=>$sec_uuid));
+}
+
+function cdm_ws_get_taxon($name_uuid, $sec_uuid){
+   $url = cdm_ws_get_taxon_url($name_uuid, $sec_uuid);
+   return cdm_ws_load($url);
+}
+
+// -------- get_typedesignation
+function cdm_ws_get_typedesignation_url($name_uuid){
+  return cdm_compose_url('type', array('uuid'=>$name_uuid));
+}
+
+function cdm_ws_get_typedesignation($name_uuid){
+  $url = cdm_ws_get_typedesignation_url($name_uuid);
+  return cdm_ws_load($url);
+}
+
+// -------- get_accepted
+function cdm_ws_get_accepted_url($name_uuid, $sec_uuid){
+  return cdm_compose_url('accepted', array('uuid'=>$name_uuid, 'sec_uuid'=>$sec_uuid));
+}
+
+function cdm_ws_get_accepted($name_uuid, $sec_uuid){
+  $url = cdm_ws_get_accepted_url($name_uuid, $sec_uuid);
+  return cdm_ws_load($url);
+}
