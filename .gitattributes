@@ -32,8 +32,6 @@ modules/cdm_dataportal/js/jquery_lightbox/images/prevlabel.gif -text
 modules/cdm_dataportal/js/jquery_lightbox/images/prevlabel.psd -text
 modules/cdm_dataportal/js/jquery_lightbox/images/prevlabel_grey.gif -text
 modules/cdm_dataportal/js/jquery_lightbox/js/jlightbox.uncompressed.js -text
-modules/cdm_dataportal/json/JSON.php -text
-modules/cdm_dataportal/json/LICENSE -text
 modules/cdm_dataportal/xml2json.php -text
 modules/countrypresence/country-earth.dbf -text
 modules/countrypresence/country-earth.prj -text
