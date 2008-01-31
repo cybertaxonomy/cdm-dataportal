@@ -158,7 +158,7 @@ function cdm_dataportal_settings(){
     '#type' => 'textfield',
     '#title'         => t('CDM Web Service URL'),
     '#description'   => t('The URL of CDM Webservice which delivers the data to be published.'),
-    '#default_value' => variable_get('cdm_webservice_url', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api/ws_stub/xml/'),
+    '#default_value' => variable_get('cdm_webservice_url', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api/ws_stub/'),
     );
     
     $form['cdm_webservice']['cdm_webservice_isStub'] =  array(
@@ -172,7 +172,7 @@ function cdm_dataportal_settings(){
     $form['cdm_webservice']['cdm_webservice_type'] =  array(
     '#type' => 'select',
     '#title'         => t('Web Service Type'),
-    '#default_value' => variable_get('cdm_webservice_type', 'xml'),
+    '#default_value' => variable_get('cdm_webservice_type', 'json'),
     '#options' => array(
         'xml' => t('XML'),
         'json' => t('JSON'),

@@ -58,7 +58,7 @@ function cdm_compose_url($file, $parameters){
   $file .= $pstr;
   
   if(variable_get('cdm_webservice_isStub', 0)){
-    $file = cdm_encode_stub($file, variable_get('cdm_webservice_type', 'xml'));
+    $file = cdm_encode_stub($file, variable_get('cdm_webservice_type', 'json'));
   }
   
   $url = variable_get('cdm_webservice_url', '').$file; 
@@ -83,6 +83,9 @@ function _get_content_curl($url)
     ob_start();
 
     curl_exec ($ch);
+    if(curl_errno($ch)){
+      watchdog('CDM', curl_error($ch).' URL: '.$url, WATCHDOG_ERROR);
+    }
     curl_close ($ch);
     $string = ob_get_contents();
 
