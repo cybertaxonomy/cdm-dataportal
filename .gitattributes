@@ -2,13 +2,6 @@
 module_patches/cck_field_perms/cck_field_perms-views0.1.patch -text
 module_patches/nodefamily/nodefamily_create-others-nodes.patch -text
 modules/cdm_dataportal/INSTALL.txt -text
-modules/cdm_dataportal/cdm/ws_stub/README.txt -text
-modules/cdm_dataportal/cdm/ws_stub/json/accepted;uuid=90000004-stub,sec_uuid=.json -text
-modules/cdm_dataportal/cdm/ws_stub/json/name;uuid=987129837-stub.json -text
-modules/cdm_dataportal/cdm/ws_stub/json/namelist;beginswith=A,page=1.json -text
-modules/cdm_dataportal/cdm/ws_stub/json/taxon;uuid=90000001-stub,sec_uuid=1001-stub.json -text
-modules/cdm_dataportal/cdm/ws_stub/json/taxon;uuid=9871129837-stub.json -text
-modules/cdm_dataportal/cdm/ws_stub/json/type;uuid=90000001-stub.json -text
 modules/cdm_dataportal/cdm_api.info -text
 modules/cdm_dataportal/cdm_api.module -text
 modules/cdm_dataportal/cdm_dataportal.info -text
