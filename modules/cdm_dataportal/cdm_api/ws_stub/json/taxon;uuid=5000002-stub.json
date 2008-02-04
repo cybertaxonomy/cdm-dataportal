@@ -4,11 +4,11 @@
  */
 {
   "root":{
-    "uuid":"5000002-stub",
+      "uuid":"5000002-stub",
       "name":{
-        "uuid":"90000002-stub",
-        "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
-        "taggedName":[
+      "uuid":"90000002-stub",
+      "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
+      "taggedName":[
           {
             "tag":"name",
             "text":"Acanthocephalus amplexifolius"
