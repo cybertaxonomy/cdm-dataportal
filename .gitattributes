@@ -7,6 +7,8 @@ modules/cdm_dataportal/cdm_api/cdm_api.module -text
 modules/cdm_dataportal/cdm_api/json/JSON.php -text
 modules/cdm_dataportal/cdm_api/json/LICENSE -text
 modules/cdm_dataportal/cdm_api/ws_stub/README.txt -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/accepted;uuid=5000004-stub.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/accepted;uuid=5000006-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/accepted;uuid=90000004-stub,sec_uuid=.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/name;uuid=987129837-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/namelist;beginswith=A,page=1.json -text
