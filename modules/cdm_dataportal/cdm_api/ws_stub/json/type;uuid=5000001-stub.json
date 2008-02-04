@@ -1,0 +1,21 @@
+/**
+ *  serialisation of a type designation
+ * 
+ */
+{
+  "root":{
+      "uuid":"70000001-stub",
+      "citation":"in Bull. Soc. Imp. Naturalistes Moscou 15",
+      "microReference":"128. 1842",
+      "media_uri":[
+        {
+          "value":"http:\/\/www.terrarium.com.pl\/galeria\/foto\/17271.jpg",
+          "uuid":"void-stub"
+        },
+        {
+          "value":"http:\/\/wp5.e-taxonomy.eu\/dataportal\/cichorieae\/media\/protolog\/png\/Acanthocephalus_amplexifolius.png",
+          "uuid":"void-stub"
+        }
+      ]
+    }
+}

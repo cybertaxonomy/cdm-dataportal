@@ -14,6 +14,8 @@ modules/cdm_dataportal/cdm_api/ws_stub/json/taxon;uuid=5000001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon;uuid=5000002-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon;uuid=90000001-stub,sec_uuid=1001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon;uuid=9871129837-stub.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/type;uuid=5000001-stub.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/type;uuid=5000002-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/type;uuid=90000001-stub.json -text
 modules/cdm_dataportal/cdm_api/xml2json.php -text
 modules/cdm_dataportal/cdm_dataportal.info -text
