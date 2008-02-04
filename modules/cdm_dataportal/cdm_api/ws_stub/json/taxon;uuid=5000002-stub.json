@@ -5,9 +5,9 @@
 {
   "root":{
     "uuid":"5000002-stub",
-    "name":{
-        "uuid":"90000001-stub",
-        "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+      "name":{
+        "uuid":"90000002-stub",
+        "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
         "taggedName":[
           {
             "tag":"name",
@@ -15,7 +15,7 @@
           },
           {
             "tag":"authors",
-            "text":"Kar. & Kir."
+            "text":"Vassilcz."
           }
         ]
       },

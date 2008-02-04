@@ -6,6 +6,7 @@
 {
   "root":[
     {
+      "uuid":"5000001-stub",
       "name":{
         "uuid":"90000001-stub",
         "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
@@ -24,6 +25,7 @@
       "isAccepted":true
     },
     {
+      "uuid":"5000002-stub",
       "name":{
         "uuid":"90000002-stub",
         "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
@@ -42,6 +44,7 @@
       "isAccepted":true
     },
     {
+      "uuid":"5000003-stub",
       "name":{
         "uuid":"90000003-stub",
         "fullname":"Acanthocephalus benthamianus Regel",
@@ -60,6 +63,7 @@
       "isAccepted":true
     },
     {
+      "uuid":"5000004-stub",
       "name":{
         "uuid":"90000004-stub",
         "fullname":"Aetheorhiza bulbosa subsp. microcephala Rech. f.",
@@ -78,6 +82,7 @@
       "isAccepted":false
     },
     {
+      "uuid":"5000005-stub",
       "name":{
         "uuid":"90000003-stub",
         "fullname":"Acanthocephalus benthamianus Regel",
@@ -96,6 +101,7 @@
       "isAccepted":true
     },
     {
+      "uuid":"5000006-stub",
       "name":{
         "uuid":"90000004-stub",
         "fullname":"Aetheorhiza bulbosa subsp. microcephala Rech. f.",
