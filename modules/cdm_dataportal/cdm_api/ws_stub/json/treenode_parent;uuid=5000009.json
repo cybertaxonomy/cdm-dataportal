@@ -8,26 +8,25 @@
 {
   "root": [
      {
-       "uuid":"5000008-stub",
-        "name":{
-          "uuid":"90000011-stub",
-          "fullname":"Acanthocephalus Kar. & Kir.",
-          "taggedName":[
-            {
-              "tag":"name",
-              "text":"Acanthocephalus "
-            },
-            {
-              "tag":"authors",
-              "text":"Kar. & Kir."
-            }
-          ]
-        },
-        "sec_uuid":"1001-stub",
-        "isAccepted":true,
-        "hasChildren":2,
+       "uuid":"5000007-stub",
+       "name":{
+        "uuid":"90000010-stub",
+        "fullname":"Cichorieae Lam. & DC.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Cichorieae"
+          },
+          {
+            "tag":"authors",
+            "text":"Lam. & DC."
+          }
+        ]
+      },
+      "sec_uuid":"1001-stub",
+      "isAccepted":true,
+      "hasChildren":2,
         "alternativeConceptRefs":[]
-      
     },
     {
        "uuid":"5000009-stub",

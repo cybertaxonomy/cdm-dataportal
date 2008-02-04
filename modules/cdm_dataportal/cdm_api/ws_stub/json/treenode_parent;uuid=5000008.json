@@ -8,7 +8,28 @@
 {
   "root": [
      {
-       "uuid":"5000008-stub",
+       "uuid":"5000007-stub",
+       "name":{
+        "uuid":"90000010-stub",
+        "fullname":"Cichorieae Lam. & DC.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Cichorieae"
+          },
+          {
+            "tag":"authors",
+            "text":"Lam. & DC."
+          }
+        ]
+      },
+      "sec_uuid":"1001-stub",
+      "isAccepted":true,
+      "hasChildren":2,
+        "alternativeConceptRefs":[]
+    },
+    {
+        "uuid":"5000008-stub",
         "name":{
           "uuid":"90000011-stub",
           "fullname":"Acanthocephalus Kar. & Kir.",
@@ -27,29 +48,6 @@
         "isAccepted":true,
         "hasChildren":2,
         "alternativeConceptRefs":[]
-      
-    },
-    {
-       "uuid":"5000009-stub",
-        "name":{
-          "uuid":"90000012-stub",
-          "fullname":"Agoseris Raf.",
-          "taggedName":[
-            {
-              "tag":"name",
-              "text":"Agoseris"
-            },
-            {
-              "tag":"authors",
-              "text":"Raf."
-            }
-          ]
-        },
-        "sec_uuid":"1001-stub",
-        "isAccepted":true,
-        "hasChildren":0,
-        "alternativeConceptRefs":[]
-      
     }
   ]
 }
