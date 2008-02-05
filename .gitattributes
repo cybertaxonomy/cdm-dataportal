@@ -45,6 +45,17 @@ modules/cdm_dataportal/cdm_dataportal.info -text
 modules/cdm_dataportal/cdm_dataportal.module -text
 modules/cdm_dataportal/cdm_dataportal.theme.php -text
 modules/cdm_dataportal/cdm_datportal.css -text
+modules/cdm_dataportal/cdm_tinytax/LICENSE.txt -text
+modules/cdm_dataportal/cdm_tinytax/images/help.png -text
+modules/cdm_dataportal/cdm_tinytax/images/internal.gif -text
+modules/cdm_dataportal/cdm_tinytax/images/last.gif -text
+modules/cdm_dataportal/cdm_tinytax/images/list.gif -text
+modules/cdm_dataportal/cdm_tinytax/images/plus.png -text
+modules/cdm_dataportal/cdm_tinytax/images/root.gif -text
+modules/cdm_dataportal/cdm_tinytax/tinytax.css -text
+modules/cdm_dataportal/cdm_tinytax/tinytax.info -text
+modules/cdm_dataportal/cdm_tinytax/tinytax.js -text
+modules/cdm_dataportal/cdm_tinytax/tinytax.module -text
 modules/cdm_dataportal/images/btn_collapse.gif -text
 modules/cdm_dataportal/images/btn_expand.gif -text
 modules/cdm_dataportal/images/loading.gif -text

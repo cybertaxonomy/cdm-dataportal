@@ -1,0 +1,26 @@
+/* $id$ */
+.tinytax{
+  font-size:12px;
+  font-size-adjust:none;
+  font-style:normal;
+  font-variant:normal;
+  font-weight:normal;
+  line-height:100%;
+  margin:0;
+  padding:0;}
+div.tinytaxnode{
+  margin:0 0 0 2px;}
+div.tinytaxlast{
+  overflow:auto;
+  max-height:200px;}
+p.tinytax{
+  background-position: top left;
+  padding:1px 1px 1px 7px;}
+p.tinytaxroot{
+  background: url(images/root.gif) no-repeat;}
+p.tinytaxinternal{
+  background: url(images/internal.gif) no-repeat;}
+p.tinytaxlist{
+  background: url(images/list.gif) no-repeat;}
+p.tinytaxlast{
+  background: url(images/last.gif) no-repeat;}
