@@ -19,6 +19,7 @@ modules/cdm_dataportal/cdm_api/ws_stub/json/taxon;uuid=9871129837-stub.json -tex
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_children;uuid=.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_children;uuid=5000007-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_children;uuid=5000007.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_children;uuid=5000008-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_children;uuid=5000011-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_children;uuid=5000011.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_parent;uuid=5000001-stub.json -text

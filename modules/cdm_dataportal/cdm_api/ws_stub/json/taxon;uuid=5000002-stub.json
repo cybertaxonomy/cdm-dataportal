@@ -1,24 +1,20 @@
-/**
- *  serialisation of taxon&uuid=90000001-stub&sec_uuid=1001-stub
- * 
- */
 {
   "root":{
       "uuid":"5000002-stub",
       "name":{
-      "uuid":"90000002-stub",
-      "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
-      "taggedName":[
-          {
-            "tag":"name",
-            "text":"Acanthocephalus amplexifolius"
-          },
-          {
-            "tag":"authors",
-            "text":"Vassilcz."
-          }
-        ]
-      },
+        "uuid":"90000002-stub",
+        "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
+        "taggedName":[
+            {
+              "tag":"name",
+              "text":"Acanthocephalus amplexifolius"
+            },
+            {
+              "tag":"authors",
+              "text":"Vassilcz."
+            }
+          ]
+        },
       "sec_uuid":"1001-stub",
       "isAccepted":true
   }
