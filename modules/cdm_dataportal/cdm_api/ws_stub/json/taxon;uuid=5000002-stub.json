@@ -1,4 +1,7 @@
-{
+/**
+ *  eu.etaxonomy.cdm.remote.dto.TaxonSTO
+ */
+ {
   "root":{
       "uuid":"5000002-stub",
       "name":{
@@ -7,13 +10,27 @@
         "taggedName":[
             {
               "tag":"name",
-              "text":"Acanthocephalus amplexifolius"
+              "text":"Acanthocephalus benthamianus var. laevis"
             },
             {
               "tag":"authors",
               "text":"Vassilcz."
             }
+          ],
+        "nomenclaturalReference": {
+          "uuid":"70000001-stub",
+          "citation":"Descr. Pl. Nov. Rar. Fedtsch.: 47. 1882",
+          "media_uri":[
+            {
+              "value":"http:\/\/www.terrarium.com.pl\/galeria\/foto\/17271.jpg",
+              "uuid":"void-stub"
+            },
+            {
+              "value":"http:\/\/wp5.e-taxonomy.eu\/dataportal\/cichorieae\/media\/protolog\/png\/Acanthocephalus_amplexifolius.png",
+              "uuid":"void-stub"
+            }
           ]
+        }
         },
       "sec_uuid":"1001-stub",
       "isAccepted":true
