@@ -114,7 +114,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
       case 0:
         $block['subject'] = t('CDM DataPortal DevLinks');
         $block['content'] = '<ul>
-        <li>'.l('A Taxon Page', 'cdm_dataportal/taxon/90000001-stub/1001-stub').'</li>
+        <li>'.l('A Taxon Page', cdm_dataportal_taxon_path('5000001-stub')).'</li>
         <li>'.l('Name List - page1 of A', 'cdm_dataportal/names/A/1').'</li>
         <li>'.l('xml2json', 'cdm/xml2json/namelist;startwith=A.xml').'</li>
         </ul>';
@@ -213,15 +213,13 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
  *    The list is ordered historically.
  *  - All facts associated with the very taxon concept and taxon name. 
  *
- * @param $name_uuid the $name_uuid of the taxon name 
+ * @param String $uuid the UUID of the taxon  
  */
-function cdm_dataportal_view_taxon($name_uuid, $sec_uuid){
+function cdm_dataportal_view_taxon($uuid){
  
-  $taxon = cdm_ws_get_taxon($name_uuid, $sec_uuid);
-  $typeref = cdm_ws_get_typedesignation($name_uuid);
+  $taxon = cdm_ws_get_taxon($uuid);
   
-  
-  drupal_set_title($taxon->name->fullname.' '.theme('cdm_typedesignation', $typeref));
+  drupal_set_title($taxon->name->fullname.' '.theme('cdm_nomenclaturalReferenceSTO', $taxon->nomenclaturalReference));
   //TODO retrieve complete synonymy and other data 
   
   $out = theme('cdm_taxon', $taxon); 
@@ -239,10 +237,36 @@ function cdm_view_xml2json(){
 
 /* ====================== other functions ====================== */
 
-function create_taxon_menu_path($name_uuid, $sec_uuid){
-  return 'cdm_dataportal/taxon/'.$name_uuid.'/'.$sec_uuid;
+/**
+ * Enter description here...
+ *
+ * @param String $uuid the UUID of the taxon
+ * @return the URL
+ */
+function cdm_dataportal_taxon_path($uuid){
+  return 'cdm_dataportal/taxon/'.$uuid;
 }
 
+/**
+ * Creates a short taxonname by using the taggename field of NameSTO or NameTO instances.
+ * If the taggename if empty the fullname will be returned.
+ *
+ * @param unknown_type $NameSTO a NameSTO or NameTO instance
+ * @return string 
+ */
+function cdm_dataportal_shortname_of($NameSTO){
+  
+  $name = trim(cdm_taggedtext_value($NameSTO->taggedName, 'name'));
+  if($name){
+    if( $pos = stripos($name, ' ')){
+      return substr($name, 0, 1).'. '.substr($name, $pos);
+    } else {
+      return $name;
+    }
+  } else {
+    return $NameSTO->fullname;
+  }
+}
 
 /**
  * @param $str the string to truncate

@@ -110,7 +110,7 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
     }
     
     $name_html = theme('cdm_taxon', $taxonTO, true, false);
-    $out = l($name_html, create_taxon_menu_path($taxonTO->name->uuid, $taxonTO->sec_uuid), array('class'=>'accepted'), '', $fragment, FALSE, TRUE);
+    $out = l($name_html, cdm_dataportal_taxon_path($taxonTO->uuid), array('class'=>'accepted'), '', $fragment, FALSE, TRUE);
     
     if($showNomRef){
        $out .=' '.theme('cdm_nomRef', $taxonTO);
@@ -136,7 +136,7 @@ function theme_cdm_dataportal_names_list($taxonSTOs){
     if($taxon->isAccepted){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
     } else {
-      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_ws_get_accepted_url($taxon->name->uuid, $taxon->sensu), 'cdm_taxon_link');
+      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_ws_get_accepted_url($taxon->uuid), 'cdm_taxon_link');
     }
   }
   $out .= '</ul>';
@@ -149,56 +149,38 @@ function theme_cdm_fullreference($referenceTO){
 }
 
 /**
- * method signatutre of old portal version:
- *  ($nameId, $cssClass = '', $togglebox = false, $separator = '<br />' , $enclosingTag = 'li')
- * 
+ * Enter description here...
  *
- * @param unknown_type $nameId
+ * @param unknown_type $referenceSTO a referenceSTO or referenceTO instance
  * @param unknown_type $cssClass
- * @param unknown_type $togglebox
  * @param unknown_type $separator
  * @param unknown_type $enclosingTag
  * @return unknown
  */
-function theme_cdm_typedesignation($referenceTO, $cssClass = '', $togglebox = false, $separator = '<br />' , $enclosingTag = 'li'){
+function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $separator = '<br />' , $enclosingTag = 'li'){
   
-  $typeref_citation = theme('cdm_fullreference', $referenceTO);
-  
+  if(isset($referenceTO->microReference)){
+    // well it is a ReferenceTO
+    $nomref_citation = theme('cdm_fullreference', $referenceSTO);
+  } else {
+    // it is ReferenceSTO
+    $nomref_citation = $referenceSTO; 
+  }
+
   $module_path = drupal_get_path('module', 'cdm_dataportal');
   drupal_add_js($module_path.'/js/jquery_lightbox/js/jlightbox.uncompressed.js');
   drupal_add_css($module_path.'/js/jquery_lightbox/css/jlightbox.css', 'module', 'screen');
   
-  if( count($referenceTO->media_uri) > 0 ){
-    //jQuery Lightbox: $attributes = array('class'=>'lightbox-enabled', 'rel'=>'lightbox-myGroup');
-    // module/jlightbox: 
+  if( count($referenceSTO->media_uri) > 0 ){
     $attributes = array('rel'=>'lightbox[protologues]');
-    $out = l($typeref_citation, $referenceTO->media_uri[0]->value, $attributes, NULL, NULL, TRUE);
-    //$attributes['style'] = 'display: none;';
-    for($i = 1;  $i < count($referenceTO->media_uri); $i++) {
-    	$out .= l('', $referenceTO->media_uri[$i]->value, $attributes, NULL, NULL, TRUE);
+    $out = l($nomref_citation, $referenceSTO->media_uri[0]->value, $attributes, NULL, NULL, TRUE);
+    for($i = 1;  $i < count($referenceSTO->media_uri); $i++) {
+      $out .= l('', $referenceSTO->media_uri[$i]->value, $attributes, NULL, NULL, TRUE);
     }
   } else {
-    $out =  $typeref_citation;
+    $out =  $nomref_citation;
   }
-  return $out;
-  /*if(count($referenceTO->media) > 0){
-    $out = ''; 
-    foreach($typeDesignations as $td){
-      
-      if(strlen($out) > 0){
-        $out .= $separator.chr(10);
-      }
-      $out .= $td['TypeStatus'].' - '.html_entity_decode($td['TypePhrase']);
-    }
-    
-    if($togglebox){
-       $out = '<div class="tbox_toggler">&nbsp;</div><div class="tbox_content">'.$out.'</div>';
-    } 
-    return '<'.$enclosingTag.' class="type_designation'.($cssClass ? ' '.$cssClass : '' ).'">'
-      .$out.'</'.$enclosingTag.'>'.chr(10);
-    
-  }*/
-  
+  return $out;  
 }
 
 //TODO: port everything below
