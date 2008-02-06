@@ -4,23 +4,23 @@
  */
  {
   "root":{
-      "uuid":"5000002-stub",
+      "uuid":"5000021-stub",
       "name":{
-        "uuid":"90000002-stub",
-        "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
+        "uuid":"90000021-stub",
+        "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
         "taggedName":[
             {
               "tag":"name",
-              "text":"Acanthocephalus benthamianus var. laevis"
+              "text":"Harpocarpus amplexifolius"
             },
             {
               "tag":"authors",
-              "text":"Vassilcz."
+              "text":"(Kar. & Kir.) Walp."
             }
           ],
         "nomenclaturalReference": {
-          "uuid":"70000001-stub",
-          "citation":"Descr. Pl. Nov. Rar. Fedtsch.: 47. 1882",
+          "uuid":"70000003-stub",
+          "citation":"Repert. Bot. Syst. 2: 666. 1843",
           "media_uri":[
             {
               "value":"http:\/\/www.terrarium.com.pl\/galeria\/foto\/17271.jpg",
@@ -33,7 +33,7 @@
           ]
         }
         },
-      "sec_uuid":"1001-stub",
+      "sec_uuid":"1002-stub",
       "isAccepted":true
   }
 }

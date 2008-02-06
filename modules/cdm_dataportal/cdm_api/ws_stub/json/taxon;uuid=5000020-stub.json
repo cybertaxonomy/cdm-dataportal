@@ -1,5 +1,6 @@
 /**
- *  eu.etaxonomy.cdm.remote.dto.TaxonSTO
+ * partial serialisation of
+ * eu.etaxonomy.cdm.remote.dto.TaxonTO
  */
 {
   "root":{
@@ -41,7 +42,7 @@
           ]
         
       },
-      "sec_uuid":"1001-stub",
+      "sec":null,
       "isAccepted":true
   }
 }
