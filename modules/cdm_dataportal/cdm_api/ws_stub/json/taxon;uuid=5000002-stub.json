@@ -2,48 +2,430 @@
  * partial serialisation of
  * eu.etaxonomy.cdm.remote.dto.TaxonTO
  */
- {
+{
   "root":{
-      "uuid":"5000002-stub",
-      "name":{
-        "uuid":"90000002-stub",
-        "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
-        "taggedName":[
-            {
-              "tag":"name",
-              "text":"Acanthocephalus benthamianus var. laevis"
-            },
-            {
-              "tag":"authors",
-              "text":"Vassilcz."
-            }
-          ],
-        "nomenclaturalReference": {
-          "uuid":"70000001-stub",
-          "citation":"Descr. Pl. Nov. Rar. Fedtsch.: 47. 1882",
-          "media_uri":[
-            {
-              "value":"http:\/\/www.terrarium.com.pl\/galeria\/foto\/17271.jpg",
-              "uuid":"void-stub"
-            },
-            {
-              "value":"http:\/\/wp5.e-taxonomy.eu\/dataportal\/cichorieae\/media\/protolog\/png\/Acanthocephalus_amplexifolius.png",
-              "uuid":"void-stub"
-            }
-          ]
+    "uuid":"5000001-stub",
+    "name":{
+      "uuid":"90000001-stub",
+      "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+      "taggedName":[
+        {
+          "tag":"name",
+          "text":"Acanthocephalus amplexifolius"
         },
-        "status": [
-            {
-              "term":"Name ungült.",
-              "language":"de"
-            },
-            {
-              "term":"nom inval.",
-              "language":"en"
+        {
+          "tag":"authors",
+          "text":"Kar. & Kir."
+        }
+      ],
+      "nomenclaturalReference":{
+        "uuid":"70000001-stub",
+        "citation":"in Bull. Soc. Imp. Naturalistes Moscou 15: 128. 1842",
+        "media_uri":[
+          {
+            "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+            "uuid":"void-stub"
+          },
+          {
+            "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+            "uuid":"void-stub"
+          }
+        ]
+      },
+      "rank":null
+    },
+    "homotypicSynonyms":[
+      {
+        "synoynm":{
+          "uuid":"5000021-stub",
+          "name":{
+            "uuid":"90000021-stub",
+            "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+            "taggedName":[
+              {
+                "tag":"name",
+                "text":"Harpocarpus amplexifolius"
+              },
+              {
+                "tag":"authors",
+                "text":"(Kar. & Kir.) Walp."
+              }
+            ],
+            "nomenclaturalReference":{
+              "uuid":"70000003-stub",
+              "citation":"Repert. Bot. Syst. 2: 666. 1843",
+              "media_uri":[
+                {
+                  "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                  "uuid":"void-stub"
+                },
+                {
+                  "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                  "uuid":"void-stub"
+                }
+              ]
             }
-         ]
+          },
+          "sec_uuid":"1002-stub",
+          "isAccepted":true
         },
-      "sec_uuid":"1001-stub",
-      "isAccepted":true
+        "type":{
+          "term":"",
+          "uuid":"",
+          "language":""
+        }
+      },
+      {
+        "synoynm":{
+          "uuid":"5000021-stub",
+          "name":{
+            "uuid":"90000021-stub",
+            "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+            "taggedName":[
+              {
+                "tag":"name",
+                "text":"Harpocarpus amplexifolius"
+              },
+              {
+                "tag":"authors",
+                "text":"(Kar. & Kir.) Walp."
+              }
+            ],
+            "nomenclaturalReference":{
+              "uuid":"70000003-stub",
+              "citation":"Repert. Bot. Syst. 2: 666. 1843",
+              "media_uri":[
+                {
+                  "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                  "uuid":"void-stub"
+                },
+                {
+                  "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                  "uuid":"void-stub"
+                }
+              ]
+            }
+          },
+          "sec_uuid":"1002-stub",
+          "isAccepted":true
+        },
+        "type":{
+          "term":"",
+          "uuid":"",
+          "language":""
+        }
+      }
+    ],
+    "heterotypicSynonymyGroups":[
+      {
+        "taxa":[
+          {
+            "uuid":"5000021-stub",
+            "name":{
+              "uuid":"90000021-stub",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "taggedName":[
+                {
+                  "tag":"name",
+                  "text":"Harpocarpus amplexifolius"
+                },
+                {
+                  "tag":"authors",
+                  "text":"(Kar. & Kir.) Walp."
+                }
+              ],
+              "nomenclaturalReference":{
+                "uuid":"70000003-stub",
+                "citation":"Repert. Bot. Syst. 2: 666. 1843",
+                "media_uri":[
+                  {
+                    "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                    "uuid":"void-stub"
+                  },
+                  {
+                    "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                    "uuid":"void-stub"
+                  }
+                ]
+              }
+            },
+            "sec_uuid":"1002-stub",
+            "isAccepted":true
+          },
+          {
+            "uuid":"5000021-stub",
+            "name":{
+              "uuid":"90000021-stub",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "taggedName":[
+                {
+                  "tag":"name",
+                  "text":"Harpocarpus amplexifolius"
+                },
+                {
+                  "tag":"authors",
+                  "text":"(Kar. & Kir.) Walp."
+                }
+              ],
+              "nomenclaturalReference":{
+                "uuid":"70000003-stub",
+                "citation":"Repert. Bot. Syst. 2: 666. 1843",
+                "media_uri":[
+                  {
+                    "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                    "uuid":"void-stub"
+                  },
+                  {
+                    "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                    "uuid":"void-stub"
+                  }
+                ]
+              }
+            },
+            "sec_uuid":"1002-stub",
+            "isAccepted":true
+          },
+          {
+            "uuid":"5000021-stub",
+            "name":{
+              "uuid":"90000021-stub",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "taggedName":[
+                {
+                  "tag":"name",
+                  "text":"Harpocarpus amplexifolius"
+                },
+                {
+                  "tag":"authors",
+                  "text":"(Kar. & Kir.) Walp."
+                }
+              ],
+              "nomenclaturalReference":{
+                "uuid":"70000003-stub",
+                "citation":"Repert. Bot. Syst. 2: 666. 1843",
+                "media_uri":[
+                  {
+                    "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                    "uuid":"void-stub"
+                  },
+                  {
+                    "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                    "uuid":"void-stub"
+                  }
+                ]
+              }
+            },
+            "sec_uuid":"1002-stub",
+            "isAccepted":true
+          }
+        ],
+        "taxa":[
+          {
+            "uuid":"5000021-stub",
+            "name":{
+              "uuid":"90000021-stub",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "taggedName":[
+                {
+                  "tag":"name",
+                  "text":"Harpocarpus amplexifolius"
+                },
+                {
+                  "tag":"authors",
+                  "text":"(Kar. & Kir.) Walp."
+                }
+              ],
+              "nomenclaturalReference":{
+                "uuid":"70000003-stub",
+                "citation":"Repert. Bot. Syst. 2: 666. 1843",
+                "media_uri":[
+                  {
+                    "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                    "uuid":"void-stub"
+                  },
+                  {
+                    "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                    "uuid":"void-stub"
+                  }
+                ]
+              }
+            },
+            "sec_uuid":"1002-stub",
+            "isAccepted":true
+          },
+          {
+            "uuid":"5000021-stub",
+            "name":{
+              "uuid":"90000021-stub",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "taggedName":[
+                {
+                  "tag":"name",
+                  "text":"Harpocarpus amplexifolius"
+                },
+                {
+                  "tag":"authors",
+                  "text":"(Kar. & Kir.) Walp."
+                }
+              ],
+              "nomenclaturalReference":{
+                "uuid":"70000003-stub",
+                "citation":"Repert. Bot. Syst. 2: 666. 1843",
+                "media_uri":[
+                  {
+                    "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                    "uuid":"void-stub"
+                  },
+                  {
+                    "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                    "uuid":"void-stub"
+                  }
+                ]
+              }
+            },
+            "sec_uuid":"1002-stub",
+            "isAccepted":true
+          },
+          {
+            "uuid":"5000021-stub",
+            "name":{
+              "uuid":"90000021-stub",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "taggedName":[
+                {
+                  "tag":"name",
+                  "text":"Harpocarpus amplexifolius"
+                },
+                {
+                  "tag":"authors",
+                  "text":"(Kar. & Kir.) Walp."
+                }
+              ],
+              "nomenclaturalReference":{
+                "uuid":"70000003-stub",
+                "citation":"Repert. Bot. Syst. 2: 666. 1843",
+                "media_uri":[
+                  {
+                    "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                    "uuid":"void-stub"
+                  },
+                  {
+                    "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                    "uuid":"void-stub"
+                  }
+                ]
+              }
+            },
+            "sec_uuid":"1002-stub",
+            "isAccepted":true
+          }
+        ],
+        "taxa":[
+          {
+            "uuid":"5000021-stub",
+            "name":{
+              "uuid":"90000021-stub",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "taggedName":[
+                {
+                  "tag":"name",
+                  "text":"Harpocarpus amplexifolius"
+                },
+                {
+                  "tag":"authors",
+                  "text":"(Kar. & Kir.) Walp."
+                }
+              ],
+              "nomenclaturalReference":{
+                "uuid":"70000003-stub",
+                "citation":"Repert. Bot. Syst. 2: 666. 1843",
+                "media_uri":[
+                  {
+                    "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                    "uuid":"void-stub"
+                  },
+                  {
+                    "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                    "uuid":"void-stub"
+                  }
+                ]
+              }
+            },
+            "sec_uuid":"1002-stub",
+            "isAccepted":true
+          },
+          {
+            "uuid":"5000021-stub",
+            "name":{
+              "uuid":"90000021-stub",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "taggedName":[
+                {
+                  "tag":"name",
+                  "text":"Harpocarpus amplexifolius"
+                },
+                {
+                  "tag":"authors",
+                  "text":"(Kar. & Kir.) Walp."
+                }
+              ],
+              "nomenclaturalReference":{
+                "uuid":"70000003-stub",
+                "citation":"Repert. Bot. Syst. 2: 666. 1843",
+                "media_uri":[
+                  {
+                    "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                    "uuid":"void-stub"
+                  },
+                  {
+                    "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                    "uuid":"void-stub"
+                  }
+                ]
+              }
+            },
+            "sec_uuid":"1002-stub",
+            "isAccepted":true
+          },
+          {
+            "uuid":"5000021-stub",
+            "name":{
+              "uuid":"90000021-stub",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "taggedName":[
+                {
+                  "tag":"name",
+                  "text":"Harpocarpus amplexifolius"
+                },
+                {
+                  "tag":"authors",
+                  "text":"(Kar. & Kir.) Walp."
+                }
+              ],
+              "nomenclaturalReference":{
+                "uuid":"70000003-stub",
+                "citation":"Repert. Bot. Syst. 2: 666. 1843",
+                "media_uri":[
+                  {
+                    "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                    "uuid":"void-stub"
+                  },
+                  {
+                    "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                    "uuid":"void-stub"
+                  }
+                ]
+              }
+            },
+            "sec_uuid":"1002-stub",
+            "isAccepted":true
+          }
+        ]
+      }
+    ],
+    "taxonRelations":[
+    ],
+    "sec_uuid":"1001-stub",
+    "isAccepted":true
   }
 }
