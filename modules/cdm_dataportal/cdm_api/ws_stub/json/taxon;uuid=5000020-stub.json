@@ -5,7 +5,7 @@
   "root":{
      "uuid":"5000020-stub",
       "name":{
-        {
+        
           "created":null,
           "typeDesignations":[
           ],
@@ -39,7 +39,7 @@
               "type":"name"
             }
           ]
-        }
+        
       },
       "sec_uuid":"1001-stub",
       "isAccepted":true
