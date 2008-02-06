@@ -114,7 +114,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
       case 0:
         $block['subject'] = t('CDM DataPortal DevLinks');
         $block['content'] = '<ul>
-        <li>'.l('A Taxon Page', cdm_dataportal_taxon_path('5000001-stub')).'</li>
+        <li>'.l('A Taxon Page', cdm_dataportal_taxon_path('5000020-stub')).'</li>
         <li>'.l('Name List - page1 of A', 'cdm_dataportal/names/A/1').'</li>
         <li>'.l('xml2json', 'cdm/xml2json/namelist;startwith=A.xml').'</li>
         </ul>';
@@ -219,10 +219,10 @@ function cdm_dataportal_view_taxon($uuid){
  
   $taxon = cdm_ws_get_taxon($uuid);
   
-  drupal_set_title($taxon->name->fullname.' '.theme('cdm_nomenclaturalReferenceSTO', $taxon->nomenclaturalReference));
+  drupal_set_title(theme('cdm_taxon', $taxon, true));
   //TODO retrieve complete synonymy and other data 
   
-  $out = theme('cdm_taxon', $taxon); 
+  $out = ''; 
   return $out;
 
 }

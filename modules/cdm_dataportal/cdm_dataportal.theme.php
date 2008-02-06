@@ -41,12 +41,12 @@ function theme_cdm_name($nameTO){
   
     if($nameTO){
       if(!$nameTO->taggedName || !count($nameTO->taggedName)){
-        $out .= '<div class="'.$class.'">'.$nameTO->fullname.'</div>';
+        $out .= '<span class="'.$class.'">'.$nameTO->fullname.'</span>';
       } else {
-        $out .= '<div class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName).'</div>';
+        $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName).'</span>';
       }
     } else {
-      $out .= '<div class="error">Invalid NameTO</div>';
+      $out .= '<span class="error">Invalid NameTO</span>';
     }
     return $out;
 }
@@ -55,17 +55,17 @@ function theme_cdm_name($nameTO){
  * Renders the given TaxonTO. The $enclosingTag (if not set false)
  * will get the following class attributes:
  * - name
- * - acceptet (only if $ptaxon is an accepted name)
+ * - accepted (only if $ptaxon is an accepted name)
  * 
  * @param TaxonTO $taxon
+ * @param boolean $displayNomRef whether to display the nomenclatural reference
  * @param boolean $noSecundum defaults to false. If set to true the secundum part is omitted.
  * @param string $enclosingTag defaults to span.
- * @param boolean $showNomRef whether to dispülay the nomenclatural reference
  * @return string of XHTML
  * 
  * usage: taxon_detail, theme_ptname_link
  */
-function theme_cdm_taxon($taxonTO, $noSecundum = true ,$enclosingTag = 'span', $showNomRef = false){
+function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $enclosingTag = 'span'){
 
     
     $refSecundum = false;
@@ -78,20 +78,18 @@ function theme_cdm_taxon($taxonTO, $noSecundum = true ,$enclosingTag = 'span', $
     
     $out  = theme('cdm_name', $taxonTO->name);
 	  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>': '');
+	  if($displayNomRef){
+	    $nomref_citation = isset($taxonTO->name->nomenclaturalReference) ? $taxonTO->name->nomenclaturalReference->citation : false;
+	    $out .= ( !$nomref_citation || str_beginsWith($nomref_citation, 'in') ? '&nbsp;':',&nbsp;');
+	    $out .= theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
+	  }
 	  //TODO:   .$ptaxon->namePhrase; 
 	  
-	  
-    /* TODO: port me if really required
-    if($showNomRef){
-        $out .= (str_beginsWith($ptaxon->nomRef, 'in') || trim($ptaxon->nomRef) == '' ? '&nbsp;':',&nbsp;').theme('cdm_nomRef',$taxon);
-    }
     if($enclosingTag){
-        $out = '<'.$enclosingTag.' class="name'.($ptaxon->isAccepted()?' accepted':'').'"><!-- ['.$ptaxon->nameId.'|'.$ptaxon->refId.'] -->'.$out.'</'.$enclosingTag.'>';
+        $out = '<'.$enclosingTag.' class="name'.($taxonTO->isAccepted ? ' accepted':'').'">'.$out.'</'.$enclosingTag.'>';
     }
-    */
-    
-    return $out;
-    
+
+    return $out;    
 }
 
 /**
@@ -109,7 +107,7 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
         $out = 'ERROR: theme_cdm_taxon_link() - taxon is not accepted';
     }
     
-    $name_html = theme('cdm_taxon', $taxonTO, true, false);
+    $name_html = theme('cdm_taxon', $taxonTO, false, true, '');
     $out = l($name_html, cdm_dataportal_taxon_path($taxonTO->uuid), array('class'=>'accepted'), '', $fragment, FALSE, TRUE);
     
     if($showNomRef){
@@ -159,12 +157,12 @@ function theme_cdm_fullreference($referenceTO){
  */
 function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $separator = '<br />' , $enclosingTag = 'li'){
   
-  if(isset($referenceTO->microReference)){
+  if(isset($referenceSTO->microReference)){
     // well it is a ReferenceTO
     $nomref_citation = theme('cdm_fullreference', $referenceSTO);
   } else {
     // it is ReferenceSTO
-    $nomref_citation = $referenceSTO; 
+    $nomref_citation = $referenceSTO->citation; 
   }
 
   $module_path = drupal_get_path('module', 'cdm_dataportal');

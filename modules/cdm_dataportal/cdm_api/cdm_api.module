@@ -38,6 +38,21 @@ function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '){
    return $out;
 }
 
+/**
+ * Finds the text tagged with $tagname in an array of taggedText instances
+ *
+ * @param array $taggedtxt
+ * @param string $tagname
+ * @return the text mapped by $tagname or an empty string
+ */
+function cdm_taggedtext_value(array &$taggedtxt = array(), $tagname){
+  foreach($taggedtxt as $tagtxt){
+    if($tagtxt->tag == $tagname)
+    return $tagtxt->text;
+  }
+  return '';
+}
+
 function cdm_encode_stub($path, $fileextension){
   return variable_get('cdm_webservice_type', 'xml').'/'.str_replace('&',',', str_replace('?',';',$path)).'.'.$fileextension;
 }
@@ -50,7 +65,7 @@ function cdm_decode_stub($path){
   return str_replace(',','&', str_replace(';','?',$path));
 }
 
-function cdm_compose_url($file, $parameters){
+function cdm_compose_url($file, $parameters = array()){
   $pstr = '';
   foreach($parameters as $key=>$value){
     $pstr .= ( strlen($pstr) == 0 ? '?' : '&').$key.'='.urlencode($value);
@@ -164,7 +179,7 @@ function cdm_ws_load($url){
    
   if( !($obj = cdm_load_obj($datastr)) ){
     $backtrace = debug_backtrace();
-    watchdog('CDM', $backtrace[1]['function'].' - failed to load '.$file, WATCHDOG_ERROR);
+    watchdog('CDM', 'cdm_ws_load() - '.$url.' failed to load', WATCHDOG_ERROR);
   }
   
   return $obj;
@@ -172,6 +187,24 @@ function cdm_ws_load($url){
 
 
 /* ------------------------------------------------------------------------- */
+
+/**
+ * Enter description here...
+ *
+ * @return unknown
+ */
+function cdm_ws(){
+  $args = func_get_args();
+  $method = array_shift($args);
+  $url_function = 'cdm_ws_'.$method.'_url';
+  if(function_exists($url_function)){
+    $url = call_user_func_array($url_function, $args);
+    return cdm_ws_load($url);
+  }
+  watchdog("cdm-api", 'cdm_ws() - invalid web service method call: "'.$method.'" dues not exist.', WATCHDOG_ERROR);
+  return false;
+  
+}
 
 // -------- whatis
 
@@ -242,6 +275,12 @@ function cdm_ws_get_reference_url($uuid){
    return cdm_compose_url('reference', array('uuid'=>$uuid));
 }
 
+/**
+ * Enter description here...
+ *
+ * @param String $uuid of the requested reference
+ * @return unknown
+ */
 function cdm_ws_get_reference($uuid){
    $url = cdm_ws_get_reference_url('reference', array('uuid'=>$uuid));
    $obj = cdm_ws_load($url);
@@ -250,12 +289,18 @@ function cdm_ws_get_reference($uuid){
 
 // -------- get_taxon
 
-function cdm_ws_get_taxon_url($name_uuid, $sec_uuid){
-  return cdm_compose_url('taxon', array('uuid'=>$name_uuid, 'sec_uuid'=>$sec_uuid));
+function cdm_ws_get_taxon_url($uuid){
+  return cdm_compose_url('taxon', array('uuid'=>$uuid));
 }
 
-function cdm_ws_get_taxon($name_uuid, $sec_uuid){
-   $url = cdm_ws_get_taxon_url($name_uuid, $sec_uuid);
+/**
+ * Enter description here...
+ *
+ * @param String $taxon_uuid UUID of the requested Taxon
+ * @return unknown
+ */
+function cdm_ws_get_taxon($taxon_uuid){
+   $url = cdm_ws_get_taxon_url($taxon_uuid);
    return cdm_ws_load($url);
 }
 
@@ -270,11 +315,28 @@ function cdm_ws_get_typedesignation($name_uuid){
 }
 
 // -------- get_accepted
-function cdm_ws_get_accepted_url($name_uuid, $sec_uuid){
-  return cdm_compose_url('accepted', array('uuid'=>$name_uuid, 'sec_uuid'=>$sec_uuid));
+function cdm_ws_get_accepted_url($taxon_uuid){
+  return cdm_compose_url('accepted', array('uuid'=>$taxon_uuid));
 }
 
-function cdm_ws_get_accepted($name_uuid, $sec_uuid){
-  $url = cdm_ws_get_accepted_url($name_uuid, $sec_uuid);
+function cdm_ws_get_accepted($taxon_uuid){
+  $url = cdm_ws_get_accepted_url($taxon_uuid);
   return cdm_ws_load($url);
+}
+
+// -------- Taxon tree ws functions
+
+/**
+ * treenode_parents returns an array of the parent TreeNodes in descending order.
+ * The TreeNode referenced by the parameter $taxon_uuid is included as last element
+ *
+ * @param String $taxon_uuid
+ * @return array
+ */
+function cdm_ws_get_treenode_parents_url($taxon_uuid){
+  return cdm_compose_url('treenode_parents', array('uuid'=>$taxon_uuid));
+}
+
+function cdm_ws_get_treenode_children_url($taxon_uuid = ''){
+  return cdm_compose_url('treenode_children', array('uuid'=>$taxon_uuid));
 }
