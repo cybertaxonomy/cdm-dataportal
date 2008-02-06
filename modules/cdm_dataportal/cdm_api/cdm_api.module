@@ -53,10 +53,55 @@ function cdm_taggedtext_value(array &$taggedtxt = array(), $tagname){
   return '';
 }
 
+/**
+ * Searches the appay of LocalisedTermTO instances for an entry mapped with the language
+ * specified as parameter $language if existing. If not the term mapped with the $defauklt_language 
+ * is returend otherwise the first term in $localised_terms is returned or fale if 
+ * $localised_terms is empty. 
+ * 
+ *
+ * @param array $localised_terms
+ * @param string $language
+ * @param string $default_language
+ * @return string
+ */
+function cdm_get_localised_term($localised_terms, $language, $default_language = 'en'){
+  
+  $default_term = (count($localised_terms) > 0 ? $localised_terms[0]->term : '') ;
+  
+  foreach($localised_terms as $lt){
+    if($lt->language == $language){
+      return $lt->term;
+    }
+    if($lt->language == $default_language){
+      $default_term = $lt->term;
+    }
+  }
+  
+  return $default_term;
+}
+
+/**
+ * Produces a path to a static web service stub out of a cdm web service path. 
+ * These stubs are object serialisations stored in files whereas the filename
+ * consists of the service name and of a 
+ * encoded version of the request query parameters
+ *
+ * @param string $path
+ * @param string $fileextension
+ * @return string
+ */
 function cdm_encode_stub($path, $fileextension){
   return variable_get('cdm_webservice_type', 'xml').'/'.str_replace('&',',', str_replace('?',';',$path)).'.'.$fileextension;
 }
 
+/**
+ * Decodes a path to a static web service stub to turn it into a path 
+ * suitable for a cdm web service
+ *
+ * @param string $path
+ * @return string
+ */
 function cdm_decode_stub($path){
   
   // remove fileextension
@@ -65,6 +110,13 @@ function cdm_decode_stub($path){
   return str_replace(',','&', str_replace(';','?',$path));
 }
 
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $file
+ * @param unknown_type $parameters
+ * @return unknown
+ */
 function cdm_compose_url($file, $parameters = array()){
   $pstr = '';
   foreach($parameters as $key=>$value){

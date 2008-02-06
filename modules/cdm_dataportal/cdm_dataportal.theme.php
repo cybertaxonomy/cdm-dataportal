@@ -35,7 +35,7 @@ function tagNameParts($name, $numOfNameTokens){
  *  
  * @param NameTO $nameTO the taxon name
  */
-function theme_cdm_name($nameTO){
+function theme_cdm_name($nameTO, $displayNomRef = true){
     //TODO: how to take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
     $class = ($nameTO->sec_uuid ? 'taxon' : 'taxonname');  
   
@@ -48,6 +48,17 @@ function theme_cdm_name($nameTO){
     } else {
       $out .= '<span class="error">Invalid NameTO</span>';
     }
+    
+        
+    if($displayNomRef && $nameTO->nomenclaturalReference->citation){
+      $out .= (str_beginsWith($nameTO->nomenclaturalReference->citation, 'in') ? '&nbsp;':',&nbsp;');
+      $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference);
+    }
+    
+    if($nameTO->status){
+      $out .= ', '.cdm_dataportal_t($nameTO->status);
+    }
+    
     return $out;
 }
 
@@ -76,13 +87,10 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
       }
     }
     
-    $out  = theme('cdm_name', $taxonTO->name);
+    $out  = theme('cdm_name', $taxonTO->name, $displayNomRef);
+    
 	  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>': '');
-	  if($displayNomRef){
-	    $nomref_citation = isset($taxonTO->name->nomenclaturalReference) ? $taxonTO->name->nomenclaturalReference->citation : false;
-	    $out .= ( !$nomref_citation || str_beginsWith($nomref_citation, 'in') ? '&nbsp;':',&nbsp;');
-	    $out .= theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
-	  }
+
 	  //TODO:   .$ptaxon->namePhrase; 
 	  
     if($enclosingTag){

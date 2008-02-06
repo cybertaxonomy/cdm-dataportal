@@ -31,7 +31,17 @@
               "uuid":"void-stub"
             }
           ]
-        }
+        },
+        "status": [
+            {
+              "term":"Name ungült.",
+              "language":"de"
+            },
+            {
+              "term":"nom inval.",
+              "language":"en"
+            }
+         ]
         },
       "sec_uuid":"1001-stub",
       "isAccepted":true

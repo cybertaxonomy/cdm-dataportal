@@ -235,6 +235,17 @@ function cdm_view_xml2json(){
 
 }
 
+/**
+ * Get a term for the current locale from the $localised_terms array.
+ * Uses global variable $locale from drupal (see drupal functions locale_initialize() for details)
+ * Function name is adapted from the drupal function t(). 
+ *
+ */
+function cdm_dataportal_t($localised_terms){
+  global $locale;  // drupal variable containing the current locale
+  return cdm_get_localised_term($localised_terms, $locale);
+}
+
 /* ====================== other functions ====================== */
 
 /**
