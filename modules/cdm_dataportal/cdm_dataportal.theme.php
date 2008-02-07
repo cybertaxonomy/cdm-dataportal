@@ -222,7 +222,7 @@ function theme_cdm_taxon_page($taxonTO){
     //$out .= theme('cdm_typedesignations', );
   }
   
-  //$out .= theme('cdm_taxonRelations', $taxonTO);
+  $out .= theme('cdm_taxonRelations', $taxonTO->taxonRelations);
   
   return $out;
 }
@@ -230,7 +230,7 @@ function theme_cdm_taxon_page($taxonTO){
 function theme_cdm_homotypicSynonyms($synonymRelationshipTOs){
   $out = '';
   foreach($synonymRelationshipTOs as $synonym){
-    $out .= '<li><span class="synonym"'.theme('cdm_related_taxon', $synonym->synoynm, 'homotypic').'</li>';
+    $out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym->synoynm, 'homotypic').'</li>';
   }
   $out = '<ul class="homotypicSynonyms">'.$out.'</ul>';
   return $out;
@@ -241,12 +241,23 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicGroupTO){
   foreach($homotypicGroupTO->taxa as $taxonSTO){
     if(!$out){
       // is first list entry
-      $out .= '<li class="firstentry"><span class="synonym"'.theme('cdm_related_taxon',$taxonSTO, 'heterotypic').'</li>';
+      $out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$taxonSTO, 'heterotypic').'</li>';
     } else {
-      $out .= '<li><span class="synonym"'.theme('cdm_related_taxon',$taxonSTO, 'homotypic').'</li>';
+      $out .= '<li class="synonym">'.theme('cdm_related_taxon',$taxonSTO, 'homotypic').'</li>';
     }
   }
   $out = '<ul class="heterotypicSynonymyGroup">'.$out.'</ul>';
+  return $out;
+}
+
+function theme_cdm_taxonRelations($TaxonRelationshipTOs){
+
+  $TaxonRelationshipTOs
+  $out = '';
+  foreach($TaxonRelationshipTOs as $taxonRelation){
+    $out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym->synoynm, 'homotypic').'</li>';
+  }
+  $out = '<ul class="homotypicSynonyms">'.$out.'</ul>';
   return $out;
 }
 

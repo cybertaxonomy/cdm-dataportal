@@ -5,8 +5,17 @@
   font-style: italic;
 }
 
+.relation_sign{
+	margin-right: 0.3em;
+}
+
 .heterotypicSynonymyGroup li{
   margin-left: 26px;
+}
+
+ul li.synonym{
+  list-style-type: none;
+  background-image: none;
 }
 
 li.firstentry{

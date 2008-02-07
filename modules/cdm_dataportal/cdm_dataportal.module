@@ -196,8 +196,8 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
   
     $taxonSTOs = cdm_ws_name_list($beginsWith, $page, $onlyAccepted, $_SESSION['cdm']['namelist_pagesize']);
     /*   
-     * FIXME the filter for accepted names will be form element, thus this widget 
-     * should be generated via form api!
+     * FIXME the filter for accepted names will be a form element, thus this widget 
+     * should be generated via form api preferably as block
      */
     //$out  = theme('cdm_dataportal_widget_filter_accepted', $onlyAccepted);
     //$out .= theme('cdm_dataportal_widget_names_list', $names, $page);
