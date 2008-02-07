@@ -349,7 +349,7 @@ function cdm_ws_get_taxon_url($uuid){
  * Enter description here...
  *
  * @param String $taxon_uuid UUID of the requested Taxon
- * @return unknown
+ * @return a TaxonTO objetct
  */
 function cdm_ws_get_taxon($taxon_uuid){
    $url = cdm_ws_get_taxon_url($taxon_uuid);
@@ -357,12 +357,12 @@ function cdm_ws_get_taxon($taxon_uuid){
 }
 
 // -------- get_typedesignation
-function cdm_ws_get_typedesignation_url($name_uuid){
+function cdm_ws_get_typedesignations_url($name_uuid){
   return cdm_compose_url('type', array('uuid'=>$name_uuid));
 }
 
-function cdm_ws_get_typedesignation($name_uuid){
-  $url = cdm_ws_get_typedesignation_url($name_uuid);
+function cdm_ws_get_typedesignations($name_uuid){
+  $url = cdm_ws_get_typedesignations_url($name_uuid);
   return cdm_ws_load($url);
 }
 

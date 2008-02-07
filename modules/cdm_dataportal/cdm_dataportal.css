@@ -1,0 +1,34 @@
+@CHARSET "ISO-8859-1";
+
+
+.taxonname .name{
+  font-style: italic;
+}
+
+.heterotypicSynonymyGroup li{
+  margin-left: 26px;
+}
+
+li.firstentry{
+  margin-left: 6px;
+}
+
+
+ul.cdm_names, ul.cdm_names li{
+	 background-image: none;
+}
+
+ul li.dynabox{
+  background-image: url('images/btn_expand.gif');
+  cursor: pointer;
+}
+
+ul li.dynabox_expanded{
+  background-image: url('images/btn_collapse.gif');
+  cursor: pointer;
+}
+
+
+ul li.dynabox .label{
+ cursor: default;
+}

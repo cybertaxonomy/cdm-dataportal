@@ -91,6 +91,7 @@ function cdm_dataportal_menu($may_cache) {
       );
 	    
   }
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
   return $items;
 }
 
@@ -217,12 +218,12 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
  */
 function cdm_dataportal_view_taxon($uuid){
  
-  $taxon = cdm_ws_get_taxon($uuid);
+  $taxonTO = cdm_ws_get_taxon($uuid);
   
-  drupal_set_title(theme('cdm_taxon', $taxon, true));
+  drupal_set_title(theme('cdm_taxon', $taxonTO, true));
   //TODO retrieve complete synonymy and other data 
   
-  $out = ''; 
+  $out = theme('cdm_taxon_page', $taxonTO); 
   return $out;
 
 }

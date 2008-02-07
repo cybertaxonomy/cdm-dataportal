@@ -125,6 +125,26 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
 	return $out;
 }
 
+function theme_cdm_related_taxon($taxonSTO, $relationtype = ''){
+  
+  $relsign = '';
+  switch ($relationtype){
+    case 'homotypic': 
+      $relsign = '≡';
+      break;
+    case 'missaplied': 
+    case 'invalid_designation':
+      $relsign = '-';
+      break;
+    default : 
+      $relsign = '=';
+  }
+  
+  $out = '<span class="relation_sign">'.$relsign.'</span>'.theme('cdm_taxon',$taxonSTO);
+  return $out;
+  
+}
+
 function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
   $out .= '<li class="dynabox"><span class="label">'.$label.'</span>';
@@ -188,6 +208,48 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
   }
   return $out;  
 }
+
+function theme_cdm_taxon_page($taxonTO){
+  $out = '';
+  
+  //$out .= theme('cdm_typedesignations', $typedesignations);
+  
+  $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms);
+  
+  foreach($taxonTO->heterotypicSynonymyGroups as $hs_group){
+    $out .= theme('cdm_heterotypicSynonymyGroup', $hs_group);
+    //$typedesignations = cdm_ws_get_typedesignations($hs_group[0]->name->uuid);
+    //$out .= theme('cdm_typedesignations', );
+  }
+  
+  //$out .= theme('cdm_taxonRelations', $taxonTO);
+  
+  return $out;
+}
+
+function theme_cdm_homotypicSynonyms($synonymRelationshipTOs){
+  $out = '';
+  foreach($synonymRelationshipTOs as $synonym){
+    $out .= '<li><span class="synonym"'.theme('cdm_related_taxon', $synonym->synoynm, 'homotypic').'</li>';
+  }
+  $out = '<ul class="homotypicSynonyms">'.$out.'</ul>';
+  return $out;
+}
+
+function theme_cdm_heterotypicSynonymyGroup($homotypicGroupTO){
+  $out = '';
+  foreach($homotypicGroupTO->taxa as $taxonSTO){
+    if(!$out){
+      // is first list entry
+      $out .= '<li class="firstentry"><span class="synonym"'.theme('cdm_related_taxon',$taxonSTO, 'heterotypic').'</li>';
+    } else {
+      $out .= '<li><span class="synonym"'.theme('cdm_related_taxon',$taxonSTO, 'homotypic').'</li>';
+    }
+  }
+  $out = '<ul class="heterotypicSynonymyGroup">'.$out.'</ul>';
+  return $out;
+}
+
 
 //TODO: port everything below
 
