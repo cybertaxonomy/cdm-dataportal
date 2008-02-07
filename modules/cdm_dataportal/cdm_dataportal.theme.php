@@ -125,15 +125,15 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
 	return $out;
 }
 
-function theme_cdm_related_taxon($taxonSTO, $relationtype = ''){
+function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = ''){
   
   $relsign = '';
-  switch ($relationtype){
-    case 'homotypic': 
+  switch ($reltype_uuid){
+    case UUID_HOMOTYPIC_SYNONYM_OF: 
       $relsign = '≡';
       break;
-    case 'missaplied': 
-    case 'invalid_designation':
+    case UUID_MISAPPLIED_NAME_FOR: 
+    case UUID_INVALID_DESIGNATION_FOR:
       $relsign = '-';
       break;
     default : 
@@ -230,7 +230,7 @@ function theme_cdm_taxon_page($taxonTO){
 function theme_cdm_homotypicSynonyms($synonymRelationshipTOs){
   $out = '';
   foreach($synonymRelationshipTOs as $synonym){
-    $out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym->synoynm, 'homotypic').'</li>';
+    $out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym->synoynm, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
   }
   $out = '<ul class="homotypicSynonyms">'.$out.'</ul>';
   return $out;
@@ -241,23 +241,47 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicGroupTO){
   foreach($homotypicGroupTO->taxa as $taxonSTO){
     if(!$out){
       // is first list entry
-      $out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$taxonSTO, 'heterotypic').'</li>';
+      $out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$taxonSTO, UUID_HETEROTYPIC_SYNONYM_OF).'</li>';
     } else {
-      $out .= '<li class="synonym">'.theme('cdm_related_taxon',$taxonSTO, 'homotypic').'</li>';
+      $out .= '<li class="synonym">'.theme('cdm_related_taxon',$taxonSTO, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
     }
   }
   $out = '<ul class="heterotypicSynonymyGroup">'.$out.'</ul>';
   return $out;
 }
 
+/**
+ * renders misapplied names and invalid designations. 
+ * Both relation types are currently treated the same!
+ *
+ * @param unknown_type $TaxonRelationshipTOs
+ * @return unknown
+ */
 function theme_cdm_taxonRelations($TaxonRelationshipTOs){
-
-  $TaxonRelationshipTOs
-  $out = '';
+  
+  // aggregate misapplied named having the same fullname:
+  $misapplied = array();
   foreach($TaxonRelationshipTOs as $taxonRelation){
-    $out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym->synoynm, 'homotypic').'</li>';
+    if($taxonRelation->typeuuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->typeuuid == UUID_INVALID_DESIGNATION_FOR ){
+      
+      $sensu_reference = cdm_ws_get_reference($taxonRelation->taxon->sec_uuid);
+      //FIXME does the fullname for misapplied names contain the scientific name without authors?
+      $name = $taxonRelation->taxon->name->fullname;
+      
+      if(!exists($misapplied[$name])){
+        $misapplied[$name] = '<span class="misapplied">"'.$name.'"<span>&nbsp;'
+        .'<span class="sensu">sensu '.$sensu_reference->fullcitation.'</span>';
+      } else {
+        $misapplied[$name] .= ',&nbsp;<span class="sensu">sensu '.$sensu_reference->fullcitation.'</span>';
+      }
+    }
   }
-  $out = '<ul class="homotypicSynonyms">'.$out.'</ul>';
+  // generate output
+  $out = '<ul class="misapplied">';
+  foreach($misapplied as $misapplied_name){
+    $out .= '<li class="synonym">'.$misapplied_name.'</li>';
+  }
+  $out .= '</ul>';
   return $out;
 }
 
