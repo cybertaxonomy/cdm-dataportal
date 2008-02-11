@@ -125,9 +125,11 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
 	return $out;
 }
 
-function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = ''){
+function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef = true){
   
   $relsign = '';
+  $name_prefix = '';
+  $name_postfix = '';
   switch ($reltype_uuid){
     case UUID_HOMOTYPIC_SYNONYM_OF: 
       $relsign = '≡';
@@ -135,12 +137,14 @@ function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = ''){
     case UUID_MISAPPLIED_NAME_FOR: 
     case UUID_INVALID_DESIGNATION_FOR:
       $relsign = '-';
+      $name_prefix = '"';
+      $name_postfix = '"';
       break;
     default : 
       $relsign = '=';
   }
   
-  $out = '<span class="relation_sign">'.$relsign.'</span>'.theme('cdm_taxon',$taxonSTO);
+  $out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix.theme('cdm_taxon',$taxonSTO, $displayNomRef).$name_postfix;
   return $out;
   
 }
@@ -171,7 +175,19 @@ function theme_cdm_dataportal_names_list($taxonSTOs){
 
 
 function theme_cdm_fullreference($referenceTO){
-  return $referenceTO->citation.' : '.$referenceTO->microReference;
+  $out = $referenceTO->authorship;
+  
+  if($referenceTO->citation){
+    $out .= ' '.$referenceTO->citation;
+  }
+  if($referenceTO->microReference){
+    $out .= ' : '.$referenceTO->microReference;
+  }
+  if($referenceTO->year){
+    $out .= '. '.$referenceTO->year;
+  }
+  
+  return $out;
 }
 
 /**
@@ -262,17 +278,15 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   // aggregate misapplied named having the same fullname:
   $misapplied = array();
   foreach($TaxonRelationshipTOs as $taxonRelation){
-    if($taxonRelation->typeuuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->typeuuid == UUID_INVALID_DESIGNATION_FOR ){
+    if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
       
-      $sensu_reference = cdm_ws_get_reference($taxonRelation->taxon->sec_uuid);
-      //FIXME does the fullname for misapplied names contain the scientific name without authors?
-      $name = $taxonRelation->taxon->name->fullname;
-      
-      if(!exists($misapplied[$name])){
-        $misapplied[$name] = '<span class="misapplied">"'.$name.'"<span>&nbsp;'
-        .'<span class="sensu">sensu '.$sensu_reference->fullcitation.'</span>';
+      $sensu_reference = cdm_ws_get_reference($taxonRelation->sec_uuid);
+      $name = $taxonRelation->name->fullname;
+      if(!isset($misapplied[$name])){
+        $misapplied[$name] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation, UUID_MISAPPLIED_NAME_FOR, false).'<span>&nbsp;'
+        .'<span class="sensu">sensu '.theme('cdm_fullreference',$sensu_reference ).'</span>';
       } else {
-        $misapplied[$name] .= ',&nbsp;<span class="sensu">sensu '.$sensu_reference->fullcitation.'</span>';
+        $misapplied[$name] .= ';&nbsp;<span class="sensu">sensu '.theme('cdm_fullreference',$sensu_reference ).'</span>';
       }
     }
   }
