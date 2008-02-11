@@ -3,7 +3,7 @@
  * eu.etaxonomy.cdm.remote.dto.TaxonTO
  *
  */
-{
+ {
   "root":{
     "uuid":"5000001-stub",
     "name":{
@@ -41,7 +41,7 @@
           "uuid":"5000021-stub",
           "name":{
             "uuid":"90000021-stub",
-            "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+            "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
             "taggedName":[
               {
                 "tag":"name",
@@ -81,7 +81,7 @@
           "uuid":"5000021-stub",
           "name":{
             "uuid":"90000021-stub",
-            "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+            "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
             "taggedName":[
               {
                 "tag":"name",
@@ -124,7 +124,7 @@
             "uuid":"5000021-stub",
             "name":{
               "uuid":"90000021-stub",
-              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
               "taggedName":[
                 {
                   "tag":"name",
@@ -157,7 +157,7 @@
             "uuid":"5000021-stub",
             "name":{
               "uuid":"90000021-stub",
-              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
               "taggedName":[
                 {
                   "tag":"name",
@@ -190,7 +190,7 @@
             "uuid":"5000021-stub",
             "name":{
               "uuid":"90000021-stub",
-              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
               "taggedName":[
                 {
                   "tag":"name",
@@ -227,7 +227,7 @@
             "uuid":"5000021-stub",
             "name":{
               "uuid":"90000021-stub",
-              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
               "taggedName":[
                 {
                   "tag":"name",
@@ -260,7 +260,7 @@
             "uuid":"5000021-stub",
             "name":{
               "uuid":"90000021-stub",
-              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
               "taggedName":[
                 {
                   "tag":"name",
@@ -293,7 +293,7 @@
             "uuid":"5000021-stub",
             "name":{
               "uuid":"90000021-stub",
-              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
               "taggedName":[
                 {
                   "tag":"name",
@@ -330,7 +330,7 @@
             "uuid":"5000021-stub",
             "name":{
               "uuid":"90000021-stub",
-              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
               "taggedName":[
                 {
                   "tag":"name",
@@ -363,7 +363,7 @@
             "uuid":"5000021-stub",
             "name":{
               "uuid":"90000021-stub",
-              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
               "taggedName":[
                 {
                   "tag":"name",
@@ -396,7 +396,7 @@
             "uuid":"5000021-stub",
             "name":{
               "uuid":"90000021-stub",
-              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+              "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
               "taggedName":[
                 {
                   "tag":"name",
@@ -433,7 +433,7 @@
         "uuid":"5000021-stub",
         "name":{
           "uuid":"90000021-stub",
-          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
           "taggedName":[
             {
               "tag":"name",
@@ -466,7 +466,7 @@
         "uuid":"5000021-stub",
         "name":{
           "uuid":"90000021-stub",
-          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
           "taggedName":[
             {
               "tag":"name",
@@ -499,7 +499,7 @@
         "uuid":"5000021-stub",
         "name":{
           "uuid":"90000021-stub",
-          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
           "taggedName":[
             {
               "tag":"name",
@@ -532,7 +532,7 @@
         "uuid":"5000021-stub",
         "name":{
           "uuid":"90000021-stub",
-          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
           "taggedName":[
             {
               "tag":"name",
@@ -566,4 +566,5 @@
     "isAccepted":true
   }
 }
+ 
  
