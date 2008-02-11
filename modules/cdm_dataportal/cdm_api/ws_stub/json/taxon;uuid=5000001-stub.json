@@ -41,15 +41,15 @@
           "uuid":"5000021-stub",
           "name":{
             "uuid":"90000021-stub",
-            "fullname":"Andryala integrifolia L.",
+            "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
             "taggedName":[
               {
                 "tag":"name",
-                "text":"Andryala integrifolia"
+                "text":"Harpocarpus amplexifolius"
               },
               {
                 "tag":"authors",
-                "text":"L."
+                "text":"(Kar. & Kir.) Walp."
               }
             ],
             "nomenclaturalReference":{
@@ -532,17 +532,17 @@
         "uuid":"5000021-stub",
         "name":{
           "uuid":"90000021-stub",
-          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp.",
-          "taggedName":[
-            {
-              "tag":"name",
-              "text":"Harpocarpus amplexifolius"
-            },
-            {
-              "tag":"authors",
-              "text":"(Kar. & Kir.) Walp."
-            }
-          ],
+          "fullname":"Andryala integrifolia L.",
+            "taggedName":[
+              {
+                "tag":"name",
+                "text":"Andryala integrifolia"
+              },
+              {
+                "tag":"authors",
+                "text":"L."
+              }
+            ],
           "nomenclaturalReference":{
             "uuid":"70000003-stub",
             "citation":"Repert. Bot. Syst. 2: 666. 1843",
