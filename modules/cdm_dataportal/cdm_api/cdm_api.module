@@ -372,7 +372,7 @@ function cdm_ws_get_reference_url($uuid){
  * @return unknown
  */
 function cdm_ws_get_reference($uuid){
-   $url = cdm_ws_get_reference_url('reference', array('uuid'=>$uuid));
+   $url = cdm_ws_get_reference_url($uuid);
    $obj = cdm_ws_load($url);
    return $obj;
 }
