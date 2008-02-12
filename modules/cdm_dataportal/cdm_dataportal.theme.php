@@ -228,14 +228,11 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
 function theme_cdm_taxon_page($taxonTO){
   $out = '';
   
-  $out .= theme('cdm_typedesignations', $taxonTO->typeDesignations);
   
-  $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms);
+  $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms, $taxonTO->typeDesignations, $taxonTO->nameTypeDesignations);
   
   foreach($taxonTO->heterotypicSynonymyGroups as $hs_group){
     $out .= theme('cdm_heterotypicSynonymyGroup', $hs_group);
-    //$typedesignations = cdm_ws_get_typedesignations($hs_group[0]->name->uuid);
-    //$out .= theme('cdm_typedesignations', );
   }
   
   $out .= theme('cdm_taxonRelations', $taxonTO->taxonRelations);
@@ -243,26 +240,43 @@ function theme_cdm_taxon_page($taxonTO){
   return $out;
 }
 
-function theme_cdm_homotypicSynonyms($synonymRelationshipTOs){
+function theme_cdm_homotypicSynonyms($synonymRelationshipTOs, $specimenTypeDesignations = false, $nameTypeDesignations = false){
+  
   $out = '';
+  $out = '<ul class="homotypicSynonyms">';
+  
   foreach($synonymRelationshipTOs as $synonym){
     $out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym->synoynm, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
   }
-  $out = '<ul class="homotypicSynonyms">'.$out.'</ul>';
+  if($specimenTypeDesignations){
+    $out .= theme('cdm_typedesignations', $specimenTypeDesignations, $nameTypeDesignations);
+  }
+  
+  $out .= '</ul>';
   return $out;
 }
 
 function theme_cdm_heterotypicSynonymyGroup($homotypicGroupTO){
-  $out = '';
+  $out = '';  
+  $out = '<ul class="heterotypicSynonymyGroup">';
+  
+  $is_first_entry = true;
   foreach($homotypicGroupTO->taxa as $taxonSTO){
-    if(!$out){
+    if($is_first_entry){
+      $is_first_entry = false;
       // is first list entry
       $out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$taxonSTO, UUID_HETEROTYPIC_SYNONYM_OF).'</li>';
     } else {
       $out .= '<li class="synonym">'.theme('cdm_related_taxon',$taxonSTO, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
     }
   }
-  $out = '<ul class="heterotypicSynonymyGroup">'.$out.'</ul>';
+  
+  if(isset($homotypicGroupTO->typeDesignations)){
+    $out .= theme('cdm_typedesignations', $homotypicGroupTO->typeDesignations);
+  }
+  
+  $out .= '</ul>';
+  
   return $out;
 }
 
@@ -299,6 +313,26 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   return $out;
 }
 
+
+function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignations = array()){
+  
+  $out = '<ul class="typeDesignations">';
+
+  foreach($nameTypeDesignations as $ntd){
+    $out .= '<li class="nameTypeDesignation"><span class="status">'.$ntd->status->value.'</span> - '.theme('cdm_name', $ntd->typeSpecies, false);
+    $out .= theme('cdm_typedesignations', $ntd->typeSpecimens);
+    $out .= '</li>';
+  }    
+  
+  foreach($specimenTypeDesignations as $std){
+    $out .= '<li class="specimenTypeDesignation"><span class="status">'.$std->status->value.'</span> - '.$std->typeSpecimen->specimenLabel;
+    $out .= '</li>';
+  }
+  
+  $out .= '</ul>';
+  
+  return $out;
+}
 
 //TODO: port everything below
 

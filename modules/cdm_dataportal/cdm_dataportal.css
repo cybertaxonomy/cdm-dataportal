@@ -13,6 +13,21 @@
   margin-left: 26px;
 }
 
+ul.homotypicSynonyms, ul.heterotypicSynonymyGroup{
+	 border-bottom: 1px solid #D4EBF9;
+}
+
+
+ul.typeDesignations{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+ul.typeDesignations li{
+	background-image: none;
+}
+
+
 .misapplied .name{
  font-style: normal;
 }
