@@ -1,8 +1,3 @@
-/**
- * partial serialisation of
- * eu.etaxonomy.cdm.remote.dto.TaxonTO
- *
- */
 {
   "root":{
     "uuid":"5000001-stub",
@@ -36,6 +31,7 @@
       "rank":null
     },
     "typeDesignations":{
+      "referencedByUuid":"void-stub",
       "status":{
         "uuid":"f3b60bdb-4638-4ca9-a0c7-36e77d8459bb",
         "value":"syntype"
@@ -54,6 +50,59 @@
         ]
       }
     },
+    "nameTypeDesignations":[
+      {
+        "typeSpecies":{
+          "uuid":"90000021-stub",
+          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
+          "taggedName":[
+            {
+              "tag":"name",
+              "text":"Harpocarpus amplexifolius"
+            },
+            {
+              "tag":"authors",
+              "text":"(Kar. & Kir.) Walp."
+            }
+          ],
+          "nomenclaturalReference":{
+            "uuid":"70000003-stub",
+            "citation":"Repert. Bot. Syst. 2: 666. 1843",
+            "media_uri":[
+              {
+                "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
+                "uuid":"void-stub"
+              },
+              {
+                "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
+                "uuid":"void-stub"
+              }
+            ]
+          }
+        },
+        "status":{
+          "value":"Isolectotype",
+          "uuid":"7a1a8a53-78f4-4fc0-89f7-782e94992d08"
+        },
+        "isRejectedType":"false",
+        "isConservedType":"false",
+        "typeSpecimens":[
+          {
+            "specimenLabel":"[Tajikistan] \"In Turkestaniae valle fluvii Sarawschan ad lacum Iskander\", O. Fedtschenko",
+            "media_uri":[
+              {
+                "value":"http://ww2.bgbm.org/herbarium/view_large.cfm?SpecimenPK=1191&idThumb=179583&SpecimenSequenz=1&loan=0",
+                "uuid":"void-stub"
+              },
+              {
+                "value":"http://ww2.bgbm.org/herbarium/view_large.cfm?SpecimenPK=1192&idThumb=179591&SpecimenSequenz=1&loan=0",
+                "uuid":"void-stub"
+              }
+            ]
+          }
+        ]
+      }
+    ],
     "homotypicSynonyms":[
       {
         "synoynm":{
@@ -585,4 +634,3 @@
     "isAccepted":true
   }
 }
- 
