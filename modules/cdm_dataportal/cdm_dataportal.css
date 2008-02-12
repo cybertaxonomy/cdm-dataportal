@@ -6,7 +6,12 @@
 }
 
 .relation_sign{
+	margin-left: -1em; /* same as ul.typeDesignations */
 	margin-right: 0.3em;
+	float: left;
+}
+
+li .taxon{
 }
 
 .heterotypicSynonymyGroup li{
@@ -15,12 +20,15 @@
 
 ul.homotypicSynonyms, ul.heterotypicSynonymyGroup{
 	 border-bottom: 1px solid #D4EBF9;
+	 
 }
+
 
 
 ul.typeDesignations{
   margin-top: 0px;
   margin-bottom: 0px;
+  margin-left: -1em; /* same as .relation_sign */
 }
 
 ul.typeDesignations li{

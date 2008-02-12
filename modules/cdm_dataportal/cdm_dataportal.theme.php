@@ -36,8 +36,9 @@ function tagNameParts($name, $numOfNameTokens){
  * @param NameTO $nameTO the taxon name
  */
 function theme_cdm_name($nameTO, $displayNomRef = true){
-    //TODO: how to take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
-    $class = ($nameTO->sec_uuid ? 'taxon' : 'taxonname');  
+  
+    //TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
+    $class = 'name'; //($nameTO->sec_uuid ? 'taxon' : 'taxonname');  
   
     if($nameTO){
       if(!$nameTO->taggedName || !count($nameTO->taggedName)){
@@ -94,7 +95,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
 	  //TODO:   .$ptaxon->namePhrase; 
 	  
     if($enclosingTag){
-        $out = '<'.$enclosingTag.' class="name'.($taxonTO->isAccepted ? ' accepted':'').'">'.$out.'</'.$enclosingTag.'>';
+        $out = '<'.$enclosingTag.' class="taxon'.($taxonTO->isAccepted === true ? ' accepted':'').'">'.$out.'</'.$enclosingTag.'>';
     }
 
     return $out;    
@@ -136,7 +137,7 @@ function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef =
       break;
     case UUID_MISAPPLIED_NAME_FOR: 
     case UUID_INVALID_DESIGNATION_FOR:
-      $relsign = '-';
+      $relsign = '&ndash;'; // &ndash; &mdash; &minus;
       $name_prefix = '"';
       $name_postfix = '"';
       break;
