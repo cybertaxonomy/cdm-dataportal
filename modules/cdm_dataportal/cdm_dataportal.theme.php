@@ -228,7 +228,7 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
 function theme_cdm_taxon_page($taxonTO){
   $out = '';
   
-  $out .= theme('cdm_typedesignations', $taxonTO->);
+  $out .= theme('cdm_typedesignations', $taxonTO->typeDesignations);
   
   $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms);
   
