@@ -30,26 +30,28 @@
       },
       "rank":null
     },
-    "typeDesignations":{
-      "referencedByUuid":"void-stub",
-      "status":{
-        "uuid":"f3b60bdb-4638-4ca9-a0c7-36e77d8459bb",
-        "value":"syntype"
-      },
-      "typeSpecimen":{
-        "specimenLabel":"[Tajikistan] \"In Turkestaniae valle fluvii Sarawschan ad lacum Iskander\", O. Fedtschenko",
-        "media_uri":[
-          {
-            "value":"http://ww2.bgbm.org/herbarium/view_large.cfm?SpecimenPK=1191&idThumb=179583&SpecimenSequenz=1&loan=0",
-            "uuid":"void-stub"
-          },
-          {
-            "value":"http://ww2.bgbm.org/herbarium/view_large.cfm?SpecimenPK=1192&idThumb=179591&SpecimenSequenz=1&loan=0",
-            "uuid":"void-stub"
-          }
-        ]
+    "typeDesignations":[
+      {
+        "referencedByUuid":"void-stub",
+        "status":{
+          "uuid":"f3b60bdb-4638-4ca9-a0c7-36e77d8459bb",
+          "value":"syntype"
+        },
+        "typeSpecimen":{
+          "specimenLabel":"[Tajikistan] \"In Turkestaniae valle fluvii Sarawschan ad lacum Iskander\", O. Fedtschenko",
+          "media_uri":[
+            {
+              "value":"http://ww2.bgbm.org/herbarium/view_large.cfm?SpecimenPK=1191&idThumb=179583&SpecimenSequenz=1&loan=0",
+              "uuid":"void-stub"
+            },
+            {
+              "value":"http://ww2.bgbm.org/herbarium/view_large.cfm?SpecimenPK=1192&idThumb=179591&SpecimenSequenz=1&loan=0",
+              "uuid":"void-stub"
+            }
+          ]
+        }
       }
-    },
+    ],
     "nameTypeDesignations":[
       {
         "typeSpecies":{
