@@ -234,6 +234,31 @@ function cdm_api_menu($may_cache) {
   return $items;
 }
 
+
+/**
+ * Implementation of hook_requirements()
+ */
+function cdm_api_requirements() {
+
+  $requirements['cdm_api'] = array(
+    'title' => t('CDM API')
+  );
+
+  if( function_exists('curl_init') ){
+    $requirements['cdm_api']['description'] = ''; // description below title is not jet in use 
+    $requirements['cdm_api']['value'] =  'CURL php extension is available.';
+  } else {
+    $requirements['cdm_api']['value'] =  'CURL php extension is missing.';
+  }
+ 
+  //FIXME: once _get_content_fsockopen is implemented change  severity to  REQUIREMENT_WARNING,
+  $requirements['cdm_api']['severity'] =  (function_exists('curl_init') ? REQUIREMENT_OK : REQUIREMENT_ERROR);
+  
+  return $requirements;
+}
+
+
+
 function proxy_content($url, $theme = null){
   $data = get_content(urldecode($url));
   

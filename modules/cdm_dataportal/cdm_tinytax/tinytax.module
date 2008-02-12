@@ -149,7 +149,6 @@ function tinytax_js_cdm($taxon_uuid) {
   // This function handles the URLs "tinytax/getcdm/{uuid} ..."
   $parents = cdm_ws('get_treenode_parents', $taxon_uuid);
   $children = cdm_ws('get_treenode_children', $taxon_uuid);
-  watchdog("CDM", 'tinytax_js_cdm : $parents is '.print_r($parents, true), WATCHDOG_ERROR);
   // Now we build the HTML, and output it.
   print drupal_to_js(array('html' => theme('tinytax_term_list', $parents, $children, 'cdm')));
   exit();
@@ -233,7 +232,6 @@ function _tinytax_view_cdmblock(){
     }
   }
   
-  watchdog("CDM", 'tinytax_js_cdm : $parents is '.print_r($parents, true), WATCHDOG_ERROR);
   $block['content'] = theme('tinytax_term_list',$parents, $children, 'cdm');
   //$block['content'] = 'UNDER CONSTRUCION'; 
   // Load the Javascript and CSS
