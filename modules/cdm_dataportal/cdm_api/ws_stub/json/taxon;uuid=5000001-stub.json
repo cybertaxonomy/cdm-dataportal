@@ -3,7 +3,7 @@
  * eu.etaxonomy.cdm.remote.dto.TaxonTO
  *
  */
- {
+{
   "root":{
     "uuid":"5000001-stub",
     "name":{
@@ -34,6 +34,25 @@
         ]
       },
       "rank":null
+    },
+    "typeDesignations":{
+      "status":{
+        "uuid":"f3b60bdb-4638-4ca9-a0c7-36e77d8459bb",
+        "value":"syntype"
+      },
+      "typeSpecimen":{
+        "specimenLabel":"[Tajikistan] \"In Turkestaniae valle fluvii Sarawschan ad lacum Iskander\", O. Fedtschenko",
+        "media_uri":[
+          {
+            "value":"http://ww2.bgbm.org/herbarium/view_large.cfm?SpecimenPK=1191&idThumb=179583&SpecimenSequenz=1&loan=0",
+            "uuid":"void-stub"
+          },
+          {
+            "value":"http://ww2.bgbm.org/herbarium/view_large.cfm?SpecimenPK=1192&idThumb=179591&SpecimenSequenz=1&loan=0",
+            "uuid":"void-stub"
+          }
+        ]
+      }
     },
     "homotypicSynonyms":[
       {
@@ -533,16 +552,16 @@
         "name":{
           "uuid":"90000021-stub",
           "fullname":"Andryala integrifolia L.",
-            "taggedName":[
-              {
-                "tag":"name",
-                "text":"Andryala integrifolia"
-              },
-              {
-                "tag":"authors",
-                "text":"L."
-              }
-            ],
+          "taggedName":[
+            {
+              "tag":"name",
+              "text":"Andryala integrifolia"
+            },
+            {
+              "tag":"authors",
+              "text":"L."
+            }
+          ],
           "nomenclaturalReference":{
             "uuid":"70000003-stub",
             "citation":"Repert. Bot. Syst. 2: 666. 1843",
@@ -566,5 +585,4 @@
     "isAccepted":true
   }
 }
- 
  
