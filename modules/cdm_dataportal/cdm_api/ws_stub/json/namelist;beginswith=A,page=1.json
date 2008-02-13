@@ -23,7 +23,7 @@
           }
         ]
       },
-      "sec_uuid":"1001-stub",
+      "secUuid":"1001-stub",
       "isAccepted":true
     },
     {
@@ -42,7 +42,7 @@
           }
         ]
       },
-      "sec_uuid":"1001-stub",
+      "secUuid":"1001-stub",
       "isAccepted":true
     },
     {
@@ -61,7 +61,7 @@
           }
         ]
       },
-      "sec_uuid":"1002-stub",
+      "secUuid":"1002-stub",
       "isAccepted":true
     },
     {
@@ -80,7 +80,7 @@
           }
         ]
       },
-      "sec_uuid":"1002-stub",
+      "secUuid":"1002-stub",
       "isAccepted":false
     },
     {
@@ -99,7 +99,7 @@
           }
         ]
       },
-      "sec_uuid":"1002-stub",
+      "secUuid":"1002-stub",
       "isAccepted":true
     },
     {
@@ -118,7 +118,7 @@
           }
         ]
       },
-      "sec_uuid":"1002-stub",
+      "secUuid":"1002-stub",
       "isAccepted":false
     }
   ]

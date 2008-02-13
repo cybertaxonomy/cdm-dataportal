@@ -38,7 +38,7 @@ function tagNameParts($name, $numOfNameTokens){
 function theme_cdm_name($nameTO, $displayNomRef = true){
   
     //TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
-    $class = 'name'; //($nameTO->sec_uuid ? 'taxon' : 'taxonname');  
+    $class = 'name'; //($nameTO->secUuid ? 'taxon' : 'taxonname');  
   
     if($nameTO){
       if(!$nameTO->taggedName || !count($nameTO->taggedName)){
@@ -82,7 +82,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
     
     $refSecundum = false;
     if(!$noSecundum){  
-      $ref_sec = cdm_ws_get_reference($taxonTO->sec_uuid);
+      $ref_sec = cdm_ws_get_reference($taxonTO->secUuid);
       if($ref_sec){
         $refSecundum = str_trunk($ref_sec->fullcitation, 40, '...');
       }
@@ -214,11 +214,11 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
   drupal_add_js($module_path.'/js/jquery_lightbox/js/jlightbox.uncompressed.js');
   drupal_add_css($module_path.'/js/jquery_lightbox/css/jlightbox.css', 'module', 'screen');
   
-  if( count($referenceSTO->media_uri) > 0 ){
+  if( count($referenceSTO->mediaURI) > 0 ){
     $attributes = array('rel'=>'lightbox[protologues]');
-    $out = l($nomref_citation, $referenceSTO->media_uri[0]->value, $attributes, NULL, NULL, TRUE);
-    for($i = 1;  $i < count($referenceSTO->media_uri); $i++) {
-      $out .= l('', $referenceSTO->media_uri[$i]->value, $attributes, NULL, NULL, TRUE);
+    $out = l($nomref_citation, $referenceSTO->mediaURI[0]->value, $attributes, NULL, NULL, TRUE);
+    for($i = 1;  $i < count($referenceSTO->mediaURI); $i++) {
+      $out .= l('', $referenceSTO->mediaURI[$i]->value, $attributes, NULL, NULL, TRUE);
     }
   } else {
     $out =  $nomref_citation;
@@ -295,7 +295,7 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   foreach($TaxonRelationshipTOs as $taxonRelation){
     if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
       
-      $sensu_reference = cdm_ws_get_reference($taxonRelation->sec_uuid);
+      $sensu_reference = cdm_ws_get_reference($taxonRelation->secUuid);
       $name = $taxonRelation->name->fullname;
       if(!isset($misapplied[$name])){
         $misapplied[$name] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation, UUID_MISAPPLIED_NAME_FOR, false).'<span>&nbsp;'
@@ -327,6 +327,12 @@ function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignat
   
   foreach($specimenTypeDesignations as $std){
     $out .= '<li class="specimenTypeDesignation"><span class="status">'.$std->status->value.'</span> - '.$std->typeSpecimen->specimenLabel;
+    if(is_array($std->typeSpecimen->mediaUri)){
+      $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/copy.gif';
+      foreach($std->typeSpecimen->mediaUri as $uri){
+        $out .= '<a href="'.$uri->value.'" target="'.$uri->uuid.'"><img src="'.$image_url.'" /></a> ';
+      }
+    }
     $out .= '</li>';
   }
   

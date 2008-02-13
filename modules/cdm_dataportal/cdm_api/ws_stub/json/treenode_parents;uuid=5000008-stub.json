@@ -22,7 +22,7 @@
             "text":"Lam. & DC."
           }
         ],
-      "sec_uuid":"1001-stub",
+      "secUuid":"1001-stub",
       "isAccepted":true,
       "hasChildren":2,
         "alternativeConceptRefs":[]
@@ -40,7 +40,7 @@
               "text":"Kar. & Kir."
             }
           ],
-        "sec_uuid":"1001-stub",
+        "secUuid":"1001-stub",
         "isAccepted":true,
         "hasChildren":2,
         "alternativeConceptRefs":[]

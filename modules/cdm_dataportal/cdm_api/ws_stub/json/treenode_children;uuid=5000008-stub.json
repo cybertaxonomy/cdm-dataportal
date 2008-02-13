@@ -23,7 +23,7 @@
             "text":"Kar. & Kir."
           }
         ],
-      "sec_uuid":"1001-stub",
+      "secUuid":"1001-stub",
       "isAccepted":true
       "hasChildren":0,
       "alternativeConceptRefs":[
@@ -45,7 +45,7 @@
             "text":"Vassilcz."
           }
         ],
-      "sec_uuid":"1001-stub",
+      "secUuid":"1001-stub",
       "isAccepted":true,
       "hasChildren":0,
       "alternativeConceptRefs":[]

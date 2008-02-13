@@ -19,7 +19,7 @@
         "nomenclaturalReference": {
           "uuid":"70000001-stub",
           "citation":"in Bull. Soc. Imp. Naturalistes Moscou 15: 128. 1842",
-          "media_uri":[
+          "mediaURI":[
             {
               "value":"http:\/\/www.terrarium.com.pl\/galeria\/foto\/17271.jpg",
               "uuid":"void-stub"
@@ -31,7 +31,7 @@
           ]
         }
       },
-      "sec_uuid":"1001-stub",
+      "secUuid":"1001-stub",
       "isAccepted":true
   }
 }
