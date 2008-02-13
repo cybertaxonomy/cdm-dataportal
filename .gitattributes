@@ -46,6 +46,7 @@ modules/cdm_dataportal/cdm_tinytax/tinytax.js -text
 modules/cdm_dataportal/cdm_tinytax/tinytax.module -text
 modules/cdm_dataportal/images/btn_collapse.gif -text
 modules/cdm_dataportal/images/btn_expand.gif -text
+modules/cdm_dataportal/images/external_link.gif -text
 modules/cdm_dataportal/images/loading.gif -text
 modules/cdm_dataportal/images/loading_circle_grey_16.gif -text
 modules/cdm_dataportal/js/cdm_dynabox.js -text

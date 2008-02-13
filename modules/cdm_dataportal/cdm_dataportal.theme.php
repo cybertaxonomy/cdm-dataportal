@@ -327,10 +327,10 @@ function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignat
   
   foreach($specimenTypeDesignations as $std){
     $out .= '<li class="specimenTypeDesignation"><span class="status">'.$std->status->value.'</span> - '.$std->typeSpecimen->specimenLabel;
-    if(is_array($std->typeSpecimen->mediaUri)){
-      $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/copy.gif';
-      foreach($std->typeSpecimen->mediaUri as $uri){
-        $out .= '<a href="'.$uri->value.'" target="'.$uri->uuid.'"><img src="'.$image_url.'" /></a> ';
+    if(is_array($std->typeSpecimen->mediaURI)){
+      $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/external_link.gif';
+      foreach($std->typeSpecimen->mediaURI as $uri){
+        $out .= ' <a href="'.$uri->value.'" target="'.$uri->uuid.'"><img src="'.$image_url.'" /></a>';
       }
     }
     $out .= '</li>';
