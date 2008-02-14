@@ -174,9 +174,11 @@ function theme_cdm_dataportal_names_list($taxonSTOs){
   return $out;
 }
 
-function theme_cdm_dataportal_credits(){
+function theme_cdm_credits(){
   $secRef_array = _cdm_dataportal_currentSecRef_array();
-  return '<span class="sec_reference_citation">'.$secRef_array['citation'].'</span>';
+  return '<span class="sec_reference_citation">'.$secRef_array['citation'].'</span>'
+  .( $secRef_array['year'] ? ' <span class="year">'.$secRef_array['year'].'</span>' : '')
+  .( $secRef_array['authorship'] ? '<div class="author">'.$secRef_array['authorship'].'</div>' : '');
 }
 
 

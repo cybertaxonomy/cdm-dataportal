@@ -228,7 +228,8 @@ function _tinytax_view_cdmblock(){
       $parents = cdm_ws('get_treenode_parents', $taxon_uuid);
       $children = cdm_ws('get_treenode_children', $taxon_uuid);   
     } else {
-      $parents = cdm_ws('get_treenode_children');
+      $secRef_array = _cdm_dataportal_currentSecRef_array();
+      $parents = cdm_ws('get_treenode_root', $secRef_array['uuid']);   
     }
   }
   
@@ -254,6 +255,9 @@ function theme_tinytax_term_list($parents = array(), $children = array(), $trees
   $return_string = '';
   $theme_sub_funct = '_theme_tinytax_'.$treesource.'_term_list_link';
   // We're not at the root, so display parents
+  if(!$parents){
+    $stop = 1;
+  }
   $parent_keys = array_keys($parents);
   for($i=0;$i<$num_parents;$i++){
     $parent = $parents[$parent_keys[$i]];

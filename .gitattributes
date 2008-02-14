@@ -27,7 +27,6 @@ modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_parents;uuid=5000002-stub.j
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_parents;uuid=5000007-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_parents;uuid=5000008-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_parents;uuid=5000009-stub.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_root.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_root;uuid=1001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/type;uuid=90000001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/type;uuid=90000002-stub.json -text

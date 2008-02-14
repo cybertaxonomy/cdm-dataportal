@@ -151,7 +151,7 @@ function cdm_decode_stub($path){
 function cdm_compose_url($file, $parameters = array()){
   $pstr = '';
   foreach($parameters as $key=>$value){
-    $pstr .= ( strlen($pstr) == 0 ? '?' : '&').$key.'='.urlencode($value);
+    $pstr .= ( strlen($pstr) == 0 ? '?' : '&').$key.'='.( is_string($value) ? urlencode($value) : $value);
   }
   $file .= $pstr;
   
@@ -270,12 +270,24 @@ function proxy_content($url, $theme = null){
 }
 
 function cdm_load_obj($datastr){
-  // if the webservice deilvers XML convert it into json
+  // if the web service delivers XML convert it into json
   if(variable_get('cdm_webservice_type', 'xml') == 'xml'){
     $datastr = xml2json::transformXmlStringToJson($datastr);  
   }
+  // --- using the PEAR json lib --- //
   $json = new Services_JSON();
   $obj = $json->decode($datastr);
+  
+  // --- using the php json lib --- //
+  // since stub files may contain comments
+  //TODO use php json lib
+  /*
+  $datastr = preg_replace('/((?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/.*))/', '', $datastr);
+  $obj = json_decode($datastr);
+  if(!is_object($obj)){
+    watchdog('CDM', 'cdm_load_obj() - error decoding JSON', WATCHDOG_ERROR);
+  }
+  */
   return $obj->root;
 }
 
@@ -468,6 +480,6 @@ function cdm_ws_get_treenode_children_url($taxon_uuid = ''){
   return cdm_compose_url('treenode_children', array('uuid'=>$taxon_uuid));
 }
 
-function cdm_ws_get_treenode_root($secUuid = ''){
+function cdm_ws_get_treenode_root_url($secUuid = ''){
   return cdm_compose_url('treenode_root', array('uuid'=>$secUuid));
 }
