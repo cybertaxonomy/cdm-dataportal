@@ -11,6 +11,7 @@ modules/cdm_dataportal/cdm_api/ws_stub/json/accepted;uuid=5000004-stub.json -tex
 modules/cdm_dataportal/cdm_api/ws_stub/json/accepted;uuid=5000006-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/allSecRefences.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/namelist;beginswith=A,page=1.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/reference;uuid=1001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/reference;uuid=1002-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/reference;uuid=1003-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon;uuid=5000001-stub.json -text
