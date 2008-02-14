@@ -324,10 +324,9 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
  * If the according session variable is not jet set the default
  * as configured in the setting is used.
  *
- * @param TaxonTO $taxonTO
  * @return array
  */
-function _cdm_dataportal_currentSecRef_array($taxonTO){
+function _cdm_dataportal_currentSecRef_array(){
   
   if( !isset($_SESSION['cdm']['currentSecRef'])){
      $secUuid = variable_get('cdm_secUuid_default', false);
