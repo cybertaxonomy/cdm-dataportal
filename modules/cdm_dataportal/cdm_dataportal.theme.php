@@ -160,7 +160,7 @@ function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
 function theme_cdm_dataportal_names_list($taxonSTOs){
   
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
-  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_datportal.css');
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
   
   $out = '<ul class="cdm_names" style="background-image: none;">';
   foreach($taxonSTOs as $taxon){
