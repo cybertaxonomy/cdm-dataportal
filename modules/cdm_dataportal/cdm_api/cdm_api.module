@@ -402,6 +402,17 @@ function cdm_ws_get_reference($uuid){
    return $obj;
 }
 
+
+function cdm_ws_get_allSecRefences_url(){
+   return cdm_compose_url('allSecRefences');
+}
+
+function cdm_ws_get_allSecRefences(){
+   $url = cdm_ws_get_allSecRefences_url();
+    return cdm_ws_load($url);
+}
+
+
 // -------- get_taxon
 
 function cdm_ws_get_taxon_url($uuid){
@@ -452,6 +463,11 @@ function cdm_ws_get_treenode_parents_url($taxon_uuid){
   return cdm_compose_url('treenode_parents', array('uuid'=>$taxon_uuid));
 }
 
+//FIXME $taxon_uuid must not be empty use cdm_ws_get_treenode_root instead
 function cdm_ws_get_treenode_children_url($taxon_uuid = ''){
   return cdm_compose_url('treenode_children', array('uuid'=>$taxon_uuid));
+}
+
+function cdm_ws_get_treenode_root($secUuid = ''){
+  return cdm_compose_url('treenode_root', array('uuid'=>$secUuid));
 }

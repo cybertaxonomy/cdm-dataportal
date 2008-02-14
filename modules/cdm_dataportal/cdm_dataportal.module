@@ -180,6 +180,21 @@ function cdm_dataportal_settings(){
       ),
     '#description'   => t('The response data type of the web service.'),
      );
+     
+     $allSecRefs = cdm_ws_get_allSecRefences();
+     $secUuid_options = array();
+     foreach($allSecRefs as $ref){
+       $secUuid_options[$ref->uuid] =  $ref->citation.($ref->year ? ' ['.$ref->year.']' : '');
+     }
+     $form['cdm_dataportal']['cdm_secUuid_default'] =  array(
+    '#type' => 'select',
+    '#title'         => t('Default Concept Reference'),
+    '#default_value' => variable_get('cdm_secUuid_default', false),
+    '#options' => $secUuid_options,
+    '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
+     );
+     
+     
 
    return system_settings_form($form);
 }
