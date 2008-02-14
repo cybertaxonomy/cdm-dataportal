@@ -174,6 +174,10 @@ function theme_cdm_dataportal_names_list($taxonSTOs){
   return $out;
 }
 
+function theme_cdm_dataportal_credits(){
+     return '<span class="sec_reference_citation">'.$_SESSION['cdm']['currentSecRef']['citation'].'</span>';
+}
+
 
 function theme_cdm_fullreference($referenceTO){
   $out = $referenceTO->authorship;

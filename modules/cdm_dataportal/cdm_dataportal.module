@@ -4,50 +4,50 @@
 /*
  * @file
  * cdm_dataportal
- * 
+ *
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
 require_once('cdm_dataportal.theme.php');
 
-/* ====================== hook implementations ====================== */ 
+/* ====================== hook implementations ====================== */
 
 /**
  * Implementation of hook_help()
- * 
+ *
  * Display help and module information
  * @param section which section of the site we're displaying help
  * @return help text for section
  */
 function cdm_dataportal_help($section='') {
 
-    $out = '';
-    switch ($section) {
-        case "admin/modules#description":
-            $out = t("The dataportal publishes CDM data hosted in a CommunityStore on the web.");
-            break;
-    }
-    return $out;
+  $out = '';
+  switch ($section) {
+    case "admin/modules#description":
+      $out = t("The dataportal publishes CDM data hosted in a CommunityStore on the web.");
+      break;
+  }
+  return $out;
 }
 
 
 /**
  * Implementation of hook_perm()
- * 
+ *
  * Valid permissions for this module
  * @return array An array of valid permissions for the portfolio module
  */
 function cdm_dataportal_perm() {
-    return array(
+  return array(
     	'administer cdm_dataportal',
         'cdm_dataportal view notes',
-        //TODO which else permission are required? -> check the WP6 requirements document
-	);
+  //TODO which else permission are required? -> check the WP6 requirements document
+  );
 }
 
 
@@ -57,7 +57,7 @@ function cdm_dataportal_perm() {
 function cdm_dataportal_menu($may_cache) {
   $items = array();
   if ($may_cache) {
-    
+
     $items[] = array(
       'path' => 'admin/settings/cdm_dataportal',
       'title' => t('CDM Dataportal'),
@@ -67,29 +67,29 @@ function cdm_dataportal_menu($may_cache) {
       'callback arguments' => 'cdm_dataportal_settings',
       'type' => MENU_NORMAL_ITEM,
     );
-    
+
     $items[] = array(
 	    'path' => 'cdm_dataportal/names',
 	    'callback' => 'cdm_dataportal_view_names',
 	    'access' => true,
 	    'type' => MENU_CALLBACK, 
-	    );
-	    // optional callback arguments: page 
-	    
-	$items[] = array(
+    );
+    // optional callback arguments: page
+     
+    $items[] = array(
 	    'path' => 'cdm_dataportal/taxon',
 	    'callback' => 'cdm_dataportal_view_taxon',
 	    'access' => true,
 	    'type' => MENU_CALLBACK, 
-	    // expected callback arguments: name_uuid
-	    );
-	$items[] = array(
+    // expected callback arguments: name_uuid
+    );
+    $items[] = array(
       'path' => 'cdm/xml2json',
       'callback' => 'cdm_view_xml2json',
       'access' => true,
       'type' => MENU_CALLBACK, 
-      );
-	    
+    );
+     
   }
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
   return $items;
@@ -97,7 +97,7 @@ function cdm_dataportal_menu($may_cache) {
 
 /**
  * Implementation of hook_block()
- * 
+ *
  * Provides the following blocks:
  *  0: list of links useful during development
  *
@@ -108,6 +108,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
   // listing of blocks, such as on the admin/block page
   if ($op == "list") {
     $block[0]["info"] = t("CDM DataPortal DevLinks");
+    $block[1]["info"] = t("CDM DataPortal Credits");
     return $block;
   }
   else if ($op == 'view') {
@@ -115,11 +116,17 @@ function cdm_dataportal_block($op='list', $delta=0) {
       case 0:
         $block['subject'] = t('CDM DataPortal DevLinks');
         $block['content'] = '<ul>
-        <li>'.l('A Taxon Page', cdm_dataportal_taxon_path('5000020-stub')).'</li>
-        <li>'.l('Name List - page1 of A', 'cdm_dataportal/names/A/1').'</li>
-        <li>'.l('xml2json', 'cdm/xml2json/namelist;startwith=A.xml').'</li>
+        <li>'.l('A Taxon Page', cdm_dataportal_taxon_path('5000001-stub')).'</li>
+        <li>'.l('Name List - page1 of A', 'cdm_dataportal/names/A/1')
+        //.'</li><li>'.l('xml2json', 'cdm/xml2json/namelist;startwith=A.xml')
+        .'</li>
         </ul>';
         return $block;
+      case 1:
+        $block['subject'] = t('Credits');
+        $block['content'] = theme('cdm_dataportal_credits');
+        //$_SESSION['cdm']['currentSecRef']['uuid']
+        return;
     }
   }
 }
@@ -132,8 +139,8 @@ function cdm_dataportal_block($op='list', $delta=0) {
  */
 function cdm_dataportal_settings_validate($form_id, $form_values){
   if (!str_endsWith($form_values['cdm_webservice_url'], '/')) {
-      form_set_error('cdm_webservice_url', t("The URL to the CDM Web Service must end with a slash: '/'."));
-    }
+    form_set_error('cdm_webservice_url', t("The URL to the CDM Web Service must end with a slash: '/'."));
+  }
 }
 
 
@@ -147,56 +154,56 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
  */
 function cdm_dataportal_settings(){
 
-   //TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
-    $form['cdm_webservice'] = array(
+  //TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
+  $form['cdm_webservice'] = array(
       '#type' => 'fieldset',
-      '#title' => t('CDM Web Servic'),
+      '#title' => t('CDM Web Service'),
       '#collapsible' => FALSE,
       '#collapsed' => TRUE,
-    );
-  
-   $form['cdm_webservice']['cdm_webservice_url'] =  array(
+  );
+
+  $form['cdm_webservice']['cdm_webservice_url'] =  array(
     '#type' => 'textfield',
     '#title'         => t('CDM Web Service URL'),
     '#description'   => t('The URL of CDM Webservice which delivers the data to be published.'),
     '#default_value' => variable_get('cdm_webservice_url', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api/ws_stub/'),
-    );
-    
-    $form['cdm_webservice']['cdm_webservice_isStub'] =  array(
+  );
+
+  $form['cdm_webservice']['cdm_webservice_isStub'] =  array(
     '#type' => 'checkbox',
     '#title'         => t('Use Web Service Stub'),
     '#default_value' => variable_get('cdm_webservice_isStub', 1),
     '#description'   => t('Use a static web service stub. Only for development. For further information please refer to the ')
-                      .l('ws_stub/README.txt', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm/ws_stub/README.txt', array('target'=>'_blank')),
-    );
-    
-    $form['cdm_webservice']['cdm_webservice_type'] =  array(
+  .l('ws_stub/README.txt', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm/ws_stub/README.txt', array('target'=>'_blank')),
+  );
+
+  $form['cdm_webservice']['cdm_webservice_type'] =  array(
     '#type' => 'select',
     '#title'         => t('Web Service Type'),
     '#default_value' => variable_get('cdm_webservice_type', 'json'),
     '#options' => array(
         'xml' => t('XML'),
         'json' => t('JSON'),
-      ),
+  ),
     '#description'   => t('The response data type of the web service.'),
-     );
-     
-     $allSecRefs = cdm_ws_get_allSecRefences();
-     $secUuid_options = array();
-     foreach($allSecRefs as $ref){
-       $secUuid_options[$ref->uuid] =  $ref->citation.($ref->year ? ' ['.$ref->year.']' : '');
-     }
-     $form['cdm_dataportal']['cdm_secUuid_default'] =  array(
+  );
+   
+  $allSecRefs = cdm_ws_get_allSecRefences();
+  $secUuid_options = array();
+  foreach($allSecRefs as $ref){
+    $secUuid_options[$ref->uuid] =  $ref->citation.($ref->year ? ' ['.$ref->year.']' : '');
+  }
+  $form['cdm_dataportal']['cdm_secUuid_default'] =  array(
     '#type' => 'select',
     '#title'         => t('Default Concept Reference'),
     '#default_value' => variable_get('cdm_secUuid_default', false),
     '#options' => $secUuid_options,
     '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
-     );
-     
-     
+  );
+   
+   
 
-   return system_settings_form($form);
+  return system_settings_form($form);
 }
 
 
@@ -208,37 +215,40 @@ function cdm_dataportal_settings(){
  * @param boolean $hide_unaccepted whether to hide nams which are not accepted by the current view
  */
 function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted = false ){
-  
-    $taxonSTOs = cdm_ws_name_list($beginsWith, $page, $onlyAccepted, $_SESSION['cdm']['namelist_pagesize']);
-    /*   
-     * FIXME the filter for accepted names will be a form element, thus this widget 
-     * should be generated via form api preferably as block
-     */
-    //$out  = theme('cdm_dataportal_widget_filter_accepted', $onlyAccepted);
-    //$out .= theme('cdm_dataportal_widget_names_list', $names, $page);
-    $out .= theme('cdm_dataportal_names_list', $taxonSTOs);
-    return $out;
+
+  $taxonSTOs = cdm_ws_name_list($beginsWith, $page, $onlyAccepted, $_SESSION['cdm']['namelist_pagesize']);
+  /*
+   * FIXME the filter for accepted names will be a form element, thus this widget
+   * should be generated via form api preferably as block
+   */
+  //$out  = theme('cdm_dataportal_widget_filter_accepted', $onlyAccepted);
+  //$out .= theme('cdm_dataportal_widget_names_list', $names, $page);
+  $out .= theme('cdm_dataportal_names_list', $taxonSTOs);
+  return $out;
 }
 
 
 /**
  * The taxon page gives detailed information on a taxon, it shows:
  *  - Taxon name
- *  - Full list of synonyms homotypic synonyms on top, followed by the 
- *    heterotypic and finally followed by misapplied names. 
+ *  - Full list of synonyms homotypic synonyms on top, followed by the
+ *    heterotypic and finally followed by misapplied names.
  *    The list is ordered historically.
- *  - All facts associated with the very taxon concept and taxon name. 
+ *  - All facts associated with the very taxon concept and taxon name.
  *
- * @param String $uuid the UUID of the taxon  
+ * @param String $uuid the UUID of the taxon
  */
 function cdm_dataportal_view_taxon($uuid){
- 
+
+
   $taxonTO = cdm_ws_get_taxon($uuid);
-  
+
+  _set_current_secUuid($taxonTO);
+
   drupal_set_title(theme('cdm_taxon', $taxonTO, true));
-  //TODO retrieve complete synonymy and other data 
-  
-  $out = theme('cdm_taxon_page', $taxonTO); 
+  //TODO retrieve complete synonymy and other data
+
+  $out = theme('cdm_taxon_page', $taxonTO);
   return $out;
 
 }
@@ -254,7 +264,7 @@ function cdm_view_xml2json(){
 /**
  * Get a term for the current locale from the $localised_terms array.
  * Uses global variable $locale from drupal (see drupal functions locale_initialize() for details)
- * Function name is adapted from the drupal function t(). 
+ * Function name is adapted from the drupal function t().
  *
  */
 function cdm_dataportal_t($localised_terms){
@@ -279,10 +289,10 @@ function cdm_dataportal_taxon_path($uuid){
  * If the taggename if empty the fullname will be returned.
  *
  * @param unknown_type $NameSTO a NameSTO or NameTO instance
- * @return string 
+ * @return string
  */
 function cdm_dataportal_shortname_of($NameSTO){
-  
+
   $name = trim(cdm_taggedtext_value($NameSTO->taggedName, 'name'));
   if($name){
     if( $pos = stripos($name, ' ')){
@@ -296,6 +306,21 @@ function cdm_dataportal_shortname_of($NameSTO){
 }
 
 /**
+ * Sets the secUuid of the $taxonTO parameter to the current secUuid which is stored in the users session
+ *
+ * @param TaxonTO $taxonTO
+ */
+function _cdm_dataportal_set_secUuid($taxonTO){
+
+  if($taxonTO){
+    if( !isset($_SESSION['cdm']['currentSecRef']) ||  $_SESSION['cdm']['currentSecRef']['uuid'] != $taxonTO->SecUuid){
+      $secRef = cdm_ws_get_reference($taxonTO->SecUuid);
+      $_SESSION['cdm']['currentSecRef'] = (array)$secRef;
+    }
+  }
+}
+
+/**
  * @param $str the string to truncate
  * @param $len the maximun length
  * @param $appendix an optional appendix.
@@ -305,10 +330,10 @@ function cdm_dataportal_shortname_of($NameSTO){
  * will have the specified length inculding the the appendix.
  */
 function str_trunk(&$str, $len, $appendix=''){
-    if(strlen($str) >= $len )
-    return  substr($str, 0, $len - strlen($appendix)).$appendix;
-    else
-    return $str;
+  if(strlen($str) >= $len )
+  return  substr($str, 0, $len - strlen($appendix)).$appendix;
+  else
+  return $str;
 }
 
 /**
@@ -317,15 +342,15 @@ function str_trunk(&$str, $len, $appendix=''){
  * @return boolean
  */
 function str_beginsWith( $str, $sub ) {
-    return ( substr( $str, 0, strlen( $sub ) ) === $sub );
+  return ( substr( $str, 0, strlen( $sub ) ) === $sub );
 }
 
 /**
- * 
+ *
  * @param string $str
  * @param string $sub
  * @return boolean
  */
 function str_endsWith( $str, $sub ) {
-    return ( substr( $str, strlen( $str ) - strlen( $sub ) ) === $sub );
+  return ( substr( $str, strlen( $str ) - strlen( $sub ) ) === $sub );
 }
