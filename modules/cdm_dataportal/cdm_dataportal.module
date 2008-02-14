@@ -189,6 +189,7 @@ function cdm_dataportal_settings(){
   );
    
   $allSecRefs = cdm_ws_get_allSecRefences();
+  $secRef_default = isset($allSecRefs[0]) ? $allSecRefs[0] : false;
   $secUuid_options = array();
   foreach($allSecRefs as $ref){
     $secUuid_options[$ref->uuid] =  $ref->citation.($ref->year ? ' ['.$ref->year.']' : '');
@@ -196,8 +197,8 @@ function cdm_dataportal_settings(){
   $form['cdm_dataportal']['cdm_secUuid_default'] =  array(
     '#type' => 'select',
     '#title'         => t('Default Concept Reference'),
-    '#default_value' => variable_get('cdm_secUuid_default', false),
     '#options' => $secUuid_options,
+    '#default_value' => variable_get('cdm_secUuid_default', $secRef_default->uuid),
     '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
   );
    
@@ -243,7 +244,7 @@ function cdm_dataportal_view_taxon($uuid){
 
   $taxonTO = cdm_ws_get_taxon($uuid);
 
-  _set_current_secUuid($taxonTO);
+  _cdm_dataportal_set_currentSecUuid($taxonTO);
 
   drupal_set_title(theme('cdm_taxon', $taxonTO, true));
   //TODO retrieve complete synonymy and other data
@@ -310,14 +311,29 @@ function cdm_dataportal_shortname_of($NameSTO){
  *
  * @param TaxonTO $taxonTO
  */
-function _cdm_dataportal_set_secUuid($taxonTO){
+function _cdm_dataportal_set_currentSecUuid($secUuid){
 
-  if($taxonTO){
-    if( !isset($_SESSION['cdm']['currentSecRef']) ||  $_SESSION['cdm']['currentSecRef']['uuid'] != $taxonTO->SecUuid){
-      $secRef = cdm_ws_get_reference($taxonTO->SecUuid);
-      $_SESSION['cdm']['currentSecRef'] = (array)$secRef;
-    }
+  if( !isset($_SESSION['cdm']['currentSecRef']) ||  $_SESSION['cdm']['currentSecRef']['uuid'] != $secUuid){
+    $secRef = cdm_ws_get_reference($secUuid);
+    $_SESSION['cdm']['currentSecRef'] = (array)$secRef;
   }
+}
+
+/**
+ * returns the current secRef array from the users session. 
+ * If the according session variable is not jet set the default
+ * as configured in the setting is used.
+ *
+ * @param TaxonTO $taxonTO
+ * @return array
+ */
+function _cdm_dataportal_currentSecRef_array($taxonTO){
+  
+  if( !isset($_SESSION['cdm']['currentSecRef'])){
+     $secUuid = variable_get('cdm_secUuid_default', false);
+     _cdm_dataportal_set_currentSecUuid($secUuid);
+  }
+  return  $_SESSION['cdm']['currentSecRef'];
 }
 
 /**
