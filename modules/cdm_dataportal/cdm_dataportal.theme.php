@@ -82,7 +82,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
     
     $refSecundum = false;
     if(!$noSecundum){  
-      $ref_sec = cdm_ws_get_reference($taxonTO->secUuid);
+      $ref_sec = cdm_ws_get(CDM_WS_REFERENCE ,$taxonTO->secUuid);
       if($ref_sec){
         $refSecundum = str_trunk($ref_sec->fullcitation, 40, '...');
       }
@@ -167,7 +167,7 @@ function theme_cdm_dataportal_names_list($taxonSTOs){
     if($taxon->isAccepted){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
     } else {
-      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_ws_get_accepted_url($taxon->uuid), 'cdm_taxon_link');
+      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_ws_get(CDM_WS_ACCEPTED_TAXON ,$taxon->uuid), 'cdm_taxon_link');
     }
   }
   $out .= '</ul>';
@@ -302,7 +302,7 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   foreach($TaxonRelationshipTOs as $taxonRelation){
     if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
       
-      $sensu_reference = cdm_ws_get_reference($taxonRelation->secUuid);
+      $sensu_reference = cdm_ws_get(CDM_WS_REFERENCE ,$taxonRelation->secUuid);
       $name = $taxonRelation->name->fullname;
       if(!isset($misapplied[$name])){
         $misapplied[$name] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation, UUID_MISAPPLIED_NAME_FOR, false).'<span>&nbsp;'

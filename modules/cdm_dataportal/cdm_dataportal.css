@@ -1,6 +1,13 @@
 @CHARSET "ISO-8859-1";
 
 
+div.debug{
+  background-color: #35405F;
+  color: #F4F7FF;
+  font-family: monospace;
+  font-size: 90%;	
+}
+
 .taxonname .name{
   font-style: italic;
 }

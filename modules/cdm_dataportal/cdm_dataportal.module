@@ -184,11 +184,27 @@ function cdm_dataportal_settings(){
     '#options' => array(
         'xml' => t('XML'),
         'json' => t('JSON'),
-  ),
+        ),
     '#description'   => t('The response data type of the web service.'),
   );
+  
+  $form['cdm_webservice']['cdm_webservice_debug'] =  array(
+    '#type' => 'checkbox',
+    '#title'         => t('Debug CDM Web Service'),
+    '#default_value' => variable_get('cdm_webservice_debug', 1),
+    '#description'   => t('Enable CDM Web Service debugging messages')
+  );
+  
+  
    
-  $allSecRefs = cdm_ws_get_allSecRefences();
+  
+  $form['cdm_dataportal'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('CDM DataPortal'),
+      '#collapsible' => FALSE,
+      '#collapsed' => TRUE,
+  );
+  $allSecRefs = cdm_ws_get(CDM_WS_SEC_REFERENCES_ALL);
   $secRef_default = isset($allSecRefs[0]) ? $allSecRefs[0] : false;
   $secUuid_options = array();
   foreach($allSecRefs as $ref){
@@ -217,7 +233,7 @@ function cdm_dataportal_settings(){
  */
 function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted = false ){
 
-  $taxonSTOs = cdm_ws_name_list($beginsWith, $page, $onlyAccepted, $_SESSION['cdm']['namelist_pagesize']);
+  $taxonSTOs = cdm_ws_get(CDM_WS_NAME_LIST, $beginsWith, $page, $onlyAccepted, 20 /*$_SESSION['cdm']['namelist_pagesize'] */);
   /*
    * FIXME the filter for accepted names will be a form element, thus this widget
    * should be generated via form api preferably as block
@@ -242,7 +258,7 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
 function cdm_dataportal_view_taxon($uuid){
 
 
-  $taxonTO = cdm_ws_get_taxon($uuid);
+  $taxonTO = cdm_ws_get(CDM_WS_TAXON ,$uuid);
 
   _cdm_dataportal_set_currentSecUuid($taxonTO->secUuid);
 
@@ -314,7 +330,7 @@ function cdm_dataportal_shortname_of($NameSTO){
 function _cdm_dataportal_set_currentSecUuid($secUuid){
 
   if( !isset($_SESSION['cdm']['currentSecRef']['uuid']) ||  $_SESSION['cdm']['currentSecRef']['uuid'] != $secUuid){
-    $secRef = cdm_ws_get_reference($secUuid);
+    $secRef = cdm_ws_get(CDM_WS_REFERENCE ,$secUuid);
     $_SESSION['cdm']['currentSecRef'] = (array)$secRef;
   }
 }

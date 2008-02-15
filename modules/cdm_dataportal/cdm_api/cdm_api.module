@@ -19,27 +19,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 require_once ('xml2json.php');
-
-// Taxon Relationship Types
-define('UUID_TAXONOMICALLY_INCLUDED_IN',  'd13fecdf-eb44-4dd7-9244-26679c05df1c');
-define('UUID_MISAPPLIED_NAME_FOR',  '1ed87175-59dd-437e-959e-0d71583d8417');
-define('UUID_INVALID_DESIGNATION_FOR',  '605b1d01-f2b1-4544-b2e0-6f08def3d6ed');
-define('UUID_CONTRADICTION',  'a8f03491-2ad6-4fae-a04c-2a4c117a2e9b');
-define('UUID_CONGRUENT_TO',  '60974c98-64ab-4574-bb5c-c110f6db634d');
-define('UUID_INCLUDES',  '0501c385-cab1-4fbe-b945-fc747419bb13');
-define('UUID_OVERLAPS',  '2046a0fd-4fd6-45a1-b707-2b91547f3ec7');
-define('UUID_EXCLUDES',  '4535a63c-4a3f-4d69-9350-7bf02e2c23be');
-define('UUID_DOES_NOT_EXCLUDE',  '0e5099bb-87c0-400e-abdc-bcfed5b5eece');
-define('UUID_DOES_NOT_OVERLAP',  'ecd2382b-3d94-4169-9dd2-2c4ea1d24605');
-define('UUID_NOT_INCLUDED_IN',  '89dffa4e-e004-4d42-b0d1-ae1827529e43');
-define('UUID_NOT_CONGRUENT_TO',  '6c16c33b-cfc5-4a00-92bd-a9f9e448f389');
-
-// Synonym Relationship Types
-define('UUID_SYNONYM_OF', '1afa5429-095a-48da-8877-836fa4fe709e');
-define('UUID_PRO_PARTE_SYNONYM_OF', '130b752d-2eff-4a62-a132-104ed8d13e5e');
-define('UUID_PARTIAL_SYNONYM_OF', '8b0d1d34-cc00-47cb-999d-b67f98d1af6e');
-define('UUID_HOMOTYPIC_SYNONYM_OF', '294313a9-5617-4ed5-ae2d-c57599907cb2');
-define('UUID_HETEROTYPIC_SYNONYM_OF', '4c1e2c59-ca55-41ac-9a82-676894976084');
+require_once ('uuids.php');
 
 
 /**
@@ -76,9 +56,9 @@ function cdm_taggedtext_value(array &$taggedtxt = array(), $tagname){
 }
 
 /**
- * Searches the appay of LocalisedTermTO instances for an entry mapped with the language
+ * Searches the array of LocalisedTermTO instances for an entry mapped with the language
  * specified as parameter $language if existing. If not the term mapped with the $defauklt_language 
- * is returend otherwise the first term in $localised_terms is returned or fale if 
+ * is returned otherwise the first term in $localised_terms is returned or fale if 
  * $localised_terms is empty. 
  * 
  *
@@ -119,11 +99,12 @@ function cdm_localized_term_is($uuid){
  * encoded version of the request query parameters
  *
  * @param string $path
- * @param string $fileextension
+ * @param string $fileExtension
  * @return string
  */
-function cdm_encode_stub($path, $fileextension){
-  return variable_get('cdm_webservice_type', 'xml').'/'.str_replace('&',',', str_replace('?',';',$path)).'.'.$fileextension;
+function cdm_encode_stub($path, $fileExtension){
+  $path =  str_replace('/',',',$path);
+  return variable_get('cdm_webservice_type', 'xml').'/'.$path.'.'.$fileExtension;
 }
 
 /**
@@ -132,7 +113,6 @@ function cdm_encode_stub($path, $fileextension){
  *
  * @param string $path
  * @return string
- */
 function cdm_decode_stub($path){
   
   // remove fileextension
@@ -140,6 +120,7 @@ function cdm_decode_stub($path){
   
   return str_replace(',','&', str_replace(';','?',$path));
 }
+ */
 
 /**
  * Enter description here...
@@ -147,8 +128,7 @@ function cdm_decode_stub($path){
  * @param unknown_type $file
  * @param unknown_type $parameters
  * @return unknown
- */
-function cdm_compose_url($file, $parameters = array()){
+function cdm_compose_url_parametrised($file, $parameters = array()){
   $pstr = '';
   foreach($parameters as $key=>$value){
     $pstr .= ( strlen($pstr) == 0 ? '?' : '&').$key.'='.( is_string($value) ? urlencode($value) : $value);
@@ -162,6 +142,25 @@ function cdm_compose_url($file, $parameters = array()){
   $url = variable_get('cdm_webservice_url', '').$file; 
   return $url;
 }
+ */
+
+
+function cdm_compose_url($file, $parameters = array()){
+  
+  $pstr = '';
+  foreach($parameters as $key=>$value){
+    $pstr .= '/'.( is_string($value) ? urlencode($value) : $value);
+  }
+  $file .= $pstr;
+  
+  if(variable_get('cdm_webservice_isStub', 0)){
+    $file = cdm_encode_stub($file, variable_get('cdm_webservice_type', 'json'));
+  }
+  
+  $url = variable_get('cdm_webservice_url', '').$file; 
+  return $url;
+}
+
 
 /**
  * Return string content from a remote file
@@ -179,21 +178,24 @@ function _get_content_curl($url)
     curl_setopt ($ch, CURLOPT_HEADER, 0);
 
     ob_start();
-
     curl_exec ($ch);
     if(curl_errno($ch)){
-      watchdog('CDM', curl_error($ch).' URL: '.$url, WATCHDOG_ERROR);
+      watchdog('CDM_API', '_get_content_curl() - '.curl_error($ch).' URL: '.$url, WATCHDOG_ERROR);
+        if(variable_get('cdm_webservice_debug', 1)){
+          drupal_set_message('_get_content_curl() - '.curl_error($ch).' URL: '.$url, 'error');
+        }
     }
     curl_close ($ch);
     $string = ob_get_contents();
-
     ob_end_clean();
-   
+ 
     return $string;    
 }
 
 function _get_content_fsockopen($url){
   //FIXME implement get_content_fsockopen($url);
+   watchdog('CDM_API', '_get_content_fsockopen - UNIMPLEMENTED', WATCHDOG_ERROR);
+   return false;
 }
 
 function get_content($url){
@@ -284,17 +286,23 @@ function cdm_load_obj($datastr){
   /*
   $datastr = preg_replace('/((?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/.*))/', '', $datastr);
   $obj = json_decode($datastr);
-  if(!is_object($obj)){
-    watchdog('CDM', 'cdm_load_obj() - error decoding JSON', WATCHDOG_ERROR);
-  }
   */
+  
+  if(!is_object($obj) || !isset($obj->root)){
+    ob_start();
+    var_dump($obj);
+    $obj_dump = ob_get_contents();
+    ob_clean();
+    watchdog('CDM', 'cdm_load_obj() - invalid object: '.$obj_dump, WATCHDOG_ERROR);
+    return false;
+  }
+
   return $obj->root;
 }
 
 /**
  * Loads the XML or JSON response for the given url from the CDM Data Store Webservice.
- * The XML is turned into a object which is returned. In case of an error a 
- * appropriate watchdog message is generated and the function returns false.
+ * The XML is turned into a object which is returned.
  * 
  * @param String $url the relative url of the web service call. 
  *        Relative means relative to the web service base url which is stored in cdm_webservice_url
@@ -303,43 +311,27 @@ function cdm_load_obj($datastr){
 function cdm_ws_load($url){
   
   $datastr = get_content($url);
-   
-  if( !($obj = cdm_load_obj($datastr)) ){
-    $backtrace = debug_backtrace();
-    watchdog('CDM', 'cdm_ws_load() - '.$url.' failed to load', WATCHDOG_ERROR);
+  $obj = cdm_load_obj($datastr);
+  if( !$obj || !$datastr){
+    watchdog('CDM', 'cdm_ws_load() - URL: '.$url, WATCHDOG_ERROR);
+    if(variable_get('cdm_webservice_debug', 1)){
+      drupal_set_message('cdm_ws_load() - URL: '.$url, 'debug');
+    }
   }
-  
   return $obj;
 }
 
 
-/* ------------------------------------------------------------------------- */
-
-/**
- * Enter description here...
- *
- * @return unknown
- */
-function cdm_ws(){
+function cdm_ws_get(){
   $args = func_get_args();
   $method = array_shift($args);
-  $url_function = 'cdm_ws_'.$method.'_url';
-  if(function_exists($url_function)){
-    $url = call_user_func_array($url_function, $args);
-    return cdm_ws_load($url);
-  }
-  watchdog("cdm-api", 'cdm_ws() - invalid web service method call: "'.$method.'" dues not exist.', WATCHDOG_ERROR);
-  return false;
-  
+  $url = cdm_compose_url($method, $args);
+  return cdm_ws_load($url);
 }
 
-// -------- whatis
-
-function cdm_ws_whatis_url($uuid){
-  return cdm_compose_url("whatis", array('uuid'=>$uuid));
-}
-
-/**cdm_ws_whatis
+/**
+ * Web Service Arguments: {Uuid}
+ * 
  * The whatis service returns the type 
  * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter. 
  * 
@@ -352,134 +344,58 @@ function cdm_ws_whatis_url($uuid){
  *   - 'dtoName':       name of the DTO class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.dto.TaxonTO
  *   - 'dtoSimpleName': simple name of the TDO class as returned by Class.getSimpleName(), e.g. TaxonTO
  */
-function cdm_ws_whatis($uuid){
-  $url = cdm_ws_whatis_url($uuid);
-  return cdm_ws_load($url);
-}
+define('CDM_WS_WHATIS', 'whatis');
 
-// -------- get_name
 
-function cdm_ws_get_name_url($uuid){
-  return cdm_compose_url("name", array('uuid'=>$uuid));
-}
 /**
- * load a name from the CDM Webservice
- *
- * @param String $uuid
- * @return a NameTO instance or false 
+ * Web Service Arguments: {NameUuid}
  */
-function cdm_ws_get_name($uuid){
-  $uri = cdm_ws_get_name_url($uuid);
-  $obj = cdm_ws_load($url);
-  return $obj;
-  
-}
-
-// -------- name_list
-function cdm_ws_name_list_url($beginsWith, $page, $onlyAccepted = false, $pagesize = 20){
-  //TODO: fully implement
-  return cdm_compose_url('namelist', array(
-                'beginswith' =>$beginsWith,
-                'page'       =>$page,
-              ) 
-          );
-}
+define('CDM_WS_NAME', 'name');
 
 /**
- * load a list of names from the CDM Webservice
- *
- * cdm_ws_name_list($beginsWith, $page, $onlyAccepted, $_SESSION['cdm']['namelist_pagesize']);
+ * Web Service Arguments: {beginsWith}, {pageNumber}, {onlyAccepted}, {pagesize}
  */
-function cdm_ws_name_list($beginsWith, $page, $onlyAccepted = false, $pagesize = 20){
-    //TODO: fully implement
-   $url = cdm_ws_name_list_url($beginsWith, $page, $onlyAccepted = false, $pagesize = 20);
-   $obj = cdm_ws_load($url);
-   return $obj;
-}
-
-// -------- get_reference
-function cdm_ws_get_reference_url($uuid){
-   return cdm_compose_url('reference', array('uuid'=>$uuid));
-}
+define('CDM_WS_NAME_LIST', 'namelist');
 
 /**
- * Enter description here...
- *
- * @param String $uuid of the requested reference
- * @return unknown
+ * Web Service Arguments: {referenceUuid}
  */
-function cdm_ws_get_reference($uuid){
-   $url = cdm_ws_get_reference_url($uuid);
-   $obj = cdm_ws_load($url);
-   return $obj;
-}
-
-
-function cdm_ws_get_allSecRefences_url(){
-   return cdm_compose_url('allSecRefences');
-}
-
-function cdm_ws_get_allSecRefences(){
-   $url = cdm_ws_get_allSecRefences_url();
-    return cdm_ws_load($url);
-}
-
-
-// -------- get_taxon
-
-function cdm_ws_get_taxon_url($uuid){
-  return cdm_compose_url('taxon', array('uuid'=>$uuid));
-}
+define('CDM_WS_REFERENCE', 'reference');
 
 /**
- * Enter description here...
- *
- * @param String $taxon_uuid UUID of the requested Taxon
- * @return a TaxonTO objetct
+ * Web Service Arguments: - none -
  */
-function cdm_ws_get_taxon($taxon_uuid){
-   $url = cdm_ws_get_taxon_url($taxon_uuid);
-   return cdm_ws_load($url);
-}
-
-// -------- get_typedesignation
-function cdm_ws_get_typedesignations_url($name_uuid){
-  return cdm_compose_url('type', array('uuid'=>$name_uuid));
-}
-
-function cdm_ws_get_typedesignations($name_uuid){
-  $url = cdm_ws_get_typedesignations_url($name_uuid);
-  return cdm_ws_load($url);
-}
-
-// -------- get_accepted
-function cdm_ws_get_accepted_url($taxon_uuid){
-  return cdm_compose_url('accepted', array('uuid'=>$taxon_uuid));
-}
-
-function cdm_ws_get_accepted($taxon_uuid){
-  $url = cdm_ws_get_accepted_url($taxon_uuid);
-  return cdm_ws_load($url);
-}
-
-// -------- Taxon tree ws functions
+define('CDM_WS_SEC_REFERENCES_ALL', 'allSecRefences');
 
 /**
+ * Web Service Arguments: {taxonUuid}
+ */
+define('CDM_WS_TAXON', 'taxon');
+
+/**
+ * Web Service Arguments: {nameUuid}
+ */
+define('CDM_WS_TYPE_DESIGNATIONS', 'type');
+
+/**
+ * Web Service Arguments: {taxonUuid}
+ */
+define('CDM_WS_ACCEPTED_TAXON', 'accepted');
+
+/**
+ * Web Service Arguments: {taxonUuid}
+ */
+define('CDM_WS_TREENODE_ROOT', 'treenode_root');
+
+/**
+ * Web Service Arguments: {taxonUuid}
+ * 
  * treenode_parents returns an array of the parent TreeNodes in descending order.
  * The TreeNode referenced by the parameter $taxon_uuid is included as last element
- *
- * @param String $taxon_uuid
- * @return array
  */
-function cdm_ws_get_treenode_parents_url($taxon_uuid){
-  return cdm_compose_url('treenode_parents', array('uuid'=>$taxon_uuid));
-}
+define('CDM_WS_TREENODE_PARENTS', 'treenode_parents');
 
-//FIXME $taxon_uuid must not be empty use cdm_ws_get_treenode_root instead
-function cdm_ws_get_treenode_children_url($taxon_uuid = ''){
-  return cdm_compose_url('treenode_children', array('uuid'=>$taxon_uuid));
-}
-
-function cdm_ws_get_treenode_root_url($secUuid = ''){
-  return cdm_compose_url('treenode_root', array('uuid'=>$secUuid));
-}
+/**
+ * Web Service Arguments: {taxonUuid}
+ */
+define('CDM_WS_TREENODE_CHILDREN', 'treenode_children');

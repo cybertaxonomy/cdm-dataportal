@@ -147,8 +147,14 @@ function tinytax_js($tid) {
 
 function tinytax_js_cdm($taxon_uuid) {
   // This function handles the URLs "tinytax/getcdm/{uuid} ..."
-  $parents = cdm_ws('get_treenode_parents', $taxon_uuid);
-  $children = cdm_ws('get_treenode_children', $taxon_uuid);
+  $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxon_uuid);
+  if(!$parents){
+    $parents = array();
+  }
+  $children = cdm_ws_get(CDM_WS_TREENODE_CHILDREN, $taxon_uuid);
+  if(!$children){
+    $children = array();
+  }
   // Now we build the HTML, and output it.
   print drupal_to_js(array('html' => theme('tinytax_term_list', $parents, $children, 'cdm')));
   exit();
@@ -220,16 +226,16 @@ function _tinytax_view_cdmblock(){
   $parents = array();
   if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!==0 && arg(3)!==0){
     $taxon_uuid = arg(2);
-    $parents = cdm_ws('get_treenode_parents', $taxon_uuid);
-    $children = cdm_ws('get_treenode_children', $taxon_uuid); 
+    $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxon_uuid);
+    $children = cdm_ws_get(CDM_WS_TREENODE_CHILDREN, $taxon_uuid); 
   } else {
     $taxon_uuid = $_SESSION['cdm_dataportal']['tree']['taxon_uuid'];
     if($taxon_uuid){
-      $parents = cdm_ws('get_treenode_parents', $taxon_uuid);
-      $children = cdm_ws('get_treenode_children', $taxon_uuid);   
+      $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS,  $taxon_uuid);
+      $children = cdm_ws_get(CDM_WS_TREENODE_CHILDREN, $taxon_uuid);   
     } else {
       $secRef_array = _cdm_dataportal_currentSecRef_array();
-      $parents = cdm_ws('get_treenode_root', $secRef_array['uuid']);   
+      $parents = cdm_ws_get(CDM_WS_TREENODE_ROOT, $secRef_array['uuid']);   
     }
   }
   
@@ -255,28 +261,27 @@ function theme_tinytax_term_list($parents = array(), $children = array(), $trees
   $return_string = '';
   $theme_sub_funct = '_theme_tinytax_'.$treesource.'_term_list_link';
   // We're not at the root, so display parents
-  if(!$parents){
-    $stop = 1;
-  }
-  $parent_keys = array_keys($parents);
-  for($i=0;$i<$num_parents;$i++){
-    $parent = $parents[$parent_keys[$i]];
-    if($i===0){
-      $tinytaxrootid = ($treesource == 'taxonomy' ? 'tinytaxroot-'.$parent->vid : 'tinytaxroot-'.$treesource);
-      $return_string .= '<div id="'.$tinytaxrootid.'" class="tinytax tinytaxroot"><p class="tinytax tinytaxroot';
-    }
-    else {
-      $return_string .= '<div class="tinytax tinytaxnode"><p class="tinytax';
-      if($i!=$num_parents-1 || $num_children){
-        $return_string .= ' tinytaxinternal';
+  if($parents){
+    $parent_keys = array_keys($parents);
+    for($i=0;$i<$num_parents;$i++){
+      $parent = $parents[$parent_keys[$i]];
+      if($i===0){
+        $tinytaxrootid = ($treesource == 'taxonomy' ? 'tinytaxroot-'.$parent->vid : 'tinytaxroot-'.$treesource);
+        $return_string .= '<div id="'.$tinytaxrootid.'" class="tinytax tinytaxroot"><p class="tinytax tinytaxroot';
       }
       else {
-        $return_string .= ' tinytaxlast';
+        $return_string .= '<div class="tinytax tinytaxnode"><p class="tinytax';
+        if($i!=$num_parents-1 || $num_children){
+          $return_string .= ' tinytaxinternal';
+        }
+        else {
+          $return_string .= ' tinytaxlast';
+        }
       }
+      $return_string .= '">'.$theme_sub_funct($parent);
     }
-    $return_string .= '">'.$theme_sub_funct($parent);
   }
-  if ($num_children){
+  if($children && $num_children){
     $return_string .='<div class="tinytaxlast tinytax tinytaxnode">';
     $children_keys = array_keys($children);
     for($i=0;$i<$num_children;$i++){
@@ -293,8 +298,10 @@ function theme_tinytax_term_list($parents = array(), $children = array(), $trees
     }
     $return_string .='</div>';
   }
-  foreach($parents as $parent){
-    $return_string .='</div>';
+  if($parents){
+   foreach($parents as $parent){
+      $return_string .='</div>';
+    }
   }
   return $return_string;
 }
