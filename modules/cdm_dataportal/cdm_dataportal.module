@@ -195,9 +195,7 @@ function cdm_dataportal_settings(){
     '#description'   => t('Enable CDM Web Service debugging messages')
   );
   
-  
-   
-  
+
   $form['cdm_dataportal'] = array(
       '#type' => 'fieldset',
       '#title' => t('CDM DataPortal'),

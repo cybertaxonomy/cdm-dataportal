@@ -2,10 +2,11 @@
 
 
 div.debug{
-  background-color: #35405F;
-  color: #F4F7FF;
+  background-color: #252525;
+  color: #FEFEFE;
   font-family: monospace;
   font-size: 90%;	
+  overflow: auto;
 }
 
 .taxonname .name{
@@ -29,8 +30,6 @@ ul.homotypicSynonyms, ul.heterotypicSynonymyGroup{
 	 border-bottom: 1px solid #D4EBF9;
 	 
 }
-
-
 
 ul.typeDesignations{
   margin-top: 0px;
