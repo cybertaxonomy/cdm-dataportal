@@ -1,4 +1,5 @@
 * text=auto !eol
+drupal/.project -text
 module_patches/cck_field_perms/cck_field_perms-views0.1.patch -text
 module_patches/nodefamily/nodefamily_create-others-nodes.patch -text
 modules/cdm_dataportal/INSTALL.txt -text
