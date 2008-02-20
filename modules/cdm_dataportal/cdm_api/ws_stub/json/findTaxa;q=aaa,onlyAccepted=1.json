@@ -42,6 +42,25 @@
       },
       "secUuid":"1001-stub",
       "isAccepted":true
+    },
+        {
+      "uuid":"5000005-stub",
+      "name":{
+        "uuid":"90000003-stub",
+        "fullname":"Acanthocephalus benthamianus Regel",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus benthamianus"
+          },
+          {
+            "tag":"authors",
+            "text":"Regel"
+          }
+        ]
+      },
+      "secUuid":"1001-stub",
+      "isAccepted":true
     }
   ]
   }
