@@ -1,0 +1,48 @@
+{
+  "root":{
+    "totalResultsCount": "200",
+    "perPageCount":"20",
+    "pageNumber":"3",
+    "totalPageCount":"10",
+    "results":[
+    {
+      "uuid":"5000001-stub",
+      "name":{
+        "uuid":"90000001-stub",
+        "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus amplexifolius"
+          },
+          {
+            "tag":"authors",
+            "text":"Kar. & Kir."
+          }
+        ]
+      },
+      "secUuid":"1001-stub",
+      "isAccepted":true
+    },
+    {
+      "uuid":"5000002-stub",
+      "name":{
+        "uuid":"90000002-stub",
+        "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus amplexifolius"
+          },
+          {
+            "tag":"authors",
+            "text":"Vassilcz."
+          }
+        ]
+      },
+      "secUuid":"1001-stub",
+      "isAccepted":true
+    }
+  ]
+  }
+}

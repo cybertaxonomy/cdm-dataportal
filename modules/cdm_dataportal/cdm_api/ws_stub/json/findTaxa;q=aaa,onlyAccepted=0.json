@@ -5,39 +5,120 @@
     "pageNumber":"3",
     "totalPageCount":"10",
     "results":[
-      {
-        "uuid":"5000021-stub",
-        "name":{
-          "uuid":"90000021-stub",
-          "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
-          "taggedName":[
-            {
-              "tag":"name",
-              "text":"Harpocarpus amplexifolius"
-            },
-            {
-              "tag":"authors",
-              "text":"(Kar. & Kir.) Walp."
-            }
-          ],
-          "nomenclaturalReference":{
-            "uuid":"70000003-stub",
-            "citation":"Repert. Bot. Syst. 2: 666. 1843",
-            "mediaURI":[
-              {
-                "value":"http://www.terrarium.com.pl/galeria/foto/17271.jpg",
-                "uuid":"void-stub"
-              },
-              {
-                "value":"http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/png/Acanthocephalus_amplexifolius.png",
-                "uuid":"void-stub"
-              }
-            ]
+    {
+      "uuid":"5000001-stub",
+      "name":{
+        "uuid":"90000001-stub",
+        "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus amplexifolius"
+          },
+          {
+            "tag":"authors",
+            "text":"Kar. & Kir."
           }
-        },
-        "secUuid":"1002-stub",
-        "isAccepted":true
-      }
-    ]
+        ]
+      },
+      "secUuid":"1001-stub",
+      "isAccepted":true
+    },
+    {
+      "uuid":"5000002-stub",
+      "name":{
+        "uuid":"90000002-stub",
+        "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus amplexifolius"
+          },
+          {
+            "tag":"authors",
+            "text":"Vassilcz."
+          }
+        ]
+      },
+      "secUuid":"1001-stub",
+      "isAccepted":true
+    },
+    {
+      "uuid":"5000003-stub",
+      "name":{
+        "uuid":"90000003-stub",
+        "fullname":"Acanthocephalus benthamianus Regel",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus benthamianus"
+          },
+          {
+            "tag":"authors",
+            "text":"Regel"
+          }
+        ]
+      },
+      "secUuid":"1002-stub",
+      "isAccepted":true
+    },
+    {
+      "uuid":"5000004-stub",
+      "name":{
+        "uuid":"90000004-stub",
+        "fullname":"Aetheorhiza bulbosa subsp. microcephala Rech. f.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Aetheorhiza bulbosa subsp. microcephala"
+          },
+          {
+            "tag":"authors",
+            "text":"Rech. f."
+          }
+        ]
+      },
+      "secUuid":"1002-stub",
+      "isAccepted":false
+    },
+    {
+      "uuid":"5000005-stub",
+      "name":{
+        "uuid":"90000003-stub",
+        "fullname":"Acanthocephalus benthamianus Regel",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Acanthocephalus benthamianus"
+          },
+          {
+            "tag":"authors",
+            "text":"Regel"
+          }
+        ]
+      },
+      "secUuid":"1002-stub",
+      "isAccepted":true
+    },
+    {
+      "uuid":"5000006-stub",
+      "name":{
+        "uuid":"90000004-stub",
+        "fullname":"Aetheorhiza bulbosa subsp. microcephala Rech. f.",
+        "taggedName":[
+          {
+            "tag":"name",
+            "text":"Aetheorhiza bulbosa subsp. microcephala"
+          },
+          {
+            "tag":"authors",
+            "text":"Rech. f."
+          }
+        ]
+      },
+      "secUuid":"1002-stub",
+      "isAccepted":false
+    }
+  ]
   }
 }
