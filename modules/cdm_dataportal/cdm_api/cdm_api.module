@@ -55,42 +55,6 @@ function cdm_taggedtext_value(array &$taggedtxt = array(), $tagname){
   return '';
 }
 
-/**
- * Searches the array of LocalisedTermTO instances for an entry mapped with the language
- * specified as parameter $language if existing. If not the term mapped with the $defauklt_language 
- * is returned otherwise the first term in $localised_terms is returned or fale if 
- * $localised_terms is empty. 
- * 
- *
- * @param array $localised_terms
- * @param string $language
- * @param string $default_language
- * @return string
- */
-function cdm_get_localised_term($localised_terms, $language, $default_language = 'en'){
-  
-  $default_term = (count($localised_terms) > 0 ? $localised_terms[0]->term : '') ;
-  
-  foreach($localised_terms as $lt){
-    if($lt->language == $language){
-      return $lt->term;
-    }
-    if($lt->language == $default_language){
-      $default_term = $lt->term;
-    }
-  }
-  
-  return $default_term;
-}
-
-/**
- * Enter description here...
- *
- * @param unknown_type $uuid
- */
-function cdm_localized_term_is($uuid){
-  
-}
 
 /**
  * Produces a path to a static web service stub out of a cdm web service path. 
@@ -102,32 +66,22 @@ function cdm_localized_term_is($uuid){
  * @param string $fileExtension
  * @return string
  */
-function cdm_encode_stub($path, $fileExtension){
+function cdm_encode_stub($path, $fileExtension, $hasParams = false){
   $path =  str_replace('/',',',$path);
+  if($hasParams){
+    $path =  str_replace('?',';',$path);
+    $path =  str_replace('&',',',$path);
+  }
   return variable_get('cdm_webservice_type', 'xml').'/'.$path.'.'.$fileExtension;
 }
 
 /**
- * Decodes a path to a static web service stub to turn it into a path 
- * suitable for a cdm web service
- *
- * @param string $path
- * @return string
-function cdm_decode_stub($path){
-  
-  // remove fileextension
-  $path = substr_replace($path, '', strrpos($path, '.'));
-  
-  return str_replace(',','&', str_replace(';','?',$path));
-}
- */
-
-/**
- * Enter description here...
+ * TODO Enter description here...
  *
  * @param unknown_type $file
  * @param unknown_type $parameters
  * @return unknown
+ */
 function cdm_compose_url_parametrised($file, $parameters = array()){
   $pstr = '';
   foreach($parameters as $key=>$value){
@@ -136,13 +90,12 @@ function cdm_compose_url_parametrised($file, $parameters = array()){
   $file .= $pstr;
   
   if(variable_get('cdm_webservice_isStub', 0)){
-    $file = cdm_encode_stub($file, variable_get('cdm_webservice_type', 'json'));
+    $file = cdm_encode_stub($file, variable_get('cdm_webservice_type', 'json'), true);
   }
   
   $url = variable_get('cdm_webservice_url', '').$file; 
   return $url;
 }
- */
 
 
 function cdm_compose_url($file, $parameters = array()){
@@ -325,7 +278,11 @@ function cdm_ws_load($url){
 function cdm_ws_get(){
   $args = func_get_args();
   $method = array_shift($args);
-  $url = cdm_compose_url($method, $args);
+  if(isset($args[0]) && is_array($args[0])){
+    $url = cdm_compose_url_parametrised($method, $args[0]);
+  } else {
+    $url = cdm_compose_url($method, $args);
+  }
   return cdm_ws_load($url);
 }
 
@@ -353,9 +310,16 @@ define('CDM_WS_WHATIS', 'whatis');
 define('CDM_WS_NAME', 'name');
 
 /**
- * Web Service Arguments: {beginsWith}, {pageNumber}, {onlyAccepted}, {pagesize}
+ * Web Service url parameters:
+ * -  q : name querystring
+ * -  sec
+ * -  higherTaxa
+ * -  matchAnywhere
+ * -  onlyAccepted
+ * -  pagesize
+ * -  page
  */
-define('CDM_WS_NAME_LIST', 'namelist');
+define('CDM_WS_FIND_TAXA', 'findTaxa');
 
 /**
  * Web Service Arguments: {referenceUuid}
@@ -399,3 +363,4 @@ define('CDM_WS_TREENODE_PARENTS', 'treenode_parents');
  * Web Service Arguments: {taxonUuid}
  */
 define('CDM_WS_TREENODE_CHILDREN', 'treenode_children');
+
