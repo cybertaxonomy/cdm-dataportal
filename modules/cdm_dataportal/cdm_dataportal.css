@@ -64,12 +64,12 @@ ul.cdm_names, ul.cdm_names li{
 }
 
 ul li.dynabox{
-  background-image: url('images/btn_expand.gif') no-repeat scroll 1px;
+  background-image: url('images/btn_expand.gif') no-repeat;
   cursor: pointer;
 }
 
 ul li.dynabox_expanded{
-  background-image: url('images/btn_collapse.gif') no-repeat scroll 1px;
+  background-image: url('images/btn_collapse.gif') no-repeat;
   cursor: pointer;
 }
 
