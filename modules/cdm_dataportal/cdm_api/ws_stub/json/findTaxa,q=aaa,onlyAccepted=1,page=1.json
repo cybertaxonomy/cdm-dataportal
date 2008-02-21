@@ -43,45 +43,7 @@
       "secUuid":"1001-stub",
       "isAccepted":true
     },
-    {
-      "uuid":"5000003-stub",
-      "name":{
-        "uuid":"90000003-stub",
-        "fullname":"Acanthocephalus benthamianus Regel",
-        "taggedName":[
-          {
-            "tag":"name",
-            "text":"Acanthocephalus benthamianus"
-          },
-          {
-            "tag":"authors",
-            "text":"Regel"
-          }
-        ]
-      },
-      "secUuid":"1002-stub",
-      "isAccepted":true
-    },
-    {
-      "uuid":"5000004-stub",
-      "name":{
-        "uuid":"90000004-stub",
-        "fullname":"Aetheorhiza bulbosa subsp. microcephala Rech. f.",
-        "taggedName":[
-          {
-            "tag":"name",
-            "text":"Aetheorhiza bulbosa subsp. microcephala"
-          },
-          {
-            "tag":"authors",
-            "text":"Rech. f."
-          }
-        ]
-      },
-      "secUuid":"1002-stub",
-      "isAccepted":false
-    },
-    {
+        {
       "uuid":"5000005-stub",
       "name":{
         "uuid":"90000003-stub",
@@ -99,25 +61,6 @@
       },
       "secUuid":"1001-stub",
       "isAccepted":true
-    },
-    {
-      "uuid":"5000006-stub",
-      "name":{
-        "uuid":"90000004-stub",
-        "fullname":"Aetheorhiza bulbosa subsp. microcephala Rech. f.",
-        "taggedName":[
-          {
-            "tag":"name",
-            "text":"Aetheorhiza bulbosa subsp. microcephala"
-          },
-          {
-            "tag":"authors",
-            "text":"Rech. f."
-          }
-        ]
-      },
-      "secUuid":"1002-stub",
-      "isAccepted":false
     }
   ]
   }
