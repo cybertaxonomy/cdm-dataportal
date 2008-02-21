@@ -79,3 +79,25 @@ ul li.dynabox_expanded{
 ul li.dynabox .label{
  cursor: default;
 }
+
+
+
+.pager strong, .pager a {
+	-moz-border-radius-bottomleft:2px;
+	-moz-border-radius-bottomright:2px;
+	-moz-border-radius-topleft:2px;
+	-moz-border-radius-topright:2px;
+	background-color:#DFEDF7;
+	border:1px solid #90C2E1;
+	margin:0px 0.25em;
+	padding:2px 5px;
+}
+
+.pager strong {
+	background-color:#0174BB;
+	color:#FFFFFF;
+}
+
+.pager-list-dots-right, .pager-list-dots-left {
+  display: inline;
+}

@@ -371,17 +371,38 @@ function theme_cdm_dataportal_search_results($resultPageSTO, $ws_name, $paramete
   return $out;
 }
 
-function theme_cdm_pager(&$resultPageSTO, $ws_name, $parameters, $neighbors = 4){
+function theme_cdm_pager(&$resultPageSTO, $ws_name, $parameters, $neighbors = 2){
   $out = '';
-  
+  $resultPageSTO->pageNumber = 6;
   if ($resultPageSTO->totalPageCount > 1) {
+    
+    $viewportsize = $neighbors * 2 + 1; 
+    
+
     $out .= '<div class="pager">';
     if($resultPageSTO->pageNumber > 1){
       $out .= theme('cdm_pager_link', t('« first'), 1,  $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-first'));
       $out .= theme('cdm_pager_link', t('‹ previous'), $resultPageSTO->pageNumber - 1, $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-previous'));
     }
-    // <div class="pager-list-dots-right">...</div>
-    //$out .= theme('cdm_pager_link', $element, ($tags[2] ? $tags[2] : 9 ), '', $ws_name, $parameters, array('class' => 'pager-previous'));
+    
+    if($resultPageSTO->totalPageCount <= $viewportsize || $resultPageSTO->pageNumber <= $neighbors){
+      $first_number = 1;
+    } else if($resultPageSTO->pageNumber >= $resultPageSTO->totalPageCount - $neighbors){
+      $first_number = $resultPageSTO->totalPageCount - $viewportsize;
+    } else {
+      $first_number = $resultPageSTO->pageNumber - $neighbors;
+    }
+    
+    if($first_number > 1){
+      $out .= '<div class="pager-list-dots-left">...</div>';
+    }
+    for($i = $first_number; $i < $first_number + $viewportsize; $i++){
+      $out .= theme('cdm_pager_link', $i, $i,  $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-first'));
+    }
+    if($i < $resultPageSTO->totalPageCount){
+      $out .= '<div class="pager-list-dots-right">...</div>';
+    }
+    
     if($resultPageSTO->pageNumber < $resultPageSTO->totalPageCount){
       $out .= theme('cdm_pager_link', t('next ›'), $resultPageSTO->pageNumber + 1, $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-next'));
       $out .= theme('cdm_pager_link', t('last »'), $resultPageSTO->totalPageCount, $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-last'));
@@ -397,7 +418,7 @@ function theme_cdm_pager_link($text, $linkPageNumber, &$resultPageSTO, $ws_name,
   $out = '';
   
   if ($linkPageNumber == $resultPageSTO->pageNumber) {
-    $out = '<strong>'.$text.'</stong>';
+    $out = '<strong>'.$text.'</strong>';
   } else {
     // <a class="pager-next active" title="Go to page 3" href="/node?page=2">3</a>
     $parameters['page'] = $linkPageNumber;
