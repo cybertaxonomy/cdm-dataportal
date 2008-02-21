@@ -17,16 +17,9 @@ modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,q=aaa,onlyAccepted=0,page=1
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,q=aaa,onlyAccepted=0.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,q=aaa,onlyAccepted=1,page=1.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,q=aaa,onlyAccepted=1.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa;q=A,page=1,onlyAccepted=,pagesize=20.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa;q=aaa,onlyAccepted=0,page=1.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa;q=aaa,onlyAccepted=0.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa;q=aaa,onlyAccepted=1.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa;q=aaa.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/namelist,A,1,,20.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/reference,1001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/reference,1002-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/reference,1003-stub.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/search,taxon,aaa,0,%2A.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon,5000001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon,5000002-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon,5000020-stub.json -text

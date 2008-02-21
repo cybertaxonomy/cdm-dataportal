@@ -199,8 +199,9 @@ function cdm_dataportal_search_taxon_form_submit($form_id, $form_values) {
   
   $_SESSION['cdm']['search'] = $form_values;
   //return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['vernacular']?'1':'0').'/'.$form_values['language'];      
-  return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['onlyAccepted']?'1':'0');      
-  
+  return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['onlyAccepted']?'1':'0');  
+  //$paramstr = compose_url_prameterstr($form_values);
+  //return url('/cdm_dataportal/search/taxon/', $paramstr);
 }
 
 /* ====================== menu callback functions ====================== */
@@ -306,7 +307,7 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
    */
   //$out  = theme('cdm_dataportal_widget_filter_accepted', $onlyAccepted);
   //$out .= theme('cdm_dataportal_widget_names_list', $names, $page);
-  $out .= theme('cdm_names_list', $taxonSTOs);
+  $out .= theme('cdm_listof_taxa', $taxonSTOs);
   return $out;
 }
 
@@ -348,10 +349,11 @@ function cdm_dataportal_view_taxon($uuid){
  *  - conservation status
  *  - locality / tdwg region
  */
-function cdm_dataportal_view_search_taxon($queryString, $onlyAccepted){
+function cdm_dataportal_view_search_taxon($queryString, $onlyAccepted = 0, $page = 1){
   
-  $resultPageSTO = cdm_ws_get(CDM_WS_FIND_TAXA, array('q' => $queryString, 'onlyAccepted' => $onlyAccepted ));
-  return theme('cdm_dataportal_search_results', $resultPageSTO);
+  $parameters = array('q' => $queryString, 'onlyAccepted' =>$onlyAccepted, 'page' => $page );
+  $resultPageSTO = cdm_ws_get(CDM_WS_FIND_TAXA, $parameters);
+  return theme('cdm_dataportal_search_results', $resultPageSTO, CDM_WS_FIND_TAXA, $parameters);
 }
 
 
@@ -468,4 +470,14 @@ function str_beginsWith( $str, $sub ) {
  */
 function str_endsWith( $str, $sub ) {
   return ( substr( $str, strlen( $str ) - strlen( $sub ) ) === $sub );
+}
+
+function compose_url_prameterstr($parameters = array()){
+  $pstr = '';
+  foreach($parameters as $key=>$value){
+    if($key != 'op' && $key != 'submit' && $key != 'form_token' && $key != 'form_id') { 
+      $pstr .= ($pstr ? '&' :'').$key.'='.urlencode($value);
+    }
+  }
+  return $pstr;
 }

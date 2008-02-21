@@ -157,7 +157,7 @@ function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
   return $out;
 }
 
-function theme_cdm_names_list($taxonSTOs){
+function theme_cdm_listof_taxa($taxonSTOs){
   
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
@@ -357,18 +357,57 @@ function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignat
   return $out;
 }
 
-function theme_cdm_dataportal_search_results($resultPageSTO){
+function theme_cdm_dataportal_search_results($resultPageSTO, $ws_name, $parameters){
   
   drupal_set_title(t('Search Results'));
   
   $out = '';
   if(count($resultPageSTO->results) > 0){
-    $out = theme('cdm_names_list', $resultPageSTO->results);
+    $out = theme('cdm_listof_taxa', $resultPageSTO->results);
+    $out .= theme('cdm_pager', $resultPageSTO,  $ws_name, $parameters);
   } else {
     $out = '<h4 calss="error">Sorry, no matching entries found.</h4>';
   }
   return $out;
 }
+
+function theme_cdm_pager(&$resultPageSTO, $ws_name, $parameters, $neighbors = 4){
+  $out = '';
+  
+  if ($resultPageSTO->totalPageCount > 1) {
+    $out .= '<div class="pager">';
+    if($resultPageSTO->pageNumber > 1){
+      $out .= theme('cdm_pager_link', t('« first'), 1,  $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-first'));
+      $out .= theme('cdm_pager_link', t('‹ previous'), $resultPageSTO->pageNumber - 1, $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-previous'));
+    }
+    // <div class="pager-list-dots-right">...</div>
+    //$out .= theme('cdm_pager_link', $element, ($tags[2] ? $tags[2] : 9 ), '', $ws_name, $parameters, array('class' => 'pager-previous'));
+    if($resultPageSTO->pageNumber < $resultPageSTO->totalPageCount){
+      $out .= theme('cdm_pager_link', t('next ›'), $resultPageSTO->pageNumber + 1, $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-next'));
+      $out .= theme('cdm_pager_link', t('last »'), $resultPageSTO->totalPageCount, $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-last'));
+    }
+    $out .= '</div>';
+  
+    return $out;
+  }
+}
+
+function theme_cdm_pager_link($text, $linkPageNumber, &$resultPageSTO, $ws_name, $parameters = array(), $attributes) {
+  
+  $out = '';
+  
+  if ($linkPageNumber == $resultPageSTO->pageNumber) {
+    $out = '<strong>'.$text.'</stong>';
+  } else {
+    // <a class="pager-next active" title="Go to page 3" href="/node?page=2">3</a>
+    $parameters['page'] = $linkPageNumber;
+    $out = l($text,'###', $attributes);
+  }
+  
+
+  return $out;
+}
+
 
 /**
  * render a numeric pager

@@ -69,48 +69,38 @@ function cdm_taggedtext_value(array &$taggedtxt = array(), $tagname){
 function cdm_encode_stub($path, $fileExtension, $hasParams = false){
   $path =  str_replace('/',',',$path);
   if($hasParams){
-    $path =  str_replace('?',';',$path);
+    $path =  str_replace('?',',',$path);
     $path =  str_replace('&',',',$path);
   }
   return variable_get('cdm_webservice_type', 'xml').'/'.$path.'.'.$fileExtension;
 }
 
-/**
- * TODO Enter description here...
- *
- * @param unknown_type $file
- * @param unknown_type $parameters
- * @return unknown
- */
-function cdm_compose_url_parametrised($file, $parameters = array()){
-  $pstr = '';
-  foreach($parameters as $key=>$value){
-    $pstr .= ( strlen($pstr) == 0 ? '?' : '&').$key.'='.( is_string($value) ? urlencode($value) : $value);
+
+function cdm_compose_url($ws_name, $parameters = array()){
+  
+  $request_params = '';
+  $path_params = '';
+  if(!is_array($parameters)){
+     // add to path
+     $path_params .= '/'.( is_string($parameters) ? urlencode($parameters) : $parameters);
+  }else{
+    foreach($parameters as $key=>$value){
+      if(is_numeric($key)){
+        // add to path
+        $path_params .= '/'.( is_string($value) ? urlencode($value) : $value);
+      } else {
+        // add to parameters
+        $request_params .= ( strlen($request_params) == 0 ? '?' : '&').$key.'='.( is_string($value) ? urlencode($value) : $value);
+      }
+    }
   }
-  $file .= $pstr;
+  $path = $ws_name.$path_params.$request_params;
   
   if(variable_get('cdm_webservice_isStub', 0)){
-    $file = cdm_encode_stub($file, variable_get('cdm_webservice_type', 'json'), true);
+    $path = cdm_encode_stub($path, variable_get('cdm_webservice_type', 'json'), strlen($request_params) > 0);
   }
   
-  $url = variable_get('cdm_webservice_url', '').$file; 
-  return $url;
-}
-
-
-function cdm_compose_url($file, $parameters = array()){
-  
-  $pstr = '';
-  foreach($parameters as $key=>$value){
-    $pstr .= '/'.( is_string($value) ? urlencode($value) : $value);
-  }
-  $file .= $pstr;
-  
-  if(variable_get('cdm_webservice_isStub', 0)){
-    $file = cdm_encode_stub($file, variable_get('cdm_webservice_type', 'json'));
-  }
-  
-  $url = variable_get('cdm_webservice_url', '').$file; 
+  $url = variable_get('cdm_webservice_url', '').$path; 
   return $url;
 }
 
@@ -275,14 +265,23 @@ function cdm_ws_load($url){
 }
 
 
-function cdm_ws_get(){
-  $args = func_get_args();
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $method
+ * @param $parameters may be an array or a single variable
+ * @return unknown
+ */
+function cdm_ws_get($method, $parameters = array()){
+  /*$args = func_get_args();
   $method = array_shift($args);
-  if(isset($args[0]) && is_array($args[0])){
+  */  
+  /*if(isset($args[0]) && is_array($args[0])){
     $url = cdm_compose_url_parametrised($method, $args[0]);
   } else {
-    $url = cdm_compose_url($method, $args);
-  }
+ */    
+  $url = cdm_compose_url($method, $parameters);
+  //}
   return cdm_ws_load($url);
 }
 
