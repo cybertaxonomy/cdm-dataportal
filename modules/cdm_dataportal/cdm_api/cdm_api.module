@@ -418,6 +418,8 @@ define('CDM_WS_REFERENCE', 'reference');
 
 /**
  * Web Service Arguments: - none -
+ * 
+ * returns a set of all available concept references
  */
 define('CDM_WS_SEC_REFERENCES_ALL', 'allSecReferences');
 
@@ -428,29 +430,45 @@ define('CDM_WS_TAXON', 'taxon');
 
 /**
  * Web Service Arguments: {nameUuid}
+ * 
+ * returns a set of type designation which are assigned to the name given
+ * as parameter. The Set may contain {@link NameTypeDesignationSTO}
+ * and {@link SpecimenTypeDesignationSTO}
  */
 define('CDM_WS_TYPE_DESIGNATIONS', 'types');
 
 /**
  * Web Service Arguments: {taxonUuid}
+ * 
+ * returns the taxon which is the accepted synonym for the taxon given as
+ * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
+ * accepted taxon, this one will be returned.
  */
 define('CDM_WS_ACCEPTED_TAXON', 'accepted');
 
 /**
- * Web Service Arguments: {taxonUuid}
+ * Web Service Arguments: {secUuid}
+ * 
+ * Gets the root nodes of the taxonomic concept tree for the concept
+ * reference specified by the secUuid parameter.
  */
 define('CDM_WS_TREENODE_ROOT', 'treenode_root');
 
 /**
  * Web Service Arguments: {taxonUuid}
  * 
- * treenode_parents returns an array of the parent TreeNodes in descending order.
- * The TreeNode referenced by the parameter $taxon_uuid is included as last element
+ * Searches the concept taxon tree for all parent taxa by walking the tree
+ * from the taxon which is referenced by the parameter taxonUuid down to its
+ * root. The reference taxon will also be included into the returned set of
+ * TreeNode instances.
  */
 define('CDM_WS_TREENODE_PARENTS', 'treenode_parents');
 
 /**
  * Web Service Arguments: {taxonUuid}
+ * 
+ * returns the children of the taxon referenced by the parameter
+ * taxonUuid.
  */
 define('CDM_WS_TREENODE_CHILDREN', 'treenode_children');
 
