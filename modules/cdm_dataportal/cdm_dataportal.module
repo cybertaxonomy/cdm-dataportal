@@ -214,48 +214,9 @@ function cdm_dataportal_search_taxon_form_submit($form_id, $form_values) {
  */
 function cdm_dataportal_settings(){
 
+  $form = cdm_api_settings_form();
+
   //TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
-  $form['cdm_webservice'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('CDM Web Service'),
-      '#collapsible' => FALSE,
-      '#collapsed' => TRUE,
-  );
-
-  $form['cdm_webservice']['cdm_webservice_url'] =  array(
-    '#type' => 'textfield',
-    '#title'         => t('CDM Web Service URL'),
-    '#description'   => t('The URL of CDM Webservice which delivers the data to be published.'),
-    '#default_value' => variable_get('cdm_webservice_url', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api/ws_stub/'),
-  );
-
-  $form['cdm_webservice']['cdm_webservice_isStub'] =  array(
-    '#type' => 'checkbox',
-    '#title'         => t('Use Web Service Stub'),
-    '#default_value' => variable_get('cdm_webservice_isStub', 1),
-    '#description'   => t('Use a static web service stub. Only for development. For further information please refer to the ')
-  .l('ws_stub/README.txt', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm/ws_stub/README.txt', array('target'=>'_blank')),
-  );
-
-  $form['cdm_webservice']['cdm_webservice_type'] =  array(
-    '#type' => 'select',
-    '#title'         => t('Web Service Type'),
-    '#default_value' => variable_get('cdm_webservice_type', 'json'),
-    '#options' => array(
-        'xml' => t('XML'),
-        'json' => t('JSON'),
-        ),
-    '#description'   => t('The response data type of the web service.'),
-  );
-  
-  $form['cdm_webservice']['cdm_webservice_debug'] =  array(
-    '#type' => 'checkbox',
-    '#title'         => t('Debug CDM Web Service'),
-    '#default_value' => variable_get('cdm_webservice_debug', 1),
-    '#description'   => t('Enable CDM Web Service debugging messages')
-  );
-  
-
   $form['cdm_dataportal'] = array(
       '#type' => 'fieldset',
       '#title' => t('CDM DataPortal'),
@@ -276,8 +237,6 @@ function cdm_dataportal_settings(){
     '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
   );
    
-   
-
   return system_settings_form($form);
 }
 
