@@ -298,9 +298,14 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicGroupTO){
  */
 function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.levitip.v011/jquery.levitip.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'js/dimensions_1.2/jquery.dimensions.js');
-  drupal_add_js ("$('.sensu').leviTip({activateOn: 'click', sourceType: 'firstchild', hideSourceElement: true});  ", 'inline');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.dimensions.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.hoverIntent.js');
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.css');
+  //drupal_add_js ("$('a.title').cluetip({splitTitle: '|'});", 'inline');
+  drupal_add_js ("$(document).ready(
+    function(){ $('.cluetip').cluetip();}
+    );", 'inline');
   
   // aggregate misapplied named having the same fullname:
   $misapplied = array();
@@ -314,10 +319,9 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
       } else {
         $misapplied[$name] .= ';';
       }
-      $misapplied[$name] .= '&nbsp;<span class="sensu">sensu '
-      .'<span class="reference">'.theme('cdm_fullreference',$sensu_reference ).'</span>'
-      .'<span class="authors">'.$sensu_reference->authorship.'</span>'
-      .'</span>'
+      $misapplied[$name] .= '&nbsp;<span class="sensu cluetip no-print" title="sensu '.theme('cdm_fullreference',$sensu_reference ).'">sensu '
+      .$sensu_reference->authorship.'</span>'
+      .'<span class="reference only-print">sensu '.theme('cdm_fullreference',$sensu_reference ).'</span>'
       ;
     }
   }
@@ -357,23 +361,23 @@ function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignat
   return $out;
 }
 
-function theme_cdm_dataportal_search_results($resultPageSTO, $ws_name, $parameters){
+function theme_cdm_search_results($resultPageSTO, $path, $parameters){
   
   drupal_set_title(t('Search Results'));
   
   $out = '';
   if(count($resultPageSTO->results) > 0){
     $out = theme('cdm_listof_taxa', $resultPageSTO->results);
-    $out .= theme('cdm_pager', $resultPageSTO,  $ws_name, $parameters);
+    $out .= theme('cdm_pager', $resultPageSTO,  $path, $parameters);
   } else {
     $out = '<h4 calss="error">Sorry, no matching entries found.</h4>';
   }
   return $out;
 }
 
-function theme_cdm_pager(&$resultPageSTO, $ws_name, $parameters, $neighbors = 2){
+function theme_cdm_pager(&$resultPageSTO, $path, $parameters, $neighbors = 2){
   $out = '';
-  $resultPageSTO->pageNumber = 6;
+
   if ($resultPageSTO->totalPageCount > 1) {
     
     $viewportsize = $neighbors * 2 + 1; 
@@ -381,8 +385,8 @@ function theme_cdm_pager(&$resultPageSTO, $ws_name, $parameters, $neighbors = 2)
 
     $out .= '<div class="pager">';
     if($resultPageSTO->pageNumber > 1){
-      $out .= theme('cdm_pager_link', t('« first'), 1,  $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-first'));
-      $out .= theme('cdm_pager_link', t('‹ previous'), $resultPageSTO->pageNumber - 1, $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-previous'));
+      $out .= theme('cdm_pager_link', t('« first'), 1,  $resultPageSTO, $path, $parameters, array('class' => 'pager-first'));
+      $out .= theme('cdm_pager_link', t('‹ previous'), $resultPageSTO->pageNumber - 1, $resultPageSTO, $path, $parameters, array('class' => 'pager-previous'));
     }
     
     if($resultPageSTO->totalPageCount <= $viewportsize || $resultPageSTO->pageNumber <= $neighbors){
@@ -397,15 +401,15 @@ function theme_cdm_pager(&$resultPageSTO, $ws_name, $parameters, $neighbors = 2)
       $out .= '<div class="pager-list-dots-left">...</div>';
     }
     for($i = $first_number; $i < $first_number + $viewportsize; $i++){
-      $out .= theme('cdm_pager_link', $i, $i,  $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-first'));
+      $out .= theme('cdm_pager_link', $i, $i,  $resultPageSTO, $path, $parameters, array('class' => 'pager-first'));
     }
     if($i < $resultPageSTO->totalPageCount){
       $out .= '<div class="pager-list-dots-right">...</div>';
     }
     
     if($resultPageSTO->pageNumber < $resultPageSTO->totalPageCount){
-      $out .= theme('cdm_pager_link', t('next ›'), $resultPageSTO->pageNumber + 1, $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-next'));
-      $out .= theme('cdm_pager_link', t('last »'), $resultPageSTO->totalPageCount, $resultPageSTO, $ws_name, $parameters, array('class' => 'pager-last'));
+      $out .= theme('cdm_pager_link', t('next ›'), $resultPageSTO->pageNumber + 1, $resultPageSTO, $path, $parameters, array('class' => 'pager-next'));
+      $out .= theme('cdm_pager_link', t('last »'), $resultPageSTO->totalPageCount, $resultPageSTO, $path, $parameters, array('class' => 'pager-last'));
     }
     $out .= '</div>';
   
@@ -413,7 +417,7 @@ function theme_cdm_pager(&$resultPageSTO, $ws_name, $parameters, $neighbors = 2)
   }
 }
 
-function theme_cdm_pager_link($text, $linkPageNumber, &$resultPageSTO, $ws_name, $parameters = array(), $attributes) {
+function theme_cdm_pager_link($text, $linkPageNumber, &$resultPageSTO, $path, $parameters = array(), $attributes) {
   
   $out = '';
   
@@ -422,55 +426,9 @@ function theme_cdm_pager_link($text, $linkPageNumber, &$resultPageSTO, $ws_name,
   } else {
     // <a class="pager-next active" title="Go to page 3" href="/node?page=2">3</a>
     $parameters['page'] = $linkPageNumber;
-    $out = l($text,'###', $attributes);
+    $out = l($text, $path, $attributes, compose_url_prameterstr($parameters));
   }
   
 
   return $out;
 }
-
-
-/**
- * render a numeric pager
- */
-function renderNumPager($numOfPages, $activePage, $maxPagerItems, $linkUrlBase){
-	
-    if ($activePage > $maxPagerItems - 2){
-        // shift visible pager items
-        $begin = $activePage - floor($maxPagerItems / 2);
-        $end   = min($activePage + ceil($maxPagerItems / 2), $numOfPages);
-    } else {
-        $begin = 1; 
-        $end   = min($numOfPages, $maxPagerItems);
-    }
-    // hide the pager if there is only one page:
-    if($begin == $end)
-        return;
-        
-    echo '<ul class="paging numeric">';
-    if ($activePage > 10){
-	    echo '<li><a href="', $linkUrlBase, $activePage - 10, '" title="backward 10 pages">&laquo;</a></li>';
-    }
-    if ($activePage > 1){
-	    echo '<li><a href="', $linkUrlBase, $activePage - 1, '" title="previuos">&lt;</a></li>';
-    }
-	for ($pn = $begin; $pn <= $end ; ++$pn) {
-		if($pn != $activePage){
-		     echo '<li><a href="'.$linkUrlBase.$pn.'">'. $pn. '</a></li>';
-		} else {
-			echo '<li class="active">'.$pn.'</li>';
-		}
-	} 
-    if ($activePage < $numOfPages){
-	    echo '<li><a href="', $linkUrlBase, $activePage + 1, '" title="next">&gt;</a></li>';
-    }
-    if ($activePage < $numOfPages - 9){
-	    echo '<li><a href="', $linkUrlBase, $activePage + 10, '" title="forward 10 pages">&raquo;</a></li>';
-    }
-    if($numOfPages > 0){
-        echo '<li> (of '.$numOfPages.' pages)</li>';
-    }
-    echo '</ul>';
-}
-
-
