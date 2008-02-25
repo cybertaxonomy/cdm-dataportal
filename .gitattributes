@@ -12,7 +12,9 @@ modules/cdm_dataportal/cdm_api/ws_stub/README.txt -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/accepted,5000004-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/accepted,5000006-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/allSecRefences.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,aaa,onlyAccepted=0,page=1.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,aaa,onlyAccepted=0.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,aaa,onlyAccepted=1,page=1.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,aaa,onlyAccepted=1.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,q=A,page=1,onlyAccepted=,pagesize=20.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,q=aaa,onlyAccepted=0,page=1.json -text
