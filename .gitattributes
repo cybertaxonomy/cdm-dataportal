@@ -3,7 +3,6 @@ drupal/.project -text
 module_patches/cck_field_perms/cck_field_perms-views0.1.patch -text
 module_patches/nodefamily/nodefamily_create-others-nodes.patch -text
 modules/cdm_dataportal/INSTALL.txt -text
-modules/cdm_dataportal/Test2.php -text
 modules/cdm_dataportal/cdm_api/cdm_api.info -text
 modules/cdm_dataportal/cdm_api/cdm_api.module -text
 modules/cdm_dataportal/cdm_api/json/JSON.php -text
@@ -103,7 +102,6 @@ modules/cdm_dataportal/js/jquery_lightbox/images/prevlabel.gif -text
 modules/cdm_dataportal/js/jquery_lightbox/images/prevlabel.psd -text
 modules/cdm_dataportal/js/jquery_lightbox/images/prevlabel_grey.gif -text
 modules/cdm_dataportal/js/jquery_lightbox/js/jlightbox.uncompressed.js -text
-modules/cdm_dataportal/test.php -text
 modules/countrypresence/country-earth.dbf -text
 modules/countrypresence/country-earth.prj -text
 modules/countrypresence/country-earth.shp -text
