@@ -11,7 +11,6 @@ modules/cdm_dataportal/cdm_api/uuids.php -text
 modules/cdm_dataportal/cdm_api/ws_stub/README.txt -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/accepted,5000004-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/accepted,5000006-stub.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/allSecRefences.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/allSecReferences.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,aaa,onlyAccepted=0,page=1.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,aaa,onlyAccepted=1,page=1.json -text
@@ -31,8 +30,6 @@ modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_parents,5000007-stub.json -
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_parents,5000008-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_parents,5000009-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_root,1001-stub.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/type,90000001-stub.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/type,90000002-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/types,90000001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/types,90000002-stub.json -text
 modules/cdm_dataportal/cdm_api/xml2json.php -text

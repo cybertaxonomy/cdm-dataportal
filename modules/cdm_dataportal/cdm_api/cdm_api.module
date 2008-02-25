@@ -1,5 +1,5 @@
 <?php
-// $Id: cdm_api.php 1012 2007-12-05 17:58:45Z a.kohlbecker $
+// $Id$
 
 /**
  * @file
@@ -380,9 +380,7 @@ function cdm_ws_get($method, $parameters = array()){
  * The whatis service returns the type 
  * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter. 
  * 
- *
- * @param unknown_type $uuid
- * @return false if the cdm store contains no matching instance. 
+ * return: false if the cdm store contains no matching instance. 
  * An associative array with the following key-value pairs:
  *   - 'cdmName':       name of the cdm class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.model.taxon.Taxon
  *   - 'cdmSimpleName': simple name of the cdm class as returned by Class.getSimpleName(), e.g. Taxon
@@ -399,25 +397,29 @@ define('CDM_WS_NAME', 'name');
 
 /**
  * Web Service url parameters:
- * -  q : name querystring
- * -  sec
- * -  higherTaxa
- * -  matchAnywhere
- * -  onlyAccepted
- * -  pagesize
- * -  page
+ * -  [last path element]: querystring
+ * -  sec : the uuid of the concept reference
+ * -  higherTaxa : list of taxon uuid, if higherTaxa are defined only taxa which are includet in one these taxa are taken in to account 
+ * -  matchAnywhere : false (default) match the querystring to the beginning of names, if set to true any matching substring is taken as a hit.
+ * -  onlyAccepted : return only taxa which are accepted in the sence of the concept reference as given by parameter sec
+ * -  pagesize : maximum number of iteme per result page
+ * -  page: the number of page to be returned
+ * 
+ * returns ResultPageSTO
  */
 define('CDM_WS_FIND_TAXA', 'findTaxa');
 
 /**
  * Web Service Arguments: {referenceUuid}
+ * 
+ * 
  */
 define('CDM_WS_REFERENCE', 'reference');
 
 /**
  * Web Service Arguments: - none -
  */
-define('CDM_WS_SEC_REFERENCES_ALL', 'allSecRefences');
+define('CDM_WS_SEC_REFERENCES_ALL', 'allSecReferences');
 
 /**
  * Web Service Arguments: {taxonUuid}
@@ -427,7 +429,7 @@ define('CDM_WS_TAXON', 'taxon');
 /**
  * Web Service Arguments: {nameUuid}
  */
-define('CDM_WS_TYPE_DESIGNATIONS', 'type');
+define('CDM_WS_TYPE_DESIGNATIONS', 'types');
 
 /**
  * Web Service Arguments: {taxonUuid}
