@@ -33,6 +33,8 @@ modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_parents,5000009-stub.json -
 modules/cdm_dataportal/cdm_api/ws_stub/json/treenode_root,1001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/type,90000001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/type,90000002-stub.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/types,90000001-stub.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/types,90000002-stub.json -text
 modules/cdm_dataportal/cdm_api/xml2json.php -text
 modules/cdm_dataportal/cdm_dataportal.css -text
 modules/cdm_dataportal/cdm_dataportal.info -text
