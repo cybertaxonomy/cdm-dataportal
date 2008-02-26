@@ -302,10 +302,17 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.dimensions.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.hoverIntent.js');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.css');
-  //drupal_add_js ("$('a.title').cluetip({splitTitle: '|'});", 'inline');
-  drupal_add_js ("$(document).ready(
-    function(){ $('.cluetip').cluetip();}
-    );", 'inline');
+
+  drupal_add_js ("$(document).ready(function(){ 
+      $('.cluetip').css({color: '#0062C2'}).cluetip({
+        splitTitle: '|',
+        showTitle:  true,
+        activation: 'hover',
+        arrows: true, 
+        dropShadow: false,
+        cluetipClass: 'rounded'
+      });
+    });", 'inline');
   
   // aggregate misapplied named having the same fullname:
   $misapplied = array();
@@ -319,7 +326,7 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
       } else {
         $misapplied[$name] .= ';';
       }
-      $misapplied[$name] .= '&nbsp;<span class="sensu cluetip no-print" title="sensu '.theme('cdm_fullreference',$sensu_reference ).'">sensu '
+      $misapplied[$name] .= '&nbsp;<span class="sensu cluetip no-print" title="|sensu '.theme('cdm_fullreference',$sensu_reference ).'|">sensu '
       .$sensu_reference->authorship.'</span>'
       .'<span class="reference only-print">sensu '.theme('cdm_fullreference',$sensu_reference ).'</span>'
       ;
