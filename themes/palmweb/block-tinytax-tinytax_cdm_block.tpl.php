@@ -4,6 +4,6 @@
     <h2 class="searchtitle"><?php print $block->subject; 
     
     theme()?></h2>
-    <div class="content"><?php print $block->content; ?></div>
+    <div class="searchccontent"><?php print $block->content; ?></div>
     
  </div>

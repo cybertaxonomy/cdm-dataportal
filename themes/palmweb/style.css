@@ -70,7 +70,23 @@ table {
 .form-item label {
   font-size: 1em;
   color: #222;
+  /* border: 1px solid #ddd; */
 }
+
+#edit-queryString {
+  color:#666666;
+  size: 20;
+  font-size: 9px;
+  border: 1px solid #ddd; 
+}
+
+/* 
+.form-item [id] {
+  color: #7d974a;
+  border: 3px solid #ddd;
+  background-color:#7d974a; 
+} */
+
 .item-list .title {
   font-size: 1em;
   color: #222;
@@ -88,6 +104,7 @@ table {
 #header, #content {
   width: 100%;
 }
+
 #header {
   position:relative; 
   margin:auto; 
@@ -232,20 +249,27 @@ ul.links li.first {
 ** See .comment .title for an example.
 */
 .title, .title a {
-  font-weight: bold;
-  font-size: 1.3em;
-  color: #777;
+  /* font-weight: bold; */
+  font-size: 14px;
+  color: black;
   margin: 0 auto;  /* decrease default margins for h<x>.title */
   
 }
 
-.title .taxname {
-  color: blue;
-  display: block;	}
+.title .name {
+}
+
+.title .name .name{
+  display: block;
+  /* font-size: 1.0em; */
+  font-size: 18px;
+  font-style: italic;
+}
 	
 .title .authors {
-  color: red;
-	}
+  display: inline;
+  font-style: bold;
+}
 
 .searchtitle {
   font-weight: bold;
@@ -253,6 +277,10 @@ ul.links li.first {
   color: #FFFFFF;
   background-color:#96AB2B;
   margin: 0 auto;  /* decrease default margins for h<x>.title */
+}
+
+.searchcontent {
+  font-size: 0.8em;
 }
 
 .submitted {

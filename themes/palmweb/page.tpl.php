@@ -3,6 +3,7 @@
 
 <head>
   <title><?php print $head_title ?></title>
+  1 1 1 
   <?php print $head ?>
   <?php print $styles ?>
   <?php print $scripts ?>
@@ -10,7 +11,7 @@
 </head>
 
 <body>
-
+2 2 2 
 <table border="0" cellpadding="0" cellspacing="0" id="header">
   <tr>
     <td id="logo">
