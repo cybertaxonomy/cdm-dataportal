@@ -306,9 +306,9 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   drupal_add_js ("$(document).ready(function(){ 
       $('.cluetip').css({color: '#0062C2'}).cluetip({
         splitTitle: '|',
-        showTitle:  true,
+        showTitle: true,
         activation: 'hover',
-        arrows: true, 
+        arrows: true,
         dropShadow: false,
         cluetipClass: 'rounded'
       });
