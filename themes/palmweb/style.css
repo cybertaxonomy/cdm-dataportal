@@ -26,7 +26,6 @@ h1 {
 }
 h2 {
   font-size: 1.2em;
-  color: #6D6968;
 }
 h3, h4, h5 {
   font-size: 1.1em;
@@ -34,12 +33,18 @@ h3, h4, h5 {
 h6 {
   font-size: 0.8em;
   color: #6D6968;
+  display: inline;
   }
-	
+
 p {
   margin-top: 0.5em;
   margin-bottom: 0.9em;
 }
+
+ .tinytaxroot {
+  padding-left: 5px;
+ }
+
 a {
   text-decoration: none;
   font-weight: normal;
@@ -69,8 +74,6 @@ table {
 }
 .form-item label {
   font-size: 1em;
-  color: #222;
-  /* border: 1px solid #ddd; */
 }
 
 #edit-queryString {
@@ -80,12 +83,10 @@ table {
   border: 1px solid #ddd; 
 }
 
-/* 
-.form-item [id] {
-  color: #7d974a;
-  border: 3px solid #ddd;
-  background-color:#7d974a; 
-} */
+.form-item {
+  font-color: #222222;
+  color: #666;
+} 
 
 .item-list .title {
   font-size: 1em;
@@ -195,7 +196,7 @@ ul.links li.first {
 }
 #main {
   /* padding in px not ex because IE messes up 100% width tables otherwise */
-  padding: 10px;
+  padding: 20px;
 }
 #mission, .node .content, .comment .content {
   line-height: 1.1em;
@@ -216,24 +217,18 @@ ul.links li.first {
 .error {
   border-color: red;
 }
+
 #sidebar-left, #sidebar-right {
-  background-color: #fff;
   width: 12em;
+  background-color: #fff;
   vertical-align: top;
   text-align: left;
-  /* padding in px not ex because IE messes up 100% width tables otherwise 
-  padding: 10px; /*
-  padding: 0px;
-  vertical-align: top; */
+  /* padding in px not ex because IE messes up 100% width tables otherwise */
+  padding: 10px 0px 0px 10px;
 }
 
 #sidebar-right {
-  /* background-color: #fff;
-  width: 12em;
-  vertical-align: top;
-  text-align: left; */
-  padding: 5px 0px 0px 0px;
-  border: 0px solid #96AB2B;
+  padding: 10px 10px 0px 0px;
 }
 
 #footer {
@@ -249,29 +244,26 @@ ul.links li.first {
 ** See .comment .title for an example.
 */
 .title, .title a {
-  /* font-weight: bold; */
   font-size: 14px;
   color: black;
   margin: 0 auto;  /* decrease default margins for h<x>.title */
-  
-}
-
-.title .name {
 }
 
 .title .name .name{
   display: block;
-  /* font-size: 1.0em; */
+  color: black;
   font-size: 18px;
   font-style: italic;
 }
 	
 .title .authors {
   display: inline;
+  color: black;
   font-style: bold;
 }
 
 .searchtitle {
+  text-indent: 5px;
   font-weight: bold;
   font-size: 1.0em;
   color: #FFFFFF;
@@ -293,26 +285,39 @@ ul.links li.first {
 .links a {
   font-weight: bold;
 }
+
 .block, .box {
-  padding: 0 0 1.5em 0;
-  border: 1px;
-}
-.block {
-  border-bottom: 1px solid #bbb;
-  padding-bottom: 0.75em;
-  margin-bottom: 1.5em;
   border: 1px;
 }
 
-.block_cdm-dataportal {
-  border-bottom: 3px solid #bbb;
+.block {
+  margin-bottom: 1.0em;
+  font-size: 12px;
+}
+
+.block-cdm_dataportal {
   padding-bottom: 0.75em;
   margin-bottom: 1.5em;
+  border: 1px solid #96AB2B;
+}
+
+.block-tinytax {
+  padding-bottom: 0.75em;
+  border: 1px solid #96AB2B;
+}
+
+.block .content {
+  margin-left: 5px;
 }
 
 .block .title {
   margin-bottom: .25em;
 }
+
+.block-user {
+  border: 1px solid #96AB2B;
+}
+
 .box .title {
   font-size: 1.1em;
 }
@@ -435,3 +440,11 @@ div.admin-panel h3 {
   padding: 5px 8px 5px;
   margin: 0;
 }
+
+ul.homotypicSynonyms, ul.heterotypicSynonymyGroup, ul.misapplied {
+  color: #666666;
+}
+
+
+
+
