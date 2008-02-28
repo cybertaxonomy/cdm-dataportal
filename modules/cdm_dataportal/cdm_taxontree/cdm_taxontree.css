@@ -1,0 +1,26 @@
+@CHARSET "ISO-8859-1";
+
+ul.cdm_taxontree li{
+	padding:0pt 0pt 0pt 1.2em;
+	list-style-image: none;
+	list-style-type: none;
+}
+
+ul.cdm_taxontree li.expanded {
+  background:transparent url(minus.png) no-repeat scroll 0px 0.35em;
+  cursor: pointer;
+}
+
+ul.cdm_taxontree li.collapsed {
+  background:transparent url(plus.png) no-repeat scroll 0px 0.35em;
+  cursor: pointer;
+}
+
+ul.cdm_taxontree li.leaf{
+	 background-image: none;
+}
+
+ul.cdm_taxontree li.leaf a, ul.cdm_taxontree li.expanded a, ul.cdm_taxontree li.collapsed a {
+  display:inline;
+}
+

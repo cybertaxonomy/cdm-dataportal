@@ -1,0 +1,157 @@
+<?php
+// $Id$
+
+/*
+ * @file
+ * cdm_taxontree.module
+ *
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+
+/**
+ * Implementation of hook_block()
+ *
+ * @param String $op
+ * @param int $delta
+ */
+function cdm_taxontree_block($op='list', $delta=0) {
+  if ($op == "list") {
+    $block[0]["info"] = t('CDM Taxon Tree');
+    return $block;
+  }
+  else if ($op == 'view') {
+    switch($delta){
+      case 0:
+        $block['subject'] = t('CDM Taxon Tree');
+        $taxonUuid_inFocus = _cdm_get_taxonuuid();
+        $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
+        $block['content'] = theme('cdm_taxontree', $tree, $taxonUuid_inFocus);
+        drupal_add_css(drupal_get_path('module', 'cdm_taxontree').'/cdm_taxontree.css');
+        drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/cdm_taxontree.js');
+        return $block;
+    }
+  }
+}
+
+
+function cdm_taxontree_build_tree($taxonUuid){
+
+  // find the secRefUuid
+  if($taxonUuid){
+    //TODO poor performance here:
+    $taxon =  cdm_ws_get(CDM_WS_TAXON, $taxonUuid);
+    $secRefUuid = $taxon->sec->uuid;
+  }
+
+  if(!$secRefUuid){
+    $secRef = _cdm_dataportal_currentSecRef_array();
+    $secRefUuid = $secRef['uuid'];
+  }
+
+  // get the root
+  $tree = cdm_ws_get(CDM_WS_TREENODE_ROOT, $secRefUuid);
+  $tree = _cdm_resultset2tree($tree);
+
+  if($taxonUuid){
+    $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxonUuid);
+    //TODO improve performance by changing the WS and thus making this line obsolete
+    $parents = array_reverse($parents);
+    $parents = _cdm_resultset2tree($parents);
+    $lastParent = null;
+    foreach($parents as $pnode){
+      if($pnode->hasChildren){
+        $children = cdm_ws_get(CDM_WS_TREENODE_CHILDREN, $pnode->uuid);
+        $children = _cdm_resultset2tree($children);
+        $pnode->children = $children;
+        if($lastParent){
+          $pnode->children[$lastParent->uuid] = $lastParent;
+        }
+      }
+      $lastParent = $pnode;
+    }
+    $tree[$pnode->uuid] = $pnode;
+  }
+
+  return $tree;
+}
+
+
+function theme_cdm_taxontree($tree, $taxonUuid_inFocus){
+
+  if(! is_array($tree)) {
+    return false;
+  }
+
+  $out = '<ul class="cdm_taxontree">';
+  foreach($tree as $node){
+    $out .= theme('cdm_taxontree_node', $node, $taxonUuid_inFocus == $node->uuid);
+    if(isset($node->children) && is_array($node->children)){
+      $out .= theme_cdm_taxontree($node->children, $taxonUuid_inFocus);
+    }
+    $out .= '</li>';
+  }
+  $out .= '</ul>';
+  return $out;
+}
+
+function theme_cdm_taxontree_node($node, $isFocused){
+
+  $is_leaf = !$node->hasChildren || $node->hasChildren == 0;
+  $is_expanded = !$is_leaf && isset($node->children);
+
+  $attributes = array();
+
+  $cdm_proxy_url = false;
+  if(!$is_leaf && !$is_expanded){
+    $ws_url = cdm_compose_url(CDM_WS_TREENODE_CHILDREN, array($node->uuid));
+    $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($ws_url)."/cdm_taxontree");
+  }
+  
+  $out = '<li class="'
+  .($isFocused ?'focused ':'')
+  .($is_leaf ?'leaf ':($is_expanded ?'expanded ':'collapsed '))
+  .'"'
+  .($cdm_proxy_url ? 'title="'.$cdm_proxy_url.'"' : '')
+  .'>'
+  .l(cdm_dataportal_shortname_of($node), cdm_dataportal_taxon_path($node->uuid))
+  .'&nbsp;'.l('[f]', '');
+
+  return $out;
+}
+
+/**
+ * Replaces the keys of an array of TreeNode instances
+ * by the $treeNode->uuid of the single array elements.
+ *
+ * @param $resultset array of TreeNode instances as +returned by the cdm web service
+ */
+function _cdm_resultset2tree($resultset){
+
+  if(! is_array($resultset)) {
+    return false;
+  }
+
+  $tree = array();
+  foreach($resultset as $treeNode){
+    $tree[$treeNode->uuid] = $treeNode;
+  }
+  return $tree;
+}
+
+
+function _cdm_get_taxonuuid(){
+
+  //TODO make the path configurable
+  if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!==0){
+    $taxon_uuid = arg(2);
+  } else {
+    $taxon_uuid = $_SESSION['cdm_dataportal']['tree']['taxon_uuid'];
+  }
+
+  return $taxon_uuid;
+}
