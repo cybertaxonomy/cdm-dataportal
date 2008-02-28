@@ -92,6 +92,13 @@ function cdm_dataportal_menu($may_cache) {
     );
     
     $items[] = array(
+      'path' => 'cdm_dataportal/filter',
+      'callback' => 'cdm_dataportal_view_filter',
+      'access' => true,
+      'type' => MENU_CALLBACK, 
+    );
+    
+    $items[] = array(
       'path' => 'cdm/xml2json',
       'callback' => 'cdm_view_xml2json',
       'access' => true,
@@ -121,6 +128,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
     $block[0]["info"] = t("CDM DataPortal DevLinks");
     $block[1]["info"] = t("CDM DataPortal Credits");
     $block[2]["info"] = t("CDM Search Taxa");
+    $block[3]["info"] = t("CDM Filters");
     return $block;
   }
   else if ($op == 'view') {
@@ -141,6 +149,10 @@ function cdm_dataportal_block($op='list', $delta=0) {
       case 2:
         $block['subject'] = t('Search Taxa');
         $block['content'] = drupal_get_form('cdm_dataportal_search_taxon_form');
+        return $block;   
+      case 3:
+        $block['subject'] = t('Active Filters');
+        $block['content'] = cdm_dataportal_view_filter('list');
         return $block;
     }
   }
@@ -364,6 +376,37 @@ function cdm_dataportal_view_search_taxon(){
   return theme('cdm_search_results', $resultPageSTO, 'cdm_dataportal/search/taxon', $request_params);
 }
 
+function cdm_dataportal_view_filter($op, $taxonUuid = null){
+  
+  if(!isset($_SESSION['cdm']['filters'])){
+    $_SESSION['cdm']['filters'] = array();
+  }
+  if($taxonUuid || $op == 'list'){
+    switch($op){
+      case 'add':
+        if(!isset($_SESSION['cdm']['filters'][$taxonUuid])){
+          $_SESSION['cdm']['filters'][$taxonUuid] = ''; //TODO put fullname into array field
+        }
+        break;
+      case 'remove':
+        unset($_SESSION['cdm']['filters'][$taxonUuid]);
+        break;
+      case 'list':
+        //TODO put in theme?
+        $out = '<ul>';
+        foreach($_SESSION['cdm']['filters'] as $uuid=>$fullname){
+          //TODO use fullname
+          $out .= '<li>'.$uuid.'</li>';
+        }
+        $out .= '</ul>';
+        return $out;
+    }
+  }
+  if($_REQUEST['destination']){
+    drupal_goto($_REQUEST['destination']);
+  }
+}
+
 
 function cdm_view_xml2json(){
   $file = arg(2);
@@ -433,6 +476,9 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
  * returns the current secRef array from the users session. 
  * If the according session variable is not jet set the default
  * as configured in the setting is used.
+ * 
+ * currentSecRef['uuid']
+ * currentSecRef[....
  *
  * @return array
  */

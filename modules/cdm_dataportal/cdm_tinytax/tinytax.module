@@ -219,25 +219,26 @@ function _tinytax_view_blocks($delta){
  */
 function _tinytax_view_cdmblock(){
 
-  $block['subject'] = t("CDM Taxontree");
+  $block['subject'] = t("CDM TinyTaxTree");
   // Lets try and create some list!
   
   $children = array();
   $parents = array();
+  
   if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!==0 && arg(3)!==0){
     $taxon_uuid = arg(2);
-    $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxon_uuid);
-    $children = cdm_ws_get(CDM_WS_TREENODE_CHILDREN, $taxon_uuid); 
   } else {
     $taxon_uuid = $_SESSION['cdm_dataportal']['tree']['taxon_uuid'];
-    if($taxon_uuid){
-      $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS,  $taxon_uuid);
-      $children = cdm_ws_get(CDM_WS_TREENODE_CHILDREN, $taxon_uuid);   
-    } else {
-      $secRef_array = _cdm_dataportal_currentSecRef_array();
-      $parents = cdm_ws_get(CDM_WS_TREENODE_ROOT, $secRef_array['uuid']);   
-    }
   }
+  
+  if($taxon_uuid){
+    $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS,  $taxon_uuid);
+    $children = cdm_ws_get(CDM_WS_TREENODE_CHILDREN, $taxon_uuid);   
+  } else {
+    $secRef_array = _cdm_dataportal_currentSecRef_array();
+    $parents = cdm_ws_get(CDM_WS_TREENODE_ROOT, $secRef_array['uuid']);   
+  }
+
   
   $block['content'] = theme('tinytax_term_list',$parents, $children, 'cdm');
   //$block['content'] = 'UNDER CONSTRUCION'; 

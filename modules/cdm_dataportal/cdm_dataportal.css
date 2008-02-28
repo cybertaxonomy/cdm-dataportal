@@ -101,3 +101,11 @@ ul li.dynabox .label{
 .pager-list-dots-right, .pager-list-dots-left {
   display: inline;
 }
+
+a.filter_add:link, a.filter_add:visited{
+
+}
+
+a.filter_remove:link, a.filter_remove:visited{
+  color: red;
+}

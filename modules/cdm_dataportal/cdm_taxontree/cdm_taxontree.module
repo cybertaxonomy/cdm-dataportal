@@ -80,8 +80,7 @@ function cdm_taxontree_build_tree($taxonUuid){
   return $tree;
 }
 
-
-function theme_cdm_taxontree($tree, $taxonUuid_inFocus){
+function theme_cdm_taxontree($tree, $taxonUuid_inFocus = null){
 
   if(! is_array($tree)) {
     return false;
@@ -91,7 +90,7 @@ function theme_cdm_taxontree($tree, $taxonUuid_inFocus){
   foreach($tree as $node){
     $out .= theme('cdm_taxontree_node', $node, $taxonUuid_inFocus == $node->uuid);
     if(isset($node->children) && is_array($node->children)){
-      $out .= theme_cdm_taxontree($node->children, $taxonUuid_inFocus);
+      $out .= theme('cdm_taxontree', $node->children, $taxonUuid_inFocus);
     }
     $out .= '</li>';
   }
@@ -117,10 +116,20 @@ function theme_cdm_taxontree_node($node, $isFocused){
   .($is_leaf ?'leaf ':($is_expanded ?'expanded ':'collapsed '))
   .'"'
   .($cdm_proxy_url ? 'title="'.$cdm_proxy_url.'"' : '')
-  .'>'
-  .l(cdm_dataportal_shortname_of($node), cdm_dataportal_taxon_path($node->uuid))
-  .'&nbsp;'.l('[f]', '');
-
+  .'>';
+  
+  $out .= l(cdm_dataportal_shortname_of($node), cdm_dataportal_taxon_path($node->uuid));
+  
+  $filter_op = isset($_SESSION['cdm']['filters'][$node->uuid]) ? 'remove' : 'add';
+  $out .= '&nbsp;'.l('[f]', 'cdm_dataportal/filter/'.$filter_op.'/'.$node->uuid, array('class'=>'filter_'.$filter_op), 'destination='.cdm_dataportal_taxon_path($node->uuid));
+  
+  /*TODO alternativeConceptRefs
+   * if($node->alternativeConceptRefs){
+    foreach($node->alternativeConceptRefs){
+    $out .=  if->alternativeConceptRefs          
+    }
+  }*/
+  
   return $out;
 }
 

@@ -42,6 +42,7 @@ modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.css -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.info -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.js -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.module -text
+modules/cdm_dataportal/cdm_taxontree/menu-leaf.gif -text
 modules/cdm_dataportal/cdm_taxontree/minus.png -text
 modules/cdm_dataportal/cdm_taxontree/plus.png -text
 modules/cdm_dataportal/cdm_tinytax/LICENSE.txt -text
