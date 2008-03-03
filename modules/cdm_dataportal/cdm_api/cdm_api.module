@@ -304,21 +304,19 @@ function proxy_content($url, $theme = null){
 }
 
 function cdm_load_obj($datastr){
+     
   // if the web service delivers XML convert it into json
   if(variable_get('cdm_webservice_type', 'xml') == 'xml'){
     $datastr = xml2json::transformXmlStringToJson($datastr);  
   }
-  // --- using the PEAR json lib --- //
-  $json = new Services_JSON();
-  $obj = $json->decode($datastr);
-  
-  // --- using the php json lib --- //
-  // since stub files may contain comments
-  //TODO use php json lib
-  /*
-  $datastr = preg_replace('/((?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/.*))/', '', $datastr);
-  $obj = json_decode($datastr);
-  */
+  if(variable_get('cdm_webservice_isStub', 0)){
+    // --- for STUBS use the more syntax tolerant PEAR json lib --- //
+    $json_pear = new Services_JSON();
+    $obj = $json_pear->decode($datastr);
+  } else {
+    // --- generally use the fast php json lib --- //
+    $obj = json_decode($datastr);
+  }
   
   if(!is_object($obj) || !isset($obj->root)){
     ob_start();
@@ -412,9 +410,14 @@ define('CDM_WS_FIND_TAXA', 'findTaxa');
 /**
  * Web Service Arguments: {referenceUuid}
  * 
- * 
  */
 define('CDM_WS_REFERENCE', 'reference');
+
+/**
+ * Web Service Arguments: {referenceUuid}
+ * 
+ */
+define('CDM_WS_SIMPLE_REFERENCE', 'simple/reference');
 
 /**
  * Web Service Arguments: - none -
@@ -427,6 +430,12 @@ define('CDM_WS_SEC_REFERENCES_ALL', 'allSecReferences');
  * Web Service Arguments: {taxonUuid}
  */
 define('CDM_WS_TAXON', 'taxon');
+
+
+/**
+ * Web Service Arguments: {taxonUuid}
+ */
+define('CDM_WS_SIMPLE_TAXON', 'simple/taxon');
 
 /**
  * Web Service Arguments: {nameUuid}

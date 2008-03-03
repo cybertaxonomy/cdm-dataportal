@@ -376,6 +376,13 @@ function cdm_dataportal_view_search_taxon(){
   return theme('cdm_search_results', $resultPageSTO, 'cdm_dataportal/search/taxon', $request_params);
 }
 
+/**
+ * filters on children override already set parent filters and vice verca
+ *
+ * @param unknown_type $op
+ * @param unknown_type $taxonUuid
+ * @return unknown
+ */
 function cdm_dataportal_view_filter($op, $taxonUuid = null){
   
   if(!isset($_SESSION['cdm']['filters'])){
@@ -384,19 +391,36 @@ function cdm_dataportal_view_filter($op, $taxonUuid = null){
   if($taxonUuid || $op == 'list'){
     switch($op){
       case 'add':
-        if(!isset($_SESSION['cdm']['filters'][$taxonUuid])){
-          $_SESSION['cdm']['filters'][$taxonUuid] = ''; //TODO put fullname into array field
+        $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxonUuid);
+        // pop off last element since this is the TreeNode object for $taxonUuid!
+        $this_node = array_pop($parents);
+        // will contain the uuid of the parent nodes excluding the $taxonUuid node itself
+        $parent_uuids = array();
+        
+        // children override parents rule: remove all parent filters, 
+        foreach($parents as $pnode){
+          unset($_SESSION['cdm']['filters'][$pnode->uuid]);
+          $parent_uuids[] = $pnode->uuid;
         }
+        
+        // search for potential children of this $taxonUuid
+        foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
+          if(in_array($taxonUuid, $node->parentUuids)){
+            unset($_SESSION['cdm']['filters'][$node->uuid]);
+          }
+        }
+        // finally add this $taxonUuid as new filter
+        $this_node->parentUuids = $parent_uuids;
+        $_SESSION['cdm']['filters'][$taxonUuid] = $this_node;
         break;
       case 'remove':
         unset($_SESSION['cdm']['filters'][$taxonUuid]);
         break;
       case 'list':
-        //TODO put in theme?
+        //TODO put in theme!!!
         $out = '<ul>';
-        foreach($_SESSION['cdm']['filters'] as $uuid=>$fullname){
-          //TODO use fullname
-          $out .= '<li>'.$uuid.'</li>';
+        foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
+          $out .= '<li>'.cdm_dataportal_shortname_of($node).' '.l('[x]', 'cdm_dataportal/filter/remove/'.$uuid, array(), drupal_get_destination()).'</li>';
         }
         $out .= '</ul>';
         return $out;
@@ -442,7 +466,7 @@ function cdm_dataportal_taxon_path($uuid){
  * Creates a short taxonname by using the taggename field of NameSTO or NameTO instances.
  * If the taggename if empty the fullname will be returned.
  *
- * @param unknown_type $NameSTO a NameSTO or NameTO instance
+ * @param unknown_type $NameSTO a NameSTO, TreeNode or NameTO instance
  * @return string
  */
 function cdm_dataportal_shortname_of($NameSTO){

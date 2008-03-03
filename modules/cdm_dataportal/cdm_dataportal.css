@@ -109,3 +109,7 @@ a.filter_add:link, a.filter_add:visited{
 a.filter_remove:link, a.filter_remove:visited{
   color: red;
 }
+
+.block-cdm_taxontree .content, .block-cdm_dataportal-3 .content{
+   font-size: 90%;
+}

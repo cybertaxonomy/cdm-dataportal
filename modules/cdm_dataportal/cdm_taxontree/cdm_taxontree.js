@@ -8,7 +8,7 @@
 		
 		return this.each(function() {
 		
-			$(this).find('li').click(function(event) {
+			$(this).children('li').not('.invisible').click(function(event) {
 				event.stopPropagation();
 				if($(this).hasClass('collapsed')){
 					var bindChildren = ($(this).find('ul').length == 0);
@@ -27,6 +27,10 @@
 				  $(this).removeClass('expanded').addClass('collapsed').children('ul').css('display', 'none');
 				} 
 			}); // END click()
+			
+			$(this).children('li').children('a').click(function(event) {
+			 event.stopPropagation();
+			});
 		});
 	}; // END cdm_taxontree()
 	 
