@@ -88,26 +88,39 @@ function cdm_taxontree_build_tree($taxonUuid){
     $secRefUuid = $secRef['uuid'];
   }
 
-  // get the root
-  $root_tree = cdm_ws_get(CDM_WS_TREENODE_ROOT, $secRefUuid);
-  $root_tree = _cdm_resultset2tree($root_tree);
+  $filtersActive = isset($_SESSION['cdm']['filters']) && count($_SESSION['cdm']['filters']) > 0;
+  $compact_tree = $filtersActive && $_SESSION['cdm']['taxontree']['compact'] == 1;
   
-  // the paths up to active filters are inactivated and thus cannot be browsed by expanding nodes
-  // therefore we need to build up the branches for all nodes which are set as filters
-  // the branches are merged with the root
-  if(isset($_SESSION['cdm']['filters'])){
-    // ###$compact_tree = $_SESSION['cdm']['taxontree']['compact'] == 1;
-    foreach($_SESSION['cdm']['filters'] as $uuid=>$filter){
-      $branch = cdm_taxontree_build_branch($uuid /* #### , !$compact_tree  #### */);
+  if(!$compact_tree){
+    // get the root
+    $root_tree = cdm_ws_get(CDM_WS_TREENODE_ROOT, $secRefUuid);
+    $root_tree = _cdm_resultset2tree($root_tree);
+    
+    if($filtersActive){
+      // the paths up to active filters are inactivated and thus cannot be browsed by expanding nodes
+      // therefore we need to build up the branches for all nodes which are set as filters
+      // the branches are merged with the root
+      foreach($_SESSION['cdm']['filters'] as $uuid=>$filter){
+        $branch = cdm_taxontree_build_branch($uuid);
+        $root_tree = _cdm_taxontree_merge($root_tree, $branch);
+      }
+    }
+    // build the the branch for the focused node and merge it with the root
+    if($taxonUuid){
+      $branch = cdm_taxontree_build_branch($taxonUuid);
       $root_tree = _cdm_taxontree_merge($root_tree, $branch);
     }
+  } else {
+    $root_tree = $_SESSION['cdm']['filters'];
+      /*  if(){
+        foreach($_SESSION['cdm']['filters'] as $uuid=>$filter){
+          $branch = cdm_taxontree_build_branch($uuid  #### , !$compact_tree  #### );
+          $root_tree = _cdm_taxontree_merge($root_tree, $branch);
+        }
+      }*/
   }
+  
 
-  // build the the branch for the focused node and merge it with the root
-  if($taxonUuid){
-    $branch = cdm_taxontree_build_branch($taxonUuid);
-    $root_tree = _cdm_taxontree_merge($root_tree, $branch);
-  }
 
   return $root_tree;
 }
@@ -159,9 +172,9 @@ function _cdm_taxontree_merge($tree, $branch) {
             if(is_array($branch[$uuid]->children) && is_array($tree[$uuid]->children)) {
               // merge recursive
               $tree[$uuid]->children = _cdm_taxontree_merge($tree[$uuid]->children, $branch[$uuid]->children);
-            } else {
+            } else if(is_array($branch[$uuid]->children)){
               $tree[$uuid] =  $branch[$uuid];
-            }
+            }  
         } 
     }
     unset($uuid, $node);
@@ -192,13 +205,6 @@ function theme_cdm_taxontree($tree, $taxonUuid_inFocus = null, $filterIncludes =
   
   $out = '<ul class="cdm_taxontree">';
   foreach($tree as $node){
-    
-   /* if($isVisibleSubtree){
-      $isVisibleNode = true;
-    } else {
-      $isVisibleNode = isset($_SESSION['cdm']['filters'][$node->uuid]);
-    }
-   */
     $out .= theme('cdm_taxontree_node', $node, $taxonUuid_inFocus == $node->uuid, $filterIncludes);
   }
   $out .= '</ul>';
@@ -221,6 +227,7 @@ function theme_cdm_taxontree_node($node, $isFocused, $filterIncludes = false){
     // 
     $name = l(cdm_dataportal_shortname_of($node), cdm_dataportal_taxon_path($node->uuid));
     $filter_icon = 'visible_implicit.gif';
+    $filter_on = false;
   } else {
     $filter_on = isset($_SESSION['cdm']['filters'][$node->uuid]);
     if($filter_on) {

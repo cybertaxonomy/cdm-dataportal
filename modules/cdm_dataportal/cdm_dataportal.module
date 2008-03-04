@@ -338,7 +338,7 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
  *
  * @param String $uuid the UUID of the taxon
  */
-function cdm_dataportal_view_taxon($uuid, $arg2){
+function cdm_dataportal_view_taxon($uuid, $arg2 = null){
 
 
   if(isset($arg2) && !is_numeric($arg2)){

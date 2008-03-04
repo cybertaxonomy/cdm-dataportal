@@ -50,6 +50,8 @@ modules/cdm_dataportal/cdm_taxontree/minus.png -text
 modules/cdm_dataportal/cdm_taxontree/plus.png -text
 modules/cdm_dataportal/cdm_taxontree/resources/Invisible.gif -text
 modules/cdm_dataportal/cdm_taxontree/resources/Visible.gif -text
+modules/cdm_dataportal/cdm_taxontree/resources/concept_switch.psd -text
+modules/cdm_dataportal/cdm_taxontree/resources/eye.png -text
 modules/cdm_dataportal/cdm_taxontree/visible.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_implicit.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_implicit_small.gif -text
