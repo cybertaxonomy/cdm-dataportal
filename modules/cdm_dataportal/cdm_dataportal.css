@@ -113,3 +113,13 @@ a.filter_remove:link, a.filter_remove:visited{
 .block-cdm_taxontree .content, .block-cdm_dataportal-3 .content{
    font-size: 90%;
 }
+
+.block-cdm_taxontree div.settings{
+	/*background-color: #2587C3;*/
+	border-bottom: 1px solid #E0DFE3;
+	border-top: 1px solid #E0DFE3;
+}
+
+.concept_switch {
+  padding:0 0.2em;
+}

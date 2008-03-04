@@ -338,20 +338,33 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
  *
  * @param String $uuid the UUID of the taxon
  */
-function cdm_dataportal_view_taxon($uuid){
+function cdm_dataportal_view_taxon($uuid, $arg2){
 
 
-  $taxonTO = cdm_ws_get(CDM_WS_TAXON ,$uuid);
-
-  _cdm_dataportal_set_currentSecUuid($taxonTO->secUuid);
-
-  drupal_set_title(theme('cdm_taxon', $taxonTO, true));
-  //TODO retrieve complete synonymy and other data
-
-  $out = theme('cdm_taxon_page', $taxonTO);
-  return $out;
-
+  if(isset($arg2) && !is_numeric($arg2)){
+   
+    switch ($args[0]){
+      case 'alternatives':
+        $alternatives = cdm_ws_get(CDM_WS_TAXON_ALTERNATIVES, $uuid);
+        return theme('cdm_alternative_taxa', $alternatives);
+    }
+    
+  } else {
+  
+    // display the page for the taxon defined by $uuid
+    $taxonTO = cdm_ws_get(CDM_WS_TAXON ,$uuid);
+  
+    _cdm_dataportal_set_currentSecUuid($taxonTO->secUuid);
+  
+    drupal_set_title(theme('cdm_taxon', $taxonTO, true));
+    //TODO retrieve complete synonymy and other data
+  
+    $out = theme('cdm_taxon_page', $taxonTO);
+    return $out;
+  }
 }
+
+
 
 /**
  * Expected URL request parameters:
@@ -427,7 +440,9 @@ function cdm_dataportal_view_filter($op, $taxonUuid = null){
     }
   }
   if($_REQUEST['destination']){
-    drupal_goto($_REQUEST['destination']);
+    $destination = $_REQUEST['destination'];
+    unset($_REQUEST['destination']);
+    drupal_goto($destination);
   }
 }
 

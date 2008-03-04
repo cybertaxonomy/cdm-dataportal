@@ -175,6 +175,16 @@ function theme_cdm_listof_taxa($taxonSTOs){
   return $out;
 }
 
+function theme_cdm_alternative_taxa($taxonSTOs){
+  $out = '<ul class="cdm_names" style="background-image: none;">';
+  foreach($taxonSTOs as $taxon){
+    $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
+  }
+  $out .= '</ul>';
+  return $out;
+}
+
+
 function theme_cdm_credits(){
   $secRef_array = _cdm_dataportal_currentSecRef_array();
   return '<span class="sec_reference_citation">'.$secRef_array['citation'].'</span>'
