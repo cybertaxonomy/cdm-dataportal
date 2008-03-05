@@ -294,12 +294,18 @@ function cdm_api_requirements() {
 
 
 function proxy_content($url, $theme = null){
+  $args = func_get_args();
+  
+  $url = array_shift($args);
+  $theme = array_shift($args);
+  
   $data = get_content(urldecode($url));
   
   if(!$theme){
     print $data;
   } else {
-    print theme($theme, cdm_load_obj($data));
+    array_unshift($args, $theme, cdm_load_obj($data));
+    print call_user_func_array('theme', $args);
   }
 }
 

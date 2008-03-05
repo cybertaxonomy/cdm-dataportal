@@ -530,6 +530,20 @@ function _cdm_dataportal_currentSecRef_array(){
   return  $_SESSION['cdm']['currentSecRef'];
 }
 
+function cdm_dataportal_filters_areset(){
+ return isset($_SESSION['cdm']['filters']) && count($_SESSION['cdm']['filters']) > 0;
+}
+
+/**
+ * @return a reference on the filters array stored in the SESSION
+ */
+function &cdm_dataportal_filters_get(){
+  if(!isset($_SESSION['cdm']['filters'])){
+    $_SESSION['cdm']['filters'] = array();
+  }
+ return $_SESSION['cdm']['filters'];
+}
+
 /**
  * @param $str the string to truncate
  * @param $len the maximun length
