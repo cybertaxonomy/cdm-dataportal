@@ -332,7 +332,7 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
       $sensu_reference = cdm_ws_get(CDM_WS_REFERENCE ,$taxonRelation->secUuid);
       $name = $taxonRelation->name->fullname;
       if(!isset($misapplied[$name])){
-        $misapplied[$name] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation, UUID_MISAPPLIED_NAME_FOR, false).'<span>';
+        $misapplied[$name] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation, UUID_MISAPPLIED_NAME_FOR, false).'</span>';
       } else {
         $misapplied[$name] .= ';';
       }
@@ -363,13 +363,9 @@ function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignat
   }    
   
   foreach($specimenTypeDesignations as $std){
-    $out .= '<li class="specimenTypeDesignation"><span class="status">'.$std->status->value.'</span> - '.$std->typeSpecimen->specimenLabel;
-    if(is_array($std->typeSpecimen->mediaURI)){
-      $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/external_link.gif';
-      foreach($std->typeSpecimen->mediaURI as $uri){
-        $out .= ' <a href="'.$uri->value.'" target="'.$uri->uuid.'"><img src="'.$image_url.'" /></a>';
-      }
-    }
+    $out .= '<li class="specimenTypeDesignation">';
+    $out .= '<span class="status">'.$std->status->value.'</span> - '.$std->typeSpecimen->specimenLabel;
+    $out .= theme('cdm_specimen', $std->typeSpecimen);
     $out .= '</li>';
   }
   
@@ -377,6 +373,56 @@ function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignat
   
   return $out;
 }
+
+function theme_cdm_specimen($specimen){
+  
+  // rights, 
+  //$specimen->specimenLabel
+  //$specimen->uuid
+  
+  // ---- jQuery ThickBox:
+  // bug: thickbox.js line 237 .trigger("unload") -> event is not triggered
+  //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
+  //drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.css');
+  
+  // ---- jQuery jqModal:
+  //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
+  //drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.css');
+  
+  
+  
+  $out = '';
+  if(is_array($specimen->mediaURI)){
+    
+    $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/external_link.gif';
+    // thickbox has problems reading the first url parameter, so a litte hack is needed here:
+    // adding a meningless patameter &tb_hack=1& ....
+    $out .= '&nbsp;<a href="#TB_inline?tb_hack=1&width=300&amp;height=300&amp;inlineId=specimen_media_'.$specimen->uuid.'" class="thickbox">'
+    .'<img src="'.$image_url.'" title="'.t('Show media').'" /></a>';
+    
+    $out .= '<div id="specimen_media_'.$specimen->uuid.'" class="tickbox_content"><table>';
+    
+    $media_row = '<tr class="media_data">';
+    $meta_row = '<tr class="meta_data">';
+    
+    foreach($specimen->mediaURI as $uri){
+      $muris = cdm_dataportal_mediaUri_conversion($uri->value);
+      if(isset($muris['preview'])){    
+        $a_child = '<img src="'.$muris['preview']['uri'].'" />';
+      } else {
+        $a_child = '<img src="'.$image_url.'" />';
+      }
+      $media_row .= '<td><a href="'.$uri->value.'" target="'.$uri->uuid.'">'.$a_child.'</a></td>';
+      $meta_row .= '<td><span class="label">'.check_plain($specimen->specimenLabel).'</span></td>';
+    }
+    $out .= $media_row.'</tr>';
+    $out .= $meta_row.'</tr>';
+    
+    $out .= '</div></table>';
+  }
+  return $out;
+}
+
 
 function theme_cdm_search_results($resultPageSTO, $path, $parameters){
   
