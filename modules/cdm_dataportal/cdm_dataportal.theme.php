@@ -382,12 +382,13 @@ function theme_cdm_specimen($specimen){
   
   // ---- jQuery ThickBox:
   // bug: thickbox.js line 237 .trigger("unload") -> event is not triggered
-  //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
-  //drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.css');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.css');
   
   // ---- jQuery jqModal:
-  //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
-  //drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.css');
+  // untested ...
+  //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jqModal.js');
+  //drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/jqModal.css');
   
   
   
@@ -397,7 +398,7 @@ function theme_cdm_specimen($specimen){
     $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/external_link.gif';
     // thickbox has problems reading the first url parameter, so a litte hack is needed here:
     // adding a meningless patameter &tb_hack=1& ....
-    $out .= '&nbsp;<a href="#TB_inline?tb_hack=1&width=300&amp;height=300&amp;inlineId=specimen_media_'.$specimen->uuid.'" class="thickbox">'
+    $out .= '&nbsp;<a href="#TB_inline?tb_hack=1&width=300&amp;height=330&amp;inlineId=specimen_media_'.$specimen->uuid.'" class="thickbox">'
     .'<img src="'.$image_url.'" title="'.t('Show media').'" /></a>';
     
     $out .= '<div id="specimen_media_'.$specimen->uuid.'" class="tickbox_content"><table>';
@@ -408,12 +409,17 @@ function theme_cdm_specimen($specimen){
     foreach($specimen->mediaURI as $uri){
       $muris = cdm_dataportal_mediaUri_conversion($uri->value);
       if(isset($muris['preview'])){    
-        $a_child = '<img src="'.$muris['preview']['uri'].'" />';
+        
+        $a_child = '<img src="'.$muris['preview']['uri'].'" '
+          .($muris['preview']['size_x'] ? 'width="'.$muris['preview']['size_x'].'"' : '')
+          .($muris['preview']['size_y'] ? 'width="'.$muris['preview']['size_y'].'"' : '')
+          .'/>';
       } else {
         $a_child = '<img src="'.$image_url.'" />';
       }
+      $webapp_access = '';
       $media_row .= '<td><a href="'.$uri->value.'" target="'.$uri->uuid.'">'.$a_child.'</a></td>';
-      $meta_row .= '<td><span class="label">'.check_plain($specimen->specimenLabel).'</span></td>';
+      $meta_row .= '<td><span class="label">'.check_plain($specimen->specimenLabel).'</span>'.$webapp_access.'</td>';
     }
     $out .= $media_row.'</tr>';
     $out .= $meta_row.'</tr>';

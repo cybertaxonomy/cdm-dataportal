@@ -249,7 +249,7 @@ function theme_cdm_taxontree_node($node, $isFocused, $filterIncludes){
   
   // filter icon 
   $out .= '&nbsp;'
-     .l('<img src="'.drupal_get_path('module', 'cdm_taxontree').'/'.$filter_icon.'" alt="[f]"', 
+     .l('<img src="'.drupal_get_path('module', 'cdm_taxontree').'/'.$filter_icon.'" alt="[f]" />', 
     'cdm_dataportal/filter/'.$filter_op.'/'.$node->uuid, array('class'=>'filter_'.$filter_op), 
     'destination='.cdm_dataportal_taxon_path($node->uuid), 
      null, false, true);
@@ -260,7 +260,7 @@ function theme_cdm_taxontree_node($node, $isFocused, $filterIncludes){
   // concept_switch
   if(isset($node->alternativeConceptRefs[0])){
     $out .= l(
-      '<img src="'.drupal_get_path('module', 'cdm_taxontree').'/concept_switch.gif" alt="[-&gt;]"', 
+      '<img src="'.drupal_get_path('module', 'cdm_taxontree').'/concept_switch.gif" alt="[-&gt;]" />', 
       'cdm_dataportal/taxon/alternative/'.$node->uuid, 
       array('rel'=>'cdm_dataportal/taxon/alternative/'.$node->uuid, 'class'=>'concept_switch'), 
       null, null, false, true);

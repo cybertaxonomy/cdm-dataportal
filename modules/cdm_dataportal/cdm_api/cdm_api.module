@@ -466,8 +466,10 @@ define('CDM_WS_ACCEPTED_TAXON', 'accepted');
  * 
  * Gets the root nodes of the taxonomic concept tree for the concept
  * reference specified by the secUuid parameter.
+ * 
+ * stub: treenode_root
  */
-define('CDM_WS_TREENODE_ROOT', 'treenode_root');
+define('CDM_WS_TREENODE_ROOT', 'taxonomy/root');
 
 /**
  * Web Service Arguments: {taxonUuid}
@@ -476,14 +478,18 @@ define('CDM_WS_TREENODE_ROOT', 'treenode_root');
  * from the taxon which is referenced by the parameter taxonUuid down to its
  * root. The reference taxon will also be included into the returned set of
  * TreeNode instances.
+ * 
+ * stub: treenode_parents
  */
-define('CDM_WS_TREENODE_PARENTS', 'treenode_parents');
+define('CDM_WS_TREENODE_PARENTS', 'taxonomy/parents');
 
 /**
  * Web Service Arguments: {taxonUuid}
  * 
  * returns the children of the taxon referenced by the parameter
  * taxonUuid.
+ * 
+ * stub: treenode_children
  */
-define('CDM_WS_TREENODE_CHILDREN', 'treenode_children');
+define('CDM_WS_TREENODE_CHILDREN', 'taxonomy/children');
 

@@ -65,7 +65,28 @@ function cdm_dataportal_menu($may_cache) {
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
       'callback arguments' => 'cdm_dataportal_settings',
-      'type' => MENU_NORMAL_ITEM,
+    );
+    
+       $items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/ws',
+      'title' => t('Web Service'),
+      'description' => t('Setting for the CDM Dataportal'),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_dataportal_settings',
+      'weight' => 1,
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+    );
+    
+    $items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/rules',
+      'title' => t('Media URI Conversion'),
+      'description' => t('Define Media URI Conversion Rules'),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_dataportal_settings_rules',
+      'weight' => 2,
+      'type' => MENU_LOCAL_TASK,
     );
 
     $items[] = array(
@@ -297,6 +318,131 @@ function cdm_dataportal_settings(){
   return system_settings_form($form);
 }
 
+function cdm_dataportal_settings_rules(){
+  $form = array();
+
+  $rules = cdm_dataportal_mediaUri_converion_rules();
+   /*
+   * rules
+   * 
+   *  ['type']: values(preview, webapp, media)
+   *  ['size_x'], ['size_y']: dimensions of preview image in px
+   *  ['pattern']: php PCRE regex pattern (see: http://www.php.net/manual/reference.pcre.pattern.syntax.php)
+   *  ['replace']: replacement string 
+   *  ['prefix']: string by which the converted url is to be prefixed
+   *  ['affix']: string by which the converted url is to be affixed
+   *  ['url_encode']: values(TRUE, FALSE) if the converted url is to be url encoded
+   *  ['embed_html']: embes the construct of prefix + url + affix into the page as plain html
+   * 
+   */
+  $new_rule = array();
+  $new_rule['type'] = 'empty';
+  $new_rule['pattern'] = '';
+  $new_rule['replace'] = '';
+  $new_rule['prefix'] = ''; 
+  $new_rule['affix'] = '';
+  $new_rule['url_encode'] = 0; 
+  $new_rule['embed_html'] = 0;
+  
+  $rules[] = $new_rule;
+  
+  $cnt = -1;
+  
+  $form['cdm_dataportal_rules'] = array(
+      '#type' => 'fieldset',
+      '#tree' => true,
+    );
+    
+  foreach($rules  as $rule){
+    $cnt++;
+    
+    $form['cdm_dataportal_rules'][$cnt] = array(
+      '#type' => 'fieldset',
+      '#title' => ($rule['type'] == 'empty' ? t('New Rule') : t('Rule '.$cnt)),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#tree' => TRUE,
+    );
+    
+    $form['cdm_dataportal_rules'][$cnt]['type'] =  array(
+      '#type'  => 'select',
+      '#title' => t('Type'),
+      '#default_value' => $rule['type'],
+      '#options' => array(
+          'preview' => t('Preview Quality'),
+          'webapp' => t('Web Application'),
+          ),
+      '#description'   => t('The type media representation.'),
+    );
+    
+   $form['cdm_dataportal_rules'][$cnt]['pattern'] =  array(
+    '#type' => 'textarea',
+    '#title'         => t('Pattern'),
+    '#description'   => t('php PCRE regex pattern (see: ').l('php manual', 'http://www.php.net/manual/reference.pcre.pattern.syntax.php').')',
+    '#default_value' => $rule['pattern'],
+    '#rows' => 1
+  );
+  
+  $form['cdm_dataportal_rules'][$cnt]['replace'] =  array(
+    '#type' => 'textarea',
+    '#title'         => t('Replacement'),
+    '#default_value' => $rule['replace'],
+    '#rows' => 1,
+   );
+  
+  $form['cdm_dataportal_rules'][$cnt]['url_encode'] =  array(
+    '#type' => 'checkbox',
+    '#title'         => t('Url Encode'),
+    '#default_value' => $rule['url_encode'],
+    '#description'   => t('Whether the converted url is to be url encoded')
+   );
+  
+  //  ['embed_html'] = 1;
+  
+  $form['cdm_dataportal_rules'][$cnt]['embed_html'] =  array(
+    '#type' => 'checkbox',
+    '#title'         => t('Embed'),
+    '#default_value' => $rule['embed_html'],
+    '#description'   => t('Embed the construct of prefix + url + affix into the page as plain html')
+   );
+  
+   
+  $form['cdm_dataportal_rules'][$cnt]['prefix'] =  array(
+    '#type' => 'textarea',
+    '#title'   => t('Prefix'),
+    '#default_value' => $rule['prefix'],
+    '#rows' => 1,
+  );
+  
+    $form['cdm_dataportal_rules'][$cnt]['affix'] =  array(
+    '#type' => 'textarea',
+    '#title'   => t('Affix'),
+    '#default_value' => $rule['affix'],
+    '#rows' => 1,
+  );
+  
+   $form['cdm_dataportal_rules'][$cnt]['size_x'] =  array(
+    '#type' => 'textfield',
+    '#title'         => t('Preview Image Width'),
+    '#default_value' => $rule['size_x'],
+    '#disabled' => $rule['type'] != 'preview',
+    '#description'   => t('Width of preview image in px'),
+    '#size' => 4, 
+  );
+  
+  $form['cdm_dataportal_rules'][$cnt]['size_y'] =  array(
+    '#type' => 'textfield',
+    '#title'         => t('Preview Image Height'),
+    '#default_value' => $rule['size_y'],
+    '#disabled' => $rule['type'] != 'preview',
+    '#description'   => t('Height of preview image in px'),
+    '#size' => 4, 
+  );
+    
+  }
+  
+  return system_settings_form($form);
+}
 
 /**
  * Displays a list of the known taxonomic names. Long lists are split up into multiple pages
@@ -542,6 +688,84 @@ function &cdm_dataportal_filters_get(){
     $_SESSION['cdm']['filters'] = array();
   }
  return $_SESSION['cdm']['filters'];
+}
+
+
+function cdm_dataportal_mediaUri_converion_rules(){
+  /*
+   * rules
+   * 
+   *  ['type']: values(preview, webapp, media)
+   *  ['size_x'], ['size_y']: dimensions of preview image in px
+   *  ['pattern']: php PCRE regex pattern (see: http://www.php.net/manual/reference.pcre.pattern.syntax.php)
+   *  ['replace']: replacement string 
+   *  ['prefix']: string by which the converted url is to be prefixed
+   *  ['affix']: string by which the converted url is to be affixed
+   *  ['url_encode']: values(TRUE, FALSE) if the converted url to be url encoded
+   *  ['embed_html']: embes the construct of prefix + url + affix into the page as plain html
+   * 
+   */
+  // default rules
+  /*
+  $rule1 = array();
+  $rule1['type'] = 'preview';
+  $rule1['pattern'] = '/^(http:\/\/ww2.bgbm.org\/herbarium\/images(?:\/\w+)(?:\/\d+){4})(\/)(.*)$/';
+  $rule1['replace'] = '$1/thumbs/$3';
+  $rule1['size_x'] = 125;
+  $rule1['size_Y'] = 200;
+  
+  $rule2 = array();
+  $rule2['type'] = 'webapp';
+  $rule2['pattern'] = '/^http:\/\/ww2.bgbm.org\/herbarium\/images\/((?:\w+\/)(?:\d+\/){4}[\w_]+?\.)(.*)$/';
+  $rule2['replace'] = '$1fpx';
+  $rule2['prefix'] = '<embed width="490" height="700" align="middle" type="application/x-shockwave-flash" 
+       pluginspage="http://www.macromedia.com/go/getflashplayer" name="FSIViewer" 
+       bgcolor="black" quality="high" play="true" 
+       src="http://ww2.bgbm.org/fsi/fsi.swf?cfg=plugin2&FPXSrc='; 
+  $rule2['affix'] = '&FPXWidth=2801&FPXHeight=4478&Effects=qlt%3D85&InitialView=&Measure_ImageWidth=270.0&Measure_Suffix=%20mm"/>';
+  $rule2['url_encode'] = 1; 
+  $rule2['embed_html'] = 1;
+  return array($rule1, $rule2);
+  */
+  
+  return variable_get('cdm_dataportal_rules', array());
+  
+  
+}
+
+/**
+ * Converts a media uri according to all matching conversion rules which are currently defined.
+ * 
+ * Format of a returned array element:
+ * 
+ *  $return_array[{type}] { // values for {type}:(preview, webapp, media, original)
+ *      ['size_x'],         // dimensions of preview image in px
+ *      ['size_y'],         // dimensions of preview image in px
+ *      ['uri']             //the uri 
+ *  }
+ * 
+ * @return returns an associative array of the original media uri and all convered 
+ *    whereas the rule type becomes the array key of the array entries.
+ *    All uris are again packed into associative arrays by means to submit 
+ *    additional information as defined in the rules applied. 
+ */
+function cdm_dataportal_mediaUri_conversion($mediaUri){
+  
+  $rules = cdm_dataportal_mediaUri_converion_rules();
+  
+  $muris = array();
+  $muris['original'] = array('uri' => $mediaUri, 'size_x'=>null, 'size_y'=>null);
+  
+  foreach($rules as $rule){
+      $uri_converted = preg_replace($rule['pattern'], $rule['replace'], $mediaUri);
+      if($uri_converted != $mediaUri){
+        if(isset($rule['url_encode']) && $rule['url_encode']){
+          $uri_converted = urlencode($uri_converted);
+        }
+        $muris[$rule['type']] = array('uri'=>$uri_converted, 'size_x'=>$rule['size_x'], 'size_y'=>$rule['size_y']);
+      }
+  }
+  return $muris;
 }
 
 /**

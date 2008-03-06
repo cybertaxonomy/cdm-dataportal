@@ -80,7 +80,9 @@ ul li.dynabox .label{
  cursor: default;
 }
 
-
+.tickbox_content{
+	display: none;
+}
 
 .pager strong, .pager a {
 	-moz-border-radius-bottomleft:2px;
