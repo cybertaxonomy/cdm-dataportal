@@ -81,12 +81,12 @@ function cdm_api_settings_form(){
   );
 
   $form['cdm_webservice']['cdm_webservice_type'] =  array(
-    '#type' => 'select',
+    '#type'          => 'select',
     '#title'         => t('Web Service Type'),
     '#default_value' => variable_get('cdm_webservice_type', 'json'),
-    '#options' => array(
-        'xml' => t('XML'),
-        'json' => t('JSON'),
+    '#options'       => array(
+            'xml'  => t('XML'),
+            'json' => t('JSON'),
         ),
     '#description'   => t('The response data type of the web service.'),
   );
@@ -315,7 +315,8 @@ function cdm_load_obj($datastr){
   if(variable_get('cdm_webservice_type', 'xml') == 'xml'){
     $datastr = xml2json::transformXmlStringToJson($datastr);  
   }
-  if(variable_get('cdm_webservice_isStub', 0)){
+  $use_stub = variable_get('cdm_webservice_isStub', 0); 
+  if($use_stub){
     // --- for STUBS use the more syntax tolerant PEAR json lib --- //
     $json_pear = new Services_JSON();
     $obj = $json_pear->decode($datastr);
@@ -324,7 +325,7 @@ function cdm_load_obj($datastr){
     $obj = json_decode($datastr);
   }
   
-  if(!is_object($obj) || !isset($obj->root)){
+  if(!(is_object($obj) || is_array($obj)) || ($use_stub && !isset($obj->root)) ){
     ob_start();
     var_dump($obj);
     $obj_dump = ob_get_contents();
@@ -333,7 +334,11 @@ function cdm_load_obj($datastr){
     return false;
   }
 
-  return $obj->root;
+  if($use_stub){
+    $arr = (array)$obj;
+    $obj = array_pop($arr);
+  }
+  return $obj;
 }
 
 /**

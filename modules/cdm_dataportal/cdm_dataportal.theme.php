@@ -407,7 +407,10 @@ function theme_cdm_specimen($specimen){
     $meta_row = '<tr class="meta_data">';
     
     foreach($specimen->mediaURI as $uri){
-      $muris = cdm_dataportal_mediaUri_conversion($uri->value);
+      // get media uri conversion rules if the module is installed and activated
+      if(module_exists('cdm_mediauri')){
+        $muris = cdm_mediauri_mediaUri_conversion($uri->value);
+      }
       if(isset($muris['preview'])){    
         
         $a_child = '<img src="'.$muris['preview']['uri'].'" '
