@@ -381,7 +381,12 @@ function theme_cdm_specimen($specimen){
   //$specimen->uuid
   
   // ---- jQuery ThickBox:
-  // bug: thickbox.js line 237 .trigger("unload") -> event is not triggered
+  /*
+   * bug: compat-1.0.js && thickbox.js line 237 .trigger("unload")
+   * -> event is not triggered because of problems with compat-1.0.js'
+   * 
+   */
+  
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.css');
   
@@ -407,10 +412,12 @@ function theme_cdm_specimen($specimen){
     $meta_row = '<tr class="meta_data">';
     
     foreach($specimen->mediaURI as $uri){
+      
       // get media uri conversion rules if the module is installed and activated
       if(module_exists('cdm_mediauri')){
-        $muris = cdm_mediauri_mediaUri_conversion($uri->value);
+        $muris = cdm_mediauri_conversion($uri->value);
       }
+      // --- handle media preview rules
       if(isset($muris['preview'])){    
         
         $a_child = '<img src="'.$muris['preview']['uri'].'" '
@@ -420,9 +427,19 @@ function theme_cdm_specimen($specimen){
       } else {
         $a_child = '<img src="'.$image_url.'" />';
       }
-      $webapp_access = '';
+      
+      // --- handle web application rules
+      $webapp = '';
+      if(isset($muris['webapp'])){
+        if($muris['webapp']['embed_html']){
+          // embed in same page
+          $webapp = $muris['webapp']['embed_html'];  
+        } else {
+          $webapp = l(t('web application'), $muris['webapp']['uri']);            
+        }
+      }
       $media_row .= '<td><a href="'.$uri->value.'" target="'.$uri->uuid.'">'.$a_child.'</a></td>';
-      $meta_row .= '<td><span class="label">'.check_plain($specimen->specimenLabel).'</span>'.$webapp_access.'</td>';
+      $meta_row .= '<td><span class="label">'.check_plain($specimen->specimenLabel).'</span><div class="webapp">'.$webapp.'</div></td>';
     }
     $out .= $media_row.'</tr>';
     $out .= $meta_row.'</tr>';

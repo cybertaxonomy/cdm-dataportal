@@ -18,6 +18,17 @@ Required additional Drupal Modules:
   cdm_dataportl requires jQuery version 1.2.1
   The contributed Drupal module 'jquery_update' however updates only to version 1.1.2, 
   thus a manual update as described in http://drupal.org/node/196140 is nessecary.  
+  
+  I addition you must edit compat-1.0.js: replace lines 24 - 26 by:
+  
+          /*
+           * a.kohlbecker: unload is still a valid event type and must not be replaced! 
+           *               compat-1.0.js breaks plugins wich are using this event e.g. thickbox
+           *  => thus I removed load from var e.
+           */ 
+          var e = ("blur,focus, resize,scroll,unload,click,dblclick," +
+            "mousedown,mouseup,mousemove,mouseover,mouseout,change,reset,select," + 
+            "submit,keydown,keypress,keyup,error").split(",");
 
 
 Installation procedure:

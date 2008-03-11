@@ -67,6 +67,18 @@ function cdm_mediauri_menu($may_cache) {
       'callback arguments' => array('cdm_mediauri_rule_delete'),
       'type' => MENU_CALLBACK,
     );
+    
+    $rules = cdm_mediauri_rules();
+    foreach($rules as $rule){
+      if($rule['embed_html'] && $rule['path']){
+        $items[] = array(
+          'path' => $rule['path'],
+          'access' => true, //TODO restrict access
+          'callback' => 'cdm_mediauri_view_embed',
+          'type' => MENU_CALLBACK,
+        );
+      }
+    }
 
   }
   return $items;
@@ -133,6 +145,11 @@ function cdm_mediauri_rule_edit_submit($form_id, $form_values) {
   
   if(is_numeric($form_values['rid'])){
     $rules = cdm_mediauri_rules();
+    // determine if the menu has changed
+    if($rules[$form_values['rid']]['embed'] != $form_values['rule']['embed'] || $rules[$form_values['rid']]['path'] != $form_values['rule']['path']) {    
+      menu_rebuild();
+      drupal_set_message('Menu Rebuild');
+    }
     $rules[$form_values['rid']] = $form_values['rule'];
     variable_set('cdm_mediauri_rules', $rules);
      drupal_set_message('Rule saved');
@@ -188,6 +205,8 @@ function cdm_mediauri_rule_edit_form($rid = 'new'){
       $rule['affix'] = '';
       $rule['url_encode'] = 0; 
       $rule['embed_html'] = 0;
+      $rule['path'] = '';
+      $rule['title'] = '';
     }
   } else {
     $rules = cdm_mediauri_rules(); 
@@ -246,13 +265,6 @@ function cdm_mediauri_rule_edit_form($rid = 'new'){
     '#rows' => 1,
    );
   
-  $form['rule']['url_encode'] =  array(
-    '#type' => 'checkbox',
-    '#title'         => t('Url Encode'),
-    '#default_value' => $rule['url_encode'],
-    '#description'   => t('Whether the converted url is to be url encoded')
-   );
-  
   //  ['embed_html'] = 1;
   
   $form['rule']['embed_html'] =  array(
@@ -261,6 +273,29 @@ function cdm_mediauri_rule_edit_form($rid = 'new'){
     '#default_value' => $rule['embed_html'],
     '#description'   => t('Embed the construct of prefix + url + affix into the page as plain html')
    );
+
+   $form['rule']['url_encode'] =  array(
+    '#type' => 'checkbox',
+    '#title'         => t('Url Encode'),
+    '#default_value' => $rule['url_encode'],
+    '#description'   => t('Whether the converted url is to be url encoded')
+   );
+  
+   
+  $form['rule']['path'] =  array(
+    '#type'          => 'textfield',
+    '#title'         => t('Drupal Path'),
+    '#default_value' => $rule['path'],
+    '#description'   => t('Drupal Path under which the media is to be embedded into a page')
+  );
+  
+  
+  $form['rule']['title'] =  array(
+    '#type'          => 'textfield',
+    '#title'         => t('Page Title'),
+    '#default_value' => $rule['title'],
+    '#description'   => t('Page Title')
+  );
   
    
   $form['rule']['prefix'] =  array(
@@ -323,18 +358,36 @@ function cdm_mediauri_rules($default = false){
   $rule1['size_x'] = 125;
   $rule1['size_Y'] = 200;
   
+  
   $rule2 = array();
   $rule2['type'] = 'webapp';
   $rule2['pattern'] = '/^http:\/\/ww2.bgbm.org\/herbarium\/images\/((?:\w+\/)(?:\d+\/){4}[\w_]+?\.)(.*)$/';
   $rule2['replace'] = '$1fpx';
-  $rule2['prefix'] = '<embed width="490" height="700" align="middle" type="application/x-shockwave-flash" 
+  $rule2['prefix'] = '<div style="float: left; width: 10em;">
+  <p>© BGBM: <br>
+  Access is granted under the following conditions:<br>
+  The images may not passed on to any third party without our written
+  consent and due mention of the copyright restrictions, and may not be
+  used for commercial or non-scientific purposes. Reproduction in
+  scientific publications is authorized on the condition that the source
+  and the copyright are fully acknowledged:<br>
+  © Botanischer Garten und Botanisches Museum Berlin-Dahlem, FU Berlin.</li>
+</p>
+<p><a href="http://www.bgbm.org/bgbm/verantwo_e.htm"
+    class="leftnavi" title="Contact">Contact</a> | <a href="http://www.bgbm.org/bgbm/imprint.htm"
+    class="leftnavi" title="Impressum">Imprint</a> | <a href="http://www.bgbm.org/disclaim_e.htm" class="leftnavi"
+    title="Disclaimer">Disclaimer</a>
+</p>
+</div><div><embed width="490" height="700" align="middle" type="application/x-shockwave-flash" 
        pluginspage="http://www.macromedia.com/go/getflashplayer" name="FSIViewer" 
        bgcolor="black" quality="high" play="true" 
        src="http://ww2.bgbm.org/fsi/fsi.swf?cfg=plugin2&FPXSrc='; 
-  $rule2['affix'] = '&FPXWidth=2801&FPXHeight=4478&Effects=qlt%3D85&InitialView=&Measure_ImageWidth=270.0&Measure_Suffix=%20mm"/>';
+  $rule2['affix'] = '&FPXWidth=2801&FPXHeight=4478&Effects=qlt%3D85&InitialView=&Measure_ImageWidth=270.0&Measure_Suffix=%20mm"/></div>';
   $rule2['url_encode'] = 1; 
   $rule2['embed_html'] = 1;
-    return array($rule1, $rule2);
+  $rule2['path'] = 'bgbm.org/herbarium';
+  
+  return array($rule1, $rule2);
   
   } else {
     return variable_get('cdm_mediauri_rules', array());
@@ -350,7 +403,8 @@ function cdm_mediauri_rules($default = false){
  *  $return_array[{type}] { // values for {type}:(preview, webapp, media, original)
  *      ['size_x'],         // dimensions of preview image in px
  *      ['size_y'],         // dimensions of preview image in px
- *      ['uri']             //the uri 
+ *      ['uri']             // the uri possibly prefixed with path
+ *      ['embed_html']      // the uri embedded into some string
  *  }
  * 
  * @return returns an associative array of the original media uri and all convered 
@@ -372,7 +426,43 @@ function cdm_mediauri_conversion($mediaUri){
           $uri_converted = urlencode($uri_converted);
         }
         $muris[$rule['type']] = array('uri'=>$uri_converted, 'size_x'=>$rule['size_x'], 'size_y'=>$rule['size_y']);
+        if(isset($rule['embed_html']) && $rule['embed_html']){
+          if($rule['path']){
+            // embed later on other page
+            $muris[$rule['type']]['uri'] = $rule['path'].'/'.$uri_converted;
+          } else {
+            // direct embed
+            $muris[$rule['type']]['embed_html'] =  $rule['prefix'].$uri_converted.$rule['affix'];
+          }
+        }
       }
   }
   return $muris;
+}
+
+function cdm_mediauri_view_embed($uri){
+  
+  $path = '';
+  for($i = 0; ($arg = arg($i)); $i++){
+    if($arg == $uri){
+      break;
+    } else {
+      $path .= ($path ? '/': '').$arg;
+    }
+  }
+  
+  $rule = false;
+  foreach(cdm_mediauri_rules() as $r){
+    if($r['embed_html'] && $r['path'] == $path){
+      $rule = $r;
+      break;
+    }
+  }
+  
+  if($rule){
+    drupal_set_title($rule['title']);
+    return $rule['prefix'].$uri.$rule['affix'];
+  }
+  
+  return 'ERROR:'.$path.$uri;
 }
