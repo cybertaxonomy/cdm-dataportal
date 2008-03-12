@@ -12,11 +12,11 @@
         "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
         "taggedName":[
           {
-            "tag":"name",
+            "type":"name",
             "text":"Acanthocephalus amplexifolius"
           },
           {
-            "tag":"authors",
+            "type":"authors",
             "text":"Kar. & Kir."
           }
         ]
@@ -31,11 +31,11 @@
         "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
         "taggedName":[
           {
-            "tag":"name",
+            "type":"name",
             "text":"Acanthocephalus amplexifolius"
           },
           {
-            "tag":"authors",
+            "type":"authors",
             "text":"Vassilcz."
           }
         ]
@@ -50,11 +50,11 @@
         "fullname":"Acanthocephalus benthamianus Regel",
         "taggedName":[
           {
-            "tag":"name",
+            "type":"name",
             "text":"Acanthocephalus benthamianus"
           },
           {
-            "tag":"authors",
+            "type":"authors",
             "text":"Regel"
           }
         ]

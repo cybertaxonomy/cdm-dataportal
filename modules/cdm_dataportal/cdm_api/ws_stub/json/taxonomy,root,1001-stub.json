@@ -15,11 +15,11 @@
       "fullname":"Cichorieae Lam. & DC.",
       "taggedName":[
         {
-          "tag":"name",
+          "type":"name",
           "text":"Cichorieae"
         },
         {
-          "tag":"authors",
+          "type":"authors",
           "text":"Lam. & DC."
         }
       ],

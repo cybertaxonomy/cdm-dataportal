@@ -10,11 +10,11 @@
         "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
         "taggedName":[
             {
-              "tag":"name",
+              "type":"name",
               "text":"Harpocarpus amplexifolius"
             },
             {
-              "tag":"authors",
+              "type":"authors",
               "text":"(Kar. & Kir.) Walp."
             }
           ],

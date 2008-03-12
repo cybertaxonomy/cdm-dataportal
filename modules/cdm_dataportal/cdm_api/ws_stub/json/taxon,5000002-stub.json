@@ -10,11 +10,11 @@
       "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
       "taggedName":[
         {
-          "tag":"name",
+          "type":"name",
           "text":"Acanthocephalus amplexifolius"
         },
         {
-          "tag":"authors",
+          "type":"authors",
           "text":"Kar. & Kir."
         }
       ],
@@ -43,11 +43,11 @@
             "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
             "taggedName":[
               {
-                "tag":"name",
+                "type":"name",
                 "text":"Harpocarpus amplexifolius"
               },
               {
-                "tag":"authors",
+                "type":"authors",
                 "text":"(Kar. & Kir.) Walp."
               }
             ],
@@ -83,11 +83,11 @@
             "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
             "taggedName":[
               {
-                "tag":"name",
+                "type":"name",
                 "text":"Harpocarpus amplexifolius"
               },
               {
-                "tag":"authors",
+                "type":"authors",
                 "text":"(Kar. & Kir.) Walp."
               }
             ],
@@ -126,11 +126,11 @@
               "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
               "taggedName":[
                 {
-                  "tag":"name",
+                  "type":"name",
                   "text":"Harpocarpus amplexifolius"
                 },
                 {
-                  "tag":"authors",
+                  "type":"authors",
                   "text":"(Kar. & Kir.) Walp."
                 }
               ],
@@ -159,11 +159,11 @@
               "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
               "taggedName":[
                 {
-                  "tag":"name",
+                  "type":"name",
                   "text":"Harpocarpus amplexifolius"
                 },
                 {
-                  "tag":"authors",
+                  "type":"authors",
                   "text":"(Kar. & Kir.) Walp."
                 }
               ],
@@ -192,11 +192,11 @@
               "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
               "taggedName":[
                 {
-                  "tag":"name",
+                  "type":"name",
                   "text":"Harpocarpus amplexifolius"
                 },
                 {
-                  "tag":"authors",
+                  "type":"authors",
                   "text":"(Kar. & Kir.) Walp."
                 }
               ],
@@ -227,11 +227,11 @@
               "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
               "taggedName":[
                 {
-                  "tag":"name",
+                  "type":"name",
                   "text":"Harpocarpus amplexifolius"
                 },
                 {
-                  "tag":"authors",
+                  "type":"authors",
                   "text":"(Kar. & Kir.) Walp."
                 }
               ],
@@ -260,11 +260,11 @@
               "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
               "taggedName":[
                 {
-                  "tag":"name",
+                  "type":"name",
                   "text":"Harpocarpus amplexifolius"
                 },
                 {
-                  "tag":"authors",
+                  "type":"authors",
                   "text":"(Kar. & Kir.) Walp."
                 }
               ],
@@ -293,11 +293,11 @@
               "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
               "taggedName":[
                 {
-                  "tag":"name",
+                  "type":"name",
                   "text":"Harpocarpus amplexifolius"
                 },
                 {
-                  "tag":"authors",
+                  "type":"authors",
                   "text":"(Kar. & Kir.) Walp."
                 }
               ],
@@ -328,11 +328,11 @@
               "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
               "taggedName":[
                 {
-                  "tag":"name",
+                  "type":"name",
                   "text":"Harpocarpus amplexifolius"
                 },
                 {
-                  "tag":"authors",
+                  "type":"authors",
                   "text":"(Kar. & Kir.) Walp."
                 }
               ],
@@ -361,11 +361,11 @@
               "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
               "taggedName":[
                 {
-                  "tag":"name",
+                  "type":"name",
                   "text":"Harpocarpus amplexifolius"
                 },
                 {
-                  "tag":"authors",
+                  "type":"authors",
                   "text":"(Kar. & Kir.) Walp."
                 }
               ],
@@ -394,11 +394,11 @@
               "fullname":"Harpocarpus amplexifolius (Kar. & Kir.) Walp., Repert. Bot. Syst. 2: 666. 1843",
               "taggedName":[
                 {
-                  "tag":"name",
+                  "type":"name",
                   "text":"Harpocarpus amplexifolius"
                 },
                 {
-                  "tag":"authors",
+                  "type":"authors",
                   "text":"(Kar. & Kir.) Walp."
                 }
               ],

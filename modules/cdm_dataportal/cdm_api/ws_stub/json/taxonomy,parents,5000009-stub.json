@@ -14,11 +14,11 @@
         "fullname":"Cichorieae Lam. & DC.",
         "taggedName":[
           {
-            "tag":"name",
+            "type":"name",
             "text":"Cichorieae"
           },
           {
-            "tag":"authors",
+            "type":"authors",
             "text":"Lam. & DC."
           }
         ],
@@ -32,11 +32,11 @@
           "fullname":"Agoseris Raf.",
           "taggedName":[
             {
-              "tag":"name",
+              "type":"name",
               "text":"Agoseris"
             },
             {
-              "tag":"authors",
+              "type":"authors",
               "text":"Raf."
             }
           ],

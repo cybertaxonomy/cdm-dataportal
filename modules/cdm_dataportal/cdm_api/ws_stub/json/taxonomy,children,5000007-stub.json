@@ -14,11 +14,11 @@
       "fullname":"Acanthocephalus Kar. & Kir.",
       "taggedName":[
         {
-          "tag":"name",
+          "type":"name",
           "text":"Acanthocephalus "
         },
         {
-          "tag":"authors",
+          "type":"authors",
           "text":"Kar. & Kir."
         }
       ],
@@ -32,11 +32,11 @@
       "fullname":"Agoseris Raf.",
       "taggedName":[
         {
-          "tag":"name",
+          "type":"name",
           "text":"Agoseris"
         },
         {
-          "tag":"authors",
+          "type":"authors",
           "text":"Raf."
         }
       ],

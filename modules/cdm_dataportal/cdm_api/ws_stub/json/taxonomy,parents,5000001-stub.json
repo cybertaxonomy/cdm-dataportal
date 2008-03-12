@@ -14,11 +14,11 @@
         "fullname":"Cichorieae Lam. & DC.",
         "taggedName":[
           {
-            "tag":"name",
+            "type":"name",
             "text":"Cichorieae"
           },
           {
-            "tag":"authors",
+            "type":"authors",
             "text":"Lam. & DC."
           }
         ],
@@ -32,11 +32,11 @@
           "fullname":"Acanthocephalus Kar. & Kir.",
           "taggedName":[
             {
-              "tag":"name",
+              "type":"name",
               "text":"Acanthocephalus "
             },
             {
-              "tag":"authors",
+              "type":"authors",
               "text":"Kar. & Kir."
             }
           ],
@@ -50,11 +50,11 @@
         "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
         "taggedName":[
           {
-            "tag":"name",
+            "type":"name",
             "text":"Acanthocephalus amplexifolius"
           },
           {
-            "tag":"authors",
+            "type":"authors",
             "text":"Kar. & Kir."
           }
         ],
