@@ -7,7 +7,7 @@
 function cdm_api_install(){
   
   db_query("CREATE TABLE {cache_cdm_ws} (
-    cid varchar(255) NOT NULL default '',
+    cid varchar(2048) NOT NULL default '',
     data longblob,
     expire int NOT NULL default '0',
     created int NOT NULL default '0',
