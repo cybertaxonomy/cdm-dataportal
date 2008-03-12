@@ -187,6 +187,8 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
     //_cdm_dataportal_set_currentSecUuid(false);
     // reset all cdm related data stored in the session
     $_SESSION['cdm'] = null;
+    // clear the cdm webservice cache
+    cache_clear_all(NULL, 'cache_cdm_ws');
   }
   
 }
@@ -509,7 +511,14 @@ function cdm_dataportal_taxon_path($uuid){
  */
 function cdm_dataportal_shortname_of($NameSTO){
 
-  $name = trim(cdm_taggedtext_value($NameSTO->taggedName, 'name'));
+  $name = '';
+  // get all tagged text tokens of the scientific name
+  foreach($NameSTO->taggedName as $tagtxt){
+      if($tagtxt->type == 'name' || $tagtxt->type == 'rank'){
+        $name .= ($name ? ' ' : '').$tagtxt->text;
+      }
+  }
+  $name = trim($name);
   if($name){
     if( $pos = stripos($name, ' ')){
       return substr($name, 0, 1).'. '.substr($name, $pos);
