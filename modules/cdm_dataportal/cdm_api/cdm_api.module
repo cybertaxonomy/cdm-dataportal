@@ -105,7 +105,8 @@ function cdm_api_settings_form(){
     '#type' => 'checkbox',
     '#title'         => t('Enable Caching'),
     '#default_value' => variable_get('cdm_webservice_cache', 1),
-    '#description'   => t('Enable caching of some webservice responses')
+    '#description'   => t('Enable caching of webservice responses on simple requests, '
+      .'that is requests which only have one parameter generally a UUID or a concatenation of UUIDs')
   );
   
   $form['cdm_webservice']['proxy'] = array(
@@ -317,9 +318,9 @@ function cdm_ws_load($url, $is_multi_paramater_query){
     }
   } else {
     $obj = unserialize($cache_entry->data);
-    if(variable_get('cdm_webservice_debug', 1)){
+    /*if(variable_get('cdm_webservice_debug', 1)){
       drupal_set_message('Using cache for: '.$url, 'debug');
-    }
+    }*/
   }
   return $obj;
 }

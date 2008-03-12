@@ -566,11 +566,17 @@ function _cdm_dataportal_currentSecRef_array(){
   return  $_SESSION['cdm']['currentSecRef'];
 }
 
-function cdm_dataportal_filters_areset(){
+/**
+ * filters are set in cdm_dataportal_view_filter()
+ *
+ * @return true if any filter is active
+ */
+function cdm_dataportal_filters_active(){
  return isset($_SESSION['cdm']['filters']) && count($_SESSION['cdm']['filters']) > 0;
 }
 
 /**
+ * filters are set in cdm_dataportal_view_filter()
  * @return a reference on the filters array stored in the SESSION
  */
 function &cdm_dataportal_filters_get(){
