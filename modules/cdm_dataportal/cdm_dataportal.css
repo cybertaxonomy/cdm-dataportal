@@ -49,6 +49,10 @@ ul.typeDesignations li{
 	display: none;
 }
 
+img.preview {
+	margin: 5px 30px;
+}
+
 ul li.synonym{
   list-style-type: none;
   background-image: none;

@@ -7,6 +7,7 @@
 		  
 var tb_pathToImage = "images/loadingAnimation.gif";
 
+
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
 
 //on page load call tb_init
@@ -218,9 +219,7 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 			
 				if(url.indexOf('TB_inline') != -1){	
 					$("#TB_ajaxContent").append($('#' + params['inlineId']).children());
-          console.debug($("#TB_ajaxContent").children());
 					$("#TB_window").unload(function () {
-					   console.debug($("#TB_ajaxContent").children());
 						$('#' + params['inlineId']).append( $("#TB_ajaxContent").children() ); // move elements back when you're finished
 					});
 					tb_position();

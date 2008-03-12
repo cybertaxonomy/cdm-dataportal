@@ -10,6 +10,20 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
+function _add_js_thickbox(){
+   // ---- jQuery ThickBox:
+  /*
+   * bug: compat-1.0.js && thickbox.js line 237 .trigger("unload")
+   * -> event is not triggered because of problems with compat-1.0.js'
+   * see INSTALL.txt
+   * 
+   */
+  
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_thickbox.css');
+    
+}
+
 function tagNameParts($name, $numOfNameTokens){
     
     $out = '<span class="name">';
@@ -228,12 +242,10 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
     $nomref_citation = $referenceSTO->citation; 
   }
 
-  $module_path = drupal_get_path('module', 'cdm_dataportal');
-  drupal_add_js($module_path.'/js/jquery_lightbox/js/jlightbox.uncompressed.js');
-  drupal_add_css($module_path.'/js/jquery_lightbox/css/jlightbox.css', 'module', 'screen');
-  
+  _add_js_thickbox();
+    
   if( count($referenceSTO->mediaURI) > 0 ){
-    $attributes = array('rel'=>'lightbox[protologues]');
+    $attributes = array('class'=>'thickbox', 'rel'=>'protologues-'.$referenceSTO->uuid);
     $out = l($nomref_citation, $referenceSTO->mediaURI[0]->value, $attributes, NULL, NULL, TRUE);
     for($i = 1;  $i < count($referenceSTO->mediaURI); $i++) {
       $out .= l('', $referenceSTO->mediaURI[$i]->value, $attributes, NULL, NULL, TRUE);
@@ -380,22 +392,7 @@ function theme_cdm_specimen($specimen){
   //$specimen->specimenLabel
   //$specimen->uuid
   
-  // ---- jQuery ThickBox:
-  /*
-   * bug: compat-1.0.js && thickbox.js line 237 .trigger("unload")
-   * -> event is not triggered because of problems with compat-1.0.js'
-   * 
-   */
-  
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
-  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.css');
-  
-  // ---- jQuery jqModal:
-  // untested ...
-  //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jqModal.js');
-  //drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/jqModal.css');
-  
-  
+  _add_js_thickbox();
   
   $out = '';
   if(is_array($specimen->mediaURI)){
@@ -420,7 +417,7 @@ function theme_cdm_specimen($specimen){
       // --- handle media preview rules
       if(isset($muris['preview'])){    
         
-        $a_child = '<img src="'.$muris['preview']['uri'].'" '
+        $a_child = '<img src="'.$muris['preview']['uri'].'" class="preview"'
           .($muris['preview']['size_x'] ? 'width="'.$muris['preview']['size_x'].'"' : '')
           .($muris['preview']['size_y'] ? 'width="'.$muris['preview']['size_y'].'"' : '')
           .'/>';
