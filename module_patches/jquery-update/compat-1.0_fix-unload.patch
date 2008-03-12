@@ -1,0 +1,18 @@
+### Eclipse Workspace Patch 1.0
+#P Drupal_CVS
+Index: jquery_update/compat-1.0.js
+===================================================================
+RCS file: /cvs/drupal-contrib/contributions/modules/jquery_update/compat-1.0.js,v
+retrieving revision 1.1
+diff -u -r1.1 compat-1.0.js
+--- jquery_update/compat-1.0.js	26 Apr 2007 15:14:38 -0000	1.1
++++ jquery_update/compat-1.0.js	12 Mar 2008 09:28:55 -0000
+@@ -21,7 +21,7 @@
+ // UPGRADE: The following event helpers should now be used as such:
+ // .oneblur(fn) -> .one("blur",fn)
+ // .unblur(fn) -> .unbind("blur",fn)
+-var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +
++var e = ("blur,focus,resize,scroll,unload,click,dblclick," +
+   "mousedown,mouseup,mousemove,mouseover,mouseout,change,reset,select," + 
+   "submit,keydown,keypress,keyup,error").split(",");
+ 
