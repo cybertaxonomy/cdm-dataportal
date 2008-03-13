@@ -203,7 +203,7 @@ function cdm_taxontree_populate($tree, $filter_default = null){
        $children = _cdm_resultset2nodelist($children, ($tree[$uuid]->filter == 'excludes'));
 
        // store the children of the node for later processing
-       if(isset($tree[$uuid]->children)){
+       if(is_array($tree[$uuid]->children)){
          $pnode_children = $tree[$uuid]->children;
        } else {
          $pnode_children = false;
@@ -236,7 +236,7 @@ function cdm_taxontree_populate($tree, $filter_default = null){
          $tree[$uuid]->children[$cnode->uuid] = $cnode;
        }
       }
-     $tree[$uuid]->children =  cdm_taxontree_populate($tree[$uuid]->children, $tree[$uuid]->filter);
+     $tree[$uuid]->children = cdm_taxontree_populate($tree[$uuid]->children, $tree[$uuid]->filter);
     }
   }
   return $tree;
