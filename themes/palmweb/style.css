@@ -195,9 +195,11 @@ ul.links li.first {
   font-weight: bold;
 }
 #main {
-  /* padding in px not ex because IE messes up 100% width tables otherwise */
-  padding: 20px;
+  /* padding in px not ex because IE messes up 100% width tables otherwise 
+  padding: 20px; */
+  padding: 20px 20px 20px 20px;  
 }
+
 #mission, .node .content, .comment .content {
   line-height: 1.1em;
 }
@@ -443,6 +445,13 @@ div.admin-panel h3 {
 
 ul.homotypicSynonyms, ul.heterotypicSynonymyGroup, ul.misapplied {
   color: #666666;
+  padding-left: 1em;
+  list-style:none;
+}
+
+ul.typeDesignations {
+  margin-left: 1em; 
+/*   list-style:none;	*/
 }
 
 
