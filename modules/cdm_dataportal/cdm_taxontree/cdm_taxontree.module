@@ -150,8 +150,11 @@ function cdm_taxontree_build_path($taxonUuid, $is_filter_path = null, $is_expand
   
   $branch_path = array();
   $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxonUuid);
-  //TODO improve performance by changing the web service and thus making the next line below obsolete:
-  $parents = array_reverse($parents);
+  //TODO reorder parents in JSON stubs and remove the if condition below
+  if(variable_get('cdm_webservice_isStub', 0)){ 
+    $parents = array_reverse($parents);
+  }
+  
   $parents = _cdm_resultset2nodelist($parents, NULL);
   $lastParent = null;
   foreach($parents as $pnode){
