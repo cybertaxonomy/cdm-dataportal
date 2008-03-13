@@ -11,6 +11,7 @@ ul.cdm_taxontree li{
 	list-style-image: none;
 	list-style-type: none;
 	white-space: nowrap;
+	font-weight: normal;
 }
 
 ul.cdm_taxontree li .active{
@@ -27,12 +28,15 @@ ul.cdm_taxontree li.collapsed {
   background:transparent url(plus.png) no-repeat scroll 0px 0.35em;
   cursor: pointer;
 }
+ul.cdm_taxontree li.focused {
+  font-weight: bold;	
+}
 
 ul.cdm_taxontree li.leaf{
 	background:transparent url(menu-leaf.gif) no-repeat scroll 0px 0.35em;
 }
 
-ul.cdm_taxontree li.filter_excludes {
+ul.cdm_taxontree li.filter_excluded {
 	background-image: none;
 	cursor: default;
 	color: #888888;

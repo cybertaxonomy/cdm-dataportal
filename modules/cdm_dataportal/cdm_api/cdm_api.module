@@ -254,12 +254,15 @@ function proxy_content($url, $theme = null){
   $url = array_shift($args);
   $theme = array_shift($args);
   
-  $data = get_content(urldecode($url));
   
+  //TODO reconsider caching logic in this function
   if(!$theme){
+    // print out JSON the cache cannot be used since it contains objetcs
+    $data = get_content(urldecode($url));
     print $data;
   } else {
-    array_unshift($args, $theme, cdm_load_obj($data));
+    $obj = cdm_ws_load(urldecode($url), false);
+    array_unshift($args, $theme, $obj);
     print call_user_func_array('theme', $args);
   }
 }
