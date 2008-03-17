@@ -50,6 +50,7 @@ modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.module -text
 modules/cdm_dataportal/cdm_taxontree/concept_switch.gif -text
 modules/cdm_dataportal/cdm_taxontree/invisible.gif -text
 modules/cdm_dataportal/cdm_taxontree/invisible_small.gif -text
+modules/cdm_dataportal/cdm_taxontree/loading_subtree.gif -text
 modules/cdm_dataportal/cdm_taxontree/menu-leaf.gif -text
 modules/cdm_dataportal/cdm_taxontree/minus.png -text
 modules/cdm_dataportal/cdm_taxontree/plus.png -text
@@ -58,6 +59,7 @@ modules/cdm_dataportal/cdm_taxontree/resources/Visible.gif -text
 modules/cdm_dataportal/cdm_taxontree/resources/concept_switch.ai -text
 modules/cdm_dataportal/cdm_taxontree/resources/concept_switch.psd -text
 modules/cdm_dataportal/cdm_taxontree/resources/eye.png -text
+modules/cdm_dataportal/cdm_taxontree/resources/loading_subtree.psd -text
 modules/cdm_dataportal/cdm_taxontree/visible.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_implicit.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_implicit_small.gif -text

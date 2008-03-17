@@ -1,5 +1,7 @@
 // $Id$
 
+
+
 (function($){
  /**
   * 
@@ -17,7 +19,11 @@
 						if(url != undefined){
 							$(this).removeAttr('title');
 							var parent_li = $(this);
+							var bg_image_tmp = parent_li.css('background-image');
+							var bg_image_loading = bg_image_tmp.replace(/^(.*)(\/.*)(\))$/, '$1/loading_subtree.gif$3')
+							parent_li.css('background-image', bg_image_loading);
 							$.get(url, function(html){
+							 parent_li.css('background-image', bg_image_tmp);
 							 parent_li.append(html).find('ul').cdm_taxontree();
 							});
 						}

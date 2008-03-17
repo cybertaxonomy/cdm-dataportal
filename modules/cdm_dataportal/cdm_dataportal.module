@@ -119,6 +119,10 @@ function cdm_dataportal_menu($may_cache) {
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
   //drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_screen.css', 'screen');
+  // to validate the session on every request is important since the cdm webservice url
+  // could have been changed in the settings. Without clearing the session if it has become invalid
+  // the dataportal would rely on wrong data, thus producing errors.
+  cdm_dataportal_session_validate();
   return $items;
   
 }
@@ -186,13 +190,28 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
     $form_values['cdm_secUuid_default'] = 0;
     //_cdm_dataportal_set_currentSecUuid(false);
     // reset all cdm related data stored in the session
-    $_SESSION['cdm'] = null;
+    cdm_dataportal_session_clear($form_values['cdm_webservice_url']);
     // clear the cdm webservice cache
     cache_clear_all(NULL, 'cache_cdm_ws');
   }
   
 }
 
+function cdm_dataportal_session_clear($cdm_ws_uri_update = false){
+  $_SESSION['cdm'] = null;
+  if(is_string($cdm_ws_uri_update)){
+    $_SESSION['cdm'] = array('ws_uri'=>$cdm_ws_uri_update);
+  }
+}
+
+function cdm_dataportal_session_validate(){
+
+  if(!isset($_SESSION['cdm']['ws_uri'])){
+    $_SESSION['cdm'] = array('ws_uri'=>variable_get('cdm_webservice_url', false));
+  } else if($_SESSION['cdm']['ws_uri'] != variable_get('cdm_webservice_url', false)){
+    cdm_dataportal_session_clear(variable_get('cdm_webservice_url', false));
+  }
+}
 
 function cdm_dataportal_search_taxon_form(){
   
@@ -307,8 +326,10 @@ function cdm_dataportal_settings(){
   $allSecRefs = cdm_ws_get(CDM_WS_SEC_REFERENCES_ALL);
   $secRef_default = isset($allSecRefs[0]) ? $allSecRefs[0] : false;
   $secUuid_options = array('0' => ' --- none ---');
-  foreach($allSecRefs as $ref){
-    $secUuid_options[$ref->uuid] =  $ref->citation.($ref->year ? ' ['.$ref->year.']' : '');
+  if(is_array($allSecRefs)){
+    foreach($allSecRefs as $ref){
+      $secUuid_options[$ref->uuid] =  $ref->citation.($ref->year ? ' ['.$ref->year.']' : '');
+    }
   }
   $form['cdm_dataportal']['cdm_secUuid_default'] =  array(
     '#type' => 'select',
@@ -378,7 +399,10 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
   
     // display the page for the taxon defined by $uuid
     $taxonTO = cdm_ws_get(CDM_WS_TAXON ,$uuid);
-  
+    if(!$taxonTO){
+      drupal_set_title(t('Taxon does not exist'));
+      return false;   
+    }
     _cdm_dataportal_set_currentSecUuid($taxonTO->secUuid);
   
     drupal_set_title(theme('cdm_taxon', $taxonTO, true));
@@ -430,6 +454,11 @@ function cdm_dataportal_view_filter($op, $taxonUuid = null){
     switch($op){
       case 'add':
         $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxonUuid);
+        //TODO reorder parents in JSON stubs and remove the if condition below
+        if(!variable_get('cdm_webservice_isStub', 0)){ 
+          $parents = array_reverse($parents);
+        }
+        
         // pop off last element since this is the TreeNode object for $taxonUuid!
         $this_node = array_pop($parents);
         // will contain the uuid of the parent nodes excluding the $taxonUuid node itself
