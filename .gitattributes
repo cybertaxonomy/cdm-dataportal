@@ -31,6 +31,7 @@ modules/cdm_dataportal/cdm_api/ws_stub/json/taxonomy,parents,5000002-stub.json -
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxonomy,parents,5000007-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxonomy,parents,5000008-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxonomy,parents,5000009-stub.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/taxonomy,root,.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxonomy,root,1001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/types,90000001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/types,90000002-stub.json -text

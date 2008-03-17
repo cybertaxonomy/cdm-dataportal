@@ -1,0 +1,50 @@
+/**
+ * eu.etaxonomy.cdm.remote.dto.TreeNode objects
+ *
+ * #
+ *  >Cichorieae [5000007-stub]
+ *    Acanthocephalus [5000008-stub]
+ *      A. amplexifolius [5000001-stub]
+ *      A. benthamianus [5000002-stub]
+ *    Agoseris [5000008-stub]
+ */
+{
+  "root":[
+    {
+     "uuid":"5000007-stub",
+      "fullname":"Cichorieae Lam. & DC.",
+      "taggedName":[
+        {
+          "type":"name",
+          "text":"Cichorieae"
+        },
+        {
+          "type":"authors",
+          "text":"Lam. & DC."
+        }
+      ],
+      "secUuid":"1001-stub",
+      "isAccepted":true,
+      "hasChildren":2,
+      "alternativeConceptRefs":[]
+    },
+    {
+     "uuid":"5000007-stub",
+      "fullname":"Cichorieae M. Eniskus",
+      "taggedName":[
+        {
+          "type":"name",
+          "text":"Cichorieae"
+        },
+        {
+          "type":"authors",
+          "text":"M. Eniskus"
+        }
+      ],
+      "secUuid":"1232-stub",
+      "isAccepted":false,
+      "hasChildren":0,
+      "alternativeConceptRefs":[]
+    }
+  ]
+}
