@@ -338,9 +338,12 @@ function cdm_dataportal_settings(){
     '#default_value' => variable_get('cdm_secUuid_default', $secRef_default->uuid),
     '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
   );
-   
   
-  // TODO reset default secuuid  in session if changed in settings
+  $form['cdm_dataportal']['cdm_taxontree'] = array(
+    '#value' => cdm_taxontree_widget(variable_get('cdm_secUuid_default', false))
+  );
+  
+
   return system_settings_form($form);
 }
 

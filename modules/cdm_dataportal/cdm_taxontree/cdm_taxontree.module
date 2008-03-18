@@ -53,7 +53,18 @@ function cdm_taxontree_block($op='list', $delta=0) {
         $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
         $block['content'] = theme('cdm_taxontree_block', $tree);
         drupal_add_css(drupal_get_path('module', 'cdm_taxontree').'/cdm_taxontree.css');
-        drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/cdm_taxontree.js');
+        drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/js/cdm_taxontree.js');
+        if($taxonUuid_inFocus){
+          drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/js/jquery.scrollTo.js');
+          drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/js/jquery.dimensions.js');
+          drupal_add_js('
+      if (Drupal.jsEnabled) {
+        $(document).ready(function() 
+        {
+          //var activeElement = $(\'div.cdm_taxontree_scroller_x .active\');
+          $(\'div.cdm_taxontree_scroller_x\').scrollTo($(\'.active\'));});
+        }', 'inline');
+        }
         return $block;
     }
   }
@@ -90,7 +101,7 @@ function _get_compact_mode(){
  * @param unknown_type $taxonUuid
  * @return unknown
  */
-function cdm_taxontree_build_tree($taxonUuid){
+function cdm_taxontree_build_tree($taxonUuid = null){
 
   // find the secRefUuid
   $secRefUuid = null;
@@ -304,142 +315,6 @@ function _cdm_taxontree_merge($tree, $branch) {
     return $tree;
 }
 
-function theme_cdm_taxontree_block($tree){
-    
-  $out = '';
-  if(cdm_dataportal_filters_active()){
-        $out .= theme('cdm_taxontree_contoller', _get_compact_mode());
-  }
-  $out .= theme('cdm_taxontree', $tree, !cdm_dataportal_filters_active(), 'cdm_taxontree_concept_switch');
-  return $out;
-}
-
-function theme_cdm_taxontree_contoller($compact_mode){
- 
-  static $modes = array('expanded', 'compact', 'flattened');
-  
-  $out = '<div class="settings">';
-  foreach($modes as $mode){
-    if($compact_mode == $mode){
-      $out .= t($mode);
-    } else {
-      $out .= l(t($mode), 'cdm_taxontree/set/compact_mode/'.$mode, array(), drupal_get_destination());
-    }
-    $out .= ' ';
-  }
-  
-  return $out.'</div>';
-}
-
-function theme_cdm_taxontree($tree, $filterIncludes = null, $tree_node_callback = false){
-  
-  if(!is_array($tree)) {
-    return false;
-  }
- 
-  if(is_null($filterIncludes)){
-    // set $filterIncludes true if no filters are set.
-    $filterIncludes = !cdm_dataportal_filters_active();
-  }
-  
-  $out = '<ul class="cdm_taxontree">';
-  foreach($tree as $node){
-    $out .= theme('cdm_taxontree_node', $node, $filterIncludes, $tree_node_callback);
-  }
-  $out .= '</ul>';
-  return $out;
-}
-
-function theme_cdm_taxontree_node($node, $filterIncludes, $tree_node_callback = false){
-
-  $is_leaf = !$node->hasChildren || $node->hasChildren == 0;
-  $is_expanded = isset($node->expanded) && $node->expanded = 'expanded';
-
-  if($filterIncludes){
-    $name = l(cdm_dataportal_shortname_of($node), cdm_dataportal_taxon_path($node->uuid));
-    $filter_class = 'filter_included';
-  } else {
-     if($node->filter == 'on') {
-      $name = l(cdm_dataportal_shortname_of($node), cdm_dataportal_taxon_path($node->uuid));
-      $filter_class = 'filter_on';
-    } else {
-      $name .= cdm_dataportal_shortname_of($node);
-      $filter_class = 'filter_excluded';
-    }
-  }
-  $nextLevelIncluded = $node->filter == 'on' || $filterIncludes;
-
-  $cdm_proxy_url = false;
-  if(!$is_leaf && !$is_expanded && $filter_class != 'filter_excluded'){
-    $ws_url = cdm_compose_url(CDM_WS_TREENODE_CHILDREN, array($node->uuid));
-    $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($ws_url).'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.$tree_node_callback);
-  }
-
-  // list item
-  $out = '<li class="'
-  .($node->focused ? 'focused ' : '')
-  .($is_leaf ? 'leaf ':($is_expanded ?'expanded ':'collapsed '))
-  .$filter_class.'"'
-  .($cdm_proxy_url ? 'title="'.$cdm_proxy_url.'"' : '')
-  .'>';
-  
-  // filter icon 
-  $out .= theme('cdm_taxontree_filter_switch', $node, $filter_class);
-  
-  // taxon name
-  $out .= $name;
-  
-  // concept_switch or other theme callbacks
-  if($tree_node_callback){
-    $out .= theme($tree_node_callback, $node);
-  }
-  
-  if(isset($node->children) && is_array($node->children)){
-      $out .= theme('cdm_taxontree', $node->children, $nextLevelIncluded);
-  }
-  $out .= '</li>';
-  
-  return $out;
-}
-
-function theme_cdm_taxontree_filter_switch(&$node, $filter_class){
-  $out = '';
-  
-  switch($filter_class){
-    case 'filter_included':
-      $filter_icon = 'visible_implicit_small.gif';
-    break;
-    case 'filter_excluded':
-       $filter_icon = 'invisible_small.gif';
-    break;
-    case 'filter_on':
-       $filter_icon = 'visible_small.gif';
-    break;
-  }
-  
-  $filter_op = $node->filter == 'on' ? 'remove' : 'add';
-
-  $out .= '&nbsp;'
-     .l('<img src="'.drupal_get_path('module', 'cdm_taxontree').'/'.$filter_icon.'" alt="[f]" />', 
-    'cdm_dataportal/filter/'.$filter_op.'/'.$node->uuid, array('class'=>'filter_'.$filter_op), 
-    'destination='.cdm_dataportal_taxon_path($node->uuid), 
-     null, false, true);
-     
-  return $out;
-}
-
-function theme_cdm_taxontree_concept_switch(&$node){
-  $out = '';
-  
-  if(isset($node->alternativeConceptRefs[0])){
-    $out = l(
-      '<img src="'.drupal_get_path('module', 'cdm_taxontree').'/concept_switch.gif" alt="[-&gt;]" />', 
-      'cdm_dataportal/taxon/alternative/'.$node->uuid, 
-      array('rel'=>'cdm_dataportal/taxon/alternative/'.$node->uuid, 'class'=>'concept_switch'), 
-      null, null, false, true);
-  }
-  return $out;
-}
 
 /**
  * Replaces the keys of an array of TreeNode instances
@@ -470,6 +345,185 @@ function _cdm_resultset2nodelist($resultset, $excluded = null, $expanded = null)
 }
 
 
+function theme_cdm_taxontree_block($tree){
+    
+  $out = '';
+  if(cdm_dataportal_filters_active()){
+        $out .= theme('cdm_taxontree_contoller', _get_compact_mode());
+  }
+  $out .= '<div class="cdm_taxontree_scroller_x"><div class="cdm_taxontree_container"><div class="cdm_taxontree_scroller_y"><div class="cdm_taxontree_border">'.theme('cdm_taxontree', $tree, !cdm_dataportal_filters_active(), TRUE, 'cdm_taxontree_node_concept_switch').'</div></div></div></div>';
+  return $out;
+}
+
+function theme_cdm_taxontree_contoller($compact_mode){
+ 
+  static $modes = array('expanded', 'compact', 'flattened');
+  
+  $out = '<div class="settings">';
+  foreach($modes as $mode){
+    if($compact_mode == $mode){
+      $out .= t($mode);
+    } else {
+      $out .= l(t($mode), 'cdm_taxontree/set/compact_mode/'.$mode, array(), drupal_get_destination());
+    }
+    $out .= ' ';
+  }
+  
+  return $out.'</div>';
+}
+
+function theme_cdm_taxontree($tree, $filterIncludes = null, $show_filter_switch = false, $tree_node_callback = false){
+  
+  if(!is_array($tree)) {
+    return false;
+  }
+ 
+  if(is_null($filterIncludes)){
+    // set $filterIncludes true if no filters are set.
+    $filterIncludes = !cdm_dataportal_filters_active();
+  }
+  
+  $out = '<ul class="cdm_taxontree">';
+  foreach($tree as $node){
+    $out .= theme('cdm_taxontree_node', $node, $filterIncludes, $show_filter_switch, $tree_node_callback);
+  }
+  $out .= '</ul>';
+  return $out;
+}
+
+function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = false, $tree_node_callback = false){
+
+  $is_leaf = !$node->hasChildren || $node->hasChildren == 0;
+  $is_expanded = isset($node->expanded) && $node->expanded = 'expanded';
+
+  if($filterIncludes){
+    $name = l(cdm_dataportal_shortname_of($node), cdm_dataportal_taxon_path($node->uuid));
+    $filter_class = 'filter_included';
+  } else {
+     if($node->filter == 'on') {
+      $name = l(cdm_dataportal_shortname_of($node), cdm_dataportal_taxon_path($node->uuid));
+      $filter_class = 'filter_on';
+    } else {
+      $name .= cdm_dataportal_shortname_of($node);
+      $filter_class = 'filter_excluded';
+    }
+  }
+  $nextLevelIncluded = $node->filter == 'on' || $filterIncludes;
+
+  $cdm_proxy_url = false;
+  if(!$is_leaf && !$is_expanded && $filter_class != 'filter_excluded'){
+    $ws_url = cdm_compose_url(CDM_WS_TREENODE_CHILDREN, array($node->uuid));
+    $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($ws_url).'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
+  }
+
+  // list item
+  $out = '<li class="'
+  .($node->focused ? 'focused ' : '')
+  .($is_leaf ? 'leaf ':($is_expanded ?'expanded ':'collapsed '))
+  .$filter_class.'"'
+  .($cdm_proxy_url ? 'title="'.$cdm_proxy_url.'"' : '')
+  .'>';
+  
+  if($show_filter_switch){
+  // filter icon 
+  $out .= theme('cdm_taxontree_node_filter_switch', $node, $filter_class);
+  }
+  
+  // taxon name
+  $out .= $name;
+  
+  // concept_switch or other theme callbacks
+  if($tree_node_callback){
+    $out .= theme($tree_node_callback, $node);
+  }
+  
+  if(isset($node->children) && is_array($node->children)){
+      $out .= theme('cdm_taxontree', $node->children, $nextLevelIncluded);
+  }
+  $out .= '</li>';
+  
+  return $out;
+}
+
+function theme_cdm_taxontree_node_filter_switch(&$node, $filter_class){
+  $out = '';
+  
+  switch($filter_class){
+    case 'filter_included':
+      $filter_icon = 'visible_implicit_small.gif';
+    break;
+    case 'filter_excluded':
+       $filter_icon = 'invisible_small.gif';
+    break;
+    case 'filter_on':
+       $filter_icon = 'visible_small.gif';
+    break;
+  }
+  
+  $filter_op = $node->filter == 'on' ? 'remove' : 'add';
+
+  $out .= '&nbsp;'
+     .l('<img src="'.drupal_get_path('module', 'cdm_taxontree').'/'.$filter_icon.'" alt="[f]" />', 
+    'cdm_dataportal/filter/'.$filter_op.'/'.$node->uuid, array('class'=>'filter_'.$filter_op), 
+    'destination='.cdm_dataportal_taxon_path($node->uuid), 
+     null, false, true);
+     
+  return $out;
+}
+
+function theme_cdm_taxontree_node_concept_switch(&$node){
+  $out = '';
+  
+  if(isset($node->alternativeConceptRefs[0])){
+    $out = l(
+      '<img src="'.drupal_get_path('module', 'cdm_taxontree').'/concept_switch.gif" alt="[-&gt;]" />', 
+      'cdm_dataportal/taxon/alternative/'.$node->uuid, 
+      array('rel'=>'cdm_dataportal/taxon/alternative/'.$node->uuid, 'class'=>'concept_switch'), 
+      null, null, false, true);
+  }
+  return $out;
+}
+
+function theme_cdm_taxontree_node_reference(&$node){
+  
+  $out = ' <span class="sec_ref widget_select" style="background-color:#'._uuid_to_rgbhex($node->secUuid).'" title="'.$node->secUuid.'">'.$node->secUuid.'</span>';
+  return $out;
+}
+
+function cdm_taxontree_widget($default_uuid = false){
+  
+  drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/js/cdm_taxontree_widget.js');
+  
+  $out = '<div class="cdm_taxontree_widget">';
+  $out .= '<div class="tree">'.theme('cdm_taxontree', cdm_taxontree_build_tree(), NULL, FALSE, 'cdm_taxontree_node_reference').'</div>';
+  $out .= '<div class="selected_nodes"><label>'.t('Selected Nodes').'</label><ul class="listing"><li><input type="text" class="value_1232-stub" value="1232-stub" /></li></ul></div>';
+  $out .= '</div>';
+  return $out;
+}
+
+
+// --------------------------------------------------- //
+ 
+function _uuid_to_rgbhex($uuid){
+  
+  $xfoot = _str_crossfoot($uuid);
+  $h = $xfoot / 2 / 2;
+  $h = $h - floor($h);
+  $RGB = _hsv_2_rgb($h, 0.45, 1); 
+  return dechex($RGB['R']).dechex($RGB['G']).dechex($RGB['B']);
+}
+
+function _str_crossfoot($str)
+{
+  $xfoot = 0;
+  for($i=0; $i<strlen($str); $i++)
+  {
+    $xfoot = $xfoot + ord($str[$i]);
+  }
+  return $xfoot;
+} 
+
+
 function _cdm_get_taxonuuid(){
 
   //TODO make the path configurable
@@ -480,4 +534,39 @@ function _cdm_get_taxonuuid(){
   }
 
   return $taxon_uuid;
+}
+
+function _hsv_2_rgb($H, $S, $V) // HSV Values:Number 0-1
+{ // RGB Results:Number 0-255
+  $RGB = array();
+  
+  if($S == 0)
+  {
+  $R = $G = $B = $V * 255;
+  }
+  else
+  {
+  $var_H = $H * 6;
+  $var_i = floor( $var_H );
+  $var_1 = $V * ( 1 - $S );
+  $var_2 = $V * ( 1 - $S * ( $var_H - $var_i ) );
+  $var_3 = $V * ( 1 - $S * (1 - ( $var_H - $var_i ) ) );
+  
+  if ($var_i == 0) { $var_R = $V ; $var_G = $var_3 ; $var_B = $var_1 ; }
+  else if ($var_i == 1) { $var_R = $var_2 ; $var_G = $V ; $var_B = $var_1 ; }
+  else if ($var_i == 2) { $var_R = $var_1 ; $var_G = $V ; $var_B = $var_3 ; }
+  else if ($var_i == 3) { $var_R = $var_1 ; $var_G = $var_2 ; $var_B = $V ; }
+  else if ($var_i == 4) { $var_R = $var_3 ; $var_G = $var_1 ; $var_B = $V ; }
+  else { $var_R = $V ; $var_G = $var_1 ; $var_B = $var_2 ; }
+  
+  $R = $var_R * 255;
+  $G = $var_G * 255;
+  $B = $var_B * 255;
+  }
+  
+  $RGB['R'] = $R;
+  $RGB['G'] = $G;
+  $RGB['B'] = $B;
+  
+  return $RGB;
 }

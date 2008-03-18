@@ -46,11 +46,14 @@ modules/cdm_dataportal/cdm_mediauri/cdm_mediauri.info -text
 modules/cdm_dataportal/cdm_mediauri/cdm_mediauri.module -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.css -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.info -text
-modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.js -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.module -text
 modules/cdm_dataportal/cdm_taxontree/concept_switch.gif -text
 modules/cdm_dataportal/cdm_taxontree/invisible.gif -text
 modules/cdm_dataportal/cdm_taxontree/invisible_small.gif -text
+modules/cdm_dataportal/cdm_taxontree/js/cdm_taxontree.js -text
+modules/cdm_dataportal/cdm_taxontree/js/cdm_taxontree_widget.js -text
+modules/cdm_dataportal/cdm_taxontree/js/jquery.scrollTo-min.js -text
+modules/cdm_dataportal/cdm_taxontree/js/jquery.scrollTo.js -text
 modules/cdm_dataportal/cdm_taxontree/loading_subtree.gif -text
 modules/cdm_dataportal/cdm_taxontree/menu-leaf.gif -text
 modules/cdm_dataportal/cdm_taxontree/minus.png -text

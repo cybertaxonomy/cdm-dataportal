@@ -1,10 +1,27 @@
 @CHARSET "ISO-8859-1";
 
-
-ul.cdm_taxontree{
-	padding:0pt 0pt 0pt 1em;
+div.cdm_taxontree_scroller_x{
+	border-top: 1px solid #ADDDFA;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 
+div.cdm_taxontree_container{
+  width: 250px;
+}
+
+div.cdm_taxontree_scroller_y {
+  overflow-y: visible;
+  border-bottom: 1px none #ADDDFA;
+  height: 70px;
+}
+
+div.cdm_taxontree_border{	
+  background-color: #EDF5FA;
+  border-left: 1px solid #ADDDFA;
+	padding:0pt 0pt 0pt 1em;
+}
+	
 ul.cdm_taxontree li{
 	padding:0pt 0pt 0pt 1em;
 	margin-left: -1em;
@@ -47,5 +64,30 @@ ul.cdm_taxontree li.filter_excluded {
 ul.cdm_taxontree li.leaf a, ul.cdm_taxontree li.expanded a, ul.cdm_taxontree li.collapsed a {
   display:inline;
   white-space: nowrap;
+}
+
+div.cdm_taxontree_widget{
+	border:1px solid #D9EAF5;
+}
+
+div.cdm_taxontree_widget div.taxontree, div.cdm_taxontree_widget div.selected_nodes{
+  width: 40%;
+  margin-right: 2em;
+  float: left;
+}
+
+
+div.cdm_taxontree_widget div.selected_nodes .listing{
+	border:1px solid #E0DFE3;
+	height: 6.5em;
+}
+
+div.cdm_taxontree_widget .widget_select {
+ cursor: pointer;
+}
+
+div.cdm_taxontree_widget .selected{
+	font-weight: bold;
+	font-style: italic;
 }
 

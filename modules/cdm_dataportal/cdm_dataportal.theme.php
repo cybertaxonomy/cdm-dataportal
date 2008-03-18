@@ -321,7 +321,7 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicGroupTO){
 function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.dimensions.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.dimensions.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.hoverIntent.js');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.css');
 
