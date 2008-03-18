@@ -1,6 +1,7 @@
 @CHARSET "ISO-8859-1";
 
 div.cdm_taxontree_scroller_x{
+  border-right: 1px solid #ADDDFA;
 	border-top: 1px solid #ADDDFA;
 	overflow-x: auto;
 	overflow-y: auto;
@@ -19,7 +20,13 @@ div.cdm_taxontree_scroller_y {
 div.cdm_taxontree_border{	
   background-color: #EDF5FA;
   border-left: 1px solid #ADDDFA;
+  border-right: 1px solid #ADDDFA;
 	padding:0pt 0pt 0pt 1em;
+	height: 70px;
+}
+
+ul.cdm_taxontree{
+	background-color: #EDF5FA;
 }
 	
 ul.cdm_taxontree li{

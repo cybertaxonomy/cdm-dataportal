@@ -61,12 +61,12 @@ if (Drupal.jsEnabled) {
 	      
 	      var h = parseFloat($(this).parent('.cdm_taxontree_scroller_x').height());
 	      var scroll_y = $(this).parent('.cdm_taxontree_scroller_x').scrollTop();
-	      $(this).parent('.cdm_taxontree_scroller_x').find('.cdm_taxontree_scroller_y').css('overflow-y', 'auto').css('border-bottom-style', 'solid').scrollTop(scroll_y).end().width(Math.ceil(container_w)).css('overflow-y', 'visible').height(h);
+	      $(this).parent('.cdm_taxontree_scroller_x').find('.cdm_taxontree_scroller_y').css('overflow-y', 'auto').css('border-bottom-style', 'solid').scrollTop(scroll_y).end().width(Math.ceil(container_w)).css('overflow-y', 'visible').css('border-right-style', 'none').height(h);
       },
     
       function() {
         var scroll_y = $(this).parent('.cdm_taxontree_scroller_x').find('.cdm_taxontree_scroller_y').scrollTop();
-	      $(this).parent('.cdm_taxontree_scroller_x').find('.cdm_taxontree_scroller_y').css('overflow-y', 'visible').css('border-bottom-style', 'none').end().css('overflow-y', 'auto').width('auto').scrollTop(scroll_y);  
+	      $(this).parent('.cdm_taxontree_scroller_x').find('.cdm_taxontree_scroller_y').css('overflow-y', 'visible').css('border-bottom-style', 'none').end().css('overflow-y', 'auto').css('border-right-style', 'solid').width('auto').scrollTop(scroll_y);  
 	    }
 	   );
 	   

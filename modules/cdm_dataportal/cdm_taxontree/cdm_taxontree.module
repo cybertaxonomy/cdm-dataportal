@@ -54,17 +54,17 @@ function cdm_taxontree_block($op='list', $delta=0) {
         $block['content'] = theme('cdm_taxontree_block', $tree);
         drupal_add_css(drupal_get_path('module', 'cdm_taxontree').'/cdm_taxontree.css');
         drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/js/cdm_taxontree.js');
-        if($taxonUuid_inFocus){
-          drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/js/jquery.scrollTo.js');
-          drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/js/jquery.dimensions.js');
-          drupal_add_js('
-      if (Drupal.jsEnabled) {
+        //TODO remove dependency from cdm_dataportal: include condition 
+        drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.dimensions.js');
+        drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/js/jquery.scrollTo.js');
+        drupal_add_js('
+        if (Drupal.jsEnabled) {
         $(document).ready(function() 
         {
           //var activeElement = $(\'div.cdm_taxontree_scroller_x .active\');
           $(\'div.cdm_taxontree_scroller_x\').scrollTo($(\'.active\'));});
         }', 'inline');
-        }
+        
         return $block;
     }
   }
