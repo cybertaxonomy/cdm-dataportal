@@ -1,28 +1,21 @@
 @CHARSET "ISO-8859-1";
 
 div.cdm_taxontree_scroller_x{
-  border-right: 1px solid #ADDDFA;
-	border-top: 1px solid #ADDDFA;
+  border: 1px solid #ADDDFA;
 	overflow-x: auto;
 	overflow-y: auto;
 }
 
 div.cdm_taxontree_container{
-  width: 250px;
+  width: 250px; /* should be greater than the sidebar width */
 }
 
 div.cdm_taxontree_scroller_y {
+  overflow: visible;
   overflow-y: visible;
-  border-bottom: 1px none #ADDDFA;
-  height: 70px;
-}
-
-div.cdm_taxontree_border{	
+  border: 1px none #ADDDFA;
   background-color: #EDF5FA;
-  border-left: 1px solid #ADDDFA;
-  border-right: 1px solid #ADDDFA;
-	padding:0pt 0pt 0pt 1em;
-	height: 70px;
+  height: 200px;
 }
 
 ul.cdm_taxontree{
@@ -30,7 +23,7 @@ ul.cdm_taxontree{
 }
 	
 ul.cdm_taxontree li{
-	padding:0pt 0pt 0pt 1em;
+	padding:0pt 1em 0pt 1em;
 	margin-left: -1em;
 	list-style-image: none;
 	list-style-type: none;
