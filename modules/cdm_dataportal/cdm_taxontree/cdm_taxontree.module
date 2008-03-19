@@ -353,7 +353,7 @@ function theme_cdm_taxontree_block($tree){
   if(cdm_dataportal_filters_active()){
         $out .= theme('cdm_taxontree_contoller', _get_compact_mode());
   }
-  $out .= '<div class="cdm_taxontree_scroller_x"><div class="cdm_taxontree_container"><div class="cdm_taxontree_scroller_y"><div class="cdm_taxontree_border">'.theme('cdm_taxontree', $tree, !cdm_dataportal_filters_active(), TRUE, 'cdm_taxontree_node_concept_switch').'</div></div></div></div>';
+  $out .= '<div class="cdm_taxontree_scroller_x"><div class="cdm_taxontree_container"><div class="cdm_taxontree_scroller_y">'.theme('cdm_taxontree', $tree, !cdm_dataportal_filters_active(), TRUE, 'cdm_taxontree_node_concept_switch').'</div></div></div>';
   return $out;
 }
 

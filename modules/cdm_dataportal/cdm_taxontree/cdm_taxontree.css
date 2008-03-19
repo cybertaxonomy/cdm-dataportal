@@ -7,19 +7,21 @@ div.cdm_taxontree_scroller_x{
 }
 
 div.cdm_taxontree_container{
-  width: 250px; /* should be greater than the sidebar width */
+  width: 200px; /* should be greater than the sidebar width */
 }
 
 div.cdm_taxontree_scroller_y {
   overflow: visible;
   overflow-y: visible;
-  border: 1px none #ADDDFA;
+  padding: 5px;
+  border: 1px solid transparent;
   background-color: #EDF5FA;
-  height: 200px;
+  height: 70px; /* this defines the height of the treebrowser box */
 }
 
 ul.cdm_taxontree{
 	background-color: #EDF5FA;
+	left: 0px; /* fix IE7? */
 }
 	
 ul.cdm_taxontree li{

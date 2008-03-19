@@ -25,9 +25,9 @@
 							$.get(url, function(html){
 						    parent_li.css('background-image', bg_image_tmp);
 								parent_li.append(html).find('ul').cdm_taxontree();
-							  // fire resize for parent container
+							  // resize parent container
 							  var tree_container = parent_li.parents('div.cdm_taxontree_container');
-							  tree_container.trigger('resize');
+							  tree_container.cdm_taxontree_container_resize();
 							});
 						}
 					} 
@@ -45,32 +45,49 @@
 	 
 })(jQuery);
 
+$.fn.cdm_taxontree_container_resize = function() {
+
+    var current_w = $(this).parent().width();
+    
+    // determine max horizontal extent of any children 
+    var tree_list = $(this).find('.cdm_taxontree_scroller_y > ul');
+    var w = tree_list.css('position', 'absolute').outerWidth({ margin: true });
+    tree_list.css('position', 'static');
+
+    // Other Browsers than Firefox
+    if( jQuery.browser['msie']) {
+      if(jQuery.browser['version'].charAt(0) == '7'){
+        w = w + 17;
+      }
+    }
+    
+    if(current_w < w){
+      $(this).parent().width(w);
+      $(this).children().width(w);
+    }
+}
+
+$.fn.cdm_taxontree_container_debug_size = function(msg) {
+
+  var out = msg 
+     + '<br />    scoll_x: ' + $(this).parent().width()
+     + '<br />        container: ' + $(this).width()
+     + '<br />            scoll_y: ' + $(this).children().width()
+     + '<br />                ul: ' + $(this).find('.cdm_taxontree_scroller_y > ul').width()
+     + '<br />';
+  $('#DEBUG_JS').append(out);
+
+}
+
+
 if (Drupal.jsEnabled) {
   $(document).ready(function() {
   
     $('ul.cdm_taxontree').cdm_taxontree();
     
-    $('div.cdm_taxontree_container').resize(
-      function(){
-        var current_w = $(this).parent().width();
-        // determine max horizontal extent of any children 
-        var tree_list = $(this).find('.cdm_taxontree_scroller_y > div > ul');
-        var w = tree_list.css('position', 'absolute').outerWidth({ margin: true });
-        tree_list.css('position', 'static');
-        
-        if(current_w < w){
-	        $(this).parent().width(w);
-	        $(this).children().width(w);
-	        console.log('resize to '+w);
-        } else {
-         console.log('kepping old value '+w);
-        }
-      }
-    );
-    
     $('div.cdm_taxontree_container').hover(
       
-      // mouseOver
+      // --- mouseOver ---- //
       function() {
       
 		    var scroller_x = $(this).parent();
@@ -78,25 +95,29 @@ if (Drupal.jsEnabled) {
 		    
 	        
 	      var h = parseFloat(scroller_x.height());
-	      var w = $(this).outerWidth({ margin: true });
 	      var scroll_top = scroller_x.scrollTop();
-	        
-	      scroller_y.css('overflow-y', 'auto').css('border-style', 'solid').scrollTop(scroll_top);
+        var border_color = '#ADDDFA'; //scroller_x.css('border-color');
+	      $(this).cdm_taxontree_container_resize();
+	      
+	      scroller_y.css('overflow-y', 'auto').css('border-color', border_color).scrollTop(scroll_top);
+	      
 	      // store scroll_left of scroller_x so that it can be restored on mouseOut
 	      scroller_x.append('<div class="_scrollLeft" style="display: none;" title="'+scroller_x.scrollLeft()+'"></div>');
-	      scroller_x.width(w).css('overflow-y', 'visible').css('overflow-x', 'visible').css('border-style', 'none').height(h);
+
+	      scroller_x.css('overflow-y', 'visible').css('overflow-x', 'visible').css('border-color', 'transparent').height(h);
       },
     
-      // mouseOut
+      // --- mouseOut ---- //
       function() {
        //return; 
        var container = $(this);
        var scroller_x = $(this).parent('.cdm_taxontree_scroller_x');
        var scroller_y = container.children('.cdm_taxontree_scroller_y');
+       var border_color = '#ADDDFA'; //scroller_y.css('border-color');
        
-       var scroll_top = $(this).parent('.cdm_taxontree_scroller_x').find('.cdm_taxontree_scroller_y').scrollTop();
-	     scroller_y.css('overflow-y', 'visible').css('border-style', 'none');
-	     scroller_x.css('overflow-y', 'auto').css('border-style', 'solid').width('auto').scrollTop(scroll_top);  
+       var scroll_top = scroller_y.scrollTop();
+	     scroller_y.css('overflow-y', 'visible').css('border-color', 'transparent');
+	     scroller_x.css('overflow-y', 'auto').css('border-color', border_color).width('auto').scrollTop(scroll_top);  
 	     // restore scroll_left of scroller_x 
 	     var scrollLeft = scroller_x.children('._scrollLeft').attr('title');
        scroller_x.scrollLeft(scrollLeft).children('._scrollLeft').remove();
