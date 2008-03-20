@@ -220,6 +220,14 @@ function _tinytax_view_blocks($delta){
 function _tinytax_view_cdmblock(){
 
   $block['subject'] = t("CDM TinyTaxTree");
+  
+  // To be replaced by
+  // So here is where the data is tagged.
+  // Next step - draw it out of the JSON file = how? 
+  $block['authors'] = t("Govaerts and Dransfield 2007");
+  
+  
+  
   // Lets try and create some list!
   
   $children = array();
