@@ -20,6 +20,10 @@ div.cdm_taxontree_container{
   width: 200px; /* should be greater than the sidebar width */
 }
 
+* html div.cdm_taxontree_container{
+  width: auto;
+}
+
 div.cdm_taxontree_scroller_y {
   overflow: visible;
   overflow-y: visible;

@@ -69,6 +69,9 @@ $.fn.cdm_taxontree_container_resize = function() {
       if(jQuery.browser['version'].charAt(0) == '7'){
         w = w + 17;
       }
+      if(jQuery.browser['version'].charAt(0) <= '6'){
+        return;
+      }
     }
     
     if(current_w < w){
@@ -92,7 +95,7 @@ $.fn.cdm_taxontree_container_debug_size = function(msg) {
 
 $.fn.cdm_taxontree_magicbox = function() {
   
-  // exclude IE6 and lower
+  // exclude IE6 and lower versions
   if(!(jQuery.browser['msie'] && jQuery.browser['version'].charAt(0) < '7')){
 
      var container = $(this).parent().parent('div.cdm_taxontree_container');
@@ -137,7 +140,7 @@ $.fn.cdm_taxontree_magicbox = function() {
 	     );
     }
     // END exclude IE6
-     
+    
   }
 
 /* ========================== auto activate ========================== */ 
