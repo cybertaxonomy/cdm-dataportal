@@ -245,11 +245,21 @@ ul.links li.first {
 ** additional rules /with only the differing properties!/ to .parent .class.
 ** See .comment .title for an example.
 */
+
+.title {
+  display: block;
+  color: red;
+}
+
 .title, .title a {
   font-size: 14px;
   color: black;
   margin: 0 auto;  /* decrease default margins for h<x>.title */
 }
+
+.title .name {
+  font-size: 18px;
+  }
 
 .title .name .name{
   display: block;
