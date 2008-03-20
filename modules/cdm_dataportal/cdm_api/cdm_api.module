@@ -178,7 +178,7 @@ function cdm_api_cron() {
 function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '){
   $out = '';
    foreach($taggedtxt as $tt){
-     $out .= (strlen($out) > 0 ? $glue : '').'<'.$tag.' class="'.$tt->tag.'">'.$tt->text.'</'.$tag.'>';
+     $out .= (strlen($out) > 0 ? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.$tt->text.'</'.$tag.'>';
    }
    return $out;
 }
