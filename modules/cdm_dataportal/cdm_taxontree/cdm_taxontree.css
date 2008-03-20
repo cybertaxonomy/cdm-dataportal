@@ -17,7 +17,7 @@ div.cdm_taxontree_scroller_x{
 }
 
 div.cdm_taxontree_container{
-  width: 200px; /* should be greater than the sidebar width */
+  width: 250px; /* should be greater than the sidebar width (e.g. 250px for the garland theme) */
 }
 
 div.cdm_taxontree_scroller_y {
