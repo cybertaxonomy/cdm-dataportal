@@ -118,6 +118,7 @@ function cdm_taxontree_build_tree($taxonUuid = null){
     $secRefUuid = $secRef['uuid'];
   // compact_modes: 'expanded', 'compact', 'flattened'
   }
+  //$secRefUuid = 'fd5d06eb-06ff-4ffd-9878-1b375765d539';
   $compact_tree = cdm_dataportal_filters_active() && _get_compact_mode() != 'expanded';
   
   // get the root level

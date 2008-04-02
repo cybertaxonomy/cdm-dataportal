@@ -309,21 +309,26 @@ function cdm_ws_load($url, $is_multi_paramater_query){
   if(!$cache_entry){
     // load fresh data from webservice
     $datastr = get_content($url);
+    /*if(TRUE){
+      $storef =  urlencode($url);
+      drupal_set_message($storef);
+      file_save_data($datastr, $storef, FILE_EXISTS_REPLACE);
+    }*/
     $obj = cdm_load_obj($datastr);
+    if(variable_get('cdm_webservice_debug', 1)){
+      drupal_set_message($url.' >> ['.(strlen($datastr) / 1024).' kb, '.($obj ? 'valid data':'invalid data').']', 'debug');
+    }
     if( !$obj || !$datastr){
       watchdog('CDM', 'cdm_ws_load() - URL: '.$url, WATCHDOG_ERROR);
-      if(variable_get('cdm_webservice_debug', 1)){
-        drupal_set_message('cdm_ws_load() - URL: '.$url, 'debug');
-      }
     } else if($do_cache) {
       // store fresh data in cache
       cache_set($url, 'cache_cdm_ws', serialize($obj), CACHE_TEMPORARY);
     }
   } else {
     $obj = unserialize($cache_entry->data);
-    /*if(variable_get('cdm_webservice_debug', 1)){
+    if(variable_get('cdm_webservice_debug', 1)){
       drupal_set_message('Using cache for: '.$url, 'debug');
-    }*/
+    }
   }
   return $obj;
 }
