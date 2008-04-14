@@ -224,9 +224,9 @@ function _tinytax_view_cdmblock(){
   // To be replaced by
   // So here is where the data is tagged.
   // Next step - draw it out of the JSON file = how? 
-  $block['authors'] = t("Govaerts and Dransfield 2007");
+  // $block['authors'] = t("Govaerts and Dransfield 2007");
   
-  
+  $block['authors'] = theme('cdm_credits');
   
   // Lets try and create some list!
   
