@@ -223,3 +223,37 @@ function palmweb_profile_modules() {
         "INSERT INTO {blocks_roles} (module,delta,rid) VALUES ('%s', '%s', %d)",
         'tinytax', 'tinytax_cdm_block', $role_id['authenticated user']
     );
+
+
+
+$block = array(
+  array(
+    'module' => 'user',
+    'delta' => 3,
+    'weight' => '-10',
+    'region' => 'left',
+  ),
+);
+drupal_execute('block_admin_display', $block);
+
+
+    db_query(
+        "INSERT INTO {blocks} (module,delta,theme,status,weight,region,custom,throttle,visibility,pages,title)
+        VALUES ('%s', '%s', '%s', %d, %d, '%s', %d, %d, %d, '%s', '%s')",
+        'cdm_dataportal', '0', 'palmweb', '1', '-5', 'right', '0', '0', '0', '', ''
+    );
+    db_query(
+        "INSERT INTO {blocks} (module,delta,theme,status,weight,region,custom,throttle,visibility,pages,title)
+        VALUES ('%s', '%s', '%s', %d, %d, '%s', %d, %d, %d, '%s', '%s')",
+        'cdm_dataportal', '1', 'palmweb', '1', '0', 'right', '0', '0', '0', '', ''
+    );
+    db_query(
+        "INSERT INTO {blocks} (module,delta,theme,status,weight,region,custom,throttle,visibility,pages,title)
+        VALUES ('%s', '%s', '%s', %d, %d, '%s', %d, %d, %d, '%s', '%s')",
+        'cdm_dataportal', '2', 'palmweb', '1', '-7', 'right', '0', '0', '0', '', ''
+    );
+    db_query(
+        "INSERT INTO {blocks} (module,delta,theme,status,weight,region,custom,throttle,visibility,pages,title)
+        VALUES ('%s', '%s', '%s', %d, %d, '%s', %d, %d, %d, '%s', '%s')",
+        'cdm_dataportal', '3', 'palmweb', '1', '0', 'right', '0', '0', '0', '', ''
+    );
