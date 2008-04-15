@@ -573,7 +573,7 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
     if(!$secUuid){
       $_SESSION['cdm']['currentSecRef'] = null;
     } else {
-      $secRef = cdm_ws_get(CDM_WS_REFERENCE ,$secUuid);
+      $secRef = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$secUuid);
       $_SESSION['cdm']['currentSecRef'] = (array)$secRef;
     }
   }

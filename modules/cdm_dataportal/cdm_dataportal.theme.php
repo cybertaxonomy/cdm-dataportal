@@ -96,7 +96,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
     
     $refSecundum = false;
     if(!$noSecundum){  
-      $ref_sec = cdm_ws_get(CDM_WS_REFERENCE ,$taxonTO->secUuid);
+      $ref_sec = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$taxonTO->secUuid);
       if($ref_sec){
         $refSecundum = str_trunk($ref_sec->fullcitation, 40, '...');
       }
@@ -341,7 +341,7 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   foreach($TaxonRelationshipTOs as $taxonRelation){
     if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
       
-      $sensu_reference = cdm_ws_get(CDM_WS_REFERENCE ,$taxonRelation->secUuid);
+      $sensu_reference = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$taxonRelation->secUuid);
       $name = $taxonRelation->name->fullname;
       if(!isset($misapplied[$name])){
         $misapplied[$name] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation, UUID_MISAPPLIED_NAME_FOR, false).'</span>';

@@ -17,9 +17,9 @@ modules/cdm_dataportal/cdm_api/ws_stub/json/accepted,5000006-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/allSecReferences.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,aaa,onlyAccepted=0,page=1.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/findTaxa,aaa,onlyAccepted=1,page=1.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/reference,1001-stub.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/reference,1002-stub.json -text
-modules/cdm_dataportal/cdm_api/ws_stub/json/reference,1003-stub.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/simple,ref,1001-stub.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/simple,ref,1002-stub.json -text
+modules/cdm_dataportal/cdm_api/ws_stub/json/simple,ref,1003-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon,5000001-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon,5000002-stub.json -text
 modules/cdm_dataportal/cdm_api/ws_stub/json/taxon,5000020-stub.json -text

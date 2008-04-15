@@ -131,7 +131,7 @@ function cdm_taxontree_build_tree($taxonUuid = null){
     // the branches are merged with the root
     foreach(cdm_dataportal_filters_get() as $uuid=>$filter){
       $branch = cdm_taxontree_build_path($uuid, TRUE, $compact_tree === false);
-      $root_tree = _cdm_taxontree_merge($root_tree, $branch);
+      $root_tree = _cdm_taxontree_merge($branch, $root_tree);
     }
   }
   

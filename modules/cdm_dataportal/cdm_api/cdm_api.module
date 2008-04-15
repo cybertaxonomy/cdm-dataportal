@@ -473,13 +473,13 @@ define('CDM_WS_FIND_TAXA', 'findTaxa');
  * Web Service Arguments: {referenceUuid}
  * 
  */
-define('CDM_WS_REFERENCE', 'reference');
+define('CDM_WS_REFERENCE', 'ref');
 
 /**
  * Web Service Arguments: {referenceUuid}
  * 
  */
-define('CDM_WS_SIMPLE_REFERENCE', 'simple/reference');
+define('CDM_WS_SIMPLE_REFERENCE', 'simple/ref');
 
 /**
  * Web Service Arguments: - none -
