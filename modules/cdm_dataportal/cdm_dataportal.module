@@ -406,7 +406,7 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
       drupal_set_title(t('Taxon does not exist'));
       return false;   
     }
-    _cdm_dataportal_set_currentSecUuid($taxonTO->secUuid);
+    _cdm_dataportal_set_currentSecUuid($taxonTO->sec->uuid);
   
     drupal_set_title(theme('cdm_taxon', $taxonTO, true));
     //TODO retrieve complete synonymy and other data

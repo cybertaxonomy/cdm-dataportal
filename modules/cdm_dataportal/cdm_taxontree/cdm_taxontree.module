@@ -13,7 +13,6 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-
 /**
  * Implementation of hook_menu()
  */
@@ -113,7 +112,7 @@ function cdm_taxontree_build_tree($taxonUuid = null){
     $secRefUuid = $taxon->sec->uuid;
   }
 
-  //$secRefUuid = 'fd5d06eb-06ff-4ffd-9878-1b375765d539';
+  //$secRefUuid = '6b18236a-a2b3-4109-b629-96bd47655e49';
   if(!$secRefUuid){
     $secRef = _cdm_dataportal_currentSecRef_array();
     $secRefUuid = $secRef['uuid'];
