@@ -9,23 +9,23 @@
  */
 {
   "root": [
-     {
-       "uuid":"5000007-stub",
-        "fullname":"Cichorieae Lam. & DC.",
-        "taggedName":[
+    {
+      "uuid":"5000002-stub",
+      "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
+      "taggedName":[
           {
             "type":"name",
-            "text":"Cichorieae"
+            "text":"Acanthocephalus benthamianus var. laevis"
           },
           {
             "type":"authors",
-            "text":"Lam. & DC."
+            "text":"Vassilcz."
           }
         ],
       "secUuid":"1001-stub",
       "isAccepted":true,
-      "hasChildren":2,
-        "alternativeConceptRefs":[]
+      "hasChildren":0,
+      "alternativeConceptRefs":[]
     },
     {
         "uuid":"5000008-stub",
@@ -46,22 +46,22 @@
         "alternativeConceptRefs":[]
     },
     {
-      "uuid":"5000002-stub",
-      "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
-      "taggedName":[
+       "uuid":"5000007-stub",
+        "fullname":"Cichorieae Lam. & DC.",
+        "taggedName":[
           {
             "type":"name",
-            "text":"Acanthocephalus benthamianus var. laevis"
+            "text":"Cichorieae"
           },
           {
             "type":"authors",
-            "text":"Vassilcz."
+            "text":"Lam. & DC."
           }
         ],
       "secUuid":"1001-stub",
       "isAccepted":true,
-      "hasChildren":0,
-      "alternativeConceptRefs":[]
+      "hasChildren":2,
+        "alternativeConceptRefs":[]
     }
   ]
 }

@@ -26,7 +26,7 @@ div.cdm_taxontree_scroller_y {
   padding: 5px;
   border: 1px solid transparent;
   background-color: #EDF5FA;
-  height: 200px; /* this defines the height of the treebrowser box */
+  height: 300px; /* this defines the height of the treebrowser box */
 }
 
 ul.cdm_taxontree{

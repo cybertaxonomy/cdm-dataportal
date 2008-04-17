@@ -457,11 +457,9 @@ function cdm_dataportal_view_filter($op, $taxonUuid = null){
     switch($op){
       case 'add':
         $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxonUuid);
-        //TODO reorder parents in JSON stubs and remove the if condition below
-        if(!variable_get('cdm_webservice_isStub', 0)){ 
-          $parents = array_reverse($parents);
-        }
         
+        $parents = array_reverse($parents);
+
         // pop off last element since this is the TreeNode object for $taxonUuid!
         $this_node = array_pop($parents);
         // will contain the uuid of the parent nodes excluding the $taxonUuid node itself
