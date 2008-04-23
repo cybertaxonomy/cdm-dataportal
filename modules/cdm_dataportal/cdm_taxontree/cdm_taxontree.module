@@ -51,17 +51,12 @@ function cdm_taxontree_block($op='list', $delta=0) {
         $taxonUuid_inFocus = _cdm_get_taxonuuid();
         $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
         $block['content'] = theme('cdm_taxontree_block', $tree);
-
-        $path_cdm_taxontree = drupal_get_path('module', 'cdm_taxontree');
-        $path_preferred_module = drupal_get_path('module', 'cdm_dataportal') ? drupal_get_path('module', 'cdm_dataportal') : $path_cdm_taxontree;
-        drupal_add_css($path_cdm_taxontree.'/cdm_taxontree.css');
-        drupal_add_js($path_preferred_module.'/js/jquery.dimensions.js');
-        drupal_add_js($path_cdm_taxontree.'/js/cdm_taxontree.js');
-        drupal_add_js($path_cdm_taxontree.'/js/jquery.scrollTo.js');
+        theme('cdm_taxontree_add_scripts');
         drupal_add_js('
         if (Drupal.jsEnabled) {
         $(document).ready(function() 
         {
+          $(\'ul.cdm_taxontree\').cdm_taxontree();
           //var activeElement = $(\'div.cdm_taxontree_scroller_x .active\');
           $(\'div.cdm_taxontree_scroller_x\').scrollTo($(\'.active\'));});
         }', 'inline');
@@ -102,7 +97,7 @@ function _get_compact_mode(){
  * @param unknown_type $taxonUuid
  * @return unknown
  */
-function cdm_taxontree_build_tree($taxonUuid = null){
+function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true){
 
   // find the secRefUuid
   $secRefUuid = null;
@@ -121,7 +116,7 @@ function cdm_taxontree_build_tree($taxonUuid = null){
   $compact_tree = cdm_dataportal_filters_active() && _get_compact_mode() != 'expanded';
 
   // get the root level
-  $root_tree = cdm_ws_get(CDM_WS_TREENODE_ROOT, $secRefUuid);
+  $root_tree = cdm_ws_get(CDM_WS_TREENODE_ROOT, ($hideOtherConcepts ? $secRefUuid : null) );
   $root_tree = _cdm_resultset2nodelist($root_tree, cdm_dataportal_filters_active());
 
   if(cdm_dataportal_filters_active()){
@@ -359,6 +354,15 @@ function _cdm_resultset2nodelist($resultset, $excluded = null, $expanded = null)
   return $tree;
 }
 
+function theme_cdm_taxontree_add_scripts(){
+  $path_cdm_taxontree = drupal_get_path('module', 'cdm_taxontree');
+  $path_preferred_module = drupal_get_path('module', 'cdm_dataportal') ? drupal_get_path('module', 'cdm_dataportal') : $path_cdm_taxontree;
+  drupal_add_css($path_cdm_taxontree.'/cdm_taxontree.css');
+  drupal_add_js($path_preferred_module.'/js/jquery.dimensions.js');
+  drupal_add_js($path_cdm_taxontree.'/js/cdm_taxontree.js');
+  drupal_add_js($path_cdm_taxontree.'/js/jquery.scrollTo.js');
+}
+
 
 function theme_cdm_taxontree_block($tree){
 
@@ -500,29 +504,34 @@ function theme_cdm_taxontree_node_concept_switch(&$node){
 }
 
 function theme_cdm_taxontree_node_reference(&$node){
-
-  $out = ' <span class="sec_ref widget_select" style="background-color:#'._uuid_to_rgbhex($node->secUuid).'" title="'.$node->secUuid.'">'.$node->secUuid.'</span>';
+  
+  $refSTO = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $node->secUuid);
+  if($refSTO && $refSTO->citation){
+    $cit = $refSTO->citation;
+  } else {
+    $cit = '['.$node->secUuid.']';
+  }
+  $out = ' <span class="sec_ref widget_select" title="'.$cit.'" style="background-color:#'._uuid_to_rgbhex($node->secUuid).'" alt="'.$node->secUuid.'">'.$cit.'</span>';
   return $out;
 }
-
-function cdm_taxontree_widget($default_uuid = false){
-
-  drupal_add_js(drupal_get_path('module', 'cdm_taxontree').'/js/cdm_taxontree_widget.js');
-
-  $out = '<div class="cdm_taxontree_widget">';
-  $out .= '<div class="tree">'.theme('cdm_taxontree', cdm_taxontree_build_tree(), NULL, FALSE, 'cdm_taxontree_node_reference').'</div>';
-  $out .= '<div class="selected_nodes"><label>'.t('Selected Nodes').'</label><ul class="listing"><li><input type="text" class="value_1232-stub" value="1232-stub" /></li></ul></div>';
-  $out .= '</div>';
-  return $out;
-}
-
 
 // --------------------------------------------------- //
+function _cdm_get_taxonuuid(){
+
+  //TODO make the path configurable
+  if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!==0){
+    $taxon_uuid = arg(2);
+  } else {
+    $taxon_uuid = $_SESSION['cdm_dataportal']['tree']['taxon_uuid'];
+  }
+
+  return $taxon_uuid;
+}
 
 function _uuid_to_rgbhex($uuid){
 
   $xfoot = _str_crossfoot($uuid);
-  $h = $xfoot / 2 / 2;
+  $h = $xfoot / 255;
   $h = $h - floor($h);
   $RGB = _hsv_2_rgb($h, 0.45, 1);
   return dechex($RGB['R']).dechex($RGB['G']).dechex($RGB['B']);
@@ -538,18 +547,6 @@ function _str_crossfoot($str)
   return $xfoot;
 }
 
-
-function _cdm_get_taxonuuid(){
-
-  //TODO make the path configurable
-  if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!==0){
-    $taxon_uuid = arg(2);
-  } else {
-    $taxon_uuid = $_SESSION['cdm_dataportal']['tree']['taxon_uuid'];
-  }
-
-  return $taxon_uuid;
-}
 
 function _hsv_2_rgb($H, $S, $V) // HSV Values:Number 0-1
 { // RGB Results:Number 0-255

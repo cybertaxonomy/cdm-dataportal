@@ -20,42 +20,51 @@
 		return this.each(function() {
 		  
 		  // init taxontree
-
 		  $(this).find('ul.cdm_taxontree').cdm_taxontree(true, options);
 
-		  
 		  var widget = $(this);
-		  var select = $('.cdm_taxontree_widget select');
-		  	  
-     // #### select.click(function(){
-     // ####   $(this).children().attr('selected', 'selected');
-     // #### });
-     		 
-		 // #### select.find('option').each(function() {		  
-		 // ####	widget.find('ul.cdm_taxontree li .value_'+$(this).text()).addClass('selected');
-		 // #### });
-		  
-			$(this).find('ul.cdm_taxontree li .widget_select').click(function(event) {
-				event.stopPropagation();
-			  var value = $(this).attr('title');
-			  if(select.children('[value='+value+']').length > 0){
-			    // remove from select
-			    // #### widget.find('ul.cdm_taxontree li .value_'+value).removeClass('selected');
-			    select.children('[value='+value+']').remove();
+		  var optionList = $('.cdm_taxontree_widget select');
+		  	  	  
+		  bind_select_click(optionList, $(this).find('ul.cdm_taxontree'), opts.multiselect);
+		  	  	  
+			/*$(this).find('ul.cdm_taxontree li .widget_select').click(function(event){
+		    event.stopPropagation();
+		    var value = $(this).attr('title');
+        if(select.children('[value='+value+']').length > 0){
+          // remove from select
+          select.children('[value='+value+']').remove();
         } else {
          // add to select
          if(!opts.multiselect){
            // remove all from select
-           // #### widget.find('ul.cdm_taxontree li .widget_select').removeClass('selected');
            select.children().remove();
          }
-         // #### widget.find('ul.cdm_taxontree li .value_'+value).addClass('selected');
          select.append('<option value="'+value+'" selected="selected">'+value+'</option>')
         }
-        
-			}); // END click()
-		}); // END each(
+			 }); // END click()
+			 */
+		}); // END each(		
 	}; // END cdm_taxontree_widget() 
+		 
+	function bind_select_click(optionList, treelist, isMultiselect){
+	 
+	   treelist.find('li .widget_select').click(function(event){
+        event.stopPropagation();
+        var value = $(this).attr('title');
+        if(optionList.children('[value='+value+']').length > 0){
+          // remove from select
+          optionList.children('[value='+value+']').remove();
+        } else {
+         // add to select
+         if(!isMultiselect){
+           // remove all from select
+           optionList.children().remove();
+         }
+         optionList.append('<option value="'+value+'" selected="selected">'+value+'</option>')
+        }
+       });
+	 
+	} // END bind_select_click()
 	 
 })(jQuery);
 

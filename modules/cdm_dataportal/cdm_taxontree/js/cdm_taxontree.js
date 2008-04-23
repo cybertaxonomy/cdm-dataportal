@@ -14,12 +14,16 @@
  /**
   * 
   */
-  $.fn.cdm_taxontree = function() {
-		
+  $.fn.cdm_taxontree = function(options) {
+  
+    var opts = $.extend({},$.fn.cdm_taxontree.defaults, options);
+    
 		return this.each(function() {
 		  
+	   /* ----------- magicbox ---------- */
       $(this).cdm_taxontree_magicbox();
 		  
+		  /* ----------- tree browser ---------- */
 			$(this).children('li').not('.invisible').click(function(event) {
 				event.stopPropagation();
 				if($(this).hasClass('collapsed')){
@@ -39,7 +43,7 @@
 						    parent_li.css('background-image', bg_image_tmp);
 								// preserve scroll positions
 								var tmp_scroller_y_left = tree_container.children().scrollTop();
-								parent_li.append(html).find('ul').cdm_taxontree();
+								parent_li.append(html).find('ul').cdm_taxontree(options);
 							  // resize parent container
 							  tree_container.cdm_taxontree_container_resize();
 							  // restore scroll positions
@@ -57,7 +61,45 @@
 			$(this).children('li').children('a').click(function(event) {
 			 event.stopPropagation();
 			});
+			
+			/* ----------- widget ------------------- */
+			if(opts.widget){
+        var widget = $(this).parents('.cdm_taxontree_widget');
+        var optionList = widget.find('select');
+        
+        // keep all options unselected
+        optionList.change(function(){
+          $(this).children().removeAttr('selected');
+        });
+        // select all options onsubmit
+        optionList.parents('form').submit(function(){
+          optionList.children().attr('selected', 'selected');
+        });
+        //
+        bind_select_click(optionList, $(this), opts.multiselect);
+      }
 		});
+		
+		function bind_select_click(optionList, treelist, isMultiselect){
+     treelist.find('li .widget_select').click(function(event){
+        event.stopPropagation();
+        var value = $(this).attr('alt');
+        if(optionList.children('[value='+value+']').length > 0){
+          // remove from select
+          optionList.children('[value='+value+']').remove();
+        } else {
+         // add to select
+         if(!isMultiselect){
+           // remove all from select
+           optionList.children().remove();
+         }
+         optionList.append('<option value="'+value+'">'+$(this).attr('title')+'</option>');
+         optionList.children().removeAttr('selected');
+        }
+       });
+  } // END bind_select_click()
+  
+  
 	}; // END cdm_taxontree()
 	 
 })(jQuery);
@@ -159,14 +201,21 @@ $.fn.cdm_taxontree_magicbox = function() {
 		);
 	}
 	// END exclude IE6
+	
     
 }
 
+$.fn.cdm_taxontree.defaults = {  // set up default options
+  widget:                 false,         // true = enable widget mode
+  element_name:           'widgetval',  // 
+  multiselect:            false,        // true = enable selection of multiple 
+};
 
-/* ========================== auto activate ========================== */ 
+/* ========================== auto activate ========================== 
 
 if (Drupal.jsEnabled) {
   $(document).ready(function() {
     $('ul.cdm_taxontree').cdm_taxontree();
   });
 }
+*/ 

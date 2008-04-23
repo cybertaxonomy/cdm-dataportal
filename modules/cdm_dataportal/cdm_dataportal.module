@@ -331,21 +331,110 @@ function cdm_dataportal_settings(){
       $secUuid_options[$ref->uuid] =  $ref->citation.($ref->year ? ' ['.$ref->year.']' : '');
     }
   }
-  $form['cdm_dataportal']['cdm_secUuid_default'] =  array(
+  
+  /*$form['cdm_dataportal']['cdm_secUuid_default'] =  array(
     '#type' => 'select',
     '#title'         => t('Default Concept Reference'),
     '#options' => $secUuid_options,
     '#default_value' => variable_get('cdm_secUuid_default', $secRef_default->uuid),
     '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
   );
-  
-  $form['cdm_dataportal']['cdm_taxontree'] = array(
-    '#value' => cdm_taxontree_widget(variable_get('cdm_secUuid_default', false))
+  */
+
+  $form['cdm_dataportal']['secuuid_widget'] = array(
+    '#type' => 'select_secuuid',
+    '#title' => t('Default Concept Reference'),
+    '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
+    '#varname' => 'cdm_secUuid_default',
+    '#multiple' => TRUE
   );
   
-
   return system_settings_form($form);
 }
+
+/**
+ * Implementation of hook_elements().
+ */
+function cdm_dataportal_elements() {
+  $type['select_secuuid'] = array(
+    '#input' => TRUE, 
+    '#process' => array('cdm_dataportal_select_secuuid_expand' => array()),
+    //'#validate' => array('cdm_dataportal_select_secuuid_validate' => array()),
+    //'#default_value' => array(),
+  );
+  return $type;
+}
+
+
+/*
+ * 
+ */
+function cdm_dataportal_select_secuuid_expand($element){
+  
+  $element['#tree'] = FALSE;
+  
+  // any value submitted?
+  if(isset($element['#post'][$element['#varname']])){
+    $selected_values = $element['#post'][$element['#varname']];
+  } else {
+    // use those store in drupal
+    $selected_values = variable_get( $element['#varname'], array());
+  }
+  if(!is_array($selected_values)){
+    $selected_values = array($selected_values);
+  }
+  $options = array();
+  foreach($selected_values as $secUuid){
+    $refSTO = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $secUuid);
+    if($refSTO && $refSTO->citation){
+      $cit = $refSTO->citation;
+    } else {
+      $cit = '['.$secUuid.']';
+    }
+    $options[$secUuid] = $cit;
+  }
+
+  $element[$element['#varname']] =  array(
+    '#type' => 'select',
+    '#options' => $options,
+    '#default_value' => array_values($options),
+    '#size' => $element['#multiple'] ? 12 : 2,
+    '#multiple' => $element['#multiple'],
+  );
+  return $element;
+}
+
+
+function theme_select_secuuid($element) {
+  
+  $default_uuid = variable_get($element['#varname'], false);
+  theme('cdm_taxontree_add_scripts');
+  drupal_add_js('$(document).ready(function() {$(\'ul.cdm_taxontree\').cdm_taxontree(
+  {
+    widget:                 true,
+    element_name:           \''.$element['#varname'].'\',  // 
+    multiselect:            '.($element['#multiple']?'true':'false').',         //
+  }
+  );});', 'inline');
+
+  $out  = '<div class="cdm_taxontree_widget">';
+  $out .= '<div class="taxontree">'.theme('cdm_taxontree', cdm_taxontree_build_tree(null, false), NULL, FALSE, 'cdm_taxontree_node_reference').'</div>';
+  $out .= $element['#children'].'<div style="clear: both;" /></div>';
+  
+  return theme(
+    'form_element',
+    array(
+      '#title' => $element['#title'],
+      '#description' => $element['#description'],
+      '#id' => $element['#id'],
+      '#required' => $element['#required'],
+      '#error' => $element['#error'],
+    ),
+    $out
+  );
+}
+
+
 
 /**
  * Displays a list of the known taxonomic names. Long lists are split up into multiple pages
