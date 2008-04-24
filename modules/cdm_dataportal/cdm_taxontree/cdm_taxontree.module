@@ -107,10 +107,8 @@ function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true){
     $secRefUuid = $taxon->sec->uuid;
   }
 
-  //$secRefUuid = '6b18236a-a2b3-4109-b629-96bd47655e49';
   if(!$secRefUuid){
-    $secRef = _cdm_dataportal_currentSecRef_array();
-    $secRefUuid = $secRef['uuid'];
+    $secRefUuid = variable_get('cdm_secUuid_default',false);
   }
   // compact_modes: 'expanded', 'compact', 'flattened'
   $compact_tree = cdm_dataportal_filters_active() && _get_compact_mode() != 'expanded';
@@ -170,6 +168,10 @@ function cdm_taxontree_build_path($taxonUuid, $is_filter_path = null, $is_expand
   $branch_path = array();
   $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxonUuid);
   if(!$parents){
+    if($is_filter_path){
+      // remove invalid filter
+      cdm_dataportal_filters_remove($taxonUuid);
+    }
     return false;
   }
 
@@ -503,15 +505,24 @@ function theme_cdm_taxontree_node_concept_switch(&$node){
   return $out;
 }
 
+
+function cdm_taxontree_secRefTitle_for($secUuid){
+  
+  $refSTO = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $secUuid);
+  if($refSTO && isset($refSTO[0]->fullCitation)){
+    $cit = $refSTO[0]->fullCitation;
+  } else {
+    $cit = '[no title for:'.$secUuid.']';
+  }
+  return $cit;
+}
+
+
 function theme_cdm_taxontree_node_reference(&$node){
   
-  $refSTO = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $node->secUuid);
-  if($refSTO && $refSTO->citation){
-    $cit = $refSTO->citation;
-  } else {
-    $cit = '['.$node->secUuid.']';
-  }
-  $out = ' <span class="sec_ref widget_select" title="'.$cit.'" style="background-color:#'._uuid_to_rgbhex($node->secUuid).'" alt="'.$node->secUuid.'">'.$cit.'</span>';
+  $secRefTitle = cdm_taxontree_secRefTitle_for($node->secUuid);
+  $out = ' <span class="sec_ref widget_select" title="'.check_plain($secRefTitle).'" style="background-color:#'._uuid_to_rgbhex($node->secUuid).'" alt="'.$node->secUuid.'">'
+      .check_plain($secRefTitle).'</span>';
   return $out;
 }
 

@@ -119,10 +119,6 @@ function cdm_dataportal_menu($may_cache) {
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
   //drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_screen.css', 'screen');
-  // to validate the session on every request is important since the cdm webservice url
-  // could have been changed in the settings. Without clearing the session if it has become invalid
-  // the dataportal would rely on wrong data, thus producing errors.
-  cdm_dataportal_session_validate();
   return $items;
   
 }
@@ -190,13 +186,14 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
     $form_values['cdm_secUuid_default'] = 0;
     //_cdm_dataportal_set_currentSecUuid(false);
     // reset all cdm related data stored in the session
-    cdm_dataportal_session_clear($form_values['cdm_webservice_url']);
+    //cdm_dataportal_session_clear($form_values['cdm_webservice_url']);
     // clear the cdm webservice cache
     cache_clear_all(NULL, 'cache_cdm_ws');
   }
   
 }
 
+/* 
 function cdm_dataportal_session_clear($cdm_ws_uri_update = false){
   $_SESSION['cdm'] = null;
   if(is_string($cdm_ws_uri_update)){
@@ -212,6 +209,7 @@ function cdm_dataportal_session_validate(){
     cdm_dataportal_session_clear(variable_get('cdm_webservice_url', false));
   }
 }
+*/
 
 function cdm_dataportal_search_taxon_form(){
   
@@ -323,30 +321,13 @@ function cdm_dataportal_settings(){
       '#collapsible' => FALSE,
       '#collapsed' => TRUE,
   );
-  $allSecRefs = cdm_ws_get(CDM_WS_SEC_REFERENCES_ALL);
-  $secRef_default = isset($allSecRefs[0]) ? $allSecRefs[0] : false;
-  $secUuid_options = array('0' => ' --- none ---');
-  if(is_array($allSecRefs)){
-    foreach($allSecRefs as $ref){
-      $secUuid_options[$ref->uuid] =  $ref->citation.($ref->year ? ' ['.$ref->year.']' : '');
-    }
-  }
-  
-  /*$form['cdm_dataportal']['cdm_secUuid_default'] =  array(
-    '#type' => 'select',
-    '#title'         => t('Default Concept Reference'),
-    '#options' => $secUuid_options,
-    '#default_value' => variable_get('cdm_secUuid_default', $secRef_default->uuid),
-    '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
-  );
-  */
 
   $form['cdm_dataportal']['secuuid_widget'] = array(
     '#type' => 'select_secuuid',
     '#title' => t('Default Concept Reference'),
     '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
     '#varname' => 'cdm_secUuid_default',
-    '#multiple' => TRUE
+    '#multiple' => false
   );
   
   return system_settings_form($form);
@@ -385,13 +366,7 @@ function cdm_dataportal_select_secuuid_expand($element){
   }
   $options = array();
   foreach($selected_values as $secUuid){
-    $refSTO = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $secUuid);
-    if($refSTO && $refSTO->citation){
-      $cit = $refSTO->citation;
-    } else {
-      $cit = '['.$secUuid.']';
-    }
-    $options[$secUuid] = $cit;
+    $options[$secUuid] = cdm_taxontree_secRefTitle_for($secUuid);
   }
 
   $element[$element['#varname']] =  array(
@@ -545,33 +520,10 @@ function cdm_dataportal_view_filter($op, $taxonUuid = null){
   if($taxonUuid || $op == 'list'){
     switch($op){
       case 'add':
-        $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxonUuid);
-        
-        $parents = array_reverse($parents);
-
-        // pop off last element since this is the TreeNode object for $taxonUuid!
-        $this_node = array_pop($parents);
-        // will contain the uuid of the parent nodes excluding the $taxonUuid node itself
-        $parent_uuids = array();
-        
-        // children override parents rule: remove all parent filters, 
-        foreach($parents as $pnode){
-          unset($_SESSION['cdm']['filters'][$pnode->uuid]);
-          $parent_uuids[] = $pnode->uuid;
-        }
-        
-        // search for potential children of this $taxonUuid
-        foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
-          if(in_array($taxonUuid, $node->parentUuids)){
-            unset($_SESSION['cdm']['filters'][$node->uuid]);
-          }
-        }
-        // finally add this $taxonUuid as new filter
-        $this_node->parentUuids = $parent_uuids;
-        $_SESSION['cdm']['filters'][$taxonUuid] = $this_node;
+        cdm_dataportal_filters_add($taxonUuid);
         break;
       case 'remove':
-        unset($_SESSION['cdm']['filters'][$taxonUuid]);
+        cdm_dataportal_filters_remove($taxonUuid);
         break;
       case 'list':
         //TODO put in theme!!!
@@ -639,7 +591,7 @@ function cdm_dataportal_shortname_of($NameSTO){
   }
   $name = trim($name);
   if($name){
-    if( $pos = stripos($name, ' ')){
+    if(strpos($name, 'Incertae sedis') === false && $pos = stripos($name, ' ')){
       return substr($name, 0, 1).'. '.substr($name, $pos);
     } else {
       return $name;
@@ -650,18 +602,21 @@ function cdm_dataportal_shortname_of($NameSTO){
 }
 
 /**
- * Sets the secUuid of the $taxonTO parameter to the current secUuid which is stored in the users session
- *
- * @param TaxonTO $taxonTO
+ * @param UUID $secUuid
  */
 function _cdm_dataportal_set_currentSecUuid($secUuid){
 
+  if(is_array($secUuid)){
+    $secUuid = $secUuid[0];
+  }
   if( !isset($_SESSION['cdm']['currentSecRef']['uuid']) ||  $_SESSION['cdm']['currentSecRef']['uuid'] != $secUuid){
     if(!$secUuid){
       $_SESSION['cdm']['currentSecRef'] = null;
     } else {
       $secRef = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$secUuid);
-      $_SESSION['cdm']['currentSecRef'] = (array)$secRef;
+      if(isset($secRef[0])){
+        $_SESSION['cdm']['currentSecRef'] = (array)($secRef[0]);
+      }
     }
   }
 }
@@ -687,7 +642,7 @@ function _cdm_dataportal_currentSecRef_array(){
 
 /**
  * filters are set in cdm_dataportal_view_filter()
- *
+ * functions using filters should remove invalid filters
  * @return true if any filter is active
  */
 function cdm_dataportal_filters_active(){
@@ -703,6 +658,38 @@ function &cdm_dataportal_filters_get(){
     $_SESSION['cdm']['filters'] = array();
   }
  return $_SESSION['cdm']['filters'];
+}
+
+
+function cdm_dataportal_filters_add($taxonUuid){
+  $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxonUuid);
+  
+  $parents = array_reverse($parents);
+  
+  // pop off last element since this is the TreeNode object for $taxonUuid!
+  $this_node = array_pop($parents);
+  // will contain the uuid of the parent nodes excluding the $taxonUuid node itself
+  $parent_uuids = array();
+  
+  // children override parents rule: remove all parent filters, 
+  foreach($parents as $pnode){
+    unset($_SESSION['cdm']['filters'][$pnode->uuid]);
+    $parent_uuids[] = $pnode->uuid;
+  }
+  
+  // search for potential children of this $taxonUuid
+  foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
+    if(in_array($taxonUuid, $node->parentUuids)){
+      unset($_SESSION['cdm']['filters'][$node->uuid]);
+    }
+  }
+  // finally add this $taxonUuid as new filter
+  $this_node->parentUuids = $parent_uuids;
+  $_SESSION['cdm']['filters'][$taxonUuid] = $this_node;
+}
+
+function cdm_dataportal_filters_remove($taxonUuid){
+  unset($_SESSION['cdm']['filters'][$taxonUuid]);
 }
 
 

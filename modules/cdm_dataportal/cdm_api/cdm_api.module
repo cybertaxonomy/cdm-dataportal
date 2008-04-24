@@ -476,17 +476,11 @@ define('CDM_WS_FIND_TAXA', 'findTaxa');
 define('CDM_WS_REFERENCE', 'ref');
 
 /**
- * Web Service Arguments: {referenceUuid}
+ * Web Service Arguments: {referenceUuid} or array of {referenceUuid}
  * 
+ * returns a list of ReferenceSTO
  */
 define('CDM_WS_SIMPLE_REFERENCE', 'simple/ref');
-
-/**
- * Web Service Arguments: - none -
- * 
- * returns a set of all available concept references
- */
-define('CDM_WS_SEC_REFERENCES_ALL', 'allSecReferences');
 
 /**
  * Web Service Arguments: {taxonUuid}
@@ -495,7 +489,9 @@ define('CDM_WS_TAXON', 'taxon');
 
 
 /**
- * Web Service Arguments: {taxonUuid}
+ * Web Service Arguments: {taxonUuid} or array of {referenceUuid}
+ * 
+ * returns a list of TaxonSTO
  */
 define('CDM_WS_SIMPLE_TAXON', 'simple/taxon');
 
