@@ -190,6 +190,10 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
     // clear the cdm webservice cache
     cache_clear_all(NULL, 'cache_cdm_ws');
   }
+  // ['cdm_webservice_cache'] default in cdm_api is 1
+  if($form_values['cdm_webservice_cache'] != variable_get('cdm_webservice_cache', 1)){
+    cache_clear_all(NULL, 'cache_cdm_ws');
+  }
   
 }
 
