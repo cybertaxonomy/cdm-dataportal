@@ -1,5 +1,6 @@
 { 
-  "root":{
+  "root":[
+    {
       "uuid":"1001-stub",
       "uri":"",
       "citation":"EDIT wp 6 - Chichorieae testt",
@@ -9,4 +10,5 @@
       "mediaURI":[
       ]
    }
+   ]
 }
