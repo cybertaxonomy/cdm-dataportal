@@ -164,6 +164,36 @@ function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef =
   
 }
 
+
+function theme_select_secuuid($element) {
+  
+  $default_uuid = variable_get($element['#varname'], false);
+  theme('cdm_taxontree_add_scripts');
+  drupal_add_js('$(document).ready(function() {$(\'ul.cdm_taxontree\').cdm_taxontree(
+  {
+    widget:                 true,
+    element_name:           \''.$element['#varname'].'\',  // 
+    multiselect:            '.($element['#multiple']?'true':'false').',         //
+  }
+  );});', 'inline');
+
+  $out  = '<div class="cdm_taxontree_widget">';
+  $out .= '<div class="taxontree">'.theme('cdm_taxontree', cdm_taxontree_build_tree(null, false), NULL, FALSE, 'cdm_taxontree_node_reference').'</div>';
+  $out .= $element['#children'].'<div style="clear: both;" /></div>';
+  
+  return theme(
+    'form_element',
+    array(
+      '#title' => $element['#title'],
+      '#description' => $element['#description'],
+      '#id' => $element['#id'],
+      '#required' => $element['#required'],
+      '#error' => $element['#error'],
+    ),
+    $out
+  );
+}
+
 function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
   $out .= '<li class="dynabox"><span class="label">'.$label.'</span>';

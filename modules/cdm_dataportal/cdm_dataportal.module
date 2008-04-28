@@ -183,14 +183,18 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
   $cdm_webservice_url_changed = variable_get('cdm_webservice_url', '') != $form_values['cdm_webservice_url'];
   
   if ($cdm_webservice_url_changed) {
-    $form_values['cdm_secUuid_default'] = 0;
-    //_cdm_dataportal_set_currentSecUuid(false);
+    $form_values['cdm_secUuid_default'] = '';
+    //TODO does the currentSecUuid need to be stored?
+    //   Yes - if switching to another concept is permanent until an other concept switch is used.
+    //   NO  - if a user only 'visits' other concepts until this context is left by visiting a non taxon page
+    //         , or explicitly when a concept switch is used.
+    //         other concept could be activated permanently by personal preference settings
+    _cdm_dataportal_set_currentSecUuid(false);
     // reset all cdm related data stored in the session
-    //cdm_dataportal_session_clear($form_values['cdm_webservice_url']);
+    // cdm_dataportal_session_clear($form_values['cdm_webservice_url']);
     // clear the cdm webservice cache
     cache_clear_all(NULL, 'cache_cdm_ws');
   }
-  // ['cdm_webservice_cache'] default in cdm_api is 1
   if($form_values['cdm_webservice_cache'] != variable_get('cdm_webservice_cache', 1)){
     cache_clear_all(NULL, 'cache_cdm_ws');
   }
@@ -381,36 +385,6 @@ function cdm_dataportal_select_secuuid_expand($element){
     '#multiple' => $element['#multiple'],
   );
   return $element;
-}
-
-
-function theme_select_secuuid($element) {
-  
-  $default_uuid = variable_get($element['#varname'], false);
-  theme('cdm_taxontree_add_scripts');
-  drupal_add_js('$(document).ready(function() {$(\'ul.cdm_taxontree\').cdm_taxontree(
-  {
-    widget:                 true,
-    element_name:           \''.$element['#varname'].'\',  // 
-    multiselect:            '.($element['#multiple']?'true':'false').',         //
-  }
-  );});', 'inline');
-
-  $out  = '<div class="cdm_taxontree_widget">';
-  $out .= '<div class="taxontree">'.theme('cdm_taxontree', cdm_taxontree_build_tree(null, false), NULL, FALSE, 'cdm_taxontree_node_reference').'</div>';
-  $out .= $element['#children'].'<div style="clear: both;" /></div>';
-  
-  return theme(
-    'form_element',
-    array(
-      '#title' => $element['#title'],
-      '#description' => $element['#description'],
-      '#id' => $element['#id'],
-      '#required' => $element['#required'],
-      '#error' => $element['#error'],
-    ),
-    $out
-  );
 }
 
 
