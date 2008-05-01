@@ -307,6 +307,10 @@ ul.links li.first {
   font-size: 12px;
 }
 
+.block-cdm_taxontree {
+  border: 1px solid #006666;
+}
+
 .block-cdm_dataportal {
   padding-bottom: 0.75em;
   margin-bottom: 1.5em;
