@@ -478,10 +478,12 @@ function _cdm_api_secref_cache_add($secUuidsStr){
   global $secref_cache;
   $refSTOs = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $secUuidsStr);
   $assocRefSTOs = array();
-  foreach($refSTOs as $ref){
-    $assocRefSTOs[$ref->uuid] = $ref;
+  if($refSTOs) {
+    foreach($refSTOs as $ref){
+      $assocRefSTOs[$ref->uuid] = $ref;
+    }
+    $secref_cache = array_merge($secref_cache, $assocRefSTOs);
   }
-  $secref_cache = array_merge($secref_cache, $assocRefSTOs);
 }
 
 /**
