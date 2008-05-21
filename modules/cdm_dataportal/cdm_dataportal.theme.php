@@ -168,6 +168,14 @@ function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef =
 function theme_select_secuuid($element) {
   
   $default_uuid = variable_get($element['#varname'], false);
+
+  $tree = cdm_taxontree_build_tree(null, false); // get root nodes
+  $secUuids = array();
+  foreach($tree as $node){
+    $secUuids[] = $node->secUuid;
+  }
+  cdm_api_secref_cache_prefetch($secUuids);
+  
   theme('cdm_taxontree_add_scripts');
   drupal_add_js('$(document).ready(function() {$(\'ul.cdm_taxontree\').cdm_taxontree(
   {
@@ -178,7 +186,7 @@ function theme_select_secuuid($element) {
   );});', 'inline');
 
   $out  = '<div class="cdm_taxontree_widget">';
-  $out .= '<div class="taxontree">'.theme('cdm_taxontree', cdm_taxontree_build_tree(null, false), NULL, FALSE, 'cdm_taxontree_node_reference').'</div>';
+  $out .= '<div class="taxontree">'.theme('cdm_taxontree', $tree, NULL, FALSE, 'cdm_taxontree_node_reference').'</div>';
   $out .= $element['#children'].'<div style="clear: both;" /></div>';
   
   return theme(

@@ -508,9 +508,9 @@ function theme_cdm_taxontree_node_concept_switch(&$node){
 
 function cdm_taxontree_secRefTitle_for($secUuid){
   
-  $refSTO = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $secUuid);
-  if($refSTO && isset($refSTO[0]->fullCitation)){
-    $cit = $refSTO[0]->fullCitation;
+  $refSTO = cdm_api_secref_cache_get($secUuid);
+  if($refSTO && isset($refSTO->fullCitation)){
+    $cit = $refSTO->fullCitation;
   } else {
     $cit = '[no title for:'.$secUuid.']';
   }

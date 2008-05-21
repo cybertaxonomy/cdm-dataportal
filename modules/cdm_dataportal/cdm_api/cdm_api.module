@@ -308,15 +308,20 @@ function cdm_ws_load($url, $is_multi_paramater_query){
   
   if(!$cache_entry){
     // load fresh data from webservice
+    $time_get_start = microtime(true);
     $datastr = get_content($url);
+    $time_get = microtime(true) - $time_get_start;
     /*if(TRUE){
       $storef =  urlencode($url);
       drupal_set_message($storef);
       file_save_data($datastr, $storef, FILE_EXISTS_REPLACE);
     }*/
+    
+    $time_parse_start = microtime(true);
     $obj = cdm_load_obj($datastr);
+    $time_parse = microtime(true) - $time_parse_start;
     if(variable_get('cdm_webservice_debug', 1)){
-      drupal_set_message($url.' >> ['.(strlen($datastr) / 1024).' kb, '.($obj ? 'valid data':'invalid data').']', 'debug');
+      drupal_set_message($url.' [fetched in: '.sprintf('%3.3f', $time_get).'s; parsed in '.sprintf('%3.3f', $time_parse).' s; size:'.sprintf('%3.1f', (strlen($datastr) / 1024)).' kb of '.($obj ? 'valid data':'invalid data').']', 'debug');
     }
     if( !$obj || !$datastr){
       watchdog('CDM', 'cdm_ws_load() - URL: '.$url, WATCHDOG_ERROR);
@@ -433,6 +438,51 @@ function _get_content_curl($url, $header = array())
     return $string;    
 }
 
+function cdm_api_secref_cache_prefetch(&$secUuids){
+  global $secref_cache;
+  if(!is_array($secref_cache)){
+    $secref_cache = array();
+  }
+  $uniqueUuids = array_unique($secUuids);
+  $i = 0;
+  $param = '';
+  while($i++ < count($uniqueUuids)){
+    $param .= $secUuids[$i].',';
+    if(strlen($param) + 37 > 2000){
+     _cdm_api_secref_cache_add($param);
+      $param = '';
+    }
+  }
+  if($param){
+     _cdm_api_secref_cache_add($param);
+  }
+}
+
+function cdm_api_secref_cache_get($secUuid){
+  global $secref_cache;
+  if(!is_array($secref_cache)){
+    $secref_cache = array();
+  }
+  if(!array_key_exists($secUuid, $secref_cache)){
+    _cdm_api_secref_cache_add($secUuid);
+  }
+  return $secref_cache[$secUuid]; 
+}
+
+function cdm_api_secref_cache_clear(){
+  global $secref_cache;
+  $secref_cache = array();
+}
+
+function _cdm_api_secref_cache_add($secUuidsStr){
+  global $secref_cache;
+  $refSTOs = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $secUuidsStr);
+  $assocRefSTOs = array();
+  foreach($refSTOs as $ref){
+    $assocRefSTOs[$ref->uuid] = $ref;
+  }
+  $secref_cache = array_merge($secref_cache, $assocRefSTOs);
+}
 
 /**
  * Web Service Arguments: {Uuid}

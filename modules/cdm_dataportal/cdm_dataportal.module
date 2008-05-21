@@ -189,14 +189,21 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
     //   NO  - if a user only 'visits' other concepts until this context is left by visiting a non taxon page
     //         , or explicitly when a concept switch is used.
     //         other concept could be activated permanently by personal preference settings
+    //
+    //  >> NO seems to be the desired solution <<
+    //
     _cdm_dataportal_set_currentSecUuid(false);
     // reset all cdm related data stored in the session
-    // cdm_dataportal_session_clear($form_values['cdm_webservice_url']);
+    // cdm_dataportal_session_clear($form_values['cdm_webservice_url']); // cdm_webservice_url is not further stored here
     // clear the cdm webservice cache
     cache_clear_all(NULL, 'cache_cdm_ws');
+    // better clear secref_cache since i can not be sure if the cache has not be used during this response
+    cdm_api_secref_cache_clear();
   }
   if($form_values['cdm_webservice_cache'] != variable_get('cdm_webservice_cache', 1)){
     cache_clear_all(NULL, 'cache_cdm_ws');
+    // better clear secref_cache since i can not be sure if the cache has not be used during this response
+    cdm_api_secref_cache_clear();
   }
   
 }
