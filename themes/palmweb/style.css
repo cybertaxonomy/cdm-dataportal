@@ -309,12 +309,19 @@ ul.links li.first {
 
 .block-cdm_taxontree {
   border: 1px solid #006666;
+  background-color: #fff;
+}
+
+div.cdm_taxontree_scroller_y, ul.cdm_taxontree,  ul.cdm_taxontree li.collapsed, ul.cdm_taxontree li.leaf, ul.cdm_taxontree li.focused,ul.cdm_taxontree li, ul.cdm_taxontree li.expanded  {
+  background-color: #fff;
+  border: 0px;
 }
 
 .block-cdm_dataportal {
   padding-bottom: 0.75em;
   margin-bottom: 1.5em;
   border: 1px solid #96AB2B;
+  background-color: #fff;
 }
 
 .block-tinytax {
