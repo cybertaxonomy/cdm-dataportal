@@ -753,8 +753,7 @@ function generated_profile_final() {
         '<img src="http://localhost/drupal-5.7/sites/default/themes/diptera/coverimg.jpg"/>',
         'diptera block',
         '3'
-    );
-    db_query(
+    );+
         "INSERT INTO {blocks} (module,delta,theme,status,weight,region,custom,throttle,visibility,pages,title)
         VALUES ('%s', '%s', '%s', %d, %d, '%s', %d, %d, %d, '%s', '%s')",
         'block', '1', 'diptera', '0', '-2', '', '0', '0', '0', '', ''
