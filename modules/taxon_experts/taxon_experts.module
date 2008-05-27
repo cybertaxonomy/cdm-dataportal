@@ -16,8 +16,6 @@ require_once('template.taxon_experts.php');
  * European Distributed Institute of Taxonomy 
  * http://www.e-taxonomy.eu
  * 
- * The contents of this file are subject to the Mozilla Public License Version 1.1
- * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
 /**
@@ -224,7 +222,7 @@ function _autotitle_expertsdb_address(&$node){
 
 /**
  * Alternative link rendering to point to the user account of the node author 
- * instead of ponting to the node itself
+ * instead of pointing to the node itself
  * 
  * used for view search_person 
  */
