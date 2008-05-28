@@ -3,7 +3,6 @@ module_patches/cck_field_perms/cck_field_perms-views0.1.patch -text
 module_patches/jquery-update/compat-1.0_fix-unload.patch -text
 module_patches/nodefamily/nodefamily_create-others-nodes.patch -text
 modules/cdm_dataportal/INSTALL.txt -text
-modules/cdm_dataportal/LICENSE.TXT -text
 modules/cdm_dataportal/cdm_api/cdm_api.info -text
 modules/cdm_dataportal/cdm_api/cdm_api.install -text
 modules/cdm_dataportal/cdm_api/cdm_api.module -text
