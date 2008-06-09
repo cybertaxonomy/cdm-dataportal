@@ -3,6 +3,8 @@ module_patches/cck_field_perms/cck_field_perms-views0.1.patch -text
 module_patches/jquery-update/compat-1.0_fix-unload.patch -text
 module_patches/nodefamily/nodefamily_create-others-nodes.patch -text
 modules/cdm_dataportal/INSTALL.txt -text
+modules/cdm_dataportal/LICENSE.txt -text
+modules/cdm_dataportal/cdm_api/LICENSE.txt -text
 modules/cdm_dataportal/cdm_api/cdm_api.info -text
 modules/cdm_dataportal/cdm_api/cdm_api.install -text
 modules/cdm_dataportal/cdm_api/cdm_api.module -text
@@ -42,8 +44,10 @@ modules/cdm_dataportal/cdm_dataportal.module -text
 modules/cdm_dataportal/cdm_dataportal.theme.php -text
 modules/cdm_dataportal/cdm_dataportal_print.css -text
 modules/cdm_dataportal/cdm_dataportal_screen.css -text
+modules/cdm_dataportal/cdm_mediauri/LICENSE.txt -text
 modules/cdm_dataportal/cdm_mediauri/cdm_mediauri.info -text
 modules/cdm_dataportal/cdm_mediauri/cdm_mediauri.module -text
+modules/cdm_dataportal/cdm_taxontree/LICENSE.txt -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.css -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.info -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.module -text
@@ -132,12 +136,14 @@ modules/smtp/LICENSE.txt -text
 modules/smtp/README.txt -text
 modules/smtp/smtp.info -text
 modules/smtp/smtp.module -text
+modules/softwareTracker/LICENSE.txt -text
 modules/softwareTracker/images/EDIT_icon.gif -text
 modules/softwareTracker/softwareTracker.css -text
 modules/softwareTracker/softwareTracker.info -text
 modules/softwareTracker/softwareTracker.install -text
 modules/softwareTracker/softwareTracker.module -text
 modules/softwareTracker/softwareTracker.sql -text
+modules/taxon_experts/LICENSE.txt -text
 modules/taxon_experts/README.txt -text
 modules/taxon_experts/noderef_parent.info -text
 modules/taxon_experts/noderef_parent.module -text

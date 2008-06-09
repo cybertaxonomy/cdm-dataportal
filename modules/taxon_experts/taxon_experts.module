@@ -1,5 +1,5 @@
 <?php
-// $Id$
+// $Id: taxon_experts.module 2466 2008-05-27 15:51:07Z a.kohlbecker $
 
 // include the module specific template extention for this module
 require_once('template.taxon_experts.php');
