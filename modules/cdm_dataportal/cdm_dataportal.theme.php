@@ -51,19 +51,21 @@ function theme_cdm_name($nameTO, $displayNomRef = true){
     //TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
     $class = 'name'; //($nameTO->secUuid ? 'taxon' : 'taxonname');  
   
-    if($nameTO){
-      if(!$nameTO->taggedName || !count($nameTO->taggedName)){
-        $out .= '<span class="'.$class.'">'.$nameTO->fullname.'</span>';
-      } else {
-        $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName).'</span>';
-      }
-    } else {
-      $out .= '<span class="error">Invalid NameTO</span>';
+
+    if(!$nameTO){
+      return '<span class="error">Invalid NameTO</span>';      
     }
-    
+
+    $hasNomRef = $nameTO->nomenclaturalReference->fullCitation;
+    if(!$nameTO->taggedName || !count($nameTO->taggedName)){
+      $out .= '<span class="'.$class.'">'.$nameTO->fullname.'</span>';
+    } else {
+      $skip = $hasNomRef ? array('reference') : array();
+      $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName, 'span', '', $skip).'</span>';
+    }
         
-    if($displayNomRef && $nameTO->nomenclaturalReference->citation){
-      $out .= (str_beginsWith($nameTO->nomenclaturalReference->citation, 'in') ? '&nbsp;':',&nbsp;');
+    if($displayNomRef && $hasNomRef){
+      $out .= (str_beginsWith($nameTO->nomenclaturalReference->fullCitation, 'in') ? '&nbsp;':',&nbsp;');
       $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference);
     }
     
@@ -245,8 +247,8 @@ function theme_cdm_credits(){
 function theme_cdm_fullreference($referenceTO){
   $out = $referenceTO->authorship;
   
-  if($referenceTO->citation){
-    $out .= ' '.$referenceTO->citation;
+  if($referenceTO->fullCitation){
+    $out .= ' '.$referenceTO->fullCitation;
   }
   if($referenceTO->microReference){
     $out .= ' : '.$referenceTO->microReference;
@@ -274,18 +276,40 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
     $nomref_citation = theme('cdm_fullreference', $referenceSTO);
   } else {
     // it is ReferenceSTO
-    $nomref_citation = $referenceSTO->citation; 
+    $nomref_citation = $referenceSTO->fullCitation; 
   }
 
   _add_js_thickbox();
-    
-  if( count($referenceSTO->mediaURI) > 0 ){
+  
+  // find media representations for inline display and high quality for download
+  // assuming that there is only one protologue per name only the first media is used 
+  /* TODO currently it is assumed that high quality representations are tiffs
+   * which is only true for the cichoriea portal
+   */
+  if( count($referenceSTO->media[0]->representations) > 0 ){
+    foreach($referenceSTO->media[0]->representations as $representation){
+      $mimeType = $representation->mimeType;
+      if(($mimeType == 'image/png' || $mimeType == 'image/jpeg' || $mimeType == 'image/gif')
+        && count($representation->representationParts) > 0){
+        $representation_inline = $representation;
+      } else if($representation->mimeType == 'image/tiff'
+        && count($representation->representationParts) > 0){
+        $representation_highquality = $representation;
+      }
+    }
+  }
+  
+  if($representation_inline) {
     $attributes = array('class'=>'thickbox', 'rel'=>'protologues-'.$referenceSTO->uuid);
-    $out = l($nomref_citation, $referenceSTO->mediaURI[0]->value, $attributes, NULL, NULL, TRUE);
-    for($i = 1;  $i < count($referenceSTO->mediaURI); $i++) {
-      $out .= l('', $referenceSTO->mediaURI[$i]->value, $attributes, NULL, NULL, TRUE);
+    for($i = 0; $part = $representation_inline->representationParts[$i]; $i++){
+      if($i == 0){        
+        $out = l($nomref_citation, $part->uri, $attributes, NULL, NULL, TRUE);
+      } else {
+        $out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);              
+      }
     }
   } else {
+    // no media available, so display just the citation string
     $out =  $nomref_citation;
   }
   return $out;  

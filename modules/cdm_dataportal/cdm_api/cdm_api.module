@@ -51,6 +51,7 @@ function cdm_api_menu($may_cache) {
   if ($may_cache) {
     
    $items[] = array(
+      // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
       'path' => 'cdm_api/proxy',
       'callback' => 'proxy_content',
       'access' => true,
@@ -172,10 +173,12 @@ function cdm_api_cron() {
  *       Default is a blak character
  * @return String of HTML 
  */
-function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '){
+function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
   $out = '';
    foreach($taggedtxt as $tt){
-     $out .= (strlen($out) > 0 ? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.$tt->text.'</'.$tag.'>';
+     if(!in_array($tt->type, $skiptags)){
+      $out .= (strlen($out) > 0 ? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.$tt->text.'</'.$tag.'>';
+     }
    }
    return $out;
 }
@@ -251,10 +254,9 @@ function proxy_content($url, $theme = null){
   $url = array_shift($args);
   $theme = array_shift($args);
   
-  
   //TODO reconsider caching logic in this function
   if(!$theme){
-    // print out JSON the cache cannot be used since it contains objetcs
+    // print out JSON, the cache cannot be used since it contains objetcs
     $data = get_content(urldecode($url));
     print $data;
   } else {
@@ -318,7 +320,7 @@ function cdm_ws_load($url, $is_multi_paramater_query){
     $obj = cdm_load_obj($datastr);
     $time_parse = microtime(true) - $time_parse_start;
     if(variable_get('cdm_webservice_debug', 1)){
-      drupal_set_message($url.' [fetched in: '.sprintf('%3.3f', $time_get).'s; parsed in '.sprintf('%3.3f', $time_parse).' s; size:'.sprintf('%3.1f', (strlen($datastr) / 1024)).' kb of '.($obj ? 'valid data':'invalid data').']', 'debug');
+      drupal_set_message($url.' [fetched in: '.sprintf('%3.3f', $time_get).'s; parsed in '.sprintf('%3.3f', $time_parse).' s; size:'.sprintf('%3.1f', (strlen($datastr) / 1024)).' kb of '.($obj ?  l('valid data', 'cdm_api/proxy/'.urlencode($url), array('target'=>'json-data')):'invalid data').'] '.$json_data_link, 'debug');
     }
     if( !$obj || !$datastr){
       watchdog('CDM', 'cdm_ws_load() - URL: '.$url, WATCHDOG_ERROR);
@@ -516,7 +518,7 @@ define('CDM_WS_NAME', 'name');
  * 
  * returns ResultPageSTO
  */
-define('CDM_WS_FIND_TAXA', 'findTaxa');
+define('CDM_WS_FIND_TAXA', 'find/taxon');
 
 /**
  * Web Service Arguments: {referenceUuid}

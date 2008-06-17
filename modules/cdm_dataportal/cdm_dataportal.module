@@ -100,13 +100,6 @@ function cdm_dataportal_menu($may_cache) {
     );
     
     $items[] = array(
-      'path' => 'cdm_dataportal/filter',
-      'callback' => 'cdm_dataportal_view_filter',
-      'access' => true,
-      'type' => MENU_CALLBACK, 
-    );
-    
-    $items[] = array(
       'path' => 'cdm/xml2json',
       'callback' => 'cdm_view_xml2json',
       'access' => true,
@@ -157,10 +150,6 @@ function cdm_dataportal_block($op='list', $delta=0) {
       case 2:
         $block['subject'] = t('Search Taxa');
         $block['content'] = drupal_get_form('cdm_dataportal_search_taxon_form');
-        return $block;   
-      case 3:
-        $block['subject'] = t('Active Filters');
-        $block['content'] = cdm_dataportal_view_filter('list');
         return $block;
     }
   }
@@ -488,42 +477,6 @@ function cdm_dataportal_view_search_taxon(){
   return theme('cdm_search_results', $resultPageSTO, 'cdm_dataportal/search/taxon', $request_params);
 }
 
-/**
- * filters on children override already set parent filters and vice verca
- *
- * @param unknown_type $op
- * @param unknown_type $taxonUuid
- * @return unknown
- */
-function cdm_dataportal_view_filter($op, $taxonUuid = null){
-  
-  if(!isset($_SESSION['cdm']['filters'])){
-    $_SESSION['cdm']['filters'] = array();
-  }
-  if($taxonUuid || $op == 'list'){
-    switch($op){
-      case 'add':
-        cdm_dataportal_filters_add($taxonUuid);
-        break;
-      case 'remove':
-        cdm_dataportal_filters_remove($taxonUuid);
-        break;
-      case 'list':
-        //TODO put in theme!!!
-        $out = '<ul>';
-        foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
-          $out .= '<li>'.cdm_dataportal_shortname_of($node).' '.l('[x]', 'cdm_dataportal/filter/remove/'.$uuid, array(), drupal_get_destination()).'</li>';
-        }
-        $out .= '</ul>';
-        return $out;
-    }
-  }
-  if($_REQUEST['destination']){
-    $destination = $_REQUEST['destination'];
-    unset($_REQUEST['destination']);
-    drupal_goto($destination);
-  }
-}
 
 
 function cdm_view_xml2json(){
@@ -621,58 +574,6 @@ function _cdm_dataportal_currentSecRef_array(){
      _cdm_dataportal_set_currentSecUuid($secUuid);
   }
   return  $_SESSION['cdm']['currentSecRef'];
-}
-
-/**
- * filters are set in cdm_dataportal_view_filter()
- * functions using filters should remove invalid filters
- * @return true if any filter is active
- */
-function cdm_dataportal_filters_active(){
- return isset($_SESSION['cdm']['filters']) && count($_SESSION['cdm']['filters']) > 0;
-}
-
-/**
- * filters are set in cdm_dataportal_view_filter()
- * @return a reference on the filters array stored in the SESSION
- */
-function &cdm_dataportal_filters_get(){
-  if(!isset($_SESSION['cdm']['filters'])){
-    $_SESSION['cdm']['filters'] = array();
-  }
- return $_SESSION['cdm']['filters'];
-}
-
-
-function cdm_dataportal_filters_add($taxonUuid){
-  $parents = cdm_ws_get(CDM_WS_TREENODE_PARENTS, $taxonUuid);
-  
-  $parents = array_reverse($parents);
-  
-  // pop off last element since this is the TreeNode object for $taxonUuid!
-  $this_node = array_pop($parents);
-  // will contain the uuid of the parent nodes excluding the $taxonUuid node itself
-  $parent_uuids = array();
-  
-  // children override parents rule: remove all parent filters, 
-  foreach($parents as $pnode){
-    unset($_SESSION['cdm']['filters'][$pnode->uuid]);
-    $parent_uuids[] = $pnode->uuid;
-  }
-  
-  // search for potential children of this $taxonUuid
-  foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
-    if(in_array($taxonUuid, $node->parentUuids)){
-      unset($_SESSION['cdm']['filters'][$node->uuid]);
-    }
-  }
-  // finally add this $taxonUuid as new filter
-  $this_node->parentUuids = $parent_uuids;
-  $_SESSION['cdm']['filters'][$taxonUuid] = $this_node;
-}
-
-function cdm_dataportal_filters_remove($taxonUuid){
-  unset($_SESSION['cdm']['filters'][$taxonUuid]);
 }
 
 

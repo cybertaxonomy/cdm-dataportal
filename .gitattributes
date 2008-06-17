@@ -55,7 +55,6 @@ modules/cdm_dataportal/cdm_taxontree/concept_switch.gif -text
 modules/cdm_dataportal/cdm_taxontree/invisible.gif -text
 modules/cdm_dataportal/cdm_taxontree/invisible_small.gif -text
 modules/cdm_dataportal/cdm_taxontree/js/cdm_taxontree.js -text
-modules/cdm_dataportal/cdm_taxontree/js/cdm_taxontree_widget.js -text
 modules/cdm_dataportal/cdm_taxontree/js/jquery.dimensions.js -text
 modules/cdm_dataportal/cdm_taxontree/js/jquery.dimensions.pack.js -text
 modules/cdm_dataportal/cdm_taxontree/js/jquery.scrollTo-min.js -text
