@@ -52,7 +52,7 @@ function cdm_taxontree_menu($may_cache) {
  * @param String $op
  * @param int $delta
  */
-function cdm_taxontree_block($op='list', $delta=0) {
+function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
   if ($op == "list") {
     $block['cdm_tree']["info"] = t('CDM Taxon Tree');
     $block['filters']["info"] = t('Active Filters');
@@ -83,9 +83,9 @@ function cdm_taxontree_block($op='list', $delta=0) {
         return $block;
         
       case 1:
-        $block['subject'] = t('Dupal Taxonomy Tree');
+        $block['subject'] = t('Dupal Taxonomy Tree ');
         $term_inFocus = arg(0) == 'taxonomy' && arg(1) == 'term' ? arg(2) : 0;
-        $tree = cdm_taxontree_build_tree($term_inFocus, true, 13);
+        $tree = cdm_taxontree_build_tree($term_inFocus, true, variable_get('cdm_taxontree_block_1_vid', 0));
         $block['content'] = theme('cdm_taxontree_block', $tree);
         theme('cdm_taxontree_add_scripts');
         drupal_add_js('
@@ -98,8 +98,30 @@ function cdm_taxontree_block($op='list', $delta=0) {
         }', 'inline');
 
         return $block;
+      }
+    } else if ($op == 'configure') {
+      switch($delta){
+        case 1:
+          $vocs = taxonomy_get_vocabularies();
+          $options = array();
+          foreach($vocs as $voc){
+            $options[$voc->vid] = $voc->name;
+          }
+          $form['vid'] = array(
+            '#type' => 'select',
+            '#title' => t('Category'),
+            '#default_value' => variable_get('cdm_taxontree_block_1_vid', 0),
+            '#options' => $options,
+          );
+          return $form;
+      }
+    } else if ($op == 'save') {
+      switch($delta){
+        case 1:
+         variable_set('cdm_taxontree_block_1_vid', $edit['vid']);
+         return;
+      }
     }
-  }
 }
 
 function cdm_taxontree_set($key, $value){
