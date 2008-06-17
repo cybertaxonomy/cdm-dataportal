@@ -3,4 +3,4 @@ name = "CDM Taxon Tree"
 description = "A Taxon Tree Browser for the CDM"
 version = 5.x-0.1
 package = "CDM"
-dependencies = cdm_api jquery_update
+dependencies = jquery_update
