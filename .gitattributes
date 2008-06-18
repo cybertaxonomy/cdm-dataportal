@@ -136,6 +136,7 @@ modules/smtp/README.txt -text
 modules/smtp/smtp.info -text
 modules/smtp/smtp.module -text
 modules/softwareTracker/LICENSE.txt -text
+modules/softwareTracker/New[!!-~]Text[!!-~]Document.txt -text
 modules/softwareTracker/images/EDIT_icon.gif -text
 modules/softwareTracker/softwareTracker.css -text
 modules/softwareTracker/softwareTracker.info -text
