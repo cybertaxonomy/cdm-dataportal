@@ -312,7 +312,7 @@ ul.links li.first {
   background-color: #fff;
 }
 
-div.cdm_taxontree_scroller_y, ul.cdm_taxontree,  ul.cdm_taxontree li.collapsed, ul.cdm_taxontree li.leaf, ul.cdm_taxontree li.focused,ul.cdm_taxontree li, ul.cdm_taxontree li.expanded  {
+div.cdm_taxontree_scroller_y, div.cdm_taxontree_scroller_y, ul.cdm_taxontree,  ul.cdm_taxontree li.collapsed, ul.cdm_taxontree li.leaf, ul.cdm_taxontree li.focused,ul.cdm_taxontree li, ul.cdm_taxontree li.expanded  {
   background-color: #fff;
   border: 0px;
 }
