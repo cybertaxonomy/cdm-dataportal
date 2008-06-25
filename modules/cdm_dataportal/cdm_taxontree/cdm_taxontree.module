@@ -26,7 +26,7 @@ function cdm_taxontree_menu($may_cache) {
     );
     
      $items[] = array(
-      //'path' => 'cdm_dataportal/filter', 
+
       'path' => 'cdm_taxontree/filter', 
       'callback' => 'cdm_taxontree_view_filter',
       'access' => true,
@@ -34,7 +34,6 @@ function cdm_taxontree_menu($may_cache) {
     );
     
     $items[] = array(
-      //'path' => 'cdm_dataportal/filter', 
       'path' => 'cdm_taxontree/taxonomy/children', 
       'callback' => 'cdm_taxontree_taxonomy_children',
       'access' => true,
@@ -706,7 +705,7 @@ function theme_cdm_taxontree_node_reference(&$node){
  * @param unknown_type $taxonUuid
  * @return unknown
  */
-function cdm_dataportal_view_filter($op, $taxonUuid = null){
+function cdm_taxontree_view_filter($op, $taxonUuid = null){
   
   if(!isset($_SESSION['cdm']['filters'])){
     $_SESSION['cdm']['filters'] = array();
@@ -714,13 +713,13 @@ function cdm_dataportal_view_filter($op, $taxonUuid = null){
   if($taxonUuid || $op == 'list'){
     switch($op){
       case 'add':
-        cdm_dataportal_filters_add($taxonUuid);
+        cdm_taxontree_filters_add($taxonUuid);
         break;
       case 'remove':
-        cdm_dataportal_filters_remove($taxonUuid);
+        cdm_taxontree_filters_remove($taxonUuid);
         break;
       case 'list':
-        //TODO put in theme!!!
+        //TODO put in cdm_dataportal_theme to decouple both modules by this!!!
         $out = '<ul>';
         foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
           $out .= '<li>'.cdm_dataportal_shortname_of($node).' '.l('[x]', 'cdm_dataportal/filter/remove/'.$uuid, array(), drupal_get_destination()).'</li>';

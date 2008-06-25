@@ -49,7 +49,7 @@ function tagNameParts($name, $numOfNameTokens){
 function theme_cdm_name($nameTO, $displayNomRef = true){
   
     //TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
-    $class = 'name'; //($nameTO->secUuid ? 'taxon' : 'taxonname');  
+    $class = ''; //name'; //($nameTO->secUuid ? 'taxon' : 'taxonname');  
   
 
     if(!$nameTO){
@@ -57,11 +57,12 @@ function theme_cdm_name($nameTO, $displayNomRef = true){
     }
 
     $hasNomRef = $nameTO->nomenclaturalReference->fullCitation;
+    //FIXME class="'.$class.' below seems to be unused
     if(!$nameTO->taggedName || !count($nameTO->taggedName)){
       $out .= '<span class="'.$class.'">'.$nameTO->fullname.'</span>';
     } else {
       $skip = $hasNomRef ? array('reference') : array();
-      $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName, 'span', '', $skip).'</span>';
+      $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName, 'span', ' ', $skip).'</span>';
     }
         
     if($displayNomRef && $hasNomRef){
@@ -108,7 +109,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
 	  //TODO:   .$ptaxon->namePhrase; 
 	  
     if($enclosingTag){
-        $out = '<'.$enclosingTag.' class="taxon'.($taxonTO->isAccepted === true ? ' accepted':'').'">'.$out.'</'.$enclosingTag.'>';
+        $out = '<'.$enclosingTag.' class="taxon'.($taxonTO->accepted === true ? ' accepted':'').'">'.$out.'</'.$enclosingTag.'>';
     }
 
     return $out;    
@@ -119,13 +120,13 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
  *
  * @param TaxonTO $taxon
  */
-function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
+function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = true){
     
     if($fragment){
         $fragment = '#'.$fragment;
     }
 
-    if(!$taxon->isAccepted) { 
+    if(!$taxon->accepted) { 
         $out = 'ERROR: theme_cdm_taxon_link() - taxon is not accepted';
     }
     
@@ -133,7 +134,7 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = false){
     $out = l($name_html, cdm_dataportal_taxon_path($taxonTO->uuid), array('class'=>'accepted'), '', $fragment, FALSE, TRUE);
     
     if($showNomRef){
-       $out .=' '.theme('cdm_nomRef', $taxonTO);
+       $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
     }
 	
 	return $out;
@@ -214,12 +215,11 @@ function theme_cdm_listof_taxa($taxonSTOs){
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
   
   $out = '<ul class="cdm_names" style="background-image: none;">';
-  $currentSecRef = _cdm_dataportal_currentSecRef_array();
   foreach($taxonSTOs as $taxon){
-    if($taxon->isAccepted && $taxon->secUuid == $currentSecRef['uuid']){
+    if(_cdm_dataportal_acceptetByCurrentView($taxon)){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
     } else {
-      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_compose_url(CDM_WS_ACCEPTED_TAXON, array($taxon->uuid)), 'cdm_taxon_link');
+      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_compose_url(CDM_WS_ACCEPTED_TAXON, array($taxon->uuid)), 'cdm_listof_taxa');
     }
   }
   $out .= '</ul>';
@@ -400,14 +400,15 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   foreach($TaxonRelationshipTOs as $taxonRelation){
     if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
       
-      $sensu_reference = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$taxonRelation->secUuid);
-      $name = $taxonRelation->name->fullname;
+      $sensu_reference_list = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$taxonRelation->taxon->secUuid);
+      $sensu_reference = $sensu_reference_list[0];
+      $name = $taxonRelation->taxon->name->fullname;
       if(!isset($misapplied[$name])){
-        $misapplied[$name] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation, UUID_MISAPPLIED_NAME_FOR, false).'</span>';
+        $misapplied[$name] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation->taxon, UUID_MISAPPLIED_NAME_FOR, false).'</span>';
       } else {
         $misapplied[$name] .= ';';
       }
-      $misapplied[$name] .= '&nbsp;<span class="sensu cluetip no-print" title="|sensu '.theme('cdm_fullreference',$sensu_reference ).'|">sensu '
+      $misapplied[$name] .= '&nbsp;<span class="sensu cluetip no-print" title="|sensu '.htmlspecialchars(theme('cdm_fullreference',$sensu_reference )).'|">sensu '
       .$sensu_reference->authorship.'</span>'
       .'<span class="reference only-print">sensu '.theme('cdm_fullreference',$sensu_reference ).'</span>'
       ;
@@ -428,14 +429,14 @@ function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignat
   $out = '<ul class="typeDesignations">';
 
   foreach($nameTypeDesignations as $ntd){
-    $out .= '<li class="nameTypeDesignation"><span class="status">'.$ntd->status->value.'</span> - '.theme('cdm_name', $ntd->typeSpecies, false);
+    $out .= '<li class="nameTypeDesignation"><span class="status">'.$ntd->status->text.'</span> - '.theme('cdm_name', $ntd->typeSpecies, false);
     $out .= theme('cdm_typedesignations', $ntd->typeSpecimens);
     $out .= '</li>';
   }    
   
   foreach($specimenTypeDesignations as $std){
     $out .= '<li class="specimenTypeDesignation">';
-    $out .= '<span class="status">'.$std->status->value.'</span> - '.$std->typeSpecimen->specimenLabel;
+    $out .= '<span class="status">'.$std->status->text.'</span> - '.$std->typeSpecimen->specimenLabel;
     $out .= theme('cdm_specimen', $std->typeSpecimen);
     $out .= '</li>';
   }
@@ -451,10 +452,11 @@ function theme_cdm_specimen($specimen){
   //$specimen->specimenLabel
   //$specimen->uuid
   
+  
   _add_js_thickbox();
   
   $out = '';
-  if(is_array($specimen->mediaURI)){
+  if(isset($specimen->media[0])){
     
     $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/external_link.gif';
     // thickbox has problems reading the first url parameter, so a litte hack is needed here:
@@ -467,35 +469,45 @@ function theme_cdm_specimen($specimen){
     $media_row = '<tr class="media_data">';
     $meta_row = '<tr class="meta_data">';
     
-    foreach($specimen->mediaURI as $uri){
-      
-      // get media uri conversion rules if the module is installed and activated
-      if(module_exists('cdm_mediauri')){
-        $muris = cdm_mediauri_conversion($uri->value);
-      }
-      // --- handle media preview rules
-      if(isset($muris['preview'])){    
+    foreach($specimen->media as $media){
+      foreach($media->representations as $representation){
         
-        $a_child = '<img src="'.$muris['preview']['uri'].'" class="preview"'
-          .($muris['preview']['size_x'] ? 'width="'.$muris['preview']['size_x'].'"' : '')
-          .($muris['preview']['size_y'] ? 'width="'.$muris['preview']['size_y'].'"' : '')
-          .'/>';
-      } else {
-        $a_child = '<img src="'.$image_url.'" />';
-      }
-      
-      // --- handle web application rules
-      $webapp = '';
-      if(isset($muris['webapp'])){
-        if($muris['webapp']['embed_html']){
-          // embed in same page
-          $webapp = $muris['webapp']['embed_html'];  
-        } else {
-          $webapp = l(t('web application'), $muris['webapp']['uri']);            
-        }
-      }
-      $media_row .= '<td><a href="'.$uri->value.'" target="'.$uri->uuid.'">'.$a_child.'</a></td>';
-      $meta_row .= '<td><span class="label">'.check_plain($specimen->specimenLabel).'</span><div class="webapp">'.$webapp.'</div></td>';
+        //TODO this this is PART 2/2 of a HACK - select preferred representation by mimetype and size
+        //      
+        if(true || $representation->mimeType == 'image/jpeg'){
+          foreach($representation->representationParts as $part){
+            // get media uri conversion rules if the module is installed and activated
+            if(module_exists('cdm_mediauri')){
+              $muris = cdm_mediauri_conversion($part->uri);
+            }
+            // --- handle media preview rules
+            if(isset($muris['preview'])){    
+              
+              $a_child = '<img src="'.$muris['preview']['uri'].'" class="preview" '
+                .($muris['preview']['size_x'] ? 'width="'.$muris['preview']['size_x'].'"' : '')
+                .($muris['preview']['size_y'] ? 'width="'.$muris['preview']['size_y'].'"' : '')
+                .'/>';
+            } else {
+              $a_child = '<img src="'.$image_url.'" />';
+            }
+            
+            // --- handle web application rules
+            $webapp = '';
+            if(isset($muris['webapp'])){
+              if($muris['webapp']['embed_html']){
+                // embed in same page
+                $webapp = $muris['webapp']['embed_html'];  
+              } else {
+                $webapp = l(t('web application'), $muris['webapp']['uri']);            
+              }
+            }
+            $media_row .= '<td><a href="'.$part->uri.'" target="'.$part->uuid.'">'.$a_child.'</a></td>';
+            $meta_row .= '<td><span class="label">'.check_plain($specimen->specimenLabel).'</span><div class="webapp">'.$webapp.'</div></td>';
+          } // END parts
+          //TODO this is PART 2/2 of a hack
+          break;
+        } // END representations
+      } // END media
     }
     $out .= $media_row.'</tr>';
     $out .= $meta_row.'</tr>';

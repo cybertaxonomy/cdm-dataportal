@@ -226,12 +226,25 @@ function cdm_dataportal_search_taxon_form(){
     '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for.')),
     '#default_value' => (isset($_SESSION['cdm']['search']['queryString']) ? $_SESSION['cdm']['search']['queryString'] : ''),
   );
-  $form['onlyAccepted'] = array(
+  $form['mode'] =  array(
+    '#type' => 'select',
+    '#title' => t('Search Mode'),
+    '#options' => array(
+        'EXACT' => t('Exact'),
+        'BEGINNING' => t('Beginning'),
+        'ANYWHERE' => t('Anywhere')
+        ),
+    '#description'   => t('* can always be used as wildcard'),
+    '#default_value' => (isset($_SESSION['cdm']['search']['mode']) ? $_SESSION['cdm']['search']['mode'] : 'start'),
+  );
+  
+  /*$form['onlyAccepted'] = array(
     '#type' => 'checkbox',
     '#title' => t('Only Accepted'),
     '#attributes' => array('title' => t('Search only for taxa which are accepted by the current treatment.')),
     '#default_value' => isset($_SESSION['cdm']['search']['onlyAccepted']) && $_SESSION['cdm']['search']['onlyAccepted'],
   );
+  */
   /*
   $form['vernacular'] = array(
     '#type' => 'checkbox',
@@ -271,7 +284,7 @@ function cdm_dataportal_search_taxon_form(){
   return $form;
 }
 
-
+//TODO is this function REACHABLE and thus in use??
 function cdm_dataportal_search_process($form) {
   unset($form['form_id']);
   unset($form['form_token']);
@@ -284,17 +297,18 @@ function cdm_dataportal_search_process($form) {
  */
 function cdm_dataportal_search_form_request(){
   // keys map $REQUEST Keys values are optional default parameters if not null
-  static $search_form_params = array('queryString'=>null, 'onlyAccepted' =>'0', 'page'=>null);
+  static $search_form_params = array('queryString'=>null, 'onlyAccepted' =>'0', 'page'=>null,  'pagesize'=>15, 'mode'=>null);
   
   $form_params = array();
   foreach($search_form_params as $key=>$default ){
     $form_params[$key] = ( isset($_REQUEST[$key]) && $_REQUEST[$key] != '' ? $_REQUEST[$key] : $default);
   }
+  $_SESSION['cdm']['search'] = $form_params;
   return $form_params;
 }
   
 
-/*
+/* UNREACHABLE since action of form directly links to view
 function cdm_dataportal_search_taxon_form_submit($form_id, $form_values) {
   
   $_SESSION['cdm']['search'] = $form_values;
@@ -470,8 +484,6 @@ function cdm_dataportal_view_search_taxon(){
   
   $request_params = cdm_dataportal_search_form_request();
   $sw_params = array_replace_key($request_params, array('queryString'=> 10 ));
-  //FIXME remove debug code:
-  $sw_params['page'] = '1'; // DEBUG code
   $resultPageSTO = cdm_ws_get(CDM_WS_FIND_TAXA, $sw_params);
   $resultPageSTO->pageNumber = $request_params['page'];
   return theme('cdm_search_results', $resultPageSTO, 'cdm_dataportal/search/taxon', $request_params);
@@ -576,6 +588,11 @@ function _cdm_dataportal_currentSecRef_array(){
   return  $_SESSION['cdm']['currentSecRef'];
 }
 
+function _cdm_dataportal_acceptetByCurrentView($taxonTO){
+  $current_secref = _cdm_dataportal_currentSecRef_array();
+  
+  return $current_secref->uuid == $taxonTO->secuuid && $taxonTO->accepted;
+}
 
 /**
  * @param $str the string to truncate

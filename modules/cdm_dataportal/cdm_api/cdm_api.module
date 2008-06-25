@@ -174,10 +174,11 @@ function cdm_api_cron() {
  * @return String of HTML 
  */
 function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
-  $out = '';
+   $out = '';
+   $i = 0;
    foreach($taggedtxt as $tt){
-     if(!in_array($tt->type, $skiptags)){
-      $out .= (strlen($out) > 0 ? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.$tt->text.'</'.$tag.'>';
+     if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
+      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.$tt->text.'</'.$tag.'>';
      }
    }
    return $out;
@@ -562,7 +563,7 @@ define('CDM_WS_TYPE_DESIGNATIONS', 'types');
  * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
  * accepted taxon, this one will be returned.
  */
-define('CDM_WS_ACCEPTED_TAXON', 'accepted');
+define('CDM_WS_ACCEPTED_TAXON', 'simple/taxon/acceptedfor');
 
 /**
  * Web Service Arguments: {secUuid}
