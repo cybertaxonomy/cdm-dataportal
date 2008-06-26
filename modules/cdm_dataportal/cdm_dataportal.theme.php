@@ -98,7 +98,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
     if(!$noSecundum){  
       $ref_sec = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$taxonTO->secUuid);
       if($ref_sec){
-        $refSecundum = str_trunk($ref_sec->fullcitation, 40, '...');
+        $refSecundum = str_trunk($ref_sec->fullCitation, 40, '...');
       }
     }
     
@@ -317,16 +317,12 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
 
 function theme_cdm_taxon_page($taxonTO){
   $out = '';
-  
-  
   $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms, $taxonTO->typeDesignations, $taxonTO->nameTypeDesignations);
-  
   foreach($taxonTO->heterotypicSynonymyGroups as $hs_group){
     $out .= theme('cdm_heterotypicSynonymyGroup', $hs_group);
   }
-  
   $out .= theme('cdm_taxonRelations', $taxonTO->taxonRelations);
-  
+  $out .= theme('cdm_descriptions', $taxonTO->descriptions);
   return $out;
 }
 
@@ -448,12 +444,7 @@ function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignat
 
 function theme_cdm_specimen($specimen){
   
-  // rights, 
-  //$specimen->specimenLabel
-  //$specimen->uuid
-  
-  
-  _add_js_thickbox();
+   _add_js_thickbox();
   
   $out = '';
   if(isset($specimen->media[0])){
@@ -488,7 +479,7 @@ function theme_cdm_specimen($specimen){
                 .($muris['preview']['size_y'] ? 'width="'.$muris['preview']['size_y'].'"' : '')
                 .'/>';
             } else {
-              $a_child = '<img src="'.$image_url.'" />';
+              $a_child = '<img src="'.$part->uri.'" />';
             }
             
             // --- handle web application rules
@@ -514,6 +505,40 @@ function theme_cdm_specimen($specimen){
     
     $out .= '</div></table>';
   }
+  return $out;
+}
+
+
+function theme_cdm_descriptions($descriptionsTOs){
+  /*
+   * ->label
+   * ->sources{}
+   * ->elements{
+   *      ->type
+   *      ->media{}
+   *      ->description
+   *      ->language
+   *      }
+   */  
+  //TODO assuming that there is only be one description, this id true in general
+  if(!isset($descriptionsTOs[0])){
+    return '';
+  }
+  $descriptionsTO = $descriptionsTOs[0];
+  $out = '';
+  foreach($descriptionsTO->elements as $descriptionElementSTO){
+     
+    $block->module = 'cdm_dataportal';
+    $block->delta  = isset($descriptionElementSTO->type->term) ? $descriptionElementSTO->type->term : 'Description';
+    $block->subject = t($block->delta);
+    $block->delta = str_replace(' ', '_', strtolower($block->delta));
+    
+    $block->content = $descriptionElementSTO->description;
+    //TODO show media etc
+    
+    $out .= theme('block', $block);
+  }
+    
   return $out;
 }
 
