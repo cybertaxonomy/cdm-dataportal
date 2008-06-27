@@ -64,7 +64,7 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
         $block['subject'] = t('CDM Taxon Tree');
         $taxonUuid_inFocus = _cdm_get_taxonuuid();
         $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
-        $block['content'] = theme('cdm_taxontree_block', $tree, TRUE, TRUE, 'cdm_taxontree_node_concept_switch');
+        $block['content'] = theme('cdm_taxontree_block', $tree, $delta, TRUE, 'cdm_taxontree_node_concept_switch');
         theme('cdm_taxontree_add_scripts');
         drupal_add_js('
         if (Drupal.jsEnabled) {
@@ -134,6 +134,13 @@ function cdm_taxontree_set($key, $value){
     unset($_REQUEST['destination']);
     drupal_goto($destination);
   }
+}
+
+function _get_block_region($delta){
+  global $user, $theme_key;
+  
+  $result = db_fetch_array(db_query("SELECT DISTINCT b.region FROM {blocks} b LEFT JOIN {blocks_roles} r ON b.module = r.module AND b.delta = r.delta WHERE b.theme = '%s' AND b.status = 1 AND (r.rid IN (%s) OR r.rid IS NULL) AND b.module = '%s' AND b.delta = '%s'", $theme_key, implode(',', array_keys($user->roles)), 'cdm_taxontree', $delta));
+  return $result['region'];
 }
 
 function _get_compact_mode(){
@@ -507,7 +514,10 @@ function theme_cdm_taxontree_add_scripts(){
  * @param $tree the tree of TreeNode to be displayed
  * @param $magicbox if true, the tree will be embedded into a set of div tags which allow the 
  *            tree to expand and overlap other content. This is useful if the node titles are 
- *            quite long or if the tree is nested deeply.   
+ *            quite long or if the tree is nested deeply.
+ *            If $magicbox ist set to the delta of the containing block the direction into which the
+ *            box expands is dependent on the region in which the blockis located. 
+ *            See also Variable $left_expand_region in this function!
  * @param $show_filter_switch The tree can offer buttons to add a node to a set of filters
  *            which can then be applied to the tree to limit the visible subtrees and thus 
  *            to compact the tree. Three different compact modes are available.
@@ -517,14 +527,25 @@ function theme_cdm_taxontree_add_scripts(){
  */
 function theme_cdm_taxontree_block($tree, $magicbox = false, $show_filter_switch = false, $tree_node_callback = false){
 
+   // THEMERS: change the line below according the specific regions of your theme
+   $left_expand_region = 'right';
+  
   $out = '';
   if(cdm_taxontree_filters_active()){
     $out .= theme('cdm_taxontree_contoller', _get_compact_mode());
   }
   if($magicbox){
-    $out .= '<div class="cdm_taxontree_scroller_x"><div class="cdm_taxontree_container"><div class="cdm_taxontree_scroller_y">';
+    if(is_numeric($magicbox) || is_string($magicbox)){
+      $region = _get_block_region($magicbox);
+    }
+    // the magicbox expands to thr right by default, 
+    // if the class 'expand-left' to  the cdm_taxontree_scroller_x the box will exmand to the left
+    $expand_direction = $region == 'right' ? 'expand-left' : '';
+    $out .= '<div class="cdm_taxontree_scroller_x '.$expand_direction.'"><div class="cdm_taxontree_container"><div class="cdm_taxontree_scroller_y">';
   }
+  
   $out .= theme('cdm_taxontree', $tree, !cdm_taxontree_filters_active(), $show_filter_switch , $tree_node_callback);
+  
   if($magicbox){
     $out .= '</div></div></div>';
   }
@@ -551,6 +572,10 @@ function theme_cdm_taxontree_contoller($compact_mode){
 function theme_cdm_taxontree($tree, $filterIncludes = null, $show_filter_switch = false, $tree_node_callback = false){
 
   if(!is_array($tree)) {
+//    $out = '<ul class="cdm_taxontree">';
+//    $out .= '<li>----------------------------NO TREE---------------------------------------</li>';
+//    $out .= '</ul>';
+//    return $out;
     return false;
   }
 

@@ -4,8 +4,9 @@
 div.cdm_taxontree_scroller_x{
   border: 1px solid #ADDDFA;
   overflow: auto;
-	overflow-x: auto;
-	overflow-y: auto;
+	overflow-x: auto; 
+  overflow-y: auto;
+	
 }
 
 div.cdm_taxontree_container{

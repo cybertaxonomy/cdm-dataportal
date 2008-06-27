@@ -123,6 +123,7 @@ $.fn.cdm_taxontree_container_resize = function() {
       $(this).parent().width(w);
       $(this).children().width(w);
     }
+    return $(this).children().outerWidth();
 }
 
 /**
@@ -157,7 +158,8 @@ $.fn.cdm_taxontree_magicbox = function() {
 		  // --- mouseOver ---- //
 			function() {
 			  var scroller_x = $(this).parent();
-			  var scroller_y = $(this).children('.cdm_taxontree_scroller_y'); 
+			  var scroller_y = $(this).children('.cdm_taxontree_scroller_y');
+			  var container =  scroller_x.parent();
 			    
 			  var h = parseFloat(scroller_x.height());
 			  var scroll_top = scroller_x.scrollTop();
@@ -166,9 +168,15 @@ $.fn.cdm_taxontree_magicbox = function() {
 			  // store scroll_left of scroller_x so that it can be restored on mouseOut
 			  scroller_x.append('<div class="_scrollLeft" style="display: none;" title="'+scroller_x.scrollLeft()+'"></div>');
 			  
-			  $(this).cdm_taxontree_container_resize();
+        var newWidth = $(this).cdm_taxontree_container_resize();
+        if(scroller_x.hasClass('expand-left')){
+			     var shift_left =  container.outerWidth({ margin: true }) - newWidth;
+			  } else {
+			     var shift_left = '0';
+			  }
+
 			  scroller_y.css('overflow-y', 'auto').css('border-color', border_color).scrollTop(scroll_top);
-			  scroller_x.css('overflow-y', 'visible').css('overflow-x', 'visible').css('border-color', 'transparent').height(h);
+			  scroller_x.css('overflow-y', 'visible').css('overflow-x', 'visible').css('margin-left', shift_left).css('border-color', 'transparent').height(h);
 			}
 			// ----------------- //
 			,    
@@ -182,7 +190,7 @@ $.fn.cdm_taxontree_magicbox = function() {
 				
 				var scroll_top = scroller_y.scrollTop();
 				scroller_y.css('overflow-y', 'visible').css('border-color', 'transparent');
-				scroller_x.css('overflow-y', 'auto').css('border-color', border_color).width('auto').scrollTop(scroll_top);
+				scroller_x.css('overflow-y', 'auto').css('margin-left', '0').css('border-color', border_color).width('auto').scrollTop(scroll_top);
 				
 				// restore scroll_left of scroller_x 
 				var scrollLeft = scroller_x.children('._scrollLeft').attr('title');
