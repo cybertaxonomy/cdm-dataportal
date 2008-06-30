@@ -68,21 +68,32 @@ ul.cdm_names, ul.cdm_names li{
 }
 
 ul li.dynabox{
-  background-image: url('images/btn_expand.gif');
+ /* background-image: url('images/btn_expand.gif'); 
   background-repeat: no-repeat;
   cursor: pointer;
+ */
 }
 
 ul li.dynabox_expanded{
-  background-image: url('images/btn_collapse.gif');
+  /* background-image: url('images/btn_collapse.gif'); 
   background-repeat: no-repeat;
   cursor: pointer;
+  */
 }
 
 
 ul li.dynabox .label{
- cursor: default;
+ cursor: pointer;
 }
+
+ul li.dynabox .label:hover{
+ color: #0174BB;
+}
+
+ul.dynabox_content{
+  margin-top:-1em;
+}
+
 
 .tickbox_content{
 	display: none;

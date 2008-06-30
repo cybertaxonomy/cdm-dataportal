@@ -131,7 +131,7 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = true){
     }
     
     $name_html = theme('cdm_taxon', $taxonTO, false, true, '');
-    $out = l($name_html, cdm_dataportal_taxon_path($taxonTO->uuid), array('class'=>'accepted'), '', $fragment, FALSE, TRUE);
+    $out = l($name_html, cdm_dataportal_taxon_path($taxonTO->uuid), array('class'=>'accepted'), null, $fragment, FALSE, TRUE);
     
     if($showNomRef){
        $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
@@ -204,7 +204,7 @@ function theme_select_secuuid($element) {
 
 function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
-  $out .= '<li class="dynabox"><span class="label">'.$label.'</span>';
+  $out .= '<li class="dynabox"><span class="label" alt="'.t('Click for accepted taxon').'">'.$label.'</span>';
   $out .= '<ul class="dynabox_content" title="'.$cdm_proxy_url.'"><li><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/images/loading_circle_grey_16.gif" style="display:none;"></li></ul>';
   return $out;
 }
