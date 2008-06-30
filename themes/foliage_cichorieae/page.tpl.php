@@ -13,7 +13,8 @@
 	<div id="header">
 		<div class="inside">
 			<div class="header_left">
-				<?php if ($logo) { ?><a href="<?php print $base_path ?>" title="<?php print $site_name.'-'.t('Home') ?>"><img src="<?php print $logo ?>" alt="<?php print $site_name.'-'.t('Home') ?>" /></a><?php } ?>
+				<?php if (false && $logo) { 
+				?><a href="<?php print $base_path ?>" title="<?php print $site_name.'-'.t('Home') ?>"><img src="<?php print $logo ?>" alt="<?php print $site_name.'-'.t('Home') ?>" /></a><?php } ?>
 				<div class="header_text">
 					<?php if ($site_name) { ?><h1 class="site-name"><a href="<?php print $base_path ?>" title="<?php print t('Home') ?>"><?php print $site_name ?></a></h1><?php } ?>
 					<?php if ($site_slogan) { ?><span class="site-slogan"><?php print $site_slogan ?></span><?php } ?>

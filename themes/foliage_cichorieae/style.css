@@ -31,7 +31,8 @@ body.left #outerColumn {
 }
 #header {
   height: 100px;
-	background: url(header.jpg) no-repeat;
+	/* background: url(header.jpg) no-repeat; */
+	background: url(header-cichorieae.png) no-repeat;
 	border-bottom: 1px solid #ccc;
 }
 #content {
@@ -147,6 +148,7 @@ input, select, textarea {
 }
 #header img, .header_text {
 	float: left;
+	margin-left: 122px;
 }
 .site-name {
   font-size: 24px;
