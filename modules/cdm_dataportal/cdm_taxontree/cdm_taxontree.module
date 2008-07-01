@@ -258,7 +258,11 @@ function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, 
 
   // get the root level
   $root_tree = cdm_taxontree_get_root($vid, ($hideOtherConcepts ? $secRefUuid : null));
+//  if(!$root_tree || !is_array($root_tree)){
+//    return array();
+//  }
   $root_tree = _cdm_resultset2nodelist($root_tree, cdm_taxontree_filters_active());
+  
 
   if(cdm_taxontree_filters_active()){
     // the paths up to active filters are inactive in the user interface and
@@ -439,7 +443,7 @@ function _cdm_taxontree_merge($tree, $branch) {
   if(!$branch){
     return $tree;
   }
-
+  
   foreach(array_keys($tree) as $uuid) {
     // check if node exists in $branch
     if(!empty($branch[$uuid])) {
