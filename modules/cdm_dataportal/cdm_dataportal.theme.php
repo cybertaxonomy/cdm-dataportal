@@ -509,7 +509,7 @@ function theme_cdm_specimen($specimen){
 }
 
 
-function theme_cdm_descriptions($descriptionsTOs){
+function theme_cdm_descriptions(array $descriptionTOs){
   /*
    * ->label
    * ->sources{}
@@ -520,27 +520,47 @@ function theme_cdm_descriptions($descriptionsTOs){
    *      ->language
    *      }
    */  
-  //TODO assuming that there is only be one description, this id true in general
-  if(!isset($descriptionsTOs[0])){
-    return '';
-  }
-  $descriptionsTO = $descriptionsTOs[0];
+
   $out = '';
-  foreach($descriptionsTO->elements as $descriptionElementSTO){
-     
-    $block->module = 'cdm_dataportal';
-    $block->delta  = isset($descriptionElementSTO->type->term) ? $descriptionElementSTO->type->term : 'Description';
-    $block->subject = t($block->delta);
-    $block->delta = str_replace(' ', '_', strtolower($block->delta));
+  $i = 0;
+  foreach($descriptionTOs as $descriptionTO){
+    if($i++ > 0){
+      $out .= '<hr />';
+      
+    }
+    $elementSTOsByType = array();
+    foreach($descriptionTO->elements as $descriptionElementSTO){
+      $elementType = isset($descriptionElementSTO->type->term) && $descriptionElementSTO->type->term ? $descriptionElementSTO->type->term : '';
+      if(!array_key_exists($elementType, $elementSTOsByType)){
+        $elementSTOsByType[$elementType] = array();
+      }
+      $elementSTOsByType[$elementType][$descriptionElementSTO->description] = $descriptionElementSTO;
+    }
     
-    $block->content = $descriptionElementSTO->description;
-    //TODO show media etc
+    //sort all 
+    foreach(array_keys($elementSTOsByType) as $key){
+  
+      ksort($elementSTOsByType[$key]);
+      
+      $block->module = 'cdm_dataportal';
+      $block->delta  = isset($key) ? $key : t('Description');
+      $block->subject = t(ucfirst($block->delta));
+      $block->delta = str_replace(' ', '_', strtolower($block->delta));
+      $block->content = '<table>';
+      
+      $i = 0;
+      foreach($elementSTOsByType[$key] as $descriptionElementSTO){
+        $block->content .= '<tr class="'.($i++%2?'odd':'even').'"><td>'.$descriptionElementSTO->description.'</td><td>'.theme('cdm_fullreference', $descriptionElementSTO->reference).'</td></tr>';
+        //TODO show media etc
+      }
+      $block->content .= '</table>';
+      $out .= theme('block', $block);
+    }
     
-    $out .= theme('block', $block);
   }
-    
   return $out;
 }
+
 
 
 function theme_cdm_search_results($resultPageSTO, $path, $parameters){
