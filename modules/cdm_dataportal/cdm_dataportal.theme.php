@@ -21,6 +21,23 @@ function _add_js_thickbox(){
     
 }
 
+/**
+ * TODO if getting fragment from request is possible remove $_REQUEST['highlite'] HACK
+ * NOT WORKING since fragments are not available to the server
+ function fragment(){
+  global $fragment;
+  if(!$fragment){ 
+    $fragment = substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['REQUEST_URI'], '#'));
+  }
+  return $fragment;
+}
+*/
+
+function uuid_anchor($uuid, $innerHTML){
+  $highlite = $_REQUEST['highlite'] == $uuid;
+  return '<a name="'.$uuid.'" ></a><span class="'.($highlite ? 'highlite' : '').'">'.$innerHTML.'</span>';
+}
+
 function tagNameParts($name, $numOfNameTokens){
     
     $out = '<span class="name">';
@@ -50,7 +67,6 @@ function theme_cdm_name($nameTO, $displayNomRef = true){
   
     //TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
     $class = ''; //name'; //($nameTO->secUuid ? 'taxon' : 'taxonname');  
-  
 
     if(!$nameTO){
       return '<span class="error">Invalid NameTO</span>';      
@@ -73,7 +89,6 @@ function theme_cdm_name($nameTO, $displayNomRef = true){
     if($nameTO->status){
       $out .= ', '.cdm_dataportal_t($nameTO->status);
     }
-    
     return $out;
 }
 
@@ -91,7 +106,7 @@ function theme_cdm_name($nameTO, $displayNomRef = true){
  * 
  * usage: taxon_detail, theme_ptname_link
  */
-function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $enclosingTag = 'span'){
+function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $enclosingTag = 'span', $uuidAnchor = TRUE){
 
     
     $refSecundum = false;
@@ -109,7 +124,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
 	  //TODO:   .$ptaxon->namePhrase; 
 	  
     if($enclosingTag){
-        $out = '<'.$enclosingTag.' class="taxon'.($taxonTO->accepted === true ? ' accepted':'').'">'.$out.'</'.$enclosingTag.'>';
+        $out = '<'.$enclosingTag.' class="taxon'.($taxonTO->accepted === true ? ' accepted':'').'">'.($uuidAnchor ? uuid_anchor($taxonTO->uuid, $out): $out).'</'.$enclosingTag.'>';
     }
 
     return $out;    
@@ -127,10 +142,10 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = true){
     }
 
     if(!$taxon->accepted) { 
-        $out = 'ERROR: theme_cdm_taxon_link() - taxon is not accepted';
+      $out = 'ERROR: theme_cdm_taxon_link() - taxon is not accepted';
     }
     
-    $name_html = theme('cdm_taxon', $taxonTO, false, true, '');
+    $name_html = theme('cdm_taxon', $taxonTO, false, true, '', FALSE);
     $out = l($name_html, cdm_dataportal_taxon_path($taxonTO->uuid), array('class'=>'accepted'), null, $fragment, FALSE, TRUE);
     
     if($showNomRef){
@@ -138,6 +153,22 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = true){
     }
 	
 	return $out;
+}
+
+/**
+ * Renders a link to the taxon detail page for the given $taxon 
+ *
+ * @param TaxonTO $taxon
+ */
+function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true){
+    
+    $name_html = theme('cdm_taxon', $taxonTO, false, true, '');
+    $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid, $taxonTO->uuid, FALSE, TRUE);
+    if($showNomRef){
+       $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
+    }
+
+  return $out;
 }
 
 function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef = true){
@@ -211,15 +242,37 @@ function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
 
 function theme_cdm_listof_taxa($taxonSTOs){
   
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
-  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
-  
+//  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
+//  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
+//  
   $out = '<ul class="cdm_names" style="background-image: none;">';
+  
+  $synonym_uuids = array();
+  foreach($taxonSTOs as $taxon){
+    if(!_cdm_dataportal_acceptetByCurrentView($taxon)){
+      if(!array_key_exists($taxon->uuid, $synonym_uuids)){
+        $synonym_uuids[$taxon->uuid] = $taxon->uuid;
+      }
+    }
+  }
+  $acceptedTable = cdm_ws_get(CDM_WS_ACCEPTED_TAXON, join(',',$synonym_uuids));
+  
   foreach($taxonSTOs as $taxon){
     if(_cdm_dataportal_acceptetByCurrentView($taxon)){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
     } else {
-      $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_compose_url(CDM_WS_ACCEPTED_TAXON, array($taxon->uuid)), 'cdm_listof_taxa');
+      $acceptedTaxa = array();
+      foreach($acceptedTable as $uuid=>$t){
+        if($uuid == $taxon->uuid){
+          $acceptedTaxa[] = $t;
+        }
+      }
+      if(count($acceptedTaxa) == 1){
+        $out .= '<li>'.theme('cdm_synonym_link', $taxon, $acceptedTaxa[0]->uuid ).'<li>';        
+      } else {
+        $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_compose_url(CDM_WS_ACCEPTED_TAXON, array($taxon->uuid)), 'cdm_listof_taxa');        
+      }
+      
     }
   }
   $out .= '</ul>';
@@ -276,29 +329,28 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
     $nomref_citation = theme('cdm_fullreference', $referenceSTO);
   } else {
     // it is ReferenceSTO
-    $nomref_citation = $referenceSTO->fullCitation; 
+    $nomref_citation = $referenceSTO->fullCitation;
   }
 
   _add_js_thickbox();
   
   // find media representations for inline display and high quality for download
   // assuming that there is only one protologue per name only the first media is used 
-  /* TODO currently it is assumed that high quality representations are tiffs
-   * which is only true for the cichoriea portal
-   */
-  if( count($referenceSTO->media[0]->representations) > 0 ){
-    foreach($referenceSTO->media[0]->representations as $representation){
-      $mimeType = $representation->mimeType;
-      if(($mimeType == 'image/png' || $mimeType == 'image/jpeg' || $mimeType == 'image/gif')
-        && count($representation->representationParts) > 0){
-        $representation_inline = $representation;
-      } else if($representation->mimeType == 'image/tiff'
-        && count($representation->representationParts) > 0){
-        $representation_highquality = $representation;
-      }
-    }
-  }
   
+//  if( count($referenceSTO->media[0]->representations) > 0 ){
+//    foreach($referenceSTO->media[0]->representations as $representation){
+//      $mimeType = $representation->mimeType;
+//      if(($mimeType == 'image/png' || $mimeType == 'image/jpeg' || $mimeType == 'image/gif')
+//        && count($representation->representationParts) > 0){
+//        $representation_inline = $representation;
+//      } else if($representation->mimeType == 'image/tiff'
+//        && count($representation->representationParts) > 0){
+//        $representation_highquality = $representation;
+//      }
+//    }
+//  }
+  $prefRepresentations = cdm_preferred_media_representations($referenceSTO->media[0], array('image/gif', 'image/jpeg', 'image/png'), 300, 400);
+  $representation_inline = array_shift($prefRepresentations);
   if($representation_inline) {
     $attributes = array('class'=>'thickbox', 'rel'=>'protologues-'.$referenceSTO->uuid);
     for($i = 0; $part = $representation_inline->representationParts[$i]; $i++){
@@ -451,7 +503,7 @@ function theme_cdm_specimen($specimen){
     
     $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/external_link.gif';
     // thickbox has problems reading the first url parameter, so a litte hack is needed here:
-    // adding a meningless patameter &tb_hack=1& ....
+    // adding a meaningless patameter &tb_hack=1& ....
     $out .= '&nbsp;<a href="#TB_inline?tb_hack=1&width=300&amp;height=330&amp;inlineId=specimen_media_'.$specimen->uuid.'" class="thickbox">'
     .'<img src="'.$image_url.'" title="'.t('Show media').'" /></a>';
     

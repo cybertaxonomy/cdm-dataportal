@@ -19,6 +19,10 @@ div.debug{
 	float: left;
 }
 
+.highlite {
+  background-color: yellow;	
+}
+
 li .taxon{
 }
 
@@ -125,6 +129,10 @@ a.filter_add:link, a.filter_add:visited{
 
 a.filter_remove:link, a.filter_remove:visited{
   color: red;
+}
+
+a.synonym:link, a.synonym:visited {
+  color: #7C7C7F;
 }
 
 .block-cdm_taxontree .content, .block-cdm_dataportal-3 .content{
