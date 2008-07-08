@@ -117,7 +117,9 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
     }
     
     $out  = theme('cdm_name', $taxonTO->name, $displayNomRef);
+    // append secundum information
 	  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>' : '');
+	  // add uuid anchor
 	  if($uuidAnchor){
       $out = uuid_anchor($taxonTO->uuid, $out);
 	  }
