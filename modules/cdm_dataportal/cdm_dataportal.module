@@ -451,7 +451,7 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
   } else {
   
     // display the page for the taxon defined by $uuid
-    $taxonTO = cdm_ws_get(CDM_WS_TAXON ,$uuid);
+    $taxonTO = cdm_ws_get(CDM_WS_TAXON, $uuid);
     if(!$taxonTO){
       drupal_set_title(t('Taxon does not exist'));
       return false;   
