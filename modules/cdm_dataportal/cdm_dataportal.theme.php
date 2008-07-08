@@ -171,7 +171,7 @@ function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true){
        $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
     }
 
-    
+     
   return $out;
 }
 
