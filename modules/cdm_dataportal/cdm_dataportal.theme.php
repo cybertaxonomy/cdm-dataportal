@@ -115,6 +115,8 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
         $refSecundum = str_trunk($ref_sec->fullCitation, 40, '...');
       }
     }
+   
+    
     
     $out  = theme('cdm_name', $taxonTO->name, $displayNomRef);
     // append secundum information
