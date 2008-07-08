@@ -169,9 +169,7 @@ function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true){
     $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid, $taxonTO->uuid, FALSE, TRUE);
     if($showNomRef){
        $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
-    }
-
-     
+    }    
   return $out;
 }
 
