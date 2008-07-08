@@ -499,6 +499,7 @@ function cdm_view_xml2json(){
 }
 
 /**
+ * TODO obsolete function remove ???
  * Get a term for the current locale from the $localised_terms array.
  * Uses global variable $locale from drupal (see drupal functions locale_initialize() for details)
  * Function name is adapted from the drupal function t().

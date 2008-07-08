@@ -86,8 +86,12 @@ function theme_cdm_name($nameTO, $displayNomRef = true){
       $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference);
     }
     
-    if($nameTO->status){
-      $out .= ', '.cdm_dataportal_t($nameTO->status);
+    $separator =  ', ';
+    if(isset($nameTO->status[0])){
+      foreach($nameTO->status as $status){
+        $out .= $separator.$status->term;        
+      }
+      $separator =  ', ';
     }
     return $out;
 }
