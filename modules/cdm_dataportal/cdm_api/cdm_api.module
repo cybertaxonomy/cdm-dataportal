@@ -352,6 +352,7 @@ function cdm_ws_load($url, $is_multi_paramater_query){
   if(!$cache_entry){
     // load fresh data from webservice
     $time_get_start = microtime(true);
+    // request data from webservice JSON or XML
     $datastr = get_content($url);
     $time_get = microtime(true) - $time_get_start;
     /*if(TRUE){
@@ -361,6 +362,7 @@ function cdm_ws_load($url, $is_multi_paramater_query){
     }*/
     
     $time_parse_start = microtime(true);
+    // parse data and create object
     $obj = cdm_load_obj($datastr);
     $time_parse = microtime(true) - $time_parse_start;
     if(variable_get('cdm_webservice_debug', 1)){
