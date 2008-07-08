@@ -115,14 +115,11 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
         $refSecundum = str_trunk($ref_sec->fullCitation, 40, '...');
       }
     }
-   
-    
-    
     $out  = theme('cdm_name', $taxonTO->name, $displayNomRef);
     // append secundum information
 	  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>' : '');
 	  // add uuid anchor
-	  if($uuidAnchor){
+	  if($uuidAnchor === TRUE){
       $out = uuid_anchor($taxonTO->uuid, $out);
 	  }
 	  //TODO:   .$ptaxon->namePhrase;
@@ -165,7 +162,7 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = true){
  */
 function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true){
     
-    $name_html = theme('cdm_taxon', $taxonTO, false, true, '');
+    $name_html = theme('cdm_taxon', $taxonTO, false, true, '', FALSE);
     $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid, $taxonTO->uuid, FALSE, TRUE);
     if($showNomRef){
        $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
@@ -257,26 +254,20 @@ function theme_cdm_listof_taxa($taxonSTOs){
       }
     }
   }
-  $acceptedTable = cdm_ws_get(CDM_WS_ACCEPTED_TAXON, join(',',$synonym_uuids));
+  $table_of_accepted = cdm_ws_get(CDM_WS_ACCEPTED_TAXON, join(',', $synonym_uuids));
   
   foreach($taxonSTOs as $taxon){
     if(_cdm_dataportal_acceptetByCurrentView($taxon)){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
     } else {
-      $acceptedTaxa = array();
-      if(is_array($acceptedTable)){
-        foreach($acceptedTable as $uuid=>$t){
-          if($uuid == $taxon->uuid){
-            $acceptedTaxa[] = $t;
-          }
-        }
-      }
+      $uuid = $taxon->uuid;
+      $acceptedTaxa = $table_of_accepted->$uuid;
       if(count($acceptedTaxa) == 1){
         $out .= '<li>'.theme('cdm_synonym_link', $taxon, $acceptedTaxa[0]->uuid ).'<li>';        
       } else {
+        //TODO avoid using AHAH ion the cdm_dynabox
         $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_compose_url(CDM_WS_ACCEPTED_TAXON, array($taxon->uuid)), 'cdm_listof_taxa');        
       }
-      
     }
   }
   $out .= '</ul>';
