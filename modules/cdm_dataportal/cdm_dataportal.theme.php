@@ -108,7 +108,6 @@ function theme_cdm_name($nameTO, $displayNomRef = true){
  */
 function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $enclosingTag = 'span', $uuidAnchor = TRUE){
 
-    
     $refSecundum = false;
     if(!$noSecundum){  
       $ref_sec = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$taxonTO->secUuid);
@@ -118,13 +117,13 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $noSecundum = true, $e
     }
     
     $out  = theme('cdm_name', $taxonTO->name, $displayNomRef);
-    
-	  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>': '');
-
-	  //TODO:   .$ptaxon->namePhrase; 
-	  
+	  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>' : '');
+	  if($uuidAnchor){
+      $out = uuid_anchor($taxonTO->uuid, $out);
+	  }
+	  //TODO:   .$ptaxon->namePhrase;
     if($enclosingTag){
-        $out = '<'.$enclosingTag.' class="taxon'.($taxonTO->accepted === true ? ' accepted':'').'">'.($uuidAnchor ? uuid_anchor($taxonTO->uuid, $out): $out).'</'.$enclosingTag.'>';
+        $out = '<'.$enclosingTag.' class="taxon'.($taxonTO->accepted === true ? ' accepted':'').'">'.$out.'</'.$enclosingTag.'>';
     }
 
     return $out;    
@@ -262,9 +261,11 @@ function theme_cdm_listof_taxa($taxonSTOs){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
     } else {
       $acceptedTaxa = array();
-      foreach($acceptedTable as $uuid=>$t){
-        if($uuid == $taxon->uuid){
-          $acceptedTaxa[] = $t;
+      if(is_array($acceptedTable)){
+        foreach($acceptedTable as $uuid=>$t){
+          if($uuid == $taxon->uuid){
+            $acceptedTaxa[] = $t;
+          }
         }
       }
       if(count($acceptedTaxa) == 1){
