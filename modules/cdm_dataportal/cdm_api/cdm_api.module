@@ -424,7 +424,7 @@ function get_content($url){
     $header = array();
     $header[] = 'Accept: '.(variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');    
     $header[] = 'Accept-Language: '.$locale;
-    $header[] = 'Accept-Encoding: UTF8';
+    $header[] = 'Accept-Charset: UTF8';
   }
   
   if(function_exists('curl_init')){
