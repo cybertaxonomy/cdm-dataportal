@@ -38,8 +38,17 @@ function uuid_anchor($uuid, $innerHTML){
   return '<a name="'.$uuid.'" ></a><span class="'.($highlite ? 'highlite' : '').'">'.$innerHTML.'</span>';
 }
 
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $name
+ * @param unknown_type $numOfNameTokens
+ * @return unknown
+ * @deprecated looks like this is not used anymore
+ */
 function tagNameParts($name, $numOfNameTokens){
     
+	
     $out = '<span class="name">';
     
     $token = strtok($name, " \n\t");
@@ -77,21 +86,22 @@ function theme_cdm_name($nameTO, $displayNomRef = true){
     if(!$nameTO->taggedName || !count($nameTO->taggedName)){
       $out .= '<span class="'.$class.'">'.$nameTO->fullname.'</span>';
     } else {
-      $skip = $hasNomRef ? array('reference') : array();
-      $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName, 'span', ' ', $skip).'</span>';
+      //$skip = $hasNomRef ? array('reference') : array();
+      $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName, 'span', ' ').'</span>';
     }
-        
+
+    /*
     if($displayNomRef && $hasNomRef){
       $out .= (str_beginsWith($nameTO->nomenclaturalReference->fullCitation, 'in') ? '&nbsp;':',&nbsp;');
       $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference);
-    }
+    }*/
     
-    $separator =  ', ';
+    
     if(isset($nameTO->status[0])){
-      foreach($nameTO->status as $status){
-        $out .= $separator.$status->term;        
-      }
-      $separator =  ', ';
+    	$separator =  ', ';
+		foreach($nameTO->status as $key => $status){ 
+			$out .= ($key == 0) ? ' '.$status->term : $separator.$status->term;        
+		}
     }
     return $out;
 }
@@ -152,9 +162,10 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = true){
     $name_html = theme('cdm_taxon', $taxonTO, false, true, '', FALSE);
     $out = l($name_html, cdm_dataportal_taxon_path($taxonTO->uuid), array('class'=>'accepted'), null, $fragment, FALSE, TRUE);
     
+    /*
     if($showNomRef){
        $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
-    }
+    }*/
 	
 	return $out;
 }
@@ -168,9 +179,12 @@ function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true){
     
     $name_html = theme('cdm_taxon', $taxonTO, false, true, '', FALSE);
     $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid, $taxonTO->uuid, FALSE, TRUE);
+    
+    /*
     if($showNomRef){
        $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
     }    
+	*/
   return $out;
 }
 
@@ -181,7 +195,7 @@ function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef =
   $name_postfix = '';
   switch ($reltype_uuid){
     case UUID_HOMOTYPIC_SYNONYM_OF: 
-      $relsign = 'â‰¡';
+      $relsign = '‰?Á';
       break;
     case UUID_MISAPPLIED_NAME_FOR: 
     case UUID_INVALID_DESIGNATION_FOR:
@@ -252,7 +266,9 @@ function theme_cdm_listof_taxa($taxonSTOs){
   
   $synonym_uuids = array();
   foreach($taxonSTOs as $taxon){
-    if(!_cdm_dataportal_acceptetByCurrentView($taxon)){
+  	
+  $test = _cdm_dataportal_acceptedByCurrentView($taxon);
+    if(!$test){
       if(!array_key_exists($taxon->uuid, $synonym_uuids)){
         $synonym_uuids[$taxon->uuid] = $taxon->uuid;
       }
@@ -261,13 +277,12 @@ function theme_cdm_listof_taxa($taxonSTOs){
   $table_of_accepted = cdm_ws_get(CDM_WS_ACCEPTED_TAXON, join(',', $synonym_uuids));
   
   foreach($taxonSTOs as $taxon){
-    if(_cdm_dataportal_acceptetByCurrentView($taxon)){
+    if(_cdm_dataportal_acceptedByCurrentView($taxon)){
       $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
     } else {
       $uuid = $taxon->uuid;
-      $acceptedTaxa = $table_of_accepted->$uuid;
-      if(count($acceptedTaxa) == 1){
-        $out .= '<li>'.theme('cdm_synonym_link', $taxon, $acceptedTaxa[0]->uuid ).'<li>';        
+      if(count($table_of_accepted) == 1){
+        $out .= '<li>'.theme('cdm_synonym_link', $taxon, $table_of_accepted[0]->uuid ).'<li>';        
       } else {
         //TODO avoid using AHAH ion the cdm_dynabox
         $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_compose_url(CDM_WS_ACCEPTED_TAXON, array($taxon->uuid)), 'cdm_listof_taxa');        
@@ -385,7 +400,7 @@ function theme_cdm_homotypicSynonyms($synonymRelationshipTOs, $specimenTypeDesig
   foreach($synonymRelationshipTOs as $synonym){
     $out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym->synoynm, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
   }
-  if($specimenTypeDesignations){
+  if($specimenTypeDesignations || $nameTypeDesignations){
     $out .= theme('cdm_typedesignations', $specimenTypeDesignations, $nameTypeDesignations);
   }
   
@@ -470,20 +485,61 @@ function theme_cdm_taxonRelations($TaxonRelationshipTOs){
   return $out;
 }
 
+/**
+ * FIXME this definitively has to be in another spot. just didn't know where to put it right now.
+ * 
+ * @param String $a 	a typeDesignation status 
+ * @param String $b		another typeDesignation status 
+ */
+function compare_specimenTypeDesignationStatus($a, $b){
+	/* this is the desired sort oder as of now:
+	 * 	Holotype
+	 * 	Isotype
+	 * 	Lectotype
+	 * 	Isolectotype
+	 * 	Syntype
+	 * 
+	 * TODO
+	 * Basically, what we are trying to do is, we define an ordered array of TypeDesignation-states
+	 * and use the index of this array for comparison. This array has to be filled with the cdm-
+	 * TypeDesignation states and the order should be parameterisable inside the dataportal.
+	 */
+	// make that static for now
+	$typeOrder = array('Holotype', 'Isotype', 'Lectotype', 'Isolectotype', 'Syntype');
+	
+	$aQuantifier = array_search($a->status->text, $typeOrder);
+	$bQuantifier = array_search($b->status->text, $typeOrder);
+	
+	if ($aQuantifier == $bQuantifier) {
+		// sort alphabetically
+        return ($a->status->text < $b->status->text) ? -1 : 1;
+    }
+    return ($aQuantifier < $bQuantifier) ? -1 : 1;
 
-function theme_cdm_typedesignations($specimenTypeDesignations, $nameTypeDesignations = array()){
+}
+
+function theme_cdm_typedesignations($specimenTypeDesignations = array(), $nameTypeDesignations = array()){
   
   $out = '<ul class="typeDesignations">';
 
   foreach($nameTypeDesignations as $ntd){
-    $out .= '<li class="nameTypeDesignation"><span class="status">'.$ntd->status->text.'</span> - '.theme('cdm_name', $ntd->typeSpecies, false);
-    $out .= theme('cdm_typedesignations', $ntd->typeSpecimens);
+    $out .= '<li class="nameTypeDesignation"><span class="status">'.($std->status->text ? $std->status->text : 'Type').'</span> - '.theme('cdm_name', $ntd->typeSpeciesName, false);
+    // TODO recursion is not needed. delete when this is cleared
+    //$out .= theme('cdm_typedesignations', $ntd->typeSpecimens);
     $out .= '</li>';
   }    
   
+  // specimenTypeDesignations should be ordered
+  // ordering might be different for dataportals so this has to be parameterized
+  
+  if(!empty($specimenTypeDesignations)){
+  	usort($specimenTypeDesignations, "compare_specimenTypeDesignationStatus");
+  }
+  
+    
   foreach($specimenTypeDesignations as $std){
     $out .= '<li class="specimenTypeDesignation">';
-    $out .= '<span class="status">'.$std->status->text.'</span> - '.$std->typeSpecimen->specimenLabel;
+    $out .= '<span class="status">'.(($std->status->text) ? $std->status->text : 'Type').'</span> - '.$std->typeSpecimen->specimenLabel;
     $out .= theme('cdm_specimen', $std->typeSpecimen);
     $out .= '</li>';
   }
@@ -638,8 +694,8 @@ function theme_cdm_pager(&$resultPageSTO, $path, $parameters, $neighbors = 2){
 
     $out .= '<div class="pager">';
     if($resultPageSTO->pageNumber > 1){
-      $out .= theme('cdm_pager_link', t('Â« first'), 1,  $resultPageSTO, $path, $parameters, array('class' => 'pager-first'));
-      $out .= theme('cdm_pager_link', t('â€¹ previous'), $resultPageSTO->pageNumber - 1, $resultPageSTO, $path, $parameters, array('class' => 'pager-previous'));
+      $out .= theme('cdm_pager_link', t('åÇ first'), 1,  $resultPageSTO, $path, $parameters, array('class' => 'pager-first'));
+      $out .= theme('cdm_pager_link', t('‰?? previous'), $resultPageSTO->pageNumber - 1, $resultPageSTO, $path, $parameters, array('class' => 'pager-previous'));
     }
     
     if($resultPageSTO->totalPageCount <= $viewportsize || $resultPageSTO->pageNumber <= $neighbors){
@@ -661,8 +717,8 @@ function theme_cdm_pager(&$resultPageSTO, $path, $parameters, $neighbors = 2){
     }
     
     if($resultPageSTO->pageNumber < $resultPageSTO->totalPageCount){
-      $out .= theme('cdm_pager_link', t('next â€º'), $resultPageSTO->pageNumber + 1, $resultPageSTO, $path, $parameters, array('class' => 'pager-next'));
-      $out .= theme('cdm_pager_link', t('last Â»'), $resultPageSTO->totalPageCount, $resultPageSTO, $path, $parameters, array('class' => 'pager-last'));
+      $out .= theme('cdm_pager_link', t('next ‰?¼'), $resultPageSTO->pageNumber + 1, $resultPageSTO, $path, $parameters, array('class' => 'pager-next'));
+      $out .= theme('cdm_pager_link', t('last åÈ'), $resultPageSTO->totalPageCount, $resultPageSTO, $path, $parameters, array('class' => 'pager-last'));
     }
     $out .= '</div>';
   
