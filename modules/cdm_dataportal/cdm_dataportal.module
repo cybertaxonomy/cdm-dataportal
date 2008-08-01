@@ -340,7 +340,7 @@ function cdm_dataportal_settings(){
 
   $form['cdm_dataportal']['secuuid_widget'] = array(
     '#type' => 'select_secuuid',
-    '#title' => t('Default Concept Reference'),
+    '#title' => t('Default Concept References'),
     '#description'   => t('The default \'sensu\' reference to start the cdm_dataportal with. Per user choices are possible and may override this value.'),
     '#varname' => 'cdm_secUuid_default',
     '#multiple' => false
@@ -361,6 +361,8 @@ function cdm_dataportal_elements() {
   );
   return $type;
 }
+
+
 
 
 /*
@@ -589,10 +591,10 @@ function _cdm_dataportal_currentSecRef_array(){
   return  $_SESSION['cdm']['currentSecRef'];
 }
 
-function _cdm_dataportal_acceptetByCurrentView($taxonTO){
+function _cdm_dataportal_acceptedByCurrentView($taxonTO){
   $current_secref = _cdm_dataportal_currentSecRef_array();
   
-  return $current_secref->uuid == $taxonTO->secuuid && $taxonTO->accepted;
+  return ($current_secref->uuid == $taxonTO->secuuid) && $taxonTO->accepted;
 }
 
 /**

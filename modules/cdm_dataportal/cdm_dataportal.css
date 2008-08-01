@@ -47,7 +47,7 @@ ul.typeDesignations li{
 
 
 .misapplied .name{
- font-style: normal;
+ 	/*font-style: normal;*/
 }
 .misapplied .authors{
 	display: none;
@@ -147,4 +147,9 @@ a.synonym:link, a.synonym:visited {
 
 .concept_switch {
   padding:0 0.2em;
+}
+
+.descriptionText, .descriptionReference{
+	width: 50%;
+	vertical-align: top;
 }

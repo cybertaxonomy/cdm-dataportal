@@ -1,6 +1,7 @@
 /.cache
 /.project
 /.settings
+modules/cdm_dataportal/.project
 modules/cdm_dataportal/cdm_api/ws-taxon.json
 modules/cdm_dataportal/cdm_api/ws-taxonomy-root.json
 modules/cdm_dataportal/cdm_api/ws-whatis.json
