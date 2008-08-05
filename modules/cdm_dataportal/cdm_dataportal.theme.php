@@ -89,6 +89,8 @@ function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true){
       $skip = $hasNomRef ? array('reference') : array();
       $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName, 'span', ' ', $skip).'</span>';
     }
+    
+    $out .= "<h1>test</h1>";
      
     if($displayNomRef && $hasNomRef){
       $out .= (str_beginsWith($nameTO->nomenclaturalReference->fullCitation, 'in') ? '&nbsp;':',&nbsp;');
@@ -103,7 +105,42 @@ function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true){
 			}
 	    }
     }
+    
+    if(!empty($nameTO->descriptions)){
+    	foreach($nameTO->descriptions as $DescriptionTO){
+    		if(!empty($DescriptionTO)){
+    			foreach($DescriptionTO as $DescriptionElementSTO){
+    				$out .= theme("cdm_descriptionElement", $DescriptionElementSTO);
+    			}
+    		}
+    	}
+    }
+    
     return $out;
+}
+
+function theme_cdm_descriptionElement($DescriptionElementSTO){
+	$out = "";
+	$uuid = $DescriptionElementSTO->uuid;
+	$type = $DescriptionElementSTO->type;
+	$media = $DescriptionElementSTO->media;
+	
+	$prefRepresentations = cdm_preferred_media_representations($media, array('image/gif', 'image/jpeg', 'image/png'), 300, 400);
+	$representation_inline = array_shift($prefRepresentations);
+	if($representation_inline) {
+		$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid);
+	    for($i = 0; $part = $representation_inline->representationParts[$i]; $i++){
+	    	if($i == 0){        
+	    	    $out = l($type->term, $part->uri, $attributes, NULL, NULL, TRUE);
+	    	} else {
+	    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);              
+	    	}
+	  	}
+	} else {
+		// no media available, so display just the type term
+		$out =  $type->term;
+	}
+	return $out;
 }
 
 /**
@@ -140,7 +177,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $displayStatus = true,
     if($enclosingTag){
         $out = '<'.$enclosingTag.' class="taxon'.($taxonTO->accepted === true ? ' accepted':'').'">'.$out.'</'.$enclosingTag.'>';
     }
-
+    
     return $out;    
 }
 
@@ -490,6 +527,7 @@ function theme_cdm_nomenclaturalStatusSTO($statusSTO, $cssClass = '', $enclosing
 
 function theme_cdm_taxon_page($taxonTO){
   $out = '';
+  
   $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms, $taxonTO->typeDesignations, $taxonTO->nameTypeDesignations);
   foreach($taxonTO->heterotypicSynonymyGroups as $hs_group){
     $out .= theme('cdm_heterotypicSynonymyGroup', $hs_group);
@@ -835,7 +873,7 @@ function theme_cdm_pager(&$resultPageSTO, $path, $parameters, $neighbors = 2){
       $out .= theme('cdm_pager_link', t('last »'), $resultPageSTO->totalPageCount, $resultPageSTO, $path, $parameters, array('class' => 'pager-last'));
     }
     $out .= '</div>';
-  
+    
     return $out;
   }
 }
