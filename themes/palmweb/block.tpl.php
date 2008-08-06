@@ -4,3 +4,4 @@
     <h2 class="searchtitle"><?php print $block->subject; ?></h2>
     <div class="content"><?php print $block->content; ?></div>
  </div>
+

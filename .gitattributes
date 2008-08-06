@@ -241,6 +241,7 @@ themes/palmweb/box.tpl.php -text
 themes/palmweb/comment.tpl.php -text
 themes/palmweb/coverimg.jpg -text
 themes/palmweb/logo.png -text
+themes/palmweb/logo_edit.png -text
 themes/palmweb/logo_original.png -text
 themes/palmweb/minus.jpg -text
 themes/palmweb/node.tpl.php -text
