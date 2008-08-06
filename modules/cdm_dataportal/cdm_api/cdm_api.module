@@ -4,15 +4,15 @@
 /**
  * @file
  * Functions which are required or useful when accessing and processing CDM Data Store Webservices
- * 
+ *
  * Naming conventions:
  * ----------------------
- * 
+ *
  *  - all webservice access methods are prefixed with cdm_ws
- * 
+ *
  *
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
  */
 require_once ('xml2json.php');
@@ -30,7 +30,7 @@ function cdm_api_requirements() {
   );
 
   if( function_exists('curl_init') ){
-    $requirements['cdm_api']['description'] = ''; // description below title is not jet in use 
+    $requirements['cdm_api']['description'] = ''; // description below title is not jet in use
     $requirements['cdm_api']['value'] =  'CURL php extension is available.';
   } else {
     $requirements['cdm_api']['value'] =  'CURL php extension is missing.';
@@ -117,8 +117,8 @@ function cdm_api_settings_form(){
   $form['cdm_webservice']['proxy']['cdm_webservice_proxy_url'] =  array(
     '#type' => 'textfield',
     '#title'         => t('Proxy URL'),
-    '#description'   => t('If this proxy url is set the cdm api tries 
-    to connect the web service over the given proxy server. 
+    '#description'   => t('If this proxy url is set the cdm api tries
+    to connect the web service over the given proxy server.
     Otherwise proxy usage is deactivated.'),
     '#default_value' => variable_get('cdm_webservice_proxy_url', false),
   );
@@ -147,6 +147,7 @@ function cdm_api_settings_form(){
     '#default_value' => variable_get('cdm_webservice_debug', 1),
     '#description'   => t('Enable CDM Web Service debugging messages')
   );
+    
   return $form;
 }
 
@@ -164,14 +165,14 @@ function cdm_api_cron() {
 
 
 /**
- * Converts an array of TagedText items into a sequence of corresponding html tags whereas 
+ * Converts an array of TagedText items into a sequence of corresponding html tags whereas
  * each item will provided with a class attribute which set to the key of the TaggedText item.
- * 
+ *
  * @param array $taggedtxt
  * @param String $tag
- * @param String $glue the string by which the chained text tokens are concatenated together. 
+ * @param String $glue the string by which the chained text tokens are concatenated together.
  *       Default is a blak character
- * @return String of HTML 
+ * @return String of HTML
  */
 function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
    $out = '';
@@ -201,21 +202,21 @@ function cdm_taggedtext_value(array &$taggedtxt = array(), $tag_type){
 
 function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width, $height){
     /*
-media Array [4]  
-    representations Array [3] 
-        mimeType  image/jpeg  
-        representationParts Array [1]   
-            duration  0 
-            heigth  0 
-            size  0 
-            uri http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/jpeg/Acanthocephalus_p1.jpg 
-            uuid  15c687f1-f79d-4b79-992f-7ba0f55e610b  
-            width 0 
-        suffix  jpg 
-        uuid  930b7d51-e7b6-4350-b21e-8124b14fe29b   
-    title 
-    uuid  17e514f1-7a8e-4daa-87ea-8f13f8742cf9   
-     * 
+media Array [4]
+    representations Array [3]
+        mimeType  image/jpeg
+        representationParts Array [1]
+            duration  0
+            heigth  0
+            size  0
+            uri http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/jpeg/Acanthocephalus_p1.jpg
+            uuid  15c687f1-f79d-4b79-992f-7ba0f55e610b
+            width 0
+        suffix  jpg
+        uuid  930b7d51-e7b6-4350-b21e-8124b14fe29b
+    title
+    uuid  17e514f1-7a8e-4daa-87ea-8f13f8742cf9
+     *
      */
   $prefRepr = array();
   if(!isset($mediaTO->representations[0])){
@@ -244,9 +245,9 @@ media Array [4]
 
 
 /**
- * Produces a path to a static web service stub out of a cdm web service path. 
+ * Produces a path to a static web service stub out of a cdm web service path.
  * These stubs are object serialisations stored in files whereas the filename
- * consists of the service name and of a 
+ * consists of the service name and of a
  * encoded version of the request query parameters
  *
  * @param string $path
@@ -287,7 +288,7 @@ function cdm_compose_url($ws_name, $parameters = array()){
     $path = cdm_encode_stub($path, variable_get('cdm_webservice_type', 'json'), strlen($request_params) > 0);
   }
   
-  $url = variable_get('cdm_webservice_url', '').$path; 
+  $url = variable_get('cdm_webservice_url', '').$path;
   return $url;
 }
 
@@ -321,11 +322,11 @@ function proxy_content($url, $theme = null){
 function cdm_ws_get($method, $parameters = array()){
   /*$args = func_get_args();
   $method = array_shift($args);
-  */  
+  */
   /*if(isset($args[0]) && is_array($args[0])){
     $url = cdm_compose_url_parametrised($method, $args[0]);
   } else {
- */    
+ */
   $url = cdm_compose_url($method, $parameters);
   //}
   return cdm_ws_load($url, (is_array($parameters)));
@@ -334,8 +335,8 @@ function cdm_ws_get($method, $parameters = array()){
 /**
  * Loads the XML or JSON response for the given url from the CDM Data Store Webservice.
  * The XML is turned into a object which is returned.
- * 
- * @param String $url the relative url of the web service call. 
+ *
+ * @param String $url the relative url of the web service call.
  *        Relative means relative to the web service base url which is stored in cdm_webservice_url
  * @return An object or false
  */
@@ -344,8 +345,13 @@ function cdm_ws_load($url, $is_multi_paramater_query){
   $do_cache = !$is_multi_paramater_query && variable_get('cdm_webservice_cache', 0);
   $cache_entry = false;
   
+  // append the default featureTree to url string
+  // this might be conflicting with caching.
+  $concatenator = strpos($url, '?') ? '&' : '?';
+  $url .= $concatenator . "ftree=" . variable_get('cdm_webservice_feature_tree', 'ae9615b8-bc60-4ed0-ad96-897f9226d568');
+  
   if($do_cache){
-    // try to get object from cache 
+    // try to get object from cache
     $cache_entry = cache_get($url, 'cache_cdm_ws');
   }
   
@@ -388,9 +394,9 @@ function cdm_load_obj($datastr){
      
   // if the web service delivers XML convert it into json
   if(variable_get('cdm_webservice_type', 'xml') == 'xml'){
-    $datastr = xml2json::transformXmlStringToJson($datastr);  
+    $datastr = xml2json::transformXmlStringToJson($datastr);
   }
-  $use_stub = variable_get('cdm_webservice_isStub', 0); 
+  $use_stub = variable_get('cdm_webservice_isStub', 0);
   if($use_stub){
     // --- for STUBS use the more syntax tolerant PEAR json lib --- //
     $json_pear = new Services_JSON();
@@ -422,7 +428,7 @@ function get_content($url){
   
   if(!$header){
     $header = array();
-    $header[] = 'Accept: '.(variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');    
+    $header[] = 'Accept: '.(variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
     $header[] = 'Accept-Language: '.$locale;
     $header[] = 'Accept-Charset: UTF8';
   }
@@ -446,10 +452,10 @@ function _get_content_fsockopen($url, $header = array()){
 
 /**
  * Return string content from a remote file
- * 
+ *
  * @param string $url
  * @return string
- * 
+ *
  * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
 */
 function _get_content_curl($url, $header = array())
@@ -462,7 +468,7 @@ function _get_content_curl($url, $header = array())
       curl_setopt($ch, CURLOPT_PROXY, variable_get('cdm_webservice_proxy_url', ''));
       curl_setopt($ch, CURLOPT_PROXYPORT, variable_get('cdm_webservice_proxy_port', '80'));
       if(variable_get('cdm_webservice_proxy_usr', false)){
-        curl_setopt ($ch, CURLOPT_PROXYUSERPWD, variable_get('cdm_webservice_proxy_usr', '').':'.variable_get('cdm_webservice_proxy_pwd', '')); 
+        curl_setopt ($ch, CURLOPT_PROXYUSERPWD, variable_get('cdm_webservice_proxy_usr', '').':'.variable_get('cdm_webservice_proxy_pwd', ''));
       }
     }
     // set headers
@@ -480,7 +486,7 @@ function _get_content_curl($url, $header = array())
     $string = ob_get_contents();
     ob_end_clean();
  
-    return $string;    
+    return $string;
 }
 
 function cdm_api_secref_cache_prefetch(&$secUuids){
@@ -511,7 +517,7 @@ function cdm_api_secref_cache_get($secUuid){
   if(!array_key_exists($secUuid, $secref_cache)){
     _cdm_api_secref_cache_add($secUuid);
   }
-  return $secref_cache[$secUuid]; 
+  return $secref_cache[$secUuid];
 }
 
 function cdm_api_secref_cache_clear(){
@@ -533,11 +539,11 @@ function _cdm_api_secref_cache_add($secUuidsStr){
 
 /**
  * Web Service Arguments: {Uuid}
- * 
- * The whatis service returns the type 
- * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter. 
- * 
- * return: false if the cdm store contains no matching instance. 
+ *
+ * The whatis service returns the type
+ * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter.
+ *
+ * return: false if the cdm store contains no matching instance.
  * An associative array with the following key-value pairs:
  *   - 'cdmName':       name of the cdm class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.model.taxon.Taxon
  *   - 'cdmSimpleName': simple name of the cdm class as returned by Class.getSimpleName(), e.g. Taxon
@@ -556,25 +562,25 @@ define('CDM_WS_NAME', 'name');
  * Web Service url parameters:
  * -  [last path element]: querystring
  * -  sec : the uuid of the concept reference
- * -  higherTaxa : list of taxon uuid, if higherTaxa are defined only taxa which are includet in one these taxa are taken in to account 
+ * -  higherTaxa : list of taxon uuid, if higherTaxa are defined only taxa which are includet in one these taxa are taken in to account
  * -  matchAnywhere : false (default) match the querystring to the beginning of names, if set to true any matching substring is taken as a hit.
  * -  onlyAccepted : return only taxa which are accepted in the sence of the concept reference as given by parameter sec
  * -  pagesize : maximum number of iteme per result page
  * -  page: the number of page to be returned
- * 
+ *
  * returns ResultPageSTO
  */
 define('CDM_WS_FIND_TAXA', 'find/taxon');
 
 /**
  * Web Service Arguments: {referenceUuid}
- * 
+ *
  */
 define('CDM_WS_REFERENCE', 'ref');
 
 /**
  * Web Service Arguments: {referenceUuid} or array of {referenceUuid}
- * 
+ *
  * returns a list of ReferenceSTO
  */
 define('CDM_WS_SIMPLE_REFERENCE', 'simple/ref');
@@ -587,14 +593,14 @@ define('CDM_WS_TAXON', 'taxon');
 
 /**
  * Web Service Arguments: {taxonUuid} or array of {referenceUuid}
- * 
+ *
  * returns a list of TaxonSTO
  */
 define('CDM_WS_SIMPLE_TAXON', 'simple/taxon');
 
 /**
  * Web Service Arguments: {nameUuid}
- * 
+ *
  * returns a set of type designation which are assigned to the name given
  * as parameter. The Set may contain {@link NameTypeDesignationSTO}
  * and {@link SpecimenTypeDesignationSTO}
@@ -603,7 +609,7 @@ define('CDM_WS_TYPE_DESIGNATIONS', 'types');
 
 /**
  * Web Service Arguments: {taxonUuid}
- * 
+ *
  * returns the taxon which is the accepted synonym for the taxon given as
  * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
  * accepted taxon, this one will be returned.
@@ -612,32 +618,32 @@ define('CDM_WS_ACCEPTED_TAXON', 'simple/taxon/acceptedfor');
 
 /**
  * Web Service Arguments: {secUuid}
- * 
+ *
  * Gets the root nodes of the taxonomic concept tree for the concept
  * reference specified by the secUuid parameter.
- * 
+ *
  * stub: treenode_root
  */
 define('CDM_WS_TREENODE_ROOT', 'taxonomy/root');
 
 /**
  * Web Service Arguments: {taxonUuid}
- * 
+ *
  * Searches the concept taxon tree for all parent taxa by walking the tree
  * from the taxon which is referenced by the parameter taxonUuid down to its
  * root. The reference taxon will also be included into the returned set of
  * TreeNode instances.
- * 
+ *
  * stub: treenode_parents
  */
 define('CDM_WS_TREENODE_PARENTS', 'taxonomy/parents');
 
 /**
  * Web Service Arguments: {taxonUuid}
- * 
+ *
  * returns the children of the taxon referenced by the parameter
  * taxonUuid.
- * 
+ *
  * stub: treenode_children
  */
 define('CDM_WS_TREENODE_CHILDREN', 'taxonomy/children');

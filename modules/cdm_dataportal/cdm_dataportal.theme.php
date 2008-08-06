@@ -90,8 +90,6 @@ function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true){
       $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName, 'span', ' ', $skip).'</span>';
     }
     
-    $out .= "<h1>test</h1>";
-     
     if($displayNomRef && $hasNomRef){
       $out .= (str_beginsWith($nameTO->nomenclaturalReference->fullCitation, 'in') ? '&nbsp;':',&nbsp;');
       $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference);
@@ -109,7 +107,7 @@ function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true){
     if(!empty($nameTO->descriptions)){
     	foreach($nameTO->descriptions as $DescriptionTO){
     		if(!empty($DescriptionTO)){
-    			foreach($DescriptionTO as $DescriptionElementSTO){
+    			foreach($DescriptionTO->elements as $DescriptionElementSTO){
     				$out .= theme("cdm_descriptionElement", $DescriptionElementSTO);
     			}
     		}
@@ -120,25 +118,28 @@ function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true){
 }
 
 function theme_cdm_descriptionElement($DescriptionElementSTO){
-	$out = "";
+	$out = " ";
+	
 	$uuid = $DescriptionElementSTO->uuid;
 	$type = $DescriptionElementSTO->type;
-	$media = $DescriptionElementSTO->media;
+	$medias = $DescriptionElementSTO->media;
 	
-	$prefRepresentations = cdm_preferred_media_representations($media, array('image/gif', 'image/jpeg', 'image/png'), 300, 400);
-	$representation_inline = array_shift($prefRepresentations);
-	if($representation_inline) {
-		$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid);
-	    for($i = 0; $part = $representation_inline->representationParts[$i]; $i++){
-	    	if($i == 0){        
-	    	    $out = l($type->term, $part->uri, $attributes, NULL, NULL, TRUE);
-	    	} else {
-	    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);              
-	    	}
-	  	}
-	} else {
-		// no media available, so display just the type term
-		$out =  $type->term;
+	foreach($medias as $media){
+		$prefRepresentations = cdm_preferred_media_representations($media, array('image/gif', 'image/jpeg', 'image/png'), 300, 400);
+		$representation_inline = array_shift($prefRepresentations);
+		if($representation_inline) {
+			$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid);
+		    for($i = 0; $part = $representation_inline->representationParts[$i]; $i++){
+		    	if($i == 0){        
+		    	    $out .= l($type->term, $part->uri, $attributes, NULL, NULL, TRUE);
+		    	} else {
+		    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);              
+		    	}
+		  	}
+		} else {
+			// no media available, so display just the type term
+			$out .=  $type->term;
+		}
 	}
 	return $out;
 }

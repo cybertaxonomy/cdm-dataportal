@@ -8,7 +8,7 @@
  * Copyright (C) 2007 EDIT
  * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  */
 
 require_once('cdm_dataportal.theme.php');
@@ -80,7 +80,7 @@ function cdm_dataportal_menu($may_cache) {
 	    'path' => 'cdm_dataportal/names',
 	    'callback' => 'cdm_dataportal_view_names',
 	    'access' => true,
-	    'type' => MENU_CALLBACK, 
+	    'type' => MENU_CALLBACK,
     );
     // optional callback arguments: page
      
@@ -88,7 +88,7 @@ function cdm_dataportal_menu($may_cache) {
 	    'path' => 'cdm_dataportal/taxon',
 	    'callback' => 'cdm_dataportal_view_taxon',
 	    'access' => true,
-	    'type' => MENU_CALLBACK, 
+	    'type' => MENU_CALLBACK,
     // expected callback arguments: name_uuid
     );
     
@@ -96,14 +96,14 @@ function cdm_dataportal_menu($may_cache) {
       'path' => 'cdm_dataportal/search/taxon',
       'callback' => 'cdm_dataportal_view_search_taxon',
       'access' => true,
-      'type' => MENU_CALLBACK, 
+      'type' => MENU_CALLBACK,
     );
     
     $items[] = array(
       'path' => 'cdm/xml2json',
       'callback' => 'cdm_view_xml2json',
       'access' => true,
-      'type' => MENU_CALLBACK, 
+      'type' => MENU_CALLBACK,
     );
      
   }
@@ -195,7 +195,7 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
   
 }
 
-/* 
+/*
 function cdm_dataportal_session_clear($cdm_ws_uri_update = false){
   $_SESSION['cdm'] = null;
   if(is_string($cdm_ws_uri_update)){
@@ -269,7 +269,7 @@ function cdm_dataportal_search_taxon_form(){
   
   $form['submit'] = array(
   '#type' => 'submit',
-  '#name' => '', 
+  '#name' => '',
   '#value' => t('Search'),
   );
   
@@ -312,8 +312,8 @@ function cdm_dataportal_search_form_request(){
 function cdm_dataportal_search_taxon_form_submit($form_id, $form_values) {
   
   $_SESSION['cdm']['search'] = $form_values;
-  //return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['vernacular']?'1':'0').'/'.$form_values['language'];      
-  return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['onlyAccepted']?'1':'0');  
+  //return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['vernacular']?'1':'0').'/'.$form_values['language'];
+  return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['onlyAccepted']?'1':'0');
   //$paramstr = compose_url_prameterstr($form_values);
   //return url('/cdm_dataportal/search/taxon/', $paramstr);
 }
@@ -345,6 +345,23 @@ function cdm_dataportal_settings(){
     '#varname' => 'cdm_secUuid_default',
     '#multiple' => false
   );
+
+  
+  /*
+   * FeatureTree implementation.
+   * By now we only present a selection of feature trees stored in database.
+   * @future let the user configure her own FeatureTree
+   */
+  $form['cdm_dataportal']['cdm_dataportal_feature_tree'] =  array(
+    '#type' => 'select',
+    '#title'         => t('Preconfigured FeatureTree'),
+    '#default_value' => variable_get('cdm_webservice_feature_tree', 'ae9615b8-bc60-4ed0-ad96-897f9226d568'),
+	'#options' => array(
+        'test' => 'Test',
+		'ae9615b8-bc60-4ed0-ad96-897f9226d568' => t('FeatureTree hardcoded default')
+    ),
+    '#description'   => t('Select a preconfigured FeatureTree for this webservice.')
+  );
   
   return system_settings_form($form);
 }
@@ -354,7 +371,7 @@ function cdm_dataportal_settings(){
  */
 function cdm_dataportal_elements() {
   $type['select_secuuid'] = array(
-    '#input' => TRUE, 
+    '#input' => TRUE,
     '#process' => array('cdm_dataportal_select_secuuid_expand' => array()),
     //'#validate' => array('cdm_dataportal_select_secuuid_validate' => array()),
     //'#default_value' => array(),
@@ -366,7 +383,7 @@ function cdm_dataportal_elements() {
 
 
 /*
- * 
+ *
  */
 function cdm_dataportal_select_secuuid_expand($element){
   
@@ -409,12 +426,12 @@ function cdm_dataportal_select_secuuid_expand($element){
 function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted = false ){
 
   $request_params  = array(
-    'q' => $beginsWith, 
+    'q' => $beginsWith,
          //'sec' = '',
          //'higherTaxa' => getFiters(),
           // 'matchAnywhere' => false, // default is false
-    'page' => $page, 
-    'onlyAccepted' => $onlyAccepted, 
+    'page' => $page,
+    'onlyAccepted' => $onlyAccepted,
     'pagesize' => 20  /*$_SESSION['cdm']['namelist_pagesize'] */);
   
   $taxonSTOs = cdm_ws_get(CDM_WS_FIND_TAXA, $request_params);
@@ -456,7 +473,7 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
     $taxonTO = cdm_ws_get(CDM_WS_TAXON, $uuid);
     if(!$taxonTO){
       drupal_set_title(t('Taxon does not exist'));
-      return false;   
+      return false;
     }
     _cdm_dataportal_set_currentSecUuid($taxonTO->sec->uuid);
   
@@ -475,7 +492,7 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
  *  - text
  *  - language
  *  - vernacular
- * 
+ *
  * future extensions to meet palmweb mockup requirements:
  *  - habitat
  *  - uses
@@ -573,10 +590,10 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
 }
 
 /**
- * returns the current secRef array from the users session. 
+ * returns the current secRef array from the users session.
  * If the according session variable is not jet set the default
  * as configured in the setting is used otherwise null.
- * 
+ *
  * currentSecRef['uuid']
  * currentSecRef[....
  *
