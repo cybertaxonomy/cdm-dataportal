@@ -12,7 +12,7 @@ body {
   /* text-align:center; */
   background-color: #fff;
   font: Arial, 76% Verdana, Arial, Helvetica, sans-serif;
-  border:10px solid #7D974A;
+  border:1px solid #7D974A;
 }
 
 tr.odd td, tr.even td {
@@ -183,7 +183,8 @@ ul.links li.first {
   color: #fff;
 }
 .site-name a:hover {
-  color: #369;
+  /* color: #369; */
+  color: #ffffff;
   text-decoration: none;
 }
 .site-slogan {
