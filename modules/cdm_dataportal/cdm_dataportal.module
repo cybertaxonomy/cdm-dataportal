@@ -352,15 +352,31 @@ function cdm_dataportal_settings(){
    * By now we only present a selection of feature trees stored in database.
    * @future let the user configure her own FeatureTree
    */
-  $form['cdm_dataportal']['cdm_dataportal_feature_tree'] =  array(
+  $form['cdm_dataportal']['cdm_dataportal_feature_tree'] = array(
     '#type' => 'select',
     '#title'         => t('Preconfigured FeatureTree'),
-    '#default_value' => variable_get('cdm_webservice_feature_tree', 'ae9615b8-bc60-4ed0-ad96-897f9226d568'),
+    '#default_value' => variable_get('cdm_dataportal_feature_tree', 'ae9615b8-bc60-4ed0-ad96-897f9226d568'),
 	'#options' => array(
         'test' => 'Test',
 		'ae9615b8-bc60-4ed0-ad96-897f9226d568' => t('FeatureTree hardcoded default')
     ),
     '#description'   => t('Select a preconfigured FeatureTree for this webservice.')
+  );
+  
+  $form['cdm_dataportal']['layout'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Layout'),
+    '#collapsible' => FALSE,
+    '#collapsed' => TRUE,
+  );
+  
+  $form['cdm_dataportal']['layout']['cdm_dataportal_nomref_in_title'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show full nomenclatural reference in title'),
+    '#default_value' => variable_get('cdm_dataportal_nomref_in_title', 1),
+    '#description' => t('Uncheck this, if you want the title of a taxon page consisting of name and author only.
+    					If not checked, the first homotypic taxon is a repetition of the accepted taxon with
+    					the full nomenclatural reference.')
   );
   
   return system_settings_form($form);
@@ -477,10 +493,11 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
     }
     _cdm_dataportal_set_currentSecUuid($taxonTO->sec->uuid);
   
-    drupal_set_title(theme('cdm_taxon', $taxonTO, true));
+    $referenceInTitle = variable_get('cdm_dataportal_nomref_in_title', 1);
+    
+    drupal_set_title(theme('cdm_taxon', $taxonTO, $referenceInTitle));
     //TODO retrieve complete synonymy and other data
-  
-    $out = theme('cdm_taxon_page', $taxonTO);
+    $out = theme('cdm_taxon_page', $taxonTO, $referenceInTitle);
     return $out;
   }
 }

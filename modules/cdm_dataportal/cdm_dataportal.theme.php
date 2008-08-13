@@ -528,10 +528,13 @@ function theme_cdm_nomenclaturalStatusSTO($statusSTO, $cssClass = '', $enclosing
 	return $out;
 }
 
-function theme_cdm_taxon_page($taxonTO){
+function theme_cdm_taxon_page($taxonTO, $referenceInTitle = false){
   $out = '';
   
-  $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms, $taxonTO->typeDesignations);
+  $prependedSynonyms = $referenceInTitle ? array() : array($taxonTO);
+    
+  
+  $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms, $taxonTO->typeDesignations, $prependedSynonyms);
   foreach($taxonTO->heterotypicSynonymyGroups as $HomotypicTaxonGroupSTO){
     $out .= theme('cdm_heterotypicSynonymyGroup', $HomotypicTaxonGroupSTO);
   }
@@ -544,10 +547,16 @@ function theme_cdm_taxon_page($taxonTO){
   return $out;
 }
 
-function theme_cdm_homotypicSynonyms($synonymRelationshipTOs, $typeDesignations = false){
+function theme_cdm_homotypicSynonyms($synonymRelationshipTOs, $typeDesignations = false, $prependedSynonyms = array()){
   
   $out = '';
   $out = '<ul class="homotypicSynonyms">';
+  
+  if(!empty($prependedSynonyms)){
+    foreach($prependedSynonyms as $taxon){
+      $out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+    }
+  }
   
   foreach($synonymRelationshipTOs as $synonym){
     $out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym->synoynm, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
@@ -557,6 +566,12 @@ function theme_cdm_homotypicSynonyms($synonymRelationshipTOs, $typeDesignations 
   }
   
   $out .= '</ul>';
+  return $out;
+}
+
+function theme_cdm_homotypicSynonymLine($taxonSTO){
+  $out = '';
+  $out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxonSTO, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
   return $out;
 }
 
@@ -663,7 +678,7 @@ function theme_cdm_nameRelations($NameRelationshipTOs){
 	$block->subject = t(ucfirst($block->delta));
 	$block->delta = str_replace(' ', '_', strtolower($block->delta));
       
-	$block->content = '<ul class="nameRelationships '.$type.'">';
+	$block->content = '<ul class="nameRelationships '.$block->delta.'">';
 					
 	$block->content .= theme('cdm_name', $NameRelationshipTO->name);
 	
