@@ -832,6 +832,7 @@ function theme_cdm_featureTree($featureTree){
 *						->descriptionElements{
 *							->DescriptionElementSTO{}
 *						->uuid
+* 						->type
 */
 
 	$descriptions = $featureTree->descriptions;
@@ -849,16 +850,28 @@ function theme_cdm_featureTree($featureTree){
 				$block->subject = t(ucfirst($block->delta));
 				$block->delta = str_replace(' ', '_', strtolower($block->delta));
 			      
-				$block->content = '<table class="'.$type.'">';
-								
-				foreach($descriptionElements as $descriptionElementSTO){
-					$block->content .= 	'<tr class="'.($i++%2?'odd':'even').'">';
-			        $block->content .= 		'<td class="descriptionText">'.$descriptionElementSTO->description.'</td>';
-			        $block->content .=  	'<td class="descriptionReference">'.theme('cdm_fullreference', $descriptionElementSTO->reference).'</td>';
-			        $block->content .= 	'</tr>';
-			        //TODO show media etc
+			    $block->content = '';
+			    
+				if($type == "Distribution"){
+				  $block->content .= '<ul>';
+    			  foreach($descriptionElements as $descriptionElementSTO){
+    			    $block->content .= '<li>' . $descriptionElementSTO->area->term . '</li>';
+    			  }
+    			  $block->content .= '</ul>';
+				}else{
+				
+    				
+    				$block->content .= '<table class="'.$type.'">';
+    								
+    				foreach($descriptionElements as $descriptionElementSTO){
+    					$block->content .= 	'<tr class="'.($i++%2?'odd':'even').'">';
+    			        $block->content .= 		'<td class="descriptionText">'.$descriptionElementSTO->description.'</td>';
+    			        $block->content .=  	'<td class="descriptionReference">'.theme('cdm_fullreference', $descriptionElementSTO->reference).'</td>';
+    			        $block->content .= 	'</tr>';
+    			        //TODO show media etc
+    				}
+    				$block->content .= '</table>';
 				}
-				$block->content .= '</table>';
 				      
 				$out .= theme('block', $block);
 			}

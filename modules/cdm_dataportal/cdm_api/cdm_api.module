@@ -348,7 +348,10 @@ function cdm_ws_load($url, $is_multi_paramater_query){
   // append the default featureTree to url string
   // this might be conflicting with caching.
   $concatenator = strpos($url, '?') ? '&' : '?';
-  $url .= $concatenator . "ftree=" . variable_get('cdm_webservice_feature_tree', 'ae9615b8-bc60-4ed0-ad96-897f9226d568');
+  
+  $ftree = variable_get('cdm_dataportal_feature_tree', false);
+  
+  $url .= ($ftree) ? $concatenator . "ftree=" . $ftree : '';
   
   if($do_cache){
     // try to get object from cache

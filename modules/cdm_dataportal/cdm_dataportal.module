@@ -357,7 +357,7 @@ function cdm_dataportal_settings(){
     '#title'         => t('Preconfigured FeatureTree'),
     '#default_value' => variable_get('cdm_dataportal_feature_tree', 'ae9615b8-bc60-4ed0-ad96-897f9226d568'),
 	'#options' => array(
-        'test' => 'Test',
+        '0' => 'No FeatureTree',
 		'ae9615b8-bc60-4ed0-ad96-897f9226d568' => t('FeatureTree hardcoded default')
     ),
     '#description'   => t('Select a preconfigured FeatureTree for this webservice.')
