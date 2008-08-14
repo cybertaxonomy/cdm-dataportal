@@ -740,8 +740,17 @@ function theme_cdm_typedesignations($typeDesignations = array()){
     // sorting might be different for dataportals so this has to be parameterized
   	usort($specimenTypeDesignations, "compare_specimenTypeDesignationStatus");
     foreach($specimenTypeDesignations as $std){
+      
+      $typeReference = '';
+      if($std->status->text){
+        $typeReference .= ' <span class="typeReference">';
+        $typeReference .= '(' . t('designated by ') . $std->reference->fullCitation . ')';
+        $typeReference .= '</span>';
+      }
+      
+      
       $out .= '<li class="specimenTypeDesignation">';
-      $out .= '<span class="status">'.(($std->status->text) ? $std->status->text : 'Type').'</span>: '.$std->typeSpecimen->specimenLabel;
+      $out .= '<span class="status">'.(($std->status->text) ? $std->status->text : t('Type')).$typeReference.'</span>: '.$std->typeSpecimen->specimenLabel;
       $out .= theme('cdm_specimen', $std->typeSpecimen);
       $out .= '</li>';
     }
