@@ -71,8 +71,7 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
         $(document).ready(function()
         {
           $(\'ul.cdm_taxontree\').cdm_taxontree();
-          //var activeElement = $(\'div.cdm_taxontree_scroller_x .active\');
-          $(\'div.cdm_taxontree_scroller_x\').scrollTo($(\'.active\'));});
+          $(\'div.cdm_taxontree_scroller_x\').scrollTo($(\'.active\'), 800, {over:-3});});
         }', 'inline');
          return $block;
         
@@ -92,8 +91,7 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
         $(document).ready(function()
         {
           $(\'ul.cdm_taxontree\').cdm_taxontree();
-          //var activeElement = $(\'div.cdm_taxontree_scroller_x .active\');
-          $(\'div.cdm_taxontree_scroller_x\').scrollTo($(\'.active\'));});
+          $(\'div.cdm_taxontree_scroller_x\').scrollTo($(\'.active\'), 800, {over:-3});});
         }', 'inline');
 
         return $block;

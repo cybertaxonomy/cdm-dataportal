@@ -29,30 +29,32 @@
 								if(url != undefined){
 									$(this).removeAttr('title');
 									var parent_li = $(this);
-									var bg_image_tmp = parent_li.css('background-image');
-									var bg_image_loading = bg_image_tmp.replace(/^(.*)(\/.*)(\))$/, '$1/loading_subtree.gif$3')
-									parent_li.css('background-image', bg_image_loading);
+									$(this).set_background_image('loading_subtree.gif');
 									
 									// load DOM subtree and append it
 									$.get(url, function(html){
 										var tree_container = parent_li.parents('div.cdm_taxontree_container');
-									    parent_li.css('background-image', bg_image_tmp);
-										// preserve scroll positions
-										var tmp_scroller_y_left = tree_container.children().scrollTop();
-										parent_li.append(html).find('ul').cdm_taxontree(options);
+										parent_li.set_background_image('minus.png');
 										if(opts.magicbox){
+											// preserve scroll positions
+											var tmp_scroller_y_left = tree_container.children().scrollTop();
+											parent_li.append(html).find('ul').cdm_taxontree(options);
 											// resize parent container
 											tree_container.cdm_taxontree_container_resize();
-										}
-										// restore scroll positions
-			                			tree_container.children().scrollTop(tmp_scroller_y_left);
+											// restore scroll positions
+			                				tree_container.children().scrollTop(tmp_scroller_y_left);
+										}else{
+											parent_li.append(html).find('ul').cdm_taxontree(options);
+										}										
 									});
-									
 								}
-							} 
+							} else {
+								$(this).set_background_image('minus.png');
+							}
 							$(this).removeClass('collapsed').addClass('expanded').children('ul').css('display', 'block');
 						} else if($(this).hasClass('expanded')){
-						  $(this).removeClass('expanded').addClass('collapsed').children('ul').css('display', 'none');
+							$(this).removeClass('expanded').addClass('collapsed').children('ul').css('display', 'none');
+							$(this).set_background_image('plus.png');
 						}
 					}
 				); // END click()
@@ -106,11 +108,19 @@
        		);
   		} // END bind_select_click()
   
-  
 	}; // END cdm_taxontree()
 	 
 })(jQuery);
 
+/**
+ *
+ */
+$.fn.set_background_image = function (imageFile)
+{
+	var bg_image_tmp = $(this).css('background-image');
+	var bg_image_new = bg_image_tmp.replace(/^(.*)(\/.*)(\))$/, '$1/'+imageFile+'$3');
+	$(this).css('background-image', bg_image_new);
+}
 
 /**
  *
@@ -153,7 +163,6 @@ $.fn.cdm_taxontree_container_debug_size = function(msg)
      + '<br />    ul: ' + $(this).find('.cdm_taxontree_scroller_y > ul').width()
      + '<br />';
   $('#DEBUG_JS').append(out);
-
 }
 
 /**
@@ -218,9 +227,7 @@ $.fn.cdm_taxontree_magicbox = function()
 			   // ------------------ //
 		);
 	}
-	// END exclude IE6
-	
-    
+	// END exclude IE6    
 }
 
 $.fn.cdm_taxontree.defaults = {  // set up default options

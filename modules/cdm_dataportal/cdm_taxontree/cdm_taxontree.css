@@ -43,14 +43,15 @@ ul.cdm_taxontree li .active{
 }
 
 ul.cdm_taxontree li.expanded {
-  background:transparent url(minus.png) no-repeat scroll 0px 0.35em;
+  background: transparent url(minus.png) no-repeat scroll 0px 0.35em;
   cursor: pointer;
 }
 
 ul.cdm_taxontree li.collapsed {
-  background:transparent url(plus.png) no-repeat scroll 0px 0.35em;
+  background: transparent url(plus.png) no-repeat scroll 0px 0.35em;
   cursor: pointer;
 }
+
 ul.cdm_taxontree li.focused {
   font-weight: bold;	
 }
