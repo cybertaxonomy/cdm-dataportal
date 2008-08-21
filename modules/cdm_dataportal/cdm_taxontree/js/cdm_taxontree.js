@@ -227,7 +227,7 @@ $.fn.cdm_taxontree.defaults = {  // set up default options
 	widget:                 false,			// true = enable widget mode
 	magicbox:				false,			// true = enable quirky magicbox
 	element_name:           'widgetval',	// 
-	multiselect:            false,			// true = enable selection of multiple 
+	multiselect:            false			// true = enable selection of multiple 
 };
 
 /* ========================== auto activate ========================== 
