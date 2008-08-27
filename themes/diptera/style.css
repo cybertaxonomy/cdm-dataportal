@@ -114,13 +114,11 @@ table {
 #header {
   position:relative; 
   margin:auto; 
-  /* background-color:#7d974a; */
   background-color:#8fc3f0; 
   height:70px;
   text-indent:20px;
   font-family:Verdana;
   color:#ffffff; 
-  /* letter-spacing:20px; */
   
 }
 #logo {
@@ -241,12 +239,30 @@ ul.links li.first {
 }
 
 #footer {
-
   background-color: #FFFFFF;
   padding: 1em;
   font-size: 0.8em;
 }
 
+#block-cdm_dataportal-distribution {
+  border: 0px;
+}
+
+#block-cdm_dataportal-distribution .searchtitle{
+  border: 0px;
+  color: #009999;
+  background-color: #EDF5FA;
+}
+
+#block-cdm_dataportal-is_new_combination_for {
+  border: 0px;
+}
+
+#block-cdm_dataportal-is_new_combination_for .searchtitle{
+  border: 0px;
+  color: #009999;
+  background-color: #EDF5FA;
+}
 /*
 ** Common declarations for child classes of node, comment, block, box, etc.
 ** If you want any of them styled differently for a specific parent, add

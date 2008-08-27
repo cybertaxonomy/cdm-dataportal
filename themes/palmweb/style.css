@@ -12,7 +12,7 @@ body {
   /* text-align:center; */
   background-color: #fff;
   font: Arial, 76% Verdana, Arial, Helvetica, sans-serif;
-  border:10px solid #7D974A;
+  border:1px solid #7D974A;
 }
 
 tr.odd td, tr.even td {
@@ -238,6 +238,28 @@ ul.links li.first {
   padding: 1em;
   font-size: 0.8em;
 }
+
+#block-cdm_dataportal-distribution {
+  border: 0px;
+}
+
+#block-cdm_dataportal-distribution .searchtitle{
+  border: 0px;
+  color: #96AB2B;
+  background-color:#FFFFFF;
+}
+
+#block-cdm_dataportal-is_new_combination_for {
+  border: 0px;
+}
+
+#block-cdm_dataportal-is_new_combination_for .searchtitle{
+  border: 0px;
+  color: #96AB2B;
+  background-color:#FFFFFF;
+}
+
+
 
 /*
 ** Common declarations for child classes of node, comment, block, box, etc.
