@@ -8,14 +8,14 @@
  */
 
 function _add_js_thickbox(){
-   // ---- jQuery ThickBox:
+   // ---- jQuery thickbox:
   /*
    * bug: compat-1.0.js && thickbox.js line 237 .trigger("unload")
    * -> event is not triggered because of problems with compat-1.0.js'
    * see INSTALL.txt
    *
    */
-  
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.imagetool.min.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_thickbox.css');
     
@@ -72,7 +72,7 @@ function tagNameParts($name, $numOfNameTokens){
  *
  * @param NameTO $nameTO the taxon name
  */
-function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true){
+function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true, $displayDescription = true){
   
     //TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
     $class = 'fullname'; //name'; //($nameTO->secUuid ? 'taxon' : 'taxonname');
@@ -92,21 +92,19 @@ function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true){
     
     if($displayNomRef && $hasNomRef){
       $out .= '<span class="reference">';
-      $out .= (str_beginsWith($nameTO->nomenclaturalReference->fullCitation, 'in') ? '&nbsp;':',&nbsp;');
       $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference);
       $out .= '</span>';
     }
     
     if($displayStatus){
 	    if(isset($nameTO->status[0])){
-	    	$separator =  ', ';
 			foreach($nameTO->status as $key => $status){
-				$out .= ($key == 0) ? ', '.$status->term : $separator.$status->term;
+				$out .= ', '.$status->term;
 			}
 	    }
     }
     
-    if(!empty($nameTO->descriptions)){
+    if($displayDescription && !empty($nameTO->descriptions)){
     	foreach($nameTO->descriptions as $DescriptionTO){
     		if(!empty($DescriptionTO)){
     			foreach($DescriptionTO->elements as $DescriptionElementSTO){
@@ -120,20 +118,24 @@ function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true){
 }
 
 function theme_cdm_descriptionElement($DescriptionElementSTO){
-	$out = " ";
+	$out = "";
+	
+	_add_js_thickbox();
 	
 	$uuid = $DescriptionElementSTO->uuid;
-	$type = $DescriptionElementSTO->type;
+	$type = $DescriptionElementSTO->mediaType;
 	$medias = $DescriptionElementSTO->media;
 	
 	foreach($medias as $media){
 		$prefRepresentations = cdm_preferred_media_representations($media, array('image/gif', 'image/jpeg', 'image/png'), 300, 400);
 		$representation_inline = array_shift($prefRepresentations);
 		if($representation_inline) {
-			$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid);
+			$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid, 'title'=>$type->term);
 		    for($i = 0; $part = $representation_inline->representationParts[$i]; $i++){
 		    	if($i == 0){
-		    	    $out .= l($type->term, $part->uri, $attributes, NULL, NULL, TRUE);
+		    	    $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$type->term.'-media.png';
+		    	    $media = '<img src="'.$image_url.'" height="14px" alt="'.$type->term.'" />';
+		    	    $out .= l($media, $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
 		    	} else {
 		    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
 		    	}
@@ -204,7 +206,7 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = true){
     
     
     if($showNomRef){
-       $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
+       $out .= theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
     }
 	
 	return $out;
@@ -232,7 +234,7 @@ function theme_cdm_taxon_misapplied_link($taxonTO, $fragment = NULL, $showNomRef
     
     
     if($showNomRef){
-       $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
+       $out .= theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
     }
 	
 	return $out;
@@ -251,7 +253,7 @@ function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true, $s
     
     
     if($showNomRef){
-       $out .=' '.theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
+       $out .= theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
     }
     
     if($showStatus){
@@ -449,7 +451,7 @@ function theme_cdm_credits(){
 function theme_cdm_fullreference($referenceTO){
   
   if($referenceTO->fullCitation){
-    $out = ' '.$referenceTO->fullCitation;
+    $out = $referenceTO->fullCitation;
   }else{
   	$out = $referenceTO->authorship;
   }
@@ -483,7 +485,9 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
   }
 
   _add_js_thickbox();
-  
+  if(!empty($nomref_citation)){
+    $nomref_citation = (str_beginsWith($nomref_citation, 'in') ? '&nbsp;':',&nbsp;') . $nomref_citation;
+  }
   // find media representations for inline display and high quality for download
   // assuming that there is only one protologue per name only the first media is used
   
@@ -513,6 +517,12 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
   } else {
     // no media available, so display just the citation string
     $out =  $nomref_citation;
+    /*
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
+    
+    $attributes = array('class'=>'thickbox');
+    $out .= l("TEST", "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/test.pdf", $attributes, NULL, NULL, FALSE);
+    */
   }
   return $out;
 }
@@ -540,8 +550,9 @@ function theme_cdm_taxon_page($taxonTO, $referenceInTitle = false){
   }
   $out .= theme('cdm_taxonRelations', $taxonTO->taxonRelations);
   
-  $out .= theme('cdm_nameRelations', $taxonTO->name->nameRelations);
-  
+  if(variable_get('cdm_dataportal_display_name_relations', 1)){
+    $out .= theme('cdm_nameRelations', $taxonTO->name->nameRelations);
+  }
   //$out .= theme('cdm_descriptions', $taxonTO->descriptions);
   $out .= theme('cdm_featureTree', $taxonTO->featureTree);
   return $out;
@@ -679,8 +690,12 @@ function theme_cdm_nameRelations($NameRelationshipTOs){
 	$block->delta = str_replace(' ', '_', strtolower($block->delta));
       
 	$block->content = '<ul class="nameRelationships '.$block->delta.'">';
-					
-	$block->content .= theme('cdm_name', $NameRelationshipTO->name);
+	$relatedNames = array();
+	foreach($NameRelationshipTO->relatedNames as $name){
+	  	 $relatedNames[] = theme('cdm_name', $name);
+	}
+	
+	$block->content .= implode(', ', $relatedNames);
 	
 	$out .= theme('block', $block);
     
@@ -742,15 +757,17 @@ function theme_cdm_typedesignations($typeDesignations = array()){
     foreach($specimenTypeDesignations as $std){
       
       $typeReference = '';
-      if($std->status->text){
-        $typeReference .= ' <span class="typeReference">';
-        $typeReference .= '(' . t('designated by ') . $std->reference->fullCitation . ')';
+      if($std->reference){
+        $typeReference .= '&nbsp;(' . t('designated by');
+        $typeReference .= '&nbsp;<span class="typeReference cluetip no-print" title="|'. htmlspecialchars(theme('cdm_fullreference',$std->reference )) .'|">';
+        $typeReference .= $std->reference->authorship . ' ' . $std->reference->year;
         $typeReference .= '</span>';
+        $typeReference .= ')';
+        $typeReference .= '<span class="reference only-print">(designated by '.theme('cdm_fullreference',$std->reference ).')</span>';
       }
       
-      
       $out .= '<li class="specimenTypeDesignation">';
-      $out .= '<span class="status">'.(($std->status->text) ? $std->status->text : t('Type')).$typeReference.'</span>: '.$std->typeSpecimen->specimenLabel;
+      $out .= '<span class="status">'.(($std->status->text) ? $std->status->text : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->specimenLabel;
       $out .= theme('cdm_specimen', $std->typeSpecimen);
       $out .= '</li>';
     }
@@ -909,8 +926,10 @@ function theme_cdm_pager(&$resultPageSTO, $path, $parameters, $neighbors = 2){
   if ($resultPageSTO->totalPageCount > 1) {
     
     $viewportsize = $neighbors * 2 + 1;
+    if($resultPageSTO->totalPageCount <= $viewportsize){
+      $viewportsize = $resultPageSTO->totalPageCount;
+    }
     
-
     $out .= '<div class="pager">';
     if($resultPageSTO->pageNumber > 1){
       $out .= theme('cdm_pager_link', t('« first'), 1,  $resultPageSTO, $path, $parameters, array('class' => 'pager-first'));
@@ -928,7 +947,9 @@ function theme_cdm_pager(&$resultPageSTO, $path, $parameters, $neighbors = 2){
     if($first_number > 1){
       $out .= '<div class="pager-list-dots-left">...</div>';
     }
-    for($i = $first_number; $i < $first_number + $viewportsize; $i++){
+    
+    
+    for($i = $first_number; ($i == $resultPageSTO->totalPageCount) || ($i < $first_number + $viewportsize); $i++){
       $out .= theme('cdm_pager_link', $i, $i,  $resultPageSTO, $path, $parameters, array('class' => 'pager-first'));
     }
     if($i < $resultPageSTO->totalPageCount){

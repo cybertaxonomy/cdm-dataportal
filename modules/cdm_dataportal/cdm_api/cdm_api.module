@@ -63,6 +63,11 @@ function cdm_api_menu($may_cache) {
   return $items;
 }
 
+/**
+ * Configures the settings forfm for the CDM-API module.
+ *
+ * @return Array Drupal settings form
+ */
 function cdm_api_settings_form(){
   
    $form['cdm_webservice'] = array(
@@ -171,7 +176,7 @@ function cdm_api_cron() {
  * @param array $taggedtxt
  * @param String $tag
  * @param String $glue the string by which the chained text tokens are concatenated together.
- *       Default is a blak character
+ *       Default is a blank character
  * @return String of HTML
  */
 function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
@@ -200,22 +205,31 @@ function cdm_taggedtext_value(array &$taggedtxt = array(), $tag_type){
   return '';
 }
 
+/**
+ * media Array [4]
+ *   representations Array [3]
+ *       mimeType  image/jpeg
+ *       representationParts Array [1]
+ *           duration  0
+ *           heigth  0
+ *           size  0
+ *           uri http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/jpeg/Acanthocephalus_p1.jpg
+ *           uuid  15c687f1-f79d-4b79-992f-7ba0f55e610b
+ *           width 0
+ *       suffix  jpg
+ *       uuid  930b7d51-e7b6-4350-b21e-8124b14fe29b
+ *   title
+ *   uuid  17e514f1-7a8e-4daa-87ea-8f13f8742cf9
+ *
+ * @param unknown_type $mediaTO
+ * @param array $mimeTypes
+ * @param unknown_type $width
+ * @param unknown_type $height
+ * @return unknown
+ */
 function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width, $height){
-    /*
-media Array [4]
-    representations Array [3]
-        mimeType  image/jpeg
-        representationParts Array [1]
-            duration  0
-            heigth  0
-            size  0
-            uri http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/jpeg/Acanthocephalus_p1.jpg
-            uuid  15c687f1-f79d-4b79-992f-7ba0f55e610b
-            width 0
-        suffix  jpg
-        uuid  930b7d51-e7b6-4350-b21e-8124b14fe29b
-    title
-    uuid  17e514f1-7a8e-4daa-87ea-8f13f8742cf9
+    /**
+
      *
      */
   $prefRepr = array();
@@ -351,7 +365,7 @@ function cdm_ws_load($url, $is_multi_paramater_query){
   
   $ftree = variable_get('cdm_dataportal_feature_tree', false);
   
-  $url .= ($ftree) ? $concatenator . "ftree=" . $ftree : '';
+  $url .= ($ftree && strpos($url, '/taxon/')) ? $concatenator . "ftree=" . $ftree : '';
   
   if($do_cache){
     // try to get object from cache
@@ -650,4 +664,17 @@ define('CDM_WS_TREENODE_PARENTS', 'taxonomy/parents');
  * stub: treenode_children
  */
 define('CDM_WS_TREENODE_CHILDREN', 'taxonomy/children');
+
+/**
+ * returns all features available in this community store
+ *
+ */
+define('CDM_WS_FEATURES', 'features');
+
+/**
+ * returns FeatureTrees that are stored in this community store
+ *
+ */
+define('CDM_WS_FEATURETREES', 'features/tree');
+
 

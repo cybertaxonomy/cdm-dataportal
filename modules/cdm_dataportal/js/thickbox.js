@@ -57,16 +57,19 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 		$('#TB_load').show();//show loader
 		
 		var baseURL;
-	   if(url.indexOf("?")!==-1){ //ff there is a query string involved
+		if(url.indexOf("?")!==-1){ //ff there is a query string involved
 			baseURL = url.substr(0, url.indexOf("?"));
-	   }else{ 
-	   		baseURL = url;
-	   }
+		}else{ 
+			baseURL = url;
+		}
 	   
-	   var urlString = /\.jpg$|\.jpeg$|\.png$|\.gif$|\.bmp$/;
-	   var urlType = baseURL.toLowerCase().match(urlString);
+		var urlString = /\.jpg$|\.jpeg$|\.png$|\.gif$|\.bmp$/;
+		var urlType = baseURL.toLowerCase().match(urlString);
+
 
 		if(urlType == '.jpg' || urlType == '.jpeg' || urlType == '.png' || urlType == '.gif' || urlType == '.bmp'){//code to show images
+				
+			var zoom = true;
 				
 			TB_PrevCaption = "";
 			TB_PrevURL = "";
@@ -88,11 +91,11 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 							} else {
 								TB_PrevCaption = TB_TempArray[TB_Counter].title;
 								TB_PrevURL = TB_TempArray[TB_Counter].href;
-								TB_PrevHTML = "<span id='TB_prev'>&nbsp;&nbsp;<a href='#'>&lt; Prev</a></span>";
+								TB_PrevHTML = "<span id='TB_prev'><a href='#'>&lt; Prev</a>&nbsp;&nbsp;</span>";
 							}
 						} else {
 							TB_FoundURL = true;
-							TB_imageCount = "Image " + (TB_Counter + 1) +" of "+ (TB_TempArray.length);											
+							TB_imageCount = (TB_Counter + 1) +"/"+ (TB_TempArray.length);											
 						}
 				}
 			}
@@ -124,11 +127,41 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 			}
 			// End Resizing
 			
+			if(zoom){
+				// viewport should be wider if zooming is enabled
+				dx = (x - imageWidth)/1.5 ;
+				
+				imageWidth += dx;
+			}
+			
 			TB_WIDTH = imageWidth + 30;
-			TB_HEIGHT = imageHeight + 60;
-			$("#TB_window").append("<a href='' id='TB_ImageOff' title='Close'><img id='TB_Image' src='"+url+"' width='"+imageWidth+"' height='"+imageHeight+"' alt='"+caption+"'/></a>" + "<div id='TB_caption'>"+caption+"<div id='TB_secondLine'>" + TB_imageCount + TB_PrevHTML + TB_NextHTML + "</div></div><div id='TB_closeWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a> or Esc Key</div>"); 		
+			TB_HEIGHT = imageHeight + 40;
+			//$("#TB_window").append("<a href='' id='TB_ImageOff' title='Close'><img id='TB_Image' src='"+url+"' width='"+imageWidth+"' height='"+imageHeight+"' alt='"+caption+"'/></a>" + "<div id='TB_caption'>"+caption+"<div id='TB_secondLine'>" + TB_imageCount + TB_PrevHTML + TB_NextHTML + "</div></div><div id='TB_closeWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a> or Esc Key</div>"); 		
+			
+			$("#TB_window").append(	"<img id='TB_Image' src='"+url+"' alt='"+caption+"'/>" 
+									+ "<div id='TB_caption'>"+caption
+										+"<div id='TB_secondLine'>" 
+											+ TB_PrevHTML + TB_imageCount + TB_NextHTML 
+										+ "</div>"
+									+ "</div>"
+								
+									+ "<div id='TB_closeWindow'>"
+										+ "<a href='#' id='TB_closeWindowButton' title='Close'>close</a> or Esc Key"
+									+ "</div>"); 		
+			
 			
 			$("#TB_closeWindowButton").click(tb_remove);
+			
+			if(zoom){
+				var imageToolOptions = {
+					'viewportWidth' :  imageWidth,
+					'viewportHeight' : imageHeight
+				}				
+			
+				$("#TB_Image").imagetool(imageToolOptions);
+				$("#TB_caption").after( "<div id='TB_zoom_instructions'>Ctrl-Click and drag to zoom</div>" );
+			}
+			
 			
 			if (!(TB_PrevHTML === "")) {
 				function goPrev(){
@@ -217,28 +250,28 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 					
 			$("#TB_closeWindowButton").click(tb_remove);
 			
-				if(url.indexOf('TB_inline') != -1){	
-					$("#TB_ajaxContent").append($('#' + params['inlineId']).children());
-					$("#TB_window").unload(function () {
-						$('#' + params['inlineId']).append( $("#TB_ajaxContent").children() ); // move elements back when you're finished
-					});
+			if(url.indexOf('TB_inline') != -1){	
+				$("#TB_ajaxContent").append($('#' + params['inlineId']).children());
+				$("#TB_window").unload(function () {
+					$('#' + params['inlineId']).append( $("#TB_ajaxContent").children() ); // move elements back when you're finished
+				});
+				tb_position();
+				$("#TB_load").remove();
+				$("#TB_window").css({display:"block"}); 
+			}else if(url.indexOf('TB_iframe') != -1){
+				tb_position();
+				if($.browser.safari){//safari needs help because it will not fire iframe onload
+					$("#TB_load").remove();
+					$("#TB_window").css({display:"block"});
+				}
+			}else{
+				$("#TB_ajaxContent").load(url += "&random=" + (new Date().getTime()),function(){//to do a post change this load method
 					tb_position();
 					$("#TB_load").remove();
-					$("#TB_window").css({display:"block"}); 
-				}else if(url.indexOf('TB_iframe') != -1){
-					tb_position();
-					if($.browser.safari){//safari needs help because it will not fire iframe onload
-						$("#TB_load").remove();
-						$("#TB_window").css({display:"block"});
-					}
-				}else{
-					$("#TB_ajaxContent").load(url += "&random=" + (new Date().getTime()),function(){//to do a post change this load method
-						tb_position();
-						$("#TB_load").remove();
-						tb_init("#TB_ajaxContent a.thickbox");
-						$("#TB_window").css({display:"block"});
-					});
-				}
+					tb_init("#TB_ajaxContent a.thickbox");
+					$("#TB_window").css({display:"block"});
+				});
+			}
 			
 		}
 

@@ -34,7 +34,7 @@
 	width:100%;
 }
 
-.TB_overlayMacFFBGHack {background: url(macFFBgHack.png) repeat;}
+.TB_overlayMacFFBGHack {background: url('images/macFFBgHack.png') repeat;}
 .TB_overlayBG {
 	background-color:#000;
 	filter:alpha(opacity=40);
@@ -60,13 +60,14 @@
 }
 
 * html #TB_window { /* ie6 hack */
-position: absolute;
-margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + 'px');
+	position: absolute;
+	margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + 'px');
 }
 
 #TB_window img#TB_Image {
 	display:block;
 	margin: 15px 0 0 15px;
+	padding: 1px;
 	border-right: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
 	border-top: 1px solid #666;
@@ -76,6 +77,13 @@ margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = d
 #TB_caption{
 	height:25px;
 	padding:7px 30px 10px 25px;
+	float:left;
+}
+
+#TB_zoom_instructions{
+	height:25px;
+	padding:7px 0 10px 0;
+	margin: 0 auto;
 	float:left;
 }
 
@@ -120,8 +128,8 @@ margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = d
 }
 
 #TB_ajaxContent tbody {
-  border-width: 0px;
-  font-size: 90%;	
+  	border-width: 0px;
+  	font-size: 90%;	
 }
 
 #TB_load{
@@ -129,7 +137,7 @@ margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = d
 	background-repeat: no-repeat;
 	background-color: #ffffff;
 	background-position: center center;
-  border: 1px solid #525252;
+  	border: 1px solid #525252;
 	position: fixed;
 	display:none;
 	height:70px;

@@ -297,7 +297,11 @@ function cdm_dataportal_search_process($form) {
  */
 function cdm_dataportal_search_form_request(){
   // keys map $REQUEST Keys values are optional default parameters if not null
-  static $search_form_params = array('queryString'=>null, 'onlyAccepted' =>'0', 'page'=>null,  'pagesize'=>15, 'mode'=>null);
+  $search_form_params = array( 	'queryString'=>null,
+  										'onlyAccepted' =>'0',
+  										'page'=>null,
+  										'pagesize'=> variable_get('cdm_dataportal_search_items_on_page', 15),
+  										'mode'=>null);
   
   $form_params = array();
   foreach($search_form_params as $key=>$default ){
@@ -345,23 +349,16 @@ function cdm_dataportal_settings(){
     '#varname' => 'cdm_secUuid_default',
     '#multiple' => false
   );
-
   
-  /*
-   * FeatureTree implementation.
-   * By now we only present a selection of feature trees stored in database.
-   * @future let the user configure her own FeatureTree
-   */
   $form['cdm_dataportal']['cdm_dataportal_feature_tree'] = array(
     '#type' => 'select',
-    '#title'         => t('Preconfigured FeatureTree'),
+    '#title'         => t('Available FeatureTrees'),
     '#default_value' => variable_get('cdm_dataportal_feature_tree', 'ae9615b8-bc60-4ed0-ad96-897f9226d568'),
-	'#options' => array(
-        '0' => 'No FeatureTree',
-		'ae9615b8-bc60-4ed0-ad96-897f9226d568' => t('FeatureTree hardcoded default')
-    ),
-    '#description'   => t('Select a preconfigured FeatureTree for this webservice.')
+	'#options' => _get_feature_trees(),
+    '#description'   => t('Select a FeatureTree for this webservice. If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>')
   );
+  
+  //------------------ LAYOUT --------------------//
   
   $form['cdm_dataportal']['layout'] = array(
     '#type' => 'fieldset',
@@ -377,6 +374,20 @@ function cdm_dataportal_settings(){
     '#description' => t('Uncheck this, if you want the title of a taxon page consisting of name and author only.
     					If not checked, the first homotypic taxon is a repetition of the accepted taxon with
     					the full nomenclatural reference.')
+  );
+  
+  $form['cdm_dataportal']['layout']['cdm_dataportal_display_name_relations'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show name relations of accepted taxa on taxon page'),
+    '#default_value' => variable_get('cdm_dataportal_display_name_relations', 1),
+    '#description' => t('')
+  );
+  
+  $form['cdm_dataportal']['layout']['cdm_dataportal_search_items_on_page'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search Page Size'),
+    '#default_value' => variable_get('cdm_dataportal_search_items_on_page', 25),
+    '#description' => t('Number of Names to display per page in search results.')
   );
   
   return system_settings_form($form);
@@ -625,6 +636,12 @@ function _cdm_dataportal_currentSecRef_array(){
   return  $_SESSION['cdm']['currentSecRef'];
 }
 
+/**
+ * Check if a taxon is accepted by the current secundum
+ *
+ * @param TaxonTO $taxonTO
+ * @return true if $taxonTo is accepted, false otherwise
+ */
 function _cdm_dataportal_acceptedByCurrentView($taxonTO){
   $current_secref = _cdm_dataportal_currentSecRef_array();
   
@@ -632,19 +649,21 @@ function _cdm_dataportal_acceptedByCurrentView($taxonTO){
 }
 
 /**
- * @param $str the string to truncate
- * @param $len the maximun length
- * @param $appendix an optional appendix.
+ * Truncates a $string to the specified $length or the original string as given as parameter.
+ * if an $appendix is defined the resulting string will have the specified $length including the $appendix.
  *
- * @return the string truncated to the specified length or the original string as given as parameter.
- * if an appendix has been defined the resulting string
- * will have the specified length inculding the the appendix.
+ * @param String $string	the string to truncate
+ * @param Number $length	the maximun length
+ * @param String $appendix	an optional appendix.
+ *
+ * @return the string
  */
-function str_trunk(&$str, $len, $appendix=''){
-  if(strlen($str) >= $len )
-  return  substr($str, 0, $len - strlen($appendix)).$appendix;
-  else
-  return $str;
+function str_trunk(&$string, $length, $appendix=''){
+  if(strlen($string) >= $length ){
+    return  substr($string, 0, $length - strlen($appendix)).$appendix;
+  } else {
+    return $string;
+  }
 }
 
 /**
@@ -684,5 +703,28 @@ function compose_url_prameterstr($parameters = array()){
      $pstr .= ($pstr ? '&' :'').$key.'='.urlencode($value);
   }
   return $pstr;
+}
+
+function _get_feature_trees(){
+   $feature_trees = array();
+   
+   // set tree that contains all features
+   $feature_trees['0'] = 'No FeatureTree';
+   
+   // get features from database
+   $persisted_trees = cdm_ws_get(CDM_WS_FEATURETREES);
+   if(is_array($persisted_trees)){
+     foreach($persisted_trees as $featureTree){
+       
+       $featureLabels = array();
+       foreach ($featureTree->features as $feature){
+         $featureLabels[] = $feature->label;
+       }
+       
+       $feature_trees[$featureTree->uuid] = implode(", ", $featureLabels);
+       
+     }
+   }
+   return $feature_trees;
 }
 
