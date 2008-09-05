@@ -86,11 +86,13 @@ modules/cdm_dataportal/cdm_tinytax/tinytax.info -text
 modules/cdm_dataportal/cdm_tinytax/tinytax.js -text
 modules/cdm_dataportal/cdm_tinytax/tinytax.module -text
 modules/cdm_dataportal/cdm_ws_urls.txt -text
+modules/cdm_dataportal/images/Protolog-media.png -text
 modules/cdm_dataportal/images/btn_collapse.gif -text
 modules/cdm_dataportal/images/btn_expand.gif -text
 modules/cdm_dataportal/images/external_link.gif -text
 modules/cdm_dataportal/images/loading.gif -text
 modules/cdm_dataportal/images/loading_circle_grey_16.gif -text
+modules/cdm_dataportal/images/macFFBgHack.png -text
 modules/cdm_dataportal/js/cdm_dynabox.js -text
 modules/cdm_dataportal/js/cdm_thickbox.css -text
 modules/cdm_dataportal/js/cluetip/Changelog.txt -text
