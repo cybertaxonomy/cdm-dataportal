@@ -297,11 +297,13 @@ function cdm_dataportal_search_process($form) {
  */
 function cdm_dataportal_search_form_request(){
   // keys map $REQUEST Keys values are optional default parameters if not null
-  $search_form_params = array( 	'queryString'=>null,
-  										'onlyAccepted' =>'0',
-  										'page'=>null,
-  										'pagesize'=> variable_get('cdm_dataportal_search_items_on_page', 15),
-  										'mode'=>null);
+  $search_form_params = array( 	'queryString' => null,
+  										'onlyAccepted' => '0',
+  										'page' => null,
+  										'pagesize' => variable_get('cdm_dataportal_search_items_on_page', 25),
+  										'mode' => null,
+                                        'sec' => $_SESSION['cdm']['currentSecRef']['uuid']);
+  
   
   $form_params = array();
   foreach($search_form_params as $key=>$default ){

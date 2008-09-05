@@ -162,7 +162,7 @@ function theme_cdm_descriptionElement($DescriptionElementSTO){
  *
  * usage: taxon_detail, theme_ptname_link
  */
-function theme_cdm_taxon($taxonTO, $displayNomRef = true, $displayStatus = true, $noSecundum = true, $enclosingTag = 'span', $uuidAnchor = TRUE){
+function theme_cdm_taxon($taxonTO, $displayNomRef = true, $displayStatus = true, $displayDescription = true, $noSecundum = true, $enclosingTag = 'span', $uuidAnchor = TRUE){
 
     $refSecundum = false;
     if(!$noSecundum){
@@ -171,7 +171,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $displayStatus = true,
         $refSecundum = str_trunk($ref_sec->fullCitation, 40, '...');
       }
     }
-    $out  = theme('cdm_name', $taxonTO->name, $displayNomRef, $displayStatus);
+    $out  = theme('cdm_name', $taxonTO->name, $displayNomRef, $displayStatus, $displayDescription);
     // append secundum information
 	  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>' : '');
 	  // add uuid anchor
@@ -201,14 +201,14 @@ function theme_cdm_taxon_link($taxonTO, $fragment = NULL, $showNomRef = true){
       $out = 'ERROR: theme_cdm_taxon_link() - taxon is not accepted';
     }
     
-    $name_html = theme('cdm_taxon', $taxonTO, false, false, true, '', FALSE);
+    $name_html = theme('cdm_taxon', $taxonTO, $showNomRef, true, false, true, '', FALSE);
     $out = l($name_html, cdm_dataportal_taxon_path($taxonTO->uuid), array('class'=>'accepted'), null, $fragment, FALSE, TRUE);
     
-    
+    /*
     if($showNomRef){
        $out .= theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
     }
-	
+	*/
 	return $out;
 }
 
@@ -227,16 +227,16 @@ function theme_cdm_taxon_misapplied_link($taxonTO, $fragment = NULL, $showNomRef
       $out = 'ERROR: theme_cdm_taxon_link() - taxon is not accepted';
     }
     
-    $name_html = theme('cdm_taxon', $taxonTO, false, false, true, '', FALSE);
+    $name_html = theme('cdm_taxon', $taxonTO, $showNomRef, true, false, true, '', FALSE);
     $out = '"';
     $out .= l($name_html, cdm_dataportal_taxon_path($taxonTO->uuid), array('class'=>'accepted'), null, $fragment, FALSE, TRUE);
     $out .= '"';
     
-    
+    /*
     if($showNomRef){
        $out .= theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
     }
-	
+	*/
 	return $out;
 }
 
@@ -248,17 +248,17 @@ function theme_cdm_taxon_misapplied_link($taxonTO, $fragment = NULL, $showNomRef
  */
 function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true, $showStatus = true){
     
-    $name_html = theme('cdm_taxon', $taxonTO, false, false, true, '', FALSE);
+    $name_html = theme('cdm_taxon', $taxonTO, $showNomRef, $showStatus, false, true, '', FALSE);
     $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid, $taxonTO->uuid, FALSE, TRUE);
     
-    
+    /*
     if($showNomRef){
        $out .= theme('cdm_nomenclaturalReferenceSTO', $taxonTO->name->nomenclaturalReference);
     }
     
     if($showStatus){
        $out .= theme('cdm_nomenclaturalStatusSTO', $taxonTO->name->status, "nomStatus");
-    }
+    }*/
 	
   return $out;
 }
@@ -458,10 +458,11 @@ function theme_cdm_fullreference($referenceTO){
   if($referenceTO->microReference){
     $out .= ' : '.$referenceTO->microReference;
   }
+  /*
   if($referenceTO->year){
     $out .= '. '.$referenceTO->year;
   }
-  
+  */
   return $out;
 }
 

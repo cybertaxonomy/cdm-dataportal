@@ -247,7 +247,7 @@ function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width,
         }
         $dwa+= $dw;
       }
-      $dwa = $dwa / count($representationTO->representationParts);
+      $dwa = (count($representationTO->representationParts)>0) ? $dwa / count($representationTO->representationParts) : 0;
       $prefRepr[$dwa.'_'.$mimeTypeKey] = $representationTO;
     }
   }
@@ -578,7 +578,7 @@ define('CDM_WS_NAME', 'name');
 /**
  * Web Service url parameters:
  * -  [last path element]: querystring
- * -  sec : the uuid of the concept reference
+ * -  sec : list of reference base uuid of concept references
  * -  higherTaxa : list of taxon uuid, if higherTaxa are defined only taxa which are includet in one these taxa are taken in to account
  * -  matchAnywhere : false (default) match the querystring to the beginning of names, if set to true any matching substring is taken as a hit.
  * -  onlyAccepted : return only taxa which are accepted in the sence of the concept reference as given by parameter sec
