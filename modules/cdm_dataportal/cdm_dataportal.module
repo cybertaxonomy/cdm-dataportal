@@ -296,20 +296,14 @@ function cdm_dataportal_search_process($form) {
  * returns the processed request parameters submitted by the search form.
  */
 function cdm_dataportal_search_form_request(){
-  // TODO definitely has to be refactored and moved to a function. Is this already happening somewhere else?
-  $secrefs = cdm_ws_get(CDM_WS_TREENODE_ROOT);
-  $secUuids = array();
-  foreach ($secrefs as $secref){
-    $secUuids[] = $secref->secUuid;
-  }
-  
+  $currentSecRefArray = _cdm_dataportal_currentSecRef_array();
   // keys map $REQUEST Keys values are optional default parameters if not null
   $search_form_params = array( 	'queryString' => null,
   										'onlyAccepted' => '0',
   										'page' => null,
   										'pagesize' => variable_get('cdm_dataportal_search_items_on_page', 25),
   										'mode' => null,
-                                        'sec' => implode(',', $secUuids));
+                                        'sec' => $currentSecRefArray['uuid']);
   
   
   $form_params = array();
@@ -607,26 +601,51 @@ function cdm_dataportal_shortname_of($NameSTO){
 }
 
 /**
+ * TODO Add Comments. I don't get what
+ *
  * @param UUID $secUuid
  */
 function _cdm_dataportal_set_currentSecUuid($secUuid){
 
+//  if(is_array($secUuid)){
+//    $secUuid = $secUuid[0];
+//  }
+//  if( !isset($_SESSION['cdm']['currentSecRef']['uuid']) ||  $_SESSION['cdm']['currentSecRef']['uuid'] != $secUuid){
+//    if(!$secUuid){
+//      $_SESSION['cdm']['currentSecRef'] = null;
+//    } else {
+//      $secRef = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$secUuid);
+//      if(isset($secRef[0])){
+//        $_SESSION['cdm']['currentSecRef'] = (array)($secRef[0]);
+//      }
+//    }
+//  }
+  
+// do not save in session but in database
+  
   if(is_array($secUuid)){
     $secUuid = $secUuid[0];
   }
-  if( !isset($_SESSION['cdm']['currentSecRef']['uuid']) ||  $_SESSION['cdm']['currentSecRef']['uuid'] != $secUuid){
-    if(!$secUuid){
-      $_SESSION['cdm']['currentSecRef'] = null;
-    } else {
-      $secRef = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$secUuid);
-      if(isset($secRef[0])){
-        $_SESSION['cdm']['currentSecRef'] = (array)($secRef[0]);
-      }
+  if(!$secUuid){
+    variable_set('cdm_currentSecRef', null);
+  } else {
+    $secRef = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$secUuid);
+    if(isset($secRef[0])){
+      variable_set('cdm_currentSecRef', (array)($secRef[0]));
     }
   }
+  
 }
 
 /**
+ * TODO
+ * This will not work with multiple instances of the dataportal running
+ * under the same host as there is only one session for all instances.
+ * In case you switch instances with the same client, you will definitely
+ * run into trouble.
+ * Also this is not handling multiple secs.
+ *
+ *
  * returns the current secRef array from the users session.
  * If the according session variable is not jet set the default
  * as configured in the setting is used otherwise null.
@@ -637,12 +656,22 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
  * @return array
  */
 function _cdm_dataportal_currentSecRef_array(){
-  
+    /*
   if( !isset($_SESSION['cdm']['currentSecRef']['uuid'])){
      $secUuid = variable_get('cdm_secUuid_default', null);
      _cdm_dataportal_set_currentSecUuid($secUuid);
   }
   return  $_SESSION['cdm']['currentSecRef'];
+  */
+
+// do not look in session but in database
+
+  if( variable_get('cdm_currentSecRef', null) == null){
+     $secUuid = variable_get('cdm_secUuid_default', null);
+     _cdm_dataportal_set_currentSecUuid($secUuid);
+  }
+  return variable_get('cdm_currentSecRef', null);
+  
 }
 
 /**
