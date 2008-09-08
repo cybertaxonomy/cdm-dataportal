@@ -353,7 +353,7 @@ function theme_cdm_list_of_taxa($taxonSTOs){
 			$uuid = $taxon->uuid;
 			$acceptedTaxa = $table_of_accepted->$uuid;
 			if(count($acceptedTaxa) == 1){
-				$out .= '<li>'.theme('cdm_synonym_link', $taxon, $acceptedTaxa[0]->uuid ).'<li>';
+				$out .= '<li>'.theme('cdm_synonym_link', $taxon, $acceptedTaxa[0]->uuid ).'</li>';
 			} else {
 			//TODO avoid using AHAH ion the cdm_dynabox
 				$out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_compose_url(CDM_WS_ACCEPTED_TAXON, array($taxon->uuid)), 'cdm_list_of_taxa');
