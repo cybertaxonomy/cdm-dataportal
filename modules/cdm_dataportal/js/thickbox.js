@@ -159,7 +159,7 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 				}				
 			
 				$("#TB_Image").imagetool(imageToolOptions);
-				$("#TB_caption").after( "<div id='TB_zoom_instructions'>Ctrl-Click and drag to zoom</div>" );
+				$("#TB_caption").after( "<div id='TB_zoom_instructions'>Click and drag to navigate. Ctrl-Click and drag to zoom.</div>" );
 			}
 			
 			
