@@ -150,6 +150,5 @@ a.synonym:link, a.synonym:visited {
 }
 
 .descriptionText, .descriptionReference{
-	width: 50%;
 	vertical-align: top;
 }
