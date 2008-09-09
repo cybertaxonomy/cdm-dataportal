@@ -871,14 +871,16 @@ function theme_cdm_featureTree($featureTree){
 			if(is_array($descriptionElements) && count($descriptionElements) > 0){
 				$block->module = 'cdm_dataportal';
 				
-				$type = isset($featureTo->type->term) ? $featureTo->type->term : 'Description';
+				$feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
 				
-				$block->delta  = $type;
+				$block->delta  = $feature;
 				$block->subject = t(ucfirst($block->delta));
 				$block->delta = str_replace(' ', '_', strtolower($block->delta));
 			      
-			    $block->content = '';
+			    $block->content = theme('cdm_descriptionElements', $descriptionElements, $block->delta);
 			    
+			    
+			    /*
 				if($type == "Distribution"){
 				  $block->content .= '<ul>';
     			  foreach($descriptionElements as $descriptionElementSTO){
@@ -887,8 +889,7 @@ function theme_cdm_featureTree($featureTree){
     			  $block->content .= '</ul>';
 				}else{
 				
-    				
-    				$block->content .= '<table class="'.$type.'">';
+    				$block->content .= '<table class="'.$feature.'">';
     								
     				foreach($descriptionElements as $descriptionElementSTO){
     					$block->content .= 	'<tr class="'.($i++%2?'odd':'even').'">';
@@ -899,6 +900,7 @@ function theme_cdm_featureTree($featureTree){
     				}
     				$block->content .= '</table>';
 				}
+*/
 				      
 				$out .= theme('block', $block);
 			}
@@ -906,6 +908,28 @@ function theme_cdm_featureTree($featureTree){
 	}
 	return $out;
 }
+
+function theme_cdm_descriptionElements($descriptionElements, $feature){
+  $out = '<ul class="description '.$feature.'">';
+  
+  foreach($descriptionElements as $descriptionElementSTO){
+    if($descriptionElementSTO->classType == 'TextData'){
+      $out .= '<li class="descriptionText">' . $descriptionElementSTO->description;
+      if(isset($descriptionElementSTO->reference)){
+        $out .= '<br> <span class="descriptionReference">'.theme('cdm_fullreference', $descriptionElementSTO->reference).'</span>';
+      }
+      $out .= '</li>';
+    }else if($descriptionElementSTO->classType == 'Distribution'){
+      $out .= '<li>' . $descriptionElementSTO->area->term . '</li>';
+    }else{
+      $out .= '<li>No method for rendering unknown description class: '.$descriptionElementSTO->classType.'</li>';
+    }
+    
+  }
+  $out .= '</ul>';
+  return $out;
+}
+
 
 function theme_cdm_search_results($resultPageSTO, $path, $parameters){
   
