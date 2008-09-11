@@ -253,6 +253,7 @@ themes/palmweb/minus.jpg -text
 themes/palmweb/node.tpl.php -text
 themes/palmweb/page.tpl.php -text
 themes/palmweb/palmweb.profile -text
+themes/palmweb/palmwebblock.profile -text
 themes/palmweb/plus.jpg -text
 themes/palmweb/screenshot.png -text
 themes/palmweb/screenshot_original.png -text
