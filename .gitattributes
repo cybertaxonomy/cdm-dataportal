@@ -244,7 +244,8 @@ themes/palmweb/block-tinytax-tinytax_cdm_block.tpl.php -text
 themes/palmweb/block.tpl.php -text
 themes/palmweb/box.tpl.php -text
 themes/palmweb/comment.tpl.php -text
-themes/palmweb/coverimg.jpg -text
+themes/palmweb/coverimg.png -text
+themes/palmweb/header-cichorieae.png -text
 themes/palmweb/logo.png -text
 themes/palmweb/logo_bgbm.jpg -text
 themes/palmweb/logo_edit.png -text

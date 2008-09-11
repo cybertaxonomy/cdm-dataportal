@@ -9,10 +9,11 @@ body {
   padding: 0;
   color: #000;
   font:small Arial,Georgia,Serif;
-  /* text-align:center; */
-  background-color: #fff;
+  /* text-align:center;
+  background-color: #FFD7AE; */
+  background-color: #FFFFFF;
   font: Arial, 76% Verdana, Arial, Helvetica, sans-serif;
-  border:1px solid #7D974A;
+  border:1px solid #ACAEEE;
 }
 
 tr.odd td, tr.even td {
@@ -50,7 +51,8 @@ a {
   font-weight: normal;
 }
 a:link {
-  color: #39c;
+  /* color: #39c; */
+  color: black;
 }
 a:visited {
   color: #369;
@@ -71,6 +73,7 @@ pre {
 table {
   /* make <td> sizes relative to body size! */
   font-size: 1em;
+  background-color: #FEDDAB;
 }
 .form-item label {
   font-size: 1em;
@@ -109,7 +112,8 @@ table {
 #header {
   position:relative; 
   margin:auto; 
-  background-color:#7d974a; 
+  /* background-color:#7d974a; */
+  background-color:#f27520; 
   height:70px;
   text-indent:20px;
   font-family:Arial;
@@ -198,6 +202,8 @@ ul.links li.first {
   /* padding in px not ex because IE messes up 100% width tables otherwise 
   padding: 20px; */
   padding: 20px 20px 20px 20px;  
+  /* background-color: #FEDDAB; */  
+  background-color: #FEDDAB;
 }
 
 #mission, .node .content, .comment .content {
@@ -222,7 +228,8 @@ ul.links li.first {
 
 #sidebar-left, #sidebar-right {
   width: 12em;
-  background-color: #fff;
+  /* background-color: #FF8000;FFD7AE;FEDDAB*/
+  background-color: #FEDDAB;
   vertical-align: top;
   text-align: left;
   /* padding in px not ex because IE messes up 100% width tables otherwise */
@@ -234,7 +241,7 @@ ul.links li.first {
 }
 
 #footer {
-  background-color: #FFFFFF;
+  background-color: #FEDDAB;
   padding: 1em;
   font-size: 0.8em;
 }
@@ -245,8 +252,8 @@ ul.links li.first {
 
 #block-cdm_dataportal-distribution .searchtitle{
   border: 0px;
-  color: #96AB2B;
-  background-color:#FFFFFF;
+  color: #ACAEEE;
+  background-color:#FEDDAB;
 }
 
 #block-cdm_dataportal-is_new_combination_for {
@@ -255,8 +262,8 @@ ul.links li.first {
 
 #block-cdm_dataportal-is_new_combination_for .searchtitle{
   border: 0px;
-  color: #96AB2B;
-  background-color:#FFFFFF;
+  color: #ACAEEE;
+  background-color:#FEDDAB;
 }
 
 
@@ -301,7 +308,8 @@ ul.links li.first {
   font-weight: bold;
   font-size: 1.0em;
   color: #FFFFFF;
-  background-color:#96AB2B;
+  background-color:#ACAEEE;
+  /* background-color:#96AB2B; */
   margin: 0 auto;  /* decrease default margins for h<x>.title */
 }
 
@@ -327,28 +335,34 @@ ul.links li.first {
 .block {
   margin-bottom: 1.0em;
   font-size: 12px;
+  background-color: #FEDDAB;
 }
 
 .block-cdm_taxontree {
-  border: 1px solid #006666;
-  background-color: #fff;
+  border: 1px solid #ACAEEE; 
+  background-color: #FEDDAB; /* ACAEEE */
 }
 
 div.cdm_taxontree_scroller_y, div.cdm_taxontree_scroller_y, ul.cdm_taxontree,  ul.cdm_taxontree li.collapsed, ul.cdm_taxontree li.leaf, ul.cdm_taxontree li.focused,ul.cdm_taxontree li, ul.cdm_taxontree li.expanded  {
-  background-color: #fff;
-  border: 0px;
+  background-color: #FEDDAB;
+  border: 0px solid #ACAEEE;
+  color: black;
 }
 
 .block-cdm_dataportal {
   padding-bottom: 0.75em;
   margin-bottom: 1.5em;
-  border: 1px solid #96AB2B;
-  background-color: #fff;
+  border: 1px solid #ACAEEE;
+  background-color: #FEDDAB;
+}
+
+.block-develtest {
+  background-color: #ACAEEE;
 }
 
 .block-tinytax {
   padding-bottom: 0.75em;
-  border: 1px solid #96AB2B;
+  border: 1px solid #FEDDAB;
 }
 
 .block .content {
@@ -360,7 +374,7 @@ div.cdm_taxontree_scroller_y, div.cdm_taxontree_scroller_y, ul.cdm_taxontree,  u
 }
 
 .block-user {
-  border: 1px solid #96AB2B;
+  border: 1px solid #ACAEEE;
 }
 
 .box .title {
