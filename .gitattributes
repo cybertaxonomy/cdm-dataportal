@@ -161,6 +161,7 @@ modules/taxon_experts/resources/taxonomy_expertdb_taxomony.xml -text
 modules/taxon_experts/taxon_experts.info -text
 modules/taxon_experts/taxon_experts.module -text
 modules/taxon_experts/template.taxon_experts.php -text
+themes/cichorieae/style.css -text
 themes/diptera/Culex[!!-~]quinquefasciatus.jpg -text
 themes/diptera/block-tinytax-tinytax_cdm_block.tpl.php -text
 themes/diptera/block.tpl.php -text
