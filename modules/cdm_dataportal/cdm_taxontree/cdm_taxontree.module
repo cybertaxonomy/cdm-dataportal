@@ -625,7 +625,7 @@ function theme_cdm_taxontree_add_scripts(){
  *            					in theme_cdm_taxontree_node(). The output of this callback, which takes the
  *            					$node object as single arument, is appended to the end of the redered node.
  */
-function theme_cdm_taxontree_block($tree, $magicbox = false, $show_filter_switch = false, $tree_node_callback = false){
+function theme_cdm_taxontree_block($tree, $delta, $magicbox = false, $show_filter_switch = false, $tree_node_callback = false){
 
    // THEMERS: change the line below according the specific regions of your theme
    $left_expand_region = 'right';
