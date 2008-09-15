@@ -10,7 +10,7 @@ body {
   color: #000;
   font:small Arial,Georgia,Serif;
   /* text-align:center;
-  background-color: #FFD7AE; */
+  background-color: #FFD7AE; */ 
   background-color: #FFFFFF;
   font: Arial, 76% Verdana, Arial, Helvetica, sans-serif;
   border:1px solid #ACAEEE;
@@ -62,13 +62,13 @@ a:hover {
   text-decoration: underline;
 }
 fieldset {
-  border: 1px solid #ccc;
+  border: 1px solid #ACAEEE;
 }
 pre {
   background-color: #fff;
   padding: 0.75em 1.5em;
   font-size: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #ACAEEE;
 }
 table {
   /* make <td> sizes relative to body size! */
@@ -83,7 +83,7 @@ table {
   color:#666666;
   size: 20;
   font-size: 9px;
-  border: 1px solid #ddd; 
+  border: 1px solid #ACAEEE; 
 }
 
 .form-item {
@@ -123,12 +123,12 @@ table {
 }
 #logo {
   vertical-align: middle;
-  border: 0;
+  border: 0 #ACAEEE;
 }
 #logo img {
   float: left;
   padding: 0 1em;
-  border: 0;
+  border: 0 #ACAEEE;
 }
 #menu {
   padding: 0.5em 0.5em 0 0.5em;
@@ -154,13 +154,13 @@ table {
   color: #9cf;
 }
 ul.links li {
-  border-left: 1px solid #9cf;
+  border-left: 1px solid #ACAEEE;
 }
 ul.links li.first {
-  border: none;
+  border: none #ACAEEE;
 }
 #search .form-text, #search .form-submit {
-  border: 1px solid #369;
+  border: 1px solid #ACAEEE;
   font-size: 1.1em;
   height: 1.5em;
   vertical-align: middle;
@@ -218,7 +218,7 @@ ul.links li.first {
 }
 .messages {
   background-color: #eee;
-  border: 1px solid #ccc;
+  border: 1px solid #ACAEEE;
   padding: 0.3em;
   margin-bottom: 1em;
 }
@@ -247,22 +247,22 @@ ul.links li.first {
 }
 
 #block-cdm_dataportal-distribution {
-  border: 0px;
+  border: 0px #ACAEEE;
 }
 
 #block-cdm_dataportal-distribution .searchtitle{
-  border: 0px;
-  color: #ACAEEE;
+  border: 0px #ACAEEE;
+  color: #7679E2;
   background-color:#FEDDAB;
 }
 
 #block-cdm_dataportal-is_new_combination_for {
-  border: 0px;
+  border: 0px #ACAEEE;
 }
 
 #block-cdm_dataportal-is_new_combination_for .searchtitle{
-  border: 0px;
-  color: #ACAEEE;
+  border: 0px #ACAEEE;
+  color: #7679E2;
   background-color:#FEDDAB;
 }
 
@@ -362,7 +362,7 @@ div.cdm_taxontree_scroller_y, div.cdm_taxontree_scroller_y, ul.cdm_taxontree,  u
 
 .block-tinytax {
   padding-bottom: 0.75em;
-  border: 1px solid #FEDDAB;
+  border: 1px solid #ACAEEE;
 }
 
 .block .content {
@@ -509,6 +509,9 @@ ul.homotypicSynonyms, ul.heterotypicSynonymyGroup, ul.misapplied {
 ul.typeDesignations {
   margin-left: 1em; 
 /*   list-style:none;	*/
+
+
+
 }
 
 
