@@ -1,0 +1,18 @@
+* text=auto !eol
+/LICENSE.txt -text
+/README.txt -text
+/block.tpl.php -text
+/box.tpl.php -text
+/comment.tpl.php -text
+/favicon.ico -text
+/footer.jpg -text
+/header-cichorieae.png -text
+/header.jpg -text
+/logo.png -text
+/node.tpl.php -text
+/page.tpl.php -text
+/print.css -text
+/screenshot-drupal.org.png -text
+/screenshot-large.png -text
+/screenshot.png -text
+/style.css -text
