@@ -152,8 +152,8 @@ ul.primary-links li a:hover, ul.primary-links li a.active{
 	background:#FFFFFF url(images/a18.gif) repeat-x scroll center top;
 }
 
-ul.primary-links li a{
-	background: none;	
+ul.primary-links li a, ul.primary-links li a:link, ul.primary-links li a:visited{
+	background-image: none;	
 }
 
 
