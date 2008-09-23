@@ -152,6 +152,11 @@ ul.primary-links li a:hover, ul.primary-links li a.active{
 	background:#FFFFFF url(images/a18.gif) repeat-x scroll center top;
 }
 
+ul.primary-links li a{
+	background: none;	
+}
+
+
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited {
 	white-space:normal;	
 }
