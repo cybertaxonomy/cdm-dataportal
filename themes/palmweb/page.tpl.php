@@ -43,9 +43,7 @@
         <div class="tabs"><?php print $tabs ?></div>
         <?php print $help ?>
         <?php print $messages ?>
-        ARSE ARSE ARSE
         <?php print $content; ?>
-        ARSE ARSE ARSE ARSE ARSE ARSE 
         <?php print $feed_icons; ?>
       </div>
     </td>
