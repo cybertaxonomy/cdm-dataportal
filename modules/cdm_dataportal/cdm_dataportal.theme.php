@@ -249,7 +249,7 @@ function theme_cdm_descriptionElement_distribution($featureTo){
     
     $oldUrl = explode('?', $featureTo->url);
     
-    $serviceUrl = $server . '?' . $oldUrl[1] . '&ms=500x200';
+    $serviceUrl = $server . '?' . $oldUrl[1] . '&ms=800x400';
   }
   
   
