@@ -68,11 +68,89 @@ function tagNameParts($name, $numOfNameTokens){
 }
 
 /**
+ * Almost any cdmObject may be annotated. Therefore we provide a generic way to display
+ * as well as create or update annotations.
+ *
+ * TODO it should be configurable which objects can be annotated as this might differ in dataportals
+ *
+ */
+function theme_cdm_annotation($baseTO){
+  if(!$baseTO->uuid){
+    return;
+  }else{
+    
+    
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_annotations.js');
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.form.js');
+    
+    $annotatableUuid = $baseTO->uuid;
+    $annotationUrl = cdm_compose_url(CDM_WS_ANNOTATIONS, array($annotatableUuid));
+    
+    $annotationProxyUrl = url('cdm_api/proxy/'. urlencode($annotationUrl).'/cdm_annotation_content');
+    
+    $out = ' <span class="annotation">';
+    $out .= '<span class="annotation_toggle" rel="'.$annotationProxyUrl.'">+</span>';
+       
+
+    $out .= '<div class="annotation_box"></div>';
+    $out .= '</span>';
+    
+    return $out;
+    
+  }
+}
+
+function theme_cdm_annotation_content($AnnotationTO){
+
+  
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_annotations.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.form.js');
+    
+  
+  $out .= theme('cdm_list_of_annotations', $AnnotationTO->annotationElements);
+
+  $annotationUrl = cdm_compose_url(CDM_WS_ANNOTATIONS, array($AnnotationTO->uuid));
+  $annotationProxyUrl = url('cdm_api/proxy/'. urlencode($annotationUrl).'/cdm_annotation_post');
+  
+  // TODO users have to be authenticated to the dataportal to be able to write annotations
+  $out .= '
+  			<div class="annotation_create">
+  				<form action="'.$annotationProxyUrl.'" method="POST">
+  					<textarea name="annotation"></textarea>
+  					<input type="hidden" name="commentator" value="">
+  					<input type="submit" value="'.t('Save annotation').'" />
+  				</form>
+ 			</div>
+	';
+  
+  return $out;
+}
+
+function theme_cdm_list_of_annotations($annotationElements){
+  
+  $out = '<ul class="annotation_list">';
+  
+  foreach ($annotationElements as $key => $row){
+    $created[$key] = $row;
+  }
+  array_multisort($created, SORT_ASC, $annotationElements);
+  
+  foreach ($annotationElements as $annotation){
+    $out .= '<li>' . $annotation->text . '</li>';
+  }
+  
+  $out .= '</ul>';
+  
+  return $out;
+  
+}
+
+/**
  * Renders the full name string (complete scientific name including the author team)
  *
  * @param NameTO $nameTO the taxon name
  */
-function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true, $displayDescription = true){
+function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $displayStatus = true, $displayDescription = true){
   
     //TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
     $class = 'fullname'; //name'; //($nameTO->secUuid ? 'taxon' : 'taxonname');
@@ -81,12 +159,16 @@ function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true, $
       return '<span class="error">Invalid NameTO</span>';
     }
 
+    
     $hasNomRef = $nameTO->nomenclaturalReference->fullCitation;
     //FIXME class="'.$class.' below seems to be unused
     if(!$nameTO->taggedName || !count($nameTO->taggedName)){
       $out .= '<span class="'.$class.'">'.$nameTO->fullname.'</span>';
     } else {
       $skip = $hasNomRef ? array('reference') : array();
+      if(!$displayAuthor){
+        $skip[] = 'authors';
+      }
       $out .= '<span class="'.$class.'">'.cdm_taggedtext2html($nameTO->taggedName, 'span', ' ', $skip).'</span>';
     }
     
@@ -113,6 +195,9 @@ function theme_cdm_name($nameTO, $displayNomRef = true, $displayStatus = true, $
     		}
     	}
     }
+    
+    // testing annotations for taxon names
+    //$out .= theme('cdm_annotation', $nameTO);
     
     return $out;
 }
@@ -148,6 +233,13 @@ function theme_cdm_descriptionElement($DescriptionElementSTO){
 	return $out;
 }
 
+function theme_cdm_descriptionElement_distribution($featureTo){
+  
+  $out .= '<img src="'.$featureTo->url.'" alt="No distribution map available." />';
+  return $out;
+  
+}
+
 /**
  * Renders the given TaxonTO. The $enclosingTag (if not set false)
  * will get the following class attributes:
@@ -171,7 +263,7 @@ function theme_cdm_taxon($taxonTO, $displayNomRef = true, $displayStatus = true,
         $refSecundum = str_trunk($ref_sec->fullCitation, 40, '...');
       }
     }
-    $out  = theme('cdm_name', $taxonTO->name, $displayNomRef, $displayStatus, $displayDescription);
+    $out  = theme('cdm_name', $taxonTO->name, true, $displayNomRef, $displayStatus, $displayDescription);
     // append secundum information
 	  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>' : '');
 	  // add uuid anchor
@@ -539,25 +631,98 @@ function theme_cdm_nomenclaturalStatusSTO($statusSTO, $cssClass = '', $enclosing
 	return $out;
 }
 
-function theme_cdm_taxon_page($taxonTO, $referenceInTitle = false){
+/**
+ * default title for a taxon page
+ *
+ * @param NameTO $nameTO
+ * @return the formatted taxon name
+ */
+function theme_cdm_taxon_page_title($nameTO){
+  return theme('cdm_name', $nameTO);
+}
+
+/**
+ * A wrapper function that groups available information to show by default, when
+ * a taxon page is requested by the browser.
+ * Individual themeing has to decide what this page should include (see methods beneath)
+ * and what information should go into tabs or should not be shown at all.
+ *
+ * It is headed by the name of the accepted taxon without author and reference.
+ *
+ */
+function theme_cdm_taxon_page_general($taxonTO, $referenceInTitle = false){
   $out = '';
   
   $prependedSynonyms = $referenceInTitle ? array() : array($taxonTO);
-    
   
+  // start with synonymy
+  $out .= theme('cdm_taxon_page_synonymy', $taxonTO);
+  
+  // display name relations
+  if(variable_get('cdm_dataportal_display_name_relations', 1)){
+    $out .= theme('cdm_nameRelations', $taxonTO->name->nameRelations);
+  }
+  
+  // show the featureTree
+  $out .= theme('cdm_taxon_page_description', $taxonTO);
+  
+  return $out;
+}
+
+
+/**
+ * Outputs all descriptive data and shows the preferred picture of the
+ * accepted taxon.
+ *
+ */
+function theme_cdm_taxon_page_description($taxonTO){
+  return theme('cdm_featureTree', $taxonTO->featureTree);
+}
+
+/**
+ * Show whole synonymy for the accepted taxon. Synonymy list is headed by the complete scientific name
+ * of the accepted taxon with nomenclatural reference.
+ *
+ */
+function theme_cdm_taxon_page_synonymy($taxonTO){
   $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms, $taxonTO->typeDesignations, $prependedSynonyms);
+  
   foreach($taxonTO->heterotypicSynonymyGroups as $HomotypicTaxonGroupSTO){
     $out .= theme('cdm_heterotypicSynonymyGroup', $HomotypicTaxonGroupSTO);
   }
   $out .= theme('cdm_taxonRelations', $taxonTO->taxonRelations);
   
-  if(variable_get('cdm_dataportal_display_name_relations', 1)){
-    $out .= theme('cdm_nameRelations', $taxonTO->name->nameRelations);
-  }
-  //$out .= theme('cdm_descriptions', $taxonTO->descriptions);
-  $out .= theme('cdm_featureTree', $taxonTO->featureTree);
   return $out;
 }
+
+/**
+ * Show the collection of images stored with the accepted taxon
+ *
+ */
+function theme_cdm_taxon_page_images(){
+  
+}
+
+/**
+ * Show a reference in it's atomized form
+ *
+ */
+function theme_cdm_reference_page(){
+  
+}
+
+/**
+ * Show a synonym page
+ *
+ * TODO what should show on this page exactly?
+ *
+ */
+function theme_cdm_synonym_page(){
+  
+}
+
+
+
 
 function theme_cdm_homotypicSynonyms($synonymRelationshipTOs, $typeDesignations = false, $prependedSynonyms = array()){
   
@@ -846,6 +1011,8 @@ function theme_cdm_specimen($specimen){
 }
 
 
+
+
 function theme_cdm_featureTree($featureTree){
 /*
 *	->featureTree{
@@ -873,44 +1040,75 @@ function theme_cdm_featureTree($featureTree){
 				
 				$feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
 				
-				$block->delta  = $feature;
-				$block->subject = t(ucfirst($block->delta));
-				$block->delta = str_replace(' ', '_', strtolower($block->delta));
-			      
-			    $block->content = theme('cdm_descriptionElements', $descriptionElements, $block->delta);
-			    
-			    
-			    /*
-				if($type == "Distribution"){
-				  $block->content .= '<ul>';
-    			  foreach($descriptionElements as $descriptionElementSTO){
-    			    $block->content .= '<li>' . $descriptionElementSTO->area->term . '</li>';
-    			  }
-    			  $block->content .= '</ul>';
-				}else{
 				
-    				$block->content .= '<table class="'.$feature.'">';
-    								
-    				foreach($descriptionElements as $descriptionElementSTO){
-    					$block->content .= 	'<tr class="'.($i++%2?'odd':'even').'">';
-    			        $block->content .= 		'<td class="descriptionText">'.$descriptionElementSTO->description.'</td>';
-    			        $block->content .=  	'<td class="descriptionReference">'.theme('cdm_fullreference', $descriptionElementSTO->reference).'</td>';
-    			        $block->content .= 	'</tr>';
-    			        //TODO show media etc
-    				}
-    				$block->content .= '</table>';
-				}
-*/
-				      
+								
+				$block->delta = $feature;
+				$block->subject = t(ucfirst($block->delta));
+				$block->delta = generalizeString($block->delta);
+				
+			    $block->content = theme('cdm_descriptionElements', $descriptionElements, $block->delta);
+			    // set anchor
+			    $out .= '<a name="'.$block->delta.'"></a>';
 				$out .= theme('block', $block);
+				
+				
+				
+  			    // TODO HACK
+                if($feature == 'Distribution'){
+//                  ob_start();
+//  				  echo "<pre>";
+//  				  print_r($featureTo->url);
+//  				  echo "</pre>";
+//  				  ob_flush();
+                  $out .= theme('cdm_descriptionElement_distribution', $featureTo);
+                }
+				
 			}
 		}
 	}
 	return $out;
 }
 
+function theme_cdm_featureTreeToc($featureTree){
+  
+    
+    $out = '<div class="featureTOC">';
+    $out .= '<h2>' . t('Table of Content') .'</h2>';
+    $out .= '<ul>';
+  
+    $descriptions = $featureTree->descriptions;
+	foreach($descriptions as $descriptionTO){
+		$features = $descriptionTO->features;
+		foreach($features as $featureTo){
+			$descriptionElements = $featureTo->descriptionElements;
+			// process $descriptionElements with content only
+			if(is_array($descriptionElements) && count($descriptionElements) > 0){
+				
+				$feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
+				
+				$out .= '<li><a href="#'.generalizeString($feature).'">'.t(ucfirst($feature)).'</a></li>';
+			}
+		}
+	}
+	$out .= '</ul></div>';
+	
+	return $out;
+}
+
+/**
+ * Replaces all occurrences of space characters with an underscore and tronsforms the given
+ * string to lowercase.
+ *
+ * @param String $string
+ * @return the transformed string
+ */
+function generalizeString($string){
+  return str_replace(' ', '_', strtolower($string));
+}
+
 function theme_cdm_descriptionElements($descriptionElements, $feature){
-  $out = '<ul class="description '.$feature.'">';
+  
+  $out .= '<ul class="description" id="'.$feature.'">';
   
   foreach($descriptionElements as $descriptionElementSTO){
     if($descriptionElementSTO->classType == 'TextData'){

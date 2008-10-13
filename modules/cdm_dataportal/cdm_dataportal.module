@@ -54,6 +54,7 @@ function cdm_dataportal_perm() {
  */
 function cdm_dataportal_menu($may_cache) {
   $items = array();
+  
   if ($may_cache) {
 
     $items[] = array(
@@ -105,11 +106,14 @@ function cdm_dataportal_menu($may_cache) {
       'access' => true,
       'type' => MENU_CALLBACK,
     );
-     
+    
+    
   }
+  
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
   //drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_screen.css', 'screen');
+  
   return $items;
   
 }
@@ -509,9 +513,11 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
   
     $referenceInTitle = variable_get('cdm_dataportal_nomref_in_title', 1);
     
-    drupal_set_title(theme('cdm_taxon', $taxonTO, $referenceInTitle));
+    //drupal_set_title(theme('cdm_taxon', $taxonTO, $referenceInTitle));
+    drupal_set_title(theme('cdm_taxon_page_title', $taxonTO->name));
     //TODO retrieve complete synonymy and other data
-    $out = theme('cdm_taxon_page', $taxonTO, $referenceInTitle);
+    //$out = theme('cdm_taxon_page', $taxonTO, $referenceInTitle);
+    $out = theme('cdm_taxon_page_general', $taxonTO);
     return $out;
   }
 }

@@ -93,6 +93,7 @@ modules/cdm_dataportal/images/external_link.gif -text
 modules/cdm_dataportal/images/loading.gif -text
 modules/cdm_dataportal/images/loading_circle_grey_16.gif -text
 modules/cdm_dataportal/images/macFFBgHack.png -text
+modules/cdm_dataportal/js/cdm_annotations.js -text
 modules/cdm_dataportal/js/cdm_dynabox.js -text
 modules/cdm_dataportal/js/cdm_thickbox.css -text
 modules/cdm_dataportal/js/cluetip/Changelog.txt -text
@@ -122,8 +123,10 @@ modules/cdm_dataportal/js/cluetip/jquery.cluetip.min.js -text
 modules/cdm_dataportal/js/cluetip/jquery.dimensions.js -text
 modules/cdm_dataportal/js/cluetip/jquery.hoverIntent.js -text
 modules/cdm_dataportal/js/cluetip/wait.gif -text
+modules/cdm_dataportal/js/jquery-ui.js -text
 modules/cdm_dataportal/js/jquery.dimensions.js -text
 modules/cdm_dataportal/js/jquery.dimensions.pack.js -text
+modules/cdm_dataportal/js/jquery.form.js -text
 modules/cdm_dataportal/js/jquery.imagetool.min.js -text
 modules/cdm_dataportal/js/thickbox.js -text
 modules/countrypresence/country-earth.dbf -text
