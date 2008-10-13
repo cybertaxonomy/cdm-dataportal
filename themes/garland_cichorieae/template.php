@@ -9,7 +9,7 @@
  * @return taxon name without author and nomencaltural reference
  */
 function garland_cichorieae_cdm_taxon_page_title($nameTO){
-  return theme('cdm_name', $nameTO, false, false);
+  return theme('cdm_name', $nameTO, false, false, false, false);
 }
 
 /**
