@@ -252,7 +252,7 @@ function theme_cdm_descriptionElement_distribution($featureTo){
     $serviceUrl = $server . '?' . $oldUrl[1] . '&ms=800x400';
   }
   
-  
+  $out .= "<p>Preliminary distribution map</p>";
   $out .= '<img style="border: 1px solid #ddd" src="'.$serviceUrl.'" alt="No distribution map available." />';
   return $out;
   
