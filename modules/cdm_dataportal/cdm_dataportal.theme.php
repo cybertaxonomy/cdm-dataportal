@@ -233,20 +233,27 @@ function theme_cdm_descriptionElement($DescriptionElementSTO){
 	return $out;
 }
 
+/**
+ * TODO
+ * Quick-and-dirty solution to show distribution service to exemplar groups
+ *
+ * @param unknown_type $featureTo
+ * @return unknown
+ */
 function theme_cdm_descriptionElement_distribution($featureTo){
   $serviceUrl = '';
   
-  $server = '';
+  $server = 'http://edit.csic.es/fitxers/TDWGs_2.php';
   
   if($featureTo->url){
     
-    $oldUrl = implode('?', $featureTo->url);
+    $oldUrl = explode('?', $featureTo->url);
     
-    $serviceUrl = $server . $oldUrl[1];
+    $serviceUrl = $server . '?' . $oldUrl[1] . '&ms=500x200';
   }
   
   
-  $out .= '<img src="'.$serviceUrl.'" alt="No distribution map available." />';
+  $out .= '<img style="border: 1px solid #ddd" src="'.$serviceUrl.'" alt="No distribution map available." />';
   return $out;
   
 }
