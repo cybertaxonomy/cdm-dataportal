@@ -234,8 +234,19 @@ function theme_cdm_descriptionElement($DescriptionElementSTO){
 }
 
 function theme_cdm_descriptionElement_distribution($featureTo){
+  $serviceUrl = '';
   
-  $out .= '<img src="'.$featureTo->url.'" alt="No distribution map available." />';
+  $server = '';
+  
+  if($featureTo->url){
+    
+    $oldUrl = implode('?', $featureTo->url);
+    
+    $serviceUrl = $server . $oldUrl[1];
+  }
+  
+  
+  $out .= '<img src="'.$serviceUrl.'" alt="No distribution map available." />';
   return $out;
   
 }
