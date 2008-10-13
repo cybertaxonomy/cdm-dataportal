@@ -1,4 +1,88 @@
 <?php
+
+/**
+ * Overrides of generic themeing functions in cdm_datportal.theme.php
+ */
+
+/**
+ * @param NameTO $nameTO
+ * @return taxon name without author and nomencaltural reference
+ */
+function garland_cichorieae_cdm_taxon_page_title($nameTO){
+  return theme('cdm_name', $nameTO, false, false);
+}
+
+/**
+ * TODO
+ * The cichorieae team wishes their side to be tabbed. Therefore we implemented a
+ * quick-and-dirty solution with javascript. It would be nice to have this implemented
+ * using drupal MENU_LOCAL_TASKs.
+ *
+ * @param TaxonTO $taxonTO
+ * @return contents of the taxon page
+ */
+function garland_cichorieae_cdm_taxon_page_general($taxonTO){
+  
+   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery-ui.js');
+  
+  $out = "
+  <script>
+    $(document).ready(function(){
+      $('#tabs').tabs();
+    });
+  </script>
+  ";
+  
+  
+  $out .= '<ul id="tabs" class="tab-menu">';
+  $out .= '<li><a href="#tab-general">'.t('General').'</a></li>';
+  $out .= '<li><a href="#tab-synonymy">'.t('Synonymy').'</a></li>';
+  $out .= '<li><a href="#tab-images">'.t('Images').'</a></li>';
+  $out .= '</ul>';
+  
+  // general
+  $out .= '<div id="tab-general">';
+  $out .= theme('cdm_taxon_page_description', $taxonTO);
+  $out .= '</div>';
+  
+  // synonymy
+  $out .= '<div id="tab-synonymy">';
+  $out .= theme('cdm_name', $taxonTO->name);
+  $out .= theme('cdm_taxon_page_synonymy', $taxonTO);
+  $out .= '</div>';
+  
+  // images//
+    // synonymy
+  $out .= '<div id="tab-images">';
+  $out .= 'No images available.';
+  $out .= '</div>';
+  
+  return $out;
+}
+
+/**
+ * The description page is supposed to be the front page for a taxon.
+ *
+ * @param TaxonTO $taxonTO
+ * @return
+ */
+function garland_cichorieae_cdm_taxon_page_description($taxonTO){
+  // preferred image
+  // hardcoded for testing
+  $out = '<img class="left" src="'.drupal_get_path('theme', 'garland_cichorieae').'/images/nopic.jpg" alt="no image available">';
+  
+  // description TOC
+  $out .= theme('cdm_featureTreeToc', $taxonTO->featureTree);
+  
+  // descriptions
+  $out .= theme('cdm_featureTree', $taxonTO->featureTree);
+  
+  return $out;
+}
+
+
+/***** GARLAND OVERRIDES ******/
+
 /**
  * Sets the body-tag class attribute.
  *

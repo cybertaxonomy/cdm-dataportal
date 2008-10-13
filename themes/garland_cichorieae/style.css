@@ -350,7 +350,7 @@ body.sidebar-left, body.sidebar-right {
 /* We must define 100% width to avoid the body being too narrow for near-empty pages */
 #wrapper #container #center {
   float: left;
-  clear: both;
+  /*clear: both;*/
   width: 100%;
   margin-top: 60px;
   position: relative;
@@ -384,7 +384,7 @@ body.sidebars #squeeze {
   margin: 60px 0 5em;
   width: 210px;
   float: left;
-  z-index: 2;
+  z-index: 3;
   position: relative;
 }
 

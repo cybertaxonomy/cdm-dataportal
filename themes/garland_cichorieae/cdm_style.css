@@ -100,6 +100,16 @@ span.cluetip {
 	color: #F03300;
 }
 
+img.left {
+	float: left;	
+	padding: 0 5px 5px 0;
+}
+
+.clear-block {
+	clear: both;	
+}
+
+
 a{
 	color: #F03300;
 }
@@ -107,6 +117,10 @@ a{
 ul.cdm_taxontree li .active {
 	color:#F03300;
 	font-weight:bold;
+}
+
+#sidebar-left {
+	float: left;	
 }
 
 #wrapper #container #center, #wrapper #container .sidebar {
@@ -182,6 +196,29 @@ a:active, a.active {
   color: #F03300;
 }
 
+ul.tab-menu{
+	border-bottom: 1px solid #000;	
+}
+
+.tab-menu li{
+  list-style-type: none;
+  list-style-image: none;
+  background: none;
+  padding: 4px 4px 2px 4px;
+  margin: 2px;
+  border: 1px solid #000;
+  display: inline;	
+  background: #ddd;
+}
+
+li.ui-tabs-selected{
+	background: #fff;
+	border-bottom: 1px solid #fff;	
+}
+
+.ui-tabs-hide{
+	display: none;	
+}
 
 
 
