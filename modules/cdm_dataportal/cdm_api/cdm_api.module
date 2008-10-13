@@ -20,6 +20,7 @@ require_once ('uuids.php');
 
 
 
+
 /**
  * Implementation of hook_requirements()
  */
@@ -49,15 +50,13 @@ function cdm_api_requirements() {
 function cdm_api_menu($may_cache) {
   $items = array();
   if ($may_cache) {
-    
-   $items[] = array(
+    $items[] = array(
       // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
       'path' => 'cdm_api/proxy',
       'callback' => 'proxy_content',
       'access' => true,
       'type' => MENU_CALLBACK,
-      );
-    
+    );
   }
   
   return $items;
@@ -308,21 +307,44 @@ function cdm_compose_url($ws_name, $parameters = array()){
 
 
 function proxy_content($url, $theme = null){
+  
   $args = func_get_args();
   
   $url = array_shift($args);
   $theme = array_shift($args);
   
-  //TODO reconsider caching logic in this function
-  if(!$theme){
-    // print out JSON, the cache cannot be used since it contains objetcs
-    $data = get_content(urldecode($url));
+  $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
+  
+  if($request_method == "POST"){
+    
+    $parameters = $_POST;
+    
+    $post_data = array();
+    foreach ($parameters as $k=>$v)
+    {
+        $post_data[] = "$k=".utf8_encode($v);
+    }
+    $post_data = implode(',', $post_data);
+    
+    // testing
+    $data = request_content(urldecode($url), "POST", $post_data);
     print $data;
-  } else {
-    $obj = cdm_ws_load(urldecode($url), false);
-    array_unshift($args, $theme, $obj);
-    print call_user_func_array('theme', $args);
+    
+  }else{
+    // in all other cases perform a simple get request
+    //TODO reconsider caching logic in this function
+    if(!$theme){
+      // print out JSON, the cache cannot be used since it contains objects
+      $data = request_content(urldecode($url));
+      print $data;
+    } else {
+      $obj = cdm_ws_load(urldecode($url), false);
+      array_unshift($args, $theme, $obj);
+      print call_user_func_array('theme', $args);
+    }
   }
+  
+
 }
 
 
@@ -354,9 +376,9 @@ function cdm_ws_get($method, $parameters = array()){
  *        Relative means relative to the web service base url which is stored in cdm_webservice_url
  * @return An object or false
  */
-function cdm_ws_load($url, $is_multi_paramater_query){
+function cdm_ws_load($url, $is_multi_paramater_query, $method="GET"){
   
-  $do_cache = !$is_multi_paramater_query && variable_get('cdm_webservice_cache', 0);
+  $do_cache = !$is_multi_paramater_query && variable_get('cdm_webservice_cache', 0) && $method == "GET";
   $cache_entry = false;
   
   // append the default featureTree to url string
@@ -376,7 +398,7 @@ function cdm_ws_load($url, $is_multi_paramater_query){
     // load fresh data from webservice
     $time_get_start = microtime(true);
     // request data from webservice JSON or XML
-    $datastr = get_content($url);
+    $datastr = request_content($url, $method);
     $time_get = microtime(true) - $time_get_start;
     /*if(TRUE){
       $storef =  urlencode($url);
@@ -439,7 +461,10 @@ function cdm_load_obj($datastr){
   return $obj;
 }
 
-function get_content($url){
+
+
+
+function request_content($url, $method="GET", $parameters = array()){
   global $locale;  // drupal variable containing the current locale i.e. language
   static $header;
   
@@ -453,16 +478,16 @@ function get_content($url){
   if(function_exists('curl_init')){
 
     // use the CURL lib if installed it is supposed to be 20x faster
-    return _get_content_curl($url, $header);
+    return _request_content_curl($url, $header, $method, $parameters);
   } else {
-    return _get_content_fsockopen($url, $header);
+    return _request_content_fsockopen($url, $header, $method, $parameters);
   }
 }
 
 
-function _get_content_fsockopen($url, $header = array()){
+function _request_content_fsockopen($url, $header = array(), $method = "GET"){
   //FIXME implement get_content_fsockopen($url);
-   watchdog('CDM_API', '_get_content_fsockopen - UNIMPLEMENTED', WATCHDOG_ERROR);
+   watchdog('CDM_API', '_request_content_fsockopen - UNIMPLEMENTED', WATCHDOG_ERROR);
    return false;
 }
 
@@ -475,7 +500,7 @@ function _get_content_fsockopen($url, $header = array()){
  *
  * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
 */
-function _get_content_curl($url, $header = array())
+function _request_content_curl($url, $header = array(), $method = "GET", $parameters = array())
 {
     $ch = curl_init();
 
@@ -490,13 +515,27 @@ function _get_content_curl($url, $header = array())
     }
     // set headers
     curl_setopt ($ch, CURLOPT_HTTPHEADER, $header);
-
+    // set method if not default
+    if($method != "GET"){
+      if($method == "POST"){
+        
+        curl_setopt ($ch, CURLOPT_POST, 1);
+        curl_setopt ($ch, CURLOPT_POSTFIELDS, $parameters);
+        
+      }else{
+        // other obscure http methods get passed to curl directly
+        // TODO generic parameter/body handling
+        curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, $method);
+      }
+    }
+    
+    
     ob_start();
     curl_exec ($ch);
     if(curl_errno($ch)){
-      watchdog('CDM_API', '_get_content_curl() - '.curl_error($ch).' URL: '.$url, WATCHDOG_ERROR);
+      watchdog('CDM_API', '_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, WATCHDOG_ERROR);
         if(variable_get('cdm_webservice_debug', 1)){
-          drupal_set_message('_get_content_curl() - '.curl_error($ch).' URL: '.$url, 'error');
+          drupal_set_message('_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, 'error');
         }
     }
     curl_close ($ch);
@@ -677,4 +716,11 @@ define('CDM_WS_FEATURES', 'features');
  */
 define('CDM_WS_FEATURETREES', 'features/tree');
 
+
+/**
+ * Web Service Arguments: {CdmObjUuid}
+ *
+ * Either retrieves or writes annotations to any annotatable entity
+ */
+define('CDM_WS_ANNOTATIONS', 'annotations');
 
