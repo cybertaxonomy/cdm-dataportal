@@ -220,5 +220,16 @@ li.ui-tabs-selected{
 	display: none;	
 }
 
+#tabs-wrapper{
+	margin: 0;
+	padding: 0;	
+}
+
+.node {
+	border-bottom:1px solid #E9EFF3;
+	margin:-1.5em 0 1.5em;
+	padding:1.5em 0;
+}
+
 
 
