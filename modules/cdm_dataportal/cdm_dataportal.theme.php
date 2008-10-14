@@ -247,7 +247,7 @@ function theme_cdm_descriptionElement_distribution($featureTo){
   
   if($featureTo->url){
     $oldUrl = explode('?', $featureTo->url);
-    $serviceUrl = $server . '?' . $oldUrl[1] . '&ms=600x300';
+    $serviceUrl = $server . '?' . $oldUrl[1] . '&ms=500x2700';
   }
   
   $out .= "<p>Preliminary distribution map</p>";
