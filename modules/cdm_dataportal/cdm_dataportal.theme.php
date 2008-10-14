@@ -246,10 +246,8 @@ function theme_cdm_descriptionElement_distribution($featureTo){
   $server = 'http://edit.csic.es/fitxers/TDWGs_2.php';
   
   if($featureTo->url){
-    
     $oldUrl = explode('?', $featureTo->url);
-    
-    $serviceUrl = $server . '?' . $oldUrl[1] . '&ms=800x400';
+    $serviceUrl = $server . '?' . $oldUrl[1] . '&ms=600x300';
   }
   
   $out .= "<p>Preliminary distribution map</p>";
@@ -715,7 +713,7 @@ function theme_cdm_taxon_page_synonymy($taxonTO){
 
 /**
  * Show the collection of images stored with the accepted taxon
- *
+ * TODO
  */
 function theme_cdm_taxon_page_images(){
   
@@ -723,7 +721,7 @@ function theme_cdm_taxon_page_images(){
 
 /**
  * Show a reference in it's atomized form
- *
+ * TODO
  */
 function theme_cdm_reference_page(){
   
@@ -738,7 +736,6 @@ function theme_cdm_reference_page(){
 function theme_cdm_synonym_page(){
   
 }
-
 
 
 
@@ -1057,9 +1054,7 @@ function theme_cdm_featureTree($featureTree){
 				$block->module = 'cdm_dataportal';
 				
 				$feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
-				
-				
-								
+							
 				$block->delta = $feature;
 				$block->subject = t(ucfirst($block->delta));
 				$block->delta = generalizeString($block->delta);
