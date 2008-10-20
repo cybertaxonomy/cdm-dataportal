@@ -1,0 +1,103 @@
+@CHARSET "ISO-8859-1";
+
+
+div.cdm_taxontree_scroller_x{
+  border: 1px solid #ADDDFA;
+  overflow: auto;
+	overflow-x: auto; 
+  overflow-y: auto;
+	
+}
+
+div.cdm_taxontree_container{
+  width: 250px; /* should be greater than the sidebar width (e.g. 250px for the garland theme) */
+}
+
+div.cdm_taxontree_scroller_y {
+  overflow: visible;
+  overflow-y: visible;
+  padding: 5px;
+  border: 1px solid transparent;
+  background-color: #EDF5FA;
+  height: 300px; /* this defines the height of the treebrowser box */
+}
+
+ul.cdm_taxontree{
+	background-color: #EDF5FA;
+	padding:0pt 0pt 0.25em 1em;
+	left: 0px; /* fix IE7? */
+}
+	
+ul.cdm_taxontree li{
+	padding:0pt 1em 0pt 1em;
+	margin-left: -1em;
+	list-style-image: none;
+	list-style-type: none;
+	white-space: nowrap;
+	font-weight: normal;
+}
+
+ul.cdm_taxontree li .active{
+	color: #027AC6;
+	font-weight: bold;
+}
+
+ul.cdm_taxontree li.expanded {
+  background:transparent url(minus.png) no-repeat scroll 0px 0.35em;
+  cursor: pointer;
+}
+
+ul.cdm_taxontree li.collapsed {
+  background:transparent url(plus.png) no-repeat scroll 0px 0.35em;
+  cursor: pointer;
+}
+ul.cdm_taxontree li.focused {
+  font-weight: bold;	
+}
+
+ul.cdm_taxontree li.leaf{
+	background:transparent url(menu-leaf.gif) no-repeat scroll 0px 0.35em;
+}
+
+ul.cdm_taxontree li.filter_excluded {
+	background-image: none;
+	cursor: default;
+	color: #888888;
+}
+
+
+
+ul.cdm_taxontree li.leaf a, ul.cdm_taxontree li.expanded a, ul.cdm_taxontree li.collapsed a {
+  display:inline;
+  white-space: nowrap;
+}
+
+/* --------- cdm_taxontree_widget  ----------- */
+
+div.cdm_taxontree_widget div.taxontree, div.cdm_taxontree_widget div.form-item{
+  width: 40%;
+  float: left;
+}
+
+div.cdm_taxontree_widget div.taxontree{
+	height: 300px;
+	padding-left: 20px;
+  background-color: #EDF5FA;
+  overflow: auto;
+  width: 45%;
+  float: left;
+}
+
+div.cdm_taxontree_widget .widget_select{
+	cursor: pointer; 
+}
+
+
+div.cdm_taxontree_widget select{
+	width: 100%;
+}
+
+div.cdm_taxontree_widget option[selected] {
+	background-color: white;
+}
+
