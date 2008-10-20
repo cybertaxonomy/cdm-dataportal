@@ -1,0 +1,27 @@
+* text=auto !eol
+/LICENSE.txt -text
+/cdm_taxontree.css -text
+/cdm_taxontree.info -text
+/cdm_taxontree.module -text
+/concept_switch.gif -text
+/invisible.gif -text
+/invisible_small.gif -text
+js/cdm_taxontree.js -text
+js/jquery.dimensions.js -text
+js/jquery.dimensions.pack.js -text
+js/jquery.scrollTo-min.js -text
+js/jquery.scrollTo.js -text
+/loading_subtree.gif -text
+/menu-leaf.gif -text
+/minus.png -text
+/plus.png -text
+resources/Invisible.gif -text
+resources/Visible.gif -text
+resources/concept_switch.ai -text
+resources/concept_switch.psd -text
+resources/eye.png -text
+resources/loading_subtree.psd -text
+/visible.gif -text
+/visible_implicit.gif -text
+/visible_implicit_small.gif -text
+/visible_small.gif -text
