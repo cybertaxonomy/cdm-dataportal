@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cdm_taxontree.js 2858 2008-06-27 07:14:57Z a.kohlbecker $
 
 
 (function($){
@@ -32,14 +32,14 @@
 							// load DOM subtree and append it
 							$.get(url, function(html){
 							  var tree_container = parent_li.parents('div.cdm_taxontree_container');
-						    parent_li.css('background-image', bg_image_tmp);
-								// preserve scroll positions
-								var tmp_scroller_y_left = tree_container.children().scrollTop();
-								parent_li.append(html).find('ul').cdm_taxontree(options);
+							  parent_li.css('background-image', bg_image_tmp);
+							  // preserve scroll positions
+							  var tmp_scroller_y_left = tree_container.children().scrollTop();
+							  parent_li.append(html).find('ul').cdm_taxontree(options);
 							  // resize parent container
 							  tree_container.cdm_taxontree_container_resize();
 							  // restore scroll positions
-                tree_container.children().scrollTop(tmp_scroller_y_left);
+							  tree_container.children().scrollTop(tmp_scroller_y_left);
 							});
 
 						}
@@ -56,52 +56,55 @@
 
 			/* ----------- widget ------------------- */
 			if(opts.widget){
-				var widget = $(this).parents();
-        var widget = $(this).parents('.cdm_taxontree_widget');
-        var optionList = widget.find('select');
+				var widget = $(this).parents('.cdm_taxontree_widget');
+				var optionList = widget.find('select');
 
-        // keep all options unselected
-        optionList.change(function(){
-          $(this).children().removeAttr('selected');
-        });
-        // select all options onsubmit
-        optionList.parents('form').submit(function(){
-          optionList.children().attr('selected', 'selected');
-        });
-        //
-        bind_select_click(optionList, $(this), opts.multiselect);
-      }
+		        // provide a way to remove items from optionlist
+		        // keep all options unselected
+		        optionList.change(function(){
+		          $(this).children("[@selected]").remove();
+		          $(this).children().removeAttr('selected');
+		        });
+		        optionList.children("[@selected]").click(function(){
+		        	$(this).remove();
+		        });
+		        // select all options onsubmit
+		        optionList.parents('form').submit(function(){
+		        	optionList.children().attr('selected', 'selected');
+		        });
+		        //
+		        bind_select_click(optionList, $(this), opts.multiselect);
+	      }
 		});
 
 		function bind_select_click(optionList, treelist, isMultiselect){
-     treelist.find('li .widget_select').click(function(event){
-        event.stopPropagation();
-        var value = $(this).attr('alt');
-        if(optionList.children('[value='+value+']').length > 0){
-          // remove from select
-          optionList.children('[value='+value+']').remove();
-        } else {
-         // add to select
-         if(!isMultiselect){
-           // remove all from select
-           optionList.children().remove();
-         }
-         optionList.append('<option value="'+value+'">'+$(this).attr('title')+'</option>');
-         
-	        // fix bug in IE
-	        if( jQuery.browser['msie']) {
-	            if(jQuery.browser['version'].charAt(0) <= '6'){
-	              return;
-	            }
-	          }
-	        // optionList.children().removeAttr('selected'); // yields a bug in IE6, @see http://gimp4you.eu.org/sandbox/js/test/removeAttr.html
-	        optionList.children("[@selected]").attr('selected','');         
-        }
+			treelist.find('li .widget_select').click(function(event){
+				event.stopPropagation();
+				var value = $(this).attr('alt');
+		        if(optionList.children('[value='+value+']').length > 0){
+		          // remove from select
+		           optionList.children('[value='+value+']').remove();
+		        } else {
+		         // add to select
+		         if(!isMultiselect){
+		           // remove all from select
+		           optionList.children().remove();
+		        }
+		        optionList.append('<option value="'+value+'">'+$(this).attr('title')+'</option>');
+		        
+		        // fix bug in IE
+		        if( jQuery.browser['msie']) {
+		            if(jQuery.browser['version'].charAt(0) <= '6'){
+		              return;
+		            }
+		          }
+		        // optionList.children().removeAttr('selected'); // yields a bug in IE6, @see http://gimp4you.eu.org/sandbox/js/test/removeAttr.html
+		        optionList.children("[@selected]").attr('selected','');
+		   }
        });
-  } // END bind_select_click()
+	} // END bind_select_click()
 
-
-	}; // END cdm_taxontree()
+  }; // END cdm_taxontree()
 
 })(jQuery);
 
@@ -168,38 +171,43 @@ $.fn.cdm_taxontree_magicbox = function() {
 			function() {
 			  var scroller_x = $(this).parent();
 			  var scroller_y = $(this).children('.cdm_taxontree_scroller_y');
+			  var widget = $(this).parents('.taxontree');
 			  var container =  scroller_x.parent();
 
 			  var h = parseFloat(scroller_x.height());
 			  var scroll_top = scroller_x.scrollTop();
-			  var border_color = scroller_x.css('border-top-color');
+			  var active_border_color = scroller_x.css('border-top-color');
+			  var inactive_border_color = widget.css('border-top-color');
 
 			  // store scroll_left of scroller_x so that it can be restored on mouseOut
 			  scroller_x.append('<div class="_scrollLeft" style="display: none;" title="'+scroller_x.scrollLeft()+'"></div>');
 
-        var newWidth = $(this).cdm_taxontree_container_resize();
-        if(scroller_x.hasClass('expand-left')){
-			     var shift_left =  container.outerWidth({ margin: true }) - newWidth;
+			  var newWidth = $(this).cdm_taxontree_container_resize();
+			  if(scroller_x.hasClass('expand-left')){
+			     var shift_left =  widget.outerWidth({ margin: true }) - newWidth;
 			  } else {
 			     var shift_left = '0';
 			  }
 
-			  scroller_y.css('overflow-y', 'auto').css('border-color', border_color).scrollTop(scroll_top);
-			  scroller_x.css('overflow-y', 'visible').css('overflow-x', 'visible').css('margin-left', shift_left).css('border-color', 'transparent').height(h);
+			  widget.css('border-color', active_border_color);
+			  scroller_y.css('overflow-y', 'auto').css('border-color', inactive_border_color).scrollTop(scroll_top);
+			  scroller_x.css('overflow-y', 'visible').css('overflow-x', 'visible').css('margin-left', shift_left).css('border-color', inactive_border_color).height(h);
 			}
 			// ----------------- //
 			,
 			// --- mouseOut ---- //
 			function() {
 				//return;
-				var container = $(this);
 				var scroller_x = $(this).parent('.cdm_taxontree_scroller_x');
-				var scroller_y = container.children('.cdm_taxontree_scroller_y');
-				var border_color = scroller_y.css('border-top-color');
+				var scroller_y = $(this).children('.cdm_taxontree_scroller_y');
+				var widget = $(this).parents('.taxontree');
+				var inactive_border_color = scroller_x.css('border-top-color');
+				var active_border_color = widget.css('border-top-color');
 
 				var scroll_top = scroller_y.scrollTop();
-				scroller_y.css('overflow-y', 'visible').css('border-color', 'transparent');
-				scroller_x.css('overflow-y', 'auto').css('margin-left', '0').css('border-color', border_color).width('auto').scrollTop(scroll_top);
+				widget.css('border-color', inactive_border_color);
+				scroller_y.css('overflow-y', 'visible').css('border-color', active_border_color);
+				scroller_x.css('overflow-y', 'auto').css('margin-left', '0').css('border-color', active_border_color).width('auto').scrollTop(scroll_top);
 
 				// restore scroll_left of scroller_x
 				var scrollLeft = scroller_x.children('._scrollLeft').attr('title');

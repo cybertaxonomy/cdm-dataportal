@@ -1,3 +1,8 @@
+/.cache
+/.project
+/.settings
 /Presets
 /Thumbs.db
+/cdm_taxontree.module.2.tmp
+/cdm_taxontree.module.tmp
 resources/Thumbs.db
