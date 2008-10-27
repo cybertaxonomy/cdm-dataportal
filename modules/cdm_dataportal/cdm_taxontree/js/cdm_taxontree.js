@@ -73,8 +73,12 @@
 			        
 			        // keep all options unselected
 			        optionList.change(function(){
+		            	$(this).children("[@selected]").remove();
 			        	$(this).children().removeAttr('selected');
 			        });
+		        	optionList.children("[@selected]").click(function(){
+		        		$(this).remove();
+		        	});
 			        // select all options onsubmit
 			        optionList.parents('form').submit(function(){
 			        	optionList.children().attr('selected', 'selected');
@@ -102,10 +106,17 @@
 						    optionList.children().remove();
 						}
 						optionList.append('<option value="'+value+'">'+$(this).attr('title')+'</option>');
-						optionList.children().removeAttr('selected');
+		        
+		        // fix bug in IE
+		        if( jQuery.browser['msie']) {
+		            if(jQuery.browser['version'].charAt(0) <= '6'){
+		              return;
 					}
 	       		}
-       		);
+		        // optionList.children().removeAttr('selected'); // yields a bug in IE6, @see http://gimp4you.eu.org/sandbox/js/test/removeAttr.html
+		        optionList.children("[@selected]").attr('selected','');
+		   }
+       });
   		} // END bind_select_click()
   
 	}; // END cdm_taxontree()
