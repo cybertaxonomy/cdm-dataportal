@@ -49,12 +49,32 @@ a {
   text-decoration: none;
   font-weight: normal;
 }
+
 a:link {
   color: #39c;
+  /* color: #7C7C7F; */
 }
 a:visited {
-  color: #369;
+  color: #39c;
+  /* color: #7C7C7F; */
 }
+
+.name {
+  /* font-style: normal; */
+  font-weight: normal;
+}
+
+.name .synonym {
+  font-style: italic;
+}
+
+a.synonym {
+  font-style: italic;
+}
+
+
+
+
 a:hover {
   color: #39c;
   text-decoration: underline;
@@ -175,9 +195,11 @@ ul.links li.first {
   font-weight: bold;
 }
 .site-name {
-  margin: 0.6em 0 0 0;
+  margin: 0.6em 0 0.6em 0;
   padding: 0;
-  font-size: 2em;
+  font-size: 2.0em;
+  font-weight: bold;
+  letter-spacing: 10px;
 }
 .site-name a:link, .site-name a:visited {
   color: #fff;
@@ -239,11 +261,11 @@ ul.links li.first {
   font-size: 0.8em;
 }
 
-#block-cdm_dataportal-distribution, #block-cdm_dataportal-discussion, #block-cdm_dataportal-uses, #block-cdm_dataportal-etymology, #block-cdm_dataportal-materials_examined, #block-cdm_dataportal-description, #block-cdm_dataportal-conservation, #block-cdm_dataportal-biology_and_ecology, #block-cdm_dataportal-common_name {
+#block-cdm_dataportal-distribution, #block-cdm_dataportal-discussion, #block-cdm_dataportal-uses, #block-cdm_dataportal-etymology, #block-cdm_dataportal-materials_examined, #block-cdm_dataportal-description, #block-cdm_dataportal-conservation, #block-cdm_dataportal-biology_and_ecology, #block-cdm_dataportal-common_name, #block-cdm_dataportal-cultivation {
   border: 0px;
 }
 
-#block-cdm_dataportal-distribution .searchtitle, #block-cdm_dataportal-discussion .searchtitle, #block-cdm_dataportal-uses .searchtitle, #block-cdm_dataportal-etymology .searchtitle, #block-cdm_dataportal-materials_examined .searchtitle, #block-cdm_dataportal-description .searchtitle, #block-cdm_dataportal-conservation .searchtitle, #block-cdm_dataportal-biology_and_ecology .searchtitle, #block-cdm_dataportal-common_name  .searchtitle {
+#block-cdm_dataportal-distribution .searchtitle, #block-cdm_dataportal-discussion .searchtitle, #block-cdm_dataportal-uses .searchtitle, #block-cdm_dataportal-etymology .searchtitle, #block-cdm_dataportal-materials_examined .searchtitle, #block-cdm_dataportal-description .searchtitle, #block-cdm_dataportal-conservation .searchtitle, #block-cdm_dataportal-biology_and_ecology .searchtitle, #block-cdm_dataportal-common_name  .searchtitle, #block-cdm_dataportal-cultivation  .searchtitle {
   border: 0px;
   color: #96AB2B;
   background-color:#FFFFFF;
@@ -259,7 +281,14 @@ ul.links li.first {
   background-color:#FFFFFF;
 }
 
+ul.description{  
+	list-style-type: none;
+	padding: 0 0 0 0;
+}
 
+/* .block ul {
+	padding:0 0 0 0;
+} */
 
 /*
 ** Common declarations for child classes of node, comment, block, box, etc.
@@ -303,6 +332,12 @@ ul.links li.first {
   color: #FFFFFF;
   background-color:#96AB2B;
   margin: 0 auto;  /* decrease default margins for h<x>.title */
+}
+
+
+.accepted, .accepted .name{
+  font-weight: bold;
+  font-style: normal;
 }
 
 .searchcontent {
@@ -486,14 +521,20 @@ div.admin-panel h3 {
   margin: 0;
 }
 
-ul.homotypicSynonyms, ul.heterotypicSynonymyGroup, ul.misapplied {
+ul.homotypicSynonyms{
+  color: #666666;
+  padding-left: 3em;
+  list-style:none;
+}
+
+ul.heterotypicSynonymyGroup, ul.misapplied {
   color: #666666;
   padding-left: 1em;
   list-style:none;
 }
 
 ul.typeDesignations {
-  margin-left: 1em; 
+  margin-left: 1em;
 /*   list-style:none;	*/
 }
 
