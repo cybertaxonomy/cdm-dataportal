@@ -1122,7 +1122,7 @@ function generalizeString($string){
 function theme_cdm_descriptionElements($descriptionElements, $feature){
   
   $out .= '<ul class="description" id="'.$feature.'">';
-  
+  $i=1;
   foreach($descriptionElements as $descriptionElementSTO){
     if($descriptionElementSTO->classType == 'TextData'){
       $out .= '<li class="descriptionText">' . $descriptionElementSTO->description;
@@ -1131,12 +1131,21 @@ function theme_cdm_descriptionElements($descriptionElements, $feature){
       }
       $out .= '</li>';
     }else if($descriptionElementSTO->classType == 'Distribution'){
-      $out .= '<li>' . $descriptionElementSTO->area->term . '</li>';
+      /* $out .= '<li>' . $descriptionElementSTO->area->term . '</li>'; */
+      
+      $sizeArray = sizeof($descriptionElements);
+      if ($i<$sizeArray) { // if last element
+      	$out .= $descriptionElementSTO->area->term.", ";
+      }
+      else {
+      	$out .= $descriptionElementSTO->area->term;
+      }
     }else{
       $out .= '<li>No method for rendering unknown description class: '.$descriptionElementSTO->classType.'</li>';
     }
-    
+    $i=$i+1;
   }
+  
   $out .= '</ul>';
   return $out;
 }
