@@ -96,7 +96,7 @@ function cdm_taxontree_cache_clear() {
  */
 function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
   if ($op == "list") {
-    $block['cdm_tree']["info"] = t('CDM Taxon Tree');
+    $block['cdm_tree']["info"] = t('Taxon Tree');
     $block['filters']["info"] = t('Active Filters');
 		$block[1]["info"] = t('Drupal Taxonomy Tree');
     return $block;
@@ -104,7 +104,7 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
   else if ($op == 'view') {
     switch($delta){
       case 'cdm_tree':
-        $block['subject'] = t('CDM Taxon Tree');
+        $block['subject'] = t('Taxon Tree');
         $taxonUuid_inFocus = _cdm_get_taxonuuid();
         $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
         $block['content'] = theme('cdm_taxontree_block', $tree, $delta, TRUE, 'cdm_taxontree_node_concept_switch');
