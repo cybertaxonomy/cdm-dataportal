@@ -299,6 +299,7 @@ themes/palmweb/block.tpl.php -text
 themes/palmweb/box.tpl.php -text
 themes/palmweb/comment.tpl.php -text
 themes/palmweb/coverimg.png -text
+themes/palmweb/funded_by.png -text
 themes/palmweb/header-cichorieae.png -text
 themes/palmweb/logo.png -text
 themes/palmweb/logo_bgbm.jpg -text
