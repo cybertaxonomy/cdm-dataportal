@@ -89,7 +89,7 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
   foreach($descriptions as $descriptionTo){
     $features = $descriptionTo->features;
     foreach($features as $featureTo){
-      if($featureTo->feature->term == 'Unknown Feature Type'){
+      if($featureTo->feature->term == 'Image'){
         
         $flashLink = $featureTo->descriptionElements[0]->description;
       }

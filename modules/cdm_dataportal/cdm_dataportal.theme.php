@@ -748,7 +748,7 @@ function theme_cdm_preferredImage($taxonTo, $defaultImage, $parameters = ''){
   foreach($descriptions as $descriptionTo){
     $features = $descriptionTo->features;
     foreach($features as $featureTo){
-      if($featureTo->feature->term == 'Unknown Feature Type'){
+      if($featureTo->feature->term == 'Image'){
         
         $preferredImage = $featureTo->descriptionElements[0]->media[0]->representations[0]->representationParts[0]->uri;
       }
@@ -1082,7 +1082,7 @@ function theme_cdm_featureTree($featureTree){
 				
 				$feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
 
-				if($feature != "Unknown Feature Type"){
+				if($feature != "Image"){
     				$block->delta = $feature;
     				$block->subject = t(ucfirst($block->delta));
     				$block->delta = generalizeString($block->delta);
@@ -1129,7 +1129,7 @@ function theme_cdm_featureTreeToc($featureTree){
 				
 				$feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
 				// HACK to implement images for taxa, should be removed
-				if($feature != 'Unknown Feature Type'){
+				if($feature != 'Image'){
 				  $out .= '<li><a href="#'.generalizeString($feature).'">'.t(ucfirst($feature)).'</a></li>';
 				}
 			}
