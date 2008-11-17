@@ -60,6 +60,10 @@ body {
 	z-index: 2;
 }
 
+#wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited{
+	font-size:	150%;
+}
+
 #splash {
 	background:#EAEAE2 url(images/splash.jpg) no-repeat scroll 0 0;
 	height:92px;
@@ -223,6 +227,14 @@ li.ui-tabs-selected{
 #tabs-wrapper{
 	margin: 0;
 	padding: 0;	
+}
+
+#tab-synonymy{
+	line-height: 150%;	
+}
+
+ul li.synonym{
+	padding-bottom: 0;	
 }
 
 .node {

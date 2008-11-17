@@ -241,19 +241,23 @@ function theme_cdm_descriptionElement($DescriptionElementSTO){
  * @return unknown
  */
 function theme_cdm_descriptionElement_distribution($featureTo){
-  $serviceUrl = '';
   
-  $server = 'http://edit.csic.es/fitxers/TDWGs_2.php';
+  $server = variable_get('cdm_dataportal_geoservice_access_point', false);
   
-  if($featureTo->url){
-    $oldUrl = explode('?', $featureTo->url);
-    $serviceUrl = $server . '?' . $oldUrl[1] . '&ms=500x270';
+  if(!server){
+    return "<p>No geoservice specified</p>";
+  }else{
+    $parameters = '?' . $featureTo->externalResources->geoServiceParameters;
+
+    $display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
+    $bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
+    
+    $serviceUrl = $server . $parameters . ($display_width ? '&ms=' . $display_width: '') . ($bounding_box ? '&bbox=' .  $bounding_box : '');
+    
+    $out .= '<img style="border: 1px solid #ddd" src="'.$serviceUrl.'" alt="No distribution map available." />';
+    
+    return $out;
   }
-  
-  $out .= "<p>Preliminary distribution map</p>";
-  $out .= '<img style="border: 1px solid #ddd" src="'.$serviceUrl.'" alt="No distribution map available." />';
-  return $out;
-  
 }
 
 /**
@@ -715,7 +719,7 @@ function theme_cdm_taxon_page_synonymy($taxonTO){
  * Show the collection of images stored with the accepted taxon
  * TODO
  */
-function theme_cdm_taxon_page_images(){
+function theme_cdm_taxon_page_images($taxonTO){
   
 }
 
@@ -736,6 +740,29 @@ function theme_cdm_reference_page(){
 function theme_cdm_synonym_page(){
   
 }
+
+function theme_cdm_preferredImage($taxonTo, $defaultImage, $parameters = ''){
+  
+  $descriptions = $taxonTo->featureTree->descriptions;
+  
+  foreach($descriptions as $descriptionTo){
+    $features = $descriptionTo->features;
+    foreach($features as $featureTo){
+      if($featureTo->feature->term == 'Unknown Feature Type'){
+        
+        $preferredImage = $featureTo->descriptionElements[0]->media[0]->representations[0]->representationParts[0]->uri;
+      }
+    }
+  }
+  
+  
+  $image = $preferredImage ? $preferredImage . $parameters : $defaultImage;
+  
+  $out = '<img class="left" src="'.$image.'" alt="no image available">';
+  
+  return $out;
+}
+
 
 
 
@@ -1054,28 +1081,31 @@ function theme_cdm_featureTree($featureTree){
 				$block->module = 'cdm_dataportal';
 				
 				$feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
-							
-				$block->delta = $feature;
-				$block->subject = t(ucfirst($block->delta));
-				$block->delta = generalizeString($block->delta);
-				
-			    $block->content = theme('cdm_descriptionElements', $descriptionElements, $block->delta);
-			    // set anchor
-			    $out .= '<a name="'.$block->delta.'"></a>';
-				$out .= theme('block', $block);
-				
-				
-				
-  			    // TODO HACK
-                if($feature == 'Distribution'){
-//                  ob_start();
-//  				  echo "<pre>";
-//  				  print_r($featureTo->url);
-//  				  echo "</pre>";
-//  				  ob_flush();
-                  $out .= theme('cdm_descriptionElement_distribution', $featureTo);
-                }
-				
+
+				if($feature != "Unknown Feature Type"){
+    				$block->delta = $feature;
+    				$block->subject = t(ucfirst($block->delta));
+    				$block->delta = generalizeString($block->delta);
+    				
+    				//
+    			      $block->content = theme('cdm_descriptionElements', $descriptionElements, $block->delta);
+    				//
+    			    // set anchor
+    			    $out .= '<a name="'.$block->delta.'"></a>';
+    				$out .= theme('block', $block);
+  				
+  				
+  				
+    			    // TODO HACK
+                    if($feature == 'Distribution'){
+  //                  ob_start();
+  //  				  echo "<pre>";
+  //  				  print_r($featureTo->url);
+  //  				  echo "</pre>";
+  //  				  ob_flush();
+                      $out .= theme('cdm_descriptionElement_distribution', $featureTo);
+                    }
+				}
 			}
 		}
 	}
@@ -1086,7 +1116,7 @@ function theme_cdm_featureTreeToc($featureTree){
   
     
     $out = '<div class="featureTOC">';
-    $out .= '<h2>' . t('Table of Content') .'</h2>';
+    $out .= '<h2>' . t('Content') .'</h2>';
     $out .= '<ul>';
   
     $descriptions = $featureTree->descriptions;
@@ -1098,8 +1128,10 @@ function theme_cdm_featureTreeToc($featureTree){
 			if(is_array($descriptionElements) && count($descriptionElements) > 0){
 				
 				$feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
-				
-				$out .= '<li><a href="#'.generalizeString($feature).'">'.t(ucfirst($feature)).'</a></li>';
+				// HACK to implement images for taxa, should be removed
+				if($feature != 'Unknown Feature Type'){
+				  $out .= '<li><a href="#'.generalizeString($feature).'">'.t(ucfirst($feature)).'</a></li>';
+				}
 			}
 		}
 	}
@@ -1123,17 +1155,22 @@ function theme_cdm_descriptionElements($descriptionElements, $feature){
   
   $out .= '<ul class="description" id="'.$feature.'">';
   $i=1;
+  $sizeArray = sizeof($descriptionElements);
+
   foreach($descriptionElements as $descriptionElementSTO){
+    
     if($descriptionElementSTO->classType == 'TextData'){
-      $out .= '<li class="descriptionText">' . $descriptionElementSTO->description;
+      
+      $description = str_replace("\n", "<br/>", $descriptionElementSTO->description);
+      
+      $out .= '<li class="descriptionText">' . $description;
       if(isset($descriptionElementSTO->reference)){
-        $out .= '<br> <span class="descriptionReference">'.theme('cdm_fullreference', $descriptionElementSTO->reference).'</span>';
+        //$out .= '<br> <span class="descriptionReference">'.theme('cdm_fullreference', $descriptionElementSTO->reference).'</span>';
       }
       $out .= '</li>';
     }else if($descriptionElementSTO->classType == 'Distribution'){
       /* $out .= '<li>' . $descriptionElementSTO->area->term . '</li>'; */
       
-      $sizeArray = sizeof($descriptionElements);
       if ($i<$sizeArray) { // if last element
       	$out .= $descriptionElementSTO->area->term.", ";
       }
@@ -1160,7 +1197,7 @@ function theme_cdm_search_results($resultPageSTO, $path, $parameters){
     $out = theme('cdm_list_of_taxa', $resultPageSTO->results);
     $out .= theme('cdm_pager', $resultPageSTO,  $path, $parameters);
   } else {
-    $out = '<h4 calss="error">Sorry, no matching entries found.</h4>';
+    $out = '<h4 class="error">Sorry, no matching entries found.</h4>';
   }
   return $out;
 }
