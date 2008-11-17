@@ -254,7 +254,7 @@ function theme_cdm_descriptionElement_distribution($featureTo){
     
     $serviceUrl = $server . $parameters . ($display_width ? '&ms=' . $display_width: '') . ($bounding_box ? '&bbox=' .  $bounding_box : '');
     
-    $out .= '<img style="border: 1px solid #ddd" src="'.$serviceUrl.'" alt="No distribution map available." />';
+    $out .= '<img style="border: 1px solid #ddd" src="'.$serviceUrl.'" alt="Distribution Map" />';
     
     return $out;
   }
