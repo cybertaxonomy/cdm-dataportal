@@ -190,7 +190,7 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $
     	foreach($nameTO->descriptions as $DescriptionTO){
     		if(!empty($DescriptionTO)){
     			foreach($DescriptionTO->elements as $DescriptionElementSTO){
-    				$out .= theme("cdm_descriptionElement", $DescriptionElementSTO);
+    				$out .= theme("cdm_media", $DescriptionElementSTO);
     			}
     		}
     	}
@@ -202,7 +202,7 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $
     return $out;
 }
 
-function theme_cdm_descriptionElement($DescriptionElementSTO){
+function theme_cdm_media($DescriptionElementSTO){
 	$out = "";
 	
 	_add_js_thickbox();
@@ -212,25 +212,71 @@ function theme_cdm_descriptionElement($DescriptionElementSTO){
 	$medias = $DescriptionElementSTO->media;
 	
 	foreach($medias as $media){
-		$prefRepresentations = cdm_preferred_media_representations($media, array('image/gif', 'image/jpeg', 'image/png'), 300, 400);
+	  
+	    
+	  
+		$prefRepresentations = cdm_preferred_media_representations($media, array('application/pdf', 'image/gif', 'image/jpeg', 'image/png', 'text/html'), 300, 400);
 		$representation_inline = array_shift($prefRepresentations);
 		if($representation_inline) {
-			$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid, 'title'=>$type->term);
-		    for($i = 0; $part = $representation_inline->representationParts[$i]; $i++){
-		    	if($i == 0){
-		    	    $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$type->term.'-media.png';
-		    	    $media = '<img src="'.$image_url.'" height="14px" alt="'.$type->term.'" />';
-		    	    $out .= l($media, $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
-		    	} else {
-		    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
-		    	}
-		  	}
+		  
+		    $contentTypeDirectory = substr($representation_inline->mimeType, 0, stripos($representation_inline->mimeType, '/'));
+		    
+		    $out = theme('cdm_media_mime_' . $contentTypeDirectory,  $representation_inline, $type);
+		  
+//			$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid, 'title'=>$type->term);
+//		    for($i = 0; $part = $representation_inline->representationParts[$i]; $i++){
+//		    	if($i == 0){
+//		    	    $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$type->term.'-media.png';
+//		    	    $media = '<img src="'.$image_url.'" height="14px" alt="'.$type->term.'" />';
+//		    	    $out .= l($media, $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+//		    	} else {
+//		    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
+//		    	}
+//		  	}
 		} else {
 			// no media available, so display just the type term
 			$out .=  $type->term;
 		}
 	}
 	return $out;
+	
+}
+
+function theme_cdm_mediaTypeTerm($type){
+  $icon_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$type->term.'-media.png';
+  return '<img src="'.$icon_url.'" height="14px" alt="'.$type->term.'" />';
+}
+
+function theme_cdm_media_mime_application($representation, $type){
+  
+  foreach($representation->representationParts as $part){
+    $attributes = array('title'=>$type->term, 'target'=>'_blank');
+    $out .= l(theme('cdm_mediaTypeTerm', $type), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+  }
+  return $out;
+}
+
+function theme_cdm_media_mime_image($representation, $type){
+    $out = '';
+    $attributes = array('class'=>'thickbox', 'rel'=>'representation-'.$representation->uuid, 'title'=>$type->term);
+    for($i = 0; $part = $representation->representationParts[$i]; $i++){
+    	if($i == 0){
+    	    
+    	    $out .= l(theme('cdm_mediaTypeTerm', $type), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+    	} else {
+    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
+    	}
+  	}
+  	return $out;
+}
+
+function theme_cdm_media_mime_text($representation, $type){
+  
+  foreach($representation->representationParts as $part){
+    $attributes = array('title'=>$type->term . t(' link will open in a new window'), 'target'=>'_blank');
+    $out .= l(theme('cdm_mediaTypeTerm', $type), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+  }
+  return $out;
 }
 
 /**
