@@ -82,6 +82,11 @@ body {
   background: none;
 }
 
+#contento {
+	float: left;
+	clear: both;	
+}
+
 ul.homotypicSynonyms, ul.heterotypicSynonymyGroup {
 	border-bottom:1px solid #dedede;
 }
