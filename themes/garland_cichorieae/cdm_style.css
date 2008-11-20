@@ -83,6 +83,7 @@ body {
 }
 
 #contento {
+	position: relative;
 	float: left;
 	clear: both;	
 }
