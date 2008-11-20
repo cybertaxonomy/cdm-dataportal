@@ -350,7 +350,7 @@ body.sidebar-left, body.sidebar-right {
 /* We must define 100% width to avoid the body being too narrow for near-empty pages */
 #wrapper #container #center {
   float: left;
-  /*clear: both;*/
+  clear: none;
   width: 100%;
   margin-top: 20px;
   position: relative;
