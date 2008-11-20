@@ -137,7 +137,7 @@ ul.cdm_taxontree li .active {
 }
 
 #wrapper #container #center, #wrapper #container .sidebar {
-	margin-top: 20px;	
+	/*margin: 60px 0 0 0;*/	
 }
 
 #wrapper #container .breadcrumb {
