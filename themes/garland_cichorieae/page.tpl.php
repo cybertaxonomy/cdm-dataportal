@@ -62,6 +62,8 @@
 
       </div> <!-- /header -->
 
+	<div id="contento">
+
       <?php if ($sidebar_left): ?>
         <div id="sidebar-left" class="sidebar">
           <?php if ($search_box): ?><div class="block block-theme"><?php print $search_box ?></div><?php endif; ?>
@@ -93,7 +95,7 @@
           <?php print $sidebar_right ?>
         </div>
       <?php endif; ?>
-
+	</div> <!-- contento -->
     </div> <!-- /container -->
   </div>
 <!-- /layout -->
