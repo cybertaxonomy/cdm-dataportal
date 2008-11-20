@@ -24,6 +24,8 @@ body {
 #edit-logo {
 	background:#FFFFFF url(images/edit-logo.gif) no-repeat scroll 0 0;
 	float: left;
+	/*position: absolute;*/
+	left: 0;
 	height:92px;
 	width:93px;
 	z-index: 2;
@@ -55,10 +57,12 @@ body {
 	background:#FF7800 url(images/a8.gif) repeat-x scroll 0 0;
 	color:#FFFFFF;
 	height:92px;
-	/*margin-left:100px;*/
-	float: left;
+	margin-left:7px;
+	margin-right: 7px;
 	padding-left:15px;
-	position:absolute;
+	/*position:absolute;
+	left: 100px;*/
+	float:left;
 	width:187px;
 	z-index: 2;
 }
@@ -70,8 +74,9 @@ body {
 #splash {
 	background:#EAEAE2 url(images/splash.jpg) no-repeat scroll 0 0;
 	height:92px;
-	position:absolute;
-	right:0;
+	/*position:absolute;
+	right:0;*/
+	float:left;
 	width:378px;
 	z-index: 2;
 }
