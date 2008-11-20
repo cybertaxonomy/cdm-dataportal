@@ -318,7 +318,7 @@ table .form-button, table .form-submit {
 }
 
 #wrapper #container #header #logo-floater {
-  position: absolute;
+ /* position: absolute; */
 }
 
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited {
