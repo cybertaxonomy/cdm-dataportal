@@ -136,6 +136,10 @@ ul.cdm_taxontree li .active {
 	float: left;	
 }
 
+#wrapper #container .sidebar{
+	display: none;	
+}
+
 #wrapper #container #center, #wrapper #container .sidebar {
 	margin-top: 20px ;	
 }
