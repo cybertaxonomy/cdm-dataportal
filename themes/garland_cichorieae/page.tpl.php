@@ -51,12 +51,14 @@
         
         <div id="splash"></div>
 
-        <?php if (isset($primary_links)) : ?>
-          <?php print theme('links', $primary_links, array('class' => 'links primary-links')) ?>
-        <?php endif; ?>
-        <?php if (isset($secondary_links)) : ?>
-          <?php print theme('links', $secondary_links, array('class' => 'links secondary-links')) ?>
-        <?php endif; ?>
+		<div id="menu">
+          <?php if (isset($primary_links)) : ?>
+            <?php print theme('links', $primary_links, array('class' => 'links primary-links')) ?>
+          <?php endif; ?>
+          <?php if (isset($secondary_links)) : ?>
+            <?php print theme('links', $secondary_links, array('class' => 'links secondary-links')) ?>
+          <?php endif; ?>
+        </div>
 
       </div> <!-- /header -->
 
