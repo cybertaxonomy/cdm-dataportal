@@ -146,6 +146,7 @@ ul.cdm_taxontree li .active {
 }
 
 #menu{
+		height:67px;
 	width: 100%;
 	float:left;
 	clear: both;
@@ -156,9 +157,8 @@ ul.primary-links {
 	/*float:left;
 	clear: both;*/
 	font-family:Tahoma,Georgia,Arial,Verdana,Serif;
-	height:67px;
 	width: 100%;
-	margin:7px 0;
+	margin: 7px 0;
 	padding:0;
 	/*position:relative;*/
 	text-transform:uppercase;
