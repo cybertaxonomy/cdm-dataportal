@@ -86,6 +86,7 @@ body {
 	position: relative;
 	float: left;
 	clear: both;	
+	z-index: 3;
 }
 
 ul.homotypicSynonyms, ul.heterotypicSynonymyGroup {
