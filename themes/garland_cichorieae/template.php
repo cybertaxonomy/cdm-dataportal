@@ -107,7 +107,7 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
       }
     }
     
-    $name = join("%5F", $nameArray);
+    $query = join("%5F", $nameArray) . '%20AND%20jpg';
     
   $out = '
   
@@ -115,22 +115,22 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
 
 <script type="text/javascript">
 <!--
-	writeFlashCode( "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$name.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=itpc_keywords&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=PrintSave",
-		"http://media.bgbm.org/erez/erez?src=erez-private/flashrequired.svg&tmp=Large&quality=97&width=470&height=350",
-		"width=470;height=350;bgcolor=454343;wmode=opaque");
+	writeFlashCode( "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=PrintSave,textbox",
+		"http://media.bgbm.org/erez/erez?src=erez-private/flashrequired.svg&tmp=Large&quality=97&width=470&height=400",
+		"width=470;height=400;bgcolor=454343;wmode=opaque");
 // -->
 </script>
 <noscript>
-	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,65,0" width="470" height="350">
-		<param name="movie" value="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$name.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=itpc_keywords&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave"/>
+	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,65,0" width="470" height="400">
+		<param name="movie" value="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave,textbox"/>
 		<param name="bgcolor" value="454343" />
 		<param name="wmode" value="opaque" />
 		<param name="allowscriptaccess" value="always" />
 		<param name="allowfullscreen" value="true" />
 		<param name="quality" value="high" />
-		<embed src="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$name.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=itpc_keywords&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave"
+		<embed src="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave,textbox"
 			width="470"
-			height="350"
+			height="400"
 			bgcolor="454343"
 			wmode="opaque"
 			allowscriptaccess="always"
@@ -150,6 +150,26 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
   return $out;
   
   
+}
+
+/**
+ * @overrides theme_cdm_taggedtext2html in order to replace t.infr and t.infgen. with '[unranked]'
+ */
+function garland_cichorieae_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
+   $out = '';
+   $i = 0;
+   foreach($taggedtxt as $tt){
+     if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
+      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">';
+      if($tt->type == "rank" && ($tt->text == "t.infr." || $tt->text == "t.infgen.")){
+        $out .= t('[unranked]');
+      }else{
+        $out .= t($tt->text);
+      }
+      $out .= '</'.$tag.'>';
+     }
+   }
+   return $out;
 }
 
 
