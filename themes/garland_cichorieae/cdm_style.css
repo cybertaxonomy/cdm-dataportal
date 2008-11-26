@@ -218,6 +218,7 @@ a:active, a.active {
 
 ul.tab-menu{
 	border-bottom: 1px solid #000;	
+	text-align: right;
 }
 
 .tab-menu li{
