@@ -1229,38 +1229,42 @@ function generalizeString($string){
 
 function theme_cdm_descriptionElements($descriptionElements, $feature){
 
-  $out .= '<ul class="description" id="'.$feature.'">';
-  $i=1;
-  $sizeArray = sizeof($descriptionElements);
-
+  $outArray = array();
+  $glue = '';
+  $sortOutArray = false;
+  $enclosingHtml = 'ul';
+  
   foreach($descriptionElements as $descriptionElementSTO){
 
     if($descriptionElementSTO->classType == 'TextData'){
-
-      $description = str_replace("\n", "<br/>", $descriptionElementSTO->description);
-
-      $out .= '<li class="descriptionText">' . $description;
-      if(isset($descriptionElementSTO->reference)){
-        //$out .= '<br> <span class="descriptionReference">'.theme('cdm_fullreference', $descriptionElementSTO->reference).'</span>';
-      }
-      $out .= '</li>';
+      $outArray[] = theme('cdm_descriptionElementTextData', $descriptionElementSTO);
     }else if($descriptionElementSTO->classType == 'Distribution'){
-      /* $out .= '<li>' . $descriptionElementSTO->area->term . '</li>'; */
-
-      if ($i<$sizeArray) { // if last element
-        $out .= $descriptionElementSTO->area->term.", ";
-      }
-      else {
-        $out .= $descriptionElementSTO->area->term;
-      }
+      $outArray[] = $descriptionElementSTO->area->term;
+      $glue = ', ';
+      $sortOutArray = true;
+      $enclosingHtml = 'p';
     }else{
-      $out .= '<li>No method for rendering unknown description class: '.$descriptionElementSTO->classType.'</li>';
+      $outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElementSTO->classType.'</li>';
     }
-    $i=$i+1;
   }
 
-  $out .= '</ul>';
+  return theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+}
+
+function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
+  $out = '<'.$enclosingHtml.' class="description" id="'.$feature.'">';
+  
+  if($sortArray) sort($elementArray);
+  
+  $out .= join($elementArray, $glue);
+  
+  $out .= '</'.$enclosingHtml.'>';
   return $out;
+}
+
+function theme_cdm_descriptionElementTextData($element){
+  $description = str_replace("\n", "<br/>", $element->description);
+  return '<li class="descriptionText">' . $description . '</li>';
 }
 
 

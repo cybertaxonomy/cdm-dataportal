@@ -172,6 +172,22 @@ function garland_cichorieae_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span'
    return $out;
 }
 
+function garland_cichorieae_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
+  $out = '<div class="description" id="'.$feature.'">';
+  
+  if($sortArray) sort($elementArray);
+  
+  $out .= join($elementArray, $glue);
+  
+  $out .= '</div>';
+  return $out;
+}
+
+function garland_cichorieae_cdm_descriptionElementTextData($element){
+  $description = str_replace("\n", "<br/>", $element->description);
+  return '<p class="descriptionText">' . $description . '</p>';
+}
+
 
 /***** GARLAND OVERRIDES ******/
 
