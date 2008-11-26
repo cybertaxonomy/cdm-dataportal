@@ -743,7 +743,7 @@ function theme_cdm_acceptedFor(){
      if($synonym){
        $out .= '<span class="acceptedFor">';
        $out .= t('is accepted for ');
-       $out .= theme('cdm_name', $synonym->name, TRUE, FALSE, TRUE, FALSE);
+       $out .= theme('cdm_name', $synonym->name, TRUE, FALSE, FALSE, FALSE);
        $out .= '</span>';
      }
   }
