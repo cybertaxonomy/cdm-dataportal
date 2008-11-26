@@ -62,3 +62,7 @@ td.menu-disabled {
   /* Fading elements in IE causes the text to bleed unless they have a background. */
   background-color: #ffffff;
 }
+
+#contento{
+	margin-top: 70px;	
+}
