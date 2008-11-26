@@ -96,7 +96,7 @@ function cdm_taxontree_cache_clear() {
  */
 function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
   if ($op == "list") {
-    $block['cdm_tree']["info"] = t('Taxon Tree');
+    $block['cdm_tree']["info"] = t('CDM Taxon Tree');
     $block['filters']["info"] = t('Active Filters');
 		$block[1]["info"] = t('Drupal Taxonomy Tree');
     return $block;

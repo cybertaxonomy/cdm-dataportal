@@ -239,7 +239,7 @@ function cdm_dataportal_search_taxon_form(){
         'ANYWHERE' => t('Anywhere')
         ),
     '#description'   => t('* can always be used as wildcard'),
-    '#default_value' => (isset($_SESSION['cdm']['search']['mode']) ? $_SESSION['cdm']['search']['mode'] : 'start'),
+    '#default_value' => (isset($_SESSION['cdm']['search']['mode']) ? $_SESSION['cdm']['search']['mode'] : 'BEGINNING'),
   );
   
   /*$form['onlyAccepted'] = array(
@@ -626,7 +626,11 @@ function cdm_dataportal_shortname_of($NameSTO){
   }
   $name = trim($name);
   if($name){
-    if(strpos($name, 'Incertae sedis') === false && $pos = stripos($name, ' ')){
+    // do not return short names for these
+    if($name == 'Incertae sedis' || $name ==  'Nomina excludenda'){
+      return $name;
+    }
+    if($pos = stripos($name, ' ')){
       return substr($name, 0, 1).'. '.substr($name, $pos);
     } else {
       return $name;

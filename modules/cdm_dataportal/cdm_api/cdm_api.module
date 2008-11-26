@@ -183,7 +183,7 @@ function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $ski
    $i = 0;
    foreach($taggedtxt as $tt){
      if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
-      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.$tt->text.'</'.$tag.'>';
+      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.t($tt->text).'</'.$tag.'>';
      }
    }
    return $out;
