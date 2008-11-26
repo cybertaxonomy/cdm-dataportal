@@ -260,7 +260,7 @@ ul li.synonym{
 	padding:1.5em 0;
 }
 
-span.acceptedFor {
+span.acceptedFor, #backButton {
 	font-size: 0.9em;	
 }
 
