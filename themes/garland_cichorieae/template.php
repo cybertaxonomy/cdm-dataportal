@@ -32,8 +32,8 @@ function garland_cichorieae_cdm_taxon_page_general($taxonTO){
     });
   </script>
   ";
-  
-  $out .= theme('cdm_back_to_search_button');
+  $out .= theme('cdm_acceptedFor');
+  $out .= theme('cdm_back_to_search_result_button');
   
   $out .= '<ul id="tabs" class="tab-menu">';
   $out .= '<li><a href="#tab-general">'.t('General').'</a></li>';

@@ -430,7 +430,7 @@ function theme_cdm_taxon_misapplied_link($taxonTO, $fragment = NULL, $showNomRef
 function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true, $showStatus = true){
 
   $name_html = theme('cdm_taxon', $taxonTO, $showNomRef, $showStatus, false, true, '', FALSE);
-  $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid, NULL, FALSE, TRUE);
+  $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid.'&acceptedFor='.$taxonTO->uuid, NULL, FALSE, TRUE);
 
   /*
    if($showNomRef){
@@ -733,10 +733,28 @@ function theme_cdm_taxon_page_title($nameTO){
   return theme('cdm_name', $nameTO);
 }
 
-function theme_cdm_back_to_search_button(){
+function theme_cdm_acceptedFor(){
+  $out = '';
+  
+  if(isset($_REQUEST['acceptedFor'])){
+     
+     $synonym = cdm_ws_get(CDM_WS_TAXON, $_REQUEST['acceptedFor']);
+     
+     if($synonym){
+       $out .= '<span class="acceptedFor">';
+       $out .= t('is accepted for ');
+       $out .= theme('cdm_name', $synonym->name, TRUE, FALSE, TRUE, FALSE);
+       $out .= '</span>';
+     }
+  }
+  
+  return $out;
+}
+
+function theme_cdm_back_to_search_result_button(){
   $out = '';
   if($_SESSION['cdm']['search']){
-    $out .= '<a href="' . $_SESSION['cdm']['last_search'] . '">' . t('Back to search result') . '<a>';
+    $out .= '<div id="backButton"><a href="' . $_SESSION['cdm']['last_search'] . '">' . t('Back to search result') . '<a></div>';
   }
   return $out;
 }
@@ -755,6 +773,10 @@ function theme_cdm_taxon_page_general($taxonTO, $referenceInTitle = false){
 
   $prependedSynonyms = $referenceInTitle ? array() : array($taxonTO);
 
+  $out .= theme('cdm_acceptedFor');
+  
+  $out .= theme('cdm_back_to_search_result_button');
+  
   // start with synonymy
   $out .= theme('cdm_taxon_page_synonymy', $taxonTO);
 
