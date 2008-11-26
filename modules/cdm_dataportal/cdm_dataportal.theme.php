@@ -430,7 +430,7 @@ function theme_cdm_taxon_misapplied_link($taxonTO, $fragment = NULL, $showNomRef
 function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true, $showStatus = true){
 
   $name_html = theme('cdm_taxon', $taxonTO, $showNomRef, $showStatus, false, true, '', FALSE);
-  $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid, $taxonTO->uuid, FALSE, TRUE);
+  $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid, NULL, FALSE, TRUE);
 
   /*
    if($showNomRef){
@@ -733,6 +733,14 @@ function theme_cdm_taxon_page_title($nameTO){
   return theme('cdm_name', $nameTO);
 }
 
+function theme_cdm_back_to_search_button(){
+  $out = '';
+  if($_SESSION['cdm']['search']){
+    $out .= '<a href="' . $_SESSION['cdm']['last_search'] . '">' . t('Back to search result') . '<a>';
+  }
+  return $out;
+}
+
 /**
  * A wrapper function that groups available information to show by default, when
  * a taxon page is requested by the browser.
@@ -760,7 +768,6 @@ function theme_cdm_taxon_page_general($taxonTO, $referenceInTitle = false){
 
   return $out;
 }
-
 
 /**
  * Outputs all descriptive data and shows the preferred picture of the
@@ -1274,7 +1281,7 @@ function theme_cdm_search_results($resultPageSTO, $path, $parameters){
 
   $out = '';
   if(count($resultPageSTO->results) > 0){
-    $out = theme('cdm_list_of_taxa', $resultPageSTO->results);
+    $out .= theme('cdm_list_of_taxa', $resultPageSTO->results);
     $out .= theme('cdm_pager', $resultPageSTO,  $path, $parameters);
   } else {
     $out = '<h4 class="error">Sorry, no matching entries found.</h4>';

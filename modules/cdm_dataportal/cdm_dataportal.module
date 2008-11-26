@@ -234,7 +234,7 @@ function cdm_dataportal_search_taxon_form(){
     '#type' => 'select',
     '#title' => t('Search Mode'),
     '#options' => array(
-        'EXACT' => t('Exact'),
+        /*'EXACT' => t('Exact'),*/
         'BEGINNING' => t('Beginning'),
         'ANYWHERE' => t('Anywhere')
         ),
@@ -543,10 +543,7 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
   
     $referenceInTitle = variable_get('cdm_dataportal_nomref_in_title', 1);
     
-    //drupal_set_title(theme('cdm_taxon', $taxonTO, $referenceInTitle));
     drupal_set_title(theme('cdm_taxon_page_title', $taxonTO->name));
-    //TODO retrieve complete synonymy and other data
-    //$out = theme('cdm_taxon_page', $taxonTO, $referenceInTitle);
     $out = theme('cdm_taxon_page_general', $taxonTO);
     return $out;
   }
@@ -567,7 +564,7 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
  *  - locality / tdwg region
  */
 function cdm_dataportal_view_search_taxon(){
-  
+  $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
   $request_params = cdm_dataportal_search_form_request();
   $sw_params = array_replace_key($request_params, array('queryString'=> 10 ));
   $resultPageSTO = cdm_ws_get(CDM_WS_FIND_TAXA, $sw_params);

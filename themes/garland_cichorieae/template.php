@@ -23,7 +23,7 @@ function garland_cichorieae_cdm_taxon_page_title($nameTO){
  */
 function garland_cichorieae_cdm_taxon_page_general($taxonTO){
   
-   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery-ui.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery-ui.js');
   
   $out = "
   <script>
@@ -33,6 +33,7 @@ function garland_cichorieae_cdm_taxon_page_general($taxonTO){
   </script>
   ";
   
+  $out .= theme('cdm_back_to_search_button');
   
   $out .= '<ul id="tabs" class="tab-menu">';
   $out .= '<li><a href="#tab-general">'.t('General').'</a></li>';
