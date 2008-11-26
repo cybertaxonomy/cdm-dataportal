@@ -72,7 +72,7 @@
       <?php endif; ?>
 
       <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
-          <?php if ($breadcrumb): print $breadcrumb; endif; ?>
+          <?php //if ($breadcrumb): print $breadcrumb; endif; ?>
           <?php if ($mission): print '<div id="mission">'. $mission .'</div>'; endif; ?>
 
           <?php if ($tabs): print '<div id="tabs-wrapper" class="clear-block">'; endif; ?>
