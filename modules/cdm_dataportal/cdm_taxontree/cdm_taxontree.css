@@ -110,9 +110,9 @@ div.cdm_taxontree_widget .cdm_taxontree_scroller_y{
 
 /* widths*/
 div.cdm_taxontree_widget div.taxontree {
-	position:absolute;
-	min-width:36em; /* -1em to catch the scroller_x padding */
-	top:1.5em;
+	/*position:absolute;*/
+	/*min-width:36em; /* -1em to catch the scroller_x padding */
+	/*top:1.5em;*/
 }
 
 #views-filters div.cdm_taxontree_widget div.taxontree{
@@ -181,6 +181,7 @@ div.cdm_taxontree_widget div.taxontree{
 	border: 1px solid #ADDDFA;
 	overflow-y:hidden;
 	overflow-x:auto;
+	float:left;
 }
 
 div.cdm_taxontree_widget .widget_select{

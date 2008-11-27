@@ -264,4 +264,8 @@ span.acceptedFor, #backButton {
 	font-size: 0.9em;	
 }
 
+#cdm-dataportal-settings .form-item fieldset {
+	padding: 0.5em;	
+}
+
 
