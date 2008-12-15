@@ -134,9 +134,9 @@ table {
   text-indent:20px;
   font-family:Arial;
   color:#ffffff; 
-  /* letter-spacing:20px; */
-  
+  /* letter-spacing:20px; */ 
 }
+
 #logo {
   vertical-align: middle;
   border: 0;
@@ -261,11 +261,11 @@ ul.links li.first {
   font-size: 0.8em;
 }
 
-#block-cdm_dataportal-distribution, #block-cdm_dataportal-discussion, #block-cdm_dataportal-uses, #block-cdm_dataportal-etymology, #block-cdm_dataportal-materials_examined, #block-cdm_dataportal-description, #block-cdm_dataportal-conservation, #block-cdm_dataportal-biology_and_ecology, #block-cdm_dataportal-common_name, #block-cdm_dataportal-cultivation {
+#block-cdm_dataportal-distribution, #block-cdm_dataportal-discussion, #block-cdm_dataportal-uses, #block-cdm_dataportal-etymology, #block-cdm_dataportal-materials_examined, #block-cdm_dataportal-description, #block-cdm_dataportal-conservation, #block-cdm_dataportal-biology_and_ecology, #block-cdm_dataportal-common_name, #block-cdm_dataportal-cultivation, #block-cdm_dataportal-introduction, #block-cdm_dataportal-diagnosis, #block-cdm_dataportal-vernacular {
   border: 0px;
 }
 
-#block-cdm_dataportal-distribution .searchtitle, #block-cdm_dataportal-discussion .searchtitle, #block-cdm_dataportal-uses .searchtitle, #block-cdm_dataportal-etymology .searchtitle, #block-cdm_dataportal-materials_examined .searchtitle, #block-cdm_dataportal-description .searchtitle, #block-cdm_dataportal-conservation .searchtitle, #block-cdm_dataportal-biology_and_ecology .searchtitle, #block-cdm_dataportal-common_name  .searchtitle, #block-cdm_dataportal-cultivation  .searchtitle {
+#block-cdm_dataportal-distribution .searchtitle, #block-cdm_dataportal-discussion .searchtitle, #block-cdm_dataportal-uses .searchtitle, #block-cdm_dataportal-etymology .searchtitle, #block-cdm_dataportal-materials_examined .searchtitle, #block-cdm_dataportal-description .searchtitle, #block-cdm_dataportal-conservation .searchtitle, #block-cdm_dataportal-biology_and_ecology .searchtitle, #block-cdm_dataportal-common_name .searchtitle, #block-cdm_dataportal-cultivation .searchtitle, #block-cdm_dataportal-introduction .searchtitle, #block-cdm_dataportal-diagnosis .searchtitle, #block-cdm_dataportal-vernacular .searchtitle {
   border: 0px;
   color: #96AB2B;
   background-color:#FFFFFF;
