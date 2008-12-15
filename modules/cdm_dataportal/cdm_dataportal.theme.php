@@ -18,7 +18,6 @@ function _add_js_thickbox(){
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.imagetool.min.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_thickbox.css');
-
 }
 
 /**
