@@ -450,6 +450,7 @@ function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef =
   $name_postfix = '';
   switch ($reltype_uuid){
     case UUID_HETEROTYPIC_SYNONYM_OF:
+    case UUID_SYNONYM_OF:
       $relsign = '=';
       break;
     case UUID_HOMOTYPIC_SYNONYM_OF:
