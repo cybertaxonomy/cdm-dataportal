@@ -196,7 +196,7 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $
 
   if($displayNomRef && $hasNomRef){
     $out .= '<span class="reference">';
-    $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference);
+    $out .= l(theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference), "/cdm_dataportal/reference/".$nameTO->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
     $out .= '</span>';
   }
 
@@ -766,27 +766,42 @@ function theme_cdm_back_to_search_result_button(){
  * and what information should go into tabs or should not be shown at all.
  *
  * It is headed by the name of the accepted taxon without author and reference.
- *
+ * @param $taxonTO the taxon object
+ * @param $page_part name of the part to display,
+ *         valid values are: 'description', 'images', 'synonymy', 'all'
  */
-function theme_cdm_taxon_page_general($taxonTO, $referenceInTitle = false){
+function theme_cdm_taxon_page_general($taxonTO, $page_part){
+
+  if(!$page_part){
+    $page_part = 'description';
+  }
+  $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';  
+
   $out = '';
-
-  $prependedSynonyms = $referenceInTitle ? array() : array($taxonTO);
-
   $out .= theme('cdm_acceptedFor');
-  
   $out .= theme('cdm_back_to_search_result_button');
   
-  // start with synonymy
-  $out .= theme('cdm_taxon_page_synonymy', $taxonTO);
-
-  // display name relations
-  if(variable_get('cdm_dataportal_display_name_relations', 1)){
-    $out .= theme('cdm_nameRelations', $taxonTO->name->nameRelations);
+  if($page_part == 'images' || $page_part == 'all'){
+    $out .= '<div id="description">';
+    $out .= theme('cdm_taxon_page_images', $taxonTO);
+    $out .= '</div>';
   }
+  
+  if($page_part == 'description' || $page_part == 'all'){
+    $out .= '<div id="description">';
+    $out .= theme('cdm_taxon_page_description', $taxonTO);
+    $out .= '</div>';
+  }
+  
+  if($page_part == 'synonymy' || $page_part == 'all'){
+    $out .= '<div id="synonymy">';
+    $out .= theme('cdm_taxon_page_synonymy', $taxonTO);
 
-  // show the featureTree
-  $out .= theme('cdm_taxon_page_description', $taxonTO);
+    if(variable_get('cdm_dataportal_display_name_relations', 1)){
+      $out .= theme('cdm_nameRelations', $taxonTO->name->nameRelations);
+     }
+    $out .= '</div>';
+  }
 
   return $out;
 }
@@ -797,7 +812,12 @@ function theme_cdm_taxon_page_general($taxonTO, $referenceInTitle = false){
  *
  */
 function theme_cdm_taxon_page_description($taxonTO){
-  return theme('cdm_featureTree', $taxonTO->featureTree);
+  
+  // description TOC
+  $out .= theme('cdm_featureTreeToc', $taxonTO->featureTree);
+  // description 
+  $out .= theme('cdm_featureTree', $taxonTO->featureTree);
+  return $out;
 }
 
 /**
@@ -806,7 +826,7 @@ function theme_cdm_taxon_page_description($taxonTO){
  *
  */
 function theme_cdm_taxon_page_synonymy($taxonTO){
-  $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms, $taxonTO->typeDesignations, $prependedSynonyms);
+  $out .= theme('cdm_homotypicSynonyms', $taxonTO->homotypicSynonyms, $taxonTO->typeDesignations);
 
   foreach($taxonTO->heterotypicSynonymyGroups as $HomotypicTaxonGroupSTO){
     $out .= theme('cdm_heterotypicSynonymyGroup', $HomotypicTaxonGroupSTO);
@@ -826,10 +846,60 @@ function theme_cdm_taxon_page_images($taxonTO){
 
 /**
  * Show a reference in it's atomized form
- * TODO
  */
-function theme_cdm_reference_page(){
-
+function theme_cdm_reference_page($referenceTO){
+  drupal_set_title($referenceTO->titleCache);
+  $field_order = array(
+    "title", 
+    //"titleCache", 
+    //"citation",
+    "authorTeam",
+    "editor",    
+    "publisher", 
+    "placePublished", 
+    "datePublished", 
+    "year",
+    "edition",      // class Book
+    "volume",       // class Article
+    "seriesPart", 
+    "inSeries",
+    "inJournal",     // class Article
+    "inBook",        // class BookSection
+    "nomRefBase",    // class BookSection, Book, Article
+    "inProceedings", // class InProceedings
+    "pages",         // class Article
+    "series",        // class Article, PrintSeries
+    "school",        // class Thesis
+    "institution",   // class Report
+    "organization",  // class Proceedings
+    "nextVersion", 
+    "previousVersion", 
+    "isbn",         // class Book
+    "issn",         // class Journal
+    "uri",    
+  ); 
+  
+  $table_rows = array();
+  foreach($field_order as $fieldname){
+      if(isset($referenceTO->$fieldname)){
+        if($fieldname == "datePublished") {
+          $partial = $referenceTO->$fieldname;
+          $datePublished = '';
+          if($partial->start){
+            $datePublished = substr($partial->start, 0, 4).'-'.substr($partial->start, 4, 2).'-'.substr($partial->start, 6, 2);
+          }
+          if($partial->end){
+            $datePublished = (strlen($datePublished) > 0 ? ' '.t('to').' ' : '').substr($partial->end, 0, 4).'-'.substr($partial->end, 4, 2).'-'.substr($partial->end, 6, 2);
+          }
+          $table_rows[] = array(t($fieldname), $datePublished);
+        } else if(is_object($referenceTO->$fieldname)){
+          $table_rows[] = array(t($fieldname), $referenceTO->$fieldname->titleCache);
+        } else {
+          $table_rows[] = array(t($fieldname), $referenceTO->$fieldname);
+        }
+      }
+  }
+  return theme("table", array("","") , $table_rows);
 }
 
 /**

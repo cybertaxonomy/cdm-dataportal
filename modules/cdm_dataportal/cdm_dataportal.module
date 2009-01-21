@@ -84,12 +84,20 @@ function cdm_dataportal_menu($may_cache) {
 	    'type' => MENU_CALLBACK,
     );
     // optional callback arguments: page
-     
+   
     $items[] = array(
-	    'path' => 'cdm_dataportal/taxon',
-	    'callback' => 'cdm_dataportal_view_taxon',
-	    'access' => true,
-	    'type' => MENU_CALLBACK,
+      'path' => 'cdm_dataportal/taxon',
+      'callback' => 'cdm_dataportal_view_taxon',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    // expected callback arguments: name_uuid
+    );
+    
+    $items[] = array(
+      'path' => 'cdm_dataportal/reference',
+      'callback' => 'cdm_dataportal_view_reference',
+      'access' => true,
+      'type' => MENU_CALLBACK,
     // expected callback arguments: name_uuid
     );
     
@@ -108,6 +116,51 @@ function cdm_dataportal_menu($may_cache) {
     );
     
     
+  } else {
+    // may not cache
+        // --- local tasks for Taxon
+    if(variable_get('cdm_dataportal_taxonpage_tabs', 1)) {
+      
+       $items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2),
+      'title' => t('General'),
+      'callback' => 'cdm_dataportal_view_taxon',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+      'callback arguments' => array(arg(2))
+      // expected callback arguments: name_uuid
+      );
+      
+      $items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/description',
+      'title' => t('General'),
+      'callback' => 'cdm_dataportal_view_taxon',
+      'access' => true,
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'callback arguments' => array(arg(2), "description")
+      // expected callback arguments: name_uuid
+      );
+      
+      $items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/images',
+      'title' => t('Images'),
+      'callback' => 'cdm_dataportal_view_taxon',
+      'access' => true,
+      'type' => MENU_LOCAL_TASK,
+      'callback arguments' => array(arg(2), "images")
+      // expected callback arguments: name_uuid
+      );
+      
+      $items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/synonymy',
+      'title' => t('Synonymy'),
+      'callback' => 'cdm_dataportal_view_taxon',
+      'access' => true,
+      'type' => MENU_LOCAL_TASK,
+      'callback arguments' => array(arg(2), "synonymy")
+      // expected callback arguments: name_uuid
+      );
+    } 
   }
   
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
@@ -400,6 +453,13 @@ function cdm_dataportal_settings(){
     '#description' => t('')
   );
   
+  $form['cdm_dataportal']['layout']['cdm_dataportal_taxonpage_tabs'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Split the taxon page into individual tabs for description, images, synonymy'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
+    '#description' => t('')
+  );
+  
   $form['cdm_dataportal']['layout']['cdm_dataportal_search_items_on_page'] = array(
     '#type' => 'textfield',
     '#title' => t('Search Page Size'),
@@ -519,6 +579,11 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
   return $out;
 }
 
+function cdm_dataportal_view_reference($uuid, $arg2 = null){
+    $referenceTO = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
+    return theme('cdm_reference_page', $referenceTO);
+}
+
 
 /**
  * The taxon page gives detailed information on a taxon, it shows:
@@ -530,10 +595,10 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
  *
  * @param String $uuid the UUID of the taxon
  */
-function cdm_dataportal_view_taxon($uuid, $arg2 = null){
+function cdm_dataportal_view_taxon($uuid, $arg2 = NULL){
 
 
-  if(isset($arg2) && !is_numeric($arg2)){
+/*  if(isset($arg2) && !is_numeric($arg2)){
    
     switch ($args[0]){
       case 'alternatives':
@@ -541,7 +606,7 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
         return theme('cdm_alternative_taxa', $alternatives);
     }
     
-  } else {
+  } else {*/
   
     // display the page for the taxon defined by $uuid
     $taxonTO = cdm_ws_get(CDM_WS_TAXON, $uuid);
@@ -554,12 +619,10 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = null){
     $referenceInTitle = variable_get('cdm_dataportal_nomref_in_title', 1);
     
     drupal_set_title(theme('cdm_taxon_page_title', $taxonTO->name));
-    $out = theme('cdm_taxon_page_general', $taxonTO);
+    $out = theme('cdm_taxon_page_general', $taxonTO, $arg2);
     return $out;
-  }
+  /*}*/
 }
-
-
 
 /**
  * Expected URL request parameters:
