@@ -12,53 +12,6 @@ function garland_cichorieae_cdm_taxon_page_title($nameTO){
   return theme('cdm_name', $nameTO, false, false, false, false);
 }
 
-/**
- * TODO
- * The cichorieae team wishes their side to be tabbed. Therefore we implemented a
- * quick-and-dirty solution with javascript. It would be nice to have this implemented
- * using drupal MENU_LOCAL_TASKs.
- *
- * @param TaxonTO $taxonTO
- * @return contents of the taxon page
- */
-function garland_cichorieae_cdm_taxon_page_general($taxonTO){
-  
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery-ui.js');
-  
-  $out = "
-  <script>
-    $(document).ready(function(){
-      $('#tabs').tabs();
-    });
-  </script>
-  ";
-  $out .= theme('cdm_acceptedFor');
-  $out .= theme('cdm_back_to_search_result_button');
-  
-  $out .= '<ul id="tabs" class="tab-menu">';
-  $out .= '<li><a href="#tab-general">'.t('General').'</a></li>';
-  $out .= '<li><a href="#tab-synonymy">'.t('Synonymy').'</a></li>';
-  $out .= '<li><a href="#tab-images">'.t('Images').'</a></li>';
-  $out .= '</ul>';
-  
-  // general
-  $out .= '<div id="tab-general">';
-  $out .= theme('cdm_taxon_page_description', $taxonTO);
-  $out .= '</div>';
-  
-  // synonymy
-  $out .= '<div id="tab-synonymy">';
-  $out .= theme('cdm_name', $taxonTO->name);
-  $out .= theme('cdm_taxon_page_synonymy', $taxonTO);
-  $out .= '</div>';
-  
-  // images//
-  $out .= '<div id="tab-images">';
-  $out .= theme('cdm_taxon_page_images', $taxonTO);
-  $out .= '</div>';
-  
-  return $out;
-}
 
 /**
  * The description page is supposed to be the front page for a taxon.
