@@ -455,9 +455,9 @@ function cdm_dataportal_settings(){
   
   $form['cdm_dataportal']['layout']['cdm_dataportal_taxonpage_tabs'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Split the taxon page into individual tabs for description, images, synonymy'),
+    '#title' => t('Tabbed taxon page'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
-    '#description' => t('')
+    '#description' => t('Split the taxon page into individual tabs for description, images, synonymy')
   );
   
   $form['cdm_dataportal']['layout']['cdm_dataportal_search_items_on_page'] = array(
