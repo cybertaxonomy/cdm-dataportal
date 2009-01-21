@@ -1,0 +1,12 @@
+* text=auto !eol
+/LICENSE.txt -text
+images/help.png -text
+images/internal.gif -text
+images/last.gif -text
+images/list.gif -text
+images/plus.png -text
+images/root.gif -text
+/tinytax.css -text
+/tinytax.info -text
+/tinytax.js -text
+/tinytax.module -text

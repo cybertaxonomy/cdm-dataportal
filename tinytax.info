@@ -1,0 +1,5 @@
+;$Id$
+name = CDM TinyTaxonomyBrowser
+description = "Provides a block for browsing cdm taxonmic concept trees."
+package = "CDM"
+
