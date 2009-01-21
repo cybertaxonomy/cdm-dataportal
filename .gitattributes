@@ -82,17 +82,6 @@ modules/cdm_dataportal/cdm_taxontree/visible.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_implicit.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_implicit_small.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_small.gif -text
-modules/cdm_dataportal/cdm_tinytax/LICENSE.txt -text
-modules/cdm_dataportal/cdm_tinytax/images/help.png -text
-modules/cdm_dataportal/cdm_tinytax/images/internal.gif -text
-modules/cdm_dataportal/cdm_tinytax/images/last.gif -text
-modules/cdm_dataportal/cdm_tinytax/images/list.gif -text
-modules/cdm_dataportal/cdm_tinytax/images/plus.png -text
-modules/cdm_dataportal/cdm_tinytax/images/root.gif -text
-modules/cdm_dataportal/cdm_tinytax/tinytax.css -text
-modules/cdm_dataportal/cdm_tinytax/tinytax.info -text
-modules/cdm_dataportal/cdm_tinytax/tinytax.js -text
-modules/cdm_dataportal/cdm_tinytax/tinytax.module -text
 modules/cdm_dataportal/cdm_ws_urls.txt -text
 modules/cdm_dataportal/images/Protolog-media.png -text
 modules/cdm_dataportal/images/btn_collapse.gif -text
