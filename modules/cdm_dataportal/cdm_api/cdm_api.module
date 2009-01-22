@@ -226,7 +226,7 @@ function cdm_taggedtext_value(array &$taggedtxt = array(), $tag_type){
  * @param unknown_type $height
  * @return unknown
  */
-function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width, $height){
+function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width = 400, $height = 300){
     /**
 
      *
@@ -239,6 +239,7 @@ function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width,
     $mimeTypeKey = array_search($representationTO->mimeType, $mimeTypes);
     if($mimeTypeKey !== false){
       $dwa = 0;
+      // look for part with the best matching size
       foreach($representationTO->representationParts as $part){
         $dw = $part->width * $part->height - $height * $width;
         if($dw < 0){
