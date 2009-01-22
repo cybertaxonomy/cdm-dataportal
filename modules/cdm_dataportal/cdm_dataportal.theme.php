@@ -239,8 +239,6 @@ function theme_cdm_media($DescriptionElementSTO){
 
   foreach($medias as $media){
      
-     
-     
     $prefRepresentations = cdm_preferred_media_representations($media, array('application/pdf', 'image/gif', 'image/jpeg', 'image/png', 'text/html'), 300, 400);
     $representation_inline = array_shift($prefRepresentations);
     if($representation_inline) {
@@ -669,7 +667,7 @@ function theme_cdm_fullreference($referenceTO){
 function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $separator = '<br />' , $enclosingTag = 'li'){
 
   if(isset($referenceSTO->microReference)){
-    // well it is a ReferenceTO
+    // it is a ReferenceTO
     $nomref_citation = theme('cdm_fullreference', $referenceSTO);
   } else {
     // it is ReferenceSTO
@@ -680,30 +678,23 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
   if(!empty($nomref_citation)){
     $nomref_citation = (str_beginsWith($nomref_citation, 'in') ? '&nbsp;':',&nbsp;') . $nomref_citation;
   }
-  // find media representations for inline display and high quality for download
-  // assuming that there is only one protologue per name only the first media is used
 
-  //  if( count($referenceSTO->media[0]->representations) > 0 ){
-  //    foreach($referenceSTO->media[0]->representations as $representation){
-  //      $mimeType = $representation->mimeType;
-  //      if(($mimeType == 'image/png' || $mimeType == 'image/jpeg' || $mimeType == 'image/gif')
-  //        && count($representation->representationParts) > 0){
-  //        $representation_inline = $representation;
-  //      } else if($representation->mimeType == 'image/tiff'
-  //        && count($representation->representationParts) > 0){
-  //        $representation_highquality = $representation;
-  //      }
-  //    }
-  //  }
-  $prefRepresentations = cdm_preferred_media_representations($referenceSTO->media[0], array('image/gif', 'image/jpeg', 'image/png'), 300, 400);
-  $representation_inline = array_shift($prefRepresentations);
-  if($representation_inline) {
-    $attributes = array('class'=>'thickbox', 'rel'=>'protologues-'.$referenceSTO->uuid);
-    for($i = 0; $part = $representation_inline->representationParts[$i]; $i++){
-      if($i == 0){
-        $out = l($nomref_citation, $part->uri, $attributes, NULL, NULL, TRUE);
-      } else {
-        $out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
+  $prefRepresentations = cdm_preferred_media_representations($referenceSTO->media[0], array('application/pdf', 'image/gif', 'image/jpeg', 'image/png'), 300, 400);
+  // shift the first representation from the ordered list
+  $representation = array_shift($prefRepresentations);
+  if($representation) {
+    if($representation->mimeType == 'application/pdf'){
+      // create link for PDFs
+      $out = l($nomref_citation, $part->uri, array(), NULL, NULL, TRUE);
+    } else {
+      // display images in layover   
+      $attributes = array('class'=>'thickbox', 'rel'=>'protologues-'.$referenceSTO->uuid);
+      for($i = 0; $part = $representation->representationParts[$i]; $i++){
+        if($i == 0){
+          $out = l($nomref_citation, $part->uri, $attributes, NULL, NULL, TRUE);
+        } else {
+          $out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
+        }
       }
     }
   } else {
@@ -761,7 +752,7 @@ function theme_cdm_acceptedFor(){
 function theme_cdm_back_to_search_result_button(){
   $out = '';
   if($_SESSION['cdm']['search']){
-    $out .= '<div id="backButton"><a href="' . $_SESSION['cdm']['last_search'] . '">' . t('Back to search result') . '<a></div>';
+    $out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION['cdm']['last_search'] ).'</div>';
   }
   return $out;
 }
@@ -788,20 +779,26 @@ function theme_cdm_taxon_page_general($taxonTO, $page_part){
   $out .= theme('cdm_acceptedFor');
   $out .= theme('cdm_back_to_search_result_button');
   
-  if($page_part == 'images' || $page_part == 'all'){
-    $out .= '<div id="description">';
-    $out .= theme('cdm_taxon_page_images', $taxonTO);
-    $out .= '</div>';
-  }
-  
   if($page_part == 'description' || $page_part == 'all'){
     $out .= '<div id="description">';
     $out .= theme('cdm_taxon_page_description', $taxonTO);
     $out .= '</div>';
   }
   
+  if($page_part == 'images' || $page_part == 'all'){
+    $out .= '<div id="images">';
+    if($page_part == 'all'){
+      $out .= '<h2>'.t('Images').'</h2>';
+    }
+    $out .= theme('cdm_taxon_page_images', $taxonTO);
+    $out .= '</div>';
+  }
+
   if($page_part == 'synonymy' || $page_part == 'all'){
     $out .= '<div id="synonymy">';
+    if($page_part == 'all'){
+      $out .= '<h2>'.t('Synonymy').'</h2>';
+    }
     $out .= theme('cdm_taxon_page_synonymy', $taxonTO);
 
     if(variable_get('cdm_dataportal_display_name_relations', 1)){
@@ -820,6 +817,7 @@ function theme_cdm_taxon_page_general($taxonTO, $page_part){
  */
 function theme_cdm_taxon_page_description($taxonTO){
   
+  print_r($taxonTO->featureTree);
   // description TOC
   $out .= theme('cdm_featureTreeToc', $taxonTO->featureTree);
   // description 
@@ -1312,7 +1310,7 @@ function theme_cdm_featureTreeToc($featureTree){
         $feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
         // HACK to implement images for taxa, should be removed
         if($feature != 'Image'){
-          $out .= '<li><a href="#'.generalizeString($feature).'">'.t(ucfirst($feature)).'</a></li>';
+          $out .= '<li>'.l(t(ucfirst($feature)), "#'.generalizeString($feature).'").'</li>';
         }
       }
     }
@@ -1372,7 +1370,6 @@ function theme_cdm_descriptionElementTextData($element){
   $description = str_replace("\n", "<br/>", $element->description);
   return '<li class="descriptionText">' . $description . '</li>';
 }
-
 
 function theme_cdm_search_results($resultPageSTO, $path, $parameters){
 
