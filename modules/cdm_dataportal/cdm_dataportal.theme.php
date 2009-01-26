@@ -817,7 +817,6 @@ function theme_cdm_taxon_page_general($taxonTO, $page_part){
  */
 function theme_cdm_taxon_page_description($taxonTO){
   
-  print_r($taxonTO->featureTree);
   // description TOC
   $out .= theme('cdm_featureTreeToc', $taxonTO->featureTree);
   // description 
