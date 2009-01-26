@@ -137,10 +137,12 @@ function garland_cichorieae_cdm_descriptionElementArray($elementArray, $feature,
   return $out;
 }
 
+/* #### exact duplicate of theme method in cdm_dataportal.theme.php ###
+ *  
 function garland_cichorieae_cdm_descriptionElementTextData($element){
   $description = str_replace("\n", "<br/>", $element->description);
   return '<p class="descriptionText">' . $description . '</p>';
-}
+}*/
 
 
 /***** GARLAND OVERRIDES ******/
