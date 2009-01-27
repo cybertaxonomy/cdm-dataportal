@@ -614,7 +614,8 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = NULL){
       drupal_set_title(t('Taxon does not exist'));
       return false;
     }
-    _cdm_dataportal_set_currentSecUuid($taxonTO->sec->uuid);
+    //TODO causes problems in cichorieae in taraxacum, thus temporaryly commented out 
+    // _cdm_dataportal_set_currentSecUuid($taxonTO->sec->uuid);
   
     $referenceInTitle = variable_get('cdm_dataportal_nomref_in_title', 1);
     
