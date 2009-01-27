@@ -65,7 +65,8 @@ Installation of install package:
 
 1. extract the archive to the document root of your webserver.
 2. configure the mysql database in the settings.php file 
-3. import the mysql dump
+3. import the mysql dump (drupal5_expertsdb-xxxx.sql) which found in the root of the installation package
+5. Login using the default admin account: usr=DemoAdmin pwd=admin
 4. navigate to admin/build/themes and to admin/build/modules in order to refresh the paths stored in the database
 
 READY!
