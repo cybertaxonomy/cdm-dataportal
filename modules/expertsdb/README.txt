@@ -1,9 +1,10 @@
 $Id$
 
 REQUIREMENTS
-------------------------------
-Drupal Modules:
+==========================================================
 
+Drupal Modules:
+----------------------------------------------------------
   activeselect (activeselect-5.x-1.0.tar.gz)
   admin_menu  
   auto_nodetitle (auto_nodetitle-5.x-1.0.tar.gz)
@@ -49,9 +50,14 @@ Additional patches found not shipped with the expertsdb module:
 	  	
 	- Patch for nodefamily.module v 1.19.2.14
 		http://dev.e-taxonomy.eu/svn/trunk/Drupal/module_patches/nodefamily/nodefamily_create-others-nodes.patch
+    
+    
+THEMES
+----------------------------------------------------------
+EDIT-expertsdb (http://dev.e-taxonomy.eu/svn/trunk/Drupal/themes/EDIT-expertsdb)
 
 INSTALL
-------------------------------
+==========================================================
 
 If you have downloaded the complete installation package, installation requires only a few steps. (If you have checked out the expertsdb module from out svn repository you need to download, patch and install the drupal modules which are listed above.)
 
@@ -60,12 +66,13 @@ Installation of install package:
 1. extract the archive to the document root of your webserver.
 2. configure the mysql database in the settings.php file 
 3. import the mysql dump
+4. navigate to admin/build/themes and to admin/build/modules in order to refresh the paths stored in the database
 
 READY!
 
 
 Importing Taxonomy resources
-------------------------------
+==========================================================
 1.) Import all taxonomies xml files from ./expertDB/resources/ 
 
 When importing the taxonomies by the taxonomy_xml it is highly recommended that you set 
