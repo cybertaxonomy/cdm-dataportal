@@ -1,0 +1,164 @@
+<?php
+/**
+ * This is the expertsdb_address_spain module for use with expertsdb_address.
+ *
+ * <p>This module simply adds support for Spanish Provinces</p>
+ *
+ * @version $Id: expertsdb_address_spain.module,v 1.1 2007/12/04 21:18:09 rconstantine Exp $;
+ * @package CCK
+ * @category CCK
+ * @author jonhattan
+ * @filesource
+ * @license http://www.gnu.org/licenses/gpl.txt GNU_GENERAL_PUBLIC_LICENSE
+ * @link none yet
+ */
+
+/**
+ * Implementation of hook_help
+ *
+ * Display help and module information
+ * @param string section which section of the site we're displaying help
+ * @return help text for section
+ */
+function expertsdb_address_spain_help($section='') {
+
+  $output = '';
+
+  switch ($section) {
+    case "admin/help#expertsdb_address_spain":
+      $output = '<p>'.  t("Adds support for Spanish Provinces to expertsdb_address."). '</p>';
+      break;
+  }
+
+  return $output;
+} // function expertsdb_address_spain_help()
+
+/**
+ * Adds all Mexican States to the states table. Adds Spain to the countries table. Returns whether all queries succeeded.
+ *
+ * @return boolean $query_ok
+ */
+function expertsdb_address_spain_installstates($query_ok = TRUE) {
+  if (db_table_exists('expertsdb_address_states')) {
+    $states = array (
+      array("Álava", "ALA"),
+      array("Albacete", "ALB"),
+      array("Alicante", "ALI"),
+      array("Almería", "ALM"),
+      array("Asturias", "AST"),
+      array("Ávila", "AVI"),
+      array("Badajoz", "BAD"),
+      array("Barcelona", "BAR"),
+      array("Burgos", "BUR"),
+      array("Cáceres", "CAC"),
+      array("Cádiz", "CAD"),
+      array("Cantabria", "CAN"),
+      array("Castellón", "CAS"),
+      array("Ciudad Real", "CIU"),
+      array("Córdoba", "COR"),
+      array("La Coruña", "LAC"),
+      array("Cuenca", "CUE"),
+      array("Gerona", "GER"),
+      array("Granada", "GRA"),
+      array("Guadalajara", "GUA"),
+      array("Guipúzcoa", "GUI"),
+      array("Huelva", "HUE"),
+      array("Huesca", "HUS"),
+      array("Islas Baleares", "ISB"),
+      array("Jaén", "JAE"),
+      array("León", "LEO"),
+      array("Lérida", "LER"),
+      array("Lugo", "LUG"),
+      array("Madrid", "MAD"),
+      array("Málaga", "MAL"),
+      array("Región de Murcia", "REM"),
+      array("Navarra", "NAV"),
+      array("Orense", "ORE"),
+      array("Palencia", "PAL"),
+      array("Las Palmas", "LPA"),
+      array("Pontevedra", "PON"),
+      array("La Rioja", "LAR"),
+      array("Salamanca", "SAL"),
+      array("Santa Cruz de Tenerife", "TFE"),
+      array("Segovia", "SEG"),
+      array("Sevilla", "SEV"),
+      array("Soria", "SOR"),
+      array("Tarragona", "TAR"),
+      array("Teruel", "TER"),
+      array("Toledo", "TOL"),
+      array("Valencia", "VAL"),
+      array("Valladolid", "VLD"),
+      array("Vizcaya", "VZY"),
+      array("Zamora", "ZMR"),
+      array("Zaragoza", "ZGZ"),
+      );
+
+      foreach ($states as $state){
+        $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('{$state[0]}', '{$state[1]}', 'ES')");
+        if (!$query2) {$query_ok = FALSE;}
+      }
+  }
+  if (db_table_exists('expertsdb_address_countries')) {
+    $query2 = db_query("INSERT INTO {expertsdb_address_countries} (country_name, country_code) VALUES ('Spain', 'ES')");
+    if (!$query2) {$query_ok = FALSE;}
+  }
+  return $query_ok;
+} // function expertsdb_address_spain_installstates()
+
+/**
+ * Implementation of hook_validate_address_fields
+ *
+ * This hook is used by expertsdb_address and any supporting modules which add country-specific field validation.
+ * The first argument is an array, passed in by reference in 'fieldname=>error string' pairs. The error string should remain empty
+ * so long as there are no errors. If there is an error, the string should be replaced with an appropriate t-ified message. The
+ * second argument is the country code of the address. The first thing an implementation of this hook should do is check to see if
+ * the country code matches the country for which the module was made to support. If not, it should return immediately, without
+ * modifying the $errors array. This will ensure that only the country which SHOULD validate, does the validation. The third argument
+ * is the item containing the values of the form.
+ *
+ * NOTE TO SPANISH USERS: The original contributor of this add-on module commented out the validation routines below except for the
+ * postal code one. I'm not sure why. I left it unchanged, but hope you'll comment on this module's issue queue if there are problems
+ * and hopefully you'll come up with solutions that I can plug in if so.
+ */
+function expertsdb_address_spain_validate_address_fields(&$errors, $country_code, $item, $field_name) {
+  if ($country_code != 'ES' && $country_code != 'Spain'){
+    return;
+  }
+  $val_locale = array('es_ES' => 'es_ES');
+  $default_locale = setlocale(LC_ALL, 0);
+
+  foreach ($val_locale as $key => $value) {
+    $current_locale = expertsdb_address_setLocaleCP($value);
+    /*
+    if (($item['street1'] != '') && (!preg_match("/^[,\.\'\-[:alpha:]0-9\/\s]+$/", _expertsdb_address_spain_remove_accents($item['street1'])))) {
+      $errors['street1'] = t('(Spain):Illegal value for %name\'s Street field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+    }
+    if (($item['street2'] != '') && (!preg_match("/^[,\.\'\-[:alpha:]0-9\/\s]+$/", _expertsdb_address_spain_remove_accents($item['street2'])))) {
+      $errors['street2'] = t('(Spain):Illegal value for %name\'s Street Continued field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+    }
+    if (($item['apt'] != '') && (!preg_match("/^[,\.\'\-[:alpha:]0-9\/\s]+$/", _expertsdb_address_spain_remove_accents($item['apt'])))) {
+      $errors['apt'] = t('(Spain):Illegal value for %name\'s Apt/Suite Number field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+    }
+    if (($item['city'] != '') && (!preg_match("/^[,\.\'\-[:alpha:]\s]+$/", _expertsdb_address_spain_remove_accents($item['city'])))) {
+      $errors['city'] = t('(Spain):Illegal value for %name\'s City field. Only letters, \' and - are valid. No numbers or other special characters allowed.', array('%name' => $field_name));
+    }
+    */
+    if (($item['zip'] != '') && (!preg_match("/^\s*[0-9]{5}\s*$/", $item['zip']))) {
+      $errors['zip'] = t('(Spain):Illegal value for %name\'s ZIP field.', array('%name' => $field_name));
+    }
+    /*
+    if (($item['other'] != '') && (!preg_match("/^[,\.\'\-[:alpha:]0-9\s]+$/", _expertsdb_address_spain_remove_accents($item['other'])))) {
+      $errors['other'] = t('(Spain):Illegal value for %name\'s Other field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+    }
+    */
+  }
+  setlocale(LC_ALL, $default_locale);
+  return;
+}
+
+//*****************************************************************************
+// Remove all accents from a string
+function _expertsdb_address_spain_remove_accents($str){
+  $str = utf8_decode($str);
+  return preg_replace('/&([a-zA-Z])(uml|acute|grave|circ|tilde);/','$1',htmlentities($str,ENT_NOQUOTES));
+}

@@ -1,0 +1,365 @@
+<?php
+/**
+ * This is the expertsdb_address_all_countries module for use with expertsdb_address.
+ *
+ */
+
+/**
+ * Implementation of hook_help
+ *
+ * Display help and module information
+ * @param string section which section of the site we're displaying help
+ * @return help text for section
+ */
+function expertsdb_address_all_countries_help($section='') {
+
+	$output = '';
+
+	switch ($section) {
+		case "admin/help#expertsdb_address_all_countries":
+			$output = '<p>'.  t("Adds support for all countries to expertsdb_address, but without regions."). '</p>';
+			break;
+	}
+
+	return $output;
+} // function expertsdb_address_all_countries_help()
+
+
+/**
+ * Adds all contries to the states table. Adds all_countries to the countries table. Returns whether all queries succeeded.
+ *
+ * @return boolean $query_ok
+ */
+function expertsdb_address_all_countries_installstates($query_ok) {
+	if(!$query_ok) return;
+
+	if (!db_table_exists('expertsdb_address_states') or !db_table_exists('expertsdb_address_countries')) return FALSE;
+
+	return _expertsdb_address_all_countries_installer('install');
+
+} // function expertsdb_address_mexico_installstates()
+
+
+function _expertsdb_address_all_countries_installer($mode = FALSE){
+	if(!$mode) return;
+	/*  $states = array (
+	 // @TODO: enter all international states here
+	 array("Aguascalientes","AGS"),
+	 );*/
+
+	/*  foreach ($states as $state) {
+	 if(!db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('{$state[0]}', '{$state[1]}', 'MX')")) return FALSE;
+	 }
+	 */
+
+	$countries = array(
+	array("Andorra", "AD"),
+	array("United Arab Emirates", "AE"),
+	array("Afghanistan", "AF"),
+	array("Antigua and Barbuda", "AG"),
+	array("Anguilla", "AI"),
+	array("Albania", "AL"),
+	array("Armenia", "AM"),
+	array("Netherlands Antilles", "AN"),
+	array("Angola", "AO"),
+	array("Antarctica", "AQ"),
+	array("Argentina", "AR"),
+	array("American Samoa", "AS"),
+	array("Austria", "AT"),
+	array("Australia", "AU"),
+	array("Aruba", "AW"),
+	array("Åland Islands", "AX"),
+	array("Azerbaijan", "AZ"),
+	array("Bosnia and Herzegovina", "BA"),
+	array("Barbados", "BB"),
+	array("Bangladesh", "BD"),
+	array("Belgium", "BE"),
+	array("Burkina Faso", "BF"),
+	array("Bulgaria", "BG"),
+	array("Bahrain", "BH"),
+	array("Burundi", "BI"),
+	array("Benin", "BJ"),
+	array("Saint Barthélemy", "BL"),
+	array("Bermuda", "BM"),
+	array("Brunei Darussalam", "BN"),
+	array("Bolivia", "BO"),
+	array("Brazil", "BR"),
+	array("Bahamas", "BS"),
+	array("Bhutan", "BT"),
+	array("Bouvet Island", "BV"),
+	array("Botswana", "BW"),
+	array("Belarus", "BY"),
+	array("Belize", "BZ"),
+	array("Canada", "CA"),
+	array("Cocos (Keeling) Islands", "CC"),
+	array("Congo, the Democratic Republic of the", "CD"),
+	array("Central African Republic", "CF"),
+	array("Congo", "CG"),
+	array("Switzerland", "CH"),
+	array("Côte d'Ivoire", "CI"),
+	array("Cook Islands", "CK"),
+	array("Chile", "CL"),
+	array("Cameroon", "CM"),
+	array("China", "CN"),
+	array("Colombia", "CO"),
+	array("Costa Rica", "CR"),
+	array("Cuba", "CU"),
+	array("Cape Verde", "CV"),
+	array("Christmas Island", "CX"),
+	array("Cyprus", "CY"),
+	array("Czech Republic", "CZ"),
+	array("Germany", "DE"),
+	array("Djibouti", "DJ"),
+	array("Denmark", "DK"),
+	array("Dominica", "DM"),
+	array("Dominican Republic", "DO"),
+	array("Algeria", "DZ"),
+	array("Ecuador", "EC"),
+	array("Estonia", "EE"),
+	array("Egypt", "EG"),
+	array("Western Sahara", "EH"),
+	array("Eritrea", "ER"),
+	array("Spain", "ES"),
+	array("Ethiopia", "ET"),
+	array("Finland", "FI"),
+	array("Fiji", "FJ"),
+	array("Falkland Islands (Malvinas)", "FK"),
+	array("Micronesia, Federated States of", "FM"),
+	array("Faroe Islands", "FO"),
+	array("France", "FR"),
+	array("Gabon", "GA"),
+	array("United Kingdom", "GB"),
+	array("Grenada", "GD"),
+	array("Georgia", "GE"),
+	array("French Guiana", "GF"),
+	array("Guernsey", "GG"),
+	array("Ghana", "GH"),
+	array("Gibraltar", "GI"),
+	array("Greenland", "GL"),
+	array("Gambia", "GM"),
+	array("Guinea", "GN"),
+	array("Guadeloupe", "GP"),
+	array("Equatorial Guinea", "GQ"),
+	array("Greece", "GR"),
+	array("South Georgia and the South Sandwich Islands", "GS"),
+	array("Guatemala", "GT"),
+	array("Guam", "GU"),
+	array("Guinea-Bissau", "GW"),
+	array("Guyana", "GY"),
+	array("Hong Kong", "HK"),
+	array("Heard Island and McDonald Islands", "HM"),
+	array("Honduras", "HN"),
+	array("Croatia", "HR"),
+	array("Haiti", "HT"),
+	array("Hungary", "HU"),
+	array("Indonesia", "ID"),
+	array("Ireland", "IE"),
+	array("Israel", "IL"),
+	array("Isle of Man", "IM"),
+	array("India", "IN"),
+	array("British Indian Ocean Territory", "IO"),
+	array("Iraq", "IQ"),
+	array("Iran, Islamic Republic of", "IR"),
+	array("Iceland", "IS"),
+	array("Italy", "IT"),
+	array("Jersey", "JE"),
+	array("Jamaica", "JM"),
+	array("Jordan", "JO"),
+	array("Japan", "JP"),
+	array("Kenya", "KE"),
+	array("Kyrgyzstan", "KG"),
+	array("Cambodia", "KH"),
+	array("Kiribati", "KI"),
+	array("Comoros", "KM"),
+	array("Saint Kitts and Nevis", "KN"),
+	array("Korea, Democratic People's Republic of", "KP"),
+	array("Korea, Republic of", "KR"),
+	array("Kuwait", "KW"),
+	array("Cayman Islands", "KY"),
+	array("Kazakhstan", "KZ"),
+	array("Lao People's Democratic Republic", "LA"),
+	array("Lebanon", "LB"),
+	array("Saint Lucia", "LC"),
+	array("Liechtenstein", "LI"),
+	array("Sri Lanka", "LK"),
+	array("Liberia", "LR"),
+	array("Lesotho", "LS"),
+	array("Lithuania", "LT"),
+	array("Luxembourg", "LU"),
+	array("Latvia", "LV"),
+	array("Libyan Arab Jamahiriya", "LY"),
+	array("Morocco", "MA"),
+	array("Monaco", "MC"),
+	array("Moldova", "MD"),
+	array("Montenegro", "ME"),
+	array("Saint Martin (French part)", "MF"),
+	array("Madagascar", "MG"),
+	array("Marshall Islands", "MH"),
+	array("Macedonia, the former Yugoslav Republic of", "MK"),
+	array("Mali", "ML"),
+	array("Myanmar", "MM"),
+	array("Mongolia", "MN"),
+	array("Macao", "MO"),
+	array("Northern Mariana Islands", "MP"),
+	array("Martinique", "MQ"),
+	array("Mauritania", "MR"),
+	array("Montserrat", "MS"),
+	array("Malta", "MT"),
+	array("Mauritius", "MU"),
+	array("Maldives", "MV"),
+	array("Malawi", "MW"),
+	array("Mexico", "MX"),
+	array("Malaysia", "MY"),
+	array("Mozambique", "MZ"),
+	array("Namibia", "NA"),
+	array("New Caledonia", "NC"),
+	array("Niger", "NE"),
+	array("Norfolk Island", "NF"),
+	array("Nigeria", "NG"),
+	array("Nicaragua", "NI"),
+	array("Netherlands", "NL"),
+	array("Norway", "NO"),
+	array("Nepal", "NP"),
+	array("Nauru", "NR"),
+	array("Niue", "NU"),
+	array("New Zealand", "NZ"),
+	array("Oman", "OM"),
+	array("Panama", "PA"),
+	array("Peru", "PE"),
+	array("French Polynesia", "PF"),
+	array("Papua New Guinea", "PG"),
+	array("Philippines", "PH"),
+	array("Pakistan", "PK"),
+	array("Poland", "PL"),
+	array("Saint Pierre and Miquelon", "PM"),
+	array("Pitcairn", "PN"),
+	array("Puerto Rico", "PR"),
+	array("Palestinian Territory, Occupied", "PS"),
+	array("Portugal", "PT"),
+	array("Palau", "PW"),
+	array("Paraguay", "PY"),
+	array("Qatar", "QA"),
+	array("Réunion", "RE"),
+	array("Romania", "RO"),
+	array("Serbia", "RS"),
+	array("Russian Federation", "RU"),
+	array("Rwanda", "RW"),
+	array("Saudi Arabia", "SA"),
+	array("Solomon Islands", "SB"),
+	array("Seychelles", "SC"),
+	array("Sudan", "SD"),
+	array("Sweden", "SE"),
+	array("Singapore", "SG"),
+	array("Saint Helena", "SH"),
+	array("Slovenia", "SI"),
+	array("Svalbard and Jan Mayen", "SJ"),
+	array("Slovakia", "SK"),
+	array("Sierra Leone", "SL"),
+	array("San Marino", "SM"),
+	array("Senegal", "SN"),
+	array("Somalia", "SO"),
+	array("Suriname", "SR"),
+	array("Sao Tome and Principe", "ST"),
+	array("El Salvador", "SV"),
+	array("Syrian Arab Republic", "SY"),
+	array("Swaziland", "SZ"),
+	array("Turks and Caicos Islands", "TC"),
+	array("Chad", "TD"),
+	array("French Southern Territories", "TF"),
+	array("Togo", "TG"),
+	array("Thailand", "TH"),
+	array("Tajikistan", "TJ"),
+	array("Tokelau", "TK"),
+	array("Timor-Leste", "TL"),
+	array("Turkmenistan", "TM"),
+	array("Tunisia", "TN"),
+	array("Tonga", "TO"),
+	array("Turkey", "TR"),
+	array("Trinidad and Tobago", "TT"),
+	array("Tuvalu", "TV"),
+	array("Taiwan, Province of China", "TW"),
+	array("Tanzania, United Republic of", "TZ"),
+	array("Ukraine", "UA"),
+	array("Uganda", "UG"),
+	array("United States Minor Outlying Islands", "UM"),
+	// array("United States", "US"), // is handled by the original module!
+	array("Uruguay", "UY"),
+	array("Uzbekistan", "UZ"),
+	array("Holy See (Vatican City State)", "VA"),
+	array("Saint Vincent and the Grenadines", "VC"),
+	array("Venezuela", "VE"),
+	array("Virgin Islands, British", "VG"),
+	array("Virgin Islands, U.S.", "VI"),
+	array("Viet Nam", "VN"),
+	array("Vanuatu", "VU"),
+	array("Wallis and Futuna", "WF"),
+	array("Samoa", "WS"),
+	array("Yemen", "YE"),
+	array("Mayotte", "YT"),
+	array("South Africa", "ZA"),
+	array("Zambia", "ZM"),
+	array("Zimbabwe", "ZW"),
+	);
+
+ $errors = 0;
+
+	foreach ($countries as $country) {
+		// try to figure out, if this country is already implemented by another module
+		$pat = array(
+			'@[\W]@', // replace anything but digits and letters with underscore
+			'@[\_]{1,}@', // replace multiple underscores with one underscore
+			'@[\_]$@', // no underscore at line end
+		);
+		$rep = array(
+			'_',
+			'_',
+			'',
+		);
+		$country_parts = explode(',', $country[0]);
+		$potential_module_name = preg_replace($pat,$rep,'expertsdb_address_' . strtolower($country_parts[0]));
+		if(!module_exists($potential_module_name)){
+			switch ($mode){
+				case 'install':
+					// insert state
+					if(!db_query("INSERT INTO {expertsdb_address_countries} (country_name, country_code) VALUES ('" . db_escape_string($country[0]) . "', '{$country[1]}')")){
+						drupal_set_message('Failed to install !country.',array('!country' => $country_parts[0]));
+					}
+					break;
+
+				case 'uninstall':
+
+					if (db_table_exists('expertsdb_address_states'))
+					$query1 = db_query("DELETE FROM {expertsdb_address_states} WHERE country_code = '%s'", $country[1]);
+					else $query1 = TRUE;
+					if (db_table_exists('expertsdb_address_countries'))
+					$query2 = db_query("DELETE FROM {expertsdb_address_countries} WHERE country_code = '%s'", $country[1]);
+					else $query2 = TRUE;
+
+					if ($query1 && $query2) {
+						drupal_set_message(t('!country was uninstalled successfully.',array('!country' => $country[0])));
+					}
+					else {
+						drupal_set_message(t('There was an error removing !country database rows.',array('!country' => $country[0])), 'error');
+						$errors ++;
+					}
+					break;
+			}
+
+
+		} // module seems to exist
+		else{
+			switch ($mode){
+				case 'install':
+					drupal_set_message(t('Not installing !country. It seems to be handled by an existing module (!module).',array('!country' => $country_parts[0],'!module' => $potential_module_name)));
+					break;
+
+				case 'uninstall':
+					drupal_set_message(t('Not uninstalling !country. It seems to be handled by an existing module (!module).',array('!country' => $country_parts[0],'!module' => $potential_module_name)));
+					break;
+			}
+
+		}
+	}
+
+	return ($errors) ? FALSE : TRUE;
+}
