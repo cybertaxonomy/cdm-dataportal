@@ -614,8 +614,7 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = NULL){
       drupal_set_title(t('Taxon does not exist'));
       return false;
     }
-    //TODO causes problems in cichorieae in taraxacum, thus temporaryly commented out 
-    // _cdm_dataportal_set_currentSecUuid($taxonTO->sec->uuid);
+    _cdm_dataportal_set_currentSecUuid($taxonTO->sec->uuid);
   
     $referenceInTitle = variable_get('cdm_dataportal_nomref_in_title', 1);
     
@@ -717,22 +716,12 @@ function cdm_dataportal_shortname_of($NameSTO){
  * @param UUID $secUuid
  */
 function _cdm_dataportal_set_currentSecUuid($secUuid){
-
-//  if(is_array($secUuid)){
-//    $secUuid = $secUuid[0];
-//  }
-//  if( !isset($_SESSION['cdm']['currentSecRef']['uuid']) ||  $_SESSION['cdm']['currentSecRef']['uuid'] != $secUuid){
-//    if(!$secUuid){
-//      $_SESSION['cdm']['currentSecRef'] = null;
-//    } else {
-//      $secRef = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE ,$secUuid);
-//      if(isset($secRef[0])){
-//        $_SESSION['cdm']['currentSecRef'] = (array)($secRef[0]);
-//      }
-//    }
-//  }
-  
+ 
 // do not save in session but in database
+  
+  //TODO setting the currentSecUuid causes problems in cichorieae in taraxacum, 
+  //     thus it is temporary disabled
+  return;
   
   if(is_array($secUuid)){
     $secUuid = $secUuid[0];
