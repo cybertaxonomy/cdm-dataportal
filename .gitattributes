@@ -210,6 +210,10 @@ modules/expertsdb/expertsdb_cck/images/button_add_element.png -text
 modules/expertsdb/expertsdb_cck/license.txt -text
 modules/expertsdb/expertsdb_cck/readme.txt -text
 modules/expertsdb/images/go_to_interest.png -text
+modules/expertsdb/module-patches/cck/cck_nodereference_views_fusion_47.patch -text
+modules/expertsdb/module-patches/cck/multiple-value-cck-prototype.patch -text
+modules/expertsdb/module-patches/views/mw_83.patch -text
+modules/expertsdb/module-patches/views/views_fusion_filter_2.patch -text
 modules/expertsdb/noderef_parent.info -text
 modules/expertsdb/noderef_parent.module -text
 modules/expertsdb/resources/geography-ed2_to_taxomomyXML.php -text
