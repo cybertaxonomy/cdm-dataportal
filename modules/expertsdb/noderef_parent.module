@@ -1,34 +1,42 @@
 <?php
-// $Id$
+// $Id noderef_parent.module, v 1.0 2007, Andreas Kohlbecker - http://www.bgbm.org/BioDivInf/default.htm $
 
 /**
  * @file
- * A online information service on  taxonomic experts, their expertise 
- * and ongoing and planned taxonomic research projects. 
+ * A online information service on  taxonomic experts, their expertise
+ * and ongoing and planned taxonomic research projects.
  * This module is brought to you by the European Distributed Institute of Taxonomy - EDIT
  *
- * @author Berlin, BGBM, Andreas Kohlbecker 2007 - http://www.bgbm.org/BioDivInf/default.htm 
- * 
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
- * http://www.e-taxonomy.eu
- * 
+ * @author Berlin, BGBM, Andreas Kohlbecker 2007 - http://www.bgbm.org/BioDivInf/default.htm
  */
 
 
 /**
  * Implementation of hook_help
  */
-function  noderef_parent_help($section='')
+function noderef_parent_help($section='')
 {
-  $output = '';
-  switch ($section)
-  {
-    case "admin/help#noderef_add":
-      $output = '<p>'.t("Node Reference widget not editable but filled with default data.").'</p>';
-      break;
-  }
-  return $output;
+	$output = '';
+	switch ($section)
+	{
+		case "admin/help#noderef_add":
+			$output = '<p>'.t("Node Reference widget not editable but filled with default data.").'</p>';
+			break;
+	}
+	return $output;
+}
+
+/**
+ *  Implementation of hook_field_settings().
+ *
+ */
+function noderef_parent_field_settings($op, $field) {
+
+	switch ($op) {
+
+		case 'arguments':
+			return;
+	}
 }
 
 /**
@@ -37,12 +45,12 @@ function  noderef_parent_help($section='')
  */
 function  noderef_parent_widget_info()
 {
-  return array(
+	return array(
     'noderef_parent_display' => array(
         'label' => 'Node Reference Parent Display',
         'field types' => array('nodereference'),
-      ),
-  );
+	),
+	);
 }
 
 /**
@@ -50,57 +58,58 @@ function  noderef_parent_widget_info()
  */
 function noderef_parent_widget($op, &$node, $field, &$items)
 {
-  
-  if ($field['widget']['type'] == 'noderef_parent_display')
-  {
-    switch ($op) {
-      
-      case 'prepare form values':
-        
-        if (count($items) == 0 ) { 
-          // must be a new node to be created get the parents node id from the URI parameters
-          if ( is_numeric($_GET[$field['field_name']]) ) {
-            $items['default nids'] = array($_GET[$field['field_name']]);
-          }
-        } 
-        else {
-          // node already exists -> get nids from items
-          $node_field_transposed = content_transpose_array_rows_cols($items);
-          $items['default nids'] = (array)$node_field_transposed['nid'];
-        }
-        break;
-        
-      case 'form':
-        
-        $default_value = '';
-        if ( isset($items['default nids'][0]) ){
-          $parent_node = node_load($items['default nids'][0]);
-          $default_value =  "[$parent_node->nid]: $parent_node->title";
-        }
-        
-        $form = array();
-        $form[$field['field_name']] = array('#tree' => TRUE);
-        $form[$field['field_name']]['parent_node'] = array(
+
+	if ($field['widget']['type'] == 'noderef_parent_display')
+	{
+		switch ($op) {
+
+			case 'prepare form values':
+
+				if (count($items) == 0 || (count($items)>0 && empty($items['parent_node']) && empty($items[0]['nid']))) {
+					// must be a new node to be created get the parents node id from the URI parameters
+					if ( is_numeric($_GET[$field['field_name']]) ) {
+						$items['default nids'] = array($_GET[$field['field_name']]);
+					}
+				}
+				else {
+					// node already exists -> get nids from items
+					$node_field_transposed = content_transpose_array_rows_cols($items);
+					$items['default nids'] = (array)$node_field_transposed['nid'];
+				}
+				break;
+
+			case 'form':
+
+				$default_value = '';
+				if ( isset($items['default nids'][0]) ){
+					$parent_node = node_load($items['default nids'][0]);
+					$default_value =  "[$parent_node->nid]: $parent_node->title";
+				}
+
+				$form = array();
+				$form[$field['field_name']] = array('#tree' => TRUE);
+				$form[$field['field_name']]['parent_node'] = array(
           '#type' => 'textfield',
           '#title' => t($field['widget']['label']),
           '#default_value' => $default_value,
           '#disabled' => 'disabled',
           '#attributes' => array (
             'class' => 'noderef_parent_display',
-          )
-        );
-        
-        return $form;
-        break;
-       
-      case 'process form values':
-        preg_match('/^\[(\d+)\].*$/', $items['parent_node'], $matches);
-        if (!empty($matches)) {
-         $items[0]['nid'] = $matches[1];
-        }
-        // Remove the widget's data representation avoiding attempts to save it.
-        unset($items['parent_node']);
-        break;
-    }
-  }
+				)
+				);
+
+				return $form;
+				break;
+
+			case 'process form values':
+				preg_match('/^\[(\d+)\].*$/', $items['parent_node'], $matches);
+				if (!empty($matches)) {
+					$items[0]['nid'] = $matches[1];
+				}
+				// Remove the widget's data representation avoiding attempts to save it.
+				//unset($items['parent_node']);
+				$items['parent_node'] = array();
+				break;
+		}
+	}
 }

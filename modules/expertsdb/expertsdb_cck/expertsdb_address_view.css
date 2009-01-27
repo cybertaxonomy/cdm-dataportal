@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+.expertsdb-address-table .preferred {
+font-weight: 700;
+color: #236abf;
+}
+
+.expertsdb-address-table .field-preferred-address{
+text-align:center;
+}

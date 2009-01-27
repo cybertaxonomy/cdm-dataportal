@@ -1,0 +1,6 @@
+name = Expertsdb Alias
+description = Defines a text field type for multiple name aliases. Data will be integrated as serialized array into the according content type database.
+dependencies = content
+package = EDIT CCK
+
+

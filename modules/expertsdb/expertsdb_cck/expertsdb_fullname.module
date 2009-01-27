@@ -1,0 +1,1852 @@
+<?php
+/**
+ * This is the expertsdb_fullname module for use with CCK.
+ *
+ * <p>This file contains information on the expertsdb_fullname module. The module adds to
+ * the field types available for inclusion in a content type definition. This field
+ * is made up of five standard html form text fields - prefix, first name, middle,
+ * last, and suffix - times two; one set for legal names and one for preferred.
+ * See the README for more details.</p>
+ * TODO it looks like the stars for the required fields might not work on small screens so
+ * instead, maybe use outlines - yellow for required on required fields, blue for required
+ * on optional field?
+ *
+ * @version $Id: cck_fullname.module,v 1.1.2.8 2007/12/17 20:30:55 rconstantine Exp $;
+ * @package CCK_Fullname
+ * @category NeighborForge
+ * @author Ryan Constantine
+ * @filesource
+ * @license http://www.gnu.org/licenses/gpl.txt GNU_GENERAL_PUBLIC_LICENSE
+ * @link none yet
+ */
+
+
+//-----------------------------------------CCK hooks--------------------------------------------------
+//-----------------------------------------CCK hooks--------------------------------------------------
+//-----------------------------------------CCK hooks--------------------------------------------------
+
+/*
+ * Definition of privacy levels
+ */
+define('PRIVACY_CONTACT_PRIVATE', 'ContactPrivate');
+define('PRIVACY_PRIVATE', 'Private');
+define('PRIVACY_PUBLIC', 'Public');
+
+/**
+ * Implementation of hook_field_info().
+ *
+ * @return
+ *   An array keyed by field type name. Each element of the array is an associative
+ *   array with these keys and values:
+ *   - "label": The human-readable label for the field type.
+ */
+function expertsdb_fullname_field_info() {
+  return array(
+    'expertsdb_fullname' => array('label' => 'Expertsdb Full Name'),
+  );
+} // function expertsdb_fullname_field_info()
+
+/**
+ * Implementation of hook_field_settings().
+ *
+ * @param $op
+ *   The operation to be performed.
+ * @param $field
+ *   The field on which the operation is to be performed.
+ * @return
+ *   This varies depending on the operation.
+ *   - "form": an array of form elements to add to
+ *     the settings page.
+ *   - "validate": no return value. Use form_set_error().
+ *   - "save": an array of names of form elements to
+ *     be saved in the database.
+ *   - "database columns": an array keyed by column name, with arrays of column
+ *     information as values.
+ *   - "filters": an array whose values are 'filters'
+ *     definitions as expected by views.module (see Views Documentation).
+ *   - "callbacks": an array describing the field's behaviour regarding hook_field
+ *     operations. The array is keyed by hook_field operations ('view', 'validate'...)
+ *     and has the following possible values :
+ *       CONTENT_CALLBACK_NONE     : do nothing for this operation
+ *       CONTENT_CALLBACK_CUSTOM   : use the behaviour in hook_field(operation)
+ *       CONTENT_CALLBACK_DEFAULT  : use content.module's default bahaviour
+ *     Note : currently only the 'view' operation implements this feature.
+ *     All other field operation implemented by the module _will_ be executed
+ *     no matter what.
+ */
+function expertsdb_fullname_field_settings($op, $field) {
+  switch ($op) {
+
+    case 'form':
+    	// pull in the stylesheet
+			drupal_add_css(drupal_get_path('module', 'expertsdb_fullname') .'/expertsdb_fullname.css');
+      $form = array();
+
+      //borrowed from namefield module
+      //----------allow content type creator to determine which fields are required-----------
+      $required_default = array();
+      if (is_array($field['required_parts'])) {
+        foreach ($field['required_parts'] as $part => $required) {
+          if ($required) { $required_default[] = $part; }
+        } // foreach possibly-required part
+      } else {
+        $required_default = array('legal_first', 'legal_last');
+      } // if we can make up our own defaults
+
+      $form['required'] = array(
+        '#type' => 'fieldset',
+        '#weight' => 3,
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#title' => t("Required Parts"),
+      );
+      $form['required']['required_parts'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t("Required Parts"),
+        '#description' => t("Choose which of these components should be required.
+        Only applies if you chose the field in the above <em>Legal name</em> or <em>Preferred name</em> sections,
+        either <strong>Required</strong>, or <strong>Optional</strong>. (Ex. 1) If you <strong>Require</strong>
+        Legal names, then the fields checked here will be a part of that requirement. Unchecked fields will be optional
+        if you elected to use them above.
+        (Ex. 2) If Preferred names are <strong>Optional</strong>, then all fields are optional until one is filled in,
+        then those checked here are required. Unchecked fields would still be optional. This will
+        prevent the entering of partial/incomplete names."),
+        '#default_value' => $required_default,
+        '#options' => array(
+          'legal_prefix' => t("Legal Prefix"),
+          'legal_first'  => t("Legal First"),
+          'legal_middle' => t("Legal Middle"),
+          'legal_last'   => t("Legal Last"),
+          'legal_suffix' => t("Legal Suffix"),
+          'preferred_prefix' => t("Preferred Prefix"),
+          'preferred_first'  => t("Preferred First"),
+          'preferred_middle' => t("Preferred Middle"),
+          'preferred_last'   => t("Preferred Last"),
+          'preferred_suffix' => t("Preferred Suffix"),
+        ),
+      );
+
+      //----------allow content type creator to determine which legal name fields to use-----------
+      $legal_default = array();
+      if (is_array($field['legalname'])) {
+        foreach ($field['legalname'] as $part => $legal) {
+          if ($legal) { $legal_default[] = $part; }
+        } // foreach possibly-legal part
+      } else {
+        $legal_default = array('legal_first', 'legal_middle', 'legal_last');
+      } // if we can make up our own default
+
+      $form['legal_name'] = array(
+        '#type' => 'fieldset',
+        '#weight' => 2,
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#title' => t('Legal Name'),
+      );
+      $form['legal_name']['use_legalname'] = array(
+        '#type' => 'radios',
+        '#title' => t('Use legal name?'),
+        '#description' => t("Check how legal names should be used. The legal name is the default name when only one is needed."),
+        '#required' => TRUE,
+        '#default_value' => isset($field['use_legalname']) ? $field['use_legalname'] : 'legal_require',
+        '#options' => array(
+          'legal_require' => t("Required"),
+          'legal_optional'  => t("Optional"),
+        ),
+      );
+      $form['legal_name']['legalname'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Legal name'),
+        '#description' => t("Check which of these fields should be available for legal names."),
+        '#required' => TRUE,
+        '#default_value' => $legal_default,
+        '#options' => array(
+          'legal_prefix' => t("Prefix"),
+          'legal_first'  => t("First"),
+          'legal_middle' => t("Middle"),
+          'legal_last'   => t("Last"),
+          'legal_suffix' => t("Suffix"),
+        ),
+      );
+      //end borrowed section
+
+      //similar to copied section
+      //----------allow content type creator to determine which preferred name fields to use-----------
+      $preferred_default = array();
+      if (is_array($field['preferredname'])) {
+        foreach ($field['preferredname'] as $part => $preferred) {
+          if ($preferred) { $preferred_default[] = $part; }
+        } // foreach possibly-legal part
+      } else {
+        $preferred_default = array('preferred_first', 'preferred_middle', 'preferred_last');
+      } // if we can make up our own default
+
+      $form['preferred_name'] = array(
+        '#type' => 'fieldset',
+        '#weight' => 2,
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#title' => t('Preferred Name'),
+      );
+      $form['preferred_name']['use_preferredname'] = array(
+        '#type' => 'radios',
+        '#title' => t('Use preferred name?'),
+        '#description' => t("Check how preferred names should be used."),
+        '#required' => TRUE,
+        '#default_value' => isset($field['use_preferredname']) ? $field['use_preferredname'] : 'preferred_optional',
+        '#options' => array(
+          'preferred_require' => t("Required"),
+          'preferred_optional'  => t("Optional"),
+          'preferred_hide'  => t("Don't use"),
+        ),
+      );
+      $form['preferred_name']['preferredname'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Preferred Name'),
+        '#description' => t("Check which of these fields should be available for preferred names."),
+        '#required' => TRUE,
+        '#default_value' => $preferred_default,
+        '#options' => array(
+          'preferred_prefix' => t("Prefix"),
+          'preferred_first'  => t("First"),
+          'preferred_middle' => t("Middle"),
+          'preferred_last'   => t("Last"),
+          'preferred_suffix' => t("Suffix"),
+        ),
+      );
+
+      $form['note'] = array(
+        '#type' => 'item',
+        '#title' => t('Notes'),
+        '#weight' => -1,
+        '#description' => t('In the "Help text" field above, cut and paste the following: Notice the stars indicating what is required.
+        If either "Legal name" or "Preferred name" have stars next to them, that means you must fill out at least the fields which have a highlighted border.
+        If either "Legal name" or "Preferred name" do not have stars, then you only fill out the fields which have a highlighted border if you fill out ANY of the
+        fields. If you leave all highlighted fields blank for an unstarred name, then you don\'t have to fill out ANY of them. For multiple sets of
+        names, names after the first set are always optional, but their fields will follow the same rules as optional names already explained.'),
+      );
+
+      $form['middle_initial'] = array(//TODO remove this because with the ability to specify the field length, this is redundant
+        '#type' => 'checkbox',
+        '#title' => t('Use middle initial only?'),
+        '#default_value' => isset($field['middle_initial']) ? $field['middle_initial'] : 1,
+        '#return_value' => 1,
+        '#description' => t('Do you want to store only middle initials? This is not simply a display option and should be set only once. Changing it has unpredictable results.'),
+      );
+
+      //-------------specify maximum lengths for each field------------------------
+      $form['max_lengths_legal'] = array(
+        '#type' => 'fieldset',
+        '#weight' => 4,
+        '#title' => t('Legal name maximum field lengths'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+      $form['max_lengths_legal']['max_length_prefix_legal'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Prefix maximum length'),
+        '#size' => 1,
+        '#default_value' => isset($field['max_length_prefix_legal']) ? $field['max_length_prefix_legal'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+      );
+      $form['max_lengths_legal']['max_length_first_legal'] = array(
+        '#type' => 'textfield',
+        '#title' => t('First name maximum length'),
+        '#size' => 6,
+        '#default_value' => isset($field['max_length_first_legal']) ? $field['max_length_first_legal'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+      );
+      $form['max_lengths_legal']['max_length_middle_legal'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Middle name maximum length'),
+        '#size' => 6,
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters (unless Middle Initial is used instead). Leave blank for an unlimited size.'),
+      );
+      if ($field['middle_initial'] == 1) {
+        $form['max_lengths_legal']['max_length_middle_legal']['#default_value'] = 1;
+      }
+      else {
+        $form['max_lengths_legal']['max_length_middle_legal']['#default_value'] = isset($field['max_length_middle_legal']) ? $field['max_length_middle_legal'] : '';
+      }
+      $form['max_lengths_legal']['max_length_last_legal'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Last name maximum length'),
+        '#size' => 6,
+        '#default_value' => isset($field['max_length_last_legal']) ? $field['max_length_last_legal'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+      );
+      $form['max_lengths_legal']['max_length_suffix_legal'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Suffix maximum length'),
+        '#size' => 1,
+        '#default_value' => isset($field['max_length_suffix_legal']) ? $field['max_length_suffix_legal'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+      );
+
+      $form['max_lengths_preferred'] = array(
+        '#type' => 'fieldset',
+        '#weight' => 4,
+        '#title' => t('Preferred name maximum field lengths'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+      $form['max_lengths_preferred']['max_length_prefix_preferred'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Prefix maximum length'),
+        '#size' => 1,
+        '#default_value' => isset($field['max_length_prefix_preferred']) ? $field['max_length_prefix_preferred'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+      );
+      $form['max_lengths_preferred']['max_length_first_preferred'] = array(
+        '#type' => 'textfield',
+        '#title' => t('First name maximum length'),
+        '#size' => 6,
+        '#default_value' => isset($field['max_length_first_preferred']) ? $field['max_length_first_preferred'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+      );
+      $form['max_lengths_preferred']['max_length_middle_preferred'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Middle name maximum length'),
+        '#size' => 6,
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters (unless Middle Initial is used instead). Leave blank for an unlimited size.'),
+      );
+      if ($field['middle_initial'] == 1) {
+        $form['max_lengths_preferred']['max_length_middle_preferred']['#default_value'] = 1;
+      }
+      else {
+        $form['max_lengths_preferred']['max_length_middle_preferred']['#default_value'] = isset($field['max_length_middle_preferred']) ? $field['max_length_middle_preferred'] : '';
+      }
+      $form['max_lengths_preferred']['max_length_last_preferred'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Last name maximum length'),
+        '#size' => 6,
+        '#default_value' => isset($field['max_length_last_preferred']) ? $field['max_length_last_preferred'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+      );
+      $form['max_lengths_preferred']['max_length_suffix_preferred'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Suffix maximum length'),
+        '#size' => 1,
+        '#default_value' => isset($field['max_length_suffix_preferred']) ? $field['max_length_suffix_preferred'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+      );
+
+      // disable multiple
+			$form['multiple'] = array('#type' => 'hidden','#value' => '0');
+			return $form;
+
+      return $form;
+
+    case 'save':
+      return array(
+        'required_parts',
+        'use_legalname',
+        'legalname',
+        'use_preferredname',
+        'preferredname',
+        'middle_initial',
+        'max_length_prefix_legal',
+        'max_length_first_legal',
+        'max_length_middle_legal',
+        'max_length_last_legal',
+        'max_length_suffix_legal',
+        'max_length_prefix_preferred',
+        'max_length_first_preferred',
+        'max_length_middle_preferred',
+        'max_length_last_preferred',
+        'max_length_suffix_preferred',
+      );
+
+    case 'database columns':
+      $columns = array(
+        'last' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+        'first' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+        'middle' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+        'prefix' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+        'suffix' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+        'last_preferred' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+        'first_preferred' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+        'middle_preferred' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+        'prefix_preferred' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+        'suffix_preferred' => array('type' => 'varchar', 'not null' => TRUE, 'default' => "''", 'sortable' => TRUE),
+      );
+      //adjust field lengths based on settings for legal names
+      if ($field['max_lengths_legal']['max_length_prefix_legal'] == 0 || $field['max_lengths_legal']['max_length_prefix_legal'] > 255) {
+        $columns['prefix']['type'] = 'longtext';
+      }
+      else {
+        $columns['prefix']['length'] = $field['max_lengths_legal']['max_length_prefix_legal'];
+      }
+      if ($field['max_lengths_legal']['max_length_first_legal'] == 0 || $field['max_lengths_legal']['max_length_first_legal'] > 255) {
+        $columns['first']['type'] = 'longtext';
+      }
+      else {
+        $columns['first']['length'] = $field['max_lengths_legal']['max_length_first_legal'];
+      }
+      if (($field['max_lengths_legal']['max_length_middle_legal'] == 0 || $field['max_lengths_legal']['max_length_middle_legal'] > 255) && ($field['middle_initial'] != 1)) {
+        $columns['middle']['type'] = 'longtext';
+      }
+      elseif ($field['middle_initial'] == 1) {
+        $columns['middle']['length'] = 1;
+      }
+      else {
+        $columns['middle']['length'] = $field['max_lengths_legal']['max_length_middle_legal'];
+      }
+      if ($field['max_lengths_legal']['max_length_last_legal'] == 0 || $field['max_lengths_legal']['max_length_last_legal'] > 255) {
+        $columns['last']['type'] = 'longtext';
+      }
+      else {
+        $columns['last']['length'] = $field['max_lengths_legal']['max_length_last_legal'];
+      }
+      if ($field['max_lengths_legal']['max_length_suffix_legal'] == 0 || $field['max_lengths_legal']['max_length_suffix_legal'] > 255) {
+        $columns['suffix']['type'] = 'longtext';
+      }
+      else {
+        $columns['suffix']['length'] = $field['max_lengths_legal']['max_length_suffix_legal'];
+      }
+
+      //adjust field lengths based on settings for preferred names
+      if ($field['max_lengths_preferred']['max_length_prefix_preferred'] == 0 || $field['max_lengths_preferred']['max_length_prefix_preferred'] > 255) {
+        $columns['prefix_preferred']['type'] = 'longtext';
+      }
+      else {
+        $columns['prefix_preferred']['length'] = $field['max_lengths_preferred']['max_length_prefix_preferred'];
+      }
+      if ($field['max_lengths_preferred']['max_length_first_preferred'] == 0 || $field['max_lengths_preferred']['max_length_first_preferred'] > 255) {
+        $columns['first_preferred']['type'] = 'longtext';
+      }
+      else {
+        $columns['first_preferred']['length'] = $field['max_lengths_preferred']['max_length_first_preferred'];
+      }
+      if (($field['max_lengths_preferred']['max_length_middle_preferred'] == 0 || $field['max_lengths_preferred']['max_length_middle_preferred'] > 255) && ($field['middle_initial'] != 1)) {
+        $columns['middle_preferred']['type'] = 'longtext';
+      }
+      elseif ($field['middle_initial'] == 1) {
+        $columns['middle_preferred']['length'] = 1;
+      }
+      else {
+        $columns['middle_preferred']['length'] = $field['max_lengths_preferred']['max_length_middle_preferred'];
+      }
+      if ($field['max_lengths_preferred']['max_length_last_preferred'] == 0 || $field['max_lengths_preferred']['max_length_last_preferred'] > 255) {
+        $columns['last_preferred']['type'] = 'longtext';
+      }
+      else {
+        $columns['last_preferred']['length'] = $field['max_lengths_preferred']['max_length_last_preferred'];
+      }
+      if ($field['max_lengths_preferred']['max_length_suffix_preferred'] == 0 || $field['max_lengths_preferred']['max_length_suffix_preferred'] > 255) {
+        $columns['suffix_preferred']['type'] = 'longtext';
+      }
+      else {
+        $columns['suffix_preferred']['length'] = $field['max_lengths_preferred']['max_length_suffix_preferred'];
+      }
+      return $columns;
+
+   case 'filters':
+     return array(
+        'default' => array(
+          'operator' => 'views_handler_operator_like',
+          'handler' => 'views_handler_filter_like',
+        ),
+      );
+
+    case 'callbacks'://pairs up with expertsdb_fullname_field::view
+      return array(
+        'view' => CONTENT_CALLBACK_CUSTOM,
+      );
+  }
+} // function expertsdb_fullname_field_settings()
+
+/**
+ * Implementation of hook_field().
+ *
+ * Validate the user's input. At present, only English alphabetic characters
+ * are valid. Would like to add support for other languages.
+ * Or present the data for viewing.
+ * @param $op
+ *   What kind of action is being performed.
+ * @param &$node
+ *   The node the action is being performed on.
+ * @param $field
+ *   The field the action is being performed on.
+ * @param &$node_field
+ *   The contents of the field in this node. Changes to this variable will
+ *   be saved back to the node object.
+ * @return
+ *   This varies depending on the operation.
+ *   - The "load" operation should return an object containing extra values
+ *     to be merged into the node object.
+ *   - The "view" operation should return a string containing an HTML
+ *     representation of the field data.
+ *   - The "insert", "update", "delete", "validate", and "submit" operations
+ *     have no return value.
+ */
+function expertsdb_fullname_field($op, &$node, $field, &$items, $teaser, $page) {
+  switch ($op) {
+    case 'submit':
+      $info = content_database_info($field['field_name']);
+      break;
+    case 'validate':
+      //validate field lengths
+      //validate the legal name field lengths; TODO restructure these into one big foreach instead of several small ones - use a case statement on $data, then test field lengths in each case
+      if ($field['max_lengths_legal']['max_length_prefix_legal'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_prefix = $field['field_name']. '][' .$delta. '][prefix';
+          if (strlen($data['prefix']) > $field['max_lengths_legal']['max_length_prefix_legal']) {
+            form_set_error($error_field_prefix, t('%label\'s Prefix Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_legal']['max_length_prefix_legal'])));
+          }
+        }
+      }
+      if ($field['max_lengths_legal']['max_length_first_legal'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_first = $field['field_name']. '][' .$delta. '][first';
+          if (strlen($data['first']) > $field['max_lengths_legal']['max_length_first_legal']) {
+            form_set_error($error_field_first, t('%label\'s First Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_legal']['max_length_first_legal'])));
+          }
+        }
+      }
+      if ($field['max_lengths_legal']['max_length_middle_legal'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_middle = $field['field_name']. '][' .$delta. '][middle';
+          if (strlen($data['middle']) > $field['max_lengths_legal']['max_length_middle_legal']) {
+            form_set_error($error_field_middle, t('%label\'s Middle Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_legal']['max_length_middle_legal'])));
+          }
+        }
+      }
+      if ($field['max_lengths_legal']['max_length_last_legal'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_last = $field['field_name']. '][' .$delta. '][last';
+          if (strlen($data['last']) > $field['max_lengths_legal']['max_length_last_legal']) {
+            form_set_error($error_field_last, t('%label\'s Last Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_legal']['max_length_last_legal'])));
+          }
+        }
+      }
+      if ($field['max_lengths_legal']['max_length_suffix_legal'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_suffix = $field['field_name']. '][' .$delta. '][suffix';
+          if (strlen($data['suffix']) > $field['max_lengths_legal']['max_length_suffix_legal']) {
+            form_set_error($error_field_suffix, t('%label\'s Suffix Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_legal']['max_length_suffix_legal'])));
+          }
+        }
+      }
+
+      //validate the preferred name field lengths
+      if ($field['max_lengths_preferred']['max_length_prefix_preferred'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_prefix_preferred = $field['field_name']. '][' .$delta. '][prefix_preferred';
+          if (strlen($data['prefix_preferred']) > $field['max_lengths_preferred']['max_length_prefix_preferred']) {
+            form_set_error($error_field_prefix_preferred, t('%label\'s Prefix Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_preferred']['max_length_prefix_preferred'])));
+          }
+        }
+      }
+      if ($field['max_lengths_preferred']['max_length_first_preferred'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_first_preferred = $field['field_name']. '][' .$delta. '][first_preferred';
+          if (strlen($data['first_preferred']) > $field['max_lengths_preferred']['max_length_first_preferred']) {
+            form_set_error($error_field_first_preferred, t('%label\'s First Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_preferred']['max_length_first_preferred'])));
+          }
+        }
+      }
+      if ($field['max_lengths_preferred']['max_length_middle_preferred'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_middle_preferred = $field['field_name']. '][' .$delta. '][middle_preferred';
+          if (strlen($data['middle_preferred']) > $field['max_lengths_preferred']['max_length_middle_preferred']) {
+            form_set_error($error_field_middle_preferred, t('%label\'s Middle Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_preferred']['max_length_middle_preferred'])));
+          }
+        }
+      }
+      if ($field['max_lengths_preferred']['max_length_last_preferred'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_last_preferred = $field['field_name']. '][' .$delta. '][last_preferred';
+          if (strlen($data['last_preferred']) > $field['max_lengths_preferred']['max_length_last_preferred']) {
+            form_set_error($error_field_last_preferred, t('%label\'s Last Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_preferred']['max_length_last_preferred'])));
+          }
+        }
+      }
+      if ($field['max_lengths_preferred']['max_length_suffix_preferred'] > 0) {
+        foreach ($items as $delta => $data) {
+          $error_field_suffix_preferred = $field['field_name']. '][' .$delta. '][suffix_preferred';
+          if (strlen($data['suffix_preferred']) > $field['max_lengths_preferred']['max_length_suffix_preferred']) {
+            form_set_error($error_field_suffix_preferred, t('%label\'s Suffix Name field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths_preferred']['max_length_suffix_preferred'])));
+          }
+        }
+      }
+
+      //validate required-ness of fields
+      foreach ($items as $delta => $data) {
+        if (is_numeric($delta)) {
+          //deal with legal name fields
+          if (($field['use_legalname'] == 'legal_require') || ($field['use_legalname'] == 'legal_optional')) {
+            $legal_empty = (empty($data['prefix']) && empty($data['first']) && empty($data['middle']) && empty($data['last']) && empty($data['suffix']));
+            if (!$legal_empty) {
+              if (empty($data['prefix']) && $field['required_parts']['legal_prefix'] === 'legal_prefix' && !empty($field['legalname']['legal_prefix'])) {
+                $error_field_prefix = $field['field_name']. '][' .$delta. '][prefix';
+                form_set_error($error_field_prefix, t('Prefix field is required.'));
+              }
+              if (empty($data['first']) && $field['required_parts']['legal_first'] === 'legal_first' && !empty($field['legalname']['legal_first'])) {
+                $error_field_first = $field['field_name']. '][' .$delta. '][first';
+                form_set_error($error_field_first, t('First name field is required.'));
+              }
+              if (empty($data['middle']) && $field['required_parts']['legal_middle'] === 'legal_middle' && !empty($field['legalname']['legal_middle'])) {
+                $error_field_middle = $field['field_name']. '][' .$delta. '][middle';
+                form_set_error($error_field_middle, t('Middle name field is required.'));
+              }
+              if (empty($data['last']) && $field['required_parts']['legal_last'] === 'legal_last' && !empty($field['legalname']['legal_last'])) {
+                $error_field_last = $field['field_name']. '][' .$delta. '][last';
+                form_set_error($error_field_last, t('Last name field is required.'));
+              }
+              if (empty($data['suffix']) && $field['required_parts']['legal_suffix'] === 'legal_suffix' && !empty($field['legalname']['legal_suffix'])) {
+                $error_field_suffix = $field['field_name']. '][' .$delta. '][suffix';
+                form_set_error($error_field_suffix, t('Suffix field is required.'));
+              }
+            }
+            elseif ($field['use_legalname'] == 'legal_require') {
+              form_set_error($field['field_name']. '][' .$delta. ']', t('Legal name field is required.'));
+            }
+          }
+
+          //deal with preferred name fields
+          if (($field['use_preferredname'] == 'preferred_require') || ($field['use_preferredname'] == 'preferred_optional')) {
+            $preferred_empty = (empty($data['prefix_preferred']) && empty($data['first_preferred']) && empty($data['middle_preferred']) && empty($data['last_preferred']) && empty($data['suffix_preferred']));
+            if (!$preferred_empty) {
+              if (empty($data['prefix_preferred']) && $field['required_parts']['preferred_prefix'] === 'preferred_prefix' && !empty($field['preferredname']['preferred_prefix'])) {
+                $error_field_prefix_preferred = $field['field_name']. '][' .$delta. '][prefix_preferred';
+                form_set_error($error_field_prefix_preferred, t('Prefix field is required.'));
+              }
+              if (empty($data['first_preferred']) && $field['required_parts']['preferred_first'] === 'preferred_first' && !empty($field['preferredname']['preferred_first'])) {
+                $error_field_first_preferred = $field['field_name']. '][' .$delta. '][first_preferred';
+                form_set_error($error_field_first_preferred, t('First name field is required.'));
+              }
+              if (empty($data['middle_preferred']) && $field['required_parts']['preferred_middle'] === 'preferred_middle' && !empty($field['preferredname']['preferred_middle'])) {
+                $error_field_middle_preferred = $field['field_name']. '][' .$delta. '][middle_preferred';
+                form_set_error($error_field_middle_preferred, t('Middle name field is required.'));
+              }
+              if (empty($data['last_preferred']) && $field['required_parts']['preferred_last'] === 'preferred_last' && !empty($field['preferredname']['preferred_last'])) {
+                $error_field_last_preferred = $field['field_name']. '][' .$delta. '][last_preferred';
+                form_set_error($error_field_last_preferred, t('Last name field is required.'));
+              }
+              if (empty($data['suffix_preferred']) && $field['required_parts']['preferred_suffix'] === 'preferred_suffix' && !empty($field['preferredname']['preferred_suffix'])) {
+                $error_field_suffix_preferred = $field['field_name']. '][' .$delta. '][suffix_preferred';
+                form_set_error($error_field_suffix_preferred, t('Suffix field is required.'));
+              }
+            }
+            elseif ($field['use_preferredname'] == 'preferred_require') {
+              form_set_error($field['field_name']. '][' .$delta. ']', t('Preferred name field is required.'));
+            }
+          }
+        }
+      }
+      break;
+
+    case 'view':
+      $context = $teaser ? 'teaser' : 'full';
+      $formatter = isset($field['display_settings'][$context]['format']) ? $field['display_settings'][$context]['format'] : 'default';
+      foreach ($items as $delta => $item) {
+        $items[$delta]['view'] = content_format($field, $item, $formatter, $node);
+      }
+      if(!empty($items)){
+      	return theme('field', $node, $field, $items, $teaser, $page);
+      }
+      return;
+  }
+} // function expertsdb_fullname_field()
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function expertsdb_fullname_field_formatter_info() {
+  return array(
+    'default' => array(
+      'label' => t('Default, prefix first middle last suffix'),
+      'field types' => array('expertsdb_fullname'),
+    ),
+    'last_name_only' => array(
+      'label' => t('Last name only'),
+      'field types' => array('expertsdb_fullname'),
+    ),
+    'first_name_only' => array(
+      'label' => t('First name only'),
+      'field types' => array('expertsdb_fullname'),
+    ),
+    'last_name_first' => array(
+      'label' => t('Last, first middle'),
+      'field types' => array('expertsdb_fullname'),
+    ),
+  );
+} // function expertsdb_fullname_field_formatter_info()
+
+/**
+ * Implemetation of hook_field_formatter().
+ *
+ * Here we format the data for display and make sure it is plain text. It should be as
+ * elsewhere it was validated as alphabetic characters only.
+ * We also check the length of each name and if it's only one character, place a period
+ * after it. Primarily this is for people who go by two initials, or who use an initial
+ * for their first name, but not middle.
+ * The $node argument is necessary so that filter access can be checked on
+ * node preview.
+ * @param $field
+ *   The field the action is being performed on.
+ * @param $item
+ *   An array, keyed by column, of the data stored for this item in this field.
+ * @param $formatter
+ *   The name of the formatter being used to display the field. In our case, we name
+ *   it directly, rather than send it through content_format() and therefore we don't
+ *   use hook_field_formatter_info either.
+ * @param $node
+ *   The node object, for context. Will be NULL in some cases.
+ *   Warning : when displaying field retrieved by Views, $node will not
+ *   be a "full-fledged" node object, but an object containg the data returned
+ *   by the Views query (at least nid, vid, changed)
+ * @return
+ *   An HTML string containing the formatted item.
+ */
+function expertsdb_fullname_field_formatter($field, $item, $formatter, $node) {
+  $output = '';
+  if (!key_exists('prefix', $item)) {
+    return '';
+  }
+  switch ($formatter) {
+    case 'default':
+      //check and clean the values for output
+      if (!empty($item['prefix'])) {
+        $cck_legalname['prefix'] = strip_tags($item['prefix']);
+      }
+      if (!empty($item['first'])) {
+        $cck_legalname['first'] = strip_tags($item['first']);
+      }
+      if (!empty($item['middle'])) {
+        $cck_legalname['middle'] = strip_tags($item['middle']);
+      }
+      if (!empty($item['last'])) {
+        $cck_legalname['last'] = strip_tags($item['last']);
+      }
+      if (!empty($item['suffix'])) {
+        $cck_legalname['suffix'] = strip_tags($item['suffix']);
+      }
+      if (!empty($cck_legalname)) {
+        $output .= theme('expertsdb_fullname', $cck_legalname, $field);
+      }
+      if (!empty($item['prefix_preferred'])) {
+        $cck_preferredname['prefix'] = strip_tags($item['prefix_preferred']);
+      }
+      if (!empty($item['first_preferred'])) {
+        $cck_preferredname['first'] = strip_tags($item['first_preferred']);
+      }
+      if (!empty($item['middle_preferred'])) {
+        $cck_preferredname['middle'] = strip_tags($item['middle_preferred']);
+      }
+      if (!empty($item['last_preferred'])) {
+        $cck_preferredname['last'] = strip_tags($item['last_preferred']);
+      }
+      if (!empty($item['suffix_preferred'])) {
+        $cck_preferredname['suffix'] = strip_tags($item['suffix_preferred']);
+      }
+      if (!empty($cck_preferredname)) {//if there is a preferred name, print it instead of the legal name (overwrite $output)
+        $output = t('Preferred name: '). theme('expertsdb_fullname', $cck_preferredname, $field);
+      }
+      return $output;
+    case 'last_name_only'://output legal last name
+      //check and clean the values for output
+        if (isset($item['last'])) {
+          $expertsdb_fullname['last'] = strip_tags($item['last']);
+        }
+        $output .= theme('expertsdb_fullname', $expertsdb_fullname, $field);
+      return $output;
+    case 'first_name_only'://output preferred first name
+      //check and clean the values for output
+        if (isset($item['first_preferred'])) {
+          $expertsdb_fullname['first_preferred'] = strip_tags($item['first_preferred']);
+        }
+        $output .= theme('expertsdb_fullname', $expertsdb_fullname, $field);
+      return $output;
+    case 'last_name_first':
+      //check and clean the values for output
+      if (!empty($item['prefix'])) {
+        $cck_legalname['prefix'] = strip_tags($item['prefix']);
+      }
+      if (!empty($item['first'])) {
+        $cck_legalname['first'] = strip_tags($item['first']);
+      }
+      if (!empty($item['middle'])) {
+        $cck_legalname['middle'] = strip_tags($item['middle']);
+      }
+      if (!empty($item['last'])) {
+        $cck_legalname['last'] = strip_tags($item['last']);
+      }
+      if (!empty($item['suffix'])) {
+        $cck_legalname['suffix'] = strip_tags($item['suffix']);
+      }
+      if (!empty($cck_legalname)) {
+        $output .= theme('expertsdb_fullname', $cck_legalname, $field, TRUE);
+      }
+      if (!empty($item['prefix_preferred'])) {
+        $cck_preferredname['prefix'] = strip_tags($item['prefix_preferred']);
+      }
+      if (!empty($item['first_preferred'])) {
+        $cck_preferredname['first'] = strip_tags($item['first_preferred']);
+      }
+      if (!empty($item['middle_preferred'])) {
+        $cck_preferredname['middle'] = strip_tags($item['middle_preferred']);
+      }
+      if (!empty($item['last_preferred'])) {
+        $cck_preferredname['last'] = strip_tags($item['last_preferred']);
+      }
+      if (!empty($item['suffix_preferred'])) {
+        $cck_preferredname['suffix'] = strip_tags($item['suffix_preferred']);
+      }
+      if (!empty($cck_preferredname)) {//if there is a preferred name, print it instead of the legal name (overwrite $output)
+        $output = t('Preferred name: '). theme('expertsdb_fullname', $cck_preferredname, $field, TRUE);
+      }
+      return $output;
+  }
+} // function expertsdb_fullname_field_formatter()
+
+/**
+ * Theme for address display as called from expertsdb_fullname_field_formatter().
+ *
+ * @param array $expertsdb_fullname
+ * @param array $field
+ * @param boolean $last_first TRUE if displayed last name first
+ * @return string $output
+ */
+function theme_expertsdb_fullname($expertsdb_fullname, $field, $last_first = FALSE) {
+  $output = '';
+  //create the output
+  if ($last_first) {
+    if (isset($expertsdb_fullname['last'])) {
+      $output .= $expertsdb_fullname['last'];
+      if (strlen($expertsdb_fullname['last']) == 1) $output .= '., ';
+      else $output .= ', ';
+    }
+    if (isset($expertsdb_fullname['prefix'])) {
+      $output .= $expertsdb_fullname['prefix'];
+      if (strlen($expertsdb_fullname['prefix']) < 4) $output .= '. ';
+      else $output .= ' ';
+    }
+    if (isset($expertsdb_fullname['first'])) {
+      $output .= $expertsdb_fullname['first'];
+      if (strlen($expertsdb_fullname['first']) == 1) $output .= '. ';
+      else $output .= ' ';
+    }
+    if (isset($expertsdb_fullname['middle'])) {
+      $output .= $expertsdb_fullname['middle'];
+      if ($field['middle_initial'] == 1) $output .= '. ';
+      else $output .= ', ';
+    }
+    if (isset($expertsdb_fullname['suffix'])) {
+      $output .= $expertsdb_fullname['suffix'];
+      if (strlen($expertsdb_fullname['suffix']) < 4) $output .= '.';
+    }
+    $output .= '<br />';
+  }
+  else {
+    if (isset($expertsdb_fullname['prefix'])) {
+      $output .= $expertsdb_fullname['prefix'];
+      if (strlen($expertsdb_fullname['prefix']) < 4) $output .= '. ';
+      else $output .= ' ';
+    }
+    if (isset($expertsdb_fullname['first'])) {
+      $output .= $expertsdb_fullname['first'];
+      if (strlen($expertsdb_fullname['first']) == 1) $output .= '. ';
+      else $output .= ' ';
+    }
+    if (isset($expertsdb_fullname['middle'])) {
+      $output .= $expertsdb_fullname['middle'];
+      if ($field['middle_initial'] == 1) $output .= '. ';
+      else $output .= ' ';
+    }
+    if (isset($expertsdb_fullname['last'])) {
+      $output .= $expertsdb_fullname['last'];
+      if (strlen($expertsdb_fullname['last']) == 1) $output .= '. ';
+      else $output .= ' ';
+    }
+    if (isset($expertsdb_fullname['suffix'])) {
+      $output .= $expertsdb_fullname['suffix'];
+      if (strlen($expertsdb_fullname['suffix']) < 4) $output .= '.';
+    }
+    $output .= '<br />';
+  }
+  return $output;
+} // function theme_expertsdb_fullname()
+
+/**
+ * Implementation of hook_widget_info().
+ *
+ * @return
+ *   An array keyed by widget name. Each element of the array is an associative
+ *   array with these keys and values:
+ *   - "label": The human-readable label for the widget.
+ *   - "field types": An array of field type names that can be edited using
+ *     this widget.
+ */
+function expertsdb_fullname_widget_info() {
+  return array(
+    'expertsdb_fullname' => array(
+      'label' => 'Full Name',
+      'field types' => array('expertsdb_fullname'),
+    ),
+  );
+} // function expertsdb_fullname_widget_info()
+
+/**
+ * Implementation of hook_widget_settings().
+ *
+ * @param $op
+ *   The operation to be performed.
+ * @param $widget
+ *   The widget on which the operation is to be performed.
+ * @return
+ *   This varies depending on the operation.
+ *   - "form": an array of form elements to add to the settings page.
+ *   - "validate": no return value. Use form_set_error().
+ *   - "save": an array of names of form elements to be saved in the database.
+ *   - "callbacks": an array describing the widget's behaviour regarding hook_widget
+ *     operations. The array is keyed by hook_widget operations ('form', 'validate'...)
+ *     and has the following possible values :
+ *       CONTENT_CALLBACK_NONE     : do nothing for this operation
+ *       CONTENT_CALLBACK_CUSTOM   : use the behaviour in hook_widget(operation)
+ *       CONTENT_CALLBACK_DEFAULT  : use content.module's default bahaviour
+ *     Note : currently only the 'default value' operation implements this feature.
+ *     All other widget operation implemented by the module _will_ be executed
+ *     no matter what.
+ */
+function expertsdb_fullname_widget_settings($op, $widget) {
+  switch ($op) {
+    case 'callbacks':
+      return array(
+        'default value' => CONTENT_CALLBACK_CUSTOM,
+      );
+  }
+} // function expertsdb_fullname_widget_settings()
+
+/**
+ * Implementation of hook_widget().
+ *
+ * Presently, we don't allow multiple values as people should only have one name.
+ * Also, we intercept the default value fields and unset() them as I couldn't think
+ * of a use case for pre-setting a person's name. We also use a little bit of CSS
+ * to render the form fields approximately the 'size' they've been specified in 'ems'
+ * as the 'size' was not being rendered in 'ems' but as some fraction thereof; this
+ * because a name with mostly wide letters wasn't all fitting in the display.
+ * @param $op
+ *   What kind of action is being performed.
+ * @param &$node
+ *   The node the action is being performed on.
+ * @param $field
+ *   The field the action is being performed on.
+ * @param &$node_field
+ *   The contents of the field in this node. Changes to this variable will
+ *   be saved back to the node object.
+ * @return
+ *   This varies depending on the operation.
+ *   - The "form" operation should return an array of form elements to display.
+ *   - Other operations have no return value.
+ */
+function expertsdb_fullname_widget($op, &$node, $field, &$items) {
+  switch ($op) {
+    case 'form':
+      $form = array();
+      $form[$field['field_name']] = array('#tree' => TRUE);
+      $form[$field['field_name']]['#theme'] = 'expertsdb_fullname_display';
+
+      $form[$field['field_name']]['use_legalname'] = array(
+        '#type' => 'value',
+        '#value' => $field['use_legalname'],
+      );
+      $form[$field['field_name']]['use_preferredname'] = array(
+        '#type' => 'value',
+        '#value' => $field['use_preferredname'],
+      );
+      $form[$field['field_name']]['required_parts'] = array(
+        '#type' => 'value',
+        '#value' => $field['required_parts'],
+      );
+      $form[$field['field_name']]['legalname'] = array(
+        '#type' => 'value',
+        '#value' => $field['legalname'],
+      );
+      $form[$field['field_name']]['preferredname'] = array(
+        '#type' => 'value',
+        '#value' => $field['preferredname'],
+      );
+
+      $form[$field['field_name']]['#type'] = 'fieldset';
+      $form[$field['field_name']]['#attributes'] = array('class' => 'expertsdb-fullname-fieldset');
+      $form[$field['field_name']]['#title'] = ucfirst(t($field['widget']['label']));
+      $form[$field['field_name']]['#description'] = t($field['widget']['description']);
+      $form[$field['field_name']]['#weight'] = $field['widget']['weight'];
+      if ($field['multiple']) {
+        $delta = 0;
+        foreach ($items as $data) {
+          if (isset($field['legalname']['legal_prefix'])) {
+            $form[$field['field_name']][$delta]['prefix'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['prefix']) ? $data['prefix'] : '',
+              '#size' => $field['max_length_prefix_legal'] ? $field['max_length_prefix_legal'] : NULL,
+              '#maxlength' => $field['max_length_prefix_legal'] ? $field['max_length_prefix_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-prefix">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_prefix'] === 'legal_prefix') {
+              $form[$field['field_name']][$delta]['prefix']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['prefix']['#attributes'] = $field['max_length_prefix_legal'] ? array('style' => 'width:' .$field["max_length_prefix_legal"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['legalname']['legal_first'])) {
+            $form[$field['field_name']][$delta]['first'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['first']) ? $data['first'] : '',
+              '#size' => $field['max_length_first_legal'] ? $field['max_length_first_legal'] : NULL,
+              '#maxlength' => $field['max_length_first_legal'] ? $field['max_length_first_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-first">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_first'] === 'legal_first') {
+              $form[$field['field_name']][$delta]['first']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['first']['#attributes'] = $field['max_length_first_legal'] ? array('style' => 'width:' .$field["max_length_first_legal"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['legalname']['legal_middle'])) {
+            $form[$field['field_name']][$delta]['middle'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['middle']) ? $data['middle'] : '',
+              '#size' => $field['max_length_middle_legal'] ? $field['max_length_middle_legal'] : NULL,
+              '#maxlength' => $field['max_lengths']['max_length_middle_legal'] ? $field['max_lengths']['max_length_middle_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-middle">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_middle'] === 'legal_middle') {
+              $form[$field['field_name']][$delta]['middle']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              if ($field['middle_initial'] == 1) {
+                $form[$field['field_name']][$delta]['middle']['#maxlength'] = 1;
+                $form[$field['field_name']][$delta]['middle']['#attributes'] = array('style' => 'width:1em');
+              }
+              else {
+                $form[$field['field_name']][$delta]['middle']['#maxlength'] = $field['max_length_middle_legal'] ? $field['max_length_middle_legal'] : NULL;
+                $form[$field['field_name']][$delta]['middle']['#attributes'] = $field['max_length_middle_legal'] ? array('style' => 'width:' .$field["max_length_middle_legal"]*0.85. 'em') : array();
+              }
+            }
+          }
+
+          if (isset($field['legalname']['legal_last'])) {
+            $form[$field['field_name']][$delta]['last'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['last']) ? $data['last'] : '',
+              '#size' => $field['max_lengths']['max_length_last_legal'] ? $field['max_lengths']['max_length_last_legal'] : NULL,
+              '#maxlength' => $field['max_lengths']['max_length_last_legal'] ? $field['max_lengths']['max_length_last_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-last">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_last'] === 'legal_last') {
+              $form[$field['field_name']][$delta]['last']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['last']['#attributes'] = $field['max_length_last_legal'] ? array('style' => 'width:' .$field["max_length_last_legal"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['legalname']['legal_suffix'])) {
+            $form[$field['field_name']][$delta]['suffix'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['suffix']) ? $data['suffix'] : '',
+              '#size' => $field['max_length_suffix_legal'] ? $field['max_length_suffix_legal'] : NULL,
+              '#maxlength' => $field['max_length_suffix_legal'] ? $field['max_length_suffix_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-suffix">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_suffix'] === 'legal_suffix') {
+              $form[$field['field_name']][$delta]['suffix']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['suffix']['#attributes'] = $field['max_length_suffix_legal'] ? array('style' => 'width:' .$field["max_length_suffix_legal"]*0.85. 'em') : array();
+            }
+          }
+
+        if (isset($field['preferredname']['preferred_prefix'])) {
+            $form[$field['field_name']][$delta]['prefix_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['prefix_preferred']) ? $data['prefix_preferred'] : '',
+              '#size' => $field['max_length_prefix_preferred'] ? $field['max_length_prefix_preferred'] : NULL,
+              '#maxlength' => $field['max_length_prefix_preferred'] ? $field['max_length_prefix_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-prefix">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_prefix'] === 'preferred_prefix') {
+              $form[$field['field_name']][$delta]['prefix_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['prefix_preferred']['#attributes'] = $field['max_length_prefix_preferred'] ? array('style' => 'width:' .$field["max_length_prefix_preferred"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['preferredname']['preferred_first'])) {
+            $form[$field['field_name']][$delta]['first_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['first_preferred']) ? $data['first_preferred'] : '',
+              '#size' => $field['max_length_first_preferred'] ? $field['max_length_first_preferred'] : NULL,
+              '#maxlength' => $field['max_length_first_preferred'] ? $field['max_length_first_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-first">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_first'] === 'preferred_first') {
+              $form[$field['field_name']][$delta]['first_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['first_preferred']['#attributes'] = $field['max_length_first_preferred'] ? array('style' => 'width:' .$field["max_length_first_preferred"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['preferredname']['preferred_middle'])) {
+            $form[$field['field_name']][$delta]['middle_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['middle_preferred']) ? $data['middle_preferred'] : '',
+              '#size' => $field['max_length_middle_preferred'] ? $field['max_length_middle_preferred'] : NULL,
+              '#maxlength' => $field['max_lengths']['max_length_middle_preferred'] ? $field['max_lengths']['max_length_middle_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-middle">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_middle'] === 'preferred_middle') {
+              $form[$field['field_name']][$delta]['middle_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              if ($field['middle_initial'] == 1) {
+                $form[$field['field_name']][$delta]['middle_preferred']['#maxlength'] = 1;
+                $form[$field['field_name']][$delta]['middle_preferred']['#attributes'] = array('style' => 'width:1em');
+              }
+              else {
+                $form[$field['field_name']][$delta]['middle_preferred']['#maxlength'] = $field['max_length_middle_preferred'] ? $field['max_length_middle_preferred'] : NULL;
+                $form[$field['field_name']][$delta]['middle_preferred']['#attributes'] = $field['max_length_middle_preferred'] ? array('style' => 'width:' .$field["max_length_middle_preferred"]*0.85. 'em') : array();
+              }
+            }
+          }
+
+          if (isset($field['preferredname']['preferred_last'])) {
+            $form[$field['field_name']][$delta]['last_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['last_preferred']) ? $data['last_preferred'] : '',
+              '#size' => $field['max_lengths']['max_length_last_preferred'] ? $field['max_lengths']['max_length_last_preferred'] : NULL,
+              '#maxlength' => $field['max_lengths']['max_length_last_preferred'] ? $field['max_lengths']['max_length_last_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-last">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_last'] === 'preferred_last') {
+              $form[$field['field_name']][$delta]['last_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['last_preferred']['#attributes'] = $field['max_length_last_preferred'] ? array('style' => 'width:' .$field["max_length_last_preferred"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['preferredname']['preferred_suffix'])) {
+            $form[$field['field_name']][$delta]['suffix_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => isset($data['suffix_preferred']) ? $data['suffix_preferred'] : '',
+              '#size' => $field['max_length_suffix_preferred'] ? $field['max_length_suffix_preferred'] : NULL,
+              '#maxlength' => $field['max_length_suffix_preferred'] ? $field['max_length_suffix_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-suffix">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_suffix'] === 'preferred_suffix') {
+              $form[$field['field_name']][$delta]['suffix_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['suffix_preferred']['#attributes'] = $field['max_length_suffix_preferred'] ? array('style' => 'width:' .$field["max_length_suffix_preferred"]*0.85. 'em') : array();
+            }
+          }
+
+          $delta++;
+        }
+        foreach (range($delta, $delta + 2) as $delta) {
+          if (isset($field['legalname']['legal_prefix'])) {
+            $form[$field['field_name']][$delta]['prefix'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_length_prefix_legal'] ? $field['max_length_prefix_legal'] : NULL,
+              '#maxlength' => $field['max_length_prefix_legal'] ? $field['max_length_prefix_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-prefix2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_prefix'] === 'legal_prefix') {
+              $form[$field['field_name']][$delta]['prefix']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['prefix']['#attributes'] = $field['max_length_prefix_legal'] ? array('style' => 'width:' .$field["max_length_prefix_legal"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['legalname']['legal_first'])) {
+            $form[$field['field_name']][$delta]['first'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_length_first_legal'] ? $field['max_length_first_legal'] : NULL,
+              '#maxlength' => $field['max_length_first_legal'] ? $field['max_length_first_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-first2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_first'] === 'legal_first') {
+              $form[$field['field_name']][$delta]['first']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['first']['#attributes'] = $field['max_length_first_legal'] ? array('style' => 'width:' .$field["max_length_first_legal"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['legalname']['legal_middle'])) {
+            $form[$field['field_name']][$delta]['middle'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_length_middle_legal'] ? $field['max_length_middle_legal'] : NULL,
+              '#maxlength' => $field['max_lengths']['max_length_middle_legal'] ? $field['max_lengths']['max_length_middle_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-middle2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_middle'] === 'legal_middle') {
+              $form[$field['field_name']][$delta]['middle']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              if ($field['middle_initial'] == 1) {
+                $form[$field['field_name']][$delta]['middle']['#maxlength'] = 1;
+                $form[$field['field_name']][$delta]['middle']['#attributes'] = array('style' => 'width:1em');
+              }
+              else {
+                $form[$field['field_name']][$delta]['middle']['#maxlength'] = $field['max_length_middle_legal'] ? $field['max_length_middle_legal'] : NULL;
+                $form[$field['field_name']][$delta]['middle']['#attributes'] = $field['max_length_middle_legal'] ? array('style' => 'width:' .$field["max_length_middle_legal"]*0.85. 'em') : array();
+              }
+            }
+          }
+
+          if (isset($field['legalname']['legal_last'])) {
+            $form[$field['field_name']][$delta]['last'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_lengths']['max_length_last_legal'] ? $field['max_lengths']['max_length_last_legal'] : NULL,
+              '#maxlength' => $field['max_lengths']['max_length_last_legal'] ? $field['max_lengths']['max_length_last_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-last2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_last'] === 'legal_last') {
+              $form[$field['field_name']][$delta]['last']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['last']['#attributes'] = $field['max_length_last_legal'] ? array('style' => 'width:' .$field["max_length_last_legal"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['legalname']['legal_suffix'])) {
+            $form[$field['field_name']][$delta]['suffix'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_length_suffix_legal'] ? $field['max_length_suffix_legal'] : NULL,
+              '#maxlength' => $field['max_length_suffix_legal'] ? $field['max_length_suffix_legal'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-suffix2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['legal_suffix'] === 'legal_suffix') {
+              $form[$field['field_name']][$delta]['suffix']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['suffix']['#attributes'] = $field['max_length_suffix_legal'] ? array('style' => 'width:' .$field["max_length_suffix_legal"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['preferredname']['preferred_prefix'])) {
+            $form[$field['field_name']][$delta]['prefix_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_length_prefix_preferred'] ? $field['max_length_prefix_preferred'] : NULL,
+              '#maxlength' => $field['max_length_prefix_preferred'] ? $field['max_length_prefix_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-prefix2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_prefix'] === 'preferred_prefix') {
+              $form[$field['field_name']][$delta]['prefix_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['prefix_preferred']['#attributes'] = $field['max_length_prefix_preferred'] ? array('style' => 'width:' .$field["max_length_prefix_preferred"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['preferredname']['preferred_first'])) {
+            $form[$field['field_name']][$delta]['first_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_length_first_preferred'] ? $field['max_length_first_preferred'] : NULL,
+              '#maxlength' => $field['max_length_first_preferred'] ? $field['max_length_first_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-first2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_first'] === 'preferred_first') {
+              $form[$field['field_name']][$delta]['first_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['first_preferred']['#attributes'] = $field['max_length_first_preferred'] ? array('style' => 'width:' .$field["max_length_first_preferred"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['preferredname']['preferred_middle'])) {
+            $form[$field['field_name']][$delta]['middle_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_length_middle_preferred'] ? $field['max_length_middle_preferred'] : NULL,
+              '#maxlength' => $field['max_lengths']['max_length_middle_preferred'] ? $field['max_lengths']['max_length_middle_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-middle2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_middle'] === 'preferred_middle') {
+              $form[$field['field_name']][$delta]['middle_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              if ($field['middle_initial'] == 1) {
+                $form[$field['field_name']][$delta]['middle_preferred']['#maxlength'] = 1;
+                $form[$field['field_name']][$delta]['middle_preferred']['#attributes'] = array('style' => 'width:1em');
+              }
+              else {
+                $form[$field['field_name']][$delta]['middle_preferred']['#maxlength'] = $field['max_length_middle_preferred'] ? $field['max_length_middle_preferred'] : NULL;
+                $form[$field['field_name']][$delta]['middle_preferred']['#attributes'] = $field['max_length_middle_preferred'] ? array('style' => 'width:' .$field["max_length_middle_preferred"]*0.85. 'em') : array();
+              }
+            }
+          }
+
+          if (isset($field['preferredname']['preferred_last'])) {
+            $form[$field['field_name']][$delta]['last_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_lengths']['max_length_last_preferred'] ? $field['max_lengths']['max_length_last_preferred'] : NULL,
+              '#maxlength' => $field['max_lengths']['max_length_last_preferred'] ? $field['max_lengths']['max_length_last_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-last2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_last'] === 'preferred_last') {
+              $form[$field['field_name']][$delta]['last_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['last_preferred']['#attributes'] = $field['max_length_last_preferred'] ? array('style' => 'width:' .$field["max_length_last_preferred"]*0.85. 'em') : array();
+            }
+          }
+
+          if (isset($field['preferredname']['preferred_suffix'])) {
+            $form[$field['field_name']][$delta]['suffix_preferred'] = array(
+              '#type' => 'textfield',
+              '#default_value' => '',
+              '#size' => $field['max_length_suffix_preferred'] ? $field['max_length_suffix_preferred'] : NULL,
+              '#maxlength' => $field['max_length_suffix_preferred'] ? $field['max_length_suffix_preferred'] : NULL,
+              '#prefix' => '<div class="expertsdb-fullname-suffix2">',
+              '#suffix' => '</div>',
+            );
+            if ($field['required_parts']['preferred_suffix'] === 'preferred_suffix') {
+              $form[$field['field_name']][$delta]['suffix_preferred']['#attributes'] = array('class' => 'required-field');
+            }
+            else {
+              $form[$field['field_name']][$delta]['suffix_preferred']['#attributes'] = $field['max_length_suffix_preferred'] ? array('style' => 'width:' .$field["max_length_suffix_preferred"]*0.85. 'em') : array();
+            }
+          }
+        }
+      }
+      else {
+        //present form for legal name with no multiples
+        if (isset($field['legalname']['legal_prefix'])) {
+          $form[$field['field_name']][0]['prefix'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['prefix']) ? $items[0]['prefix'] : '',
+            '#size' => $field['max_length_prefix_legal'] ? $field['max_length_prefix_legal'] : NULL,
+            '#maxlength' => $field['max_length_prefix_legal'] ? $field['max_length_prefix_legal'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-prefix">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['legal_prefix'] === 'legal_prefix') {
+            $form[$field['field_name']][0]['prefix']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            $form[$field['field_name']][0]['prefix']['#attributes'] = $field['max_length_prefix_legal'] ? array('style' => 'width:' .$field["max_length_prefix_legal"]*0.85. 'em') : array();
+          }
+        }
+
+        if (isset($field['legalname']['legal_first'])) {
+          $form[$field['field_name']][0]['first'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['first']) ? $items[0]['first'] : '',
+            '#size' => $field['max_length_first_legal'] ? $field['max_length_first_legal'] : NULL,
+            '#maxlength' => $field['max_length_first_legal'] ? $field['max_length_first_legal'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-first">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['legal_first'] === 'legal_first') {
+            $form[$field['field_name']][0]['first']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            $form[$field['field_name']][0]['first']['#attributes'] = $field['max_length_first_legal'] ? array('style' => 'width:' .$field["max_length_first_legal"]*0.85. 'em') : array();
+          }
+        }
+
+        if (isset($field['legalname']['legal_middle'])) {
+          $form[$field['field_name']][0]['middle'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['middle']) ? $items[0]['middle'] : '',
+            '#size' => $field['max_length_middle_legal'] ? $field['max_length_middle_legal'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-middle">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['legal_middle'] === 'legal_middle') {
+            $form[$field['field_name']][0]['middle']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            if ($field['middle_initial'] == 1) {
+              $form[$field['field_name']][0]['middle']['#maxlength'] = 1;
+              $form[$field['field_name']][0]['middle']['#attributes'] = array('style' => 'width:1em');
+            }
+            else {
+              $form[$field['field_name']][0]['middle']['#maxlength'] = $field['max_length_middle_legal'] ? $field['max_length_middle_legal'] : NULL;
+              $form[$field['field_name']][0]['middle']['#attributes'] = $field['max_length_middle_legal'] ? array('style' => 'width:' .$field["max_length_middle_legal"]*0.85. 'em') : array();
+            }
+          }
+        }
+
+        if (isset($field['legalname']['legal_last'])) {
+          $form[$field['field_name']][0]['last'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['last']) ? $items[0]['last'] : '',
+            '#size' => $field['max_length_last_legal'] ? $field['max_length_last_legal'] : NULL,
+            '#maxlength' => $field['max_length_last_legal'] ? $field['max_length_last_legal'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-last">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['legal_last'] === 'legal_last') {
+            $form[$field['field_name']][0]['last']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            $form[$field['field_name']][0]['last']['#attributes'] = $field['max_length_last_legal'] ? array('style' => 'width:' .$field["max_length_last_legal"]*0.85. 'em') : array();
+          }
+        }
+
+        if (isset($field['legalname']['legal_suffix'])) {
+          $form[$field['field_name']][0]['suffix'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['suffix']) ? $items[0]['suffix'] : '',
+            '#size' => $field['max_length_suffix_legal'] ? $field['max_length_suffix_legal'] : NULL,
+            '#maxlength' => $field['max_length_suffix_legal'] ? $field['max_length_suffix_legal'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-suffix">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['legal_suffix'] === 'legal_suffix') {
+            $form[$field['field_name']][0]['suffix']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            $form[$field['field_name']][0]['suffix']['#attributes'] = $field['max_length_suffix_legal'] ? array('style' => 'width:' .$field["max_length_suffix_legal"]*0.85. 'em') : array();
+          }
+        }
+
+        //present form for preferred name with no multiples
+        if (isset($field['preferredname']['preferred_prefix'])) {
+          $form[$field['field_name']][0]['prefix_preferred'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['prefix_preferred']) ? $items[0]['prefix_preferred'] : '',
+            '#size' => $field['max_length_prefix_preferred'] ? $field['max_length_prefix_preferred'] : NULL,
+            '#maxlength' => $field['max_length_prefix_preferred'] ? $field['max_length_prefix_preferred'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-prefix">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['preferred_prefix'] === 'preferred_prefix') {
+            $form[$field['field_name']][0]['prefix_preferred']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            $form[$field['field_name']][0]['prefix_preferred']['#attributes'] = $field['max_length_prefix_preferred'] ? array('style' => 'width:' .$field["max_length_prefix_preferred"]*0.85. 'em') : array();
+          }
+        }
+
+        if (isset($field['preferredname']['preferred_first'])) {
+          $form[$field['field_name']][0]['first_preferred'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['first_preferred']) ? $items[0]['first_preferred'] : '',
+            '#size' => $field['max_length_first_preferred'] ? $field['max_length_first_preferred'] : NULL,
+            '#maxlength' => $field['max_length_first_preferred'] ? $field['max_length_first_preferred'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-first">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['preferred_first'] === 'preferred_first') {
+            $form[$field['field_name']][0]['first_preferred']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            $form[$field['field_name']][0]['first_preferred']['#attributes'] = $field['max_length_first_preferred'] ? array('style' => 'width:' .$field["max_length_first_preferred"]*0.85. 'em') : array();
+          }
+
+        }
+
+        if (isset($field['preferredname']['preferred_middle'])) {
+          $form[$field['field_name']][0]['middle_preferred'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['middle_preferred']) ? $items[0]['middle_preferred'] : '',
+            '#size' => $field['max_length_middle_preferred'] ? $field['max_length_middle_preferred'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-middle">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['preferred_middle'] === 'preferred_middle') {
+            $form[$field['field_name']][0]['middle_preferred']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            if ($field['middle_initial'] == 1) {
+              $form[$field['field_name']][0]['middle_preferred']['#maxlength'] = 1;
+              $form[$field['field_name']][0]['middle_preferred']['#attributes'] = array('style' => 'width:1em');
+            }
+            else {
+              $form[$field['field_name']][0]['middle_preferred']['#maxlength'] = $field['max_length_middle_preferred'] ? $field['max_length_middle_preferred'] : NULL;
+              $form[$field['field_name']][0]['middle_preferred']['#attributes'] = $field['max_length_middle_preferred'] ? array('style' => 'width:' .$field["max_length_middle_preferred"]*0.85. 'em') : array();
+            }
+          }
+        }
+
+        if (isset($field['preferredname']['preferred_last'])) {
+          $form[$field['field_name']][0]['last_preferred'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['last_preferred']) ? $items[0]['last_preferred'] : '',
+            '#size' => $field['max_length_last_preferred'] ? $field['max_length_last_preferred'] : NULL,
+            '#maxlength' => $field['max_length_last_preferred'] ? $field['max_length_last_preferred'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-last">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['preferred_last'] === 'preferred_last') {
+            $form[$field['field_name']][0]['last_preferred']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            $form[$field['field_name']][0]['last_preferred']['#attributes'] = $field['max_length_last_preferred'] ? array('style' => 'width:' .$field["max_length_last_preferred"]*0.85. 'em') : array();
+          }
+        }
+
+        if (isset($field['preferredname']['preferred_suffix'])) {
+          $form[$field['field_name']][0]['suffix_preferred'] = array(
+            '#type' => 'textfield',
+            '#default_value' => isset($items[0]['suffix_preferred']) ? $items[0]['suffix_preferred'] : '',
+            '#size' => $field['max_length_suffix_preferred'] ? $field['max_length_suffix_preferred'] : NULL,
+            '#maxlength' => $field['max_length_suffix_preferred'] ? $field['max_length_suffix_preferred'] : NULL,
+            '#prefix' => '<div class="expertsdb-fullname-suffix">',
+            '#suffix' => '</div>',
+          );
+          if($field['required_parts']['preferred_suffix'] === 'preferred_suffix') {
+            $form[$field['field_name']][0]['suffix_preferred']['#attributes'] = array('class' => 'required-field');
+          }
+          else {
+            $form[$field['field_name']][0]['suffix_preferred']['#attributes'] = $field['max_length_suffix_preferred'] ? array('style' => 'width:' .$field["max_length_suffix_preferred"]*0.85. 'em') : array();
+          }
+        }
+      }
+      return $form;
+
+    /*case 'default value':
+      unset ($field['widget']['default_value_php']);
+      unset ($field['widget']['default_value']);
+      break;*/
+
+    case 'process form values':
+      // Don't save empty fields except the first value
+      foreach ($items as $delta => $item) {
+        if (!is_numeric($delta)) {
+          unset($items[$delta]);//if we don't do this, for some reason, the first $delta of good values turns into a set of 'l's (the letter l)
+        }
+        //in the validation stage, we'll enforce required fields for $delta > 0, but let's just remove any totally empty $deltas now
+        elseif (($item['prefix'] == '') && ($item['first'] == '') && ($item['middle'] == '') && ($item['last'] == '') && ($item['suffix'] == '') &&
+         ($item['prefix_preferred'] == '') && ($item['first_preferred'] == '') && ($item['middle_preferred'] == '') && ($item['last_preferred'] == '') && ($item['suffix_preferred'] == '') && $delta > 0) {
+          unset($items[$delta]);
+        }
+      }
+      break;
+  }
+} //function expertsdb_fullname_widget()
+
+/**
+ * Display the input fields to the user.
+ *
+ * @param array $form
+ * 	The data to be rendered.
+ * @return string An HTML string ready for display.
+ */
+function theme_expertsdb_fullname_display($form) {
+  drupal_add_css(drupal_get_path('module', 'expertsdb_fullname') .'/expertsdb_fullname.css', 'module', 'all', FALSE);
+  $output = '';
+  $rows = array();
+  $header = array();
+
+  $header[] = t('');
+  if ($form['legalname']['#value']['legal_prefix'] === 'legal_prefix' || $form['preferredname']['#value']['preferred_prefix'] === 'preferred_prefix') {
+    $header[] = t('Prefix');
+  }
+  if ($form['legalname']['#value']['legal_first'] === 'legal_first' || $form['preferredname']['#value']['preferred_first'] === 'preferred_first') {
+    $header[] = t('First');
+  }
+  if ($form['legalname']['#value']['legal_middle'] === 'legal_middle' || $form['preferredname']['#value']['preferred_middle'] === 'preferred_middle') {
+    $header[] = t('Middle');
+  }
+  if ($form['legalname']['#value']['legal_last'] === 'legal_last' || $form['preferredname']['#value']['preferred_last'] === 'preferred_last') {
+    $header[] = t('Last');
+  }
+  if ($form['legalname']['#value']['legal_suffix'] === 'legal_suffix' || $form['preferredname']['#value']['preferred_suffix'] === 'preferred_suffix') {
+    $header[] = t('Suffix');
+  }
+
+  foreach (element_children($form) as $delta) {
+    if (is_numeric($delta)) {
+      if ($form['use_legalname']['#value'] == 'legal_require') {
+        $rows[$delta]['name'] = '<div class="fullname-type required">'. t('Legal name') .'<span class="form-required" title="This field is required.">*</span></div>';
+      }
+      else {
+        $rows[$delta]['name'] = '<div class="fullname-type">'. t('Legal name') .'</div>';
+      }
+      unset($form['use_legalname']);
+
+      if ($form['legalname']['#value']['legal_prefix'] === 'legal_prefix') {
+        $rows[$delta]['prefix'] = drupal_render($form[$delta]['prefix']);
+      }
+      else {
+        if ($form['use_preferredname']['#value'] != 'preferred_hide' && $form['preferredname']['#value']['preferred_prefix'] === 'preferred_prefix') {
+          $rows[$delta]['prefix'] = '';
+        }
+        $form[$delta]['prefix']['#access'] = FALSE;
+      }
+      if ($form['legalname']['#value']['legal_first'] === 'legal_first') {
+        $rows[$delta]['first'] = drupal_render($form[$delta]['first']);
+      }
+      else {
+        if ($form['use_preferredname']['#value'] != 'preferred_hide' && $form['preferredname']['#value']['preferred_first'] === 'preferred_first') {
+          $rows[$delta]['first'] = '';
+        }
+        $form[$delta]['first']['#access'] = FALSE;
+      }
+      if ($form['legalname']['#value']['legal_middle'] === 'legal_middle') {
+        $rows[$delta]['middle'] = drupal_render($form[$delta]['middle']);
+      }
+      else {
+        if ($form['use_preferredname']['#value'] != 'preferred_hide' && $form['preferredname']['#value']['preferred_middle'] === 'preferred_middle') {
+          $rows[$delta]['middle'] = '';
+        }
+        $form[$delta]['middle']['#access'] = FALSE;
+      }
+      if ($form['legalname']['#value']['legal_last'] === 'legal_last') {
+        $rows[$delta]['last'] = drupal_render($form[$delta]['last']);
+      }
+      else {
+        if ($form['use_preferredname']['#value'] != 'preferred_hide' && $form['preferredname']['#value']['preferred_last'] === 'preferred_last') {
+          $rows[$delta]['last'] = '';
+        }
+        $form[$delta]['last']['#access'] = FALSE;
+      }
+      if ($form['legalname']['#value']['legal_suffix'] === 'legal_suffix') {
+        $rows[$delta]['suffix'] = drupal_render($form[$delta]['suffix']);
+      }
+      else {
+        if ($form['use_preferredname']['#value'] != 'preferred_hide' && $form['preferredname']['#value']['preferred_suffix'] === 'preferred_suffix') {
+          $rows[$delta]['suffix'] = '';
+        }
+        $form[$delta]['suffix']['#access'] = FALSE;
+      }
+
+      //if preferred name is active, show the input fields
+      if ($form['use_preferredname']['#value'] != 'preferred_hide') {
+        //if form has fields from preferred name, set a title based on required-ness
+        if ($form[$delta]['prefix_preferred'] || $form[$delta]['first_preferred'] || $form[$delta]['middle_preferred'] || $form[$delta]['last_preferred'] || $form[$delta]['suffix_preferred']) {
+          if ($form['use_preferredname']['#value'] == 'preferred_require') {
+            $rows[$delta .'b']['name_preferred'] = '<div class="fullname-type required">'. t('Preferred name') .'<span class="form-required" title="This field is required.">*</span></div>';
+          }
+          else {
+            $rows[$delta .'b']['name_preferred'] = '<div class="fullname-type">'. t('Preferred name') .'</div>';
+          }
+          unset($form['use_preferredname']);
+        }
+
+        if ($form['preferredname']['#value']['preferred_prefix'] === 'preferred_prefix') {
+          $rows[$delta .'b']['prefix_preferred'] = drupal_render($form[$delta]['prefix_preferred']);
+        }
+        else {
+          if ($form['legalname']['#value']['legal_prefix'] === 'legal_prefix') {
+            $rows[$delta .'b']['prefix_preferred'] = '';
+          }
+          $form[$delta]['prefix_preferred']['#access'] = FALSE;
+        }
+        if ($form['preferredname']['#value']['preferred_first'] === 'preferred_first') {
+          $rows[$delta .'b']['first_preferred'] = drupal_render($form[$delta]['first_preferred']);
+        }
+        else {
+          if ($form['legalname']['#value']['legal_first'] === 'legal_first') {
+            $rows[$delta .'b']['first_preferred'] = '';
+          }
+          $form[$delta]['first_preferred']['#access'] = FALSE;
+        }
+        if ($form['preferredname']['#value']['preferred_middle'] === 'preferred_middle') {
+          $rows[$delta .'b']['middle_preferred'] = drupal_render($form[$delta]['middle_preferred']);
+        }
+        else {
+          if ($form['legalname']['#value']['legal_middle'] === 'legal_middle') {
+          $rows[$delta .'b']['middle_preferred'] =  '';
+          }
+          $form[$delta]['middle_preferred']['#access'] = FALSE;
+        }
+        if ($form['preferredname']['#value']['preferred_last'] === 'preferred_last') {
+          $rows[$delta .'b']['last_preferred'] = drupal_render($form[$delta]['last_preferred']);
+        }
+        else {
+          if ($form['legalname']['#value']['legal_last'] === 'legal_last') {
+          $rows[$delta .'b']['last_preferred'] = '';
+          }
+          $form[$delta]['last_preferred']['#access'] = FALSE;
+        }
+        if ($form['preferredname']['#value']['preferred_suffix'] === 'preferred_suffix') {
+          $rows[$delta .'b']['suffix_preferred'] = drupal_render($form[$delta]['suffix_preferred']);
+        }
+        else {
+          if ($form['legalname']['#value']['legal_suffix'] === 'legal_suffix') {
+          $rows[$delta .'b']['suffix_preferred'] = '';
+          }
+          $form[$delta]['suffix_preferred']['#access'] = FALSE;
+        }
+      }
+      else {
+        $form[$delta]['prefix_preferred']['#access'] = FALSE;
+        $form[$delta]['first_preferred']['#access'] = FALSE;
+        $form[$delta]['middle_preferred']['#access'] = FALSE;
+        $form[$delta]['last_preferred']['#access'] = FALSE;
+        $form[$delta]['suffix_preferred']['#access'] = FALSE;
+      }
+    }
+  }
+  unset($form['use_legalname']);
+  unset($form['use_preferredname']);
+  unset($form['required_parts']);
+  unset($form['legalname']);
+  unset($form['preferredname']);
+  $output .= theme('table', $header, $rows);
+  $output .= drupal_render($form);
+  return $output;
+} //function theme_expertsdb_fullname_display
+
+//-----------------------------------------Integration with other modules-----------------------------
+//-----------------------------------------Integration with other modules-----------------------------
+//-----------------------------------------Integration with other modules-----------------------------
+
+/**
+ * Implementation of hook_diff()
+ */
+function expertsdb_fullname_diff(&$old_node, &$new_node) {
+  $result = array();
+  $cck_info = content_types($new_node->type);
+  if ($cck_info) {
+    foreach ($cck_info['fields'] as $field) {
+      if ($field['type'] == 'expertsdb_fullname') {
+        $old_values = array();
+        $new_values = array();
+        if (isset($old_node->$field['field_name'])) {
+          $old_values = expertsdb_fullname_diff_values($old_node, $field);
+        }
+        if (isset($new_node->$field['field_name'])) {
+          $new_values = expertsdb_fullname_diff_values($new_node, $field);
+        }
+        foreach ($new_values as $key => $value) {
+          if (!isset($old_values[$key]) && ($new_values[$key] == '')) {
+            unset($new_values[$key]);
+          }
+        }
+        $result[] = array(
+          'name' => $field['widget']['label'],
+          'old' => $old_values,
+          'new' => $new_values,
+          'format' => array(
+            'show_header' => true,
+            ),
+          );
+      }
+    }
+  }
+  return $result;
+}
+
+/**
+ * A helper function for the diff hook
+ *
+ * @param object $node
+ * @param array $field
+ * @return array
+ */
+function expertsdb_fullname_diff_values(&$node, &$field) {
+  foreach ($node->$field['field_name'] as $item => $value) {
+    if (!is_numeric($item)) {
+      continue;
+    }
+    else {
+      $result[] = $value['prefix'];
+      $result[] = $value['first'];
+      $result[] = $value['middle'];
+      $result[] = $value['last'];
+      $result[] = $value['suffix'];
+      $result[] = $value['prefix_preferred'];
+      $result[] = $value['first_preferred'];
+      $result[] = $value['middle_preferred'];
+      $result[] = $value['last_preferred'];
+      $result[] = $value['suffix_preferred'];
+    }
+  }
+  return $result;
+}
+
+/**
+ * Implementation of hook_token_values
+ *
+ * @param string $type $type contains the current context -- 'node', 'user', 'global', etc.
+ * @param mixed $object contains the specific node, user, etc. that should be used as the basis for the replacements.
+ * @return array $tokens
+ */
+function expertsdb_fullname_token_values($type, $object = NULL) {
+  if ($type == 'field') {
+    $tokens = array();
+    $something = $object[0];
+    $tokens['fullname'] = $something['view'];
+    $tokens['prefix'] = check_plain($something['prefix']);
+    $tokens['first'] = check_plain($something['first']);
+    $tokens['middle'] = check_plain($something['middle']);
+    $tokens['last'] = check_plain($something['last']);
+    $tokens['suffix'] = check_plain($something['suffix']);
+    $tokens['prefix_preferred'] = check_plain($something['prefix_preferred']);
+    $tokens['first_preferred'] = check_plain($something['first_preferred']);
+    $tokens['middle_preferred'] = check_plain($something['middle_preferred']);
+    $tokens['last_preferred'] = check_plain($something['last_preferred']);
+    $tokens['suffix_preferred'] = check_plain($something['suffix_preferred']);
+    return $tokens;
+  }
+} // function expertsdb_fullname_token_values()
+
+/**
+ * Implementation of hook_token_list
+ *
+ * @param string $type indicates the context that token help is being generated for.
+ * @return array $tokens
+ */
+function expertsdb_fullname_token_list($type = 'all') {
+  if ($type == 'field' || $type == 'all') {
+    $tokens = array();
+    $tokens['expertsdb_fullname']['fullname'] = t("The user's full name");
+    $tokens['expertsdb_fullname']['prefix'] = t("The user's legal prefix");
+    $tokens['expertsdb_fullname']['first'] = t("The user's legal first name");
+    $tokens['expertsdb_fullname']['middle'] = t("The user's legal middle name or initial");
+    $tokens['expertsdb_fullname']['last'] = t("The user's legal last name");
+    $tokens['expertsdb_fullname']['suffix'] = t("The user's legal suffix");
+    $tokens['expertsdb_fullname']['prefix_preferred'] = t("The user's preferred prefix");
+    $tokens['expertsdb_fullname']['first_preferred'] = t("The user's preferred first name");
+    $tokens['expertsdb_fullname']['middle_preferred'] = t("The user's preferred middle name or initial");
+    $tokens['expertsdb_fullname']['last_preferred'] = t("The user's preferred last name");
+    $tokens['expertsdb_fullname']['suffix_preferred'] = t("The user's preferred suffix");
+    return $tokens;
+  }
+} // function expertsdb_fullname_token_list()
