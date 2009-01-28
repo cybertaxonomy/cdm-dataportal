@@ -135,6 +135,10 @@ a.synonym:link, a.synonym:visited {
   color: #7C7C7F;
 }
 
+a.toc:link, a.toc:visited {
+  color: #F03300;
+}
+
 .block-cdm_taxontree .content, .block-cdm_dataportal-3 .content{
    font-size: 90%;
 }

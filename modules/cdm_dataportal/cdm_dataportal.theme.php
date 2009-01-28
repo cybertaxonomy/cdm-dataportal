@@ -192,15 +192,9 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = 'LINK',
     $out .= '<span class="'.$class.'">'.theme('cdm_taggedtext2html', $nameTO->taggedName, 'span', ' ', $skip).'</span>';
   }
 
-
-
   if($displayNomRef && $hasNomRef){
     $out .= '<span class="reference">';
-    if($nomRefLink){
-      $out .= l(theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference), "/cdm_dataportal/reference/".$nameTO->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);      
-    } else {
-      $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference);
-    }
+    $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference, $nomRefLink);
     $out .= '</span>';
   }
 
@@ -664,7 +658,7 @@ function theme_cdm_fullreference($referenceTO){
  * @param unknown_type $enclosingTag
  * @return unknown
  */
-function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $separator = '<br />' , $enclosingTag = 'li'){
+function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cssClass = '', $separator = '<br />' , $enclosingTag = 'li'){
 
   if(isset($referenceSTO->microReference)){
     // it is a ReferenceTO
@@ -674,11 +668,16 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $cssClass = '', $sep
     $nomref_citation = $referenceSTO->fullCitation;
   }
 
-  _add_js_thickbox();
+  if($doLink){
+    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);      
+  }
+  
   if(!empty($nomref_citation)){
     $nomref_citation = (str_beginsWith($nomref_citation, 'in') ? '&nbsp;':',&nbsp;') . $nomref_citation;
   }
 
+  // append links to protologe images
+  _add_js_thickbox();
   $prefRepresentations = cdm_preferred_media_representations($referenceSTO->media[0], array('application/pdf', 'image/gif', 'image/jpeg', 'image/png'), 300, 400);
   // shift the first representation from the ordered list
   $representation = array_shift($prefRepresentations);
@@ -780,7 +779,7 @@ function theme_cdm_taxon_page_general($taxonTO, $page_part){
   $out .= theme('cdm_back_to_search_result_button');
   
   if($page_part == 'description' || $page_part == 'all'){
-    $out .= '<div id="description">';
+    $out .= '<div id="general">';
     $out .= theme('cdm_taxon_page_description', $taxonTO);
     $out .= '</div>';
   }
@@ -899,11 +898,11 @@ function theme_cdm_reference_page($referenceTO){
           if($partial->end){
             $datePublished = (strlen($datePublished) > 0 ? ' '.t('to').' ' : '').substr($partial->end, 0, 4).'-'.substr($partial->end, 4, 2).'-'.substr($partial->end, 6, 2);
           }
-          $table_rows[] = array(t($fieldname), $datePublished);
+          $table_rows[] = array(t(ucfirst(strtolower($fieldname))), $datePublished);
         } else if(is_object($referenceTO->$fieldname)){
-          $table_rows[] = array(t($fieldname), $referenceTO->$fieldname->titleCache);
+          $table_rows[] = array(t(ucfirst(strtolower($fieldname))), $referenceTO->$fieldname->titleCache);
         } else {
-          $table_rows[] = array(t($fieldname), $referenceTO->$fieldname);
+          $table_rows[] = array(t(ucfirst(strtolower($fieldname))), $referenceTO->$fieldname);
         }
       }
   }
@@ -1296,8 +1295,7 @@ function theme_cdm_featureTree($featureTree){
 }
 
 function theme_cdm_featureTreeToc($featureTree){
-
-
+  
   $out = '<div class="featureTOC">';
   $out .= '<h2>' . t('Content') .'</h2>';
   $out .= '<ul>';
@@ -1313,7 +1311,7 @@ function theme_cdm_featureTreeToc($featureTree){
         $feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
         // HACK to implement images for taxa, should be removed
         if($feature != 'Image'){
-          $out .= '<li>'.l(t(ucfirst($feature)), "#'.generalizeString($feature).'").'</li>';
+          $out .= '<li>'.l(t(ucfirst($feature)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($feature)).'</li>';
         }
       }
     }

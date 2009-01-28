@@ -127,6 +127,7 @@ function cdm_dataportal_menu($may_cache) {
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_CALLBACK,
+      'weight' => 1,
       'callback arguments' => array(arg(2))
       // expected callback arguments: name_uuid
       );
@@ -137,17 +138,8 @@ function cdm_dataportal_menu($may_cache) {
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => 2,
       'callback arguments' => array(arg(2), "description")
-      // expected callback arguments: name_uuid
-      );
-      
-      $items[] = array(
-      'path' => 'cdm_dataportal/taxon/'.arg(2).'/images',
-      'title' => t('Images'),
-      'callback' => 'cdm_dataportal_view_taxon',
-      'access' => true,
-      'type' => MENU_LOCAL_TASK,
-      'callback arguments' => array(arg(2), "images")
       // expected callback arguments: name_uuid
       );
       
@@ -157,7 +149,19 @@ function cdm_dataportal_menu($may_cache) {
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_LOCAL_TASK,
+      'weight' => 3,
       'callback arguments' => array(arg(2), "synonymy")
+      // expected callback arguments: name_uuid
+      );
+      
+      $items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/images',
+      'title' => t('Images'),
+      'callback' => 'cdm_dataportal_view_taxon',
+      'access' => true,
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 4,
+      'callback arguments' => array(arg(2), "images")
       // expected callback arguments: name_uuid
       );
     } 
@@ -763,10 +767,11 @@ function _cdm_dataportal_currentSecRef_array(){
   }
   return  $_SESSION['cdm']['currentSecRef'];
   */
-
-// do not look in session but in database
-
-  if( variable_get('cdm_currentSecRef', null) == null){
+  
+  //TODO setting the currentSecUuid causes problems in cichorieae in taraxacum, 
+  //     thus it is temporary DISABLED
+  // do not look in session but in database
+  if( "DISABLED" != false || variable_get('cdm_currentSecRef', null) == null){
      $secUuid = variable_get('cdm_secUuid_default', null);
      _cdm_dataportal_set_currentSecUuid($secUuid);
   }

@@ -981,7 +981,7 @@ function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, 
   // find the secRefUuid
   $secRefUuid = null;
   if(is_null($vid)){
-    //TODO compare with _cdm_dataportal_currentSecRef_array() & _cdm_dataportal_set_currentSecRef
+    //TODO use instead _cdm_dataportal_currentSecRef_array() & _cdm_dataportal_set_currentSecRef
     //TODO using the currentSecUuid causes problems in cichorieae in taraxacum, 
     /*     thus it is temporary DISABLED..
     if($taxonUuid){
