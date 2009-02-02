@@ -42,9 +42,8 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
   foreach($descriptions as $descriptionTo){
     $features = $descriptionTo->features;
     foreach($features as $featureTo){
-      print($featureTo->feature->term.',');
       if($featureTo->feature->term == 'Image'){
-        $flashLink = true;
+        $flashLink = count($featureTo->descriptionElements) > 0;
         break;        
       }
     }
