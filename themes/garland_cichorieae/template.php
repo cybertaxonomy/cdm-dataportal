@@ -39,13 +39,13 @@ function garland_cichorieae_cdm_taxon_page_description($taxonTO){
 function garland_cichorieae_cdm_taxon_page_images($taxonTO){
   
   $descriptions = $taxonTO->featureTree->descriptions;
-  
   foreach($descriptions as $descriptionTo){
     $features = $descriptionTo->features;
     foreach($features as $featureTo){
+      print($featureTo->feature->term.',');
       if($featureTo->feature->term == 'Image'){
-        
-        $flashLink = $featureTo->descriptionElements[0]->description;
+        $flashLink = true;
+        break;        
       }
     }
   }
