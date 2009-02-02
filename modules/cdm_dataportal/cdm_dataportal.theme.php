@@ -206,11 +206,12 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = 'LINK',
     }
   }
 
+  // render protologues etc...
   if($displayDescription && !empty($nameTO->descriptions)){
     foreach($nameTO->descriptions as $DescriptionTO){
     		if(!empty($DescriptionTO)){
     		  foreach($DescriptionTO->elements as $DescriptionElementSTO){
-    		    $out .= theme("cdm_media", $DescriptionElementSTO);
+    		    $out .= theme("cdm_media", $DescriptionElementSTO, array('application/pdf', 'image/png', 'image/jpeg', 'image/gif', 'text/html'));
     		  }
     		}
     }
@@ -222,7 +223,7 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = 'LINK',
   return $out;
 }
 
-function theme_cdm_media($DescriptionElementSTO){
+function theme_cdm_media($DescriptionElementSTO, $mimeTypePreference){
   $out = "";
 
   _add_js_thickbox();
@@ -233,7 +234,7 @@ function theme_cdm_media($DescriptionElementSTO){
 
   foreach($medias as $media){
      
-    $prefRepresentations = cdm_preferred_media_representations($media, array('application/pdf', 'image/gif', 'image/jpeg', 'image/png', 'text/html'), 300, 400);
+    $prefRepresentations = cdm_preferred_media_representations($media, $mimeTypePreference, 300, 400);
     $representation_inline = array_shift($prefRepresentations);
     if($representation_inline) {
 
@@ -676,6 +677,7 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cs
     $nomref_citation = (str_beginsWith($nomref_citation, 'in') ? '&nbsp;':',&nbsp;') . $nomref_citation;
   }
 
+  /* protologues are now modeled as name descriptions --> see theme_cdm_name()
   // append links to protologe images
   _add_js_thickbox();
   $prefRepresentations = cdm_preferred_media_representations($referenceSTO->media[0], array('application/pdf', 'image/gif', 'image/jpeg', 'image/png'), 300, 400);
@@ -704,8 +706,9 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cs
 
      $attributes = array('class'=>'thickbox');
      $out .= l("TEST", "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/test.pdf", $attributes, NULL, NULL, FALSE);
-     */
+     * /
   }
+  */
   return $out;
 }
 

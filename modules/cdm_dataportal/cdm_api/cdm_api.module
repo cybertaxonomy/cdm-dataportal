@@ -235,20 +235,26 @@ function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width 
   if(!isset($mediaTO->representations[0])){
     return $prefRepr;
   }
-  foreach($mediaTO->representations as $representationTO){
-    $mimeTypeKey = array_search($representationTO->mimeType, $mimeTypes);
-    if($mimeTypeKey !== false){
-      $dwa = 0;
-      // look for part with the best matching size
-      foreach($representationTO->representationParts as $part){
-        $dw = $part->width * $part->height - $height * $width;
-        if($dw < 0){
-          $dw *= -1;
+  
+  while(count($mimeTypes) > 0){
+    // getRepresentationByMimeType
+    $mimeType = array_shift($mimeTypes);
+    foreach($mediaTO->representations as $representationTO){
+      if($representationTO->mimeType == $mimeType){
+        // preffered mimetype found -> erase all remaining mimetypes to end loop
+        $mimeTypes = array();
+        $dwa = 0;
+        // look for part with the best matching size
+        foreach($representationTO->representationParts as $part){
+          $dw = $part->width * $part->height - $height * $width;
+          if($dw < 0){
+            $dw *= -1;
+          }
+          $dwa+= $dw;
         }
-        $dwa+= $dw;
+        $dwa = (count($representationTO->representationParts)>0) ? $dwa / count($representationTO->representationParts) : 0;
+        $prefRepr[$dwa.'_'.$mimeTypeKey] = $representationTO;
       }
-      $dwa = (count($representationTO->representationParts)>0) ? $dwa / count($representationTO->representationParts) : 0;
-      $prefRepr[$dwa.'_'.$mimeTypeKey] = $representationTO;
     }
   }
   // sort
