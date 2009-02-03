@@ -171,7 +171,7 @@ function theme_cdm_list_of_annotations($annotationElements){
  * @param NameTO $nameTO the taxon name
  * @param $displayNomRef values are 'LINK', 'PLAIN', 'HIDE' = FALSE
  */
-function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = 'LINK', $displayStatus = true, $displayDescription = true, $nomRefLink = true){
+function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $displayStatus = true, $displayDescription = true, $nomRefLink = true){
 
   //TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
   $class = 'fullname'; //name'; //($nameTO->secUuid ? 'taxon' : 'taxonname');
@@ -676,40 +676,8 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cs
   if(!empty($nomref_citation)){
     $nomref_citation = (str_beginsWith($nomref_citation, 'in') ? '&nbsp;':',&nbsp;') . $nomref_citation;
   }
-
-  /* protologues are now modeled as name descriptions --> see theme_cdm_name()
-  // append links to protologe images
-  _add_js_thickbox();
-  $prefRepresentations = cdm_preferred_media_representations($referenceSTO->media[0], array('application/pdf', 'image/gif', 'image/jpeg', 'image/png'), 300, 400);
-  // shift the first representation from the ordered list
-  $representation = array_shift($prefRepresentations);
-  if($representation) {
-    if($representation->mimeType == 'application/pdf'){
-      // create link for PDFs
-      $out = l($nomref_citation, $part->uri, array(), NULL, NULL, TRUE);
-    } else {
-      // display images in layover   
-      $attributes = array('class'=>'thickbox', 'rel'=>'protologues-'.$referenceSTO->uuid);
-      for($i = 0; $part = $representation->representationParts[$i]; $i++){
-        if($i == 0){
-          $out = l($nomref_citation, $part->uri, $attributes, NULL, NULL, TRUE);
-        } else {
-          $out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
-        }
-      }
-    }
-  } else {
-    // no media available, so display just the citation string
-    $out =  $nomref_citation;
-    /*
-     drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
-
-     $attributes = array('class'=>'thickbox');
-     $out .= l("TEST", "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/test.pdf", $attributes, NULL, NULL, FALSE);
-     * /
-  }
-  */
-  return $out;
+  
+  return $nomref_citation;
 }
 
 function theme_cdm_nomenclaturalStatusSTO($statusSTO, $cssClass = '', $enclosingTag = 'span'){
