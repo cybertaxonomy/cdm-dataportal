@@ -269,6 +269,11 @@ span.acceptedFor, #backButton {
 	padding: 0.5em;	
 }
 
+.cdm_taxontree_scroller_xy{
+	background-color: #F3F3F3;
+	border: 1px solid #DEDEDE;
+	}
+
 ul.cdm_taxontree {
 	background-color: transparent;
 }
