@@ -123,14 +123,17 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
         $block['subject'] = t('Taxon Tree');
         $taxonUuid_inFocus = _cdm_get_taxonuuid();
         $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
-        $block['content'] = theme('cdm_taxontree_block', $tree, $delta, TRUE, 'cdm_taxontree_node_concept_switch');
+        $magicbox_enable = variable_get('cdm_taxontree_magicbox_enable', 0);
+        $block['content'] = theme('cdm_taxontree_block', $tree, $delta, FALSE, 'cdm_taxontree_node_concept_switch');
+        // java script 
+        $verticalSroller = $magicbox_enable ? 'cdm_taxontree_scroller_x' : 'cdm_taxontree_scroller_xy';
         theme('cdm_taxontree_add_scripts');
         drupal_add_js('
         if (Drupal.jsEnabled) {
         $(document).ready(function()
         {
           $(\'ul.cdm_taxontree\').cdm_taxontree();
-          $(\'div.cdm_taxontree_scroller_x\').scrollTo($(\'.active\'), 400, {over:-3});});
+          $(\'div.'.$verticalSroller.'\').scrollTo($(\'.active\'), 400, {over:-3});});
         }', 'inline');
          return $block;
         
@@ -140,10 +143,10 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
         return $block;
         
       case 1:
-        $block['subject'] = t('Drupal Taxonomy Tree ');
+        $block['subject'] = t('Taxonomy Tree');
         $term_inFocus = arg(0) == 'taxonomy' && arg(1) == 'term' ? arg(2) : 0;
         $tree = cdm_taxontree_build_tree($term_inFocus, true, variable_get('cdm_taxontree_block_1_vid', 0));
-        $block['content'] = theme('cdm_taxontree_block', $tree);
+        $block['content'] = theme('cdm_taxontree_block', $tree, $delta, FALSE);
         theme('cdm_taxontree_add_scripts');
         drupal_add_js('
         if (Drupal.jsEnabled) {
@@ -1317,12 +1320,16 @@ function theme_cdm_taxontree_block($tree, $delta, $magicbox = false, $show_filte
     // if the class 'expand-left' to  the cdm_taxontree_scroller_x the box will expand to the left
     $expand_direction = $region == 'right' ? 'expand-left' : '';
     $out .= '<div class="cdm_taxontree_scroller_x '.$expand_direction.'"><div class="cdm_taxontree_container"><div class="cdm_taxontree_scroller_y">';
+  } else {
+    $out .= '<div class="cdm_taxontree_scroller_xy">';
   }
   
   $out .= theme('cdm_taxontree', $tree, !cdm_taxontree_filters_active(), $show_filter_switch , $tree_node_callback);
   
   if($magicbox){
     $out .= '</div></div></div>';
+  } else {
+    $out .= '</div>';
   }
   return $out;
 }

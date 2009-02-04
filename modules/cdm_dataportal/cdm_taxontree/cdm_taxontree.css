@@ -1,6 +1,18 @@
 @CHARSET "ISO-8859-1";
 
+/* ==== tree containers ==== */
+ 
+/* --- one scrollable container for plain box --- */
 
+div.cdm_taxontree_scroller_xy{
+	overflow: auto;
+	height: 300px;
+}
+
+/* ---- separate horizontal and vertical scrollable 
+   containers in case of magic box mode,
+   plus container to span the tree to its maximum width --- */
+   
 div.cdm_taxontree_scroller_x{
   border: 1px solid #ADDDFA;
   overflow: auto;
@@ -21,6 +33,8 @@ div.cdm_taxontree_scroller_y {
   background-color: #EDF5FA;
   height: 300px; /* this defines the height of the treebrowser box */
 }
+
+/* ==== styling the tree ==== */
 
 ul.cdm_taxontree{
 	background-color: #EDF5FA;
