@@ -22,6 +22,6 @@ function cdm_api_install(){
  * Implementation of hook_uninstall().
  */
 function cdm_api_uninstall(){
-    db_query("DROP TABLE {cache_cdm_ws}");
+    db_query("DROP TABLE {cache_cdm_ws};");
 }
  ?>

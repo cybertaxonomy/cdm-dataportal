@@ -60,20 +60,36 @@ function cdm_taxontree_menu($may_cache) {
           'type' => MENU_CALLBACK,
         );
   
-		$items[] = array('path' => 'admin/settings/cdm_dataportal/clear_cache',
-      'title' => t('Empty CDM Taxontree Cache'),
-      'callback' => 'cdm_taxontree_cache_clear',
-      'access' => user_access('administer cdm_dataportal'),
-      'weight' => 2,
-      'type' => MENU_NORMAL_ITEM,
-		);
+    } else {
 
+      if(variable_get('cdm_taxontree_cache', 0)){
+    		$items[] = array('path' => 'admin/settings/cdm_dataportal/clear_cache',
+          'title' => t('Empty CDM Taxontree Cache'),
+          'callback' => 'cdm_taxontree_cache_clear',
+          'access' => user_access('administer cdm_dataportal'),
+          'weight' => 2,
+          'type' => MENU_NORMAL_ITEM,
+    		);
+      }
+      
     }
     return $items;
 }
 
+function cdm_taxontree_cache_get($term){
+  if(variable_get('cdm_taxontree_cache', 0)){
+    return cache_get($term,'cache_cdm_taxontree');
+  }
+}
+
+function cdm_taxontree_cache_set($term, $child_terms){
+  if(variable_get('cdm_taxontree_cache', 0)){
+    return cache_set($term,'cache_cdm_taxontree', serialize($child_terms));
+  }
+}
+
 /**
- * function to empty the cdm_taxontree cache table in case of changes in taxa
+ * function to empty the cdm_taxontree cache table
  *
  */
 function cdm_taxontree_cache_clear() {
@@ -550,7 +566,7 @@ function cdm_taxontree_views_filters_alter($view, $filters){
 					$term_collection = array();
 					// get child terms from cache
 					foreach($child_terms as $key => $term){
-						if(!$children = cache_get($term,'cache_cdm_taxontree')){
+						if(!$children = cdm_taxontree_cache_get($term,'cache_cdm_taxontree')){
 							// no data in cache? add some!
 							$child_terms = _cdm_taxontree_get_all_children($child_terms,TRUE);
 							// add parent term
@@ -559,7 +575,7 @@ function cdm_taxontree_views_filters_alter($view, $filters){
 								$child_terms[$key] = $key;
 							}
 
-							cache_set($term,'cache_cdm_taxontree',serialize($child_terms));
+							cdm_taxontree_cache_set($term,'cache_cdm_taxontree',serialize($child_terms));
 							$children = $child_terms;
 						}
 						else{
@@ -1363,9 +1379,12 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
     // disable filterswitch
     $show_filter_switch = false;
     
+  } else if(module_exists('cdm_dataportal')){
+      $node_name = cdm_dataportal_shortname_of($node);
+      $path = cdm_dataportal_taxon_path($node->uuid);
   } else {
-    $node_name = cdm_dataportal_shortname_of($node);
-    $path = cdm_dataportal_taxon_path($node->uuid);
+      $node_name = "module cdm_dataportal missing";
+      $path = "";
   }
 
   if($filterIncludes){
@@ -1389,7 +1408,7 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
   if(!$is_leaf && !$is_expanded && $filter_class != 'filter_excluded'){
     if($node->tid){
       $ahah_url = url('cdm_taxontree/taxonomy/children/'.$node->tid.'/'.$node->vid.'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
-    } else {
+    } else if(module_exists('cdm_dataportal')) {
       $ws_url = cdm_compose_url(CDM_WS_TREENODE_CHILDREN, array($node->uuid));
       $ahah_url = url('cdm_api/proxy/'.urlencode($ws_url).'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
     }
@@ -1425,8 +1444,11 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
 }
 
 function theme_cdm_taxontree_node_filter_switch(&$node, $filter_class){
+  if(!module_exists('cdm_dataportal')) {
+    return '';
+  }
+  
   $out = '';
-
   switch($filter_class){
     case 'filter_included':
       $filter_icon = 'visible_implicit_small.gif';
