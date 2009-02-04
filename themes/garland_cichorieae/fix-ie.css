@@ -64,9 +64,12 @@ td.menu-disabled {
   background-color: #ffffff;
 }
 
-#contento{
-	/* # CDM # margin-top: 70px; */ 
-	margin-top: 0px;  	
+#contento{              /* IE6 HACK */
+   margin-top: 0px;
+}
+
+*+html #contento {      /* IE7 HACK */
+   margin-top: 70px;
 }
 
 div.cdm_taxontree_scroller_xy{

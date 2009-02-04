@@ -126,13 +126,13 @@ function garland_cichorieae_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span'
 }
 
 function garland_cichorieae_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
-  $out = '<div class="description" id="'.$feature.'">';
+  $out = '<'.$enclosingHtml.' class="description" id="'.$feature.'">';
   
   if($sortArray) sort($elementArray);
   
   $out .= join($elementArray, $glue);
   
-  $out .= '</div>';
+  $out .= '</'.$enclosingHtml.'>';
   return $out;
 }
 
