@@ -21,7 +21,7 @@
     <div id="wrapper">
     <div id="container" class="clear-block">
 
-	  <div id="upbg"></div>
+	  <?php /* <div id="upbg"></div> */ ?>
 
       <div id="header">
       	<div id="edit-logo"></div>

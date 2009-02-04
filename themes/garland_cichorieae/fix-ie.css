@@ -56,6 +56,7 @@ td.menu-disabled {
 #header-region {
   /* Because of the lack of min-height, we use height as an alternative */
   height: 1em;
+  display: none;
 }
 
 #attach-hide label, #uploadprogress div.message {
@@ -64,5 +65,10 @@ td.menu-disabled {
 }
 
 #contento{
-	margin-top: 70px;	
+	/* # CDM # margin-top: 70px; */ 
+	margin-top: 0px;  	
+}
+
+div.cdm_taxontree_scroller_xy{
+  width: 190px;
 }

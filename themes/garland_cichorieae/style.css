@@ -308,9 +308,9 @@ table .form-button, table .form-submit {
 }
 
 #wrapper #container {
-  /*margin: 0 auto;
+  margin: 0 auto;
   padding: 0 20px;
-  max-width: 1270px;*/
+  max-width: 1270px;
 }
 
 #wrapper #container #header {
@@ -318,7 +318,7 @@ table .form-button, table .form-submit {
 }
 
 #wrapper #container #header #logo-floater {
- /* position: absolute; */
+  position: absolute;
 }
 
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited {
@@ -340,21 +340,17 @@ table .form-button, table .form-submit {
 
 /* With 3 columns, require a minimum width of 1000px to ensure there is enough horizontal space. */
 body.sidebars {
-  /*min-width: 980px;*/
+  min-width: 980px;
 }
 /* With 2 columsn, require a minimum width of 800px. */
 body.sidebar-left, body.sidebar-right {
-  /*min-width: 780px;*/
+  min-width: 780px;
 }
 
 /* We must define 100% width to avoid the body being too narrow for near-empty pages */
 #wrapper #container #center {
   float: left;
-  clear: none;
   width: 100%;
- /* margin-top: 20px;*/
-  position: relative;
-  z-index: 3;
 }
 
 /* So we move the #center container over the sidebars to compensate */
@@ -381,7 +377,7 @@ body.sidebars #squeeze {
 
 /* We ensure the sidebars are still clickable using z-index */
 #wrapper #container .sidebar {
- /* margin: 20px 0 5em;*/
+  margin: 60px 0 5em;
   width: 210px;
   float: left;
   z-index: 4;
@@ -421,27 +417,26 @@ body.sidebars #squeeze {
   font-size: 1.3em;
 }
 
-
-
 /* Now we add the backgrounds for the main content shading */
 #wrapper #container #center #squeeze {
-/*  background: #fff url(images/bg-content.png) repeat-x 50% 0;
-  position: relative;*/
+  /*background: #fff url(images/bg-content.png) repeat-x 50% 0; */
+  position: relative;
 }
 
 #wrapper #container #center .right-corner {
- /* background: transparent url(images/bg-content-right.png) no-repeat 100% 0;
+  /*background: transparent url(images/bg-content-right.png) no-repeat 100% 0; */
   position: relative;
-  left: 10px;*/
+  left: 10px;
 }
 
 #wrapper #container #center .right-corner .left-corner {
- /* padding: 60px 25px 5em 35px;
-  background: transparent url(images/bg-content-left.png) no-repeat 0 0;
+  /* padding: 60px 25px 5em 35px; */
+  padding: 0px 25px 5em 35px; 
+  /* background: transparent url(images/bg-content-left.png) no-repeat 0 0; */
   margin-left: -10px;
   position: relative;
   left: -10px;
-  min-height: 400px;*/
+  min-height: 400px;
 }
 
 #wrapper #container #footer {
@@ -453,7 +448,7 @@ body.sidebars #squeeze {
 }
 
 #wrapper #container .breadcrumb {
-  position: relative;
+  position: absolute;
   top: 15px;
   left: 35px;
   z-index: 3;
@@ -475,12 +470,12 @@ body.sidebars #footer {
  * Header
  */
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited {
-	color: #FFFFFF;
-	font-family: Tahoma, Arial, Helvetica, sans-serif;
-	font-size:130%;
-	font-weight: bold;
-	line-height:1.2em;
-	padding-top: 10px;
+  color: #FFFFFF;
+  font-family: Tahoma, Arial, Helvetica, sans-serif;
+  font-size:130%;
+  font-weight: bold;
+  line-height:1.2em;
+  padding-top: 10px;
 }
 
 #wrapper #container #header h1 a:hover {

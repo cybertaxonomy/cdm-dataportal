@@ -37,7 +37,7 @@ body {
 }
 
 
-#container {
+#wrapper #container {
 	background:#FFFFFF url(images/abg.gif) repeat-y scroll 0 0;
 	position:relative;
 	margin: 0 auto;
@@ -52,7 +52,8 @@ body {
 
 
 
-#logo-floater {
+#wrapper #container #header #logo-floater {
+	position: relative;
 	background:#FF7800 url(images/a8.gif) repeat-x scroll 0 0;
 	color:#FFFFFF;
 	height:92px;
@@ -266,6 +267,10 @@ span.acceptedFor, #backButton {
 
 #cdm-dataportal-settings .form-item fieldset {
 	padding: 0.5em;	
+}
+
+ul.cdm_taxontree {
+	background-color: transparent;
 }
 
 
