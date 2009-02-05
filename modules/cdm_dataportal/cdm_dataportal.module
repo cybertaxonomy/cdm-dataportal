@@ -443,9 +443,9 @@ function cdm_dataportal_settings(){
   
   $form['cdm_dataportal']['layout']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show full nomenclatural reference in title'),
+    '#title' => t('Hide full nomenclatural reference in title'),
     '#default_value' => variable_get('cdm_dataportal_nomref_in_title', 1),
-    '#description' => t('Uncheck this, if you want the title of a taxon page consisting of name and author only.
+    '#description' => t('Uncheck this, if you want the title of a taxon page consisting of name and author plus publication year only.
     					If not checked, the first homotypic taxon is a repetition of the accepted taxon with
     					the full nomenclatural reference.')
   );
@@ -601,15 +601,12 @@ function cdm_dataportal_view_reference($uuid, $arg2 = null){
  */
 function cdm_dataportal_view_taxon($uuid, $arg2 = NULL){
 
-
 /*  if(isset($arg2) && !is_numeric($arg2)){
-   
     switch ($args[0]){
       case 'alternatives':
         $alternatives = cdm_ws_get(CDM_WS_TAXON_ALTERNATIVES, $uuid);
         return theme('cdm_alternative_taxa', $alternatives);
-    }
-    
+    }  
   } else {*/
   
     // display the page for the taxon defined by $uuid
@@ -619,11 +616,10 @@ function cdm_dataportal_view_taxon($uuid, $arg2 = NULL){
       return false;
     }
     _cdm_dataportal_set_currentSecUuid($taxonTO->sec->uuid);
-  
-    $referenceInTitle = variable_get('cdm_dataportal_nomref_in_title', 1);
     
     drupal_set_title(theme('cdm_taxon_page_title', $taxonTO->name));
     $out = theme('cdm_taxon_page_general', $taxonTO, $arg2);
+    
     return $out;
   /*}*/
 }

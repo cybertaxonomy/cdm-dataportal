@@ -177,7 +177,7 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $
     return '<span class="error">Invalid $nameTO in theme_cdm_name()</span>';
   }
 
-  /* TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
+  /* TODO: - take the different sub types of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
    * 
    * Use class names from objects?, additional field in DTO?
    * Preliminary using default value, which could be set in module settings:
@@ -187,16 +187,17 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $
   $class = 'taxonname taxonname_'.strtolower($taxonname_type);
   
   $hasNomRef = $nameTO->nomenclaturalReference->fullCitation;
+   
   if(!$nameTO->taggedName || !count($nameTO->taggedName)){
     $out .= '<span class="'.$class.'">'.$nameTO->fullname.'</span>';
   } else {
     $skip = $hasNomRef ? array('reference') : array();
-    if(!$displayAuthor){
+    if(!$displayAuthor || $taxonname_type == 'ZoologicalName') {
       $skip[] = 'authors';
-    }
+    } 
     $out .= '<span class="'.$class.'">'.theme('cdm_taggedtext2html', $nameTO->taggedName, 'span', ' ', $skip).'</span>';
   }
-
+  
   if($displayNomRef && $hasNomRef){
     $out .= '<span class="reference">';
     $out .= theme('cdm_nomenclaturalReferenceSTO', $nameTO->nomenclaturalReference, $nomRefLink);
@@ -447,6 +448,7 @@ function theme_cdm_synonym_link($taxonTO, $accepted_uuid, $showNomRef = true, $s
 
   return $out;
 }
+
 
 function theme_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef = true){
 
@@ -715,7 +717,13 @@ function theme_cdm_nomenclaturalStatusSTO($statusSTO, $cssClass = '', $enclosing
  * @return the formatted taxon name
  */
 function theme_cdm_taxon_page_title($nameTO){
-  return theme('cdm_name', $nameTO);
+  
+  if(variable_get('cdm_dataportal_nomref_in_title', 1)){
+    // taxon name only with author and year
+    return theme('cdm_name', $nameTO, TRUE, false, false, false); 
+  } else {
+    return theme('cdm_name', $nameTO);
+  }
 }
 
 function theme_cdm_acceptedFor(){
@@ -755,8 +763,8 @@ function theme_cdm_back_to_search_result_button(){
  * @param $page_part name of the part to display,
  *         valid values are: 'description', 'images', 'synonymy', 'all'
  */
-function theme_cdm_taxon_page_general($taxonTO, $page_part){
-
+function theme_cdm_taxon_page_general($taxonTO, $page_part) {
+  
   if(!$page_part){
     $page_part = 'description';
   }
@@ -925,11 +933,8 @@ function theme_cdm_preferredImage($taxonTo, $defaultImage, $parameters = ''){
     }
   }
 
-
   $image = $preferredImage ? $preferredImage . $parameters : $defaultImage;
-
   $out = '<img class="left" src="'.$image.'" alt="no image available" />';
-
   return $out;
 }
 
