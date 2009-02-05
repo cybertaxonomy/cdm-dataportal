@@ -28,7 +28,8 @@ function diptera_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $
 
   $nomref_citation = $referenceSTO->authorship.', '.$referenceSTO->year;
   if($showPage){
-    $nomref_citation .= ': '.$referenceSTO->pages;
+    $referenceTO = cdm_ws_get(CDM_WS_REFERENCE, $referenceSTO->uuid);
+    $nomref_citation .= ': '.$referenceTO->pages;
   }
   
   if($doLink){
