@@ -173,15 +173,20 @@ function theme_cdm_list_of_annotations($annotationElements){
  */
 function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $displayStatus = true, $displayDescription = true, $nomRefLink = true){
 
-  //TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
-  $class = 'fullname'; //name'; //($nameTO->secUuid ? 'taxon' : 'taxonname');
-
   if(!$nameTO){
-    return '<span class="error">Invalid NameTO</span>';
+    return '<span class="error">Invalid $nameTO in theme_cdm_name()</span>';
   }
 
+  /* TODO: - take the different subtypes of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
+   * 
+   * Use class names from objects?, additional field in DTO?
+   * Preliminary using default value, which could be set in module settings:
+   * values correspond with eu.etaxonomy.cdm.model.name.*: 'ZoologicalName', 'ViralName', 'BotanicalName'
+   */
+  $taxonname_type = (variable_get('cdm_taxonname_type', 'ZoologicalName'));
+  $class = 'taxonname taxonname_'.strtolower($taxonname_type);
+  
   $hasNomRef = $nameTO->nomenclaturalReference->fullCitation;
-  //FIXME class="'.$class.' below seems to be unused
   if(!$nameTO->taggedName || !count($nameTO->taggedName)){
     $out .= '<span class="'.$class.'">'.$nameTO->fullname.'</span>';
   } else {
@@ -632,7 +637,7 @@ function theme_cdm_credits(){
 }
 
 
-function theme_cdm_fullreference($referenceTO){
+function theme_cdm_fullreference($referenceTO, $link = FALSE){
 
   if($referenceTO->fullCitation){
     $out = $referenceTO->fullCitation;
@@ -647,6 +652,10 @@ function theme_cdm_fullreference($referenceTO){
    $out .= '. '.$referenceTO->year;
    }
    */
+  
+  if($link){
+   $out = l($out, "/cdm_dataportal/reference/".$referenceTO->uuid, array("class"=>"reference"));
+  }
   return $out;
 }
 
@@ -680,6 +689,14 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cs
   return $nomref_citation;
 }
 
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $statusSTO
+ * @param unknown_type $cssClass
+ * @param unknown_type $enclosingTag
+ * @return unknown
+ */
 function theme_cdm_nomenclaturalStatusSTO($statusSTO, $cssClass = '', $enclosingTag = 'span'){
 
   $out = "<$enclosingTag" . ($cssClass == '' ? '' : ' class="' . $cssClass . '"') . ">";
@@ -826,7 +843,11 @@ function theme_cdm_taxon_page_images($taxonTO){
  * Show a reference in it's atomized form
  */
 function theme_cdm_reference_page($referenceTO){
-  drupal_set_title($referenceTO->titleCache);
+  if($referenceTO->titleCache) {
+    drupal_set_title($referenceTO->titleCache);
+  } else {
+    drupal_set_title($referenceTO->fullCitation);
+  }
   $field_order = array(
     "title", 
     //"titleCache", 
@@ -907,7 +928,7 @@ function theme_cdm_preferredImage($taxonTo, $defaultImage, $parameters = ''){
 
   $image = $preferredImage ? $preferredImage . $parameters : $defaultImage;
 
-  $out = '<img class="left" src="'.$image.'" alt="no image available">';
+  $out = '<img class="left" src="'.$image.'" alt="no image available" />';
 
   return $out;
 }
@@ -1339,8 +1360,13 @@ function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', 
 }
 
 function theme_cdm_descriptionElementTextData($element){
+
   $description = str_replace("\n", "<br/>", $element->description);
-  return '<li class="descriptionText">' . $description . '</li>';
+  $referenceCitation = '';
+  if($element->reference){
+    $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+  }
+  return '<li class="descriptionText">' . $description . $referenceCitation.'</li>';
 }
 
 function theme_cdm_search_results($resultPageSTO, $path, $parameters){
