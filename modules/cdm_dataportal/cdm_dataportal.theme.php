@@ -679,13 +679,15 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cs
     // it is ReferenceSTO
     $nomref_citation = $referenceSTO->fullCitation;
   }
+  
+  $is_IN_reference = str_beginsWith($nomref_citation, 'in');
 
   if($doLink){
     $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);      
   }
   
   if(!empty($nomref_citation)){
-    $nomref_citation = (str_beginsWith($nomref_citation, 'in') ? '&nbsp;':',&nbsp;') . $nomref_citation;
+    $nomref_citation = ($is_IN_reference ? '&nbsp;':',&nbsp;') . $nomref_citation;
   }
   
   return $nomref_citation;
