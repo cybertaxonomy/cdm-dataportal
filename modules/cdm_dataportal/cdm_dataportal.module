@@ -441,6 +441,14 @@ function cdm_dataportal_settings(){
     '#collapsed' => TRUE,
   );
   
+   $form['cdm_dataportal']['layout']['cdm_taxonname_type'] = array(
+    '#type' => 'select',
+    '#title'         => t('Taxon name type'),
+    '#default_value' => variable_get('cdm_taxonname_type', 'BotanicalName'),
+    '#options' => array( 'BotanicalName'=>t('BotanicalName'), 'ZoologicalName'=>t('ZoologicalName')),
+    '#description'   => t('')
+  );
+  
   $form['cdm_dataportal']['layout']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
     '#title' => t('Hide full nomenclatural reference in title'),

@@ -180,10 +180,10 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $
   /* TODO: - take the different sub types of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
    * 
    * Use class names from objects?, additional field in DTO?
-   * Preliminary using default value, which could be set in module settings:
+   * Preliminary using default value, which can be set in module settings:
    * values correspond with eu.etaxonomy.cdm.model.name.*: 'ZoologicalName', 'ViralName', 'BotanicalName'
    */
-  $taxonname_type = (variable_get('cdm_taxonname_type', 'ZoologicalName'));
+  $taxonname_type = (variable_get('cdm_taxonname_type', 'BotanicalName'));
   $class = 'taxonname taxonname_'.strtolower($taxonname_type);
   
   $hasNomRef = $nameTO->nomenclaturalReference->fullCitation;
