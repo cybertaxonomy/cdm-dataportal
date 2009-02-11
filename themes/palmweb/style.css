@@ -319,10 +319,10 @@ ul.description{
   font-style: italic;
 }
 	
-.title .authors {
+.title .authors,.title .reference, .title .reference a  {
   display: inline;
   color: black;
-  font-style: bold;
+  font-weight: bold;
 }
 
 .searchtitle {
