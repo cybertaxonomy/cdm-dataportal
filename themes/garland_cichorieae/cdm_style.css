@@ -10,7 +10,7 @@ body {
 	font: 12px/170% Verdana;
 }
 
-
+/*
 #upbg {
 	background:#FFFFFF url(images/upbg.gif) no-repeat scroll 0 0;
 	height:264px;
@@ -20,6 +20,7 @@ body {
 	width:747px;
 	z-index:0;
 }
+*/
 
 #edit-logo {
 	background:#FFFFFF url(images/edit-logo.gif) no-repeat scroll 0 0;
@@ -30,24 +31,27 @@ body {
 	z-index: 2;
 }
 
-#wrapper {
-	background: #F9F9F7 url(images/a1.gif) repeat-x 0 0;
-	margin:0 auto;
-	width:747px;
-}
-
-
 #wrapper #container {
-	background:#FFFFFF url(images/abg.gif) repeat-y scroll 0 0;
 	position:relative;
 	margin: 0 auto;
 	padding:13px 30px;
 	z-index:0;
 }
 
+#wrapper {
+	background:#FFFFFF url(images/abg-left.gif) repeat-y scroll left top;
+	margin:0 auto;
+	width:80%;
+}
+
+#container {
+	background:transparent url(images/abg-right.gif) repeat-y scroll right top;
+}
+
 #wrapper #container #header {
   position: relative;
   z-index: 2;
+  min-width: 700px;
 }
 
 
