@@ -41,7 +41,7 @@ body {
 #wrapper {
 	background:#FFFFFF url(images/abg-left.gif) repeat-y scroll left top;
 	margin:0 auto;
-	width:80%;
+	width:940px;
 }
 
 #container {
@@ -74,10 +74,14 @@ body {
 }
 
 #splash {
-	background:#EAEAE2 url(images/splash.jpg) no-repeat scroll 0 0;
+	/* 
+	background:#EAEAE2 url(images/splashChichorium_wide.jpg) no-repeat scroll 0 0; 
+	*/
+	background:#EAEAE2 url(images/splash2xChichorium.jpg) no-repeat scroll 0 0; 
 	height:92px;
 	float:left;
-	width:378px;
+	width:570px;
+	overflow:hidden;
 	z-index: 2;
 }
 
@@ -94,8 +98,20 @@ body {
 	z-index: 3;
 }
 
+#general {
+	margin-top: 25px;
+}
+
 ul.homotypicSynonyms, ul.heterotypicSynonymyGroup {
 	border-bottom:1px solid #dedede;
+}
+
+.featureTOC{
+	float:right;
+}
+
+.featureTOC li{
+  line-height: 1.2em;
 }
 
 ul.cdm_names li {
@@ -162,6 +178,16 @@ ul.cdm_taxontree li .active {
 	float:left;
 	clear: both;
 }
+
+ul.primary {
+  clear: both;
+  float:right;
+}
+
+div.clear {
+	clear:both;
+}
+
 
 ul.primary-links {
 	background:#46461F url(images/a16.gif) repeat-x scroll 0 0;
@@ -249,6 +275,10 @@ li.ui-tabs-selected{
 #tabs-wrapper{
 	margin: 0;
 	padding: 0;	
+}
+
+#backButton {
+	margin-top: -2em;
 }
 
 #tab-synonymy{

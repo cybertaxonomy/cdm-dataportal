@@ -77,7 +77,7 @@
 
           <?php if ($tabs): print '<div id="tabs-wrapper" class="clear-block">'; endif; ?>
           <?php if ($title): print '<h2'. ($tabs ? ' class="with-tabs"' : '') .'>'. $title .'</h2>'; endif; ?>
-          <?php if ($tabs): print $tabs .'</div>'; endif; ?>
+          <?php if ($tabs): print '<div class="clear"></div>'.$tabs .'</div>'; endif; ?>
 
           <?php if (isset($tabs2)): print $tabs2; endif; ?>
 

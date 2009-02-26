@@ -36,6 +36,16 @@ function garland_cichorieae_cdm_taxon_page_description($taxonTO){
   return $out;
 }
 
+function garland_cichorieae_cdm_descriptionElementTextData($element){
+
+  $description = str_replace("\n", "<br/>", $element->description);
+  $referenceCitation = '';
+  if($element->reference){
+    $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+  }
+  return '<p class="descriptionText">' . $description . $referenceCitation.'</p>';
+}
+
 
 function garland_cichorieae_cdm_taxon_page_images($taxonTO){
   
@@ -127,6 +137,7 @@ function garland_cichorieae_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span'
 }
 
 function garland_cichorieae_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
+  $enclosingHtml = 'div';
   $out = '<'.$enclosingHtml.' class="description" id="'.$feature.'">';
   
   if($sortArray) sort($elementArray);
