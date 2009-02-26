@@ -1503,7 +1503,7 @@ function theme_cdm_pager_link_new($text, $linkPageNumber, &$pager, $path, $param
 
   $out = '';
 
-  if ($linkPageNumber == $pager->pageNumber) {
+  if ($linkPageNumber == $pager->currentIndex) {
     $out = '<strong>'.$text.'</strong>';
   } else {
     $out = l($text, $path.$linkPageNumber, $attributes /*, compose_url_prameterstr($parameters)*/);
