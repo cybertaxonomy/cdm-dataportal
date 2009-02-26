@@ -639,14 +639,20 @@ define('CDM_WS_FIND_TAXA', 'find/taxon');
  * Web Service Arguments: {referenceUuid}
  *
  */
-define('CDM_WS_REFERENCE', 'ref');
+define('CDM_WS_REFERENCE', 'reference');
+
+/**
+ * Web Service Arguments: {pageNumber}
+ *
+ */
+define('CDM_WS_REFERENCE_LIST', 'reference/list');
 
 /**
  * Web Service Arguments: {referenceUuid} or array of {referenceUuid}
  *
  * returns a list of ReferenceSTO
  */
-define('CDM_WS_SIMPLE_REFERENCE', 'simple/ref');
+define('CDM_WS_SIMPLE_REFERENCE', 'simple/reference');
 
 /**
  * Web Service Arguments: {taxonUuid}

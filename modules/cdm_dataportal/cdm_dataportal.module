@@ -102,6 +102,14 @@ function cdm_dataportal_menu($may_cache) {
     );
     
     $items[] = array(
+      'path' => 'cdm_dataportal/reference/list',
+      'callback' => 'cdm_dataportal_view_reference_list',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    // expected callback arguments: name_uuid
+    );
+    
+    $items[] = array(
       'path' => 'cdm_dataportal/search/taxon',
       'callback' => 'cdm_dataportal_view_search_taxon',
       'access' => true,
@@ -595,6 +603,12 @@ function cdm_dataportal_view_reference($uuid, $arg2 = null){
     $referenceTO = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
     return theme('cdm_reference_page', $referenceTO);
 }
+
+function cdm_dataportal_view_reference_list($pageNumber){
+    $referencePager = cdm_ws_get(CDM_WS_REFERENCE_LIST, $pageNumber);
+    return theme('cdm_reference_pager', $referencePager, 'cdm_dataportal/reference/list/');
+}
+
 
 
 /**

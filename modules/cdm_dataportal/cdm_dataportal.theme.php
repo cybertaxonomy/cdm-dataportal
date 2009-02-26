@@ -849,6 +849,23 @@ function theme_cdm_taxon_page_images($taxonTO){
 
 }
 
+function theme_cdm_reference_pager($referencePager, $path, $parameters = array()){
+  drupal_set_title(t('Bibliographic Index'));
+  $out = '';
+  if(count($referencePager->records) > 0){
+    $out .= '<ul>';
+    foreach($referencePager->records as $reference){
+      $reference->fullCitation = $reference->titleCache; //FIXME remove hack for matching cdm entity to STO
+      $out .= '<li>'.theme('cdm_fullreference', $reference, TRUE).'</li>';
+    }
+    $out .= '</ul>';
+    $out .= theme('cdm_pager_new', $referencePager,  $path, $parameters);
+  } else {
+    $out = '<h4 class="error">Sorry, this page contains not entries.</h4>';
+  }
+  return $out;
+}
+
 /**
  * Show a reference in it's atomized form
  */
@@ -1434,6 +1451,64 @@ function theme_cdm_pager(&$resultPageSTO, $path, $parameters, $neighbors = 2){
 
     return $out;
   }
+}
+
+function theme_cdm_pager_new(&$pager, $path, $parameters, $neighbors = 2){
+  $out = '';
+
+  if ($pager->pagesAvailable > 1) {
+
+    $viewportsize = $neighbors * 2 + 1;
+    if($pager->pagesAvailable <= $viewportsize){
+      $viewportsize = $pager->pagesAvailable;
+    }
+
+    $out .= '<div class="pager">';
+    if($pager->currentIndex > 1){
+      $out .= theme('cdm_pager_link_new', t('« first'), 1,  $pager, $path, $parameters, array('class' => 'pager-first'));
+      $out .= theme('cdm_pager_link_new', t('‹ previous'), $pager->currentIndex - 1, $pager, $path, $parameters, array('class' => 'pager-previous'));
+    }
+
+    if($pager->pagesAvailable <= $viewportsize || $pager->currentIndex <= $neighbors){
+      $first_number = 1;
+    } else if($pager->currentIndex >= $pager->pagesAvailable - $neighbors){
+      $first_number = $pager->pagesAvailable - $viewportsize;
+    } else {
+      $first_number = $pager->currentIndex - $neighbors;
+    }
+
+    if($first_number > 1){
+      $out .= '<div class="pager-list-dots-left">...</div>';
+    }
+
+
+    for($i = $first_number; ($i == $pager->pagesAvailable) || ($i < $first_number + $viewportsize); $i++){
+      $out .= theme('cdm_pager_link_new', $i, $i,  $pager, $path, $parameters, array('class' => 'pager-first'));
+    }
+    if($i < $pager->pagesAvailable){
+      $out .= '<div class="pager-list-dots-right">...</div>';
+    }
+
+    if($pager->currentIndex < $pager->pagesAvailable){
+      $out .= theme('cdm_pager_link_new', t('next ›'), $pager->currentIndex + 1, $pager, $path, $parameters, array('class' => 'pager-next'));
+      $out .= theme('cdm_pager_link_new', t('last »'), $pager->pagesAvailable, $pager, $path, $parameters, array('class' => 'pager-last'));
+    }
+    $out .= '</div>';
+
+    return $out;
+  }
+}
+
+function theme_cdm_pager_link_new($text, $linkPageNumber, &$pager, $path, $parameters = array(), $attributes) {
+
+  $out = '';
+
+  if ($linkPageNumber == $pager->pageNumber) {
+    $out = '<strong>'.$text.'</strong>';
+  } else {
+    $out = l($text, $path.$linkPageNumber, $attributes /*, compose_url_prameterstr($parameters)*/);
+  }
+  return $out;
 }
 
 function theme_cdm_pager_link($text, $linkPageNumber, &$resultPageSTO, $path, $parameters = array(), $attributes) {
