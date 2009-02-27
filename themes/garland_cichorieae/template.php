@@ -55,7 +55,7 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
     foreach($features as $featureTo){
       if($featureTo->feature->term == 'Image'){
         $flashLink = count($featureTo->descriptionElements) > 0;
-        break;        
+        break;
       }
     }
   }
@@ -66,8 +66,9 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
     
     $nameArray = array();
     foreach($taggedName as $taggedText){
-      if($taggedText->type == 'name'){
-        $nameArray[] = $taggedText->text;
+      if($taggedText->type == 'name' || $taggedText->type == 'rank'){
+        $part = $taggedText->text == "subsp." ? "s" : $taggedText->text;
+        $nameArray[] = $part;
       }
     }
     
@@ -149,7 +150,7 @@ function garland_cichorieae_cdm_descriptionElementArray($elementArray, $feature,
 }
 
 /* #### exact duplicate of theme method in cdm_dataportal.theme.php ###
- *  
+ *
 function garland_cichorieae_cdm_descriptionElementTextData($element){
   $description = str_replace("\n", "<br/>", $element->description);
   return '<p class="descriptionText">' . $description . '</p>';
