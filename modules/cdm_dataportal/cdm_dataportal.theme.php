@@ -847,6 +847,70 @@ function theme_cdm_taxon_page_synonymy($taxonTO){
  */
 function theme_cdm_taxon_page_images($taxonTO){
 
+  $descriptions = $taxonTO->featureTree->descriptions;
+  foreach($descriptions as $descriptionTo){
+    $features = $descriptionTo->features;
+    foreach($features as $featureTo){
+      if($featureTo->feature->term == 'Image'){
+        $flashLink = count($featureTo->descriptionElements) > 0;
+        break;        
+      }
+    }
+  }
+  
+  if($flashLink){
+    
+    $taggedName = $taxonTO->name->taggedName;
+    
+    $nameArray = array();
+    foreach($taggedName as $taggedText){
+      if($taggedText->type == 'name'){
+        $nameArray[] = $taggedText->text;
+      }
+    }
+    
+    $query = join("%5F", $nameArray) . '%20AND%20jpg';
+    
+  $out = '
+  
+  <script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
+
+<script type="text/javascript">
+<!--
+	writeFlashCode( "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=PrintSave,textbox",
+		"http://media.bgbm.org/erez/erez?src=erez-private/flashrequired.svg&tmp=Large&quality=97&width=470&height=400",
+		"width=470;height=400;bgcolor=454343;wmode=opaque");
+// -->
+</script>
+<noscript>
+	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,65,0" width="470" height="400">
+		<param name="movie" value="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave,textbox"/>
+		<param name="bgcolor" value="454343" />
+		<param name="wmode" value="opaque" />
+		<param name="allowscriptaccess" value="always" />
+		<param name="allowfullscreen" value="true" />
+		<param name="quality" value="high" />
+		<embed src="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave,textbox"
+			width="470"
+			height="400"
+			bgcolor="454343"
+			wmode="opaque"
+			allowscriptaccess="always"
+			allowfullscreen="true"
+			quality="high"
+			type="application/x-shockwave-flash"
+			pluginspage="http://www.adobe.com/go/getflashplayer">
+		</embed>
+	</object>
+
+</noscript>';
+  
+  }else{
+    $out = 'No images available.';
+  
+  }
+  return $out;
+
 }
 
 function theme_cdm_reference_pager($referencePager, $path, $parameters = array()){
