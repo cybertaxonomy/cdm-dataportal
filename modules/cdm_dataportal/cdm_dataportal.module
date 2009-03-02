@@ -487,6 +487,7 @@ function cdm_dataportal_settings(){
     '#description' => t('Number of Names to display per page in search results.')
   );
   
+ 
   //---------------- GEOSERVICE ----------------//
   
   $form['cdm_dataportal']['geoservice'] = array(
@@ -515,6 +516,14 @@ function cdm_dataportal_settings(){
     '#title' => t('Geoservice Bounding Box'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_bounding_box', '-180,-90,180,90'),
     '#description' => t('Define the surrounding area using latitude and longitude. Leave as is for the whole world.')
+  );
+  
+   //cdm_dataportal_geoservice_labels_on
+  $form['cdm_dataportal']['geoservice']['cdm_dataportal_geoservice_labels_on'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display Country Labels'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_labels_on', FALSE),
+    '#description' => t('Check this if you like country names to be displayed in the maps. ')
   );
   
   return system_settings_form($form);

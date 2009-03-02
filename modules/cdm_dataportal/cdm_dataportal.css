@@ -9,6 +9,13 @@ div.debug{
   overflow: auto;
 }
 
+div.debug a.valid {
+  color: #1BDF00;	
+}
+div.debug a.invalid {
+  color: #F3000A; 
+}
+
 .name{
   font-style: italic;
 }

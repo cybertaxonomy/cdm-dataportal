@@ -418,7 +418,13 @@ function cdm_ws_load($url, $is_multi_paramater_query, $method="GET"){
     $obj = cdm_load_obj($datastr);
     $time_parse = microtime(true) - $time_parse_start;
     if(variable_get('cdm_webservice_debug', 1)){
-      drupal_set_message($url.' [fetched in: '.sprintf('%3.3f', $time_get).'s; parsed in '.sprintf('%3.3f', $time_parse).' s; size:'.sprintf('%3.1f', (strlen($datastr) / 1024)).' kb of '.($obj ?  l('valid data', 'cdm_api/proxy/'.urlencode($url), array('target'=>'json-data')):'invalid data').'] '.$json_data_link, 'debug');
+      $success_msg = $obj?'valid':'invalid'; 
+      drupal_set_message(
+         $url.' [fetched in: '.sprintf('%3.3f', $time_get).'s; '
+        .'parsed in '.sprintf('%3.3f', $time_parse).' s;'
+        .' size:'.sprintf('%3.1f', (strlen($datastr) / 1024)).' kb of '
+        .l($success_msg.' data', 'cdm_api/proxy/'.urlencode($url), array('target'=>'json-data', 'class'=>$success_msg)).'] '.$json_data_link
+        , 'debug');
     }
     if( !$obj || !$datastr){
       watchdog('CDM', 'cdm_ws_load() - URL: '.$url, WATCHDOG_ERROR);

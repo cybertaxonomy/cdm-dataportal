@@ -318,14 +318,17 @@ function theme_cdm_descriptionElement_distribution($featureTo){
   if(!server){
     return "<p>No geoservice specified</p>";
   }else{
-    $parameters = '?' . $featureTo->externalResources->geoServiceParameters;
+    $map_data_parameters = '?' . $featureTo->externalResources->geoServiceParameters;
 
     $display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
     $bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
+    $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
-    $serviceUrl = $server . $parameters . ($display_width ? '&ms=' . $display_width: '') . ($bounding_box ? '&bbox=' .  $bounding_box : '');
+    $query_string = ($display_width ? '&ms=' . $display_width: '') 
+      . ($bounding_box ? '&bbox=' .  $bounding_box : '') 
+      . ($labels_on ? '&labels=' .  $labels_on : '');
 
-    $out .= '<img style="border: 1px solid #ddd" src="'.$serviceUrl.'" alt="Distribution Map" />';
+    $out .= '<img style="border: 1px solid #ddd" src="'.url($server.$map_data_parameters, $query_string).'" alt="Distribution Map" />';
 
     return $out;
   }
@@ -773,8 +776,8 @@ function theme_cdm_taxon_page_general($taxonTO, $page_part) {
   $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';  
 
   $out = '';
-  $out .= theme('cdm_acceptedFor');
   $out .= theme('cdm_back_to_search_result_button');
+  $out .= theme('cdm_acceptedFor');
   
   if($page_part == 'description' || $page_part == 'all'){
     $out .= '<div id="general">';
@@ -843,7 +846,9 @@ function theme_cdm_taxon_page_synonymy($taxonTO){
 
 /**
  * Show the collection of images stored with the accepted taxon
- * TODO
+ * 
+ * TODO this is just a copy of the special image display in the cichorieae
+ *  and will not work with other portals thus a more general solution is needed
  */
 function theme_cdm_taxon_page_images($taxonTO){
 
