@@ -54,7 +54,9 @@ body {
   min-width: 700px;
 }
 
-
+#wrapper #container #center .right-corner {
+	width: 670px;
+}
 
 #wrapper #container #header #logo-floater {
 	position: relative;
