@@ -279,9 +279,6 @@ li.ui-tabs-selected{
 	padding: 0;	
 }
 
-#backButton {
-	margin-top: -2em;
-}
 
 #tab-synonymy{
 	line-height: 150%;	
@@ -299,6 +296,10 @@ ul li.synonym{
 
 span.acceptedFor, #backButton {
 	font-size: 0.9em;	
+}
+
+#backButton {
+  margin-top: -2em;
 }
 
 #cdm-dataportal-settings .form-item fieldset {

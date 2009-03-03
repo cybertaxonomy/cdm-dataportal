@@ -40,10 +40,11 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
 
   $description = str_replace("\n", "<br/>", $element->description);
   $referenceCitation = '';
+  
   if($element->reference){
-    $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+    $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, false);
   }
-  return '<p class="descriptionText">' . $description . $referenceCitation.'</p>';
+  return '<p class="descriptionText">' . $description . /*$referenceCitation. */ '</p>';
 }
 
 
@@ -155,6 +156,35 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
   $description = str_replace("\n", "<br/>", $element->description);
   return '<p class="descriptionText">' . $description . '</p>';
 }*/
+
+
+/**
+ * all reference links switched of
+ */
+function garland_cichorieae_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cssClass = '', $separator = '<br />' , $enclosingTag = 'li'){
+  
+  $doLink = FALSE;
+  
+  if(isset($referenceSTO->microReference)){
+    // it is a ReferenceTO
+    $nomref_citation = theme('cdm_fullreference', $referenceSTO);
+  } else {
+    // it is ReferenceSTO
+    $nomref_citation = $referenceSTO->fullCitation;
+  }
+  
+  $is_IN_reference = str_beginsWith($nomref_citation, 'in');
+
+  if($doLink){
+    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);      
+  }
+  
+  if(!empty($nomref_citation)){
+    $nomref_citation = ($is_IN_reference ? '&nbsp;':',&nbsp;') . $nomref_citation;
+  }
+  
+  return $nomref_citation;
+}
 
 
 /***** GARLAND OVERRIDES ******/
