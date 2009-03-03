@@ -36,17 +36,6 @@ function garland_cichorieae_cdm_taxon_page_description($taxonTO){
   return $out;
 }
 
-function garland_cichorieae_cdm_descriptionElementTextData($element){
-
-  $description = str_replace("\n", "<br/>", $element->description);
-  $referenceCitation = '';
-  
-  if($element->reference){
-    $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, false);
-  }
-  return '<p class="descriptionText">' . $description . /*$referenceCitation. */ '</p>';
-}
-
 
 function garland_cichorieae_cdm_taxon_page_images($taxonTO){
   
