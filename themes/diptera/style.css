@@ -1,23 +1,21 @@
 /* $Id: style.css,v 1.19 2006/12/27 13:17:15 drumm Exp $ */
 
-/* purple color F69904
+/*
 ** HTML elements
 */
 body {
-  margin-left:0px;
-  margin-right:0px;
+  margin-left:80px;
+  margin-right:80px;
   padding: 0;
-  /* color: #000;  */
+  color: #000;
   font:small Euphemia ,Georgia,Serif;
   /* text-align:center; */
   background-color: #fff;
+  /* font: Verdana, 76% Verdana, Arial, Helvetica, sans-serif; */
   font: Verdana, 76% Verdana, Arial, Helvetica, sans-serif;
+  
+  /* border:1px solid #7D974A; */
   border: 1px solid #006666;
-  
-  /* experimentation */
-  background-color: #b16620;
-  color: #696969;
-  
 }
 
 tr.odd td, tr.even td {
@@ -54,21 +52,16 @@ a {
   text-decoration: none;
   font-weight: normal;
 }
-
 a:link {
-  /* color: #39c; */
-  /* purple diptera color: #F69904; */
-  color: #FFFFFF;
-  
+  color: #39c;
 }
 a:visited {
-  color: #FFFFFF;
+  color: #369;
 }
 a:hover {
-  color: #FFFFFF;
+  color: #39c;
   text-decoration: underline;
 }
-
 fieldset {
   border: 1px solid #ccc;
 }
@@ -81,8 +74,7 @@ pre {
 table {
   /* make <td> sizes relative to body size! */
   font-size: 1em;
-  background-color: #EDF5FA; */
-  /* purple diptera background-color: #ffffee;  */
+  background-color: #EDF5FA;
 }
 .form-item label {
   font-size: 1em;
@@ -118,20 +110,14 @@ table {
   width: 100%;
 }
 
-
 #header {
   position:relative; 
   margin:auto; 
-  /* background-color:#8fc3f0;  */ 
+  background-color:#8fc3f0; 
   height:70px;
   text-indent:20px;
-  font-family:Verdana; 
-  /* experimentation */
-  /* color:#ffffff;  */
-  /* purple background-color: #622830; */
-  background-color: #339999;
-  color: #f69904;
-  
+  font-family:Verdana;
+  color:#ffffff; 
   
 }
 #logo {
@@ -150,16 +136,12 @@ table {
 }
 #navlist {
   font-size: 1.0em;
-  padding: 0 0.8em 1.2em 0
-  /* experimentation */
-  /*  color: #9cf */
-  color: #f69904;
-
+  padding: 0 0.8em 1.2em 0;
+  color: #9cf;
 }
 #navlist a {
   font-weight: bold;
-  color: #fff
-  color: #ffffff; ;
+  color: #fff;
 }
 #subnavlist {
   padding: 0.5em 1.2em 0.4em 0;
@@ -198,16 +180,10 @@ ul.links li.first {
 .site-name {
   margin: 0.6em 0 0 0;
   padding: 0;
-  font-size: 2.0em;
-  letter-spacing:5px;
-
-
+  font-size: 2.4em;
 }
 .site-name a:link, .site-name a:visited {
-  /* purple color: #f69904; 
-  replace ffffff with f69904 
-  replace FFFFFF with F69904 */
-  color: #FFFFFF;
+  color: #fff;
 }
 .site-name a:hover {
   color: #369;
@@ -225,8 +201,7 @@ ul.links li.first {
   /* padding in px not ex because IE messes up 100% width tables otherwise 
   padding: 20px; */
   padding: 20px 20px 20px 20px;
-  /* blue diptera background-color:#EDF5FAA; */
-  background-color: #EDF5FAA;
+  background-color: #EDF5FA;
 }
 
 #mission, .node .content, .comment .content {
@@ -251,8 +226,7 @@ ul.links li.first {
 
 #sidebar-left, #sidebar-right {
   width: 12em;
-  /* blue diptera background-color:#EDF5FAA; */
-  background-color: #EDF5FAA;
+  background-color: #EDF5FA;
   vertical-align: top;
   text-align: left;
   /* padding in px not ex because IE messes up 100% width tables otherwise */
@@ -269,17 +243,17 @@ ul.links li.first {
   font-size: 0.8em;
 }
 
-#block-cdm_dataportal-distribution, #block-cdm_dataportal-discussion, #block-cdm_dataportal-uses, #block-cdm_dataportal-etymology, #block-cdm_dataportal-materials_examined, #block-cdm_dataportal-description, #block-cdm_dataportal-conservation, #block-cdm_dataportal-biology_and_ecology, #block-cdm_dataportal-common_name, #block-cdm_dataportal-cultivation, #block-cdm_dataportal-introduction, #block-cdm_dataportal-diagnosis, #block-cdm_dataportal-vernacular, #block-cdm_dataportal-citation, #block-cdm_dataportal-has_orthographic_variant, #block-cdm_dataportal-occurrence{
+
+#block-cdm_dataportal-distribution, #block-cdm_dataportal-discussion, #block-cdm_dataportal-uses, #block-cdm_dataportal-etymology, #block-cdm_dataportal-materials_examined, #block-cdm_dataportal-description, #block-cdm_dataportal-conservation, #block-cdm_dataportal-biology_and_ecology, #block-cdm_dataportal-common_name {
   border: 0px;
 }
 
-#block-cdm_dataportal-distribution .searchtitle, #block-cdm_dataportal-discussion .searchtitle, #block-cdm_dataportal-uses .searchtitle, #block-cdm_dataportal-etymology .searchtitle, #block-cdm_dataportal-materials_examined .searchtitle, #block-cdm_dataportal-description .searchtitle, #block-cdm_dataportal-conservation .searchtitle, #block-cdm_dataportal-biology_and_ecology .searchtitle, #block-cdm_dataportal-common_name .searchtitle, #block-cdm_dataportal-cultivation .searchtitle, #block-cdm_dataportal-introduction .searchtitle, #block-cdm_dataportal-diagnosis .searchtitle, #block-cdm_dataportal-vernacular .searchtitle, #block-cdm_dataportal-citation .searchtitle, #block-cdm_dataportal-has_orthographic_variant .searchtitle, #block-cdm_dataportal-occurrence .searchtitle {  
+#block-cdm_dataportal-distribution .searchtitle, #block-cdm_dataportal-discussion .searchtitle, #block-cdm_dataportal-uses .searchtitle, #block-cdm_dataportal-etymology .searchtitle, #block-cdm_dataportal-materials_examined .searchtitle, #block-cdm_dataportal-description .searchtitle, #block-cdm_dataportal-conservation .searchtitle, #block-cdm_dataportal-biology_and_ecology .searchtitle, #block-cdm_dataportal-common_name  .searchtitle {
   border: 0px;
-  /* blue diptera color: #009999; */
-  /* purple diptera color: #b16620; */
   color: #009999;
-  background-color: #EDF5FAA;
+  background-color: #EDF5FA;
 }
+
 
 #block-cdm_dataportal-is_new_combination_for {
   border: 0px;
@@ -287,9 +261,8 @@ ul.links li.first {
 
 #block-cdm_dataportal-is_new_combination_for .searchtitle{
   border: 0px;
-  /* blue diptera color: #009999; */
   color: #009999;
-  background-color:#EDF5FAA;
+  background-color: #EDF5FA;
 }
 /*
 ** Common declarations for child classes of node, comment, block, box, etc.
@@ -332,11 +305,9 @@ ul.links li.first {
   font-weight: bold;
   font-size: 1.0em;
   color: #FFFFFF;
-  /* purple background colour #622830 */
   /* background-color:#96AB2B;
-  background-color:#339999/
-  background-color:#009999 */
-  background-color:#339999;
+  background-color:#339999; */
+  background-color:#009999;
   margin: 0 auto;  /* decrease default margins for h<x>.title */
 }
 
@@ -400,8 +371,8 @@ ul.links li.first {
 }
 .node {
   margin: .5em 0 2em 0;
-  /* background-color:#EDF5FAA; */
-  background-color:#EDF5FAA;
+  /* background-color: #EDF5FA; */
+  background-color: #EDF5FA;
 }
 .sticky {
   padding: .5em;
@@ -531,21 +502,6 @@ ul.typeDesignations {
 /*   list-style:none;	*/
 }
 
-li a.active {
-color:#FFFFFF;
-}
 
-/* to override cdm_taxontree.css */
 
-div.cdm_taxontree_scroller_y {
-  background-color: #EDF5FAA;
-}
-
-ul.cdm_taxontree{
-	background-color: #EDF5FAA;
-}
-
-ul.cdm_taxontree li .active {
-color:#B16620;FFFFFF
-}
 
