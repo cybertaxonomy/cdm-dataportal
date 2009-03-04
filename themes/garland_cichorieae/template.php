@@ -80,8 +80,8 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
 <script type="text/javascript">
 <!--
 	writeFlashCode( "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=PrintSave,textbox",
-		"http://media.bgbm.org/erez/erez?src=erez-private/flashrequired.svg&tmp=Large&quality=97&width=470&height=400",
-		"width=470;height=400;bgcolor=454343;wmode=opaque");
+		"http://media.bgbm.org/erez/erez?src=erez-private/flashrequired.svg&tmp=Large&quality=97&width=620&height=400",
+		"width=620;height=400;bgcolor=454343;wmode=opaque");
 // -->
 </script>
 <noscript>
@@ -93,7 +93,7 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
 		<param name="allowfullscreen" value="true" />
 		<param name="quality" value="high" />
 		<embed src="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave,textbox"
-			width="470"
+			width="620"
 			height="400"
 			bgcolor="454343"
 			wmode="opaque"
