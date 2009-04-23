@@ -70,11 +70,13 @@ function diptera_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef
   
   $out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix.$taxon_str;
   if($taxonSTO->name->taggedName){
-    $authors = '<span class="authors">'.cdm_taggedtext_value($taxonSTO->name->taggedName, "authors").'</span>';
+    $authorsStr = cdm_taggedtext_value($taxonSTO->name->taggedName, "authors");
+    $authorsHtml = '<span class="authors">'.$authorsStr.'</span>';
     if(isset($taxonSTO->name->nomenclaturalReference)){
-      $authors = l($authors, "/cdm_dataportal/reference/".$taxonSTO->name->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);  
+      $authorsHtml = l($authorsHtml, "/cdm_dataportal/reference/".$taxonSTO->name->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);  
     }
-    $out .= $authors;
+
+    $out .= ( str_beginsWith($authorsStr,'(') ? ' ' : ', ') . $authorsHtml;
   }else{
     if($taxonSTO->name->nomenclaturalReference){
       $out .= ' '.theme('cdm_nomenclaturalReferenceSTO', $taxonSTO->name->nomenclaturalReference, TRUE, '', '<br />', 'li', TRUE);
