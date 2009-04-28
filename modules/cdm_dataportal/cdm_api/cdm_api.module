@@ -149,7 +149,7 @@ function cdm_api_settings_form(){
     '#type' => 'checkbox',
     '#title'         => t('Debug CDM Web Service'),
     '#default_value' => variable_get('cdm_webservice_debug', 1),
-    '#description'   => t('Enable CDM Web Service debugging messages')
+    '#description'   => t('Enable CDM Web Service debugging messages. Only visible for administrators!')
   );
     
   return $form;
