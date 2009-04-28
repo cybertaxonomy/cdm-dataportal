@@ -292,28 +292,26 @@ function cdm_dataportal_search_taxon_form(){
   $form['queryString'] = array(
     '#type' => 'textfield',
     '#size' => 20,
-    '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for.')),
+    '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
     '#default_value' => (isset($_SESSION['cdm']['search']['queryString']) ? $_SESSION['cdm']['search']['queryString'] : ''),
   );
   $form['mode'] =  array(
-    '#type' => 'select',
-    '#title' => t('Search Mode'),
-    '#options' => array(
-        /*'EXACT' => t('Exact'),*/
-        'BEGINNING' => t('Beginning'),
-        'ANYWHERE' => t('Anywhere')
-        ),
-    '#description'   => t('* can always be used as wildcard'),
-    '#default_value' => (isset($_SESSION['cdm']['search']['mode']) ? $_SESSION['cdm']['search']['mode'] : 'BEGINNING'),
-  );
+    '#type' => 'hidden',
+    '#value' => 'BEGINNING'
+    );
+    
+  $form['onlyAccepted'] =  array(
+    '#type' => 'hidden',
+    '#value' => '0',
+    );
   
-  /*$form['onlyAccepted'] = array(
+ /* $form['onlyAccepted'] = array(
     '#type' => 'checkbox',
     '#title' => t('Only Accepted'),
-    '#attributes' => array('title' => t('Search only for taxa which are accepted by the current treatment.')),
+    '#attributes' => array('title' => t('Search only for accepted taxa.')),
     '#default_value' => isset($_SESSION['cdm']['search']['onlyAccepted']) && $_SESSION['cdm']['search']['onlyAccepted'],
-  );
-  */
+  );*/
+  
   /*
   $form['vernacular'] = array(
     '#type' => 'checkbox',

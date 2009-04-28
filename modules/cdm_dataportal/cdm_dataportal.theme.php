@@ -1462,14 +1462,14 @@ function theme_cdm_descriptionElementTextData($element){
   return '<li class="descriptionText">' . $description . $referenceCitation.'</li>';
 }
 
-function theme_cdm_search_results($resultPageSTO, $path, $parameters){
+function theme_cdm_search_results($resultPage, $path, $parameters){
 
   drupal_set_title(t('Search Results'));
 
   $out = '';
-  if(count($resultPageSTO->results) > 0){
-    $out .= theme('cdm_list_of_taxa', $resultPageSTO->results);
-    $out .= theme('cdm_pager', $resultPageSTO,  $path, $parameters);
+  if(count($resultPage->results) > 0){
+    $out .= theme('cdm_list_of_taxa', $resultPage->results);
+    $out .= theme('cdm_pager', $resultPage,  $path, $parameters);
   } else {
     $out = '<h4 class="error">Sorry, no matching entries found.</h4>';
   }
