@@ -434,7 +434,7 @@ function cdm_dataportal_settings(){
     $form['cdm_dataportal']['feature_tree']['cdm_dataportal_feature_tree_active'] = array(
     '#type' => 'select',
     '#title'         => t('Available FeatureTrees'),
-    '#default_value' => variable_get('cdm_dataportal_feature_tree_active', 'ae9615b8-bc60-4ed0-ad96-897f9226d568'),
+    '#default_value' => variable_get('cdm_dataportal_feature_tree_active', false),
 	'#options' => _get_feature_trees(),
     '#description'   => t('Select a FeatureTree for this webservice. If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>')
   );

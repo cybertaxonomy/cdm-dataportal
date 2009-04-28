@@ -392,7 +392,7 @@ function cdm_ws_load($url, $is_multi_paramater_query, $method="GET"){
   // this might be conflicting with caching.
   $concatenator = strpos($url, '?') ? '&' : '?';
   
-  $ftree = variable_get('cdm_dataportal_feature_tree', false);
+  $ftree = variable_get('cdm_dataportal_feature_tree_active', false);
   
   $url .= ($ftree && strpos($url, '/taxon/')) ? $concatenator . "ftree=" . $ftree : '';
   
