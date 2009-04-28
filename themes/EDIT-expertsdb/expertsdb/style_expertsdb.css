@@ -1,0 +1,59 @@
+/
+* dl dd.nodeprofile-nodeprofile-display {
+	margin-left: 0px;
+}
+
+dd.nodeprofile-nodeprofile-display div.node {
+	border: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+.profile .person {
+	margin-bottom: 2em;
+}
+
+.profile .title {
+	clear: left;
+	margin-bottom: 0.5em;
+}
+
+.clear-float {
+	clear: both;
+}
+
+.name_aliases {
+	font-size: 70%;
+	vertical-align: baseline;
+}
+
+.profile h2.person .operations {
+	font-size: 80%;
+	font-weight: normal;
+}
+
+div.date_lifespan span {
+	display: inline;
+	margin-left: 0.3em;
+}
+
+table.interest_data th {
+	vertical-align: top;
+}
+
+table.interest_data td span.term {
+	display: block;
+}
+
+table.interest_data td span.notes {
+	display: block;
+	font-size: 90%;
+	font-style: italic;
+	margin-top: 1em;
+}
+
+div.view-search-interest,div.view-search-interest select,div.view-search-interest textarea
+	{
+	font-size: 90%;
+}  /*
+
