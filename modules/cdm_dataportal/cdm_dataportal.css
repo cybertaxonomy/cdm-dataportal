@@ -1,0 +1,198 @@
+@CHARSET "ISO-8859-1";
+/* $Id$ */
+
+div.debug{
+  background-color: #252525;
+  color: #FEFEFE;
+  font-family: monospace;
+  font-size: 90%;	
+  overflow: auto;
+}
+
+div.debug a.valid {
+  color: #1BDF00;	
+}
+div.debug a.invalid {
+  color: #F3000A; 
+}
+
+.name{
+  font-style: italic;
+}
+
+.relation_sign{
+	margin-left: -1em; /* same as ul.typeDesignations */
+	margin-right: 0.3em;
+	float: left;
+}
+
+.highlite {
+  background-color: yellow;	
+}
+
+li .taxon{
+}
+
+.heterotypicSynonymyGroup li{
+  margin-left: 26px;
+}
+
+ul.homotypicSynonyms, ul.heterotypicSynonymyGroup{
+	 border-bottom: 1px solid #D4EBF9;
+	 
+}
+
+ul.typeDesignations{
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: -1em; /* same as .relation_sign */
+}
+
+ul.typeDesignations li{
+	background-image: none;
+}
+
+
+.misapplied .name{
+ 	/*font-style: normal;*/
+}
+.misapplied .authors{
+	display: none;
+}
+
+img.preview {
+	margin: 5px 30px;
+}
+
+ul li.synonym{
+  list-style-type: none;
+  background-image: none;
+}
+
+li.firstentry{
+  margin-left: 6px;
+}
+
+
+ul.cdm_names, ul.cdm_names li{
+	 background-image: none;
+}
+
+ul li.dynabox{
+ /* background-image: url('images/btn_expand.gif'); 
+  background-repeat: no-repeat;
+  cursor: pointer;
+ */
+}
+
+ul li.dynabox_expanded{
+  /* background-image: url('images/btn_collapse.gif'); 
+  background-repeat: no-repeat;
+  cursor: pointer;
+  */
+}
+
+
+ul li.dynabox .label{
+ cursor: pointer;
+}
+
+ul li.dynabox .label:hover{
+ color: #0174BB;
+}
+
+ul.dynabox_content{
+  margin-top:-1em;
+}
+
+
+.tickbox_content{
+	display: none;
+}
+
+.pager strong, .pager a {
+	-moz-border-radius-bottomleft:2px;
+	-moz-border-radius-bottomright:2px;
+	-moz-border-radius-topleft:2px;
+	-moz-border-radius-topright:2px;
+	background-color:#DFEDF7;
+	border:1px solid #90C2E1;
+	margin:0px 0.25em;
+	padding:2px 5px;
+}
+
+.pager strong {
+	background-color:#0174BB;
+	color:#FFFFFF;
+}
+
+.pager-list-dots-right, .pager-list-dots-left {
+  display: inline;
+}
+
+a.filter_add:link, a.filter_add:visited{
+
+}
+
+a.filter_remove:link, a.filter_remove:visited{
+  color: red;
+}
+
+a.synonym:link, a.synonym:visited {
+  color: #7C7C7F;
+}
+
+a.toc:link, a.toc:visited {
+  color: #F03300;
+}
+
+.block-cdm_taxontree .content, .block-cdm_dataportal-3 .content{
+   font-size: 90%;
+}
+
+.block-cdm_taxontree div.settings{
+	/*background-color: #2587C3;*/
+	border-bottom: 1px solid #E0DFE3;
+	border-top: 1px solid #E0DFE3;
+}
+
+.concept_switch {
+  padding:0 0.2em;
+}
+
+.descriptionText, .descriptionReference{
+	vertical-align: top;
+}
+
+.annotation_box {
+	display: none;	
+	background: #FFFFCC;
+	border: 1px solid #FFCC66;
+	font-size: 9pt;
+	padding: 5px
+}
+.annotation_box ul, .annotation_box li{
+	list-style-type: none;	
+	line-height: 11pt;
+	padding: 0;
+	margin: 0;
+}
+
+.annotation_box li{
+	padding-left: 15px;	
+}
+
+.annotation_create{
+	margin-top: 20px;
+	text-align: right;
+}
+
+.annotation_create textarea {
+	width: 100%;	
+}
+
+.annotation_create form{
+	margin-bottom: 0;
+}
+
+

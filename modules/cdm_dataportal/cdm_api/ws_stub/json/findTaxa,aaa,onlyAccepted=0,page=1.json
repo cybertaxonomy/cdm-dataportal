@@ -1,0 +1,124 @@
+{
+  "root":{
+    "totalResultsCount": "200",
+    "perPageCount":"20",
+    "pageNumber":"3",
+    "totalPageCount":"10",
+    "results":[
+    {
+      "uuid":"5000001-stub",
+      "name":{
+        "uuid":"90000001-stub",
+        "fullname":"Acanthocephalus amplexifolius Kar. & Kir.",
+        "taggedName":[
+          {
+            "type":"name",
+            "text":"Acanthocephalus amplexifolius"
+          },
+          {
+            "type":"authors",
+            "text":"Kar. & Kir."
+          }
+        ]
+      },
+      "secUuid":"1001-stub",
+      "isAccepted":true
+    },
+    {
+      "uuid":"5000002-stub",
+      "name":{
+        "uuid":"90000002-stub",
+        "fullname":"Acanthocephalus benthamianus var. laevis Vassilcz.",
+        "taggedName":[
+          {
+            "type":"name",
+            "text":"Acanthocephalus amplexifolius"
+          },
+          {
+            "type":"authors",
+            "text":"Vassilcz."
+          }
+        ]
+      },
+      "secUuid":"1001-stub",
+      "isAccepted":true
+    },
+    {
+      "uuid":"5000003-stub",
+      "name":{
+        "uuid":"90000003-stub",
+        "fullname":"Acanthocephalus benthamianus Regel",
+        "taggedName":[
+          {
+            "type":"name",
+            "text":"Acanthocephalus benthamianus"
+          },
+          {
+            "type":"authors",
+            "text":"Regel"
+          }
+        ]
+      },
+      "secUuid":"1002-stub",
+      "isAccepted":true
+    },
+    {
+      "uuid":"5000004-stub",
+      "name":{
+        "uuid":"90000004-stub",
+        "fullname":"Aetheorhiza bulbosa subsp. microcephala Rech. f.",
+        "taggedName":[
+          {
+            "type":"name",
+            "text":"Aetheorhiza bulbosa subsp. microcephala"
+          },
+          {
+            "type":"authors",
+            "text":"Rech. f."
+          }
+        ]
+      },
+      "secUuid":"1002-stub",
+      "isAccepted":false
+    },
+    {
+      "uuid":"5000005-stub",
+      "name":{
+        "uuid":"90000003-stub",
+        "fullname":"Acanthocephalus benthamianus Regel",
+        "taggedName":[
+          {
+            "type":"name",
+            "text":"Acanthocephalus benthamianus"
+          },
+          {
+            "type":"authors",
+            "text":"Regel"
+          }
+        ]
+      },
+      "secUuid":"1001-stub",
+      "isAccepted":true
+    },
+    {
+      "uuid":"5000006-stub",
+      "name":{
+        "uuid":"90000004-stub",
+        "fullname":"Aetheorhiza bulbosa subsp. microcephala Rech. f.",
+        "taggedName":[
+          {
+            "type":"name",
+            "text":"Aetheorhiza bulbosa subsp. microcephala"
+          },
+          {
+            "type":"authors",
+            "text":"Rech. f."
+          }
+        ]
+      },
+      "secUuid":"1002-stub",
+      "isAccepted":false
+    }
+  ]
+  }
+}

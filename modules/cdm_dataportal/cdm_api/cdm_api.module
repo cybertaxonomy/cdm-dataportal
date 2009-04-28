@@ -1,0 +1,745 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Functions which are required or useful when accessing and processing CDM Data Store Webservices
+ *
+ * Naming conventions:
+ * ----------------------
+ *
+ *  - all webservice access methods are prefixed with cdm_ws
+ *
+ *
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ */
+require_once ('xml2json.php');
+require_once ('uuids.php');
+
+
+
+
+/**
+ * Implementation of hook_requirements()
+ */
+function cdm_api_requirements() {
+
+  $requirements['cdm_api'] = array(
+    'title' => t('CDM API')
+  );
+
+  if( function_exists('curl_init') ){
+    $requirements['cdm_api']['description'] = ''; // description below title is not jet in use
+    $requirements['cdm_api']['value'] =  'CURL php extension is available.';
+  } else {
+    $requirements['cdm_api']['value'] =  'CURL php extension is missing.';
+  }
+ 
+  //FIXME: once _get_content_fsockopen is implemented change  severity to  REQUIREMENT_WARNING,
+  $requirements['cdm_api']['severity'] =  (function_exists('curl_init') ? REQUIREMENT_OK : REQUIREMENT_ERROR);
+  
+  return $requirements;
+}
+
+
+/**
+ * Implementation of hook_menu()
+ */
+function cdm_api_menu($may_cache) {
+  $items = array();
+  if ($may_cache) {
+    $items[] = array(
+      // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
+      'path' => 'cdm_api/proxy',
+      'callback' => 'proxy_content',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    );
+  }
+  
+  return $items;
+}
+
+/**
+ * Configures the settings forfm for the CDM-API module.
+ *
+ * @return Array Drupal settings form
+ */
+function cdm_api_settings_form(){
+  
+   $form['cdm_webservice'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('CDM Web Service'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+  );
+
+  $form['cdm_webservice']['cdm_webservice_url'] =  array(
+    '#type' => 'textfield',
+    '#title'         => t('CDM Web Service URL'),
+    '#description'   => t('The URL of CDM Webservice which delivers the data to be published.'),
+    '#default_value' => variable_get('cdm_webservice_url', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api/ws_stub/'),
+  );
+
+  $form['cdm_webservice']['cdm_webservice_isStub'] =  array(
+    '#type' => 'checkbox',
+    '#title'         => t('Use Web Service Stub'),
+    '#default_value' => variable_get('cdm_webservice_isStub', 1),
+    '#description'   => t('Use a static web service stub. Only for development. For further information please refer to the ')
+  .l('ws_stub/README.txt', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm/ws_stub/README.txt', array('target'=>'_blank')),
+  );
+  
+
+  $form['cdm_webservice']['cdm_webservice_type'] =  array(
+    '#type'          => 'select',
+    '#title'         => t('Web Service Type'),
+    '#default_value' => variable_get('cdm_webservice_type', 'json'),
+    '#options'       => array(
+            'xml'  => t('XML'),
+            'json' => t('JSON'),
+        ),
+    '#description'   => t('The response data type of the web service.'),
+  );
+
+  $form['cdm_webservice']['cdm_webservice_cache'] =  array(
+    '#type' => 'checkbox',
+    '#title'         => t('Enable Caching'),
+    '#default_value' => variable_get('cdm_webservice_cache', 1),
+    '#description'   => t('Enable caching of webservice responses on simple requests, '
+      .'that is requests which only have one parameter generally a UUID or a concatenation of UUIDs')
+  );
+  
+  $form['cdm_webservice']['proxy'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Proxy'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE
+  );
+  
+  $form['cdm_webservice']['proxy']['cdm_webservice_proxy_url'] =  array(
+    '#type' => 'textfield',
+    '#title'         => t('Proxy URL'),
+    '#description'   => t('If this proxy url is set the cdm api tries
+    to connect the web service over the given proxy server.
+    Otherwise proxy usage is deactivated.'),
+    '#default_value' => variable_get('cdm_webservice_proxy_url', false),
+  );
+  
+  $form['cdm_webservice']['proxy']['cdm_webservice_proxy_port'] =  array(
+    '#type' => 'textfield',
+    '#title'         => t('Proxy Port'),
+    '#default_value' => variable_get('cdm_webservice_proxy_port', '80'),
+  );
+  
+  $form['cdm_webservice']['proxy']['cdm_webservice_proxy_usr'] =  array(
+    '#type' => 'textfield',
+    '#title'         => t('Login'),
+    '#default_value' => variable_get('cdm_webservice_proxy_usr', false),
+  );
+  
+  $form['cdm_webservice']['proxy']['cdm_webservice_proxy_pwd'] =  array(
+    '#type' => 'textfield',
+    '#title'         => t('Password'),
+    '#default_value' => variable_get('cdm_webservice_proxy_pwd', false),
+  );
+  
+  $form['cdm_webservice']['cdm_webservice_debug'] =  array(
+    '#type' => 'checkbox',
+    '#title'         => t('Debug CDM Web Service'),
+    '#default_value' => variable_get('cdm_webservice_debug', 1),
+    '#description'   => t('Enable CDM Web Service debugging messages')
+  );
+    
+  return $form;
+}
+
+/**
+ * Implementation of hook_cron().
+ *
+ * Expire outdated cache entries
+ */
+function cdm_api_cron() {
+  cache_clear_all(NULL, 'cache_cdm_ws');
+}
+
+
+// ----------------------------------------------------------- //
+
+
+/**
+ * Converts an array of TagedText items into a sequence of corresponding html tags whereas
+ * each item will provided with a class attribute which set to the key of the TaggedText item.
+ *
+ * @param array $taggedtxt
+ * @param String $tag
+ * @param String $glue the string by which the chained text tokens are concatenated together.
+ *       Default is a blank character
+ * @return String of HTML
+ */
+function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
+   $out = '';
+   $i = 0;
+   foreach($taggedtxt as $tt){
+     if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
+      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.t($tt->text).'</'.$tag.'>';
+     }
+   }
+   return $out;
+}
+
+/**
+ * Finds the text tagged with $$tag_type in an array of taggedText instances
+ *
+ * @param array $taggedtxt
+ * @param string $tag_type
+ * @return the text mapped by $tag_type or an empty string
+ */
+function cdm_taggedtext_value(array &$taggedtxt = array(), $tag_type){
+  foreach($taggedtxt as $tagtxt){
+    if($tagtxt->type == $tag_type)
+    return $tagtxt->text;
+  }
+  return '';
+}
+
+/**
+ * media Array [4]
+ *   representations Array [3]
+ *       mimeType  image/jpeg
+ *       representationParts Array [1]
+ *           duration  0
+ *           heigth  0
+ *           size  0
+ *           uri http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/jpeg/Acanthocephalus_p1.jpg
+ *           uuid  15c687f1-f79d-4b79-992f-7ba0f55e610b
+ *           width 0
+ *       suffix  jpg
+ *       uuid  930b7d51-e7b6-4350-b21e-8124b14fe29b
+ *   title
+ *   uuid  17e514f1-7a8e-4daa-87ea-8f13f8742cf9
+ *
+ * @param unknown_type $mediaTO
+ * @param array $mimeTypes
+ * @param unknown_type $width
+ * @param unknown_type $height
+ * @return unknown
+ */
+function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width = 400, $height = 300){
+    /**
+
+     *
+     */
+  $prefRepr = array();
+  if(!isset($mediaTO->representations[0])){
+    return $prefRepr;
+  }
+  
+  while(count($mimeTypes) > 0){
+    // getRepresentationByMimeType
+    $mimeType = array_shift($mimeTypes);
+    foreach($mediaTO->representations as $representationTO){
+      if($representationTO->mimeType == $mimeType){
+        // preffered mimetype found -> erase all remaining mimetypes to end loop
+        $mimeTypes = array();
+        $dwa = 0;
+        // look for part with the best matching size
+        foreach($representationTO->representationParts as $part){
+          $dw = $part->width * $part->height - $height * $width;
+          if($dw < 0){
+            $dw *= -1;
+          }
+          $dwa+= $dw;
+        }
+        $dwa = (count($representationTO->representationParts)>0) ? $dwa / count($representationTO->representationParts) : 0;
+        $prefRepr[$dwa.'_'.$mimeTypeKey] = $representationTO;
+      }
+    }
+  }
+  // sort
+  krsort($prefRepr);
+  // return
+  return $prefRepr;
+}
+
+
+/**
+ * Produces a path to a static web service stub out of a cdm web service path.
+ * These stubs are object serialisations stored in files whereas the filename
+ * consists of the service name and of a
+ * encoded version of the request query parameters
+ *
+ * @param string $path
+ * @param string $fileExtension
+ * @return string
+ */
+function cdm_encode_stub($path, $fileExtension, $hasParams = false){
+  $path =  str_replace('/',',',$path);
+  if($hasParams){
+    $path =  str_replace('?',',',$path);
+    $path =  str_replace('&',',',$path);
+  }
+  return variable_get('cdm_webservice_type', 'xml').'/'.$path.'.'.$fileExtension;
+}
+
+
+function cdm_compose_url($ws_name, $parameters = array()){
+  
+  $request_params = '';
+  $path_params = '';
+  if(!is_array($parameters)){
+     // add to path
+     $path_params .= '/'.( is_string($parameters) ? urlencode($parameters) : $parameters);
+  }else{
+    foreach($parameters as $key=>$value){
+      if(is_numeric($key)){
+        // add to path
+        $path_params .= '/'.( is_string($value) ? urlencode($value) : $value);
+      } else {
+        // add to parameters
+        $request_params .= ( strlen($request_params) == 0 ? '?' : '&').$key.'='.( is_string($value) ? urlencode($value) : $value);
+      }
+    }
+  }
+  $path = $ws_name.$path_params.$request_params;
+  
+  if(variable_get('cdm_webservice_isStub', 0)){
+    $path = cdm_encode_stub($path, variable_get('cdm_webservice_type', 'json'), strlen($request_params) > 0);
+  }
+  
+  $url = variable_get('cdm_webservice_url', '').$path;
+  return $url;
+}
+
+
+function proxy_content($url, $theme = null){
+  
+  $args = func_get_args();
+  
+  $url = array_shift($args);
+  $theme = array_shift($args);
+  
+  $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
+  
+  if($request_method == "POST"){
+    
+    $parameters = $_POST;
+    
+    $post_data = array();
+    foreach ($parameters as $k=>$v)
+    {
+        $post_data[] = "$k=".utf8_encode($v);
+    }
+    $post_data = implode(',', $post_data);
+    
+    // testing
+    $data = request_content(urldecode($url), "POST", $post_data);
+    print $data;
+    
+  }else{
+    // in all other cases perform a simple get request
+    //TODO reconsider caching logic in this function
+    if(!$theme){
+      // print out JSON, the cache cannot be used since it contains objects
+      $data = request_content(urldecode($url));
+      print $data;
+    } else {
+      $obj = cdm_ws_load(urldecode($url), false);
+      array_unshift($args, $theme, $obj);
+      print call_user_func_array('theme', $args);
+    }
+  }
+  
+
+}
+
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $method
+ * @param $parameters may be an array or a single variable
+ * @return unknown
+ */
+function cdm_ws_get($method, $parameters = array()){
+  /*$args = func_get_args();
+  $method = array_shift($args);
+  */
+  /*if(isset($args[0]) && is_array($args[0])){
+    $url = cdm_compose_url_parametrised($method, $args[0]);
+  } else {
+ */
+  $url = cdm_compose_url($method, $parameters);
+  //}
+  return cdm_ws_load($url, (is_array($parameters)));
+}
+
+/**
+ * Loads the XML or JSON response for the given url from the CDM Data Store Webservice.
+ * The XML is turned into a object which is returned.
+ *
+ * @param String $url the relative url of the web service call.
+ *        Relative means relative to the web service base url which is stored in cdm_webservice_url
+ * @return An object or false
+ */
+function cdm_ws_load($url, $is_multi_paramater_query, $method="GET"){
+  
+  $do_cache = !$is_multi_paramater_query && variable_get('cdm_webservice_cache', 0) && $method == "GET";
+  $cache_entry = false;
+  
+  // append the default featureTree to url string
+  // this might be conflicting with caching.
+  $concatenator = strpos($url, '?') ? '&' : '?';
+  
+  $ftree = variable_get('cdm_dataportal_feature_tree', false);
+  
+  $url .= ($ftree && strpos($url, '/taxon/')) ? $concatenator . "ftree=" . $ftree : '';
+  
+  if($do_cache){
+    // try to get object from cache
+    $cache_entry = cache_get($url, 'cache_cdm_ws');
+  }
+  
+  if(!$cache_entry){
+    // load fresh data from webservice
+    $time_get_start = microtime(true);
+    // request data from webservice JSON or XML
+    $datastr = request_content($url, $method);
+    $time_get = microtime(true) - $time_get_start;
+    /*if(TRUE){
+      $storef =  urlencode($url);
+      drupal_set_message($storef);
+      file_save_data($datastr, $storef, FILE_EXISTS_REPLACE);
+    }*/
+    
+    $time_parse_start = microtime(true);
+    // parse data and create object
+    $obj = cdm_load_obj($datastr);
+    $time_parse = microtime(true) - $time_parse_start;
+    if(variable_get('cdm_webservice_debug', 1)){
+      $success_msg = $obj?'valid':'invalid'; 
+      drupal_set_message(
+         $url.' [fetched in: '.sprintf('%3.3f', $time_get).'s; '
+        .'parsed in '.sprintf('%3.3f', $time_parse).' s;'
+        .' size:'.sprintf('%3.1f', (strlen($datastr) / 1024)).' kb of '
+        .l($success_msg.' data', 'cdm_api/proxy/'.urlencode($url), array('target'=>'json-data', 'class'=>$success_msg)).'] '.$json_data_link
+        , 'debug');
+    }
+    if( !$obj || !$datastr){
+      watchdog('CDM', 'cdm_ws_load() - URL: '.$url, WATCHDOG_ERROR);
+    } else if($do_cache) {
+      // store fresh data in cache
+      cache_set($url, 'cache_cdm_ws', serialize($obj), CACHE_TEMPORARY);
+    }
+  } else {
+    $obj = unserialize($cache_entry->data);
+    if(variable_get('cdm_webservice_debug', 1)){
+      drupal_set_message('Using cache for: '.$url, 'debug');
+    }
+  }
+  return $obj;
+}
+
+
+function cdm_load_obj($datastr){
+     
+  // if the web service delivers XML convert it into json
+  if(variable_get('cdm_webservice_type', 'xml') == 'xml'){
+    $datastr = xml2json::transformXmlStringToJson($datastr);
+  }
+  $use_stub = variable_get('cdm_webservice_isStub', 0);
+  if($use_stub){
+    // --- for STUBS use the more syntax tolerant PEAR json lib --- //
+    $json_pear = new Services_JSON();
+    $obj = $json_pear->decode($datastr);
+  } else {
+    // --- generally use the fast php json lib --- //
+    $obj = json_decode($datastr);
+  }
+  
+  if(!(is_object($obj) || is_array($obj)) || ($use_stub && !isset($obj->root)) ){
+    ob_start();
+    var_dump($obj);
+    $obj_dump = ob_get_contents();
+    ob_clean();
+    watchdog('CDM', 'cdm_load_obj() - invalid object: '.$obj_dump, WATCHDOG_ERROR);
+    return false;
+  }
+
+  if($use_stub){
+    $arr = (array)$obj;
+    $obj = array_pop($arr);
+  }
+  return $obj;
+}
+
+
+
+
+function request_content($url, $method="GET", $parameters = array()){
+  global $locale;  // drupal variable containing the current locale i.e. language
+  static $header;
+  
+  if(!$header){
+    $header = array();
+    $header[] = 'Accept: '.(variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
+    $header[] = 'Accept-Language: '.$locale;
+    $header[] = 'Accept-Charset: UTF8';
+  }
+  
+  if(function_exists('curl_init')){
+
+    // use the CURL lib if installed it is supposed to be 20x faster
+    return _request_content_curl($url, $header, $method, $parameters);
+  } else {
+    return _request_content_fsockopen($url, $header, $method, $parameters);
+  }
+}
+
+
+function _request_content_fsockopen($url, $header = array(), $method = "GET"){
+  //FIXME implement get_content_fsockopen($url);
+   watchdog('CDM_API', '_request_content_fsockopen - UNIMPLEMENTED', WATCHDOG_ERROR);
+   return false;
+}
+
+
+/**
+ * Return string content from a remote file
+ *
+ * @param string $url
+ * @return string
+ *
+ * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
+*/
+function _request_content_curl($url, $header = array(), $method = "GET", $parameters = array())
+{
+    $ch = curl_init();
+
+    curl_setopt ($ch, CURLOPT_URL, $url);
+    // set proxy settings
+    if(variable_get('cdm_webservice_proxy_url', false)){
+      curl_setopt($ch, CURLOPT_PROXY, variable_get('cdm_webservice_proxy_url', ''));
+      curl_setopt($ch, CURLOPT_PROXYPORT, variable_get('cdm_webservice_proxy_port', '80'));
+      if(variable_get('cdm_webservice_proxy_usr', false)){
+        curl_setopt ($ch, CURLOPT_PROXYUSERPWD, variable_get('cdm_webservice_proxy_usr', '').':'.variable_get('cdm_webservice_proxy_pwd', ''));
+      }
+    }
+    // set headers
+    curl_setopt ($ch, CURLOPT_HTTPHEADER, $header);
+    // set method if not default
+    if($method != "GET"){
+      if($method == "POST"){
+        
+        curl_setopt ($ch, CURLOPT_POST, 1);
+        curl_setopt ($ch, CURLOPT_POSTFIELDS, $parameters);
+        
+      }else{
+        // other obscure http methods get passed to curl directly
+        // TODO generic parameter/body handling
+        curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, $method);
+      }
+    }
+    
+    
+    ob_start();
+    curl_exec ($ch);
+    if(curl_errno($ch)){
+      watchdog('CDM_API', '_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, WATCHDOG_ERROR);
+        if(variable_get('cdm_webservice_debug', 1)){
+          drupal_set_message('_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, 'error');
+        }
+    }
+    curl_close ($ch);
+    $string = ob_get_contents();
+    ob_end_clean();
+ 
+    return $string;
+}
+
+function cdm_api_secref_cache_prefetch(&$secUuids){
+  global $secref_cache;
+  if(!is_array($secref_cache)){
+    $secref_cache = array();
+  }
+  $uniqueUuids = array_unique($secUuids);
+  $i = 0;
+  $param = '';
+  while($i++ < count($uniqueUuids)){
+    $param .= $secUuids[$i].',';
+    if(strlen($param) + 37 > 2000){
+     _cdm_api_secref_cache_add($param);
+      $param = '';
+    }
+  }
+  if($param){
+     _cdm_api_secref_cache_add($param);
+  }
+}
+
+function cdm_api_secref_cache_get($secUuid){
+  global $secref_cache;
+  if(!is_array($secref_cache)){
+    $secref_cache = array();
+  }
+  if(!array_key_exists($secUuid, $secref_cache)){
+    _cdm_api_secref_cache_add($secUuid);
+  }
+  return $secref_cache[$secUuid];
+}
+
+function cdm_api_secref_cache_clear(){
+  global $secref_cache;
+  $secref_cache = array();
+}
+
+function _cdm_api_secref_cache_add($secUuidsStr){
+  global $secref_cache;
+  $refSTOs = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $secUuidsStr);
+  $assocRefSTOs = array();
+  if($refSTOs) {
+    foreach($refSTOs as $ref){
+      $assocRefSTOs[$ref->uuid] = $ref;
+    }
+    $secref_cache = array_merge($secref_cache, $assocRefSTOs);
+  }
+}
+
+/**
+ * Web Service Arguments: {Uuid}
+ *
+ * The whatis service returns the type
+ * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter.
+ *
+ * return: false if the cdm store contains no matching instance.
+ * An associative array with the following key-value pairs:
+ *   - 'cdmName':       name of the cdm class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.model.taxon.Taxon
+ *   - 'cdmSimpleName': simple name of the cdm class as returned by Class.getSimpleName(), e.g. Taxon
+ *   - 'dtoName':       name of the DTO class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.dto.TaxonTO
+ *   - 'dtoSimpleName': simple name of the TDO class as returned by Class.getSimpleName(), e.g. TaxonTO
+ */
+define('CDM_WS_WHATIS', 'whatis');
+
+
+/**
+ * Web Service Arguments: {NameUuid}
+ */
+define('CDM_WS_NAME', 'name');
+
+/**
+ * Web Service url parameters:
+ * -  [last path element]: querystring
+ * -  sec : list of reference base uuid of concept references
+ * -  higherTaxa : list of taxon uuid, if higherTaxa are defined only taxa which are includet in one these taxa are taken in to account
+ * -  matchAnywhere : false (default) match the querystring to the beginning of names, if set to true any matching substring is taken as a hit.
+ * -  onlyAccepted : return only taxa which are accepted in the sence of the concept reference as given by parameter sec
+ * -  pagesize : maximum number of iteme per result page
+ * -  page: the number of page to be returned
+ *
+ * returns ResultPageSTO
+ */
+define('CDM_WS_FIND_TAXA', 'find/taxon');
+
+/**
+ * Web Service Arguments: {referenceUuid}
+ *
+ */
+define('CDM_WS_REFERENCE', 'reference');
+
+/**
+ * Web Service Arguments: {pageNumber}
+ *
+ */
+define('CDM_WS_REFERENCE_LIST', 'reference/list');
+
+/**
+ * Web Service Arguments: {referenceUuid} or array of {referenceUuid}
+ *
+ * returns a list of ReferenceSTO
+ */
+define('CDM_WS_SIMPLE_REFERENCE', 'simple/reference');
+
+/**
+ * Web Service Arguments: {taxonUuid}
+ */
+define('CDM_WS_TAXON', 'taxon');
+
+
+/**
+ * Web Service Arguments: {taxonUuid} or array of {referenceUuid}
+ *
+ * returns a list of TaxonSTO
+ */
+define('CDM_WS_SIMPLE_TAXON', 'simple/taxon');
+
+/**
+ * Web Service Arguments: {nameUuid}
+ *
+ * returns a set of type designation which are assigned to the name given
+ * as parameter. The Set may contain {@link NameTypeDesignationSTO}
+ * and {@link SpecimenTypeDesignationSTO}
+ */
+define('CDM_WS_TYPE_DESIGNATIONS', 'types');
+
+/**
+ * Web Service Arguments: {taxonUuid}
+ *
+ * returns the taxon which is the accepted synonym for the taxon given as
+ * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
+ * accepted taxon, this one will be returned.
+ */
+define('CDM_WS_ACCEPTED_TAXON', 'simple/taxon/acceptedfor');
+
+/**
+ * Web Service Arguments: {secUuid}
+ *
+ * Gets the root nodes of the taxonomic concept tree for the concept
+ * reference specified by the secUuid parameter.
+ *
+ * stub: treenode_root
+ */
+define('CDM_WS_TREENODE_ROOT', 'taxonomy/root');
+
+/**
+ * Web Service Arguments: {taxonUuid}
+ *
+ * Searches the concept taxon tree for all parent taxa by walking the tree
+ * from the taxon which is referenced by the parameter taxonUuid down to its
+ * root. The reference taxon will also be included into the returned set of
+ * TreeNode instances.
+ *
+ * stub: treenode_parents
+ */
+define('CDM_WS_TREENODE_PARENTS', 'taxonomy/parents');
+
+/**
+ * Web Service Arguments: {taxonUuid}
+ *
+ * returns the children of the taxon referenced by the parameter
+ * taxonUuid.
+ *
+ * stub: treenode_children
+ */
+define('CDM_WS_TREENODE_CHILDREN', 'taxonomy/children');
+
+/**
+ * returns all features available in this community store
+ *
+ */
+define('CDM_WS_FEATURES', 'features');
+
+/**
+ * returns FeatureTrees that are stored in this community store
+ *
+ */
+define('CDM_WS_FEATURETREES', 'features/tree');
+
+
+/**
+ * Web Service Arguments: {CdmObjUuid}
+ *
+ * Either retrieves or writes annotations to any annotatable entity
+ */
+define('CDM_WS_ANNOTATIONS', 'annotations');
+

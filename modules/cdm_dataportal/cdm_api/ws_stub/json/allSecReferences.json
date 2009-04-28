@@ -1,0 +1,34 @@
+{ 
+  "root":[
+    { 
+      "uuid":"1001-stub",
+      "uri":"",
+      "citation":"EDIT wp 6 - Chichorieae test",
+      "year":"2005",
+      "microReference":"",
+      "authorship":"AS Ralf, Eckhardt",
+      "mediaURI":[
+      ]
+    },
+    {
+      "uuid":"1012-stub",
+      "uri":"",
+      "citation":"Chich-Project 2000",
+      "year":"2000",
+      "microReference":"",
+      "authorship":"",
+      "mediaURI":[
+      ]
+    },
+    {
+      "uuid":"1011-stub",
+      "uri":"",
+      "citation":"campari soda",
+      "year":"1890",
+      "microReference":"",
+      "authorship":"E. Müller et. al",
+      "mediaURI":[
+      ]
+    }
+   ]
+}

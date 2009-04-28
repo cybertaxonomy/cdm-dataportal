@@ -1,0 +1,6 @@
+; $Id$
+name = "CDM Media-URI Conversion"
+description = "Allows to create conversion rules for media uris"
+version = 5.x-0.1
+package = "CDM"
+; dependencies = 
