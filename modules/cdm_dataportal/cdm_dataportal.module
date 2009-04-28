@@ -370,7 +370,8 @@ function cdm_dataportal_search_form_request(){
   										'page' => null,
   										'pagesize' => variable_get('cdm_dataportal_search_items_on_page', 25),
   										'mode' => null,
-                                        'sec' => $currentSecRefArray['uuid']);
+                     // 'sec' => $currentSecRefArray['uuid']
+  );
   
   
   $form_params = array();
