@@ -18,7 +18,7 @@
 require_once ('xml2json.php');
 require_once ('uuids.php');
 
-
+define(DEFAULT_TAXONTREE_RANKLIMIT, 'Genus');
 
 
 /**
@@ -82,7 +82,79 @@ function cdm_api_settings_form(){
     '#description'   => t('The URL of CDM Webservice which delivers the data to be published.'),
     '#default_value' => variable_get('cdm_webservice_url', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api/ws_stub/'),
   );
-
+  
+  $form['cdm_webservice']['taxontree_ranklimit'] =  array(
+    '#type'          => 'select',
+    '#title'         => t('Rank of highest displayed taxon'),
+    '#default_value' => variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT),
+    '#options'       => array(
+            'Empire' => t('Empire'),
+            'Domain' => t('Domain'),
+            'Super Kingdom' => t('Super Kingdom'),
+            'Kingdom' => t('Kingdom'),
+            'Subkingdom' => t('Subkingdom'),
+            'Infrakingdom' => t('Infrakingdom'),
+            'Superphylum' => t('Superphylum'),
+            'Phylum' => t('Phylum'),
+            'Subphylum' => t('Subphylum'),
+            'Infraphylum' => t('Infraphylum'),
+            'Superdivision' => t('Superdivision'),
+            'Division' => t('Division'),
+            'Subdivision' => t('Subdivision'),
+            'Infradivision' => t('Infradivision'),
+            'Superclass' => t('Superclass'),
+            'Class' => t('Class'),
+            'Subclass' => t('Subclass'),
+            'Infraclass' => t('Infraclass'),
+            'Superorder' => t('Superorder'),
+            'Order' => t('Order'),
+            'Suborder' => t('Suborder'),
+            'Infraorder' => t('Infraorder'),
+            'Superfamily' => t('Superfamily'),
+            'Family' => t('Family'),
+            'Subfamily' => t('Subfamily'),
+            'Infrafamily' => t('Infrafamily'),
+            'Supertribe' => t('Supertribe'),
+            'Tribe' => t('Tribe'),
+            'Subtribe' => t('Subtribe'),
+            'Infratribe' => t('Infratribe'),
+            'Suprageneric Taxon' => t('Suprageneric Taxon'),
+            'Genus' => t('Genus'),
+            'Subgenus' => t('Subgenus'),
+            'Infragenus' => t('Infragenus'),
+            'Section' => t('Section'),
+            'Subsection' => t('Subsection'),
+            'Series' => t('Series'),
+            'Subseries' => t('Subseries'),
+            'Species Aggregate' => t('Species Aggregate'),
+            'Infrageneric Taxon' => t('Infrageneric Taxon'),
+            'Species' => t('Species'),
+            'Subspecific Aggregate' => t('Subspecific Aggregate'),
+            'Subspecies' => t('Subspecies'),
+            'Infraspecies' => t('Infraspecies'),
+            'Variety' => t('Variety'),
+            'Bio Variety' => t('Bio Variety'),
+            'Patho Variety' => t('Patho Variety'),
+            'Subvariety' => t('Subvariety'),
+            'Subsubvariety' => t('Subsubvariety'),
+            'Convar' => t('Convar'),
+            'Form' => t('Form'),
+            'Special Form' => t('Special Form'),
+            'Subform' => t('Subform'),
+            'Subsubform' => t('Subsubform'),
+            'Infraspecific Taxon' => t('Infraspecific Taxon'),
+            'Candidate' => t('Candidate'),
+            'Denomination Class' => t('Denomination Class'),
+            'Grex' => t('Grex'),
+            'Graft Chimaera' => t('Graft Chimaera'),
+            'Cultivar Group' => t('Cultivar Group'),
+            'Cultivar' => t('Cultivar'),
+            'Unknown Rank' => t('Unknown Rank')
+        ),
+    '#description'   => t('The rank of the highest displayed taxon in the taxontree.'),
+  );
+  
+  /*
   $form['cdm_webservice']['cdm_webservice_isStub'] =  array(
     '#type' => 'checkbox',
     '#title'         => t('Use Web Service Stub'),
@@ -102,6 +174,7 @@ function cdm_api_settings_form(){
         ),
     '#description'   => t('The response data type of the web service.'),
   );
+  */
 
   $form['cdm_webservice']['cdm_webservice_cache'] =  array(
     '#type' => 'checkbox',
@@ -263,6 +336,54 @@ function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width 
   return $prefRepr;
 }
 
+/**
+ * expects an ISO 8601 time representations of a org.joda.time.Partial 
+ * of the form yyyy-MM-dd and returns the year as String. 
+ * In case the year is unknown (= ????) null is returned.
+ *
+ * @param ISO 8601 time representations of a org.joda.time.Partial 
+ * @return String 
+ */
+function partialToYear($partial){
+  $year = substr($partial, 0, 4);  
+  if($year != '??'){
+    return $month;
+  } else { 
+    return null; 
+  }
+}
+/**
+ * expects an ISO 8601 time representations of a org.joda.time.Partial 
+ * of the form yyyy-MM-dd and returns the month as String.
+ * In case the month is unknown (= ???) null is returned.
+ *
+ * @param ISO 8601 time representations of a org.joda.time.Partial 
+ * @return String 
+ */
+function partialToMonth($partial){
+  $month = substr($partial, 5, 2);
+  if($month != '??'){
+    return $month;
+  } else { 
+    return null; 
+  }
+}
+/**
+ * expects an ISO 8601 time representations of a org.joda.time.Partial 
+ * of the form yyyy-MM-dd and returns the day as String.
+ * In case the day is unknown (= ???) null is returned.
+ *
+ * @param ISO 8601 time representations of a org.joda.time.Partial 
+ * @return String 
+ */
+function partialToDay($partial){
+  $day = substr($partial, 7, 2);
+  if($day != '??'){
+    return $day;
+  } else { 
+    return null; 
+  }
+}
 
 /**
  * Produces a path to a static web service stub out of a cdm web service path.
@@ -298,7 +419,9 @@ function cdm_compose_url($ws_name, $parameters = array()){
         $path_params .= '/'.( is_string($value) ? urlencode($value) : $value);
       } else {
         // add to parameters
-        $request_params .= ( strlen($request_params) == 0 ? '?' : '&').$key.'='.( is_string($value) ? urlencode($value) : $value);
+        if($value != null){
+          $request_params .= ( strlen($request_params) == 0 ? '?' : '&').$key.'='.( is_string($value) ? urlencode($value) : $value);
+        }
       }
     }
   }
@@ -345,7 +468,7 @@ function proxy_content($url, $theme = null){
       $data = request_content(urldecode($url));
       print $data;
     } else {
-      $obj = cdm_ws_load(urldecode($url), false);
+      $obj = cdm_ws_httpRequest(urldecode($url), false);
       array_unshift($args, $theme, $obj);
       print call_user_func_array('theme', $args);
     }
@@ -356,13 +479,15 @@ function proxy_content($url, $theme = null){
 
 
 /**
- * Enter description here...
+ * Send a HTTP GET request to the RESTService and deserializes 
+ * and returns the response as object
  *
- * @param unknown_type $method
+ * @param $resourceURI the 
  * @param $parameters may be an array or a single variable
  * @return unknown
  */
-function cdm_ws_get($method, $parameters = array()){
+function cdm_ws_get($resourceURI, $parameters = array()){
+
   /*$args = func_get_args();
   $method = array_shift($args);
   */
@@ -370,10 +495,94 @@ function cdm_ws_get($method, $parameters = array()){
     $url = cdm_compose_url_parametrised($method, $args[0]);
   } else {
  */
-  $url = cdm_compose_url($method, $parameters);
+  $uri = cdm_compose_url($resourceURI, $parameters);
   //}
-  return cdm_ws_load($url, (is_array($parameters)));
+  return cdm_ws_httpRequest($uri, (is_array($parameters)));
 }
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $resourceURI
+ * @param unknown_type $uuid
+ * @param unknown_type $parameters
+ * @return unknown
+ */
+function cdm_ws_property($resourceURI, $uuid, $parameters = array()){
+  $resourcePropertyURI = str_replace('{uuid}', $uuid, $resourceURI);
+  if($resourcePropertyURI == $resourceURI){
+     drupal_set_message('parameter {uiud} missing in $resourceURI: '.$resourceURI);
+  }
+  return cdm_ws_get($resourcePropertyURI);
+}
+/**
+ * Enter description here...
+ *
+ * @param String $resourceURI
+ * @param pageSize
+ *            the maximum number of entities returned per page (can be null
+ *            to return all entities in a single page)
+ * @param pageNumber
+ *            the number of the page to be returned, the first page has the
+ *            pageNumber = 1
+ * @return unknown
+ */
+function cdm_ws_page($resourceURI, $pageSize, $pageNumber){
+  return cdm_ws_get($resourcePropertyURI, array("page" => $pageNumber, 'pageSize'=>$pageSize));
+}
+
+function cdm_ws_find($resourceURI, $parameters = array()){
+ drupal_set_message('NOT YET IMPLEMENTED');
+}
+
+
+function cdm_ws_taxonomy_find($uuid, $rank = null, $viewUuid = null){
+ return cdm_ws_get(CDM_WS_TAXONOMY, array("uuid" => $uuid, 'rank'=>$rank));
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $secUuid
+ * @param unknown_type $path
+ * @return unknown
+ */
+function cdm_ws_taxonomy($secUuid = null, $path){
+ return cdm_ws_get(cdm_ws_taxonomy_compose_resourcePath($secUuid, $path));
+}
+
+function cdm_ws_taxonomy_compose_resourcePath($secUuid = null, $path = null){
+  $viewrank =  _cdm_taxonomy_compose_viewrank($secUuid);
+  return CDM_WS_TAXONOMY . '/' . ($viewrank ? $viewrank : '' ) . ($path ? '/' . $path : '') ;
+}
+
+/**
+ * Enter description here...
+ *
+ * @param UUID $secUuid
+ * @param String $path
+ * @return unknown
+ */
+function cdm_ws_taxonomy_pathFromRoot($secUuid = null, $path){
+ return cdm_ws_get(CDM_WS_TAXONOMY . '/' .  _cdm_taxonomy_compose_viewrank($secUuid)  . '/' . $path . '/path' );
+}
+
+/**
+ * Enter description here...
+ *
+ * @param UUID $viewUuid
+ * @param String $rank
+ * @return unknown
+ */
+function _cdm_taxonomy_compose_viewrank($viewUuid = null){
+  if(empty($viewUuid)){
+    return null;
+  }
+  $rank = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
+  return $viewUuid . (empty($rank) ? '' : ','.$rank);
+}
+
+
 
 /**
  * Loads the XML or JSON response for the given url from the CDM Data Store Webservice.
@@ -381,11 +590,12 @@ function cdm_ws_get($method, $parameters = array()){
  *
  * @param String $url the relative url of the web service call.
  *        Relative means relative to the web service base url which is stored in cdm_webservice_url
+ * @param $is_multi_parameter_query parameter to indicate that the URI has queryparameters and should not be cached
  * @return An object or false
  */
-function cdm_ws_load($url, $is_multi_paramater_query, $method="GET"){
-  
-  $do_cache = !$is_multi_paramater_query && variable_get('cdm_webservice_cache', 0) && $method == "GET";
+function cdm_ws_httpRequest($url, $is_multi_parameter_query = false, $method="GET"){
+ 
+  $do_cache = !$is_multi_parameter_query && variable_get('cdm_webservice_cache', 0) && $method == "GET";
   $cache_entry = false;
   
   // append the default featureTree to url string
@@ -427,7 +637,7 @@ function cdm_ws_load($url, $is_multi_paramater_query, $method="GET"){
         , 'debug');
     }
     if( !$obj || !$datastr){
-      watchdog('CDM', 'cdm_ws_load() - URL: '.$url, WATCHDOG_ERROR);
+      watchdog('CDM', 'cdm_ws_httpRequest() - URL: '.$url, WATCHDOG_ERROR);
     } else if($do_cache) {
       // store fresh data in cache
       cache_set($url, 'cache_cdm_ws', serialize($obj), CACHE_TEMPORARY);
@@ -485,7 +695,7 @@ function request_content($url, $method="GET", $parameters = array()){
     $header = array();
     $header[] = 'Accept: '.(variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
     $header[] = 'Accept-Language: '.$locale;
-    $header[] = 'Accept-Charset: UTF8';
+    $header[] = 'Accept-Charset: UTF-8';
   }
   
   if(function_exists('curl_init')){
@@ -596,7 +806,7 @@ function cdm_api_secref_cache_clear(){
 
 function _cdm_api_secref_cache_add($secUuidsStr){
   global $secref_cache;
-  $refSTOs = cdm_ws_get(CDM_WS_SIMPLE_REFERENCE, $secUuidsStr);
+  $refSTOs = cdm_ws_get(CDM_WS_REFERENCE, $secUuidsStr);
   $assocRefSTOs = array();
   if($refSTOs) {
     foreach($refSTOs as $ref){
@@ -619,7 +829,7 @@ function _cdm_api_secref_cache_add($secUuidsStr){
  *   - 'dtoName':       name of the DTO class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.dto.TaxonTO
  *   - 'dtoSimpleName': simple name of the TDO class as returned by Class.getSimpleName(), e.g. TaxonTO
  */
-define('CDM_WS_WHATIS', 'whatis');
+//define('CDM_WS_WHATIS', 'whatis');
 
 
 /**
@@ -639,7 +849,7 @@ define('CDM_WS_NAME', 'name');
  *
  * returns ResultPageSTO
  */
-define('CDM_WS_FIND_TAXA', 'find/taxon');
+define('CDM_WS_FIND_TAXA', 'taxon');
 
 /**
  * Web Service Arguments: {referenceUuid}
@@ -647,40 +857,11 @@ define('CDM_WS_FIND_TAXA', 'find/taxon');
  */
 define('CDM_WS_REFERENCE', 'reference');
 
-/**
- * Web Service Arguments: {pageNumber}
- *
- */
-define('CDM_WS_REFERENCE_LIST', 'reference/list');
-
-/**
- * Web Service Arguments: {referenceUuid} or array of {referenceUuid}
- *
- * returns a list of ReferenceSTO
- */
-define('CDM_WS_SIMPLE_REFERENCE', 'simple/reference');
 
 /**
  * Web Service Arguments: {taxonUuid}
  */
-define('CDM_WS_TAXON', 'taxon');
-
-
-/**
- * Web Service Arguments: {taxonUuid} or array of {referenceUuid}
- *
- * returns a list of TaxonSTO
- */
-define('CDM_WS_SIMPLE_TAXON', 'simple/taxon');
-
-/**
- * Web Service Arguments: {nameUuid}
- *
- * returns a set of type designation which are assigned to the name given
- * as parameter. The Set may contain {@link NameTypeDesignationSTO}
- * and {@link SpecimenTypeDesignationSTO}
- */
-define('CDM_WS_TYPE_DESIGNATIONS', 'types');
+define('CDM_WS_TAXON', 'portal/taxon');
 
 /**
  * Web Service Arguments: {taxonUuid}
@@ -689,7 +870,7 @@ define('CDM_WS_TYPE_DESIGNATIONS', 'types');
  * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
  * accepted taxon, this one will be returned.
  */
-define('CDM_WS_ACCEPTED_TAXON', 'simple/taxon/acceptedfor');
+define('CDM_WS_TAXON_ACCEPTED', 'taxon/{uuid}/accepted');
 
 /**
  * Web Service Arguments: {secUuid}
@@ -699,47 +880,10 @@ define('CDM_WS_ACCEPTED_TAXON', 'simple/taxon/acceptedfor');
  *
  * stub: treenode_root
  */
-define('CDM_WS_TREENODE_ROOT', 'taxonomy/root');
-
-/**
- * Web Service Arguments: {taxonUuid}
- *
- * Searches the concept taxon tree for all parent taxa by walking the tree
- * from the taxon which is referenced by the parameter taxonUuid down to its
- * root. The reference taxon will also be included into the returned set of
- * TreeNode instances.
- *
- * stub: treenode_parents
- */
-define('CDM_WS_TREENODE_PARENTS', 'taxonomy/parents');
-
-/**
- * Web Service Arguments: {taxonUuid}
- *
- * returns the children of the taxon referenced by the parameter
- * taxonUuid.
- *
- * stub: treenode_children
- */
-define('CDM_WS_TREENODE_CHILDREN', 'taxonomy/children');
-
-/**
- * returns all features available in this community store
- *
- */
-define('CDM_WS_FEATURES', 'features');
+define('CDM_WS_TAXONOMY', 'taxonomy');
 
 /**
  * returns FeatureTrees that are stored in this community store
  *
  */
-define('CDM_WS_FEATURETREES', 'features/tree');
-
-
-/**
- * Web Service Arguments: {CdmObjUuid}
- *
- * Either retrieves or writes annotations to any annotatable entity
- */
-define('CDM_WS_ANNOTATIONS', 'annotations');
-
+define('CDM_WS_FEATURETREE', 'featuretree');
