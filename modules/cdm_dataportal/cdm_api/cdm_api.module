@@ -417,7 +417,7 @@ function cdm_ws_load($url, $is_multi_paramater_query, $method="GET"){
     // parse data and create object
     $obj = cdm_load_obj($datastr);
     $time_parse = microtime(true) - $time_parse_start;
-    if(variable_get('cdm_webservice_debug', 1)){
+    if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
       $success_msg = $obj?'valid':'invalid'; 
       drupal_set_message(
          $url.' [fetched in: '.sprintf('%3.3f', $time_get).'s; '
@@ -434,7 +434,7 @@ function cdm_ws_load($url, $is_multi_paramater_query, $method="GET"){
     }
   } else {
     $obj = unserialize($cache_entry->data);
-    if(variable_get('cdm_webservice_debug', 1)){
+    if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
       drupal_set_message('Using cache for: '.$url, 'debug');
     }
   }
@@ -547,7 +547,7 @@ function _request_content_curl($url, $header = array(), $method = "GET", $parame
     curl_exec ($ch);
     if(curl_errno($ch)){
       watchdog('CDM_API', '_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, WATCHDOG_ERROR);
-        if(variable_get('cdm_webservice_debug', 1)){
+        if(variable_get('cdm_webservice_debug', 1)  && user_access('administer') ){
           drupal_set_message('_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, 'error');
         }
     }
