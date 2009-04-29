@@ -9,7 +9,7 @@ function diptera_cdm_taxon_page_title($nameTO){
   if(variable_get('cdm_dataportal_nomref_in_title', 1)){
     // taxon name only with author and year
     // $displayAuthor = true, $displayNomRef = true, $displayStatus = true, $displayDescription = true, $nomRefLink = true
-    return theme('cdm_name', $nameTO, /*$displayAuthor*/ TRUE, /*$displayStatus*/ false, /*$displayDescription*/ false, TRUE); 
+    return theme('cdm_name', $nameTO, /*$displayAuthor*/ TRUE, /*$displayStatus*/ false, /*$displayDescription*/ false, TRUE);
   } else {
     return theme('cdm_name', $nameTO);
   }
@@ -33,7 +33,7 @@ function diptera_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $
   }
   
   if($doLink){
-    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array("title"=>$referenceSTO->citation), NULL, NULL, FALSE, FALSE);      
+    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array("title"=>$referenceSTO->citation), NULL, NULL, FALSE, FALSE);
   }
   
   if(!empty($nomref_citation)){
@@ -73,7 +73,7 @@ function diptera_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef
     $authorsStr = cdm_taggedtext_value($taxonSTO->name->taggedName, "authors");
     $authorsHtml = '<span class="authors">'.$authorsStr.'</span>';
     if(isset($taxonSTO->name->nomenclaturalReference)){
-      $authorsHtml = l($authorsHtml, "/cdm_dataportal/reference/".$taxonSTO->name->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);  
+      $authorsHtml = l($authorsHtml, "/cdm_dataportal/reference/".$taxonSTO->name->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
     }
 
     $out .= ( str_beginsWith($authorsStr,'(') ? ' ' : ', ') . $authorsHtml;
@@ -85,6 +85,25 @@ function diptera_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef
   $out .= $name_postfix;
   return $out;
 
+}
+
+function diptera_cdm_taxon_page_images($taxonTO){
+
+  $descriptions = $taxonTO->featureTree->descriptions;
+  foreach($descriptions as $descriptionTo){
+    $features = $descriptionTo->features;
+    foreach($features as $featureTo){
+      if($featureTo->feature->term == 'Image'){
+        if(count($featureTo->descriptionElements) > 0){
+          $imagesExist = true;
+          // display image
+          $out .= "";
+        }
+      }
+    }
+  }
+  
+  return $imagesExist ? $out : 'No images available.';
 }
 
 ?>
