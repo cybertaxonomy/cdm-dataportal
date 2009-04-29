@@ -87,17 +87,31 @@ function diptera_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef
 
 }
 
-function diptera_cdm_taxon_page_images($taxonTO){
+function diptera_cdm_taxon_page_images($taxon){
 
-  $descriptions = $taxonTO->featureTree->descriptions;
-  foreach($descriptions as $descriptionTo){
-    $features = $descriptionTo->features;
-    foreach($features as $featureTo){
-      if($featureTo->feature->term == 'Image'){
-        if(count($featureTo->descriptionElements) > 0){
+  $descriptions = $taxon->featureTree->descriptions;
+  foreach($descriptions as $description){
+    $features = $description->features;
+    foreach($features as $feature){
+      if($feature->feature->term == 'Image'){
+        $descriptionElements = $feature->descriptionElements;
+        if(count($descriptionElements) > 0){
           $imagesExist = true;
           // display image
-          $out .= "";
+          
+          foreach($descriptionElements as $descriptionElement){
+            $medias = $descriptionElement->media;
+            foreach($medias as $media){
+              $representations = $media->representations;
+              foreach($representations as $representation){
+                $representationParts = $representation->respresentationParts;
+                foreach($representationParts as $representationPart){
+                  $out .= '<img src="' . $representationPart->uri . '" alt=""/>';
+                }
+              }
+            }
+          }
+          
         }
       }
     }
