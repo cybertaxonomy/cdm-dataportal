@@ -104,7 +104,7 @@ function diptera_cdm_taxon_page_images($taxon){
             foreach($medias as $media){
               $representations = $media->representations;
               foreach($representations as $representation){
-                $representationParts = $representation->respresentationParts;
+                $representationParts = $representation->representationParts;
                 foreach($representationParts as $representationPart){
                   $out .= '<img src="' . $representationPart->uri . '" alt=""/>';
                 }
