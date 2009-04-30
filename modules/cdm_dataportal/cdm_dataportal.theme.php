@@ -178,7 +178,7 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $
   }
 
   /* TODO: - take the different sub types of eu.etaxonomy.cdm.model.name.TaxonNameBase into account?
-   * 
+   *
    * Use class names from objects?, additional field in DTO?
    * Preliminary using default value, which can be set in module settings:
    * values correspond with eu.etaxonomy.cdm.model.name.*: 'ZoologicalName', 'ViralName', 'BotanicalName'
@@ -194,7 +194,7 @@ function theme_cdm_name($nameTO, $displayAuthor = true, $displayNomRef = true, $
     $skip = $hasNomRef ? array('reference') : array();
     if(!$displayAuthor || $taxonname_type == 'ZoologicalName') {
       $skip[] = 'authors';
-    } 
+    }
     $out .= '<span class="'.$class.'">'.theme('cdm_taggedtext2html', $nameTO->taggedName, 'span', ' ', $skip).'</span>';
   }
   
@@ -324,8 +324,8 @@ function theme_cdm_descriptionElement_distribution($featureTo){
     $bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
     $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
-    $query_string = ($display_width ? '&ms=' . $display_width: '') 
-      . ($bounding_box ? '&bbox=' .  $bounding_box : '') 
+    $query_string = ($display_width ? '&ms=' . $display_width: '')
+      . ($bounding_box ? '&bbox=' .  $bounding_box : '')
       . ($labels_on ? '&labels=' .  $labels_on : '');
 
     $out .= '<img style="border: 1px solid #ddd" src="'.url($server.$map_data_parameters, $query_string).'" alt="Distribution Map" />';
@@ -686,7 +686,7 @@ function theme_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cs
   $is_IN_reference = str_beginsWith($nomref_citation, 'in');
 
   if($doLink){
-    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);      
+    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);
   }
   
   if(!empty($nomref_citation)){
@@ -725,7 +725,7 @@ function theme_cdm_taxon_page_title($nameTO){
   
   if(variable_get('cdm_dataportal_nomref_in_title', 1)){
     // taxon name only with author and year
-    return theme('cdm_name', $nameTO, TRUE, false, false, false); 
+    return theme('cdm_name', $nameTO, TRUE, false, false, false);
   } else {
     return theme('cdm_name', $nameTO);
   }
@@ -752,7 +752,7 @@ function theme_cdm_acceptedFor(){
 function theme_cdm_back_to_search_result_button(){
   $out = '';
   if($_SESSION['cdm']['search']){
-    $out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION['cdm']['last_search'] ).'</div>';
+    $out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION/*['cdm']['last_search']*/ ).'</div>';
   }
   return $out;
 }
@@ -773,7 +773,7 @@ function theme_cdm_taxon_page_general($taxonTO, $page_part) {
   if(!$page_part){
     $page_part = 'description';
   }
-  $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';  
+  $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
 
   $out = '';
   $out .= theme('cdm_back_to_search_result_button');
@@ -822,7 +822,7 @@ function theme_cdm_taxon_page_description($taxonTO){
   
   // description TOC
   $out .= theme('cdm_featureTreeToc', $taxonTO->featureTree);
-  // description 
+  // description
   $out .= theme('cdm_featureTree', $taxonTO->featureTree);
   return $out;
 }
@@ -846,7 +846,7 @@ function theme_cdm_taxon_page_synonymy($taxonTO){
 
 /**
  * Show the collection of images stored with the accepted taxon
- * 
+ *
  * TODO this is just a copy of the special image display in the cichorieae
  *  and will not work with other portals thus a more general solution is needed
  */
@@ -858,7 +858,7 @@ function theme_cdm_taxon_page_images($taxonTO){
     foreach($features as $featureTo){
       if($featureTo->feature->term == 'Image'){
         $flashLink = count($featureTo->descriptionElements) > 0;
-        break;        
+        break;
       }
     }
   }
@@ -945,18 +945,18 @@ function theme_cdm_reference_page($referenceTO){
     drupal_set_title($referenceTO->fullCitation);
   }
   $field_order = array(
-    "title", 
-    //"titleCache", 
+    "title",
+    //"titleCache",
     //"citation",
     "authorTeam",
-    "editor",    
-    "publisher", 
-    "placePublished", 
-    "datePublished", 
+    "editor",
+    "publisher",
+    "placePublished",
+    "datePublished",
     "year",
     "edition",      // class Book
     "volume",       // class Article
-    "seriesPart", 
+    "seriesPart",
     "inSeries",
     "inJournal",     // class Article
     "inBook",        // class BookSection
@@ -967,12 +967,12 @@ function theme_cdm_reference_page($referenceTO){
     "school",        // class Thesis
     "institution",   // class Report
     "organization",  // class Proceedings
-    "nextVersion", 
-    "previousVersion", 
+    "nextVersion",
+    "previousVersion",
     "isbn",         // class Book
     "issn",         // class Journal
-    "uri",    
-  ); 
+    "uri",
+  );
   
   $table_rows = array();
   foreach($field_order as $fieldname){
