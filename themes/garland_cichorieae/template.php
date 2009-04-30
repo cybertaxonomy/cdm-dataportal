@@ -41,7 +41,8 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
   $description = str_replace("\n", "<br/>", $element->description);
   $referenceCitation = '';
   if($element->reference){
-    $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+    // disabling references for cichorieae description Elements because they all have faulty references
+    //$referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
   }
   return '<p class="descriptionText">' . $description . $referenceCitation.'</p>';
 }
@@ -66,6 +67,7 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
     $nameArray = array();
     foreach($taggedName as $taggedText){
       if($taggedText->type == 'name' || $taggedText->type == 'rank'){
+        // replacing of "subsp." with "s" is cichorieae specific
         $part = $taggedText->text == "subsp." ? "s" : $taggedText->text;
         $nameArray[] = $part;
       }
@@ -174,7 +176,7 @@ function garland_cichorieae_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink
   $is_IN_reference = str_beginsWith($nomref_citation, 'in');
 
   if($doLink){
-    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);      
+    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);
   }
   
   if(!empty($nomref_citation)){
