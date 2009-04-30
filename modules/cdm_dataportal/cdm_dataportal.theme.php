@@ -752,7 +752,7 @@ function theme_cdm_acceptedFor(){
 function theme_cdm_back_to_search_result_button(){
   $out = '';
   if($_SESSION['cdm']['search']){
-    $out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION/*['cdm']['last_search']*/ ).'</div>';
+    $out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION['cdm']['last_search'] ).'</div>';
   }
   return $out;
 }
