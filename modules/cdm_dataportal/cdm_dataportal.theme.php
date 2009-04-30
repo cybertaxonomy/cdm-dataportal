@@ -1459,7 +1459,7 @@ function theme_cdm_descriptionElementTextData($element){
   $description = str_replace("\n", "<br/>", $element->description);
   $referenceCitation = '';
   if($element->reference){
-    $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+   // $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
   }
   return '<li class="descriptionText">' . $description . $referenceCitation.'</li>';
 }
