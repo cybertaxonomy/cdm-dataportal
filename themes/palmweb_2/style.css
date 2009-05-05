@@ -110,13 +110,13 @@ ul.menu ul, .item-list ul ul {
 }
 
 ul li, ul.menu li, .item-list ul li, li.leaf {
-  margin: 0.15em 0 0.15em .5em;
+  margin: 0.15em 0 0.15em 2em;
 }
 
 ul li, ul.menu li, .item-list ul li, li.leaf {
   padding: 0 0 .2em 1.5em;
-  list-style-type: none;
-  list-style-image: none;
+  /*list-style-type: none;
+  list-style-image: none;*/
   background: transparent url(images/menu-leaf.gif) no-repeat 1px .35em;
 }
 
