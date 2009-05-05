@@ -549,7 +549,7 @@ ul.primary-links li {
 
 ul.primary-links li a, ul.primary-links li a:link, ul.primary-links li a:visited {
   display: block;
-  margin: 0 0.3em;
+  margin: 0 0 0 0.3em;
   padding: .75em 0;
   color: #529AD6;
   background: transparent url(images/bg-navigation-item.png) no-repeat 50% 0;
@@ -669,8 +669,8 @@ ul.secondary li.active a {
 ul.links li, ul.inline li {
   margin-left: 0;
   margin-right: 0;
-  padding-left: 0;
-  padding-right: 1em;
+  padding-left: 1em;
+  padding-right: 0;
   background-image: none;
 }
 
