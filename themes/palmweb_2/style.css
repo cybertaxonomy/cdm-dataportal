@@ -549,14 +549,14 @@ ul.primary-links li {
 
 ul.primary-links li a, ul.primary-links li a:link, ul.primary-links li a:visited {
   display: block;
-  margin: 0 1em;
-  padding: .75em 0 0;
+  margin: 0 0.3em;
+  padding: .75em 0;
   color: #529AD6;
   background: transparent url(images/bg-navigation-item.png) no-repeat 50% 0;
 }
 
 ul.primary-links li a:hover, ul.primary-links li a.active {
-  color: #fff;
+  color: #494949;
   background: transparent url(images/bg-navigation-item-hover.png) no-repeat 50% 0;
 }
 
