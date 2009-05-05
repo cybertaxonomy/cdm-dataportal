@@ -9,7 +9,7 @@
 function palmweb_2_cdm_taxon_page_description($taxonTO){
   // preferred image
   // hardcoded for testing
-  $defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/nopic.jpg';
+  $defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
   
   $out = theme('cdm_preferredImage', $taxonTO, $defaultPreferredImage, '&width=333&height=220&quality=95&format=jpeg');
   

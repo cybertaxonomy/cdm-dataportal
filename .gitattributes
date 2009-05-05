@@ -456,6 +456,7 @@ themes/palmweb_2/color/preview.png -text
 themes/palmweb_2/comment.tpl.php -text
 themes/palmweb_2/fix-ie.css -text
 themes/palmweb_2/images/funded_by.png -text
+themes/palmweb_2/images/no_picture.png -text
 themes/palmweb_2/logo.png -text
 themes/palmweb_2/node.tpl.php -text
 themes/palmweb_2/page.tpl.php -text
