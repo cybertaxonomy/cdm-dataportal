@@ -316,7 +316,7 @@ table .form-button, table .form-submit {
 }
 
 #wrapper #container #header {
-  height: 113px;
+  height: 150px;
 }
 
 #wrapper #container #header #logo-floater {
@@ -378,7 +378,7 @@ body.sidebars #squeeze {
 
 /* We ensure the sidebars are still clickable using z-index */
 #wrapper #container .sidebar {
-  margin: 60px 0 5em;
+  margin: 30px 0 5em;
   width: 190px;
   float: left;
   z-index: 2;
