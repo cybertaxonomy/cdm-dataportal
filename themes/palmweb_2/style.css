@@ -512,8 +512,8 @@ body.sidebars #footer {
 #wrapper #container #general .featureTOC ul li{
 	list-style-type: none;
 	color: #F03300;
-	padding-bottom: 0;
-	margin: 0 inherit;
+	padding: 0;
+	margin: 0 0 0 1.5em;
 }
 
 
@@ -640,7 +640,7 @@ h2.with-tabs {
 ul.primary li a, ul.primary li.active a, ul.primary li a:hover, ul.primary li a:visited,
 ul.secondary li a, ul.secondary li.active a, ul.secondary li a:hover, ul.secondary li a:visited {
   border: 0;
-  background: #222;
+  background: #eee;
   padding: 2px 1.3em;
   margin: 0 0 0 1.3em;
   height: auto;
