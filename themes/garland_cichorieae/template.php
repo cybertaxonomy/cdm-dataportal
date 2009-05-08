@@ -36,16 +36,6 @@ function garland_cichorieae_cdm_taxon_page_description($taxonTO){
   return $out;
 }
 
-function garland_cichorieae_cdm_back_to_search_result_button(){
-  $out = '';
-  
-  //$out = '<div style="display:none">'.print_r($_SESSION).'</div>';
-  if($_SESSION['cdm']['search']){
-    $out .= '<div id="backButton">'.l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search'] ).'</div>';
-  }
-  return $out;
-}
-
 function garland_cichorieae_cdm_descriptionElementTextData($element){
 
   $description = str_replace("\n", "<br/>", $element->description);
