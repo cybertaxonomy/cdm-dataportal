@@ -41,7 +41,7 @@ function garland_cichorieae_cdm_back_to_search_result_button(){
   
   //$out = '<div style="display:none">'.print_r($_SESSION).'</div>';
   if($_SESSION['cdm']['search']){
-    $out .= '<div id="backButton">'.l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . " - " . $_SESSION['cdm']['last_search'] ).'</div>';
+    $out .= '<div id="backButton">'.l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search'] ).'</div>';
   }
   return $out;
 }
