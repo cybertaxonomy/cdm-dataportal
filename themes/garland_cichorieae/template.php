@@ -43,6 +43,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
   if($element->reference){
     // disabling references for cichorieae description Elements because they all have faulty references
     //$referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+    echo "I AM THE WALRUS!";
   }
   return '<p class="descriptionText">' . $description . $referenceCitation.'</p>';
 }
