@@ -731,6 +731,18 @@ function theme_cdm_taxon_page_title($nameTO){
   }
 }
 
+/**
+ * Allows theaming of the taxon page tabs
+ * 
+ * @param $tabname
+ * @return unknown_type
+ */
+function theme_cdm_taxonpage_tab($tabname){
+  switch($tabname){
+    default: return t($tabname); 
+  }
+}
+
 function theme_cdm_acceptedFor(){
   $out = '';
   

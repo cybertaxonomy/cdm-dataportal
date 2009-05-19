@@ -131,7 +131,7 @@ function cdm_dataportal_menu($may_cache) {
       
        $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2),
-      'title' => t('General'),
+      'title' => theme('cdm_taxonpage_tab', 'General'),
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_CALLBACK,
@@ -142,7 +142,7 @@ function cdm_dataportal_menu($may_cache) {
       
       $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2).'/description',
-      'title' => t('General'),
+      'title' => theme('cdm_taxonpage_tab', 'General'),
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -153,7 +153,7 @@ function cdm_dataportal_menu($may_cache) {
       
       $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2).'/synonymy',
-      'title' => t('Synonymy'),
+      'title' => theme('cdm_taxonpage_tab', 'Synonymy'),
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_LOCAL_TASK,
@@ -164,7 +164,7 @@ function cdm_dataportal_menu($may_cache) {
       
       $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2).'/images',
-      'title' => t('Images'),
+      'title' => theme('cdm_taxonpage_tab', 'Images'),
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_LOCAL_TASK,
@@ -370,7 +370,7 @@ function cdm_dataportal_search_form_request(){
   										'page' => null,
   										'pagesize' => variable_get('cdm_dataportal_search_items_on_page', 25),
   										'mode' => null,
-                     // 'sec' => $currentSecRefArray['uuid']
+                      'sec' => $currentSecRefArray['uuid']
   );
   
   
