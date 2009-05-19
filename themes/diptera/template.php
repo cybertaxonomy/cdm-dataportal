@@ -77,8 +77,8 @@ function diptera_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef
       $authorsHtml = l($authorsHtml, "/cdm_dataportal/reference/".$taxonSTO->name->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);  
     }
     $out .= ( str_beginsWith($authorsStr,'(') ? ' ' : ', ') . $authorsHtml;
-    if($taxonSTO->name->nomenclaturalReference->pages){
-      $out .= '<span class="pages">:&nbsp;' . $taxonSTO->name->nomenclaturalReference->pages . '</span>'; 
+    if($taxonSTO->name->nomenclaturalMicroReference){
+      $out .= '<span class="pages">:&nbsp;' . $taxonSTO->name->nomenclaturalMicroReference . '</span>'; 
     }
   }else{
     if($taxonSTO->name->nomenclaturalReference){
@@ -143,13 +143,13 @@ function diptera_cdm_taxon_page_general($taxonTO, $page_part) {
        $authorsStr = cdm_taggedtext_value($taxonTO->name->taggedName, "authors");
        $authorsHtml = '<span class="authors">'.$authorsStr.'</span>';
        
-       if(isset($taxonSTO->name->nomenclaturalReference)){
+       if(isset($taxonTO->name->nomenclaturalReference)){
           $authorsHtml = l($authorsHtml, "/cdm_dataportal/reference/".$taxonTO->name->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);  
        }
        $out .= ( str_beginsWith($authorsStr,'(') ? ' ' : ', ') . $authorsHtml;
-       if($taxonTO->name->nomenclaturalReference->pages){
-          $out .= '<span class="pages">:&nbsp;' . $taxonTO->name->nomenclaturalReference->pages . '</span>'; 
-       } 
+      if($taxonTO->name->nomenclaturalMicroReference){
+        $out .= '<span class="pages">:&nbsp;' . $taxonTO->name->nomenclaturalMicroReference . '</span>'; 
+      }
       // ---
     }
     $out .= theme('cdm_taxon_page_synonymy', $taxonTO);
