@@ -243,7 +243,7 @@ function diptera_cdm_taxon_page_images($taxon){
 function diptera_cdm_feature_name($feature_name){
   switch($feature_name){
     case "Citation": return t("Citations");
-    default: return t($block->delta);
+    default: return t($feature_name);
   }
 }
 
