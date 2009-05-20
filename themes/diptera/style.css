@@ -492,6 +492,7 @@ ul.homotypicSynonyms, ul.heterotypicSynonymyGroup, ul.misapplied {
   color: #666666;
   padding-left: 1em;
   list-style:none;
+  margin: 0.5em 0 0.5em 0;
 }
 
 ul.typeDesignations {
