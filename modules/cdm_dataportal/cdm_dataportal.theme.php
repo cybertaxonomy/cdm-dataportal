@@ -1472,6 +1472,9 @@ function theme_cdm_descriptionElementTextData($element){
   $referenceCitation = '';
   if($element->reference){
     $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+    if($element->reference->pages){
+      $referenceCitation .= ': ' . $element->reference->pages;
+    }
   }
   return '<li class="descriptionText">' . $description . $referenceCitation.'</li>';
 }
