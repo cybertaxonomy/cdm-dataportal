@@ -299,7 +299,7 @@ span.acceptedFor, #backButton {
 }
 
 #backButton {
-  margin-top: -2em;
+  /*margin-top: -2em; // renders the link unusabel because it is overlayed by tabs-wrapper*/
 }
 
 #cdm-dataportal-settings .form-item fieldset {

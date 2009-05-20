@@ -9,7 +9,7 @@ function diptera_cdm_taxon_page_title($nameTO){
   if(variable_get('cdm_dataportal_nomref_in_title', 1)){
     // taxon name only with author and year
     // $displayAuthor = true, $displayNomRef = true, $displayStatus = true, $displayDescription = true, $nomRefLink = true
-    return theme('cdm_name', $nameTO, /*$displayAuthor*/ TRUE, /*$displayStatus*/ false, /*$displayDescription*/ false, TRUE); 
+    return theme('cdm_name', $nameTO, /*$displayAuthor*/ TRUE, /*$displayStatus*/ false, /*$displayDescription*/ false, TRUE);
   } else {
     return theme('cdm_name', $nameTO);
   }
@@ -33,7 +33,7 @@ function diptera_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $
   }
   
   if($doLink){
-    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array("title"=>$referenceSTO->citation), NULL, NULL, FALSE, FALSE);      
+    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array("title"=>$referenceSTO->citation), NULL, NULL, FALSE, FALSE);
   }
   
   if(!empty($nomref_citation)){
@@ -204,6 +204,39 @@ function diptera_cdm_taxon_page_general($taxonTO, $page_part) {
   }
 
   return $out;
+}
+
+function diptera_cdm_taxon_page_images($taxon){
+
+  $descriptions = $taxon->featureTree->descriptions;
+  foreach($descriptions as $description){
+    $features = $description->features;
+    foreach($features as $feature){
+      if($feature->feature->term == 'Image'){
+        $descriptionElements = $feature->descriptionElements;
+        if(count($descriptionElements) > 0){
+          $imagesExist = true;
+          // display image
+          
+          foreach($descriptionElements as $descriptionElement){
+            $medias = $descriptionElement->media;
+            foreach($medias as $media){
+              $representations = $media->representations;
+              foreach($representations as $representation){
+                $representationParts = $representation->representationParts;
+                foreach($representationParts as $representationPart){
+                  $out .= '<img src="' . $representationPart->uri . '" alt=""/>';
+                }
+              }
+            }
+          }
+          
+        }
+      }
+    }
+  }
+  
+  return $imagesExist ? $out : 'No images available.';
 }
 
 
