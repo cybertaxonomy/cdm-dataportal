@@ -243,15 +243,11 @@ ul.links li.first {
   font-size: 0.8em;
 }
 
-
-#block-cdm_dataportal-distribution, #block-cdm_dataportal-discussion, #block-cdm_dataportal-uses, #block-cdm_dataportal-etymology, #block-cdm_dataportal-materials_examined, #block-cdm_dataportal-description, #block-cdm_dataportal-conservation, #block-cdm_dataportal-biology_and_ecology, #block-cdm_dataportal-common_name {
-  border: 0px;
-}
-
-#block-cdm_dataportal-distribution .searchtitle, #block-cdm_dataportal-discussion .searchtitle, #block-cdm_dataportal-uses .searchtitle, #block-cdm_dataportal-etymology .searchtitle, #block-cdm_dataportal-materials_examined .searchtitle, #block-cdm_dataportal-description .searchtitle, #block-cdm_dataportal-conservation .searchtitle, #block-cdm_dataportal-biology_and_ecology .searchtitle, #block-cdm_dataportal-common_name  .searchtitle {
+.block-cdm_dataportal-feature .searchtitle{
   border: 0px;
   color: #009999;
   background-color: #EDF5FA;
+  margin-bottom: 6px;
 }
 
 
@@ -263,6 +259,7 @@ ul.links li.first {
   border: 0px;
   color: #009999;
   background-color: #EDF5FA;
+  
 }
 /*
 ** Common declarations for child classes of node, comment, block, box, etc.
