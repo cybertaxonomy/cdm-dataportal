@@ -738,6 +738,7 @@ function theme_cdm_taxon_page_title($nameTO){
  * @return unknown_type
  */
 function theme_cdm_taxonpage_tab($tabname){
+   //TODO replace by using translations
   switch($tabname){
     default: return t($tabname); 
   }
@@ -1368,8 +1369,9 @@ function theme_cdm_featureTree($featureTree){
 
         if($feature != "Image"){
           $block->delta = $feature;
-          $block->subject = t(ucfirst($block->delta));
+          $block->subject = theme('cdm_feature_name', $feature);
           $block->delta = generalizeString($block->delta);
+          $block->module = "cdm_dataportal-feature";
 
           //
           $block->content = theme('cdm_descriptionElements', $descriptionElements, $block->delta);
@@ -1423,6 +1425,13 @@ function theme_cdm_featureTreeToc($featureTree){
   return $out;
 }
 
+function theme_cdm_feature_name($feature_name){
+  //TODO replace by using translations
+  switch($feature_name){
+    default: return t(ucfirst($block->delta));
+  }
+}
+
 /**
  * Replaces all occurrences of space characters with an underscore and tronsforms the given
  * string to lowercase.
@@ -1474,10 +1483,17 @@ function theme_cdm_descriptionElementTextData($element){
   $description = str_replace("\n", "<br/>", $element->description);
   $referenceCitation = '';
   if($element->reference){
-    $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
-    if($element->reference->pages){
-      $referenceCitation .= ': ' . $element->reference->pages;
-    }
+    
+      $fullCitation = $element->reference->authorship;
+      if($element->reference->year) {
+        $fullCitation .= ', '.$element->reference->year;
+      }
+      $element->reference->fullCitation = $fullCitation;
+      
+      $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+      if($element->reference->pages){
+        $referenceCitation .= ': '. $element->reference->pages;
+      }
   }
   return '<li class="descriptionText">' . $description . $referenceCitation.'</li>';
 }
