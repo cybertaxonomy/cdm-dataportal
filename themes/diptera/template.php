@@ -90,6 +90,49 @@ function diptera_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef
 
 }
 
+function diptera_cdm_descriptionElements($descriptionElements, $feature){
+
+  $outArray = array();
+  $glue = '';
+  $sortOutArray = false;
+  $enclosingHtml = 'ul';
+  
+  // only for diptera
+  if($feature == 'citation'){
+    foreach($descriptionElements as $descriptionElement){
+      $tokens = split(":", $descriptionElement->description);
+      if(count($tokens) == 2){
+        // token[0]: taxon name; token[1]: note; 
+        $descriptionElement->description = $tokens[1] . ' [<span class="name">' . $tokens[0] . '</span>]';
+      }
+      if(isset($descriptionElement->reference->year)){
+        $elementMap[$descriptionElement->reference->year] = $descriptionElement;
+      } else {
+        $elementMap[] = $descriptionElement;
+      }
+    }
+    $success = ksort($elementMap);
+    $descriptionElements = $elementMap;
+  }
+  // ---
+  
+  foreach($descriptionElements as $descriptionElementSTO){
+
+    if($descriptionElementSTO->classType == 'TextData'){
+      $outArray[] = theme('cdm_descriptionElementTextData', $descriptionElementSTO);
+    }else if($descriptionElementSTO->classType == 'Distribution'){
+      $outArray[] = $descriptionElementSTO->area->term;
+      $glue = ', ';
+      $sortOutArray = true;
+      $enclosingHtml = 'p';
+    }else{
+      $outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElementSTO->classType.'</li>';
+    }
+  }
+
+  return theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+}
+
 /**
  * Allows theaming of the taxon page tabs
  * 
