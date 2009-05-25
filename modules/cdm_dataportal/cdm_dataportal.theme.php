@@ -1428,7 +1428,7 @@ function theme_cdm_featureTreeToc($featureTree){
 function theme_cdm_feature_name($feature_name){
   //TODO replace by using translations
   switch($feature_name){
-    default: return t(ucfirst($block->delta));
+    default: return t(ucfirst($feature_name));
   }
 }
 
@@ -1491,8 +1491,8 @@ function theme_cdm_descriptionElementTextData($element){
       $element->reference->fullCitation = $fullCitation;
       
       $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
-      if($element->reference->pages){
-        $referenceCitation .= ': '. $element->reference->pages;
+      if($element->citationMicroreference){
+        $referenceCitation .= ': '. $element->citationMicroreference;
       }
   }
   return '<li class="descriptionText">' . $description . $referenceCitation.'</li>';
