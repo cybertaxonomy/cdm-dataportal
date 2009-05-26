@@ -747,11 +747,7 @@ function cdm_dataportal_shortname_of($NameSTO){
  */
 function _cdm_dataportal_set_currentSecUuid($secUuid){
  
-// do not save in session but in database
-  
-  //TODO setting the currentSecUuid causes problems in cichorieae in taraxacum, 
-  //     thus it is temporary disabled
-  return;
+  // do not save in session but in database
   
   if(is_array($secUuid)){
     $secUuid = $secUuid[0];
