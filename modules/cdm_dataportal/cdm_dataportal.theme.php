@@ -1455,10 +1455,12 @@ function theme_cdm_descriptionElements($descriptionElements, $feature){
     if($descriptionElementSTO->classType == 'TextData'){
       $outArray[] = theme('cdm_descriptionElementTextData', $descriptionElementSTO);
     }else if($descriptionElementSTO->classType == 'Distribution'){
-      $outArray[] = $descriptionElementSTO->area->term;
-      $glue = ', ';
-      $sortOutArray = true;
-      $enclosingHtml = 'p';
+      if( !array_search($descriptionElementSTO->area->term, $outArray)){
+        $outArray[] = $descriptionElementSTO->area->term;
+        $glue = ', ';
+        $sortOutArray = true;
+        $enclosingHtml = 'p';
+      }
     }else{
       $outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElementSTO->classType.'</li>';
     }
