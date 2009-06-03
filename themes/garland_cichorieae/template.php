@@ -25,10 +25,11 @@ function garland_cichorieae_cdm_taxon_page_description($taxonTO){
   // hardcoded for testing
   $defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
   
-  $out = theme('cdm_preferredImage', $taxonTO, $defaultPreferredImage, '&width=400&height=300&quality=95&format=jpeg');
-  
+  $out = '';
   // description TOC
   $out .= theme('cdm_featureTreeToc', $taxonTO->featureTree);
+
+  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $taxonTO, $defaultPreferredImage, '&width=400&height=300&quality=95&format=jpeg').'</div>';
   
   // descriptions
   $out .= theme('cdm_featureTree', $taxonTO->featureTree);

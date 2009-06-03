@@ -116,6 +116,10 @@ ul.homotypicSynonyms, ul.heterotypicSynonymyGroup {
   line-height: 1.2em;
 }
 
+.featureTOC h2 {
+  margin-top: 0;	
+}
+
 ul.cdm_names li {
 	padding-left: 0;
 }
@@ -137,10 +141,11 @@ span.cluetip {
 	color: #F03300;
 }
 
-img.left {
+/* img.left {
 	float: left;	
 	padding: 0 5px 5px 0;
 }
+*/
 
 .clear-block {
 	clear: both;	
