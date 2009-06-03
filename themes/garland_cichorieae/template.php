@@ -23,9 +23,9 @@ function garland_cichorieae_cdm_taxon_page_title($nameTO){
 function garland_cichorieae_cdm_taxon_page_description($taxonTO){
   // preferred image
   // hardcoded for testing
-  $defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic.jpg';
+  $defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
   
-  $out = theme('cdm_preferredImage', $taxonTO, $defaultPreferredImage, '&width=333&height=220&quality=95&format=jpeg');
+  $out = theme('cdm_preferredImage', $taxonTO, $defaultPreferredImage, '&width=400&height=300&quality=95&format=jpeg');
   
   // description TOC
   $out .= theme('cdm_featureTreeToc', $taxonTO->featureTree);
