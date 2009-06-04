@@ -85,8 +85,10 @@ modules/cdm_dataportal/cdm_taxontree/visible_implicit_small.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_small.gif -text
 modules/cdm_dataportal/cdm_ws_urls.txt -text
 modules/cdm_dataportal/images/Protolog-media.png -text
+modules/cdm_dataportal/images/Protologue-media.png -text
 modules/cdm_dataportal/images/btn_collapse.gif -text
 modules/cdm_dataportal/images/btn_expand.gif -text
+modules/cdm_dataportal/images/clear.gif -text
 modules/cdm_dataportal/images/external_link.gif -text
 modules/cdm_dataportal/images/loading.gif -text
 modules/cdm_dataportal/images/loading_circle_grey_16.gif -text

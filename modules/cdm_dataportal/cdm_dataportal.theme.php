@@ -705,6 +705,19 @@ function theme_cdm_taxon_page_title($name){
   }
 }
 
+/**
+ * Allows theaming of the taxon page tabs
+ * 
+ * @param $tabname
+ * @return unknown_type
+ */
+function theme_cdm_taxonpage_tab($tabname){
+   //TODO replace by using translations
+  switch($tabname){
+    default: return t($tabname); 
+  }
+}
+
 function theme_cdm_acceptedFor(){
   $out = '';
   
@@ -727,7 +740,9 @@ function theme_cdm_back_to_search_result_button(){
   $out = '';
   if($_SESSION['cdm']['search']){
     /*['cdm']['last_search']*/
-    $out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION ).'</div>';
+    //$out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION ).'</div>';
+    $out .= '<div id="backButton">'.l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search'] ).'</div>';
+  
   }
   return $out;
 }
@@ -1335,8 +1350,9 @@ function theme_cdm_featureTree($featureTree){
 
         if($feature != "Image"){
           $block->delta = $feature;
-          $block->subject = t(ucfirst($block->delta));
+          $block->subject = theme('cdm_feature_name', $feature);
           $block->delta = generalizeString($block->delta);
+          $block->module = "cdm_dataportal-feature";
 
           //
           $block->content = theme('cdm_descriptionElements', $descriptionElements, $block->delta);
@@ -1390,6 +1406,23 @@ function theme_cdm_featureTreeToc($featureTree){
   return $out;
 }
 
+function theme_cdm_feature_name($feature_name){
+  //TODO replace by using translations
+  switch($feature_name){
+    default: return t(ucfirst($feature_name));
+  }
+}
+
+/**
+ * Replaces all occurrences of space characters with an underscore and tronsforms the given
+ * string to lowercase.
+ *
+ * @param String $string
+ * @return the transformed string
+ */
+function generalizeString($string){
+  return str_replace(' ', '_', strtolower($string));
+}
 
 function theme_cdm_descriptionElements($descriptionElements, $feature){
   
@@ -1444,7 +1477,16 @@ function theme_cdm_descriptionElementTextData($element){
   $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   $referenceCitation = '';
   if($element->reference){
-    $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+      $fullCitation = $element->reference->authorship;
+      if($element->reference->year) {
+        $fullCitation .= ', '.$element->reference->year;
+      }
+      $element->reference->fullCitation = $fullCitation;
+      
+      $referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
+      if($element->citationMicroreference){
+        $referenceCitation .= ': '. $element->citationMicroreference;
+      }
   }
   return '<li class="descriptionText">' . $description . $referenceCitation.'</li>';
 }
@@ -1520,5 +1562,22 @@ function theme_cdm_pager_link_new($text, $linkPageNumber, &$pager, $path, $param
   } else {
     $out = l($text, $path.$linkPageNumber, $attributes /*, compose_url_prameterstr($parameters)*/);
   }
+  return $out;
+}
+
+
+function theme_cdm_pager_link($text, $linkPageNumber, &$resultPageSTO, $path, $parameters = array(), $attributes) {
+
+  $out = '';
+
+  if ($linkPageNumber == $resultPageSTO->pageNumber) {
+    $out = '<strong>'.$text.'</strong>';
+  } else {
+    // <a class="pager-next active" title="Go to page 3" href="/node?page=2">3</a>
+    $parameters['page'] = $linkPageNumber;
+    $out = l($text, $path, $attributes, compose_url_prameterstr($parameters));
+  }
+
+
   return $out;
 }

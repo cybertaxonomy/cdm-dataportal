@@ -133,7 +133,7 @@ function cdm_dataportal_menu($may_cache) {
       
        $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2),
-      'title' => t('General'),
+      'title' => theme('cdm_taxonpage_tab', 'General'),
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_CALLBACK,
@@ -144,7 +144,7 @@ function cdm_dataportal_menu($may_cache) {
       
       $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2).'/description',
-      'title' => t('General'),
+      'title' => theme('cdm_taxonpage_tab', 'General'),
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -155,7 +155,7 @@ function cdm_dataportal_menu($may_cache) {
       
       $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2).'/synonymy',
-      'title' => t('Synonymy'),
+      'title' => theme('cdm_taxonpage_tab', 'Synonymy'),
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_LOCAL_TASK,
@@ -166,7 +166,7 @@ function cdm_dataportal_menu($may_cache) {
       
       $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2).'/images',
-      'title' => t('Images'),
+      'title' => theme('cdm_taxonpage_tab', 'Images'),
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_LOCAL_TASK,
@@ -372,7 +372,8 @@ function cdm_dataportal_search_form_request(){
   										'page' => null,
   										'pagesize' => variable_get('cdm_dataportal_search_items_on_page', 25),
   										'mode' => null,
-                      'sec' => $currentSecRefArray['uuid']);
+                   						'sec' => $currentSecRefArray['uuid']
+  );
   
   
   $form_params = array();
@@ -435,7 +436,7 @@ function cdm_dataportal_settings(){
     $form['cdm_dataportal']['feature_tree']['cdm_dataportal_feature_tree_active'] = array(
     '#type' => 'select',
     '#title'         => t('Available FeatureTrees'),
-    '#default_value' => variable_get('cdm_dataportal_feature_tree_active', 'ae9615b8-bc60-4ed0-ad96-897f9226d568'),
+    '#default_value' => variable_get('cdm_dataportal_feature_tree_active', false),
 	'#options' => _get_feature_trees(),
     '#description'   => t('Select a FeatureTree for this webservice. If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>')
   );
@@ -720,11 +721,7 @@ function cdm_dataportal_shortname_of($name){
  */
 function _cdm_dataportal_set_currentSecUuid($secUuid){
  
-// do not save in session but in database
-  
-  //TODO setting the currentSecUuid causes problems in cichorieae in taraxacum, 
-  //     thus it is temporary disabled
-  return;
+  // do not save in session but in database
   
   if(is_array($secUuid)){
     $secUuid = $secUuid[0];

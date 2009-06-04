@@ -222,7 +222,7 @@ function cdm_api_settings_form(){
     '#type' => 'checkbox',
     '#title'         => t('Debug CDM Web Service'),
     '#default_value' => variable_get('cdm_webservice_debug', 1),
-    '#description'   => t('Enable CDM Web Service debugging messages')
+    '#description'   => t('Enable CDM Web Service debugging messages. Only visible for administrators!')
   );
     
   return $form;
@@ -602,7 +602,7 @@ function cdm_ws_httpRequest($url, $is_multi_parameter_query = false, $method="GE
   // this might be conflicting with caching.
   $concatenator = strpos($url, '?') ? '&' : '?';
   
-  $ftree = variable_get('cdm_dataportal_feature_tree', false);
+  $ftree = variable_get('cdm_dataportal_feature_tree_active', false);
   
   $url .= ($ftree && strpos($url, '/taxon/')) ? $concatenator . "ftree=" . $ftree : '';
   
@@ -627,7 +627,7 @@ function cdm_ws_httpRequest($url, $is_multi_parameter_query = false, $method="GE
     // parse data and create object
     $obj = cdm_load_obj($datastr);
     $time_parse = microtime(true) - $time_parse_start;
-    if(variable_get('cdm_webservice_debug', 1)){
+    if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
       $success_msg = $obj?'valid':'invalid'; 
       drupal_set_message(
          $url.' [fetched in: '.sprintf('%3.3f', $time_get).'s; '
@@ -644,7 +644,7 @@ function cdm_ws_httpRequest($url, $is_multi_parameter_query = false, $method="GE
     }
   } else {
     $obj = unserialize($cache_entry->data);
-    if(variable_get('cdm_webservice_debug', 1)){
+    if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
       drupal_set_message('Using cache for: '.$url, 'debug');
     }
   }
@@ -757,7 +757,7 @@ function _request_content_curl($url, $header = array(), $method = "GET", $parame
     curl_exec ($ch);
     if(curl_errno($ch)){
       watchdog('CDM_API', '_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, WATCHDOG_ERROR);
-        if(variable_get('cdm_webservice_debug', 1)){
+        if(variable_get('cdm_webservice_debug', 1)  && user_access('administer') ){
           drupal_set_message('_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, 'error');
         }
     }
