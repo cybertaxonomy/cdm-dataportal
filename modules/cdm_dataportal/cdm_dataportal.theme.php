@@ -329,6 +329,24 @@ function theme_cdm_descriptionElement_distribution($featureTo){
       . ($labels_on ? '&labels=' .  $labels_on : '');
 
     $out .= '<img style="border: 1px solid #ddd" src="'.url($server.$map_data_parameters, $query_string).'" alt="Distribution Map" />';
+    
+    // add a simple legend
+    $legenddata = array(
+      'native' => "4daf4a",
+      'native_doubtfully_native' => "377eb8",
+      'cultivated' => "984ea3",
+      'introduced' => "ff7f00",
+      'introduced adventitious' => "ffff33",
+      'introduced cultivated' => "a65628",
+      'introduced naturalized' => "f781bf"
+    );
+    
+    $out .= '<div class="distribution_map_legend">';
+    foreach($legenddata as $term => $color){
+      $out .= '<image style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
+      drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).', ';
+    }
+    $out .= '</div>';
 
     return $out;
   }
