@@ -344,7 +344,7 @@ function theme_cdm_descriptionElement_distribution($featureTo){
     $out .= '<div class="distribution_map_legend">';
     foreach($legenddata as $term => $color){
       $out .= '<image style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
-      drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).', ';
+      drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).' ';
     }
     $out .= '</div>';
 
