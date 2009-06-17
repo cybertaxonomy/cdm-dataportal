@@ -1,7 +1,7 @@
 <?php
 // $Id$ //
 
-// Taxon Relationship Types
+// Taxon RelationshipTypes
 define('UUID_TAXONOMICALLY_INCLUDED_IN',  'd13fecdf-eb44-4dd7-9244-26679c05df1c');
 define('UUID_MISAPPLIED_NAME_FOR',  '1ed87175-59dd-437e-959e-0d71583d8417');
 define('UUID_INVALID_DESIGNATION_FOR',  '605b1d01-f2b1-4544-b2e0-6f08def3d6ed');
@@ -15,9 +15,47 @@ define('UUID_DOES_NOT_OVERLAP',  'ecd2382b-3d94-4169-9dd2-2c4ea1d24605');
 define('UUID_NOT_INCLUDED_IN',  '89dffa4e-e004-4d42-b0d1-ae1827529e43');
 define('UUID_NOT_CONGRUENT_TO',  '6c16c33b-cfc5-4a00-92bd-a9f9e448f389');
 
-// Synonym Relationship Types
+// SynonymRelationshipTypes
 define('UUID_SYNONYM_OF', '1afa5429-095a-48da-8877-836fa4fe709e');
 define('UUID_PRO_PARTE_SYNONYM_OF', '130b752d-2eff-4a62-a132-104ed8d13e5e');
 define('UUID_PARTIAL_SYNONYM_OF', '8b0d1d34-cc00-47cb-999d-b67f98d1af6e');
 define('UUID_HOMOTYPIC_SYNONYM_OF', '294313a9-5617-4ed5-ae2d-c57599907cb2');
 define('UUID_HETEROTYPIC_SYNONYM_OF', '4c1e2c59-ca55-41ac-9a82-676894976084');
+
+// NameRelationshipTypes
+define('UUID_ORTHOGRAPHIC_VARIANT', 'eeaea868-c4c1-497f-b9fe-52c9fc4aca53');
+define('UUID_LATER_HOMONYM', '80f06f65-58e0-4209-b811-cb40ad7220a6');
+define('UUID_TREATED_AS_LATER_HOMONYM', '2990a884-3302-4c8b-90b2-dfd31aaa2778');
+define('UUID_ALTERNATIVE_NAME', '049c6358-1094-4765-9fae-c9972a0e7780');
+define('UUID_BASIONYM', '25792738-98de-4762-bac1-8c156faded4a');
+define('UUID_REPLACED_SYNONYM', '71c67c38-d162-445b-b0c2-7aba56106696');
+define('UUID_CONSERVED_AGAINST', 'e6439f95-bcac-4ebb-a8b5-69fa5ce79e6a');
+define('UUID_VALIDATED_BY_NAME', 'a176c9ad-b4c2-4c57-addd-90373f8270eb');
+define('UUID_LATER_VALIDATED_BY_NAME', 'a25ee4c1-863a-4dab-9499-290bf9b89639');
+define('UUID_BLOCKING_NAME_FOR', '1dab357f-2e12-4511-97a4-e5153589e6a6');
+
+// Features
+define('UUID_UNKNOWN', '910307f1-dc3c-452c-a6dd-af5ac7cd365c');
+define('UUID_DESCRIPTION', '9087cdcd-8b08-4082-a1de-34c9ba9fb493');
+define('UUID_DISTRIBUTION', '9fc9d10c-ba50-49ee-b174-ce83fc3f80c6');
+define('UUID_ECOLOGY', 'aa923827-d333-4cf5-9a5f-438ae0a4746b');
+define('UUID_BIOLOGY_ECOLOGY', '9832e24f-b670-43b4-ac7c-20a7261a1d8c');
+define('UUID_KEY', 'a677f827-22b9-4205-bb37-11cb48dd9106');
+define('UUID_MATERIALS_EXAMINED', '7c0c7571-a864-47c1-891d-01f59000dae1');
+define('UUID_MATERIALS_METHODS', '1e87d9c3-0844-4a03-9686-773e2ccb3ab6');
+define('UUID_ETYMOLOGY', 'dd653d48-355c-4aec-a4e7-724f6eb29f8d');
+define('UUID_DIAGNOSIS', 'd43d8501-ceab-4caa-9e51-e87138528fac');
+define('UUID_PROTOLOG', '7f1fd111-fc52-49f0-9e75-d0097f576b2d');
+define('UUID_COMMON_NAME', 'fc810911-51f0-4a46-ab97-6562fe263ae5');
+define('UUID_PHENOLOGY', 'a7786d3e-7c58-4141-8416-346d4c80c4a2');
+define('UUID_OCCURRENCE', '5deff505-1a32-4817-9a74-50e6936fd630');
+define('UUID_CITATION', '99b2842f-9aa7-42fa-bd5f-7285311e0101');
+define('UUID_ADDITIONAL_PUBLICATION', 'cb2eab09-6d9d-4e43-8ad2-873f23400930');
+define('UUID_USES', 'e5374d39-b210-47c7-bec1-bee05b5f1cb6');
+define('UUID_CONSERVATION', '4518fc20-2492-47de-b345-777d2b83c9cf');
+define('UUID_CULTIVATION', 'e28965b2-a367-48c5-b954-8afc8ac2c69b');
+define('UUID_INTRODUCTION', 'e75255ca-8ff4-4905-baad-f842927fe1d3');
+define('UUID_DISCUSSION', 'd3c4cbb6-0025-4322-886b-cd0156753a25');
+define('UUID_IMAGE', '84193b2c-327f-4cce-90ef-c8da18fd5bb5');
+
+

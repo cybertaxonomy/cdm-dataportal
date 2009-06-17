@@ -1,5 +1,5 @@
 <?php
-// $Id$
+// $Id: cdm_dataportal.theme.php 5972 2009-06-04 13:04:54Z a.kohlbecker $
 
 /*
  * Copyright (C) 2007 EDIT
@@ -120,9 +120,11 @@ function theme_cdm_annotation($cdmBase){
 }
 
 function theme_cdm_annotation_content($AnnotationTO){
-  
+
+
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_annotations.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.form.js');
+
 
   $out .= theme('cdm_list_of_annotations', $AnnotationTO->annotationElements);
 
@@ -160,6 +162,22 @@ function theme_cdm_list_of_annotations($annotationElements){
 
   return $out;
 
+}
+
+/**
+ * Renders the full name string (complete scientific name including the author team)
+ */
+function theme_cdm_name($name, $displayAuthorTeam = true){
+
+  // name part
+  $skip = array();
+  if(!$displayAuthorTeam || $name->class == 'ZoologicalName') {
+      $skip[] = 'authors';
+  }
+  
+  $nameHtml = '<span class="'.$class.'">'.theme('cdm_taggedtext2html', $name->taggedName, 'span', ' ', $skip).'</span>';
+  // END - name part
+  return $nameHtml;
 }
 
 function theme_cdm_media($descriptionElement, $mimeTypePreference){
@@ -244,7 +262,7 @@ function theme_cdm_media_mime_text($mediaRepresentation, $feature){
  * @param unknown_type $featureTo
  * @return unknown
  */
-function theme_cdm_descriptionElements_distribution($descriptionElements){
+function theme_cdm_descriptionElement_distribution($feature){
 
   $server = variable_get('cdm_dataportal_geoservice_access_point', false);
 
@@ -285,132 +303,209 @@ function theme_cdm_descriptionElements_distribution($descriptionElements){
   }
 }
 
-function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, $renderPath = null){
-  
-  $renderTemplate = get_nameRenderTemplate($renderPath, $nameLink, $refenceLink);
-  
-  $partDefinition = get_partDefinition($taxonName->class);
-  
-  // apply defintions to template
-  foreach($renderTemplate as $part=>$uri){
-    if(isset($partDefinition[$part])){
-      $renderTemplate[$part] = $partDefinition[$part];
-      if(is_string($uri)){
-        $renderTemplate[$part]['#uri'] = $uri;
-      }
-    }
-  }
-  
-  if(isset($taxonName->taggedName)){
-    
-    $taggedName = $taxonName->taggedName;
-    // due to a bug in the cdmlib the taggedName alway has a lst empty element, we will remove it:
-    array_pop($taggedName);
-    
-    if(!isset($renderTemplate['namePart']['authorTeam'])){
-      // find author and split off from name 
-      // TODO expecting to find the author as the last element
-      if($taggedName[count($taggedName)- 1]->type == 'authors'){
-        $authorTeam = $taggedName[count($taggedName)- 1]->text;
-        unset($taggedName[count($taggedName)- 1]);
-      }
-    }
-    $name = '<span class="'.$taxonName->class.'">'.theme('cdm_taggedtext2html', $taggedName).'</span>';
-  } else {  
-    $name = '<span class="'.$taxonName->class.'_titleCache">'.$taxonName->titleCache.'</span>';
-  }
-  
-  // fill name into $renderTemplate
-  array_setr('name', $name, $renderTemplate);
- 
-  // fill with authorTeam
-  if($authorTeam){
-    $authorTeamHtml = ' <span class="authorTeam">'.$authorTeam.'</span>';
-    array_setr('authorTeam', $authorTeamHtml, $renderTemplate);
-  }
-  
-  // fill with reference
-  if($taxonName->nomenclaturalReference){
-    $citation = $taxonName->nomenclaturalReference->titleCache;
-    $authorTeam = cdm_taggedtext_value($taggedName, 'authors');
-    $citation = trim(str_replace($authorTeam, '', $citation));
-    if(str_beginsWith($citation, ", in")){
-      $citation = substr($citation, 1);
-    }
-    $referenceHtml = ' <span class="reference">'.$citation.'</span>';
-    array_setr('reference', $referenceHtml, $renderTemplate);
-  }
+/**
+ * Renders the given TaxonTO. The $enclosingTag (if not set false)
+ * will get the following class attributes:
+ * - name
+ * - accepted (only if $ptaxon is an accepted name)
+ *
+ * @param TaxonTO $taxon
+ * @param boolean $displayNomRef whether to display the nomenclatural reference
+ * @param boolean $noSecundum defaults to false. If set to true the secundum part is omitted.
+ * @param string $enclosingTag defaults to span.
+ * @return string of XHTML
+ *
+ * usage: taxon_detail, theme_ptname_link
+ */
+function theme_cdm_taxonbase($taxon, $linkToTaxon = false, $displayNomRef = true, $linkToNomRef = false, 
+  $displayAuthorTeam = true, $displayStatus = true, $displayDescription = true, $enclosingTag = 'span', 
+  $uuidAnchor = TRUE, $acceptedUuid = NULL, $uriFragment = NULL){
 
-  // fill with microreference
-  if($taxonName->nomenclaturalMicroReference){
-    $microreferenceHtml = '<span class="microreference">:&nbsp;' . $taxonName->nomenclaturalMicroReference . '</span>';
-    array_setr('microreference', $microreferenceHtml, $renderTemplate);
+  if($taxon->class != "Taxon" && $taxon->class != "Synonym") {
+    $out = 'ERROR: theme_cdm_taxon() - invalid type, supplied item is '.$taxon->class;
   }
   
-  // fill with status
-  if(array_setr('status', true, $renderTemplate)){
+  if($uriFragment){
+    $uriFragment = '#'.$uriFragment;
+  }
+  
+  // name part
+  $taxonHtml = theme('cdm_name', $taxon->name, $displayAuthorTeam);
+  /* >>> moved into theme_cdm_name
+  $skip = array();
+  if(!$displayAuthorTeam || $taxon->name->class == 'ZoologicalName') {
+      $skip[] = 'authors';
+  }
+  $taxonHtml = '<span class="'.$class.'">'.theme('cdm_taggedtext2html', $taxon->name->taggedName, 'span', ' ', $skip).'</span>';
+  // END - name part */
+  
+  if($linkToTaxon){
+    if($taxon->class == "Synonym"){
+      $query = 'highlite='.$taxon->uuid.'&acceptedFor='.$taxon->uuid;
+      $taxonUuid = $acceptedUuid;
+    } else {
+      $taxonUuid = $taxon->uuid;
+    }
+    $linkUri = cdm_dataportal_taxon_path($taxonUuid);
+    
+    $out = l($taxonHtml, $linkUri, array('class'=>strtolower($taxon->class)), $query, $uriFragment, FALSE, TRUE);
+  } else {
+    $out = $taxonHtml;
+  }
+  
+  if($displayNomRef){
+    if($taxon->name->class == 'ZoologicalName') {
+      
+      // add the AuthorTeam as reference for ZoologicalName, it has been skipped in the name part
+      $authorTeam = cdm_taggedtext_value($taxon->name->taggedName, 'authors');
+      $authorTeamPart = l('<span class="authors">'.$authorTeam.'</span>', "/cdm_dataportal/reference/".$taxon->name->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
+      if($taxon->name->nomenclaturalMicroReference){
+        $microreference = '<span class="pages">:&nbsp;' . $taxon->name->nomenclaturalMicroReference . '</span>'; 
+      }
+
+      $out .= ', '.$authorTeamPart.$microreference;
+      
+    } else {
+      $referencePart .= theme('cdm_nomenclaturalReference', $taxon->name, $linkToNomRef);
+      //$referencePart .= theme('cdm_nomenclaturalReference_'.$taxon->name->class, $taxon->name->nomenclaturalReference, $linkToNomRef);
+      $out .= $referencePart;
+    }
+  }
+  
+  if($displayStatus){
     if(isset($taxon->name->status[0])){
       foreach($taxon->name->status as $status){
-        $statusHtml .= ', '.$status->type->representation_L10n;
+        $out .= ', '.$status->type->representation_L10n;
       }
     }
-    array_setr('status', ' <span class="nomenclatural_status">'.$statusHtml.'</span>', $renderTemplate);
   }
 
-  // fill with protologues etc...
-  if(array_setr('description', true, $renderTemplate)){
-    $descriptions = cdm_ws_get(CDM_WS_NAME_DESCRIPTIONS, $taxonName->uuid);
-    foreach($descriptions as $description){
+  // render protologues etc...
+  //FIXME if($displayDescription && !isset($name->descriptions) => get'em from web service ..
+  if($displayDescription && !empty($taxon->name->descriptions)){
+    foreach($taxon->name->descriptions as $description){
         if(!empty($description)){
           foreach($description->elements as $description_element){
-            $descriptionHtml .= theme("cdm_media", $description_element, array('application/pdf', 'image/png', 'image/jpeg', 'image/gif', 'text/html'));
+            $out .= theme("cdm_media", $description_element, array('application/pdf', 'image/png', 'image/jpeg', 'image/gif', 'text/html'));
           }
         }
     }
-    array_setr('description', $descriptionHtml, $renderTemplate);
-  }  
+  }
   
-  // render
-  $out = '';
-  foreach($renderTemplate as $partName=>$part){
-    if(!is_array($part)){
-      continue;
-    }
-    if(!empty($part['#uri'])){
-      $out .= '<a href="'.$part['#uri'].'" class="'.$partName.'">';
-    }
-    foreach($part as $key=>$text){
-      if(is_string($text) && $key != '#uri'){
-        $out .= '<span class="'.$key.'">'.$text.'</span>';
-      }
-    }
-    if(!empty($part['#uri'])){
-      $out .= '</a>';
+  if($enclosingTag){  
+    $out = '<'.$enclosingTag.'>'.$out.'</'.$enclosingTag.'>';
+  }
+  
+  return $out; 
+}
+
+/**
+ * Renders the given TaxonTO. The $enclosingTag (if not set false)
+ * will get the following class attributes:
+ * - name
+ * - accepted (only if $ptaxon is an accepted name)
+ *
+ * @param TaxonTO $taxon
+ * @param boolean $displayNomRef whether to display the nomenclatural reference
+ * @param boolean $noSecundum defaults to false. If set to true the secundum part is omitted.
+ * @param string $enclosingTag defaults to span.
+ * @return string of XHTML
+ *
+ * usage: taxon_detail, theme_ptname_link
+ */
+function theme_cdm_taxon($taxon, $displayNomRef = true, $displayStatus = true, $displayDescription = true, $noSecundum = true, $enclosingTag = 'span', $uuidAnchor = TRUE, $nomRefLink = true){
+
+  $refSecundum = false;
+  if(!$noSecundum){
+    $ref_sec = cdm_ws_get(CDM_WS_REFERENCE ,$taxonTO->secUuid);
+    if($ref_sec){
+      $refSecundum = str_trunk($ref_sec->fullCitation, 40, '...');
     }
   }
+  $out  = theme('cdm_name', $taxon->name, true, $displayNomRef, $displayStatus, $displayDescription, $nomRefLink);
+  // append secundum information
+  $out .=($refSecundum ? '&nbsp;<span class="secundum">sec. '.$refSecundum.'</span>' : '');
+  // add uuid anchor
+  if($uuidAnchor === TRUE){
+    $out = uuid_anchor($taxon->uuid, $out);
+  }
+  //TODO:   .$ptaxon->namePhrase;
+  if($enclosingTag){
+    $out = '<'.$enclosingTag.' class="taxon'.($taxon->class == "Taxon" ? ' accepted':'').'">'.$out.'</'.$enclosingTag.'>';
+  }
+
   return $out;
 }
 
 /**
- * Recursively searches the array for the $key and sets the given value
- * @param $key
- * @param $value  
- * @param $array
- * @return true if the key has been found
+ * Renders a link to the taxon detail page for the given $taxon
+ *
+ * @param TaxonTO $taxon
  */
-function &array_setr($key, $value, array &$array){
-  foreach($array as $k=>&$v){
-    if($key == $k){
-      $v = $value;
-      return $array;
-    } else if(is_array($v)){
-      $innerArray = array_setr($key, $value, $v);
-      if($innerArray){
-        return $array;
-      }
-    }
+function theme_cdm_taxon_link($taxon, $fragment = NULL, $showNomRef = true, $nomRefLink = true){
+
+  if($fragment){
+    $fragment = '#'.$fragment;
   }
-  return null;
+ 
+  if($taxon->class != "Taxon") {
+    $out = 'ERROR: theme_cdm_taxon_link() - taxon is not accepted';
+  }
+
+   if($showNomRef && $nomRefLink){
+     // name part as link and reference part as link
+     $name_html = theme('cdm_taxon', $taxon, FALSE /*$showNomRef*/, true, false, true, '', FALSE);
+     $out = l($name_html, cdm_dataportal_taxon_path($taxon->uuid), array('class'=>'accepted'), null, $fragment, FALSE, TRUE);
+     $out .= theme('cdm_nomenclaturalReference', $taxon->name);
+   } else {
+     // fullname as link
+     $name_html = theme('cdm_taxon', $taxon, $showNomRef, true, false, true, '', FALSE, $nomRefLink);
+     $out = l($name_html, cdm_dataportal_taxon_path($taxon->uuid), array('class'=>'accepted'), null, $fragment, FALSE, TRUE);
+   }
+  
+  return $out;
+}
+
+/**
+ * Renders a link to the misapplied taxon detail page for the given $taxon
+ *
+ * @param TaxonTO $taxon
+ */
+function theme_cdm_taxon_misapplied_link($taxon, $fragment = NULL, $showNomRef = true){
+
+  if($fragment){
+    $fragment = '#'.$fragment;
+  }
+
+  if($taxon->class != "Taxon") {
+    $out = 'ERROR: theme_cdm_taxon_link() - taxon is not accepted';
+  }
+
+  $name_html = theme('cdm_taxon', $taxon, $showNomRef, true, false, true, '', FALSE);
+  $out = '"';
+  $out .= l($name_html, cdm_dataportal_taxon_path($taxon->uuid), array('class'=>'accepted'), null, $fragment, FALSE, TRUE);
+  $out .= '"';
+
+  /*
+   if($showNomRef){
+   $out .= theme('cdm_nomenclaturalReference', $taxonTO->name);
+   }
+   */
+  return $out;
+}
+
+
+/**
+ * Renders a link to the taxon detail page for the given $taxon
+ *
+ * @param TaxonTO $taxon
+ */
+function theme_cdm_synonym_link($taxon, $accepted_uuid, $showNomRef = true, $showStatus = true){
+
+  $name_html = theme('cdm_taxon', $taxon, $showNomRef, $showStatus, false, true, '', FALSE);
+  $out = l($name_html, cdm_dataportal_taxon_path($accepted_uuid), array('class'=>'synonym'), 'highlite='.$taxonTO->uuid.'&acceptedFor='.$taxon->uuid, NULL, FALSE, TRUE);
+
+  return $out;
 }
 
 
@@ -437,11 +532,16 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = '', $displayNomRef = tr
       $relsign = '&ndash;';
   }
 
-  //$taxonUri = url(path_to_taxon($taxon->uuid));
-  if($taxon->name->nomenclaturalReference){
-    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
-  }
-  $nameHtml = theme('cdm_taxonname', $taxon->name, $taxonUri, $referenceUri);
+  $linkToTaxon = false;
+  $displayNomRef = true;
+  $linkToNomRef = true;
+  $displayAuthorTeam = true;
+  $displayMicroReference = true;
+  $displayStatus = false;
+  $displayDescription = false;
+
+  $nameHtml = theme('cdm_taxonbase', $taxon, $linkToTaxon, $displayNomRef, $linkToNomRef, 
+      $displayAuthorTeam, $displayMicroReference, $displayStatus, $displayDescription);
   
   $out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix;
   return $out;
@@ -497,22 +597,18 @@ function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
   return $out;
 }
 
-function theme_cdm_list_of_taxa($records){
-  
-  $renderPath = 'list_of_taxa';
-  
+function theme_cdm_list_of_taxa($taxonPager){
   $out = '<ul class="cdm_names" style="background-image: none;">';
 
   $synonym_uuids = array();
-  foreach($records as $taxon){
+  foreach($taxonPager->records as $taxon){
     if(!_cdm_dataportal_acceptedByCurrentView($taxon)){
       if(!array_key_exists($taxon->uuid, $synonym_uuids)){
         $synonym_uuids[$taxon->uuid] = $taxon->uuid;
       }
     }
   }
-  // batch service not jet implemented: 
-  // $table_of_accepted = cdm_ws_property(CDM_WS_TAXON_ACCEPTED, join(',', $synonym_uuids));
+  // batch service not jet implemented: $table_of_accepted = cdm_ws_property(CDM_WS_TAXON_ACCEPTED, join(',', $synonym_uuids));
   // thus ...
   $table_of_accepted = array();
   foreach($synonym_uuids as $synUuid){
@@ -520,30 +616,88 @@ function theme_cdm_list_of_taxa($records){
   }
   // .. well, for sure not as performant as before, but better than nothing.
 
-  foreach($records as $taxon){
+  foreach($taxonPager->records as $taxon){
     if(_cdm_dataportal_acceptedByCurrentView($taxon)){
-      $taxonUri = url(path_to_taxon($taxon->uuid));
-      if(isset($taxon->name->nomenclaturalReference)){
-        $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
-      }
-      $out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath).'</li>';
+      $out .= '<li>'.theme('cdm_taxon_link', $taxon, /*$fragment*/ NULL, /*$showNomRef*/ true, /*$nomRefLink*/ false ).'</li>';
     } else {
       $uuid = $taxon->uuid;
-      $acceptedTaxa = $table_of_accepted[$uuid];
+      $acceptedTaxa = $table_of_accepted->$uuid;
       if(count($acceptedTaxa) == 1){
-        $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxa[0]->uuid, 'synonymy');
-        if(isset($acceptedTaxa[0]->name->nomenclaturalReference)){
-          $referenceUri = url(path_to_reference($acceptedTaxa[0]->name->nomenclaturalReference->uuid));
-        }
-        $out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath).'</li>';
+        $out .= '<li>'.theme('cdm_synonym_link', $taxon, $acceptedTaxa[0]->uuid ).'</li>';
       } else {
         //TODO avoid using AHAH in the cdm_dynabox
-        $out .= theme('cdm_dynabox', theme('cdm_taxonName', $taxon->name, null, null, $renderPath), cdm_compose_url(CDM_WS_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
+        $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_compose_url(CDM_WS_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
       }
     }
   }
   $out .= '</ul>';
   return $out;
+
+
+
+  /*
+   //  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
+   //  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
+   //
+   $out = '<ul class="cdm_names" style="background-image: none;">';
+
+   //get all accepted for synonyms in one blow to reduce overhead
+   /* disabled! Not implemented in cdmlib-remote. Did someone forget
+   * to commit???
+   $synonym_uuids = array();
+   foreach($taxonSTOs as $taxon){
+   if(!_cdm_dataportal_acceptedByCurrentView($taxon)){
+   if(!array_key_exists($taxon->uuid, $synonym_uuids)){
+   $synonym_uuids[$taxon->uuid] = $taxon->uuid;
+   }
+   }
+   }
+   $table_of_accepted = cdm_ws_get(CDM_WS_TAXON_ACCEPTED, join(',', $synonym_uuids));
+   */
+  /*
+   // get the secUuid of the actual taxonomy.
+   // TODO: this is not generic and can be applied if there is one taxonomy only
+   $root = cdm_ws_get(CDM_WS_TREENODE_ROOT);
+   $rootSecUuid = $root[0]->secUuid;
+
+   // RUDE HACK: group misappliedNames by filtering identical names but differing secUuids.
+   $misapplied = array();
+   foreach($taxonSTOs as $taxon){
+   if($taxon->secUuid != $rootSecUuid){
+   // is misapplied name
+   if(! in_array($taxon->name->uuid, $misapplied)){
+   $misapplied[$taxon->name->uuid]['printed'] = 0;
+   }
+   }
+   }
+
+   foreach($taxonSTOs as $taxon){
+   if(_cdm_dataportal_acceptedByCurrentView($taxon)){
+
+   if($taxon->secUuid == $rootSecUuid){
+   $out .= '<li>'.theme('cdm_taxon_link', $taxon).'</li>';
+   }
+   else if(! $misapplied[$taxon->name->uuid]['printed']){
+   // RUDE HACK for misapplied names, paging not correct with this
+   $out .= '<li>'.theme('cdm_taxon_misapplied_link', $taxon).'</li>';
+   $misapplied[$taxon->name->uuid]['printed'] = 1;
+
+   }
+   }
+   else {
+   // get accepted taxa for this taxon
+   $table_of_accepted = cdm_ws_get(CDM_WS_TAXON_ACCEPTED, $taxon->uuid);
+   if(count($table_of_accepted) == 1){
+   $out .= '<li>'.theme('cdm_synonym_link', $taxon, $table_of_accepted[0]->uuid ).'<li>';
+   }
+   else {
+   //TODO avoid using AHAH ion the cdm_dynabox
+   $out .= theme('cdm_dynabox', theme('cdm_name', $taxon->name), cdm_compose_url(CDM_WS_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
+   }
+   }
+   }
+   $out .= '</ul>';
+   return $out;*/
 }
 
 
@@ -554,9 +708,7 @@ function theme_cdm_credits(){
   .( $secRef_array['authorTeam'] ? '<div class="author">'.$secRef_array['authorTeam']['titleCache'].'</div>' : '');
 }
 
-/**
- * @deprecated ??
- */
+
 function theme_cdm_reference($reference, $linkToReference = FALSE, $style = NULL ){
   
   if($style == "ZoologicalName"){
@@ -638,21 +790,20 @@ function theme_cdm_taxonpage_tab($tabname){
  * @param NameTO $nameTO
  * @return the formatted taxon name
  */
-function theme_cdm_taxon_page_title($taxon){
+function theme_cdm_taxon_page_title($name){
   
-  $renderPath = 'taxon_page_title';
-  if(isset($taxon->name->nomenclaturalReference)){
-        $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+  if(variable_get('cdm_dataportal_nomref_in_title', 1)){
+    // taxon name only with author and year
+    return theme('cdm_name', $name, TRUE, false, false, false);
+  } else {
+    return theme('cdm_name', $name);
   }
-  return theme('cdm_taxonName', $taxon->name, null, $referenceUri, $renderPath);
 }
 
 
-function theme_cdm_acceptedFor($renderPath = false){
+function theme_cdm_acceptedFor(){
   $out = '';
-  if(!$renderPath){
-    $renderPath = 'acceptedFor';
-  }
+  
   if(isset($_REQUEST['acceptedFor'])){
      
      $synonym = cdm_ws_get(CDM_WS_TAXON, $_REQUEST['acceptedFor']);
@@ -660,10 +811,7 @@ function theme_cdm_acceptedFor($renderPath = false){
      if($synonym){
        $out .= '<span class="acceptedFor">';
        $out .= t('is accepted for ');
-       if(isset($synonym->name->nomenclaturalReference)){
-             $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
-       }
-       $out .= theme('cdm_taxonName', $synonym->name, null, $referenceUri, $renderPath);
+       $out .= theme('cdm_name', $synonym->name, TRUE, FALSE, FALSE, FALSE);
        $out .= '</span>';
      }
   }
@@ -699,16 +847,11 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
   $out = '';
   $out .= theme('cdm_back_to_search_result_button');
-  $out .= theme('cdm_acceptedFor', 'page_general');
+  $out .= theme('cdm_acceptedFor');
   
   if($page_part == 'description' || $page_part == 'all'){
-    
-    $featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get('cdm_dataportal_featuretree_uuid', false));
-    $taxonDescriptions = cdm_ws_get(CDM_WS_TAXON_DESCRIPTIONS, $taxon->uuid);
-    $mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $taxonDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
- 
     $out .= '<div id="general">';
-    $out .= theme('cdm_taxon_page_description', $taxon, $mergedTrees);
+    $out .= theme('cdm_taxon_page_description', $taxon);
     $out .= '</div>';
   }
   
@@ -717,8 +860,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
     if($page_part == 'all'){
       $out .= '<h2>'.t('Images').'</h2>';
     }
-    $taxonDescriptions = cdm_ws_get(CDM_WS_TAXON_DESCRIPTIONS, $taxon->uuid);
-    $out .= theme('cdm_taxon_page_images', $taxon, $taxonDescriptions);
+    $out .= theme('cdm_taxon_page_images', $taxon);
     $out .= '</div>';
   }
 
@@ -727,17 +869,16 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
     if($page_part == 'all'){
       $out .= '<h2>'.t('Synonymy').'</h2>';
     }
-    $addAcceptedTaxon = !variable_get('cdm_dataportal_nomref_in_title', 1);
-    $out .= theme('cdm_taxon_page_synonymy', $taxon, $addAcceptedTaxon);
+    if(!variable_get('cdm_dataportal_nomref_in_title', 1)){
+      $out .= theme('cdm_taxon_new', $taxon);
+    }
+    $out .= theme('cdm_taxon_page_synonymy', $taxon);
 
     if(variable_get('cdm_dataportal_display_name_relations', 1)){
       
       $nameRelationships = cdm_ws_get(CDM_WS_TAXON_NAMERELATIONS, $taxon->uuid);
       // TODO is it correct to skip relationsFromThisName since all relationships are to be understood as 'is .... of'
-      if(variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1)){
-        $skip = array(UUID_BASIONYM);
-      }
-      $out .= theme('cdm_nameRelations', $nameRelationships, $skip);
+      $out .= theme('cdm_nameRelations', $nameRelationships);
      }
     $out .= '</div>';
   }
@@ -750,12 +891,12 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
  * accepted taxon.
  *
  */
-function theme_cdm_taxon_page_description($taxon, $mergedTrees){
-
+function theme_cdm_taxon_page_description($taxon){
+  
   // description TOC
-  $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
+  $out .= theme('cdm_featureTreeToc', $taxon->featureTree);
   // description
-  $out .= theme('cdm_featureTrees', $mergedTrees, $taxon);
+  $out .= theme('cdm_featureTree', $taxon->featureTree);
   return $out;
 }
 
@@ -764,50 +905,38 @@ function theme_cdm_taxon_page_description($taxon, $mergedTrees){
  * of the accepted taxon with nomenclatural reference.
  *
  */
-function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
-  $renderPath = 'taxon_page_synonymy';
+function theme_cdm_taxon_page_synonymy($taxon){
+  
   $synomymie = cdm_ws_get(CDM_WS_TAXON_SYNONYMY, $taxon->uuid);
   $taxonRelationships = cdm_ws_get(CDM_WS_TAXON_RELATIONS, $taxon->uuid);
- 
-  if($addAcceptedTaxon){
-    if(isset($taxon->name->nomenclaturalReference)){
-           $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
-     }
-    $out .= theme('cdm_taxonName', $taxon->name, null, $referenceUri, $renderPath);
-  }
   
-  if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
-    // display the type information for the added taxon
-    $typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
-    if($typeDesignations){
-      $out .= theme('cdm_typedesignations', $typeDesignations);
-    }
-  } else {
-    // reder the homotypicSynonymyGroup including the type information
-    $out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
-  }
+  $out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
+  
   if($synomymie->heterotypicSynonymyGroups) {
     foreach($synomymie->heterotypicSynonymyGroups as $homotypicalGroup){
       $out .= theme('cdm_heterotypicSynonymyGroup', $homotypicalGroup);
     }
   }
-
-  $out .= theme('cdm_taxonRelations', $taxonRelationships, $skip);
+  $out .= theme('cdm_taxonRelations', $taxonRelationships);
 
   return $out;
 }
 
 /**
  * Show the collection of images stored with the accepted taxon
- * 
+ *
+ * TODO this is just a copy of the special image display in the cichorieae
+ *  and will not work with other portals thus a more general solution is needed
  */
-function theme_cdm_taxon_page_images($taxon, $taxonDescriptions){
+function theme_cdm_taxon_page_images($taxon){
 
-  if($taxonDescriptions){
-    foreach($taxonDescriptions as $descriptionElements){
-      foreach($descriptionElements->elements as $element){
-        if($element->feature->uuid == UUID_IMAGE){
-          $flashLink = true;
+  $descriptions = $taxon->featureTree->descriptions;
+  if($descriptions){
+    foreach($descriptions as $descriptionTo){
+      $features = $descriptionTo->features;
+      foreach($features as $featureTo){
+        if($featureTo->feature->term == 'Image'){
+          $flashLink = count($featureTo->descriptionElements) > 0;
           break;
         }
       }
@@ -958,12 +1087,16 @@ function theme_cdm_synonym_page(){
 
 }
 
-function theme_cdm_preferredImage($mergedTrees, $defaultImage, $parameters = ''){
+function theme_cdm_preferredImage($taxonTo, $defaultImage, $parameters = ''){
 
-  if(isset($mergedTrees[0])){
-    foreach($mergedTrees[0]->root->children as $node){
-      if($node->feature->uuid == UUID_IMAGE){
-        $preferredImage = $node->descriptionElements[0]->media[0]->representations[0]->parts[0]->uri;
+  $descriptions = $taxonTo->featureTree->descriptions;
+
+  foreach($descriptions as $descriptionTo){
+    $features = $descriptionTo->features;
+    foreach($features as $featureTo){
+      if($featureTo->feature->term == 'Image'){
+
+        $preferredImage = $featureTo->descriptionElements[0]->media[0]->representations[0]->representationParts[0]->uri;
       }
     }
   }
@@ -982,6 +1115,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
     return;
   }
   
+  $out = '';
   $out = '<ul class="homotypicSynonyms">';
 
   if(!empty($prependedSynonyms)){
@@ -994,6 +1128,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
     $out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
   }
   
+  //$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
   $typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $synonymList[0]->uuid);
   if($typeDesignations){
     $out .= theme('cdm_typedesignations', $typeDesignations);
@@ -1027,7 +1162,7 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
     }
   }
 
-  if($typeDesignations){
+  if(isset($typeDesignations)){
     $out .= theme('cdm_typedesignations', $typeDesignations);
   }
 
@@ -1099,7 +1234,7 @@ function theme_cdm_taxonRelations($taxonRelationships){
   return $out;
 }
 
-function theme_cdm_nameRelations($nameRelationships, $skipTypes = false){
+function theme_cdm_nameRelations($nameRelationships, $skipTypes = array(UUID_BASIONYM)){
 
   // group by relationship type
   $relationshipGroups = array();  
@@ -1113,23 +1248,33 @@ function theme_cdm_nameRelations($nameRelationships, $skipTypes = false){
   // generate output
   $out = '';
   foreach($relationshipGroups as $group){
-    $type = $group[0]->type;
-    
-    if(is_array($skipTypes) && in_array($type->uuid, $skipTypes)){
-      continue;
-    }
-    
-    $block->module = 'cdm_dataportal';
-    $block->subject = t(ucfirst($type->inverseRepresentation_L10n));
-    $block->delta = generalizeString(strtolower($type->inverseRepresentation_L10n));
+      
+      $type = $group[0]->type;
+      
+      if(in_array($type->uuid, $skipTypes)){
+        continue;
+      }
+      
+      $block->module = 'cdm_dataportal';
   
-    foreach($group as $relationship){    
-      $relatedNames[] = cdm_taggedtext2html($relationship->fromName->taggedName);
-    }
-    
-    $block->content .= implode('; ', $relatedNames);
-    $out .= theme('block', $block);
+      // $type->representation_L10n = !empty($type->representation_L10n) ? $type->representation_L10n : 'Name relation';
+  
+      $block->delta  = $type->representation_L10n;
+      $block->subject = t(ucfirst($block->delta));
+      $block->delta = str_replace(' ', '_', strtolower($block->delta));
+  
+      foreach($group as $relationship){    
+        $relatedNames[] = cdm_taggedtext2html($relationship->fromName->taggedName);
+      
+      }
+      
+      //$block->content = '<div class="nameRelationships '.$block->delta.'">';
+      $block->content .= implode('; ', $relatedNames);
+      //$block->content .= '</div>';
+  
+      $out .= theme('block', $block);
   }
+  
   return $out;
 }
 
@@ -1167,7 +1312,7 @@ function compare_specimenTypeDesignationStatus($a, $b){
 }
 
 function theme_cdm_typedesignations($typeDesignations = array()){
-  $renderPath = 'typedesignations';
+
   $out = '<ul class="typeDesignations">';
 
   $specimenTypeDesignations = array();
@@ -1182,22 +1327,20 @@ function theme_cdm_typedesignations($typeDesignations = array()){
         $out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: '.t('not designated'). '</li>';
       }else if($typeDesignation->typeName){
         
+        //$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: '.theme('cdm_name', $typeDesignation->typeName, false);
         $out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: ';
         
-        if($typeDesignation->typeName->nomenclaturalReference){
-          $referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
-        }
-        $out .= theme('cdm_taxonName', $typeDesignation->typeName, null, $referenceUri, $renderPath);
+        $out .= theme('cdm_name', $typeDesignation->typeName, false);
         
-//        if($typeDesignation->typeName->class == 'ZoologicalName') {
-//          // appending authorTeam which has been skipped in cdm_name
-//          $authorTeam = cdm_taggedtext_value($typeDesignation->typeName->taggedName, 'authors');
-//          $authorTeamPart = l('<span class="authors">'.$authorTeam.'</span>', "/cdm_dataportal/reference/".$typeDesignation->typeName->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
-//          $out .= (str_endsWith($authorTeam, ')') ? '' : ', ').$authorTeamPart;
-//        } else {
-//          $out .= ' '.theme('cdm_reference', $typeDesignation->citation, true, $referenceStyle);
-//          $out .= '</li>';
-//        }
+        if($typeDesignation->typeName->class == 'ZoologicalName') {
+          // appending authorTeam which has been skipped in cdm_name
+          $authorTeam = cdm_taggedtext_value($typeDesignation->typeName->taggedName, 'authors');
+          $authorTeamPart = l('<span class="authors">'.$authorTeam.'</span>', "/cdm_dataportal/reference/".$typeDesignation->typeName->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
+          $out .= (str_endsWith($authorTeam, ')') ? '' : ', ').$authorTeamPart;
+        } else {
+          $out .= ' '.theme('cdm_reference', $typeDesignation->citation, true, $referenceStyle);
+          $out .= '</li>';
+        }
       }
     }
   }
@@ -1295,93 +1438,92 @@ function theme_cdm_specimen($specimen){
   return $out;
 }
 
-function theme_cdm_featureTrees($mergedTrees, $taxon){
-  
-  if(!$mergedTrees){
-    return;
-  }
-  
-  foreach($mergedTrees as &$mTree){
-    //TODO diplay title and reference in case of multiple $mergedTrees -> theme
-    $out .= theme('cdm_feature_nodes', $mTree->root->children);
-  }
-  return $out;
-}
 
-function theme_cdm_featureTreeTOCs($mergedTrees){
-  
-  if(!$mergedTrees){
-    return;
-  }
+
+
+function theme_cdm_featureTree($featureTree){
   //FIXME
-  $out = '<div class="featureTOC">';
-  $out .= '<h2>' . t('Content') .'</h2>';
+  /*
+   *	->featureTree{
+   *		->descriptions{
+   *			->DescriptionTo{
+   *				->label
+   *			    ->sources{}
+   *			    ->elements{}
+   *				->features{
+   *					->FeatureTo{
+   *						->descriptionElements{
+   *							->DescriptionElementSTO{}
+   *						->uuid
+   * 						->type
+   */
 
-  //TODO diplay title and reference in case of multiple $mergedTrees -> theme
-  
-  foreach($mergedTrees as &$mTree){
-    $out .= theme('cdm_feature_nodesTOC', $mTree->root->children);
-  }
-  
-  $out .= '</div>';
-  return $out;
-}
-
-function theme_cdm_feature_nodes($featureNodes){
-  
-  foreach($featureNodes as $node){
+  $descriptions = $featureTree->descriptions;
+  foreach($descriptions as $descriptionTO){
+    $features = $descriptionTO->features;
+    foreach($features as $featureTo){
+      $descriptionElements = $featureTo->descriptionElements;
       // process $descriptionElements with content only
-      if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0){
-
-        $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
-
+      if(is_array($descriptionElements) && count($descriptionElements) > 0){
         $block->module = 'cdm_dataportal';
-        
-        if($node->feature->uuid != UUID_IMAGE){
-          $block->delta = generalizeString($featureRepresentation);
-          $block->subject = theme('cdm_feature_name', $featureRepresentation);
+
+        $feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
+
+        if($feature != "Image"){
+          $block->delta = $feature;
+          $block->subject = theme('cdm_feature_name', $feature);
+          $block->delta = generalizeString($block->delta);
           $block->module = "cdm_dataportal-feature";
 
-          $block->content = theme('cdm_descriptionElements', $node->descriptionElements, $block->delta);
-          
-          // set anchor; FIXME put anchor in $block->subject
+          //
+          $block->content = theme('cdm_descriptionElements', $descriptionElements, $block->delta);
+          //
+          // set anchor
           $out .= '<a name="'.$block->delta.'"></a>';
           $out .= theme('block', $block);
 
+
+
           // TODO HACK
-          if($node->feature->uuid == UUID_DISTRIBUTION){
-            //$out .= theme('cdm_descriptionElements_distribution', $node->descriptionElements);
+          if($feature == 'Distribution'){
+            //                  ob_start();
+            //  				  echo "<pre>";
+            //  				  print_r($featureTo->url);
+            //  				  echo "</pre>";
+            //  				  ob_flush();
+            $out .= theme('cdm_descriptionElement_distribution', $featureTo);
           }
         }
       }
-      // theme 
-      if(count($node->children) > 0){
-        $out .= '<div class="nested_description_elements">';
-        $out .= theme('cdm_feature_nodes', $node->children);
-        $out .= '</div>';
-      }
+    }
   }
   return $out;
 }
 
-
-function theme_cdm_feature_nodesTOC($featureNodes){
-
+function theme_cdm_featureTreeToc($featureTree){
+  //FIXME
+  $out = '<div class="featureTOC">';
+  $out .= '<h2>' . t('Content') .'</h2>';
   $out .= '<ul>';
-  
-  foreach($featureNodes as $node){
-    // process $descriptionElements with content only
-    if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0){
 
-      $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
-      // HACK to implement images for taxa, should be removed
-      if($node->feature->uuid != UUID_IMAGE){
-        $out .= '<li>'.l(t(ucfirst($featureRepresentation)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($featureRepresentation)).'</li>';
+  $descriptions = $featureTree->descriptions;
+  foreach($descriptions as $descriptionTO){
+    $features = $descriptionTO->features;
+    foreach($features as $featureTo){
+      $descriptionElements = $featureTo->descriptionElements;
+      // process $descriptionElements with content only
+      if(is_array($descriptionElements) && count($descriptionElements) > 0){
+
+        $feature = isset($featureTo->feature->term) ? $featureTo->feature->term : 'Feature';
+        // HACK to implement images for taxa, should be removed
+        if($feature != 'Image'){
+          $out .= '<li>'.l(t(ucfirst($feature)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($feature)).'</li>';
+        }
       }
     }
   }
+  $out .= '</ul></div>';
 
-  $out .= '</ul>';
   return $out;
 }
 
@@ -1392,7 +1534,7 @@ function theme_cdm_feature_name($feature_name){
   }
 }
 
-function theme_cdm_descriptionElements($descriptionElements){
+function theme_cdm_descriptionElements($descriptionElements, $feature){
   
   $outArray = array();
   $glue = '';
@@ -1400,33 +1542,26 @@ function theme_cdm_descriptionElements($descriptionElements){
   $enclosingHtml = 'ul';
   
   foreach($descriptionElements as $descriptionElement){
-    
-    if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
-       if($descriptionElement->class == 'Distribution'){
-          $repr = $descriptionElement->area->representation_L10n;
-       } else if($descriptionElement->class == 'TextData'){
-         $repr = $descriptionElement->multilanguageText_L10n->text;
-       }
-      if( !array_search($repr, $outArray)){
-        $outArray[] = $repr;
+
+    if($descriptionElement->class == 'TextData'){
+      $outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement);
+    }else if($descriptionElement->class == 'Distribution'){
+      if( !array_search($descriptionElementSTO->area->term, $outArray)){
+        $outArray[] = $descriptionElementSTO->area->term;
         $glue = ', ';
         $sortOutArray = true;
         $enclosingHtml = 'p';
       }
-    } else if($descriptionElement->class == 'TextData'){
-      $outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement);
-    } else {
+    }else{
       $outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
     }
-    
   }
-  // take the feature of the last $descriptionElement
-  $feature = $descriptionElement->feature;
+
   return theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
 }
 
 function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
-  $out = '<'.$enclosingHtml.' class="description" id="'.$feature->representation_L10n.'">';
+  $out = '<'.$enclosingHtml.' class="description" id="'.$feature.'">';
   
   if($sortArray) sort($elementArray);
   
@@ -1437,35 +1572,45 @@ function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', 
 }
 
 function theme_cdm_descriptionElementTextData($element){
-
+/*
+ * multilanguageText_L10n is
+ * LanguageString{
+              annotations
+              created
+              createdBy
+              language
+              markers
+              text
+              updated
+              updatedBy
+              uuid
+   }
+*/
   $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   $referenceCitation = '';
-  if($element->citation){
-      $fullCitation = $element->citation->authorTeam->titleCache;
-      if(isset($element->citation->datePublished->start)) {
-        $fullCitation .= ', '.partialToYear($element->citation->datePublished->start);
+  if($element->reference){
+      $fullCitation = $element->reference->authorship;
+      if($element->reference->year) {
+        $fullCitation .= ', '.$element->reference->year;
       }
+      $element->reference->fullCitation = $fullCitation;
       
-      $referenceCitation = l('<span class="reference">'.$fullCitation.'</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-      $referenceCitation = $referenceCitation;
-      if($element->citationMicroReference){
-        $referenceCitation .= ': '. $element->citationMicroReference;
-      }
-      if($description && strlen($description) > 0){
-        $referenceCitation = '; '.$referenceCitation;
+      $referenceCitation = '; '.theme('cdm_reference', $element->reference, TRUE);
+      if($element->citationMicroreference){
+        $referenceCitation .= ': '. $element->citationMicroreference;
       }
   }
   return '<li class="descriptionText">' . $description . $referenceCitation.'</li>';
 }
 
-function theme_cdm_search_results($pager, $path, $parameters){
+function theme_cdm_search_results($resultPage, $path, $parameters){
 
   drupal_set_title(t('Search Results'));
 
   $out = '';
-  if(count($pager->records) > 0){
-    $out .= theme('cdm_list_of_taxa', $pager->records);
-    $out .= theme('cdm_pager_new', $pager, $path, $parameters);
+  if(count($resultPage->results) > 0){
+    $out .= theme('cdm_list_of_taxa', $resultPage->results);
+    $out .= theme('cdm_pager', $resultPage,  $path, $parameters);
   } else {
     $out = '<h4 class="error">Sorry, no matching entries found.</h4>';
   }

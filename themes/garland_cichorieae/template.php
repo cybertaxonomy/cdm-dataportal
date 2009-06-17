@@ -5,14 +5,6 @@
  * Overrides of generic themeing functions in cdm_datportal.theme.php
  */
 
-/**
- * @param NameTO $nameTO
- * @return taxon name without author and nomencaltural reference
- */
-function garland_cichorieae_cdm_taxon_page_title($nameTO){
-  return theme('cdm_name', $nameTO, false, false, false, false);
-}
-
 
 /**
  * The description page is supposed to be the front page for a taxon.
@@ -20,26 +12,25 @@ function garland_cichorieae_cdm_taxon_page_title($nameTO){
  * @param TaxonTO $taxonTO
  * @return
  */
-function garland_cichorieae_cdm_taxon_page_description($taxonTO){
+function garland_cichorieae_cdm_taxon_page_description($taxonTO, $mergedTrees){
+
+  // description TOC
+  $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
+
   // preferred image
   // hardcoded for testing
   $defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
-  
-  $out = '';
-  // description TOC
-  $out .= theme('cdm_featureTreeToc', $taxonTO->featureTree);
+  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $mergedTrees, $defaultPreferredImage, '&width=400&height=300&quality=95&format=jpeg').'</div>';
 
-  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $taxonTO, $defaultPreferredImage, '&width=400&height=300&quality=95&format=jpeg').'</div>';
-  
-  // descriptions
-  $out .= theme('cdm_featureTree', $taxonTO->featureTree);
-  
+  // description
+  $out .= theme('cdm_featureTrees', $mergedTrees, $taxon);
+
   return $out;
 }
 
 function garland_cichorieae_cdm_descriptionElementTextData($element){
 
-  $description = str_replace("\n", "<br/>", $element->description);
+  $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   $referenceCitation = '';
   if($element->reference){
     // disabling references for cichorieae description Elements because they all have faulty references
@@ -48,23 +39,23 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
   return '<p class="descriptionText">' . $description . $referenceCitation.'</p>';
 }
 
-function garland_cichorieae_cdm_taxon_page_images($taxonTO){
-  
-  $descriptions = $taxonTO->featureTree->descriptions;
-  foreach($descriptions as $descriptionTo){
-    $features = $descriptionTo->features;
-    foreach($features as $featureTo){
-      if($featureTo->feature->term == 'Image'){
-        $flashLink = count($featureTo->descriptionElements) > 0;
-        break;
+function garland_cichorieae_cdm_taxon_page_images($taxon, $taxonDescriptions){
+
+  if($taxonDescriptions){
+    foreach($taxonDescriptions as $descriptionElements){
+      foreach($descriptionElements->elements as $element){
+        if($element->feature->uuid == UUID_IMAGE){
+          $flashLink = true;
+          break;
+        }
       }
     }
   }
-  
+
   if($flashLink){
-    
-    $taggedName = $taxonTO->name->taggedName;
-    
+
+    $taggedName = $taxon->name->taggedName;
+
     $nameArray = array();
     foreach($taggedName as $taggedText){
       if($taggedText->type == 'name' || $taggedText->type == 'rank'){
@@ -73,10 +64,10 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
         $nameArray[] = $part;
       }
     }
-    
+
     $query = join("%5F", $nameArray) . '%20AND%20jpg';
-    
-  $out = '
+
+    $out = '
   
   <script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
 
@@ -109,24 +100,24 @@ function garland_cichorieae_cdm_taxon_page_images($taxonTO){
 	</object>
 
 </noscript>';
-  
+
   }else{
     $out = 'No images available.';
-  
+
   }
   return $out;
-  
-  
+
+
 }
 
 /**
  * @overrides theme_cdm_taggedtext2html in order to replace t.infr and t.infgen. with '[unranked]'
  */
 function garland_cichorieae_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
-   $out = '';
-   $i = 0;
-   foreach($taggedtxt as $tt){
-     if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
+  $out = '';
+  $i = 0;
+  foreach($taggedtxt as $tt){
+    if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
       $out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">';
       if($tt->type == "rank" && ($tt->text == "t.infr." || $tt->text == "t.infgen.")){
         $out .= t('[unranked]');
@@ -134,38 +125,31 @@ function garland_cichorieae_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span'
         $out .= t($tt->text);
       }
       $out .= '</'.$tag.'>';
-     }
-   }
-   return $out;
+    }
+  }
+  return $out;
 }
 
 function garland_cichorieae_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
   $enclosingHtml = 'div';
-  $out = '<'.$enclosingHtml.' class="description" id="'.$feature.'">';
-  
+  $out = '<'.$enclosingHtml.' class="description" id="'.$feature->representation_L10n.'">';
+
   if($sortArray) sort($elementArray);
-  
+
   $out .= join($elementArray, $glue);
-  
+
   $out .= '</'.$enclosingHtml.'>';
   return $out;
 }
-
-/* #### exact duplicate of theme method in cdm_dataportal.theme.php ###
- *
-function garland_cichorieae_cdm_descriptionElementTextData($element){
-  $description = str_replace("\n", "<br/>", $element->description);
-  return '<p class="descriptionText">' . $description . '</p>';
-}*/
 
 
 /**
  * all reference links switched of
  */
 function garland_cichorieae_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cssClass = '', $separator = '<br />' , $enclosingTag = 'li'){
-  
+
   $doLink = FALSE;
-  
+
   if(isset($referenceSTO->microReference)){
     // it is a ReferenceTO
     $nomref_citation = theme('cdm_fullreference', $referenceSTO);
@@ -173,17 +157,17 @@ function garland_cichorieae_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink
     // it is ReferenceSTO
     $nomref_citation = $referenceSTO->fullCitation;
   }
-  
+
   $is_IN_reference = str_beginsWith($nomref_citation, 'in');
 
   if($doLink){
     $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);
   }
-  
+
   if(!empty($nomref_citation)){
     $nomref_citation = ($is_IN_reference ? '&nbsp;':',&nbsp;') . $nomref_citation;
   }
-  
+
   return $nomref_citation;
 }
 
@@ -276,4 +260,68 @@ function phptemplate_menu_local_tasks() {
   }
 
   return $output;
+}
+
+function theme_get_partDefinition($nameType){
+  if($nameType == 'BotanicalName'){
+    return array(
+        'namePart' => array(
+          'name' => true
+    ),
+        'authorTeamPart' => array(
+          'authorTeam' => true,   
+    ),
+        'referencePart' => array(
+          'reference' => true      
+    ),
+        'microreferencePart' => array(
+          'microreference' => true,
+    ),
+        'statusPart' => array(
+          'status' => true,
+    ),
+        'descriptionPart' => array(
+          'description' => true,
+    ),
+    );
+  }
+  return false;
+}
+
+function theme_get_nameRenderTemplate($renderPath){
+
+  switch($renderPath) {
+    case 'taxon_page_title':
+      $template = array(
+            'namePart' => true
+      );
+      break;
+    case 'taxon_page_synonymy':
+      $template = array(
+          'namePart' => true,
+          'authorshipPart' => true,
+          'referencePart' => true,
+          'microreferencePart' => true,
+          'statusPart' => true,
+          'descriptionPart' => true
+      );
+      break;
+    case 'acceptedFor':
+      $template = array(
+            'namePart' => true,
+            'authorshipPart' => true,
+            'referencePart' => true
+      );
+      break;
+    default:
+    case 'list_of_taxa':
+    case 'typedesignations':
+      $template = array(
+            'namePart' => true,
+            'authorshipPart' => true,
+            'referencePart' => true,
+            'microreferencePart' => true
+      );
+  }
+  return $template;
 }

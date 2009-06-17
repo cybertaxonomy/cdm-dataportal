@@ -6,48 +6,47 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function palmweb_2_cdm_taxon_page_description($taxonTO){
+function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees){
+
   // preferred image
-  // hardcoded for testing
+  // hardcoded for testing;
   $defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
+  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $mergedTrees, $defaultPreferredImage, '&width=333&height=220&quality=95&format=jpeg').'</div>';
   
-  $out = theme('cdm_preferredImage', $taxonTO, $defaultPreferredImage, '&width=333&height=220&quality=95&format=jpeg');
-  
-  // description TOC
-  $out .= theme('cdm_featureTreeToc', $taxonTO->featureTree);
-  
-  // descriptions
-  $out .= theme('cdm_featureTree', $taxonTO->featureTree);
+   // description TOC
+  $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
+  // description
+  $out .= theme('cdm_featureTrees', $mergedTrees, $taxon);
   
   return $out;
 }
 
-function palmweb_2_cdm_taxon_page_images($taxonTO){
+function palmweb_2_cdm_taxon_page_images($taxon, $taxonDescriptions){
   
-  $descriptions = $taxonTO->featureTree->descriptions;
-  foreach($descriptions as $descriptionTo){
-    $features = $descriptionTo->features;
-    foreach($features as $featureTo){
-      if($featureTo->feature->term == 'Image'){
-        $flashLink = count($featureTo->descriptionElements) > 0;
-        break;
+  if($taxonDescriptions){
+    foreach($taxonDescriptions as $descriptionElements){
+      foreach($descriptionElements->elements as $element){
+        if($element->feature->uuid == UUID_IMAGE){
+          $flashLink = true;
+          break;
+        }
       }
     }
   }
   
   if($flashLink){
     
-    $taggedName = $taxonTO->name->taggedName;
-    
+    $taggedName = $taxon->name->taggedName;
+  
     $nameArray = array();
     foreach($taggedName as $taggedText){
       if($taggedText->type == 'name' || $taggedText->type == 'rank'){
         // replacing of "subsp." with "s" is cichorieae specific
-        $part = $taggedText->text == "subsp." ? "s" : $taggedText->text;
-        $nameArray[] = $part;
+        //$part = $taggedText->text == "subsp." ? "s" : $taggedText->text;
+        $nameArray[] = $taggedText->text;
       }
     }
-    
+       
     $query = join("%5F", $nameArray) . '%20AND%20jpg';
     
   $out = '
@@ -180,4 +179,54 @@ function phptemplate_menu_local_tasks() {
   }
 
   return $output;
+}
+
+function theme_get_partDefinition($nameType){
+  if($nameType == 'BotanicalName'){
+    return array(
+        'namePart' => array(
+          'name' => true
+        ),
+        'authorTeamPart' => array(
+          'authorTeam' => true,   
+        ),
+        'referencePart' => array(
+          'reference' => true      
+        ),
+        'microreferencePart' => array(
+          'microreference' => true,
+        ),
+        'statusPart' => array(
+          'status' => true,
+        ),
+        'descriptionPart' => array(
+          'description' => true,
+        ),
+      );
+  }
+  return false;
+}
+
+function theme_get_nameRenderTemplate($renderPath){
+  
+  switch($renderPath) {
+      case 'acceptedFor':
+        $template = array(
+          'namePart' => true,
+          'authorshipPart' => true
+        );
+        break;
+      case 'taxon_page_title':
+      case 'list_of_taxa':
+      case 'taxon_page_synonymy':
+      case 'typedesignations': //TODO correct template for typedesignations?
+      default:
+        $template = array(
+          'namePart' => true,
+          'authorshipPart' => true,
+          'referencePart' => true,
+          'descriptionPart' => true
+        );
+  }
+  return $template;
 }

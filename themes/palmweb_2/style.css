@@ -413,6 +413,11 @@ body.sidebars #squeeze {
   margin: 0;
 }
 
+.block .content p { /* same indent as ul + li */
+  margin:0.15em 0 0.40em 1.5em;
+  padding:0 0 0.2em 1.5em;
+}
+
 #sidebar-left .block-region {
   margin: 0 15px 0 0px;
 }

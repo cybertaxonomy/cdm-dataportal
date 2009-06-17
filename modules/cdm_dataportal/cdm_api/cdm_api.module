@@ -80,7 +80,7 @@ function cdm_api_settings_form(){
     '#type' => 'textfield',
     '#title'         => t('CDM Web Service URL'),
     '#description'   => t('The URL of CDM Webservice which delivers the data to be published.'),
-    '#default_value' => variable_get('cdm_webservice_url', 'http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api/ws_stub/'),
+    '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
   
   $form['cdm_webservice']['taxontree_ranklimit'] =  array(
@@ -345,12 +345,13 @@ function cdm_preferred_media_representations($mediaTO, array $mimeTypes, $width 
  * @return String 
  */
 function partialToYear($partial){
-  $year = substr($partial, 0, 4);  
-  if($year != '??'){
-    return $month;
-  } else { 
-    return null; 
+  if(is_string($partial)){
+    $year = substr($partial, 0, 4);  
+    if($year != '??'){
+      return $year;
+    } 
   }
+  return; 
 }
 /**
  * expects an ISO 8601 time representations of a org.joda.time.Partial 
@@ -361,12 +362,13 @@ function partialToYear($partial){
  * @return String 
  */
 function partialToMonth($partial){
-  $month = substr($partial, 5, 2);
-  if($month != '??'){
-    return $month;
-  } else { 
-    return null; 
+  if(is_string($partial)){
+    $month = substr($partial, 5, 2);
+    if($month != '??'){
+      return $month;
+    }
   }
+  return; 
 }
 /**
  * expects an ISO 8601 time representations of a org.joda.time.Partial 
@@ -377,70 +379,79 @@ function partialToMonth($partial){
  * @return String 
  */
 function partialToDay($partial){
-  $day = substr($partial, 7, 2);
-  if($day != '??'){
-    return $day;
-  } else { 
-    return null; 
+  if(is_string($partial)){
+    $day = substr($partial, 7, 2);
+    if($day != '??'){
+      return $day;
+    }
   }
+  return;
 }
 
 /**
- * Produces a path to a static web service stub out of a cdm web service path.
- * These stubs are object serialisations stored in files whereas the filename
- * consists of the service name and of a
- * encoded version of the request query parameters
- *
- * @param string $path
- * @param string $fileExtension
- * @return string
+ * 
+ * @param $uri_pattern
+ * @param $pathParameters an array of path elements, or a single element
+ * @param $query  A query string to append to the URL.
+ * @return unknown_type
  */
-function cdm_encode_stub($path, $fileExtension, $hasParams = false){
-  $path =  str_replace('/',',',$path);
-  if($hasParams){
-    $path =  str_replace('?',',',$path);
-    $path =  str_replace('&',',',$path);
-  }
-  return variable_get('cdm_webservice_type', 'xml').'/'.$path.'.'.$fileExtension;
-}
-
-
-function cdm_compose_url($ws_name, $parameters = array()){
+function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL ){
   
   $request_params = '';
   $path_params = '';
-  if(!is_array($parameters)){
-     // add to path
-     $path_params .= '/'.( is_string($parameters) ? urlencode($parameters) : $parameters);
-  }else{
-    foreach($parameters as $key=>$value){
-      if(is_numeric($key)){
-        // add to path
-        $path_params .= '/'.( is_string($value) ? urlencode($value) : $value);
-      } else {
-        // add to parameters
-        if($value != null){
-          $request_params .= ( strlen($request_params) == 0 ? '?' : '&').$key.'='.( is_string($value) ? urlencode($value) : $value);
-        }
-      }
+  
+  /* (1) 
+   * substitute all place holders ($0, $1, ..) in the 
+   * $uri_pattern by the according element of the $pathParameters array
+   */
+  static $helperArray = array();
+  if(!is_array($pathParameters) && isset($pathParameters)){
+    $helperArray[0] = $pathParameters;
+    $pathParameters = $helperArray;
+  }
+  $i = 0;
+  while(strpos($uri_pattern, "$".$i) !== FALSE){
+    if(count($pathParameters) <= $i){
+      drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
+    }
+    $uri_pattern = str_replace("$".$i, $pathParameters[$i], $uri_pattern);
+    ++$i;      
+  }
+    
+  /* (2)
+   * Append all remaining element of the $pathParameters array as path elements
+   */
+  if(count($pathParameters) > $i){
+    // strip trailing slashes
+    if(strrchr($uri_pattern, '/') == strlen($uri_pattern)){ 
+      $uri_pattern = substr($uri_pattern, 0, strlen($uri_pattern) - 1); 
+    }
+    while(count($pathParameters) > $i){
+      $uri_pattern .= '/' . $pathParameters[$i];
+      ++$i;
     }
   }
-  $path = $ws_name.$path_params.$request_params;
   
-  if(variable_get('cdm_webservice_isStub', 0)){
-    $path = cdm_encode_stub($path, variable_get('cdm_webservice_type', 'json'), strlen($request_params) > 0);
+  /* (3)
+   * Append the query string supplied by $query
+   */
+  if (isset($query)) {
+    $uri_pattern .= (strpos($uri_pattern, '?') !== FALSE ? '&' : '?') . $query;
   }
   
-  $url = variable_get('cdm_webservice_url', '').$path;
-  return $url;
+  $path = $ws_name.$uri_pattern;
+  
+  $uri = variable_get('cdm_webservice_url', '').$path;
+  return $uri;
 }
 
 
-function proxy_content($url, $theme = null){
+function proxy_content($uri, $theme = null){
   
   $args = func_get_args();
   
-  $url = array_shift($args);
+  $uriEncoded = array_shift($args);
+  $uri = urldecode($uriEncoded);
   $theme = array_shift($args);
   
   $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
@@ -457,7 +468,7 @@ function proxy_content($url, $theme = null){
     $post_data = implode(',', $post_data);
     
     // testing
-    $data = request_content(urldecode($url), "POST", $post_data);
+    $data = request_content($uri, "POST", $post_data);
     print $data;
     
   }else{
@@ -465,10 +476,10 @@ function proxy_content($url, $theme = null){
     //TODO reconsider caching logic in this function
     if(!$theme){
       // print out JSON, the cache cannot be used since it contains objects
-      $data = request_content(urldecode($url));
+      $data = request_content($uri);
       print $data;
     } else {
-      $obj = cdm_ws_httpRequest(urldecode($url), false);
+      $obj = cdm_ws_httpRequest($uri);
       array_unshift($args, $theme, $obj);
       print call_user_func_array('theme', $args);
     }
@@ -486,35 +497,14 @@ function proxy_content($url, $theme = null){
  * @param $parameters may be an array or a single variable
  * @return unknown
  */
-function cdm_ws_get($resourceURI, $parameters = array()){
-
-  /*$args = func_get_args();
-  $method = array_shift($args);
-  */
-  /*if(isset($args[0]) && is_array($args[0])){
-    $url = cdm_compose_url_parametrised($method, $args[0]);
-  } else {
- */
-  $uri = cdm_compose_url($resourceURI, $parameters);
-  //}
-  return cdm_ws_httpRequest($uri, (is_array($parameters)));
+function cdm_ws_get($method, $pathParameters = array(), $query = null){
+  
+  $uri = cdm_compose_url($method, $pathParameters, $query);
+  
+  return cdm_ws_httpRequest($uri);
 }
 
-/**
- * Enter description here...
- *
- * @param unknown_type $resourceURI
- * @param unknown_type $uuid
- * @param unknown_type $parameters
- * @return unknown
- */
-function cdm_ws_property($resourceURI, $uuid, $parameters = array()){
-  $resourcePropertyURI = str_replace('{uuid}', $uuid, $resourceURI);
-  if($resourcePropertyURI == $resourceURI){
-     drupal_set_message('parameter {uiud} missing in $resourceURI: '.$resourceURI);
-  }
-  return cdm_ws_get($resourcePropertyURI);
-}
+
 /**
  * Enter description here...
  *
@@ -528,16 +518,11 @@ function cdm_ws_property($resourceURI, $uuid, $parameters = array()){
  * @return unknown
  */
 function cdm_ws_page($resourceURI, $pageSize, $pageNumber){
-  return cdm_ws_get($resourcePropertyURI, array("page" => $pageNumber, 'pageSize'=>$pageSize));
+  return cdm_ws_get($resourceURI, null, queryString(array("page" => $pageNumber, 'pageSize'=>$pageSize)));
 }
-
-function cdm_ws_find($resourceURI, $parameters = array()){
- drupal_set_message('NOT YET IMPLEMENTED');
-}
-
 
 function cdm_ws_taxonomy_find($uuid, $rank = null, $viewUuid = null){
- return cdm_ws_get(CDM_WS_TAXONOMY, array("uuid" => $uuid, 'rank'=>$rank));
+ return cdm_ws_get(CDM_WS_TAXONOMY, null, queryString(array("uuid" => $uuid, 'rank'=>$rank)));
 }
 
 /**
@@ -583,72 +568,127 @@ function _cdm_taxonomy_compose_viewrank($viewUuid = null){
 }
 
 
+function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDescriptionsSeparated = false){
+  
+  if(!$featureTree){
+    drupal_set_message('cdm_ws_descriptions_by_featuretree() - No feature supplied', 'error');
+    return false;
+  }
+  
+  $mergedTrees = array(); 
+  
+  if($isDescriptionsSeparated){
+    // merge any description into a sparate feature tree
+    foreach($descriptions as $desc){
+      $mergedNodes = _mergeFeatureTreeDesciptions($featureTree->root->children, $desc->elements);
+      
+      $mergedTree = clone $featureTree;
+      $mergedTree->root->children = $mergedNodes;
+      $mergedTrees[] = $mergedTree;
+    }
+  } else {
+    // combine all descripions into one feature tree
+    foreach($descriptions as $desc){
+      $mergedNodes = _mergeFeatureTreeDesciptions($featureTree->root->children, $desc->elements);
+      $featureTree->root->children = $mergedNodes;
+    }
+    $mergedTrees[] = $featureTree;
+  }
+  
+ return $mergedTrees;
+}
+
+function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
+  
+  foreach($featureNodes as &$node){
+    
+    // append corresponding elements to an additional node field: $node->descriptionElements 
+    foreach($descriptionElements as $element){
+      if($element->feature->uuid == $node->feature->uuid){
+        if(!isset($node->descriptionElements)){
+          $node->descriptionElements = array();
+        }
+        $node->descriptionElements[] = $element;
+      }
+    }
+    
+    // recurse into node children
+    if(is_array($node->children)){
+      foreach($node->children as $nodes){
+        $mergedChildNodes = _mergeFeatureTreeDesciptions($nodes, $descriptionElements);
+        $node->children = $mergedChildNodes;
+      }
+    }
+    
+  }
+  return $featureNodes;
+}
+
 
 /**
  * Loads the XML or JSON response for the given url from the CDM Data Store Webservice.
  * The XML is turned into a object which is returned.
  *
- * @param String $url the relative url of the web service call.
+ * @param String $uri the relative url of the web service call.
  *        Relative means relative to the web service base url which is stored in cdm_webservice_url
  * @param $is_multi_parameter_query parameter to indicate that the URI has queryparameters and should not be cached
  * @return An object or false
  */
-function cdm_ws_httpRequest($url, $is_multi_parameter_query = false, $method="GET"){
+function cdm_ws_httpRequest($uri, $method="GET"){
  
-  $do_cache = !$is_multi_parameter_query && variable_get('cdm_webservice_cache', 0) && $method == "GET";
+  $do_cache = variable_get('cdm_webservice_cache', 1); //strpos($uri, "?") !== FALSE; // if the url has a query parameter sting
   $cache_entry = false;
-  
-  // append the default featureTree to url string
-  // this might be conflicting with caching.
-  $concatenator = strpos($url, '?') ? '&' : '?';
-  
-  $ftree = variable_get('cdm_dataportal_feature_tree_active', false);
-  
-  $url .= ($ftree && strpos($url, '/taxon/')) ? $concatenator . "ftree=" . $ftree : '';
-  
+   
   if($do_cache){
     // try to get object from cache
-    $cache_entry = cache_get($url, 'cache_cdm_ws');
+    $cache_entry = cache_get($uri, 'cache_cdm_ws');
   }
   
   if(!$cache_entry){
     // load fresh data from webservice
     $time_get_start = microtime(true);
     // request data from webservice JSON or XML
-    $datastr = request_content($url, $method);
+    $datastr = request_content($uri, $method);
     $time_get = microtime(true) - $time_get_start;
-    /*if(TRUE){
-      $storef =  urlencode($url);
-      drupal_set_message($storef);
-      file_save_data($datastr, $storef, FILE_EXISTS_REPLACE);
-    }*/
+
     
     $time_parse_start = microtime(true);
     // parse data and create object
     $obj = cdm_load_obj($datastr);
+
     $time_parse = microtime(true) - $time_parse_start;
     if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
-      $success_msg = $obj?'valid':'invalid'; 
-      drupal_set_message(
-         $url.' [fetched in: '.sprintf('%3.3f', $time_get).'s; '
-        .'parsed in '.sprintf('%3.3f', $time_parse).' s;'
-        .' size:'.sprintf('%3.1f', (strlen($datastr) / 1024)).' kb of '
-        .l($success_msg.' data', 'cdm_api/proxy/'.urlencode($url), array('target'=>'json-data', 'class'=>$success_msg)).'] '.$json_data_link
-        , 'debug');
+      $success_msg = $obj || $datastr == "[]" ? 'valid':'invalid'; 
+      _add_debugMessage($uri, $time_get, $time_parse, strlen($datastr), $success_msg);
     }
     if( !$obj || !$datastr){
-      watchdog('CDM', 'cdm_ws_httpRequest() - URL: '.$url, WATCHDOG_ERROR);
+      watchdog('CDM', 'cdm_ws_httpRequest() - URL: '.$uri, WATCHDOG_ERROR);
     } else if($do_cache) {
       // store fresh data in cache
-      cache_set($url, 'cache_cdm_ws', serialize($obj), CACHE_TEMPORARY);
+      cache_set($uri, 'cache_cdm_ws', serialize($obj), CACHE_TEMPORARY);
     }
   } else {
     $obj = unserialize($cache_entry->data);
     if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
-      drupal_set_message('Using cache for: '.$url, 'debug');
+      _add_debugMessage('Using cache for: '.$uri, 'debug');
     }
   }
   return $obj;
+}
+
+function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg){
+  
+  _add_status_message_toggler();
+ 
+  $message = '<span class="uri">'.$uri.'</span> [fetched in: '.sprintf('%3.3f', $time_get).'s; ';
+  $message .= 'parsed in '.sprintf('%3.3f', $time_parse).' s; ';
+  $message .= 'size:'.sprintf('%3.1f', ($datasize / 1024)).' kb of '.$success_msg.' data: ';
+  $message .= '<a href="'.$uri.'.xml" target="data" class="'.$success_msg.'">xml</a>,';
+  $message .= '<a href="'.$uri.'.json" target="data" class="'.$success_msg.'">json</a>';
+  $message .= '] ';
+  
+  drupal_set_message($message, 'debug');
+
 }
 
 
@@ -658,17 +698,11 @@ function cdm_load_obj($datastr){
   if(variable_get('cdm_webservice_type', 'xml') == 'xml'){
     $datastr = xml2json::transformXmlStringToJson($datastr);
   }
-  $use_stub = variable_get('cdm_webservice_isStub', 0);
-  if($use_stub){
-    // --- for STUBS use the more syntax tolerant PEAR json lib --- //
-    $json_pear = new Services_JSON();
-    $obj = $json_pear->decode($datastr);
-  } else {
-    // --- generally use the fast php json lib --- //
-    $obj = json_decode($datastr);
-  }
   
-  if(!(is_object($obj) || is_array($obj)) || ($use_stub && !isset($obj->root)) ){
+  $obj = json_decode($datastr);
+  
+  
+  if(!(is_object($obj) || is_array($obj)) ){
     ob_start();
     var_dump($obj);
     $obj_dump = ob_get_contents();
@@ -677,17 +711,13 @@ function cdm_load_obj($datastr){
     return false;
   }
 
-  if($use_stub){
-    $arr = (array)$obj;
-    $obj = array_pop($arr);
-  }
   return $obj;
 }
 
 
 
 
-function request_content($url, $method="GET", $parameters = array()){
+function request_content($uri, $method="GET", $parameters = array()){
   global $locale;  // drupal variable containing the current locale i.e. language
   static $header;
   
@@ -701,15 +731,15 @@ function request_content($url, $method="GET", $parameters = array()){
   if(function_exists('curl_init')){
 
     // use the CURL lib if installed it is supposed to be 20x faster
-    return _request_content_curl($url, $header, $method, $parameters);
+    return _request_content_curl($uri, $header, $method, $parameters);
   } else {
-    return _request_content_fsockopen($url, $header, $method, $parameters);
+    return _request_content_fsockopen($uri, $header, $method, $parameters);
   }
 }
 
 
-function _request_content_fsockopen($url, $header = array(), $method = "GET"){
-  //FIXME implement get_content_fsockopen($url);
+function _request_content_fsockopen($uri, $header = array(), $method = "GET"){
+  //FIXME implement get_content_fsockopen($uri);
    watchdog('CDM_API', '_request_content_fsockopen - UNIMPLEMENTED', WATCHDOG_ERROR);
    return false;
 }
@@ -718,16 +748,16 @@ function _request_content_fsockopen($url, $header = array(), $method = "GET"){
 /**
  * Return string content from a remote file
  *
- * @param string $url
+ * @param string $uri
  * @return string
  *
  * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
 */
-function _request_content_curl($url, $header = array(), $method = "GET", $parameters = array())
+function _request_content_curl($uri, $header = array(), $method = "GET", $parameters = array())
 {
     $ch = curl_init();
 
-    curl_setopt ($ch, CURLOPT_URL, $url);
+    curl_setopt ($ch, CURLOPT_URL, $uri);
     // set proxy settings
     if(variable_get('cdm_webservice_proxy_url', false)){
       curl_setopt($ch, CURLOPT_PROXY, variable_get('cdm_webservice_proxy_url', ''));
@@ -756,9 +786,9 @@ function _request_content_curl($url, $header = array(), $method = "GET", $parame
     ob_start();
     curl_exec ($ch);
     if(curl_errno($ch)){
-      watchdog('CDM_API', '_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, WATCHDOG_ERROR);
+      watchdog('CDM_API', '_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$uri, WATCHDOG_ERROR);
         if(variable_get('cdm_webservice_debug', 1)  && user_access('administer') ){
-          drupal_set_message('_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$url, 'error');
+          drupal_set_message('_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$uri, 'error');
         }
     }
     curl_close ($ch);
@@ -806,74 +836,104 @@ function cdm_api_secref_cache_clear(){
 
 function _cdm_api_secref_cache_add($secUuidsStr){
   global $secref_cache;
-  $refSTOs = cdm_ws_get(CDM_WS_REFERENCE, $secUuidsStr);
-  $assocRefSTOs = array();
+  $ref = cdm_ws_get(CDM_WS_REFERENCE, $secUuidsStr);
+  // batch fetching not jet reimplemented thus:
+  /*$assocRefSTOs = array();
   if($refSTOs) {
     foreach($refSTOs as $ref){
       $assocRefSTOs[$ref->uuid] = $ref;
     }
     $secref_cache = array_merge($secref_cache, $assocRefSTOs);
+  }*/
+  $secref_cache[$ref->uuid] = $ref;
+}
+
+function queryString($elements) {
+  $query = '';
+  foreach($elements as $key=>$value){
+    $query .= (strlen($query) > 0 ? '&' : '').$key.'='.urlencode($value);
   }
+  return $query;
 }
 
 /**
- * Web Service Arguments: {Uuid}
- *
- * The whatis service returns the type
- * i.e. DTO class name and simplename & cdm class name and simplename of the instance referenced by the $uuid parameter.
- *
- * return: false if the cdm store contains no matching instance.
- * An associative array with the following key-value pairs:
- *   - 'cdmName':       name of the cdm class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.model.taxon.Taxon
- *   - 'cdmSimpleName': simple name of the cdm class as returned by Class.getSimpleName(), e.g. Taxon
- *   - 'dtoName':       name of the DTO class as returned by Class.getName(), e.g. eu.etaxonomy.cdm.dto.TaxonTO
- *   - 'dtoSimpleName': simple name of the TDO class as returned by Class.getSimpleName(), e.g. TaxonTO
+ * implementation of the magic method __clone to allow deep cloning of objects
  */
-//define('CDM_WS_WHATIS', 'whatis');
-
+function __clone(){
+    foreach($this as $name => $value){
+        if(gettype($value)=='object'){
+            $this->$name= clone($this->$name);
+        }
+    }
+} 
 
 /**
- * Web Service Arguments: {NameUuid}
+ * Implementation of theme_status_messages($display = NULL) 
+ * @see includes/theme.inc
+ * 
+ * 
+ * 
+ * @param $display
+ * @return unknown_type
  */
+function _add_status_message_toggler() {
+  static $isAdded;
+  if(!$isAdded){
+    
+    drupal_add_js(
+          '$(document).ready(function(){
+          
+            $(\'.messages\').before( \'<h6 class="messages_toggler debug">Debug Messages (klick to toggle)</h6>\' );
+            $(\'.messages_toggler\').click(function(){
+              $(this).next().slideToggle(\'fast\');
+                return false;
+            }).next().hide();
+            
+          });'
+          , 'inline');
+    $isAdded = TRUE;      
+  }
+}
+
+
 define('CDM_WS_NAME', 'name');
 
-/**
- * Web Service url parameters:
- * -  [last path element]: querystring
- * -  sec : list of reference base uuid of concept references
- * -  higherTaxa : list of taxon uuid, if higherTaxa are defined only taxa which are includet in one these taxa are taken in to account
- * -  matchAnywhere : false (default) match the querystring to the beginning of names, if set to true any matching substring is taken as a hit.
- * -  onlyAccepted : return only taxa which are accepted in the sence of the concept reference as given by parameter sec
- * -  pagesize : maximum number of iteme per result page
- * -  page: the number of page to be returned
- *
- * returns ResultPageSTO
- */
-define('CDM_WS_FIND_TAXA', 'taxon');
+define('CDM_WS_NAME_TYPEDESIGNATIONS', 'name/$0/typeDesignations');
 
-/**
- * Web Service Arguments: {referenceUuid}
- *
- */
+define('CDM_WS_TAXON_NAMETYPEDESIGNATIONS', 'portal/taxon/$0/nameTypeDesignations');
+
+define('CDM_WS_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
+
+define('CDM_WS_NAME_DESCRIPTIONS', 'portal/name/$0/descriptions');
+
 define('CDM_WS_REFERENCE', 'reference');
 
+define('CDM_WS_FIND_TAXA', 'portal/taxon/find');
 
-/**
- * Web Service Arguments: {taxonUuid}
- */
 define('CDM_WS_TAXON', 'portal/taxon');
 
 /**
- * Web Service Arguments: {taxonUuid}
- *
- * returns the taxon which is the accepted synonym for the taxon given as
+ * @parameters $0 : the taxon uuid
+ * 
+ * @returns 
+ */
+define('CDM_WS_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');
+
+define('CDM_WS_TAXON_RELATIONS', 'portal/taxon/$0/taxonRelationships');
+
+define('CDM_WS_TAXON_NAMERELATIONS', 'portal/taxon/$0/nameRelationships');
+
+
+/**
+ * @parameters $0 : the taxon uuid
+ * 
+ * @returns the taxon which is the accepted synonym for the taxon given as
  * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
  * accepted taxon, this one will be returned.
  */
-define('CDM_WS_TAXON_ACCEPTED', 'taxon/{uuid}/accepted');
+define('CDM_WS_TAXON_ACCEPTED', 'taxon/$0/accepted');
 
 /**
- * Web Service Arguments: {secUuid}
  *
  * Gets the root nodes of the taxonomic concept tree for the concept
  * reference specified by the secUuid parameter.
@@ -886,4 +946,6 @@ define('CDM_WS_TAXONOMY', 'taxonomy');
  * returns FeatureTrees that are stored in this community store
  *
  */
-define('CDM_WS_FEATURETREE', 'featuretree');
+define('CDM_WS_FEATURETREE', 'featuretree/$0');
+
+define('CDM_WS_FEATURETREES', 'featuretree');

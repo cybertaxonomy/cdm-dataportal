@@ -138,7 +138,7 @@ function cdm_dataportal_menu($may_cache) {
       'access' => true,
       'type' => MENU_CALLBACK,
       'weight' => 1,
-      'callback arguments' => array(arg(2))
+      'callback arguments' => array(arg(2), "description")
       // expected callback arguments: name_uuid
       );
       
@@ -205,15 +205,6 @@ function cdm_dataportal_block($op='list', $delta=0) {
   }
   else if ($op == 'view') {
     switch($delta){
-      case 0:
-        $block['subject'] = t('CDM DataPortal DevLinks');
-        $block['content'] = '<ul>
-        <li>'.l('A Taxon Page', cdm_dataportal_taxon_path('5000001-stub')).'</li>
-        <li>'.l('Name List - page1 of A', 'cdm_dataportal/names/A/1')
-        //.'</li><li>'.l('xml2json', 'cdm/xml2json/namelist;startwith=A.xml')
-        .'</li>
-        </ul>';
-        return $block;
       case 1:
         $block['subject'] = t('Credits');
         $block['content'] = theme('cdm_credits');
@@ -240,17 +231,11 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
 
   $cdm_webservice_url_changed = variable_get('cdm_webservice_url', '') != $form_values['cdm_webservice_url'];
   
-  if ($cdm_webservice_url_changed) {
-    $form_values['cdm_secUuid_default'] = '';
-    //TODO does the currentSecUuid need to be stored?
-    //   Yes - if switching to another concept is permanent until an other concept switch is used.
-    //   NO  - if a user only 'visits' other concepts until this context is left by visiting a non taxon page
-    //         , or explicitly when a concept switch is used.
-    //         other concept could be activated permanently by personal preference settings
-    //
-    //  >> NO seems to be the desired solution <<
-    //
-    _cdm_dataportal_set_currentSecUuid(false);
+  $cdm_secUuid_default_changed = variable_get('cdm_secUuid_default', '') != $form_values['cdm_secUuid_default'];
+  
+  if ($cdm_webservice_url_changed || $cdm_secUuid_default_changed) {
+    
+    _cdm_dataportal_set_currentSecUuid($form_values['cdm_secUuid_default']);
     // reset all cdm related data stored in the session
     // cdm_dataportal_session_clear($form_values['cdm_webservice_url']); // cdm_webservice_url is not further stored here
     // clear the cdm webservice cache
@@ -291,49 +276,11 @@ function cdm_dataportal_search_taxon_form(){
   $form['#process'] = array('cdm_dataportal_search_process' => array());
   $form['#action'] = url($url, NULL, NULL, true);
   
-  $form['queryString'] = array(
+  $form['query'] = array(
     '#type' => 'textfield',
     '#size' => 20,
     '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
-    '#default_value' => (isset($_SESSION['cdm']['search']['queryString']) ? $_SESSION['cdm']['search']['queryString'] : ''),
-  );
-  $form['mode'] =  array(
-    '#type' => 'hidden',
-    '#value' => 'BEGINNING'
-    );
-    
-  $form['onlyAccepted'] =  array(
-    '#type' => 'hidden',
-    '#value' => '0',
-    );
-  
- /* $form['onlyAccepted'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Only Accepted'),
-    '#attributes' => array('title' => t('Search only for accepted taxa.')),
-    '#default_value' => isset($_SESSION['cdm']['search']['onlyAccepted']) && $_SESSION['cdm']['search']['onlyAccepted'],
-  );*/
-  
-  /*
-  $form['vernacular'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Vernacular Names'),
-    '#attributes' => array('title' => t('Search for vernacular names.')),
-    '#default_value' => isset($_SESSION['cdm']['search']['vernacular']) && $_SESSION['cdm']['search']['vernacular'],
-  );
-  $form['language'] =  array(
-    '#type' => 'select',
-    '#title' => t('Language'),
-    '#options' => array(
-        '*' => t('ALL')
-        ),
-    '#description'   => t('The language of the vernacular name'),
-    '#default_value' => (isset($_SESSION['cdm']['search']['language']) ? $_SESSION['cdm']['search']['language'] : ''),
-  );
-  */
-  $form['page'] = array(
-  '#type' => 'hidden',
-  '#value' => '1',
+    '#default_value' => (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : ''),
   );
   
   $form['submit'] = array(
@@ -353,7 +300,13 @@ function cdm_dataportal_search_taxon_form(){
   return $form;
 }
 
-//TODO is this function REACHABLE and thus in use??
+/**
+ * Implementation #process method call, see form_builder()
+ * <p>
+ * Removes Drupal internal form elements from query
+ * @param $form
+ * @return unknown_type
+ */
 function cdm_dataportal_search_process($form) {
   unset($form['form_id']);
   unset($form['form_token']);
@@ -365,14 +318,25 @@ function cdm_dataportal_search_process($form) {
  * returns the processed request parameters submitted by the search form.
  */
 function cdm_dataportal_search_form_request(){
+  /*
+   * @RequestParam(value = "page", required = false) Integer page,
+      @RequestParam(value = "pageSize", required = false) Integer pageSize,
+      @RequestParam(value = "q", required = false) String query,
+      @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
+      @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
+      @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doNamesWithoutTaxa,
+      @RequestParam(value = "secUuid", required = false) UUID secUuid) {
+   */
   $currentSecRefArray = _cdm_dataportal_currentSecRef_array();
-  // keys map $REQUEST Keys values are optional default parameters if not null
-  $search_form_params = array( 	'queryString' => null,
-  										'onlyAccepted' => '0',
-  										'page' => null,
-  										'pagesize' => variable_get('cdm_dataportal_search_items_on_page', 25),
-  										'mode' => null,
-                   						'sec' => $currentSecRefArray['uuid']
+  
+  $search_form_params = array( 	
+      'query' => null,
+			'doTaxa' => '1',
+      'doSynonyms' => '1',
+      'doTaxaByCommonNames' => '1',
+			'page' => 0,
+			'pageSize' => variable_get('cdm_dataportal_search_items_on_page', 25),
+   		'secUuid' => $currentSecRefArray['uuid']
   );
   
   
@@ -380,7 +344,9 @@ function cdm_dataportal_search_form_request(){
   foreach($search_form_params as $key=>$default ){
     $form_params[$key] = ( isset($_REQUEST[$key]) && $_REQUEST[$key] != '' ? $_REQUEST[$key] : $default);
   }
+ 
   $_SESSION['cdm']['search'] = $form_params;
+  
   return $form_params;
 }
   
@@ -433,12 +399,14 @@ function cdm_dataportal_settings(){
     '#collapsed' => TRUE,
   );
   
-    $form['cdm_dataportal']['feature_tree']['cdm_dataportal_feature_tree_active'] = array(
+    $form['cdm_dataportal']['feature_tree']['cdm_dataportal_featuretree_uuid'] = array(
     '#type' => 'select',
     '#title'         => t('Available FeatureTrees'),
-    '#default_value' => variable_get('cdm_dataportal_feature_tree_active', false),
-	'#options' => _get_feature_trees(),
-    '#description'   => t('Select a FeatureTree for this webservice. If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>')
+    '#default_value' => variable_get('cdm_dataportal_featuretree_uuid', false),
+	  '#options' => _get_feature_trees(),
+    '#description'   => t('Select a FeatureTree for this webservice.'
+          //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
+          )
   );
   
   //------------------ LAYOUT --------------------//
@@ -474,6 +442,13 @@ function cdm_dataportal_settings(){
     '#description' => t('')
   );
   
+  $form['cdm_dataportal']['layout']['cdm_dataportal_name_relations_skiptype_basionym'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Exclude the basionym relationship type from the taxon page'),
+    '#default_value' => variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1),
+    '#description' => t('')
+  );
+  
   $form['cdm_dataportal']['layout']['cdm_dataportal_taxonpage_tabs'] = array(
     '#type' => 'checkbox',
     '#title' => t('Tabbed taxon page'),
@@ -486,6 +461,15 @@ function cdm_dataportal_settings(){
     '#title' => t('Search Page Size'),
     '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
     '#description' => t('Number of Names to display per page in search results.')
+  );
+  
+  $form['cdm_dataportal']['layout']['cdm_dataportal_descriptions_separated'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Separate Desriptions'),
+    '#default_value' => variable_get('cdm_dataportal_descriptions_separated', 0),
+    '#description' => t('By default corresponding elements of different descriptions are joined together'
+                        .' into a common section per feature (i.e. type of description).'
+                        .' Check this box to allow displaying all descriptions separately.')
   );
   
  
@@ -626,7 +610,7 @@ function cdm_dataportal_view_reference_list($pageNumber){
  *
  * @param String $uuid the UUID of the taxon
  */
-function cdm_dataportal_view_taxon($uuid, $chapter){
+function cdm_dataportal_view_taxon($uuid, $chapter = null){
   
     // display the page for the taxon defined by $uuid
     $taxon = cdm_ws_get(CDM_WS_TAXON, $uuid);
@@ -636,7 +620,7 @@ function cdm_dataportal_view_taxon($uuid, $chapter){
     }
     _cdm_dataportal_set_currentSecUuid($taxon->sec->uuid);
     
-    drupal_set_title(theme('cdm_taxon_page_title', $taxon->name));
+    drupal_set_title(theme('cdm_taxon_page_title', $taxon));
     $out = theme('cdm_taxon_page_general', $taxon, $chapter);
     
     return $out;
@@ -656,11 +640,14 @@ function cdm_dataportal_view_taxon($uuid, $chapter){
  *  - locality / tdwg region
  */
 function cdm_dataportal_view_search_taxon(){
+  
   $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
+  
   $request_params = cdm_dataportal_search_form_request();
-  $sw_params = array_replace_key($request_params, array('queryString'=> 10 ));
-  $taxonPager = cdm_ws_find(CDM_WS_TAXON, $sw_params);
-  //$taxonPager->pageNumber = $request_params['page'];
+  $sw_params = array_replace_key($request_params, array('query'=> 'q' ));
+ 
+  $taxonPager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($sw_params));
+  
   return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/taxon', $request_params);
 }
 
@@ -678,8 +665,19 @@ function cdm_view_xml2json(){
  * @param String $uuid the UUID of the taxon
  * @return the URL
  */
-function cdm_dataportal_taxon_path($uuid){
+function path_to_taxon($uuid){
+  if(!$uuid) return false;
   return 'cdm_dataportal/taxon/'.$uuid;
+}
+
+function path_to_reference($uuid){
+  if(!$uuid) return false;
+  return 'cdm_dataportal/reference/'.$uuid;
+}
+
+function uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
+   $acceptedPath = path_to_taxon($acceptedUuid);
+   return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid);
 }
 
 /**
@@ -730,8 +728,8 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
     variable_set('cdm_currentSecRef', null);
   } else {
     $secRef = cdm_ws_get(CDM_WS_REFERENCE, $secUuid);
-    if(isset($secRef[0])){
-      variable_set('cdm_currentSecRef', (array)($secRef[0]));
+    if(isset($secRef)){
+      variable_set('cdm_currentSecRef', (array)($secRef));
     }
   }
   
@@ -746,7 +744,7 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
  * Also this is not handling multiple secs.
  *
  *
- * returns the current secRef array from the users session.
+ * returns the current secRef array.
  * If the according session variable is not jet set the default
  * as configured in the setting is used otherwise null.
  *
@@ -756,18 +754,9 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
  * @return array
  */
 function _cdm_dataportal_currentSecRef_array(){
-    /*
-  if( !isset($_SESSION['cdm']['currentSecRef']['uuid'])){
-     $secUuid = variable_get('cdm_secUuid_default', null);
-     _cdm_dataportal_set_currentSecUuid($secUuid);
-  }
-  return  $_SESSION['cdm']['currentSecRef'];
-  */
-  
-  //TODO setting the currentSecUuid causes problems in cichorieae in taraxacum, 
-  //     thus it is temporary DISABLED
+
   // do not look in session but in database
-  if( "DISABLED" != false || variable_get('cdm_currentSecRef', null) == null){
+  if( variable_get('cdm_currentSecRef', null) == null){
      $secUuid = variable_get('cdm_secUuid_default', null);
      _cdm_dataportal_set_currentSecUuid($secUuid);
   }
@@ -782,9 +771,9 @@ function _cdm_dataportal_currentSecRef_array(){
  * @return true if $taxonTo is accepted, false otherwise
  */
 function _cdm_dataportal_acceptedByCurrentView($taxon){
-  $current_secref = _cdm_dataportal_currentSecRef_array();
   
-  return $taxon->class == "Taxon" && $current_secref->uuid == $taxon->sec->uuid;
+  $current_secref = _cdm_dataportal_currentSecRef_array();
+  return $taxon->class == "Taxon" && $current_secref['uuid'] == $taxon->sec->uuid;
 }
 
 /**
@@ -825,7 +814,14 @@ function str_endsWith( $str, $sub ) {
   return ( substr( $str, strlen( $str ) - strlen( $sub ) ) === $sub );
 }
 
-
+/**
+ * Replaces all occurences in $array of the key defined in $replace_map with the according values in the 
+ * $replace_map.
+ * 
+ * @param $array
+ * @param $replace_map 
+ * @return unknown_type
+ */
 function array_replace_key($array, $replace_map){
   foreach($replace_map as $key=>$newkey){
     if(isset($array[$key])){
@@ -864,13 +860,12 @@ function _get_feature_trees(){
    $feature_trees['0'] = 'No FeatureTree';
    
    // get features from database
-   $pager = cdm_ws_page(CDM_WS_FEATURETREE, null, null);
-   $persisted_trees = $pager->records;
+   $persisted_trees = cdm_ws_get(CDM_WS_FEATURETREES);
    if(is_array($persisted_trees)){
      foreach($persisted_trees as $featureTree){
        
        $featureLabels = array();
-       foreach ($featureTree->children as $featureNode){
+       foreach ($featureTree->root->children as $featureNode){
          $featureLabels[] = $featureNode->feature->representation_L10n;
        }
        
@@ -881,3 +876,119 @@ function _get_feature_trees(){
    return $feature_trees;
 }
 
+
+function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NULL){
+  //TODO implement admin user interface to replace swicth statement 
+  //     preliminar solution: using themes 
+  
+  $template = theme('get_nameRenderTemplate', $renderPath);
+  
+  if(!is_array($template)){
+    switch($renderPath){
+      case 'list_of_taxa':
+      case  'acceptedFor':
+      case 'taxon_page_synonymy':
+      case 'typedesignations':
+      case 'taxon_page_title':
+      case 'na': $template = array(
+          'namePart' => true,
+          //'authorshipPart' => true,
+        );
+        break;
+      case 'nar': $template = array(
+          'namePart' => true,
+          //'authorshipPart' => true,
+          'referencePart' => true,
+          'microreferencePart' => true,
+        );
+        break;
+      default: $template = array(
+          'namePart' => true,
+          'authorshipPart' => true,
+          'referencePart' => true,
+          'microreferencePart' => true,
+          'statusPart' => true,
+          'descriptionPart' => true
+        );
+    }
+  }
+  if($nameLink && array_key_exists('namePart', $template)){
+    $template['namePart'] = $nameLink;
+  }
+  if($refenceLink && array_key_exists('referencePart', $template)){
+    $template['referencePart'] = $refenceLink;
+  }
+  return $template;
+}
+
+function get_partDefinition($taxonNameType){
+  //TODO implement admin user interface to allow specify the partdefinitions for any type
+  //     preliminar solution: using themes 
+  
+  $partdef = theme('get_partDefinition', $taxonNameType);
+  
+  if(!is_array($partdef)){  
+    switch($taxonNameType){
+      case 'ZoologicalName': $partdef = array(
+        'namePart' => array(
+          'name' => true,
+        ),
+        'referencePart' => array(
+          'authorTeam' => true
+        ),
+        'microreferencePart' => array(
+          'microreference' => true,
+        ),
+        'statusPart' => array(
+          'status' => true,
+        ),
+        'descriptionPart' => array(
+          'description' => true,
+        ),
+      );
+      break;
+      case 'BotanicalName': $partdef = array(
+        'namePart' => array(
+          'name' => true
+        ),
+        'authorTeamPart' => array(
+          'authorTeam' => true,   
+        ),
+        'referencePart' => array(
+          'reference' => true      
+        ),
+        'microreferencePart' => array(
+          'microreference' => true,
+        ),
+        'statusPart' => array(
+          'status' => true,
+        ),
+        'descriptionPart' => array(
+          'description' => true,
+        ),
+      );
+      break;
+      default: $partdef = array(
+        'namePart' => array(
+          'name' => true,
+        ),
+        'authorTeamPart' => array(
+          'authorTeam' => true,   
+        ),
+        'referencePart' => array(
+          'reference' => true      
+        ),
+        'microreferencePart' => array(
+          'microreference' => true,
+        ),
+        'statusPart' => array(
+          'status' => true,
+        ),
+        'descriptionPart' => array(
+          'description' => true,
+        ),
+      );
+    }
+  }
+  return $partdef;
+}

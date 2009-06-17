@@ -1,12 +1,19 @@
 @CHARSET "ISO-8859-1";
 /* $Id$ */
 
-div.debug{
+div.debug, h6.debug{
   background-color: #252525;
-  color: #FEFEFE;
+  color: #AAAAAA;
   font-family: monospace;
   font-size: 90%;	
   overflow: auto;
+}
+
+h6.debug {
+	color: #FFFFFF;
+	padding: 0 1em;
+	margin-bottom: -0.75em;
+	border:1px solid #B8D3E5;
 }
 
 div.debug a.valid {
@@ -14,6 +21,10 @@ div.debug a.valid {
 }
 div.debug a.invalid {
   color: #F3000A; 
+}
+
+div.debug .uri{
+	color: #FFFFFF;
 }
 
 .name{
@@ -138,7 +149,7 @@ a.filter_remove:link, a.filter_remove:visited{
   color: red;
 }
 
-a.synonym:link, a.synonym:visited {
+a.synonym:link, a.synonym:visited, .Synonym a:link, .Synonym:visited {
   color: #7C7C7F;
 }
 

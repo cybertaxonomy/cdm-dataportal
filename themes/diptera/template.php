@@ -1,96 +1,7 @@
 <?php
 // $Id: $
 
-/**
- * Overrides of generic themeing functions in cdm_datportal.theme.php
- */
-function diptera_cdm_taxon_page_title($nameTO){
-  
-  if(variable_get('cdm_dataportal_nomref_in_title', 1)){
-    // taxon name only with author and year
-    // $displayAuthor = true, $displayNomRef = true, $displayStatus = true, $displayDescription = true, $nomRefLink = true
-    return theme('cdm_name', $nameTO, /*$displayAuthor*/ TRUE, /*$displayStatus*/ false, /*$displayDescription*/ false, TRUE);
-  } else {
-    return theme('cdm_name', $nameTO);
-  }
-}
-
-/**
- * for diptera show only author, year as nom.ref
- *
- * @param unknown_type $referenceSTO a referenceSTO or referenceTO instance
- * @param unknown_type $cssClass
- * @param unknown_type $separator
- * @param unknown_type $enclosingTag
- * @return unknown
- */
-function diptera_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cssClass = '', $separator = '<br />' , $enclosingTag = 'li', $showPage = false){
-
-  $nomref_citation = $referenceSTO->authorship.', '.$referenceSTO->year;
-  if($showPage){
-    $referenceTO = cdm_ws_get(CDM_WS_REFERENCE, $referenceSTO->uuid);
-    $nomref_citation .= ': '.$referenceTO->pages;
-  }
-  
-  if($doLink){
-    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/".$referenceSTO->uuid, array("title"=>$referenceSTO->citation), NULL, NULL, FALSE, FALSE);
-  }
-  
-  if(!empty($nomref_citation)){
-    $nomref_citation = (str_beginsWith($nomref_citation, 'in') ? '&nbsp;':',&nbsp;') . $nomref_citation;
-  }
-  
-  return $nomref_citation;
-}
-
-function diptera_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef = true){
-
-  $relsign = '';
-  $name_prefix = '';
-  $name_postfix = '';
-  switch ($reltype_uuid){
-    case UUID_HETEROTYPIC_SYNONYM_OF:
-    case UUID_SYNONYM_OF:
-      $relsign = '=';
-      break;
-    case UUID_HOMOTYPIC_SYNONYM_OF:
-      $relsign = '≡';
-      break;
-    case UUID_MISAPPLIED_NAME_FOR:
-    case UUID_INVALID_DESIGNATION_FOR:
-      $relsign = '&ndash;'; // &ndash; &mdash; &minus;
-      $name_prefix = '"';
-      $name_postfix = '"';
-      break;
-    default :
-      $relsign = '&ndash;';
-  }
-  
-  $taxon_str  = theme('cdm_name', $taxonSTO->name, true, false, false, false, false);
-  
-  $out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix.$taxon_str;
-  
-  if($taxonSTO->name->taggedName){
-    $authorsStr = cdm_taggedtext_value($taxonSTO->name->taggedName, "authors");
-    $authorsHtml = '<span class="authors">'.$authorsStr.'</span>';
-    if(isset($taxonSTO->name->nomenclaturalReference)){
-      $authorsHtml = l($authorsHtml, "/cdm_dataportal/reference/".$taxonSTO->name->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
-    }
-    $out .= ( str_beginsWith($authorsStr,'(') ? ' ' : ', ') . $authorsHtml;
-    if($taxonSTO->name->nomenclaturalMicroReference){
-      $out .= '<span class="pages">:&nbsp;' . $taxonSTO->name->nomenclaturalMicroReference . '</span>'; 
-    }
-  }else{
-    if($taxonSTO->name->nomenclaturalReference){
-      $out .= ' '.theme('cdm_nomenclaturalReferenceSTO', $taxonSTO->name->nomenclaturalReference, TRUE, '', '<br />', 'li', TRUE);
-    }
-  }
-  $out .= $name_postfix;
-  return $out;
-
-}
-
-  function diptera_cdm_descriptionElements($descriptionElements, $feature){
+function diptera_cdm_descriptionElements($descriptionElements){
 
   $outArray = array();
   $glue = '';
@@ -98,17 +9,17 @@ function diptera_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef
   $enclosingHtml = 'ul';
   
   // only for diptera
-  if($feature == 'citation'){
-    foreach($descriptionElements as $descriptionElement){
-      $tokens = split(":", $descriptionElement->description);
+  if(isset($descriptionElements[0]) && $descriptionElements[0]->feature->uuid == UUID_CITATION ) {
+    foreach($descriptionElements as $element){
+      $tokens = split(":", $element->multilanguageText_L10n->text);
       if(count($tokens) == 2){
         // token[0]: taxon name; token[1]: note; 
-        $descriptionElement->description = $tokens[1] . ' [<span class="name">' . $tokens[0] . '</span>]';
+        $element->multilanguageText_L10n->text = $tokens[1] . ' [<span class="name">' . $tokens[0] . '</span>]';
       }
-      if(isset($descriptionElement->reference->year)){
-        $elementMap[$descriptionElement->reference->year] = $descriptionElement;
+      if(isset($element->citation->datePublished->start)){
+        $elementMap[partialToYear($element->citation->datePublished->start)] = $element;
       } else {
-        $elementMap[] = $descriptionElement;
+        $elementMap[] = $element;
       }
     }
     $success = ksort($elementMap);
@@ -116,17 +27,18 @@ function diptera_cdm_related_taxon($taxonSTO, $reltype_uuid = '', $displayNomRef
   }
   // ---
   
-  foreach($descriptionElements as $descriptionElementSTO){
-
-    if($descriptionElementSTO->classType == 'TextData'){
-      $outArray[] = theme('cdm_descriptionElementTextData', $descriptionElementSTO);
-    }else if($descriptionElementSTO->classType == 'Distribution'){
-      $outArray[] = $descriptionElementSTO->area->term;
-      $glue = ', ';
-      $sortOutArray = true;
-      $enclosingHtml = 'p';
+  foreach($descriptionElements as $element){
+    if($element->class == 'TextData'){
+      $outArray[] = theme('cdm_descriptionElementTextData', $element);
+    }else if($element->class == 'Distribution'){
+      if( !array_search($element->area->representation_L10n, $outArray)){
+        $outArray[] = $element->area->representation_L10n;
+        $glue = ', ';
+        $sortOutArray = true;
+        $enclosingHtml = 'p';
+      }
     }else{
-      $outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElementSTO->classType.'</li>';
+      $outArray[] = '<li>No method for rendering unknown description class: '.$element->classType.'</li>';
     }
   }
 
@@ -146,96 +58,27 @@ function diptera_cdm_taxonpage_tab($tabname){
   }
 }
 
-function diptera_cdm_taxon_page_general($taxonTO, $page_part) {
-  
-  if(!$page_part){
-    $page_part = 'description';
-  }
-  $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';  
 
-  $out = '';
-  $out .= theme('cdm_back_to_search_result_button');
-  $out .= theme('cdm_acceptedFor');
-  
-  if($page_part == 'description' || $page_part == 'all'){
-    $out .= '<div id="general">';
-    $out .= theme('cdm_taxon_page_description', $taxonTO);
-    $out .= '</div>';
-  }
-  
-  if($page_part == 'images' || $page_part == 'all'){
-    $out .= '<div id="images">';
-    if($page_part == 'all'){
-      $out .= '<h2>'.t('Images').'</h2>';
-    }
-    $out .= theme('cdm_taxon_page_images', $taxonTO);
-    $out .= '</div>';
-  }
+function diptera_cdm_taxon_page_images($taxon, $taxonDescriptions){
 
-  if($page_part == 'synonymy' || $page_part == 'all'){
-    $out .= '<div id="synonymy">';
-    if($page_part == 'all'){
-      $out .= '<h2>'.t('Synonymy').'</h2>';
-    }
-    if(!variable_get('cdm_dataportal_nomref_in_title', 1)){
-      //---
-       $taxon_str  = theme('cdm_name', $taxonTO->name, true, false, false, false, false);
-       
-       $out .= $taxon_str;
-       
-       $authorsStr = cdm_taggedtext_value($taxonTO->name->taggedName, "authors");
-       $authorsHtml = '<span class="authors">'.$authorsStr.'</span>';
-       
-       if(isset($taxonTO->name->nomenclaturalReference)){
-          $authorsHtml = l($authorsHtml, "/cdm_dataportal/reference/".$taxonTO->name->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);  
-       }
-       $out .= ( str_beginsWith($authorsStr,'(') ? ' ' : ', ') . $authorsHtml;
-      if($taxonTO->name->nomenclaturalMicroReference){
-        $out .= '<span class="pages">:&nbsp;' . $taxonTO->name->nomenclaturalMicroReference . '</span>'; 
-      }
-      // ---
-    }
-    $out .= theme('cdm_taxon_page_synonymy', $taxonTO);
-
-    if(variable_get('cdm_dataportal_display_name_relations', 1)){
-      $out .= theme('cdm_nameRelations', $taxonTO->name->nameRelations);
-     }
-    $out .= '</div>';
-  }
-
-  return $out;
-}
-
-function diptera_cdm_taxon_page_images($taxon){
-
-  $descriptions = $taxon->featureTree->descriptions;
-  foreach($descriptions as $description){
-    $features = $description->features;
-    foreach($features as $feature){
-      if($feature->feature->term == 'Image'){
-        $descriptionElements = $feature->descriptionElements;
-        if(count($descriptionElements) > 0){
+  if($taxonDescriptions){
+    foreach($taxonDescriptions as $description){
+      foreach($description->elements as $element){
+        if($element->feature->uuid == UUID_IMAGE){
           $imagesExist = true;
           // display image
-          
-          foreach($descriptionElements as $descriptionElement){
-            $medias = $descriptionElement->media;
-            foreach($medias as $media){
-              $representations = $media->representations;
-              foreach($representations as $representation){
-                $representationParts = $representation->representationParts;
-                foreach($representationParts as $representationPart){
-                  $out .= '<img src="' . $representationPart->uri . '" alt=""/>';
-                }
+          $medias = $element->media;
+          foreach($medias as $media){
+            foreach($media->representations as $representation){
+              foreach($representation->parts as $part){
+                $out .= '<img src="' . $part->uri . '" alt=""/>';
               }
             }
           }
-          
         }
       }
     }
-  }
-  
+  }  
   return $imagesExist ? $out : 'No images available.';
 }
 
@@ -246,4 +89,66 @@ function diptera_cdm_feature_name($feature_name){
     default: return t(ucfirst($feature_name));
   }
 }
+
+
+function diptera_get_partDefinition($nameType){
+  
+  if($nameType == 'ZoologicalName'){
+    return array(
+        'namePart' => array(
+          'name' => true,
+        ),
+        'referencePart' => array(
+          'authorTeam' => true
+        ),
+        'microreferencePart' => array(
+          'microreference' => true,
+        ),
+        'statusPart' => array(
+          'status' => true,
+        ),
+        'descriptionPart' => array(
+          'description' => true,
+        ),
+      );
+  }
+  return false;
+}
+
+function diptera_get_nameRenderTemplate($renderPath){
+  
+  switch ($renderPath){
+    case 'taxon_page_title': 
+      $template = array(
+          'namePart' => true,
+        );
+      break;
+    case  'acceptedFor':
+    case 'list_of_taxa': 
+      $template = array(
+        'namePart' => true,
+        'referencePart' => true,
+      );
+      break;
+    case 'typedesignations': 
+      $template = array(
+        'namePart' => true,
+        //'authorshipPart' => true,
+        'referencePart' => true,
+        'microreferencePart' => true,
+      );
+      break;
+    case 'taxon_page_synonymy':
+    default: 
+      $template = array(
+        'namePart' => true,
+        'referencePart' => true,
+        'microreferencePart' => true,
+        'statusPart' => true,
+        'descriptionPart' => true
+      );
+  }
+  return $template;
+}
+
 ?>

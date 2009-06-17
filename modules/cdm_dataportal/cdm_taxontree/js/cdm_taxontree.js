@@ -25,9 +25,9 @@
 						if($(this).hasClass('collapsed')){
 							var bindChildren = ($(this).find('ul').length == 0);
 							if(bindChildren){
-								var url = $(this).attr('title');
+								var url = $(this).attr('ref');
 								if(url != undefined){
-									$(this).removeAttr('title');
+									$(this).removeAttr('ref');
 									var parent_li = $(this);
 									$(this).set_background_image('loading_subtree.gif');
 									
