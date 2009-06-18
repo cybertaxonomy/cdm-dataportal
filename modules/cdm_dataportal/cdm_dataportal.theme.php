@@ -168,7 +168,7 @@ function theme_cdm_media($descriptionElement, $mimeTypePreference){
   _add_js_thickbox();
 
   $uuid = $descriptionElement->uuid;
-  $feature = $descriptionElement->type;
+  $feature = $descriptionElement->feature;
   $medias = $descriptionElement->media;
 
   foreach($medias as $media){
@@ -228,9 +228,9 @@ function theme_cdm_media_mime_image($mediaRepresentation, $feature){
   return $out;
 }
 
-function theme_cdm_media_mime_text($mediaRepresentation, $feature){
+function theme_cdm_media_mime_text($representation, $feature){
 
-  foreach($representation->representationParts as $part){
+  foreach($representation->parts as $part){
     $attributes = array('title'=>$feature->representation_L10n . t(' link will open in a new window'), 'target'=>'_blank');
     $out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
   }
@@ -244,14 +244,15 @@ function theme_cdm_media_mime_text($mediaRepresentation, $feature){
  * @param unknown_type $featureTo
  * @return unknown
  */
-function theme_cdm_descriptionElements_distribution($descriptionElements){
+function theme_cdm_descriptionElements_distribution($taxon){
+  
 
   $server = variable_get('cdm_dataportal_geoservice_access_point', false);
 
   if(!server){
     return "<p>No geoservice specified</p>";
   }else{
-    $map_data_parameters = '?' .cdm_ws_get(/* FIXME get geoServiceParameters */ );
+    $map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
 
     $display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
     $bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
@@ -260,8 +261,79 @@ function theme_cdm_descriptionElements_distribution($descriptionElements){
     $query_string = ($display_width ? '&ms=' . $display_width: '')
       . ($bounding_box ? '&bbox=' .  $bounding_box : '')
       . ($labels_on ? '&labels=' .  $labels_on : '');
+      
+    $mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
+    $mapUriByProxy = uri_uriByProxy($mapUri, 'image/png');
 
-    $out .= '<img style="border: 1px solid #ddd" src="'.url($server.$map_data_parameters, $query_string).'" alt="Distribution Map" />';
+    if(variable_get('cdm_dataportal_map_openlayers', 0)){
+      // embed into openlayers viewer
+      drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/openlayers/OpenLayers.js');
+      drupal_add_js('
+ var map;  
+ var edit_wms = new OpenLayers.Layer.WMS.Untiled( 
+    "EDIT WMS layer", 
+    "http://edit.csic.es/geoserver/wms",
+    {layers:"topp:tdwg_level_4",transparent:"true"},
+    {styles:\'\'},
+    {group:\'no base\'},
+    {\'displayInLayerSwitcher\':false}
+  );
+
+ var ol_wms = new OpenLayers.Layer.WMS( 
+    "OpenLayers WMS",
+    "http://labs.metacarta.com/wms/vmap0",
+    {layers: \'basic\'}, 
+    {group:\'base\'},
+    {\'displayInLayerSwitcher\':false} 
+  );
+  
+ function init() {
+   var options={ 
+     controls: 
+       [
+         new OpenLayers.Control.LayerSwitcher({\'ascending\':false}),
+         new OpenLayers.Control.PanZoomBar(),
+         new OpenLayers.Control.MousePosition(),
+         new OpenLayers.Control.KeyboardDefaults()
+       ],
+     projection: new OpenLayers.Projection("EPSG:4326")
+    };
+   
+   map = new OpenLayers.Map(\'map\',options);
+   map.addLayers([ol_wms]);
+   map.setCenter(new OpenLayers.LonLat(10.2, 48.9), 3);
+ }
+ 
+$(document).ready(function(){
+  init(); 
+  rest_url=\''.$mapUriByProxy.'\';
+  $.ajax({
+    
+     url:rest_url,
+     type: \'GET\',
+     dataType:\'text\',
+     success:function(j){
+        path="http://edit.csic.es/fitxers/sld/temp_rests/"+j;
+        if (!edit_wms.params.SLD){
+          edit_wms.params.SLD=path;
+          map.addLayers([edit_wms]);
+        } else { 
+          edit_wms.params.SLD=path; 
+          edit_wms.redraw();
+        }
+    
+        edit_wms.setVisibility(true);
+     }
+  });
+});'
+      , 'inline');
+      
+      
+    } else {
+      // simple image
+      $out .= '<img style="border: 1px solid #ddd" src="'.url($server. '?' .$map_data_parameters->String, $query_string).'" alt="Distribution Map" />';
+        
+    }
 
     // add a simple legend
     $legenddata = array(
@@ -295,9 +367,9 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
   foreach($renderTemplate as $part=>$uri){
     if(isset($partDefinition[$part])){
       $renderTemplate[$part] = $partDefinition[$part];
-      if(is_string($uri)){
-        $renderTemplate[$part]['#uri'] = $uri;
-      }
+    }
+    if(is_array($uri)){
+      $renderTemplate[$part]['#uri'] = $uri['#uri'];
     }
   }
   
@@ -335,10 +407,16 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
     $authorTeam = cdm_taggedtext_value($taggedName, 'authors');
     $citation = trim(str_replace($authorTeam, '', $citation));
     if(str_beginsWith($citation, ", in")){
-      $citation = substr($citation, 1);
+      $citation = substr($citation, 2);
+      $separator = ' ';
+    } else if(!str_beginsWith($citation, "in")){
+      $separator = ', ';
+    } else {
+      $separator = ' ';
     }
-    $referenceHtml = ' <span class="reference">'.$citation.'</span>';
-    array_setr('reference', $referenceHtml, $renderTemplate);
+    $referenceArray['#separator'] = $separator;
+    $referenceArray['#html'] = '<span class="reference">'.$citation.'</span>';
+    array_setr('reference', $referenceArray, $renderTemplate);
   }
 
   // fill with microreference
@@ -373,21 +451,33 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
   // render
   $out = '';
   foreach($renderTemplate as $partName=>$part){
+    $separator = '';
+    $partHtml = '';
+    $uri = false;
     if(!is_array($part)){
       continue;
     }
-    if(!empty($part['#uri'])){
-      $out .= '<a href="'.$part['#uri'].'" class="'.$partName.'">';
+    if(isset($part['#uri']) && is_string($part['#uri'])){
+      $uri = $part['#uri'];
+      unset($part['#uri']);
     }
-    foreach($part as $key=>$text){
-      if(is_string($text) && $key != '#uri'){
-        $out .= '<span class="'.$key.'">'.$text.'</span>';
+    foreach($part as $key=>$content){
+      $html = '';
+      if(is_array($content)){
+        $html = $content['#html'];
+        $separator = $content['#separator'];
+      } else if(is_string($content)){
+        $html = $content;
       }
+      $partHtml .= '<span class="'.$key.'">'.$html.'</span>';
     }
-    if(!empty($part['#uri'])){
-      $out .= '</a>';
+    if($uri){
+      $out .= $separator.'<a href="'.$uri.'" class="'.$partName.'">'.$partHtml.'</a>';
+    } else {
+      $out .= $separator.$partHtml;
     }
   }
+  
   return $out;
 }
 
@@ -1303,7 +1393,7 @@ function theme_cdm_featureTrees($mergedTrees, $taxon){
   
   foreach($mergedTrees as &$mTree){
     //TODO diplay title and reference in case of multiple $mergedTrees -> theme
-    $out .= theme('cdm_feature_nodes', $mTree->root->children);
+    $out .= theme('cdm_feature_nodes', $mTree->root->children, $taxon);
   }
   return $out;
 }
@@ -1327,7 +1417,7 @@ function theme_cdm_featureTreeTOCs($mergedTrees){
   return $out;
 }
 
-function theme_cdm_feature_nodes($featureNodes){
+function theme_cdm_feature_nodes($featureNodes, $taxon){
   
   foreach($featureNodes as $node){
       // process $descriptionElements with content only
@@ -1350,14 +1440,14 @@ function theme_cdm_feature_nodes($featureNodes){
 
           // TODO HACK
           if($node->feature->uuid == UUID_DISTRIBUTION){
-            //$out .= theme('cdm_descriptionElements_distribution', $node->descriptionElements);
+            $out .= theme('cdm_descriptionElements_distribution', $taxon);
           }
         }
       }
       // theme 
       if(count($node->children) > 0){
         $out .= '<div class="nested_description_elements">';
-        $out .= theme('cdm_feature_nodes', $node->children);
+        $out .= theme('cdm_feature_nodes', $node->children, $taxon);
         $out .= '</div>';
       }
   }

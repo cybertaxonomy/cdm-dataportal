@@ -12,7 +12,7 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function garland_cichorieae_cdm_taxon_page_description($taxonTO, $mergedTrees){
+function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees){
 
   // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
@@ -268,7 +268,7 @@ function theme_get_partDefinition($nameType){
         'namePart' => array(
           'name' => true
     ),
-        'authorTeamPart' => array(
+        'authorshipPart' => array(
           'authorTeam' => true,   
     ),
         'referencePart' => array(
@@ -293,14 +293,13 @@ function theme_get_nameRenderTemplate($renderPath){
   switch($renderPath) {
     case 'taxon_page_title':
       $template = array(
-            'namePart' => true
+            'namePart' => array('#uri'=>true)
       );
       break;
     case 'taxon_page_synonymy':
       $template = array(
-          'namePart' => true,
-          'authorshipPart' => true,
-          'referencePart' => true,
+          'namePart' => array('#uri'=>true),
+          'referencePart' => array('#uri'=>true),
           'microreferencePart' => true,
           'statusPart' => true,
           'descriptionPart' => true
@@ -308,18 +307,17 @@ function theme_get_nameRenderTemplate($renderPath){
       break;
     case 'acceptedFor':
       $template = array(
-            'namePart' => true,
+            'namePart' => array('#uri'=>true),
             'authorshipPart' => true,
-            'referencePart' => true
+            'referencePart' => array('#uri'=>true)
       );
       break;
     default:
     case 'list_of_taxa':
     case 'typedesignations':
       $template = array(
-            'namePart' => true,
-            'authorshipPart' => true,
-            'referencePart' => true,
+            'namePart' => array('#uri'=>true),
+            'referencePart' => array('#uri'=>true),
             'microreferencePart' => true
       );
   }

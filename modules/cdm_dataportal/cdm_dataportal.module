@@ -891,32 +891,36 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
       case 'typedesignations':
       case 'taxon_page_title':
       case 'na': $template = array(
-          'namePart' => true,
+          'namePart' => array('#uri'=>true),
           //'authorshipPart' => true,
         );
         break;
       case 'nar': $template = array(
-          'namePart' => true,
+          'namePart' => array('#uri'=>true),
           //'authorshipPart' => true,
-          'referencePart' => true,
+          'referencePart' => array('#uri'=>true),
           'microreferencePart' => true,
         );
         break;
       default: $template = array(
-          'namePart' => true,
+          'namePart' => array('#uri'=>true),
           'authorshipPart' => true,
-          'referencePart' => true,
+          'referencePart' => array('#uri'=>true),
           'microreferencePart' => true,
           'statusPart' => true,
           'descriptionPart' => true
         );
     }
   }
-  if($nameLink && array_key_exists('namePart', $template)){
-    $template['namePart'] = $nameLink;
+  if($nameLink && isset($template['namePart']['#uri'])){
+    $template['namePart']['#uri'] = $nameLink;
+  } else{
+    unset($template['namePart']['#uri']);
   }
-  if($refenceLink && array_key_exists('referencePart', $template)){
-    $template['referencePart'] = $refenceLink;
+  if($refenceLink && isset($template['referencePart']['#uri'])){
+    $template['referencePart']['#uri'] = $refenceLink;
+  }else{
+    unset($template['referencePart']['#uri']);
   }
   return $template;
 }

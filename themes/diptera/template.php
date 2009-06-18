@@ -120,30 +120,30 @@ function diptera_get_nameRenderTemplate($renderPath){
   switch ($renderPath){
     case 'taxon_page_title': 
       $template = array(
-          'namePart' => true,
+          'namePart' => array('#uri'=>true),
         );
       break;
     case  'acceptedFor':
     case 'list_of_taxa': 
       $template = array(
-        'namePart' => true,
-        'referencePart' => true,
+        'namePart' => array('#uri'=>true),
+        'referencePart' => array('#uri'=>true),
       );
       break;
     case 'typedesignations': 
       $template = array(
-        'namePart' => true,
+        'namePart' => array('#uri'=>true),
         //'authorshipPart' => true,
-        'referencePart' => true,
+        'referencePart' => array('#uri'=>true),
         'microreferencePart' => true,
       );
       break;
     case 'taxon_page_synonymy':
     default: 
       $template = array(
-        'namePart' => true,
+        'namePart' => array('#uri'=>true),
         'referencePart' => true,
-        'microreferencePart' => true,
+        'microreferencePart' => array('#uri'=>true),
         'statusPart' => true,
         'descriptionPart' => true
       );

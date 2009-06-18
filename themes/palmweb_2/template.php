@@ -185,10 +185,10 @@ function theme_get_partDefinition($nameType){
   if($nameType == 'BotanicalName'){
     return array(
         'namePart' => array(
-          'name' => true
-        ),
-        'authorTeamPart' => array(
+          'name' => true,
           'authorTeam' => true,   
+        ),
+        'authorshipPart' => array(
         ),
         'referencePart' => array(
           'reference' => true      
@@ -212,7 +212,7 @@ function theme_get_nameRenderTemplate($renderPath){
   switch($renderPath) {
       case 'acceptedFor':
         $template = array(
-          'namePart' => true,
+          'namePart' => array('#uri'=>true),
           'authorshipPart' => true
         );
         break;
@@ -222,9 +222,9 @@ function theme_get_nameRenderTemplate($renderPath){
       case 'typedesignations': //TODO correct template for typedesignations?
       default:
         $template = array(
-          'namePart' => true,
+          'namePart' => array('#uri'=>true),
           'authorshipPart' => true,
-          'referencePart' => true,
+          'referencePart' => array('#uri'=>true),
           'descriptionPart' => true
         );
   }

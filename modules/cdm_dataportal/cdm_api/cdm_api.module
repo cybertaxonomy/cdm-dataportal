@@ -471,23 +471,31 @@ function proxy_content($uri, $theme = null){
     $data = request_content($uri, "POST", $post_data);
     print $data;
     
-  }else{
+  }else if(strpos($theme, '/') > 0){ // must be a mimetype
+    header('Content-Type: '.$theme);
+    $data = request_content_binary($uri);
+    print $data;
+    exit;
+  } else {
     // in all other cases perform a simple get request
     //TODO reconsider caching logic in this function
     if(!$theme){
       // print out JSON, the cache cannot be used since it contains objects
       $data = request_content($uri);
       print $data;
+      exit;
     } else {
       $obj = cdm_ws_httpRequest($uri);
       array_unshift($args, $theme, $obj);
       print call_user_func_array('theme', $args);
     }
   }
-  
-
 }
 
+function uri_uriByProxy($uri, $theme = false){
+  // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");)
+  return url('cdm_api/proxy/'.urlencode($uri).($theme?"/$theme":''));
+}
 
 /**
  * Send a HTTP GET request to the RESTService and deserializes 
@@ -737,6 +745,25 @@ function request_content($uri, $method="GET", $parameters = array()){
   }
 }
 
+function request_content_binary($uri){
+  global $locale;  // drupal variable containing the current locale i.e. language
+  static $header;
+  
+//  if(!$header){
+//    $header = array();
+//    $header[] = 'Accept: '.(variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
+//    $header[] = 'Accept-Language: '.$locale;
+//    $header[] = 'Accept-Charset: UTF-8';
+//  }
+  
+  if(function_exists('curl_init')){
+    // use the CURL lib if installed it is supposed to be 20x faster
+    return _request_content_curl($uri, $header, $method, $parameters);
+  } else {
+    return _request_content_fsockopen($uri, $header, $method, $parameters);
+  }
+}
+
 
 function _request_content_fsockopen($uri, $header = array(), $method = "GET"){
   //FIXME implement get_content_fsockopen($uri);
@@ -949,3 +976,5 @@ define('CDM_WS_TAXONOMY', 'taxonomy');
 define('CDM_WS_FEATURETREE', 'featuretree/$0');
 
 define('CDM_WS_FEATURETREES', 'featuretree');
+
+define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'geo/map/distribution/$0');
