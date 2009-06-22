@@ -405,16 +405,17 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
    * $uri_pattern by the according element of the $pathParameters array
    */
   static $helperArray = array();
-  if(!is_array($pathParameters) && isset($pathParameters)){
+  if($pathParameters && !is_array($pathParameters)){
     $helperArray[0] = $pathParameters;
     $pathParameters = $helperArray;
   }
+  
   $i = 0;
   while(strpos($uri_pattern, "$".$i) !== FALSE){
     if(count($pathParameters) <= $i){
       drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
     }
-    $uri_pattern = str_replace("$".$i, $pathParameters[$i], $uri_pattern);
+    $uri_pattern = str_replace("$".$i, rawurlencode($pathParameters[$i]), $uri_pattern);
     ++$i;      
   }
     
@@ -468,12 +469,12 @@ function proxy_content($uri, $theme = null){
     $post_data = implode(',', $post_data);
     
     // testing
-    $data = request_content($uri, "POST", $post_data);
+    $data = cdm_http_request($uri, "POST", $post_data);
     print $data;
     
   }else if(strpos($theme, '/') > 0){ // must be a mimetype
     header('Content-Type: '.$theme);
-    $data = request_content_binary($uri);
+    $data = _http_request_binary($uri);
     print $data;
     exit;
   } else {
@@ -481,11 +482,11 @@ function proxy_content($uri, $theme = null){
     //TODO reconsider caching logic in this function
     if(!$theme){
       // print out JSON, the cache cannot be used since it contains objects
-      $data = request_content($uri);
+      $data = cdm_http_request($uri);
       print $data;
       exit;
     } else {
-      $obj = cdm_ws_httpRequest($uri);
+      $obj = cdm_ws_get($uri, null, null, null, TRUE);
       array_unshift($args, $theme, $obj);
       print call_user_func_array('theme', $args);
     }
@@ -496,22 +497,6 @@ function uri_uriByProxy($uri, $theme = false){
   // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");)
   return url('cdm_api/proxy/'.urlencode($uri).($theme?"/$theme":''));
 }
-
-/**
- * Send a HTTP GET request to the RESTService and deserializes 
- * and returns the response as object
- *
- * @param $resourceURI the 
- * @param $parameters may be an array or a single variable
- * @return unknown
- */
-function cdm_ws_get($method, $pathParameters = array(), $query = null){
-  
-  $uri = cdm_compose_url($method, $pathParameters, $query);
-  
-  return cdm_ws_httpRequest($uri);
-}
-
 
 /**
  * Enter description here...
@@ -557,7 +542,8 @@ function cdm_ws_taxonomy_compose_resourcePath($secUuid = null, $path = null){
  * @return unknown
  */
 function cdm_ws_taxonomy_pathFromRoot($secUuid = null, $path){
- return cdm_ws_get(CDM_WS_TAXONOMY . '/' .  _cdm_taxonomy_compose_viewrank($secUuid)  . '/' . $path . '/path' );
+ $viewrank =  _cdm_taxonomy_compose_viewrank($secUuid);
+ return cdm_ws_get(CDM_WS_TAXONOMY . '/' . ($viewrank ? $viewrank : '' )  . '/' . $path . '/path' );
 }
 
 /**
@@ -642,8 +628,22 @@ function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
  * @param $is_multi_parameter_query parameter to indicate that the URI has queryparameters and should not be cached
  * @return An object or false
  */
-function cdm_ws_httpRequest($uri, $method="GET"){
- 
+
+/**
+ * Send a HTTP GET request to the RESTService and deserializes 
+ * and returns the response as object
+ *
+ * @param $resourceURI the 
+ * @param $parameters may be an array or a single variable
+ * @return unknown
+ */
+function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET", $absoluteURI = false){
+  
+  // transform the given uri path or patthern into a proper webservice uri
+  if(!$absoluteURI){
+    $uri = cdm_compose_url($uri, $pathParameters, $query);
+  }
+  
   $do_cache = variable_get('cdm_webservice_cache', 1); //strpos($uri, "?") !== FALSE; // if the url has a query parameter sting
   $cache_entry = false;
    
@@ -656,7 +656,7 @@ function cdm_ws_httpRequest($uri, $method="GET"){
     // load fresh data from webservice
     $time_get_start = microtime(true);
     // request data from webservice JSON or XML
-    $datastr = request_content($uri, $method);
+    $datastr = cdm_http_request($uri, $method);
     $time_get = microtime(true) - $time_get_start;
 
     
@@ -670,7 +670,7 @@ function cdm_ws_httpRequest($uri, $method="GET"){
       _add_debugMessage($uri, $time_get, $time_parse, strlen($datastr), $success_msg);
     }
     if( !$obj || !$datastr){
-      watchdog('CDM', 'cdm_ws_httpRequest() - URL: '.$uri, WATCHDOG_ERROR);
+      watchdog('CDM', 'cdm_ws_get() - URL: '.$uri, WATCHDOG_ERROR);
     } else if($do_cache) {
       // store fresh data in cache
       cache_set($uri, 'cache_cdm_ws', serialize($obj), CACHE_TEMPORARY);
@@ -723,9 +723,7 @@ function cdm_load_obj($datastr){
 }
 
 
-
-
-function request_content($uri, $method="GET", $parameters = array()){
+function cdm_http_request($uri, $method="GET", $parameters = array(), $header = false){
   global $locale;  // drupal variable containing the current locale i.e. language
   static $header;
   
@@ -739,35 +737,15 @@ function request_content($uri, $method="GET", $parameters = array()){
   if(function_exists('curl_init')){
 
     // use the CURL lib if installed it is supposed to be 20x faster
-    return _request_content_curl($uri, $header, $method, $parameters);
+    return _http_request_using_curl($uri, $header, $method, $parameters);
   } else {
-    return _request_content_fsockopen($uri, $header, $method, $parameters);
+    return _http_request_using_fsockopen($uri, $header, $method, $parameters);
   }
 }
 
-function request_content_binary($uri){
-  global $locale;  // drupal variable containing the current locale i.e. language
-  static $header;
-  
-//  if(!$header){
-//    $header = array();
-//    $header[] = 'Accept: '.(variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
-//    $header[] = 'Accept-Language: '.$locale;
-//    $header[] = 'Accept-Charset: UTF-8';
-//  }
-  
-  if(function_exists('curl_init')){
-    // use the CURL lib if installed it is supposed to be 20x faster
-    return _request_content_curl($uri, $header, $method, $parameters);
-  } else {
-    return _request_content_fsockopen($uri, $header, $method, $parameters);
-  }
-}
-
-
-function _request_content_fsockopen($uri, $header = array(), $method = "GET"){
+function _http_request_using_fsockopen($uri, $header = array(), $method = "GET"){
   //FIXME implement get_content_fsockopen($uri);
-   watchdog('CDM_API', '_request_content_fsockopen - UNIMPLEMENTED', WATCHDOG_ERROR);
+   watchdog('CDM_API', '_http_request_fsockopen - UNIMPLEMENTED', WATCHDOG_ERROR);
    return false;
 }
 
@@ -780,7 +758,7 @@ function _request_content_fsockopen($uri, $header = array(), $method = "GET"){
  *
  * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
 */
-function _request_content_curl($uri, $header = array(), $method = "GET", $parameters = array())
+function _http_request_using_curl($uri, $header = array(), $method = "GET", $parameters = array())
 {
     $ch = curl_init();
 
@@ -809,13 +787,12 @@ function _request_content_curl($uri, $header = array(), $method = "GET", $parame
       }
     }
     
-    
     ob_start();
     curl_exec ($ch);
     if(curl_errno($ch)){
-      watchdog('CDM_API', '_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$uri, WATCHDOG_ERROR);
+      watchdog('CDM_API', '_http_request_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$uri, WATCHDOG_ERROR);
         if(variable_get('cdm_webservice_debug', 1)  && user_access('administer') ){
-          drupal_set_message('_request_content_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$uri, 'error');
+          drupal_set_message('_http_request_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$uri, 'error');
         }
     }
     curl_close ($ch);
@@ -898,8 +875,6 @@ function __clone(){
  * Implementation of theme_status_messages($display = NULL) 
  * @see includes/theme.inc
  * 
- * 
- * 
  * @param $display
  * @return unknown_type
  */
@@ -910,7 +885,7 @@ function _add_status_message_toggler() {
     drupal_add_js(
           '$(document).ready(function(){
           
-            $(\'.messages\').before( \'<h6 class="messages_toggler debug">Debug Messages (klick to toggle)</h6>\' );
+            $(\'.messages.debug\').before( \'<h6 class="messages_toggler debug">Debug Messages (klick to toggle)</h6>\' );
             $(\'.messages_toggler\').click(function(){
               $(this).next().slideToggle(\'fast\');
                 return false;
@@ -959,6 +934,8 @@ define('CDM_WS_TAXON_NAMERELATIONS', 'portal/taxon/$0/nameRelationships');
  * accepted taxon, this one will be returned.
  */
 define('CDM_WS_TAXON_ACCEPTED', 'taxon/$0/accepted');
+
+define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
 
 /**
  *

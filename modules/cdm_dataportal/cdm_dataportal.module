@@ -472,6 +472,49 @@ function cdm_dataportal_settings(){
                         .' Check this box to allow displaying all descriptions separately.')
   );
   
+   $form['cdm_dataportal']['layout']['findtaxa'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Search Taxa'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  
+  $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_taxon_media_on'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show media for accepted taxa'),
+    '#default_value' => variable_get('cdm_dataportal_findtaxa_taxon_media_on', 1),
+    '#description' => t('')
+  );
+  
+  $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_synonyms_media_on'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show media for syonyms'),
+    '#default_value' => variable_get('cdm_dataportal_findtaxa_synonyms_media_on', 0),
+    '#description' => t('')
+  );
+  
+   $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_media_maxextend'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Maximum extend of Images'),
+    '#default_value' => variable_get('cdm_dataportal_findtaxa_media_maxextend', 120),
+    '#description' => t('')
+  );
+  
+  $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_media_cols'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of columns'),
+    '#default_value' => variable_get('cdm_dataportal_findtaxa_media_cols', 3),
+    '#description' => t('')
+  );
+  
+  $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_media_maxRows'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Maximum number of rows'),
+    '#default_value' => variable_get('cdm_dataportal_findtaxa_media_maxRows', 1),
+    '#description' => t('')
+  );
+  
+  
  
   //---------------- GEOSERVICE ----------------//
   
@@ -480,6 +523,13 @@ function cdm_dataportal_settings(){
     '#title' => t('Geoservice'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
+  );
+  
+  $form['cdm_dataportal']['geoservice']['cdm_dataportal_map_openlayers'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('OpenLayers Viewer'),
+    '#default_value' => variable_get('cdm_dataportal_map_openlayers', 1),
+    '#description' => t('Display the maps in an interactive viewer which allows zooming and panning.')
   );
   
   $form['cdm_dataportal']['geoservice']['cdm_dataportal_geoservice_access_point'] = array(

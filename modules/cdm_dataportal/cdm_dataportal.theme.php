@@ -237,6 +237,43 @@ function theme_cdm_media_mime_text($representation, $feature){
   return $out;
 }
 
+function theme_cdm_media_thumbnails($mediaList, $maxExtend, $cols = 4, $maxRows = 1 ){
+  
+  if(!isset($mediaList[0])){
+    return;
+  }
+  $out = '<table class="media_thumbnails">';
+  for($r = 0; $r < $maxRows && count($mediaList) > 0; $r++){
+    $out .= '<tr>';  
+    for($r = 0; $r < $cols; $r++){
+      $media = array_shift($mediaList);
+      if(isset($media->representations[0]->parts[0])){
+        $contentTypeDirectory = substr($media->representations[0]->mimeType, 0, stripos($media->representations[0]->mimeType, '/'));
+        $mediaPartHtml = theme('cdm_media_thumbnail_'.$contentTypeDirectory, $media->representations[0], $maxExtend);
+//        if($mediaPartHtml){
+//          '<img src="" width="'.$maxExtend.'" height="'.$maxExtend.'" />';
+//        }
+      } else {
+        $mediaPartHtml = '';
+      }
+      $out .= '<td>'.$mediaPartHtml.'</td>';    
+    }
+    $out .= '</tr>';  
+  }
+  if(count($mediaList) > 0){
+     $out .= '<tr><td colspan="'.$cols.'">'.count($mediaList).' '.t('more ...').'</td></tr>';
+  }
+  $out .= '</table>';
+  return $out;
+}
+
+function theme_cdm_media_thumbnail_image($mediaRepresentation, $maxExtend){
+  if(isset($mediaRepresentation->parts[0])){
+    return  '<img src="'.$mediaRepresentation->parts[0]->uri.'" width="'.$maxExtend.'" height="'.$maxExtend.'" />';
+  }
+
+}
+
 /**
  * TODO
  * Quick-and-dirty solution to show distribution service to exemplar groups
@@ -262,23 +299,68 @@ function theme_cdm_descriptionElements_distribution($taxon){
       . ($bounding_box ? '&bbox=' .  $bounding_box : '')
       . ($labels_on ? '&labels=' .  $labels_on : '');
       
-    $mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
-    $mapUriByProxy = uri_uriByProxy($mapUri, 'image/png');
-
-    if(variable_get('cdm_dataportal_map_openlayers', 0)){
+    if(variable_get('cdm_dataportal_map_openlayers', 1)){
       // embed into openlayers viewer
-      drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/openlayers/OpenLayers.js');
+      $server = 'http://edit.csic.es/v1/areas_ol.php';
+      //$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
+      //$map_tdwg_Uri ='http://edit.csic.es/v1/areas_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
+      $tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
+      $tdwg_sldUri = "http://edit.csic.es/fitxers/sld/temp_rests/".$tdwg_sldFile;
+      
+      
+      $add_tdwg1 = (strpos($map_tdwg_Uri,'tdwg1') !== FALSE ? 'map.addLayers([tdwg_1]);' : '');
+      $add_tdwg2 = (strpos($map_tdwg_Uri,'tdwg2') !== FALSE ? 'map.addLayers([tdwg_2]);' : '');
+      $add_tdwg3 = (strpos($map_tdwg_Uri,'tdwg3') !== FALSE ? 'map.addLayers([tdwg_3]);' : '');
+      $add_tdwg4 = (strpos($map_tdwg_Uri,'tdwg4') !== FALSE ? 'map.addLayers([tdwg_4]);' : '');
+      
+      
+//      $googleMapsApiKey_localhost = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
+//      drupal_set_html_head(' <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$googleMapsApiKey_localhost.'"></script>');
+
+      drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js');
       drupal_add_js('
- var map;  
- var edit_wms = new OpenLayers.Layer.WMS.Untiled( 
-    "EDIT WMS layer", 
+ var map;
+ 
+ var tdwg_1 = new OpenLayers.Layer.WMS.Untiled( 
+    "tdwg level 1", 
+    "http://edit.csic.es/geoserver/wms",
+    {layers:"topp:tdwg_level_1",transparent:"true"},
+    {styles:\'\'},
+    {group:\'no base\'},
+    {\'displayInLayerSwitcher\':false},
+    {format: \'image/png\'}
+  );
+  
+ var tdwg_2 = new OpenLayers.Layer.WMS.Untiled( 
+    "tdwg level 2", 
+    "http://edit.csic.es/geoserver/wms",
+    {layers:"topp:tdwg_level_2",transparent:"true"},
+    {styles:\'\'},
+    {group:\'no base\'},
+    {\'displayInLayerSwitcher\':false},
+    {format: \'image/png\'}
+  );
+  
+ var tdwg_3 = new OpenLayers.Layer.WMS.Untiled( 
+    "tdwg level 3", 
+    "http://edit.csic.es/geoserver/wms",
+    {layers:"topp:tdwg_level_3",transparent:"true"},
+    {styles:\'\'},
+    {group:\'no base\'},
+    {\'displayInLayerSwitcher\':false},
+    {format: \'image/png\'}
+  );
+  
+  var tdwg_4 = new OpenLayers.Layer.WMS.Untiled( 
+    "tdwg level 4", 
     "http://edit.csic.es/geoserver/wms",
     {layers:"topp:tdwg_level_4",transparent:"true"},
     {styles:\'\'},
     {group:\'no base\'},
-    {\'displayInLayerSwitcher\':false}
+    {\'displayInLayerSwitcher\':false},
+    {format: \'image/png\'}
   );
-
+ 
  var ol_wms = new OpenLayers.Layer.WMS( 
     "OpenLayers WMS",
     "http://labs.metacarta.com/wms/vmap0",
@@ -287,52 +369,69 @@ function theme_cdm_descriptionElements_distribution($taxon){
     {\'displayInLayerSwitcher\':false} 
   );
   
+  /*
+  // --- google layers ----
+     var gphy = new OpenLayers.Layer.Google(
+        "Google Physical",
+        {type: G_PHYSICAL_MAP}
+    );
+    var gmap = new OpenLayers.Layer.Google(
+        "Google Streets", // the default
+        {numZoomLevels: 20}
+    );
+    var ghyb = new OpenLayers.Layer.Google(
+        "Google Hybrid",
+        {type: G_HYBRID_MAP, numZoomLevels: 20}
+    );
+    var gsat = new OpenLayers.Layer.Google(
+        "Google Satellite",
+        {type: G_SATELLITE_MAP, numZoomLevels: 20}
+    );
+  */
+
+
+  // ------------------------------
+  
+  
  function init() {
    var options={ 
      controls: 
        [
          new OpenLayers.Control.LayerSwitcher({\'ascending\':false}),
          new OpenLayers.Control.PanZoomBar(),
-         new OpenLayers.Control.MousePosition(),
-         new OpenLayers.Control.KeyboardDefaults()
+         //new OpenLayers.Control.PanZoom(),
+         new OpenLayers.Control.MouseToolbar(),
+         //new OpenLayers.Control.MousePosition(),
+         //new OpenLayers.Control.KeyboardDefaults()
        ],
-     projection: new OpenLayers.Projection("EPSG:4326")
+       numZoomLevels: 6,
+       projection: new OpenLayers.Projection("EPSG:4326")
     };
+
+   tdwg_1.params.SLD = \''.$tdwg_sldUri.'\';
+   tdwg_2.params.SLD = \''.$tdwg_sldUri.'\';
+   tdwg_3.params.SLD = \''.$tdwg_sldUri.'\';
+   tdwg_4.params.SLD = \''.$tdwg_sldUri.'\';
    
-   map = new OpenLayers.Map(\'map\',options);
+   map = new OpenLayers.Map(\'openlayers_map\',options);
    map.addLayers([ol_wms]);
-   map.setCenter(new OpenLayers.LonLat(10.2, 48.9), 3);
+   '.$add_tdwg1.'
+   '.$add_tdwg2.'
+   '.$add_tdwg3.'
+   '.$add_tdwg4.'
+   map.setCenter(new OpenLayers.LonLat(0, 0), 1);
  }
  
 $(document).ready(function(){
   init(); 
-  rest_url=\''.$mapUriByProxy.'\';
-  $.ajax({
-    
-     url:rest_url,
-     type: \'GET\',
-     dataType:\'text\',
-     success:function(j){
-        path="http://edit.csic.es/fitxers/sld/temp_rests/"+j;
-        if (!edit_wms.params.SLD){
-          edit_wms.params.SLD=path;
-          map.addLayers([edit_wms]);
-        } else { 
-          edit_wms.params.SLD=path; 
-          edit_wms.redraw();
-        }
-    
-        edit_wms.setVisibility(true);
-     }
-  });
 });'
       , 'inline');
-      
+      $out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'; height:'.($display_width / 2).'"></div>';
       
     } else {
       // simple image
-      $out .= '<img style="border: 1px solid #ddd" src="'.url($server. '?' .$map_data_parameters->String, $query_string).'" alt="Distribution Map" />';
-        
+      $mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
+      $out .= '<img style="border: 1px solid #ddd" src="'.$mapUri.'" alt="Distribution Map" />'; 
     }
 
     // add a simple legend
@@ -348,7 +447,7 @@ $(document).ready(function(){
     
     $out .= '<div class="distribution_map_legend">';
     foreach($legenddata as $term => $color){
-      $out .= '<image style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
+      $out .= '<img style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
       drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).' ';
     }
     $out .= '</div>';
@@ -587,9 +686,17 @@ function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
   return $out;
 }
 
-function theme_cdm_list_of_taxa($records){
+function theme_cdm_list_of_taxa($records, $showMedia = false){
   
   $renderPath = 'list_of_taxa';
+  
+  $showMedia_taxa = variable_get('cdm_dataportal_findtaxa_taxon_media_on', 1);
+  $showMedia_synonyms = variable_get('cdm_dataportal_findtaxa_synonyms_media_on', 0);
+  $prefMimeTypeRegex = 'image:.*';
+  $prefMediaQuality = '*';
+  $cols = variable_get('cdm_dataportal_findtaxa_media_cols', 3);
+  $maxRows = variable_get('cdm_dataportal_findtaxa_media_maxRows', 1);
+  $maxExtend = variable_get('cdm_dataportal_findtaxa_media_maxextend', 120);
   
   $out = '<ul class="cdm_names" style="background-image: none;">';
 
@@ -616,18 +723,30 @@ function theme_cdm_list_of_taxa($records){
       if(isset($taxon->name->nomenclaturalReference)){
         $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
       }
-      $out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath).'</li>';
+      $out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
+      if($showMedia_taxa){
+          $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+          $out .= theme('cdm_media_thumbnails', $mediaList, $maxExtend, $cols, $maxRows);
+      }
+      $out .= '</li>';
     } else {
       $uuid = $taxon->uuid;
       $acceptedTaxa = $table_of_accepted[$uuid];
       if(count($acceptedTaxa) == 1){
-        $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxa[0]->uuid, 'synonymy');
-        if(isset($acceptedTaxa[0]->name->nomenclaturalReference)){
-          $referenceUri = url(path_to_reference($acceptedTaxa[0]->name->nomenclaturalReference->uuid));
+        $acceptedTaxon = $acceptedTaxa[0];
+        $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid, 'synonymy');
+        if(isset($acceptedTaxon->name->nomenclaturalReference)){
+          $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
         }
-        $out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath).'</li>';
+        $out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
+        if($showMedia_synonyms){
+          $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($acceptedTaxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+          $out .= theme('cdm_media_thumbnails', $mediaList, $maxExtend,$cols, $maxRows);
+        }
+      $out .= '</li>';
       } else {
         //TODO avoid using AHAH in the cdm_dynabox
+        //TODO add media
         $out .= theme('cdm_dynabox', theme('cdm_taxonName', $taxon->name, null, null, $renderPath), cdm_compose_url(CDM_WS_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
       }
     }

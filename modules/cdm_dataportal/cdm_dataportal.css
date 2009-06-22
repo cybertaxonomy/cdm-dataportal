@@ -206,4 +206,17 @@ a.toc:link, a.toc:visited {
 	margin-bottom: 0;
 }
 
+#openlayers_map{
+	width: 100%;
+	height: 200px;
+	border: 1px solid;
+}
 
+.media_thumbnails{
+  margin-top: 0px;
+  margin-left: 0.3em; 
+}
+	
+.media_thumbnails tbody{
+	border: 0px none;
+}
