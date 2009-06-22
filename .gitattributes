@@ -104,7 +104,6 @@ modules/cdm_dataportal/js/jquery.dimensions.js -text
 modules/cdm_dataportal/js/jquery.dimensions.pack.js -text
 modules/cdm_dataportal/js/jquery.form.js -text
 modules/cdm_dataportal/js/jquery.imagetool.min.js -text
-modules/cdm_dataportal/js/openlayers/OpenLayers.js -text
 modules/cdm_dataportal/js/thickbox.js -text
 modules/countrypresence/country-earth.dbf -text
 modules/countrypresence/country-earth.prj -text
