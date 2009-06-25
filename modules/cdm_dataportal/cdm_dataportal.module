@@ -112,6 +112,13 @@ function cdm_dataportal_menu($may_cache) {
     );
     
     $items[] = array(
+      'path' => 'cdm_dataportal/search',
+      'callback' => 'cdm_dataportal_view_search_advanced',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    );
+    
+    $items[] = array(
       'path' => 'cdm_dataportal/search/taxon',
       'callback' => 'cdm_dataportal_view_search_taxon',
       'access' => true,
@@ -269,7 +276,12 @@ function cdm_dataportal_session_validate(){
 }
 */
 
-function cdm_dataportal_search_taxon_form(){
+function cdm_dataportal_search_taxon_form($advancedForm = false){
+  
+  $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
+  $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? $_SESSION['cdm']['search']['doTaxa'] : 1);
+  $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? $_SESSION['cdm']['search']['doSynonyms'] : 1);
+  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? $_SESSION['cdm']['search']['doTaxaByCommonNames'] : 1);
   
   $url = 'cdm_dataportal/search/taxon';
   $form['#method'] = 'get';
@@ -277,27 +289,93 @@ function cdm_dataportal_search_taxon_form(){
   $form['#action'] = url($url, NULL, NULL, true);
   
   $form['query'] = array(
+    '#delta' => 0,
     '#type' => 'textfield',
     '#size' => 20,
     '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
-    '#default_value' => (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : ''),
+    '#value' => $preset_query,
   );
   
-  $form['submit'] = array(
-  '#type' => 'submit',
-  '#name' => '',
-  '#value' => t('Search'),
-  );
+  $form['search'] = array(
+      '#delta' => 1,
+      '#tree' => true,
+      //'#type' => $advancedForm ? 'fieldset': 'hidden',
+      '#title' => t('Options')
+    );
+  
   
   // clean URL get forms breaks if we don't give it a 'q'.
   if (!(bool)variable_get('clean_url', '0')) {
-    $form['q'] = array(
+    $form['search']['q'] = array(
+      '#delta' => -1,
       '#type' => 'hidden',
       '#value' => $url,
       '#name' => 'q',
     );
   }
+  
+  $form['search']['pageSize'] = array(
+      '#delta' => -1,
+      '#type' => 'hidden',
+      '#value' => variable_get('cdm_dataportal_search_items_on_page', 25)
+    );
+    
+  $currentSecRefArray = _cdm_dataportal_currentSecRef_array();
+  $form['search']['secUuid'] = array(
+    '#delta' => -1,
+    '#type' => 'hidden',
+    '#value' => $currentSecRefArray['uuid']
+  );
+
+  if($advancedForm){
+     $form['search']['doTaxa'] = array(
+      '#delta' => 2,
+      '#type' => 'checkbox',
+      '#title' => t('Search for accepted taxa'),
+      '#value' => $preset_doTaxa
+     );
+      $form['search']['doSynonyms'] = array(
+      '#delta' => 3,
+      '#type' => 'checkbox',
+      '#title' => t('Search for synonyms'),
+      '#value' => $preset_doSynonyms
+     );
+     $form['search']['doTaxaByCommonNames'] = array(
+      '#delta' => 4,
+      '#type' => 'checkbox',
+      '#title' => t('Search for common names'),
+      '#value' => $preset_doTaxaByCommonNames
+     );
+  } else {
+    $form['search']['doTaxa'] = array(
+      '#delta' => -2,
+      '#type' => 'hidden',
+      '#value' => 1
+     );
+      $form['search']['doSynonyms'] = array(
+      '#delta' => -3,
+      '#type' => 'hidden',
+      '#value' => 1
+     );
+     $form['search']['doTaxaByCommonNames'] = array(
+      '#delta' => -4,
+      '#type' => 'hidden',
+      '#value' => 1
+     );
+  }
+  
+   $form['submit'] = array(
+  '#delta' => 9,
+  '#type' => 'submit',
+  '#name' => '',
+  '#value' => t('Search')
+  );
+  
   return $form;
+}
+
+function cdm_dataportal_search_taxon_form_advanced(){
+  return cdm_dataportal_search_taxon_form(true);
 }
 
 /**
@@ -318,33 +396,10 @@ function cdm_dataportal_search_process($form) {
  * returns the processed request parameters submitted by the search form.
  */
 function cdm_dataportal_search_form_request(){
-  /*
-   * @RequestParam(value = "page", required = false) Integer page,
-      @RequestParam(value = "pageSize", required = false) Integer pageSize,
-      @RequestParam(value = "q", required = false) String query,
-      @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
-      @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
-      @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doNamesWithoutTaxa,
-      @RequestParam(value = "secUuid", required = false) UUID secUuid) {
-   */
-  $currentSecRefArray = _cdm_dataportal_currentSecRef_array();
+
+  $form_params = $_REQUEST['search'];
+  $form_params['query'] =  $_REQUEST['query'];
   
-  $search_form_params = array( 	
-      'query' => null,
-			'doTaxa' => '1',
-      'doSynonyms' => '1',
-      'doTaxaByCommonNames' => '1',
-			'page' => 0,
-			'pageSize' => variable_get('cdm_dataportal_search_items_on_page', 25),
-   		'secUuid' => $currentSecRefArray['uuid']
-  );
-  
-  
-  $form_params = array();
-  foreach($search_form_params as $key=>$default ){
-    $form_params[$key] = ( isset($_REQUEST[$key]) && $_REQUEST[$key] != '' ? $_REQUEST[$key] : $default);
-  }
- 
   $_SESSION['cdm']['search'] = $form_params;
   
   return $form_params;
@@ -381,12 +436,24 @@ function cdm_dataportal_settings(){
       '#collapsed' => TRUE,
   );
   
-  $form['cdm_dataportal']['secuuid_widget'] = array(
-    '#type' => 'select_secuuid', // => will be themed by theme_select_secuuid(...)
-    '#title' => t('Default Concept References'),
-    '#description'   => t('The default \'sensu\' reference to start the CDM DataPortal with. Per user choices are possible and may override this value.'),
-    '#varname' => 'cdm_secUuid_default',
-    '#multiple' => false
+//  $form['cdm_dataportal']['secuuid_widget'] = array(
+//    '#type' => 'select_secuuid', // => will be themed by theme_select_secuuid(...)
+//    '#title' => t('Default Concept References'),
+//    '#description'   => t('The default \'sensu\' reference to start the CDM DataPortal with. Per user choices are possible and may override this value.'),
+//    '#varname' => 'cdm_secUuid_default',
+//    '#multiple' => false
+//  );
+  
+  $taxonTrees = cdm_ws_get(CDM_WS_TAXONOMY);
+  foreach($taxonTrees as $tree){
+    $taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;  
+  }
+  $form['cdm_dataportal']['cdm_taxonomictree_uuid'] = array(
+    '#type' => 'select',
+    '#title'         => t('Available taxonomic views'),
+    '#default_value' => variable_get('cdm_taxonomictree_uuid', false),
+    '#options' => $taxonomicTreeOptions,
+    '#description'   => t('Select a taxonomic view for this webservice.')
   );
   
     
@@ -561,6 +628,14 @@ function cdm_dataportal_settings(){
     '#description' => t('Check this if you like country names to be displayed in the maps. ')
   );
   
+   //cdm_dataportal_geoservice_legend_on
+  $form['cdm_dataportal']['geoservice']['cdm_dataportal_geoservice_legend_on'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display a map legend'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_on', TRUE),
+    '#description' => t('Check this if you like a legend to be displayed with the maps. ')
+  );
+  
   return system_settings_form($form);
 }
 
@@ -677,11 +752,17 @@ function cdm_dataportal_view_taxon($uuid, $chapter = null){
   /*}*/
 }
 
+function cdm_dataportal_view_search_advanced(){
+  
+  drupal_set_title(t('Advanced Search'));
+  
+  $searchForm = cdm_dataportal_search_taxon_form(true);
+    
+  return drupal_get_form('cdm_dataportal_search_taxon_form_advanced');
+  
+}
+
 /**
- * Expected URL request parameters:
- *  - text
- *  - language
- *  - vernacular
  *
  * future extensions to meet palmweb mockup requirements:
  *  - habitat

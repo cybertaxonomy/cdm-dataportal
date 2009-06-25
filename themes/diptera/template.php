@@ -59,26 +59,18 @@ function diptera_cdm_taxonpage_tab($tabname){
 }
 
 
-function diptera_cdm_taxon_page_images($taxon, $taxonDescriptions){
+function diptera_cdm_taxon_page_images($taxon, $medias){
 
-  if($taxonDescriptions){
-    foreach($taxonDescriptions as $description){
-      foreach($description->elements as $element){
-        if($element->feature->uuid == UUID_IMAGE){
-          $imagesExist = true;
-          // display image
-          $medias = $element->media;
-          foreach($medias as $media){
-            foreach($media->representations as $representation){
-              foreach($representation->parts as $part){
-                $out .= '<img src="' . $part->uri . '" alt=""/>';
-              }
-            }
-          }
-        }
+  $imagesExist = isset($medias[0]);
+
+  foreach($medias as $media){
+    foreach($media->representations as $representation){
+      foreach($representation->parts as $part){
+        $out .= '<img src="' . $part->uri . '" alt=""/>';
       }
     }
-  }  
+  }
+ 
   return $imagesExist ? $out : 'No images available.';
 }
 

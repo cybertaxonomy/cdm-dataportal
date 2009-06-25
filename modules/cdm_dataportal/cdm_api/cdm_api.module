@@ -18,7 +18,7 @@
 require_once ('xml2json.php');
 require_once ('uuids.php');
 
-define(DEFAULT_TAXONTREE_RANKLIMIT, 'Genus');
+define(DEFAULT_TAXONTREE_RANKLIMIT, '');//TODO Genus UUID
 
 
 /**
@@ -83,74 +83,16 @@ function cdm_api_settings_form(){
     '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
   
+  $rankVocabulary = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_RANK);
+  $options = array();
+  foreach($rankVocabulary->terms as $term){
+    $options[$term->uuid] = t($term->representation_L10n);
+  }
   $form['cdm_webservice']['taxontree_ranklimit'] =  array(
     '#type'          => 'select',
     '#title'         => t('Rank of highest displayed taxon'),
-    '#default_value' => variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT),
-    '#options'       => array(
-            'Empire' => t('Empire'),
-            'Domain' => t('Domain'),
-            'Super Kingdom' => t('Super Kingdom'),
-            'Kingdom' => t('Kingdom'),
-            'Subkingdom' => t('Subkingdom'),
-            'Infrakingdom' => t('Infrakingdom'),
-            'Superphylum' => t('Superphylum'),
-            'Phylum' => t('Phylum'),
-            'Subphylum' => t('Subphylum'),
-            'Infraphylum' => t('Infraphylum'),
-            'Superdivision' => t('Superdivision'),
-            'Division' => t('Division'),
-            'Subdivision' => t('Subdivision'),
-            'Infradivision' => t('Infradivision'),
-            'Superclass' => t('Superclass'),
-            'Class' => t('Class'),
-            'Subclass' => t('Subclass'),
-            'Infraclass' => t('Infraclass'),
-            'Superorder' => t('Superorder'),
-            'Order' => t('Order'),
-            'Suborder' => t('Suborder'),
-            'Infraorder' => t('Infraorder'),
-            'Superfamily' => t('Superfamily'),
-            'Family' => t('Family'),
-            'Subfamily' => t('Subfamily'),
-            'Infrafamily' => t('Infrafamily'),
-            'Supertribe' => t('Supertribe'),
-            'Tribe' => t('Tribe'),
-            'Subtribe' => t('Subtribe'),
-            'Infratribe' => t('Infratribe'),
-            'Suprageneric Taxon' => t('Suprageneric Taxon'),
-            'Genus' => t('Genus'),
-            'Subgenus' => t('Subgenus'),
-            'Infragenus' => t('Infragenus'),
-            'Section' => t('Section'),
-            'Subsection' => t('Subsection'),
-            'Series' => t('Series'),
-            'Subseries' => t('Subseries'),
-            'Species Aggregate' => t('Species Aggregate'),
-            'Infrageneric Taxon' => t('Infrageneric Taxon'),
-            'Species' => t('Species'),
-            'Subspecific Aggregate' => t('Subspecific Aggregate'),
-            'Subspecies' => t('Subspecies'),
-            'Infraspecies' => t('Infraspecies'),
-            'Variety' => t('Variety'),
-            'Bio Variety' => t('Bio Variety'),
-            'Patho Variety' => t('Patho Variety'),
-            'Subvariety' => t('Subvariety'),
-            'Subsubvariety' => t('Subsubvariety'),
-            'Convar' => t('Convar'),
-            'Form' => t('Form'),
-            'Special Form' => t('Special Form'),
-            'Subform' => t('Subform'),
-            'Subsubform' => t('Subsubform'),
-            'Infraspecific Taxon' => t('Infraspecific Taxon'),
-            'Candidate' => t('Candidate'),
-            'Denomination Class' => t('Denomination Class'),
-            'Grex' => t('Grex'),
-            'Graft Chimaera' => t('Graft Chimaera'),
-            'Cultivar Group' => t('Cultivar Group'),
-            'Cultivar' => t('Cultivar'),
-            'Unknown Rank' => t('Unknown Rank')
-        ),
+    '#default_value' => variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT_UUID),
+    '#options'       => array_reverse($options),
     '#description'   => t('The rank of the highest displayed taxon in the taxontree.'),
   );
   
@@ -525,12 +467,12 @@ function cdm_ws_taxonomy_find($uuid, $rank = null, $viewUuid = null){
  * @param unknown_type $path
  * @return unknown
  */
-function cdm_ws_taxonomy($secUuid = null, $path){
- return cdm_ws_get(cdm_ws_taxonomy_compose_resourcePath($secUuid, $path));
+function cdm_ws_taxonomy($path = null){
+ return cdm_ws_get(cdm_ws_taxonomy_compose_resourcePath($path));
 }
 
-function cdm_ws_taxonomy_compose_resourcePath($secUuid = null, $path = null){
-  $viewrank =  _cdm_taxonomy_compose_viewrank($secUuid);
+function cdm_ws_taxonomy_compose_resourcePath($path = null){
+  $viewrank =  _cdm_taxonomy_compose_viewrank();
   return CDM_WS_TAXONOMY . '/' . ($viewrank ? $viewrank : '' ) . ($path ? '/' . $path : '') ;
 }
 
@@ -541,9 +483,9 @@ function cdm_ws_taxonomy_compose_resourcePath($secUuid = null, $path = null){
  * @param String $path
  * @return unknown
  */
-function cdm_ws_taxonomy_pathFromRoot($secUuid = null, $path){
- $viewrank =  _cdm_taxonomy_compose_viewrank($secUuid);
- return cdm_ws_get(CDM_WS_TAXONOMY . '/' . ($viewrank ? $viewrank : '' )  . '/' . $path . '/path' );
+function cdm_ws_taxonomy_pathFromRoot($path){
+ $viewrank =  _cdm_taxonomy_compose_viewrank();
+ return cdm_ws_get(CDM_WS_TAXONOMY .  ($viewrank ? '/' .$viewrank : '' )  . '/' . $path . '/path' );
 }
 
 /**
@@ -553,9 +495,10 @@ function cdm_ws_taxonomy_pathFromRoot($secUuid = null, $path){
  * @param String $rank
  * @return unknown
  */
-function _cdm_taxonomy_compose_viewrank($viewUuid = null){
-  if(empty($viewUuid)){
-    return null;
+function _cdm_taxonomy_compose_viewrank(){
+  $viewUuid = variable_get('cdm_taxonomictree_uuid', false);
+  if(!$viewUuid){
+    return;
   }
   $rank = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
   return $viewUuid . (empty($rank) ? '' : ','.$rank);
@@ -629,13 +572,17 @@ function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
  * @return An object or false
  */
 
+
 /**
  * Send a HTTP GET request to the RESTService and deserializes 
  * and returns the response as object
- *
- * @param $resourceURI the 
- * @param $parameters may be an array or a single variable
- * @return unknown
+ * 
+ * @param $uri
+ * @param $pathParameters
+ * @param $query
+ * @param $method the HTTP method to use, valuid values are "GET" or "POST";
+ * @param $absoluteURI
+ * @return unknown_type
  */
 function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET", $absoluteURI = false){
   
@@ -669,9 +616,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
       $success_msg = $obj || $datastr == "[]" ? 'valid':'invalid'; 
       _add_debugMessage($uri, $time_get, $time_parse, strlen($datastr), $success_msg);
     }
-    if( !$obj || !$datastr){
-      watchdog('CDM', 'cdm_ws_get() - URL: '.$uri, WATCHDOG_ERROR);
-    } else if($do_cache) {
+    if($obj && $do_cache) {
       // store fresh data in cache
       cache_set($uri, 'cache_cdm_ws', serialize($obj), CACHE_TEMPORARY);
     }
@@ -686,10 +631,16 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
 
 function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg){
   
+  static $cummulated_time_parse;
+  static $cummulated_time_get;
   _add_status_message_toggler();
+  
+  $cummulated_time_get += $time_get;
+  $cummulated_time_parse += $time_parse;
  
-  $message = '<span class="uri">'.$uri.'</span> [fetched in: '.sprintf('%3.3f', $time_get).'s; ';
-  $message .= 'parsed in '.sprintf('%3.3f', $time_parse).' s; ';
+  $message = '<span class="uri">'.$uri.'</span><br />';
+  $message .= '[fetched in: '.sprintf('%3.3f', $time_get).'s('.sprintf('%3.3f', $cummulated_time_get).'s); ';
+  $message .= 'parsed in '.sprintf('%3.3f', $time_parse).' s('.sprintf('%3.3f', $cummulated_time_parse).'s); ';
   $message .= 'size:'.sprintf('%3.1f', ($datasize / 1024)).' kb of '.$success_msg.' data: ';
   $message .= '<a href="'.$uri.'.xml" target="data" class="'.$success_msg.'">xml</a>,';
   $message .= '<a href="'.$uri.'.json" target="data" class="'.$success_msg.'">json</a>';
@@ -715,17 +666,28 @@ function cdm_load_obj($datastr){
     var_dump($obj);
     $obj_dump = ob_get_contents();
     ob_clean();
-    watchdog('CDM', 'cdm_load_obj() - invalid object: '.$obj_dump, WATCHDOG_ERROR);
     return false;
   }
 
   return $obj;
 }
 
-
+/**
+ * 
+ * @param $uri
+ * @param $method the HTTP method to use, valuid values are "GET" or "POST"; efaults to "GET" even if null, 
+ *        false or any invalid value is supplied.
+ * @param $parameters
+ * @param $header
+ * @return unknown_type
+ */
 function cdm_http_request($uri, $method="GET", $parameters = array(), $header = false){
   global $locale;  // drupal variable containing the current locale i.e. language
   static $header;
+  
+  if($method != "GET" && $method != "POST"){
+    $method  = "GET";
+  }
   
   if(!$header){
     $header = array();
@@ -790,9 +752,9 @@ function _http_request_using_curl($uri, $header = array(), $method = "GET", $par
     ob_start();
     curl_exec ($ch);
     if(curl_errno($ch)){
-      watchdog('CDM_API', '_http_request_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$uri, WATCHDOG_ERROR);
+      watchdog('CDM_API', '_http_request_curl() - '.curl_error($ch).'; REQUEST-METHOD:'.$method.' URL: '.substr($uri.' ', 0, 150), WATCHDOG_ERROR);
         if(variable_get('cdm_webservice_debug', 1)  && user_access('administer') ){
-          drupal_set_message('_http_request_curl() - '.curl_error($ch).' REQUEST-METHOD:'.$method.' URL: '.$uri, 'error');
+          drupal_set_message('_http_request_curl() - '.curl_error($ch).'; REQUEST-METHOD:'.$method.' URL: '.substr($uri.' ', 0, 150), 'error');
         }
     }
     curl_close ($ch);
@@ -944,7 +906,9 @@ define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
  *
  * stub: treenode_root
  */
-define('CDM_WS_TAXONOMY', 'taxonomy');
+define('CDM_WS_TAXONOMY', 'taxontree');
+
+define('CDM_WS_TERMVOCABULARY', 'term/$0');
 
 /**
  * returns FeatureTrees that are stored in this community store

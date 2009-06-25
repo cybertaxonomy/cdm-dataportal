@@ -940,13 +940,13 @@ function cdm_taxontree_taxonomy_children($tid, $vid, $theme){
  * @param unknown_type $secRefUuuid
  * @return unknown
  */
-function cdm_taxontree_get_root($vid = null, $secRefUuuid = null){
+function cdm_taxontree_get_root($vid = null){
   if(is_numeric($vid)){
     // vid, $parent = 0, $depth = -1, $max_depth = NULL) {
     $terms = taxonomy_get_tree($vid, 0, -1, 1);
     return cdm_taxontree_terms2treenodes($terms);
   } else {
-    return cdm_ws_taxonomy($secRefUuuid, null);
+    return cdm_ws_taxonomy();
   }
 }
 
@@ -965,8 +965,7 @@ function cdm_taxontree_get_children($uuid, $vid = null){
   } else {
     //FIXME replace $uuid by path of parent $uuids
     
-    $secRefUuid = variable_get('cdm_secUuid_default', null);
-    return cdm_ws_taxonomy($secRefUuid, $uuid);
+    return cdm_ws_taxonomy($uuid);
   }
 }
 
@@ -983,12 +982,8 @@ function cdm_taxontree_get_parents($uuid){
     array_push($terms, taxonomy_get_term($uuid));
     $terms = array_reverse($terms);
     return cdm_taxontree_terms2treenodes($terms);
-  } else {
-    //FIXME use view uuid once views are implemented
-    //$secRef = _cdm_dataportal_currentSecRef_array();
-    $secRefUuid = variable_get('cdm_secUuid_default', null);
-    
-    return cdm_ws_taxonomy_pathFromRoot($secRefUuid, $uuid);
+  } else {   
+    return cdm_ws_taxonomy_pathFromRoot($uuid);
   }
 }
 
@@ -1003,6 +998,7 @@ function cdm_taxontree_get_parents($uuid){
  * @return unknown
  */
 function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, $vid = null){
+  //TODO remove $hideOtherConcepts from method signature
 
   // find the secRefUuid
   $secRefUuid = null;
@@ -1024,7 +1020,7 @@ function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, 
   /* valid compact_modes: 'expanded', 'compact', 'flattened' */
 
   // get the root level
-  $root_tree = cdm_taxontree_get_root($vid, ($hideOtherConcepts ? $secRefUuid : null));
+  $root_tree = cdm_taxontree_get_root($vid);
 //  if(!$root_tree || !is_array($root_tree)){
 //    return array();
 //  }
@@ -1420,7 +1416,7 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
     if($node->tid){
       $ahah_url = url('cdm_taxontree/taxonomy/children/'.$node->tid.'/'.$node->vid.'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
     } else if(module_exists('cdm_dataportal')) {
-      $ws_url = cdm_compose_url(cdm_ws_taxonomy_compose_resourcePath( $node->secUuid, $node->uuid));
+      $ws_url = cdm_compose_url(cdm_ws_taxonomy_compose_resourcePath($node->uuid));
       $ahah_url = url('cdm_api/proxy/'.urlencode($ws_url).'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
     }
   }
@@ -1619,8 +1615,7 @@ function &cdm_taxontree_filters_get(){
  */
 function cdm_taxontree_filters_add($taxonUuid){
 
-  $sec = _cdm_dataportal_currentSecRef_array();
-  $parents = cdm_ws_taxonomy_pathFromRoot($sec['uuid'], $taxonUuid);
+  $parents = cdm_ws_taxonomy_pathFromRoot($taxonUuid);
   
   $parents = array_reverse($parents);
   

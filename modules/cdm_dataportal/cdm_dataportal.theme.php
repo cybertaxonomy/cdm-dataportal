@@ -237,19 +237,19 @@ function theme_cdm_media_mime_text($representation, $feature){
   return $out;
 }
 
-function theme_cdm_media_thumbnails($mediaList, $maxExtend, $cols = 4, $maxRows = 1 ){
+function theme_cdm_media_gallerie($mediaList, $maxExtend, $cols = 4, $maxRows = 1 ){
   
   if(!isset($mediaList[0])){
     return;
   }
-  $out = '<table class="media_thumbnails">';
+  $out = '<table class="media_gallerie">';
   for($r = 0; $r < $maxRows && count($mediaList) > 0; $r++){
     $out .= '<tr>';  
     for($r = 0; $r < $cols; $r++){
       $media = array_shift($mediaList);
       if(isset($media->representations[0]->parts[0])){
         $contentTypeDirectory = substr($media->representations[0]->mimeType, 0, stripos($media->representations[0]->mimeType, '/'));
-        $mediaPartHtml = theme('cdm_media_thumbnail_'.$contentTypeDirectory, $media->representations[0], $maxExtend);
+        $mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->representations[0], $maxExtend);
 //        if($mediaPartHtml){
 //          '<img src="" width="'.$maxExtend.'" height="'.$maxExtend.'" />';
 //        }
@@ -267,7 +267,7 @@ function theme_cdm_media_thumbnails($mediaList, $maxExtend, $cols = 4, $maxRows 
   return $out;
 }
 
-function theme_cdm_media_thumbnail_image($mediaRepresentation, $maxExtend){
+function theme_cdm_media_gallerie_image($mediaRepresentation, $maxExtend){
   if(isset($mediaRepresentation->parts[0])){
     return  '<img src="'.$mediaRepresentation->parts[0]->uri.'" width="'.$maxExtend.'" height="'.$maxExtend.'" />';
   }
@@ -302,10 +302,10 @@ function theme_cdm_descriptionElements_distribution($taxon){
     if(variable_get('cdm_dataportal_map_openlayers', 1)){
       // embed into openlayers viewer
       $server = 'http://edit.csic.es/v1/areas_ol.php';
-      //$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
+      $map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
       //$map_tdwg_Uri ='http://edit.csic.es/v1/areas_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
       $tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
-      $tdwg_sldUri = "http://edit.csic.es/fitxers/sld/temp_rests/".$tdwg_sldFile;
+      $tdwg_sldUri = "http://edit.csic.es/fitxers/sld/temp_rests/".$tdwg_sldFile->data;
       
       
       $add_tdwg1 = (strpos($map_tdwg_Uri,'tdwg1') !== FALSE ? 'map.addLayers([tdwg_1]);' : '');
@@ -366,7 +366,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
     "http://labs.metacarta.com/wms/vmap0",
     {layers: \'basic\'}, 
     {group:\'base\'},
-    {\'displayInLayerSwitcher\':false} 
+    {\'displayInLayerSwitcher\':false}
   );
   
   /*
@@ -433,24 +433,26 @@ $(document).ready(function(){
       $mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
       $out .= '<img style="border: 1px solid #ddd" src="'.$mapUri.'" alt="Distribution Map" />'; 
     }
-
-    // add a simple legend
-    $legenddata = array(
-      'native' => "4daf4a",
-      'native_doubtfully_native' => "377eb8",
-      'cultivated' => "984ea3",
-      'introduced' => "ff7f00",
-      'introduced adventitious' => "ffff33",
-      'introduced cultivated' => "a65628",
-      'introduced naturalized' => "f781bf"
-    );
     
-    $out .= '<div class="distribution_map_legend">';
-    foreach($legenddata as $term => $color){
-      $out .= '<img style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
-      drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).' ';
+    // add a simple legend
+    if(variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
+      $legenddata = array(
+        'native' => "4daf4a",
+        'native_doubtfully_native' => "377eb8",
+        'cultivated' => "984ea3",
+        'introduced' => "ff7f00",
+        'introduced adventitious' => "ffff33",
+        'introduced cultivated' => "a65628",
+        'introduced naturalized' => "f781bf"
+      );
+      
+      $out .= '<div class="distribution_map_legend">';
+      foreach($legenddata as $term => $color){
+        $out .= '<img style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
+        drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).' ';
+      }
+      $out .= '</div>';
     }
-    $out .= '</div>';
     
     return $out;
   }
@@ -726,7 +728,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
       $out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
       if($showMedia_taxa){
           $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-          $out .= theme('cdm_media_thumbnails', $mediaList, $maxExtend, $cols, $maxRows);
+          $out .= theme('cdm_media_gallerie', $mediaList, $maxExtend, $cols, $maxRows);
       }
       $out .= '</li>';
     } else {
@@ -741,7 +743,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
         $out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
         if($showMedia_synonyms){
           $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($acceptedTaxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-          $out .= theme('cdm_media_thumbnails', $mediaList, $maxExtend,$cols, $maxRows);
+          $out .= theme('cdm_media_gallerie', $mediaList, $maxExtend,$cols, $maxRows);
         }
       $out .= '</li>';
       } else {
@@ -905,7 +907,30 @@ function theme_cdm_back_to_search_result_button(){
 function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   
   $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
-
+  $hideTabs = array();
+  
+  
+  // get images
+  $prefMimeTypeRegex = 'image:.*';
+  $prefMediaQuality = '*';
+  $media = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+  if(!isset($media[0])) {
+    $hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
+    
+  }
+  // $hideTabs[] = theme('cdm_taxonpage_tab', 'General');
+  // $hideTabs[] = theme('cdm_taxonpage_tab', 'Synonymy')
+  
+  // hide tabs
+  $tabhide_js = '';
+  foreach($hideTabs as $tabText) {
+    $tabhide_js .= "$('.tabs.primary').children('li').children('a:contains(\"$tabText\")').hide();\n";
+  }
+  drupal_add_js("
+  $(document).ready(function(){
+      $tabhide_js
+    });", 'inline');
+      
   $out = '';
   $out .= theme('cdm_back_to_search_result_button');
   $out .= theme('cdm_acceptedFor', 'page_general');
@@ -926,8 +951,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
     if($page_part == 'all'){
       $out .= '<h2>'.t('Images').'</h2>';
     }
-    $taxonDescriptions = cdm_ws_get(CDM_WS_TAXON_DESCRIPTIONS, $taxon->uuid);
-    $out .= theme('cdm_taxon_page_images', $taxon, $taxonDescriptions);
+    $out .= theme('cdm_taxon_page_images', $taxon, $media);
     $out .= '</div>';
   }
 
@@ -974,9 +998,11 @@ function theme_cdm_taxon_page_description($taxon, $mergedTrees){
  *
  */
 function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
+  
   $renderPath = 'taxon_page_synonymy';
   $synomymie = cdm_ws_get(CDM_WS_TAXON_SYNONYMY, $taxon->uuid);
   $taxonRelationships = cdm_ws_get(CDM_WS_TAXON_RELATIONS, $taxon->uuid);
+  $skip = array(UUID_BASIONYM);
  
   if($addAcceptedTaxon){
     if(isset($taxon->name->nomenclaturalReference)){
@@ -1010,18 +1036,9 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
  * Show the collection of images stored with the accepted taxon
  * 
  */
-function theme_cdm_taxon_page_images($taxon, $taxonDescriptions){
+function theme_cdm_taxon_page_images($taxon, $media){
 
-  if($taxonDescriptions){
-    foreach($taxonDescriptions as $descriptionElements){
-      foreach($descriptionElements->elements as $element){
-        if($element->feature->uuid == UUID_IMAGE){
-          $flashLink = true;
-          break;
-        }
-      }
-    }
-  }
+  $flashLink = isset($media[0]);
   
   if($flashLink){
     
@@ -1671,7 +1688,7 @@ function theme_cdm_search_results($pager, $path, $parameters){
 
   drupal_set_title(t('Search Results'));
 
-  $out = '';
+  $out = l('Advanced Search', '/cdm_dataportal/search');
   if(count($pager->records) > 0){
     $out .= theme('cdm_list_of_taxa', $pager->records);
     $out .= theme('cdm_pager_new', $pager, $path, $parameters);
