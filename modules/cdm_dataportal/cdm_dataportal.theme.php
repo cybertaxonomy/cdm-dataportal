@@ -301,18 +301,33 @@ function theme_cdm_descriptionElements_distribution($taxon){
       
     if(variable_get('cdm_dataportal_map_openlayers', 1)){
       // embed into openlayers viewer
-      $server = 'http://edit.csic.es/v1/areas_ol.php';
+      $server = 'http://edit.csic.es/v1/areas3_ol.php';
       $map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
-      //$map_tdwg_Uri ='http://edit.csic.es/v1/areas_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
-      $tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
-      $tdwg_sldUri = "http://edit.csic.es/fitxers/sld/temp_rests/".$tdwg_sldFile->data;
+      //$map_tdwg_Uri ='http://edit.csic.es/v1/areas3_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
+      //$tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
+      $tdwg_sldFiles = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);
+      
+      if(isset($tdwg_sldFiles[0]->layers)){
+        $layerSlds = $tdwg_sldFiles[0]->layers;
+        foreach($layerSlds as $layer){
+          $tdwg_sldUris[$layer->tdwg] = "http://edit.csic.es/fitxers/sld/".$layer->sld;
+        }
+      }
+      $tdwg_sldUri = "http://edit.csic.es/fitxers/sld/".substr($tdwg_sldFile, 7, 7);
       
       
-      $add_tdwg1 = (strpos($map_tdwg_Uri,'tdwg1') !== FALSE ? 'map.addLayers([tdwg_1]);' : '');
-      $add_tdwg2 = (strpos($map_tdwg_Uri,'tdwg2') !== FALSE ? 'map.addLayers([tdwg_2]);' : '');
-      $add_tdwg3 = (strpos($map_tdwg_Uri,'tdwg3') !== FALSE ? 'map.addLayers([tdwg_3]);' : '');
-      $add_tdwg4 = (strpos($map_tdwg_Uri,'tdwg4') !== FALSE ? 'map.addLayers([tdwg_4]);' : '');
-      
+      $add_tdwg1 = (isset($tdwg_sldUris['tdwg1']) ? "
+          tdwg_1.params.SLD = '".$tdwg_sldUris['tdwg1']."';
+          map.addLayers([tdwg_1]);" : '');
+      $add_tdwg2 = (isset($tdwg_sldUris['tdwg2']) ? "
+          tdwg_2.params.SLD = '".$tdwg_sldUris['tdwg2']."';
+          map.addLayers([tdwg_2]);" : '');
+      $add_tdwg3 = (isset($tdwg_sldUris['tdwg3']) ? "
+          tdwg_3.params.SLD = '".$tdwg_sldUris['tdwg3']."';
+          map.addLayers([tdwg_3]);" : '');
+      $add_tdwg4 = (isset($tdwg_sldUris['tdwg4']) ? "
+          tdwg_4.params.SLD = '".$tdwg_sldUris['tdwg4']."';
+          map.addLayers([tdwg_4]);" : '');
       
 //      $googleMapsApiKey_localhost = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
 //      drupal_set_html_head(' <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$googleMapsApiKey_localhost.'"></script>');
@@ -369,25 +384,25 @@ function theme_cdm_descriptionElements_distribution($taxon){
     {\'displayInLayerSwitcher\':false}
   );
   
-  /*
+  
   // --- google layers ----
-     var gphy = new OpenLayers.Layer.Google(
-        "Google Physical",
-        {type: G_PHYSICAL_MAP}
-    );
-    var gmap = new OpenLayers.Layer.Google(
-        "Google Streets", // the default
-        {numZoomLevels: 20}
-    );
-    var ghyb = new OpenLayers.Layer.Google(
-        "Google Hybrid",
-        {type: G_HYBRID_MAP, numZoomLevels: 20}
-    );
-    var gsat = new OpenLayers.Layer.Google(
-        "Google Satellite",
-        {type: G_SATELLITE_MAP, numZoomLevels: 20}
-    );
-  */
+//     var gphy = new OpenLayers.Layer.Google(
+//        "Google Physical",
+//        {type: G_PHYSICAL_MAP}
+//    );
+//    var gmap = new OpenLayers.Layer.Google(
+//        "Google Streets", // the default
+//        {numZoomLevels: 20}
+//    );
+//    var ghyb = new OpenLayers.Layer.Google(
+//        "Google Hybrid",
+//        {type: G_HYBRID_MAP, numZoomLevels: 20}
+//    );
+//    var gsat = new OpenLayers.Layer.Google(
+//        "Google Satellite",
+//        {type: G_SATELLITE_MAP, numZoomLevels: 20}
+//    );
+ 
 
 
   // ------------------------------
@@ -407,14 +422,10 @@ function theme_cdm_descriptionElements_distribution($taxon){
        numZoomLevels: 6,
        projection: new OpenLayers.Projection("EPSG:4326")
     };
-
-   tdwg_1.params.SLD = \''.$tdwg_sldUri.'\';
-   tdwg_2.params.SLD = \''.$tdwg_sldUri.'\';
-   tdwg_3.params.SLD = \''.$tdwg_sldUri.'\';
-   tdwg_4.params.SLD = \''.$tdwg_sldUri.'\';
    
    map = new OpenLayers.Map(\'openlayers_map\',options);
    map.addLayers([ol_wms]);
+//   map.addLayers([gphy]);
    '.$add_tdwg1.'
    '.$add_tdwg2.'
    '.$add_tdwg3.'
@@ -431,7 +442,7 @@ $(document).ready(function(){
     } else {
       // simple image
       $mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
-      $out .= '<img style="border: 1px solid #ddd" src="'.$mapUri.'" alt="Distribution Map" />'; 
+      $out .= '<img class="distribution_map" src="'.$mapUri.'" alt="Distribution Map" />'; 
     }
     
     // add a simple legend
@@ -1688,7 +1699,7 @@ function theme_cdm_search_results($pager, $path, $parameters){
 
   drupal_set_title(t('Search Results'));
 
-  $out = l('Advanced Search', '/cdm_dataportal/search');
+  $out = ''; //l('Advanced Search', '/cdm_dataportal/search');
   if(count($pager->records) > 0){
     $out .= theme('cdm_list_of_taxa', $pager->records);
     $out .= theme('cdm_pager_new', $pager, $path, $parameters);

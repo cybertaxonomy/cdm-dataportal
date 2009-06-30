@@ -219,6 +219,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
       case 2:
         $block['subject'] = t('Search Taxa');
         $block['content'] = drupal_get_form('cdm_dataportal_search_taxon_form');
+        $block['content'] .= '<div>'.l('Advanced Search', '/cdm_dataportal/search').'</div>';
         return $block;
     }
   }
@@ -282,6 +283,9 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
   $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? $_SESSION['cdm']['search']['doTaxa'] : 1);
   $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? $_SESSION['cdm']['search']['doSynonyms'] : 1);
   $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? $_SESSION['cdm']['search']['doTaxaByCommonNames'] : 1);
+  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? $_SESSION['cdm']['search']['doTaxaByCommonNames'] : 1);
+  $tdwg_level_select =  (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
+  $areas =  (isset($_SESSION['cdm']['search']['areas']) ? $_SESSION['cdm']['search']['areas'] : false);
   
   $url = 'cdm_dataportal/search/taxon';
   $form['#method'] = 'get';
@@ -302,6 +306,13 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       //'#type' => $advancedForm ? 'fieldset': 'hidden',
       '#title' => t('Options')
     );
+    
+   $form['search']['view'] = array(
+    '#delta' => -1,
+    '#type' => 'hidden',
+    '#value' => variable_get('cdm_taxonomictree_uuid', false),
+    '#name' => 'q',
+  );
   
   
   // clean URL get forms breaks if we don't give it a 'q'.
@@ -328,24 +339,94 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
   );
 
   if($advancedForm){
-     $form['search']['doTaxa'] = array(
+    // general search parameters
+    $form['search']['doTaxa'] = array(
       '#delta' => 2,
       '#type' => 'checkbox',
       '#title' => t('Search for accepted taxa'),
       '#value' => $preset_doTaxa
-     );
-      $form['search']['doSynonyms'] = array(
+    );
+    $form['search']['doSynonyms'] = array(
       '#delta' => 3,
       '#type' => 'checkbox',
       '#title' => t('Search for synonyms'),
       '#value' => $preset_doSynonyms
-     );
-     $form['search']['doTaxaByCommonNames'] = array(
+    );
+    $form['search']['doTaxaByCommonNames'] = array(
       '#delta' => 4,
       '#type' => 'checkbox',
       '#title' => t('Search for common names'),
       '#value' => $preset_doTaxaByCommonNames
-     );
+    );
+     
+    // Geographic Range
+    $form['search']['geographic_range'] = array(
+      '#type' => 'fieldset',
+      '#delta' => 5,
+      '#tree' => true,
+      '#title' => t('Geographic range'),
+    );
+    
+    $form['search']['geographic_range']['tdwg_level_select'] = array(
+    '#type' => 'radios',
+    '#title' => t('Select a TDWG distribution level and code:'),
+    '#default_value' => $tdwg_level_select,
+    '#options' => array(
+      t('TDWG level-1, i.e. a continent'),
+      t('TDWG level-2'),
+      t('TDWG level-3, i.e. a country'),
+      t('TDWG level-4')
+      )     
+    );
+    $tdwg[1] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '1');
+    $tdwg[2] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '2');
+    $tdwg[3] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '3');
+    $tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
+    
+    $tdwg_js = '';
+    foreach($tdwg as $key=>$tdwg_level){
+      $tdwgOptions = array();
+      $tdwgOptionsSelected = array();
+      foreach($tdwg_level as $area){
+        $representation = $area->representations[0];
+        $tdwgOptions[$representation->abbreviatedLabel] = $area->representation_L10n;
+        if(is_array($areas) && in_array($representation->abbreviatedLabel, $areas)){
+          $tdwgOptionsSelected[] = $area->uuid;
+        }
+      }
+      $form['search']['geographic_range']['tdwg_level_'.$key] = array(
+        '#type' => 'select',
+        '#title'         => t('TDWG level').' '.$key,
+        '#default_value' => $tdwgOptionsSelected,
+        '#multiple' => TRUE, 
+        '#options' => $tdwgOptions
+      );   
+      $tdwg_js .= "$('#edit-search-geographic-range-tdwg-level-$key').parent()".($tdwg_level_select == $key ?  '.show()' : '.hide()'). ";\n";  
+    }
+
+    drupal_add_js(
+    "$(document).ready(function(){
+    
+      $(\"input[@name='search[geographic_range][tdwg_level_select]']\").change( 
+        function(event){
+          var selectId = $(\"input[@name='search[geographic_range][tdwg_level_select]']:checked\").val();
+          var i;
+          for(i = 0; i < 4; i++){
+            if(selectId == i){
+              $('#edit-search-geographic-range-tdwg-level-' + (i + 1) ).parent().fadeIn('slow');
+              $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).children().removeAttr('selected');
+            } else {
+              $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).parent().fadeOut('slow');
+              $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).children().removeAttr('selected');
+            }
+          }
+        }
+      );
+      
+     $tdwg_js
+    });",
+    'inline');
+      
   } else {
     $form['search']['doTaxa'] = array(
       '#delta' => -2,
@@ -397,9 +478,26 @@ function cdm_dataportal_search_process($form) {
  */
 function cdm_dataportal_search_form_request(){
 
+  // split of  geographic range
+  if(isset($_REQUEST['search']['geographic_range'])){
+    $geographicRange = $_REQUEST['search']['geographic_range'];
+    unset($_REQUEST['search']['geographic_range']);
+  }
+    
   $form_params = $_REQUEST['search'];
   $form_params['query'] =  $_REQUEST['query'];
   
+  // add geographic range
+  if($geographicRange){
+    $form_params['tdwg_level_select'] = $geographicRange['tdwg_level_select'];
+    for($i = 1; $i < 5; $i++){
+      if(isset($geographicRange['tdwg_level_'.$i])){
+        $form_params['area'] = $geographicRange['tdwg_level_'.$i];
+      }
+    }
+  }
+  
+  // store in session
   $_SESSION['cdm']['search'] = $form_params;
   
   return $form_params;
@@ -775,9 +873,9 @@ function cdm_dataportal_view_search_taxon(){
   $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
   
   $request_params = cdm_dataportal_search_form_request();
-  $sw_params = array_replace_key($request_params, array('query'=> 'q' ));
+  //$sw_params = array_replace_key($request_params, array('query'=> 'q' ));
  
-  $taxonPager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($sw_params));
+  $taxonPager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($request_params));
   
   return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/taxon', $request_params);
 }

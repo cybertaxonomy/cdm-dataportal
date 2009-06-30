@@ -817,7 +817,13 @@ function _cdm_api_secref_cache_add($secUuidsStr){
 function queryString($elements) {
   $query = '';
   foreach($elements as $key=>$value){
-    $query .= (strlen($query) > 0 ? '&' : '').$key.'='.urlencode($value);
+    if(is_array($value)){
+      foreach($value as $v){
+        $query .= (strlen($query) > 0 ? '&' : '').$key.'='.urlencode($v);
+      }
+    } else{
+      $query .= (strlen($query) > 0 ? '&' : '').$key.'='.urlencode($value);      
+    }
   }
   return $query;
 }
@@ -909,6 +915,8 @@ define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
 define('CDM_WS_TAXONOMY', 'taxontree');
 
 define('CDM_WS_TERMVOCABULARY', 'term/$0');
+
+define('CDM_WS_TDWG_LEVEL', 'term/tdwg/$0');
 
 /**
  * returns FeatureTrees that are stored in this community store
