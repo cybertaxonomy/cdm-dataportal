@@ -978,12 +978,19 @@ function cdm_taxontree_get_children($uuid, $vid = null){
 function cdm_taxontree_get_parents($uuid){
 
   if(!_is_uuid($uuid)){
+    // using Drupal taxonomy
     $terms = taxonomy_get_parents($uuid);
     array_push($terms, taxonomy_get_term($uuid));
     $terms = array_reverse($terms);
     return cdm_taxontree_terms2treenodes($terms);
-  } else {   
-    return cdm_ws_taxonomy_pathFromRoot($uuid);
+  } else {
+    // using cdm
+    $terms = cdm_ws_taxonomy_pathFromRoot($uuid);
+    if(!$terms){
+      return;
+    }
+    $terms = array_reverse($terms);
+    return $terms;
   }
 }
 

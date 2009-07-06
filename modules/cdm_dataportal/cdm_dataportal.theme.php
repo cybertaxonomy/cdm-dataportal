@@ -207,7 +207,7 @@ function theme_cdm_mediaTypeTerm($feature){
 
 function theme_cdm_media_mime_application($mediaRepresentation, $feature){
 
-  foreach($representation->representationParts as $part){
+  foreach($mediaRepresentation->parts as $part){
     $attributes = array('title'=>$feature->representation_L10n, 'target'=>'_blank');
     $out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
   }
@@ -434,10 +434,11 @@ function theme_cdm_descriptionElements_distribution($taxon){
  }
  
 $(document).ready(function(){
-  init(); 
+  init();
+
 });'
       , 'inline');
-      $out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'; height:'.($display_width / 2).'"></div>';
+      $out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
       
     } else {
       // simple image
@@ -770,6 +771,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 
 
 function theme_cdm_credits(){
+  return null;
   $secRef_array = _cdm_dataportal_currentSecRef_array();
   return '<span class="sec_reference_citation">'.$secRef_array['citation'].'</span>'
   .( $secRef_array['period'] ? ' <span class="year">'.partialToYear($secRef_array['period']).'</span>' : '')

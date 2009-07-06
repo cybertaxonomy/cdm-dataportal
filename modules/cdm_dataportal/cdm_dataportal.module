@@ -281,9 +281,9 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
   
   $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
   $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? $_SESSION['cdm']['search']['doTaxa'] : 1);
-  $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? $_SESSION['cdm']['search']['doSynonyms'] : 1);
-  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? $_SESSION['cdm']['search']['doTaxaByCommonNames'] : 1);
-  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? $_SESSION['cdm']['search']['doTaxaByCommonNames'] : 1);
+  $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
+  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
+  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
   $tdwg_level_select =  (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
   $areas =  (isset($_SESSION['cdm']['search']['areas']) ? $_SESSION['cdm']['search']['areas'] : false);
   
@@ -394,6 +394,7 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
           $tdwgOptionsSelected[] = $area->uuid;
         }
       }
+      asort($tdwgOptions);
       $form['search']['geographic_range']['tdwg_level_'.$key] = array(
         '#type' => 'select',
         '#title'         => t('TDWG level').' '.$key,
@@ -401,7 +402,7 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
         '#multiple' => TRUE, 
         '#options' => $tdwgOptions
       );   
-      $tdwg_js .= "$('#edit-search-geographic-range-tdwg-level-$key').parent()".($tdwg_level_select == $key ?  '.show()' : '.hide()'). ";\n";  
+      $tdwg_js .= "$('#edit-search-geographic-range-tdwg-level-$key').parent()".($tdwg_level_select + 1 == $key ?  '.show()' : '.hide()'). ";\n";  
     }
 
     drupal_add_js(
