@@ -299,7 +299,7 @@ function theme_get_nameRenderTemplate($renderPath){
     case 'taxon_page_synonymy':
       $template = array(
           'namePart' => array('#uri'=>true),
-          'referencePart' => array('#uri'=>true),
+          'referencePart' => true,
           'microreferencePart' => true,
           'statusPart' => true,
           'descriptionPart' => true
@@ -309,7 +309,7 @@ function theme_get_nameRenderTemplate($renderPath){
       $template = array(
             'namePart' => array('#uri'=>true),
             'authorshipPart' => true,
-            'referencePart' => array('#uri'=>true)
+            'referencePart' => true
       );
       break;
     default:
