@@ -317,7 +317,7 @@ function theme_get_nameRenderTemplate($renderPath){
     case 'typedesignations':
       $template = array(
             'namePart' => array('#uri'=>true),
-            'referencePart' => array('#uri'=>true),
+            'referencePart' => true,
             'microreferencePart' => true
       );
   }
