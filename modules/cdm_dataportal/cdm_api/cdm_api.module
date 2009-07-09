@@ -623,6 +623,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
   } else {
     $obj = unserialize($cache_entry->data);
     if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
+      _add_status_message_toggler();
       drupal_set_message('Using cache for: '.$uri, 'debug');
     }
   }
