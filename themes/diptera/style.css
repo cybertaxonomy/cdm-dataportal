@@ -158,6 +158,10 @@ ul.links li {
 ul.links li.first {
   border: none;
 }
+
+ul.dynabox_content {
+  margin-top:0;
+}
 #search .form-text, #search .form-submit {
   border: 1px solid #369;
   font-size: 1.1em;
