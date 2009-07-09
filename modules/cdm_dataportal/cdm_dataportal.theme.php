@@ -301,7 +301,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
       
     if(variable_get('cdm_dataportal_map_openlayers', 1)){
       // embed into openlayers viewer
-      $server = 'http://edit.csic.es/v1/areas3_ol.php';
+      $server = 'http://edit.csic.es/v1/areas3_ol2.php';
       $map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
       //$map_tdwg_Uri ='http://edit.csic.es/v1/areas3_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
       //$tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
@@ -310,11 +310,9 @@ function theme_cdm_descriptionElements_distribution($taxon){
       if(isset($tdwg_sldFiles[0]->layers)){
         $layerSlds = $tdwg_sldFiles[0]->layers;
         foreach($layerSlds as $layer){
-          $tdwg_sldUris[$layer->tdwg] = "http://edit.csic.es/fitxers/sld/".$layer->sld;
+          $tdwg_sldUris[$layer->tdwg] = "http://edit.csic.es/v1/sld/".$layer->sld;
         }
       }
-      $tdwg_sldUri = "http://edit.csic.es/fitxers/sld/".substr($tdwg_sldFile, 7, 7);
-      
       
       $add_tdwg1 = (isset($tdwg_sldUris['tdwg1']) ? "
           tdwg_1.params.SLD = '".$tdwg_sldUris['tdwg1']."';
@@ -694,6 +692,8 @@ function theme_select_secuuid($element) {
 }
 
 function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
+  
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
   $out .= '<li class="dynabox"><span class="label" alt="'.t('Click for accepted taxon').'">'.$label.'</span>';
   $out .= '<ul class="dynabox_content" title="'.$cdm_proxy_url.'"><li><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/images/loading_circle_grey_16.gif" style="display:none;"></li></ul>';
@@ -716,7 +716,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 
   $synonym_uuids = array();
   foreach($records as $taxon){
-    if(!_cdm_dataportal_acceptedByCurrentView($taxon)){
+    if($taxon->class == "Taxon"){
       if(!array_key_exists($taxon->uuid, $synonym_uuids)){
         $synonym_uuids[$taxon->uuid] = $taxon->uuid;
       }
@@ -732,7 +732,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
   // .. well, for sure not as performant as before, but better than nothing.
 
   foreach($records as $taxon){
-    if(_cdm_dataportal_acceptedByCurrentView($taxon)){
+    if($taxon->class == "Taxon"){
       $taxonUri = url(path_to_taxon($taxon->uuid));
       if(isset($taxon->name->nomenclaturalReference)){
         $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));

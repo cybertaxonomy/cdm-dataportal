@@ -307,11 +307,10 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       '#title' => t('Options')
     );
     
-   $form['search']['view'] = array(
+   $form['search']['tree'] = array(
     '#delta' => -1,
     '#type' => 'hidden',
-    '#value' => variable_get('cdm_taxonomictree_uuid', false),
-    '#name' => 'q',
+    '#value' => variable_get('cdm_taxonomictree_uuid', false)
   );
   
   
@@ -330,13 +329,6 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       '#type' => 'hidden',
       '#value' => variable_get('cdm_dataportal_search_items_on_page', 25)
     );
-    
-  $currentSecRefArray = _cdm_dataportal_currentSecRef_array();
-  $form['search']['secUuid'] = array(
-    '#delta' => -1,
-    '#type' => 'hidden',
-    '#value' => $currentSecRefArray['uuid']
-  );
 
   if($advancedForm){
     // general search parameters
@@ -995,15 +987,24 @@ function _cdm_dataportal_currentSecRef_array(){
 }
 
 /**
- * Check if a taxon is accepted by the current secundum
+ * Check if a taxon is accepted by the current taxonomic tree
  *
- * @param TaxonTO $taxonTO
- * @return true if $taxonTo is accepted, false otherwise
+ * @param Taxon $taxon
+ * @return true if $taxon is accepted, false otherwise
  */
+
 function _cdm_dataportal_acceptedByCurrentView($taxon){
   
-  $current_secref = _cdm_dataportal_currentSecRef_array();
-  return $taxon->class == "Taxon" && $current_secref['uuid'] == $taxon->sec->uuid;
+  //$current_secref = _cdm_dataportal_currentSecRef_array();
+  $defaultTreeUuid = variable_get('cdm_taxonomictree_uuid', false);
+  if($taxon->class == "Taxon" && isset($taxon->taxonNodes)){
+    foreach($taxon->taxonNodes as $node){
+      if($node->taxonomicTree == $defaultTreeUuid) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 /**

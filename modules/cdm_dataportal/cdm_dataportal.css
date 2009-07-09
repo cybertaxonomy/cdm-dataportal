@@ -87,6 +87,8 @@ li.firstentry{
 
 ul.cdm_names, ul.cdm_names li{
 	 background-image: none;
+	 list-style-type: none;
+	 list-style-image: none;
 }
 
 ul li.dynabox{

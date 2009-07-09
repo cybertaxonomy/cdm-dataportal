@@ -901,7 +901,7 @@ define('CDM_WS_TAXON_NAMERELATIONS', 'portal/taxon/$0/nameRelationships');
  * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
  * accepted taxon, this one will be returned.
  */
-define('CDM_WS_TAXON_ACCEPTED', 'taxon/$0/accepted');
+define('CDM_WS_TAXON_ACCEPTED', 'portal/taxon/$0/accepted');
 
 define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
 
