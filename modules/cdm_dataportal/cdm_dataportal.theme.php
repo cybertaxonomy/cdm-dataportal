@@ -1720,10 +1720,8 @@ function theme_cdm_pager(&$pager, $path, $parameters, $neighbors = 2){
 
   if ($pager->pagesAvailable > 1) {
 
-    $indices_count = count($pager->indices);
-    
     $out .= '<div class="pager">';
-    if($pager->currentIndex > 1){
+    if($pager->currentIndex > 0){
       $out .= theme('cdm_pager_link', t('« first'), 0,  $pager, $path, $parameters, array('class' => 'pager-first'));
       $out .= theme('cdm_pager_link', t('‹ previous'), $pager->currentIndex - 1, $pager, $path, $parameters, array('class' => 'pager-previous'));
     }
@@ -1736,7 +1734,7 @@ function theme_cdm_pager(&$pager, $path, $parameters, $neighbors = 2){
       $label = $index + 1;
       $out .= theme('cdm_pager_link', $label, $index,  $pager, $path, $parameters, array('class' => 'pager-first'));
     }
-    if($pager->indices[$indices_count - 1] < $pager->pagesAvailable){
+    if($pager->indices[count($pager->indices) - 1] < $pager->pagesAvailable - 1){
       $out .= '<div class="pager-list-dots-right">...</div>';
     }
 
