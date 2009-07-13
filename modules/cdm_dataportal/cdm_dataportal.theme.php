@@ -1124,7 +1124,7 @@ function theme_cdm_reference_pager($referencePager, $path, $parameters = array()
       $out .= '<li>'.theme('cdm_reference', $reference, TRUE).'</li>';
     }
     $out .= '</ul>';
-    $out .= theme('cdm_pager_new', $referencePager,  $path, $parameters);
+    $out .= theme('cdm_pager', $referencePager,  $path, $parameters);
   } else {
     $out = '<h4 class="error">Sorry, this page contains not entries.</h4>';
   }
@@ -1707,7 +1707,7 @@ function theme_cdm_search_results($pager, $path, $parameters){
   $out = ''; //l('Advanced Search', '/cdm_dataportal/search');
   if(count($pager->records) > 0){
     $out .= theme('cdm_list_of_taxa', $pager->records);
-    $out .= theme('cdm_pager_new', $pager, $path, $parameters);
+    $out .= theme('cdm_pager', $pager, $path, $parameters);
   } else {
     $out = '<h4 class="error">Sorry, no matching entries found.</h4>';
   }
@@ -1715,46 +1715,34 @@ function theme_cdm_search_results($pager, $path, $parameters){
 }
 
 
-function theme_cdm_pager_new(&$pager, $path, $parameters, $neighbors = 2){
-  //FIXME take advantage of new pager class => nearly no calcualations needed !!!
+function theme_cdm_pager(&$pager, $path, $parameters, $neighbors = 2){
   $out = '';
 
   if ($pager->pagesAvailable > 1) {
 
-    $viewportsize = $neighbors * 2 + 1;
-    if($pager->pagesAvailable <= $viewportsize){
-      $viewportsize = $pager->pagesAvailable;
-    }
-
+    $indices_count = count($pager->indices);
+    
     $out .= '<div class="pager">';
     if($pager->currentIndex > 1){
-      $out .= theme('cdm_pager_link_new', t('« first'), 1,  $pager, $path, $parameters, array('class' => 'pager-first'));
-      $out .= theme('cdm_pager_link_new', t('‹ previous'), $pager->currentIndex - 1, $pager, $path, $parameters, array('class' => 'pager-previous'));
+      $out .= theme('cdm_pager_link', t('« first'), 0,  $pager, $path, $parameters, array('class' => 'pager-first'));
+      $out .= theme('cdm_pager_link', t('‹ previous'), $pager->currentIndex - 1, $pager, $path, $parameters, array('class' => 'pager-previous'));
     }
 
-    if($pager->pagesAvailable <= $viewportsize || $pager->currentIndex <= $neighbors){
-      $first_number = 1;
-    } else if($pager->currentIndex >= $pager->pagesAvailable - $neighbors){
-      $first_number = $pager->pagesAvailable - $viewportsize;
-    } else {
-      $first_number = $pager->currentIndex - $neighbors;
-    }
-
-    if($first_number > 1){
+    if($pager->indices[0] > 0){
       $out .= '<div class="pager-list-dots-left">...</div>';
     }
 
-
-    for($i = $first_number; ($i == $pager->pagesAvailable) || ($i < $first_number + $viewportsize); $i++){
-      $out .= theme('cdm_pager_link_new', $i, $i,  $pager, $path, $parameters, array('class' => 'pager-first'));
+    foreach($pager->indices as $index){
+      $label = $index + 1;
+      $out .= theme('cdm_pager_link', $label, $index,  $pager, $path, $parameters, array('class' => 'pager-first'));
     }
-    if($i < $pager->pagesAvailable){
+    if($pager->indices[$indices_count - 1] < $pager->pagesAvailable){
       $out .= '<div class="pager-list-dots-right">...</div>';
     }
 
-    if($pager->currentIndex < $pager->pagesAvailable){
-      $out .= theme('cdm_pager_link_new', t('next ›'), $pager->currentIndex + 1, $pager, $path, $parameters, array('class' => 'pager-next'));
-      $out .= theme('cdm_pager_link_new', t('last »'), $pager->pagesAvailable, $pager, $path, $parameters, array('class' => 'pager-last'));
+    if($pager->nextIndex){
+      $out .= theme('cdm_pager_link', t('next ›'), $pager->nextIndex, $pager, $path, $parameters, array('class' => 'pager-next'));
+      $out .= theme('cdm_pager_link', t('last »'), $pager->pagesAvailable - 1, $pager, $path, $parameters, array('class' => 'pager-last'));
     }
     $out .= '</div>';
 
@@ -1762,31 +1750,14 @@ function theme_cdm_pager_new(&$pager, $path, $parameters, $neighbors = 2){
   }
 }
 
-function theme_cdm_pager_link_new($text, $linkPageNumber, &$pager, $path, $parameters = array(), $attributes) {
+function theme_cdm_pager_link($text, $linkIndex, &$pager, $path, $parameters = array(), $attributes) {
 
   $out = '';
-
-  if ($linkPageNumber == $pager->currentIndex) {
+  $parameters['search']['page'] = $linkIndex;
+  if ($linkIndex == $pager->currentIndex) {
     $out = '<strong>'.$text.'</strong>';
   } else {
-    $out = l($text, $path.$linkPageNumber, $attributes /*, compose_url_prameterstr($parameters)*/);
+    $out = l($text, $path, $attributes, drupal_query_string_encode($parameters));
   }
-  return $out;
-}
-
-
-function theme_cdm_pager_link($text, $linkPageNumber, &$resultPageSTO, $path, $parameters = array(), $attributes) {
-
-  $out = '';
-
-  if ($linkPageNumber == $resultPageSTO->pageNumber) {
-    $out = '<strong>'.$text.'</strong>';
-  } else {
-    // <a class="pager-next active" title="Go to page 3" href="/node?page=2">3</a>
-    $parameters['page'] = $linkPageNumber;
-    $out = l($text, $path, $attributes, compose_url_prameterstr($parameters));
-  }
-
-
   return $out;
 }

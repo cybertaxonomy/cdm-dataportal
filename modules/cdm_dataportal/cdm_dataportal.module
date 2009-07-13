@@ -471,6 +471,7 @@ function cdm_dataportal_search_process($form) {
  */
 function cdm_dataportal_search_form_request(){
 
+
   // split of  geographic range
   if(isset($_REQUEST['search']['geographic_range'])){
     $geographicRange = $_REQUEST['search']['geographic_range'];
@@ -864,13 +865,13 @@ function cdm_dataportal_view_search_advanced(){
 function cdm_dataportal_view_search_taxon(){
   
   $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
-  
+
   $request_params = cdm_dataportal_search_form_request();
-  //$sw_params = array_replace_key($request_params, array('query'=> 'q' ));
- 
   $taxonPager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($request_params));
   
-  return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/taxon', $request_params);
+  $search_params = $_REQUEST;
+  unset($search_params['q']);
+  return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/taxon', $search_params);
 }
 
 function cdm_view_xml2json(){
@@ -1075,11 +1076,17 @@ function generalizeString($string){
   return str_replace(' ', '_', strtolower($string));
 }
 
-
-function compose_url_prameterstr($parameters = array()){
+/**@Deprecated
+ * 
+ */
+function compose_url_prameterstr($parameters = array(), $parentPropertyName = false){
   $pstr = '';
   foreach($parameters as $key=>$value){
-     $pstr .= ($pstr ? '&' :'').$key.'='.urlencode($value);
+    if(is_array($value)){
+      
+    } else {
+       $pstr .= ($pstr ? '&' :'').$key.'='.urlencode($value);    
+    }
   }
   return $pstr;
 }
