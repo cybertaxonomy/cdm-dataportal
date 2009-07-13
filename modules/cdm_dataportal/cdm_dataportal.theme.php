@@ -948,6 +948,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   $out .= theme('cdm_back_to_search_result_button');
   $out .= theme('cdm_acceptedFor', 'page_general');
   
+  // --- DESCRIPTION --- //
   if($page_part == 'description' || $page_part == 'all'){
     
     $featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get('cdm_dataportal_featuretree_uuid', false));
@@ -955,10 +956,10 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
     $mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $taxonDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
  
     $out .= '<div id="general">';
-    $out .= theme('cdm_taxon_page_description', $taxon, $mergedTrees);
+    $out .= theme('cdm_taxon_page_description', $taxon, $mergedTrees, $media);
     $out .= '</div>';
   }
-  
+  // --- IMAGES --- //
   if($page_part == 'images' || $page_part == 'all'){
     $out .= '<div id="images">';
     if($page_part == 'all'){
@@ -967,7 +968,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
     $out .= theme('cdm_taxon_page_images', $taxon, $media);
     $out .= '</div>';
   }
-
+  // --- SYNONYMY --- //
   if($page_part == 'synonymy' || $page_part == 'all'){
     $out .= '<div id="synonymy">';
     if($page_part == 'all'){
@@ -996,8 +997,13 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
  * accepted taxon.
  *
  */
-function theme_cdm_taxon_page_description($taxon, $mergedTrees){
-
+function theme_cdm_taxon_page_description($taxon, $mergedTrees, $media = null){
+  
+  // preferred image
+  // hardcoded for testing;
+  //$defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
+  //$out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, '&width=333&height=220&quality=95&format=jpeg').'</div>';
+ 
   // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
   // description
@@ -1197,18 +1203,15 @@ function theme_cdm_synonym_page(){
 
 }
 
-function theme_cdm_preferredImage($mergedTrees, $defaultImage, $parameters = ''){
+function theme_cdm_preferredImage($media, $defaultImage, $imageWidth, $imageHeight, $parameters = ''){
 
-  if(isset($mergedTrees[0])){
-    foreach($mergedTrees[0]->root->children as $node){
-      if($node->feature->uuid == UUID_IMAGE){
-        $preferredImage = $node->descriptionElements[0]->media[0]->representations[0]->parts[0]->uri;
-      }
-    }
+  if(isset($media[0])){
+    $preferredMedia = $media[0];
   }
-
-  $image = $preferredImage ? $preferredImage . $parameters : $defaultImage;
-  $out = '<img class="left" src="'.$image.'" alt="no image available" />';
+ 
+  $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
+  $altText = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available";
+  $out = '<img class="left" width="'.$imageWidth.'" height="'.$imageHeight.'" src="'.$imageUri.'" alt="'.$altText.'" />';
   return $out;
 }
 
