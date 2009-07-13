@@ -322,5 +322,9 @@ ul.cdm_taxontree {
 
 .distribution_map_legend {
 	font-size: 80%;
-} 
+}
+
+span.submitted, .description {
+	font-size: 1em;
+}
 
