@@ -31,6 +31,11 @@ div.debug .uri{
   font-style: italic;
 }
 
+.rank, .authors{
+	font-style: normal;
+}
+	
+
 .relation_sign{
 	margin-left: -1em; /* same as ul.typeDesignations */
 	margin-right: 0.3em;

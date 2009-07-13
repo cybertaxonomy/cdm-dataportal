@@ -21,32 +21,21 @@ function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees){
   return $out;
 }
 
-function palmweb_2_cdm_taxon_page_images($taxon, $taxonDescriptions){
-  
-  if($taxonDescriptions){
-    foreach($taxonDescriptions as $descriptionElements){
-      foreach($descriptionElements->elements as $element){
-        if($element->feature->uuid == UUID_IMAGE){
-          $flashLink = true;
-          break;
-        }
-      }
-    }
-  }
+function palmweb_2_cdm_taxon_page_images($taxon, $media){
+
+  $flashLink = isset($media[0]);
   
   if($flashLink){
     
     $taggedName = $taxon->name->taggedName;
-  
+    
     $nameArray = array();
     foreach($taggedName as $taggedText){
-      if($taggedText->type == 'name' || $taggedText->type == 'rank'){
-        // replacing of "subsp." with "s" is cichorieae specific
-        //$part = $taggedText->text == "subsp." ? "s" : $taggedText->text;
+      if($taggedText->type == 'name'){
         $nameArray[] = $taggedText->text;
       }
     }
-       
+    
     $query = join("%5F", $nameArray) . '%20AND%20jpg';
     
   $out = '

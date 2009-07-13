@@ -39,35 +39,24 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
   return '<p class="descriptionText">' . $description . $referenceCitation.'</p>';
 }
 
-function garland_cichorieae_cdm_taxon_page_images($taxon, $taxonDescriptions){
+function garland_cichorieae_cdm_taxon_page_images($taxon, $media){
 
-  if($taxonDescriptions){
-    foreach($taxonDescriptions as $descriptionElements){
-      foreach($descriptionElements->elements as $element){
-        if($element->feature->uuid == UUID_IMAGE){
-          $flashLink = true;
-          break;
-        }
-      }
-    }
-  }
-
+  $flashLink = isset($media[0]);
+  
   if($flashLink){
-
+    
     $taggedName = $taxon->name->taggedName;
-
+    
     $nameArray = array();
     foreach($taggedName as $taggedText){
-      if($taggedText->type == 'name' || $taggedText->type == 'rank'){
-        // replacing of "subsp." with "s" is cichorieae specific
-        $part = $taggedText->text == "subsp." ? "s" : $taggedText->text;
-        $nameArray[] = $part;
+      if($taggedText->type == 'name'){
+        $nameArray[] = $taggedText->text;
       }
     }
-
+    
     $query = join("%5F", $nameArray) . '%20AND%20jpg';
-
-    $out = '
+    
+  $out = '
   
   <script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
 
