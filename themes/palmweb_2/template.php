@@ -6,12 +6,12 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees){
+function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media){
 
   // preferred image
   // hardcoded for testing;
   $defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
-  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $mergedTrees, $defaultPreferredImage, '&width=333&height=220&quality=95&format=jpeg').'</div>';
+  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, 333, 220).'</div>';
   
    // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);

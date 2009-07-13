@@ -12,15 +12,17 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees){
+function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $media){
 
   // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
 
   // preferred image
-  // hardcoded for testing
+  // 2 lines hard coded for testing
   $defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
-  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $mergedTrees, $defaultPreferredImage, '&width=400&height=300&quality=95&format=jpeg').'</div>';
+  $imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
+  
+  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, 400, 300, $imageUriParams).'</div>';
 
   // description
   $out .= theme('cdm_featureTrees', $mergedTrees, $taxon);
