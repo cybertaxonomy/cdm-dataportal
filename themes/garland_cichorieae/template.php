@@ -56,7 +56,7 @@ function garland_cichorieae_cdm_taxon_page_images($taxon, $media){
       }
     }
     
-    $query = join("%5F", $nameArray) . '%20AND%20jpg';
+    $query = join("%5F", $nameArray) . '%20AND%20EditWP6%20AND%20jpg';
     
   $out = '
   
