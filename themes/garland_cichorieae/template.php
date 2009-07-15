@@ -12,17 +12,18 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $media){
+function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hideImages = false){
 
   // description TOC
-  $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
+  $out = theme('cdm_featureTreeTOCs', $mergedTrees);
 
   // preferred image
   // 2 lines hard coded for testing
-  $defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
-  $imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
-  
-  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, 400, 300, $imageUriParams).'</div>';
+  if(!$hideImages){
+    $defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
+    $imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
+    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, null, null, $imageUriParams).'</div>';
+  }
 
   // description
   $out .= theme('cdm_featureTrees', $mergedTrees, $taxon);
@@ -259,13 +260,12 @@ function theme_get_partDefinition($nameType){
         'namePart' => array(
           'name' => true
     ),
-        'authorshipPart' => array(
-          'authorTeam' => true,   
+        'nameAuthorPart' => array(
+          'name' => true,
+          'authors' => true
     ),
         'referencePart' => array(
-          'reference' => true      
-    ),
-        'microreferencePart' => array(
+          'reference' => true,
           'microreference' => true,
     ),
         'statusPart' => array(
@@ -289,17 +289,15 @@ function theme_get_nameRenderTemplate($renderPath){
       break;
     case 'taxon_page_synonymy':
       $template = array(
-          'namePart' => array('#uri'=>true),
+          'nameAuthorPart' => array('#uri'=>true),
           'referencePart' => true,
-          'microreferencePart' => true,
           'statusPart' => true,
           'descriptionPart' => true
       );
       break;
     case 'acceptedFor':
       $template = array(
-            'namePart' => array('#uri'=>true),
-            'authorshipPart' => true,
+            'nameAuthorPart' => array('#uri'=>true),
             'referencePart' => true
       );
       break;
@@ -307,9 +305,8 @@ function theme_get_nameRenderTemplate($renderPath){
     case 'list_of_taxa':
     case 'typedesignations':
       $template = array(
-            'namePart' => array('#uri'=>true),
-            'referencePart' => true,
-            'microreferencePart' => true
+            'nameAuthorPart' => array('#uri'=>true),
+            'referencePart' => true
       );
   }
   return $template;

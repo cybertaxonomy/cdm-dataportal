@@ -6,14 +6,15 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media){
+function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hideImages = false){
 
-  // preferred image
-  // hardcoded for testing;
-  $defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
-  // 184px × 144
-  $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, 184, 144).'</div>';
-  
+  if(!$hideImages){
+    // preferred image
+    // hardcoded for testing;
+    $defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
+    // 184px × 144
+    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, 184, 144).'</div>';
+  }
    // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
   // description
@@ -176,15 +177,13 @@ function theme_get_partDefinition($nameType){
     return array(
         'namePart' => array(
           'name' => true,
-          'authorTeam' => true,   
+          'authors' => true,   
         ),
         'authorshipPart' => array(
         ),
         'referencePart' => array(
-          'reference' => true      
-        ),
-        'microreferencePart' => array(
-          'microreference' => true,
+          'reference' => true,
+          'microreference' => true
         ),
         'statusPart' => array(
           'status' => true,
@@ -203,7 +202,7 @@ function theme_get_nameRenderTemplate($renderPath){
       case 'acceptedFor':
         $template = array(
           'namePart' => array('#uri'=>true),
-          'authorshipPart' => true
+          //'authorshipPart' => true
         );
         break;
       case 'taxon_page_title':
@@ -213,7 +212,7 @@ function theme_get_nameRenderTemplate($renderPath){
       default:
         $template = array(
           'namePart' => array('#uri'=>true),
-          'authorshipPart' => true,
+          //'authorshipPart' => true,
           'referencePart' => array('#uri'=>true),
           'descriptionPart' => true
         );

@@ -88,13 +88,15 @@ function diptera_get_partDefinition($nameType){
   if($nameType == 'ZoologicalName'){
     return array(
         'namePart' => array(
+          'name' => true
+        ),
+        'nameAuthorPart' => array(
           'name' => true,
+          'authors' => true
         ),
         'referencePart' => array(
-          'authorTeam' => true
-        ),
-        'microreferencePart' => array(
-          'microreference' => true,
+         'authors' => true,
+         'microreference' => true
         ),
         'statusPart' => array(
           'status' => true,
@@ -125,17 +127,14 @@ function diptera_get_nameRenderTemplate($renderPath){
     case 'typedesignations': 
       $template = array(
         'namePart' => array('#uri'=>true),
-        //'authorshipPart' => true,
-        'referencePart' => array('#uri'=>true),
-        'microreferencePart' => true,
+        'referencePart' => array('#uri'=>true)
       );
       break;
     case 'taxon_page_synonymy':
     default: 
       $template = array(
         'namePart' => array('#uri'=>true),
-        'referencePart' => true,
-        'microreferencePart' => array('#uri'=>true),
+        'referencePart' => array('#uri'=>true),
         'statusPart' => true,
         'descriptionPart' => true
       );
