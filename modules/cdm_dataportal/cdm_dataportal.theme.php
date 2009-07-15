@@ -20,6 +20,26 @@ function _add_js_thickbox(){
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_thickbox.css');
 }
 
+function _add_js_cluetip(){
+  
+  //TODO replace by http://www.socialembedded.com/labs/jQuery-Tooltip-Plugin/jQuery-Tooltip-Plugin.html
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.dimensions.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.hoverIntent.js');
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.css');
+  drupal_add_js ("$(document).ready(function(){
+      $('.cluetip').css({color: '#0062C2'}).cluetip({
+        splitTitle: '|',
+        showTitle: true,
+        activation: 'hover',
+        sicky: true,
+        arrows: true,
+        dropShadow: false,
+        cluetipClass: 'rounded'
+      });
+    });", 'inline');
+}
+
 /**
  * TODO if getting fragment from request is possible remove $_REQUEST['highlite'] HACK
  * NOT WORKING since fragments are not available to the server
@@ -244,6 +264,13 @@ function theme_cdm_media_gallerie($mediaList, $maxExtend, $cols = 4, $maxRows = 
   }
   $out = '<table class="media_gallerie">';
   for($r = 0; $r < $maxRows && count($mediaList) > 0; $r++){
+    $out .= '<colgroup>';
+    for($r = 0; $r < $cols; $r++){
+      $out .= '<col width="'.(100 / $cols).'%">';
+    }
+    $out .= '</colgroup>';
+  }
+  for($r = 0; $r < $maxRows && count($mediaList) > 0; $r++){
     $out .= '<tr>';  
     for($r = 0; $r < $cols; $r++){
       $media = array_shift($mediaList);
@@ -301,7 +328,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
       
     if(variable_get('cdm_dataportal_map_openlayers', 1)){
       // embed into openlayers viewer
-      $server = 'http://edit.csic.es/v1/areas3_ol2.php';
+      $server = 'http://edit.csic.es/v1/areas_sld.php';
       $map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
       //$map_tdwg_Uri ='http://edit.csic.es/v1/areas3_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
       //$tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
@@ -490,13 +517,29 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
     // due to a bug in the cdmlib the taggedName alway has a lst empty element, we will remove it:
     array_pop($taggedName);
     
-    if(!isset($renderTemplate['namePart']['authorTeam'])){
-      // find author and split off from name 
-      // TODO expecting to find the author as the last element
-      if($taggedName[count($taggedName)- 1]->type == 'authors'){
-        $authorTeam = $taggedName[count($taggedName)- 1]->text;
-        unset($taggedName[count($taggedName)- 1]);
-      }
+    $lastAuthorElementString = false;
+    $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
+    $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
+    
+    if(!($hasNamePart_with_Authors || $hasNameAuthorPart_with_Authors)){
+//      // find author and split off from name 
+//      // TODO expecting to find the author as the last element
+//      if($taggedName[count($taggedName)- 1]->type == 'authors'){
+//        $authorTeam = $taggedName[count($taggedName)- 1]->text;
+//        unset($taggedName[count($taggedName)- 1]);
+//      }
+
+        // remove all authors
+        $taggedNameNew = array();
+        foreach($taggedName as $element){
+          if($element->type != 'authors'){
+            $taggedNameNew[] = $element;
+          } else {
+              $lastAuthorElementString = $element->text;
+          }
+       }
+       $taggedName = $taggedNameNew;
+       
     }
     $name = '<span class="'.$taxonName->class.'">'.theme('cdm_taggedtext2html', $taggedName).'</span>';
   } else {  
@@ -506,34 +549,55 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
   // fill name into $renderTemplate
   array_setr('name', $name, $renderTemplate);
  
-  // fill with authorTeam
-  if($authorTeam){
-    $authorTeamHtml = ' <span class="authorTeam">'.$authorTeam.'</span>';
-    array_setr('authorTeam', $authorTeamHtml, $renderTemplate);
-  }
+//  // fill with authorTeam
+//  if($authorTeam){
+//    $authorTeamHtml = ' <span class="authorTeam">'.$authorTeam.'</span>';
+//    array_setr('authorTeam', $authorTeamHtml, $renderTemplate);
+//  }
+
   
   // fill with reference
-  if($taxonName->nomenclaturalReference){
-    $citation = $taxonName->nomenclaturalReference->titleCache;
-    $authorTeam = cdm_taggedtext_value($taggedName, 'authors');
-    $citation = trim(str_replace($authorTeam, '', $citation));
-    if(str_beginsWith($citation, ", in")){
-      $citation = substr($citation, 2);
-      $separator = ' ';
-    } else if(!str_beginsWith($citation, "in")){
-      $separator = ', ';
-    } else {
-      $separator = ' ';
+  if(isset($renderTemplate['referencePart'])){
+    
+    // [Eckhard]:"Komma nach dem Taxonnamen ist grunsätzlich falsch, 
+    // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
+    if(isset($renderTemplate['referencePart']['reference']) && $taxonName->nomenclaturalReference){
+      $microreference = null;
+      if(isset($renderTemplate['referencePart']['microreference'])){
+        $microreference = $taxonName->nomenclaturalMicroReference;
+      }
+      $citation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($taxonName->nomenclaturalReference->uuid, $microreference));
+      $citation = $citation->String;
+      // find preceding element of the refrence
+      $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
+      if(str_beginsWith($citation, ", in")){
+        $citation = substr($citation, 2);
+        $separator = ' ';
+      } else if(!str_beginsWith($citation, "in") && $precedingKey == 'authors'){
+        $separator = ', ';
+      } else {
+        $separator = ' ';
+      }
+      
+      $referenceArray['#separator'] = $separator;
+      $referenceArray['#html'] = '<span class="reference">'.$citation.'</span>';      
+      array_setr('reference', $referenceArray, $renderTemplate);
     }
-    $referenceArray['#separator'] = $separator;
-    $referenceArray['#html'] = '<span class="reference">'.$citation.'</span>';
-    array_setr('reference', $referenceArray, $renderTemplate);
-  }
-
-  // fill with microreference
-  if($taxonName->nomenclaturalMicroReference){
-    $microreferenceHtml = '<span class="microreference">:&nbsp;' . $taxonName->nomenclaturalMicroReference . '</span>';
-    array_setr('microreference', $microreferenceHtml, $renderTemplate);
+    
+    // if authors have been removed from the name part the last named authorteam 
+    // should be added to the reference citation, otherwise, keep the separator 
+    // out of the reference 
+    if(isset($renderTemplate['referencePart']['authors']) && $lastAuthorElementString){
+      // if the nomenclaturalReference cintation is not included in the reference part but diplay of the microreference
+      // is whanted append the microreference to the authorTeam
+      if(!isset($renderTemplate['referencePart']['reference']) && isset($renderTemplate['referencePart']['microreference'])){
+          $separator = ": ";
+          $citation = $taxonName->nomenclaturalMicroReference;
+      }
+      $referenceArray['#html'] = ' <span class="reference">'.$lastAuthorElementString.$separator.$citation.'</span>';
+      array_setr('authors', $referenceArray, $renderTemplate);
+    }
+    
   }
   
   // fill with status
@@ -608,6 +672,34 @@ function &array_setr($key, $value, array &$array){
       $innerArray = array_setr($key, $value, $v);
       if($innerArray){
         return $array;
+      }
+    }
+  }
+  return null;
+}
+
+function &get_preceding_contentElement($contentElementKey, array &$renderTemplate){
+  $precedingElement = null;
+  foreach($renderTemplate as &$part){
+    foreach($part as $key=>&$element){
+      if($key == $contentElementKey){
+        return $precedingElement;
+      }
+      $precedingElement = $element;
+    }
+  }
+  return null;
+}
+
+function &get_preceding_contentElementKey($contentElementKey, array &$renderTemplate){
+  $precedingKey = null;
+  foreach($renderTemplate as &$part){
+    foreach($part as $key=>&$element){
+      if($key == $contentElementKey){
+        return $precedingKey;
+      }
+      if(!str_beginsWith($key, '#')){
+        $precedingKey = $key;
       }
     }
   }
@@ -931,6 +1023,13 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
     
   }
+  
+  // hideImage flag depending on administative preset
+  $hideImages = false;
+  if(variable_get('image_hide_rank', '0') != '0'){
+    $rankCompare = rank_compare($taxon->name->rank->uuid, variable_get('image_hide_rank', '-99'));
+    $hideImages =  ($rankCompare > -1);
+  }
   // $hideTabs[] = theme('cdm_taxonpage_tab', 'General');
   // $hideTabs[] = theme('cdm_taxonpage_tab', 'Synonymy')
   
@@ -956,11 +1055,11 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
     $mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $taxonDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
  
     $out .= '<div id="general">';
-    $out .= theme('cdm_taxon_page_description', $taxon, $mergedTrees, $media);
+    $out .= theme('cdm_taxon_page_description', $taxon, $mergedTrees, $media, $hideImages);
     $out .= '</div>';
   }
   // --- IMAGES --- //
-  if($page_part == 'images' || $page_part == 'all'){
+  if(!$hideImages && $page_part == 'images' || $page_part == 'all'){
     $out .= '<div id="images">';
     if($page_part == 'all'){
       $out .= '<h2>'.t('Images').'</h2>';
@@ -997,13 +1096,15 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
  * accepted taxon.
  *
  */
-function theme_cdm_taxon_page_description($taxon, $mergedTrees, $media = null){
+function theme_cdm_taxon_page_description($taxon, $mergedTrees, $media = null, $hideImages = false){
   
   // preferred image
   // hardcoded for testing;
+  //if(!$hideImages){
   //$defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
   //$out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, '&width=333&height=220&quality=95&format=jpeg').'</div>';
- 
+  //}
+  
   // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
   // description
@@ -1290,21 +1391,8 @@ function theme_cdm_taxonRelations($taxonRelationships){
   if(!$taxonRelationships){
     return;
   }
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.dimensions.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.hoverIntent.js');
-  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.css');
-
-  drupal_add_js ("$(document).ready(function(){
-      $('.cluetip').css({color: '#0062C2'}).cluetip({
-        splitTitle: '|',
-        showTitle: true,
-        activation: 'hover',
-        arrows: true,
-        dropShadow: false,
-        cluetipClass: 'rounded'
-      });
-    });", 'inline');
+  
+  _add_js_cluetip();
 
   // aggregate misapplied names having the same fullname:
   $misapplied = array();
@@ -1409,6 +1497,8 @@ function compare_specimenTypeDesignationStatus($a, $b){
 }
 
 function theme_cdm_typedesignations($typeDesignations = array()){
+  
+  _add_js_cluetip();
   $renderPath = 'typedesignations';
   $out = '<ul class="typeDesignations">';
 
@@ -1450,13 +1540,20 @@ function theme_cdm_typedesignations($typeDesignations = array()){
     foreach($specimenTypeDesignations as $std){
 
       $typeReference = '';
-      if(!empty($std->citation)){
+      //show citation only for Lectotype or Neotype
+      $showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_NEOTYPE || $std->typeStatus->uuid == UUID_LECTOTYPE);
+      if($showCitation && !empty($std->citation)){
+        $shortCitation = $std->citation->authorTeam->titleCache;
+        $shortCitation .= (strlen($shortCitation) > 0 ? ' ' : '' ). partialToYear($std->citation->datePublished->start);
+        if(strlen($shortCitation) == 0){
+          $shortCitation = theme('cdm_reference',$std->citation );
+          $missingShortCitation = true;
+        }
         $typeReference .= '&nbsp;(' . t('designated by');
-        $typeReference .= '&nbsp;<span class="typeReference cluetip no-print" title="|'. htmlspecialchars(theme('cdm_reference',$std->citation )) .'|">';
-        $typeReference .= $std->citation->authorTeam->titleCache . ' ' . partialToYear($std->citation->datePublished->start);
-        $typeReference .= '</span>';
+        $typeReference .= '&nbsp;<span class="typeReference '.($missingShortCitation ? '' : 'cluetip').' no-print" title="'. htmlspecialchars('|'.theme('cdm_reference',$std->citation ).'|') .'">';
+        $typeReference .= $shortCitation.'</span>';
         $typeReference .= ')';
-        $typeReference .= '<span class="reference only-print">(designated by '.theme('cdm_reference',$std->citation ).')</span>';
+        //$typeReference .= '<span class="reference only-print">(designated by '.theme('cdm_reference',$std->citation ).')</span>';
       }
 
       $out .= '<li class="specimenTypeDesignation">';

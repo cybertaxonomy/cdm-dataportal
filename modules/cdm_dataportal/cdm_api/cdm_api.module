@@ -69,7 +69,7 @@ function cdm_api_menu($may_cache) {
  */
 function cdm_api_settings_form(){
   
-   $form['cdm_webservice'] = array(
+  $form['cdm_webservice'] = array(
       '#type' => 'fieldset',
       '#title' => t('CDM Web Service'),
       '#collapsible' => FALSE,
@@ -83,16 +83,11 @@ function cdm_api_settings_form(){
     '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
   
-  $rankVocabulary = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_RANK);
-  $options = array();
-  foreach($rankVocabulary->terms as $term){
-    $options[$term->uuid] = t($term->representation_L10n);
-  }
   $form['cdm_webservice']['taxontree_ranklimit'] =  array(
     '#type'          => 'select',
     '#title'         => t('Rank of highest displayed taxon'),
     '#default_value' => variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT_UUID),
-    '#options'       => array_reverse($options),
+    '#options'       => cdm_rankVocabulary_as_option(),
     '#description'   => t('The rank of the highest displayed taxon in the taxontree.'),
   );
   
@@ -505,6 +500,20 @@ function _cdm_taxonomy_compose_viewrank(){
 }
 
 
+function cdm_rankVocabulary_as_option(){
+  global $rankVocabularyOptions;
+  if(!$rankVocabularyOptions){
+    $vocab = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_RANK);
+    $rankVocabularyOptions = array();
+    foreach($vocab->terms as $term){
+      $rankVocabularyOptions[$term->uuid] = t($term->representation_L10n);
+    }
+    array_reverse($rankVocabularyOptions);
+  }
+  return $rankVocabularyOptions;
+}
+
+
 function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDescriptionsSeparated = false){
   
   if(!$featureTree){
@@ -879,6 +888,9 @@ define('CDM_WS_NAME_DESCRIPTIONS', 'portal/name/$0/descriptions');
 
 define('CDM_WS_REFERENCE', 'reference');
 
+
+define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCitation/$1');
+
 define('CDM_WS_FIND_TAXA', 'portal/taxon/find');
 
 define('CDM_WS_TAXON', 'portal/taxon');
@@ -916,6 +928,8 @@ define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
 define('CDM_WS_TAXONOMY', 'taxontree');
 
 define('CDM_WS_TERMVOCABULARY', 'term/$0');
+
+define('CDM_WS_TERM_COMPARE', 'term/$0/compareTo/$1');
 
 define('CDM_WS_TDWG_LEVEL', 'term/tdwg/$0');
 

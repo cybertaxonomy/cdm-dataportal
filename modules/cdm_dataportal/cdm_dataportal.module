@@ -479,7 +479,7 @@ function cdm_dataportal_search_form_request(){
   }
     
   $form_params = $_REQUEST['search'];
-  $form_params['query'] =  $_REQUEST['query'];
+  $form_params['query'] =  trim($_REQUEST['query']);
   
   // add geographic range
   if($geographicRange){
@@ -577,7 +577,7 @@ function cdm_dataportal_settings(){
     '#collapsed' => TRUE,
   );
   
-   $form['cdm_dataportal']['layout']['cdm_taxonname_type'] = array(
+  $form['cdm_dataportal']['layout']['cdm_taxonname_type'] = array(
     '#type' => 'select',
     '#title'         => t('Taxon name type'),
     '#default_value' => variable_get('cdm_taxonname_type', 'BotanicalName'),
@@ -631,6 +631,17 @@ function cdm_dataportal_settings(){
                         .' Check this box to allow displaying all descriptions separately.')
   );
   
+  $options = cdm_rankVocabulary_as_option();
+  array_unshift($options, '-- DISABLED --');
+  $form['cdm_dataportal']['layout']['image_hide_rank'] =  array(
+    '#type'          => 'select',
+    '#title'         => t('Hide Images for Taxa above'),
+    '#default_value' => variable_get('image_hide_rank', '0'),
+    '#options'       => $options,
+    '#description'   => t(''),
+  );
+  
+  // --- find taxa ---- //
    $form['cdm_dataportal']['layout']['findtaxa'] = array(
     '#type' => 'fieldset',
     '#title' => t('Search Taxa'),
@@ -898,6 +909,30 @@ function path_to_reference($uuid){
   return 'cdm_dataportal/reference/'.$uuid;
 }
 
+/**
+ * Compares thisRank with thatRank.
+ * Returns a negative integer, zero, or a positive integer 
+ * as the of thisRank is higher than, equal to, or lower than thatRank.
+ * e.g: 
+ * <ul>
+ * <li>rank_compare({species_uuid}, {genus_uuid}) = -1</li>
+ * <li>rank_compare({genus_uuid}, {genus_uuid}) = 0</li>
+ * <li>rank_compare({genus_uuid}, {tribus_uuid}) = 1</li>
+ * </ul>
+ * <p>
+ * This compare logic of the underlying webservice is the
+ * <b>inverse logic</b> of the the one implemented in 
+ * java.lang.Comparable#compareTo(java.lang.Object)
+ * @param $thisRankUuid
+ * @param $thatRankUuid
+ * @return  a negative integer, zero, or a positive integer 
+ * as the thisRank is lower than, equal to, or higher than thatRank 
+ */
+function rank_compare($thisRankUuid, $thatRankUuid){
+    $result = cdm_ws_get(CDM_WS_TERM_COMPARE, array($thisRankUuid, $thatRankUuid));
+    return $result->Integer;
+}
+
 function uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
    $acceptedPath = path_to_taxon($acceptedUuid);
    return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid);
@@ -1150,16 +1185,25 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
         );
     }
   }
+  
+  if($nameLink && isset($template['nameAuthorPart']['#uri'])){
+    $template['nameAuthorPart']['#uri'] = $nameLink;
+  } else{
+    unset($template['nameAuthorPart']['#uri']);
+  }
+  
   if($nameLink && isset($template['namePart']['#uri'])){
     $template['namePart']['#uri'] = $nameLink;
   } else{
     unset($template['namePart']['#uri']);
   }
+  
   if($refenceLink && isset($template['referencePart']['#uri'])){
     $template['referencePart']['#uri'] = $refenceLink;
   }else{
     unset($template['referencePart']['#uri']);
   }
+  
   return $template;
 }
 
