@@ -156,7 +156,7 @@ a.filter_remove:link, a.filter_remove:visited{
   color: red;
 }
 
-a.synonym:link, a.synonym:visited, .Synonym a:link, .Synonym:visited {
+a.synonym:link, a.synonym:visited, .Synonym a:link, .Synonym a:visited {
   color: #7C7C7F;
 }
 

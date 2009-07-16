@@ -280,12 +280,11 @@ function cdm_dataportal_session_validate(){
 function cdm_dataportal_search_taxon_form($advancedForm = false){
   
   $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
-  $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? $_SESSION['cdm']['search']['doTaxa'] : 1);
+  $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 0);
   $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
   $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
-  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
   $tdwg_level_select =  (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
-  $areas =  (isset($_SESSION['cdm']['search']['areas']) ? $_SESSION['cdm']['search']['areas'] : false);
+  $selected_areas =  (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : false);
   
   $url = 'cdm_dataportal/search/taxon';
   $form['#method'] = 'get';
@@ -382,8 +381,8 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       foreach($tdwg_level as $area){
         $representation = $area->representations[0];
         $tdwgOptions[$representation->abbreviatedLabel] = $area->representation_L10n;
-        if(is_array($areas) && in_array($representation->abbreviatedLabel, $areas)){
-          $tdwgOptionsSelected[] = $area->uuid;
+        if(is_array($selected_areas) && in_array($representation->abbreviatedLabel, $selected_areas)){
+          $tdwgOptionsSelected[] = $representation->abbreviatedLabel; //$area->uuid;
         }
       }
       asort($tdwgOptions);
@@ -471,15 +470,17 @@ function cdm_dataportal_search_process($form) {
  */
 function cdm_dataportal_search_form_request(){
 
+    
+  $form_params = array();
+  array_deep_copy($_REQUEST['search'], $form_params);
+  $form_params['query'] =  trim($_REQUEST['query']);
 
   // split of  geographic range
   if(isset($_REQUEST['search']['geographic_range'])){
     $geographicRange = $_REQUEST['search']['geographic_range'];
-    unset($_REQUEST['search']['geographic_range']);
+    // remove 
+    unset($form_params['geographic_range']);
   }
-    
-  $form_params = $_REQUEST['search'];
-  $form_params['query'] =  trim($_REQUEST['query']);
   
   // add geographic range
   if($geographicRange){

@@ -257,7 +257,7 @@ function theme_cdm_media_mime_text($representation, $feature){
   return $out;
 }
 
-function theme_cdm_media_gallerie($mediaList, $maxExtend, $cols = 4, $maxRows = 1 ){
+function theme_cdm_media_gallerie($mediaList, $maxExtend, $cols = 4, $maxRows = 1, $mediaLinks = null, $moreLink = null ){
   
   if(!isset($mediaList[0])){
     return;
@@ -808,7 +808,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 
   $synonym_uuids = array();
   foreach($records as $taxon){
-    if($taxon->class == "Taxon"){
+    if($taxon->class != "Taxon"){
       if(!array_key_exists($taxon->uuid, $synonym_uuids)){
         $synonym_uuids[$taxon->uuid] = $taxon->uuid;
       }
@@ -1785,7 +1785,7 @@ function theme_cdm_descriptionElementTextData($element){
         $fullCitation .= ', '.partialToYear($element->citation->datePublished->start);
       }
       
-      $referenceCitation = l('<span class="reference">'.$fullCitation.'</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+      $referenceCitation = l('<span class="reference">'.$fullCitation.'</span>', path_to_reference($element->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
       $referenceCitation = $referenceCitation;
       if($element->citationMicroReference){
         $referenceCitation .= ': '. $element->citationMicroReference;
@@ -1812,7 +1812,7 @@ function theme_cdm_search_results($pager, $path, $parameters){
 }
 
 
-function theme_cdm_pager(&$pager, $path, $parameters, $neighbors = 2){
+function theme_cdm_pager(&$pager, $path, $parameters){
   $out = '';
 
   if ($pager->pagesAvailable > 1) {
@@ -1852,7 +1852,8 @@ function theme_cdm_pager_link($text, $linkIndex, &$pager, $path, $parameters = a
   if ($linkIndex == $pager->currentIndex) {
     $out = '<strong>'.$text.'</strong>';
   } else {
-    $out = l($text, $path, $attributes, drupal_query_string_encode($parameters));
+    $queryString = drupal_query_string_encode($parameters);
+    $out = l($text, $path, $attributes, $queryString);
   }
   return $out;
 }

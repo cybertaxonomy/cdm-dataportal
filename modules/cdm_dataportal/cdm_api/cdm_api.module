@@ -839,15 +839,37 @@ function queryString($elements) {
 }
 
 /**
- * implementation of the magic method __clone to allow deep cloning of objects
+ * implementation of the magic method __clone to allow deep cloning of objects and arrays
  */
 function __clone(){
     foreach($this as $name => $value){
-        if(gettype($value)=='object'){
+        if(gettype($value)=='object' || gettype($value)=='array'){
             $this->$name= clone($this->$name);
         }
     }
 } 
+
+/**
+ * Make a complete deep copy of an array replacing
+ * references with deep copies until a certain depth is reached
+ * ($maxdepth) whereupon references are copied as-is...
+ * [From http://us3.php.net/manual/en/ref.array.php]
+ * @param $array
+ * @param $copy
+ * @param $maxdepth
+ * @param $depth
+ * @return unknown_type
+ */
+function array_deep_copy (&$array, &$copy, $maxdepth=50, $depth=0) {
+    if($depth > $maxdepth) { $copy = $array; return; }
+    if(!is_array($copy)) $copy = array();
+    foreach($array as $k => &$v) {
+        if(is_array($v)) {        array_deep_copy($v,$copy[$k],$maxdepth,++$depth);
+        } else {
+            $copy[$k] = $v;
+        }
+    }
+}
 
 /**
  * Implementation of theme_status_messages($display = NULL) 
