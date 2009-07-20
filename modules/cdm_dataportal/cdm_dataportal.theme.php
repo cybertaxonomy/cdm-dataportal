@@ -357,7 +357,12 @@ function theme_cdm_descriptionElements_distribution($taxon){
 //      $googleMapsApiKey_localhost = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
 //      drupal_set_html_head(' <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$googleMapsApiKey_localhost.'"></script>');
 
-      drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js');
+      /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+       * OpenLayers.js must be loaded BEFORE jQuery. 
+       * If jQuery loaded before $.something will fail in IE8.
+       * Therefore we add OpenLayers.js it in the page.tpl.php
+       */
+      //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
       drupal_add_js('
  var map;
  
@@ -434,27 +439,27 @@ function theme_cdm_descriptionElements_distribution($taxon){
   
   
  function init() {
-   var options={ 
-     controls: 
-       [
-         new OpenLayers.Control.LayerSwitcher({\'ascending\':false}),
-         new OpenLayers.Control.PanZoomBar(),
-         //new OpenLayers.Control.PanZoom(),
-         new OpenLayers.Control.MouseToolbar(),
-         //new OpenLayers.Control.MousePosition(),
-         //new OpenLayers.Control.KeyboardDefaults()
-       ],
+   var options={
+// controls break openlayers in IE8 !!!!!!!!!!!!!!
+//     controls: 
+//       [
+//         new OpenLayers.Control.LayerSwitcher({\'ascending\':false}),
+//         new OpenLayers.Control.PanZoomBar(),
+//         //new OpenLayers.Control.PanZoom(),
+//         new OpenLayers.Control.MouseToolbar(),
+//         //new OpenLayers.Control.MousePosition(),
+//         //new OpenLayers.Control.KeyboardDefaults()
+//       ],
        numZoomLevels: 6,
        projection: new OpenLayers.Projection("EPSG:4326")
     };
-   
-   map = new OpenLayers.Map(\'openlayers_map\',options);
+   map = new OpenLayers.Map(\'openlayers_map\');
    map.addLayers([ol_wms]);
 //   map.addLayers([gphy]);
-   '.$add_tdwg1.'
-   '.$add_tdwg2.'
-   '.$add_tdwg3.'
-   '.$add_tdwg4.'
+//   '.$add_tdwg1.'
+//   '.$add_tdwg2.'
+//   '.$add_tdwg3.'
+//   '.$add_tdwg4.'
    map.setCenter(new OpenLayers.LonLat(0, 0), 1);
  }
  
@@ -1309,10 +1314,11 @@ function theme_cdm_preferredImage($media, $defaultImage, $imageWidth, $imageHeig
   if(isset($media[0])){
     $preferredMedia = $media[0];
   }
- 
+  
+  //$widthAndHeight = ($imageWidth ? ' width="'.$imageWidth : '').($imageHeight ? '" height="'.$imageHeight : '');
   $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
   $altText = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available";
-  $out = '<img class="left" width="'.$imageWidth.'" height="'.$imageHeight.'" src="'.$imageUri.'" alt="'.$altText.'" />';
+  $out = '<img class="left" '.$widthAndHeight.' " src="'.$imageUri.'" alt="'.$altText.'" />';
   return $out;
 }
 
