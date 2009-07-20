@@ -5,7 +5,15 @@
   <title><?php print $head_title ?></title> 
   <?php print $head ?>
   <?php print $styles ?>
-  <?php print $scripts ?>
+<?php 
+   /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   * OpenLayers.js must be loaded BEFORE jQuery. 
+   * If jQuery loaded before $.something will fail in IE8.
+   * Therefore we add OpenLayers.js it in the page.tpl.php
+   */ 
+  print ('<script type="text/javascript" src="'.drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js'.'"></script>'."\n");
+  print $scripts 
+?>
   <script type="text/javascript"><?php /* Needed to avoid Flash of Unstyle Content in IE */ ?> </script>
 </head>
 
