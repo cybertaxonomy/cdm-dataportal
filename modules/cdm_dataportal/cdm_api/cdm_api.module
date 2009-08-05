@@ -508,7 +508,7 @@ function cdm_rankVocabulary_as_option(){
     //ob_start();
     print_r($vocab);
     
-    break;
+    exit;
     //ob_end_flush();
     
     $rankVocabularyOptions = array();
