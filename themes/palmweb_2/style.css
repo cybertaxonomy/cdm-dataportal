@@ -310,7 +310,7 @@ table .form-button, table .form-submit {
 
 #wrapper #container {
   margin: 0 auto;
-  padding: 10px 15px;
+  padding: 10px 15px 0;
   max-width: 710px;
   background: #ffffff;
   border-left: 1px solid #000;
