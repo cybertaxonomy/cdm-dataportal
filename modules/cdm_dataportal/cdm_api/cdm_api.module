@@ -767,6 +767,10 @@ function _http_request_using_curl($uri, $header = array(), $method = "GET", $par
           drupal_set_message('_http_request_curl() - '.curl_error($ch).'; REQUEST-METHOD:'.$method.' URL: '.substr($uri.' ', 0, 150), 'error');
         }
     }
+    curl_close ($ch);
+    $string = ob_get_contents();
+    ob_end_clean();
+ 
     return $string;
 }
 
