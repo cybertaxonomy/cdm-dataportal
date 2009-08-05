@@ -10,12 +10,13 @@
 /**
  * Generic elements
  */
-body {
+html, body {
   margin: 0;
   padding: 0;
   background: #fff;
   font: 12px/170% Verdana;
   color: #222;
+  height: 100%;
 }
 
 input {
@@ -304,6 +305,7 @@ table .form-button, table .form-submit {
 
 #wrapper {
   background: #efefef;
+  height: 100%;
 }
 
 #wrapper #container {
@@ -313,6 +315,7 @@ table .form-button, table .form-submit {
   background: #ffffff;
   border-left: 1px solid #000;
   border-right: 1px solid #000;
+  height: 100%;
 }
 
 #wrapper #container #header {
