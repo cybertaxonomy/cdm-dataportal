@@ -13,10 +13,9 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: #fff;
+  background: #efefef;
   font: 12px/170% Verdana;
   color: #222;
-  height: 100%;
 }
 
 input {
@@ -304,18 +303,15 @@ table .form-button, table .form-submit {
 }
 
 #wrapper {
-  background: #efefef;
-  height: 100%;
 }
 
 #wrapper #container {
   margin: 0 auto;
-  padding: 0 15px 0;
+  padding: 10px 15px;
   max-width: 710px;
   background: #ffffff;
   border-left: 1px solid #000;
   border-right: 1px solid #000;
-  height: 100%;
 }
 
 #wrapper #container #header {
