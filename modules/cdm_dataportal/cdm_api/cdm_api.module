@@ -505,8 +505,11 @@ function cdm_rankVocabulary_as_option(){
   if(!$rankVocabularyOptions){
     $vocab = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_RANK);
     
-    
+    //ob_start();
     print_r($vocab);
+    
+    break;
+    //ob_end_flush();
     
     $rankVocabularyOptions = array();
     foreach($vocab->terms as $term){
