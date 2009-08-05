@@ -613,11 +613,6 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
     $time_get_start = microtime(true);
     // request data from webservice JSON or XML
     $datastr = cdm_http_request($uri, $method);
-    
-    echo "Break for: ";
-    print_r($datastr);
-    exit;
-    
     $time_get = microtime(true) - $time_get_start;
 
     
@@ -776,6 +771,13 @@ function _http_request_using_curl($uri, $header = array(), $method = "GET", $par
     $string = ob_get_contents();
     ob_end_clean();
  
+    
+    
+    echo "Break for: ";
+    print_r($string);
+    exit;
+    
+    
     return $string;
 }
 
