@@ -218,14 +218,22 @@ a.toc:link, a.toc:visited {
 	height: 200px;
 	border: 1px solid;
 }
+.media .viewer{
+	margin-top: 20px;
+}
 
 .media_thumbnails{
   margin-top: 0px;
   margin-left: 0.3em; 
 }
 	
-.media_gallerie tbody{
+.media_gallery tbody {
 	border: 0px none;
+}
+
+.image-passe-partout, .image_viewer {
+  border: 1px solid;
+  background-color: #eeeeee;	
 }
 
 .distribution_map{

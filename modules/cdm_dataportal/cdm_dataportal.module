@@ -112,6 +112,14 @@ function cdm_dataportal_menu($may_cache) {
     );
     
     $items[] = array(
+      'path' => 'cdm_dataportal/media',
+      'callback' => 'cdm_dataportal_view_media',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    // expected callback arguments: media_uuid
+    );
+    
+    $items[] = array(
       'path' => 'cdm_dataportal/search',
       'callback' => 'cdm_dataportal_view_search_advanced',
       'access' => true,
@@ -829,6 +837,11 @@ function cdm_dataportal_view_reference_list($pageNumber){
     return theme('cdm_reference_pager', $referencePager, 'cdm_dataportal/reference/list/');
 }
 
+function cdm_dataportal_view_media($mediaUuid){
+   $media = cdm_ws_get(CDM_WS_MEDIA, $mediaUuid);
+   return theme('cdm_media_page', $media);
+}
+
 /**
  * The taxon page gives detailed information on a taxon, it shows:
  *  - Taxon name
@@ -908,6 +921,11 @@ function path_to_taxon($uuid){
 function path_to_reference($uuid){
   if(!$uuid) return false;
   return 'cdm_dataportal/reference/'.$uuid;
+}
+
+function path_to_media($uuid){
+  if(!$uuid) return false;
+  return 'cdm_dataportal/media/'.$uuid;
 }
 
 /**

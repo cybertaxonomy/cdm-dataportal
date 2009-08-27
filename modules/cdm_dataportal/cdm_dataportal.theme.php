@@ -15,10 +15,27 @@ function _add_js_thickbox(){
   * see INSTALL.txt
   *
   */
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.imagetool.min.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox.js');
-  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_thickbox.css');
+  //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.imagetool.min.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox/thickbox.js');
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox/cdm_thickbox.css');
 }
+
+function _add_js_lightbox($galleryID){
+  $lightBoxBasePath = drupal_get_path('module', 'cdm_dataportal') .'/js/jquery-lightbox-0.5';
+  drupal_add_js($lightBoxBasePath.'/js/jquery.lightbox-0.5.js');
+  drupal_add_css($lightBoxBasePath.'/css/jquery.lightbox-0.5.css');
+  drupal_add_js ('$(document).ready(function() {
+      $(\'#'.$galleryID.' a.lightbox\').lightBox({
+        fixedNavigation:  true,
+        imageLoading:     \''.$lightBoxBasePath.'/images/lightbox-ico-loading.gif\', 
+        imageBtnPrev:     \''.$lightBoxBasePath.'/images/lightbox-btn-prev.gif\',    
+        imageBtnNext:     \''.$lightBoxBasePath.'/images/lightbox-btn-next.gif\',   
+        imageBtnClose:    \''.$lightBoxBasePath.'/images/lightbox-btn-close.gif\',  
+        imageBlank:       \''.$lightBoxBasePath.'/images/lightbox-blank.gif\'
+      });
+    });', 'inline');
+}
+
 
 function _add_js_cluetip(){
   
@@ -257,48 +274,306 @@ function theme_cdm_media_mime_text($representation, $feature){
   return $out;
 }
 
-function theme_cdm_media_gallerie($mediaList, $maxExtend, $cols = 4, $maxRows = 1, $mediaLinks = null, $moreLink = null ){
+
+function theme_cdm_media_caption($media, $elements = array('title', 'description', 'file', 'filename'), $fileUri = null){
+  $out = '<div class="media_caption">';
+  if(isset($elements['title']) && $media->title_L10n){
+    $out .= '<span class="title">'.$media->title_L10n.'</span>';
+  }
+  if(isset($elements['description']) && $media->description_L10n){
+    $out .= '<span class="description">'.$media->description_L10n.'</span>';
+  }
+  if(isset($elements['file'])){
+    $out .= '<span class="file">'.$media->title_L10n.'</span>';
+  }
+  if(isset($elements['filename']) && $fileUri){
+    $filename = substr($fileUri, strrpos($fileUri, "/")+1);
+    $out .= '<span class="filename">'.$filename.'</span>';
+  }
+  $out .= '</div>';
+  return $out;
+}
+
+/**
+ * @param $mediaList an array of Media entities
+ * @param $maxExtend
+ * @param $cols
+ * @param $maxRows
+ * @param $mediaLinkType valid values: 
+ *      "NONE": do not link the images, 
+ *      "LIGHTBOX": open the link in a light box,
+ *      "IMAGEPAGE": link to the image page
+ * @param $alternativeMediaUri an array of alternative URIs to link the images wich will overwrite the URIs of the media parts. 
+ *     The order of URI in this array must correspond with the order of images in $mediaList
+ * @param $moreLink an URI to link the the hint on more images to; if null no link is created
+ * @return unknown_type
+ */
+function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
+    $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $moreLinkUri = null ){
+      
+  //TODO correctly handle multiple media representation parts
   
+  // prevent from errors
   if(!isset($mediaList[0])){
     return;
   }
-  $out = '<table class="media_gallerie">';
-  for($r = 0; $r < $maxRows && count($mediaList) > 0; $r++){
+  
+  $galleryID = "media_gallery_".$galleryName;
+  
+  // prepare media links
+  $doLink = false;
+  $linkAttributes = null;
+  if($mediaLinkType = 'LIGHTBOX'){
+    $doLink = true;
+    //_add_js_thickbox();
+    //$linkAttributes = array("class"=>"thickbox", "rel"=>"media_gallerie".$galleryName);
+    _add_js_lightbox($galleryID);
+    $linkAttributes = array("class"=>"lightbox");
+  }
+  
+  // render the media gallery grid 
+  $out = '<table id="'.$galleryID.'" class="media_gallery">';
     $out .= '<colgroup>';
-    for($r = 0; $r < $cols; $r++){
+    for($c = 0; $c < $cols; $c++){
       $out .= '<col width="'.(100 / $cols).'%">';
     }
     $out .= '</colgroup>';
-  }
-  for($r = 0; $r < $maxRows && count($mediaList) > 0; $r++){
+    
+  $mediaIndex = 0;
+  for($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++){
+    $captionParts = array();
     $out .= '<tr>';  
-    for($r = 0; $r < $cols; $r++){
+    for($c = 0; $c < $cols; $c++){
       $media = array_shift($mediaList);
       if(isset($media->representations[0]->parts[0])){
         $contentTypeDirectory = substr($media->representations[0]->mimeType, 0, stripos($media->representations[0]->mimeType, '/'));
-        $mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->representations[0], $maxExtend);
-//        if($mediaPartHtml){
-//          '<img src="" width="'.$maxExtend.'" height="'.$maxExtend.'" />';
-//        }
+        $mediaIndex++;
+        $mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->representations[0]->parts[0], $maxExtend, TRUE);
+        
+        // --- compose Media Link
+        $mediaLinkUri = false;
+        if($alternativeMediaUri){
+          if(isset($alternativeMediaUri[$mediaIndex])){
+            $mediaLinkUri = $alternativeMediaUri[$mediaIndex];
+          }
+          if(is_string($alternativeMediaUri)){
+            $mediaLinkUri = $alternativeMediaUri;
+          }
+        } else {
+          $mediaLinkUri = $media->representations[0]->parts[0]->uri;
+        }
+        $linkAttributes['title'] = ($media->title_L10n ? $media->title_L10n : '')
+            .($media->title_L10n && $media->description_L10n ? ' - ' : '')
+            .($media->description_L10n ? $media->description_L10n : '');
+        
+        // --- assemble captions
+        if(isset($media->representations[0]->parts[0]->uri)){
+          $fileUri = $media->representations[0]->parts[0]->uri;
+        }
+        $captionPartHtml = theme('cdm_media_caption', $media, $captionElements, $fileUri);
+        if(isset($captionElements['#uri'])){
+          $captionPartHtml .= l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE);
+        }
+        $captionParts[] = $captionPartHtml;
+        
+        // --- surround imagePart with link
+        if($doLink){
+          $mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, $linkAttributes, null, null, FALSE, TRUE);
+        }
+        
       } else {
         $mediaPartHtml = '';
+        $captionParts[] = '';
       }
-      $out .= '<td>'.$mediaPartHtml.'</td>';    
+      $out .= '<td>'.$mediaPartHtml.'</td>';
     }
-    $out .= '</tr>';  
+    $out .= '</tr>';
+    if(isset($captionElements[0])){
+      $out .= '<tr>';
+      // add caption row
+      foreach($captionParts as $captionPartHtml){
+        $out .= '<td>'.$captionPartHtml.'</td>';
+      }
+      $out .= '</tr>';  
+    }
   }
   if(count($mediaList) > 0){
-     $out .= '<tr><td colspan="'.$cols.'">'.count($mediaList).' '.t('more ...').'</td></tr>';
+     $moreHtml = count($mediaList).' '.t('more ...');
+     if($moreLinkUri){
+       $moreHtml = l($moreHtml, $moreLinkUri);
+     }
+     $out .= '<tr><td colspan="'.$cols.'">'.$moreHtml.'</td></tr>';
   }
   $out .= '</table>';
   return $out;
 }
 
-function theme_cdm_media_gallerie_image($mediaRepresentation, $maxExtend){
-  if(isset($mediaRepresentation->parts[0])){
-    return  '<img src="'.$mediaRepresentation->parts[0]->uri.'" width="'.$maxExtend.'" height="'.$maxExtend.'" />';
+function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
+  //TODO merge with theme_cdm_media_mime_image?
+  
+  if(isset($mediaRepresentationPart)){
+    $h = $mediaRepresentationPart->height;
+    $w = $mediaRepresentationPart->width;
+    $margins = '0 0 0 0';
+    $ratio = $w / $h;
+    if($ratio > 1){
+      $displayHeight = round($maxExtend / $ratio);
+      $displayWidth = $maxExtend;
+      $m = round(($maxExtend - $displayHeight) / 2);
+      $margins = 'margin:'.$m.'px 0 '.$m.'px 0;';
+    } else {
+      $displayHeight = $maxExtend;
+      $displayWidth = round($maxExtend * $ratio);
+      $m = round(($maxExtend - $displayWidth) / 2);
+      $margins = 'margin:0 '.$m.'px 0 '.$m.'px;';
+    }
+    
+    // turn attributes array into string
+    $attrStr = ' ';
+    //$attributes['title'] = 'h:'.$h.', w:'.$w.',ratio:'.$ratio;
+    if(is_array($attributes)){
+      foreach($attributes as $name=>$value){
+        $attrStr .= $name.'="'.$value.'" ';
+      }
+    }
+    
+    //return  '<img src="'."http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/photos/Lapsana_communis_A_01.jpg".'" width="'.$maxExtend.'" height="'.$maxExtend.'" />';
+    if($addPassePartout){
+      $out .= '<div class="image-passe-partout" style="width:'.$maxExtend.'px; height:'.$maxExtend.'px;">';
+    } else {
+      // do not add margins if no pass partout is shown
+      $margins = '';
+    }
+    $out .= '<img src="'.$mediaRepresentationPart->uri.'" width="'.$displayWidth.'" height="'.$displayHeight.'" style="'.$margins.'"'.$attrStr.' /></div>';
+    return $out;
   }
 
+}
+
+function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
+  
+  // see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
+  // and http://trac.openlayers.org/wiki/SettingZoomLevels
+  
+  $w = $mediaRepresentationPart->width;
+  $h = $mediaRepresentationPart->height;
+  
+  // calculate  maxResolution (default is 360 deg / 256 px) and the bounds
+  if($w > $h){
+    $lat = 90;
+    $lon = 90 * ($h / $w);
+    $maxRes = $w / $maxExtend;
+  } else {
+    $lat = 90 * ($w / $h);
+    $lon = 90;
+    $maxRes =  $h / $maxExtend ;
+  }
+  
+  $maxRes *= 1;
+  drupal_add_js('
+ var map;
+
+ var imageLayerOptions={
+     maxResolution: '.$maxRes.',
+     maxExtent: new OpenLayers.Bounds(0, 0, '.$w.', '.$h.')
+  };
+  var mapOptions={
+     restrictedExtent:  new OpenLayers.Bounds(0, 0, '.$w.', '.$h.')
+  };
+ 
+ var graphic = new OpenLayers.Layer.Image(
+          \'Image Title\',
+          \''.$mediaRepresentationPart->uri.'\',
+          new OpenLayers.Bounds(0, 0, '.$w.', '.$h.'),
+          new OpenLayers.Size('.$w.', '.$h.'),
+          imageLayerOptions
+          );
+  
+ function init() {
+   map = new OpenLayers.Map(\'openlayers_image\', mapOptions);
+   map.addLayers([graphic]);
+   map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+   map.zoomToMaxExtent();
+ }
+ 
+$(document).ready(function(){
+  init();
+
+});'
+      , 'inline');
+      $out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
+      return $out;
+  
+}
+
+function theme_cdm_media_page($media){
+  $out = '';
+
+  $title = $media->title_L10n;
+  
+  $imageMaxExtend = variable_get('image-page-maxextend', 400);
+  
+  if(!$title){
+    $title = 'Media '.$media->uuid.'';
+  }
+
+  //choose representation
+  $representation = $media->representations[0];
+  
+  drupal_set_title($title);
+  //TODO show image in openlayers viewer
+
+  $out .= '<div class="media">';
+  
+  $out .= '<div class="viewer">';
+  //$out .= theme('cdm_media_gallerie_image', $representation->parts[0], $imageMaxExtend);
+  $out .= theme('cdm_openlayers_image', $representation->parts[0], $imageMaxExtend);
+  $out .= '</div>';
+  
+  
+  // general media metadata
+  $out .= '<h4 class="title">'.$media->title_L10n.'</h4>';
+  $out .= '<div class="description">'.$media->description_L10n.'</div>';
+  $out .= '<div class="artist">'.$media->artist->titleCache.'</div>';
+  $out .= '<ul class="rights">';
+  foreach($media->rights as $right){  
+    $out .= '<li>'.theme('cdm_right', $right).'</li>';
+  }
+  $out .= '</div>';
+  
+  // representation(-part) specific metadata
+  $thumbnailMaxExtend = 100;
+  $out .= '<table>';
+  $out .= '<tr><th colspan="3">'.t('MimeType').': '.$representation->mimeType.'</th></tr>';
+  $i = 1;
+  foreach($representation->parts as $part){
+    $out .= '<tr><th>'.t('Part').' '.$i++.'</th><td>';
+    switch($part->class){
+      case 'ImageFile': $out .= $part->width.' x '.$part->height.' - '.$part->size.'k'; break;
+      case 'AudioFile': 
+      case 'MovieFile': $out .= t('Duration').': '.$part->duration.'s - '.$part->size.'k'; break;
+      default: $out .= $part->size.'k';
+    }   
+    $out .= '</td><td>'.theme('cdm_media_gallerie_image', $part, $thumbnailMaxExtend, true);'</td><tr>';
+  }
+  $out .= '</table>';
+  $out .= '</div>';
+  
+  return $out;
+}
+
+function theme_cdm_right($right){
+  $out = '<div class="right">';
+  $out .= '<span class="type">'.$right->type->representation_L10n.' </span>';
+  if($right->uri){
+    $out .= '<a href="'.$right->uri.'>'.$right->abbreviatedText.'</a>';
+  } else {
+    $out .= $right->abbreviatedText;
+  }
+  $out .= '<span class="agent"> '.$right->abbreviatedText.'</span>';
+  $out .= '</div>';
+  return $out;
+  //$right->type->representation_L10n
 }
 
 /**
@@ -827,8 +1102,10 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
     $table_of_accepted[$synUuid] = cdm_ws_get(CDM_WS_TAXON_ACCEPTED, $synUuid);
   }
   // .. well, for sure not as performant as before, but better than nothing.
-
+  $captionElements = array('title', '#uri'=>t('open Image'));
+  $gallery_name = $taxon->uuid;
   foreach($records as $taxon){
+    // its a Taxon
     if($taxon->class == "Taxon"){
       $taxonUri = url(path_to_taxon($taxon->uuid));
       if(isset($taxon->name->nomenclaturalReference)){
@@ -836,11 +1113,14 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
       }
       $out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
       if($showMedia_taxa){
+          $moreLinkUri = path_to_taxon($taxon->uuid).'/images';
           $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-          $out .= theme('cdm_media_gallerie', $mediaList, $maxExtend, $cols, $maxRows);
+          $out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements
+                , 'LIGHTBOX', null, $moreLinkUri);
       }
       $out .= '</li>';
     } else {
+      // its a synonym
       $uuid = $taxon->uuid;
       $acceptedTaxa = $table_of_accepted[$uuid];
       if(count($acceptedTaxa) == 1){
@@ -852,7 +1132,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
         $out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
         if($showMedia_synonyms){
           $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($acceptedTaxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-          $out .= theme('cdm_media_gallerie', $mediaList, $maxExtend,$cols, $maxRows);
+          $out .= theme('cdm_media_gallerie', $mediaList, $gallery_name, $maxExtend,$cols, $maxRows, $gallery_captions);
         }
       $out .= '</li>';
       } else {
@@ -1162,56 +1442,20 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
  * 
  */
 function theme_cdm_taxon_page_images($taxon, $media){
-
-  $flashLink = isset($media[0]);
   
-  if($flashLink){
-    
-    $taggedName = $taxon->name->taggedName;
-    
-    $nameArray = array();
-    foreach($taggedName as $taggedText){
-      if($taggedText->type == 'name'){
-        $nameArray[] = $taggedText->text;
-      }
-    }
-    
-    $query = join("%5F", $nameArray) . '%20AND%20jpg';
-    
-  $out = '
+  $hasImages = isset($media[0]);
   
-  <script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
-
-<script type="text/javascript">
-<!--
-	writeFlashCode( "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=PrintSave,textbox",
-		"http://media.bgbm.org/erez/erez?src=erez-private/flashrequired.svg&tmp=Large&quality=97&width=470&height=400",
-		"width=470;height=400;bgcolor=454343;wmode=opaque");
-// -->
-</script>
-<noscript>
-	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,65,0" width="470" height="400">
-		<param name="movie" value="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave,textbox"/>
-		<param name="bgcolor" value="454343" />
-		<param name="wmode" value="opaque" />
-		<param name="allowscriptaccess" value="always" />
-		<param name="allowfullscreen" value="true" />
-		<param name="quality" value="high" />
-		<embed src="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave,textbox"
-			width="470"
-			height="400"
-			bgcolor="454343"
-			wmode="opaque"
-			allowscriptaccess="always"
-			allowfullscreen="true"
-			quality="high"
-			type="application/x-shockwave-flash"
-			pluginspage="http://www.adobe.com/go/getflashplayer">
-		</embed>
-	</object>
-
-</noscript>';
-  
+  if($hasImages){
+    //
+    $maxExtend = 150;
+    $cols = 3; 
+    $maxRows = false;
+    $alternativeMediaUri = null;
+    $captionElements = array('title', '#uri'=>t('open Image'));
+    $gallery_name = $taxon->uuid;
+    $out = '<div class="image-gallerie">';
+    $out .= theme('cdm_media_gallerie', $media, $gallery_name, $maxExtend, $cols, $maxRows, $captionElements, null, null);
+    $out .= '</div>';
   }else{
     $out = 'No images available.';
   
@@ -1309,7 +1553,7 @@ function theme_cdm_synonym_page(){
 
 }
 
-function theme_cdm_preferredImage($media, $defaultImage, $imageWidth, $imageHeight, $parameters = ''){
+function theme_cdm_preferredImage($media, $defaultImage, $imageMaxExtend, $parameters = ''){
 
   if(isset($media[0])){
     $preferredMedia = $media[0];
@@ -1318,7 +1562,8 @@ function theme_cdm_preferredImage($media, $defaultImage, $imageWidth, $imageHeig
   //$widthAndHeight = ($imageWidth ? ' width="'.$imageWidth : '').($imageHeight ? '" height="'.$imageHeight : '');
   $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
   $altText = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available";
-  $out = '<img class="left" '.$widthAndHeight.' " src="'.$imageUri.'" alt="'.$altText.'" />';
+  $out = theme('cdm_media_gallerie_image', $preferredMedia->representations[0]->part[0], $imageMaxExtend, false);
+  // $out = '<img class="left" '.$widthAndHeight.' " src="'.$imageUri.'" alt="'.$altText.'" />';
   return $out;
 }
 

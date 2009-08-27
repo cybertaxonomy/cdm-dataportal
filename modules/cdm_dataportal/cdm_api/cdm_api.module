@@ -274,29 +274,29 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
 }
 
 /**
- * expects an ISO 8601 time representations of a org.joda.time.Partial
- * of the form yyyy-MM-dd and returns the year as String.
+ * expects an ISO 8601 time representations of a org.joda.time.Partial 
+ * of the form yyyy-MM-dd and returns the year as String. 
  * In case the year is unknown (= ????) null is returned.
  *
- * @param ISO 8601 time representations of a org.joda.time.Partial
- * @return String
+ * @param ISO 8601 time representations of a org.joda.time.Partial 
+ * @return String 
  */
 function partialToYear($partial){
   if(is_string($partial)){
-    $year = substr($partial, 0, 4);
+    $year = substr($partial, 0, 4);  
     if($year != '??'){
       return $year;
-    }
+    } 
   }
-  return;
+  return; 
 }
 /**
- * expects an ISO 8601 time representations of a org.joda.time.Partial
+ * expects an ISO 8601 time representations of a org.joda.time.Partial 
  * of the form yyyy-MM-dd and returns the month as String.
  * In case the month is unknown (= ???) null is returned.
  *
- * @param ISO 8601 time representations of a org.joda.time.Partial
- * @return String
+ * @param ISO 8601 time representations of a org.joda.time.Partial 
+ * @return String 
  */
 function partialToMonth($partial){
   if(is_string($partial)){
@@ -305,15 +305,15 @@ function partialToMonth($partial){
       return $month;
     }
   }
-  return;
+  return; 
 }
 /**
- * expects an ISO 8601 time representations of a org.joda.time.Partial
+ * expects an ISO 8601 time representations of a org.joda.time.Partial 
  * of the form yyyy-MM-dd and returns the day as String.
  * In case the day is unknown (= ???) null is returned.
  *
- * @param ISO 8601 time representations of a org.joda.time.Partial
- * @return String
+ * @param ISO 8601 time representations of a org.joda.time.Partial 
+ * @return String 
  */
 function partialToDay($partial){
   if(is_string($partial)){
@@ -326,7 +326,7 @@ function partialToDay($partial){
 }
 
 /**
- *
+ * 
  * @param $uri_pattern
  * @param $pathParameters an array of path elements, or a single element
  * @param $query  A query string to append to the URL.
@@ -337,8 +337,8 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
   $request_params = '';
   $path_params = '';
   
-  /* (1)
-   * substitute all place holders ($0, $1, ..) in the
+  /* (1) 
+   * substitute all place holders ($0, $1, ..) in the 
    * $uri_pattern by the according element of the $pathParameters array
    */
   static $helperArray = array();
@@ -353,7 +353,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
       drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
     }
     $uri_pattern = str_replace("$".$i, rawurlencode($pathParameters[$i]), $uri_pattern);
-    ++$i;
+    ++$i;      
   }
     
   /* (2)
@@ -361,8 +361,8 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
    */
   if(count($pathParameters) > $i){
     // strip trailing slashes
-    if(strrchr($uri_pattern, '/') == strlen($uri_pattern)){
-      $uri_pattern = substr($uri_pattern, 0, strlen($uri_pattern) - 1);
+    if(strrchr($uri_pattern, '/') == strlen($uri_pattern)){ 
+      $uri_pattern = substr($uri_pattern, 0, strlen($uri_pattern) - 1); 
     }
     while(count($pathParameters) > $i){
       $uri_pattern .= '/' . $pathParameters[$i];
@@ -521,7 +521,7 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
     return false;
   }
   
-  $mergedTrees = array();
+  $mergedTrees = array(); 
   
   if($isDescriptionsSeparated){
     // merge any description into a sparate feature tree
@@ -548,7 +548,7 @@ function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
   
   foreach($featureNodes as &$node){
     
-    // append corresponding elements to an additional node field: $node->descriptionElements
+    // append corresponding elements to an additional node field: $node->descriptionElements 
     foreach($descriptionElements as $element){
       if($element->feature->uuid == $node->feature->uuid){
         if(!isset($node->descriptionElements)){
@@ -583,9 +583,9 @@ function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
 
 
 /**
- * Send a HTTP GET request to the RESTService and deserializes
+ * Send a HTTP GET request to the RESTService and deserializes 
  * and returns the response as object
- *
+ * 
  * @param $uri
  * @param $pathParameters
  * @param $query
@@ -622,7 +622,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
 
     $time_parse = microtime(true) - $time_parse_start;
     if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
-      $success_msg = $obj || $datastr == "[]" ? 'valid':'invalid';
+      $success_msg = $obj || $datastr == "[]" ? 'valid':'invalid'; 
       _add_debugMessage($uri, $time_get, $time_parse, strlen($datastr), $success_msg);
     }
     if($obj && $do_cache) {
@@ -683,9 +683,9 @@ function cdm_load_obj($datastr){
 }
 
 /**
- *
+ * 
  * @param $uri
- * @param $method the HTTP method to use, valuid values are "GET" or "POST"; efaults to "GET" even if null,
+ * @param $method the HTTP method to use, valuid values are "GET" or "POST"; efaults to "GET" even if null, 
  *        false or any invalid value is supplied.
  * @param $parameters
  * @param $header
@@ -832,7 +832,7 @@ function queryString($elements) {
         $query .= (strlen($query) > 0 ? '&' : '').$key.'='.urlencode($v);
       }
     } else{
-      $query .= (strlen($query) > 0 ? '&' : '').$key.'='.urlencode($value);
+      $query .= (strlen($query) > 0 ? '&' : '').$key.'='.urlencode($value);      
     }
   }
   return $query;
@@ -847,7 +847,7 @@ function __clone(){
             $this->$name= clone($this->$name);
         }
     }
-}
+} 
 
 /**
  * Make a complete deep copy of an array replacing
@@ -872,9 +872,9 @@ function array_deep_copy (&$array, &$copy, $maxdepth=50, $depth=0) {
 }
 
 /**
- * Implementation of theme_status_messages($display = NULL)
+ * Implementation of theme_status_messages($display = NULL) 
  * @see includes/theme.inc
- *
+ * 
  * @param $display
  * @return unknown_type
  */
@@ -893,10 +893,11 @@ function _add_status_message_toggler() {
             
           });'
           , 'inline');
-    $isAdded = TRUE;
+    $isAdded = TRUE;      
   }
 }
 
+define('CDM_WS_MEDIA', 'portal/media');
 
 define('CDM_WS_NAME', 'name');
 
@@ -910,7 +911,6 @@ define('CDM_WS_NAME_DESCRIPTIONS', 'portal/name/$0/descriptions');
 
 define('CDM_WS_REFERENCE', 'reference');
 
-
 define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCitation/$1');
 
 define('CDM_WS_FIND_TAXA', 'portal/taxon/find');
@@ -919,8 +919,8 @@ define('CDM_WS_TAXON', 'portal/taxon');
 
 /**
  * @parameters $0 : the taxon uuid
- *
- * @returns
+ * 
+ * @returns 
  */
 define('CDM_WS_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');
 
@@ -931,7 +931,7 @@ define('CDM_WS_TAXON_NAMERELATIONS', 'portal/taxon/$0/nameRelationships');
 
 /**
  * @parameters $0 : the taxon uuid
- *
+ * 
  * @returns the taxon which is the accepted synonym for the taxon given as
  * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
  * accepted taxon, this one will be returned.
@@ -947,7 +947,7 @@ define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
  *
  * stub: treenode_root
  */
-define('CDM_WS_TAXONOMY', 'taxontree');
+define('CDM_WS_TAXONOMY', 'portal/taxontree');
 
 define('CDM_WS_TERMVOCABULARY', 'term/$0');
 
