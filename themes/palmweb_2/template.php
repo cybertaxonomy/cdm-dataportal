@@ -12,8 +12,9 @@ function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hid
     // preferred image
     // hardcoded for testing;
     $defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
-    // 184px × 144
-    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, 184, 144).'</div>';
+    // preferred image size 184px × 144
+    $imageMaxExtend = 184;
+    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, $imageMaxExtend).'</div>';
   }
    // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
@@ -23,7 +24,7 @@ function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hid
   return $out;
 }
 
-function palmweb_2_cdm_taxon_page_images($taxon, $media){
+function _disabled_palmweb_2_cdm_taxon_page_images($taxon, $media){
 
   $flashLink = isset($media[0]);
   

@@ -398,6 +398,7 @@ themes/garland_cichorieae/color/preview.css -text
 themes/garland_cichorieae/color/preview.png -text
 themes/garland_cichorieae/comment.tpl.php -text
 themes/garland_cichorieae/fix-ie.css -text
+themes/garland_cichorieae/fix-ie7.css -text
 themes/garland_cichorieae/images/a1.gif -text
 themes/garland_cichorieae/images/a16.gif -text
 themes/garland_cichorieae/images/a18.gif -text
@@ -494,6 +495,7 @@ themes/palmweb_2/color/preview.css -text
 themes/palmweb_2/color/preview.png -text
 themes/palmweb_2/comment.tpl.php -text
 themes/palmweb_2/fix-ie.css -text
+themes/palmweb_2/fix-ie7.css -text
 themes/palmweb_2/images/funded_by.png -text
 themes/palmweb_2/images/no_picture.png -text
 themes/palmweb_2/logo.png -text

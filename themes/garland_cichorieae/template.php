@@ -22,7 +22,8 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
   if(!$hideImages){
     $defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
     $imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
-    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, null, null, $imageUriParams).'</div>';
+    $imageMaxExtend = 400;
+    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, $imageMaxExtend, $imageUriParams).'</div>';
   }
 
   // description
