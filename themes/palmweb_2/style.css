@@ -223,7 +223,7 @@ span.submitted, .description {
 .description {
   line-height: 150%;
   margin-bottom: 0.75em;
-  color: #898989;
+  color: #000000;
 }
 
 .messages, .preview {
@@ -518,6 +518,7 @@ body.sidebars #footer {
 	color: #F03300;
 	padding: 0;
 	margin: 0;
+	font-size: 90%;
 }
 
 
@@ -1036,4 +1037,8 @@ table.system-status-report tr.warning, table.system-status-report tr.warning th 
 table.system-status-report tr.ok, table.system-status-report tr.ok th {
   background-color: #dfd;
   border-color: #beb;
+}
+
+.Taxon .reference, .Synonym .reference{
+	font-size: 90%; 
 }

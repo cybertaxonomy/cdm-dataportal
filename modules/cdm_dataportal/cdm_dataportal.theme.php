@@ -309,7 +309,7 @@ function theme_cdm_media_caption($media, $elements = array('title', 'description
  * @return unknown_type
  */
 function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
-    $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $moreLinkUri = null ){
+    $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null ){
       
   //TODO correctly handle multiple media representation parts
   
@@ -397,12 +397,14 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
       $out .= '</tr>';  
     }
   }
-  if(count($mediaList) > 0){
-     $moreHtml = count($mediaList).' '.t('more ...');
-     if($moreLinkUri){
-       $moreHtml = l($moreHtml, $moreLinkUri);
-     }
-     $out .= '<tr><td colspan="'.$cols.'">'.$moreHtml.'</td></tr>';
+ if($galleryLinkUri){
+    if(count($mediaList) > 0){
+       $moreHtml = count($mediaList).' '.t('more in gallery');
+    } else {
+      $moreHtml = t('open gallery');
+    }
+    $moreHtml = l($moreHtml, $galleryLinkUri);
+    $out .= '<tr><td colspan="'.$cols.'">'.$moreHtml.'</td></tr>';
   }
   $out .= '</table>';
   return $out;
@@ -1264,7 +1266,7 @@ function theme_cdm_taxon_page_title($taxon){
   if(isset($taxon->name->nomenclaturalReference)){
         $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
   }
-  return theme('cdm_taxonName', $taxon->name, null, $referenceUri, $renderPath);
+  return '<span class="'.$taxon->class.'">'.theme('cdm_taxonName', $taxon->name, null, $referenceUri, $renderPath).'</span>';
 }
 
 
