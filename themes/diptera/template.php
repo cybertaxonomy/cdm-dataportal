@@ -114,6 +114,7 @@ function diptera_get_nameRenderTemplate($renderPath){
       );
       break;
     case 'taxon_page_synonymy':
+    case 'related_taxon':
     default: 
       $template = array(
         'namePart' => array('#uri'=>true),

@@ -289,6 +289,7 @@ function theme_get_nameRenderTemplate($renderPath){
       );
       break;
     case 'taxon_page_synonymy':
+    case 'related_taxon':
       $template = array(
           'nameAuthorPart' => array('#uri'=>true),
           'referencePart' => true,
@@ -303,8 +304,8 @@ function theme_get_nameRenderTemplate($renderPath){
       );
       break;
     default:
-    case 'list_of_taxa':
     case 'typedesignations':
+    case 'list_of_taxa':
       $template = array(
             'nameAuthorPart' => array('#uri'=>true),
             'referencePart' => true

@@ -213,6 +213,7 @@ function theme_get_nameRenderTemplate($renderPath){
       case 'taxon_page_title':
       case 'list_of_taxa':
       case 'taxon_page_synonymy':
+      case 'related_taxon':
       default:
         $template = array(
           'namePart' => array('#uri'=>true),
