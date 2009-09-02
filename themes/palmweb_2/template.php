@@ -11,10 +11,14 @@ function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hid
   if(!$hideImages){
     // preferred image
     // hardcoded for testing;
-    $defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
+    $defaultRepresentationPart = false;
+    $defaultRepresentationPart->width = 184;
+    $defaultRepresentationPart->height = 144;
+    $defaultRepresentationPart->uri = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
+    
     // preferred image size 184px × 144
     $imageMaxExtend = 184;
-    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, $imageMaxExtend).'</div>';
+    $out .= '<div class="preferredImage">'.$defaultRepresentationPart->uri.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
   }
    // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);

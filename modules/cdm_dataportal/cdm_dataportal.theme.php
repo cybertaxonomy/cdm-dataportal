@@ -1404,12 +1404,18 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
  */
 function theme_cdm_taxon_page_description($taxon, $mergedTrees, $media = null, $hideImages = false){
   
-  // preferred image
-  // hardcoded for testing;
-  //if(!$hideImages){
-  //$defaultPreferredImage = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
-  //$out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, '&width=333&height=220&quality=95&format=jpeg').'</div>';
-  //}
+//  if(!$hideImages){
+//    // preferred image
+//    // hardcoded for testing;
+//    $defaultRepresentationPart = false;
+//    $defaultRepresentationPart->width = 184;
+//    $defaultRepresentationPart->height = 144;
+//    $defaultRepresentationPart->uri = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
+//    
+//    // preferred image size 184px × 144
+//    $imageMaxExtend = 184;
+//    $out .= '<div class="preferredImage">'.$defaultRepresentationPart->uri.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
+//  }
   
   // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
@@ -1574,16 +1580,21 @@ function theme_cdm_synonym_page(){
 
 }
 
-function theme_cdm_preferredImage($media, $defaultImage, $imageMaxExtend, $parameters = ''){
+function theme_cdm_preferredImage($media, $defaultRepresentationPart, $imageMaxExtend, $parameters = ''){
 
   if(isset($media[0])){
-    $preferredMedia = $media[0];
+    $representationPart = $media[0]->representations[0]->part[0];
+    if($parameters){
+      $representationPart->uri.$parameters;
+    }
+  } else {
+    $representationPart = $defaultRepresentationPart;
   }
   
   //$widthAndHeight = ($imageWidth ? ' width="'.$imageWidth : '').($imageHeight ? '" height="'.$imageHeight : '');
-  $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
-  $altText = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available";
-  $out = theme('cdm_media_gallerie_image', $preferredMedia->representations[0]->part[0], $imageMaxExtend, false);
+//  $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
+  $attributes = array('alt'=>($preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available"));
+  $out = theme('cdm_media_gallerie_image', $defaultRepresentationPart, $imageMaxExtend, false, $attributes);
   // $out = '<img class="left" '.$widthAndHeight.' " src="'.$imageUri.'" alt="'.$altText.'" />';
   return $out;
 }

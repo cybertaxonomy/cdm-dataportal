@@ -20,10 +20,17 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
   // preferred image
   // 2 lines hard coded for testing
   if(!$hideImages){
-    $defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
-    $imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
+    
+    //$defaultPreferredImage = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
+    $defaultRepresentationPart = false;
+    $defaultRepresentationPart->width = 400;
+    $defaultRepresentationPart->height = 300;
+    $defaultRepresentationPart->uri = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
+    
+    $imageUriParams = '&width=400&height=300&quality=95&format=jpeg'; 
+    
     $imageMaxExtend = 400;
-    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultPreferredImage, $imageMaxExtend, $imageUriParams).'</div>';
+    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend, $imageUriParams).'</div>';
   }
 
   // description
