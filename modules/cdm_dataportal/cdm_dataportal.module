@@ -116,7 +116,7 @@ function cdm_dataportal_menu($may_cache) {
       'callback' => 'cdm_dataportal_view_media',
       'access' => true,
       'type' => MENU_CALLBACK,
-    // expected callback arguments: media_uuid
+    // expected callback arguments: media_uuid, mediarepresentation_uuid, part_uuid or part#
     );
     
     $items[] = array(
@@ -837,9 +837,9 @@ function cdm_dataportal_view_reference_list($pageNumber){
     return theme('cdm_reference_pager', $referencePager, 'cdm_dataportal/reference/list/');
 }
 
-function cdm_dataportal_view_media($mediaUuid){
+function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = false, $part = 0){
    $media = cdm_ws_get(CDM_WS_MEDIA, $mediaUuid);
-   return theme('cdm_media_page', $media);
+   return theme('cdm_media_page', $media, $mediarepresentation_uuid, $part);
 }
 
 /**
@@ -923,9 +923,16 @@ function path_to_reference($uuid){
   return 'cdm_dataportal/reference/'.$uuid;
 }
 
-function path_to_media($uuid){
+function path_to_media($uuid, $representaion_uuid = false, $partId = false){
   if(!$uuid) return false;
-  return 'cdm_dataportal/media/'.$uuid;
+  $out = 'cdm_dataportal/media/'.$uuid;
+  if($representaion_uuid){
+    $out .= '/'.$representaion_uuid;
+    if($partId !== false){
+      $out .= '/'.$partId;
+    }
+  }
+  return $out;
 }
 
 /**

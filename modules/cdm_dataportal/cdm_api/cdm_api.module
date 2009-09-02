@@ -57,6 +57,15 @@ function cdm_api_menu($may_cache) {
       'access' => true,
       'type' => MENU_CALLBACK,
     );
+    
+    $items[] = array(
+      // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
+      'path' => 'cdm_api/setvalue/session',
+      'callback' => 'setvalue_session',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    );
+    
   }
   
   return $items;
@@ -428,6 +437,28 @@ function proxy_content($uri, $theme = null){
       print call_user_func_array('theme', $args);
     }
   }
+}
+
+function setvalue_session(){
+ 
+  if(strlen(arg(3)) > 0){
+    $keys = explode('|', arg(3));
+  }
+  $val = arg(4);
+  
+  // prevent from malicous tags  
+  $val = strip_tags($val);
+  
+  $var = &$_SESSION;
+  $i = 0;
+  foreach($keys as $key){
+    $hasMoreKeys = ++$i < count($var);
+    if($hasMoreKeys && (!isset($var[$key]) || !is_array($var[$key]))){
+      $var[$key] = array();
+    }
+    $var = &$var[$key];
+  }
+  $var = $val;
 }
 
 function uri_uriByProxy($uri, $theme = false){

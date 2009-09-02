@@ -222,6 +222,21 @@ a.toc:link, a.toc:visited {
 	margin-top: 20px;
 }
 
+.media ul.primary li a
+, .media ul.primary li.active a
+, .media ul.primary li a:hover
+, .media ul.primary li a:visited
+, .media ul.secondary li a
+, .media ul.secondary li.active a
+, .media ul.secondary li a:hover
+ , .media ul.secondary li a:visited{
+	margin-left : 0px;
+}
+
+.media ul.primary li a.active{
+  font-weight: bold;
+}
+
 .media_thumbnails{
   margin-top: 0px;
   margin-left: 0.3em; 

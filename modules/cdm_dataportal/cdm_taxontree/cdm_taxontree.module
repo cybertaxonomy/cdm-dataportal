@@ -133,7 +133,7 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
         $(document).ready(function()
         {
           $(\'ul.cdm_taxontree\').cdm_taxontree();
-          $(\'div.'.$verticalSroller.'\').scrollTo($(\'.active\'), 400, {over:-3});});
+          $(\'div.'.$verticalSroller.'\').scrollTo($(\'.focused\'), 400, {over:-3});});
         }', 'inline');
          return $block;
         
@@ -1006,20 +1006,11 @@ function cdm_taxontree_get_parents($uuid){
  */
 function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, $vid = null){
   //TODO remove $hideOtherConcepts from method signature
-
-  // find the secRefUuid
-  $secRefUuid = null;
         
   if(is_null($vid)){
     
     if($taxonUuid){
       $taxon =  cdm_ws_get(CDM_WS_TAXON, $taxonUuid);
-      $secRefUuid = $taxon->sec->uuid;
-    }
-  
-    if(!$secRefUuid){
-      $secRefArray = _cdm_dataportal_currentSecRef_array();
-      $secRefUuid = $secRefArray['uuid'];
     }
     
     $compact_tree = cdm_taxontree_filters_active() && _get_compact_mode() != 'expanded';
@@ -1507,6 +1498,7 @@ function theme_cdm_taxontree_node_concept_switch(&$node){
  * @param array $node The <TreeNode> element as returned by the webservice
  *
  * @return String html formatted title of the secundum
+ * @deprecated replace by according taxonomictree function
  */
 function theme_cdm_taxontree_node_reference(&$node){
 
@@ -1664,7 +1656,7 @@ function cdm_taxontree_filters_remove($taxonUuid){
  * Analyses the current Drupal path.
  * If a certain taxon was requested in the request, returns the UUID of that taxon.
  * A stored UUID if no taxon was requested.
- * TODO where does the dtored UUID come from?
+ * TODO where does the stored UUID come from?
  *
  * @return UUID
  */

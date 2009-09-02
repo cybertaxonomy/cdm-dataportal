@@ -506,9 +506,40 @@ $(document).ready(function(){
   
 }
 
-function theme_cdm_media_page($media){
+function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId = false){
   $out = '';
 
+
+  // determine which reprresentation and which part to show
+  $representationIdx = 0;
+  if($mediarepresentation_uuid){
+    $i = 0;
+    foreach($media->representations as $representation) {
+      if($representation->uuid == $mediarepresentation_uuid){  
+        $representationIdx = $i;
+      }
+      $i++;
+    }
+  } else {
+    $mediarepresentation_uuid = $media->representations[0]->uuid;
+  }
+
+  $partIdx  = 0;
+  if(!is_numeric($partId)){
+    // assuming it is an uuid
+    $i = 0;
+    foreach($media->representations[$representationIdx]->parts as $part) {
+      if($part->uuid == $partId){  
+        $partIdx = $i;
+      }
+      $i++;
+    }
+  } else {
+   // assuming it is an index
+    $partIdx = $partId;
+  }
+  
+  
   $title = $media->title_L10n;
   
   $imageMaxExtend = variable_get('image-page-maxextend', 400);
@@ -516,20 +547,16 @@ function theme_cdm_media_page($media){
   if(!$title){
     $title = 'Media '.$media->uuid.'';
   }
-
-  //choose representation
-  $representation = $media->representations[0];
   
   drupal_set_title($title);
-  //TODO show image in openlayers viewer
 
+  
   $out .= '<div class="media">';
   
   $out .= '<div class="viewer">';
-  //$out .= theme('cdm_media_gallerie_image', $representation->parts[0], $imageMaxExtend);
-  $out .= theme('cdm_openlayers_image', $representation->parts[0], $imageMaxExtend);
+  //$out .= theme('cdm_media_gallerie_image', $representation->parts[$partIdx], $imageMaxExtend);
+  $out .= theme('cdm_openlayers_image', $media->representations[$representationIdx]->parts[$partIdx], $imageMaxExtend);
   $out .= '</div>';
-  
   
   // general media metadata
   $out .= '<h4 class="title">'.$media->title_L10n.'</h4>';
@@ -539,22 +566,31 @@ function theme_cdm_media_page($media){
   foreach($media->rights as $right){  
     $out .= '<li>'.theme('cdm_right', $right).'</li>';
   }
-  $out .= '</div>';
-  
+  $out .= '</ul>';
+
+  //tabs for the different representations
+  //ul.secondary 
+  $out .= '<ul class="primary">';
+  foreach($media->representations as $representation){
+    $out .= '<li>'.l($media->representations[$representationIdx]->mimeType, path_to_media($media->uuid, $mediarepresentation_uuid, $partIdx)).'</li>';
+  }
+  $out .= '</ul>';
+
   // representation(-part) specific metadata
   $thumbnailMaxExtend = 100;
   $out .= '<table>';
-  $out .= '<tr><th colspan="3">'.t('MimeType').': '.$representation->mimeType.'</th></tr>';
-  $i = 1;
-  foreach($representation->parts as $part){
-    $out .= '<tr><th>'.t('Part').' '.$i++.'</th><td>';
+  //$out .= '<tr><th colspan="3">'.t('MimeType').': '.$media->representations[$representationIdx]->mimeType.'</th></tr>';
+  $i = 0;
+  foreach($media->representations[$representationIdx]->parts as $part){
+    $out .= '<tr><th>'.t('Part').' '.($i + 1).'</th><td>';
     switch($part->class){
       case 'ImageFile': $out .= $part->width.' x '.$part->height.' - '.$part->size.'k'; break;
       case 'AudioFile': 
       case 'MovieFile': $out .= t('Duration').': '.$part->duration.'s - '.$part->size.'k'; break;
       default: $out .= $part->size.'k';
     }   
-    $out .= '</td><td>'.theme('cdm_media_gallerie_image', $part, $thumbnailMaxExtend, true);'</td><tr>';
+    $out .= '</td><td><a href="'.url(path_to_media($media->uuid, $mediarepresentation_uuid, $i)).'">'.theme('cdm_media_gallerie_image', $part, $thumbnailMaxExtend, true);'</a></td><tr>';
+    $i++;
   }
   $out .= '</table>';
   $out .= '</div>';
@@ -641,80 +677,57 @@ function theme_cdm_descriptionElements_distribution($taxon){
       drupal_add_js('
  var map;
  
+ var layerOptions = {
+     maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+     isBaseLayer: false,
+     displayInLayerSwitcher: false
+  };
+ 
  var tdwg_1 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 1", 
     "http://edit.csic.es/geoserver/wms",
-    {layers:"topp:tdwg_level_1",transparent:"true"},
-    {styles:\'\'},
-    {group:\'no base\'},
-    {\'displayInLayerSwitcher\':false},
-    {format: \'image/png\'}
+    {layers:"topp:tdwg_level_1",transparent:"true", format:"image/png"},
+    layerOptions
   );
   
  var tdwg_2 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 2", 
     "http://edit.csic.es/geoserver/wms",
-    {layers:"topp:tdwg_level_2",transparent:"true"},
-    {styles:\'\'},
-    {group:\'no base\'},
-    {\'displayInLayerSwitcher\':false},
-    {format: \'image/png\'}
+    {layers:"topp:tdwg_level_2",transparent:"true", format:"image/png"},
+    layerOptions
   );
   
  var tdwg_3 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 3", 
     "http://edit.csic.es/geoserver/wms",
-    {layers:"topp:tdwg_level_3",transparent:"true"},
-    {styles:\'\'},
-    {group:\'no base\'},
-    {\'displayInLayerSwitcher\':false},
-    {format: \'image/png\'}
+    {layers:"topp:tdwg_level_3", transparent:"true", format:"image/png"},
+    layerOptions
   );
   
   var tdwg_4 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 4", 
     "http://edit.csic.es/geoserver/wms",
-    {layers:"topp:tdwg_level_4",transparent:"true"},
-    {styles:\'\'},
-    {group:\'no base\'},
-    {\'displayInLayerSwitcher\':false},
-    {format: \'image/png\'}
+    {layers:"topp:tdwg_level_4",transparent:"true", format:"image/png"},
+    layerOptions
   );
+  
+ // make baselayer
+ layerOptions[\'isBaseLayer\'] = true; 
  
  var ol_wms = new OpenLayers.Layer.WMS( 
     "OpenLayers WMS",
     "http://labs.metacarta.com/wms/vmap0",
     {layers: \'basic\'}, 
-    {group:\'base\'},
-    {\'displayInLayerSwitcher\':false}
+    layerOptions
   );
   
   
-  // --- google layers ----
-//     var gphy = new OpenLayers.Layer.Google(
-//        "Google Physical",
-//        {type: G_PHYSICAL_MAP}
-//    );
-//    var gmap = new OpenLayers.Layer.Google(
-//        "Google Streets", // the default
-//        {numZoomLevels: 20}
-//    );
-//    var ghyb = new OpenLayers.Layer.Google(
-//        "Google Hybrid",
-//        {type: G_HYBRID_MAP, numZoomLevels: 20}
-//    );
-//    var gsat = new OpenLayers.Layer.Google(
-//        "Google Satellite",
-//        {type: G_SATELLITE_MAP, numZoomLevels: 20}
-//    );
- 
-
-
   // ------------------------------
   
   
  function init() {
-   var options={
+ 
+   var mapOptions={
 // controls break openlayers in IE8 !!!!!!!!!!!!!!
 //     controls: 
 //       [
@@ -725,17 +738,21 @@ function theme_cdm_descriptionElements_distribution($taxon){
 //         //new OpenLayers.Control.MousePosition(),
 //         //new OpenLayers.Control.KeyboardDefaults()
 //       ],
-       numZoomLevels: 6,
+       maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+       maxResolution: '.(360 / $display_width).',
+       restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
        projection: new OpenLayers.Projection("EPSG:4326")
     };
-   map = new OpenLayers.Map(\'openlayers_map\');
+    
+   
+   map = new OpenLayers.Map(\'openlayers_map\', mapOptions);
    map.addLayers([ol_wms]);
-//   map.addLayers([gphy]);
-//   '.$add_tdwg1.'
-//   '.$add_tdwg2.'
-//   '.$add_tdwg3.'
-//   '.$add_tdwg4.'
-   map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+   '.$add_tdwg1.'
+   '.$add_tdwg2.'
+   '.$add_tdwg3.'
+   '.$add_tdwg4.'
+   map.zoomToMaxExtent();
+   
  }
  
 $(document).ready(function(){
@@ -1009,12 +1026,14 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = '', $displayNomRef = tr
     default :
       $relsign = '&ndash;';
   }
+  
+  $renderPath = 'related_taxon';
 
   //$taxonUri = url(path_to_taxon($taxon->uuid));
   if($taxon->name->nomenclaturalReference){
     $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
   }
-  $nameHtml = theme('cdm_taxonname', $taxon->name, $taxonUri, $referenceUri);
+  $nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
   
   $out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix;
   return $out;
@@ -2049,10 +2068,42 @@ function theme_cdm_descriptionElementTextData($element){
 }
 
 function theme_cdm_search_results($pager, $path, $parameters){
+  
+  
+  $showThumbnails = $_SESSION['pageoptions']['searchtaxa']['showThumbnails'];
+  if( !is_numeric($showThumbnails)){
+    $showThumbnails = 1;
+  }
+  $setSessionUri = url('cdm_api/setvalue/session').'/pageoptions|searchtaxa|showThumbnails/';
+  drupal_add_js('$(document).ready(function() {
+  
+        // init
+        if('.$showThumbnails.' == 1){
+              $(\'.media_gallery\').show(20);
+        } else {
+          $(\'.media_gallery\').hide(20);
+        }
+        // add change hander
+        $(\'#showThumbnails\').change(
+          function(event){
+            var state = 0;
+            if($(this).is(\':checked\')){
+              $(\'.media_gallery\').show(20);
+              state = 1;
+            } else {
+              $(\'.media_gallery\').hide(20);
+            }
+            // store state in session variable
+            var uri = \''.$setSessionUri.'\' + state;
+            jQuery.get(uri);
+          });
+        });', "inline");
 
   drupal_set_title(t('Search Results'));
 
   $out = ''; //l('Advanced Search', '/cdm_dataportal/search');
+  
+  $out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form></div>';
   if(count($pager->records) > 0){
     $out .= theme('cdm_list_of_taxa', $pager->records);
     $out .= theme('cdm_pager', $pager, $path, $parameters);
