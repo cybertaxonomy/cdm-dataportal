@@ -18,7 +18,7 @@ function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hid
     
     // preferred image size 184px × 144
     $imageMaxExtend = 184;
-    $out .= '<div class="preferredImage">'.$defaultRepresentationPart->uri.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
+    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
   }
    // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
