@@ -177,7 +177,7 @@ function phptemplate_menu_local_tasks() {
   return $output;
 }
 
-function theme_get_partDefinition($nameType){
+function palmweb_2_get_partDefinition($nameType){
   if($nameType == 'BotanicalName'){
     return array(
         'namePart' => array(
@@ -201,7 +201,7 @@ function theme_get_partDefinition($nameType){
   return false;
 }
 
-function theme_get_nameRenderTemplate($renderPath){
+function palmweb_2_get_nameRenderTemplate($renderPath){
   
   switch($renderPath) {
       case 'acceptedFor':

@@ -658,17 +658,26 @@ function cdm_dataportal_settings(){
     '#collapsed' => TRUE,
   );
   
-  $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_taxon_media_on'] = array(
+  //variable_get('', 1);
+  $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_show_taxon_thumbnails'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show media for accepted taxa'),
-    '#default_value' => variable_get('cdm_dataportal_findtaxa_taxon_media_on', 1),
+    '#title' => t('Show media thumbnails for accepted taxa'),
+    '#default_value' => variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1),
     '#description' => t('')
   );
   
-  $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_synonyms_media_on'] = array(
+  $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_show_synonym_thumbnails'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show media for syonyms'),
-    '#default_value' => variable_get('cdm_dataportal_findtaxa_synonyms_media_on', 0),
+    '#title' => t('Show media thumbnails for syonyms'),
+    '#default_value' => variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0),
+    '#description' => t('')
+  );
+  
+  //   $showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 0);
+  $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_show_thumbnail_captions'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show captions under thumbnails'),
+    '#default_value' => variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 1),
     '#description' => t('')
   );
   

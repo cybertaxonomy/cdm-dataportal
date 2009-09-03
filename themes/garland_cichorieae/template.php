@@ -262,7 +262,7 @@ function phptemplate_menu_local_tasks() {
   return $output;
 }
 
-function theme_get_partDefinition($nameType){
+function garland_cichorieae_get_partDefinition($nameType){
   if($nameType == 'BotanicalName'){
     return array(
         'namePart' => array(
@@ -287,7 +287,7 @@ function theme_get_partDefinition($nameType){
   return false;
 }
 
-function theme_get_nameRenderTemplate($renderPath){
+function garland_cichorieae_get_nameRenderTemplate($renderPath){
 
   switch($renderPath) {
     case 'taxon_page_title':
@@ -320,3 +320,28 @@ function theme_get_nameRenderTemplate($renderPath){
   }
   return $template;
 }
+
+/**
+ */
+function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
+      
+    $gallery_name = $taxon->uuid;
+    
+    $showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 0);
+    $prefMimeTypeRegex = 'image:.*';
+    $prefMediaQuality = '*';
+    $cols = variable_get('cdm_dataportal_findtaxa_media_cols', 3);
+    $maxRows = variable_get('cdm_dataportal_findtaxa_media_maxRows', 1);
+    $maxExtend = variable_get('cdm_dataportal_findtaxa_media_maxextend', 120);
+    
+    if($showCaption){
+      $captionElements = array('title', '#uri'=>t('open Image'));
+    }
+    
+    $galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
+    $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+    $out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'NORMAL', $galleryLinkUri, null);
+
+    return $out;
+}
+

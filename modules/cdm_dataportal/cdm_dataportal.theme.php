@@ -209,14 +209,15 @@ function theme_cdm_media($descriptionElement, $mimeTypePreference){
   $medias = $descriptionElement->media;
 
   foreach($medias as $media){
-     
     $prefRepresentations = cdm_preferred_media_representations($media, $mimeTypePreference, 300, 400);
     $mediaRepresentation = array_shift($prefRepresentations);
     if($mediaRepresentation) {
 
       $contentTypeDirectory = substr($mediaRepresentation->mimeType, 0, stripos($mediaRepresentation->mimeType, '/'));
+      
+      $out .= $contentTypeDirectory;
 
-      $out = theme('cdm_media_mime_' . $contentTypeDirectory,  $mediaRepresentation, $feature);
+      $out .= theme('cdm_media_mime_' . $contentTypeDirectory,  $mediaRepresentation, $feature);
 
       //			$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid, 'title'=>$feature->term);
       //		    for($i = 0; $part = $mediaRepresentation->representationParts[$i]; $i++){
@@ -295,14 +296,40 @@ function theme_cdm_media_caption($media, $elements = array('title', 'description
 }
 
 /**
+ */
+function theme_cdm_taxon_list_thumbnails($taxon){
+      
+    $gallery_name = $taxon->uuid;
+    
+    $showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 0);
+    $prefMimeTypeRegex = 'image:.*';
+    $prefMediaQuality = '*';
+    $cols = variable_get('cdm_dataportal_findtaxa_media_cols', 3);
+    $maxRows = variable_get('cdm_dataportal_findtaxa_media_maxRows', 1);
+    $maxExtend = variable_get('cdm_dataportal_findtaxa_media_maxextend', 120);
+    
+    if($showCaption){
+      $captionElements = array('title', '#uri'=>t('open Image'));
+    }
+    
+    $galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
+    $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+    $out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'LIGHTBOX', null, $galleryLinkUri);
+
+    return $out;
+}
+
+
+/**
  * @param $mediaList an array of Media entities
  * @param $maxExtend
  * @param $cols
  * @param $maxRows
+ * @param $captionElements an array possible values are like in the following example: array('title', 'description', 'file', 'filename'), to add a link to the caption: array('title', '#uri'=>t('open Image'));
  * @param $mediaLinkType valid values: 
  *      "NONE": do not link the images, 
  *      "LIGHTBOX": open the link in a light box,
- *      "IMAGEPAGE": link to the image page
+ *      "NORMAL": link to the image page or to the $alternativeMediaUri if it is defined
  * @param $alternativeMediaUri an array of alternative URIs to link the images wich will overwrite the URIs of the media parts. 
  *     The order of URI in this array must correspond with the order of images in $mediaList
  * @param $moreLink an URI to link the the hint on more images to; if null no link is created
@@ -323,7 +350,10 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
   // prepare media links
   $doLink = false;
   $linkAttributes = null;
-  if($mediaLinkType = 'LIGHTBOX'){
+  if($mediaLinkType != 'NONE'){
+    $doLink = true;    
+  }
+  if($mediaLinkType == 'LIGHTBOX'){
     $doLink = true;
     //_add_js_thickbox();
     //$linkAttributes = array("class"=>"thickbox", "rel"=>"media_gallerie".$galleryName);
@@ -1097,16 +1127,10 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
   
   $renderPath = 'list_of_taxa';
   
-  $showMedia_taxa = variable_get('cdm_dataportal_findtaxa_taxon_media_on', 1);
-  $showMedia_synonyms = variable_get('cdm_dataportal_findtaxa_synonyms_media_on', 0);
-  $prefMimeTypeRegex = 'image:.*';
-  $prefMediaQuality = '*';
-  $cols = variable_get('cdm_dataportal_findtaxa_media_cols', 3);
-  $maxRows = variable_get('cdm_dataportal_findtaxa_media_maxRows', 1);
-  $maxExtend = variable_get('cdm_dataportal_findtaxa_media_maxextend', 120);
+  $showMedia_taxa = variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1);
+  $showMedia_synonyms = variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0);
   
-  $out = '<ul class="cdm_names" style="background-image: none;">';
-
+  // .. well, for sure not as performant as before, but better than nothing.
   $synonym_uuids = array();
   foreach($records as $taxon){
     if($taxon->class != "Taxon"){
@@ -1122,9 +1146,9 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
   foreach($synonym_uuids as $synUuid){
     $table_of_accepted[$synUuid] = cdm_ws_get(CDM_WS_TAXON_ACCEPTED, $synUuid);
   }
-  // .. well, for sure not as performant as before, but better than nothing.
-  $captionElements = array('title', '#uri'=>t('open Image'));
-  $gallery_name = $taxon->uuid;
+  
+  $out = '<ul class="cdm_names" style="background-image: none;">';
+  
   foreach($records as $taxon){
     // its a Taxon
     if($taxon->class == "Taxon"){
@@ -1134,10 +1158,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
       }
       $out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
       if($showMedia_taxa){
-          $moreLinkUri = path_to_taxon($taxon->uuid).'/images';
-          $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-          $out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements
-                , 'LIGHTBOX', null, $moreLinkUri);
+          $out .= theme('cdm_taxon_list_thumbnails', $taxon);
       }
       $out .= '</li>';
     } else {
@@ -1152,8 +1173,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
         }
         $out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
         if($showMedia_synonyms){
-          $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($acceptedTaxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-          $out .= theme('cdm_media_gallerie', $mediaList, $gallery_name, $maxExtend,$cols, $maxRows, $gallery_captions);
+          $out .= theme('cdm_taxon_list_thumbnails', $acceptedTaxon);
         }
       $out .= '</li>';
       } else {

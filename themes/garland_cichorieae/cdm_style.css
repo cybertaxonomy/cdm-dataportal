@@ -328,3 +328,7 @@ span.submitted, .description {
 	font-size: 1em;
 }
 
+.media_gallery a:link, .media_gallery a:visited, .media_gallery .image-passe-partout {
+  border-width: 0px;
+}
+
