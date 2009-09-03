@@ -214,8 +214,6 @@ function theme_cdm_media($descriptionElement, $mimeTypePreference){
     if($mediaRepresentation) {
 
       $contentTypeDirectory = substr($mediaRepresentation->mimeType, 0, stripos($mediaRepresentation->mimeType, '/'));
-      
-      $out .= $contentTypeDirectory;
 
       $out .= theme('cdm_media_mime_' . $contentTypeDirectory,  $mediaRepresentation, $feature);
 
