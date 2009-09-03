@@ -301,7 +301,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
       
     $gallery_name = $taxon->uuid;
     
-    $showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 0);
+    $showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 1);
     $prefMimeTypeRegex = 'image:.*';
     $prefMediaQuality = '*';
     $cols = variable_get('cdm_dataportal_findtaxa_media_cols', 3);
