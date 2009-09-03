@@ -1327,7 +1327,6 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   $media = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
   if(!isset($media[0])) {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
-    
   }
   
   // hideImage flag depending on administative preset
@@ -1583,7 +1582,7 @@ function theme_cdm_synonym_page(){
 function theme_cdm_preferredImage($media, $defaultRepresentationPart, $imageMaxExtend, $parameters = ''){
 
   if(isset($media[0])){
-    $representationPart = $media[0]->representations[0]->part[0];
+    $representationPart = $media[0]->representations[0]->parts[0];
     if($parameters){
       $representationPart->uri.$parameters;
     }
@@ -1594,13 +1593,10 @@ function theme_cdm_preferredImage($media, $defaultRepresentationPart, $imageMaxE
   //$widthAndHeight = ($imageWidth ? ' width="'.$imageWidth : '').($imageHeight ? '" height="'.$imageHeight : '');
 //  $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
   $attributes = array('alt'=>($preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available"));
-  $out = theme('cdm_media_gallerie_image', $defaultRepresentationPart, $imageMaxExtend, false, $attributes);
+  $out .= theme('cdm_media_gallerie_image', $representationPart, $imageMaxExtend, false, $attributes);
   // $out = '<img class="left" '.$widthAndHeight.' " src="'.$imageUri.'" alt="'.$altText.'" />';
   return $out;
 }
-
-
-
 
 function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = array()){
 
