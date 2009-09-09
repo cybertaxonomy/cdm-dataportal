@@ -1,0 +1,1741 @@
+<?php
+// $Id$
+
+/*
+ * @file
+ * cdm_taxontree.module
+ *
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ */
+
+
+/*
+ * Definition of privacy levels
+ */
+define('TAXONPRIVACY_PRIVATE', 'Private');
+define('TAXONPRIVACY_PUBLIC', 'Public');
+
+/**
+ * Implementation of hook_perm()
+ *
+ * Valid permissions for this module
+ * @return array An array of valid permissions for the taxon_experts module
+ */
+function cdm_taxontree_perm() {
+	return array(
+    	'view private taxoninterests',
+	//TODO which else permission are required?
+	);
+}
+
+/**
+ * Implementation of hook_menu()
+ */
+function cdm_taxontree_menu($may_cache) {
+
+    $items = array();
+    if ($may_cache) {
+  
+        $items[] = array(
+          'path' => 'cdm_taxontree/set',
+          'callback' => 'cdm_taxontree_set',
+          'access' => true,
+          'type' => MENU_CALLBACK,
+        );
+        
+         $items[] = array(
+    
+          'path' => 'cdm_taxontree/filter',
+          'callback' => 'cdm_taxontree_view_filter',
+          'access' => true,
+          'type' => MENU_CALLBACK,
+        );
+        
+        $items[] = array(
+          'path' => 'cdm_taxontree/taxonomy/children',
+          'callback' => 'cdm_taxontree_taxonomy_children',
+          'access' => true,
+          'type' => MENU_CALLBACK,
+        );
+  
+    } else {
+
+      if(variable_get('cdm_taxontree_cache', 0)){
+    		$items[] = array('path' => 'admin/settings/cdm_dataportal/clear_cache',
+          'title' => t('Empty CDM Taxontree Cache'),
+          'callback' => 'cdm_taxontree_cache_clear',
+          'access' => user_access('administer cdm_dataportal'),
+          'weight' => 2,
+          'type' => MENU_NORMAL_ITEM,
+    		);
+      }
+      
+    }
+    return $items;
+}
+
+function cdm_taxontree_cache_get($term){
+  if(variable_get('cdm_taxontree_cache', 0)){
+    return cache_get($term,'cache_cdm_taxontree');
+  }
+}
+
+function cdm_taxontree_cache_set($term, $child_terms){
+  if(variable_get('cdm_taxontree_cache', 0)){
+    return cache_set($term,'cache_cdm_taxontree', serialize($child_terms));
+  }
+}
+
+/**
+ * function to empty the cdm_taxontree cache table
+ *
+ */
+function cdm_taxontree_cache_clear() {
+
+	// clear core tables
+	$alltables = array('cache_cdm_taxontree');
+	foreach ($alltables as $table) {
+		cache_clear_all('*', $table, TRUE);
+	}
+	drupal_set_message('CDM Taxontree Cache cleared.');
+	drupal_goto('admin/settings/cdm_dataportal');
+}
+
+
+/**
+ * Implementation of hook_block()
+ *
+ * @param String $op
+ * @param int $delta
+ */
+function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
+  if ($op == "list") {
+    $block['cdm_tree']["info"] = t('CDM Taxon Tree');
+    $block['filters']["info"] = t('Active Filters');
+		$block[1]["info"] = t('Drupal Taxonomy Tree');
+    return $block;
+  }
+  else if ($op == 'view') {
+    switch($delta){
+      case 'cdm_tree':
+        $block['subject'] = t('Taxon Tree');
+        $taxonUuid_inFocus = _cdm_get_taxonuuid();
+        $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
+        $magicbox_enable = variable_get('cdm_taxontree_magicbox_enable', 0);
+        $block['content'] = theme('cdm_taxontree_block', $tree, $delta, FALSE, 'cdm_taxontree_node_concept_switch');
+        // java script 
+        $verticalSroller = $magicbox_enable ? 'cdm_taxontree_scroller_x' : 'cdm_taxontree_scroller_xy';
+        theme('cdm_taxontree_add_scripts');
+        drupal_add_js('
+        if (Drupal.jsEnabled) {
+        $(document).ready(function()
+        {
+          $(\'ul.cdm_taxontree\').cdm_taxontree();
+          $(\'div.'.$verticalSroller.'\').scrollTo($(\'.focused\'), 400, {over:-3});});
+        }', 'inline');
+         return $block;
+        
+      case 'filters':
+        $block['subject'] = t('Active Filters');
+        $block['content'] = cdm_taxontree_view_filter('list');
+        return $block;
+        
+      case 1:
+        $block['subject'] = t('Taxonomy Tree');
+        $term_inFocus = arg(0) == 'taxonomy' && arg(1) == 'term' ? arg(2) : 0;
+        $tree = cdm_taxontree_build_tree($term_inFocus, true, variable_get('cdm_taxontree_block_1_vid', 0));
+        $block['content'] = theme('cdm_taxontree_block', $tree, $delta, FALSE);
+        theme('cdm_taxontree_add_scripts');
+        drupal_add_js('
+        if (Drupal.jsEnabled) {
+        $(document).ready(function()
+        {
+          $(\'ul.cdm_taxontree\').cdm_taxontree();
+          $(\'div.cdm_taxontree_scroller_x\').scrollTo($(\'.active\'), 400, {over:-3});});
+        }', 'inline');
+
+        return $block;
+      }
+    } else if ($op == 'configure') {
+      switch($delta){
+        case 1:
+          $vocs = taxonomy_get_vocabularies();
+          $options = array();
+          foreach($vocs as $voc){
+            $options[$voc->vid] = $voc->name;
+          }
+          $form['vid'] = array(
+            '#type' => 'select',
+            '#title' => t('Category'),
+            '#default_value' => variable_get('cdm_taxontree_block_1_vid', 0),
+            '#options' => $options,
+          );
+          return $form;
+      }
+    } else if ($op == 'save') {
+      switch($delta){
+        case 1:
+         variable_set('cdm_taxontree_block_1_vid', $edit['vid']);
+				return;
+		}
+	}
+}
+
+/**
+ * Implementation of hook_help().
+ *
+ * @param unknown_type $section
+ * @return unknown
+ */
+function cdm_taxontree_help($section) {
+	switch ($section) {
+		case 'admin/modules#description':
+			return t('Defines a selection widget for massive taxonomy structures.');
+	}
+}
+
+/**
+ * Implementation of hook_field_info().
+ */
+function cdm_taxontree_field_info() {
+	return array(
+    'cdm_taxontree' => array('label' => 'CDM Taxontree'),
+	);
+}
+
+/**
+ * Implementation of hook_field()
+ *
+ */
+function cdm_taxontree_field($op, &$node, $field, &$items, $teaser, $page) {
+	switch ($op) {
+
+		case 'view':
+			$context = $teaser ? 'teaser' : 'full';
+			$formatter = isset($field['display_settings'][$context]['format']) ? $field['display_settings'][$context]['format'] : 'default';
+			foreach ($items as $delta => $item) {
+				$items[$delta]['view'] = content_format($field, $item, $formatter, $node);
+			}
+			return theme('field', $node, $field, $items, $teaser, $page);
+	}
+}
+
+/**
+ * Implementation of hook_field_settings().
+ */
+function cdm_taxontree_field_settings($op, $field) {
+	switch ($op) {
+		case 'form':
+			$form = array(
+        '#theme' => 'cdm_taxontree_field_settings',
+			);
+			return $form;
+
+		case 'save':
+			break;
+
+		case 'database columns':
+			return array(
+        'tid' => array('type' => 'int', 'length' => 10, 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+			);
+			break;
+
+		case 'filters':
+			return array(
+			 'default' => array(
+       'operator' => 'views_handler_operator_like',
+       'handler' => 'cdm_taxontree_views_filter_handler',
+			),
+			);
+			break;
+
+		case 'callbacks': //pairs up with cck_fullname_field::view
+			return array(
+        'view' => CONTENT_CALLBACK_CUSTOM,
+			);
+			break;
+
+	}
+}
+
+/**
+ * implementation of hook_widget_info()
+ *
+ */
+function cdm_taxontree_widget_info(){
+	$vocabularies = taxonomy_get_vocabularies();
+	$vocabs = array();
+	foreach ($vocabularies as $vid => $vocab) {
+		$vocabs['cdm_taxontree_' .$vocab->vid] = array(
+        'label' => $vocab->name,
+        'field types' => array('cdm_taxontree'),
+		);
+	}
+	return $vocabs;
+}
+
+/**
+ * implementation of hook_widget()
+ *
+ */
+function cdm_taxontree_widget($op, &$node, $field, &$node_field){
+	switch($op){
+		case 'prepare form values':
+			// get posted values in both node edit and profile edit mode
+			if ($_POST[$field['field_name']] || $_POST[$field['type_name'].'_node_form'][$field['field_name']]) {
+				$node_field = ($_POST['form_id'] == 'user_edit') ?  $_POST[$field['type_name'].'_node_form'][$field['field_name']] : $_POST[$field['field_name']];
+			}else{
+				$node_field_transposed = content_transpose_array_rows_cols($node_field);
+				$node_field = array();
+				$node_field[0]['cdm_taxontree_select'] = $node_field_transposed['tid'];
+			}
+			return;
+
+		case 'form':
+			$form = array();
+			$form[$field['field_name']] = array(
+        '#tree' => TRUE,
+        '#theme' => NULL,
+        '#type' => 'markup',
+        '#title' => t($field['widget']['label']),
+        '#description' => t($field['widget']['description']),
+        '#weight' => $field['widget']['weight'],
+			);
+
+			// add the form
+			$delta = 0;
+			_cdm_taxontree_widget_form($form[$field['field_name']][$delta], $field, $node_field);
+
+			return $form;
+
+		case 'validate':
+			if($field['required'] && count($node_field[0]['cdm_taxontree_select']) < 1){
+				form_set_error('cdm_taxontree_select', t('Please select at least one item from %type.', array('%type' => $field['widget']['label'])));
+			}
+         return;
+      }
+    }
+
+function _cdm_taxontree_widget_form(&$form_item, $field = array(), $node_field = array(), $delta = 0) {
+
+  // get vocabulary id
+  $vid = substr($field['widget']['type'], strlen($field['type'])+1);
+
+  // build the tree
+  $tree = cdm_taxontree_build_tree(NULL, NULL, $vid);
+
+  $options = array();
+  if (!empty($node_field[$delta]['cdm_taxontree_select'])){
+    $options = _cdm_taxontree_recreate_options($node_field[$delta]['cdm_taxontree_select']);
+  }
+
+  // prefix and suffix: render the taxon tree div structure around the select field
+  $prefix .= '<div class="cdm_taxontree_widget">';
+  // hide labels in filter view
+  if(substr($field['field_name'],-7,7) !== '_filter'){
+    $prefix .= '<div class="taxontree_header">';
+    $prefix .= '<div class="field-label column-left">' . t($field['widget']['label']) . ':' . ($field['required'] == 1 ? ' <span class="form-required" title="' .t('This field is required.'). '">*</span>' : '') . '</div>';
+    $prefix .= '<div class="field-label column-right">' . t('Your Selection') . ':</div>';
+    $prefix .= '</div>';
+  }
+  $prefix .= '<div class="taxontree">';
+  $prefix .= '<div class="cdm_taxontree_scroller_x">';
+  $prefix .= '<div class="cdm_taxontree_container">';
+  $prefix .= '<div class="cdm_taxontree_scroller_y">';
+  // inject the taxon tree
+  $prefix .= theme('cdm_taxontree',$tree, NULL, FALSE, 'cdm_taxontree_node_reference_widget', $field['field_name']);
+  $prefix .= '</div></div></div></div>';
+  $prefix .= '<div class="taxontree_devider"><span class="hidden">&gt;&gt;</span></div>';
+  // this is the place where to put the select box without disturbing the scrollers
+  $suffix = '</div>';
+
+  // pull in the default value
+  $default_value = (!empty($field['widget']['default_value'][$delta]['cdm_taxontree_select'])) ? $field['widget']['default_value'][$delta]['cdm_taxontree_select'] : array();
+  // $default_show_childnodes = ($field['widget']['default_value']['include_childnodes']['include_childnodes'] === 'include_childnodes') ? 'checked="checked"' : '';
+  $default_show_childnodes = 'checked="checked"';
+
+  // add the select box and set to multiple, if appropriate
+  $form_item['cdm_taxontree_select'] = array(
+        '#tree' => TRUE,
+        '#type' => 'select',
+        '#default_value' => !empty($node_field[$delta]['cdm_taxontree_select']) ? $node_field[$delta]['cdm_taxontree_select'] : $default_value ,
+        '#multiple' => $field['multiple'] ? TRUE : FALSE,
+        '#options' => $options,
+        '#size' => $field['multiple'] ? 12 : 2,
+        '#prefix' => $prefix,
+        '#suffix' => $suffix,
+        '#attributes' => array('class' => 'taxontree_select'),
+  );
+
+  // add the scripts for multiple widgets, if not already present
+  theme('cdm_taxontree_add_scripts');
+
+  global $taxontree_script_present;
+  if(!$taxontree_script_present[$field['field_name']]){
+    drupal_add_js('$(document).ready(function() {$(\'ul.cdm_taxontree.' . $field['field_name'] . '\').cdm_taxontree(
+      {
+        widget:                 true,
+        element_name:           \''.$field['field_name'] .'\',  //
+        multiselect:            '.($field['multiple']?'true':'false').'         //
+      }
+      );});', 'inline');
+    $taxontree_script_present[$field['field_name']] = TRUE;
+  }
+
+  // add flag for including child nodes if selected in settings
+  // this is only tirggered in filter mode
+  if($field['show_include_childnodes']){
+
+    $default_value = (count($_GET)==1) ? $default_show_childnodes : ($field['include_childnodes_flag']) ? 'checked="checked"' : '';
+
+    $include_label = 'Include Childnodes';
+    $include_childnode_message = 'Include childnodes and parent node';
+    // HACK! Replace the text to display as 'include childnodes text'
+    if(substr($field['field_name'],-7,7) == '_filter'){
+      $vocabulary = substr($field['widget']['type'],strlen($field['type'])+1);
+      switch($vocabulary){
+
+        case 8:
+          $include_label = 'Include Childtaxa';
+          $include_childnode_message = 'Check, if all child taxa of the selected taxa shall be included';
+          break;
+        case 3:
+          $include_label = 'Include Subregions';
+          $include_childnode_message = 'Check, if all subregions of the selected region should be included';
+          break;
+
+      }
+    }
+
+    $form_item['include_childnodes'] = array(
+      '#tree' => TRUE,
+      '#type' => 'markup',
+      '#prefix' => '<div class="include-options">',
+      '#value' => '<label class="field-label" for="' . $field['field_name'] . $delta . '-include">' . t($include_label) . '</label><div class="field-description">' . t($include_childnode_message) . '<input type="checkbox" name="'  .$field['field_name'] . $delta . '_include" id="' . $field['field_name'] . $delta . '-include" value="include_childnodes" ' . $default_value . '/></div>',
+      '#suffix' => '</div>',
+    );
+
+  }
+
+}
+
+function cdm_taxontree_field_formatter_info() {
+	return array(
+    'default' => array(
+      'label' => t('Default'),
+      'field types' => array('cdm_taxontree'),
+	),
+    'link' => array(
+      'label' => t('With link'),
+      'field types' => array('cdm_taxontree'),
+	),
+	);
+}
+
+
+
+/*
+ * formatters to prepare the correct links for taxa
+ */
+function cdm_taxontree_field_formatter($field, $item, $formatter, $node) {
+	switch ($formatter) {
+		case 'link':
+			$term = taxonomy_get_term($item['tid']);
+			$taxa = db_result(db_query('SELECT name FROM {vocabulary} WHERE vid = %d', $term->vid));
+			switch($taxa){
+				case 'Taxonomy':
+					$link = 'interest_by_taxonomy/';
+					break;
+				case 'Georegion':
+					$link = 'interest_by_georegion/';
+					break;
+				default:
+					$link = 'taxonomy/term/';
+			}
+			return l($term->name, $link.$term->tid);
+
+				default:
+					$name = db_result(db_query('SELECT name FROM {term_data} WHERE tid = %d', $item['tid']));
+					return $name;
+	}
+}
+
+/**
+ * Helper function to transpose a list of term ids into an
+ * array with key = tid and value = term name;
+ * used to recreate cdm_taxontree_widgets select list options.
+ *
+ * @param array $options
+ * @return array transposed options
+ */
+function _cdm_taxontree_recreate_options($options = array()){
+	$transposed = array();
+	foreach($options as $key => $tid){
+		if(is_numeric($tid)){
+			$parents = taxonomy_get_parents_all($tid);
+			$path = theme('cdm_taxontree_taxon_fullpath',array_reverse($parents),3);
+			$transposed[$tid] = $path;
+		}
+	}
+	return $transposed;
+}
+
+/*
+ * implementation of hook_form_alter()
+ *
+ * used to replace the standard taxonomy selectbox
+ * with our nice cdm_taxontree_widget form.
+ *
+ */
+function cdm_taxontree_form_alter($form_id, &$form){
+
+	if($form_id == 'views_filters')
+	{
+		global $user;
+		$view = $form['view']['#value'];
+
+		// find the cdm_taxontree_filter
+		foreach($view->exposed_filter as $delta => $filter){
+			if(preg_match('@^cdm_taxontree@',$filter['field'])){
+
+				// simulate field settings to invoke the widget form correctly
+				$field = array(
+					'field_name' => 'cdm_taxontree_filter',
+					'type' => 'cdm_taxontree',
+				  'multiple' => $form['filter'.$delta]['#multiple'],
+					'show_include_childnodes' => 1,
+					'include_childnodes_flag' => $_GET['cdm_taxontree_filter' . $delta . '_include'] ? 1 : 0,
+					'widget' => array(
+						'type' => 'cdm_taxontree_' . $form['filter'.$delta]['#vocab'],
+						'label' => $filter['label'],
+				),
+				);
+
+				// simulate the node_field data from filter form values
+				$filter_field = array();
+				$filter_values = $form['filter'.$delta]['#default_value'];
+
+				// transpose the filter values to a form understood by the widget
+				if(is_array($filter_values)){
+					foreach($filter_values as $key => $val){
+						$filter_field[$delta]['cdm_taxontree_select'][] = $val;
+					}
+				}else if(is_numeric($key)){
+					$filter_field[$delta]['cdm_taxontree_select'][] = $filter_values;
+				}
+
+				// create the widget
+				$subform = array();
+				_cdm_taxontree_widget_form($subform['cdm_taxontree_filter'], $field, $filter_field, $delta);
+
+				// add some important attributes
+				$subform['cdm_taxontree_filter']['cdm_taxontree_select']['#name'] = 'filter'.$delta;
+				$subform['cdm_taxontree_filter']['cdm_taxontree_select']['#id'] = 'edit-filter'.$delta;
+
+				// replace original form element with widget
+				$form['filter'.$delta] = $subform['cdm_taxontree_filter'];
+
+			}
+		}
+	}
+}
+
+/**
+ * implementation of hook_filters_alter(), a *views modification*
+ * to enable injection of more filter values
+ *
+ * @param object $view, needed to find cdm_taxontree filters by $delta
+ * @param array $filters, incoming filter values
+ * @return array $filters extended filter values
+ */
+function cdm_taxontree_views_filters_alter($view, $filters){
+
+	if($view->name == 'search_interest'){
+		// find the cdm_taxontree_filter
+		foreach($view->exposed_filter as $delta => $filter){
+			if(preg_match('@^cdm_taxontree@',$filter['field'])){
+
+				// include child terms and parent term
+				if($_GET['cdm_taxontree_filter' . $delta . '_include'] == TRUE && is_array($filters[$delta]['filter'])){
+					foreach($filters[$delta]['filter'] as $key => $val){
+
+						if(is_numeric($val)){
+							$child_terms[] = $val;
+						}
+					}
+
+					$term_collection = array();
+					// get child terms from cache
+					foreach($child_terms as $key => $term){
+						if(!$children = cdm_taxontree_cache_get($term,'cache_cdm_taxontree')){
+							// no data in cache? add some!
+							$child_terms = _cdm_taxontree_get_all_children($child_terms,TRUE);
+							// add parent term
+							$parent_terms = taxonomy_get_parents($term);
+							foreach($parent_terms as $key => $term_obj){
+								$child_terms[$key] = $key;
+							}
+
+							cdm_taxontree_cache_set($term,'cache_cdm_taxontree',serialize($child_terms));
+							$children = $child_terms;
+						}
+						else{
+							$children = unserialize($children->data);
+						}
+
+						$term_collection = array_merge($term_collection, $children);
+					}
+
+					// re-add filter values
+					$filters[$delta]['filter'] = $term_collection;
+
+				}
+			}
+		}
+	}
+				
+	/*
+	 * React on taxonprivacy settings
+	 * Remove taxon_privacy from taxonomy / filters, if user is allowed to view private taxon interests
+	 */
+	global $user;
+
+	// show information only to roles with access to private interests
+	if($user->uid && user_access('view private taxoninterests',$user)){
+			foreach($view->filter as $delta => $filter){
+				if(preg_match('@^term_node_@',$filter['field'])){
+					$tid = intval(str_replace('.tid','',str_replace('term_node_','',$filter['field'])));
+					if($tid == 9){
+						unset($view->filter[$delta]);
+					}
+				}
+			}
+	}
+
+	
+	return $filters;
+}
+
+/**
+ * Transforms an unpredictably and irregularly nested set of tids (as returned
+ * from a taxonomy form) into a linear array of tids.
+ * borrow from taxonomy_browser.module
+ */
+function _cdm_taxontree_get_all_children($tids = null, $include_children = false) {
+	static $tid_list;
+
+	if (isset($tids) && is_array($tids)) {
+		$tid_list = array();
+		foreach ($tids as $key => $tid) {
+			if (!empty($tid)) {
+				if (is_array($tid)) {
+					foreach ($tid as $key2 => $tid2) {
+						if (!empty($tid2)) {
+							$tid_list[$tid2] = $tid2;
+						}
+					}
+				}
+				else {
+					$tid_list[$tid] = $tid;
+				}
+			} /* end !empty */
+		} /* end foreach */
+	}
+
+	if ($include_children) {
+		foreach ($tid_list as $tid) {
+			_cdm_taxontree_get_children($tid_list, $tid);
+		}
+	}
+
+	return $tid_list;
+}
+
+function _cdm_taxontree_get_children(&$tid_list, $tid) {
+	$child_nodes = taxonomy_get_children($tid);
+	if (!empty($child_nodes)) {
+		foreach ($child_nodes as $child_tid => $child_term) {
+			$tid_list[$tid] = $tid;
+			_cdm_taxontree_get_children($tid_list, $child_tid);
+		}
+	}
+	else {
+		$tid_list[$tid] = $tid;
+	}
+}
+
+/**
+ * Implematation of hook_views_tables()
+ *
+ *
+ * @return onject views related db table data
+ */
+function cdm_taxontree_views_tables() {
+	$tables = array();
+	// field_name, type_name, widget_type
+	$result = db_query("SELECT nfi.*, nf.db_storage FROM {node_field_instance} nfi INNER JOIN {node_field} nf ON nfi.field_name = nf.field_name WHERE widget_type LIKE 'cdm_taxontree_%'");
+	while ($row = db_fetch_object($result)) {
+
+		// Build the list of options
+		$vid = substr($row->widget_type, 14); // 14 = strlen('cdm_taxontree)!
+
+		$options = array();
+		$tree = taxonomy_form($vid);
+		foreach ($tree['#options'] as $index => $option) {
+			if (is_object($option)) {
+				foreach($option->option as $key => $value) {
+					$options[$key] = $value;
+				}
+			}
+		}
+
+		// Rely on CCK to provide us with the correct table name.
+		if ($row->db_storage == CONTENT_DB_STORAGE_PER_FIELD) {
+			$table_name = _content_tablename($row->field_name, CONTENT_DB_STORAGE_PER_FIELD);
+		}
+		else {
+			$table_name = _content_tablename($row->type_name, CONTENT_DB_STORAGE_PER_CONTENT_TYPE);
+		}
+
+		# Get the taxonomy multi select property
+		$vocab = taxonomy_get_vocabulary($vid);
+		$multiple = $vocab->multiple;
+
+		$table = array(
+      'name' => $table_name,
+      'provider' => 'cdm_taxontree',
+      'join' => array(
+        'left' => array('table' => 'node', 'field' => 'vid',),
+        'right' => array('field' => 'vid'),
+		),
+      'filters' => array(
+		$row->field_name .'_tid' => array(
+          'name' => t('CDM Taxontree: @field_name', array('@field_name' => $row->field_name)),
+          'help' => t('Filter on @field_name terms.', array('@field_name' => $row->field_name)),
+          'operator' => 'views_handler_operator_or',
+					'handler' => 'cdm_taxontree_views_handler_filter_default',
+          'value' => array(
+          	'#type' => 'select',
+		// pass the vocabulary id
+						'#vocab' => $vid,
+          	'#options' => $options,
+          	'#multiple' => $multiple,
+		),
+		),
+		),
+		);
+		$tables['cdm_taxontree'. $row->field_name] = $table;
+	}
+	return $tables;
+}
+
+function cdm_taxontree_views_handler_filter_default($op, $filter, $filterinfo, &$query) {
+	$table = $filterinfo['table'];
+	$field = $filterinfo['field'];
+
+	if (is_array($filter['value']) && count($filter['value'])) {
+		if ($filter['operator'] == 'OR' || $filter['operator'] == 'NOR') {
+			$query->ensure_table($table);
+			$where_args = array_merge(array($query->use_alias_prefix . $table, $field), $filter['value']);
+			$placeholder = array_fill(0, count($filter['value']), '%s');
+			if ($filter['operator'] == 'OR') {
+				$query->add_where("%s.%s IN (". implode(", ", $placeholder) .")", $where_args);
+			}
+			else {
+				$where_args[] = $where_args[0];
+				$where_args[] = $where_args[1];
+				$query->add_where("(%s.%s NOT IN (". implode(", ", $placeholder) .") OR %s.%s IS NULL)", $where_args);
+			}
+		}
+		else {
+			$howmany = count($filter['value']);
+			$high_table = $query->add_table($table, true, $howmany);
+			if (!$high_table) { // couldn't add the table
+				return;
+			}
+
+			$table_num = $high_table - $howmany;
+			foreach ($filter['value'] as $item) {
+				$table_num++;
+				$tn = $query->get_table_name($table, $table_num);
+				$query->add_where("%s.%s = '%s'", $tn, $field, $item);
+			}
+		}
+	}
+	else {
+		$query->ensure_table("$table");
+		$query->add_where("%s.%s %s '%s'", $query->use_alias_prefix . $table, $field, $filter['operator'], $filter['value']);
+	}
+}
+
+/**
+ * implematation of hook_token_list()
+ *
+ */
+function cdm_taxontree_token_list($type = 'all') {
+	if ($type == 'field' || $type == 'all') {
+		$tokens = array();
+
+		$tokens['cdm_taxontree']['tid'] = t("Term ID - first item only.");
+		$tokens['cdm_taxontree']['tid-all'] = t("Term ID - all items comma separated");
+		$tokens['cdm_taxontree']['tid-n'] = t("Term ID - where n = the value to select if more than one value in the field.");
+		$tokens['cdm_taxontree']['raw'] = t("Raw, unfiltered term - first item only");
+		$tokens['cdm_taxontree']['raw-all'] = t("Raw, unfiltered terms - all items comma separated");
+		$tokens['cdm_taxontree']['raw-n'] = t('Raw, unfiltered terms - where n = the value to select if more than one value in the field');
+		$tokens['cdm_taxontree']['formatted'] = t("Formatted and filtered terms - first item only");
+		$tokens['cdm_taxontree']['formatted-all'] = t("Formatted and filtered terms - all items with line break separated");
+		$tokens['cdm_taxontree']['formatted-n'] = t('Formatted and filtered terms - where n = the value to select if more than one value in the field');
+
+		return $tokens;
+	}
+}
+
+
+/**
+ * implementation of hook_token_values()
+ *
+ */
+function cdm_taxontree_token_values($type, $object = NULL) {
+	if ($type == 'field') {
+		$i = 0;
+		foreach ($object as $value) {
+			$term = taxonomy_get_term($value['tid']);
+			$values[] = $term->name;
+			$views[] = $value['view'];
+			$tokens['raw-' . $i] = $term->name;
+			$tokens['formatted-' . $i] = $value['view'];
+			$i++;
+		}
+
+		//for backwards compat
+		$tokens['raw-all']  = implode(', ' , $values);
+		$tokens['formatted-all'] = implode("\n", $views);
+
+		return $tokens;
+	}
+}
+
+
+function cdm_taxontree_set($key, $value){
+
+  if(is_string($key)){
+    $_SESSION['cdm']['taxontree'][$key] = $value;
+  }
+
+  if($_REQUEST['destination']){
+    $destination = $_REQUEST['destination'];
+    unset($_REQUEST['destination']);
+    drupal_goto($destination);
+  }
+}
+
+
+/**
+ * Enter description here...
+ *
+ * @param UUID $secUuid
+ * @return unknown
+ */
+function cdm_taxontree_secRefTitle_for($secUuid){
+  
+  $reference = cdm_api_secref_cache_get($secUuid);
+  if($reference){
+    $cit = $reference->titleCache;
+  } else {
+    $cit = '[no title for:'.$secUuid.']';
+  }
+  return $cit;
+}
+
+
+
+/**
+ * Queries the Drupal database for the location of a certain block with the given $delta
+ *
+ * @param [String | Number] $delta
+ * @return values (left | right | <empty>)
+ */
+function _get_block_region($delta){
+  global $user, $theme_key;
+  
+  $result = db_fetch_array(db_query("SELECT DISTINCT b.region FROM {blocks} b LEFT JOIN {blocks_roles} r ON b.module = r.module AND b.delta = r.delta WHERE b.theme = '%s' AND b.status = 1 AND (r.rid IN (%s) OR r.rid IS NULL) AND b.module = '%s' AND b.delta = '%s'", $theme_key, implode(',', array_keys($user->roles)), 'cdm_taxontree', $delta));
+  return $result['region'];
+}
+
+/**
+ * Enter description here...
+ *
+ * @return unknown
+ */
+function _get_compact_mode(){
+
+  if(!isset($_SESSION['cdm']['taxontree']['compact_mode'])){
+    $_SESSION['cdm']['taxontree']['compact_mode'] = 'expanded';
+  }
+  return  $_SESSION['cdm']['taxontree']['compact_mode'];
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $str
+ * @return unknown
+ */
+function _is_uuid($str){
+  return strlen($str) == 36 && strpos($str, '-');
+}
+
+/**
+ * Converts an array of drupal taxonomy terms into an
+ * array of partially instantiated cdm tree nodes by adding the fields
+ * relevant for tree node processing in cdm_taxontree
+ *
+ *
+ * term       =>      cdm tree node
+ * ------------------------------------
+ * tid       ->     uuid
+   name      ->     titleCache
+                    taggedName
+                    secUuid
+                    isAccepted
+                    taxonomicChildrenCount
+                    alternativeConceptRefs
+ *
+ * @param unknown_type $terms
+ */
+function cdm_taxontree_terms2treenodes(&$terms){
+  foreach($terms as &$term){
+    $term->uuid = $term->tid;
+    $term->titleCache = $term->name;
+    $term->taxonomicChildrenCount = count(taxonomy_get_children($term->tid, $term->vid));
+  }
+  return $terms;
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $tid
+ * @param unknown_type $vid
+ * @param unknown_type $theme
+ */
+function cdm_taxontree_taxonomy_children($tid, $vid, $theme){
+  $args = func_get_args();
+  $tid = array_shift($args);
+  $vid = array_shift($args);
+  $theme = array_shift($args);
+  
+  $children = cdm_taxontree_get_children($tid, $vid);
+  $children = cdm_taxontree_terms2treenodes($children);
+  array_unshift($args, $theme, $children);
+  print call_user_func_array('theme', $args);
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $vid
+ * @param unknown_type $secRefUuuid
+ * @return unknown
+ */
+function cdm_taxontree_get_root($vid = null){
+  if(is_numeric($vid)){
+    // vid, $parent = 0, $depth = -1, $max_depth = NULL) {
+    $terms = taxonomy_get_tree($vid, 0, -1, 1);
+    return cdm_taxontree_terms2treenodes($terms);
+  } else {
+    return cdm_ws_taxonomy();
+  }
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $uuid
+ * @param unknown_type $vid
+ * @return unknown
+ */
+function cdm_taxontree_get_children($uuid, $vid = null){
+
+  if(is_numeric($vid)){
+    $terms = taxonomy_get_children($uuid, $vid);
+    return cdm_taxontree_terms2treenodes($terms);
+  } else {
+    //FIXME replace $uuid by path of parent $uuids
+    
+    return cdm_ws_taxonomy($uuid);
+  }
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $uuid
+ * @return unknown
+ */
+function cdm_taxontree_get_parents($uuid){
+
+  if(!_is_uuid($uuid)){
+    // using Drupal taxonomy
+    $terms = taxonomy_get_parents($uuid);
+    array_push($terms, taxonomy_get_term($uuid));
+    $terms = array_reverse($terms);
+    return cdm_taxontree_terms2treenodes($terms);
+  } else {
+    // using cdm
+    $terms = cdm_ws_taxonomy_pathFromRoot($uuid);
+    if(!$terms){
+      return;
+    }
+    $terms = array_reverse($terms);
+    return $terms;
+  }
+}
+
+/**
+ * builds a tree of TaxonNode instances, whereas the instances are extended by some fields:
+ *
+ *  - $node->filter: values ( 'on', 'excluded', 'included' )
+ *  - $node->expanded: values ( 'expanded', 'collapsed' )
+ *    $node->focused: values ( TRUE, FALSE )
+ *
+ * @param unknown_type $taxonUuid
+ * @return unknown
+ */
+function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, $vid = null){
+  //TODO remove $hideOtherConcepts from method signature
+        
+  if(is_null($vid)){
+    
+    if($taxonUuid){
+      $taxon =  cdm_ws_get(CDM_WS_TAXON, $taxonUuid);
+    }
+    
+    $compact_tree = cdm_taxontree_filters_active() && _get_compact_mode() != 'expanded';
+  }
+  /* valid compact_modes: 'expanded', 'compact', 'flattened' */
+
+  // get the root level
+  $root_tree = cdm_taxontree_get_root($vid);
+//  if(!$root_tree || !is_array($root_tree)){
+//    return array();
+//  }
+  $root_tree = _cdm_resultset2nodelist($root_tree, cdm_taxontree_filters_active());
+  
+
+  if(cdm_taxontree_filters_active()){
+    // the paths up to active filters are inactive in the user interface and
+    // thus cannot be browsed by expanding nodes
+    // therefore we need to build up the branches for all nodes which are set as filters
+    // the branches are merged with the root
+    foreach(cdm_taxontree_filters_get() as $uuid=>$filter){
+      $branch = cdm_taxontree_build_path($uuid, TRUE, ($compact_tree === false ? true :null));
+      $root_tree = _cdm_taxontree_merge($root_tree, $branch);
+    }
+  }
+
+  // build the the branch for the focused node and merge it with the root
+  if($taxonUuid){
+    $branch = cdm_taxontree_build_path($taxonUuid, NULL, (cdm_taxontree_filters_active() ? NULL : TRUE), TRUE);
+    $root_tree = _cdm_taxontree_merge($root_tree, $branch);
+  }
+
+  //reorder siblings & populate expanded nodes with children and propagate the filter attribute
+  $root_tree = cdm_taxontree_populate($root_tree, $compact_tree === false);
+
+  // flatten tree
+  if($compact_tree){
+    if( _get_compact_mode() == 'flattened'){
+      $root_tree = cdm_taxontree_flatten($root_tree);
+    } else if(_get_compact_mode() == 'compact') {
+      foreach($root_tree as $uuid => $node){
+        if( $node->filter == 'excluded' && !$node->children){
+          unset($root_tree[$uuid]);
+        }
+      }
+    }
+  }
+
+  return $root_tree;
+}
+
+/**
+ * Builds the specific branch path for $taxonUuid.
+ * The branch path reaches from the parent root node of $taxonUuid up to $taxonUuid.
+ *
+ * @param UUID $taxonUuid
+ * @param Boolean $is_filter_path whether the upmost node of this path is mapped by an active filter
+ * @param Boolean $is_expanded whether all nodes along the tree are expanded
+ * @param Boolean $is_focused whether to upper most element of this branch is set as filter
+ * @return a subtree
+ */
+function cdm_taxontree_build_path($taxonUuid, $is_filter_path = null, $is_expanded = null, $is_focused = FALSE){
+
+  $branch_path = array();
+  
+  $parents = cdm_taxontree_get_parents($taxonUuid);
+  if(!$parents){
+    if($is_filter_path){
+      // remove invalid filter
+      cdm_taxontree_filters_remove($taxonUuid);
+    }
+    return false;
+  }
+
+  $parents = _cdm_resultset2nodelist($parents, NULL);
+  $lastParent = null;
+  foreach($parents as $pnode){
+    $pnode->focused = false;
+    if($lastParent){
+      $pnode->children = array($lastParent->uuid => $lastParent);
+      if(!is_null($is_filter_path)){
+        $pnode->filter = ($is_filter_path ? 'excludes' : 'included');
+      }
+      if(!is_null($is_expanded)){
+        $pnode->expanded = ($is_expanded ? 'expanded' : 'collapsed');
+      }
+    } else {
+      // the uppermost node of branch
+      if(!is_null($is_filter_path)){
+        $pnode->filter = ($is_filter_path ? 'on' : 'includes');
+      }
+      // uppermost node is always expanded if it has children
+      $pnode->focused = $is_focused;
+      $pnode->expanded = ($pnode->taxonomicChildrenCount ? 'expanded' : 'collapsed');
+    }
+    $lastParent = $pnode;
+  }
+  $branch_path[$pnode->uuid] = $pnode;
+  return $branch_path;
+}
+
+/**
+ * Performs two steps on each level of the tree:
+ *  1. reorder siblings except root (is expected to be ordered jet) alphabetically
+ *  2. populate children of expanded nodes  & propagate the filter attribute
+ *
+ * @param unknown_type $tree
+ * @return unknown
+ */
+function cdm_taxontree_populate($tree, $expand_excluded, $filter_default = null){
+
+  if(!is_array($tree)){
+    return false;
+  }
+  foreach(array_keys($tree) as $uuid){
+
+    if(!isset($tree[$uuid]->filter) && !is_null($filter_default)){
+      $tree[$uuid]->filter = $filter_default;
+    }
+
+    if( $tree[$uuid]->expanded == 'expanded' && ($expand_excluded || $tree[$uuid]->filter != 'excluded')){
+      $children = cdm_taxontree_get_children($uuid, $tree[$uuid]->vid);
+      $children = _cdm_resultset2nodelist($children, ($tree[$uuid]->filter == 'excludes'));
+
+      // store the children of the node for later processing
+      if(is_array($tree[$uuid]->children)){
+        $pnode_children = $tree[$uuid]->children;
+      } else {
+        $pnode_children = false;
+      }
+      // replace the children by the newly retrieved child nodes
+      $tree[$uuid]->children = $children;
+       
+      if($pnode_children){
+        // recurse into the childtree which was stored before
+        $pnode_children =  cdm_taxontree_populate($pnode_children, $expand_excluded ,$tree[$uuid]->filter);
+        // recombine
+        foreach($pnode_children as $childUuid=>$cnode){
+          $tree[$uuid]->children[$childUuid] = $cnode;
+        }
+      }
+    } else {
+      // reorder nodes which are not expanded, expanded nodes are reordered implicitly above
+      if(isset($tree[$uuid]->children) && count($tree[$uuid]->children) > 1) {
+        // copy the children into an array which can be sorted by its keys
+        $ordered = array();
+        foreach($tree[$uuid]->children as $cnode){
+          // concatenate full name and uid
+          $reordered[str_pad($cnode->titleCache, 255, '-').$cnode->uuid] = $cnode;
+        }
+        // sort
+        ksort($reordered);
+        // move the children back into the parent node
+        $tree[$uuid]->children = array();
+        foreach($reordered as $cnode){
+          $tree[$uuid]->children[$cnode->uuid] = $cnode;
+        }
+      }
+      $tree[$uuid]->children = cdm_taxontree_populate($tree[$uuid]->children, $expand_excluded, $tree[$uuid]->filter);
+    }
+  }
+  return $tree;
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $tree
+ * @param unknown_type $new_root
+ * @return unknown
+ */
+function cdm_taxontree_flatten($tree, &$new_root = null){
+  if(!$new_root){
+    $new_root = array();
+  }
+  foreach($tree as $node){
+    if($node->filter == 'on'){
+      $new_root[$node->uuid] = $node;
+    } else if(is_array($node->children)){
+      cdm_taxontree_flatten($node->children, $new_root);
+    }
+  }
+  return $new_root;
+}
+
+
+/**
+ * Merge a branch into a tree whereas the tree dominated the branch except
+ * nodes having property filter set to "on". These always dominate
+ * nevertheless if they are in tree or branch.
+ *
+ * @param unknown_type $tree the dominant tree
+ * @param unknown_type $branch the tree to be merged in
+ * @return the merged $tree
+ */
+function _cdm_taxontree_merge($tree, $branch) {
+
+  if(!$branch){
+    return $tree;
+  }
+  
+  foreach(array_keys($tree) as $uuid) {
+    // check if node exists in $branch
+    if(!empty($branch[$uuid])) {
+      // preserve filter property
+      if(isset($tree[$uuid]->filter) && !(isset($branch[$uuid]->filter) && $branch[$uuid]->filter == 'on') ){
+        $branch[$uuid]->filter = $tree[$uuid]->filter;
+      } else if(isset($branch[$uuid]->filter)){
+        $tree[$uuid]->filter = $branch[$uuid]->filter;
+      }
+      // preserve expanded property
+      if(isset($tree[$uuid]->expanded)){
+        $branch[$uuid]->expanded = $tree[$uuid]->expanded;
+      } else if(isset($branch[$uuid]->expanded)){
+        $tree[$uuid]->expanded = $branch[$uuid]->expanded;
+      }
+      // $Uuid exists check if the node in tree1 or tree2 contains children
+      if(is_array($branch[$uuid]->children) && is_array($tree[$uuid]->children)) {
+        // merge recursive
+        $tree[$uuid]->children = _cdm_taxontree_merge($tree[$uuid]->children, $branch[$uuid]->children);
+      } else if(is_array($branch[$uuid]->children)){
+        $tree[$uuid] =  $branch[$uuid];
+      }
+      unset($branch[$uuid]);
+    }
+  }
+  // append remaining items from branch to tree
+  foreach(array_keys($branch) as $uuid){
+    $tree[$uuid] =  $branch[$uuid];
+  }
+  return $tree;
+}
+
+
+/**
+ * Replaces the keys of an array of TreeNode instances
+ * by the $treeNode->uuid of the single array elements.
+ * An sets additional fields
+ *
+ * @param $resultset array of TreeNode instances as +returned by the cdm web service
+ * @param $excluded  whether the $resultset is included by a active filter. Is ignored if NULL.
+ * @param $expanded  whether the children of the nodes in the $resultset are expanded or not. Is ignored if NULL.
+ */
+function _cdm_resultset2nodelist($resultset, $excluded = null, $expanded = null){
+
+  if(! is_array($resultset)) {
+    return false;
+  }
+
+  $tree = array();
+  foreach($resultset as $treeNode){
+    if(!is_null($excluded)){
+      $treeNode->filter = ($excluded ? 'excluded': 'included');
+    }
+    if(!is_null($expanded)){
+      $treeNode->expanded = ($expanded ? 'expanded': 'collapsed');
+    }
+    $tree[$treeNode->uuid] = $treeNode;
+  }
+  return $tree;
+}
+
+
+// ------------------------ THEME --------------------------- //
+
+
+function theme_cdm_taxontree_add_scripts(){
+  $path_cdm_taxontree = drupal_get_path('module', 'cdm_taxontree');
+  $path_preferred_module = drupal_get_path('module', 'cdm_dataportal') ? drupal_get_path('module', 'cdm_dataportal') : $path_cdm_taxontree;
+  drupal_add_css($path_cdm_taxontree.'/cdm_taxontree.css');
+  drupal_add_js($path_preferred_module.'/js/jquery.dimensions.js');
+  drupal_add_js($path_cdm_taxontree.'/js/cdm_taxontree.js');
+  drupal_add_js($path_cdm_taxontree.'/js/jquery.scrollTo.js');
+}
+
+
+/**
+ * @param $tree 				the tree of TreeNode to be displayed
+ * @param $magicbox 			if true, the tree will be embedded into a set of div tags which allow the
+ *            					tree to expand and overlap other content. This is useful if the node titles are
+ *            					quite long or if the tree is nested deeply.
+ *            					If $magicbox ist set to the delta of the containing block the direction into which the
+ *            					box expands is dependent on the region in which the blockis located.
+ *            					See also Variable $left_expand_region in this function!
+ * @param $show_filter_switch 	The tree can offer buttons to add a node to a set of filters
+ *            					which can then be applied to the tree to limit the visible subtrees and thus
+ *            					to compact the tree. Three different compact modes are available.
+ * @param $tree_node_callback 	name of a callback method which will be called for each node
+ *            					in theme_cdm_taxontree_node(). The output of this callback, which takes the
+ *            					$node object as single arument, is appended to the end of the redered node.
+ */
+function theme_cdm_taxontree_block($tree, $delta, $magicbox = false, $show_filter_switch = false, $tree_node_callback = false){
+
+   // THEMERS: change the line below according the specific regions of your theme
+   $left_expand_region = 'right';
+  
+  $out = '';
+  if(cdm_taxontree_filters_active()){
+    $out .= theme('cdm_taxontree_contoller', _get_compact_mode());
+  }
+  if($magicbox){
+    if(is_numeric($magicbox) || is_string($magicbox)){
+      $region = _get_block_region($magicbox);
+    }
+    // the magicbox expands to the right by default,
+    // if the class 'expand-left' to  the cdm_taxontree_scroller_x the box will expand to the left
+    $expand_direction = $region == 'right' ? 'expand-left' : '';
+    $out .= '<div class="cdm_taxontree_scroller_x '.$expand_direction.'"><div class="cdm_taxontree_container"><div class="cdm_taxontree_scroller_y">';
+  } else {
+    $out .= '<div class="cdm_taxontree_scroller_xy">';
+  }
+  
+  $out .= theme('cdm_taxontree', $tree, !cdm_taxontree_filters_active(), $show_filter_switch , $tree_node_callback);
+  
+  if($magicbox){
+    $out .= '</div></div></div>';
+  } else {
+    $out .= '</div>';
+  }
+  return $out;
+}
+
+function theme_cdm_taxontree_contoller($compact_mode){
+
+  static $modes = array('expanded', 'compact', 'flattened');
+
+  $out = '<div class="settings">';
+  foreach($modes as $mode){
+    if($compact_mode == $mode){
+      $out .= t($mode);
+    } else {
+      $out .= l(t($mode), 'cdm_taxontree/set/compact_mode/'.$mode, array(), drupal_get_destination());
+    }
+    $out .= ' ';
+  }
+
+  return $out.'</div>';
+}
+
+function theme_cdm_taxontree($tree, $filterIncludes = null, $show_filter_switch = false, $tree_node_callback = false, $element_name = false){
+
+  if(!is_array($tree)) {
+//    $out = '<ul class="cdm_taxontree">';
+//    $out .= '<li>----------------------------NO TREE---------------------------------------</li>';
+//    $out .= '</ul>';
+//    return $out;
+    return false;
+  }
+
+  if(is_null($filterIncludes)){
+    // set $filterIncludes true if no filters are set.
+    $filterIncludes = !cdm_taxontree_filters_active();
+  }
+
+	// append element name to get multiple taxontrees on one page working
+	$out = '<ul class="cdm_taxontree' . (($element_name) ? ' ' . $element_name : '') . '">';
+  foreach($tree as $node){
+    $out .= theme('cdm_taxontree_node', $node, $filterIncludes, $show_filter_switch, $tree_node_callback);
+  }
+  $out .= '</ul>';
+  return $out;
+}
+
+function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = false, $tree_node_callback = false){
+
+  $is_leaf = !$node->taxonomicChildrenCount || $node->taxonomicChildrenCount == 0;
+  $is_expanded = isset($node->expanded) && $node->expanded = 'expanded';
+  
+  if($node->tid){
+    $node_name = $node->name;
+    $path = "taxonomy/term/".$node->tid;
+    // disable filterswitch
+    $show_filter_switch = false;
+    
+  } else if(module_exists('cdm_dataportal')){
+      $node_name = cdm_dataportal_shortname_of($node);
+      $path = path_to_taxon($node->uuid);
+  } else {
+      $node_name = "module cdm_dataportal missing";
+      $path = "";
+  }
+
+  if($filterIncludes){
+		$name = l($node_name, $path);
+		// no names for terms in filter widget; as discussed with A. Müller
+		//$name = '';
+    
+		$filter_class = 'filter_included';
+  } else {
+    if($node->filter == 'on') {
+      $name = l($node_name,  $path);
+      $filter_class = 'filter_on';
+    } else {
+      $name .= $node_name;
+      $filter_class = 'filter_excluded';
+    }
+  }
+  $nextLevelIncluded = $node->filter == 'on' || $filterIncludes;
+
+  $ahah_url = false;
+  if(!$is_leaf && !$is_expanded && $filter_class != 'filter_excluded'){
+    if($node->tid){
+      $ahah_url = url('cdm_taxontree/taxonomy/children/'.$node->tid.'/'.$node->vid.'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
+    } else if(module_exists('cdm_dataportal')) {
+      $ws_url = cdm_compose_url(cdm_ws_taxonomy_compose_resourcePath($node->uuid));
+      $ahah_url = url('cdm_api/proxy/'.urlencode($ws_url).'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
+    }
+  }
+
+  // list item
+  $out = '<li class="'
+  .($node->focused ? 'focused ' : '')
+  .($is_leaf ? 'leaf ':($is_expanded ?'expanded ':'collapsed '))
+  .$filter_class.'"'
+  .($ahah_url ? 'ref="'.$ahah_url.'"' : '')
+  .'>';
+
+  if($show_filter_switch){
+    // filter icon
+    $out .= theme('cdm_taxontree_node_filter_switch', $node, $filter_class);
+  }
+
+  // taxon name
+  $out .= $name;
+
+  // concept_switch or other theme callbacks
+  if($tree_node_callback){
+    $out .= theme($tree_node_callback, $node);
+  }
+
+  if($node->children && is_array($node->children)){
+    $out .= theme('cdm_taxontree', $node->children, $nextLevelIncluded, $show_filter_switch, $tree_node_callback);
+  }
+  $out .= '</li>';
+
+  return $out;
+}
+
+function theme_cdm_taxontree_node_filter_switch(&$node, $filter_class){
+  if(!module_exists('cdm_dataportal')) {
+    return '';
+  }
+  
+  $out = '';
+  switch($filter_class){
+    case 'filter_included':
+      $filter_icon = 'visible_implicit_small.gif';
+      break;
+    case 'filter_excluded':
+      $filter_icon = 'invisible_small.gif';
+      break;
+    case 'filter_on':
+      $filter_icon = 'visible_small.gif';
+      break;
+  }
+
+  $filter_op = $node->filter == 'on' ? 'remove' : 'add';
+
+  $out .= '&nbsp;'
+  .l('<img src="'.drupal_get_path('module', 'cdm_taxontree').'/'.$filter_icon.'" alt="[f]" />',
+    'cdm_taxontree/filter/'.$filter_op.'/'.$node->uuid, array('class'=>'filter_'.$filter_op),
+    'destination='.path_to_taxon($node->uuid),
+  null, false, true);
+   
+  return $out;
+}
+
+function theme_cdm_taxontree_node_concept_switch(&$node){
+  $out = '';
+
+  if(isset($node->alternativeConceptRefs[0])){
+    $out = l(
+      '<img src="'.drupal_get_path('module', 'cdm_taxontree').'/concept_switch.gif" alt="[-&gt;]" />',
+      'cdm_dataportal/taxon/alternative/'.$node->uuid,
+    array('rel'=>'cdm_dataportal/taxon/alternative/'.$node->uuid, 'class'=>'concept_switch'),
+    null, null, false, true);
+  }
+  return $out;
+}
+
+
+
+/**
+ * Theme function that returns a <span> element containing the secundum of a given TreeNode> element
+ *
+ * @param array $node The <TreeNode> element as returned by the webservice
+ *
+ * @return String html formatted title of the secundum
+ * @deprecated replace by according taxonomictree function
+ */
+function theme_cdm_taxontree_node_reference(&$node){
+
+  $secRefTitle = cdm_taxontree_secRefTitle_for($node->secUuid);
+  // encode any special characters
+  $secRefTitle = check_plain($secRefTitle);
+  $out = ' <span class="sec_ref widget_select" title="'.$secRefTitle.'" style="background-color:#'._uuid_to_rgbhex($node->secUuid).'" alt="'.$node->secUuid.'">'
+      .$secRefTitle.'</span>';
+  return $out;
+}
+
+
+/**
+ * theme function to display terms in the cd,_taxontree_widget with additional data.
+ *
+ */
+function theme_cdm_taxontree_node_reference_widget(&$node){
+	$title = ($node->titleCache) ? check_plain($node->titleCache) : check_plain($node->name);
+	$parents = taxonomy_get_parents_all($node->tid);
+	$path = theme('cdm_taxontree_taxon_fullpath',array_reverse($parents),3);
+	$out = ' <span class="sec_ref widget_select" title="' . (!empty($path) ? $path : $title) . '" alt="'.$node->tid.'">' . $title . '</span>';
+	return $out;
+}
+
+/**
+ * theme function to replace term names with full path to term name
+ *
+ * @param array $tids path->to->term
+ * @param integer $max_levels, 0 is unlimited
+ * @return text representation of path->to->term
+ */
+function theme_cdm_taxontree_taxon_fullpath($tids = array(), $max_levels = 3){
+	$path = array();
+	foreach ($tids as $tid){
+		$path[] = $tid->name;
+	}
+	if(count($path) > $max_levels){
+		$abbr_path = array_slice($path,0,$max_levels-1);
+		array_push($abbr_path,'…');
+		array_push($abbr_path,array_pop($path));
+		$path = $abbr_path;
+	}
+	return implode(' » ',$path);
+}
+
+// ----------------- FILTERS -------------------------- //
+
+/**
+ * filters on children, overrides already set parent filters and vice versa
+ *
+ * @param STRING $op [add | remove] a taxon from the filtered taxa
+ * 					 TODO at the moment there is also a 'list' operation that displays all set filters and provides the ability to delete them.
+ * 						  This option depends on function is defined in cdm_dataportal. Problem is, that the dependency is the other way round.
+ * @param UUID $taxonUuid
+ * @return unknown
+ */
+function cdm_taxontree_view_filter($op, $taxonUuid = null){
+  
+  if(!isset($_SESSION['cdm']['filters'])){
+    $_SESSION['cdm']['filters'] = array();
+  }
+  if($taxonUuid || $op == 'list'){
+    switch($op){
+      case 'add':
+        cdm_taxontree_filters_add($taxonUuid);
+        break;
+      case 'remove':
+        cdm_taxontree_filters_remove($taxonUuid);
+        break;
+      case 'list':
+        //TODO put in cdm_dataportal_theme to decouple both modules by this!!!
+        $out = '<ul>';
+        foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
+          $out .= '<li>'.cdm_dataportal_shortname_of($node).' '.l('[x]', 'cdm_dataportal/filter/remove/'.$uuid, array(), drupal_get_destination()).'</li>';
+        }
+        $out .= '</ul>';
+        return $out;
+    }
+  }
+  if($_REQUEST['destination']){
+    $destination = $_REQUEST['destination'];
+    unset($_REQUEST['destination']);
+    drupal_goto($destination);
+  }
+}
+
+/**
+ * Filters are set in cdm_dataportal_view_filter().
+ * functions using filters should remove invalid filters
+ *
+ * @return true if any filter is active
+ */
+function cdm_taxontree_filters_active(){
+ return isset($_SESSION['cdm']['filters']) && count($_SESSION['cdm']['filters']) > 0;
+}
+
+/**
+ * Filters are set in cdm_dataportal_view_filter().
+ *
+ * @return a reference on the filters array stored in the SESSION
+ */
+function &cdm_taxontree_filters_get(){
+  if(!isset($_SESSION['cdm']['filters'])){
+    $_SESSION['cdm']['filters'] = array();
+  }
+ return $_SESSION['cdm']['filters'];
+}
+
+/**
+ * Adds a taxon to the filtered taxa array
+ *
+ * @param UUID $taxonUuid
+ */
+function cdm_taxontree_filters_add($taxonUuid){
+
+  $parents = cdm_ws_taxonomy_pathFromRoot($taxonUuid);
+  
+  $parents = array_reverse($parents);
+  
+  // pop off last element since this is the TreeNode object for $taxonUuid!
+  $this_node = array_pop($parents);
+  // will contain the uuid of the parent nodes excluding the $taxonUuid node itself
+  $parent_uuids = array();
+  
+  // children override parents rule: remove all parent filters,
+  foreach($parents as $pnode){
+    unset($_SESSION['cdm']['filters'][$pnode->uuid]);
+    $parent_uuids[] = $pnode->uuid;
+  }
+  
+  // search for potential children of this $taxonUuid
+  foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
+    if(in_array($taxonUuid, $node->parentUuids)){
+      unset($_SESSION['cdm']['filters'][$node->uuid]);
+    }
+  }
+  // finally add this $taxonUuid as new filter
+  $this_node->parentUuids = $parent_uuids;
+  $_SESSION['cdm']['filters'][$taxonUuid] = $this_node;
+}
+
+/**
+ * Unsets a taxon from the filtered taxa array
+ *
+ * @param UUID $taxonUuid
+ */
+function cdm_taxontree_filters_remove($taxonUuid){
+  unset($_SESSION['cdm']['filters'][$taxonUuid]);
+}
+
+
+// ------------------------ PRIVATE --------------------------- //
+
+/**
+ * Analyses the current Drupal path.
+ * If a certain taxon was requested in the request, returns the UUID of that taxon.
+ * A stored UUID if no taxon was requested.
+ * TODO where does the stored UUID come from?
+ *
+ * @return UUID
+ */
+function _cdm_get_taxonuuid(){
+
+  //TODO make the path configurable
+  if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!==0){
+    $taxon_uuid = arg(2);
+  } else {
+    $taxon_uuid = $_SESSION['cdm_dataportal']['tree']['taxon_uuid'];
+  }
+  return $taxon_uuid;
+}
+
+/**
+ * Converts a UUID into a hexadecimal RGB colour code.
+ *
+ * @param UUID $uuid
+ * @return Number hexadecimal
+ */
+function _uuid_to_rgbhex($uuid){
+
+  $xfoot = _str_crossfoot($uuid);
+  $h = $xfoot / 255;
+  $h = $h - floor($h);
+  $RGB = _hsv_2_rgb($h, 0.45, 1);
+  return dechex($RGB['R']).dechex($RGB['G']).dechex($RGB['B']);
+}
+
+/**
+ * Sums up ASCII values of the character in the given string.
+ *
+ * @param String $str
+ * @return Number
+ */
+function _str_crossfoot($str){
+  $xfoot = 0;
+  for($i=0; $i<strlen($str); $i++){
+    $xfoot = $xfoot + ord($str[$i]);
+  }
+  return $xfoot;
+}
+
+/**
+ * Converts HSV colour codes into their RGB counterpart
+ *
+ * @param Number $H value 0-1
+ * @param Number $S value 0-1
+ * @param Number $V value 0-1
+ * @return array three values  0-255
+ */
+function _hsv_2_rgb($H, $S, $V) // HSV Values:Number 0-1
+{ //
+  $RGB = array();
+  
+  if($S == 0){
+    $R = $G = $B = $V * 255;
+  } else {
+    $var_H = $H * 6;
+    $var_i = floor( $var_H );
+    $var_1 = $V * ( 1 - $S );
+    $var_2 = $V * ( 1 - $S * ( $var_H - $var_i ) );
+    $var_3 = $V * ( 1 - $S * (1 - ( $var_H - $var_i ) ) );
+  
+    if ($var_i == 0) { $var_R = $V ; $var_G = $var_3 ; $var_B = $var_1 ; }
+    else if ($var_i == 1) { $var_R = $var_2 ; $var_G = $V ; $var_B = $var_1 ; }
+    else if ($var_i == 2) { $var_R = $var_1 ; $var_G = $V ; $var_B = $var_3 ; }
+    else if ($var_i == 3) { $var_R = $var_1 ; $var_G = $var_2 ; $var_B = $V ; }
+    else if ($var_i == 4) { $var_R = $var_3 ; $var_G = $var_1 ; $var_B = $V ; }
+    else { $var_R = $V ; $var_G = $var_1 ; $var_B = $var_2 ; }
+  
+    $R = $var_R * 255;
+    $G = $var_G * 255;
+    $B = $var_B * 255;
+  }
+  
+  $RGB['R'] = $R;
+  $RGB['G'] = $G;
+  $RGB['B'] = $B;
+  
+  return $RGB;
+}
