@@ -1,0 +1,367 @@
+<?php
+// $Id: shib_auth.module,v 1.3.4.5.2.10.2.5 2008/09/26 11:58:24 niif Exp $
+
+/**
+ * @file
+ * Provides user authentication with Shibboleth (both v1.3 and v2.0) as well as some authorisation features (automatic role assignment base on Shibboleth attributes).
+ */
+
+/**
+ * Display help and module information
+ * @param path which path of the site we're displaying help
+ * @param arg array that holds the current path as would be returned from arg() function
+ * @return help text for the path
+ */
+function shib_auth_help($section) {
+  $output = '';
+  switch ($section) {
+    case 'admin/help#shib_auth':
+      //TODO
+      $output = '<p>'. t("The Shibboleth authentication module let you utilize the advantages of the Single Sign On (SSO) methods.") .'</p>';
+      break;
+  }
+  return $output;
+} // function shib_auth_help
+
+/**
+ * Create a new user based on informations from the Shibboleth handler if it's necessary or log in.
+ */
+function shib_auth_init() {
+  global $user;
+
+  if (variable_get('shib_auth_debug_state', FALSE)) {
+    $debug_message = print_r($_SERVER, TRUE);
+    drupal_set_message('<pre>'. $debug_message .'</pre>');
+  }
+  
+  $uname= $_SERVER[variable_get('shib_auth_username_variable', 'REMOTE_USER')];
+  $umail= $_SERVER[variable_get('shib_auth_username_email', 'HTTP_SHIB_MAIL')];
+  $umail_single = preg_replace('/;.*/', '', $umail);
+  // If
+  // - The user isn't logged in
+  // - There is Shibboleth authentication in the background
+  // - The settings are fine and there has been a valid username setted up
+  // - The settings are fine and there has been a valid user email address setted up
+  if (!$user->uid && ($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'] || $_SERVER['Shib-Identity-Provider'])) {
+    if ($uname && $umail_single) {
+      user_external_login_register($uname, "shib_auth");
+      $account = user_save($user, array('mail' => $umail_single));
+      // Terminate if an error occured during user_save().
+      if (!$account) {
+        drupal_set_message(t("Error saving user account."), 'error');
+        return;
+      }
+      $user = $account;
+
+    }
+    else {
+      $message = 'Username or e-mail address is missing. Maybe the Shibboleth configuration is not perfect.'; 
+      drupal_set_message(t($message), 'error');
+      watchdog('shib_auth', $message, WATCHDOG_CRITICAL);
+    }
+  }
+  role_assign(); 
+  //var_dump($user->roles);print('<br>');
+
+} // function shib_auth_init()
+
+/**
+ * Role assign 
+ *
+ */
+function role_assign() {
+global $user;
+
+$rules = db_query("SELECT * FROM {shib_auth}");
+
+while ($rule = db_fetch_array($rules)) {
+    $fieldname = $rule['field'];
+    $expression = '/'. $rule['regexpression'] .'/';
+      foreach (explode(';', $_SERVER[$fieldname]) as $value) {
+        if (preg_match($expression, trim($value))) {
+          $roles = unserialize($rule['role']);
+          if (!empty($roles)){
+            foreach ($roles as $key => $value) {
+              $user->roles[$key] = $value;
+            }
+          }
+      }
+    }
+  }
+
+$user->roles = array_filter($user->roles);
+}// function role_assign()
+
+/**
+ * Let the user exit from the Shibboleth authority when he/she log out from the actual Drupal site.
+ * @param op What kind of action is being performed.
+ * @param edit The array of form values submitted by the user.
+ * @param account The user object on which the operation is being performed.
+ * @param category The active category of user information being edited.
+ */
+function shib_auth_user($op, &$edit, &$account, $category = NULL) {
+  global $base_url, $user;
+
+  if ($op == "logout") {
+    $handler_url = variable_get('shib_auth_handler_url', '/Shibboleth.sso');
+    $handler_protocol = variable_get('shib_auth_handler_protocol', 'https');
+    if (ereg("^http[s]{0,1}://", $handler_url) ) {
+      // If handlerURL is an absolute path
+      $logout_handler = $handler_url .'/Logout';
+    }
+    else {
+      // Else, if the handlerURL is a relative path
+      // If the WAYF's URI doesn't start with slash then extend it
+      if ( !ereg("^/", $handler_url) ) $handler_url = '/'. $handler_url;
+      $logout_handler = $handler_protocol .'://'. $_SERVER['HTTP_HOST'] . $handler_url .'/Logout';
+    }
+    $return_url = variable_get('logout_return_url', $base_url);
+    drupal_goto("$logout_handler?return=$return_url");
+  }
+} // function shib_auth_user(logout)
+
+/**
+ * Valid permissions for this module
+ * @return array An array of valid permissions for the shib_auth module
+ */
+function shib_auth_perm() {
+  return array('administer shibboleth authentication');
+} // function shib_auth_perm()
+
+/**
+ * Generate the login text in HTML format using the 't' function
+ * @returns HTML text of the login form
+ */
+function generate_login_text() {
+  global $base_url, $user;
+  
+  if (!$user->uid) {
+    $handler_url = variable_get('shib_auth_handler_url', '/Shibboleth.sso');
+    $handler_protocol = variable_get('shib_auth_handler_protocol', 'https');
+    $wayf_uri = variable_get('shib_auth_wayf_uri', '/WAYF/HREF');
+
+    // If the WAYF's URI doesn't start with slash then extend it
+    if ( !ereg('^/', $wayf_uri) ) {
+      $wayf_uri = '/'. $wayf_uri;
+    }
+  
+    $handler = '';
+    $block_content = '';
+  
+    if (ereg("^http[s]{0,1}://", $handler_url) ) {
+      // If handlerURL is an absolute path
+      $handler = $handler_url . $wayf_uri;
+    }
+    else {
+      // Else, if the handlerURL is a relative path
+      // If the WAYF's URI doesn't start with slash then extend it
+      if ( !ereg("^/", $handler_url) ) $handler_url = "/" . $handler_url;
+      $handler = $handler_protocol .'://'. $_SERVER['HTTP_HOST'] . $handler_url . $wayf_uri;
+    }
+    //$actualLocation: the path where the Shibboleth should return
+    //orig: $actual_location = (isset($_SERVER['HTTPS']) ? 'https' : 'http') .'://'. $_SERVER['HTTP_HOST'] . request_uri();
+	$actual_location = variable_get('login_target_protocol', 'https') .'://'. $_SERVER['HTTP_HOST'] . request_uri();
+    
+    // If there is no session yet then we should put the login text into the block
+    $block_content .= '<p><b><a href='. $handler .'?target='. $actual_location .'>'
+                      . variable_get('auth_link_text', t('Click here to login via Shibboleth!')) 
+                      .'</a></b></p>';
+
+    return $block_content;
+  }
+} // function generate_login_text()
+
+/**
+ * Generate the HTML text for the shib_auth login block
+ * @param op the operation from the URL
+ * @param delta offset
+ * @returns block HTML 
+ */
+function shib_auth_block($op='list', $delta=0, $edit = array()) {
+  // listing of blocks, such as on the admin/block page
+  switch ($op) {
+    case "list":
+      $blocks[0] = array(
+        'info'       => t('Shibboleth authentication'),
+        'status'     => TRUE,
+        'visibility' => 1,
+        'weight'     => 0,
+        'region'     => 'left'
+      );
+      return $blocks;
+    case 'configure':
+      $form = array();
+      switch ($delta) {
+        case 0:
+          $form['auth_link_text'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Text of the auth link'),
+            '#require' => TRUE,
+            '#size' => 60,
+            '#description' => t('Here you can replace the text of the authentication link.'),
+            '#default_value' => variable_get('auth_link_text', t('Click here to login via Shibboleth!')),
+          );
+      }
+      return $form;
+    case 'save':
+      switch ($delta) {
+        case 0:
+          variable_set('auth_link_text', $edit['auth_link_text']);
+      }
+      break;
+    case "view": default:
+      switch ($delta) {
+        case 0:
+          $block = array(
+          'subject' => t('Shibboleth login'),
+          'content' => generate_login_text() );
+          break;
+      }
+      return $block;
+  }
+} // function shib_auth_block()
+
+/**
+ * Generate the menu element to access the Shibboleth authentication module's administration page
+ * @returns HTML text of the administer menu element
+ */
+function shib_auth_menu($may_cache) {
+  $items = array();
+ 
+  if ($may_cache) { 
+    $items[] = array(
+      'path' => 'admin/user/shib_auth',
+      'title' => t('Shibboleth settings'),
+      'description' => t('Control the various settings of the shibboleth authentication module'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => array('shib_auth_admin'),
+      'access' => user_access('administer shibboleth authentication'),
+      'weight' => -10,
+    );
+
+    $items[] = array(
+      'path' => 'admin/user/shib_auth/general',
+      'title' => t('General settings'),
+      'access' => user_access('administer shibboleth authentication'),
+      'weight' => -10,
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+    );
+  
+    $items[] = array(
+      'path' => 'admin/user/shib_auth/rules',
+      'title' => t('Shibboleth group rules'),
+      'description' => t('Administer the users group membership'),
+      'callback' => 'shib_auth_list_rules',
+      'access' => user_access('administer permissions'),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => -8,
+    );
+  
+    $items[] = array(
+      'path' => 'admin/user/shib_auth/rules/general',
+      'title' => t('Rules'),
+      'access' => user_access('administer shibboleth authentication'),
+      'weight' => -10,
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+    );
+
+    $items[] = array(
+      'path' => 'admin/user/shib_auth/rules/New',
+      'title' => t('Add new rule'),
+      'description' => t('Add new shibboleth based role adjudication'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => array('shib_auth_new_rule_form'),
+      'access' => user_access('administer permissions'),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => -7,
+    );
+  }
+  else{
+    role_assign(); 
+
+    $items[] = array(
+      'path' => 'admin/user/shib_auth/rules/Delete/'. arg(5),
+      'callback' => 'shib_auth_delete_rule',
+      'callback arguments' => array(arg(5)),
+      'access' => user_access('administer permissions'),
+      //'type' => MENU_CALLBACK,
+    );
+
+    $items[] = array(
+      'path' => 'admin/user/shib_auth/rules/Edit/'. arg(5),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => array('shib_auth_edit_rule'),
+      'access' => user_access('administer permissions'),
+      'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items[] = array(
+      'path' => 'admin/user/shib_auth/rules/Clone/'. arg(5),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => array('shib_auth_clone_rule'),
+      'access' => user_access('administer permissions'),
+      'type' => MENU_CALLBACK,
+    );
+  }
+
+  return $items;
+} // function shib_auth_menu()
+
+/**
+ * Alters forms for the shibboleth authentication module.
+ *
+ * @param $form_id The form ID.
+ * @param $form The form.
+ */
+function shib_auth_form_alter($form_id, &$form) {
+  if ($form_id == 'user_login') {
+    $form['shibboleth'] = array(
+      '#type' => 'hidden', 
+      '#weight' => -1,
+      '#prefix' => generate_login_text(), 
+      '#suffix' => '', 
+    );
+  }
+}
+
+/**
+ * Helper function for authentication modules. Either login in or registers the
+ * current user, based on username. Either way, the global $user object is
+ * populated based on $name.
+ *
+ * Backport this function from user.module of Drupal 6.x.
+ *
+ * @param $name The user's name.
+ * @param $module Name of the module which process the authetication.
+ */
+function user_external_login_register($name, $module) {
+  global $user;
+
+  // Try to load the user
+  $user = user_load(array('name' => $name));
+
+  if (!isset($user->uid)) {
+    // Register this new user.
+    $userinfo = array(
+      'name' => $name,
+      'pass' => user_password(),
+      'init' => $name,
+      'status' => 1,
+      "authname_$module" => $name,
+      'access' => time()
+    );
+    $account = user_save('', $userinfo);
+    // Terminate if an error occured during user_save().
+    if (!$account) {
+      drupal_set_message(t("Error saving user account."), 'error');
+      return;
+    }
+    $user = $account;
+    watchdog('user', 'New external user: %name using module %module.', array('%name' => $name, '%module' => $module), WATCHDOG_NOTICE, l(t('edit'), 'user/'. $user->uid .'/edit'));
+  }
+}
+
+// include the admin form if it really want to use
+if (arg(0) === 'admin' AND arg(1) === 'user' AND arg(2) === 'shib_auth') {
+  include_once('shib_auth_admin.inc');
+}

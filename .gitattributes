@@ -285,6 +285,13 @@ modules/expertsdb/resources/taxonomy_expertdb_taxomony.xml -text
 modules/expertsdb/taxon_experts_search_interests.css -text
 modules/expertsdb/taxon_experts_view.css -text
 modules/expertsdb/template.taxon_experts.php -text
+modules/shib_auth/INSTALL.txt -text
+modules/shib_auth/LICENSE.txt -text
+modules/shib_auth/README.txt -text
+modules/shib_auth/shib_auth.info -text
+modules/shib_auth/shib_auth.install -text
+modules/shib_auth/shib_auth.module -text
+modules/shib_auth/shib_auth_admin.inc -text
 modules/smtp/INSTALL.txt -text
 modules/smtp/LICENSE.txt -text
 modules/smtp/README.txt -text
