@@ -252,7 +252,7 @@ function shib_auth_menu($may_cache) {
       'title' => t('Shibboleth group rules'),
       'description' => t('Administer the users group membership'),
       'callback' => 'shib_auth_list_rules',
-      'access' => user_access('administer permissions'),
+      'access' => user_access('administer access control'),
       'type' => MENU_LOCAL_TASK,
       'weight' => -8,
     );
@@ -271,7 +271,7 @@ function shib_auth_menu($may_cache) {
       'description' => t('Add new shibboleth based role adjudication'),
       'callback' => 'drupal_get_form',
       'callback arguments' => array('shib_auth_new_rule_form'),
-      'access' => user_access('administer permissions'),
+      'access' => user_access('administer access control'),
       'type' => MENU_LOCAL_TASK,
       'weight' => -7,
     );
@@ -283,7 +283,7 @@ function shib_auth_menu($may_cache) {
       'path' => 'admin/user/shib_auth/rules/Delete/'. arg(5),
       'callback' => 'shib_auth_delete_rule',
       'callback arguments' => array(arg(5)),
-      'access' => user_access('administer permissions'),
+      'access' => user_access('administer access control'),
       //'type' => MENU_CALLBACK,
     );
 
@@ -291,7 +291,7 @@ function shib_auth_menu($may_cache) {
       'path' => 'admin/user/shib_auth/rules/Edit/'. arg(5),
       'callback' => 'drupal_get_form',
       'callback arguments' => array('shib_auth_edit_rule'),
-      'access' => user_access('administer permissions'),
+      'access' => user_access('administer access control'),
       'type' => MENU_NORMAL_ITEM,
     );
 
@@ -299,7 +299,7 @@ function shib_auth_menu($may_cache) {
       'path' => 'admin/user/shib_auth/rules/Clone/'. arg(5),
       'callback' => 'drupal_get_form',
       'callback arguments' => array('shib_auth_clone_rule'),
-      'access' => user_access('administer permissions'),
+      'access' => user_access('administer access control'),
       'type' => MENU_CALLBACK,
     );
   }
