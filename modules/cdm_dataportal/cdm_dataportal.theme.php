@@ -660,27 +660,40 @@ function theme_cdm_descriptionElements_distribution($taxon){
     $map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
 
     $display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
-    $bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
+    //$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
     $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
     $query_string = ($display_width ? '&ms=' . $display_width: '')
       . ($bounding_box ? '&bbox=' .  $bounding_box : '')
       . ($labels_on ? '&labels=' .  $labels_on : '');
       
+      $query_string .= '&img=false&legend=1&mlp=3';
+      
     if(variable_get('cdm_dataportal_map_openlayers', 1)){
       // embed into openlayers viewer
-      $server = 'http://edit.csic.es/v1/areas_sld.php';
+      //$server = 'http://edit.csic.es/v1/areas_sld.php';
+      $server = 'http://edit.csic.es/v1/test.php';
       $map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
+      
+      //#print($map_tdwg_Uri.'<br>');
+      
       //$map_tdwg_Uri ='http://edit.csic.es/v1/areas3_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
       //$tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
-      $tdwg_sldFiles = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);
       
-      if(isset($tdwg_sldFiles[0]->layers)){
-        $layerSlds = $tdwg_sldFiles[0]->layers;
+      // get the respone from the map service
+      $responseObj = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);
+      $responseObj = $responseObj[0];
+      
+      // get the sld files from the response object
+      if(isset($responseObj->layers)){
+        $layerSlds = $responseObj->layers;
         foreach($layerSlds as $layer){
           $tdwg_sldUris[$layer->tdwg] = "http://edit.csic.es/v1/sld/".$layer->sld;
+          //#print($tdwg_sldUris[$layer->tdwg].'<br>');
         }
       }
+      // get the bbox from the response object
+      $zoomto_bbox = ($responseObj->bbox ? $responseObj->bbox : '-180, -90, 180, 90');
       
       $add_tdwg1 = (isset($tdwg_sldUris['tdwg1']) ? "
           tdwg_1.params.SLD = '".$tdwg_sldUris['tdwg1']."';
@@ -781,8 +794,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
    '.$add_tdwg2.'
    '.$add_tdwg3.'
    '.$add_tdwg4.'
-   map.zoomToMaxExtent();
-   
+   map.zoomToExtent(new OpenLayers.Bounds('.$zoomto_bbox.'), true);
  }
  
 $(document).ready(function(){
