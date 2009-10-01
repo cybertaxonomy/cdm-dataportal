@@ -660,7 +660,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
     $map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
 
     $display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
-    //$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
+    $bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
     $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
     $query_string = ($display_width ? '&ms=' . $display_width: '')
@@ -693,7 +693,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
         }
       }
       // get the bbox from the response object
-      $zoomto_bbox = ($responseObj->bbox ? $responseObj->bbox : '-180, -90, 180, 90');
+      $zoomto_bbox = ($bounding_box ? $bounding_box : ($responseObj->bbox ? $responseObj->bbox :'-180, -90, 180, 90') );
       
       $add_tdwg1 = (isset($tdwg_sldUris['tdwg1']) ? "
           tdwg_1.params.SLD = '".$tdwg_sldUris['tdwg1']."';

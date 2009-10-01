@@ -16,6 +16,7 @@
  * http://www.e-taxonomy.eu
  */
 require_once ('xml2json.php');
+require_once ('commons.php');
 require_once ('uuids.php');
 
 define(DEFAULT_TAXONTREE_RANKLIMIT, '');//TODO Genus UUID
@@ -625,15 +626,15 @@ function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
  * @return unknown_type
  */
 function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET", $absoluteURI = false){
-  
+   
   // transform the given uri path or patthern into a proper webservice uri
   if(!$absoluteURI){
     $uri = cdm_compose_url($uri, $pathParameters, $query);
   }
   
   $do_cache = variable_get('cdm_webservice_cache', 1); //strpos($uri, "?") !== FALSE; // if the url has a query parameter sting
-  // never cache absolute URIs
-  $do_cache = $do_cache && !$absoluteURI;
+  // only cache cdm webservice URIs
+  $do_cache = $do_cache && str_beginsWith($uri, variable_get('cdm_webservice_url', '#EMPTY#'));
   $cache_entry = false;
    
   if($do_cache){
