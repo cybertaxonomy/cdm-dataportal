@@ -45,7 +45,7 @@ function cdm_dataportal_help($section='') {
 function cdm_dataportal_perm() {
   return array(
     	'administer cdm_dataportal',
-        'cdm_dataportal view notes',
+      'cdm_dataportal view notes',
   //TODO which else permission are required? -> check the WP6 requirements document
   );
 }
@@ -555,6 +555,10 @@ function cdm_dataportal_settings(){
     '#default_value' => variable_get('cdm_taxonomictree_uuid', false),
     '#options' => $taxonomicTreeOptions,
     '#description'   => t('Select a taxonomic view for this webservice.')
+  );
+  
+  $form['cdm_dataportal']['DEBUG']= array(
+    '#value' => '<pre>'.print_r($taxonomicTreeOptions, true).'</pre>'
   );
   
     
