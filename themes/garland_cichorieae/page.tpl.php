@@ -64,7 +64,12 @@
 
 		<div id="menu">
           <?php if (isset($primary_links)) : ?>
-            <?php print theme('links', $primary_links, array('class' => 'links primary-links')) ?>
+                      
+            <?php
+              foreach($primary_links as &$link) {
+                $link['attributes']['target'] = generalizeString($link['title']);
+              }
+              print theme('links', $primary_links, array('class' => 'links primary-links')) ?>
           <?php endif; ?>
           <?php if (isset($secondary_links)) : ?>
             <?php print theme('links', $secondary_links, array('class' => 'links secondary-links')) ?>
