@@ -107,4 +107,11 @@ define('UUID_PHOTOTYPE', 'b7807acc-f559-474e-ad4a-e7a41e085e34');
 define('UUID_UNSPECIFIC', '230fd762-b143-49de-ac2e-744bcc48a63b');
 define('UUID_ORIGINALMATERIAL', '49c96cae-6be6-401e-9b36-1bc12d9dc8f9');
 
+// rights term
+
+define('UUID_RIGHTS_LICENCE', '67c0d47e-8985-1014-8845-c84599f9992c');
+define('UUID_RIGHTS_COPYRIGHT', 'd1ef838e-b195-4f28-b8eb-0d3be080bd37');
+define('UUID_RIGHTS_ACCESS_RIGHTS', 'a50b4def-b3ac-4508-b50a-e0f249e3a1d7');
+
+
 

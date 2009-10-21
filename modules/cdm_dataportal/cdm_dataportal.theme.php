@@ -330,7 +330,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
  *      "NORMAL": link to the image page or to the $alternativeMediaUri if it is defined
  * @param $alternativeMediaUri an array of alternative URIs to link the images wich will overwrite the URIs of the media parts. 
  *     The order of URI in this array must correspond with the order of images in $mediaList
- * @param $moreLink an URI to link the the hint on more images to; if null no link is created
+ * @param $galleryLinkUri an URI to link the the hint on more images to; if null no link is created
  * @return unknown_type
  */
 function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
@@ -629,18 +629,54 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 }
 
 function theme_cdm_right($right){
-  $out = '<div class="right">';
-  $out .= '<span class="type">'.$right->type->representation_L10n.' </span>';
-  if($right->uri){
-    $out .= '<a href="'.$right->uri.'>'.$right->abbreviatedText.'</a>';
-  } else {
-    $out .= $right->abbreviatedText;
+  
+  $funcSubName = false;
+  switch($right->term->uuid){
+    case UUID_RIGHTS_LICENCE: $funcSubName = 'licence'; break;
+    case UUID_RIGHTS_COPYRIGHT: $funcSubName = 'copyright'; break;
+    default: $funcSubName = 'copyright';
   }
-  $out .= '<span class="agent"> '.$right->abbreviatedText.'</span>';
-  $out .= '</div>';
-  return $out;
-  //$right->type->representation_L10n
+  if($funcSubName){
+    $out = '<div class="right">';
+    $out .= theme('cdm_right_'.$funcSubName, $right);
+    $out .= '</div>';
+    return $out;
+  }
 }
+
+
+/**
+ * Theme for rights of type UUID_RIGHTS_COPYRIGHT
+ * @param $right
+ * @return unknown_type
+ */
+function theme_cdm_right_copyright($right){
+    $out .= '<span class="type">&copy;</span>';
+    if($right->agent){
+      $out .= ' <span class="agent"> '.$right->agent->firstname . ' ' .$right->agent->lastname .'</span>';
+    }
+    return $out;
+}
+
+  
+/**
+ * Theme for rights of type UUID_RIGHTS_LICENCE
+ * @param $right
+ * @return unknown_type
+ */
+function theme_cdm_right_licence($right){   
+$out .= '<span class="type">'.$right->type->representation_L10n.' </span>';
+    if($right->uri){
+      $out .= '<a href="'.$right->uri.'>'.$right->abbreviatedText.'</a>';
+    } else {
+      $out .= $right->abbreviatedText;
+    }
+    if($right->agent){
+      $out .= '<span class="agent"> '.$right->agent->firstname . ' ' .$right->agent->lastname .'</span>';
+    }
+    return $out;
+}
+
 
 /**
  * TODO
@@ -1509,8 +1545,9 @@ function theme_cdm_taxon_page_images($taxon, $media){
     $alternativeMediaUri = null;
     $captionElements = array('title', '#uri'=>t('open Image'));
     $gallery_name = $taxon->uuid;
+    $mediaLinkType = 'LIGHTBOX';
     $out = '<div class="image-gallerie">';
-    $out .= theme('cdm_media_gallerie', $media, $gallery_name, $maxExtend, $cols, $maxRows, $captionElements, null, null);
+    $out .= theme('cdm_media_gallerie', $media, $gallery_name, $maxExtend, $cols, $maxRows, $captionElements, $mediaLinkType, null);
     $out .= '</div>';
   }else{
     $out = 'No images available.';
