@@ -557,9 +557,9 @@ function cdm_dataportal_settings(){
     '#description'   => t('Select a taxonomic view for this webservice.')
   );
   
-  $form['cdm_dataportal']['DEBUG']= array(
-    '#value' => '<pre>'.print_r($taxonomicTreeOptions, true).'</pre>'
-  );
+//  $form['cdm_dataportal']['DEBUG']= array(
+//    '#value' => '<pre>'.print_r($taxonTrees, true).'</pre>'
+//  );
   
     
   //------------------ FEATURE TREE --------------------//
