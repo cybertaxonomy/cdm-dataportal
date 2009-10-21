@@ -777,7 +777,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 //         new OpenLayers.Control.LayerSwitcher({\'ascending\':false}),
 //         new OpenLayers.Control.PanZoomBar(),
 //         //new OpenLayers.Control.PanZoom(),
-//         new OpenLayers.Control.MouseToolbar(),
+//         //new OpenLayers.Control.MouseToolbar(),
 //         //new OpenLayers.Control.MousePosition(),
 //         //new OpenLayers.Control.KeyboardDefaults()
 //       ],
@@ -794,7 +794,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
    '.$add_tdwg2.'
    '.$add_tdwg3.'
    '.$add_tdwg4.'
-   map.zoomToExtent(new OpenLayers.Bounds('.$zoomto_bbox.'), true);
+   map.zoomToExtent(new OpenLayers.Bounds('.$zoomto_bbox.'), false);
  }
  
 $(document).ready(function(){
@@ -2087,23 +2087,23 @@ function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', 
 function theme_cdm_descriptionElementTextData($element){
 
   $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
-  $referenceCitation = '';
-  if($element->citation){
-      $fullCitation = $element->citation->authorTeam->titleCache;
-      if(isset($element->citation->datePublished->start)) {
-        $fullCitation .= ', '.partialToYear($element->citation->datePublished->start);
-      }
-      
-      $referenceCitation = l('<span class="reference">'.$fullCitation.'</span>', path_to_reference($element->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-      $referenceCitation = $referenceCitation;
-      if($element->citationMicroReference){
-        $referenceCitation .= ': '. $element->citationMicroReference;
-      }
-      if($description && strlen($description) > 0){
-        $referenceCitation = '; '.$referenceCitation;
-      }
+  $sourceRefs = '';
+  foreach($element->sources as $source){
+    $referenceCitation = '';
+    if($source->citation){
+        $referenceCitation = l('<span class="reference">'.$source->citation->titleCache.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+        if($source->citationMicroReference){
+          $referenceCitation .= ': '. $source->citationMicroReference;
+        }
+        if($description && strlen($description) > 0 ){
+          $sourceRefs .= '; '.$referenceCitation;
+        }
+    }
   }
-  return '<li class="descriptionText">' . $description . $referenceCitation.'</li>';
+  if(strlen($sourceRefs) > 0){
+    $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+  }
+  return '<li class="descriptionText">' . $description . $sourceRefs. '</li>';
 }
 
 function theme_cdm_search_results($pager, $path, $parameters){
