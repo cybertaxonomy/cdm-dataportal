@@ -69,7 +69,7 @@ function garland_cichorieae_cdm_taxon_page_images($taxon, $media){
     
   $out = '
   
-  <script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
+<script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
 
 <script type="text/javascript">
 <!--
