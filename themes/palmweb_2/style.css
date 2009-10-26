@@ -1042,3 +1042,7 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
 .Taxon .reference, .Synonym .reference{
 	font-size: 90%; 
 }
+
+.media_gallery{
+	font-size: 90%;
+}

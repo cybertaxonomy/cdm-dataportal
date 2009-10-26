@@ -307,7 +307,8 @@ function theme_cdm_taxon_list_thumbnails($taxon){
     $maxExtend = variable_get('cdm_dataportal_findtaxa_media_maxextend', 120);
     
     if($showCaption){
-      $captionElements = array('title', '#uri'=>t('open Image'));
+      //$captionElements = array('title', '#uri'=>t('open Image'));
+      $captionElements = array('title');
     }
     
     $galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
