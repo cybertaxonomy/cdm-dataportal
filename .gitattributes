@@ -286,6 +286,8 @@ modules/expertsdb/resources/taxonomy_expertdb_taxomony.xml -text
 modules/expertsdb/taxon_experts_search_interests.css -text
 modules/expertsdb/taxon_experts_view.css -text
 modules/expertsdb/template.taxon_experts.php -text
+modules/ext_links/ext_links.info -text
+modules/ext_links/ext_links.module -text
 modules/shib_auth/INSTALL.txt -text
 modules/shib_auth/LICENSE.txt -text
 modules/shib_auth/README.txt -text
