@@ -276,14 +276,14 @@ function theme_cdm_media_mime_text($representation, $feature){
 
 function theme_cdm_media_caption($media, $elements = array('title', 'description', 'file', 'filename'), $fileUri = null){
   $out = '<div class="media_caption">';
-  if(isset($elements['title']) && $media->title_L10n){
-    $out .= '<span class="title">'.$media->title_L10n.'</span>';
+  if(isset($elements['title']) && $media->titleCache){
+    $out .= '<span class="title">'.$media->titleCachex.'</span>';
   }
   if(isset($elements['description']) && $media->description_L10n){
     $out .= '<span class="description">'.$media->description_L10n.'</span>';
   }
   if(isset($elements['file'])){
-    $out .= '<span class="file">'.$media->title_L10n.'</span>';
+    $out .= '<span class="file">'.$media->titleCache.'</span>';
   }
   if(isset($elements['filename']) && $fileUri){
     $filename = substr($fileUri, strrpos($fileUri, "/")+1);
@@ -324,7 +324,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
  * @param $maxExtend
  * @param $cols
  * @param $maxRows
- * @param $captionElements an array possible values are like in the following example: array('title', 'description', 'file', 'filename'), to add a link to the caption: array('title', '#uri'=>t('open Image'));
+ * @param $captionElements an array possible values are like in the following example: array('title', 'description', 'file', 'filename'), to add a link to the caption: array('titlecache', '#uri'=>t('open Image'));
  * @param $mediaLinkType valid values: 
  *      "NONE": do not link the images, 
  *      "LIGHTBOX": open the link in a light box,
@@ -334,11 +334,11 @@ function theme_cdm_taxon_list_thumbnails($taxon){
  * @param $galleryLinkUri an URI to link the the hint on more images to; if null no link is created
  * @return unknown_type
  */
-function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
+function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('titlecache'),
     $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null ){
       
   //TODO correctly handle multiple media representation parts
-  
+  $_SESSION['cdm']['last_gallery']= substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'], "?q=")+3); 
   // prevent from errors
   if(!isset($mediaList[0])){
     return;
@@ -391,8 +391,8 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
         } else {
           $mediaLinkUri = $media->representations[0]->parts[0]->uri;
         }
-        $linkAttributes['title'] = ($media->title_L10n ? $media->title_L10n : '')
-            .($media->title_L10n && $media->description_L10n ? ' - ' : '')
+        $linkAttributes['title'] = ($media->titleCache ? $media->titleCache : '')
+            .($media->titleCache && $media->description_L10n ? ' - ' : '')
             .($media->description_L10n ? $media->description_L10n : '');
         
         // --- assemble captions
@@ -571,28 +571,31 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
   }
   
   
-  $title = $media->title_L10n;
+  $title = $media->titleCache;
   
   $imageMaxExtend = variable_get('image-page-maxextend', 400);
   
   if(!$title){
-    $title = 'Media '.$media->uuid.'';
+    $title = 'Media### '.$media->uuid.'';
   }
   
   drupal_set_title($title);
-
+  
   
   $out .= '<div class="media">';
   
-  $out .= '<div class="viewer">';
-  //$out .= theme('cdm_media_gallerie_image', $representation->parts[$partIdx], $imageMaxExtend);
+  //$out .= '<div class="viewer">';
+  $out .= theme(cdm_back_to_image_gallery_button);
+  $out .= '<div class="viewer">';  
+//$out .= theme('cdm_media_gallerie_image', $representation->parts[$partIdx], $imageMaxExtend);
   $out .= theme('cdm_openlayers_image', $media->representations[$representationIdx]->parts[$partIdx], $imageMaxExtend);
   $out .= '</div>';
   
   // general media metadata
-  $out .= '<h4 class="title">'.$media->title_L10n.'</h4>';
+  $out .= '<h4 class="title">'.$media->titleCache.'</h4>';
   $out .= '<div class="description">'.$media->description_L10n.'</div>';
   $out .= '<div class="artist">'.$media->artist->titleCache.'</div>';
+  //$out .= theme(cdm_back_to_image_gallery_button);
   $out .= '<ul class="rights">';
   foreach($media->rights as $right){  
     $out .= '<li>'.theme('cdm_right', $right).'</li>';
@@ -1371,6 +1374,17 @@ function theme_cdm_back_to_search_result_button(){
   return $out;
 }
 
+function theme_cdm_back_to_image_gallery_button(){
+ //$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
+ //$gallery_name = $taxon->uuid;
+ //$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+
+	$out = '<div id="backToGalleryButton">'.l(t('Back to Images'), $_SESSION['cdm']['last_gallery'] ).'</div>'; 
+    	
+  return $out;
+}
+
+
 /**
  * A wrapper function that groups available information to show by default, when
  * a taxon page is requested by the browser.
@@ -2129,6 +2143,8 @@ function theme_cdm_descriptionElementTextData($element){
   foreach($element->sources as $source){
     $referenceCitation = '';
     if($source->citation){
+	//$authorTeam = $source->citation->authorTeam->titleCache;
+
         $referenceCitation = l('<span class="reference">'.$source->citation->titleCache.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
         if($source->citationMicroReference){
           $referenceCitation .= ': '. $source->citationMicroReference;
