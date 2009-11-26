@@ -81,7 +81,7 @@ class xml2json {
 		contains an instance variable which itself is an associative array of 
 		several SimpleXMLElement objects.	
 		*/
-		$simpleXmlElementObject = simplexml_load_string($xmlStringContents);	
+		$simpleXmlElementObject = simplexml_load_string($xmlStringContents);
 		
 		if ($simpleXmlElementObject == null) {
 			return(EMPTY_STR);
@@ -234,4 +234,3 @@ class xml2json {
 	} // End of function convertSimpleXmlElementObjectIntoArray. 
 	
 } // End of class xml2json
-?>

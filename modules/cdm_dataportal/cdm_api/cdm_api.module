@@ -637,8 +637,8 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
     $time_parse_start = microtime(true);
     // parse data and create object
     $obj = cdm_load_obj($datastr);
-
     $time_parse = microtime(true) - $time_parse_start;
+    
     if(variable_get('cdm_webservice_debug', 1) && ( user_access('administer') || user_access('administer cdm_api'))){
       $success_msg = $obj || $datastr == "[]" ? 'valid':'invalid'; 
       _add_debugMessage($uri, $time_get, $time_parse, strlen($datastr), $success_msg);
@@ -681,13 +681,15 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
 
 function cdm_load_obj($datastr){
      
+  // NOTICE: the cdm dataportal currently does not support xml so the line below are commented out
+  /*
   // if the web service delivers XML convert it into json
-  if(variable_get('cdm_webservice_type', 'xml') == 'xml'){
+  if(variable_get('cdm_webservice_type', 'json') == 'xml'){
     $datastr = xml2json::transformXmlStringToJson($datastr);
   }
+  */
   
   $obj = json_decode($datastr);
-  
   
   if(!(is_object($obj) || is_array($obj)) ){
     ob_start();
@@ -916,6 +918,8 @@ function _add_status_message_toggler() {
 }
 
 define('CDM_WS_MEDIA', 'portal/media');
+
+define('CDM_WS_MEDIA_METADATA', 'portal/media/$0/metadata');
 
 define('CDM_WS_NAME', 'name');
 

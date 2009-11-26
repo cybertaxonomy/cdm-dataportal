@@ -391,10 +391,18 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
         } else {
           $mediaLinkUri = $media->representations[0]->parts[0]->uri;
         }
+        
+        $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
+        //$artist = 'Artist: '.$media_metadata->Artist;
         $linkAttributes['title'] = ($media->titleCache ? $media->titleCache : '')
             .($media->titleCache && $media->description_L10n ? ' - ' : '')
-            .($media->description_L10n ? $media->description_L10n : '');
-        
+            .($media->description_L10n ? $media->description_L10n : '')
+            .($media_metadata->Artist ? '<br>Artist: '.$media_metadata->Artist : '')
+            .($media_metadata->Copyright ? '<br>CopyRight: ' .$media_metadata->Copyright : '');
+            
+    //$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality)); define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
+    //$prefMimeTypeRegex = 'image:.*';
+               
         // --- assemble captions
         if(isset($media->representations[0]->parts[0]->uri)){
           $fileUri = $media->representations[0]->parts[0]->uri;

@@ -7,7 +7,7 @@
 function cdm_api_install(){
   
   db_query("CREATE TABLE {cache_cdm_ws} (
-    cid varchar(333) NOT NULL default '', -- max key length is 999 byte = varchar(333)
+    cid varchar(255) NOT NULL default '', -- max key length in some cases is only 767 byte ~ varchar(255)
     data longblob,
     expire int NOT NULL default '0',
     created int NOT NULL default '0',
