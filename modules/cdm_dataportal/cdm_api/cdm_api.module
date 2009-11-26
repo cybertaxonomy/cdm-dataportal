@@ -969,7 +969,7 @@ define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
  *
  * stub: treenode_root
  */
-define('CDM_WS_TAXONOMY', 'portal/taxontree');
+define('CDM_WS_TAXONOMY',  'portal/taxontree');
 
 define('CDM_WS_TERMVOCABULARY', 'term/$0');
 
