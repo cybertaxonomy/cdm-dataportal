@@ -919,7 +919,7 @@ function _add_status_message_toggler() {
 
 define('CDM_WS_MEDIA', 'portal/media');
 
-define('CDM_WS_MEDIA_METADATA', 'portal/media/$0/metadata');
+define('CDM_WS_MEDIA_METADATA', 'media/$0/metadata');
 
 define('CDM_WS_NAME', 'name');
 
