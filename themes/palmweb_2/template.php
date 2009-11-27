@@ -227,3 +227,10 @@ function palmweb_2_get_nameRenderTemplate($renderPath){
   }
   return $template;
 }
+
+function palmweb_2_cdm_feature_name($feature_name){
+  switch($feature_name){
+    case "Protologue": return t("Original Publication");
+    default: return t(ucfirst($feature_name));
+  }
+}
