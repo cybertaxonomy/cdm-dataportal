@@ -219,6 +219,12 @@ a.toc:link, a.toc:visited {
 	height: 200px;
 	border: 1px solid;
 }
+
+.distribution_map_caption{
+	font-size: 90%;
+	font-style: italic;
+}
+
 .media .viewer{
 	margin-top: 20px;
 }

@@ -92,7 +92,7 @@ function cdm_dataportal_menu($may_cache) {
       'callback' => 'cdm_dataportal_view_taxon',
       'access' => true,
       'type' => MENU_CALLBACK,
-    // expected callback arguments: name_uuid
+    // expected callback arguments: uuid
     );
     
     $items[] = array(
@@ -100,7 +100,7 @@ function cdm_dataportal_menu($may_cache) {
       'callback' => 'cdm_dataportal_view_reference',
       'access' => true,
       'type' => MENU_CALLBACK,
-    // expected callback arguments: name_uuid
+    // expected callback arguments: uuid
     );
     
     $items[] = array(
@@ -108,7 +108,7 @@ function cdm_dataportal_menu($may_cache) {
       'callback' => 'cdm_dataportal_view_reference_list',
       'access' => true,
       'type' => MENU_CALLBACK,
-    // expected callback arguments: name_uuid
+    // expected callback arguments: uuid
     );
     
     $items[] = array(
@@ -116,7 +116,7 @@ function cdm_dataportal_menu($may_cache) {
       'callback' => 'cdm_dataportal_view_media',
       'access' => true,
       'type' => MENU_CALLBACK,
-    // expected callback arguments: media_uuid, mediarepresentation_uuid, part_uuid or part#
+    // expected callback arguments: uuid, mediarepresentation_uuid, part_uuid or part#
     );
     
     $items[] = array(
@@ -764,9 +764,9 @@ function cdm_dataportal_settings(){
    //cdm_dataportal_geoservice_legend_on
   $form['cdm_dataportal']['geoservice']['cdm_dataportal_geoservice_map_caption'] = array(
     '#type' => 'textfield',
-    '#title' => t('map_caption'),
+    '#title' => t('Map Caption'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_map_caption', ''),
-    '#description' => t('Define a caption for the map')
+    '#description' => t('Define a caption for the map.')
   );
   
   return system_settings_form($form);
