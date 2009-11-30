@@ -3,4 +3,4 @@ name = "CDM External taxa links"
 description = A block module for listing external links to taxa information.
 version = "5.x-3.2"
 package = "CDM"
-dependencies = cdm_api
+dependencies = cdm_dataportal
