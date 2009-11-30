@@ -535,6 +535,7 @@ body.sidebars #footer {
   background-color: #fff;
   border: 1px solid #e0e5fb;
   margin-bottom: 2em;
+  font-size: 80%;	
 }
 
 /**
@@ -546,6 +547,7 @@ ul.primary-links {
   float: right;
   position: relative;
   z-index: 4;
+  font-size: 80%;
 }
 
 ul.primary-links li {
@@ -1039,8 +1041,18 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
   border-color: #beb;
 }
 
-.Taxon .reference, .Synonym .reference{
+.Taxon .reference, .Synonym .reference {
 	font-size: 90%; 
+}
+
+h2.with-tabs .authors{
+	font-size: 90%;
+	font-weight:bold
+}
+
+a.toc:link, a.toc:visited {
+  color: #F03300;
+  font-size: 90%;
 }
 
 .media_gallery{
