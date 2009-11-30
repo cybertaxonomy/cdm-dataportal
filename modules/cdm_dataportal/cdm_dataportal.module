@@ -761,6 +761,14 @@ function cdm_dataportal_settings(){
     '#description' => t('Check this if you like a legend to be displayed with the maps. ')
   );
   
+   //cdm_dataportal_geoservice_legend_on
+  $form['cdm_dataportal']['geoservice']['cdm_dataportal_geoservice_map_caption'] = array(
+    '#type' => 'textfield',
+    '#title' => t('map_caption'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_map_caption', ''),
+    '#description' => t('Define a caption for the map')
+  );
+  
   return system_settings_form($form);
 }
 

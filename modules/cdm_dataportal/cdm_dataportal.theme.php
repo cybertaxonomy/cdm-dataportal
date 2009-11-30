@@ -244,7 +244,9 @@ function theme_cdm_mediaTypeTerm($feature){
 function theme_cdm_media_mime_application($mediaRepresentation, $feature){
 
   foreach($mediaRepresentation->parts as $part){
-    $attributes = array('title'=>$feature->representation_L10n, 'target'=>'_blank');
+    $attributes = array('title'=> theme('cdm_feature_name', $feature->representation_L10n), 'target'=>'_blank');
+     //$attributes = array('title'=>$feature->representation_L10n, 'target'=>'_blank');
+    //$attributes = array('title'=>'original publication', 'target'=>'_blank');
     $out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
   }
   return $out;
@@ -267,7 +269,8 @@ function theme_cdm_media_mime_image($mediaRepresentation, $feature){
 function theme_cdm_media_mime_text($representation, $feature){
 
   foreach($representation->parts as $part){
-    $attributes = array('title'=>$feature->representation_L10n . t(' link will open in a new window'), 'target'=>'_blank');
+    $attributes = array('title'=> theme('cdm_feature_name', $feature->representation_L10n), 'target'=>'_blank');
+    //$attributes = array('title'=>t('original publication'), 'target'=>'_blank');
     $out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
   }
   return $out;
@@ -851,6 +854,7 @@ $(document).ready(function(){
 });'
       , 'inline');
       $out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+      $out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>';
       
     } else {
       // simple image
@@ -876,6 +880,7 @@ $(document).ready(function(){
         drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).' ';
       }
       $out .= '</div>';
+      
     }
     
     return $out;
@@ -1003,7 +1008,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
     foreach($descriptions as $description){
         if(!empty($description)){
           foreach($description->elements as $description_element){
-            $descriptionHtml .= theme("cdm_media", $description_element, array('application/pdf', 'image/png', 'image/jpeg', 'image/gif', 'text/html'));
+          	$descriptionHtml .= theme("cdm_media", $description_element, array('application/pdf', 'image/png', 'image/jpeg', 'image/gif', 'text/html'));
           }
         }
     }
