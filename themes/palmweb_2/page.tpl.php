@@ -5,6 +5,7 @@
     <title><?php print $head_title ?></title>
     <?php print $head ?>
     <?php print $styles ?>
+    <style type="text/css" media="all">@import "<?php print base_path() . path_to_theme() ?>/cdm_style.css";</style>
 <?php 
    /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    * OpenLayers.js must be loaded BEFORE jQuery. 

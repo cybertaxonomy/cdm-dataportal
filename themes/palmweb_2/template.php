@@ -8,6 +8,7 @@
  */
 function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hideImages = false){
 
+  
   if(!$hideImages){
     // preferred image
     // hardcoded for testing;
@@ -20,7 +21,8 @@ function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hid
     $imageMaxExtend = 184;
     $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
   }
-   // description TOC
+  
+  // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
   // description
   $out .= theme('cdm_featureTrees', $mergedTrees, $taxon);

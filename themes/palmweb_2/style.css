@@ -507,8 +507,9 @@ body.sidebars #footer {
 }
 
 #wrapper #container #general h2{
-	font-size: 120%;
-	color: #97ac2d;
+	font-size: 160%;
+	/*font-weight: bold;
+	/*color: #97ac2d;*/
 }
 #wrapper #container #general .featureTOC h2{
 	color: #222;
@@ -1039,22 +1040,4 @@ table.system-status-report tr.warning, table.system-status-report tr.warning th 
 table.system-status-report tr.ok, table.system-status-report tr.ok th {
   background-color: #dfd;
   border-color: #beb;
-}
-
-.Taxon .reference, .Synonym .reference {
-	font-size: 90%; 
-}
-
-h2.with-tabs .authors{
-	font-size: 90%;
-	font-weight:bold
-}
-
-a.toc:link, a.toc:visited {
-  color: #F03300;
-  font-size: 90%;
-}
-
-.media_gallery{
-	font-size: 90%;
 }
