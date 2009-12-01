@@ -2155,10 +2155,24 @@ function theme_cdm_descriptionElementTextData($element){
   $sourceRefs = '';
   foreach($element->sources as $source){
     $referenceCitation = '';
+    
     if($source->citation){
-	//$authorTeam = $source->citation->authorTeam->titleCache;
-
-        $referenceCitation = l('<span class="reference">'.$source->citation->titleCache.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+	//var_dump($source->citation->authorTeam->teamMembers);
+	$authorTeam = $source->citation->authorTeam->teamMembers;
+	if (count($authorTeam) > 2){
+		$authorA = $authorTeam[0]->titleCache;
+		$authorA .= " et al.";
+	}
+	elseif (count($authorTeam = 2)){
+		$authorA = $authorTeam[0] -> titleCache . " & " . $authorTeam[1] ->titleCache;
+	}
+	else
+		$authorA = $authorTeam[0]-> titleCache;
+		
+		
+    	//$authorTeam = $source->citation->authorTeam->titleCache;
+		
+        $referenceCitation = l('<span class="reference">'.$authorA.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
         if($source->citationMicroReference){
           $referenceCitation .= ': '. $source->citationMicroReference;
         }
@@ -2167,6 +2181,27 @@ function theme_cdm_descriptionElementTextData($element){
         }
     }
   }
+  
+	/*
+	if (count($authorTeam) > 2){
+		$authorA = $authorTeam[0];
+		$authorA .= "et al.";
+	}
+	elseif (count($authorTeam = 2)){
+		$authorA = $authorTeam[0] . " & " . $authorTeam[1];
+	}
+	else
+		$authorA = $authorTeam[0];
+
+        $referenceCitation = l('<span class="reference">'.$authorA.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+        if($source->citationMicroReference){
+          $referenceCitation .= ': '. $source->citationMicroReference;
+        }
+        if($description && strlen($description) > 0 ){
+          $sourceRefs .= '; '.$referenceCitation;
+        }
+    }
+    */
   if(strlen($sourceRefs) > 0){
     $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
   }
