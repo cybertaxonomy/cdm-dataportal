@@ -400,8 +400,8 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
         $linkAttributes['title'] = ($media->titleCache ? $media->titleCache : '')
             .($media->titleCache && $media->description_L10n ? ' - ' : '')
             .($media->description_L10n ? $media->description_L10n : '')
-            .($media_metadata->Artist ? '<br>Artist: '.$media_metadata->Artist : '')
-            .($media_metadata->Copyright ? '<br>CopyRight: ' .$media_metadata->Copyright : '');
+            .($media_metadata->Artist ? '<br>Artist: '.$media_metadata->Artist : '<br> No artist')
+            .($media_metadata->Copyright ? '<br>CopyRight: ' .$media_metadata->Copyright : '<br> No copyright');
             
     //$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality)); define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
     //$prefMimeTypeRegex = 'image:.*';
@@ -2160,14 +2160,14 @@ function theme_cdm_descriptionElementTextData($element){
 	//var_dump($source->citation->authorTeam->teamMembers);
 	$authorTeam = $source->citation->authorTeam->teamMembers;
 	if (count($authorTeam) > 2){
-		$authorA = $authorTeam[0]->titleCache;
+		$authorA = $authorTeam[0]->lastname;
 		$authorA .= " et al.";
 	}
 	elseif (count($authorTeam = 2)){
-		$authorA = $authorTeam[0] -> titleCache . " & " . $authorTeam[1] ->titleCache;
+		$authorA = $authorTeam[0] -> lastname . " & " . $authorTeam[1] ->lastname;
 	}
 	else
-		$authorA = $authorTeam[0]-> titleCache;
+		$authorA = $authorTeam[0]-> lastname;
 		
 		
     	//$authorTeam = $source->citation->authorTeam->titleCache;
