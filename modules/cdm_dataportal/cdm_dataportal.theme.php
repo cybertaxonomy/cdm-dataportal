@@ -486,7 +486,11 @@ function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $a
       // do not add margins if no pass partout is shown
       $margins = '';
     }
-    $out .= '<img src="'.$mediaRepresentationPart->uri.'" width="'.$displayWidth.'" height="'.$displayHeight.'" style="'.$margins.'"'.$attrStr.' /></div>';
+    $out .= '<img src="'.$mediaRepresentationPart->uri.'" width="'.$displayWidth.'" height="'.$displayHeight.'" style="'.$margins.'"'.$attrStr.' />';
+    
+    if($addPassePartout){
+    	$out .= '</div>';    	
+    }
     return $out;
   }
 
