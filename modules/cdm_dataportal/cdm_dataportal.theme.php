@@ -854,7 +854,7 @@ $(document).ready(function(){
 });'
       , 'inline');
       $out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
-      $out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>';
+      $out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
       
     } else {
       // simple image
