@@ -376,11 +376,12 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
     $captionParts = array();
     $out .= '<tr>';  
     for($c = 0; $c < $cols; $c++){
-      $media = array_shift($mediaList);
-      if(isset($media->representations[0]->parts[0])){
-        $contentTypeDirectory = substr($media->representations[0]->mimeType, 0, stripos($media->representations[0]->mimeType, '/'));
+     // $media = array_shift($mediaList);
+	$media = $mediaList->galleryName;
+      if(isset($media->parts[0])){
+        $contentTypeDirectory = substr($media->mimeType, 0, stripos($media->mimeType, '/'));
         $mediaIndex++;
-        $mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->representations[0]->parts[0], $maxExtend, TRUE);
+        $mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->parts[0], $maxExtend, TRUE);
         
         // --- compose Media Link
         $mediaLinkUri = false;
@@ -392,7 +393,7 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
             $mediaLinkUri = $alternativeMediaUri;
           }
         } else {
-          $mediaLinkUri = $media->representations[0]->parts[0]->uri;
+          $mediaLinkUri = $media->parts[0]->uri;
         }
         
         $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
@@ -407,8 +408,8 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
     //$prefMimeTypeRegex = 'image:.*';
                
         // --- assemble captions
-        if(isset($media->representations[0]->parts[0]->uri)){
-          $fileUri = $media->representations[0]->parts[0]->uri;
+        if(isset($media->parts[0]->uri)){
+          $fileUri = $media->parts[0]->uri;
         }
         $captionPartHtml = theme('cdm_media_caption', $media, $captionElements, $fileUri);
         if(isset($captionElements['#uri'])){
@@ -446,10 +447,7 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
     $moreHtml = l($moreHtml, $galleryLinkUri);
     $out .= '<tr><td colspan="'.$cols.'">'.$moreHtml.'</td></tr>';
   }
-  $out .= '</table>';
-  return $out;
-}
-
+  $out .= '</table>
 function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
   //TODO merge with theme_cdm_media_mime_image?
   
@@ -2163,16 +2161,26 @@ function theme_cdm_descriptionElementTextData($element){
     if($source->citation){
 	//var_dump($source->citation->authorTeam->teamMembers);
 	$authorTeam = $source->citation->authorTeam->teamMembers;
-	if (count($authorTeam) > 2){
-		$authorA = $authorTeam[0]->lastname;
+	if (count($authorTeam)>0){
+		if ($authorTeam[0]->lastname){
+			$authorA = $authorTeam[0]->lastname;
+		}else{
+			$authorA = $authorTeam[0]->titleCache;
+			$authorA = substr($authorA, strrpos(' ', $authorA)+1);
+		}
+	}
+	if (count($authorTeam)>2){
 		$authorA .= " et al.";
 	}
 	elseif (count($authorTeam = 2)){
-		$authorA = $authorTeam[0] -> lastname . " & " . $authorTeam[1] ->lastname;
+		if ($authorTeam[1]->lastname){
+			$authorA .=  " & " . $authorTeam[1] ->lastname;
+		}else{
+			$authorB = $authorTeam[1]->titleCache;
+			$authorB = substr($authorB, strrpos(' ', $authorB)+1);
+			$authorA .= " & ". $authorB;
+		}
 	}
-	else
-		$authorA = $authorTeam[0]-> lastname;
-		
 		
     	//$authorTeam = $source->citation->authorTeam->titleCache;
 		
