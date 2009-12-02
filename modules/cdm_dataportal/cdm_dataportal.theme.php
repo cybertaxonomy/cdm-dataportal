@@ -447,7 +447,10 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
     $moreHtml = l($moreHtml, $galleryLinkUri);
     $out .= '<tr><td colspan="'.$cols.'">'.$moreHtml.'</td></tr>';
   }
-  $out .= '</table>
+  $out .= '</table>';
+}
+
+
 function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
   //TODO merge with theme_cdm_media_mime_image?
   
