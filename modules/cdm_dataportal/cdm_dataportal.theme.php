@@ -376,12 +376,12 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
     $captionParts = array();
     $out .= '<tr>';  
     for($c = 0; $c < $cols; $c++){
-     // $media = array_shift($mediaList);
-	$media = $mediaList->galleryName;
-      if(isset($media->parts[0])){
-        $contentTypeDirectory = substr($media->mimeType, 0, stripos($media->mimeType, '/'));
+ 
+      $media = array_shift($mediaList);
+      if(isset($media->representations[0]->parts[0])){
+        $contentTypeDirectory = substr($media->representations[0]->mimeType, 0, stripos($media->representations[0]->mimeType, '/'));
         $mediaIndex++;
-        $mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->parts[0], $maxExtend, TRUE);
+        $mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->representations[0]->parts[0], $maxExtend, TRUE);
         
         // --- compose Media Link
         $mediaLinkUri = false;
@@ -393,7 +393,8 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
             $mediaLinkUri = $alternativeMediaUri;
           }
         } else {
-          $mediaLinkUri = $media->parts[0]->uri;
+        
+          $mediaLinkUri = $media->representations[0]->parts[0]->uri;
         }
         
         $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
@@ -408,8 +409,9 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
     //$prefMimeTypeRegex = 'image:.*';
                
         // --- assemble captions
-        if(isset($media->parts[0]->uri)){
-          $fileUri = $media->parts[0]->uri;
+       
+        if(isset($media->representations[0]->parts[0]->uri)){
+          $fileUri = $media->representations[0]->parts[0]->uri;
         }
         $captionPartHtml = theme('cdm_media_caption', $media, $captionElements, $fileUri);
         if(isset($captionElements['#uri'])){
@@ -447,10 +449,10 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
     $moreHtml = l($moreHtml, $galleryLinkUri);
     $out .= '<tr><td colspan="'.$cols.'">'.$moreHtml.'</td></tr>';
   }
+
   $out .= '</table>';
+  return $out;
 }
-
-
 function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
   //TODO merge with theme_cdm_media_mime_image?
   
