@@ -292,27 +292,6 @@ function ext_links_menu() {
 } // function ext_links_menu()
 
 /**
- * Extracts from the obj taxon the genus and the first epithet
- * @param unknown_type $taxon
- * @return array $speciesName
- */
-function getSpeciesName($taxon) {
-	$speciesName = array();
-	$i = 0;
-	while(isset($taxon->name->taggedName[$i]) && !$speciesName[species]) {
-		if($taxon->name->taggedName[$i]->type == "name")
-		{
-			if(!$speciesName[genus])
-				$speciesName[genus] = $taxon->name->taggedName[$i]->text;
-			else
-				$speciesName[species] = $taxon->name->taggedName[$i]->text;
-		} 
-		$i++;
-	}
-	return $speciesName;
-}
-
-/**
  * Generate the HTML text for the ext_link login block
  * @param op the operation from the URL
  * @param delta offset
@@ -331,12 +310,12 @@ switch ($op) {
 		if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!==0){
 			$uuid = arg(2);
 		    $taxon = cdm_ws_get(CDM_WS_TAXON, $uuid);
-			$synonymy = cdm_ws_get(CDM_WS_TAXON_SYNONYMY, $uuid);
 		    //var_dump($taxon);
 		    //$taxon->titleCache;
 		    //var_export()
 		    if($taxon){
-		    	$speciesName = getSpeciesName($taxon);
+	    		$genus = $taxon->name->taggedName[0]->text;
+		    	$species = $taxon->name->taggedName[1]->text;
 		    	$addtional_headers = '<SCRIPT TYPE="text/javascript">
 		    	function popupExternalLinks( x_url)
 		    	{
@@ -353,43 +332,30 @@ switch ($op) {
 		    	
 		    	$block_content = '';
 		    	if(variable_get('ext_links_gbif_check', 0)) {
-		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', '').$speciesName['genus'].' '.$speciesName['species'].'\')">'.variable_get('ext_links_gbif_text', '').'</a><br />';
+		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', '').$genus.' '.$species.'\')">'.variable_get('ext_links_gbif_text', '').'</a><br />';
 		    	}
 		    	if(variable_get('ext_links_nybg_check', 0)) {
-		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', '').$speciesName['genus'].' '.$speciesName['species'].'\')">'.variable_get('ext_links_nybg_text', '').'</a><br />';
+		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', '').$genus.' '.$species.'\')">'.variable_get('ext_links_nybg_text', '').'</a><br />';
 		    	}
 		    	if(variable_get('ext_links_tropicos_check', 0)) {
-		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_tropicos_link', '').$speciesName['genus'].'+'.$speciesName['species'].'\')">'.variable_get('ext_links_tropicos_text', '').'</a><br />';
+		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_tropicos_link', '').$genus.'+'.$species.'\')">'.variable_get('ext_links_tropicos_text', '').'</a><br />';
 		    	}
 		    	if(variable_get('ext_links_ncbi_check', 0)) {
-		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_ncbi_link', '').$speciesName['genus'].'+AND+'.$speciesName['species'].'\')">'.variable_get('ext_links_ncbi_text', '').'</a><br />';
+		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_ncbi_link', '').$genus.'+AND+'.$species.'\')">'.variable_get('ext_links_ncbi_text', '').'</a><br />';
 		    	}
 		    	if(variable_get('ext_links_google_check', 0)) {
-		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_google_link', '').$speciesName['genus'].'+'.$speciesName['species'].'\')">'.variable_get('ext_links_google_text', '').'</a><br />';
+		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_google_link', '').$genus.'+'.$species.'\')">'.variable_get('ext_links_google_text', '').'</a><br />';
 		    	}
 		    	if(variable_get('ext_links_flickr_check', 0)) {
-		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_flickr_link', '').$speciesName['genus'].'+'.$speciesName['species'].'\')">'.variable_get('ext_links_flickr_text', '').'</a><br />';
+		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_flickr_link', '').$genus.'+'.$species.'\')">'.variable_get('ext_links_flickr_text', '').'</a><br />';
 		    	}
 		    	if(variable_get('ext_links_scholar_check', 0)) {
-		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_scholar_link', '').$speciesName['genus'].'+'.$speciesName['species'].'\')">'.variable_get('ext_links_scholar_text', '').'</a><br />';
+		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_scholar_link', '').$genus.'+'.$species.'\')">'.variable_get('ext_links_scholar_text', '').'</a><br />';
 		    	}
 		    	if(variable_get('ext_links_bhl_check', 0)) {
-		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_bhl_link', '').$speciesName['genus'].' '.$speciesName['species'].'\')">'.variable_get('ext_links_bhl_text', '').'</a><br />';
+		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_bhl_link', '').$genus.' '.$species.'\')">'.variable_get('ext_links_bhl_text', '').'</a><br />';
 		    	}
-/*
-		    	$i=0;
-		    	while(isset($synonymy->heterotypicSynonymyGroups[$i])){
-$j=0;
-		    		while(isset($synonymy->heterotypicSynonymyGroups[$i][$j])){
-$block_content .= $synonymy->heterotypicSynonymyGroups[$i][$j]->name->taggedName[0]->text;
-		    			$block_content .= " ".$synonymy->heterotypicSynonymyGroups[$i][$j]->name->taggedName[1]->text."<br>";
-$j++;
-		    		}
-$i++;
-		    	}
-*/
-//$block_content .= var_dump($synonymy->heterotypicSynonymyGroups[2][0]->name->taggedName[0]->text);
-			    $block['subject'] = 'External links';
+			    	$block['subject'] = 'External links';
 			    $block['content'] = $block_content;
 				return $block;
 		    }
