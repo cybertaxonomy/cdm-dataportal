@@ -13,7 +13,13 @@
 	font-size: 120%;
 	color: #97ac2d;	
 }
+
 */
+#general {
+	line-height: 145%;
+}
+
+
 .preferredImage {
 	float: right;
 }
