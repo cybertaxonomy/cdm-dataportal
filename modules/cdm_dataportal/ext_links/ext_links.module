@@ -315,24 +315,10 @@ function ext_links_block($op='list', $delta=0) {
         		    //$taxon->titleCache;
         		    //var_export()
         		    if($taxon){
-          	    		$genus = $taxon->name->taggedName[0]->text;
+          		    	drupal_add_js(drupal_get_path('module', 'ext_links') . '/ext_links.js');
+        		    	
+          		    	$genus = $taxon->name->taggedName[0]->text;
           		    	$species = $taxon->name->taggedName[1]->text;
-          		    	
-          		    	// FIMXE use drupal_add_js() instead of drupal_set_html_head 
-//          		    	$addtional_headers = '<SCRIPT TYPE="text/javascript">
-//          		    	function popupExternalLinks( x_url)
-//          		    	{
-//          			    	var		oWindow = null;
-//          			    	var		iWidth = 820;
-//          			    	var		iHeight = 700;
-//          			    	oWindow = window.open( x_url, "POPUP_EXTERNAL_LINKS", "dependent=yes,locationbar=no,menubar=no,scrollbars=yes,resizable=yes,status=no,screenX=0,screenY=0,height="+iHeight+",width="+iWidth); 
-//          			    	if( top.window.opener)
-//          			    	oWindow.opener = top.window.opener;
-//          			    	oWindow.focus();
-//          				  }
-//          		    	</SCRIPT>';
-//          		    	drupal_set_html_head($addtional_headers);
-                     // end of fixme
           		    	$block_content = '';
           		    	if(variable_get('ext_links_gbif_check', 0)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', '').$genus.' '.$species.'\')">'.variable_get('ext_links_gbif_text', '').'</a><br />';

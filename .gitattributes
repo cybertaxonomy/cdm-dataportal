@@ -61,6 +61,7 @@ modules/cdm_dataportal/cdm_taxontree/visible_implicit_small.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_small.gif -text
 modules/cdm_dataportal/cdm_ws_urls.txt -text
 modules/cdm_dataportal/ext_links/ext_links.info -text
+modules/cdm_dataportal/ext_links/ext_links.js -text
 modules/cdm_dataportal/ext_links/ext_links.module -text
 modules/cdm_dataportal/images/Protolog-media.png -text
 modules/cdm_dataportal/images/Protologue-media.png -text
