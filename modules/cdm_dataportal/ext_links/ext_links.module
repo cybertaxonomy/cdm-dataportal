@@ -30,238 +30,124 @@ function ext_links_help($section) {
  * @returns block HTML 
  */
 function ext_links_admin() {
-  // GBIF
-  $form['gbif'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('GBIF'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['gbif']['ext_links_gbif_check'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display GBIF link?'),
-    '#default_value' => variable_get('ext_links_gbif_check', 1),
-  );
-	$form['gbif']['ext_links_gbif_link'] = array(
-    '#type' => 'textfield',
-    '#title' => t('GBIF link'),
-    '#default_value' => variable_get('ext_links_gbif_link', 'http://data.gbif.org/species/'),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The link to GBIF without the taxon name.")
-  );
-	$form['gbif']['ext_links_gbif_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('GBIF text'),
-    '#default_value' => variable_get('ext_links_gbif_text', 'Search GBIF...'),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The text of the link that is displayed.")
-  );
-  
-  // The New York Botanical Garden
-  $form['nybg'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('The New York Botanical Garden'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['nybg']['ext_links_nybg_check'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display NYBG link?'),
-    '#default_value' => variable_get('ext_links_nybg_check', 1),
-  );
-	$form['nybg']['ext_links_nybg_link'] = array(
-    '#type' => 'textfield',
-    '#title' => t('NYBG link'),
-    '#default_value' => variable_get('ext_links_nybg_link', 'http://rbg-web2.rbge.org.uk/cgi-bin/nph-readbtree.pl/dataset=NYBG/filename=names3/firstval=1/multiaddr=/multiform=multisite3.php?ETI='),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The link to NCBI without the taxon name.")
-  );
-	$form['nybg']['ext_links_nybg_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('NYBG text'),
-    '#default_value' => variable_get('ext_links_nybg_text', 'Search NYBG...'),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The text of the link that is displayed.")
-  );
-  
-  // Tropicos
-  $form['tropicos'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Tropicos'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['tropicos']['ext_links_tropicos_check'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display Tropicos link?'),
-    '#default_value' => variable_get('ext_links_tropicos_check', 1),
-  );
-	$form['tropicos']['ext_links_tropicos_link'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Tropicos link'),
-    '#default_value' => variable_get('ext_links_tropicos_link', 'http://www.tropicos.org/NameSearch.aspx?name='),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The link to Tropicos without the taxon name.")
-  );
-	$form['tropicos']['ext_links_tropicos_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Tropicos text'),
-    '#default_value' => variable_get('ext_links_tropicos_text', 'Search Tropicos...'),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The text of the link that is displayed.")
-  );
-  
-  // NCBI
-  $form['ncbi'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('NCBI'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['ncbi']['ext_links_ncbi_check'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display NCBI link?'),
-    '#default_value' => variable_get('ext_links_ncbi_check', 1),
-  );
-	$form['ncbi']['ext_links_ncbi_link'] = array(
-    '#type' => 'textfield',
-    '#title' => t('NCBI link'),
-    '#default_value' => variable_get('ext_links_ncbi_link', 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term='),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The link to NCBI without the taxon name.")
-  );
-	$form['ncbi']['ext_links_ncbi_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('NCBI text'),
-    '#default_value' => variable_get('ext_links_ncbi_text', 'Search NCBI...'),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The text of the link that is displayed.")
-  );
-  
-  // Google Images
-  $form['google'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Google Images'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['google']['ext_links_google_check'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display Google link?'),
-    '#default_value' => variable_get('ext_links_google_check', 1),
-  );
-	$form['google']['ext_links_google_link'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Google link'),
-    '#default_value' => variable_get('ext_links_google_link', 'http://images.google.com/images?q='),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The link to google without the taxon name.")
-  );
-	$form['google']['ext_links_google_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Google text'),
-    '#default_value' => variable_get('ext_links_google_text', 'Search Google Images...'),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The text of the link that is displayed.")
-  );
-  
-  // flickr
-  $form['flickr'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('flickr'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['flickr']['ext_links_flickr_check'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display flickr link?'),
-    '#default_value' => variable_get('ext_links_flickr_check', 1),
-  );
-	$form['flickr']['ext_links_flickr_link'] = array(
-    '#type' => 'textfield',
-    '#title' => t('flickr link'),
-    '#default_value' => variable_get('ext_links_flickr_link', 'http://www.flickr.com/search/?w=all&q='),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The link to flickr without the taxon name.")
-  );
-	$form['flickr']['ext_links_flickr_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('flickr text'),
-    '#default_value' => variable_get('ext_links_flickr_text', 'Search flickr...'),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The text of the link that is displayed.")
-  );
-  
-  // Google scholar
-  $form['scholar'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Google scholar'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['scholar']['ext_links_scholar_check'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display Google scholar link?'),
-    '#default_value' => variable_get('ext_links_scholar_check', 1),
-  );
-	$form['scholar']['ext_links_scholar_link'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Google scholar link'),
-    '#default_value' => variable_get('ext_links_scholar_link', 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q='),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The link to Google scholar without the taxon name.")
-  );
-	$form['scholar']['ext_links_scholar_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Google scholar text'),
-    '#default_value' => variable_get('ext_links_scholar_text', 'Search Google scholar...'),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The text of the link that is displayed.")
-  );
-  
-  // Biodiversity Heritage Library
-  $form['bhl'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Biodiversity Heritage Library (BHL)'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['bhl']['ext_links_bhl_check'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display BHL link?'),
-    '#default_value' => variable_get('ext_links_bhl_check', 1),
-  );
-	$form['bhl']['ext_links_bhl_link'] = array(
-    '#type' => 'textfield',
-    '#title' => t('BHL link'),
-    '#default_value' => variable_get('ext_links_bhl_link', 'http://www.biodiversitylibrary.org/Search.aspx?searchCat=&searchTerm='),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The link to BHL without the taxon name.")
-  );
-	$form['bhl']['ext_links_bhl_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('BHL text'),
-    '#default_value' => variable_get('ext_links_bhl_text', 'Search BHL...'),
-    '#size' => 70,
-    '#maxlength' => 255,
-    '#description' => t("The text of the link that is displayed.")
-  );
-  
+	$ext_links[0] = array(
+		'form' => 'gbif',
+		'form_title' => 'GBIF',
+		'check_title' => 'GBIF',
+		'link_title' => 'GBIF link',
+		'link_default_value' => 'http://data.gbif.org/species/',
+		'link_description' => 'The link to GBIF without the taxon name.',
+		'text_title' => 'GBIF text',
+		'text_default_value' => 'Search GBIF...',
+		'text_description' => 'The text of the link that is displayed..',
+	);
+	$ext_links[1] = array(
+		'form' => 'nybg',
+		'form_title' => 'The New York Botanical Garden',
+		'check_title' => 'Display NYBG link?',
+		'link_title' => 'NYBG link',
+		'link_default_value' => 'http://rbg-web2.rbge.org.uk/cgi-bin/nph-readbtree.pl/dataset=NYBG/filename=names3/firstval=1/multiaddr=/multiform=multisite3.php?ETI=',
+		'link_description' => 'The link to NCBI without the taxon name.',
+		'text_title' => 'NYBG text',
+		'text_default_value' => 'Search NYBG...',
+		'text_description' => 'The text of the link that is displayed..',
+	);
+	$ext_links[2] = array(
+		'form' => 'tropicos',
+		'form_title' => 'Tropicos',
+		'check_title' => 'Display Tropicos link?',
+		'link_title' => 'Tropicos link',
+		'link_default_value' => 'http://www.tropicos.org/NameSearch.aspx?name=',
+		'link_description' => 'The link to Tropicos without the taxon name.',
+		'text_title' => 'Tropicos text',
+		'text_default_value' => 'Search Tropicos...',
+		'text_description' => 'The text of the link that is displayed..',
+	);
+	$ext_links[3] = array(
+		'form' => 'ncbi',
+		'form_title' => 'NCBI',
+		'check_title' => 'Display NCBI link?',
+		'link_title' => 'NCBI link',
+		'link_default_value' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=',
+		'link_description' => 'The link to NCBI without the taxon name.',
+		'text_title' => 'NCBI text',
+		'text_default_value' => 'Search NCBI...',
+		'text_description' => 'The text of the link that is displayed..',
+	);
+	$ext_links[4] = array(
+		'form' => 'google',
+		'form_title' => 'Google Images',
+		'check_title' => 'Display Google Images link?',
+		'link_title' => 'Google Images link',
+		'link_default_value' => 'http://images.google.com/images?q=',
+		'link_description' => 'The link to Google Images without the taxon name.',
+		'text_title' => 'Google Images text',
+		'text_default_value' => 'Search Google Images...',
+		'text_description' => 'The text of the link that is displayed..',
+	);
+	$ext_links[5] = array(
+		'form' => 'flickr',
+		'form_title' => 'flickr',
+		'check_title' => 'Display flickr link?',
+		'link_title' => 'flickr link',
+		'link_default_value' => 'http://www.flickr.com/search/?w=all&q=',
+		'link_description' => 'The link to flickr without the taxon name.',
+		'text_title' => 'flickr text',
+		'text_default_value' => 'Search flickr...',
+		'text_description' => 'The text of the link that is displayed..',
+	);
+	$ext_links[6] = array(
+		'form' => 'scholar',
+		'form_title' => 'Google scholar',
+		'check_title' => 'Display Google scholar link?',
+		'link_title' => 'Google scholar link',
+		'link_default_value' => 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q=',
+		'link_description' => 'The link to Google scholar without the taxon name.',
+		'text_title' => 'Google scholar text',
+		'text_default_value' => 'Search Google scholar...',
+		'text_description' => 'The text of the link that is displayed..',
+	);
+	$ext_links[7] = array(
+		'form' => 'bhl',
+		'form_title' => 'Biodiversity Heritage Library (BHL)',
+		'check_title' => 'Display BHL link?',
+		'link_title' => 'BHL link',
+		'link_default_value' => 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q=',
+		'link_description' => 'The link to BHL without the taxon name.',
+		'text_title' => 'BHL text',
+		'text_default_value' => 'Search BHL...',
+		'text_description' => 'The text of the link that is displayed..',
+	);
+
+	for($i=0; $i<sizeof($ext_links); $i++){
+	  $form[$ext_links[$i][form]] = array(
+	    '#type' => 'fieldset',
+	    '#title' => t($ext_links[$i][form_title]),
+	    '#collapsible' => TRUE,
+	    '#collapsed' => TRUE,
+	  );
+	  $form[$ext_links[$i][form]]['ext_links_'.$ext_links[$i][form].'_check'] = array(
+	    '#type' => 'checkbox',
+	    '#title' => t($ext_links[$i][check_title]),
+	    '#default_value' => variable_get('ext_links_'.$ext_links[$i][form].'_check', 1),
+	  );
+	  $form[$ext_links[$i][form]]['ext_links_'.$ext_links[$i][form].'_link'] = array(
+	    '#type' => 'textfield',
+	    '#title' => t($ext_links[$i][link_title]),
+	    '#default_value' => variable_get('ext_links_'.$ext_links[$i][form].'_link', $ext_links[$i][link_default_value]),
+	    '#size' => 70,
+	    '#maxlength' => 255,
+	    '#description' => t($ext_links[$i][link_description])
+	  );
+	$form[$ext_links[$i][form]]['ext_links_'.$ext_links[$i][form].'_text'] = array(
+	    '#type' => 'textfield',
+	    '#title' => t($ext_links[$i][text_title]),
+	    '#default_value' => variable_get('ext_links_'.$ext_links[$i][form].'_text', $ext_links[$i][text_default_value]),
+	    '#size' => 70,
+	    '#maxlength' => 255,
+	    '#description' => t($ext_links[$i][text_description])
+	  );
+	}
   return system_settings_form($form);
 } // function ext_links_admin()
 
@@ -299,8 +185,6 @@ function ext_links_menu() {
  */
 function ext_links_block($op='list', $delta=0) {
   // listing of blocks, such as on the admin/block page
-//$genus="Solanum";
-//$species="aviculare";
 
    if ($op == "list"){
     	$block[0]["info"] = t("External Taxon Links");
