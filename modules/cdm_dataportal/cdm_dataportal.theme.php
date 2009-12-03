@@ -376,7 +376,6 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
     $captionParts = array();
     $out .= '<tr>';  
     for($c = 0; $c < $cols; $c++){
- 
       $media = array_shift($mediaList);
       if(isset($media->representations[0]->parts[0])){
         $contentTypeDirectory = substr($media->representations[0]->mimeType, 0, stripos($media->representations[0]->mimeType, '/'));
@@ -393,23 +392,45 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
             $mediaLinkUri = $alternativeMediaUri;
           }
         } else {
-        
           $mediaLinkUri = $media->representations[0]->parts[0]->uri;
         }
         
         $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
-        //$artist = 'Artist: '.$media_metadata->Artist;
+        
+        //Getting the location metadata for showing it in the lihgtbox
+        $location = ''; 
+        if($media_metadata->Country || $media_metadata->Province || $media_metadata->City){
+        	//adding sublocation
+            $location .= ($media_metadata->Sublocation ? '<br>Location: ' .$media_metadata->Sublocation : '');
+            //adding city
+            if ($location == '' && $media_metadata->City)
+                $location .= '<br>Location: ' . $media_metadata->City;
+            elseif (!($location == '') && $media_metadata->City)
+                $location .= ', ' . $media_metadata->City;
+            //adding Province
+            if ($location == '' && $media_metadata->Province)
+                $location .= '<br>Location: ' . $media_metadata->Province;
+            elseif (!($location == '') && $media_metadata->Province)
+                $location .= ', ' . $media_metadata->Province;
+            //adding Country
+            if ($location == '' && $media_metadata->Country)
+                $location .= '<br>Location: ' . $media_metadata->Country;
+            elseif (!($location == '') && $media_metadata->Country)
+                $location .= ' (' . $media_metadata->Country . ')';
+        }
+        
         $linkAttributes['title'] = ($media->titleCache ? $media->titleCache : '')
             .($media->titleCache && $media->description_L10n ? ' - ' : '')
             .($media->description_L10n ? $media->description_L10n : '')
             .($media_metadata->Artist ? '<br>Artist: '.$media_metadata->Artist : '<br> No artist')
-            .($media_metadata->Copyright ? '<br>CopyRight: ' .$media_metadata->Copyright : '<br> No copyright');
+            .($media_metadata->Copyright ? '<br>CopyRight: ' .$media_metadata->Copyright : '<br> No copyright')
+            .$location;
+                     
             
     //$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality)); define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
     //$prefMimeTypeRegex = 'image:.*';
                
         // --- assemble captions
-       
         if(isset($media->representations[0]->parts[0]->uri)){
           $fileUri = $media->representations[0]->parts[0]->uri;
         }
@@ -449,10 +470,10 @@ function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $c
     $moreHtml = l($moreHtml, $galleryLinkUri);
     $out .= '<tr><td colspan="'.$cols.'">'.$moreHtml.'</td></tr>';
   }
-
   $out .= '</table>';
   return $out;
 }
+
 function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
   //TODO merge with theme_cdm_media_mime_image?
   
@@ -1264,6 +1285,23 @@ function theme_cdm_credits(){
   return '<span class="sec_reference_citation">'.$secRef_array['citation'].'</span>'
   .( $secRef_array['period'] ? ' <span class="year">'.partialToYear($secRef_array['period']).'</span>' : '')
   .( $secRef_array['authorTeam'] ? '<div class="author">'.$secRef_array['authorTeam']['titleCache'].'</div>' : '');
+}
+
+
+function theme_cdm_print_button(){
+	
+  drupal_add_js ('$(document).ready(function() {
+         $(\'#print_button img\').click(function () { 
+         window.print();
+     });
+  });', 'inline');
+	  
+	$output = '<div id="print_button"><img src="'
+	.drupal_get_path('module', 'cdm_dataportal').'/images/print_icon.gif'
+	.'" alt="'.t('Print this page').'" title="'.t('Print this page').'" />'.t(' Print this page');
+	$output .= '</div>';
+	
+	return $output;	
 }
 
 /**
@@ -2166,26 +2204,16 @@ function theme_cdm_descriptionElementTextData($element){
     if($source->citation){
 	//var_dump($source->citation->authorTeam->teamMembers);
 	$authorTeam = $source->citation->authorTeam->teamMembers;
-	if (count($authorTeam)>0){
-		if ($authorTeam[0]->lastname){
-			$authorA = $authorTeam[0]->lastname;
-		}else{
-			$authorA = $authorTeam[0]->titleCache;
-			$authorA = substr($authorA, strrpos(' ', $authorA)+1);
-		}
-	}
-	if (count($authorTeam)>2){
+	if (count($authorTeam) > 2){
+		$authorA = $authorTeam[0]->lastname;
 		$authorA .= " et al.";
 	}
 	elseif (count($authorTeam = 2)){
-		if ($authorTeam[1]->lastname){
-			$authorA .=  " & " . $authorTeam[1] ->lastname;
-		}else{
-			$authorB = $authorTeam[1]->titleCache;
-			$authorB = substr($authorB, strrpos(' ', $authorB)+1);
-			$authorA .= " & ". $authorB;
-		}
+		$authorA = $authorTeam[0] -> lastname . " & " . $authorTeam[1] ->lastname;
 	}
+	else
+		$authorA = $authorTeam[0]-> lastname;
+		
 		
     	//$authorTeam = $source->citation->authorTeam->titleCache;
 		

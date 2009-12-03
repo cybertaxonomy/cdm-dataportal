@@ -212,10 +212,11 @@ function cdm_dataportal_menu($may_cache) {
 function cdm_dataportal_block($op='list', $delta=0) {
   // listing of blocks, such as on the admin/block page
   if ($op == "list") {
-    $block[0]["info"] = t("CDM DataPortal DevLinks");
+    //$block[0]["info"] = t("CDM DataPortal DevLinks");
     $block[1]["info"] = t("CDM DataPortal Credits");
     $block[2]["info"] = t("CDM Search Taxa");
-    $block[3]["info"] = t("CDM Filters");
+    //$block[3]["info"] = t("CDM Filters");
+    $block[4]["info"] = t("CDM Dataportal Print");
     return $block;
   }
   else if ($op == 'view') {
@@ -229,7 +230,11 @@ function cdm_dataportal_block($op='list', $delta=0) {
         $block['content'] = drupal_get_form('cdm_dataportal_search_taxon_form');
         $block['content'] .= '<div>'.l('Advanced Search', '/cdm_dataportal/search').'</div>';
         return $block;
-    }
+      case 4:
+      	$block['subject'] = t('Print this page');
+      	$block['content'] = theme('cdm_print_button');;
+      	return $block;   
+     }
   }
 }
 
