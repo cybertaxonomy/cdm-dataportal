@@ -30,16 +30,15 @@ function ext_links_help($section) {
  * @returns block HTML 
  */
 function ext_links_admin() {
+	global $ext_links_default;
 	$ext_links[0] = array(
 		'form' => 'gbif',
 		'form_title' => 'GBIF',
 		'check_title' => 'GBIF',
 		'link_title' => 'GBIF link',
-		'link_default_value' => 'http://data.gbif.org/species/',
 		'link_description' => 'The link to GBIF without the taxon name.',
 		'concat_default_value' => ' ',
 		'text_title' => 'GBIF text',
-		'text_default_value' => 'Search GBIF...',
 		'text_description' => 'The text of the link that is displayed..',
 	);
 	$ext_links[1] = array(
@@ -47,11 +46,9 @@ function ext_links_admin() {
 		'form_title' => 'The New York Botanical Garden',
 		'check_title' => 'Display NYBG link?',
 		'link_title' => 'NYBG link',
-		'link_default_value' => 'http://rbg-web2.rbge.org.uk/cgi-bin/nph-readbtree.pl/dataset=NYBG/filename=names3/firstval=1/multiaddr=/multiform=multisite3.php?ETI=',
 		'link_description' => 'The link to NCBI without the taxon name.',
 		'concat_default_value' => ' ',
 		'text_title' => 'NYBG text',
-		'text_default_value' => 'Search NYBG...',
 		'text_description' => 'The text of the link that is displayed..',
 	);
 	$ext_links[2] = array(
@@ -59,11 +56,9 @@ function ext_links_admin() {
 		'form_title' => 'Tropicos',
 		'check_title' => 'Display Tropicos link?',
 		'link_title' => 'Tropicos link',
-		'link_default_value' => 'http://www.tropicos.org/NameSearch.aspx?name=',
 		'link_description' => 'The link to Tropicos without the taxon name.',
 		'concat_default_value' => '+',
 		'text_title' => 'Tropicos text',
-		'text_default_value' => 'Search Tropicos...',
 		'text_description' => 'The text of the link that is displayed..',
 	);
 	$ext_links[3] = array(
@@ -71,11 +66,9 @@ function ext_links_admin() {
 		'form_title' => 'NCBI',
 		'check_title' => 'Display NCBI link?',
 		'link_title' => 'NCBI link',
-		'link_default_value' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=',
 		'link_description' => 'The link to NCBI without the taxon name.',
 		'concat_default_value' => '+AND+',
 		'text_title' => 'NCBI text',
-		'text_default_value' => 'Search NCBI...',
 		'text_description' => 'The text of the link that is displayed..',
 	);
 	$ext_links[4] = array(
@@ -83,11 +76,9 @@ function ext_links_admin() {
 		'form_title' => 'Google Images',
 		'check_title' => 'Display Google Images link?',
 		'link_title' => 'Google Images link',
-		'link_default_value' => 'http://images.google.com/images?q=',
 		'link_description' => 'The link to Google Images without the taxon name.',
 		'concat_default_value' => '+',
 		'text_title' => 'Google Images text',
-		'text_default_value' => 'Search Google Images...',
 		'text_description' => 'The text of the link that is displayed..',
 	);
 	$ext_links[5] = array(
@@ -95,11 +86,9 @@ function ext_links_admin() {
 		'form_title' => 'flickr',
 		'check_title' => 'Display flickr link?',
 		'link_title' => 'flickr link',
-		'link_default_value' => 'http://www.flickr.com/search/?w=all&q=',
 		'link_description' => 'The link to flickr without the taxon name.',
 		'concat_default_value' => '+',
 		'text_title' => 'flickr text',
-		'text_default_value' => 'Search flickr...',
 		'text_description' => 'The text of the link that is displayed..',
 	);
 	$ext_links[6] = array(
@@ -107,11 +96,9 @@ function ext_links_admin() {
 		'form_title' => 'Google scholar',
 		'check_title' => 'Display Google scholar link?',
 		'link_title' => 'Google scholar link',
-		'link_default_value' => 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q=',
 		'link_description' => 'The link to Google scholar without the taxon name.',
 		'concat_default_value' => '+',
 		'text_title' => 'Google scholar text',
-		'text_default_value' => 'Search Google scholar...',
 		'text_description' => 'The text of the link that is displayed..',
 	);
 	$ext_links[7] = array(
@@ -119,11 +106,9 @@ function ext_links_admin() {
 		'form_title' => 'Biodiversity Heritage Library (BHL)',
 		'check_title' => 'Display BHL link?',
 		'link_title' => 'BHL link',
-		'link_default_value' => 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q=',
 		'link_description' => 'The link to BHL without the taxon name.',
 		'concat_default_value' => ' ',
 		'text_title' => 'BHL text',
-		'text_default_value' => 'Search BHL...',
 		'text_description' => 'The text of the link that is displayed..',
 	);
 
@@ -142,7 +127,7 @@ function ext_links_admin() {
 	  $form[$ext_links[$i][form]]['ext_links_'.$ext_links[$i][form].'_link'] = array(
 	    '#type' => 'textfield',
 	    '#title' => t($ext_links[$i][link_title]),
-	    '#default_value' => variable_get('ext_links_'.$ext_links[$i][form].'_link', $ext_links[$i][link_default_value]),
+	    '#default_value' => variable_get('ext_links_'.$ext_links[$i][form].'_link', $ext_links_default[$ext_links[$i][form]][link_default_value]),
 	    '#size' => 70,
 	    '#maxlength' => 255,
 	    '#description' => t($ext_links[$i][link_description])
@@ -158,7 +143,7 @@ function ext_links_admin() {
 	$form[$ext_links[$i][form]]['ext_links_'.$ext_links[$i][form].'_text'] = array(
 	    '#type' => 'textfield',
 	    '#title' => t($ext_links[$i][text_title]),
-	    '#default_value' => variable_get('ext_links_'.$ext_links[$i][form].'_text', $ext_links[$i][text_default_value]),
+	    '#default_value' => variable_get('ext_links_'.$ext_links[$i][form].'_text', $ext_links_default[$ext_links[$i][form]][text_default_value]),
 	    '#size' => 70,
 	    '#maxlength' => 255,
 	    '#description' => t($ext_links[$i][text_description])
@@ -178,7 +163,42 @@ function ext_links_perm() {
 */
 function ext_links_menu() {
 
-  $items = array();
+	// default values for the external links defined as global variables
+ 	global $ext_links_default;
+	$ext_links_default["gbif"] = array(
+		'link_default_value' => 'http://data.gbif.org/species/',
+		'text_default_value' => 'Search GBIF...',
+ 	); 
+	$ext_links_default["nybg"] = array(
+ 		'link_default_value' => 'http://rbg-web2.rbge.org.uk/cgi-bin/nph-readbtree.pl/dataset=NYBG/filename=names3/firstval=1/multiaddr=/multiform=multisite3.php?ETI=',
+		'text_default_value' => 'Search NYBG...',
+ 	); 
+	$ext_links_default["tropicos"] = array(
+		'link_default_value' => 'http://www.tropicos.org/NameSearch.aspx?name=',
+		'text_default_value' => 'Search Tropicos...',
+	); 
+ 	$ext_links_default["ncbi"] = array(
+		'link_default_value' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=',
+		'text_default_value' => 'Search NCBI...',
+ 		); 
+ 	$ext_links_default["google"] = array(
+		'link_default_value' => 'http://images.google.com/images?q=',
+		'text_default_value' => 'Search Google Images...',
+ 	); 
+ 	$ext_links_default["flickr"] = array(
+		'link_default_value' => 'http://www.flickr.com/search/?w=all&q=',
+		'text_default_value' => 'Search flickr...',
+ 	); 
+ 	$ext_links_default["scholar"] = array(
+		'link_default_value' => 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q=',
+		'text_default_value' => 'Search Google scholar...',
+ 	); 
+ 	$ext_links_default["bhl"] = array(
+		'link_default_value' => 'http://www.biodiversitylibrary.org/Search.aspx?searchCat=&searchTerm=',
+		'text_default_value' => 'Search BHL...',
+ 	); 
+ 	
+	$items = array();
 
   $items[] = array(
     'path' => 'admin/settings/extlinks',
@@ -220,14 +240,15 @@ function getSpeciesName($taxon){
  */
 function ext_links_block($op='list', $delta=0) {
   // listing of blocks, such as on the admin/block page
-
+	global $ext_links_default;
+	
    if ($op == "list"){
     	$block[0]["info"] = t("External Taxon Links");
 		return $block;
    } else if ($op == 'view') {
       switch($delta){
         case 0:
-        		if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!==0){
+        		if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!== 0){
         			$uuid = arg(2);
         		    $taxon = cdm_ws_get(CDM_WS_TAXON, $uuid);
         		    //var_dump($taxon);
@@ -239,34 +260,34 @@ function ext_links_block($op='list', $delta=0) {
           		    	$genus = $taxon->name->taggedName[0]->text;
           		    	$species = $taxon->name->taggedName[1]->text;
           		    	$block_content = '';
-          		    	if(variable_get('ext_links_gbif_check', 1)) {
-          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', '').$speciesName[genus].variable_get('ext_links_gbif_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_gbif_text', '').'</a><br />';
+          		    	if(variable_get('ext_links_gbif_check', true)) {
+          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', $ext_links_default[gbif][link_default_value]).$speciesName[genus].variable_get('ext_links_gbif_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_gbif_text', $ext_links_default[gbif][text_default_value]).'</a><br />';
           		    	}
           		    	if(variable_get('ext_links_nybg_check', 1)) {
-          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', '').$speciesName[genus].variable_get('ext_links_nybg_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_nybg_text', '').'</a><br />';
+          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default[nybg][link_default_value]).$speciesName[genus].variable_get('ext_links_nybg_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_nybg_text', $ext_links_default[nybg][text_default_value]).'</a><br />';
           		    	}
           		    	if(variable_get('ext_links_tropicos_check', 1)) {
-          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_tropicos_link', '').$speciesName[genus].variable_get('ext_links_tropicos_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_tropicos_text', '').'</a><br />';
+          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_tropicos_link', $ext_links_default[tropicos][link_default_value]).$speciesName[genus].variable_get('ext_links_tropicos_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_tropicos_text', $ext_links_default[tropicos][text_default_value]).'</a><br />';
           		    	}
           		    	if(variable_get('ext_links_ncbi_check', 1)) {
-          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_ncbi_link', '').$speciesName[genus].variable_get('ext_links_ncbi_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_ncbi_text', '').'</a><br />';
+          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_ncbi_link', $ext_links_default[ncbi][link_default_value]).$speciesName[genus].variable_get('ext_links_ncbi_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_ncbi_text', $ext_links_default[ncbi][text_default_value]).'</a><br />';
           		    	}
           		    	if(variable_get('ext_links_google_check', 1)) {
-          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_google_link', '').$speciesName[genus].variable_get('ext_links_google_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_google_text', '').'</a><br />';
+          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_google_link', $ext_links_default[google][link_default_value]).$speciesName[genus].variable_get('ext_links_google_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_google_text', $ext_links_default[google][text_default_value]).'</a><br />';
           		    	}
           		    	if(variable_get('ext_links_flickr_check', 1)) {
-          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_flickr_link', '').$speciesName[genus].variable_get('ext_links_flickr_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_flickr_text', '').'</a><br />';
+          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_flickr_link', $ext_links_default[flickr][link_default_value]).$speciesName[genus].variable_get('ext_links_flickr_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_flickr_text', $ext_links_default[flickr][text_default_value]).'</a><br />';
           		    	}
           		    	if(variable_get('ext_links_scholar_check', 1)) {
-          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_scholar_link', '').$speciesName[genus].variable_get('ext_links_scholar_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_scholar_text', '').'</a><br />';
+          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_scholar_link', $ext_links_default[scholar][link_default_value]).$speciesName[genus].variable_get('ext_links_scholar_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_scholar_text', $ext_links_default[scholar][text_default_value]).'</a><br />';
           		    	}
           		    	if(variable_get('ext_links_bhl_check', 1)) {
-          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_bhl_link', '').$speciesName[genus].variable_get('ext_links_bhl_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_bhl_text', '').'</a><br />';
+          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_bhl_link', $ext_links_default[bhl][link_default_value]).$speciesName[genus].variable_get('ext_links_bhl_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_bhl_text', $ext_links_default[bhl][text_default_value]).'</a><br />';
           		    	}
           			    $block['subject'] = 'External links';
           			    $block['content'] = $block_content;
-          			    print_r($block);
-          				  return $block;
+	       				
+          			    return $block;
   		          } // if taxon
   	  	} // if path
       } // switch 
