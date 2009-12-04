@@ -864,8 +864,7 @@ function cdm_dataportal_view_reference_list($pageNumber){
 }
 
 function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = false, $part = 0){
-   var_dump($mediaUuid);
-	$media = cdm_ws_get(CDM_WS_MEDIA, $mediaUuid);
+   	$media = cdm_ws_get(CDM_WS_MEDIA, $mediaUuid);
    return theme('cdm_media_page', $media, $mediarepresentation_uuid, $part);
 }
 
