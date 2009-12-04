@@ -239,32 +239,33 @@ function ext_links_block($op='list', $delta=0) {
           		    	$genus = $taxon->name->taggedName[0]->text;
           		    	$species = $taxon->name->taggedName[1]->text;
           		    	$block_content = '';
-          		    	if(variable_get('ext_links_gbif_check', 0)) {
+          		    	if(variable_get('ext_links_gbif_check', 1)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', '').$speciesName[genus].variable_get('ext_links_gbif_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_gbif_text', '').'</a><br />';
           		    	}
-          		    	if(variable_get('ext_links_nybg_check', 0)) {
+          		    	if(variable_get('ext_links_nybg_check', 1)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', '').$speciesName[genus].variable_get('ext_links_nybg_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_nybg_text', '').'</a><br />';
           		    	}
-          		    	if(variable_get('ext_links_tropicos_check', 0)) {
+          		    	if(variable_get('ext_links_tropicos_check', 1)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_tropicos_link', '').$speciesName[genus].variable_get('ext_links_tropicos_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_tropicos_text', '').'</a><br />';
           		    	}
-          		    	if(variable_get('ext_links_ncbi_check', 0)) {
+          		    	if(variable_get('ext_links_ncbi_check', 1)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_ncbi_link', '').$speciesName[genus].variable_get('ext_links_ncbi_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_ncbi_text', '').'</a><br />';
           		    	}
-          		    	if(variable_get('ext_links_google_check', 0)) {
+          		    	if(variable_get('ext_links_google_check', 1)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_google_link', '').$speciesName[genus].variable_get('ext_links_google_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_google_text', '').'</a><br />';
           		    	}
-          		    	if(variable_get('ext_links_flickr_check', 0)) {
+          		    	if(variable_get('ext_links_flickr_check', 1)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_flickr_link', '').$speciesName[genus].variable_get('ext_links_flickr_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_flickr_text', '').'</a><br />';
           		    	}
-          		    	if(variable_get('ext_links_scholar_check', 0)) {
+          		    	if(variable_get('ext_links_scholar_check', 1)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_scholar_link', '').$speciesName[genus].variable_get('ext_links_scholar_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_scholar_text', '').'</a><br />';
           		    	}
-          		    	if(variable_get('ext_links_bhl_check', 0)) {
+          		    	if(variable_get('ext_links_bhl_check', 1)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_bhl_link', '').$speciesName[genus].variable_get('ext_links_bhl_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_bhl_text', '').'</a><br />';
           		    	}
           			    $block['subject'] = 'External links';
           			    $block['content'] = $block_content;
+          			    print_r($block);
           				  return $block;
   		          } // if taxon
   	  	} // if path
