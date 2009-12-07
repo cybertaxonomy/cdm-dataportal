@@ -1262,3 +1262,105 @@ function get_partDefinition($taxonNameType){
   }
   return $partdef;
 }
+
+/**
+ * 
+ * @param $media
+ * @param $priority
+ * @return unknown_type
+ * TODO rename to read_media_metadata() and move to *.module
+ */
+function cdm_read_media_metadata($media, $priority = 1){
+
+    $metadata_caption = array('title' => '', 
+                              'artist' => '', 
+                              'rights', 
+                              'location', 
+                              'filename' => '', 
+                              'mediacreated' => '', 
+                              'description' => '');
+
+    //getting the media metadata
+    $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
+
+    //filling the title, artist, copyright depending on the priority 1=>files 2=>CDM
+    switch($priority){
+        case 1:
+            //filling the title
+            if ($media_metadata->Headline)
+            $metadata_caption['title'] = $media_metadata->Headline;
+            elseif ($media->titleCache){
+                $metadata_caption['title'] = $media->titleCache;
+                if ($media->description_L10n)
+                $metadata_caption['title'] .= ' - ' . $media->description_L10n;
+            }
+            
+            //filling the artist
+            if ($media_metadata->Artist)
+                 $metadata_caption['artist'] = ($media_metadata->Artist ? ''.$media_metadata->Artist : '');
+            elseif ($media->artist->titleCache)
+                 $metadata_caption['artist'] = $media->artist->titleCache;
+    
+            //filling out with the copyright info
+            $metadata_caption['rights'] = array('copyright' => array('agentNames' => array()),
+                                                'license' => array('agentNames' => array(), 'types' => array(), 'abbreviatedTexts' => array(), 'uris' => array()));
+            if ($media_metadata->Copyright)
+                 $metadata_caption['rights']['copyright']['agentNames'][] = $media_metadata->Copyright;
+            elseif ($media->rights){
+                foreach($media->rights as $right){
+                    switch($right->term->uuid){
+                        case UUID_RIGHTS_LICENCE:
+                            $metadata_caption['rights']['license']['agentNames'][] = ($right->agent ? ''.$right->agent->firstname.' '.$right->agent->lastname : '');
+                            $metadata_caption['rights']['license']['types'][] = ($right->representation_L10n ? ''.$right->representation_L10n : '');
+                            $metadata_caption['rights']['license']['abbreviatedTexts'][] = ($right->abbreviatedText ? ''.$right->abbreviatedText : '');
+                            $metadata_caption['rights']['license']['uris'][] = ($right->uri ? ''.$right->uri : '');
+                            break;
+                        case UUID_RIGHTS_COPYRIGHT:
+                            $metadata_caption['rights']['copyright']['agentNames'][] = $right->agent->firstname . ' ' . $right->agent->lastname;
+                            break;
+                    }
+                }
+            }
+            else
+            $metadata_caption['rights']['agentNames'][] = '';
+
+            break;
+
+        case 2:
+            //filling the title
+            if ($media->titleCache){
+                $metadata_caption['title'] = $media->titleCache;
+                if ($media->description_L10n)
+                $metadata_caption['title'] .= ' - ' . $media->description_L10n;
+            }
+            elseif ($media_metadata->Headline)
+                $metadata_caption['title'] = $media_metadata->Headline;
+            break;
+    }
+    //filling the description (though there is no description in the db???)
+    $metadata_caption['description'] = $media->description_L10n;
+
+    //filling the location
+    $metadata_caption['location'] = array();
+    $metadata_caption['location']['sublocation'] = $media_metadata->Sublocation;
+    $metadata_caption['location']['city'] = $media_metadata->City;
+    $metadata_caption['location']['province'] = $media_metadata->Province;
+    $metadata_caption['location']['country'] = $media_metadata->Country;
+
+
+    //filling the filename
+    if(isset($media->representations[0]->parts[0]->uri)){
+        $fileUri = $media->representations[0]->parts[0]->uri;
+        $filename = substr($fileUri, strrpos($fileUri, "/")+1);
+        $metadata_caption['filename'] = $filename;
+    }
+    else
+    $metadata_caption['filename'] = '';
+    
+    //filling the creation date
+    $metadata_caption['mediacreated'] = $media->created;
+
+    //returned value
+    return $metadata_caption;
+
+}

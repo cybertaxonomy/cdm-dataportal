@@ -146,7 +146,7 @@ function theme_cdm_annotation($cdmBase){
 
 		$out = ' <span class="annotation">';
 		$out .= '<span class="annotation_toggle" rel="'.$annotationProxyUrl.'">+</span>';
-		 
+			
 
 		$out .= '<div class="annotation_box"></div>';
 		$out .= '</span>';
@@ -220,17 +220,17 @@ function theme_cdm_media($descriptionElement, $mimeTypePreference){
 			//			$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid, 'title'=>$feature->term);
 			//		    for($i = 0; $part = $mediaRepresentation->representationParts[$i]; $i++){
 			//		    	if($i == 0){
-				//		    	    $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$feature->term.'-media.png';
-				//		    	    $media = '<img src="'.$image_url.'" height="14px" alt="'.$feature->term.'" />';
-				//		    	    $out .= l($media, $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
-				//		    	} else {
-				//		    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
-				//		    	}
-				//		  	}
-			} else {
-				// no media available, so display just the type term
-				$out .=  $feature->representation_L10n;
-			}
+			//		    	    $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$feature->term.'-media.png';
+			//		    	    $media = '<img src="'.$image_url.'" height="14px" alt="'.$feature->term.'" />';
+			//		    	    $out .= l($media, $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+			//		    	} else {
+			//		    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
+			//		    	}
+			//		  	}
+		} else {
+			// no media available, so display just the type term
+			$out .=  $feature->representation_L10n;
+		}
 	}
 	return $out;
 
@@ -257,7 +257,7 @@ function theme_cdm_media_mime_image($mediaRepresentation, $feature){
 	$attributes = array('class'=>'thickbox', 'rel'=>'representation-'.$representation->uuid, 'title'=>$feature->representation_L10n);
 	for($i = 0; $part = $representation->representationParts[$i]; $i++){
 		if($i == 0){
-			 
+
 			$out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
 		} else {
 			$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
@@ -293,18 +293,135 @@ function theme_cdm_media_caption($media, $elements = array('title', 'description
 		$filename = substr($fileUri, strrpos($fileUri, "/")+1);
 		$out .= '<span class="filename">'.$filename.'</span>';
 	}
-	
+
 	if(array_search('rights', $elements)!== false && $media->rights){
 		$out .= '<ul class="rights">';
-	    foreach($media->rights as $right){
-	        $out .= '<li>'.theme('cdm_right', $right).'</li>';
-	    }
-        $out .= '</ul>';
+		foreach($media->rights as $right){
+			$out .= '<li>'.theme('cdm_right', $right).'</li>';
+		}
+		$out .= '</ul>';
 	}
-	
+
 	$out .= '</div>';
 
 	return $out;
+}
+
+// TODO DELETE !!!
+///*
+// * This function return a string wicht contains the metadata information from a media (e.g. jpeg file)
+// * The argument is the media where we want to get the metadata
+// * */
+//function theme_cdm_media_metadata_caption ($media){
+//	$media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
+//
+//	//Getting the location metadata for showing it in the lihgtbox
+//	$location = '';
+//	if($media_metadata->Country || $media_metadata->Province || $media_metadata->City){
+//		//adding sublocation
+//		$location .= ($media_metadata->Sublocation ? '<br>Location: ' .$media_metadata->Sublocation : '');
+//		//adding city
+//		if ($location == '' && $media_metadata->City)
+//		$location .= '<br>Location: ' . $media_metadata->City;
+//		elseif (!($location == '') && $media_metadata->City)
+//		$location .= ', ' . $media_metadata->City;
+//		//adding Province
+//		if ($location == '' && $media_metadata->Province)
+//		$location .= '<br>Location: ' . $media_metadata->Province;
+//		elseif (!($location == '') && $media_metadata->Province)
+//		$location .= ', ' . $media_metadata->Province;
+//		//adding Country
+//		if ($location == '' && $media_metadata->Country)
+//		$location .= '<br>Location: ' . $media_metadata->Country;
+//		elseif (!($location == '') && $media_metadata->Country)
+//		$location .= ' (' . $media_metadata->Country . ')';
+//	}
+//
+//	$metadata_caption = ($media->titleCache ? $media->titleCache : '')
+//	.($media->titleCache && $media->description_L10n ? ' - ' : '')
+//	.($media->description_L10n ? $media->description_L10n : '')
+//	.($media_metadata->Artist ? '<br>Artist: '.$media_metadata->Artist : '<br> No artist')
+//	.($media_metadata->Copyright ? '<br>CopyRight: ' .$media_metadata->Copyright : '<br> No copyright')
+//	.$location;
+//
+//	return $metadata_caption;
+//}
+
+
+
+function theme_cdm_metadata_caption($metadata_caption, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
+	$out = '<dl class="media-caption">';
+	//title
+	if($metadata_caption['title'] && (!$elements || array_search('title', $elements)!== false)){
+	   $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $metadata_caption['title'] . '</dd>';
+	   //unset($metadata_caption['title']);
+	}
+	   //description   
+	if($metadata_caption['description'] && (!$elements || array_search('description', $elements)!== false)){
+	   $out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $metadata_caption['description'] . '</dd>';
+	   //unset($metadata_caption['description']);
+	}
+    //artist
+	if($metadata_caption['artist'] && (!$elements || array_search('artist', $elements)!== false)){
+	   //$out .= '<span class = "artist">' . ($metadata_caption['artist'] ? 'Artist: ' . $metadata_caption['artist'] . '</span>' . '<br>' : '');
+	   $out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $metadata_caption['artist'] . '</dd>';
+	}
+	//location   
+	if(!$elements || array_search('location', $elements)!== false){
+	   $location = '';
+	   $location .= $media_metadata['location']['sublocation'];
+	   if ($location && $metadata_caption['location']['city']){
+	       $location .= ', ';
+	   }
+	   $location .= $metadata_caption['location']['city'];
+	   if ($location && $metadata_caption['location']['province']){
+           $location .= ', ';
+	   }
+	   $location .= $metadata_caption['location']['province'];
+       if ($location && $metadata_caption['location']['country']){
+           $location .= ' (' . $metadata_caption['location']['country'] . ')';
+       } else {
+        $location .= $metadata_caption['location']['country'];
+       }
+       if ($location){
+        $out .= '<dt class = "location">' . t('Location') . '</dt> <dd class = "location">' . $location  . '</dd>';
+       }
+	}
+	//rights
+	if(!$elements || array_search('rights', $elements)!== false){
+	   $rights = '';
+       //copyrights
+	   $cnt = count($metadata_caption['rights']['copyright']['agentNames']);
+	   if($cnt > 0){
+           $rights .= '<dt class="rights">&copy;</dt> <dd class="rights"> '; 
+	       for($i = 0; $i < $cnt; $i++){
+            $rights .= $metadata_caption['rights']['copyright']['agentNames'][$i];
+            if($i+1 < $cnt){
+                $rights .= ' / ';
+            }
+	       }
+	       $rights .= '</dd>';
+	   }
+	   //license
+       $cnt = count($metadata_caption['rights']['license']['agentNames']);
+       if($cnt > 0){
+           $rights .= '<dt class ="license">' . t('License') . '</dt> <dd class = "license">'; 
+	       for($i = 0; $i < $cnt; $i++){
+            $rights .= $metadata_caption['rights']['license']['agentNames'][$i];
+            if ($i+1 < $cnt){
+                $rights .= ' / ';
+                }
+            }
+            $rights .= '</dd>';
+       }
+       if($rights){
+       $out .=  $rights . '</dt>';
+       }  
+	}
+	//TODO add all other metadata elemenst generically
+	$out .= '</dl>';
+    //return value
+    return $out;
 }
 
 /**
@@ -338,7 +455,8 @@ function theme_cdm_taxon_list_thumbnails($taxon){
  * @param $maxExtend
  * @param $cols
  * @param $maxRows
- * @param $captionElements an array possible values are like in the following example: array('title', 'description', 'file', 'filename'), to add a link to the caption: array('titlecache', '#uri'=>t('open Image'));
+ * @param $captionElements an array possible values are like in the following example: array('title', 'description', 'file', 'filename'), 
+ *         to add a link to the caption: array('titlecache', '#uri'=>t('open Image'));
  * @param $mediaLinkType valid values:
  *      "NONE": do not link the images,
  *      "LIGHTBOX": open the link in a light box,
@@ -405,19 +523,26 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 				} else {
 					$mediaLinkUri = $media->representations[0]->parts[0]->uri;
 				}
+
+			   
+				$metadataMap = cdm_read_media_metadata($media);
 				
-				$linkAttributes['title'] = theme('cdm_media_metadata_caption', $media);
+				// generate gallery caption
+				$captionPartHtml = theme('cdm_metadata_caption', $metadataMap, $captionElements);
+				// generate & add caption to lightbox
+				$lightBoxCaptionElements = null;
+                $linkAttributes['title'] = theme('cdm_metadata_caption', $metadataMap, $lightBoxCaptionElements);
 
 				//$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality)); define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
 				//$prefMimeTypeRegex = 'image:.*';
-				 
+					
 				// --- assemble captions
-				if(isset($media->representations[0]->parts[0]->uri)){
-					$fileUri = $media->representations[0]->parts[0]->uri;
-				}
-				$captionPartHtml = theme('cdm_media_caption', $media, $captionElements, $fileUri);
+//				if(isset($media->representations[0]->parts[0]->uri)){
+//					$fileUri = $media->representations[0]->parts[0]->uri;
+//				}
+//				$captionPartHtml = theme('cdm_media_caption', $media, $captionElements, $fileUri);
 				if(isset($captionElements['#uri'])){
-					$captionPartHtml .= l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE);
+					$captionPartHtml .= '<div>'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
 				}
 				$captionParts[] = $captionPartHtml;
 
@@ -432,7 +557,7 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 			}
 			$out .= '<td>'.$mediaPartHtml.'</td>';
 		}
-		$out .= '</tr>';
+		$out .= '</tr>'; // end of media parts
 		if(isset($captionElements[0])){
 			$out .= '<tr>';
 			// add caption row
@@ -453,44 +578,6 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 	}
 	$out .= '</table>';
 	return $out;
-}
-/*
- * This function return a string wicht contains the metadata information from a media (e.g. jpeg file)
- * The argument is the media where we want to get the metadata
- * */
-function theme_cdm_media_metadata_caption ($media){
-	$media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
-
-	//Getting the location metadata for showing it in the lihgtbox
-	$location = '';
-	if($media_metadata->Country || $media_metadata->Province || $media_metadata->City){
-		//adding sublocation
-		$location .= ($media_metadata->Sublocation ? '<br>Location: ' .$media_metadata->Sublocation : '');
-		//adding city
-		if ($location == '' && $media_metadata->City)
-		$location .= '<br>Location: ' . $media_metadata->City;
-		elseif (!($location == '') && $media_metadata->City)
-		$location .= ', ' . $media_metadata->City;
-		//adding Province
-		if ($location == '' && $media_metadata->Province)
-		$location .= '<br>Location: ' . $media_metadata->Province;
-		elseif (!($location == '') && $media_metadata->Province)
-		$location .= ', ' . $media_metadata->Province;
-		//adding Country
-		if ($location == '' && $media_metadata->Country)
-		$location .= '<br>Location: ' . $media_metadata->Country;
-		elseif (!($location == '') && $media_metadata->Country)
-		$location .= ' (' . $media_metadata->Country . ')';
-	}
-
-	$metadata_caption = ($media->titleCache ? $media->titleCache : '')
-	.($media->titleCache && $media->description_L10n ? ' - ' : '')
-	.($media->description_L10n ? $media->description_L10n : '')
-	.($media_metadata->Artist ? '<br>Artist: '.$media_metadata->Artist : '<br> No artist')
-	.($media_metadata->Copyright ? '<br>CopyRight: ' .$media_metadata->Copyright : '<br> No copyright')
-	.$location;
-	
-	return $metadata_caption;
 }
 
 function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
@@ -589,9 +676,9 @@ $(document).ready(function(){
   init();
 
 });'
-, 'inline');
-$out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
-return $out;
+	, 'inline');
+	$out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
+	return $out;
 
 }
 
@@ -648,21 +735,24 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 	$out .= '</div>';
 
 	// general media metadata
-	$out .= '<div class="metadata_caption">' . theme('cdm_media_metadata_caption', $media) . '</div><br>';
+	$metadataToPrint = cdm_read_media_metadata($media);
+    $metadataToPrint = theme('cdm_metadata_caption', $metadataToPrint);
+    $out .= $metadataToPrint;
+	//$out .= '<div class="metadata_caption">' . theme('cdm_media_metadata_caption', $media) . '</div><br>';
 	/*
-	$out .= '<h4 class="title">'.$media->titleCache.'</h4>';
-	$out .= '<div class="description">'.$media->description_L10n.'</div>';
-	$out .= '<div class="artist">'.$media->artist->titleCache.'</div>';
-	*/
+	 $out .= '<h4 class="title">'.$media->titleCache.'</h4>';
+	 $out .= '<div class="description">'.$media->description_L10n.'</div>';
+	 $out .= '<div class="artist">'.$media->artist->titleCache.'</div>';
+	 */
 	//$out .= theme(cdm_back_to_image_gallery_button);
 	/*
 	$out .= '<ul class="rights">';
 	foreach($media->rights as $right){
-		$out .= '<li>'.theme('cdm_right', $right).'</li>';
+	$out .= '<li>'.theme('cdm_right', $right).'</li>';
 	}
 	$out .= '</ul>';
-    */
-	
+	*/
+
 	//tabs for the different representations
 	//ul.secondary
 	$out .= '<ul class="primary">';
@@ -902,9 +992,9 @@ $(document).ready(function(){
   init();
 
 });'
-, 'inline');
-$out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
-$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
+			, 'inline');
+			$out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+			$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
 
 		} else {
 			// simple image
@@ -981,7 +1071,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 				}
 			}
 			$taggedName = $taggedNameNew;
-			 
+
 		}
 		$name = '<span class="'.$taxonName->class.'">'.theme('cdm_taggedtext2html', $taggedName).'</span>';
 	} else {
@@ -1317,7 +1407,7 @@ function theme_cdm_print_button(){
          window.print();
      });
   });', 'inline');
-	 
+
 	$output = '<div id="print_button"><img src="'
 	.drupal_get_path('module', 'cdm_dataportal').'/images/print_icon.gif'
 	.'" alt="'.t('Print this page').'" title="'.t('Print this page').'" />'.t(' Print this page');
@@ -1426,9 +1516,9 @@ function theme_cdm_acceptedFor($renderPath = false){
 		$renderPath = 'acceptedFor';
 	}
 	if(isset($_REQUEST['acceptedFor'])){
-		 
+			
 		$synonym = cdm_ws_get(CDM_WS_TAXON, $_REQUEST['acceptedFor']);
-		 
+			
 		if($synonym){
 			$out .= '<span class="acceptedFor">';
 			$out .= t('is accepted for ');
@@ -1460,7 +1550,7 @@ function theme_cdm_back_to_image_gallery_button(){
 	//$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 
 	$out = '<div id="backToGalleryButton">'.l(t('Back to Images'), $_SESSION['cdm']['last_gallery'] ).'</div>';
-	 
+
 	return $out;
 }
 
@@ -1856,7 +1946,7 @@ function theme_cdm_taxonRelations($taxonRelationships){
 
 		}
 	}
-	 
+
 	// generate output
 	$out = '<ul class="misapplied">';
 	foreach($misapplied as $misapplied_name){
@@ -1972,41 +2062,41 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 				//          $out .= '</li>';
 				//        }
 			}
-	}
-}
-
-if(!empty($specimenTypeDesignations)){
-	// sorting might be different for dataportals so this has to be parameterized
-	usort($specimenTypeDesignations, "compare_specimenTypeDesignationStatus");
-	foreach($specimenTypeDesignations as $std){
-
-		$typeReference = '';
-		//show citation only for Lectotype or Neotype
-		$showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_NEOTYPE || $std->typeStatus->uuid == UUID_LECTOTYPE);
-		if($showCitation && !empty($std->citation)){
-			$shortCitation = $std->citation->authorTeam->titleCache;
-			$shortCitation .= (strlen($shortCitation) > 0 ? ' ' : '' ). partialToYear($std->citation->datePublished->start);
-			if(strlen($shortCitation) == 0){
-				$shortCitation = theme('cdm_reference',$std->citation );
-				$missingShortCitation = true;
-			}
-			$typeReference .= '&nbsp;(' . t('designated by');
-			$typeReference .= '&nbsp;<span class="typeReference '.($missingShortCitation ? '' : 'cluetip').' no-print" title="'. htmlspecialchars('|'.theme('cdm_reference',$std->citation ).'|') .'">';
-			$typeReference .= $shortCitation.'</span>';
-			$typeReference .= ')';
-			//$typeReference .= '<span class="reference only-print">(designated by '.theme('cdm_reference',$std->citation ).')</span>';
 		}
-
-		$out .= '<li class="specimenTypeDesignation">';
-		$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
-		$out .= theme('cdm_specimen', $std->typeSpecimen);
-		$out .= '</li>';
 	}
-}
 
-$out .= '</ul>';
+	if(!empty($specimenTypeDesignations)){
+		// sorting might be different for dataportals so this has to be parameterized
+		usort($specimenTypeDesignations, "compare_specimenTypeDesignationStatus");
+		foreach($specimenTypeDesignations as $std){
 
-return $out;
+			$typeReference = '';
+			//show citation only for Lectotype or Neotype
+			$showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_NEOTYPE || $std->typeStatus->uuid == UUID_LECTOTYPE);
+			if($showCitation && !empty($std->citation)){
+				$shortCitation = $std->citation->authorTeam->titleCache;
+				$shortCitation .= (strlen($shortCitation) > 0 ? ' ' : '' ). partialToYear($std->citation->datePublished->start);
+				if(strlen($shortCitation) == 0){
+					$shortCitation = theme('cdm_reference',$std->citation );
+					$missingShortCitation = true;
+				}
+				$typeReference .= '&nbsp;(' . t('designated by');
+				$typeReference .= '&nbsp;<span class="typeReference '.($missingShortCitation ? '' : 'cluetip').' no-print" title="'. htmlspecialchars('|'.theme('cdm_reference',$std->citation ).'|') .'">';
+				$typeReference .= $shortCitation.'</span>';
+				$typeReference .= ')';
+				//$typeReference .= '<span class="reference only-print">(designated by '.theme('cdm_reference',$std->citation ).')</span>';
+			}
+
+			$out .= '<li class="specimenTypeDesignation">';
+			$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
+			$out .= theme('cdm_specimen', $std->typeSpecimen);
+			$out .= '</li>';
+		}
+	}
+
+	$out .= '</ul>';
+
+	return $out;
 }
 
 function theme_cdm_specimen($specimen){
