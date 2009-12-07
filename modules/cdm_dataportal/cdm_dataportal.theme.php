@@ -962,22 +962,15 @@ function theme_cdm_descriptionElements_distribution($taxon){
  function init() {
  
    var mapOptions={
-// controls break openlayers in IE8 !!!!!!!!!!!!!!
-//     controls: 
-//       [
-//         new OpenLayers.Control.LayerSwitcher({\'ascending\':false}),
-//         new OpenLayers.Control.PanZoomBar(),
-//         //new OpenLayers.Control.PanZoom(),
-//         //new OpenLayers.Control.MouseToolbar(),
-//         //new OpenLayers.Control.MousePosition(),
-//         //new OpenLayers.Control.KeyboardDefaults()
-//       ],
+     controls: 
+       [ 
+         new OpenLayers.Control.PanZoom()
+       ],
        maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
        maxResolution: '.(360 / $display_width).',
        restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
        projection: new OpenLayers.Projection("EPSG:4326")
     };
-    
    
    map = new OpenLayers.Map(\'openlayers_map\', mapOptions);
    map.addLayers([ol_wms]);
