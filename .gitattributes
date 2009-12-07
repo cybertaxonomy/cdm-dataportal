@@ -98,6 +98,7 @@ modules/cdm_dataportal/js/OpenLayers/img/zoom-plus-mini.png -text
 modules/cdm_dataportal/js/OpenLayers/img/zoom-world-mini.png -text
 modules/cdm_dataportal/js/OpenLayers/img/zoombar.png -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/framedCloud.css -text
+modules/cdm_dataportal/js/OpenLayers/theme/default/google.css -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/ie6-style.css -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/add_point_off.png -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/add_point_on.png -text
@@ -124,6 +125,7 @@ modules/cdm_dataportal/js/OpenLayers/theme/default/img/panning-hand-off.png -tex
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/panning-hand-on.png -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/remove_point_off.png -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/remove_point_on.png -text
+modules/cdm_dataportal/js/OpenLayers/theme/default/img/ruler.png -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/save_features_off.png -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/save_features_on.png -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/view_next_off.png -text
@@ -169,10 +171,7 @@ modules/cdm_dataportal/js/jquery-lightbox-0.5/images/lightbox-btn-next.gif -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/images/lightbox-btn-prev.gif -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/images/lightbox-ico-loading.gif -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/index.htm -text
-modules/cdm_dataportal/js/jquery-lightbox-0.5/js/jquery.js -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/js/jquery.lightbox-0.5.js -text
-modules/cdm_dataportal/js/jquery-lightbox-0.5/js/jquery.lightbox-0.5.min.js -text
-modules/cdm_dataportal/js/jquery-lightbox-0.5/js/jquery.lightbox-0.5.pack.js -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/photos/image1.jpg -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/photos/image2.jpg -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/photos/image3.jpg -text

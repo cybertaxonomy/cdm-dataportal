@@ -21,6 +21,11 @@ function _add_js_thickbox(){
 }
 
 function _add_js_lightbox($galleryID){
+  /*
+   * Important Notice:
+   * The jquery.lightbox-0.5.js has been modified in order to allow using the "alt" attribute
+   * for captions instead of the "title" attribute
+   */
 	$lightBoxBasePath = drupal_get_path('module', 'cdm_dataportal') .'/js/jquery-lightbox-0.5';
 	drupal_add_js($lightBoxBasePath.'/js/jquery.lightbox-0.5.js');
 	drupal_add_css($lightBoxBasePath.'/css/jquery.lightbox-0.5.css');
@@ -33,7 +38,8 @@ function _add_js_lightbox($galleryID){
         imageBtnClose:    \''.$lightBoxBasePath.'/images/lightbox-btn-close.gif\',  
         imageBlank:       \''.$lightBoxBasePath.'/images/lightbox-blank.gif\'
       });
-    });', 'inline');
+    });
+    ', 'inline');
 }
 
 
@@ -531,7 +537,7 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 				$captionPartHtml = theme('cdm_metadata_caption', $metadataMap, $captionElements);
 				// generate & add caption to lightbox
 				$lightBoxCaptionElements = null;
-                $linkAttributes['title'] = theme('cdm_metadata_caption', $metadataMap, $lightBoxCaptionElements);
+                $linkAttributes['alt'] = theme('cdm_metadata_caption', $metadataMap, $lightBoxCaptionElements);
 
 				//$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality)); define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
 				//$prefMimeTypeRegex = 'image:.*';
