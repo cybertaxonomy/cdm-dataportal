@@ -654,6 +654,11 @@ function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
      maxExtent: new OpenLayers.Bounds(0, 0, '.$w.', '.$h.')
   };
   var mapOptions={
+      controls: 
+       [ 
+         new OpenLayers.Control.PanZoom(),
+         new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
+       ],
      restrictedExtent:  new OpenLayers.Bounds(0, 0, '.$w.', '.$h.')
   };
  
