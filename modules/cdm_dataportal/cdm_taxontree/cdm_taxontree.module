@@ -133,7 +133,7 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
         $(document).ready(function()
         {
           $(\'ul.cdm_taxontree\').cdm_taxontree();
-          $(\'div.'.$verticalSroller.'\').scrollTo($(\'.focused\'), 400, {over:-3});});
+          $(\'div.'.$verticalSroller.'\').scrollTo($(\'.active\'), 400, {over:-3});});
         }', 'inline');
          return $block;
         
