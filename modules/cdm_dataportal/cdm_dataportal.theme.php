@@ -964,7 +964,8 @@ function theme_cdm_descriptionElements_distribution($taxon){
    var mapOptions={
      controls: 
        [ 
-         new OpenLayers.Control.PanZoom()
+         new OpenLayers.Control.PanZoom(),
+         new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
        ],
        maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
        maxResolution: '.(360 / $display_width).',
