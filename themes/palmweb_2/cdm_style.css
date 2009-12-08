@@ -41,3 +41,12 @@ a.toc:link, a.toc:visited {
 .media_gallery{
 	font-size: 90%;
 }
+
+.media_gallery{
+  font-size: 90%;
+}
+
+.media_gallery .media-caption dd.title {
+  font-size:100%;
+  font-weight:normal;
+}
