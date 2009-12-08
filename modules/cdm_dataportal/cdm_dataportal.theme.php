@@ -2362,38 +2362,34 @@ function theme_cdm_descriptionElementTextData($element){
 		if($source->citation){
 			$authorTeam = $source->citation->authorTeam->teamMembers;
 			if (count($authorTeam) > 2){
-				$authorA = $authorTeam[0]->lastname;
+				if (isset($authorTeam[0]->lastname)){
+					$authorA = $authorTeam[0]->lastname;
+				}else{
+					$authorA = $authorTeam[0]->titlecache;
+					$authorA = substr($authorA, strrpos($authorA, " "));
+				}
 				$authorA .= " et al.";
+			}elseif (count($authorTeam = 2)){
+				if (isset($authorTeam[0]->lastname )&& isset($authorTeam[1]->lastname ))
+				{
+					$authorA = $authorTeam[0]->lastname;
+					$authorB = $authorTeam[1]->lastname;
+				}else{
+					$authorA = $authorTeam[0]->titlecache;
+					$authorB = $authorTeam[1]->titlecache;
+					$authorA = substr($authorA, strrpos($authorA, " "));
+					$authorB = substr($authorB, strrpos($authorB, " "));
+				}
+				$authorA = $authorA . " & " . $authorB;
+			}else{
+    			if (isset($authorTeam[0]->lastname))
+				{
+					$authorA = $authorTeam[0]->lastname;
+				}else{
+					$authorA = $authorTeam[0]->titlecache;
+					$authorA = substr($authorA, strrpos($authorA, " "));
+				}
 			}
-			elseif (count($authorTeam = 2)){
-				$authorA = $authorTeam[0] -> lastname . " & " . $authorTeam[1] ->lastname;
-			}
-			else
-		}
-		$authorA .= " et al.";
-	}
-	elseif (count($authorTeam = 2)){
-		if (isset($authorTeam[0]->lastname )&& isset($authorTeam[1]->lastname ))
-		{
-			$authorA = $authorTeam[0]->lastname;
-			$authorB = $authorTeam[1]->lastname;
-		}else{
-			$authorA = $authorTeam[0]->titlecache;
-			$authorB = $authorTeam[1]->titlecache;
-			$authorA = substr($authorA, strrpos($authorA, " "));
-			$authorB = substr($authorB, strrpos($authorB, " "));
-		}
-		$authorA = $authorA . " & " . $authorB;
-	}
-	else
-    if (isset($authorTeam[0]->lastname))
-		{
-			$authorA = $authorTeam[0]->lastname;
-		}else{
-			$authorA = $authorTeam[0]->titlecache;
-			$authorA = substr($authorA, strrpos($authorA, " "));
-		}
-		
 		
     	//$authorTeam = $source->citation->authorTeam->titleCache;
 		
