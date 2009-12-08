@@ -735,7 +735,6 @@ function cdm_load_obj($datastr){
 
   if(!(is_object($obj) || is_array($obj)) ){
     ob_start();
-    var_dump($obj);
     $obj_dump = ob_get_contents();
     ob_clean();
     return false;
@@ -1012,6 +1011,7 @@ define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
  * stub: treenode_root
  */
 define('CDM_WS_TAXONOMY',  'portal/taxontree');
+define('CDM_WS_TAXONOMY_MEDIA', 'portal/taxontree/taxon');
 
 define('CDM_WS_TERMVOCABULARY', 'term/$0');
 
