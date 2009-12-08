@@ -2362,11 +2362,10 @@ function theme_cdm_descriptionElementTextData($element){
 		if($source->citation){
 			$authorTeam = $source->citation->authorTeam->teamMembers;
 			//var_dump($authorTeam[0]->lastname);
-			var_dump(count($authorTeam));
+			
 			
 			if (count($authorTeam)>0){
-				$test = "count >0";
-				var_dump($test);
+				
 				if (isset($authorTeam[0]->lastname)){
 					$authorA = $authorTeam[0]->lastname;
 				}else{
@@ -2378,8 +2377,8 @@ function theme_cdm_descriptionElementTextData($element){
 				
 				$authorA .= " et al.";
 			}elseif (count($authorTeam = 2)){
-				$test = "count = 2";
-				var_dump($test);
+				
+				
 				if (isset($authorTeam[0]->lastname )&& isset($authorTeam[1]->lastname ))
 				{
 					//$authorA = $authorTeam[0]->lastname;
@@ -2398,10 +2397,10 @@ function theme_cdm_descriptionElementTextData($element){
     	//$authorTeam = $source->citation->authorTeam->titleCache;
 		
 		$datePublished = $source->citation->datePublished;
-		var_dump($datePublished);
+		
 		if (strlen($datePublished->start) >0){
 			$year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
-			var_dump ($year);
+			
 		}
 		if (strlen($year)>0){
 			$reference = $authorA . ' ' . $year;
