@@ -283,79 +283,7 @@ function theme_cdm_media_mime_text($representation, $feature){
 }
 
 
-function theme_cdm_media_caption($media, $elements = array('title', 'description', 'file', 'filename', 'rights'), $fileUri = null){
-
-	$out = '<div class="media_caption">';
-	if( array_search('title', $elements)!== false && $media->titleCache){
-		$out .= '<span class="title">'.$media->titleCache.'</span>';
-	}
-	if(array_search('description', $elements)!== false && $media->description_L10n){
-		$out .= '<span class="description">'.$media->description_L10n.'</span>';
-	}
-	if(array_search('file', $elements)!== false){
-		$out .= '<span class="file">'.$media->titleCache.'</span>';
-	}
-	if(array_search('filename', $elements)!== false && $fileUri){
-		$filename = substr($fileUri, strrpos($fileUri, "/")+1);
-		$out .= '<span class="filename">'.$filename.'</span>';
-	}
-
-	if(array_search('rights', $elements)!== false && $media->rights){
-		$out .= '<ul class="rights">';
-		foreach($media->rights as $right){
-			$out .= '<li>'.theme('cdm_right', $right).'</li>';
-		}
-		$out .= '</ul>';
-	}
-
-	$out .= '</div>';
-
-	return $out;
-}
-
-// TODO DELETE !!!
-///*
-// * This function return a string wicht contains the metadata information from a media (e.g. jpeg file)
-// * The argument is the media where we want to get the metadata
-// * */
-//function theme_cdm_media_metadata_caption ($media){
-//	$media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
-//
-//	//Getting the location metadata for showing it in the lihgtbox
-//	$location = '';
-//	if($media_metadata->Country || $media_metadata->Province || $media_metadata->City){
-//		//adding sublocation
-//		$location .= ($media_metadata->Sublocation ? '<br>Location: ' .$media_metadata->Sublocation : '');
-//		//adding city
-//		if ($location == '' && $media_metadata->City)
-//		$location .= '<br>Location: ' . $media_metadata->City;
-//		elseif (!($location == '') && $media_metadata->City)
-//		$location .= ', ' . $media_metadata->City;
-//		//adding Province
-//		if ($location == '' && $media_metadata->Province)
-//		$location .= '<br>Location: ' . $media_metadata->Province;
-//		elseif (!($location == '') && $media_metadata->Province)
-//		$location .= ', ' . $media_metadata->Province;
-//		//adding Country
-//		if ($location == '' && $media_metadata->Country)
-//		$location .= '<br>Location: ' . $media_metadata->Country;
-//		elseif (!($location == '') && $media_metadata->Country)
-//		$location .= ' (' . $media_metadata->Country . ')';
-//	}
-//
-//	$metadata_caption = ($media->titleCache ? $media->titleCache : '')
-//	.($media->titleCache && $media->description_L10n ? ' - ' : '')
-//	.($media->description_L10n ? $media->description_L10n : '')
-//	.($media_metadata->Artist ? '<br>Artist: '.$media_metadata->Artist : '<br> No artist')
-//	.($media_metadata->Copyright ? '<br>CopyRight: ' .$media_metadata->Copyright : '<br> No copyright')
-//	.$location;
-//
-//	return $metadata_caption;
-//}
-
-
-
-function theme_cdm_metadata_caption($metadata_caption, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
+function theme_cdm_media_caption($metadata_caption, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
 	$out = '<dl class="media-caption">';
 	//title
 	if($metadata_caption['title'] && (!$elements || array_search('title', $elements)!== false)){
@@ -534,10 +462,10 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 				$metadataMap = cdm_read_media_metadata($media);
 				
 				// generate gallery caption
-				$captionPartHtml = theme('cdm_metadata_caption', $metadataMap, $captionElements);
+				$captionPartHtml = theme('cdm_media_caption', $metadataMap, $captionElements);
 				// generate & add caption to lightbox
 				$lightBoxCaptionElements = null;
-                $linkAttributes['alt'] = theme('cdm_metadata_caption', $metadataMap, $lightBoxCaptionElements);
+                $linkAttributes['alt'] = theme('cdm_media_caption', $metadataMap, $lightBoxCaptionElements);
 
 				//$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality)); define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
 				//$prefMimeTypeRegex = 'image:.*';
@@ -747,7 +675,7 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 
 	// general media metadata
 	$metadataToPrint = cdm_read_media_metadata($media);
-    $metadataToPrint = theme('cdm_metadata_caption', $metadataToPrint);
+    $metadataToPrint = theme('cdm_media_caption', $metadataToPrint);
     $out .= $metadataToPrint;
 	//$out .= '<div class="metadata_caption">' . theme('cdm_media_metadata_caption', $media) . '</div><br>';
 	/*
@@ -793,56 +721,6 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 
 	return $out;
 }
-
-function theme_cdm_right($right){
-
-	$funcSubName = false;
-	switch($right->term->uuid){
-		case UUID_RIGHTS_LICENCE: $funcSubName = 'licence'; break;
-		case UUID_RIGHTS_COPYRIGHT: $funcSubName = 'copyright'; break;
-		default: $funcSubName = 'copyright';
-	}
-	if($funcSubName){
-		$out = '<div class="right">';
-		$out .= theme('cdm_right_'.$funcSubName, $right);
-		$out .= '</div>';
-		return $out;
-	}
-}
-
-
-/**
- * Theme for rights of type UUID_RIGHTS_COPYRIGHT
- * @param $right
- * @return unknown_type
- */
-function theme_cdm_right_copyright($right){
-	$out .= '<span class="type">&copy;</span>';
-	if($right->agent){
-		$out .= ' <span class="agent"> '.$right->agent->firstname . ' ' .$right->agent->lastname .'</span>';
-	}
-	return $out;
-}
-
-
-/**
- * Theme for rights of type UUID_RIGHTS_LICENCE
- * @param $right
- * @return unknown_type
- */
-function theme_cdm_right_licence($right){
-	$out .= '<span class="type">'.$right->type->representation_L10n.' </span>';
-	if($right->uri){
-		$out .= '<a href="'.$right->uri.'>'.$right->abbreviatedText.'</a>';
-	} else {
-		$out .= $right->abbreviatedText;
-	}
-	if($right->agent){
-		$out .= '<span class="agent"> '.$right->agent->firstname . ' ' .$right->agent->lastname .'</span>';
-	}
-	return $out;
-}
-
 
 /**
  * TODO
