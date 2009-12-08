@@ -42,6 +42,16 @@ function ext_links_admin() {
 		'text_description' => 'The text of the link that is displayed..',
 	);
 	$ext_links[1] = array(
+		'form' => 'biocase',
+		'form_title' => 'BioCASE',
+		'check_title' => 'Display BioCASE link?',
+		'link_title' => 'BioCASE link',
+		'link_description' => 'The link to BioCASE without the taxon name.',
+		'concat_default_value' => ' ',
+		'text_title' => 'BioCASE text',
+		'text_description' => 'The text of the link that is displayed..',
+	);
+	$ext_links[2] = array(
 		'form' => 'nybg',
 		'form_title' => 'The New York Botanical Garden',
 		'check_title' => 'Display NYBG link?',
@@ -51,7 +61,7 @@ function ext_links_admin() {
 		'text_title' => 'NYBG text',
 		'text_description' => 'The text of the link that is displayed..',
 	);
-	$ext_links[2] = array(
+	$ext_links[3] = array(
 		'form' => 'tropicos',
 		'form_title' => 'Tropicos',
 		'check_title' => 'Display Tropicos link?',
@@ -61,7 +71,7 @@ function ext_links_admin() {
 		'text_title' => 'Tropicos text',
 		'text_description' => 'The text of the link that is displayed..',
 	);
-	$ext_links[3] = array(
+	$ext_links[4] = array(
 		'form' => 'ncbi',
 		'form_title' => 'NCBI',
 		'check_title' => 'Display NCBI link?',
@@ -71,7 +81,7 @@ function ext_links_admin() {
 		'text_title' => 'NCBI text',
 		'text_description' => 'The text of the link that is displayed..',
 	);
-	$ext_links[4] = array(
+	$ext_links[5] = array(
 		'form' => 'google',
 		'form_title' => 'Google Images',
 		'check_title' => 'Display Google Images link?',
@@ -81,7 +91,7 @@ function ext_links_admin() {
 		'text_title' => 'Google Images text',
 		'text_description' => 'The text of the link that is displayed..',
 	);
-	$ext_links[5] = array(
+	$ext_links[6] = array(
 		'form' => 'flickr',
 		'form_title' => 'flickr',
 		'check_title' => 'Display flickr link?',
@@ -91,7 +101,7 @@ function ext_links_admin() {
 		'text_title' => 'flickr text',
 		'text_description' => 'The text of the link that is displayed..',
 	);
-	$ext_links[6] = array(
+	$ext_links[7] = array(
 		'form' => 'scholar',
 		'form_title' => 'Google scholar',
 		'check_title' => 'Display Google scholar link?',
@@ -101,7 +111,7 @@ function ext_links_admin() {
 		'text_title' => 'Google scholar text',
 		'text_description' => 'The text of the link that is displayed..',
 	);
-	$ext_links[7] = array(
+	$ext_links[8] = array(
 		'form' => 'bhl',
 		'form_title' => 'Biodiversity Heritage Library (BHL)',
 		'check_title' => 'Display BHL link?',
@@ -169,7 +179,11 @@ function ext_links_menu() {
 		'link_default_value' => 'http://data.gbif.org/species/',
 		'text_default_value' => 'Search GBIF...',
  	); 
-	$ext_links_default["nybg"] = array(
+	$ext_links_default["biocase"] = array(
+ 		'link_default_value' => 'http://search.biocase.org/edit/search/units/simpleSearch/query1?unitName=',
+		'text_default_value' => 'Search BioCASE...',
+ 	); 
+ 	$ext_links_default["nybg"] = array(
  		'link_default_value' => 'http://rbg-web2.rbge.org.uk/cgi-bin/nph-readbtree.pl/dataset=NYBG/filename=names3/firstval=1/multiaddr=/multiform=multisite3.php?ETI=',
 		'text_default_value' => 'Search NYBG...',
  	); 
@@ -262,6 +276,9 @@ function ext_links_block($op='list', $delta=0) {
           		    	$block_content = '';
           		    	if(variable_get('ext_links_gbif_check', true)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', $ext_links_default[gbif][link_default_value]).$speciesName[genus].variable_get('ext_links_gbif_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_gbif_text', $ext_links_default[gbif][text_default_value]).'</a><br />';
+          		    	}
+          		    	if(variable_get('ext_links_biocase_check', 1)) {
+          		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_biocase_link', $ext_links_default[biocase][link_default_value]).$speciesName[genus].variable_get('ext_links_biocase_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_biocase_text', $ext_links_default[biocase][text_default_value]).'</a><br />';
           		    	}
           		    	if(variable_get('ext_links_nybg_check', 1)) {
           		    		$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default[nybg][link_default_value]).$speciesName[genus].variable_get('ext_links_nybg_concat', ' ').$speciesName[species].'\')">'.variable_get('ext_links_nybg_text', $ext_links_default[nybg][text_default_value]).'</a><br />';
