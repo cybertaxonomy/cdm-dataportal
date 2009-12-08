@@ -1407,15 +1407,16 @@ function theme_cdm_credits(){
 
 function theme_cdm_print_button(){
 
-	drupal_add_js ('$(document).ready(function() {
-         $(\'#print_button img\').click(function () { 
+    drupal_add_js ('$(document).ready(function() {
+         $(\'#print_button\').click(function () { 
          window.print();
      });
   });', 'inline');
-
+    
 	$output = '<div id="print_button"><img src="'
 	.drupal_get_path('module', 'cdm_dataportal').'/images/print_icon.gif'
-	.'" alt="'.t('Print this page').'" title="'.t('Print this page').'" />'.t(' Print this page');
+	. ' "alt="' . t('Print this page') . ' "title="'.t('Print this page').'" />'; //.t(' Print this page');
+	$output .= l(' Print this page', '');
 	$output .= '</div>';
 
 	return $output;
