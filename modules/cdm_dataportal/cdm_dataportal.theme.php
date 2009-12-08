@@ -2300,6 +2300,47 @@ function theme_cdm_descriptionElements($descriptionElements){
 	return theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
 }
 
+function theme_cdm_descriptionElementDistribution($element){
+  $description = str_replace("\n", "<br/>", $element->area->representation_L10n);
+  $sourceRefs = '';
+	
+  foreach($element->sources as $source){
+    $referenceCitation = '';
+   // var_dump($source->citation);
+  //	var_dump($source->citation->authorTeam->teamMembers);
+    if($source->citation){
+	//var_dump($source->citation->authorTeam->teamMembers);
+	$authorTeam = $source->citation->authorTeam->teamMembers;
+	if (count($authorTeam) > 2){
+		$authorA = $authorTeam[0]->lastname;
+		$authorA .= " et al.";
+	}
+	elseif (count($authorTeam = 2)){
+		$authorA = $authorTeam[0] -> lastname . " & " . $authorTeam[1] ->lastname;
+	}
+	else
+		$authorA = $authorTeam[0]-> lastname;
+		
+		
+    	//$authorTeam = $source->citation->authorTeam->titleCache;
+		
+        $referenceCitation = l('<span class="reference">'.$authorA.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+        if($source->citationMicroReference){
+          $referenceCitation .= ': '. $source->citationMicroReference;
+        }
+        if($description && strlen($description) > 0 ){
+          $sourceRefs .= '; '.$referenceCitation;
+        }
+    }
+  }
+  
+	
+  if(strlen($sourceRefs) > 0){
+    $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+  }
+  return  $description . $sourceRefs;
+}
+
 function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
 	$out = '<'.$enclosingHtml.' class="description" id="'.$feature->representation_L10n.'">';
 
@@ -2328,21 +2369,44 @@ function theme_cdm_descriptionElementTextData($element){
 				$authorA = $authorTeam[0] -> lastname . " & " . $authorTeam[1] ->lastname;
 			}
 			else
-			$authorA = $authorTeam[0]-> lastname;
-
-
-			//$authorTeam = $source->citation->authorTeam->titleCache;
-
-			$referenceCitation = l('<span class="reference">'.$authorA.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-			if($source->citationMicroReference){
-				$referenceCitation .= ': '. $source->citationMicroReference;
-			}
-			if($description && strlen($description) > 0 ){
-				$sourceRefs .= '; '.$referenceCitation;
-			}
 		}
+		$authorA .= " et al.";
 	}
-
+	elseif (count($authorTeam = 2)){
+		if (isset($authorTeam[0]->lastname )&& isset($authorTeam[1]->lastname ))
+		{
+			$authorA = $authorTeam[0]->lastname;
+			$authorB = $authorTeam[1]->lastname;
+		}else{
+			$authorA = $authorTeam[0]->titlecache;
+			$authorB = $authorTeam[1]->titlecache;
+			$authorA = substr($authorA, strrpos($authorA, " "));
+			$authorB = substr($authorB, strrpos($authorB, " "));
+		}
+		$authorA = $authorA . " & " . $authorB;
+	}
+	else
+    if (isset($authorTeam[0]->lastname))
+		{
+			$authorA = $authorTeam[0]->lastname;
+		}else{
+			$authorA = $authorTeam[0]->titlecache;
+			$authorA = substr($authorA, strrpos($authorA, " "));
+		}
+		
+		
+    	//$authorTeam = $source->citation->authorTeam->titleCache;
+		
+        $referenceCitation = l('<span class="reference">'.$authorA.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+        if($source->citationMicroReference){
+          $referenceCitation .= ': '. $source->citationMicroReference;
+        }
+        if($description && strlen($description) > 0 ){
+          $sourceRefs .= '; '.$referenceCitation;
+        }
+    }
+  }
+  
 	/*
 	 if (count($authorTeam) > 2){
 		$authorA = $authorTeam[0];
