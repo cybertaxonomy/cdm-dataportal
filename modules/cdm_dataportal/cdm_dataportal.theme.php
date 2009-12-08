@@ -2361,44 +2361,59 @@ function theme_cdm_descriptionElementTextData($element){
 
 		if($source->citation){
 			$authorTeam = $source->citation->authorTeam->teamMembers;
-			if (count($authorTeam) > 2){
+			//var_dump($authorTeam[0]->lastname);
+			var_dump(count($authorTeam));
+			
+			if (count($authorTeam)>0){
+				$test = "count >0";
+				var_dump($test);
 				if (isset($authorTeam[0]->lastname)){
 					$authorA = $authorTeam[0]->lastname;
 				}else{
 					$authorA = $authorTeam[0]->titlecache;
 					$authorA = substr($authorA, strrpos($authorA, " "));
 				}
+			}
+			if (count($authorTeam) > 2){
+				
 				$authorA .= " et al.";
 			}elseif (count($authorTeam = 2)){
+				$test = "count = 2";
+				var_dump($test);
 				if (isset($authorTeam[0]->lastname )&& isset($authorTeam[1]->lastname ))
 				{
-					$authorA = $authorTeam[0]->lastname;
+					//$authorA = $authorTeam[0]->lastname;
 					$authorB = $authorTeam[1]->lastname;
 				}else{
-					$authorA = $authorTeam[0]->titlecache;
+					//$authorA = $authorTeam[0]->titlecache;
 					$authorB = $authorTeam[1]->titlecache;
-					$authorA = substr($authorA, strrpos($authorA, " "));
+					//$authorA = substr($authorA, strrpos($authorA, " "));
 					$authorB = substr($authorB, strrpos($authorB, " "));
 				}
-				$authorA = $authorA . " & " . $authorB;
-			}else{
-    			if (isset($authorTeam[0]->lastname))
-				{
-					$authorA = $authorTeam[0]->lastname;
-				}else{
-					$authorA = $authorTeam[0]->titlecache;
-					$authorA = substr($authorA, strrpos($authorA, " "));
+				if (strlen($authorB)>0){
+					$authorA = $authorA . " &" . $authorB ."###";
 				}
 			}
 		
     	//$authorTeam = $source->citation->authorTeam->titleCache;
 		
-        $referenceCitation = l('<span class="reference">'.$authorA.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+		$datePublished = $source->citation->datePublished;
+		var_dump($datePublished);
+		if (strlen($datePublished->start) >0){
+			$year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
+			var_dump ($year);
+		}
+		if (strlen($year)>0){
+			$reference = $authorA . ' ' . $year;
+		}else {
+			$reference = $authorA ;
+		}
+        $referenceCitation = l('<span class="reference">'.'(' .$reference.')'.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
         if($source->citationMicroReference){
           $referenceCitation .= ': '. $source->citationMicroReference;
         }
         if($description && strlen($description) > 0 ){
-          $sourceRefs .= '; '.$referenceCitation;
+          $sourceRefs .= ' '.$referenceCitation ;
         }
     }
   }
