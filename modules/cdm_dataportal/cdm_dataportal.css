@@ -289,3 +289,17 @@ a.toc:link, a.toc:visited {
   background-color: #ffffff;
 }
 
+/* The print button text with underline and different color on hover */
+#print_button{
+  cursor:pointer;
+}
+#print_button span{
+  color:#027AC6;
+  margin-left: 0.3em; /* spacing between image and text */
+}
+#print_button span:hover {
+  color:#0062A0;
+  text-decoration:underline;
+}
+
+

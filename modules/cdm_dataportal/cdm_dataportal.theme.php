@@ -1294,7 +1294,8 @@ function theme_cdm_print_button(){
 	$output = '<div id="print_button"><img src="'
 	.drupal_get_path('module', 'cdm_dataportal').'/images/print_icon.gif'
 	. ' "alt="' . t('Print this page') . ' "title="'.t('Print this page').'" />'; //.t(' Print this page');
-	$output .= l(' Print this page', '');
+	//$output .= l(' Print this page', '');
+	$output .= '<span>Print this page</span>';
 	$output .= '</div>';
 
 	return $output;
