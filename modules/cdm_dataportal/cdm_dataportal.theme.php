@@ -2173,7 +2173,7 @@ function theme_cdm_descriptionElements($descriptionElements){
 			
 				if( !array_search($repr, $outArray)){
 					$outArray[] = $repr;
-					$glue = ', ';
+					$glue = '<br/> ';
 					$sortOutArray = true;
 					$enclosingHtml = 'p';
 				}
@@ -2201,29 +2201,24 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
     $descriptions .= $description . ", ";
   }   
   $descriptions = substr($descriptions, 0, strlen($descriptions)-2);
-  
- 
-  	//var_dump (variable_get('cdm_taxonomictree_uuid', FALSE));
-	$taxonTrees =  cdm_ws_get(CDM_WS_TAXONOMY);
-	foreach($taxonTrees as $taxonTree){
-		if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
-			
-			$reference = $taxonTree-> reference;
-			break;
-		}
+  $taxonTrees =  cdm_ws_get(CDM_WS_TAXONOMY);
+  foreach($taxonTrees as $taxonTree){
+	if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
+		$reference = $taxonTree-> reference;
+		break;
 	}
+  }
 	
-	//var_dump ($taxonTree->secUuid);
-  $referenceCitation = l('<span class="reference">('. $reference->title .')</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+	
+  $referenceCitation = l('<span class="reference">(World Checklist of Monocotyledons)</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
   if($descriptions && strlen($descriptions) > 0 ){
           $sourceRefs .= ' '.$referenceCitation;
         }
  
-	
   if(strlen($sourceRefs) > 0){
     $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
   }
-  return $descriptions. $sourceRefs;
+  return $descriptions. $sourceRefs ;
   
   
 }
@@ -2277,7 +2272,7 @@ function theme_cdm_descriptionElementTextData($element, $list){
 					$authorB = substr($authorB, strrpos($authorB, " "));
 				}
 				if (strlen($authorB)>0){
-					$authorA = $authorA . " &" . $authorB ."###";
+					$authorA = $authorA . " & " . $authorB ;
 				}
 			}
 		
