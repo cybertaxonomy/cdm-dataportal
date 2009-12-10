@@ -377,6 +377,8 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 	}
 
 	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
+	
+	//$mediaList = cdm_ws_get(CDM_WS_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false), $taxon ->rank, $taxon->uuid ));
 	$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'LIGHTBOX', null, $galleryLinkUri);
 
@@ -1460,6 +1462,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 	// get images
 	$prefMimeTypeRegex = 'image:.*';
 	$prefMediaQuality = '*';
+	//$media =  cdm_ws_get(CDM_WS_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false),$taxon->uuid));
 	$media = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 	if(!isset($media[0])) {
 		$hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
@@ -2153,72 +2156,76 @@ function theme_cdm_descriptionElements($descriptionElements){
 	$glue = '';
 	$sortOutArray = false;
 	$enclosingHtml = 'ul';
+	$distributionElements=array();
 
 	foreach($descriptionElements as $descriptionElement){
-
+		
 		if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
 			if($descriptionElement->class == 'Distribution'){
-				$repr = $descriptionElement->area->representation_L10n;
+				//$repr = $descriptionElement->area->representation_L10n;
+				$distributionElements[]= $descriptionElement->area->representation_L10n;
+				//var_dump ($distributionElements);
+				//$repr = theme(cdm_descriptionElementDistribution, $descriptionElement);
 			} else if($descriptionElement->class == 'TextData'){
-				$repr = $descriptionElement->multilanguageText_L10n->text;
-			}
-			if( !array_search($repr, $outArray)){
-				$outArray[] = $repr;
-				$glue = ', ';
-				$sortOutArray = true;
-				$enclosingHtml = 'p';
+				//$repr = $descriptionElement->multilanguageText_L10n->text;
+				$list = false;
+				$repr = "<t/>". theme ('cdm_descriptionElementTextData', $descriptionElement, $list);
+			
+				if( !array_search($repr, $outArray)){
+					$outArray[] = $repr;
+					$glue = ', ';
+					$sortOutArray = true;
+					$enclosingHtml = 'p';
+				}
 			}
 		} else if($descriptionElement->class == 'TextData'){
-			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement);
+			$list = true;
+			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement,$list );
 		} else {
 			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
 		}
 
 	}
+	
+	$outArray[] = theme(cdm_descriptionElementDistribution, $distributionElements);
 	// take the feature of the last $descriptionElement
 	$feature = $descriptionElement->feature;
 	return theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
 }
 
-function theme_cdm_descriptionElementDistribution($element){
-  $description = str_replace("\n", "<br/>", $element->area->representation_L10n);
-  $sourceRefs = '';
-	
-  foreach($element->sources as $source){
-    $referenceCitation = '';
-   // var_dump($source->citation);
-  //	var_dump($source->citation->authorTeam->teamMembers);
-    if($source->citation){
-	//var_dump($source->citation->authorTeam->teamMembers);
-	$authorTeam = $source->citation->authorTeam->teamMembers;
-	if (count($authorTeam) > 2){
-		$authorA = $authorTeam[0]->lastname;
-		$authorA .= " et al.";
-	}
-	elseif (count($authorTeam = 2)){
-		$authorA = $authorTeam[0] -> lastname . " & " . $authorTeam[1] ->lastname;
-	}
-	else
-		$authorA = $authorTeam[0]-> lastname;
-		
-		
-    	//$authorTeam = $source->citation->authorTeam->titleCache;
-		
-        $referenceCitation = l('<span class="reference">'.$authorA.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-        if($source->citationMicroReference){
-          $referenceCitation .= ': '. $source->citationMicroReference;
-        }
-        if($description && strlen($description) > 0 ){
-          $sourceRefs .= '; '.$referenceCitation;
-        }
-    }
-  }
+function theme_cdm_descriptionElementDistribution($descriptionElements){
   
+  $descriptions = '';
+	
+  foreach($descriptionElements as $description){
+    $descriptions .= $description . ", ";
+  }   
+  $descriptions = substr($descriptions, 0, strlen($descriptions)-2);
+  
+ 
+  	//var_dump (variable_get('cdm_taxonomictree_uuid', FALSE));
+	$taxonTrees =  cdm_ws_get(CDM_WS_TAXONOMY);
+	foreach($taxonTrees as $taxonTree){
+		if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
+			
+			$reference = $taxonTree-> reference;
+			break;
+		}
+	}
+	
+	//var_dump ($taxonTree->secUuid);
+  $referenceCitation = l('<span class="reference">('. $reference->title .')</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+  if($descriptions && strlen($descriptions) > 0 ){
+          $sourceRefs .= ' '.$referenceCitation;
+        }
+ 
 	
   if(strlen($sourceRefs) > 0){
     $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
   }
-  return  $description . $sourceRefs;
+  return $descriptions. $sourceRefs;
+  
+  
 }
 
 function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
@@ -2232,7 +2239,7 @@ function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', 
 	return $out;
 }
 
-function theme_cdm_descriptionElementTextData($element){
+function theme_cdm_descriptionElementTextData($element, $list){
 
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
@@ -2320,7 +2327,11 @@ function theme_cdm_descriptionElementTextData($element){
 	if(strlen($sourceRefs) > 0){
 		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
 	}
-	return '<li class="descriptionText">' . $description . $sourceRefs. '</li>';
+	if ($list){
+		return '<li class="descriptionText">' . $description . $sourceRefs. '</li>';
+	}else{
+		return $description . $sourceRefs;
+	}
 }
 
 function theme_cdm_search_results($pager, $path, $parameters){
