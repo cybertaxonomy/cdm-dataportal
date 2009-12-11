@@ -385,6 +385,13 @@ function proxy_content($uri, $theme = null){
   $uriEncoded = array_shift($args);
   $uri = urldecode($uriEncoded);
   $theme = array_shift($args);
+  
+  //find comma sepatated string in all args
+  foreach($args as &$arg){
+  	if(strpos($arg, ',')){
+  		$arg = explode(',', $arg);
+  	}
+  }
 
   $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
 
@@ -1011,7 +1018,7 @@ define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
  * stub: treenode_root
  */
 define('CDM_WS_TAXONOMY',  'portal/taxontree');
-define('CDM_WS_TAXONOMY_MEDIA', 'portal/taxontree/taxon');
+define('CDM_WS_TAXONOMY_MEDIA', 'portal/taxontree/$0/$1');
 
 define('CDM_WS_TERMVOCABULARY', 'term/$0');
 
