@@ -733,16 +733,15 @@ function theme_cdm_descriptionElements_distribution($taxon){
 		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
 		$labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
-		$query_string = ($display_width ? '&ms=' . $display_width: '')
+		$query_string = ($display_width ? '&ms=' . $display_width: '')  
 		. ($bounding_box ? '&bbox=' .  $bounding_box : '')
-		. ($labels_on ? '&labels=' .  $labels_on : '');
-
-		$query_string .= '&img=false&legend=1&mlp=3';
+		. ($labels_on ? '&labels=' .  $labels_on : '');		
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
 			//$server = 'http://edit.csic.es/v1/areas_sld.php';
 			$server = 'http://edit.csic.es/v1/test.php';
+			$query_string .= '&img=false&legend=1&mlp=3';
 			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
 
 			//#print($map_tdwg_Uri.'<br>');
@@ -871,8 +870,10 @@ $(document).ready(function(){
 
 		} else {
 			// simple image
+			$mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
+			$query_string .= '&img=true&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
 			$mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
-			$out .= '<img class="distribution_map" src="'.$mapUri.'" alt="Distribution Map" />';
+			$out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
 		}
 
 		// add a simple legend
@@ -1828,8 +1829,10 @@ function theme_cdm_taxonRelations($taxonRelationships){
 	foreach($misapplied as $misapplied_name){
 		$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
 		// sorting authors
-		ksort($misapplied_name['authorteam']);
-		$out .= join('; ', $misapplied_name['authorteam']);
+		if(isset($misapplied_name['authorteam'])){
+		  ksort($misapplied_name['authorteam']);
+		  $out .= join('; ', $misapplied_name['authorteam']);
+		}
 		$out .= '</li>';
 	}
 	$out .= '</ul>';
