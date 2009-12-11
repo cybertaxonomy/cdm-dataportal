@@ -135,6 +135,7 @@ modules/cdm_dataportal/js/OpenLayers/theme/default/img/view_previous_on.png -tex
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/zoom-panel-NOALPHA.png -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/img/zoom-panel.png -text
 modules/cdm_dataportal/js/OpenLayers/theme/default/style.css -text
+modules/cdm_dataportal/js/ahah-content.js -text
 modules/cdm_dataportal/js/cdm_annotations.js -text
 modules/cdm_dataportal/js/cdm_dynabox.js -text
 modules/cdm_dataportal/js/cluetip/Changelog.txt -text

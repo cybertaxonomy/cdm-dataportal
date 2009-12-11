@@ -21,8 +21,8 @@ Drupal.cdm_dynaboxAutoAttach = function () {
       if(url != undefined){
         dynabox_content.removeAttr('title').find('.loading').css( 'display', 'block');
 	      $.get(url, function(html){
-          dynabox_content.find('.loading').remove().end().append(html);
-        });
+            dynabox_content.find('.loading').remove().end().append(html);
+          });
       }
       
     });

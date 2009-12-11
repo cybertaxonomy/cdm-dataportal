@@ -63,6 +63,10 @@ function _add_js_cluetip(){
     });", 'inline');
 }
 
+function _add_js_ahah(){
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/ahah-content.js');
+}
+
 /**
  * TODO if getting fragment from request is possible remove $_REQUEST['highlite'] HACK
  * NOT WORKING since fragments are not available to the server
@@ -260,6 +264,7 @@ function theme_cdm_media_mime_application($mediaRepresentation, $feature){
 
 function theme_cdm_media_mime_image($mediaRepresentation, $feature){
 	$out = '';
+	//TODO thickbox is not used anymore -> delete ?
 	$attributes = array('class'=>'thickbox', 'rel'=>'representation-'.$representation->uuid, 'title'=>$feature->representation_L10n);
 	for($i = 0; $part = $representation->representationParts[$i]; $i++){
 		if($i == 0){
@@ -283,39 +288,42 @@ function theme_cdm_media_mime_text($representation, $feature){
 }
 
 
-function theme_cdm_media_caption($metadata_caption, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
+function theme_cdm_media_caption($media, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
+	
+	$media_metadata = cdm_read_media_metadata($media);
+	
 	$out = '<dl class="media-caption">';
 	//title
-	if($metadata_caption['title'] && (!$elements || array_search('title', $elements)!== false)){
-	   $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $metadata_caption['title'] . '</dd>';
-	   //unset($metadata_caption['title']);
+	if($media_metadata['title'] && (!$elements || array_search('title', $elements)!== false)){
+	   $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
+	   //unset($media_metadata['title']);
 	}
 	   //description   
-	if($metadata_caption['description'] && (!$elements || array_search('description', $elements)!== false)){
-	   $out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $metadata_caption['description'] . '</dd>';
-	   //unset($metadata_caption['description']);
+	if($media_metadata['description'] && (!$elements || array_search('description', $elements)!== false)){
+	   $out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $media_metadata['description'] . '</dd>';
+	   //unset($media_metadata['description']);
 	}
     //artist
-	if($metadata_caption['artist'] && (!$elements || array_search('artist', $elements)!== false)){
-	   //$out .= '<span class = "artist">' . ($metadata_caption['artist'] ? 'Artist: ' . $metadata_caption['artist'] . '</span>' . '<br>' : '');
-	   $out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $metadata_caption['artist'] . '</dd>';
+	if($media_metadata['artist'] && (!$elements || array_search('artist', $elements)!== false)){
+	   //$out .= '<span class = "artist">' . ($media_metadata['artist'] ? 'Artist: ' . $media_metadata['artist'] . '</span>' . '<br>' : '');
+	   $out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $media_metadata['artist'] . '</dd>';
 	}
 	//location   
 	if(!$elements || array_search('location', $elements)!== false){
 	   $location = '';
 	   $location .= $media_metadata['location']['sublocation'];
-	   if ($location && $metadata_caption['location']['city']){
+	   if ($location && $media_metadata['location']['city']){
 	       $location .= ', ';
 	   }
-	   $location .= $metadata_caption['location']['city'];
-	   if ($location && $metadata_caption['location']['province']){
+	   $location .= $media_metadata['location']['city'];
+	   if ($location && $media_metadata['location']['province']){
            $location .= ', ';
 	   }
-	   $location .= $metadata_caption['location']['province'];
-       if ($location && $metadata_caption['location']['country']){
-           $location .= ' (' . $metadata_caption['location']['country'] . ')';
+	   $location .= $media_metadata['location']['province'];
+       if ($location && $media_metadata['location']['country']){
+           $location .= ' (' . $media_metadata['location']['country'] . ')';
        } else {
-        $location .= $metadata_caption['location']['country'];
+        $location .= $media_metadata['location']['country'];
        }
        if ($location){
         $out .= '<dt class = "location">' . t('Location') . '</dt> <dd class = "location">' . $location  . '</dd>';
@@ -325,11 +333,11 @@ function theme_cdm_media_caption($metadata_caption, $elements = array('title', '
 	if(!$elements || array_search('rights', $elements)!== false){
 	   $rights = '';
        //copyrights
-	   $cnt = count($metadata_caption['rights']['copyright']['agentNames']);
+	   $cnt = count($media_metadata['rights']['copyright']['agentNames']);
 	   if($cnt > 0){
            $rights .= '<dt class="rights">&copy;</dt> <dd class="rights"> '; 
 	       for($i = 0; $i < $cnt; $i++){
-            $rights .= $metadata_caption['rights']['copyright']['agentNames'][$i];
+            $rights .= $media_metadata['rights']['copyright']['agentNames'][$i];
             if($i+1 < $cnt){
                 $rights .= ' / ';
             }
@@ -337,11 +345,11 @@ function theme_cdm_media_caption($metadata_caption, $elements = array('title', '
 	       $rights .= '</dd>';
 	   }
 	   //license
-       $cnt = count($metadata_caption['rights']['license']['agentNames']);
+       $cnt = count($media_metadata['rights']['license']['agentNames']);
        if($cnt > 0){
            $rights .= '<dt class ="license">' . t('License') . '</dt> <dd class = "license">'; 
 	       for($i = 0; $i < $cnt; $i++){
-            $rights .= $metadata_caption['rights']['license']['agentNames'][$i];
+            $rights .= $media_metadata['rights']['license']['agentNames'][$i];
             if ($i+1 < $cnt){
                 $rights .= ' / ';
                 }
@@ -460,23 +468,17 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 					$mediaLinkUri = $media->representations[0]->parts[0]->uri;
 				}
 
-			   
-				$metadataMap = cdm_read_media_metadata($media);
-				
 				// generate gallery caption
-				$captionPartHtml = theme('cdm_media_caption', $metadataMap, $captionElements);
+				_add_js_ahah();
+				$content_url = cdm_compose_url(CDM_WS_MEDIA, $media->uuid);
+				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".join(',',$captionElements));
+				$captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
+				
 				// generate & add caption to lightbox
 				$lightBoxCaptionElements = null;
-                $linkAttributes['alt'] = theme('cdm_media_caption', $metadataMap, $lightBoxCaptionElements);
-
-				//$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality)); define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
-				//$prefMimeTypeRegex = 'image:.*';
-					
-				// --- assemble captions
-//				if(isset($media->representations[0]->parts[0]->uri)){
-//					$fileUri = $media->representations[0]->parts[0]->uri;
-//				}
-//				$captionPartHtml = theme('cdm_media_caption', $media, $captionElements, $fileUri);
+				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption"); //.($lightBoxCaptionElements?'/'.join	(',',$lightBoxCaptionElements):''));
+				$linkAttributes['alt'] = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
+				
 				if(isset($captionElements['#uri'])){
 					$captionPartHtml .= '<div>'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
 				}
@@ -676,23 +678,9 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 	$out .= '</div>';
 
 	// general media metadata
-	$metadataToPrint = cdm_read_media_metadata($media);
-    $metadataToPrint = theme('cdm_media_caption', $metadataToPrint);
+    $metadataToPrint = theme('cdm_media_caption', $media);
     $out .= $metadataToPrint;
-	//$out .= '<div class="metadata_caption">' . theme('cdm_media_metadata_caption', $media) . '</div><br>';
-	/*
-	 $out .= '<h4 class="title">'.$media->titleCache.'</h4>';
-	 $out .= '<div class="description">'.$media->description_L10n.'</div>';
-	 $out .= '<div class="artist">'.$media->artist->titleCache.'</div>';
-	 */
-	//$out .= theme(cdm_back_to_image_gallery_button);
-	/*
-	$out .= '<ul class="rights">';
-	foreach($media->rights as $right){
-	$out .= '<li>'.theme('cdm_right', $right).'</li>';
-	}
-	$out .= '</ul>';
-	*/
+
 
 	//tabs for the different representations
 	//ul.secondary
@@ -2164,8 +2152,7 @@ function theme_cdm_descriptionElements($descriptionElements){
 			if($descriptionElement->class == 'Distribution'){
 				//$repr = $descriptionElement->area->representation_L10n;
 				$distributionElements[]= $descriptionElement->area->representation_L10n;
-				//var_dump ($distributionElements);
-				//$repr = theme(cdm_descriptionElementDistribution, $descriptionElement);
+				
 			} else if($descriptionElement->class == 'TextData'){
 				//$repr = $descriptionElement->multilanguageText_L10n->text;
 				$list = false;
@@ -2243,9 +2230,6 @@ function theme_cdm_descriptionElementTextData($element, $list){
 
 		if($source->citation){
 			$authorTeam = $source->citation->authorTeam->teamMembers;
-			//var_dump($authorTeam[0]->lastname);
-			
-			
 			if (count($authorTeam)>0){
 				
 				if (isset($authorTeam[0]->lastname)){
