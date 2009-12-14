@@ -1711,7 +1711,19 @@ function theme_cdm_reference_page($referenceTO){
 					$nameArray = array();
 					
 					foreach($team as $member){
-						$nameArray[] = $member->titleCache;
+						if (strlen($member->lastname)> 0){
+								$nname = $member->lastname;
+								$name = $nname;
+								if (strlen($member->firstname)> 0){
+									$vname = $member->firstname;
+									$name =$vname." ". $nname;
+								}
+								$nameArray[] =$name;
+						}else{
+							if (strlen($member->titleCache)> 0){
+								$nameArray[] = $member->titleCache;
+							}
+						}
 					}
 					$names = join($nameArray, ", ");
 				}else{
