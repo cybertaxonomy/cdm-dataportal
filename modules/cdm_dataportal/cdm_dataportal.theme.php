@@ -1659,11 +1659,11 @@ function theme_cdm_reference_page($referenceTO){
     "edition",      // class Book
     "volume",       // class Article
     "seriesPart",
-    "inSeries",
-    "inJournal",     // class Article
-    "inBook",        // class BookSection
+    "inReference",
+    //"inJournal",     // class Article
+    //"inBook",        // class BookSection
     "nomRefBase",    // class BookSection, Book, Article
-    "inProceedings", // class InProceedings
+    //"inProceedings", // class InProceedings
     "pages",         // class Article
     "series",        // class Article, PrintSeries
     "school",        // class Thesis
@@ -1726,6 +1726,21 @@ function theme_cdm_reference_page($referenceTO){
 						}
 					}
 					$names = join($nameArray, ", ");
+				}else if ($fieldname == "inReference"){
+					$type = $referenceTO ->$fieldname-> type;
+					$names = $referenceTO-> $fieldname-> titleCache;
+					switch ($type) {
+						case "Book":
+							$fieldname = "in book";
+							break;
+						case "Journal":
+							$fieldname = "in journal";
+							break;
+						case "Proceedings":
+							$fieldname = "in proceedings";
+							break;
+					}
+					
 				}else{
 					$names = $referenceTO->$fieldname-> titleCache;
 					
