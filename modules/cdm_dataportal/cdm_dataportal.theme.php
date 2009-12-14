@@ -1645,6 +1645,7 @@ function theme_cdm_reference_page($referenceTO){
 	} else {
 		drupal_set_title($referenceTO->fullCitation);
 	}
+
 	$field_order = array(
     "title",
 	//"titleCache",
@@ -1677,24 +1678,57 @@ function theme_cdm_reference_page($referenceTO){
 
 	$table_rows = array();
 	foreach($field_order as $fieldname){
+
 		if(isset($referenceTO->$fieldname)){
+			
 			if($fieldname == "datePublished") {
 				$partial = $referenceTO->$fieldname;
 				$datePublished = '';
 				if($partial->start){
-					$datePublished = substr($partial->start, 0, 4).'-'.substr($partial->start, 4, 2).'-'.substr($partial->start, 6, 2);
+					//var_dump ($partial->start);
+					$datePublishedYear = substr($partial->start, 0, 4);
+					$datePublishedMonth = substr($partial->start, 5, 2);
+					
+					if (!(preg_match('#[0-9]#',$datePublishedMonth))){ 
+						$datePublishedMonth = '00';
+					}
+					
+					$datePublishedDay = substr($partial->start, 7, 2);
+				if (!(preg_match('#[0-9]#',$datePublishedDay))){ 
+						$datePublishedDay = '00';
+					}
+					$datePublished = $datePublishedYear.'-'.$datePublishedMonth.'-'.$datePublishedDay;
 				}
 				if($partial->end){
 					$datePublished = (strlen($datePublished) > 0 ? ' '.t('to').' ' : '').substr($partial->end, 0, 4).'-'.substr($partial->end, 4, 2).'-'.substr($partial->end, 6, 2);
 				}
 				$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $datePublished);
 			} else if(is_object($referenceTO->$fieldname)){
-				$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $referenceTO->$fieldname->titleCache);
+				if ($fieldname == "authorTeam"){
+					$dump = $referenceTO->$fieldname;
+					$teammembers = "teamMembers";
+					$team = $dump->$teammembers;
+					$nameArray = array();
+					
+					foreach($team as $member){
+						$nameArray[] = $member->titleCache;
+					}
+					$names = join($nameArray, ", ");
+				}else{
+					$names = $referenceTO->$fieldname-> titleCache;
+					
+				}
+				$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $names);
+
 			} else {
 				$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $referenceTO->$fieldname);
 			}
 		}
 	}
+	
+	//select the type of the reference and find the in Reference attribute
+	//var_dump ($referenceTO->inReference);
+	
 	return theme("table", array("","") , $table_rows);
 }
 
@@ -2199,8 +2233,12 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 	}
   }
 	
-	
-  $referenceCitation = l('<span class="reference">(World Checklist of Monocotyledons)</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+	if ($reference->title === "World Checklist of Arecaceae"){
+  		$referenceCitation = l('<span class="reference">(World Checklist of Monocotyledons)</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+	}else
+	{
+		$referenceCitation = l('<span class="reference">('.$reference->title.')</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+	}
   if($descriptions && strlen($descriptions) > 0 ){
           $sourceRefs .= ' '.$referenceCitation;
         }
