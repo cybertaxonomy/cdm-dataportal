@@ -373,7 +373,7 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
     
     $form['search']['geographic_range']['tdwg_level_select'] = array(
     '#type' => 'radios',
-    '#title' => t('Select a TDWG distribution level and code:'),
+    '#title' => t('Select a TDWG distribution level and code'),
     '#default_value' => $tdwg_level_select,
     '#options' => array(
       t('TDWG level-1, i.e. a continent'),

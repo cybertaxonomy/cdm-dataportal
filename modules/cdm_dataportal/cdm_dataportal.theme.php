@@ -1358,7 +1358,7 @@ function theme_cdm_nomenclaturalReference($name, $doLink = FALSE, $displayMicror
 }
 
 /**
- * Allows theaming of the taxon page tabs
+ * Allows theming of the taxon page tabs
  *
  * @param $tabname
  * @return unknown_type
