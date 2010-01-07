@@ -21,11 +21,11 @@ function _add_js_thickbox(){
 }
 
 function _add_js_lightbox($galleryID){
-  /*
-   * Important Notice:
-   * The jquery.lightbox-0.5.js has been modified in order to allow using the "alt" attribute
-   * for captions instead of the "title" attribute
-   */
+	/*
+	 * Important Notice:
+	 * The jquery.lightbox-0.5.js has been modified in order to allow using the "alt" attribute
+	 * for captions instead of the "title" attribute
+	 */
 	$lightBoxBasePath = drupal_get_path('module', 'cdm_dataportal') .'/js/jquery-lightbox-0.5';
 	drupal_add_js($lightBoxBasePath.'/js/jquery.lightbox-0.5.js');
 	drupal_add_css($lightBoxBasePath.'/css/jquery.lightbox-0.5.css');
@@ -289,81 +289,81 @@ function theme_cdm_media_mime_text($representation, $feature){
 
 
 function theme_cdm_media_caption($media, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
-	
+
 	$media_metadata = cdm_read_media_metadata($media);
-	
+
 	$out = '<dl class="media-caption">';
 	//title
 	if($media_metadata['title'] && (!$elements || array_search('title', $elements)!== false)){
-	   $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
-	   //unset($media_metadata['title']);
+		$out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
+		//unset($media_metadata['title']);
 	}
-	   //description   
+	//description
 	if($media_metadata['description'] && (!$elements || array_search('description', $elements)!== false)){
-	   $out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $media_metadata['description'] . '</dd>';
-	   //unset($media_metadata['description']);
+		$out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $media_metadata['description'] . '</dd>';
+		//unset($media_metadata['description']);
 	}
-    //artist
+	//artist
 	if($media_metadata['artist'] && (!$elements || array_search('artist', $elements)!== false)){
-	   //$out .= '<span class = "artist">' . ($media_metadata['artist'] ? 'Artist: ' . $media_metadata['artist'] . '</span>' . '<br>' : '');
-	   $out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $media_metadata['artist'] . '</dd>';
+		//$out .= '<span class = "artist">' . ($media_metadata['artist'] ? 'Artist: ' . $media_metadata['artist'] . '</span>' . '<br>' : '');
+		$out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $media_metadata['artist'] . '</dd>';
 	}
-	//location   
+	//location
 	if(!$elements || array_search('location', $elements)!== false){
-	   $location = '';
-	   $location .= $media_metadata['location']['sublocation'];
-	   if ($location && $media_metadata['location']['city']){
-	       $location .= ', ';
-	   }
-	   $location .= $media_metadata['location']['city'];
-	   if ($location && $media_metadata['location']['province']){
-           $location .= ', ';
-	   }
-	   $location .= $media_metadata['location']['province'];
-       if ($location && $media_metadata['location']['country']){
-           $location .= ' (' . $media_metadata['location']['country'] . ')';
-       } else {
-        $location .= $media_metadata['location']['country'];
-       }
-       if ($location){
-        $out .= '<dt class = "location">' . t('Location') . '</dt> <dd class = "location">' . $location  . '</dd>';
-       }
+		$location = '';
+		$location .= $media_metadata['location']['sublocation'];
+		if ($location && $media_metadata['location']['city']){
+			$location .= ', ';
+		}
+		$location .= $media_metadata['location']['city'];
+		if ($location && $media_metadata['location']['province']){
+			$location .= ', ';
+		}
+		$location .= $media_metadata['location']['province'];
+		if ($location && $media_metadata['location']['country']){
+			$location .= ' (' . $media_metadata['location']['country'] . ')';
+		} else {
+			$location .= $media_metadata['location']['country'];
+		}
+		if ($location){
+			$out .= '<dt class = "location">' . t('Location') . '</dt> <dd class = "location">' . $location  . '</dd>';
+		}
 	}
 	//rights
 	if(!$elements || array_search('rights', $elements)!== false){
-	   $rights = '';
-       //copyrights
-	   $cnt = count($media_metadata['rights']['copyright']['agentNames']);
-	   if($cnt > 0){
-           $rights .= '<dt class="rights">&copy;</dt> <dd class="rights"> '; 
-	       for($i = 0; $i < $cnt; $i++){
-            $rights .= $media_metadata['rights']['copyright']['agentNames'][$i];
-            if($i+1 < $cnt){
-                $rights .= ' / ';
-            }
-	       }
-	       $rights .= '</dd>';
-	   }
-	   //license
-       $cnt = count($media_metadata['rights']['license']['agentNames']);
-       if($cnt > 0){
-           $rights .= '<dt class ="license">' . t('License') . '</dt> <dd class = "license">'; 
-	       for($i = 0; $i < $cnt; $i++){
-            $rights .= $media_metadata['rights']['license']['agentNames'][$i];
-            if ($i+1 < $cnt){
-                $rights .= ' / ';
-                }
-            }
-            $rights .= '</dd>';
-       }
-       if($rights){
-       $out .=  $rights . '</dt>';
-       }  
+		$rights = '';
+		//copyrights
+		$cnt = count($media_metadata['rights']['copyright']['agentNames']);
+		if($cnt > 0){
+			$rights .= '<dt class="rights">&copy;</dt> <dd class="rights"> ';
+			for($i = 0; $i < $cnt; $i++){
+				$rights .= $media_metadata['rights']['copyright']['agentNames'][$i];
+				if($i+1 < $cnt){
+					$rights .= ' / ';
+				}
+			}
+			$rights .= '</dd>';
+		}
+		//license
+		$cnt = count($media_metadata['rights']['license']['agentNames']);
+		if($cnt > 0){
+			$rights .= '<dt class ="license">' . t('License') . '</dt> <dd class = "license">';
+			for($i = 0; $i < $cnt; $i++){
+				$rights .= $media_metadata['rights']['license']['agentNames'][$i];
+				if ($i+1 < $cnt){
+					$rights .= ' / ';
+				}
+			}
+			$rights .= '</dd>';
+		}
+		if($rights){
+			$out .=  $rights . '</dt>';
+		}
 	}
 	//TODO add all other metadata elemenst generically
 	$out .= '</dl>';
-    //return value
-    return $out;
+	//return value
+	return $out;
 }
 
 /**
@@ -385,7 +385,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 	}
 
 	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
-	
+
 	//$mediaList = cdm_ws_get(CDM_WS_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false), $taxon ->rank, $taxon->uuid ));
 	$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'LIGHTBOX', null, $galleryLinkUri);
@@ -399,7 +399,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
  * @param $maxExtend
  * @param $cols
  * @param $maxRows
- * @param $captionElements an array possible values are like in the following example: array('title', 'description', 'file', 'filename'), 
+ * @param $captionElements an array possible values are like in the following example: array('title', 'description', 'file', 'filename'),
  *         to add a link to the caption: array('titlecache', '#uri'=>t('open Image'));
  * @param $mediaLinkType valid values:
  *      "NONE": do not link the images,
@@ -444,7 +444,6 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 	}
 	$out .= '</colgroup>';
 
-	$mediaIndex = 0;
 	for($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++){
 		$captionParts = array();
 		$out .= '<tr>';
@@ -472,13 +471,13 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 				_add_js_ahah();
 				$content_url = cdm_compose_url(CDM_WS_MEDIA, $media->uuid);
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".join(',',$captionElements));
-				$captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
-				
+                $captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
+                
 				// generate & add caption to lightbox
 				$lightBoxCaptionElements = null;
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption"); //.($lightBoxCaptionElements?'/'.join	(',',$lightBoxCaptionElements):''));
 				$linkAttributes['alt'] = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
-				
+
 				if(isset($captionElements['#uri'])){
 					$captionPartHtml .= '<div>'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
 				}
@@ -619,9 +618,9 @@ $(document).ready(function(){
   init();
 
 });'
-	, 'inline');
-	$out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
-	return $out;
+, 'inline');
+$out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
+return $out;
 
 }
 
@@ -678,8 +677,8 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 	$out .= '</div>';
 
 	// general media metadata
-    $metadataToPrint = theme('cdm_media_caption', $media);
-    $out .= $metadataToPrint;
+	$metadataToPrint = theme('cdm_media_caption', $media);
+	$out .= $metadataToPrint;
 
 
 	//tabs for the different representations
@@ -733,9 +732,9 @@ function theme_cdm_descriptionElements_distribution($taxon){
 		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
 		$labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
-		$query_string = ($display_width ? '&ms=' . $display_width: '')  
+		$query_string = ($display_width ? '&ms=' . $display_width: '')
 		. ($bounding_box ? '&bbox=' .  $bounding_box : '')
-		. ($labels_on ? '&labels=' .  $labels_on : '');		
+		. ($labels_on ? '&labels=' .  $labels_on : '');
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
@@ -864,9 +863,9 @@ $(document).ready(function(){
   init();
 
 });'
-			, 'inline');
-			$out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
-			$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
+, 'inline');
+$out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
 
 		} else {
 			// simple image
@@ -1276,12 +1275,12 @@ function theme_cdm_credits(){
 
 function theme_cdm_print_button(){
 
-    drupal_add_js ('$(document).ready(function() {
+	drupal_add_js ('$(document).ready(function() {
          $(\'#print_button\').click(function () { 
          window.print();
      });
   });', 'inline');
-    
+
 	$output = '<div id="print_button"><img src="'
 	.drupal_get_path('module', 'cdm_dataportal').'/images/print_icon.gif'
 	. ' "alt="' . t('Print this page') . ' "title="'.t('Print this page').'" />'; //.t(' Print this page');
@@ -1640,11 +1639,14 @@ function theme_cdm_reference_pager($referencePager, $path, $parameters = array()
  * Show a reference in it's atomized form
  */
 function theme_cdm_reference_page($referenceTO){
+
+	/*
 	if($referenceTO->titleCache) {
 		drupal_set_title($referenceTO->titleCache);
 	} else {
 		drupal_set_title($referenceTO->fullCitation);
 	}
+	*/
 
 	$field_order = array(
     "title",
@@ -1660,10 +1662,10 @@ function theme_cdm_reference_page($referenceTO){
     "volume",       // class Article
     "seriesPart",
     "inReference",
-    //"inJournal",     // class Article
-    //"inBook",        // class BookSection
+	//"inJournal",     // class Article
+	//"inBook",        // class BookSection
     "nomRefBase",    // class BookSection, Book, Article
-    //"inProceedings", // class InProceedings
+	//"inProceedings", // class InProceedings
     "pages",         // class Article
     "series",        // class Article, PrintSeries
     "school",        // class Thesis
@@ -1675,12 +1677,12 @@ function theme_cdm_reference_page($referenceTO){
     "issn",         // class Journal
     "uri",
 	);
-
+/*
 	$table_rows = array();
 	foreach($field_order as $fieldname){
 
 		if(isset($referenceTO->$fieldname)){
-			
+				
 			if($fieldname == "datePublished") {
 				$partial = $referenceTO->$fieldname;
 				$datePublished = '';
@@ -1688,13 +1690,13 @@ function theme_cdm_reference_page($referenceTO){
 					//var_dump ($partial->start);
 					$datePublishedYear = substr($partial->start, 0, 4);
 					$datePublishedMonth = substr($partial->start, 5, 2);
-					
-					if (!(preg_match('#[0-9]#',$datePublishedMonth))){ 
+						
+					if (!(preg_match('#[0-9]#',$datePublishedMonth))){
 						$datePublishedMonth = '00';
 					}
-					
+						
 					$datePublishedDay = substr($partial->start, 7, 2);
-				if (!(preg_match('#[0-9]#',$datePublishedDay))){ 
+					if (!(preg_match('#[0-9]#',$datePublishedDay))){
 						$datePublishedDay = '00';
 					}
 					$datePublished = $datePublishedYear.'-'.$datePublishedMonth.'-'.$datePublishedDay;
@@ -1703,22 +1705,23 @@ function theme_cdm_reference_page($referenceTO){
 					$datePublished = (strlen($datePublished) > 0 ? ' '.t('to').' ' : '').substr($partial->end, 0, 4).'-'.substr($partial->end, 4, 2).'-'.substr($partial->end, 6, 2);
 				}
 				$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $datePublished);
+				//$datePublished = array(t(ucfirst(strtolower($fieldname))), $datePublished);
 			} else if(is_object($referenceTO->$fieldname)){
 				if ($fieldname == "authorTeam"){
 					$dump = $referenceTO->$fieldname;
 					$teammembers = "teamMembers";
 					$team = $dump->$teammembers;
 					$nameArray = array();
-					
+						
 					foreach($team as $member){
 						if (strlen($member->lastname)> 0){
-								$nname = $member->lastname;
-								$name = $nname;
-								if (strlen($member->firstname)> 0){
-									$vname = $member->firstname;
-									$name =$vname." ". $nname;
-								}
-								$nameArray[] =$name;
+							$nname = $member->lastname;
+							$name = $nname;
+							if (strlen($member->firstname)> 0){
+								$vname = $member->firstname;
+								$name =$vname." ". $nname;
+							}
+							$nameArray[] =$name;
 						}else{
 							if (strlen($member->titleCache)> 0){
 								$nameArray[] = $member->titleCache;
@@ -1740,268 +1743,378 @@ function theme_cdm_reference_page($referenceTO){
 							$fieldname = "in proceedings";
 							break;
 					}
-					
+						
 				}else{
 					$names = $referenceTO->$fieldname-> titleCache;
-					
 				}
 				$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $names);
+				//$name = array(t(ucfirst(strtolower($fieldname))), $names);
 
 			} else {
 				$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $referenceTO->$fieldname);
+				//$name = array(t(ucfirst(strtolower($fieldname))), $referenceTO->$fieldname);
 			}
 		}
 	}
+*/
 	
 	//select the type of the reference and find the in Reference attribute
-	//var_dump ($referenceTO->inReference);
-	
-	return theme("table", array("","") , $table_rows);
-}
 
-/**
- * Show a synonym page
- *
- * TODO what should show on this page exactly?
- *
- */
-function theme_cdm_synonym_page(){
+	$referenceData = array(
+    "title" => NULL,
+	//"titleCache",
+	//"citation",
+    "authorTeam" => NULL,
+    "editor" => NULL,
+    "publisher" => NULL,
+    "placePublished" => NULL,
+    "datePublished" => NULL,
+    "year" => NULL,
+    "edition" => NULL,      // class Book
+    "volume" => NULL,       // class Article
+    "seriesPart" => NULL,
+    "inReference" => NULL,
+	//"inJournal",     // class Article
+	//"inBook",        // class BookSection
+    "nomRefBase" => NULL,    // class BookSection, Book, Article
+	//"inProceedings", // class InProceedings
+    "pages" => NULL,         // class Article
+    "series" => NULL,        // class Article, PrintSeries
+    "school" => NULL,        // class Thesis
+    "institution" => NULL,   // class Report
+    "organization" => NULL,  // class Proceedings
+    "nextVersion" => NULL,
+    "previousVersion" => NULL,
+    "isbn" => NULL,         // class Book
+    "issn" => NULL,         // class Journal
+    "uri" => NULL,
+	);
 
-}
+	foreach($field_order as $fieldname){
 
-function theme_cdm_preferredImage($media, $defaultRepresentationPart, $imageMaxExtend, $parameters = ''){
+		if(isset($referenceTO->$fieldname)){
+			switch($fieldname){
+				case "datePublished":
+					$partial = $referenceTO->$fieldname;
+					$datePublished = '';
+					if($partial->start){
+						$datePublishedYear = substr($partial->start, 0, 4);
+						$datePublishedMonth = substr($partial->start, 5, 2);
+						if (!(preg_match('#[0-9]#',$datePublishedMonth))){
+							$datePublishedMonth = '00';
+						}
+						$datePublishedDay = substr($partial->start, 7, 2);
+						if (!(preg_match('#[0-9]#',$datePublishedDay))){
+							$datePublishedDay = '00';
+						}
+						$datePublished = $datePublishedYear.'-'.$datePublishedMonth.'-'.$datePublishedDay;
+					}
+					if($partial->end){
+						$datePublished = (strlen($datePublished) > 0 ? ' '.t('to').' ' : '').substr($partial->end, 0, 4).'-'.substr($partial->end, 4, 2).'-'.substr($partial->end, 6, 2);
+					}
 
-	if(isset($media[0])){
-		$representationPart = $media[0]->representations[0]->parts[0];
-		if($parameters){
-			$representationPart->uri.$parameters;
+					$referenceData[$fieldname] = $datePublishedYear;
+					break;
+
+				default:
+					if(is_object($referenceTO->$fieldname)){
+						if ($fieldname == "authorTeam"){
+							$dump = $referenceTO->$fieldname;
+							$teammembers = "teamMembers";
+							$team = $dump->$teammembers;
+							$nameArray = array();
+
+							foreach($team as $member){
+								if (strlen($member->lastname)> 0){
+									$nname = $member->lastname;
+									$name = $nname;
+									if (strlen($member->firstname)> 0){
+										$vname = $member->firstname;
+										$name =$vname." ". $nname;
+									}
+									$nameArray[] =$name;
+								}else{
+									if (strlen($member->titleCache)> 0){
+										$nameArray[] = $member->titleCache;
+									}
+								}
+							}
+							$names = join($nameArray, ", ");
+							$referenceData[$fieldname] = $names;
+						}else if ($fieldname == "inReference"){
+							$names = $referenceTO->$fieldname->titleCache;
+							$referenceData[$fieldname] = $names;
+						}else{
+							$names = $referenceTO->$fieldname->titleCache;
+							$referenceData[$fieldname] = $names;
+						}
+					}else{
+						$referenceData[$fieldname] = $referenceTO->$fieldname;						
+					}
+
+			}
 		}
-	} else {
-		$representationPart = $defaultRepresentationPart;
 	}
 
-	//$widthAndHeight = ($imageWidth ? ' width="'.$imageWidth : '').($imageHeight ? '" height="'.$imageHeight : '');
-	//  $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
-	$attributes = array('alt'=>($preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available"));
-	$out .= theme('cdm_media_gallerie_image', $representationPart, $imageMaxExtend, false, $attributes);
-	// $out = '<img class="left" '.$widthAndHeight.' " src="'.$imageUri.'" alt="'.$altText.'" />';
-	return $out;
-}
-
-function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = array()){
-
-	if(! is_array($synonymList) || count($synonymList) == 0){
-		return;
+		return "" . ((strlen($referenceData["authorTeam"])>0) ? ($referenceData["authorTeam"] . '. ') : '')
+		                 . ((strlen($referenceData["datePublished"])>0) ? ($referenceData["datePublished"] . '. ') : '')
+		                 . ((strlen($referenceData["title"])>0) ? ($referenceData["title"] . '. ') : "")
+		                 . ((strlen($referenceData["placePublished"])>0) ? ($referenceData["placePublished"] . '. ') : '')
+		                 . ((strlen($referenceData["editor"])>0) ? ($referenceData["editor"] . '. ') : '')
+		                 . ((strlen($referenceData["publisher"])>0) ? ($referenceData["publisher"] . '. ') : '')
+		                 . ((strlen($referenceData["inReference"])>0) ? ($referenceData["inReference"] . '. ') : '')
+		                 . ((strlen($referenceData["series"])>0) ? ($referenceData["series"] . '. ') : '')
+		                 . ((strlen($referenceData["volume"])>0) ? ($referenceData["volume"] . '. ') : '')
+		                 . ((strlen($referenceData["pages"])>0) ? ($referenceData["pages"] . '. ') : '')
+		                 . ((strlen($referenceData["isbn"])>0) ? ($referenceData["isbn"] . '. ') : '')
+		                 . ((strlen($referenceData["issn"])>0) ? ($referenceData["issn"] . '. ') : '')
+		                 . ((strlen($referenceData["uri"])>0) ? ($referenceData["uri"] . '. ') : '');
+   
 	}
 
-	$out = '<ul class="homotypicSynonyms">';
+	/**
+	 * Show a synonym page
+	 *
+	 * TODO what should show on this page exactly?
+	 *
+	 */
+	function theme_cdm_synonym_page(){
 
-	if(!empty($prependedSynonyms)){
-		foreach($prependedSynonyms as $taxon){
-			$out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
-		}
 	}
 
-	foreach($synonymList as $synonym){
-		$out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
-	}
+	function theme_cdm_preferredImage($media, $defaultRepresentationPart, $imageMaxExtend, $parameters = ''){
 
-	$typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $synonymList[0]->uuid);
-	if($typeDesignations){
-		$out .= theme('cdm_typedesignations', $typeDesignations);
-	}
-
-	$out .= '</ul>';
-	return $out;
-}
-
-function theme_cdm_homotypicSynonymLine($taxon){
-	$out = '';
-	$out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
-	return $out;
-}
-
-function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
-	$out = '';
-	$out = '<ul class="heterotypicSynonymyGroup">';
-
-	$is_first_entry = true;
-	$typeDesignations = null;
-	foreach($homotypicalGroup as $synonym){
-		if($is_first_entry){
-			$is_first_entry = false;
-			//$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
-			$typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $synonym->uuid);
-			// is first list entry
-			$out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$synonym, UUID_HETEROTYPIC_SYNONYM_OF).'</li>';
+		if(isset($media[0])){
+			$representationPart = $media[0]->representations[0]->parts[0];
+			if($parameters){
+				$representationPart->uri.$parameters;
+			}
 		} else {
-			$out .= '<li class="synonym">'.theme('cdm_related_taxon',$synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+			$representationPart = $defaultRepresentationPart;
 		}
+
+		//$widthAndHeight = ($imageWidth ? ' width="'.$imageWidth : '').($imageHeight ? '" height="'.$imageHeight : '');
+		//  $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
+		$attributes = array('alt'=>($preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available"));
+		$out .= theme('cdm_media_gallerie_image', $representationPart, $imageMaxExtend, false, $attributes);
+		// $out = '<img class="left" '.$widthAndHeight.' " src="'.$imageUri.'" alt="'.$altText.'" />';
+		return $out;
 	}
 
-	if($typeDesignations){
-		$out .= theme('cdm_typedesignations', $typeDesignations);
-	}
+	function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = array()){
 
-	$out .= '</ul>';
-
-	return $out;
-}
-
-/**
- * renders misapplied names and invalid designations.
- * Both relation types are currently treated the same!
- *
- * @param unknown_type $taxonRelationships
- * @return unknown
- */
-function theme_cdm_taxonRelations($taxonRelationships){
-
-	if(!$taxonRelationships){
-		return;
-	}
-
-	_add_js_cluetip();
-
-	// aggregate misapplied names having the same fullname:
-	$misapplied = array();
-	foreach($taxonRelationships as $taxonRelation){
-		if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
-
-			$name = $taxonRelation->fromTaxon->name->titleCache;
-			$authorteam = $taxonRelation->fromTaxon->sec->authorTeam->titleCache;
-
-			if(!isset($misapplied[$name])){
-				$misapplied[$name]['out'] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR, false).'</span>';
-			}
-
-			// collect all authors for this fullname
-			if(isset($authorteam)){
-				$misapplied[$name]['authorteam'][$authorteam] = '&nbsp;<span class="sensu cluetip no-print" title="|sensu '.htmlspecialchars(theme('cdm_reference',$taxonRelation->fromTaxon->sec )).'|">sensu '
-				.$authorteam.'</span>'
-				.'<span class="reference only-print">sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec ).'</span>';
-			}
-
+		if(! is_array($synonymList) || count($synonymList) == 0){
+			return;
 		}
+
+		$out = '<ul class="homotypicSynonyms">';
+
+		if(!empty($prependedSynonyms)){
+			foreach($prependedSynonyms as $taxon){
+				$out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+			}
+		}
+
+		foreach($synonymList as $synonym){
+			$out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+		}
+
+		$typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $synonymList[0]->uuid);
+		if($typeDesignations){
+			$out .= theme('cdm_typedesignations', $typeDesignations);
+		}
+
+		$out .= '</ul>';
+		return $out;
 	}
 
-	// generate output
-	$out = '<ul class="misapplied">';
-	foreach($misapplied as $misapplied_name){
-		$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
-		// sorting authors
-		if(isset($misapplied_name['authorteam'])){
+	function theme_cdm_homotypicSynonymLine($taxon){
+		$out = '';
+		$out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+		return $out;
+	}
+
+	function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
+		$out = '';
+		$out = '<ul class="heterotypicSynonymyGroup">';
+
+		$is_first_entry = true;
+		$typeDesignations = null;
+		foreach($homotypicalGroup as $synonym){
+			if($is_first_entry){
+				$is_first_entry = false;
+				//$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
+				$typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $synonym->uuid);
+				// is first list entry
+				$out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$synonym, UUID_HETEROTYPIC_SYNONYM_OF).'</li>';
+			} else {
+				$out .= '<li class="synonym">'.theme('cdm_related_taxon',$synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+			}
+		}
+
+		if($typeDesignations){
+			$out .= theme('cdm_typedesignations', $typeDesignations);
+		}
+
+		$out .= '</ul>';
+
+		return $out;
+	}
+
+	/**
+	 * renders misapplied names and invalid designations.
+	 * Both relation types are currently treated the same!
+	 *
+	 * @param unknown_type $taxonRelationships
+	 * @return unknown
+	 */
+	function theme_cdm_taxonRelations($taxonRelationships){
+
+		if(!$taxonRelationships){
+			return;
+		}
+
+		_add_js_cluetip();
+
+		// aggregate misapplied names having the same fullname:
+		$misapplied = array();
+		foreach($taxonRelationships as $taxonRelation){
+			if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
+
+				$name = $taxonRelation->fromTaxon->name->titleCache;
+				$authorteam = $taxonRelation->fromTaxon->sec->authorTeam->titleCache;
+
+				if(!isset($misapplied[$name])){
+					$misapplied[$name]['out'] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR, false).'</span>';
+				}
+
+				// collect all authors for this fullname
+				if(isset($authorteam)){
+					$misapplied[$name]['authorteam'][$authorteam] = '&nbsp;<span class="sensu cluetip no-print" title="|sensu '.htmlspecialchars(theme('cdm_reference',$taxonRelation->fromTaxon->sec )).'|">sensu '
+					.$authorteam.'</span>'
+					.'<span class="reference only-print">sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec ).'</span>';
+				}
+
+			}
+		}
+
+		// generate output
+		$out = '<ul class="misapplied">';
+		foreach($misapplied as $misapplied_name){
+			$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
+			// sorting authors
+			if(isset($misapplied_name['authorteam'])){
 		  ksort($misapplied_name['authorteam']);
 		  $out .= join('; ', $misapplied_name['authorteam']);
-		}
-		$out .= '</li>';
-	}
-	$out .= '</ul>';
-	return $out;
-}
-
-function theme_cdm_nameRelations($nameRelationships, $skipTypes = false){
-
-	// group by relationship type
-	$relationshipGroups = array();
-	foreach($nameRelationships as $nameRelationship){
-		if(!array_key_exists($nameRelationship->type->uuid, $relationshipGroups)){
-			$relationshipGroups[$nameRelationship->type->uuid] = array();
-		}
-		$relationshipGroups[$nameRelationship->type->uuid][] = $nameRelationship;
-	}
-
-	// generate output
-	$out = '';
-	foreach($relationshipGroups as $group){
-		$type = $group[0]->type;
-
-		if(is_array($skipTypes) && in_array($type->uuid, $skipTypes)){
-			continue;
-		}
-
-		$block->module = 'cdm_dataportal';
-		$block->subject = t(ucfirst($type->inverseRepresentation_L10n));
-		$block->delta = generalizeString(strtolower($type->inverseRepresentation_L10n));
-
-		foreach($group as $relationship){
-			$relatedNames[] = cdm_taggedtext2html($relationship->fromName->taggedName);
-		}
-
-		$block->content .= implode('; ', $relatedNames);
-		$out .= theme('block', $block);
-	}
-	return $out;
-}
-
-/**
- * FIXME this definitively has to be in another spot. just didn't know where to put it right now.
- * Compares the status of two SpecimenTypeDesignations
- * @param String $a 	a SpecimenTypeDesignations
- * @param String $b		another SpecimenTypeDesignations
- */
-function compare_specimenTypeDesignationStatus($a, $b){
-	/* this is the desired sort oder as of now:
-	 * 	Holotype
-	 * 	Isotype
-	 * 	Lectotype
-	 * 	Isolectotype
-	 * 	Syntype
-	 *
-	 * TODO
-	 * Basically, what we are trying to do is, we define an ordered array of TypeDesignation-states
-	 * and use the index of this array for comparison. This array has to be filled with the cdm-
-	 * TypeDesignation states and the order should be parameterisable inside the dataportal.
-	 */
-	// make that static for now
-	$typeOrder = array('Holotype', 'Isotype', 'Lectotype', 'Isolectotype', 'Syntype');
-
-	$aQuantifier = array_search($a->typeStatus->label, $typeOrder);
-	$bQuantifier = array_search($b->typeStatus->label, $typeOrder);
-
-	if ($aQuantifier == $bQuantifier) {
-		// sort alphabetically
-		return ($a->typeStatus->label < $b->typeStatus->label) ? -1 : 1;
-	}
-	return ($aQuantifier < $bQuantifier) ? -1 : 1;
-
-}
-
-function theme_cdm_typedesignations($typeDesignations = array()){
-
-	_add_js_cluetip();
-	$renderPath = 'typedesignations';
-	$out = '<ul class="typeDesignations">';
-
-	$specimenTypeDesignations = array();
-	foreach($typeDesignations as $typeDesignation){
-		if($typeDesignation->class == 'SpecimenTypeDesignation'){
-			// SpecimenTypeDesignations should be ordered. collect theme here only
-			$specimenTypeDesignations[] = $typeDesignation;
-		}else {
-
-			// it's a NameTypeDesignation
-			if($typeDesignation->notDesignated){
-				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: '.t('not designated'). '</li>';
-			}else if($typeDesignation->typeName){
-
-				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: ';
-
-				if($typeDesignation->typeName->nomenclaturalReference){
-					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
-				}
-				$out .= theme('cdm_taxonName', $typeDesignation->typeName, null, $referenceUri, $renderPath);
-
-				//        if($typeDesignation->typeName->class == 'ZoologicalName') {
-				//          // appending authorTeam which has been skipped in cdm_name
-				//          $authorTeam = cdm_taggedtext_value($typeDesignation->typeName->taggedName, 'authors');
-				//          $authorTeamPart = l('<span class="authors">'.$authorTeam.'</span>', "/cdm_dataportal/reference/".$typeDesignation->typeName->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
-				//          $out .= (str_endsWith($authorTeam, ')') ? '' : ', ').$authorTeamPart;
-				//        } else {
-				//          $out .= ' '.theme('cdm_reference', $typeDesignation->citation, true, $referenceStyle);
-				//          $out .= '</li>';
-				//        }
 			}
+			$out .= '</li>';
+		}
+		$out .= '</ul>';
+		return $out;
+	}
+
+	function theme_cdm_nameRelations($nameRelationships, $skipTypes = false){
+
+		// group by relationship type
+		$relationshipGroups = array();
+		foreach($nameRelationships as $nameRelationship){
+			if(!array_key_exists($nameRelationship->type->uuid, $relationshipGroups)){
+				$relationshipGroups[$nameRelationship->type->uuid] = array();
+			}
+			$relationshipGroups[$nameRelationship->type->uuid][] = $nameRelationship;
+		}
+
+		// generate output
+		$out = '';
+		foreach($relationshipGroups as $group){
+			$type = $group[0]->type;
+
+			if(is_array($skipTypes) && in_array($type->uuid, $skipTypes)){
+				continue;
+			}
+
+			$block->module = 'cdm_dataportal';
+			$block->subject = t(ucfirst($type->inverseRepresentation_L10n));
+			$block->delta = generalizeString(strtolower($type->inverseRepresentation_L10n));
+
+			foreach($group as $relationship){
+				$relatedNames[] = cdm_taggedtext2html($relationship->fromName->taggedName);
+			}
+
+			$block->content .= implode('; ', $relatedNames);
+			$out .= theme('block', $block);
+		}
+		return $out;
+	}
+
+	/**
+	 * FIXME this definitively has to be in another spot. just didn't know where to put it right now.
+	 * Compares the status of two SpecimenTypeDesignations
+	 * @param String $a 	a SpecimenTypeDesignations
+	 * @param String $b		another SpecimenTypeDesignations
+	 */
+	function compare_specimenTypeDesignationStatus($a, $b){
+		/* this is the desired sort oder as of now:
+		 * 	Holotype
+		 * 	Isotype
+		 * 	Lectotype
+		 * 	Isolectotype
+		 * 	Syntype
+		 *
+		 * TODO
+		 * Basically, what we are trying to do is, we define an ordered array of TypeDesignation-states
+		 * and use the index of this array for comparison. This array has to be filled with the cdm-
+		 * TypeDesignation states and the order should be parameterisable inside the dataportal.
+		 */
+		// make that static for now
+		$typeOrder = array('Holotype', 'Isotype', 'Lectotype', 'Isolectotype', 'Syntype');
+
+		$aQuantifier = array_search($a->typeStatus->label, $typeOrder);
+		$bQuantifier = array_search($b->typeStatus->label, $typeOrder);
+
+		if ($aQuantifier == $bQuantifier) {
+			// sort alphabetically
+			return ($a->typeStatus->label < $b->typeStatus->label) ? -1 : 1;
+		}
+		return ($aQuantifier < $bQuantifier) ? -1 : 1;
+
+	}
+
+	function theme_cdm_typedesignations($typeDesignations = array()){
+
+		_add_js_cluetip();
+		$renderPath = 'typedesignations';
+		$out = '<ul class="typeDesignations">';
+
+		$specimenTypeDesignations = array();
+		foreach($typeDesignations as $typeDesignation){
+			if($typeDesignation->class == 'SpecimenTypeDesignation'){
+				// SpecimenTypeDesignations should be ordered. collect theme here only
+				$specimenTypeDesignations[] = $typeDesignation;
+			}else {
+
+				// it's a NameTypeDesignation
+				if($typeDesignation->notDesignated){
+					$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: '.t('not designated'). '</li>';
+				}else if($typeDesignation->typeName){
+
+					$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: ';
+
+					if($typeDesignation->typeName->nomenclaturalReference){
+						$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
+					}
+					$out .= theme('cdm_taxonName', $typeDesignation->typeName, null, $referenceUri, $renderPath);
+
+					//        if($typeDesignation->typeName->class == 'ZoologicalName') {
+					//          // appending authorTeam which has been skipped in cdm_name
+					//          $authorTeam = cdm_taggedtext_value($typeDesignation->typeName->taggedName, 'authors');
+					//          $authorTeamPart = l('<span class="authors">'.$authorTeam.'</span>', "/cdm_dataportal/reference/".$typeDesignation->typeName->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
+					//          $out .= (str_endsWith($authorTeam, ')') ? '' : ', ').$authorTeamPart;
+					//        } else {
+					//          $out .= ' '.theme('cdm_reference', $typeDesignation->citation, true, $referenceStyle);
+					//          $out .= '</li>';
+					//        }
+				}
 		}
 	}
 
@@ -2211,17 +2324,17 @@ function theme_cdm_descriptionElements($descriptionElements){
 	$distributionElements=array();
 
 	foreach($descriptionElements as $descriptionElement){
-		
+
 		if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
 			if($descriptionElement->class == 'Distribution'){
 				//$repr = $descriptionElement->area->representation_L10n;
 				$distributionElements[]= $descriptionElement->area->representation_L10n;
-				
+
 			} else if($descriptionElement->class == 'TextData'){
 				//$repr = $descriptionElement->multilanguageText_L10n->text;
 				$list = false;
 				$repr = "<t/>". theme ('cdm_descriptionElementTextData', $descriptionElement, $list);
-			
+					
 				if( !array_search($repr, $outArray)){
 					$outArray[] = $repr;
 					$glue = '<br/> ';
@@ -2237,7 +2350,7 @@ function theme_cdm_descriptionElements($descriptionElements){
 		}
 
 	}
-	
+
 	$outArray[] = theme(cdm_descriptionElementDistribution, $distributionElements);
 	// take the feature of the last $descriptionElement
 	$feature = $descriptionElement->feature;
@@ -2245,37 +2358,37 @@ function theme_cdm_descriptionElements($descriptionElements){
 }
 
 function theme_cdm_descriptionElementDistribution($descriptionElements){
-  
-  $descriptions = '';
-	
-  foreach($descriptionElements as $description){
-    $descriptions .= $description . ", ";
-  }   
-  $descriptions = substr($descriptions, 0, strlen($descriptions)-2);
-  $taxonTrees =  cdm_ws_get(CDM_WS_TAXONOMY);
-  foreach($taxonTrees as $taxonTree){
-	if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
-		$reference = $taxonTree-> reference;
-		break;
+
+	$descriptions = '';
+
+	foreach($descriptionElements as $description){
+		$descriptions .= $description . ", ";
 	}
-  }
-	
+	$descriptions = substr($descriptions, 0, strlen($descriptions)-2);
+	$taxonTrees =  cdm_ws_get(CDM_WS_TAXONOMY);
+	foreach($taxonTrees as $taxonTree){
+		if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
+			$reference = $taxonTree-> reference;
+			break;
+		}
+	}
+
 	if ($reference->title === "World Checklist of Arecaceae"){
-  		$referenceCitation = l('<span class="reference">(World Checklist of Monocotyledons)</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+		$referenceCitation = l('<span class="reference">(World Checklist of Monocotyledons)</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
 	}else
 	{
 		$referenceCitation = l('<span class="reference">('.$reference->title.')</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
 	}
-  if($descriptions && strlen($descriptions) > 0 ){
-          $sourceRefs .= ' '.$referenceCitation;
-        }
- 
-  if(strlen($sourceRefs) > 0){
-    $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
-  }
-  return $descriptions. $sourceRefs ;
-  
-  
+	if($descriptions && strlen($descriptions) > 0 ){
+		$sourceRefs .= ' '.$referenceCitation;
+	}
+
+	if(strlen($sourceRefs) > 0){
+		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+	}
+	return $descriptions. $sourceRefs ;
+
+
 }
 
 function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
@@ -2299,7 +2412,7 @@ function theme_cdm_descriptionElementTextData($element, $list){
 		if($source->citation){
 			$authorTeam = $source->citation->authorTeam->teamMembers;
 			if (count($authorTeam)>0){
-				
+
 				if (isset($authorTeam[0]->lastname)){
 					$authorA = $authorTeam[0]->lastname;
 				}else{
@@ -2308,11 +2421,11 @@ function theme_cdm_descriptionElementTextData($element, $list){
 				}
 			}
 			if (count($authorTeam) > 2){
-				
+
 				$authorA .= " et al.";
 			}elseif (count($authorTeam = 2)){
-				
-				
+
+
 				if (isset($authorTeam[0]->lastname )&& isset($authorTeam[1]->lastname ))
 				{
 					//$authorA = $authorTeam[0]->lastname;
@@ -2327,30 +2440,30 @@ function theme_cdm_descriptionElementTextData($element, $list){
 					$authorA = $authorA . " & " . $authorB ;
 				}
 			}
-		
-    	//$authorTeam = $source->citation->authorTeam->titleCache;
-		
-		$datePublished = $source->citation->datePublished;
-		
-		if (strlen($datePublished->start) >0){
-			$year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
-			
+
+			//$authorTeam = $source->citation->authorTeam->titleCache;
+
+			$datePublished = $source->citation->datePublished;
+
+			if (strlen($datePublished->start) >0){
+				$year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
+					
+			}
+			if (strlen($year)>0){
+				$reference = $authorA . ' ' . $year;
+			}else {
+				$reference = $authorA ;
+			}
+			$referenceCitation = l('<span class="reference">'.'(' .$reference.')'.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+			if($source->citationMicroReference){
+				$referenceCitation .= ': '. $source->citationMicroReference;
+			}
+			if($description && strlen($description) > 0 ){
+				$sourceRefs .= ' '.$referenceCitation ;
+			}
 		}
-		if (strlen($year)>0){
-			$reference = $authorA . ' ' . $year;
-		}else {
-			$reference = $authorA ;
-		}
-        $referenceCitation = l('<span class="reference">'.'(' .$reference.')'.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-        if($source->citationMicroReference){
-          $referenceCitation .= ': '. $source->citationMicroReference;
-        }
-        if($description && strlen($description) > 0 ){
-          $sourceRefs .= ' '.$referenceCitation ;
-        }
-    }
-  }
-  
+	}
+
 	/*
 	 if (count($authorTeam) > 2){
 		$authorA = $authorTeam[0];
