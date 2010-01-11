@@ -8,6 +8,7 @@ modules/cdm_dataportal/cdm_api/LICENSE.txt -text
 modules/cdm_dataportal/cdm_api/cdm_api.info -text
 modules/cdm_dataportal/cdm_api/cdm_api.install -text
 modules/cdm_dataportal/cdm_api/cdm_api.module -text
+modules/cdm_dataportal/cdm_api/cdm_node.php -text
 modules/cdm_dataportal/cdm_api/commons.php -text
 modules/cdm_dataportal/cdm_api/json/JSON.php -text
 modules/cdm_dataportal/cdm_api/json/LICENSE -text
@@ -190,6 +191,7 @@ modules/cdm_dataportal/js/jquery.form.js -text
 modules/cdm_dataportal/js/jquery.imagetool.min.js -text
 modules/cdm_dataportal/js/thickbox/cdm_thickbox.css -text
 modules/cdm_dataportal/js/thickbox/thickbox.js -text
+modules/cdm_dataportal/node_types.php -text
 modules/cdm_dataportal/translations/cdm_dataportal.pot.template -text
 modules/countrypresence/country-earth.dbf -text
 modules/countrypresence/country-earth.prj -text

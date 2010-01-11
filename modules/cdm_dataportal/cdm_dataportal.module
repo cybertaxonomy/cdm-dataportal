@@ -11,7 +11,9 @@
  *
  */
 
+require_once('node_types.php');
 require_once('cdm_dataportal.theme.php');
+
 
 define(CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE, 25);
 
@@ -89,7 +91,7 @@ function cdm_dataportal_menu($may_cache) {
    
     $items[] = array(
       'path' => 'cdm_dataportal/taxon',
-      'callback' => 'cdm_dataportal_view_taxon',
+      'callback' => 'cdm_dataportal_taxon_page_view',
       'access' => true,
       'type' => MENU_CALLBACK,
     // expected callback arguments: uuid
@@ -149,7 +151,7 @@ function cdm_dataportal_menu($may_cache) {
        $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2),
       'title' => theme('cdm_taxonpage_tab', 'General'),
-      'callback' => 'cdm_dataportal_view_taxon',
+      'callback' => 'cdm_dataportal_taxon_page_view',
       'access' => true,
       'type' => MENU_CALLBACK,
       'weight' => 1,
@@ -160,7 +162,7 @@ function cdm_dataportal_menu($may_cache) {
       $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2).'/description',
       'title' => theme('cdm_taxonpage_tab', 'General'),
-      'callback' => 'cdm_dataportal_view_taxon',
+      'callback' => 'cdm_dataportal_taxon_page_view',
       'access' => true,
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => 2,
@@ -171,7 +173,7 @@ function cdm_dataportal_menu($may_cache) {
       $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2).'/synonymy',
       'title' => theme('cdm_taxonpage_tab', 'Synonymy'),
-      'callback' => 'cdm_dataportal_view_taxon',
+      'callback' => 'cdm_dataportal_taxon_page_view',
       'access' => true,
       'type' => MENU_LOCAL_TASK,
       'weight' => 3,
@@ -182,7 +184,7 @@ function cdm_dataportal_menu($may_cache) {
       $items[] = array(
       'path' => 'cdm_dataportal/taxon/'.arg(2).'/images',
       'title' => theme('cdm_taxonpage_tab', 'Images'),
-      'callback' => 'cdm_dataportal_view_taxon',
+      'callback' => 'cdm_dataportal_taxon_page_view',
       'access' => true,
       'type' => MENU_LOCAL_TASK,
       'weight' => 4,
@@ -677,7 +679,7 @@ function cdm_dataportal_settings(){
   
   $form['cdm_dataportal']['layout']['findtaxa']['cdm_dataportal_findtaxa_show_synonym_thumbnails'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show media thumbnails for syonyms'),
+    '#title' => t('Show media thumbnails for synonyms'),
     '#default_value' => variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0),
     '#description' => t('')
   );
@@ -874,13 +876,28 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = false
  *  - Full list of synonyms homotypic synonyms on top, followed by the
  *    heterotypic and finally followed by misapplied names.
  *    The list is ordered historically.
- *  - All facts associated with the very taxon concept and taxon name.
+ *  - All description associated with the taxon.
  *
- * @param String $uuid the UUID of the taxon
+ * @param $uuid
+ * @param $chapter name of the part to display,
+ *         valid values are: 'description', 'images', 'synonymy', 'all'
+ * @return unknown_type
  */
-function cdm_dataportal_view_taxon($uuid, $chapter = null){
+function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all'){
   
     // display the page for the taxon defined by $uuid
+    $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter); 
+    return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title , $taxonpage->content);
+}
+
+/**
+ * @param $uuid
+ * @param $chapter name of the part to display,
+ *         valid values are: 'description', 'images', 'synonymy', 'all'
+ * @return unknown_type
+ */
+function cdm_dataportal_taxon_view($uuid, $chapter = 'all'){
+  
     $taxon = cdm_ws_get(CDM_WS_TAXON, $uuid);
     if(!$taxon){
       drupal_set_title(t('Taxon does not exist'));
@@ -888,12 +905,12 @@ function cdm_dataportal_view_taxon($uuid, $chapter = null){
     }
     _cdm_dataportal_set_currentSecUuid($taxon->sec->uuid);
     
-    drupal_set_title(theme('cdm_taxon_page_title', $taxon));
-    $out = theme('cdm_taxon_page_general', $taxon, $chapter);
-    
-    return $out;
-  /*}*/
+    $taxonpage->title = theme('cdm_taxon_page_title', $taxon);
+    $taxonpage->content = theme('cdm_taxon_page_general', $taxon, $chapter);
+
+    return $taxonpage;
 }
+
 
 function cdm_dataportal_view_search_advanced(){
   
@@ -1362,5 +1379,4 @@ function cdm_read_media_metadata($media, $priority = 1){
 
     //returned value
     return $metadata_caption;
-
 }

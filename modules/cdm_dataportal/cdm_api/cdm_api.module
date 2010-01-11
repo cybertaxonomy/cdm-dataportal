@@ -18,6 +18,7 @@
 require_once ('xml2json.php');
 require_once ('commons.php');
 require_once ('uuids.php');
+require_once ('cdm_node.php');
 
 define(DEFAULT_TAXONTREE_RANKLIMIT, '');//TODO Genus UUID
 
@@ -33,13 +34,13 @@ function cdm_api_requirements() {
 
   if( function_exists('curl_init') ){
     $requirements['cdm_api']['description'] = ''; // description below title is not jet in use
-    $requirements['cdm_api']['value'] =  'CURL php extension is available.';
+    $requirements['cdm_api']['value'] =  'CURL php extension is available and will be used by the cdm api. HTTP requests thus will be up to 20x faster';
   } else {
-    $requirements['cdm_api']['value'] =  'CURL php extension is missing.';
+    $requirements['cdm_api']['value'] =  'CURL php extension is missing. If CURL lib is installed HTTP requests will be up to 20x faster';
   }
 
   //FIXME: once _get_content_fsockopen is implemented change  severity to  REQUIREMENT_WARNING,
-  $requirements['cdm_api']['severity'] =  (function_exists('curl_init') ? REQUIREMENT_OK : REQUIREMENT_ERROR);
+  $requirements['cdm_api']['severity'] =  (function_exists('curl_init') ? REQUIREMENT_OK : REQUIREMENT_INFO);
 
   return $requirements;
 }
@@ -167,7 +168,6 @@ function cdm_api_perm() {
       'administer cdm_api'
       );
 }
-
 
 // ----------------------------------------------------------- //
 
@@ -769,13 +769,12 @@ function cdm_http_request($uri, $method="GET", $parameters = array(), $header = 
 
   if(!$header){
     $header = array();
-    $header[] = 'Accept: '.(variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
-    $header[] = 'Accept-Language: '.$locale;
-    $header[] = 'Accept-Charset: UTF-8';
+    $header['Accept'] = (variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
+    $header['Accept-Language'] = $locale;
+    $header['Accept-Charset'] = 'UTF-8';
   }
 
   if(function_exists('curl_init')){
-
     // use the CURL lib if installed it is supposed to be 20x faster
     return _http_request_using_curl($uri, $header, $method, $parameters);
   } else {
@@ -784,9 +783,8 @@ function cdm_http_request($uri, $method="GET", $parameters = array(), $header = 
 }
 
 function _http_request_using_fsockopen($uri, $header = array(), $method = "GET"){
-  //FIXME implement get_content_fsockopen($uri);
-  watchdog('CDM_API', '_http_request_fsockopen - UNIMPLEMENTED', WATCHDOG_ERROR);
-  return false;
+ $response = drupal_http_request($uri, $header, $method);
+ return $response->data;
 }
 
 
@@ -798,7 +796,7 @@ function _http_request_using_fsockopen($uri, $header = array(), $method = "GET")
  *
  * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
  */
-function _http_request_using_curl($uri, $header = array(), $method = "GET", $parameters = array())
+function _http_request_using_curl($uri, $headers = array(), $method = "GET", $parameters = array())
 {
   $ch = curl_init();
 
@@ -811,8 +809,11 @@ function _http_request_using_curl($uri, $header = array(), $method = "GET", $par
       curl_setopt ($ch, CURLOPT_PROXYUSERPWD, variable_get('cdm_webservice_proxy_usr', '').':'.variable_get('cdm_webservice_proxy_pwd', ''));
     }
   }
-  // set headers
-  curl_setopt ($ch, CURLOPT_HTTPHEADER, $header);
+  // modify headers array to be used by curl
+  foreach($headers as $header_key=>$header_val){
+    $curl_headers[] = $header_key.': '.$header_val;
+  }
+  curl_setopt ($ch, CURLOPT_HTTPHEADER, $curl_headers);
   // set method if not default
   if($method != "GET"){
     if($method == "POST"){

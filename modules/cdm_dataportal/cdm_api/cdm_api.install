@@ -16,6 +16,16 @@ function cdm_api_install(){
     INDEX expire (expire)
     ) /*!40100 DEFAULT CHARACTER SET UTF8 */ ");
   
+  db_query("
+    CREATE TABLE {node_cdm} (
+      `nid` int(11) NOT NULL,
+      `wsuri` varchar(255) default NULL,
+      `cdmtype` varchar(255) default NULL,
+      `uuid` varchar(255) default NULL,
+      PRIMARY KEY  (`uuid`)
+    ) /*!40100 DEFAULT CHARACTER SET UTF8 */  
+    ");
+  
 }
 
 /**
