@@ -1,0 +1,38 @@
+name = Summertime
+description = Theme for communities and blogs provided by <a href="http://RussianWebStudio.com">RussianWebStudio.com</a>.
+
+
+
+core = 6.x
+engine = phptemplate
+
+stylesheets[all][] = style.css
+stylesheets[all][] = local.css
+regions[top_menu] = top menu
+regions[left] = left sidebar
+regions[right] = right sidebar
+regions[content_top] = content top
+regions[content] = content
+regions[content_bottom] = content bottom
+regions[footer] = footer
+features[] = name
+features[] = slogan
+features[] = node_user_picture
+features[] = comment_user_picture
+features[] = favicon
+features[] = primary_links
+
+
+; Information added by drupal.org packaging script on 2009-09-10
+version = "6.x-1.x-dev"
+core = "6.x"
+project = "summertime"
+datestamp = "1252542485"
+
+
+; Information added by drupal.org packaging script on 2009-09-15
+version = "6.x-1.2"
+core = "6.x"
+project = "summertime"
+datestamp = "1253021181"
+
