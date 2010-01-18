@@ -1476,6 +1476,7 @@ body.frontpage .column-center{
   margin-top: -120px;
 	padding-left: 100px;
 	width: 160px;
+	height: 124px;
 	color: white;
 }
 
@@ -1485,7 +1486,12 @@ body.frontpage .column-center{
 }
 
 .icon-box .content{
+	margin-top: 20px; 
 	padding-left: 15px; 
 	padding-right: 25px; 
-	margin-top: 43px;
+}
+
+.icon-link{
+	padding-left: 220px;
+	margin-top: -55px;
 }
