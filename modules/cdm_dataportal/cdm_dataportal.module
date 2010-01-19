@@ -581,7 +581,7 @@ function cdm_dataportal_settings(){
     $form['cdm_dataportal']['feature_tree']['cdm_dataportal_featuretree_uuid'] = array(
     '#type' => 'select',
     '#title'         => t('Available FeatureTrees'),
-    '#default_value' => variable_get('cdm_dataportal_featuretree_uuid', false),
+    '#default_value' => variable_get('cdm_dataportal_featuretree_uuid', UUID_DEFAULT_FEATURETREE),
 	  '#options' => _get_feature_trees(),
     '#description'   => t('Select a FeatureTree for this webservice.'
           //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
@@ -1131,13 +1131,17 @@ function _get_feature_trees(){
    $feature_trees = array();
    
    // set tree that contains all features
-   $feature_trees['0'] = 'No FeatureTree';
+   $feature_trees[UUID_DEFAULT_FEATURETREE] = t('Default Featuretree (contains all features)');
    
    // get features from database
    $persisted_trees = cdm_ws_get(CDM_WS_FEATURETREES);
    if(is_array($persisted_trees)){
      foreach($persisted_trees as $featureTree){
        
+       // do not add the DEFAULT_FEATURETREE again
+       if($featureTree->uuid == UUID_DEFAULT_FEATURETREE){
+        continue;
+       }
        $featureLabels = array();
        foreach ($featureTree->root->children as $featureNode){
          $featureLabels[] = $featureNode->feature->representation_L10n;

@@ -1,6 +1,8 @@
 <?php
 // $Id$ //
 
+define('UUID_DEFAULT_FEATURETREE', 'ac8d4e58-926d-4f81-ac77-cebdd295df7c');
+
 // TermVocabularies
 define('UUID_LANGUAGE', '45ac7043-7f5e-4f37-92f2-3874aaaef2de');
 define('UUID_CONTINENT','e72cbcb6-58f8-4201-9774-15d0c6abc128' );
