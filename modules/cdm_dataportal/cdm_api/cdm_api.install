@@ -15,17 +15,9 @@ function cdm_api_install(){
     PRIMARY KEY (cid),
     INDEX expire (expire)
     ) /*!40100 DEFAULT CHARACTER SET UTF8 */ ");
-  
-  db_query("
-    CREATE TABLE {node_cdm} (
-      `nid` int(11) NOT NULL,
-      `wsuri` varchar(255) default NULL,
-      `cdmtype` varchar(255) default NULL,
-      `uuid` varchar(255) default NULL,
-      PRIMARY KEY  (`uuid`)
-    ) /*!40100 DEFAULT CHARACTER SET UTF8 */  
-    ");
-  
+    
+  db_query(_get_sql_create_nodecdm());
+  db_query(_get_sql_fix_watchdog());
 }
 
 /**
@@ -33,5 +25,37 @@ function cdm_api_install(){
  */
 function cdm_api_uninstall(){
     db_query("DROP TABLE {cache_cdm_ws};");
+    //TODO delete all cdm nodes using node_delete()    
+    db_query("DROP TABLE {node_cdm};");
+
 }
- ?>
+
+/**
+ * Implementation of hook_api_update_N().
+ * 
+ * Update 1 for version 5.x-1.0
+ */
+function cdm_api_update_5101() {
+  $items = array();
+  $items[] = update_sql(_get_sql_create_nodecdm());
+  $items[] = update_sql(_get_sql_fix_watchdog());
+  return $items;
+}
+
+// ------------------------- SQL  Scripts ------------------------ // 
+
+function _get_sql_create_nodecdm() {
+  return "
+    CREATE TABLE {node_cdm} (
+      `nid` int(11) NOT NULL,
+      `wsuri` varchar(255) default NULL,
+      `cdmtype` varchar(255) default NULL,
+      `uuid` varchar(255) default NULL,
+      PRIMARY KEY  (`uuid`)
+    ) /*!40100 DEFAULT CHARACTER SET UTF8 */  
+    ";
+}
+
+function _get_sql_fix_watchdog() {
+  return  "ALTER TABLE {watchdog} CHANGE referer referer TEXT NOT NULL ;";
+}
