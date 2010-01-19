@@ -413,6 +413,9 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
 $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null ){
 
+  if(!is_array($captionElements)){
+    $captionElements = array();
+  }
 	//TODO correctly handle multiple media representation parts
 	$_SESSION['cdm']['last_gallery']= substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'], "?q=")+3);
 	// prevent from errors
