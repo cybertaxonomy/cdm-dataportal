@@ -193,14 +193,6 @@ modules/cdm_dataportal/js/thickbox/cdm_thickbox.css -text
 modules/cdm_dataportal/js/thickbox/thickbox.js -text
 modules/cdm_dataportal/node_types.php -text
 modules/cdm_dataportal/translations/cdm_dataportal.pot.template -text
-modules/countrypresence/country-earth.dbf -text
-modules/countrypresence/country-earth.prj -text
-modules/countrypresence/country-earth.shp -text
-modules/countrypresence/country-earth.shx -text
-modules/countrypresence/countrypresence.info -text
-modules/countrypresence/countrypresence.install -text
-modules/countrypresence/countrypresence.module -text
-modules/countrypresence/googleMapCreator.php -text
 modules/expertsdb/LICENSE.txt -text
 modules/expertsdb/README.txt -text
 modules/expertsdb/expertsdb.info -text
