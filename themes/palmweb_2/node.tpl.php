@@ -8,7 +8,7 @@
   <h2><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
 <?php endif; ?>
 
-  <?php if ($submitted): ?>
+  <?php if (false && $submitted): ?>
     <span class="submitted"><?php print t('!date — !username', array('!username' => theme('username', $node), '!date' => format_date($node->created))); ?></span>
   <?php endif; ?>
 
