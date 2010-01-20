@@ -757,7 +757,7 @@ function cdm_load_obj($datastr){
  *        false or any invalid value is supplied.
  * @param $parameters
  * @param $header
- * @return unknown_type
+ * @return the response data 
  */
 function cdm_http_request($uri, $method="GET", $parameters = array(), $header = false){
   global $locale;  // drupal variable containing the current locale i.e. language

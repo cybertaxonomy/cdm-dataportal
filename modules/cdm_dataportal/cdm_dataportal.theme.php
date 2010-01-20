@@ -223,7 +223,7 @@ function theme_cdm_media($descriptionElement, $mimeTypePreference){
 		$mediaRepresentation = array_shift($prefRepresentations);
 		if($mediaRepresentation) {
 
-			$contentTypeDirectory = substr($mediaRepresentation->mimeType, 0, stripos($mediaRepresentation->mimeType, '/'));
+			$contentTypeDirectory = media_content_type_dir($mediaRepresentation);
 
 			$out .= theme('cdm_media_mime_' . $contentTypeDirectory,  $mediaRepresentation, $feature);
 
@@ -453,7 +453,7 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 		for($c = 0; $c < $cols; $c++){
 			$media = array_shift($mediaList);
 			if(isset($media->representations[0]->parts[0])){
-				$contentTypeDirectory = substr($media->representations[0]->mimeType, 0, stripos($media->representations[0]->mimeType, '/'));
+				$contentTypeDirectory = media_content_type_dir($media->representations[0], 'image'); 
 				$mediaIndex++;
 				$mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->representations[0]->parts[0], $maxExtend, TRUE);
 
@@ -474,7 +474,7 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 				_add_js_ahah();
 				$content_url = cdm_compose_url(CDM_WS_MEDIA, $media->uuid);
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".join(',',$captionElements));
-                $captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
+        $captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
                 
 				// generate & add caption to lightbox
 				$lightBoxCaptionElements = null;
@@ -524,8 +524,18 @@ function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $a
 	//TODO merge with theme_cdm_media_mime_image?
 
 	if(isset($mediaRepresentationPart)){
+	  
 		$h = $mediaRepresentationPart->height;
 		$w = $mediaRepresentationPart->width;
+		if($w == 0 || $h == 0){
+		  $image_uri = str_replace(' ','%20',$mediaRepresentationPart->uri); //take url and replace spaces 
+		  $imageDimensions = getimagesize_remote($image_uri);
+		  if(!$imageDimensions){
+		    return '<div>'.t('Image unavailable, uri:').$mediaRepresentationPart->uri.'</div>';
+		  }
+		  $w = $imageDimensions[0];
+		  $h = $imageDimensions[1];
+		}
 		$margins = '0 0 0 0';
 		$ratio = $w / $h;
 		if($ratio > 1){
@@ -905,6 +915,8 @@ $out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_
 
 function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, $renderPath = null){
 
+  
+  
 	$renderTemplate = get_nameRenderTemplate($renderPath, $nameLink, $refenceLink);
 
 	$partDefinition = get_partDefinition($taxonName->class);
@@ -918,8 +930,8 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 			$renderTemplate[$part]['#uri'] = $uri['#uri'];
 		}
 	}
-
-	if(isset($taxonName->taggedName)){
+	
+	if(is_array($taxonName->taggedName) && is_string($taxonName->taggedName[1]->text) && $taxonName->taggedName[1]->text != ''){
 
 		$taggedName = $taxonName->taggedName;
 		// due to a bug in the cdmlib the taggedName alway has a lst empty element, we will remove it:
@@ -2589,3 +2601,27 @@ function theme_cdm_pager_link($text, $linkIndex, &$pager, $path, $parameters = a
 	}
 	return $out;
 }
+
+
+function getimagesize_remote($image_url) {
+    
+    $contents = cdm_http_request($image_url);
+
+    $im = ImageCreateFromString($contents);
+    if (!$im) { return false; }
+    $gis[0] = ImageSX($im);
+    $gis[1] = ImageSY($im);
+// array member 3 is used below to keep with current getimagesize standards
+    $gis[3] = "width={$gis[0]} height={$gis[1]}";
+    ImageDestroy($im);
+    return $gis;
+}
+
+function media_content_type_dir($media_representation, $default = false){
+  
+  if($media_representation->mimeType){
+   return substr($media_representation->mimeType, 0, stripos($media_representation->mimeType, '/'));
+  } else {
+    return $default;
+  }
+}      
