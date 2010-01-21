@@ -580,9 +580,20 @@ function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
 
 	// see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
 	// and http://trac.openlayers.org/wiki/SettingZoomLevels
-
+	
+  //TODO megre code below with code from theme_cdm_media_gallerie_image
 	$w = $mediaRepresentationPart->width;
 	$h = $mediaRepresentationPart->height;
+	
+  if($w == 0 || $h == 0){
+      $image_uri = str_replace(' ','%20',$mediaRepresentationPart->uri); //take url and replace spaces 
+      $imageDimensions = getimagesize_remote($image_uri);
+      if(!$imageDimensions){
+        return '<div>'.t('Image unavailable, uri:').$mediaRepresentationPart->uri.'</div>';
+      }
+      $w = $imageDimensions[0];
+      $h = $imageDimensions[1];
+    }
 
 	// calculate  maxResolution (default is 360 deg / 256 px) and the bounds
 	if($w > $h){
@@ -669,8 +680,10 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 	}
 
 
-	$title = $media->titleCache;
-
+	$media_metadata = cdm_read_media_metadata($media);
+	//$title = $media->titleCache;
+  $title = $media_metadata['title'];
+  
 	$imageMaxExtend = variable_get('image-page-maxextend', 400);
 
 	if(!$title){
