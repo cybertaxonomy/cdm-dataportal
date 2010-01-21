@@ -931,10 +931,15 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 		}
 	}
 	
-	if(is_array($taxonName->taggedName) && is_string($taxonName->taggedName[1]->text) && $taxonName->taggedName[1]->text != ''){
+	$firstEntryIsValidNamePart = is_array($taxonName->taggedName) 
+	 && is_string($taxonName->taggedName[1]->text) 
+	 && $taxonName->taggedName[1]->text != '' 
+	 && $taxonName->taggedName[1]->type = 'name';
+	 // got to use second entry as first one, see ToDo comment below ... 
+	if($firstEntryIsValidNamePart){
 
 		$taggedName = $taxonName->taggedName;
-		// due to a bug in the cdmlib the taggedName alway has a lst empty element, we will remove it:
+		//TODO  due to a bug in the cdmlib the taggedName alway has a lst empty element, we will remove it:
 		array_pop($taggedName);
 
 		$lastAuthorElementString = false;
@@ -2606,12 +2611,17 @@ function theme_cdm_pager_link($text, $linkIndex, &$pager, $path, $parameters = a
 function getimagesize_remote($image_url) {
     
     $contents = cdm_http_request($image_url);
+    if(!$contents){
+      return false;
+    }
 
     $im = ImageCreateFromString($contents);
-    if (!$im) { return false; }
+    if (!$im) { 
+      return false; 
+    }
     $gis[0] = ImageSX($im);
     $gis[1] = ImageSY($im);
-// array member 3 is used below to keep with current getimagesize standards
+    // array member 3 is used below to keep with current getimagesize standards
     $gis[3] = "width={$gis[0]} height={$gis[1]}";
     ImageDestroy($im);
     return $gis;

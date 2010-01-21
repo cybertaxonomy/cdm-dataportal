@@ -21,15 +21,20 @@ Drupal.ahahContentAutoAttach0 = function () {
       // register with lightbox etc ...
       $('body').bind('overflow', function(event){
     	  
-    	  var ahah_content = $(event.target).find('.ahah-content');
-    	  if(ahah_content != undefined){
-    		  var url = ahah_content.attr('rel');
-	          if(url != undefined){
-	        	  ahah_content.removeAttr('rel').find('.loading').css('display', 'block');
-	    	      $.get(url, function(html){
-	    	    	  ahah_content.find('.loading').remove().end().append(html);
-	              });
-	          }
+    	  var ahah_content_set = $(event.target).find('.ahah-content');
+    	  if(ahah_content_set != undefined){
+				
+				  $(ahah_content_set).each(function(i){
+						var ahahContent = $(this);
+						var url = ahah_content.attr('rel');
+						if(url != undefined){
+							ahah_content.removeAttr('rel').find('.loading').css('display', 'block');
+							$.get(url, function(html){
+								ahah_content.find('.loading').remove().end().append(html);
+								});
+						}
+					})
+					
     	  }
       });
       

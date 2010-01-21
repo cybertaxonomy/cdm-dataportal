@@ -1308,12 +1308,14 @@ function cdm_read_media_metadata($media, $priority = 1){
     switch($priority){
         case 1:
             //filling the title
-            if ($media_metadata->Headline)
-            $metadata_caption['title'] = $media_metadata->Headline;
-            elseif ($media->titleCache){
-                $metadata_caption['title'] = $media->titleCache;
-                if ($media->description_L10n)
-                $metadata_caption['title'] .= ' - ' . $media->description_L10n;
+            if ($media_metadata->Headline) {
+              $metadata_caption['title'] = $media_metadata->Headline;
+            } else if ($media->titleCache){
+              $metadata_caption['title'] = $media_metadata->ObjectName;
+            } else if ($media->titleCache){
+              $metadata_caption['title'] = $media->titleCache;
+              if ($media->description_L10n)
+              $metadata_caption['title'] .= ' - ' . $media->description_L10n;
             }
             
             //filling the artist
