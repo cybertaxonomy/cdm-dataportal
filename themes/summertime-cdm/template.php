@@ -73,7 +73,7 @@ function phptemplate_menu_local_tasks() {
   return $output;
 }
 
-function summertime_menu_item_link($link) {
+function summertime_cdm_menu_item_link($link) {
   if (empty($link['localized_options'])) {
     $link['localized_options'] = array();
   }
@@ -83,7 +83,7 @@ function summertime_menu_item_link($link) {
   return l('<span>' . $link['title'] . '</span>', $link['href'], $link['localized_options']);
 }
 
-function summertime_node_submitted($node) {
+function summertime_cdm_node_submitted($node) {
   return t('by !username on @datetime',
     array(
       '!username' => theme('username', $node),
@@ -91,4 +91,29 @@ function summertime_node_submitted($node) {
     ));
 }
 
+/**
+ * Returns the rendered local tasks. The default implementation renders
+ * them as tabs.
+ *
+ * @ingroup themeable
+ */
+function summertime_cdm_menu_local_tasks() {
+  $output = '';
+  $route_mames = array('individual', 'group', 'community');
+  
+  if ($primary = menu_primary_local_tasks()){
+  	$output .= "<ul class=\"tabs primary pageroute pageroute_group\">\n". $primary ."</ul>\n";
+  }
+  /*
+  if ($primary = menu_primary_local_tasks()) {
+    $output .= "<ul class=\"tabs primary\">\n". $primary ."</ul>\n";
+  }
+  */
+  if ($secondary = menu_secondary_local_tasks()) {
+    $output .= "<ul class=\"tabs secondary\">\n". $secondary ."</ul>\n";
+  }
+  
+
+  return $output;
+}
 
