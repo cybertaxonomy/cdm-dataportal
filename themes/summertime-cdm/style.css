@@ -127,7 +127,7 @@ table{
   #circules{
 
 
-    background: url(images/bg_rounds.gif) no-repeat center top;
+   /* background: url(images/bg_rounds.gif) no-repeat center top; */
  
   }
 
@@ -226,9 +226,9 @@ table{
 /*********************PICTURE******************/
 
  .banner{
-   border-bottom: 6px solid #fff;
+   /*border-bottom: 6px solid #fff;*/
    background: url(images/cdm-header_3.jpg) no-repeat center left;
-   padding:33px 0 33px 64px;
+   /* padding:33px 0 33px 64px;*/
    height: 260px;
  }
 
@@ -267,7 +267,7 @@ table{
     .column-center{
       width: 68.5%;
       float: left;
-      overflow: hidden;
+      /*overflow: hidden;*/
       border-right: 1px solid #BAD4A7;
 
     }
@@ -277,7 +277,7 @@ table{
       border-left: 3px solid #fff;
       border-right: 3px solid #fff;
       float: left;
-      padding: 20px 30px 40px;
+      padding: 0px 30px 40px;
       width: 85.5%;
     }
 
@@ -644,7 +644,7 @@ padding:0;    }
        input#edit-openid-identifier {
          width: 84%;
        }
-
+/*
      .supermitted{
 
        padding-bottom: 8px;
@@ -652,7 +652,7 @@ padding:0;    }
        font-family: Tahoma;
        margin-bottom: 15px;
      }
-
+*/
 
 
 
@@ -720,14 +720,14 @@ padding:0;    }
        margin-top: 15px;
      }
 
-
+/*
      .submitted{
        background:url(images/submitted-icon.gif) no-repeat 0 0;
        padding: 3px 0 1px 20px;
         font-size: 0.85em;
         color:#ADADAD;
        }
-
+*/
 
 
 
@@ -966,8 +966,6 @@ background: none;
    }
 
 
-
-
  /*******************************************/
  ul.secondary{
    background:transparent url(images/tabs-secondary-bg.gif) repeat scroll left 23px;
@@ -976,7 +974,80 @@ background: none;
 
  div.tabs{
    margin-bottom: 10px;
+   margin-left: -15px;
  }
+ 
+div.pageroute{
+   margin-bottom: 10px;
+   margin-top: -30px;
+   margin-right:-35px;
+   /* background: url(images/individual-sub-banner-pageroute-example.jpg) no-repeat top left;*/
+   height: 124px;
+   padding-top:21px;
+ }
+
+.pageroute_group {
+    background: url(images/route-banners/route-banner-group.png) no-repeat top left;
+ }
+
+.pageroute_linux_community, .pageroute_windows_community {
+    background: url(images/route-banners/route-banner-community.png) no-repeat top left;
+ }
+ 
+ div.pageroute .tabs{
+    margin-left: 120px;
+    margin-top: -5px;
+ }
+	
+ div.pageroute ul.primary li {
+    background: none;
+    border: none;
+    padding: 0;
+ }
+ 
+body div.pageroute ul.primary li a{
+	color:#ffffff;
+    padding-top: 39px;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: block;
+    text-align: center;
+    background: url(images/route-banners/route-node-inner.png) no-repeat center top;
+ }
+ 
+body div.pageroute ul.primary li a:hover{
+    color: #000000;	
+}
+
+div.pageroute ul.primary  li.first a{
+	 background: url(images/route-banners/route-node-left.png) no-repeat center top;
+	}
+	
+div.pageroute ul.primary  li.last a{
+    background: url(images/route-banners/route-node-right.png) no-repeat center top;
+    }
+    
+div.pageroute ul.primary li.first a.active_node{
+     background: url(images/route-banners/route-node-left-active.png) no-repeat center top;
+    }
+    
+div.pageroute ul.primary li.last a.active_node{
+    background: url(images/route-banners/route-node-right-active.png) no-repeat center top;
+    }
+
+div.pageroute ul.primary li a.active_node {
+     background-image: url(images/route-banners/route-node-inner-active.png);
+    }
+    
+h2.pageroute_title{
+	/*font-weight: bold;*/
+
+   /* width: 50px;*/
+    height: 40px;
+    text-align: left;
+    color: white;
+    margin-top: -17px; padding-left: 115px;
+}
 
 
  ul.secondary li a {

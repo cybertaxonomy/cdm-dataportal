@@ -172,7 +172,8 @@ no-right-column
 
 <?php if ($content_top): ?><div id="content-top" class="clear-block"><?php echo $content_top ?></div><?php endif; ?>
 
-<?php echo $breadcrumb ?>
+ 
+<?php //echo $breadcrumb ?>
 
 <?php if ($tabs): ?><div class="tabs"><?php echo $tabs; ?></div><?php endif; ?>
 <?php if ($title): ?><h1 class="page-title"><?php echo $title ?></h1><?php endif; ?>

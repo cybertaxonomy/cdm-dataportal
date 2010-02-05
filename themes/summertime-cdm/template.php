@@ -1,6 +1,47 @@
 <?php
 // $Id: template.php,v 1.1 2009/08/25 19:15:43 troy Exp $
 
+
+/**
+ * Return the different routes names from the pagerouzte database 
+ * without names repetition
+ *
+ * @return
+ *   array of strings with the route names 
+ */
+function _get_route_names(){
+	$route_names = array(); 
+	$result = db_query("SELECT r.path FROM {pageroute_routes} r");
+	while ($data = db_fetch_object($result)) {
+	   if (!in_array($data->path, $route_names)){
+	   $route_names[] = $data->path;	
+	   }
+	}
+	return $route_names;
+}
+
+function _replace_link_title($old_title){
+	$new_title = $old_title;
+	$result = db_query("SELECT  r.path, p.name, p.title FROM {pageroute_routes} r, {pageroute_pages} p WHERE r.prid=p.prid");
+
+	//initialization of route data 
+	while ($data = db_fetch_object($result)) {
+		$route_names[] = $data->path;
+		$route_pages[] = $data->name;
+		$route_titles[] = $data->title;
+	}
+
+	//replacing the route_name for route_title on the tabs
+	if(in_array(arg(0) , $route_names)){
+		$key = array_search($old_title, $route_pages);
+	    if($key != NULL || $key !== FALSE){
+	    	$new_title = $route_titles[$key];
+	    }
+	}
+	
+	return $new_title;
+}
+
 function phptemplate_preprocess_page(&$vars) {
   $defaults = array(
     'admin_left_column' => 1,
@@ -44,15 +85,23 @@ function phptemplate_menu_item_link($link) {
     $link['options'] = array();
   }
 
+  if(strpos($link['title'], arg(1)) !== false){
+    $link['options']['attributes']['class'] = 'active_node';
+  }
+  
   // If an item is a LOCAL TASK, render it as a tab
   if ($link['type'] & MENU_IS_LOCAL_TASK) {
-    $link['title'] = '<span class="tab">' . check_plain($link['title']) . '</span>';
+  	$new_title = _replace_link_title($link['title']); 	
+    //$link['title'] = '<span class="tab">' . check_plain($link['title']) . '</span>';
+    $link['title'] = '<span class="tab">' . $new_title . '</span>';
     $link['options']['html'] = TRUE;
   }
 
   if (empty($link['type'])) {
     $true = TRUE;
   }
+  
+  $attributes = array();
 
   return l($link['title'], $link['href'], $link['options']);
 }
@@ -62,14 +111,33 @@ function phptemplate_menu_item_link($link) {
  */
 function phptemplate_menu_local_tasks() {
   $output = '';
-
-  if ($primary = menu_primary_local_tasks()) {
+  $route_names = _get_route_names();
+  
+  
+  if (($primary = menu_primary_local_tasks()) && ( in_array(arg(0) , $route_names))) {
+  	// it is a page root local task!
+  	$li_count = substr_count($primary, "<li");
+  	
+  	$li_width = floor(100 / $li_count).'%';
+  	$primary = str_replace('<li', '<li style="width: '.$li_width.'"', $primary);
+    
+    $pos = strpos($primary, '<li');
+  	$primary = substr_replace($primary, ' class="first" ', $pos + 3, 1);
+  	$pos = strrpos($primary, '<li');
+    $primary = substr_replace($primary, ' class="last" ', $pos + 3, 1);
+  	
+    $a = str_replace('_',' ',arg(0));
+    $title = '<h2 class="pageroute_title">' .  $a . '</h2>'; 
+  	$output .= '<div class="pageroute pageroute_'.strtolower(arg(0)).'">'.$title.'<ul class="tabs primary clear-block">'. $primary .'</ul>'.'</div>';
+  
+  } elseif ($primary = menu_primary_local_tasks()) {
     $output .= '<ul class="tabs primary clear-block">' . $primary . '</ul>';
   }
+
   if ($secondary = menu_secondary_local_tasks()) {
     $output .= '<ul class="tabs secondary clear-block">' . $secondary . '</ul>';
   }
-
+  
   return $output;
 }
 
@@ -89,31 +157,5 @@ function summertime_cdm_node_submitted($node) {
       '!username' => theme('username', $node),
       '@datetime' => format_date($node->created),
     ));
-}
-
-/**
- * Returns the rendered local tasks. The default implementation renders
- * them as tabs.
- *
- * @ingroup themeable
- */
-function summertime_cdm_menu_local_tasks() {
-  $output = '';
-  $route_mames = array('individual', 'group', 'community');
-  
-  if ($primary = menu_primary_local_tasks()){
-  	$output .= "<ul class=\"tabs primary pageroute pageroute_group\">\n". $primary ."</ul>\n";
-  }
-  /*
-  if ($primary = menu_primary_local_tasks()) {
-    $output .= "<ul class=\"tabs primary\">\n". $primary ."</ul>\n";
-  }
-  */
-  if ($secondary = menu_secondary_local_tasks()) {
-    $output .= "<ul class=\"tabs secondary\">\n". $secondary ."</ul>\n";
-  }
-  
-
-  return $output;
 }
 
