@@ -50,3 +50,13 @@ a.toc:link, a.toc:visited {
   font-size:100%;
   font-weight:normal;
 }
+
+ul.cdm_taxontree {
+background-color: transparent;
+}
+
+/* HACK for DEMO 
+div.error{
+		display: none;
+	}
+*/
