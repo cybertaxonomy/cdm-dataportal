@@ -1,0 +1,458 @@
+<?php
+
+/**
+ * @file
+ * Defines simple expertsdb_timespan field types.
+ */
+
+/*
+ * Definition of privacy levels
+ */
+define('PRIVACY_CONTACT_PRIVATE', 'ContactPrivate');
+define('PRIVACY_PRIVATE', 'Private');
+define('PRIVACY_PUBLIC', 'Public');
+
+/**
+ * Implementation of hook_perm()
+ *
+ * Valid permissions for this module
+ * @return array An array of valid permissions for the expertsdb_timespan module
+ */
+function expertsdb_timespan_perm() {
+	return array(
+    	'view private expertsdb_timespan fields',
+	//TODO which else permission are required?
+	);
+}
+
+/**
+ * Implementation of hook_help().
+ *
+ * @param unknown_type $section
+ * @return unknown
+ */
+function expertsdb_timespan_help($section) {
+	switch ($section) {
+		case 'admin/modules#description':
+			return t('Defines two date fields for CCK taking dates in either format YYYY, YYYY/MM or YYYY/MM/DD. Timespan From field may be required, Timespan To field is optional. <em>Note: Requires content.module.</em>');
+	}
+}
+
+/**
+ * Implementation of hook_field_info().
+ */
+function expertsdb_timespan_field_info() {
+	return array(
+    'expertsdb_timespan' => array('label' => 'Expertsdb Timespan'),
+	);
+}
+
+/**
+ * Implementation of hook_field_settings().
+ */
+function expertsdb_timespan_field_settings($op, $field) {
+	switch ($op) {
+		case 'form':
+			$form = array(
+        '#theme' => 'expertsdb_timespan_field_settings',
+			);
+
+			$form['field_labels'] = array(
+        '#type' => 'fieldset',
+        '#weight' => 2,
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#title' => t('Field Labels'),
+      	'#description' => t('Change the field labels according to your needs.'),
+			);
+
+			$form['field_labels']['label_from'] = array(
+        '#type' => 'textfield',
+        '#default_value' => (!empty($field['label_from'])) ? $field['label_from'] : t('Timespan from'),
+        '#size' => '46',
+        '#title' => t('Timespan From field label'),
+			);
+
+			$form['field_labels']['label_to'] = array(
+        '#type' => 'textfield',
+        '#default_value' => (!empty($field['label_to'])) ? $field['label_to'] : t('Timespan to'),
+        '#size' => '46',
+				'#title' => t('Timespan To field label'),
+			);
+
+			// disable multiple and
+			$form['multiple'] = array('#type' => 'hidden','#value' => '0');
+
+			return $form;
+
+		case 'validate':
+			break;
+
+		case 'save':
+			return array('label_from','label_to');
+			break;
+
+		case 'database columns':
+			$columns = array(
+        'expertsdb_timespan' => array('type' => 'mediumtext', 'not null' => FALSE),
+			);
+			return $columns;
+
+		case 'callbacks': //pairs up with cck_fullname_field::view
+			return array(
+        'view' => CONTENT_CALLBACK_CUSTOM,
+			);
+
+	}
+}
+
+/**
+ * Implemantation of hook_field()
+ *
+ * @param unknown_type $op
+ * @param unknown_type $node
+ * @param unknown_type $field
+ * @param unknown_type $items
+ * @param unknown_type $teaser
+ * @param unknown_type $page
+ * @return unknown
+ */
+function expertsdb_timespan_field($op, &$node, $field, &$items, $teaser, $page) {
+	switch ($op) {
+
+		case 'view':
+			$context = $teaser ? 'teaser' : 'full';
+			$formatter = isset($field['display_settings'][$context]['format']) ? $field['display_settings'][$context]['format'] : 'default';
+			$items = content_format($field, $items, $formatter, $node);
+			if(!empty($items) && is_array($items) && count($items) > 0){
+				return theme('expertsdb_timespan_container', $node, $field, $items, $teaser, $page);
+			}
+			return;
+	}
+}
+
+/**
+ * Implementation of hook_widget_info().
+ */
+function expertsdb_timespan_widget_info() {
+	return array(
+    'expertsdb_timespan' => array(
+      'label' => 'Two Date fields representing a Timespan',
+      'field types' => array('expertsdb_timespan'),
+	),
+	);
+}
+
+/**
+ * Implementation of hook_widget().
+ */
+function expertsdb_timespan_widget($op, &$node, $field, &$node_field) {
+	switch ($op) {
+		case 'prepare form values':
+			// unserialize and prepare data
+			_expertsdb_timespan_widget_prepare($node_field);
+
+			// get posted values in both node edit and profile edit mode
+			if ($_POST[$field['field_name']] || $_POST[$field['type_name'].'_node_form'][$field['field_name']]) {
+				$node_field = ($_POST['form_id'] == 'user_edit') ?  $_POST[$field['type_name'].'_node_form'][$field['field_name']] : $_POST[$field['field_name']];
+			}
+			return;
+
+		case 'form':
+			$form = array();
+			$form[$field['field_name']] = array(
+        '#tree' => TRUE,
+        '#theme' => 'expertsdb_timespan_widget_form',
+        '#type' => 'fieldset',
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE,
+        '#title' => t($field['widget']['label']),
+        '#description' => t($field['widget']['description']) . "<br /><strong>Format:</strong> dates may be entered in either format YYYY/MM/DD, YYYY/MM or YYYY.",
+			);
+
+			$delta = 0;
+			// Render timespan fields; multiple is deactivated
+			_expertsdb_timespan_widget_form($form[$field['field_name']][$delta], $field, $node_field, $delta);
+
+			return $form;
+
+		case 'validate':
+			_expertsdb_timespan_widget_process($node_field);
+
+			foreach($node_field as $delta => $value){
+				if ($value['timespan_from'] && !(isset($field['widget']['default_value'][$delta]['timespan_from']) && $value['timespan_from'] == $field['widget']['default_value'][$delta]['timespan_from'] && !$field['required'])) {
+
+					// check if date matches our date formats
+					if (preg_match('@(\d{4})\/(\d{1,2})\/(\d{1,2})|(\d{4})\/(\d{1,2})|(\d{4})@',$value['timespan_from']) == FALSE) {
+						form_set_error($field['field_name'] .'][' . $delta . '][timespan', t('Please enter your %label_from in a correct date format.',$field['timespan_from']));
+					}
+
+				}
+			}
+			return;
+
+		case 'process form values':
+			if(!strstr($node_field[0]['expertsdb_timespan'],':{')){
+				// apply some formating
+				_expertsdb_timespan_widget_process($node_field);
+			}
+
+			return;
+
+		case 'submit':
+			// apply some formating
+			_expertsdb_timespan_widget_process($node_field);
+			// serialize data
+			_expertsdb_timespan_widget_serialize($node_field);
+			return;
+	}
+}
+
+function _expertsdb_timespan_widget_process(&$node_field) {
+	foreach ($node_field as $delta => $value){
+
+		// do some data conversion
+		// regex matche either YYYY/M(M)/D(D), YYYY/M(M) or YYYY
+		// matches[1][0] => year
+		// matches[2][0] => month
+		// matches[3][0] => day
+
+		foreach($value as $field_name => $data){
+
+			// Remove all but digits and slashes
+			$node_field[$delta][$field_name] = preg_replace('@[^0-9\/]@','',check_plain(trim($data)));
+
+			preg_match_all('@(\d{4})\/(\d{1,2})\/(\d{1,2})|(\d{4})\/(\d{1,2})|(\d{4})@', $node_field[$delta][$field_name], $matches);
+			if($matches[3][0] && $matches[2][0] && $matches[1][0]){
+				$node_field[$delta][$field_name] = date("Y/m/d", mktime(0, 0, 0, $matches[2][0], $matches[3][0], $matches[1][0]));
+			}
+			else if($matches[5][0] && $matches[4][0]){
+				$node_field[$delta][$field_name] = date("Y/m", mktime(0, 0, 0, $matches[5][0], 1, $matches[4][0]));
+			}
+			else if($matches[6][0]){
+				$node_field[$delta][$field_name] = date("Y", mktime(0, 0, 0, 1, 1, $matches[6][0]));
+			}
+		}
+
+	}
+}
+
+function _expertsdb_timespan_widget_prepare(&$node_field) {
+	// only prepare, if data is actually serialized
+	if(strstr($node_field[0]['expertsdb_timespan'],':{')){
+		$node_field[0] = unserialize($node_field[0]['expertsdb_timespan']);
+		if(count($node_field) > 0){
+			// return content of first array element
+			$node_field = $node_field[0];
+		}
+	}
+}
+
+function _expertsdb_timespan_widget_serialize(&$node_field){
+	$node_field = array(array('expertsdb_timespan' => serialize($node_field)));
+}
+
+/**
+ * Helper function renders the expertsdb_timespan widget only for multiple values.
+ *
+ * @param unknown_type $form_item
+ * @param unknown_type $field
+ * @param unknown_type $node_field
+ * @param unknown_type $delta
+ */
+function _expertsdb_timespan_widget_form(&$form_item, $field, $node_field, $delta = 0) {
+
+	// pull in the stylesheet
+	drupal_add_css(drupal_get_path('module', 'expertsdb_timespan') .'/expertsdb_timespan_form.css');
+
+	$form_item = array(
+    '#tree' => TRUE,
+    '#theme' => 'expertsdb_timespan_widget_form_row',
+	);
+
+	$default_timespan_from = "";
+	if (isset($field['widget']['default_value'][$delta]['timespan_from'])) {
+		$default_timespan_from = $field['widget']['default_value'][$delta]['timespan_from'];
+	}
+
+	$default_timespan_to = "";
+	if (isset($field['widget']['default_value'][$delta]['timespan_to'])) {
+		$default_timespan_from = $field['widget']['default_value'][$delta]['timespan_to'];
+	}
+
+	// we only use a single value here; multiple is deactivated
+	$form_item['timespan_from'] = array(
+		    '#type' => 'textfield',
+		    '#maxlength' => '10',
+        '#title' => $field['label_from'],
+        '#description' => NULL,
+		    '#default_value' => ($node_field[$delta]['timespan_from']) ? $node_field[$delta]['timespan_from'] : $default_timespan_from,
+		    '#required' => ($field['required']) ? $field['required'] : FALSE,
+	);
+
+	$form_item['timespan_to'] = array(
+		    '#type' => 'textfield',
+		    '#maxlength' => '10',
+        '#title' => $field['label_to'],
+        '#description' => NULL,
+		    '#default_value' => ($node_field[$delta]['timespan_to']) ? $node_field[$delta]['timespan_to'] : $default_timespan_to,
+		    '#required' => FALSE,
+	);
+}
+
+function theme_expertsdb_timespan_widget_form($element) {
+	// pull in the stylesheet
+	drupal_add_css(drupal_get_path('module', 'expertsdb_timespan') .'/expertsdb_timespan_form.css');
+	$output = drupal_render($element);
+
+	return $output;
+}
+
+/**
+ * Theme the display of a single form row
+ */
+function theme_expertsdb_timespan_widget_form_row($element) {
+	$output = '';
+	$output .= '<div class="expertsdb-timespan-field-row clear-block">';
+	$output .= '<div class="expertsdb-timespan-field-timespan-from">' . drupal_render($element['timespan_from']) . '</div>';
+	$output .= '<div class="expertsdb-timespan-field-timespan-to">' . drupal_render($element['timespan_to']) . '</div>';
+	$output .= drupal_render($element);
+	$output .= '</div>';
+	return $output;
+}
+
+/**
+ * Theme the settings form for the expertsdb_timespan field.
+ */
+function theme_expertsdb_timespan_field_settings($form) {
+	$title_value = drupal_render($form['title_value']);
+	$title_checkbox = drupal_render($form['title']['value']);
+
+	// Set Static Title radio option to include the title_value textfield
+	$form['title']['value'] = array('#value' => '<div class="container-inline">'. $title_checkbox . $title_value .'</div>');
+
+	// Reprint the title radio options with the included textfield
+	return drupal_render($form);
+}
+
+function theme_expertsdb_timespan_container($node, $field, $items, $teaser, $page){
+	// pull in the stylesheet
+	drupal_add_css(drupal_get_path('module', 'expertsdb_timespan') .'/expertsdb_timespan_view.css');
+	$output = '';
+	$output .= '<div class="expertsdb-timespan-container">';
+	$output .= theme('field', $node, $field, $items, $teaser, $page);
+	$output .= '</div>';
+	return $output;
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function expertsdb_timespan_field_formatter_info() {
+	return array(
+    'default' => array(
+      'label' => t('Default'),
+      'field types' => array('expertsdb_timespan'),
+	),
+    'christian' => array(
+      'label' => t('Lifespan, christian'),
+      'field types' => array('expertsdb_timespan'),
+	),
+  'membership' => array(
+      'label' => t('Membership'),
+      'field types' => array('expertsdb_timespan'),
+	),
+	);
+}
+
+/**
+ * Implementation of hook_field_formatter().
+ */
+function expertsdb_timespan_field_formatter($field, $item, $formatter, $node) {
+
+	/*
+	 * React on privacy settings
+	 */
+	if($node->field_privacy){
+		global $user;
+		$term = taxonomy_get_term($node->field_privacy[0]['tid']);
+		switch($term->name){
+
+			case PRIVACY_CONTACT_PRIVATE:
+			case PRIVACY_PRIVATE:
+				// show information only to roles with access and node author
+				if($user->uid != $node->uid && !user_access('view private expertsdb_timespan fields',$user)){
+					return;
+				}
+				break;
+
+			case PRIVACY_PUBLIC:
+				// allow everybody to view aliases as configured in the field formatter (display field)
+				break;
+
+		}
+	}
+	// worship values coming in from views as plain serialized values
+	if($item['expertsdb_timespan']){
+		$item[0]['expertsdb_timespan'] = $item['expertsdb_timespan'];
+	}
+
+	// item comes in either as serialized or unserialized value
+	if (empty($item[0]['expertsdb_timespan']) && empty($item[0]['timespan_from'])) {
+		return ;
+	}
+	if(strstr($item[0]['expertsdb_timespan'],':{')){
+		$items = unserialize($item[0]['expertsdb_timespan']);
+	}else{
+		$items = $item;
+	}
+
+
+	foreach($items as $delta => $item){
+		switch ($formatter) {
+
+			case 'membership':
+				$items[$delta]['view'] = ((!$item['timespan_to']) ? '<span class="timespan label">' . t('Member since') . '</span> ' : t('Member from')) . ' <span class="timespan-from">' . $item['timespan_from'] . (($item['timespan_to']) ? '</span> to <span class="timespan-to">' . $item['timespan_to'] . '</span>' : '</span>' );
+				break;
+
+			case 'christian':
+				$items[$delta]['view'] = '<span class="timespan-from">&lowast; ' . $item['timespan_from'] . '</span>' . (($item['timespan_to']) ? ', <span class="timespan-to">&dagger; ' . $item['timespan_to'] . '</span>' : '</span>' );
+				break;
+
+			default:
+				$items[$delta]['view'] = (!$item['timespan_to'] ? '<span class="timespan label">' . $field['label_from'] . ':</span> ' : '<span class="timespan label">' . $field['widget']['label'] . '</span> ') . '<span class="timespan-from">' . $item['timespan_from'] . ($item['timespan_to'] ? '</span> - <span class="timespan-to">' . $item['timespan_to'] . '</span>' : '</span>' );
+		}
+
+	}
+
+	return $items;
+}
+
+/*
+ * custom field handler to handle serialized values in views tables
+ */
+function expertsdb_timespan_handler_view($fieldinfo, $fielddata, $value, $data) {
+
+	$formatter = $fielddata['options'];
+	$items = array();
+	if(strstr($data->$fielddata['queryname'],':{')){
+		$items = unserialize($data->$fielddata['queryname']);
+	}
+	foreach($items as $delta => $item){
+		switch ($formatter) {
+
+			case 'membership':
+				$items[$delta] = ((!$item['timespan_to']) ? '<span class="timespan">' . t('Member since') . '</span> ' : t('Member from')) . ' <span class="timespan-from">' . $item['timespan_from'] . (($item['timespan_to']) ? '</span> to <span class="timespan-to">' . $item['timespan_to'] . '</span>' : '</span>' );
+				break;
+
+			case 'christian':
+				$items[$delta] = '<span class="timespan-from">&lowast; ' . $item['timespan_from'] . '</span>' . (($item['timespan_to']) ? ', <span class="timespan-to">&dagger; ' . $item['timespan_to'] . '</span>' : '</span>' );
+				break;
+
+			default:
+				$items[$delta] = (!$item['timespan_to'] ? '<span class="timespan">' . $fieldinfo['content_field']['label_from'] . ':</span> ' : '<span class="timespan">' . $fieldinfo['content_field']['widget']['label'] . ':</span> ') . '<span class="timespan-from">' . $item['timespan_from'] . ($item['timespan_to'] ? '</span> - <span class="timespan-to">' . $item['timespan_to'] . '</span>' : '</span>' );
+		}
+
+	}
+	return implode('<br />',$items);
+}

@@ -1,0 +1,2361 @@
+<?php
+/**
+ * This is the expertsdb_address module for use with CCK.
+ *
+ * <p>This file contains information on the expertsdb_address module. The module adds to
+ * the field types available for inclusion in a content type definition. This field
+ * is made up of several standard html form fields - street 1, street 2, apartment/suite
+ * number, city, state, ZIP code, country and other.</p>
+ * <p>Street 1, street 2, apartment/suite number, other and city can each have a maximum length
+ * set by the admin. State is a dropdown list with values supplied via a database table
+ * which is part of this module. ZIP is a 5 digit integer field.</p>
+ * TODO add a hook that will allow field names to change via jquery or ajax when a country is
+ * selected. ex. if CANADA is selected, 'State' could change to 'Province'.
+ * TODO add an option in the admin settings that if some kind of geo-location module is enabled
+ * that the address field defaults can be populated with data from them INSTEAD of the fields
+ * that can be filled in now manually
+ *
+ * @version $Id: expertsdb_address.module,v 1.15.2.1 2007/12/14 20:16:15 rconstantine Exp $;
+ * @package expertsdb_address
+ * @category NeighborForge
+ * @author Ryan Constantine
+ * @filesource
+ * @license http://www.gnu.org/licenses/gpl.txt GNU_GENERAL_PUBLIC_LICENSE
+ * @link none yet
+ */
+
+
+/*
+ * Definition of privacy levels
+ */
+define('PRIVACY_CONTACT_PRIVATE', 'ContactPrivate');
+define('PRIVACY_PRIVATE', 'Private');
+define('PRIVACY_PUBLIC', 'Public');
+
+/**
+ * Implementation of hook_menu
+ *
+ * Required for Activeselect's AJAX capabilities.
+ * @return array An array of arrays, to add menu entries to the system menu.
+ */
+function expertsdb_address_menu($may_cache) {
+
+	$items = array();
+	if ($may_cache) {
+		$items[] = array(
+    'path' => 'expertsdb_address/activeselect',
+    'title' => t('Activeselect CCK Address'),
+    'callback' => 'drupal_get_form',
+    'callback arguments' => array('expertsdb_address_activeselect'),
+    'access' => user_access('access content'),
+    'type' => MENU_CALLBACK,
+		);
+
+		$items[] = array(
+    'path' => 'expertsdb_address/activeaddress1',
+    'title' => t('Activeselect CCK Address of prestored addresses'),
+    'callback' => 'drupal_get_form',
+    'callback arguments' => array('expertsdb_address_activeaddress1'),
+    'access' => user_access('administer content'),
+    'type' => MENU_CALLBACK,
+		);
+
+		// implement js callback for more-addresses-button
+		$items[] = array(
+      'path' => 'expertsdb_address/widget/js',
+      'callback' => 'expertsdb_address_widget_js',
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK,
+		);
+	}
+
+	return $items;
+} // function expertsdb_address_menu()
+
+/**
+ * Implementation of hook_perm in order to restrict database access to bonafide site admins.
+ * See note below in expertsdb_address_field_settings.
+ */
+function expertsdb_address_perm() {
+	return array(
+  		'administer databases',
+    	'view private expertsdb_address fields',
+	//TODO which else permission are required?
+	);
+}
+
+/**
+ * Implementation of hook_field_info().
+ *
+ * @return
+ *   An array keyed by field type name. Each element of the array is an associative
+ *   array with these keys and values:
+ *   - "label": The human-readable label for the field type.
+ */
+function expertsdb_address_field_info() {
+	return array(
+  'expertsdb_address' => array('label' => 'Expertsdb Address'),
+	);
+} //function expertsdb_address_field_info()
+
+/**
+ * Implementation of hook_field_settings().
+ *
+ * See the README.txt for more info.
+ *
+ * @param $op
+ *   The operation to be performed.
+ * @param $field
+ *   The field on which the operation is to be performed.
+ * @return
+ *   This varies depending on the operation.
+ *   - "form": an array of form elements to add to
+ *     the settings page.
+ *   - "validate": no return value. Use form_set_error().
+ *   - "save": an array of names of form elements to
+ *     be saved in the database.
+ *   - "database columns": an array keyed by column name, with arrays of column
+ *     information as values.
+ *   - "filters": an array whose values are 'filters'
+ *     definitions as expected by views.module (see Views Documentation).
+ *   - "callbacks": an array describing the field's behaviour regarding hook_field
+ *     operations. The array is keyed by hook_field operations ('view', 'validate'...)
+ *     and has the following possible values :
+ *       CONTENT_CALLBACK_NONE     : do nothing for this operation
+ *       CONTENT_CALLBACK_CUSTOM   : use the behaviour in hook_field(operation)
+ *       CONTENT_CALLBACK_DEFAULT  : use content.module's default bahaviour
+ *     Note : currently only the 'view' operation implements this feature.
+ *     All other field operation implemented by the module _will_ be executed
+ *     no matter what.
+ */
+function expertsdb_address_field_settings($op, $field) {
+	switch ($op) {
+		case 'form':
+			$activeselect = module_exists('activeselect');
+			$form = array();
+			$form['state_abbrv'] = array(
+        '#type' => 'select',
+        '#title' => t('Display States/Provinces as'),
+        '#description' => t('Be sure to check <em>Allow other countries?</em> below if you select Free-text.'),
+        '#default_value' => isset($field['state_abbrv']) ? $field['state_abbrv'] : 0,
+        '#options' => array('Select with full names', 'Select with abbreviations', 'Free-text entry'),
+			);
+			$form['country_abbrv'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Use abbreviations for display of Countries?'),
+        '#default_value' => isset($field['country_abbrv']) ? $field['country_abbrv'] : 0,
+        '#return_value' => 1,
+			);
+			$form['countries'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Allowed Countries'),
+        '#description' => t('Check the countries from which you\'ll allow user addresses.'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+			);
+			$all_countries = array();
+			$sql = "SELECT cas.country_name, cas.country_code FROM {expertsdb_address_countries} cas ORDER BY cas.country_name ASC";
+			$results = db_query($sql);
+			while ($result = db_fetch_object($results)) {
+				$all_countries[$result->country_code] = $result->country_name;
+			}
+			$state_options = expertsdb_address_get_states($all_countries);
+			$form['countries']['other_countries'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Allow <em>other</em> countries?'),
+        '#description' => t('Disable validation of state field against the state database. Admin users should validate the state field of sumitted addresses manually.'),
+        '#default_value' => isset($field['other_countries']) ? $field['other_countries'] : 0,
+        '#return_value' => 1,
+			);
+			$form['countries']['clist'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Countries'),
+        '#default_value' => isset($field['clist']) ? $field['clist'] : 1,
+        '#options' => $all_countries,
+			);
+
+			//for selecting which fields to display
+			$field_display_default = array();
+			if (is_array($field['fielddisplay'])) {
+				foreach ($field['fielddisplay'] as $part => $val) {
+					if ($val) { $field_display_default[] = $part; }
+				}
+			}
+			else {
+				$field_display_default = array('field_display_preferred_address','field_display_street1', 'field_display_street2', 'field_display_apt', 'field_display_city', 'field_display_state', 'field_state_alternative', 'field_display_country', 'field_display_zip', 'field_display_other');
+			}
+			$form['field_display'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Customize fields to use'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#description' => t('Here you can select which fields to use. Note: normally, the following fields are REQUIRED but will not be (naturally) when not used: Country, State, Zip, City, Address'),
+			);
+			$form['field_display']['fielddisplay'] = array(
+        '#type' => 'checkboxes',
+        '#required' => FALSE,
+        '#default_value' => $field_display_default,
+        '#options' => array(
+					'field_display_preferred_address' => t("Preferred Address"),
+          'field_display_street1' => t("Address"),
+          'field_display_street2'  => t("Address continued"),
+          'field_display_apt' => t("Apt/suite number"),
+          'field_display_city'   => t("City"),
+          'field_display_state' => t("State"),
+      		'field_display_state_alternative' => t("State alternative"),
+          'field_display_zip' => t("Zip"),
+          'field_display_country' => t("Country"),
+          'field_display_other' => t("Other"),
+			),
+			);
+
+			//maximum lengths of fields
+			$form['max_lengths'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Maximum field lengths'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#description' => t('You may find that if you don\'t set values here that the placement of the form elements are funky. I designed the CSS file using
+        30, 30, 7, 30, 30 as maximums. Feel free to adjust maximums as you see fit, but realize you may have to adjust the CSS file or override the CSS values
+        in your theme\'s style.css file.'),
+			);
+			$form['max_lengths']['max_length_street1'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Maximum length: address field'),
+        '#size' => 6,
+        '#default_value' => isset($field['max_length_street1']) ? $field['max_length_street1'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+			);
+			$form['max_lengths']['max_length_street2'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Maximum length: address continued field'),
+        '#size' => 6,
+        '#default_value' => isset($field['max_length_street2']) ? $field['max_length_street2'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+			);
+			$form['max_lengths']['max_length_apt'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Maximum length: apt field'),
+        '#size' => 6,
+        '#default_value' => isset($field['max_length_apt']) ? $field['max_length_apt'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+			);
+			$form['max_lengths']['max_length_city'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Maximum length: city field'),
+        '#size' => 6,
+        '#default_value' => isset($field['max_length_city']) ? $field['max_length_city'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+			);
+			$form['max_lengths']['max_length_other'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Maximum length: other field'),
+        '#size' => 6,
+        '#default_value' => isset($field['max_length_other']) ? $field['max_length_other'] : '',
+        '#required' => FALSE,
+        '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+			);
+
+			//for customizing the field titles
+			$form['field_names'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Customize field names'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#description' => t('Here you can change the field name of any address field. This will aid in translating for other languages.'),
+			);
+			$form['field_names']['field_names_preferred_address'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Preferred Address'),
+        '#default_value' => isset($field['field_names_preferred_address']) && $field['field_names_preferred_address'] != '' ? $field['field_names_preferred_address'] : t('Preferred Address'),
+        '#required' => FALSE,
+			);
+			$form['field_names']['field_names_street1'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Address'),
+        '#default_value' => isset($field['field_names_street1']) && $field['field_names_street1'] != '' ? $field['field_names_street1'] : t('Address'),
+        '#required' => FALSE,
+			);
+			$form['field_names']['field_names_street2'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Address continued'),
+        '#default_value' => isset($field['field_names_street2']) && $field['field_names_street2'] != '' ? $field['field_names_street2'] : t('Address continued'),
+        '#required' => FALSE,
+			);
+			$form['field_names']['field_names_apt'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Apt/suite number'),
+        '#default_value' => isset($field['field_names_apt']) && $field['field_names_apt'] != '' ? $field['field_names_apt'] : t('Apt/suite number'),
+        '#required' => FALSE,
+			);
+			$form['field_names']['field_names_city'] = array(
+        '#type' => 'textfield',
+        '#title' => t('City'),
+        '#default_value' => isset($field['field_names_city']) && $field['field_names_city'] != '' ? $field['field_names_city'] : t('City'),
+        '#required' => FALSE,
+			);
+			$form['field_names']['field_names_state'] = array(
+        '#type' => 'textfield',
+        '#title' => t('State'),
+        '#default_value' => isset($field['field_names_state']) && $field['field_names_state'] != '' ? $field['field_names_state'] : t('State'),
+        '#required' => FALSE,
+			);
+			$form['field_names']['field_names_state_alternative'] = array(
+        '#type' => 'textfield',
+        '#title' => t('State'),
+        '#default_value' => isset($field['field_names_state_alternative']) && $field['field_names_state_alternative'] != '' ? $field['field_names_state_alternative'] : t('State alternative'),
+        '#required' => FALSE,
+			);
+			$form['field_names']['field_names_zip'] = array(
+        '#type' => 'textfield',
+        '#title' => t('ZIP'),
+        '#default_value' => isset($field['field_names_zip']) && $field['field_names_zip'] != '' ? $field['field_names_zip'] : t('ZIP'),
+        '#required' => FALSE,
+			);
+			$form['field_names']['field_names_country'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Country'),
+        '#default_value' => isset($field['field_names_country']) && $field['field_names_country'] != '' ? $field['field_names_country'] : t('Country'),
+        '#required' => FALSE,
+			);
+			$form['field_names']['field_names_other'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Other'),
+        '#default_value' => isset($field['field_names_other']) && $field['field_names_other'] != '' ? $field['field_names_other'] : t('Other'),
+        '#required' => FALSE,
+			);
+
+			//for customizing the field order
+			$order_options = array(1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10);
+			$form['field_order'] = array(
+        '#type' => 'fieldset',
+        '#tree' => TRUE,
+        '#title' => t('Customize field display order'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#description' => t('Here you can order the address fields as you wish. This will affect both the form used for input and display on nodes.
+        Be careful to not double up the numbers, there\'s no validation against duplicates here.'),
+			);
+			$form['field_order']['preferred_address'] = array(
+        '#type' => 'select',
+				'#title' => t('Preferred Address'),
+				'#default_value' => isset($field['field_order']['preferred_address']) ? $field['field_order']['preferred_address'] : 1,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+			$form['field_order']['street1'] = array(
+        '#type' => 'select',
+        '#title' => t('Address'),
+        '#default_value' => isset($field['field_order']['street1']) ? $field['field_order']['street1'] : 2,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+			$form['field_order']['street2'] = array(
+        '#type' => 'select',
+        '#title' => t('Address continued'),
+        '#default_value' => isset($field['field_order']['street2']) ? $field['field_order']['street2'] : 3,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+			$form['field_order']['apt'] = array(
+        '#type' => 'select',
+        '#title' => t('Apt/suite number'),
+        '#default_value' => isset($field['field_order']['apt']) ? $field['field_order']['apt'] : 4,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+			$form['field_order']['city'] = array(
+        '#type' => 'select',
+        '#title' => t('City'),
+        '#default_value' => isset($field['field_order']['city']) ? $field['field_order']['city'] : 5,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+			$form['field_order']['state'] = array(
+        '#type' => 'select',
+        '#title' => t('State'),
+        '#default_value' => isset($field['field_order']['state']) ? $field['field_order']['state'] : 6,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+			$form['field_order']['state_alternative'] = array(
+        '#type' => 'select',
+        '#title' => t('State alternative'),
+        '#default_value' => isset($field['field_order']['state_alternative']) ? $field['field_order']['state_alternative'] : 7,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+			$form['field_order']['zip'] = array(
+        '#type' => 'select',
+        '#title' => t('ZIP'),
+        '#default_value' => isset($field['field_order']['zip']) ? $field['field_order']['zip'] : 8,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+			$form['field_order']['country'] = array(
+        '#type' => 'select',
+        '#title' => t('Country'),
+        '#default_value' => isset($field['field_order']['country']) ? $field['field_order']['country'] : 9,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+			$form['field_order']['other'] = array(
+        '#type' => 'select',
+        '#title' => t('Other'),
+        '#default_value' => isset($field['field_order']['other']) ? $field['field_order']['other'] : 10,
+        '#options' => $order_options,
+        '#required' => FALSE,
+			);
+
+			//for customizing the field defaults
+			$form['field_defaults'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Customize field defaults'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#description' => t('Here you can set any defaults that should appear when a new address is to be entered.'),
+			);
+			$form['field_defaults']['field_defaults_street1'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Address'),
+        '#default_value' => isset($field['field_defaults_street1']) && $field['field_defaults_street1'] != '' ? $field['field_defaults_street1'] : '',
+        '#required' => FALSE,
+			);
+			$form['field_defaults']['field_defaults_street2'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Address continued'),
+        '#default_value' => isset($field['field_defaults_street2']) && $field['field_defaults_street2'] != '' ? $field['field_defaults_street2'] : '',
+        '#required' => FALSE,
+			);
+			$form['field_defaults']['field_defaults_apt'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Apt/suite number'),
+        '#default_value' => isset($field['field_defaults_apt']) && $field['field_defaults_apt'] != '' ? $field['field_defaults_apt'] : '',
+        '#required' => FALSE,
+			);
+			$form['field_defaults']['field_defaults_city'] = array(
+        '#type' => 'textfield',
+        '#title' => t('City'),
+        '#default_value' => isset($field['field_defaults_city']) && $field['field_defaults_city'] != '' ? $field['field_defaults_city'] : '',
+        '#required' => FALSE,
+			);
+			if ($activeselect) {
+				$form['field_defaults']['field_defaults_state'] = array(
+          '#type' => 'select',
+          '#title' => t('State'),
+          '#multiple' => FALSE,
+          '#default_value' => isset($field['field_defaults_state']) ? $field['field_defaults_state'] : '',
+          '#required' => FALSE,
+          '#options' => array(),
+          '#DANGEROUS_SKIP_CHECK' => TRUE,
+				);
+			}
+			else {
+				$form['field_defaults']['field_defaults_state'] = array(
+          '#type' => 'select',
+          '#title' => t('State'),
+          '#multiple' => FALSE,
+          '#default_value' => isset($field['field_defaults_state']) && !empty($field['field_defaults_state']) ? $field['field_defaults_state'] : '',
+          '#required' => FALSE,
+          '#options' => $state_options,
+				);
+			}
+			$form['field_defaults']['field_defaults_zip'] = array(
+        '#type' => 'textfield',
+        '#title' => t('ZIP'),
+        '#default_value' => isset($field['field_defaults_zip']) && $field['field_defaults_zip'] != '' ? $field['field_defaults_zip'] : '',
+        '#required' => FALSE,
+			);
+			if ($activeselect) {
+				$form['field_defaults']['field_defaults_country'] = array(
+          '#type' => 'activeselect',
+          '#title' => t('Country'),
+          '#multiple' => FALSE,
+          '#default_value' => isset($field['field_defaults_country']) ? $field['field_defaults_country'] : '',
+          '#required' => FALSE,
+          '#options' => $all_countries,
+          '#activeselect_path' => 'expertsdb_address/activeselect',
+          '#activeselect_targets' => str_replace('_', '-', 'field_defaults_state'),
+          '#activeselect_extra' => isset($field['field_defaults_state']) && !empty($field['field_defaults_state']) ? $field['field_defaults_state'] : '',
+				);
+			}
+			else {
+				$form['field_defaults']['field_defaults_country'] = array(
+          '#type' => 'select',
+          '#title' => t('Country'),
+          '#multiple' => FALSE,
+          '#default_value' => isset($field['field_defaults_country']) && !empty($field['field_defaults_country']) ? $field['field_defaults_country'] : '',
+          '#required' => FALSE,
+          '#options' => $all_countries,
+				);
+			}
+			$form['field_defaults']['field_defaults_other'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Other'),
+        '#default_value' => isset($field['field_defaults_other']) && $field['field_defaults_other'] != '' ? $field['field_defaults_other'] : '',
+        '#required' => FALSE,
+			);
+
+			//for validating addresses against a known database
+			if ($activeselect && user_access('administer databases')) {
+				$form['select_address_from_db'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Select from DB'),
+          '#description' => t('Requires the activeselect module. This is for when you know all users\' addresses ahead of time, or you have a limited geography that you\'ve set up.'),
+          '#collapsible' => TRUE,
+          '#collapsed' => TRUE,
+				);
+				$form['select_address_from_db']['select_a_f_d'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Should users select addresses from a database?'),
+          '#default_value' => isset($field['select_a_f_d']) ? $field['select_a_f_d'] : 0,
+          '#return_value' => 1,
+				);
+				$all_tables = array();
+				$sql = "SHOW tables";
+				$results = db_query($sql);
+				global $db_url;
+				$db_name = substr(strrchr($db_url, "/"), 1);
+				$db_tables = 'Tables_in_' .$db_name;
+				while ($result = db_fetch_object($results)) {
+					$all_tables[$result->$db_tables] = $result->$db_tables;
+				}
+				if (isset($field['select_streetcolumn']) && isset($field['select_street_numcolumn']) && isset($field['select_city']) && isset($field['select_zip'])) {
+					$extra_street_num_city_zip = $field['select_streetcolumn']. ',' .$field['select_street_numcolumn']. ',' .$field['select_city']. ',' .$field['select_zip'];
+				}
+				else {
+					$extra_street_num_city_zip = '';
+				}
+				$form['select_address_from_db']['select_table'] = array(
+          '#type' => 'activeselect',
+          '#title' => t('Select table to use for addresses'),
+          '#default_value' => isset($field['select_table']) ? array($field['select_table']) : array(),
+          '#multiple' => FALSE,
+          '#required' => isset($field['select_address_from_db']) ? $field['select_address_from_db'] : FALSE,
+          '#options' => $all_tables,
+          '#activeselect_path' => 'expertsdb_address/activeaddress1',
+          '#activeselect_targets' => str_replace('_', '-', 'select_streetcolumn'). ',' .str_replace('_', '-', 'select_street_numcolumn'). ',' .str_replace('_', '-', 'select_city'). ',' .str_replace('_', '-', 'select_zip'),
+          '#activeselect_extra' => $extra_street_num_city_zip,//should be string, not array or object
+				);
+				$form['select_address_from_db']['select_streetcolumn'] = array(
+          '#type' => 'activeselect',
+          '#title' => t('Select column for street'),
+          '#default_value' => isset($field['select_streetcolumn']) ? array($field['select_streetcolumn']) : array(),
+          '#multiple' => FALSE,
+          '#required' => isset($field['select_address_from_db']) ? $field['select_address_from_db'] : FALSE,
+          '#options' => array(),
+          '#DANGEROUS_SKIP_CHECK' => TRUE,
+				);
+				$form['select_address_from_db']['select_street_numcolumn'] = array(
+          '#type' => 'select',
+          '#title' => t('Select column for street number'),
+          '#default_value' => isset($field['select_street_numcolumn']) ? array($field['select_street_numcolumn']) : array(),
+          '#multiple' => FALSE,
+          '#required' => isset($field['select_address_from_db']) ? $field['select_address_from_db'] : FALSE,
+          '#options' => array(),
+          '#DANGEROUS_SKIP_CHECK' => TRUE,
+				);
+				$form['select_address_from_db']['select_city'] = array(
+          '#type' => 'select',
+          '#title' => t('Select column for city'),
+          '#default_value' => isset($field['select_city']) ? array($field['select_city']) : array(),
+          '#multiple' => FALSE,
+          '#required' => isset($field['select_address_from_db']) ? $field['select_address_from_db'] : FALSE,
+          '#options' => array(),
+          '#DANGEROUS_SKIP_CHECK' => TRUE,
+				);
+				$form['select_address_from_db']['select_zip'] = array(
+          '#type' => 'select',
+          '#title' => t('Select column for postal code'),
+          '#default_value' => isset($field['select_zip']) ? array($field['select_zip']) : array(),
+          '#multiple' => FALSE,
+          '#required' => isset($field['select_address_from_db']) ? $field['select_address_from_db'] : FALSE,
+          '#options' => array(),
+          '#DANGEROUS_SKIP_CHECK' => TRUE,
+				);
+				$form['select_address_from_db']['select_country'] = array(
+          '#type' => 'activeselect',
+          '#title' => t('Select a mandatory country'),
+          '#description' => t('Be sure to select the right country in <em>Allowed Countries</em> above.'),
+          '#default_value' => isset($field['select_country']) ? array($field['select_country']) : array(),
+          '#multiple' => FALSE,
+          '#required' => isset($field['select_address_from_db']) ? $field['select_address_from_db'] : FALSE,
+          '#options' => $all_countries,
+          '#activeselect_path' => 'expertsdb_address/activeselect',
+          '#activeselect_targets' => str_replace('_', '-', 'select_state'),
+          '#activeselect_extra' => isset($field['select_state']) ? $field['select_state'] : '',
+				);
+				$form['select_address_from_db']['select_state'] = array(
+          '#type' => 'select',
+          '#title' => t('Select a mandatory state'),
+          '#default_value' => isset($field['select_state']) ? array($field['select_state']) : array(),
+          '#multiple' => FALSE,
+          '#required' => isset($field['select_address_from_db']) ? $field['select_address_from_db'] : FALSE,
+          '#options' => array(),
+          '#DANGEROUS_SKIP_CHECK' => TRUE,
+				);
+			}
+
+			/*
+			 * implements a custom setting for multiple values,
+			 * because the standard $form['multiple'] force db table normalization
+			 */
+			$form['allow_multiple'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Allow submission of multiple addresses'),
+          '#default_value' => isset($field['allow_multiple']) ? $field['allow_multiple'] : 1,
+          '#description' => t('Checking will allow the user to submit more than one address. Additionally, the user has to select one address as his preferred address.'),
+			);
+
+			// disable multiple
+			$form['multiple'] = array('#type' => 'hidden','#value' => '0');
+
+			return $form;
+
+		case 'validate':
+			if ($field['max_length_street1'] && !is_numeric($field['max_length_street1'])) {
+				form_set_error('max_length_street1', t('"Maximum length: first street field" must be a number.'));
+			}
+			if ($field['max_length_street2'] && !is_numeric($field['max_length_street2'])) {
+				form_set_error('max_length_street2', t('"Maximum length: second street field" must be a number.'));
+			}
+			if ($field['max_length_city'] && !is_numeric($field['max_length_city'])) {
+				form_set_error('max_length_city', t('"Maximum length: city name" must be a number.'));
+			}
+			if ($field['max_length_other'] && !is_numeric($field['max_length_other'])) {
+				form_set_error('max_length_other', t('"Maximum length: other" must be a number.'));
+			}
+			if (($field['other_countries'] == 0) && ($field['state_abbrv'] == 2)) {
+				form_set_error('other_countries', t('"Allow <em>other</em> countries?" must be checked if you are using <em>Free-text entry</em> for states.'));
+			}
+			if (($field['other_countries'] == 1) && ($field['state_abbrv'] != 2)) {
+				form_set_error('state_abbrv', t('You must use "<em>Free text entry</em>" for states if you "Allow <em>other</em> countries".'));
+			}
+			if (isset($field['multiple'])) {
+				unset ($field['multiple']);
+			}
+			break;
+
+		case 'save':
+			return array('state_abbrv',
+        'country_abbrv',
+        'clist',
+        'fielddisplay',
+        'max_length_street1',
+        'max_length_street2',
+        'max_length_apt',
+        'max_length_city',
+        'max_length_other',
+			  'field_names_preferred_address',
+        'field_names_street1',
+        'field_names_street2',
+        'field_names_apt',
+        'field_names_city',
+        'field_names_state',
+      	'field_names_state_alternative',
+        'field_names_country',
+        'field_names_zip',
+        'field_names_other',
+        'field_order',
+        'field_defaults_street1',
+        'field_defaults_street2',
+        'field_defaults_apt',
+        'field_defaults_city',
+        'field_defaults_state',
+      	'field_defaults_state_alternative',
+        'field_defaults_country',
+        'field_defaults_zip',
+        'field_defaults_other',
+        'select_a_f_d',
+        'select_table',
+        'select_streetcolumn',
+        'select_street_numcolumn',
+        'select_city',
+        'select_zip',
+        'select_country',
+        'select_state',
+        'other_countries',
+      	'allow_multiple',
+			);
+
+		case 'database columns':
+			$columns = array(
+        'expertsdb_address' => array('type' => 'longtext', 'not null' => FALSE),
+			);
+
+			return $columns;
+
+		case 'filters':
+			return array(
+          'default' => array(
+            'operator' => 'views_handler_operator_like',
+            'handler' => 'views_handler_filter_like',
+			),
+			);
+
+		case 'callbacks'://pairs up with expertsdb_address_field::view
+			return array(
+      'view' => CONTENT_CALLBACK_CUSTOM,
+			);
+	}
+} //function expertsdb_address_field_settings()
+
+/**
+ * Implementation of hook_field().
+ *
+ * <p>-Validate the user's input.</p>
+ * <p>-Alternatively, present the data for viewing.</p>
+ * @param $op
+ *   What kind of action is being performed.
+ * @param &$node
+ *   The node the action is being performed on.
+ * @param $field
+ *   The field the action is being performed on.
+ * @param &$node_field
+ *   The contents of the field in this node. Changes to this variable will
+ *   be saved back to the node object.
+ * @return
+ *   This varies depending on the operation.
+ *   - The "load" operation should return an object containing extra values
+ *     to be merged into the node object.
+ *   - The "view" operation should return a string containing an HTML
+ *     representation of the field data.
+ *   - The "insert", "update", "delete", "validate", and "submit" operations
+ *     have no return value.
+ */
+function expertsdb_address_field($op, &$node, $field, &$items, $teaser, $page) {
+	switch ($op) {
+
+		case 'view':
+			$context = $teaser ? 'teaser' : 'full';
+			$formatter = isset($field['display_settings'][$context]['format']) ? $field['display_settings'][$context]['format'] : 'default';
+			$items = content_format($field, $items, $formatter, $node);
+			if((!empty($items) && is_array($items) && count($items) > 0) || (!empty($items) && $formatter == 'table')){
+				return theme('expertsdb_address_container', $node, $field, $items, $teaser, $page);
+			}
+	}
+} //function expertsdb_address_field()
+
+/**
+ * Implementation of hook_validate_address_fields
+ *
+ * This hook is used by expertsdb_address and any supporting modules which add country-specific field validation.
+ * The first argument is an array, passed in by reference in 'fieldname=>error string' pairs. The error string should remain empty
+ * so long as there are no errors. If there is an error, the string should be replaced with an appropriate t-ified message. The
+ * second argument is the country code of the address. The first thing an implementation of this hook should do is check to see if
+ * the country code matches the country for which the module was made to support. If not, it should return immediately, without
+ * modifying the $errors array. This will ensure that only the country which SHOULD validate, does the validation. The third argument
+ * is the item containing the values of the form.
+ *
+ * @param array $errors
+ * @param string $country_code
+ * @param array $item
+ * @param string $field_name
+ */
+function expertsdb_address_validate_address_fields(&$errors, $country_code, $item, $field_name) {
+	if ($country_code != 'US' && $country_code != 'United States') {
+		return;
+	}
+	if (($item['street1'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\/\s]+$/", $item['street1']))) {
+		$errors['street1'] = t('Illegal value for %name\'s Street field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+	}
+	if (($item['street2'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\/\s]+$/", $item['street2']))) {
+		$errors['street2'] = t('Illegal value for %name\'s Street Continued field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+	}
+	if (($item['apt'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\/]+$/", $item['apt']))) {
+		$errors['apt'] = t('Illegal value for %name\'s Apt/Suite Number field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+	}
+	if (($item['city'] != '') && (!preg_match("/^[\.\'\-[:alpha:]\s]+$/", $item['city']))) {
+		$errors['city'] = t('Illegal value for %name\'s City field. Only letters, \' and - are valid. No numbers or other special characters allowed.', array('%name' => $field_name));
+	}
+	if (($item['zip'] != '') && (!preg_match("/^\d{5}(?:-\d{4})?$/", $item['zip']))) {
+		$errors['zip'] = t('Illegal value for %name\'s ZIP field. No letters or special characters allowed.', array('%name' => $field_name));
+	}
+	if (($item['other'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\s]+$/", $item['other']))) {
+		$errors['other'] = t('Illegal value for %name\'s Other field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+	}
+	return;
+} // expertsdb_address_validate_address_fields()
+
+/**
+ * Implementation of hook_widget_info().
+ *
+ * @return
+ *   An array keyed by widget name. Each element of the array is an associative
+ *   array with these keys and values:
+ *   - "label": The human-readable label for the widget.
+ *   - "field types": An array of field type names that can be edited using
+ *     this widget.
+ */
+function expertsdb_address_widget_info() {
+	return array(
+    'expertsdb_address' => array(
+      'label' => 'Expertsdb Address',
+      'field types' => array('expertsdb_address'),
+	),
+	);
+} //function expertsdb_address_widget_info()
+
+/**
+ * Implementation of hook_widget_settings().
+ *
+ * @param $op
+ *   The operation to be performed.
+ * @param $widget
+ *   The widget on which the operation is to be performed.
+ * @return
+ *   This varies depending on the operation.
+ *   - "form": an array of form elements to add to the settings page.
+ *   - "validate": no return value. Use form_set_error().
+ *   - "save": an array of names of form elements to be saved in the database.
+ *   - "callbacks": an array describing the widget's behaviour regarding hook_widget
+ *     operations. The array is keyed by hook_widget operations ('form', 'validate'...)
+ *     and has the following possible values :
+ *       CONTENT_CALLBACK_NONE     : do nothing for this operation
+ *       CONTENT_CALLBACK_CUSTOM   : use the behaviour in hook_widget(operation)
+ *       CONTENT_CALLBACK_DEFAULT  : use content.module's default bahaviour
+ *     Note : currently only the 'default value' operation implements this feature.
+ *     All other widget operation implemented by the module _will_ be executed
+ *     no matter what.
+ */
+function expertsdb_address_widget_settings($op, $widget) {
+	switch ($op) {
+		case 'callbacks':
+			return array(
+        'default value' => CONTENT_CALLBACK_CUSTOM,
+			);
+	}
+} //function expertsdb_address_widget_settings()
+
+
+/**
+ * Implementation of hook_widget().
+ *
+ * Presently, we don't allow multiple values as people should only have one name.
+ * Also, we intercept the default value fields and unset() them as I couldn't think
+ * of a use case for pre-setting a person's name. We also use a little bit of CSS
+ * to render the form fields approximately the 'size' they've been specified in 'ems'
+ * as the 'size' was not being rendered in 'ems' but as some fraction thereof; this
+ * because a name with mostly wide letters wasn't all fitting in the display.
+ * @param $op
+ *   What kind of action is being performed.
+ * @param &$node
+ *   The node the action is being performed on.
+ * @param $field
+ *   The field the action is being performed on.
+ * @param &$node_field
+ *   The contents of the field in this node. Changes to this variable will
+ *   be saved back to the node object.
+ * @return
+ *   This varies depending on the operation.
+ *   - The "form" operation should return an array of form elements to display.
+ *   - Other operations have no return value.
+ */
+function expertsdb_address_widget($op, &$node, $field, &$node_field) {
+	drupal_add_css(drupal_get_path('module', 'expertsdb_address'). '/expertsdb_address_form.css', 'module', 'all', FALSE);
+
+	switch ($op) {
+
+		case 'prepare form values':
+			// unserialize and prepare data
+			_expertsdb_address_widget_prepare($node_field);
+
+			// get posted values in both node edit and profile edit mode
+			if ($_POST[$field['field_name']] || $_POST[$field['type_name'].'_node_form'][$field['field_name']]) {
+				$node_field = ($_POST['form_id'] == 'user_edit') ?  $_POST[$field['type_name'].'_node_form'][$field['field_name']] : $_POST[$field['field_name']];
+				unset($node_field['count'], $node_field['more-url'], $node_field['more']);
+			}
+			return;
+
+		case 'form':
+			$form = array();
+			$form[$field['field_name']] = array(
+        '#tree' => TRUE,
+        '#theme' => 'expertsdb_address_widget_form',
+        '#type' => 'fieldset',
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#title' => t($field['widget']['label']),
+        '#description' => t($field['widget']['description']),
+        '#weight' => $field['widget']['weight'],
+			);
+
+			// render single or multiple values
+			$delta = 0;
+			// Render expertsdb_address fields for all the entered values
+			if(is_array($node_field) && count($node_field) > 0){
+				foreach ($node_field as $delta => $data) {
+					if (is_array($data) && $data['country']) {
+						_expertsdb_address_widget_form($form[$field['field_name']][$delta], $field, $data, $delta);
+					}
+				}
+			}
+			else{
+				// Render one new expertsdb_address field
+				_expertsdb_address_widget_form($form[$field['field_name']][$delta], $field, array(), $delta);
+			}
+
+			if($field['allow_multiple']){
+
+				if(module_exists('jquery_plugin')){
+					// pull in jquery checkbox plugin to make radioCheckboxes
+					jquery_plugin_add('checkboxes');
+				}
+				// add javascript for 'more' button
+				drupal_add_js(drupal_get_path('module', 'expertsdb_address') .'/expertsdb_address.js');
+
+				// Create a wrapper for additional fields
+				$form[$field['field_name']]['wrapper'] = array(
+          '#type' => 'markup',
+          '#value' => '<div id="' . str_replace('_', '-', $field['field_name']) . '-wrapper" class="clear-block"></div>',
+				);
+
+				// Add 'More' Javascript Callback
+				$form[$field['field_name']]['more-url'] = array(
+          '#type' => 'hidden',
+          '#value' => url('expertsdb_address/widget/js/' . $field['type_name'] . '/' . $field['field_name'], NULL, NULL, TRUE),
+          '#attributes' => array('class' => 'more-addresses'),
+          '#id' => str_replace('_', '-', $field['field_name']) . '-more-url',
+				);
+
+				// Add Current Field Count
+				$form[$field['field_name']]['count'] = array(
+          '#type' => 'hidden',
+          '#value' => $delta,
+          '#id' => str_replace('_', '-', $field['field_name']) . '-count',
+				);
+
+				// Add More Button
+				$form[$field['field_name']]['more'] = array(
+	        '#name' => 'more',
+	        '#id' => str_replace('_', '-', $field['field_name']) . '-more',
+	        '#weight' => 10,
+					'#type' => 'views_imagebutton',
+					'#title' => t('More Addresses'),
+	    		'#image' => drupal_get_path('module','expertsdb_email') . '/images/button_add_element.png',  // provide the path to your image here
+	    		'#default_value' => t('More emails'), // original value of button text
+				);
+			}
+			return $form;
+
+		case 'validate':
+
+			$preferred_counter = 0;
+
+			if ($field['select_a_f_d'] == 1) {
+				if (is_array($node_field)) {
+
+					foreach ($node_field as $delta => $item) {
+						if(!is_numeric($delta)) continue;
+
+						// check for multiple preferred addresses
+						if(is_numeric($delta) && $item['preferred_address']['preferred_address'] === 'preferred_address'){
+							$preferred_counter ++;
+						}
+
+						//setup error handling fields
+						$error_field_street1 = $field['field_name']. '][' .$delta. '][street1';
+						$error_field_street2 = $field['field_name']. '][' .$delta. '][street2';
+						$error_field_city = $field['field_name']. '][' .$delta. '][city';
+						$error_field_state = $field['field_name']. '][' .$delta. '][state';
+						$error_field_state = $field['field_name']. '][' .$delta. '][state_alternative';
+						$error_field_zip = $field['field_name']. '][' .$delta. '][zip';
+						$error_field_country = $field['field_name']. '][' .$delta. '][country';
+						$errors = array(
+                'street1' => '',
+                'street2' => '',
+                'city' => '',
+                'state' => '',
+            		'state_alternative' => '',
+                'zip' => '',
+                'country' => '',
+						);
+
+						//do the actual validation
+						if (($item['country'] != '') && ($item['country'] == $field['country'])) {
+							$errors['country'] = t('Illegal value for <em>Country</em>. It should have been set for you. Contact the site administrator.');
+						}
+						if (($item['state'] != '') && ($item['state'] == $field['state'])) {
+							$errors['state'] = t('Illegal value for <em>State</em>. It should have been set for you. Contact the site administrator.');
+						}
+						$table = $field['select_table'];
+						$column_city = $field['select_city'];
+						$column_zip = $field['select_zip'];
+						$sql = "SELECT %s FROM {%s} ORDER BY %s ASC";
+						$results = db_query($sql, $column_city, $table, $column_city);
+						while ($result = db_fetch_object($results)) {
+							$all_cities[$result->$column_city] = $result->$column_city;
+						}
+						if (!array_key_exists($item['city'], $all_cities)) {
+							$errors['city'] = t('Illegal value for <em>City</em>. You must select from the list.');
+						}
+						$results = db_query($sql, $column_zip, $table, $column_zip);
+						while ($result = db_fetch_object($results)) {
+							$all_zips[$result->$column_zip] = $result->$column_zip;
+						}
+						if (!array_key_exists($item['zip'], $all_zips)) {
+							$errors['zip'] = t('Illegal value for <em>Zip Code</em>. You must select from the list.');
+						}
+						//switch the user's input to what is found in the DB
+						$sql1 = "SELECT %s FROM {%s} WHERE %s LIKE '%s'";
+						$results1 = db_fetch_object(db_query($sql1, $field['select_streetcolumn'], $table, $field['select_streetcolumn'], $item['street2']. '%'));
+						if (!$results1) {
+							$errors['street2'] = t('Illegal value for <em>Street Name</em>.');
+						}
+						else {
+							$node_field[$delta]['street2'] = $results1->$field['select_streetcolumn'];
+						}
+						$sql2 = "SELECT %s, %s FROM {%s} WHERE %s = %d AND %s LIKE '%s'";
+						$results2 = db_fetch_object(db_query($sql2, $field['select_street_numcolumn'], $field['select_streetcolumn'], $table, $field['select_street_numcolumn'], $item['street1'], $field['select_streetcolumn'], $item['street2']. '%'));
+						if (!$results2) {
+							$errors['street1'] = t('Possible illegal value for <em>Street Number</em>. This number was not found on the street you indicated.');
+							if ($errors['street2'] != '') {
+								$errors['street2'] = t('Possible illegal value for <em>Street Name</em>. This street was not found with the number you indicated.');
+							}
+						}
+						$sql3 = "SELECT * FROM {%s} WHERE %s = %d AND %s LIKE '%s' AND %s = '%s' AND %s = %d";
+						$values = array(
+						$table,
+						$field['select_street_numcolumn'], $item['street1'],
+						$field['select_streetcolumn'], $item['street2']. '%',
+						$field['select_city'], $item['city'],
+						$field['select_zip'], $item['zip'],
+						);
+						$result = db_fetch_object(db_query($sql3, $values));
+						if (!$result && ($errors['street1'] != '') && ($errors['street2'] != '') && ($errors['city'] != '') && ($errors['state'] != '') && ($errors['zip'] != '') && ($errors['country'] != '')) {
+							$errors['street1'] = t('Error. Cannot find this address in the database.');
+							$errors['street2'] = t('Error. Cannot find this address in the database.');
+							$errors['city'] = t('Error. Cannot find this address in the database.');
+							$errors['zip'] = t('Error. Cannot find this address in the database.');
+							$errors['state'] = t('Error. Cannot find this address in the database.');
+							$errors['country'] = t('Error. Cannot find this address in the database.');
+						}
+
+						//report errors
+						if ($errors['street1'] != '') {
+							form_set_error($error_field_street1, $errors['street1']);
+						}
+						if ($errors['street2'] != '') {
+							form_set_error($error_field_street2, $errors['street2']);
+						}
+						if ($errors['city'] != '') {
+							form_set_error($error_field_city, $errors['city']);
+						}
+						if ($errors['state'] != '') {
+							form_set_error($error_field_state, $errors['state']);
+						}
+						if ($errors['zip'] != '') {
+							form_set_error($error_field_zip, $errors['zip']);
+						}
+						if ($errors['country'] != '') {
+							form_set_error($error_field_country, $errors['country']);
+						}
+
+					}
+				}
+			}
+			else {
+
+				$all_countries = array();
+				$sql = "SELECT cas.country_name, cas.country_code FROM {expertsdb_address_countries} cas ORDER BY cas.country_name ASC";
+				$results = db_query($sql);
+				while ($result = db_fetch_object($results)) {
+					$all_countries[$result->country_code] = $result->country_name;//master list of countries to check against
+				}
+
+				if (isset($field['clist'])) {
+					$allowed_countries = $field['clist'];//just the country codes
+				}
+				else {
+					$allowed_countries = array();
+				}
+				$allowed_countries = array_filter($allowed_countries);//get rid of those not allowed
+				foreach ($allowed_countries as $code => $code2) {
+					$allowed_countries[$code] = $all_countries[$code];//add names to codes
+				}
+
+
+				if (is_array($node_field)) {
+
+					// catch empty forms
+					$temp_field = $node_field;
+					foreach ($temp_field as $delta => $data) {
+						if(is_array($data)){
+							unset($data['country'],$data['state'],$data['preferred_address'],$data['field_order'],$data['fielddisplay']);
+							$input = implode('',$data);
+							if (strlen($input) == 0) return;
+						}
+					}
+
+					foreach ($node_field as $delta => $item) {
+						if(!is_numeric($delta)) continue;
+
+						// check for multiple preferred addresses
+						if($field['allow_multiple'] && is_numeric($delta) && $item['preferred_address']['preferred_address'] === 'preferred_address'){
+							$preferred_counter ++;
+						}
+
+						$error_field_street1 = $field['field_name']. '][' .$delta. '][street1';
+						$error_field_street2 = $field['field_name']. '][' .$delta. '][street2';
+						$error_field_apt = $field['field_name']. '][' .$delta. '][apt';
+						$error_field_city = $field['field_name']. '][' .$delta. '][city';
+						$error_field_state = $field['field_name']. '][' .$delta. '][state';
+						$error_field_state = $field['field_name']. '][' .$delta. '][state_aternative';
+						$error_field_zip = $field['field_name']. '][' .$delta. '][zip';
+						$error_field_country = $field['field_name']. '][' .$delta. '][country';
+						$error_field_other = $field['field_name']. '][' .$delta. '][other';
+
+						$errors = array(
+              'street1' => '',
+              'street2' => '',
+              'apt' => '',
+              'city' => '',
+              'state' => '',
+							'state_alternative' => '',
+              'zip' => '',
+              'country' => '',
+              'other' => ''
+              );
+
+              //since states and countries come from drop-downs, we can validate them here
+              if (array_key_exists($item['country'], $allowed_countries)) {
+              	$selected_country[$item['country']] = $allowed_countries[$item['country']];
+              }
+              elseif (!$field['other_countries']) {
+              	$errors['country'] = t('Illegal value for %name\'s %type field. You must select a %type from the dropdown list.', array('%name' => t($field['widget']['label']), '%type' => $field['field_names_country']));
+              }
+              $state_options = expertsdb_address_get_states($selected_country);
+              if (count($state_options)>0 && $field['fielddisplay']['field_display_state'] && !$field['other_countries'] && !array_key_exists($item['state'], $state_options)) {
+              	$errors['state'] = t('Illegal value for %name\'s %type field. You must select a %type from the dropdown list.', array('%name' => t($field['widget']['label']), '%type' => $field['field_names_state']));
+              }
+
+              //pass all other fields on to the various address modules for validation
+              foreach (module_implements('validate_address_fields') as $name) {
+              	$function = $name. '_validate_address_fields';
+              	$function($errors, $item['country'], $item, t($field['widget']['label']));
+              }
+
+              if ($errors['street1'] != '') {
+              	form_set_error($error_field_street1, $errors['street1']);
+              }
+              if ($errors['street2'] != '') {
+              	form_set_error($error_field_street2, $errors['street2']);
+              }
+              if ($errors['apt'] != '') {
+              	form_set_error($error_field_apt, $errors['apt']);
+              }
+              if ($errors['city'] != '') {
+              	form_set_error($error_field_city, $errors['city']);
+              }
+              if ($errors['state'] != '') {
+              	form_set_error($error_field_state, $errors['state']);
+              }
+              if ($errors['state_alternative'] != '') {
+              	form_set_error($error_field_state, $errors['state']);
+              }
+              if ($errors['zip'] != '') {
+              	form_set_error($error_field_zip, $errors['zip']);
+              }
+              if ($errors['country'] != '') {
+              	form_set_error($error_field_country, $errors['country']);
+              }
+              if ($errors['other'] != '') {
+              	form_set_error($error_field_other, $errors['other']);
+              }
+
+					}
+				}
+
+				if ($field['max_lengths']['max_length_street1'] > 0) {
+					foreach ($node_field as $delta => $data) {//again, don't know if we'll ever need to deal with multiples, but leaving this in just in case
+						$error_field_street1 = $field['field_name']. '][' .$delta. '][street1';
+						if (strlen($data['street1']) > $field['max_lengths']['max_length_street1']) {
+							form_set_error($error_field_street1, t('%label\'s Street field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths']['max_length_street1'])));
+						}
+					}
+				}
+				if ($field['max_lengths']['max_length_street2'] > 0) {
+					foreach ($node_field as $delta => $data) {//again, don't know if we'll ever need to deal with multiples, but leaving this in just in case
+						$error_field_street2 = $field['field_name']. '][' .$delta. '][street2';
+						if (strlen($data['street2']) > $field['max_lengths']['max_length_street2']) {
+							form_set_error($error_field_street2, t('%label\'s Street Continued field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths']['max_length_street2'])));
+						}
+					}
+				}
+				if ($field['max_lengths']['max_length_city'] > 0) {
+					foreach ($node_field as $delta => $data) {//again, don't know if we'll ever need to deal with multiples, but leaving this in just in case
+						$error_field_city = $field['field_name']. '][' .$delta. '][city';
+						if (strlen($data['city']) > $field['max_lengths']['max_length_city']) {
+							form_set_error($error_field_city, t('%label\'s City field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths']['max_length_city'])));
+						}
+					}
+				}
+				if ($field['max_lengths']['max_length_other'] > 0) {
+					foreach ($node_field as $delta => $data) {//again, don't know if we'll ever need to deal with multiples, but leaving this in just in case
+						$error_field_other = $field['field_name']. '][' .$delta. '][other';
+						if (strlen($data['other']) > $field['max_lengths']['max_length_other']) {
+							form_set_error($error_field_other, t('%label\'s Other field is longer than %max characters.', array('%label' => $field['widget']['label'], '%max' => $field['max_lengths']['max_length_other'])));
+						}
+					}
+				}
+			}
+
+			// warn in case of multiple preferred email addresses
+			if($field['allow_multiple'] && $preferred_counter != 1){
+				form_set_error($field['field_name'] .']['. $delta. '][street1', t('Please select exactly one preferred address.'));
+			}
+			break;
+
+		case 'process form values':
+			// run a cleanup cycle
+			if(!strstr($node_field[0]['expertsdb_address'],':{')){
+				_expertsdb_address_cleanup_and_sort($node_field,$field['field_name']);
+			}
+			break;
+
+		case 'submit':
+			// do not save empty values and bring preferred email to the top
+			_expertsdb_address_cleanup_and_sort($node_field);
+
+			// serialize data
+			_expertsdb_address_serialize($node_field);
+			break;
+	}
+} //function expertsdb_address_widget()
+
+/**
+ * AHAH generation of additional form fields
+ *
+ * @param unknown_type $type_name
+ * @param unknown_type $field_name
+ */
+function expertsdb_address_widget_js($type_name, $field_name) {
+	$field = content_fields($field_name, $type_name);
+	$type = content_types($type_name);
+	// get the correct delta and field_name depending on being in node_form or user_edit
+	// $delta = ($_POST['form_id'] == 'user_edit') ? $_POST[$type['type'].'_node_form'][$field_name]['count']: $_POST[$field_name]['count'];
+	$delta = $_POST[$field_name]['count'];
+	$form = array();
+
+	_expertsdb_address_widget_form($form, $field, $node_field, $delta);
+
+	// Assign parents matching the original form
+	foreach (element_children($form) as $key) {
+		$form[$key]['#parents'] = array($field_name, $delta, $key);
+	}
+
+	// Add names, ids, and other form properties
+	foreach (module_implements('form_alter') as $module) {
+		$function = $module .'_form_alter';
+		$function('expertsdb_address_widget_js', $form);
+	}
+	$form = form_builder('expertsdb_address_widget_js', $form);
+
+	// if form is rendered as part of the user profile page, we need to alter name and id of newly generated form elements
+	/*	if($_POST['form_id'] == 'user_edit'){
+	foreach (element_children($form) as $key) {
+	$element_name = explode('[',$form[$key]['#name']);
+	array_walk($element_name,'_expertsdb_address_widget_alter_elements');
+	$form[$key]['#name'] = $type['type'] . '_node_form' . '[' . implode('][',$element_name).']';
+	}
+	}*/
+
+	$output = drupal_render($form);
+
+	print drupal_to_js(array('status' => TRUE, 'data' => $output));
+
+
+	exit;
+}
+
+/**
+ * Connection to Active Server module.
+ *
+ * Here is where we fetch and format the options to push to the state dropdown.
+ */
+function expertsdb_address_activeselect($source, $targets, $string, $extra = NULL) {
+	if (empty($source) || empty($targets) || empty($string)) {
+		exit();
+	}
+	$targets = explode(',', $targets);
+	$output = array();
+
+	$array = activeselect_explode_values($string);
+
+	$state_options = expertsdb_address_get_states($array);
+
+	foreach ($targets as $target) {
+		$options = array();
+
+		if (isset($extra)) {
+			$first_element = FALSE;
+		}
+		else {
+			$first_element = TRUE;
+		}
+		foreach ($state_options as $key => $value) {
+			$options[$key]['value'] = $value;
+
+			if ($first_element) {
+				$options[$key]['selected'] = TRUE;
+				$first_element = FALSE;
+			}
+			elseif ($key == $extra) {
+				$options[$key]['selected'] = TRUE;
+			}
+			else {
+				$options[$key]['selected'] = FALSE;
+			}
+		}
+		$multiple = FALSE;
+
+		$output[$target] = array('options' => $options, 'multiple' => $multiple);
+	}
+	activeselect_set_header_nocache();
+	print drupal_to_js($output);
+	exit();
+
+} // function expertsdb_address_activeselect()
+
+/**
+ * Connection to Active Server module.
+ *
+ * Here is where we fetch and format the options to push to the street column dropdown.
+ */
+function expertsdb_address_activeaddress1($source, $targets, $string, $extra = NULL) {
+	if (empty($source) || empty($targets) || empty($string)) {
+		exit();
+	}
+	$targets = explode(',', $targets);
+	if ($extra != '') {
+		$extras = explode(',', $extra);
+	}
+	else {
+		$extras = NULL;
+	}
+	$output = array();
+	$array = activeselect_explode_values($string);
+
+	$sql = "SHOW COLUMNS FROM {%s}";
+	$results = db_query($sql, $array);
+	while ($result = db_fetch_object($results)) {
+		$column_options[$result->Field] = $result->Field;
+	}
+	foreach ($targets as $target) {
+		$options = array();
+		if ($target == 'select-streetcolumn') {
+			$this_extra = $extras[0];
+		}
+		elseif ($target == 'select-street-numcolumn') {
+			$this_extra = $extras[1];
+		}
+		elseif ($target == 'select-city') {
+			$this_extra = $extras[2];
+		}
+		elseif ($target == 'select-zip') {
+			$this_extra = $extras[3];
+		}
+		if (isset($this_extra)) {
+			$first_element = FALSE;
+		}
+		else {
+			$first_element = TRUE;
+		}
+		foreach ($column_options as $key => $value) {
+			$options[$key]['value'] = $value;
+
+			if ($first_element) {
+				$options[$key]['selected'] = TRUE;
+				$first_element = FALSE;
+			}
+			elseif ($key == $this_extra) {
+				$options[$key]['selected'] = TRUE;
+			}
+			else {
+				$options[$key]['selected'] = FALSE;
+			}
+		}
+		$multiple = FALSE;
+
+		$output[$target] = array('options' => $options, 'multiple' => $multiple);
+	}
+	activeselect_set_header_nocache();
+	print drupal_to_js($output);
+	exit();
+
+} // function expertsdb_address_activeselect()
+
+/**
+ * Helper function renders the expertsdb_email widget only for multiple values.
+ *
+ * @param unknown_type $form_item
+ * @param unknown_type $field
+ * @param unknown_type $node_field
+ * @param integer $delta
+ */
+function _expertsdb_address_widget_form(&$form_item, $field, $node_field, $delta = 0) {
+	global $user;
+
+	$activeselect = module_exists('activeselect');
+
+	$form_item = array(
+    '#tree' => TRUE,
+    '#theme' => 'expertsdb_address_widget_form_row',
+	);
+
+	// **********************************
+
+	global $form_values, $_POST;
+	$all_countries = array();
+	$all_countries[] = t('Please select your country');
+	$sql = "SELECT cas.country_name, cas.country_code FROM {expertsdb_address_countries} cas ORDER BY cas.country_name ASC";
+	$results = db_query($sql);
+	while ($result = db_fetch_object($results)) {
+		$all_countries[$result->country_code] = $result->country_name;
+	}
+
+	if (isset($field['clist'])) {
+		$allowed_countries = $field['clist'];
+	}
+	else {
+		$allowed_countries = array();
+	}
+	$allowed_countries = array_filter($allowed_countries);
+	foreach ($allowed_countries as $code => $code2) {
+		$allowed_countries[$code] = $all_countries[$code];
+	}
+	//if the user doesn't have activeselect, give a giant list of state/provinces to go with the country list
+	$state_options = expertsdb_address_get_states($allowed_countries);
+	$form_item = array();
+	//setup fieldset containing all address elements
+	$form_item = array('#tree' => TRUE);
+	$form_item['#type'] = 'fieldset';
+	$form_item['#attributes'] = array('class' => 'expertsdb-address-fieldset');
+	$form_item['#theme'] = 'expertsdb_address_display';
+	$form_item['#title'] = ($delta === 0) ? t('Address') : t('Additional Address');
+	$form_item['#description'] = NULL;
+	// $form_item['#weight'] = $delta;
+
+	if($field['allow_multiple']){
+		// add preferred_address flag for multiple values; first item is always the preferred address
+		$form_item['preferred_address'] = array(
+  	'#type' => 'checkboxes',
+		'#title' => t('Preferred address'),
+   	'#description' => t("Check, if this address is your preferred address."),
+    '#default_value' => ($node_field['preferred_address']['preferred_address'] === 'preferred_address') ? 'preferred_address' : (($delta === 0) ? 'preferred_address' : NULL),
+		'#required' => $field['fielddisplay']['field_display_preferred_address'] == 'field_display_preferred_address' && $field['required'] == TRUE ? TRUE : FALSE,
+		'#attributes' => array(
+			'class' => 'preferred-address',
+		),
+    '#options' => array(
+    	'preferred_address' => t("Preferred address"),
+		),
+		);
+	}// add preferred option on single values
+	else{
+		// add preferred_address flag for multiple values; first item is always the preferred address
+		$form_item['preferred_address'] = array(
+  	'#type' => 'hidden',
+    '#required' => FALSE,
+    '#default_value' =>  'preferred_address',
+		'#required' => $field['fielddisplay']['field_display_preferred_address'] == 'field_display_preferred_address' && $field['required'] == TRUE ? TRUE : FALSE,
+		'#attributes' => array(
+			'class' => 'preferred-address',
+		),
+    '#options' => array(
+    	'preferred_address' => t("Preferred address"),
+		),
+		);
+	}
+
+
+	if ($field['select_a_f_d'] == 1) {
+		$table = $field['select_table'];
+
+		$column_city = $field['select_city'];
+		$sql = "SELECT %s FROM {%s} ORDER BY %s ASC";
+		$results = db_query($sql, $column_city, $table, $column_city);
+		while ($result = db_fetch_object($results)) {
+			$all_cities[$result->$column_city] = $result->$column_city;
+		}
+
+		$column_zip = $field['select_zip'];
+		$results = db_query($sql, $column_zip, $table, $column_zip);
+		while ($result = db_fetch_object($results)) {
+			$all_zips[$result->$column_zip] = $result->$column_zip;
+		}
+
+		$mand_state = $field['select_state'];
+		$mand_country = $field['select_country'];
+
+		$form_item['street1'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Street number'),
+          '#default_value' => isset($node_field['street1']) ? $node_field['street1'] : '',
+          '#required' => $field['fielddisplay']['field_display_street1'] == 'field_display_street1' && $field['required'] == TRUE ? TRUE : FALSE,
+          '#size' => 10,
+          '#maxlength' => 10,
+		);
+		$form_item['street1']['#attributes'] = array('style' => 'width: 8.5em');
+
+		$form_item['street2'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Street name'),
+          '#description' => t('Leave off any street designators like Way, or Road, or Rd. Just use the name.'),
+          '#default_value' => isset($node_field['street2']) ? $node_field['street2'] : '',
+          '#required' => $field['fielddisplay']['field_display_street2'] == 'field_display_street2' && $field['required'] == TRUE ? TRUE : FALSE,
+          '#size' => 25,
+          '#maxlength' => 50,
+		);
+		$form_item['street2']['#attributes'] = array('style' => 'width: 21.25em');
+
+		//$city = isset($_POST['city']) ? $_POST['city'] : $node_field['city'];
+		$form_item['city'] = array(
+          '#type' => 'select',
+          '#title' => t('City'),
+          '#default_value' => $city,
+          '#multiple' => FALSE,
+          '#required' => $field['fielddisplay']['field_display_city'] == 'field_display_city' && $field['required'] == TRUE ? TRUE : FALSE,
+          '#options' => $all_cities,
+		);
+
+		//$zip = isset($_POST['zip']) ? $_POST['zip'] : $node_field['zip'];
+		$form_item['zip'] = array(
+          '#type' => 'select',
+          '#title' => t('Zip code'),
+          '#default_value' => $zip,
+          '#multiple' => FALSE,
+          '#required' => $field['fielddisplay']['field_display_zip'] == 'field_display_zip' && $field['required'] == TRUE ? TRUE : FALSE,
+          '#options' => $all_zips,
+		);
+
+		$form_item['state'] = array(
+          '#type' => 'hidden',
+          '#title' => t('State'),
+          '#value' => $mand_state,
+		);
+
+		$form_item['country'] = array(
+          '#type' => 'hidden',
+          '#title' => t('Country'),
+          '#value' => $mand_country,
+		);
+	}
+	else { //not using the pre-known address validation option
+		$form_item['street1'] = array(
+          '#type' => 'textfield',
+          '#title' => isset($field['field_names_street1']) ? $field['field_names_street1'] : t('Address'),
+          '#default_value' => isset($node_field['street1']) ? $node_field['street1'] : $field['field_defaults_street1'],
+          '#required' => $field['fielddisplay']['field_display_street1'] == 'field_display_street1' && $field['required'] == TRUE ? TRUE : FALSE,
+          '#size' => 20,
+          '#maxlength' => $field['max_length_street1'] ? $field['max_length_street1'] : NULL,
+          '#prefix' => '<div class="expertsdb-address-street1">',
+          '#suffix' => '</div>',
+		);
+		$form_item['street1']['#attributes'] = $field['max_length_street1'] ? array('style' => 'width:' .$field["max_length_street1"]*0.85. 'em') : array();
+
+		$form_item['apt'] = array(
+          '#type' => 'textfield',
+          '#title' => isset($field['field_names_apt']) ? $field['field_names_apt'] : t('Apt/suite number'),
+          '#default_value' => isset($node_field['apt']) ? $node_field['apt'] : $field['field_defaults_apt'],
+          '#required' => FALSE,
+          '#size' => 7,
+          '#maxlength' => $field['max_length_apt'] ? $field['max_length_apt'] : NULL,
+          '#prefix' => '<div class="expertsdb-address-apt">',
+          '#suffix' => '</div>',
+		);
+		$form_item['apt']['#attributes'] = $field['max_length_apt'] ? array('style' => 'width:' .$field["max_length_apt"]*0.85. 'em') : array();
+
+		$form_item['street2'] = array(
+          '#type' => 'textfield',
+          '#title' => isset($field['field_names_street2']) ? $field['field_names_street2'] : t('Address continued'),
+          '#default_value' => isset($node_field['street2']) ? $node_field['street2'] : $field['field_defaults_street2'],
+          '#required' => FALSE,
+          '#size' => 20,
+          '#maxlength' => $field['max_length_street2'] ? $field['max_length_street2'] : NULL,
+          '#prefix' => '<div class="expertsdb-address-street2">',
+          '#suffix' => '</div>',
+		);
+		$form_item['street2']['#attributes'] = $field['max_length_street2'] ? array('style' => 'width:' .$field["max_length_street2"]*0.85. 'em') : array();
+
+		$form_item['city'] = array(
+          '#type' => 'textfield',
+          '#title' => isset($field['field_names_city']) ? $field['field_names_city'] : t('City'),
+          '#default_value' => isset($node_field['city']) ? $node_field['city'] : $field['field_defaults_city'],
+          '#required' => $field['fielddisplay']['field_display_city'] == 'field_display_city' && $field['required'] == TRUE ? TRUE : FALSE,
+          '#size' => 20,
+          '#maxlength' => $field['max_length_city'] ? $field['max_length_city'] : NULL,
+          '#prefix' => '<div class="expertsdb-address-city">',
+          '#suffix' => '</div>',
+		);
+		$form_item['city']['#attributes'] = $field['max_length_city'] ? array('style' => 'width:' .$field["max_length_city"]*0.85. 'em') : array();
+
+		$state = (empty($node_field['state'])) ? (!empty($field['field_defaults_state'])) ? $field['field_defaults_state'] : '' :  $node_field['state'];
+		// squash tha t annoying array(0) value if that one comes in, activeselect will not work.
+		$state = (is_array($state) && count($state) == 0) ? '' : $state;
+		//$state = isset($_POST['state']) ? $_POST['state'] : $state_pre_default;
+
+		if ($field['state_abbrv'] == 2) {
+			$form_item['state'] = array(
+            '#type' => 'textfield',
+            '#title' => isset($field['field_names_state']) ? $field['field_names_state'] : t('State'),
+            '#default_value' => $state,
+            '#required' => $field['fielddisplay']['field_display_state'] == 'field_display_state' && $field['required'] == TRUE ? TRUE : FALSE,
+            '#size' => 20,
+            '#maxlength' => $field['max_length_city'] ? $field['max_length_city'] : NULL,
+            '#prefix' => '<div class="expertsdb-address-state">',
+            '#suffix' => '</div>',
+			);
+			$form_item['state']['#attributes'] = $field['max_length_city'] ? array('style' => 'width:' .$field["max_length_city"]*0.85. 'em') : array();
+		}
+		else {
+			$form_item['state'] = array(
+            '#type' => 'select',
+            '#title' => isset($field['field_names_state']) ? $field['field_names_state'] : t('State'),
+            '#default_value' => $state,
+            '#multiple' => FALSE,
+            '#required' => $field['fielddisplay']['field_display_state'] == 'field_display_state' && $field['required'] == TRUE ? TRUE : FALSE,
+            '#options' => array(),
+            '#prefix' => '<div class="expertsdb-address-state">',
+            '#suffix' => '</div>',
+            '#DANGEROUS_SKIP_CHECK' => TRUE,
+			);
+
+			// add a non-present state
+			$form_item['state_alternative'] = array(
+          '#type' => 'textfield',
+          '#title' => isset($field['field_names_state_alternative']) ? $field['field_names_state_alternative'] : t('Different State'),
+          '#default_value' => isset($node_field['state_alternative']) ? $node_field['state_alternative'] : $field['field_defaults_state_alternative'],
+          '#required' => FALSE, // $field['fielddisplay']['field_display_state_alternative'] == 'field_display_state_alternative' && $field['required'] == TRUE ? TRUE : FALSE,
+					'#size' => 20,
+          '#maxlength' => $field['max_length_city'] ? $field['max_length_city'] : NULL,
+          '#prefix' => '<div class="expertsdb-address-state-alternative">',
+          '#suffix' => '</div>',
+        	'#description' => t('If your !state is not listed, please enter it here. Make sure that you choose the correct country above.',array('!state' => $field['field_names_state'])),
+			);
+		}
+
+		$form_item['zip'] = array(
+          '#type' => 'textfield',
+          '#title' => isset($field['field_names_zip']) ? $field['field_names_zip'] : t('ZIP'),
+          '#default_value' => isset($node_field['zip']) ? $node_field['zip'] : $field['field_defaults_zip'],
+          '#required' => $field['fielddisplay']['field_display_zip'] == 'field_display_zip' && $field['required'] == TRUE ? TRUE : FALSE,
+          '#size' => 10,
+          '#maxlength' => 10,
+          '#prefix' => '<div class="expertsdb-address-zip">',
+          '#suffix' => '</div>',
+		);
+		$form_item['zip']['#attributes'] = array('style' => 'width:8.5em', 'class' => 'number');
+
+		if ($field['other_countries'] == 1) {
+			$form_item['country'] = array(
+            '#type' => 'textfield',
+            '#title' => isset($field['field_names_country']) ? $field['field_names_country'] : t('Country'),
+            '#default_value' => isset($node_field['country']) ? $node_field['country'] : '',
+            '#required' => $field['fielddisplay']['field_display_country'] == 'field_display_country' && $field['required'] == TRUE ? TRUE : FALSE,
+            '#size' => 20,
+            '#maxlength' => $field['max_length_city'] ? $field['max_length_city'] : NULL,
+            '#prefix' => '<div class="expertsdb-address-country">',
+            '#suffix' => '</div>',
+			);
+			$form_item['country']['#attributes'] = $field['max_length_city'] ? array('style' => 'width:' .$field["max_length_city"]*0.85. 'em') : array();
+		}
+		else {
+			$first_value = end($allowed_countries);
+			$first_key = array_keys($allowed_countries, $first_value);
+			$country_pre_default = isset($field['field_defaults_country']) ? $field['field_defaults_country'] : $first_key;
+			$form_item['country'] = array(
+            '#type' => 'select',
+            '#title' => isset($field['field_names_country']) ? $field['field_names_country'] : t('Country'),
+            '#default_value' => isset($node_field['country']) ? array($node_field['country']) : $country_pre_default,
+            '#multiple' => FALSE,
+            '#required' => $field['fielddisplay']['field_display_country'] == 'field_display_country' && $field['required'] == TRUE ? TRUE : FALSE,
+            '#options' => $allowed_countries,
+            '#prefix' => '<div class="expertsdb-address-country">',
+            '#suffix' => '</div>',
+			);
+			if ($activeselect && ($field['other_countries'] == 0)) {
+				$form_item['country']['#type'] = 'activeselect';
+				$form_item['country']['#activeselect_path'] = 'expertsdb_address/activeselect';
+				$form_item['country']['#activeselect_targets'] = str_replace('_', '-', $field['field_name']). '-' . $delta . '-state';
+				$form_item['country']['#activeselect_extra'] = !empty($state) ? $state : '';
+			}
+			else {
+				$form_item['state']['#options'] = $state_options;
+			}
+		}
+		$form_item['other'] = array(
+          '#type' => 'textfield',
+          '#title' => isset($field['field_names_other']) ? $field['field_names_other'] : t('Other'),
+          '#default_value' => isset($node_field['other']) ? $node_field['other'] : $field['field_defaults_other'],
+          '#required' => FALSE,
+          '#size' => 20,
+          '#maxlength' => $field['max_length_other'] ? $field['max_length_other'] : NULL,
+          '#prefix' => '<div class="expertsdb-address-other">',
+          '#suffix' => '</div>',
+					'#description' => t('If your !country is not listed, please enter it here.',array('!country' => $field['field_names_country'])),
+		);
+		$form_item['other']['#attributes'] = $field['max_length_other'] ? array('style' => 'width:' .$field["max_length_other"]*0.85. 'em') : array();
+	}
+	$form_item['field_order'] = array(
+        '#type' => 'value',
+        '#value' => $field['field_order'],
+	);
+	$form_item['fielddisplay'] = array(
+        '#type' => 'value',
+        '#value' => $field['fielddisplay'],
+	);
+
+}
+
+function _expertsdb_address_widget_alter_elements(&$element){
+	$element = preg_replace('@\]@', '', $element);
+}
+
+/**
+ * Helper function to unserailize serialized data
+ *
+ * @param unknown_type $node_field
+ */
+function _expertsdb_address_widget_prepare(&$node_field){
+	// only prepare, if data is actually serialized
+	if(strstr($node_field[0]['expertsdb_address'],':{')){
+		$node_field[0] = unserialize($node_field[0]['expertsdb_address']);
+		if(count($node_field) > 0){
+			// return content of first array element
+			$node_field = $node_field[0];
+		}
+	}
+}
+
+/**
+ * Helper function to serialize data
+ *
+ * @param unknown_type $node_field
+ */
+function _expertsdb_address_serialize(&$node_field){
+	$node_field = array(array('expertsdb_address' => serialize($node_field)));
+}
+
+/**
+ * Function to remove unwanted elements from the node_field array
+ * and to move the preferred address to the top of the list
+ *
+ * @param array $node_field
+ */
+function _expertsdb_address_cleanup_and_sort(&$node_field){
+	$save_field = array();
+	//$registered_emails =array();
+
+	// Remove the JS helper fields
+	unset($node_field['count'], $node_field['more-url'], $node_field['more']);
+
+	// Don't save empty fields except the first value
+	if ($field['select_a_f_d'] != 1) {
+		foreach ($node_field as $delta => $item) {
+			unset($node_field[$delta]['field_order'],$node_field[$delta]['fielddisplay']);
+			if (!is_numeric($delta)) {
+				unset($node_field[$delta]);
+			}
+			elseif (($item['street1'] == '') && ($item['city'] == '') && ($item['zip'] == '') && ($item['other'] == '') && ($item['state_alternative'] == '')) {
+				unset($node_field[$delta]);
+				continue;
+			}
+
+			// resort addresses; preferred address goes to top
+			if($node_field[$delta]['preferred_address'] && $node_field[$delta]['preferred_address']['preferred_address'] === 'preferred_address'){
+				// put email as first element into the list of emails to save
+				array_unshift($save_field,$node_field[$delta]);
+			}else{
+				$node_field[$delta]['preferred_address']['preferred_address'] = FALSE;
+				array_push($save_field,$node_field[$delta]);
+			}
+		}
+	}
+	else {
+		foreach ($node_field as $delta => $item) {
+			unset($node_field[$delta]['field_order'],$node_field[$delta]['fielddisplay']);
+			if (!is_numeric($delta)) {
+				unset($node_field[$delta]);
+			}
+			elseif (($item['street1'] == '') && ($item['city'] == '') && ($item['zip'] == '')) {
+				unset($node_field[$delta]);
+				continue;
+			}
+
+			// resort addresses; preferred address goes to top
+			if($node_field[$delta]['preferred_address'] && $node_field[$delta]['preferred_address']['preferred_address'] === 'preferred_address'){
+				// put email as first element into the list of emails to save
+				array_unshift($save_field,$node_field[$delta]);
+			}else{
+				$node_field[$delta]['preferred_address']['preferred_address'] = FALSE;
+				array_push($save_field,$node_field[$delta]);
+			}
+		}
+	}
+	$node_field = $save_field;
+}
+
+/**
+ * Get all locales supported on the server running Drupal.
+ */
+function expertsdb_address_get_all_locales() {
+	/*ob_start();
+	 system('locale -a');
+	 $str = ob_end_clean();
+	 return split("\\n", trim($str));*/
+	exec('locale -a', $output);
+	return $output;
+}
+
+/**
+ * Set locale in a platform-independent way.
+ *
+ * Taken from: http://www.onphp5.com/article/22
+ *
+ * @param  string $locale  the locale name ('en_US', 'uk_UA', 'fr_FR' etc)
+ * @return  string  the encoding name used by locale-aware functions
+ * @throw  Exception  if the locale could not be set
+ */
+function expertsdb_address_setLocaleCP($locale) {
+	list($lang, $cty) = explode('_', $locale);
+	$locales = array($locale . '.UTF-8', $lang);
+	$result = setlocale(LC_ALL, $locales);
+
+	if (!$result) {
+		drupal_set_message("Unknown Locale name $locale", "error");
+		return;
+	}
+
+	// See if we have successfully set it to UTF-8
+	if (!strpos($result, 'UTF-8')) {
+		preg_match('~\.(\d+)$~', $result, $m);
+		$encoding = 'CP' . $m[1];
+	}
+	else {
+		$encoding = 'UTF-8';
+	}
+
+	return $encoding;
+}
+
+/**
+ * Query the DB for the allowed States/Provinces corresponding to the allowed Countries.
+ *
+ * If Activeselect is installed, this will be called dynamically to fill the state selector dynamically via AJAX.
+ * Expects an array of CountryCode => CountryName pairs.
+ * @param array $countries
+ * @return array $state_options
+ */
+function expertsdb_address_get_states($countries = NULL) {
+	$state_options = array();
+	$where = 'WHERE ';
+	if ($countries == NULL) {
+		$where = '';
+	}
+	else {
+		$countrynum = count($countries);
+		foreach ($countries as $code => $name) {
+			if ($countrynum > 1) {
+				$where .= 'cas.country_code = \'' .$code. '\' OR ';
+				$countrynum--;
+			}
+			else {
+				$where .= 'cas.country_code = \'' .$code. '\'';
+				$countrynum--;
+			}
+		}
+	}
+	$sql = "SELECT cas.state_id, cas.state_name, cas.state_abbrv, cas.country_code FROM {expertsdb_address_states} cas " .$where. " ORDER BY cas.country_code ASC, cas.state_name ASC";
+	$results = db_query($sql);
+	while ($result = db_fetch_object($results)) {
+		$state_options[$result->state_abbrv] = $result->state_name;
+	}
+	return $state_options;
+} // function expertsdb_address_get_states()
+
+/**
+ * Theme the display of a single form row
+ *
+ * @param unknown_type $element
+ * @return unknown
+ */
+function theme_expertsdb_address_widget_form_row($element) {
+	$output = '';
+	$output .= '<div class="expertsdb-email-field-row clear-block"><div class="expertsdb-email-field-subrow clear-block">';
+	$output .= '<div class="expertsdb-email-field-preferred-email preferred-email-field-column">' . drupal_render($element['preferred_email']) . '</div>';
+	$output .= '<div class="expertsdb-email-field-expertsdb-email">' . drupal_render($element['email']) . '</div>';
+	$output .= '</div>';
+	$output .= '</div>';
+	return $output;
+}
+
+/**
+ * Theme the display of the entire expertsdb_address set
+ *
+ * @param unknown_type $element
+ * @return unknown
+ */
+function theme_expertsdb_address_widget_form($element) {
+	// pull in the stylesheet
+	drupal_add_css(drupal_get_path('module', 'expertsdb_address') .'/expertsdb_address_form.css');
+	$output = drupal_render($element);
+	return $output;
+}
+
+/**
+ * Theme to display a complete container with all email addresses in view mode
+ *
+ * @param unknown_type $node
+ * @param unknown_type $field
+ * @param unknown_type $items
+ * @param unknown_type $teaser
+ * @param unknown_type $page
+ * @return unknown
+ */
+function theme_expertsdb_address_container($node, $field, $items, $teaser, $page){
+	// pull in the stylesheet
+	drupal_add_css(drupal_get_path('module', 'expertsdb_address') .'/expertsdb_address_view.css');
+	$output = '';
+	$output .= '<div class="expertsdb-address-container">';
+	$output .= theme('field', $node, $field, $items, $teaser, $page);
+	$output .= '</div>';
+	return $output;
+}
+
+/**
+ * Call drupal_render to get some output that is screen-ready.
+ *
+ * Was going to use this but haven't yet. Perhaps should do something here and eliminate CSS file?
+ *
+ * @param array $form
+ * 	The data to be rendered.
+ * @return string An HTML string ready for display.
+ */
+function theme_expertsdb_address_display($form) {
+	$output = '';
+	asort($form['field_order']['#value']);
+	foreach ($form['field_order']['#value'] as $field => $order) {
+		if ($form['fielddisplay']['#value']['field_display_'.$field] === 'field_display_'.$field) {
+			$output .= drupal_render($form[$field]);
+		}
+		else {
+			if ($field == 'country' || $field == 'state') { //make it so if activeselect isn't used that we do make #access FALSE instead of this
+				$form['#title'] = '';
+				$form['#attributes'] = array('style' => "display:none");
+			}
+			else {
+				$form['#access'] = FALSE;
+			}
+		}
+	}
+	$output .= drupal_render($form);
+	return $output;
+} //function theme_expertsdb_address_display()
+
+/**
+ * Theme for address display as called from expertsdb_address_field_formatter().
+ */
+function theme_expertsdb_address($expertsdb_address, $field) {
+	//create the output
+	if ($expertsdb_address['afd'] == 1) {
+		$output = $expertsdb_address['street1']. ' ';
+		$output .= $expertsdb_address['street2']. '<br />';
+		$output .= $expertsdb_address['city']. ', ';
+		$output .= $expertsdb_address['state']. ' ';
+		$output .= $expertsdb_address['zip'];
+		$output .= '<br />';
+	}
+	else {
+		$output = '';
+		asort($field['field_order']);
+		foreach ($field['field_order'] as $field2 => $order) {
+			switch ($field2) {//TODO create more elaborate output based on $order; not I'm only now using it for display of other, assuming it will either be first or last
+				case 'street1':
+					if ($field['fielddisplay']['field_display_street1'] === 'field_display_street1' && isset($expertsdb_address['street1']) && $expertsdb_address['street1'] != '') {
+						$output .= $expertsdb_address['street1'] .' ';
+					}
+					break;
+				case 'street2':
+					if ($field['fielddisplay']['field_display_street2'] === 'field_display_street2' && isset($expertsdb_address['street2']) && $expertsdb_address['street2'] != '') {
+						$output .= '<br />'. $expertsdb_address['street2'];
+					}
+					break;
+				case 'apt':
+					if ($field['fielddisplay']['field_display_apt'] === 'field_display_apt' && isset($expertsdb_address['apt']) && $expertsdb_address['apt'] != '') {
+						$output .= '#'. $expertsdb_address['apt'];
+					}
+					break;
+				case 'city':
+					if ($field['fielddisplay']['field_display_city'] === 'field_display_city' && isset($expertsdb_address['city']) && $expertsdb_address['city'] != '') {
+						$output .= '<br />'. $expertsdb_address['city'] .', ';
+					}
+					break;
+				case 'state':
+					if ($field['fielddisplay']['field_display_state'] === 'field_display_state' && isset($expertsdb_address['state']) && $expertsdb_address['state'] != '') {
+						$output .= $expertsdb_address['state'] .' ';
+					}
+					break;
+				case 'zip':
+					if ($field['fielddisplay']['field_display_zip'] === 'field_display_zip' && isset($expertsdb_address['zip']) && $expertsdb_address['zip'] != '') {
+						$output .= $expertsdb_address['zip'];
+					}
+					break;
+				case 'country':
+					if ($field['fielddisplay']['field_display_country'] === 'field_display_country' && isset($expertsdb_address['country']) && $expertsdb_address['country'] != '') {
+						$output .= ' '. $expertsdb_address['country'];
+					}
+					break;
+				case 'other':
+					if ($field['fielddisplay']['field_display_other'] !== 0 && isset($expertsdb_address['other']) && $expertsdb_address['other'] != '') {
+						if ($order > 1) {
+							$output .= '<br />'. $expertsdb_address['other'] .'<br />';
+						}
+						else {
+							$output .= $expertsdb_address['other'] .'<br />';
+						}
+					}
+					break;
+			}
+		}
+		$output .= '<br /><br />';
+	}
+	return $output;
+} // function theme_expertsdb_address()
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function expertsdb_address_field_formatter_info() {
+	return array(
+    'default' => array(
+      'label' => t('Default: show all values'),
+      'field types' => array('expertsdb_address'),
+	),
+  'country_specific' => array(
+      'label' => t('Country specific, dependig on contry formatter'),
+      'field types' => array('expertsdb_address'),
+	),
+  'table' => array(
+      'label' => t('Show addresses as table'),
+      'field types' => array('expertsdb_address'),
+	),
+	);
+}
+
+/**
+ * Implementation of hook_field_formatter().
+ *
+ * <p>Here we format the data for display and make sure it is plain text. It should be as
+ * elsewhere it was validated as alphanumeric characters only.</p>
+ * <p>The $node argument is necessary so that filter access can be checked on
+ * node preview.</p>
+ * @param $field
+ *   The field the action is being performed on.
+ * @param $item
+ *   An array, keyed by column, of the data stored for this item in this field.
+ * @param $formatter
+ *   The name of the formatter being used to display the field. In our case, we name
+ *   it directly, rather than send it through content_format() and therefore we don't
+ *   use hook_field_formatter_info either.
+ * @param $node
+ *   The node object, for context. Will be NULL in some cases.
+ *   Warning : when displaying field retrieved by Views, $node will not
+ *   be a "full-fledged" node object, but an object containg the data returned
+ *   by the Views query (at least nid, vid, changed)
+ * @return
+ *   An HTML string containing the formatted item.
+ */
+function expertsdb_address_field_formatter($field, $item, $formatter, $node) {
+	// item comes in as either serialized or unserilaized item
+	if (empty($item[0]['expertsdb_address']) && empty($item[0]['city'])) {
+		return array();
+	}
+	if(strstr($item[0]['expertsdb_address'],':{')){
+		$items = unserialize($item[0]['expertsdb_address']);
+	}else{
+		unset($item['count'], $item['more-url'], $item['more']);
+		$items = $item;
+	}
+
+	if(empty($items)) return;
+	/*
+	 * React on privacy settings
+	 */
+	if($node->field_privacy){
+		global $user;
+		$term = taxonomy_get_term($node->field_privacy[0]['tid']);
+		switch($term->name){
+
+			case PRIVACY_CONTACT_PRIVATE:
+			case PRIVACY_PRIVATE:
+				// show information only to roles with access and node author
+				if($user->uid != $node->uid && !user_access('view private expertsdb_address fields',$user)){
+					return;
+				}
+				break;
+
+			case PRIVACY_PUBLIC:
+				// allow everybody to view aliases as configured in the field formatter (display field)
+				break;
+
+		}
+	}
+
+	// pull in the stylesheet
+	drupal_add_css(drupal_get_path('module', 'expertsdb_address') .'/expertsdb_address_view.css');
+
+	switch ($formatter) {
+
+		case 'table':
+			// invoke the table formatter
+			// and: yes, we use the serialized item here. The table formatter will take care of displaying all addresses.
+			$item[0]['view'] = _expertsdb_address_list_table_formatter($node, $field, $items);
+			return $item;
+			break;
+
+		case 'country_specific':
+			foreach ($items as $delta => $item) {
+				if (empty($item['city'])) {
+					// don't stop on empty values
+					continue;
+				}
+
+				$expertsdb_address = _expertsdb_address_prepare_view_data($item,$field);
+				if(function_exists('theme_expertsdb_address_').strtolower($expertsdb_address['country'])){
+					$items[$delta]['view'] = theme('expertsdb_address_'.strtolower($expertsdb_address['country']), $expertsdb_address, $field);
+				} // fall back to default
+				else{
+					$items[$delta]['view'] = theme('expertsdb_address', $expertsdb_address, $field);
+				}
+			}
+			break;
+
+		case 'default':
+			foreach ($items as $delta => $item) {
+				if (empty($item['city'])) {
+					// don't stop on empty values
+					continue;
+				}
+
+				$expertsdb_address = _expertsdb_address_prepare_view_data($item,$field);
+				$items[$delta]['view'] = theme('expertsdb_address', $expertsdb_address, $field);
+			}
+
+	}
+
+	return $items;
+} //function expertsdb_address_format()
+
+function _expertsdb_address_prepare_view_data($item,$field){
+	$expertsdb_address = array();
+	// prepare dataset
+	if ($field['select_a_f_d'] == 1) {
+		$expertsdb_address['afd'] = 1;
+		$expertsdb_address['street1'] = strip_tags($item['street1']);
+		$expertsdb_address['street2'] = strip_tags($item['street2']);
+		$expertsdb_address['city'] = strip_tags($item['city']);
+		$expertsdb_address['state'] = strip_tags($item['state']);
+		$expertsdb_address['state_alternative'] = strip_tags($item['state_alternative']);
+		$expertsdb_address['zip'] = strip_tags($item['zip']);
+		$expertsdb_address['country'] = strip_tags($item['country']);
+	}
+	else {
+		//if no field typically in an address is set, return. if at least one field is set, continue.
+		if (!isset($item['street1']) && !isset($item['city']) && !isset($item['state']) && !isset($item['zip']) && !isset($item['country'])) {
+			return '';
+		}
+		//get some values to use later
+		$expertsdb_address['afd'] = 0;
+		$all_countries = array();
+		$all_countries[] = t('Please select your country');
+		$sql = "SELECT cas.country_name, cas.country_code FROM {expertsdb_address_countries} cas ORDER BY cas.country_name ASC";
+		$results = db_query($sql);
+		while ($result = db_fetch_object($results)) {
+			$all_countries[$result->country_code] = $result->country_name;
+		}
+		if (isset($field['clist'])) {
+			$allowed_countries = $field['clist'];
+		}
+		else {
+			$allowed_countries = array();
+		}
+		$allowed_countries = array_filter($allowed_countries);
+		foreach ($allowed_countries as $code => $code2) {
+			$allowed_countries[$code] = $all_countries[$code];
+		}
+
+		if ($field['other_countries']) {
+			$country[$item['country']] = $item['country'];
+		}
+		else {
+			$country[$item['country']] = $all_countries[$item['country']];
+		}
+
+		if ($field['state_abbrv'] == 2) {
+			$expertsdb_address_state = strip_tags($item['state']);
+		}
+		else {
+			$states = expertsdb_address_get_states($country);
+		}
+
+		//check the values
+		$expertsdb_address['street1'] = strip_tags($item['street1']);
+		$expertsdb_address['street2'] = strip_tags($item['street2']);
+		$expertsdb_address['apt'] = strip_tags($item['apt']);
+		$expertsdb_address['city'] = strip_tags($item['city']);
+		$expertsdb_address['state'] = strip_tags($item['state']);
+		$expertsdb_address['state_alternative'] = strip_tags($item['state_alternative']);
+		$expertsdb_address['zip'] = strip_tags($item['zip']);
+		$expertsdb_address['country'] = strip_tags($item['country']);
+		$expertsdb_address['other'] = strip_tags($item['other']);
+
+		//are we using state abbreviations for display?
+		if ($field['state_abbrv'] == 0) {
+			$expertsdb_address['state'] = ($expertsdb_address['state_alternative']) ? $expertsdb_address['state_aternative'] : $states[$expertsdb_address['state']];
+		}
+
+		//are we using country abbreviations for display?
+		if ($field['country_abbrv'] == 0) {
+			$expertsdb_address['country'] = ($expertsdb_address['other']) ? $expertsdb_address['other'] : $country[$expertsdb_address['country']];
+		}
+	}
+
+	// always keep the preferred flag
+	$expertsdb_address['preferred_address'] = $item['preferred_address'];
+
+	return $expertsdb_address;
+}
+
+function _expertsdb_address_list_table_formatter($node, $field, $items) {
+
+	if(empty($items) || count($items[0]) < 2) return;
+	// Format the header
+	$header = array();
+	// make sure, that the number of cells matches the number of headers
+	$registered_items = array();
+	// items not to display in the table
+	$omitted_items = array('other','state_alternative');
+
+	$force_preferred = count($items) == 1 ? TRUE :FALSE;
+
+	foreach($field['field_order'] as $key => $parts){
+		if (!in_array($key,$omitted_items) && $field['fielddisplay']['field_display_'.$key]){
+			$registered_items[] = $key;
+		}// skip item
+		else{
+			continue;
+		}
+		switch($key){
+			case 'preferred_address':
+				$cell['data'] = t('Pref.');
+				$cell['class'] = _expertsdb_address_create_stylename($field['field_names_'.$key]);
+				$header[$field['field_order']['$key']] = $cell;
+				break;
+
+			default:
+				$cell['data'] = $field['field_names_'.$key];
+				$cell['class'] = _expertsdb_address_create_stylename($field['field_names_'.$key]);
+				$header[$field['field_order'][$key]] = $cell;
+		}
+	}
+
+	// sort header like field_order
+	ksort($header);
+	$preferred_style = '';
+	foreach ($items as $dalta => $item) {
+		$row = array();
+		// transpose values, like country and region
+		$item = _expertsdb_address_prepare_view_data($item,$field);
+
+		$preferred_style = (isset($item['preferred_address']) && $item['preferred_address']['preferred_address'] === 'preferred_address' || $force_preferred == TRUE) ? ' preferred' : '';
+
+		// step out if item is empty
+		if(empty($item)) continue;
+
+		foreach($item as $key => $parts){
+
+			// do not use fields, that are not in the header
+			if(!in_array($key,$registered_items)) continue;
+
+			switch($key){
+				case 'preferred_address':
+					$cell['data'] = ($item[$key]['preferred_address'] === 'preferred_address' || $force_preferred == TRUE) ? '<strong>*</strong>' : '&nbsp;';
+					$cell['class'] = _expertsdb_address_create_stylename($key).$preferred_style;
+					$row[$field['field_order'][$key]] = $cell;
+					break;
+
+				case 'state':
+					$cell['data'] = (!empty($item[$key])) ? $item[$key] : (!empty($item['state_alternative']) ? $item['state_alternative'] : '');
+					$cell['class'] = _expertsdb_address_create_stylename($key).$preferred_style;
+					$row[$field['field_order'][$key]] = $cell;
+					break;
+
+				case 'country':
+					$cell['data'] = (!empty($item['other'])) ? $item['other'] : $item['country'];
+					$cell['class'] = _expertsdb_address_create_stylename($key).$preferred_style;
+					$row[$field['field_order'][$key]] = $cell;
+					break;
+
+				default:
+					$cell['data'] = (!empty($item[$key])) ? $item[$key] : '';
+					$cell['class'] = _expertsdb_address_create_stylename($key).$preferred_style;
+					$row[$field['field_order'][$key]] = $cell;
+			}
+		}
+
+		// sort row like field_order
+		ksort($row);
+		$rows[] = $row;
+	}
+
+	return theme('table', $header, $rows, array('class' => 'expertsdb-address-table'));
+}
+
+function _expertsdb_address_create_stylename($fieldname){
+	if(!$fieldname) return;
+	return views_css_safe('field-'. strtolower(preg_replace('@\s@','-',$fieldname)));
+}
+/**
+ * Implementation of hook_diff()
+ */
+function expertsdb_address_diff(&$old_node, &$new_node) {
+	$result = array();
+	$cck_info = content_types($new_node->type);
+	if ($cck_info) {
+		foreach ($cck_info['fields'] as $field) {
+			if ($field['type'] == 'expertsdb_address') {
+				$old_values = array();
+				$new_values = array();
+				if (isset($old_node->$field['field_name'])) {
+					$old_values = expertsdb_address_diff_values($old_node, $field);
+				}
+				if (isset($new_node->$field['field_name'])) {
+					$new_values = expertsdb_address_diff_values($new_node, $field);
+				}
+				$result[] = array(
+          'name' => $field['widget']['label'],
+          'old' => $old_values,
+          'new' => $new_values,
+          'format' => array(
+            'show_header' => true,
+				),
+				);
+			}
+		}
+	}
+	return $result;
+}
+
+function expertsdb_address_diff_values(&$node, &$field) {
+	foreach ($node->$field['field_name'] as $item => $value) {
+		foreach ($value as $i) {
+			$result[] = $i;
+		}
+	}
+	return $result;
+}

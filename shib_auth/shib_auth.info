@@ -1,0 +1,16 @@
+; $Id: shib_auth.info,v 1.2.4.1.4.2 2008/09/26 11:58:24 niif Exp $
+name = Shibboleth authentication
+description = Shibboleth authentication module.
+core = 5.x
+
+; Information added by drupal.org packaging script on 2008-08-30
+version = "5.x-3.2"
+project = "shib_auth"
+datestamp = "1220120419"
+
+
+; Information added by drupal.org packaging script on 2008-09-26
+version = "5.x-3.3"
+project = "shib_auth"
+datestamp = "1222431022"
+

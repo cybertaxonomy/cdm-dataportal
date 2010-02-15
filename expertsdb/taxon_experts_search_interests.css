@@ -1,0 +1,44 @@
+/* search_interest filter styles */
+
+.view-search-interest td {
+vertical-align:top;
+padding-top: 1em;
+}
+
+.view-search-interest td.row-submit {
+padding-top: 1em;
+padding-bottom: 1em;
+}
+
+.view-search-interest .field-label{
+font-weight:700;
+margin:0 0 .5em 0;
+}
+
+.view-search-interest select#edit-filter2 {
+	width:36em;
+	background-color: #fff;
+	border: 1px solid #ADDDFA;
+margin: .5em 0 0 0;
+}
+
+.view-search-interest select#edit-filter3 {
+	width: 36em;
+	background-color: #fff;
+	border: 1px solid #ADDDFA;
+margin:1em 0 0 0;
+}
+
+.view-search-interest select#edit-filter4 {
+	width: 36em;
+	background-color: #fff;
+	border: 1px solid #ADDDFA;
+margin:1em 0 0 0;
+}
+
+.view-search-interest input#edit-filter5 {
+	width: 35.75em;
+	background-color: #fff;
+	border: 1px solid #ADDDFA;
+margin:1em 0 0 0;
+}

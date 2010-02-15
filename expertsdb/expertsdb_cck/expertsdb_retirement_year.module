@@ -1,0 +1,302 @@
+<?php
+
+/**
+ * @file
+ * Defines simple expertsdb_retirement_year field types.
+ */
+
+/*
+ * Definition of privacy levels
+ */
+define('PRIVACY_CONTACT_PRIVATE', 'ContactPrivate');
+define('PRIVACY_PRIVATE', 'Private');
+define('PRIVACY_PUBLIC', 'Public');
+
+/**
+ * Implementation of hook_perm()
+ *
+ * Valid permissions for this module
+ * @return array An array of valid permissions for the expertsdb_retirement_year module
+ */
+function expertsdb_retirement_year_perm() {
+	return array(
+    	'view private expertsdb_retirement_year fields',
+	//TODO which else permission are required?
+	);
+}
+
+/**
+ * Implementation of hook_help().
+ *
+ * @param unknown_type $section
+ * @return unknown
+ */
+function expertsdb_retirement_year_help($section) {
+	switch ($section) {
+		case 'admin/modules#description':
+			return t('Defines a date field type for CCK taking only 2 or 4 digit year values. <em>Note: Requires content.module.</em>');
+	}
+}
+
+/**
+ * Implementation of hook_field_info().
+ */
+function expertsdb_retirement_year_field_info() {
+	return array(
+    'expertsdb_retirement_year' => array('label' => 'Expertsdb Retirement Year'),
+	);
+}
+
+/**
+ * Implementation of hook_field_settings().
+ */
+function expertsdb_retirement_year_field_settings($op, $field) {
+	switch ($op) {
+		case 'form':
+			$form = array(
+        '#theme' => 'expertsdb_retirement_year_field_settings',
+			);
+
+			$form['allow_past_years'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Allow year values to be in the past (on node creation only).'),
+          '#default_value' => isset($field['allow_past_years']) ? $field['allow_past_years'] : 1,
+          '#description' => t('Checking will allow the retirement year values to be in the past, otherwise only values beginning with the current year are allowed.'),
+			);
+
+			// disable multiple and
+			$form['multiple'] = array('#type' => 'hidden','#value' => '0');
+
+			return $form;
+
+		case 'validate':
+			break;
+
+		case 'save':
+			return array('allow_past_years',);
+			break;
+
+		case 'database columns':
+			$columns = array(
+        'retirement_year' => array('type' => 'integer', 'length' => 11, 'not null' => FALSE, 'default' => NULL, 'sortable' => TRUE),
+			);
+			return $columns;
+
+		case 'filters':
+			return;
+
+		case 'arguments':
+			return;
+
+		case 'callbacks'://pairs up with cck_fullname_field::view
+			return array(
+        'view' => CONTENT_CALLBACK_CUSTOM,
+			);
+
+	}
+}
+
+/**
+ * Implemantation of hook_field()
+ *
+ * @param unknown_type $op
+ * @param unknown_type $node
+ * @param unknown_type $field
+ * @param unknown_type $items
+ * @param unknown_type $teaser
+ * @param unknown_type $page
+ * @return unknown
+ */
+function expertsdb_retirement_year_field($op, &$node, $field, &$items, $teaser, $page) {
+	switch ($op) {
+
+		case 'view':
+      foreach ($items as $delta => $item) {
+        $items[$delta]['view'] = content_format($field, $items[$delta], 'default', $node);
+      }
+      return theme('field', $node, $field, $items, $teaser, $page);
+	}
+}
+
+/**
+ * Implementation of hook_widget_info().
+ */
+function expertsdb_retirement_year_widget_info() {
+	return array(
+    'expertsdb_retirement_year' => array(
+      'label' => 'Field for a 2 or 4 digit year value',
+      'field types' => array('expertsdb_retirement_year'),
+	),
+	);
+}
+
+/**
+ * Implementation of hook_widget().
+ */
+function expertsdb_retirement_year_widget($op, &$node, $field, &$node_field) {
+	switch ($op) {
+		case 'prepare form values':
+			return;
+
+		case 'form':
+			$form = array();
+			$form[$field['field_name']] = array(
+        '#tree' => TRUE,
+        '#theme' => 'expertsdb_retirement_year_widget_form',
+        '#type' => 'fieldset',
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE,
+        '#title' => t($field['widget']['label']),
+        '#description' => t($field['widget']['description']),
+			);
+
+			$delta = 0;
+			$default_retirement_year = "";
+			if (isset($field['widget']['default_value'][$delta]['retirement_year'])) {
+				$default_retirement_year = $field['widget']['default_value'][$delta]['retirement_year'];
+			}
+
+			// we only use a single value here; multiple is deactivated
+			$form[$field['field_name']][$delta]['retirement_year'] = array(
+		    '#type' => 'textfield',
+		    '#maxlength' => '4',
+				'#title' => t($field['widget']['label']),
+		    '#default_value' => ($node_field[$delta]['retirement_year']) ? $node_field[$delta]['retirement_year'] : $default_retirement_year,
+		    '#required' => ($field['required']) ? $field['required'] : FALSE,
+			);
+			return $form;
+
+		case 'validate':
+			_expertsdb_retirement_year_widget_process($node_field);
+
+			foreach($node_field as $delta => $value){
+				if ($value['retirement_year'] && !(isset($field['widget']['default_value'][$delta]['retirement_year']) && $value['retirement_year'] == $field['widget']['default_value'][$delta]['retirement_year'] && !$field['required'])) {
+
+					// check if year has four digits
+					if (preg_match('@[0-9]{4}@',$value['retirement_year']) == FALSE) {
+						form_set_error($field['field_name'] .'][' . $delta . '][retirement_year', t('Please enter the foreseen retirement year either as two or four digit value.'));
+					}
+
+					// check for years in the past
+					if(!$field['allow_past_years'] && $value['retirement_year'] < date('Y')){
+						form_set_error($field['field_name'] .'][' . $delta . '][retirement_year', t('A past retirement year is not allowed.'));
+					}
+
+				}
+			}
+			return;
+
+		case 'process form values':
+			return;
+
+		case 'submit':
+			// apply some formating
+			_expertsdb_retirement_year_widget_process($node_field);
+			return;
+	}
+}
+
+function _expertsdb_retirement_year_widget_process(&$node_field) {
+	foreach ($node_field as $delta => $value){
+
+		// Trim whitespace from value and remove non digits
+		$node_field[$delta]['retirement_year'] = preg_replace('@\D@','',check_plain(trim($value['retirement_year'])));
+
+		// try to convert a two digit year to a for digit year
+		if(strlen($node_field[$delta]['retirement_year']) == 2){
+			$node_field[$delta]['retirement_year'] = date('Y',mktime(0, 0, 0, 1, 1, $node_field[$delta]['retirement_year']));
+		}
+
+	}
+}
+
+/**
+ * Theme the display of the entire retirement year set
+ */
+function theme_expertsdb_retirement_year_widget_form($element) {
+	// pull in the stylesheet
+	drupal_add_css(drupal_get_path('module', 'expertsdb_retirement_year') .'/expertsdb_retirement_year_form.css');
+	$output = drupal_render($element);
+
+	return $output;
+}
+
+/**
+ * Theme the display of a single form row
+ */
+function theme_expertsdb_retirement_year_widget_form_row($element) {
+	$output = '';
+	$output .= '<div class="expertsdb-retirement-year-field-row clear-block">';
+	$output .= '<div class="expertsdb-retirement-year-field-year">' . drupal_render($element['retirement_year']) . '</div>';
+	$output .= drupal_render($element);
+	$output .= '</div>';
+	return $output;
+}
+
+/**
+ * Theme the settings form for the expertsdb_retirement_year field.
+ */
+function theme_expertsdb_retirement_year_field_settings($form) {
+	$title_value = drupal_render($form['title_value']);
+	$title_checkbox = drupal_render($form['title']['value']);
+
+	// Set Static Title radio option to include the title_value textfield
+	$form['title']['value'] = array('#value' => '<div class="container-inline">'. $title_checkbox . $title_value .'</div>');
+
+	// Reprint the title radio options with the included textfield
+	return drupal_render($form);
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function expertsdb_retirement_year_field_formatter_info() {
+	return array(
+    'default' => array(
+      'label' => t('Default'),
+      'field types' => array('expertsdb_retirement_year'),
+	),
+	);
+}
+
+/**
+ * Implementation of hook_field_formatter().
+ */
+function expertsdb_retirement_year_field_formatter($field, $item, $formatter, $node) {
+
+	/*
+	 * React on privacy settings
+	 */
+	if($node->field_privacy){
+		global $user;
+		$term = taxonomy_get_term($node->field_privacy[0]['tid']);
+		switch($term->name){
+
+			case PRIVACY_CONTACT_PRIVATE:
+			case PRIVACY_PRIVATE:
+				// show information only to roles with access and node author
+				if($user->uid != $node->uid && !user_access('view private expertsdb_retirement_year fields',$user)){
+					return;
+				}
+				break;
+
+			case PRIVACY_PUBLIC:
+				// allow everybody to view aliases as configured in the field formatter (display field)
+				break;
+
+		}
+	}
+	
+	// item comes in either as serialized or unserialized value
+	if (empty($item['retirement_year'])) {
+		return '';
+	}
+
+	switch ($formatter) {
+
+		default:
+			$output = '<span class="retirement-year">' . $item['retirement_year'] . '</span>';
+	}
+
+	return $output;
+}

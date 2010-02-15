@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE taxonomy SYSTEM "taxonomy.dtd">
+<vocabulary>
+<vid>11</vid><name>expertdb_activity</name><description></description><help></help><relations>0</relations><hierarchy>0</hierarchy><multiple>1</multiple><required>0</required><tags>0</tags><module>taxonomy</module><weight>0</weight><nodes></nodes><term><tid>26</tid><vid>11</vid><name>Recognition, description and naming of taxa</name><description>1. Recognition, description and naming of taxa (species, genera, families etc., also revision of older description, synonymisations, etc.)
+</description><weight>1</weight><depth>0</depth><parent>0</parent><synonyms>Alpha-taxonomy</synonyms></term><term><tid>27</tid><vid>11</vid><name>Comparison of taxa, including studies of relationship</name><description>2. Comparison of taxa, including studies of relationship (phylogeny)
+
+</description><weight>2</weight><depth>0</depth><parent>0</parent><synonyms>Part A of beta-taxonomy</synonyms></term><term><tid>780</tid><vid>11</vid><name>Classification of taxa</name><description>3. Classification of taxa (preferably based on phylogenetic analyses)
+</description><weight>3</weight><depth>0</depth><parent>0</parent><synonyms>Part B of beta-taxonomy</synonyms></term><term><tid>781</tid><vid>11</vid><name>Study of genetic variation within species</name><description>4. Study of genetic variation within species
+</description><weight>4</weight><depth>0</depth><parent>0</parent><synonyms>Gamma-taxonomy</synonyms></term><term><tid>782</tid><vid>11</vid><name>Construction of tools for identification</name><description>5. Construction of tools for identification i.e. keys, DNA barcodes
+
+</description><weight>5</weight><depth>0</depth><parent>0</parent></term><term><tid>783</tid><vid>11</vid><name>Identification of specimens</name><description>6. Identification of specimens i.e. referring them to taxa, using the tools
+
+</description><weight>6</weight><depth>0</depth><parent>0</parent></term><term><tid>784</tid><vid>11</vid><name>Inventories of taxa in specific areas or ecosystems</name><description>7. Inventories of taxa in specific areas or ecosystems e.g. using the tools for identifiaction
+
+ </description><weight>7</weight><depth>0</depth><parent>0</parent></term></vocabulary>

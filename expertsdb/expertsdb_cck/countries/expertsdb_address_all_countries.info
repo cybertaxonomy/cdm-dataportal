@@ -1,0 +1,5 @@
+name = Expertsdb Address Field All Countries Support
+description = Adds support for all countries, but without regions
+dependencies = content expertsdb_address
+package = EDIT CCK
+

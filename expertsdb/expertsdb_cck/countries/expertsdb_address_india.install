@@ -1,0 +1,40 @@
+<?php
+//$Id: expertsdb_address_india.install,v 1.1 2007/12/04 21:18:09 rconstantine Exp $;
+/**
+ * Implementation of hook_install().
+ *
+ * For country codes, use http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html
+ * If you are adding states or provinces for other countries, just duplicate the .inc, .install, and . module set for India.
+ * We should be able to grab what we need by Country Code. *
+ */
+function expertsdb_address_india_install() {
+  $query_ok = TRUE;
+  include_once('./'. drupal_get_path('module', 'expertsdb_address_india') .'/expertsdb_address_india.module');
+  $query_ok = expertsdb_address_india_installstates($query_ok);
+  if ($query_ok) {
+    drupal_set_message('The expertsdb_address_India module was installed successfully. The database was updated.');
+  }
+  else {
+    drupal_set_message('There was an error installing expertsdb_address_India.', 'error');
+  }
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function expertsdb_address_india_uninstall() {
+  if (db_table_exists('expertsdb_address_states')) {
+    $query1 = db_query("DELETE FROM {expertsdb_address_states} WHERE country_code = '%s'", 'IN');
+  }
+  if (db_table_exists('expertsdb_address_countries')) {
+    $query2 = db_query("DELETE FROM {expertsdb_address_countries} WHERE country_code = '%s'", 'IN');
+  }
+
+  if ($query1 && $query2) {
+    drupal_set_message('The expertsdb_address_India module was uninstalled successfully.');
+  }
+  else {
+    drupal_set_message('There was an error removing the expertsdb_address_India data from the database tables.', 'error');
+  }
+
+}

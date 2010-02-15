@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+
+
+.fullname-field {
+  clear: right;
+}
+
+
+.expertsdb-fullname-prefix .form-item, .expertsdb-fullname-first .form-item, .expertsdb-fullname-middle .form-item, .expertsdb-fullname-last .form-item, .expertsdb-fullname-suffix .form-item {
+  float: left;
+  width: 16em;
+}
+
+.expertsdb-fullname-prefix2 .form-item, .expertsdb-fullname-first2 .form-item, .expertsdb-fullname-middle2 .form-item, .expertsdb-fullname-last2 .form-item, .expertsdb-fullname-suffix2 .form-item {
+  float: left;
+}
+
+.form-item .required-field{
+	border: 1px solid #236abf;
+}
+
+legend, legend a:link,legend a:active,legend a:visited{
+font-weight:700;
+color:#236abf;
+}
+
+legend a:hover{
+text-decoration: underline;
+}

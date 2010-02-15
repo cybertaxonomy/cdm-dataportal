@@ -1,0 +1,6 @@
+name = Expertsdb timespan
+description = Defines two date fields for CCK taking dates in either format YYYY, YYYY/MM or YYYY/MM/DD.
+dependencies = content
+package = EDIT CCK
+
+

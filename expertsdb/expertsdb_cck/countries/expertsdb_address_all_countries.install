@@ -1,0 +1,27 @@
+<?php
+/**
+ * Implementation of hook_install().
+ *
+ * For country codes, use http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html
+ * If you are adding states or provinces for other countries, just duplicate the .inc, .install, and . module set for all_countries.
+ * We should be able to grab what we need by Country Code. *
+ */
+function expertsdb_address_all_countries_install() {
+  $query_ok = TRUE;
+  include_once('./'. drupal_get_path('module', 'expertsdb_address_all_countries') .'/expertsdb_address_all_countries.module');
+	if (expertsdb_address_all_countries_installstates($query_ok)) {
+		drupal_set_message('The expertsdb_address_all_countries module was installed successfully. The database was updated.');
+	}
+	else {
+		drupal_set_message('There was an error installing expertsdb_address_all_countries.', 'error');
+	}
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function expertsdb_address_all_countries_uninstall() {
+  $query_ok = TRUE;
+  include_once('./'. drupal_get_path('module', 'expertsdb_address_all_countries') .'/expertsdb_address_all_countries.module');
+	return _expertsdb_address_all_countries_installer('uninstall');
+}

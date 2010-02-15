@@ -1,0 +1,119 @@
+<?php
+/**
+ * This is the expertsdb_address_canada module for use with expertsdb_address.
+ *
+ * <p>This module simply adds support for Canadian Provinces</p>
+ *
+ * @version $Id: expertsdb_address_canada.module,v 1.8.2.1 2007/12/14 20:16:15 rconstantine Exp $;
+ * @package expertsdb_address_Canada
+ * @category NeighborForge
+ * @author Ryan Constantine
+ * @filesource
+ * @license http://www.gnu.org/licenses/gpl.txt GNU_GENERAL_PUBLIC_LICENSE
+ * @link none yet
+ */
+
+/**
+ * Implementation of hook_help
+ *
+ * Display help and module information
+ * @param string section which section of the site we're displaying help
+ * @return help text for section
+ */
+function expertsdb_address_canada_help($section='') {
+
+  $output = '';
+
+  switch ($section) {
+    case "admin/help#expertsdb_address_canada":
+      $output = '<p>' . t("Adds support for Canadian Provinces to expertsdb_address."). '</p>';
+      break;
+  }
+
+  return $output;
+} // function expertsdb_address_canada_help()
+
+/**
+ * Adds all Canadian Provinces to the states table. Adds Canada to the countries table. Returns whether all queries succeeded.
+ *
+ * @return boolean $query_ok
+ */
+function expertsdb_address_canada_installstates($query_ok = TRUE) {
+  if (db_table_exists('expertsdb_address_states')) {
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Alberta', 'AB', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('British Columbia', 'BC', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Manitoba', 'MB', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('New Brunswick', 'NB', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Newfoundland and Labrador', 'NL', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Northwest Territories', 'NT', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Nova Scotia', 'NS', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Nunavut', 'NU', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Ontario', 'ON', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Prince Edward Island', 'PE', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Quebec', 'QC', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Saskatchewan', 'SK', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Yukon', 'YT', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+  }
+  if (db_table_exists('expertsdb_address_countries')) {
+    $query2 = db_query("INSERT INTO {expertsdb_address_countries} (country_name, country_code) VALUES ('Canada', 'CA')");
+    if (!$query2) {$query_ok = FALSE;}
+  }
+  return $query_ok;
+} // function expertsdb_address_canada_installstates()
+
+/**
+ * Implementation of hook_validate_address_fields
+ *
+ * This hook is used by expertsdb_address and any supporting modules which add country-specific field validation.
+ * The first argument is an array, passed in by reference in 'fieldname=>error string' pairs. The error string should remain empty
+ * so long as there are no errors. If there is an error, the string should be replaced with an appropriate t-ified message. The
+ * second argument is the country code of the address. The first thing an implementation of this hook should do is check to see if
+ * the country code matches the country for which the module was made to support. If not, it should return immediately, without
+ * modifying the $errors array. This will ensure that only the country which SHOULD validate, does the validation. The third argument
+ * is the item containing the values of the form.
+ */
+function expertsdb_address_canada_validate_address_fields(&$errors, $country_code, $item, $field_name) {
+  if ($country_code != 'CA' && $country_code != 'Canada') {
+    return;
+  }
+  $val_locale = array('en_CA' => 'en_CA', 'fr_CA' => 'fr_CA');
+  $locales = expertsdb_address_get_all_locales();
+  $default_locale = setlocale(LC_ALL, 0);
+
+  foreach ($val_locale as $key => $value) {
+    $current_locale = expertsdb_address_setLocaleCP($value);
+    if (($item['street1'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\/\s]+$/", $item['street1']))) {
+      $errors['street1'] = t('(Canada): Illegal value for %name\'s Street field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+    }
+    if (($item['street2'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\/\s]+$/", $item['street2']))) {
+      $errors['street2'] = t('(Canada):Illegal value for %name\'s Street Continued field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+    }
+    if (($item['apt'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\/]+$/", $item['apt']))) {
+      $errors['apt'] = t('(Canada):Illegal value for %name\'s Apt/Suite Number field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+    }
+    if (($item['city'] != '') && (!preg_match("/^[\.\'\-[:alpha:]\s]+$/", $item['city']))) {
+      $errors['city'] = t('(Canada):Illegal value for %name\'s City field. Only letters, \' and - are valid. No numbers or other special characters allowed.', array('%name' => $field_name));
+    }
+    if (($item['zip'] != '') && (!preg_match("/^([ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ])\ {0,1}(\d[ABCEGHJKLMNPRSTVWXYZ]\d)$/", $item['zip']))) {
+      $errors['zip'] = t('(Canada):Illegal value for %name\'s ZIP field.', array('%name' => $field_name));
+    }
+    if (($item['other'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\s]+$/", $item['other']))) {
+      $errors['other'] = t('(Canada):Illegal value for %name\'s Other field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+    }
+  }
+  setlocale(LC_ALL, $default_locale);
+  return;
+}
