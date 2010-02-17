@@ -10,9 +10,11 @@
 *   array A form array.
 */
 function phptemplate_settings($saved_settings) {
+
   $defaults = array(
     'admin_left_column' => 1,
-    'admin_right_column' => 0
+    'admin_right_column' => 0,
+		'banner_image' => 'cdm-header_3.jpg'
   );
   
   $settings = array_merge($defaults, $saved_settings);
@@ -37,7 +39,26 @@ function phptemplate_settings($saved_settings) {
     '#type' => 'checkbox',
     '#title' => t('Show right column in admin section'),
     '#default_value' => $settings['admin_right_column']
-    );  
+    ); 
+
+	$form['edit_container'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Site Banner'),
+    '#description' => t('Select the banner image to be displayed.'),
+    '#collapsible' => TRUE,
+    '#collapsed' => false,
+  );
+	
+	// General Settings
+  $form['edit_container']['banner_image'] = array(
+		'#type' => 'checkboxes',
+		'#title' => t('Default options'),
+		'#default_value' => $settings['banner_image']
+		'#options' => array(
+			'cdm-platform-header.jpg' => t('CDM Platform'),
+			'cdm-header_3.jpg' => t('CDM Setups')
+		)
+	);
   
   // Return theme settings form
   return $form;

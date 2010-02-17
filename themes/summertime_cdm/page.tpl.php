@@ -126,7 +126,7 @@
 <?php endif; ?> 
 
 
-                   <div class="banner"><div class="banner-text"><h2><a href="<?php echo $front_page; ?>" title="<?php echo t('Home') ?>"><?php echo $site_name ?></a></h2>
+                   <div class="banner" style="background-image: url(<?php echo base_path() . path_to_theme() . theme_get_setting('banner_image'); ?>);"><div class="banner-text"><h2><a href="<?php echo $front_page; ?>" title="<?php echo t('Home') ?>"><?php echo $site_name ?></a></h2>
 				   
 
 				    <?php if ($site_slogan): ?>
