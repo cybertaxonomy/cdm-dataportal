@@ -53,7 +53,7 @@ function phptemplate_settings($saved_settings) {
   $form['edit_container']['banner_image'] = array(
 		'#type' => 'checkboxes',
 		'#title' => t('Default options'),
-		'#default_value' => $settings['banner_image']
+		'#default_value' => $settings['banner_image'],
 		'#options' => array(
 			'cdm-platform-header.jpg' => t('CDM Platform'),
 			'cdm-header_3.jpg' => t('CDM Setups')
