@@ -98,7 +98,7 @@ function phptemplate_menu_item_link($link) {
   }
   
   // If an item is a LOCAL TASK, render it as a tab
-  if (drupal_check_module("pageroute") && ($link['type'] & MENU_IS_LOCAL_TASK)) {
+  if (module_exists("pageroute") && ($link['type'] & MENU_IS_LOCAL_TASK)) {
   	$new_title = _replace_link_title($link['title']); 	
     //$link['title'] = '<span class="tab">' . check_plain($link['title']) . '</span>';
     $link['title'] = '<span class="tab">' . $new_title . '</span>';
@@ -119,7 +119,7 @@ function phptemplate_menu_item_link($link) {
  */
 function phptemplate_menu_local_tasks() {
   $output = '';
-  if (drupal_check_module("pageroute")){
+  if (module_exists("pageroute")){
     $route_names = _get_route_names();
   }
   
