@@ -825,7 +825,7 @@ function cdm_dataportal_view_cache_site(){
   $out = '';
   
   $request_params = array();
-  $request_params['query'] = 'Phoenix%';
+  $request_params['query'] = '%';
   $request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false);
   $request_params['doTaxa'] = 1;
   $request_params['doSynonyms'] = 0;
