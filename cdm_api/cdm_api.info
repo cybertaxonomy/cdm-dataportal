@@ -1,0 +1,5 @@
+; $Id$
+name = "CDM API"
+description = "CDM Web Service API"
+version = 5.x-1.0
+package = "CDM"
