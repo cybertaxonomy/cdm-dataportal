@@ -17,6 +17,11 @@ require_once('cdm_dataportal.theme.php');
 
 define(CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE, 25);
 
+function _add_js_progressbar(){
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.progressbar/js/jquery.progressbar.js');
+}
+
+
 /* ====================== hook implementations ====================== */
 
 /**
@@ -64,16 +69,33 @@ function cdm_dataportal_menu($may_cache) {
     $items[] = array(
       'path' => 'admin/settings/cdm_dataportal',
       'title' => t('CDM Dataportal'),
-      'description' => t('Setting for the CDM Dataportal'),
+      'description' => t('Setting for the CDM DataPortal'),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
       'callback arguments' => 'cdm_dataportal_settings',
     );
     
+    $items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/general',
+      'title' => t('General'),
+      'description' => t('Setting for the CDM DataPortal'),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_dataportal_settings',
+    );
+    
+    $items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/cachesite',
+      'title' => t('Cache Site'),
+      'description' => t('Cache the whole CDM DataPortal site'),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'cdm_dataportal_view_cache_site'
+    );
+    
     /*$items[] = array(
       'path' => 'admin/settings/cdm_dataportal/ws',
       'title' => t('Web Service'),
-      'description' => t('Setting for the CDM Dataportal'),
+      'description' => t('Setting for the CDM DataPortal'),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
       'callback arguments' => 'cdm_dataportal_settings',
@@ -156,6 +178,17 @@ function cdm_dataportal_menu($may_cache) {
       'type' => MENU_CALLBACK,
       'weight' => 1,
       'callback arguments' => array(arg(2), "description")
+      // expected callback arguments: name_uuid
+      );
+      
+      $items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/all',
+      'title' => theme('cdm_taxonpage_tab', 'General'),
+      'callback' => 'cdm_dataportal_taxon_page_view',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+      'weight' => 2,
+      'callback arguments' => array(arg(2), "all")
       // expected callback arguments: name_uuid
       );
       
@@ -777,6 +810,47 @@ function cdm_dataportal_settings(){
   );
   
   return system_settings_form($form);
+}
+
+
+/**
+ * @return walk and cache all taxon pages 
+ */
+function cdm_dataportal_view_cache_site(){
+  
+  _add_js_progressbar();
+  
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cache_all_taxa.js');
+  
+  $out = '';
+  
+  $request_params = array();
+  $request_params['query'] = 'Phoenix%';
+  $request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false);
+  $request_params['doTaxa'] = 1;
+  $request_params['doSynonyms'] = 0;
+  $request_params['doTaxaByCommonNames'] = 0;
+  $search_url = cdm_compose_url(CDM_WS_FIND_TAXA, null, queryString($request_params));
+  $search_url = uri_uriByProxy($search_url);
+  $taxon_page_url = url('cdm_dataportal/taxon/');
+  
+  $out .= '<form id="cache_site">';
+  $out .= '<br /><h4>'
+    .t('Cache all taxon pages')
+    .'</h4>';
+  $out .= '<div>'.t('This caching process may take long time and could cause heavy load on your server').'</div>';
+  $out .= '<div id="progress"></div>';
+  $out .= '<input type="hidden" name="searchTaxaUrl" value="'.$search_url.'"/>';
+  $out .= '<input type="hidden" name="taxonPageUrl" value="'.$taxon_page_url.'"/>';
+  $out .= '<input type="button" name="start" value="'.t('Start').'"/>';
+  $out .= '<input type="button" name="stop" value="'.t('Stop').'"/>';
+  $out .= '</form>';
+  $out .= '</div>';
+//  foreach($taxonPager->records as $taxon){
+//    cdm_dataportal_taxon_view($uuid); 
+//  }
+  
+  return $out;
 }
 
 /**

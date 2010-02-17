@@ -67,6 +67,7 @@ function _add_js_ahah(){
 	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/ahah-content.js');
 }
 
+
 /**
  * TODO if getting fragment from request is possible remove $_REQUEST['highlite'] HACK
  * NOT WORKING since fragments are not available to the server
