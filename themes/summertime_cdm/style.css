@@ -985,8 +985,10 @@ div.pageroute{
    height: 124px;
    padding-top:21px;
  }
+ 
+ 
 
-.pageroute_group {
+.pageroute_group .pageroute_individual{
     background: url(images/route-banners/route-banner-group.png) no-repeat top left;
  }
 
