@@ -214,7 +214,7 @@ $(document).ready(function() {
 			userMessage = '';
 		}
 		$('#usermessage').html(userMessage);
-		if(stop){
+		if(doStop == true){
 			$('#cache_site [name=stop]').attr('disabled', 'disabled');
 			$('#cache_site [name=start]').removeAttr('disabled');
 		}
