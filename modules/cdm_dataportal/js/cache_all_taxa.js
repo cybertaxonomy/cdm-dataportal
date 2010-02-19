@@ -107,11 +107,10 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 					url: taxonUrl,
 					cache: false, // browser will not cache
 					complete: function(xmlHttpRequest, statusText){
-							if(xmlHttpRequest.status == 200){
-								parent.run(nowMillies);
-							} else {
+							if(xmlHttpRequest.status != 200){
 								errorCallback(statusText, null, unescape(taxonUrl), false);
 							}
+							parent.run(nowMillies);
 						}
 				});
 				taxon = null;
@@ -214,7 +213,7 @@ $(document).ready(function() {
 			userMessage = '';
 		}
 		$('#usermessage').html(userMessage);
-		if(stop){
+		if(doStop){
 			$('#cache_site [name=stop]').attr('disabled', 'disabled');
 			$('#cache_site [name=start]').removeAttr('disabled');
 		}
