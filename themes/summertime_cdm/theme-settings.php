@@ -51,8 +51,8 @@ function phptemplate_settings($saved_settings) {
 	
 	// General Settings
   $form['edit_container']['banner_image'] = array(
-		'#type' => 'checkboxes',
-		'#title' => t('Default options'),
+		'#type' => 'select',
+		'#title' => t('Banner Image'),
 		'#default_value' => $settings['banner_image'],
 		'#options' => array(
 			'cdm-platform-header.jpg' => t('CDM Platform'),
