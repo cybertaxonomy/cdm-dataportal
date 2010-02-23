@@ -23,9 +23,8 @@ Drupal.ahahContentAutoAttach = function () {
     	  
     	  var ahah_content_set = $(event.target).find('.ahah-content');
     	  if(ahah_content_set != undefined){
-				
 				  $(ahah_content_set).each(function(i){
-						var ahahContent = $(this);
+						var ahah_content = $(this);
 						var url = ahah_content.attr('rel');
 						if(url != undefined){
 							ahah_content.removeAttr('rel').find('.loading').css('display', 'block');
