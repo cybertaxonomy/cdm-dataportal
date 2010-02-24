@@ -766,7 +766,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
 			//$server = 'http://edit.csic.es/v1/areas_sld.php';
-			$server = 'http://edit.csic.es/v1/test.php';
+			$server = 'http://edit.csic.es/v1/areas.php';
 			$query_string .= '&img=false&legend=1&mlp=3';
 			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
 
