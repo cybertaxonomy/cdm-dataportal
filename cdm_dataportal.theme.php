@@ -582,11 +582,13 @@ function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
 	// see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
 	// and http://trac.openlayers.org/wiki/SettingZoomLevels
 	
-  //TODO megre code below with code from theme_cdm_media_gallerie_image
-	$w = $mediaRepresentationPart->width;
-	$h = $mediaRepresentationPart->height;
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
+  
+    //TODO megre code below with code from theme_cdm_media_gallerie_image
+    $w = $mediaRepresentationPart->width;
+    $h = $mediaRepresentationPart->height;
 	
-  if($w == 0 || $h == 0){
+    if($w == 0 || $h == 0){
       $image_uri = str_replace(' ','%20',$mediaRepresentationPart->uri); //take url and replace spaces 
       $imageDimensions = getimagesize_remote($image_uri);
       if(!$imageDimensions){
