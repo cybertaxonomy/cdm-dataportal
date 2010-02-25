@@ -10,8 +10,12 @@
    * OpenLayers.js must be loaded BEFORE jQuery. 
    * If jQuery loaded before $.something will fail in IE8.
    * Therefore we add OpenLayers.js it in the page.tpl.php
-   */ 
-  print ('<script type="text/javascript" src="'.drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js'.'"></script>'."\n");
+   * -----------------------------------------------------
+   * Andreas Kohlbecker [Feb 25th 2010]:
+   * This problems seems to be solved somehow (a bugfix in IE8?)
+   * so I am removing this "hack" by uncommenting the line below
+   */
+  //print ('<script type="text/javascript" src="'.drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js'.'"></script>'."\n");
   print $scripts 
 ?>
   <script type="text/javascript"><?php /* Needed to avoid Flash of Unstyle Content in IE */ ?> </script>

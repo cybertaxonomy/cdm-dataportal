@@ -765,8 +765,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
-			//$server = 'http://edit.csic.es/v1/areas_sld.php';
-			$server = 'http://edit.csic.es/v1/test.php';
+			$server = 'http://edit.csic.es/v1/areas.php';
 			$query_string .= '&img=false&legend=1&mlp=3';
 			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
 
@@ -810,8 +809,12 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			 * OpenLayers.js must be loaded BEFORE jQuery.
 			 * If jQuery loaded before $.something will fail in IE8.
 			 * Therefore we add OpenLayers.js it in the page.tpl.php
-			 */
-			//drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
+			 * -----------------------------------------------------
+       * Andreas Kohlbecker [Feb 25th 2010]:
+       * This problems seems to be solved somehow (a bugfix in IE8?)
+       * so I am removing this "hack" by uncommenting the line below
+       */
+			drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
 			drupal_add_js('
  var map;
  
@@ -1539,7 +1542,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	if($page_part == 'all'){
   		$out .= '<h2>'.t('Synonymy').'</h2>';
   	}
-  	$addAcceptedTaxon = !variable_get('cdm_dataportal_nomref_in_title', 1);
+  	$addAcceptedTaxon = !variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
   	$out .= theme('cdm_taxon_page_synonymy', $taxon, $addAcceptedTaxon);
 
   	if(variable_get('cdm_dataportal_display_name_relations', 1)){
