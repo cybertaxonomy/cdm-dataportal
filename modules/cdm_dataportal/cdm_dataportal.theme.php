@@ -292,6 +292,8 @@ function theme_cdm_media_mime_text($representation, $feature){
 function theme_cdm_media_caption($media, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
 
 	$media_metadata = cdm_read_media_metadata($media);
+	//phpinfo();
+	//var_dump($media);
 
 	$out = '<dl class="media-caption">';
 	//title
@@ -412,7 +414,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
  * @return unknown_type
  */
 function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
-$mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null ){
+$mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null){
 
   if(!is_array($captionElements)){
     $captionElements = array();
@@ -472,15 +474,16 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 				}
 
 				// generate gallery caption
+				$media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
 				_add_js_ahah();
 				$content_url = cdm_compose_url(CDM_WS_MEDIA, $media->uuid);
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".join(',',$captionElements));
-        $captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
+                $captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
                 
 				// generate & add caption to lightbox
 				$lightBoxCaptionElements = null;
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption"); //.($lightBoxCaptionElements?'/'.join	(',',$lightBoxCaptionElements):''));
-				$linkAttributes['alt'] = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
+				$linkAttributes['alt'] = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ...</span></div>';
 
 				if(isset($captionElements['#uri'])){
 					$captionPartHtml .= '<div>'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
@@ -581,8 +584,8 @@ function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
 
 	// see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
 	// and http://trac.openlayers.org/wiki/SettingZoomLevels
-	
-  //TODO megre code below with code from theme_cdm_media_gallerie_image
+	var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
+  //TODO merge code below with code from theme_cdm_media_gallerie_image
 	$w = $mediaRepresentationPart->width;
 	$h = $mediaRepresentationPart->height;
 	
@@ -693,7 +696,6 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 
 	drupal_set_title($title);
 
-
 	$out .= '<div class="media">';
 
 	//$out .= '<div class="viewer">';
@@ -704,6 +706,11 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 	$out .= '</div>';
 
 	// general media metadata
+	//$media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
+    //vardump("PRINTING MEDIA METADATA");
+    //vardump($media_metadata);
+    //vardump("PRINTING MEDIA");
+    //vardump($media);
 	$metadataToPrint = theme('cdm_media_caption', $media);
 	$out .= $metadataToPrint;
 
@@ -765,6 +772,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
+			//$server = 'http://edit.csic.es/v1/areas_sld.php';
 			$server = 'http://edit.csic.es/v1/areas.php';
 			$query_string .= '&img=false&legend=1&mlp=3';
 			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
@@ -780,6 +788,13 @@ function theme_cdm_descriptionElements_distribution($taxon){
 
 			// get the sld files from the response object
 			if(isset($responseObj->layers)){
+				if(isset($responseObj->legend)){
+					//$splittedLegendSldUrl = explode("http://edit.csic.es/v1/sld/", $responseObj->legend);
+				    //$tdwg_sldLegend = $splittedLegendSldUrl[1];
+				    $tdwg_sldLegend=$responseObj->legend;
+				    $legend_url ="http://edit.csic.es/geoserver/wms/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE&WIDTH=64&HEIGHT=36&";
+				    $legend_url .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':')."italic;fontSize".urlencode(':')."12&SLD=".urlencode($tdwg_sldLegend);
+				}
 				$layerSlds = $responseObj->layers;
 				foreach($layerSlds as $layer){
 					$tdwg_sldUris[$layer->tdwg] = "http://edit.csic.es/v1/sld/".$layer->sld;
@@ -801,7 +816,12 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			$add_tdwg4 = (isset($tdwg_sldUris['tdwg4']) ? "
           tdwg_4.params.SLD = '".$tdwg_sldUris['tdwg4']."';
           map.addLayers([tdwg_4]);" : '');
-
+/*
+          $add_legend = (isset($legend_url) ? "
+	      legend.params.SLD = '".$legend_url."';
+		  map.addLayers([legend]);" : '');
+*/
+			
 			//      $googleMapsApiKey_localhost = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
 			//      drupal_set_html_head(' <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$googleMapsApiKey_localhost.'"></script>');
 
@@ -879,7 +899,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
        restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
        projection: new OpenLayers.Projection("EPSG:4326")
     };
-   
+
    map = new OpenLayers.Map(\'openlayers_map\', mapOptions);
    map.addLayers([ol_wms]);
    '.$add_tdwg1.'
@@ -894,7 +914,8 @@ $(document).ready(function(){
 
 });'
 , 'inline');
-$out = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+$out  = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+$out .= '<div id="openlayers_legend"><img id="legend" src="'.$legend_url.'"></div>';
 $out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
 
 		} else {
