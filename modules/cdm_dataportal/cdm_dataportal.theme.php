@@ -292,8 +292,6 @@ function theme_cdm_media_mime_text($representation, $feature){
 function theme_cdm_media_caption($media, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
 
 	$media_metadata = cdm_read_media_metadata($media);
-	//phpinfo();
-	//var_dump($media);
 
 	$out = '<dl class="media-caption">';
 	//title
@@ -584,7 +582,7 @@ function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
 
 	// see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
 	// and http://trac.openlayers.org/wiki/SettingZoomLevels
-	var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
+	//var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
   //TODO merge code below with code from theme_cdm_media_gallerie_image
 	$w = $mediaRepresentationPart->width;
 	$h = $mediaRepresentationPart->height;
