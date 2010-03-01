@@ -157,6 +157,9 @@ function summertime_cdm_menu_item_link($link) {
   if (empty($link['localized_options'])) {
     $link['localized_options'] = array();
   }
+  if(strpos($link['title'], arg(1)) !== false){
+    $link['options']['attributes']['class'] = 'active_node';
+  }
   
   $link['localized_options']['html'] = true;
 
