@@ -3,8 +3,8 @@
 
 
 /**
- * Return the different routes names from the pagerouzte database 
- * without names repetition
+ * Return the different routes names from the pageroute database 
+ * tables without names repetition
  *
  * @return
  *   array of strings with the route names 
@@ -20,6 +20,12 @@ function _get_route_names(){
 	return $route_names;
 }
 
+/**
+ * Return a string with the new title
+ * 
+ * @return
+ *   string with the new name 
+ */
 function _replace_route_title($old_title){
 	$old_titles_list = array('Group' => 'CDM Setup for Groups', 
 	                         'Linux_Community' => 'CDM Setup for Communities', 
@@ -46,7 +52,7 @@ function _replace_link_title($old_title){
 	    	$new_title = $route_titles[$key];
 	    }
 	}
-	
+		
 	return $new_title;
 }
 
@@ -60,9 +66,7 @@ function phptemplate_preprocess_page(&$vars) {
   // Get default theme settings.
   $settings = theme_get_settings($theme_key);    
   $settings = array_merge($defaults, $settings);
- 
-  
-  
+   
   if (arg(0) == 'admin' && ($settings['admin_right_column'] == 0) && !(arg(1) == 'build' && arg(2) == 'block')) {
     $vars['right'] = '';
   }
@@ -93,9 +97,9 @@ function phptemplate_menu_item_link($link) {
     $link['options'] = array();
   }
 
-  if(strpos($link['title'], arg(1)) !== false){
+  //if(strpos($link['title'], arg(1)) !== false){
     $link['options']['attributes']['class'] = 'active_node';
-  }
+  //}
   
   // If an item is a LOCAL TASK, render it as a tab
   if (module_exists("pageroute") && ($link['type'] & MENU_IS_LOCAL_TASK)) {
@@ -156,9 +160,6 @@ function phptemplate_menu_local_tasks() {
 function summertime_cdm_menu_item_link($link) {
   if (empty($link['localized_options'])) {
     $link['localized_options'] = array();
-  }
-  if(strpos($link['title'], arg(1)) !== false){
-    $link['options']['attributes']['class'] = 'active_node';
   }
   
   $link['localized_options']['html'] = true;
