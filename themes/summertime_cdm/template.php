@@ -97,9 +97,9 @@ function phptemplate_menu_item_link($link) {
     $link['options'] = array();
   }
 
-  //if(strpos($link['title'], arg(1)) !== false){
+  if(strpos($link['title'], arg(1)) !== false){
     $link['options']['attributes']['class'] = 'active_node';
-  //}
+  }
   
   // If an item is a LOCAL TASK, render it as a tab
   if (module_exists("pageroute") && ($link['type'] & MENU_IS_LOCAL_TASK)) {
