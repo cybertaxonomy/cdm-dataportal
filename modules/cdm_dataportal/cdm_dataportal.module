@@ -1366,7 +1366,7 @@ function get_partDefinition($taxonNameType){
  * @return unknown_type
  * TODO rename to read_media_metadata() and move to *.module
  */
-function cdm_read_media_metadata($media ){
+function cdm_read_media_metadata($media){
 
 	$metadata_caption = array('title' => '',           //media_metadata and media
                               'artist' => '',          //media_metadata and media
