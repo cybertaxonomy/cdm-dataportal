@@ -908,14 +908,16 @@ $(document).ready(function(){
 });'
 			, 'inline');
 			// showing openlayers
-			$out  = '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+			$out = '<div id="openlayers">'; 			
+			$out .= '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+		    // showing lengeds
+            if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
+                $out .= '<div id="openlayers_legend"><img id="legend" src="'.$legend_url.'"></div>';
+            }
 			// showing map caption
 			$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
-			// showing lengeds
-			if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
-				$out .= '<div id="openlayers_legend"><img id="legend" src="'.$legend_url.'"></div>';
-			}
-
+            $out .= '</div>';
+           
 		} else {
 			// simple image
 			$mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
