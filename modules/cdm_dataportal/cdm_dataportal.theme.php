@@ -752,7 +752,7 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
  */
 function theme_cdm_descriptionElements_distribution($taxon){
 
-
+    $fontStyles = array(0 => "plane", 1 => "italic");
 	$server = variable_get('cdm_dataportal_geoservice_access_point', false);
 
 	if(!server){
@@ -774,7 +774,12 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			$server = 'http://edit.csic.es/v1/areas.php';
 			$query_string .= '&img=false&legend=1&mlp=3';
 			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
-
+            $legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
+            $legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
+            $legend_url_font_style = $fontStyles[$legend_url_font_style];
+            $legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
+            $legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
+            
 			//#print($map_tdwg_Uri.'<br>');
 
 			//$map_tdwg_Uri ='http://edit.csic.es/v1/areas3_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
@@ -790,8 +795,9 @@ function theme_cdm_descriptionElements_distribution($taxon){
 					//$splittedLegendSldUrl = explode("http://edit.csic.es/v1/sld/", $responseObj->legend);
 					//$tdwg_sldLegend = $splittedLegendSldUrl[1];
 					$sldLegend=$responseObj->legend;
-					$legend_url ="http://edit.csic.es/geoserver/wms/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE&WIDTH=64&HEIGHT=36&";
-					$legend_url .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':')."italic;fontSize".urlencode(':')."12&SLD=".urlencode($sldLegend);
+					$legend_url  ="http://edit.csic.es/geoserver/wms/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+					$legend_url .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
+					$legend_url .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
 				}
 				$layerSlds = $responseObj->layers;
 				foreach($layerSlds as $layer){
@@ -904,7 +910,8 @@ function theme_cdm_descriptionElements_distribution($taxon){
  
 $(document).ready(function(){
   init();
-
+  $(\'#openlayers_legend\').css(\'top\', -$(\'#openlayers_map\').height());
+  $(\'#openlayers_legend\').css(\'left\', $(\'#openlayers_map\').width()-100);
 });'
 			, 'inline');
 			// showing openlayers

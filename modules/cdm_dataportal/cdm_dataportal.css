@@ -221,11 +221,14 @@ a.toc:link, a.toc:visited {
 }
 
 #openlayers_legend{
-	float: right;
-    margin-top: -200px; 
     position: relative;
     z-index: 30000;
+    /*
+    top:10px;	
+	float: right;
+    margin-top: -200px; 
     top: 0px;
+    */
 }
 
 .distribution_map_caption{
