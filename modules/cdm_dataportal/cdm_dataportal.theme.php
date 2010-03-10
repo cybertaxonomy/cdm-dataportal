@@ -386,9 +386,13 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 	}
 
 	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
-
+  $selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
+  if ($selectShowMedia == 0){
+      $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+  }else{
+      $mediaList = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+  }
 	//$mediaList = cdm_ws_get(CDM_WS_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false), $taxon ->rank, $taxon->uuid ));
-	$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'LIGHTBOX', null, $galleryLinkUri);
 
 	return $out;
@@ -1508,6 +1512,8 @@ function theme_cdm_back_to_image_gallery_button(){
  */
 function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
+	global $theme;
+	
 	$page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
 	$hideTabs = array();
 
@@ -1516,7 +1522,15 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 	$prefMimeTypeRegex = 'image:.*';
 	$prefMediaQuality = '*';
 	//$media =  cdm_ws_get(CDM_WS_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false),$taxon->uuid));
-	$media = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+
+	
+  $selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
+  if ($selectShowMedia == 0){
+      $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+  }else{
+      $mediaList = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+  }
+
 	if(!isset($media[0])) {
 		$hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
 	}
@@ -1563,6 +1577,11 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	}
   	$out .= theme('cdm_taxon_page_images', $taxon, $media);
   	$out .= '</div>';
+    
+  	if($theme == 'garland_cichorieae'){
+  		$out .= theme('cdm_taxon_page_images_cichorieae_copyright');
+  	}
+   
   }
   // --- SYNONYMY --- //
   if($page_part == 'synonymy' || $page_part == 'all'){
@@ -2397,8 +2416,8 @@ function theme_cdm_descriptionElements($descriptionElements){
 
 			} else if($descriptionElement->class == 'TextData'){
 				//$repr = $descriptionElement->multilanguageText_L10n->text;
-				$list = false;
-				$repr = "<t/>". theme ('cdm_descriptionElementTextData', $descriptionElement, $list);
+				$asListElement = false;
+				$repr = "<t/>". theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
 					
 				if( !array_search($repr, $outArray)){
 					$outArray[] = $repr;
@@ -2408,8 +2427,8 @@ function theme_cdm_descriptionElements($descriptionElements){
 				}
 			}
 		} else if($descriptionElement->class == 'TextData'){
-			$list = true;
-			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement,$list );
+			$asListElement = true;
+			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
 		} else {
 			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
 		}
@@ -2467,7 +2486,7 @@ function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', 
 	return $out;
 }
 
-function theme_cdm_descriptionElementTextData($element, $list){
+function theme_cdm_descriptionElementTextData($element, $asListElement){
 
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
@@ -2552,7 +2571,7 @@ function theme_cdm_descriptionElementTextData($element, $list){
 	if(strlen($sourceRefs) > 0){
 		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
 	}
-	if ($list){
+	if ($asListElement){
 		return '<li class="descriptionText">' . $description . $sourceRefs. '</li>';
 	}else{
 		return $description . $sourceRefs;
