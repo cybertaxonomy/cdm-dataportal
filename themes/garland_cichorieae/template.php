@@ -106,8 +106,16 @@ function garland_cichorieae_cdm_taxon_page_images($taxon, $media){
 
   }
   return $out;
+}
 
-
+function garland_cichorieae_cdm_taxon_page_images_cichorieae_copyright(){
+	$out = '<div id="cichorieae-copyright">';
+	$out .= '<p>';
+	$out .= '&copy; Images used on this website remain copyright of the individual photographer.<br> To obtain permission to use images in publications or websites please contact the network at <a href="edit-wp6-cichorieae@bgbm.org">edit-wp6-cichorieae@bgbm.org</a>. Images may be used for personal use, such as PowerPoint presentations, without permission.';
+	$out .= '</p>';
+    $out .= '</div>';
+    
+	return $out;
 }
 
 /**
