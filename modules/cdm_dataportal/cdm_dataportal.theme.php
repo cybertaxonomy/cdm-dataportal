@@ -2383,7 +2383,7 @@ function theme_cdm_feature_nodesTOC($featureNodes){
 			$featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
 			// HACK to implement images for taxa, should be removed
 			if($node->feature->uuid != UUID_IMAGE){
-				$out .= '<li>'.l(t(ucfirst($featureRepresentation)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($featureRepresentation)).'</li>';
+				$out .= '<li>'.l(t(theme('cdm_feature_name', $featureRepresentation)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($featureRepresentation)).'</li>';
 			}
 		}
 	}
