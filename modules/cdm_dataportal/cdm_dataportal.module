@@ -17,6 +17,7 @@ require_once('cdm_dataportal.theme.php');
 
 define(CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE, 25);
 define(CDM_DATAPORTAL_NOMREF_IN_TITLE, 1);
+define(CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR, 0);
 
 function _add_js_progressbar(){
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.progressbar/js/jquery.progressbar.js');
@@ -678,6 +679,13 @@ function cdm_dataportal_settings_layout(){
     '#type' => 'checkbox',
     '#title' => t('Show name relations of accepted taxa on taxon page'),
     '#default_value' => variable_get('cdm_dataportal_display_name_relations', 1),
+    '#description' => t('')
+    );
+    
+    $form['cdm_dataportal_display_is_accepted_for'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display <em>is accepted for ...</em> on taxon pages when coming from a synonym link.'),
+    '#default_value' => variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR),
     '#description' => t('')
     );
 

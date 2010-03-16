@@ -540,7 +540,8 @@ function cdm_rankVocabulary_as_option(){
 function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDescriptionsSeparated = false){
 
   if(!$featureTree){
-    drupal_set_message('cdm_ws_descriptions_by_featuretree() - No feature supplied', 'error');
+    drupal_set_message('No \'FeatureTree\' has been set so far. '
+    .'In order to display descriptive data of your taxa, please select a \'FeatureTree\' in the '.l('CDM Dataportal Ssettings', 'admin/settings/cdm_dataportal/general'), 'warning');
     return false;
   }
 

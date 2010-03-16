@@ -416,7 +416,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
  * @return unknown_type
  */
 function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
-$mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null){
+$mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null ){
 
 	if(!is_array($captionElements)){
 		$captionElements = array();
@@ -476,7 +476,6 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 				}
 
 				// generate gallery caption
-				$media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
 				_add_js_ahah();
 				$content_url = cdm_compose_url(CDM_WS_MEDIA, $media->uuid);
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".join(',',$captionElements));
@@ -485,7 +484,7 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 				// generate & add caption to lightbox
 				$lightBoxCaptionElements = null;
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption"); //.($lightBoxCaptionElements?'/'.join	(',',$lightBoxCaptionElements):''));
-				$linkAttributes['alt'] = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ...</span></div>';
+				$linkAttributes['alt'] = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
 
 				if(isset($captionElements['#uri'])){
 					$captionPartHtml .= '<div>'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
@@ -586,6 +585,10 @@ function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
 
 	// see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
 	// and http://trac.openlayers.org/wiki/SettingZoomLevels
+	
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
+      
+  //TODO megre code below with code from theme_cdm_media_gallerie_image
 	//var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
 	//TODO merge code below with code from theme_cdm_media_gallerie_image
 	$w = $mediaRepresentationPart->width;
@@ -698,6 +701,7 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 
 	drupal_set_title($title);
 
+
 	$out .= '<div class="media">';
 
 	//$out .= '<div class="viewer">';
@@ -774,7 +778,6 @@ function theme_cdm_descriptionElements_distribution($taxon){
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
-			//$server = 'http://edit.csic.es/v1/areas_sld.php';
 			$server = 'http://edit.csic.es/v1/areas.php';
 			$query_string .= '&img=false&legend=1&mlp=3';
 			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
@@ -824,7 +827,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			$add_tdwg4 = (isset($tdwg_sldUris['tdwg4']) ? "
           tdwg_4.params.SLD = '".$tdwg_sldUris['tdwg4']."';
           map.addLayers([tdwg_4]);" : '');
-				
+			
 			//      $googleMapsApiKey_localhost = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
 			//      drupal_set_html_head(' <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$googleMapsApiKey_localhost.'"></script>');
 
@@ -902,7 +905,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
        restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
        projection: new OpenLayers.Projection("EPSG:4326")
     };
-
+   
    map = new OpenLayers.Map(\'openlayers_map\', mapOptions);
    map.addLayers([ol_wms]);
    '.$add_tdwg1.'
@@ -917,7 +920,7 @@ $(document).ready(function(){
   $(\'#openlayers_legend\').css(\'top\', -$(\'#openlayers_map\').height());
   $(\'#openlayers_legend\').css(\'left\', $(\'#openlayers_map\').width()-100);
 });'
-			, 'inline');
+, 'inline');
 			// showing openlayers
 			$out = '<div id="openlayers">'; 			
 			$out .= '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
@@ -1213,7 +1216,8 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = '', $displayNomRef = tr
 	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
 
 	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix;
-	return $out;
+	
+	return uuid_anchor($taxon->uuid, $out);
 
 }
 
@@ -1322,7 +1326,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 				}
 				$out .= '</li>';
 			} else {
-				//TODO avoid using AHAH in the cdm_dynabox
+				//TODO avoid using Ajax in the cdm_dynabox
 				//TODO add media
 				$out .= theme('cdm_dynabox', theme('cdm_taxonName', $taxon->name, null, null, $renderPath), cdm_compose_url(CDM_WS_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
 			}
@@ -1556,8 +1560,9 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
   $out = '';
   $out .= theme('cdm_back_to_search_result_button');
-  $out .= theme('cdm_acceptedFor', 'page_general');
-
+  if(variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR)){
+    $out .= theme('cdm_acceptedFor', 'page_general');
+  }
   // --- DESCRIPTION --- //
   if($page_part == 'description' || $page_part == 'all'){
 

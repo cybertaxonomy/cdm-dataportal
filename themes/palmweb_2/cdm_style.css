@@ -55,6 +55,11 @@ ul.cdm_taxontree {
 background-color: transparent;
 }
 
+/* switch off highlighting of synonyms */
+.synonym span.highlite{
+  background-color: transparent;	
+}
+
 /* HACK for DEMO 
 div.error{
 		display: none;
