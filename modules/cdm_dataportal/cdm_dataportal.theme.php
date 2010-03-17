@@ -386,18 +386,35 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 	}
 
 	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
-  $selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
-  if ($selectShowMedia == 0){
-      $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-  }else{
-      $mediaList = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-  }
+	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
+	if ($selectShowMedia == 0){
+		$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	}else{
+		$mediaList = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	}
 	//$mediaList = cdm_ws_get(CDM_WS_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false), $taxon ->rank, $taxon->uuid ));
-	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'LIGHTBOX', null, $galleryLinkUri);
+	//$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'LIGHTBOX', null, $galleryLinkUri);
+	
+	
+	$out .= theme('cdm_media_gallery_wrapper', $mediaList, $gallery_name, CDM_DATAPORTAL_SEARCH_GALLERY_FORM_NAME);
 
 	return $out;
 }
 
+
+function theme_cdm_media_gallery_wrapper($media_list, $gallery_name, $gallery_config_form_name){
+  $caption_elements = array('title', 'rights');
+  $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
+  $gallery_settings = variable_get('description_gallery', $gallery_settings);
+  
+	return theme('cdm_media_gallerie', 
+	             $media_list, 
+	             $gallery_name, 
+	             $gallery_settings['cdm_dataportal_media_maxextend'], 
+	             $gallery_settings['cdm_dataportal_media_cols'], 
+	             $gallery_settings['cdm_dataportal_media_maxRows'], 
+	             $caption_elements);
+}
 
 /**
  * @param $mediaList an array of Media entities
@@ -529,7 +546,7 @@ function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $a
 	//TODO merge with theme_cdm_media_mime_image?
 
 	if(isset($mediaRepresentationPart)){
-		 
+			
 		$h = $mediaRepresentationPart->height;
 		$w = $mediaRepresentationPart->width;
 		if($w == 0 || $h == 0){
@@ -651,9 +668,9 @@ $(document).ready(function(){
   init();
 
 });'
-	, 'inline');
-	$out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
-	return $out;
+, 'inline');
+$out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
+return $out;
 
 }
 
@@ -760,7 +777,7 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
  */
 function theme_cdm_descriptionElements_distribution($taxon){
 
-    $fontStyles = array(0 => "plane", 1 => "italic");
+	$fontStyles = array(0 => "plane", 1 => "italic");
 	$server = variable_get('cdm_dataportal_geoservice_access_point', false);
 
 	if(!server){
@@ -781,12 +798,12 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			$server = 'http://edit.csic.es/v1/areas.php';
 			$query_string .= '&img=false&legend=1&mlp=3';
 			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
-            $legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
-            $legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
-            $legend_url_font_style = $fontStyles[$legend_url_font_style];
-            $legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
-            $legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
-            
+			$legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
+			$legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
+			$legend_url_font_style = $fontStyles[$legend_url_font_style];
+			$legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
+			$legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
+
 			//#print($map_tdwg_Uri.'<br>');
 
 			//$map_tdwg_Uri ='http://edit.csic.es/v1/areas3_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
@@ -827,7 +844,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			$add_tdwg4 = (isset($tdwg_sldUris['tdwg4']) ? "
           tdwg_4.params.SLD = '".$tdwg_sldUris['tdwg4']."';
           map.addLayers([tdwg_4]);" : '');
-			
+
 			//      $googleMapsApiKey_localhost = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
 			//      drupal_set_html_head(' <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$googleMapsApiKey_localhost.'"></script>');
 
@@ -921,17 +938,17 @@ $(document).ready(function(){
   $(\'#openlayers_legend\').css(\'left\', $(\'#openlayers_map\').width()-100);
 });'
 , 'inline');
-			// showing openlayers
-			$out = '<div id="openlayers">'; 			
-			$out .= '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
-		    // showing lengeds
-            if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
-                $out .= '<div id="openlayers_legend"><img id="legend" src="'.$legend_url.'"></div>';
-            }
-			// showing map caption
-			$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
-            $out .= '</div>';
-           
+// showing openlayers
+$out = '<div id="openlayers">';
+$out .= '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+// showing lengeds
+if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
+	$out .= '<div id="openlayers_legend"><img id="legend" src="'.$legend_url.'"></div>';
+}
+// showing map caption
+$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
+$out .= '</div>';
+ 
 		} else {
 			// simple image
 			$mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
@@ -939,28 +956,28 @@ $(document).ready(function(){
 			$mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
 			$out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
 		}
-/*
-		// add a simple legend
-		if(variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
+		/*
+		 // add a simple legend
+		 if(variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
 			$legenddata = array(
-        'native' => "4daf4a",
-        'native_doubtfully_native' => "377eb8",
-        'cultivated' => "984ea3",
-        'introduced' => "ff7f00",
-        'introduced adventitious' => "ffff33",
-        'introduced cultivated' => "a65628",
-        'introduced naturalized' => "f781bf"
-        );
+			'native' => "4daf4a",
+			'native_doubtfully_native' => "377eb8",
+			'cultivated' => "984ea3",
+			'introduced' => "ff7f00",
+			'introduced adventitious' => "ffff33",
+			'introduced cultivated' => "a65628",
+			'introduced naturalized' => "f781bf"
+			);
 
-        $out .= '<div class="distribution_map_legend">';
-        foreach($legenddata as $term => $color){
-        	$out .= '<img style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
-        	drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).' ';
-        }
-        $out .= '</div>';
+			$out .= '<div class="distribution_map_legend">';
+			foreach($legenddata as $term => $color){
+			$out .= '<img style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
+			drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).' ';
+			}
+			$out .= '</div>';
 
-		}
-*/
+			}
+			*/
 		return $out;
 	}
 }
@@ -1517,7 +1534,7 @@ function theme_cdm_back_to_image_gallery_button(){
 function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
 	global $theme;
-	
+
 	$page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
 	$hideTabs = array();
 
@@ -1527,13 +1544,13 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 	$prefMediaQuality = '*';
 	//$media =  cdm_ws_get(CDM_WS_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false),$taxon->uuid));
 
-	
-  $selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
-  if ($selectShowMedia == 0){
-      $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-  }else{
-      $mediaList = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
-  }
+
+	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
+	if ($selectShowMedia == 0){
+		$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	}else{
+		$mediaList = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	}
 
 	if(!isset($media[0])) {
 		$hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
@@ -1561,7 +1578,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   $out = '';
   $out .= theme('cdm_back_to_search_result_button');
   if(variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR)){
-    $out .= theme('cdm_acceptedFor', 'page_general');
+  $out .= theme('cdm_acceptedFor', 'page_general');
   }
   // --- DESCRIPTION --- //
   if($page_part == 'description' || $page_part == 'all'){
@@ -1582,11 +1599,11 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	}
   	$out .= theme('cdm_taxon_page_images', $taxon, $media);
   	$out .= '</div>';
-    
+
   	if($theme == 'garland_cichorieae'){
   		$out .= theme('cdm_taxon_page_images_cichorieae_copyright');
   	}
-   
+  	 
   }
   // --- SYNONYMY --- //
   if($page_part == 'synonymy' || $page_part == 'all'){
@@ -1697,7 +1714,8 @@ function theme_cdm_taxon_page_images($taxon, $media){
 		$gallery_name = $taxon->uuid;
 		$mediaLinkType = 'LIGHTBOX';
 		$out = '<div class="image-gallerie">';
-		$out .= theme('cdm_media_gallerie', $media, $gallery_name, $maxExtend, $cols, $maxRows, $captionElements, $mediaLinkType, null);
+		//$out .= theme('cdm_media_gallerie', $media, $gallery_name, $maxExtend, $cols, $maxRows, $captionElements, $mediaLinkType, null);
+		$out .= theme('cdm_media_gallery_wrapper', $media, $gallery_name, CDM_DATAPORTAL_MEDIA_GALLERY_FORM_NAME);
 		$out .= '</div>';
 	}else{
 		$out = 'No images available.';
@@ -1958,7 +1976,7 @@ function theme_cdm_reference_page($referenceTO){
 	. ((strlen($referenceData["isbn"])>0) ? ($referenceData["isbn"] . '. ') : '')
 	. ((strlen($referenceData["issn"])>0) ? ($referenceData["issn"] . '. ') : '')
 	. ((strlen($referenceData["uri"])>0) ? ($referenceData["uri"] . '. ') : '');
-	 
+
 }
 
 /**
@@ -2204,41 +2222,41 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 				//          $out .= '</li>';
 				//        }
 			}
-	}
-}
-
-if(!empty($specimenTypeDesignations)){
-	// sorting might be different for dataportals so this has to be parameterized
-	usort($specimenTypeDesignations, "compare_specimenTypeDesignationStatus");
-	foreach($specimenTypeDesignations as $std){
-
-		$typeReference = '';
-		//show citation only for Lectotype or Neotype
-		$showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_NEOTYPE || $std->typeStatus->uuid == UUID_LECTOTYPE);
-		if($showCitation && !empty($std->citation)){
-			$shortCitation = $std->citation->authorTeam->titleCache;
-			$shortCitation .= (strlen($shortCitation) > 0 ? ' ' : '' ). partialToYear($std->citation->datePublished->start);
-			if(strlen($shortCitation) == 0){
-				$shortCitation = theme('cdm_reference',$std->citation );
-				$missingShortCitation = true;
-			}
-			$typeReference .= '&nbsp;(' . t('designated by');
-			$typeReference .= '&nbsp;<span class="typeReference '.($missingShortCitation ? '' : 'cluetip').' no-print" title="'. htmlspecialchars('|'.theme('cdm_reference',$std->citation ).'|') .'">';
-			$typeReference .= $shortCitation.'</span>';
-			$typeReference .= ')';
-			//$typeReference .= '<span class="reference only-print">(designated by '.theme('cdm_reference',$std->citation ).')</span>';
 		}
-
-		$out .= '<li class="specimenTypeDesignation">';
-		$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
-		$out .= theme('cdm_specimen', $std->typeSpecimen);
-		$out .= '</li>';
 	}
-}
 
-$out .= '</ul>';
+	if(!empty($specimenTypeDesignations)){
+		// sorting might be different for dataportals so this has to be parameterized
+		usort($specimenTypeDesignations, "compare_specimenTypeDesignationStatus");
+		foreach($specimenTypeDesignations as $std){
 
-return $out;
+			$typeReference = '';
+			//show citation only for Lectotype or Neotype
+			$showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_NEOTYPE || $std->typeStatus->uuid == UUID_LECTOTYPE);
+			if($showCitation && !empty($std->citation)){
+				$shortCitation = $std->citation->authorTeam->titleCache;
+				$shortCitation .= (strlen($shortCitation) > 0 ? ' ' : '' ). partialToYear($std->citation->datePublished->start);
+				if(strlen($shortCitation) == 0){
+					$shortCitation = theme('cdm_reference',$std->citation );
+					$missingShortCitation = true;
+				}
+				$typeReference .= '&nbsp;(' . t('designated by');
+				$typeReference .= '&nbsp;<span class="typeReference '.($missingShortCitation ? '' : 'cluetip').' no-print" title="'. htmlspecialchars('|'.theme('cdm_reference',$std->citation ).'|') .'">';
+				$typeReference .= $shortCitation.'</span>';
+				$typeReference .= ')';
+				//$typeReference .= '<span class="reference only-print">(designated by '.theme('cdm_reference',$std->citation ).')</span>';
+			}
+
+			$out .= '<li class="specimenTypeDesignation">';
+			$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
+			$out .= theme('cdm_specimen', $std->typeSpecimen);
+			$out .= '</li>';
+		}
+	}
+
+	$out .= '</ul>';
+
+	return $out;
 }
 
 function theme_cdm_specimen($specimen){
@@ -2354,8 +2372,14 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				$block->subject = theme('cdm_feature_name', $featureRepresentation);
 				$block->module = "cdm_dataportal-feature";
 
+				//get the text for the feature block
 				$block->content = theme('cdm_descriptionElements', $node->descriptionElements, $block->delta);
-
+				// get media for the feature block
+				$media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
+				$captionElements = array('title', 'rights');
+				//$block->content .= theme('cdm_media_gallerie', $media_list, "test", 150, 4, false, $captionElements);
+				$block->content .= theme('cdm_media_gallery_wrapper', $media_list, 'test5', 'description_gallery');
+				
 				// set anchor; FIXME put anchor in $block->subject
 				$out .= '<a name="'.$block->delta.'"></a>';
 				$out .= theme('block', $block);
@@ -2404,8 +2428,28 @@ function theme_cdm_feature_name($feature_name){
 	}
 }
 
-function theme_cdm_descriptionElements($descriptionElements){
+/**
+ * This function collects all the media from a list of description elements
+ * and return them as an Array.
+ *
+ * @param $descriptionElementes The description elements
+ * @return Array The output with all the media
+ */
+function cdm_dataportal_media_from_descriptionElements($descriptionElements){
+	//variables
+	$outArrayOfMedia = array(); //return value
+	//implementation
+	foreach($descriptionElements as $descriptionElement){
+		foreach($descriptionElement->media as $media){
+			if(isset($media)){
+			 $outArrayOfMedia[] = $media;
+			}
+	 }
+	}
+	return $outArrayOfMedia;
+}
 
+function theme_cdm_descriptionElements($descriptionElements){
 	$outArray = array();
 	$glue = '';
 	$sortOutArray = false;
@@ -2413,6 +2457,8 @@ function theme_cdm_descriptionElements($descriptionElements){
 	$distributionElements=array();
 
 	foreach($descriptionElements as $descriptionElement){
+		//var_dump($descriptionElement);
+		//var_dump("</br> =============================================================================== </br>");
 
 		if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
 			if($descriptionElement->class == 'Distribution'){
@@ -2434,6 +2480,8 @@ function theme_cdm_descriptionElements($descriptionElements){
 		} else if($descriptionElement->class == 'TextData'){
 			$asListElement = true;
 			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
+		} else if($descriptionElement->class == 'media'){
+				
 		} else {
 			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
 		}
@@ -2491,96 +2539,56 @@ function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', 
 	return $out;
 }
 
+/**
+ * TODO: assign a new name to the function? because it is used for the citations 
+ *       textdata elements and not for all text data description elements
+ * @param $element The description element which contains the text information
+ * @param $asListElement A boolean which determines whether the citations should 
+ *                       be renderer as a list or not  
+ * @return unknown_type Html to be renderized in drupal
+ */
 function theme_cdm_descriptionElementTextData($element, $asListElement){
 
-	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
-	$sourceRefs = '';
-	foreach($element->sources as $source){
-		$referenceCitation = '';
-
-		if($source->citation){
-			$authorTeam = $source->citation->authorTeam->teamMembers;
-			if (count($authorTeam)>0){
-
-				if (isset($authorTeam[0]->lastname)){
-					$authorA = $authorTeam[0]->lastname;
-				}else{
-					$authorA = $authorTeam[0]->titlecache;
-					$authorA = substr($authorA, strrpos($authorA, " "));
-				}
-			}
-			if (count($authorTeam) > 2){
-
-				$authorA .= " et al.";
-			}elseif (count($authorTeam = 2)){
-
-
-				if (isset($authorTeam[0]->lastname )&& isset($authorTeam[1]->lastname ))
-				{
-					//$authorA = $authorTeam[0]->lastname;
-					$authorB = $authorTeam[1]->lastname;
-				}else{
-					//$authorA = $authorTeam[0]->titlecache;
-					$authorB = $authorTeam[1]->titlecache;
-					//$authorA = substr($authorA, strrpos($authorA, " "));
-					$authorB = substr($authorB, strrpos($authorB, " "));
-				}
-				if (strlen($authorB)>0){
-					$authorA = $authorA . " & " . $authorB ;
-				}
-			}
-
-			//$authorTeam = $source->citation->authorTeam->titleCache;
-
-			$datePublished = $source->citation->datePublished;
-
-			if (strlen($datePublished->start) >0){
-				$year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
-					
-			}
-			if (strlen($year)>0){
-				$reference = $authorA . ' ' . $year;
-			}else {
-				$reference = $authorA ;
-			}
-			$referenceCitation = l('<span class="reference">'.'(' .$reference.')'.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-			if($source->citationMicroReference){
-				$referenceCitation .= ': '. $source->citationMicroReference;
-			}
-			if($description && strlen($description) > 0 ){
-				$sourceRefs .= ' '.$referenceCitation ;
-			}
-		}
-	}
-
-	/*
-	 if (count($authorTeam) > 2){
-		$authorA = $authorTeam[0];
-		$authorA .= "et al.";
-		}
-		elseif (count($authorTeam = 2)){
-		$authorA = $authorTeam[0] . " & " . $authorTeam[1];
-		}
-		else
-		$authorA = $authorTeam[0];
-
-		$referenceCitation = l('<span class="reference">'.$authorA.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-		if($source->citationMicroReference){
-		$referenceCitation .= ': '. $source->citationMicroReference;
-		}
-		if($description && strlen($description) > 0 ){
-		$sourceRefs .= '; '.$referenceCitation;
-		}
-		}
-		*/
-	if(strlen($sourceRefs) > 0){
-		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
-	}
-	if ($asListElement){
-		return '<li class="descriptionText">' . $description . $sourceRefs. '</li>';
-	}else{
-		return $description . $sourceRefs;
-	}
+  $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+  $sourceRefs = '';
+  $result = array();
+  $res_text;
+  $res_author;
+  $res_date;
+    
+  foreach($element->sources as $source){
+    $referenceCitation = '';
+    if($source->citation){
+      $datePublished = $source->citation->datePublished;
+      if (strlen($datePublished->start) >0){
+        $year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
+      }
+      /* new implementation */
+      $author_team_titlecache = $source->citation->authorTeam->titleCache; //$source->citation->authorTeam->titlecache
+      if (strlen($year)>0){
+        $reference = $author_team_titlecache.' '. $year;
+      }else {
+        $reference = $author_team_titlecache ;
+      }
+      
+      $referenceCitation = l('<span class="reference">'.'(' .$reference.')'.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+      if($source->citationMicroReference){
+        $referenceCitation .= ': '. $source->citationMicroReference;
+      }
+      if($description && strlen($description) > 0 ){
+        $sourceRefs .= ' '.$referenceCitation ;
+      }
+    }
+  }
+  if(strlen($sourceRefs) > 0){
+    $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+  }
+  if ($asListElement){
+    $res_text = '<li class="descriptionText">' . $description . $sourceRefs. '</li>';
+  }else{
+    $res_text = $description . $sourceRefs;
+  }
+    return $res_text;
 }
 
 function theme_cdm_search_results($pager, $path, $parameters){
