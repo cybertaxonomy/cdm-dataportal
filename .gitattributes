@@ -61,6 +61,8 @@ modules/cdm_dataportal/cdm_taxontree/visible_implicit.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_implicit_small.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_small.gif -text
 modules/cdm_dataportal/cdm_ws_urls.txt -text
+modules/cdm_dataportal/classes/footnote.php -text
+modules/cdm_dataportal/classes/footnotemanager.php -text
 modules/cdm_dataportal/ext_links/ext_links.info -text
 modules/cdm_dataportal/ext_links/ext_links.js -text
 modules/cdm_dataportal/ext_links/ext_links.module -text
@@ -167,6 +169,7 @@ modules/cdm_dataportal/js/cluetip/jquery.cluetip.min.js -text
 modules/cdm_dataportal/js/cluetip/jquery.dimensions.js -text
 modules/cdm_dataportal/js/cluetip/jquery.hoverIntent.js -text
 modules/cdm_dataportal/js/cluetip/wait.gif -text
+modules/cdm_dataportal/js/footnotes.js -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/css/jquery.lightbox-0.5.css -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/images/lightbox-blank.gif -text
 modules/cdm_dataportal/js/jquery-lightbox-0.5/images/lightbox-btn-close.gif -text

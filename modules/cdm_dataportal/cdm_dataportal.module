@@ -13,6 +13,8 @@
 
 require_once('node_types.php');
 require_once('cdm_dataportal.theme.php');
+require_once('classes/footnotemanager.php');
+require_once('classes/footnote.php');
 
 define(CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE, 25);
 define(CDM_DATAPORTAL_NOMREF_IN_TITLE, 1);

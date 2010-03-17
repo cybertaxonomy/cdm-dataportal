@@ -313,4 +313,13 @@ a.toc:link, a.toc:visited {
   text-decoration:underline;
 }
 
+.footnote{
+	font-size: 90%;
+}
+
+.footnote-key{
+  vertical-align: super;
+  font-size: 80%;
+  font-style: italic;
+}
 

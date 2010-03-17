@@ -42,6 +42,10 @@ function _add_js_lightbox($galleryID){
     ', 'inline');
 }
 
+function _add_js_footnotes(){
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/footnotes.js');
+}
+
 
 function _add_js_cluetip(){
 
@@ -2373,7 +2377,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				$block->module = "cdm_dataportal-feature";
 
 				//get the text for the feature block
-				$block->content = theme('cdm_descriptionElements', $node->descriptionElements, $block->delta);
+				$block->content = theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid);
 				// get media for the feature block
 				$media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
 				$captionElements = array('title', 'rights');
@@ -2449,26 +2453,26 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 	return $outArrayOfMedia;
 }
 
-function theme_cdm_descriptionElements($descriptionElements){
+/**
+ * Theme a list of description elements, usually of a specific feature type
+ * @param $descriptionElements
+ * @return unknown_type
+ */
+function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 	$outArray = array();
 	$glue = '';
 	$sortOutArray = false;
 	$enclosingHtml = 'ul';
-	$distributionElements=array();
+	$distributionElements = array();
 
 	foreach($descriptionElements as $descriptionElement){
-		//var_dump($descriptionElement);
-		//var_dump("</br> =============================================================================== </br>");
-
+		
 		if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
 			if($descriptionElement->class == 'Distribution'){
-				//$repr = $descriptionElement->area->representation_L10n;
-				$distributionElements[]= $descriptionElement->area->representation_L10n;
-
+				$distributionElements[]= $descriptionElement;
 			} else if($descriptionElement->class == 'TextData'){
-				//$repr = $descriptionElement->multilanguageText_L10n->text;
 				$asListElement = false;
-				$repr = "<t/>". theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
+				$repr = theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
 					
 				if( !array_search($repr, $outArray)){
 					$outArray[] = $repr;
@@ -2480,28 +2484,38 @@ function theme_cdm_descriptionElements($descriptionElements){
 		} else if($descriptionElement->class == 'TextData'){
 			$asListElement = true;
 			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
-		} else if($descriptionElement->class == 'media'){
-				
 		} else {
 			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
 		}
 
 	}
 
-	$outArray[] = theme(cdm_descriptionElementDistribution, $distributionElements);
+	$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
+	
+	
 	// take the feature of the last $descriptionElement
 	$feature = $descriptionElement->feature;
-	return theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+	$out = theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+	$out .= '<div class="footnote_list">'. FootnoteManager::renderFootnoteList($featureUuid) . '</div>';
+	return $out;
 }
 
 function theme_cdm_descriptionElementDistribution($descriptionElements){
 
-	$descriptions = '';
+	$out = '';
+	$separator = ', ';
 
-	foreach($descriptionElements as $description){
-		$descriptions .= $description . ", ";
+	foreach($descriptionElements as $descriptionElement){
+		//$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, $descriptionElement->area->representation_L10n);
+	  $footnoteKeyList = '';
+		foreach($descriptionElement->sources as $source){
+  		$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, $source, 'cdm_DescriptionElementSource');
+  		$footnoteKeyList .= theme('cdm_footnode_key', $footnoteKey) . ' ';
+		}
+    $out .= $descriptionElement->area->representation_L10n . $footnoteKeyList . $separator;
 	}
-	$descriptions = substr($descriptions, 0, strlen($descriptions)-2);
+	$out = substr($out, 0, strlen($out)-strlen($separator) );
+	
 	$taxonTrees =  cdm_ws_get(CDM_WS_TAXONOMY);
 	foreach($taxonTrees as $taxonTree){
 		if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
@@ -2510,22 +2524,44 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 		}
 	}
 
-	if ($reference->title === "World Checklist of Arecaceae"){
-		$referenceCitation = l('<span class="reference">(World Checklist of Monocotyledons)</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-	}else
-	{
-		$referenceCitation = l('<span class="reference">('.$reference->title.')</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-	}
-	if($descriptions && strlen($descriptions) > 0 ){
-		$sourceRefs .= ' '.$referenceCitation;
-	}
+//  $referenceCitation = l('<span class="reference">('.$reference->title.')</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+//	if($descriptions && strlen($descriptions) > 0 ){
+//		$sourceRefs .= ' '.$referenceCitation;
+//	}
 
-	if(strlen($sourceRefs) > 0){
-		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
-	}
-	return $descriptions. $sourceRefs ;
+	return $out;
 
+}
 
+function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
+  
+    //ev. delegate to theme_cdm_ReferencedEntityBase
+    $out = '';
+    if($descriptionElementSource->citation){
+      $datePublished = $descriptionElementSource->citation->datePublished;
+      if (strlen($datePublished->start) >0){
+        $year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
+      }
+      $author_team_titlecache = $descriptionElementSource->citation->authorTeam->titleCache;
+      if (strlen($year)>0){
+        $reference = $author_team_titlecache.' '. $year;
+      }else {
+        $reference = $author_team_titlecache ;
+      }
+      
+      if($doLink){
+        $out = l('<span class="reference">'.$reference.'</span>'
+          , path_to_reference($descriptionElementSource->citation->uuid)
+          , array("class"=>"reference")
+          , NULL, NULL, FALSE ,TRUE);
+      } else {
+       $out = $reference;
+      }
+      if($descriptionElementSource->citationMicroReference){
+        $out .= ': '. $descriptionElementSource->citationMicroReference;
+      }
+    }
+    return $out;
 }
 
 function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
@@ -2557,27 +2593,9 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
   $res_date;
     
   foreach($element->sources as $source){
-    $referenceCitation = '';
-    if($source->citation){
-      $datePublished = $source->citation->datePublished;
-      if (strlen($datePublished->start) >0){
-        $year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
-      }
-      /* new implementation */
-      $author_team_titlecache = $source->citation->authorTeam->titleCache; //$source->citation->authorTeam->titlecache
-      if (strlen($year)>0){
-        $reference = $author_team_titlecache.' '. $year;
-      }else {
-        $reference = $author_team_titlecache ;
-      }
-      
-      $referenceCitation = l('<span class="reference">'.'(' .$reference.')'.'</span>', path_to_reference($source->citation->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-      if($source->citationMicroReference){
-        $referenceCitation .= ': '. $source->citationMicroReference;
-      }
-      if($description && strlen($description) > 0 ){
-        $sourceRefs .= ' '.$referenceCitation ;
-      }
+    $referenceCitation = theme('cdm_DescriptionElementSource', $source);
+    if($description && strlen($description) > 0 && $referenceCitation ){
+        $sourceRefs .= ' ('.$referenceCitation.')' ;
     }
   }
   if(strlen($sourceRefs) > 0){
@@ -2588,7 +2606,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
   }else{
     $res_text = $description . $sourceRefs;
   }
-    return $res_text;
+  return $res_text;
 }
 
 function theme_cdm_search_results($pager, $path, $parameters){
@@ -2636,6 +2654,18 @@ function theme_cdm_search_results($pager, $path, $parameters){
 	}
 	return $out;
 }
+
+function theme_cdm_footnode_key($footnoteKey){
+  $out = '<a href="#footnote-'.$footnoteKey.'" class="footnote-key">'.$footnoteKey.'</a>';
+  return $out;
+}
+
+function theme_cdm_footnode($footnoteKey, $footnodeText){
+  _add_js_footnotes();
+  $out = '<span class="footnote footnote-'.$footnoteKey.'"><a name="footnote-'.$footnoteKey.'"></a><span class="footnote-anchor">'.$footnoteKey.'.</span>&nbsp;'.$footnodeText.'</span>';
+  return $out;
+}
+
 
 
 function theme_cdm_pager(&$pager, $path, $parameters){
