@@ -16,9 +16,9 @@ require_once('cdm_dataportal.theme.php');
 require_once('classes/footnotemanager.php');
 require_once('classes/footnote.php');
 
-define(CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE, 25);
-define(CDM_DATAPORTAL_NOMREF_IN_TITLE, 1);
-define(CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR, 0);
+define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
+define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
+define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
 
 /* gallery variables */
 $gallery_settings = array(
@@ -28,10 +28,10 @@ $gallery_settings = array(
     "cdm_dataportal_media_maxextend" => 120,
     "cdm_dataportal_media_cols" => 3,
     "cdm_dataportal_media_maxRows" => 1);
-define(CDM_DATAPORTAL_GALLERY_SETTINGS, serialize($gallery_settings));
-define(CDM_DATAPORTAL_DESCRIPTION_GALLERY_FORM_NAME, "description_gallery");
-define(CDM_DATAPORTAL_MEDIA_GALLERY_FORM_NAME, "media_gallery");
-define(CDM_DATAPORTAL_SEARCH_GALLERY_FORM_NAME, "search_gallery");
+define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
+define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_FORM_NAME', "description_gallery");
+define('CDM_DATAPORTAL_MEDIA_GALLERY_FORM_NAME', "media_gallery");
+define('CDM_DATAPORTAL_SEARCH_GALLERY_FORM_NAME', "search_gallery");
 
 
 
