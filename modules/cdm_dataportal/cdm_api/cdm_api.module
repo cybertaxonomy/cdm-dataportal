@@ -359,7 +359,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
       $uri_pattern = substr($uri_pattern, 0, strlen($uri_pattern) - 1);
     }
     while(count($pathParameters) > $i){
-      $uri_pattern .= '/' . $pathParameters[$i];
+      $uri_pattern .= '/' . rawurlencode($pathParameters[$i]);
       ++$i;
     }
   }
