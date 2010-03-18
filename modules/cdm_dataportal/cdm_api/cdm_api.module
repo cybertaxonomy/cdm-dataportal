@@ -319,9 +319,6 @@ function partialToDay($partial){
   return;
 }
 
-function _urlencode($text){
-	return str_replace('%0E', '.', rawurlencode($text));
-}
 /**
  *
  * @param $uri_pattern
@@ -349,7 +346,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
     if(count($pathParameters) <= $i){
       drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
     }
-    $uri_pattern = str_replace("$".$i, _urlencode($pathParameters[$i]), $uri_pattern);
+    $uri_pattern = str_replace("$".$i, rawurlencode($pathParameters[$i]), $uri_pattern);
     ++$i;
   }
 
@@ -362,7 +359,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
       $uri_pattern = substr($uri_pattern, 0, strlen($uri_pattern) - 1);
     }
     while(count($pathParameters) > $i){
-      $uri_pattern .= '/' . _urlencode($pathParameters[$i]);
+      $uri_pattern .= '/' . rawurlencode($pathParameters[$i]);
       ++$i;
     }
   }
