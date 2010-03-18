@@ -1122,7 +1122,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 	}
 
 	// render
-	$out = '';
+	$out = '<span ref="/name/'.$taxonName->uuid.'">';
 	foreach($renderTemplate as $partName=>$part){
 		$separator = '';
 		$partHtml = '';
@@ -1151,7 +1151,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 		}
 	}
 
-	return $out;
+	return $out.'</span>';
 }
 
 /**
