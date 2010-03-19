@@ -380,9 +380,9 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 	$showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 1);
 	$prefMimeTypeRegex = 'image:.*';
 	$prefMediaQuality = '*';
-	$cols = variable_get('cdm_dataportal_findtaxa_media_cols', 3);
-	$maxRows = variable_get('cdm_dataportal_findtaxa_media_maxRows', 1);
-	$maxExtend = variable_get('cdm_dataportal_findtaxa_media_maxextend', 120);
+	//$cols = variable_get('cdm_dataportal_findtaxa_media_cols', 3);
+	//$maxRows = variable_get('cdm_dataportal_findtaxa_media_maxRows', 1);
+	//$maxExtend = variable_get('cdm_dataportal_findtaxa_media_maxextend', 120);
 
 	if($showCaption){
 		//$captionElements = array('title', '#uri'=>t('open Image'));
@@ -708,7 +708,6 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 		// assuming it is an index
 		$partIdx = $partId;
 	}
-
 
 	$media_metadata = cdm_read_media_metadata($media);
 	//$title = $media->titleCache;
@@ -1551,10 +1550,15 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
 	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
 	if ($selectShowMedia == 0){
-		$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+		$media = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 	}else{
-		$mediaList = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+		$media = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 	}
+/*
+ if(!isset($mediaList[0])) {
+    $hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
+  }
+*/
 
 	if(!isset($media[0])) {
 		$hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
