@@ -1,0 +1,47 @@
+<?php
+// $Id$
+
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+*/
+
+function theme_cdm_reference_pager($referencePager, $path, $parameters = array()){
+	drupal_set_title(t('Bibliographic Index'));
+	$out = '';
+	if(count($referencePager->records) > 0){
+		$out .= '<ul>';
+		foreach($referencePager->records as $reference){
+			$reference->fullCitation = $reference->titleCache; //FIXME remove hack for matching cdm entity to STO
+			$out .= '<li>'.theme('cdm_reference', $reference, TRUE).'</li>';
+		}
+		$out .= '</ul>';
+		$out .= theme('cdm_pager', $referencePager,  $path, $parameters);
+	} else {
+		$out = '<h4 class="error">Sorry, this page contains not entries.</h4>';
+	}
+	return $out;
+}
+
+
+/**
+ * @deprecated ??
+ */
+function theme_cdm_reference($reference, $linkToReference = FALSE, $style = NULL ){
+
+	if($style == "ZoologicalName"){
+		$year = partialToYear($reference->datePublished->start);
+		$citation = $reference->authorTeam->titleCache.($year ? ', '.$year : '');
+	} else {
+		$citation = $reference->titleCache;
+	}
+	if($linkToReference){
+		return l('<span class="reference">'.$citation.'</span>', "/cdm_dataportal/reference/".$reference->uuid, array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+	} else {
+		return '<span class="reference">'.$citation.'</span>';
+	}
+}

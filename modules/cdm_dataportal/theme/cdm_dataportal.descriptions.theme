@@ -1,0 +1,506 @@
+<?php
+// $Id$
+
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+*/
+
+function theme_cdm_feature_nodesTOC($featureNodes){
+
+	$out .= '<ul>';
+
+	foreach($featureNodes as $node){
+		// process $descriptionElements with content only
+		if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0){
+
+			$featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
+			// HACK to implement images for taxa, should be removed
+			if($node->feature->uuid != UUID_IMAGE){
+				$out .= '<li>'.l(t(theme('cdm_feature_name', $featureRepresentation)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($featureRepresentation)).'</li>';
+			}
+		}
+	}
+
+	$out .= '</ul>';
+	return $out;
+}
+
+function theme_cdm_feature_name($feature_name){
+	//TODO replace by using translations ?
+	switch($feature_name){
+		default: return t(ucfirst($feature_name));
+	}
+}
+
+function theme_cdm_featureTrees($mergedTrees, $taxon){
+
+	if(!$mergedTrees){
+		return;
+	}
+
+	foreach($mergedTrees as &$mTree){
+		//TODO diplay title and reference in case of multiple $mergedTrees -> theme
+		$out .= theme('cdm_feature_nodes', $mTree->root->children, $taxon);
+	}
+	return $out;
+}
+
+
+
+function theme_cdm_featureTreeTOCs($mergedTrees){
+
+	if(!$mergedTrees){
+		return;
+	}
+	//FIXME
+	$out = '<div class="featureTOC">';
+	$out .= '<h2>' . t('Content') .'</h2>';
+
+	//TODO diplay title and reference in case of multiple $mergedTrees -> theme
+
+	foreach($mergedTrees as &$mTree){
+		$out .= theme('cdm_feature_nodesTOC', $mTree->root->children);
+	}
+
+	$out .= '</div>';
+	return $out;
+}
+
+
+
+function theme_cdm_feature_nodes($featureNodes, $taxon){
+
+	$gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
+	
+	foreach($featureNodes as $node){
+		// process $descriptionElements with content only
+		if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0){
+
+			$featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
+
+			$block->module = 'cdm_dataportal';
+
+			if($node->feature->uuid != UUID_IMAGE){
+				$block->delta = generalizeString($featureRepresentation);
+				$block->subject = theme('cdm_feature_name', $featureRepresentation);
+				$block->module = "cdm_dataportal-feature";
+
+				//get the text for the feature block
+				$block->content = theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid);
+				// get media for the feature block
+				$media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
+				$captionElements = array('title', 'rights');
+				//$block->content .= theme('cdm_media_gallerie', $media_list, "test", 150, 4, false, $captionElements);
+				$block->content .= theme('cdm_media_gallery', $media_list, 
+					CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
+					$gallery_settings['cdm_dataportal_media_maxextend'], 
+	             	$gallery_settings['cdm_dataportal_media_cols'], 
+	             	$gallery_settings['cdm_dataportal_media_maxRows'],
+	             	$captionElements);
+				
+				// set anchor; FIXME put anchor in $block->subject
+				$out .= '<a name="'.$block->delta.'"></a>';
+				$out .= theme('block', $block);
+
+				// TODO HACK
+				if($node->feature->uuid == UUID_DISTRIBUTION){
+					$out .= theme('cdm_descriptionElements_distribution', $taxon);
+				}
+			}
+		}
+		// theme
+		if(count($node->children) > 0){
+			$out .= '<div class="nested_description_elements">';
+			$out .= theme('cdm_feature_nodes', $node->children, $taxon);
+			$out .= '</div>';
+		}
+	}
+	return $out;
+}
+
+
+
+
+function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
+	$out = '<'.$enclosingHtml.' class="description" id="'.$feature->representation_L10n.'">';
+
+	if($sortArray) sort($elementArray);
+
+	$out .= join($elementArray, $glue);
+
+	$out .= '</'.$enclosingHtml.'>';
+	return $out;
+}
+
+/**
+ * TODO: assign a new name to the function? because it is used for the citations 
+ *       textdata elements and not for all text data description elements
+ * @param $element The description element which contains the text information
+ * @param $asListElement A boolean which determines whether the citations should 
+ *                       be renderer as a list or not  
+ * @return unknown_type Html to be renderized in drupal
+ */
+function theme_cdm_descriptionElementTextData($element, $asListElement){
+
+  $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+  $sourceRefs = '';
+  $result = array();
+  $res_text;
+  $res_author;
+  $res_date;
+    
+  foreach($element->sources as $source){
+    $referenceCitation = theme('cdm_DescriptionElementSource', $source);
+    if($description && strlen($description) > 0 && $referenceCitation ){
+        $sourceRefs .= ' ('.$referenceCitation.')' ;
+    }
+  }
+  if(strlen($sourceRefs) > 0){
+    $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+  }
+  if ($asListElement){
+    $res_text = '<li class="descriptionText">' . $description . $sourceRefs. '</li>';
+  }else{
+    $res_text = $description . $sourceRefs;
+  }
+  return $res_text;
+}
+
+
+/**
+ * Theme a list of description elements, usually of a specific feature type
+ * @param $descriptionElements
+ * @return unknown_type
+ */
+function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
+	$outArray = array();
+	$glue = '';
+	$sortOutArray = false;
+	$enclosingHtml = 'ul';
+	$distributionElements = array();
+
+	foreach($descriptionElements as $descriptionElement){
+		
+		if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
+			if($descriptionElement->class == 'Distribution'){
+				$distributionElements[]= $descriptionElement;
+			} else if($descriptionElement->class == 'TextData'){
+				$asListElement = false;
+				$repr = theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
+					
+				if( !array_search($repr, $outArray)){
+					$outArray[] = $repr;
+					$glue = '<br/> ';
+					$sortOutArray = true;
+					$enclosingHtml = 'p';
+				}
+			}
+		} else if($descriptionElement->class == 'TextData'){
+			$asListElement = true;
+			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
+		} else {
+			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
+		}
+
+	}
+
+	$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
+	
+	
+	// take the feature of the last $descriptionElement
+	$feature = $descriptionElement->feature;
+	$out = theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+	$out .= '<div class="footnote_list">'. FootnoteManager::renderFootnoteList($featureUuid) . '</div>';
+	return $out;
+}
+
+/**
+ * 
+ * @param unknown_type $descriptionElements
+ * @return unknown_type
+ */
+function theme_cdm_descriptionElementDistribution($descriptionElements){
+
+	$out = '';
+	$separator = ', ';
+
+	foreach($descriptionElements as $descriptionElement){
+		//$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, $descriptionElement->area->representation_L10n);
+	  $footnoteKeyList = '';
+		foreach($descriptionElement->sources as $source){
+  		$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, $source, 'cdm_DescriptionElementSource');
+  		$footnoteKeyList .= theme('cdm_footnode_key', $footnoteKey) . ' ';
+		}
+    $out .= $descriptionElement->area->representation_L10n . $footnoteKeyList . $separator;
+	}
+	$out = substr($out, 0, strlen($out)-strlen($separator) );
+	
+	$taxonTrees =  cdm_ws_get(CDM_WS_TAXONOMY);
+	foreach($taxonTrees as $taxonTree){
+		if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
+			$reference = $taxonTree-> reference;
+			break;
+		}
+	}
+
+//  $referenceCitation = l('<span class="reference">('.$reference->title.')</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
+//	if($descriptions && strlen($descriptions) > 0 ){
+//		$sourceRefs .= ' '.$referenceCitation;
+//	}
+
+	return $out;
+
+}
+
+
+function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
+  
+    //ev. delegate to theme_cdm_ReferencedEntityBase
+    $out = '';
+    if($descriptionElementSource->citation){
+      $datePublished = $descriptionElementSource->citation->datePublished;
+      if (strlen($datePublished->start) >0){
+        $year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
+      }
+      $author_team_titlecache = $descriptionElementSource->citation->authorTeam->titleCache;
+      if (strlen($year)>0){
+        $reference = $author_team_titlecache.' '. $year;
+      }else {
+        $reference = $author_team_titlecache ;
+      }
+      
+      if($doLink){
+        $out = l('<span class="reference">'.$reference.'</span>'
+          , path_to_reference($descriptionElementSource->citation->uuid)
+          , array("class"=>"reference")
+          , NULL, NULL, FALSE ,TRUE);
+      } else {
+       $out = $reference;
+      }
+      if($descriptionElementSource->citationMicroReference){
+        $out .= ': '. $descriptionElementSource->citationMicroReference;
+      }
+    }
+    return $out;
+}
+
+
+
+/**
+ * TODO
+ * Quick-and-dirty solution to show distribution service to exemplar groups
+ *
+ * @param unknown_type $featureTo
+ * @return unknown
+ */
+function theme_cdm_descriptionElements_distribution($taxon){
+
+	$fontStyles = array(0 => "plane", 1 => "italic");
+	$server = variable_get('cdm_dataportal_geoservice_access_point', false);
+
+	if(!server){
+		return "<p>No geoservice specified</p>";
+	}else{
+		$map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
+
+		$display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
+		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
+		$labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
+
+		$query_string = ($display_width ? '&ms=' . $display_width: '')
+		. ($bounding_box ? '&bbox=' .  $bounding_box : '')
+		. ($labels_on ? '&labels=' .  $labels_on : '');
+
+		if(variable_get('cdm_dataportal_map_openlayers', 1)){
+			// embed into openlayers viewer
+			$server = 'http://edit.csic.es/v1/areas.php';
+			$query_string .= '&img=false&legend=1&mlp=3';
+			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
+			$legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
+			$legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
+			$legend_url_font_style = $fontStyles[$legend_url_font_style];
+			$legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
+			$legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
+
+			//#print($map_tdwg_Uri.'<br>');
+
+			//$map_tdwg_Uri ='http://edit.csic.es/v1/areas3_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
+			//$tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
+
+			// get the respone from the map service
+			$responseObj = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);
+			$responseObj = $responseObj[0];
+
+			// get the sld files from the response object
+			if(isset($responseObj->layers)){
+				if(isset($responseObj->legend)){
+					//$splittedLegendSldUrl = explode("http://edit.csic.es/v1/sld/", $responseObj->legend);
+					//$tdwg_sldLegend = $splittedLegendSldUrl[1];
+					$sldLegend=$responseObj->legend;
+					$legend_url  ="http://edit.csic.es/geoserver/wms/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+					$legend_url .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
+					$legend_url .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
+				}
+				$layerSlds = $responseObj->layers;
+				foreach($layerSlds as $layer){
+					$tdwg_sldUris[$layer->tdwg] = "http://edit.csic.es/v1/sld/".$layer->sld;
+					//#print($tdwg_sldUris[$layer->tdwg].'<br>');
+				}
+			}
+			// get the bbox from the response object
+			$zoomto_bbox = ($bounding_box ? $bounding_box : ($responseObj->bbox ? $responseObj->bbox :'-180, -90, 180, 90') );
+
+			$add_tdwg1 = (isset($tdwg_sldUris['tdwg1']) ? "
+          tdwg_1.params.SLD = '".$tdwg_sldUris['tdwg1']."';
+          map.addLayers([tdwg_1]);" : '');
+			$add_tdwg2 = (isset($tdwg_sldUris['tdwg2']) ? "
+          tdwg_2.params.SLD = '".$tdwg_sldUris['tdwg2']."';
+          map.addLayers([tdwg_2]);" : '');
+			$add_tdwg3 = (isset($tdwg_sldUris['tdwg3']) ? "
+          tdwg_3.params.SLD = '".$tdwg_sldUris['tdwg3']."';
+          map.addLayers([tdwg_3]);" : '');
+			$add_tdwg4 = (isset($tdwg_sldUris['tdwg4']) ? "
+          tdwg_4.params.SLD = '".$tdwg_sldUris['tdwg4']."';
+          map.addLayers([tdwg_4]);" : '');
+
+			//      $googleMapsApiKey_localhost = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
+			//      drupal_set_html_head(' <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$googleMapsApiKey_localhost.'"></script>');
+
+			/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			 * OpenLayers.js must be loaded BEFORE jQuery.
+			 * If jQuery loaded before $.something will fail in IE8.
+			 * Therefore we add OpenLayers.js it in the page.tpl.php
+			 * -----------------------------------------------------
+			 * Andreas Kohlbecker [Feb 25th 2010]:
+			 * This problems seems to be solved somehow (a bugfix in IE8?)
+			 * so I am removing this "hack" by uncommenting the line below
+			 */
+			drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
+			drupal_add_js('
+ var map;
+ 
+ var layerOptions = {
+     maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+     isBaseLayer: false,
+     displayInLayerSwitcher: false
+  };
+ 
+ var tdwg_1 = new OpenLayers.Layer.WMS.Untiled( 
+    "tdwg level 1", 
+    "http://edit.csic.es/geoserver/wms",
+    {layers:"topp:tdwg_level_1",transparent:"true", format:"image/png"},
+    layerOptions
+  );
+  
+ var tdwg_2 = new OpenLayers.Layer.WMS.Untiled( 
+    "tdwg level 2", 
+    "http://edit.csic.es/geoserver/wms",
+    {layers:"topp:tdwg_level_2",transparent:"true", format:"image/png"},
+    layerOptions
+  );
+  
+ var tdwg_3 = new OpenLayers.Layer.WMS.Untiled( 
+    "tdwg level 3", 
+    "http://edit.csic.es/geoserver/wms",
+    {layers:"topp:tdwg_level_3", transparent:"true", format:"image/png"},
+    layerOptions
+  );
+  
+  var tdwg_4 = new OpenLayers.Layer.WMS.Untiled( 
+    "tdwg level 4", 
+    "http://edit.csic.es/geoserver/wms",
+    {layers:"topp:tdwg_level_4",transparent:"true", format:"image/png"},
+    layerOptions
+  );
+  
+ // make baselayer
+ layerOptions[\'isBaseLayer\'] = true; 
+ 
+ var ol_wms = new OpenLayers.Layer.WMS( 
+    "OpenLayers WMS",
+    "http://labs.metacarta.com/wms/vmap0",
+    {layers: \'basic\'}, 
+    layerOptions
+  );
+  
+  
+  // ------------------------------
+  
+  
+ function init() {
+ 
+   var mapOptions={
+     controls: 
+       [ 
+         new OpenLayers.Control.PanZoom(),
+         new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
+       ],
+       maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+       maxResolution: '.(360 / $display_width).',
+       restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+       projection: new OpenLayers.Projection("EPSG:4326")
+    };
+   
+   map = new OpenLayers.Map(\'openlayers_map\', mapOptions);
+   map.addLayers([ol_wms]);
+   '.$add_tdwg1.'
+   '.$add_tdwg2.'
+   '.$add_tdwg3.'
+   '.$add_tdwg4.'
+   map.zoomToExtent(new OpenLayers.Bounds('.$zoomto_bbox.'), false);
+ }
+ 
+$(document).ready(function(){
+  init();
+  $(\'#openlayers_legend\').css(\'top\', -$(\'#openlayers_map\').height());
+  $(\'#openlayers_legend\').css(\'left\', $(\'#openlayers_map\').width()-100);
+});'
+, 'inline');
+// showing openlayers
+$out = '<div id="openlayers">';
+$out .= '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+// showing lengeds
+if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
+	$out .= '<div id="openlayers_legend"><img id="legend" src="'.$legend_url.'"></div>';
+}
+// showing map caption
+$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
+$out .= '</div>';
+ 
+		} else {
+			// simple image
+			$mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
+			$query_string .= '&img=true&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
+			$mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
+			$out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
+		}
+		/*
+		 // add a simple legend
+		 if(variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
+			$legenddata = array(
+			'native' => "4daf4a",
+			'native_doubtfully_native' => "377eb8",
+			'cultivated' => "984ea3",
+			'introduced' => "ff7f00",
+			'introduced adventitious' => "ffff33",
+			'introduced cultivated' => "a65628",
+			'introduced naturalized' => "f781bf"
+			);
+
+			$out .= '<div class="distribution_map_legend">';
+			foreach($legenddata as $term => $color){
+			$out .= '<img style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
+			drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).' ';
+			}
+			$out .= '</div>';
+
+			}
+			*/
+		return $out;
+	}
+}

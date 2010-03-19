@@ -1,4 +1,15 @@
 <?php
+// $Id$
+
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+*/
+
 
 class Footnote
 {
@@ -28,7 +39,7 @@ class Footnote
       } else {
         $out = $this->object;
       }
-      return theme('cdm_footnode', $this->key, $out);
+      return theme('cdm_footnote', $this->key, $out);
     }
 
 }

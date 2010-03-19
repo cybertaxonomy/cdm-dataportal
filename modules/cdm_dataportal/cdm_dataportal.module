@@ -6,13 +6,24 @@
  * cdm_dataportal
  *
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
+ * European Distributed Institute of Taxonomy 
  * http://www.e-taxonomy.eu
- *
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
  */
 
 require_once('node_types.php');
-require_once('cdm_dataportal.theme.php');
+
+require_once('theme/cdm_dataportal.common.theme');
+require_once('theme/cdm_dataportal.descriptions.theme');
+require_once('theme/cdm_dataportal.media.theme');
+require_once('theme/cdm_dataportal.occurrence.theme');
+require_once('theme/cdm_dataportal.page.theme');
+require_once('theme/cdm_dataportal.taxon.theme');
+require_once('theme/cdm_dataportal.name.theme');
+require_once('theme/cdm_dataportal.references.theme');
+
 require_once('classes/footnotemanager.php');
 require_once('classes/footnote.php');
 
@@ -27,11 +38,19 @@ $gallery_settings = array(
     "cdm_dataportal_show_thumbnail_captions" => 1,
     "cdm_dataportal_media_maxextend" => 120,
     "cdm_dataportal_media_cols" => 3,
-    "cdm_dataportal_media_maxRows" => 1);
+    "cdm_dataportal_media_maxRows" => 0);
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
-define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_FORM_NAME', "description_gallery");
-define('CDM_DATAPORTAL_MEDIA_GALLERY_FORM_NAME', "media_gallery");
-define('CDM_DATAPORTAL_SEARCH_GALLERY_FORM_NAME', "search_gallery");
+define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
+define('CDM_DATAPORTAL_MEDIA_GALLERY_NAME', "media_gallery");
+define('CDM_DATAPORTAL_SEARCH_GALLERY_NAME', "search_gallery");
+
+
+
+
+function getGallerySettings($gallery_config_form_name){
+	$default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
+  	return variable_get($gallery_config_form_name, $default_values);
+}
 
 
 
@@ -761,72 +780,20 @@ function cdm_dataportal_settings_layout(){
     '#options' => $selectShowMedia,
     '#description'   => t('Select if a taxon should show only his media or also child media.')
     );
-/*
-    // --- SEARCH TAXA GALLERY ---- //
-    $form['findtaxa'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Search Taxa'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    );
 
-    //variable_get('', 1);
-    $form['findtaxa']['cdm_dataportal_findtaxa_show_taxon_thumbnails'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show media thumbnails for accepted taxa'),
-    '#default_value' => variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1),
-    '#description' => t('')
-    );
-
-    $form['findtaxa']['cdm_dataportal_findtaxa_show_synonym_thumbnails'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show media thumbnails for synonyms'),
-    '#default_value' => variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0),
-    '#description' => t('')
-    );
-
-    //   $showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 0);
-    $form['findtaxa']['cdm_dataportal_findtaxa_show_thumbnail_captions'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show captions under thumbnails'),
-    '#default_value' => variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 1),
-    '#description' => t('')
-    );
-
-    $form['findtaxa']['cdm_dataportal_findtaxa_media_maxextend'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Maximum extend of Images'),
-    '#default_value' => variable_get('cdm_dataportal_findtaxa_media_maxextend', 120),
-    '#description' => t('')
-    );
-
-    $form['findtaxa']['cdm_dataportal_findtaxa_media_cols'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Number of columns'),
-    '#default_value' => variable_get('cdm_dataportal_findtaxa_media_cols', 3),
-    '#description' => t('')
-    );
-
-    $form['findtaxa']['cdm_dataportal_findtaxa_media_maxRows'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Maximum number of rows'),
-    '#default_value' => variable_get('cdm_dataportal_findtaxa_media_maxRows', 1),
-    '#description' => t('')
-    );
-*/
     // --- SEARCH TAXA GALLERY ---- //
     $collapsed = TRUE;
-    $form_name = CDM_DATAPORTAL_SEARCH_GALLERY_FORM_NAME;
+    $form_name = CDM_DATAPORTAL_SEARCH_GALLERY_NAME;
     $form_tittle = 'Search Taxa';
     $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
 
     // --- FEATURE DESCRIPTION GALLERY ---- //
-    $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_FORM_NAME;
+    $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
     $form_tittle = 'Description elements gallery';
     $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
 
     // --- MEDIA GALLERY ---- //
-    $form_name = CDM_DATAPORTAL_MEDIA_GALLERY_FORM_NAME;
+    $form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
     $form_tittle = 'Media gallery';
     $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
 
@@ -845,7 +812,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $
 
 	$default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
 	$gallery_settings = variable_get($form_name, $default_values);
-	//variable_get('', 1);
+
 	$form[$form_name]['cdm_dataportal_show_taxon_thumbnails'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show media thumbnails for accepted taxa'),
@@ -872,7 +839,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $
     '#type' => 'textfield',
     '#title' => t('Maximum extend of Images'),
     '#default_value' => $gallery_settings['cdm_dataportal_media_maxextend'],
-    '#description' => t('')
+    '#description' => t('In the gallery neither width or height will exceed the maximum extend of images.')
 	);
 
 	$form[$form_name]['cdm_dataportal_media_cols'] = array(
@@ -886,7 +853,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $
     '#type' => 'textfield',
     '#title' => t('Maximum number of rows'),
     '#default_value' => $gallery_settings['cdm_dataportal_media_maxRows'],
-    '#description' => t('')
+    '#description' => t('If you want an unlimited number of rows please set to 0')
 	);
 
 	return $form;
@@ -1669,3 +1636,26 @@ function cdm_read_media_metadata($media){
 	//returned value
 	return $metadata_caption;
 }
+
+/**
+ * This function collects all the media from a list of description elements
+ * and return them as an Array.
+ *
+ * @param $descriptionElementes The description elements
+ * @return Array The output with all the media
+ */
+function cdm_dataportal_media_from_descriptionElements($descriptionElements){
+	//variables
+	$outArrayOfMedia = array(); //return value
+	//implementation
+	foreach($descriptionElements as $descriptionElement){
+		foreach($descriptionElement->media as $media){
+			if(isset($media)){
+			 $outArrayOfMedia[] = $media;
+			}
+	 }
+	}
+	return $outArrayOfMedia;
+}
+
+

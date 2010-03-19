@@ -128,9 +128,10 @@
  */
 $.fn.set_background_image = function (imageFile)
 {
-	var bg_image_tmp = $(this).css('background-image');
-	var bg_image_new = bg_image_tmp.replace(/^(.*)(\/.*)(\))$/, '$1/'+imageFile+'$3');
-	$(this).css('background-image', bg_image_new);
+//	var bg_image_tmp = $(this).css('background-image');
+//	var bg_image_new = bg_image_tmp.replace(/^(.*)(\/.*)(\))$/, '$1/'+imageFile+'$3');
+//	$(this).css('background-image', bg_image_new);
+	$(this).css('background-image', imageFile);
 }
 
 /**

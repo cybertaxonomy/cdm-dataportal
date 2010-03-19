@@ -1,0 +1,591 @@
+<?php
+// $Id$
+
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+*/
+
+/**
+ * default title for a taxon page
+ *
+ * @param NameTO $nameTO
+ * @return the formatted taxon name
+ */
+function theme_cdm_taxon_page_title($taxon){
+
+	$renderPath = 'taxon_page_title';
+	if(isset($taxon->name->nomenclaturalReference)){
+		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+	}
+	return '<span class="'.$taxon->class.'">'.theme('cdm_taxonName', $taxon->name, null, $referenceUri, $renderPath).'</span>';
+}
+
+
+/**
+ * A wrapper function that groups available information to show by default, when
+ * a taxon page is requested by the browser.
+ * Individual themeing has to decide what this page should include (see methods beneath)
+ * and what information should go into tabs or should not be shown at all.
+ *
+ * It is headed by the name of the accepted taxon without author and reference.
+ * @param $taxonTO the taxon object
+ * @param $page_part name of the part to display,
+ *         valid values are: 'description', 'images', 'synonymy', 'all'
+ */
+function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
+
+	global $theme;
+
+	$page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
+	$hideTabs = array();
+
+
+	// get images
+	$prefMimeTypeRegex = 'image:.*';
+	$prefMediaQuality = '*';
+	//$media =  cdm_ws_get(CDM_WS_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false),$taxon->uuid));
+
+
+	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
+	if ($selectShowMedia == 0){
+		$media = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	}else{
+		$media = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	}
+/*
+ if(!isset($mediaList[0])) {
+    $hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
+  }
+*/
+
+	if(!isset($media[0])) {
+		$hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
+	}
+
+	// hideImage flag depending on administative preset
+	$hideImages = false;
+	if(variable_get('image_hide_rank', '0') != '0'){
+		$rankCompare = rank_compare($taxon->name->rank->uuid, variable_get('image_hide_rank', '-99'));
+		$hideImages =  ($rankCompare > -1);
+	}
+	// $hideTabs[] = theme('cdm_taxonpage_tab', 'General');
+	// $hideTabs[] = theme('cdm_taxonpage_tab', 'Synonymy')
+
+	// hide tabs
+	$tabhide_js = '';
+	foreach($hideTabs as $tabText) {
+		$tabhide_js .= "$('.tabs.primary').children('li').children('a:contains(\"$tabText\")').hide();\n";
+	}
+	drupal_add_js("
+  $(document).ready(function(){
+  $tabhide_js
+    });", 'inline');
+
+  $out = '';
+  $out .= theme('cdm_back_to_search_result_button');
+  if(variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR)){
+  $out .= theme('cdm_acceptedFor', 'page_general');
+  }
+  // --- DESCRIPTION --- //
+  if($page_part == 'description' || $page_part == 'all'){
+
+  	$featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get('cdm_dataportal_featuretree_uuid', false));
+  	$taxonDescriptions = cdm_ws_get(CDM_WS_TAXON_DESCRIPTIONS, $taxon->uuid);
+  	$mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $taxonDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
+
+  	$out .= '<div id="general">';
+  	$out .= theme('cdm_taxon_page_description', $taxon, $mergedTrees, $media, $hideImages);
+  	$out .= '</div>';
+  }
+  // --- IMAGES --- //
+  if(!$hideImages && $page_part == 'images' || $page_part == 'all'){
+  	$out .= '<div id="images">';
+  	if($page_part == 'all'){
+  		$out .= '<h2>'.t('Images').'</h2>';
+  	}
+  	$out .= theme('cdm_taxon_page_images', $taxon, $media);
+  	$out .= '</div>';
+
+  	if($theme == 'garland_cichorieae'){
+  		$out .= theme('cdm_taxon_page_images_cichorieae_copyright');
+  	}
+  	 
+  }
+  // --- SYNONYMY --- //
+  if($page_part == 'synonymy' || $page_part == 'all'){
+  	$out .= '<div id="synonymy">';
+  	if($page_part == 'all'){
+  		$out .= '<h2>'.t('Synonymy').'</h2>';
+  	}
+  	$addAcceptedTaxon = !variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
+  	$out .= theme('cdm_taxon_page_synonymy', $taxon, $addAcceptedTaxon);
+
+  	if(variable_get('cdm_dataportal_display_name_relations', 1)){
+
+  		$nameRelationships = cdm_ws_get(CDM_WS_TAXON_NAMERELATIONS, $taxon->uuid);
+  		// TODO is it correct to skip relationsFromThisName since all relationships are to be understood as 'is .... of'
+  		if(variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1)){
+  			$skip = array(UUID_BASIONYM);
+  		}
+  		$out .= theme('cdm_nameRelations', $nameRelationships, $skip);
+  	}
+  	$out .= '</div>';
+  }
+
+  return $out;
+}
+
+
+/**
+ * Outputs all descriptive data and shows the preferred picture of the
+ * accepted taxon.
+ *
+ */
+function theme_cdm_taxon_page_description($taxon, $mergedTrees, $media = null, $hideImages = false){
+
+	//  if(!$hideImages){
+	//    // preferred image
+	//    // hardcoded for testing;
+	//    $defaultRepresentationPart = false;
+	//    $defaultRepresentationPart->width = 184;
+	//    $defaultRepresentationPart->height = 144;
+	//    $defaultRepresentationPart->uri = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
+	//
+	//    // preferred image size 184px × 144
+	//    $imageMaxExtend = 184;
+	//    $out .= '<div class="preferredImage">'.$defaultRepresentationPart->uri.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
+	//  }
+
+	// description TOC
+	$out .= theme('cdm_featureTreeTOCs', $mergedTrees);
+	// description
+	$out .= theme('cdm_featureTrees', $mergedTrees, $taxon);
+	return $out;
+}
+
+/**
+ * Show whole synonymy for the accepted taxon. Synonymy list is headed by the complete scientific name
+ * of the accepted taxon with nomenclatural reference.
+ *
+ */
+function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
+
+	$renderPath = 'taxon_page_synonymy';
+	$synomymie = cdm_ws_get(CDM_WS_TAXON_SYNONYMY, $taxon->uuid);
+	$taxonRelationships = cdm_ws_get(CDM_WS_TAXON_RELATIONS, $taxon->uuid);
+	$skip = array(UUID_BASIONYM);
+
+	if($addAcceptedTaxon){
+		if(isset($taxon->name->nomenclaturalReference)){
+			$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+		}
+		$out .= theme('cdm_taxonName', $taxon->name, null, $referenceUri, $renderPath);
+	}
+
+	if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
+		// display the type information for the added taxon
+		$typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
+		if($typeDesignations){
+			$out .= theme('cdm_typedesignations', $typeDesignations);
+		}
+	} else {
+		// reder the homotypicSynonymyGroup including the type information
+		$out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
+	}
+	if($synomymie->heterotypicSynonymyGroups) {
+		foreach($synomymie->heterotypicSynonymyGroups as $homotypicalGroup){
+			$out .= theme('cdm_heterotypicSynonymyGroup', $homotypicalGroup);
+		}
+	}
+
+	$out .= theme('cdm_taxonRelations', $taxonRelationships, $skip);
+
+	return $out;
+}
+
+/**
+ * Show the collection of images stored with the accepted taxon
+ *
+ */
+function theme_cdm_taxon_page_images($taxon, $media){
+
+	$hasImages = isset($media[0]);
+
+	if($hasImages){
+		//
+		$maxExtend = 150;
+		$cols = 3;
+		$maxRows = false;
+		$alternativeMediaUri = null;
+		$captionElements = array('title', 'rights', '#uri'=>t('open Image'));
+		$gallery_name = $taxon->uuid;
+		$mediaLinkType = 'LIGHTBOX';
+		
+		$gallery_settings = getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
+	
+		$out = '<div class="image-gallerie">';
+		$out .= theme('cdm_media_gallerie', $media, 
+					$gallery_name, 
+					$gallery_settings['cdm_dataportal_media_maxextend'], 
+	             	$gallery_settings['cdm_dataportal_media_cols'], 
+	             	$gallery_settings['cdm_dataportal_media_maxRows'],
+	             	$captionElements, 
+	             	$mediaLinkType, 
+	             	null);
+		$out .= '</div>';
+	}else{
+		$out = 'No images available.';
+
+	}
+	return $out;
+}
+
+/**
+ * Show a reference in it's atomized form
+ */
+function theme_cdm_reference_page($referenceTO){
+
+	/*
+	 if($referenceTO->titleCache) {
+		drupal_set_title($referenceTO->titleCache);
+		} else {
+		drupal_set_title($referenceTO->fullCitation);
+		}
+		*/
+
+	$field_order = array(
+    "title",
+	//"titleCache",
+	//"citation",
+    "authorTeam",
+    "editor",
+    "publisher",
+    "placePublished",
+    "datePublished",
+    "year",
+    "edition",      // class Book
+    "volume",       // class Article
+    "seriesPart",
+    "inReference",
+	//"inJournal",     // class Article
+	//"inBook",        // class BookSection
+    "nomRefBase",    // class BookSection, Book, Article
+	//"inProceedings", // class InProceedings
+    "pages",         // class Article
+    "series",        // class Article, PrintSeries
+    "school",        // class Thesis
+    "institution",   // class Report
+    "organization",  // class Proceedings
+    "nextVersion",
+    "previousVersion",
+    "isbn",         // class Book
+    "issn",         // class Journal
+    "uri",
+	);
+	/*
+	 $table_rows = array();
+	 foreach($field_order as $fieldname){
+
+		if(isset($referenceTO->$fieldname)){
+
+		if($fieldname == "datePublished") {
+		$partial = $referenceTO->$fieldname;
+		$datePublished = '';
+		if($partial->start){
+		//var_dump ($partial->start);
+		$datePublishedYear = substr($partial->start, 0, 4);
+		$datePublishedMonth = substr($partial->start, 5, 2);
+
+		if (!(preg_match('#[0-9]#',$datePublishedMonth))){
+		$datePublishedMonth = '00';
+		}
+
+		$datePublishedDay = substr($partial->start, 7, 2);
+		if (!(preg_match('#[0-9]#',$datePublishedDay))){
+		$datePublishedDay = '00';
+		}
+		$datePublished = $datePublishedYear.'-'.$datePublishedMonth.'-'.$datePublishedDay;
+		}
+		if($partial->end){
+		$datePublished = (strlen($datePublished) > 0 ? ' '.t('to').' ' : '').substr($partial->end, 0, 4).'-'.substr($partial->end, 4, 2).'-'.substr($partial->end, 6, 2);
+		}
+		$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $datePublished);
+		//$datePublished = array(t(ucfirst(strtolower($fieldname))), $datePublished);
+		} else if(is_object($referenceTO->$fieldname)){
+		if ($fieldname == "authorTeam"){
+		$dump = $referenceTO->$fieldname;
+		$teammembers = "teamMembers";
+		$team = $dump->$teammembers;
+		$nameArray = array();
+
+		foreach($team as $member){
+		if (strlen($member->lastname)> 0){
+		$nname = $member->lastname;
+		$name = $nname;
+		if (strlen($member->firstname)> 0){
+		$vname = $member->firstname;
+		$name =$vname." ". $nname;
+		}
+		$nameArray[] =$name;
+		}else{
+		if (strlen($member->titleCache)> 0){
+		$nameArray[] = $member->titleCache;
+		}
+		}
+		}
+		$names = join($nameArray, ", ");
+		}else if ($fieldname == "inReference"){
+		$type = $referenceTO ->$fieldname-> type;
+		$names = $referenceTO-> $fieldname-> titleCache;
+		switch ($type) {
+		case "Book":
+		$fieldname = "in book";
+		break;
+		case "Journal":
+		$fieldname = "in journal";
+		break;
+		case "Proceedings":
+		$fieldname = "in proceedings";
+		break;
+		}
+
+		}else{
+		$names = $referenceTO->$fieldname-> titleCache;
+		}
+		$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $names);
+		//$name = array(t(ucfirst(strtolower($fieldname))), $names);
+
+		} else {
+		$table_rows[] = array(t(ucfirst(strtolower($fieldname))), $referenceTO->$fieldname);
+		//$name = array(t(ucfirst(strtolower($fieldname))), $referenceTO->$fieldname);
+		}
+		}
+		}
+		*/
+
+	//select the type of the reference and find the in Reference attribute
+
+	$referenceData = array(
+    "title" => NULL,
+	//"titleCache",
+	//"citation",
+    "authorTeam" => NULL,
+    "editor" => NULL,
+    "publisher" => NULL,
+    "placePublished" => NULL,
+    "datePublished" => NULL,
+    "year" => NULL,
+    "edition" => NULL,      // class Book
+    "volume" => NULL,       // class Article
+    "seriesPart" => NULL,
+    "inReference" => NULL,
+	//"inJournal",     // class Article
+	//"inBook",        // class BookSection
+    "nomRefBase" => NULL,    // class BookSection, Book, Article
+	//"inProceedings", // class InProceedings
+    "pages" => NULL,         // class Article
+    "series" => NULL,        // class Article, PrintSeries
+    "school" => NULL,        // class Thesis
+    "institution" => NULL,   // class Report
+    "organization" => NULL,  // class Proceedings
+    "nextVersion" => NULL,
+    "previousVersion" => NULL,
+    "isbn" => NULL,         // class Book
+    "issn" => NULL,         // class Journal
+    "uri" => NULL,
+	);
+
+	foreach($field_order as $fieldname){
+
+		if(isset($referenceTO->$fieldname)){
+			switch($fieldname){
+				case "datePublished":
+					$partial = $referenceTO->$fieldname;
+					$datePublished = '';
+					if($partial->start){
+						$datePublishedYear = substr($partial->start, 0, 4);
+						$datePublishedMonth = substr($partial->start, 5, 2);
+						if (!(preg_match('#[0-9]#',$datePublishedMonth))){
+							$datePublishedMonth = '00';
+						}
+						$datePublishedDay = substr($partial->start, 7, 2);
+						if (!(preg_match('#[0-9]#',$datePublishedDay))){
+							$datePublishedDay = '00';
+						}
+						$datePublished = $datePublishedYear.'-'.$datePublishedMonth.'-'.$datePublishedDay;
+					}
+					if($partial->end){
+						$datePublished = (strlen($datePublished) > 0 ? ' '.t('to').' ' : '').substr($partial->end, 0, 4).'-'.substr($partial->end, 4, 2).'-'.substr($partial->end, 6, 2);
+					}
+
+					$referenceData[$fieldname] = $datePublishedYear;
+					break;
+
+				default:
+					if(is_object($referenceTO->$fieldname)){
+						if ($fieldname == "authorTeam"){
+							$dump = $referenceTO->$fieldname;
+							$teammembers = "teamMembers";
+							$team = $dump->$teammembers;
+							$nameArray = array();
+
+							foreach($team as $member){
+								if (strlen($member->lastname)> 0){
+									$nname = $member->lastname;
+									$name = $nname;
+									if (strlen($member->firstname)> 0){
+										$vname = $member->firstname;
+										$name =$vname." ". $nname;
+									}
+									$nameArray[] =$name;
+								}else{
+									if (strlen($member->titleCache)> 0){
+										$nameArray[] = $member->titleCache;
+									}
+								}
+							}
+							$names = join($nameArray, ", ");
+							$referenceData[$fieldname] = $names;
+						}else if ($fieldname == "inReference"){
+							$names = $referenceTO->$fieldname->titleCache;
+							$referenceData[$fieldname] = $names;
+						}else{
+							$names = $referenceTO->$fieldname->titleCache;
+							$referenceData[$fieldname] = $names;
+						}
+					}else{
+						$referenceData[$fieldname] = $referenceTO->$fieldname;
+					}
+
+			}
+		}
+	}
+
+	return "" . ((strlen($referenceData["authorTeam"])>0) ? ($referenceData["authorTeam"] . '. ') : '')
+	. ((strlen($referenceData["datePublished"])>0) ? ($referenceData["datePublished"] . '. ') : '')
+	. ((strlen($referenceData["title"])>0) ? ($referenceData["title"] . '. ') : "")
+	. ((strlen($referenceData["placePublished"])>0) ? ($referenceData["placePublished"] . '. ') : '')
+	. ((strlen($referenceData["editor"])>0) ? ($referenceData["editor"] . '. ') : '')
+	. ((strlen($referenceData["publisher"])>0) ? ($referenceData["publisher"] . '. ') : '')
+	. ((strlen($referenceData["inReference"])>0) ? ($referenceData["inReference"] . '. ') : '')
+	. ((strlen($referenceData["series"])>0) ? ($referenceData["series"] . '. ') : '')
+	. ((strlen($referenceData["volume"])>0) ? ($referenceData["volume"] . '. ') : '')
+	. ((strlen($referenceData["pages"])>0) ? ($referenceData["pages"] . '. ') : '')
+	. ((strlen($referenceData["isbn"])>0) ? ($referenceData["isbn"] . '. ') : '')
+	. ((strlen($referenceData["issn"])>0) ? ($referenceData["issn"] . '. ') : '')
+	. ((strlen($referenceData["uri"])>0) ? ($referenceData["uri"] . '. ') : '');
+
+}
+
+
+function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId = false){
+	$out = '';
+	// determine which reprresentation and which part to show
+	$representationIdx = 0;
+	if($mediarepresentation_uuid){
+		$i = 0;
+		foreach($media->representations as $representation) {
+			if($representation->uuid == $mediarepresentation_uuid){
+				$representationIdx = $i;
+			}
+			$i++;
+		}
+	} else {
+		$mediarepresentation_uuid = $media->representations[0]->uuid;
+	}
+
+	$partIdx  = 0;
+	if(!is_numeric($partId)){
+		// assuming it is an uuid
+		$i = 0;
+		foreach($media->representations[$representationIdx]->parts as $part) {
+			if($part->uuid == $partId){
+				$partIdx = $i;
+			}
+			$i++;
+		}
+	} else {
+		// assuming it is an index
+		$partIdx = $partId;
+	}
+
+	$media_metadata = cdm_read_media_metadata($media);
+	//$title = $media->titleCache;
+	$title = $media_metadata['title'];
+
+	$imageMaxExtend = variable_get('image-page-maxextend', 400);
+
+	if(!$title){
+		$title = 'Media### '.$media->uuid.'';
+	}
+
+	drupal_set_title($title);
+
+
+	$out .= '<div class="media">';
+
+	//$out .= '<div class="viewer">';
+	$out .= theme(cdm_back_to_image_gallery_button);
+	$out .= '<div class="viewer">';
+	//$out .= theme('cdm_media_gallerie_image', $representation->parts[$partIdx], $imageMaxExtend);
+	$out .= theme('cdm_openlayers_image', $media->representations[$representationIdx]->parts[$partIdx], $imageMaxExtend);
+	$out .= '</div>';
+
+	// general media metadata
+	//$media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
+	//vardump("PRINTING MEDIA METADATA");
+	//vardump($media_metadata);
+	//vardump("PRINTING MEDIA");
+	//vardump($media);
+	$metadataToPrint = theme('cdm_media_caption', $media);
+	$out .= $metadataToPrint;
+
+
+	//tabs for the different representations
+	//ul.secondary
+	$out .= '<ul class="primary">';
+	foreach($media->representations as $representation){
+		$out .= '<li>'.l($media->representations[$representationIdx]->mimeType, path_to_media($media->uuid, $mediarepresentation_uuid, $partIdx)).'</li>';
+	}
+	$out .= '</ul>';
+
+	// representation(-part) specific metadata
+	$thumbnailMaxExtend = 100;
+	$out .= '<table>';
+	//$out .= '<tr><th colspan="3">'.t('MimeType').': '.$media->representations[$representationIdx]->mimeType.'</th></tr>';
+	$i = 0;
+	foreach($media->representations[$representationIdx]->parts as $part){
+		$out .= '<tr><th>'.t('Part').' '.($i + 1).'</th><td>';
+		switch($part->class){
+			case 'ImageFile': $out .= $part->width.' x '.$part->height.' - '.$part->size.'k'; break;
+			case 'AudioFile':
+			case 'MovieFile': $out .= t('Duration').': '.$part->duration.'s - '.$part->size.'k'; break;
+			default: $out .= $part->size.'k';
+		}
+		$out .= '</td><td><a href="'.url(path_to_media($media->uuid, $mediarepresentation_uuid, $i)).'">'.theme('cdm_media_gallerie_image', $part, $thumbnailMaxExtend, true);'</a></td><tr>';
+		$i++;
+	}
+	$out .= '</table>';
+	$out .= '</div>';
+
+	return $out;
+}
+
+/**
+ * Allows theming of the taxon page tabs
+ *
+ * @param $tabname
+ * @return unknown_type
+ */
+function theme_cdm_taxonpage_tab($tabname){
+	//TODO replace by using translations or theme the menue tabs itself instead?
+	switch($tabname){
+		default: return t($tabname);
+	}
+}
+

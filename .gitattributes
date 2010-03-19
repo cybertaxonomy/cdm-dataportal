@@ -18,7 +18,6 @@ modules/cdm_dataportal/cdm_api/xml2json.php -text
 modules/cdm_dataportal/cdm_dataportal.css -text
 modules/cdm_dataportal/cdm_dataportal.info -text
 modules/cdm_dataportal/cdm_dataportal.module -text
-modules/cdm_dataportal/cdm_dataportal.theme.php -text
 modules/cdm_dataportal/cdm_dataportal_print.css -text
 modules/cdm_dataportal/cdm_dataportal_screen.css -text
 modules/cdm_dataportal/cdm_mediauri/LICENSE.txt -text
@@ -207,6 +206,14 @@ modules/cdm_dataportal/js/jquery.progressbar/js/jquery.progressbar.min.js -text
 modules/cdm_dataportal/js/thickbox/cdm_thickbox.css -text
 modules/cdm_dataportal/js/thickbox/thickbox.js -text
 modules/cdm_dataportal/node_types.php -text
+modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text
+modules/cdm_dataportal/theme/cdm_dataportal.descriptions.theme -text
+modules/cdm_dataportal/theme/cdm_dataportal.media.theme -text
+modules/cdm_dataportal/theme/cdm_dataportal.name.theme -text
+modules/cdm_dataportal/theme/cdm_dataportal.occurrence.theme -text
+modules/cdm_dataportal/theme/cdm_dataportal.page.theme -text
+modules/cdm_dataportal/theme/cdm_dataportal.references.theme -text
+modules/cdm_dataportal/theme/cdm_dataportal.taxon.theme -text
 modules/cdm_dataportal/translations/cdm_dataportal.pot.template -text
 modules/expertsdb/LICENSE.txt -text
 modules/expertsdb/README.txt -text

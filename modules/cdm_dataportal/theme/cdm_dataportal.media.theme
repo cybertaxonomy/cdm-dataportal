@@ -1,0 +1,478 @@
+<?php
+// $Id$
+
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+*/
+
+function media_content_type_dir($media_representation, $default = false){
+
+	if($media_representation->mimeType){
+		return substr($media_representation->mimeType, 0, stripos($media_representation->mimeType, '/'));
+	} else {
+		return $default;
+	}
+}
+
+function getimagesize_remote($image_url) {
+
+	$contents = cdm_http_request($image_url);
+	if(!$contents){
+		return false;
+	}
+
+	$im = ImageCreateFromString($contents);
+	if (!$im) {
+		return false;
+	}
+	$gis[0] = ImageSX($im);
+	$gis[1] = ImageSY($im);
+	// array member 3 is used below to keep with current getimagesize standards
+	$gis[3] = "width={$gis[0]} height={$gis[1]}";
+	ImageDestroy($im);
+	return $gis;
+}
+
+
+
+function theme_cdm_media($descriptionElement, $mimeTypePreference){
+	$out = "";
+
+	_add_js_thickbox();
+
+	$uuid = $descriptionElement->uuid;
+	$feature = $descriptionElement->feature;
+	$medias = $descriptionElement->media;
+
+	foreach($medias as $media){
+		$prefRepresentations = cdm_preferred_media_representations($media, $mimeTypePreference, 300, 400);
+		$mediaRepresentation = array_shift($prefRepresentations);
+		if($mediaRepresentation) {
+
+			$contentTypeDirectory = media_content_type_dir($mediaRepresentation);
+
+			$out .= theme('cdm_media_mime_' . $contentTypeDirectory,  $mediaRepresentation, $feature);
+
+			//			$attributes = array('class'=>'thickbox', 'rel'=>'descriptionElement-'.$uuid, 'title'=>$feature->term);
+			//		    for($i = 0; $part = $mediaRepresentation->representationParts[$i]; $i++){
+			//		    	if($i == 0){
+			//		    	    $image_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$feature->term.'-media.png';
+			//		    	    $media = '<img src="'.$image_url.'" height="14px" alt="'.$feature->term.'" />';
+			//		    	    $out .= l($media, $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+			//		    	} else {
+			//		    		$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
+			//		    	}
+			//		  	}
+		} else {
+			// no media available, so display just the type term
+			$out .=  $feature->representation_L10n;
+		}
+	}
+	return $out;
+
+}
+
+function theme_cdm_mediaTypeTerm($feature){
+	$icon_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$feature->representation_L10n.'-media.png';
+	return '<img src="'.$icon_url.'" height="14px" alt="'.$feature->representation_L10n.'" />';
+}
+
+function theme_cdm_media_mime_application($mediaRepresentation, $feature){
+
+	foreach($mediaRepresentation->parts as $part){
+		$attributes = array('title'=> theme('cdm_feature_name', $feature->representation_L10n), 'target'=>'_blank');
+		//$attributes = array('title'=>$feature->representation_L10n, 'target'=>'_blank');
+		//$attributes = array('title'=>'original publication', 'target'=>'_blank');
+		$out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+	}
+	return $out;
+}
+
+function theme_cdm_media_mime_image($mediaRepresentation, $feature){
+	$out = '';
+	//TODO thickbox is not used anymore -> delete ?
+	$attributes = array('class'=>'thickbox', 'rel'=>'representation-'.$representation->uuid, 'title'=>$feature->representation_L10n);
+	for($i = 0; $part = $representation->representationParts[$i]; $i++){
+		if($i == 0){
+
+			$out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+		} else {
+			$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
+		}
+	}
+	return $out;
+}
+
+function theme_cdm_media_mime_text($representation, $feature){
+
+	foreach($representation->parts as $part){
+		$attributes = array('title'=> theme('cdm_feature_name', $feature->representation_L10n), 'target'=>'_blank');
+		//$attributes = array('title'=>t('original publication'), 'target'=>'_blank');
+		$out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+	}
+	return $out;
+}
+
+
+function theme_cdm_media_caption($media, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
+
+	$media_metadata = cdm_read_media_metadata($media);
+
+	$out = '<dl class="media-caption">';
+	//title
+	if($media_metadata['title'] && (!$elements || array_search('title', $elements)!== false)){
+		$out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
+		//unset($media_metadata['title']);
+	}
+	//description
+	if($media_metadata['description'] && (!$elements || array_search('description', $elements)!== false)){
+		$out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $media_metadata['description'] . '</dd>';
+		//unset($media_metadata['description']);
+	}
+	//artist
+	if($media_metadata['artist'] && (!$elements || array_search('artist', $elements)!== false)){
+		//$out .= '<span class = "artist">' . ($media_metadata['artist'] ? 'Artist: ' . $media_metadata['artist'] . '</span>' . '<br>' : '');
+		$out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $media_metadata['artist'] . '</dd>';
+	}
+	//location
+	if(!$elements || array_search('location', $elements)!== false){
+		$location = '';
+		$location .= $media_metadata['location']['sublocation'];
+		if ($location && $media_metadata['location']['city']){
+			$location .= ', ';
+		}
+		$location .= $media_metadata['location']['city'];
+		if ($location && $media_metadata['location']['province']){
+			$location .= ', ';
+		}
+		$location .= $media_metadata['location']['province'];
+		if ($location && $media_metadata['location']['country']){
+			$location .= ' (' . $media_metadata['location']['country'] . ')';
+		} else {
+			$location .= $media_metadata['location']['country'];
+		}
+		if ($location){
+			$out .= '<dt class = "location">' . t('Location') . '</dt> <dd class = "location">' . $location  . '</dd>';
+		}
+	}
+	//rights
+	if(!$elements || array_search('rights', $elements)!== false){
+		$rights = '';
+		//copyrights
+		$cnt = count($media_metadata['rights']['copyright']['agentNames']);
+		if($cnt > 0){
+			$rights .= '<dt class="rights">&copy;</dt> <dd class="rights"> ';
+			for($i = 0; $i < $cnt; $i++){
+				$rights .= $media_metadata['rights']['copyright']['agentNames'][$i];
+				if($i+1 < $cnt){
+					$rights .= ' / ';
+				}
+			}
+			$rights .= '</dd>';
+		}
+		//license
+		$cnt = count($media_metadata['rights']['license']['agentNames']);
+		if($cnt > 0){
+			$rights .= '<dt class ="license">' . t('License') . '</dt> <dd class = "license">';
+			for($i = 0; $i < $cnt; $i++){
+				$rights .= $media_metadata['rights']['license']['agentNames'][$i];
+				if ($i+1 < $cnt){
+					$rights .= ' / ';
+				}
+			}
+			$rights .= '</dd>';
+		}
+		if($rights){
+			$out .=  $rights . '</dt>';
+		}
+	}
+	//TODO add all other metadata elemenst generically
+	$out .= '</dl>';
+	//return value
+	return $out;
+}
+
+
+/**
+ * @param $mediaList an array of Media entities
+ * @param $maxExtend
+ * @param $cols
+ * @param $maxRows
+ * @param $captionElements an array possible values are like in the following example: array('title', 'description', 'file', 'filename'),
+ *         to add a link to the caption: array('titlecache', '#uri'=>t('open Image'));
+ * @param $mediaLinkType valid values:
+ *      "NONE": do not link the images,
+ *      "LIGHTBOX": open the link in a light box,
+ *      "NORMAL": link to the image page or to the $alternativeMediaUri if it is defined
+ * @param $alternativeMediaUri an array of alternative URIs to link the images wich will overwrite the URIs of the media parts.
+ *     The order of URI in this array must correspond with the order of images in $mediaList
+ * @param $galleryLinkUri an URI to link the the hint on more images to; if null no link is created
+ * @return unknown_type
+ */
+function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
+$mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null ){
+	
+	if(!is_array($captionElements)){
+		$captionElements = array();
+	}
+	//TODO correctly handle multiple media representation parts
+	$_SESSION['cdm']['last_gallery']= substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'], "?q=")+3);
+	// prevent from errors
+	if(!isset($mediaList[0])){
+		return;
+	}
+
+	$galleryID = "media_gallery_".$galleryName;
+
+	// prepare media links
+	$doLink = false;
+	$linkAttributes = null;
+	if($mediaLinkType != 'NONE'){
+		$doLink = true;
+	}
+	if($mediaLinkType == 'LIGHTBOX'){
+		$doLink = true;
+		//_add_js_thickbox();
+		//$linkAttributes = array("class"=>"thickbox", "rel"=>"media_gallerie".$galleryName);
+		_add_js_lightbox($galleryID);
+		$linkAttributes = array("class"=>"lightbox");
+	}
+
+	// render the media gallery grid
+	$out = '<table id="'.$galleryID.'" class="media_gallery">';
+	$out .= '<colgroup>';
+
+	for($c = 0; $c < $cols; $c++){
+		$out .= '<col width="'.(100 / $cols).'%">';
+	}
+	$out .= '</colgroup>';
+
+	for($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++){
+		$captionParts = array();
+		$out .= '<tr>';
+		for($c = 0; $c < $cols; $c++){
+			$media = array_shift($mediaList);
+			if(isset($media->representations[0]->parts[0])){
+				$contentTypeDirectory = media_content_type_dir($media->representations[0], 'image');
+				$mediaIndex++;
+				$mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->representations[0]->parts[0], $maxExtend, TRUE);
+
+				// --- compose Media Link
+				$mediaLinkUri = false;
+				if($alternativeMediaUri){
+					if(isset($alternativeMediaUri[$mediaIndex])){
+						$mediaLinkUri = $alternativeMediaUri[$mediaIndex];
+					}
+					if(is_string($alternativeMediaUri)){
+						$mediaLinkUri = $alternativeMediaUri;
+					}
+				} else {
+					$mediaLinkUri = $media->representations[0]->parts[0]->uri;
+				}
+
+				// generate gallery caption
+				_add_js_ahah();
+				$content_url = cdm_compose_url(CDM_WS_MEDIA, $media->uuid);
+				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".join(',',$captionElements));
+				$captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
+
+				// generate & add caption to lightbox
+				$lightBoxCaptionElements = null;
+				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption"); //.($lightBoxCaptionElements?'/'.join	(',',$lightBoxCaptionElements):''));
+				$linkAttributes['alt'] = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
+
+				if(isset($captionElements['#uri'])){
+					$captionPartHtml .= '<div>'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
+				}
+				$captionParts[] = $captionPartHtml;
+
+				// --- surround imagePart with link
+				if($doLink){
+					$mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, $linkAttributes, null, null, FALSE, TRUE);
+				}
+
+			} else {
+				$mediaPartHtml = '';
+				$captionParts[] = '';
+			}
+			$out .= '<td>'.$mediaPartHtml.'</td>';
+		}
+		$out .= '</tr>'; // end of media parts
+		if(isset($captionElements[0])){
+			$out .= '<tr>';
+			// add caption row
+			foreach($captionParts as $captionPartHtml){
+				$out .= '<td>'.$captionPartHtml.'</td>';
+			}
+			$out .= '</tr>';
+		}
+	}
+	if($galleryLinkUri){
+		if(count($mediaList) > 0){
+			$moreHtml = count($mediaList).' '.t('more in gallery');
+		} else {
+			$moreHtml = t('open gallery');
+		}
+		$moreHtml = l($moreHtml, $galleryLinkUri);
+		$out .= '<tr><td colspan="'.$cols.'">'.$moreHtml.'</td></tr>';
+	}
+	$out .= '</table>';
+	return $out;
+}
+
+function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
+	//TODO merge with theme_cdm_media_mime_image?
+
+	if(isset($mediaRepresentationPart)){
+			
+		$h = $mediaRepresentationPart->height;
+		$w = $mediaRepresentationPart->width;
+		if($w == 0 || $h == 0){
+			$image_uri = str_replace(' ','%20',$mediaRepresentationPart->uri); //take url and replace spaces
+			$imageDimensions = getimagesize_remote($image_uri);
+			if(!$imageDimensions){
+				return '<div>'.t('Image unavailable, uri:').$mediaRepresentationPart->uri.'</div>';
+			}
+			$w = $imageDimensions[0];
+			$h = $imageDimensions[1];
+		}
+		$margins = '0 0 0 0';
+		$ratio = $w / $h;
+		if($ratio > 1){
+			$displayHeight = round($maxExtend / $ratio);
+			$displayWidth = $maxExtend;
+			$m = round(($maxExtend - $displayHeight) / 2);
+			$margins = 'margin:'.$m.'px 0 '.$m.'px 0;';
+		} else {
+			$displayHeight = $maxExtend;
+			$displayWidth = round($maxExtend * $ratio);
+			$m = round(($maxExtend - $displayWidth) / 2);
+			$margins = 'margin:0 '.$m.'px 0 '.$m.'px;';
+		}
+
+		// turn attributes array into string
+		$attrStr = ' ';
+		//$attributes['title'] = 'h:'.$h.', w:'.$w.',ratio:'.$ratio;
+		if(is_array($attributes)){
+			foreach($attributes as $name=>$value){
+				$attrStr .= $name.'="'.$value.'" ';
+			}
+		}
+
+		//return  '<img src="'."http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/photos/Lapsana_communis_A_01.jpg".'" width="'.$maxExtend.'" height="'.$maxExtend.'" />';
+		if($addPassePartout){
+			$out .= '<div class="image-passe-partout" style="width:'.$maxExtend.'px; height:'.$maxExtend.'px;">';
+		} else {
+			// do not add margins if no pass partout is shown
+			$margins = '';
+		}
+		$out .= '<img src="'.$mediaRepresentationPart->uri.'" width="'.$displayWidth.'" height="'.$displayHeight.'" style="'.$margins.'"'.$attrStr.' />';
+
+		if($addPassePartout){
+			$out .= '</div>';
+		}
+		return $out;
+	}
+
+}
+
+function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
+
+	// see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
+	// and http://trac.openlayers.org/wiki/SettingZoomLevels
+	
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
+      
+  //TODO megre code below with code from theme_cdm_media_gallerie_image
+	//var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
+	//TODO merge code below with code from theme_cdm_media_gallerie_image
+	$w = $mediaRepresentationPart->width;
+	$h = $mediaRepresentationPart->height;
+
+	if($w == 0 || $h == 0){
+		$image_uri = str_replace(' ','%20',$mediaRepresentationPart->uri); //take url and replace spaces
+		$imageDimensions = getimagesize_remote($image_uri);
+		if(!$imageDimensions){
+			return '<div>'.t('Image unavailable, uri:').$mediaRepresentationPart->uri.'</div>';
+		}
+		$w = $imageDimensions[0];
+		$h = $imageDimensions[1];
+	}
+
+	// calculate  maxResolution (default is 360 deg / 256 px) and the bounds
+	if($w > $h){
+		$lat = 90;
+		$lon = 90 * ($h / $w);
+		$maxRes = $w / $maxExtend;
+	} else {
+		$lat = 90 * ($w / $h);
+		$lon = 90;
+		$maxRes =  $h / $maxExtend ;
+	}
+
+	$maxRes *= 1;
+	drupal_add_js('
+ var map;
+
+ var imageLayerOptions={
+     maxResolution: '.$maxRes.',
+     maxExtent: new OpenLayers.Bounds(0, 0, '.$w.', '.$h.')
+  };
+  var mapOptions={
+      controls: 
+       [ 
+         new OpenLayers.Control.PanZoom(),
+         new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
+       ],
+     restrictedExtent:  new OpenLayers.Bounds(0, 0, '.$w.', '.$h.')
+  };
+ 
+ var graphic = new OpenLayers.Layer.Image(
+          \'Image Title\',
+          \''.$mediaRepresentationPart->uri.'\',
+          new OpenLayers.Bounds(0, 0, '.$w.', '.$h.'),
+          new OpenLayers.Size('.$w.', '.$h.'),
+          imageLayerOptions
+          );
+  
+ function init() {
+   map = new OpenLayers.Map(\'openlayers_image\', mapOptions);
+   map.addLayers([graphic]);
+   map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+   map.zoomToMaxExtent();
+ }
+ 
+$(document).ready(function(){
+  init();
+
+});'
+, 'inline');
+$out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
+return $out;
+
+}
+
+
+function theme_cdm_preferredImage($media, $defaultRepresentationPart, $imageMaxExtend, $parameters = ''){
+
+	if(isset($media[0])){
+		$representationPart = $media[0]->representations[0]->parts[0];
+		if($parameters){
+			$representationPart->uri.$parameters;
+		}
+	} else {
+		$representationPart = $defaultRepresentationPart;
+	}
+
+	//$widthAndHeight = ($imageWidth ? ' width="'.$imageWidth : '').($imageHeight ? '" height="'.$imageHeight : '');
+	//  $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
+	$attributes = array('alt'=>($preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available"));
+	$out .= theme('cdm_media_gallerie_image', $representationPart, $imageMaxExtend, false, $attributes);
+	// $out = '<img class="left" '.$widthAndHeight.' " src="'.$imageUri.'" alt="'.$altText.'" />';
+	return $out;
+}
