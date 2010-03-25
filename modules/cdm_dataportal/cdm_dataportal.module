@@ -178,6 +178,14 @@ function cdm_dataportal_menu($may_cache) {
       'type' => MENU_CALLBACK,
 		// expected callback arguments: uuid
 		);
+		
+		$items[] = array(
+      'path' => 'cdm_dataportal/name',
+      'callback' => 'cdm_dataportal_name_page_view',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    // expected callback arguments: uuid
+    );
 
 		$items[] = array(
       'path' => 'cdm_dataportal/reference',
@@ -216,7 +224,7 @@ function cdm_dataportal_menu($may_cache) {
       'access' => true,
       'type' => MENU_CALLBACK,
 		);
-
+		
 		$items[] = array(
       'path' => 'cdm/xml2json',
       'callback' => 'cdm_view_xml2json',
@@ -224,10 +232,18 @@ function cdm_dataportal_menu($may_cache) {
       'type' => MENU_CALLBACK,
 		);
 
-
 	} else {
 		// may not cache
 		// --- local tasks for Taxon
+		$items[] = array(
+      'path' => 'cdm_dataportal/name/'.arg(2),
+      //'callback' => 'cdm_dataportal_view_name',
+		  'callback' => 'cdm_dataportal_name_page_view',
+      'callback arguments' => array(arg(2)),
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    );
+    
 		if(variable_get('cdm_dataportal_taxonpage_tabs', 1)) {
 
 			$items[] = array(
@@ -1165,6 +1181,50 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all'){
 	return $taxonpage;
 }
 
+/**
+ * The function returns a name page as a drupal node ready to be renderized by drupal.
+ * The node page show the taxon name title and the list of taxon related with such taxon 
+ * name on the tree already in used. 
+ * @param $taxon_name_uuid A taxon name uuid
+ * @return The formatted name page as node
+ */
+function cdm_dataportal_name_page_view($taxon_name_uuid){
+  $taxonname_page = cdm_dataportal_name_view($taxon_name_uuid);
+  return cdm_node_show(NODETYPE_NAME, $taxon_name_uuid, $taxonname_page->title , $taxonname_page->content);
+}
+
+/**
+ * The function genates a object ready to be transformated to a node 
+ * in order to show as a drupal node
+ * @param $taxon_name_uuid
+ * @return the object with the page content and title  
+ */
+function cdm_dataportal_name_view($taxon_name_uuid){
+	//getting the full taxonname object from the server  
+  $taxon_name = cdm_ws_get(CDM_WS_NAME, array($taxon_name_uuid));
+  if(!$taxon_name){
+    drupal_set_title(t('Taxon name does not exist'));
+    return false;
+  }
+  //searching for all the taxon connected with the taxon name on the tree in used
+  $name_cache = cdm_ws_get(CDM_WS_NAME_NAMECAHE, array($taxon_name_uuid));
+  $request_params = array();
+  $request_params['query'] = $name_cache;
+  $request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false);
+  $request_params['doTaxa'] = 1;
+  $request_params['doSynonyms'] = 1;
+  $request_params['doTaxaByCommonNames'] = 0;
+  $request_params['matchMode'] = "EXACT";
+  $taxon_pager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($request_params));
+  
+  //_cdm_dataportal_set_currentSecUuid($taxon->sec->uuid);
+  
+  //generating the returned object
+  $taxon_name_page->title = theme('cdm_name_page_title', $taxon_name);
+  $taxon_name_page->content = theme_cdm_list_of_taxa($taxon_pager->records, false);
+
+  return $taxon_name_page; 
+}
 
 function cdm_dataportal_view_search_advanced(){
 
@@ -1196,6 +1256,47 @@ function cdm_dataportal_view_search_taxon(){
 	return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/taxon', $search_params);
 }
 
+///**
+// * 
+// * @return unknown_type
+// */
+//function cdm_dataportal_view_name($taxon_name_uuid){
+//
+//	$taxon_name = cdm_ws_get(CDM_WS_NAME, array($taxon_name_uuid));
+//	/*
+//	$name_cache = cdm_ws_get(CDM_WS_NAME_NAMECAHE, array($taxon_name_uuid));
+//	$records = array();
+//	foreach ($taxon_name->taxonBases as $taxon_base){
+//		$taxon = cdm_ws_get(CDM_WS_TAXON, array($taxon_base->uuid));
+//		$records[] = $taxon;
+//	}
+//	
+//	$out  = "Taxon name: " . $taxon_name->titleCache . "<br/>";
+//	$out .= theme_cdm_list_of_taxa($records, false);
+//	*/
+//	
+//	$request_params = array();
+//  $request_params['query'] = $name_cache;
+//  $request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false);
+//  $request_params['doTaxa'] = 1;
+//  $request_params['doSynonyms'] = 1;
+//  $request_params['doTaxaByCommonNames'] = 0;
+//  //$request_params['matchMode'] = "EXACT";
+//  
+//  $taxon_pager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($request_params));
+//  //var_dump($taxon_pager->records);
+//  //$out = theme_cdm_taxonname_page_title($taxon_name);
+//  $out = theme_cdm_list_of_taxa($taxon_pager->records, false);
+//  
+///*
+//  $out  = "Taxon name: " . $taxon_name->titleCache . "<br/>";
+//  $out .= "Taxon name uuid: " . $taxon_name_uuid  . "<br/>";
+//  $out .= "Taxon name records: "  . "<br/>" . $records_names_out; 
+//*/
+//  //$out  = "Taxon name: " . $taxon_name->titleCache . "<br/>";
+//	return $out;
+//}
+
 function cdm_view_xml2json(){
 	$file = arg(2);
 	$datastr = get_content(variable_get('cdm_webservice_url', '').$file);
@@ -1218,6 +1319,14 @@ function path_to_taxon($uuid){
 function path_to_reference($uuid){
 	if(!$uuid) return false;
 	return 'cdm_dataportal/reference/'.$uuid;
+}
+
+function path_to_name($name_uuid){
+	$res = false;
+	if($name_uuid){
+	 $res = 'cdm_dataportal/name/'.$name_uuid;
+	}
+  return $res;
 }
 
 function path_to_media($uuid, $representaion_uuid = false, $partId = false){

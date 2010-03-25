@@ -29,13 +29,13 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			if($typeDesignation->notDesignated){
 				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: '.t('not designated'). '</li>';
 			}else if($typeDesignation->typeName){
-
+        $link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
 				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: ';
 
 				if($typeDesignation->typeName->nomenclaturalReference){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
 				}
-				$out .= theme('cdm_taxonName', $typeDesignation->typeName, null, $referenceUri, $renderPath);
+				$out .= theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri, $renderPath);
 
 				//        if($typeDesignation->typeName->class == 'ZoologicalName') {
 				//          // appending authorTeam which has been skipped in cdm_name
@@ -218,8 +218,6 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 
 
 function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, $renderPath = null){
-
-
 
 	$renderTemplate = get_nameRenderTemplate($renderPath, $nameLink, $refenceLink);
 

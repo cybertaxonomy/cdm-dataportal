@@ -25,6 +25,18 @@ function theme_cdm_taxon_page_title($taxon){
 	return '<span class="'.$taxon->class.'">'.theme('cdm_taxonName', $taxon->name, null, $referenceUri, $renderPath).'</span>';
 }
 
+/**
+ * Default title for a name page
+ * @param $taxon_name The taxon name object
+ * @return the formatted name title
+ */
+function theme_cdm_name_page_title($taxon_name){
+  $renderPath = 'taxon_page_title';
+  if(isset($taxon_name->nomenclaturalReference)){
+    $referenceUri = url(path_to_reference($taxon_name->nomenclaturalReference->uuid));
+  }
+  return '<span class="'.$taxon_name->class.'">'.theme('cdm_taxonName', $taxon_name, null, $referenceUri, $renderPath).'</span>';
+}
 
 /**
  * A wrapper function that groups available information to show by default, when
@@ -192,6 +204,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		$typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
 		if($typeDesignations){
 			$out .= theme('cdm_typedesignations', $typeDesignations);
+			//$out .= l('test', path_to_name($typeDesignations[0]->typeName->uuid), array(), NULL, NULL, FALSE, TRUE);
 		}
 	} else {
 		// reder the homotypicSynonymyGroup including the type information

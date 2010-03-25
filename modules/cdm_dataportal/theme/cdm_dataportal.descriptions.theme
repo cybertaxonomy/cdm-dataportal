@@ -163,10 +163,33 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
   if(strlen($sourceRefs) > 0){
     $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
   }
+/*  
+          $out = l('<span class="reference">'.$reference.'</span>'
+          , path_to_reference($descriptionElementSource->citation->uuid)
+          , array("class"=>"reference")
+          , NULL, NULL, FALSE ,TRUE);
+*/  
+  if ($source->nameUsedInSource->uuid){ //do a link to name page
+    $name_used_in_source_text_to_show = l('(name used in source: '.$source->nameUsedInSource->titleCache . ')',
+                                           path_to_name($source->nameUsedInSource->uuid), 
+                                           array(),
+                                           NULL, NULL, FALSE ,TRUE);
+   
+  }else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
+  	$name_used_in_source_text_to_show = "  (name used in source: " . 
+  	                                    $source->nameUsedInSource->originalNameString . ")";
+  }
+  /*
+  if (strlen($name_used_in_source) > 0){
+    $name_used_in_source_text_to_show = "  (name used in source: " . $name_used_in_source . ")";
+  }
+  */
+  
   if ($asListElement){
-    $res_text = '<li class="descriptionText">' . $description . $sourceRefs. '</li>';
+    $res_text = '<li class="descriptionText">' . $description . $sourceRefs .
+                ' ' . $name_used_in_source_text_to_show . '</li>';
   }else{
-    $res_text = $description . $sourceRefs;
+    $res_text = $description . $sourceRefs . $name_used_in_source_text_to_show;
   }
   return $res_text;
 }

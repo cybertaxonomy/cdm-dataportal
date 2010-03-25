@@ -3,6 +3,7 @@
 define(NODETYPE_TAXON, 'taxon');
 define(NODETYPE_MEDIA, 'media');
 define(NODETYPE_REFERENCE, 'reference');
+define(NODETYPE_NAME, 'name');
 
 /**
  * Implementation of hook_node_info().
@@ -11,7 +12,7 @@ function cdm_dataportal_node_info() {
   
   static $nodetypes;
   if(!$nodetype){
-    $nodetypes = array(NODETYPE_REFERENCE, NODETYPE_TAXON, NODETYPE_MEDIA); 
+    $nodetypes = array(NODETYPE_REFERENCE, NODETYPE_TAXON, NODETYPE_MEDIA, NODETYPE_NAME); 
   }
   
   $nodeinfo = array();
@@ -73,6 +74,15 @@ function cdm_dataportal_nodeapi(&$node, $op, $teaser, $page) {
             cdm_add_node_content($node, $taxonpage->content, variable_get('cdm_content_weight', -1));
           }
           break;
+        case 'cdm_'.NODETYPE_NAME : 
+          if(arg(0) == 'node'){
+            $cdmnode = db_fetch_object(db_query('SELECT * FROM {node_cdm} WHERE nid = \'%d\''
+              , $node->nid));
+            $namepage = cdm_dataportal_name_view($cdmnode->uuid);
+            drupal_set_title($namepage->title);
+            cdm_add_node_content($node, $namepage->content, variable_get('cdm_content_weight', -1));
+          }
+          break;  
       }
       break;   
   }
