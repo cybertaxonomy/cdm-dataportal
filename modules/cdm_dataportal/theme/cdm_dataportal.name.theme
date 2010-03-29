@@ -242,7 +242,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 
 		$taggedName = $taxonName->taggedName;
 		//TODO  due to a bug in the cdmlib the taggedName alway has a lst empty element, we will remove it:
-		array_pop($taggedName);
+		//array_pop($taggedName);
 
 		$lastAuthorElementString = false;
 		$hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
