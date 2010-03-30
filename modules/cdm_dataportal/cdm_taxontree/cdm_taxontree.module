@@ -1010,7 +1010,7 @@ function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, 
   if(is_null($vid)){
     
     if($taxonUuid){
-      $taxon =  cdm_ws_get(CDM_WS_TAXON, $taxonUuid);
+      $taxon =  cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxonUuid);
     }
     
     $compact_tree = cdm_taxontree_filters_active() && _get_compact_mode() != 'expanded';

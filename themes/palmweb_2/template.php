@@ -99,7 +99,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
     $descriptions .= $descriptionElement->area->representation_L10n . $separator;
   }
   $descriptions = substr($descriptions, 0, strlen($descriptions)-2);
-  $taxonTrees =  cdm_ws_get(CDM_WS_TAXONOMY);
+  $taxonTrees =  cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   foreach($taxonTrees as $taxonTree){
     if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
       $reference = $taxonTree-> reference;
@@ -251,7 +251,7 @@ function palmweb_2_get_nameRenderTemplate($renderPath){
       case 'list_of_taxa':
       case 'taxon_page_synonymy':
       case 'related_taxon':
-      default:
+      case '#DEFAULT':
         $template = array(
           'namePart' => array('#uri'=>true),
           'referencePart' => true,

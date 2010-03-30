@@ -264,7 +264,7 @@ function ext_links_block($op='list', $delta=0) {
         case 0:
         		if (arg(0)=="cdm_dataportal" && arg(1)=="taxon" && arg(2)!== 0){
         			$uuid = arg(2);
-        		    $taxon = cdm_ws_get(CDM_WS_TAXON, $uuid);
+        		    $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $uuid);
         		    //var_dump($taxon);
         		    //$taxon->titleCache;
         		    //var_export()

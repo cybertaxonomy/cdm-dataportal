@@ -18,6 +18,7 @@
 require_once ('xml2json.php');
 require_once ('commons.php');
 require_once ('uuids.php');
+require_once ('webservice_uris.php');
 require_once ('cdm_node.php');
 
 define(DEFAULT_TAXONTREE_RANKLIMIT, '');//TODO Genus UUID
@@ -458,6 +459,38 @@ function uri_uriByProxy($uri, $theme = false){
   return url('cdm_api/proxy/'.urlencode($uri).($theme?"/$theme":''));
 }
 
+function cdm_compose_annotations_url($cdmBase){
+	
+    if(!$cdmBase->uuid){
+        return;
+    }
+    
+	$ws_base_uri = null;
+    switch($cdmBase->class){
+        case 'TaxonBase':
+        case 'Taxon':
+        case 'Synonym':
+            $ws_base_uri = CDM_WS_TAXON;
+            break;
+        case 'TaxonNameBase':
+        case 'NonViralName':
+        case 'BacterialName':
+        case 'BotanicalName':
+        case 'CultivarPlantName':
+        case 'ZoologicalName':
+        case 'ViralName':
+            $ws_base_uri = CDM_WS_NAME;
+            break;
+        case 'Media':
+            $ws_base_uri = CDM_WS_MEDIA;
+            break;
+        default: 
+            trigger_error('Unsupported CDM Class - no annotations available', E_USER_ERROR);
+            return;
+    }
+    return  cdm_compose_url($ws_base_uri, array($cdmBase->uuid, 'annotation'));
+}
+
 /**
  * Enter description here...
  *
@@ -475,7 +508,7 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber){
 }
 
 function cdm_ws_taxonomy_find($uuid, $rank = null, $viewUuid = null){
-  return cdm_ws_get(CDM_WS_TAXONOMY, null, queryString(array("uuid" => $uuid, 'rank'=>$rank)));
+  return cdm_ws_get(CDM_WS_PORTAL_TAXONOMY, null, queryString(array("uuid" => $uuid, 'rank'=>$rank)));
 }
 
 /**
@@ -491,7 +524,7 @@ function cdm_ws_taxonomy($path = null){
 
 function cdm_ws_taxonomy_compose_resourcePath($path = null){
   $viewrank =  _cdm_taxonomy_compose_viewrank();
-  return CDM_WS_TAXONOMY . '/' . ($viewrank ? $viewrank : '' ) . ($path ? '/' . $path : '') ;
+  return CDM_WS_PORTAL_TAXONOMY . '/' . ($viewrank ? $viewrank : '' ) . ($path ? '/' . $path : '') ;
 }
 
 /**
@@ -503,7 +536,7 @@ function cdm_ws_taxonomy_compose_resourcePath($path = null){
  */
 function cdm_ws_taxonomy_pathFromRoot($path){
   $viewrank =  _cdm_taxonomy_compose_viewrank();
-  return cdm_ws_get(CDM_WS_TAXONOMY .  ($viewrank ? '/' .$viewrank : '' )  . '/' . $path . '/path' );
+  return cdm_ws_get(CDM_WS_PORTAL_TAXONOMY .  ($viewrank ? '/' .$viewrank : '' )  . '/' . $path . '/path' );
 }
 
 /**
@@ -610,7 +643,7 @@ function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
  *
  * @param $uri
  * @param $pathParameters
- * @param $query
+ * @param $query  A query string to be appended to the URL.
  * @param $method the HTTP method to use, valuid values are "GET" or "POST";
  * @param $absoluteURI
  * @return unknown_type
@@ -966,77 +999,3 @@ function _add_status_message_toggler() {
           $isAdded = TRUE;
   }
 }
-
-define('CDM_WS_MEDIA', 'portal/media');
-
-define('CDM_WS_MEDIA_METADATA', 'media/$0/metadata');
-
-define('CDM_WS_NAME', 'name');
-
-define('CDM_WS_NAME_NAMECAHE', 'name/$0/nameCache');
-
-define('CDM_WS_NAME_TYPEDESIGNATIONS', 'name/$0/typeDesignations');
-
-define('CDM_WS_TAXON_NAMETYPEDESIGNATIONS', 'portal/taxon/$0/nameTypeDesignations');
-
-define('CDM_WS_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
-
-define('CDM_WS_NAME_DESCRIPTIONS', 'portal/name/$0/descriptions');
-
-define('CDM_WS_REFERENCE', 'reference');
-
-define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCitation/$1');
-
-define('CDM_WS_FIND_TAXA', 'portal/taxon/find');
-
-define('CDM_WS_TAXON', 'portal/taxon');
-
-/**
- * @parameters $0 : the taxon uuid
- *
- * @returns
- */
-define('CDM_WS_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');
-
-define('CDM_WS_TAXON_RELATIONS', 'portal/taxon/$0/taxonRelationships');
-
-define('CDM_WS_TAXON_NAMERELATIONS', 'portal/taxon/$0/nameRelationships');
-
-
-/**
- * @parameters $0 : the taxon uuid
- *
- * @returns the taxon which is the accepted synonym for the taxon given as
- * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
- * accepted taxon, this one will be returned.
- */
-define('CDM_WS_TAXON_ACCEPTED', 'portal/taxon/$0/accepted');
-
-define('CDM_WS_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
-define('CDM_WS_TAXON_SUBTREE_MEDIA', 'portal/taxon/$0/subtree/media/$1/$2');
-
-/**
- *
- * Gets the root nodes of the taxonomic concept tree for the concept
- * reference specified by the secUuid parameter.
- *
- * stub: treenode_root
- */
-define('CDM_WS_TAXONOMY',  'portal/taxontree');
-define('CDM_WS_TAXONOMY_MEDIA', 'portal/taxontree/$0/$1');
-
-define('CDM_WS_TERMVOCABULARY', 'term/$0');
-
-define('CDM_WS_TERM_COMPARE', 'term/$0/compareTo/$1');
-
-define('CDM_WS_TDWG_LEVEL', 'term/tdwg/$0');
-
-/**
- * returns FeatureTrees that are stored in this community store
- *
- */
-define('CDM_WS_FEATURETREE', 'featuretree/$0');
-
-define('CDM_WS_FEATURETREES', 'featuretree');
-
-define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'geo/map/distribution/$0');

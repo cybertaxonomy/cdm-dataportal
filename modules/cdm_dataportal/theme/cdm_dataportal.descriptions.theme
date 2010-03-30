@@ -263,7 +263,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 	}
 	$out = substr($out, 0, strlen($out)-strlen($separator) );
 	
-	$taxonTrees =  cdm_ws_get(CDM_WS_TAXONOMY);
+	$taxonTrees =  cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
 	foreach($taxonTrees as $taxonTree){
 		if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
 			$reference = $taxonTree-> reference;

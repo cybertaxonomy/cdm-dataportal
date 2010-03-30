@@ -14,8 +14,8 @@
 
 function theme_cdm_typedesignations($typeDesignations = array()){
 
+	RenderHints::pushToRenderStack('typedesignations');
 	_add_js_cluetip();
-	$renderPath = 'typedesignations';
 	$out = '<ul class="typeDesignations">';
 
 	$specimenTypeDesignations = array();
@@ -29,13 +29,13 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			if($typeDesignation->notDesignated){
 				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: '.t('not designated'). '</li>';
 			}else if($typeDesignation->typeName){
-        $link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
+                $link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
 				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: ';
 
 				if($typeDesignation->typeName->nomenclaturalReference){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
 				}
-				$out .= theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri, $renderPath);
+				$out .= theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri);
 
 				//        if($typeDesignation->typeName->class == 'ZoologicalName') {
 				//          // appending authorTeam which has been skipped in cdm_name
@@ -81,6 +81,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 
 	$out .= '</ul>';
 
+	RenderHints::popFromRenderStack();
 	return $out;
 }
 
@@ -157,10 +158,13 @@ function theme_cdm_nameRelations($nameRelationships, $skipTypes = false){
 function theme_cdm_homotypicSynonymLine($taxon){
 	$out = '';
 	$out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+	
 	return $out;
 }
 
 function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
+	
+	RenderHints::pushToRenderStack('heterotypicSynonymyGroup');
 	$out = '';
 	$out = '<ul class="heterotypicSynonymyGroup">';
 
@@ -168,29 +172,37 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 	$typeDesignations = null;
 	foreach($homotypicalGroup as $synonym){
 		if($is_first_entry){
+			RenderHints::setfootnoteListKey($synonym->uuid);
 			$is_first_entry = false;
 			//$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
-			$typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $synonym->uuid);
+			$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $synonym->uuid);
 			// is first list entry
 			$out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$synonym, UUID_HETEROTYPIC_SYNONYM_OF).'</li>';
 		} else {
 			$out .= '<li class="synonym">'.theme('cdm_related_taxon',$synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 		}
 	}
-
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
 
 	$out .= '</ul>';
-
+    
+	$out .= FootnoteManager::renderFootnoteList($firstSynonymUuid);
+    
+    RenderHints::popFromRenderStack();
 	return $out;
 }
 
 
 
 function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = array()){
-
+	
+	RenderHints::pushToRenderStack('homotypicSynonymyGroup');
+	
+	$firstSynonymUuid = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
+	RenderHints::setfootnoteListKey($firstSynonymUuid);
+	
 	if(! is_array($synonymList) || count($synonymList) == 0){
 		return;
 	}
@@ -207,19 +219,22 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 		$out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 	}
 
-	$typeDesignations = cdm_ws_get(CDM_WS_TAXON_NAMETYPEDESIGNATIONS, $synonymList[0]->uuid);
+	$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $synonymList[0]->uuid);
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
 
 	$out .= '</ul>';
+	$out .= FootnoteManager::renderFootnoteList($firstSynonymUuid);
+	
+	RenderHints::popFromRenderStack();
 	return $out;
 }
 
 
-function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, $renderPath = null){
+function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
 
-	$renderTemplate = get_nameRenderTemplate($renderPath, $nameLink, $refenceLink);
+    $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
 
 	$partDefinition = get_partDefinition($taxonName->class);
 
@@ -241,8 +256,6 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 	if($firstEntryIsValidNamePart){
 
 		$taggedName = $taxonName->taggedName;
-		//TODO  due to a bug in the cdmlib the taggedName alway has a lst empty element, we will remove it:
-		//array_pop($taggedName);
 
 		$lastAuthorElementString = false;
 		$hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
@@ -293,7 +306,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 			if(isset($renderTemplate['referencePart']['microreference'])){
 				$microreference = $taxonName->nomenclaturalMicroReference;
 			}
-			$citation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($taxonName->nomenclaturalReference->uuid, $microreference));
+			$citation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($taxonName->nomenclaturalReference->uuid), "microReference=$microreference");
 			$citation = $citation->String;
 			// find preceding element of the refrence
 			$precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
@@ -339,7 +352,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 
 	// fill with protologues etc...
 	if(array_setr('description', true, $renderTemplate)){
-		$descriptions = cdm_ws_get(CDM_WS_NAME_DESCRIPTIONS, $taxonName->uuid);
+		$descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxonName->uuid);
 		foreach($descriptions as $description){
 			if(!empty($description)){
 				foreach($description->elements as $description_element){

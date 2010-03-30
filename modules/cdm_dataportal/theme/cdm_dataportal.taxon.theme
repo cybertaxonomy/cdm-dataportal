@@ -109,14 +109,13 @@ function theme_cdm_taxonRelations($taxonRelationships){
 	return $out;
 }
 
-function theme_cdm_acceptedFor($renderPath = false){
+function theme_cdm_acceptedFor(){
+	RenderHints::pushToRenderStack('acceptedFor');
+		
 	$out = '';
-	if(!$renderPath){
-		$renderPath = 'acceptedFor';
-	}
 	if(isset($_REQUEST['acceptedFor'])){
 			
-		$synonym = cdm_ws_get(CDM_WS_TAXON, $_REQUEST['acceptedFor']);
+		$synonym = cdm_ws_get(CDM_WS_PORTAL_TAXON, $_REQUEST['acceptedFor']);
 			
 		if($synonym){
 			$out .= '<span class="acceptedFor">';
@@ -124,17 +123,17 @@ function theme_cdm_acceptedFor($renderPath = false){
 			if(isset($synonym->name->nomenclaturalReference)){
 				$referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
 			}
-			$out .= theme('cdm_taxonName', $synonym->name, null, $referenceUri, $renderPath);
+			$out .= theme('cdm_taxonName', $synonym->name, null, $referenceUri);
 			$out .= '</span>';
 		}
 	}
-
+    RenderHints::popFromRenderStack();
 	return $out;
 }
 
 function theme_cdm_list_of_taxa($records, $showMedia = false){
 
-	$renderPath = 'list_of_taxa';
+	RenderHints::pushToRenderStack('list_of_taxa');
 
 	$showMedia_taxa = variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1);
 	$showMedia_synonyms = variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0);
@@ -149,11 +148,11 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 		}
 	}
 	// batch service not jet implemented:
-	// $table_of_accepted = cdm_ws_property(CDM_WS_TAXON_ACCEPTED, join(',', $synonym_uuids));
+	// $table_of_accepted = cdm_ws_property(CDM_WS_PORTAL_TAXON_ACCEPTED, join(',', $synonym_uuids));
 	// thus ...
 	$table_of_accepted = array();
 	foreach($synonym_uuids as $synUuid){
-		$table_of_accepted[$synUuid] = cdm_ws_get(CDM_WS_TAXON_ACCEPTED, $synUuid);
+		$table_of_accepted[$synUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, $synUuid);
 	}
 
 	$out = '<ul class="cdm_names" style="background-image: none;">';
@@ -165,7 +164,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 			if(isset($taxon->name->nomenclaturalReference)){
 				$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 			}
-			$out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
+			$out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
 			if($showMedia_taxa){
 				$out .= theme('cdm_taxon_list_thumbnails', $taxon);
 			}
@@ -180,7 +179,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 				if(isset($acceptedTaxon->name->nomenclaturalReference)){
 					$referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
 				}
-				$out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
+				$out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
 				if($showMedia_synonyms){
 					$out .= theme('cdm_taxon_list_thumbnails', $acceptedTaxon);
 				}
@@ -188,16 +187,17 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 			} else {
 				//TODO avoid using Ajax in the cdm_dynabox
 				//TODO add media
-				$out .= theme('cdm_dynabox', theme('cdm_taxonName', $taxon->name, null, null, $renderPath), cdm_compose_url(CDM_WS_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
+				$out .= theme('cdm_dynabox', theme('cdm_taxonName', $taxon->name, null, null), cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
 			}
 		}
 	}
 	$out .= '</ul>';
+	RenderHints::popFromRenderStack();
 	return $out;
 }
 
 
-function theme_cdm_related_taxon($taxon, $reltype_uuid = '', $displayNomRef = true){
+function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 
 	$relsign = '';
 	$name_prefix = '';
@@ -220,13 +220,13 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = '', $displayNomRef = tr
 			$relsign = '&ndash;';
 	}
 
-	$renderPath = 'related_taxon';
+	 RenderHints::pushToRenderStack('related_taxon');
 
 	//$taxonUri = url(path_to_taxon($taxon->uuid));
 	if($taxon->name->nomenclaturalReference){
 		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 	}
-	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, $renderPath);
+	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
 
 	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix;
 	
@@ -257,11 +257,11 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
 	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
 	if ($selectShowMedia == 0){
-		$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 	}else{
-		$mediaList = cdm_ws_get(CDM_WS_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 	}
-	//$mediaList = cdm_ws_get(CDM_WS_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false), $taxon ->rank, $taxon->uuid ));
+	//$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false), $taxon ->rank, $taxon->uuid ));
 	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,
 					$gallery_settings['cdm_dataportal_media_maxextend'], 
 	             	$gallery_settings['cdm_dataportal_media_cols'], 

@@ -86,29 +86,25 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
  *
  */
 function theme_cdm_annotation($cdmBase){
-	if(!$cdmBase->uuid){
-		return;
-	}else{
+	
+	$annotationUrl = cdm_compose_annotations_url($cdmBase);
 
+	if($annotationUrl){
 		drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_annotations.js');
 		drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.form.js');
-
-		$annotatableUuid = $cdmBase->uuid;
-		//FIXME annotations only available as property of e.g. taxon, name, ...
-		$annotationUrl = cdm_compose_url(CDM_WS_ANNOTATIONS, array($annotatableUuid));
-
 		$annotationProxyUrl = url('cdm_api/proxy/'. urlencode($annotationUrl).'/cdm_annotation_content');
-
+	
 		$out = ' <span class="annotation">';
 		$out .= '<span class="annotation_toggle" rel="'.$annotationProxyUrl.'">+</span>';
 			
-
+	
 		$out .= '<div class="annotation_box"></div>';
 		$out .= '</span>';
-
-		return $out;
-
 	}
+
+	return $out;
+
+
 }
 
 function theme_cdm_annotation_content($AnnotationTO){
@@ -233,7 +229,7 @@ function theme_cdm_back_to_search_result_button(){
 function theme_cdm_back_to_image_gallery_button(){
 	//$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
 	//$gallery_name = $taxon->uuid;
-	//$mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	//$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 
 	$out = '<div id="backToGalleryButton">'.l(t('Back to Images'), $_SESSION['cdm']['last_gallery'] ).'</div>';
 

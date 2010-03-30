@@ -318,9 +318,9 @@ function garland_cichorieae_get_nameRenderTemplate($renderPath){
             'referencePart' => true
       );
       break;
-    default:
     case 'typedesignations':
     case 'list_of_taxa':
+    case '#DEFAULT':
       $template = array(
             'nameAuthorPart' => array('#uri'=>true),
             'referencePart' => true
@@ -347,7 +347,7 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
     }
     
     $galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
-    $mediaList = cdm_ws_get(CDM_WS_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+    $mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
     $out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'NORMAL', $galleryLinkUri, null);
 
     return $out;

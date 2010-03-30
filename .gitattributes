@@ -13,7 +13,7 @@ modules/cdm_dataportal/cdm_api/commons.php -text
 modules/cdm_dataportal/cdm_api/json/JSON.php -text
 modules/cdm_dataportal/cdm_api/json/LICENSE -text
 modules/cdm_dataportal/cdm_api/uuids.php -text
-modules/cdm_dataportal/cdm_api/ws-test.sh -text
+modules/cdm_dataportal/cdm_api/webservice_uris.php -text
 modules/cdm_dataportal/cdm_api/xml2json.php -text
 modules/cdm_dataportal/cdm_dataportal.css -text
 modules/cdm_dataportal/cdm_dataportal.info -text
@@ -62,6 +62,7 @@ modules/cdm_dataportal/cdm_taxontree/visible_small.gif -text
 modules/cdm_dataportal/cdm_ws_urls.txt -text
 modules/cdm_dataportal/classes/footnote.php -text
 modules/cdm_dataportal/classes/footnotemanager.php -text
+modules/cdm_dataportal/classes/renderhints.php -text
 modules/cdm_dataportal/ext_links/ext_links.info -text
 modules/cdm_dataportal/ext_links/ext_links.js -text
 modules/cdm_dataportal/ext_links/ext_links.module -text

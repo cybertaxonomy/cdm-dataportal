@@ -26,6 +26,7 @@ require_once('theme/cdm_dataportal.references.theme');
 
 require_once('classes/footnotemanager.php');
 require_once('classes/footnote.php');
+require_once('classes/renderhints.php');
 
 define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
 define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
@@ -661,7 +662,7 @@ function cdm_dataportal_settings(){
 	//    '#multiple' => false
 	//  );
 
-	$taxonTrees = cdm_ws_get(CDM_WS_TAXONOMY);
+	$taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
 	foreach($taxonTrees as $tree){
 		$taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
 	}
@@ -991,7 +992,7 @@ function cdm_dataportal_settings_geo(){
 	 '#description'   => t('Select a taxonomic view for this webservice.')
 	 );
 
-	 $taxonTrees = cdm_ws_get(CDM_WS_TAXONOMY);
+	 $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
 	 foreach($taxonTrees as $tree){
 	 $taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
 	 }
@@ -1026,7 +1027,7 @@ function cdm_dataportal_view_cache_site(){
 	$request_params['doTaxa'] = 1;
 	$request_params['doSynonyms'] = 0;
 	$request_params['doTaxaByCommonNames'] = 0;
-	$search_url = cdm_compose_url(CDM_WS_FIND_TAXA, null, queryString($request_params));
+	$search_url = cdm_compose_url(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
 	$search_url = uri_uriByProxy($search_url);
 	$taxon_page_url = url('cdm_dataportal/taxon/');
 
@@ -1114,7 +1115,7 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
     'onlyAccepted' => $onlyAccepted,
     'pagesize' => 20  /*$_SESSION['cdm']['namelist_pagesize'] */);
 
-	$taxonPager = cdm_ws_find(CDM_WS_FIND_TAXA, $request_params);
+	$taxonPager = cdm_ws_find(CDM_WS_PORTAL_TAXON_FIND, $request_params);
 	/*
 	 * FIXME the filter for accepted names will be a form element, thus this widget
 	 * should be generated via form api preferably as block
@@ -1136,7 +1137,7 @@ function cdm_dataportal_view_reference_list($pageNumber){
 }
 
 function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = false, $part = 0){
-	$media = cdm_ws_get(CDM_WS_MEDIA, $mediaUuid);
+	$media = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $mediaUuid);
 	return theme('cdm_media_page', $media, $mediarepresentation_uuid, $part);
 }
 
@@ -1168,7 +1169,7 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all'){
  */
 function cdm_dataportal_taxon_view($uuid, $chapter = 'all'){
 
-	$taxon = cdm_ws_get(CDM_WS_TAXON, $uuid);
+	$taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $uuid);
 	if(!$taxon){
 		drupal_set_title(t('Taxon does not exist'));
 		return false;
@@ -1249,7 +1250,7 @@ function cdm_dataportal_view_search_taxon(){
 	$_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
 
 	$request_params = cdm_dataportal_search_form_request();
-	$taxonPager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($request_params));
+	$taxonPager = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
 
 	$search_params = $_REQUEST;
 	unset($search_params['q']);
@@ -1522,8 +1523,22 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
 	//TODO implement admin user interface to replace swicth statement
 	//     preliminar solution: using themes
 
-	$template = theme('get_nameRenderTemplate', $renderPath);
-
+	$template = null;
+	// find best matching default RenderTemplate in theme
+	//echo "<br/><br/>".$renderPath;
+	while(!is_array($template) && strlen($renderPath) > 0){
+	   $template = theme('get_nameRenderTemplate', $renderPath);
+	   $renderPath = substr($renderPath, 0, strrpos($renderPath, '.'));
+//	   if(!is_array($template)){
+//	       echo "<br/>->".$renderPath;
+//	   }
+	}
+	
+	// otherwise get default RenderTemplate from theme 
+	if(!is_array($template)){
+	   $template = theme('get_nameRenderTemplate', '#DEFAULT');
+	}
+	// otherwise get system default RenderTemplate
 	if(!is_array($template)){
 		switch($renderPath){
 			case 'list_of_taxa':
@@ -1532,17 +1547,17 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
 			case 'typedesignations':
 			case 'taxon_page_title':
 			case 'na': $template = array(
-          'namePart' => array('#uri'=>true),
-			//'authorshipPart' => true,
-			);
-			break;
+			        'namePart' => array('#uri'=>true),
+			        //'authorshipPart' => true,
+				);
+				break;
 			case 'nar': $template = array(
-          'namePart' => array('#uri'=>true),
-			//'authorshipPart' => true,
-          'referencePart' => array('#uri'=>true),
-          'microreferencePart' => true,
-			);
-			break;
+		          	'namePart' => array('#uri'=>true),
+					 //'authorshipPart' => true,
+		          	'referencePart' => array('#uri'=>true),
+		          	'microreferencePart' => true,
+				);
+				break;
 			default: $template = array(
           'namePart' => array('#uri'=>true),
           'authorshipPart' => true,
