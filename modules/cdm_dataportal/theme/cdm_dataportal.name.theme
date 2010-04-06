@@ -366,8 +366,8 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
 	}
 
 	// render
-	//$out = '<span ref="/name/'.$taxonName->uuid.'">';
-	$out = '<span ref="/name/'.$taxonName->uuid.'" class=”’.$rank_order_id.’”>';
+	$out = '<span ref="/name/'.$taxonName->uuid.'">';
+	
 	foreach($renderTemplate as $partName=>$part){
 		$separator = '';
 		$partHtml = '';
