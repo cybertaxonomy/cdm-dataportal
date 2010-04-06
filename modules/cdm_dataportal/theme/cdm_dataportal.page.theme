@@ -247,7 +247,7 @@ function theme_cdm_taxon_page_images($taxon, $media){
 					$gallery_name, 
 					$gallery_settings['cdm_dataportal_media_maxextend'], 
 	             	$gallery_settings['cdm_dataportal_media_cols'], 
-	             	$gallery_settings['cdm_dataportal_media_maxRows'],
+	             	0, // ignore maxrows settings 
 	             	$captionElements, 
 	             	$mediaLinkType, 
 	             	null);
