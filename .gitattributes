@@ -193,6 +193,13 @@ garland_diptera/logo.png -text
 garland_diptera/logo_bgbm.jpg -text
 garland_diptera/logo_edit.png -text
 garland_diptera/logo_kew.jpg -text
+garland_diptera/minus.jpg -text
+garland_diptera/node.tpl.php -text
+garland_diptera/page.tpl.php -text
+garland_diptera/print.css -text
+garland_diptera/screenshot.png -text
+garland_diptera/style.css -text
+garland_diptera/template.php -text
 images/bg-bar-white.png -text
 images/bg-bar.png -text
 images/bg-content-left.png -text
