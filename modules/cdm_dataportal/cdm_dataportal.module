@@ -121,6 +121,7 @@ function cdm_dataportal_menu($may_cache) {
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
       'callback arguments' => 'cdm_dataportal_settings',
+	  'weight' => 0,
       'type' => MENU_LOCAL_TASK,
 		);
 
@@ -131,6 +132,7 @@ function cdm_dataportal_menu($may_cache) {
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
       'callback arguments' => 'cdm_dataportal_settings_geo',
+	  'weight' => 1,
       'type' => MENU_LOCAL_TASK,
 		);
 
@@ -141,15 +143,17 @@ function cdm_dataportal_menu($may_cache) {
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
       'callback arguments' => 'cdm_dataportal_settings_layout',
+      'weight' => 2,
       'type' => MENU_LOCAL_TASK,
 		);
 
 		$items[] = array(
       'path' => 'admin/settings/cdm_dataportal/cachesite',
-      'title' => t('Cache Site'),
+      'title' => t('Cache'),
       'description' => t('Cache the whole CDM DataPortal site'),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'cdm_dataportal_view_cache_site',
+      'weight' => 10,
       'type' => MENU_LOCAL_TASK,
 		);
 
