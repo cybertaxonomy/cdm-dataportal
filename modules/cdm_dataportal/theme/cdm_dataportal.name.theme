@@ -235,7 +235,8 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
 
     $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
-
+	
+	
 	$partDefinition = get_partDefinition($taxonName->class);
 
 	// apply defintions to template
@@ -249,14 +250,15 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
 	}
 
 	$firstEntryIsValidNamePart = is_array($taxonName->taggedName)
-	&& is_string($taxonName->taggedName[1]->text)
-	&& $taxonName->taggedName[1]->text != ''
-	&& $taxonName->taggedName[1]->type = 'name';
+	&& is_string($taxonName->taggedName[0]->text)
+	&& $taxonName->taggedName[0]->text != ''
+	&& $taxonName->taggedName[0]->type == 'name';
+	
 	// got to use second entry as first one, see ToDo comment below ...
 	if($firstEntryIsValidNamePart){
 
 		$taggedName = $taxonName->taggedName;
-
+		
 		$lastAuthorElementString = false;
 		$hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
 		$hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
@@ -364,7 +366,8 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
 	}
 
 	// render
-	$out = '<span ref="/name/'.$taxonName->uuid.'">';
+	//$out = '<span ref="/name/'.$taxonName->uuid.'">';
+	$out = '<span ref="/name/'.$taxonName->uuid.'" class=”’.$rank_order_id.’”>';
 	foreach($renderTemplate as $partName=>$part){
 		$separator = '';
 		$partHtml = '';
