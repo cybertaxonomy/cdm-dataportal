@@ -507,9 +507,11 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber){
   return cdm_ws_get($resourceURI, null, queryString(array("page" => $pageNumber, 'pageSize'=>$pageSize)));
 }
 
-function cdm_ws_taxonomy_find($uuid, $rank = null, $viewUuid = null){
-  return cdm_ws_get(CDM_WS_PORTAL_TAXONOMY, null, queryString(array("uuid" => $uuid, 'rank'=>$rank)));
-}
+//function cdm_ws_taxonomy_compose_resourcePath($path = null){
+//  $viewrank =  _cdm_taxonomy_compose_viewrank();
+//  return CDM_WS_PORTAL_TAXONOMY . '/' . ($viewrank ? $viewrank : '' ) . ($path ? '/' . $path : '') ;
+//}
+
 
 /**
  * Enter description here...
@@ -518,13 +520,26 @@ function cdm_ws_taxonomy_find($uuid, $rank = null, $viewUuid = null){
  * @param unknown_type $path
  * @return unknown
  */
-function cdm_ws_taxonomy($path = null){
-  return cdm_ws_get(cdm_ws_taxonomy_compose_resourcePath($path));
+function cdm_compose_taxonomy_path($taxonUuid = null){
+	//return cdm_ws_get(cdm_ws_taxonomy_compose_resourcePath($path));
+
+	$viewUuid = variable_get('cdm_taxonomictree_uuid', false);
+	$rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
+
+	if($taxonUuid){
+		return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array($viewUuid, $taxonUuid));
+	} else {
+		if($rankUuid){
+			return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK, array($viewUuid, $rankUuid));
+		} else {
+			return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY, array($viewUuid));
+		}
+	}
 }
 
-function cdm_ws_taxonomy_compose_resourcePath($path = null){
-  $viewrank =  _cdm_taxonomy_compose_viewrank();
-  return CDM_WS_PORTAL_TAXONOMY . '/' . ($viewrank ? $viewrank : '' ) . ($path ? '/' . $path : '') ;
+function cdm_ws_taxonomy($taxonUuid = null){
+    //return cdm_ws_get(cdm_ws_taxonomy_compose_resourcePath($path));
+    return cdm_ws_get(cdm_compose_taxonomy_path($taxonUuid), null, null, null, TRUE);
 }
 
 /**
@@ -534,9 +549,18 @@ function cdm_ws_taxonomy_compose_resourcePath($path = null){
  * @param String $path
  * @return unknown
  */
-function cdm_ws_taxonomy_pathFromRoot($path){
-  $viewrank =  _cdm_taxonomy_compose_viewrank();
-  return cdm_ws_get(CDM_WS_PORTAL_TAXONOMY .  ($viewrank ? '/' .$viewrank : '' )  . '/' . $path . '/path' );
+function cdm_ws_taxonomy_pathFromRoot($taxonUuid){
+  //$viewrank =  _cdm_taxonomy_compose_viewrank();
+  //return cdm_ws_get(CDM_WS_PORTAL_TAXONOMY .  ($viewrank ? '/' .$viewrank : '' )  . '/' . $path . '/path' );
+  
+  $viewUuid = variable_get('cdm_taxonomictree_uuid', false);
+  $rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
+
+  if($rankUuid){
+  	return cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK, array($viewUuid, $taxonUuid, $rankUuid));
+  } else {
+    return cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_PATH_FROM, array($viewUuid, $taxonUuid));
+  }
 }
 
 /**
@@ -546,14 +570,14 @@ function cdm_ws_taxonomy_pathFromRoot($path){
  * @param String $rank
  * @return unknown
  */
-function _cdm_taxonomy_compose_viewrank(){
-  $viewUuid = variable_get('cdm_taxonomictree_uuid', false);
-  if(!$viewUuid){
-    return;
-  }
-  $rank = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
-  return $viewUuid . (empty($rank) ? '' : ','.$rank);
-}
+//function _cdm_taxonomy_compose_viewrank(){
+//  $viewUuid = variable_get('cdm_taxonomictree_uuid', false);
+//  if(!$viewUuid){
+//    return;
+//  }
+//  $rank = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
+//  return $viewUuid . (empty($rank) ? '' : ','.$rank);
+//}
 
 
 function cdm_rankVocabulary_as_option(){
@@ -642,7 +666,7 @@ function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
  * log as the drupal cache is not beeing cleared and are availabel across multiple sript executions.
  *
  * @param $uri
- * @param $pathParameters
+ * @param $pathParameters an array of path parameters
  * @param $query  A query string to be appended to the URL.
  * @param $method the HTTP method to use, valuid values are "GET" or "POST";
  * @param $absoluteURI

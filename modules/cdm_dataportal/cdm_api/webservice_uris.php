@@ -52,7 +52,18 @@ define('CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA', 'portal/taxon/$0/subtree/media/$1/$2
  *
  * stub: treenode_root
  */
-define('CDM_WS_PORTAL_TAXONOMY',  'portal/taxontree');
+define('CDM_WS_PORTAL_TAXONOMY',  'portal/taxontree/');
+
+define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES',  'portal/taxontree/$0/childNodes/');
+
+define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK',  'portal/taxontree/$0/childNodesAt/$1/');
+
+define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON',  'portal/taxontree/$0/childNodesOf/$1/');
+
+define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM',  'portal/taxontree/$0/pathFrom/$1');
+
+define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK',  'portal/taxontree/$0/pathFrom/$1/toRank/$2');
+
 
 define('CDM_WS_PORTAL_TAXONOMY_MEDIA', 'portal/taxontree/$0/$1');
 

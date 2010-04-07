@@ -1414,7 +1414,7 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
     if($node->tid){
       $ahah_url = url('cdm_taxontree/taxonomy/children/'.$node->tid.'/'.$node->vid.'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
     } else if(module_exists('cdm_dataportal')) {
-      $ws_url = cdm_compose_url(cdm_ws_taxonomy_compose_resourcePath($node->uuid));
+      $ws_url = cdm_compose_taxonomy_path($node->uuid);
       $ahah_url = url('cdm_api/proxy/'.urlencode($ws_url).'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
     }
   }
