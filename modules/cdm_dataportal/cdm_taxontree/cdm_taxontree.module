@@ -1089,7 +1089,7 @@ function cdm_taxontree_build_path($taxonUuid, $is_filter_path = null, $is_expand
   foreach($parents as $pnode){
     $pnode->focused = false;
     if($lastParent){
-      $pnode->children = array($lastParent->uuid => $lastParent);
+      $pnode->children = array($lastParent->taxonUuid => $lastParent);
       if(!is_null($is_filter_path)){
         $pnode->filter = ($is_filter_path ? 'excludes' : 'included');
       }
@@ -1107,7 +1107,7 @@ function cdm_taxontree_build_path($taxonUuid, $is_filter_path = null, $is_expand
     }
     $lastParent = $pnode;
   }
-  $branch_path[$pnode->uuid] = $pnode;
+  $branch_path[$pnode->taxonUuid] = $pnode;
   return $branch_path;
 }
 
@@ -1158,14 +1158,14 @@ function cdm_taxontree_populate($tree, $expand_excluded, $filter_default = null)
         $ordered = array();
         foreach($tree[$uuid]->children as $cnode){
           // concatenate full name and uid
-          $reordered[str_pad($cnode->titleCache, 255, '-').$cnode->uuid] = $cnode;
+          $reordered[str_pad($cnode->titleCache, 255, '-').$cnode->taxonUuid] = $cnode;
         }
         // sort
         ksort($reordered);
         // move the children back into the parent node
         $tree[$uuid]->children = array();
         foreach($reordered as $cnode){
-          $tree[$uuid]->children[$cnode->uuid] = $cnode;
+          $tree[$uuid]->children[$cnode->taxonUuid] = $cnode;
         }
       }
       $tree[$uuid]->children = cdm_taxontree_populate($tree[$uuid]->children, $expand_excluded, $tree[$uuid]->filter);
@@ -1187,7 +1187,7 @@ function cdm_taxontree_flatten($tree, &$new_root = null){
   }
   foreach($tree as $node){
     if($node->filter == 'on'){
-      $new_root[$node->uuid] = $node;
+      $new_root[$node->taxonUuid] = $node;
     } else if(is_array($node->children)){
       cdm_taxontree_flatten($node->children, $new_root);
     }
@@ -1246,7 +1246,7 @@ function _cdm_taxontree_merge($tree, $branch) {
 
 /**
  * Replaces the keys of an array of TreeNode instances
- * by the $treeNode->uuid of the single array elements.
+ * by the $treenode->taxonUuid of the single array elements.
  * An sets additional fields
  *
  * @param $resultset array of TreeNode instances as +returned by the cdm web service
@@ -1267,7 +1267,7 @@ function _cdm_resultset2nodelist($resultset, $excluded = null, $expanded = null)
     if(!is_null($expanded)){
       $treeNode->expanded = ($expanded ? 'expanded': 'collapsed');
     }
-    $tree[$treeNode->uuid] = $treeNode;
+    $tree[$treeNode->taxonUuid] = $treeNode;
   }
   return $tree;
 }
@@ -1386,7 +1386,7 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
     
   } else if(module_exists('cdm_dataportal')){
       $node_name = cdm_dataportal_shortname_of($node);
-      $path = path_to_taxon($node->uuid);
+      $path = path_to_taxon($node->taxonUuid);
   } else {
       $node_name = "module cdm_dataportal missing";
       $path = "";
@@ -1414,7 +1414,7 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
     if($node->tid){
       $ahah_url = url('cdm_taxontree/taxonomy/children/'.$node->tid.'/'.$node->vid.'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
     } else if(module_exists('cdm_dataportal')) {
-      $ws_url = cdm_compose_taxonomy_path($node->uuid);
+      $ws_url = cdm_compose_taxonomy_path($node->taxonUuid);
       $ahah_url = url('cdm_api/proxy/'.urlencode($ws_url).'/cdm_taxontree/'.($nextLevelIncluded ? 1 : 0).'/'.($show_filter_switch ? 1 : 0).'/'.$tree_node_callback);
     }
   }
@@ -1470,8 +1470,8 @@ function theme_cdm_taxontree_node_filter_switch(&$node, $filter_class){
 
   $out .= '&nbsp;'
   .l('<img src="'.drupal_get_path('module', 'cdm_taxontree').'/'.$filter_icon.'" alt="[f]" />',
-    'cdm_taxontree/filter/'.$filter_op.'/'.$node->uuid, array('class'=>'filter_'.$filter_op),
-    'destination='.path_to_taxon($node->uuid),
+    'cdm_taxontree/filter/'.$filter_op.'/'.$node->taxonUuid, array('class'=>'filter_'.$filter_op),
+    'destination='.path_to_taxon($node->taxonUuid),
   null, false, true);
    
   return $out;
@@ -1483,8 +1483,8 @@ function theme_cdm_taxontree_node_concept_switch(&$node){
   if(isset($node->alternativeConceptRefs[0])){
     $out = l(
       '<img src="'.drupal_get_path('module', 'cdm_taxontree').'/concept_switch.gif" alt="[-&gt;]" />',
-      'cdm_dataportal/taxon/alternative/'.$node->uuid,
-    array('rel'=>'cdm_dataportal/taxon/alternative/'.$node->uuid, 'class'=>'concept_switch'),
+      'cdm_dataportal/taxon/alternative/'.$node->taxonUuid,
+    array('rel'=>'cdm_dataportal/taxon/alternative/'.$node->taxonUuid, 'class'=>'concept_switch'),
     null, null, false, true);
   }
   return $out;
@@ -1625,14 +1625,14 @@ function cdm_taxontree_filters_add($taxonUuid){
   
   // children override parents rule: remove all parent filters,
   foreach($parents as $pnode){
-    unset($_SESSION['cdm']['filters'][$pnode->uuid]);
-    $parent_uuids[] = $pnode->uuid;
+    unset($_SESSION['cdm']['filters'][$pnode->taxonUuid]);
+    $parent_uuids[] = $pnode->taxonUuid;
   }
   
   // search for potential children of this $taxonUuid
   foreach($_SESSION['cdm']['filters'] as $uuid=>$node){
     if(in_array($taxonUuid, $node->parentUuids)){
-      unset($_SESSION['cdm']['filters'][$node->uuid]);
+      unset($_SESSION['cdm']['filters'][$node->taxonUuid]);
     }
   }
   // finally add this $taxonUuid as new filter
