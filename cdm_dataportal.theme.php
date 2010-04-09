@@ -767,9 +767,10 @@ function theme_cdm_descriptionElements_distribution($taxon){
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
-			$server = 'http://edit.csic.es/v1/areas.php';
+			//$server = 'http://edit.csic.es/v1/areas.php';
+			$geoserver_uri = "http://193.190.223.46:8080/geoserver";
 			$query_string .= '&img=false&legend=1&mlp=3';
-			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
+			$map_tdwg_Uri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
 
 			//#print($map_tdwg_Uri.'<br>');
 
@@ -784,7 +785,8 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			if(isset($responseObj->layers)){
 				$layerSlds = $responseObj->layers;
 				foreach($layerSlds as $layer){
-					$tdwg_sldUris[$layer->tdwg] = "http://edit.csic.es/v1/sld/".$layer->sld;
+					//$tdwg_sldUris[$layer->tdwg] = $server . "/sld/" . $layer->sld;
+					$tdwg_sldUris[$layer->tdwg] = "http://edit.africamuseum.be/synthesys/www/v1/sld/" . $layer->sld;
 					//#print($tdwg_sldUris[$layer->tdwg].'<br>');
 				}
 			}
@@ -828,28 +830,28 @@ function theme_cdm_descriptionElements_distribution($taxon){
  
  var tdwg_1 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 1", 
-    "http://edit.csic.es/geoserver/wms",
+    "'.$geoserver_uri.'/wms",
     {layers:"topp:tdwg_level_1",transparent:"true", format:"image/png"},
     layerOptions
   );
   
  var tdwg_2 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 2", 
-    "http://edit.csic.es/geoserver/wms",
+    "'.$geoserver_uri.'/wms",
     {layers:"topp:tdwg_level_2",transparent:"true", format:"image/png"},
     layerOptions
   );
   
  var tdwg_3 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 3", 
-    "http://edit.csic.es/geoserver/wms",
+    "'.$geoserver_uri.'/wms",
     {layers:"topp:tdwg_level_3", transparent:"true", format:"image/png"},
     layerOptions
   );
   
   var tdwg_4 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 4", 
-    "http://edit.csic.es/geoserver/wms",
+    "'.$geoserver_uri.'/wms",
     {layers:"topp:tdwg_level_4",transparent:"true", format:"image/png"},
     layerOptions
   );
@@ -903,7 +905,7 @@ $out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_
 			// simple image
 			$mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
 			$query_string .= '&img=true&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
-			$mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
+			$mapUri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
 			$out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
 		}
 
