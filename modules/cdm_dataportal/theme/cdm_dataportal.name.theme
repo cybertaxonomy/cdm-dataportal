@@ -74,6 +74,10 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 
 			$out .= '<li class="specimenTypeDesignation">';
 			$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
+			//$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache . ' footnote: '. theme_cdm_footnote($std->typeSpecimen->collection->code, $std->typeSpecimen->collection->titleCache);
+  
+			//var_dump($std->typeSpecimen->collection);
+			
 			$out .= theme('cdm_specimen', $std->typeSpecimen);
 			$out .= '</li>';
 		}

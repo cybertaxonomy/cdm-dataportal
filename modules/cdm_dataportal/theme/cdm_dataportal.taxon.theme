@@ -227,14 +227,24 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 	}
 	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
+	
+	//later homonym or trated as later homonym
+	$taxon_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMERELATIONS, $taxon->uuid);
+	switch ($taxon_name_relations[0]->type->representation_L10n){
+		case 'later homonym for':
+			$later_homonym = ' [non ' . $taxon_name_relations[0]->fromName->titleCache . ']';
+			break;
+		case 'treated as later homonym for':
+			$later_homonym = ' [non ' . $taxon_name_relations[0]->fromName->titleCache . ']';
+      break;
+	}
 
-	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix;
+	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $later_homonym;
+	
+  //var_dump($taxon_name_relations[0]->type->representation_L10n);  
 	
 	return uuid_anchor($taxon->uuid, $out);
-
 }
-
-
 
 
 /**

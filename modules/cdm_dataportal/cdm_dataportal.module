@@ -1230,7 +1230,11 @@ function cdm_dataportal_name_view($taxon_name_uuid){
   
   //generating the returned object
   $taxon_name_page->title = theme('cdm_name_page_title', $taxon_name);
-  $taxon_name_page->content = theme_cdm_list_of_taxa($taxon_pager->records, false);
+  if($taxon_pager->records){
+    $taxon_name_page->content = theme_cdm_list_of_taxa($taxon_pager->records, false);
+  }else{
+    $taxon_name_page->content = 'This name has no taxa';
+  }
 
   return $taxon_name_page; 
 }

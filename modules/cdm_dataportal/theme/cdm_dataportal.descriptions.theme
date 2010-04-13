@@ -170,14 +170,13 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
           , NULL, NULL, FALSE ,TRUE);
 */  
   if ($source->nameUsedInSource->uuid){ //do a link to name page
-    $name_used_in_source_text_to_show = l('(name used in source: '.$source->nameUsedInSource->titleCache . ')',
+    $name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
                                            path_to_name($source->nameUsedInSource->uuid), 
                                            array(),
                                            NULL, NULL, FALSE ,TRUE);
    
   }else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
-  	$name_used_in_source_text_to_show = "  (name used in source: " . 
-  	                                    $source->nameUsedInSource->originalNameString . ")";
+  	$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
   }
   /*
   if (strlen($name_used_in_source) > 0){
@@ -186,10 +185,10 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
   */
   
   if ($asListElement){
-    $res_text = '<li class="descriptionText">' . $description . $sourceRefs .
-                ' ' . $name_used_in_source_text_to_show . '</li>';
+    $res_text = '<li class="descriptionText">' 
+      . $name_used_in_source_link_to_show . ': ' . $description . $sourceRefs . '</li>';
   }else{
-    $res_text = $description . $sourceRefs . $name_used_in_source_text_to_show;
+    $res_text = $description . $sourceRefs . ' (name in source: '. $name_used_in_source_link_to_show . ')';
   }
   return $res_text;
 }
@@ -282,7 +281,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 
 
 function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
-  
+
     //ev. delegate to theme_cdm_ReferencedEntityBase
     $out = '';
     if($descriptionElementSource->citation){
@@ -341,7 +340,8 @@ function theme_cdm_descriptionElements_distribution($taxon){
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
-			$server = 'http://edit.csic.es/v1/areas.php';
+			//$server = 'http://edit.csic.es/v1/areas.php';
+			$server = 'http://edit.africamuseum.be/edit_wp5/v1/areas.php';
 			$query_string .= '&img=false&legend=1&mlp=3';
 			$map_tdwg_Uri = url($server. '?' .$map_data_parameters->String, $query_string);
 			$legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
@@ -365,13 +365,16 @@ function theme_cdm_descriptionElements_distribution($taxon){
 					//$splittedLegendSldUrl = explode("http://edit.csic.es/v1/sld/", $responseObj->legend);
 					//$tdwg_sldLegend = $splittedLegendSldUrl[1];
 					$sldLegend=$responseObj->legend;
-					$legend_url  ="http://edit.csic.es/geoserver/wms/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+					//$legend_url  ="http://edit.csic.es/geoserver/wms/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+					$legend_url  ="http://193.190.223.46:8080/geoserver/wms/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
 					$legend_url .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
 					$legend_url .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
 				}
 				$layerSlds = $responseObj->layers;
 				foreach($layerSlds as $layer){
-					$tdwg_sldUris[$layer->tdwg] = "http://edit.csic.es/v1/sld/".$layer->sld;
+					//$tdwg_sldUris[$layer->tdwg] = "http://edit.csic.es/v1/sld/".$layer->sld;
+					//$tdwg_sldUris[$layer->tdwg] = "http://edit.africamuseum.be/edit_wp5/v1/sld/wms".$layer->sld;
+					$tdwg_sldUris[$layer->tdwg] = $layer->sld;
 					//#print($tdwg_sldUris[$layer->tdwg].'<br>');
 				}
 			}
@@ -415,28 +418,28 @@ function theme_cdm_descriptionElements_distribution($taxon){
  
  var tdwg_1 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 1", 
-    "http://edit.csic.es/geoserver/wms",
+    "http://193.190.223.46:8080/geoserver/wms/",
     {layers:"topp:tdwg_level_1",transparent:"true", format:"image/png"},
     layerOptions
   );
   
  var tdwg_2 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 2", 
-    "http://edit.csic.es/geoserver/wms",
+    "http://193.190.223.46:8080/geoserver/wms/",
     {layers:"topp:tdwg_level_2",transparent:"true", format:"image/png"},
     layerOptions
   );
   
  var tdwg_3 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 3", 
-    "http://edit.csic.es/geoserver/wms",
+    "http://193.190.223.46:8080/geoserver/wms/",
     {layers:"topp:tdwg_level_3", transparent:"true", format:"image/png"},
     layerOptions
   );
   
   var tdwg_4 = new OpenLayers.Layer.WMS.Untiled( 
     "tdwg level 4", 
-    "http://edit.csic.es/geoserver/wms",
+    "http://193.190.223.46:8080/geoserver/wms/",
     {layers:"topp:tdwg_level_4",transparent:"true", format:"image/png"},
     layerOptions
   );
@@ -499,7 +502,8 @@ $out .= '</div>';
 			// simple image
 			$mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
 			$query_string .= '&img=true&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
-			$mapUri = url($server. '?' .$map_data_parameters->String, $query_string);
+			//$query_string .= '&img=true&legend=1&mlp=3' . $mapStaticCaption;
+			$mapUri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
 			$out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
 		}
 		/*
