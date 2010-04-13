@@ -772,7 +772,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			$query_string .= '&img=false&legend=1&mlp=3';
 			$map_tdwg_Uri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
 
-			print($map_tdwg_Uri.'<br>');
+			//#print($map_tdwg_Uri.'<br>');
 
 			//$map_tdwg_Uri ='http://edit.csic.es/v1/areas3_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
 			//$tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
@@ -787,7 +787,8 @@ function theme_cdm_descriptionElements_distribution($taxon){
 				foreach($layerSlds as $layer){
 					//$tdwg_sldUris[$layer->tdwg] = $server . "/sld/" . $layer->sld;
 					$tdwg_sldUris[$layer->tdwg] = $layer->sld;
-					print($tdwg_sldUris[$layer->tdwg].'<br>');
+					//$tdwg_sldUris[$layer->tdwg] = str_replace("//edit.africamuseum/", "//edit.africamuseum.be/", $layer->sld);
+					//#print($tdwg_sldUris[$layer->tdwg].'<br>');
 				}
 			}
 			// get the bbox from the response object
