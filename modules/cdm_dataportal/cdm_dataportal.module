@@ -329,7 +329,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
 	// listing of blocks, such as on the admin/block page
 	if ($op == "list") {
 		//$block[0]["info"] = t("CDM DataPortal DevLinks");
-		$block[1]["info"] = t("CDM DataPortal Credits");
+//		$block[1]["info"] = t("CDM DataPortal Credits");
 		$block[2]["info"] = t("CDM Search Taxa");
 		//$block[3]["info"] = t("CDM Filters");
 		$block[4]["info"] = t("CDM Dataportal Print");
@@ -337,10 +337,10 @@ function cdm_dataportal_block($op='list', $delta=0) {
 	}
 	else if ($op == 'view') {
 		switch($delta){
-			case 1:
-				$block['subject'] = t('Credits');
-				$block['content'] = theme('cdm_credits');
-				return $block;
+//			case 1:
+//				$block['subject'] = t('Credits');
+//				$block['content'] = theme('cdm_credits');
+//				return $block;
 			case 2:
 				$block['subject'] = t('Search Taxa');
 				$block['content'] = drupal_get_form('cdm_dataportal_search_taxon_form');
@@ -363,23 +363,22 @@ function cdm_dataportal_block($op='list', $delta=0) {
 function cdm_dataportal_settings_validate($form_id, $form_values){
 
 	if (!str_endsWith($form_values['cdm_webservice_url'], '/')) {
-		form_set_error('cdm_webservice_url', t("The URL to the CDM Web Service must end with a slash: '/'."));
+		//form_set_error('cdm_webservice_url', t("The URL to the CDM Web Service must end with a slash: '/'."));
+		$form_values['cdm_webservice_url'] .= '/';
 	}
 
-	$cdm_webservice_url_changed = variable_get('cdm_webservice_url', '') != $form_values['cdm_webservice_url'];
+//	$cdm_webservice_url_changed = variable_get('cdm_webservice_url', '') != $form_values['cdm_webservice_url'];
 
-	$cdm_secUuid_default_changed = variable_get('cdm_secUuid_default', '') != $form_values['cdm_secUuid_default'];
-
-	if ($cdm_webservice_url_changed || $cdm_secUuid_default_changed) {
-
-		_cdm_dataportal_set_currentSecUuid($form_values['cdm_secUuid_default']);
-		// reset all cdm related data stored in the session
-		// cdm_dataportal_session_clear($form_values['cdm_webservice_url']); // cdm_webservice_url is not further stored here
-		// clear the cdm webservice cache
-		cache_clear_all(NULL, 'cache_cdm_ws');
-		// better clear secref_cache since i can not be sure if the cache has not be used during this response
-		cdm_api_secref_cache_clear();
-	}
+//	if ($cdm_webservice_url_changed) {
+//
+//		//FIXME remove _cdm_dataportal_set_currentSecUuid($form_values['cdm_secUuid_default']);
+//		// reset all cdm related data stored in the session
+//		// cdm_dataportal_session_clear($form_values['cdm_webservice_url']); // cdm_webservice_url is not further stored here
+//		// clear the cdm webservice cache
+//		cache_clear_all(NULL, 'cache_cdm_ws');
+//		// better clear secref_cache since i can not be sure if the cache has not be used during this response
+//		cdm_api_secref_cache_clear();
+//	}
 	if($form_values['cdm_webservice_cache'] != variable_get('cdm_webservice_cache', 1)){
 		cache_clear_all(NULL, 'cache_cdm_ws');
 		// better clear secref_cache since i can not be sure if the cache has not be used during this response
@@ -1040,9 +1039,12 @@ function cdm_dataportal_view_cache_site(){
 	$taxon_page_url = url('cdm_dataportal/taxon/');
 
 	$out .= '<form id="cache_site">';
-	$out .= '<br /><h4>'
-	.t('Cache all taxon pages')
-	.'</h4>';
+	$out .= '<br /><h4>'.t('Cache all taxon pages').'</h4>';
+	$out .= 'Before  running the cache bot you have to empty the cache manually:<ul>' 
+            .'<li>Navigate to "Site Configuration -> General"</li>'
+            .'<li>Uncheck "Enable Caching" checkbox</li>'
+            .'<li>Check "Enable Caching" checkbox</li>'
+	        .'</ul>';
 	$out .= '<div>'.t('This caching process may take long time and could cause heavy load on your server').'</div>';
 	$out .= '<div id="progress"></div>';
 	$out .= '<input type="hidden" name="searchTaxaUrl" value="'.$search_url.'"/>';
@@ -1182,7 +1184,7 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all'){
 		drupal_set_title(t('Taxon does not exist'));
 		return false;
 	}
-	_cdm_dataportal_set_currentSecUuid($taxon->sec->uuid);
+	//FIXME remove _cdm_dataportal_set_currentSecUuid($taxon->sec->uuid);
 
 	$taxonpage->title = theme('cdm_taxon_page_title', $taxon);
 	$taxonpage->content = theme('cdm_taxon_page_general', $taxon, $chapter);
@@ -1456,16 +1458,16 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
  *
  * @return array
  */
-function _cdm_dataportal_currentSecRef_array(){
-
-	// do not look in session but in database
-	if( variable_get('cdm_currentSecRef', null) == null){
-		$secUuid = variable_get('cdm_secUuid_default', null);
-		_cdm_dataportal_set_currentSecUuid($secUuid);
-	}
-	return variable_get('cdm_currentSecRef', null);
-
-}
+//FIXME function _cdm_dataportal_currentSecRef_array(){
+//
+//	// do not look in session but in database
+//	if( variable_get('cdm_currentSecRef', null) == null){
+//		$secUuid = variable_get('cdm_secUuid_default', null);
+//		_cdm_dataportal_set_currentSecUuid($secUuid);
+//	}
+//	return variable_get('cdm_currentSecRef', null);
+//
+//}
 
 /**
  * Check if a taxon is accepted by the current taxonomic tree
@@ -1476,7 +1478,7 @@ function _cdm_dataportal_currentSecRef_array(){
 
 function _cdm_dataportal_acceptedByCurrentView($taxon){
 
-	//$current_secref = _cdm_dataportal_currentSecRef_array();
+	//FIXME $current_secref = _cdm_dataportal_currentSecRef_array();
 	$defaultTreeUuid = variable_get('cdm_taxonomictree_uuid', false);
 	if($taxon->class == "Taxon" && isset($taxon->taxonNodes)){
 		foreach($taxon->taxonNodes as $node){
