@@ -350,9 +350,6 @@ function theme_cdm_descriptionElements_distribution($taxon){
 
 			//#print($map_tdwg_Uri.'<br>');
 
-			//$map_tdwg_Uri ='http://edit.csic.es/v1/areas3_ol.php?l=earth&ad=tdwg4:c:UGAOO,SAROO,NZSOO,SUDOO,SPAAN,BGMBE,SICSI,TANOO,GEROO,SPASP,KENOO,SICMA,CLCBI,YUGMA,GRCOO,ROMOO,NZNOO,CLCMA,YUGSL,CLCLA,ALGOO,SWIOO,CLCSA,MDROO,HUNOO,ETHOO,BGMLU,COROO,BALOO,POROO,BALOO|e:CZESK,GRBOO|g:AUTAU|b:LBSLB,TUEOO|d:IREIR,AUTLI,POLOO,IRENI|f:NETOO,YUGCR|a:TUEOO,BGMBE,LBSLB||tdwg3:c:BGM,MOR,SPA,SIC,ITA,MOR,SPA,FRA|a:YUG,AUT&as=a:8dd3c7,,1|b:fdb462,,1|c:4daf4a,,1|d:ffff33,,1|e:bebada,,1|f:ff7f00,,1|g:377eb8,,1&&ms=610&bbox=-180,-90,180,90';
-			//$tdwg_sldFile = cdm_http_request($map_tdwg_Uri);
-
 			// get the respone from the map service
 			$responseObj = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);
 			$responseObj = $responseObj[0];
@@ -361,11 +358,9 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			// get the sld files from the response object
 			if(isset($responseObj->layers)){
 				if(isset($responseObj->legend)){
-					//$splittedLegendSldUrl = explode("http://edit.csic.es/v1/sld/", $responseObj->legend);
-					//$tdwg_sldLegend = $splittedLegendSldUrl[1];
+
 					$sldLegend=$responseObj->legend;
-					//$legend_url  ="http://edit.csic.es/geoserver/wms/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
-					$legend_url  ="http://193.190.223.46:8080/geoserver/wms/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+					$legend_url  = $geoserver_uri . "/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
 					$legend_url .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
 					$legend_url .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
 				}
