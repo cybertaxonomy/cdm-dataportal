@@ -243,7 +243,11 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	
   //var_dump($taxon_name_relations[0]->type->representation_L10n);  
 	
-	return uuid_anchor($taxon->uuid, $out);
+	$out = uuid_anchor($taxon->uuid, $out);
+	
+	RenderHints::popFromRenderStack();
+	
+	return $out; 
 }
 
 
