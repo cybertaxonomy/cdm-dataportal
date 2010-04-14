@@ -1537,7 +1537,8 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
 
 	$template = null;
 	// find best matching default RenderTemplate in theme
-	//echo "<br/><br/>".$renderPath;
+	//echo "<br/><br/>RENDER PATH:  ".$renderPath;
+	//var_dump('RENDER PATH: ' . $renderPath);
 	while(!is_array($template) && strlen($renderPath) > 0){
 	   $template = theme('get_nameRenderTemplate', $renderPath);
 	   $renderPath = substr($renderPath, 0, strrpos($renderPath, '.'));
@@ -1598,7 +1599,7 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
 	}else{
 		unset($template['referencePart']['#uri']);
 	}
-
+	
 	return $template;
 }
 

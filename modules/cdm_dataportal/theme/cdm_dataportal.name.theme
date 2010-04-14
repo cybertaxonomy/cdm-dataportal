@@ -238,9 +238,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 
 function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
 
-    $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
-	
-	
+  $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
 	$partDefinition = get_partDefinition($taxonName->class);
 
 	// apply defintions to template

@@ -40,6 +40,10 @@ class RenderHints
       return array_pop(self::$renderStack);
     }
     
+    public static function sizeof(){
+    	return sizeof(self::$renderStack);
+    }
+    
     /**
      * 
      * @return
