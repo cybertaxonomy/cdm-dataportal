@@ -336,7 +336,7 @@ function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $a
 			$image_uri = str_replace(' ','%20',$mediaRepresentationPart->uri); //take url and replace spaces
 			$imageDimensions = getimagesize_remote($image_uri);
 			if(!$imageDimensions){
-				return '<div>'.t('Image unavailable, uri:').$mediaRepresentationPart->uri.'</div>';
+				return '<div>'.t('Image unavailable, uri: ').$mediaRepresentationPart->uri.'</div>';
 			}
 			$w = $imageDimensions[0];
 			$h = $imageDimensions[1];

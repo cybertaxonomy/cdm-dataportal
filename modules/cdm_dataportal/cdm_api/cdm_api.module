@@ -684,7 +684,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
     $uri = cdm_compose_url($uri, $pathParameters, $query);
   }
 
-  $is_cdm_ws_uri = str_beginsWith($uri, variable_get('cdm_webservice_url', '#EMPTY#'));
+  $is_cdm_ws_uri = _is_cdm_ws_uri($uri);
   $use_cacheL2 = variable_get('cdm_webservice_cache', 1);
 
   $cacheL1_obj = $cacheL1[$uri];
@@ -778,8 +778,12 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
   $message .= '[fetched in: '.sprintf('%3.3f', $time_get).'s('.sprintf('%3.3f', $cummulated_time_get).'s); ';
   $message .= 'parsed in '.sprintf('%3.3f', $time_parse).' s('.sprintf('%3.3f', $cummulated_time_parse).'s); ';
   $message .= 'size:'.sprintf('%3.1f', ($datasize / 1024)).' kb of '.$success_msg.' data: ';
-  $message .= '<a href="'.url($path.'.xml', $query).'" target="data" class="'.$success_msg.'">xml</a>,';
-  $message .= '<a href="'.url($path.'.json', $query).'" target="data" class="'.$success_msg.'">json</a>';
+  if(_is_cdm_ws_uri($path)){
+	  $message .= '<a href="'.url($path.'.xml', $query).'" target="data" class="'.$success_msg.'">xml</a>,';
+	  $message .= '<a href="'.url($path.'.json', $query).'" target="data" class="'.$success_msg.'">json</a>';
+  } else {
+  	  $message .= '<a href="'.url($path, $query).'" target="data" class="'.$success_msg.'">open</a>';
+  }
   $message .= '] ';
   drupal_set_message($message, 'debug');
 
@@ -819,20 +823,20 @@ function cdm_load_obj($datastr){
  */
 function cdm_http_request($uri, $method="GET", $parameters = array(), $header = false){
   global $locale;  // drupal variable containing the current locale i.e. language
-  static $header;
 
   if($method != "GET" && $method != "POST"){
     $method  = "GET";
   }
 
-  if(!$header){
-    $header = array();
+  $header = array();
+  if(!$header && _is_cdm_ws_uri($uri)){
     $header['Accept'] = (variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
     $header['Accept-Language'] = $locale;
     $header['Accept-Charset'] = 'UTF-8';
   }
 
-  if(function_exists('curl_init')){
+  if(false && function_exists('curl_init')){ 
+  	// !!!!! CURL Disabled due to problems with forllowing redirects (CURLOPT_FOLLOWLOCATION=1) and safe_mode = on 
     // use the CURL lib if installed it is supposed to be 20x faster
     return _http_request_using_curl($uri, $header, $method, $parameters);
   } else {
@@ -859,6 +863,9 @@ function _http_request_using_curl($uri, $headers = array(), $method = "GET", $pa
   $ch = curl_init();
 
   curl_setopt ($ch, CURLOPT_URL, $uri);
+  curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+  curl_setopt ($ch, CURLOPT_MAXREDIRS, 5);
+  
   // set proxy settings
   if(variable_get('cdm_webservice_proxy_url', false)){
     curl_setopt($ch, CURLOPT_PROXY, variable_get('cdm_webservice_proxy_url', ''));
@@ -867,11 +874,15 @@ function _http_request_using_curl($uri, $headers = array(), $method = "GET", $pa
       curl_setopt ($ch, CURLOPT_PROXYUSERPWD, variable_get('cdm_webservice_proxy_usr', '').':'.variable_get('cdm_webservice_proxy_pwd', ''));
     }
   }
+  
   // modify headers array to be used by curl
   foreach($headers as $header_key=>$header_val){
     $curl_headers[] = $header_key.': '.$header_val;
   }
-  curl_setopt ($ch, CURLOPT_HTTPHEADER, $curl_headers);
+  if(isset($curl_headers)){
+    curl_setopt ($ch, CURLOPT_HTTPHEADER, $curl_headers);
+  }
+  
   // set method if not default
   if($method != "GET"){
     if($method == "POST"){
@@ -887,7 +898,8 @@ function _http_request_using_curl($uri, $headers = array(), $method = "GET", $pa
   }
 
   ob_start();
-  curl_exec ($ch);
+  curl_exec($ch);
+  $info = curl_getinfo($ch);
   if(curl_errno($ch)){
     watchdog('CDM_API', '_http_request_curl() - '.curl_error($ch).'; REQUEST-METHOD:'.$method.' URL: '.substr($uri.' ', 0, 150), WATCHDOG_ERROR);
     if(variable_get('cdm_webservice_debug', 1)  && user_access('administer') ){
@@ -949,6 +961,10 @@ function _cdm_api_secref_cache_add($secUuidsStr){
    $secref_cache = array_merge($secref_cache, $assocRefSTOs);
    }*/
   $secref_cache[$ref->uuid] = $ref;
+}
+
+function _is_cdm_ws_uri($uri){
+	return str_beginsWith($uri, variable_get('cdm_webservice_url', '#EMPTY#'));
 }
 
 function queryString($elements) {
