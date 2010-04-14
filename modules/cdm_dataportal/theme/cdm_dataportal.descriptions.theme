@@ -253,11 +253,12 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 
 	foreach($descriptionElements as $descriptionElement){
 		//$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, $descriptionElement->area->representation_L10n);
-	  $footnoteKeyList = '';
-		foreach($descriptionElement->sources as $source){
-  		$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, $source, 'cdm_DescriptionElementSource');
-  		$footnoteKeyList .= theme('cdm_footnode_key', $footnoteKey) . ' ';
-		}
+	$footnoteKeyList = '';
+	foreach($descriptionElement->sources as $source){
+		break;
+		$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, $source, 'cdm_DescriptionElementSource');
+		$footnoteKeyList .= theme('cdm_footnode_key', $footnoteKey) . ' ';
+	}
     $out .= $descriptionElement->area->representation_L10n . $footnoteKeyList . $separator;
 	}
 	$out = substr($out, 0, strlen($out)-strlen($separator) );
