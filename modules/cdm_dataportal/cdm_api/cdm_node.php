@@ -21,11 +21,8 @@ function cdm_load_node($nodetype, $uuid, $title){
     $messages = drupal_set_message();
 
     $result = drupal_execute($node->type.'_node_form', $values, $node);
-    
     // restore the messages
-    if(isset($messages)){
-      $_SESSION['messages'] = $messages;
-    }
+    $_SESSION['messages'] = $messages;
     
     if(!is_array($result)){
       // result should contain the path the newly created node; e.g.: node/32

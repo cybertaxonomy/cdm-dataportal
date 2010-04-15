@@ -1,0 +1,28 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install().
+ */
+function cdm_dataportal_install(){
+   update_sql(_get_sql_fix_module_weight());
+}
+
+
+/**
+ * Implementation of hook_api_update_N().
+ * 
+ * Update 1 for version 5.x-1.0
+ */
+function cdm_dataportal_update_5101() {
+  $items = array();
+  $items[] = update_sql(_get_sql_fix_module_weight());
+  return $items;
+}
+
+// ------------------------- SQL  Scripts ------------------------ // 
+
+
+function _get_sql_fix_module_weight() {
+  return  "UPDATE {system} SET weight = 20 WHERE name = 'cdm_dataportal'";
+}

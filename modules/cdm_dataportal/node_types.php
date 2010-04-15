@@ -5,19 +5,22 @@ define(NODETYPE_MEDIA, 'media');
 define(NODETYPE_REFERENCE, 'reference');
 define(NODETYPE_NAME, 'name');
 
+function cdm_dataportal_get_nodetypes(){
+	static $nodetypes;
+	  if(!$nodetypes){
+	    $nodetypes = array('cdm_'.NODETYPE_REFERENCE => NODETYPE_REFERENCE, 'cdm_'.NODETYPE_TAXON => NODETYPE_TAXON, 'cdm_'.NODETYPE_MEDIA => NODETYPE_MEDIA, 'cdm_'.NODETYPE_NAME => NODETYPE_NAME); 
+	  }
+	  return $nodetypes; 
+}
+
 /**
  * Implementation of hook_node_info().
  */
 function cdm_dataportal_node_info() {
-  
-  static $nodetypes;
-  if(!$nodetype){
-    $nodetypes = array(NODETYPE_REFERENCE, NODETYPE_TAXON, NODETYPE_MEDIA, NODETYPE_NAME); 
-  }
-  
+	
   $nodeinfo = array();
-  foreach( $nodetypes as $type){
-    $nodeinfo['cdm_'.$type] = array(
+  foreach( cdm_dataportal_get_nodetypes() as $nodeType=>$type){
+    $nodeinfo[$nodeType] = array(
       'name' => t(ucfirst($type)),
       'has_title' => TRUE,
       'module' => 'cdm_dataportal',
@@ -27,6 +30,7 @@ function cdm_dataportal_node_info() {
   
   return $nodeinfo;
 }
+
 
 /**
  *  Implementation of hook_form()

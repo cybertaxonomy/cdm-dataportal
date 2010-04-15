@@ -17,6 +17,7 @@ modules/cdm_dataportal/cdm_api/webservice_uris.php -text
 modules/cdm_dataportal/cdm_api/xml2json.php -text
 modules/cdm_dataportal/cdm_dataportal.css -text
 modules/cdm_dataportal/cdm_dataportal.info -text
+modules/cdm_dataportal/cdm_dataportal.install -text
 modules/cdm_dataportal/cdm_dataportal.module -text
 modules/cdm_dataportal/cdm_dataportal_print.css -text
 modules/cdm_dataportal/cdm_dataportal_screen.css -text

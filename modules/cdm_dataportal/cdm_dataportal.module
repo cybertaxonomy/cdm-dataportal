@@ -704,6 +704,27 @@ function cdm_dataportal_settings(){
 	return system_settings_form($form);
 }
 
+function cdm_dataportal_form_alter($form_id, &$form) {
+    
+static $comment_node_disabled =  0;
+static $comment_node_read_only =  1;
+static $comment_node_read_write =  2;
+   
+    
+  if ($form_id == 'node_type_form' 
+    && isset($form['identity']['type']) 
+    && array_key_exists($form['#node_type']->type, cdm_dataportal_get_nodetypes()) 
+    ) {
+    $form['workflow']['comment'] = array(
+      '#type' => 'radios',
+      '#title' => t('Default comment setting'),
+      '#default_value' => variable_get('comment_'. $form['#node_type']->type, $comment_node_disabled),
+      '#options' => array(t('Disabled'), t('Read only'), t('Read/Write')),
+      '#description' => t('Users with the <em>administer comments</em> permission will be able to override this setting.'),
+    );
+  }
+}
+
 /**
  * LAYOUT settings
  * @return unknown_type
