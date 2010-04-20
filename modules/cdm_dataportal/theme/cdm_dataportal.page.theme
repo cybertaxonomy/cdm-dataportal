@@ -38,7 +38,7 @@ function theme_cdm_name_page_title($taxon_name){
   if(isset($taxon_name->nomenclaturalReference)){
     $referenceUri = url(path_to_reference($taxon_name->nomenclaturalReference->uuid));
   }
-  return '<span class="'.$taxon_name->class.'">'.theme('cdm_taxonName', $taxon_name, null, $referenceUri, $renderPath).'###</span>';
+  return '<span class="'.$taxon_name->class.'">'.theme('cdm_taxonName', $taxon_name, null, $referenceUri, $renderPath).'</span>';
 }
 
 /**
@@ -537,7 +537,7 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 	$imageMaxExtend = variable_get('image-page-maxextend', 400);
 
 	if(!$title){
-		$title = 'Media### '.$media->uuid.'';
+		$title = 'Media '.$media->uuid.'';
 	}
 
 	drupal_set_title($title);

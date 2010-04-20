@@ -1247,7 +1247,8 @@ function cdm_dataportal_name_view($taxon_name_uuid){
   $request_params['doSynonyms'] = 1;
   $request_params['doTaxaByCommonNames'] = 0;
   $request_params['matchMode'] = "EXACT";
-  $taxon_pager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($request_params));
+  //$taxon_pager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($request_params));
+  $taxon_pager = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
   
   //_cdm_dataportal_set_currentSecUuid($taxon->sec->uuid);
   
