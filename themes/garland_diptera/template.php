@@ -99,12 +99,12 @@ function phptemplate_menu_local_tasks() {
  */
 function compare_citations($x, $y)
 {
-	//var_dump($x->sources[0]->citation->authorTeam->titleCache);
-	//var_dump($y->sources[0]->citation->authorTeam->titleCache);
+	//var_dump($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname);
+	//var_dump($y->sources[0]->citation->authorTeam->teamMembers[0]->lastname);
 
 	 //same author, and different year
-	if($x->sources[0]->citation->authorTeam->titleCache ==
-	   $y->sources[0]->citation->authorTeam->titleCache){
+	if($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname ==
+	   $y->sources[0]->citation->authorTeam->teamMembers[0]->lastname){
 		$x_year = substr(
 		        $x->sources[0]->citation->datePublished->start,
 		        0,
@@ -129,14 +129,16 @@ function compare_citations($x, $y)
 		$res = 1;
 	}
 	//different author and the first one is alphabetically smaller
-	else if($x->sources[0]->citation->authorTeam->titleCache <
-	$y->sources[0]->citation->authorTeam->titleCache){
+	else if($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname <
+	$y->sources[0]->citation->authorTeam->teamMembers[0]->lastname){
 		$res = -1;
 	}
 	//different author and the second one is alphabetically smaller
 	else{
 		$res = 1;
 	}
+	//var_dump($res);
+	//var_dump(' ============ ');
 	return $res;
 }
 
@@ -269,4 +271,3 @@ function garland_diptera_get_nameRenderTemplate($renderPath){
   }
   return $template;
 }
-
