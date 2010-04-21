@@ -310,7 +310,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
 			if(isset($renderTemplate['referencePart']['microreference'])){
 				$microreference = $taxonName->nomenclaturalMicroReference;
 			}
-			$citation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($taxonName->nomenclaturalReference->uuid), "microReference=$microreference");
+			$citation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($taxonName->nomenclaturalReference->uuid), "microReference=".urlencode($microreference));
 			$citation = $citation->String;
 			// find preceding element of the refrence
 			$precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
