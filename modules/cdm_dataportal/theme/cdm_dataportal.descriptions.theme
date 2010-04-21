@@ -286,11 +286,13 @@ function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink =
     //ev. delegate to theme_cdm_ReferencedEntityBase
     $out = '';
     if($descriptionElementSource->citation){
+    	//var_dump($descriptionElementSource->citation->authorTeam->teamMembers[0]->lastname);
       $datePublished = $descriptionElementSource->citation->datePublished;
       if (strlen($datePublished->start) >0){
         $year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
       }
-      $author_team_titlecache = $descriptionElementSource->citation->authorTeam->titleCache;
+      //$author_team_titlecache = $descriptionElementSource->citation->authorTeam->titleCache;
+      $author_team_titlecache = $descriptionElementSource->citation->authorTeam->teamMembers[0]->lastname;
       if (strlen($year)>0){
         $reference = $author_team_titlecache.' '. $year;
       }else {
