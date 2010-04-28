@@ -153,7 +153,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
   $res_text;
   $res_author;
   $res_date;
-    
+   
   foreach($element->sources as $source){
     $referenceCitation = theme('cdm_DescriptionElementSource', $source);
     if($description && strlen($description) > 0 && $referenceCitation ){
@@ -183,10 +183,11 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
     $name_used_in_source_text_to_show = "  (name used in source: " . $name_used_in_source . ")";
   }
   */
-  
+ 
   if ($asListElement){
     $res_text = '<li class="descriptionText">' 
-      . $name_used_in_source_link_to_show . ': ' . $description . $sourceRefs . '</li>';
+      . ($name_used_in_source_link_to_show ? $name_used_in_source_link_to_show . ': ' : '') 
+      . $description . $sourceRefs . '</li>';
   }else{
     $res_text = $description . $sourceRefs . ' (name in source: '. $name_used_in_source_link_to_show . ')';
   }
@@ -205,7 +206,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 	$sortOutArray = false;
 	$enclosingHtml = 'ul';
 	$distributionElements = array();
-
+	
 	foreach($descriptionElements as $descriptionElement){
 		
 		if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
@@ -286,13 +287,12 @@ function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink =
     //ev. delegate to theme_cdm_ReferencedEntityBase
     $out = '';
     if($descriptionElementSource->citation){
-    	//var_dump($descriptionElementSource->citation->authorTeam->teamMembers[0]->lastname);
       $datePublished = $descriptionElementSource->citation->datePublished;
       if (strlen($datePublished->start) >0){
         $year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
       }
-      //$author_team_titlecache = $descriptionElementSource->citation->authorTeam->titleCache;
-      $author_team_titlecache = $descriptionElementSource->citation->authorTeam->teamMembers[0]->lastname;
+      $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $descriptionElementSource->citation->uuid);
+      $author_team_titlecache = $author_team->titleCache;
       if (strlen($year)>0){
         $reference = $author_team_titlecache.' '. $year;
       }else {
