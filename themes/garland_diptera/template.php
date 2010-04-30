@@ -271,3 +271,35 @@ function garland_diptera_get_nameRenderTemplate($renderPath){
   }
   return $template;
 }
+
+function garland_diptera_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
+
+    //ev. delegate to theme_cdm_ReferencedEntityBase
+    $out = '';
+    if($descriptionElementSource->citation){
+      $datePublished = $descriptionElementSource->citation->datePublished;
+      if (strlen($datePublished->start) >0){
+        $year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
+      }
+      $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $descriptionElementSource->citation->uuid);
+      $author_team_titlecache = $author_team->titleCache;
+      if (strlen($year)>0){
+        $reference = $author_team_titlecache.' '. $year;
+      }else {
+        $reference = $author_team_titlecache ;
+      }
+      
+      if($doLink){
+        $out = l('<span class="reference">'.$reference.'</span>'
+          , path_to_reference($descriptionElementSource->citation->uuid)
+          , array("class"=>"reference")
+          , NULL, NULL, FALSE ,TRUE);
+      } else {
+       $out = $reference;
+      }
+      if($descriptionElementSource->citationMicroReference){
+        $out .= ': '. $descriptionElementSource->citationMicroReference;
+      }
+    }
+    return $out;
+}
