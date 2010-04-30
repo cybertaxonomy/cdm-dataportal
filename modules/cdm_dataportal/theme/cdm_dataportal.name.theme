@@ -59,7 +59,9 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			//show citation only for Lectotype or Neotype
 			$showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_NEOTYPE || $std->typeStatus->uuid == UUID_LECTOTYPE);
 			if($showCitation && !empty($std->citation)){
-				$shortCitation = $std->citation->authorTeam->titleCache;
+				//$shortCitation = $std->citation->authorTeam->titleCache;
+			  $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std->citation->uuid);
+			  $shortCitation = $author_team->titleCache;
 				$shortCitation .= (strlen($shortCitation) > 0 ? ' ' : '' ). partialToYear($std->citation->datePublished->start);
 				if(strlen($shortCitation) == 0){
 					$shortCitation = theme('cdm_reference',$std->citation );
@@ -76,8 +78,6 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
 			//$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache . ' footnote: '. theme_cdm_footnote($std->typeSpecimen->collection->code, $std->typeSpecimen->collection->titleCache);
   
-			//var_dump($std->typeSpecimen->collection);
-			
 			$out .= theme('cdm_specimen', $std->typeSpecimen);
 			$out .= '</li>';
 		}

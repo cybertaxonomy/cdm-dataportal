@@ -33,11 +33,14 @@ function theme_cdm_reference_pager($referencePager, $path, $parameters = array()
  */
 function theme_cdm_reference($reference, $linkToReference = FALSE, $style = NULL ){
 
+	$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
 	if($style == "ZoologicalName"){
 		$year = partialToYear($reference->datePublished->start);
-		$citation = $reference->authorTeam->titleCache.($year ? ', '.$year : '');
+		//$citation = $reference->authorTeam->titleCache.($year ? ', '.$year : '');
+		$citation = $author_team->titleCache . ($year ? ', '.$year : '');
 	} else {
-		$citation = $reference->titleCache;
+		//$citation = $reference->titleCache;
+		$citation = $author_team->titleCache;
 	}
 	if($linkToReference){
 		return l('<span class="reference">'.$citation.'</span>', "/cdm_dataportal/reference/".$reference->uuid, array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);

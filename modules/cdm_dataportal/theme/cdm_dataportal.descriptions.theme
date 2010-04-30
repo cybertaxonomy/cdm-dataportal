@@ -185,9 +185,12 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
   */
  
   if ($asListElement){
-    $res_text = '<li class="descriptionText">' 
-      . ($name_used_in_source_link_to_show ? $name_used_in_source_link_to_show . ': ' : '') 
-      . $description . $sourceRefs . '</li>';
+    $res_text = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+    //adding ":" if necesary 
+    if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+    	$res_text .= ': ';
+    }
+     $res_text .= $description . $sourceRefs . '</li>';
   }else{
     $res_text = $description . $sourceRefs . ' (name in source: '. $name_used_in_source_link_to_show . ')';
   }

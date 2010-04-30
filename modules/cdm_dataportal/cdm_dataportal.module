@@ -1250,17 +1250,22 @@ function cdm_dataportal_name_view($taxon_name_uuid){
   //$taxon_pager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($request_params));
   $taxon_pager = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
   
+  if (sizeof($taxon_pager->records) == 1){
+  	drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[0]->uuid);
+  }else{
+    $taxon_name_page->title = theme('cdm_name_page_title', $taxon_name);
+    if($taxon_pager->records){
+      $taxon_name_page->content = theme_cdm_list_of_taxa($taxon_pager->records, false);
+    }else{
+      $taxon_name_page->content = 'This name has no taxa';
+    }
+    return $taxon_name_page; 
+  }
+  
   //_cdm_dataportal_set_currentSecUuid($taxon->sec->uuid);
   
   //generating the returned object
-  $taxon_name_page->title = theme('cdm_name_page_title', $taxon_name);
-  if($taxon_pager->records){
-    $taxon_name_page->content = theme_cdm_list_of_taxa($taxon_pager->records, false);
-  }else{
-    $taxon_name_page->content = 'This name has no taxa';
-  }
 
-  return $taxon_name_page; 
 }
 
 function cdm_dataportal_view_search_advanced(){
