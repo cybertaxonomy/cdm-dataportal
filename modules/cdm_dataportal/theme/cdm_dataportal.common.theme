@@ -10,6 +10,8 @@
 * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
 */
 
+define(FOOTNOTE_ANNOTATIONS, 'annotations');
+
 /**
  * TODO if getting fragment from request is possible remove $_REQUEST['highlite'] HACK
  * NOT WORKING since fragments are not available to the server
@@ -81,26 +83,56 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
 /**
  * Almost any cdmObject may be annotated. Therefore we provide a generic way to display
  * as well as create or update annotations.
+ * The following cdm classes are annotatable:
+ * 
+ *  DescriptionElementBase
+ *	EventBase
+ *	HomotypicalGroup
+ *	IdentifiableEntity
+ *	  DescriptionBase
+ *	  IdentifiableMediaEntity
+ *	  Media
+ *	  Sequence
+ *	  TaxonBase
+ *	  TaxonNameBase
+ *	  TaxonomicTree
+ *	  TermBase
+ *	LanguageStringBase
+ *	ReferencedEntityBase
+ *	  NomenclaturalStatus
+ *	  OriginalSourceBase
+ *	  RelationshipBase
+ *	  TypeDesignationBase
+ *	TaxonNode
+ *  WorkingSet
  *
  * TODO it should be configurable which objects can be annotated as this might differ in dataportals
  *
  */
 function theme_cdm_annotation($cdmBase){
 	
-	$annotationUrl = cdm_compose_annotations_url($cdmBase);
-
-	if($annotationUrl){
-		drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_annotations.js');
-		drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.form.js');
-		$annotationProxyUrl = url('cdm_api/proxy/'. urlencode($annotationUrl).'/cdm_annotation_content');
-	
-		$out = ' <span class="annotation">';
-		$out .= '<span class="annotation_toggle" rel="'.$annotationProxyUrl.'">+</span>';
-			
-	
-		$out .= '<div class="annotation_box"></div>';
-		$out .= '</span>';
-	}
+//    $annotationUrl = cdm_compose_annotations_url($cdmBase);
+//
+//	if($annotationUrl){
+//		drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_annotations.js');
+//		drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.form.js');
+//		$annotationProxyUrl = url('cdm_api/proxy/'. urlencode($annotationUrl).'/cdm_annotation_content');
+//	
+//		$out = ' <span class="annotation">';
+//		$out .= '<span class="annotation_toggle" rel="'.$annotationProxyUrl.'">+</span>';
+//			
+//	
+//		$out .= '<div class="annotation_box"></div>';
+//		$out .= '</span>';
+//	}
+    $annotationUrl = cdm_compose_annotations_url($cdmBase);
+    if($annotationUrl){
+        $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
+        foreach($annotationPager->records as $annotation){
+	        $footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $annotation->text);
+	        $out .= (isset($out)? ',' : '') . theme('cdm_footnote_key', $footnoteKey);
+        }
+    }
 
 	return $out;
 
@@ -152,8 +184,8 @@ function theme_cdm_list_of_annotations($annotationElements){
 
 /* ============================ footnotes ============================= */
 
-function theme_cdm_footnote_key($footnoteKey){
-  $out = '<a href="#footnote-'.$footnoteKey.'" class="footnote-key">'.$footnoteKey.'</a>';
+function theme_cdm_footnote_key($footnoteKey, $highlightable=true){
+  $out = '<a href="#footnote-'.$footnoteKey.'" class="footnote-key footnote-key-'.$footnoteKey.'">'.$footnoteKey.'</a>';
   return $out;
 }
 
@@ -161,6 +193,12 @@ function theme_cdm_footnote($footnoteKey, $footnoteText){
   _add_js_footnotes();
   $out = '<span class="footnote footnote-'.$footnoteKey.'"><a name="footnote-'.$footnoteKey.'"></a><span class="footnote-anchor">'.$footnoteKey.'.</span>&nbsp;'.$footnoteText.'</span>';
   return $out;
+}
+
+function theme_cdm_footnotes($footnoteListKey, $enclosingTag = 'span'){
+	
+	$out = '<'.$enclosingTag.' class="footnotes footnotes-'.$footnoteListKey.'">' . FootnoteManager::renderFootnoteList($footnoteListKey) . '</'.$enclosingTag.'>';
+	return $out;
 }
 
 

@@ -329,7 +329,12 @@ function theme_cdm_descriptionElements_distribution($taxon){
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
-			$query_string .= '&img=false&legend=1&mlp=3';
+			if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
+			  $query_string .= '&img=false&legend=1&mlp=3';
+			}
+			$map_data_parameters->String = str_replace(': ', "%20", $map_data_parameters->String);
+			$map_data_parameters->String = str_replace('(', "", $map_data_parameters->String);
+			$map_data_parameters->String = str_replace(')', "", $map_data_parameters->String);
 			$map_tdwg_Uri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
 			$legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
 			$legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
@@ -337,7 +342,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			$legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
 			$legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
 
-			//#print($map_tdwg_Uri.'<br>');
+			print($map_tdwg_Uri.'<br>');
 
 			// get the respone from the map service
 			$responseObj = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);

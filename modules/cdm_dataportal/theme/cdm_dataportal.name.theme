@@ -123,8 +123,16 @@ function compare_specimenTypeDesignationStatus($a, $b){
 
 }
 
-function theme_cdm_nameRelations($nameRelationships, $skipTypes = false){
+function theme_cdm_nameRelationships($nameRelationships, $skipTypes = false){
 
+    if(!$nameRelationships){
+        return;
+    }
+    
+	RenderHints::pushToRenderStack('nameRelationships');
+    $footnoteListKey = 'nameRelationships';
+    RenderHints::setFootnoteListKey($footnoteListKey);
+    
 	// group by relationship type
 	$relationshipGroups = array();
 	foreach($nameRelationships as $nameRelationship){
@@ -154,6 +162,9 @@ function theme_cdm_nameRelations($nameRelationships, $skipTypes = false){
 		$block->content .= implode('; ', $relatedNames);
 		$out .= theme('block', $block);
 	}
+	$out .= theme('cdm_footnotes', $footnoteListKey, 'div');
+	
+	RenderHints::popFromRenderStack();
 	return $out;
 }
 
@@ -169,14 +180,16 @@ function theme_cdm_homotypicSynonymLine($taxon){
 function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 	
 	RenderHints::pushToRenderStack('heterotypicSynonymyGroup');
+	
 	$out = '';
 	$out = '<ul class="heterotypicSynonymyGroup">';
-
+    $footnoteListKey = ( isset($homotypicalGroup[0]) ? $homotypicalGroup[0]->uuid : 'NULL');
+	RenderHints::setFootnoteListKey($footnoteListKey);
+    
 	$is_first_entry = true;
 	$typeDesignations = null;
 	foreach($homotypicalGroup as $synonym){
 		if($is_first_entry){
-			RenderHints::setfootnoteListKey($synonym->uuid);
 			$is_first_entry = false;
 			//$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
 			$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $synonym->uuid);
@@ -190,9 +203,9 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
 
+	$out .= theme('cdm_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
     
-	$out .= FootnoteManager::renderFootnoteList($firstSynonymUuid);
     
     RenderHints::popFromRenderStack();
 	return $out;
@@ -204,8 +217,8 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 	
 	RenderHints::pushToRenderStack('homotypicSynonymyGroup');
 	
-	$firstSynonymUuid = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
-	RenderHints::setfootnoteListKey($firstSynonymUuid);
+	$footnoteListKey = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
+	RenderHints::setFootnoteListKey($footnoteListKey);
 	
 	if(! is_array($synonymList) || count($synonymList) == 0){
 		return;
@@ -228,8 +241,8 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
 
+	$out .= theme('cdm_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
-	$out .= FootnoteManager::renderFootnoteList($firstSynonymUuid);
 	
 	RenderHints::popFromRenderStack();
 	return $out;
@@ -397,8 +410,12 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
 			$out .= $separator.$partHtml;
 		}
 	}
-
-	return $out.'</span>';
+    $out .= '</span>';
+    
+	// add annotations
+	$out .= theme('cdm_annotation', $taxonName);
+	
+	return $out;
 }
 
 /**

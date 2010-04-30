@@ -44,6 +44,10 @@ define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
 define('CDM_DATAPORTAL_MEDIA_GALLERY_NAME', "media_gallery");
 define('CDM_DATAPORTAL_SEARCH_GALLERY_NAME', "search_gallery");
+define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS', 'cdm_dataportal_display_taxon_relationships');
+define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name_relations');
+define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
+define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
 
 
 
@@ -751,12 +755,19 @@ function cdm_dataportal_settings_layout(){
                         the full nomenclatural reference.')
 	);
 
-	$form['cdm_dataportal_display_name_relations'] = array(
+	$form[CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show name relations of accepted taxa on taxon page'),
-    '#default_value' => variable_get('cdm_dataportal_display_name_relations', 1),
+    '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT),
     '#description' => t('')
 	);
+	
+	$form[CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show taxon relations of accepted taxa on taxon page'),
+    '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
+    '#description' => t('')
+    );
 
 	$form['cdm_dataportal_display_is_accepted_for'] = array(
     '#type' => 'checkbox',

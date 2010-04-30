@@ -37,7 +37,7 @@ class FootnoteManager
      * 
      * @param $footnoteListKey
      * @param $separator
-     * @return unknown_type
+     * @return the rendered footnotelist
      */
     public static function renderFootnoteList($footnoteListKey, $separator = ', '){
       $out = '';

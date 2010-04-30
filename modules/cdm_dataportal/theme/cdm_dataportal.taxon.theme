@@ -64,16 +64,20 @@ function theme_cdm_search_results($pager, $path, $parameters){
  * @param unknown_type $taxonRelationships
  * @return unknown
  */
-function theme_cdm_taxonRelations($taxonRelationships){
+function theme_cdm_taxonRelationships($taxonRelationships){
 
 	if(!$taxonRelationships){
 		return;
 	}
+	
+	RenderHints::pushToRenderStack('taxonRelationships');
+    $footnoteListKey = 'taxonRelationships';
+    RenderHints::setFootnoteListKey($footnoteListKey);
 
-	_add_js_cluetip();
-
-	// aggregate misapplied names having the same fullname:
 	$misapplied = array();
+	$joinedAuthorTeams = array();
+	
+	// aggregate misapplied names having the same fullname:
 	foreach($taxonRelationships as $taxonRelation){
 		if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
 
@@ -87,26 +91,41 @@ function theme_cdm_taxonRelations($taxonRelationships){
 
 			// collect all authors for this fullname
 			if(isset($authorteam)){
-				$misapplied[$name]['authorteam'][$authorteam] = '&nbsp;<span class="sensu cluetip no-print" title="|sensu '.htmlspecialchars(theme('cdm_reference',$taxonRelation->fromTaxon->sec )).'|">sensu '
-				.$authorteam.'</span>'
-				.'<span class="reference only-print">sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec ).'</span>';
+                  $misapplied[$name]['authorteam'][$authorteam] = '';
+                  $joinedAuthorTeams[$authorteam] = 'sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec);
 			}
 
 		}
 	}
+	
+	// sort the joinedAuthorTeams and create footnotes and footnotekeys
+	ksort($joinedAuthorTeams);
+	foreach($joinedAuthorTeams as $authorteam=>$sensuCitation){
+		$footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensuCitation);
+		$joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu '.$authorteam. theme('cdm_footnote_key', $footnoteKey).'</span>';
+	}
 
 	// generate output
 	$out = '<ul class="misapplied">';
+	
 	foreach($misapplied as $misapplied_name){
+		
 		$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
-		// sorting authors
+		// fill authors the renderedFootnoteKey and sorting 'em
+		foreach($misapplied_name['authorteam'] as $authorteam=>&$renderedFootnoteKey) {
+		  $renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
+	    }
 		if(isset($misapplied_name['authorteam'])){
 			ksort($misapplied_name['authorteam']);
 			$out .= join('; ', $misapplied_name['authorteam']);
 		}
 		$out .= '</li>';
+		
 	}
 	$out .= '</ul>';
+	
+	$out .= theme('cdm_footnotes', $footnoteListKey, 'div');
+    RenderHints::popFromRenderStack();
 	return $out;
 }
 

@@ -23,16 +23,16 @@ class RenderHints
       
     }
 
-    public static function getfootnoteListKey(){
+    public static function getFootnoteListKey(){
       return self::$footnoteListKey;
     }
     
-    public static function setfootnoteListKey($key){
-      return self::$footnoteListKey = $footnoteListKey;
+    public static function setFootnoteListKey($key){
+      self::$footnoteListKey = $key;
     }
     
     public static function pushToRenderStack($pathelement){
-      return array_push(self::$renderStack, $pathelement);
+      array_push(self::$renderStack, $pathelement);
     }
     
    

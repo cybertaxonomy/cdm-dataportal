@@ -140,15 +140,6 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	$addAcceptedTaxon = !variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
   	$out .= theme('cdm_taxon_page_synonymy', $taxon, $addAcceptedTaxon);
 
-  	if(variable_get('cdm_dataportal_display_name_relations', 1)){
-
-  		$nameRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMERELATIONS, $taxon->uuid);
-  		// TODO is it correct to skip relationsFromThisName since all relationships are to be understood as 'is .... of'
-  		if(variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1)){
-  			$skip = array(UUID_BASIONYM);
-  		}
-  		$out .= theme('cdm_nameRelations', $nameRelationships, $skip);
-  	}
   	$out .= '</div>';
   }
 
@@ -192,7 +183,6 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 
 	RenderHints::pushToRenderStack('taxon_page_synonymy');
 	$synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, $taxon->uuid);
-	$taxonRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, $taxon->uuid);
 	$skip = array(UUID_BASIONYM);
 
 	if($addAcceptedTaxon){
@@ -218,8 +208,22 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 			$out .= theme('cdm_heterotypicSynonymyGroup', $homotypicalGroup);
 		}
 	}
+	
+    if(variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT)){
 
-	$out .= theme('cdm_taxonRelations', $taxonRelationships, $skip);
+        $nameRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMERELATIONS, $taxon->uuid);
+        // TODO is it correct to skip relationsFromThisName since all relationships are to be understood as 'is .... of'
+        if(variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1)){
+            $skip = array(UUID_BASIONYM);
+        }
+        $out .= theme('nameRelationships', $nameRelationships, $skip);
+    }
+    
+   if(variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)){
+   	    $taxonRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, $taxon->uuid);
+        $out .= theme('cdm_taxonRelationships', $taxonRelationships);
+    }
+	
     RenderHints::popFromRenderStack();
 	return $out;
 }

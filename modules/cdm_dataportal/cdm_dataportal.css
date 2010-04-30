@@ -323,3 +323,12 @@ a.toc:link, a.toc:visited {
   font-style: italic;
 }
 
+.heterotypicSynonymyGroup li.footnotes, .homotypicSynonymyGroup li.footnotes{
+	margin-top: 10px;
+    margin-left: 6px;
+    padding-left: 6px;
+    list-style: none;
+    list-style-image: none;
+    background-image: none;
+}
+
