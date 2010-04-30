@@ -99,12 +99,11 @@ function phptemplate_menu_local_tasks() {
  */
 function compare_citations($x, $y)
 {
-	//var_dump($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname);
-	//var_dump($y->sources[0]->citation->authorTeam->teamMembers[0]->lastname);
+  $author_team_x = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $x->sources[0]->citation->uuid);
+  $author_team_y = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $y->sources[0]->citation->uuid);
 
 	 //same author, and different year
-	if($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname ==
-	   $y->sources[0]->citation->authorTeam->teamMembers[0]->lastname){
+	if($author_team_x->titleCache == $author_team_y->titleCache){   	
 		$x_year = substr(
 		        $x->sources[0]->citation->datePublished->start,
 		        0,
@@ -129,8 +128,9 @@ function compare_citations($x, $y)
 		$res = 1;
 	}
 	//different author and the first one is alphabetically smaller
-	else if($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname <
-	$y->sources[0]->citation->authorTeam->teamMembers[0]->lastname){
+	//else if($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname <
+	//$y->sources[0]->citation->authorTeam->teamMembers[0]->lastname){
+	else if ($author_team_x->titleCache < $author_team_y->titleCache)	{
 		$res = -1;
 	}
 	//different author and the second one is alphabetically smaller
