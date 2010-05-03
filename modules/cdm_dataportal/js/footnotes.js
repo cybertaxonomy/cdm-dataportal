@@ -1,5 +1,5 @@
 if (Drupal.jsEnabled) {
-  $(document).ready($(document).ready(function() {
+  $(document).ready(function() {
 	  
 	  function getFootnoteClassName(object){
 		  return '.'+$(object).attr('href').substr(1);

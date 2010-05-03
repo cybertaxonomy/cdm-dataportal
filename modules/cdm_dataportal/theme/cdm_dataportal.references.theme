@@ -17,7 +17,7 @@ function theme_cdm_reference_pager($referencePager, $path, $parameters = array()
 		$out .= '<ul>';
 		foreach($referencePager->records as $reference){
 			$reference->fullCitation = $reference->titleCache; //FIXME remove hack for matching cdm entity to STO
-			$out .= '<li>'.theme('cdm_reference', $reference, TRUE).'</li>';
+			$out .= '<li>'.theme('cdm_reference', $reference, null, TRUE).'</li>';
 		}
 		$out .= '</ul>';
 		$out .= theme('cdm_pager', $referencePager,  $path, $parameters);
@@ -29,22 +29,31 @@ function theme_cdm_reference_pager($referencePager, $path, $parameters = array()
 
 
 /**
- * @deprecated ??
+ * used by 
+ *  - theme_cdm_typedesignations
+ *  - theme_cdm_reference_pager
+ *  - theme_cdm_taxonRelationships
+ *  
  */
-function theme_cdm_reference($reference, $linkToReference = FALSE, $style = NULL ){
+function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE, $referenceStyle = NULL ){
 
 	$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
-	if($style == "ZoologicalName"){
+	if($style == "zoology"){
 		$year = partialToYear($reference->datePublished->start);
-		//$citation = $reference->authorTeam->titleCache.($year ? ', '.$year : '');
 		$citation = $author_team->titleCache . ($year ? ', '.$year : '');
 	} else {
-		//$citation = $reference->titleCache;
-		$citation = $author_team->titleCache;
+		$citation = $reference->titleCache;
 	}
-	if($linkToReference){
-		return l('<span class="reference">'.$citation.'</span>', "/cdm_dataportal/reference/".$reference->uuid, array("class"=>"reference"), NULL, NULL, FALSE ,TRUE);
-	} else {
-		return '<span class="reference">'.$citation.'</span>';
+	if($doLink){
+		$out = l('<span class="reference">'.$citation.'</span>'
+          , path_to_reference($reference->uuid)
+          , array("class"=>"reference")
+          , NULL, NULL, FALSE ,TRUE);
+    } else {
+		$out = '<span class="reference">'.$citation.'</span>';
 	}
+    if(!empty($descriptionElementSource->citationMicroReference)){
+        $out .= ': '. $descriptionElementSource->citationMicroReference;
+     }
+      
 }

@@ -150,7 +150,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
   $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   $sourceRefs = '';
   $result = array();
-  $res_text;
+  $out;
   $res_author;
   $res_date;
    
@@ -181,16 +181,19 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
   }
   
   if ($asListElement){
-    $res_text = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+    $out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
     //adding ":" if necesary 
     if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
-    	$res_text .= ': ';
+    	$out .= ': ';
     }
-     $res_text .= $description . $sourceRefs . '</li>';
+     $out .= $description . $sourceRefs . '</li>';
   }else{
-    $res_text = $description . $sourceRefs . ' (name in source: '. $name_used_in_source_link_to_show . ')';
+    $out = $description . $sourceRefs . ' (name in source: '. $name_used_in_source_link_to_show . ')';
   }
-  return $res_text;
+  
+  // add annotations as footnote key
+  $out .= theme('cdm_annotations', $element);
+  return $out;
 }
 
 
@@ -205,6 +208,8 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 	$sortOutArray = false;
 	$enclosingHtml = 'ul';
 	$distributionElements = array();
+	
+	RenderHints::pushToRenderStack('cdm_descriptionElements');
 	
 	foreach($descriptionElements as $descriptionElement){
 		
@@ -233,11 +238,14 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 
 	$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
 	
-	
 	// take the feature of the last $descriptionElement
 	$feature = $descriptionElement->feature;
 	$out = theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+	
 	$out .= '<div class="footnote_list">'. FootnoteManager::renderFootnoteList($featureUuid) . '</div>';
+		
+    RenderHints::popFromRenderStack();
+    
 	return $out;
 }
 
@@ -253,13 +261,12 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 
 	foreach($descriptionElements as $descriptionElement){
 		//$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, $descriptionElement->area->representation_L10n);
-	$footnoteKeyList = '';
-	foreach($descriptionElement->sources as $source){
-		break;
-		$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, $source, 'cdm_DescriptionElementSource');
-		$footnoteKeyList .= theme('cdm_footnode_key', $footnoteKey) . ' ';
-	}
-    $out .= $descriptionElement->area->representation_L10n . $footnoteKeyList . $separator;
+//		$footnoteKeyList = '';
+//		foreach($descriptionElement->sources as $source){
+//			$footnoteKey = FootnoteManager::addNewFootnote($descriptionElement->feature->uuid, theme('cdm_DescriptionElementSource', $source));
+//			$footnoteKeyList .= theme('cdm_footnode_key', $footnoteKey) . ' ';
+//		}
+	    $out .= $descriptionElement->area->representation_L10n . $footnoteKeyList . $separator;
 	}
 	$out = substr($out, 0, strlen($out)-strlen($separator) );
 	
@@ -283,22 +290,10 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 
 function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
 
-    //ev. delegate to theme_cdm_ReferencedEntityBase
-    $out = '';
-    if($descriptionElementSource->citation){
-      $reference = $descriptionElementSource->citation->titleCache;    
-      if($doLink){
-        $out = l('<span class="reference">'.$reference.'</span>'
-          , path_to_reference($descriptionElementSource->citation->uuid)
-          , array("class"=>"reference")
-          , NULL, NULL, FALSE ,TRUE);
-      } else {
-       $out = $reference;
-      }
-      if($descriptionElementSource->citationMicroReference){
-        $out .= ': '. $descriptionElementSource->citationMicroReference;
-      }
-    }
+    $out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, TRUE);
+      
+	// add annotations as footnote key
+    $out .= theme('cdm_annotations', $descriptionElementSource->citation);
     return $out;
 }
 

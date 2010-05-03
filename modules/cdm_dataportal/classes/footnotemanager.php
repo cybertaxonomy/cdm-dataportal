@@ -58,8 +58,12 @@ class FootnoteManager
      * @param $themeArguments
      * @return unknown_type
      */
-    public static function addNewFootnote($footnoteListKey, $object, $theme = NULL, $themeArguments = array()){
+    public static function addNewFootnote($footnoteListKey, $object = null, $theme = NULL, $themeArguments = array()){
 
+      if(!$object){
+      	return false;
+      }
+    	
       if(!array_key_exists($footnoteListKey, self::$fnstore)){
           self::$fnstore[$footnoteListKey] = array();
       }

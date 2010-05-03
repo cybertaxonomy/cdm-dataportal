@@ -109,28 +109,17 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
  * TODO it should be configurable which objects can be annotated as this might differ in dataportals
  *
  */
-function theme_cdm_annotation($cdmBase){
+function theme_cdm_annotations($cdmBase){
 	
-//    $annotationUrl = cdm_compose_annotations_url($cdmBase);
-//
-//	if($annotationUrl){
-//		drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_annotations.js');
-//		drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.form.js');
-//		$annotationProxyUrl = url('cdm_api/proxy/'. urlencode($annotationUrl).'/cdm_annotation_content');
-//	
-//		$out = ' <span class="annotation">';
-//		$out .= '<span class="annotation_toggle" rel="'.$annotationProxyUrl.'">+</span>';
-//			
-//	
-//		$out .= '<div class="annotation_box"></div>';
-//		$out .= '</span>';
-//	}
+	
     $annotationUrl = cdm_compose_annotations_url($cdmBase);
     if($annotationUrl){
         $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
-        foreach($annotationPager->records as $annotation){
-	        $footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $annotation->text);
-	        $out .= (isset($out)? ',' : '') . theme('cdm_footnote_key', $footnoteKey);
+        if($annotationPager->count > 0){
+	        foreach($annotationPager->records as $annotation){
+		        $footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $annotation->text);
+		        $out .= (isset($out)? ',' : '') . theme('cdm_footnote_key', $footnoteKey);
+	        }   
         }
     }
 

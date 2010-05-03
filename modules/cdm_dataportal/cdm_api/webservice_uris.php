@@ -79,6 +79,8 @@ define('CDM_WS_TDWG_LEVEL', 'term/tdwg/$0');
  */
 define('CDM_WS_FEATURETREE', 'featuretree/$0');
 
+//define('CDM_WS_FEATURETREE_CHILDREN', 'featuretree/$0/children');
+
 define('CDM_WS_FEATURETREES', 'featuretree');
 
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'geo/map/distribution/$0');

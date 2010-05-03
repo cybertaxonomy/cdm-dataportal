@@ -484,8 +484,10 @@ function cdm_compose_annotations_url($cdmBase){
         case 'Media':
             $ws_base_uri = CDM_WS_MEDIA;
             break;
-        default: 
-            trigger_error('Unsupported CDM Class - no annotations available', E_USER_ERROR);
+        case 'ReferenceBase':
+            $ws_base_uri = CDM_WS_REFERENCE;
+            break;
+        default:  trigger_error('Unsupported CDM Class - no annotations available for ' . $cdmBase->class, E_USER_ERROR);
             return;
     }
     return  cdm_compose_url($ws_base_uri, array($cdmBase->uuid, 'annotation'));
@@ -598,7 +600,7 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
 
   if(!$featureTree){
     drupal_set_message('No \'FeatureTree\' has been set so far. '
-    .'In order to display descriptive data of your taxa, please select a \'FeatureTree\' in the '.l('CDM Dataportal Ssettings', 'admin/settings/cdm_dataportal/general'), 'warning');
+    .'In order to see the species profiles of your taxa, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/general'), 'warning');
     return false;
   }
 

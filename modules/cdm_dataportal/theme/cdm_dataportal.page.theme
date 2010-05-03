@@ -109,7 +109,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   // --- DESCRIPTION --- //
   if($page_part == 'description' || $page_part == 'all'){
 
-  	$featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get('cdm_dataportal_featuretree_uuid', false));
+  	$featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get(CDM_DATAPORTAL_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
   	$taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid);
   	$mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $taxonDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
 
@@ -197,12 +197,12 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
 		if($typeDesignations){
 			$out .= theme('cdm_typedesignations', $typeDesignations);
-			//$out .= l('test', path_to_name($typeDesignations[0]->typeName->uuid), array(), NULL, NULL, FALSE, TRUE);
 		}
 	} else {
 		// reder the homotypicSynonymyGroup including the type information
 		$out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
 	}
+	
 	if($synomymie->heterotypicSynonymyGroups) {
 		foreach($synomymie->heterotypicSynonymyGroups as $homotypicalGroup){
 			$out .= theme('cdm_heterotypicSynonymyGroup', $homotypicalGroup);

@@ -64,7 +64,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			  $shortCitation = $author_team->titleCache;
 				$shortCitation .= (strlen($shortCitation) > 0 ? ' ' : '' ). partialToYear($std->citation->datePublished->start);
 				if(strlen($shortCitation) == 0){
-					$shortCitation = theme('cdm_reference',$std->citation );
+					$shortCitation = theme('cdm_reference', $std->citation);
 					$missingShortCitation = true;
 				}
 				$typeReference .= '&nbsp;(' . t('designated by');
@@ -413,7 +413,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
     $out .= '</span>';
     
 	// add annotations
-	$out .= theme('cdm_annotation', $taxonName);
+	$out .= theme('cdm_annotations', $taxonName);
 	
 	return $out;
 }
