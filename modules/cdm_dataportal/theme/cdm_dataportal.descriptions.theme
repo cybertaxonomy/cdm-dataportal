@@ -337,7 +337,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			$legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
 			$legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
 
-			print($map_tdwg_Uri.'<br>');
+			//print($map_tdwg_Uri.'<br>');
 
 			// get the respone from the map service
 			$responseObj = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);
