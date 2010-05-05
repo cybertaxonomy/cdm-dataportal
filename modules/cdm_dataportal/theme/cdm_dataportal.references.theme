@@ -37,7 +37,8 @@ function theme_cdm_reference_pager($referencePager, $path, $parameters = array()
  */
 function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE, $referenceStyle = NULL ){
 
-	$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
+  $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
+
 	if($style == "zoology"){
 		$year = partialToYear($reference->datePublished->start);
 		$citation = $author_team->titleCache . ($year ? ', '.$year : '');

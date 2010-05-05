@@ -60,8 +60,10 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			$showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_NEOTYPE || $std->typeStatus->uuid == UUID_LECTOTYPE);
 			if($showCitation && !empty($std->citation)){
 				//$shortCitation = $std->citation->authorTeam->titleCache;
-			  $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std->citation->uuid);
-			  $shortCitation = $author_team->titleCache;
+
+			     $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std->citation->uuid);
+			     $shortCitation = $author_team->titleCache;
+
 				$shortCitation .= (strlen($shortCitation) > 0 ? ' ' : '' ). partialToYear($std->citation->datePublished->start);
 				if(strlen($shortCitation) == 0){
 					$shortCitation = theme('cdm_reference', $std->citation);
