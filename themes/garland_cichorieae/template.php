@@ -14,6 +14,7 @@
  */
 function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hideImages = false){
 
+	RenderHints::pushToRenderStack('taxon_page_description');
   // description TOC
   $out = theme('cdm_featureTreeTOCs', $mergedTrees);
 
@@ -35,7 +36,8 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
 
   // description
   $out .= theme('cdm_featureTrees', $mergedTrees, $taxon);
-
+  RenderHints::popFromRenderStack();   
+  
   return $out;
 }
 
@@ -49,6 +51,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
   }
   return '<p class="descriptionText">' . $description . $referenceCitation.'</p>';
 }
+
 
 function garland_cichorieae_cdm_taxon_page_images($taxon, $media){
 

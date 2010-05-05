@@ -487,6 +487,16 @@ function cdm_compose_annotations_url($cdmBase){
         case 'ReferenceBase':
             $ws_base_uri = CDM_WS_REFERENCE;
             break;
+        case 'Distribution':
+        case 'TextData':
+        case 'TaxonInteraction':
+        case 'QuantitativeData':
+        case 'IndividualsAssociation':
+        case 'Distribution':
+        case 'CommonTaxonName':
+        case 'CategoricalData':	
+        	$ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
+        	break;
         default:  trigger_error('Unsupported CDM Class - no annotations available for ' . $cdmBase->class, E_USER_ERROR);
             return;
     }

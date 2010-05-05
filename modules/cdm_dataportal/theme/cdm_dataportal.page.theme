@@ -22,7 +22,7 @@ function theme_cdm_taxon_page_title($taxon){
 	if(isset($taxon->name->nomenclaturalReference)){
 		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 	}
-	$out = theme('cdm_taxonName', $taxon->name, null, $referenceUri);
+	$out = theme('cdm_taxonName', $taxon->name, null, $referenceUri, false);
 	RenderHints::popFromRenderStack();
 
 	return '<span class="'.$taxon->class.'">'.$out.'</span>';
@@ -34,11 +34,14 @@ function theme_cdm_taxon_page_title($taxon){
  * @return the formatted name title
  */
 function theme_cdm_name_page_title($taxon_name){
-  $renderPath = 'taxon_page_title';
+  RenderHints::pushToRenderStack('taxon_page_title');
   if(isset($taxon_name->nomenclaturalReference)){
     $referenceUri = url(path_to_reference($taxon_name->nomenclaturalReference->uuid));
   }
-  return '<span class="'.$taxon_name->class.'">'.theme('cdm_taxonName', $taxon_name, null, $referenceUri, $renderPath).'</span>';
+  
+  $out = '<span class="'.$taxon_name->class.'">'.theme('cdm_taxonName', $taxon_name, null, $referenceUri, false).'</span>';
+  RenderHints::popFromRenderStack();
+  return $out;
 }
 
 /**
@@ -190,6 +193,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 			$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 		}
 		$out .= theme('cdm_taxonName', $taxon->name, null, $referenceUri);
+		$out .= theme('cdm_annotations_as_footnotekeys', $taxon);
 	}
 
 	if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){

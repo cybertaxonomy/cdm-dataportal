@@ -103,7 +103,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	ksort($joinedAuthorTeams);
 	foreach($joinedAuthorTeams as $authorteam=>$sensuCitation){
 		$footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensuCitation);
-		$joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu '.$authorteam. theme('cdm_footnote_key', $footnoteKey).'</span>';
+		$joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu '.$authorteam. theme('cdm_footnote_key', $footnoteKey, $footnoteListKey).'</span>';
 	}
 
 	// generate output
@@ -112,7 +112,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	foreach($misapplied as $misapplied_name){
 		
 		$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
-		// fill authors the renderedFootnoteKey and sorting 'em
+		// fill authors with the renderedFootnoteKey and sorting 'em
 		foreach($misapplied_name['authorteam'] as $authorteam=>&$renderedFootnoteKey) {
 		  $renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
 	    }
@@ -125,6 +125,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	}
 	$out .= '</ul>';
 	
+	$out .= theme('cdm_footnotes', $footnoteListKey, 'div');
     RenderHints::popFromRenderStack();
 	return $out;
 }
@@ -144,6 +145,7 @@ function theme_cdm_acceptedFor(){
 				$referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
 			}
 			$out .= theme('cdm_taxonName', $synonym->name, null, $referenceUri);
+			$out .= theme('cdm_annotations_as_footnotekeys', $synonym);
 			$out .= '</span>';
 		}
 	}
@@ -185,9 +187,12 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 				$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 			}
 			$out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
+            $out .= theme('cdm_annotations_as_footnotekeys', $taxon);
+            
 			if($showMedia_taxa){
 				$out .= theme('cdm_taxon_list_thumbnails', $taxon);
 			}
+			
 			$out .= '</li>';
 		} else {
 			// its a synonym
@@ -200,6 +205,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 					$referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
 				}
 				$out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
+				$out .= theme('cdm_annotations_as_footnotekeys', $taxon);
 				if($showMedia_synonyms){
 					$out .= theme('cdm_taxon_list_thumbnails', $acceptedTaxon);
 				}
@@ -207,7 +213,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 			} else {
 				//TODO avoid using Ajax in the cdm_dynabox
 				//TODO add media
-				$out .= theme('cdm_dynabox', theme('cdm_taxonName', $taxon->name, null, null), cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
+				$out .= theme('cdm_dynabox', theme('cdm_taxonName', $taxon->name, null, null, false), cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
 			}
 		}
 	}
@@ -247,6 +253,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 	}
 	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
+	$nameHtml .= theme('cdm_annotations_as_footnotekeys', $taxon);
 	
 	//later homonym or trated as later homonym
 	$taxon_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMERELATIONS, $taxon->uuid);

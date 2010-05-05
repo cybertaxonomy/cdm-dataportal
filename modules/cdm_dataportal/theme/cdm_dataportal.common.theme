@@ -109,23 +109,24 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
  * TODO it should be configurable which objects can be annotated as this might differ in dataportals
  *
  */
-function theme_cdm_annotations($cdmBase){
-	
+function theme_cdm_annotations_as_footnotekeys($cdmBase){
 	
     $annotationUrl = cdm_compose_annotations_url($cdmBase);
     if($annotationUrl){
         $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
         if($annotationPager->count > 0){
 	        foreach($annotationPager->records as $annotation){
-		        $footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $annotation->text);
-		        $out .= (isset($out)? ',' : '') . theme('cdm_footnote_key', $footnoteKey);
+		        $footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey() . '-annotations', $annotation->text);
+		        $out .=  theme('cdm_footnote_key', $footnoteKey, RenderHints::getFootnoteListKey() . '-annotations', (isset($out)? ',' : ''));
 	        }   
         }
     }
-
 	return $out;
+}
 
 
+function theme_cdm_annotation_footnotes($footnoteListKey, $enclosingTag = 'span'){
+    return theme('cdm_footnotes', $footnoteListKey . '-annotations', $enclosingTag);
 }
 
 function theme_cdm_annotation_content($AnnotationTO){
@@ -173,8 +174,10 @@ function theme_cdm_list_of_annotations($annotationElements){
 
 /* ============================ footnotes ============================= */
 
-function theme_cdm_footnote_key($footnoteKey, $highlightable=true){
-  $out = '<a href="#footnote-'.$footnoteKey.'" class="footnote-key footnote-key-'.$footnoteKey.'">'.$footnoteKey.'</a>';
+function theme_cdm_footnote_key($footnoteKey, $footnoteListKey, $separator = '', $highlightable=true){
+  $out = '<span class="footnote-key footnote-key-'.$footnoteKey.' member-of-footnotes-'.$footnoteListKey.'">'.$separator
+        .'<a href="#footnote-'.$footnoteKey.'">'.$footnoteKey.'</a>'
+        .'</span>';
   return $out;
 }
 
@@ -184,9 +187,10 @@ function theme_cdm_footnote($footnoteKey, $footnoteText){
   return $out;
 }
 
+
 function theme_cdm_footnotes($footnoteListKey, $enclosingTag = 'span'){
 	
-	$out = '<'.$enclosingTag.' class="footnotes footnotes-'.$footnoteListKey.'">' . FootnoteManager::renderFootnoteList($footnoteListKey) . '</'.$enclosingTag.'>';
+	$out = '<'.$enclosingTag.' class="footnotes footnotes-'.$footnoteListKey.' ">' . FootnoteManager::renderFootnoteList($footnoteListKey) . '</'.$enclosingTag.'>';
 	return $out;
 }
 

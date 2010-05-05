@@ -32,6 +32,8 @@ define('CDM_WS_PORTAL_TAXON_RELATIONS', 'portal/taxon/$0/taxonRelationships');
 
 define('CDM_WS_PORTAL_TAXON_NAMERELATIONS', 'portal/taxon/$0/nameRelationships');
 
+define('CDM_WS_DESCRIPTIONELEMENT', 'descriptionelement/$0');
+
 
 /**
  * @parameters $0 : the taxon uuid

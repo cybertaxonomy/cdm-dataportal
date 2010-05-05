@@ -94,10 +94,24 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
 
   $descriptions = '';
   $separator = ', ';
-
-  foreach($descriptionElements as $descriptionElement){
-    $descriptions .= $descriptionElement->area->representation_L10n . $separator;
-  }
+  
+    RenderHints::pushToRenderStack('descriptionElementDistribution');
+    RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+    foreach($descriptionElements as $descriptionElement){
+        // annotations as footnotes
+        $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
+//        // source references as footnotes
+//        $sourcesFootnoteKeyList = '';
+//        foreach($descriptionElement->sources as $source){
+//            $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, false));
+//            $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : ''));
+//        }
+        if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
+            $annotationFootnoteKeys .= $separator;
+        }
+        $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList . ' ';
+    }
+  
   $descriptions = substr($descriptions, 0, strlen($descriptions)-2);
   $taxonTrees =  cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   foreach($taxonTrees as $taxonTree){
@@ -117,6 +131,8 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
   if(strlen($sourceRefs) > 0){
     $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
   }
+  
+    RenderHints::popFromRenderStack();
   return $descriptions. $sourceRefs ;
 
 }

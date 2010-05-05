@@ -205,7 +205,7 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
 
-	$out .= theme('cdm_footnotes', $footnoteListKey, 'li');
+	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
     
     
@@ -243,7 +243,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
 
-	$out .= theme('cdm_footnotes', $footnoteListKey, 'li');
+	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
 	
 	RenderHints::popFromRenderStack();
@@ -251,7 +251,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 }
 
 
-function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
+function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, $showAnnotations = true){
 
   $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
 	$partDefinition = get_partDefinition($taxonName->class);
@@ -414,8 +414,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL){
 	}
     $out .= '</span>';
     
-	// add annotations
-	$out .= theme('cdm_annotations', $taxonName);
+	$out .= theme('cdm_annotations_as_footnotekeys', $taxonName);
 	
 	return $out;
 }

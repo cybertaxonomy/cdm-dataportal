@@ -56,5 +56,6 @@ function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE
     if(!empty($descriptionElementSource->citationMicroReference)){
         $out .= ': '. $descriptionElementSource->citationMicroReference;
      }
-      
+     
+    return $out;
 }

@@ -8,6 +8,10 @@ function diptera_cdm_descriptionElements($descriptionElements){
   $sortOutArray = false;
   $enclosingHtml = 'ul';
   
+  
+   RenderHints::pushToRenderStack('cdm_descriptionElements');
+    
+  
   // only for diptera
   if(isset($descriptionElements[0]) && $descriptionElements[0]->feature->uuid == UUID_CITATION ) {
     foreach($descriptionElements as $element){
@@ -42,7 +46,9 @@ function diptera_cdm_descriptionElements($descriptionElements){
     }
   }
 
-  return theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+      $out = theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+      RenderHints::popFromRenderStack();
+      return  $out;
 }
 
 /**
