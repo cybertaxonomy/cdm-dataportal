@@ -5,7 +5,7 @@
  * Implementation of hook_install().
  */
 function cdm_dataportal_install(){
-   update_sql(_get_sql_fix_module_weight());
+   db_query(_get_sql_fix_module_weight());
 }
 
 
