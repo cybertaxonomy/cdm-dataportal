@@ -112,7 +112,6 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
         $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList . $separator;
     }
   
-  $out = substr($out, 0, strlen($out)-2);
   $taxonTrees =  cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   foreach($taxonTrees as $taxonTree){
     if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
