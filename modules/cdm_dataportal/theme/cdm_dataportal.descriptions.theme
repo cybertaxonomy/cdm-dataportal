@@ -331,6 +331,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			$map_data_parameters->String = str_replace(': ', "%20", $map_data_parameters->String);
 			$map_data_parameters->String = str_replace('(', "", $map_data_parameters->String);
 			$map_data_parameters->String = str_replace(')', "", $map_data_parameters->String);
+            $map_data_parameters->String = str_replace('.', "%46", $map_data_parameters->String);
 			$map_tdwg_Uri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
 			$legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
 			$legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
