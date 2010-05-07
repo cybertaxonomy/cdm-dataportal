@@ -315,12 +315,16 @@ function theme_cdm_descriptionElements_distribution($taxon){
 	}else{
 		$map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
 
-		$map_data_parameters->String = str_replace(':', "%58", $map_data_parameters->String);
-		$map_data_parameters->String = str_replace(':', "%20", $map_data_parameters->String);
-		$map_data_parameters->String = str_replace('(', "", $map_data_parameters->String);
-		$map_data_parameters->String = str_replace(')', "", $map_data_parameters->String);
-        $map_data_parameters->String = str_replace('.', "%46", $map_data_parameters->String);
-		$map_tdwg_Uri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
+//		$map_data_parameters->String = str_replace(':', "%58", $map_data_parameters->String);
+//		$map_data_parameters->String = str_replace(':', "%20", $map_data_parameters->String);
+//		$map_data_parameters->String = str_replace('(', "", $map_data_parameters->String);
+//		$map_data_parameters->String = str_replace(')', "", $map_data_parameters->String);
+//      $map_data_parameters->String = str_replace('.', "%46", $map_data_parameters->String);
+        $map_data_parameters->String = str_replace('%3A', ":", $map_data_parameters->String);       
+
+        
+        print($map_data_parameters->String);
+        
 		
 		
 		$display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
@@ -336,6 +340,9 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
 			  $query_string .= '&img=false&legend=1&mlp=3';
 			}
+			
+			$map_tdwg_Uri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
+			
 			$legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
 			$legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
 			$legend_url_font_style = $fontStyles[$legend_url_font_style];
