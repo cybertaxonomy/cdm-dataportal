@@ -322,10 +322,6 @@ function theme_cdm_descriptionElements_distribution($taxon){
 //      $map_data_parameters->String = str_replace('.', "%46", $map_data_parameters->String);
         $map_data_parameters->String = str_replace('%3A', ":", $map_data_parameters->String);       
 
-        
-        print($map_data_parameters->String);
-        
-		
 		
 		$display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
 		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
