@@ -90,9 +90,9 @@ function _disabled_palmweb_2_cdm_taxon_page_images($taxon, $media){
   
 }
 
-function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
+function xxx_palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
 
-  $descriptions = '';
+  $out = '';
   $separator = ', ';
   
     RenderHints::pushToRenderStack('descriptionElementDistribution');
@@ -100,19 +100,19 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
     foreach($descriptionElements as $descriptionElement){
         // annotations as footnotes
         $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
-//        // source references as footnotes
-//        $sourcesFootnoteKeyList = '';
-//        foreach($descriptionElement->sources as $source){
-//            $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, false));
-//            $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : ''));
-//        }
+        // source references as footnotes
+        $sourcesFootnoteKeyList = '';
+        foreach($descriptionElement->sources as $source){
+            $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, false));
+            $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : ''));
+        }
         if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
             $annotationFootnoteKeys .= $separator;
         }
         $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList . ' ';
     }
   
-  $descriptions = substr($descriptions, 0, strlen($descriptions)-2);
+  $out = substr($out, 0, strlen($out)-2);
   $taxonTrees =  cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   foreach($taxonTrees as $taxonTree){
     if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
@@ -124,7 +124,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
 
   $referenceCitation = '('.l('<span class="reference">World Checklist of Monocotyledons</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE).')';
   
-  if($descriptions && strlen($descriptions) > 0 ){
+  if($out && strlen($out) > 0 ){
     $sourceRefs .= ' '.$referenceCitation;
   }
 
@@ -133,7 +133,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
   }
   
     RenderHints::popFromRenderStack();
-  return $descriptions. $sourceRefs ;
+  return $out. $sourceRefs ;
 
 }
 
