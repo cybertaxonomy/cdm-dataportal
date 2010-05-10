@@ -327,14 +327,14 @@ function theme_cdm_descriptionElements_distribution($taxon){
 		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
 		$labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
-		$query_string = ($display_width ? '&ms=' . $display_width: '')
+		$query_string = ($display_width ? '&img=false&ms=' . $display_width: '')
 		. ($bounding_box ? '&bbox=' .  $bounding_box : '')
 		. ($labels_on ? '&labels=' .  $labels_on : '');
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
 			if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
-			  $query_string .= '&img=false&legend=1&mlp=3';
+			  $query_string .= '&legend=1&mlp=3';
 			}
 			
 			$map_tdwg_Uri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
