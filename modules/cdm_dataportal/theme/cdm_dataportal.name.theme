@@ -15,6 +15,7 @@
 function theme_cdm_typedesignations($typeDesignations = array()){
 
 	RenderHints::pushToRenderStack('typedesignations');
+	RenderHints::setFootnoteListKey(UUID_SYNONYM_OF);
 	_add_js_cluetip();
 	$out = '<ul class="typeDesignations">';
 
@@ -78,15 +79,17 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 
 			$out .= '<li class="specimenTypeDesignation">';
 			$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
-			//$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache . ' footnote: '. theme_cdm_footnote($std->typeSpecimen->collection->code, $std->typeSpecimen->collection->titleCache);
-  
 			$out .= theme('cdm_specimen', $std->typeSpecimen);
+			//footnotes for synonymy acronyms 
+			$_fkey = FootnoteManager::addNewFootnote(RenderHints::getRenderPath(), $std->typeSpecimen->collection->titleCache);
+      $out .= theme('cdm_footnote_key', $_fkey, RenderHints::getRenderPath());		
 			$out .= '</li>';
 		}
 	}
 
 	$out .= '</ul>';
-
+	//render the footnotes at the end of the page
+  $out .= theme('cdm_footnotes', RenderHints::getRenderPath());
 	RenderHints::popFromRenderStack();
 	return $out;
 }

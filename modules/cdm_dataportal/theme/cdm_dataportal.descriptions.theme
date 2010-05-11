@@ -255,7 +255,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 
 	$out = '';
 	$separator = ',';
-    RenderHints::pushToRenderStack('descriptionElementDistribution');
+  RenderHints::pushToRenderStack('descriptionElementDistribution');
 	RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 	foreach($descriptionElements as $descriptionElement){
 		// annotations as footnotes
