@@ -99,6 +99,17 @@ function phptemplate_menu_local_tasks() {
  */
 function compare_citations($x, $y)
 {
+	
+	if( !$x->sources[0]->citation->uuid){// && !$y->sources[0]->citation->uuid){
+		$res = -1;
+		//var_dump($y->sources[0]->citation->uuid);
+	}elseif(!$y->sources[0]->citation->uuid){
+		$res = 1;
+		//var_dump($x->sources[0]->citation->uuid);
+	}
+	else{
+		
+	
   $author_team_x = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $x->sources[0]->citation->uuid);
   $author_team_y = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $y->sources[0]->citation->uuid);
 
@@ -137,6 +148,8 @@ function compare_citations($x, $y)
 	else{
 		$res = 1;
 	}
+	
+  }
 	//var_dump($res);
 	//var_dump(' ============ ');
 	return $res;
@@ -281,14 +294,15 @@ function garland_diptera_cdm_DescriptionElementSource($descriptionElementSource,
       if (strlen($datePublished->start) >0){
         $year=substr($datePublished->start,0,strpos($datePublished->start,'-'));
       }
-      $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $descriptionElementSource->citation->uuid);
-      $author_team_titlecache = $author_team->titleCache;
-      if (strlen($year)>0){
-        $reference = $author_team_titlecache.' '. $year;
-      }else {
-        $reference = $author_team_titlecache ;
-      }
-      
+
+        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $descriptionElementSource->citation->uuid);
+        $author_team_titlecache = $author_team->titleCache;
+        if (strlen($year)>0){
+          $reference = $author_team_titlecache.' '. $year;
+        }else {
+          $reference = $author_team_titlecache ;
+        }
+
       if($doLink){
         $out = l('<span class="reference">'.$reference.'</span>'
           , path_to_reference($descriptionElementSource->citation->uuid)

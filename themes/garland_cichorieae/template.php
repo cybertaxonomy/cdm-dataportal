@@ -45,11 +45,20 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
 
   $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   $referenceCitation = '';
+
   if($element->reference){
     // disabling references for cichorieae description Elements because they all have faulty references
     //$referenceCitation = '; '.theme('cdm_fullreference', $element->reference, TRUE);
   }
-  return '<p class="descriptionText">' . $description . $referenceCitation.'</p>';
+  //return '<p class="descriptionText">' . $description . $referenceCitation.'</p>';
+  
+  foreach($element->sources as $source){
+    $referenceCitation = theme('cdm_DescriptionElementSource', $source);
+    if($description && strlen($description) > 0 && $referenceCitation ){
+        $sourceRefs .= ' ('.$referenceCitation.')' ;
+    }
+  }
+  return '<p class="descriptionText">' . $description . $sourceRefs . '</p>';
 }
 
 
