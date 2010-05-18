@@ -15,8 +15,7 @@
 function theme_cdm_typedesignations($typeDesignations = array()){
 
 	RenderHints::pushToRenderStack('typedesignations');
-	RenderHints::setFootnoteListKey(UUID_SYNONYM_OF);
-	_add_js_cluetip();
+	//_add_js_cluetip();
 	$out = '<ul class="typeDesignations">';
 
 	$specimenTypeDesignations = array();
@@ -70,26 +69,45 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 					$shortCitation = theme('cdm_reference', $std->citation);
 					$missingShortCitation = true;
 				}
+				
 				$typeReference .= '&nbsp;(' . t('designated by');
 				$typeReference .= '&nbsp;<span class="typeReference '.($missingShortCitation ? '' : 'cluetip').' no-print" title="'. htmlspecialchars('|'.theme('cdm_reference',$std->citation ).'|') .'">';
 				$typeReference .= $shortCitation.'</span>';
-				$typeReference .= ')';
+				$typeReference .= ':'. $std->citationMicroReference .')';
+
+			  $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-lectotypes', $std->citation->titleCache);
+				$typeReference .= theme('cdm_footnote_key', $_fkey2, RenderHints::getRenderPath() . '-lectotypes'); 
+        //$citation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($taxonName->nomenclaturalReference->uuid), "microReference=".urlencode($microreference));
+        //$citation = $citation->String;
+				
+
 				//$typeReference .= '<span class="reference only-print">(designated by '.theme('cdm_reference',$std->citation ).')</span>';
 			}
 
+			
 			$out .= '<li class="specimenTypeDesignation">';
 			$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
 			$out .= theme('cdm_specimen', $std->typeSpecimen);
+
 			//footnotes for synonymy acronyms 
-			$_fkey = FootnoteManager::addNewFootnote(RenderHints::getRenderPath(), $std->typeSpecimen->collection->titleCache);
-      $out .= theme('cdm_footnote_key', $_fkey, RenderHints::getRenderPath());		
+			$_fkey = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-acronyms', $std->typeSpecimen->collection->titleCache);
+      $out .= theme('cdm_footnote_key', $_fkey, RenderHints::getRenderPath() . '-acronyms');  
 			$out .= '</li>';
+			
+			if (!empty($std->citation)){
+				$render_footnote_lectotypes = true;
+			 //$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
+			}
 		}
 	}
 
 	$out .= '</ul>';
 	//render the footnotes at the end of the page
-  $out .= theme('cdm_footnotes', RenderHints::getRenderPath());
+     if ($render_footnote_lectotypes){
+       $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
+      }
+  $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-acronyms');
+  
 	RenderHints::popFromRenderStack();
 	return $out;
 }

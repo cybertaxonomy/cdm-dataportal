@@ -228,11 +228,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
         $out .= theme('cdm_taxonRelationships', $taxonRelationships);
     }
 	
-    //$out .= theme('cdm_footnote_key', $_fkey, 'TEST');    
-    //RenderHints::setFootnoteListKey('test');  
-    //var_dump(RenderHints::getFootnoteListKey('test'));
-    //var_dump(RenderHints::getRenderPath());
-    //RenderHints::popFromRenderStack();
+    RenderHints::popFromRenderStack();
             
 	return $out;
 }
