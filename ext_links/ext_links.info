@@ -1,0 +1,6 @@
+; $Id: ext_links.info,v 1.2.4.1.4.2 2008/09/26 11:58:24 niif Exp a.kroupa $
+name = "CDM External taxa links"
+description = A block module for listing external links to taxa information.
+version = "5.x-1.0"
+package = "CDM"
+dependencies = cdm_dataportal
