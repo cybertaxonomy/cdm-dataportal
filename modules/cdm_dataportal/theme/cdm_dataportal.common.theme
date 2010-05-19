@@ -118,6 +118,11 @@ function theme_cdm_annotations_as_footnotekeys($cdmBase){
 	        foreach($annotationPager->records as $annotation){
 		        $footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey() . '-annotations', $annotation->text);
 		        $out .=  theme('cdm_footnote_key', $footnoteKey, RenderHints::getFootnoteListKey() . '-annotations', (isset($out)? ',' : ''));
+		        
+//		        var_dump(RenderHints::getFootnoteListKey());
+//		        var_dump(RenderHints::getRenderPath());
+//	        	$footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-annotations', $annotation->text);
+//            $out .=  theme('cdm_footnote_key', $footnoteKey, RenderHints::getRenderPath() . '-annotations', (isset($out)? ',' : ''));
 	        }   
         }
     }

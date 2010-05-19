@@ -396,6 +396,11 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 		foreach($descriptions as $description){
 			if(!empty($description)){
 				foreach($description->elements as $description_element){
+				  $second_citation = '';
+					if ($description_element->multilanguageText_L10n->text){
+					  $second_citation = '[& ' . $description_element->multilanguageText_L10n->text . '].';
+					}
+					$descriptionHtml .= $second_citation;
 					$descriptionHtml .= theme("cdm_media", $description_element, array('application/pdf', 'image/png', 'image/jpeg', 'image/gif', 'text/html'));
 				}
 			}
