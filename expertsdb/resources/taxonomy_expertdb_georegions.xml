@@ -1,0 +1,2157 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE taxonomy SYSTEM "taxonomy.dtd">
+<vocabulary>
+<vid>20</vid>
+<name>expertdb_georegions</name>
+<description>marine andtTerrestrial geographical region. Terrestrial terms are compatible with the TDWG GeographicalRegions LSID vocabulary (http://rs.tdwg.org/ontology/voc/GeographicRegion.rdf).
+The terrestrial regions are structured in a hierarchy having four levels of detail. Marine areas terms and hierarchie are conform with BioBEL marine area classification 
+(http://biobel.biodiversity.be/biobel/search/classification)</description>
+<help/>
+<relations>0</relations>
+<hierarchy>1</hierarchy>
+<multiple>1</multiple>
+<required>0</required>
+<weight>0</weight>
+<nodes/>
+<!-- Marine -->
+<term><tid>10000</tid><vid>20</vid><name>Marine</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>10001</tid><vid>20</vid><name>East Atlantic</name><description></description><weight>0</weight><parent>10000</parent></term>
+<term><tid>10002</tid><vid>20</vid><name>Baltic Sea</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10003</tid><vid>20</vid><name>Benguela Current</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10004</tid><vid>20</vid><name>Black Sea</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10005</tid><vid>20</vid><name>Canary Current</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10006</tid><vid>20</vid><name>Celtic-Biscay Shelf</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10007</tid><vid>20</vid><name>Faroe Plateau</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10008</tid><vid>20</vid><name>Guinea Current</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10009</tid><vid>20</vid><name>Iberian Coastal</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10010</tid><vid>20</vid><name>Mediterranean Sea</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10011</tid><vid>20</vid><name>North Sea</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10012</tid><vid>20</vid><name>Norwegian Sea</name><description></description><weight>0</weight><parent>10001</parent></term>
+<term><tid>10013</tid><vid>20</vid><name>East Pacific</name><description></description><weight>0</weight><parent>10000</parent></term>
+<term><tid>10014</tid><vid>20</vid><name>California Current</name><description></description><weight>0</weight><parent>10013</parent></term>
+<term><tid>10015</tid><vid>20</vid><name>East Bering Sea</name><description></description><weight>0</weight><parent>10013</parent></term>
+<term><tid>10016</tid><vid>20</vid><name>Gulf of Alaska</name><description></description><weight>0</weight><parent>10013</parent></term>
+<term><tid>10017</tid><vid>20</vid><name>Gulf of California</name><description></description><weight>0</weight><parent>10013</parent></term>
+<term><tid>10018</tid><vid>20</vid><name>Humboldt Current</name><description></description><weight>0</weight><parent>10013</parent></term>
+<term><tid>10019</tid><vid>20</vid><name>Insular Pacific-Hawaiian</name><description></description><weight>0</weight><parent>10013</parent></term>
+<term><tid>10020</tid><vid>20</vid><name>Pacific Central American Coastal</name><description></description><weight>0</weight><parent>10013</parent></term>
+<term><tid>10021</tid><vid>20</vid><name>Indian</name><description></description><weight>0</weight><parent>10000</parent></term>
+<term><tid>10022</tid><vid>20</vid><name>Agulhas Current</name><description></description><weight>0</weight><parent>10021</parent></term>
+<term><tid>10023</tid><vid>20</vid><name>Arabian Sea</name><description></description><weight>0</weight><parent>10021</parent></term>
+<term><tid>10024</tid><vid>20</vid><name>Bay of Bengal</name><description></description><weight>0</weight><parent>10021</parent></term>
+<term><tid>10025</tid><vid>20</vid><name>Northwest Australian Shelf</name><description></description><weight>0</weight><parent>10021</parent></term>
+<term><tid>10026</tid><vid>20</vid><name>Red Sea</name><description></description><weight>0</weight><parent>10021</parent></term>
+<term><tid>10027</tid><vid>20</vid><name>Somali Coastal Current</name><description></description><weight>0</weight><parent>10021</parent></term>
+<term><tid>10028</tid><vid>20</vid><name>Southwest Australian Shelf</name><description></description><weight>0</weight><parent>10021</parent></term>
+<term><tid>10029</tid><vid>20</vid><name>West Central Australian Shelf</name><description></description><weight>0</weight><parent>10021</parent></term>
+<term><tid>10030</tid><vid>20</vid><name>Polar</name><description></description><weight>0</weight><parent>10000</parent></term>
+<term><tid>10031</tid><vid>20</vid><name>Antarctica (marine)</name><description></description><weight>0</weight><parent>10030</parent></term>
+<term><tid>10032</tid><vid>20</vid><name>Barents Sea</name><description></description><weight>0</weight><parent>10030</parent></term>
+<term><tid>10033</tid><vid>20</vid><name>Beaufort Sea</name><description></description><weight>0</weight><parent>10030</parent></term>
+<term><tid>10034</tid><vid>20</vid><name>Chukchi Sea</name><description></description><weight>0</weight><parent>10030</parent></term>
+<term><tid>10035</tid><vid>20</vid><name>East Siberian Sea</name><description></description><weight>0</weight><parent>10030</parent></term>
+<term><tid>10036</tid><vid>20</vid><name>Kara Sea</name><description></description><weight>0</weight><parent>10030</parent></term>
+<term><tid>10037</tid><vid>20</vid><name>Laptev Sea</name><description></description><weight>0</weight><parent>10030</parent></term>
+<term><tid>10038</tid><vid>20</vid><name>West Atlantic</name><description></description><weight>0</weight><parent>10000</parent></term>
+<term><tid>10039</tid><vid>20</vid><name>Caribbean Sea</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10040</tid><vid>20</vid><name>East Brazil Shelf</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10041</tid><vid>20</vid><name>Gulf of Mexico</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10042</tid><vid>20</vid><name>Newfoundland-Labrador Shelf</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10043</tid><vid>20</vid><name>North Brazil Shelf</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10044</tid><vid>20</vid><name>Northeast U.S. Continental Shelf</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10045</tid><vid>20</vid><name>Patagonian Shelf</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10046</tid><vid>20</vid><name>Scotian Shelf</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10047</tid><vid>20</vid><name>South Brazil Shelf</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10048</tid><vid>20</vid><name>Southeast U.S. Continental Shelf</name><description></description><weight>0</weight><parent>10038</parent></term>
+<term><tid>10049</tid><vid>20</vid><name>West Pacific</name><description></description><weight>0</weight><parent>10000</parent></term>
+<term><tid>10050</tid><vid>20</vid><name>East Central Australian Shelf</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10051</tid><vid>20</vid><name>East China Sea</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10052</tid><vid>20</vid><name>Gulf of Thailand</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10053</tid><vid>20</vid><name>Indonesian Sea</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10054</tid><vid>20</vid><name>Kuroshio Current</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10055</tid><vid>20</vid><name>New Zealand Shelf</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10056</tid><vid>20</vid><name>North Australian Shelf</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10057</tid><vid>20</vid><name>Northeast Australian Shelf</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10058</tid><vid>20</vid><name>Northwest Australian Shelf</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10059</tid><vid>20</vid><name>Oyashio Current</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10060</tid><vid>20</vid><name>Sea of Japan</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10061</tid><vid>20</vid><name>Sea of Okhotsk</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10062</tid><vid>20</vid><name>South China Sea</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10063</tid><vid>20</vid><name>Southeast Australian Shelf</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10064</tid><vid>20</vid><name>Southwest Australian Shelf</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10065</tid><vid>20</vid><name>Sulu-Celebes Sea</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10066</tid><vid>20</vid><name>West Bering Sea</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10067</tid><vid>20</vid><name>West Central Australian Shelf</name><description></description><weight>0</weight><parent>10049</parent></term>
+<term><tid>10068</tid><vid>20</vid><name>Yellow Sea</name><description></description><weight>0</weight><parent>10049</parent></term>
+<!-- Terrestrial -->
+<term><tid>20000</tid><vid>20</vid><name>Terrestrial</name><description/><synonyms/><weight>0</weight><depth>0</depth><parent>0</parent></term>
+<term><tid>20001</tid><vid>20</vid><name>Europe</name><description/><synonyms/><weight>0</weight><depth>1</depth><parent>20000</parent></term>
+<term><tid>20002</tid><vid>20</vid><name>Africa</name><description/><synonyms/><weight>0</weight><depth>1</depth><parent>20000</parent></term>
+<term><tid>20003</tid><vid>20</vid><name>Asia-Temperate</name><description/><synonyms/><weight>0</weight><depth>1</depth><parent>20000</parent></term>
+<term><tid>20004</tid><vid>20</vid><name>Asia-Tropical</name><description/><synonyms/><weight>0</weight><depth>1</depth><parent>20000</parent></term>
+<term><tid>20005</tid><vid>20</vid><name>Australasia</name><description/><synonyms/><weight>0</weight><depth>1</depth><parent>20000</parent></term>
+<term><tid>20006</tid><vid>20</vid><name>Pacific</name><description/><synonyms/><weight>0</weight><depth>1</depth><parent>20000</parent></term>
+<term><tid>20007</tid><vid>20</vid><name>Northern America</name><description/><synonyms/><weight>0</weight><depth>1</depth><parent>20000</parent></term>
+<term><tid>20008</tid><vid>20</vid><name>Southern America</name><description/><synonyms/><weight>0</weight><depth>1</depth><parent>20000</parent></term>
+<term><tid>20009</tid><vid>20</vid><name>Antarctic</name><description/><synonyms/><weight>0</weight><depth>1</depth><parent>20000</parent></term>
+<term><tid>20010</tid><vid>20</vid><name>Northern Europe</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20001</parent></term>
+<term><tid>20011</tid><vid>20</vid><name>Middle Europe</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20001</parent></term>
+<term><tid>20012</tid><vid>20</vid><name>Southwestern Europe</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20001</parent></term>
+<term><tid>20013</tid><vid>20</vid><name>Southeastern Europe</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20001</parent></term>
+<term><tid>20014</tid><vid>20</vid><name>Eastern Europe</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20001</parent></term>
+<term><tid>20015</tid><vid>20</vid><name>Northern Africa</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20016</tid><vid>20</vid><name>Macaronesia</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20017</tid><vid>20</vid><name>West Tropical Africa</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20018</tid><vid>20</vid><name>West-Central Tropical Africa</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20019</tid><vid>20</vid><name>Northeast Tropical Africa</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20020</tid><vid>20</vid><name>East Tropical Africa</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20021</tid><vid>20</vid><name>South Tropical Africa</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20022</tid><vid>20</vid><name>Southern Africa</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20023</tid><vid>20</vid><name>Middle Atlantic Ocean</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20024</tid><vid>20</vid><name>Western Indian Ocean</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20002</parent></term>
+<term><tid>20025</tid><vid>20</vid><name>Siberia</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20003</parent></term>
+<term><tid>20026</tid><vid>20</vid><name>Russian Far East</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20003</parent></term>
+<term><tid>20027</tid><vid>20</vid><name>Middle Asia</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20003</parent></term>
+<term><tid>20028</tid><vid>20</vid><name>Caucasus</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20003</parent></term>
+<term><tid>20029</tid><vid>20</vid><name>Western Asia</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20003</parent></term>
+<term><tid>20030</tid><vid>20</vid><name>Arabian Peninsula</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20003</parent></term>
+<term><tid>20031</tid><vid>20</vid><name>China</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20003</parent></term>
+<term><tid>20032</tid><vid>20</vid><name>Mongolia</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20003</parent></term>
+<term><tid>20033</tid><vid>20</vid><name>Eastern Asia</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20003</parent></term>
+<term><tid>20034</tid><vid>20</vid><name>Indian Subcontinent</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20004</parent></term>
+<term><tid>20035</tid><vid>20</vid><name>Indo-China</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20004</parent></term>
+<term><tid>20036</tid><vid>20</vid><name>Malesia</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20004</parent></term>
+<term><tid>20037</tid><vid>20</vid><name>Papuasia</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20004</parent></term>
+<term><tid>20038</tid><vid>20</vid><name>Australia</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20005</parent></term>
+<term><tid>20039</tid><vid>20</vid><name>New Zealand</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20005</parent></term>
+<term><tid>20040</tid><vid>20</vid><name>Southwestern Pacific</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20006</parent></term>
+<term><tid>20041</tid><vid>20</vid><name>South-Central Pacific</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20006</parent></term>
+<term><tid>20042</tid><vid>20</vid><name>Northwestern Pacific</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20006</parent></term>
+<term><tid>20043</tid><vid>20</vid><name>North-Central Pacific</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20006</parent></term>
+<term><tid>20044</tid><vid>20</vid><name>Subarctic America</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20045</tid><vid>20</vid><name>Western Canada</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20046</tid><vid>20</vid><name>Eastern Canada</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20047</tid><vid>20</vid><name>Northwestern U.S.A.</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20048</tid><vid>20</vid><name>North-Central U.S.A.</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20049</tid><vid>20</vid><name>Northeastern U.S.A.</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20050</tid><vid>20</vid><name>Southwestern U.S.A.</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20051</tid><vid>20</vid><name>South-Central U.S.A.</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20052</tid><vid>20</vid><name>Southeastern U.S.A.</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20053</tid><vid>20</vid><name>Mexico</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20007</parent></term>
+<term><tid>20054</tid><vid>20</vid><name>Central America</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20008</parent></term>
+<term><tid>20055</tid><vid>20</vid><name>Caribbean</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20008</parent></term>
+<term><tid>20056</tid><vid>20</vid><name>Northern South America</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20008</parent></term>
+<term><tid>20057</tid><vid>20</vid><name>Western South America</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20008</parent></term>
+<term><tid>20058</tid><vid>20</vid><name>Brazil</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20008</parent></term>
+<term><tid>20059</tid><vid>20</vid><name>Southern South America</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20008</parent></term>
+<term><tid>20060</tid><vid>20</vid><name>Subantarctic Islands</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20009</parent></term>
+<term><tid>20061</tid><vid>20</vid><name>Antarctic Continent</name><description/><synonyms>
+</synonyms><weight>0</weight><depth>2</depth><parent>20009</parent></term>
+<term><tid>20062</tid><vid>20</vid><name>Alberta</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20045</parent></term>
+<term><tid>20063</tid><vid>20</vid><name>Afghanistan</name><description>
+</description><synonyms>AF</synonyms><weight>0</weight><depth>3</depth><parent>20029</parent></term>
+<term><tid>20064</tid><vid>20</vid><name>Argentina Northeast</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20065</tid><vid>20</vid><name>Argentina South</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20066</tid><vid>20</vid><name>Argentina Northwest</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20067</tid><vid>20</vid><name>Alabama</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20068</tid><vid>20</vid><name>Albania</name><description>
+</description><synonyms>AL</synonyms><weight>0</weight><depth>3</depth><parent>20013</parent></term>
+<term><tid>20069</tid><vid>20</vid><name>Aldabra</name><description>
+</description><synonyms>SC</synonyms><weight>0</weight><depth>3</depth><parent>20024</parent></term>
+<term><tid>20070</tid><vid>20</vid><name>Algeria</name><description>
+</description><synonyms>DZ</synonyms><weight>0</weight><depth>3</depth><parent>20015</parent></term>
+<term><tid>20071</tid><vid>20</vid><name>Altay</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20025</parent></term>
+<term><tid>20072</tid><vid>20</vid><name>Aleutian Is.</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20044</parent></term>
+<term><tid>20073</tid><vid>20</vid><name>Amur</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20026</parent></term>
+<term><tid>20074</tid><vid>20</vid><name>Andaman Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20035</parent></term>
+<term><tid>20075</tid><vid>20</vid><name>Angola</name><description>
+</description><synonyms>AO</synonyms><weight>0</weight><depth>3</depth><parent>20021</parent></term>
+<term><tid>20076</tid><vid>20</vid><name>Antarctica</name><description>
+</description><synonyms>AQ</synonyms><weight>0</weight><depth>3</depth><parent>20061</parent></term>
+<term><tid>20077</tid><vid>20</vid><name>Arizona</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20050</parent></term>
+<term><tid>20078</tid><vid>20</vid><name>Arkansas</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20079</tid><vid>20</vid><name>Aruba</name><description>
+</description><synonyms>AW</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20080</tid><vid>20</vid><name>Ascension</name><description>
+</description><synonyms>SH</synonyms><weight>0</weight><depth>3</depth><parent>20023</parent></term>
+<term><tid>20081</tid><vid>20</vid><name>Alaska</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20044</parent></term>
+<term><tid>20082</tid><vid>20</vid><name>Amsterdam-St.Paul Is.</name><description>
+</description><synonyms>TF</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20083</tid><vid>20</vid><name>Assam</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20084</tid><vid>20</vid><name>Antipodean Is.</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>3</depth><parent>20039</parent></term>
+<term><tid>20085</tid><vid>20</vid><name>Austria</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20011</parent></term>
+<term><tid>20086</tid><vid>20</vid><name>Azores</name><description>
+</description><synonyms>PT</synonyms><weight>0</weight><depth>3</depth><parent>20016</parent></term>
+<term><tid>20087</tid><vid>20</vid><name>Bahamas</name><description>
+</description><synonyms>BS</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20088</tid><vid>20</vid><name>Baleares</name><description>
+</description><synonyms>ES</synonyms><weight>0</weight><depth>3</depth><parent>20012</parent></term>
+<term><tid>20089</tid><vid>20</vid><name>Bangladesh</name><description>
+</description><synonyms>BD</synonyms><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20090</tid><vid>20</vid><name>Benin</name><description>
+</description><synonyms>BJ</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20091</tid><vid>20</vid><name>Bermuda</name><description>
+</description><synonyms>BM</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20092</tid><vid>20</vid><name>Belgium</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20011</parent></term>
+<term><tid>20093</tid><vid>20</vid><name>Bismarck Archipelago</name><description>
+</description><synonyms>PG</synonyms><weight>0</weight><depth>3</depth><parent>20037</parent></term>
+<term><tid>20094</tid><vid>20</vid><name>Burkina</name><description>
+</description><synonyms>BF</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20095</tid><vid>20</vid><name>Belarus</name><description>Belorussiya
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20014</parent></term>
+<term><tid>20096</tid><vid>20</vid><name>Baltic States</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20014</parent></term>
+<term><tid>20097</tid><vid>20</vid><name>Belize</name><description>
+</description><synonyms>BZ</synonyms><weight>0</weight><depth>3</depth><parent>20054</parent></term>
+<term><tid>20098</tid><vid>20</vid><name>Bolivia</name><description>
+</description><synonyms>BO</synonyms><weight>0</weight><depth>3</depth><parent>20057</parent></term>
+<term><tid>20099</tid><vid>20</vid><name>Borneo</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20100</tid><vid>20</vid><name>Botswana</name><description>
+</description><synonyms>BW</synonyms><weight>0</weight><depth>3</depth><parent>20022</parent></term>
+<term><tid>20101</tid><vid>20</vid><name>Bouvet I.</name><description>
+</description><synonyms>BV</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20102</tid><vid>20</vid><name>British Columbia</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20045</parent></term>
+<term><tid>20103</tid><vid>20</vid><name>Buryatiya</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20025</parent></term>
+<term><tid>20104</tid><vid>20</vid><name>Bulgaria</name><description>
+</description><synonyms>BG</synonyms><weight>0</weight><depth>3</depth><parent>20013</parent></term>
+<term><tid>20105</tid><vid>20</vid><name>Burundi</name><description>
+</description><synonyms>BI</synonyms><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20106</tid><vid>20</vid><name>Brazil West-Central</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>3</depth><parent>20058</parent></term>
+<term><tid>20107</tid><vid>20</vid><name>Brazil Northeast</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>3</depth><parent>20058</parent></term>
+<term><tid>20108</tid><vid>20</vid><name>Brazil Southeast</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>3</depth><parent>20058</parent></term>
+<term><tid>20109</tid><vid>20</vid><name>Brazil North</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>3</depth><parent>20058</parent></term>
+<term><tid>20110</tid><vid>20</vid><name>Brazil South</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>3</depth><parent>20058</parent></term>
+<term><tid>20111</tid><vid>20</vid><name>Cabinda</name><description>
+</description><synonyms>AO</synonyms><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20112</tid><vid>20</vid><name>Central African Republic</name><description>
+</description><synonyms>CF</synonyms><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20113</tid><vid>20</vid><name>California</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20050</parent></term>
+<term><tid>20114</tid><vid>20</vid><name>Cayman Is.</name><description>
+</description><synonyms>KY</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20115</tid><vid>20</vid><name>Cambodia</name><description>
+</description><synonyms>KH</synonyms><weight>0</weight><depth>3</depth><parent>20035</parent></term>
+<term><tid>20116</tid><vid>20</vid><name>Chagos Archipelago</name><description>L2 code 40
+</description><synonyms>IO</synonyms><weight>0</weight><depth>3</depth><parent>20024</parent></term>
+<term><tid>20117</tid><vid>20</vid><name>Chad</name><description>
+</description><synonyms>TD</synonyms><weight>0</weight><depth>3</depth><parent>20019</parent></term>
+<term><tid>20118</tid><vid>20</vid><name>China South-Central</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>3</depth><parent>20031</parent></term>
+<term><tid>20119</tid><vid>20</vid><name>Hainan</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>3</depth><parent>20031</parent></term>
+<term><tid>20120</tid><vid>20</vid><name>Inner Mongolia</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>3</depth><parent>20031</parent></term>
+<term><tid>20121</tid><vid>20</vid><name>Manchuria</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>3</depth><parent>20031</parent></term>
+<term><tid>20122</tid><vid>20</vid><name>China North-Central</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>3</depth><parent>20031</parent></term>
+<term><tid>20123</tid><vid>20</vid><name>Qinghai</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>3</depth><parent>20031</parent></term>
+<term><tid>20124</tid><vid>20</vid><name>China Southeast</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20031</parent></term>
+<term><tid>20125</tid><vid>20</vid><name>Tibet</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>3</depth><parent>20031</parent></term>
+<term><tid>20126</tid><vid>20</vid><name>Xinjiang</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>3</depth><parent>20031</parent></term>
+<term><tid>20127</tid><vid>20</vid><name>Cocos (Keeling) Is.</name><description>
+</description><synonyms>CC</synonyms><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20128</tid><vid>20</vid><name>Chile Central</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20129</tid><vid>20</vid><name>Colombia</name><description>
+</description><synonyms>CO</synonyms><weight>0</weight><depth>3</depth><parent>20057</parent></term>
+<term><tid>20130</tid><vid>20</vid><name>Chile North</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20131</tid><vid>20</vid><name>Chile South</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20132</tid><vid>20</vid><name>Cameroon</name><description>
+</description><synonyms>CM</synonyms><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20133</tid><vid>20</vid><name>Connecticut</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20134</tid><vid>20</vid><name>Canary Is.</name><description>
+</description><synonyms>ES</synonyms><weight>0</weight><depth>3</depth><parent>20016</parent></term>
+<term><tid>20135</tid><vid>20</vid><name>Colorado</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20047</parent></term>
+<term><tid>20136</tid><vid>20</vid><name>Comoros</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20024</parent></term>
+<term><tid>20137</tid><vid>20</vid><name>Congo</name><description>
+</description><synonyms>CG</synonyms><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20138</tid><vid>20</vid><name>Cook Is.</name><description>
+</description><synonyms>CK</synonyms><weight>0</weight><depth>3</depth><parent>20041</parent></term>
+<term><tid>20139</tid><vid>20</vid><name>Corse</name><description>
+</description><synonyms>FR</synonyms><weight>0</weight><depth>3</depth><parent>20012</parent></term>
+<term><tid>20140</tid><vid>20</vid><name>Costa Rica</name><description>
+</description><synonyms>CR</synonyms><weight>0</weight><depth>3</depth><parent>20054</parent></term>
+<term><tid>20141</tid><vid>20</vid><name>Central American Pacific Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20054</parent></term>
+<term><tid>20142</tid><vid>20</vid><name>Cape Provinces</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>3</depth><parent>20022</parent></term>
+<term><tid>20143</tid><vid>20</vid><name>Caprivi Strip</name><description>
+</description><synonyms>NA</synonyms><weight>0</weight><depth>3</depth><parent>20022</parent></term>
+<term><tid>20144</tid><vid>20</vid><name>Caroline Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20042</parent></term>
+<term><tid>20145</tid><vid>20</vid><name>Crozet Is.</name><description>
+</description><synonyms>TF</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20146</tid><vid>20</vid><name>Chita</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20025</parent></term>
+<term><tid>20147</tid><vid>20</vid><name>Chatham Is.</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>3</depth><parent>20039</parent></term>
+<term><tid>20148</tid><vid>20</vid><name>Cuba</name><description>
+</description><synonyms>CU</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20149</tid><vid>20</vid><name>Cape Verde</name><description>
+</description><synonyms>CV</synonyms><weight>0</weight><depth>3</depth><parent>20016</parent></term>
+<term><tid>20150</tid><vid>20</vid><name>Cyprus</name><description>
+</description><synonyms>CY</synonyms><weight>0</weight><depth>3</depth><parent>20029</parent></term>
+<term><tid>20151</tid><vid>20</vid><name>Czechoslovakia</name><description>
+</description><synonyms>CS</synonyms><weight>0</weight><depth>3</depth><parent>20011</parent></term>
+<term><tid>20152</tid><vid>20</vid><name>Delaware</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20153</tid><vid>20</vid><name>Denmark</name><description>
+</description><synonyms>DK</synonyms><weight>0</weight><depth>3</depth><parent>20010</parent></term>
+<term><tid>20154</tid><vid>20</vid><name>Djibouti</name><description>
+</description><synonyms>DJ</synonyms><weight>0</weight><depth>3</depth><parent>20019</parent></term>
+<term><tid>20155</tid><vid>20</vid><name>Dominican Republic</name><description>
+</description><synonyms>DO</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20156</tid><vid>20</vid><name>Desventurados Is.</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20157</tid><vid>20</vid><name>East Aegean Is.</name><description>
+</description><synonyms>GR</synonyms><weight>0</weight><depth>3</depth><parent>20029</parent></term>
+<term><tid>20158</tid><vid>20</vid><name>Easter Is.</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>3</depth><parent>20041</parent></term>
+<term><tid>20159</tid><vid>20</vid><name>Ecuador</name><description>
+</description><synonyms>EC</synonyms><weight>0</weight><depth>3</depth><parent>20057</parent></term>
+<term><tid>20160</tid><vid>20</vid><name>Egypt</name><description>
+</description><synonyms>EG</synonyms><weight>0</weight><depth>3</depth><parent>20015</parent></term>
+<term><tid>20161</tid><vid>20</vid><name>East Himalaya</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20162</tid><vid>20</vid><name>El Salvador</name><description>
+</description><synonyms>SV</synonyms><weight>0</weight><depth>3</depth><parent>20054</parent></term>
+<term><tid>20163</tid><vid>20</vid><name>Equatorial Guinea</name><description>
+</description><synonyms>GQ</synonyms><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20164</tid><vid>20</vid><name>Eritrea</name><description>
+</description><synonyms>ER</synonyms><weight>0</weight><depth>3</depth><parent>20019</parent></term>
+<term><tid>20165</tid><vid>20</vid><name>Ethiopia</name><description>
+</description><synonyms>ET</synonyms><weight>0</weight><depth>3</depth><parent>20019</parent></term>
+<term><tid>20166</tid><vid>20</vid><name>Falkland Is.</name><description>
+</description><synonyms>FK</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20167</tid><vid>20</vid><name>Fiji</name><description>
+</description><synonyms>FJ</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20168</tid><vid>20</vid><name>Finland</name><description>
+</description><synonyms>FI</synonyms><weight>0</weight><depth>3</depth><parent>20010</parent></term>
+<term><tid>20169</tid><vid>20</vid><name>Florida</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20170</tid><vid>20</vid><name>Føroyar</name><description>
+</description><synonyms>FO</synonyms><weight>0</weight><depth>3</depth><parent>20010</parent></term>
+<term><tid>20171</tid><vid>20</vid><name>France</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20012</parent></term>
+<term><tid>20172</tid><vid>20</vid><name>French Guiana</name><description>
+</description><synonyms>GF</synonyms><weight>0</weight><depth>3</depth><parent>20056</parent></term>
+<term><tid>20173</tid><vid>20</vid><name>Gabon</name><description>
+</description><synonyms>GA</synonyms><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20174</tid><vid>20</vid><name>Galápagos</name><description>
+</description><synonyms>EC</synonyms><weight>0</weight><depth>3</depth><parent>20057</parent></term>
+<term><tid>20175</tid><vid>20</vid><name>Gambia, The</name><description>
+</description><synonyms>GM</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20176</tid><vid>20</vid><name>Georgia</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20177</tid><vid>20</vid><name>Germany</name><description>
+</description><synonyms>DE</synonyms><weight>0</weight><depth>3</depth><parent>20011</parent></term>
+<term><tid>20178</tid><vid>20</vid><name>Gulf of Guinea Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20179</tid><vid>20</vid><name>Ghana</name><description>
+</description><synonyms>GH</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20180</tid><vid>20</vid><name>Gilbert Is.</name><description>
+</description><synonyms>KI</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20181</tid><vid>20</vid><name>Guinea-Bissau</name><description>
+</description><synonyms>GW</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20182</tid><vid>20</vid><name>Greenland</name><description>
+</description><synonyms>GL</synonyms><weight>0</weight><depth>3</depth><parent>20044</parent></term>
+<term><tid>20183</tid><vid>20</vid><name>Great Britain</name><description>
+</description><synonyms>UK</synonyms><weight>0</weight><depth>3</depth><parent>20010</parent></term>
+<term><tid>20184</tid><vid>20</vid><name>Greece</name><description>
+</description><synonyms>GR</synonyms><weight>0</weight><depth>3</depth><parent>20013</parent></term>
+<term><tid>20185</tid><vid>20</vid><name>Gulf States</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20030</parent></term>
+<term><tid>20186</tid><vid>20</vid><name>Guatemala</name><description>
+</description><synonyms>GT</synonyms><weight>0</weight><depth>3</depth><parent>20054</parent></term>
+<term><tid>20187</tid><vid>20</vid><name>Guinea</name><description>
+</description><synonyms>GN</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20188</tid><vid>20</vid><name>Guyana</name><description>
+</description><synonyms>GY</synonyms><weight>0</weight><depth>3</depth><parent>20056</parent></term>
+<term><tid>20189</tid><vid>20</vid><name>Haiti</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20190</tid><vid>20</vid><name>Hawaii</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20043</parent></term>
+<term><tid>20191</tid><vid>20</vid><name>Howland-Baker Is.</name><description>
+</description><synonyms>UM</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20192</tid><vid>20</vid><name>Heard-McDonald Is.</name><description>
+</description><synonyms>HM</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20193</tid><vid>20</vid><name>Honduras</name><description>
+</description><synonyms>HN</synonyms><weight>0</weight><depth>3</depth><parent>20054</parent></term>
+<term><tid>20194</tid><vid>20</vid><name>Hungary</name><description>
+</description><synonyms>HU</synonyms><weight>0</weight><depth>3</depth><parent>20011</parent></term>
+<term><tid>20195</tid><vid>20</vid><name>Iceland</name><description>
+</description><synonyms>IS</synonyms><weight>0</weight><depth>3</depth><parent>20010</parent></term>
+<term><tid>20196</tid><vid>20</vid><name>Idaho</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20047</parent></term>
+<term><tid>20197</tid><vid>20</vid><name>Illinois</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20198</tid><vid>20</vid><name>India</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20199</tid><vid>20</vid><name>Indiana</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20200</tid><vid>20</vid><name>Iowa</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20201</tid><vid>20</vid><name>Ireland</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20010</parent></term>
+<term><tid>20202</tid><vid>20</vid><name>Irkutsk</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20025</parent></term>
+<term><tid>20203</tid><vid>20</vid><name>Iran</name><description>
+</description><synonyms>IR</synonyms><weight>0</weight><depth>3</depth><parent>20029</parent></term>
+<term><tid>20204</tid><vid>20</vid><name>Iraq</name><description>
+</description><synonyms>IQ</synonyms><weight>0</weight><depth>3</depth><parent>20029</parent></term>
+<term><tid>20205</tid><vid>20</vid><name>Italy</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20013</parent></term>
+<term><tid>20206</tid><vid>20</vid><name>Ivory Coast</name><description>
+</description><synonyms>CI</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20207</tid><vid>20</vid><name>Jamaica</name><description>
+</description><synonyms>JM</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20208</tid><vid>20</vid><name>Japan</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>3</depth><parent>20033</parent></term>
+<term><tid>20209</tid><vid>20</vid><name>Jawa</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20210</tid><vid>20</vid><name>Juan Fernández Is.</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20211</tid><vid>20</vid><name>Kamchatka</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20026</parent></term>
+<term><tid>20212</tid><vid>20</vid><name>Kansas</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20213</tid><vid>20</vid><name>Kazakhstan</name><description>
+</description><synonyms>KZ</synonyms><weight>0</weight><depth>3</depth><parent>20027</parent></term>
+<term><tid>20214</tid><vid>20</vid><name>Kerguelen</name><description>
+</description><synonyms>TF</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20215</tid><vid>20</vid><name>Kenya</name><description>
+</description><synonyms>KE</synonyms><weight>0</weight><depth>3</depth><parent>20020</parent></term>
+<term><tid>20216</tid><vid>20</vid><name>Kermadec Is.</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>3</depth><parent>20039</parent></term>
+<term><tid>20217</tid><vid>20</vid><name>Kirgizistan</name><description>
+</description><synonyms>KG</synonyms><weight>0</weight><depth>3</depth><parent>20027</parent></term>
+<term><tid>20218</tid><vid>20</vid><name>Khabarovsk</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20026</parent></term>
+<term><tid>20219</tid><vid>20</vid><name>Korea</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20033</parent></term>
+<term><tid>20220</tid><vid>20</vid><name>Krasnoyarsk</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20025</parent></term>
+<term><tid>20221</tid><vid>20</vid><name>Kriti</name><description>
+</description><synonyms>GR</synonyms><weight>0</weight><depth>3</depth><parent>20013</parent></term>
+<term><tid>20222</tid><vid>20</vid><name>Krym</name><description>
+</description><synonyms>UA</synonyms><weight>0</weight><depth>3</depth><parent>20014</parent></term>
+<term><tid>20223</tid><vid>20</vid><name>Kentucky</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20224</tid><vid>20</vid><name>Kuril Is.</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20026</parent></term>
+<term><tid>20225</tid><vid>20</vid><name>Kuwait</name><description>
+</description><synonyms>KW</synonyms><weight>0</weight><depth>3</depth><parent>20030</parent></term>
+<term><tid>20226</tid><vid>20</vid><name>Kazan-retto</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>3</depth><parent>20033</parent></term>
+<term><tid>20227</tid><vid>20</vid><name>Labrador</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20046</parent></term>
+<term><tid>20228</tid><vid>20</vid><name>Laos</name><description>
+</description><synonyms>LA</synonyms><weight>0</weight><depth>3</depth><parent>20035</parent></term>
+<term><tid>20229</tid><vid>20</vid><name>Liberia</name><description>
+</description><synonyms>LR</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20230</tid><vid>20</vid><name>Lebanon-Syria</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20029</parent></term>
+<term><tid>20231</tid><vid>20</vid><name>Libya</name><description>
+</description><synonyms>LY</synonyms><weight>0</weight><depth>3</depth><parent>20015</parent></term>
+<term><tid>20232</tid><vid>20</vid><name>Laccadive Is.</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20233</tid><vid>20</vid><name>Leeward Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20234</tid><vid>20</vid><name>Lesotho</name><description>
+</description><synonyms>LS</synonyms><weight>0</weight><depth>3</depth><parent>20022</parent></term>
+<term><tid>20235</tid><vid>20</vid><name>Line Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20041</parent></term>
+<term><tid>20236</tid><vid>20</vid><name>Louisiana</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20237</tid><vid>20</vid><name>Lesser Sunda Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20238</tid><vid>20</vid><name>Magadan</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20026</parent></term>
+<term><tid>20239</tid><vid>20</vid><name>Maine</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20240</tid><vid>20</vid><name>Manitoba</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20045</parent></term>
+<term><tid>20241</tid><vid>20</vid><name>Macquarie Is.</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20242</tid><vid>20</vid><name>Masachusettes</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20243</tid><vid>20</vid><name>Mauritius</name><description>
+</description><synonyms>MU</synonyms><weight>0</weight><depth>3</depth><parent>20024</parent></term>
+<term><tid>20244</tid><vid>20</vid><name>Mozambique Channel Is.</name><description>
+</description><synonyms>RE</synonyms><weight>0</weight><depth>3</depth><parent>20024</parent></term>
+<term><tid>20245</tid><vid>20</vid><name>Marcus I.</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>3</depth><parent>20042</parent></term>
+<term><tid>20246</tid><vid>20</vid><name>Madagascar</name><description>
+</description><synonyms>MG</synonyms><weight>0</weight><depth>3</depth><parent>20024</parent></term>
+<term><tid>20247</tid><vid>20</vid><name>Madeira</name><description>
+</description><synonyms>PT</synonyms><weight>0</weight><depth>3</depth><parent>20016</parent></term>
+<term><tid>20248</tid><vid>20</vid><name>Maldives</name><description>
+</description><synonyms>MV</synonyms><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20249</tid><vid>20</vid><name>Michigan</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20250</tid><vid>20</vid><name>Minnesota</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20251</tid><vid>20</vid><name>Mali</name><description>
+</description><synonyms>ML</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20252</tid><vid>20</vid><name>Malawi</name><description>
+</description><synonyms>MW</synonyms><weight>0</weight><depth>3</depth><parent>20021</parent></term>
+<term><tid>20253</tid><vid>20</vid><name>Malaya</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20254</tid><vid>20</vid><name>Montana</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20047</parent></term>
+<term><tid>20255</tid><vid>20</vid><name>Maluku</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20256</tid><vid>20</vid><name>Mongolia</name><description>
+</description><synonyms>MN</synonyms><weight>0</weight><depth>3</depth><parent>20032</parent></term>
+<term><tid>20257</tid><vid>20</vid><name>Morocco</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20015</parent></term>
+<term><tid>20258</tid><vid>20</vid><name>Mozambique</name><description>
+</description><synonyms>MZ</synonyms><weight>0</weight><depth>3</depth><parent>20021</parent></term>
+<term><tid>20259</tid><vid>20</vid><name>Marion-Prince Edward Is.</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20260</tid><vid>20</vid><name>Marianas</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20042</parent></term>
+<term><tid>20261</tid><vid>20</vid><name>Marquesas</name><description>
+</description><synonyms>PF</synonyms><weight>0</weight><depth>3</depth><parent>20041</parent></term>
+<term><tid>20262</tid><vid>20</vid><name>Marshall Is.</name><description>
+</description><synonyms>MH</synonyms><weight>0</weight><depth>3</depth><parent>20042</parent></term>
+<term><tid>20263</tid><vid>20</vid><name>Maryland</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20264</tid><vid>20</vid><name>Mississippi</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20265</tid><vid>20</vid><name>Missouri</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20266</tid><vid>20</vid><name>Mauritania</name><description>
+</description><synonyms>MR</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20267</tid><vid>20</vid><name>Mexico Central</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>3</depth><parent>20053</parent></term>
+<term><tid>20268</tid><vid>20</vid><name>Mexico Northeast</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>3</depth><parent>20053</parent></term>
+<term><tid>20269</tid><vid>20</vid><name>Mexico Gulf</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>3</depth><parent>20053</parent></term>
+<term><tid>20270</tid><vid>20</vid><name>Mexican Pacific Is.</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>3</depth><parent>20053</parent></term>
+<term><tid>20271</tid><vid>20</vid><name>Mexico Northwest</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>3</depth><parent>20053</parent></term>
+<term><tid>20272</tid><vid>20</vid><name>Mexico Southwest</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>3</depth><parent>20053</parent></term>
+<term><tid>20273</tid><vid>20</vid><name>Mexico Southeast</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>3</depth><parent>20053</parent></term>
+<term><tid>20274</tid><vid>20</vid><name>Myanmar</name><description>
+</description><synonyms>MM</synonyms><weight>0</weight><depth>3</depth><parent>20035</parent></term>
+<term><tid>20275</tid><vid>20</vid><name>Namibia</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>3</depth><parent>20022</parent></term>
+<term><tid>20276</tid><vid>20</vid><name>KwaZulu-Natal</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>3</depth><parent>20022</parent></term>
+<term><tid>20277</tid><vid>20</vid><name>New Brunswick</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20046</parent></term>
+<term><tid>20278</tid><vid>20</vid><name>North Carolina</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20279</tid><vid>20</vid><name>Nicobar Is.</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>3</depth><parent>20035</parent></term>
+<term><tid>20280</tid><vid>20</vid><name>North Caucasus</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20028</parent></term>
+<term><tid>20281</tid><vid>20</vid><name>North Dakota</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20282</tid><vid>20</vid><name>Nebraska</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20283</tid><vid>20</vid><name>Nepal</name><description>
+</description><synonyms>NP</synonyms><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20284</tid><vid>20</vid><name>Netherlands</name><description>
+</description><synonyms>NL</synonyms><weight>0</weight><depth>3</depth><parent>20011</parent></term>
+<term><tid>20285</tid><vid>20</vid><name>Nevada</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20050</parent></term>
+<term><tid>20286</tid><vid>20</vid><name>Norfolk Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20038</parent></term>
+<term><tid>20287</tid><vid>20</vid><name>Newfoundland</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20046</parent></term>
+<term><tid>20288</tid><vid>20</vid><name>Nigeria</name><description>
+</description><synonyms>NG</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20289</tid><vid>20</vid><name>Niger</name><description>
+</description><synonyms>NE</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20290</tid><vid>20</vid><name>Nicaragua</name><description>
+</description><synonyms>NI</synonyms><weight>0</weight><depth>3</depth><parent>20054</parent></term>
+<term><tid>20291</tid><vid>20</vid><name>Netherlands Antilles</name><description>
+</description><synonyms>AN</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20292</tid><vid>20</vid><name>Nansei-shoto</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>3</depth><parent>20033</parent></term>
+<term><tid>20293</tid><vid>20</vid><name>Norway</name><description>
+</description><synonyms>NO</synonyms><weight>0</weight><depth>3</depth><parent>20010</parent></term>
+<term><tid>20294</tid><vid>20</vid><name>Nauru</name><description>
+</description><synonyms>NR</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20295</tid><vid>20</vid><name>Nova Scotia</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20046</parent></term>
+<term><tid>20296</tid><vid>20</vid><name>New South Wales</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>3</depth><parent>20038</parent></term>
+<term><tid>20297</tid><vid>20</vid><name>Northern Territory</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>3</depth><parent>20038</parent></term>
+<term><tid>20298</tid><vid>20</vid><name>Niue</name><description>
+</description><synonyms>NU</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20299</tid><vid>20</vid><name>Nunavut</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20044</parent></term>
+<term><tid>20300</tid><vid>20</vid><name>New Caledonia</name><description>
+</description><synonyms>NC</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20301</tid><vid>20</vid><name>New Guinea</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20037</parent></term>
+<term><tid>20302</tid><vid>20</vid><name>New Hampshire</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20303</tid><vid>20</vid><name>New Jersey</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20304</tid><vid>20</vid><name>New Mexico</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20051</parent></term>
+<term><tid>20305</tid><vid>20</vid><name>Northwest Territories</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20044</parent></term>
+<term><tid>20306</tid><vid>20</vid><name>New York</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20307</tid><vid>20</vid><name>New Zealand North</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>3</depth><parent>20039</parent></term>
+<term><tid>20308</tid><vid>20</vid><name>New Zealand South</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>3</depth><parent>20039</parent></term>
+<term><tid>20309</tid><vid>20</vid><name>Free State</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>3</depth><parent>20022</parent></term>
+<term><tid>20310</tid><vid>20</vid><name>Ogasawara-shoto</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>3</depth><parent>20033</parent></term>
+<term><tid>20311</tid><vid>20</vid><name>Ohio</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20312</tid><vid>20</vid><name>Oklahoma</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20313</tid><vid>20</vid><name>Oman</name><description>
+</description><synonyms>OM</synonyms><weight>0</weight><depth>3</depth><parent>20030</parent></term>
+<term><tid>20314</tid><vid>20</vid><name>Ontario</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20046</parent></term>
+<term><tid>20315</tid><vid>20</vid><name>Oregon</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20047</parent></term>
+<term><tid>20316</tid><vid>20</vid><name>Pakistan</name><description>
+</description><synonyms>PK</synonyms><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20317</tid><vid>20</vid><name>Palestine</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20029</parent></term>
+<term><tid>20318</tid><vid>20</vid><name>Panamá</name><description>
+</description><synonyms>PA</synonyms><weight>0</weight><depth>3</depth><parent>20054</parent></term>
+<term><tid>20319</tid><vid>20</vid><name>Paraguay</name><description>
+</description><synonyms>PY</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20320</tid><vid>20</vid><name>Prince Edward I.</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20046</parent></term>
+<term><tid>20321</tid><vid>20</vid><name>Pennsylvania</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20322</tid><vid>20</vid><name>Peru</name><description>
+</description><synonyms>PE</synonyms><weight>0</weight><depth>3</depth><parent>20057</parent></term>
+<term><tid>20323</tid><vid>20</vid><name>Philippines</name><description>
+</description><synonyms>PH</synonyms><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20324</tid><vid>20</vid><name>Phoenix Is.</name><description>
+</description><synonyms>KI</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20325</tid><vid>20</vid><name>Pitcairn Is.</name><description>
+</description><synonyms>PN</synonyms><weight>0</weight><depth>3</depth><parent>20041</parent></term>
+<term><tid>20326</tid><vid>20</vid><name>Poland</name><description>
+</description><synonyms>PL</synonyms><weight>0</weight><depth>3</depth><parent>20011</parent></term>
+<term><tid>20327</tid><vid>20</vid><name>Portugal</name><description>
+</description><synonyms>PT</synonyms><weight>0</weight><depth>3</depth><parent>20012</parent></term>
+<term><tid>20328</tid><vid>20</vid><name>Primorye</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20026</parent></term>
+<term><tid>20329</tid><vid>20</vid><name>Puerto Rico</name><description>
+</description><synonyms>PR</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20330</tid><vid>20</vid><name>Queensland</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>3</depth><parent>20038</parent></term>
+<term><tid>20331</tid><vid>20</vid><name>Québec</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20046</parent></term>
+<term><tid>20332</tid><vid>20</vid><name>Réunion</name><description>
+</description><synonyms>RE</synonyms><weight>0</weight><depth>3</depth><parent>20024</parent></term>
+<term><tid>20333</tid><vid>20</vid><name>Rhode I.</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20334</tid><vid>20</vid><name>Rodrigues</name><description>
+</description><synonyms>MU</synonyms><weight>0</weight><depth>3</depth><parent>20024</parent></term>
+<term><tid>20335</tid><vid>20</vid><name>Romania</name><description>
+</description><synonyms>RO</synonyms><weight>0</weight><depth>3</depth><parent>20013</parent></term>
+<term><tid>20336</tid><vid>20</vid><name>Central European Russia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20014</parent></term>
+<term><tid>20337</tid><vid>20</vid><name>East European Russia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20014</parent></term>
+<term><tid>20338</tid><vid>20</vid><name>North European Russia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20014</parent></term>
+<term><tid>20339</tid><vid>20</vid><name>South European Russia</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20014</parent></term>
+<term><tid>20340</tid><vid>20</vid><name>Northwest European Russia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20014</parent></term>
+<term><tid>20341</tid><vid>20</vid><name>Rwanda</name><description>
+</description><synonyms>RW</synonyms><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20342</tid><vid>20</vid><name>Sakhalin</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20026</parent></term>
+<term><tid>20343</tid><vid>20</vid><name>Samoa</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20344</tid><vid>20</vid><name>Sardegna</name><description>
+</description><synonyms>IT</synonyms><weight>0</weight><depth>3</depth><parent>20012</parent></term>
+<term><tid>20345</tid><vid>20</vid><name>Saskatchewan</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20045</parent></term>
+<term><tid>20346</tid><vid>20</vid><name>Saudi Arabia</name><description>
+</description><synonyms>SA</synonyms><weight>0</weight><depth>3</depth><parent>20030</parent></term>
+<term><tid>20347</tid><vid>20</vid><name>South Carolina</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20348</tid><vid>20</vid><name>Society Is.</name><description>
+</description><synonyms>PF</synonyms><weight>0</weight><depth>3</depth><parent>20041</parent></term>
+<term><tid>20349</tid><vid>20</vid><name>South China Sea</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20035</parent></term>
+<term><tid>20350</tid><vid>20</vid><name>Santa Cruz Is.</name><description>
+</description><synonyms>SB</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20351</tid><vid>20</vid><name>South Dakota</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20352</tid><vid>20</vid><name>Selvagens</name><description>
+</description><synonyms>PT</synonyms><weight>0</weight><depth>3</depth><parent>20016</parent></term>
+<term><tid>20353</tid><vid>20</vid><name>Senegal</name><description>
+</description><synonyms>SN</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20354</tid><vid>20</vid><name>Seychelles</name><description>
+</description><synonyms>SC</synonyms><weight>0</weight><depth>3</depth><parent>20024</parent></term>
+<term><tid>20355</tid><vid>20</vid><name>South Georgia</name><description>
+</description><synonyms>GS</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20356</tid><vid>20</vid><name>Sicilia</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20013</parent></term>
+<term><tid>20357</tid><vid>20</vid><name>Sierra Leone</name><description>
+</description><synonyms>SL</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20358</tid><vid>20</vid><name>Sinai</name><description>
+</description><synonyms>EG</synonyms><weight>0</weight><depth>3</depth><parent>20029</parent></term>
+<term><tid>20359</tid><vid>20</vid><name>South Australia</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>3</depth><parent>20038</parent></term>
+<term><tid>20360</tid><vid>20</vid><name>Socotra</name><description>
+</description><synonyms>YE</synonyms><weight>0</weight><depth>3</depth><parent>20019</parent></term>
+<term><tid>20361</tid><vid>20</vid><name>Solomon Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20037</parent></term>
+<term><tid>20362</tid><vid>20</vid><name>Somalia</name><description>
+</description><synonyms>SO</synonyms><weight>0</weight><depth>3</depth><parent>20019</parent></term>
+<term><tid>20363</tid><vid>20</vid><name>Spain</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20012</parent></term>
+<term><tid>20364</tid><vid>20</vid><name>Sri Lanka</name><description>
+</description><synonyms>LK</synonyms><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20365</tid><vid>20</vid><name>South Sandwich Is.</name><description>
+</description><synonyms>GS</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20366</tid><vid>20</vid><name>St.Helena</name><description>
+</description><synonyms>SH</synonyms><weight>0</weight><depth>3</depth><parent>20023</parent></term>
+<term><tid>20367</tid><vid>20</vid><name>Sudan</name><description>
+</description><synonyms>SD</synonyms><weight>0</weight><depth>3</depth><parent>20019</parent></term>
+<term><tid>20368</tid><vid>20</vid><name>Sulawesi</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20369</tid><vid>20</vid><name>Sumatera</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20370</tid><vid>20</vid><name>Suriname</name><description>Surinam
+</description><synonyms>SR</synonyms><weight>0</weight><depth>3</depth><parent>20056</parent></term>
+<term><tid>20371</tid><vid>20</vid><name>Svalbard</name><description>
+</description><synonyms>SJ</synonyms><weight>0</weight><depth>3</depth><parent>20010</parent></term>
+<term><tid>20372</tid><vid>20</vid><name>Southwest Caribbean</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20373</tid><vid>20</vid><name>Sweden</name><description>
+</description><synonyms>SE</synonyms><weight>0</weight><depth>3</depth><parent>20010</parent></term>
+<term><tid>20374</tid><vid>20</vid><name>Switzerland</name><description>
+</description><synonyms>CH</synonyms><weight>0</weight><depth>3</depth><parent>20011</parent></term>
+<term><tid>20375</tid><vid>20</vid><name>Swaziland</name><description>
+</description><synonyms>SZ</synonyms><weight>0</weight><depth>3</depth><parent>20022</parent></term>
+<term><tid>20376</tid><vid>20</vid><name>Taiwan</name><description>
+</description><synonyms>TW</synonyms><weight>0</weight><depth>3</depth><parent>20033</parent></term>
+<term><tid>20377</tid><vid>20</vid><name>Tanzania</name><description>
+</description><synonyms>TZ</synonyms><weight>0</weight><depth>3</depth><parent>20020</parent></term>
+<term><tid>20378</tid><vid>20</vid><name>Tasmania</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>3</depth><parent>20038</parent></term>
+<term><tid>20379</tid><vid>20</vid><name>Turks-Caicos Is.</name><description>
+</description><synonyms>TC</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20380</tid><vid>20</vid><name>Transcaucasus</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20028</parent></term>
+<term><tid>20381</tid><vid>20</vid><name>Tristan da Cunha</name><description>
+</description><synonyms>SH</synonyms><weight>0</weight><depth>3</depth><parent>20060</parent></term>
+<term><tid>20382</tid><vid>20</vid><name>Tennessee</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20383</tid><vid>20</vid><name>Texas</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20051</parent></term>
+<term><tid>20384</tid><vid>20</vid><name>Thailand</name><description>
+</description><synonyms>TH</synonyms><weight>0</weight><depth>3</depth><parent>20035</parent></term>
+<term><tid>20385</tid><vid>20</vid><name>Turkmenistan</name><description>
+</description><synonyms>TM</synonyms><weight>0</weight><depth>3</depth><parent>20027</parent></term>
+<term><tid>20386</tid><vid>20</vid><name>Togo</name><description>
+</description><synonyms>TG</synonyms><weight>0</weight><depth>3</depth><parent>20017</parent></term>
+<term><tid>20387</tid><vid>20</vid><name>Tokelau-Manihiki</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20388</tid><vid>20</vid><name>Tonga</name><description>
+</description><synonyms>TO</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20389</tid><vid>20</vid><name>Trinidad-Tobago</name><description>
+</description><synonyms>TT</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20390</tid><vid>20</vid><name>Tuamotu</name><description>
+</description><synonyms>PF</synonyms><weight>0</weight><depth>3</depth><parent>20041</parent></term>
+<term><tid>20391</tid><vid>20</vid><name>Tubuai Is.</name><description>
+</description><synonyms>PF</synonyms><weight>0</weight><depth>3</depth><parent>20041</parent></term>
+<term><tid>20392</tid><vid>20</vid><name>Turkey-in-Europe</name><description>
+</description><synonyms>TR</synonyms><weight>0</weight><depth>3</depth><parent>20013</parent></term>
+<term><tid>20393</tid><vid>20</vid><name>Tunisia</name><description>
+</description><synonyms>TN</synonyms><weight>0</weight><depth>3</depth><parent>20015</parent></term>
+<term><tid>20394</tid><vid>20</vid><name>Turkey</name><description>
+</description><synonyms>TR</synonyms><weight>0</weight><depth>3</depth><parent>20029</parent></term>
+<term><tid>20395</tid><vid>20</vid><name>Tuvalu</name><description>
+</description><synonyms>TV</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20396</tid><vid>20</vid><name>Tuva</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20025</parent></term>
+<term><tid>20397</tid><vid>20</vid><name>Northern Provinces</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>3</depth><parent>20022</parent></term>
+<term><tid>20398</tid><vid>20</vid><name>Tadzhikistan</name><description>
+</description><synonyms>TJ</synonyms><weight>0</weight><depth>3</depth><parent>20027</parent></term>
+<term><tid>20399</tid><vid>20</vid><name>Uganda</name><description>
+</description><synonyms>UG</synonyms><weight>0</weight><depth>3</depth><parent>20020</parent></term>
+<term><tid>20400</tid><vid>20</vid><name>Ukraine</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20014</parent></term>
+<term><tid>20401</tid><vid>20</vid><name>Uruguay</name><description>
+</description><synonyms>UY</synonyms><weight>0</weight><depth>3</depth><parent>20059</parent></term>
+<term><tid>20402</tid><vid>20</vid><name>Utah</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20050</parent></term>
+<term><tid>20403</tid><vid>20</vid><name>Uzbekistan</name><description>
+</description><synonyms>UZ</synonyms><weight>0</weight><depth>3</depth><parent>20027</parent></term>
+<term><tid>20404</tid><vid>20</vid><name>Vanuatu</name><description>
+</description><synonyms>VU</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20405</tid><vid>20</vid><name>Venezuela</name><description>
+</description><synonyms>VE</synonyms><weight>0</weight><depth>3</depth><parent>20056</parent></term>
+<term><tid>20406</tid><vid>20</vid><name>Vermont</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20407</tid><vid>20</vid><name>Victoria</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>3</depth><parent>20038</parent></term>
+<term><tid>20408</tid><vid>20</vid><name>Vietnam</name><description>
+</description><synonyms>VN</synonyms><weight>0</weight><depth>3</depth><parent>20035</parent></term>
+<term><tid>20409</tid><vid>20</vid><name>Venezuelan Antilles</name><description>
+</description><synonyms>VE</synonyms><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20410</tid><vid>20</vid><name>Virginia</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20411</tid><vid>20</vid><name>Wake I.</name><description>
+</description><synonyms>UM</synonyms><weight>0</weight><depth>3</depth><parent>20042</parent></term>
+<term><tid>20412</tid><vid>20</vid><name>Wallis-Futuna Is.</name><description>
+</description><synonyms>WF</synonyms><weight>0</weight><depth>3</depth><parent>20040</parent></term>
+<term><tid>20413</tid><vid>20</vid><name>Washington</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20047</parent></term>
+<term><tid>20414</tid><vid>20</vid><name>Western Australia</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>3</depth><parent>20038</parent></term>
+<term><tid>20415</tid><vid>20</vid><name>District of Columbia</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20052</parent></term>
+<term><tid>20416</tid><vid>20</vid><name>West Himalaya</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20034</parent></term>
+<term><tid>20417</tid><vid>20</vid><name>Windward Is.</name><description>
+</description><synonyms/><weight>0</weight><depth>3</depth><parent>20055</parent></term>
+<term><tid>20418</tid><vid>20</vid><name>Wisconsin</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20048</parent></term>
+<term><tid>20419</tid><vid>20</vid><name>Western Sahara</name><description>
+</description><synonyms>EH</synonyms><weight>0</weight><depth>3</depth><parent>20015</parent></term>
+<term><tid>20420</tid><vid>20</vid><name>West Siberia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20025</parent></term>
+<term><tid>20421</tid><vid>20</vid><name>West Virginia</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20049</parent></term>
+<term><tid>20422</tid><vid>20</vid><name>Wyoming</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>3</depth><parent>20047</parent></term>
+<term><tid>20423</tid><vid>20</vid><name>Christmas I.</name><description>
+</description><synonyms>CX</synonyms><weight>0</weight><depth>3</depth><parent>20036</parent></term>
+<term><tid>20424</tid><vid>20</vid><name>Yakutskiya</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>3</depth><parent>20025</parent></term>
+<term><tid>20425</tid><vid>20</vid><name>Yemen</name><description>
+</description><synonyms>YE</synonyms><weight>0</weight><depth>3</depth><parent>20030</parent></term>
+<term><tid>20426</tid><vid>20</vid><name>Yugoslavia</name><description>
+</description><synonyms>YU</synonyms><weight>0</weight><depth>3</depth><parent>20013</parent></term>
+<term><tid>20427</tid><vid>20</vid><name>Yukon</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>3</depth><parent>20044</parent></term>
+<term><tid>20428</tid><vid>20</vid><name>Zaire</name><description>
+</description><synonyms>CD</synonyms><weight>0</weight><depth>3</depth><parent>20018</parent></term>
+<term><tid>20429</tid><vid>20</vid><name>Zambia</name><description>
+</description><synonyms>ZM</synonyms><weight>0</weight><depth>3</depth><parent>20021</parent></term>
+<term><tid>20430</tid><vid>20</vid><name>Zimbabwe</name><description>
+</description><synonyms>ZW</synonyms><weight>0</weight><depth>3</depth><parent>20021</parent></term>
+<term><tid>20431</tid><vid>20</vid><name>Alberta</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20062</parent></term>
+<term><tid>20432</tid><vid>20</vid><name>Afghanistan</name><description>
+</description><synonyms>AF</synonyms><weight>0</weight><depth>4</depth><parent>20063</parent></term>
+<term><tid>20433</tid><vid>20</vid><name>Buenos Aires</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20064</parent></term>
+<term><tid>20434</tid><vid>20</vid><name>Chaco</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20064</parent></term>
+<term><tid>20435</tid><vid>20</vid><name>Corrientes</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20064</parent></term>
+<term><tid>20436</tid><vid>20</vid><name>Córdoba</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20064</parent></term>
+<term><tid>20437</tid><vid>20</vid><name>Argentina Distrito Federal</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20064</parent></term>
+<term><tid>20438</tid><vid>20</vid><name>Entre Ríos</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20064</parent></term>
+<term><tid>20439</tid><vid>20</vid><name>Formosa</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20064</parent></term>
+<term><tid>20440</tid><vid>20</vid><name>La Pampa</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20064</parent></term>
+<term><tid>20441</tid><vid>20</vid><name>Misiones</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20064</parent></term>
+<term><tid>20442</tid><vid>20</vid><name>Chubut</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20065</parent></term>
+<term><tid>20443</tid><vid>20</vid><name>Neuquén</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20065</parent></term>
+<term><tid>20444</tid><vid>20</vid><name>Rio Negro</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20065</parent></term>
+<term><tid>20445</tid><vid>20</vid><name>Santa Cruz</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20065</parent></term>
+<term><tid>20446</tid><vid>20</vid><name>Santa Fé</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20065</parent></term>
+<term><tid>20447</tid><vid>20</vid><name>Tierra del Fuego (Argentina)</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20065</parent></term>
+<term><tid>20448</tid><vid>20</vid><name>Catamarca</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20066</parent></term>
+<term><tid>20449</tid><vid>20</vid><name>Jujuy</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20066</parent></term>
+<term><tid>20450</tid><vid>20</vid><name>La Rioja</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20066</parent></term>
+<term><tid>20451</tid><vid>20</vid><name>Mendoza</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20066</parent></term>
+<term><tid>20452</tid><vid>20</vid><name>Salta</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20066</parent></term>
+<term><tid>20453</tid><vid>20</vid><name>Santiago del Estero</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20066</parent></term>
+<term><tid>20454</tid><vid>20</vid><name>San Juan</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20066</parent></term>
+<term><tid>20455</tid><vid>20</vid><name>San Luis</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20066</parent></term>
+<term><tid>20456</tid><vid>20</vid><name>Tucuman</name><description>
+</description><synonyms>AR</synonyms><weight>0</weight><depth>4</depth><parent>20066</parent></term>
+<term><tid>20457</tid><vid>20</vid><name>Alabama</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20067</parent></term>
+<term><tid>20458</tid><vid>20</vid><name>Albania</name><description>
+</description><synonyms>AL</synonyms><weight>0</weight><depth>4</depth><parent>20068</parent></term>
+<term><tid>20459</tid><vid>20</vid><name>Aldabra</name><description>
+</description><synonyms>SC</synonyms><weight>0</weight><depth>4</depth><parent>20069</parent></term>
+<term><tid>20460</tid><vid>20</vid><name>Algeria</name><description>
+</description><synonyms>DZ</synonyms><weight>0</weight><depth>4</depth><parent>20070</parent></term>
+<term><tid>20461</tid><vid>20</vid><name>Altay</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20071</parent></term>
+<term><tid>20462</tid><vid>20</vid><name>Aleutian Is.</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20072</parent></term>
+<term><tid>20463</tid><vid>20</vid><name>Amur</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20073</parent></term>
+<term><tid>20464</tid><vid>20</vid><name>Andaman Is.</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20074</parent></term>
+<term><tid>20465</tid><vid>20</vid><name>Coco Is.</name><description>
+</description><synonyms>BU</synonyms><weight>0</weight><depth>4</depth><parent>20074</parent></term>
+<term><tid>20466</tid><vid>20</vid><name>Angola</name><description>
+</description><synonyms>AO</synonyms><weight>0</weight><depth>4</depth><parent>20075</parent></term>
+<term><tid>20467</tid><vid>20</vid><name>Antarctica</name><description>
+</description><synonyms>AQ</synonyms><weight>0</weight><depth>4</depth><parent>20076</parent></term>
+<term><tid>20468</tid><vid>20</vid><name>Arizona</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20077</parent></term>
+<term><tid>20469</tid><vid>20</vid><name>Arkansas</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20078</parent></term>
+<term><tid>20470</tid><vid>20</vid><name>Aruba</name><description>
+</description><synonyms>AW</synonyms><weight>0</weight><depth>4</depth><parent>20079</parent></term>
+<term><tid>20471</tid><vid>20</vid><name>Ascension</name><description>
+</description><synonyms>SH</synonyms><weight>0</weight><depth>4</depth><parent>20080</parent></term>
+<term><tid>20472</tid><vid>20</vid><name>Alaska</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20081</parent></term>
+<term><tid>20473</tid><vid>20</vid><name>Amsterdam-St.Paul Is.</name><description>
+</description><synonyms>TF</synonyms><weight>0</weight><depth>4</depth><parent>20082</parent></term>
+<term><tid>20474</tid><vid>20</vid><name>Assam</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20083</parent></term>
+<term><tid>20475</tid><vid>20</vid><name>Manipur</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20083</parent></term>
+<term><tid>20476</tid><vid>20</vid><name>Meghalaya</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20083</parent></term>
+<term><tid>20477</tid><vid>20</vid><name>Mizoram</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20083</parent></term>
+<term><tid>20478</tid><vid>20</vid><name>Nagaland</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20083</parent></term>
+<term><tid>20479</tid><vid>20</vid><name>Tripura</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20083</parent></term>
+<term><tid>20480</tid><vid>20</vid><name>Antipodean Is.</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>4</depth><parent>20084</parent></term>
+<term><tid>20481</tid><vid>20</vid><name>Austria</name><description>
+</description><synonyms>AT</synonyms><weight>0</weight><depth>4</depth><parent>20085</parent></term>
+<term><tid>20482</tid><vid>20</vid><name>Liechtenstein</name><description>
+</description><synonyms>LI</synonyms><weight>0</weight><depth>4</depth><parent>20085</parent></term>
+<term><tid>20483</tid><vid>20</vid><name>Açôres</name><description>
+</description><synonyms>PT</synonyms><weight>0</weight><depth>4</depth><parent>20086</parent></term>
+<term><tid>20484</tid><vid>20</vid><name>Bahamas</name><description>
+</description><synonyms>BS</synonyms><weight>0</weight><depth>4</depth><parent>20087</parent></term>
+<term><tid>20485</tid><vid>20</vid><name>Baleares</name><description>
+</description><synonyms>ES</synonyms><weight>0</weight><depth>4</depth><parent>20088</parent></term>
+<term><tid>20486</tid><vid>20</vid><name>Bangladesh</name><description>
+</description><synonyms>BD</synonyms><weight>0</weight><depth>4</depth><parent>20089</parent></term>
+<term><tid>20487</tid><vid>20</vid><name>Benin</name><description>
+</description><synonyms>BJ</synonyms><weight>0</weight><depth>4</depth><parent>20090</parent></term>
+<term><tid>20488</tid><vid>20</vid><name>Bermuda</name><description>
+</description><synonyms>BM</synonyms><weight>0</weight><depth>4</depth><parent>20091</parent></term>
+<term><tid>20489</tid><vid>20</vid><name>Belgium</name><description>
+</description><synonyms>BE</synonyms><weight>0</weight><depth>4</depth><parent>20092</parent></term>
+<term><tid>20490</tid><vid>20</vid><name>Luxembourg</name><description>
+</description><synonyms>LU</synonyms><weight>0</weight><depth>4</depth><parent>20092</parent></term>
+<term><tid>20491</tid><vid>20</vid><name>Bismarck Archipelago</name><description>
+</description><synonyms>PG</synonyms><weight>0</weight><depth>4</depth><parent>20093</parent></term>
+<term><tid>20492</tid><vid>20</vid><name>Burkina</name><description>
+</description><synonyms>BF</synonyms><weight>0</weight><depth>4</depth><parent>20094</parent></term>
+<term><tid>20493</tid><vid>20</vid><name>Belarus</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20095</parent></term>
+<term><tid>20494</tid><vid>20</vid><name>Estonia</name><description>
+</description><synonyms>EE</synonyms><weight>0</weight><depth>4</depth><parent>20096</parent></term>
+<term><tid>20495</tid><vid>20</vid><name>Kaliningrad</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20096</parent></term>
+<term><tid>20496</tid><vid>20</vid><name>Latvia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20096</parent></term>
+<term><tid>20497</tid><vid>20</vid><name>Lithuania</name><description>
+</description><synonyms>LT</synonyms><weight>0</weight><depth>4</depth><parent>20096</parent></term>
+<term><tid>20498</tid><vid>20</vid><name>Belize</name><description>
+</description><synonyms>BZ</synonyms><weight>0</weight><depth>4</depth><parent>20097</parent></term>
+<term><tid>20499</tid><vid>20</vid><name>Bolivia</name><description>
+</description><synonyms>BO</synonyms><weight>0</weight><depth>4</depth><parent>20098</parent></term>
+<term><tid>20500</tid><vid>20</vid><name>Brunei</name><description>
+</description><synonyms>BN</synonyms><weight>0</weight><depth>4</depth><parent>20099</parent></term>
+<term><tid>20501</tid><vid>20</vid><name>Kalimantan</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>4</depth><parent>20099</parent></term>
+<term><tid>20502</tid><vid>20</vid><name>Sabah</name><description>
+</description><synonyms>MY</synonyms><weight>0</weight><depth>4</depth><parent>20099</parent></term>
+<term><tid>20503</tid><vid>20</vid><name>Sarawak</name><description>
+</description><synonyms>MY</synonyms><weight>0</weight><depth>4</depth><parent>20099</parent></term>
+<term><tid>20504</tid><vid>20</vid><name>Botswana</name><description>
+</description><synonyms>BW</synonyms><weight>0</weight><depth>4</depth><parent>20100</parent></term>
+<term><tid>20505</tid><vid>20</vid><name>Bouvet I.</name><description>
+</description><synonyms>BV</synonyms><weight>0</weight><depth>4</depth><parent>20101</parent></term>
+<term><tid>20506</tid><vid>20</vid><name>British Columbia</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20102</parent></term>
+<term><tid>20507</tid><vid>20</vid><name>Buryatiya</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20103</parent></term>
+<term><tid>20508</tid><vid>20</vid><name>Bulgaria</name><description>
+</description><synonyms>BG</synonyms><weight>0</weight><depth>4</depth><parent>20104</parent></term>
+<term><tid>20509</tid><vid>20</vid><name>Burundi</name><description>
+</description><synonyms>BI</synonyms><weight>0</weight><depth>4</depth><parent>20105</parent></term>
+<term><tid>20510</tid><vid>20</vid><name>Brazilia Distrito Federal</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20106</parent></term>
+<term><tid>20511</tid><vid>20</vid><name>Goiás</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20106</parent></term>
+<term><tid>20512</tid><vid>20</vid><name>Mato Grosso do Sul</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20106</parent></term>
+<term><tid>20513</tid><vid>20</vid><name>Mato Grosso</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20106</parent></term>
+<term><tid>20514</tid><vid>20</vid><name>Alagoas</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20515</tid><vid>20</vid><name>Bahia</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20516</tid><vid>20</vid><name>Ceará</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20517</tid><vid>20</vid><name>Fernando de Noronha</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20518</tid><vid>20</vid><name>Maranhao</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20519</tid><vid>20</vid><name>Paraíba</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20520</tid><vid>20</vid><name>Pernambuco</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20521</tid><vid>20</vid><name>Piauí</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20522</tid><vid>20</vid><name>Rio Grande do Norte</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20523</tid><vid>20</vid><name>Sergipe</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20107</parent></term>
+<term><tid>20524</tid><vid>20</vid><name>Espirito Santo</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20108</parent></term>
+<term><tid>20525</tid><vid>20</vid><name>Minas Gerais</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20108</parent></term>
+<term><tid>20526</tid><vid>20</vid><name>Rio de Janeiro</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20108</parent></term>
+<term><tid>20527</tid><vid>20</vid><name>São Paulo</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20108</parent></term>
+<term><tid>20528</tid><vid>20</vid><name>Trindade</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20108</parent></term>
+<term><tid>20529</tid><vid>20</vid><name>Acre</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20109</parent></term>
+<term><tid>20530</tid><vid>20</vid><name>Amazonas</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20109</parent></term>
+<term><tid>20531</tid><vid>20</vid><name>Amapá</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20109</parent></term>
+<term><tid>20532</tid><vid>20</vid><name>Pará</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20109</parent></term>
+<term><tid>20533</tid><vid>20</vid><name>Roraima</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20109</parent></term>
+<term><tid>20534</tid><vid>20</vid><name>Rondônia</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20109</parent></term>
+<term><tid>20535</tid><vid>20</vid><name>Tocantins</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20109</parent></term>
+<term><tid>20536</tid><vid>20</vid><name>Paraná</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20110</parent></term>
+<term><tid>20537</tid><vid>20</vid><name>Rio Grande do Sul</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20110</parent></term>
+<term><tid>20538</tid><vid>20</vid><name>Santa Catarina</name><description>
+</description><synonyms>BR</synonyms><weight>0</weight><depth>4</depth><parent>20110</parent></term>
+<term><tid>20539</tid><vid>20</vid><name>Cabinda</name><description>
+</description><synonyms>AO</synonyms><weight>0</weight><depth>4</depth><parent>20111</parent></term>
+<term><tid>20540</tid><vid>20</vid><name>Central African Republic</name><description>
+</description><synonyms>CF</synonyms><weight>0</weight><depth>4</depth><parent>20112</parent></term>
+<term><tid>20541</tid><vid>20</vid><name>California</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20113</parent></term>
+<term><tid>20542</tid><vid>20</vid><name>Cayman Is.</name><description>
+</description><synonyms>KY</synonyms><weight>0</weight><depth>4</depth><parent>20114</parent></term>
+<term><tid>20543</tid><vid>20</vid><name>Cambodia</name><description>
+</description><synonyms>KH</synonyms><weight>0</weight><depth>4</depth><parent>20115</parent></term>
+<term><tid>20544</tid><vid>20</vid><name>Chagos Archipelago</name><description>
+</description><synonyms>IO</synonyms><weight>0</weight><depth>4</depth><parent>20116</parent></term>
+<term><tid>20545</tid><vid>20</vid><name>Chad</name><description>
+</description><synonyms>TD</synonyms><weight>0</weight><depth>4</depth><parent>20117</parent></term>
+<term><tid>20546</tid><vid>20</vid><name>Guizhou</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20118</parent></term>
+<term><tid>20547</tid><vid>20</vid><name>Hubei</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20118</parent></term>
+<term><tid>20548</tid><vid>20</vid><name>Sichuan</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20118</parent></term>
+<term><tid>20549</tid><vid>20</vid><name>Yunnan</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20118</parent></term>
+<term><tid>20550</tid><vid>20</vid><name>Hainan</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20119</parent></term>
+<term><tid>20551</tid><vid>20</vid><name>Nei Mongol</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20120</parent></term>
+<term><tid>20552</tid><vid>20</vid><name>Ningxia</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20120</parent></term>
+<term><tid>20553</tid><vid>20</vid><name>Heilongjiang</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20121</parent></term>
+<term><tid>20554</tid><vid>20</vid><name>Jilin</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20121</parent></term>
+<term><tid>20555</tid><vid>20</vid><name>Liaoning</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20121</parent></term>
+<term><tid>20556</tid><vid>20</vid><name>Beijing</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20122</parent></term>
+<term><tid>20557</tid><vid>20</vid><name>Gansu</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20122</parent></term>
+<term><tid>20558</tid><vid>20</vid><name>Hebei</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20122</parent></term>
+<term><tid>20559</tid><vid>20</vid><name>Shaanxi</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20122</parent></term>
+<term><tid>20560</tid><vid>20</vid><name>Shandong</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20122</parent></term>
+<term><tid>20561</tid><vid>20</vid><name>Shanxi</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20122</parent></term>
+<term><tid>20562</tid><vid>20</vid><name>Tianjin</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20122</parent></term>
+<term><tid>20563</tid><vid>20</vid><name>Qinghai</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20123</parent></term>
+<term><tid>20564</tid><vid>20</vid><name>Anhui</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20565</tid><vid>20</vid><name>Fujian</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20566</tid><vid>20</vid><name>Guangdong</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20567</tid><vid>20</vid><name>Guangxi</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20568</tid><vid>20</vid><name>Henan</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20569</tid><vid>20</vid><name>Hong Kong</name><description>
+</description><synonyms>HK</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20570</tid><vid>20</vid><name>Hunan</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20571</tid><vid>20</vid><name>Jiangsu</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20572</tid><vid>20</vid><name>Jiangxi</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20573</tid><vid>20</vid><name>Kin-Men</name><description>
+</description><synonyms>TW</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20574</tid><vid>20</vid><name>Macau</name><description>
+</description><synonyms>MO</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20575</tid><vid>20</vid><name>Ma-tsu-Pai-chúan</name><description>
+</description><synonyms>TW</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20576</tid><vid>20</vid><name>Shanghai</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20577</tid><vid>20</vid><name>Zhejiang</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20124</parent></term>
+<term><tid>20578</tid><vid>20</vid><name>Tibet</name><description>Sube del nivel 4 al nivel 3. El código en el libro es CHT-XI.
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20125</parent></term>
+<term><tid>20579</tid><vid>20</vid><name>Xinjiang</name><description>
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20126</parent></term>
+<term><tid>20580</tid><vid>20</vid><name>Cocos (Keeling) Is.</name><description>
+</description><synonyms>CC</synonyms><weight>0</weight><depth>4</depth><parent>20127</parent></term>
+<term><tid>20581</tid><vid>20</vid><name>Biobío</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20128</parent></term>
+<term><tid>20582</tid><vid>20</vid><name>Coquimbo</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20128</parent></term>
+<term><tid>20583</tid><vid>20</vid><name>La Araucania</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20128</parent></term>
+<term><tid>20584</tid><vid>20</vid><name>Maule</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20128</parent></term>
+<term><tid>20585</tid><vid>20</vid><name>O'Higgins</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20128</parent></term>
+<term><tid>20586</tid><vid>20</vid><name>Santiago</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20128</parent></term>
+<term><tid>20587</tid><vid>20</vid><name>Valparaíso</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20128</parent></term>
+<term><tid>20588</tid><vid>20</vid><name>Colombia</name><description>
+</description><synonyms>CO</synonyms><weight>0</weight><depth>4</depth><parent>20129</parent></term>
+<term><tid>20589</tid><vid>20</vid><name>Antofagasta</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20130</parent></term>
+<term><tid>20590</tid><vid>20</vid><name>Atacama</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20130</parent></term>
+<term><tid>20591</tid><vid>20</vid><name>Tarapaca</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20130</parent></term>
+<term><tid>20592</tid><vid>20</vid><name>Aisén</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20131</parent></term>
+<term><tid>20593</tid><vid>20</vid><name>Los Lagos</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20131</parent></term>
+<term><tid>20594</tid><vid>20</vid><name>Magellanes</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20131</parent></term>
+<term><tid>20595</tid><vid>20</vid><name>Cameroon</name><description>
+</description><synonyms>CM</synonyms><weight>0</weight><depth>4</depth><parent>20132</parent></term>
+<term><tid>20596</tid><vid>20</vid><name>Connecticut</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20133</parent></term>
+<term><tid>20597</tid><vid>20</vid><name>Canary Is.</name><description>
+</description><synonyms>ES</synonyms><weight>0</weight><depth>4</depth><parent>20134</parent></term>
+<term><tid>20598</tid><vid>20</vid><name>Colorado</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20135</parent></term>
+<term><tid>20599</tid><vid>20</vid><name>Comoros</name><description>
+</description><synonyms>KM</synonyms><weight>0</weight><depth>4</depth><parent>20136</parent></term>
+<term><tid>20600</tid><vid>20</vid><name>Mayotte</name><description>
+</description><synonyms>YT</synonyms><weight>0</weight><depth>4</depth><parent>20136</parent></term>
+<term><tid>20601</tid><vid>20</vid><name>Congo</name><description>
+</description><synonyms>CG</synonyms><weight>0</weight><depth>4</depth><parent>20137</parent></term>
+<term><tid>20602</tid><vid>20</vid><name>Cook Is.</name><description>
+</description><synonyms>CK</synonyms><weight>0</weight><depth>4</depth><parent>20138</parent></term>
+<term><tid>20603</tid><vid>20</vid><name>Corse</name><description>
+</description><synonyms>FR</synonyms><weight>0</weight><depth>4</depth><parent>20139</parent></term>
+<term><tid>20604</tid><vid>20</vid><name>Costa Rica</name><description>
+</description><synonyms>CR</synonyms><weight>0</weight><depth>4</depth><parent>20140</parent></term>
+<term><tid>20605</tid><vid>20</vid><name>Clipperton I.</name><description>
+</description><synonyms>PF</synonyms><weight>0</weight><depth>4</depth><parent>20141</parent></term>
+<term><tid>20606</tid><vid>20</vid><name>Cocos I.</name><description>
+</description><synonyms>CR</synonyms><weight>0</weight><depth>4</depth><parent>20141</parent></term>
+<term><tid>20607</tid><vid>20</vid><name>Malpelo I.</name><description>
+</description><synonyms>CO</synonyms><weight>0</weight><depth>4</depth><parent>20141</parent></term>
+<term><tid>20608</tid><vid>20</vid><name>Eastern Cape Province</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20142</parent></term>
+<term><tid>20609</tid><vid>20</vid><name>Northern Cape Province</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20142</parent></term>
+<term><tid>20610</tid><vid>20</vid><name>Western Cape Province</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20142</parent></term>
+<term><tid>20611</tid><vid>20</vid><name>Caprivi Strip</name><description>
+</description><synonyms>NA</synonyms><weight>0</weight><depth>4</depth><parent>20143</parent></term>
+<term><tid>20612</tid><vid>20</vid><name>Micronesia Federated States</name><description>
+</description><synonyms>FM</synonyms><weight>0</weight><depth>4</depth><parent>20144</parent></term>
+<term><tid>20613</tid><vid>20</vid><name>Palau</name><description>
+</description><synonyms>PW</synonyms><weight>0</weight><depth>4</depth><parent>20144</parent></term>
+<term><tid>20614</tid><vid>20</vid><name>Crozet Is.</name><description>
+</description><synonyms>TF</synonyms><weight>0</weight><depth>4</depth><parent>20145</parent></term>
+<term><tid>20615</tid><vid>20</vid><name>Chita</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20146</parent></term>
+<term><tid>20616</tid><vid>20</vid><name>Chatham Is.</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>4</depth><parent>20147</parent></term>
+<term><tid>20617</tid><vid>20</vid><name>Cuba</name><description>
+</description><synonyms>CU</synonyms><weight>0</weight><depth>4</depth><parent>20148</parent></term>
+<term><tid>20618</tid><vid>20</vid><name>Cape Verde</name><description>
+</description><synonyms>CV</synonyms><weight>0</weight><depth>4</depth><parent>20149</parent></term>
+<term><tid>20619</tid><vid>20</vid><name>Cyprus</name><description>
+</description><synonyms>CY</synonyms><weight>0</weight><depth>4</depth><parent>20150</parent></term>
+<term><tid>20620</tid><vid>20</vid><name>Czech Republic</name><description>
+</description><synonyms>SK</synonyms><weight>0</weight><depth>4</depth><parent>20151</parent></term>
+<term><tid>20621</tid><vid>20</vid><name>Slovakia</name><description>
+</description><synonyms>CZ</synonyms><weight>0</weight><depth>4</depth><parent>20151</parent></term>
+<term><tid>20622</tid><vid>20</vid><name>Delaware</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20152</parent></term>
+<term><tid>20623</tid><vid>20</vid><name>Denmark</name><description>
+</description><synonyms>DK</synonyms><weight>0</weight><depth>4</depth><parent>20153</parent></term>
+<term><tid>20624</tid><vid>20</vid><name>Djibouti</name><description>
+</description><synonyms>DJ</synonyms><weight>0</weight><depth>4</depth><parent>20154</parent></term>
+<term><tid>20625</tid><vid>20</vid><name>Dominican Republic</name><description>
+</description><synonyms>DO</synonyms><weight>0</weight><depth>4</depth><parent>20155</parent></term>
+<term><tid>20626</tid><vid>20</vid><name>Desventurados Is.</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20156</parent></term>
+<term><tid>20627</tid><vid>20</vid><name>East Aegean Is.</name><description>
+</description><synonyms>GR</synonyms><weight>0</weight><depth>4</depth><parent>20157</parent></term>
+<term><tid>20628</tid><vid>20</vid><name>Easter Is.</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20158</parent></term>
+<term><tid>20629</tid><vid>20</vid><name>Ecuador</name><description>
+</description><synonyms>EC</synonyms><weight>0</weight><depth>4</depth><parent>20159</parent></term>
+<term><tid>20630</tid><vid>20</vid><name>Egypt</name><description>
+</description><synonyms>EG</synonyms><weight>0</weight><depth>4</depth><parent>20160</parent></term>
+<term><tid>20631</tid><vid>20</vid><name>Arunachal Pradesh</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20161</parent></term>
+<term><tid>20632</tid><vid>20</vid><name>Bhutan</name><description>
+</description><synonyms>BT</synonyms><weight>0</weight><depth>4</depth><parent>20161</parent></term>
+<term><tid>20633</tid><vid>20</vid><name>Darjiling</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20161</parent></term>
+<term><tid>20634</tid><vid>20</vid><name>Sikkim</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20161</parent></term>
+<term><tid>20635</tid><vid>20</vid><name>El Salvador</name><description>
+</description><synonyms>SV</synonyms><weight>0</weight><depth>4</depth><parent>20162</parent></term>
+<term><tid>20636</tid><vid>20</vid><name>Equatorial Guinea</name><description>
+</description><synonyms>GQ</synonyms><weight>0</weight><depth>4</depth><parent>20163</parent></term>
+<term><tid>20637</tid><vid>20</vid><name>Eritrea</name><description>
+</description><synonyms>ER</synonyms><weight>0</weight><depth>4</depth><parent>20164</parent></term>
+<term><tid>20638</tid><vid>20</vid><name>Ethiopia</name><description>
+</description><synonyms>ET</synonyms><weight>0</weight><depth>4</depth><parent>20165</parent></term>
+<term><tid>20639</tid><vid>20</vid><name>Falkland Is.</name><description>
+</description><synonyms>FK</synonyms><weight>0</weight><depth>4</depth><parent>20166</parent></term>
+<term><tid>20640</tid><vid>20</vid><name>Fiji</name><description>
+</description><synonyms>FJ</synonyms><weight>0</weight><depth>4</depth><parent>20167</parent></term>
+<term><tid>20641</tid><vid>20</vid><name>Finland</name><description>
+</description><synonyms>FI</synonyms><weight>0</weight><depth>4</depth><parent>20168</parent></term>
+<term><tid>20642</tid><vid>20</vid><name>Florida</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20169</parent></term>
+<term><tid>20643</tid><vid>20</vid><name>Føroyar</name><description>
+</description><synonyms>FO</synonyms><weight>0</weight><depth>4</depth><parent>20170</parent></term>
+<term><tid>20644</tid><vid>20</vid><name>Channel Is.</name><description>
+</description><synonyms>UK</synonyms><weight>0</weight><depth>4</depth><parent>20171</parent></term>
+<term><tid>20645</tid><vid>20</vid><name>France</name><description>
+</description><synonyms>FR</synonyms><weight>0</weight><depth>4</depth><parent>20171</parent></term>
+<term><tid>20646</tid><vid>20</vid><name>Monaco</name><description>
+</description><synonyms>MC</synonyms><weight>0</weight><depth>4</depth><parent>20171</parent></term>
+<term><tid>20647</tid><vid>20</vid><name>French Guiana</name><description>
+</description><synonyms>GF</synonyms><weight>0</weight><depth>4</depth><parent>20172</parent></term>
+<term><tid>20648</tid><vid>20</vid><name>Gabon</name><description>
+</description><synonyms>GA</synonyms><weight>0</weight><depth>4</depth><parent>20173</parent></term>
+<term><tid>20649</tid><vid>20</vid><name>Galápagos</name><description>
+</description><synonyms>EC</synonyms><weight>0</weight><depth>4</depth><parent>20174</parent></term>
+<term><tid>20650</tid><vid>20</vid><name>Gambia, The</name><description>
+</description><synonyms>GM</synonyms><weight>0</weight><depth>4</depth><parent>20175</parent></term>
+<term><tid>20651</tid><vid>20</vid><name>Georgia</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20176</parent></term>
+<term><tid>20652</tid><vid>20</vid><name>Germany</name><description>
+</description><synonyms>DE</synonyms><weight>0</weight><depth>4</depth><parent>20177</parent></term>
+<term><tid>20653</tid><vid>20</vid><name>Annobón</name><description>
+</description><synonyms>GQ</synonyms><weight>0</weight><depth>4</depth><parent>20178</parent></term>
+<term><tid>20654</tid><vid>20</vid><name>Bioko</name><description>
+</description><synonyms>GQ</synonyms><weight>0</weight><depth>4</depth><parent>20178</parent></term>
+<term><tid>20655</tid><vid>20</vid><name>Principe</name><description>
+</description><synonyms>ST</synonyms><weight>0</weight><depth>4</depth><parent>20178</parent></term>
+<term><tid>20656</tid><vid>20</vid><name>São Tomé</name><description>
+</description><synonyms>ST</synonyms><weight>0</weight><depth>4</depth><parent>20178</parent></term>
+<term><tid>20657</tid><vid>20</vid><name>Ghana</name><description>
+</description><synonyms>GH</synonyms><weight>0</weight><depth>4</depth><parent>20179</parent></term>
+<term><tid>20658</tid><vid>20</vid><name>Gilbert Is.</name><description>
+</description><synonyms>KI</synonyms><weight>0</weight><depth>4</depth><parent>20180</parent></term>
+<term><tid>20659</tid><vid>20</vid><name>Guinea-Bissau</name><description>
+</description><synonyms>GW</synonyms><weight>0</weight><depth>4</depth><parent>20181</parent></term>
+<term><tid>20660</tid><vid>20</vid><name>Greenland</name><description>
+</description><synonyms>GL</synonyms><weight>0</weight><depth>4</depth><parent>20182</parent></term>
+<term><tid>20661</tid><vid>20</vid><name>Great Britain</name><description>
+</description><synonyms>UK</synonyms><weight>0</weight><depth>4</depth><parent>20183</parent></term>
+<term><tid>20662</tid><vid>20</vid><name>Greece</name><description>
+</description><synonyms>GR</synonyms><weight>0</weight><depth>4</depth><parent>20184</parent></term>
+<term><tid>20663</tid><vid>20</vid><name>Bahrain</name><description>
+</description><synonyms>BH</synonyms><weight>0</weight><depth>4</depth><parent>20185</parent></term>
+<term><tid>20664</tid><vid>20</vid><name>Qatar</name><description>
+</description><synonyms>QA</synonyms><weight>0</weight><depth>4</depth><parent>20185</parent></term>
+<term><tid>20665</tid><vid>20</vid><name>United Arab Emirates</name><description>
+</description><synonyms>AE</synonyms><weight>0</weight><depth>4</depth><parent>20185</parent></term>
+<term><tid>20666</tid><vid>20</vid><name>Guatemala</name><description>
+</description><synonyms>GT</synonyms><weight>0</weight><depth>4</depth><parent>20186</parent></term>
+<term><tid>20667</tid><vid>20</vid><name>Guinea</name><description>
+</description><synonyms>GN</synonyms><weight>0</weight><depth>4</depth><parent>20187</parent></term>
+<term><tid>20668</tid><vid>20</vid><name>Guyana</name><description>
+</description><synonyms>GY</synonyms><weight>0</weight><depth>4</depth><parent>20188</parent></term>
+<term><tid>20669</tid><vid>20</vid><name>Haiti</name><description>
+</description><synonyms>HT</synonyms><weight>0</weight><depth>4</depth><parent>20189</parent></term>
+<term><tid>20670</tid><vid>20</vid><name>Navassa I.</name><description>
+</description><synonyms>PR</synonyms><weight>0</weight><depth>4</depth><parent>20189</parent></term>
+<term><tid>20671</tid><vid>20</vid><name>Hawaiian Is.</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20190</parent></term>
+<term><tid>20672</tid><vid>20</vid><name>Johnston I.</name><description>
+</description><synonyms>UM</synonyms><weight>0</weight><depth>4</depth><parent>20190</parent></term>
+<term><tid>20673</tid><vid>20</vid><name>Midway Is.</name><description>
+</description><synonyms>UM</synonyms><weight>0</weight><depth>4</depth><parent>20190</parent></term>
+<term><tid>20674</tid><vid>20</vid><name>Howland-Baker Is.</name><description>
+</description><synonyms>UM</synonyms><weight>0</weight><depth>4</depth><parent>20191</parent></term>
+<term><tid>20675</tid><vid>20</vid><name>Heard-McDonald Is.</name><description>
+</description><synonyms>HM</synonyms><weight>0</weight><depth>4</depth><parent>20192</parent></term>
+<term><tid>20676</tid><vid>20</vid><name>Honduras</name><description>
+</description><synonyms>HN</synonyms><weight>0</weight><depth>4</depth><parent>20193</parent></term>
+<term><tid>20677</tid><vid>20</vid><name>Hungary</name><description>
+</description><synonyms>HU</synonyms><weight>0</weight><depth>4</depth><parent>20194</parent></term>
+<term><tid>20678</tid><vid>20</vid><name>Iceland</name><description>
+</description><synonyms>IS</synonyms><weight>0</weight><depth>4</depth><parent>20195</parent></term>
+<term><tid>20679</tid><vid>20</vid><name>Idaho</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20196</parent></term>
+<term><tid>20680</tid><vid>20</vid><name>Illinois</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20197</parent></term>
+<term><tid>20681</tid><vid>20</vid><name>Andhra Pradesh</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20682</tid><vid>20</vid><name>Bihar</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20683</tid><vid>20</vid><name>Chandigarh</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20684</tid><vid>20</vid><name>Dadra-Nagar-Haveli</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20685</tid><vid>20</vid><name>Delhi</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20686</tid><vid>20</vid><name>Diu</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20687</tid><vid>20</vid><name>Daman</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20688</tid><vid>20</vid><name>Goa</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20689</tid><vid>20</vid><name>Gujarat</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20690</tid><vid>20</vid><name>Haryana</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20691</tid><vid>20</vid><name>Kerala</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20692</tid><vid>20</vid><name>Karaikal</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20693</tid><vid>20</vid><name>Karnataka</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20694</tid><vid>20</vid><name>Mahé</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20695</tid><vid>20</vid><name>Madhya Pradesh</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20696</tid><vid>20</vid><name>Maharashtra</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20697</tid><vid>20</vid><name>Orissa</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20698</tid><vid>20</vid><name>Pondicherry</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20699</tid><vid>20</vid><name>Punjab</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20700</tid><vid>20</vid><name>Rajasthan</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20701</tid><vid>20</vid><name>Tamil Nadu</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20702</tid><vid>20</vid><name>Uttar Pradesh</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20703</tid><vid>20</vid><name>West Bengal</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20704</tid><vid>20</vid><name>Yanam</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>20705</tid><vid>20</vid><name>Indiana</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20199</parent></term>
+<term><tid>20706</tid><vid>20</vid><name>Iowa</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20200</parent></term>
+<term><tid>20707</tid><vid>20</vid><name>Ireland</name><description>
+</description><synonyms>IE</synonyms><weight>0</weight><depth>4</depth><parent>20201</parent></term>
+<term><tid>20708</tid><vid>20</vid><name>Northern Ireland</name><description>
+</description><synonyms>UK</synonyms><weight>0</weight><depth>4</depth><parent>20201</parent></term>
+<term><tid>20709</tid><vid>20</vid><name>Irkutsk</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20202</parent></term>
+<term><tid>20710</tid><vid>20</vid><name>Iran</name><description>
+</description><synonyms>IR</synonyms><weight>0</weight><depth>4</depth><parent>20203</parent></term>
+<term><tid>20711</tid><vid>20</vid><name>Iraq</name><description>
+</description><synonyms>IQ</synonyms><weight>0</weight><depth>4</depth><parent>20204</parent></term>
+<term><tid>20712</tid><vid>20</vid><name>Italy</name><description>
+</description><synonyms>IT</synonyms><weight>0</weight><depth>4</depth><parent>20205</parent></term>
+<term><tid>20713</tid><vid>20</vid><name>San Marino</name><description>
+</description><synonyms>SM</synonyms><weight>0</weight><depth>4</depth><parent>20205</parent></term>
+<term><tid>20714</tid><vid>20</vid><name>Vatican City</name><description>
+</description><synonyms>VA</synonyms><weight>0</weight><depth>4</depth><parent>20205</parent></term>
+<term><tid>20715</tid><vid>20</vid><name>Ivory Coast</name><description>
+</description><synonyms>CI</synonyms><weight>0</weight><depth>4</depth><parent>20206</parent></term>
+<term><tid>20716</tid><vid>20</vid><name>Jamaica</name><description>
+</description><synonyms>JM</synonyms><weight>0</weight><depth>4</depth><parent>20207</parent></term>
+<term><tid>20717</tid><vid>20</vid><name>Hokkaido</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>4</depth><parent>20208</parent></term>
+<term><tid>20718</tid><vid>20</vid><name>Honshu</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>4</depth><parent>20208</parent></term>
+<term><tid>20719</tid><vid>20</vid><name>Kyushu</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>4</depth><parent>20208</parent></term>
+<term><tid>20720</tid><vid>20</vid><name>Shikoku</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>4</depth><parent>20208</parent></term>
+<term><tid>20721</tid><vid>20</vid><name>Jawa</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>4</depth><parent>20209</parent></term>
+<term><tid>20722</tid><vid>20</vid><name>Juan Fernández Is.</name><description>
+</description><synonyms>CL</synonyms><weight>0</weight><depth>4</depth><parent>20210</parent></term>
+<term><tid>20723</tid><vid>20</vid><name>Kamchatka</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20211</parent></term>
+<term><tid>20724</tid><vid>20</vid><name>Kansas</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20212</parent></term>
+<term><tid>20725</tid><vid>20</vid><name>Kazakhstan</name><description>
+</description><synonyms>KZ</synonyms><weight>0</weight><depth>4</depth><parent>20213</parent></term>
+<term><tid>20726</tid><vid>20</vid><name>Kerguelen</name><description>
+</description><synonyms>TF</synonyms><weight>0</weight><depth>4</depth><parent>20214</parent></term>
+<term><tid>20727</tid><vid>20</vid><name>Kenya</name><description>
+</description><synonyms>KE</synonyms><weight>0</weight><depth>4</depth><parent>20215</parent></term>
+<term><tid>20728</tid><vid>20</vid><name>Kermadec Is.</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>4</depth><parent>20216</parent></term>
+<term><tid>20729</tid><vid>20</vid><name>Kirgizistan</name><description>
+</description><synonyms>KG</synonyms><weight>0</weight><depth>4</depth><parent>20217</parent></term>
+<term><tid>20730</tid><vid>20</vid><name>Khabarovsk</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20218</parent></term>
+<term><tid>20731</tid><vid>20</vid><name>North Korea</name><description>
+</description><synonyms>KP</synonyms><weight>0</weight><depth>4</depth><parent>20219</parent></term>
+<term><tid>20732</tid><vid>20</vid><name>South Korea</name><description>
+</description><synonyms>KR</synonyms><weight>0</weight><depth>4</depth><parent>20219</parent></term>
+<term><tid>20733</tid><vid>20</vid><name>Krasnoyarsk</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20220</parent></term>
+<term><tid>20734</tid><vid>20</vid><name>Kriti</name><description>
+</description><synonyms>GR</synonyms><weight>0</weight><depth>4</depth><parent>20221</parent></term>
+<term><tid>20735</tid><vid>20</vid><name>Krym</name><description>
+</description><synonyms>UA</synonyms><weight>0</weight><depth>4</depth><parent>20222</parent></term>
+<term><tid>20736</tid><vid>20</vid><name>Kentucky</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20223</parent></term>
+<term><tid>20737</tid><vid>20</vid><name>Kuril Is.</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20224</parent></term>
+<term><tid>20738</tid><vid>20</vid><name>Kuwait</name><description>
+</description><synonyms>KW</synonyms><weight>0</weight><depth>4</depth><parent>20225</parent></term>
+<term><tid>20739</tid><vid>20</vid><name>Kazan-retto</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>4</depth><parent>20226</parent></term>
+<term><tid>20740</tid><vid>20</vid><name>Labrador</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20227</parent></term>
+<term><tid>20741</tid><vid>20</vid><name>Laos</name><description>
+</description><synonyms>LA</synonyms><weight>0</weight><depth>4</depth><parent>20228</parent></term>
+<term><tid>20742</tid><vid>20</vid><name>Liberia</name><description>
+</description><synonyms>LR</synonyms><weight>0</weight><depth>4</depth><parent>20229</parent></term>
+<term><tid>20743</tid><vid>20</vid><name>Lebanon</name><description>
+</description><synonyms>LB</synonyms><weight>0</weight><depth>4</depth><parent>20230</parent></term>
+<term><tid>20744</tid><vid>20</vid><name>Syria</name><description>
+</description><synonyms>SY</synonyms><weight>0</weight><depth>4</depth><parent>20230</parent></term>
+<term><tid>20745</tid><vid>20</vid><name>Libya</name><description>
+</description><synonyms>LY</synonyms><weight>0</weight><depth>4</depth><parent>20231</parent></term>
+<term><tid>20746</tid><vid>20</vid><name>Laccadive Is.</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20232</parent></term>
+<term><tid>20747</tid><vid>20</vid><name>Antigua-Barbuda</name><description>
+</description><synonyms>AG</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20748</tid><vid>20</vid><name>Anguilla</name><description>
+</description><synonyms>AI</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20749</tid><vid>20</vid><name>Aves I.</name><description>
+</description><synonyms>VE</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20750</tid><vid>20</vid><name>British Virgin Is.</name><description>
+</description><synonyms>VG</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20751</tid><vid>20</vid><name>Guadeloupe</name><description>
+</description><synonyms>GP</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20752</tid><vid>20</vid><name>Montserrat</name><description>
+</description><synonyms>MS</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20753</tid><vid>20</vid><name>Netherlands Leeward Is.</name><description>
+</description><synonyms>AN</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20754</tid><vid>20</vid><name>St.Kitts-Nevis</name><description>
+</description><synonyms>KN</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20755</tid><vid>20</vid><name>St.Martin-St.Barthélémy</name><description>
+</description><synonyms>GP</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20756</tid><vid>20</vid><name>Virgin Is.</name><description>
+</description><synonyms>VI</synonyms><weight>0</weight><depth>4</depth><parent>20233</parent></term>
+<term><tid>20757</tid><vid>20</vid><name>Lesotho</name><description>
+</description><synonyms>LS</synonyms><weight>0</weight><depth>4</depth><parent>20234</parent></term>
+<term><tid>20758</tid><vid>20</vid><name>Kiribati Line Is.</name><description>
+</description><synonyms>KI</synonyms><weight>0</weight><depth>4</depth><parent>20235</parent></term>
+<term><tid>20759</tid><vid>20</vid><name>U.S. Line Is.</name><description>
+</description><synonyms>UM</synonyms><weight>0</weight><depth>4</depth><parent>20235</parent></term>
+<term><tid>20760</tid><vid>20</vid><name>Louisiana</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20236</parent></term>
+<term><tid>20761</tid><vid>20</vid><name>Bali</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>4</depth><parent>20237</parent></term>
+<term><tid>20762</tid><vid>20</vid><name>East Timor</name><description>
+</description><synonyms>TP</synonyms><weight>0</weight><depth>4</depth><parent>20237</parent></term>
+<term><tid>20763</tid><vid>20</vid><name>Lesser Sunda Is.</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>4</depth><parent>20237</parent></term>
+<term><tid>20764</tid><vid>20</vid><name>Magadan</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20238</parent></term>
+<term><tid>20765</tid><vid>20</vid><name>Maine</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20239</parent></term>
+<term><tid>20766</tid><vid>20</vid><name>Manitoba</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20240</parent></term>
+<term><tid>20767</tid><vid>20</vid><name>Macquarie Is.</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20241</parent></term>
+<term><tid>20768</tid><vid>20</vid><name>Masachusettes</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20242</parent></term>
+<term><tid>20769</tid><vid>20</vid><name>Mauritius</name><description>
+</description><synonyms>MU</synonyms><weight>0</weight><depth>4</depth><parent>20243</parent></term>
+<term><tid>20770</tid><vid>20</vid><name>Mozambique Channel Is.</name><description>
+</description><synonyms>RE</synonyms><weight>0</weight><depth>4</depth><parent>20244</parent></term>
+<term><tid>20771</tid><vid>20</vid><name>Marcus I.</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>4</depth><parent>20245</parent></term>
+<term><tid>20772</tid><vid>20</vid><name>Madagascar</name><description>
+</description><synonyms>MG</synonyms><weight>0</weight><depth>4</depth><parent>20246</parent></term>
+<term><tid>20773</tid><vid>20</vid><name>Madeira</name><description>
+</description><synonyms>PT</synonyms><weight>0</weight><depth>4</depth><parent>20247</parent></term>
+<term><tid>20774</tid><vid>20</vid><name>Maldives</name><description>
+</description><synonyms>MV</synonyms><weight>0</weight><depth>4</depth><parent>20248</parent></term>
+<term><tid>20775</tid><vid>20</vid><name>Michigan</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20249</parent></term>
+<term><tid>20776</tid><vid>20</vid><name>Minnesota</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20250</parent></term>
+<term><tid>20777</tid><vid>20</vid><name>Mali</name><description>
+</description><synonyms>ML</synonyms><weight>0</weight><depth>4</depth><parent>20251</parent></term>
+<term><tid>20778</tid><vid>20</vid><name>Malawi</name><description>
+</description><synonyms>MW</synonyms><weight>0</weight><depth>4</depth><parent>20252</parent></term>
+<term><tid>20779</tid><vid>20</vid><name>Peninsular Malaysia</name><description>
+</description><synonyms>MY</synonyms><weight>0</weight><depth>4</depth><parent>20253</parent></term>
+<term><tid>20780</tid><vid>20</vid><name>Singapore</name><description>
+</description><synonyms>SG</synonyms><weight>0</weight><depth>4</depth><parent>20253</parent></term>
+<term><tid>20781</tid><vid>20</vid><name>Montana</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20254</parent></term>
+<term><tid>20782</tid><vid>20</vid><name>Maluku</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>4</depth><parent>20255</parent></term>
+<term><tid>20783</tid><vid>20</vid><name>Mongolia</name><description>
+</description><synonyms>MN</synonyms><weight>0</weight><depth>4</depth><parent>20256</parent></term>
+<term><tid>20784</tid><vid>20</vid><name>Morocco</name><description>
+</description><synonyms>MA</synonyms><weight>0</weight><depth>4</depth><parent>20257</parent></term>
+<term><tid>20785</tid><vid>20</vid><name>Spanish North African Territories</name><description>
+</description><synonyms>ES</synonyms><weight>0</weight><depth>4</depth><parent>20257</parent></term>
+<term><tid>20786</tid><vid>20</vid><name>Mozambique</name><description>
+</description><synonyms>MZ</synonyms><weight>0</weight><depth>4</depth><parent>20258</parent></term>
+<term><tid>20787</tid><vid>20</vid><name>Marion-Prince Edward Is.</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20259</parent></term>
+<term><tid>20788</tid><vid>20</vid><name>Guam</name><description>
+</description><synonyms>GU</synonyms><weight>0</weight><depth>4</depth><parent>20260</parent></term>
+<term><tid>20789</tid><vid>20</vid><name>Northern Marianas</name><description>
+</description><synonyms>MP</synonyms><weight>0</weight><depth>4</depth><parent>20260</parent></term>
+<term><tid>20790</tid><vid>20</vid><name>Marquesas</name><description>
+</description><synonyms>PF</synonyms><weight>0</weight><depth>4</depth><parent>20261</parent></term>
+<term><tid>20791</tid><vid>20</vid><name>Marshall Is.</name><description>
+</description><synonyms>MH</synonyms><weight>0</weight><depth>4</depth><parent>20262</parent></term>
+<term><tid>20792</tid><vid>20</vid><name>Maryland</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20263</parent></term>
+<term><tid>20793</tid><vid>20</vid><name>Mississippi</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20264</parent></term>
+<term><tid>20794</tid><vid>20</vid><name>Missouri</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20265</parent></term>
+<term><tid>20795</tid><vid>20</vid><name>Mauritania</name><description>
+</description><synonyms>MR</synonyms><weight>0</weight><depth>4</depth><parent>20266</parent></term>
+<term><tid>20796</tid><vid>20</vid><name>Mexico Distrito Federal</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20267</parent></term>
+<term><tid>20797</tid><vid>20</vid><name>México State</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20267</parent></term>
+<term><tid>20798</tid><vid>20</vid><name>Morelos</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20267</parent></term>
+<term><tid>20799</tid><vid>20</vid><name>Puebla</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20267</parent></term>
+<term><tid>20800</tid><vid>20</vid><name>Tlaxcala</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20267</parent></term>
+<term><tid>20801</tid><vid>20</vid><name>Aguascalientes</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20802</tid><vid>20</vid><name>Coahuila</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20803</tid><vid>20</vid><name>Chihuahua</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20804</tid><vid>20</vid><name>Durango</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20805</tid><vid>20</vid><name>Guanajuato</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20806</tid><vid>20</vid><name>Hidalgo</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20807</tid><vid>20</vid><name>Nuevo León</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20808</tid><vid>20</vid><name>Querétaro</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20809</tid><vid>20</vid><name>San Luis Potosí</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20810</tid><vid>20</vid><name>Tamaulipas</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20811</tid><vid>20</vid><name>Zacatecas</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20268</parent></term>
+<term><tid>20812</tid><vid>20</vid><name>Veracruz</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20269</parent></term>
+<term><tid>20813</tid><vid>20</vid><name>Guadalupe I.</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20270</parent></term>
+<term><tid>20814</tid><vid>20</vid><name>Rocas Alijos</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20270</parent></term>
+<term><tid>20815</tid><vid>20</vid><name>Revillagigedo Is.</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20270</parent></term>
+<term><tid>20816</tid><vid>20</vid><name>Baja California</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20271</parent></term>
+<term><tid>20817</tid><vid>20</vid><name>Baja California Sur</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20271</parent></term>
+<term><tid>20818</tid><vid>20</vid><name>Sinaloa</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20271</parent></term>
+<term><tid>20819</tid><vid>20</vid><name>Sonora</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20271</parent></term>
+<term><tid>20820</tid><vid>20</vid><name>Colima</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20272</parent></term>
+<term><tid>20821</tid><vid>20</vid><name>Guerrero</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20272</parent></term>
+<term><tid>20822</tid><vid>20</vid><name>Jalisco</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20272</parent></term>
+<term><tid>20823</tid><vid>20</vid><name>Michoacán</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20272</parent></term>
+<term><tid>20824</tid><vid>20</vid><name>Nayarit</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20272</parent></term>
+<term><tid>20825</tid><vid>20</vid><name>Oaxaca</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20272</parent></term>
+<term><tid>20826</tid><vid>20</vid><name>Campeche</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20273</parent></term>
+<term><tid>20827</tid><vid>20</vid><name>Chiapas</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20273</parent></term>
+<term><tid>20828</tid><vid>20</vid><name>Quintana Roo</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20273</parent></term>
+<term><tid>20829</tid><vid>20</vid><name>Tabasco</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20273</parent></term>
+<term><tid>20830</tid><vid>20</vid><name>Yucatán</name><description>
+</description><synonyms>MX</synonyms><weight>0</weight><depth>4</depth><parent>20273</parent></term>
+<term><tid>20831</tid><vid>20</vid><name>Myanmar</name><description>
+</description><synonyms>MM</synonyms><weight>0</weight><depth>4</depth><parent>20274</parent></term>
+<term><tid>20832</tid><vid>20</vid><name>Namibia</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20275</parent></term>
+<term><tid>20833</tid><vid>20</vid><name>KwaZulu-Natal</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20276</parent></term>
+<term><tid>20834</tid><vid>20</vid><name>New Brunswick</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20277</parent></term>
+<term><tid>20835</tid><vid>20</vid><name>North Carolina</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20278</parent></term>
+<term><tid>20836</tid><vid>20</vid><name>Nicobar Is.</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20279</parent></term>
+<term><tid>20837</tid><vid>20</vid><name>Dagestan</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20280</parent></term>
+<term><tid>20838</tid><vid>20</vid><name>Kabardino-Balkariya</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20280</parent></term>
+<term><tid>20839</tid><vid>20</vid><name>Karacheyevo-Cherkessiya</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20280</parent></term>
+<term><tid>20840</tid><vid>20</vid><name>Krasnodar</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20280</parent></term>
+<term><tid>20841</tid><vid>20</vid><name>Severo-Osetiya</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20280</parent></term>
+<term><tid>20842</tid><vid>20</vid><name>Stavropol</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20280</parent></term>
+<term><tid>20843</tid><vid>20</vid><name>North Dakota</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20281</parent></term>
+<term><tid>20844</tid><vid>20</vid><name>Nebraska</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20282</parent></term>
+<term><tid>20845</tid><vid>20</vid><name>Nepal</name><description>
+</description><synonyms>NP</synonyms><weight>0</weight><depth>4</depth><parent>20283</parent></term>
+<term><tid>20846</tid><vid>20</vid><name>Netherlands</name><description>
+</description><synonyms>NL</synonyms><weight>0</weight><depth>4</depth><parent>20284</parent></term>
+<term><tid>20847</tid><vid>20</vid><name>Nevada</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20285</parent></term>
+<term><tid>20848</tid><vid>20</vid><name>Lord Howe I.</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20286</parent></term>
+<term><tid>20849</tid><vid>20</vid><name>Norfolk I.</name><description>
+</description><synonyms>NF</synonyms><weight>0</weight><depth>4</depth><parent>20286</parent></term>
+<term><tid>20850</tid><vid>20</vid><name>Newfoundland</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20287</parent></term>
+<term><tid>20851</tid><vid>20</vid><name>St.Pierre-Miquelon</name><description>
+</description><synonyms>PM</synonyms><weight>0</weight><depth>4</depth><parent>20287</parent></term>
+<term><tid>20852</tid><vid>20</vid><name>Nigeria</name><description>
+</description><synonyms>NG</synonyms><weight>0</weight><depth>4</depth><parent>20288</parent></term>
+<term><tid>20853</tid><vid>20</vid><name>Niger</name><description>
+</description><synonyms>NE</synonyms><weight>0</weight><depth>4</depth><parent>20289</parent></term>
+<term><tid>20854</tid><vid>20</vid><name>Nicaragua</name><description>
+</description><synonyms>NI</synonyms><weight>0</weight><depth>4</depth><parent>20290</parent></term>
+<term><tid>20855</tid><vid>20</vid><name>Bonaire</name><description>
+</description><synonyms>AN</synonyms><weight>0</weight><depth>4</depth><parent>20291</parent></term>
+<term><tid>20856</tid><vid>20</vid><name>Curaçao</name><description>
+</description><synonyms>AN</synonyms><weight>0</weight><depth>4</depth><parent>20291</parent></term>
+<term><tid>20857</tid><vid>20</vid><name>Nansei-shoto</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>4</depth><parent>20292</parent></term>
+<term><tid>20858</tid><vid>20</vid><name>Norway</name><description>
+</description><synonyms>NO</synonyms><weight>0</weight><depth>4</depth><parent>20293</parent></term>
+<term><tid>20859</tid><vid>20</vid><name>Nauru</name><description>
+</description><synonyms>NR</synonyms><weight>0</weight><depth>4</depth><parent>20294</parent></term>
+<term><tid>20860</tid><vid>20</vid><name>Nova Scotia</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20295</parent></term>
+<term><tid>20861</tid><vid>20</vid><name>Australian Capital Territory</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20296</parent></term>
+<term><tid>20862</tid><vid>20</vid><name>New South Wales</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20296</parent></term>
+<term><tid>20863</tid><vid>20</vid><name>Northern Territory</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20297</parent></term>
+<term><tid>20864</tid><vid>20</vid><name>Niue</name><description>
+</description><synonyms>NU</synonyms><weight>0</weight><depth>4</depth><parent>20298</parent></term>
+<term><tid>20865</tid><vid>20</vid><name>Nunavut</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20299</parent></term>
+<term><tid>20866</tid><vid>20</vid><name>New Caledonia</name><description>
+</description><synonyms>NC</synonyms><weight>0</weight><depth>4</depth><parent>20300</parent></term>
+<term><tid>20867</tid><vid>20</vid><name>Irian Jaya</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>4</depth><parent>20301</parent></term>
+<term><tid>20868</tid><vid>20</vid><name>Papua New Guinea</name><description>
+</description><synonyms>PG</synonyms><weight>0</weight><depth>4</depth><parent>20301</parent></term>
+<term><tid>20869</tid><vid>20</vid><name>New Hampshire</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20302</parent></term>
+<term><tid>20870</tid><vid>20</vid><name>New Jersey</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20303</parent></term>
+<term><tid>20871</tid><vid>20</vid><name>New Mexico</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20304</parent></term>
+<term><tid>20872</tid><vid>20</vid><name>Northwest Territories</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20305</parent></term>
+<term><tid>20873</tid><vid>20</vid><name>New York</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20306</parent></term>
+<term><tid>20874</tid><vid>20</vid><name>New Zealand North</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>4</depth><parent>20307</parent></term>
+<term><tid>20875</tid><vid>20</vid><name>New Zealand South</name><description>
+</description><synonyms>NZ</synonyms><weight>0</weight><depth>4</depth><parent>20308</parent></term>
+<term><tid>20876</tid><vid>20</vid><name>Free State</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20309</parent></term>
+<term><tid>20877</tid><vid>20</vid><name>Ogasawara-shoto</name><description>
+</description><synonyms>JP</synonyms><weight>0</weight><depth>4</depth><parent>20310</parent></term>
+<term><tid>20878</tid><vid>20</vid><name>Ohio</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20311</parent></term>
+<term><tid>20879</tid><vid>20</vid><name>Oklahoma</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20312</parent></term>
+<term><tid>20880</tid><vid>20</vid><name>Oman</name><description>
+</description><synonyms>OM</synonyms><weight>0</weight><depth>4</depth><parent>20313</parent></term>
+<term><tid>20881</tid><vid>20</vid><name>Ontario</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20314</parent></term>
+<term><tid>20882</tid><vid>20</vid><name>Oregon</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20315</parent></term>
+<term><tid>20883</tid><vid>20</vid><name>Pakistan</name><description>
+</description><synonyms>PK</synonyms><weight>0</weight><depth>4</depth><parent>20316</parent></term>
+<term><tid>20884</tid><vid>20</vid><name>Israel</name><description>
+</description><synonyms>IL</synonyms><weight>0</weight><depth>4</depth><parent>20317</parent></term>
+<term><tid>20885</tid><vid>20</vid><name>Jordan</name><description>
+</description><synonyms>JO</synonyms><weight>0</weight><depth>4</depth><parent>20317</parent></term>
+<term><tid>20886</tid><vid>20</vid><name>Panamá</name><description>
+</description><synonyms>PA</synonyms><weight>0</weight><depth>4</depth><parent>20318</parent></term>
+<term><tid>20887</tid><vid>20</vid><name>Paraguay</name><description>
+</description><synonyms>PY</synonyms><weight>0</weight><depth>4</depth><parent>20319</parent></term>
+<term><tid>20888</tid><vid>20</vid><name>Prince Edward I.</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20320</parent></term>
+<term><tid>20889</tid><vid>20</vid><name>Pennsylvania</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20321</parent></term>
+<term><tid>20890</tid><vid>20</vid><name>Peru</name><description>
+</description><synonyms>PE</synonyms><weight>0</weight><depth>4</depth><parent>20322</parent></term>
+<term><tid>20891</tid><vid>20</vid><name>Philippines</name><description>
+</description><synonyms>PH</synonyms><weight>0</weight><depth>4</depth><parent>20323</parent></term>
+<term><tid>20892</tid><vid>20</vid><name>Phoenix Is.</name><description>
+</description><synonyms>KI</synonyms><weight>0</weight><depth>4</depth><parent>20324</parent></term>
+<term><tid>20893</tid><vid>20</vid><name>Pitcairn Is.</name><description>
+</description><synonyms>PN</synonyms><weight>0</weight><depth>4</depth><parent>20325</parent></term>
+<term><tid>20894</tid><vid>20</vid><name>Poland</name><description>
+</description><synonyms>PL</synonyms><weight>0</weight><depth>4</depth><parent>20326</parent></term>
+<term><tid>20895</tid><vid>20</vid><name>Portugal</name><description>
+</description><synonyms>PT</synonyms><weight>0</weight><depth>4</depth><parent>20327</parent></term>
+<term><tid>20896</tid><vid>20</vid><name>Primorye</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20328</parent></term>
+<term><tid>20897</tid><vid>20</vid><name>Puerto Rico</name><description>
+</description><synonyms>PR</synonyms><weight>0</weight><depth>4</depth><parent>20329</parent></term>
+<term><tid>20898</tid><vid>20</vid><name>Coral Sea Is. Territory</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20330</parent></term>
+<term><tid>20899</tid><vid>20</vid><name>Queensland</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20330</parent></term>
+<term><tid>20900</tid><vid>20</vid><name>Québec</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20331</parent></term>
+<term><tid>20901</tid><vid>20</vid><name>Réunion</name><description>
+</description><synonyms>RE</synonyms><weight>0</weight><depth>4</depth><parent>20332</parent></term>
+<term><tid>20902</tid><vid>20</vid><name>Rhode I.</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20333</parent></term>
+<term><tid>20903</tid><vid>20</vid><name>Rodrigues</name><description>
+</description><synonyms>MU</synonyms><weight>0</weight><depth>4</depth><parent>20334</parent></term>
+<term><tid>20904</tid><vid>20</vid><name>Romania</name><description>
+</description><synonyms>RO</synonyms><weight>0</weight><depth>4</depth><parent>20335</parent></term>
+<term><tid>20905</tid><vid>20</vid><name>Central European Russia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20336</parent></term>
+<term><tid>20906</tid><vid>20</vid><name>East European Russia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20337</parent></term>
+<term><tid>20907</tid><vid>20</vid><name>North European Russia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20338</parent></term>
+<term><tid>20908</tid><vid>20</vid><name>South European Russia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20339</parent></term>
+<term><tid>20909</tid><vid>20</vid><name>Northwest European Russia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20340</parent></term>
+<term><tid>20910</tid><vid>20</vid><name>Rwanda</name><description>
+</description><synonyms>RW</synonyms><weight>0</weight><depth>4</depth><parent>20341</parent></term>
+<term><tid>20911</tid><vid>20</vid><name>Sakhalin</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20342</parent></term>
+<term><tid>20912</tid><vid>20</vid><name>American Samoa</name><description>
+</description><synonyms>AS</synonyms><weight>0</weight><depth>4</depth><parent>20343</parent></term>
+<term><tid>20913</tid><vid>20</vid><name>Samoa</name><description>Western Samoa
+</description><synonyms>WS</synonyms><weight>0</weight><depth>4</depth><parent>20343</parent></term>
+<term><tid>20914</tid><vid>20</vid><name>Sardegna</name><description>
+</description><synonyms>IT</synonyms><weight>0</weight><depth>4</depth><parent>20344</parent></term>
+<term><tid>20915</tid><vid>20</vid><name>Saskatchewan</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20345</parent></term>
+<term><tid>20916</tid><vid>20</vid><name>Saudi Arabia</name><description>
+</description><synonyms>SA</synonyms><weight>0</weight><depth>4</depth><parent>20346</parent></term>
+<term><tid>20917</tid><vid>20</vid><name>South Carolina</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20347</parent></term>
+<term><tid>20918</tid><vid>20</vid><name>Society Is.</name><description>
+</description><synonyms>PF</synonyms><weight>0</weight><depth>4</depth><parent>20348</parent></term>
+<term><tid>20919</tid><vid>20</vid><name>Paracel Is.</name><description>
+</description><synonyms>PI</synonyms><weight>0</weight><depth>4</depth><parent>20349</parent></term>
+<term><tid>20920</tid><vid>20</vid><name>Spratly Is.</name><description>
+</description><synonyms>SI</synonyms><weight>0</weight><depth>4</depth><parent>20349</parent></term>
+<term><tid>20921</tid><vid>20</vid><name>Santa Cruz Is.</name><description>
+</description><synonyms>SB</synonyms><weight>0</weight><depth>4</depth><parent>20350</parent></term>
+<term><tid>20922</tid><vid>20</vid><name>South Dakota</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20351</parent></term>
+<term><tid>20923</tid><vid>20</vid><name>Selvagens</name><description>
+</description><synonyms>PT</synonyms><weight>0</weight><depth>4</depth><parent>20352</parent></term>
+<term><tid>20924</tid><vid>20</vid><name>Senegal</name><description>
+</description><synonyms>SN</synonyms><weight>0</weight><depth>4</depth><parent>20353</parent></term>
+<term><tid>20925</tid><vid>20</vid><name>Seychelles</name><description>
+</description><synonyms>SC</synonyms><weight>0</weight><depth>4</depth><parent>20354</parent></term>
+<term><tid>20926</tid><vid>20</vid><name>South Georgia</name><description>
+</description><synonyms>GS</synonyms><weight>0</weight><depth>4</depth><parent>20355</parent></term>
+<term><tid>20927</tid><vid>20</vid><name>Malta</name><description>
+</description><synonyms>MT</synonyms><weight>0</weight><depth>4</depth><parent>20356</parent></term>
+<term><tid>20928</tid><vid>20</vid><name>Sicilia</name><description>
+</description><synonyms>IT</synonyms><weight>0</weight><depth>4</depth><parent>20356</parent></term>
+<term><tid>20929</tid><vid>20</vid><name>Sierra Leone</name><description>
+</description><synonyms>SL</synonyms><weight>0</weight><depth>4</depth><parent>20357</parent></term>
+<term><tid>20930</tid><vid>20</vid><name>Sinai</name><description>
+</description><synonyms>EG</synonyms><weight>0</weight><depth>4</depth><parent>20358</parent></term>
+<term><tid>20931</tid><vid>20</vid><name>South Australia</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20359</parent></term>
+<term><tid>20932</tid><vid>20</vid><name>Socotra</name><description>
+</description><synonyms>YE</synonyms><weight>0</weight><depth>4</depth><parent>20360</parent></term>
+<term><tid>20933</tid><vid>20</vid><name>North Solomons</name><description>
+</description><synonyms>PG</synonyms><weight>0</weight><depth>4</depth><parent>20361</parent></term>
+<term><tid>20934</tid><vid>20</vid><name>South Solomons</name><description>
+</description><synonyms>SB</synonyms><weight>0</weight><depth>4</depth><parent>20361</parent></term>
+<term><tid>20935</tid><vid>20</vid><name>Somalia</name><description>
+</description><synonyms>SO</synonyms><weight>0</weight><depth>4</depth><parent>20362</parent></term>
+<term><tid>20936</tid><vid>20</vid><name>Andorra</name><description>
+</description><synonyms>AD</synonyms><weight>0</weight><depth>4</depth><parent>20363</parent></term>
+<term><tid>20937</tid><vid>20</vid><name>Gilbraltar</name><description>
+</description><synonyms>GI</synonyms><weight>0</weight><depth>4</depth><parent>20363</parent></term>
+<term><tid>20938</tid><vid>20</vid><name>Spain</name><description>
+</description><synonyms>ES</synonyms><weight>0</weight><depth>4</depth><parent>20363</parent></term>
+<term><tid>20939</tid><vid>20</vid><name>Sri Lanka</name><description>
+</description><synonyms>LK</synonyms><weight>0</weight><depth>4</depth><parent>20364</parent></term>
+<term><tid>20940</tid><vid>20</vid><name>South Sandwich Is.</name><description>
+</description><synonyms>GS</synonyms><weight>0</weight><depth>4</depth><parent>20365</parent></term>
+<term><tid>20941</tid><vid>20</vid><name>St.Helena</name><description>
+</description><synonyms>SH</synonyms><weight>0</weight><depth>4</depth><parent>20366</parent></term>
+<term><tid>20942</tid><vid>20</vid><name>Sudan</name><description>
+</description><synonyms>SD</synonyms><weight>0</weight><depth>4</depth><parent>20367</parent></term>
+<term><tid>20943</tid><vid>20</vid><name>Sulawesi</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>4</depth><parent>20368</parent></term>
+<term><tid>20944</tid><vid>20</vid><name>Sumatera</name><description>
+</description><synonyms>ID</synonyms><weight>0</weight><depth>4</depth><parent>20369</parent></term>
+<term><tid>20945</tid><vid>20</vid><name>Surinam</name><description>
+</description><synonyms>SR</synonyms><weight>0</weight><depth>4</depth><parent>20370</parent></term>
+<term><tid>20946</tid><vid>20</vid><name>Svalbard</name><description>
+</description><synonyms>SJ</synonyms><weight>0</weight><depth>4</depth><parent>20371</parent></term>
+<term><tid>20947</tid><vid>20</vid><name>Colombian Caribbean Is.</name><description>
+</description><synonyms>CO</synonyms><weight>0</weight><depth>4</depth><parent>20372</parent></term>
+<term><tid>20948</tid><vid>20</vid><name>Honduran Caribbean Is.</name><description>
+</description><synonyms>HN</synonyms><weight>0</weight><depth>4</depth><parent>20372</parent></term>
+<term><tid>20949</tid><vid>20</vid><name>Nicaraguan Caribbean Is.</name><description>
+</description><synonyms>NI</synonyms><weight>0</weight><depth>4</depth><parent>20372</parent></term>
+<term><tid>20950</tid><vid>20</vid><name>Sweden</name><description>
+</description><synonyms>SE</synonyms><weight>0</weight><depth>4</depth><parent>20373</parent></term>
+<term><tid>20951</tid><vid>20</vid><name>Switzerland</name><description>
+</description><synonyms>CH</synonyms><weight>0</weight><depth>4</depth><parent>20374</parent></term>
+<term><tid>20952</tid><vid>20</vid><name>Swaziland</name><description>
+</description><synonyms>SZ</synonyms><weight>0</weight><depth>4</depth><parent>20375</parent></term>
+<term><tid>20953</tid><vid>20</vid><name>Taiwan</name><description>
+</description><synonyms>TW</synonyms><weight>0</weight><depth>4</depth><parent>20376</parent></term>
+<term><tid>20954</tid><vid>20</vid><name>Tanzania</name><description>
+</description><synonyms>TZ</synonyms><weight>0</weight><depth>4</depth><parent>20377</parent></term>
+<term><tid>20955</tid><vid>20</vid><name>Tasmania</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20378</parent></term>
+<term><tid>20956</tid><vid>20</vid><name>Turks-Caicos Is.</name><description>
+</description><synonyms>TC</synonyms><weight>0</weight><depth>4</depth><parent>20379</parent></term>
+<term><tid>20957</tid><vid>20</vid><name>Abkhaziya</name><description>
+</description><synonyms>GE</synonyms><weight>0</weight><depth>4</depth><parent>20380</parent></term>
+<term><tid>20958</tid><vid>20</vid><name>Adzhariya</name><description>
+</description><synonyms>GE</synonyms><weight>0</weight><depth>4</depth><parent>20380</parent></term>
+<term><tid>20959</tid><vid>20</vid><name>Armenia</name><description>
+</description><synonyms>AM</synonyms><weight>0</weight><depth>4</depth><parent>20380</parent></term>
+<term><tid>20960</tid><vid>20</vid><name>Azerbaijan</name><description>
+</description><synonyms>AZ</synonyms><weight>0</weight><depth>4</depth><parent>20380</parent></term>
+<term><tid>20961</tid><vid>20</vid><name>Georgia</name><description>
+</description><synonyms>GE</synonyms><weight>0</weight><depth>4</depth><parent>20380</parent></term>
+<term><tid>20962</tid><vid>20</vid><name>Nakhichevan</name><description>
+</description><synonyms>AZ</synonyms><weight>0</weight><depth>4</depth><parent>20380</parent></term>
+<term><tid>20963</tid><vid>20</vid><name>Nagorno Karabakh</name><description>
+</description><synonyms>AZ</synonyms><weight>0</weight><depth>4</depth><parent>20380</parent></term>
+<term><tid>20964</tid><vid>20</vid><name>Tristan da Cunha</name><description>
+</description><synonyms>SH</synonyms><weight>0</weight><depth>4</depth><parent>20381</parent></term>
+<term><tid>20965</tid><vid>20</vid><name>Tennessee</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20382</parent></term>
+<term><tid>20966</tid><vid>20</vid><name>Texas</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20383</parent></term>
+<term><tid>20967</tid><vid>20</vid><name>Thailand</name><description>
+</description><synonyms>TH</synonyms><weight>0</weight><depth>4</depth><parent>20384</parent></term>
+<term><tid>20968</tid><vid>20</vid><name>Turkmenistan</name><description>
+</description><synonyms>TM</synonyms><weight>0</weight><depth>4</depth><parent>20385</parent></term>
+<term><tid>20969</tid><vid>20</vid><name>Togo</name><description>
+</description><synonyms>TG</synonyms><weight>0</weight><depth>4</depth><parent>20386</parent></term>
+<term><tid>20970</tid><vid>20</vid><name>Manihiki Is.</name><description>
+</description><synonyms>CK</synonyms><weight>0</weight><depth>4</depth><parent>20387</parent></term>
+<term><tid>20971</tid><vid>20</vid><name>Swains I.</name><description>
+</description><synonyms>AS</synonyms><weight>0</weight><depth>4</depth><parent>20387</parent></term>
+<term><tid>20972</tid><vid>20</vid><name>Tokelau</name><description>
+</description><synonyms>TK</synonyms><weight>0</weight><depth>4</depth><parent>20387</parent></term>
+<term><tid>20973</tid><vid>20</vid><name>Tonga</name><description>
+</description><synonyms>TO</synonyms><weight>0</weight><depth>4</depth><parent>20388</parent></term>
+<term><tid>20974</tid><vid>20</vid><name>Trinidad-Tobago</name><description>
+</description><synonyms>TT</synonyms><weight>0</weight><depth>4</depth><parent>20389</parent></term>
+<term><tid>20975</tid><vid>20</vid><name>Tuamotu</name><description>
+</description><synonyms>PF</synonyms><weight>0</weight><depth>4</depth><parent>20390</parent></term>
+<term><tid>20976</tid><vid>20</vid><name>Tubuai Is.</name><description>
+</description><synonyms>PF</synonyms><weight>0</weight><depth>4</depth><parent>20391</parent></term>
+<term><tid>20977</tid><vid>20</vid><name>Turkey-in-Europe</name><description>
+</description><synonyms>TR</synonyms><weight>0</weight><depth>4</depth><parent>20392</parent></term>
+<term><tid>20978</tid><vid>20</vid><name>Tunisia</name><description>
+</description><synonyms>TN</synonyms><weight>0</weight><depth>4</depth><parent>20393</parent></term>
+<term><tid>20979</tid><vid>20</vid><name>Turkey</name><description>
+</description><synonyms>TR</synonyms><weight>0</weight><depth>4</depth><parent>20394</parent></term>
+<term><tid>20980</tid><vid>20</vid><name>Tuvalu</name><description>
+</description><synonyms>TV</synonyms><weight>0</weight><depth>4</depth><parent>20395</parent></term>
+<term><tid>20981</tid><vid>20</vid><name>Tuva</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20396</parent></term>
+<term><tid>20982</tid><vid>20</vid><name>Gauteng</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20397</parent></term>
+<term><tid>20983</tid><vid>20</vid><name>Mpumalanga</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20397</parent></term>
+<term><tid>20984</tid><vid>20</vid><name>Northern Province</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20397</parent></term>
+<term><tid>20985</tid><vid>20</vid><name>North-West Province</name><description>
+</description><synonyms>ZA</synonyms><weight>0</weight><depth>4</depth><parent>20397</parent></term>
+<term><tid>20986</tid><vid>20</vid><name>Tadzhikistan</name><description>
+</description><synonyms>TJ</synonyms><weight>0</weight><depth>4</depth><parent>20398</parent></term>
+<term><tid>20987</tid><vid>20</vid><name>Uganda</name><description>
+</description><synonyms>UG</synonyms><weight>0</weight><depth>4</depth><parent>20399</parent></term>
+<term><tid>20988</tid><vid>20</vid><name>Moldova</name><description>
+</description><synonyms>MD</synonyms><weight>0</weight><depth>4</depth><parent>20400</parent></term>
+<term><tid>20989</tid><vid>20</vid><name>Ukraine</name><description>
+</description><synonyms>UA</synonyms><weight>0</weight><depth>4</depth><parent>20400</parent></term>
+<term><tid>20990</tid><vid>20</vid><name>Uruguay</name><description>
+</description><synonyms>UY</synonyms><weight>0</weight><depth>4</depth><parent>20401</parent></term>
+<term><tid>20991</tid><vid>20</vid><name>Utah</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20402</parent></term>
+<term><tid>20992</tid><vid>20</vid><name>Uzbekistan</name><description>
+</description><synonyms>UZ</synonyms><weight>0</weight><depth>4</depth><parent>20403</parent></term>
+<term><tid>20993</tid><vid>20</vid><name>Vanuatu</name><description>
+</description><synonyms>VU</synonyms><weight>0</weight><depth>4</depth><parent>20404</parent></term>
+<term><tid>20994</tid><vid>20</vid><name>Venezuela</name><description>
+</description><synonyms>VE</synonyms><weight>0</weight><depth>4</depth><parent>20405</parent></term>
+<term><tid>20995</tid><vid>20</vid><name>Vermont</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20406</parent></term>
+<term><tid>20996</tid><vid>20</vid><name>Victoria</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20407</parent></term>
+<term><tid>20997</tid><vid>20</vid><name>Vietnam</name><description>
+</description><synonyms>VN</synonyms><weight>0</weight><depth>4</depth><parent>20408</parent></term>
+<term><tid>20998</tid><vid>20</vid><name>Venezuelan Antilles</name><description>
+</description><synonyms>VE</synonyms><weight>0</weight><depth>4</depth><parent>20409</parent></term>
+<term><tid>20999</tid><vid>20</vid><name>Virginia</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20410</parent></term>
+<term><tid>21000</tid><vid>20</vid><name>Wake I.</name><description>
+</description><synonyms>UM</synonyms><weight>0</weight><depth>4</depth><parent>20411</parent></term>
+<term><tid>21001</tid><vid>20</vid><name>Wallis-Futuna Is.</name><description>
+</description><synonyms>WF</synonyms><weight>0</weight><depth>4</depth><parent>20412</parent></term>
+<term><tid>21002</tid><vid>20</vid><name>Washington</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20413</parent></term>
+<term><tid>21003</tid><vid>20</vid><name>Ashmore-Cartier Is.</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20414</parent></term>
+<term><tid>21004</tid><vid>20</vid><name>Western Australia</name><description>
+</description><synonyms>AU</synonyms><weight>0</weight><depth>4</depth><parent>20414</parent></term>
+<term><tid>21005</tid><vid>20</vid><name>District of Columbia</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20415</parent></term>
+<term><tid>21006</tid><vid>20</vid><name>Himachal Pradesh</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20416</parent></term>
+<term><tid>21007</tid><vid>20</vid><name>Jammu-Kashmir</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20416</parent></term>
+<term><tid>21008</tid><vid>20</vid><name>Uttaranchal</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20416</parent></term>
+<term><tid>21009</tid><vid>20</vid><name>Barbados</name><description>
+</description><synonyms>BB</synonyms><weight>0</weight><depth>4</depth><parent>20417</parent></term>
+<term><tid>21010</tid><vid>20</vid><name>Dominica</name><description>
+</description><synonyms>DM</synonyms><weight>0</weight><depth>4</depth><parent>20417</parent></term>
+<term><tid>21011</tid><vid>20</vid><name>Grenada</name><description>
+</description><synonyms>GD</synonyms><weight>0</weight><depth>4</depth><parent>20417</parent></term>
+<term><tid>21012</tid><vid>20</vid><name>Martinique</name><description>
+</description><synonyms>MQ</synonyms><weight>0</weight><depth>4</depth><parent>20417</parent></term>
+<term><tid>21013</tid><vid>20</vid><name>St.Lucia</name><description>
+</description><synonyms>LC</synonyms><weight>0</weight><depth>4</depth><parent>20417</parent></term>
+<term><tid>21014</tid><vid>20</vid><name>St.Vincent</name><description>
+</description><synonyms>VC</synonyms><weight>0</weight><depth>4</depth><parent>20417</parent></term>
+<term><tid>21015</tid><vid>20</vid><name>Wisconsin</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20418</parent></term>
+<term><tid>21016</tid><vid>20</vid><name>Western Sahara</name><description>
+</description><synonyms>EH</synonyms><weight>0</weight><depth>4</depth><parent>20419</parent></term>
+<term><tid>21017</tid><vid>20</vid><name>West Siberia</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20420</parent></term>
+<term><tid>21018</tid><vid>20</vid><name>West Virginia</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20421</parent></term>
+<term><tid>21019</tid><vid>20</vid><name>Wyoming</name><description>
+</description><synonyms>US</synonyms><weight>0</weight><depth>4</depth><parent>20422</parent></term>
+<term><tid>21020</tid><vid>20</vid><name>Christmas I.</name><description>
+</description><synonyms>CX</synonyms><weight>0</weight><depth>4</depth><parent>20423</parent></term>
+<term><tid>21021</tid><vid>20</vid><name>Yakutskiya</name><description>
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20424</parent></term>
+<term><tid>21022</tid><vid>20</vid><name>North Yemen</name><description>
+</description><synonyms>YE</synonyms><weight>0</weight><depth>4</depth><parent>20425</parent></term>
+<term><tid>21023</tid><vid>20</vid><name>South Yemen</name><description>
+</description><synonyms>YE</synonyms><weight>0</weight><depth>4</depth><parent>20425</parent></term>
+<term><tid>21024</tid><vid>20</vid><name>Bosnia-Herzegovina</name><description>
+</description><synonyms>YU</synonyms><weight>0</weight><depth>4</depth><parent>20426</parent></term>
+<term><tid>21025</tid><vid>20</vid><name>Croatia</name><description>
+</description><synonyms>HR</synonyms><weight>0</weight><depth>4</depth><parent>20426</parent></term>
+<term><tid>21026</tid><vid>20</vid><name>Kosovo</name><description>
+</description><synonyms>YU</synonyms><weight>0</weight><depth>4</depth><parent>20426</parent></term>
+<term><tid>21027</tid><vid>20</vid><name>Macedonia</name><description>
+</description><synonyms>MK</synonyms><weight>0</weight><depth>4</depth><parent>20426</parent></term>
+<term><tid>21028</tid><vid>20</vid><name>Montenegro</name><description>
+</description><synonyms>YU</synonyms><weight>0</weight><depth>4</depth><parent>20426</parent></term>
+<term><tid>21029</tid><vid>20</vid><name>Serbia</name><description>
+</description><synonyms>YU</synonyms><weight>0</weight><depth>4</depth><parent>20426</parent></term>
+<term><tid>21030</tid><vid>20</vid><name>Slovenia</name><description>
+</description><synonyms>SL</synonyms><weight>0</weight><depth>4</depth><parent>20426</parent></term>
+<term><tid>21031</tid><vid>20</vid><name>Yukon</name><description>
+</description><synonyms>CA</synonyms><weight>0</weight><depth>4</depth><parent>20427</parent></term>
+<term><tid>21032</tid><vid>20</vid><name>Zaire</name><description>
+</description><synonyms>CD</synonyms><weight>0</weight><depth>4</depth><parent>20428</parent></term>
+<term><tid>21033</tid><vid>20</vid><name>Zambia</name><description>
+</description><synonyms>ZM</synonyms><weight>0</weight><depth>4</depth><parent>20429</parent></term>
+<term><tid>21034</tid><vid>20</vid><name>Zimbabwe</name><description>
+</description><synonyms>ZW</synonyms><weight>0</weight><depth>4</depth><parent>20430</parent></term>
+<term><tid>21035</tid><vid>20</vid><name>Jharkhand</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>21036</tid><vid>20</vid><name>Chattisgarh</name><description>
+</description><synonyms>IN</synonyms><weight>0</weight><depth>4</depth><parent>20198</parent></term>
+<term><tid>21037</tid><vid>20</vid><name>Chechnya</name><description>Una de las partes en que se divide Checheno-Ingushetiya
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20280</parent></term>
+<term><tid>21038</tid><vid>20</vid><name>Ingushetiya</name><description>Una de las partes en que se divide Checheno-Ingushetiya
+</description><synonyms>RU</synonyms><weight>0</weight><depth>4</depth><parent>20280</parent></term>
+<term><tid>21039</tid><vid>20</vid><name>Chongqing</name><description>Anteriormente parte de Sichuan
+</description><synonyms>CN</synonyms><weight>0</weight><depth>4</depth><parent>20118</parent></term>
+</vocabulary>

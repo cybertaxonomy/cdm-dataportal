@@ -1,0 +1,33 @@
+Index: token/token_cck.inc
+===================================================================
+RCS file: /cvs/drupal-contrib/contributions/modules/token/Attic/token_cck.inc,v
+retrieving revision 1.1.2.6
+diff -r1.1.2.6 token_cck.inc
+113,115c113,119
+< 
+<       $tokens['text']['raw']       = t("Raw, unfiltered text.");
+<       $tokens['text']['formatted'] = t("Formatted and filtered text.");
+---
+>       
+>       $tokens['text']['raw']       = t("Raw, unfiltered text - first item only");
+>       $tokens['text']['raw-all']       = t("Raw, unfiltered text. - all items with commas in between values");      
+>       $tokens['text']['raw-n']  = t('Raw, unfiltered text. - where n = the value to select if more than one value in the field');
+>       $tokens['text']['formatted'] = t("Formatted and filtered text. - first item only");
+>       $tokens['text']['formatted-all'] = t("Formatted and filtered text. - all items with line breaks in between values");
+>       $tokens['text']['formatted-all']  = t('Formatted and filtered text. - where n = the value to select if more than one value in the field');
+122a127,137
+>       
+>       $i = 0;
+>       foreach ($object as $value) {        
+>         $values[] = $value['value'];
+>         $views[] = $value['view'];
+>         $tokens['raw-' . $i] = $value['value'];
+>         $tokens['formatted-' . $i] = $value['view'];
+>         $i++;
+>       }
+>       
+>       //for backwards compat
+125a141,143
+>       $tokens['raw-all']  = implode(',' , $values);
+>       $tokens['formatted-all'] = implode("\n", $views);
+>       

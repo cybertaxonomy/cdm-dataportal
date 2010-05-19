@@ -1,0 +1,23 @@
+$rules  Array [2] 
+  1 Array [11]  
+    type  webapp  
+    pattern /^http:\\/\\/ww2.bgbm.org\\/herbarium\\/images\\/((?:\\w+\\/)(?:\\d+\\/){4}[\\w_]+?\\.)(.*)$/ 
+    replace $1fpx 
+    embed_html  1 
+    url_encode  1 
+    path  bgbm.org/herbarium  
+    title Botanic Garden and Botanical Museum Berlin-Dahlem, Freie UniversitÃ¤t Berlin - Digital herbarium  
+    prefix  <div style="float: left; width: 15em; font-size: 80%;">\r\n\t<p>Â© BGBM: <br>\r\n\tAccess is granted under the following conditions:<br>\r\n\tThe images may not passed on to any third party without our written\r\n\tconsent and due mention of the copyright restrictions, and may not be\r\n\tused for commercial or non-scientific purposes. Reproduction in\r\n\tscientific publications is authorized on the condition that the source\r\n\tand the copyright are fully acknowledged:<br>\r\n\tÂ© Botanischer Garten und Botanisches Museum Berlin-Dahlem, FU Berlin.</li>\r\n</p>\r\n<p><a href="http://www.bgbm.org/bgbm/verantwo_e.htm"\r\n\t\tclass="leftnavi" title="Contact">Contact</a> | <a href="http://www.bgbm.org/bgbm/imprint.htm"\r\n\t\tclass="leftnavi" title="Impressum">Imprint</a> | <a href="http://www.bgbm.org/disclaim_e.htm" class="leftnavi"\r\n\t\ttitle="Disclaimer">Disclaimer</a>\r\n</p>\r\n</div>\r\n<div><embed width="490" height="700" align="middle" type="application/x-shockwave-flash" \r\n       pluginspage="http://www.macromedia.com/go/getflashplayer" name="F  
+    affix &FPXWidth=2801&FPXHeight=4478&Effects=qlt%3D85&InitialView=&Measure_ImageWidth=270.0&Measure_Suffix=%20mm"/></div>  
+    size_x  
+    size_y  
+  2 Array [9] 
+    type  preview 
+    pattern /^(http:\\/\\/ww2.bgbm.org\\/herbarium\\/images(?:\\/\\w+)(?:\\/\\d+){4})(\\/)(.*)$/  
+    replace $1/thumbs/$3  
+    url_encode  0 
+    embed_html  0 
+    prefix  
+    affix 
+    size_x  125 
+    size_y  

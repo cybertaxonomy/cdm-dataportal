@@ -1,0 +1,383 @@
+<?php
+// $Id $
+
+/**
+ * @file
+ * Allows users to create nodes instead of selecting them from a list
+ *
+ * @author Obslogic (Mike Smith aka Lionfish)
+ */
+
+
+/**
+ * Implementation of hook_help
+ */
+function expertsdb_addnode_help($section='')
+{
+	$output = '';
+	switch ($section)
+	{
+		case "admin/help#expertsdb_addnode":
+			$output = '<p>'.t("Provides an option to the user to create a new node type.").'</p>';
+			break;
+	}
+	return $output;
+}
+
+/**
+ * Implementation of hook_widget_info.
+ * Specifies the label and that it is a widget for the nodereference field type
+ */
+function expertsdb_addnode_widget_info()
+{
+	return array(
+    'expertsdb_addnode_select' => array(
+      'label' => 'Expertsdb AddNode List',
+      'field types' => array('nodereference'),
+	),
+	);
+}
+
+/**
+ * Implementation of hook_widget
+ */
+function expertsdb_addnode_widget($op, &$node, $field, &$node_field)
+{
+	//need this module for the_nodereference_potential_references function.
+	include_once(drupal_get_path('module', 'content').'/nodereference.module');
+
+	if ($field['widget']['type'] == 'expertsdb_addnode_select')
+	{
+		switch ($op) {
+
+			case 'prepare form values':
+				//puts node_field (original) values into a temporary bit of the array called default nids
+				$node_field_transposed = content_transpose_array_rows_cols($node_field);
+				$node_field['default nids'] = $node_field_transposed['nid'];
+				break;
+
+			case 'form':
+				//adds javascript
+				$path = drupal_get_path('module','expertsdb_addnode');
+				drupal_add_js($path . '/expertsdb_addnode.js');
+
+				$form = array();
+				$selectedoptions = array();
+
+				//gets the list of all potential nodes that could be referenced
+				$options = _nodereference_potential_references($field, true);
+
+				foreach ($options as $key => $value) {
+					$options[$key] = _nodereference_item($field, $value);
+				}
+
+				//string describing what can be added. If there's one type it will be that, otherwise it will be
+				//just 'item'.
+				$typedesc = "";
+				$type_count=0;  //counts up how many types there are
+				$type_list=array(); //list of the types
+
+				//If referenceable_types is not an array, give up.
+				if (!is_array($field['referenceable_types']))
+				{
+					return $form;
+				}
+
+				//add referenceable types to the $type_list array
+				foreach ($field['referenceable_types'] as $ref_type)
+				{
+					if ($ref_type)
+					{
+						$typedesc = $ref_type;
+						$type_count++;
+						$type_list[] = $ref_type;
+					}
+				}
+
+				//if there are no types available, give up.
+				if ($type_count==0)
+				{
+					//@todo Need to display something explaining the problem.
+					return $form;
+				}
+				//converts the type name to a human readable one
+				$typedesc = node_get_types('type', $typedesc);
+				$typedesc = $typedesc->name;
+
+				//If there's more than one type available then we use the term 'item' to describe them
+				if ($type_count>1)
+				{
+					$typedesc = "item";
+				}
+
+				$fieldname=$field['field_name'];
+				$title=t($field['widget']['label']);
+
+				//$createmsg is a message such as "Create a new _fund_ or _pot_" with links in.
+				$createmsg=_expertsdb_addnode_create_new_message($type_count, $fieldname, $type_list);
+
+				$prefix = '';
+				$suffix = '';
+				$subsuffix = "";
+
+				//this prefix builds the table headers etc.
+				$prefix = "";
+				$prefix.= "<b>$title:</b>";
+				$prefix.= '<table class="expertsdb-addnode-select-table">';
+				$prefix.= "<tr>";
+				$prefix.= '<th class="expertsdb-addnode-select column-left">';
+				$prefix.= "<a href='javascript:;' id='$fieldname' class='expertsdb_addnode_select_link'>";
+				$prefix.= t("Select</a> !typedesc already available</th>", array('!typedesc'=>"$typedesc"));
+				$prefix.= '<th class="expertsdb-addnode-select-table-header column-right">';
+				$prefix.= $createmsg;//msg that says 'Create an item' or whatever
+				$prefix.= "</th>";
+				$prefix.= "</tr>";
+				$prefix.= "<tr>";
+				$prefix.= '<td class="expertsdb-addnode-select column-left">';
+				//select box goes here
+				$suffix.= "</td>";
+				$suffix.= '<td class="expertsdb-addnode-select column-right">';
+				//the subforms go here
+				//the last subform must suffix with:
+				$subsuffix.= "</td>";
+				$subsuffix.= "</tr>";
+				$subsuffix.= "</table>";
+
+				///This hidden form element has been moved above the subforms to allow it to be processed before their
+				///#after_build functions run (as they will need the values in this element).
+				//whether we've selected something from the select box, or created a new item
+				//is stored in this hidden field. So the submit functions know what to do.
+				$form["expertsdb_addnode_".$fieldname] = array(
+          '#type' => 'hidden',
+          '#title' => t('selection or creation'),
+          '#default_value' => '',
+          '#attributes' => array (
+            'class' => 'expertsdb_addnode_source',
+				),
+				);
+
+				$weight = $field['weight'];
+
+				//select box
+				$form[$fieldname]['#tree'] = TRUE;
+				$form[$fieldname]['nids'] = array(
+          '#type' => 'select',
+          '#title' => '', //no title for this bit
+          '#default_value' => $node_field['default nids'],
+          '#multiple' => TRUE, // @todo: set this to the original multiple value and fix the bug, which makes this module disfunctional, if this is set to FALSE
+          '#options' => $options,
+          '#required' => $field['required'],
+          '#description' => $field['widget']['description'],
+          '#prefix' => $prefix,
+          '#suffix' => $suffix,
+          '#size' => 15,
+          '#weight' => $weight,
+          '#attributes' => array(
+				//'style' => 'width:90%',
+            'class' => "expertsdb_addnode_select",
+            'id' => "$fieldname",
+				),
+				);
+
+				//loops through the types this field can be.
+				foreach ($type_list as $typename)
+				{
+					$weight = $weight + 0.1;//puts them in an order.
+
+					$subnode = array('uid' => $node->uid, 'type' => $typename);
+					//the name of the array below this field type, needed to divide the subforms.
+					$subfieldname = 'node_'.$typename;
+					$form[$fieldname][$subfieldname] = array(
+            '#type' => 'subform',
+            '#id' => $typename.'_node_form',
+            '#arguments' => array($subnode),
+            '#weight' => $weight,
+            '#prefix' => "<span class='expertsdb_addnode_form $fieldname' id='$typename'>",
+            '#suffix' => "</span>",
+            '#after_build' => array('subform_element_build_subform','expertsdb_addnode_fix_subform'),
+            '#fieldname' => $fieldname,
+            '#extra_form' => array("#fieldname"=>$fieldname),
+					);
+				}
+				//updates the last suffix to include the subsuffix (which closes the table)
+				$form[$fieldname][$subfieldname]['#suffix'] .= $subsuffix;
+
+				//add submit handlers:
+				//Add the nids of the newly created sub-nodes to the node
+				$form['#submit']['expertsdb_addnode_addnids_submit'] = array();
+				//the subform element submit handler
+				$form['#submit']['subform_element_submit'] = array();
+				//the handler for the base node (todo: Is this still necessary, I think subform_element might do this)
+				$form['#submit']['node_form_submit'] = array();
+
+				// @TODO: add the current author to the subform
+
+				return $form;
+
+			case 'process form values':
+				$node_field = content_transpose_array_rows_cols(array('nid' => $node_field['nids']));
+				break;
+
+			case 'submit':
+				break;
+		}
+	}
+}
+
+/**
+ * This is called as an #after_build function for each subform.
+ *It 1) Disables the subform's validation etc if it's unused
+ *   2) Removes the subform's buttons.
+ */
+function expertsdb_addnode_fix_subform($form_element, &$form_values)
+{
+	//get the subform array (from the subform_element module)
+	global $subforms;
+
+	//the type of node to create
+	$nodetype = $form_element['#arguments'][0]['type'];
+
+	//the name of the field the expertsdb_addnode widget is for
+	$current_fieldname = $form_element['#fieldname'];
+
+	//for each field in the form, look for expertsdb_addnode_[blah]
+	foreach($form_values as $key => $value)
+	{
+		//if the field key begins 'expertsdb_addnode_' then it's one of the hidden fields, we use these to identify the names of potential subforms
+		if (strpos($key, 'expertsdb_addnode_') === 0)
+		{
+			//get the fieldname (the bit after the 'expertsdb_addnode_' in the key).
+			$fieldname = substr($key, 18);
+			if ($fieldname == $current_fieldname)
+			{
+				//find out which subform's the source (it will be the value of this key).
+				$source = $value;
+				//if it's not '' then we're creating a new node. (if it is '' then we must be using the select box).
+				//in other words, we disable subform processing if $source = '' or it's not related to this subform
+				$disable = TRUE;
+
+				if (strlen($source)>0) //if we're not using the select box...
+				{
+					if ($source == $nodetype) //and we've chosen this subform over any other
+					{
+						$disable = FALSE;
+					}
+				}
+
+				if ($disable) //disable this subform as it's not being used.
+				{
+					$form_element['#validate'] = array();
+				}
+			}
+		}
+	}
+
+	//Remove submit and preview buttons from the subform.
+	$form_element['#form']['submit']['#attributes'] = array(
+    'style' => 'height:0px; visibility:hidden;',
+	);
+	$form_element['#form']['preview']['#attributes'] = array(
+    'style' => 'height:0px; visibility:hidden;',
+	);
+
+	// bugfix
+	global $user;
+	$form_element['#form']['author']['name']['#value'] = $user->name;
+	// disable authoring information
+	foreach (array('preview', 'submit', 'delete', 'author','options') as $name) {
+		$form_element['#form'][$name]['#access'] = FALSE;
+	}
+
+	return $form_element;
+}
+
+/**
+ * Called as a main form submit handler. It submits the subforms and gets the nids then puts them into
+ * the main node.
+ */
+function expertsdb_addnode_addnids_submit($form_id, &$form_values)
+{
+	//copied from subform_element_submit, allows us to get hold of the redirects and get the nids from them
+	global $subforms;
+	if (isset($subforms)) {
+		foreach ($subforms as $key => $subform) {
+			if (!isset($subform['#submitted'])) {
+				$subforms[$key]['#submitted'] = TRUE;
+				$redirect = subform_element_call('drupal_submit_form', $subform['#post']['form_id'], $subform);
+				$fieldname = $subform['#fieldname'];
+				$split = explode("/", $redirect);
+				$newnid = $split[1];
+				//unset the current array, and replace it with a new array.
+				//note that as multiselect is currently set, this is an array
+				// @todo allow multi/single select!!
+				unset($form_values[$fieldname]['nids']);
+				$form_values[$fieldname]['nids'] = array ( $newnid => $newnid );
+
+			}
+		}
+		return $redirect;
+	}
+}
+
+/**
+ * This outputs HTML for the 'create new nodetype' link message.
+ * @param $type_count
+ *   Number of types that could be added
+ *
+ * @param $fieldname
+ *   The fieldname of this expertsdb_addnode field
+ *
+ * @param $type_list
+ *   List of types
+ */
+function _expertsdb_addnode_create_new_message($type_count, $fieldname, $type_list)
+{
+	$msg="";
+	$spanmsg.= "<span id='$fieldname' class='expertsdb_addnode_links'>";
+
+	//if there's only one type then the message is of the form "Create a new blah"
+	if ($type_count==1)
+	{
+		$atype=$type_list[0];
+		$typedesc = node_get_types('type', $atype);
+		$typedesc = $typedesc->name;
+
+		//pretransmsg is message before translation.
+		$pretransmsg = "or <a href='javascript:;' class='expertsdb_addnode_item !fieldname' id='!atype'>";
+		$pretransmsg.= "!spanmsg";
+		$pretransmsg.= "create a new !typedesc";
+		$pretransmsg.= "</span>";
+		$pretransmsg.= "</a>";
+		$vars = array('!fieldname' => $fieldname, '!atype' => $atype, '!spanmsg' => $spanmsg, '!typedesc' => $typedesc);
+		$msg.= t($pretransmsg, $vars);
+	}
+
+	//if there's more than one type then the message is of the form "Create a new blah or blah"
+	if ($type_count>1)
+	{
+		$vars = array();
+		$msg.= t("or create a new ");
+		$tempcnt=0;
+		foreach ($type_list as $atype)
+		{
+			$typedesc = node_get_types('type', $atype);
+			$typedesc = $typedesc->name;
+			$msg.= "<a href='javascript:;' class='expertsdb_addnode_item $fieldname' id='$atype'>";
+			$msg.= $spanmsg;
+			$msg.= "$typedesc";
+			$msg.= "</span>";
+			$msg.= "</a>";
+			$tempcnt++;
+			if ($tempcnt == $type_count-1)
+			{
+				$msg.= t(" or ");
+			}
+			else
+			{
+				$msg.= t(", ");
+			}
+		}
+	}
+	$msg .= "</span>";
+	return $msg;
+}

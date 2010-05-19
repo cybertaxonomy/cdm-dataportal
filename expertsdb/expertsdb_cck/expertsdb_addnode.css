@@ -1,0 +1,21 @@
+.expertssdb-add-node-headline-row {
+	clear: both;
+	margin: 1em 0;
+	height: 2em;
+	padding: 1em 1em .5em 1em;
+	border-top: 1px solid #bbb;
+	border-bottom: 1px solid #bbb;
+	font-weight:700;
+}
+
+.expertssdb-add-node-box .column-left {
+	float: left;
+}
+
+.expertssdb-add-node-box .column-right {
+	float: left;
+}
+
+select.expertsdb_addnode_select{
+width:30em;
+}

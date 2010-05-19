@@ -1,0 +1,6 @@
+; $Id$
+name = Node Reference Parent
+package = CCK
+description = "A CCK widget which is not editable but filled with default data only. It is used to simulate 1:n relationships between parent and child nodes."
+version = 5.x-1.0
+dependencies = nodereference

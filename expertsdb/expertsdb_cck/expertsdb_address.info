@@ -1,0 +1,4 @@
+name = Expertsdb Address Field
+description = Defines address field for CCK. Data will be integrated as serialized array into the according content type database.
+dependencies = content
+package = EDIT CCK

@@ -1,0 +1,20 @@
+$Id: INSTALL.txt,v 1.1.4.2 2008/07/16 11:54:28 niif Exp $
+***********************************************************
+Shibboleth Authetication module - Installation Instructions
+
+Writen by Tamás Dévai: tamas.devai@niif.hu
+***********************************************************
+
+1. Configure Shibboleth SP for your Drupal installation.
+
+2. Place the entire folder in your /modules directory, or a /modules directory
+    in a mulitsite folder, or in the /sites/all directory.
+
+3. Enable the module at administer -> site building -> modules.
+
+4. Visit administer -> user management -> access control, and grant users
+   permissions to administer the module.
+
+5. Visit administer -> user management -> Shibboleth settings to set up the module.
+   See the help located at administer -> help -> Shibboleth authentication for details
+   on how to properly configure the module for your needs.

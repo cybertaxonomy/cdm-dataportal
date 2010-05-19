@@ -1,0 +1,85 @@
+<?php
+//$Id: expertsdb_address_mexico.install,v 1.5 2007/10/11 15:57:56 ricflomag Exp $;
+/**
+ * Implementation of hook_install().
+ *
+ * For country codes, use http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html
+ * If you are adding states or provinces for other countries, just duplicate the .inc, .install, and . module set for Mexico.
+ * We should be able to grab what we need by Country Code. *
+ */
+function expertsdb_address_mexico_install() {
+  if (expertsdb_address_mexico_installstates()) {
+    drupal_set_message('The expertsdb_address_Mexico module was installed successfully. The database was updated.');
+  }
+  else {
+    drupal_set_message('There was an error installing expertsdb_address_Mexico.', 'error');
+  }
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function expertsdb_address_mexico_uninstall() {
+  if (db_table_exists('expertsdb_address_states'))
+    $query1 = db_query("DELETE FROM {expertsdb_address_states} WHERE country_code = '%s'", 'MX');
+  else $query1 = TRUE;
+  if (db_table_exists('expertsdb_address_countries'))
+    $query2 = db_query("DELETE FROM {expertsdb_address_countries} WHERE country_code = '%s'", 'MX');
+  else $query2 = TRUE;
+
+  if ($query1 && $query2) {
+    drupal_set_message('The expertsdb_address_Mexico module was uninstalled successfully.');
+  }
+  else {
+    drupal_set_message('There was an error removing the expertsdb_address_Mexico database rows.', 'error');
+  }
+}
+
+/**
+ * Adds all Mexican States to the states table. Adds Mexico to the countries table. Returns whether all queries succeeded.
+ *
+ * @return boolean $query_ok
+ */
+function expertsdb_address_mexico_installstates() {
+  if (!db_table_exists('expertsdb_address_states') or !db_table_exists('expertsdb_address_countries')) return FALSE;
+  $states = array (
+    array("Aguascalientes","AGS"),
+    array("Baja California Norte","BC"),
+    array("Baja California Sur","BCS"),
+    array("Campeche","CAMP"),
+    array("Chiapas","CHIS"),
+    array("Chihuahua","CHIH"),
+    array("Coahuila","COAH"),
+    array("Colima","COL"),
+    array("Distrito Federal","DF"),
+    array("Durango","DGO"),
+    array("Edo. de México","MEX"),
+    array("Guanajuato","GTO"),
+    array("Guerrero","GRO"),
+    array("Hidalgo","HGO"),
+    array("Jalisco","JAL"),
+    array("Michoacán","MICH"),
+    array("Morelos","MOL"),
+    array("Nayarit","NAY"),
+    array("Nuevo León","NL"),
+    array("Oaxaca","OAX"),
+    array("Puebla","PUE"),
+    array("Querétaro","QRO"),
+    array("Quintana Roo","QROO"),
+    array("San Luis Potosí","SLP"),
+    array("Sinaloa","SIN"),
+    array("Sonora","SON"),
+    array("Tabasco","TAB"),
+    array("Tamaulipas","TAMPS"),
+    array("Tlaxcala","TLAX"),
+    array("Veracruz","VER"),
+    array("Yucatán","YUC"),
+    array("Zacatecas","ZAC"),
+    );
+
+  foreach ($states as $state) {
+    if(!db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('{$state[0]}', '{$state[1]}', 'MX')")) return FALSE;
+  }
+
+  return db_query("INSERT INTO {expertsdb_address_countries} (country_name, country_code) VALUES ('Mexico', 'MX')");
+} // function expertsdb_address_mexico_installstates()

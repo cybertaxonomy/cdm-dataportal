@@ -1,0 +1,5 @@
+name = Expertsdb Address Field Belgian Support
+description = Adds support for Belgium
+dependencies = content expertsdb_address
+package = EDIT CCK
+

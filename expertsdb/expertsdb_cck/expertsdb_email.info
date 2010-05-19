@@ -1,0 +1,5 @@
+name = Expertsdb EMail
+description = Defines an email field type for cck. Data will be integrated as serialized array into the according content type database.
+dependencies = content jquery_plugin
+package = EDIT CCK
+

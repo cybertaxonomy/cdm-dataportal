@@ -1,0 +1,9 @@
+; $Id: smtp.info,v 1.2 2007/02/15 19:37:03 lukelast Exp $
+name = SMTP
+description = Allows the sending of site email to an SMTP server.
+package = "Mail"
+; Information added by drupal.org packaging script on 2007-06-24
+version = "5.x-1.x-dev"
+project = "smtp"
+datestamp = "1182657130"
+

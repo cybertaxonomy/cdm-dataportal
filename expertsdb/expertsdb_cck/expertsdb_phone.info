@@ -1,0 +1,6 @@
+name = Expertsdb Phone
+description = Defines a text field type for multiple phone numbers in international notation. Data will be integrated as serialized array into the according content type database.
+dependencies = content
+package = EDIT CCK
+
+

@@ -1,0 +1,260 @@
+<?php
+/**
+ * $Id: expertsdb_address.install,v 1.6.2.1 2007/12/14 20:16:15 rconstantine Exp $
+ * Implementation of hook_install().
+ *
+ * For country codes, use http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html
+ * If you are adding states or provinces for other countries, just add them in below. We should be able to grab what we need by Country Code.
+ * For now, while there is only support for the U.S., my code in the module won't use the country code.
+ *
+ * Also, once two or more countries are supported, another table will need to be created which cross references Country Codes with
+ * country names.
+ *
+ * @package expertsdb_address
+ * @category NeighborForge
+ */
+function expertsdb_address_install() {
+  $query_ok = TRUE;
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      if (!db_table_exists('expertsdb_address_states')) {
+        $query1 = db_query("CREATE TABLE {expertsdb_address_states} (
+                  state_id int unsigned NOT NULL auto_increment,
+                  state_name varchar(64) NOT NULL default '',
+                  state_abbrv varchar(5) NOT NULL default '',
+                  country_code varchar(2) NOT NULL default '',
+                  PRIMARY KEY (state_id),
+                  UNIQUE KEY (state_name)
+                  ) /*!40100 DEFAULT CHARACTER SET UTF8 */ ");
+      }
+      if (!db_table_exists('expertsdb_address_countries')) {
+        $query3 = db_query("CREATE TABLE {expertsdb_address_countries} (
+                  country_code varchar(2) NOT NULL default '',
+                  country_name varchar(64) NOT NULL default '',
+                  PRIMARY KEY name_code (country_name, country_code)
+                  ) /*!40100 DEFAULT CHARACTER SET UTF8 */ ");
+      }
+      break;
+    case 'pgsql':
+      //I don't really know what I'm doing here, so if I screwed up the pgsql, let me know how to fix it.
+      if (!db_table_exists('expertsdb_address_states')) {
+        $query1 = db_query("CREATE TABLE {expertsdb_address_states} (
+                  state_id serial,
+                  state_name varchar(64) NOT NULL default '',
+                  state_abbrv varchar(5) NOT NULL default '',
+                  country_code varchar(2) NOT NULL default '',
+                  PRIMARY KEY (state_id),
+                  UNIQUE (state_name)
+                  )");
+      }
+      if (!db_table_exists('expertsdb_address_countries')) {
+        $query3 = db_query("CREATE TABLE {expertsdb_address_countries} (
+                  country_code varchar(2) NOT NULL default '',
+                  country_name varchar(64) NOT NULL default '',
+                  PRIMARY KEY (country_name, country_code)
+                  )");
+      }
+      break;
+  }
+  if (!$query1 || !$query3) $query_ok = FALSE;
+
+  include_once('./'. drupal_get_path('module', 'expertsdb_address') .'/expertsdb_address_state.inc');
+
+  if ($query_ok) {
+    drupal_set_message('The expertsdb_address module was installed successfully. Tables were added to the database.');
+  }
+  else {
+    drupal_set_message('There was an error installing the expertsdb_address database tables.', 'error');
+  }
+}
+
+/**
+ * Implementation of hook_update_N().
+ */
+function expertsdb_address_update_1() {
+  $ret = array();
+
+  //first, handle existing table issues
+  include_once('./'. drupal_get_path('module', 'content') .'/content.module');
+  include_once('./'. drupal_get_path('module', 'content') .'/content_admin.inc');
+
+  content_clear_type_cache();
+  $fields = content_fields();
+
+  foreach ($fields as $field) {
+    switch ($field['type']) {
+      case 'expertsdb_address':
+        $db_info = content_database_info($field);
+        $columns_old = $db_info['columns'];
+        $columns = $columns_old;
+        $columns['state']['length'] = 100;
+        $columns['other']['type'] = 'longtext';
+        $columns['other']['not_null'] = TRUE;
+        $columns['other']['default'] = "''";
+        $columns['other']['sortable'] = FALSE;
+        // force the old values : if the db info was rebuilt before the update is run,
+        // it will already contain the new values, and nothing gets changed in content_alter_db_field
+        $columns_old['state']['length'] = 2;
+        unset($columns_old['other']);
+        content_alter_db_field($field, $columns_old, $field, $columns);
+        $ret[] = array(
+          'query' => strtr('The field %field_name has been updated with an \'other\' column. Also, the length of the state column has been increased from 2 to 100 characters.', array('%field_name' => $field['field_name'])),
+          'success' => TRUE
+        );
+        break;
+      }
+    }
+//now add the new table
+  $query_ok = TRUE;
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      if (!db_table_exists('expertsdb_address_countries')) {
+        $ret[] = $query3 = update_sql("CREATE TABLE {expertsdb_address_countries} (
+                  country_code varchar(2) NOT NULL default '',
+                  country_name varchar(64) NOT NULL default '',
+                  PRIMARY KEY name_code (country_name, country_code)
+                  ) /*!40100 DEFAULT CHARACTER SET UTF8 */ ");
+      }
+      break;
+    case 'pgsql':
+      //I don't really know what I'm doing here, so if I screwed up the pgsql, let me know how to fix it.
+      if (!db_table_exists('expertsdb_address_countries')) {
+        $ret[] = $query3 = update_sql("CREATE TABLE {expertsdb_address_countries} (
+                  country_code varchar(2) NOT NULL default '',
+                  country_name varchar(64) NOT NULL default '',
+                  PRIMARY KEY (country_name, country_code)
+                  )");
+      }
+      break;
+  }
+  if (!$query3) $query_ok = FALSE;
+
+  $query2 = db_query("INSERT INTO {expertsdb_address_countries} (country_name, country_code) VALUES ('United States', 'US')");
+  if (!$query2) $query_ok = FALSE;
+
+  if ($query_ok) {
+    drupal_set_message('The expertsdb_address module was updated successfully. Tables were added to the database.');
+  }
+  else {
+    drupal_set_message('There was an error installing the expertsdb_address database table update.', 'error');
+  }
+  return $ret;
+}
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * This should change any relevent tables that use this module. It should roughly look like:
+ * +-----------------------+------------------+------+-----+---------+-------+
+ * | Field                 | Type             | Null | Key | Default | Extra |
+ * +-----------------------+------------------+------+-----+---------+-------+
+ * | vid                   | int(10) unsigned | NO   | PRI | 0       |       |
+ * | nid                   | int(10) unsigned | NO   |     | 0       |       |
+ * | field_address_street1 | longtext         | NO   |     |         |       |
+ * | field_address_street2 | longtext         | YES  |     | NULL    |       |
+ * | field_address_apt     | varchar(15)      | YES  |     | NULL    |       |
+ * | field_address_city    | longtext         | NO   |     |         |       |
+ * | field_address_state   | varchar(100)     | NO   |     |         |       |
+ * | field_address_zip     | varchar(15)      | NO   |     |         |       |
+ * | field_address_country | varchar(2)       | NO   |     |         |       |
+ * | field_address_other   | longtext         | YES  |     | NULL    |       |
+ * +-----------------------+------------------+------+-----+---------+-------+
+ * Changes are made to type, null and default as noted below. If your table doesn't change
+ * for one reason or another, I've included the print-out of my table above so you can change
+ * it by hand. Most of the types will not change during this operation, so don't change them
+ * by hand either. The important columns are the Null and Default ones.
+ */
+function expertsdb_address_update_2() {
+$ret = array();
+
+  //first, handle existing table issues
+  include_once('./'. drupal_get_path('module', 'content') .'/content.module');
+  include_once('./'. drupal_get_path('module', 'content') .'/content_admin.inc');
+
+  content_clear_type_cache();
+  $fields = content_fields();
+
+  foreach ($fields as $field) {
+    switch ($field['type']) {
+      case 'expertsdb_address':
+        $db_info = content_database_info($field);
+        $columns_old = $db_info['columns'];
+        $columns = $columns_old;
+        $columns['street1']['not null'] = TRUE;
+        $columns['street1']['default'] = "''";
+        $columns['street2']['not null'] = FALSE;
+        $columns['street2']['default'] = NULL;
+        $columns['apt']['type'] = 'varchar';
+        $columns['apt']['length'] = 15;
+        $columns['apt']['not null'] = FALSE;
+        $columns['apt']['default'] = NULL;
+        $columns['city']['not null'] = TRUE;
+        $columns['city']['default'] = "''";
+        $columns['state']['not null'] = TRUE;
+        $columns['state']['default'] = "''";
+        $columns['zip']['type'] = 'varchar';
+        $columns['zip']['length'] = 15;
+        $columns['zip']['not null'] = TRUE;
+        $columns['zip']['default'] = "''";
+        $columns['country']['not null'] = TRUE;
+        $columns['country']['default'] = "''";
+        $columns['other']['not null'] = FALSE;
+        $columns['other']['default'] = NULL;
+        // force the old values : if the db info was rebuilt before the update is run,
+        // it will already contain the new values, and nothing gets changed in content_alter_db_field
+        $columns_old['street1']['not null'] = TRUE;
+        $columns_old['street1']['default'] = "''";
+        $columns_old['street2']['not null'] = TRUE;
+        $columns_old['street2']['default'] = "''";
+        $columns_old['apt']['type'] = 'int';
+        $columns_old['apt']['not null'] = FALSE;
+        $columns_old['apt']['default'] = NULL;
+        $columns_old['city']['not null'] = FALSE;
+        $columns_old['city']['not null'] = TRUE;
+        $columns_old['city']['default'] = "''";
+        $columns_old['state']['not null'] = TRUE;
+        $columns_old['state']['default'] = "''";
+        $columns_old['zip']['type'] = 'int';
+        $columns_old['zip']['not null'] = TRUE;
+        $columns_old['zip']['default'] = 0;
+        $columns_old['country']['not null'] = TRUE;
+        $columns_old['country']['default'] = "''";
+        $columns_old['other']['not null'] = TRUE;
+        $columns_old['other']['default'] = "''";
+        content_alter_db_field($field, $columns_old, $field, $columns);
+        $ret[] = array(
+          'query' => strtr('The field %field_name has been updated in several respects.', array('%field_name' => $field['field_name'])),
+          'success' => TRUE
+        );
+        break;
+      }
+    }
+  $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Washington, D.C.', 'DC', 'US')");
+  if (!$query2) $query_ok = FALSE;
+
+  if ($query_ok) {
+    drupal_set_message('The expertsdb_address module was updated successfully. Tables were updated.');
+  }
+  else {
+    drupal_set_message('There was an error updating the expertsdb_address database table.', 'error');
+  }
+  return $ret;
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function expertsdb_address_uninstall() {
+  $query1 = db_query('DROP TABLE {expertsdb_address_states}');
+  $query2 = db_query('DROP TABLE {expertsdb_address_countries}');
+
+  if ($query1 && $query2) {
+    drupal_set_message('The expertsdb_address module was uninstalled successfully.');
+  }
+  else {
+    drupal_set_message('There was an error removing the expertsdb_address database tables.', 'error');
+  }
+
+}
