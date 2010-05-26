@@ -41,10 +41,14 @@ function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE
 
 	if($style == "zoology"){
 		$year = partialToYear($reference->datePublished->start);
-		$citation = $author_team->titleCache . ($year ? ', '.$year : '');
+		$citation = $author_team->titleCache . ($year ? '. '.$year : '');
 	} else {
-		$citation = $reference->titleCache;
+		//$citation = $reference->titleCache;
+		$year = partialToYear($reference->datePublished->start);
+		$citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
+		$citation = str_replace('..', '.', $citation);
 	}
+
 	if($doLink){
 		$out = l('<span class="reference">'.$citation.'</span>'
           , path_to_reference($reference->uuid)
@@ -58,4 +62,19 @@ function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE
      }
      
     return $out;
+}
+
+function short_form_of_author_team ($author_team){
+	$number_of_authors = substr_count($author_team, ' & ') + 1;
+	switch ($number_of_authors) {
+		case 1:
+			break;
+		case 2:
+			$result = str_replace(' & ', ' and ', $author_team);
+			break;
+		default:
+			$result_parts = explode(' & ', $author_team);
+      $result = $result_parts[0] . ' et al.';	  
+	}
+	return $result;
 }

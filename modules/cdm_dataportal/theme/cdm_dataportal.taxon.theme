@@ -237,7 +237,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 			break;
 		case UUID_MISAPPLIED_NAME_FOR:
 		case UUID_INVALID_DESIGNATION_FOR:
-			$relsign = '&ndash;'; // &ndash; &mdash; &minus;
+			$relsign = '&mdash;'; // &ndash; &mdash; &minus;
 			$name_prefix = '"';
 			$name_postfix = '"';
 			break;
@@ -246,9 +246,13 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	}
 
 	$status = $taxon->name->status[0]->type->representation_L10n;
-  if ($status == 'Invalid' || $status == 'Nudum'){
-    	$relsign = '-';
-    	$status = $taxon->name->status[0]->type->representation_L10n;
+  //if ($status == 'Invalid' || $status == 'Nudum'){
+  if (sizeof($status) > 0){
+      if ($status == 'Invalid' || $status == 'Nudum'){
+       $relsign = '&mdash';
+      }
+    	$status = ', ' . $taxon->name->status[0]->type->representation_L10n_abbreviated;
+    	//var_dump('&mdash' . $taxon->name->status[0]->type->representation_L10n_abbreviated);
   }
   
 	 RenderHints::pushToRenderStack('related_taxon');
