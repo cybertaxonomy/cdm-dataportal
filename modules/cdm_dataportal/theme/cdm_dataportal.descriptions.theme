@@ -187,7 +187,10 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
     }
      $out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';   
   }else{
-    $out = $description . $sourceRefs . ' (name in source: '. $name_used_in_source_link_to_show . ')';
+  	if ($name_used_in_source_link_to_show){
+  		$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+  	}
+    $out = $description . $sourceRefs . $name_used_in_source_link_to_show;
     $out .= theme('cdm_annotations_as_footnotekeys', $element);
   }
   
