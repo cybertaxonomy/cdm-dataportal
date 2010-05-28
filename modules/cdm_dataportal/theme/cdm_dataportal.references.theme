@@ -36,17 +36,22 @@ function theme_cdm_reference_pager($referencePager, $path, $parameters = array()
  *  
  */
 function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE, $referenceStyle = NULL ){
-
+  global $theme_key; //TODO: implement in the palmae theme the concrete case
   $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
 
 	if($style == "zoology"){
 		$year = partialToYear($reference->datePublished->start);
 		$citation = $author_team->titleCache . ($year ? '. '.$year : '');
-	} else {
-		//$citation = $reference->titleCache;
+	}elseif ($theme_key == 'palmweb_2') {
 		$year = partialToYear($reference->datePublished->start);
-		$citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
-		$citation = str_replace('..', '.', $citation);
+    $citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
+    $citation = str_replace('..', '.', $citation);
+	} else {
+		$citation = $reference->titleCache;
+		
+		//$year = partialToYear($reference->datePublished->start);
+		//$citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
+		//$citation = str_replace('..', '.', $citation);
 	}
 
 	if($doLink){
