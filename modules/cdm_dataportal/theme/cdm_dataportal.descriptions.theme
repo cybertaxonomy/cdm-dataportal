@@ -2,13 +2,13 @@
 // $Id$
 
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ */
 
 function theme_cdm_feature_nodesTOC($featureNodes){
 
@@ -76,7 +76,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 
 	RenderHints::pushToRenderStack('feature_nodes');
 	$gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
-	
+
 	foreach($featureNodes as $node){
 		// process $descriptionElements with content only
 		if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0){
@@ -91,18 +91,23 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				$block->module = "cdm_dataportal-feature";
 
 				//get the text for the feature block
-				$block->content = theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid);
+				//var_dump($node->feature);
+				if ($node->feature->titleCache == 'Common Name'){
+					$block->content = theme('cdm_common_names', $node->descriptionElements);
+				} else {
+				  $block->content = theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid);
+				}
 				// get media for the feature block
 				$media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
 				$captionElements = array('title', 'rights');
 				//$block->content .= theme('cdm_media_gallerie', $media_list, "test", 150, 4, false, $captionElements);
-				$block->content .= theme('cdm_media_gallery', $media_list, 
-					CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
-					$gallery_settings['cdm_dataportal_media_maxextend'], 
-	             	$gallery_settings['cdm_dataportal_media_cols'], 
-	             	$gallery_settings['cdm_dataportal_media_maxRows'],
-	             	$captionElements);
-				
+				$block->content .= theme('cdm_media_gallery', $media_list,
+				CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
+				$gallery_settings['cdm_dataportal_media_maxextend'],
+				$gallery_settings['cdm_dataportal_media_cols'],
+				$gallery_settings['cdm_dataportal_media_maxRows'],
+				$captionElements);
+
 				// set anchor; FIXME put anchor in $block->subject
 				$out .= '<a name="'.$block->delta.'"></a>';
 				$out .= theme('block', $block);
@@ -111,9 +116,9 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				if($node->feature->uuid == UUID_DISTRIBUTION){
 					$out .= theme('cdm_descriptionElements_distribution', $taxon);
 				}
-				
-			    $out .= theme('cdm_footnotes', $node->feature->uuid);
-			    $out .= theme('cdm_annotation_footnotes', $node->feature->uuid);
+
+				$out .= theme('cdm_footnotes', $node->feature->uuid);
+				$out .= theme('cdm_annotation_footnotes', $node->feature->uuid);
 			}
 		}
 		// theme
@@ -141,65 +146,100 @@ function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', 
 	return $out;
 }
 
+
+function theme_cdm_descriptionElement_CommonTaxonName($element){
+	$out = $element->language->representation_L10n . ' (' . $element->area->titleCache . '): ' . $element->name;
+	return $out;
+}
 /**
- * TODO: assign a new name to the function? because it is used for the citations 
+ * TODO: assign a new name to the function? because it is used for the citations
  *       textdata elements and not for all text data description elements
  * @param $element The description element which contains the text information
- * @param $asListElement A boolean which determines whether the citations should 
- *                       be renderer as a list or not  
+ * @param $asListElement A boolean which determines whether the citations should
+ *                       be renderer as a list or not
  * @return unknown_type Html to be renderized in drupal
  */
 function theme_cdm_descriptionElementTextData($element, $asListElement){
 
-  $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
-  $sourceRefs = '';
-  $result = array();
-  $out;
-  $res_author;
-  $res_date;
-   
-  foreach($element->sources as $source){
-    $referenceCitation = theme('cdm_DescriptionElementSource', $source);
-    if($description && strlen($description) > 0 && $referenceCitation ){
-        $sourceRefs .= ' ('.$referenceCitation.')' ;
-    }else if ($referenceCitation){
-    	  $sourceRefs = $referenceCitation;
-    }
-  }
-  if(strlen($sourceRefs) > 0){
-    $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
-  }
- 
-  if ($source->nameUsedInSource->uuid){ //do a link to name page
-    $name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
-                                           path_to_name($source->nameUsedInSource->uuid), 
-                                           array(),
-                                           NULL, NULL, FALSE ,TRUE);
-  }else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
-  	$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
-  }
-  
-  if ($asListElement){
-    $out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
-    //adding ":" if necesary 
-    if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
-    	$out .= ': ';
-    }
-     $out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';   
-  }else{
-  	if ($name_used_in_source_link_to_show){
-  		$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
-  	}
-    $out = $description . $sourceRefs . $name_used_in_source_link_to_show;
-    $out .= theme('cdm_annotations_as_footnotekeys', $element);
-  }
-  
-  // add annotations as footnote key
-  //$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
+	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+	$sourceRefs = '';
+	$result = array();
+	$out;
+	$res_author;
+	$res_date;
+	 
+	foreach($element->sources as $source){
+		$referenceCitation = theme('cdm_DescriptionElementSource', $source);
+		if($description && strlen($description) > 0 && $referenceCitation ){
+			$sourceRefs .= ' ('.$referenceCitation.')' ;
+		}else if ($referenceCitation){
+			$sourceRefs = $referenceCitation;
+		}
+	}
+	if(strlen($sourceRefs) > 0){
+		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+	}
 
-  return $out;
+	if ($source->nameUsedInSource->uuid){ //do a link to name page
+		$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
+		path_to_name($source->nameUsedInSource->uuid),
+		array(),
+		NULL, NULL, FALSE ,TRUE);
+	}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
+		$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
+	}
+
+	if ($asListElement){
+		$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+		//adding ":" if necesary
+		if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+			$out .= ': ';
+		}
+		$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+	}else{
+		if ($name_used_in_source_link_to_show){
+			$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+		}
+		$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
+		$out .= theme('cdm_annotations_as_footnotekeys', $element);
+	}
+
+	// add annotations as footnote key
+	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
+
+	return $out;
 }
 
+
+function theme_cdm_common_names($elements){
+	$result;
+	$separator = ',';
+	//create the a-array with the areas and text to show
+	foreach ($elements as $element){
+		if ($element->class == 'CommonTaxonName'){
+			$sourcesFootnoteKeyList = '';
+			foreach($element->sources as $source){
+				$_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
+        $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_COMMON_NAME, ($sourcesFootnoteKeyList ? $separator : ''));
+			}
+			$common_names[$element->language->representation_L10n] = ' (' . $element->area->titleCache . '): ' . $element->name . $sourcesFootnoteKeyList;
+		}
+	}
+	if (count($common_names) > 0){
+		//sorting the a-array based on the area (key)
+		ksort($common_names);
+		//creating the output to be render by drupal
+		foreach ($common_names as $key => $val){
+			if (count($result) > 0){
+				$result = $result . '; ';
+			}
+			$result = $result . '<b>' . $key . '</b>' . $val;
+		}
+	} else {
+		$result = '';
+	}
+	return $result;
+}
 
 /**
  * Theme a list of description elements, usually of a specific feature type
@@ -212,11 +252,12 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 	$sortOutArray = false;
 	$enclosingHtml = 'ul';
 	$distributionElements = array();
-	
+
 	RenderHints::pushToRenderStack('cdm_descriptionElements');
-	
+	$common_names = theme('cdm_common_names', $descriptionElements);
+	var_dump($common_names);
 	foreach($descriptionElements as $descriptionElement){
-		
+
 		if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
 			if($descriptionElement->class == 'Distribution'){
 				$distributionElements[]= $descriptionElement;
@@ -234,6 +275,9 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 		} else if($descriptionElement->class == 'TextData'){
 			$asListElement = true;
 			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
+		}else if ($descriptionElement->class == 'CommonTaxonName') {
+			//var_dump('TEST');
+			$outArray[] = theme('cdm_descriptionElement_CommonTaxonName', $descriptionElement);
 		} else {
 			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
 		}
@@ -241,18 +285,18 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 	}
 
 	$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
-	
+
 	// take the feature of the last $descriptionElement
 	$feature = $descriptionElement->feature;
 	$out = theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
 
-  RenderHints::popFromRenderStack();
-   
+	RenderHints::popFromRenderStack();
+	 
 	return $out;
 }
 
 /**
- * 
+ *
  * @param unknown_type $descriptionElements
  * @return unknown_type
  */
@@ -260,7 +304,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 
 	$out = '';
 	$separator = ',';
-  RenderHints::pushToRenderStack('descriptionElementDistribution');
+	RenderHints::pushToRenderStack('descriptionElementDistribution');
 	RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 	foreach($descriptionElements as $descriptionElement){
 		// annotations as footnotes
@@ -276,12 +320,12 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 		if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
 			$annotationFootnoteKeys .= $separator;
 		}
-	    $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList . ' ';
+		$out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList . ' ';
 	}
-	
-	
+
+
 	$out = substr($out, 0, strlen($out)-strlen($separator) );
-	
+
 	$taxonTrees =  cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
 	foreach($taxonTrees as $taxonTree){
 		if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
@@ -290,7 +334,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 		}
 	}
 
-    RenderHints::popFromRenderStack();
+	RenderHints::popFromRenderStack();
 	return $out;
 
 }
@@ -298,11 +342,11 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 
 function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
 
-    $out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
-    
+	$out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
+
 	// add annotations as footnote key
-    $out .= theme('cdm_annotations_as_footnotekeys', $descriptionElementSource->citation);
-    return $out;
+	$out .= theme('cdm_annotations_as_footnotekeys', $descriptionElementSource->citation);
+	return $out;
 }
 
 /**
@@ -322,14 +366,14 @@ function theme_cdm_descriptionElements_distribution($taxon){
 	}else{
 		$map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
 
-//		$map_data_parameters->String = str_replace(':', "%58", $map_data_parameters->String);
-//		$map_data_parameters->String = str_replace(':', "%20", $map_data_parameters->String);
-//		$map_data_parameters->String = str_replace('(', "", $map_data_parameters->String);
-//		$map_data_parameters->String = str_replace(')', "", $map_data_parameters->String);
-//      $map_data_parameters->String = str_replace('.', "%46", $map_data_parameters->String);
-        $map_data_parameters->String = str_replace('%3A', ":", $map_data_parameters->String);       
+		//		$map_data_parameters->String = str_replace(':', "%58", $map_data_parameters->String);
+		//		$map_data_parameters->String = str_replace(':', "%20", $map_data_parameters->String);
+		//		$map_data_parameters->String = str_replace('(', "", $map_data_parameters->String);
+		//		$map_data_parameters->String = str_replace(')', "", $map_data_parameters->String);
+		//      $map_data_parameters->String = str_replace('.', "%46", $map_data_parameters->String);
+		$map_data_parameters->String = str_replace('%3A', ":", $map_data_parameters->String);
 
-		
+
 		$display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
 		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
 		$labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
@@ -341,11 +385,11 @@ function theme_cdm_descriptionElements_distribution($taxon){
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 			// embed into openlayers viewer
 			if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
-			  $query_string .= '&legend=1&mlp=3';
+				$query_string .= '&legend=1&mlp=3';
 			}
-			
+				
 			$map_tdwg_Uri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
-			
+				
 			$legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
 			$legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
 			$legend_url_font_style = $fontStyles[$legend_url_font_style];
@@ -482,18 +526,18 @@ $(document).ready(function(){
   $(\'#openlayers_legend\').css(\'top\', -$(\'#openlayers_map\').height());
   $(\'#openlayers_legend\').css(\'left\', $(\'#openlayers_map\').width()-100);
 });'
-, 'inline');
-// showing openlayers
-$out = '<div id="openlayers">';
-$out .= '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
-// showing lengeds
-if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
-	$out .= '<div id="openlayers_legend"><img id="legend" src="'.$legend_url.'"></div>';
-}
-// showing map caption
-$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
-$out .= '</div>';
- 
+			, 'inline');
+			// showing openlayers
+			$out = '<div id="openlayers">';
+			$out .= '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+			// showing lengeds
+			if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
+				$out .= '<div id="openlayers_legend"><img id="legend" src="'.$legend_url.'"></div>';
+			}
+			// showing map caption
+			$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
+			$out .= '</div>';
+
 		} else {
 			// simple image
 			$mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
