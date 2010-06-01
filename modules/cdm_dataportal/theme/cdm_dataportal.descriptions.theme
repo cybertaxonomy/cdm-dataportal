@@ -91,7 +91,6 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				$block->module = "cdm_dataportal-feature";
 
 				//get the text for the feature block
-				//var_dump($node->feature);
 				if ($node->feature->titleCache == 'Common Name'){
 					$block->content = theme('cdm_common_names', $node->descriptionElements);
 				} else {
@@ -255,7 +254,6 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 
 	RenderHints::pushToRenderStack('cdm_descriptionElements');
 	$common_names = theme('cdm_common_names', $descriptionElements);
-	var_dump($common_names);
 	foreach($descriptionElements as $descriptionElement){
 
 		if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
@@ -276,7 +274,6 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 			$asListElement = true;
 			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
 		}else if ($descriptionElement->class == 'CommonTaxonName') {
-			//var_dump('TEST');
 			$outArray[] = theme('cdm_descriptionElement_CommonTaxonName', $descriptionElement);
 		} else {
 			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
