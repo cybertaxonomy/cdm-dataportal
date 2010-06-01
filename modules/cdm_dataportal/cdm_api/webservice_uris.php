@@ -6,6 +6,8 @@ define('CDM_WS_MEDIA_METADATA', 'media/$0/metadata');
 
 define('CDM_WS_NAME', 'name');
 
+define('CDM_WS_TAXON', 'taxon');
+
 define('CDM_WS_NAME_TYPEDESIGNATIONS', 'name/$0/typeDesignations');
 
 define('CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS', 'portal/taxon/$0/nameTypeDesignations');
