@@ -218,10 +218,20 @@ function theme_cdm_common_names($elements){
 		if ($element->class == 'CommonTaxonName'){
 			$sourcesFootnoteKeyList = '';
 			foreach($element->sources as $source){
-				$_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
-        $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_COMMON_NAME, ($sourcesFootnoteKeyList ? $separator : ''));
+				if(!$source->idNamespace && strlen($source->idNamespace) == 0){ 
+				  $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
+          $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_COMMON_NAME, ($sourcesFootnoteKeyList ? $separator : ''));
+				}
 			}
-			$common_names[$element->language->representation_L10n] = ' (' . $element->area->titleCache . '): ' . $element->name . $sourcesFootnoteKeyList;
+			//$common_names[$element->language->representation_L10n] = ' (' . $element->area->titleCache . '): ' . $element->name . $sourcesFootnoteKeyList;
+			//$common_names['<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')'] = ': ' . $element->name . $sourcesFootnoteKeyList;
+			$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
+			if($common_names[$key]){
+				var_dump("duplicado!!");
+				$common_names[$key] = $common_names[$key] . ', ' . $element->name . $sourcesFootnoteKeyList;
+			}else{
+				$common_names[$key] = $element->name . $sourcesFootnoteKeyList;
+			}
 		}
 	}
 	if (count($common_names) > 0){
@@ -232,7 +242,7 @@ function theme_cdm_common_names($elements){
 			if (count($result) > 0){
 				$result = $result . '; ';
 			}
-			$result = $result . '<b>' . $key . '</b>' . $val;
+			$result = $result . $key . ': ' . $val;
 		}
 	} else {
 		$result = '';
