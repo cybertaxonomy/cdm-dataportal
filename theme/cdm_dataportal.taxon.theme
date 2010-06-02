@@ -42,7 +42,7 @@ function theme_cdm_search_results($pager, $path, $parameters){
           });
         });', "inline");
 
-	drupal_set_title(t('Search Results'));
+	drupal_set_title(t('Search results'));
 
 	$out = ''; //l('Advanced Search', '/cdm_dataportal/search');
 
@@ -242,7 +242,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 			$name_postfix = '"';
 			break;
 		default :
-			$relsign = '&ndash;';
+			$relsign = '&mdash;';
 	}
 
 	$status = $taxon->name->status[0]->type->representation_L10n;
