@@ -1,0 +1,377 @@
+<?php
+// $Id$
+
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+*/
+
+define(FOOTNOTE_ANNOTATIONS, 'annotations');
+
+/**
+ * TODO if getting fragment from request is possible remove $_REQUEST['highlite'] HACK
+ * NOT WORKING since fragments are not available to the server
+ function fragment(){
+ global $fragment;
+ if(!$fragment){
+ $fragment = substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['REQUEST_URI'], '#'));
+ }
+ return $fragment;
+ }
+ */
+
+function uuid_anchor($uuid, $innerHTML){
+	$highlite = $_REQUEST['highlite'] == $uuid;
+	return '<a name="'.$uuid.'" ></a><span class="'.($highlite ? 'highlite' : '').'">'.$innerHTML.'</span>';
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $name
+ * @param unknown_type $numOfNameTokens
+ * @return unknown
+ * @deprecated looks like this is not used anymore
+ */
+function tagNameParts($name, $numOfNameTokens){
+
+	$out = '<span class="name">';
+
+	$token = strtok($name, " \n\t");
+	$i = 0;
+	$noSpace = true;
+	while($token != false){
+		if($i == $numOfNameTokens){
+			$out .= '</span> <span class="authors">';
+			$noSpace = true;
+		}
+		$out .= ($noSpace?'':' ').$token;
+		$noSpace = false;
+		$token = strtok(" \n\t");
+		$i++;
+	}
+	return $out.'</span>';
+}
+
+/**
+ * Converts an array of TagedText items into a sequence of corresponding html tags whereas
+ * each item will provided with a class attribute which set to the key of the TaggedText item.
+ *
+ * @param array $taggedtxt
+ * @param String $tag
+ * @param String $glue the string by which the chained text tokens are concatenated together.
+ *       Default is a blank character
+ * @return String of HTML
+ */
+function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
+	$out = '';
+	$i = 0;
+	foreach($taggedtxt as $tt){
+		if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
+			$out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.t($tt->text).'</'.$tag.'>';
+		}
+	}
+	return $out;
+}
+
+/* ============================ annotations ============================= */
+
+/**
+ * Almost any cdmObject may be annotated. Therefore we provide a generic way to display
+ * as well as create or update annotations.
+ * The following cdm classes are annotatable:
+ * 
+ *  DescriptionElementBase
+ *	EventBase
+ *	HomotypicalGroup
+ *	IdentifiableEntity
+ *	  DescriptionBase
+ *	  IdentifiableMediaEntity
+ *	  Media
+ *	  Sequence
+ *	  TaxonBase
+ *	  TaxonNameBase
+ *	  TaxonomicTree
+ *	  TermBase
+ *	LanguageStringBase
+ *	ReferencedEntityBase
+ *	  NomenclaturalStatus
+ *	  OriginalSourceBase
+ *	  RelationshipBase
+ *	  TypeDesignationBase
+ *	TaxonNode
+ *  WorkingSet
+ *
+ * TODO it should be configurable which objects can be annotated as this might differ in dataportals
+ *
+ */
+function theme_cdm_annotations_as_footnotekeys($cdmBase){
+	
+    $annotationUrl = cdm_compose_annotations_url($cdmBase);
+    if($annotationUrl){
+        $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
+        if($annotationPager->count > 0){
+	        foreach($annotationPager->records as $annotation){
+		        $footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey() . '-annotations', $annotation->text);
+		        $out .=  theme('cdm_footnote_key', $footnoteKey, RenderHints::getFootnoteListKey() . '-annotations', (isset($out)? ',' : ''));
+		        
+//		        var_dump(RenderHints::getFootnoteListKey());
+//		        var_dump(RenderHints::getRenderPath());
+//	        	$footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-annotations', $annotation->text);
+//            $out .=  theme('cdm_footnote_key', $footnoteKey, RenderHints::getRenderPath() . '-annotations', (isset($out)? ',' : ''));
+	        }   
+        }
+    }
+	return $out;
+}
+
+
+function theme_cdm_annotation_footnotes($footnoteListKey, $enclosingTag = 'span'){
+    return theme('cdm_footnotes', $footnoteListKey . '-annotations', $enclosingTag);
+}
+
+function theme_cdm_annotation_content($AnnotationTO){
+
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_annotations.js');
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.form.js');
+
+	$out .= theme('cdm_list_of_annotations', $AnnotationTO->annotationElements);
+
+	$annotationUrl = cdm_compose_url(CDM_WS_ANNOTATIONS, array($AnnotationTO->uuid));
+	$annotationProxyUrl = url('cdm_api/proxy/'. urlencode($annotationUrl).'/cdm_annotation_post');
+
+	// TODO users have to be authenticated to the dataportal to be able to write annotations
+	$out .= '
+  			<div class="annotation_create">
+  				<form action="'.$annotationProxyUrl.'" method="POST">
+  					<textarea name="annotation"></textarea>
+  					<input type="hidden" name="commentator" value="">
+  					<input type="submit" value="'.t('Save annotation').'" />
+  				</form>
+ 			</div>
+	';
+
+	return $out;
+}
+
+function theme_cdm_list_of_annotations($annotationElements){
+
+	$out = '<ul class="annotation_list">';
+
+	foreach ($annotationElements as $key => $row){
+		$created[$key] = $row;
+	}
+	array_multisort($created, SORT_ASC, $annotationElements);
+
+	foreach ($annotationElements as $annotation){
+		$out .= '<li>' . $annotation->text . '</li>';
+	}
+
+	$out .= '</ul>';
+
+	return $out;
+
+}
+
+/* ============================ footnotes ============================= */
+
+function theme_cdm_footnote_key($footnoteKey, $footnoteListKey, $separator = '', $highlightable=true){
+  $out = '<span class="footnote-key footnote-key-'.$footnoteKey.' member-of-footnotes-'.$footnoteListKey.'">'.$separator
+        .'<a href="#footnote-'.$footnoteKey.'">'.$footnoteKey.'</a>'
+        .'</span>';
+  return $out;
+}
+
+function theme_cdm_footnote($footnoteKey, $footnoteText){
+  _add_js_footnotes();
+  $out = '<span class="footnote footnote-'.$footnoteKey.'"><a name="footnote-'.$footnoteKey.'"></a><span class="footnote-anchor">'.$footnoteKey.'.</span>&nbsp;'.$footnoteText.'</span>';
+  return $out;
+}
+
+
+function theme_cdm_footnotes($footnoteListKey, $enclosingTag = 'span'){
+	
+	$out = '<'.$enclosingTag.' class="footnotes footnotes-'.$footnoteListKey.' ">' . FootnoteManager::renderFootnoteList($footnoteListKey) . '</'.$enclosingTag.'>';
+	return $out;
+}
+
+
+/* ============================ pager ============================= */
+
+
+function theme_cdm_pager(&$pager, $path, $parameters){
+	$out = '';
+
+	if ($pager->pagesAvailable > 1) {
+
+		$out .= '<div class="pager">';
+		if($pager->currentIndex > 0){
+			$out .= theme('cdm_pager_link', t('« first'), 0,  $pager, $path, $parameters, array('class' => 'pager-first'));
+			$out .= theme('cdm_pager_link', t('‹ previous'), $pager->currentIndex - 1, $pager, $path, $parameters, array('class' => 'pager-previous'));
+		}
+
+		if($pager->indices[0] > 0){
+			$out .= '<div class="pager-list-dots-left">...</div>';
+		}
+
+		foreach($pager->indices as $index){
+			$label = $index + 1;
+			$out .= theme('cdm_pager_link', $label, $index,  $pager, $path, $parameters, array('class' => 'pager-first'));
+		}
+		if($pager->indices[count($pager->indices) - 1] < $pager->pagesAvailable - 1){
+			$out .= '<div class="pager-list-dots-right">...</div>';
+		}
+
+		if($pager->nextIndex){
+			$out .= theme('cdm_pager_link', t('next ›'), $pager->nextIndex, $pager, $path, $parameters, array('class' => 'pager-next'));
+			$out .= theme('cdm_pager_link', t('last »'), $pager->pagesAvailable - 1, $pager, $path, $parameters, array('class' => 'pager-last'));
+		}
+		$out .= '</div>';
+
+		return $out;
+	}
+}
+
+function theme_cdm_pager_link($text, $linkIndex, &$pager, $path, $parameters = array(), $attributes) {
+
+	$out = '';
+	$parameters['search']['page'] = $linkIndex;
+	if ($linkIndex == $pager->currentIndex) {
+		$out = '<strong>'.$text.'</strong>';
+	} else {
+		$queryString = drupal_query_string_encode($parameters);
+		$out = l($text, $path, $attributes, $queryString);
+	}
+	return $out;
+}
+
+/* ============================ special buttons ============================= */
+
+function theme_cdm_back_to_search_result_button(){
+	$out = '';
+	if($_SESSION['cdm']['search']){
+		/*['cdm']['last_search']*/
+		//$out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION ).'</div>';
+		$out .= '<div id="backButton">'.l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search'] ).'</div>';
+
+	}
+	return $out;
+}
+
+function theme_cdm_back_to_image_gallery_button(){
+	//$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
+	//$gallery_name = $taxon->uuid;
+	//$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+
+	$out = '<div id="backToGalleryButton">'.l(t('Back to Images'), $_SESSION['cdm']['last_gallery'] ).'</div>';
+
+	return $out;
+}
+
+function theme_cdm_print_button(){
+
+	drupal_add_js ('$(document).ready(function() {
+         $(\'#print_button\').click(function () { 
+         window.print();
+     });
+  });', 'inline');
+
+	$output = '<div id="print_button"><img src="'
+	.drupal_get_path('module', 'cdm_dataportal').'/images/print_icon.gif'
+	. ' "alt="' . t('Print this page') . ' "title="'.t('Print this page').'" />'; //.t(' Print this page');
+	//$output .= l(' Print this page', '');
+	$output .= '<span>Print this page</span>';
+	$output .= '</div>';
+
+	return $output;
+}
+
+/* ============================ other ============================= */
+
+//function theme_cdm_credits(){
+//	return "";
+//	$secRef_array = _cdm_dataportal_currentSecRef_array();
+//	return '<span class="sec_reference_citation">'.$secRef_array['citation'].'</span>'
+//	.( $secRef_array['period'] ? ' <span class="year">'.partialToYear($secRef_array['period']).'</span>' : '')
+//	.( $secRef_array['authorTeam'] ? '<div class="author">'.$secRef_array['authorTeam']['titleCache'].'</div>' : '');
+//}
+
+
+function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
+
+	$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
+	$out .= '<li class="dynabox"><span class="label" alt="'.t('Click for accepted taxon').'">'.$label.'</span>';
+	$out .= '<ul class="dynabox_content" title="'.$cdm_proxy_url.'"><li><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/images/loading_circle_grey_16.gif" style="display:none;"></li></ul>';
+	return $out;
+}
+
+/* ============================ java script functions ============================= */
+
+function _add_js_thickbox(){
+	// ---- jQuery thickbox:
+	/*
+	* bug: compat-1.0.js && thickbox.js line 237 .trigger("unload")
+	* -> event is not triggered because of problems with compat-1.0.js'
+	* see INSTALL.txt
+	*
+	*/
+	//drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.imagetool.min.js');
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox/thickbox.js');
+	drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox/cdm_thickbox.css');
+}
+
+function _add_js_lightbox($galleryID){
+	/*
+	 * Important Notice:
+	 * The jquery.lightbox-0.5.js has been modified in order to allow using the "alt" attribute
+	 * for captions instead of the "title" attribute
+	 */
+	$lightBoxBasePath = drupal_get_path('module', 'cdm_dataportal') .'/js/jquery-lightbox-0.5';
+	drupal_add_js($lightBoxBasePath.'/js/jquery.lightbox-0.5.js');
+	drupal_add_css($lightBoxBasePath.'/css/jquery.lightbox-0.5.css');
+	drupal_add_js ('$(document).ready(function() {
+      $(\'#'.$galleryID.' a.lightbox\').lightBox({
+        fixedNavigation:  true,
+        imageLoading:     \''.$lightBoxBasePath.'/images/lightbox-ico-loading.gif\', 
+        imageBtnPrev:     \''.$lightBoxBasePath.'/images/lightbox-btn-prev.gif\',    
+        imageBtnNext:     \''.$lightBoxBasePath.'/images/lightbox-btn-next.gif\',   
+        imageBtnClose:    \''.$lightBoxBasePath.'/images/lightbox-btn-close.gif\',  
+        imageBlank:       \''.$lightBoxBasePath.'/images/lightbox-blank.gif\'
+      });
+    });
+    ', 'inline');
+}
+
+function _add_js_footnotes(){
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/footnotes.js');
+}
+
+
+function _add_js_cluetip(){
+
+	//TODO replace by http://www.socialembedded.com/labs/jQuery-Tooltip-Plugin/jQuery-Tooltip-Plugin.html
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.js');
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.dimensions.js');
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.hoverIntent.js');
+	drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/cluetip/jquery.cluetip.css');
+	drupal_add_js ("$(document).ready(function(){
+      $('.cluetip').css({color: '#0062C2'}).cluetip({
+        splitTitle: '|',
+        showTitle: true,
+        activation: 'hover',
+        sicky: true,
+        arrows: true,
+        dropShadow: false,
+        cluetipClass: 'rounded'
+      });
+    });", 'inline');
+}
+
+function _add_js_ahah(){
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/ahah-content.js');
+}
