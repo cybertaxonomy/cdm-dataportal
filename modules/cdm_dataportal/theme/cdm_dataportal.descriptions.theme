@@ -407,7 +407,6 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			// get the respone from the map service
 			$responseObj = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);
 			$responseObj = $responseObj[0];
-			var_dump($responseObj);
 
 			$geoserver_uri = $responseObj->geoserver;
 			// get the sld files from the response object
