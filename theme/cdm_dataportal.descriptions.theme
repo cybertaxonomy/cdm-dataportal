@@ -227,7 +227,6 @@ function theme_cdm_common_names($elements){
 			//$common_names['<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')'] = ': ' . $element->name . $sourcesFootnoteKeyList;
 			$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
 			if($common_names[$key]){
-				var_dump("duplicado!!");
 				$common_names[$key] = $common_names[$key] . ', ' . $element->name . $sourcesFootnoteKeyList;
 			}else{
 				$common_names[$key] = $element->name . $sourcesFootnoteKeyList;
