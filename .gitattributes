@@ -30,6 +30,7 @@ modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.css -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.info -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.install -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.module -text
+modules/cdm_dataportal/cdm_taxontree/cdm_taxontree_widget.php -text
 modules/cdm_dataportal/cdm_taxontree/concept_switch.gif -text
 modules/cdm_dataportal/cdm_taxontree/images/btn_expand.gif -text
 modules/cdm_dataportal/cdm_taxontree/images/button_master.xcf -text
