@@ -218,9 +218,9 @@ function theme_cdm_common_names($elements){
 		if ($element->class == 'CommonTaxonName'){
 			$sourcesFootnoteKeyList = '';
 			foreach($element->sources as $source){
-				if(!$source->idNamespace && strlen($source->idNamespace) == 0){ 
+				if(_is_original_source_type($source)){ 
 				  $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
-          $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_COMMON_NAME, ($sourcesFootnoteKeyList ? $separator : ''));
+                  $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_COMMON_NAME, ($sourcesFootnoteKeyList ? $separator : ''));
 				}
 			}
 			//$common_names[$element->language->representation_L10n] = ' (' . $element->area->titleCache . '): ' . $element->name . $sourcesFootnoteKeyList;
@@ -318,7 +318,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 		// source references as footnotes
 		$sourcesFootnoteKeyList = '';
 		foreach($descriptionElement->sources as $source){
-			if(!$source->idNamespace && strlen($source->idNamespace) == 0){ // workaround for missing original source type, idNamespace is always set in these cases
+			if(_is_original_source_type($source)){
 			 $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, false));
 			 $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : ''));
 			}
@@ -351,7 +351,7 @@ function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink =
 	$out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
 
 	// add annotations as footnote key
-	$out .= theme('cdm_annotations_as_footnotekeys', $descriptionElementSource->citation);
+	// $out .= theme('cdm_annotations_as_footnotekeys', $descriptionElementSource->citation);
 	return $out;
 }
 
@@ -407,6 +407,7 @@ function theme_cdm_descriptionElements_distribution($taxon){
 			// get the respone from the map service
 			$responseObj = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);
 			$responseObj = $responseObj[0];
+			var_dump($responseObj);
 
 			$geoserver_uri = $responseObj->geoserver;
 			// get the sld files from the response object

@@ -68,15 +68,15 @@ function cdm_taxontree_menu($may_cache) {
  */
 function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
   if ($op == "list") {
-    $block['cdm_tree']["info"] = t('CDM Taxon Tree');
-    $block['filters']["info"] = t('Active Filters');
-		$block[1]["info"] = t('Drupal Taxonomy Tree');
+    $block['cdm_tree']["info"] = t('CDM taxon tree');
+    $block['filters']["info"] = t('Active filters');
+		$block[1]["info"] = t('Drupal taxonomy tree');
     return $block;
   }
   else if ($op == 'view') {
     switch($delta){
       case 'cdm_tree':
-        $block['subject'] = t('Taxon Tree');
+        $block['subject'] = t('Taxon tree');
         $taxonUuid_inFocus = _cdm_get_taxonuuid();
         $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
         $magicbox_enable = variable_get('cdm_taxontree_magicbox_enable', 0);
@@ -94,12 +94,12 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
          return $block;
         
       case 'filters':
-        $block['subject'] = t('Active Filters');
+        $block['subject'] = t('Active filters');
         $block['content'] = cdm_taxontree_view_filter('list');
         return $block;
         
       case 1:
-        $block['subject'] = t('Taxonomy Tree');
+        $block['subject'] = t('Taxonomy tree');
         $term_inFocus = arg(0) == 'taxonomy' && arg(1) == 'term' ? arg(2) : 0;
         $tree = cdm_taxontree_build_tree($term_inFocus, true, variable_get('cdm_taxontree_block_1_vid', 0));
         $block['content'] = theme('cdm_taxontree_block', $tree, $delta, FALSE);

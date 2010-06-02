@@ -347,7 +347,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
 //				$block['content'] = theme('cdm_credits');
 //				return $block;
 			case 2:
-				$block['subject'] = t('Search Taxa');
+				$block['subject'] = t('Search taxa');
 				$block['content'] = drupal_get_form('cdm_dataportal_search_taxon_form');
 				$block['content'] .= '<div>'.l('Advanced Search', '/cdm_dataportal/search').'</div>';
 				return $block;
@@ -866,7 +866,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $
 	$default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
 	$gallery_settings = variable_get($form_name, $default_values);
 
-  if($form_name != CDM_DATAPORTAL_MEDIA_GALLERY_NAME){
+  if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
     $form[$form_name]['cdm_dataportal_show_taxon_thumbnails'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show media thumbnails for accepted taxa'),
@@ -904,7 +904,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $
     '#description' => t('')
 	);
 
-  if($form_name != CDM_DATAPORTAL_MEDIA_GALLERY_NAME){
+  if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
     $form[$form_name]['cdm_dataportal_media_maxRows'] = array(
       '#type' => 'textfield',
       '#title' => t('Maximum number of rows'),
@@ -1291,7 +1291,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid){
 
 function cdm_dataportal_view_search_advanced(){
 
-	drupal_set_title(t('Advanced Search'));
+	drupal_set_title(t('Advanced search'));
 
 	$searchForm = cdm_dataportal_search_taxon_form(true);
 
@@ -1580,6 +1580,14 @@ function _get_feature_trees(){
 	return $feature_trees;
 }
 
+/**
+ * workaround for missing original source type, idNamespace is always set in these cases
+ * @param unknown_type $source
+ * @return unknown_type
+ */
+function _is_original_source_type($source){
+	return !$source->idNamespace && strlen($source->idNamespace) == 0;
+}
 
 function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NULL){
 	//TODO implement admin user interface to replace swicth statement

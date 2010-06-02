@@ -11,7 +11,7 @@
 */
 
 function theme_cdm_reference_pager($referencePager, $path, $parameters = array()){
-	drupal_set_title(t('Bibliographic Index'));
+	drupal_set_title(t('Bibliographic index'));
 	$out = '';
 	if(count($referencePager->records) > 0){
 		$out .= '<ul>';
