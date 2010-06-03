@@ -17,7 +17,7 @@ function theme_cdm_search_results($pager, $path, $parameters){
 	if( !is_numeric($showThumbnails)){
 		$showThumbnails = 1;
 	}
-	$setSessionUri = url('cdm_api/setvalue/session').'/pageoptions|searchtaxa|showThumbnails/';
+	$setSessionUri = url('cdm_api/setvalue/session', "var=[pageoption][searchtaxa][showThumbnails]&val=");
 	drupal_add_js('$(document).ready(function() {
   
         // init

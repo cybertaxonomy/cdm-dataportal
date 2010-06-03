@@ -64,6 +64,19 @@ function _add_js_progressbar(){
 	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.progressbar/js/jquery.progressbar.js');
 }
 
+function _add_js_treeselector(){
+    //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/treeselector.js');
+	drupal_add_js("
+		if (Drupal.jsEnabled) {
+		  $(document).ready(function() {
+		      $('#cdm-taxonomictree-selector-form #edit-val').change(function () {
+		          $('#cdm-taxonomictree-selector-form').submit();
+		      });
+		      
+		  });
+		}", 'inline');
+}
+
 
 /* ====================== hook implementations ====================== */
 
@@ -442,7 +455,7 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
 	$form['search']['tree'] = array(
     '#delta' => -1,
     '#type' => 'hidden',
-    '#value' => variable_get('cdm_taxonomictree_uuid', false)
+    '#value' => get_taxonomictree_uuid_selected()
 	);
 
 
@@ -584,6 +597,43 @@ function cdm_dataportal_search_taxon_form_advanced(){
 	return cdm_dataportal_search_taxon_form(true);
 }
 
+function cdm_taxonomictree_selector(){
+	_add_js_treeselector();
+    
+    $out = drupal_get_form('cdm_taxonomictree_selector_form');
+    
+    return $out;
+}
+
+
+function cdm_taxonomictree_selector_form(){
+	
+	$url = url('cdm_api/setvalue/session', null);
+    $form['#action'] = $url;
+    
+    $form['var'] = array(
+        '#delta' => -3,
+        '#type' => 'hidden',
+        '#value' => '[cdm][taxonomictree_uuid]'    
+    );
+    
+    $form['destination'] = array(
+        '#delta' => -3,
+        '#type' => 'hidden',
+        '#value' => substr(drupal_get_destination(), strlen('destination='))
+    );
+    
+    $form['val'] = array(
+	    '#type' => 'select',
+	    '#title'         => t('Available classifications'),
+	    '#default_value' => get_taxonomictree_uuid_selected(),
+	    '#options' => cdm_get_taxontrees_as_options()
+    );
+    
+    return $form;
+	
+}
+
 /**
  * Implementation #process method call, see form_builder()
  * <p>
@@ -662,30 +712,13 @@ function cdm_dataportal_settings(){
       '#collapsed' => TRUE,
 	);
 
-	//  $form['cdm_dataportal']['secuuid_widget'] = array(
-	//    '#type' => 'select_secuuid', // => will be themed by theme_select_secuuid(...)
-	//    '#title' => t('Default Concept References'),
-	//    '#description'   => t('The default \'sensu\' reference to start the CDM DataPortal with. Per user choices are possible and may override this value.'),
-	//    '#varname' => 'cdm_secUuid_default',
-	//    '#multiple' => false
-	//  );
-
-	$taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
-	foreach($taxonTrees as $tree){
-		$taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
-	}
 	$form['cdm_dataportal']['cdm_taxonomictree_uuid'] = array(
     '#type' => 'select',
-    '#title'         => t('Available taxonomic views'),
+    '#title'         => t('Available classifications'),
     '#default_value' => variable_get('cdm_taxonomictree_uuid', false),
-    '#options' => $taxonomicTreeOptions,
-    '#description'   => t('Select a taxonomic view for this webservice.')
+    '#options' => cdm_get_taxontrees_as_options(),
+    '#description'   => t('Select the default classification to be used.')
 	);
-
-	//  $form['cdm_dataportal']['DEBUG']= array(
-	//    '#value' => '<pre>'.print_r($taxonTrees, true).'</pre>'
-	//  );
-
 
 	//------------------ FEATURE TREE --------------------//
 
@@ -700,7 +733,7 @@ function cdm_dataportal_settings(){
     '#type' => 'select',
     '#title'         => t('Available FeatureTrees'),
     '#default_value' => variable_get(CDM_DATAPORTAL_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
-	  '#options' => _get_feature_trees(),
+	  '#options' => cdm_get_featureTrees_as_options(),
     '#description'   => t('Select a FeatureTree for this webservice.'
     //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
 	)
@@ -968,16 +1001,6 @@ function cdm_dataportal_settings_geo(){
     '#description' => t('Define a caption for the map.')
 	);
 
-	/*
-	 //cdm_dataportal_geoservice_legend_on
-	 $form['cdm_dataportal_geoservice_legend_on'] = array(
-	 '#type' => 'checkbox',
-	 '#title' => t('Display a map legend'),
-	 '#default_value' => variable_get('cdm_dataportal_geoservice_legend_on', TRUE),
-	 '#description' => t('Check this if you like a legend to be displayed with the maps. ')
-	 );
-	 */
-
 	//cdm_dataportal_geoservice_map_legend
 	$form['cdm_dataportal_geoservice_map_legend'] = array(
       '#type' => 'fieldset',
@@ -1023,30 +1046,7 @@ function cdm_dataportal_settings_geo(){
     '#description' => t('Icon height in pixels.')
 	);
 
-	/* variable_get('cdm_dataportal_findtaxa_media_maxextend', 120),
-	 *  $form['cdm_dataportal']['cdm_taxonomictree_uuid'] = array(
-	 '#type' => 'select',
-	 '#title'         => t('Available taxonomic views'),
-	 '#default_value' => variable_get('cdm_taxonomictree_uuid', false),
-	 '#options' => $taxonomicTreeOptions,
-	 '#description'   => t('Select a taxonomic view for this webservice.')
-	 );
-
-	 $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
-	 foreach($taxonTrees as $tree){
-	 $taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
-	 }
-	 $form['cdm_dataportal']['cdm_taxonomictree_uuid'] = array(
-	 '#type' => 'select',
-	 '#title'         => t('Available taxonomic views'),
-	 '#default_value' => variable_get('cdm_taxonomictree_uuid', false),
-	 '#options' => $taxonomicTreeOptions,
-	 '#description'   => t('Select a taxonomic view for this webservice.')
-	 );
-	 */
-
 	return system_settings_form($form);
-
 }
 
 
@@ -1063,7 +1063,7 @@ function cdm_dataportal_view_cache_site(){
 
 	$request_params = array();
 	$request_params['query'] = '%';
-	$request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false);
+	$request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false); //cache only the dafault classification
 	$request_params['doTaxa'] = 1;
 	$request_params['doSynonyms'] = 0;
 	$request_params['doTaxaByCommonNames'] = 0;
@@ -1254,7 +1254,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid){
   $name_cache = cdm_ws_get(CDM_WS_NAME_NAMECAHE, array($taxon_name_uuid));
   $request_params = array();
   $request_params['query'] = $name_cache;
-  $request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false);
+  $request_params['tree'] = get_taxonomictree_uuid_selected();
   $request_params['doTaxa'] = 1;
   $request_params['doSynonyms'] = 1;
   $request_params['doTaxaByCommonNames'] = 0;
@@ -1319,46 +1319,6 @@ function cdm_dataportal_view_search_taxon(){
 	return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/taxon', $search_params);
 }
 
-///**
-// * 
-// * @return unknown_type
-// */
-//function cdm_dataportal_view_name($taxon_name_uuid){
-//
-//	$taxon_name = cdm_ws_get(CDM_WS_NAME, array($taxon_name_uuid));
-//	/*
-//	$name_cache = cdm_ws_get(CDM_WS_NAME_NAMECAHE, array($taxon_name_uuid));
-//	$records = array();
-//	foreach ($taxon_name->taxonBases as $taxon_base){
-//		$taxon = cdm_ws_get(CDM_WS_TAXON, array($taxon_base->uuid));
-//		$records[] = $taxon;
-//	}
-//	
-//	$out  = "Taxon name: " . $taxon_name->titleCache . "<br/>";
-//	$out .= theme_cdm_list_of_taxa($records, false);
-//	*/
-//	
-//	$request_params = array();
-//  $request_params['query'] = $name_cache;
-//  $request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false);
-//  $request_params['doTaxa'] = 1;
-//  $request_params['doSynonyms'] = 1;
-//  $request_params['doTaxaByCommonNames'] = 0;
-//  //$request_params['matchMode'] = "EXACT";
-//  
-//  $taxon_pager = cdm_ws_get(CDM_WS_FIND_TAXA, null, queryString($request_params));
-//  //var_dump($taxon_pager->records);
-//  //$out = theme_cdm_taxonname_page_title($taxon_name);
-//  $out = theme_cdm_list_of_taxa($taxon_pager->records, false);
-//  
-///*
-//  $out  = "Taxon name: " . $taxon_name->titleCache . "<br/>";
-//  $out .= "Taxon name uuid: " . $taxon_name_uuid  . "<br/>";
-//  $out .= "Taxon name records: "  . "<br/>" . $records_names_out; 
-//*/
-//  //$out  = "Taxon name: " . $taxon_name->titleCache . "<br/>";
-//	return $out;
-//}
 
 function cdm_view_xml2json(){
 	$file = arg(2);
@@ -1526,8 +1486,7 @@ function _cdm_dataportal_set_currentSecUuid($secUuid){
 
 function _cdm_dataportal_acceptedByCurrentView($taxon){
 
-	//FIXME $current_secref = _cdm_dataportal_currentSecRef_array();
-	$defaultTreeUuid = variable_get('cdm_taxonomictree_uuid', false);
+	$defaultTreeUuid = get_taxonomictree_uuid_selected();
 	if($taxon->class == "Taxon" && isset($taxon->taxonNodes)){
 		foreach($taxon->taxonNodes as $node){
 			if($node->taxonomicTree == $defaultTreeUuid) {
@@ -1553,33 +1512,6 @@ function compose_url_prameterstr($parameters = array(), $parentPropertyName = fa
 	return $pstr;
 }
 
-function _get_feature_trees(){
-	$feature_trees = array();
-
-	// set tree that contains all features
-	$feature_trees[UUID_DEFAULT_FEATURETREE] = t('Default Featuretree (contains all features)');
-
-	// get features from database
-	$persisted_trees = cdm_ws_get(CDM_WS_FEATURETREES);
-	if(is_array($persisted_trees)){
-		foreach($persisted_trees as $featureTree){
-
-			// do not add the DEFAULT_FEATURETREE again
-			if($featureTree->uuid == UUID_DEFAULT_FEATURETREE){
-				continue;
-			}
-			$featureLabels = array();
-			foreach ($featureTree->root->children as $featureNode){
-				$featureLabels[] = $featureNode->feature->representation_L10n;
-			}
-
-			$feature_trees[$featureTree->uuid] = implode(", ", $featureLabels);
-
-		}
-	}
-	return $feature_trees;
-}
-
 /**
  * workaround for missing original source type, idNamespace is always set in these cases
  * @param unknown_type $source
@@ -1589,8 +1521,25 @@ function _is_original_source_type($source){
 	return !$source->idNamespace && strlen($source->idNamespace) == 0;
 }
 
+function get_taxonomictree_uuid_selected(){
+	if(is_uuid($_SESSION['cdm']['taxonomictree_uuid']) ){
+		return $_SESSION['cdm']['taxonomictree_uuid'];
+	} else {
+		return variable_get('cdm_taxonomictree_uuid', false);
+	}
+}
+
+function switch_to_taxonomictree_uuid($taxonomictree_uuid){
+    $_SESSION['cdm']['taxonomictree_uuid'] = $taxonomictree_uuid;
+}
+
+function reset_taxonomictree_uuid($taxonomictree_uuid){
+    unset($_SESSION['cdm']['taxonomictree_uuid']);
+}
+
+
 function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NULL){
-	//TODO implement admin user interface to replace swicth statement
+	//TODO implement admin user interface to replace switch statement
 	//     preliminar solution: using themes
 
 	$template = null;

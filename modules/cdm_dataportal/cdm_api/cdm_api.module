@@ -434,10 +434,13 @@ function proxy_content($uri, $theme = null){
 
 function setvalue_session(){
 
-  if(strlen(arg(3)) > 0){
-    $keys = explode('|', arg(3));
+  if( $_REQUEST['var'] && strlen( $_REQUEST['var']) > 4){
+  	$keys = substr( $_REQUEST['var'], 1, strlen( $_REQUEST['var']) - 2);
+    $keys = explode('][', $keys);
+  } else {
+  	return;
   }
-  $val = arg(4);
+  $val =  $_REQUEST['val'] ?  $_REQUEST['val'] : null;
 
   // prevent from malicous tags
   $val = strip_tags($val);
@@ -452,6 +455,7 @@ function setvalue_session(){
     $var = &$var[$key];
   }
   $var = $val;
+  drupal_goto($_REQUEST['destination']);
 }
 
 function uri_uriByProxy($uri, $theme = false){
@@ -535,7 +539,8 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber){
 function cdm_compose_taxonomy_path($taxonUuid = null){
 	//return cdm_ws_get(cdm_ws_taxonomy_compose_resourcePath($path));
 
-	$viewUuid = variable_get('cdm_taxonomictree_uuid', false);
+	//### REMOVE $viewUuid = variable_get('cdm_taxonomictree_uuid', false);
+	$viewUuid = get_taxonomictree_uuid_selected();
 	$rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
 
 	if($taxonUuid){
@@ -562,10 +567,9 @@ function cdm_ws_taxonomy($taxonUuid = null){
  * @return unknown
  */
 function cdm_ws_taxonomy_pathFromRoot($taxonUuid){
-  //$viewrank =  _cdm_taxonomy_compose_viewrank();
-  //return cdm_ws_get(CDM_WS_PORTAL_TAXONOMY .  ($viewrank ? '/' .$viewrank : '' )  . '/' . $path . '/path' );
-  
-  $viewUuid = variable_get('cdm_taxonomictree_uuid', false);
+ 
+  //### REMOVE $viewUuid = variable_get('cdm_taxonomictree_uuid', false);
+  $viewUuid = get_taxonomictree_uuid_selected();
   $rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
 
   if($rankUuid){
@@ -574,23 +578,6 @@ function cdm_ws_taxonomy_pathFromRoot($taxonUuid){
     return cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_PATH_FROM, array($viewUuid, $taxonUuid));
   }
 }
-
-/**
- * Enter description here...
- *
- * @param UUID $viewUuid
- * @param String $rank
- * @return unknown
- */
-//function _cdm_taxonomy_compose_viewrank(){
-//  $viewUuid = variable_get('cdm_taxonomictree_uuid', false);
-//  if(!$viewUuid){
-//    return;
-//  }
-//  $rank = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
-//  return $viewUuid . (empty($rank) ? '' : ','.$rank);
-//}
-
 
 function cdm_rankVocabulary_as_option(){
   global $rankVocabularyOptions;
@@ -925,6 +912,43 @@ function _http_request_using_curl($uri, $headers = array(), $method = "GET", $pa
   return $string;
 }
 
+
+function cdm_get_featureTrees_as_options(){
+    $feature_trees = array();
+
+    // set tree that contains all features
+    $feature_trees[UUID_DEFAULT_FEATURETREE] = t('Default Featuretree (contains all features)');
+
+    // get features from database
+    $persisted_trees = cdm_ws_get(CDM_WS_FEATURETREES);
+    if(is_array($persisted_trees)){
+        foreach($persisted_trees as $featureTree){
+
+            // do not add the DEFAULT_FEATURETREE again
+            if($featureTree->uuid == UUID_DEFAULT_FEATURETREE){
+                continue;
+            }
+            $featureLabels = array();
+            foreach ($featureTree->root->children as $featureNode){
+                $featureLabels[] = $featureNode->feature->representation_L10n;
+            }
+
+            $feature_trees[$featureTree->uuid] = implode(", ", $featureLabels);
+
+        }
+    }
+    return $feature_trees;
+}
+
+function cdm_get_taxontrees_as_options(){
+   $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
+    foreach($taxonTrees as $tree){
+        $taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
+    }
+    return $taxonomicTreeOptions;
+}
+
+
 function cdm_api_secref_cache_prefetch(&$secUuids){
   global $secref_cache;
   if(!is_array($secref_cache)){
@@ -959,6 +983,10 @@ function cdm_api_secref_cache_get($secUuid){
 function cdm_api_secref_cache_clear(){
   global $secref_cache;
   $secref_cache = array();
+}
+
+function is_uuid($str){
+	return isset($str) && strlen($str) == 36 && strpos($str, '-');
 }
 
 function _cdm_api_secref_cache_add($secUuidsStr){

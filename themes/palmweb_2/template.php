@@ -114,8 +114,8 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
   
   $taxonTrees =  cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   foreach($taxonTrees as $taxonTree){
-    if ($taxonTree -> uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
-      $reference = $taxonTree-> reference;
+    if ($taxonTree->uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
+      $reference = $taxonTree->reference;
       break;
     }
   }

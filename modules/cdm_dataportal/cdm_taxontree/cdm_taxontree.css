@@ -86,6 +86,16 @@ ul.cdm_taxontree li.leaf a,ul.cdm_taxontree li.expanded a,ul.cdm_taxontree li.co
   white-space: nowrap;
 }
 
+#cdm-taxonomictree-selector-form .form-item{
+    margin-bottom: 0px;
+    /*background-color:#F3F3F3;
+    border:1px solid #DEDEDE; */
+}
+
+#cdm-taxonomictree-selector-form select{
+	width: 193px;
+}
+
 span.widget_select{
 color:#316AA0;
 }

@@ -80,7 +80,11 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
         $taxonUuid_inFocus = _cdm_get_taxonuuid();
         $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
         $magicbox_enable = variable_get('cdm_taxontree_magicbox_enable', 0);
-        $block['content'] = theme('cdm_taxontree_block', $tree, $delta, FALSE, 'cdm_taxontree_node_concept_switch');
+        
+        if(count(cdm_get_taxontrees_as_options()) > 0){
+            $block['content'] = cdm_taxonomictree_selector();
+        }
+        $block['content'] .= theme('cdm_taxontree_block', $tree, $delta, FALSE, 'cdm_taxontree_node_concept_switch');
         // java script 
         $verticalSroller = $magicbox_enable ? 'cdm_taxontree_scroller_x' : 'cdm_taxontree_scroller_xy';
         theme('cdm_taxontree_add_scripts');
@@ -312,15 +316,6 @@ function _get_compact_mode(){
   return  $_SESSION['cdm']['taxontree']['compact_mode'];
 }
 
-/**
- * Enter description here...
- *
- * @param unknown_type $str
- * @return unknown
- */
-function _is_uuid($str){
-  return strlen($str) == 36 && strpos($str, '-');
-}
 
 /**
  * Converts an array of drupal taxonomy terms into an
@@ -412,7 +407,7 @@ function cdm_taxontree_get_children($uuid, $vid = null){
  */
 function cdm_taxontree_get_parents($uuid){
 
-  if(!_is_uuid($uuid)){
+  if(!is_uuid($uuid)){
     // using Drupal taxonomy
     $terms = taxonomy_get_parents($uuid);
     array_push($terms, taxonomy_get_term($uuid));
