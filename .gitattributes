@@ -26,6 +26,7 @@ modules/cdm_dataportal/cdm_mediauri/cdm_mediauri.info -text
 modules/cdm_dataportal/cdm_mediauri/cdm_mediauri.module -text
 modules/cdm_dataportal/cdm_mediauri/rule-examples.txt -text
 modules/cdm_dataportal/cdm_taxontree/LICENSE.txt -text
+modules/cdm_dataportal/cdm_taxontree/cdm_taxontree-widget.css -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.css -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.info -text
 modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.install -text

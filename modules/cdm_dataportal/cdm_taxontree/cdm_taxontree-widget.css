@@ -1,0 +1,133 @@
+@CHARSET "ISO-8859-1";
+
+/* --------- cdm_taxontree_widget  ----------- */
+
+
+#cdm-taxonomictree-selector-form .form-item{
+    margin-bottom: 0px;
+    /*background-color:#F3F3F3;
+    border:1px solid #DEDEDE; */
+}
+
+#cdm-taxonomictree-selector-form select{
+    width: 100%;
+}
+
+span.widget_select{
+    color:#316AA0;
+}
+
+div.taxontree_header{
+height:2em;
+display:block;
+}
+
+div.cdm_taxontree_widget{
+position:relative;
+width:auto;
+margin: .5em 0 1em 0;
+}
+
+/* heights: keep them consistent */
+div.cdm_taxontree_widget div.taxontree_devider,
+div.cdm_taxontree_widget div.taxontree,
+div.cdm_taxontree_widget .cdm_taxontree_scroller_x,
+div.cdm_taxontree_widget .cdm_taxontree_scroller_y{
+	border:none;
+	height: 200px;
+	position:relative;
+	float:none;
+	clear:both;
+}
+
+/* maintain layering */
+div.cdm_taxontree_widget div.taxontree,
+div.cdm_taxontree_widget .cdm_taxontree_scroller_x,
+div.cdm_taxontree_widget .cdm_taxontree_scroller_y{
+	z-index: 10;
+	border-color:#236abf;
+}
+
+/* widths*/
+div.cdm_taxontree_widget div.taxontree {
+	/*position:absolute;*/
+	/*min-width:36em; /* -1em to catch the scroller_x padding */
+	/*top:1.5em;*/
+}
+
+#views-filters div.cdm_taxontree_widget div.taxontree{
+top:0;
+}
+
+div.cdm_taxontree_widget div.column-left{
+  float: left;
+	width:36em; /* -1em to catch the scroller_x padding */
+}
+
+div.cdm_taxontree_widget .taxontree_select {
+	position:absolute;
+	width: 36em;
+	left: 40em;
+	top:1.5em;
+	height:202px;
+}
+
+#views-filters div.cdm_taxontree_widget .taxontree_select{
+top:0;
+}
+
+div.cdm_taxontree_widget div.column-right{
+	margin-left: 40em;
+}
+
+/* labels */
+div.cdm_taxontree_widget div.field-label {
+	font-weight: 700;
+}
+
+/* the devider to show the arrows in between */
+div.cdm_taxontree_widget .taxontree_devider {
+	position:relative;
+	width: 4em;
+	left: 36em;
+	background: transparent url(images/cdm_taxontree_devider.png) no-repeat 50% 50%;
+}
+
+div.cdm_taxontree_widget .hidden{
+	position:absolute;
+	left:-300em;
+}
+
+/* the right selectbox */
+div.cdm_taxontree_widget .taxontree_select {
+	background-color: #EDF5FA;
+	border: 1px solid #ADDDFA;
+	z-index:1;
+}
+
+/* include childnodes */
+div.include-options{
+	margin: 1em 0 0 0;
+	padding: 0 0 1em 0;
+	clear:both;
+}
+
+div.cdm_taxontree_widget.form-item{
+float:none;
+}
+
+div.cdm_taxontree_widget div.taxontree{
+  background-color: #EDF5FA;
+	border: 1px solid #ADDDFA;
+	overflow-y:hidden;
+	overflow-x:auto;
+	float:left;
+}
+
+div.cdm_taxontree_widget .widget_select{
+	cursor: pointer; 
+}
+
+div.cdm_taxontree_widget option[selected] {
+	background-color: #EDF5FA;
+}
