@@ -21,7 +21,7 @@ require_once ('uuids.php');
 require_once ('webservice_uris.php');
 require_once ('cdm_node.php');
 
-define(DEFAULT_TAXONTREE_RANKLIMIT, '');//TODO Genus UUID
+define('DEFAULT_TAXONTREE_RANKLIMIT', '');//TODO Genus UUID
 
 
 /**
