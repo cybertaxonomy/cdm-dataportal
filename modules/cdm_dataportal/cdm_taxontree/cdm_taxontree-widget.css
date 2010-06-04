@@ -3,16 +3,6 @@
 /* --------- cdm_taxontree_widget  ----------- */
 
 
-#cdm-taxonomictree-selector-form .form-item{
-    margin-bottom: 0px;
-    /*background-color:#F3F3F3;
-    border:1px solid #DEDEDE; */
-}
-
-#cdm-taxonomictree-selector-form select{
-    width: 100%;
-}
-
 span.widget_select{
     color:#316AA0;
 }
