@@ -1217,9 +1217,34 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all'){
 		drupal_set_title(t('Taxon does not exist'));
 		return false;
 	}
-	//FIXME remove _cdm_dataportal_set_currentSecUuid($taxon->sec->uuid);
-
 	$taxonpage->title = theme('cdm_taxon_page_title', $taxon);
+	
+	// check if the taxon id contained in the currently selected tree
+	$taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $uuid);
+	$taxon_in_current_tree = false;
+	foreach($taxon_nodes as $node){	
+	   if(get_taxonomictree_uuid_selected() == $node->taxonomicTree->uuid){
+	       $taxon_in_current_tree = true;
+	       break;
+	   }
+	}
+	if(!$taxon_in_current_tree){
+		if(count($taxon_nodes) == 0){
+			drupal_set_message('This concept of the taxon '.theme('cdm_taxonName', $taxon->name).' is not contained any classification.'
+			,'warning');
+		} else {
+			$trees = '';
+			foreach($taxon_nodes as $node){ 
+				$trees .= ($trees?', ':'').'<strong>'.$node->taxonomicTree->titleCache.'</strong>';
+				
+			} 
+			drupal_set_message('This concept of the taxon '.theme('cdm_taxonName', $taxon->name).' is not contained in the currently chosen classification, but in '
+			.(count($taxon_nodes) > 1? ' one of these: ' : ' this one: ') . $trees
+			, 'warning');
+		}
+	}
+
+	// render the taxon page
 	$taxonpage->content = theme('cdm_taxon_page_general', $taxon, $chapter);
 
 	return $taxonpage;

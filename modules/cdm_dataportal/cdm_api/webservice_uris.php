@@ -26,6 +26,8 @@ define('CDM_WS_PORTAL_TAXON_FIND', 'portal/taxon/find');
 
 define('CDM_WS_PORTAL_TAXON', 'portal/taxon');
 
+define('CDM_WS_PORTAL_TAXON_TAXONNODES', 'portal/taxon/$0/taxonNodes');
+
 define('CDM_WS_NAME_NAMECAHE', 'name/$0/nameCache');
 
 define('CDM_WS_PORTAL_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');

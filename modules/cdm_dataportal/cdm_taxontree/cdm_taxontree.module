@@ -76,7 +76,7 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
   else if ($op == 'view') {
     switch($delta){
       case 'cdm_tree':
-        $block['subject'] = t('Taxon tree');
+        $block['subject'] = t('Classification');
         $taxonUuid_inFocus = _cdm_get_taxonuuid();
         $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
         $magicbox_enable = variable_get('cdm_taxontree_magicbox_enable', 0);
