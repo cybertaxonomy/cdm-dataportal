@@ -111,20 +111,9 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
  */
 function theme_cdm_annotations_as_footnotekeys($cdmBase){
 	
-    $annotationUrl = cdm_compose_annotations_url($cdmBase);
-    if($annotationUrl){
-        $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
-        if($annotationPager->count > 0){
-	        foreach($annotationPager->records as $annotation){
-		        $footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey() . '-annotations', $annotation->text);
-		        $out .=  theme('cdm_footnote_key', $footnoteKey, RenderHints::getFootnoteListKey() . '-annotations', (isset($out)? ',' : ''));
-		        
-//		        var_dump(RenderHints::getFootnoteListKey());
-//		        var_dump(RenderHints::getRenderPath());
-//	        	$footnoteKey = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-annotations', $annotation->text);
-//            $out .=  theme('cdm_footnote_key', $footnoteKey, RenderHints::getRenderPath() . '-annotations', (isset($out)? ',' : ''));
-	        }   
-        }
+	$footNoteKeys = cdm_annotations_as_footnotekeys($cdmBase);
+	foreach($footNoteKeys as $footNoteKey){
+	   $out .=  theme('cdm_footnote_key', $footnoteKey->keyStr, $footnoteKey->footnoteListKey, (isset($out)? ',' : ''));
     }
 	return $out;
 }

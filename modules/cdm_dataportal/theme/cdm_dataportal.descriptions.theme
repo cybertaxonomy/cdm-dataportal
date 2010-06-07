@@ -111,9 +111,9 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				$out .= '<a name="'.$block->delta.'"></a>';
 				$out .= theme('block', $block);
 
-				// TODO HACK
+				// Display cdm distribution map TODO this is a HACK to a proper generic implementation?
 				if($node->feature->uuid == UUID_DISTRIBUTION){
-					$out .= theme('cdm_descriptionElements_distribution', $taxon);
+					$out .= theme('cdm_distribution_map', $taxon);
 				}
 
 				$out .= theme('cdm_footnotes', $node->feature->uuid);
@@ -211,42 +211,40 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
 
 
 function theme_cdm_common_names($elements){
-	$result;
+
+	$out = '';
 	$separator = ',';
-	//create the a-array with the areas and text to show
+	
 	foreach ($elements as $element){
 		if ($element->class == 'CommonTaxonName'){
-			$sourcesFootnoteKeyList = '';
-			foreach($element->sources as $source){
-				if(_is_original_source_type($source)){ 
-				  $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
-                  $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_COMMON_NAME, ($sourcesFootnoteKeyList ? $separator : ''));
-				}
-			}
-			//$common_names[$element->language->representation_L10n] = ' (' . $element->area->titleCache . '): ' . $element->name . $sourcesFootnoteKeyList;
-			//$common_names['<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')'] = ': ' . $element->name . $sourcesFootnoteKeyList;
 			$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
-			if($common_names[$key]){
-				$common_names[$key] = $common_names[$key] . ', ' . $element->name . $sourcesFootnoteKeyList;
-			}else{
-				$common_names[$key] = $element->name . $sourcesFootnoteKeyList;
-			}
+			$common_names[$key][] = $element;
 		}
 	}
+	
 	if (count($common_names) > 0){
 		//sorting the a-array based on the area (key)
 		ksort($common_names);
 		//creating the output to be render by drupal
-		foreach ($common_names as $key => $val){
-			if (count($result) > 0){
-				$result = $result . '; ';
+		foreach ($common_names as $key => $elements){
+
+			$rendered_element_list = '';
+			foreach($elements as $element){
+				$sourcesFootnoteKeyList = '';
+				// add footnotes for sources
+	            foreach($element->sources as $source){
+	                if(_is_original_source_type($source)){ 
+	                  $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
+	                  $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_COMMON_NAME, ($sourcesFootnoteKeyList ? $separator : ''));
+	                }
+	            }
+				$rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
 			}
-			$result = $result . $key . ': ' . $val;
+			$out .= (strlen($out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list;
+			
 		}
-	} else {
-		$result = '';
 	}
-	return $result;
+	return $out;
 }
 
 /**
@@ -314,19 +312,25 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 	RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 	foreach($descriptionElements as $descriptionElement){
 		// annotations as footnotes
-		$annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
+		//$annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
+		$footNoteKeys = cdm_annotations_as_footnotekeys($descriptionElement);
+		
 		// source references as footnotes
-		$sourcesFootnoteKeyList = '';
 		foreach($descriptionElement->sources as $source){
 			if(_is_original_source_type($source)){
-			 $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, false));
-			 $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : ''));
+			 $_fkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
+			 $footNoteKeys[] = new FootnoteKey($_fkey, RenderHints::getFootnoteListKey());
 			}
 		}
-		if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
-			$annotationFootnoteKeys .= $separator;
-		}
-		$out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList . ' ';
+		// sort and render footnote keys
+		$footnoteKeyListStr = '';
+		asort($footNoteKeys);
+        foreach($footNoteKeys as $footNoteKey){
+			$footnoteKeyListStr .= theme('cdm_footnote_key', $footNoteKey->keyStr, $footnoteKey->footnoteListKey, ($footnoteKeyListStr ? $separator : ''));
+        }
+		
+        
+		$out .= '<span class="descriptionElement descriptionElement-'.$descriptionElement->uuid.'">'.$descriptionElement->area->representation_L10n . $footnoteKeyListStr . ' </span>';
 	}
 
 	$out = substr($out, 0, strlen($out)-strlen($separator) );
@@ -353,7 +357,7 @@ function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink =
  * @param unknown_type $featureTo
  * @return unknown
  */
-function theme_cdm_descriptionElements_distribution($taxon){
+function theme_cdm_distribution_map($taxon){
 
 	$fontStyles = array(0 => "plane", 1 => "italic");
 	$server = variable_get('cdm_dataportal_geoservice_access_point', false);

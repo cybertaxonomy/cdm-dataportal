@@ -26,6 +26,7 @@ require_once('theme/cdm_dataportal.references.theme');
 
 require_once('classes/footnotemanager.php');
 require_once('classes/footnote.php');
+require_once('classes/footnotekey.php');
 require_once('classes/renderhints.php');
 
 define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
@@ -1826,5 +1827,23 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 	}
 	return $outArrayOfMedia;
 }
+
+function cdm_annotations_as_footnotekeys($cdmBase){
+    
+	$footNoteKeys = array();
+    $footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
+    $annotationUrl = cdm_compose_annotations_url($cdmBase);
+    if($annotationUrl){
+        $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
+        if($annotationPager->count > 0){
+            foreach($annotationPager->records as $annotation){
+                $footnoteKeyStr = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
+                $footNoteKeys[] = new FootnoteKey($footnoteKeyStr, $footnoteListKey);
+            }   
+        }
+    }
+    return $footNoteKeys;
+}
+
 
 
