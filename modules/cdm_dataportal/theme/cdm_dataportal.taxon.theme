@@ -103,7 +103,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	ksort($joinedAuthorTeams);
 	foreach($joinedAuthorTeams as $authorteam=>$sensuCitation){
 		$footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensuCitation);
-		$joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu '.$authorteam. theme('cdm_footnote_key', $footnoteKey, $footnoteListKey).'</span>';
+		$joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu '.$authorteam. theme('cdm_footnote_key', $footnoteKey).'</span>';
 	}
 
 	// generate output

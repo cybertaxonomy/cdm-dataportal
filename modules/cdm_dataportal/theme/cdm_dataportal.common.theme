@@ -168,9 +168,9 @@ function theme_cdm_list_of_annotations($annotationElements){
 
 /* ============================ footnotes ============================= */
 
-function theme_cdm_footnote_key($footnoteKey, $footnoteListKey, $separator = '', $highlightable=true){
-  $out = '<span class="footnote-key footnote-key-'.$footnoteKey.' member-of-footnotes-'.$footnoteListKey.'">'.$separator
-        .'<a href="#footnote-'.$footnoteKey.'">'.$footnoteKey.'</a>'
+function theme_cdm_footnote_key(FootnoteKey $footnoteKey, $separator = '', $highlightable=true){
+  $out = '<span class="footnote-key footnote-key-'.$footnoteKey->keyStr.' member-of-footnotes-'.$footnoteKey->footnoteListKey.'">'.$separator
+        .'<a href="#footnote-'.$footnoteKey->keyStr.'">'.$footnoteKey->keyStr.'</a>'
         .'</span>';
   return $out;
 }

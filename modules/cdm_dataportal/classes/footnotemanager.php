@@ -76,7 +76,7 @@ class FootnoteManager
         
       }
       
-      return $fnKey;
+      return new FootnoteKey($fnKey, $footnoteListKey);
     }
     
     /**

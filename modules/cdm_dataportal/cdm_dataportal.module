@@ -1837,8 +1837,7 @@ function cdm_annotations_as_footnotekeys($cdmBase){
         $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
         if($annotationPager->count > 0){
             foreach($annotationPager->records as $annotation){
-                $footnoteKeyStr = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
-                $footNoteKeys[] = new FootnoteKey($footnoteKeyStr, $footnoteListKey);
+                $footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
             }   
         }
     }

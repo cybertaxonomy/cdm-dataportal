@@ -104,7 +104,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
 //        $sourcesFootnoteKeyList = '';
 //        foreach($descriptionElement->sources as $source){
 //            $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, false));
-//            $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : ''));
+//            $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));
 //        }
 //        if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
 //            $annotationFootnoteKeys .= $separator;

@@ -235,7 +235,7 @@ function theme_cdm_common_names($elements){
 	            foreach($element->sources as $source){
 	                if(_is_original_source_type($source)){ 
 	                  $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
-	                  $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_COMMON_NAME, ($sourcesFootnoteKeyList ? $separator : ''));
+	                  $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));
 	                }
 	            }
 				$rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
@@ -318,15 +318,14 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 		// source references as footnotes
 		foreach($descriptionElement->sources as $source){
 			if(_is_original_source_type($source)){
-			 $_fkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
-			 $footNoteKeys[] = new FootnoteKey($_fkey, RenderHints::getFootnoteListKey());
+			    $footNoteKeys[] = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
 			}
 		}
 		// sort and render footnote keys
 		$footnoteKeyListStr = '';
 		asort($footNoteKeys);
         foreach($footNoteKeys as $footNoteKey){
-			$footnoteKeyListStr .= theme('cdm_footnote_key', $footNoteKey->keyStr, $footnoteKey->footnoteListKey, ($footnoteKeyListStr ? $separator : ''));
+			$footnoteKeyListStr .= theme('cdm_footnote_key', $footNoteKey, ($footnoteKeyListStr ? $separator : ''));
         }
 		
         
