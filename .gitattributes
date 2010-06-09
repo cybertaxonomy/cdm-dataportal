@@ -208,6 +208,7 @@ modules/cdm_dataportal/js/jquery.progressbar/images/progressbg_yellow.gif -text
 modules/cdm_dataportal/js/jquery.progressbar/js/jquery.js -text
 modules/cdm_dataportal/js/jquery.progressbar/js/jquery.progressbar.js -text
 modules/cdm_dataportal/js/jquery.progressbar/js/jquery.progressbar.min.js -text
+modules/cdm_dataportal/js/openlayers_map.js -text
 modules/cdm_dataportal/js/thickbox/cdm_thickbox.css -text
 modules/cdm_dataportal/js/thickbox/thickbox.js -text
 modules/cdm_dataportal/node_types.php -text

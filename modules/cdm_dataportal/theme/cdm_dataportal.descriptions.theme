@@ -10,6 +10,25 @@
  * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
  */
 
+
+function _add_js_openlayers_map(){
+	
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/openlayers_map.js');
+    drupal_add_js("
+        if (Drupal.jsEnabled) {
+          $(document).ready(function() {
+              $('#openlayers_map').cdm_openlayers_map('"
+              .variable_get('cdm_dataportal_geoservice_access_point', false)."', {
+                legendPosition: 3, 
+                displayWidth: '" . variable_get('cdm_dataportal_geoservice_display_width', false) . "',
+                boundingBox: '" . variable_get('cdm_dataportal_geoservice_bounding_box', false) . "'
+            });
+          });
+        }", 'inline');
+     	
+}
+
 function theme_cdm_feature_nodesTOC($featureNodes){
 
 	$out .= '<ul>';
@@ -358,185 +377,54 @@ function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink =
  */
 function theme_cdm_distribution_map($taxon){
 
-	$fontStyles = array(0 => "plane", 1 => "italic");
 	$server = variable_get('cdm_dataportal_geoservice_access_point', false);
 
 	if(!server){
 		return "<p>No geoservice specified</p>";
 	}else{
+		
+		$fontStyles = array(0 => "plane", 1 => "italic");
+		
 		$map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
-
-		//		$map_data_parameters->String = str_replace(':', "%58", $map_data_parameters->String);
-		//		$map_data_parameters->String = str_replace(':', "%20", $map_data_parameters->String);
-		//		$map_data_parameters->String = str_replace('(', "", $map_data_parameters->String);
-		//		$map_data_parameters->String = str_replace(')', "", $map_data_parameters->String);
-		//      $map_data_parameters->String = str_replace('.', "%46", $map_data_parameters->String);
-		$map_data_parameters->String = str_replace('%3A', ":", $map_data_parameters->String);
+		$query_string = str_replace('%3A', ":", $map_data_parameters->String);
 
 
 		$display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
 		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
 		$labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
-		$query_string = ($display_width ? '&img=false&ms=' . $display_width: '')
+		$query_string .= ($display_width ? '&img=false&ms=' . $display_width: '')
 		. ($bounding_box ? '&bbox=' .  $bounding_box : '')
 		. ($labels_on ? '&labels=' .  $labels_on : '');
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
-			// embed into openlayers viewer
-			if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
-				$query_string .= '&legend=1&mlp=3';
-			}
-				
-			$map_tdwg_Uri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
-				
+			
+			/* =========== display distributions using the openlayers map viewer =========== */
+			
 			$legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
 			$legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
 			$legend_url_font_style = $fontStyles[$legend_url_font_style];
 			$legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
 			$legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
-
-			//print($map_tdwg_Uri.'<br>');
-
-			// get the respone from the map service
-			$responseObj = cdm_ws_get($map_tdwg_Uri, null, null, "GET", TRUE);
-			$responseObj = $responseObj[0];
-
-			$geoserver_uri = $responseObj->geoserver;
-			// get the sld files from the response object
-			if(isset($responseObj->layers)){
-				if(isset($responseObj->legend)){
-
-					$sldLegend=$responseObj->legend;
-					$legend_url  = $geoserver_uri . "/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
-					$legend_url .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
-					$legend_url .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
-				}
-				$layerSlds = $responseObj->layers;
-				foreach($layerSlds as $layer){
-					$tdwg_sldUris[$layer->tdwg] = $layer->sld;
-					//#print($tdwg_sldUris[$layer->tdwg].'<br>');
-				}
-			}
-			// get the bbox from the response object
-			$zoomto_bbox = ($bounding_box ? $bounding_box : ($responseObj->bbox ? $responseObj->bbox :'-180, -90, 180, 90') );
-
-			$add_tdwg1 = (isset($tdwg_sldUris['tdwg1']) ? "
-          tdwg_1.params.SLD = '".$tdwg_sldUris['tdwg1']."';
-          map.addLayers([tdwg_1]);" : '');
-			$add_tdwg2 = (isset($tdwg_sldUris['tdwg2']) ? "
-          tdwg_2.params.SLD = '".$tdwg_sldUris['tdwg2']."';
-          map.addLayers([tdwg_2]);" : '');
-			$add_tdwg3 = (isset($tdwg_sldUris['tdwg3']) ? "
-          tdwg_3.params.SLD = '".$tdwg_sldUris['tdwg3']."';
-          map.addLayers([tdwg_3]);" : '');
-			$add_tdwg4 = (isset($tdwg_sldUris['tdwg4']) ? "
-          tdwg_4.params.SLD = '".$tdwg_sldUris['tdwg4']."';
-          map.addLayers([tdwg_4]);" : '');
-
-			//      $googleMapsApiKey_localhost = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
-			//      drupal_set_html_head(' <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$googleMapsApiKey_localhost.'"></script>');
-
-			/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			 * OpenLayers.js must be loaded BEFORE jQuery.
-			 * If jQuery loaded before $.something will fail in IE8.
-			 * Therefore we add OpenLayers.js it in the page.tpl.php
-			 * -----------------------------------------------------
-			 * Andreas Kohlbecker [Feb 25th 2010]:
-			 * This problems seems to be solved somehow (a bugfix in IE8?)
-			 * so I am removing this "hack" by uncommenting the line below
-			 */
-			drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
-			drupal_add_js('
- var map;
- 
- var layerOptions = {
-     maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-     isBaseLayer: false,
-     displayInLayerSwitcher: false
-  };
- 
- var tdwg_1 = new OpenLayers.Layer.WMS.Untiled( 
-    "tdwg level 1", 
-    "'.$geoserver_uri.'/wms",
-    {layers:"topp:tdwg_level_1",transparent:"true", format:"image/png"},
-    layerOptions
-  );
-  
- var tdwg_2 = new OpenLayers.Layer.WMS.Untiled( 
-    "tdwg level 2", 
-    "'.$geoserver_uri.'/wms",
-    {layers:"topp:tdwg_level_2",transparent:"true", format:"image/png"},
-    layerOptions
-  );
-  
- var tdwg_3 = new OpenLayers.Layer.WMS.Untiled( 
-    "tdwg level 3", 
-    "'.$geoserver_uri.'/wms",
-    {layers:"topp:tdwg_level_3", transparent:"true", format:"image/png"},
-    layerOptions
-  );
-  
-  var tdwg_4 = new OpenLayers.Layer.WMS.Untiled( 
-    "tdwg level 4", 
-    "'.$geoserver_uri.'/wms",
-    {layers:"topp:tdwg_level_4",transparent:"true", format:"image/png"},
-    layerOptions
-  );
-  
- // make baselayer
- layerOptions[\'isBaseLayer\'] = true; 
- 
- var ol_wms = new OpenLayers.Layer.WMS( 
-    "OpenLayers WMS",
-    "http://labs.metacarta.com/wms/vmap0",
-    {layers: \'basic\'}, 
-    layerOptions
-  );
-  
-  
-  // ------------------------------
-  
-  
- function init() {
- 
-   var mapOptions={
-     controls: 
-       [ 
-         new OpenLayers.Control.PanZoom(),
-         new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
-       ],
-       maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-       maxResolution: '.(360 / $display_width).',
-       restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-       projection: new OpenLayers.Projection("EPSG:4326")
-    };
-   
-   map = new OpenLayers.Map(\'openlayers_map\', mapOptions);
-   map.addLayers([ol_wms]);
-   '.$add_tdwg1.'
-   '.$add_tdwg2.'
-   '.$add_tdwg3.'
-   '.$add_tdwg4.'
-   map.zoomToExtent(new OpenLayers.Bounds('.$zoomto_bbox.'), false);
- }
- 
-$(document).ready(function(){
-  init();
-  $(\'#openlayers_legend\').css(\'top\', -$(\'#openlayers_map\').height());
-  $(\'#openlayers_legend\').css(\'left\', $(\'#openlayers_map\').width()-100);
-});'
-			, 'inline');
-			// showing openlayers
+			
+			//$legendQueryStr  = $geoserver_uri . "/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+			$legendFormatQueryStr  = "format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+            $legendFormatQueryStr .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
+            $legendFormatQueryStr .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
+                
+            _add_js_openlayers_map();
+            
 			$out = '<div id="openlayers">';
-			$out .= '<div id="openlayers_map" class="smallmap" style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
-			// showing lengeds
-			if (variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
-				$out .= '<div id="openlayers_legend"><img id="legend" src="'.$legend_url.'"></div>';
-			}
+			$out .= '<div id="openlayers_map" class="smallmap" '
+			.'distributionQuery="'.$query_string.'"'
+			.'legendFormatQuery="'.$legendFormatQueryStr.'"'
+			.'style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+
 			// showing map caption
-			$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
-			$out .= '</div>';
+			if(variable_get('cdm_dataportal_geoservice_map_caption', '')){
+			  $out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
+			  $out .= '</div>';
+			}
 
 		} else {
 			// simple image
