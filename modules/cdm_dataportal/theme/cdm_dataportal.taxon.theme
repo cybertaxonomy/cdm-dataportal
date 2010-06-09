@@ -237,12 +237,12 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 			break;
 		case UUID_MISAPPLIED_NAME_FOR:
 		case UUID_INVALID_DESIGNATION_FOR:
-			$relsign = '&mdash;'; // &ndash; &mdash; &minus;
+			$relsign = '&ndash;'; // &ndash; &mdash; &minus;
 			$name_prefix = '"';
 			$name_postfix = '"';
 			break;
 		default :
-			$relsign = '&mdash;';
+			$relsign = '&ndash;';
 	}
 
 	$status = $taxon->name->status[0]->type->representation_L10n;
