@@ -114,12 +114,14 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	};
 	
 	var addLegend= function(legendSrcUrl){
-		mapElement.after('<div id="openlayers_legend"><img id="legend" src="' + legendSrcUrl + '"></div>');
-		
-		//TODO position legend according to options.legendPosition
-		mapElement.next('#openlayers_legend')
+		mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
+		mapElement.next('.openlayers_legend').find('img').load(function () {
+			$(this).parent()
+			.css('position', 'relative')
+			.css('z-index', '30000')
 			.css('top', -mapElement.height())
-			.css('left', mapElement.width()- 140); //FIXME use correct image width
+			.css('left', mapElement.width()- $(this).width());
+		});
 	};
 	
 	/**

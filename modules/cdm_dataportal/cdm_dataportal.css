@@ -220,17 +220,6 @@ a.toc:link, a.toc:visited {
 	border: 1px solid;
 }
 
-#openlayers_legend{
-    position: relative;
-    z-index: 30000;
-    /*
-    top:10px;	
-	float: right;
-    margin-top: -200px; 
-    top: 0px;
-    */
-}
-
 .distribution_map_caption{
 	font-size: 90%;
 	font-style: italic;
