@@ -50,7 +50,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			distributionQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + options.legendPosition);				
 		}
 		// jsonp 
-		distributionQuery = mergeQueryStrings(distributionQuery, 'foo=foo');
+		distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
 		
 		var legendFormatQuery = mapElement.attr('legendFormatQuery');
 		if(legendFormatQuery !== undefined){
@@ -63,9 +63,17 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			  dataType: "jsonp",
 			  success: function(data){
 					initOpenLayers(data);
-				},
-			  jsonp: "foo"
+				}
 			});
+			
+//		$.ajax({
+//			  url: mapServiceRequest,
+//			  dataType: "jsonp",
+//			  success: function(data){
+//					initOpenLayers(data);
+//				},
+//			  jsonp: "foo"
+//			});
 	};
 	
 	/**
@@ -97,19 +105,22 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				
 			}
 			
-			map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
+			//map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
 
 			
 			// zoom to the required area
-			var boundsStr = (options.boundingBox !== undefined ? options.boundingBox : (mapResponseObj.bbox ? mapResponseObj.bbox : '-180, -90, 180, 90') );
+			var boundsStr = (typeof options.boundingBox == 'string' && options.boundingBox.length > 6 ? 
+						options.boundingBox : (mapResponseObj.bbox ? 
+									mapResponseObj.bbox : '-180, -90, 180, 90') 
+				);
 			var zoomToBounds = OpenLayers.Bounds.fromString( boundsStr );
 			map.zoomToExtent(zoomToBounds, false);
 						
 			// HACK:
-			var hack = "/var/www/";
-			mapResponseObj.legend = "http://edit.br.fgov.be/" + mapResponseObj.legend.substr(hack.length - 1);
+//			var hack = "/var/www/";
+//			mapResponseObj.legend = "http://edit.br.fgov.be/" + mapResponseObj.legend.substr(hack.length - 1);
 			// END OF HACK
-			if(options.legendPosition !== undefined){
+			if(options.legendPosition != undefined){
 				var legendSrcUrl = mapResponseObj.geoserver + legendImgSrc + mapResponseObj.legend;
 				addLegendAsElement(legendSrcUrl);
 				//addLegendAsLayer(legendSrcUrl, map);
@@ -120,6 +131,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	};
 	
 	var addLegendAsElement= function(legendSrcUrl){
+		
 		mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
 		mapElement.next('.openlayers_legend').find('img').load(function () {
 			$(this).parent()
