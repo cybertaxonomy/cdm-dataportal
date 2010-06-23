@@ -108,35 +108,39 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				$block->delta = generalizeString($featureRepresentation);
 				$block->subject = theme('cdm_feature_name', $featureRepresentation);
 				$block->module = "cdm_dataportal-feature";
+				$block->content = '';
+				
+			    // Display cdm distribution map TODO this is a HACK to a proper generic implementation?
+                if($node->feature->uuid == UUID_DISTRIBUTION){
+                    $block->content .= theme('cdm_distribution_map', $taxon);
+                }
 
 				//get the text for the feature block
 				if ($node->feature->titleCache == 'Common Name'){
-					$block->content = theme('cdm_common_names', $node->descriptionElements);
+					$block->content .= theme('cdm_common_names', $node->descriptionElements);
 				} else {
-				  $block->content = theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid);
+				    $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid);
 				}
+				
 				// get media for the feature block
 				$media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
 				$captionElements = array('title', 'rights');
 				//$block->content .= theme('cdm_media_gallerie', $media_list, "test", 150, 4, false, $captionElements);
 				$block->content .= theme('cdm_media_gallery', $media_list,
-				CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
-				$gallery_settings['cdm_dataportal_media_maxextend'],
-				$gallery_settings['cdm_dataportal_media_cols'],
-				$gallery_settings['cdm_dataportal_media_maxRows'],
-				$captionElements);
+					CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
+					$gallery_settings['cdm_dataportal_media_maxextend'],
+					$gallery_settings['cdm_dataportal_media_cols'],
+					$gallery_settings['cdm_dataportal_media_maxRows'],
+					$captionElements
+				);
+
+				$block->content .= theme('cdm_footnotes', $node->feature->uuid);
+				$block->content .= theme('cdm_annotation_footnotes', $node->feature->uuid);
 
 				// set anchor; FIXME put anchor in $block->subject
 				$out .= '<a name="'.$block->delta.'"></a>';
 				$out .= theme('block', $block);
 
-				// Display cdm distribution map TODO this is a HACK to a proper generic implementation?
-				if($node->feature->uuid == UUID_DISTRIBUTION){
-					$out .= theme('cdm_distribution_map', $taxon);
-				}
-
-				$out .= theme('cdm_footnotes', $node->feature->uuid);
-				$out .= theme('cdm_annotation_footnotes', $node->feature->uuid);
 			}
 		}
 		// theme
