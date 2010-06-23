@@ -127,6 +127,8 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			}
 		}
 		
+		// adjust height of openlayers container div
+		$('#openlayers').css('height', $('#openlayers #openlayers_map').height());
 		
 	};
 	

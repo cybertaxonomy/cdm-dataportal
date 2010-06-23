@@ -733,7 +733,7 @@ function cdm_dataportal_settings(){
 	$form['cdm_dataportal']['feature_tree'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
     '#type' => 'select',
     '#title'         => t('Available FeatureTrees'),                
-    '#default_value' => variable_get(CDM_DATAPORTAL_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
+    '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
 	  '#options' => cdm_get_featureTrees_as_options(),
     '#description'   => t('Select a FeatureTree for this webservice.'
     //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
