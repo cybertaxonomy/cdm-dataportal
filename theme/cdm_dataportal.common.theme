@@ -168,7 +168,7 @@ function theme_cdm_list_of_annotations($annotationElements){
 
 /* ============================ footnotes ============================= */
 
-function theme_cdm_footnote_key(FootnoteKey $footnoteKey, $separator = '', $highlightable=true){
+function theme_cdm_footnote_key($footnoteKey, $separator = '', $highlightable=true){
   $out = '<span class="footnote-key footnote-key-'.$footnoteKey->keyStr.' member-of-footnotes-'.$footnoteKey->footnoteListKey.'">'.$separator
         .'<a href="#footnote-'.$footnoteKey->keyStr.'">'.$footnoteKey->keyStr.'</a>'
         .'</span>';
