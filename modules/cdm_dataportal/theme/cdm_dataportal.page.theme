@@ -112,7 +112,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   // --- DESCRIPTION --- //
   if($page_part == 'description' || $page_part == 'all'){
 
-  	$featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get(CDM_DATAPORTAL_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
+  	$featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
   	$taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid);
   	$mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $taxonDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
 
