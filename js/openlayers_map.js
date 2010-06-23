@@ -137,10 +137,11 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
 		mapElement.next('.openlayers_legend').find('img').load(function () {
 			$(this).parent()
-			.css('position', 'relative')
-			.css('z-index', '30000')
-			.css('top', -mapElement.height())
-			.css('left', mapElement.width()- $(this).width());
+				.css('position', 'relative')
+				.css('z-index', '30000')
+				.css('top', -mapElement.height())
+				.css('left', mapElement.width()- $(this).width())
+				.width($(this).width());
 		});
 	};
 	

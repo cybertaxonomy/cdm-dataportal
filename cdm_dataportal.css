@@ -224,6 +224,12 @@ a.toc:link, a.toc:visited {
 	border: 1px solid;
 }
 
+.openlayers_legend{
+    background-color: white;
+    filter:alpha(opacity=75); /* IE's opacity*/
+    opacity: 0.75;
+}
+
 .distribution_map_caption{
 	font-size: 90%;
 	font-style: italic;
