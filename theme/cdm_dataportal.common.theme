@@ -113,7 +113,7 @@ function theme_cdm_annotations_as_footnotekeys($cdmBase){
 	
 	$footNoteKeys = cdm_annotations_as_footnotekeys($cdmBase);
 	foreach($footNoteKeys as $footNoteKey){
-	   $out .=  theme('cdm_footnote_key', $footnoteKey->keyStr, $footnoteKey->footnoteListKey, (isset($out)? ',' : ''));
+	   $out .=  theme('cdm_footnote_key', $footnoteKey, $footnoteKey->footnoteListKey, (isset($out)? ',' : ''));
     }
 	return $out;
 }
