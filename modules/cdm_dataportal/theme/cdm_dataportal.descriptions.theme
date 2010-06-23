@@ -419,6 +419,7 @@ function theme_cdm_distribution_map($taxon){
 			.'distributionQuery="'.$query_string.'"'
 			.'legendFormatQuery="'.$legendFormatQueryStr.'"'
 			.'style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+			$out .= '</div>'; // end of <div id="openlayers">
 
 			// showing map caption
 			if(variable_get('cdm_dataportal_geoservice_map_caption', '')){
