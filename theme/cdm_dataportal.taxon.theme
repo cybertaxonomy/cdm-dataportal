@@ -1,0 +1,326 @@
+<?php
+// $Id$
+
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+*/
+
+function theme_cdm_search_results($pager, $path, $parameters){
+
+
+	$showThumbnails = $_SESSION['pageoptions']['searchtaxa']['showThumbnails'];
+	if( !is_numeric($showThumbnails)){
+		$showThumbnails = 1;
+	}
+	$setSessionUri = url('cdm_api/setvalue/session', "var=[pageoption][searchtaxa][showThumbnails]&val=");
+	drupal_add_js('$(document).ready(function() {
+  
+        // init
+        if('.$showThumbnails.' == 1){
+              $(\'.media_gallery\').show(20);
+        } else {
+          $(\'.media_gallery\').hide(20);
+        }
+        // add change hander
+        $(\'#showThumbnails\').change(
+          function(event){
+            var state = 0;
+            if($(this).is(\':checked\')){
+              $(\'.media_gallery\').show(20);
+              state = 1;
+            } else {
+              $(\'.media_gallery\').hide(20);
+            }
+            // store state in session variable
+            var uri = \''.$setSessionUri.'\' + state;
+            jQuery.get(uri);
+          });
+        });', "inline");
+
+	drupal_set_title(t('Search results'));
+
+	$out = ''; //l('Advanced Search', '/cdm_dataportal/search');
+
+	$out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form></div>';
+	if(count($pager->records) > 0){
+		$out .= theme('cdm_list_of_taxa', $pager->records);
+		$out .= theme('cdm_pager', $pager, $path, $parameters);
+	} else {
+		$out = '<h4 class="error">Sorry, no matching entries found.</h4>';
+	}
+	return $out;
+}
+
+
+/**
+ * renders misapplied names and invalid designations.
+ * Both relation types are currently treated the same!
+ *
+ * @param unknown_type $taxonRelationships
+ * @return unknown
+ */
+function theme_cdm_taxonRelationships($taxonRelationships){
+
+	if(!$taxonRelationships){
+		return;
+	}
+	
+	RenderHints::pushToRenderStack('taxonRelationships');
+    $footnoteListKey = 'taxonRelationships';
+    RenderHints::setFootnoteListKey($footnoteListKey);
+
+	$misapplied = array();
+	$joinedAuthorTeams = array();
+	
+	// aggregate misapplied names having the same fullname:
+	foreach($taxonRelationships as $taxonRelation){
+		if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
+
+			$name = $taxonRelation->fromTaxon->name->titleCache;
+
+			$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
+			$authorteam = $author_team->titleCache;
+
+			if(!isset($misapplied[$name])){
+				$misapplied[$name]['out'] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR, false).'</span>';
+			}
+
+			// collect all authors for this fullname
+			if(isset($authorteam)){
+                  $misapplied[$name]['authorteam'][$authorteam] = '';
+                  $joinedAuthorTeams[$authorteam] = 'sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec);
+			}
+
+		}
+	}
+	
+	// sort the joinedAuthorTeams and create footnotes and footnotekeys
+	ksort($joinedAuthorTeams);
+	foreach($joinedAuthorTeams as $authorteam=>$sensuCitation){
+		$footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensuCitation);
+		$joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu '.$authorteam. theme('cdm_footnote_key', $footnoteKey).'</span>';
+	}
+
+	// generate output
+	$out = '<ul class="misapplied">';
+	
+	foreach($misapplied as $misapplied_name){
+		
+		$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
+		// fill authors with the renderedFootnoteKey and sorting 'em
+		foreach($misapplied_name['authorteam'] as $authorteam=>&$renderedFootnoteKey) {
+		  $renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
+	    }
+		if(isset($misapplied_name['authorteam'])){
+			ksort($misapplied_name['authorteam']);
+			$out .= join('; ', $misapplied_name['authorteam']);
+		}
+		$out .= '</li>';
+		
+	}
+	$out .= '</ul>';
+	
+	$out .= theme('cdm_footnotes', $footnoteListKey, 'div');
+    RenderHints::popFromRenderStack();
+	return $out;
+}
+
+function theme_cdm_acceptedFor(){
+	RenderHints::pushToRenderStack('acceptedFor');
+		
+	$out = '';
+	if(isset($_REQUEST['acceptedFor'])){
+			
+		$synonym = cdm_ws_get(CDM_WS_PORTAL_TAXON, $_REQUEST['acceptedFor']);
+			
+		if($synonym){
+			$out .= '<span class="acceptedFor">';
+			$out .= t('is accepted for ');
+			if(isset($synonym->name->nomenclaturalReference)){
+				$referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
+			}
+			$out .= theme('cdm_taxonName', $synonym->name, null, $referenceUri);
+			$out .= theme('cdm_annotations_as_footnotekeys', $synonym);
+			$out .= '</span>';
+		}
+	}
+    RenderHints::popFromRenderStack();
+	return $out;
+}
+
+function theme_cdm_list_of_taxa($records, $showMedia = false){
+
+	RenderHints::pushToRenderStack('list_of_taxa');
+
+	$showMedia_taxa = variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1);
+	$showMedia_synonyms = variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0);
+
+	// .. well, for sure not as performant as before, but better than nothing.
+	$synonym_uuids = array();
+	foreach($records as $taxon){
+		if($taxon->class != "Taxon"){
+			if(!array_key_exists($taxon->uuid, $synonym_uuids)){
+				$synonym_uuids[$taxon->uuid] = $taxon->uuid;
+			}
+		}
+	}
+	// batch service not jet implemented:
+	// $table_of_accepted = cdm_ws_property(CDM_WS_PORTAL_TAXON_ACCEPTED, join(',', $synonym_uuids));
+	// thus ...
+	$table_of_accepted = array();
+	foreach($synonym_uuids as $synUuid){
+		$table_of_accepted[$synUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, $synUuid);
+	}
+
+	$out = '<ul class="cdm_names" style="background-image: none;">';
+
+	foreach($records as $taxon){
+		// its a Taxon
+		if($taxon->class == "Taxon"){
+			$taxonUri = url(path_to_taxon($taxon->uuid));
+			if(isset($taxon->name->nomenclaturalReference)){
+				$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+			}
+			$out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
+            $out .= theme('cdm_annotations_as_footnotekeys', $taxon);
+            
+			if($showMedia_taxa){
+				$out .= theme('cdm_taxon_list_thumbnails', $taxon);
+			}
+			
+			$out .= '</li>';
+		} else {
+			// its a synonym
+			$uuid = $taxon->uuid;
+			$acceptedTaxa = $table_of_accepted[$uuid];
+			if(count($acceptedTaxa) == 1){
+				$acceptedTaxon = $acceptedTaxa[0];
+				$taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid, 'synonymy');
+				if(isset($acceptedTaxon->name->nomenclaturalReference)){
+					$referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
+				}
+				$out .= '<li class="Synonym">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
+				$out .= theme('cdm_annotations_as_footnotekeys', $taxon);
+				if($showMedia_synonyms){
+					$out .= theme('cdm_taxon_list_thumbnails', $acceptedTaxon);
+				}
+				$out .= '</li>';
+			} else {
+				//TODO avoid using Ajax in the cdm_dynabox
+				//TODO add media
+				$out .= theme('cdm_dynabox', theme('cdm_taxonName', $taxon->name, null, null, false), cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
+			}
+		}
+	}
+	$out .= '</ul>';
+	RenderHints::popFromRenderStack();
+	return $out;
+}
+
+
+function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
+	$relsign = '';
+	$name_prefix = '';
+	$name_postfix = '';
+	switch ($reltype_uuid){
+		case UUID_HETEROTYPIC_SYNONYM_OF:
+		case UUID_SYNONYM_OF:
+			$relsign = '=';
+			break;
+		case UUID_HOMOTYPIC_SYNONYM_OF:
+			$relsign = '≡';
+			break;
+		case UUID_MISAPPLIED_NAME_FOR:
+		case UUID_INVALID_DESIGNATION_FOR:
+			$relsign = '&ndash;'; // &ndash; &mdash; &minus;
+			$name_prefix = '"';
+			$name_postfix = '"';
+			break;
+		default :
+			$relsign = '&ndash;';
+	}
+
+	$status = $taxon->name->status[0]->type->representation_L10n;
+  //if ($status == 'Invalid' || $status == 'Nudum'){
+  if (sizeof($status) > 0){
+      if ($status == 'Invalid' || $status == 'Nudum'){
+       $relsign = '&mdash';
+      }
+    	$status = ', ' . $taxon->name->status[0]->type->representation_L10n_abbreviated;
+    	//var_dump('&mdash' . $taxon->name->status[0]->type->representation_L10n_abbreviated);
+  }
+  
+	 RenderHints::pushToRenderStack('related_taxon');
+
+	//$taxonUri = url(path_to_taxon($taxon->uuid));
+	if($taxon->name->nomenclaturalReference){
+		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+	}
+	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
+	$nameHtml .= theme('cdm_annotations_as_footnotekeys', $taxon);
+	
+	//later homonym or trated as later homonym
+	$taxon_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMERELATIONS, $taxon->uuid);
+	foreach($taxon_name_relations as $element){	
+    switch ($element->type->representation_L10n){
+      case 'later homonym for':
+        $later_homonym = ' [non ' . l($element->fromName->titleCache . ']', 
+                                     'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid);
+        break;
+    case 'treated as later homonym for':
+        $later_homonym = ' [non ' . l($element->fromName->titleCache . ']', 
+                                     'cdm_dataportal/name/' . $element->fromName->uuid);
+        break;
+    }
+	}
+
+	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $later_homonym . $status;
+	
+	$out = uuid_anchor($taxon->uuid, $out);
+	
+	RenderHints::popFromRenderStack();
+	
+	return $out; 
+}
+
+
+/**
+ */
+function theme_cdm_taxon_list_thumbnails($taxon){
+
+	$gallery_name = $taxon->uuid;
+
+	$showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 1);
+	$prefMimeTypeRegex = 'image:.*';
+	$prefMediaQuality = '*';
+
+	$gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
+	
+	if($showCaption){
+		//$captionElements = array('title', '#uri'=>t('open Image'));
+		$captionElements = array('title', 'rights');
+	}
+
+	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
+	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
+	if ($selectShowMedia == 0){
+		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	}else{
+		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	}
+	//$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false), $taxon ->rank, $taxon->uuid ));
+	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,
+					$gallery_settings['cdm_dataportal_media_maxextend'], 
+	             	$gallery_settings['cdm_dataportal_media_cols'], 
+	             	$gallery_settings['cdm_dataportal_media_maxRows'], 
+	             	$captionElements, 'LIGHTBOX', null, $galleryLinkUri);
+
+	return $out;
+}
+
+
