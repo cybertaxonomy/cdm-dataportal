@@ -21,6 +21,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	     controls: 
 	       [ 
 	         new OpenLayers.Control.PanZoom(),
+	        // new OpenLayers.Control.LayerSwitcher(),
 	         new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
 	       ],
 	       maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
@@ -96,6 +97,9 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				
 			}
 			
+			map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
+
+			
 			// zoom to the required area
 			var boundsStr = (options.boundingBox !== undefined ? options.boundingBox : (mapResponseObj.bbox ? mapResponseObj.bbox : '-180, -90, 180, 90') );
 			var zoomToBounds = OpenLayers.Bounds.fromString( boundsStr );
@@ -106,14 +110,16 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			mapResponseObj.legend = "http://edit.br.fgov.be/" + mapResponseObj.legend.substr(hack.length - 1);
 			// END OF HACK
 			if(options.legendPosition !== undefined){
-				addLegend(mapResponseObj.geoserver + legendImgSrc + mapResponseObj.legend);
+				var legendSrcUrl = mapResponseObj.geoserver + legendImgSrc + mapResponseObj.legend;
+				addLegendAsElement(legendSrcUrl);
+				//addLegendAsLayer(legendSrcUrl, map);
 			}
 		}
 		
 		
 	};
 	
-	var addLegend= function(legendSrcUrl){
+	var addLegendAsElement= function(legendSrcUrl){
 		mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
 		mapElement.next('.openlayers_legend').find('img').load(function () {
 			$(this).parent()
@@ -122,6 +128,41 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			.css('top', -mapElement.height())
 			.css('left', mapElement.width()- $(this).width());
 		});
+	};
+	
+	
+	var addLegendAsLayer= function(legendSrcUrl, map){
+		var w, h;
+		
+		// 1. download imge to find height and width
+		mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
+		mapElement.next('.openlayers_legend').css('display', 'none').find('img').load(function () {
+			
+			w = mapElement.next('.openlayers_legend').find('img').width();
+			h = mapElement.next('.openlayers_legend').find('img').height();
+			mapElement.next('.openlayers_legend').remove();
+			
+			createLegendLayer();
+		});
+		
+		// 2. create the Legend Layer
+		var createLegendLayer = function(){
+
+			
+			var legendLayerOptions={
+					maxResolution: '.$maxRes.',
+					maxExtent: new OpenLayers.Bounds(0, 0, w, h)
+			};
+			
+			var legendLayer = new OpenLayers.Layer.Image(
+					'Legend',
+					legendSrcUrl,
+					new OpenLayers.Bounds(0, 0, w, h),
+					new OpenLayers.Size(w, h),
+					imageLayerOptions
+			);
+		}
+
 	};
 	
 	/**
