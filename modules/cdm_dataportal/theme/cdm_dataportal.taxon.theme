@@ -265,16 +265,16 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	$nameHtml .= theme('cdm_annotations_as_footnotekeys', $taxon);
 	
 	//later homonym or trated as later homonym
-	$taxon_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMERELATIONS, $taxon->uuid);
+	$taxon_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
 	foreach($taxon_name_relations as $element){	
     switch ($element->type->representation_L10n){
       case 'later homonym for':
-        $later_homonym = ' [non ' . l($element->fromName->titleCache . ']', 
-                                     'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid);
+        $later_homonym = ' [non ' . l($element->fromName->titleCache, 
+                                     'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid) . ']';
         break;
     case 'treated as later homonym for':
-        $later_homonym = ' [non ' . l($element->fromName->titleCache . ']', 
-                                     'cdm_dataportal/name/' . $element->fromName->uuid);
+        $later_homonym = ' [non ' . l($element->fromName->titleCache, 
+                                     'cdm_dataportal/name/' . $element->fromName->uuid) . ']';
         break;
     }
 	}

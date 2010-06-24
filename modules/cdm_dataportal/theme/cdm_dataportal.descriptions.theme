@@ -119,7 +119,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				if ($node->feature->titleCache == 'Common Name'){
 					$block->content .= theme('cdm_common_names', $node->descriptionElements);
 				} else {
-				    $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid);
+					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid);
 				}
 				
 				// get media for the feature block
@@ -189,7 +189,6 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
 	$out;
 	$res_author;
 	$res_date;
-	 
 	foreach($element->sources as $source){
 		$referenceCitation = theme('cdm_DescriptionElementSource', $source);
 		if($description && strlen($description) > 0 && $referenceCitation ){
@@ -318,7 +317,6 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid){
 	$out = theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
 
 	RenderHints::popFromRenderStack();
-	 
 	return $out;
 }
 
@@ -369,6 +367,138 @@ function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink =
 
 	// add annotations as footnote key
 	// $out .= theme('cdm_annotations_as_footnotekeys', $descriptionElementSource->citation);
+	return $out;
+}
+/*
+ function theme_cdm_descriptionElementDistribution($descriptionElements){
+
+ $out = '';
+ $separator = ',';
+ RenderHints::pushToRenderStack('descriptionElementDistribution');
+ RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+ foreach($descriptionElements as $descriptionElement){
+ // annotations as footnotes
+ $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
+ // source references as footnotes
+ $sourcesFootnoteKeyList = '';
+ foreach($descriptionElement->sources as $source){
+ if(_is_original_source_type($source)){
+ $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, false));
+ $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : ''));
+ }
+ }
+ if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
+ $annotationFootnoteKeys .= $separator;
+ }
+ $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList . ' ';
+ }
+
+ $out = substr($out, 0, strlen($out)-strlen($separator) );
+
+ RenderHints::popFromRenderStack();
+ return $out;
+
+ }
+ */
+function theme_cdm_description_areas($descriptions_uuids){
+	$request_params = array();
+	$request_params['omitLevels'] = UUID_NAMEDAREALEVEL_TDWGLEVEL_2;
+	//$ordered_areas = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE, $descriptions_uuids, queryString($request_params));
+	$ordered_areas2 = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE, $descriptions_uuids, queryString($request_params));
+  //var_dump($ordered_areas2->rootElement->children);
+	RenderHints::pushToRenderStack('descriptionAreas');
+	RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+
+	//ignoring the root element because is garbage
+	/*
+	 $ordered_areas = $ordered_areas->rootElement->children;
+	 $out = '';
+
+	 foreach ($ordered_areas as $element_l1){//level 1
+	 if ($element_l1->data){
+	 //$result[] = $element_l1->data->titleCache;
+	 $out .= '<b>' . $element_l1->data->titleCache . ':</b> ';
+	 }
+		foreach ($element_l1->children as $element_l2){//level 2
+		$out_l3 = '';
+		if ($element_l2->data){
+		//$result[][] = $element_l2->data->titleCache;
+		//$out .= $element_l2->data->titleCache . '[';
+		}
+		foreach ($element_l2->children as $element_l3){//level 3
+		$out_l4 = '';
+		if ($element_l3->data){
+		//$result[][][] = $element_l3->data->titleCache;
+		$out .= $element_l3->data->titleCache;
+
+		$l3 = $element_l3->data->titleCache;
+		}
+		foreach ($element_l3->children as $element_l4){//level 4
+		if ($element_l4->data){
+		//$result[][][][] = $element_14->data->titleCache;
+		$l4 = $element_l4->data->titleCache;
+		if (sizeof($l4) != 0 && $l4 != $l3){
+		$out_l4 .= $l4 . ', ';
+		}
+		}
+		}
+		$out_l4 = substr($out_l4, 0, -2);
+		if($out_l4){
+		$out .= ' (' . $out_l4 . '); ';
+		}else{
+		$out .= '; ';
+		}
+		}
+		}
+		$out = substr($out, 0, -2);
+		$out .= '<br>';
+		}
+		*/
+	$ordered_areas2 = $ordered_areas2->rootElement->children;
+	$out = '';
+	foreach ($ordered_areas2 as $element_l1){//level 1
+		if ($element_l1->data){
+			$out .= '<b>' . $element_l1->data->area->titleCache . ':</b> ';
+		}
+		foreach ($element_l1->children as $element_l3){//level 3
+			$out_l4 = '';
+			if ($element_l3->data){
+				$out .= $element_l3->data->area->titleCache;
+				$l3 = $element_l3->data->area->titleCache;
+				var_dump($element_l3->data->sources);
+			}
+			foreach ($element_l3->children as $element_l4){//level 4
+				if ($element_l4->data){
+					$l4 = $element_l4->data->area->titleCache;
+					//if (sizeof($l4) != 0 && $l4 != $l3){
+					if (sizeof($l4) != 0){
+						$out_l4 .= $l4 . ', ';
+						//var_dump($element_l4->data->sources);
+						foreach($element_l4->data->sources as $source){
+							if(_is_original_source_type($source)){
+								//$_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, false));
+								//$sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : ''));
+								var_dump('#### TEST ###');
+							}
+						}
+					}
+				}
+			}
+			$out_l4 = substr($out_l4, 0, -2);
+			//romper y volver a juntar sin el no querido
+			$pieces = explode(",", $out_l4);
+			//if ((sizeof($pieces) == 1) && $pieces[0] == $l3){var_dump($pieces[0]);}
+			if (((sizeof($pieces) == 1) && $pieces[0] == $l3) || strlen($out_l4)<2){
+				$out .= '; ';
+			}else{
+				$out .= ' (' . $out_l4 . '); ';
+			}
+		}
+
+		$out = substr($out, 0, -2);
+		$out .= '<br>';
+	}
+	RenderHints::popFromRenderStack();
 	return $out;
 }
 

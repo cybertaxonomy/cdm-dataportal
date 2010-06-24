@@ -16,6 +16,9 @@ define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
 
 define('CDM_WS_PORTAL_NAME_DESCRIPTIONS', 'portal/name/$0/descriptions');
 
+define('CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE', 'portal/description/$0,$1/namedAreaTree');
+define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE', 'portal/description/$0,$1/DistributionTree');
+
 define('CDM_WS_REFERENCE', 'reference');
 
 define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCitation');
@@ -36,7 +39,13 @@ define('CDM_WS_PORTAL_TAXON_RELATIONS', 'portal/taxon/$0/taxonRelationships');
 
 define('CDM_WS_PORTAL_TAXON_NAMERELATIONS', 'portal/taxon/$0/nameRelationships');
 
+define('CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS', 'portal/taxon/$0/toNameRelationships');
+
+define('CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS', 'portal/taxon/$0/fromNameRelationships');
+
 define('CDM_WS_DESCRIPTIONELEMENT', 'descriptionelement/$0');
+
+define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionelement/$0');
 
 
 /**
@@ -83,10 +92,10 @@ define('CDM_WS_TDWG_LEVEL', 'term/tdwg/$0');
  * returns FeatureTrees that are stored in this community store
  *
  */
-define('CDM_WS_FEATURETREE', 'featuretree/$0');
+define('CDM_WS_FEATURETREE', 'portal/featuretree/$0');
 
 //define('CDM_WS_FEATURETREE_CHILDREN', 'featuretree/$0/children');
 
-define('CDM_WS_FEATURETREES', 'featuretree');
+define('CDM_WS_FEATURETREES', 'portal/featuretree');
 
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'geo/map/distribution/$0');
