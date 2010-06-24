@@ -568,28 +568,28 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
 
 	} else {
 		$form['search']['doTaxa'] = array(
-      '#delta' => -2,
-      '#type' => 'hidden',
-      '#value' => 1
-		);
+	      '#delta' => -2,
+	      '#type' => 'hidden',
+	      '#value' => 1
+			);
 		$form['search']['doSynonyms'] = array(
-      '#delta' => -3,
-      '#type' => 'hidden',
-      '#value' => 1
-		);
+	      '#delta' => -3,
+	      '#type' => 'hidden',
+	      '#value' => 1
+			);
 		$form['search']['doTaxaByCommonNames'] = array(
-      '#delta' => -4,
-      '#type' => 'hidden',
-      '#value' => 1
-		);
+	      '#delta' => -4,
+	      '#type' => 'hidden',
+	      '#value' => 0
+			);
 	}
 
 	$form['submit'] = array(
-  '#delta' => 9,
-  '#type' => 'submit',
-  '#name' => '',
-  '#value' => t('Search')
-	);
+	  '#delta' => 9,
+	  '#type' => 'submit',
+	  '#name' => '',
+	  '#value' => t('Search')
+		);
 
 	return $form;
 }
