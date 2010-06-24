@@ -1,0 +1,1884 @@
+<?php
+// $Id$
+
+/*
+ * @file
+ * cdm_dataportal
+ *
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ */
+
+require_once('node_types.php');
+
+require_once('theme/cdm_dataportal.common.theme');
+require_once('theme/cdm_dataportal.descriptions.theme');
+require_once('theme/cdm_dataportal.media.theme');
+require_once('theme/cdm_dataportal.occurrence.theme');
+require_once('theme/cdm_dataportal.page.theme');
+require_once('theme/cdm_dataportal.taxon.theme');
+require_once('theme/cdm_dataportal.name.theme');
+require_once('theme/cdm_dataportal.references.theme');
+
+require_once('classes/footnotemanager.php');
+require_once('classes/footnote.php');
+require_once('classes/footnotekey.php');
+require_once('classes/renderhints.php');
+
+define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
+define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
+define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
+
+/* gallery variables */
+$gallery_settings = array(
+    "cdm_dataportal_show_taxon_thumbnails" => 1,
+    "cdm_dataportal_show_synonym_thumbnails" => 0,
+    "cdm_dataportal_show_thumbnail_captions" => 1,
+    "cdm_dataportal_media_maxextend" => 120,
+    "cdm_dataportal_media_cols" => 3,
+    "cdm_dataportal_media_maxRows" => 1);
+define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
+define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
+define('CDM_DATAPORTAL_MEDIA_GALLERY_NAME', "media_gallery");
+define('CDM_DATAPORTAL_SEARCH_GALLERY_NAME', "search_gallery");
+define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS', 'cdm_dataportal_display_taxon_relationships');
+define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name_relations');
+define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
+define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
+define('CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
+
+
+
+
+function getGallerySettings($gallery_config_form_name){
+	$default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
+  	return variable_get($gallery_config_form_name, $default_values);
+}
+
+
+
+function _add_js_progressbar(){
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.progressbar/js/jquery.progressbar.js');
+}
+
+function _add_js_treeselector(){
+    //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/treeselector.js');
+	drupal_add_js("
+		if (Drupal.jsEnabled) {
+		  $(document).ready(function() {
+		      $('#cdm-taxonomictree-selector-form #edit-val').change(function () {
+		          $('#cdm-taxonomictree-selector-form').submit();
+		      });
+		      
+		  });
+		}", 'inline');
+}
+
+
+/* ====================== hook implementations ====================== */
+
+/**
+ * Implementation of hook_help()
+ *
+ * Display help and module information
+ * @param section which section of the site we're displaying help
+ * @return help text for section
+ */
+function cdm_dataportal_help($section='') {
+
+	$out = '';
+	switch ($section) {
+		case "admin/modules#description":
+			$out = t("The dataportal publishes CDM data hosted in a CommunityStore on the web.");
+			break;
+	}
+	return $out;
+}
+
+
+/**
+ * Implementation of hook_perm()
+ *
+ * Valid permissions for this module
+ * @return array An array of valid permissions for the portfolio module
+ */
+function cdm_dataportal_perm() {
+	return array(
+    	'administer cdm_dataportal',
+      'cdm_dataportal view notes',
+	//TODO which else permission are required? -> check the WP6 requirements document
+	);
+}
+
+
+/**
+ * Implementation of hook_menu()
+ */
+function cdm_dataportal_menu($may_cache) {
+	$items = array();
+
+	if ($may_cache) {
+
+		$items[] = array(
+      'path' => 'admin/settings/cdm_dataportal',
+      'title' => t('CDM Dataportal'),
+      'description' => t('Setting for the CDM DataPortal'),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_dataportal_settings',
+      'type' => MENU_NORMAL_ITEM,
+		);
+
+		$items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/general',
+      'title' => t('General'),
+      'description' => t('Setting for the CDM DataPortal'),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_dataportal_settings',
+	  'weight' => 0,
+      'type' => MENU_LOCAL_TASK,
+		);
+
+		$items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/geo',
+      'title' => t('Geo & Map'),
+      'description' => t('Geo & Map'),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_dataportal_settings_geo',
+	  'weight' => 1,
+      'type' => MENU_LOCAL_TASK,
+		);
+
+		$items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/layout',
+      'title' => t('Layout'),
+      'description' => t('Configure and adjust the layout of your DataPortal '),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_dataportal_settings_layout',
+      'weight' => 2,
+      'type' => MENU_LOCAL_TASK,
+		);
+
+		$items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/cachesite',
+      'title' => t('Cache'),
+      'description' => t('Cache the whole CDM DataPortal site'),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'cdm_dataportal_view_cache_site',
+      'weight' => 10,
+      'type' => MENU_LOCAL_TASK,
+		);
+
+		/*$items[] = array(
+		 'path' => 'admin/settings/cdm_dataportal/ws',
+		 'title' => t('Web Service'),
+		 'description' => t('Setting for the CDM DataPortal'),
+		 'access' => user_access('administer cdm_dataportal'),
+		 'callback' => 'drupal_get_form',
+		 'callback arguments' => 'cdm_dataportal_settings',
+		 'weight' => 1,
+		 'type' => MENU_DEFAULT_LOCAL_TASK,
+		 );*/
+
+		$items[] = array(
+	    'path' => 'cdm_dataportal/names',
+	    'callback' => 'cdm_dataportal_view_names',
+	    'access' => true,
+	    'type' => MENU_CALLBACK,
+		);
+		// optional callback arguments: page
+			
+		$items[] = array(
+      'path' => 'cdm_dataportal/taxon',
+      'callback' => 'cdm_dataportal_taxon_page_view',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+		// expected callback arguments: uuid
+		);
+		
+		$items[] = array(
+      'path' => 'cdm_dataportal/name',
+      'callback' => 'cdm_dataportal_name_page_view',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    // expected callback arguments: uuid
+    );
+
+		$items[] = array(
+      'path' => 'cdm_dataportal/reference',
+      'callback' => 'cdm_dataportal_view_reference',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+		// expected callback arguments: uuid
+		);
+
+		$items[] = array(
+      'path' => 'cdm_dataportal/reference/list',
+      'callback' => 'cdm_dataportal_view_reference_list',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+		// expected callback arguments: uuid
+		);
+
+		$items[] = array(
+      'path' => 'cdm_dataportal/media',
+      'callback' => 'cdm_dataportal_view_media',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+		// expected callback arguments: uuid, mediarepresentation_uuid, part_uuid or part#
+		);
+
+		$items[] = array(
+      'path' => 'cdm_dataportal/search',
+      'callback' => 'cdm_dataportal_view_search_advanced',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+		);
+
+		$items[] = array(
+      'path' => 'cdm_dataportal/search/taxon',
+      'callback' => 'cdm_dataportal_view_search_taxon',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+		);
+		
+		$items[] = array(
+      'path' => 'cdm/xml2json',
+      'callback' => 'cdm_view_xml2json',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+		);
+
+	} else {
+		// may not cache
+		// --- local tasks for Taxon
+		$items[] = array(
+      'path' => 'cdm_dataportal/name/'.arg(2),
+      //'callback' => 'cdm_dataportal_view_name',
+		  'callback' => 'cdm_dataportal_name_page_view',
+      'callback arguments' => array(arg(2), arg(3)),
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    );
+    
+		if(variable_get('cdm_dataportal_taxonpage_tabs', 1)) {
+
+			$items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2),
+      'title' => theme('cdm_taxonpage_tab', 'General'),
+      'callback' => 'cdm_dataportal_taxon_page_view',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+      'weight' => 1,
+      'callback arguments' => array(arg(2), "description")
+			// expected callback arguments: name_uuid
+			);
+
+			$items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/all',
+      'title' => theme('cdm_taxonpage_tab', 'General'),
+      'callback' => 'cdm_dataportal_taxon_page_view',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+      'weight' => 2,
+      'callback arguments' => array(arg(2), "all")
+			// expected callback arguments: name_uuid
+			);
+
+			$items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/description',
+      'title' => theme('cdm_taxonpage_tab', 'General'),
+      'callback' => 'cdm_dataportal_taxon_page_view',
+      'access' => true,
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => 2,
+      'callback arguments' => array(arg(2), "description")
+			// expected callback arguments: name_uuid
+			);
+
+			$items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/synonymy',
+      'title' => theme('cdm_taxonpage_tab', 'Synonymy'),
+      'callback' => 'cdm_dataportal_taxon_page_view',
+      'access' => true,
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 3,
+      'callback arguments' => array(arg(2), "synonymy")
+			// expected callback arguments: name_uuid
+			);
+
+			$items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/images',
+      'title' => theme('cdm_taxonpage_tab', 'Images'),
+      'callback' => 'cdm_dataportal_taxon_page_view',
+      'access' => true,
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 4,
+      'callback arguments' => array(arg(2), "images")
+			// expected callback arguments: name_uuid
+			);
+		}
+	}
+
+	drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal.css');
+	//drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
+	drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_screen.css', 'screen');
+
+	return $items;
+
+}
+
+/**
+ * Implementation of hook_block()
+ *
+ * Provides the following blocks:
+ *  0: list of links useful during development
+ *
+ * @param String $op
+ * @param int $delta
+ */
+function cdm_dataportal_block($op='list', $delta=0) {
+	// listing of blocks, such as on the admin/block page
+	if ($op == "list") {
+		//$block[0]["info"] = t("CDM DataPortal DevLinks");
+//		$block[1]["info"] = t("CDM DataPortal Credits");
+		$block[2]["info"] = t("CDM Search Taxa");
+		//$block[3]["info"] = t("CDM Filters");
+		$block[4]["info"] = t("CDM Dataportal Print");
+		return $block;
+	}
+	else if ($op == 'view') {
+		switch($delta){
+//			case 1:
+//				$block['subject'] = t('Credits');
+//				$block['content'] = theme('cdm_credits');
+//				return $block;
+			case 2:
+				$block['subject'] = t('Search taxa');
+				$block['content'] = drupal_get_form('cdm_dataportal_search_taxon_form');
+				$block['content'] .= '<div>'.l('Advanced Search', '/cdm_dataportal/search').'</div>';
+				return $block;
+			case 4:
+				$block['subject'] = t('Print this page');
+				$block['content'] = theme('cdm_print_button');;
+				return $block;
+		}
+	}
+}
+
+
+/**
+ * Implementation of hook_validate()
+ *
+ * @param $element
+ */
+function cdm_dataportal_settings_validate($form_id, $form_values){
+
+	if (!str_endsWith($form_values['cdm_webservice_url'], '/')) {
+		//form_set_error('cdm_webservice_url', t("The URL to the CDM Web Service must end with a slash: '/'."));
+		$form_values['cdm_webservice_url'] .= '/';
+	}
+
+//	$cdm_webservice_url_changed = variable_get('cdm_webservice_url', '') != $form_values['cdm_webservice_url'];
+
+//	if ($cdm_webservice_url_changed) {
+//
+//		//FIXME remove _cdm_dataportal_set_currentSecUuid($form_values['cdm_secUuid_default']);
+//		// reset all cdm related data stored in the session
+//		// cdm_dataportal_session_clear($form_values['cdm_webservice_url']); // cdm_webservice_url is not further stored here
+//		// clear the cdm webservice cache
+//		cache_clear_all(NULL, 'cache_cdm_ws');
+//		// better clear secref_cache since i can not be sure if the cache has not be used during this response
+//		cdm_api_secref_cache_clear();
+//	}
+	if($form_values['cdm_webservice_cache'] != variable_get('cdm_webservice_cache', 1)){
+		cache_clear_all(NULL, 'cache_cdm_ws');
+		// better clear secref_cache since i can not be sure if the cache has not be used during this response
+		cdm_api_secref_cache_clear();
+	}
+
+}
+
+/*
+ function cdm_dataportal_session_clear($cdm_ws_uri_update = false){
+ $_SESSION['cdm'] = null;
+ if(is_string($cdm_ws_uri_update)){
+ $_SESSION['cdm'] = array('ws_uri'=>$cdm_ws_uri_update);
+ }
+ }
+
+ function cdm_dataportal_session_validate(){
+
+ if(!isset($_SESSION['cdm']['ws_uri'])){
+ $_SESSION['cdm'] = array('ws_uri'=>variable_get('cdm_webservice_url', false));
+ } else if($_SESSION['cdm']['ws_uri'] != variable_get('cdm_webservice_url', false)){
+ cdm_dataportal_session_clear(variable_get('cdm_webservice_url', false));
+ }
+ }
+ */
+
+function cdm_dataportal_search_taxon_form($advancedForm = false){
+
+	$preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
+	$preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 0);
+	$preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
+	$preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
+	$tdwg_level_select =  (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
+	$selected_areas =  (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : false);
+
+	$url = 'cdm_dataportal/search/taxon';
+	$form['#method'] = 'get';
+	$form['#process'] = array('cdm_dataportal_search_process' => array());
+	$form['#action'] = url($url, NULL, NULL, true);
+
+	$form['query'] = array(
+    '#delta' => 0,
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
+    '#value' => $preset_query,
+	);
+
+	$form['search'] = array(
+      '#delta' => 1,
+      '#tree' => true,
+	//'#type' => $advancedForm ? 'fieldset': 'hidden',
+      '#title' => t('Options')
+	);
+
+	$form['search']['tree'] = array(
+    '#delta' => -1,
+    '#type' => 'hidden',
+    '#value' => get_taxonomictree_uuid_selected()
+	);
+
+
+	// clean URL get forms breaks if we don't give it a 'q'.
+	if (!(bool)variable_get('clean_url', '0')) {
+		$form['search']['q'] = array(
+      '#delta' => -1,
+      '#type' => 'hidden',
+      '#value' => $url,
+      '#name' => 'q',
+		);
+	}
+
+	$form['search']['pageSize'] = array(
+      '#delta' => -1,
+      '#type' => 'hidden',
+      '#value' => variable_get('cdm_dataportal_search_items_on_page', 25)
+	);
+
+	if($advancedForm){
+		// general search parameters
+		$form['search']['doTaxa'] = array(
+      '#delta' => 2,
+      '#type' => 'checkbox',
+      '#title' => t('Search for accepted taxa'),
+      '#value' => $preset_doTaxa
+		);
+		$form['search']['doSynonyms'] = array(
+      '#delta' => 3,
+      '#type' => 'checkbox',
+      '#title' => t('Search for synonyms'),
+      '#value' => $preset_doSynonyms
+		);
+		$form['search']['doTaxaByCommonNames'] = array(
+      '#delta' => 4,
+      '#type' => 'checkbox',
+      '#title' => t('Search for common names'),
+      '#value' => $preset_doTaxaByCommonNames
+		);
+			
+		// Geographic Range
+		$form['search']['geographic_range'] = array(
+      '#type' => 'fieldset',
+      '#delta' => 5,
+      '#tree' => true,
+      '#title' => t('Geographic range'),
+		);
+
+		$form['search']['geographic_range']['tdwg_level_select'] = array(
+    '#type' => 'radios',
+    '#title' => t('Select a TDWG distribution level and code'),
+    '#default_value' => $tdwg_level_select,
+    '#options' => array(
+		t('TDWG level-1, i.e. a continent'),
+		t('TDWG level-2'),
+		t('TDWG level-3, i.e. a country'),
+		t('TDWG level-4')
+		)
+		);
+		$tdwg[1] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '1');
+		$tdwg[2] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '2');
+		$tdwg[3] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '3');
+		$tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
+
+		$tdwg_js = '';
+		foreach($tdwg as $key=>$tdwg_level){
+			$tdwgOptions = array();
+			$tdwgOptionsSelected = array();
+			foreach($tdwg_level as $area){
+				$representation = $area->representations[0];
+				$tdwgOptions[$representation->abbreviatedLabel] = $area->representation_L10n;
+				if(is_array($selected_areas) && in_array($representation->abbreviatedLabel, $selected_areas)){
+					$tdwgOptionsSelected[] = $representation->abbreviatedLabel; //$area->uuid;
+				}
+			}
+			asort($tdwgOptions);
+			$form['search']['geographic_range']['tdwg_level_'.$key] = array(
+        '#type' => 'select',
+        '#title'         => t('TDWG level').' '.$key,
+        '#default_value' => $tdwgOptionsSelected,
+        '#multiple' => TRUE, 
+        '#options' => $tdwgOptions
+			);
+			$tdwg_js .= "$('#edit-search-geographic-range-tdwg-level-$key').parent()".($tdwg_level_select + 1 == $key ?  '.show()' : '.hide()'). ";\n";
+		}
+
+		drupal_add_js(
+    "$(document).ready(function(){
+    
+      $(\"input[@name='search[geographic_range][tdwg_level_select]']\").change( 
+        function(event){
+          var selectId = $(\"input[@name='search[geographic_range][tdwg_level_select]']:checked\").val();
+          var i;
+          for(i = 0; i < 4; i++){
+            if(selectId == i){
+              $('#edit-search-geographic-range-tdwg-level-' + (i + 1) ).parent().fadeIn('slow');
+              $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).children().removeAttr('selected');
+            } else {
+              $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).parent().fadeOut('slow');
+              $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).children().removeAttr('selected');
+            }
+          }
+        }
+      );
+      
+      $tdwg_js
+    });",
+    'inline');
+
+	} else {
+		$form['search']['doTaxa'] = array(
+	      '#delta' => -2,
+	      '#type' => 'hidden',
+	      '#value' => 1
+			);
+		$form['search']['doSynonyms'] = array(
+	      '#delta' => -3,
+	      '#type' => 'hidden',
+	      '#value' => 1
+			);
+		$form['search']['doTaxaByCommonNames'] = array(
+	      '#delta' => -4,
+	      '#type' => 'hidden',
+	      '#value' => 0
+			);
+	}
+
+	$form['submit'] = array(
+	  '#delta' => 9,
+	  '#type' => 'submit',
+	  '#name' => '',
+	  '#value' => t('Search')
+		);
+
+	return $form;
+}
+
+function cdm_dataportal_search_taxon_form_advanced(){
+	return cdm_dataportal_search_taxon_form(true);
+}
+
+function cdm_taxonomictree_selector(){
+	_add_js_treeselector();
+    
+    $out = drupal_get_form('cdm_taxonomictree_selector_form');
+    
+    return $out;
+}
+
+
+function cdm_taxonomictree_selector_form(){
+	
+	$url = url('cdm_api/setvalue/session', null);
+    $form['#action'] = $url;
+    
+    $form['var'] = array(
+        '#delta' => -3,
+        '#type' => 'hidden',
+        '#value' => '[cdm][taxonomictree_uuid]'    
+    );
+    
+    $form['destination'] = array(
+        '#delta' => -3,
+        '#type' => 'hidden',
+        '#value' => substr(drupal_get_destination(), strlen('destination='))
+    );
+    
+    $form['val'] = array(
+	    '#type' => 'select',
+	    '#title'         => t('Available classifications'),
+	    '#default_value' => get_taxonomictree_uuid_selected(),
+	    '#options' => cdm_get_taxontrees_as_options()
+    );
+    
+    return $form;
+	
+}
+
+/**
+ * Implementation #process method call, see form_builder()
+ * <p>
+ * Removes Drupal internal form elements from query
+ * @param $form
+ * @return unknown_type
+ */
+function cdm_dataportal_search_process($form) {
+	unset($form['form_id']);
+	unset($form['form_token']);
+	return $form;
+}
+
+/**
+ * Filters $_REQUEST by a list of valid request  parameters and also sets defaults if required.
+ * returns the processed request parameters submitted by the search form.
+ */
+function cdm_dataportal_search_form_request(){
+
+
+	$form_params = array();
+	array_deep_copy($_REQUEST['search'], $form_params);
+	$form_params['query'] =  trim($_REQUEST['query']);
+
+	// split of  geographic range
+	if(isset($_REQUEST['search']['geographic_range'])){
+		$geographicRange = $_REQUEST['search']['geographic_range'];
+		// remove
+		unset($form_params['geographic_range']);
+	}
+
+	// add geographic range
+	if($geographicRange){
+		$form_params['tdwg_level_select'] = $geographicRange['tdwg_level_select'];
+		for($i = 1; $i < 5; $i++){
+			if(isset($geographicRange['tdwg_level_'.$i])){
+				$form_params['area'] = $geographicRange['tdwg_level_'.$i];
+			}
+		}
+	}
+
+	// store in session
+	$_SESSION['cdm']['search'] = $form_params;
+
+	return $form_params;
+}
+
+
+/* UNREACHABLE since action of form directly links to view
+ function cdm_dataportal_search_taxon_form_submit($form_id, $form_values) {
+
+ $_SESSION['cdm']['search'] = $form_values;
+ //return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['vernacular']?'1':'0').'/'.$form_values['language'];
+ return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['onlyAccepted']?'1':'0');
+ //$paramstr = compose_url_prameterstr($form_values);
+ //return url('/cdm_dataportal/search/taxon/', $paramstr);
+ }
+ */
+/* ====================== menu callback functions ====================== */
+
+/**
+ * Generate main administration form.
+ *
+ * @return
+ *   An array containing form items to place on the module settings page.
+ */
+function cdm_dataportal_settings(){
+
+	$form = cdm_api_settings_form();
+
+	//TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
+	$form['cdm_dataportal'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('CDM DataPortal'),
+      '#collapsible' => FALSE,
+      '#collapsed' => TRUE,
+	);
+
+	$form['cdm_dataportal']['cdm_taxonomictree_uuid'] = array(
+    '#type' => 'select',
+    '#title'         => t('Available classifications'),
+    '#default_value' => variable_get('cdm_taxonomictree_uuid', false),
+    '#options' => cdm_get_taxontrees_as_options(),
+    '#description'   => t('Select the default classification to be used.')
+	);
+
+	//------------------ FEATURE TREE --------------------//
+
+	$form['cdm_dataportal']['feature_tree'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Feature Tree'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+	);
+
+	$form['cdm_dataportal']['feature_tree'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
+    '#type' => 'select',
+    '#title'         => t('Available FeatureTrees'),                
+    '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
+	  '#options' => cdm_get_featureTrees_as_options(),
+    '#description'   => t('Select a FeatureTree for this webservice.'
+    //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
+	)
+	);
+
+	return system_settings_form($form);
+}
+
+function cdm_dataportal_form_alter($form_id, &$form) {
+    
+static $comment_node_disabled =  0;
+static $comment_node_read_only =  1;
+static $comment_node_read_write =  2;
+   
+    
+  if ($form_id == 'node_type_form' 
+    && isset($form['identity']['type']) 
+    && array_key_exists($form['#node_type']->type, cdm_dataportal_get_nodetypes()) 
+    ) {
+    $form['workflow']['comment'] = array(
+      '#type' => 'radios',
+      '#title' => t('Default comment setting'),
+      '#default_value' => variable_get('comment_'. $form['#node_type']->type, $comment_node_disabled),
+      '#options' => array(t('Disabled'), t('Read only'), t('Read/Write')),
+      '#description' => t('Users with the <em>administer comments</em> permission will be able to override this setting.'),
+    );
+  }
+}
+
+/**
+ * LAYOUT settings
+ * @return unknown_type
+ */
+function cdm_dataportal_settings_layout(){
+
+	$form = array();
+
+
+	$form['cdm_taxonname_type'] = array(
+    '#type' => 'select',
+    '#title'         => t('Taxon name type'),
+    '#default_value' => variable_get('cdm_taxonname_type', 'BotanicalName'),
+    '#options' => array( 'BotanicalName'=>t('BotanicalName'), 'ZoologicalName'=>t('ZoologicalName')),
+    '#description'   => t('')
+	);
+
+	$form['cdm_dataportal_nomref_in_title'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show full nomenclatural reference in title'),
+    '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE),
+    '#description' => t('Uncheck this, if you want the title of a taxon page consisting of name and author plus publication year only.
+                        If not checked, the first homotypic taxon is a repetition of the accepted taxon with
+                        the full nomenclatural reference.')
+	);
+
+	$form[CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show name relations of accepted taxa on taxon page'),
+    '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT),
+    '#description' => t('')
+	);
+	
+	$form[CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show taxon relations of accepted taxa on taxon page'),
+    '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
+    '#description' => t('')
+    );
+
+	$form['cdm_dataportal_display_is_accepted_for'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display <em>is accepted for ...</em> on taxon pages when coming from a synonym link.'),
+    '#default_value' => variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR),
+    '#description' => t('')
+	);
+
+	$form['cdm_dataportal_name_relations_skiptype_basionym'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Exclude the basionym relationship type from the taxon page'),
+    '#default_value' => variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1),
+    '#description' => t('')
+	);
+
+	$form['cdm_dataportal_taxonpage_tabs'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Tabbed taxon page'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
+    '#description' => t('Split the taxon page into individual tabs for description, images, synonymy')
+	);
+
+	$form['cdm_dataportal_search_items_on_page'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search Page Size'),
+    '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
+    '#description' => t('Number of Names to display per page in search results.')
+	);
+
+	$form['cdm_dataportal_descriptions_separated'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Separate Descriptions'),
+    '#default_value' => variable_get('cdm_dataportal_descriptions_separated', 0),
+    '#description' => t('By default corresponding elements of different descriptions are joined together'
+    .' into a common section per feature (i.e. type of description).'
+    .' Check this box to allow displaying all descriptions separately.')
+    );
+
+    //---- IMAGES ----//
+    $form['images'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Images'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    );
+    $options = cdm_rankVocabulary_as_option();
+    array_unshift($options, '-- DISABLED --');
+    $form['images']['image_hide_rank'] =  array(
+    '#type'          => 'select',
+    '#title'         => t('Hide Images for Taxa above'),
+    '#default_value' => variable_get('image_hide_rank', '0'),
+    '#options'       => $options,
+    '#description'   => t(''),
+    );
+    //show media
+    $selectShowMedia = array(0 => "Show only taxon media",
+    1 => "Show taxon and child taxon media");
+    $form['images']['cdm_dataportal_show_media'] = array(
+    '#type' => 'select',
+    '#title' => t('Available media files'),
+    '#default_value' => variable_get('cdm_dataportal_show_media', false),
+    '#options' => $selectShowMedia,
+    '#description'   => t('Select if a taxon should show only his media or also child media.')
+    );
+
+    // --- SEARCH TAXA GALLERY ---- //
+    $collapsed = TRUE;
+    $form_name = CDM_DATAPORTAL_SEARCH_GALLERY_NAME;
+    $form_tittle = 'Search Taxa';
+    $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+
+    // --- FEATURE DESCRIPTION GALLERY ---- //
+    $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
+    $form_tittle = 'Description elements gallery';
+    $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+
+    // --- MEDIA GALLERY ---- //
+    $form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
+    $form_tittle = 'Media gallery';
+    $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+    
+    //-- DISTRIBUTION LAYOUT --//
+    $form['distribution_layout'] = array(
+        '#title' => t('Distribution layout'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#type' => 'fieldset',
+    );
+    $form['distribution_layout']['TDWG_1'] =  array(
+    '#type'          => 'checkbox',
+    '#title'         => t('TDWG level 1'),
+    '#default_value' => variable_get('sort_tdwg_1', '1'),
+    //'#options'       => $options,
+    '#description'   => t('Check it if you want to sort the distribution areas based on TDWG level 1'),
+    );
+    $form['distribution_layout']['TDWG_2'] =  array(
+    '#type'          => 'checkbox',
+    '#title'         => t('TDWG level 2'),
+    '#default_value' => variable_get('sort_tdwg_2', '0'),
+    '#description'   => t('Check it if you want to sort the distribution areas based on TDWG level 2'),
+    //'#options'       => $options,
+    );
+    $form['distribution_layout']['TDWG_3'] =  array(
+    '#type'          => 'checkbox',
+    '#title'         => t('TDWG level 3'),
+    '#default_value' => variable_get('sort_tdwg_3', '1'),
+    '#description'   => t('Check it if you want to sort the distribution areas based on TDWG level 3'),
+    //'#options'       => $options,
+    );
+    $form['distribution_layout']['TDWG_4'] =  array(
+    '#type'          => 'checkbox',
+    '#title'         => t('TDWG level 4'),
+    '#default_value' => variable_get('sort_tdwg_4', '1'),
+    '#description'   => t('Check it if you want to sort the distribution areas based on TDWG level 4'),
+    //'#options'       => $options,
+    );
+
+    return system_settings_form($form);
+}
+
+function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed){
+
+	$form[$form_name] = array(
+    '#type' => 'fieldset',
+    '#title' => t($form_tittle),
+    '#collapsible' => TRUE,
+    '#collapsed' => $collapsed,
+    '#tree' => true,
+	);
+
+	$default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
+	$gallery_settings = variable_get($form_name, $default_values);
+
+  if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
+    $form[$form_name]['cdm_dataportal_show_taxon_thumbnails'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show media thumbnails for accepted taxa'),
+      '#default_value' => $gallery_settings['cdm_dataportal_show_taxon_thumbnails'],
+      '#description' => t('')
+    );
+
+    $form[$form_name]['cdm_dataportal_show_synonym_thumbnails'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show media thumbnails for synonyms'),
+      '#default_value' => $gallery_settings['cdm_dataportal_show_synonym_thumbnails'],
+      '#description' => t('')
+    );
+  }
+  
+	//$showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 0);
+	$form[$form_name]['cdm_dataportal_show_thumbnail_captions'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show captions under thumbnails'),
+    '#default_value' => $gallery_settings['cdm_dataportal_show_thumbnail_captions'],
+    '#description' => t('')
+	);
+
+	$form[$form_name]['cdm_dataportal_media_maxextend'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Maximum extend of Images'),
+    '#default_value' => $gallery_settings['cdm_dataportal_media_maxextend'],
+    '#description' => t('In the gallery neither width or height will exceed the maximum extend of images.')
+	);
+
+	$form[$form_name]['cdm_dataportal_media_cols'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of columns'),
+    '#default_value' => $gallery_settings['cdm_dataportal_media_cols'],
+    '#description' => t('')
+	);
+
+  if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
+    $form[$form_name]['cdm_dataportal_media_maxRows'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum number of rows'),
+      '#default_value' => $gallery_settings['cdm_dataportal_media_maxRows'],
+      '#description' => t('If you want an unlimited number of rows please set to 0')
+    );
+  }
+
+	return $form;
+}
+
+/**
+ * GEOSERVICE and Map settings
+ * @return unknown_type
+ */
+function cdm_dataportal_settings_geo(){
+
+	$form = array();
+
+	$form['cdm_dataportal_map_openlayers'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('OpenLayers Viewer'),
+    '#default_value' => variable_get('cdm_dataportal_map_openlayers', 1),
+    '#description' => t('Display the maps in an interactive viewer which allows zooming and panning.')
+	);
+
+	$form['cdm_dataportal_geoservice_access_point'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Geoservice Access Point'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_access_point', ''),
+    '#description' => t('Base URL of the geoservice to be used by this portal')
+	);
+
+	$form['cdm_dataportal_geoservice_display_width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Geoservice Display Width'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_display_width', 390),
+    '#description' => t('Width of the image generated by geoservice')
+	);
+
+	$form['cdm_dataportal_geoservice_bounding_box'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Fixed Geoservice Bounding Box'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_bounding_box', '-180,-90,180,90'),
+    '#description' => t('Define urrounding of area to be displayed in maps. Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong> to let the map <strong>automatically zoom</strong> to the distribution area.')
+	);
+
+	//cdm_dataportal_geoservice_labels_on
+	$form['cdm_dataportal_geoservice_labels_on'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display Country Labels'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_labels_on', FALSE),
+    '#description' => t('Check this if you like country names to be displayed in the maps. ')
+	);
+
+	//cdm_dataportal_geoservice_legend_on
+	$form['cdm_dataportal_geoservice_map_caption'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Map Caption'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_map_caption', ''),
+    '#description' => t('Define a caption for the map.')
+	);
+
+	//cdm_dataportal_geoservice_map_legend
+	$form['cdm_dataportal_geoservice_map_legend'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Map Legend'),
+      '#collapsible' => FALSE,
+      '#collapsed' => TRUE,
+	);
+
+	$form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_on'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display a map legend'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_on', TRUE),
+    '#description' => t('Check this if you like a legend to be displayed with the maps. ')
+	);
+
+	$form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_font_size'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Font size'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_font_size', 10),
+    '#description' => t('Font size in pixels.')
+	);
+
+	$fontStyles = array(0 => "plane", 1 => "italic");
+	$form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_font_style'] = array(
+    '#type' => 'select',
+    '#title' => t('Available font styles'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_font_style', false),
+    '#options' => $fontStyles,
+    '#description'   => t('Select a font style for the map legend.')
+	);
+
+	$form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_icon_width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Icon width'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_icon_width', 35),
+    '#description' => t('Icon width in pixels.')
+	);
+
+	$form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_icon_height'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Icon height'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_icon_height', 15),
+    '#description' => t('Icon height in pixels.')
+	);
+
+	return system_settings_form($form);
+}
+
+
+/**
+ * @return walk and cache all taxon pages
+ */
+function cdm_dataportal_view_cache_site(){
+
+	_add_js_progressbar();
+
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cache_all_taxa.js');
+
+	$out = '';
+
+	$request_params = array();
+	$request_params['query'] = '%';
+	$request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false); //cache only the dafault classification
+	$request_params['doTaxa'] = 1;
+	$request_params['doSynonyms'] = 0;
+	$request_params['doTaxaByCommonNames'] = 0;
+	$search_url = cdm_compose_url(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
+	$search_url = uri_uriByProxy($search_url);
+	$taxon_page_url = url('cdm_dataportal/taxon/');
+
+	$out .= '<form id="cache_site">';
+	$out .= '<br /><h4>'.t('Cache all taxon pages').'</h4>';
+	$out .= 'Before  running the cache bot you have to empty the cache manually:<ul>' 
+            .'<li>Navigate to "Site Configuration -> General"</li>'
+            .'<li>Uncheck "Enable Caching" checkbox</li>'
+            .'<li>Check "Enable Caching" checkbox</li>'
+	        .'</ul>';
+	$out .= '<div>'.t('This caching process may take long time and could cause heavy load on your server').'</div>';
+	$out .= '<div id="progress"></div>';
+	$out .= '<input type="hidden" name="searchTaxaUrl" value="'.$search_url.'"/>';
+	$out .= '<input type="hidden" name="taxonPageUrl" value="'.$taxon_page_url.'"/>';
+	$out .= '<input type="button" name="start" value="'.t('Start').'"/>';
+	$out .= '<input type="button" name="stop" value="'.t('Stop').'"/>';
+	$out .= '</form>';
+	$out .= '</div>';
+	//  foreach($taxonPager->records as $taxon){
+	//    cdm_dataportal_taxon_view($uuid);
+	//  }
+
+	return $out;
+}
+
+/**
+ * Implementation of hook_elements().
+ */
+function cdm_dataportal_elements() {
+	$type['select_secuuid'] = array(
+    '#input' => TRUE,
+    '#process' => array('cdm_dataportal_select_secuuid_expand' => array()),
+	//'#validate' => array('cdm_dataportal_select_secuuid_validate' => array()),
+	//'#default_value' => array(),
+	);
+	return $type;
+}
+
+/*
+ *
+ */
+function cdm_dataportal_select_secuuid_expand($element){
+
+	$element['#tree'] = FALSE;
+
+	// any value submitted?
+	if(isset($element['#post'][$element['#varname']])){
+		$selected_values = $element['#post'][$element['#varname']];
+	} else {
+		// use those store in drupal
+		$selected_values = variable_get( $element['#varname'], array());
+	}
+	if(!is_array($selected_values)){
+		$selected_values = array($selected_values);
+	}
+	$options = array();
+	foreach($selected_values as $secUuid){
+		$options[$secUuid] = cdm_taxontree_secRefTitle_for($secUuid);
+	}
+
+	$element[$element['#varname']] =  array(
+    '#type' => 'select',
+    '#options' => $options,
+    '#default_value' => array_values($options),
+    '#size' => $element['#multiple'] ? 12 : 2,
+    '#multiple' => $element['#multiple'],
+	);
+	return $element;
+}
+
+
+
+/**
+ * Displays a list of the known taxonomic names. Long lists are split up into multiple pages
+ *
+ * TODO: parameters are still preliminar
+ * @param String $page page number to diplay defaults to page 1
+ * @param boolean $hide_unaccepted whether to hide nams which are not accepted by the current view
+ */
+function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted = false ){
+
+	$request_params  = array(
+    'q' => $beginsWith,
+	//'sec' = '',
+	//'higherTaxa' => getFiters(),
+	// 'matchAnywhere' => false, // default is false
+    'page' => $page,
+    'onlyAccepted' => $onlyAccepted,
+    'pagesize' => 20  /*$_SESSION['cdm']['namelist_pagesize'] */);
+
+	$taxonPager = cdm_ws_find(CDM_WS_PORTAL_TAXON_FIND, $request_params);
+	/*
+	 * FIXME the filter for accepted names will be a form element, thus this widget
+	 * should be generated via form api preferably as block
+	 */
+	//$out  = theme('cdm_dataportal_widget_filter_accepted', $onlyAccepted);
+	//$out .= theme('cdm_dataportal_widget_names_list', $names, $page);
+	$out .= theme('cdm_listof_taxa', $taxonPager);
+	return $out;
+}
+
+function cdm_dataportal_view_reference($uuid, $arg2 = null){
+	$reference = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
+	return theme('cdm_reference_page', $reference);
+}
+
+function cdm_dataportal_view_reference_list($pageNumber){
+	$referencePager = cdm_ws_page(CDM_WS_REFERENCE, variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE), $pageNumber);
+	return theme('cdm_reference_pager', $referencePager, 'cdm_dataportal/reference/list/');
+}
+
+function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = false, $part = 0){
+	$media = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $mediaUuid);
+	return theme('cdm_media_page', $media, $mediarepresentation_uuid, $part);
+}
+
+/**
+ * The taxon page gives detailed information on a taxon, it shows:
+ *  - Taxon name
+ *  - Full list of synonyms homotypic synonyms on top, followed by the
+ *    heterotypic and finally followed by misapplied names.
+ *    The list is ordered historically.
+ *  - All description associated with the taxon.
+ *
+ * @param $uuid
+ * @param $chapter name of the part to display,
+ *         valid values are: 'description', 'images', 'synonymy', 'all'
+ * @return unknown_type
+ */
+function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all'){
+
+	// display the page for the taxon defined by $uuid
+	$taxonpage = cdm_dataportal_taxon_view($uuid, $chapter);
+	return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title , $taxonpage->content);
+}
+
+/**
+ * @param $uuid
+ * @param $chapter name of the part to display,
+ *         valid values are: 'description', 'images', 'synonymy', 'all'
+ * @return unknown_type
+ */
+function cdm_dataportal_taxon_view($uuid, $chapter = 'all'){
+
+	$taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $uuid);
+	if(!$taxon){
+		drupal_set_title(t('Taxon does not exist'));
+		return false;
+	}
+	$taxonpage->title = theme('cdm_taxon_page_title', $taxon);
+	
+	// check if the taxon id contained in the currently selected tree
+	$taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $uuid);
+	$taxon_in_current_tree = false;
+	foreach($taxon_nodes as $node){	
+	   if(get_taxonomictree_uuid_selected() == $node->taxonomicTree->uuid){
+	       $taxon_in_current_tree = true;
+	       break;
+	   }
+	}
+	if(!$taxon_in_current_tree){
+		if(count($taxon_nodes) == 0){
+			drupal_set_message('This concept of the taxon '.theme('cdm_taxonName', $taxon->name).' is not contained any classification.'
+			,'warning');
+		} else {
+			$trees = '';
+			foreach($taxon_nodes as $node){ 
+				$trees .= ($trees?', ':'').'<strong>'.$node->taxonomicTree->titleCache.'</strong>';
+				
+			} 
+			drupal_set_message('This concept of the taxon '.theme('cdm_taxonName', $taxon->name).' is not contained in the currently chosen classification, but in '
+			.(count($taxon_nodes) > 1? ' one of these: ' : ' this one: ') . $trees
+			, 'warning');
+		}
+	}
+
+	// render the taxon page
+	$taxonpage->content = theme('cdm_taxon_page_general', $taxon, $chapter);
+
+	return $taxonpage;
+}
+
+/**
+ * The function returns a name page as a drupal node ready to be renderized by drupal.
+ * The node page show the taxon name title and the list of taxon related with such taxon 
+ * name on the tree already in used. 
+ * @param $taxon_name_uuid A taxon name uuid
+ * @return The formatted name page as node
+ */
+function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid){
+  $taxonname_page = cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid);
+  return cdm_node_show(NODETYPE_NAME, $taxon_name_uuid, $taxonname_page->title , $taxonname_page->content);
+}
+
+/**
+ * The function genates a object ready to be transformated to a node 
+ * in order to show as a drupal node
+ * @param $taxon_name_uuid
+ * @return the object with the page content and title  
+ */
+function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid){
+	//getting the full taxonname object from the server  
+  $taxon_name = cdm_ws_get(CDM_WS_NAME, array($taxon_name_uuid));
+  if(!$taxon_name){
+    drupal_set_title(t('Taxon name does not exist'));
+    return false;
+  }
+  //searching for all the taxon connected with the taxon name on the tree in used
+  $name_cache = cdm_ws_get(CDM_WS_NAME_NAMECAHE, array($taxon_name_uuid));
+  $request_params = array();
+  $request_params['query'] = $name_cache;
+  $request_params['tree'] = get_taxonomictree_uuid_selected();
+  $request_params['doTaxa'] = 1;
+  $request_params['doSynonyms'] = 1;
+  $request_params['doTaxaByCommonNames'] = 0;
+  $request_params['matchMode'] = "EXACT";
+  $taxon_pager = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
+  
+  //removing the name where we come from and 
+  foreach($taxon_pager->records as $k=>&$taxon){
+  	if($taxon->uuid == $taxon_to_hide_uuid){
+  		unset($taxon_pager->records[$k]);
+  	}
+  }
+ 
+  //show the taxa list or go to the singular taxon
+  if (sizeof($taxon_pager->records) == 1){ //sigle taxon case
+  	reset($taxon_pager->records);
+  	$first_key = key($taxon_pager->records);
+    if($taxon_pager->records[$first_key]->class != "Taxon"){
+        $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, $taxon_pager->records[$first_key]->uuid);
+        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid);
+    }else{
+  	   drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid);
+    }
+  }else{ //more than one taxa case
+    $taxon_name_page->title = theme('cdm_name_page_title', $taxon_name);
+    if($taxon_pager->records){
+      $taxon_name_page->content = theme_cdm_list_of_taxa($taxon_pager->records, false);
+    }else{
+      $taxon_name_page->content = 'This name has no taxa';
+    }
+    return $taxon_name_page; 
+  }
+}
+
+function cdm_dataportal_view_search_advanced(){
+
+	drupal_set_title(t('Advanced search'));
+
+	$searchForm = cdm_dataportal_search_taxon_form(true);
+
+	return drupal_get_form('cdm_dataportal_search_taxon_form_advanced');
+
+}
+
+/**
+ *
+ * future extensions to meet palmweb mockup requirements:
+ *  - habitat
+ *  - uses
+ *  - conservation status
+ *  - locality / tdwg region
+ */
+function cdm_dataportal_view_search_taxon(){
+
+	$_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
+
+	$request_params = cdm_dataportal_search_form_request();
+	$taxonPager = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
+
+	$search_params = $_REQUEST;
+	unset($search_params['q']);
+	return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/taxon', $search_params);
+}
+
+
+function cdm_view_xml2json(){
+	$file = arg(2);
+	$datastr = get_content(variable_get('cdm_webservice_url', '').$file);
+	return  xml2json::transformXmlStringToJson($datastr);
+}
+
+/* ====================== other functions ====================== */
+
+/**
+ * Enter description here...
+ *
+ * @param String $uuid the UUID of the taxon
+ * @return the URL
+ */
+function path_to_taxon($uuid){
+	if(!$uuid) return false;
+	return 'cdm_dataportal/taxon/'.$uuid;
+}
+
+function path_to_reference($uuid){
+	if(!$uuid) return false;
+	return 'cdm_dataportal/reference/'.$uuid;
+}
+
+function path_to_name($name_uuid){
+	$res = false;
+	if($name_uuid){
+	 $res = 'cdm_dataportal/name/'.$name_uuid;
+	}
+  return $res;
+}
+
+function path_to_media($uuid, $representaion_uuid = false, $partId = false){
+	if(!$uuid) return false;
+	$out = 'cdm_dataportal/media/'.$uuid;
+	if($representaion_uuid){
+		$out .= '/'.$representaion_uuid;
+		if($partId !== false){
+			$out .= '/'.$partId;
+		}
+	}
+	return $out;
+}
+
+/**
+ * Compares thisRank with thatRank.
+ * Returns a negative integer, zero, or a positive integer
+ * as the of thisRank is higher than, equal to, or lower than thatRank.
+ * e.g:
+ * <ul>
+ * <li>rank_compare({species_uuid}, {genus_uuid}) = -1</li>
+ * <li>rank_compare({genus_uuid}, {genus_uuid}) = 0</li>
+ * <li>rank_compare({genus_uuid}, {tribus_uuid}) = 1</li>
+ * </ul>
+ * <p>
+ * This compare logic of the underlying webservice is the
+ * <b>inverse logic</b> of the the one implemented in
+ * java.lang.Comparable#compareTo(java.lang.Object)
+ * @param $thisRankUuid
+ * @param $thatRankUuid
+ * @return  a negative integer, zero, or a positive integer
+ * as the thisRank is lower than, equal to, or higher than thatRank
+ */
+function rank_compare($thisRankUuid, $thatRankUuid){
+	$result = cdm_ws_get(CDM_WS_TERM_COMPARE, array($thisRankUuid, $thatRankUuid));
+	return $result->Integer;
+}
+
+function uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
+	$acceptedPath = path_to_taxon($acceptedUuid);
+	return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid);
+}
+
+/**
+ * Creates a short taxonname by using the taggename field of NameSTO or NameTO instances.
+ * If the taggename if empty the fullname will be returned.
+ *
+ * @param unknown_type $Name or TreeNode
+ * @return string
+ */
+function cdm_dataportal_shortname_of($name){
+
+	$nameStr = '';
+	// get all tagged text tokens of the scientific name
+	foreach($name->taggedTitle as $tagtxt){
+		if($tagtxt->type == 'name' || $tagtxt->type == 'rank'){
+			$nameStr .= ($nameStr ? ' ' : '').$tagtxt->text;
+		}
+	}
+	$nameStr = trim($nameStr);
+	if($nameStr){
+		// do not return short names for these
+		if($nameStr == 'Incertae sedis' || $nameStr ==  'Nomina excludenda'){
+			return $nameStr;
+		}
+		if($pos = stripos($nameStr, ' ')){
+			return substr($nameStr, 0, 1).'. '.substr($nameStr, $pos);
+		} else {
+			return $nameStr;
+		}
+	} else {
+		return $name->titleCache;
+	}
+}
+
+/**
+ * TODO Add Comments. I don't get what
+ *
+ * @param UUID $secUuid
+ */
+function _cdm_dataportal_set_currentSecUuid($secUuid){
+
+	// do not save in session but in database
+
+	if(is_array($secUuid)){
+		$secUuid = $secUuid[0];
+	}
+	if(!$secUuid){
+		variable_set('cdm_currentSecRef', null);
+	} else {
+		$secRef = cdm_ws_get(CDM_WS_REFERENCE, $secUuid);
+		if(isset($secRef)){
+			variable_set('cdm_currentSecRef', (array)($secRef));
+		}
+	}
+
+}
+
+/**
+ * TODO
+ * This will not work with multiple instances of the dataportal running
+ * under the same host as there is only one session for all instances.
+ * In case you switch instances with the same client, you will definitely
+ * run into trouble.
+ * Also this is not handling multiple secs.
+ *
+ *
+ * returns the current secRef array.
+ * If the according session variable is not jet set the default
+ * as configured in the setting is used otherwise null.
+ *
+ * currentSecRef['uuid']
+ * currentSecRef[....
+ *
+ * @return array
+ */
+//FIXME function _cdm_dataportal_currentSecRef_array(){
+//
+//	// do not look in session but in database
+//	if( variable_get('cdm_currentSecRef', null) == null){
+//		$secUuid = variable_get('cdm_secUuid_default', null);
+//		_cdm_dataportal_set_currentSecUuid($secUuid);
+//	}
+//	return variable_get('cdm_currentSecRef', null);
+//
+//}
+
+/**
+ * Check if a taxon is accepted by the current taxonomic tree
+ *
+ * @param Taxon $taxon
+ * @return true if $taxon is accepted, false otherwise
+ */
+
+function _cdm_dataportal_acceptedByCurrentView($taxon){
+
+	$defaultTreeUuid = get_taxonomictree_uuid_selected();
+	if($taxon->class == "Taxon" && isset($taxon->taxonNodes)){
+		foreach($taxon->taxonNodes as $node){
+			if($node->taxonomicTree == $defaultTreeUuid) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/**@Deprecated
+ *
+ */
+function compose_url_prameterstr($parameters = array(), $parentPropertyName = false){
+	$pstr = '';
+	foreach($parameters as $key=>$value){
+		if(is_array($value)){
+
+		} else {
+			$pstr .= ($pstr ? '&' :'').$key.'='.urlencode($value);
+		}
+	}
+	return $pstr;
+}
+
+/**
+ * workaround for missing original source type, idNamespace is always set in these cases
+ * @param unknown_type $source
+ * @return unknown_type
+ */
+function _is_original_source_type($source){
+	return !$source->idNamespace && strlen($source->idNamespace) == 0;
+}
+
+function get_taxonomictree_uuid_selected(){
+	if(is_uuid($_SESSION['cdm']['taxonomictree_uuid']) ){
+		return $_SESSION['cdm']['taxonomictree_uuid'];
+	} else {
+		return variable_get('cdm_taxonomictree_uuid', false);
+	}
+}
+
+function switch_to_taxonomictree_uuid($taxonomictree_uuid){
+    $_SESSION['cdm']['taxonomictree_uuid'] = $taxonomictree_uuid;
+}
+
+function reset_taxonomictree_uuid($taxonomictree_uuid){
+    unset($_SESSION['cdm']['taxonomictree_uuid']);
+}
+
+
+function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NULL){
+	//TODO implement admin user interface to replace switch statement
+	//     preliminar solution: using themes
+
+	$template = null;
+	// find best matching default RenderTemplate in theme
+	//echo "<br/><br/>RENDER PATH:  ".$renderPath;
+	//var_dump('RENDER PATH: ' . $renderPath);
+	while(!is_array($template) && strlen($renderPath) > 0){
+	   $template = theme('get_nameRenderTemplate', $renderPath);
+	   $renderPath = substr($renderPath, 0, strrpos($renderPath, '.'));
+//	   if(!is_array($template)){
+//	       echo "<br/>->".$renderPath;
+//	   }
+	}
+	
+	// otherwise get default RenderTemplate from theme 
+	if(!is_array($template)){
+	   $template = theme('get_nameRenderTemplate', '#DEFAULT');
+	}
+	// otherwise get system default RenderTemplate
+	if(!is_array($template)){
+		switch($renderPath){
+			case 'list_of_taxa':
+			case  'acceptedFor':
+			case 'taxon_page_synonymy':
+			case 'typedesignations':
+			case 'taxon_page_title':
+			case 'na': $template = array(
+			        'namePart' => array('#uri'=>true),
+			        //'authorshipPart' => true,
+				);
+				break;
+			case 'nar': $template = array(
+		          	'namePart' => array('#uri'=>true),
+					 //'authorshipPart' => true,
+		          	'referencePart' => array('#uri'=>true),
+		          	'microreferencePart' => true,
+				);
+				break;
+			default: $template = array(
+          'namePart' => array('#uri'=>true),
+          'authorshipPart' => true,
+          'referencePart' => array('#uri'=>true),
+          'microreferencePart' => true,
+          'statusPart' => true,
+          'descriptionPart' => true
+			);
+		}
+	}
+
+	if($nameLink && isset($template['nameAuthorPart']['#uri'])){
+		$template['nameAuthorPart']['#uri'] = $nameLink;
+	} else{
+		unset($template['nameAuthorPart']['#uri']);
+	}
+
+	if($nameLink && isset($template['namePart']['#uri'])){
+		$template['namePart']['#uri'] = $nameLink;
+	} else{
+		unset($template['namePart']['#uri']);
+	}
+
+	if($refenceLink && isset($template['referencePart']['#uri'])){
+		$template['referencePart']['#uri'] = $refenceLink;
+	}else{
+		unset($template['referencePart']['#uri']);
+	}
+	
+	return $template;
+}
+
+function get_partDefinition($taxonNameType){
+	//TODO implement admin user interface to allow specify the partdefinitions for any type
+	//     preliminar solution: using themes
+
+	$partdef = theme('get_partDefinition', $taxonNameType);
+
+	if(!is_array($partdef)){
+		switch($taxonNameType){
+			case 'ZoologicalName': $partdef = array(
+        'namePart' => array(
+          'name' => true,
+			),
+        'referencePart' => array(
+          'authorTeam' => true
+			),
+        'microreferencePart' => array(
+          'microreference' => true,
+			),
+        'statusPart' => array(
+          'status' => true,
+			),
+        'descriptionPart' => array(
+          'description' => true,
+			),
+			);
+			break;
+			case 'BotanicalName': $partdef = array(
+        'namePart' => array(
+          'name' => true
+			),
+        'authorTeamPart' => array(
+          'authorTeam' => true,   
+			),
+        'referencePart' => array(
+          'reference' => true      
+			),
+        'microreferencePart' => array(
+          'microreference' => true,
+			),
+        'statusPart' => array(
+          'status' => true,
+			),
+        'descriptionPart' => array(
+          'description' => true,
+			),
+			);
+			break;
+			default: $partdef = array(
+        'namePart' => array(
+          'name' => true,
+			),
+        'authorTeamPart' => array(
+          'authorTeam' => true,   
+			),
+        'referencePart' => array(
+          'reference' => true      
+			),
+        'microreferencePart' => array(
+          'microreference' => true,
+			),
+        'statusPart' => array(
+          'status' => true,
+			),
+        'descriptionPart' => array(
+          'description' => true,
+			),
+			);
+		}
+	}
+	return $partdef;
+}
+
+/**
+ * The function read the metadata info such title or artist of a media file. The
+ * function tries at first to get all the info from the file metadata and if it is
+ * not avaible look at the media file info stored at the database.
+ * @param $media The media file
+ * @return array The array with the avilable specified metadata info.
+ * TODO rename to read_media_metadata() and move to *.module
+ */
+function cdm_read_media_metadata($media){
+
+	$metadata_caption = array('title' => '',           //media_metadata and media
+                              'artist' => '',          //media_metadata and media
+                              'rights',                //media_metadata and media
+                              'location',              //media_metadata
+                              'filename' => '',        //media
+                              'mediacreated' => '',    //media
+                              'description' => '');    //media
+
+	//getting the media metadata
+	$media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
+
+	//title
+	//if ($media_metadata->Headline) {
+	if ($media_metadata->ObjectName) {
+		$metadata_caption['title'] = $media_metadata->ObjectName;
+		//	} else if ($media->titleCache){
+		//		$metadata_caption['title'] = $media_metadata->ObjectName;
+	} else if ($media->titleCache){
+		$metadata_caption['title'] = $media->titleCache;
+		if ($media->description_L10n)
+		$metadata_caption['title'] .= ' - ' . $media->description_L10n;
+	}else{ //if there is no title on the db and metadata get file title
+    $aux = $media->representations[0]->parts[0]->uri;
+    $aux = explode("/", $aux);
+    $aux = end($aux);
+		$metadata_caption['title'] = $aux;		
+	}
+
+	//artist
+	if ($media_metadata->Artist){
+	 $metadata_caption['artist'] = ($media_metadata->Artist ? ''.$media_metadata->Artist : '');
+	}
+	elseif ($media->artist->titleCache){
+	 $metadata_caption['artist'] = $media->artist->titleCache;
+	}
+	
+	//copyright
+	$metadata_caption['rights'] = array('copyright' => array('agentNames' => array()),
+                                      'license' => array('agentNames' => array(), 'types' => array(), 'abbreviatedTexts' => array(), 'uris' => array()));
+	if ($media_metadata->Copyright)
+	$metadata_caption['rights']['copyright']['agentNames'][] = $media_metadata->Copyright;
+	elseif ($media->rights){
+		foreach($media->rights as $right){
+			switch($right->term->uuid){
+				case UUID_RIGHTS_LICENCE:
+					$metadata_caption['rights']['license']['agentNames'][] = ($right->agent ? ''.$right->agent->firstname.' '.$right->agent->lastname : '');
+					$metadata_caption['rights']['license']['types'][] = ($right->representation_L10n ? ''.$right->representation_L10n : '');
+					$metadata_caption['rights']['license']['abbreviatedTexts'][] = ($right->abbreviatedText ? ''.$right->abbreviatedText : '');
+					$metadata_caption['rights']['license']['uris'][] = ($right->uri ? ''.$right->uri : '');
+					break;
+				case UUID_RIGHTS_COPYRIGHT:
+					$metadata_caption['rights']['copyright']['agentNames'][] = $right->agent->firstname . ' ' . $right->agent->lastname;
+					break;
+			}
+		}
+	}
+	else
+	$metadata_caption['rights']['agentNames'][] = '';
+
+	//filling the description (though there is no description in the db???)
+	//$metadata_caption['description'] = $media->description_L10n;
+
+	//location
+	$metadata_caption['location'] = array();
+	$metadata_caption['location']['sublocation'] = $media_metadata->Sublocation;
+	$metadata_caption['location']['city'] = $media_metadata->City;
+	$metadata_caption['location']['province'] = $media_metadata->Province;
+	$metadata_caption['location']['country'] = $media_metadata->Country;
+
+	//filename
+	if(isset($media->representations[0]->parts[0]->uri)){
+		$fileUri = $media->representations[0]->parts[0]->uri;
+		$filename = substr($fileUri, strrpos($fileUri, "/")+1);
+		$metadata_caption['filename'] = $filename;
+	}
+	else{
+	 $metadata_caption['filename'] = '';
+	}
+	/*
+	 //creation date
+	 if($media_metadata["Modify Date"])
+	 $metadata_caption['mediacreated'] = $media_metadata["Modify Date"];
+	 else
+	 $metadata_caption['mediacreated'] = $media->created;
+	 */
+	//returned value
+	return $metadata_caption;
+}
+
+/**
+ * This function collects all the media from a list of description elements
+ * and return them as an Array.
+ *
+ * @param $descriptionElementes The description elements
+ * @return Array The output with all the media
+ */
+function cdm_dataportal_media_from_descriptionElements($descriptionElements){
+	//variables
+	$outArrayOfMedia = array(); //return value
+	//implementation
+	foreach($descriptionElements as $descriptionElement){
+		foreach($descriptionElement->media as $media){
+			if(isset($media)){
+			 $outArrayOfMedia[] = $media;
+			}
+	 }
+	}
+	return $outArrayOfMedia;
+}
+
+function cdm_annotations_as_footnotekeys($cdmBase){
+    
+	$footNoteKeys = array();
+    $footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
+    $annotationUrl = cdm_compose_annotations_url($cdmBase);
+    if($annotationUrl){
+        $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
+        if($annotationPager->count > 0){
+            foreach($annotationPager->records as $annotation){
+                $footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
+            }   
+        }
+    }
+    return $footNoteKeys;
+}
+
+
+
