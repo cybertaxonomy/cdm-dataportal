@@ -363,8 +363,9 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 
 function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
 
-	$out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
-
+	if(isset($descriptionElementSource->citation)){
+	   $out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
+	}
 	// add annotations as footnote key
 	// $out .= theme('cdm_annotations_as_footnotekeys', $descriptionElementSource->citation);
 	return $out;
