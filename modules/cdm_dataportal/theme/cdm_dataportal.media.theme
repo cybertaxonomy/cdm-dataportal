@@ -26,7 +26,7 @@ function getimagesize_remote($image_url) {
 		return false;
 	}
 
-	$im = ImageCreateFromString($contents);
+	$im = @ImageCreateFromString($contents); // using@ to avoid php user warnings
 	if (!$im) {
 		return false;
 	}
