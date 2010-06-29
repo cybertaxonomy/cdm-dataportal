@@ -224,6 +224,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 
 
 function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
+	
 	$relsign = '';
 	$name_prefix = '';
 	$name_postfix = '';
@@ -249,7 +250,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
   //if ($status == 'Invalid' || $status == 'Nudum'){
   if (sizeof($status) > 0){
       if ($status == 'Invalid' || $status == 'Nudum'){
-       $relsign = '&mdash';
+       $relsign = '&ndash';
       }
     	$status = ', ' . $taxon->name->status[0]->type->representation_L10n_abbreviated;
     	//var_dump('&mdash' . $taxon->name->status[0]->type->representation_L10n_abbreviated);
