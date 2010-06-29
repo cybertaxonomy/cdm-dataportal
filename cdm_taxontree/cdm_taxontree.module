@@ -81,7 +81,7 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
         $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
         $magicbox_enable = variable_get('cdm_taxontree_magicbox_enable', 0);
         
-        if(count(cdm_get_taxontrees_as_options()) > 0){
+        if(count(cdm_get_taxontrees_as_options()) > 1){
             $block['content'] = cdm_taxonomictree_selector();
         }
         $block['content'] .= theme('cdm_taxontree_block', $tree, $delta, FALSE, 'cdm_taxontree_node_concept_switch');
