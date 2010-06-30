@@ -263,7 +263,7 @@ function cdm_dataportal_menu($may_cache) {
       'path' => 'cdm_dataportal/name/'.arg(2),
       //'callback' => 'cdm_dataportal_view_name',
 		  'callback' => 'cdm_dataportal_name_page_view',
-      'callback arguments' => array(arg(2), arg(3)),
+      'callback arguments' => array(arg(2), arg(3), arg(4)),
       'access' => true,
       'type' => MENU_CALLBACK,
     );
@@ -1294,8 +1294,8 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all'){
  * @param $taxon_name_uuid A taxon name uuid
  * @return The formatted name page as node
  */
-function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid){
-  $taxonname_page = cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid);
+function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = null){
+  $taxonname_page = cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid);
   return cdm_node_show(NODETYPE_NAME, $taxon_name_uuid, $taxonname_page->title , $taxonname_page->content);
 }
 
@@ -1305,7 +1305,7 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid){
  * @param $taxon_name_uuid
  * @return the object with the page content and title  
  */
-function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid){
+function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = null){
 	//getting the full taxonname object from the server  
   $taxon_name = cdm_ws_get(CDM_WS_NAME, array($taxon_name_uuid));
   if(!$taxon_name){
@@ -1328,17 +1328,26 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid){
   	if($taxon->uuid == $taxon_to_hide_uuid){
   		unset($taxon_pager->records[$k]);
   	}
-  }
- 
+  } 
   //show the taxa list or go to the singular taxon
   if (sizeof($taxon_pager->records) == 1){ //sigle taxon case
   	reset($taxon_pager->records);
   	$first_key = key($taxon_pager->records);
     if($taxon_pager->records[$first_key]->class != "Taxon"){
         $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, $taxon_pager->records[$first_key]->uuid);
-        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid);
+        if($synonym_uuid){
+        	drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', 'highlite=' . $synonym_uuid);
+        }else{
+        	drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid);
+        }    
     }else{
-  	   drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid);
+    	  if($synonym_uuid){
+          drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid . '/synonymy',
+                      'highlite=' . $synonym_uuid);
+        }else{
+          drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid);
+        } 
+  	   //drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid);
     }
   }else{ //more than one taxa case
     $taxon_name_page->title = theme('cdm_name_page_title', $taxon_name);
