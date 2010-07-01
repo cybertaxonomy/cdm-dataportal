@@ -335,3 +335,8 @@ a.toc:link, a.toc:visited {
     background-image: none;
 }
 
+.featuretree_structure {
+	 font-size: 90%;
+	 line-height: 1em;
+	 color: #999999;
+}
