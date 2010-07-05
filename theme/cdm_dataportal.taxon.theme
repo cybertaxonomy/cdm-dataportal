@@ -192,7 +192,6 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 			if($showMedia_taxa){
 				$out .= theme('cdm_taxon_list_thumbnails', $taxon);
 			}
-			
 			$out .= '</li>';
 		} else {
 			// its a synonym
@@ -270,16 +269,15 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	foreach($taxon_name_relations as $element){	
     switch ($element->type->representation_L10n){
       case 'later homonym for':
-        $later_homonym = ' [non ' . l($element->fromName->titleCache, 
-                                     'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid) . ']';
+        $later_homonym = ' [non ' . l($element->toName->titleCache, 
+                                     'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid) . ']';
         break;
     case 'treated as later homonym for':
-        $later_homonym = ' [non ' . l($element->fromName->titleCache, 
-                                     'cdm_dataportal/name/' . $element->fromName->uuid) . ']';
+        $later_homonym = ' [non ' . l($element->toName->titleCache, 
+                                     'cdm_dataportal/name/' . $element->toName->uuid) . ']';
         break;
     }
 	}
-
 	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $later_homonym . $status;
 	
 	$out = uuid_anchor($taxon->uuid, $out);
@@ -288,7 +286,6 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	
 	return $out; 
 }
-
 
 /**
  */

@@ -116,16 +116,14 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	$taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid); //con el taxon puedo coger las descripciones!!!!!
   	$mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $taxonDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
   	
+/*
   	// tree distributions
-  	//foreach ($taxonDescriptions as $description){
-  	//	$descriptions_uuids[] = $description->uuid;
-  	//}
-  	////$taxon_areas = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE, $descriptions_uuids);
-  	//$test = theme('cdm_description_areas', $descriptions_uuids);
-    //$out .= '<div id=test>';
-    //$out .= $test;
-    //$out .= '</div>';
+  	$test = theme('cdm_description_areas', $taxon->uuid);
+    $out .= '<div id=test>';
+    $out .= $test;
+    $out .= '</div>';
     // ----
+*/
     
   	$out .= '<div id="general">';
   	$out .= theme('cdm_taxon_page_description', $taxon, $mergedTrees, $media, $hideImages);

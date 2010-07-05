@@ -50,8 +50,7 @@ define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
-
-
+define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal_structdesc_featuretree_uuid');
 
 
 function getGallerySettings($gallery_config_form_name){
@@ -263,7 +262,7 @@ function cdm_dataportal_menu($may_cache) {
       'path' => 'cdm_dataportal/name/'.arg(2),
       //'callback' => 'cdm_dataportal_view_name',
 		  'callback' => 'cdm_dataportal_name_page_view',
-      'callback arguments' => array(arg(2), arg(3)),
+      'callback arguments' => array(arg(2), arg(3), arg(4)),
       'access' => true,
       'type' => MENU_CALLBACK,
     );
@@ -721,25 +720,6 @@ function cdm_dataportal_settings(){
     '#description'   => t('Select the default classification to be used.')
 	);
 
-	//------------------ FEATURE TREE --------------------//
-
-	$form['cdm_dataportal']['feature_tree'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Feature Tree'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-	);
-
-	$form['cdm_dataportal']['feature_tree'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
-    '#type' => 'select',
-    '#title'         => t('Available FeatureTrees'),                
-    '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
-	  '#options' => cdm_get_featureTrees_as_options(),
-    '#description'   => t('Select a FeatureTree for this webservice.'
-    //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
-	)
-	);
-
 	return system_settings_form($form);
 }
 
@@ -773,6 +753,7 @@ function cdm_dataportal_settings_layout(){
 	$form = array();
 
 
+	
 	$form['cdm_taxonname_type'] = array(
     '#type' => 'select',
     '#title'         => t('Taxon name type'),
@@ -841,6 +822,37 @@ function cdm_dataportal_settings_layout(){
     .' Check this box to allow displaying all descriptions separately.')
     );
 
+    //------------------ FEATURE TREE --------------------//
+
+	  $form['cdm_dataportal']['taxon_profile'] = array(
+	    '#type' => 'fieldset',
+	    '#title' => t('Taxon profile'),
+	    '#description'   => t('This section covers setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.'),
+	    '#collapsible' => TRUE,
+	    '#collapsed' => FALSE,
+	  );
+	
+	  $form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
+	    '#type' => 'radios',
+	    '#title'         => t('Taxon profile elements'),                
+	    '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
+	    '#options' => cdm_get_featureTrees_as_options(TRUE),
+	    '#description'   => t('Select a FeatureTree to specify the elements to be displayd in the taxon profile.'
+	    //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
+	    )
+	  );
+	  
+	  $form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
+	    '#type' => 'radios',
+	    '#title'         => t('Natural language representation of structured descriptions'),                
+	    '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, null),
+	    '#options' => cdm_get_featureTrees_as_options(),
+	    '#description'   => t('Taxon descriptions can be stored in a highly structured form.'.
+	      ' The feature tree selected here will be used to generate textual representation in natural language.'
+	    //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
+	    )
+	  );
+    
     //---- IMAGES ----//
     $form['images'] = array(
     '#type' => 'fieldset',
@@ -1294,8 +1306,8 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all'){
  * @param $taxon_name_uuid A taxon name uuid
  * @return The formatted name page as node
  */
-function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid){
-  $taxonname_page = cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid);
+function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = null){
+	$taxonname_page = cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid);
   return cdm_node_show(NODETYPE_NAME, $taxon_name_uuid, $taxonname_page->title , $taxonname_page->content);
 }
 
@@ -1305,7 +1317,7 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid){
  * @param $taxon_name_uuid
  * @return the object with the page content and title  
  */
-function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid){
+function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = null){
 	//getting the full taxonname object from the server  
   $taxon_name = cdm_ws_get(CDM_WS_NAME, array($taxon_name_uuid));
   if(!$taxon_name){
@@ -1329,17 +1341,26 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid){
   		unset($taxon_pager->records[$k]);
   	}
   }
- 
   //show the taxa list or go to the singular taxon
   if (sizeof($taxon_pager->records) == 1){ //sigle taxon case
   	reset($taxon_pager->records);
   	$first_key = key($taxon_pager->records);
     if($taxon_pager->records[$first_key]->class != "Taxon"){
         $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, $taxon_pager->records[$first_key]->uuid);
+			if($synonym_uuid){
+				drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', 'highlite=' . $synonym_uuid);
+			}else{
         drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid);
+			}
     }else{
+			if($synonym_uuid){
+				drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid . '/synonymy',
+                      'highlite=' . $synonym_uuid);
+			}else{
   	   drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid);
     }
+			//drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid);
+		}
   }else{ //more than one taxa case
     $taxon_name_page->title = theme('cdm_name_page_title', $taxon_name);
     if($taxon_pager->records){
