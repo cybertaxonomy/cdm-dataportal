@@ -902,35 +902,16 @@ function cdm_dataportal_settings_layout(){
         '#collapsible' => TRUE,
         '#collapsed' => TRUE,
         '#type' => 'fieldset',
-    );
-    $form['distribution_layout']['TDWG_1'] =  array(
-    '#type'          => 'checkbox',
-    '#title'         => t('TDWG level 1'),
-    '#default_value' => variable_get('sort_tdwg_1', '1'),
-    //'#options'       => $options,
-    '#description'   => t('Check it if you want to sort the distribution areas based on TDWG level 1'),
-    );
-    $form['distribution_layout']['TDWG_2'] =  array(
-    '#type'          => 'checkbox',
-    '#title'         => t('TDWG level 2'),
-    '#default_value' => variable_get('sort_tdwg_2', '0'),
-    '#description'   => t('Check it if you want to sort the distribution areas based on TDWG level 2'),
-    //'#options'       => $options,
-    );
-    $form['distribution_layout']['TDWG_3'] =  array(
-    '#type'          => 'checkbox',
-    '#title'         => t('TDWG level 3'),
-    '#default_value' => variable_get('sort_tdwg_3', '1'),
-    '#description'   => t('Check it if you want to sort the distribution areas based on TDWG level 3'),
-    //'#options'       => $options,
-    );
-    $form['distribution_layout']['TDWG_4'] =  array(
-    '#type'          => 'checkbox',
-    '#title'         => t('TDWG level 4'),
-    '#default_value' => variable_get('sort_tdwg_4', '1'),
-    '#description'   => t('Check it if you want to sort the distribution areas based on TDWG level 4'),
-    //'#options'       => $options,
-    );
+     );
+    
+    $form['distribution_layout']['distribution_sort'] =  array(
+    '#type'          => 'radios',
+    '#title'         => t('Sort'),
+    '#default_value' => 0,
+    '#options' => array(
+            t('Standard (No sort)'),
+            t('Sorted without TDWG Level 2'),
+    ));
 
     return system_settings_form($form);
 }

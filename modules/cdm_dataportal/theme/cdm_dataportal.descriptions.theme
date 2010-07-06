@@ -116,7 +116,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				}
 
 				//get the text for the feature block
-				if ($node->feature->titleCache == 'Common Name'){
+				if ($node->feature->titleCache == 'Common Names'){
 					$block->content .= theme('cdm_common_names', $node->descriptionElements);
 				} else {
 					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
@@ -262,7 +262,7 @@ function theme_cdm_common_names($elements){
 				}
 				$rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
 			}
-			$out .= (strlen($out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list;
+			$out .= (strlen($out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list . '<br>';
 
 		}
 	}
@@ -309,8 +309,15 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 		}
 
 	}
+	
+	$sort = variable_get('distribution_sort', 'Never');
+	if($sort == 1){
+		$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
+	}else{
+		$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
+	}
 	//$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
-	$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
+	//$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
 
 	// take the feature of the last $descriptionElement
 	$feature = $descriptionElement->feature;
@@ -382,12 +389,12 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 	foreach ($ordered_areas2 as $element_l1){//level 1
 			
 		if ($element_l1->data){
-			$out .= '<b>' . $element_l1->data->area->titleCache . ':</b> ';
+			$out .= '<b>' . $element_l1->data->area->representation_L10n . ':</b> ';
 		}
 		foreach ($element_l1->children as $element_l3){//level 3
 			$out_l4 = '';
 			if ($element_l3->data){
-				$l3 = $element_l3->data->area->titleCache;
+				$l3 = $element_l3->data->area->representation_L10n;
 			}
 			if (sizeof($element_l3->children) == 0){
 				$footnoteKeyListStr2 = '';
@@ -404,7 +411,7 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 			}
 			foreach ($element_l3->children as $element_l4){//level 4
 				if ($element_l4->data){
-					$l4 = $element_l4->data->area->titleCache;
+					$l4 = $element_l4->data->area->representation_L10n;
 					if (strlen($l4) > 0){
 						//$out_l4 .= $l4;
 						$footnoteKeyListStr = '';
