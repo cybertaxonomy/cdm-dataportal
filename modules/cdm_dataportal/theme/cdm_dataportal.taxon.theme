@@ -224,32 +224,37 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 
 function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	
+	static $relsign_homo = '≡';
+	static $relsign_hetero = '=';
+	static $relsign_invalid = '&ndash;';
+	
 	$relsign = '';
 	$name_prefix = '';
 	$name_postfix = '';
+	
 	switch ($reltype_uuid){
 		case UUID_HETEROTYPIC_SYNONYM_OF:
 		case UUID_SYNONYM_OF:
-			$relsign = '=';
+			$relsign = $relsign_hetero;
 			break;
 		case UUID_HOMOTYPIC_SYNONYM_OF:
-			$relsign = '≡';
+			$relsign = $relsign_homo;
 			break;
 		case UUID_MISAPPLIED_NAME_FOR:
 		case UUID_INVALID_DESIGNATION_FOR:
-			$relsign = '&ndash;'; // &ndash; &mdash; &minus;
+			$relsign = $relsign_invalid;
 			$name_prefix = '"';
 			$name_postfix = '"';
 			break;
 		default :
-			$relsign = '&ndash;';
+			$relsign = $relsign_invalid;
 	}
 
 	$status = $taxon->name->status[0]->type->representation_L10n;
   //if ($status == 'Invalid' || $status == 'Nudum'){
   if (sizeof($status) > 0){
       if ($status == 'Invalid' || $status == 'Nudum'){
-       $relsign = '&ndash;';
+       $relsign = $relsign_invalid;
       }
     	$status = ', ' . $taxon->name->status[0]->type->representation_L10n_abbreviated;
     	//var_dump('&mdash' . $taxon->name->status[0]->type->representation_L10n_abbreviated);
