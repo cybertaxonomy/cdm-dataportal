@@ -320,7 +320,7 @@ a.toc:link, a.toc:visited {
 .footnote-key{
   vertical-align: super;
   font-size: 80%;
-  line-height: 100% /* compensate line-height increasement by vertical-align: super; */
+  line-height: 100%; /* compensate line-height increasement by vertical-align: super; */
   font-style: italic;
 }
 
