@@ -116,7 +116,8 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				}
 
 				//get the text for the feature block
-				if ($node->feature->titleCache == 'Common Names'){
+				//if ($node->feature->titleCache == 'Common Name'){
+			  if ($node->feature->uuid == UUID_COMMON_NAME){
 					$block->content .= theme('cdm_common_names', $node->descriptionElements);
 				} else {
 					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
@@ -262,11 +263,11 @@ function theme_cdm_common_names($elements){
 				}
 				$rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
 			}
-			$out .= (strlen($out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list . '<br>';
+			$out .= (strlen($out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list;
 
 		}
 	}
-	return $out;
+	return $out . '<br>' . '<br>';
 }
 
 /**
