@@ -1474,9 +1474,17 @@ function cdm_dataportal_shortname_of($name){
 		}
 	}
 	$nameStr = trim($nameStr);
+	/*
+	if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
+	    stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE){
+	 var_dump($nameStr);	
+	}
+	*/
 	if($nameStr){
 		// do not return short names for these
-		if($nameStr == 'Incertae sedis' || $nameStr ==  'Nomina excludenda'){
+		//if(strtolower($nameStr) == 'incertae sedis' || $nameStr ==  'nomina excludenda'){
+		if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
+        stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE){
 			return $nameStr;
 		}
 		if($pos = stripos($nameStr, ' ')){
