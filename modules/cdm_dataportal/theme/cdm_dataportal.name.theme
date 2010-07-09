@@ -20,8 +20,11 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 
 	$specimenTypeDesignations = array();
 	foreach($typeDesignations as $typeDesignation){
+		
 		if($typeDesignation->class == 'SpecimenTypeDesignation'){
 			// SpecimenTypeDesignations should be ordered. collect theme here only
+			
+			
 			$specimenTypeDesignations[] = $typeDesignation;
 		}else {
 
@@ -36,16 +39,6 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
 				}
 				$out .= theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri);
-
-				//        if($typeDesignation->typeName->class == 'ZoologicalName') {
-				//          // appending authorTeam which has been skipped in cdm_name
-				//          $authorTeam = cdm_taggedtext_value($typeDesignation->typeName->taggedName, 'authors');
-				//          $authorTeamPart = l('<span class="authors">'.$authorTeam.'</span>', "/cdm_dataportal/reference/".$typeDesignation->typeName->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
-				//          $out .= (str_endsWith($authorTeam, ')') ? '' : ', ').$authorTeamPart;
-				//        } else {
-				//          $out .= ' '.theme('cdm_reference', $typeDesignation->citation, true, $referenceStyle);
-				//          $out .= '</li>';
-				//        }
 			}
 		}
 	}
@@ -75,22 +68,18 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 				$typeReference .= $shortCitation.'</span>';
 				$typeReference .= ':'. $std->citationMicroReference .')';
 
-			    $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-lectotypes', $std->citation->titleCache);
+			  $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-lectotypes', $std->citation->titleCache);
 				$typeReference .= theme('cdm_footnote_key', $_fkey2); 
-        //$citation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($taxonName->nomenclaturalReference->uuid), "microReference=".urlencode($microreference));
-        //$citation = $citation->String;
-				
+     	}
 
-				//$typeReference .= '<span class="reference only-print">(designated by '.theme('cdm_reference',$std->citation ).')</span>';
-			}
-
+     	$derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std->typeSpecimen->uuid);
 			
 			$out .= '<li class="specimenTypeDesignation">';
-			$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
-			$out .= theme('cdm_specimen', $std->typeSpecimen);
+			$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$derivedUnitFacadeInstance->titleCache;
+			$out .= theme('cdm_specimen', $derivedUnitFacadeInstance);
 
 			//footnotes for synonymy acronyms 
-			$_fkey = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-acronyms', $std->typeSpecimen->collection->titleCache);
+			$_fkey = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-acronyms', $derivedUnitFacadeInstance->collection->titleCache);
             $out .= theme('cdm_footnote_key', $_fkey);  
 			$out .= '</li>';
 			
@@ -214,8 +203,7 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 	foreach($homotypicalGroup as $synonym){
 		if($is_first_entry){
 			$is_first_entry = false;
-			//$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
-			$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $synonym->uuid);
+			$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
 			// is first list entry
 			$out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$synonym, UUID_HETEROTYPIC_SYNONYM_OF).'</li>';
 		} else {
@@ -259,7 +247,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 		$out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 	}
 
-	$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $synonymList[0]->uuid);
+	$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
