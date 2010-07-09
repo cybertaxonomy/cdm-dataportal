@@ -169,6 +169,10 @@ function theme_cdm_list_of_annotations($annotationElements){
 /* ============================ footnotes ============================= */
 
 function theme_cdm_footnote_key($footnoteKey, $separator = '', $highlightable=true){
+	if (!$footnoteKey->footnoteListKey){
+		//var_dump('#####' . $footnoteKey);
+		return ''; 	  
+	}
   $out = '<span class="footnote-key footnote-key-'.$footnoteKey->keyStr.' member-of-footnotes-'.$footnoteKey->footnoteListKey.'">'.$separator
         .'<a href="#footnote-'.$footnoteKey->keyStr.'">'.$footnoteKey->keyStr.'</a>'
         .'</span>';
@@ -188,6 +192,21 @@ function theme_cdm_footnotes($footnoteListKey, $enclosingTag = 'span'){
 	return $out;
 }
 
+function cdm_exist_footnote($footnote_list, $footnote){
+	$result = false;
+	foreach ($footnote_list as $element){
+		if ($element == $footnote){
+			$result = true;
+		}
+	}
+	return $result;
+}
+
+function cdm_add_footnote_to_array(&$footnote_list, $footnote){
+	if(!cdm_exist_footnote($footnote_list, $footnote)){
+		$footnote_list[] = $footnote;		
+	}
+}
 
 /* ============================ pager ============================= */
 
