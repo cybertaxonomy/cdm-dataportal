@@ -170,6 +170,17 @@ a.toc:link, a.toc:visited {
    font-size: 90%;
 }
 
+.content dt {
+	float: left;
+	font-weight: bold;
+  margin-right: 0.3em;
+}
+
+.content dd {
+	margin-left: 0;
+	font-weight: normal;
+}
+
 .block-cdm_taxontree div.settings{
 	/*background-color: #2587C3;*/
 	border-bottom: 1px solid #E0DFE3;
@@ -266,16 +277,6 @@ a.toc:link, a.toc:visited {
 .media-caption{
 	line-height: 1.3em;
 	margin-left: 0;
-}	
-.media-caption dt{
-	float:left;
-	margin-right: 0.3em;
-	font-weight: bold;
-}
-
-.media-caption dd{
-    margin-left: 0;
-    font-weight: normal;
 }
 
 .media-caption dt.title{
