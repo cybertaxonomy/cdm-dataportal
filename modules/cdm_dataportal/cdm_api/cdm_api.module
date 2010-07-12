@@ -821,7 +821,17 @@ function cdm_load_obj($datastr){
  * @return the response data 
  */
 function cdm_http_request($uri, $method="GET", $parameters = array(), $header = false){
-  global $locale;  // drupal variable containing the current locale i.e. language
+	
+  static $acceptLanguage = null;
+  
+  if(!$acceptLanguage) {
+  	$headers = getallheaders();
+  	if($headers['Accept-Language']){
+  		$acceptLanguage = $headers['Accept-Language'];
+  	} else {
+  		$acceptLanguage = "en"; // DEFAULT TODO make configurable
+  	}
+  }
 
   if($method != "GET" && $method != "POST"){
     $method  = "GET";
@@ -830,7 +840,7 @@ function cdm_http_request($uri, $method="GET", $parameters = array(), $header = 
   $header = array();
   if(!$header && _is_cdm_ws_uri($uri)){
     $header['Accept'] = (variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
-    $header['Accept-Language'] = $locale;
+    $header['Accept-Language'] = $acceptLanguage;
     $header['Accept-Charset'] = 'UTF-8';
   }
 
