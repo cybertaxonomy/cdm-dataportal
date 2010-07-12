@@ -2,13 +2,13 @@
 // $Id$
 
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ */
 
 function theme_cdm_search_results($pager, $path, $parameters){
 
@@ -69,14 +69,14 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	if(!$taxonRelationships){
 		return;
 	}
-	
+
 	RenderHints::pushToRenderStack('taxonRelationships');
-    $footnoteListKey = 'taxonRelationships';
-    RenderHints::setFootnoteListKey($footnoteListKey);
+	$footnoteListKey = 'taxonRelationships';
+	RenderHints::setFootnoteListKey($footnoteListKey);
 
 	$misapplied = array();
 	$joinedAuthorTeams = array();
-	
+
 	// aggregate misapplied names having the same fullname:
 	foreach($taxonRelationships as $taxonRelation){
 		if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
@@ -92,13 +92,13 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 
 			// collect all authors for this fullname
 			if(isset($authorteam)){
-                  $misapplied[$name]['authorteam'][$authorteam] = '';
-                  $joinedAuthorTeams[$authorteam] = 'sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec);
+				$misapplied[$name]['authorteam'][$authorteam] = '';
+				$joinedAuthorTeams[$authorteam] = 'sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec);
 			}
 
 		}
 	}
-	
+
 	// sort the joinedAuthorTeams and create footnotes and footnotekeys
 	ksort($joinedAuthorTeams);
 	foreach($joinedAuthorTeams as $authorteam=>$sensuCitation){
@@ -108,31 +108,31 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 
 	// generate output
 	$out = '<ul class="misapplied">';
-	
+
 	foreach($misapplied as $misapplied_name){
-		
+
 		$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
 		// fill authors with the renderedFootnoteKey and sorting 'em
 		foreach($misapplied_name['authorteam'] as $authorteam=>&$renderedFootnoteKey) {
-		  $renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
-	    }
+			$renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
+		}
 		if(isset($misapplied_name['authorteam'])){
 			ksort($misapplied_name['authorteam']);
 			$out .= join('; ', $misapplied_name['authorteam']);
 		}
 		$out .= '</li>';
-		
+
 	}
 	$out .= '</ul>';
-	
+
 	$out .= theme('cdm_footnotes', $footnoteListKey, 'div');
-    RenderHints::popFromRenderStack();
+	RenderHints::popFromRenderStack();
 	return $out;
 }
 
 function theme_cdm_acceptedFor(){
 	RenderHints::pushToRenderStack('acceptedFor');
-		
+
 	$out = '';
 	if(isset($_REQUEST['acceptedFor'])){
 			
@@ -149,7 +149,7 @@ function theme_cdm_acceptedFor(){
 			$out .= '</span>';
 		}
 	}
-    RenderHints::popFromRenderStack();
+	RenderHints::popFromRenderStack();
 	return $out;
 }
 
@@ -187,8 +187,8 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 				$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 			}
 			$out .= '<li class="Taxon">'.theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
-            $out .= theme('cdm_annotations_as_footnotekeys', $taxon);
-            
+			$out .= theme('cdm_annotations_as_footnotekeys', $taxon);
+
 			if($showMedia_taxa){
 				$out .= theme('cdm_taxon_list_thumbnails', $taxon);
 			}
@@ -223,15 +223,15 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 
 
 function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
-	
+
 	static $relsign_homo = '≡';
 	static $relsign_hetero = '=';
 	static $relsign_invalid = '&ndash;';
-	
+
 	$relsign = '';
 	$name_prefix = '';
 	$name_postfix = '';
-	
+
 	switch ($reltype_uuid){
 		case UUID_HETEROTYPIC_SYNONYM_OF:
 		case UUID_SYNONYM_OF:
@@ -251,16 +251,16 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	}
 
 	$status = $taxon->name->status[0]->type->representation_L10n;
-  //if ($status == 'Invalid' || $status == 'Nudum'){
-  if (sizeof($status) > 0){
-      if ($status == 'Invalid' || $status == 'Nudum'){
-       $relsign = $relsign_invalid;
-      }
-    	$status = ', ' . $taxon->name->status[0]->type->representation_L10n_abbreviated;
-    	//var_dump('&mdash' . $taxon->name->status[0]->type->representation_L10n_abbreviated);
-  }
-  
-	 RenderHints::pushToRenderStack('related_taxon');
+	//if ($status == 'Invalid' || $status == 'Nudum'){
+	if (sizeof($status) > 0){
+		if ($status == 'Invalid' || $status == 'Nudum'){
+			$relsign = $relsign_invalid;
+		}
+		$status = ', ' . $taxon->name->status[0]->type->representation_L10n_abbreviated;
+		//var_dump('&mdash' . $taxon->name->status[0]->type->representation_L10n_abbreviated);
+	}
+
+	RenderHints::pushToRenderStack('related_taxon');
 
 	//$taxonUri = url(path_to_taxon($taxon->uuid));
 	if($taxon->name->nomenclaturalReference){
@@ -268,28 +268,30 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	}
 	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
 	$nameHtml .= theme('cdm_annotations_as_footnotekeys', $taxon);
-	
+
 	//later homonym or trated as later homonym
 	$taxon_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
-	foreach($taxon_name_relations as $element){	
-    switch ($element->type->representation_L10n){
-      case 'later homonym for':
-        $later_homonym = ' [non ' . l($element->toName->titleCache, 
+	if ($taxon_name_relations){
+		foreach($taxon_name_relations as $element){
+			switch ($element->type->representation_L10n){
+				case 'later homonym for':
+					$later_homonym = ' [non ' . l($element->toName->titleCache,
                                      'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid) . ']';
-        break;
-    case 'treated as later homonym for':
-        $later_homonym = ' [non ' . l($element->toName->titleCache, 
+					break;
+				case 'treated as later homonym for':
+					$later_homonym = ' [non ' . l($element->toName->titleCache,
                                      'cdm_dataportal/name/' . $element->toName->uuid) . ']';
-        break;
-    }
+					break;
+			}
+		}
 	}
 	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $later_homonym . $status;
-	
+
 	$out = uuid_anchor($taxon->uuid, $out);
-	
+
 	RenderHints::popFromRenderStack();
-	
-	return $out; 
+
+	return $out;
 }
 
 /**
@@ -303,7 +305,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 	$prefMediaQuality = '*';
 
 	$gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
-	
+
 	if($showCaption){
 		//$captionElements = array('title', '#uri'=>t('open Image'));
 		$captionElements = array('title', 'rights');
@@ -318,10 +320,10 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 	}
 	//$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false), $taxon ->rank, $taxon->uuid ));
 	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,
-					$gallery_settings['cdm_dataportal_media_maxextend'], 
-	             	$gallery_settings['cdm_dataportal_media_cols'], 
-	             	$gallery_settings['cdm_dataportal_media_maxRows'], 
-	             	$captionElements, 'LIGHTBOX', null, $galleryLinkUri);
+	$gallery_settings['cdm_dataportal_media_maxextend'],
+	$gallery_settings['cdm_dataportal_media_cols'],
+	$gallery_settings['cdm_dataportal_media_maxRows'],
+	$captionElements, 'LIGHTBOX', null, $galleryLinkUri);
 
 	return $out;
 }
