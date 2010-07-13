@@ -43,7 +43,7 @@ function getimagesize_remote($image_url) {
 function theme_cdm_media($descriptionElement, $mimeTypePreference){
 	$out = "";
 
-	_add_js_thickbox();
+	//_add_js_thickbox();
 
 	$uuid = $descriptionElement->uuid;
 	$feature = $descriptionElement->feature;

@@ -244,7 +244,16 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
   while(count($mimeTypes) > 0){
     // getRepresentationByMimeType
     $mimeType = array_shift($mimeTypes);
+    
     foreach($media->representations as $representation){
+    	
+    	//if the mimetype is not known, try inferring it
+    	if(!$representation->mimeType){
+    		if(isset($representation->parts[0])){
+    		  $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
+    		}
+    	}
+    	
       if($representation->mimeType == $mimeType){
         // preffered mimetype found -> erase all remaining mimetypes to end loop
         $mimeTypes = array();
@@ -260,12 +269,44 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
         $dwa = (count($representation->parts)>0) ? $dwa / count($representation->parts) : 0;
         $prefRepr[$dwa.'_'.$mimeTypeKey] = $representation;
       }
+      
     }
+    
   }
   // sort
   krsort($prefRepr);
   // return
   return $prefRepr;
+}
+
+/**
+ * Infers the mime type of a file using the filename extension.
+ * @param $filepath the path to the respective file. 
+ *        The filename extension will be used to infer the mime type.
+ * @return the mimetype to the file or false if the according mime type could not be found
+ */
+function infer_mime_type($filepath){
+	static $mimemap = null;
+	if(!$mimemap){
+		$mimemap = array(
+			'jpg'=>'image/jpeg',
+		  'jpeg'=>'image/jpeg',
+		  'png'=>'image/png',
+		  'gif'=>'image/gif',
+		  'giff'=>'image/gif',
+		  'tif'=>'image/tif',
+      'tiff'=>'image/tif',
+		  'pdf'=>'application/pdf',
+		  'html'=>'text/html',
+		  'htm'=>'text/html'
+		);
+	}
+	$extension = substr($filepath, strrpos($filepath, '.') + 1);
+	if(isset($mimemap[$extension])){
+		return $mimemap[$extension];
+	} else {
+		false;
+	}
 }
 
 /**
