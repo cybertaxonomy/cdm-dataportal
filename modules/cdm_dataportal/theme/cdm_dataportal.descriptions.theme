@@ -267,7 +267,7 @@ function theme_cdm_common_names($elements){
 
 		}
 	}
-	return $out . '<br>' . '<br>';
+	return  '<div id="common names" class="Description">' . $out . '</div>';
 }
 
 /**
