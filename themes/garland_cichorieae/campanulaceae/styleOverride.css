@@ -19,14 +19,8 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 #wrapper #container #header #logo-floater {
 	background:url("images/campanu-logo-floater-bg-1.png") repeat-x scroll 0 0 #FF7800;
 	border-right:7px solid white;
-	color:#FFFFFF;
-	float:left;
-	height:92px;
-	margin-left:7px;
-	margin-right:50px;
 	padding-left:15px;
 	padding-right:15px;
-	position:relative;
 	width: auto;
 	z-index:4;
 }
