@@ -1,0 +1,32 @@
+
+@IMPORT url("../styleOverride.css");
+
+#edit-logo {
+background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
+}
+
+#splash {
+  background:#EAEAE2 url(images/Campanula_patula_header-croped-696x92.jpg) no-repeat scroll 0 0; 
+  height:92px;
+  float:left;
+  width:570px;
+  overflow:hidden;
+  float: right;
+  margin-top: -92px;
+  z-index: 2;
+}
+
+#wrapper #container #header #logo-floater {
+	background:url("images/campanu-logo-floater-bg-1.png") repeat-x scroll 0 0 #FF7800;
+	border-right:7px solid white;
+	color:#FFFFFF;
+	float:left;
+	height:92px;
+	margin-left:7px;
+	margin-right:50px;
+	padding-left:15px;
+	padding-right:15px;
+	position:relative;
+	width: auto;
+	z-index:4;
+}

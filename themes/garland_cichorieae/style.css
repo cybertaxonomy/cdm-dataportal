@@ -7,6 +7,7 @@
  * modifying this file.
  */
 
+
 /**
  * Generic elements
  */
@@ -991,3 +992,4 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
   background-color: #dfd;
   border-color: #beb;
 }
+
