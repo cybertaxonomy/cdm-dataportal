@@ -425,11 +425,13 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 						//$out_l4 .= $l4;
 						$footnoteKeyListStr = '';
 						$footNoteKeys = cdm_annotations_as_footnotekeys($element_l4->data);
-						foreach($element_l4->data->sources as $source){
-							if(_is_original_source_type($source)){
-								//$footNoteKeys[] = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
-								$fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
-								cdm_add_footnote_to_array($footNoteKeys, $fn_key);
+						if(isset($element_l4->data->sources)){
+							foreach($element_l4->data->sources as $source){
+								if(_is_original_source_type($source)){
+									//$footNoteKeys[] = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
+									$fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
+									cdm_add_footnote_to_array($footNoteKeys, $fn_key);
+								}
 							}
 						}
 						foreach($footNoteKeys as $key){
