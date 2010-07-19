@@ -853,29 +853,37 @@ function cdm_dataportal_settings_layout(){
     
     //---- IMAGES ----//
     $form['images'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Images'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+	    '#type' => 'fieldset',
+	    '#title' => t('Images'),
+	    '#collapsible' => TRUE,
+	    '#collapsed' => TRUE,
     );
     $options = cdm_rankVocabulary_as_option();
     array_unshift($options, '-- DISABLED --');
     $form['images']['image_hide_rank'] =  array(
-    '#type'          => 'select',
-    '#title'         => t('Hide Images for Taxa above'),
-    '#default_value' => variable_get('image_hide_rank', '0'),
-    '#options'       => $options,
-    '#description'   => t(''),
+	    '#type'          => 'select',
+	    '#title'         => t('Hide Images for Taxa above'),
+	    '#default_value' => variable_get('image_hide_rank', '0'),
+	    '#options'       => $options,
+	    '#description'   => t(''),
     );
     //show media
     $selectShowMedia = array(0 => "Show only taxon media",
     1 => "Show taxon and child taxon media");
     $form['images']['cdm_dataportal_show_media'] = array(
-    '#type' => 'select',
-    '#title' => t('Available media files'),
-    '#default_value' => variable_get('cdm_dataportal_show_media', false),
-    '#options' => $selectShowMedia,
-    '#description'   => t('Select if a taxon should show only his media or also child media.')
+	    '#type' => 'select',
+	    '#title' => t('Available media files'),
+	    '#default_value' => variable_get('cdm_dataportal_show_media', false),
+	    '#options' => $selectShowMedia,
+	    '#description'   => t('Select if a taxon should show only his media or also child media.')
+    );
+    $selectShowMedia = array(0 => "Show only taxon media",
+    1 => "Show taxon and child taxon media");
+    $form['images']['cdm_dataportal_show_default_image'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show default image'),
+      '#default_value' => variable_get('cdm_dataportal_show_default_image', false),
+      '#description'   => t('Select if the taxon profile page should display the default image if no image is available for the chosen taxon.')
     );
 
     // --- SEARCH TAXA GALLERY ---- //
