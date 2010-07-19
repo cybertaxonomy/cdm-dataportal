@@ -5,18 +5,35 @@
     <title><?php print $head_title ?></title>
     <?php print $head ?>
     <?php print $styles ?>
-    <style type="text/css" media="all">@import "<?php print base_path() . path_to_theme() ?>/cdm_style.css";</style>
 <?php 
-   /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   * OpenLayers.js must be loaded BEFORE jQuery. 
-   * If jQuery loaded before $.something will fail in IE8.
-   * Therefore we add OpenLayers.js it in the page.tpl.php
-   * -----------------------------------------------------
-   * Andreas Kohlbecker [Feb 25th 2010]:
-   * This problems seems to be solved somehow (a bugfix in IE8?)
-   * so I am removing this "hack" by uncommenting the line below
+    
+      /**
+			 * Return the path to the currently selected sub theme.
    */ 
-  //print ('<script type="text/javascript" src="'.drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js'.'"></script>'."\n");
+			function path_to_sub_theme() {
+        global $theme, $user, $custom_theme; 
+        
+			  $themes = list_themes();
+			  
+			  // Only select the user selected theme if it is available in the
+			  // list of enabled themes.
+			  $theme = $user->theme && $themes[$user->theme]->status ? $user->theme : variable_get('theme_default', 'garland');
+			
+			  // Allow modules to override the present theme... only select custom theme
+			  // if it is available in the list of installed themes.
+			  $theme = $custom_theme && $themes[$custom_theme] ? $custom_theme : $theme;
+		
+			  return dirname($themes[$theme]->filename);
+			}
+			
+    ?>
+    <style type="text/css" media="all">@import "<?php 
+      print base_path(); 
+	    $subThemePath = path_to_sub_theme();
+	    print $subThemePath; 
+      
+      ?>/styleOverride.css";</style>
+<?php 
   print $scripts 
 ?>
 <!--    <style type="text/css" media="print">@import "<?php print base_path() . path_to_theme() ?>/print.css";</style>-->
