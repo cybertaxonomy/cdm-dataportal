@@ -752,8 +752,6 @@ function cdm_dataportal_settings_layout(){
 
 	$form = array();
 
-
-	
 	$form['cdm_taxonname_type'] = array(
     '#type' => 'select',
     '#title'         => t('Taxon name type'),
@@ -878,6 +876,14 @@ function cdm_dataportal_settings_layout(){
     '#default_value' => variable_get('cdm_dataportal_show_media', false),
     '#options' => $selectShowMedia,
     '#description'   => t('Select if a taxon should show only his media or also child media.')
+    );
+    $selectShowMedia = array(0 => "Show only taxon media",
+    1 => "Show taxon and child taxon media");
+    $form['images']['cdm_dataportal_show_default_image'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show default image'),
+      '#default_value' => variable_get('cdm_dataportal_show_default_image', false),
+      '#description'   => t('Select if the taxon profile page should display the default image if no image is available for the chosen taxon.')
     );
 
     // --- SEARCH TAXA GALLERY ---- //
