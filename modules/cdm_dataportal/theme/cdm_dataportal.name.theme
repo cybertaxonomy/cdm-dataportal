@@ -47,22 +47,24 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 		}else {
 			// it's a NameTypeDesignation
 			if($typeDesignation->notDesignated){
-				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: '.t('not designated'). '</li>';
+				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span> '.t('not designated'). '</li>';
 			}else if($typeDesignation->typeName){
 				$link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
-				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: ';
+				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span> ';
 
+			if($typeDesignation->citation){
+          $out .= lectotype_citation_layout($typeDesignation->citation);
+          //footnotes
+          $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, $typeDesignation->citation->titleCache);
+          $out .= theme('cdm_footnote_key', $fkey_typeDesignation) . '): ';          
+          $typeDesignation_footnotes = true;
+        }
+				
 				if($typeDesignation->typeName->nomenclaturalReference){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
 				}
 				$out .= theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri);
-				if($typeDesignation->citation){
-					$out .= lectotype_citation_layout($typeDesignation->citation);
-					//footnotes
-					$fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, $typeDesignation->citation->titleCache);
-          $out .= theme('cdm_footnote_key', $fkey_typeDesignation) . ')';          
-          $typeDesignation_footnotes = true;
-				}
+				
 			}
 		}
 	}
