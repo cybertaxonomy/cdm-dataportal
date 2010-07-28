@@ -16,26 +16,36 @@
  * @param $typeDesignation_citation The lectotype citation to print
  * @return html valid string
  */
-function lectotype_citation_layout($typeDesignation_citation){
+function lectotype_citation_layout($typeDesignation){
+
 	$res = '';
-	if ($typeDesignation_citation){
+	$citation = $typeDesignation->citation;
+	$pages = $typeDesignation->citationMicroReference;
+	if ($citation){
 		//$type = $typeDesignation_citation->type;
-		$year = substr($typeDesignation_citation->datePublished->start, 0, 4);
-		$page = $typeDesignation_citation->page;
-		$author = $typeDesignation_citation->authorTeam->titleCache;
+		$year = substr($citation->datePublished->start, 0, 4);
+		$author = $citation->authorTeam->titleCache;
 		$res .= ' (designated by ';
 		$res .= $author;
 		$res .= ($year ? ' '.$year : '');
-		$res .= ($year && $page ? ': '. $page : '');
+		$res .= ($pages ? ': '. $pages : '');
 		//$res .= ')';
-		//$res .= ($type ? ': ' . $type : '');
 	}
 	return $res;
 }
 
 function theme_cdm_typedesignations($typeDesignations = array()){
-
-	RenderHints::pushToRenderStack('typedesignations');
+/*
+	if(isset($renderTemplate['referencePart']['reference']) && $taxonName->nomenclaturalReference){
+      $microreference = null;
+      if(isset($renderTemplate['referencePart']['microreference'])){
+        $microreference = $taxonName->nomenclaturalMicroReference;
+      }
+      $citation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($typeDesignation->uuid), "microReference=".urlencode($microreference));
+      $citation = $citation->String;
+*/      
+	
+  RenderHints::pushToRenderStack('typedesignations');
 	//_add_js_cluetip();
 	$out = '<ul class="typeDesignations">';
   $typeDesignation_footnotes = false;
@@ -47,24 +57,23 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 		}else {
 			// it's a NameTypeDesignation
 			if($typeDesignation->notDesignated){
-				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span> '.t('not designated'). '</li>';
+				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: '.t('not designated'). '</li>';
 			}else if($typeDesignation->typeName){
 				$link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
-				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span> ';
+				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>';
 
-			if($typeDesignation->citation){
-          $out .= lectotype_citation_layout($typeDesignation->citation);
+			if($typeDesignation->citation){				
+          $out .= lectotype_citation_layout($typeDesignation);
           //footnotes
           $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, $typeDesignation->citation->titleCache);
-          $out .= theme('cdm_footnote_key', $fkey_typeDesignation) . '): ';          
-          $typeDesignation_footnotes = true;
+          $out .= theme('cdm_footnote_key', $fkey_typeDesignation) . ')';          
         }
 				
 				if($typeDesignation->typeName->nomenclaturalReference){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
 				}
-				$out .= theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri);
-				
+                   
+				$out .= ': ' . theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri);
 			}
 		}
 	}
@@ -122,9 +131,9 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 		$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
 	}
 	$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-acronyms');
-	if ($typeDesignation_footnotes){
-	  $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid);  
-	}
+	
+	$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid);  
+	
 	RenderHints::popFromRenderStack();
 	return $out;
 }
@@ -231,7 +240,7 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 	foreach($homotypicalGroup as $synonym){
 		if($is_first_entry){
 			$is_first_entry = false;
-			$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
+			$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
 			// is first list entry
 			$out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$synonym, UUID_HETEROTYPIC_SYNONYM_OF).'</li>';
 		} else {
@@ -281,7 +290,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 		$out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 	}
 
-	$typeDesignations = cdm_ws_get(CDM_WS_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
+	$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}

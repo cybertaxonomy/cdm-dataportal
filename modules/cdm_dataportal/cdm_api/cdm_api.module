@@ -21,7 +21,7 @@ require_once ('uuids.php');
 require_once ('webservice_uris.php');
 require_once ('cdm_node.php');
 
-define('DEFAULT_TAXONTREE_RANKLIMIT', '');//TODO Genus UUID
+define('DEFAULT_TAXONTREE_RANKLIMIT', '1b11c34c-48a8-4efa-98d5-84f7f66ef43a');//TODO Genus UUID
 
 
 /**
@@ -98,7 +98,7 @@ function cdm_api_settings_form(){
   $form['cdm_webservice']['taxontree_ranklimit'] =  array(
     '#type'          => 'select',
     '#title'         => t('Rank of highest displayed taxon'),
-    '#default_value' => variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT_UUID),
+    '#default_value' => variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT), //before DEFAULT_TAXONTREE_RANKLIMIT_UUID
     '#options'       => cdm_rankVocabulary_as_option(),
     '#description'   => t('The rank of the highest displayed taxon in the taxontree.'),
   );

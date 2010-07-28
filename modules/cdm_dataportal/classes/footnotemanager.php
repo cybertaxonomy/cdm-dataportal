@@ -35,6 +35,17 @@ class FootnoteManager
     
     /**
      * 
+     * @param $footnoteListKey a string as key to the list of footnotes
+     * @return
+     */
+    public static function removeFootnoteList($footnoteListKey){
+      if(array_key_exists($footnoteListKey, self::$fnstore)) {
+	      unset(self::$fnstore[$footnoteListKey]);
+      }
+    }
+    
+    /**
+     * 
      * @param $footnoteListKey
      * @param $separator
      * @return the rendered footnotelist
