@@ -20,14 +20,10 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 
 	$specimenTypeDesignations = array();
 	foreach($typeDesignations as $typeDesignation){
-		
 		if($typeDesignation->class == 'SpecimenTypeDesignation'){
-			// SpecimenTypeDesignations should be ordered. collect theme here only
-			
-			
+			// SpecimenTypeDesignations should be ordered. collect theme here only			
 			$specimenTypeDesignations[] = $typeDesignation;
 		}else {
-
 			// it's a NameTypeDesignation
 			if($typeDesignation->notDesignated){
 				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: '.t('not designated'). '</li>';
@@ -39,8 +35,11 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
 				}
 				$out .= theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri);
+				if($typeDesignation->citation){
+				  $out .= ' ' . $typeDesignation->citation->titleCache;
 			}
 		}
+	}
 	}
 
 	if(!empty($specimenTypeDesignations)){
