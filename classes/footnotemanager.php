@@ -63,7 +63,6 @@ class FootnoteManager
       if(!$object){
       	return false;
       }
-
       if(!array_key_exists($footnoteListKey, self::$fnstore)){
           self::$fnstore[$footnoteListKey] = array();
       }
