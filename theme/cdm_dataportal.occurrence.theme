@@ -10,25 +10,35 @@
 * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
 */
 
-function theme_cdm_specimen($specimen){
+/**
+ * 
+ * @param $specimenTypeDesignation
+ * @return unknown_type
+ */
+function theme_cdm_specimen($specimenTypeDesignation){
 
-	_add_js_thickbox();
+	// _add_js_thickbox();
+	
+	if($specimenTypeDesignation->typeSpecimen){
+		$derivedUnitFacade = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $specimenTypeDesignation->typeSpecimen->uuid);
+		var_dump($derivedUnitFacade);
+	}
 
 	$out = '';
-	if(isset($specimen->media[0])){
+	if(isset($specimenTypeDesignation->media[0])){
 
 		$image_url = drupal_get_path('module', 'cdm_dataportal').'/images/external_link.gif';
 		// thickbox has problems reading the first url parameter, so a litte hack is needed here:
 		// adding a meaningless patameter &tb_hack=1& ....
-		$out .= '&nbsp;<a href="#TB_inline?tb_hack=1&width=300&amp;height=330&amp;inlineId=specimen_media_'.$specimen->uuid.'" class="thickbox">'
+		$out .= '&nbsp;<a href="#TB_inline?tb_hack=1&width=300&amp;height=330&amp;inlineId=specimen_media_'.$specimenTypeDesignation->uuid.'" class="thickbox">'
 		.'<img src="'.$image_url.'" title="'.t('Show media').'" /></a>';
 
-		$out .= '<div id="specimen_media_'.$specimen->uuid.'" class="tickbox_content"><table>';
+		$out .= '<div id="specimen_media_'.$specimenTypeDesignation->uuid.'" class="tickbox_content"><table>';
 
 		$media_row = '<tr class="media_data">';
 		$meta_row = '<tr class="meta_data">';
 
-		foreach($specimen->media as $media){
+		foreach($specimenTypeDesignation->media as $media){
 			foreach($media->representations as $representation){
 
 				//TODO this this is PART 2/2 of a HACK - select preferred representation by mimetype and size
@@ -61,7 +71,7 @@ function theme_cdm_specimen($specimen){
 							}
 						}
 						$media_row .= '<td><a href="'.$part->uri.'" target="'.$part->uuid.'">'.$a_child.'</a></td>';
-						$meta_row .= '<td><span class="label">'.check_plain($specimen->titleCache).'</span><div class="webapp">'.$webapp.'</div></td>';
+						$meta_row .= '<td><span class="label">'.check_plain($specimenTypeDesignation->titleCache).'</span><div class="webapp">'.$webapp.'</div></td>';
 					} // END parts
 					//TODO this is PART 2/2 of a hack
 					break;

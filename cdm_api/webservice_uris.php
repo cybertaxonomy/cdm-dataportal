@@ -99,3 +99,5 @@ define('CDM_WS_FEATURETREE', 'featuretree/$0');
 define('CDM_WS_FEATURETREES', 'featuretree');
 
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'geo/map/distribution/$0');
+
+define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedunitfacade/$0');
