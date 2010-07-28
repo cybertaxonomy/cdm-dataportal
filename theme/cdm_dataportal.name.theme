@@ -19,7 +19,7 @@
 function lectotype_citation_layout($typeDesignation_citation){
 	$res = '';
 	if ($typeDesignation_citation){
-		$type = $typeDesignation_citation->type;
+		//$type = $typeDesignation_citation->type;
 		$year = substr($typeDesignation_citation->datePublished->start, 0, 4);
 		$page = $typeDesignation_citation->page;
 		$author = $typeDesignation_citation->authorTeam->titleCache;
@@ -27,8 +27,8 @@ function lectotype_citation_layout($typeDesignation_citation){
 		$res .= $author;
 		$res .= ($year ? ' '.$year : '');
 		$res .= ($year && $page ? ': '. $page : '');
-		$res .= ')';
-		$res .= ($type ? ': ' . $type : '');
+		//$res .= ')';
+		//$res .= ($type ? ': ' . $type : '');
 	}
 	return $res;
 }
@@ -47,10 +47,10 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 		}else {
 			// it's a NameTypeDesignation
 			if($typeDesignation->notDesignated){
-				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: '.t('not designated'). '</li>';
+				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: '.t('not designated'). '</li>';
 			}else if($typeDesignation->typeName){
                 $link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
-				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: ';
+				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: ';
 
 				if($typeDesignation->typeName->nomenclaturalReference){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
@@ -60,7 +60,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 					$out .= lectotype_citation_layout($typeDesignation->citation);
 					//footnotes
 					$fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, $typeDesignation->citation->titleCache);
-          $out .= theme('cdm_footnote_key', $fkey_typeDesignation);
+          $out .= theme('cdm_footnote_key', $fkey_typeDesignation) . ')';          
           $typeDesignation_footnotes = true;
 			}
 		}
