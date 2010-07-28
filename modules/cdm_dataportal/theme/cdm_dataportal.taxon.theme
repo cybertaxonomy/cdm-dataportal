@@ -125,7 +125,6 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	}
 	$out .= '</ul>';
 
-	//$out .= theme('cdm_footnotes', $footnoteListKey, 'div');
 	$tr_footnotes = theme('cdm_footnotes', $footnoteListKey, 'div');
 	$tr_footnotes_exploded = explode('sensu', $tr_footnotes);
 	$tr_footnotes_aux = '';
