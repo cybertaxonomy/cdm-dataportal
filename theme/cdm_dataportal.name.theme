@@ -2,43 +2,22 @@
 // $Id$
 
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
- *
- * The contents of this file are subject to the Mozilla Public License Version 1.1
- * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+*/
 
-/**
- * This function prints the lectotype citation with the correct layout
- * Lectotypes are renderized in the synonymy tab of a taxon if they exist
- * @param $typeDesignation_citation The lectotype citation to print
- * @return html valid string
- */
-function lectotype_citation_layout($typeDesignation_citation){
-	$res = '';
-	if ($typeDesignation_citation){
-		//$type = $typeDesignation_citation->type;
-		$year = substr($typeDesignation_citation->datePublished->start, 0, 4);
-		$page = $typeDesignation_citation->page;
-		$author = $typeDesignation_citation->authorTeam->titleCache;
-		$res .= ' (designated by ';
-		$res .= $author;
-		$res .= ($year ? ' '.$year : '');
-		$res .= ($year && $page ? ': '. $page : '');
-		//$res .= ')';
-		//$res .= ($type ? ': ' . $type : '');
-	}
-	return $res;
-}
+
 
 function theme_cdm_typedesignations($typeDesignations = array()){
 
 	RenderHints::pushToRenderStack('typedesignations');
 	//_add_js_cluetip();
 	$out = '<ul class="typeDesignations">';
-  $typeDesignation_footnotes = false;
+
 	$specimenTypeDesignations = array();
 	foreach($typeDesignations as $typeDesignation){
 		if($typeDesignation->class == 'SpecimenTypeDesignation'){
@@ -48,25 +27,27 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 
 			// it's a NameTypeDesignation
 			if($typeDesignation->notDesignated){
-				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span> '.t('not designated'). '</li>';
+				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: '.t('not designated'). '</li>';
 			}else if($typeDesignation->typeName){
                 $link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
-				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span> ';
+				$out .= '<li class="nameTypeDesignation"><span class="status">Type</span>: ';
 
-				if($typeDesignation->citation){
-					$out .= lectotype_citation_layout($typeDesignation->citation);
-					//footnotes
-					$fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, $typeDesignation->citation->titleCache);
-          $out .= theme('cdm_footnote_key', $fkey_typeDesignation) . '): ';          
-          $typeDesignation_footnotes = true;
-			}
-				
 				if($typeDesignation->typeName->nomenclaturalReference){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
-		}
+				}
 				$out .= theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri);
-				
-	}
+
+				//        if($typeDesignation->typeName->class == 'ZoologicalName') {
+				//          // appending authorTeam which has been skipped in cdm_name
+				//          $authorTeam = cdm_taggedtext_value($typeDesignation->typeName->taggedName, 'authors');
+				//          $authorTeamPart = l('<span class="authors">'.$authorTeam.'</span>', "/cdm_dataportal/reference/".$typeDesignation->typeName->nomenclaturalReference->uuid, array(), NULL, NULL, FALSE, TRUE);
+				//          $out .= (str_endsWith($authorTeam, ')') ? '' : ', ').$authorTeamPart;
+				//        } else {
+				//          $out .= ' '.theme('cdm_reference', $typeDesignation->citation, true, $referenceStyle);
+				//          $out .= '</li>';
+				//        }
+			}
+		}
 	}
 
 	if(!empty($specimenTypeDesignations)){
@@ -88,14 +69,14 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 					$shortCitation = theme('cdm_reference', $std->citation);
 					$missingShortCitation = true;
 				}
-
+				
 				$typeReference .= '&nbsp;(' . t('designated by');
 				$typeReference .= '&nbsp;<span class="typeReference '.($missingShortCitation ? '' : 'cluetip').' no-print" title="'. htmlspecialchars('|'.theme('cdm_reference',$std->citation ).'|') .'">';
 				$typeReference .= $shortCitation.'</span>';
 				$typeReference .= ':'. $std->citationMicroReference .')';
 
 			    $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-lectotypes', $std->citation->titleCache);
-				$typeReference .= theme('cdm_footnote_key', $_fkey2);
+				$typeReference .= theme('cdm_footnote_key', $_fkey2); 
         //$citation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($taxonName->nomenclaturalReference->uuid), "microReference=".urlencode($microreference));
         //$citation = $citation->String;
 				
@@ -108,9 +89,9 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			$out .= '<span class="status">'.(($std->typeStatus->representation_L10n) ? $std->typeStatus->representation_L10n : t('Type')) .$typeReference.'</span>: '.$std->typeSpecimen->titleCache;
 			$out .= theme('cdm_specimen', $std->typeSpecimen);
 
-			//footnotes for synonymy acronyms
+			//footnotes for synonymy acronyms 
 			$_fkey = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-acronyms', $std->typeSpecimen->collection->titleCache);
-			$out .= theme('cdm_footnote_key', $_fkey);
+            $out .= theme('cdm_footnote_key', $_fkey);  
 			$out .= '</li>';
 			
 			if (!empty($std->citation)){
@@ -126,9 +107,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
        $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
       }
     $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-acronyms');
-	if ($typeDesignation_footnotes){
-	  $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid);  
-	}
+  
 	RenderHints::popFromRenderStack();
 	return $out;
 }
@@ -172,11 +151,11 @@ function theme_cdm_nameRelationships($nameRelationships, $skipTypes = false){
     if(!$nameRelationships){
         return;
     }
-
+    
 	RenderHints::pushToRenderStack('nameRelationships');
     $footnoteListKey = 'nameRelationships';
     RenderHints::setFootnoteListKey($footnoteListKey);
-
+    
 	// group by relationship type
 	$relationshipGroups = array();
 	foreach($nameRelationships as $nameRelationship){
@@ -207,7 +186,7 @@ function theme_cdm_nameRelationships($nameRelationships, $skipTypes = false){
 		$out .= theme('block', $block);
 	}
 	$out .= theme('cdm_footnotes', $footnoteListKey, 'div');
-
+	
 	RenderHints::popFromRenderStack();
 	return $out;
 }
@@ -217,19 +196,19 @@ function theme_cdm_nameRelationships($nameRelationships, $skipTypes = false){
 function theme_cdm_homotypicSynonymLine($taxon){
 	$out = '';
 	$out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
-
+	
 	return $out;
 }
 
 function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
-
+	
 	RenderHints::pushToRenderStack('heterotypicSynonymyGroup');
-
+	
 	$out = '';
 	$out = '<ul class="heterotypicSynonymyGroup">';
     $footnoteListKey = ( isset($homotypicalGroup[0]) ? $homotypicalGroup[0]->uuid : 'NULL');
 	RenderHints::setFootnoteListKey($footnoteListKey);
-
+    
 	$is_first_entry = true;
 	$typeDesignations = null;
 	foreach($homotypicalGroup as $synonym){
@@ -243,20 +222,14 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 			$out .= '<li class="synonym">'.theme('cdm_related_taxon',$synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 		}
 	}
-	$test =  theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
-	//tuypedesignations footnotes
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
-		
 	}
-	//annotation footnotes
-	//$annotation_key = ( isset($homotypicalGroup[0]) ? $homotypicalGroup[0]->uuid : 'NULL');
-	//$fkey_annotations = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-annotations-' . $annotation_key, $annotation_key);
-	//$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-annotations-' . $annotation_key);  
-	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');  
+
+	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
-
-
+    
+    
     RenderHints::popFromRenderStack();
 	return $out;
 }
@@ -264,12 +237,12 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 
 
 function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = array()){
-
+	
 	RenderHints::pushToRenderStack('homotypicSynonymyGroup');
-
+	
 	$footnoteListKey = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
 	RenderHints::setFootnoteListKey($footnoteListKey);
-
+	
 	if(! is_array($synonymList) || count($synonymList) == 0){
 		return;
 	}
@@ -293,7 +266,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 
 	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
-
+	
 	RenderHints::popFromRenderStack();
 	return $out;
 }
@@ -318,12 +291,12 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 	&& is_string($taxonName->taggedName[0]->text)
 	&& $taxonName->taggedName[0]->text != ''
 	&& $taxonName->taggedName[0]->type == 'name';
-
+	
 	// got to use second entry as first one, see ToDo comment below ...
 	if($firstEntryIsValidNamePart){
 
 		$taggedName = $taxonName->taggedName;
-
+		
 		$lastAuthorElementString = false;
 		$hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
 		$hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
@@ -437,7 +410,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 
 	// render
 	$out = '<span ref="/name/'.$taxonName->uuid.'">';
-
+	
 	foreach($renderTemplate as $partName=>$part){
 		$separator = '';
 		$partHtml = '';
@@ -466,8 +439,9 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 		}
 	}
     $out .= '</span>';
-
+    
 	$out .= theme('cdm_annotations_as_footnotekeys', $taxonName);
+	
 	return $out;
 }
 
