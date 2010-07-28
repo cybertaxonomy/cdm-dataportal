@@ -125,7 +125,11 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	}
 	$out .= '</ul>';
 
-	$out .= theme('cdm_footnotes', $footnoteListKey, 'div');
+	//$out .= theme('cdm_footnotes', $footnoteListKey, 'div');
+	$test = theme('cdm_footnotes', $footnoteListKey, 'div');
+	
+	$out .= $test;
+	
     RenderHints::popFromRenderStack();
 	return $out;
 }
