@@ -338,6 +338,14 @@ a.toc:link, a.toc:visited {
     background-image: none;
 }
 
+/* footnotes margin when listing the synonymy*/
+.heterotypicSynonymyGroup .footnote{
+  margin-left: 3em;
+}
+.homotypicSynonyms .footnote{
+  margin-left: 1em;
+}
+/* -- */
 .featuretree_structure {
 	 font-size: 90%;
 	 line-height: 1em;
