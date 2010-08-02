@@ -57,7 +57,6 @@ function theme_cdm_feature_name($feature_name){
 }
 
 function theme_cdm_featureTrees($mergedTrees, $taxon){
-
 	if(!$mergedTrees){
 		return;
 	}
@@ -228,7 +227,6 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
 
 	// add annotations as footnote key
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
-
 	return $out;
 }
 
@@ -558,10 +556,14 @@ function theme_cdm_distribution_map($taxon){
 
 	$server = variable_get('cdm_dataportal_geoservice_access_point', false);
 
-	if(!server){
+	if(!$server){
+		//warning message
+		 drupal_set_message('No \'Geoservice Access Point\' has been set so far. '
+    . 'Please configure the variable \'Geoservice Access Point\' here ' 
+    . l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/geo'), 'warning');
+		//message to render
 		return "<p>No geoservice specified</p>";
 	}else{
-
 		$fontStyles = array(0 => "plane", 1 => "italic");
 
 		$map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);

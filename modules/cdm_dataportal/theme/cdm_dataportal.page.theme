@@ -178,7 +178,6 @@ function theme_cdm_taxon_page_description($taxon, $mergedTrees, $media = null, $
 	    $imageMaxExtend = 184;
 	    $out .= '<div class="preferredImage">'.$defaultRepresentationPart->uri.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
 	  }
-
 	// description TOC
 	$out .= theme('cdm_featureTreeTOCs', $mergedTrees);
 	// description
