@@ -16,7 +16,7 @@ define('CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS', 'portal/taxon/$0/nameTypeDesi
 
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
 
-define('CDM_WS_PORTAL_NAME_DESCRIPTIONS', 'portal/name/$0/descriptions');
+define('CDM_WS_PORTAL_NAME_DESCRIPTIONS', 'portal/name/$0/taxonNameDescriptions'); //TaxonNameDescriptions
 
 define('CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE', 'portal/description/$0,$1/namedAreaTree');
 define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE', 'portal/description/$0,$1/DistributionTree');
@@ -45,9 +45,9 @@ define('CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS', 'portal/taxon/$0/toNameRelationsh
 
 define('CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS', 'portal/taxon/$0/fromNameRelationships');
 
-define('CDM_WS_DESCRIPTIONELEMENT', 'descriptionelement/$0');
+define('CDM_WS_DESCRIPTIONELEMENT', 'descriptionElement/$0');
 
-define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionelement/$0');
+define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
 
 
 /**
@@ -69,22 +69,22 @@ define('CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA', 'portal/taxon/$0/subtree/media/$1/$2
  *
  * stub: treenode_root
  */
-define('CDM_WS_PORTAL_TAXONOMY',  'portal/taxontree/');
+define('CDM_WS_PORTAL_TAXONOMY',  'portal/taxonTree');
 
-define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES',  'portal/taxontree/$0/childNodes/');
+define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES',  'portal/taxonTree/$0/childNodes');
 
-define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK',  'portal/taxontree/$0/childNodesAt/$1/');
+define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK',  'portal/taxonTree/$0/childNodesAt/$1');
 
-define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON',  'portal/taxontree/$0/childNodesOf/$1/');
+define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON',  'portal/taxonTree/$0/childNodesOf/$1');
 
-define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM',  'portal/taxontree/$0/pathFrom/$1');
+define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM',  'portal/taxonTree/$0/pathFrom/$1');
 
-define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK',  'portal/taxontree/$0/pathFrom/$1/toRank/$2');
+define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK',  'portal/taxonTree/$0/pathFrom/$1/toRank/$2');
 
 
-define('CDM_WS_PORTAL_TAXONOMY_MEDIA', 'portal/taxontree/$0/$1');
+define('CDM_WS_PORTAL_TAXONOMY_MEDIA', 'portal/taxonTree/$0/$1');
 
-define('CDM_WS_TERMVOCABULARY', 'term/$0');
+define('CDM_WS_TERMVOCABULARY', 'termVocabulary/$0');
 
 define('CDM_WS_TERM_COMPARE', 'term/$0/compareTo/$1');
 
@@ -94,12 +94,12 @@ define('CDM_WS_TDWG_LEVEL', 'term/tdwg/$0');
  * returns FeatureTrees that are stored in this community store
  *
  */
-define('CDM_WS_FEATURETREE', 'featuretree/$0');
+define('CDM_WS_FEATURETREE', 'featureTree/$0');
 
 //define('CDM_WS_FEATURETREE_CHILDREN', 'featuretree/$0/children');
 
-define('CDM_WS_FEATURETREES', 'featuretree');
+define('CDM_WS_FEATURETREES', 'featureTree');
 
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'geo/map/distribution/$0');
 
-define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedunitfacade/$0');
+define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedUnitFacade/$0');
