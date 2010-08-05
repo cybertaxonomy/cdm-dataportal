@@ -565,8 +565,13 @@ function theme_cdm_distribution_map($taxon){
 		$fontStyles = array(0 => "plane", 1 => "italic");
 		
 		$map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
-		$query_string = str_replace('%3A', ":", $map_data_parameters->String);
-
+		$query_string = $map_data_parameters->String;
+		if(!$query_string){
+			// the $query_string is empty if there are no distribution areas defined
+			return ;
+		}
+		
+		$query_string = str_replace('%3A', ":", $query_string);
 
 		$display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
 		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
