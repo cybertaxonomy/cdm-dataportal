@@ -58,7 +58,7 @@ function theme_cdm_name_page_title($taxon_name){
 function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
 	global $theme;
-
+	
 	$page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
 	$hideTabs = array();
 
@@ -107,28 +107,21 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   $out = '';
   $out .= theme('cdm_back_to_search_result_button');
   if(variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR)){
-  $out .= theme('cdm_acceptedFor', 'page_general');
+    $out .= theme('cdm_acceptedFor', 'page_general');
   }
+  
   // --- DESCRIPTION --- //
   if($page_part == 'description' || $page_part == 'all'){
 
   	$featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
   	$taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid); //con el taxon puedo coger las descripciones!!!!!
   	$mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $taxonDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
-
-/*
-  	// tree distributions
-  	$test = theme('cdm_description_areas', $taxon->uuid);
-    $out .= '<div id=test>';
-    $out .= $test;
-    $out .= '</div>';
-    // ----
-*/
-  	
+ 	
   	$out .= '<div id="general">';
   	$out .= theme('cdm_taxon_page_description', $taxon, $mergedTrees, $media, $hideImages);
   	$out .= '</div>';
   }
+  
   // --- IMAGES --- //
   if(!$hideImages && $page_part == 'images' || $page_part == 'all'){
   	$out .= '<div id="images">';
@@ -140,9 +133,9 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
   	if($theme == 'garland_cichorieae'){
   		$out .= theme('cdm_taxon_page_images_cichorieae_copyright');
-  	}
-  	 
+  	}  	 
   }
+  
   // --- SYNONYMY --- //
   if($page_part == 'synonymy' || $page_part == 'all'){
   	$out .= '<div id="synonymy">';
@@ -154,7 +147,16 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
   	$out .= '</div>';
   }
-
+  
+  // --- SPECIMENS --- //
+  if($page_part == 'specimens' || $page_part == 'all'){
+  	$out .= '<div id="specimens">';
+    if($page_part == 'all'){
+      $out .= '<h2>'.t('Specimens').'</h2>';
+    }
+    $out .= theme('cdm_taxon_page_specimens', $taxon);
+    $out .= '</div>';
+  }
   return $out;
 }
 
@@ -185,6 +187,24 @@ function theme_cdm_taxon_page_description($taxon, $mergedTrees, $media = null, $
 	return $out;
 }
 
+
+function theme_cdm_taxon_page_specimens($taxon){
+	
+  RenderHints::pushToRenderStack('taxon_page_specimens');
+
+  /*
+  $header = array( 'title 1', 'title 2', 'title 3' );
+  $rows = array( 
+    // Simple row array
+    array( 'Cell 1', 'Cell 2', 'Cell 3' ), 
+    // Row with attributes on the row and some of its cells. 
+    array( 'data' => array('Cell 1', array('data' => 'Cell 2', 'colspan' => 2)), 'class' => 'funky' ) );
+  //theme_table($header, $rows, $attributes = array(), $caption = NULL);
+  $out = theme_table($header, $rows);
+  */
+  RenderHints::popFromRenderStack();
+  //return $out;
+}
 /**
  * Show whole synonymy for the accepted taxon. Synonymy list is headed by the complete scientific name
  * of the accepted taxon with nomenclatural reference.

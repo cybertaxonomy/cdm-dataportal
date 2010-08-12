@@ -97,10 +97,8 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 
 	foreach($featureNodes as $node){
 		// process $descriptionElements with content only
-		if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0){
-
+		if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0 || count($node->children) > 0){
 			$featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
-
 			$block->module = 'cdm_dataportal';
 
 			if($node->feature->uuid != UUID_IMAGE){
@@ -116,7 +114,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 
 				//get the text for the feature block
 				//if ($node->feature->titleCache == 'Common Name'){
-			  if ($node->feature->uuid == UUID_COMMON_NAME){
+				if ($node->feature->uuid == UUID_COMMON_NAME){
 					$block->content .= theme('cdm_common_names', $node->descriptionElements);
 				} else {
 					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
@@ -144,11 +142,27 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 			}
 		}
 		// theme
+
 		if(count($node->children) > 0){
-			$out .= '<div class="nested_description_elements">';
-			$out .= theme('cdm_feature_nodes', $node->children, $taxon);
-			$out .= '</div>';
+			/*
+			 $out .= '<div class="nested_description_elements">';
+			 $out .= theme('cdm_feature_nodes', $node->children, $taxon);
+			 $out .= '</div>';
+			 */
+			$text = '';
+			foreach ($node->children as $child){
+			 //$out .= theme('cdm_descriptionElementTextData', $child->descriptionElements[0], false);
+			 if (is_array($child->descriptionElements)){//if condition added to avoid warnings
+			 	foreach ($child->descriptionElements as $element) {
+			 		$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+			 	}
+			 	$text .= $description;
+			 	$description = '';
+			 }
+			}
+			$out .= $text;
 		}
+
 	}
 	RenderHints::popFromRenderStack();
 	return $out;
@@ -189,6 +203,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement){
 	$out;
 	$res_author;
 	$res_date;
+
 	foreach($element->sources as $source){
 		$referenceCitation = theme('cdm_DescriptionElementSource', $source);
 		if($description && strlen($description) > 0 && $referenceCitation ){
@@ -236,13 +251,14 @@ function theme_cdm_common_names($elements){
 	$out = '';
 	$separator = ',';
 
-	foreach ($elements as $element){
-		if ($element->class == 'CommonTaxonName'){
-			$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
-			$common_names[$key][] = $element;
-		}
+	if (is_array($elements)){
+	 foreach ($elements as $element){
+	 	if ($element->class == 'CommonTaxonName'){
+	 		$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
+	 		$common_names[$key][] = $element;
+	 	}
+	 }
 	}
-
 	if (count($common_names) > 0){
 		//sorting the a-array based on the area (key)
 		ksort($common_names);
@@ -256,7 +272,7 @@ function theme_cdm_common_names($elements){
 				foreach($element->sources as $source){
 					if(_is_original_source_type($source)){
 						$_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
-						$sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));						
+						$sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));
 					}
 				}
 				$rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
@@ -277,7 +293,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 	$outArray = array();
 	if(variable_get('distribution_sort', false)){
 		$glue = '';
-    $enclosingHtml = 'dl';
+		$enclosingHtml = 'dl';
 	} else {
 		$glue = '';
 		$enclosingHtml = 'ul';
@@ -311,7 +327,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
 		}
 	}
-	
+
 	if(variable_get('distribution_sort', false)){
 		$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
 	}else{
@@ -346,7 +362,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 		foreach($descriptionElement->sources as $source){
 			if(_is_original_source_type($source)){
 				$fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
-        cdm_add_footnote_to_array($footNoteKeys, $fn_key);// ensure uniqueness of the footnote keys
+				cdm_add_footnote_to_array($footNoteKeys, $fn_key);// ensure uniqueness of the footnote keys
 			}
 		}
 		// sort and render footnote keys
@@ -401,17 +417,17 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 			}
 			if (sizeof($element_l3->children) == 0){
 				$footnoteKeyListStr2 = '';
-        $footNoteKeys2 = cdm_annotations_as_footnotekeys($element_l3->data);
+				$footNoteKeys2 = cdm_annotations_as_footnotekeys($element_l3->data);
 				foreach($element_l3->data->sources as $source){
 					if(_is_original_source_type($source)){
-						//$footNoteKeys2[] = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));						
+						//$footNoteKeys2[] = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
 						$fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
-            cdm_add_footnote_to_array($footNoteKeys2, $fn_key);           
+						cdm_add_footnote_to_array($footNoteKeys2, $fn_key);
 					}
 				}
-		    foreach($footNoteKeys2 as $key){
-            $footnoteKeyListStr2 .= theme('cdm_footnote_key', $key, ($footnoteKeyListStr2 ? $separator : ''));
-        }
+				foreach($footNoteKeys2 as $key){
+					$footnoteKeyListStr2 .= theme('cdm_footnote_key', $key, ($footnoteKeyListStr2 ? $separator : ''));
+				}
 				$out_l4 .= $l3 . $footnoteKeyListStr2 . ', ';
 			}
 			foreach ($element_l3->children as $element_l4){//level 4
@@ -504,7 +520,7 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
 
 	if(isset($descriptionElementSource->citation)){
-	   $out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
+		$out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
 	}
 	return $out;
 }
@@ -556,9 +572,9 @@ function theme_cdm_distribution_map($taxon){
 
 	if(!$server){
 		//warning message
-		 drupal_set_message('No \'Geoservice Access Point\' has been set so far. '
-    . 'Please configure the variable \'Geoservice Access Point\' here ' 
-    . l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/geo'), 'warning');
+		drupal_set_message('No \'Geoservice Access Point\' has been set so far. '
+		. 'Please configure the variable \'Geoservice Access Point\' here '
+		. l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/geo'), 'warning');
 		//message to render
 		return "<p>No geoservice specified</p>";
 	}else{
@@ -570,7 +586,7 @@ function theme_cdm_distribution_map($taxon){
 			// the $query_string is empty if there are no distribution areas defined
 			return ;
 		}
-		
+
 		$query_string = str_replace('%3A', ":", $query_string);
 
 		$display_width = variable_get('cdm_dataportal_geoservice_display_width', false);

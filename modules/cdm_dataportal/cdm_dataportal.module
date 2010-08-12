@@ -150,7 +150,7 @@ function cdm_dataportal_menu($may_cache) {
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
       'callback arguments' => 'cdm_dataportal_settings_geo',
-	  'weight' => 1,
+	    'weight' => 1,
       'type' => MENU_LOCAL_TASK,
 		);
 
@@ -323,6 +323,17 @@ function cdm_dataportal_menu($may_cache) {
       'callback arguments' => array(arg(2), "images")
 			// expected callback arguments: name_uuid
 			);
+	
+			$items[] = array(
+      'path' => 'cdm_dataportal/taxon/'.arg(2).'/specimens',
+      'title' => theme('cdm_taxonpage_tab', 'Specimens'),
+      'callback' => 'cdm_dataportal_taxon_page_view',
+      'access' => true,
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 5,
+      'callback arguments' => array(arg(2), "specimens")
+      // expected callback arguments: name_uuid
+      );
 		}
 	}
 
@@ -1230,11 +1241,10 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = false
  *
  * @param $uuid
  * @param $chapter name of the part to display,
- *         valid values are: 'description', 'images', 'synonymy', 'all'
+ *         valid values are: 'description', 'images', 'synonymy', 'specimens', 'all'
  * @return unknown_type
  */
 function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all'){
-
 	// display the page for the taxon defined by $uuid
 	$taxonpage = cdm_dataportal_taxon_view($uuid, $chapter);
 	return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title , $taxonpage->content);
@@ -1311,7 +1321,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
 		drupal_set_title(t('Taxon name does not exist'));
 		return false;
 	}
-	//searching for all the taxon connected with the taxon name on the tree in used
+	//searching for all the taxa connected with the taxon name on the tree in used
 	$name_cache = cdm_ws_get(CDM_WS_NAME_NAMECAHE, array($taxon_name_uuid));
 	$request_params = array();
 	$request_params['query'] = $name_cache;
