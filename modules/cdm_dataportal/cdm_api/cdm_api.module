@@ -1002,7 +1002,7 @@ function _http_request_using_curl($uri, $headers = array(), $method = "GET", $pa
 
 function _featureTree_elements_toString($rootNode, $separator = ', '){
 	$out = '';
-	$featureLabels = array(); var_dump($rootNode);
+	$featureLabels = array(); 
   foreach ($rootNode->children as $featureNode){
   	$out .= ($out ? $separator : '');
     $out .= $featureNode->feature->representation_L10n;

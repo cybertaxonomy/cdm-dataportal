@@ -21,7 +21,6 @@ function theme_cdm_specimen($specimenTypeDesignation){
 	
 	if($specimenTypeDesignation->typeSpecimen){
 		$derivedUnitFacade = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $specimenTypeDesignation->typeSpecimen->uuid);
-		var_dump($derivedUnitFacade);
 	}
 
 	$out = '';

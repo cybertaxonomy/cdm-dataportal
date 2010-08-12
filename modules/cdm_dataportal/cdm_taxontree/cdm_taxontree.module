@@ -809,7 +809,6 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
 	$is_expanded = isset($node->expanded) && $node->expanded = 'expanded';
 /*
 if($node->taxonUuid == '1a0bb171-9461-4713-b98d-d0a5f03dfcb1'){
-	var_dump('ACHTUNG ##########!!!!!!!!!!!!');
 }
 */
 	if($node->tid){
