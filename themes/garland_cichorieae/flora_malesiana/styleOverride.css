@@ -6,7 +6,7 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 }
 
 #splash {
-  background:#EAEAE2 url(images/Campanula_patula_header-croped-696x92.jpg) no-repeat scroll 0 0; 
+  background:#EAEAE2 url(images/flora-malesiana-header2.jpg) no-repeat scroll 0 0; 
   height:92px;
   float:left;
   width:570px;
@@ -17,7 +17,7 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 }
 
 #wrapper #container #header #logo-floater {
-	background:url("images/campanu-logo-floater-bg-1.png") repeat-x scroll 0 0 #FF7800;
+	background:url("images/flora-malesiana-logo-floater-bg-1.jpg") repeat-x scroll 0 0 #FF7800;
 	border-right:7px solid white;
 	padding-left:15px;
 	padding-right:15px;
