@@ -24,3 +24,7 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 	width: auto;
 	z-index:4;
 }
+
+.featureTOC{
+	float: left;
+}

@@ -41,7 +41,7 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
   return $out;
 }
 
-
+/*
 function garland_cichorieae_cdm_descriptionElementTextData($element){
 
   $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
@@ -60,7 +60,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
         $sourceRefs .= ' ('.$referenceCitation.')' ;
 /* 
  * TODO: why does not belongs this code to the cichorieae theme ??
- */         
+ *         
     }else if ($referenceCitation){
       $sourceRefs = $referenceCitation;
       //var_dump('Cichorieae:');
@@ -71,7 +71,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
   }
   return '<p class="descriptionText">' . $description . $sourceRefs . '</p>';
 }
-
+*/
 
 function garland_cichorieae_cdm_taxon_page_images($taxon, $media){
 
