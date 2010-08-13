@@ -76,7 +76,7 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
 
 
 
-function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElement){
+function garland_cichorieae_cdm_descriptionElementTextData($element){
 
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
@@ -85,12 +85,13 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	$res_author;
 	$res_date;
 
+	$default_theme = variable_get('theme_default', 'garland_cichorieae');	
 	if ($default_theme == 'flora_malesiana'){
-		$asListElement = false;
-	}else{
 		$asListElement = true;
+	}else{
+		$asListElement = false;
 	}
-
+  
 	foreach($element->sources as $source){
 		$referenceCitation = theme('cdm_DescriptionElementSource', $source);
 		if($description && strlen($description) > 0 && $referenceCitation ){
