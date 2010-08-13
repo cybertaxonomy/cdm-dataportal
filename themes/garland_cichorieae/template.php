@@ -76,7 +76,7 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
 
 
 
-function garland_cichorieae_cdm_descriptionElementTextData($element){
+function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElement){
 
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
@@ -84,6 +84,12 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
 	$out;
 	$res_author;
 	$res_date;
+
+	if ($default_theme == 'flora_malesiana'){
+		$asListElement = false;
+	}else{
+		$asListElement = true;
+	}
 
 	foreach($element->sources as $source){
 		$referenceCitation = theme('cdm_DescriptionElementSource', $source);
@@ -106,12 +112,20 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
 		$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
 	}
 
-	if ($name_used_in_source_link_to_show){
-		$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+	if ($asListElement){
+		$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+		//adding ":" if necesary
+		if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+			$out .= ': ';
+		}
+		$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+	}else{
+		if ($name_used_in_source_link_to_show){
+			$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+		}
+		$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
+		$out .= theme('cdm_annotations_as_footnotekeys', $element);
 	}
-	$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
-	$out .= theme('cdm_annotations_as_footnotekeys', $element);
-
 
 	// add annotations as footnote key
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
