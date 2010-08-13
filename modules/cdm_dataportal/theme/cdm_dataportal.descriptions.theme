@@ -35,7 +35,7 @@ function theme_cdm_feature_nodesTOC($featureNodes){
 
 	foreach($featureNodes as $node){
 		// process $descriptionElements with content only
-		if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0){
+		if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0 || count($node->children) > 0){
 
 			$featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
 			// HACK to implement images for taxa, should be removed
@@ -155,6 +155,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 			 if (is_array($child->descriptionElements)){//if condition added to avoid warnings
 			 	foreach ($child->descriptionElements as $element) {
 			 		$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+			 		$description = str_replace($element->feature->titleCache, '<em>' . $element->feature->titleCache . '</em>', $description);
 			 	}
 			 	$text .= $description;
 			 	$description = '';
@@ -318,8 +319,15 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 					$enclosingHtml = 'p';
 				}
 			}
-		}else if($descriptionElement->class == 'TextData'){
-			$asListElement = true;
+		}else if($descriptionElement->class == 'TextData'){			
+			//$default_theme = variable_get('theme_default', 'TEST');
+			if ($default_theme == 'garland_cichorieae' 
+			    //||$default_theme == 'flora_malesiana'
+			    ){
+				$asListElement = false;
+			}else{
+				$asListElement = true;
+			}
 			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement);
 		}else if ($descriptionElement->class == 'CommonTaxonName') {
 			$outArray[] = theme('cdm_descriptionElement_CommonTaxonName', $descriptionElement);
