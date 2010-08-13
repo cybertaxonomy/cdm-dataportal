@@ -86,12 +86,11 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
 	$res_date;
 
 	$default_theme = variable_get('theme_default', 'garland_cichorieae');	
-	if ($default_theme == 'flora_malesiana'){
+	if ($default_theme == 'flora_malesiana' && $element->feature->titleCache == 'Citation'){
 		$asListElement = true;
 	}else{
 		$asListElement = false;
-	}
-  
+	}  
 	foreach($element->sources as $source){
 		$referenceCitation = theme('cdm_DescriptionElementSource', $source);
 		if($description && strlen($description) > 0 && $referenceCitation ){
