@@ -1,0 +1,89 @@
+<?php
+// $Id$
+
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+*/
+
+function theme_cdm_reference_pager($referencePager, $path, $parameters = array()){
+	drupal_set_title(t('Bibliographic index'));
+	$out = '';
+	if(count($referencePager->records) > 0){
+		$out .= '<ul>';
+		foreach($referencePager->records as $reference){
+			$reference->fullCitation = $reference->titleCache; //FIXME remove hack for matching cdm entity to STO
+			$out .= '<li>'.theme('cdm_reference', $reference, null, TRUE).'</li>';
+		}
+		$out .= '</ul>';
+		$out .= theme('cdm_pager', $referencePager,  $path, $parameters);
+	} else {
+		$out = '<h4 class="error">Sorry, this page contains not entries.</h4>';
+	}
+	return $out;
+}
+
+
+/**
+ * used by 
+ *  - theme_cdm_typedesignations
+ *  - theme_cdm_reference_pager
+ *  - theme_cdm_taxonRelationships
+ *  
+ */
+function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE, $referenceStyle = NULL ){
+  global $theme_key; //TODO: implement in the palmae theme the concrete case
+  $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
+
+	if($style == "zoology"){
+		$year = partialToYear($reference->datePublished->start);
+		$citation = $author_team->titleCache . ($year ? '. '.$year : '');
+	}elseif ($theme_key == 'palmweb_2') {
+		$year = partialToYear($reference->datePublished->start);
+    $citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
+    $citation = str_replace('..', '.', $citation);
+	} else {
+		$citation = $reference->titleCache;
+		
+		//$year = partialToYear($reference->datePublished->start);
+		//$citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
+		//$citation = str_replace('..', '.', $citation);
+	}
+
+	if($doLink){
+		$out = l('<span class="reference">'.$citation.'</span>'
+          , path_to_reference($reference->uuid)
+          , array("class"=>"reference")
+          , NULL, NULL, FALSE ,TRUE);
+    } else {
+		$out = '<span class="reference">'.$citation.'</span>';
+	}
+    if(!empty($descriptionElementSource->citationMicroReference)){
+        $out .= ': '. $descriptionElementSource->citationMicroReference;
+     }
+     
+    return $out;
+}
+
+function short_form_of_author_team ($author_team){
+
+	$number_of_authors = substr_count($author_team, ' & ') + 1;
+	//var_dump($author_team);
+	//var_dump($number_of_authors);
+	switch ($number_of_authors) {
+		case 1:
+			$result = $author_team;
+			break;
+		case 2:
+			$result = str_replace(' & ', ' and ', $author_team);
+			break;
+		default:
+			$result_parts = explode(' & ', $author_team);
+      $result = $result_parts[0] . ' et al.';	  
+	}
+	return $result;
+}
