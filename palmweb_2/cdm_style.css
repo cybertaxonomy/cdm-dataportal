@@ -1,0 +1,67 @@
+@CHARSET "UTF-8";
+
+/**
+#general {
+	margin-top: 25px;
+}
+
+#general .clear-block{
+	clear: both;
+}
+
+#general h2{
+	font-size: 120%;
+	color: #97ac2d;	
+}
+
+*/
+#general {
+	line-height: 145%;
+}
+
+
+.preferredImage {
+	float: right;
+}
+
+.Taxon .reference, .Synonym .reference {
+	font-size: 90%; 
+}
+
+h2.with-tabs .authors{
+	font-size: 90%;
+	font-weight:bold
+}
+
+a.toc:link, a.toc:visited {
+  color: #F03300;
+  font-size: 90%;
+}
+
+.media_gallery{
+	font-size: 90%;
+}
+
+.media_gallery{
+  font-size: 90%;
+}
+
+.media_gallery .media-caption dd.title {
+  font-size:100%;
+  font-weight:normal;
+}
+
+ul.cdm_taxontree {
+background-color: transparent;
+}
+
+/* switch off highlighting of synonyms */
+.synonym span.highlite{
+  background-color: transparent;	
+}
+
+/* HACK for DEMO 
+div.error{
+		display: none;
+	}
+*/
