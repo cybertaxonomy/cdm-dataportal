@@ -5,7 +5,10 @@ define(NODETYPE_MEDIA, 'media');
 define(NODETYPE_REFERENCE, 'reference');
 define(NODETYPE_NAME, 'name');
 
-function cdm_dataportal_get_nodetypes(){
+/**
+ * Implementation of hook_cdm_nodetypes().
+ */
+function cdm_dataportal_cdm_nodetypes(){
 	static $nodetypes;
 	  if(!$nodetypes){
 	    $nodetypes = array('cdm_'.NODETYPE_REFERENCE => NODETYPE_REFERENCE, 'cdm_'.NODETYPE_TAXON => NODETYPE_TAXON, 'cdm_'.NODETYPE_MEDIA => NODETYPE_MEDIA, 'cdm_'.NODETYPE_NAME => NODETYPE_NAME); 
@@ -19,12 +22,12 @@ function cdm_dataportal_get_nodetypes(){
 function cdm_dataportal_node_info() {
 	
   $nodeinfo = array();
-  foreach( cdm_dataportal_get_nodetypes() as $nodeType=>$type){
+  foreach( cdm_get_nodetypes() as $nodeType=>$type){
     $nodeinfo[$nodeType] = array(
       'name' => t(ucfirst($type)),
       'has_title' => TRUE,
       'module' => 'cdm_dataportal',
-      'description' => t('Node type with reflects cdm entities of the type' . $type . '.')
+      'description' => t('This node type is being used internally to create peer nodes in drupal for cdm entities of the type ' . $type . '.')
     );
   }
   
@@ -88,6 +91,11 @@ function cdm_dataportal_nodeapi(&$node, $op, $teaser, $page) {
           }
           break;  
       }
-      break;   
+      break;
+      
+      case 'delete':
+      	if(array_key_exists($node->type, cdm_get_nodetypes())){
+      		 db_query("DELETE FROM {node_cdm} WHERE nid = %d", $node->nid);
+      	}
   }
 }

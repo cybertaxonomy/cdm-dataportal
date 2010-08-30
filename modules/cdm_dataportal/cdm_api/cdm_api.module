@@ -151,7 +151,7 @@ function cdm_api_settings_form(){
     '#default_value' => variable_get('cdm_webservice_debug', 1),
     '#description'   => t('Enable CDM Web Service debugging messages. Only visible for the super administrator or for users having the permission <em>administer cdm_api</em>!')
     );
-
+    
     return $form;
 }
 
@@ -208,6 +208,23 @@ function cdm_taggedtext_value(array &$taggedtxt = array(), $tag_type){
   }
   return '';
 }
+
+function get_taxonomictree_uuid_selected(){
+  if(is_uuid($_SESSION['cdm']['taxonomictree_uuid']) ){
+    return $_SESSION['cdm']['taxonomictree_uuid'];
+  } else {
+    return variable_get('cdm_taxonomictree_uuid', false);
+  }
+}
+
+function switch_to_taxonomictree_uuid($taxonomictree_uuid){
+  $_SESSION['cdm']['taxonomictree_uuid'] = $taxonomictree_uuid;
+}
+
+function reset_taxonomictree_uuid($taxonomictree_uuid){
+  unset($_SESSION['cdm']['taxonomictree_uuid']);
+}
+
 
 /**
  * media Array [4]

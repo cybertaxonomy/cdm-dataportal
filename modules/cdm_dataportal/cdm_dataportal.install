@@ -8,6 +8,15 @@ function cdm_dataportal_install(){
    db_query(_get_sql_fix_module_weight());
 }
 
+/**
+ * Implementation of hook_uninstall().
+ */
+function cdm_dataportal_uninstall(){
+
+   cdm_delete_all_cdm_nodes();
+}
+
+
 
 /**
  * Implementation of hook_api_update_N().

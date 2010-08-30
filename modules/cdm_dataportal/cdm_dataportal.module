@@ -745,7 +745,7 @@ function cdm_dataportal_form_alter($form_id, &$form) {
 
 	if ($form_id == 'node_type_form'
 	&& isset($form['identity']['type'])
-	&& array_key_exists($form['#node_type']->type, cdm_dataportal_get_nodetypes())
+	&& array_key_exists($form['#node_type']->type, cdm_get_nodetypes())
 	) {
 		$form['workflow']['comment'] = array(
       '#type' => 'radios',
@@ -1472,7 +1472,7 @@ function rank_compare($thisRankUuid, $thatRankUuid){
 
 function uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
 	$acceptedPath = path_to_taxon($acceptedUuid);
-	return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid);
+	return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid, $synonymUuid);
 }
 
 /**
@@ -1609,22 +1609,6 @@ function compose_url_prameterstr($parameters = array(), $parentPropertyName = fa
  */
 function _is_original_source_type($source){
 	return !$source->idNamespace && strlen($source->idNamespace) == 0;
-}
-
-function get_taxonomictree_uuid_selected(){
-	if(is_uuid($_SESSION['cdm']['taxonomictree_uuid']) ){
-		return $_SESSION['cdm']['taxonomictree_uuid'];
-	} else {
-		return variable_get('cdm_taxonomictree_uuid', false);
-	}
-}
-
-function switch_to_taxonomictree_uuid($taxonomictree_uuid){
-	$_SESSION['cdm']['taxonomictree_uuid'] = $taxonomictree_uuid;
-}
-
-function reset_taxonomictree_uuid($taxonomictree_uuid){
-	unset($_SESSION['cdm']['taxonomictree_uuid']);
 }
 
 

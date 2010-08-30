@@ -25,8 +25,8 @@ function cdm_api_install(){
  */
 function cdm_api_uninstall(){
     db_query("DROP TABLE {cache_cdm_ws};");
-    //TODO delete all cdm nodes using node_delete()    
     db_query("DROP TABLE {node_cdm};");
+    // according nodes are deleted by cdm_dataportal_uninstall
 
 }
 
