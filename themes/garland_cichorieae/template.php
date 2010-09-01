@@ -26,7 +26,7 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
 		$defaultRepresentationPart = false;
 		$defaultRepresentationPart->width = 400;
 		$defaultRepresentationPart->height = 300;
-		$defaultRepresentationPart->uri = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
+		$defaultRepresentationPart->uri = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300_4x3cm.jpg';
 
 		$imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
 
