@@ -149,6 +149,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 			 $out .= theme('cdm_feature_nodes', $node->children, $taxon);
 			 $out .= '</div>';
 			 */
+			var_dump('TEST 1');
 			$text = '';
 			foreach ($node->children as $child){
 			 //$out .= theme('cdm_descriptionElementTextData', $child->descriptionElements[0], false);
