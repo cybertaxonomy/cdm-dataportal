@@ -22,6 +22,7 @@ require_once ('webservice_uris.php');
 require_once ('cdm_node.php');
 
 define('DEFAULT_TAXONTREE_RANKLIMIT', '1b11c34c-48a8-4efa-98d5-84f7f66ef43a');//TODO Genus UUID
+define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
 
 
 /**
@@ -152,6 +153,22 @@ function cdm_api_settings_form(){
     '#description'   => t('Enable CDM Web Service debugging messages. Only visible for the super administrator or for users having the permission <em>administer cdm_api</em>!')
     );
     
+    //TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
+    $form['cdm_dataportal'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('CDM DataPortal'),
+      '#collapsible' => FALSE,
+      '#collapsed' => TRUE,
+    );
+	
+	  $form['cdm_dataportal'][CDM_TAXONOMICTREE_UUID] = array(
+	    '#type' => 'select',
+	    '#title'         => t('Available classifications'),
+	    '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, false),
+	    '#options' => cdm_get_taxontrees_as_options(),
+	    '#description'   => t('Select the default classification to be used.')
+	  );
+    
     return $form;
 }
 
@@ -213,7 +230,7 @@ function get_taxonomictree_uuid_selected(){
   if(is_uuid($_SESSION['cdm']['taxonomictree_uuid']) ){
     return $_SESSION['cdm']['taxonomictree_uuid'];
   } else {
-    return variable_get('cdm_taxonomictree_uuid', false);
+    return variable_get(CDM_TAXONOMICTREE_UUID, false);
   }
 }
 
@@ -597,7 +614,6 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber){
 function cdm_compose_taxonomy_path($taxonUuid = null){
 	//return cdm_ws_get(cdm_ws_taxonomy_compose_resourcePath($path));
 
-	//### REMOVE $viewUuid = variable_get('cdm_taxonomictree_uuid', false);
 	$viewUuid = get_taxonomictree_uuid_selected();
 	$rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
 

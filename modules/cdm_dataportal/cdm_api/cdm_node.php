@@ -36,9 +36,9 @@ function cdm_load_node($nodetype, $uuid, $title){
 			$pathelements = explode('/', $result);
 			$nid = array_pop($pathelements);
 			$node->nid = $nid;
-
-			db_query('INSERT INTO {node_cdm} (nid, wsuri, cdmtype, uuid) VALUES (%d, \'%s\', \'%s\', \'%s\');'
-			, $nid, variable_get('cdm_webservice_url', NULL),  $nodetype, $uuid);
+      $hash = md5( variable_get('cdm_webservice_url', NULL) . $uuid ); // hash as a 32-character hexadecimal number. 
+			db_query('INSERT INTO {node_cdm} (nid, wsuri, hash, cdmtype, uuid) VALUES (%d, \'%s\', \'%s\', \'%s\', \'%s\');'
+			, $nid, variable_get('cdm_webservice_url', NULL), $hash,  $nodetype, $uuid);
 
 		} else {
 			drupal_set_message(t('Could not create node for ' . $nodetype),'error');
