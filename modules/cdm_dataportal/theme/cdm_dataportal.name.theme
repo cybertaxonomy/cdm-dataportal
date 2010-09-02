@@ -16,7 +16,7 @@
  * @param $typeDesignation_citation The lectotype citation to print
  * @return html valid string
  */
-function lectotype_citation_layout($typeDesignation){
+function type_designation_citation_layout($typeDesignation){
 
 	$res = '';
 	$citation = $typeDesignation->citation;
@@ -49,22 +49,25 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 	//_add_js_cluetip();
 	$out = '<ul class="typeDesignations">';
 	$typeDesignation_footnotes = false;
+	$is_lectotype = false;
 	$specimenTypeDesignations = array();
 	foreach($typeDesignations as $typeDesignation){
 		if($typeDesignation->class == 'SpecimenTypeDesignation'){
 			// SpecimenTypeDesignations should be ordered. collect theme here only
 			$specimenTypeDesignations[] = $typeDesignation;
-		}else {
+		}else{ //it is a lectotype?
+			if(strcmp($typeDesignation->typeStatus->titleCache, 'lectotype') == 0){
+        $is_lectotype = true;
+      } 
 			// it's a NameTypeDesignation
-			if($typeDesignation->notDesignated){
-				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: '.t('not designated'). '</li>';
+			if($typeDesignation->notDesignated){ 
+				$out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated'). '</li>';
+				//$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: '.t('not designated'). '</li>';
 			}else if($typeDesignation->typeName){
-				$is_lectotype = true;
 				$link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
-				$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>';
+				$out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
 				if($typeDesignation->citation){
-					$out .= lectotype_citation_layout($typeDesignation);
-
+					$out .= type_designation_citation_layout($typeDesignation);
 					//footnotes
 					$fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, $typeDesignation->citation->titleCache);
 					$out .= theme('cdm_footnote_key', $fkey_typeDesignation) . ')';
@@ -72,7 +75,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 				if($typeDesignation->typeName->nomenclaturalReference){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
 				}
-				$out .= ': ' . theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri, true, $is_lectotype);
+				$out .= ': ' . theme('cdm_taxonName', $typeDesignation->typeName, $link_to_name_page, $referenceUri, true, true);
 			}
 		}
 	}
@@ -302,7 +305,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 }
 
 
-function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, $showAnnotations = true, $is_lectotype = false){
+function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, $showAnnotations = true, $is_type_designation = false){
 
 	$renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
 	$partDefinition = get_partDefinition($taxonName->class);
@@ -366,7 +369,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 	//  }
 
 	// fill with reference
-	if(isset($renderTemplate['referencePart']) && !$is_lectotype){
+	if(isset($renderTemplate['referencePart']) && !$is_type_designation){
 
 		// [Eckhard]:"Komma nach dem Taxonnamen ist grunsätzlich falsch,
 		// Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
