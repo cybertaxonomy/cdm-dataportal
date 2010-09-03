@@ -50,6 +50,13 @@ div.debug .uri{
 li .taxon{
 }
 
+#synonymy ul li {
+	padding-bottom: 0px;
+  padding-top: 0px;
+  margin-bottom: 0px;
+  margin-top:0px;
+  line-height: 150%;
+}
 .heterotypicSynonymyGroup li{
   margin-left: 26px;
 }
@@ -83,7 +90,7 @@ img.preview {
 
 ul li.synonym{
   list-style-type: none;
-  background-image: none;
+  background-image: none;  
 }
 
 li.firstentry{
