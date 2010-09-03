@@ -227,6 +227,12 @@ span.submitted, .description {
   color: #000000;
 }
 
+.block-cdm_dataportal-feature    li.descriptionText {
+  list-style: none;
+  list-style-image: none;
+  background-image: none;
+}
+
 .messages, .preview {
   margin: .75em 0 .75em;
   padding: .5em 1em;
