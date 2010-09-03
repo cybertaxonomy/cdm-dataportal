@@ -517,7 +517,7 @@ function cdm_taxontree_build_path($taxonUuid, $is_filter_path = null, $is_expand
 	$parents = _cdm_resultset2nodelist($parents, NULL);
 	$lastParent = null;
 	foreach($parents as $pnode){
-		$pnode->focused = false;
+		$pnode->focused = false; //TODO to be relaced by ($pnode->taxonUuid == $taxonUuid); ?? compare usage of $is_focused
 		if($lastParent){
 			$pnode->children = array($lastParent->taxonUuid => $lastParent);
 			if(!is_null($is_filter_path)){
@@ -656,6 +656,12 @@ function _cdm_taxontree_merge($tree, $branch) {
 			} else if(isset($branch[$uuid]->expanded)){
 				$tree[$uuid]->expanded = $branch[$uuid]->expanded;
 			}
+		  // preserve focused property
+      if(isset($tree[$uuid]->focused)){
+        $branch[$uuid]->focused = $tree[$uuid]->focused;
+      } else if(isset($branch[$uuid]->focused)){
+        $tree[$uuid]->focused = $branch[$uuid]->focused;
+      }
 			// $Uuid exists check if the node in tree1 or tree2 contains children
 			if(is_array($branch[$uuid]->children) && is_array($tree[$uuid]->children)) {
 				// merge recursive
