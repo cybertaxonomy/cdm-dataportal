@@ -109,7 +109,6 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 			$referenceCitation = theme('cdm_DescriptionElementSource', 
 		                               $source, 
 								       (strcmp($block_subject, 'Name Usage') == 0) ? false : true);
-			$referenceCitation = $referenceCitation->string;
 			if($description && strlen($description) > 0 && $referenceCitation ){
 				$sourceRefs .= ' ('.$referenceCitation.')' ;
 			}else if ($referenceCitation){
