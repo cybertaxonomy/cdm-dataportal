@@ -323,18 +323,18 @@ function cdm_dataportal_menu($may_cache) {
       'callback arguments' => array(arg(2), "images")
 			// expected callback arguments: name_uuid
 			);
-	/*
-			$items[] = array(
-      'path' => 'cdm_dataportal/taxon/'.arg(2).'/specimens',
-      'title' => theme('cdm_taxonpage_tab', 'Specimens'),
-      'callback' => 'cdm_dataportal_taxon_page_view',
-      'access' => true,
-      'type' => MENU_LOCAL_TASK,
-      'weight' => 5,
-      'callback arguments' => array(arg(2), "specimens")
-      // expected callback arguments: name_uuid
-      );
-  */
+			/*
+			 $items[] = array(
+			 'path' => 'cdm_dataportal/taxon/'.arg(2).'/specimens',
+			 'title' => theme('cdm_taxonpage_tab', 'Specimens'),
+			 'callback' => 'cdm_dataportal_taxon_page_view',
+			 'access' => true,
+			 'type' => MENU_LOCAL_TASK,
+			 'weight' => 5,
+			 'callback arguments' => array(arg(2), "specimens")
+			 // expected callback arguments: name_uuid
+			 );
+			 */
 
 		}
 	}
@@ -741,7 +741,7 @@ function cdm_dataportal_form_alter($form_id, &$form) {
 	static $comment_node_disabled =  0;
 	static $comment_node_read_only =  1;
 	static $comment_node_read_write =  2;
-	 
+
 
 	if ($form_id == 'node_type_form'
 	&& isset($form['identity']['type'])
@@ -764,7 +764,7 @@ function cdm_dataportal_form_alter($form_id, &$form) {
 function cdm_dataportal_settings_layout(){
 
 	$form = array();
-	
+
 	$form['cdm_taxonname_type'] = array(
     '#type' => 'select',
     '#title'         => t('Taxon name type'),
@@ -835,35 +835,35 @@ function cdm_dataportal_settings_layout(){
 
     //------------------ FEATURE TREE --------------------//
 
-	  $form['cdm_dataportal']['taxon_profile'] = array(
+    $form['cdm_dataportal']['taxon_profile'] = array(
 	    '#type' => 'fieldset',
 	    '#title' => t('Taxon profile'),
 	    '#description'   => t('This section covers setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.'),
 	    '#collapsible' => TRUE,
 	    '#collapsed' => FALSE,
-	  );
-	
-	  $form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
+    );
+
+    $form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
 	    '#type' => 'radios',
 	    '#title'         => t('Taxon profile elements'),                
 	    '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
 	    '#options' => cdm_get_featureTrees_as_options(TRUE),
 	    '#description'   => t('Select a FeatureTree to specify the elements to be displayd in the taxon profile.'
 	    //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
-	    )
-	  );
-	  
-	  $form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
+    )
+    );
+     
+    $form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
 	    '#type' => 'radios',
 	    '#title'         => t('Natural language representation of structured descriptions'),                
 	    '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, null),
 	    '#options' => cdm_get_featureTrees_as_options(),
 	    '#description'   => t('Taxon descriptions can be stored in a highly structured form.'.
 	      ' The feature tree selected here will be used to generate textual representation in natural language.'
-	    //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
-	    )
-	  );
-    
+	      //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
+    )
+    );
+
     //---- IMAGES ----//
     $form['images'] = array(
 	    '#type' => 'fieldset',
@@ -921,15 +921,15 @@ function cdm_dataportal_settings_layout(){
         '#collapsible' => TRUE,
         '#collapsed' => TRUE,
         '#type' => 'fieldset',
-     );
-    
+    );
+
     $form['distribution_layout']['distribution_sort'] =  array(
     '#type'          => 'radios',
     '#title'         => t('Sort'),
     '#default_value' => 0,
     '#options' => array(
-            t('Standard (No sort)'),
-            t('Sorted without TDWG Level 2'),
+    t('Standard (No sort)'),
+    t('Sorted without TDWG Level 2'),
     ));
 
     return system_settings_form($form);
@@ -1493,16 +1493,16 @@ function cdm_dataportal_shortname_of($name){
 	}
 	$nameStr = trim($nameStr);
 	/*
-	if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
-	    stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE){
-	 var_dump($nameStr);	
-	}
-	*/
+	 if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
+	 stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE){
+	 var_dump($nameStr);
+	 }
+	 */
 	if($nameStr){
 		// do not return short names for these
 		//if(strtolower($nameStr) == 'incertae sedis' || $nameStr ==  'nomina excludenda'){
 		if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
-        stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE){
+		stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE){
 			return $nameStr;
 		}
 		if($pos = stripos($nameStr, ' ')){
@@ -1877,19 +1877,42 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 }
 
 function cdm_annotations_as_footnotekeys($cdmBase){
-
+	//is argument cdmBase an array? 
+	if (!is_array($cdmBase)){
+		$cdmBase_array = array();
+		$cdmBase_array[] = $cdmBase;
+	}else{
+		$cdmBase_array = $cdmBase;
+	}
+	//adding the footnotes keys
 	$footNoteKeys = array();
 	$footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
-	$annotationUrl = cdm_compose_annotations_url($cdmBase);
-	if($annotationUrl){
-		$annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
-		if($annotationPager->count > 0){
-			foreach($annotationPager->records as $annotation){
-				$footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
+	foreach($cdmBase_array as $cdmBase_element){
+		$annotationUrl = cdm_compose_annotations_url($cdmBase_element);
+		if($annotationUrl){
+			$annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
+			if($annotationPager->count > 0){
+				foreach($annotationPager->records as $annotation){
+					$footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
+				}
 			}
 		}
 	}
 	return $footNoteKeys;
+	/*
+	 $footNoteKeys = array();
+	 $footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
+	 $annotationUrl = cdm_compose_annotations_url($cdmBase);
+	 if($annotationUrl){
+		$annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
+		if($annotationPager->count > 0){
+		foreach($annotationPager->records as $annotation){
+		$footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
+		}
+		}
+		}
+		return $footNoteKeys;
+		*/
 }
 
 

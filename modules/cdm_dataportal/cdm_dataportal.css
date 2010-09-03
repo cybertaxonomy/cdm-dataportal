@@ -329,7 +329,7 @@ a.toc:link, a.toc:visited {
   font-weight: bold;
 }
 
-.heterotypicSynonymyGroup li.footnotes, .homotypicSynonymyGroup li.footnotes{
+.heterotypicSynonymyGroup li.footnotes, .homotypicSynonymyGroup li.footnotes, .homotypicSynonyms li.footnotes, .misapplied li.footnotes{
 	margin-top: 10px;
     margin-left: 6px;
     padding-left: 6px;
@@ -339,12 +339,14 @@ a.toc:link, a.toc:visited {
 }
 
 /* footnotes margin when listing the synonymy*/
+/*
 .heterotypicSynonymyGroup .footnote{
   margin-left: 3em;
 }
 .homotypicSynonyms .footnote{
   margin-left: 1em;
 }
+*/
 /* -- */
 .featuretree_structure {
 	 font-size: 90%;
