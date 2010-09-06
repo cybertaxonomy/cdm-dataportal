@@ -117,7 +117,8 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				if ($node->feature->uuid == UUID_COMMON_NAME){
 					$block->content .= theme('cdm_common_names', $node->descriptionElements);
 				} else {
-					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid, $node->feature->uuid);
+					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
+					//if($node->feature->uuid == UUID_NAME_USAGE){var_dump('AHORA'); var_dump($block->content);}
 				}
 
 				// get media for the feature block
@@ -210,34 +211,39 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 		}else if ($referenceCitation){
 			$sourceRefs = $referenceCitation;
 		}
-	}
-	if(strlen($sourceRefs) > 0){
-		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
-	}
-
-	if ($source->nameUsedInSource->uuid){ //do a link to name page
-		$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
-		                                      path_to_name($source->nameUsedInSource->uuid),
-		                                      array(), NULL, NULL, FALSE ,TRUE);
-	}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
-		$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
-	}
-
-	if ($asListElement){
-		$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
-		//adding ":" if necesary
-		if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
-			$out .= ': ';
+	
+		if(strlen($sourceRefs) > 0){
+			$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
 		}
-		$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
-	}else{
-		if ($name_used_in_source_link_to_show){
-			$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
-		}
-		$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
-		$out .= theme('cdm_annotations_as_footnotekeys', $element);
-	}
 
+		if ($source->nameUsedInSource->uuid){ //do a link to name page
+			$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
+			path_to_name($source->nameUsedInSource->uuid),
+			array(), NULL, NULL, FALSE ,TRUE);
+		}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
+			$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
+		}
+
+		if ($asListElement){
+			$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+			//adding ":" if necesary
+			if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+				$out .= ': ';
+			}
+			$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+		}else{
+			if ($name_used_in_source_link_to_show){
+				$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+			}
+			$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
+		}
+	}
+	//if no sources, print the description
+  if(!isset($out)) {
+    $out = $description;    
+  }
+  //printing annotations footnotes
+	$out .= theme('cdm_annotations_as_footnotekeys', $element);
 	// add annotations as footnote key
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
 	return $out;
@@ -286,7 +292,7 @@ function theme_cdm_common_names($elements){
  * @param $descriptionElements
  * @return unknown_type
  */
-function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxon_uuid, $feature_uuid){
+function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxon_uuid){
 	$outArray = array();
 	if(variable_get('distribution_sort', false)){
 		$glue = '';
@@ -306,7 +312,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 				$distributionElements[]= $descriptionElement;
 			} else if($descriptionElement->class == 'TextData'){
 				$asListElement = false;
-				$repr = theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $feature_uuid);
+				$repr = theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $descriptionElement->feature->uuid);
 					
 				if( !array_search($repr, $outArray)){
 					$outArray[] = $repr;
@@ -315,14 +321,19 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 					$enclosingHtml = 'p';
 				}
 			}
-		}else if($descriptionElement->class == 'TextData'){			
+		}else if($descriptionElement->class == 'TextData'){
 			$asListElement = true;
-			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $feature_uuid);
+			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $descriptionElement->feature->uuid);
 		}else if ($descriptionElement->class == 'CommonTaxonName') {
 			$outArray[] = theme('cdm_descriptionElement_CommonTaxonName', $descriptionElement);
 		}else {
 			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
 		}
+	}
+	//if feature = NAME USAGE sort the list of sources
+	//this is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE
+	if($descriptionElement->feature->uuid == UUID_NAME_USAGE){
+		sort($outArray);
 	}
 
 	if(variable_get('distribution_sort', false)){
