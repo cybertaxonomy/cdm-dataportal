@@ -73,10 +73,7 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
  }
  */
 
-
-
-
-function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElement, $block_subject){
+function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid){
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
 	$result = array();
@@ -91,7 +88,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	}else{
 		$asListElement = false;
 	}  
-	if (strcmp($block_subject, 'Name Usage') == 0){
+	if ($feature_uuid == UUID_NAME_USAGE){
 		foreach($element->sources as $source){
 			$referenceCitation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, 
 			                                array($source->citation->uuid), 
@@ -108,7 +105,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 		foreach($element->sources as $source){
 			$referenceCitation = theme('cdm_DescriptionElementSource', 
 		                               $source, 
-								       (strcmp($block_subject, 'Name Usage') == 0) ? false : true);
+								       ($feature_uuid == UUID_NAME_USAGE) ? false : true);
 			if($description && strlen($description) > 0 && $referenceCitation ){
 				$sourceRefs .= ' ('.$referenceCitation.')' ;
 			}else if ($referenceCitation){
@@ -120,7 +117,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	foreach($element->sources as $source){ //var_dump($source); var_dump(' ++++++++ ');
 		$referenceCitation = theme('cdm_DescriptionElementSource', 
 		                           $source, 
-								   (strcmp($block_subject, 'Name Usage') == 0) ? false : true);
+								   ($feature_uuid == UUID_NAME_USAGE) ? false : true);
 		if($description && strlen($description) > 0 && $referenceCitation ){
 			$sourceRefs .= ' ('.$referenceCitation.')' ;
 		}else if ($referenceCitation){
@@ -132,17 +129,17 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
 	}
 
-	if ($source->nameUsedInSource->uuid && (strcmp($block_subject, 'Name Usage') != 0)){ //do a link to name page
+	if ($source->nameUsedInSource->uuid && ($feature_uuid != UUID_NAME_USAGE)){ //do a link to name page
 		$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
 											  path_to_name($source->nameUsedInSource->uuid),
 											  array(), NULL, NULL, FALSE ,TRUE);
-	}else if ($source->nameUsedInSource->uuid && (strcmp($block_subject, 'Name Usage') == 0)){
+	}else if ($source->nameUsedInSource->uuid && ($feature_uuid == UUID_NAME_USAGE)){
 		$name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
 	}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
 		$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
 	}
 
-	if($asListElement && (strcmp($block_subject, 'Name Usage') == 0)){	 
+	if($asListElement && ($feature_uuid == UUID_NAME_USAGE)){	 
 		$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
 		//adding ":" if necesary
 		if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
