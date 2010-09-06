@@ -117,7 +117,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				if ($node->feature->uuid == UUID_COMMON_NAME){
 					$block->content .= theme('cdm_common_names', $node->descriptionElements);
 				} else {
-					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid, $block->subject);
+					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid, $node->feature->uuid);
 				}
 
 				// get media for the feature block
@@ -195,7 +195,7 @@ function theme_cdm_descriptionElement_CommonTaxonName($element){
  *                       be renderer as a list or not
  * @return unknown_type Html to be renderized in drupal
  */
-function theme_cdm_descriptionElementTextData($element, $asListElement, $block_subject){
+function theme_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid){
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
 	$result = array();
@@ -286,7 +286,7 @@ function theme_cdm_common_names($elements){
  * @param $descriptionElements
  * @return unknown_type
  */
-function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxon_uuid, $block_subject){
+function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxon_uuid, $feature_uuid){
 	$outArray = array();
 	if(variable_get('distribution_sort', false)){
 		$glue = '';
@@ -306,7 +306,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 				$distributionElements[]= $descriptionElement;
 			} else if($descriptionElement->class == 'TextData'){
 				$asListElement = false;
-				$repr = theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $block_subject);
+				$repr = theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $feature_uuid);
 					
 				if( !array_search($repr, $outArray)){
 					$outArray[] = $repr;
@@ -317,7 +317,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 			}
 		}else if($descriptionElement->class == 'TextData'){			
 			$asListElement = true;
-			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $block_subject);
+			$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $feature_uuid);
 		}else if ($descriptionElement->class == 'CommonTaxonName') {
 			$outArray[] = theme('cdm_descriptionElement_CommonTaxonName', $descriptionElement);
 		}else {
