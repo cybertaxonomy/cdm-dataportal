@@ -77,9 +77,9 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
 	$result = array();
-	//$out;
 	$res_author;
 	$res_date;
+	$no_links = false;
 
 	$default_theme = variable_get('theme_default', 'garland_cichorieae');	
 	if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale')
@@ -88,6 +88,9 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	}else{
 		$asListElement = false;
 	}
+	if ($feature_uuid == UUID_NAME_USAGE || $feature_uuid == UUID_CHROMOSOMES){
+		$no_links = true;
+	}
 	foreach($element->sources as $source){
 		//initialize some variables
 		if ($feature_uuid == UUID_NAME_USAGE){
@@ -95,20 +98,15 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 			                                array($source->citation->uuid), 
 								            "microReference=".urlencode($source->citationMicroReference));
 			$referenceCitation = $referenceCitation->String; 
-			if($description && strlen($description) > 0 && $referenceCitation ){
-				$sourceRefs .= ' ('.$referenceCitation.')' ;
-			}else if ($referenceCitation){
-				$sourceRefs = $referenceCitation;
-			}
 		}else{
 			$referenceCitation = theme('cdm_DescriptionElementSource', 
 		                               $source, 
-								       ($feature_uuid == UUID_NAME_USAGE) ? false : true);
-			if($description && strlen($description) > 0 && $referenceCitation ){
-				$sourceRefs .= ' ('.$referenceCitation.')' ;
-			}else if ($referenceCitation){
-				$sourceRefs = $referenceCitation;
-			}
+								       ($no_links) ? false : true);
+		}
+		if($description && strlen($description) > 0 && $referenceCitation ){
+			$sourceRefs .= ' ('.$referenceCitation.')' ;
+		}else if ($referenceCitation){
+			$sourceRefs = $referenceCitation;
 		}
 		//generate the output		
 		if(strlen($sourceRefs) > 0){
