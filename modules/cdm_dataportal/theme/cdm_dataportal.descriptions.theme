@@ -118,15 +118,14 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 					$block->content .= theme('cdm_common_names', $node->descriptionElements);
 				} else {
 					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
-					//if($node->feature->uuid == UUID_NAME_USAGE){var_dump('AHORA'); var_dump($block->content);}
 				}
 
 				// get media for the feature block
 				$media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
 				$captionElements = array('title', 'rights');
 				//$block->content .= theme('cdm_media_gallerie', $media_list, "test", 150, 4, false, $captionElements);
-				$block->content .= theme('cdm_media_gallery', $media_list,
-				CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
+				$block->content .= theme('cdm_media_gallery', $media_list, 
+				          CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
 				$gallery_settings['cdm_dataportal_media_maxextend'],
 				$gallery_settings['cdm_dataportal_media_cols'],
 				$gallery_settings['cdm_dataportal_media_maxRows'],
@@ -218,8 +217,8 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 
 		if ($source->nameUsedInSource->uuid){ //do a link to name page
 			$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
-			path_to_name($source->nameUsedInSource->uuid),
-			array(), NULL, NULL, FALSE ,TRUE);
+			             path_to_name($source->nameUsedInSource->uuid),
+			             array(), NULL, NULL, FALSE ,TRUE);
 		}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
 			$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
 		}
@@ -250,41 +249,50 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 }
 
 function theme_cdm_common_names($elements){
+  $text_data_out = '';
+  $common_name_out = '';
+  $separator = ',';
+  $textData_commonNames = array();
 
-	$out = '';
-	$separator = ',';
+  if (is_array($elements)){
+   foreach ($elements as $element){
+    if ($element->class == 'CommonTaxonName'){
+      $key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
+      $common_names[$key][] = $element;
+    }else if ($element->class == 'TextData' && $element->feature->uuid == UUID_COMMON_NAME){
+      $textData_commonNames[] = $element;
+    }
+   }
+  }
+  //handling common names
+  if (count($common_names) > 0){
+    //sorting the a-array based on the area (key)
+    ksort($common_names);
+    //creating the output to be render by drupal
+    foreach ($common_names as $key => $elements){
 
-	if (is_array($elements)){
-	 foreach ($elements as $element){
-	 	if ($element->class == 'CommonTaxonName'){
-	 		$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
-	 		$common_names[$key][] = $element;
-	 	}
-	 }
-	}
-	if (count($common_names) > 0){
-		//sorting the a-array based on the area (key)
-		ksort($common_names);
-		//creating the output to be render by drupal
-		foreach ($common_names as $key => $elements){
+      $rendered_element_list = '';
+      foreach($elements as $element){
+        $sourcesFootnoteKeyList = '';
+        // addinf footnotes sources
+        foreach($element->sources as $source){
+          if(_is_original_source_type($source)){
+            $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
+            $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));
+          }
+        }
+        $rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
+      }
+      $common_name_out .= (strlen($common_name_out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list;
 
-			$rendered_element_list = '';
-			foreach($elements as $element){
-				$sourcesFootnoteKeyList = '';
-				// addinf footnotes sources
-				foreach($element->sources as $source){
-					if(_is_original_source_type($source)){
-						$_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
-						$sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));
-					}
-				}
-				$rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
-			}
-			$out .= (strlen($out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list;
-
-		}
-	}
-	return  '<div id="common names" class="Description">' . $out . '</div>';
+    }
+  }  
+  //handling commons names as text data
+  foreach($textData_commonNames as $text_data_element){
+    $text_data_out .= theme('cdm_descriptionElementTextData', $text_data_element, true, $text_data_element->feature->uuid);          
+  }
+  $out_array[] = $text_data_out;
+  return $common_name_out . theme('cdm_descriptionElementArray', $out_array, $element->feature);
 }
 
 /**
