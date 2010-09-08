@@ -257,9 +257,9 @@ function theme_cdm_common_names($elements){
   if (is_array($elements)){
    foreach ($elements as $element){
     if ($element->class == 'CommonTaxonName'){
-      $key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
-      //$key = '<b>' . $element->language->representation_L10n . '</b>';
-      //$key .= (strlen($element->area->titleCache)>0) ? ' (' . $element->area->titleCache . ')' : '';
+      //$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
+      $key = '<b>' . $element->language->representation_L10n . '</b>';
+      $key .= (strlen($element->area->titleCache)>0) ? ' (' . $element->area->titleCache . ')' : '';
       $common_names[$key][] = $element;
     }else if ($element->class == 'TextData' && $element->feature->uuid == UUID_COMMON_NAME){
       $textData_commonNames[] = $element;
