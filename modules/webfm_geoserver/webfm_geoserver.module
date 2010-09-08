@@ -68,7 +68,7 @@ function webfm_geoserver_settings() {
 /**
  * Implementation of hook_webfm_extend_js().
  */
-function webfm_geoserver_extend_js(){
+function webfm_geoserver_webfm_extend_js(){
   $modulepath = drupal_get_path('module', 'webfm_geoserver');
   drupal_add_js($modulepath. '/webfm_geoserver.js');
 }
