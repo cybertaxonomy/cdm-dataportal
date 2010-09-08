@@ -26,7 +26,7 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
 		$defaultRepresentationPart = false;
 		$defaultRepresentationPart->width = 400;
 		$defaultRepresentationPart->height = 300;
-		$defaultRepresentationPart->uri = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300.jpg';
+		$defaultRepresentationPart->uri = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300_4x3cm.jpg';
 
 		$imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
 
@@ -73,52 +73,146 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
  }
  */
 
-
-
-
-function garland_cichorieae_cdm_descriptionElementTextData($element){
-
+function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid){
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
 	$result = array();
-	$out;
 	$res_author;
 	$res_date;
+	$no_links = false;
 
 	$default_theme = variable_get('theme_default', 'garland_cichorieae');	
-	if ($default_theme == 'flora_malesiana' && $element->feature->titleCache == 'Citation'){
+	if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale')
+	    && $element->feature->titleCache == 'Citation'){
 		$asListElement = true;
 	}else{
 		$asListElement = false;
-	}  
+	}
+	if ($feature_uuid == UUID_NAME_USAGE || $feature_uuid == UUID_CHROMOSOMES){
+		$no_links = true;
+	}
 	foreach($element->sources as $source){
-		$referenceCitation = theme('cdm_DescriptionElementSource', $source);
+		//initialize some variables
+		if ($feature_uuid == UUID_NAME_USAGE){
+			$referenceCitation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, 
+			                                array($source->citation->uuid), 
+								            "microReference=".urlencode($source->citationMicroReference));
+			$referenceCitation = $referenceCitation->String; 
+		}else{
+			$referenceCitation = theme('cdm_DescriptionElementSource', 
+		                               $source, 
+								       ($no_links) ? false : true);
+		}
+		if($description && strlen($description) > 0 && $referenceCitation ){
+			$sourceRefs .= ' ('.$referenceCitation.')' ;
+		}else if ($referenceCitation){
+			$sourceRefs = $referenceCitation;
+		}
+		//generate the output		
+		if(strlen($sourceRefs) > 0){
+			$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+		}
+		if ($source->nameUsedInSource->uuid && ($feature_uuid != UUID_NAME_USAGE)){
+			//do a link to name page
+			$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
+											  path_to_name($source->nameUsedInSource->uuid),
+											  array(), NULL, NULL, FALSE ,TRUE);
+		}else if ($source->nameUsedInSource->uuid && ($feature_uuid == UUID_NAME_USAGE)){
+			//do not do link for NAME USAGE feature
+			$name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
+		}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ 
+			//show a text without link
+			$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
+		}
+
+		if($asListElement && ($feature_uuid == UUID_NAME_USAGE)){	 
+			$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+			//adding ":" if necesary
+			if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+				$out .= ': ';
+			}
+			$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+		}else if ($asListElement){
+			$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+			//adding ":" if necesary
+			if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+				$out .= ': ';
+			}
+			$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+		//special handling for flora malesiana TODO: possible better way to implement this case?
+		}else{
+			if ($name_used_in_source_link_to_show){
+				$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+			}
+			$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
+		}
+	}
+	
+    //if no sources, print the description
+    if(!isset($out)) {
+      $out = $description;    
+    }
+    //printing annotations footnotes
+    $out .= theme('cdm_annotations_as_footnotekeys', $element);
+/*	
+	if ($feature_uuid == UUID_NAME_USAGE){
+		foreach($element->sources as $source){
+			$referenceCitation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, 
+			                                array($source->citation->uuid), 
+								            "microReference=".urlencode($source->citationMicroReference));
+			$referenceCitation = $referenceCitation->String; 
+			if($description && strlen($description) > 0 && $referenceCitation ){
+				$sourceRefs .= ' ('.$referenceCitation.')' ;
+			}else if ($referenceCitation){
+				$sourceRefs = $referenceCitation;
+	}  
+		}
+	}else{
+	foreach($element->sources as $source){
+			$referenceCitation = theme('cdm_DescriptionElementSource', 
+		                               $source, 
+								       ($feature_uuid == UUID_NAME_USAGE) ? false : true);
 		if($description && strlen($description) > 0 && $referenceCitation ){
 			$sourceRefs .= ' ('.$referenceCitation.')' ;
 		}else if ($referenceCitation){
 			$sourceRefs = $referenceCitation;
 		}
 	}
+	}	
+	
 	if(strlen($sourceRefs) > 0){
 		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
 	}
 
-	if ($source->nameUsedInSource->uuid){ //do a link to name page
+	if ($source->nameUsedInSource->uuid && ($feature_uuid != UUID_NAME_USAGE)){
+	//do a link to name page
 		$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
 		path_to_name($source->nameUsedInSource->uuid),
-		array(),
-		NULL, NULL, FALSE ,TRUE);
-	}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
+											  array(), NULL, NULL, FALSE ,TRUE);
+	}else if ($source->nameUsedInSource->uuid && ($feature_uuid == UUID_NAME_USAGE)){
+	//do not do link for NAME USAGE feature
+		$name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
+		var_dump('###   ' . $name_used_in_source_link_to_show);
+	}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ 
+	//show a text without link
 		$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
 	}
 
-	if ($asListElement){
+	if($asListElement && ($feature_uuid == UUID_NAME_USAGE)){	 
 		$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
 		//adding ":" if necesary
 		if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
 			$out .= ': ';
 		}
 		$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+	}else if ($asListElement){
+		$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+		//adding ":" if necesary
+		if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+			$out .= ': ';
+		}
+		$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+	//special handling for flora malesiana TODO: possible better way to implement this case?
 	}else{
 		if ($name_used_in_source_link_to_show){
 			$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
@@ -126,7 +220,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element){
 		$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
 		$out .= theme('cdm_annotations_as_footnotekeys', $element);
 	}
-
+*/
 	// add annotations as footnote key
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
 	return $out;

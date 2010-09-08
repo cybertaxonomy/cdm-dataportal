@@ -127,9 +127,6 @@ garland_cichorieae/color/preview.png -text
 garland_cichorieae/comment.tpl.php -text
 garland_cichorieae/fix-ie.css -text
 garland_cichorieae/fix-ie7.css -text
-garland_cichorieae/flora_malesiana/images/Campanula_patula_header-croped-696x92.jpg -text
-garland_cichorieae/flora_malesiana/images/campanu-logo-floater-bg-1.png -text
-garland_cichorieae/flora_malesiana/images/campanu-logo-floater-bg-2.png -text
 garland_cichorieae/flora_malesiana/images/edit-logo.png -text
 garland_cichorieae/flora_malesiana/images/flora-malesiana-header.jpg -text
 garland_cichorieae/flora_malesiana/images/flora-malesiana-header2.jpg -text
@@ -138,6 +135,14 @@ garland_cichorieae/flora_malesiana/logo.png -text
 garland_cichorieae/flora_malesiana/screenshot.png -text
 garland_cichorieae/flora_malesiana/style.css -text
 garland_cichorieae/flora_malesiana/styleOverride.css -text
+garland_cichorieae/flore_afrique_centrale/images/edit-logo.png -text
+garland_cichorieae/flore_afrique_centrale/images/flora-malesiana-header.jpg -text
+garland_cichorieae/flore_afrique_centrale/images/flora-malesiana-header2.jpg -text
+garland_cichorieae/flore_afrique_centrale/images/flora-malesiana-logo-floater-bg-1.jpg -text
+garland_cichorieae/flore_afrique_centrale/logo.png -text
+garland_cichorieae/flore_afrique_centrale/screenshot.png -text
+garland_cichorieae/flore_afrique_centrale/style.css -text
+garland_cichorieae/flore_afrique_centrale/styleOverride.css -text
 garland_cichorieae/images/a1.gif -text
 garland_cichorieae/images/a16.gif -text
 garland_cichorieae/images/a18.gif -text
@@ -163,6 +168,7 @@ garland_cichorieae/images/menu-expanded.gif -text
 garland_cichorieae/images/menu-leaf.gif -text
 garland_cichorieae/images/nopic_333x250.jpg -text
 garland_cichorieae/images/nopic_400x300.jpg -text
+garland_cichorieae/images/nopic_400x300_4x3cm.jpg -text
 garland_cichorieae/images/splash.jpg -text
 garland_cichorieae/images/splash2xChichorium.jpg -text
 garland_cichorieae/images/splash2xChichorium.psd -text
