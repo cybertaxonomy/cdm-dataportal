@@ -333,6 +333,9 @@ modules/softwareTracker/softwareTracker.info -text
 modules/softwareTracker/softwareTracker.install -text
 modules/softwareTracker/softwareTracker.module -text
 modules/softwareTracker/softwareTracker.sql -text
+modules/webfm_geoserver/webfm_geoserver.info -text
+modules/webfm_geoserver/webfm_geoserver.js -text
+modules/webfm_geoserver/webfm_geoserver.module -text
 themes/EDIT-expertsdb/block.tpl.php -text
 themes/EDIT-expertsdb/color/base.png -text
 themes/EDIT-expertsdb/color/color.inc -text

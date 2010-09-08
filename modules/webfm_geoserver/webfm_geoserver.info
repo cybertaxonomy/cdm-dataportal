@@ -1,0 +1,7 @@
+; $Id$
+name = WebFM - Geoserver
+description = A module which allows to perform management tasks to a geoserver
+package = WebFM
+core = 6.x
+dependencies[] = webfm
+
