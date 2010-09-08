@@ -123,16 +123,16 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 		$out .= '</li>';
 
 	}
-	$out .= '</ul>';
+	//$out .= '</ul>';
 
-	$tr_footnotes = theme('cdm_footnotes', $footnoteListKey, 'div');
+	$tr_footnotes = theme('cdm_footnotes', $footnoteListKey, 'li');
 	$tr_footnotes_exploded = explode('sensu', $tr_footnotes);
 	$tr_footnotes_aux = '';
 	foreach ($tr_footnotes_exploded as $element){
 		$tr_footnotes_aux .= $element; 
 	}
 	$out .= $tr_footnotes_aux;
-	
+	$out .= '</ul>';
 	RenderHints::popFromRenderStack();
 	return $out;
 }
@@ -273,8 +273,12 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	if($taxon->name->nomenclaturalReference){
 		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 	}
-	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri);
-	$nameHtml .= theme('cdm_annotations_as_footnotekeys', $taxon);
+	//printing the taxonName and the handling the special case of annotations
+	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, false);
+	$special_annotations_array = array();
+	$special_annotations_array[] = $taxon->name;
+	$special_annotations_array[] = $taxon;
+	$nameHtml .= theme('cdm_annotations_as_footnotekeys', $special_annotations_array);
 
 	//later homonym or trated as later homonym
 	$taxon_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);

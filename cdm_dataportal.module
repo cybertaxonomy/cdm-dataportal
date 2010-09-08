@@ -741,11 +741,11 @@ function cdm_dataportal_form_alter($form_id, &$form) {
 	static $comment_node_disabled =  0;
 	static $comment_node_read_only =  1;
 	static $comment_node_read_write =  2;
-	 
+
 
 	if ($form_id == 'node_type_form'
 	&& isset($form['identity']['type'])
-	&& array_key_exists($form['#node_type']->type, cdm_dataportal_get_nodetypes())
+	&& array_key_exists($form['#node_type']->type, cdm_get_nodetypes())
 	) {
 		$form['workflow']['comment'] = array(
       '#type' => 'radios',
@@ -764,7 +764,7 @@ function cdm_dataportal_form_alter($form_id, &$form) {
 function cdm_dataportal_settings_layout(){
 
 	$form = array();
-	
+
 	$form['cdm_taxonname_type'] = array(
     '#type' => 'select',
     '#title'         => t('Taxon name type'),
@@ -842,7 +842,7 @@ function cdm_dataportal_settings_layout(){
 	    '#collapsible' => TRUE,
 	    '#collapsed' => FALSE,
 	  );
-	
+
 	  $form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
 	    '#type' => 'radios',
 	    '#title'         => t('Taxon profile elements'),                
@@ -863,7 +863,7 @@ function cdm_dataportal_settings_layout(){
 	    //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
 	    )
 	  );
-    
+
     //---- IMAGES ----//
     $form['images'] = array(
 	    '#type' => 'fieldset',
@@ -922,7 +922,7 @@ function cdm_dataportal_settings_layout(){
         '#collapsed' => TRUE,
         '#type' => 'fieldset',
      );
-    
+
     $form['distribution_layout']['distribution_sort'] =  array(
     '#type'          => 'radios',
     '#title'         => t('Sort'),
@@ -1472,7 +1472,7 @@ function rank_compare($thisRankUuid, $thatRankUuid){
 
 function uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
 	$acceptedPath = path_to_taxon($acceptedUuid);
-	return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid);
+	return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid, $synonymUuid);
 }
 
 /**
@@ -1495,7 +1495,7 @@ function cdm_dataportal_shortname_of($name){
 	/*
 	if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
 	    stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE){
-	 var_dump($nameStr);	
+	 var_dump($nameStr);
 	}
 	*/
 	if($nameStr){
@@ -1609,22 +1609,6 @@ function compose_url_prameterstr($parameters = array(), $parentPropertyName = fa
  */
 function _is_original_source_type($source){
 	return !$source->idNamespace && strlen($source->idNamespace) == 0;
-}
-
-function get_taxonomictree_uuid_selected(){
-	if(is_uuid($_SESSION['cdm']['taxonomictree_uuid']) ){
-		return $_SESSION['cdm']['taxonomictree_uuid'];
-	} else {
-		return variable_get('cdm_taxonomictree_uuid', false);
-	}
-}
-
-function switch_to_taxonomictree_uuid($taxonomictree_uuid){
-	$_SESSION['cdm']['taxonomictree_uuid'] = $taxonomictree_uuid;
-}
-
-function reset_taxonomictree_uuid($taxonomictree_uuid){
-	unset($_SESSION['cdm']['taxonomictree_uuid']);
 }
 
 
@@ -1893,9 +1877,31 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 }
 
 function cdm_annotations_as_footnotekeys($cdmBase){
-
+	//is argument cdmBase an array? 
+	if (!is_array($cdmBase)){
+		$cdmBase_array = array();
+		$cdmBase_array[] = $cdmBase;
+	}else{
+		$cdmBase_array = $cdmBase;
+	}
+	//adding the footnotes keys
 	$footNoteKeys = array();
 	$footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
+	foreach($cdmBase_array as $cdmBase_element){
+		$annotationUrl = cdm_compose_annotations_url($cdmBase_element);
+		if($annotationUrl){
+			$annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
+			if($annotationPager->count > 0){
+				foreach($annotationPager->records as $annotation){
+					$footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
+				}
+			}
+		}
+	}
+	return $footNoteKeys;
+	/*
+	 $footNoteKeys = array();
+	 $footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
 	$annotationUrl = cdm_compose_annotations_url($cdmBase);
 	if($annotationUrl){
 		$annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
@@ -1906,6 +1912,7 @@ function cdm_annotations_as_footnotekeys($cdmBase){
 		}
 	}
 	return $footNoteKeys;
+		*/
 }
 
 

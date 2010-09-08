@@ -92,7 +92,8 @@ define('UUID_CULTIVATION', 'e28965b2-a367-48c5-b954-8afc8ac2c69b');
 define('UUID_INTRODUCTION', 'e75255ca-8ff4-4905-baad-f842927fe1d3');
 define('UUID_DISCUSSION', 'd3c4cbb6-0025-4322-886b-cd0156753a25');
 define('UUID_IMAGE', '84193b2c-327f-4cce-90ef-c8da18fd5bb5');
-define('UUID_COMMON_NAME', 'fc810911-51f0-4a46-ab97-6562fe263ae5');
+define('UUID_NAME_USAGE', '99b2842f-9aa7-42fa-bd5f-7285311e0101');
+define('UUID_CHROMOSOMES', 'c4a60319-4978-4692-9545-58d60cf8379e');
 
 // typedesignation status
 define('UUID_HOLOTYPE', 'a407dbc7-e60c-46ff-be11-eddf4c5a970d');

@@ -25,20 +25,47 @@ function cdm_api_install(){
  */
 function cdm_api_uninstall(){
     db_query("DROP TABLE {cache_cdm_ws};");
-    //TODO delete all cdm nodes using node_delete()    
     db_query("DROP TABLE {node_cdm};");
+    // according nodes are deleted by cdm_dataportal_uninstall
 
 }
 
 /**
  * Implementation of hook_api_update_N().
  * 
- * Update 1 for version 5.x-1.0
+ * Database updates consist of 3 parts:
+ *    1 digit for Drupal core compatibility
+ *    1 digit for your module's major release version (e.g. is this the 5.x-1.* (1) or 5.x-2.* (2) series of your module?)
+ *    2 digits for sequential counting starting with 00
+ * The 2nd digit should be 0 for initial porting of your module to a new Drupal core API.
+ * 
+ * Update 1 for version 5.x-1.*
  */
 function cdm_api_update_5101() {
   $items = array();
   $items[] = update_sql(_get_sql_create_nodecdm());
   $items[] = update_sql(_get_sql_fix_watchdog());
+  return $items;
+}
+
+/**
+ * Implementation of hook_api_update_N().
+ * 
+ * Database updates consist of 3 parts:
+ *    1 digit for Drupal core compatibility
+ *    1 digit for your module's major release version (e.g. is this the 5.x-1.* (1) or 5.x-2.* (2) series of your module?)
+ *    2 digits for sequential counting starting with 00
+ * The 2nd digit should be 0 for initial porting of your module to a new Drupal core API.
+ * 
+ * Update 1 for version 5.x-1.*
+ */
+function cdm_api_update_5102() {
+  $items = array();
+  $items[] = update_sql('ALTER TABLE {node_cdm} add `hash` char(32) default NULL AFTER `wsuri`;');
+  $items[] = update_sql('UPDATE {node_cdm} SET `hash`= MD5(CONCAT(`wsuri`, `uuid`));');
+  $items[] = update_sql('ALTER TABLE {node_cdm}  CHANGE COLUMN `hash` `hash` CHAR(32) NOT NULL AFTER `wsuri`;');
+  $items[] = update_sql('ALTER TABLE {node_cdm}  DROP PRIMARY KEY;');
+  $items[] = update_sql('ALTER TABLE {node_cdm}  ADD PRIMARY KEY (`hash`);');
   return $items;
 }
 
@@ -49,9 +76,10 @@ function _get_sql_create_nodecdm() {
     CREATE TABLE {node_cdm} (
       `nid` int(11) NOT NULL,
       `wsuri` varchar(255) default NULL,
+      `hash` char(32) NOT NULL,
       `cdmtype` varchar(255) default NULL,
       `uuid` varchar(255) default NULL,
-      PRIMARY KEY  (`uuid`)
+      PRIMARY KEY  (`hash`)
     ) /*!40100 DEFAULT CHARACTER SET UTF8 */  
     ";
 }

@@ -185,8 +185,7 @@ function theme_cdm_footnote($footnoteKey, $footnoteText){
 }
 
 
-function theme_cdm_footnotes($footnoteListKey, $enclosingTag = 'span'){
-	
+function theme_cdm_footnotes($footnoteListKey, $enclosingTag = 'span'){	
 	$out = '<'.$enclosingTag.' class="footnotes footnotes-'.$footnoteListKey.' ">' . FootnoteManager::renderFootnoteList($footnoteListKey) . '</'.$enclosingTag.'>';
 	FootnoteManager::removeFootnoteList($footnoteListKey);
 	return $out;
