@@ -611,8 +611,7 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber){
  * @param unknown_type $path
  * @return unknown
  */
-function cdm_compose_taxonomy_path($taxonUuid = null){
-	//return cdm_ws_get(cdm_ws_taxonomy_compose_resourcePath($path));
+function cdm_compose_taxonomy_path($taxonUuid = false){
 
 	$viewUuid = get_taxonomictree_uuid_selected();
 	$rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
@@ -640,8 +639,13 @@ function cdm_ws_taxonomy($taxonUuid = null){
 	      unset($_SESSION['cdm']['taxonomictree_uuid']);
 	      return cdm_ws_taxonomy($taxonUuid);
 	    } else {
+	    	// check if taxonomictree_uuid is valid
+	    	$test = cdm_ws_get(cdm_compose_taxonomy_path(), null, null, null, TRUE);
+        if($test == null){
+	    	  print ($_SESSION['cdm']['taxonomictree_uuid']);
 	      // the default set by the admin seems to be invalid or is not even set 
-	      drupal_set_message(_no_classfication_uuid_message(), 'warning'); 
+          drupal_set_message(_no_classfication_uuid_message(), 'warning');
+	    	} 
 	    }
 	  }
     
@@ -674,9 +678,15 @@ function cdm_ws_taxonomy_pathFromRoot($taxonUuid){
 	  	unset($_SESSION['cdm']['taxonomictree_uuid']);
 	  	return cdm_ws_taxonomy_pathFromRoot($taxonUuid);
 	  } else {
+	  	  // check if taxonomictree_uuid is valid
+        $test = cdm_ws_get(cdm_compose_taxonomy_path(), null, null, null, TRUE);
+        if($test == null){
 	  	// the default set by the admin seems to be invalid or is not even set 
-	  	drupal_set_message(_no_classfication_uuid_message(), 'warning'); 
+          print ($_SESSION['cdm']['taxonomictree_uuid']);
+          // the default set by the admin seems to be invalid or is not even set 
+          drupal_set_message(_no_classfication_uuid_message(), 'warning');
 	  }
+  }
   }
   
   return $response;
@@ -1223,7 +1233,7 @@ function _add_status_message_toggler() {
 
 function _no_classfication_uuid_message(){
 	return
-	t('This PataPortal is not configured properly.')
+	t('This DataPortal is not configured properly.')
       . l(t('Please choose a valid classification'), 'admin/settings/cdm_dataportal/general')
       . t(', or contact the maintainer of this DataPortal.');
 }
