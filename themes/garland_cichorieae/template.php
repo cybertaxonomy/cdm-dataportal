@@ -63,10 +63,6 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
  *
  }else if ($referenceCitation){
  $sourceRefs = $referenceCitation;
- //var_dump('Cichorieae:');
- //var_dump('sourceRefs => ' . $sourceRefs);
-  
-
  }
  }
  return '<p class="descriptionText">' . $description . $sourceRefs . '</p>';
@@ -192,7 +188,6 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	}else if ($source->nameUsedInSource->uuid && ($feature_uuid == UUID_NAME_USAGE)){
 	//do not do link for NAME USAGE feature
 		$name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
-		var_dump('###   ' . $name_used_in_source_link_to_show);
 	}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ 
 	//show a text without link
 		$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;

@@ -88,7 +88,11 @@
                       
             <?php
               foreach($primary_links as &$link) {
-                $link['attributes']['target'] = generalizeString($link['title']);
+                $link_title = $link['title'];
+                if(module_exists('cdm_api')){
+                  $link_title = generalizeString($link_title);
+                }
+                $link['attributes']['target'] = $link_title;
               }
               print theme('links', $primary_links, array('class' => 'links primary-links')) ?>
           <?php endif; ?>
