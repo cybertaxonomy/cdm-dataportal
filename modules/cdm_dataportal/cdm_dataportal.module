@@ -1866,6 +1866,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 	//variables
 	$outArrayOfMedia = array(); //return value
 	//implementation
+	if(is_array($descriptionElements)){//avoiding warning box in drupal for flora malesiana
 	foreach($descriptionElements as $descriptionElement){
 		foreach($descriptionElement->media as $media){
 			if(isset($media)){
@@ -1873,6 +1874,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 			}
 	 }
 	}
+  }
 	return $outArrayOfMedia;
 }
 
