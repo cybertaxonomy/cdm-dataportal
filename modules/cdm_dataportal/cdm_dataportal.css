@@ -338,11 +338,16 @@ a.toc:link, a.toc:visited {
 
 .heterotypicSynonymyGroup li.footnotes, .homotypicSynonymyGroup li.footnotes, .homotypicSynonyms li.footnotes, .misapplied li.footnotes{
 	margin-top: 10px;
-    margin-left: 6px;
-    padding-left: 6px;
-    list-style: none;
-    list-style-image: none;
-    background-image: none;
+  margin-left: 6px;
+  padding-left: 6px;
+  list-style: none;
+  list-style-image: none;
+  background-image: none;
+}
+#synonymy li.footnotes{
+	list-style: none;
+  list-style-image: none;
+  background-image: none;
 }
 
 /* footnotes margin when listing the synonymy*/
