@@ -316,6 +316,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 
 	RenderHints::pushToRenderStack('cdm_descriptionElements');
 	$common_names = theme('cdm_common_names', $descriptionElements);
+	if(is_array($descriptionElements)){//avoiding warning box in drupal for flora malesiana
 	foreach($descriptionElements as $descriptionElement){
 		if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
 			if($descriptionElement->class == 'Distribution'){
@@ -339,6 +340,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 		}else {
 			$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
 		}
+	}
 	}
 	//if feature = NAME USAGE sort the list of sources
 	//this is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE

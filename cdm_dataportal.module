@@ -1866,6 +1866,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 	//variables
 	$outArrayOfMedia = array(); //return value
 	//implementation
+	if(is_array($descriptionElements)){//avoiding warning box in drupal for flora malesiana
 	foreach($descriptionElements as $descriptionElement){
 		foreach($descriptionElement->media as $media){
 			if(isset($media)){
@@ -1873,10 +1874,12 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 			}
 	 }
 	}
+  }
 	return $outArrayOfMedia;
 }
 
-function cdm_annotations_as_footnotekeys($cdmBase){
+function cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array()){
+	 $footNoteKeys = array();
 	//is argument cdmBase an array? 
 	if (!is_array($cdmBase)){
 		$cdmBase_array = array();
@@ -1884,9 +1887,13 @@ function cdm_annotations_as_footnotekeys($cdmBase){
 	}else{
 		$cdmBase_array = $cdmBase;
 	}
+  //getting the key for the footnotemanager
+	if((bool) $footnote_list_key){
+		$footnoteListKey = $footnote_list_key;
+	}else{
+		$footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
+	}
 	//adding the footnotes keys
-	$footNoteKeys = array();
-	$footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
 	foreach($cdmBase_array as $cdmBase_element){
 		$annotationUrl = cdm_compose_annotations_url($cdmBase_element);
 		if($annotationUrl){

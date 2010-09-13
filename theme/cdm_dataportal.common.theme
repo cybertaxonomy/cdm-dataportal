@@ -109,8 +109,8 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
  * TODO it should be configurable which objects can be annotated as this might differ in dataportals
  *
  */
-function theme_cdm_annotations_as_footnotekeys($cdmBase){
-	$footNoteKeys = cdm_annotations_as_footnotekeys($cdmBase);
+function theme_cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array()){
+	$footNoteKeys = cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key);
 	foreach($footNoteKeys as $a){
 	   //$out .=  theme('cdm_footnote_key', $a, $a->footnoteListKey, (isset($out)? ',' : ''));
 	   $out .=  theme('cdm_footnote_key', $a, (isset($out)? ',' : ''));
@@ -168,9 +168,12 @@ function theme_cdm_list_of_annotations($annotationElements){
 
 /* ============================ footnotes ============================= */
 
-function theme_cdm_footnote_key($footnoteKey, $separator = '', $highlightable=true){
+function theme_cdm_footnote_key($footnoteKey, $separator = '', $highlightable=true, $separator_off = false){
 	if (!$footnoteKey->footnoteListKey){
 		return ''; 	  
+	}
+	if ($separator_off){
+		$separator = '';
 	}
   $out = '<span class="footnote-key footnote-key-'.$footnoteKey->keyStr.' member-of-footnotes-'.$footnoteKey->footnoteListKey.'">'.$separator
         .'<a href="#footnote-'.$footnoteKey->keyStr.'">'.$footnoteKey->keyStr.'</a>'
