@@ -283,19 +283,34 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	//later homonym or trated as later homonym
 	$taxon_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
 	if ($taxon_name_relations){
-		foreach($taxon_name_relations as $element){
+		foreach($taxon_name_relations as $element){ 
 			switch ($element->type->representation_L10n){
 				case 'later homonym for':
-					$later_homonym = ' [non ' . l($element->toName->titleCache,
-                                     'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid) . ']';
+					if(isset($later_homonym)){
+						$later_homonym .= ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4), 
+						    'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid);
+					}else{
+					  $later_homonym = ' [non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+                        'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid)
+					              . ' ' . $element->toName->datePublished->start;
+					}
 					break;
 				case 'treated as later homonym for':
-					$later_homonym = ' [non ' . l($element->toName->titleCache,
-                                     'cdm_dataportal/name/' . $element->toName->uuid) . ']';
+					if(isset($later_homonym)){
+            $later_homonym = ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+                              'cdm_dataportal/name/' . $element->toName->uuid);						
+					}else{
+					  $later_homonym = ' [non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4), 
+					                   'cdm_dataportal/name/' . $element->toName->uuid);
+					}
 					break;
 			}
 		}
+		if(isset($later_homonym)){
+	    $later_homonym .= ']';
 	}
+	}
+	
 	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $later_homonym . $status;
 
 	$out = uuid_anchor($taxon->uuid, $out);
