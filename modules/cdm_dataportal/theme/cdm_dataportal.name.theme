@@ -70,8 +70,9 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 				if($typeDesignation->citation){
 					$out .= type_designation_citation_layout($typeDesignation);
 					//footnotes
-					$fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, $typeDesignation->citation->titleCache);
-					$out .= theme('cdm_footnote_key', $fkey_typeDesignation, $separator) . ')';
+					//$fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, $typeDesignation->citation->titleCache);
+					$fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations', $typeDesignation->citation->titleCache);
+					$out .= theme('cdm_footnote_key', $fkey_typeDesignation, $separator, true, true) . ')';
 				}
 				if($typeDesignation->typeName->nomenclaturalReference){
 					$referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
@@ -132,8 +133,8 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 	if ($render_footnote_lectotypes){
 		$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
 	}
-	$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-acronyms');
-
+	$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-acronyms', 'li');
+	$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations', 'li');
 	//$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, 'li');
 
 	RenderHints::popFromRenderStack();
@@ -277,6 +278,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 	RenderHints::pushToRenderStack('homotypicSynonymyGroup');
 
 	$footnoteListKey = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
+	$accepted_taxon_footnoteListKey = RenderHints::getFootnoteListKey();
 	RenderHints::setFootnoteListKey($footnoteListKey);
 
 	if(! is_array($synonymList) || count($synonymList) == 0){
@@ -300,6 +302,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
 
+	$out .= theme('cdm_footnotes', $accepted_taxon_footnoteListKey, 'li');
 	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
 
@@ -475,7 +478,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL, 
 	}
 	$out .= '</span>';
 	if ($show_annotations){
-    $out .= theme('cdm_annotations_as_footnotekeys', $taxonName);
+    //$out .= theme('cdm_annotations_as_footnotekeys', $taxonName);
 	}
 	return $out;
 }

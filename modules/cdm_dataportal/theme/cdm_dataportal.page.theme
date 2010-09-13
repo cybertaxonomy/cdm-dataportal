@@ -221,7 +221,14 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 			$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 		}
 		$out .= theme('cdm_taxonName', $taxon->name, null, $referenceUri);
-		$out .= theme('cdm_annotations_as_footnotekeys', $taxon);
+		
+		$special_annotations_array = array();
+    $special_annotations_array[] = $taxon->name;
+    $special_annotations_array[] = $taxon;   
+    $out .= theme('cdm_annotations_as_footnotekeys', 
+                  $special_annotations_array, 
+                  RenderHints::getRenderPath() . '-annotations');
+    RenderHints::setFootnoteListKey(RenderHints::getRenderPath() . '-annotations');  
 	}
 
 	if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
@@ -231,7 +238,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 			$out .= theme('cdm_typedesignations', $typeDesignations);
 		}
 	} else {
-		// reder the homotypicSynonymyGroup including the type information
+		// render the homotypicSynonymyGroup including the type information
 		$out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
 	}
 	
@@ -256,8 +263,8 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
         $out .= theme('cdm_taxonRelationships', $taxonRelationships);
     }
 	
-    RenderHints::popFromRenderStack();
-            
+  RenderHints::popFromRenderStack();
+
 	return $out;
 }
 
