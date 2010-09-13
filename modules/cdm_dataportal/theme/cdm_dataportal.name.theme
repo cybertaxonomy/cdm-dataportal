@@ -107,7 +107,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 				$typeReference .= ':'. $std->citationMicroReference .')';
 
 				$_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-lectotypes', $std->citation->titleCache);
-				$typeReference .= theme('cdm_footnote_key', $_fkey2, $separator);
+				$typeReference .= theme('cdm_footnote_key', $_fkey2, $separator, true, true);
 			}
 
 			$derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std->typeSpecimen->uuid);

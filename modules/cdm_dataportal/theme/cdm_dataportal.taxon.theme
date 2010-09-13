@@ -287,18 +287,21 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 			switch ($element->type->representation_L10n){
 				case 'later homonym for':
 					if(isset($later_homonym)){
-						$later_homonym .= ' nec ' . l($element->toName->titleCache, 
+						$later_homonym .= ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4), 
 						    'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid);
 					}else{
-					  $later_homonym = ' [non ' . l($element->toName->titleCache,
-                        'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid);
+					  $later_homonym = ' [non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+                        'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid)
+					              . ' ' . $element->toName->datePublished->start;
 					}
 					break;
 				case 'treated as later homonym for':
 					if(isset($later_homonym)){
-            $later_homonym = ' nec ' . l($element->toName->titleCache, 'cdm_dataportal/name/' . $element->toName->uuid);						
+            $later_homonym = ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+                              'cdm_dataportal/name/' . $element->toName->uuid);						
 					}else{
-					  $later_homonym = ' [non ' . l($element->toName->titleCache, 'cdm_dataportal/name/' . $element->toName->uuid);
+					  $later_homonym = ' [non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4), 
+					                   'cdm_dataportal/name/' . $element->toName->uuid);
 					}
 					break;
 			}
