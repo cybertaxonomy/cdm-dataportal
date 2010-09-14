@@ -764,96 +764,112 @@ function cdm_dataportal_form_alter($form_id, &$form) {
 function cdm_dataportal_settings_layout(){
 
 	$form = array();
-
-	$form['cdm_taxonname_type'] = array(
-    '#type' => 'select',
-    '#title'         => t('Taxon name type'),
-    '#default_value' => variable_get('cdm_taxonname_type', 'BotanicalName'),
-    '#options' => array( 'BotanicalName'=>t('BotanicalName'), 'ZoologicalName'=>t('ZoologicalName')),
-    '#description'   => t('')
+	/*
+	 $form['cdm_taxonname_type'] = array(
+	 '#type' => 'select',
+	 '#title'         => t('Taxon name type'),
+	 '#default_value' => variable_get('cdm_taxonname_type', 'BotanicalName'),
+	 '#options' => array( 'BotanicalName'=>t('BotanicalName'), 'ZoologicalName'=>t('ZoologicalName')),
+	 '#description'   => t('')
+	 );
+	 */
+	//---- SYNONYMY ----//
+	$form['synonymy'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Synonymy'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
 	);
-
-	$form['cdm_dataportal_nomref_in_title'] = array(
+	
+	$form['synonymy']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show full nomenclatural reference in title'),
     '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE),
-    '#description' => t('Uncheck this, if you want the title of a taxon page consisting of name and author plus publication year only.
+    '#description' => t('Check this, if you want the title of a taxon page consisting of name and author plus publication year only.
                         If not checked, the first homotypic taxon is a repetition of the accepted taxon with
                         the full nomenclatural reference.')
 	);
 
-	$form[CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
+	$form['synonymy']['cdm_dataportal_display_is_accepted_for'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display <em>is accepted for ...</em> on taxon pages when coming from a synonym link.'),
+    '#default_value' => variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR),
+    '#description' => t('Check this if after doing a search and clicking on a synonym you want to see the "accept of" text for the accepted synonym')
+	);
+
+	$form['synonymy'][CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show name relations of accepted taxa on taxon page'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT),
     '#description' => t('')
 	);
 
-	$form[CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+	$form['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show taxon relations of accepted taxa on taxon page'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
     '#description' => t('')
 	);
 
-	$form['cdm_dataportal_display_is_accepted_for'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display <em>is accepted for ...</em> on taxon pages when coming from a synonym link.'),
-    '#default_value' => variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR),
-    '#description' => t('')
-	);
-
-	$form['cdm_dataportal_name_relations_skiptype_basionym'] = array(
+	$form['synonymy']['cdm_dataportal_name_relations_skiptype_basionym'] = array(
     '#type' => 'checkbox',
     '#title' => t('Exclude the basionym relationship type from the taxon page'),
     '#default_value' => variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1),
     '#description' => t('')
 	);
 
-	$form['cdm_dataportal_taxonpage_tabs'] = array(
+	$form['synonymy']['cdm_dataportal_taxonpage_tabs'] = array(
     '#type' => 'checkbox',
     '#title' => t('Tabbed taxon page'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
     '#description' => t('Split the taxon page into individual tabs for description, images, synonymy')
 	);
 
-	$form['cdm_dataportal_search_items_on_page'] = array(
+  //------------------ SEARCH --------------------//	
+	 $form['search'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Search'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+  );
+	$form['search']['cdm_dataportal_search_items_on_page'] = array(
     '#type' => 'textfield',
     '#title' => t('Search Page Size'),
     '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
     '#description' => t('Number of Names to display per page in search results.')
 	);
 
-	$form['cdm_dataportal_descriptions_separated'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Separate Descriptions'),
-    '#default_value' => variable_get('cdm_dataportal_descriptions_separated', 0),
-    '#description' => t('By default corresponding elements of different descriptions are joined together'
-    .' into a common section per feature (i.e. type of description).'
-    .' Check this box to allow displaying all descriptions separately.')
-    );
+	/*
+	 $form['cdm_dataportal_descriptions_separated'] = array(
+	 '#type' => 'checkbox',
+	 '#title' => t('Separate Descriptions'),
+	 '#default_value' => variable_get('cdm_dataportal_descriptions_separated', 0),
+	 '#description' => t('By default corresponding elements of different descriptions are joined together'
+	 .' into a common section per feature (i.e. type of description).'
+	 .' Check this box to allow displaying all descriptions separately.')
+	 );
+	 */
+	//------------------ FEATURE TREE --------------------//
 
-    //------------------ FEATURE TREE --------------------//
-
-    $form['cdm_dataportal']['taxon_profile'] = array(
+	$form['cdm_dataportal']['taxon_profile'] = array(
 	    '#type' => 'fieldset',
 	    '#title' => t('Taxon profile'),
 	    '#description'   => t('This section covers setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.'),
 	    '#collapsible' => TRUE,
-	    '#collapsed' => FALSE,
-    );
+	    '#collapsed' => TRUE,
+	);
 
-    $form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
+	$form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
 	    '#type' => 'radios',
 	    '#title'         => t('Taxon profile elements'),                
 	    '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
 	    '#options' => cdm_get_featureTrees_as_options(TRUE),
 	    '#description'   => t('Select a FeatureTree to specify the elements to be displayd in the taxon profile.'
 	    //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
-    )
-    );
-     
-    $form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
+	)
+	);
+	 
+	$form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
 	    '#type' => 'radios',
 	    '#title'         => t('Natural language representation of structured descriptions'),                
 	    '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, null),
@@ -861,78 +877,78 @@ function cdm_dataportal_settings_layout(){
 	    '#description'   => t('Taxon descriptions can be stored in a highly structured form.'.
 	      ' The feature tree selected here will be used to generate textual representation in natural language.'
 	      //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
-    )
-    );
+	)
+	);
 
-    //---- IMAGES ----//
-    $form['images'] = array(
+	//---- IMAGES ----//
+	$form['images'] = array(
 	    '#type' => 'fieldset',
 	    '#title' => t('Images'),
 	    '#collapsible' => TRUE,
 	    '#collapsed' => TRUE,
-    );
-    $options = cdm_rankVocabulary_as_option();
-    array_unshift($options, '-- DISABLED --');
-    $form['images']['image_hide_rank'] =  array(
+	);
+	$options = cdm_rankVocabulary_as_option();
+	array_unshift($options, '-- DISABLED --');
+	$form['images']['image_hide_rank'] =  array(
 	    '#type'          => 'select',
 	    '#title'         => t('Hide Images for Taxa above'),
 	    '#default_value' => variable_get('image_hide_rank', '0'),
 	    '#options'       => $options,
 	    '#description'   => t(''),
-    );
-    //show media
-    $selectShowMedia = array(0 => "Show only taxon media",
-    1 => "Show taxon and child taxon media");
-    $form['images']['cdm_dataportal_show_media'] = array(
+	);
+	//show media
+	$selectShowMedia = array(0 => "Show only taxon media",
+	1 => "Show taxon and child taxon media");
+	$form['images']['cdm_dataportal_show_media'] = array(
 	    '#type' => 'select',
 	    '#title' => t('Available media files'),
 	    '#default_value' => variable_get('cdm_dataportal_show_media', false),
 	    '#options' => $selectShowMedia,
 	    '#description'   => t('Select if a taxon should show only his media or also child media.')
-    );
-    $selectShowMedia = array(0 => "Show only taxon media",
-    1 => "Show taxon and child taxon media");
-    $form['images']['cdm_dataportal_show_default_image'] = array(
+	);
+	$selectShowMedia = array(0 => "Show only taxon media",
+	1 => "Show taxon and child taxon media");
+	$form['images']['cdm_dataportal_show_default_image'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show default image'),
       '#default_value' => variable_get('cdm_dataportal_show_default_image', false),
       '#description'   => t('Select if the taxon profile page should display the default image if no image is available for the chosen taxon.')
-    );
+	);
 
-    // --- SEARCH TAXA GALLERY ---- //
-    $collapsed = TRUE;
-    $form_name = CDM_DATAPORTAL_SEARCH_GALLERY_NAME;
-    $form_tittle = 'Search Taxa';
-    $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+	// --- SEARCH TAXA GALLERY ---- //
+	$collapsed = TRUE;
+	$form_name = CDM_DATAPORTAL_SEARCH_GALLERY_NAME;
+	$form_tittle = 'Search Taxa';
+	$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
 
-    // --- FEATURE DESCRIPTION GALLERY ---- //
-    $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
-    $form_tittle = 'Description elements gallery';
-    $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+	// --- FEATURE DESCRIPTION GALLERY ---- //
+	$form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
+	$form_tittle = 'Description elements gallery';
+	$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
 
-    // --- MEDIA GALLERY ---- //
-    $form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
-    $form_tittle = 'Media gallery';
-    $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+	// --- MEDIA GALLERY ---- //
+	$form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
+	$form_tittle = 'Media gallery';
+	$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
 
-    //-- DISTRIBUTION LAYOUT --//
-    $form['distribution_layout'] = array(
+	//-- DISTRIBUTION LAYOUT --//
+	$form['distribution_layout'] = array(
         '#title' => t('Distribution layout'),
         '#collapsible' => TRUE,
         '#collapsed' => TRUE,
         '#type' => 'fieldset',
-    );
+	);
 
-    $form['distribution_layout']['distribution_sort'] =  array(
+	$form['distribution_layout']['distribution_sort'] =  array(
     '#type'          => 'radios',
     '#title'         => t('Sort'),
     '#default_value' => 0,
     '#options' => array(
-    t('Standard (No sort)'),
-    t('Sorted without TDWG Level 2'),
-    ));
+	t('Standard (No sort)'),
+	t('Sorted without TDWG Level 2'),
+	));
 
-    return system_settings_form($form);
+	return system_settings_form($form);
 }
 
 function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed){
@@ -1867,27 +1883,27 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 	$outArrayOfMedia = array(); //return value
 	//implementation
 	if(is_array($descriptionElements)){//avoiding warning box in drupal for flora malesiana
-	foreach($descriptionElements as $descriptionElement){
-		foreach($descriptionElement->media as $media){
-			if(isset($media)){
-			 $outArrayOfMedia[] = $media;
+		foreach($descriptionElements as $descriptionElement){
+			foreach($descriptionElement->media as $media){
+				if(isset($media)){
+					$outArrayOfMedia[] = $media;
+				}
 			}
-	 }
+		}
 	}
-  }
 	return $outArrayOfMedia;
 }
 
 function cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array()){
-	 $footNoteKeys = array();
-	//is argument cdmBase an array? 
+	$footNoteKeys = array();
+	//is argument cdmBase an array?
 	if (!is_array($cdmBase)){
 		$cdmBase_array = array();
 		$cdmBase_array[] = $cdmBase;
 	}else{
 		$cdmBase_array = $cdmBase;
 	}
-  //getting the key for the footnotemanager
+	//getting the key for the footnotemanager
 	if((bool) $footnote_list_key){
 		$footnoteListKey = $footnote_list_key;
 	}else{
