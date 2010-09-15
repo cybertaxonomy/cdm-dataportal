@@ -203,38 +203,40 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 	$res_author;
 	$res_date;
 
-	foreach($element->sources as $source){
-		$referenceCitation = theme('cdm_DescriptionElementSource', $source);
-		if($description && strlen($description) > 0 && $referenceCitation ){
-			$sourceRefs .= ' ('.$referenceCitation.')' ;
-		}else if ($referenceCitation){
-			$sourceRefs = $referenceCitation;
-		}
+	if(is_array($element->sources)){
+		foreach($element->sources as $source){
+			$referenceCitation = theme('cdm_DescriptionElementSource', $source);
+			if($description && strlen($description) > 0 && $referenceCitation ){
+				$sourceRefs .= ' ('.$referenceCitation.')' ;
+			}else if ($referenceCitation){
+				$sourceRefs = $referenceCitation;
+			}
+		
+			if(strlen($sourceRefs) > 0){
+				$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+			}
 	
-		if(strlen($sourceRefs) > 0){
-			$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
-		}
-
-		if ($source->nameUsedInSource->uuid){ //do a link to name page
-			$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
-			             path_to_name($source->nameUsedInSource->uuid),
-			             array(), NULL, NULL, FALSE ,TRUE);
-		}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
-			$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
-		}
-
-		if ($asListElement){
-			$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
-			//adding ":" if necesary
-			if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
-				$out .= ': ';
+			if ($source->nameUsedInSource->uuid){ //do a link to name page
+				$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
+				             path_to_name($source->nameUsedInSource->uuid),
+				             array(), NULL, NULL, FALSE ,TRUE);
+			}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
+				$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
 			}
-			$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
-		}else{
-			if ($name_used_in_source_link_to_show){
-				$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+	
+			if ($asListElement){
+				$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+				//adding ":" if necesary
+				if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+					$out .= ': ';
+				}
+				$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+			}else{
+				if ($name_used_in_source_link_to_show){
+					$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+				}
+				$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
 			}
-			$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
 		}
 	}
 	//if no sources, print the description

@@ -45,6 +45,13 @@ define('CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS', 'portal/taxon/$0/toNameRelationsh
 
 define('CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS', 'portal/taxon/$0/fromNameRelationships');
 
+define('CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA', 'description/$0/hasStructuredData');
+
+/**
+ * /description/{uuid}/naturalLanguageDescription/{featuretree_uuid}
+ */
+define('CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION', 'description/$0/naturalLanguageDescription/$1');
+
 define('CDM_WS_DESCRIPTIONELEMENT', 'descriptionElement/$0');
 
 define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');

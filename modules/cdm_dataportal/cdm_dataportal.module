@@ -630,18 +630,18 @@ function cdm_taxonomictree_selector_form(){
         '#value' => '[cdm][taxonomictree_uuid]'    
         );
 
-        $form['destination'] = array(
-        '#delta' => -3,
-        '#type' => 'hidden',
-        '#value' => substr(drupal_get_destination(), strlen('destination='))
-        );
+   $form['destination'] = array(
+	   '#delta' => -3,
+	   '#type' => 'hidden',
+	   '#value' => substr(drupal_get_destination(), strlen('destination='))
+    );
 
-        $form['val'] = array(
-	    '#type' => 'select',
-	    '#title'         => t('Available classifications'),
-	    '#default_value' => get_taxonomictree_uuid_selected(),
-	    '#options' => cdm_get_taxontrees_as_options()
-        );
+    $form['val'] = array(
+      '#type' => 'select',
+      '#title'         => t('Available classifications'),
+      '#default_value' => get_taxonomictree_uuid_selected(),
+      '#options' => cdm_get_taxontrees_as_options()
+    );
 
         return $form;
 
@@ -717,21 +717,6 @@ function cdm_dataportal_settings(){
 
 	$form = cdm_api_settings_form();
 
-	//TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
-	$form['cdm_dataportal'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('CDM DataPortal'),
-      '#collapsible' => FALSE,
-      '#collapsed' => TRUE,
-	);
-
-	$form['cdm_dataportal']['cdm_taxonomictree_uuid'] = array(
-    '#type' => 'select',
-    '#title'         => t('Available classifications'),
-    '#default_value' => variable_get('cdm_taxonomictree_uuid', false),
-    '#options' => cdm_get_taxontrees_as_options(),
-    '#description'   => t('Select the default classification to be used.')
-	);
 
 	return system_settings_form($form);
 }
@@ -1884,9 +1869,11 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 	//implementation
 	if(is_array($descriptionElements)){//avoiding warning box in drupal for flora malesiana
 		foreach($descriptionElements as $descriptionElement){
-			foreach($descriptionElement->media as $media){
-				if(isset($media)){
-					$outArrayOfMedia[] = $media;
+			if(is_array($descriptionElement->media)){
+				foreach($descriptionElement->media as $media){
+					if(isset($media)){
+						$outArrayOfMedia[] = $media;
+					}
 				}
 			}
 		}
