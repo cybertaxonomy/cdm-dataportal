@@ -232,7 +232,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 	}
 
 	//if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
-	if(!isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){	
+	if(!isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
 		// display the type information for the added taxon
 		$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
 		if($typeDesignations){
