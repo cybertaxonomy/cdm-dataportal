@@ -280,7 +280,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 	$footnoteListKey = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
 	$accepted_taxon_footnoteListKey = RenderHints::getFootnoteListKey();
 	RenderHints::setFootnoteListKey($footnoteListKey);
-
+ 
 	if(! is_array($synonymList) || count($synonymList) == 0){
 		return;
 	}
@@ -301,8 +301,9 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
-
-	$out .= theme('cdm_footnotes', $accepted_taxon_footnoteListKey, 'li');
+  if($accepted_taxon_footnoteListKey){// to avoiding drupal warnings (#1830) why false???
+  	 $out .= theme('cdm_footnotes', $accepted_taxon_footnoteListKey, 'li');
+  }
 	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
 
