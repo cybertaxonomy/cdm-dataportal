@@ -129,7 +129,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	$tr_footnotes_exploded = explode('sensu', $tr_footnotes);
 	$tr_footnotes_aux = '';
 	foreach ($tr_footnotes_exploded as $element){
-		$tr_footnotes_aux .= $element; 
+		$tr_footnotes_aux .= $element;
 	}
 	$out .= $tr_footnotes_aux;
 	$out .= '</ul>';
@@ -280,39 +280,58 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	$special_annotations_array[] = $taxon;
 	$nameHtml .= theme('cdm_annotations_as_footnotekeys', $special_annotations_array);
 
-	//later homonym or trated as later homonym
-	$taxon_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
-	if ($taxon_name_relations){
-		foreach($taxon_name_relations as $element){ 
+	//later homonym or trated as later homonym AND bloking names
+	$from_name_rels = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
+	$to_name_rels = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
+	//first the FROM RELS
+	if ($from_name_rels){
+		foreach($from_name_rels as $element){
 			switch ($element->type->representation_L10n){
 				case 'later homonym for':
-					if(isset($later_homonym)){
-						$later_homonym .= ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4), 
+					if(isset($rels_out)){
+						$rels_out .= ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
 						    'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid);
 					}else{
-					  $later_homonym = ' [non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+						$rels_out = ' non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
                         'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid)
-					              . ' ' . $element->toName->datePublished->start;
+						. ' ' . $element->toName->datePublished->start;
 					}
 					break;
 				case 'treated as later homonym for':
-					if(isset($later_homonym)){
-            $later_homonym = ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+					if(isset($rels_out)){
+						$rels_out = ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
                               'cdm_dataportal/name/' . $element->toName->uuid);						
 					}else{
-					  $later_homonym = ' [non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4), 
+						$rels_out = ' non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
 					                   'cdm_dataportal/name/' . $element->toName->uuid);
 					}
 					break;
 			}
 		}
-		if(isset($later_homonym)){
-	    $later_homonym .= ']';
+		//second the TO RELS
+		if ($to_name_rels){
+			foreach($to_name_rels as $element){
+				switch ($element->type->representation_L10n){
+					case 'blocking name for':
+						if(isset($rels_out) ){
+							$rels_out .= ' nec ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
+                'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid . '/' . $element->fromName->taxonBases[0]->uuid);
+						}else{
+							$rels_out = ' non ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
+                        'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid . '/' . $element->fromName->taxonBases[0]->uuid)
+							. ' ' . $element->fromName->datePublished->start;
+						}
+						break;
+				}
+			}
+		}
+    //rels output
+		if(isset($rels_out)){
+			$rels_out = '['. $rels_out .']';
 		}
 	}
-	
-	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $later_homonym . $status;
-
+  //geneal output
+	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $rels_out . $status;
 	$out = uuid_anchor($taxon->uuid, $out);
 
 	RenderHints::popFromRenderStack();
