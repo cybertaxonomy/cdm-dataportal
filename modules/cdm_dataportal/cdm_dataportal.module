@@ -768,7 +768,7 @@ function cdm_dataportal_settings_layout(){
 	
 	$form['synonymy']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show full nomenclatural reference in title'),
+    '#title' => t('Show full nomenclatural reference at the top of the synonymy'),
     '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE),
     '#description' => t('Check this, if you want the title of a taxon page consisting of name and author plus publication year only.
                         If not checked, the first homotypic taxon is a repetition of the accepted taxon with
@@ -779,30 +779,31 @@ function cdm_dataportal_settings_layout(){
     '#type' => 'checkbox',
     '#title' => t('Display <em>is accepted for ...</em> on taxon pages when coming from a synonym link.'),
     '#default_value' => variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR),
-    '#description' => t('Check this if after doing a search and clicking on a synonym you want to see the "accept of" text for the accepted synonym')
+    '#description' => t('Check this if after doing a search and clicking on a synonym you want to see the "accept of" text for the accepted synonym.')
 	);
 
 	$form['synonymy'][CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show name relations of accepted taxa on taxon page'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT),
-    '#description' => t('')
+    '#description' => t('Check this if you want the synonymy list to show all the name relationships where other names implies the accepted taxa.')
 	);
 
 	$form['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show taxon relations of accepted taxa on taxon page'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
-    '#description' => t('')
+    '#description' => t('Check this if you want the synonymy list to show the <em>"Misapplied Name for"</em> and <em>"Invalid Designation for"</em> relationships of accepted taxa.')
 	);
 
+/*
 	$form['synonymy']['cdm_dataportal_name_relations_skiptype_basionym'] = array(
     '#type' => 'checkbox',
     '#title' => t('Exclude the basionym relationship type from the taxon page'),
     '#default_value' => variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1),
     '#description' => t('')
 	);
-
+*/
 	$form['synonymy']['cdm_dataportal_taxonpage_tabs'] = array(
     '#type' => 'checkbox',
     '#title' => t('Tabbed taxon page'),

@@ -159,7 +159,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	if($page_part == 'all'){
   		$out .= '<h2>'.t('Synonymy').'</h2>';
   	}
-  	$addAcceptedTaxon = !variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
+  	$addAcceptedTaxon = variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
   	$out .= theme('cdm_taxon_page_synonymy', $taxon, $addAcceptedTaxon);
 
   	$out .= '</div>';
@@ -273,7 +273,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		if(variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1)){
 			$skip = array(UUID_BASIONYM);
 		}
-		$out .= theme('nameRelationships', $nameRelationships, $skip);
+		$out .= theme('cdm_nameRelationships', $nameRelationships, $skip);
 	}
 
 	if(variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)){
