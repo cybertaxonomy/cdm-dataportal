@@ -323,18 +323,16 @@ function cdm_dataportal_menu($may_cache) {
       'callback arguments' => array(arg(2), "images")
 			// expected callback arguments: name_uuid
 			);
-			/*
-			 $items[] = array(
-			 'path' => 'cdm_dataportal/taxon/'.arg(2).'/specimens',
-			 'title' => theme('cdm_taxonpage_tab', 'Specimens'),
-			 'callback' => 'cdm_dataportal_taxon_page_view',
-			 'access' => true,
-			 'type' => MENU_LOCAL_TASK,
-			 'weight' => 5,
-			 'callback arguments' => array(arg(2), "specimens")
-			 // expected callback arguments: name_uuid
-			 );
-			 */
+		 $items[] = array(
+		 'path' => 'cdm_dataportal/taxon/'.arg(2).'/specimens',
+		 'title' => theme('cdm_taxonpage_tab', 'Specimens'),
+		 'callback' => 'cdm_dataportal_taxon_page_view',
+		 'access' => true,
+		 'type' => MENU_LOCAL_TASK,
+		 'weight' => 5,
+		 'callback arguments' => array(arg(2), "specimens")
+		 // expected callback arguments: name_uuid
+		 );
 
 		}
 	}
@@ -768,11 +766,10 @@ function cdm_dataportal_settings_layout(){
 	
 	$form['synonymy']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show full nomenclatural reference at the top of the synonymy'),
+    '#title' => t('Show accepted taxon on top of the synonymy'),
     '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE),
-    '#description' => t('Check this, if you want the title of a taxon page consisting of name and author plus publication year only.
-                        If not checked, the first homotypic taxon is a repetition of the accepted taxon with
-                        the full nomenclatural reference.')
+    '#description' => t('If checked, the first homotypic taxon is a repetition of the accepted taxon most likely
+                        with the full nomenclatural reference (depending on the currently chosen theme).')
 	);
 
 	$form['synonymy']['cdm_dataportal_display_is_accepted_for'] = array(

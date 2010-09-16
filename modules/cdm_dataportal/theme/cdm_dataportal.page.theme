@@ -84,6 +84,11 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 	if(!isset($media[0])) {
 		$hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
 	}
+	
+	$descriptionElementCount = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation'), "count=true");
+  if($descriptionElementCount->Integer < 1) {
+    $hideTabs[] = theme('cdm_taxonpage_tab', 'Specimens');
+  }
 
 	// hideImage flag depending on administative preset
 	$hideImages = false;
@@ -165,8 +170,8 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	$out .= '</div>';
   }
 
-  // --- SPECIMENS --- //
-  if($page_part == 'specimens' || $page_part == 'all'){
+  // --- SPECIMENS --- // 
+  if($descriptionElementCount > 0 && ($page_part == 'specimens' || $page_part == 'all') ){
   	$out .= '<div id="specimens">';
   	if($page_part == 'all'){
   		$out .= '<h2>'.t('Specimens').'</h2>';
@@ -209,18 +214,30 @@ function theme_cdm_taxon_page_specimens($taxon){
 
 	RenderHints::pushToRenderStack('taxon_page_specimens');
 
-	/*
-	 $header = array( 'title 1', 'title 2', 'title 3' );
-	 $rows = array(
-	 // Simple row array
-	 array( 'Cell 1', 'Cell 2', 'Cell 3' ),
-	 // Row with attributes on the row and some of its cells.
-	 array( 'data' => array('Cell 1', array('data' => 'Cell 2', 'colspan' => 2)), 'class' => 'funky' ) );
-	 //theme_table($header, $rows, $attributes = array(), $caption = NULL);
-	 $out = theme_table($header, $rows);
-	 */
+  $descriptionElements = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation') );
+  if($descriptionElements){
+  	
+//  	if(variable_get('cdm_dataportal_map_openlayers', 1)){
+//  	  _add_js_openlayers_map();
+//
+//      $out = '<div id="openlayers">';
+//      $out .= '<div id="openlayers_map" class="smallmap" '
+////      .'distributionQuery="'.$query_string.'"'
+////      .'legendFormatQuery="'.$legendFormatQueryStr.'"'
+//      .'style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
+//      $out .= '</div>';
+//  	}
+  	
+  	$out .= '<ul class="specimens">';
+    foreach($descriptionElements as $descriptionElement) {
+    	if($descriptionElement->associatedSpecimenOrObservation){
+    	 $out .= '<li class="descriptionElement descriptionElement_IndividualsAssociation">' . $descriptionElement->associatedSpecimenOrObservation->titleCache . '</li>';
+    	}
+    }
+    $out .= '</ul>';
+  }
 	RenderHints::popFromRenderStack();
-	//return $out;
+	return $out;
 }
 /**
  * Show whole synonymy for the accepted taxon. Synonymy list is headed by the complete scientific name

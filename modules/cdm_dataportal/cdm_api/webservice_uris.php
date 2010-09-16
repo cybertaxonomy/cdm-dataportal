@@ -16,7 +16,14 @@ define('CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS', 'portal/taxon/$0/nameTypeDesi
 
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
 
-define('CDM_WS_PORTAL_NAME_DESCRIPTIONS', 'portal/name/$0/taxonNameDescriptions'); //TaxonNameDescriptions
+/**
+ * $0 : taxon uud
+ * $1 : simple name of class extending DescriptionElementBase 
+ * 
+ */
+define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE', 'portal/taxon/$0/descriptions/elementsByType/$1');
+
+define('CDM_WS_PORTAL_NAME_DESCRIPTIONS', 'portal/name/$0/taxonNameDescriptions');
 
 define('CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE', 'portal/description/$0,$1/namedAreaTree');
 define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE', 'portal/description/$0,$1/DistributionTree');
