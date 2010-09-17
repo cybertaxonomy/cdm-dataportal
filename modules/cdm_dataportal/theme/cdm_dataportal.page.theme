@@ -84,7 +84,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 	if(!isset($media[0])) {
 		$hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
 	}
-	
+
 	$descriptionElementCount = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation'), "count=true");
   if($descriptionElementCount->Integer < 1) {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Specimens');
@@ -136,7 +136,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   		}
   		$taxonDescriptions = null; // release memory
   	}
-  	 
+
   	$mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $nonStructuredDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
 
   	$out .= '<div id="general">';
@@ -170,7 +170,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	$out .= '</div>';
   }
 
-  // --- SPECIMENS --- // 
+  // --- SPECIMENS --- //
   if($descriptionElementCount > 0 && ($page_part == 'specimens' || $page_part == 'all') ){
   	$out .= '<div id="specimens">';
   	if($page_part == 'all'){
@@ -215,27 +215,31 @@ function theme_cdm_taxon_page_specimens($taxon){
 	RenderHints::pushToRenderStack('taxon_page_specimens');
 
   $descriptionElements = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation') );
+
+  if(variable_get('cdm_dataportal_map_openlayers', 1)){
+
+  	  $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
+  	  $occurrenceQuery = $occurrenceQuery->String;
+  	  //$query_string = 'l=v%3Aatbi%2Ce_w_0&legend=0&ms=400%2C350&od=1%3A44.29481%2C6.82161|44.29252%2C6.822873|44.29247%2C6.82346|44.29279%2C6.823678|44.29269%2C6.82394|44.28482%2C6.887252|44.11469%2C7.287144|44.11468%2C7.289168&os=1%3Ac%2F8B0000%2F10%2FAporrectodea caliginosa&recalculate=false&image=false';
+
+  	  $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', false), $occurrenceQuery);
+
+  	}
+
   if($descriptionElements){
-  	
-//  	if(variable_get('cdm_dataportal_map_openlayers', 1)){
-//  	  _add_js_openlayers_map();
-//
-//      $out = '<div id="openlayers">';
-//      $out .= '<div id="openlayers_map" class="smallmap" '
-////      .'distributionQuery="'.$query_string.'"'
-////      .'legendFormatQuery="'.$legendFormatQueryStr.'"'
-//      .'style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
-//      $out .= '</div>';
-//  	}
-  	
-  	$out .= '<ul class="specimens">';
-    foreach($descriptionElements as $descriptionElement) {
-    	if($descriptionElement->associatedSpecimenOrObservation){
-    	 $out .= '<li class="descriptionElement descriptionElement_IndividualsAssociation">' . $descriptionElement->associatedSpecimenOrObservation->titleCache . '</li>';
-    	}
-    }
-    $out .= '</ul>';
+  	$out_specimenList = '<ul class="specimens">';
+  	foreach($descriptionElements as $descriptionElement) {
+  		if($descriptionElement->associatedSpecimenOrObservation){
+
+  			$out_specimenList .= '<li class="descriptionElement descriptionElement_IndividualsAssociation">' . $descriptionElement->associatedSpecimenOrObservation->titleCache . '</li>';
+  		}
+  	}
+  	$out_specimenList .= '</ul>';
   }
+
+  $out .= $out_specimenList;
+
+
 	RenderHints::popFromRenderStack();
 	return $out;
 }

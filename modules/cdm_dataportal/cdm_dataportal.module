@@ -70,11 +70,43 @@ function _add_js_treeselector(){
 		      $('#cdm-taxonomictree-selector-form #edit-val').change(function () {
 		          $('#cdm-taxonomictree-selector-form').submit();
 		      });
-		      
+
 		  });
 		}", 'inline');
 }
 
+
+function get_openlayers_map($width, $occurrenceQuery = false, $distributionQuery = false, $legendFormatQuery = false, $map_caption = false ){
+
+      _add_js_openlayers_map();
+
+      $out = '<div id="openlayers">';
+      $out .= '<div id="openlayers_map" class="smallmap"';
+      $out .= ' style="width: ' . $width . 'px; height:'.( $width / 2).'px"';
+      if($occurrenceQuery){
+
+      	//fix $occurrenceQuery
+      	$occurrenceQuery .= '&ms=400,350';
+      	$occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0';
+      	$occurrenceQuery .= '&legend=0'; //TODO add to cdm service?
+
+      	$out .= ' occurrenceQuery="'.$occurrenceQuery.'"';
+      }
+      if($distributionQuery){
+        $out .= ' distributionQuery="'.$distributionQuery.'"';
+      }
+      if($legendFormatQuery){
+         $out .= ' legendFormatQuery="'.$legendFormatQuery.'"';
+      }
+      $out .= '></div></div>';
+
+      // showing map caption
+      if($map_caption){
+        $out .= '<div class="distribution_map_caption">' . $map_caption . '</div>' . '<br />'; //FIXME: replace <br> by according css style
+        $out .= '</div>';
+      }
+      return $out;
+}
 
 /* ====================== hook implementations ====================== */
 
@@ -191,7 +223,7 @@ function cdm_dataportal_menu($may_cache) {
 	    'type' => MENU_CALLBACK,
 		);
 		// optional callback arguments: page
-			
+
 		$items[] = array(
       'path' => 'cdm_dataportal/taxon',
       'callback' => 'cdm_dataportal_taxon_page_view',
@@ -504,7 +536,7 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       '#title' => t('Search for common names'),
       '#value' => $preset_doTaxaByCommonNames
 		);
-			
+
 		// Geographic Range
 		$form['search']['geographic_range'] = array(
       '#type' => 'fieldset',
@@ -545,7 +577,7 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
         '#type' => 'select',
         '#title'         => t('TDWG level').' '.$key,
         '#default_value' => $tdwgOptionsSelected,
-        '#multiple' => TRUE, 
+        '#multiple' => TRUE,
         '#options' => $tdwgOptions
 			);
 			$tdwg_js .= "$('#edit-search-geographic-range-tdwg-level-$key').parent()".($tdwg_level_select + 1 == $key ?  '.show()' : '.hide()'). ";\n";
@@ -553,8 +585,8 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
 
 		drupal_add_js(
     "$(document).ready(function(){
-    
-      $(\"input[@name='search[geographic_range][tdwg_level_select]']\").change( 
+
+      $(\"input[@name='search[geographic_range][tdwg_level_select]']\").change(
         function(event){
           var selectId = $(\"input[@name='search[geographic_range][tdwg_level_select]']:checked\").val();
           var i;
@@ -569,7 +601,7 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
           }
         }
       );
-      
+
       $tdwg_js
     });",
     'inline');
@@ -623,7 +655,7 @@ function cdm_taxonomictree_selector_form(){
 	$form['var'] = array(
         '#delta' => -3,
         '#type' => 'hidden',
-        '#value' => '[cdm][taxonomictree_uuid]'    
+        '#value' => '[cdm][taxonomictree_uuid]'
         );
 
    $form['destination'] = array(
@@ -769,7 +801,7 @@ function cdm_dataportal_settings_layout(){
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
 	);
-	
+
 	$form['synonymy']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show accepted taxon on top of the synonymy'),
@@ -848,17 +880,17 @@ function cdm_dataportal_settings_layout(){
 
 	$form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
 	    '#type' => 'radios',
-	    '#title'         => t('Taxon profile elements'),                
+	    '#title'         => t('Taxon profile elements'),
 	    '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
 	    '#options' => cdm_get_featureTrees_as_options(TRUE),
 	    '#description'   => t('Select a FeatureTree to specify the elements to be displayd in the taxon profile.'
 	    //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
 	)
 	);
-	 
+
 	$form['cdm_dataportal']['taxon_profile'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
 	    '#type' => 'radios',
-	    '#title'         => t('Natural language representation of structured descriptions'),                
+	    '#title'         => t('Natural language representation of structured descriptions'),
 	    '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, null),
 	    '#options' => cdm_get_featureTrees_as_options(),
 	    '#description'   => t('Taxon descriptions can be stored in a highly structured form.'.
@@ -1275,6 +1307,7 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = false
  */
 function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all'){
 	// display the page for the taxon defined by $uuid
+	set_last_taxon_page_tab(arg(3));
 	$taxonpage = cdm_dataportal_taxon_view($uuid, $chapter);
 	return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title , $taxonpage->content);
 }
@@ -1445,7 +1478,11 @@ function cdm_view_xml2json(){
  */
 function path_to_taxon($uuid){
 	if(!$uuid) return false;
-	return 'cdm_dataportal/taxon/'.$uuid;
+	if(get_last_taxon_page_tab()){
+		return 'cdm_dataportal/taxon/'.$uuid . '/' . get_last_taxon_page_tab();
+	} else {
+		 return 'cdm_dataportal/taxon/'.$uuid ;
+	}
 }
 
 function path_to_reference($uuid){
@@ -1742,10 +1779,10 @@ function get_partDefinition($taxonNameType){
           'name' => true
 			),
         'authorTeamPart' => array(
-          'authorTeam' => true,   
+          'authorTeam' => true,
 			),
         'referencePart' => array(
-          'reference' => true      
+          'reference' => true
 			),
         'microreferencePart' => array(
           'microreference' => true,
@@ -1763,10 +1800,10 @@ function get_partDefinition($taxonNameType){
           'name' => true,
 			),
         'authorTeamPart' => array(
-          'authorTeam' => true,   
+          'authorTeam' => true,
 			),
         'referencePart' => array(
-          'reference' => true      
+          'reference' => true
 			),
         'microreferencePart' => array(
           'microreference' => true,

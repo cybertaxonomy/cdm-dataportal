@@ -18,8 +18,8 @@ define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
 
 /**
  * $0 : taxon uud
- * $1 : simple name of class extending DescriptionElementBase 
- * 
+ * $1 : simple name of class extending DescriptionElementBase
+ *
  */
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE', 'portal/taxon/$0/descriptions/elementsByType/$1');
 
@@ -114,6 +114,7 @@ define('CDM_WS_FEATURETREE', 'featureTree/$0');
 
 define('CDM_WS_FEATURETREES', 'featureTree');
 
-define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'geo/map/distribution/$0');
+define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'ext/edit/mapServiceParameters/taxonDistributionFor/$0');
+define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');
 
 define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedUnitFacade/$0');

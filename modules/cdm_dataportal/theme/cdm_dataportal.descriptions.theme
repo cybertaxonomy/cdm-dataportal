@@ -20,9 +20,11 @@ function _add_js_openlayers_map(){
           $(document).ready(function() {
               $('#openlayers_map').cdm_openlayers_map('"
               .variable_get('cdm_dataportal_geoservice_access_point', false)."', {
-                legendPosition: 3, 
+                legendPosition: 3,
                 displayWidth: '" . variable_get('cdm_dataportal_geoservice_display_width', false) . "',
-                boundingBox: '" . variable_get('cdm_dataportal_geoservice_bounding_box', false) . "'
+                boundingBox: '" . variable_get('cdm_dataportal_geoservice_bounding_box', false) . "',
+                distributionOpacity: '" . variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5') . "',
+                legendOpacity: '" . variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5') . "'
             });
           });
         }", 'inline');
@@ -124,7 +126,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				$media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
 				$captionElements = array('title', 'rights');
 				//$block->content .= theme('cdm_media_gallerie', $media_list, "test", 150, 4, false, $captionElements);
-				$block->content .= theme('cdm_media_gallery', $media_list, 
+				$block->content .= theme('cdm_media_gallery', $media_list,
 				          CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
 				$gallery_settings['cdm_dataportal_media_maxextend'],
 				$gallery_settings['cdm_dataportal_media_cols'],
@@ -211,11 +213,11 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 			}else if ($referenceCitation){
 				$sourceRefs = $referenceCitation;
 			}
-		
+
 			if(strlen($sourceRefs) > 0){
 				$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
 			}
-	
+
 			if ($source->nameUsedInSource->uuid){ //do a link to name page
 				$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
 				             path_to_name($source->nameUsedInSource->uuid),
@@ -223,7 +225,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 			}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
 				$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
 			}
-	
+
 			if ($asListElement){
 				$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
 				//adding ":" if necesary
@@ -241,7 +243,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 	}
 	//if no sources, print the description
   if(!isset($out)) {
-    $out = $description;    
+    $out = $description;
   }
   //printing annotations footnotes
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element);
@@ -290,10 +292,10 @@ function theme_cdm_common_names($elements){
       $common_name_out .= (strlen($common_name_out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list;
 
     }
-  }  
+  }
   //handling commons names as text data
   foreach($textData_commonNames as $text_data_element){
-    $text_data_out .= theme('cdm_descriptionElementTextData', $text_data_element, true, $text_data_element->feature->uuid);          
+    $text_data_out .= theme('cdm_descriptionElementTextData', $text_data_element, true, $text_data_element->feature->uuid);
   }
   $out_array[] = $text_data_out;
   return $common_name_out . theme('cdm_descriptionElementArray', $out_array, $element->feature);
@@ -326,7 +328,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 			} else if($descriptionElement->class == 'TextData'){
 				$asListElement = false;
 				$repr = theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $descriptionElement->feature->uuid);
-					
+
 				if( !array_search($repr, $outArray)){
 					$outArray[] = $repr;
 					$glue = '<br/> ';
@@ -427,7 +429,7 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 
 	//printing the distributions
 	foreach ($ordered_areas2 as $element_l1){//level 1
-			
+
 		if ($element_l1->data){
 			$out .= '<dt>' . $element_l1->data->area->representation_L10n . ':</dt> ';
 		}
@@ -615,8 +617,8 @@ function theme_cdm_distribution_map($taxon){
 		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
 		$labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
-		$query_string .= ($display_width ? '&img=false&ms=' . $display_width: '')
-		. ($bounding_box ? '&bbox=' .  $bounding_box : '')
+		$query_string .= ($display_width ? '&img=false&ms=' . $display_width: '').
+		  ($bounding_box ? '&bbox=' .  $bounding_box : '')
 		. ($labels_on ? '&labels=' .  $labels_on : '');
 
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
@@ -634,25 +636,21 @@ function theme_cdm_distribution_map($taxon){
 			$legendFormatQueryStr .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
 			$legendFormatQueryStr .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
 
-			_add_js_openlayers_map();
-
-			$out = '<div id="openlayers">';
-			$out .= '<div id="openlayers_map" class="smallmap" '
-			.'distributionQuery="'.$query_string.'"'
-			.'legendFormatQuery="'.$legendFormatQueryStr.'"'
-			.'style="width: '.$display_width.'px; height:'.($display_width / 2).'px"></div>';
-			$out .= '</div>'; // end of <div id="openlayers">
-
-			// showing map caption
-			if(variable_get('cdm_dataportal_geoservice_map_caption', '')){
-				$out .= '<div class="distribution_map_caption">' . variable_get('cdm_dataportal_geoservice_map_caption', '') . '</div>' . '<br>';
-				$out .= '</div>';
-			}
+			$out = get_openlayers_map(
+				$display_width,
+				null,
+				$query_string,
+				$legendFormatQueryStr,
+				variable_get('cdm_dataportal_geoservice_map_caption', '')
+			);
 
 		} else {
 			// simple image
 			$mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
-			$query_string .= '&img=true&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
+
+			$query_string .= ($display_width ? '&img=true&ms=' . $display_width: '')
+			.'&img=true&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
+
 			$mapUri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
 			$out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
 		}

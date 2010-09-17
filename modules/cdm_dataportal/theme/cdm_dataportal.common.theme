@@ -3,9 +3,9 @@
 
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
 */
@@ -84,7 +84,7 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
  * Almost any cdmObject may be annotated. Therefore we provide a generic way to display
  * as well as create or update annotations.
  * The following cdm classes are annotatable:
- * 
+ *
  *  DescriptionElementBase
  *	EventBase
  *	HomotypicalGroup
@@ -170,7 +170,7 @@ function theme_cdm_list_of_annotations($annotationElements){
 
 function theme_cdm_footnote_key($footnoteKey, $separator = '', $highlightable=true, $separator_off = false){
 	if (!$footnoteKey->footnoteListKey){
-		return ''; 	  
+		return '';
 	}
 	if ($separator_off){
 		$separator = '';
@@ -206,7 +206,7 @@ function cdm_exist_footnote($footnote_list, $footnote){
 
 function cdm_add_footnote_to_array(&$footnote_list, $footnote){
 	if(!cdm_exist_footnote($footnote_list, $footnote)){
-		$footnote_list[] = $footnote;		
+		$footnote_list[] = $footnote;
 	}
 }
 
@@ -285,7 +285,7 @@ function theme_cdm_back_to_image_gallery_button(){
 function theme_cdm_print_button(){
 
 	drupal_add_js ('$(document).ready(function() {
-         $(\'#print_button\').click(function () { 
+         $(\'#print_button\').click(function () {
          window.print();
      });
   });', 'inline');
@@ -320,6 +320,7 @@ function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
 	return $out;
 }
 
+
 /* ============================ java script functions ============================= */
 
 function _add_js_thickbox(){
@@ -347,10 +348,10 @@ function _add_js_lightbox($galleryID){
 	drupal_add_js ('$(document).ready(function() {
       $(\'#'.$galleryID.' a.lightbox\').lightBox({
         fixedNavigation:  true,
-        imageLoading:     \''.$lightBoxBasePath.'/images/lightbox-ico-loading.gif\', 
-        imageBtnPrev:     \''.$lightBoxBasePath.'/images/lightbox-btn-prev.gif\',    
-        imageBtnNext:     \''.$lightBoxBasePath.'/images/lightbox-btn-next.gif\',   
-        imageBtnClose:    \''.$lightBoxBasePath.'/images/lightbox-btn-close.gif\',  
+        imageLoading:     \''.$lightBoxBasePath.'/images/lightbox-ico-loading.gif\',
+        imageBtnPrev:     \''.$lightBoxBasePath.'/images/lightbox-btn-prev.gif\',
+        imageBtnNext:     \''.$lightBoxBasePath.'/images/lightbox-btn-next.gif\',
+        imageBtnClose:    \''.$lightBoxBasePath.'/images/lightbox-btn-close.gif\',
         imageBlank:       \''.$lightBoxBasePath.'/images/lightbox-blank.gif\'
       });
     });
