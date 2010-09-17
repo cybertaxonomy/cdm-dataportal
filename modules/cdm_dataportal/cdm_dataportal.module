@@ -47,18 +47,16 @@ define('CDM_DATAPORTAL_MEDIA_GALLERY_NAME', "media_gallery");
 define('CDM_DATAPORTAL_SEARCH_GALLERY_NAME', "search_gallery");
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS', 'cdm_dataportal_display_taxon_relationships');
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name_relations');
+//define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_2', array("default" => t('Display all')));
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
 define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal_structdesc_featuretree_uuid');
 
-
 function getGallerySettings($gallery_config_form_name){
 	$default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
 	return variable_get($gallery_config_form_name, $default_values);
 }
-
-
 
 function _add_js_progressbar(){
 	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.progressbar/js/jquery.progressbar.js');
@@ -756,6 +754,14 @@ function cdm_dataportal_settings_layout(){
 	 '#description'   => t('')
 	 );
 	 */
+	
+	$form['cdm_dataportal_taxonpage_tabs'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Tabbed taxon page'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
+    '#description' => t('Split the taxon page into individual tabs for description, images, synonymy')
+  );
+	
 	//---- SYNONYMY ----//
 	$form['synonymy'] = array(
       '#type' => 'fieldset',
@@ -779,13 +785,31 @@ function cdm_dataportal_settings_layout(){
     '#description' => t('Check this if after doing a search and clicking on a synonym you want to see the "accept of" text for the accepted synonym.')
 	);
 
+	$name_relationships_terms = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_NAME_RELATIONSHIP_TYPE);
+  $name_rel_options = array();
+  //$name_rel_options['default'] = 'Show all';
+  foreach ($name_relationships_terms->terms as $element){
+    $name_rel_options[$element->uuid] = t('Show "' . $element->titleCache . '" relationships'); 
+  } 
+  
+	$name_relationships_form['name_relationships_to_show']= array(
+  '#type' => 'checkboxes',
+  '#title' => t('Display name relationships'),
+  '#default_value' => variable_get('name_relationships_to_show', 0),
+  '#options' => $name_rel_options,
+  '#description' => t('Select the name relationships you want to show for the accepted taxa.'),
+  );
+    
+  $form['synonymy']['name_relationships'] = $name_relationships_form;
+/*
 	$form['synonymy'][CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show name relations of accepted taxa on taxon page'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT),
-    '#description' => t('Check this if you want the synonymy list to show all the name relationships where other names implies the accepted taxa.')
+    //'#description' => t('Check this if you want the synonymy list to show all the name relationships where other names implies the accepted taxa.')
+	  '#description' => t('Check this if you want the synonymy list to show all the name relationships of accepted taxa.')
 	);
-
+*/
 	$form['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show taxon relations of accepted taxa on taxon page'),
@@ -801,26 +825,6 @@ function cdm_dataportal_settings_layout(){
     '#description' => t('')
 	);
 */
-	$form['synonymy']['cdm_dataportal_taxonpage_tabs'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Tabbed taxon page'),
-    '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
-    '#description' => t('Split the taxon page into individual tabs for description, images, synonymy')
-	);
-
-  //------------------ SEARCH --------------------//	
-	 $form['search'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Search'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-  );
-	$form['search']['cdm_dataportal_search_items_on_page'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Search Page Size'),
-    '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
-    '#description' => t('Number of Names to display per page in search results.')
-	);
 
 	/*
 	 $form['cdm_dataportal_descriptions_separated'] = array(
@@ -897,8 +901,23 @@ function cdm_dataportal_settings_layout(){
       '#default_value' => variable_get('cdm_dataportal_show_default_image', false),
       '#description'   => t('Select if the taxon profile page should display the default image if no image is available for the chosen taxon.')
 	);
+	
+	//------------------ SEARCH --------------------// 
+  $form['search'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Search'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+  );
+  $form['search']['cdm_dataportal_search_items_on_page'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search Page Size'),
+    '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
+    '#description' => t('Number of Names to display per page in search results.')
+  );
 
 	// --- SEARCH TAXA GALLERY ---- //
+	$items = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);
 	$collapsed = TRUE;
 	$form_name = CDM_DATAPORTAL_SEARCH_GALLERY_NAME;
 	$form_tittle = 'Search Taxa';
@@ -946,8 +965,17 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $
 
 	$default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
 	$gallery_settings = variable_get($form_name, $default_values);
+	//$test = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);
 
 	if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
+		/* TODO: why cdm_dataportal_search_items_on_page does not save the value on $test???
+		$form[$form_name]['cdm_dataportal_search_items_on_page'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Search Page Size'),
+      '#default_value' => $test,
+      '#description' => t('Number of Names to display per page in search results.')
+    );
+    */
 		$form[$form_name]['cdm_dataportal_show_taxon_thumbnails'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show media thumbnails for accepted taxa'),

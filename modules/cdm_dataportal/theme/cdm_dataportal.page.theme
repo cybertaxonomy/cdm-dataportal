@@ -123,20 +123,20 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
   	$nonStructuredDescriptions = array();
   	if($taxonDescriptions != null){
-	    foreach ($taxonDescriptions as $taxonDescription) {
-	    	// check if structured description
-	    	$hasStructuredData = cdm_ws_get(CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA, $taxonDescription->uuid);
-	    	$hasStructuredData = $hasStructuredData->Boolean == 'true';
-	    	if($hasStructuredData){
-			  	$naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array($taxonDescription->uuid, variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, false)));
-	    		$taxonDescription->elements = null;
-	    		$taxonDescription->elements = array($naturallanguage_textData);
-	    	} 
-	    	$nonStructuredDescriptions[] = $taxonDescription;
-	  	}
-	  	$taxonDescriptions = null; // release memory
+  		foreach ($taxonDescriptions as $taxonDescription) {
+  			// check if structured description
+  			$hasStructuredData = cdm_ws_get(CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA, $taxonDescription->uuid);
+  			$hasStructuredData = $hasStructuredData->Boolean == 'true';
+  			if($hasStructuredData){
+  				$naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array($taxonDescription->uuid, variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, false)));
+  				$taxonDescription->elements = null;
+  				$taxonDescription->elements = array($naturallanguage_textData);
+  			}
+  			$nonStructuredDescriptions[] = $taxonDescription;
+  		}
+  		$taxonDescriptions = null; // release memory
   	}
-  	
+  	 
   	$mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $nonStructuredDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
 
   	$out .= '<div id="general">';
@@ -250,6 +250,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 	$synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, $taxon->uuid);
 	$skip = array(UUID_BASIONYM);
 
+	//render full accepted taxon
 	if($addAcceptedTaxon){
 		if(isset($taxon->name->nomenclaturalReference)){
 			$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
@@ -264,9 +265,9 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		RenderHints::getRenderPath() . '-annotations');
 		RenderHints::setFootnoteListKey(RenderHints::getRenderPath() . '-annotations');
 	}
-
-	//if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
+	//render accepted taxon homotypic synonymy groups or type desygnations
 	if(!isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
+		//if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
 		// display the type information for the added taxon
 		$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
 		if($typeDesignations){
@@ -276,28 +277,39 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		// render the homotypicSynonymyGroup including the type information
 		$out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
 	}
-
+	//render accepted taxon heterotypic synonymy groups
 	if($synomymie->heterotypicSynonymyGroups) {
 		foreach($synomymie->heterotypicSynonymyGroups as $homotypicalGroup){
 			$out .= theme('cdm_heterotypicSynonymyGroup', $homotypicalGroup);
 		}
 	}
-
-	if(variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT)){
-
-		$nameRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
-		// TODO is it correct to skip relationsFromThisName since all relationships are to be understood as 'is .... of'
-		if(variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1)){
-			$skip = array(UUID_BASIONYM);
-		}
-		$out .= theme('cdm_nameRelationships', $nameRelationships, $skip);
-	}
-
+	//render taxon relationships
 	if(variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)){
 		$taxonRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, $taxon->uuid);
 		$out .= theme('cdm_taxonRelationships', $taxonRelationships);
 	}
-
+  //render name relationships 
+  $name_rels_to_show = variable_get('name_relationships_to_show', 0);
+  $skip = array();
+  foreach ($name_rels_to_show as $key => $value){
+    if ($value === 0){
+      $skip[] = $key;
+    }
+  }
+  if (sizeof($name_rels_to_show) != sizeof($skip)){
+   $nameRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
+   $out .= theme('cdm_nameRelationships', $nameRelationships, $skip);
+  }
+  /*
+  if(variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT)){
+    $nameRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
+    // TODO is it correct to skip relationsFromThisName since all relationships are to be understood as 'is .... of'
+    if(variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1)){
+      $skip = array(UUID_BASIONYM);
+    }
+    $out .= theme('cdm_nameRelationships', $nameRelationships, $skip);
+  }
+  */
 	RenderHints::popFromRenderStack();
 
 	return $out;
