@@ -821,7 +821,7 @@ function cdm_dataportal_settings_layout(){
   $name_rel_options = array();
   //$name_rel_options['default'] = 'Show all';
   foreach ($name_relationships_terms->terms as $element){
-    $name_rel_options[$element->uuid] = t('Show "' . $element->titleCache . '" relationships'); 
+    $name_rel_options[$element->uuid] = t('Show "' . $element->representation_L10n_abbreviated . '" relationships'); 
   } 
   
 	$name_relationships_form['name_relationships_to_show']= array(
