@@ -883,11 +883,11 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
 
   return $obj;
 }
-function _add_debugMessageStr($msg){
+function _add_debugMessageStr($message){
   _add_status_message_toggler();
   drupal_set_message($message, 'debug');
-
 }
+
 function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg){
 
   static $cummulated_time_parse;
