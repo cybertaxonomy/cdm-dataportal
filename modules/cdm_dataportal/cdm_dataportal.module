@@ -964,7 +964,7 @@ function cdm_dataportal_settings_layout(){
 	$form['distribution_layout']['distribution_sort'] =  array(
     '#type'          => 'radios',
     '#title'         => t('Sort'),
-    '#default_value' => 'NO_SORT',
+    '#default_value' => variable_get('distribution_sort', 'NO_SORT'),
     '#options' => array(
 				'NO_SORT' => t('Standard (No sort)'),
 				'HIDE_TDWG2' => t('Sorted without TDWG Level 2'),
