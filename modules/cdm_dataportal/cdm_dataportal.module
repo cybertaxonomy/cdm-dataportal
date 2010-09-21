@@ -426,18 +426,6 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
 		$form_values['cdm_webservice_url'] .= '/';
 	}
 
-	//	$cdm_webservice_url_changed = variable_get('cdm_webservice_url', '') != $form_values['cdm_webservice_url'];
-
-	//	if ($cdm_webservice_url_changed) {
-	//
-	//		//FIXME remove _cdm_dataportal_set_currentSecUuid($form_values['cdm_secUuid_default']);
-	//		// reset all cdm related data stored in the session
-	//		// cdm_dataportal_session_clear($form_values['cdm_webservice_url']); // cdm_webservice_url is not further stored here
-	//		// clear the cdm webservice cache
-	//		cache_clear_all(NULL, 'cache_cdm_ws');
-	//		// better clear secref_cache since i can not be sure if the cache has not be used during this response
-	//		cdm_api_secref_cache_clear();
-	//	}
 	if($form_values['cdm_webservice_cache'] != variable_get('cdm_webservice_cache', 1)){
 		cache_clear_all(NULL, 'cache_cdm_ws');
 		// better clear secref_cache since i can not be sure if the cache has not be used during this response
@@ -786,14 +774,14 @@ function cdm_dataportal_settings_layout(){
 	 '#description'   => t('')
 	 );
 	 */
-	
+
 	$form['cdm_dataportal_taxonpage_tabs'] = array(
     '#type' => 'checkbox',
     '#title' => t('Tabbed taxon page'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
     '#description' => t('Split the taxon page into individual tabs for description, images, synonymy')
   );
-	
+
 	//---- SYNONYMY ----//
 	$form['synonymy'] = array(
       '#type' => 'fieldset',
@@ -821,9 +809,9 @@ function cdm_dataportal_settings_layout(){
   $name_rel_options = array();
   //$name_rel_options['default'] = 'Show all';
   foreach ($name_relationships_terms->terms as $element){
-    $name_rel_options[$element->uuid] = t('Show "' . $element->representation_L10n_abbreviated . '" relationships'); 
-  } 
-  
+    $name_rel_options[$element->uuid] = t('Show "' . $element->representation_L10n_abbreviated . '" relationships');
+  }
+
 	$name_relationships_form['name_relationships_to_show']= array(
   '#type' => 'checkboxes',
   '#title' => t('Display name relationships'),
@@ -831,7 +819,7 @@ function cdm_dataportal_settings_layout(){
   '#options' => $name_rel_options,
   '#description' => t('Select the name relationships you want to show for the accepted taxa.'),
   );
-    
+
   $form['synonymy']['name_relationships'] = $name_relationships_form;
 /*
 	$form['synonymy'][CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
@@ -933,8 +921,8 @@ function cdm_dataportal_settings_layout(){
       '#default_value' => variable_get('cdm_dataportal_show_default_image', false),
       '#description'   => t('Select if the taxon profile page should display the default image if no image is available for the chosen taxon.')
 	);
-	
-	//------------------ SEARCH --------------------// 
+
+	//------------------ SEARCH --------------------//
   $form['search'] = array(
       '#type' => 'fieldset',
       '#title' => t('Search'),
@@ -976,10 +964,10 @@ function cdm_dataportal_settings_layout(){
 	$form['distribution_layout']['distribution_sort'] =  array(
     '#type'          => 'radios',
     '#title'         => t('Sort'),
-    '#default_value' => 0,
+    '#default_value' => 'NO_SORT',
     '#options' => array(
-	t('Standard (No sort)'),
-	t('Sorted without TDWG Level 2'),
+				'NO_SORT' => t('Standard (No sort)'),
+				'HIDE_TDWG2' => t('Sorted without TDWG Level 2'),
 	));
 
 	return system_settings_form($form);
@@ -1579,57 +1567,6 @@ function cdm_dataportal_shortname_of($name){
 	}
 }
 
-/**
- * TODO Add Comments. I don't get what
- *
- * @param UUID $secUuid
- */
-function _cdm_dataportal_set_currentSecUuid($secUuid){
-
-	// do not save in session but in database
-
-	if(is_array($secUuid)){
-		$secUuid = $secUuid[0];
-	}
-	if(!$secUuid){
-		variable_set('cdm_currentSecRef', null);
-	} else {
-		$secRef = cdm_ws_get(CDM_WS_REFERENCE, $secUuid);
-		if(isset($secRef)){
-			variable_set('cdm_currentSecRef', (array)($secRef));
-		}
-	}
-
-}
-
-/**
- * TODO
- * This will not work with multiple instances of the dataportal running
- * under the same host as there is only one session for all instances.
- * In case you switch instances with the same client, you will definitely
- * run into trouble.
- * Also this is not handling multiple secs.
- *
- *
- * returns the current secRef array.
- * If the according session variable is not jet set the default
- * as configured in the setting is used otherwise null.
- *
- * currentSecRef['uuid']
- * currentSecRef[....
- *
- * @return array
- */
-//FIXME function _cdm_dataportal_currentSecRef_array(){
-//
-//	// do not look in session but in database
-//	if( variable_get('cdm_currentSecRef', null) == null){
-//		$secUuid = variable_get('cdm_secUuid_default', null);
-//		_cdm_dataportal_set_currentSecUuid($secUuid);
-//	}
-//	return variable_get('cdm_currentSecRef', null);
-//
-//}
 
 /**
  * Check if a taxon is accepted by the current taxonomic tree

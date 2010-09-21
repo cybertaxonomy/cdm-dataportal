@@ -308,7 +308,7 @@ function theme_cdm_common_names($elements){
  */
 function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxon_uuid){
 	$outArray = array();
-	if(variable_get('distribution_sort', false)){
+	if(variable_get('distribution_sort', 'NO_SORT')  != 'NO_SORT'){
 		$glue = '';
 		$enclosingHtml = 'dl';
 	} else {
@@ -352,7 +352,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 		sort($outArray);
 	}
 
-	if(variable_get('distribution_sort', false)){
+	if(variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT'){
 		$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
 	}else{
 		$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
