@@ -62,7 +62,6 @@ modules/cdm_dataportal/cdm_taxontree/visible.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_implicit.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_implicit_small.gif -text
 modules/cdm_dataportal/cdm_taxontree/visible_small.gif -text
-modules/cdm_dataportal/cdm_ws_urls.txt -text
 modules/cdm_dataportal/classes/footnote.php -text
 modules/cdm_dataportal/classes/footnotekey.php -text
 modules/cdm_dataportal/classes/footnotemanager.php -text

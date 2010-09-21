@@ -1,8 +1,0 @@
-http://search.biocase.org:8080/cdmserver/
-
-http://search.biocase.org:8080/cdmserver/taxon/52b46f50-20de-4845-a2b9-12d55eb02ad7
-
-http://192.168.1.115:8080/cdmserver/taxonomy/3757915e-2cd0-4c20-ad10-f04710ca693d/parent
-
-
-http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api/ws_stub/

@@ -56,6 +56,9 @@ function cdm_dataportal_update_5102() {
   	$items[] = _modify_variable('distribution_sort', 'NO_SORT');
   }
 
+  $items[] = _create_variable('cdm_dataportal_geoservice_distributionOpacity', '1.0');
+  $items[] = _create_variable('cdm_dataportal_geoservice_legendOpacity', '0.75');
+
   return $items;
 }
 
@@ -85,10 +88,13 @@ function _remove_variable($name) {
   return array('success' => TRUE, 'query' => "Removing variable $name");
 }
 
-function _modify_variable($name, $value_override) {
-  $success = TRUE;
 
-  variable_set($name, $value_override);
+function _create_variable($name, $value) {
+  variable_set($name, $value);
+  return array('success' => TRUE, 'query' => "Creating variable $name new value: $value");
+}
+
+function _modify_variable($name, $value_override) {
 
   /*
    * FIXME take care for correct handling of tree variables
@@ -102,6 +108,5 @@ function _modify_variable($name, $value_override) {
 	 * -----> solutions merge arrays !!!
    */
 
-
-  return array('success' => $success, 'query' => "Modifying variable $name new value: $value_override");
+  return _create_variable($name, $value_override);
 }

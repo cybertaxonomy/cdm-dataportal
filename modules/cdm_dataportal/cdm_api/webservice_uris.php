@@ -25,8 +25,8 @@ define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE', 'portal/taxon/$0/descr
 
 define('CDM_WS_PORTAL_NAME_DESCRIPTIONS', 'portal/name/$0/taxonNameDescriptions');
 
-define('CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE', 'portal/description/$0,$1/namedAreaTree');
-define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE', 'portal/description/$0,$1/DistributionTree');
+define('CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE', 'portal/description/$0/namedAreaTree');
+define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE', 'portal/description/$0/DistributionTree');
 
 define('CDM_WS_REFERENCE', 'reference');
 

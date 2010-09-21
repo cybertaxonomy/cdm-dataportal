@@ -423,8 +423,8 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 	//getting the sortered distributions (omiting level ??)
 	$request_params = array();
 	$request_params['omitLevels'] = UUID_NAMEDAREALEVEL_TDWGLEVEL_2;
-	//$ordered_areas = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE, $descriptions_uuids, queryString($request_params));
-	$ordered_areas2 = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE, $descriptions_uuids, queryString($request_params));
+	//$ordered_areas = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE, join(',',$descriptions_uuids), queryString($request_params));
+	$ordered_areas2 = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE, join(',',$descriptions_uuids), queryString($request_params));
 	$ordered_areas2 = $ordered_areas2->rootElement->children;
 
 	//printing the distributions

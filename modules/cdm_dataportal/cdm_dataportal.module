@@ -1081,7 +1081,6 @@ function cdm_dataportal_settings_geo(){
     '#description' => t('Define urrounding of area to be displayed in maps. Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong> to let the map <strong>automatically zoom</strong> to the distribution area.')
 	);
 
-	//cdm_dataportal_geoservice_labels_on
 	$form['cdm_dataportal_geoservice_labels_on'] = array(
     '#type' => 'checkbox',
     '#title' => t('Display Country Labels'),
@@ -1089,7 +1088,6 @@ function cdm_dataportal_settings_geo(){
     '#description' => t('Check this if you like country names to be displayed in the maps. ')
 	);
 
-	//cdm_dataportal_geoservice_legend_on
 	$form['cdm_dataportal_geoservice_map_caption'] = array(
     '#type' => 'textfield',
     '#title' => t('Map Caption'),
@@ -1097,7 +1095,20 @@ function cdm_dataportal_settings_geo(){
     '#description' => t('Define a caption for the map.')
 	);
 
-	//cdm_dataportal_geoservice_map_legend
+	$form['cdm_dataportal_geoservice_distributionOpacity'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Distribution Layer Opacity'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5'),
+    '#description' => t('Valid values range from 0.0 to 1.0. You can choose to let the underlying layers shine through if you select a value < 1.0. A value of 1.0 will cause a full opacity of the ditribution layer.')
+  );
+
+  $form['cdm_dataportal_geoservice_legendOpacity'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Opacity of the legends'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5'),
+    '#description' => t('Valid values range from 0.0 to 1.0. You can choose to let the layers shine through the legend if you select a value < 1.0. A value of 1.0 will cause a full opacity of the legend.')
+  );
+
 	$form['cdm_dataportal_geoservice_map_legend'] = array(
       '#type' => 'fieldset',
       '#title' => t('Map Legend'),
