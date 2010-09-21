@@ -953,6 +953,16 @@ function cdm_dataportal_settings_layout(){
 	$form_tittle = 'Media gallery';
 	$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
 
+	$form['image_gallery_viewer'] =  array(
+    '#type'          => 'select',
+    '#title'         => t('Image Gallery Viewer'),
+    '#default_value' => variable_get('image_gallery_viewer', 'default'),
+    '#options' => array(
+        'default' => t('Standart image gallery'),
+        'fsi' => t('FSI viewer (requires FSI server!)'),
+  ));
+	// variable_get("imageviewer", "default")
+
 	//-- DISTRIBUTION LAYOUT --//
 	$form['distribution_layout'] = array(
         '#title' => t('Distribution layout'),

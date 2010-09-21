@@ -150,7 +150,13 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	if($page_part == 'all'){
   		$out .= '<h2>'.t('Images').'</h2>';
   	}
-  	$out .= theme('cdm_taxon_page_images', $taxon, $media);
+
+  	// get the image gallery as configured by the admin
+  	$taxon_image_gallery = call_user_func_array(
+	    'taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'),
+	    array($taxon, $media));
+  	$out .= $taxon_image_gallery;
+
   	$out .= '</div>';
 
   	if($theme == 'garland_cichorieae'){
@@ -292,7 +298,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		$taxonRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, $taxon->uuid);
 		$out .= theme('cdm_taxonRelationships', $taxonRelationships);
 	}
-  //render name relationships 
+  //render name relationships
   $name_rels_to_show = variable_get('name_relationships_to_show', 0);
   $skip = array();
   foreach ($name_rels_to_show as $key => $value){
@@ -319,43 +325,113 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 	return $out;
 }
 
+
 /**
- * Show the collection of images stored with the accepted taxon
+ * TODO Implementation of Hook taxon_image_gallery()
  *
+ * @param unknown_type $taxon
+ * @param unknown_type $media
+ * @return unknown_type
  */
-function theme_cdm_taxon_page_images($taxon, $media){
+function taxon_image_gallery_default($taxon, $media){
 
-	$hasImages = isset($media[0]);
+	 $hasImages = isset($media[0]);
 
-	if($hasImages){
-		//
-		$maxExtend = 150;
-		$cols = 3;
-		$maxRows = false;
-		$alternativeMediaUri = null;
-		$captionElements = array('title', 'rights', '#uri'=>t('open Image'));
-		$gallery_name = $taxon->uuid;
-		$mediaLinkType = 'LIGHTBOX';
+  if($hasImages){
+    //
+    $maxExtend = 150;
+    $cols = 3;
+    $maxRows = false;
+    $alternativeMediaUri = null;
+    $captionElements = array('title', 'rights', '#uri'=>t('open Image'));
+    $gallery_name = $taxon->uuid;
+    $mediaLinkType = 'LIGHTBOX';
 
-		$gallery_settings = getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
+    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
 
-		$out = '<div class="image-gallerie">';
-		$out .= theme('cdm_media_gallerie', $media,
-		$gallery_name,
-		$gallery_settings['cdm_dataportal_media_maxextend'],
-		$gallery_settings['cdm_dataportal_media_cols'],
-		0, // ignore maxrows settings
-		$captionElements,
-		$mediaLinkType,
-		null);
-		$out .= '</div>';
-	}else{
-		$out = 'No images available.';
+    $out = '<div class="image-gallerie">';
+    $out .= theme('cdm_media_gallerie', $media,
+        $gallery_name,
+        $gallery_settings['cdm_dataportal_media_maxextend'],
+        $gallery_settings['cdm_dataportal_media_cols'],
+        0, // ignore maxrows settings
+        $captionElements,
+        $mediaLinkType,
+        null);
+    $out .= '</div>';
+  }else{
+    $out = 'No images available.';
 
-	}
-	return $out;
+  }
+  return $out;
+
 }
 
+/**
+ * TODO Implementation of Hook taxon_image_gallery()
+ *
+ * @param unknown_type $taxon
+ * @param unknown_type $media
+ * @return unknown_type
+ */
+function taxon_image_gallery_fsi($taxon, $media){
+
+  $flashLink = isset($media[0]);
+
+  if($flashLink){
+
+    $taggedName = $taxon->name->taggedName;
+
+    $nameArray = array();
+    foreach($taggedName as $taggedText){
+      if($taggedText->type == 'name'){
+        $nameArray[] = $taggedText->text;
+      }
+    }
+
+    $query = join("%5F", $nameArray) . '%20AND%20EditWP6%20AND%20jpg';
+
+    $out = '
+
+<script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
+
+<script type="text/javascript">
+<!--
+  writeFlashCode( "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=textbox,fullscreen",
+    "http://media.bgbm.org/erez/erez?src=erez-private/flashrequired.svg&tmp=Large&quality=97&width=620&height=400",
+    "width=620;height=400;bgcolor=454343;wmode=opaque");
+// -->
+</script>
+<noscript>
+  <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,65,0" width="470" height="400">
+    <param name="movie" value="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=textbox,fullscreen"/>
+    <param name="bgcolor" value="454343" />
+    <param name="wmode" value="opaque" />
+    <param name="allowscriptaccess" value="always" />
+    <param name="allowfullscreen" value="true" />
+    <param name="quality" value="high" />
+    <embed src="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave,textbox,fullscreen"
+      width="620"
+      height="400"
+      bgcolor="454343"
+      wmode="opaque"
+      allowscriptaccess="always"
+      allowfullscreen="true"
+      quality="high"
+      type="application/x-shockwave-flash"
+      pluginspage="http://www.adobe.com/go/getflashplayer">
+    </embed>
+  </object>
+
+</noscript>';
+
+  }else{
+    $out = 'No images available.';
+
+  }
+  return $out;
+
+}
 /**
  * Show a reference in it's atomized form
  */
