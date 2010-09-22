@@ -336,7 +336,7 @@ a.toc:link, a.toc:visited {
   font-weight: bold;
 }
 
-.heterotypicSynonymyGroup li.footnotes, .homotypicSynonymyGroup li.footnotes, .homotypicSynonyms li.footnotes, .misapplied li.footnotes{
+.heterotypicSynonymyGroup li.footnotes, .homotypicSynonymyGroup li.footnotes, .homotypicSynonyms li.footnotes, .misapplied li.footnotes, .content li.descriptionText{
 	margin-top: 10px;
   margin-left: 6px;
   padding-left: 6px;
@@ -349,6 +349,7 @@ a.toc:link, a.toc:visited {
   list-style-image: none;
   background-image: none;
 }
+.content
 
 /* footnotes margin when listing the synonymy*/
 /*

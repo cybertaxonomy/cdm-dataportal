@@ -299,7 +299,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		$out .= theme('cdm_taxonRelationships', $taxonRelationships);
 	}
   //render name relationships
-  $name_rels_to_show = variable_get('name_relationships_to_show', 0);
+  $name_rels_to_show = variable_get('name_relationships_to_show', null);
   $skip = array();
   foreach ($name_rels_to_show as $key => $value){
     if ($value === 0){
