@@ -6,40 +6,148 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	
 	var dataBounds = null;
 	
+	
+	 
+	var defaultControls = [ 
+  	         new OpenLayers.Control.PanZoom(),
+	         new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
+	       ];
+	/* 
+	 * EPSG:4326 and EPSG:900913 extends 
+	 */
+	var mapExtend_4326 = new OpenLayers.Bounds(-180, -90, 180, 90);
+	var mapExtend_900913 = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+	
+	var mapOptions={
+			EPSG900913: {
+				controls: defaultControls,
+				maxExtent: mapExtend_900913,
+				//maxResolution: (mapExtend_900913.getWidth() / options.displayWidth),
+				maxResolution: (mapExtend_900913.getHeight() / (options.displayWidth / 2)),
+				//maxResolution:156543.0339 * 20,
+				units:'m',
+				restrictedExtent: mapExtend_900913,
+				projection: new OpenLayers.Projection("EPSG:900913")
+			},
+			EPSG4326: {
+				controls: defaultControls,
+				maxExtent: mapExtend_4326,
+				maxResolution: (mapExtend_4326.getWidth() / options.displayWidth),
+				units:'degrees',
+				restrictedExtent: mapExtend_4326,
+				projection: new OpenLayers.Projection("EPSG:4326")
+			}
+	};
+	
+	
+	var dataProj = new OpenLayers.Projection("EPSG:4326");
+	
+	var dataLayerOptions = {
+			maxExtent: mapExtend_4326,
+			isBaseLayer: false,
+			displayInLayerSwitcher: true
+	};
+
 	var layerByNameMap = {
 			tdwg1: 'topp:tdwg_level_1',
 			tdwg2: 'topp:tdwg_level_2',
 			tdwg3: 'topp:tdwg_level_3',
 			tdwg4: 'topp:tdwg_level_4'
 	};
-	 
-	var defaultLayerOptions = {
-		maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-		isBaseLayer: false,
-		displayInLayerSwitcher: false
-	};
 	
-	var mapOptions={
-	     controls: 
-	       [ 
-	         new OpenLayers.Control.PanZoom(),
-	        // new OpenLayers.Control.LayerSwitcher(),
-	         new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
-	       ],
-	       maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-	       maxResolution: (360 / options.displayWidth),
-	       restrictedExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-	       projection: new OpenLayers.Projection("EPSG:4326")
-    };
-	 
-	
-	 var baseLayer = new OpenLayers.Layer.WMS( 
-	    "OpenLayers WMS",
+  
+	/**
+	 * NOTE: labs.metacarta.com is currently unavailable
+	 * 
+	 * Available Projections:
+	 * 		EPSG:900913
+	 * 		EPSG:4326
+	 */
+	var metacarta_vmap0 = new OpenLayers.Layer.WMS( 
+	    "Metacarta Vmap0",
 	    "http://labs.metacarta.com/wms/vmap0",
-	    {layers: 'basic'}, 
-	    this.defaultLayerOptions );
+	    {layers: 'basic', format:"png"},
+	     {
+			maxExtent: mapExtend_4326,
+			isBaseLayer: true,
+			displayInLayerSwitcher: true
+		}
+	 );
+	
+	/**
+	 * Available Projections:
+	 * 		EPSG:4326
+	 */
+    var osgeo_vmap0 = new OpenLayers.Layer.WMS(
+        "OpenLayers World",
+        "http://vmap0.tiles.osgeo.org/wms/vmap0",
+        {layers: 'basic', format:"png"},
+        {
+			maxExtent: mapExtend_4326,
+			isBaseLayer: true,
+			displayInLayerSwitcher: true
+		}
+    );
+
 	 
-	 baseLayer.options.isBaseLayer = true;
+	// create Google Mercator layers
+    var gmap = new OpenLayers.Layer.Google(
+        "Google Streets",
+        {'sphericalMercator': true}
+    );
+    var gsat = new OpenLayers.Layer.Google(
+        "Google Satellite",
+        {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 22}
+    );
+    var ghyb = new OpenLayers.Layer.Google(
+        "Google Hybrid",
+        {type: G_HYBRID_MAP, 'sphericalMercator': true}
+    );
+
+    // create Virtual Earth layers
+    var veroad = new OpenLayers.Layer.VirtualEarth(
+        "Virtual Earth Roads",
+        {'type': VEMapStyle.Road, 'sphericalMercator': true}
+    );
+    var veaer = new OpenLayers.Layer.VirtualEarth(
+        "Virtual Earth Aerial",
+        {'type': VEMapStyle.Aerial, 'sphericalMercator': true}
+    );
+    var vehyb = new OpenLayers.Layer.VirtualEarth(
+        "Virtual Earth Hybrid",
+        {'type': VEMapStyle.Hybrid, 'sphericalMercator': true}
+    );
+
+    // create Yahoo layer
+//    var yahoo = new OpenLayers.Layer.Yahoo(
+//        "Yahoo Street",
+//        {'sphericalMercator': true}
+//    );
+//    var yahoosat = new OpenLayers.Layer.Yahoo(
+//        "Yahoo Satellite",
+//        {'type': YAHOO_MAP_SAT, 'sphericalMercator': true}
+//    );
+//    var yahoohyb = new OpenLayers.Layer.Yahoo(
+//        "Yahoo Hybrid",
+//        {'type': YAHOO_MAP_HYB, 'sphericalMercator': true}
+//    );
+
+    // create OSM layer
+    var mapnik = new OpenLayers.Layer.OSM();
+    // create OAM layer
+    var oam = new OpenLayers.Layer.XYZ(
+        "OpenAerialMap",
+        "http://tile.openaerialmap.org/tiles/1.0.0/openaerialmap-900913/${z}/${x}/${y}.png",
+        {
+            sphericalMercator: true
+        }
+    );
+
+    // create OSM layer
+    var osmarender = new OpenLayers.Layer.OSM(
+        "OpenStreetMap (Tiles@Home)",
+        "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
+    );
 	
 	/**
 	 * 
@@ -49,9 +157,10 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		initOpenLayers();
 
 		// -- Distribution Layer --
+		var mapServiceRequest;
 		var distributionQuery = mapElement.attr('distributionQuery');
 		
-		if(distributionQuery != undefined){
+		if(distributionQuery !== undefined){
 			if(typeof legendPosition == 'number'){
 				distributionQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + options.legendPosition);				
 			}
@@ -62,7 +171,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
 			}
 			
-			var mapServiceRequest = mapserverBaseUrl + '/areas.php?' + distributionQuery;
+			mapServiceRequest = mapserverBaseUrl + '/areas.php?' + distributionQuery;
 			
 			$.ajax({
 				  url: mapServiceRequest,
@@ -75,7 +184,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		
 		// -- Occurrence Layer --
 		var occurrenceQuery = mapElement.attr('occurrenceQuery');
-		if(occurrenceQuery != undefined){
+		if(occurrenceQuery !== undefined){
 //			if(typeof legendPosition == 'number'){
 //				occurrenceQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + options.legendPosition);				
 //			}
@@ -86,7 +195,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 //				legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
 //			}
 			
-			var mapServiceRequest = mapserverBaseUrl + '/points.php?' + occurrenceQuery;
+			mapServiceRequest = mapserverBaseUrl + '/points.php?' + occurrenceQuery;
 			
 			$.ajax({
 				  url: mapServiceRequest,
@@ -106,19 +215,27 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	var initOpenLayers = function(){
 			
 		// instatiate the openlayers viewer
-		map = new OpenLayers.Map('openlayers_map', mapOptions);
+		map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG4326);
 		
 		//add the base layer
-		map.addLayers([baseLayer]);
-		
-			
-		//map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
+		//map.addLayers([mapnik ,gmap]);
+		//map.addLayers([veroad ,gmap, metacartaVmap0]);
+        map.addLayers([
+                       osgeo_vmap0, 
+                       //gmap, gsat, ghyb, 
+                       //veroad, veaer, vehyb,
+                       //oam, mapnik, osmarender
+                       ]);
 
+		
+		if(options.showLayerSwitcher == true){
+			map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
+		}
 		
 		// zoom to the required area
 		var boundsStr = (typeof options.boundingBox == 'string' && options.boundingBox.length > 6 ? options.boundingBox : '-180, -90, 180, 90');
 		var zoomToBounds = OpenLayers.Bounds.fromString( boundsStr );
-		map.zoomToExtent(zoomToBounds, false);
+		map.zoomToExtent(zoomToBounds.transform(dataProj, map.getProjectionObject()), false);
 		
 		// adjust height of openlayers container div
 		$('#openlayers').css('height', $('#openlayers #openlayers_map').height());
@@ -130,7 +247,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	 */
 	var addDistributionLayer = function(mapResponseObj){
 			
-		
+		var layer;
 		// add additional layers, get them from 
 		// the mapResponseObj
 		if(mapResponseObj !== undefined){
@@ -138,14 +255,14 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				// it is a response from the points.php
 				//TODO points_sld should be renamed to sld in response + fill path to sld should be given				
 				
-				var layer = new OpenLayers.Layer.WMS.Untiled( 
+				layer = new OpenLayers.Layer.WMS.Untiled( 
 						'points', 
 						"http://193.190.116.6:8080/geoserver/wms/wms",
 						{layers: 'topp:rest_points' ,transparent:"true", format:"image/png"},
-						defaultLayerOptions );
+						dataLayerOptions );
 
 				var sld = mapResponseObj.points_sld;
-				if(sld.indexOf("http://") != 0){
+				if(sld.indexOf("http://") !== 0){
 					sld = "http://edit.br.fgov.be/synthesys/www/v1/sld/" + sld;
 				}
 				
@@ -157,11 +274,11 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				for ( var i in mapResponseObj.layers) {
 				var layerData = mapResponseObj.layers[i];
 				
-					var layer = new OpenLayers.Layer.WMS.Untiled( 
+					layer = new OpenLayers.Layer.WMS.Untiled( 
 							layerData.tdwg, 
 							mapResponseObj.geoserver + "/wms",
 							{layers: layerByNameMap[layerData.tdwg] ,transparent:"true", format:"image/png"},
-							defaultLayerOptions );
+							dataLayerOptions );
 					layer.params.SLD = layerData.sld;
 					layer.setOpacity(options.distributionOpacity);
 					map.addLayers([layer]);
@@ -171,21 +288,21 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			}
 
 			// zoom to the required area
-			if(mapResponseObj.bbox != undefined){
+			if(mapResponseObj.bbox !== undefined){
 				var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
 				if(dataBounds !== null){
 					dataBounds.extend(newBounds);
 				} else if(newBounds !== undefined){
 					dataBounds = newBounds;
 				}
-				map.zoomToExtent(dataBounds, false);
+				map.zoomToExtent(dataBounds.transform(dataProj, map.getProjectionObject()), false);
 				if(map.getZoom() > options.maxZoom){
 					map.zoomTo(options.maxZoom);
 				}
 			}
 						
 
-			if(options.legendPosition != undefined && mapResponseObj.legend != undefined){
+			if(options.legendPosition !== undefined && mapResponseObj.legend !== undefined){
 				var legendSrcUrl = mapResponseObj.geoserver + legendImgSrc + mapResponseObj.legend;
 				addLegendAsElement(legendSrcUrl);
 				//addLegendAsLayer(legendSrcUrl, map);
@@ -239,9 +356,8 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 					legendSrcUrl,
 					new OpenLayers.Bounds(0, 0, w, h),
 					new OpenLayers.Size(w, h),
-					imageLayerOptions
-			);
-		}
+					imageLayerOptions);
+		};
 
 	};
 	
@@ -286,6 +402,7 @@ $.fn.cdm_openlayers_map.defaults = {  // set up default options
 		distributionOpacity: 0.75,
 		legendOpacity: 0.75,
 		boundingBox: null,
+		showLayerSwitcher: false,
 		maxZoom: 4
 };
 
