@@ -89,7 +89,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		}
     );
 
-	 
+/*
 	// create Google Mercator layers
     var gmap = new OpenLayers.Layer.Google(
         "Google Streets",
@@ -148,6 +148,8 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
         "OpenStreetMap (Tiles@Home)",
         "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
     );
+    
+*/
 	
 	/**
 	 * 
