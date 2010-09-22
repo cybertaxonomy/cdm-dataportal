@@ -4,6 +4,8 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	
 	var map = null;
 	
+	var dataBounds = null;
+	
 	
 	 
 	var defaultControls = [ 
@@ -152,7 +154,9 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	 */
 	this.init = function(){
 		
-		// get and prepare the Urls
+		initOpenLayers();
+
+		// -- Distribution Layer --
 		var mapServiceRequest;
 		var distributionQuery = mapElement.attr('distributionQuery');
 		
@@ -177,8 +181,6 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 					}
 				});
 		}
-		// jsonp 
-		distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
 		
 		// -- Occurrence Layer --
 		var occurrenceQuery = mapElement.attr('occurrenceQuery');
@@ -204,29 +206,13 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				});
 		}
 		
-		var mapServiceRequest = mapserverBaseUrl + '/areas.php?' + distributionQuery;
-		$.ajax({
-			  url: mapServiceRequest,
-			  dataType: "jsonp",
-			  success: function(data){
-					initOpenLayers(data);
-				}
-			});
 			
-//		$.ajax({
-//			  url: mapServiceRequest,
-//			  dataType: "jsonp",
-//			  success: function(data){
-//					initOpenLayers(data);
-//				},
-//			  jsonp: "foo"
-//			});
 	};
 	
 	/**
-	 * 
+	 * Initialize the Openlayers viewer with the base layer
 	 */
-	var initOpenLayers = function(mapResponseObj){
+	var initOpenLayers = function(){
 			
 		// instatiate the openlayers viewer
 		map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG4326);
@@ -265,7 +251,9 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		// add additional layers, get them from 
 		// the mapResponseObj
 		if(mapResponseObj !== undefined){
-			for ( var i in mapResponseObj.layers) {
+			if(mapResponseObj.points_sld !== undefined){
+				// it is a response from the points.php
+				//TODO points_sld should be renamed to sld in response + fill path to sld should be given				
 				
 				layer = new OpenLayers.Layer.WMS.Untiled( 
 						'points', 
@@ -278,8 +266,13 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 					sld = "http://edit.br.fgov.be/synthesys/www/v1/sld/" + sld;
 				}
 				
-				layer.params.SLD = layerData.sld;
+				layer.params.SLD = sld;					
 				map.addLayers([layer]);
+
+			} else {
+				// it is a response from the areas.php				
+				for ( var i in mapResponseObj.layers) {
+				var layerData = mapResponseObj.layers[i];
 				
 					layer = new OpenLayers.Layer.WMS.Untiled( 
 							layerData.tdwg, 
@@ -293,10 +286,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				}
 				
 			}
-			
-			//map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
 
-			
 			// zoom to the required area
 			if(mapResponseObj.bbox !== undefined){
 				var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
@@ -319,15 +309,15 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			}
 		}
 		
-		// adjust height of openlayers container div
-		$('#openlayers').css('height', $('#openlayers #openlayers_map').height());
-		
 	};
 	
+	/**
+	 * 
+	 */
 	var addLegendAsElement= function(legendSrcUrl){
 		
 		mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
-		mapElement.next('.openlayers_legend').find('img').load(function () {
+		mapElement.next('.openlayers_legend').css('opacity', options.legendOpacity).find('img').load(function () {
 			$(this).parent()
 				.css('position', 'relative')
 				.css('z-index', '30000')
@@ -343,7 +333,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		
 		// 1. download imge to find height and width
 		mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
-		mapElement.next('.openlayers_legend').css('display', 'none').find('img').load(function () {
+		mapElement.next('.openlayers_legend').css('display', 'none').css('opacity', options.legendOpacity).find('img').load(function () {
 			
 			w = mapElement.next('.openlayers_legend').find('img').width();
 			h = mapElement.next('.openlayers_legend').find('img').height();
