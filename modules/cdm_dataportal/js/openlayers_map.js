@@ -43,7 +43,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	var dataProj = new OpenLayers.Projection("EPSG:4326");
 	
 	var dataLayerOptions = {
-			maxExtent: mapExtend_4326,
+			maxExtent: mapExtend_900913,
 			isBaseLayer: false,
 			displayInLayerSwitcher: true
 	};
@@ -177,7 +177,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				  url: mapServiceRequest,
 				  dataType: "jsonp",
 				  success: function(data){
-						addDistributionLayer(data);
+						addDataLayer(data);
 					}
 				});
 		}
@@ -201,7 +201,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				  url: mapServiceRequest,
 				  dataType: "jsonp",
 				  success: function(data){
-						addDistributionLayer(data);
+						addDataLayer(data);
 					}
 				});
 		}
@@ -215,16 +215,16 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	var initOpenLayers = function(){
 			
 		// instatiate the openlayers viewer
-		map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG4326);
+		map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG900913);
 		
 		//add the base layer
 		//map.addLayers([mapnik ,gmap]);
 		//map.addLayers([veroad ,gmap, metacartaVmap0]);
         map.addLayers([
-                       osgeo_vmap0, 
-                       //gmap, gsat, ghyb, 
-                       //veroad, veaer, vehyb,
-                       //oam, mapnik, osmarender
+                       //osgeo_vmap0, 
+                       gmap, gsat, //ghyb, 
+                       veroad, veaer, //vehyb,
+                       oam, mapnik, osmarender
                        ]);
 
 		
@@ -245,7 +245,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	/**
 	 * add a distribution layer
 	 */
-	var addDistributionLayer = function(mapResponseObj){
+	var addDataLayer = function(mapResponseObj){
 			
 		var layer;
 		// add additional layers, get them from 
@@ -298,6 +298,8 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				map.zoomToExtent(dataBounds.transform(dataProj, map.getProjectionObject()), false);
 				if(map.getZoom() > options.maxZoom){
 					map.zoomTo(options.maxZoom);
+				} else if(map.getZoom() < options.minZoom){
+					map.zoomTo(options.minZoom);
 				}
 			}
 						
@@ -320,7 +322,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		mapElement.next('.openlayers_legend').css('opacity', options.legendOpacity).find('img').load(function () {
 			$(this).parent()
 				.css('position', 'relative')
-				.css('z-index', '30000')
+				.css('z-index', '1002')
 				.css('top', -mapElement.height())
 				.css('left', mapElement.width()- $(this).width())
 				.width($(this).width());
@@ -403,6 +405,7 @@ $.fn.cdm_openlayers_map.defaults = {  // set up default options
 		legendOpacity: 0.75,
 		boundingBox: null,
 		showLayerSwitcher: false,
-		maxZoom: 4
+		maxZoom: 4,
+		minZoom: 1
 };
 
