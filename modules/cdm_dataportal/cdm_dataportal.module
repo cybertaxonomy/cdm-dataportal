@@ -1077,6 +1077,16 @@ function cdm_dataportal_settings_geo(){
     '#description' => t('Base URL of the geoservice to be used by this portal')
 	);
 
+	$localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
+	$form['gmap_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Gogle Maps API Key'),
+    '#default_value' => variable_get('gmap_api_key', $localhostkey),
+    '#description' => t('Gogle Maps API Key, the key set by default <code>'.$localhostkey.'</code> is a key for the localhost = 127.0.0.1')
+  );
+
+	//variable_get('gmap_api_key'
+
 	$form['cdm_dataportal_geoservice_display_width'] = array(
     '#type' => 'textfield',
     '#title' => t('Geoservice Display Width'),

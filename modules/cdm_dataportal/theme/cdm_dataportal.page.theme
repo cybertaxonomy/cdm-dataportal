@@ -85,8 +85,12 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 		$hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
 	}
 
-	$descriptionElementCount = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation'), "count=true");
-  if($descriptionElementCount->Integer < 1) {
+//	$descriptionElementCount = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation'), "count=true");
+//	if($descriptionElementCount->Integer < 0) { //DEBUG HACK
+   // ### sending the same query twice is faster than two different ones, $descriptionElements will be retrieved again in the specimens page
+	$descriptionElements = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation'));
+  $descriptionElementCount = is_array($descriptionElements) ? count($descriptionElements) : 0;
+	if($descriptionElementCount > 0) {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Specimens');
   }
 
@@ -222,22 +226,58 @@ function theme_cdm_taxon_page_specimens($taxon){
 
   $descriptionElements = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation') );
 
-  if(variable_get('cdm_dataportal_map_openlayers', 1)){
-
-  	  $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
-  	  $occurrenceQuery = $occurrenceQuery->String;
-  	  //$query_string = 'l=v%3Aatbi%2Ce_w_0&legend=0&ms=400%2C350&od=1%3A44.29481%2C6.82161|44.29252%2C6.822873|44.29247%2C6.82346|44.29279%2C6.823678|44.29269%2C6.82394|44.28482%2C6.887252|44.11469%2C7.287144|44.11468%2C7.289168&os=1%3Ac%2F8B0000%2F10%2FAporrectodea caliginosa&recalculate=false&image=false';
-
-  	  $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', false), $occurrenceQuery);
-
+  //collect media (fieldObjectMedia, derivedUnitMedia) and add as fields
+  foreach($descriptionElements as $descriptionElement) {
+  	if($descriptionElement->associatedSpecimenOrObservation){
+	  	$descriptionElement->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($descriptionElement->associatedSpecimenOrObservation->uuid, 'fieldObjectMedia') );
+	  	$descriptionElement->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($descriptionElement->associatedSpecimenOrObservation->uuid, 'derivedUnitMedia') );
   	}
+  }
+
+  if(variable_get('cdm_dataportal_map_openlayers', 1)){
+    $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
+    $occurrenceQuery = $occurrenceQuery->String;
+    $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', false), $occurrenceQuery);
+  }
+
+
 
   if($descriptionElements){
   	$out_specimenList = '<ul class="specimens">';
   	foreach($descriptionElements as $descriptionElement) {
   		if($descriptionElement->associatedSpecimenOrObservation){
 
-  			$out_specimenList .= '<li class="descriptionElement descriptionElement_IndividualsAssociation">' . $descriptionElement->associatedSpecimenOrObservation->titleCache . '</li>';
+  			$mediaList = array();
+  			if(is_array($descriptionElement->_fieldObjectMedia)){
+  				$mediaList = array_merge($mediaList, $descriptionElement->_fieldObjectMedia);
+  			}
+  		  if(is_array($descriptionElement->_derivedUnitMedia)){
+          $mediaList = array_merge($mediaList, $descriptionElement->_derivedUnitMedia);
+        }
+  			$li = '<li class="descriptionElement descriptionElement_IndividualsAssociation">' . $descriptionElement->associatedSpecimenOrObservation->titleCache;
+  			if(count($mediaList) > 0){
+	  			/*$gallery_name =  $descriptionElement->associatedSpecimenOrObservation->uuid;
+	  			$li .= theme(
+	  			    'cdm_media_gallerie',
+	            $mediaList,
+	  		      $gallery_name ,
+						  $gallery_settings['cdm_dataportal_media_maxextend'],
+						  $gallery_settings['cdm_dataportal_media_cols'],
+						  $gallery_settings['cdm_dataportal_media_maxRows'],
+						  $captionElements, 'LIGHTBOX', null, null);
+	  			*/
+  				$li .= '<div>';
+  				foreach ($mediaList as $media){
+            foreach($media->representations as $representations){
+            	foreach($representations->parts as $part){
+            		$li .= l('images/Protologue-media.png', $part->uri, array('target'=>'speciemen_media')). ' ';
+            	}
+            }
+  				}
+  				$li .= '</div>';
+  			}
+  			$li .= '</li>';
+  			$out_specimenList .= $li;
   		}
   	}
   	$out_specimenList .= '</ul>';
