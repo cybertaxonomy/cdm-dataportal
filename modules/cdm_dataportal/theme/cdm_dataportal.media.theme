@@ -3,9 +3,9 @@
 
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
 */
@@ -77,8 +77,13 @@ function theme_cdm_media($descriptionElement, $mimeTypePreference){
 
 }
 
-function theme_cdm_mediaTypeTerm($feature){
-	$icon_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$feature->representation_L10n.'-media.png';
+function theme_cdm_mediaTypeTerm($feature, $mediaUrl = false){
+	$provider = '';
+	if(strpos($mediaUrl, 'www.biodiversitylibrary.org') > 0){
+    $provider = '-BHL';
+	}
+	$icon_image = $feature->representation_L10n.'-media'.$provider.'.png';
+	$icon_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$icon_image;
 	return '<img src="'.$icon_url.'" height="14px" alt="'.$feature->representation_L10n.'" />';
 }
 
@@ -88,7 +93,7 @@ function theme_cdm_media_mime_application($mediaRepresentation, $feature){
 		$attributes = array('title'=> theme('cdm_feature_name', $feature->representation_L10n), 'target'=>'_blank');
 		//$attributes = array('title'=>$feature->representation_L10n, 'target'=>'_blank');
 		//$attributes = array('title'=>'original publication', 'target'=>'_blank');
-		$out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+		$out .= l(theme('cdm_mediaTypeTerm', $feature, $part->uri), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
 	}
 	return $out;
 }
@@ -99,8 +104,7 @@ function theme_cdm_media_mime_image($mediaRepresentation, $feature){
 	$attributes = array('class'=>'thickbox', 'rel'=>'representation-'.$representation->uuid, 'title'=>$feature->representation_L10n);
 	for($i = 0; $part = $representation->representationParts[$i]; $i++){
 		if($i == 0){
-
-			$out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+			$out .= l(theme('cdm_mediaTypeTerm', $feature, $part->uri), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
 		} else {
 			$out .= l('', $part->uri, $attributes, NULL, NULL, TRUE);
 		}
@@ -113,7 +117,7 @@ function theme_cdm_media_mime_text($representation, $feature){
 	foreach($representation->parts as $part){
 		$attributes = array('title'=> theme('cdm_feature_name', $feature->representation_L10n), 'target'=>'_blank');
 		//$attributes = array('title'=>t('original publication'), 'target'=>'_blank');
-		$out .= l(theme('cdm_mediaTypeTerm', $feature), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
+		$out .= l(theme('cdm_mediaTypeTerm', $feature, $part->uri), $part->uri, $attributes, NULL, NULL, TRUE, TRUE);
 	}
 	return $out;
 }
@@ -214,9 +218,10 @@ function theme_cdm_media_caption($media, $elements = array('title', 'description
  * @param $galleryLinkUri an URI to link the the hint on more images to; if null no link is created
  * @return unknown_type
  */
-function theme_cdm_media_gallerie($mediaList, $galleryName, $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
-$mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null ){
-	
+function theme_cdm_media_gallerie($mediaList, $galleryName,
+  $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
+  $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null ){
+
 	if(!is_array($captionElements)){
 		$captionElements = array();
 	}
@@ -228,19 +233,17 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 	}
 
 	$galleryID = "media_gallery_".$galleryName;
+	$mediaPartLinkAttributes = array();
+	$openMediaLinkAttributes = array();
 
 	// prepare media links
 	$doLink = false;
-	$linkAttributes = null;
 	if($mediaLinkType != 'NONE'){
 		$doLink = true;
 	}
 	if($mediaLinkType == 'LIGHTBOX'){
 		$doLink = true;
-		//_add_js_thickbox();
-		//$linkAttributes = array("class"=>"thickbox", "rel"=>"media_gallerie".$galleryName);
 		_add_js_lightbox($galleryID);
-		$linkAttributes = array("class"=>"lightbox");
 	}
 
 	// render the media gallery grid
@@ -258,10 +261,24 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 		for($c = 0; $c < $cols; $c++){
 			$media = array_shift($mediaList);
 			if(isset($media->representations[0]->parts[0])){
-				$contentTypeDirectory = media_content_type_dir($media->representations[0], 'image');
-				$mediaIndex++;
-				$mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $media->representations[0]->parts[0], $maxExtend, TRUE);
 
+				//
+				// find preferred representation
+				//
+				$preferred_media_representations_list = cdm_preferred_media_representations(
+				   $media,
+				   array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'),
+				   $maxExtend, $maxExtend);
+				if(count($preferred_media_representations_list) == 0){
+					// fallback to using the first one in the list
+					$preferred_media_representations_list = $media->representations;
+				}
+        $preferred_media_representation = array_shift($preferred_media_representations_list);
+
+        // $preferred_media_representation->parts[0]->uri = "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
+				$contentTypeDirectory = media_content_type_dir($preferred_media_representation, 'application');
+				$mediaIndex++;
+				$mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $preferred_media_representation->parts[0], $maxExtend, TRUE);
 				// --- compose Media Link
 				$mediaLinkUri = false;
 				if($alternativeMediaUri){
@@ -272,28 +289,38 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 						$mediaLinkUri = $alternativeMediaUri;
 					}
 				} else {
-					$mediaLinkUri = $media->representations[0]->parts[0]->uri;
+					$mediaLinkUri = $preferred_media_representation->parts[0]->uri;
 				}
 
-				// generate gallery caption
 				_add_js_ahah();
 				$content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
-				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".join(',',$captionElements));
+				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".serialize($captionElements));
 				$captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
 
+				// generate gallery caption
+				if($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image'){
+          $mediaPartLinkAttributes['class'] = "lightbox";
+				} else {
+					$mediaPartLinkAttributes['target'] = "specimen";
+					$openMediaLinkAttributes['target'] = "specimen";
+				}
 				// generate & add caption to lightbox
 				$lightBoxCaptionElements = null;
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption"); //.($lightBoxCaptionElements?'/'.join	(',',$lightBoxCaptionElements):''));
-				$linkAttributes['alt'] = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
+				$mediaPartLinkAttributes['alt'] = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
 
 				if(isset($captionElements['#uri'])){
-					$captionPartHtml .= '<div>'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
+					if($contentTypeDirectory == 'image'){
+						$captionPartHtml .= '<div>'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
+					} else {
+						$captionPartHtml .= '<div>'.l($captionElements['#uri'], $mediaLinkUri, $openMediaLinkAttributes, null, null, TRUE, TRUE).'</div>';
+					}
 				}
 				$captionParts[] = $captionPartHtml;
 
 				// --- surround imagePart with link
 				if($doLink){
-					$mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, $linkAttributes, null, null, FALSE, TRUE);
+					$mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, $mediaPartLinkAttributes, null, null, FALSE, TRUE);
 				}
 
 			} else {
@@ -303,7 +330,7 @@ $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null
 			$out .= '<td>'.$mediaPartHtml.'</td>';
 		}
 		$out .= '</tr>'; // end of media parts
-		if(isset($captionElements[0])){
+		if(count($captionElements) > 0){
 			$out .= '<tr>';
 			// add caption row
 			foreach($captionParts as $captionPartHtml){
@@ -329,7 +356,7 @@ function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $a
 	//TODO merge with theme_cdm_media_mime_image?
 
 	if(isset($mediaRepresentationPart)){
-			
+
 		$h = $mediaRepresentationPart->height;
 		$w = $mediaRepresentationPart->width;
 		if($w == 0 || $h == 0){
@@ -381,13 +408,53 @@ function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $a
 
 }
 
+function theme_cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
+
+  if(isset($mediaRepresentationPart)){
+
+    if($addPassePartout){
+      $out .= '<div class="image-passe-partout" style="width:'.$maxExtend.'px; height:'.$maxExtend.'px;">';
+    } else {
+      // do not add margins if no pass partout is shown
+      $margins = '';
+    }
+    $out .= '<div class="appication">Web Application</div>';
+
+    if($addPassePartout){
+      $out .= '</div>';
+    }
+    return $out;
+  }
+
+}
+
+function theme_cdm_media_gallerie_text($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
+
+  if(isset($mediaRepresentationPart)){
+
+    if($addPassePartout){
+      $out .= '<div class="image-passe-partout" style="width:'.$maxExtend.'px; height:'.$maxExtend.'px;">';
+    } else {
+      // do not add margins if no pass partout is shown
+      $margins = '';
+    }
+    $out .= '<div class="appication">Web Application</div>';
+
+    if($addPassePartout){
+      $out .= '</div>';
+    }
+    return $out;
+  }
+
+}
+
 function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
 
 	// see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
 	// and http://trac.openlayers.org/wiki/SettingZoomLevels
-	
+
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
-      
+
   //TODO megre code below with code from theme_cdm_media_gallerie_image
 	//var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
 	//TODO merge code below with code from theme_cdm_media_gallerie_image
@@ -424,14 +491,14 @@ function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
      maxExtent: new OpenLayers.Bounds(0, 0, '.$w.', '.$h.')
   };
   var mapOptions={
-      controls: 
-       [ 
+      controls:
+       [
          new OpenLayers.Control.PanZoom(),
          new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
        ],
      restrictedExtent:  new OpenLayers.Bounds(0, 0, '.$w.', '.$h.')
   };
- 
+
  var graphic = new OpenLayers.Layer.Image(
           \'Image Title\',
           \''.$mediaRepresentationPart->uri.'\',
@@ -439,14 +506,14 @@ function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
           new OpenLayers.Size('.$w.', '.$h.'),
           imageLayerOptions
           );
-  
+
  function init() {
    map = new OpenLayers.Map(\'openlayers_image\', mapOptions);
    map.addLayers([graphic]);
    map.setCenter(new OpenLayers.LonLat(0, 0), 1);
    map.zoomToMaxExtent();
  }
- 
+
 $(document).ready(function(){
   init();
 

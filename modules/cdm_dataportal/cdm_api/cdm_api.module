@@ -278,10 +278,7 @@ function get_last_taxon_page_tab(){
  * @return unknown
  */
 function cdm_preferred_media_representations($media, array $mimeTypes, $width = 400, $height = 300){
-  /**
 
-  *
-  */
   $prefRepr = array();
   if(!isset($media->representations[0])){
     return $prefRepr;
@@ -291,7 +288,7 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
     // getRepresentationByMimeType
     $mimeType = array_shift($mimeTypes);
 
-    foreach($media->representations as $representation){
+    foreach($media->representations as &$representation){
 
     	//if the mimetype is not known, try inferring it
     	if(!$representation->mimeType){
@@ -351,7 +348,7 @@ function infer_mime_type($filepath){
 	if(isset($mimemap[$extension])){
 		return $mimemap[$extension];
 	} else {
-		false;
+		return 'text/html'; //FIXME remove this hack just return false;
 	}
 }
 
@@ -474,12 +471,17 @@ function proxy_content($uri, $theme = null){
   $uri = urldecode($uriEncoded);
   $theme = array_shift($args);
 
-  //find comma sepatated string in all args
-  foreach($args as &$arg){
-  	if(strpos($arg, ',')){
-  		$arg = explode(',', $arg);
-  	}
+  // find and deserialize arrays
+    foreach($args as &$arg){
+		  if( strpos($arg, "a:") === 0){ //FIXME use regex to find serialized arrays
+		    $arg = unserialize($arg);
+		  }
+		  //find comma sepatated string in all args
+//  	if(strpos($arg, ',')){
+//  		$arg = explode(',', $arg);
+//  	}
   }
+
 
   $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
 
@@ -709,10 +711,12 @@ function cdm_rankVocabulary_as_option(){
   if(!$rankVocabularyOptions){
     $vocab = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_RANK);
     $rankVocabularyOptions = array();
-    foreach($vocab->terms as $term){
-      $rankVocabularyOptions[$term->uuid] = t($term->representation_L10n);
+    if($vocab){
+	    foreach($vocab->terms as $term){
+	      $rankVocabularyOptions[$term->uuid] = t($term->representation_L10n);
+	    }
+	    array_reverse($rankVocabularyOptions);
     }
-    array_reverse($rankVocabularyOptions);
   }
   return $rankVocabularyOptions;
 }
@@ -722,7 +726,7 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
 
   if(!$featureTree){
     drupal_set_message('No \'FeatureTree\' has been set so far. '
-    .'In order to see the species profiles of your taxa, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/general'), 'warning');
+    .'In order to see the species profiles of your taxa, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/layout'), 'warning');
     return false;
   }
 
@@ -840,7 +844,10 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
       // The object has been found in the L1 cache
       //
       $obj = $cacheL1_obj;
-      _add_debugMessageStr('Using cacheL1 for: '.$uri);
+      if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
+      	_add_status_message_toggler();
+        _add_debugMessageStr('Using cacheL1 for: '.$uri);
+      }
     } else if($cacheL2_entry) {
       //
       // The object has been found in the L2 cache
@@ -1105,10 +1112,13 @@ function cdm_get_featureTrees_as_options($addDefaultFeatureTree = false){
 
 function cdm_get_taxontrees_as_options(){
    $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
-    foreach($taxonTrees as $tree){
-        $taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
-    }
-    return $taxonomicTreeOptions;
+   $taxonomicTreeOptions = array();
+   if($taxonTrees){
+	    foreach($taxonTrees as $tree){
+	        $taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
+	    }
+   }
+   return $taxonomicTreeOptions;
 }
 
 

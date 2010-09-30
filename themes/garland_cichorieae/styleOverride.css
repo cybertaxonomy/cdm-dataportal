@@ -70,6 +70,10 @@ body {
 	z-index: 2;
 }
 
+#logo-floater {
+  min-width: 200px;	
+}
+
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited{
 	font-size:	150%;
 }

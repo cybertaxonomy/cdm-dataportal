@@ -41,7 +41,13 @@ $gallery_settings = array(
     "cdm_dataportal_media_maxextend" => 120,
     "cdm_dataportal_media_cols" => 3,
     "cdm_dataportal_media_maxRows" => 1);
+/**
+ * default settings for all gallerys
+ * @var unknown_type
+ */
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
+
+define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
 define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
 define('CDM_DATAPORTAL_MEDIA_GALLERY_NAME', "media_gallery");
 define('CDM_DATAPORTAL_SEARCH_GALLERY_NAME', "search_gallery");
@@ -406,7 +412,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
 				$block['content'] .= '<div>'.l('Advanced Search', '/cdm_dataportal/search').'</div>';
 				return $block;
 			case 4:
-				$block['subject'] = t('Print this page');
+				$block['subject'] = t('<none>');
 				$block['content'] = theme('cdm_print_button');;
 				return $block;
 		}
@@ -947,6 +953,12 @@ function cdm_dataportal_settings_layout(){
 	$form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
 	$form_tittle = 'Description elements gallery';
 	$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+
+	// --- CDM_DATAPORTAL_SPECIMEN_GALLERY --- //
+  $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
+  $form_tittle = 'Speciment media gallery';
+  $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+
 
 	// --- MEDIA GALLERY ---- //
 	$form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;

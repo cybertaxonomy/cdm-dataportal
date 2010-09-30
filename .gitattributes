@@ -69,12 +69,13 @@ modules/cdm_dataportal/classes/renderhints.php -text
 modules/cdm_dataportal/ext_links/ext_links.info -text
 modules/cdm_dataportal/ext_links/ext_links.js -text
 modules/cdm_dataportal/ext_links/ext_links.module -text
-modules/cdm_dataportal/images/Protolog-media.png -text
+modules/cdm_dataportal/images/Protologue-media-BHL.png -text
 modules/cdm_dataportal/images/Protologue-media.png -text
 modules/cdm_dataportal/images/btn_collapse.gif -text
 modules/cdm_dataportal/images/btn_expand.gif -text
 modules/cdm_dataportal/images/clear.gif -text
 modules/cdm_dataportal/images/external_link.gif -text
+modules/cdm_dataportal/images/favicon.ico -text
 modules/cdm_dataportal/images/loading.gif -text
 modules/cdm_dataportal/images/loading_circle_grey_16.gif -text
 modules/cdm_dataportal/images/macFFBgHack.png -text
@@ -448,6 +449,14 @@ themes/garland_EDIT/print.css -text
 themes/garland_EDIT/screenshot.png -text
 themes/garland_EDIT/style.css -text
 themes/garland_EDIT/template.php -text
+themes/garland_cichorieae/SUB_THEME_TEMPLATE/images/edit-logo.png -text
+themes/garland_cichorieae/SUB_THEME_TEMPLATE/images/flora-malesiana-header.jpg -text
+themes/garland_cichorieae/SUB_THEME_TEMPLATE/images/flora-malesiana-header2.jpg -text
+themes/garland_cichorieae/SUB_THEME_TEMPLATE/images/flora-malesiana-logo-floater-bg-1.jpg -text
+themes/garland_cichorieae/SUB_THEME_TEMPLATE/logo.png -text
+themes/garland_cichorieae/SUB_THEME_TEMPLATE/screenshot.png -text
+themes/garland_cichorieae/SUB_THEME_TEMPLATE/style.css -text
+themes/garland_cichorieae/SUB_THEME_TEMPLATE/styleOverride.css -text
 themes/garland_cichorieae/block.tpl.php -text
 themes/garland_cichorieae/campanulaceae/images/Campanula_patula_header-croped-696x92.jpg -text
 themes/garland_cichorieae/campanulaceae/images/campanu-logo-floater-bg-1.png -text
@@ -520,6 +529,7 @@ themes/garland_cichorieae/screenshot.png -text
 themes/garland_cichorieae/style.css -text
 themes/garland_cichorieae/styleOverride.css -text
 themes/garland_cichorieae/template.php -text
+themes/garland_cichorieae/theme-settings.php -text
 themes/garland_diptera/Culex[!!-~]quinquefasciatus.jpg -text
 themes/garland_diptera/Mila_patr.jpg -text
 themes/garland_diptera/block.tpl.php -text

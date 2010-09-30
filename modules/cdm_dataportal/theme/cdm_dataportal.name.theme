@@ -59,9 +59,9 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 		}else{ //it is a lectotype?
 			if(strcmp($typeDesignation->typeStatus->titleCache, 'lectotype') == 0){
         $is_lectotype = true;
-      } 
+      }
 			// it's a NameTypeDesignation
-			if($typeDesignation->notDesignated){ 
+			if($typeDesignation->notDesignated){
 				$out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated'). '</li>';
 				//$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: '.t('not designated'). '</li>';
 			}else if($typeDesignation->typeName){
@@ -252,12 +252,12 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 	}
 	//$test =  theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
 	//tuypedesignations footnotes
-	
+
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 
 	}
-	
+
 	//annotation footnotes
 	//$annotation_key = ( isset($homotypicalGroup[0]) ? $homotypicalGroup[0]->uuid : 'NULL');
 	//$fkey_annotations = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-annotations-' . $annotation_key, $annotation_key);
@@ -280,7 +280,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 	$footnoteListKey = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
 	$accepted_taxon_footnoteListKey = RenderHints::getFootnoteListKey();
 	RenderHints::setFootnoteListKey($footnoteListKey);
- 
+
 	if(! is_array($synonymList) || count($synonymList) == 0){
 		return;
 	}
@@ -522,12 +522,14 @@ function &get_preceding_contentElement($contentElementKey, array &$renderTemplat
 function &get_preceding_contentElementKey($contentElementKey, array &$renderTemplate){
 	$precedingKey = null;
 	foreach($renderTemplate as &$part){
-		foreach($part as $key=>&$element){
-			if($key == $contentElementKey){
-				return $precedingKey;
-			}
-			if(!str_beginsWith($key, '#')){
-				$precedingKey = $key;
+		if(is_array($part)){
+			foreach($part as $key=>&$element){
+				if($key == $contentElementKey){
+					return $precedingKey;
+				}
+				if(!str_beginsWith($key, '#')){
+					$precedingKey = $key;
+				}
 			}
 		}
 	}

@@ -19,7 +19,7 @@ function theme_cdm_search_results($pager, $path, $parameters){
 	}
 	$setSessionUri = url('cdm_api/setvalue/session', "var=[pageoption][searchtaxa][showThumbnails]&val=");
 	drupal_add_js('$(document).ready(function() {
-  
+
         // init
         if('.$showThumbnails.' == 1){
               $(\'.media_gallery\').show(20);
@@ -112,13 +112,13 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	foreach($misapplied as $misapplied_name){
 
 		$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
-		// fill authors with the renderedFootnoteKey and sorting 'em
-		foreach($misapplied_name['authorteam'] as $authorteam=>&$renderedFootnoteKey) {
-			$renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
-		}
 		if(isset($misapplied_name['authorteam'])){
-			ksort($misapplied_name['authorteam']);
-			$out .= join('; ', $misapplied_name['authorteam']);
+			// fill authors with the renderedFootnoteKey and sorting 'em
+			foreach($misapplied_name['authorteam'] as $authorteam=>&$renderedFootnoteKey) {
+				$renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
+			}
+				ksort($misapplied_name['authorteam']);
+				$out .= join('; ', $misapplied_name['authorteam']);
 		}
 		$out .= '</li>';
 
@@ -142,9 +142,9 @@ function theme_cdm_acceptedFor(){
 
 	$out = '';
 	if(isset($_REQUEST['acceptedFor'])){
-			
+
 		$synonym = cdm_ws_get(CDM_WS_PORTAL_TAXON, $_REQUEST['acceptedFor']);
-			
+
 		if($synonym){
 			$out .= '<span class="acceptedFor">';
 			$out .= t('is accepted for ');
@@ -300,7 +300,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 				case 'treated as later homonym for':
 					if(isset($rels_out)){
 						$rels_out = ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
-                              'cdm_dataportal/name/' . $element->toName->uuid);						
+                              'cdm_dataportal/name/' . $element->toName->uuid);
 					}else{
 						$rels_out = ' non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
 					                   'cdm_dataportal/name/' . $element->toName->uuid);

@@ -99,6 +99,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
         "Google Satellite",
         {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 22}
     );
+    
     var ghyb = new OpenLayers.Layer.Google(
         "Google Hybrid",
         {type: G_HYBRID_MAP, 'sphericalMercator': true}
@@ -236,6 +237,11 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		var boundsStr = (typeof options.boundingBox == 'string' && options.boundingBox.length > 6 ? options.boundingBox : '-180, -90, 180, 90');
 		var zoomToBounds = OpenLayers.Bounds.fromString( boundsStr );
 		map.zoomToExtent(zoomToBounds.transform(dataProj, map.getProjectionObject()), false);
+		if(map.getZoom() > options.maxZoom){
+			map.zoomTo(options.maxZoom);
+		} else if(map.getZoom() < options.minZoom){
+			map.zoomTo(options.minZoom);
+		}
 		
 		// adjust height of openlayers container div
 		$('#openlayers').css('height', $('#openlayers #openlayers_map').height());
