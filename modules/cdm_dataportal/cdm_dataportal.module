@@ -1090,11 +1090,12 @@ function cdm_dataportal_settings_geo(){
 	);
 
 	$localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
+	$gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
 	$form['gmap_api_key'] = array(
     '#type' => 'textfield',
     '#title' => t('Gogle Maps API Key'),
-    '#default_value' => variable_get('gmap_api_key', $localhostkey),
-    '#description' => t('Gogle Maps API Key, the key set by default <code>'.$localhostkey.'</code> is a key for the localhost = 127.0.0.1')
+    '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
+    '#description' => t('Gogle Maps API Key, the key set by default <code>'.$localhostkey.'</code> is a key for the localhost = 127.0.0.1 The key in use is the one above this text.')
   );
 
 	//variable_get('gmap_api_key'
