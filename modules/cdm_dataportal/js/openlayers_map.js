@@ -6,7 +6,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	
 	var dataBounds = null;
 	
-	
+	var baseLayers = [];
 	 
 	var defaultControls = [ 
   	         new OpenLayers.Control.PanZoom(),
@@ -55,105 +55,12 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			tdwg4: 'topp:tdwg_level_4'
 	};
 	
-  
-	/**
-	 * NOTE: labs.metacarta.com is currently unavailable
-	 * 
-	 * Available Projections:
-	 * 		EPSG:900913
-	 * 		EPSG:4326
-	 */
-	var metacarta_vmap0 = new OpenLayers.Layer.WMS( 
-	    "Metacarta Vmap0",
-	    "http://labs.metacarta.com/wms/vmap0",
-	    {layers: 'basic', format:"png"},
-	     {
-			maxExtent: mapExtend_4326,
-			isBaseLayer: true,
-			displayInLayerSwitcher: true
-		}
-	 );
-	
-	/**
-	 * Available Projections:
-	 * 		EPSG:4326
-	 */
-    var osgeo_vmap0 = new OpenLayers.Layer.WMS(
-        "OpenLayers World",
-        "http://vmap0.tiles.osgeo.org/wms/vmap0",
-        {layers: 'basic', format:"png"},
-        {
-			maxExtent: mapExtend_4326,
-			isBaseLayer: true,
-			displayInLayerSwitcher: true
-		}
-    );
-
-	 
-	// create Google Mercator layers
-    var gmap = new OpenLayers.Layer.Google(
-        "Google Streets",
-        {'sphericalMercator': true}
-    );
-    var gsat = new OpenLayers.Layer.Google(
-        "Google Satellite",
-        {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 22}
-    );
-    
-    var ghyb = new OpenLayers.Layer.Google(
-        "Google Hybrid",
-        {type: G_HYBRID_MAP, 'sphericalMercator': true}
-    );
-
-    // create Virtual Earth layers
-    var veroad = new OpenLayers.Layer.VirtualEarth(
-        "Virtual Earth Roads",
-        {'type': VEMapStyle.Road, 'sphericalMercator': true}
-    );
-    var veaer = new OpenLayers.Layer.VirtualEarth(
-        "Virtual Earth Aerial",
-        {'type': VEMapStyle.Aerial, 'sphericalMercator': true}
-    );
-    var vehyb = new OpenLayers.Layer.VirtualEarth(
-        "Virtual Earth Hybrid",
-        {'type': VEMapStyle.Hybrid, 'sphericalMercator': true}
-    );
-
-    // create Yahoo layer
-//    var yahoo = new OpenLayers.Layer.Yahoo(
-//        "Yahoo Street",
-//        {'sphericalMercator': true}
-//    );
-//    var yahoosat = new OpenLayers.Layer.Yahoo(
-//        "Yahoo Satellite",
-//        {'type': YAHOO_MAP_SAT, 'sphericalMercator': true}
-//    );
-//    var yahoohyb = new OpenLayers.Layer.Yahoo(
-//        "Yahoo Hybrid",
-//        {'type': YAHOO_MAP_HYB, 'sphericalMercator': true}
-//    );
-
-    // create OSM layer
-    var mapnik = new OpenLayers.Layer.OSM();
-    // create OAM layer
-    var oam = new OpenLayers.Layer.XYZ(
-        "OpenAerialMap",
-        "http://tile.openaerialmap.org/tiles/1.0.0/openaerialmap-900913/${z}/${x}/${y}.png",
-        {
-            sphericalMercator: true
-        }
-    );
-
-    // create OSM layer
-    var osmarender = new OpenLayers.Layer.OSM(
-        "OpenStreetMap (Tiles@Home)",
-        "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
-    );
-	
 	/**
 	 * 
 	 */
 	this.init = function(){
+		
+		baseLayers = createLayers(options.baseLayerNames);
 		
 		initOpenLayers();
 
@@ -216,20 +123,25 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	var initOpenLayers = function(){
 			
 		// instatiate the openlayers viewer
-		map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG900913);
+		if(baseLayers[0].projection == mapOptions.EPSG900913.projection){
+			map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG900913);
+		} else {
+			map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG4326);		
+		}
 		
-		//add the base layer
-		//map.addLayers([mapnik ,gmap]);
-		//map.addLayers([veroad ,gmap, metacartaVmap0]);
-        map.addLayers([
-                       //osgeo_vmap0, 
-                       gmap, gsat, //ghyb, 
-                       veroad, veaer, //vehyb,
-                       oam, mapnik, osmarender
-                       ]);
+		//add the base layers
+		map.addLayers(baseLayers);
+//		map.setBaseLayer(baseLayers[0]);
+
+//        map.addLayers([
+//                       //osgeo_vmap0, 
+//                       gmap, gsat, //ghyb, 
+//                       veroad, veaer, //vehyb,
+//                       oam, mapnik, osmarender
+//                       ]);
 
 		
-		if(options.showLayerSwitcher == true){
+		if(options.showLayerSwitcher === true){
 			map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
 		}
 		
@@ -347,25 +259,26 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			h = mapElement.next('.openlayers_legend').find('img').height();
 			mapElement.next('.openlayers_legend').remove();
 			
-			createLegendLayer();
+//			createLegendLayer();
+//			// 2. create the Legend Layer
+			//TODO createLegendLayer as inner fiinction seems like an error
+//			var createLegendLayer = function(){
+//				
+//				
+//				var legendLayerOptions={
+//						maxResolution: '.$maxRes.',
+//						maxExtent: new OpenLayers.Bounds(0, 0, w, h)
+//				};
+//				
+//				var legendLayer = new OpenLayers.Layer.Image(
+//						'Legend',
+//						legendSrcUrl,
+//						new OpenLayers.Bounds(0, 0, w, h),
+//						new OpenLayers.Size(w, h),
+//						imageLayerOptions);
+//			};
 		});
 		
-		// 2. create the Legend Layer
-		var createLegendLayer = function(){
-
-			
-			var legendLayerOptions={
-					maxResolution: '.$maxRes.',
-					maxExtent: new OpenLayers.Bounds(0, 0, w, h)
-			};
-			
-			var legendLayer = new OpenLayers.Layer.Image(
-					'Legend',
-					legendSrcUrl,
-					new OpenLayers.Bounds(0, 0, w, h),
-					new OpenLayers.Size(w, h),
-					imageLayerOptions);
-		};
 
 	};
 	
@@ -381,6 +294,155 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		} else {
 			return queryStr1 + queryStr2;
 		}
+	};
+	
+	/**
+	 * 
+	 */
+	var createLayers = function( baseLayerNames ){
+		var baseLayers = new Array();
+		for(var i = 0; i <  baseLayerNames.length; i++) {
+			//var layerName in baseLayerNames ){
+			baseLayers[i] = getLayersByName(baseLayerNames[i]);
+		}
+		return baseLayers;
+	};
+		
+	/**
+	 * 
+	 */
+	var getLayersByName = function(layerName){
+		
+		var baseLayer;
+		
+		switch(layerName){
+		
+			case 'metacarta_vmap0':
+				/**
+				 * NOTE: labs.metacarta.com is currently unavailable
+				 * 
+				 * Available Projections:
+				 * 		EPSG:900913
+				 * 		EPSG:4326
+				 */
+				baseLayer = new OpenLayers.Layer.WMS( 
+					    "Metacarta Vmap0",
+					    "http://labs.metacarta.com/wms/vmap0",
+					    {layers: 'basic', format:"png"},
+					     {
+							maxExtent: mapExtend_4326,
+							isBaseLayer: true,
+							displayInLayerSwitcher: true
+						}
+				);
+			break;
+				
+			case 'osgeo_vmap0':
+				/**
+				 * Available Projections:
+				 * 		EPSG:4326
+				 */
+				baseLayer = new OpenLayers.Layer.WMS(
+			        "OpenLayers World",
+			        "http://vmap0.tiles.osgeo.org/wms/vmap0",
+			        {layers: 'basic', format:"png"},
+			        {
+						maxExtent: mapExtend_4326,
+						isBaseLayer: true,
+						displayInLayerSwitcher: true
+					}
+				);
+			break;
+			
+			// create Google Mercator layers
+			case 'gmap':
+				baseLayer = new OpenLayers.Layer.Google(
+					        "Google Streets",
+					        {'sphericalMercator': true}
+					    );
+			break;
+			
+	
+			case 'gsat':
+				baseLayer = new OpenLayers.Layer.Google(
+					        "Google Satellite",
+					        {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 22}
+					    );
+			break;
+		   
+			case 'ghyb':
+				baseLayer = new OpenLayers.Layer.Google(
+					        "Google Hybrid",
+					        {type: G_HYBRID_MAP, 'sphericalMercator': true}
+					    );
+			break;
+			
+			case 'veroad':
+				baseLayer = new OpenLayers.Layer.VirtualEarth(
+					        "Virtual Earth Roads",
+					        {'type': VEMapStyle.Road, 'sphericalMercator': true}
+					    );
+			break;
+			
+			case 'veaer':
+				baseLayer = new OpenLayers.Layer.VirtualEarth(
+					        "Virtual Earth Aerial",
+					        {'type': VEMapStyle.Aerial, 'sphericalMercator': true}
+					    );
+			break;
+			
+			case 'vehyb':
+				baseLayer = new OpenLayers.Layer.VirtualEarth(
+					        "Virtual Earth Hybrid",
+					        {'type': VEMapStyle.Hybrid, 'sphericalMercator': true}
+					    );
+			break;
+			
+			case 'yahoo':
+				baseLayer = new OpenLayers.Layer.Yahoo(
+					        "Yahoo Street",
+					        {'sphericalMercator': true}
+					    );
+			break;
+			
+			case 'yahoosat':
+				baseLayer = new OpenLayers.Layer.Yahoo(
+					        "Yahoo Satellite",
+					        {'type': YAHOO_MAP_SAT, 'sphericalMercator': true}
+					    );
+			break;
+			
+			case 'yahoohyb':
+				 rebaseLayer = new OpenLayers.Layer.Yahoo(
+					        "Yahoo Hybrid",
+					        {'type': YAHOO_MAP_HYB, 'sphericalMercator': true}
+					    );
+			break;
+			
+			case 'mapnik':
+				baseLayer = new OpenLayers.Layer.OSM();
+			break;
+			
+			case 'oam':
+				baseLayer = new OpenLayers.Layer.XYZ(
+				        "OpenAerialMap",
+				        "http://tile.openaerialmap.org/tiles/1.0.0/openaerialmap-900913/${z}/${x}/${y}.png",
+				        {
+				            sphericalMercator: true
+				        }
+				    );
+			break;
+	
+			case 'osmarender':
+				baseLayer = new OpenLayers.Layer.OSM(
+				        "OpenStreetMap (Tiles@Home)",
+				        "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
+				    );
+			break;
+			
+		};
+		
+		return baseLayer;
 	};
 	
 }
@@ -411,6 +473,7 @@ $.fn.cdm_openlayers_map.defaults = {  // set up default options
 		legendOpacity: 0.75,
 		boundingBox: null,
 		showLayerSwitcher: false,
+		baseLayerNames: new Array("metacarta_vmap0"),
 		maxZoom: 4,
 		minZoom: 1
 };
