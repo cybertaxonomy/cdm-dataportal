@@ -475,6 +475,6 @@ $.fn.cdm_openlayers_map.defaults = {  // set up default options
 		showLayerSwitcher: false,
 		baseLayerNames: new Array("metacarta_vmap0"),
 		maxZoom: 4,
-		minZoom: 1
+		minZoom: 0
 };
 
