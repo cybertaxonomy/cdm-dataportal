@@ -17,8 +17,9 @@ function _add_js_openlayers_map(){
 	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/openlayers_map.js');
 
   $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
-  drupal_set_html_head('<script src=http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key='.$gmap_api_key.'" type="text/javascript"></script>');
-  drupal_set_html_head('<script src="http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1" type="text/javascript"></script>');
+// FIXME add only if needed
+//  drupal_set_html_head('<script src=http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key='.$gmap_api_key.'" type="text/javascript"></script>');
+//  drupal_set_html_head('<script src="http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1" type="text/javascript"></script>');
 
 	drupal_add_js("
         if (Drupal.jsEnabled) {
