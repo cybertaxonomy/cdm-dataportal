@@ -20,7 +20,6 @@ function _add_js_openlayers_map(){
   drupal_set_html_head('<script src=http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key='.$gmap_api_key.'" type="text/javascript"></script>');
   drupal_set_html_head('<script src="http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1" type="text/javascript"></script>');
 
-
 	drupal_add_js("
         if (Drupal.jsEnabled) {
           $(document).ready(function() {
@@ -269,8 +268,10 @@ function theme_cdm_common_names($elements){
 		foreach ($elements as $element){
 			if ($element->class == 'CommonTaxonName'){
 				//$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
-				$key = '<b>' . $element->language->representation_L10n . '</b>';
-				$key .= (strlen($element->area->titleCache)>0) ? ' (' . $element->area->titleCache . ')' : '';
+				if ($element->language->representation_L10n){
+					$key = '<b>' . $element->language->representation_L10n . '</b>';
+					$key .= (strlen($element->area->titleCache)>0) ? ' (' . $element->area->titleCache . ')' : '';
+				}
 				$common_names[$key][] = $element;
 			}else if ($element->class == 'TextData' && $element->feature->uuid == UUID_COMMON_NAME){
 				$textData_commonNames[] = $element;
@@ -283,29 +284,39 @@ function theme_cdm_common_names($elements){
 		ksort($common_names);
 		//creating the output to be render by drupal
 		foreach ($common_names as $key => $elements){
-
 			$rendered_element_list = '';
 			foreach($elements as $element){
 				$sourcesFootnoteKeyList = '';
-				// addinf footnotes sources
+				// adding footnotes sources
 				foreach($element->sources as $source){
 					if(_is_original_source_type($source)){
 						$_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
 						$sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));
 					}
 				}
-				$rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
+				if($element->name){
+				  $rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
+			  }
 			}
-			$common_name_out .= (strlen($common_name_out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list;
-
+			if ($key){
+			 $common_name_out .= (strlen($common_name_out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list;
+			}else{
+			  $common_name_out .= (strlen($common_name_out) > 0 ? '; ': '') . $rendered_element_list;
+			}
 		}
 	}
 	//handling commons names as text data
 	foreach($textData_commonNames as $text_data_element){
 		$text_data_out .= theme('cdm_descriptionElementTextData', $text_data_element, true, $text_data_element->feature->uuid);
 	}
-	$out_array[] = $text_data_out;
-	return $common_name_out . theme('cdm_descriptionElementArray', $out_array, $element->feature);
+	
+	$common_name_out = "<div class=common_names_as_common_names> $common_name_out </div>";
+  $out_array[] = $text_data_out;
+	$common_name_out_text_data = '<div class=common_names_as_text_data>' . theme('cdm_descriptionElementArray', $out_array, $element->feature) . '</div>';
+	
+	return $common_name_out;
+	//return $common_name_out . theme('cdm_descriptionElementArray', $out_array, $element->feature);
+	//return "<div class=common_names> $common_name_out $common_name_out_text_data";
 }
 
 /**

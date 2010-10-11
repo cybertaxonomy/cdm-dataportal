@@ -2,13 +2,13 @@
 // $Id$
 
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ */
 
 define(FOOTNOTE_ANNOTATIONS, 'annotations');
 
@@ -112,15 +112,15 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
 function theme_cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array()){
 	$footNoteKeys = cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key);
 	foreach($footNoteKeys as $a){
-	   //$out .=  theme('cdm_footnote_key', $a, $a->footnoteListKey, (isset($out)? ',' : ''));
-	   $out .=  theme('cdm_footnote_key', $a, (isset($out)? ',' : ''));
-    }
+		//$out .=  theme('cdm_footnote_key', $a, $a->footnoteListKey, (isset($out)? ',' : ''));
+		$out .=  theme('cdm_footnote_key', $a, (isset($out)? ',' : ''));
+	}
 	return $out;
 }
 
 
 function theme_cdm_annotation_footnotes($footnoteListKey, $enclosingTag = 'span'){
-    return theme('cdm_footnotes', $footnoteListKey . '-annotations', $enclosingTag);
+	return theme('cdm_footnotes', $footnoteListKey . '-annotations', $enclosingTag);
 }
 
 function theme_cdm_annotation_content($AnnotationTO){
@@ -175,16 +175,16 @@ function theme_cdm_footnote_key($footnoteKey, $separator = '', $highlightable=tr
 	if ($separator_off){
 		$separator = '';
 	}
-  $out = '<span class="footnote-key footnote-key-'.$footnoteKey->keyStr.' member-of-footnotes-'.$footnoteKey->footnoteListKey.'">'.$separator
-        .'<a href="#footnote-'.$footnoteKey->keyStr.'">'.$footnoteKey->keyStr.'</a>'
-        .'</span>';
-  return $out;
+	$out = '<span class="footnote-key footnote-key-'.$footnoteKey->keyStr.' member-of-footnotes-'.$footnoteKey->footnoteListKey.'">'.$separator
+	.'<a href="#footnote-'.$footnoteKey->keyStr.'">'.$footnoteKey->keyStr.'</a>'
+	.'</span>';
+	return $out;
 }
 
 function theme_cdm_footnote($footnoteKey, $footnoteText){
-  _add_js_footnotes();
-  $out = '<span class="footnote footnote-'.$footnoteKey.'"><a name="footnote-'.$footnoteKey.'"></a><span class="footnote-anchor">'.$footnoteKey.'.</span>&nbsp;'.$footnoteText.'</span>';
-  return $out;
+	_add_js_footnotes();
+	$out = '<span class="footnote footnote-'.$footnoteKey.'"><a name="footnote-'.$footnoteKey.'"></a><span class="footnote-anchor">'.$footnoteKey.'.</span>&nbsp;'.$footnoteText.'</span>';
+	return $out;
 }
 
 
@@ -196,9 +196,11 @@ function theme_cdm_footnotes($footnoteListKey, $enclosingTag = 'span'){
 
 function cdm_exist_footnote($footnote_list, $footnote){
 	$result = false;
-	foreach ($footnote_list as $element){
-		if ($element == $footnote){
-			$result = true;
+	if (is_array($footnote_list)){
+		foreach ($footnote_list as $element){
+			if ($element == $footnote){
+				$result = true;
+			}
 		}
 	}
 	return $result;
@@ -320,11 +322,11 @@ function theme_cdm_dynabox($label, $content_url, $theme, $enclosingtag = 'li'){
 function _add_js_thickbox(){
 	// ---- jQuery thickbox:
 	/*
-	* bug: compat-1.0.js && thickbox.js line 237 .trigger("unload")
-	* -> event is not triggered because of problems with compat-1.0.js'
-	* see INSTALL.txt
-	*
-	*/
+	 * bug: compat-1.0.js && thickbox.js line 237 .trigger("unload")
+	 * -> event is not triggered because of problems with compat-1.0.js'
+	 * see INSTALL.txt
+	 *
+	 */
 	//drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.imagetool.min.js');
 	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox/thickbox.js');
 	drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/js/thickbox/cdm_thickbox.css');
@@ -353,7 +355,7 @@ function _add_js_lightbox($galleryID){
 }
 
 function _add_js_footnotes(){
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/footnotes.js');
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/footnotes.js');
 }
 
 
