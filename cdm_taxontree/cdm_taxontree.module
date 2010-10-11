@@ -84,7 +84,7 @@ function cdm_taxontree_block($op='list', $delta=0, $edit = array()) {
 				if(count(cdm_get_taxontrees_as_options()) > 1){
 					$block['content'] = cdm_taxonomictree_selector();
 				}
-				$block['content'] .= theme('cdm_taxontree_block', $tree, $delta, FALSE, 'cdm_taxontree_node_concept_switch');
+				$block['content'] .= theme('cdm_taxontree_block', $tree, $delta, FALSE, FALSE /*, 'cdm_taxontree_node_concept_switch'*/);
 				// java script
 				$verticalSroller = $magicbox_enable ? 'cdm_taxontree_scroller_x' : 'cdm_taxontree_scroller_xy';
 				theme('cdm_taxontree_add_scripts');
@@ -865,6 +865,7 @@ if($node->taxonUuid == '1a0bb171-9461-4713-b98d-d0a5f03dfcb1'){
 	.$filter_class.'"'
 	.($ahah_url ? 'ref="'.$ahah_url.'"' : '')
 	.'>';
+
 
 	if($show_filter_switch){
 		// filter icon
