@@ -71,7 +71,7 @@ body {
 }
 
 #logo-floater {
-  min-width: 200px;	
+  /* min-width: 200px;	*/
 }
 
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited{
