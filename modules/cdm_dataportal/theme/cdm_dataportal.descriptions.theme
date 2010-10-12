@@ -312,7 +312,7 @@ function theme_cdm_common_names($elements){
 	//handling commons names as text data
 	foreach($textData_commonNames as $text_data_element){//var_dump($text_data_element);
 		$text_data_out .= theme('cdm_descriptionElementTextData', $text_data_element, true, $text_data_element->feature->uuid);
-	}  var_dump($text_data_out);
+	}
 	
 	$common_name_out = "<div class=common_names_as_common_names> $common_name_out </div>";
   $out_array[] = $text_data_out;
