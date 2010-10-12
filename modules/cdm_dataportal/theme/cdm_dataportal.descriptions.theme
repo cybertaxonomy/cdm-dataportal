@@ -265,7 +265,8 @@ function theme_cdm_common_names($elements){
 	$separator = ',';
 	$textData_commonNames = array();
 
-	if (is_array($elements)){
+	
+	if (is_array($elements)){//var_dump($elements);
 		foreach ($elements as $element){
 			if ($element->class == 'CommonTaxonName'){
 				//$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
@@ -274,13 +275,15 @@ function theme_cdm_common_names($elements){
 					$key .= (strlen($element->area->titleCache)>0) ? ' (' . $element->area->titleCache . ')' : '';
 				}
 				$common_names[$key][] = $element;
-			}else if ($element->class == 'TextData' && $element->feature->uuid == UUID_COMMON_NAME){
+			}else if ($element->class == 'TextData'){
+		 //else if ($element->class == 'TextData' && $element->feature->uuid == UUID_COMMON_NAME){
 				$textData_commonNames[] = $element;
 			}
 		}
 	}
 	//handling common names
-	if (count($common_names) > 0){
+	
+	if (count($common_names) > 0){ var_dump("hay common names");
 		//sorting the a-array based on the area (key)
 		ksort($common_names);
 		//creating the output to be render by drupal
@@ -307,15 +310,15 @@ function theme_cdm_common_names($elements){
 		}
 	}
 	//handling commons names as text data
-	foreach($textData_commonNames as $text_data_element){
+	foreach($textData_commonNames as $text_data_element){//var_dump($text_data_element);
 		$text_data_out .= theme('cdm_descriptionElementTextData', $text_data_element, true, $text_data_element->feature->uuid);
-	}
+	}  var_dump($text_data_out);
 	
 	$common_name_out = "<div class=common_names_as_common_names> $common_name_out </div>";
   $out_array[] = $text_data_out;
 	$common_name_out_text_data = '<div class=common_names_as_text_data>' . theme('cdm_descriptionElementArray', $out_array, $element->feature) . '</div>';
 	
-	return $common_name_out;
+	return $common_name_out . $common_name_out_text_data;
 	//return $common_name_out . theme('cdm_descriptionElementArray', $out_array, $element->feature);
 	//return "<div class=common_names> $common_name_out $common_name_out_text_data";
 }
