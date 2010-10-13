@@ -283,7 +283,7 @@ function theme_cdm_common_names($elements){
 	}
 	//handling common names
 	
-	if (count($common_names) > 0){ var_dump("hay common names");
+	if (count($common_names) > 0){
 		//sorting the a-array based on the area (key)
 		ksort($common_names);
 		//creating the output to be render by drupal
