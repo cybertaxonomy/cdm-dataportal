@@ -204,7 +204,7 @@ function theme_cdm_descriptionElement_CommonTaxonName($element){
  *                       be renderer as a list or not
  * @return unknown_type Html to be renderized in drupal
  */
-function theme_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid){
+function theme_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid = null){
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
 	$result = array();
