@@ -110,6 +110,9 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
  *
  */
 function theme_cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array()){
+  if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)){
+    return '';
+  }
 	$footNoteKeys = cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key);
 	foreach($footNoteKeys as $a){
 		//$out .=  theme('cdm_footnote_key', $a, $a->footnoteListKey, (isset($out)? ',' : ''));
@@ -120,6 +123,9 @@ function theme_cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = ar
 
 
 function theme_cdm_annotation_footnotes($footnoteListKey, $enclosingTag = 'span'){
+  if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)){
+    return '';
+  }
 	return theme('cdm_footnotes', $footnoteListKey . '-annotations', $enclosingTag);
 }
 
@@ -172,6 +178,10 @@ function theme_cdm_footnote_key($footnoteKey, $separator = '', $highlightable=tr
 	if (!$footnoteKey->footnoteListKey){
 		return '';
 	}
+	if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)){
+		return '';
+	}
+	
 	if ($separator_off){
 		$separator = '';
 	}
@@ -189,6 +199,9 @@ function theme_cdm_footnote($footnoteKey, $footnoteText){
 
 
 function theme_cdm_footnotes($footnoteListKey, $enclosingTag = 'span'){
+  if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)){
+    return '';
+  }
 	$out = '<'.$enclosingTag.' class="footnotes footnotes-'.$footnoteListKey.' ">' . FootnoteManager::renderFootnoteList($footnoteListKey) . '</'.$enclosingTag.'>';
 	FootnoteManager::removeFootnoteList($footnoteListKey);
 	return $out;
