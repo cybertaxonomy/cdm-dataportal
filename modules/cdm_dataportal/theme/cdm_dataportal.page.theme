@@ -85,12 +85,9 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 		$hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
 	}
 
-	//	$descriptionElementCount = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation'), "count=true");
-	//	if($descriptionElementCount->Integer < 0) { //DEBUG HACK
-	// ### sending the same query twice is faster than two different ones, $descriptionElements will be retrieved again in the specimens page
-	$descriptionElements = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation'));
-	$descriptionElementCount = is_array($descriptionElements) ? count($descriptionElements) : 0;
-	if($descriptionElementCount == 0) {
+	$specimensOrObersvations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObersvations') );
+	$specimensOrObersvationsCount = is_array($specimensOrObersvations) ? count($specimensOrObersvations) : 0;
+	if($specimensOrObersvationsCount == 0) {
 		$hideTabs[] = theme('cdm_taxonpage_tab', 'Specimens');
 	}
 
@@ -185,7 +182,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   }
 
   // --- SPECIMENS --- //
-  if($descriptionElementCount > 0 && ($page_part == 'specimens' || $page_part == 'all') ){
+  if($specimensOrObersvationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all') ){
   	$out .= '<div id="specimens">';
   	if($page_part == 'all'){
   		$out .= '<h2>'.t('Specimens').'</h2>';
@@ -228,16 +225,14 @@ function theme_cdm_taxon_page_specimens($taxon){
 
 	RenderHints::pushToRenderStack('taxon_page_specimens');
 
-	$descriptionElements = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE, array($taxon->uuid, 'IndividualsAssociation') );
+	$specimensOrObersvations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObersvations') );
 
 	//collect media (fieldObjectMedia, derivedUnitMedia) and add as fields
-	foreach($descriptionElements as $descriptionElement) {
-		if($descriptionElement->associatedSpecimenOrObservation){
-			$descriptionElement->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($descriptionElement->associatedSpecimenOrObservation->uuid, 'fieldObjectMedia') );
-			$descriptionElement->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($descriptionElement->associatedSpecimenOrObservation->uuid, 'derivedUnitMedia') );
+	 foreach($specimensOrObersvations as $specimensOrObersvation) {
+			$specimensOrObersvation->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($specimensOrObersvation->uuid, 'fieldObjectMedia') );
+			$specimensOrObersvation->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($specimensOrObersvation->uuid, 'derivedUnitMedia') );
 			//	  	$derivedUnitFacde = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($descriptionElement->associatedSpecimenOrObservation->uuid) );
 			//	  	$descriptionElement->_titleCache = $derivedUnitFacde->titleCache;
-		}
 	}
 
 	if(variable_get('cdm_dataportal_map_openlayers', 1)){
@@ -248,24 +243,23 @@ function theme_cdm_taxon_page_specimens($taxon){
 
 
 
-	if($descriptionElements){
+	if($specimensOrObersvations){
 		$out_specimenList = '<table class="specimens">';
 		$i = 1;
-		foreach($descriptionElements as $descriptionElement) {
+		foreach($specimensOrObersvations as $specimensOrObersvation) {
 			$i++;
-			if($descriptionElement->associatedSpecimenOrObservation){
 
 				$mediaList = array();
-				if(is_array($descriptionElement->_fieldObjectMedia)){
-					$mediaList = array_merge($mediaList, $descriptionElement->_fieldObjectMedia);
+				if(is_array($specimensOrObersvation->_fieldObjectMedia)){
+					$mediaList = array_merge($mediaList, $specimensOrObersvation->_fieldObjectMedia);
 				}
-				if(is_array($descriptionElement->_derivedUnitMedia)){
-					$mediaList = array_merge($mediaList, $descriptionElement->_derivedUnitMedia);
+				if(is_array($specimensOrObersvation->_derivedUnitMedia)){
+					$mediaList = array_merge($mediaList, $specimensOrObersvation->_derivedUnitMedia);
 				}
-				$li = '<tr class="descriptionElement descriptionElement_IndividualsAssociation '.($i%2?'odd':'even').'"><td>' . $descriptionElement->associatedSpecimenOrObservation->titleCache;
+				$li = '<tr class="descriptionElement descriptionElement_IndividualsAssociation '.($i%2?'odd':'even').'"><td>' . $specimensOrObersvation->titleCache;
 				if(count($mediaList) > 0){
 					$gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
-					$gallery_name =  $descriptionElement->associatedSpecimenOrObservation->uuid;
+					$gallery_name =  $specimensOrObersvation->uuid;
 					$captionElements = array('#uri'=>t('open media'));
 					$gallery_html = theme(
 	  			    'cdm_media_gallerie',
@@ -280,7 +274,6 @@ function theme_cdm_taxon_page_specimens($taxon){
 				}
 				$li .= '</td><td>'.$gallery_html.'</td></tr>';
 				$out_specimenList .= $li;
-			}
 		}
 		$out_specimenList .= '</table>';
 	}
@@ -347,7 +340,7 @@ function specimens_search_form() {
 	$form['#prefix'] = '<div class="my-form-class">';
 	$form['#suffix'] = '</div>';
 	*/
-	
+
 	//returning value
 	return $form;
 }
