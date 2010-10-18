@@ -87,7 +87,10 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 			$authorteam = $author_team->titleCache;
 
 			if(!isset($misapplied[$name])){
-				$misapplied[$name]['out'] = '<span class="misapplied">'.theme('cdm_related_taxon',$taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR, false).'</span>';
+				$misapplied[$name]['out'] = 
+				  '<span class="misapplied">'
+				  .theme('cdm_related_taxon',$taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR, false).
+				  '</span>';
 			}
 
 			// collect all authors for this fullname
@@ -235,9 +238,11 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	static $relsign_hetero = '=';
 	static $relsign_invalid = '&ndash;';
 
-	$relsign = '';
+  $relsign = '';
 	$name_prefix = '';
 	$name_postfix = '';
+	
+	$skiptags = array();
 
 	switch ($reltype_uuid){
 		case UUID_HETEROTYPIC_SYNONYM_OF:
@@ -249,6 +254,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 			break;
 		case UUID_MISAPPLIED_NAME_FOR:
 		case UUID_INVALID_DESIGNATION_FOR:
+			$skiptags[] = 'authors';
 			$relsign = $relsign_invalid;
 			$name_prefix = '"';
 			$name_postfix = '"';
@@ -274,7 +280,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 	}
 	//printing the taxonName and the handling the special case of annotations
-	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, false);
+	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, true, false, $skiptags);
 	$special_annotations_array = array();
 	$special_annotations_array[] = $taxon->name;
 	$special_annotations_array[] = $taxon;
