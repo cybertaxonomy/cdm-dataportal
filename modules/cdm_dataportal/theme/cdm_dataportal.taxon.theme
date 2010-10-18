@@ -126,7 +126,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 		$out .= '</li>';
 
 	}
-	//$out .= '</ul>';
+	$out .= '</ul>';
 
 	$tr_footnotes = theme('cdm_footnotes', $footnoteListKey, 'li');
 	$tr_footnotes_exploded = explode('sensu', $tr_footnotes);
@@ -134,8 +134,8 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	foreach ($tr_footnotes_exploded as $element){
 		$tr_footnotes_aux .= $element;
 	}
-	$out .= $tr_footnotes_aux;
-	$out .= '</ul>';
+	$out .= '<ul>' . $tr_footnotes_aux . '</ul>';
+	//$out .= '</ul>';
 	RenderHints::popFromRenderStack();
 	return $out;
 }

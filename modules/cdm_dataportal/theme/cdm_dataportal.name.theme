@@ -147,13 +147,14 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 
 	$out .= '</ul>';
 	//render the footnotes at the end of the page
+	
 	if ($render_footnote_lectotypes){
 		$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
 	}
 	$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-acronyms', 'li');
 	$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations', 'li');
 	//$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, 'li');
-
+ 
 	RenderHints::popFromRenderStack();
 	return $out;
 }
