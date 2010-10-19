@@ -789,7 +789,7 @@ function cdm_dataportal_settings_layout(){
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
     '#description' => t('Split the taxon page into individual tabs for description, images, synonymy')
   );
-  
+
   //---- footnotes ---//
   $form['footnotes'] = array(
       '#type' => 'fieldset',

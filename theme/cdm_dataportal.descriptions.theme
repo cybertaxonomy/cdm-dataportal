@@ -375,7 +375,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 	}
 
 	if(variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT'){
-		$outArray[] = theme('cdm_description_ordered_distributions2', $taxon_uuid, $distributionElements);
+		$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
 	}else{
 		$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
 	}
@@ -428,7 +428,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 }
 
 
-function theme_cdm_description_ordered_distributions2($taxon_uuid, $descriptionElements){
+function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionElements){
 	//returning null if no description elements
 	if ($descriptionElements == null){
 		return '';
@@ -535,167 +535,6 @@ function theme_cdm_description_ordered_distributions2($taxon_uuid, $descriptionE
 	RenderHints::popFromRenderStack();
 	return $out;
 }
-
-
-function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionElements){
-
-	if ($descriptionElements == null){
-		return '';
-	}
-	$out = '';
-	$separator = ',';
-	RenderHints::pushToRenderStack('descriptionElementDistribution');
-	RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
-
-	//getting all the taxon description for a given taxon
-	$taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon_uuid);
-	foreach ($taxonDescriptions as $description){
-		$descriptions_uuids[] = $description->uuid;
-	}
-	//getting the sortered distributions (omiting level ??)
-	$request_params = array();
-	$request_params['omitLevels'] = UUID_NAMEDAREALEVEL_TDWGLEVEL_2;
-	//$ordered_areas = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE, join(',',$descriptions_uuids), queryString($request_params));
-	$ordered_areas2 = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE, join(',',$descriptions_uuids), queryString($request_params));
-	$ordered_areas2 = $ordered_areas2->rootElement->children;
-
-	//printing the distributions
-	foreach ($ordered_areas2 as $element_l1){//level 1
-		if ($element_l1->data){
-			$out .= '<dt>' . $element_l1->data->area->representation_L10n . ':</dt> ';
-		}
-		$out .= '<dd>';
-
-		foreach ($element_l1->children as $element_l3){//level 3
-			$out_l4 = '';
-			if ($element_l3->data){
-				$l3 = $element_l3->data->area->representation_L10n;
-			}
-			if (sizeof($element_l3->children) == 0){
-				$footnoteKeyListStr2 = '';
-				$footNoteKeys2 = cdm_annotations_as_footnotekeys($element_l3->data);
-				$superFootNoteKeys = array();
-				foreach($element_l3->data->sources as $source){
-					if(_is_original_source_type($source)){
-						//$footNoteKeys2[] = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
-						$fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
-						cdm_add_footnote_to_array($footNoteKeys2, $fn_key3);
-						cdm_add_footnote_to_array($superFootNoteKeys, $fn_key3);
-					}
-				}
-				foreach($footNoteKeys2 as $key){
-					$footnoteKeyListStr2 .= theme('cdm_footnote_key', $key, ($footnoteKeyListStr2 ? $separator : ''));
-				}
-				//$out_l4 .= $l3 . $footnoteKeyListStr2 . ', ';
-				$out_l4 .= $l3 . ', ';
-			}
-			$l4_aux = array();
-			foreach ($element_l3->children as $element_l4){//level 4
-				if ($element_l4->data){
-					$l4 = $element_l4->data->area->representation_L10n;
-					if (strlen($l4) > 0){
-						//$out_l4 .= $l4;
-						$footnoteKeyListStr = '';
-						$footNoteKeys = cdm_annotations_as_footnotekeys($element_l4->data);
-						if(isset($element_l4->data->sources)){
-							foreach($element_l4->data->sources as $source){
-								if(_is_original_source_type($source)){
-									//$footNoteKeys[] = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
-									$fn_key4 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
-									cdm_add_footnote_to_array($footNoteKeys, $fn_key4);
-									cdm_add_footnote_to_array($superFootNoteKeys, $fn_key4);
-								}
-							}
-						}
-						foreach($footNoteKeys as $key){
-							$footnoteKeyListStr .= theme('cdm_footnote_key', $key, ($footnoteKeyListStr ? $separator : ''));
-						}
-						$out_l4 .= $l4 . $footnoteKeyListStr .', ';
-						$l4_aux[] = $l4 ;
-
-					}
-				}
-			}
-			$out_l4 = substr($out_l4, 0, -2);
-			/*
-			 $pieces1 = explode(", ", $out_l4); //var_dump($pieces1[0]);
-			 $pieces2 =  explode('<span class="footnote-key', $pieces1[0]);
-			 if (((sizeof($pieces1) == 1) && substr_count($pieces2[0], $l3) > 0) || strlen($out_l4)<2){
-			 $out .= $out_l4 . $footnoteKeyListStr2 . '; ';
-			 }else{
-			 $out .= $l3 . $footnoteKeyListStr2 . ' (' . $out_l4 . '); ';
-			 }
-			 */
-			$superfootnoteKeyListStr = '';
-			foreach($superFootNoteKeys as $key){
-				$superfootnoteKeyListStr .= theme('cdm_footnote_key', $key, ($superfootnoteKeyListStr ? $separator : ''));
-			}		$superfootnoteKeyListStr = '';
-			if (empty($l4_aux)){
-				$out .= $out_l4 . '; ';      var_dump("caso1) $l3:$l4");
-			}elseif ( (sizeof($l4_aux) == 1) && $l4_aux[0] == $l3 || empty($l4_aux)){
-				$out .= $l4 . $superfootnoteKeyListStr . '; ';     var_dump("caso2) $l3:$l4");
-				//$out .= $l4 . '; ';
-			}else{
-				$out .= $l3 . $footnoteKeyListStr2 . ' (' . $out_l4 . '); ';    var_dump("caso3) $l3:$l4");
-				//$out .= $l3 . ' (' . $out_l4 . '); ';
-			}
-
-
-
-		}
-		$out = substr($out, 0, -2);
-		$out .= '.</dd>';
-	}
-	RenderHints::popFromRenderStack();
-	return $out;
-
-	//ignoring the root element because is garbage
-	/*
-	 $ordered_areas = $ordered_areas->rootElement->children;
-	 $out = '';
-
-	 foreach ($ordered_areas as $element_l1){//level 1
-	 if ($element_l1->data){
-	 //$result[] = $element_l1->data->titleCache;
-	 $out .= '<b>' . $element_l1->data->titleCache . ':</b> ';
-	 }
-	 foreach ($element_l1->children as $element_l2){//level 2
-	 $out_l3 = '';
-	 if ($element_l2->data){
-	 //$result[][] = $element_l2->data->titleCache;
-	 //$out .= $element_l2->data->titleCache . '[';
-	 }
-	 foreach ($element_l2->children as $element_l3){//level 3
-	 $out_l4 = '';
-	 if ($element_l3->data){
-	 //$result[][][] = $element_l3->data->titleCache;
-	 $out .= $element_l3->data->titleCache;
-
-	 $l3 = $element_l3->data->titleCache;
-	 }
-	 foreach ($element_l3->children as $element_l4){//level 4
-	 if ($element_l4->data){
-	 //$result[][][][] = $element_14->data->titleCache;
-	 $l4 = $element_l4->data->titleCache;
-	 if (sizeof($l4) != 0 && $l4 != $l3){
-	 $out_l4 .= $l4 . ', ';
-	 }
-	 }
-	 }
-	 $out_l4 = substr($out_l4, 0, -2);
-	 if($out_l4){
-	 $out .= ' (' . $out_l4 . '); ';
-	 }else{
-	 $out .= '; ';
-	 }
-	 }
-	 }
-	 $out = substr($out, 0, -2);
-	 $out .= '<br>';
-	 }
-	 */
-}
-
 
 function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
 

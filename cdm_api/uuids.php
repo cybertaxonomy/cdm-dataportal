@@ -50,6 +50,10 @@ define('UUID_DOES_NOT_OVERLAP',  'ecd2382b-3d94-4169-9dd2-2c4ea1d24605');
 define('UUID_NOT_INCLUDED_IN',  '89dffa4e-e004-4d42-b0d1-ae1827529e43');
 define('UUID_NOT_CONGRUENT_TO',  '6c16c33b-cfc5-4a00-92bd-a9f9e448f389');
 
+//TypeStatus from NameTypeDesignation
+define('UUID_ORIGINAL_DESIGNATION', '40032a44-973b-4a64-b25e-76f86c3a753c');
+define('UUID_MONOTYPE', '3fc639b2-9a64-45f8-9a81-657a4043ad74');
+
 // SynonymRelationshipTypes
 define('UUID_SYNONYM_OF', '1afa5429-095a-48da-8877-836fa4fe709e');
 define('UUID_PRO_PARTE_SYNONYM_OF', '130b752d-2eff-4a62-a132-104ed8d13e5e');
