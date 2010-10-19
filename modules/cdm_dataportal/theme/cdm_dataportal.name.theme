@@ -20,15 +20,15 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
 	$res = '';
 	$citation = $typeDesignation->citation;
 	$pages = $typeDesignation->citationMicroReference;
-	$data_type = variable_get('cdm_dataportal_data_type', 'BIOLOGY');
+	//$data_type = variable_get('cdm_dataportal_data_type', 'BIOLOGY');
 	
-	if($data_type == 'ZOOLOGY'){
+	//if($data_type == 'ZOOLOGY'){
 		if ($typeDesignation->typeStatus->uuid == UUID_ORIGINAL_DESIGNATION ||
 		    $typeDesignation->typeStatus->uuid == UUID_MONOTYPE){
 			$res = ' ('. $typeDesignation->typeStatus->representation_L10n . ')';
 			return $res;
 		 }	 
-	}
+	//}
 
 	if ($citation){
     //$type = $typeDesignation_citation->type;
