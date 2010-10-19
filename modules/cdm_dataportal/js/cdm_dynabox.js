@@ -11,10 +11,10 @@
 
 Drupal.cdm_dynaboxAutoAttach = function () {
 
-  $('li.dynabox').find('.dynabox_content').hide().click(function(event){event.stopPropagation();});
-  $('li.dynabox span.label').click(
+  $('.dynabox').find('.dynabox_content').hide().click(function(event){event.stopPropagation();});
+  $('.dynabox span.label').click(
     function () {
-      var dynabox_content = $(this).toggleClass("dynabox_expanded").parent('li.dynabox').find('.dynabox_content').slideToggle("fast");
+      var dynabox_content = $(this).toggleClass("dynabox_expanded").parent('.dynabox').find('.dynabox_content').slideToggle("fast");
 
       var url = dynabox_content.attr('title');
       

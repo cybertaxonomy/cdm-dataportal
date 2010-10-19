@@ -220,9 +220,13 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 				}
 				$out .= '</li>';
 			} else {
-				//TODO avoid using Ajax in the cdm_dynabox
+				//TODO avoid using Ajax in the cdm_dynabox .... why?
 				//TODO add media
-				$out .= theme('cdm_dynabox', theme('cdm_taxonName', $taxon->name, null, null, false), cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon->uuid)), 'cdm_list_of_taxa');
+				$out .= cdm_dynabox(
+				  theme('cdm_taxonName', $taxon->name, null, null, false),
+				  cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon->uuid)),
+				  'cdm_list_of_taxa',
+				  'Click for accepted taxon');
 			}
 		}
 	}

@@ -104,30 +104,15 @@ ul.cdm_names, ul.cdm_names li{
 	 list-style-image: none;
 }
 
-ul li.dynabox{
- /* background-image: url('images/btn_expand.gif'); 
-  background-repeat: no-repeat;
-  cursor: pointer;
- */
-}
-
-ul li.dynabox_expanded{
-  /* background-image: url('images/btn_collapse.gif'); 
-  background-repeat: no-repeat;
-  cursor: pointer;
-  */
-}
-
-
-ul li.dynabox .label{
+.dynabox .label{
  cursor: pointer;
 }
 
-ul li.dynabox .label:hover{
+.dynabox .label:hover{
  color: #0174BB;
 }
-
-ul.dynabox_content{
+ 
+ul.cdm_names .dynabox_content{
   margin-top:-1em;
 }
 

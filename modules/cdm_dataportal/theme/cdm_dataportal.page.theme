@@ -256,7 +256,21 @@ function theme_cdm_taxon_page_specimens($taxon){
 				if(is_array($specimensOrObersvation->_derivedUnitMedia)){
 					$mediaList = array_merge($mediaList, $specimensOrObersvation->_derivedUnitMedia);
 				}
-				$li = '<tr class="descriptionElement descriptionElement_IndividualsAssociation '.($i%2?'odd':'even').'"><td>' . $specimensOrObersvation->titleCache;
+
+				// --- render the title cache
+				$out_row = '<tr class="descriptionElement descriptionElement_IndividualsAssociation '.($i%2?'odd':'even').'">';
+				if($specimensOrObersvation->class != 'FieldObservation'){
+          $label_html = cdm_dynabox($specimensOrObersvation->titleCache,
+            cdm_compose_url('portal/'.CDM_WS_DERIVEDUNIT_FACADE, array($specimensOrObersvation->uuid)),
+            'cdm_derivedUnitFacade',
+            'Click for details',
+            array('div', 'div'));
+				} else {
+				  $label_html = $specimensOrObersvation->titleCache;
+				}
+				$out_row .= '<td>' . $label_html . '</td>';
+
+				// --- render associated media
 				if(count($mediaList) > 0){
 					$gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
 					$gallery_name =  $specimensOrObersvation->uuid;
@@ -272,15 +286,11 @@ function theme_cdm_taxon_page_specimens($taxon){
 				} else {
 					$gallery_html = '';
 				}
-				$li .= '</td><td>'.$gallery_html.'</td></tr>';
-				$out_specimenList .= $li;
+				$out_row .= '<td>'.$gallery_html.'</td></tr>';
+				$out_specimenList .= $out_row;
 		}
 		$out_specimenList .= '</table>';
 	}
-
-	$out .= drupal_get_form('specimens_search_form');
-	//$test = specimens_table($descriptionElements);
-	//$out .= $test;
 
 	$out .= $out_specimenList;
 

@@ -1994,5 +1994,14 @@ function cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array())
 		*/
 }
 
+function cdm_dynabox($label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul')){
 
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
+
+  $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
+  $out .= '<'. $enclosingtags[0]. ' class="dynabox"><span class="label" alt="'.t($link_alt_text).'">'.$label.'</span>';
+  $out .= '<'. $enclosingtags[1]. ' class="dynabox_content" title="'.$cdm_proxy_url.'"><'. $enclosingtags[0]. '><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/images/loading_circle_grey_16.gif" style="display:none;"></'. $enclosingtags[0]. '></'. $enclosingtags[1]. '>';
+  $out .= '</'. $enclosingtags[0]. '>';
+  return $out;
+}
 

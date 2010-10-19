@@ -3,22 +3,22 @@
 
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
 */
 
 /**
- * 
+ *
  * @param $specimenTypeDesignation
  * @return unknown_type
  */
 function theme_cdm_specimen($specimenTypeDesignation){
 
 	// _add_js_thickbox();
-	
+
 	if($specimenTypeDesignation->typeSpecimen){
 		$derivedUnitFacade = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $specimenTypeDesignation->typeSpecimen->uuid);
 	}
@@ -81,6 +81,38 @@ function theme_cdm_specimen($specimenTypeDesignation){
 		$out .= $meta_row.'</tr>';
 
 		$out .= '</div></table>';
+	}
+	return $out;
+}
+
+function theme_cdm_derivedUnitFacade($derivedUnitFacade){
+
+	static $excludeFields = array('class', 'titleCache', 'derivedUnitMedia');
+
+	if(is_object($derivedUnitFacade)){
+		$out = '<dl>';
+	  foreach (get_object_vars($derivedUnitFacade) as $field=>$value){
+	  	if(!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class) ))){
+	  		switch($field){
+	  			case 'locality': $stringValue = $value->language->representation_L10n; break;
+	  			case 'country' : $stringValue = $value->representation_L10n; break;
+	  			case 'collector':
+	  			case 'collection' : $stringValue = $value->titleCache; break;
+	  			case 'exactLocation':
+	  				if($value->referenceSystem){
+	  					//TODO ....
+              $stringValue = $value->latitude .', '.$value->longitude;
+	  				} else {
+	  				   $stringValue = $value->latitude .', '.$value->longitude;
+	  				}
+
+	  			  break;
+	  			default: $stringValue = $value;
+	  		}
+	  	  $out .= '<dt>' . $field . '</dt><dd>' . $stringValue . '</dd>';
+	  	}
+	  }
+		$out .= '</dl>';
 	}
 	return $out;
 }
