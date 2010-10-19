@@ -789,18 +789,7 @@ function cdm_dataportal_settings_layout(){
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
     '#description' => t('Split the taxon page into individual tabs for description, images, synonymy')
   );
-  
-  /*
-  $cdm_data_type_options = array('BIOLOGY' => 'BIOLOGY', 'ZOOLOGY' => 'ZOOLOGY');
-  $form['cdm_dataportal_data_type'] =  array(
-      '#type'          => 'select',
-      '#title'         => t('Layout according to the'),
-      '#default_value' => variable_get('cdm_dataportal_data_type', 'BIOLOGY'),
-      '#options'       => $cdm_data_type_options,
-      '#description'   => t('Select if your data type belongs to the biology or to the zoology'),
-  ); 
-  */
-  
+
   //---- footnotes ---//
   $form['footnotes'] = array(
       '#type' => 'fieldset',
