@@ -795,23 +795,23 @@ function cdm_dataportal_settings_layout(){
       '#type' => 'fieldset',
       '#title' => t('Footnotes'),
       '#collapsible' => TRUE,
-      '#collapsed' => TRUE,    
+      '#collapsed' => TRUE,
   );
-  
+
   $form['footnotes']['cdm_dataportal_all_footnotes'] = array(
       '#type' => 'checkbox',
       '#title' => t('Do not show footnotes'),
       '#default_value' => variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES),
       '#description' => t('Check this if you do not want to show any footnotes')
   );
-  
+
   $form['footnotes']['cdm_dataportal_annotations_footnotes'] = array(
       '#type' => 'checkbox',
       '#title' => t('Do not show annotations footnotes'),
       '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
       '#description' => t('Check this if you do not want to show annotation footnotes')
   );
-  
+
 
 	//---- SYNONYMY ----//
 	$form['synonymy'] = array(
@@ -1999,7 +1999,7 @@ function cdm_dynabox($label, $content_url, $theme, $link_alt_text, $enclosingtag
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
 
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
-  $out .= '<'. $enclosingtags[0]. ' class="dynabox"><span class="label" alt="'.t($link_alt_text).'">'.$label.'</span>';
+  $out .= '<'. $enclosingtags[0]. ' class="dynabox"><a href="'.$content_url.'" class="label" alt="'.t($link_alt_text).'">'.$label.'</a>';
   $out .= '<'. $enclosingtags[1]. ' class="dynabox_content" title="'.$cdm_proxy_url.'"><'. $enclosingtags[0]. '><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/images/loading_circle_grey_16.gif" style="display:none;"></'. $enclosingtags[0]. '></'. $enclosingtags[1]. '>';
   $out .= '</'. $enclosingtags[0]. '>';
   return $out;

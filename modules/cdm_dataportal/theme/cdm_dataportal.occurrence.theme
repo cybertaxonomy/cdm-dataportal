@@ -98,18 +98,10 @@ function theme_cdm_derivedUnitFacade($derivedUnitFacade){
 	  			case 'country' : $stringValue = $value->representation_L10n; break;
 	  			case 'collector':
 	  			case 'collection' : $stringValue = $value->titleCache; break;
-	  			case 'exactLocation':
-	  				if($value->referenceSystem){
-	  					//TODO ....
-              $stringValue = $value->latitude .', '.$value->longitude;
-	  				} else {
-	  				   $stringValue = $value->latitude .', '.$value->longitude;
-	  				}
-
-	  			  break;
+	  			case 'exactLocation': $stringValue = $value->sexagesimalString; break;
 	  			default: $stringValue = $value;
 	  		}
-	  	  $out .= '<dt>' . $field . '</dt><dd>' . $stringValue . '</dd>';
+	  	  $out .= '<dt>' . t(ucfirst($field)) . ':</dt><dd>' . $stringValue . '</dd>';
 	  	}
 	  }
 		$out .= '</dl>';

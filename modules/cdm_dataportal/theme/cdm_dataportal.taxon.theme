@@ -87,7 +87,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 			$authorteam = $author_team->titleCache;
 
 			if(!isset($misapplied[$name])){
-				$misapplied[$name]['out'] = 
+				$misapplied[$name]['out'] =
 				  '<span class="misapplied">'
 				  .theme('cdm_related_taxon',$taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR, false).
 				  '</span>';
@@ -245,7 +245,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
   $relsign = '';
 	$name_prefix = '';
 	$name_postfix = '';
-	
+
 	$skiptags = array();
 
 	switch ($reltype_uuid){
