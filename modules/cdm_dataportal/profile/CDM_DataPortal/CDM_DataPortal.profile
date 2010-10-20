@@ -65,7 +65,15 @@ function CDM_DataPortal_profile_final() {
     variable_set('theme_default', 'garland');
     variable_set('theme_settings', array (
       'toggle_node_info_page' => false,
+      'toggle_node_info_cdm_media' => false,
+      'toggle_node_info_cdm_name' => false,
+      'toggle_node_info_cdm_taxon' => false,
+      'toggle_node_info_cdm_reference' => false
     ));
+    variable_set('cdm_webservice_debug', 0);
+    variable_set('cdm_webservice_cache', 0);
+    variable_set('distribution_sort', 'HIDE_TDWG2');
+    
 
 /************************************************************
 *                            ROLES                          *
