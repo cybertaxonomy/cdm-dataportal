@@ -473,7 +473,7 @@ $.fn.cdm_openlayers_map.defaults = {  // set up default options
 		legendOpacity: 0.75,
 		boundingBox: null,
 		showLayerSwitcher: false,
-		baseLayerNames: new Array("metacarta_vmap0"),
+		baseLayerNames: new Array("osgeo_vmap0"),
 		maxZoom: 4,
 		minZoom: 0
 };
