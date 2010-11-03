@@ -467,6 +467,8 @@ function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, 
 	}
 
 	// build the the branch for the focused node and merge it with the root
+	// TODO only add brancht to taxon if taxon is in current classification!!!
+	// hint: $viewUuid = get_taxonomictree_uuid_selected();
 	if($taxonUuid){
 		$branch = cdm_taxontree_build_path($taxonUuid, NULL, (cdm_taxontree_filters_active() ? NULL : TRUE), TRUE);
 		$root_tree = _cdm_taxontree_merge($root_tree, $branch);
