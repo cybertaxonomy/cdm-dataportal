@@ -1389,7 +1389,7 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all'){
 	$taxon_in_current_tree = false;
 	foreach($taxon_nodes as $node){
 		if(get_taxonomictree_uuid_selected() == $node->taxonomicTree->uuid){
-			$taxon_in_current_tree = true;
+			$taxon_in_current_tree = true; 
 			break;
 		}
 	}
@@ -1604,7 +1604,6 @@ function uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
  * @return string
  */
 function cdm_dataportal_shortname_of($name){
-
 	$nameStr = '';
 	// get all tagged text tokens of the scientific name
 	foreach($name->taggedTitle as $tagtxt){
@@ -1613,17 +1612,11 @@ function cdm_dataportal_shortname_of($name){
 		}
 	}
 	$nameStr = trim($nameStr);
-	/*
-	 if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
-	 stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE){
-	 var_dump($nameStr);
-	 }
-	 */
 	if($nameStr){
 		// do not return short names for these
-		//if(strtolower($nameStr) == 'incertae sedis' || $nameStr ==  'nomina excludenda'){
-		if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
-		stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE){
+		//if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
+		//	stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE) {
+		if ($name->unplaced || $name->excluded){
 			return $nameStr;
 		}
 		if($pos = stripos($nameStr, ' ')){

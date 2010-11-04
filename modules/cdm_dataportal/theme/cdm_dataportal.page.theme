@@ -17,7 +17,6 @@
  * @return the formatted taxon name
  */
 function theme_cdm_taxon_page_title($taxon){
-
 	RenderHints::pushToRenderStack('taxon_page_title');
 	if(isset($taxon->name->nomenclaturalReference)){
 		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
