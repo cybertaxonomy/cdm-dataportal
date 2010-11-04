@@ -467,10 +467,12 @@ function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, 
 	}
 
 	// build the the branch for the focused node and merge it with the root
-	$taxon_in_current_tree = taxon_in_current_tree($taxonUuid);
-	if($taxonUuid && $taxon_in_current_tree){
-		$branch = cdm_taxontree_build_path($taxonUuid, NULL, (cdm_taxontree_filters_active() ? NULL : TRUE), TRUE);
-		$root_tree = _cdm_taxontree_merge($root_tree, $branch);
+	if($taxonUuid){
+		$taxon_in_current_tree = taxon_in_current_tree($taxonUuid);
+		if ($taxon_in_current_tree) {
+			$branch = cdm_taxontree_build_path($taxonUuid, NULL, (cdm_taxontree_filters_active() ? NULL : TRUE), TRUE);
+			$root_tree = _cdm_taxontree_merge($root_tree, $branch);
+		}
 	}
 
 	//reorder siblings & populate expanded nodes with children and propagate the filter attribute
