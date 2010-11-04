@@ -467,9 +467,8 @@ function cdm_taxontree_build_tree($taxonUuid = null, $hideOtherConcepts = true, 
 	}
 
 	// build the the branch for the focused node and merge it with the root
-	// TODO only add brancht to taxon if taxon is in current classification!!!
-	// hint: $viewUuid = get_taxonomictree_uuid_selected();
-	if($taxonUuid){
+	$taxon_in_current_tree = taxon_in_current_tree($taxonUuid);
+	if($taxonUuid && $taxon_in_current_tree){
 		$branch = cdm_taxontree_build_path($taxonUuid, NULL, (cdm_taxontree_filters_active() ? NULL : TRUE), TRUE);
 		$root_tree = _cdm_taxontree_merge($root_tree, $branch);
 	}
@@ -881,23 +880,6 @@ if($node->taxonUuid == '1a0bb171-9461-4713-b98d-d0a5f03dfcb1'){
 	if($tree_node_callback){
 		$out .= theme($tree_node_callback, $node);
 	}
-
-/*
-	foreach ($node->children as $element){
-		$nameStr = '';
-		foreach($element->taggedTitle as $tagtxt){
-			if($tagtxt->type == 'name' || $tagtxt->type == 'rank'){
-				$nameStr .= ($nameStr ? ' ' : '').$tagtxt->text;
-			}
-		}
-		$nameStr = trim($nameStr);
-		if (stristr(strtolower($tagtxt->text), 'incertae sedis') !== FALSE ||
-		    stristr(strtolower($tagtxt->text), 'nomina excludenda') !== FALSE){
-			var_dump('PREMIO');
-			var_dump($element);
-		}
-	}
-	*/
 
 	if($node->children && is_array($node->children)){
 		$out .= theme('cdm_taxontree', $node->children, $nextLevelIncluded, $show_filter_switch, $tree_node_callback);
