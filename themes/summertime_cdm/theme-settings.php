@@ -16,10 +16,10 @@ function phptemplate_settings($saved_settings) {
     'admin_right_column' => 0,
 		'banner_image' => 'cdm-header_3.jpg'
   );
-  
+
   $settings = array_merge($defaults, $saved_settings);
-   
-   
+
+
   $form['tnt_container'] = array(
     '#type' => 'fieldset',
     '#title' => t('Column settings'),
@@ -27,19 +27,19 @@ function phptemplate_settings($saved_settings) {
     '#collapsible' => TRUE,
     '#collapsed' => false,
   );
-  
+
   // General Settings
   $form['tnt_container']['admin_left_column'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show left column in admin section'),
     '#default_value' => $settings['admin_left_column']
     );
-  
+
   $form['tnt_container']['admin_right_column'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show right column in admin section'),
     '#default_value' => $settings['admin_right_column']
-    ); 
+    );
 
 	$form['edit_container'] = array(
     '#type' => 'fieldset',
@@ -48,20 +48,20 @@ function phptemplate_settings($saved_settings) {
     '#collapsible' => TRUE,
     '#collapsed' => false,
   );
-	
+
 	// General Settings
   $form['edit_container']['banner_image'] = array(
 		'#type' => 'select',
 		'#title' => t('Banner Image'),
 		'#default_value' => $settings['banner_image'],
 		'#options' => array(
-			'cdm-platform-header.jpg' => t('CDM Platform'),
+			'cdm-platform-header_2.jpg' => t('CDM Platform'),
 			'cdm-header_3.jpg' => t('CDM Setups')
 		)
 	);
-  
+
   // Return theme settings form
   return $form;
-}  
+}
 
 ?>
