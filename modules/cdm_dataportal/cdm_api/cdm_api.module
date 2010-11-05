@@ -21,10 +21,6 @@ require_once ('uuids.php');
 require_once ('webservice_uris.php');
 require_once ('cdm_node.php');
 
-define('DEFAULT_TAXONTREE_RANKLIMIT', '1b11c34c-48a8-4efa-98d5-84f7f66ef43a');//TODO Genus UUID
-define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
-
-
 /**
  * Implementation of hook_requirements()
  */
@@ -75,102 +71,6 @@ function cdm_api_menu($may_cache) {
   return $items;
 }
 
-/**
- * Configures the settings form for the CDM-API module.
- *
- * @return Array Drupal settings form
- */
-function cdm_api_settings_form(){
-
-  $form['cdm_webservice'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('CDM Web Service'),
-      '#collapsible' => FALSE,
-      '#collapsed' => FALSE,
-  );
-
-  $form['cdm_webservice']['cdm_webservice_url'] =  array(
-    '#type' => 'textfield',
-    '#title'         => t('CDM Web Service URL'),
-    '#description'   => t('The URL of CDM Webservice which delivers the data to be published.'),
-    '#default_value' => variable_get('cdm_webservice_url', NULL),
-  );
-
-  $form['cdm_webservice']['taxontree_ranklimit'] =  array(
-    '#type'          => 'select',
-    '#title'         => t('Rank of highest displayed taxon'),
-    '#default_value' => variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT), //before DEFAULT_TAXONTREE_RANKLIMIT_UUID
-    '#options'       => cdm_rankVocabulary_as_option(),
-    '#description'   => t('The rank of the highest displayed taxon in the taxontree.'),
-  );
-
-  $form['cdm_webservice']['cdm_webservice_cache'] =  array(
-    '#type' => 'checkbox',
-    '#title'         => t('Enable Caching'),
-    '#default_value' => variable_get('cdm_webservice_cache', 1),
-    '#description'   => t('Enable caching of webservice responses on simple requests, '
-    .'that is requests which only have one parameter generally a UUID or a concatenation of UUIDs')
-    );
-
-    $form['cdm_webservice']['proxy'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Proxy'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE
-    );
-
-    $form['cdm_webservice']['proxy']['cdm_webservice_proxy_url'] =  array(
-    '#type' => 'textfield',
-    '#title'         => t('Proxy URL'),
-    '#description'   => t('If this proxy url is set the cdm api tries
-    to connect the web service over the given proxy server.
-    Otherwise proxy usage is deactivated.'),
-    '#default_value' => variable_get('cdm_webservice_proxy_url', false),
-    );
-
-    $form['cdm_webservice']['proxy']['cdm_webservice_proxy_port'] =  array(
-    '#type' => 'textfield',
-    '#title'         => t('Proxy Port'),
-    '#default_value' => variable_get('cdm_webservice_proxy_port', '80'),
-    );
-
-    $form['cdm_webservice']['proxy']['cdm_webservice_proxy_usr'] =  array(
-    '#type' => 'textfield',
-    '#title'         => t('Login'),
-    '#default_value' => variable_get('cdm_webservice_proxy_usr', false),
-    );
-
-    $form['cdm_webservice']['proxy']['cdm_webservice_proxy_pwd'] =  array(
-    '#type' => 'textfield',
-    '#title'         => t('Password'),
-    '#default_value' => variable_get('cdm_webservice_proxy_pwd', false),
-    );
-
-    $form['cdm_webservice']['cdm_webservice_debug'] =  array(
-    '#type' => 'checkbox',
-    '#title'         => t('Debug CDM Web Service'),
-    '#default_value' => variable_get('cdm_webservice_debug', 1),
-    '#description'   => t('Enable CDM Web Service debugging messages. Only visible for the super administrator or for users having the permission <em>administer cdm_api</em>!')
-    );
-
-    //TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
-    $form['cdm_dataportal'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('CDM DataPortal'),
-      '#collapsible' => FALSE,
-      '#collapsed' => TRUE,
-    );
-
-	  $form['cdm_dataportal'][CDM_TAXONOMICTREE_UUID] = array(
-	    '#type' => 'select',
-	    '#title'         => t('Available classifications'),
-	    '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, false),
-	    '#options' => cdm_get_taxontrees_as_options(),
-	    '#description'   => t('Select the default classification to be used.')
-	  );
-
-    return $form;
-}
 
 /**
  * Implementation of hook_cron().
