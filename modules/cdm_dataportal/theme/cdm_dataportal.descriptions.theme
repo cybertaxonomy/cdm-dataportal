@@ -25,7 +25,7 @@ function _add_js_openlayers_map(){
         if (Drupal.jsEnabled) {
           $(document).ready(function() {
               $('#openlayers_map').cdm_openlayers_map('"
-              .variable_get('cdm_dataportal_geoservice_access_point', false)."', {
+              .getEDITMapServiceURI()."', {
                 legendPosition: 3,
                 displayWidth: '" . variable_get('cdm_dataportal_geoservice_display_width', false) . "',
                 boundingBox: '" . variable_get('cdm_dataportal_geoservice_bounding_box', false) . "',
@@ -265,7 +265,7 @@ function theme_cdm_common_names($elements){
 	$separator = ',';
 	$textData_commonNames = array();
 
-	
+
 	if (is_array($elements)){//var_dump($elements);
 		foreach ($elements as $element){
 			if ($element->class == 'CommonTaxonName'){
@@ -282,7 +282,7 @@ function theme_cdm_common_names($elements){
 		}
 	}
 	//handling common names
-	
+
 	if (count($common_names) > 0){
 		//sorting the a-array based on the area (key)
 		ksort($common_names);
@@ -313,11 +313,11 @@ function theme_cdm_common_names($elements){
 	foreach($textData_commonNames as $text_data_element){//var_dump($text_data_element);
 		$text_data_out .= theme('cdm_descriptionElementTextData', $text_data_element, true, $text_data_element->feature->uuid);
 	}
-	
+
 	$common_name_out = "<div class=common_names_as_common_names> $common_name_out </div>";
   $out_array[] = $text_data_out;
 	$common_name_out_text_data = '<div class=common_names_as_text_data>' . theme('cdm_descriptionElementArray', $out_array, $element->feature) . '</div>';
-	
+
 	return $common_name_out . $common_name_out_text_data;
 	//return $common_name_out . theme('cdm_descriptionElementArray', $out_array, $element->feature);
 	//return "<div class=common_names> $common_name_out $common_name_out_text_data";
@@ -587,7 +587,7 @@ function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink =
  */
 function theme_cdm_distribution_map($taxon){
 
-	$server = variable_get('cdm_dataportal_geoservice_access_point', false);
+	$server = getEDITMapServiceURI();
 
 	if(!$server){
 		//warning message

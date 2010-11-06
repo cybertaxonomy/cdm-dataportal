@@ -9,6 +9,7 @@ define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
 define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
 
+
 /* gallery variables */
 $gallery_settings = array(
     "cdm_dataportal_show_taxon_thumbnails" => 1,
@@ -412,27 +413,26 @@ function cdm_dataportal_settings_geo(){
 
   $form = array();
 
-  $form['cdm_dataportal_map_openlayers'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('OpenLayers Viewer'),
-    '#default_value' => variable_get('cdm_dataportal_map_openlayers', 1),
-    '#description' => t('Display the maps in an interactive viewer which allows zooming and panning.')
-  );
-
-  $form['cdm_dataportal_geoservice_access_point'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Geoservice Access Point'),
-    '#default_value' => variable_get('cdm_dataportal_geoservice_access_point', ''),
+  $form['edit_map_server'] = array(
+    '#type' => 'select',
+    '#title' => t('Geoservice Access Point URL'),
+    '#default_value' => variable_get('edit_map_server', 'http://edit.br.fgov.be/edit_wp5/v1/'),
+    '#options' => array(
+	      'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server',
+      /*
+        'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server - Mirror 1',
+        'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server - Mirror 2',
+       */
+	      'ALTERNATIVE' => '-- Alternative URL --'
+	    ),
     '#description' => t('Base URL of the geoservice to be used by this portal')
   );
 
-  $localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
-  $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
-  $form['gmap_api_key'] = array(
+  $form['edit_map_server_alternative'] = array(
     '#type' => 'textfield',
-    '#title' => t('Gogle Maps API Key'),
-    '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
-    '#description' => t('Gogle Maps API Key, the key set by default <code>'.$localhostkey.'</code> is a key for the localhost = 127.0.0.1 The key in use is the one above this text.')
+    '#title' => t('Geoservice Access Point - Alternative URL'),
+    '#default_value' => variable_get('edit_map_server_alternative', ''),
+    '#description' => t('Alternative URL of a EDIT Map Service to be used by this portal. You must choose the option <i>-- Alternative URL --</i> in the chooser abofe to enable this url.')
   );
 
   $form['cdm_dataportal_geoservice_display_width'] = array(
@@ -463,14 +463,56 @@ function cdm_dataportal_settings_geo(){
     '#description' => t('Define a caption for the map.')
   );
 
-  $form['cdm_dataportal_geoservice_distributionOpacity'] = array(
+  $form['cdm_dataportal_map_openlayers'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('OpenLayers Viewer'),
+    '#default_value' => variable_get('cdm_dataportal_map_openlayers', 1),
+    '#description' => t('Display the maps in an interactive viewer which allows zooming and panning.')
+  );
+
+
+  // --- OpenLayers Settings --- //
+
+  $form['openlayers'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('OpenLayers Settings'),
+      '#collapsible' => FALSE,
+      '#collapsed' => !variable_get('cdm_dataportal_map_openlayers', 1)
+  );
+
+  $baselayer_options = array(
+    /*
+     * NOTICE: must correspond to the layers defined in js/openlayers_,ap.js#getLayersByName()
+     */
+    'metacarta_vmap0' => "Metacarta Vmap0" ,
+    'osgeo_vmap0' => "OpenLayers World"
+
+  );
+  $form['openlayers']['baselayers'] = array(
+    '#type' => 'checkboxes_preferred',
+    '#title' => t('Baser Layers'),
+    '#options' => $baselayer_options,
+    '#default_value' => variable_get('baselayers', array('metacarta_vmap0', 'PREFERRED' => 'metacarta_vmap0')),
+    '#description' => t('')
+  );
+
+  $localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
+  $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
+  $form['openlayers']['gmap_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Gogle Maps API Key'),
+    '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
+    '#description' => t('Gogle Maps API Key, the key set by default <code>'.$localhostkey.'</code> is a key for the localhost = 127.0.0.1 The key in use is the one above this text.')
+  );
+
+  $form['openlayers']['cdm_dataportal_geoservice_distributionOpacity'] = array(
     '#type' => 'textfield',
     '#title' => t('Distribution Layer Opacity'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5'),
     '#description' => t('Valid values range from 0.0 to 1.0. You can choose to let the underlying layers shine through if you select a value < 1.0. A value of 1.0 will cause a full opacity of the ditribution layer.')
   );
 
-  $form['cdm_dataportal_geoservice_legendOpacity'] = array(
+  $form['openlayers']['cdm_dataportal_geoservice_legendOpacity'] = array(
     '#type' => 'textfield',
     '#title' => t('Legend Opacity'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5'),
@@ -587,3 +629,119 @@ function cdm_dataportal_settings_validate($form_id, $form_values){
   }
 
 }
+
+function getEDITMapServiceURI(){
+
+  if(variable_get('edit_map_server', false) == 'ALTERNATIVE'){
+  	return (variable_get('edit_map_server_alternative', false));
+  } else {
+  	return variable_get('edit_map_server', false);
+  }
+
+}
+
+/**
+ * Implementation of hook_elements()
+ *
+ * see http://drupal.org/node/37862 for an example
+ */
+function cdm_dataportal_elements() {
+   $type['checkboxes_preferred'] = array(
+    '#input' => TRUE,
+    '#process' => array('expand_checkboxes_preferred' => array()),
+    '#after_build' => array('checkboxes_preferred_after_build')
+    );
+   return $type;
+}
+
+/**
+ * #process function for the custom form element type 'checkbox_preferred'
+ */
+function expand_checkboxes_preferred($element){
+
+	// first of all create the checkboxes
+  $element = expand_checkboxes($element);
+
+  $children = element_children($element);
+  $element['table_start'] = array(
+    '#value' => '<table class="checkboxes_preferred"><tr><th></th><th>'.t('Enabled').'</th><th>'.t('Default').'</th></tr>',
+    '#weight'=>-1
+  );
+  $weight = 0;
+  foreach ($children as $key) {
+  	$odd_even = $weight % 4 == 0 ? 'odd' : 'even';
+    $element[$key]['#weight'] = $weight;
+    $element[$key]['#prefix'] = '<tr class="'.$odd_even.'"><td>'.$key.'</td><td>';
+    $element[$key]['#suffix'] = '</td>';
+    unset($element[$key]['#title']);
+    $weight += 2;
+  }
+  $weight = 0;
+
+  if (count($element['#options']) > 0) {
+    foreach ($element['#options'] as $key => $choice) {
+      if (!isset($element[$key.'_preferred'])) {
+        $element[$key.'_preferred'] = array(
+        '#type' => 'radio',
+        '#name' => $element['#parents'][0].'_preferred',
+        '#return_value' => check_plain($key),
+        '#default_value' => $element['#default_value_2'],
+        '#attributes' => $element['#attributes'],
+        '#parents' => $element['#parents'],
+        '#spawned' => TRUE,
+        '#weight' => $weight + 1,
+        '#prefix' => '<td>',
+        '#suffix' => '</td></tr>',
+        //'#submit' => 'submit_checkboxes_preferred'
+        );
+      }
+      $weight += 2;
+    }
+  }
+
+  $element['table_end'] = array(
+  //'#type'=>'value',
+  '#value' => '</table>', '#weight'=>$weight++);
+  return $element;
+}
+
+
+function theme_checkboxes_preferred($element){
+  return theme('form_element',
+     array(
+      '#title' => $element['#title'],
+      '#description' => $element['#description'],
+      '#id' => $element['#id'],
+      '#required' => $element['#required'],
+      '#error' => $element['#error'],
+      ),
+     $element['#children']);
+}
+
+function checkboxes_preferred_after_build($form, &$form_values){
+
+	$parent_id = $form['#parents'][0];
+
+	if($_POST && count($_POST) > 0){
+		// first pass of form processing
+		$preferred_layer = $_POST[$parent_id.'_preferred'];
+	  $form['#value']['PREFERRED'] = $preferred_layer;
+	  $form_values[$parent_id] = $form['#value'];
+	} else {
+		// second pass of form processing
+    $preferred_layer = $form['#value']['PREFERRED'];
+	}
+
+  // also set the chosen value (not sure if this is good drupal style ....)
+  foreach( $children = element_children($form) as $key ){
+      if($form[$key]['#type'] == 'radio'){
+        $form[$key]['#value'] = $preferred_layer;
+      }
+  }
+  // the default layer mus always be enabled
+  $form[$preferred_layer]['#value'] = $preferred_layer;
+
+
+  return $form;
+}
+
