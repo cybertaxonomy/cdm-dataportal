@@ -484,16 +484,37 @@ function cdm_dataportal_settings_geo(){
     /*
      * NOTICE: must correspond to the layers defined in js/openlayers_,ap.js#getLayersByName()
      */
-    'metacarta_vmap0' => "Metacarta Vmap0" ,
-    'osgeo_vmap0' => "OpenLayers World"
+    'osgeo_vmap0' => "OpenLayers World", // EPSG:4326
+    'metacarta_vmap0' => "Metacarta Vmap0" , // EPSG:4326, EPSG:900913
+    // all others EPSG:900913 ...
+    'osmarender' => 'OpenStreetMap',
+    'oam' => 'OpenAerialMap',
+    'gmap' => 'Google Streets',
+    'gsat' => 'Google Satellite',
+    'ghyb' => 'Google Hybrid',
+    'veroad' => 'Virtual Earth Roads',
+    'veaer' => 'Virtual Earth Aerial',
+    'vehyb' => 'Virtual Earth Hybrid'
+//  ,
+//    'yahoo' => 'Yahoo Street',
+//    'yahoosat' => 'Yahoo Satellite',
+//    'yahoohyb' => 'Yahoo Hybrid'
 
   );
   $form['openlayers']['baselayers'] = array(
     '#type' => 'checkboxes_preferred',
     '#title' => t('Baser Layers'),
     '#options' => $baselayer_options,
-    '#default_value' => variable_get('baselayers', array('metacarta_vmap0', 'PREFERRED' => 'metacarta_vmap0')),
+    '#default_value' => variable_get('baselayers', array('metacarta_vmap0' => "metacarta_vmap0", 'PREFERRED' => 'metacarta_vmap0')),
     '#description' => t('')
+  );
+
+  // cdm_dataportal_geoservice_showLayerSwitcher
+  $form['openlayers']['cdm_dataportal_geoservice_showLayerSwitcher'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show LayerSwitcher'),
+    '#default_value' => variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE),
+    '#description' => t('The LayerSwitcher control displays a table of contents for the map.  This allows the user interface to switch between BaseLasyers and to show or hide Overlays.  By default the switcher is shown minimized on the right edge of the map, the user may expand it by clicking on the handle.')
   );
 
   $localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
@@ -671,7 +692,7 @@ function expand_checkboxes_preferred($element){
   foreach ($children as $key) {
   	$odd_even = $weight % 4 == 0 ? 'odd' : 'even';
     $element[$key]['#weight'] = $weight;
-    $element[$key]['#prefix'] = '<tr class="'.$odd_even.'"><td>'.$key.'</td><td>';
+    $element[$key]['#prefix'] = '<tr class="'.$odd_even.'"><td>'.t($element['#options'][$key]).'</td><td>';
     $element[$key]['#suffix'] = '</td>';
     unset($element[$key]['#title']);
     $weight += 2;

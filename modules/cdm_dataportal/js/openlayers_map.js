@@ -7,6 +7,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	var dataBounds = null;
 	
 	var baseLayers = [];
+	var defaultBaseLayer;
 	 
 	var defaultControls = [ 
   	         new OpenLayers.Control.PanZoom(),
@@ -60,7 +61,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	 */
 	this.init = function(){
 		
-		baseLayers = createLayers(options.baseLayerNames);
+		createLayers(options.baseLayerNames, options.defaultBaseLayerName);
 		
 		initOpenLayers();
 
@@ -123,7 +124,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	var initOpenLayers = function(){
 			
 		// instatiate the openlayers viewer
-		if(baseLayers[0].projection == mapOptions.EPSG900913.projection){
+		if(defaultBaseLayer.projection == mapOptions.EPSG900913.projection){
 			map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG900913);
 		} else {
 			map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG4326);		
@@ -131,15 +132,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		
 		//add the base layers
 		map.addLayers(baseLayers);
-//		map.setBaseLayer(baseLayers[0]);
-
-//        map.addLayers([
-//                       //osgeo_vmap0, 
-//                       gmap, gsat, //ghyb, 
-//                       veroad, veaer, //vehyb,
-//                       oam, mapnik, osmarender
-//                       ]);
-
+		map.setBaseLayer(defaultBaseLayer);
 		
 		if(options.showLayerSwitcher === true){
 			map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
@@ -299,14 +292,20 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	/**
 	 * 
 	 */
-	var createLayers = function( baseLayerNames ){
-		var baseLayers = new Array();
+	var createLayers = function( baseLayerNames, defaultBaseLayerName){
+		//var baseLayers = new Array();
 		for(var i = 0; i <  baseLayerNames.length; i++) {
 			//var layerName in baseLayerNames ){
 			baseLayers[i] = getLayersByName(baseLayerNames[i]);
+			// set the default base layer
+			if(baseLayerNames[i] == defaultBaseLayerName){
+				defaultBaseLayer = baseLayers[i];
+			}
 		}
-		return baseLayers;
+		
+		//return baseLayers;
 	};
+	
 		
 	/**
 	 * 
@@ -437,7 +436,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 				baseLayer = new OpenLayers.Layer.OSM(
 				        "OpenStreetMap (Tiles@Home)",
 				        "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
-				    );
+				       );
 			break;
 			
 		};
@@ -473,7 +472,8 @@ $.fn.cdm_openlayers_map.defaults = {  // set up default options
 		legendOpacity: 0.75,
 		boundingBox: null,
 		showLayerSwitcher: false,
-		baseLayerNames: new Array("osgeo_vmap0"),
+		baseLayerNames: ["osgeo_vmap0"],
+		defaultBaseLayerName: 'osgeo_vmap0',
 		maxZoom: 4,
 		minZoom: 0
 };
