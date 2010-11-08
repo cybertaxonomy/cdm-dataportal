@@ -9,11 +9,18 @@ div.debug, h6.debug{
   overflow: auto;
 }
 
-h6.debug {
+body .messages{
+	clear: both;
+	margin-top: 25px;
+}
+
+body h6.debug {
 	color: #FFFFFF;
 	padding: 0 1em;
+  margin-top: 10px;
 	margin-bottom: -0.75em;
-	border:1px solid #B8D3E5;
+	border:1px solid #B8D3E5; 
+	clear: both;
 }
 
 div.debug a.valid {

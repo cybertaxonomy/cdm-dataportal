@@ -165,73 +165,11 @@ function cdm_dataportal_perm() {
 function cdm_dataportal_menu($may_cache) {
 	$items = array();
 
+	cdm_dataportal_menu_admin($may_cache, $items);
+
 	if ($may_cache) {
 
-		$items[] = array(
-      'path' => 'admin/settings/cdm_dataportal',
-      'title' => t('CDM Dataportal'),
-      'description' => t('Setting for the CDM DataPortal'),
-      'access' => user_access('administer cdm_dataportal'),
-      'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_dataportal_settings',
-      'type' => MENU_NORMAL_ITEM,
-		);
-
-		$items[] = array(
-      'path' => 'admin/settings/cdm_dataportal/general',
-      'title' => t('General'),
-      'description' => t('Setting for the CDM DataPortal'),
-      'access' => user_access('administer cdm_dataportal'),
-      'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_dataportal_settings',
-	  'weight' => 0,
-      'type' => MENU_LOCAL_TASK,
-		);
-
-		$items[] = array(
-      'path' => 'admin/settings/cdm_dataportal/geo',
-      'title' => t('Geo & Map'),
-      'description' => t('Geo & Map'),
-      'access' => user_access('administer cdm_dataportal'),
-      'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_dataportal_settings_geo',
-	    'weight' => 1,
-      'type' => MENU_LOCAL_TASK,
-		);
-
-		$items[] = array(
-      'path' => 'admin/settings/cdm_dataportal/layout',
-      'title' => t('Layout'),
-      'description' => t('Configure and adjust the layout of your DataPortal '),
-      'access' => user_access('administer cdm_dataportal'),
-      'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_dataportal_settings_layout',
-      'weight' => 2,
-      'type' => MENU_LOCAL_TASK,
-		);
-
-		$items[] = array(
-      'path' => 'admin/settings/cdm_dataportal/cachesite',
-      'title' => t('Cache'),
-      'description' => t('Cache the whole CDM DataPortal site'),
-      'access' => user_access('administer cdm_dataportal'),
-      'callback' => 'cdm_dataportal_view_cache_site',
-      'weight' => 10,
-      'type' => MENU_LOCAL_TASK,
-		);
-
-		/*$items[] = array(
-		 'path' => 'admin/settings/cdm_dataportal/ws',
-		 'title' => t('Web Service'),
-		 'description' => t('Setting for the CDM DataPortal'),
-		 'access' => user_access('administer cdm_dataportal'),
-		 'callback' => 'drupal_get_form',
-		 'callback arguments' => 'cdm_dataportal_settings',
-		 'weight' => 1,
-		 'type' => MENU_DEFAULT_LOCAL_TASK,
-		 );*/
-
-		$items[] = array(
+	 $items[] = array(
 	    'path' => 'cdm_dataportal/names',
 	    'callback' => 'cdm_dataportal_view_names',
 	    'access' => true,
