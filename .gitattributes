@@ -338,6 +338,13 @@ modules/softwareTracker/softwareTracker.sql -text
 modules/webfm_geoserver/webfm_geoserver.info -text
 modules/webfm_geoserver/webfm_geoserver.js -text
 modules/webfm_geoserver/webfm_geoserver.module -text
+/pom.xml -text
+src/site/apt/download.apt -text
+src/site/apt/getting-started.apt -text
+src/site/apt/index.apt -text
+src/site/fml/faq.fml -text
+src/site/fml/troubleshooting.fml -text
+src/site/site.xml -text
 themes/EDIT-expertsdb/block.tpl.php -text
 themes/EDIT-expertsdb/color/base.png -text
 themes/EDIT-expertsdb/color/color.inc -text
