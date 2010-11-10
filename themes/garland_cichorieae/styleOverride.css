@@ -189,11 +189,18 @@ ul.cdm_taxontree li .active {
 	clear: both;
 }
 
-ul.primary {
+ul.primary, ul.secondary {
   clear: both;
   float:right;
+  
 }
 
+ul.secondary {
+	background:none repeat scroll 0 0 transparent;
+	border:0 none;
+	margin:0;
+	padding:0;
+}
 div.clear {
 	clear:both;
 }

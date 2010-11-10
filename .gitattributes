@@ -1,4 +1,8 @@
 * text=auto !eol
+/.buildpath -text
+.cache/.dataModel -text
+/.project -text
+ide/eclipse/cdm_dataportal.launch -text
 module_patches/cck_field_perms/cck_field_perms-views0.1.patch -text
 module_patches/jquery-update/compat-1.0_fix-unload.patch -text
 module_patches/nodefamily/nodefamily_create-others-nodes.patch -text
@@ -212,8 +216,15 @@ modules/cdm_dataportal/js/openlayers_map.js -text
 modules/cdm_dataportal/js/thickbox/cdm_thickbox.css -text
 modules/cdm_dataportal/js/thickbox/thickbox.js -text
 modules/cdm_dataportal/node_types.php -text
+modules/cdm_dataportal/pom.xml -text
 modules/cdm_dataportal/profile/CDM_DataPortal/CDM_DataPortal.profile -text
 modules/cdm_dataportal/settings.php -text
+modules/cdm_dataportal/src/site/apt/download.apt -text
+modules/cdm_dataportal/src/site/apt/getting-started.apt -text
+modules/cdm_dataportal/src/site/apt/index.apt -text
+modules/cdm_dataportal/src/site/fml/faq.fml -text
+modules/cdm_dataportal/src/site/fml/troubleshooting.fml -text
+modules/cdm_dataportal/src/site/site.xml -text
 modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text
 modules/cdm_dataportal/theme/cdm_dataportal.descriptions.theme -text
 modules/cdm_dataportal/theme/cdm_dataportal.media.theme -text
@@ -338,13 +349,6 @@ modules/softwareTracker/softwareTracker.sql -text
 modules/webfm_geoserver/webfm_geoserver.info -text
 modules/webfm_geoserver/webfm_geoserver.js -text
 modules/webfm_geoserver/webfm_geoserver.module -text
-/pom.xml -text
-src/site/apt/download.apt -text
-src/site/apt/getting-started.apt -text
-src/site/apt/index.apt -text
-src/site/fml/faq.fml -text
-src/site/fml/troubleshooting.fml -text
-src/site/site.xml -text
 themes/EDIT-expertsdb/block.tpl.php -text
 themes/EDIT-expertsdb/color/base.png -text
 themes/EDIT-expertsdb/color/color.inc -text
