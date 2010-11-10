@@ -1,7 +1,4 @@
 * text=auto !eol
-/.buildpath -text
-.cache/.dataModel -text
-/.project -text
 ide/eclipse/cdm_dataportal.launch -text
 module_patches/cck_field_perms/cck_field_perms-views0.1.patch -text
 module_patches/jquery-update/compat-1.0_fix-unload.patch -text
