@@ -43,7 +43,7 @@ function getGallerySettings($gallery_config_form_name){
 
 function cdm_dataportal_menu_admin($may_cache, &$items){
 
-	if (!$may_cache) {
+	if ($may_cache) {
 
 		$items[] = array(
       'path' => 'admin/settings/cdm_dataportal',
@@ -153,7 +153,7 @@ function cdm_settings_general(){
 
   $form['cdm_webservice']['cdm_webservice_url'] =  array(
     '#type' => 'textfield',
-    '#title'         => t('CDM Web Service URL'),
+    '#title'         => t('CDM web service URL'),
     '#description'   => t('The URL of CDM Webservice which delivers the data to be published.'),
     '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
@@ -168,7 +168,7 @@ function cdm_settings_general(){
 
   $form['cdm_webservice']['cdm_webservice_cache'] =  array(
     '#type' => 'checkbox',
-    '#title'         => t('Enable Caching'),
+    '#title'         => t('Enable caching'),
     '#default_value' => variable_get('cdm_webservice_cache', 1),
     '#description'   => t('Enable caching of webservice responses on simple requests, '
     .'that is requests which only have one parameter generally a UUID or a concatenation of UUIDs')
@@ -192,7 +192,7 @@ function cdm_settings_general(){
 
     $form['cdm_webservice']['proxy']['cdm_webservice_proxy_port'] =  array(
     '#type' => 'textfield',
-    '#title'         => t('Proxy Port'),
+    '#title'         => t('Proxy port'),
     '#default_value' => variable_get('cdm_webservice_proxy_port', '80'),
     );
 
@@ -281,7 +281,7 @@ function cdm_settings_layout_taxon(){
     '#description' => t('Split the taxon page into individual tabs for description, images, synonymy')
   );
 
-   //---- IMAGES ----//
+  // ---- IMAGES ----//
   $form['images'] = array(
       '#type' => 'fieldset',
       '#title' => t('Images'),
@@ -292,7 +292,7 @@ function cdm_settings_layout_taxon(){
   array_unshift($options, '-- DISABLED --');
   $form['images']['image_hide_rank'] =  array(
       '#type'          => 'select',
-      '#title'         => t('Hide Images for Taxa above'),
+      '#title'         => t('Hide images for taxa above'),
       '#default_value' => variable_get('image_hide_rank', '0'),
       '#options'       => $options,
       '#description'   => t(''),
@@ -300,6 +300,7 @@ function cdm_settings_layout_taxon(){
   //show media
   $selectShowMedia = array(0 => "Show only taxon media",
   1 => "Show taxon and child taxon media");
+
   $form['images']['cdm_dataportal_show_media'] = array(
       '#type' => 'select',
       '#title' => t('Available media files'),
@@ -307,8 +308,7 @@ function cdm_settings_layout_taxon(){
       '#options' => $selectShowMedia,
       '#description'   => t('Select if a taxon should show only his media or also child media.')
   );
-  $selectShowMedia = array(0 => "Show only taxon media",
-  1 => "Show taxon and child taxon media");
+
   $form['images']['cdm_dataportal_show_default_image'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show default image'),
@@ -316,7 +316,8 @@ function cdm_settings_layout_taxon(){
       '#description'   => t('Select if the taxon profile page should display the default image if no image is available for the chosen taxon.')
   );
 
-  /* ===  TAXON_PROFILE === */
+  /* ======  TAXON_PROFILE ====== */
+
    $form['taxon_profile'] = array(
       '#type' => 'fieldset',
       '#title' => t('Taxon profile'),
@@ -349,7 +350,8 @@ function cdm_settings_layout_taxon(){
   $form_tittle = 'Images';
   $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
 
-  //-- DISTRIBUTION LAYOUT --//
+  /* ------ DISTRIBUTION LAYOUT ------ */
+
   $form['taxon_profile']['distribution_layout'] = array(
         '#title' => t('Distribution layout'),
         '#collapsible' => TRUE,
@@ -366,7 +368,7 @@ function cdm_settings_layout_taxon(){
         'HIDE_TDWG2' => t('Sorted without TDWG Level 2'),
   ));
 
-  //---- SYNONYMY ----//
+  /* ====== SYNONYMY ====== */
   $form['synonymy'] = array(
       '#type' => 'fieldset',
       '#title' => t('Synonymy'),
@@ -441,7 +443,7 @@ function cdm_settings_layout_taxon(){
    );
    */
 
-   // --- SPECIMENs --- //
+   // ====== SPECIMENS ====== //
     $form['specimens'] = array(
       '#type' => 'fieldset',
       '#title' => t('Specimens'),
@@ -449,8 +451,8 @@ function cdm_settings_layout_taxon(){
       '#collapsed' => FALSE,
   );
   $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
-  $form_tittle = 'Specimen media gallery';
-  $form['specimens'] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+  $form_title = 'Specimen media';
+  $form['specimens'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
 
 	return system_settings_form($form);
 }
@@ -460,7 +462,7 @@ function cdm_settings_layout_search(){
 
   $form['cdm_dataportal_search_items_on_page'] = array(
     '#type' => 'textfield',
-    '#title' => t('Search Page Size'),
+    '#title' => t('Search page size'),
     '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
     '#description' => t('Number of Names to display per page in search results.')
   );
@@ -469,8 +471,8 @@ function cdm_settings_layout_search(){
   $items = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);
   $collapsed = FALSE;
   $form_name = CDM_DATAPORTAL_SEARCH_GALLERY_NAME;
-  $form_tittle = 'Media Thumbnails';
-  $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+  $form_title = 'Media thumbnails';
+  $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
 
   return system_settings_form($form);
 }
@@ -480,7 +482,7 @@ function cdm_settings_layout_media(){
 
   $form['image_gallery_viewer'] =  array(
     '#type'          => 'select',
-    '#title'         => t('Image Gallery Viewer'),
+    '#title'         => t('Image gallery viewer'),
     '#default_value' => variable_get('image_gallery_viewer', 'default'),
     '#options' => array(
         'default' => t('Standart image gallery'),
@@ -489,8 +491,8 @@ function cdm_settings_layout_media(){
 
   // --- MEDIA GALLERY ---- //
   $form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
-  $form_tittle = 'Media gallery';
-  $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
+  $form_title = 'Media gallery';
+  $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
 
 
   return system_settings_form($form);
@@ -507,7 +509,7 @@ function cdm_settings_geo(){
 
   $form['edit_map_server'] = array(
     '#type' => 'select',
-    '#title' => t('Geoservice Access Point URL'),
+    '#title' => t('Geoservice access point URL'),
     '#default_value' => variable_get('edit_map_server', 'http://edit.br.fgov.be/edit_wp5/v1/'),
     '#options' => array(
 	      'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server',
@@ -522,7 +524,7 @@ function cdm_settings_geo(){
 
   $form['edit_map_server_alternative'] = array(
     '#type' => 'textfield',
-    '#title' => t('Geoservice Access Point - Alternative URL'),
+    '#title' => t('Geoservice access point - alternative URL'),
     '#default_value' => variable_get('edit_map_server_alternative', ''),
     '#description' => t('Alternative URL of a EDIT Map Service to be used by this portal. You must choose the option <i>-- Alternative URL --</i> in the chooser abofe to enable this url.')
   );
@@ -536,28 +538,28 @@ function cdm_settings_geo(){
 
   $form['cdm_dataportal_geoservice_bounding_box'] = array(
     '#type' => 'textfield',
-    '#title' => t('Fixed Geoservice Bounding Box'),
+    '#title' => t('Fixed bounding box'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_bounding_box', '-180,-90,180,90'),
-    '#description' => t('Define urrounding of area to be displayed in maps. Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong> to let the map <strong>automatically zoom</strong> to the distribution area.')
+    '#description' => t('Define surrounding of area to be displayed in maps. Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong> to let the map <strong>automatically zoom</strong> to the distribution area.')
   );
 
   $form['cdm_dataportal_geoservice_labels_on'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Display Country Labels'),
+    '#title' => t('Display area labels'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_labels_on', FALSE),
-    '#description' => t('Check this if you like country names to be displayed in the maps. ')
+    '#description' => t('Check this if you like area names to be displayed in the maps. ')
   );
 
   $form['cdm_dataportal_geoservice_map_caption'] = array(
     '#type' => 'textfield',
-    '#title' => t('Map Caption'),
+    '#title' => t('Map caption'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_map_caption', ''),
     '#description' => t('Define a caption for the map.')
   );
 
   $form['cdm_dataportal_map_openlayers'] = array(
     '#type' => 'checkbox',
-    '#title' => t('OpenLayers Viewer'),
+    '#title' => t('OpenLayers viewer'),
     '#default_value' => variable_get('cdm_dataportal_map_openlayers', 1),
     '#description' => t('Display the maps in an interactive viewer which allows zooming and panning.')
   );
@@ -567,7 +569,7 @@ function cdm_settings_geo(){
 
   $form['openlayers'] = array(
       '#type' => 'fieldset',
-      '#title' => t('OpenLayers Settings'),
+      '#title' => t('OpenLayers settings'),
       '#collapsible' => FALSE,
       '#collapsed' => !variable_get('cdm_dataportal_map_openlayers', 1)
   );
@@ -613,28 +615,28 @@ function cdm_settings_geo(){
   $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
   $form['openlayers']['gmap_api_key'] = array(
     '#type' => 'textfield',
-    '#title' => t('Gogle Maps API Key'),
+    '#title' => t('Gogle maps API key'),
     '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
     '#description' => t('Gogle Maps API Key, the key set by default <code>'.$localhostkey.'</code> is a key for the localhost = 127.0.0.1 The key in use is the one above this text.')
   );
 
   $form['openlayers']['cdm_dataportal_geoservice_distributionOpacity'] = array(
     '#type' => 'textfield',
-    '#title' => t('Distribution Layer Opacity'),
+    '#title' => t('Distribution layer opacity'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5'),
     '#description' => t('Valid values range from 0.0 to 1.0. You can choose to let the underlying layers shine through if you select a value < 1.0. A value of 1.0 will cause a full opacity of the ditribution layer.')
   );
 
   $form['openlayers']['cdm_dataportal_geoservice_legendOpacity'] = array(
     '#type' => 'textfield',
-    '#title' => t('Legend Opacity'),
+    '#title' => t('Legend opacity'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5'),
     '#description' => t('Valid values range from 0.0 to 1.0. You can choose to let the layers shine through the legend if you select a value < 1.0. A value of 1.0 will cause a full opacity of the legend.')
   );
 
   $form['cdm_dataportal_geoservice_map_legend'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Map Legend'),
+      '#title' => t('Map legend'),
       '#collapsible' => FALSE,
       '#collapsed' => TRUE,
   );

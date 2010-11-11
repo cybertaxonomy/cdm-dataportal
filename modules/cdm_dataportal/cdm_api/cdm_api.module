@@ -994,15 +994,30 @@ function cdm_get_featureTrees_as_options($addDefaultFeatureTree = false){
     if(is_array($persisted_trees)){
 
         foreach($persisted_trees as $featureTree){
-
             // do not add the DEFAULT_FEATURETREE again
             if($featureTree->uuid == UUID_DEFAULT_FEATURETREE){
                 continue;
             }
+
             $treeRepresentation = $featureTree->titleCache;
-            $treeRepresentation .= '<div class="featuretree_structure">'
-              ._featureTree_elements_toString($featureTree->root)
-              .'</div>';
+
+            if(is_array($featureTree->root->children) && count($featureTree->root->children) > 0){
+	            $treeDetails = '<div class="featuretree_structure">'
+	              //._featureTree_elements_toString($featureTree->root)
+	              .theme('featureTree_hierarchy', $featureTree->uuid)
+	              .'</div>';
+		          $form = array();
+	            $form['featureTree-'.$featureTree->uuid] = array(
+	                '#type' => 'fieldset',
+						      '#title' => t('Show details'),
+						      '#collapsible' => TRUE,
+						      '#collapsed' => TRUE,
+						  );
+						  $form['featureTree-'.$featureTree->uuid]['details'] = array('#value'=>$treeDetails);
+
+						  $treeRepresentation .= drupal_render($form);
+            }
+
             $feature_trees[$featureTree->uuid] = $treeRepresentation;
         }
 

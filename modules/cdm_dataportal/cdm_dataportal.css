@@ -83,6 +83,17 @@ ul.typeDesignations li{
 	background-image: none;
 }
 
+.form-item fieldset {
+	font-size: 80%;
+	margin-top: -3px;
+	margin-left: 25px;
+  	
+}
+
+.form-item fieldset .featuretree_structure{
+  height: 13em;
+  overflow: auto;	
+}
 
 .misapplied .name{
  	/*font-style: normal;*/

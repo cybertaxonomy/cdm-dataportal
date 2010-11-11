@@ -150,6 +150,37 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 	return $out;
 }
 
+function theme_FeatureTree_hierarchy($FeatureTreeUuid){
+
+	if(!is_uuid($FeatureTreeUuid)){
+		return;
+	}
+  $out = '';
+	$featureTree = cdm_ws_get(CDM_WS_FEATURETREE, array($FeatureTreeUuid));
+	if($featureTree && $featureTree->root){
+		$out = '<ul class="'.$featureTree->class.'">';
+		$out .= theme('FeatureTree_hierarchy_children', $featureTree->root);
+		$out .= '</ul>';
+	}
+	return $out;
+}
+
+function theme_FeatureTree_hierarchy_children($node){
+
+	$out = '';
+	if($node->children){
+
+		foreach($node->children as $childNode){
+      $out .= '<li>'.check_plain($childNode->feature->representation_L10n);
+      if($childNode->childen && count($childNode->childen) > 0){
+      	$out .= '<ul>'.theme('FeatureTree_hierarchy_children', $childNode).'</ul>';
+      }
+      $out .= '</li>';
+		}
+	}
+	return $out;
+}
+
 
 
 
