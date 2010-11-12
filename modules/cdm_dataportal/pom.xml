@@ -103,7 +103,13 @@
 		<system>Trac</system>
 		<url>http://dev.e-taxonomy.eu/trac/</url>
 	</issueManagement>
-	
+	<!-- **** REPOSITORIES **** -->
+	<repositories>
+		<repository>
+			<id>EditRepository</id>
+			<url>http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
+		</repository>
+	</repositories>
 	<!-- **** PLUGINS **** -->
 	<build>
 		<plugins>
@@ -197,13 +203,18 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-scm</artifactId>
-				<version>1.0-alpha-5</version>
+				<version>1.0-beta-6</version>
 			</extension>
-			<!--
-				<extension> <groupId>org.apache.maven.wagon</groupId>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh-external</artifactId>
-				<version>1.0-alpha-5</version> </extension>
-			-->
+				<version>1.0-beta-6</version>
+			</extension>
 			<extension>
 				<groupId>org.apache.maven.scm</groupId>
 				<artifactId>maven-scm-manager-plexus</artifactId>
