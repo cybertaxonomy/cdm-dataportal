@@ -164,7 +164,7 @@ table{
 
  p{padding:2px 0 12px 0; margin:0;}
 
-.console{
+plaintext, pre, .console{
 	 padding: 5px 5px;
 	 background-color: #0d4b74;
 	 color: #ffffff;
