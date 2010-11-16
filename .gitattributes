@@ -216,11 +216,15 @@ modules/cdm_dataportal/node_types.php -text
 modules/cdm_dataportal/pom.xml -text
 modules/cdm_dataportal/profile/CDM_DataPortal/CDM_DataPortal.profile -text
 modules/cdm_dataportal/settings.php -text
+modules/cdm_dataportal/src/site/apt/configuration.apt -text
 modules/cdm_dataportal/src/site/apt/download.apt -text
 modules/cdm_dataportal/src/site/apt/getting-started.apt -text
 modules/cdm_dataportal/src/site/apt/index.apt -text
+modules/cdm_dataportal/src/site/apt/installation.apt -text
+modules/cdm_dataportal/src/site/apt/screenshots.apt -text
 modules/cdm_dataportal/src/site/fml/faq.fml -text
 modules/cdm_dataportal/src/site/fml/troubleshooting.fml -text
+modules/cdm_dataportal/src/site/resources/images/cichorieae-search.PNG -text
 modules/cdm_dataportal/src/site/site.xml -text
 modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text
 modules/cdm_dataportal/theme/cdm_dataportal.descriptions.theme -text

@@ -8,14 +8,18 @@
 	<body>
 		<menu name="General Information">
 			<item name="Overview" href="index.html"/>
-			<item name="FAQ" href="faq.html"/>
+			<item name="Screenshots" href="screenshots.html"/>
+			<item name="Dataportal Installation" href="installation.html"/>
+			<item name="Dataportal Configuration" href="configuration.html"/>
 			<item name="Download" href="download.html"/>
+
 		</menu>
+		
 		<menu name="Developer">
 			<item name="Getting started" href="getting-started.html"/>
-			<item name="Troubleshooting" href="troubleshooting.html"/>
-			<item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/CdmDataportal"/>
+			<item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/CdmDataportalDev"/>
 		</menu>
+		
 		<menu name="Project">
 			<item name="Mailing Lists" href="mail-lists.html"/>
 			<item name="Project Team" href="team-list.html"/>
