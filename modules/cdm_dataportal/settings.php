@@ -43,7 +43,7 @@ function getGallerySettings($gallery_config_form_name){
 
 function cdm_dataportal_menu_admin($may_cache, &$items){
 
-	if ($may_cache) {
+	if (!$may_cache) {
 
 		$items[] = array(
       'path' => 'admin/settings/cdm_dataportal',

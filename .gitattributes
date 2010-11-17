@@ -70,6 +70,13 @@ modules/cdm_dataportal/classes/renderhints.php -text
 modules/cdm_dataportal/ext_links/ext_links.info -text
 modules/cdm_dataportal/ext_links/ext_links.js -text
 modules/cdm_dataportal/ext_links/ext_links.module -text
+modules/cdm_dataportal/help.php -text
+modules/cdm_dataportal/help/overview.apt -text
+modules/cdm_dataportal/help/overview.html -text
+modules/cdm_dataportal/help/settings_cache.html -text
+modules/cdm_dataportal/help/settings_general.html -text
+modules/cdm_dataportal/help/settings_geo.html -text
+modules/cdm_dataportal/help/settings_layout.html -text
 modules/cdm_dataportal/images/Protologue-media-BHL.png -text
 modules/cdm_dataportal/images/Protologue-media.png -text
 modules/cdm_dataportal/images/btn_collapse.gif -text
