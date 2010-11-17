@@ -350,6 +350,7 @@ modules/softwareTracker/softwareTracker.sql -text
 modules/webfm_geoserver/webfm_geoserver.info -text
 modules/webfm_geoserver/webfm_geoserver.js -text
 modules/webfm_geoserver/webfm_geoserver.module -text
+themes/.buildpath -text
 themes/EDIT-expertsdb/block.tpl.php -text
 themes/EDIT-expertsdb/color/base.png -text
 themes/EDIT-expertsdb/color/color.inc -text

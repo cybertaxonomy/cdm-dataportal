@@ -30,7 +30,7 @@
 
 h2.with-tabs .authors{
 	font-size: 90%;
-	font-weight:bold
+	font-weight:bold;
 }
 
 a.toc:link, a.toc:visited {
@@ -54,7 +54,7 @@ background-color: transparent;
 
 /* switch off highlighting of synonyms */
 .synonym span.highlite{
-  background-color: transparent;	
+  background-color: #96AB2C;	
 }
 
 /* HACK for DEMO 

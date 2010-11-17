@@ -282,3 +282,28 @@ function palmweb_2_cdm_feature_name($feature_name){
     default: return t(ucfirst($feature_name));
   }
 }
+
+function palmweb_2_cdm_taxon_page_title($taxon, $uuid, $synonym_uuid){
+	RenderHints::pushToRenderStack('taxon_page_title');
+	$synonym = cdm_ws_get(CDM_WS_PORTAL_TAXON, $synonym_uuid);
+	if(isset($taxon->name->nomenclaturalReference)){
+		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+	}
+	$out = theme('cdm_taxonName', $taxon->name, null, $referenceUri, false);
+	 	   
+	RenderHints::popFromRenderStack();
+	if ($synonym->name->titleCache){
+	$result = '<span class = "synonym_title">' .$synonym->name->titleCache . ' is synonym of ' .'</span>'.
+		   '<span class="'.$taxon->class.'">'.$out.'</span>';
+	}else{
+		$result = '<span class="'.$taxon->class.'">'.$out.'</span>';
+	}
+	return $result;
+	
+}
+
+function palmweb_2_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null) {
+	$acceptedPath = path_to_taxon($acceptedUuid);
+	//return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid, $synonymUuid."/$synonymUuid");
+	return url("$acceptedPath/$synonymUuid".($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid);
+}
