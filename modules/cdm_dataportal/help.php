@@ -126,6 +126,12 @@ function cdm_dataportal_file_get_content ($path) {
 	$apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
 	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>', 
 	                           $apt_content);
+	/*                           
+    $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
+	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>', 
+	                           $apt_content);
+	 */
+		                           
 	//regular expressions
 	$apt_content = preg_replace('/<!--.*-->/', '', $apt_content);
 	$apt_content = preg_replace('/\<a target="(.*)" href="(.*)" title="(.*)"\>(.*)\<\/a\>/', '{{{$2}$4}}', $apt_content);
