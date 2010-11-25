@@ -1,0 +1,20 @@
+CDM Server Installation
+
+   As already explained CDM Dataportal module publishes the data of the CDM Server, 
+   therefore an already working CDM Server is a prerequisite for retrieving the 
+   data to publish. More information to CDM Server {{{http://wp5.e-taxonomy.eu/cdm-server/}here}}.
+   
+Drupal Installation
+
+   Since the CDM Dataportal is a drupal module you will need to install at first Drupal
+   (currently we are working with Drupal 5).
+   
+In Detail
+
+   In our {{{http://wp5.e-taxonomy.eu/cdm-setups/}setups site}} we described a full 
+   installation guide for our different products. If your are interested in CDM Server 
+   and CDM Dataportal installation please follow the
+   {{{http://wp5.e-taxonomy.eu/cdm-setups/?q=node/17}Group Installation}}, 
+   where you can ignore the second step <Connecting the Taxonomic Editor>.
+
+   
