@@ -430,7 +430,23 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 	return $out;
 
 }
-
+/**
+ * Function target is to compare two different foootnotes objects.
+ * The comparation is based on the footnote key. The one which is 
+ * displayed as footnote number.
+ * 
+ * @param footnote object $a
+ * @param footnote object $b
+ */
+function footnotes_key_compare($a, $b){
+	$res = 0;
+	if ($a->keyStr < $b->keyStr){
+		$res = -1;
+	}elseif ($a->keyStr > $b->keyStr){
+		$res = 1;
+	}
+	return $res;     
+}
 
 function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionElements){
 	//returning null if no description elements
@@ -488,10 +504,12 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 							cdm_add_footnote_to_array($fnKeysLevel4, $fn_key4);
 						}
 					}
+					usort($fnKeysLevel4, "footnotes_key_compare");
 					$l4_regions[$text_l4] = $fnKeysLevel4;
 				}
 			}//level4
 			//managing level3 and level4 for generating the right output
+			usort($fnKeysLevel3, "footnotes_key_compare");
 			foreach ($fnKeysLevel3 as $key3){
 				foreach ($l4_regions as $key4 => $value4){
 					cdm_add_footnote_to_array($l4_regions[$key4], $key3);
