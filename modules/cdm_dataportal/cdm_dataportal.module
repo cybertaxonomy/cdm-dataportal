@@ -830,7 +830,7 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = null
 		} else {
 			$trees = '';
 			foreach($taxon_nodes as $node){
-				$trees .= ($trees?', ':'').'<strong>'.$node->taxonomicTree->titleCache.'</strong>';
+				$trees .= ($trees?', ':'').'<strong>'.$node->classification->titleCache.'</strong>';
 
 			}
 			drupal_set_message('This concept of the taxon '.theme('cdm_taxonName', $taxon->name).' is not contained in the currently chosen classification, but in '
@@ -1072,7 +1072,7 @@ function _cdm_dataportal_acceptedByCurrentView($taxon){
 	$defaultTreeUuid = get_taxonomictree_uuid_selected();
 	if($taxon->class == "Taxon" && isset($taxon->taxonNodes)){
 		foreach($taxon->taxonNodes as $node){
-			if($node->taxonomicTree == $defaultTreeUuid) {
+			if($node->classification == $defaultTreeUuid) {
 				return true;
 			}
 		}
