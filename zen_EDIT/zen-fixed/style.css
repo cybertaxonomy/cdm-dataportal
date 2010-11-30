@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+
+/**
+*   Zen Fixed
+*
+*   Provides CSS to make a fixed width version of the theme.
+*   $Id: style.css,v 1.7 2006/10/23 05:42:28 zirafa Exp $
+*
+*/
+
+/* We need to grab the CSS files from the directory above*/
+@import "../layout.css";
+@import "../icons.css";
+@import "../style.css";
+
+body {
+  min-width: 800px;
+}
+
+#page {
+  width: 800px;              /* page width - optional */
+  margin: 10px auto;            /* center the page - optional */
+}
+
+#logo-title {
+  margin: 10px 0 0 0;
+}
