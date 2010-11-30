@@ -122,9 +122,11 @@ ul.cdm_names, ul.cdm_names li{
 	 list-style-image: none;
 }
 
+/*
 ul.cdm_names a:link, ul.cdm_names .Synonym a:visited {
 color:#7C7C7F;
 }
+*/
 
 .dynabox .label:hover{
  color: #0174BB;
