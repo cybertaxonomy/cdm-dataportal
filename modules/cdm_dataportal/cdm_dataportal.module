@@ -662,19 +662,15 @@ function cdm_dataportal_form_alter($form_id, &$form) {
 
 
 
-function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed){
-	
-	if ($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME) {
-		$description = 'This section covers the taxa thumbnails which appear when a search is performed.';
-	}
-	
+function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description = ''){
+
 	$form[$form_name] = array(
     '#type' => 'fieldset',
     '#title' => t($form_tittle),
     '#collapsible' => TRUE,
     '#collapsed' => $collapsed,
     '#tree' => true,
-	'#description' => t($description),
+	'#description' => t($form_description),
 	);
 
 	$default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
@@ -714,17 +710,16 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $
 
 	$form[$form_name]['cdm_dataportal_media_maxextend'] = array(
     '#type' => 'textfield',
-    '#title' => t('Maximum extend of Images'),
+    '#title' => t('Thumbnail size'),
     '#default_value' => $gallery_settings['cdm_dataportal_media_maxextend'],
-    '#description' => t('Selecht how many thumbnails should be renderized. In the gallery neither width or height 
-                         will exceed the maximum extend of images.')
+    '#description' => t('Does it work? TODO: Write the description  text.')
 	);
 
 	$form[$form_name]['cdm_dataportal_media_cols'] = array(
     '#type' => 'textfield',
     '#title' => t('Number of columns'),
     '#default_value' => $gallery_settings['cdm_dataportal_media_cols'],
-    '#description' => t('You can group the thumbnails, select in how many columns should be the thumbnails grouped.')
+    '#description' => t('Group the thumbnails in columns, select in how many columns should be displayed.')
 	);
 
 	if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
