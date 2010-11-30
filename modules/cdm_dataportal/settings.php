@@ -62,16 +62,17 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
       'callback arguments' => 'cdm_settings_general',
-    'weight' => 0,
+      'weight' => 0,
       'type' => MENU_LOCAL_TASK,
 		);
-
+	
 		$items[] = array(
       'path' => 'admin/settings/cdm_dataportal/cachesite',
       'title' => t('Cache'),
-      'description' => t('Cache the whole CDM DataPortal site'),
+      'description' => t('Cache'),
       'access' => user_access('administer cdm_dataportal'),
-      'callback' => 'cdm_view_cache_site',
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_settings_cache',
       'weight' => 10,
       'type' => MENU_LOCAL_TASK,
 		);
@@ -108,7 +109,29 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'weight' => 1,
       'type' => MENU_LOCAL_TASK,
 		);
-
+/*		
+		$items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/layout/synonymy',
+      'title' => t('Synonymy'),
+      'description' => t('Configure and adjust the layout of your DataPortal '),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_settings_layout_synonymy',
+      'weight' => 1,
+      'type' => MENU_LOCAL_TASK,
+		);
+		
+		$items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/layout/specimens',
+      'title' => t('Specimens'),
+      'description' => t('Configure and adjust the layout of your DataPortal '),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'cdm_settings_layout_specimens',
+      'weight' => 1,
+      'type' => MENU_LOCAL_TASK,
+		);
+*/
 		$items[] = array(
       'path' => 'admin/settings/cdm_dataportal/layout/search',
       'title' => t('Search'),
@@ -163,8 +186,8 @@ function cdm_settings_general(){
       '#title' => t('CDM Server'),
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
-	  '#description' => t('The Web Services from the <em>CDM Server</em> which make possible the dialogue between 
-	                       <em>CDM Data Portal</em> and <em>CDM Server</em> are here configurable.'),
+	  '#description' => t('<em>CDM Server</em> makes possible the dialogue with
+	                       <em>CDM Data Portal</em> thanks to his web services.'),
 	);
 
 	$form['cdm_webservice']['cdm_webservice_url'] =  array(
@@ -189,7 +212,7 @@ function cdm_settings_general(){
                            select here which rank should be at the top level of the tree structure.'),
 	);
 	*/
-
+/*
 	$form['cdm_webservice']['cdm_webservice_cache'] =  array(
     '#type' => 'checkbox',
     '#title'         => t('<b>Enable caching</b>'),
@@ -203,7 +226,7 @@ function cdm_settings_general(){
 	                       visible till the cache is erased. Therefore developers should deactived this feature when they 
 	                       are working on the CDM Dataportal Module')
     );
-    
+*/    
     $form['cdm_webservice']['cdm_webservice_debug'] =  array(
     '#type' => 'checkbox',
     '#title'         => t('<b>Debug CDM Web Service</b>'),
@@ -250,11 +273,15 @@ function cdm_settings_general(){
     //TODO: settings are still incomplete, compare with trunk/dataportal/inc/config_default.php.inc
     $form['cdm_dataportal'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Taxa Classification'),
+      '#title' => t('Taxon Tree'),
       '#collapsible' => FALSE,
       '#collapsed' => TRUE,
-      '#description' => t('When you explore your collection, you can navigate it through a 
-                           tree structure (<em>taxon tree</em>).'),
+      '#description' => t('<p>When you explore your collection, you can navigate it through a 
+                           tree structure also called <em>Taxon Tree</em>.</p><p>To be able to navigate through 
+                           your collection the 
+                           <a href="http://drupal.org/handbook/blocks">drupal block</a> 
+                           <em>CDM Taxon Tree</em> should be visible for users. Enable the block at 
+                           <a href="./?q=admin/build/block">Administer&#45&#62Site building&#45&#62Blocks</a></p>'),
     );
 
     $form['cdm_dataportal'][CDM_TAXONOMICTREE_UUID] = array(
@@ -274,7 +301,7 @@ function cdm_settings_general(){
     '#description'   => t('This is the rank of the highest displayed taxon in the <em>taxon tree</em>. You can 
                            select here which rank should be at the top level of the tree structure.'),
 	);
-
+	
     return system_settings_form($form);
 }
 
@@ -286,15 +313,24 @@ function cdm_settings_general(){
  */
 function cdm_settings_layout(){
 
+	drupal_goto('admin/settings/cdm_dataportal/layout/taxon');
 	$form = array();
-
-
+/*
+	// -- tabbed pages -- //
+	$form['cdm_dataportal_taxonpage_tabs'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Tabbed taxon page'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
+    '#description' => t('If selected split the taxon page into individual tabs for description, images, synonymy. If not the taxon data is renderized as a long single page without tabs.')
+	);
+*/	
 	//---- footnotes ---//
 	$form['footnotes'] = array(
       '#type' => 'fieldset',
       '#title' => t('Footnotes'),
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
+	  '#description' => t('Taxa data such authors or synonyms names may have annotations or footnotes. This section covers such settings.'),
 	);
 
 	$form['footnotes']['cdm_dataportal_all_footnotes'] = array(
@@ -314,73 +350,178 @@ function cdm_settings_layout(){
 	return system_settings_form($form);
 }
 
-function cdm_settings_layout_taxon(){
-
-	$form = array();
-
-	$form['cdm_dataportal_taxonpage_tabs'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Tabbed taxon page'),
-    '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
-    '#description' => t('If selected split the taxon page into individual tabs for description, images, synonymy. If not the taxon data is renderized as a long single page without tabs.')
-	);
-
-	// ---- IMAGES ----//
-	$form['images'] = array(
+function cdm_settings_layout_synonymy(){
+  /* ====== SYNONYMY ====== */
+  $form['synonymy'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Images'),
-      '#collapsible' => FALSE,
+      '#title' => t('Synonymy'),
+      '#collapsible' => TRUE,
       '#collapsed' => FALSE,
-	  '#description' => t('In this section you can configured settings related with taxa images displayed at each taxon profile page (also named taxon general tab).'),
-	);
-	$options = cdm_rankVocabulary_as_option();
-	array_unshift($options, '-- DISABLED --');
-	$form['images']['image_hide_rank'] =  array(
-      '#type'          => 'select',
-      '#title'         => t('Hide images for taxa above'),
-      '#default_value' => variable_get('image_hide_rank', '0'),
-      '#options'       => $options,
-      '#description'   => t('Select which rank of images should not be displayed at the taxon profile page.'),
-	);
-	//show media
-	$selectShowMedia = array(0 => "Show only taxon media",
-	1 => "Show taxon and child taxon media");
+      '#description' => t('This section covers the settings related to the taxon <b>synonymy</b> tab.'),
+  );
 
-	$form['images']['cdm_dataportal_show_media'] = array(
-      '#type' => 'select',
-      '#title' => t('Available media files'),
-      '#default_value' => variable_get('cdm_dataportal_show_media', false),
-      '#options' => $selectShowMedia,
-      '#description'   => t('Select if the taxon page profile should display only his media or also children media.')
-	);
+  $form['synonymy']['cdm_dataportal_nomref_in_title'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show accepted taxon on top of the synonymy'),
+    '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE),
+    '#description' => t('If checked, the first homotypic taxon is a repetition of the accepted taxon most likely
+                        with the full nomenclatural reference (depending on the currently chosen theme).')
+  );
 
-	$form['images']['cdm_dataportal_show_default_image'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Show default image'),
-      '#default_value' => variable_get('cdm_dataportal_show_default_image', false),
-      '#description'   => t('Select if the taxon page profile should display the default image if no image is available for the chosen taxon.')
-	);
+  $form['synonymy']['cdm_dataportal_display_is_accepted_for'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display <em>is accepted for ...</em> on taxon pages when coming from a synonym link.'),
+    '#default_value' => variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR),
+    '#description' => t('Check this if after doing a search and clicking on a synonym you want to see the "accept of" text for the accepted synonym.')
+  );
+
+  $name_relationships_terms = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_NAME_RELATIONSHIP_TYPE);
+  $name_rel_options = array();
+  //$name_rel_options['default'] = 'Show all';
+  foreach ($name_relationships_terms->terms as $element){
+    $name_rel_options[$element->uuid] = t('Show "' . $element->representation_L10n_abbreviated . '" relationships');
+  }
+  
+  $name_relationships_form['name_relationships_to_show']= array(
+    '#type' => 'checkboxes',
+    '#title' => t('Display name relationships'),
+    '#default_value' => variable_get('name_relationships_to_show', 0),
+    '#options' => $name_rel_options,
+    '#description' => t('Select the name relationships you want to show for the accepted taxa.'),
+  );
+
+  $form['synonymy']['name_relationships'] = $name_relationships_form;
+      /*
+       $form['synonymy'][CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
+       '#type' => 'checkbox',
+       '#title' => t('Show name relations of accepted taxa on taxon page'),
+       '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT),
+       //'#description' => t('Check this if you want the synonymy list to show all the name relationships where other names implies the accepted taxa.')
+       '#description' => t('Check this if you want the synonymy list to show all the name relationships of accepted taxa.')
+       );
+     */
+  $form['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show taxon relations of accepted taxa on taxon page'),
+    '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
+    '#description' => t('Check this if you want the synonymy list to show the <em>"Misapplied Name for"</em> and <em>"Invalid Designation for"</em> relationships of accepted taxa.')
+  );
+
+  return system_settings_form($form);
+      /*
+       $form['synonymy']['cdm_dataportal_name_relations_skiptype_basionym'] = array(
+       '#type' => 'checkbox',
+       '#title' => t('Exclude the basionym relationship type from the taxon page'),
+       '#default_value' => variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1),
+       '#description' => t('')
+       );
+       */
+}
+
+function cdm_settings_layout_taxon(){
+  $collapsed = true;
+  $form = array();
 
 	/* ======  TAXON_PROFILE ====== */
 
 	$form['taxon_profile'] = array(
       '#type' => 'fieldset',
       '#title' => t('Taxon profile'),
-      '#description'   => t('This section covers setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.'),
+      '#description'   => t('<p>This section covers setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.</p>'. 
+                            '<p><strong>Note:</strong> Individual configuration for each tabs or sections is possible below.</p>'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
 	);
+	
+	//--------- TABBED TAXON -------//
+	$form['taxon_profile']['cdm_dataportal_taxonpage_tabs'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Tabbed taxon page'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
+    '#description' => t('<p>If selected split the taxon page into individual tabs for description, images, synonymy. 
+                            If not the taxon data is renderized as a long single page without tabs.</p>')
+	);
+	
+	//---- footnotes ---//
+	$form['taxon_profile']['footnotes'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Footnotes'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+	  '#description' => t('Taxa data such authors, synonyms names or some taxa description text may have annotations or footnotes. When the footnotes are enabled 
+	                       they will be visible (if they exist). Taxon synonymy and taxon speciemens sections or tabs may contain also footnotes.'),
+	);
 
-	$form['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
+	$form['taxon_profile']['footnotes']['cdm_dataportal_all_footnotes'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Do not show footnotes'),
+      '#default_value' => variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES),
+      '#description' => t('Check this if you do not want to show any footnotes')
+	);
+
+	$form['taxon_profile']['footnotes']['cdm_dataportal_annotations_footnotes'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Do not show annotations footnotes'),
+      '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
+      '#description' => t('Check this if you do not want to show annotation footnotes')
+	);
+
+	// ---- PROFILE PICTURE ----//
+	$form['taxon_profile']['picture'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Profile Picture'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+	  '#description' => t('Select a profile picture for taxa. Like a facebook of plants.'),
+	);
+	
+	$form['taxon_profile']['picture']['cdm_dataportal_show_default_image'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable profil picture'),
+      '#default_value' => variable_get('cdm_dataportal_show_default_image', false),
+      '#description'   => t('Show the profil picture.')
+	);
+	
+	$options = cdm_rankVocabulary_as_option();
+	array_unshift($options, '-- DISABLED --');
+	$form['taxon_profile']['picture']['image_hide_rank'] =  array(
+      '#type'          => 'select',
+      '#title'         => t('Hide picture for taxa above'),
+      '#default_value' => variable_get('image_hide_rank', '0'),
+      '#options'       => $options,
+      '#description'   => t('Select which rank of pictures should not have a profil picture.'),
+	);
+	//show picture
+	$selectShowMedia = array(0 => "Show only taxon pictures",
+	1 => "Show taxon and child taxa pictures");
+
+	$form['taxon_profile']['picture']['cdm_dataportal_show_media'] = array(
+      '#type' => 'select',
+      '#title' => t('Available picture files'),
+      '#default_value' => variable_get('cdm_dataportal_show_media', false),
+      '#options' => $selectShowMedia,
+      '#description'   => t('Show the profil pictures current taxon\'s children.')
+	);
+
+	//-- FEATURE TREE --//
+	$form['taxon_profile']['taxon_profile'] = array(
+	 '#type' => 'fieldset',
+     '#title' => t('Features'),
+     '#collapsible' => TRUE,
+     '#collapsed' => TRUE,
+	 '#description' => t('This section covers settings related to the taxon\'s <em>Feature Tree</em>. The <em>feature tree</em> are the taxon\'s
+	                      features such description, distribution, common names, etc. that drupal will render at his taxon profile page.'),
+	);
+	$form['taxon_profile']['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
       '#type' => 'radios',
       '#title'         => t('Taxon profile sections'),
       '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
       '#options' => cdm_get_featureTrees_as_options(TRUE),
-      '#description'   => t('Select a FeatureTree to specify the kins and order of sections to be displayd in the taxon profile.'
+      '#description'   => t('Select the Feature Tree to be displayed at the taxon profile. Click "Show Details" to see the Feature Tree elemets.'
       )
       );
 
-      $form['taxon_profile'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
+      $form['taxon_profile']['taxon_profile'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
       '#type' => 'radios',
       '#title'         => t('Natural language representation of structured descriptions'),
       '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, null),
@@ -391,18 +532,13 @@ function cdm_settings_layout_taxon(){
       )
       );
 
-      $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
-      $form_tittle = 'Images';
-      $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed);
 
-
-
-      /* ------ DISTRIBUTION LAYOUT ------ */
+  /* ------ DISTRIBUTION LAYOUT ------ */
 
       $form['taxon_profile']['distribution_layout'] = array(
-        '#title' => t('Distribution layout'),
+        '#title' => t('Distribution'),
         '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
+        '#collapsed' => TRUE,
         '#type' => 'fieldset',
       	'#description' => t('Select if you want to sort or not the distribution text located below the distribution map.'),
       );
@@ -416,46 +552,46 @@ function cdm_settings_layout_taxon(){
         'HIDE_TDWG2' => t('Sorted without TDWG Level 2'),
       ));
 
-      /* ====== SYNONYMY ====== */
-      $form['synonymy'] = array(
+ /* ====== SYNONYMY ====== */
+  $form['taxon_profile']['synonymy'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Synonymy'),
+      '#title' => t('Taxon Synonymy (Tab)'),
       '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
-      '#description' => t('This section covers the settings related to the taxon profile tab, also known as the <b>Synonymy</b> tab.'),
-      );
+      '#collapsed' => TRUE,
+      '#description' => t('This section covers the settings related to the taxon <b>synonymy</b> tab.'),
+  );
 
-      $form['synonymy']['cdm_dataportal_nomref_in_title'] = array(
+  $form['taxon_profile']['synonymy']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show accepted taxon on top of the synonymy'),
     '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE),
     '#description' => t('If checked, the first homotypic taxon is a repetition of the accepted taxon most likely
                         with the full nomenclatural reference (depending on the currently chosen theme).')
-      );
+  );
 
-      $form['synonymy']['cdm_dataportal_display_is_accepted_for'] = array(
+  $form['taxon_profile']['synonymy']['cdm_dataportal_display_is_accepted_for'] = array(
     '#type' => 'checkbox',
     '#title' => t('Display <em>is accepted for ...</em> on taxon pages when coming from a synonym link.'),
     '#default_value' => variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR),
     '#description' => t('Check this if after doing a search and clicking on a synonym you want to see the "accept of" text for the accepted synonym.')
-      );
+  );
 
-      $name_relationships_terms = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_NAME_RELATIONSHIP_TYPE);
-      $name_rel_options = array();
-      //$name_rel_options['default'] = 'Show all';
-      foreach ($name_relationships_terms->terms as $element){
-      	$name_rel_options[$element->uuid] = t('Show "' . $element->representation_L10n_abbreviated . '" relationships');
-      }
+  $name_relationships_terms = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_NAME_RELATIONSHIP_TYPE);
+  $name_rel_options = array();
+  //$name_rel_options['default'] = 'Show all';
+  foreach ($name_relationships_terms->terms as $element){
+    $name_rel_options[$element->uuid] = t('Show "' . $element->representation_L10n_abbreviated . '" relationships');
+  }
+  
+  $name_relationships_form['name_relationships_to_show']= array(
+    '#type' => 'checkboxes',
+    '#title' => t('Display name relationships'),
+    '#default_value' => variable_get('name_relationships_to_show', 0),
+    '#options' => $name_rel_options,
+    '#description' => t('Select the name relationships you want to show for the accepted taxa.'),
+  );
 
-      $name_relationships_form['name_relationships_to_show']= array(
-  '#type' => 'checkboxes',
-  '#title' => t('Display name relationships'),
-  '#default_value' => variable_get('name_relationships_to_show', 0),
-  '#options' => $name_rel_options,
-  '#description' => t('Select the name relationships you want to show for the accepted taxa.'),
-      );
-
-      $form['synonymy']['name_relationships'] = $name_relationships_form;
+  $form['taxon_profile']['synonymy']['name_relationships'] = $name_relationships_form;
       /*
        $form['synonymy'][CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
        '#type' => 'checkbox',
@@ -464,46 +600,36 @@ function cdm_settings_layout_taxon(){
        //'#description' => t('Check this if you want the synonymy list to show all the name relationships where other names implies the accepted taxa.')
        '#description' => t('Check this if you want the synonymy list to show all the name relationships of accepted taxa.')
        );
-       */
-      $form['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+     */
+  $form['taxon_profile']['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show taxon relations of accepted taxa on taxon page'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
     '#description' => t('Check this if you want the synonymy list to show the <em>"Misapplied Name for"</em> and <em>"Invalid Designation for"</em> relationships of accepted taxa.')
-      );
-
-      /*
-       $form['synonymy']['cdm_dataportal_name_relations_skiptype_basionym'] = array(
-       '#type' => 'checkbox',
-       '#title' => t('Exclude the basionym relationship type from the taxon page'),
-       '#default_value' => variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1),
-       '#description' => t('')
-       );
-       */
-
-      /*
-       $form['cdm_dataportal_descriptions_separated'] = array(
-       '#type' => 'checkbox',
-       '#title' => t('Separate Descriptions'),
-       '#default_value' => variable_get('cdm_dataportal_descriptions_separated', 0),
-       '#description' => t('By default corresponding elements of different descriptions are joined together'
-       .' into a common section per feature (i.e. type of description).'
-       .' Check this box to allow displaying all descriptions separately.')
-       );
-       */
-
-      // ====== SPECIMENS ====== //
-      $form['specimens'] = array(
+  );
+      
+  // ====== SPECIMENS ====== //
+  $form['taxon_profile']['specimens'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Specimens'),
+      '#title' => t('Taxon Specimens (Tab)'),
       '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
-      );
-      $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
-      $form_title = 'Specimen media';
-      $form['specimens'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
-
-      return system_settings_form($form);
+      '#collapsed' => TRUE,
+      '#description' => t('This section covers the settings related to the taxon <b>specimens</b> tab.'),
+  );
+  $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
+  $form_title = 'Specimen media';
+  $form_description = 'TODO: write text.';
+  $form['taxon_profile']['specimens'][] = 
+    cdm_dataportal_create_gallery_settings_form($form_name, $form_title, FALSE, $form_description);
+    
+       //-- MEDIA THUMBNAILS --//
+      $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
+      $form_tittle = 'Taxon Images (Tab)';
+      $form_description = 'This section covers the settings related to the taxon images tab. Taxon images display all the media (in this case images) found for a given taxon as a thumbnails.';
+      $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description);
+    
+      
+  return system_settings_form($form);
 }
 
 function cdm_settings_layout_search(){
@@ -515,14 +641,17 @@ function cdm_settings_layout_search(){
       '#title' => t('Taxa Search'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
-	  '#description' => t('The data portal allows the users to perform searchs, this section covers the search settings.'),
+	  '#description' => t('<p>The data portal allows the users to perform searchs.</p><p>To perform searchs
+	                       the block <em>CDM Taxon Search</em> should be enabled and visible for users 
+	                       where they can write the text to be searched. You can find Drupal block configuration 
+	                       site at <a href="./?q=admin/build/block">Administer&#45&#62Site building&#45&#62Blocks</a></p> '),
       );
       
 	$form['search_settings']['cdm_dataportal_search_items_on_page'] = array(
     '#type' => 'textfield',
-    '#title' => t('Search page size'),
+    '#title' => t('Results per page'),
     '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
-    '#description' => t('Number of Names to display per page in search results.')
+    '#description' => t('Number of results to display per page.')
 	);
 
 	// --- SEARCH TAXA GALLERY ---- //
@@ -530,27 +659,40 @@ function cdm_settings_layout_search(){
 	$collapsed = FALSE;
 	$form_name = CDM_DATAPORTAL_SEARCH_GALLERY_NAME;
 	$form_title = 'Taxa Search thumbnails';
-	$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
+	$form_description = 'Search results may show thumbnails. ';
+	$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
 	return system_settings_form($form);
 }
 
 function cdm_settings_layout_media(){
+	
 	$form = array();
+	
+	$form['media_settings'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Images Settings'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+	  '#description' => t('This section covers the settings related to the taxon images tab.'),
+      );
 
-	$form['image_gallery_viewer'] =  array(
+	$form['media_settings']['image_gallery_viewer'] =  array(
     '#type'          => 'select',
     '#title'         => t('Image gallery viewer'),
     '#default_value' => variable_get('image_gallery_viewer', 'default'),
     '#options' => array(
         'default' => t('Standart image gallery'),
         'fsi' => t('FSI viewer (requires FSI server!)'),
+	'#description' => t('Select your '),
 	));
 
 	// --- MEDIA GALLERY ---- //
 	$form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
 	$form_title = 'Media gallery';
-	$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
+	$form_description = 'What it is supposed to do this form? TODO: write description text.';
+	//$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
+	$form['media_settings'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
 
 	return system_settings_form($form);
@@ -574,7 +716,7 @@ function cdm_settings_geo(){
       '#title' => t('Geo Server Settings'),
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
-      '#description' => t('Configuration and selection of your geo server.'),
+      '#description' => t('Configuration and selection of your geo server. The Geo Server is the responsible for generating the maps.'),
 	 );
 	      
 	$form['geoserver']['edit_map_server'] = array(
@@ -589,7 +731,7 @@ function cdm_settings_geo(){
 	 */
 	      'ALTERNATIVE' => '-- Alternative URL --'
 	      ),
-    '#description' => t('Here it is possible to select the Map Server you want the portal to connect to generate the geographic data.
+    '#description' => t('Select the Map Server you want the data portal to connect.
                          If you want to introduce a custom address just select the Alternative URL value and fill the field Geoservice 
                          Access Point - Alternative URL with the custem ip address.')
 	      );
@@ -722,13 +864,14 @@ function cdm_settings_geo(){
       '#title' => t('Map legend'),
       '#collapsible' => FALSE,
       '#collapsed' => TRUE,
+	  '#description' => t('Configure the maps legend.')  
 	      );
 
 	      $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_on'] = array(
     '#type' => 'checkbox',
     '#title' => t('<b>Display a map legend</b>'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_legend_on', TRUE),
-    '#description' => t('Check this if you like a legend to be displayed with the maps. ')
+    '#description' => t('Check this if you like a legend to be displayed with the maps.')
 	      );
 
 	      $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legendOpacity'] = array(
@@ -772,17 +915,49 @@ function cdm_settings_geo(){
 	      return system_settings_form($form);
 }
 
+
+function cdm_settings_cache(){
+  
+  $form = array();
+	
+  $form['cache_settings'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Cache Settings'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+	  '#description' => t('<p>TODO: cache process does not work, check java script.</p><p>When caching is enabled all single taxon sites are stored in an internal drupal cache doing 
+                           the portal response of taxa pages faster. This is possible because the sites are loaded from 
+                           the cache and are not created from scratch.</p>'),
+      );
+  
+  $form['cache_settings']['cdm_webservice_cache'] =  array(
+    '#type'          => 'checkbox',
+    '#title'         => t('<strong>Enable caching</strong>'),
+	'#options'		 => cdm_help_general_cache(),
+    '#default_value' => variable_get('cdm_webservice_cache', 1),
+    '#description'   => t('<p>Enable drupal to load taxa pages from the cache.</p>' . 
+	                       '<p><strong>Note:</strong> If taxa are modified by the editor or any other application the changes will be not 
+	                       visible till the cache is erased. Therefore developers should deactived this feature when they 
+	                       are working on the CDM Dataportal Module.</p>')
+    );
+
+  $form['cache_settings']['cdm_run_cache'] = array(
+    '#value' => cdm_view_cache_site()    
+  );
+
+  return system_settings_form($form);
+}
+
 /**
  * @return walk and cache all taxon pages
  */
 function cdm_view_cache_site(){
 
-	_add_js_progressbar();
-
-	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cache_all_taxa.js');
-
 	$out = '';
-
+    
+    _add_js_progressbar();
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cache_all_taxa.js');
+	
 	$request_params = array();
 	$request_params['query'] = '%';
 	$request_params['tree'] = variable_get('cdm_taxonomictree_uuid', false); //cache only the dafault classification
@@ -793,18 +968,14 @@ function cdm_view_cache_site(){
 	$search_url = uri_uriByProxy($search_url);
 	$taxon_page_url = url('cdm_dataportal/taxon/');
 	                       
-	$out .= '<form id="cache_site">';
-	$out .= '<br /><h4>'.t('Cache all taxon pages').'</h4>';
-	$out .= 'When the cache is enabled (Enable Caching checkbox at <a href="./?q=admin/settings/cdm_dataportal/general">general settings</a>) all single taxon sites are stored in an internal drupal cache doing 
-  the portal response of taxa sites faster. It means the taxa sites are not created from scratch but loaded
-  from the cache. <b>When you lunch the cache process the cache is filled and ready to be enabled.</b><br/>
+	
+	$out .= t('<p><strong>Cache all taxon pages</strong></p>');
+	$out .= '<p>When you lunch the cache process the cache is filled and ready to be enabled.<br/>
   Remember that when you load the taxa from the cache last changes on taxa will be not visible till you erase
-  the cache and fill it again.<br/><br/>';
-	$out .= 'Before  running the cache bot you have to empty the cache manually:<ul>'
-	.'<li>Navigate to "Site Configuration -> General"</li>'
-	.'<li>Uncheck "Enable Caching" checkbox</li>'
-	.'<li>Check "Enable Caching" checkbox</li>'
-	.'</ul>';
+  the cache and fill it again.</p>';
+	$out .= '<p>Before  running the cache bot you have to empty the cache manually</p>';
+	
+	$out .= '<form id="cache_site">';
 	$out .= '<div>'.t('This caching process may take long time and could cause heavy load on your server').'</div>';
 	$out .= '<div id="progress"></div>';
 	$out .= '<input type="hidden" name="searchTaxaUrl" value="'.$search_url.'"/>';
