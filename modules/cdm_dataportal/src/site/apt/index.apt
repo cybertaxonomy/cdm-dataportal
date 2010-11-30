@@ -1,34 +1,5 @@
 EDIT CDM Data Portal
 
-   The EDIT Data Portal publishes data hosted in a CDM Community Store online.
-
-   Each taxon is represented by an individual page, which displays the list of synonyms,
-   related taxa, occurrences, descriptions, media, and more. The list of homotypic and 
-   heterotypic synonyms is ordered historically and grouped by types.
-
-   It has been implemented as a module for the content management system Drupal.
-   Thus the EDIT Data Portal offers a great deal of flexibility making it possible
-   to adapt the EDIT Data Portal to the individual needs of a community.
-
-Drupal    
-
-    Drupal as multipurpose tool and application framework for biodiversity 
-    information networks.
-    
-    The open source content management system Drupal becomes more and more widely 
-    used in the area of biodiversity informatics. This popularity is not only
-    due to its capabilities to just manage content for
-    websites. The genius of what the Drupal community has done, is to reduce all 
-    of the aspects of social software to the core and then build a platform that 
-    could be infinitely extended to allow the assembly of almost any styles of 
-    online social interaction. During the past years the community contributed 
-    over 3000 different modules extending the Drupal core and thus on one hand 
-    providing a highly flexible construction kit and on the other hand showing by 
-    many examples that nearly everything is possible, perhaps only limited by the 
-    human imagination.
-
-In Detail
-
     The EDIT Data Portal publishes taxonomic data data hosted in a CommunityStore
     either to a closed community or to the public at large. It has been implemented 
     as a module for the content management system Drupal. The term
@@ -69,6 +40,25 @@ In Detail
     publish the work of the EDIT exemplar groups focusing on the taxonomic groups 
     Cichorieae, Diptera and Palmae. Links to the demosites are found below.
 
+
+Drupal    
+
+    The open source content management system Drupal becomes more and more widely 
+    used in the area of biodiversity informatics. This popularity is not only
+    due to its capabilities to just manage content for
+    websites. The genius of what the Drupal community has done, is to reduce all 
+    of the aspects of social software to the core and then build a platform that 
+    could be infinitely extended to allow the assembly of almost any styles of 
+    online social interaction. During the past years the community contributed 
+    over 3000 different modules extending the Drupal core and thus on one hand 
+    providing a highly flexible construction kit and on the other hand showing by 
+    many examples that nearly everything is possible, perhaps only limited by the 
+    human imagination.
+    
+    The EDIT Data Portal has been developed as a drupal module to take the 
+    advantage of the community support and already available resources. Since we
+    offer CDM Data Portal as a package with drupal together it is not necessary 
+    to spend extra time learning about drupal.
 
 ~~Constructing the EDIT platform for cybertaxonomy
 

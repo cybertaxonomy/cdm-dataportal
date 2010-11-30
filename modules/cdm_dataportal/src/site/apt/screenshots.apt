@@ -1,5 +1,50 @@
+Examples
+
+   It is possible to see the data portal in action, the following links contains some collections using it.
+   
+   *{{{http://wp6-cichorieae.e-taxonomy.eu/portal/}Cichorieae}} group of plants.
+   
+   *{{{http://www.palmweb.org}Palmae}} group of plants.
+   
+   *{{{http://160.45.63.151/dataportal/diptera/}Diptera}} group of flies and mosquitoes.
+   
 Screenshots
 
-   Coming soon.
+    The welcome site of the palmweb with the <<taxon tree>> (the classification box) and
+    the <<search>> (the search box) at the link side of the page. On the 
+    middle of the page is the welcome text.
+
+[./images/palmae2.png] Figure caption
+
+    
+    The welcome site of the cichorieae with the <<taxon tree>> (the classification box),
+    the <<search>> (the search box) and the <<user login>> at the link side of the page. On the 
+    middle of the page is the welcome text.
+    
+[./images/cichorieae2.png] Figure caption
+
+
+   A screenshot of the palmweb portal after performing a search for the string "Coc"
    
-[./images/cichorieae-search.PNG] Figure caption
+[./images/palmae5.png] Figure caption
+
+
+   Screenshot of the <<Lactuca Alpina>> from cichorieae portal. We can see how a taxon 
+   profil (general tab) page looks like with his <<profile picture>> and 
+   <<distribution map>>. We can see the <<footnotes>> for the distribution references 
+   (the small red numbers). Also the <<taxon tree>> is focused at the Lactuca Alpina
+   taxon under Cichorieae->Lactucinae->Lactuca->L. alpina at the left side of the page.
+   
+[./images/cichorieae4.png] Figure caption
+
+   Screenshot of the Crepis Mollis taxon from cichorieae portal. This is how the 
+   synonymy tab looks like. The heterotypic synonyms are grouped and ordered by date.
+   The footnotes are displayed at the end of the page and the red links 
+
+[./images/cichorieae5.PNG] Figure caption
+
+   The following screenshot is from one of the configuration pages of the data portal,
+   it contains the instructions for a correct configuration. At the top right corner 
+   are the different configurable options (general, geo & map, layout and cache).
+   
+[./images/settings1.PNG] Figure caption
