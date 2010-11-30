@@ -1,0 +1,698 @@
+<?php
+// $Id$
+
+/**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ */
+
+
+function theme_cdm_feature_nodesTOC($featureNodes){
+
+	$out .= '<ul>';
+
+	foreach($featureNodes as $node){
+		// process $descriptionElements with content only
+		if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0 || count($node->children) > 0){
+
+			$featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
+			// HACK to implement images for taxa, should be removed
+			if($node->feature->uuid != UUID_IMAGE){
+				$out .= '<li>'.l(t(theme('cdm_feature_name', $featureRepresentation)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($featureRepresentation)).'</li>';
+			}
+		}
+	}
+
+	$out .= '</ul>';
+	return $out;
+}
+
+function theme_cdm_feature_name($feature_name){
+	//TODO replace by using translations ?
+	switch($feature_name){
+		default: return t(ucfirst($feature_name));
+	}
+}
+
+function theme_cdm_featureTrees($mergedTrees, $taxon){
+	if(!$mergedTrees){
+		return;
+	}
+	foreach($mergedTrees as &$mTree){
+		//TODO diplay title and reference in case of multiple $mergedTrees -> theme
+		$out .= theme('cdm_feature_nodes', $mTree->root->children, $taxon);
+	}
+	return $out;
+}
+
+
+
+function theme_cdm_featureTreeTOCs($mergedTrees){
+
+	if(!$mergedTrees){
+		return;
+	}
+	//FIXME
+	$out = '<div class="featureTOC">';
+	$out .= '<h2>' . t('Content') .'</h2>';
+
+	//TODO diplay title and reference in case of multiple $mergedTrees -> theme
+
+	foreach($mergedTrees as &$mTree){
+		$out .= theme('cdm_feature_nodesTOC', $mTree->root->children);
+	}
+
+	$out .= '</div>';
+	return $out;
+}
+
+
+
+function theme_cdm_feature_nodes($featureNodes, $taxon){
+
+	RenderHints::pushToRenderStack('feature_nodes');
+	$gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
+
+	foreach($featureNodes as $node){
+		// process $descriptionElements with content only
+		if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0 || count($node->children) > 0){
+			$featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
+			$block->module = 'cdm_dataportal';
+
+			if($node->feature->uuid != UUID_IMAGE){
+				$block->delta = generalizeString($featureRepresentation);
+				$block->subject = theme('cdm_feature_name', $featureRepresentation);
+				$block->module = "cdm_dataportal-feature";
+				$block->content = '';
+
+				// Display cdm distribution map TODO this is a HACK to a proper generic implementation?
+				if($node->feature->uuid == UUID_DISTRIBUTION){
+					$block->content .= theme('cdm_distribution_map', $taxon);
+				}
+
+				//get the text for the feature block
+				//if ($node->feature->titleCache == 'Common Name'){
+				if ($node->feature->uuid == UUID_COMMON_NAME){
+					$block->content .= theme('cdm_common_names', $node->descriptionElements);
+				} else {
+					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
+				}
+
+				// get media for the feature block
+				$media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
+				$captionElements = array('title', 'rights');
+				//$block->content .= theme('cdm_media_gallerie', $media_list, "test", 150, 4, false, $captionElements);
+				$block->content .= theme('cdm_media_gallery', $media_list,
+				CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
+				$gallery_settings['cdm_dataportal_media_maxextend'],
+				$gallery_settings['cdm_dataportal_media_cols'],
+				$gallery_settings['cdm_dataportal_media_maxRows'],
+				$captionElements
+				);
+
+				$block->content .= theme('cdm_footnotes', $node->feature->uuid);
+				$block->content .= theme('cdm_annotation_footnotes', $node->feature->uuid);
+
+				// set anchor; FIXME put anchor in $block->subject
+				$out .= '<a name="'.$block->delta.'"></a>';
+				$out .= theme('block', $block);
+
+			}
+		}
+		// theme
+		if(count($node->children) > 0){
+			/*
+			 $out .= '<div class="nested_description_elements">';
+			 $out .= theme('cdm_feature_nodes', $node->children, $taxon);
+			 $out .= '</div>';
+			 */
+			$text = '';
+			foreach ($node->children as $child){
+			 //$out .= theme('cdm_descriptionElementTextData', $child->descriptionElements[0], false);
+			 if (is_array($child->descriptionElements)){//if condition added to avoid warnings
+			 	foreach ($child->descriptionElements as $element) {
+			 		$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+			 		$description = str_replace($element->feature->titleCache, '<em>' . $element->feature->titleCache . '</em>', $description);
+			 	}
+			 	$text .= $description;
+			 	$description = '';
+			 }
+			}
+			$out .= $text;
+		}
+
+	}
+	RenderHints::popFromRenderStack();
+	return $out;
+}
+
+function theme_FeatureTree_hierarchy($FeatureTreeUuid){
+
+	if(!is_uuid($FeatureTreeUuid)){
+		return;
+	}
+  $out = '';
+	$featureTree = cdm_ws_get(CDM_WS_FEATURETREE, array($FeatureTreeUuid));
+	if($featureTree && $featureTree->root){
+		$out = '<ul class="'.$featureTree->class.'">';
+		$out .= theme('FeatureTree_hierarchy_children', $featureTree->root);
+		$out .= '</ul>';
+	}
+	return $out;
+}
+
+function theme_FeatureTree_hierarchy_children($node){
+
+	$out = '';
+	if($node->children){
+
+		foreach($node->children as $childNode){
+      $out .= '<li>'.check_plain($childNode->feature->representation_L10n);
+      if($childNode->childen && count($childNode->childen) > 0){
+      	$out .= '<ul>'.theme('FeatureTree_hierarchy_children', $childNode).'</ul>';
+      }
+      $out .= '</li>';
+		}
+	}
+	return $out;
+}
+
+
+
+
+function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
+	$out = '<'.$enclosingHtml.' class="description" id="'.$feature->representation_L10n.'">';
+
+	if($sortArray) sort($elementArray);
+
+	$out .= join($elementArray, $glue);
+
+	$out .= '</'.$enclosingHtml.'>';
+	return $out;
+}
+
+
+function theme_cdm_descriptionElement_CommonTaxonName($element){
+	$out = $element->language->representation_L10n . ' (' . $element->area->titleCache . '): ' . $element->name;
+	return $out;
+}
+/**
+ * TODO: assign a new name to the function? because it is used for the citations
+ *       textdata elements and not for all text data description elements
+ * @param $element The description element which contains the text information
+ * @param $asListElement A boolean which determines whether the citations should
+ *                       be renderer as a list or not
+ * @return unknown_type Html to be renderized in drupal
+ */
+function theme_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid = null){
+	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+	$sourceRefs = '';
+	$result = array();
+	$out;
+	$res_author;
+	$res_date;
+
+	if(is_array($element->sources)){
+		foreach($element->sources as $source){
+			$referenceCitation = theme('cdm_DescriptionElementSource', $source);
+			if($description && strlen($description) > 0 && $referenceCitation ){
+				$sourceRefs .= ' ('.$referenceCitation.')' ;
+			}else if ($referenceCitation){
+				$sourceRefs = $referenceCitation;
+			}
+
+			if(strlen($sourceRefs) > 0){
+				$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+			}
+
+			if ($source->nameUsedInSource->uuid){ //do a link to name page
+				$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
+				path_to_name($source->nameUsedInSource->uuid),
+				array(), NULL, NULL, FALSE ,TRUE);
+			}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
+				$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
+			}
+
+			if ($asListElement){
+				$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+				//adding ":" if necesary
+				if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+					$out .= ': ';
+				}
+				$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+			}else{
+				if ($name_used_in_source_link_to_show){
+					$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+				}
+				$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
+			}
+		}
+	}
+	//if no sources, print the description
+	if(!isset($out)) {
+		$out = $description;
+	}
+	//printing annotations footnotes
+	//$out .= theme('cdm_annotations_as_footnotekeys', $element);
+	// add annotations as footnote key
+	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
+	return $out;
+}
+
+function theme_cdm_common_names($elements){
+	$text_data_out = '';
+	$common_name_out = '';
+	$separator = ',';
+	$textData_commonNames = array();
+
+
+	if (is_array($elements)){//var_dump($elements);
+		foreach ($elements as $element){
+			if ($element->class == 'CommonTaxonName'){
+				//$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
+				if ($element->language->representation_L10n){
+					$key = '<b>' . $element->language->representation_L10n . '</b>';
+					$key .= (strlen($element->area->titleCache)>0) ? ' (' . $element->area->titleCache . ')' : '';
+				}
+				$common_names[$key][] = $element;
+			}else if ($element->class == 'TextData'){
+		 //else if ($element->class == 'TextData' && $element->feature->uuid == UUID_COMMON_NAME){
+				$textData_commonNames[] = $element;
+			}
+		}
+	}
+	//handling common names
+
+	if (count($common_names) > 0){
+		//sorting the a-array based on the area (key)
+		ksort($common_names);
+		//creating the output to be render by drupal
+		foreach ($common_names as $key => $elements){
+			$rendered_element_list = '';
+			foreach($elements as $element){
+				$sourcesFootnoteKeyList = '';
+				// adding footnotes sources
+				foreach($element->sources as $source){
+					if(_is_original_source_type($source)){
+						$_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', $source, false));
+						$sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));
+					}
+				}
+				if($element->name){
+				  $rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
+			  }
+			}
+			if ($key){
+			 $common_name_out .= (strlen($common_name_out) > 0 ? '; ': '') . $key . ': ' . $rendered_element_list;
+			}else{
+			  $common_name_out .= (strlen($common_name_out) > 0 ? '; ': '') . $rendered_element_list;
+			}
+		}
+	}
+	//handling commons names as text data
+	foreach($textData_commonNames as $text_data_element){//var_dump($text_data_element);
+		$text_data_out .= theme('cdm_descriptionElementTextData', $text_data_element, true, $text_data_element->feature->uuid);
+	}
+
+	$common_name_out = "<div class=common_names_as_common_names> $common_name_out </div>";
+  $out_array[] = $text_data_out;
+	$common_name_out_text_data = '<div class=common_names_as_text_data>' . theme('cdm_descriptionElementArray', $out_array, $element->feature) . '</div>';
+
+	return $common_name_out . $common_name_out_text_data;
+	//return $common_name_out . theme('cdm_descriptionElementArray', $out_array, $element->feature);
+	//return "<div class=common_names> $common_name_out $common_name_out_text_data";
+}
+
+/**
+ * Theme a list of description elements, usually of a specific feature type
+ * @param $descriptionElements
+ * @return unknown_type
+ */
+function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxon_uuid){
+	$outArray = array();
+	if(variable_get('distribution_sort', 'NO_SORT')  != 'NO_SORT'){
+		$glue = '';
+		$enclosingHtml = 'dl';
+	} else {
+		$glue = '';
+		$enclosingHtml = 'ul';
+	}
+	$sortOutArray = false;
+	$distributionElements = array();
+
+	RenderHints::pushToRenderStack('cdm_descriptionElements');
+	$common_names = theme('cdm_common_names', $descriptionElements);
+	if(is_array($descriptionElements)){//avoiding warning box in drupal for flora malesiana
+		foreach($descriptionElements as $descriptionElement){
+			if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
+				if($descriptionElement->class == 'Distribution'){
+					$distributionElements[]= $descriptionElement;
+				} else if($descriptionElement->class == 'TextData'){
+					$asListElement = false;
+					$repr = theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $descriptionElement->feature->uuid);
+
+					if( !array_search($repr, $outArray)){
+						$outArray[] = $repr;
+						$glue = '<br/> ';
+						$sortOutArray = true;
+						$enclosingHtml = 'p';
+					}
+				}
+			}else if($descriptionElement->class == 'TextData'){
+				$asListElement = true;
+				$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $descriptionElement->feature->uuid);
+			}else if ($descriptionElement->class == 'CommonTaxonName') {
+				$outArray[] = theme('cdm_descriptionElement_CommonTaxonName', $descriptionElement);
+			}else {
+				$outArray[] = '<li>No method for rendering unknown description class: '.$descriptionElement->classType.'</li>';
+			}
+		}
+	}
+	//if feature = NAME USAGE sort the list of sources
+	//this is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE
+	if($descriptionElement->feature->uuid == UUID_NAME_USAGE){
+		sort($outArray);
+	}
+
+	if(variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT'){
+		$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
+	}else{
+		$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
+	}
+	//$outArray[] = theme('cdm_descriptionElementDistribution', $distributionElements);
+	//$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
+
+	// take the feature of the last $descriptionElement
+	$feature = $descriptionElement->feature;
+	$out = theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+
+	RenderHints::popFromRenderStack();
+	return $out;
+}
+
+/**
+ *
+ * @param unknown_type $descriptionElements
+ * @return unknown_type
+ */
+function theme_cdm_descriptionElementDistribution($descriptionElements){
+	$out = '';
+	$separator = ',';
+	RenderHints::pushToRenderStack('descriptionElementDistribution');
+	RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+	foreach($descriptionElements as $descriptionElement){
+		// annotations as footnotes
+		//$annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
+		$footNoteKeys = cdm_annotations_as_footnotekeys($descriptionElement);
+		// source references as footnotes
+		foreach($descriptionElement->sources as $source){
+			if(_is_original_source_type($source)){
+				$fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
+				cdm_add_footnote_to_array($footNoteKeys, $fn_key);// ensure uniqueness of the footnote keys
+			}
+		}
+		// sort and render footnote keys
+		$footnoteKeyListStr = '';
+		asort($footNoteKeys);
+		foreach($footNoteKeys as $footNoteKey){
+			$footnoteKeyListStr .= theme('cdm_footnote_key', $footNoteKey, ($footnoteKeyListStr ? $separator : ''));
+		}
+		$out .= '<span class="descriptionElement descriptionElement-'.$descriptionElement->uuid.'">'.$descriptionElement->area->representation_L10n . $footnoteKeyListStr . ' </span>';
+	}
+
+	//$out = substr($out, 0, strlen($out)-strlen($separator) );
+
+	RenderHints::popFromRenderStack();
+	return $out;
+
+}
+/**
+ * Function target is to compare two different foootnotes objects.
+ * The comparation is based on the footnote key. The one which is 
+ * displayed as footnote number.
+ * 
+ * @param footnote object $a
+ * @param footnote object $b
+ */
+function footnotes_key_compare($a, $b){
+	$res = 0;
+	if ($a->keyStr < $b->keyStr){
+		$res = -1;
+	}elseif ($a->keyStr > $b->keyStr){
+		$res = 1;
+	}
+	return $res;     
+}
+
+function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionElements){
+	//returning null if no description elements
+	if ($descriptionElements == null){
+		return '';
+	}
+	//initialization some variables
+	$out = '';
+	$separator = ',';
+	RenderHints::pushToRenderStack('descriptionElementDistribution');
+	RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+	//getting all the taxon description for a given taxon
+	$taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon_uuid);
+	foreach ($taxonDescriptions as $description){
+		$descriptions_uuids[] = $description->uuid;
+	}
+	//getting the sortered distributions (omiting level ??)
+	$request_params = array();
+	$request_params['omitLevels'] = UUID_NAMEDAREALEVEL_TDWGLEVEL_2;
+	$ordered_areas = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE, join(',',$descriptions_uuids), queryString($request_params));
+	$ordered_areas = $ordered_areas->rootElement->children;
+
+	//printing the distributions
+	foreach ($ordered_areas as $element_level1){
+		//level1
+		if ($element_level1->data){
+			$out .= '<dt>' . $element_level1->data->area->representation_L10n . ':</dt> ';
+		}
+		$out .= '<dd>';
+
+		//level3
+		foreach ($element_level1->children as $element_level3){
+			if ($element_level3->data){
+				$text_l3 = $element_level3->data->area->representation_L10n;
+			}
+			$fnKeysLevel3Str = '';
+			$fnKeysLevel3 = cdm_annotations_as_footnotekeys($element_level3->data);
+			foreach($element_level3->data->sources as $source){
+				if(_is_original_source_type($source)){
+					$fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
+					cdm_add_footnote_to_array($fnKeysLevel3, $fn_key3);
+				}
+			}
+			//level4
+			$l4_regions = array();
+			foreach ($element_level3->children as $element_level4){
+				if ($element_level4->data){
+					$text_l4 = $element_level4->data->area->representation_L10n;
+					$l4_regions[$element_level3->data->area->representation_L10n] = '';
+					$fnKeysLevel4Str = '';
+					$fnKeysLevel4 = cdm_annotations_as_footnotekeys($element_level4->data);
+					foreach($element_level4->data->sources as $source){
+						if(_is_original_source_type($source)){
+							$fn_key4 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
+							cdm_add_footnote_to_array($fnKeysLevel4, $fn_key4);
+						}
+					}
+					usort($fnKeysLevel4, "footnotes_key_compare");
+					$l4_regions[$text_l4] = $fnKeysLevel4;
+				}
+			}//level4
+			//managing level3 and level4 for generating the right output
+			usort($fnKeysLevel3, "footnotes_key_compare");
+			foreach ($fnKeysLevel3 as $key3){
+				foreach ($l4_regions as $key4 => $value4){
+					cdm_add_footnote_to_array($l4_regions[$key4], $key3);
+				}
+			}
+			if ($element_level3->numberOfChildren == 1 &&
+			 $text_l3 == $element_level3->children[0]->data->area->representation_L10n){
+				//var_dump($element_level3->children[0]->data->area->representation_L10n);
+				$fnStr = '';
+				$region = array_pop($l4_regions);
+				foreach($region as $key){
+					$fnStr .= theme('cdm_footnote_key', $key, ($fnStr ? $separator : ''));
+				}
+				$out .= "$text_l3 $fnStr; ";
+			}else{
+				$fnKeysLevel3Str = '';
+				foreach($fnKeysLevel3 as $key){
+					$fnKeysLevel3Str .= theme('cdm_footnote_key', $key, ($fnKeysLevel3Str ? $separator : ''));
+				}
+				$text_l4_aux = '';
+				foreach ($l4_regions as $key => $value){
+					$fnKeysLevel4Str = '';
+					if (is_array($l4_regions[$key])) {
+						foreach ($l4_regions[$key] as $fnkey){//warning why?
+							$fnKeysLevel4Str .= theme('cdm_footnote_key', $fnkey, ($fnKeysLevel4Str ? $separator : ''));
+						}
+					}
+					if ($key != $text_l3 || sizeof($l4_regions > 1)){
+						$text_l4_aux .= "$key $fnKeysLevel4Str, ";
+					}
+				}
+				$text_l4_aux = substr($text_l4_aux, 0, -2);
+				if (strlen($text_l4_aux) > 0){
+					$out .= "$text_l3 $fnKeysLevel3Str ( $text_l4_aux ); ";
+				}else{
+					$out .= "$text_l3 $fnKeysLevel3Str; ";
+				}
+
+			}
+		}//level3
+		$out = substr($out, 0, -2);
+		$out .= '.</dd>';
+	}//level1
+
+	RenderHints::popFromRenderStack();
+	return $out;
+}
+
+function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
+
+	if(isset($descriptionElementSource->citation)){
+		$out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
+	}
+	return $out;
+}
+
+
+/*
+ function theme_cdm_descriptionElementDistribution($descriptionElements){
+
+ $out = '';
+ $separator = ',';
+ RenderHints::pushToRenderStack('descriptionElementDistribution');
+ RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+ foreach($descriptionElements as $descriptionElement){
+ // annotations as footnotes
+ $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
+ // source references as footnotes
+ $sourcesFootnoteKeyList = '';
+ foreach($descriptionElement->sources as $source){
+ if(_is_original_source_type($source)){
+ $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, false));
+ $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : ''));
+ }
+ }
+ if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
+ $annotationFootnoteKeys .= $separator;
+ }
+ $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList . ' ';
+ }
+
+ $out = substr($out, 0, strlen($out)-strlen($separator) );
+
+ RenderHints::popFromRenderStack();
+ return $out;
+
+ }
+ */
+
+
+/**
+ * TODO
+ * Quick-and-dirty solution to show distribution service to exemplar groups
+ *
+ * @param unknown_type $featureTo
+ * @return unknown
+ */
+function theme_cdm_distribution_map($taxon){
+
+	$server = getEDITMapServiceURI();
+
+	if(!$server){
+		//warning message
+		drupal_set_message('No \'Geoservice Access Point\' has been set so far. '
+		. 'Please configure the variable \'Geoservice Access Point\' here '
+		. l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/geo'), 'warning');
+		//message to render
+		return "<p>No geoservice specified</p>";
+	}else{
+		$fontStyles = array(0 => "plane", 1 => "italic");
+
+		$map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
+		$query_string = $map_data_parameters->String;
+		if(!$query_string){
+			// the $query_string is empty if there are no distribution areas defined
+			return ;
+		}
+
+		$query_string = str_replace('%3A', ":", $query_string);
+
+		$display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
+		$bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
+		$labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
+
+		$query_string .= ($display_width ? '&img=false&ms=' . $display_width: '').
+		($bounding_box ? '&bbox=' .  $bounding_box : '')
+		. ($labels_on ? '&labels=' .  $labels_on : '');
+
+		if(variable_get('cdm_dataportal_map_openlayers', 1)){
+
+			/* =========== display distributions using the openlayers map viewer =========== */
+
+			$legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
+			$legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
+			$legend_url_font_style = $fontStyles[$legend_url_font_style];
+			$legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
+			$legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
+
+			//$legendQueryStr  = $geoserver_uri . "/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1&format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+			$legendFormatQueryStr  = "format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+			$legendFormatQueryStr .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
+			$legendFormatQueryStr .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
+
+			$out = get_openlayers_map(
+			$display_width,
+			null,
+			$query_string,
+			$legendFormatQueryStr,
+			variable_get('cdm_dataportal_geoservice_map_caption', '')
+			);
+
+		} else {
+			// simple image
+			$mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
+
+			$query_string .= ($display_width ? '&img=true&ms=' . $display_width: '')
+			.'&img=true&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
+
+			$mapUri = url($server. '/areas.php?' .$map_data_parameters->String, $query_string);
+			$out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
+		}
+		/*
+		 // add a simple legend
+		 if(variable_get('cdm_dataportal_geoservice_legend_on', TRUE)){
+		 $legenddata = array(
+		 'native' => "4daf4a",
+		 'native_doubtfully_native' => "377eb8",
+		 'cultivated' => "984ea3",
+		 'introduced' => "ff7f00",
+		 'introduced adventitious' => "ffff33",
+		 'introduced cultivated' => "a65628",
+		 'introduced naturalized' => "f781bf"
+		 );
+
+		 $out .= '<div class="distribution_map_legend">';
+		 foreach($legenddata as $term => $color){
+		 $out .= '<img style="width: 3em; height: 1em; background-color: #'.$color.'" src="'.
+		 drupal_get_path('module', 'cdm_dataportal').'/images/clear.gif" />'.t($term).' ';
+		 }
+		 $out .= '</div>';
+
+		 }
+		 */
+		return $out;
+	}
+}
