@@ -1264,13 +1264,16 @@ function cdm_read_media_metadata($media){
 
 	//getting the media metadata
 	$media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
-
+	$media_metadata_aux = (array) $media_metadata;
 	//title
 	//if ($media_metadata->Headline) {
 	if ($media_metadata->ObjectName) {
 		$metadata_caption['title'] = $media_metadata->ObjectName;
+	    
 		//	} else if ($media->titleCache){
 		//		$metadata_caption['title'] = $media_metadata->ObjectName;
+	} else if ($media_metadata_aux['Object Name']){
+		$metadata_caption['title'] = $media_metadata_aux['Object Name'];
 	} else if ($media->titleCache){
 		$metadata_caption['title'] = $media->titleCache;
 		if ($media->description_L10n)

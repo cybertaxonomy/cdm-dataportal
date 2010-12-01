@@ -2,13 +2,13 @@
 // $Id$
 
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ */
 
 function media_content_type_dir($media_representation, $default = false){
 
@@ -221,9 +221,16 @@ function theme_cdm_media_caption($media, $elements = array('title', 'description
  * @param $galleryLinkUri an URI to link the the hint on more images to; if null no link is created
  * @return unknown_type
  */
-function theme_cdm_media_gallerie($mediaList, $galleryName,
-  $maxExtend = 150, $cols = 4, $maxRows = false, $captionElements = array('title'),
-  $mediaLinkType = 'LIGHTBOX', $alternativeMediaUri = null, $galleryLinkUri = null ){
+function theme_cdm_media_gallerie(
+	$mediaList,
+    $galleryName,
+	$maxExtend = 150, 
+	$cols = 4, 
+	$maxRows = false, 
+	$captionElements = array('title'),
+	$mediaLinkType = 'LIGHTBOX', 
+	$alternativeMediaUri = null, 
+	$galleryLinkUri = null ){
 
 	if(!is_array($captionElements)){
 		$captionElements = array();
@@ -269,16 +276,16 @@ function theme_cdm_media_gallerie($mediaList, $galleryName,
 				// find preferred representation
 				//
 				$preferred_media_representations_list = cdm_preferred_media_representations(
-				   $media,
-				   array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'),
-				   $maxExtend, $maxExtend);
+				$media,
+				array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'),
+				$maxExtend, $maxExtend);
 				if(count($preferred_media_representations_list) == 0){
 					// fallback to using the first one in the list
 					$preferred_media_representations_list = $media->representations;
 				}
-        $preferred_media_representation = array_shift($preferred_media_representations_list);
+				$preferred_media_representation = array_shift($preferred_media_representations_list);
 
-        // $preferred_media_representation->parts[0]->uri = "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
+				// $preferred_media_representation->parts[0]->uri = "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
 				$contentTypeDirectory = media_content_type_dir($preferred_media_representation, 'application');
 				$mediaIndex++;
 				$mediaPartHtml = theme('cdm_media_gallerie_'.$contentTypeDirectory, $preferred_media_representation->parts[0], $maxExtend, TRUE);
@@ -297,12 +304,13 @@ function theme_cdm_media_gallerie($mediaList, $galleryName,
 
 				_add_js_ahah();
 				$content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
+				
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".serialize($captionElements));
 				$captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
 
 				// generate gallery caption
 				if($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image'){
-          $mediaPartLinkAttributes['class'] = "lightbox";
+					$mediaPartLinkAttributes['class'] = "lightbox";
 				} else {
 					$mediaPartLinkAttributes['target'] = "specimen";
 					$openMediaLinkAttributes['target'] = "specimen";
@@ -413,41 +421,41 @@ function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $a
 
 function theme_cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
 
-  if(isset($mediaRepresentationPart)){
+	if(isset($mediaRepresentationPart)){
 
-    if($addPassePartout){
-      $out .= '<div class="image-passe-partout" style="width:'.$maxExtend.'px; height:'.$maxExtend.'px;">';
-    } else {
-      // do not add margins if no pass partout is shown
-      $margins = '';
-    }
-    $out .= '<div class="appication">Web Application</div>';
+		if($addPassePartout){
+			$out .= '<div class="image-passe-partout" style="width:'.$maxExtend.'px; height:'.$maxExtend.'px;">';
+		} else {
+			// do not add margins if no pass partout is shown
+			$margins = '';
+		}
+		$out .= '<div class="appication">Web Application</div>';
 
-    if($addPassePartout){
-      $out .= '</div>';
-    }
-    return $out;
-  }
+		if($addPassePartout){
+			$out .= '</div>';
+		}
+		return $out;
+	}
 
 }
 
 function theme_cdm_media_gallerie_text($mediaRepresentationPart, $maxExtend, $addPassePartout = FALSE, $attributes = null){
 
-  if(isset($mediaRepresentationPart)){
+	if(isset($mediaRepresentationPart)){
 
-    if($addPassePartout){
-      $out .= '<div class="image-passe-partout" style="width:'.$maxExtend.'px; height:'.$maxExtend.'px;">';
-    } else {
-      // do not add margins if no pass partout is shown
-      $margins = '';
-    }
-    $out .= '<div class="appication">Web Application</div>';
+		if($addPassePartout){
+			$out .= '<div class="image-passe-partout" style="width:'.$maxExtend.'px; height:'.$maxExtend.'px;">';
+		} else {
+			// do not add margins if no pass partout is shown
+			$margins = '';
+		}
+		$out .= '<div class="appication">Web Application</div>';
 
-    if($addPassePartout){
-      $out .= '</div>';
-    }
-    return $out;
-  }
+		if($addPassePartout){
+			$out .= '</div>';
+		}
+		return $out;
+	}
 
 }
 
@@ -456,9 +464,9 @@ function theme_cdm_openlayers_image($mediaRepresentationPart, $maxExtend){
 	// see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
 	// and http://trac.openlayers.org/wiki/SettingZoomLevels
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
+	drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/OpenLayers/OpenLayers.js', 'core', 'header');
 
-  //TODO megre code below with code from theme_cdm_media_gallerie_image
+	//TODO megre code below with code from theme_cdm_media_gallerie_image
 	//var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
 	//TODO merge code below with code from theme_cdm_media_gallerie_image
 	$w = $mediaRepresentationPart->width;
@@ -521,9 +529,9 @@ $(document).ready(function(){
   init();
 
 });'
-, 'inline');
-$out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
-return $out;
+	, 'inline');
+	$out = '<div id="openlayers_image" class="image_viewer" style="width: '.$maxExtend.'px; height:'.($maxExtend).'px"></div>';
+	return $out;
 
 }
 
