@@ -8,11 +8,13 @@
  */
 
 //html paths for differents documentation sections:
-define('HELP_OVERVIEW', './sites/all/modules/cdm_dataportal/help/overview.html');
+define('HELP_OVERVIEW', drupal_get_path('module', 'cdm_dataportal') . '/help/overview.html');
+/*
 define('HELP_SETTINGS_GENERAL', './sites/all/modules/cdm_dataportal/help/settings_general.html');
 define('HELP_SETTINGS_GEO', './sites/all/modules/cdm_dataportal/help/settings_geo.html');
 define('HELP_SETTINGS_LAYOUT', './sites/all/modules/cdm_dataportal/help/settings_layout.html');
-define('HELP_SETTINGS_CACHE', './sites/all/modules/cdm_dataportal/help/settings_cache.html');
+define('HELP_SETTINGS_CACHE', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_cache.html');
+*/
 
 function cdm_dataportal_menu_help ($may_cache, &$items) {
 
@@ -135,9 +137,7 @@ function cdm_dataportal_file_get_content ($path) {
 	//regular expressions
 	$apt_content = preg_replace('/<!--.*-->/', '', $apt_content);
 	$apt_content = preg_replace('/\<a target="(.*)" href="(.*)" title="(.*)"\>(.*)\<\/a\>/', '{{{$2}$4}}', $apt_content);
-	                           
-	            
-                 
+	                                      
 	$apt_file = str_replace('html', 'apt', $path);
 	$fd = fopen($apt_file, 'w');
 	fwrite($fd, $apt_content);
