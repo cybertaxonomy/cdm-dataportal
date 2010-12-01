@@ -192,7 +192,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 	foreach($records as $taxon){
 		// its a Taxon
 		if($taxon->class == "Taxon"){
-			$taxonUri = url(path_to_taxon($taxon->uuid));
+			$taxonUri = url(path_to_taxon($taxon->uuid, false)); //create the link without the last tab visit
 			if(isset($taxon->name->nomenclaturalReference)){
 				$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 			}
