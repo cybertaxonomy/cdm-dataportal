@@ -87,7 +87,8 @@ function cdm_dataportal_file_get_content ($path) {
 	//modyfing the html file to get the drupal paths 
 	$content = file_get_contents($path);
 	$content_result = str_replace("{MODULE_PATH}", file_directory_path(), $content);
-	
+
+	/*
 	//converting from html to apt for maven documentation
 	$apt_content = $content_result;
 	//general modifications	
@@ -128,11 +129,11 @@ function cdm_dataportal_file_get_content ($path) {
 	$apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
 	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>', 
 	                           $apt_content);
-	/*                           
-    $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
-	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>', 
-	                           $apt_content);
-	 */
+//	                           
+//    $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
+//	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>', 
+//	                           $apt_content);
+//	 
 		                           
 	//regular expressions
 	$apt_content = preg_replace('/<!--.*-->/', '', $apt_content);
@@ -142,7 +143,7 @@ function cdm_dataportal_file_get_content ($path) {
 	$fd = fopen($apt_file, 'w');
 	fwrite($fd, $apt_content);
 	fclose($fd);
-	
+	*/
 	return $content_result;
 }
 
