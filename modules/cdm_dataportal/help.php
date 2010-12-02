@@ -88,7 +88,7 @@ function cdm_dataportal_file_get_content ($path) {
 	$content = file_get_contents($path);
 	$content_result = str_replace("{MODULE_PATH}", file_directory_path(), $content);
 
-	/*
+	/* XXXXX change made because of problems with SVN!!! XXXXX 
 	//converting from html to apt for maven documentation
 	$apt_content = $content_result;
 	//general modifications	
