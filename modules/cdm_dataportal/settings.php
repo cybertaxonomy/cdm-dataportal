@@ -714,8 +714,8 @@ function cdm_settings_geo(){
      $form['geoserver'] = array(
       '#type' => 'fieldset',
       '#title' => t('Geo Server Settings'),
-      '#collapsible' => FALSE,
-      '#collapsed' => FALSE,
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
       '#description' => t('Configuration and selection of your geo server. The Geo Server is the responsible for generating the maps.'),
 	 );
 	      
@@ -723,6 +723,7 @@ function cdm_settings_geo(){
     '#type' => 'select',
     '#title' => t('Geoservice access point URL'),
     '#default_value' => variable_get('edit_map_server', 'http://edit.br.fgov.be/edit_wp5/v1/'),
+
     '#options' => array(
 	      'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server',
 	/*
@@ -751,8 +752,8 @@ function cdm_settings_geo(){
 	      $form['map_settings'] = array(
       '#type' => 'fieldset',
       '#title' => t('Maps settings'),
-      '#collapsible' => FALSE,
-      '#collapsed' => FALSE,
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
 	  '#description' => t('Configuration of the renderized maps.'),
 	      );
 	      
@@ -791,7 +792,8 @@ function cdm_settings_geo(){
     '#description' => t('Valid values range from 0.0 to 1.0. Value 1.0 means the distributions (the countries or regions) will 
                          fully visible, while a value near to 0.0 will be not much visible.')
 	      );
-
+	      
+/*
 	      $form['map_settings']['cdm_dataportal_map_openlayers'] = array(
     '#type' => 'checkbox',
     '#title' => t('<b>Open Layers viewer</b>'),
@@ -800,16 +802,17 @@ function cdm_settings_geo(){
                          on a static image. If enabled you can configure the default layer (background of your maps) below. Only one of 
                          them will be renderized, the one selected as <em>Default</em>.')
 	      );
-
+*/
 
 	      // --- OpenLayers Settings --- //
 
 	      $form['openlayers'] = array(
       '#type' => 'fieldset',
       '#title' => t('Open Layers settings'),
-      '#collapsible' => FALSE,
-      '#collapsed' => !variable_get('cdm_dataportal_map_openlayers', 1),
-	  '#description' => t('If you have activated the interactive maps (Open Layers Viewer checkbox). Here you will be able to configure which layer you prefer to use as map background.'),
+      '#collapsible' => TRUE,
+	  '#collapsed' => TRUE,   
+      //'#collapsed' => !variable_get('cdm_dataportal_map_openlayers', 1),
+	  '#description' => t('If you activate the interactive maps (Open Layers Viewer checkbox). You need to configure which layer you prefer to use as map background.'),
 	      );
 
 	      $baselayer_options = array(
@@ -832,6 +835,15 @@ function cdm_settings_geo(){
 	      //    'yahoosat' => 'Yahoo Satellite',
 	      //    'yahoohyb' => 'Yahoo Hybrid'
 
+	      );
+	      
+	      $form['openlayers']['cdm_dataportal_map_openlayers'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('<b>Open Layers viewer</b>'),
+    '#default_value' => variable_get('cdm_dataportal_map_openlayers', 1),
+    '#description' => t('Display the maps in an interactive viewer which allows zooming and panning. If not enabled the maps will consist
+                         on a static image. If enabled you can configure the default layer (background of your maps) below. Only one of 
+                         them will be renderized.')
 	      );
 	      $form['openlayers']['baselayers'] = array(
     '#type' => 'checkboxes_preferred',
@@ -862,7 +874,7 @@ function cdm_settings_geo(){
 	      $form['cdm_dataportal_geoservice_map_legend'] = array(
       '#type' => 'fieldset',
       '#title' => t('Map legend'),
-      '#collapsible' => FALSE,
+      '#collapsible' => TRUE,
       '#collapsed' => TRUE,
 	  '#description' => t('Configure the maps legend.')  
 	      );

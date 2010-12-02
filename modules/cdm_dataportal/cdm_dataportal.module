@@ -287,6 +287,8 @@ function cdm_dataportal_menu($may_cache) {
       'callback arguments' => array(arg(2), "images")
 			// expected callback arguments: name_uuid
 			);
+/*TODO: activate the specimens tab when the specimens are at least partly implemented 
+ *  or to develop but not for the production server			
 		 $items[] = array(
 		 'path' => 'cdm_dataportal/taxon/'.arg(2).'/specimens',
 		 'title' => theme('cdm_taxonpage_tab', 'Specimens'),
@@ -297,6 +299,7 @@ function cdm_dataportal_menu($may_cache) {
 		 'callback arguments' => array(arg(2), "specimens")
 		 // expected callback arguments: name_uuid
 		 );
+*/
 		}
 	}
 
