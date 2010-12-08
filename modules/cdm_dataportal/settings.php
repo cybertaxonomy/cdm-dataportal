@@ -8,7 +8,7 @@ define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
 define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
 define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
-
+define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 4);
 
 /* gallery variables */
 $gallery_settings = array(
@@ -18,10 +18,21 @@ $gallery_settings = array(
     "cdm_dataportal_media_maxextend" => 120,
     "cdm_dataportal_media_cols" => 3,
     "cdm_dataportal_media_maxRows" => 1);
+
+
+$taxon_tab_options = array(
+  0 => 'General',
+  1 => 'Synonymy',
+  2 => 'Images',
+  3 => 'Specimens',
+  CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX => 'Last visited tab',
+);
+
 /**
  * default settings for all gallerys
  * @var unknown_type
  */
+define('CDM_DATAPORTAL_DEFAULT_TAXON_TAB', serialize($taxon_tab_options));
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
 define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
@@ -40,6 +51,32 @@ function getGallerySettings($gallery_config_form_name){
 	return variable_get($gallery_config_form_name, $default_values);
 }
 
+function get_default_taxon_tab() {
+	$values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
+	$value = variable_get('cdm_dataportal_detault_tab', 0);
+	return ($values[$value]);
+	
+	switch ($value){
+		case 0:
+			$res = 'General';
+			break;
+		case 1:
+			$res = 'Synonymy';
+			break;
+		case 2:
+			$res = 'Images';
+			break;
+		case 3:
+			$res = 'Specimens';
+			break;
+		case 4:
+			$res = 'last_visited_tab';
+			break;
+		default:
+			$res = 'General';
+	}
+	return $res;
+}
 
 function cdm_dataportal_menu_admin($may_cache, &$items){
 
@@ -427,19 +464,38 @@ function cdm_settings_layout_taxon(){
 	$form['taxon_profile'] = array(
       '#type' => 'fieldset',
       '#title' => t('Taxon profile'),
-      '#description'   => t('<p>This section covers setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.</p>'. 
-                            '<p><strong>Note:</strong> Individual configuration for each tabs or sections is possible below.</p>'),
+      '#description' => t('<p>This section covers the setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.
+                      It is possible to split the taxon profile in different tabs, visit the section Taxon tabs to discover and configure the tabs</p>'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
 	);
 	
 	//--------- TABBED TAXON -------//
-	$form['taxon_profile']['cdm_dataportal_taxonpage_tabs'] = array(
+	$form['taxon_profile']['taxon_tabs'] = array(
+	  '#type' => 'fieldset',
+      '#title' => t('Taxon tabs'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+	  '#description' => t('If tabbed taxon page is enabled the taxon profile will be splitted in four diferent tabs; 
+	           General, Synonymy, Images and Specimens. If the taxon has no information for any of the tabs/sections such tab will be not displayed.'),
+	);
+	
+	$form['taxon_profile']['taxon_tabs']['cdm_dataportal_taxonpage_tabs'] = array(
     '#type' => 'checkbox',
     '#title' => t('Tabbed taxon page'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
-    '#description' => t('<p>If selected split the taxon page into individual tabs for description, images, synonymy. 
+    '#description' => t('<p>If selected split the taxon page into individual tabs for description, images, synonymy and specimens. 
                             If not the taxon data is renderized as a long single page without tabs.</p>')
+	);
+	
+	$form['taxon_profile']['taxon_tabs']['cdm_dataportal_detault_tab'] =  array(
+      '#type'          => 'select',
+      '#title'         => t('Default tab to display'),
+      '#default_value' => variable_get('cdm_dataportal_detault_tab', 0),
+      '#options'       => unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB),
+      '#description'   => t('<p>Select the default tab to display when visiting a taxon page. Only available if Tabbed Taxon Page is enable.</p>
+              <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab
+              to be renderized will be the synonymy of the accepted taxon and not the above selected tab.'),
 	);
 	
 	//---- footnotes ---//

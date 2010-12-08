@@ -961,12 +961,19 @@ function cdm_view_xml2json(){
  * @param String $uuid the UUID of the taxon
  * @return the URL
  */
-function path_to_taxon($uuid, $last_tab_on = true){
+function path_to_taxon($uuid, $no_tab = false){
+	$tab = get_default_taxon_tab();
+	$values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
+
 	if(!$uuid) return false;
-	if(get_last_taxon_page_tab() && $last_tab_on){
+	
+	if ($no_tab){
+		return 'cdm_dataportal/taxon/'.$uuid;
+	}elseif(get_last_taxon_page_tab() && 
+	   $tab == $values[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX]){
 		return 'cdm_dataportal/taxon/'.$uuid . '/' . get_last_taxon_page_tab();
 	} else {
-		return 'cdm_dataportal/taxon/'.$uuid ;
+		return 'cdm_dataportal/taxon/'.$uuid . '/' . strtolower($tab);
 	}
 }
 
@@ -1020,7 +1027,7 @@ function rank_compare($thisRankUuid, $thatRankUuid){
 }
 
 function theme_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
-	$acceptedPath = path_to_taxon($acceptedUuid, false);
+	$acceptedPath = path_to_taxon($acceptedUuid, true);
 	return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid, $synonymUuid);
 }
 
