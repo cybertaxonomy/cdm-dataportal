@@ -375,10 +375,10 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		$special_annotations_array = array();
 		$special_annotations_array[] = $taxon->name;
 		$special_annotations_array[] = $taxon;
-		$out .= theme('cdm_annotations_as_footnotekeys',
-		$special_annotations_array,
-		RenderHints::getRenderPath() . '-annotations');
-		RenderHints::setFootnoteListKey(RenderHints::getRenderPath() . '-annotations');
+		$out .= theme('cdm_annotations_as_footnotekeys', 
+					$special_annotations_array,
+					RenderHints::getRenderPath() . '-annotations');
+					RenderHints::setFootnoteListKey(RenderHints::getRenderPath() . '-annotations');
 	}
 	//render accepted taxon homotypic synonymy groups or type desygnations
 	//if(!isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
@@ -428,6 +428,11 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 	 $out .= theme('cdm_nameRelationships', $nameRelationships, $skip);
 	 }
 	 */
+	
+	//render the annontations text for the accepted taxa
+	if ($addAcceptedTaxon){
+		$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-annotations', 'li');
+	}
 	RenderHints::popFromRenderStack();
 
 	return $out;
