@@ -1,4 +1,6 @@
 * text=auto !eol
+backup/node-review.tpl.php -text
+backup/node-software.tpl.php -text
 /block.tpl.php -text
 color/base.png -text
 color/color.inc -text
@@ -27,9 +29,14 @@ minnelli/color/preview.png -text
 minnelli/logo.png -text
 minnelli/screenshot.png -text
 minnelli/style.css -text
+/node-review.tpl.php -text
+/node-software.tpl.php -text
 /node.tpl.php -text
 /page.tpl.php -text
 /print.css -text
 /screenshot.png -text
 /style.css -text
 /template.php -text
+/views-list-reviewz.css -text
+/views-list-reviewz.tpl.php -text
+/views-list-termfilter.tpl.php -text
