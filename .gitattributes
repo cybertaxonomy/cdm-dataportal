@@ -1,0 +1,9 @@
+* text=auto !eol
+/LICENSE.txt -text
+/New[!!-~]Text[!!-~]Document.txt -text
+images/EDIT_icon.gif -text
+/softwareTracker.css -text
+/softwareTracker.info -text
+/softwareTracker.install -text
+/softwareTracker.module -text
+/softwareTracker.sql -text
