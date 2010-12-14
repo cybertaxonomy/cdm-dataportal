@@ -346,3 +346,49 @@ span.submitted, .description {
   font-size:100%;
   font-weight:normal;
 }
+
+/*
+ * GLOSSARY
+ */
+
+#toc-index {
+	width: 500px;
+	font-size: 80%;
+	/*
+	border-bottom-style: solid;
+	border-bottom-with: 1px;
+	border-bottom-color: #DADADA;
+	*/
+	border-style: solid;
+	border-with: 1px;
+	border-color: #DADADA;
+	background-color: #F1F1F1;
+}
+
+#toc-index table {
+	border-collapse: separate;
+}
+
+#toc-index li {
+	margin-top: 0;
+	padding-bottom: 0;
+}
+
+#toc-index ul {
+	margin-top: 0;
+	padding-bottom: 0;
+}
+
+li.toclevel-1 {
+	background-image: none;	
+}
+
+li.toclevel-2 {
+	padding-left: 30px;
+	background-image: none;
+}
+
+li.toclevel-3 {
+	margin-left: 45px;
+	background-image: none;
+}
