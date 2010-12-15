@@ -226,7 +226,7 @@ function cdm_dataportal_menu($may_cache) {
         'title' => t('cdm_dataportal'),
         'access' => TRUE,
         'callback' => 'drupal_get_form',
-        'callback arguments' => array('cdm_dataportal_user_from'),
+        'callback arguments' => array('cdm_dataportal_user_form'),
         'type' => MENU_LOCAL_TASK,
         'weight' => 10,
       );
@@ -318,25 +318,12 @@ function cdm_dataportal_menu($may_cache) {
 	return $items;
 
 }
+/**
+ * The function generate form for own user cdm dataportal configurations
+ */
+function cdm_dataportal_user_form() {
 
-function cdm_dataportal_user_page() {
-	
-	$output = t('Example form');
-	$output .= drupal_get_form('cdm_dataportal_user_from');
-	
-	return $output;
-}
-
-function cdm_dataportal_user_from() {
-	/*
-	$form['test'] = array(
-		'#title' => t('Your Name'),
-		'#type' => 'textfield',
-		'#description' => t('Please enter your name.'),
-	);
-	return $form;
-	*/
-	$form['test'] =  array(
+	$form['cdm_dataportal_user_form'] =  array(
       '#type'          => 'select',
       '#title'         => t('Default tab to display'),
       '#default_value' => variable_get('cdm_dataportal_detault_tab', 0),
@@ -354,12 +341,31 @@ function cdm_dataportal_user_from() {
 	return $form;
 }
 
+/**
+ * The function submit the user cdm dataportal configurations 
+ * @param unknown_type $form
+ * @param unknown_type $form_values
+ */
 function cdm_dataportal_user_from_submit($form, $form_values) {
-	$variable = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
-	//drupal_set_message('new value ' . $form_values['test'] . ' ' . $variable[$form_values['test']]);
-	variable_set('cdm_dataportal_detault_tab', $form_values['test']);
-	drupal_set_message(' '.variable_get('cdm_dataportal_detault_tab', 0));
 	
+	global $user;
+	$msg_type = 'status';
+	$username = $user->name;
+	$variable_to_use = 'cdm_dataportal_' .$user->uid . '_default_tab';
+	
+	//if is the right user the variables are setted
+	if (arg(0)=='user' && ($uid=arg(1)) && is_numeric($uid) && $user->uid==$uid){
+		$variable = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
+		variable_set($variable_to_use . '_active', true);
+		variable_set($variable_to_use, $form_values['cdm_dataportal_user_form']);
+		drupal_set_message('The user default tab have been changed to: '
+			. $variable[variable_get($variable_to_use, 0)]
+			. ' for the user ' . $username, $msg_type);
+	//problem with the user id => variables wont be saved
+	}else{
+		$msg_type = 'warning';
+		drupal_set_message('Default tab have not been saved due to user id problems', $msg_type);
+	}
 }
 
 /**

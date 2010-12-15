@@ -52,9 +52,23 @@ function getGallerySettings($gallery_config_form_name){
 }
 
 function get_default_taxon_tab() {
+	
+	global $user;
 	$values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
-	$value = variable_get('cdm_dataportal_detault_tab', 0);
-	return ($values[$value]);
+	
+	//get the user value
+	$user_tab_on = 
+		variable_get('cdm_dataportal_' .$user->uid . 'default_tab_active', false);
+	if($user_tab_on){
+		$user_value = variable_get('cdm_dataportal_' .$user->uid . 'default_tab', 0);
+		$index_value = $user_value;
+		
+	//get the system value
+	}else{
+		$system_value = variable_get('cdm_dataportal_detault_tab', 0);
+		$index_value = $system_value;
+	}
+	return ($values[$index_value]);
 	
 	switch ($value){
 		case 0:
@@ -350,7 +364,7 @@ function cdm_settings_general(){
  */
 function cdm_settings_layout(){
 
-	drupal_goto('admin/settings/cdm_dataportal/layout/taxon');
+	//drupal_goto('admin/settings/cdm_dataportal/layout/taxon');
 	$form = array();
 /*
 	// -- tabbed pages -- //
@@ -361,6 +375,40 @@ function cdm_settings_layout(){
     '#description' => t('If selected split the taxon page into individual tabs for description, images, synonymy. If not the taxon data is renderized as a long single page without tabs.')
 	);
 */	
+	
+	
+	$form['gen_layout'] = array(
+		'#type' => 'fieldset',
+	    '#title' => t('Portal Layout'),
+        '#collapsible' => FALSE,
+         '#collapsed' => FALSE,
+	     '#description' => t('This settings contains the general configurations layout. If you want to configure the specific sites layout visit the respective configuration site for taxon, search or media.'),
+	);
+	//---- footnotes ---//
+	$form['gen_layout']['footnotes'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Footnotes'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+	  '#description' => t('Taxa data such authors, synonyms names, descriptions, media or distribution areas may have annotations or footnotes. When the footnotes are enabled 
+	                       they will be visible (if they exist).'),
+	);
+
+	$form['gen_layout']['footnotes']['cdm_dataportal_all_footnotes'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Do not show footnotes'),
+      '#default_value' => variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES),
+      '#description' => t('Check this if you do not want to show any footnotes')
+	);
+
+	$form['gen_layout']['footnotes']['cdm_dataportal_annotations_footnotes'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Do not show annotations footnotes'),
+      '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
+      '#description' => t('Check this if you do not want to show annotation footnotes')
+	);
+	
+/*
 	//---- footnotes ---//
 	$form['footnotes'] = array(
       '#type' => 'fieldset',
@@ -383,7 +431,7 @@ function cdm_settings_layout(){
       '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
       '#description' => t('Check this if you do not want to show annotation footnotes')
 	);
-
+*/
 	return system_settings_form($form);
 }
 
@@ -456,7 +504,7 @@ function cdm_settings_layout_synonymy(){
 }
 
 function cdm_settings_layout_taxon(){
-  $collapsed = true;
+  $collapsed = false;
   $form = array();
 
 	/* ======  TAXON_PROFILE ====== */
@@ -466,7 +514,7 @@ function cdm_settings_layout_taxon(){
       '#title' => t('Taxon profile'),
       '#description' => t('<p>This section covers the setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.
                       It is possible to split the taxon profile in different tabs, visit the section Taxon tabs to discover and configure the tabs</p>'),
-      '#collapsible' => TRUE,
+      '#collapsible' => FALSE,
       '#collapsed' => FALSE,
 	);
 	
@@ -475,7 +523,7 @@ function cdm_settings_layout_taxon(){
 	  '#type' => 'fieldset',
       '#title' => t('Taxon tabs'),
       '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+      '#collapsed' => FALSE,
 	  '#description' => t('If tabbed taxon page is enabled the taxon profile will be splitted in four diferent tabs; 
 	           General, Synonymy, Images and Specimens. If the taxon has no information for any of the tabs/sections such tab will be not displayed.'),
 	);
@@ -497,7 +545,8 @@ function cdm_settings_layout_taxon(){
               <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab
               to be renderized will be the synonymy of the accepted taxon and not the above selected tab.'),
 	);
-	
+
+/* THIS SECTION HAS BEEN MOVED TO LAYOUT
 	//---- footnotes ---//
 	$form['taxon_profile']['footnotes'] = array(
       '#type' => 'fieldset',
@@ -521,13 +570,13 @@ function cdm_settings_layout_taxon(){
       '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
       '#description' => t('Check this if you do not want to show annotation footnotes')
 	);
-
+*/
 	// ---- PROFILE PICTURE ----//
 	$form['taxon_profile']['picture'] = array(
       '#type' => 'fieldset',
       '#title' => t('Profile Picture'),
       '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+      '#collapsed' => FALSE,
 	  '#description' => t('Select a profile picture for taxa. Like a facebook of plants.'),
 	);
 	
@@ -564,7 +613,7 @@ function cdm_settings_layout_taxon(){
 	 '#type' => 'fieldset',
      '#title' => t('Features'),
      '#collapsible' => TRUE,
-     '#collapsed' => TRUE,
+     '#collapsed' => FALSE,
 	 '#description' => t('This section covers settings related to the taxon\'s <em>Feature Tree</em>. The <em>feature tree</em> are the taxon\'s
 	                      features such description, distribution, common names, etc. that drupal will render at his taxon profile page.'),
 	);
@@ -594,7 +643,7 @@ function cdm_settings_layout_taxon(){
       $form['taxon_profile']['distribution_layout'] = array(
         '#title' => t('Distribution'),
         '#collapsible' => TRUE,
-        '#collapsed' => TRUE,
+        '#collapsed' => FALSE,
         '#type' => 'fieldset',
       	'#description' => t('Select if you want to sort or not the distribution text located below the distribution map.'),
       );
@@ -613,7 +662,7 @@ function cdm_settings_layout_taxon(){
       '#type' => 'fieldset',
       '#title' => t('Taxon Synonymy (Tab)'),
       '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+      '#collapsed' => FALSE,
       '#description' => t('This section covers the settings related to the taxon <b>synonymy</b> tab.'),
   );
 
@@ -669,7 +718,7 @@ function cdm_settings_layout_taxon(){
       '#type' => 'fieldset',
       '#title' => t('Taxon Specimens (Tab)'),
       '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+      '#collapsed' => FALSE,
       '#description' => t('This section covers the settings related to the taxon <b>specimens</b> tab.'),
   );
   $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
