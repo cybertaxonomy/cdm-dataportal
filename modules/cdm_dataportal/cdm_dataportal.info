@@ -1,6 +1,6 @@
 ; $Id$
 name = "CDM Dataportal"
 description = "The dataportal publishes CDM data hosted in a CommunityStore on the web."
-version = 5.x-1.0
+version = 5.x-3.0
 package = "CDM"
 dependencies = cdm_api cdm_taxontree jquery_update
