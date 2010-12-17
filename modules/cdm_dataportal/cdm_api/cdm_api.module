@@ -126,6 +126,9 @@ function cdm_taggedtext_value(array &$taggedtxt = array(), $tag_type){
   return '';
 }
 
+/**
+ * Returns the currently classification tree in use
+ */
 function get_taxonomictree_uuid_selected(){
   if(is_uuid($_SESSION['cdm']['taxonomictree_uuid']) ){
     return $_SESSION['cdm']['taxonomictree_uuid'];
