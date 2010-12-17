@@ -947,7 +947,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
 		reset($taxon_pager->records);
 		$first_key = key($taxon_pager->records);
 		if($taxon_pager->records[$first_key]->class != "Taxon"){
-			$taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, $taxon_pager->records[$first_key]->uuid);
+			$taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon_pager->records[$first_key]->uuid, get_taxonomictree_uuid_selected()));
 			if($synonym_uuid){
 				drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', 'highlite=' . $synonym_uuid);
 			}else{

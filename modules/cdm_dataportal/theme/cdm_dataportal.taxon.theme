@@ -169,6 +169,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 
 	$showMedia_taxa = variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1);
 	$showMedia_synonyms = variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0);
+	$classification_uuid = get_taxonomictree_uuid_selected();
 
 	// .. well, for sure not as performant as before, but better than nothing.
 	$synonym_uuids = array();
@@ -183,8 +184,9 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 	// $table_of_accepted = cdm_ws_property(CDM_WS_PORTAL_TAXON_ACCEPTED, join(',', $synonym_uuids));
 	// thus ...
 	$table_of_accepted = array();
+	
 	foreach($synonym_uuids as $synUuid){
-		$table_of_accepted[$synUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, $synUuid);
+		$table_of_accepted[$synUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($synUuid, $classification_uuid));
 	}
 
 	$out = '<ul class="cdm_names" style="background-image: none;">';
@@ -224,12 +226,13 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 				//TODO add media
 				$out .= cdm_dynabox(
 				  theme('cdm_taxonName', $taxon->name, null, null, false),
-				  cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon->uuid)),
+				  cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon->uuid, $classification_uuid)),
 				  'cdm_list_of_taxa',
 				  'Click for accepted taxon');
 			}
 		}
 	}
+
 	$out .= '</ul>';
 	RenderHints::popFromRenderStack();
 	return $out;
