@@ -500,6 +500,8 @@ themes/garland_cichorieae/color/color.inc -text
 themes/garland_cichorieae/color/preview.css -text
 themes/garland_cichorieae/color/preview.png -text
 themes/garland_cichorieae/comment.tpl.php -text
+themes/garland_cichorieae/cyprus/style.css -text
+themes/garland_cichorieae/cyprus/styleOverride.css -text
 themes/garland_cichorieae/fix-ie.css -text
 themes/garland_cichorieae/fix-ie7.css -text
 themes/garland_cichorieae/flora_malesiana/images/edit-logo.png -text
