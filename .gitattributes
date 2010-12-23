@@ -500,8 +500,10 @@ themes/garland_cichorieae/color/color.inc -text
 themes/garland_cichorieae/color/preview.css -text
 themes/garland_cichorieae/color/preview.png -text
 themes/garland_cichorieae/comment.tpl.php -text
-themes/garland_cichorieae/cyprus/edit-logo.gif -text
 themes/garland_cichorieae/cyprus/images/edit-logo.gif -text
+themes/garland_cichorieae/cyprus/images/edit-logo.png -text
+themes/garland_cichorieae/cyprus/images/test_Origanum_cordifolium_CSC_3120.jpg -text
+themes/garland_cichorieae/cyprus/images/test_Vicia_lunata_CSC_6051.jpg -text
 themes/garland_cichorieae/cyprus/style.css -text
 themes/garland_cichorieae/cyprus/styleOverride.css -text
 themes/garland_cichorieae/fix-ie.css -text

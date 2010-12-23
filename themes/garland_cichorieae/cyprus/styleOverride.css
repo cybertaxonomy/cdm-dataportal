@@ -59,7 +59,7 @@ body {
 
 #wrapper #container #header #logo-floater {
 	position: relative;
-	background:#FF7800 url(images/a8.gif) repeat-x scroll 0 0;
+	background:#663350 url(images/a8.gif) repeat-x scroll 0 0;
 	color:#FFFFFF;
 	height:92px;
 	margin-left:7px;
@@ -82,7 +82,7 @@ body {
 	/* 
 	background:#EAEAE2 url(images/splashChichorium_wide.jpg) no-repeat scroll 0 0; 
 	*/
-	background:#EAEAE2 url(images/splash2xChichorium.jpg) no-repeat scroll 0 0; 
+	background:#EAEAE2 url(images/test_Vicia_lunata_CSC_6051.jpg) no-repeat scroll 0 0; 
 	height:92px;
 	float:left;
 	width:570px;
