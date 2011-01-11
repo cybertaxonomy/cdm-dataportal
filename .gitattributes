@@ -1,0 +1,23 @@
+* text=auto !eol
+/block-tinytax-tinytax_cdm_block.tpl.php -text
+/block.tpl.php -text
+/box.tpl.php -text
+/comment.tpl.php -text
+/coverimg.png -text
+/funded_by.jpg -text
+/funded_by.png -text
+/header-cichorieae.png -text
+/logo.png -text
+/logo_bgbm.jpg -text
+/logo_edit.png -text
+/logo_kew.jpg -text
+/minus.jpg -text
+/node.tpl.php -text
+/page.tpl.php -text
+/palmweb.profile -text
+/palmwebblock.profile -text
+/plus.jpg -text
+/powered_by.jpg -text
+/screenshot.png -text
+/screenshot_original.png -text
+/style.css -text
