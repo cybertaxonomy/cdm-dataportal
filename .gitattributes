@@ -1,0 +1,5 @@
+* text=auto !eol
+images/menu-expanded.gif -text
+/logo.png -text
+/style.css -text
+/style_expertsdb.css -text
