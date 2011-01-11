@@ -365,7 +365,6 @@ modules/softwareTracker/softwareTracker.sql -text
 modules/webfm_geoserver/webfm_geoserver.info -text
 modules/webfm_geoserver/webfm_geoserver.js -text
 modules/webfm_geoserver/webfm_geoserver.module -text
-themes/.buildpath -text
 themes/diptera/Culex[!!-~]quinquefasciatus.jpg -text
 themes/diptera/Mila_patr.jpg -text
 themes/diptera/block-tinytax-tinytax_cdm_block.tpl.php -text
