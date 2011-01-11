@@ -59,7 +59,7 @@ body {
 }
 
 #wrapper #container #header #logo-floater {
-	position: relative;
+	/*position: relative;*/
 	background:#663350 url(images/a8.gif) repeat-x scroll 0 0;
 	color:#FFFFFF;
 	height:40px;
@@ -67,9 +67,9 @@ body {
 	/*margin-right: 7px;*/
 	padding-left:15px;
 	float:left;
-	width:865px;
-	z-index: 2;
-	margin-top: 7px;
+	/*width:865px;*/
+	z-index: 10;
+	margin-top: 97px;
 }
 
 #logo-floater {
@@ -189,6 +189,7 @@ ul.cdm_taxontree li .active {
 	width: 100%;
 	float:left;
 	clear: both;
+	margin-top: 40px;
 }
 
 ul.primary, ul.secondary {
@@ -214,13 +215,16 @@ ul.primary-links {
 	clear: both;*/
 	font-family:Tahoma,Georgia,Arial,Verdana,Serif;
 	/*height:67px;*/
-	height:46px;
+	/*height:46px;*/
 	width: 100%;
 	/*margin:7px 0;*/
 	padding:0;
 	/*position:relative;*/
 	text-transform:uppercase;
 	z-index:4;
+	height: 40px;
+	margin-top: -35px;
+	padding-top: 40px;
 }
 
 ul.primary-links li a, ul.primary-links li a:hover, ul.primary-links li a:visited, ul.primary-links li a:active{

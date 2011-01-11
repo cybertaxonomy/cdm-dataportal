@@ -1,0 +1,14 @@
+#wrapper #container #header #logo-floater {
+    /*position: relative;*/
+    background:#663350 url(images/a8.gif) repeat-x scroll 0 0;
+    color:#FFFFFF;
+    height:40px;
+    /*margin-left:7px;*/
+    /*margin-right: 7px;*/
+    padding-left:15px;
+    float:left;
+    /*width:865px;*/
+    z-index: 10;
+    margin-top: 97px;
+    margin-left: -100px;
+}
