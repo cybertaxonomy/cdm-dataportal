@@ -303,7 +303,8 @@ function palmweb_2_cdm_taxon_page_title($taxon, $uuid, $synonym_uuid){
 }
 
 function palmweb_2_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null) {
-	$acceptedPath = path_to_taxon($acceptedUuid, false);
+	$acceptedPath = path_to_taxon($acceptedUuid, true);
+	return url($acceptedPath . ($pagePart ? '/'.$pagePart : '') . '/'.$synonymUuid, 'highlite='.$synonymUuid);
 	//return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid, $synonymUuid."/$synonymUuid");
-	return url("$acceptedPath/$synonymUuid".($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid);
+	//return url("$acceptedPath/$synonymUuid".($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid);	
 }
