@@ -578,7 +578,7 @@ ul.primary, ul.primary li, ul.secondary, ul.secondary li {
   padding: 0;
 }
 
-#tabs-wrapper {
+#tabs-wrapper, #tabs-wrapper2 {
   margin: 0 -26px 1em;
   padding: 0 26px;
   border-bottom: 1px solid #e9eff3;

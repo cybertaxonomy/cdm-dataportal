@@ -289,7 +289,7 @@ li.ui-tabs-selected{
 	display: none;	
 }
 
-#tabs-wrapper{
+#tabs-wrapper, #tabs-wrapper2{
 	margin: 0;
 	padding: 0;	
 }
