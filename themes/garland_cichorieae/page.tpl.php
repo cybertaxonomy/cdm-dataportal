@@ -81,8 +81,10 @@
         ?>
         </div>
         <?php
+            //var_dump(theme_get_setting('banner_right_path'));
+            var_dump(theme_get_setting('logo_path'));
             if(!theme_get_setting('default_banner_right') && theme_get_setting('banner_right_path')){
-            //	$splash_style = 'style="background: url('.theme_get_setting('banner_right_path').')"';
+              $splash_style = 'style="background: url('.theme_get_setting('banner_right_path').')"';
             }
             ?>
         <div id="splash" <?php print($splash_style); ?>></div>
@@ -124,7 +126,7 @@
           <?php if ($title): print '<h2'. ($tabs ? ' class="with-tabs"' : '') .'>'. $title .'</h2>'; endif; ?>
           <?php if ($tabs): print '<div class="clear"></div>'.$tabs .'</div>'; endif; ?>
 
-          <?php if (isset($tabs2)): print $tabs2; endif; ?>
+          <?php if (isset($tabs2)): print '<div id="tabs-wrapper2" class="clear-block">' . $tabs2 . '</div><div class="clear"></div>'; endif; ?>
 
           <?php if ($help): print $help; endif; ?>
           <?php if ($messages): print $messages; endif; ?>
