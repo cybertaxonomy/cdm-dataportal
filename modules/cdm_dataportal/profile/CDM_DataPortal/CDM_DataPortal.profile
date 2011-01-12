@@ -44,6 +44,7 @@ function CDM_DataPortal_profile_final() {
 ************************************************************/
     variable_set('anonymous', 'Anonymous');
     variable_set('comment_page', 0);
+    //TODO fix for linux and mac os-x
     variable_set('file_directory_temp', 'c:\\windows\\temp');
     variable_set('filter_html_1', 1);
     variable_set('menu_primary_menu', 2);
@@ -74,12 +75,24 @@ function CDM_DataPortal_profile_final() {
     variable_set('cdm_webservice_cache', 0);
     variable_set('distribution_sort', 'HIDE_TDWG2');
     
+    variable_set('user_register', '0');
+    
 
 /************************************************************
 *                            ROLES                          *
 ************************************************************/
+
     $role_id['anonymous user'] = 1;
     $role_id['authenticated user'] = 2;
+    $rid = 3;
+    $role_id['CDM admin'] = $rid;
+    db_query("INSERT INTO {role} (rid, name) VALUES (%d, '%s')", $rid, 'CDM admin');
+    db_query("INSERT INTO {permission} (rid, perm) VALUES (%d, '%s')", $rid, 'access administration menu, administer blocks, administer cdm_dataportal, cdm_dataportal view notes, access devel information, access imce, administer imce, administer menu, access content, administer content types, administer nodes, create page content, create story content, edit own page content, edit own story content, edit page content, edit story content, view revisions, access administration pages, administer site configuration, select different theme, administer users');
+    $rid = 4;
+    $role_id['admin'] = $rid;
+    db_query("INSERT INTO {role} (rid, name) VALUES (%d, '%s')", $rid, 'admin');
+    db_query("INSERT INTO {permission} (rid, perm) VALUES (%d, '%s')", $rid, 'access administration menu, display drupal links, administer blocks, use PHP for block visibility, administer cdm_dataportal, cdm_dataportal view notes, access comments, administer comments, post comments, post comments without approval, access devel information, execute php code, switch users, administer filters, access imce, administer imce, administer menu, access content, administer content types, administer nodes, create page content, create story content, edit own page content, edit own story content, edit page content, edit story content, revert revisions, view revisions, access administration pages, administer site configuration, select different theme, administer taxonomy, access user profiles, administer access control, administer users, change own username');
+
 
 /************************************************************
 *                            USERS                          *
@@ -141,7 +154,7 @@ function CDM_DataPortal_profile_final() {
         "REPLACE INTO {variable} (name, value) VALUES
           ('cdm_dataportal_geoservice_display_width', 's:3:\"600\";'),
           ('site_frontpage', 's:6:\"node/1\";'),
-          ('site_name', 's:9:\"TDWG 2010\";')
+          ('site_name', 's:19:\"EDIT CDM DataPortal\";')
         ");
         
    // FIX node sequences !!!!!
@@ -151,7 +164,7 @@ function CDM_DataPortal_profile_final() {
         ('{node_nid}', 1),
         ('{node_revisions_vid}', 1);
         ");
-	
+  
     return;
 }
 
