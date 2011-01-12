@@ -55,7 +55,10 @@ function _add_js_openlayers_map(){
 
 	$gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
 
-	$baseLayers = variable_get('baselayers', array('metacarta_vmap0', 'PREFERRED' => 'metacarta_vmap0'));
+	$baseLayers = variable_get('baselayers', array());
+	if(!is_array($baseLayers) || count($baseLayers) == 0){
+		$baseLayers = array('metacarta_vmap0' => 'Metacarta Vmap0', 'PREFERRED' => 'metacarta_vmap0');
+	}
 	$layerNames = '';
 	foreach($baseLayers as $layerName => $layerLabel){
 		if($layerName == 'PREFERRED'){
@@ -220,7 +223,7 @@ function cdm_dataportal_menu($may_cache) {
       'type' => MENU_CALLBACK,
 		);
 
-	}elseif (arg(0)=='user' && ($uid=arg(1)) && is_numeric($uid)) {			
+	}elseif (arg(0)=='user' && ($uid=arg(1)) && is_numeric($uid)) {
 		//user configuration of cdm_dataportal
 		$items[] = array('path' => 'user/'.$uid.'/cdm_dataportal',
         'title' => t('cdm_dataportal'),
@@ -297,7 +300,7 @@ function cdm_dataportal_menu($may_cache) {
       'callback arguments' => array(arg(2), "images")
 			// expected callback arguments: name_uuid
 			);
-			 		
+
 		 $items[] = array(
 		 'path' => 'cdm_dataportal/taxon/'.arg(2).'/specimens',
 		 'title' => theme('cdm_taxonpage_tab', 'Specimens'),
@@ -332,27 +335,27 @@ function cdm_dataportal_user_form() {
               <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab
               to be renderized will be the synonymy of the accepted taxon and not the above selected tab.'),
 	);
-	
+
 	$form['submit'] = array(
 	  '#type' => 'submit',
 	  '#value' => t('Submit')
 	);
-	
+
 	return $form;
 }
 
 /**
- * The function submit the user cdm dataportal configurations 
+ * The function submit the user cdm dataportal configurations
  * @param unknown_type $form
  * @param unknown_type $form_values
  */
 function cdm_dataportal_user_from_submit($form, $form_values) {
-	
+
 	global $user;
 	$msg_type = 'status';
 	$username = $user->name;
 	$variable_to_use = 'cdm_dataportal_' .$user->uid . '_default_tab';
-	
+
 	//if is the right user the variables are setted
 	if (arg(0)=='user' && ($uid=arg(1)) && is_numeric($uid) && $user->uid==$uid){
 		$variable = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
@@ -872,7 +875,7 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = null
 		drupal_set_title(t('Taxon does not exist'));
 		return false;
 	}
-	
+
 	$taxonpage->title = theme('cdm_taxon_page_title', $taxon, $uuid, $synonym_uuid);
 
 	// check if the taxon id contained in the currently selected tree
@@ -1023,10 +1026,10 @@ function path_to_taxon($uuid, $no_tab = false){
 	$values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
 
 	if(!$uuid) return false;
-	
+
 	if ($no_tab){
 		return 'cdm_dataportal/taxon/'.$uuid;
-	}elseif(get_last_taxon_page_tab() && 
+	}elseif(get_last_taxon_page_tab() &&
 	   $tab == $values[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX]){
 		return 'cdm_dataportal/taxon/'.$uuid . '/' . get_last_taxon_page_tab();
 	} else {
@@ -1336,7 +1339,7 @@ function cdm_read_media_metadata($media){
 	//if ($media_metadata->Headline) {
 	if ($media_metadata->ObjectName) {
 		$metadata_caption['title'] = $media_metadata->ObjectName;
-	    
+
 		//	} else if ($media->titleCache){
 		//		$metadata_caption['title'] = $media_metadata->ObjectName;
 	} else if ($media_metadata_aux['Object Name']){
