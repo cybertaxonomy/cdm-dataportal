@@ -330,7 +330,7 @@ function cdm_dataportal_user_form() {
       '#type'          => 'select',
       '#title'         => t('Default tab to display'),
       /*'#default_value' => variable_get('cdm_dataportal_detault_tab', 0),*/
-	  '#default_value' => get_default_taxon_tab(),
+	  '#default_value' => get_default_taxon_tab(true),
       '#options'       => unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB),
       '#description'   => t('<p>Select the default tab to display when visiting a taxon page. Only available if Tabbed Taxon Page is enable.</p>
               <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab

@@ -51,7 +51,7 @@ function getGallerySettings($gallery_config_form_name){
 	return variable_get($gallery_config_form_name, $default_values);
 }
 
-function get_default_taxon_tab() {
+function get_default_taxon_tab($index = false) {
 	
 	global $user;
 	$values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
@@ -64,10 +64,15 @@ function get_default_taxon_tab() {
 		$index_value = $user_value;
 	//get the system value
 	}else{  
-		$system_value = variable_get('cdm_dataportal_detault_tab', 0);
+		$system_value = variable_get('cdm_dataportal_default_tab', 0);
 		$index_value = $system_value;
 	}
-	return ($values[$index_value]);
+	if (!index){
+	   return ($values[$index_value]);
+	}else{
+	   return $index_value;
+	}
+	
 
 	switch ($value){
 		case 0:
