@@ -52,19 +52,18 @@ function getGallerySettings($gallery_config_form_name){
 }
 
 function get_default_taxon_tab() {
-
+	
 	global $user;
 	$values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
-
+	$user_tab_active = 'cdm_dataportal_' .$user->uid . '_default_tab_active';
+	$user_tab = 'cdm_dataportal_' .$user->uid . '_default_tab';
 	//get the user value
-	$user_tab_on =
-		variable_get('cdm_dataportal_' .$user->uid . 'default_tab_active', false);
+	$user_tab_on = variable_get($user_tab_active, false);
 	if($user_tab_on){
-		$user_value = variable_get('cdm_dataportal_' .$user->uid . 'default_tab', 0);
+		$user_value = variable_get($user_tab, 0);
 		$index_value = $user_value;
-
 	//get the system value
-	}else{
+	}else{  
 		$system_value = variable_get('cdm_dataportal_detault_tab', 0);
 		$index_value = $system_value;
 	}
