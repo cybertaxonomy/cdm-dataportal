@@ -325,7 +325,18 @@ function cdm_dataportal_menu($may_cache) {
  * The function generate form for own user cdm dataportal configurations
  */
 function cdm_dataportal_user_form() {
-
+	
+	global $user;
+    $checkbox_value = 'cdm_dataportal_' .$user->uid . '_default_tab_active';
+    
+	$form['check'] = array
+    (
+    '#type'            => 'checkbox',
+    '#title'         => t('Activate user default configuration'),
+    '#default_value'   => variable_get($checkbox_value, 0),
+    '#description' => t('Check this if you want configure your own default tab from the below menu.')
+    );
+    
 	$form['cdm_dataportal_user_form'] =  array(
       '#type'          => 'select',
       '#title'         => t('Default tab to display'),
@@ -359,11 +370,16 @@ function cdm_dataportal_user_form_submit($form, $form_values) {
 	//if is the right user the variables are setted
 	if (arg(0)=='user' && ($uid=arg(1)) && is_numeric($uid) && $user->uid==$uid){
 		$variable = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
-		variable_set($variable_to_use . '_active', true);
+		variable_set($variable_to_use . '_active', $form_values['check']);
 		variable_set($variable_to_use, $form_values['cdm_dataportal_user_form']);
-		drupal_set_message('The user default tab have been changed to: '
-			. $variable[variable_get($variable_to_use, 0)]
-			. ' for the user ' . $username, $msg_type);
+		if ($form_values['check']){
+			drupal_set_message('The user default tab will be used for the next taxon site visit.');
+			drupal_set_message('The user default tab have been changed to: '
+            . $variable[variable_get($variable_to_use, 0)]
+            . ' for the user ' . $username, $msg_type);
+		}else{
+			drupal_set_message('The user default tab wont be used for the next taxon site, check the box if you want to use the user default configuration.');
+		}
 	//problem with the user id => variables wont be saved
 	}else{
 		$msg_type = 'warning';
