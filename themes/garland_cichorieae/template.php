@@ -532,3 +532,11 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
 	return $out;
 }
 
+
+function garland_cichorieae_cdm_feature_name($feature_name){
+  switch($feature_name){
+    case "Protologue": return t("Original Publication");
+    default: return t(ucfirst($feature_name));
+  }
+}
+
