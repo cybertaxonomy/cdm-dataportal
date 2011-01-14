@@ -68,16 +68,16 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
  return '<p class="descriptionText">' . $description . $sourceRefs . '</p>';
  }
  */
-
 function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid){
+	
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
 	$result = array();
 	$res_author;
 	$res_date;
 	$no_links = false;
-
-	$default_theme = variable_get('theme_default', 'garland_cichorieae');	
+	$default_theme = variable_get('theme_default', 'garland_cichorieae');
+		
 	if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale')
 	    && $element->feature->titleCache == 'Citation'){
 		$asListElement = true;
@@ -531,4 +531,35 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
 
 	return $out;
 }
+
+
+function garland_cichorieae_cdm_feature_name($feature_name){
+  switch($feature_name){
+    case "Protologue": return t("Original Publication");
+    default: return t(ucfirst($feature_name));
+  }
+}
+
+/* ======================== Special functions for subtheme handling ================  */
+function sub_theme() {
+  global $user, $custom_theme;
+  // Only select the user selected theme if it is available in the
+  // list of enabled themes.
+  $theme = $user->theme && $themes[$user->theme]->status ? $user->theme : variable_get('theme_default', 'garland');
+  // Allow modules to override the present theme... only select custom theme
+  // if it is available in the list of installed themes.
+  $theme = $custom_theme && $themes[$custom_theme] ? $custom_theme : $theme;
+  return $theme;
+} 
+
+/**
+* Return the path to the currently selected sub theme.
+*/
+function path_to_sub_theme() {
+  $themes = list_themes();
+  $theme = sub_theme(); 
+  return dirname($themes[$theme]->filename);
+}
+
+
 
