@@ -40,6 +40,7 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 	color: #7fbde0;
 	margin-left: 16px;
 	margin-top: 15px;
+	z-index: 20;
 }
 
 #edit-logo-small {
