@@ -131,7 +131,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   				$structured_description_featuretree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, false);
   				$naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array($taxonDescription->uuid, $structured_description_featuretree_uuid));
   				if(!$naturallanguage_textData){
-  					drupal_set_message('The \'FeatureTree\' for the generation of natural language representations is not configured correctly, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/layout'), 'warning');
+  					drupal_set_message('The \'FeatureTree\' for the generation of natural language representations is not configured correctly, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/layout/taxon'), 'warning');
   				}
   				$taxonDescription->elements = null;
   				$taxonDescription->elements = array($naturallanguage_textData);
@@ -375,7 +375,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		$special_annotations_array = array();
 		$special_annotations_array[] = $taxon->name;
 		$special_annotations_array[] = $taxon;
-		$out .= theme('cdm_annotations_as_footnotekeys', 
+		$out .= theme('cdm_annotations_as_footnotekeys',
 					$special_annotations_array,
 					RenderHints::getRenderPath() . '-annotations');
 					RenderHints::setFootnoteListKey(RenderHints::getRenderPath() . '-annotations');
@@ -428,7 +428,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 	 $out .= theme('cdm_nameRelationships', $nameRelationships, $skip);
 	 }
 	 */
-	
+
 	//render the annontations text for the accepted taxa
 	if ($addAcceptedTaxon){
 		$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-annotations', 'li');
