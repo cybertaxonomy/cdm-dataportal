@@ -6,7 +6,7 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 }
 
 #splash {
-  background:#EAEAE2 url(images/banner_website_Ericaceae.jpg) no-repeat scroll 0 0; 
+  background:#EAEAE2 url(images/banner_website_Ericaceae2.jpg) no-repeat scroll 0 0; 
   height:92px;
   /*float:left;*/
   width:880px;
@@ -33,22 +33,24 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited
 {
-	font-family: serif;
-	font-size: 130%;
-	color: #6db8d8;
+	font-family: Georgia, Times, serif;
+	font-weight: normal;
+	font-size: 135%;
+	/*color: #6db8d8;*/
+	color: #7fbde0;
 	margin-left: 16px;
-	margin-top: 16px;
+	margin-top: 15px;
 }
 
 #edit-logo-small {
     float: right;
-    margin-top: -70px;
+    margin-top: -53px;
 }
 
 #bel-logo-small {
     float: right;
-    margin-top: 4px;
-    margin-right: 65px;
+    margin-top: 3px;
+    margin-right: 55px;
 }
 
 #header-region .block {
