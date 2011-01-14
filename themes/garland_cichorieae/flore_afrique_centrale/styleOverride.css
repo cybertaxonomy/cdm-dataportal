@@ -6,25 +6,51 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 }
 
 #splash {
-  background:#EAEAE2 url(images/flora-malesiana-header2.jpg) no-repeat scroll 0 0; 
+  background:#EAEAE2 url(images/banner_website_Ericaceae.jpg) no-repeat scroll 0 0; 
   height:92px;
-  float:left;
-  width:570px;
+  /*float:left;*/
+  width:880px;
   overflow:hidden;
-  float: right;
+  /*float: right;*/
   margin-top: -92px;
   z-index: 2;
 }
 
 #wrapper #container #header #logo-floater {
-	background:url("images/flora-malesiana-logo-floater-bg-1.jpg") repeat-x scroll 0 0 #FF7800;
-	border-right:7px solid white;
-	padding-left:15px;
-	padding-right:15px;
-	width: auto;
-	z-index:4;
+	/*background:url("images/flora-malesiana-logo-floater-bg-1.jpg") repeat-x scroll 0 0 #FF7800;*/
+	/*border-right:7px solid white;*/
+	width: 328px;
+	z-index: 10;
+	position: static;
+	float: right;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
 }
 
 .featureTOC{
 	float: left;
+}
+
+#wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited
+{
+	font-family: serif;
+	font-size: 130%;
+	color: #6db8d8;
+	margin-left: 16px;
+	margin-top: 16px;
+}
+
+#edit-logo-small {
+    float: right;
+    margin-top: -70px;
+}
+
+#bel-logo-small {
+    float: right;
+    margin-top: 4px;
+    margin-right: 65px;
+}
+
+#header-region .block {
+    margin-right: 0;
 }

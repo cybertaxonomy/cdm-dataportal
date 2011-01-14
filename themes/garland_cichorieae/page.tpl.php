@@ -5,28 +5,7 @@
     <title><?php print $head_title ?></title>
     <?php print $head ?>
     <?php print $styles ?>
-    <?php
 
-      /**
-			 * Return the path to the currently selected sub theme.
-			 */
-			function path_to_sub_theme() {
-        global $theme, $user, $custom_theme;
-
-			  $themes = list_themes();
-
-			  // Only select the user selected theme if it is available in the
-			  // list of enabled themes.
-			  $theme = $user->theme && $themes[$user->theme]->status ? $user->theme : variable_get('theme_default', 'garland');
-
-			  // Allow modules to override the present theme... only select custom theme
-			  // if it is available in the list of installed themes.
-			  $theme = $custom_theme && $themes[$custom_theme] ? $custom_theme : $theme;
-
-			  return dirname($themes[$theme]->filename);
-			}
-
-    ?>
     <style type="text/css" media="all">@import "<?php
       print base_path();
 	    $subThemePath = path_to_sub_theme();
@@ -48,7 +27,7 @@
   <body<?php print phptemplate_body_class($sidebar_left, $sidebar_right); ?>>
 
 <!-- Layout -->
-  <div id="header-region" class="clear-block"><?php print $header; ?></div>
+  
 
     <div id="wrapper">
     <div id="container" class="clear-block">
@@ -79,16 +58,19 @@
             print $site_html .'</a></h1>';
           }
         ?>
+        
         </div>
         <?php
             //var_dump(theme_get_setting('banner_right_path'));
-            var_dump(theme_get_setting('logo_path'));
+            //var_dump(theme_get_setting('logo_path'));
             if(!theme_get_setting('default_banner_right') && theme_get_setting('banner_right_path')){
               $splash_style = 'style="background: url('.theme_get_setting('banner_right_path').')"';
             }
             ?>
         <div id="splash" <?php print($splash_style); ?>></div>
 
+        <div id="header-region" class="clear-block"><?php print $header; ?></div>
+        
 		<div id="menu">
           <?php if (isset($primary_links)) : ?>
 
