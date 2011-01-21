@@ -533,7 +533,12 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 				foreach($region as $key){
 					$fnStr .= theme('cdm_footnote_key', $key, ($fnStr ? $separator : ''));
 				}
-				$out .= "$text_l3 $fnStr; ";
+				if (strlen($fnStr) > 0){
+					$out .= "$text_l3 $fnStr; ";
+				}else{
+					$out .= "$text_l3; ";
+				}
+
 			}else{
 				$fnKeysLevel3Str = '';
 				foreach($fnKeysLevel3 as $key){
@@ -553,20 +558,13 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 					}
 				}
 				$text_l4_aux = substr($text_l4_aux, 0, -3);
+				
 				if (strlen($text_l4_aux) > 0){
 					$out .= "$text_l3 $fnKeysLevel3Str ($text_l4_aux); ";
-				}elseif (strlen($fnKeysLevel3Str) > 0){
-					$out .= "$text_l3 $fnKeysLevel3Str; ";
-				}else{
-					$out .= "$text_l3; ";
-				}
-				/*
-					if (strlen($text_l4_aux) > 0){
-					$out .= "$text_l3 $fnKeysLevel3Str ( $text_l4_aux ); ";
 				}else{
 					$out .= "$text_l3 $fnKeysLevel3Str; ";
 				}
-				*/
+				
 			}
 		}//level3
 		$out = substr($out, 0, -2);
