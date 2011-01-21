@@ -98,6 +98,10 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				//if ($node->feature->titleCache == 'Common Name'){
 				if ($node->feature->uuid == UUID_COMMON_NAME){
 					$block->content .= theme('cdm_common_names', $node->descriptionElements);
+				/*	
+				}else if($node->feature->uuid == UUID_IMAGE_SOURCES) {
+					$block->content .= theme('cdm_image_sources', $node->descriptionElements);
+				*/
 				} else {
 					$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
 				}
@@ -200,6 +204,7 @@ function theme_cdm_descriptionElement_CommonTaxonName($element){
 	$out = $element->language->representation_L10n . ' (' . $element->area->titleCache . '): ' . $element->name;
 	return $out;
 }
+
 /**
  * TODO: assign a new name to the function? because it is used for the citations
  *       textdata elements and not for all text data description elements
@@ -262,6 +267,9 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
 	return $out;
 }
+function theme_cdm_image_sources($elements){
+    var_dump($elements);
+}
 
 function theme_cdm_common_names($elements){
 	$text_data_out = '';
@@ -270,7 +278,7 @@ function theme_cdm_common_names($elements){
 	$textData_commonNames = array();
 
 
-	if (is_array($elements)){//var_dump($elements);
+	if (is_array($elements)){
 		foreach ($elements as $element){
 			if ($element->class == 'CommonTaxonName'){
 				//$key = '<b>' . $element->language->representation_L10n . '</b> (' . $element->area->titleCache . ')';
@@ -314,12 +322,12 @@ function theme_cdm_common_names($elements){
 		}
 	}
 	//handling commons names as text data
-	foreach($textData_commonNames as $text_data_element){//var_dump($text_data_element);
+	foreach($textData_commonNames as $text_data_element){
 		$text_data_out .= theme('cdm_descriptionElementTextData', $text_data_element, true, $text_data_element->feature->uuid);
 	}
 
 	$common_name_out = "<div class=common_names_as_common_names> $common_name_out </div>";
-  $out_array[] = $text_data_out;
+    $out_array[] = $text_data_out;
 	$common_name_out_text_data = '<div class=common_names_as_text_data>' . theme('cdm_descriptionElementArray', $out_array, $element->feature) . '</div>';
 
 	return $common_name_out . $common_name_out_text_data;
@@ -345,7 +353,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 	$distributionElements = array();
 
 	RenderHints::pushToRenderStack('cdm_descriptionElements');
-	$common_names = theme('cdm_common_names', $descriptionElements);
+	//$common_names = theme('cdm_common_names', $descriptionElements);
 	if(is_array($descriptionElements)){//avoiding warning box in drupal for flora malesiana
 		foreach($descriptionElements as $descriptionElement){
 			if($descriptionElement->feature->uuid == UUID_DISTRIBUTION){
@@ -362,6 +370,8 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 						$enclosingHtml = 'p';
 					}
 				}
+			}else if($descriptionElement->feature->uuid == UUID_IMAGE_SOURCES){
+				// do nothing?
 			}else if($descriptionElement->class == 'TextData'){
 				$asListElement = true;
 				$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $descriptionElement->feature->uuid);
@@ -537,17 +547,26 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 							$fnKeysLevel4Str .= theme('cdm_footnote_key', $fnkey, ($fnKeysLevel4Str ? $separator : ''));
 						}
 					}
-					if ($key != $text_l3 || sizeof($l4_regions > 1)){
+					//if ($key != $text_l3 || sizeof($l4_regions > 1)){
+					if ($key != $text_l3){
 						$text_l4_aux .= "$key $fnKeysLevel4Str, ";
 					}
 				}
-				$text_l4_aux = substr($text_l4_aux, 0, -2);
+				$text_l4_aux = substr($text_l4_aux, 0, -3);
 				if (strlen($text_l4_aux) > 0){
+					$out .= "$text_l3 $fnKeysLevel3Str ($text_l4_aux); ";
+				}elseif (strlen($fnKeysLevel3Str) > 0){
+					$out .= "$text_l3 $fnKeysLevel3Str; ";
+				}else{
+					$out .= "$text_l3; ";
+				}
+				/*
+					if (strlen($text_l4_aux) > 0){
 					$out .= "$text_l3 $fnKeysLevel3Str ( $text_l4_aux ); ";
 				}else{
 					$out .= "$text_l3 $fnKeysLevel3Str; ";
 				}
-
+				*/
 			}
 		}//level3
 		$out = substr($out, 0, -2);
