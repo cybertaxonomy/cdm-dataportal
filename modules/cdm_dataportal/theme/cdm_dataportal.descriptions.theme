@@ -533,10 +533,9 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 				foreach($region as $key){
 					$fnStr .= theme('cdm_footnote_key', $key, ($fnStr ? $separator : ''));
 				}
-				if (strlen($fnStr) > 0){
-					$out .= "$text_l3 $fnStr; ";
-				}else{
-					$out .= "$text_l3; ";
+	            //removing whitespaces when &fnStr is empty
+				if(substr($out, -3) == ' ; '){
+					$out = substr($out, 0, -3) . '; ';
 				}
 
 			}else{
