@@ -536,10 +536,8 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 				$out .= "$text_l3 $fnStr; ";
 	            //removing whitespaces when &fnStr is empty
 				if(substr($out, -3) == ' ; '){
-					var_dump(substr($out, -3));
 					$out = substr($out, 0, -3) . '; ';
 				}
-
 			}else{
 				$fnKeysLevel3Str = '';
 				foreach($fnKeysLevel3 as $key){
@@ -558,7 +556,7 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 						$text_l4_aux .= "$key $fnKeysLevel4Str, ";
 					}
 				}
-				$text_l4_aux = substr($text_l4_aux, 0, -3);
+				$text_l4_aux = substr($text_l4_aux, 0, -2);
 				
 				if (strlen($text_l4_aux) > 0){
 					$out .= "$text_l3 $fnKeysLevel3Str ($text_l4_aux); ";
