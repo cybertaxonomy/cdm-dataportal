@@ -224,11 +224,6 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 */
 	// add annotations as footnote key
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
-	
-    if ($element->feature->uuid = UUID_IMAGE_SOURCES){
-        var_dump($out);
-    }
-    
     
 	return $out;
 }
