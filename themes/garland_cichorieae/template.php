@@ -81,9 +81,12 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale')
 	    && $element->feature->titleCache == 'Citation'){
 		$asListElement = true;
+	}elseif ($default_theme == 'cyprus' && $element->feature->uuid == '6f677e98-d8d5-4bc5-80bf-affdb7e3945a'){
+	   	$asListElement = true;
 	}else{
 		$asListElement = false;
 	}
+
 	if ($feature_uuid == UUID_NAME_USAGE || $feature_uuid == UUID_CHROMOSOMES){
 		$no_links = true;
 	}
