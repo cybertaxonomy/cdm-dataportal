@@ -298,7 +298,6 @@ function garland_cichorieae_cdm_taxon_page_images($taxon, $media){
 
 function garland_cichorieae_cdm_taxon_page_images_cichorieae_copyright(){
 	$default_theme = variable_get('theme_default', 'garland_cichorieae');
-	var_dump($default_theme);
 	if ($default_theme == 'cyprus'){
 		$out = '<div id="cyprus-copyright">';
         $out .= '<p>';
