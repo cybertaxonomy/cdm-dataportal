@@ -360,6 +360,9 @@ function cdm_settings_general(){
     return system_settings_form($form);
 }
 
+function gen_layout_form_submit ($form, $form_values) {
+	drupal_set_message('This is a test!');
+}
 
 
 /**
@@ -379,8 +382,6 @@ function cdm_settings_layout(){
     '#description' => t('If selected split the taxon page into individual tabs for description, images, synonymy. If not the taxon data is renderized as a long single page without tabs.')
 	);
 */
-
-
 	$form['gen_layout'] = array(
 		'#type' => 'fieldset',
 	    '#title' => t('Portal Layout'),
@@ -388,6 +389,7 @@ function cdm_settings_layout(){
          '#collapsed' => FALSE,
 	     '#description' => t('This settings contains the general configurations layout. If you want to configure the specific sites layout visit the respective configuration site for taxon, search or media.'),
 	);
+	
 	//---- footnotes ---//
 	$form['gen_layout']['footnotes'] = array(
       '#type' => 'fieldset',
@@ -411,6 +413,20 @@ function cdm_settings_layout(){
       '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
       '#description' => t('Check this if you do not want to show annotation footnotes')
 	);
+	
+	//--- Advanced Search ---//
+	$form['gen_layout']['asearch'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Advanced search'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+    );
+    $form['gen_layout']['asearch']['conf'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show advanced search link'),
+      '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
+      '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
+    );
 
 /*
 	//---- footnotes ---//
@@ -731,12 +747,11 @@ function cdm_settings_layout_taxon(){
   $form['taxon_profile']['specimens'][] =
     cdm_dataportal_create_gallery_settings_form($form_name, $form_title, FALSE, $form_description);
 
-       //-- MEDIA THUMBNAILS --//
-      $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
-      $form_tittle = 'Taxon Images (Tab)';
-      $form_description = 'This section covers the settings related to the taxon images tab. Taxon images display all the media (in this case images) found for a given taxon as a thumbnails.';
-      $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description);
-
+  //-- MEDIA THUMBNAILS --//
+  $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
+  $form_tittle = 'Taxon Images (Tab)';
+  $form_description = 'This section covers the settings related to the taxon images tab. Taxon images display all the media (in this case images) found for a given taxon as a thumbnails.';
+  $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description);
 
   return system_settings_form($form);
 }

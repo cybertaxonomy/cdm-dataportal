@@ -230,7 +230,8 @@ function theme_cdm_media_gallerie(
 	$captionElements = array('title'),
 	$mediaLinkType = 'LIGHTBOX', 
 	$alternativeMediaUri = null, 
-	$galleryLinkUri = null ){
+	$galleryLinkUri = null,
+	$showCaption = true){
 
 	if(!is_array($captionElements)){
 		$captionElements = array();
@@ -341,13 +342,15 @@ function theme_cdm_media_gallerie(
 			$out .= '<td>'.$mediaPartHtml.'</td>';
 		}
 		$out .= '</tr>'; // end of media parts
-		if(count($captionElements) > 0){
-			$out .= '<tr>';
-			// add caption row
-			foreach($captionParts as $captionPartHtml){
-				$out .= '<td>'.$captionPartHtml.'</td>';
-			}
-			$out .= '</tr>';
+		if ($showCaption){
+		     if(count($captionElements) > 0){
+            $out .= '<tr>';
+            // add caption row
+            foreach($captionParts as $captionPartHtml){
+                $out .= '<td>'.$captionPartHtml.'</td>';
+            }
+            $out .= '</tr>';
+            }
 		}
 	}
 	if($galleryLinkUri){

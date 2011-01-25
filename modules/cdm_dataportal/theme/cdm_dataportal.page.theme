@@ -393,6 +393,11 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		// render the homotypicSynonymyGroup including the type information
     $out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
 	}
+	/*
+	else{
+		$out .= '<ul class="homotypicSynonyms"></ul>';
+	}
+	*/
 	//render accepted taxon heterotypic synonymy groups
 	if($synomymie->heterotypicSynonymyGroups) {
 		foreach($synomymie->heterotypicSynonymyGroups as $homotypicalGroup){
@@ -463,14 +468,17 @@ function taxon_image_gallery_default($taxon, $media){
 		$gallery_settings = getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
 
 		$out = '<div class="image-gallerie">';
-		$out .= theme('cdm_media_gallerie', $media,
+		$out .= theme('cdm_media_gallerie', 
+		$media,
 		$gallery_name,
 		$gallery_settings['cdm_dataportal_media_maxextend'],
 		$gallery_settings['cdm_dataportal_media_cols'],
 		0, // ignore maxrows settings
 		$captionElements,
 		$mediaLinkType,
-		null);
+		null,
+		null,
+		$gallery_settings['cdm_dataportal_show_thumbnail_captions']);
 		$out .= '</div>';
 	}else{
 		$out = 'No images available.';

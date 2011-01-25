@@ -415,7 +415,9 @@ function cdm_dataportal_block($op='list', $delta=0) {
 			case 2:
 				$block['subject'] = t('Search taxa');
 				$block['content'] = drupal_get_form('cdm_dataportal_search_taxon_form');
-				$block['content'] .= '<div>'.l('Advanced Search', '/cdm_dataportal/search').'</div>';
+				if (variable_get('cdm_dataportal_show_advanced_search', 1)){
+				    $block['content'] .= '<div>'.l('Advanced Search', '/cdm_dataportal/search').'</div>';
+				}
 				return $block;
 			case 4:
 				$block['subject'] = t('<none>');
@@ -791,7 +793,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $
     '#type' => 'textfield',
     '#title' => t('Thumbnail size'),
     '#default_value' => $gallery_settings['cdm_dataportal_media_maxextend'],
-    '#description' => t('Does it work? TODO: Write the description  text.')
+    '#description' => t('Select the size of the thumbnails.')
 	);
 
 	$form[$form_name]['cdm_dataportal_media_cols'] = array(
