@@ -80,8 +80,8 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 		
 	if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale')
 	    && $element->feature->titleCache == 'Citation'){
-		$asListElement = true;
-	}elseif ($default_theme == 'cyprus' && $element->feature->uuid == '6f677e98-d8d5-4bc5-80bf-affdb7e3945a'){
+		$asListElement = true;	
+	}elseif ($element->feature->uuid == UUID_CHROMOSOMES_NUMBERS){
 	   	$asListElement = true;
 	}else{
 		$asListElement = false;
@@ -224,6 +224,12 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 */
 	// add annotations as footnote key
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
+	
+    if ($element->feature->uuid = UUID_IMAGE_SOURCES){
+        var_dump($out);
+    }
+    
+    
 	return $out;
 }
 
@@ -291,11 +297,23 @@ function garland_cichorieae_cdm_taxon_page_images($taxon, $media){
 }
 
 function garland_cichorieae_cdm_taxon_page_images_cichorieae_copyright(){
-	$out = '<div id="cichorieae-copyright">';
-	$out .= '<p>';
-	$out .= '&copy; Images used on this website remain copyright of the individual photographer.<br> To obtain permission to use images in publications or websites please contact the network at <a href="edit-wp6-cichorieae@bgbm.org">edit-wp6-cichorieae@bgbm.org</a>. Images may be used for personal use, such as PowerPoint presentations, without permission.';
-	$out .= '</p>';
-	$out .= '</div>';
+	$default_theme = variable_get('theme_default', 'garland_cichorieae');
+	var_dump($default_theme);
+	if ($default_theme == 'cyprus'){
+		$out = '<div id="cyprus-copyright">';
+        $out .= '<p>';
+        //$out .= '&copy; Images used on this website remain copyright of the individual photographer.<br> To obtain permission to use images in publications or websites please contact the network at <a href="edit-wp6-cichorieae@bgbm.org">edit-wp6-cichorieae@bgbm.org</a>. Images may be used for personal use, such as PowerPoint presentations, without permission.';
+        $out .= '&copy; Images used on this website remain copyright of the individual photographer.<br> To obtain permission to use images in publications or websites please contact the editors at <a href="r.hand@bgbm.org">r.hand@bgbm.org</a>. Images may be used for personal use, such as PowerPoint presentations, without permission.';
+        $out .= '</p>';
+        $out .= '</div>';
+	}else{
+		$out = '<div id="cichorieae-copyright">';
+        $out .= '<p>';
+        $out .= '&copy; Images used on this website remain copyright of the individual photographer.<br> To obtain permission to use images in publications or websites please contact the network at <a href="edit-wp6-cichorieae@bgbm.org">edit-wp6-cichorieae@bgbm.org</a>. Images may be used for personal use, such as PowerPoint presentations, without permission.';
+        $out .= '</p>';
+        $out .= '</div>';
+	}
+
 
 	return $out;
 }
