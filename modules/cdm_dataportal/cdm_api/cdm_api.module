@@ -112,18 +112,19 @@ function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $ski
 }
 
 /**
- * Finds the text tagged with $$tag_type in an array of taggedText instances
+ * Finds the text tagged with $tag_type in an array of taggedText instances
  *
  * @param array $taggedtxt
  * @param string $tag_type
- * @return the text mapped by $tag_type or an empty string
+ * @return an array with the texts mapped by $tag_type
  */
-function cdm_taggedtext_value(array &$taggedtxt = array(), $tag_type){
+function cdm_taggedtext_values(array &$taggedtxt = array(), $tag_type){
+	$tokens = array();
   foreach($taggedtxt as $tagtxt){
     if($tagtxt->type == $tag_type)
-    return $tagtxt->text;
+    $tokens[] = $tagtxt->text;
   }
-  return '';
+  return $tokens;
 }
 
 /**
@@ -1077,7 +1078,7 @@ function cdm_api_secref_cache_clear(){
 }
 
 function is_uuid($str){
-	return isset($str) && strlen($str) == 36 && strpos($str, '-');
+	return is_string($str) && strlen($str) == 36 && strpos($str, '-');
 }
 
 function _cdm_api_secref_cache_add($secUuidsStr){
