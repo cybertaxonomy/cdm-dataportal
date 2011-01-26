@@ -438,11 +438,8 @@ function theme_cdm_description_element_image_source($image_sources, $asListEleme
             $footnoteKeyListStr .= theme('cdm_footnote_key', $footNoteKey, ($footnoteKeyListStr ? $separator : ''));
         }
         //return value!
-        if ($asListElement){
-        	$out .= '<p><span class="descriptionElement descriptionElement-'.$image_source->uuid.'">'.$image_source->multilanguageText_L10n->text . $footnoteKeyListStr . ' </span><p>';
-        }else{
-        	$out .= '<span class="descriptionElement descriptionElement-'.$image_source->uuid.'">'.$image_source->multilanguageText_L10n->text . $footnoteKeyListStr . ' </span>';
-        }
+        $out .= '<span class="descriptionElement descriptionElement-'.$image_source->uuid.'">'.$image_source->multilanguageText_L10n->text . $footnoteKeyListStr . '; </span>';
+
     }
         
     RenderHints::popFromRenderStack();
