@@ -267,9 +267,6 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
 	return $out;
 }
-function theme_cdm_image_sources($elements){
-    var_dump($elements);
-}
 
 function theme_cdm_common_names($elements){
 	$text_data_out = '';
@@ -351,7 +348,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 	}
 	$sortOutArray = false;
 	$distributionElements = array();
-
+	
 	RenderHints::pushToRenderStack('cdm_descriptionElements');
 	//$common_names = theme('cdm_common_names', $descriptionElements);
 	if(is_array($descriptionElements)){//avoiding warning box in drupal for flora malesiana
@@ -371,7 +368,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 					}
 				}
 			}else if($descriptionElement->feature->uuid == UUID_IMAGE_SOURCES){
-				// do nothing?
+				$image_sources[] = $descriptionElement;
 			}else if($descriptionElement->class == 'TextData'){
 				$asListElement = true;
 				$outArray[] = theme('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $descriptionElement->feature->uuid);
@@ -387,7 +384,10 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 	if($descriptionElement->feature->uuid == UUID_NAME_USAGE){
 		sort($outArray);
 	}
-
+    if($image_sources){
+        $outArray[] = theme('cdm_description_element_image_source', $image_sources, true);
+           
+    }
 	if(variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT'){
 		$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
 	}else{
@@ -402,6 +402,51 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 
 	RenderHints::popFromRenderStack();
 	return $out;
+}
+
+function compare_image_sources($a, $b){
+    if($a->multilanguageText_L10n->text == $b->multilanguageText_L10n->text){
+    	return 0;
+    }
+    return ($a->multilanguageText_L10n->text < $b->multilanguageText_L10n->text) ? -1 : 1;
+}
+
+/**
+ * 
+ */
+function theme_cdm_description_element_image_source($image_sources, $asListElement) {
+    $out = '';
+    $separator = ',';
+    RenderHints::pushToRenderStack('descriptionElementImageSource');
+    RenderHints::setFootnoteListKey(UUID_IMAGE_SOURCES);
+    
+    //sorting the image sources
+    usort($image_sources, "compare_image_sources");
+    //generate the footnotes
+    foreach($image_sources as $image_source){
+        $footNoteKeys = cdm_annotations_as_footnotekeys($image_source);
+        foreach($image_source->sources as $source){
+            if(_is_original_source_type($source)){
+                $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
+                cdm_add_footnote_to_array($footNoteKeys, $fn_key);// ensure uniqueness of the footnote keys
+            }
+        }  
+        //sort and render footnote keys
+        $footnoteKeyListStr = '';
+        asort($footNoteKeys);
+        foreach($footNoteKeys as $footNoteKey){
+            $footnoteKeyListStr .= theme('cdm_footnote_key', $footNoteKey, ($footnoteKeyListStr ? $separator : ''));
+        }
+        //return value!
+        if ($asListElement){
+        	$out .= '<p><span class="descriptionElement descriptionElement-'.$image_source->uuid.'">'.$image_source->multilanguageText_L10n->text . $footnoteKeyListStr . ' </span><p>';
+        }else{
+        	$out .= '<span class="descriptionElement descriptionElement-'.$image_source->uuid.'">'.$image_source->multilanguageText_L10n->text . $footnoteKeyListStr . ' </span>';
+        }
+    }
+        
+    RenderHints::popFromRenderStack();
+    return $out;
 }
 
 /**
@@ -438,7 +483,6 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 
 	RenderHints::popFromRenderStack();
 	return $out;
-
 }
 /**
  * Function target is to compare two different foootnotes objects.
