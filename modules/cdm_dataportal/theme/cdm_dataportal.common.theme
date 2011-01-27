@@ -289,7 +289,8 @@ function theme_cdm_pager_link($text, $linkIndex, &$pager, $path, $parameters = a
 
 function theme_cdm_back_to_search_result_button(){
 	$out = '';
-	if($_SESSION['cdm']['search']){
+	$show_button = variable_get('cdm_dataportal_show_back_to_search_results', 1);
+	if($_SESSION['cdm']['search'] && $show_button){
 		/*['cdm']['last_search']*/
 		//$out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION ).'</div>';
 		$out .= '<div id="backButton">'.l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search'] ).'</div>';

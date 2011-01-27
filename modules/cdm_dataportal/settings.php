@@ -386,8 +386,8 @@ function cdm_settings_layout(){
 		'#type' => 'fieldset',
 	    '#title' => t('Portal Layout'),
         '#collapsible' => FALSE,
-         '#collapsed' => FALSE,
-	     '#description' => t('This settings contains the general configurations layout. If you want to configure the specific sites layout visit the respective configuration site for taxon, search or media.'),
+        '#collapsed' => FALSE,
+	    '#description' => t('This settings contains the general configurations layout. If you want to configure the specific sites layout visit the respective configuration site for taxon, search or media.'),
 	);
 	
 	//---- footnotes ---//
@@ -421,37 +421,13 @@ function cdm_settings_layout(){
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
     );
-    $form['gen_layout']['asearch']['conf'] = array(
+    $form['gen_layout']['asearch']['cdm_dataportal_show_advanced_search'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show advanced search link'),
       '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
       '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
     );
-
-/*
-	//---- footnotes ---//
-	$form['footnotes'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Footnotes'),
-      '#collapsible' => FALSE,
-      '#collapsed' => FALSE,
-	  '#description' => t('Taxa data such authors or synonyms names may have annotations or footnotes. This section covers such settings.'),
-	);
-
-	$form['footnotes']['cdm_dataportal_all_footnotes'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Do not show footnotes'),
-      '#default_value' => variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES),
-      '#description' => t('Check this if you do not want to show any footnotes')
-	);
-
-	$form['footnotes']['cdm_dataportal_annotations_footnotes'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Do not show annotations footnotes'),
-      '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
-      '#description' => t('Check this if you do not want to show annotation footnotes')
-	);
-*/
+    
 	return system_settings_form($form);
 }
 
@@ -536,6 +512,13 @@ function cdm_settings_layout_taxon(){
                       It is possible to split the taxon profile in different tabs, visit the section Taxon tabs to discover and configure the tabs</p>'),
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
+	);
+	
+	$form['taxon_profile']['cdm_dataportal_show_back_to_search_results'] = array(
+	    '#type' => 'checkbox',
+        '#title' => t('Show <em>Back to search results</em> link at the taxon site.'),
+        '#default_value' => variable_get('cdm_dataportal_show_back_to_search_results', 1),
+        '#description' => t('<p>If checked the link to search results is rendererized at the top of the taxon site. Clicking on the link the last search performed is renderized again.</p>')
 	);
 
 	//--------- TABBED TAXON -------//
