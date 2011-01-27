@@ -21,6 +21,21 @@ body {
 }
 */
 
+heterotypicSynonymyGroup li.footnotes, 
+.homotypicSynonymyGroup li.footnotes, 
+.homotypicSynonyms li.footnotes, 
+.misapplied li.footnotes, 
+.content li.descriptionText {
+    background-image: none;
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+    margin-left: 0px;
+    margin-top: 10px;
+    padding-left: 0px;
+}
+
+
 #edit-logo {
 	background:#FFFFFF url(images/edit-logo.gif) no-repeat scroll 0 0;
 	float: left;
