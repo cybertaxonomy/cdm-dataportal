@@ -39,7 +39,7 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
 
 	$fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations', $typeDesignation->citation->titleCache);
 	$res .= theme('cdm_footnote_key', $fkey_typeDesignation, $footnote_separator, true, true) . ')';
-	 
+
 }
 return $res;
 }
@@ -329,7 +329,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 
 function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 	$show_annotations = true, $is_type_designation = false, $skiptags = array()){
-		
+
 	$renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
 	$partDefinition = get_partDefinition($taxonName->class);
 
@@ -436,7 +436,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 	}
 
 	// fill with status
-	if((bool) $taxon->name->status){
+	if(is_array($taxon->name->status)){
 		if(array_setr('status', true, $renderTemplate)){
 			if(isset($taxon->name->status[0])){
 				foreach($taxon->name->status as $status){
@@ -492,7 +492,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 			$out .= $separator.'<a href="'.$uri.'" class="'.$partName.'">'.$partHtml.'</a>';
 		} else {
 			$out .= $separator.$partHtml;
-				
+
 		}
 	}
 	$out .= '</span>';
