@@ -128,11 +128,13 @@
  */
 $.fn.set_background_image = function (imageFile)
 {
-//	var bg_image_tmp = $(this).css('background-image');
-//	var bg_image_new = bg_image_tmp.replace(/^(.*)(\/.*)(\))$/, '$1/'+imageFile+'$3');
-//	$(this).css('background-image', bg_image_new);
-	//TODO: uncomment the next line and find out why does not work with IE
-	//$(this).css('background-image', imageFile);
+	var bg_image_tmp = $(this).css('background-image');
+	var bg_image_new = bg_image_tmp.replace(/^(.*)(\/.*)(\))$/, '$1/'+imageFile+'$3');
+	if($.browser.mozilla){
+		// special bug handling for mozilla: strip of last closing bracket
+		bg_image_new = bg_image_new.substr(0, bg_image_new.length - 1);
+	}
+	$(this).css('background-image', bg_image_new);
 }
 
 /**
