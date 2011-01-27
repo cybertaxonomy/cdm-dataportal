@@ -436,16 +436,17 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 	}
 
 	// fill with status
-	if(is_array($taxon->name->status)){
+	if(is_array($taxonName->status)){
 		if(array_setr('status', true, $renderTemplate)){
-			if(isset($taxon->name->status[0])){
-				foreach($taxon->name->status as $status){
+			if(isset($taxonName->status[0])){
+				foreach($taxonName->status as $status){
 					$statusHtml .= ', '.$status->type->representation_L10n;
 				}
 			}
 			array_setr('status', ' <span class="nomenclatural_status">'.$statusHtml.'</span>', $renderTemplate);
 		}
 	}
+
 	// fill with protologues etc...
 	if(array_setr('description', true, $renderTemplate)){
 		$descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxonName->uuid);
