@@ -62,10 +62,10 @@
         </div>
         <?php
             //var_dump(theme_get_setting('banner_right_path'));
-            //var_dump(theme_get_setting('logo_path'));
-            if(!theme_get_setting('default_banner_right') && theme_get_setting('banner_right_path')){
-              $splash_style = 'style="background: url('.theme_get_setting('banner_right_path').')"';
-            }
+            //   var_dump(theme_get_setting('logo_path'));
+//            if(!theme_get_setting('default_banner_right') && theme_get_setting('banner_right_path')){
+//              $splash_style = 'style="background: url('.theme_get_setting('banner_right_path').')"';
+//            }
             ?>
         <div id="splash" <?php print($splash_style); ?>></div>
 
