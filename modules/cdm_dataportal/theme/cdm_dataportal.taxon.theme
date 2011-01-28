@@ -193,7 +193,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 	// $table_of_accepted = cdm_ws_property(CDM_WS_PORTAL_TAXON_ACCEPTED, join(',', $synonym_uuids));
 	// thus ...
 	$table_of_accepted = array();
-	
+
 	foreach($synonym_uuids as $synUuid){
 		$table_of_accepted[$synUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($synUuid, $classification_uuid));
 	}
@@ -203,7 +203,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 	foreach($records as $taxon){
 		// its a Taxon
 		if($taxon->class == "Taxon"){
-			$taxonUri = url(path_to_taxon($taxon->uuid)); 
+			$taxonUri = url(path_to_taxon($taxon->uuid));
 			if(isset($taxon->name->nomenclaturalReference)){
 				$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 			}
@@ -278,16 +278,20 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 		default :
 			$relsign = $relsign_invalid;
 	}
-
-	$status = $taxon->name->status[0]->type->representation_L10n;
-	//if ($status == 'Invalid' || $status == 'Nudum'){
-	if (sizeof($status) > 0){
-		if ($status == 'Invalid' || $status == 'Nudum'){
-			$relsign = $relsign_invalid;
+	/*
+	 * names with status invalid or nudum are to be displayed with the $relsign_invalid,
+	 * these names appear at the end of all names in their homotypic group
+	 * (ordered correctly by the java cdm_lib)
+	 */
+	if ( is_array($taxon->name->status)) {
+		foreach($taxon->name->status as $status){
+			if ($status->type->uuid == UUID_NOMENCLATURALSTATUS_TYPE_INVALID || $status->type->uuid == UUID_NOMENCLATURALSTATUS_TYPE_NUDUM){
+				$relsign = $relsign_invalid;
+			}
 		}
-		$status = ', ' . $taxon->name->status[0]->type->representation_L10n_abbreviated;
-		//var_dump('&mdash' . $taxon->name->status[0]->type->representation_L10n_abbreviated);
 	}
+
+	// now rendering starts ..
 
 	RenderHints::pushToRenderStack('related_taxon');
 
@@ -303,43 +307,43 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 	$nameHtml .= theme('cdm_annotations_as_footnotekeys', $special_annotations_array);
 
 	//later homonym or trated as later homonym AND bloking names
-	$from_name_rels = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
-	$to_name_rels = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
+	$from_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
+	$to_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
 	//first the FROM RELS
-	if ($from_name_rels){
-		foreach($from_name_rels as $element){
+	if ($from_name_relations){
+		foreach($from_name_relations as $element){
 			switch ($element->type->representation_L10n){
 				case 'later homonym for':
-					if(isset($rels_out)){
-						$rels_out .= ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+					if(isset($name_relations_html)){
+						$name_relations_html .= ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
 						    'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid);
 					}else{
-						$rels_out = ' non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+						$name_relations_html = ' non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
                         'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid)
 						. ' ' . $element->toName->datePublished->start;
 					}
 					break;
 				case 'treated as later homonym for':
-					if(isset($rels_out)){
-						$rels_out = ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+					if(isset($name_relations_html)){
+						$name_relations_html = ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
                               'cdm_dataportal/name/' . $element->toName->uuid);
 					}else{
-						$rels_out = ' non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+						$name_relations_html = ' non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
 					                   'cdm_dataportal/name/' . $element->toName->uuid);
 					}
 					break;
 			}
 		}
 		//second the TO RELS
-		if ($to_name_rels){
-			foreach($to_name_rels as $element){
+		if ($to_name_relations){
+			foreach($to_name_relations as $element){
 				switch ($element->type->representation_L10n){
 					case 'blocking name for':
-						if(isset($rels_out) ){
-							$rels_out .= ' nec ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
+						if(isset($name_relations_html) ){
+							$name_relations_html .= ' nec ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
                 'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid . '/' . $element->fromName->taxonBases[0]->uuid);
 						}else{
-							$rels_out = ' non ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
+							$name_relations_html = ' non ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
                         'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid . '/' . $element->fromName->taxonBases[0]->uuid)
 							. ' ' . $element->fromName->datePublished->start;
 						}
@@ -348,12 +352,12 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 			}
 		}
     //rels output
-		if(isset($rels_out)){
-			$rels_out = '['. $rels_out .']';
+		if(isset($name_relations_html)){
+			$name_relations_html = '['. $name_relations_html .']';
 		}
 	}
   //geneal output
-	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $rels_out . $status;
+	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $name_relations_html;
 	$out = uuid_anchor($taxon->uuid, $out);
 
 	RenderHints::popFromRenderStack();

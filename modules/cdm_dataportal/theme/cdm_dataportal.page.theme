@@ -156,8 +156,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	}
 
   	// get the image gallery as configured by the admin
-  	$taxon_image_gallery = call_user_func_array(
-	    'taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'),
+  	$taxon_image_gallery = call_user_func_array( 'taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'),
   	array($taxon, $media));
   	$out .= $taxon_image_gallery;
 
