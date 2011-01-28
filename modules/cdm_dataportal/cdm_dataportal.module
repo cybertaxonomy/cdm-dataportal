@@ -340,8 +340,7 @@ function cdm_dataportal_user_form() {
 	$form['cdm_dataportal_user_form'] =  array(
       '#type'          => 'select',
       '#title'         => t('Default tab to display'),
-      /*'#default_value' => variable_get('cdm_dataportal_detault_tab', 0),*/
-	  '#default_value' => get_default_taxon_tab(true),
+	    '#default_value' => get_default_taxon_tab(true),
       '#options'       => unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB),
       '#description'   => t('<p>Select the default tab to display when visiting a taxon page. Only available if Tabbed Taxon Page is enable.</p>
               <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab
@@ -744,7 +743,7 @@ function cdm_dataportal_form_alter($form_id, &$form) {
 
 
 function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description = ''){
-
+//TODO move into settings.php
 	$form[$form_name] = array(
     '#type' => 'fieldset',
     '#title' => t($form_tittle),
@@ -1044,7 +1043,7 @@ function path_to_taxon($uuid, $no_tab = false){
 	$values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
 
 	if(!$uuid) return false;
-	
+
 	if (!$tab){
 		return 'cdm_dataportal/taxon/'.$uuid;
 	}elseif(get_last_taxon_page_tab() &&
