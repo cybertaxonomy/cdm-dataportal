@@ -640,8 +640,12 @@ function cdm_taxontree_flatten($tree, &$new_root = null){
  */
 function _cdm_taxontree_merge($tree, $branch) {
 
-	if(!$branch){
+	if(!$branch || !is_array($branch)){
 		return $tree;
+	}
+
+	if(!is_array($tree)){
+		return;
 	}
 
 	foreach(array_keys($tree) as $uuid) {
@@ -816,10 +820,7 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
 
 	$is_leaf = !$node->taxonomicChildrenCount || $node->taxonomicChildrenCount == 0;
 	$is_expanded = isset($node->expanded) && $node->expanded = 'expanded';
-/*
-if($node->taxonUuid == '1a0bb171-9461-4713-b98d-d0a5f03dfcb1'){
-}
-*/ 
+
 	if($node->tid){
 		$node_name = $node->name;
 		$path = "taxonomy/term/".$node->tid;
