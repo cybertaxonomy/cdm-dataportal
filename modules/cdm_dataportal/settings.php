@@ -28,6 +28,8 @@ $taxon_tab_options = array(
   CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX => 'Last visited tab',
 );
 
+define('EDIT_MAPSERVER_URI', 'http://edit.br.fgov.be/edit_wp5/v1/');
+
 /**
  * default settings for all gallerys
  * @var unknown_type
@@ -52,7 +54,7 @@ function getGallerySettings($gallery_config_form_name){
 }
 
 function get_default_taxon_tab($index = false) {
-	
+
 	global $user;
 	$values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
 	$user_tab_active = 'cdm_dataportal_' .$user->uid . '_default_tab_active';
@@ -63,7 +65,7 @@ function get_default_taxon_tab($index = false) {
 		$user_value = variable_get($user_tab, 0);
 		$index_value = $user_value;
 	//get the system value
-	}else{  
+	}else{
 		$system_value = variable_get('cdm_dataportal_default_tab', 0);
 		$index_value = $system_value;
 	}
@@ -781,7 +783,7 @@ function cdm_settings_layout_media(){
       '#title' => t('Images Settings'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
-	  '#description' => t('This section covers the settings related to the taxon images tab.'),
+	    '#description' => t('This section covers the settings related to the taxon images tab.'),
       );
 
 	$form['media_settings']['image_gallery_viewer'] =  array(
@@ -832,7 +834,7 @@ function cdm_settings_geo(){
     '#default_value' => variable_get('edit_map_server', 'http://edit.br.fgov.be/edit_wp5/v1/'),
 
     '#options' => array(
-	      'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server',
+	      EDIT_MAPSERVER_URI => 'EDIT Map Server',
 	/*
 	 'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server - Mirror 1',
 	 'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server - Mirror 2',
@@ -1135,8 +1137,10 @@ function getEDITMapServiceURI(){
 
 	if(variable_get('edit_map_server', false) == 'ALTERNATIVE'){
 		return (variable_get('edit_map_server_alternative', false));
-	} else {
+	} else if(variable_get('edit_map_server', false)) {
 		return variable_get('edit_map_server', false);
+	} else {
+		return EDIT_MAPSERVER_URI;
 	}
 
 }
