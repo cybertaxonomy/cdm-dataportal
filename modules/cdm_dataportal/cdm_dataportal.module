@@ -792,22 +792,24 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $
     '#type' => 'textfield',
     '#title' => t('Thumbnail size'),
     '#default_value' => $gallery_settings['cdm_dataportal_media_maxextend'],
-    '#description' => t('Select the size of the thumbnails.')
+    '#description' => t('Select the size of each individual thumbnail.')
 	);
 
-	$form[$form_name]['cdm_dataportal_media_cols'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Number of columns'),
-    '#default_value' => $gallery_settings['cdm_dataportal_media_cols'],
-    '#description' => t('Group the thumbnails in columns, select in how many columns should be displayed.')
-	);
+	if($form_name != CDM_DATAPORTAL_MEDIA_GALLERY_NAME){
+	   $form[$form_name]['cdm_dataportal_media_cols'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Number of columns'),
+        '#default_value' => $gallery_settings['cdm_dataportal_media_cols'],
+        '#description' => t('Group the thumbnails in columns: select how many columns should the gallery display.')
+	   );
+	}
 
 	if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
 		$form[$form_name]['cdm_dataportal_media_maxRows'] = array(
       '#type' => 'textfield',
       '#title' => t('Maximum number of rows'),
       '#default_value' => $gallery_settings['cdm_dataportal_media_maxRows'],
-      '#description' => t('You can group the thumbnails, select in how many columns should be the thumbnails grouped.<br>
+      '#description' => t('You can group the thumbnails in rows, select in how many rows should be the thumbnails grouped.<br>
                            <b>Note:</b> If you want an unlimited number of rows please set to 0')
 		);
 	}
