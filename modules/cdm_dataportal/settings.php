@@ -728,16 +728,30 @@ function cdm_settings_layout_taxon(){
   );
   $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
   $form_title = 'Specimen media';
-  $form_description = 'TODO: write text.';
+  $form_description = 'Specimens may have media which is displayed at the Specimen tab/section as a gallery.
+   It is possible to configure the thumbnails gallery here, however for configuring how a single media should 
+   be displayed please go to <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a></p>';
   $form['taxon_profile']['specimens'][] =
     cdm_dataportal_create_gallery_settings_form($form_name, $form_title, FALSE, $form_description);
 
   //-- MEDIA THUMBNAILS --//
-  $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
-  $form_tittle = 'Taxon Images (Tab)';
-  $form_description = 'This section covers the settings related to the taxon images tab. Taxon images display all the media (in this case images) found for a given taxon as a thumbnails.';
-  $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description);
+  //$form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
+  //$form_tittle = 'Taxon Images (Tab)';
+  //$form_description = 'This section covers the settings related to the taxon images tab. Taxon images display all the media (in this case images) found for a given taxon as a thumbnails.';
+  //$form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description);
+  // --- MEDIA GALLERY ---- //
+  $form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
+  $form_title = 'Media gallery (Tab)';
+  $form_description = '<p>This section covers the settings related to the taxon <strong>media</strong> tab.
+   Taxa may have media (usually images) and they are as thumbnails displayed. It is possible to configure 
+   the thumbnails gallery here, however for configuring how a single media should be displayed please go to 
+   <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a></p>
+   <p><strong>Note:</strong> These settings are only taken into account when the standard 
+   gallery viewer is selected at <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a>.</p>';
+  //$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
+  $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
+  
   return system_settings_form($form);
 }
 
@@ -780,26 +794,24 @@ function cdm_settings_layout_media(){
 
 	$form['media_settings'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Images Settings'),
+      '#title' => t('Media display settings'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
-	    '#description' => t('This section covers the settings related to the taxon images tab.'),
+	  '#description' => t('This section covers the settings related to the taxa media, that is how each single media should be displayed.'),
       );
 
 	$form['media_settings']['image_gallery_viewer'] =  array(
     '#type'          => 'select',
-    '#title'         => t('Image gallery viewer'),
+    '#title'         => t('Image viewer'),
     '#default_value' => variable_get('image_gallery_viewer', 'default'),
-    '#options' => array(
-        'default' => t('Standart image gallery'),
-        'fsi' => t('FSI viewer (requires FSI server!)'),
-	'#description' => t('Select your '),
-	));
+    '#options' => array('default' => t('Standard image viewer'),
+                        'fsi' => t('FSI viewer (requires FSI server!)')),
+	);
 
 	// --- MEDIA GALLERY ---- //
 	$form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
-	$form_title = 'Media gallery';
-	$form_description = 'What it is supposed to do this form? TODO: write description text.';
+	$form_title = 'Standard viewer';
+	$form_description = '<p>Configure the standard image viewer.</p><p><strong>Note:</strong> the image viewer should selected otherwise settings are not taking into account.</p>';
 	//$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
 	$form['media_settings'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
