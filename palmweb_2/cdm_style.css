@@ -24,7 +24,7 @@
 	float: right;
 }
 
-.Taxon .reference, .Synonym .reference {
+.Taxon .reference, .Synonym .reference, .Taxon .status, .Synonym .status {
 	font-size: 90%; 
 }
 

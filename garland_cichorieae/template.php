@@ -77,7 +77,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	$res_date;
 	$no_links = false;
 	$default_theme = variable_get('theme_default', 'garland_cichorieae');
-		
+	
 	if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale')
 	    && $element->feature->titleCache == 'Citation'){
 		$asListElement = true;	
@@ -90,18 +90,18 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	if ($feature_uuid == UUID_NAME_USAGE || $feature_uuid == UUID_CHROMOSOMES){
 		$no_links = true;
 	}
-	
+
 	if(is_array($element->sources)){
 		foreach($element->sources as $source){
 			//initialize some variables
 			if ($feature_uuid == UUID_NAME_USAGE){
-				$referenceCitation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, 
-				                                array($source->citation->uuid), 
+				$referenceCitation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
+				                                array($source->citation->uuid),
 									            "microReference=".urlencode($source->citationMicroReference));
-				$referenceCitation = $referenceCitation->String; 
+				$referenceCitation = $referenceCitation->String;
 			}else{
-				$referenceCitation = theme('cdm_DescriptionElementSource', 
-			                               $source, 
+				$referenceCitation = theme('cdm_DescriptionElementSource',
+			                               $source,
 									       ($no_links) ? false : true);
 			}
 			if($description && strlen($description) > 0 && $referenceCitation ){
@@ -109,7 +109,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 			}else if ($referenceCitation){
 				$sourceRefs = $referenceCitation;
 			}
-			//generate the output		
+			//generate the output
 			if(strlen($sourceRefs) > 0){
 				$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
 			}
@@ -121,12 +121,12 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 			}else if ($source->nameUsedInSource->uuid && ($feature_uuid == UUID_NAME_USAGE)){
 				//do not do link for NAME USAGE feature
 				$name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
-			}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ 
+			}else if (strlen($source->nameUsedInSource->originalNameString) > 0){
 				//show a text without link
 				$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
 			}
-	
-			if($asListElement && ($feature_uuid == UUID_NAME_USAGE)){	 
+
+			if($asListElement && ($feature_uuid == UUID_NAME_USAGE)){
 				$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
 				//adding ":" if necesary
 				if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
@@ -149,30 +149,30 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 			}
 		}
 	}
-	
+
     //if no sources, print the description
     if(!isset($out)) {
-      $out = $description;    
+      $out = $description;
     }
     //printing annotations footnotes
     $out .= theme('cdm_annotations_as_footnotekeys', $element);
-/*	
+/*
 	if ($feature_uuid == UUID_NAME_USAGE){
 		foreach($element->sources as $source){
-			$referenceCitation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, 
-			                                array($source->citation->uuid), 
+			$referenceCitation = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
+			                                array($source->citation->uuid),
 								            "microReference=".urlencode($source->citationMicroReference));
-			$referenceCitation = $referenceCitation->String; 
+			$referenceCitation = $referenceCitation->String;
 			if($description && strlen($description) > 0 && $referenceCitation ){
 				$sourceRefs .= ' ('.$referenceCitation.')' ;
 			}else if ($referenceCitation){
 				$sourceRefs = $referenceCitation;
-			}			
+			}
 		}
 	}else{
 		foreach($element->sources as $source){
-			$referenceCitation = theme('cdm_DescriptionElementSource', 
-		                               $source, 
+			$referenceCitation = theme('cdm_DescriptionElementSource',
+		                               $source,
 								       ($feature_uuid == UUID_NAME_USAGE) ? false : true);
 			if($description && strlen($description) > 0 && $referenceCitation ){
 				$sourceRefs .= ' ('.$referenceCitation.')' ;
@@ -180,8 +180,8 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 				$sourceRefs = $referenceCitation;
 			}
 		}
-	}	
-	
+	}
+
 	if(strlen($sourceRefs) > 0){
 		$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
 	}
@@ -194,12 +194,12 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	}else if ($source->nameUsedInSource->uuid && ($feature_uuid == UUID_NAME_USAGE)){
 	//do not do link for NAME USAGE feature
 		$name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
-	}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ 
+	}else if (strlen($source->nameUsedInSource->originalNameString) > 0){
 	//show a text without link
 		$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
 	}
 
-	if($asListElement && ($feature_uuid == UUID_NAME_USAGE)){	 
+	if($asListElement && ($feature_uuid == UUID_NAME_USAGE)){
 		$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
 		//adding ":" if necesary
 		if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
@@ -251,7 +251,7 @@ function garland_cichorieae_cdm_taxon_page_images($taxon, $media){
 		$query = join("%5F", $nameArray) . '%20AND%20EditWP6%20AND%20jpg';
 
 		$out = '
-  
+
 <script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
 
 <script type="text/javascript">
@@ -547,7 +547,6 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
 	return $out;
 }
 
-
 function garland_cichorieae_cdm_feature_name($feature_name){
   switch($feature_name){
     case "Protologue": return t("Original Publication");
@@ -556,25 +555,27 @@ function garland_cichorieae_cdm_feature_name($feature_name){
 }
 
 /* ======================== Special functions for subtheme handling ================  */
+
 function sub_theme() {
-  global $user, $custom_theme;
-  // Only select the user selected theme if it is available in the
+	global $user, $custom_theme;
+
+	// Only select the user selected theme if it is available in the
   // list of enabled themes.
   $theme = $user->theme && $themes[$user->theme]->status ? $user->theme : variable_get('theme_default', 'garland');
+
   // Allow modules to override the present theme... only select custom theme
   // if it is available in the list of installed themes.
   $theme = $custom_theme && $themes[$custom_theme] ? $custom_theme : $theme;
-  return $theme;
-} 
 
-/**
-* Return the path to the currently selected sub theme.
-*/
-function path_to_sub_theme() {
-  $themes = list_themes();
-  $theme = sub_theme(); 
-  return dirname($themes[$theme]->filename);
+  return $theme;
 }
 
 
-
+/**
+ * Return the path to the currently selected sub theme.
+ */
+function path_to_sub_theme() {
+  $themes = list_themes();
+  $theme = sub_theme();
+  return dirname($themes[$theme]->filename);
+}

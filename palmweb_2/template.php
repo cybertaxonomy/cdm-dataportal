@@ -8,7 +8,7 @@
  */
 function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hideImages = false){
 
-  
+
   if(!$hideImages){
     // preferred image
     // hardcoded for testing;
@@ -16,39 +16,39 @@ function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hid
     $defaultRepresentationPart->width = 184;
     $defaultRepresentationPart->height = 144;
     $defaultRepresentationPart->uri = drupal_get_path('theme', 'palmweb_2').'/images/no_picture.png';
-    
+
     // preferred image size 184px × 144
     $imageMaxExtend = 184;
     $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
   }
-  
+
   // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);
   // description
   $out .= theme('cdm_featureTrees', $mergedTrees, $taxon);
-  
+
   return $out;
 }
 
 function _disabled_palmweb_2_cdm_taxon_page_images($taxon, $media){
 
   $flashLink = isset($media[0]);
-  
+
   if($flashLink){
-    
+
     $taggedName = $taxon->name->taggedName;
-    
+
     $nameArray = array();
     foreach($taggedName as $taggedText){
       if($taggedText->type == 'name'){
         $nameArray[] = $taggedText->text;
       }
     }
-    
+
    $query = join("%5F", $nameArray) . '%20AND%20EditWP6%20AND%20jpg';
-    
+
   $out = '
-  
+
   <script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
 
 <script type="text/javascript">
@@ -80,21 +80,21 @@ function _disabled_palmweb_2_cdm_taxon_page_images($taxon, $media){
 	</object>
 
 </noscript>';
-  
+
   }else{
     $out = 'No images available.';
-  
+
   }
   return $out;
-  
-  
+
+
 }
 
 function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
 
   $out = '';
   $separator = ', ';
-  
+
     RenderHints::pushToRenderStack('descriptionElementDistribution');
     RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
     foreach($descriptionElements as $descriptionElement){
@@ -111,7 +111,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
 //        }
         $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList . $separator;
     }
-  
+
   $taxonTrees =  cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   foreach($taxonTrees as $taxonTree){
     if ($taxonTree->uuid == variable_get('cdm_taxonomictree_uuid', FALSE)){
@@ -122,7 +122,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
   $out = substr($out, 0, strlen($out)-strlen($separator) );
 
   $referenceCitation = '('.l('<span class="reference">World Checklist of Monocotyledons</span>', path_to_reference($reference->uuid), array("class"=>"reference"), NULL, NULL, FALSE ,TRUE).')';
-  
+
   if($out && strlen($out) > 0 ){
     $sourceRefs .= ' '.$referenceCitation;
   }
@@ -130,7 +130,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements) {
   if(strlen($sourceRefs) > 0){
     $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
   }
-  
+
     RenderHints::popFromRenderStack();
   return $out. $sourceRefs ;
 
@@ -230,7 +230,7 @@ function palmweb_2_get_partDefinition($nameType){
     return array(
         'namePart' => array(
           'name' => true,
-          'authors' => true,   
+          'authors' => true,
         ),
         'authorshipPart' => array(
         ),
@@ -250,14 +250,14 @@ function palmweb_2_get_partDefinition($nameType){
 }
 
 function palmweb_2_get_nameRenderTemplate($renderPath){
-  
+
   switch($renderPath) {
       case 'acceptedFor':
         $template = array(
           'namePart' => array('#uri'=>true),
         );
         break;
-      case 'typedesignations': 
+      case 'typedesignations':
         $template = array(
           'namePart' => array('#uri'=>true),
           'referencePart' => true
@@ -270,7 +270,8 @@ function palmweb_2_get_nameRenderTemplate($renderPath){
         $template = array(
           'namePart' => array('#uri'=>true),
           'referencePart' => true,
-          'descriptionPart' => true
+          'descriptionPart' => true,
+          'statusPart' => true
         );
   }
   return $template;
@@ -290,7 +291,7 @@ function palmweb_2_cdm_taxon_page_title($taxon, $uuid, $synonym_uuid){
 		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 	}
 	$out = theme('cdm_taxonName', $taxon->name, null, $referenceUri, false);
-	 	   
+
 	RenderHints::popFromRenderStack();
 	if ($synonym->name->titleCache){
 	$result = '<span class = "synonym_title">' .$synonym->name->titleCache . ' is synonym of ' .'</span>'.
@@ -299,12 +300,12 @@ function palmweb_2_cdm_taxon_page_title($taxon, $uuid, $synonym_uuid){
 		$result = '<span class="'.$taxon->class.'">'.$out.'</span>';
 	}
 	return $result;
-	
+
 }
 
 function palmweb_2_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null) {
 	$acceptedPath = path_to_taxon($acceptedUuid, true);
 	return url($acceptedPath . ($pagePart ? '/'.$pagePart : '') . '/'.$synonymUuid, 'highlite='.$synonymUuid);
 	//return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid, $synonymUuid."/$synonymUuid");
-	//return url("$acceptedPath/$synonymUuid".($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid);	
+	//return url("$acceptedPath/$synonymUuid".($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid);
 }
