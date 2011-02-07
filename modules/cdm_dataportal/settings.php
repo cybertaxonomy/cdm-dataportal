@@ -894,7 +894,7 @@ function cdm_settings_geo(){
 
 	      $form['map_settings']['cdm_dataportal_geoservice_labels_on'] = array(
     '#type' => 'checkbox',
-    '#title' => t('<b>Display area labels</b>'),
+    '#title' => '<b>'.t('Display area labels').'</b>',
     '#default_value' => variable_get('cdm_dataportal_geoservice_labels_on', FALSE),
     '#description' => t('Check this if you like area names to be displayed in the maps. DOES IT WORKS???? ')
 	      );
@@ -929,11 +929,11 @@ function cdm_settings_geo(){
 
 	      $form['openlayers'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Open Layers settings'),
+      '#title' => t('OpenLayers settings'),
       '#collapsible' => TRUE,
 	  '#collapsed' => TRUE,
       //'#collapsed' => !variable_get('cdm_dataportal_map_openlayers', 1),
-	  '#description' => t('If you activate the interactive maps (Open Layers Viewer checkbox). You need to configure which layer you prefer to use as map background.'),
+	  '#description' => t('If you activate the interactive maps (OpenLayers Viewer checkbox). You need to configure which layer you prefer to use as map background.'),
 	      );
 
 	      $baselayer_options = array(
@@ -960,7 +960,7 @@ function cdm_settings_geo(){
 
 	      $form['openlayers']['cdm_dataportal_map_openlayers'] = array(
     '#type' => 'checkbox',
-    '#title' => t('<b>Open Layers viewer</b>'),
+    '#title' => '<b>'.t('OpenLayers viewer').'</b>',
     '#default_value' => variable_get('cdm_dataportal_map_openlayers', 1),
     '#description' => t('Display the maps in an interactive viewer which allows zooming and panning. If not enabled the maps will consist
                          on a static image. If enabled you can configure the default layer (background of your maps) below. Only one of
@@ -977,7 +977,7 @@ function cdm_settings_geo(){
 	      // cdm_dataportal_geoservice_showLayerSwitcher
 	      $form['openlayers']['cdm_dataportal_geoservice_showLayerSwitcher'] = array(
     '#type' => 'checkbox',
-    '#title' => t('<b>Show Layer Switcher</b>'),
+    '#title' => '<b>'.t('Show Layer Switcher').'</b>',
     '#default_value' => variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE),
     '#description' => t('The Layer Switcher control displays a table of contents for the map.  This allows the user interface to switch between BaseLasyers and to show or hide Overlays.  By default the switcher is shown minimized on the right edge of the map, the user may expand it by clicking on the handle.')
 	      );
@@ -1002,7 +1002,7 @@ function cdm_settings_geo(){
 
 	      $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_on'] = array(
     '#type' => 'checkbox',
-    '#title' => t('<b>Display a map legend</b>'),
+    '#title' => '<b>'.t('Display a map legend').'</b>',
     '#default_value' => variable_get('cdm_dataportal_geoservice_legend_on', TRUE),
     '#description' => t('Check this if you like a legend to be displayed with the maps.')
 	      );
