@@ -154,10 +154,10 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	if($page_part == 'all'){
   		$out .= '<h2>'.t('Images').'</h2>';
   	}
-
+  	
   	// get the image gallery as configured by the admin
   	$taxon_image_gallery = call_user_func_array( 'taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'),
-  	array($taxon, $media));
+  	     array($taxon, $media));
   	$out .= $taxon_image_gallery;
 
   	$out .= '</div>';
@@ -369,8 +369,12 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		if(isset($taxon->name->nomenclaturalReference)){
 			$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 		}
-		$out .= theme('cdm_taxonName', $taxon->name, null, $referenceUri);
-
+		
+		$accepted_name = theme('cdm_taxonName', $taxon->name, null, $referenceUri);
+		$out .= '<span class="accepted-name">';
+		$out .= $accepted_name;
+        $out .= '</span>';
+		
 		$special_annotations_array = array();
 		$special_annotations_array[] = $taxon->name;
 		$special_annotations_array[] = $taxon;
@@ -383,14 +387,19 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 	//if(!isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
 		//if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
 		// display the type information for the added taxon
+    //}
+    
+    //render accepted taxon homotypic synonymy groups or type desygnations but
+	//show only the typedesignations at the homotypic synonymy group
+	if (!$synomymie->homotypicSynonymsByHomotypicGroup[0]->name->uuid){
 		$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
 		if($typeDesignations){
 			$out .= theme('cdm_typedesignations', $typeDesignations);
 		}
-	//}
+	}
+    // render the homotypicSynonymyGroup including the type information
 	if($synomymie->homotypicSynonymsByHomotypicGroup){
-		// render the homotypicSynonymyGroup including the type information
-    $out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
+        $out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
 	}
 	/*
 	else{
