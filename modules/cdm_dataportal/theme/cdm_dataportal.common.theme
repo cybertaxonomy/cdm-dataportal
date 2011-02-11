@@ -12,6 +12,39 @@
 
 define(FOOTNOTE_ANNOTATIONS, 'annotations');
 
+/**
+* Get the true path to the root of the Drupal site.
+* Better than using DOCUMENT_ROOT and base_path().
+*/
+function absolute_path_to_drupal() {
+    static $absolute_path_to_drupal = NULL;
+    
+    if ($absolute_path_to_drupal === NULL) {
+        // Get the absolute path to this file:
+        $dir = rtrim(str_replace('\\', '/', dirname(__FILE__)), '/');
+        $parts = explode('/', $dir);
+        // Iterate up the directory hierarchy until we find the website root:
+        $done = FALSE;
+        do{
+            // Check a couple of obvious things:
+            $done = is_dir("$dir/sites") && is_dir("$dir/includes") && is_file("$dir/index.php");
+            if (!$done) {
+                // If there's no more path to examine, we didn't find the site root:
+                if (empty($parts)) {
+                    $absolute_path_to_drupal = FALSE;
+                    break;
+                }
+            // Go up one level and look again:
+            array_pop($parts);
+            $dir = implode('/', $parts);
+            }
+        }while (!$done);
+
+        $absolute_path_to_drupal = $dir;
+    }
+    return $absolute_path_to_drupal;
+}
+
 function taxon_in_current_tree ($taxon_uuid) {
 	$taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon_uuid);
 	$taxon_in_current_tree = false;
