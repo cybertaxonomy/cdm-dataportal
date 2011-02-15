@@ -55,12 +55,27 @@ function contains_type_designation ($element, $collection){
 }
 
 function cdm_add_type_designations ($source, $extra) {
-	$result = $source;
-    foreach ($extra as $element) { 
-    	if (!contains_type_designation($element, $source)){
+	$result;
+	if (is_array($source)){
+	   if ($extra){
+        foreach ($extra as $element) { 
+           if (!contains_type_designation($element, $source)){
+            $result[] = $element;
+           }
+         }
+        }
+	}else {
+	   $result = $extra;	
+	}
+/*	
+	if ($extra){
+	    foreach ($extra as $element) { 
+    	   if (!contains_type_designation($element, $source)){
     		$result[] = $element;
-    	}
-    }
+    	   }
+        }
+	}
+*/	
     return $result;
 }
 
