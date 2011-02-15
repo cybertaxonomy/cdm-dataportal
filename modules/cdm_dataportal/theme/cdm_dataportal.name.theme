@@ -55,27 +55,19 @@ function contains_type_designation ($element, $collection){
 }
 
 function cdm_add_type_designations ($source, $extra) {
-	$result;
 	if (is_array($source)){
-	   if ($extra){
-        foreach ($extra as $element) { 
-           if (!contains_type_designation($element, $source)){
-            $result[] = $element;
-           }
-         }
+	   $result = $source;
+        if ($extra){
+            foreach ($extra as $element) { 
+                if (!contains_type_designation($element, $source)){
+                $result[] = $element;
+            }
         }
+    }
 	}else {
-	   $result = $extra;	
+		$result = $extra;
 	}
-/*	
-	if ($extra){
-	    foreach ($extra as $element) { 
-    	   if (!contains_type_designation($element, $source)){
-    		$result[] = $element;
-    	   }
-        }
-	}
-*/	
+  
     return $result;
 }
 
@@ -109,17 +101,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			if($typeDesignation->notDesignated){
 				$out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated'). '</li>';
 				//$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: '.t('not designated'). '</li>';
-				/*
-				var_dump('uno');
-				var_dump($typeDesignation->typeName);
-				var_dump($typeDesignation->typeStatus->titleCache);
-				*/
 			}else if($typeDesignation->typeName){
-				/*
-				var_dump('dos');
-				var_dump($typeDesignation->typeName);
-				var_dump($typeDesignation->typeStatus->titleCache);
-				*/
 				$link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
 				$out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
 
@@ -367,6 +349,11 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $accepted_taxon_uuid, $p
     }
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
+		if ($render_footnote_lectotypes){
+            $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
+        }
+        $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-acronyms', 'li');
+        $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations', 'li');
 	}
 	if($accepted_taxon_footnoteListKey){// to avoiding drupal warnings (#1830) why false???
 		$out .= theme('cdm_footnotes', $accepted_taxon_footnoteListKey, 'li');
