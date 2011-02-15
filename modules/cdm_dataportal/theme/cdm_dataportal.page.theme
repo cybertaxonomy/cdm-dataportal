@@ -396,6 +396,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
 		if($typeDesignations){
 			$out .= theme('cdm_typedesignations', $typeDesignations);
+			$out .= '<ul class="homotypicSynonyms">' . '</ul>';
 		}
 	}
     // render the homotypicSynonymyGroup including the type information
