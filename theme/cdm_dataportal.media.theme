@@ -260,12 +260,10 @@ function theme_cdm_media_gallerie(
 	// render the media gallery grid
 	$out = '<table id="'.$galleryID.'" class="media_gallery">';
 	$out .= '<colgroup>';
-
 	for($c = 0; $c < $cols; $c++){
 		$out .= '<col width="'.(100 / $cols).'%">';
 	}
 	$out .= '</colgroup>';
-
 	for($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++){
 		$captionParts = array();
 		$out .= '<tr>';

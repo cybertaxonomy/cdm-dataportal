@@ -111,6 +111,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
   $out = '';
   $out .= theme('cdm_back_to_search_result_button');
+  //var_dump(variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR));
   if(variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR)){
   	$out .= theme('cdm_acceptedFor', 'page_general');
   }
@@ -154,10 +155,10 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
   	if($page_part == 'all'){
   		$out .= '<h2>'.t('Images').'</h2>';
   	}
-
+  	
   	// get the image gallery as configured by the admin
   	$taxon_image_gallery = call_user_func_array( 'taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'),
-  	array($taxon, $media));
+  	     array($taxon, $media));
   	$out .= $taxon_image_gallery;
 
   	$out .= '</div>';
@@ -369,8 +370,12 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 		if(isset($taxon->name->nomenclaturalReference)){
 			$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 		}
-		$out .= theme('cdm_taxonName', $taxon->name, null, $referenceUri);
-
+		
+		$accepted_name = theme('cdm_taxonName', $taxon->name, null, $referenceUri);
+		$out .= '<span class="accepted-name">';
+		$out .= $accepted_name;
+        $out .= '</span>';
+		
 		$special_annotations_array = array();
 		$special_annotations_array[] = $taxon->name;
 		$special_annotations_array[] = $taxon;
@@ -383,14 +388,20 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 	//if(!isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
 		//if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
 		// display the type information for the added taxon
+    //}
+    
+    //render accepted taxon homotypic synonymy groups or type desygnations but
+	//show only the typedesignations at the homotypic synonymy group
+	if (!$synomymie->homotypicSynonymsByHomotypicGroup[0]->name->uuid){
 		$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
 		if($typeDesignations){
 			$out .= theme('cdm_typedesignations', $typeDesignations);
+			$out .= '<ul class="homotypicSynonyms">' . '</ul>';
 		}
-	//}
+	}
+    // render the homotypicSynonymyGroup including the type information
 	if($synomymie->homotypicSynonymsByHomotypicGroup){
-		// render the homotypicSynonymyGroup including the type information
-    $out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup);
+        $out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup, $taxon->uuid);
 	}
 	/*
 	else{
@@ -464,21 +475,21 @@ function taxon_image_gallery_default($taxon, $media){
 		$gallery_name = $taxon->uuid;
 		$mediaLinkType = 'LIGHTBOX';
 
-		$gallery_settings = getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
-
+		//$gallery_settings = getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
+		$gallery_settings = getGallerySettings(CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB);
 		$out = '<div class="image-gallerie">';
 		$out .= theme('cdm_media_gallerie', 
-		$media,
-		$gallery_name,
-		$gallery_settings['cdm_dataportal_media_maxextend'],
-		$gallery_settings['cdm_dataportal_media_cols'],
-		0, // ignore maxrows settings
-		$captionElements,
-		$mediaLinkType,
-		null,
-		null,
-		$gallery_settings['cdm_dataportal_show_thumbnail_captions']);
-		$out .= '</div>';
+		  $media,
+		  $gallery_name,
+		  $gallery_settings['cdm_dataportal_media_maxextend'],
+		  $gallery_settings['cdm_dataportal_media_cols'],
+		  0, // ignore maxrows settings
+		  $captionElements,
+		  $mediaLinkType,
+		  null,
+		  null,
+		  $gallery_settings['cdm_dataportal_show_thumbnail_captions']);
+		  $out .= '</div>';
 	}else{
 		$out = 'No images available.';
 
@@ -875,7 +886,8 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 			case 'MovieFile': $out .= t('Duration').': '.$part->duration.'s - '.$part->size.'k'; break;
 			default: $out .= $part->size.'k';
 		}
-		$out .= '</td><td><a href="'.url(path_to_media($media->uuid, $mediarepresentation_uuid, $i)).'">'.theme('cdm_media_gallerie_image', $part, $thumbnailMaxExtend, true);'</a></td><tr>';
+		$out .= '</td><td><a href="'.url(path_to_media($media->uuid, $mediarepresentation_uuid, $i)).'">'
+		  .theme('cdm_media_gallerie_image', $part, $thumbnailMaxExtend, true);'</a></td><tr>';
 		$i++;
 	}
 	$out .= '</table>';
