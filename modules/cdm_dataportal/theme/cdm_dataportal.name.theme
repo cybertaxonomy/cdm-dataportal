@@ -44,6 +44,26 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
 return $res;
 }
 
+function contains_type_designation ($element, $collection){
+    $result = false;
+    foreach ($collection as $a){
+    	if($a->uuid == $element->uuid){
+    		$result = true;
+    	}
+    }
+    return $result;
+}
+
+function cdm_add_type_designations ($source, $extra) {
+	$result = $source;
+    foreach ($extra as $element) { 
+    	if (!contains_type_designation($element, $source)){
+    		$result[] = $element;
+    	}
+    }
+    return $result;
+}
+
 function theme_cdm_typedesignations($typeDesignations = array()){
 	/*
 	 if(isset($renderTemplate['referencePart']['reference']) && $taxonName->nomenclaturalReference){
@@ -74,9 +94,20 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			if($typeDesignation->notDesignated){
 				$out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated'). '</li>';
 				//$out .= '<li class="nameTypeDesignation"><span class="status">Lectotype</span>: '.t('not designated'). '</li>';
+				/*
+				var_dump('uno');
+				var_dump($typeDesignation->typeName);
+				var_dump($typeDesignation->typeStatus->titleCache);
+				*/
 			}else if($typeDesignation->typeName){
+				/*
+				var_dump('dos');
+				var_dump($typeDesignation->typeName);
+				var_dump($typeDesignation->typeStatus->titleCache);
+				*/
 				$link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
 				$out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
+
 				if($typeDesignation->citation){
 					$out .= type_designation_citation_layout($typeDesignation, $separator);
 					//footnotes
@@ -288,7 +319,7 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 
 
 
-function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = array()){
+function theme_cdm_homotypicSynonymyGroup($synonymList, $accepted_taxon_uuid, $prependedSynonyms = array()){
 
 	RenderHints::pushToRenderStack('homotypicSynonymyGroup');
 
@@ -311,8 +342,14 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $prependedSynonyms = arr
 	foreach($synonymList as $synonym){
 		$out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 	}
-
-	$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
+	
+	$homonym_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
+    $accepted_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $accepted_taxon_uuid);
+    if($accepted_typeDesignations){
+        $typeDesignations = cdm_add_type_designations($homonym_typeDesignations, $accepted_typeDesignations);
+    }else {
+    	$typeDesignations = $homonym_typeDesignations;
+    }
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
 	}
