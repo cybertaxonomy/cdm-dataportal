@@ -82,7 +82,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 	 $citation = $citation->String;
 	 */
 
-	RenderHints::pushToRenderStack('typedesignations');
+	//RenderHints::pushToRenderStack('typedesignations');
 	//_add_js_cluetip();
 	$out = '<ul class="typeDesignations">';
 	$typeDesignation_footnotes = false;
@@ -171,8 +171,8 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 	}
 
 	$out .= '</ul>';
+	
 	//render the footnotes at the end of the page
-
 	if ($render_footnote_lectotypes){
 		$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
 	}
@@ -181,6 +181,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 	//$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations-' . $typeDesignation->uuid, 'li');
 
 	RenderHints::popFromRenderStack();
+
 	return $out;
 }
 
@@ -349,15 +350,11 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $accepted_taxon_uuid, $p
     }
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
-		if ($render_footnote_lectotypes){
-            $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
-        }
-        $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-acronyms', 'li');
-        $out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-typeDesignations', 'li');
 	}
 	if($accepted_taxon_footnoteListKey){// to avoiding drupal warnings (#1830) why false???
 		$out .= theme('cdm_footnotes', $accepted_taxon_footnoteListKey, 'li');
 	}
+	
 	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
 
