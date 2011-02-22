@@ -39,6 +39,7 @@ define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
 define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
 define('CDM_DATAPORTAL_MEDIA_GALLERY_NAME', "media_gallery");
+define('CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB', "taxon_tab_media_gallery");
 define('CDM_DATAPORTAL_SEARCH_GALLERY_NAME', "search_gallery");
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS', 'cdm_dataportal_display_taxon_relationships');
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name_relations');
@@ -210,7 +211,18 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'weight' => 3,
       'type' => MENU_LOCAL_TASK,
 		);
-
+/*   Path to banners configuration (DEFAULT THEME)		
+		$items[] = array(
+      'path' => 'admin/settings/cdm_dataportal/layout/theme',
+      'title' => t('Theme'),
+      'description' => t('Configure the drupal theme of your DataPortal '),
+      'access' => user_access('administer cdm_dataportal'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => array('cdm_dataportal_theming_form'),
+      'weight' => 4,
+      'type' => MENU_LOCAL_TASK,
+        );
+*/
 	}
 
 
@@ -429,8 +441,80 @@ function cdm_settings_layout(){
       '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
       '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
     );
-    
+        
 	return system_settings_form($form);
+}
+
+function cdm_dataportal_theming_form (){
+    //--- Theme ---//
+/*    
+    $form['cdm_dataportal_theming'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Theme Images'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+    );
+*/
+	$form = array('#attributes' => array('enctype' => 'multipart/form-data'));
+	
+    $form['cdm_dataportal_theming_right_image'] = array(
+        '#type' => 'file',
+        '#title' => t('Select top right image'),
+        '#description' => t('Maximum dimensions are %dimensions and the maximum size is %size kB.', 
+                            array('%dimensions' =>  '250x250', '%size' => '30')),
+    );
+    $form['cdm_dataportal_theming_middle_image'] = array(
+        '#type' => 'file',
+        '#title' => t('Select top middle image'),
+    );
+    $form['test'] = array(
+        '#type' => 'textfield',
+        '#title' => t('test')
+    );
+    
+    //$form['gen_layout']['theme']['#submit'][] = 'settings_validate_theme_pictures';
+    $form['cdm_dataportal_theming']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Submit')
+    );
+    
+    return $form;
+}
+
+function cdm_dataportal_theming_form_submit (&$form, &$form_values){
+	$validators = array();	
+	//destination path where the files/banners will be saved
+	$dest = absolute_path_to_drupal() . '/' . path_to_theme() . '/images/banners';
+	$dest = str_replace('/', DIRECTORY_SEPARATOR, $dest);	
+	//drupal_set_message($dest);
+
+	//check if directory exists
+	if (!file_exists($dest)){
+        if(!mkdir($dest, 0777, true)){//TODO: add rights, which rights should I add?
+            drupal_set_message('Fail uploading the files; the directory '
+                               . $dest . ' could not be created.', 
+                               'warning');
+        }       
+	}
+	//check if files already exist
+	//if (file_exists($dest)) {
+	//}	
+	
+	//save the files
+    $file = file_check_upload('cdm_dataportal_theming_middle_image');
+    if ($file){
+        $file = file_save_upload($file, 'files');
+        drupal_set_message($file->filepath);
+        file_move($file->filepath, $dest);
+    }else{
+    	drupal_set_message('Fail uploading the file, the file is not accepted.', 'warning');
+    }
+	//use banners in the selected theme
+    //if (!copy($file, $file.'.bak')) {
+    //    print ("failed to copy $file...<br>\n");
+    //}
+    
+    //use the banners as default theme
 }
 
 function cdm_settings_layout_synonymy(){
@@ -740,7 +824,8 @@ function cdm_settings_layout_taxon(){
   //$form_description = 'This section covers the settings related to the taxon images tab. Taxon images display all the media (in this case images) found for a given taxon as a thumbnails.';
   //$form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description);
   // --- MEDIA GALLERY ---- //
-  $form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
+  //$form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
+  $form_name = CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB;
   $form_title = 'Media gallery (Tab)';
   $form_description = '<p>This section covers the settings related to the taxon <strong>media</strong> tab.
    Taxa may have media (usually images) and they are as thumbnails displayed. It is possible to configure 
