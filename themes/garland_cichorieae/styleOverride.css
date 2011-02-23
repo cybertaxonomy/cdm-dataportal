@@ -107,6 +107,10 @@ body {
 	margin-top: 25px;
 }
 
+.accepted-name{
+	   border-bottom:1px solid #dedede;
+}
+
 ul.homotypicSynonyms, ul.heterotypicSynonymyGroup {
 	border-bottom:1px solid #dedede;
 }
