@@ -98,7 +98,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				//if ($node->feature->titleCache == 'Common Name'){
 				if ($node->feature->uuid == UUID_COMMON_NAME){
 					$block->content .= theme('cdm_common_names', $node->descriptionElements);
-				/*	
+				/*
 				}else if($node->feature->uuid == UUID_IMAGE_SOURCES) {
 					$block->content .= theme('cdm_image_sources', $node->descriptionElements);
 				*/
@@ -348,7 +348,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 	}
 	$sortOutArray = false;
 	$distributionElements = array();
-	
+
 	RenderHints::pushToRenderStack('cdm_descriptionElements');
 	//$common_names = theme('cdm_common_names', $descriptionElements);
 	if(is_array($descriptionElements)){//avoiding warning box in drupal for flora malesiana
@@ -386,7 +386,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 	}
     if($image_sources){
         $outArray[] = theme('cdm_description_element_image_source', $image_sources, true);
-           
+
     }
 	if(variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT'){
 		$outArray[] = theme('cdm_description_ordered_distributions', $taxon_uuid, $distributionElements);
@@ -412,14 +412,14 @@ function compare_image_sources($a, $b){
 }
 
 /**
- * 
+ *
  */
 function theme_cdm_description_element_image_source($image_sources, $asListElement) {
     $out = '';
     $separator = ',';
     RenderHints::pushToRenderStack('descriptionElementImageSource');
     RenderHints::setFootnoteListKey(UUID_IMAGE_SOURCES);
-    
+
     //sorting the image sources
     usort($image_sources, "compare_image_sources");
     //generate the footnotes
@@ -430,7 +430,7 @@ function theme_cdm_description_element_image_source($image_sources, $asListEleme
                 $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', $source, false));
                 cdm_add_footnote_to_array($footNoteKeys, $fn_key);// ensure uniqueness of the footnote keys
             }
-        }  
+        }
         //sort and render footnote keys
         $footnoteKeyListStr = '';
         asort($footNoteKeys);
@@ -441,7 +441,7 @@ function theme_cdm_description_element_image_source($image_sources, $asListEleme
         $out .= '<span class="descriptionElement descriptionElement-'.$image_source->uuid.'">'.$image_source->multilanguageText_L10n->text . $footnoteKeyListStr . '; </span>';
 
     }
-        
+
     RenderHints::popFromRenderStack();
     return $out;
 }
@@ -483,9 +483,9 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){
 }
 /**
  * Function target is to compare two different foootnotes objects.
- * The comparation is based on the footnote key. The one which is 
+ * The comparation is based on the footnote key. The one which is
  * displayed as footnote number.
- * 
+ *
  * @param footnote object $a
  * @param footnote object $b
  */
@@ -496,7 +496,7 @@ function footnotes_key_compare($a, $b){
 	}elseif ($a->keyStr > $b->keyStr){
 		$res = 1;
 	}
-	return $res;     
+	return $res;
 }
 
 function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionElements){
@@ -598,13 +598,13 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 					}
 				}
 				$text_l4_aux = substr($text_l4_aux, 0, -2);
-				
+
 				if (strlen($text_l4_aux) > 0){
 					$out .= "$text_l3 $fnKeysLevel3Str ($text_l4_aux); ";
 				}else{
 					$out .= "$text_l3 $fnKeysLevel3Str; ";
 				}
-				
+
 			}
 		}//level3
 		$out = substr($out, 0, -2);
@@ -679,6 +679,7 @@ function theme_cdm_distribution_map($taxon){
 		$fontStyles = array(0 => "plane", 1 => "italic");
 
 		$map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
+		$out .= '<!-- map_data_parameters:'. $map_data_parameters . ' -->';
 		$query_string = $map_data_parameters->String;
 		if(!$query_string){
 			// the $query_string is empty if there are no distribution areas defined
@@ -695,6 +696,8 @@ function theme_cdm_distribution_map($taxon){
 		($bounding_box ? '&bbox=' .  $bounding_box : '')
 		. ($labels_on ? '&labels=' .  $labels_on : '');
 
+		/* ------ choose the display mode, either openlayers or static image ------ */
+
 		if(variable_get('cdm_dataportal_map_openlayers', 1)){
 
 			/* =========== display distributions using the openlayers map viewer =========== */
@@ -710,7 +713,7 @@ function theme_cdm_distribution_map($taxon){
 			$legendFormatQueryStr .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
 			$legendFormatQueryStr .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
 
-			$out = get_openlayers_map(
+			$out .= get_openlayers_map(
 			$display_width,
 			null,
 			$query_string,
