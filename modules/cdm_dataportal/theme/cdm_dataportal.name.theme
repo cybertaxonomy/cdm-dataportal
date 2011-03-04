@@ -58,7 +58,7 @@ function cdm_add_type_designations ($source, $extra) {
 	if (is_array($source)){
 	   $result = $source;
         if ($extra){
-            foreach ($extra as $element) { 
+            foreach ($extra as $element) {
                 if (!contains_type_designation($element, $source)){
                 $result[] = $element;
             }
@@ -67,7 +67,7 @@ function cdm_add_type_designations ($source, $extra) {
 	}else {
 		$result = $extra;
 	}
-  
+
     return $result;
 }
 
@@ -82,8 +82,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 	 $citation = $citation->String;
 	 */
 
-	//RenderHints::pushToRenderStack('typedesignations');
-	//_add_js_cluetip();
+	RenderHints::pushToRenderStack('typedesignations');
 	$out = '<ul class="typeDesignations">';
 	$typeDesignation_footnotes = false;
 	$is_lectotype = false;
@@ -171,7 +170,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 	}
 
 	$out .= '</ul>';
-	
+
 	//render the footnotes at the end of the page
 	if ($render_footnote_lectotypes){
 		$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-lectotypes');
@@ -340,7 +339,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $accepted_taxon_uuid, $p
 	foreach($synonymList as $synonym){
 		$out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 	}
-	
+
 	$homonym_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
     $accepted_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $accepted_taxon_uuid);
     if($accepted_typeDesignations){
@@ -354,7 +353,7 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $accepted_taxon_uuid, $p
 	if($accepted_taxon_footnoteListKey){// to avoiding drupal warnings (#1830) why false???
 		$out .= theme('cdm_footnotes', $accepted_taxon_footnoteListKey, 'li');
 	}
-	
+
 	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
 	$out .= '</ul>';
 
