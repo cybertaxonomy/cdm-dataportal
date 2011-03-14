@@ -2,7 +2,8 @@
 
 // vim: filetype=php
 
-require ("../CDM_DataPortal/CDM_DataPortal.profile");
+require_once ("profiles/CDM_DataPortal/CDM_DataPortal.profile");
+
 
 /************************************************************
 *                           MODULES                         *
@@ -17,14 +18,14 @@ function CDM_DataPortal_Testing_profile_modules() {
 function CDM_DataPortal_Testing_profile_details() {
   return array (
       'name' => 'CDM DataPortal Testing',
-      'description' => 'CDM DataPortal installation profile für testing purposes ',
+      'description' => 'CDM DataPortal installation profile for testing purposes ',
     );
 }
 
 function CDM_DataPortal_Testing_profile_final() {
 
   CDM_DataPortal_profile_final();
- 
+
 /************************************************************
 *                           BLOCKS                          *
 ************************************************************/
@@ -41,7 +42,7 @@ function CDM_DataPortal_Testing_profile_final() {
       VALUES ('%s', '%s', '%s', %d, %d, '%s', %d, %d, %d, '%s', '%s')",
       'cdm_dataportal', '2', 'garland', '1', '-10', 'left', '0', '0', '0', '', ''
   );
-  
+
   return;
 }
 
