@@ -44,8 +44,11 @@ function CDM_DataPortal_profile_final() {
 ************************************************************/
     variable_set('anonymous', 'Anonymous');
     variable_set('comment_page', 0);
-    //TODO fix for linux and mac os-x
-    variable_set('file_directory_temp', 'c:\\windows\\temp');
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+      variable_set('file_directory_temp', 'c:\\windows\\temp');
+    } else {
+      variable_set('file_directory_temp', '/tmp');
+    }
     variable_set('filter_html_1', 1);
     variable_set('menu_primary_menu', 2);
     variable_set('menu_secondary_menu', 2);
@@ -74,9 +77,9 @@ function CDM_DataPortal_profile_final() {
     variable_set('cdm_webservice_debug', 0);
     variable_set('cdm_webservice_cache', 0);
     variable_set('distribution_sort', 'HIDE_TDWG2');
-    
+
     variable_set('user_register', '0');
-    
+
 
 /************************************************************
 *                            ROLES                          *
@@ -135,18 +138,18 @@ function CDM_DataPortal_profile_final() {
         "INSERT INTO {node_revisions} (nid,vid,uid,title,body,teaser,log,timestamp,format)
         VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s')",
         '1','1','1','CDM DataPortal','<h3>Welcome to your CDM DataPortal. </h3>
-    
+
     This data portal makes full use of the Common Data Model  (CDM), a central component of the Internet Platform for Cybertaxonomy being developed by EDIT workpackage 5. All taxon pages are created as dynamic web pages from the underlying database.
-    
+
     In order to finish the setup of your DataPortal please visit the <?php print(l(\'CDM Dataportal settings\', \'admin/settings/cdm_dataportal\')); ?>. The CDM Dataportal provides several Drupal Blocks (<i>taxon search</i>, <i>classification browser</i>, <i>external links</i>, <i>print this page</i>) which you may want to activate in the <?php print(l(\'Blocks Settings\', \'admin/build/block\')); ?>','<h3>Welcome to your CDM DataPortal. </h3>
-    
+
     This data portal makes full use of the Common Data Model  (CDM), a central component of the Internet Platform for Cybertaxonomy being developed by EDIT workpackage 5. All taxon pages are created as dynamic web pages from the underlying database.
-    
+
     In order to finish the setup of your DataPortal please visit the <?php print(l(\'CDM Dataportal settings\', \'admin/settings/cdm_dataportal\')); ?>. The CDM Dataportal provides several Drupal Blocks (<i>taxon search</i>, <i>classification browser</i>, <i>external links</i>, <i>print this page</i>) which you may want to activate in the <?php print(l(\'Blocks Settings\', \'admin/build/block\')); ?>','','1285673272','2'
     );
 
     system_initialize_theme_blocks('garland');
-    
+
     // set site info
     //  * site name
     //  * start page
@@ -156,15 +159,15 @@ function CDM_DataPortal_profile_final() {
           ('site_frontpage', 's:6:\"node/1\";'),
           ('site_name', 's:19:\"EDIT CDM DataPortal\";')
         ");
-        
+
    // FIX node sequences !!!!!
-   
+
     db_query(
         "REPLACE INTO {sequences} (name, id) VALUES
         ('{node_nid}', 1),
         ('{node_revisions_vid}', 1);
         ");
-  
+
     return;
 }
 
