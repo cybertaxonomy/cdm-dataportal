@@ -71,7 +71,7 @@ DRUSH="drush --uri=http://160.45.63.201/dataportal/jenkins/"
 # and we will use a preset sub site directory and ur own install script:
 wget -O /tmp/jenkins-drupal-install http://160.45.63.201/dataportal/jenkins/install.php?profile=CDM_DataPortal_Testing
 
-$DRUSH vset --yes cdm_webservice_url "http://160.45.63.201:8080/cichorieae/
+$DRUSH vset --yes cdm_webservice_url http://160.45.63.201:8080/cichorieae/
 
 
 
