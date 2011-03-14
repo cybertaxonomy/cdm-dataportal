@@ -2,45 +2,12 @@
 ###
 # Continous intergration build with jenkins
 #   call this script from within jenkins with:
-#   >    bash -e $WORKSPACE/jenkins-ci/integration.sh $JOB_NAME $dbUser $dbPassword
-#
-#   USAGE: 
+#   >    bash -ex $WORKSPACE/jenkins-ci/integration.sh $WORKSPACE $JOB_NAME $dbUser $dbPassword
 #
 # references:
 #   http://thinkshout.com/blog/2010/09/sean/beginners-guide-using-hudson-continuous-integration-drupal
 #   http://drush.ws/help/3
-###
-#  The following variables are available to shell scripts
-#  
-#  BUILD_NUMBER
-#      The current build number, such as "153"
-#  BUILD_ID
-#      The current build id, such as "2005-08-22_23-59-59" (YYYY-MM-DD_hh-mm-ss)
-#  JOB_NAME
-#      Name of the project of this build, such as "foo"
-#  BUILD_TAG
-#      String of "hudson-${JOB_NAME}-${BUILD_NUMBER}". Convenient to put into a resource file, a jar file, etc for easier identification.
-#  EXECUTOR_NUMBER
-#      The unique number that identifies the current executor (among executors of the same machine) that's carrying out this build. This is the number you see in the "build executor status", except that the number starts from 0, not 1.
-#  NODE_NAME
-#      Name of the slave if the build is on a slave, or "" if run on master
-#  NODE_LABELS
-#      Whitespace-separated list of labels that the node is assigned.
-#  JAVA_HOME
-#      If your job is configured to use a specific JDK, this variable is set to the JAVA_HOME of the specified JDK. When this variable is set, PATH is also updated to have $JAVA_HOME/bin.
-#  WORKSPACE
-#      The absolute path of the workspace.
-#  HUDSON_URL
-#      Full URL of Hudson, like http://server:port/hudson/
-#  BUILD_URL
-#      Full URL of this build, like http://server:port/hudson/job/foo/15/
-#  JOB_URL
-#      Full URL of this job, like http://server:port/hudson/job/foo/
-#  SVN_REVISION
-#      For Subversion-based projects, this variable contains the revision number of the module.
-#  CVS_BRANCH
-#      For CVS-based projects, this variable contains the branch of the module. If CVS is configured to check out the trunk, this environment variable will not be set.
-#
+
 WORKSPACE=$1
 JOB_NAME=$2
 drupalRoot=/var/www/drupal/
@@ -52,20 +19,24 @@ dbUser=$3
 dbPassword=$4
 
 # copy installation profiles
-echo ">>> workspace is $WORKSPACE"
-echo "${WORKSPACE}/profile/* ${drupalRoot}profiles/"
+echo ">>> copying installation profiles to ${drupalRoot}profiles/"
 svn export ${WORKSPACE}/profile/ /tmp/drupal_profiles
 cp -R  /tmp/drupal_profiles/* ${drupalRoot}profiles/
 rm -R /tmp/drupal_profiles
 
+# copy module
+echo ">>> copying module ${drupalRoot}profiles/"
+rm -R ${drupalRoot}/sites/all/modules/cdm_dataportal
+svn export ${WORKSPACE} ${drupalRoot}/sites/all/modules/
+
 # drop all tables in database
+echo ">>> clearing database ..."
 MYSQLCMD="mysql --user=$dbUser --password=$dbPassword -D $dbName"
-echo $MYSQLCMD
 $MYSQLCMD -BNe "show tables" | awk '{print "set foreign_key_checks=0; drop table `" $1 "`;"}' | $MYSQLCMD
 unset MYSQLCMD
 
 # install drupal site
-echo "installing drupal site ..."
+echo ">>> installing drupal site ..."
 cd $drupalRoot
 DRUSH="drush --uri=http://160.45.63.201/dataportal/jenkins/"
 ## drush si only works with drupal 7 so the folowing does not yet work
