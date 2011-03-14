@@ -40,13 +40,13 @@
 #      For CVS-based projects, this variable contains the branch of the module. If CVS is configured to check out the trunk, this environment variable will not be set.
 #
 
-drupalRoot=/var/www/drupal/
-drupalSiteName=$JOB_NAME
-drupalInstallationProfile="CDM_DataPortal"
+set drupalRoot=/var/www/drupal/
+set drupalSiteName=$JOB_NAME
+set drupalInstallationProfile="CDM_DataPortal"
 
-dbName="jenkins_"$1
-dbUser= $2
-dbPassword=$3
+set dbName="jenkins_"$1
+set dbUser= $2
+set dbPassword=$3
 
 # copy installation profiles
 echo ">>> workspace is "$WORKSPACE
