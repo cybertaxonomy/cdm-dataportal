@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ###
 # Continius intergration build with jenkins
 #   call this script from within jenkins with:
@@ -46,7 +46,8 @@ set drupalInstallationProfile="CDM_DataPortal"
 
 set dbName="jenkins_"$1
 set dbUser= $2
-set dbPassword=$3
+set 
+dbPassword=$3
 
 # copy installation profiles
 echo ">>> workspace is "$WORKSPACE
