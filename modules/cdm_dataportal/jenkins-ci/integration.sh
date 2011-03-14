@@ -26,7 +26,7 @@ rm -R /tmp/drupal_profiles
 
 # copy module
 echo ">>> copying module ${drupalRoot}profiles/"
-rm -R ${drupalRoot}/sites/all/modules/cdm_dataportal
+rm -R ${drupalRoot}sites/all/modules/cdm_dataportal
 svn export ${WORKSPACE} ${drupalRoot}/sites/all/modules/
 
 # drop all tables in database
