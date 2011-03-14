@@ -1,11 +1,12 @@
 <?php
 // vim: filetype=php
 
-require ("../CDM_DataPortal/CDM_DataPortal.profile);
+require ("../CDM_DataPortal/CDM_DataPortal.profile");
 
 /************************************************************
 *                           BLOCKS                          *
 ************************************************************/
+
     // Taxon tree
     db_query(
         "INSERT INTO {blocks} (module,delta,theme,status,weight,region,custom,throttle,visibility,pages,title)
