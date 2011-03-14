@@ -219,6 +219,7 @@ modules/cdm_dataportal/js/thickbox/thickbox.js -text
 modules/cdm_dataportal/node_types.php -text
 modules/cdm_dataportal/pom.xml -text
 modules/cdm_dataportal/profile/CDM_DataPortal/CDM_DataPortal.profile -text
+modules/cdm_dataportal/profile/CDM_DataPortal_Testing/CDM_DataPortal_Testing.profile -text
 modules/cdm_dataportal/settings.php -text
 modules/cdm_dataportal/src/site/apt/configuration.apt -text
 modules/cdm_dataportal/src/site/apt/download.apt -text
