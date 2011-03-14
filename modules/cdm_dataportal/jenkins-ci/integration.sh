@@ -1,8 +1,10 @@
 #!/bin/bash
 ###
-# Continius intergration build with jenkins
+# Continous intergration build with jenkins
 #   call this script from within jenkins with:
 #   >    bash -e $WORKSPACE/jenkins-ci/integration.sh $JOB_NAME $dbUser $dbPassword
+#
+#   USAGE: 
 #
 # references:
 #   http://thinkshout.com/blog/2010/09/sean/beginners-guide-using-hudson-continuous-integration-drupal
@@ -39,29 +41,37 @@
 #  CVS_BRANCH
 #      For CVS-based projects, this variable contains the branch of the module. If CVS is configured to check out the trunk, this environment variable will not be set.
 #
-set JOB_NAME=$1
-set drupalRoot=/var/www/drupal/
-set drupalSiteName=$JOB_NAME
-set drupalInstallationProfile="CDM_DataPortal"
+WORKSPACE=$1
+JOB_NAME=$2
+drupalRoot=/var/www/drupal/
+drupalSiteName="jenkins"
+drupalInstallationProfile="CDM_DataPortal"
 
-set dbName="jenkins_"$JOB_NAME
-set dbUser= $2
-set 
-dbPassword=$3
+dbName="jenkins_$JOB_NAME"
+dbUser=$3
+dbPassword=$4
 
 # copy installation profiles
-echo ">>> workspace is "$WORKSPACE
-cp $WORKSPACE/profile/ $drupalRoot/profiles/
+echo ">>> workspace is $WORKSPACE"
+echo "${WORKSPACE}profile/* ${drupalRoot}profiles/"
+cp -R  ${WORKSPACE}profile/* ${drupalRoot}profiles/
 
 # drop all tables in database
-MYSQL --user=$dbUser --password=$dbPassword -D $dbName
-$MYSQL -BNe "show tables" | awk '{print "set foreign_key_checks=0; drop table `" $1 "`;"}' | $MYSQL
-unset MYSQL
+MYSQLCMD="mysql --user=$dbUser --password=$dbPassword -D $dbName"
+echo $MYSQLCMD
+$MYSQLCMD -BNe "show tables" | awk '{print "set foreign_key_checks=0; drop table `" $1 "`;"}' | $MYSQLCMD
+unset MYSQLCMD
 
 # install drupal site
+echo "installing drupal site ..."
 cd $drupalRoot
-yes | drush si --profile=$drupalInstallationProfile --clean-url=0 --sites-subdir=$drupalSiteName --db-url=mysql://$dbUser:$dbPassword@localhost/$dbName
+DRUSH="drush --uri=http://160.45.63.201/dataportal/jenkins/"
+## drush si only works with drupal 7 so the folowing does not yet work
+#yes | drush si --profile=${drupalInstallationProfile} --clean-url=0 --sites-subdir=${drupalSiteName} --db-url=mysql://${dbUser}:${dbPassword}@localhost/${dbName}
+# and we will use a preset sub site directory and ur own install script:
+wget -O /tmp/jenkins-drupal-install http://160.45.63.201/dataportal/jenkins/install.php?profile=CDM_DataPortal_Testing
 
+$DRUSH vset --yes cdm_webservice_url "http://160.45.63.201:8080/cichorieae/
 
 
 
