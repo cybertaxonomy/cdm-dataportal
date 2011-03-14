@@ -7,7 +7,7 @@ require ("../CDM_DataPortal/CDM_DataPortal.profile");
 /************************************************************
 *                           MODULES                         *
 ************************************************************/
-function CDM_DataPortal__Testing_profile_modules() {
+function CDM_DataPortal_Testing_profile_modules() {
   return CDM_DataPortal_profile_modules();
 }
 
