@@ -34,7 +34,7 @@ function CDM_DataPortal_profile_modules() {
 function CDM_DataPortal_profile_details() {
     return array (
         'name' => 'CDM DataPortal',
-        'description' => 'CDM DataPortal installation profile generated automatically on 28th Sep 2010 02:05pm',
+        'description' => 'CDM DataPortal installation profile',
       );
 }
 
