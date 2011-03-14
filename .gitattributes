@@ -84,6 +84,7 @@ modules/cdm_dataportal/images/loading.gif -text
 modules/cdm_dataportal/images/loading_circle_grey_16.gif -text
 modules/cdm_dataportal/images/macFFBgHack.png -text
 modules/cdm_dataportal/images/print_icon.gif -text
+modules/cdm_dataportal/jenkins-ci/integration.sh -text
 modules/cdm_dataportal/js/OpenLayers/OpenLayers.js -text
 modules/cdm_dataportal/js/OpenLayers/img/blank.gif -text
 modules/cdm_dataportal/js/OpenLayers/img/cloud-popup-relative.png -text
