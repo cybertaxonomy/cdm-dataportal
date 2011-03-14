@@ -75,7 +75,7 @@ function get_default_taxon_tab($index = false) {
 	}else{
 	   return $index_value;
 	}
-	
+
 
 	switch ($value){
 		case 0:
@@ -109,7 +109,7 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Setting for the CDM DataPortal'),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_general',
+      'callback arguments' => array('cdm_settings_general'),
       'type' => MENU_NORMAL_ITEM,
 		);
 
@@ -119,7 +119,7 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Setting for the CDM DataPortal'),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_general',
+      'callback arguments' => array('cdm_settings_general'),
       'weight' => 0,
       'type' => MENU_LOCAL_TASK,
 		);
@@ -130,7 +130,7 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Cache'),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_cache',
+      'callback arguments' => array('cdm_settings_cache'),
       'weight' => 10,
       'type' => MENU_LOCAL_TASK,
 		);
@@ -141,7 +141,7 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Geo & Map'),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_geo',
+      'callback arguments' => array('cdm_settings_geo'),
       'weight' => 1,
       'type' => MENU_LOCAL_TASK,
 		);
@@ -152,7 +152,7 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Configure and adjust the layout of your DataPortal '),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_layout',
+      'callback arguments' => array('cdm_settings_layout'),
       'weight' => 2,
       'type' => MENU_LOCAL_TASK,
 		);
@@ -163,7 +163,7 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Configure and adjust the layout of your DataPortal '),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_layout_taxon',
+      'callback arguments' => array('cdm_settings_layout_taxon'),
       'weight' => 1,
       'type' => MENU_LOCAL_TASK,
 		);
@@ -174,7 +174,7 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Configure and adjust the layout of your DataPortal '),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_layout_synonymy',
+      'callback arguments' => array('cdm_settings_layout_synonymy'),
       'weight' => 1,
       'type' => MENU_LOCAL_TASK,
 		);
@@ -185,7 +185,7 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Configure and adjust the layout of your DataPortal '),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_layout_specimens',
+      'callback arguments' => array('cdm_settings_layout_specimens'),
       'weight' => 1,
       'type' => MENU_LOCAL_TASK,
 		);
@@ -196,7 +196,7 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Configure and adjust the layout of your DataPortal '),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_layout_search',
+      'callback arguments' => array('cdm_settings_layout_search'),
       'weight' => 2,
       'type' => MENU_LOCAL_TASK,
 		);
@@ -207,11 +207,11 @@ function cdm_dataportal_menu_admin($may_cache, &$items){
       'description' => t('Configure and adjust the layout of your DataPortal '),
       'access' => user_access('administer cdm_dataportal'),
       'callback' => 'drupal_get_form',
-      'callback arguments' => 'cdm_settings_layout_media',
+      'callback arguments' => array('cdm_settings_layout_media'),
       'weight' => 3,
       'type' => MENU_LOCAL_TASK,
 		);
-/*   Path to banners configuration (DEFAULT THEME)		
+/*   Path to banners configuration (DEFAULT THEME)
 		$items[] = array(
       'path' => 'admin/settings/cdm_dataportal/layout/theme',
       'title' => t('Theme'),
@@ -403,7 +403,7 @@ function cdm_settings_layout(){
         '#collapsed' => FALSE,
 	    '#description' => t('This settings contains the general configurations layout. If you want to configure the specific sites layout visit the respective configuration site for taxon, search or media.'),
 	);
-	
+
 	//---- footnotes ---//
 	$form['gen_layout']['footnotes'] = array(
       '#type' => 'fieldset',
@@ -427,7 +427,7 @@ function cdm_settings_layout(){
       '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
       '#description' => t('Check this if you do not want to show annotation footnotes')
 	);
-	
+
 	//--- Advanced Search ---//
 	$form['gen_layout']['asearch'] = array(
       '#type' => 'fieldset',
@@ -441,13 +441,13 @@ function cdm_settings_layout(){
       '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
       '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
     );
-        
+
 	return system_settings_form($form);
 }
 
 function cdm_dataportal_theming_form (){
     //--- Theme ---//
-/*    
+/*
     $form['cdm_dataportal_theming'] = array(
       '#type' => 'fieldset',
       '#title' => t('Theme Images'),
@@ -456,11 +456,11 @@ function cdm_dataportal_theming_form (){
     );
 */
 	$form = array('#attributes' => array('enctype' => 'multipart/form-data'));
-	
+
     $form['cdm_dataportal_theming_right_image'] = array(
         '#type' => 'file',
         '#title' => t('Select top right image'),
-        '#description' => t('Maximum dimensions are %dimensions and the maximum size is %size kB.', 
+        '#description' => t('Maximum dimensions are %dimensions and the maximum size is %size kB.',
                             array('%dimensions' =>  '250x250', '%size' => '30')),
     );
     $form['cdm_dataportal_theming_middle_image'] = array(
@@ -471,35 +471,35 @@ function cdm_dataportal_theming_form (){
         '#type' => 'textfield',
         '#title' => t('test')
     );
-    
+
     //$form['gen_layout']['theme']['#submit'][] = 'settings_validate_theme_pictures';
     $form['cdm_dataportal_theming']['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Submit')
     );
-    
+
     return $form;
 }
 
 function cdm_dataportal_theming_form_submit (&$form, &$form_values){
-	$validators = array();	
+	$validators = array();
 	//destination path where the files/banners will be saved
 	$dest = absolute_path_to_drupal() . '/' . path_to_theme() . '/images/banners';
-	$dest = str_replace('/', DIRECTORY_SEPARATOR, $dest);	
+	$dest = str_replace('/', DIRECTORY_SEPARATOR, $dest);
 	//drupal_set_message($dest);
 
 	//check if directory exists
 	if (!file_exists($dest)){
         if(!mkdir($dest, 0777, true)){//TODO: add rights, which rights should I add?
             drupal_set_message('Fail uploading the files; the directory '
-                               . $dest . ' could not be created.', 
+                               . $dest . ' could not be created.',
                                'warning');
-        }       
+        }
 	}
 	//check if files already exist
 	//if (file_exists($dest)) {
-	//}	
-	
+	//}
+
 	//save the files
     $file = file_check_upload('cdm_dataportal_theming_middle_image');
     if ($file){
@@ -513,7 +513,7 @@ function cdm_dataportal_theming_form_submit (&$form, &$form_values){
     //if (!copy($file, $file.'.bak')) {
     //    print ("failed to copy $file...<br>\n");
     //}
-    
+
     //use the banners as default theme
 }
 
@@ -599,7 +599,7 @@ function cdm_settings_layout_taxon(){
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
 	);
-	
+
 	$form['taxon_profile']['cdm_dataportal_show_back_to_search_results'] = array(
 	    '#type' => 'checkbox',
         '#title' => t('Show <em>Back to search results</em> link at the taxon site.'),
@@ -813,7 +813,7 @@ function cdm_settings_layout_taxon(){
   $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
   $form_title = 'Specimen media';
   $form_description = 'Specimens may have media which is displayed at the Specimen tab/section as a gallery.
-   It is possible to configure the thumbnails gallery here, however for configuring how a single media should 
+   It is possible to configure the thumbnails gallery here, however for configuring how a single media should
    be displayed please go to <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a></p>';
   $form['taxon_profile']['specimens'][] =
     cdm_dataportal_create_gallery_settings_form($form_name, $form_title, FALSE, $form_description);
@@ -828,15 +828,15 @@ function cdm_settings_layout_taxon(){
   $form_name = CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB;
   $form_title = 'Media gallery (Tab)';
   $form_description = '<p>This section covers the settings related to the taxon <strong>media</strong> tab.
-   Taxa may have media (usually images) and they are as thumbnails displayed. It is possible to configure 
-   the thumbnails gallery here, however for configuring how a single media should be displayed please go to 
+   Taxa may have media (usually images) and they are as thumbnails displayed. It is possible to configure
+   the thumbnails gallery here, however for configuring how a single media should be displayed please go to
    <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a></p>
-   <p><strong>Note:</strong> These settings are only taken into account when the standard 
+   <p><strong>Note:</strong> These settings are only taken into account when the standard
    gallery viewer is selected at <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a>.</p>';
   //$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
   $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
-  
+
   return system_settings_form($form);
 }
 
