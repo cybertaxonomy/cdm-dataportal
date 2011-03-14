@@ -39,12 +39,12 @@
 #  CVS_BRANCH
 #      For CVS-based projects, this variable contains the branch of the module. If CVS is configured to check out the trunk, this environment variable will not be set.
 #
-
+set JOB_NAME=$1
 set drupalRoot=/var/www/drupal/
 set drupalSiteName=$JOB_NAME
 set drupalInstallationProfile="CDM_DataPortal"
 
-set dbName="jenkins_"$1
+set dbName="jenkins_"$JOB_NAME
 set dbUser= $2
 set 
 dbPassword=$3
