@@ -20,11 +20,11 @@ function CDM_DataPortal_profile_modules() {
         10 => 'cdm_dataportal',
         11 => 'menu',
         12 => 'node',
-        13 => 'profile_generator',
-        14 => 'system',
-        15 => 'ext_links',
-        16 => 'user',
-        17 => 'watchdog',
+        13 => 'system',
+        14 => 'ext_links',
+        15 => 'user',
+        16 => 'watchdog',
+       // 17 => 'profile_generator',
       );
 }
 
