@@ -54,7 +54,8 @@ dbPassword=$4
 # copy installation profiles
 echo ">>> workspace is $WORKSPACE"
 echo "${WORKSPACE}/profile/* ${drupalRoot}profiles/"
-cp -R  ${WORKSPACE}/profile/* ${drupalRoot}profiles/
+svn extract ${WORKSPACE}/profile/ /tmp/drupal_profiles
+cp -R  /tmp/drupal_profiles/* ${drupalRoot}profiles/
 
 # drop all tables in database
 MYSQLCMD="mysql --user=$dbUser --password=$dbPassword -D $dbName"
