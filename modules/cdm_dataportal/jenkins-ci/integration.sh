@@ -54,8 +54,9 @@ dbPassword=$4
 # copy installation profiles
 echo ">>> workspace is $WORKSPACE"
 echo "${WORKSPACE}/profile/* ${drupalRoot}profiles/"
-svn extract ${WORKSPACE}/profile/ /tmp/drupal_profiles
+svn export ${WORKSPACE}/profile/ /tmp/drupal_profiles
 cp -R  /tmp/drupal_profiles/* ${drupalRoot}profiles/
+rm -R /tmp/drupal_profiles
 
 # drop all tables in database
 MYSQLCMD="mysql --user=$dbUser --password=$dbPassword -D $dbName"
@@ -71,10 +72,7 @@ DRUSH="drush --uri=http://160.45.63.201/dataportal/jenkins/"
 #yes | drush si --profile=${drupalInstallationProfile} --clean-url=0 --sites-subdir=${drupalSiteName} --db-url=mysql://${dbUser}:${dbPassword}@localhost/${dbName}
 # and we will use a preset sub site directory and ur own install script:
 wget -O /tmp/jenkins-drupal-install http://160.45.63.201/dataportal/jenkins/install.php?profile=CDM_DataPortal_Testing
+rm /tmp/jenkins-drupal-install
 
 $DRUSH vset --yes cdm_webservice_url http://160.45.63.201:8080/cichorieae/
-
-
-
-
 
