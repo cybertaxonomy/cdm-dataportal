@@ -51,4 +51,4 @@ wget -O /tmp/jenkins-drupal-install ${drupalBaseURL}jenkins/install.php?profile=
 rm /tmp/jenkins-drupal-install
 
 $DRUSH vset --yes cdm_webservice_url $cdmServerURL
-$DRUSH vset --yes cdm-taxonomictree-uuid $cdmClassificationUUID
+$DRUSH vset --yes cdm_taxonomictree_uuid $cdmClassificationUUID
