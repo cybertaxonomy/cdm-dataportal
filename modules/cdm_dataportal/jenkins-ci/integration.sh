@@ -10,13 +10,18 @@
 
 WORKSPACE=$1
 JOB_NAME=$2
-drupalRoot=/var/www/drupal/
-drupalSiteName="jenkins"
-drupalInstallationProfile="CDM_DataPortal"
-
-dbName="jenkins_$JOB_NAME"
 dbUser=$3
 dbPassword=$4
+
+dbName="jenkins_$JOB_NAME"
+
+drupalBaseURL=http://160.45.63.201/dataportal/
+drupalRoot=/var/www/drupal/
+drupalSiteName="jenkins"
+drupalInstallationProfile="CDM_DataPortal_Testing"
+
+cdmServerURL=http://160.45.63.201:8080/cichorieae/
+cdmClassificationUUID=534e190f-3339-49ba-95d9-fa27d5493e3e
 
 # copy installation profiles
 echo ">>> copying installation profiles to ${drupalRoot}profiles/"
@@ -38,12 +43,12 @@ unset MYSQLCMD
 # install drupal site
 echo ">>> installing drupal site ..."
 cd $drupalRoot
-DRUSH="drush --uri=http://160.45.63.201/dataportal/jenkins/"
+DRUSH="drush --uri=${drupalBaseURL}jenkins/"
 ## drush si only works with drupal 7 so the folowing does not yet work
 #yes | drush si --profile=${drupalInstallationProfile} --clean-url=0 --sites-subdir=${drupalSiteName} --db-url=mysql://${dbUser}:${dbPassword}@localhost/${dbName}
 # and we will use a preset sub site directory and ur own install script:
-wget -O /tmp/jenkins-drupal-install http://160.45.63.201/dataportal/jenkins/install.php?profile=CDM_DataPortal_Testing
+wget -O /tmp/jenkins-drupal-install ${drupalBaseURL}jenkins/install.php?profile=$drupalInstallationProfile
 rm /tmp/jenkins-drupal-install
 
-$DRUSH vset --yes cdm_webservice_url http://160.45.63.201:8080/cichorieae/
-
+$DRUSH vset --yes cdm_webservice_url $cdmServerURL
+$DRUSH vset --yes cdm-taxonomictree-uuid $cdmClassificationUUID
