@@ -244,7 +244,8 @@ modules/cdm_dataportal/src/site/resources/images/palmae4.png -text
 modules/cdm_dataportal/src/site/resources/images/palmae5.png -text
 modules/cdm_dataportal/src/site/resources/images/settings1.PNG -text
 modules/cdm_dataportal/src/site/site.xml -text
-modules/cdm_dataportal/test/selenium/search-L.communis -text
+modules/cdm_dataportal/test/selenium/TestSuite-search.html -text
+modules/cdm_dataportal/test/selenium/search-L.communis.html -text
 modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text
 modules/cdm_dataportal/theme/cdm_dataportal.descriptions.theme -text
 modules/cdm_dataportal/theme/cdm_dataportal.media.theme -text
