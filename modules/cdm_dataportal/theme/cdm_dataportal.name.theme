@@ -361,6 +361,150 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $accepted_taxon_uuid, $p
 	return $out;
 }
 
+function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NULL){
+  //TODO implement admin user interface to replace switch statement
+  //     preliminar solution: using themes
+
+  $template = null;
+  // find best matching default RenderTemplate in theme
+  //echo "<br/><br/>RENDER PATH:  ".$renderPath;
+  //var_dump('RENDER PATH: ' . $renderPath);
+  while(!is_array($template) && strlen($renderPath) > 0){
+    $template = theme('get_nameRenderTemplate', $renderPath);
+    $renderPath = substr($renderPath, 0, strrpos($renderPath, '.'));
+    //     if(!is_array($template)){
+    //         echo "<br/>->".$renderPath;
+    //     }
+  }
+
+  // otherwise get default RenderTemplate from theme
+  if(!is_array($template)){
+    $template = theme('get_nameRenderTemplate', '#DEFAULT');
+  }
+  // otherwise get system default RenderTemplate
+  if(!is_array($template)){
+    switch($renderPath){
+      case 'list_of_taxa':
+      case  'acceptedFor':
+      case 'taxon_page_synonymy':
+      case 'typedesignations':
+      case 'taxon_page_title':
+      case 'na': $template = array(
+              'namePart' => array('#uri'=>true),
+      //'authorshipPart' => true,
+      );
+      break;
+      case 'nar': $template = array(
+                'namePart' => array('#uri'=>true),
+      //'authorshipPart' => true,
+                'referencePart' => array('#uri'=>true),
+                'microreferencePart' => true,
+      );
+      break;
+      default: $template = array(
+          'namePart' => array('#uri'=>true),
+          'authorshipPart' => true,
+          'referencePart' => array('#uri'=>true),
+          'microreferencePart' => true,
+          'statusPart' => true,
+          'descriptionPart' => true
+      );
+    }
+  }
+
+  if($nameLink && isset($template['nameAuthorPart']['#uri'])){
+    $template['nameAuthorPart']['#uri'] = $nameLink;
+  } else{
+    unset($template['nameAuthorPart']['#uri']);
+  }
+
+  if($nameLink && isset($template['namePart']['#uri'])){
+    $template['namePart']['#uri'] = $nameLink;
+  } else{
+    unset($template['namePart']['#uri']);
+  }
+
+  if($refenceLink && isset($template['referencePart']['#uri'])){
+    $template['referencePart']['#uri'] = $refenceLink;
+  }else{
+    unset($template['referencePart']['#uri']);
+  }
+
+  return $template;
+}
+
+function get_partDefinition($taxonNameType){
+  //TODO implement admin user interface to allow specify the partdefinitions for any type
+  //     preliminar solution: using themes
+
+  $partdef = theme('get_partDefinition', $taxonNameType);
+
+  if(!is_array($partdef)){
+    switch($taxonNameType){
+      case 'ZoologicalName': $partdef = array(
+        'namePart' => array(
+          'name' => true,
+      ),
+        'referencePart' => array(
+          'authorTeam' => true
+      ),
+        'microreferencePart' => array(
+          'microreference' => true,
+      ),
+        'statusPart' => array(
+          'status' => true,
+      ),
+        'descriptionPart' => array(
+          'description' => true,
+      ),
+      );
+      break;
+      case 'BotanicalName': $partdef = array(
+        'namePart' => array(
+          'name' => true
+      ),
+        'nameAuthorPart' => array(
+          'name' => true,
+          'authors' => true
+      ),
+        'referencePart' => array(
+          'reference' => true,
+          'microreference' => true
+      ),
+        'statusPart' => array(
+          'status' => true,
+      ),
+        'descriptionPart' => array(
+          'description' => true,
+      ),
+      );
+      break;
+      default: $partdef = array(
+        'namePart' => array(
+          'name' => true,
+      ),
+        'nameAuthorPart' => array(
+          'authorTeam' => true,
+      ),
+        'referencePart' => array(
+          'reference' => true
+      ),
+        'microreferencePart' => array(
+          'microreference' => true,
+      ),
+        'statusPart' => array(
+          'status' => true,
+      ),
+        'descriptionPart' => array(
+          'description' => true,
+      ),
+      );
+    }
+  }
+  return $partdef;
+}
+
+
 
 function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 	$show_annotations = true, $is_type_designation = false, $skiptags = array()){
