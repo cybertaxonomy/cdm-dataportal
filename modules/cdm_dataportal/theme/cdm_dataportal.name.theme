@@ -461,9 +461,6 @@ function get_partDefinition($taxonNameType){
       break;
       case 'BotanicalName': $partdef = array(
         'namePart' => array(
-          'name' => true
-      ),
-        'nameAuthorPart' => array(
           'name' => true,
           'authors' => true
       ),
@@ -482,11 +479,9 @@ function get_partDefinition($taxonNameType){
       default: $partdef = array(
         'namePart' => array(
           'name' => true,
+          'authorTeam' => true
       ),
-        'nameAuthorPart' => array(
-          'authorTeam' => true,
-      ),
-        'referencePart' => array(
+      'referencePart' => array(
           'reference' => true
       ),
         'microreferencePart' => array(
