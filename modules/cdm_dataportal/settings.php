@@ -1028,6 +1028,8 @@ function cdm_settings_geo(){
     'osgeo_vmap0' => "OpenLayers World", // EPSG:4326
     'metacarta_vmap0' => "Metacarta Vmap0" , // EPSG:4326, EPSG:900913
 	      // all others EPSG:900913 ...
+	  'edit-vmap0_world_basic' => 'EDIT Vmap0',
+	  'edit-etopo1' => "ETOPO1 Global Relief Model",
     'osmarender' => 'OpenStreetMap',
     //'oam' => 'OpenAerialMap', // currently unavailable
     'gmap' => 'Google Streets',

@@ -63,7 +63,14 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		
 		createLayers(options.baseLayerNames, options.defaultBaseLayerName);
 		
+     //HACK !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if(defaultBaseLayer.projection == mapOptions.EPSG900913.projection){
+      options.minZoom = 1;
+		}
+    
 		initOpenLayers();
+    
+   
 
 		// -- Distribution Layer --
 		var mapServiceRequest;
@@ -347,6 +354,32 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 			        {layers: 'basic', format:"png"},
 			        {
 						maxExtent: mapExtend_4326,
+						isBaseLayer: true,
+						displayInLayerSwitcher: true
+					}
+				);
+			break;
+			
+			case 'edit-etopo1':
+				baseLayer = new OpenLayers.Layer.WMS(
+			        "ETOPO1 Global Relief Model",
+			        "http://edit.br.fgov.be:8080/geoserver/wms",
+			        {layers: 'topp:color_etopo1_ice_full', format:"image/png"},
+			        {
+						maxExtent: mapExtend_900913,
+						isBaseLayer: true,
+						displayInLayerSwitcher: true
+					}
+				);
+			break;
+			
+			case 'edit-vmap0_world_basic':
+				baseLayer = new OpenLayers.Layer.WMS(
+			        "EDIT Vmap0",
+			        "http://edit.br.fgov.be:8080/geoserver/wms",
+			        {layers: 'vmap0_world_basic', format:"image/png"},
+			        {
+						maxExtent: mapExtend_900913,
 						isBaseLayer: true,
 						displayInLayerSwitcher: true
 					}
