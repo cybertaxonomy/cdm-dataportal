@@ -756,3 +756,95 @@ function theme_cdm_distribution_map($taxon){
 		return $out;
 	}
 }
+
+/**
+ * Returns a list of a specific type of IdentificationKeys, the list can be restricteded by a taxon.
+ * @param $type The simple name of the cdm class implementing the interface IIdentificationKey,
+ *          valid values are : PolytomousKey, MediaKey, MultiAccessKey
+ * @param $taxonUuid if given this parameter restrict the listed keys to
+ *          those which have the taxon identified be this uuid in scope.
+ */
+function _list_IdentificationKeys($type, $taxonUuid = null, $pageSize = null, $pageNumber = null){
+
+  if(!$type){
+    drupal_set_message("Type parameter is missing", "error");
+    return;
+  }
+  $cdm_ws_pasepath = null;
+  switch($type){
+    case "PolytomousKey" : $cdm_ws_pasepath = CDM_WS_POLYTOMOUSKEY; break;
+    case "MediaKey" : $cdm_ws_pasepath = CDM_WS_MEDIAKEY; break;
+    case "MultiAccessKey" : $cdm_ws_pasepath = CDM_WS_MULTIACCESSKEY; break;
+  }
+
+  if(!$cdm_ws_pasepath){
+    drupal_set_message("Type parameter is not valid: ".$type, "error");
+  }
+
+  $queryParameters  = '';
+  if(is_numeric($pageSize)){
+  	$queryParameters  = "pageSize=".$pageSize;
+  } else {
+  	$queryParameters  = "pageSize=0";
+  }
+
+  if(is_numeric($pageNumber)){
+    $queryParameters  = "pageNumber=".$pageNumber;
+  } else {
+    $queryParameters  = "pageNumber=0";
+  }
+  $queryParameters  = null;
+  if($taxonUuid){
+    $queryParameters = "findByTaxonomicScope=$taxonUuid";
+  }
+  $pager = cdm_ws_get($cdm_ws_pasepath, null, $queryParameters);
+
+  if(!$pager || $pager->count == 0){
+      return array();
+  }
+  return $pager->records;
+}
+
+/**
+ * Renders a list of a specific type of IdentificationKeys, the list can be restricteded by a taxon.
+ * @param $type The simple name of the cdm class implementing the interface IIdentificationKey,
+ *          valid values are : PolytomousKey, MediaKey, MultiAccessKey
+ * @param $taxonUuid if given this parameter restrict the listed keys to
+ *          those which have the taxon identified be this uuid in scope.
+ */
+function theme_cdm_list_IdentificationKeys($type, $taxonUuid = null, $pageSize, $pageNumber){
+
+  $keyList = _list_IdentificationKeys($type, $taxonUuid);
+  if(!$keyList || count ($keyList) == 0){
+  	return;
+  }
+
+  RenderHints::pushToRenderStack('list_IdentificationKeys');
+  $out = '<ul>';
+  foreach ($keyList as $key){
+    $out .= '<li>'.l($key->titleCache, path_to_key($type, $key->uuid)).'</li>';
+  }
+  $out .= '</ul>';
+  RenderHints::popFromRenderStack();
+
+  return $out;
+}
+
+function theme_cdm_block_IdentificationKeys($taxonUuid = null, $pageSize = null){
+
+	static $types = array("PolytomousKey"=>"Polytomous", "MediaKey"=>"Media", "MultiAccessKey"=>"Multiaccess");
+  RenderHints::pushToRenderStack('block_IdentificationKeys');
+	$out = '';
+	foreach($types as $type=>$label){
+		$keylist = theme('cdm_list_IdentificationKeys', $type, $taxonUuid, $pageSize, $pageNumber);
+		if(!$keylist){
+			continue;
+		}
+		$out .= '<div class="'.$type.'">';
+		$out .= '<h3>'.t($label)."</h3>";
+		$out .= $keylist;
+		$out .= '</div>';
+	}
+  RenderHints::popFromRenderStack();
+	return $out;
+}

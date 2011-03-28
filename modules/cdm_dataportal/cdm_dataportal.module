@@ -311,6 +311,17 @@ function cdm_dataportal_menu($may_cache) {
 		 'callback arguments' => array(arg(2), "specimens")
 		 // expected callback arguments: name_uuid
 		 );
+
+		 $items[] = array(
+     'path' => 'cdm_dataportal/taxon/'.arg(2).'/keys',
+     'title' => theme('cdm_taxonpage_tab', 'Keys'),
+     'callback' => 'cdm_dataportal_taxon_page_view',
+     'access' => true,
+     'type' => MENU_LOCAL_TASK,
+     'weight' => 6,
+     'callback arguments' => array(arg(2), "keys")
+     // expected callback arguments: name_uuid
+     );
 		}
 	}
 
@@ -403,6 +414,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
 		$block[2]["info"] = t("CDM Search Taxa");
 		//$block[3]["info"] = t("CDM Filters");
 		$block[4]["info"] = t("CDM Dataportal Print");
+		$block["keys"]["info"] = t("CDM identification keys");
 		return $block;
 	}
 	else if ($op == 'view') {
@@ -422,6 +434,10 @@ function cdm_dataportal_block($op='list', $delta=0) {
 				$block['subject'] = t('<none>');
 				$block['content'] = theme('cdm_print_button');;
 				return $block;
+			case "keys":
+				$block['subject'] = t('Identification Keys');
+        $block['content'] = theme('cdm_block_IdentificationKeys');
+        return $block;
 		}
 	}
 }
@@ -497,6 +513,12 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       '#type' => 'hidden',
       '#value' => variable_get('cdm_dataportal_search_items_on_page', 25)
 	);
+
+	$form['search']['pageNumber'] = array(
+      '#delta' => -1,
+      '#type' => 'hidden',
+      '#value' => 0
+  );
 
 	if($advancedForm){
 		// general search parameters
@@ -1054,6 +1076,12 @@ function path_to_taxon($uuid, $no_tab = false){
 	} else {
 		return 'cdm_dataportal/taxon/'.$uuid . '/' . strtolower($tab);
 	}
+}
+
+function path_to_key($keyType, $keyUuid){
+	if(!$keyUuid || !$keyType) return false;
+	$keyType{0} = strtolower($keyType{0});
+  return "cdm_dataportal/".$keyType."/$keyUuid";
 }
 
 function path_to_reference($uuid){

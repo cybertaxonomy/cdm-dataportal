@@ -118,3 +118,8 @@ define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'ext/edit/mapServiceParameters/taxon
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');
 
 define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedUnitFacade/$0');
+
+define('CDM_WS_MEDIAKEY', 'mediaKey');
+define('CDM_WS_MULTIACCESSKEY', 'multiAccessKey');
+define('CDM_WS_POLYTOMOUSKEY', 'polytomousKey');
+define('CDM_WS_POLYTOMOUSKEY_NODE', 'polytomousKeyNode');

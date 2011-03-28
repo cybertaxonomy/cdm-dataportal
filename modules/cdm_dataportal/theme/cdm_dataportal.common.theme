@@ -18,7 +18,7 @@ define(FOOTNOTE_ANNOTATIONS, 'annotations');
 */
 function absolute_path_to_drupal() {
     static $absolute_path_to_drupal = NULL;
-    
+
     if ($absolute_path_to_drupal === NULL) {
         // Get the absolute path to this file:
         $dir = rtrim(str_replace('\\', '/', dirname(__FILE__)), '/');
@@ -225,7 +225,7 @@ function theme_cdm_footnote_key($footnoteKey, $separator = '', $highlightable=tr
 	if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)){
 		return '';
 	}
-	
+
 	if ($separator_off){
 		$separator = '';
 	}
@@ -308,7 +308,7 @@ function theme_cdm_pager(&$pager, $path, $parameters){
 function theme_cdm_pager_link($text, $linkIndex, &$pager, $path, $parameters = array(), $attributes) {
 
 	$out = '';
-	$parameters['search']['page'] = $linkIndex;
+	$parameters['search']['pageNumber'] = $linkIndex;
 	if ($linkIndex == $pager->currentIndex) {
 		$out = '<strong>'.$text.'</strong>';
 	} else {
