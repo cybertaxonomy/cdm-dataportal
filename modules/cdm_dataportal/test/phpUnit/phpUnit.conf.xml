@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit 
+  bootstrap="bootstrap.php">
+	
+	<php>
+	  <ini name="xdebug.remote_autostart" value="0" />
+	</php>
+	
+
+  <!--
+  <testsuite name="Object_Freezer">
+    <directory>Tests</directory>
+  </testsuite>
+  -->
+  <testsuite name="testsuite">
+    <file>testtest.php</file>
+  </testsuite>
+</phpunit>
