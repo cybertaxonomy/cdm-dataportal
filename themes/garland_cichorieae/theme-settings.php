@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * see http://drupal.org/node/177868
+ */
 /**
 * Implementation of THEMEHOOK_settings() function.
 *
@@ -10,6 +12,7 @@
 */
 function phptemplate_settings($saved_settings) {
 
+	$key = sub_theme();
 
 	$defaults = array(
 	    'default_banner_right' => 1,
@@ -22,13 +25,12 @@ function phptemplate_settings($saved_settings) {
   if ($file = file_check_upload('banner_right_upload')) {
     if ($info = image_get_info($file->filepath)) {
       $parts = pathinfo($file->filename);
-      //$filename = ($key) ? str_replace('/', '_', $key) .'_logo.'. $parts['extension'] : 'logo.'. $parts['extension'];
-      $filename = 'banner_right.'. $parts['extension'];
+      $filename = ($key) ? str_replace('/', '_', $key) .'_banner_right.'. $parts['extension'] : '_banner_right.'. $parts['extension'];
 
       if ($file = file_save_upload('banner_right_upload', $filename, 1)) {
         $_POST['default_banner_right'] = 0;
         $_POST['banner_right_path'] = $file->filepath;
-        //$_POST['toggle_banner_right'] = 1;
+        $form["#after_build"][] = "banner_right_after_build";
       }
     }
     else {
@@ -36,24 +38,35 @@ function phptemplate_settings($saved_settings) {
     }
   }
 
-	$form['default_banner_right'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Use the right default header image'),
-      '#default_value' => $settings['default_banner_right'],
-      '#tree' => FALSE,
-      '#description' => t('Check here if you want the theme to use the right header image supplied with it.')
-	 );
+  if (true || $file) {
+		$form['default_banner_right'] = array(
+	      '#type' => 'checkbox',
+	      '#title' => t('Use the right default header image'),
+	      '#default_value' => $settings['default_banner_right'],
+	      '#tree' => FALSE,
+	      '#description' => t('Check here if you want the theme to use the right header image supplied with it.')
+		 );
 
-	$form['banner_right_path'] = array(
-	  '#type' => 'textfield',
-	  '#title' => t('Right banner image path'),
-	  '#default_value' => $settings['banner_right_path'],
-	  );
+		$form['banner_right_path'] = array(
+		  '#type' => 'textfield',
+		  '#title' => t('Right banner image path'),
+		  '#default_value' => $settings['banner_right_path'],
+		  '#maxlength' => 255
+		  );
 
-	$form['banner_right_upload'] = array(
-	  '#type' => 'file',
-	  '#title' => t('Upload new right banner image'),
-	  );
+		$form['banner_right_upload'] = array(
+		  '#type' => 'file',
+		  '#title' => t('Upload new right banner image'),
+		  );
+  }
 
   return $form;
 }
+
+
+function banner_right_after_build(&$form, &$form_values) {
+  $form["#post"]["banner_right_path"] = $_POST['banner_right_path'];
+  return $form;
+}
+
+

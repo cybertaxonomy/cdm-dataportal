@@ -12,6 +12,7 @@
 
 define(FOOTNOTE_ANNOTATIONS, 'annotations');
 
+
 /**
 * Get the true path to the root of the Drupal site.
 * Better than using DOCUMENT_ROOT and base_path().
@@ -359,6 +360,8 @@ function theme_cdm_print_button(){
 
 	return $output;
 }
+
+
 
 
 /* ============================ java script functions ============================= */

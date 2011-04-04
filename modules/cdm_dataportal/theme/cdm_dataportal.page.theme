@@ -905,6 +905,21 @@ function theme_cdm_media_page($media, $mediarepresentation_uuid = false, $partId
 	return $out;
 }
 
+
+
+
+function theme_cdm_polytomousKey_page($polytomousKey){
+
+  drupal_set_title($polytomousKey->titleCache);
+
+  $out = theme("cdm_IdentificationKey", $polytomousKey, false);
+
+  // key nodes in linked style
+  $out .= theme('cdm_polytomousKey', $polytomousKey);
+
+  return $out;
+}
+
 /**
  * Allows theming of the taxon page tabs
  *

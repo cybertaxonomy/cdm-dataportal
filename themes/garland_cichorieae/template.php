@@ -69,7 +69,7 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
  }
  */
 function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid){
-	
+
 	$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
 	$sourceRefs = '';
 	$result = array();
@@ -77,10 +77,10 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 	$res_date;
 	$no_links = false;
 	$default_theme = variable_get('theme_default', 'garland_cichorieae');
-	
+
 	if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale')
 	    && $element->feature->titleCache == 'Citation'){
-		$asListElement = true;	
+		$asListElement = true;
 	}elseif ($element->feature->uuid == UUID_CHROMOSOMES_NUMBERS){
 	   	$asListElement = true;
 	}else{
@@ -224,7 +224,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 */
 	// add annotations as footnote key
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
-    
+
 	return $out;
 }
 
@@ -493,6 +493,7 @@ function garland_cichorieae_get_nameRenderTemplate($renderPath){
 
 	switch($renderPath) {
 		case 'taxon_page_title':
+		case 'polytomousKey':
 			$template = array(
             'namePart' => array('#uri'=>true)
 			);

@@ -376,3 +376,26 @@ a.toc:link, a.toc:visited {
 	 line-height: 1em;
 	 color: #999999;
 }
+
+.polytomousKey_linkedStyle td{
+	vertical-align: top;
+	padding-top: 0;
+}
+.polytomousKey_linkedStyle tr.childCount_0 td{
+  padding-top: 1em;
+}
+.polytomousKey_linkedStyle tr:hover {
+  background-color: #eeeeee;
+}
+	
+.polytomousKey_linkedStyle .nodeLink, .polytomousKey_linkedStyle .nodeNumber {
+  width: 1.5em;
+}
+.polytomousKey_linkedStyle .nodeLink{
+  text-align: right;
+}
+
+.polytomousKey_linkedStyle .nodeLinkToTaxon, .polytomousKey_linkedStyle .nodeLinkToSubkey {
+	float: right;
+  text-align: right;
+}

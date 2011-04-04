@@ -16,21 +16,23 @@
     "updated": "2011-04-01T17:31:18.795+02:00",
     "useNameCache": false,
     "uuid": "0ae4f7ab-f482-482c-ba57-cf0e4389a417",
-    "name": [
-        {
-            "class": "TaggedText",
-            "text": "Alectryon",
-            "type": "name" 
-        },
-        {
-            "class": "TaggedText",
-            "text": "myrmecophilus",
-            "type": "name" 
-        },
-        {
-            "class": "TaggedText",
-            "text": "Leenh.",
-            "type": "authors" 
-        } 
-    ] 
+    "name": {
+      "taggedName": [
+          {
+              "class": "TaggedText",
+              "text": "Alectryon",
+              "type": "name" 
+          },
+          {
+              "class": "TaggedText",
+              "text": "myrmecophilus",
+              "type": "name" 
+          },
+          {
+              "class": "TaggedText",
+              "text": "Leenh.",
+              "type": "authors" 
+          } 
+      ]
+    }
 }

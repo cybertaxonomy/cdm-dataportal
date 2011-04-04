@@ -205,6 +205,7 @@ function theme_cdm_descriptionElement_CommonTaxonName($element){
 	return $out;
 }
 
+
 /**
  * TODO: assign a new name to the function? because it is used for the citations
  *       textdata elements and not for all text data description elements
@@ -223,38 +224,38 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 
 	if(is_array($element->sources)){
 		foreach($element->sources as $source){
-			$referenceCitation = theme('cdm_DescriptionElementSource', $source);
-			if($description && strlen($description) > 0 && $referenceCitation ){
-				$sourceRefs .= ' ('.$referenceCitation.')' ;
-			}else if ($referenceCitation){
-				$sourceRefs = $referenceCitation;
-			}
+		  $referenceCitation = theme('cdm_DescriptionElementSource', $source);
+      if($description && strlen($description) > 0 && $referenceCitation ){
+        $sourceRefs .= ' ('.$referenceCitation.')' ;
+      }else if ($referenceCitation){
+        $sourceRefs = $referenceCitation;
+      }
 
-			if(strlen($sourceRefs) > 0){
-				$sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
-			}
+      if(strlen($sourceRefs) > 0){
+        $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
+      }
 
-			if ($source->nameUsedInSource->uuid){ //do a link to name page
-				$name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
-				path_to_name($source->nameUsedInSource->uuid),
-				array(), NULL, NULL, FALSE ,TRUE);
-			}else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
-				$name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
-			}
+      if ($source->nameUsedInSource->uuid){ //do a link to name page
+        $name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
+        path_to_name($source->nameUsedInSource->uuid),
+        array(), NULL, NULL, FALSE ,TRUE);
+      }else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
+        $name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
+      }
 
-			if ($asListElement){
-				$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
-				//adding ":" if necesary
-				if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
-					$out .= ': ';
-				}
-				$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
-			}else{
-				if ($name_used_in_source_link_to_show){
-					$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
-				}
-				$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
-			}
+      if ($asListElement){
+        $out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
+        //adding ":" if necesary
+        if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
+          $out .= ': ';
+        }
+        $out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+      }else{
+        if ($name_used_in_source_link_to_show){
+          $name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
+        }
+        $out = $description . $sourceRefs . $name_used_in_source_link_to_show;
+      }
 		}
 	}
 	//if no sources, print the description
@@ -267,6 +268,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 	//$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
 	return $out;
 }
+
 
 function theme_cdm_common_names($elements){
 	$text_data_out = '';
@@ -623,6 +625,17 @@ function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink =
 	return $out;
 }
 
+function theme_cdm_IdentifieableSource($source, $doLink = TRUE){
+
+  if(isset($source->citation)){
+    $out = theme('cdm_reference', $source->citation, $source->citationMicroReference, $doLink);
+  }
+  return $out;
+}
+
+
+
+
 
 /*
  function theme_cdm_descriptionElementDistribution($descriptionElements){
@@ -805,6 +818,94 @@ function _list_IdentificationKeys($type, $taxonUuid = null, $pageSize = null, $p
   return $pager->records;
 }
 
+function theme_cdm_IdentificationKey($identificationKey, $doLinkToKeyPage = true){
+
+	 $parentRenderPath = RenderHints::getRenderPath();
+	 RenderHints::pushToRenderStack("IdentificationKey");
+
+	 if($doLinkToKeyPage) {
+	   $out = l($identificationKey->titleCache, path_to_key($identificationKey->class, $identificationKey->uuid));
+	 } else {
+	   $out = $identificationKey->titleCache;
+	 }
+	 if(is_array($identificationKey->sources)){
+	 	// display sources
+	 	foreach($identificationKey->sources as $source){
+      $out .= theme("cdm_IdentifieableSource", $source);
+	 	}
+	 	// display annotations
+    $out .= theme("cdm_annotations_as_footnotekeys", $identificationKey, $parentRenderPath);
+	 }
+	 RenderHints::popFromRenderStack();
+	 return $out;
+}
+
+function theme_cdm_polytomousKey(&$polytomousKey){
+
+	$keyStyle = "linkedStyle"; // TODO settings needed
+
+	RenderHints::pushToRenderStack("polytomousKey");
+  // key nodes in linked style
+  $out = '<table class="polytomousKey polytomousKey_'.$keyStyle.'">';
+  $out .= theme('cdm_polytomousKey_'.$keyStyle.'_subgraph', $polytomousKey->root);
+  $out .= '</table>';
+  RenderHints::popFromRenderStack();
+  return $out;
+}
+
+function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
+
+  static $statementCountCharacter = '\'';
+
+  $out = "";
+
+  if(is_array($polytomousKeyNode->children)){
+
+    $childCount = 0;
+
+    // render edges of the current node
+    foreach($polytomousKeyNode->children as &$child){
+      $out .= '<tr class="childCount_' . $childCount . '">';
+
+      $out .= '<td class="nodeNumber">'. uuid_anchor($polytomousKeyNode->uuid, $polytomousKeyNode->nodeNumber . str_pad("", $childCount++ , $statementCountCharacter)) . "</td>";
+
+      $islinkToTaxonOrSubkey = isset($child->taxon->uuid) || isset($child->subkey->uuid);
+
+      $out .= '<td class="edge" colspan="'. ( $islinkToTaxonOrSubkey ? '2' : '1' )  .'">';
+      if(isset($polytomousKeyNode->question->label_l10n)){
+        $out .= $polytomousKeyNode->question->label_l10n .  ": ";
+      }
+      $out .= $child->statement->label_l10n;
+
+      if(!$islinkToTaxonOrSubkey){
+      	$out .= '</td>';
+      	// link to a PolytomousKeyNode
+        $out .= '<td class="nodeLink">' . l($child->nodeNumber, $_REQUEST["q"], null, null, $child->uuid) . '</td>';
+      } else {
+	      if(isset($child->taxon->uuid)){
+	      	// link to a taxon
+	      	$out .= '<div class="nodeLinkToTaxon">' . theme("cdm_taxonName", $child->taxon->name, path_to_taxon($child->taxon->uuid)) . '</div>';
+	      } else if(isset($child->subkey->uuid)){
+	        // link to a subkey
+	        $out .= '<div class="nodeLinkToSubkey">'
+	         . theme('cdm_IdentificationKey', $child->subkey) . '</div>';
+	      }
+	      $out .= '</td>';
+      }
+
+      $out .= '</tr>';
+
+    }
+
+    // recurse into child nodes
+    foreach($polytomousKeyNode->children as &$child){
+      $out .= theme('cdm_polytomousKey_linkedStyle_subgraph', $child);
+    }
+
+  }
+  return $out;
+}
+
 /**
  * Renders a list of a specific type of IdentificationKeys, the list can be restricteded by a taxon.
  * @param $type The simple name of the cdm class implementing the interface IIdentificationKey,
@@ -822,9 +923,12 @@ function theme_cdm_list_IdentificationKeys($type, $taxonUuid = null, $pageSize, 
   RenderHints::pushToRenderStack('list_IdentificationKeys');
   $out = '<ul>';
   foreach ($keyList as $key){
-    $out .= '<li>'.l($key->titleCache, path_to_key($type, $key->uuid)).'</li>';
+    $out .= '<li>';
+    $out .= theme('cdm_IdentificationKey', $key);
+    $out .= '</li>';
   }
   $out .= '</ul>';
+  $out .= theme("cdm_annotation_footnotes", RenderHints::getRenderPath());
   RenderHints::popFromRenderStack();
 
   return $out;

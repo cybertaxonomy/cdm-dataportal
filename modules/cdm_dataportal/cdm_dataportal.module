@@ -203,6 +203,14 @@ function cdm_dataportal_menu($may_cache) {
 		);
 
 		$items[] = array(
+      'path' => 'cdm_dataportal/polytomousKey',
+      'callback' => 'cdm_dataportal_view_polytomousKey',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    // expected callback arguments: polytomousKey->uuid
+    );
+
+		$items[] = array(
       'path' => 'cdm_dataportal/search',
       'callback' => 'cdm_dataportal_view_search_advanced',
       'access' => true,
@@ -882,6 +890,61 @@ function cdm_dataportal_view_reference_list($pageNumber){
 function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = false, $part = 0){
 	$media = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $mediaUuid);
 	return theme('cdm_media_page', $media, $mediarepresentation_uuid, $part);
+}
+
+function _load_taxonBase(&$taxonBase){
+	if(isset($taxonBase->uuid)){
+	    $taxonBase->name = cdm_ws_get(CDM_WS_TAXON, array($taxonBase->uuid, "name"));
+	    $taxonBase->name->taggedName = cdm_ws_get(CDM_WS_NAME, array($taxonBase->name->uuid, "taggedName"));
+	    $taxonBase->name->nomenclaturalReference = cdm_ws_get(CDM_WS_NAME, array($taxonBase->name->uuid, "nomenclaturalReference"));
+	  }
+}
+
+/**
+ * Loads the subgraph of the given PolytomousKeyNode recursively from the cdm REST service.
+ * @param PolytomousKeyNode $polytomousKeyNode passed by reference
+ * @return nothing
+ */
+function _load_polytomousKeySubGraph(&$polytomousKeyNode){
+	if(!$polytomousKeyNode){
+		return;
+	}
+	$polytomousKeyNode = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, $polytomousKeyNode->uuid);
+
+  if(!$polytomousKeyNode){
+  	//drupal_set_message("_load_polytomousKeyChildNodes() : could not load polytomousKeyNode", "error");
+  	return;
+  }
+
+  // load children
+  foreach($polytomousKeyNode->children as &$childNode){
+    _load_polytomousKeySubGraph($childNode);
+  }
+
+  // load subkey
+  $polytomousKeyNode->subkey = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, array($polytomousKeyNode->uuid, "subkey"));
+
+  // load taxon
+  $polytomousKeyNode->taxon = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, array($polytomousKeyNode->uuid, "taxon"));
+  _load_taxonBase($polytomousKeyNode->taxon);
+  return;
+}
+
+function cdm_dataportal_view_polytomousKey($polytomousKeyUuid){
+  $polytomousKey = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, $polytomousKeyUuid);
+
+  $sourcePager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, array($polytomousKeyUuid, "sources"));
+  if(is_array($sourcePager->records)){
+    $polytomousKey->sources =  $sourcePager->records;
+  }
+
+  $annotationPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, array($polytomousKeyUuid, "annotations"));
+  if(is_array($annotationPager->records)){
+    $polytomousKey->annotations = $annotationPager->records;
+  }
+
+  _load_polytomousKeySubGraph($polytomousKey->root);
+  return theme('cdm_polytomousKey_page', $polytomousKey);
 }
 
 /**

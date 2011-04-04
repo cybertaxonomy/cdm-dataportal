@@ -119,6 +119,7 @@ define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOc
 
 define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedUnitFacade/$0');
 
+define('CDM_WS_IDENTIFICATIONKEY', 'identificationKey');
 define('CDM_WS_MEDIAKEY', 'mediaKey');
 define('CDM_WS_MULTIACCESSKEY', 'multiAccessKey');
 define('CDM_WS_POLYTOMOUSKEY', 'polytomousKey');

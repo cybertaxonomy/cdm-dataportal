@@ -17,7 +17,6 @@ function cdm_dataportal_uninstall(){
 }
 
 
-
 /**
  * Implementation of hook_api_update_N().
  *

@@ -317,6 +317,10 @@ function partialToDay($partial){
  */
 function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL ){
 
+	if(!isset($pathParameters)){
+		$pathParameters = array();
+	}
+
   $request_params = '';
   $path_params = '';
 
@@ -332,8 +336,11 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
 
   $i = 0;
   while(strpos($uri_pattern, "$".$i) !== FALSE){
-    if(count($pathParameters) <= $i && user_access('administer')){
-      drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
+    if(count($pathParameters) <= $i){
+    	if(user_access('administer')){
+        drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
+    	}
+      break;
     }
     $uri_pattern = str_replace("$".$i, rawurlencode($pathParameters[$i]), $uri_pattern);
     ++$i;
@@ -494,6 +501,11 @@ function cdm_compose_annotations_url($cdmBase){
         case 'CategoricalData':
         	$ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
         	break;
+        case 'PolytomousKey':
+        case 'MediaKey':
+        case 'MultiAccessKey':
+          $ws_base_uri = CDM_WS_IDENTIFICATIONKEY;
+          break;
         default:  trigger_error('Unsupported CDM Class - no annotations available for ' . $cdmBase->class, E_USER_ERROR);
             return;
     }
@@ -727,7 +739,9 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
   $is_cdm_ws_uri = _is_cdm_ws_uri($uri);
   $use_cacheL2 = variable_get('cdm_webservice_cache', 1);
 
-  $cacheL1_obj = $cacheL1[$uri];
+  if(array_key_exists($uri, $cacheL1)){
+    $cacheL1_obj = $cacheL1[$uri];
+  }
   //print $cacheL1_obj;
   $set_cacheL1 = false;
   if($is_cdm_ws_uri && !$cacheL1_obj){
@@ -835,14 +849,6 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
 
 function cdm_load_obj($datastr){
 
-  // NOTICE: the cdm dataportal currently does not support xml so the line below are commented out
-  /*
-   // if the web service delivers XML convert it into json
-   if(variable_get('cdm_webservice_type', 'json') == 'xml'){
-   $datastr = xml2json::transformXmlStringToJson($datastr);
-   }
-   */
-
   $obj = json_decode($datastr);
 
   if(!(is_object($obj) || is_array($obj)) ){
@@ -869,10 +875,13 @@ function cdm_http_request($uri, $method="GET", $parameters = array(), $header = 
   static $acceptLanguage = null;
 
   if(!$acceptLanguage) {
-  	$headers = getallheaders();
-  	if($headers['Accept-Language']){
-  		$acceptLanguage = $headers['Accept-Language'];
-  	} else {
+  	if(function_exists('apache_request_headers')){
+  		$headers = apache_request_headers();
+	  	if($headers['Accept-Language']){
+	  		$acceptLanguage = $headers['Accept-Language'];
+	  	}
+  	}
+  	if( !$acceptLanguage ) {
   		$acceptLanguage = "en"; // DEFAULT TODO make configurable
   	}
   }

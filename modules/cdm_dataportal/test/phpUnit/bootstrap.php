@@ -5,14 +5,7 @@
 // see http://pkp.sfu.ca/wiki/index.php/Configure_Eclipse_for_PHPUnit#Configure_XDebug_Debugger_to_work_with_PHPUnit
 //
 print("> bootstrapping Drupal for phpUnit ...\n");
-
-//$phpUnitTestBaseDir = "test".DIRECTORY_SEPARATOR."phpUnit";
-//
-//while(!str_endsWith( getcwd(), $phpUnitTestBaseDir) || strlen(getcwd()) < strln($phpUnitTestBaseDir)){
-//
-//}
-
-print(">".getcwd()."\n");
+//print(">".getcwd()."\n");
 
 // TestUtils.php must be included at the very first step
 require_once ('TestUtils.php');
@@ -23,7 +16,8 @@ require_once  ('includes/bootstrap.inc');
 $_SERVER['HTTP_HOST']='127.0.0.1';
 $_SERVER['REQUEST_METHOD'] = 'get';
 $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-$_SERVER['REQUEST_URI'] = "http://" . $_SERVER['HTTP_HOST'] . "/" . "cichorieae/";
+$_SERVER['PHP_SELF'] = $_SERVER['SITE_BASE_PATH']."/index.php";
+//$_SERVER['REQUEST_URI'] = "http://" . $_SERVER['HTTP_HOST'] . "/" . "flora-malesiana/";
 
 drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 

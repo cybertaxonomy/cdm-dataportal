@@ -369,12 +369,23 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
   // find best matching default RenderTemplate in theme
   //echo "<br/><br/>RENDER PATH:  ".$renderPath;
   //var_dump('RENDER PATH: ' . $renderPath);
-  while(!is_array($template) && strlen($renderPath) > 0){
-    $template = theme('get_nameRenderTemplate', $renderPath);
-    $renderPath = substr($renderPath, 0, strrpos($renderPath, '.'));
-    //     if(!is_array($template)){
-    //         echo "<br/>->".$renderPath;
-    //     }
+
+  // preserve renderPath_base
+  if( ($separatorPos =  strpos($renderPath, '.')) >= 0 ){
+  } else {
+  	$separatorPos = strlen($renderPath);
+  }
+  $renderPath_base = substr($renderPath, 0, $separatorPos);
+
+  // find in theme function if it exists
+  if(theme_get_function('get_nameRenderTemplate')){
+	  while(!is_array($template) && strlen($renderPath) > 0){
+	    $template = theme('get_nameRenderTemplate', $renderPath);
+	    $renderPath = substr($renderPath, 0, strrpos($renderPath, '.'));
+	    //     if(!is_array($template)){
+	    //         echo "<br/>->".$renderPath;
+	    //     }
+	  }
   }
 
   // otherwise get default RenderTemplate from theme
@@ -383,12 +394,13 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
   }
   // otherwise get system default RenderTemplate
   if(!is_array($template)){
-    switch($renderPath){
+    switch($renderPath_base){
       case 'list_of_taxa':
-      case  'acceptedFor':
+      case 'acceptedFor':
       case 'taxon_page_synonymy':
       case 'typedesignations':
       case 'taxon_page_title':
+      case 'polytomousKey':
       case 'na': $template = array(
               'namePart' => array('#uri'=>true),
       //'authorshipPart' => true,
@@ -434,6 +446,7 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
 }
 
 function get_partDefinition($taxonNameType){
+
   //TODO implement admin user interface to allow specify the partdefinitions for any type
   //     preliminar solution: using themes
 
@@ -459,7 +472,8 @@ function get_partDefinition($taxonNameType){
       ),
       );
       break;
-      case 'BotanicalName': $partdef = array(
+      case 'BotanicalName':
+      default: $partdef = array(
         'namePart' => array(
           'name' => true,
           'authors' => true
@@ -476,24 +490,24 @@ function get_partDefinition($taxonNameType){
       ),
       );
       break;
-      default: $partdef = array(
-        'namePart' => array(
-          'name' => true,
-          'authorTeam' => true
-      ),
-      'referencePart' => array(
-          'reference' => true
-      ),
-        'microreferencePart' => array(
-          'microreference' => true,
-      ),
-        'statusPart' => array(
-          'status' => true,
-      ),
-        'descriptionPart' => array(
-          'description' => true,
-      ),
-      );
+//      default: $partdef = array(
+//        'namePart' => array(
+//          'name' => true,
+//          'authorTeam' => true
+//      ),
+//      'referencePart' => array(
+//          'reference' => true
+//      ),
+//        'microreferencePart' => array(
+//          'microreference' => true,
+//      ),
+//        'statusPart' => array(
+//          'status' => true,
+//      ),
+//        'descriptionPart' => array(
+//          'description' => true,
+//      ),
+//      );
     }
   }
   return $partdef;
@@ -503,7 +517,6 @@ function get_partDefinition($taxonNameType){
 
 function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 	$show_annotations = true, $is_type_designation = false, $skiptags = array()){
-
 	$renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
 	$partDefinition = get_partDefinition($taxonName->class);
 
@@ -518,9 +531,9 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 	}
 
 	$firstEntryIsValidNamePart = is_array($taxonName->taggedName)
-	&& is_string($taxonName->taggedName[0]->text)
-	&& $taxonName->taggedName[0]->text != ''
-	&& $taxonName->taggedName[0]->type == 'name';
+			&& is_string($taxonName->taggedName[0]->text)
+			&& $taxonName->taggedName[0]->text != ''
+			&& $taxonName->taggedName[0]->type == 'name';
 
 	// got to use second entry as first one, see ToDo comment below ...
 	if($firstEntryIsValidNamePart){
