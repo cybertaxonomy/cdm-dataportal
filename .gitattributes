@@ -73,7 +73,8 @@ modules/cdm_dataportal/help.php -text
 modules/cdm_dataportal/help/overview.apt -text
 modules/cdm_dataportal/help/overview.html -text
 modules/cdm_dataportal/ide/eclipse/cdm_dataportal.launch -text
-modules/cdm_dataportal/ide/eclipse/phpunit.launch -text
+modules/cdm_dataportal/ide/eclipse/phpUnit.launch -text
+modules/cdm_dataportal/ide/eclipse/phpunit[!!-~](external[!!-~]tools).launch -text
 modules/cdm_dataportal/images/Protologue-media-BHL.png -text
 modules/cdm_dataportal/images/Protologue-media.png -text
 modules/cdm_dataportal/images/btn_collapse.gif -text
@@ -245,9 +246,14 @@ modules/cdm_dataportal/src/site/resources/images/palmae4.png -text
 modules/cdm_dataportal/src/site/resources/images/palmae5.png -text
 modules/cdm_dataportal/src/site/resources/images/settings1.PNG -text
 modules/cdm_dataportal/src/site/site.xml -text
+modules/cdm_dataportal/test/phpUnit/TestUtils.php -text
 modules/cdm_dataportal/test/phpUnit/bootstrap.php -text
 modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml -text
-modules/cdm_dataportal/test/phpUnit/suite/testTest.php -text
+modules/cdm_dataportal/test/phpUnit/phpunit.php -text
+modules/cdm_dataportal/test/phpUnit/resources/theme/cdm_dataportal.name.themeTest-taxon1.json -text
+modules/cdm_dataportal/test/phpUnit/src/README.txt -text
+modules/cdm_dataportal/test/phpUnit/src/testTest.php -text
+modules/cdm_dataportal/test/phpUnit/src/theme/cdm_dataportal.name.themeTest.php -text
 modules/cdm_dataportal/test/selenium/TestSuite-search.html -text
 modules/cdm_dataportal/test/selenium/search-L.communis.html -text
 modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text

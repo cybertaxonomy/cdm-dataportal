@@ -1,0 +1,36 @@
+{
+    "appendedPhrase": "",
+    "class": "Taxon",
+    "created": "2011-01-17T12:53:58.000+01:00",
+    "data": [
+        
+    ],
+    "doubtful": false,
+    "excluded": false,
+    "lsid": null,
+    "protectedTitleCache": false,
+    "taxonStatusUnknown": false,
+    "taxonomicChildrenCount": 0,
+    "titleCache": "Alectryon myrmecophilus Leenh. sec. Flora Malesiana - Sapindaceae I",
+    "unplaced": false,
+    "updated": "2011-04-01T17:31:18.795+02:00",
+    "useNameCache": false,
+    "uuid": "0ae4f7ab-f482-482c-ba57-cf0e4389a417",
+    "name": [
+        {
+            "class": "TaggedText",
+            "text": "Alectryon",
+            "type": "name" 
+        },
+        {
+            "class": "TaggedText",
+            "text": "myrmecophilus",
+            "type": "name" 
+        },
+        {
+            "class": "TaggedText",
+            "text": "Leenh.",
+            "type": "authors" 
+        } 
+    ] 
+}

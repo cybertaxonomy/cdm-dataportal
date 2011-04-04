@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="false"/>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="PHPBIN" value="C:\Programme\php-5.2.14\php.exe"/>
+<mapEntry key="XDEBUG_CONFIG" value="idekey=ECLIPSE_DBGP"/>
+<mapEntry key="SCRIPT_NAME" value="${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/src}"/>
 </mapAttribute>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.ui.externaltools.launchGroup"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${none}"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="C:\Programme\php-5.2.14\phpunit.bat"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--configuration ${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml}&#13;&#10;${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/suite}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="C:\Programme\php-5.2.14\phpunit"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--configuration ${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml}&#13;&#10;${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/src}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/}"/>
 </launchConfiguration>

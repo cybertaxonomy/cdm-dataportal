@@ -3,7 +3,10 @@
   bootstrap="bootstrap.php">
 	
 	<php>
-	  <ini name="xdebug.remote_autostart" value="0" />
+	  <!--<ini name="xdebug.remote_autostart" value="1" />
+	  --><ini name="error_reporting" value="E_ALL &amp; ~E_NOTICE" />
+	  <ini name="display_errors" value="TRUE" />
+    <ini name="display_startup_errors" value="TRUE" />
 	</php>
 	
 
