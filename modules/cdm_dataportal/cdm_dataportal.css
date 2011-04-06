@@ -330,7 +330,10 @@ a.toc:link, a.toc:visited {
   color:#0062A0;
   text-decoration:underline;
 }
-
+.annotations {
+	font-size: 90%;
+}
+	
 .footnote{
 	font-size: 90%;
 }

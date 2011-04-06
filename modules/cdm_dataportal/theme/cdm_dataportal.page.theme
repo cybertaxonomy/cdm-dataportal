@@ -912,7 +912,7 @@ function theme_cdm_polytomousKey_page($polytomousKey){
 
   drupal_set_title($polytomousKey->titleCache);
 
-  $out = theme("cdm_IdentificationKey", $polytomousKey, false);
+  $out = theme("cdm_IdentificationKey", $polytomousKey, false, false);
 
   // key nodes in linked style
   $out .= theme('cdm_polytomousKey', $polytomousKey);

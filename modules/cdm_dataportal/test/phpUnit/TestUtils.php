@@ -14,22 +14,30 @@ class TestUtils {
 
 		$absoluteFilePath = TEST_RESOURCES_FOLDER .  $fileInTestResources;
 	   if(!is_file($absoluteFilePath)){
-	   	print ("ERROR: File '$absoluteFilePath' does not exist.");
+	   	TestUtils::stderr ("ERROR: File '$absoluteFilePath' does not exist.");
 	   }
 	   if(!is_readable($absoluteFilePath)){
-	   	print ("ERROR: File '$absoluteFilePath' is not readable");
+	   	TestUtils::stderr ("ERROR: File '$absoluteFilePath' is not readable");
 	   }
 
 		$datastr = file_get_contents($absoluteFilePath);
 		if(!is_string($datastr)){
-			print ("ERROR: File '$absoluteFilePath' is empty: $datastr");
+			TestUtils::stderr ("ERROR: File '$absoluteFilePath' is empty: $datastr");
 		}
 
 		$obj = json_decode($datastr);
 
 		if(!$obj){
-      print ("ERROR: File '$absoluteFilePath' contains invalid json");
+      TestUtils::stderr ("ERROR: File '$absoluteFilePath' contains invalid json");
     }
 	  return $obj;
+  }
+
+  static function stdout($string){
+  	file_put_contents("php://stdout", $string);
+  }
+
+  static function stderr($string){
+    file_put_contents("php://stderr", $string);
   }
 }

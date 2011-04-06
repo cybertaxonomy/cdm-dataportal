@@ -906,9 +906,19 @@ function _load_taxonBase(&$taxonBase){
  * @return nothing
  */
 function _load_polytomousKeySubGraph(&$polytomousKeyNode){
+
 	if(!$polytomousKeyNode){
 		return;
 	}
+	if($polytomousKeyNode->class != "PolytomousKeyNode"){
+		drupal_set_message("_load_polytomousKeySubGraph() invalid type given.", "error");
+		return;
+	}
+  if(!is_uuid($polytomousKeyNode->uuid)){
+    drupal_set_message("_load_polytomousKeySubGraph() invalid type given.", "error");
+    return;
+  }
+
 	$polytomousKeyNode = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, $polytomousKeyNode->uuid);
 
   if(!$polytomousKeyNode){
@@ -936,6 +946,7 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid){
   $sourcePager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, array($polytomousKeyUuid, "sources"));
   if(is_array($sourcePager->records)){
     $polytomousKey->sources =  $sourcePager->records;
+    //$polytomousKey->sources->citation = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, array($polytomousKeyUuid, "sources"));
   }
 
   $annotationPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, array($polytomousKeyUuid, "annotations"));
@@ -1118,6 +1129,7 @@ function cdm_view_xml2json(){
 }
 
 /* ====================== other functions ====================== */
+
 
 /**
  * Enter description here...
@@ -1425,31 +1437,14 @@ function cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array())
 	}
 	//adding the footnotes keys
 	foreach($cdmBase_array as $cdmBase_element){
-		$annotationUrl = cdm_compose_annotations_url($cdmBase_element);
-		if($annotationUrl){
-			$annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
-			if($annotationPager->count > 0){
-				foreach($annotationPager->records as $annotation){
+		$annotations = cdm_ws_getAnnotationsFor($cdmBase_element);
+		if(is_array($annotations)){
+			foreach($annotations as $annotation){
 					$footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
-				}
-			}
-		}
+      }
+    }
 	}
 	return $footNoteKeys;
-	/*
-	 $footNoteKeys = array();
-	 $footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
-	 $annotationUrl = cdm_compose_annotations_url($cdmBase);
-	 if($annotationUrl){
-		$annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
-		if($annotationPager->count > 0){
-		foreach($annotationPager->records as $annotation){
-		$footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
-		}
-		}
-		}
-		return $footNoteKeys;
-		*/
 }
 
 function cdm_dynabox($label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul')){

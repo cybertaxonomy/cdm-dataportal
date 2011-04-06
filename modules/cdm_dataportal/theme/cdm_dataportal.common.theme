@@ -252,6 +252,19 @@ function theme_cdm_footnotes($footnoteListKey, $enclosingTag = 'span'){
 	return $out;
 }
 
+function theme_cdm_annotations($annotations, $enclosingTag = 'span'){
+  if(!is_array($annotations)){
+  	return;
+  }
+  $out = '<'.$enclosingTag.' class="annotations">';
+  $i = 0;
+  foreach($annotations as $annotation){
+    $out .= ($i++ > 0 ? ', ' : '') . $annotation->text;
+  }
+  $out .= '</'.$enclosingTag.'>';
+  return $out;
+}
+
 function cdm_exist_footnote($footnote_list, $footnote){
 	$result = false;
 	if (is_array($footnote_list)){

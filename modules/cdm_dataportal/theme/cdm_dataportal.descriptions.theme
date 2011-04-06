@@ -818,24 +818,29 @@ function _list_IdentificationKeys($type, $taxonUuid = null, $pageSize = null, $p
   return $pager->records;
 }
 
-function theme_cdm_IdentificationKey($identificationKey, $doLinkToKeyPage = true){
+function theme_cdm_IdentificationKey($identificationKey, $doLinkToKeyPage = true, $showIdentificationKeyTitle = true){
 
 	 $parentRenderPath = RenderHints::getRenderPath();
 	 RenderHints::pushToRenderStack("IdentificationKey");
 
-	 if($doLinkToKeyPage) {
-	   $out = l($identificationKey->titleCache, path_to_key($identificationKey->class, $identificationKey->uuid));
-	 } else {
-	   $out = $identificationKey->titleCache;
+	 if($showIdentificationKeyTitle){
+		 if($doLinkToKeyPage) {
+		   $out = l($identificationKey->titleCache, path_to_key($identificationKey->class, $identificationKey->uuid));
+		 } else {
+		   $out = $identificationKey->titleCache;
+		 }
 	 }
 	 if(is_array($identificationKey->sources)){
 	 	// display sources
+	 	$i = 0;
+	 	$out .= '<div>';
 	 	foreach($identificationKey->sources as $source){
-      $out .= theme("cdm_IdentifieableSource", $source);
+      $out .= ($i++ > 0 ? ', ' : '' ) . theme("cdm_IdentifieableSource", $source);
 	 	}
-	 	// display annotations
-    $out .= theme("cdm_annotations_as_footnotekeys", $identificationKey, $parentRenderPath);
+	 	$out .= '</div>';
 	 }
+	 	// display annotations
+   $out .= theme('cdm_annotations', cdm_ws_getAnnotationsFor($identificationKey), 'div');
 	 RenderHints::popFromRenderStack();
 	 return $out;
 }
@@ -871,7 +876,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
 
       $islinkToTaxonOrSubkey = isset($child->taxon->uuid) || isset($child->subkey->uuid);
 
-      $out .= '<td class="edge" colspan="'. ( $islinkToTaxonOrSubkey ? '2' : '1' )  .'">';
+      $out .= '<td ' . RenderHints::getHtmlElementID($polytomousKeyNode) . '  class="edge" colspan="'. ( $islinkToTaxonOrSubkey ? '2' : '1' )  .'">';
       if(isset($polytomousKeyNode->question->label_l10n)){
         $out .= $polytomousKeyNode->question->label_l10n .  ": ";
       }
@@ -884,7 +889,14 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
       } else {
 	      if(isset($child->taxon->uuid)){
 	      	// link to a taxon
-	      	$out .= '<div class="nodeLinkToTaxon">' . theme("cdm_taxonName", $child->taxon->name, path_to_taxon($child->taxon->uuid)) . '</div>';
+	      	$out .= '<div class="nodeLinkToTaxon">';
+	      	if(is_object($child->modifyingText)){
+	      		$i = 0;
+            foreach(get_object_vars($child->modifyingText) as $language=>$languageString){
+	      	    $out .= ($i++ > 0 ? ', ' : '') . '<span class="modifyingText">'. $languageString->text . '</span> ';
+            }
+	      	}
+	      	$out .=  theme("cdm_taxonName", $child->taxon->name, path_to_taxon($child->taxon->uuid)) . '</div>';
 	      } else if(isset($child->subkey->uuid)){
 	        // link to a subkey
 	        $out .= '<div class="nodeLinkToSubkey">'

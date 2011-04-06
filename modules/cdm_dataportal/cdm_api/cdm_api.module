@@ -504,12 +504,13 @@ function cdm_compose_annotations_url($cdmBase){
         case 'PolytomousKey':
         case 'MediaKey':
         case 'MultiAccessKey':
-          $ws_base_uri = CDM_WS_IDENTIFICATIONKEY;
+          $ws_base_uri = $cdmBase->class;
+          $ws_base_uri{0} = strtolower($ws_base_uri{0});
           break;
         default:  trigger_error('Unsupported CDM Class - no annotations available for ' . $cdmBase->class, E_USER_ERROR);
             return;
     }
-    return  cdm_compose_url($ws_base_uri, array($cdmBase->uuid, 'annotation'));
+    return  cdm_compose_url($ws_base_uri, array($cdmBase->uuid, 'annotations'));
 }
 
 /**
@@ -667,6 +668,20 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
   }
 
   return $mergedTrees;
+}
+
+/**
+ * @param $cdmBase
+ * @return an array or empty
+ */
+function cdm_ws_getAnnotationsFor($cdmBase){
+    $annotationUrl = cdm_compose_annotations_url($cdmBase);
+    if($annotationUrl){
+      $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
+      if(is_array($annotationPager->records)){
+        return $annotationPager->records;
+      }
+    }
 }
 
 function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){

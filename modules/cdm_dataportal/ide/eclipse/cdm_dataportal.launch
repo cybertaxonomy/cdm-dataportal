@@ -8,6 +8,9 @@
 <stringAttribute key="file_name" value="/Drupal5/index.php"/>
 <booleanAttribute key="firstLineBreakpoint" value="false"/>
 <stringAttribute key="name" value="Default PHP Web Server"/>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+</listAttribute>
 <booleanAttribute key="org.eclipse.php.debug.core.OpenInBrowser" value="true"/>
 <stringAttribute key="org.eclipse.php.debug.core.PHP_Project" value="/Drupal5"/>
 <booleanAttribute key="org.eclipse.php.debug.core.RunWithDebugInfo" value="true"/>

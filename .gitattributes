@@ -252,6 +252,7 @@ modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml -text
 modules/cdm_dataportal/test/phpUnit/phpunit.php -text
 modules/cdm_dataportal/test/phpUnit/resources/theme/cdm_dataportal.name.themeTest-taxon1.json -text
 modules/cdm_dataportal/test/phpUnit/src/README.txt -text
+modules/cdm_dataportal/test/phpUnit/src/cdm_dataportal.moduleTest.php -text
 modules/cdm_dataportal/test/phpUnit/src/testTest.php -text
 modules/cdm_dataportal/test/phpUnit/src/theme/cdm_dataportal.name.themeTest.php -text
 modules/cdm_dataportal/test/selenium/TestSuite-search.html -text
