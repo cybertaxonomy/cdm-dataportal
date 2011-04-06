@@ -870,41 +870,77 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
 
     // render edges of the current node
     foreach($polytomousKeyNode->children as &$child){
+
+    	if(!isset($child->statement)){
+    		// skip node with empty statements (see below for explanation: "Special case")
+    		continue;
+    	}
+
       $out .= '<tr class="childCount_' . $childCount . '">';
 
       $out .= '<td class="nodeNumber">'. uuid_anchor($polytomousKeyNode->uuid, $polytomousKeyNode->nodeNumber . str_pad("", $childCount++ , $statementCountCharacter)) . "</td>";
 
-      $islinkToTaxonOrSubkey = isset($child->taxon->uuid) || isset($child->subkey->uuid);
+      /*
+       * Special case:
+       * Child nodes with empty statements but taxa as leaf are to
+       * treated as if all those taxa where direct children of the source node.
+       */
+      $islinkToManyTaxa = !isset($child->children[0]->statement) && isset($child->children[0]->taxon->uuid);
+      $islinkToTaxon = isset($child->taxon->uuid);
+      $islinkToSubKey = isset($child->subkey->uuid);
+      $islinkToOtherNode = isset($child->otherNode);
+      $islinkToNode = $child->nodeNumber && !$islinkToManyTaxa && !$islinkToOtherNode; // either null or 0
 
-      $out .= '<td ' . RenderHints::getHtmlElementID($polytomousKeyNode) . '  class="edge" colspan="'. ( $islinkToTaxonOrSubkey ? '2' : '1' )  .'">';
+      $out .= '<td ' . RenderHints::getHtmlElementID($child) . '  class="edge">';
       if(isset($polytomousKeyNode->question->label_l10n)){
         $out .= $polytomousKeyNode->question->label_l10n .  ": ";
       }
       $out .= $child->statement->label_l10n;
 
-      if(!$islinkToTaxonOrSubkey){
-      	$out .= '</td>';
-      	// link to a PolytomousKeyNode
-        $out .= '<td class="nodeLink">' . l($child->nodeNumber, $_REQUEST["q"], null, null, $child->uuid) . '</td>';
-      } else {
-	      if(isset($child->taxon->uuid)){
-	      	// link to a taxon
+      // --- links to nodes taxa and subkeys
+      $out .= '<div class="nodeLink">';
+
+     // link to a PolytomousKeyNode
+      if($islinkToNode){
+        $out .= '<div class="nodeLinkToNode">' . l($child->nodeNumber, $_REQUEST["q"], null, null, $child->uuid) . '</div>';
+      }
+
+      // link to a PolytomousKeyNode
+      if($islinkToOtherNode){
+        $out .= '<div class="nodeLinkToOtherNode">' . l($child->otherNode->nodeNumber, $_REQUEST["q"], null, null, $child->otherNode->uuid) . '</div>';
+      }
+
+      // link to one or many taxa
+      if($islinkToTaxon || $islinkToManyTaxa){
+
+      	if($islinkToManyTaxa){
+          $taxonChildren = $child->children;
+      	} else {
+          $taxonChildren = array($child);
+      	}
+
+      	foreach($taxonChildren as $taxonChild){
+	      	// TODO many taxa $child->children->taxon
 	      	$out .= '<div class="nodeLinkToTaxon">';
-	      	if(is_object($child->modifyingText)){
+	      	if(is_object($taxonChild->modifyingText)){
 	      		$i = 0;
-            foreach(get_object_vars($child->modifyingText) as $language=>$languageString){
+            foreach(get_object_vars($taxonChild->modifyingText) as $language=>$languageString){
 	      	    $out .= ($i++ > 0 ? ', ' : '') . '<span class="modifyingText">'. $languageString->text . '</span> ';
             }
 	      	}
-	      	$out .=  theme("cdm_taxonName", $child->taxon->name, path_to_taxon($child->taxon->uuid)) . '</div>';
-	      } else if(isset($child->subkey->uuid)){
-	        // link to a subkey
-	        $out .= '<div class="nodeLinkToSubkey">'
-	         . theme('cdm_IdentificationKey', $child->subkey) . '</div>';
+	      	$out .=  theme("cdm_taxonName", $taxonChild->taxon->name, path_to_taxon($taxonChild->taxon->uuid));
+	      	$out .=  '</div>';
+      	}
+
+        // link to a subkey
+	      if($islinkToSubKey){
+	        $out .= '<div class="nodeLinkToSubkey">' . theme('cdm_IdentificationKey', $child->subkey) . '</div>';
 	      }
-	      $out .= '</td>';
+
       }
 
+	    $out .= '</div>'; // end node link
+      $out .= '</td>'; // end edge
       $out .= '</tr>';
 
     }

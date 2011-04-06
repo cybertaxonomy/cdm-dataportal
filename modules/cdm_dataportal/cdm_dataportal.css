@@ -390,15 +390,8 @@ a.toc:link, a.toc:visited {
 .polytomousKey_linkedStyle tr:hover {
   background-color: #eeeeee;
 }
-	
-.polytomousKey_linkedStyle .nodeLink, .polytomousKey_linkedStyle .nodeNumber {
-  width: 1.5em;
-}
-.polytomousKey_linkedStyle .nodeLink{
-  text-align: right;
-}
 
-.polytomousKey_linkedStyle .nodeLinkToTaxon, .polytomousKey_linkedStyle .nodeLinkToSubkey {
+.polytomousKey_linkedStyle .nodeLink {
 	float: right;
   text-align: right;
 }
