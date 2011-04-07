@@ -73,6 +73,7 @@ modules/cdm_dataportal/help.php -text
 modules/cdm_dataportal/help/overview.apt -text
 modules/cdm_dataportal/help/overview.html -text
 modules/cdm_dataportal/ide/eclipse/cdm_dataportal.launch -text
+modules/cdm_dataportal/ide/eclipse/phpUnit.launch -text
 modules/cdm_dataportal/ide/eclipse/phpunit[!!-~](external[!!-~]tools).launch -text
 modules/cdm_dataportal/images/Protologue-media-BHL.png -text
 modules/cdm_dataportal/images/Protologue-media.png -text
