@@ -41,24 +41,24 @@ function phptemplate_settings($saved_settings) {
     '#default_value' => $settings['admin_right_column']
     );
 
-	$form['edit_container'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Site Banner'),
-    '#description' => t('Select the banner image to be displayed.'),
-    '#collapsible' => TRUE,
-    '#collapsed' => false,
-  );
-
-	// General Settings
-  $form['edit_container']['banner_image'] = array(
-		'#type' => 'select',
-		'#title' => t('Banner Image'),
-		'#default_value' => $settings['banner_image'],
-		'#options' => array(
-			'cdm-platform-header_2.jpg' => t('CDM Platform'),
-			'cdm-header_3.jpg' => t('CDM Setups')
-		)
-	);
+//	$form['edit_container'] = array(
+//    '#type' => 'fieldset',
+//    '#title' => t('Site Banner'),
+//    '#description' => t('Select the banner image to be displayed.'),
+//    '#collapsible' => TRUE,
+//    '#collapsed' => false,
+//  );
+//
+//	// General Settings
+//  $form['edit_container']['banner_image'] = array(
+//		'#type' => 'select',
+//		'#title' => t('Banner Image'),
+//		'#default_value' => $settings['banner_image'],
+//		'#options' => array(
+//			'cdm-platform-header_2.jpg' => t('CDM Platform'),
+//			'cdm-header_3.jpg' => t('CDM Setups')
+//		)
+//	);
 
   // Return theme settings form
   return $form;

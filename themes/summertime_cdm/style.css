@@ -993,11 +993,11 @@ div.pageroute{
  
  
 
-.pageroute_group {
+.pageroute_cdm-setups_group {
     background: url(images/route-banners/route-banner-group.png) no-repeat top left;
  }
 
-.pageroute_linux_community, .pageroute_windows_community {
+.pageroute_cdm-setups_linux_community, .pageroute_cdm-setups_windows_community {
     background: url(images/route-banners/route-banner-community.png) no-repeat top left;
  }
  

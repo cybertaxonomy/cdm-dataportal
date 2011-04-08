@@ -20,6 +20,14 @@ function _get_route_names(){
 	return $route_names;
 }
 
+function _get_current_route_name(){
+	return arg(0) . '/' . arg(1);
+}
+
+function _get_current_route_page(){
+  return arg(2);
+}
+
 /**
  * Return a string with the new title
  *
@@ -27,9 +35,9 @@ function _get_route_names(){
  *   string with the new name
  */
 function _replace_route_title($old_title){
-	$old_titles_list = array('Group' => 'CDM Setup for Groups',
-	                         'Linux_Community' => 'CDM Setup for Communities',
-	                         'Windows_Community' => 'CDM Setup for Communities');
+	$old_titles_list = array('cdm-setups/group' => 'CDM Setup for Groups',
+	                         'cdm-setups/linux_community' => 'CDM Setup for Communities',
+	                         'cdm-setups/windows_community' => 'CDM Setup for Communities');
 
 	return $old_titles_list[$old_title];
 }
@@ -46,7 +54,7 @@ function _replace_link_title($old_title){
 	}
 
 	//replacing the route_name for route_title on the tabs
-	if(in_array(arg(0) , $route_names)){
+	if(in_array(_get_current_route_name() , $route_names)){
 		$key = array_search($old_title, $route_pages);
 	    if($key != NULL || $key !== FALSE){
 	    	$new_title = $route_titles[$key];
@@ -97,7 +105,7 @@ function phptemplate_menu_item_link($link) {
     $link['options'] = array();
   }
 
-  if(strpos($link['title'], arg(1)) !== false){
+  if(strpos($link['title'], _get_current_route_page()) !== false){
     $link['options']['attributes']['class'] = 'active_node';
   }
 
@@ -130,7 +138,7 @@ function phptemplate_menu_local_tasks() {
   }
 
 
-  if (isset($route_names) && ($primary = menu_primary_local_tasks()) && ( in_array(arg(0) , $route_names))) {
+  if (isset($route_names) && ($primary = menu_primary_local_tasks()) && ( in_array(_get_current_route_name() , $route_names))) {
   	// it is a page root local task!
   	$li_count = substr_count($primary, "<li");
 
@@ -142,11 +150,11 @@ function phptemplate_menu_local_tasks() {
   	$pos = strrpos($primary, '<li');
     $primary = substr_replace($primary, ' class="last" ', $pos + 3, 1);
 
-    //$a = str_replace('_',' ',arg(0));
+    //$a = str_replace('_',' ',_get_current_route_name());
     //replacing the navigation banner title
-    $new_title = _replace_route_title(arg(0));
+    $new_title = _replace_route_title(_get_current_route_name());
     $title = '<h2 class="pageroute_title">' .  $new_title . '</h2>';
-  	$output .= '<div class="pageroute pageroute_'.strtolower(arg(0)).'">'.$title.'<ul class="tabs primary clear-block">'. $primary .'</ul>'.'</div>';
+  	$output .= '<div class="pageroute pageroute_'.str_replace('/', '_', strtolower(_get_current_route_name())).'">'.$title.'<ul class="tabs primary clear-block">'. $primary .'</ul>'.'</div>';
 
   } elseif ($primary = menu_primary_local_tasks()) {
     $output .= '<ul class="tabs primary clear-block">' . $primary . '</ul>';
