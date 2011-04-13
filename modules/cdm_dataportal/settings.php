@@ -29,6 +29,7 @@ $taxon_tab_options = array(
 );
 
 define('EDIT_MAPSERVER_URI', 'http://edit.br.fgov.be/edit_wp5/v1/');
+define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
 
 /**
  * default settings for all gallerys
@@ -737,7 +738,7 @@ function cdm_settings_layout_taxon(){
       	'#description' => t('Select if you want to sort or not the distribution text located below the distribution map.'),
       );
 
-      $form['taxon_profile']['distribution_layout']['distribution_sort'] =  array(
+    $form['taxon_profile']['distribution_layout']['distribution_sort'] =  array(
     '#type'          => 'radios',
     '#title'         => t('Sort'),
     '#default_value' => variable_get('distribution_sort', 'NO_SORT'),
@@ -745,6 +746,16 @@ function cdm_settings_layout_taxon(){
         'NO_SORT' => t('Standard (No sort)'),
         'HIDE_TDWG2' => t('Sorted without TDWG Level 2'),
       ));
+
+     $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] =  array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Show TextData elements on top of the map'),
+    '#default_value' => variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0),
+    '#description' => t('Check this if you want to appear all <code>TextData</code> elements on top of the map.
+      Otherwise all <code>TextData</code> distribution elements will be listed below the other area elements.
+      This option is useful if you need to have descriptive texts for each distribution map.'),
+    );
+
 
  /* ====== SYNONYMY ====== */
   $form['taxon_profile']['synonymy'] = array(
