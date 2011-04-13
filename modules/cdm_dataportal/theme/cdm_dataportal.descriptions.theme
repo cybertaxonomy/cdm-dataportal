@@ -89,8 +89,28 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 				$block->module = "cdm_dataportal-feature";
 				$block->content = '';
 
-				// Display cdm distribution map TODO this is a HACK to a proper generic implementation?
 				if($node->feature->uuid == UUID_DISTRIBUTION){
+
+					/* Another HACK:
+					 *  1) place all Description elements of class TextData on top of the distribution_map
+					 *  2) remove these from the list of nodes, in oder to prevent them from beeing rendered again
+					 */
+					$distributionTextDataList = array();
+					$distributionElementsList = array();
+          foreach($node->descriptionElements as $descriptionElement){
+          	if($descriptionElement->class == "TextData"){
+          		$distributionTextDataList[] = $descriptionElement;
+          	} else {
+          		$distributionElementsList[] = $descriptionElement;
+          	}
+          }
+          if(count($distributionTextDataList) > 0){
+          	$node->descriptionElements = $distributionElementsList;
+          	$block->content .= theme('cdm_descriptionElements', $distributionTextDataList, $node->feature->uuid, $taxon->uuid);
+          }
+
+
+					// Display cdm distribution map TODO this is a HACK to a proper generic implementation?
 					$block->content .= theme('cdm_distribution_map', $taxon);
 				}
 
