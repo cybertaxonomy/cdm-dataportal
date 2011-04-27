@@ -375,49 +375,48 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 	$synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, $taxon->uuid);
 	$skip = array(UUID_BASIONYM);
 
-	//render full accepted taxon
+	//render accepted taxon
 	if($addAcceptedTaxon){
 		if(isset($taxon->name->nomenclaturalReference)){
 			$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
 		}
 
-		$accepted_name = theme('cdm_taxonName', $taxon->name, null, $referenceUri);
-		$out .= '<span class="accepted-name">';
-		$out .= $accepted_name;
-        $out .= '</span>';
+		$accepted_name = '<span class="accepted-name">';
+		$accepted_name .= theme('cdm_taxonName', $taxon->name, null, $referenceUri);
+    $accepted_name .= '</span>';
 
 		$special_annotations_array = array();
 		$special_annotations_array[] = $taxon->name;
 		$special_annotations_array[] = $taxon;
-		$out .= theme('cdm_annotations_as_footnotekeys',
+		$accepted_name .= theme('cdm_annotations_as_footnotekeys',
 					$special_annotations_array,
 					RenderHints::getRenderPath() . '-annotations');
 					RenderHints::setFootnoteListKey(RenderHints::getRenderPath() . '-annotations');
 	}
-	//render accepted taxon homotypic synonymy groups or type desygnations
-	//if(!isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
-		//if($addAcceptedTaxon && !isset($synomymie->homotypicSynonymsByHomotypicGroup[0])){
-		// display the type information for the added taxon
-    //}
 
-    //render accepted taxon homotypic synonymy groups or type desygnations but
-	//show only the typedesignations at the homotypic synonymy group
-	if (!$synomymie->homotypicSynonymsByHomotypicGroup[0]->name->uuid){
+
+  //render homotypic synonymy group
+	$hasHomotypicSynonyms = isset($synomymie->homotypicSynonymsByHomotypicGroup[0]->name->uuid);
+
+	if($accepted_name){
+		$out .= $accepted_name;
+	}
+
+	if (!$hasHomotypicSynonyms){
+	  //show typeDesignations even if the homotypic synonymy group is empty
 		$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
 		if($typeDesignations){
 			$out .= theme('cdm_typedesignations', $typeDesignations);
-			$out .= '<ul class="homotypicSynonyms">' . '</ul>';
 		}
-	}
+		if($typeDesignations || $accepted_name){
+			// add empty list for coherent layout
+  	 $out .= '<ul class="homotypicSynonyms">' . '</ul>';
+		}
+	} else {
     // render the homotypicSynonymyGroup including the type information
-	if($synomymie->homotypicSynonymsByHomotypicGroup){
-        $out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup, $taxon->uuid);
+    $out .= theme('cdm_homotypicSynonymyGroup', $synomymie->homotypicSynonymsByHomotypicGroup, $taxon->uuid);
 	}
-	/*
-	else{
-		$out .= '<ul class="homotypicSynonyms"></ul>';
-	}
-	*/
+
 	//render accepted taxon heterotypic synonymy groups
 	if($synomymie->heterotypicSynonymyGroups) {
 		foreach($synomymie->heterotypicSynonymyGroups as $homotypicalGroup){
@@ -449,7 +448,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
 	 // TODO is it correct to skip relationsFromThisName since all relationships are to be understood as 'is .... of'
 	 if(variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1)){
 	 $skip = array(UUID_BASIONYM);
-	 }
+ }
 	 $out .= theme('cdm_nameRelationships', $nameRelationships, $skip);
 	 }
 	 */
