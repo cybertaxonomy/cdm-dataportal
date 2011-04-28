@@ -142,6 +142,7 @@
 				<version>2.1.1</version>
 				<configuration>
 					<locales>en</locales>
+					<siteDirectory>${basedir}/site</siteDirectory>
 				</configuration>
 			</plugin>
 			<plugin>
