@@ -8,6 +8,10 @@ modules/cdm_dataportal/cdm_taxontree/Thumbs.db
 modules/cdm_dataportal/cdm_taxontree/resources/Thumbs.db
 modules/cdm_dataportal/images/Thumbs.db
 modules/cdm_dataportal/target
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/.classpath
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/.project
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/.settings
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/target
 /target
 themes/.project
 themes/garland_cichorieae/Thumbs.db

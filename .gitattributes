@@ -248,8 +248,6 @@ modules/cdm_dataportal/site/resources/images/settings1.PNG -text
 modules/cdm_dataportal/site/site.xml -text
 modules/cdm_dataportal/test/TestSuite-search.html -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/pom.xml -text
-modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/App.java -text
-modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/AppTest.java -text
 modules/cdm_dataportal/test/phpUnit/TestUtils.php -text
 modules/cdm_dataportal/test/phpUnit/bootstrap.php -text
 modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml -text
