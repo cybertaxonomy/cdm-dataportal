@@ -257,8 +257,6 @@ modules/cdm_dataportal/test/phpUnit/src/README.txt -text
 modules/cdm_dataportal/test/phpUnit/src/cdm_dataportal.moduleTest.php -text
 modules/cdm_dataportal/test/phpUnit/src/testTest.php -text
 modules/cdm_dataportal/test/phpUnit/src/theme/cdm_dataportal.name.themeTest.php -text
-modules/cdm_dataportal/test/selenium/TestSuite-search.html -text
-modules/cdm_dataportal/test/selenium/search-L.communis.html -text
 modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text
 modules/cdm_dataportal/theme/cdm_dataportal.descriptions.theme -text
 modules/cdm_dataportal/theme/cdm_dataportal.media.theme -text
