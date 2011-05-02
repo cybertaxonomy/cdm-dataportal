@@ -17,5 +17,3 @@ if [ -z "$(pidof Xvfb)" ]; then
         $VIRTUAL_X &
 fi
 export DISPLAY
-
-
