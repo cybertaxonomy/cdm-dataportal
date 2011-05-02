@@ -16,7 +16,7 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
-public class SearchLCommunisTest extends CDMDataPortalTestBase {
+public class SearchLCommunisTest extends CdmDataPortalTestBase {
 	
 	static String baseUrl = "http://wp6-cichorieae.e-taxonomy.eu/portal/";
 
