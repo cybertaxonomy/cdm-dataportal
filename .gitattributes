@@ -249,7 +249,7 @@ modules/cdm_dataportal/site/resources/images/settings1.PNG -text
 modules/cdm_dataportal/site/site.xml -text
 modules/cdm_dataportal/test/TestSuite-search.html -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/pom.xml -text
-modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/CDMDataPortalTestBase.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/CdmDataPortalTestBase.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/SearchLCommunisTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/resources/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/resources/org/mozilla/addons/firebug-1.6.2.xpi -text
