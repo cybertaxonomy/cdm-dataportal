@@ -1,3 +1,12 @@
+// $Id$
+/**
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.dataportal;
 
 import java.lang.annotation.ElementType;
@@ -15,46 +24,47 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 public class DataPortalContextAwareRunner extends BlockJUnit4ClassRunner {
-	
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.TYPE)
 	@Inherited
 	public @interface DataPortalContexts {
 		/**
-		 * @return an array of DataPortalContext to which the annotated test class is applicable
+		 * @return an array of DataPortalContext to which the annotated test
+		 *         class is applicable
 		 */
 		DataPortalContext[] value();
 	}
-	
-	private DataPortalContext dataPortalContext; 
-	
+
+	private DataPortalContext dataPortalContext;
+
 	public DataPortalContextAwareRunner(Class<?> klass)
 			throws InitializationError {
 		super(klass);
 		dataPortalContext = DataPortalManager.currentDataPortalContext();
 	}
-	
+
 	@Override
 	public void run(final RunNotifier notifier) {
-		EachTestNotifier testNotifier= new EachTestNotifier(notifier,
+		EachTestNotifier testNotifier = new EachTestNotifier(notifier,
 				getDescription());
-		
+
 		boolean isApplicableToContext = false;
-		DataPortalContexts dataPortalContextsAnotation = getTestClass().getJavaClass().getAnnotation(DataPortalContexts.class);
-		for(DataPortalContext cntxt : dataPortalContextsAnotation.value()){
-			if(dataPortalContext.equals(cntxt)){
+		DataPortalContexts dataPortalContextsAnotation = getTestClass()
+				.getJavaClass().getAnnotation(DataPortalContexts.class);
+		for (DataPortalContext cntxt : dataPortalContextsAnotation.value()) {
+			if (dataPortalContext.equals(cntxt)) {
 				isApplicableToContext = true;
 			}
 		}
-		
-		if(!isApplicableToContext){
+
+		if (!isApplicableToContext) {
 			testNotifier.fireTestIgnored();
 			return;
 		}
-			
+
 		try {
-			Statement statement= classBlock(notifier);
+			Statement statement = classBlock(notifier);
 			statement.evaluate();
 		} catch (AssumptionViolatedException e) {
 			testNotifier.fireTestIgnored();
