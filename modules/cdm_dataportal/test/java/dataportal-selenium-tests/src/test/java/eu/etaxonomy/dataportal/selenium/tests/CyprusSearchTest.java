@@ -16,7 +16,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.DataPortalContextAwareRunner.DataPortalContexts;
+import eu.etaxonomy.dataportal.DataPortalContexts;
 import eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase;
 
 /**
@@ -27,6 +27,13 @@ import eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase;
 @DataPortalContexts( { DataPortalContext.cyprus })
 public class CyprusSearchTest extends CdmDataPortalTestBase{
 	
+	/**
+	 * @param context
+	 */
+	public CyprusSearchTest(DataPortalContext context) {
+		super(context);
+	}
+
 	/**
 	 * see http://dev.e-taxonomy.eu/trac/ticket/2350
 	 */

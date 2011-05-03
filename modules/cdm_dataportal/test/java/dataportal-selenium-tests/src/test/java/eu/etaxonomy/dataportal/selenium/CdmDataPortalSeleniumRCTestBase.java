@@ -9,11 +9,15 @@
  */
 package eu.etaxonomy.dataportal.selenium;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openqa.selenium.WebDriverBackedSelenium;
 
 import com.thoughtworks.selenium.Selenium;
 
+import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.DataPortalManager;
 
 /**
@@ -27,20 +31,28 @@ import eu.etaxonomy.dataportal.DataPortalManager;
 @Deprecated
 public abstract class CdmDataPortalSeleniumRCTestBase extends CdmDataPortalTestBase {
 
-	protected static Selenium selenium;
-
-	@BeforeClass
-	public static void setUpDriver() {
-		CdmDataPortalTestBase.setUpDriver();
-		selenium = new WebDriverBackedSelenium(driver, DataPortalManager.currentDataPortalContext().getBaseUri().toString());
+	/**
+	 * @param context
+	 */
+	public CdmDataPortalSeleniumRCTestBase(DataPortalContext context) {
+		super(context);
 	}
 
-	@BeforeClass
-	public static void closeDriver() {
+	protected static Selenium selenium;
+
+	@Before
+	public void setUpSelenium() {
+		if(selenium == null) {
+			selenium = new WebDriverBackedSelenium(driver, getContext().getBaseUri().toString());
+		}
+	}
+
+	@AfterClass
+	public static void stopSelenium() {
 		if (selenium != null) {
 			selenium.stop();
+			selenium = null;
 		}
-		CdmDataPortalTestBase.closeDriver();
 	}
 
 }

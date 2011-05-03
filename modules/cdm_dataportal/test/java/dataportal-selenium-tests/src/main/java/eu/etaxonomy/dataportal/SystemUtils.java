@@ -12,7 +12,7 @@ package eu.etaxonomy.dataportal;
 
 public class SystemUtils {
 
-	public static void reportInvalidSystemProperty(String propertyName, Exception e) {
+	public static void handleInvalidSystemProperty(String propertyName, Exception e) {
 		throw new RuntimeException("Invalid system property  -D" +
 				propertyName +  "=" + System.getProperty(propertyName), e);
 	}

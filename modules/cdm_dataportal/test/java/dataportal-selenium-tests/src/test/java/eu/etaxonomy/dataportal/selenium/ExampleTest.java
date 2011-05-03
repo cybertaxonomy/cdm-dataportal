@@ -11,21 +11,29 @@ package eu.etaxonomy.dataportal.selenium;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.DataPortalContextAwareRunner.DataPortalContexts;
+import eu.etaxonomy.dataportal.DataPortalContexts;
 
+@SuppressWarnings("deprecation")
 @DataPortalContexts( { DataPortalContext.cichorieae })
 public class ExampleTest extends CdmDataPortalSeleniumRCTestBase {
 
+	/**
+	 * @param context
+	 */
+	public ExampleTest(DataPortalContext context) {
+		super(context);
+	}
+
 	@Test
 	public void testSearchLCommunis() throws Exception {
-		driver
-				.get(getBaseUrl()
+		driver.get(getBaseUrl()
 						+ "?query=Lapsana+com*&search[tree]=534e190f-3339-49ba-95d9-fa27d5493e3e&q=cdm_dataportal%2Fsearch%2Ftaxon&search[pageSize]=25&search[pageNumber]=0&search[doTaxa]=1&search[doSynonyms]=1&search[doTaxaByCommonNames]=0");
 		WebElement taxonElement = driver.findElement(By
 				.xpath("/html/body/div/div/div[2]/div[2]/div/div/div/ul/li/span[@ref='/name/f280f79f-5903-47b0-8352-53e4204c6cf1']"));
@@ -55,8 +63,7 @@ public class ExampleTest extends CdmDataPortalSeleniumRCTestBase {
 	 */
 	@Test
 	public void testSearchLCommunisUsingSeleniumRC() throws Exception {
-		selenium
-				.open("?query=Lapsana+com*&search[tree]=534e190f-3339-49ba-95d9-fa27d5493e3e&q=cdm_dataportal%2Fsearch%2Ftaxon&search[pageSize]=25&search[pageNumber]=0&search[doTaxa]=1&search[doSynonyms]=1&search[doTaxaByCommonNames]=0");
+		selenium.open("?query=Lapsana+com*&search[tree]=534e190f-3339-49ba-95d9-fa27d5493e3e&q=cdm_dataportal%2Fsearch%2Ftaxon&search[pageSize]=25&search[pageNumber]=0&search[doTaxa]=1&search[doSynonyms]=1&search[doTaxaByCommonNames]=0");
 		selenium.isTextPresent("Lapsana");
 		selenium.isTextPresent("communis");
 		selenium.isTextPresent("L.");

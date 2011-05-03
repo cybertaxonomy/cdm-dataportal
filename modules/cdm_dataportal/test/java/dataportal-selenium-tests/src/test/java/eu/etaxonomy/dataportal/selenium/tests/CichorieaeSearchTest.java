@@ -17,11 +17,16 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.DataPortalContextAwareRunner.DataPortalContexts;
+import eu.etaxonomy.dataportal.DataPortalContexts;
 import eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase;
 
 @DataPortalContexts( { DataPortalContext.cichorieae })
 public class CichorieaeSearchTest extends CdmDataPortalTestBase {
+
+
+	public CichorieaeSearchTest(DataPortalContext context) {
+		super(context);
+	}
 
 	@Test
 	public void testSearchLCommunis() throws Exception {

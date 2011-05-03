@@ -7,15 +7,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
-import org.junit.BeforeClass; //$Id$
-/**
- * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
- * http://www.e-taxonomy.eu
- * 
- * The contents of this file are subject to the Mozilla Public License Version 1.1
- * See LICENSE.TXT at the top of this package for the full license terms.
- */
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -25,15 +17,14 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import eu.etaxonomy.dataportal.Browser;
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.DataPortalContextAwareRunner;
-import eu.etaxonomy.dataportal.DataPortalManager;
+import eu.etaxonomy.dataportal.DataPortalContextSuite;
 import eu.etaxonomy.dataportal.SystemUtils;
 
 /**
  * @author a.kohlbecker
  * 
  */
-@RunWith(DataPortalContextAwareRunner.class)
+@RunWith(DataPortalContextSuite.class)
 public abstract class CdmDataPortalTestBase {
 
 	public static final Logger logger = Logger.getLogger(CdmDataPortalTestBase.class);
@@ -43,6 +34,16 @@ public abstract class CdmDataPortalTestBase {
 	private static final String FIREBUG_VERSION = "1.6.2";
 
 	protected static WebDriver driver;
+
+	private DataPortalContext context;
+	
+	public DataPortalContext getContext() {
+		return context;
+	}
+
+	public CdmDataPortalTestBase(DataPortalContext context){
+		this.context = context;
+	}
 
 	@BeforeClass
 	public static void setUpDriver() {
@@ -63,9 +64,9 @@ public abstract class CdmDataPortalTestBase {
 			}
 
 		} catch (NullPointerException e) {
-			SystemUtils.reportInvalidSystemProperty(SYSTEM_PROPERTY_NAME_BROWSER, e);
+			SystemUtils.handleInvalidSystemProperty(SYSTEM_PROPERTY_NAME_BROWSER, e);
 		} catch (IllegalArgumentException e) {
-			SystemUtils.reportInvalidSystemProperty(SYSTEM_PROPERTY_NAME_BROWSER, e);
+			SystemUtils.handleInvalidSystemProperty(SYSTEM_PROPERTY_NAME_BROWSER, e);
 		}
 
 	}
@@ -136,7 +137,7 @@ public abstract class CdmDataPortalTestBase {
 	 * @return string representatoin of the DataPortal base URI
 	 */
 	public String getBaseUrl() {
-		return DataPortalManager.currentDataPortalContext().getBaseUri().toString();
+		return context.getBaseUri().toString();
 	}
 
 }
