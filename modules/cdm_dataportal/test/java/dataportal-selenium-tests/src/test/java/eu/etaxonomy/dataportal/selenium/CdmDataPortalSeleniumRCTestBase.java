@@ -20,8 +20,11 @@ import eu.etaxonomy.dataportal.DataPortalManager;
  * http://seleniumhq.org/docs/03_webdriver.html#emulating-selenium-rc
  * 
  * @author a.kohlbecker
- * 
+ * @deprecated SeleniumRCTests should only be used if you are really desperatly
+ *             shor in time and you need to use the Selenium 1 IDE in order to
+ *             quickly create tests.
  */
+@Deprecated
 public abstract class CdmDataPortalSeleniumRCTestBase extends CdmDataPortalTestBase {
 
 	protected static Selenium selenium;

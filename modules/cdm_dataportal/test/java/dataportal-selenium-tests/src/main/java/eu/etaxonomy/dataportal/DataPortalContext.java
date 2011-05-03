@@ -13,24 +13,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
-
 public enum DataPortalContext {
 
-	cichorieae("http://160.45.63.201/dataportal/preview/cichorieae/",
-			"http://127.0.0.1:8080", "534e190f-3339-49ba-95d9-fa27d5493e3e"), palmae(
-			"http://160.45.63.201/dataportal/preview/palmae/",
-			"http://127.0.0.1:8080", "534e190f-3339-49ba-95d9-fa27d5493e3e");
-	// floraMalesiana;
-
+	cichorieae("http://160.45.63.201/dataportal/preview/cichorieae/", "http://127.0.0.1:8080", "534e190f-3339-49ba-95d9-fa27d5493e3e"), 
+	palmae("http://160.45.63.201/dataportal/preview/cyprus/", "http://127.0.0.1:8080", "534e190f-3339-49ba-95d9-fa27d5493e3e"),
+	cyprus("http://160.45.63.201/dataportal/preview/cyprus/", "http://127.0.0.1:8080", "0c2b5d25-7b15-4401-8b51-dd4be0ee5cab");
 
 	URI baseUri;
 	URI cdmServerUri;
 	UUID classificationUUID;
 	String themeName;
 
-	private DataPortalContext(String baseUri, String cdmServerUri,
-			String classificationUUID) {
+	private DataPortalContext(String baseUri, String cdmServerUri, String classificationUUID) {
 		try {
 			this.baseUri = new URI(baseUri);
 			this.cdmServerUri = new URI(cdmServerUri);

@@ -99,6 +99,7 @@ public abstract class CdmDataPortalTestBase {
 		// "C:\\Programme\\Mozilla Firefox 3\\firefox.exe");
 		// System.out.println("##:" +
 		// System.getProperty("webdriver.firefox.bin"));
+		
 		FirefoxProfile firefoxProfile = new FirefoxProfile();
 		try {
 

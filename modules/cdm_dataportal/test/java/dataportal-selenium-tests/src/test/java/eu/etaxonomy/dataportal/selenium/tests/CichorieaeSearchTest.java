@@ -7,7 +7,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.dataportal.selenium;
+package eu.etaxonomy.dataportal.selenium.tests;
 
 import junit.framework.Assert;
 
@@ -18,14 +18,14 @@ import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.DataPortalContextAwareRunner.DataPortalContexts;
+import eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase;
 
 @DataPortalContexts( { DataPortalContext.cichorieae })
-public class ExampleTest extends CdmDataPortalSeleniumRCTestBase {
+public class CichorieaeSearchTest extends CdmDataPortalTestBase {
 
 	@Test
 	public void testSearchLCommunis() throws Exception {
-		driver
-				.get(getBaseUrl()
+		driver.get(getBaseUrl()
 						+ "?query=Lapsana+com*&search[tree]=534e190f-3339-49ba-95d9-fa27d5493e3e&q=cdm_dataportal%2Fsearch%2Ftaxon&search[pageSize]=25&search[pageNumber]=0&search[doTaxa]=1&search[doSynonyms]=1&search[doTaxaByCommonNames]=0");
 		WebElement taxonElement = driver.findElement(By
 				.xpath("/html/body/div/div/div[2]/div[2]/div/div/div/ul/li/span[@ref='/name/f280f79f-5903-47b0-8352-53e4204c6cf1']"));
@@ -46,21 +46,6 @@ public class ExampleTest extends CdmDataPortalSeleniumRCTestBase {
 
 		RenderedWebElement referenceElement = (RenderedWebElement) taxonElement.findElement(By.className("reference"));
 		Assert.assertEquals("Sp. Pl.: 811. 1753", referenceElement.findElement((By.className("reference"))).getText());
-	}
-
-	/**
-	 * This test emulates the Selenium RC API
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testSearchLCommunisUsingSeleniumRC() throws Exception {
-		selenium
-				.open("?query=Lapsana+com*&search[tree]=534e190f-3339-49ba-95d9-fa27d5493e3e&q=cdm_dataportal%2Fsearch%2Ftaxon&search[pageSize]=25&search[pageNumber]=0&search[doTaxa]=1&search[doSynonyms]=1&search[doTaxaByCommonNames]=0");
-		selenium.isTextPresent("Lapsana");
-		selenium.isTextPresent("communis");
-		selenium.isTextPresent("L.");
-		selenium.isTextPresent("Sp. Pl.: 811. 1753");
 	}
 
 }
