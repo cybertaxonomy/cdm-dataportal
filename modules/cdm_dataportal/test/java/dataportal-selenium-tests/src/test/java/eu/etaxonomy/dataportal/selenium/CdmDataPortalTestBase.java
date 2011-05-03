@@ -5,21 +5,40 @@ package eu.etaxonomy.dataportal.selenium;
 
 import java.io.IOException;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
+import eu.etaxonomy.dataportal.DataPortalContextAwareRunner;
+
 /**
  * @author a.kohlbecker
  *
  */
+@RunWith(DataPortalContextAwareRunner.class)
 public abstract class CdmDataPortalTestBase {
 	
 	private static final String FIREBUG_VERSION = "1.6.2";
 
-	protected WebDriver driver;
+	protected static WebDriver driver;
+
+    @BeforeClass
+    public static void setUpDriver() {
+    	driver = initFirefoxDriver();
+    }
+    
+    
+    @AfterClass
+    public static void closeDriver() {
+    	if(driver != null){
+    		driver.quit();
+    	}
+    }
 	
 	public WebDriver initChromeDriver() {
 		//System.setProperty("webdriver.chrome.bin", "C:\\Dokumente und Einstellungen\\a.kohlbecker.BGBM\\Lokale Einstellungen\\Anwendungsdaten\\Google\\Chrome\\Application\\chrome.exe");
@@ -36,13 +55,13 @@ public abstract class CdmDataPortalTestBase {
 	 * See http://code.google.com/p/selenium/wiki/FirefoxDriverInternals
 	 * @return
 	 */
-	public WebDriver initFirefoxDriver() {
+	public static WebDriver initFirefoxDriver() {
 		//System.setProperty("webdriver.firefox.bin", "C:\\Programme\\Mozilla Firefox 3\\firefox.exe");
 		//System.out.println("##:" + System.getProperty("webdriver.firefox.bin"));
 		FirefoxProfile firefoxProfile = new FirefoxProfile();
     	try {
     		
-    		firefoxProfile.addExtension(this.getClass(), "/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
+    		firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
     		firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying firt run page
     		
     		// --- allow enabling incompatible addons
@@ -62,5 +81,6 @@ public abstract class CdmDataPortalTestBase {
 		
         return driver;
 	}
+	
 
 }
