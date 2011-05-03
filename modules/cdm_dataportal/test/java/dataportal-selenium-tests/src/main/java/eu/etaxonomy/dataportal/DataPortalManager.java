@@ -9,17 +9,29 @@
  */
 package eu.etaxonomy.dataportal;
 
-import static eu.etaxonomy.dataportal.DataPortalContext.*;
 
 /**
+ * 
  * @author a.kohlbecker
  * 
  */
 public class DataPortalManager {
 
+	private static final String SYSTEM_PROPERTY_NAME_DATA_PORTAL_CONTEXT = "dataPortalContext";
+
 	static DataPortalManager managerInstance = null;
 
-	private DataPortalContext currentDataPortalContext = cichorieae;
+	private DataPortalContext currentDataPortalContext = null;
+	
+	private DataPortalManager(){
+		try {
+			currentDataPortalContext = DataPortalContext.valueOf(System.getProperty(SYSTEM_PROPERTY_NAME_DATA_PORTAL_CONTEXT));
+		} catch (NullPointerException e) {
+			SystemUtils.reportInvalidSystemProperty(SYSTEM_PROPERTY_NAME_DATA_PORTAL_CONTEXT, e);
+		} catch (IllegalArgumentException e) {
+			SystemUtils.reportInvalidSystemProperty(SYSTEM_PROPERTY_NAME_DATA_PORTAL_CONTEXT, e);
+		}
+	}
 
 	public static void prepare() {
 		if (managerInstance == null) {
@@ -34,7 +46,7 @@ public class DataPortalManager {
 	}
 
 	private void setupDataPortal() {
-		// TODO
+		// TODO configure the data portal using drush, see http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/jenkins-ci/integration.sh
 	}
 
 }

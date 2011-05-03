@@ -38,20 +38,17 @@ public class DataPortalContextAwareRunner extends BlockJUnit4ClassRunner {
 
 	private DataPortalContext dataPortalContext;
 
-	public DataPortalContextAwareRunner(Class<?> klass)
-			throws InitializationError {
+	public DataPortalContextAwareRunner(Class<?> klass) throws InitializationError {
 		super(klass);
 		dataPortalContext = DataPortalManager.currentDataPortalContext();
 	}
 
 	@Override
 	public void run(final RunNotifier notifier) {
-		EachTestNotifier testNotifier = new EachTestNotifier(notifier,
-				getDescription());
+		EachTestNotifier testNotifier = new EachTestNotifier(notifier, getDescription());
 
 		boolean isApplicableToContext = false;
-		DataPortalContexts dataPortalContextsAnotation = getTestClass()
-				.getJavaClass().getAnnotation(DataPortalContexts.class);
+		DataPortalContexts dataPortalContextsAnotation = getTestClass().getJavaClass().getAnnotation(DataPortalContexts.class);
 		for (DataPortalContext cntxt : dataPortalContextsAnotation.value()) {
 			if (dataPortalContext.equals(cntxt)) {
 				isApplicableToContext = true;

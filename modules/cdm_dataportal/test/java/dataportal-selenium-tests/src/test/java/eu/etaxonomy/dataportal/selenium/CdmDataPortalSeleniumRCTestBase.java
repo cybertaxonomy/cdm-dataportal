@@ -22,16 +22,14 @@ import eu.etaxonomy.dataportal.DataPortalManager;
  * @author a.kohlbecker
  * 
  */
-public abstract class CdmDataPortalSeleniumRCTestBase extends
-		CdmDataPortalTestBase {
+public abstract class CdmDataPortalSeleniumRCTestBase extends CdmDataPortalTestBase {
 
 	protected static Selenium selenium;
 
 	@BeforeClass
 	public static void setUpDriver() {
 		CdmDataPortalTestBase.setUpDriver();
-		selenium = new WebDriverBackedSelenium(driver, DataPortalManager
-				.currentDataPortalContext().getBaseUri().toString());
+		selenium = new WebDriverBackedSelenium(driver, DataPortalManager.currentDataPortalContext().getBaseUri().toString());
 	}
 
 	@BeforeClass

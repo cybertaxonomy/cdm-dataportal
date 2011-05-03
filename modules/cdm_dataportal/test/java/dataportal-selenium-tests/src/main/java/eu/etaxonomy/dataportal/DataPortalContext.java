@@ -33,13 +33,9 @@ public enum DataPortalContext {
 			String classificationUUID) {
 		try {
 			this.baseUri = new URI(baseUri);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		try {
 			this.cdmServerUri = new URI(cdmServerUri);
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		this.classificationUUID = UUID.fromString(classificationUUID);
 	}

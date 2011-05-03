@@ -24,7 +24,10 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import eu.etaxonomy.dataportal.Browser;
+import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.DataPortalContextAwareRunner;
+import eu.etaxonomy.dataportal.DataPortalManager;
+import eu.etaxonomy.dataportal.SystemUtils;
 
 /**
  * @author a.kohlbecker
@@ -32,7 +35,7 @@ import eu.etaxonomy.dataportal.DataPortalContextAwareRunner;
  */
 @RunWith(DataPortalContextAwareRunner.class)
 public abstract class CdmDataPortalTestBase {
-	
+
 	public static final Logger logger = Logger.getLogger(CdmDataPortalTestBase.class);
 
 	private static final String SYSTEM_PROPERTY_NAME_BROWSER = "browser";
@@ -43,23 +46,26 @@ public abstract class CdmDataPortalTestBase {
 
 	@BeforeClass
 	public static void setUpDriver() {
-		Browser browser = Browser.valueOf(System.getProperty(
-				SYSTEM_PROPERTY_NAME_BROWSER, Browser.firefox.name()));
-		if (browser == null) {
-			throw new RuntimeException("Invalid system property: '"
-					+ System.getProperty(SYSTEM_PROPERTY_NAME_BROWSER) + "'");
-		}
-		logger.info("Using browser " + browser.name());
-		switch (browser) {
-		case firefox:
-			driver = initFirefoxDriver();
-			break;
-		case chrome:
-			driver = initChromeDriver();
-			break;
-		case iexplorer:
-			driver = initInternetExplorerDriver();
-			break;
+		try {
+			Browser browser = Browser.valueOf(System.getProperty(SYSTEM_PROPERTY_NAME_BROWSER, Browser.firefox.name()));
+
+			logger.info("Using browser: " + browser.name());
+			switch (browser) {
+			case firefox:
+				driver = initFirefoxDriver();
+				break;
+			case chrome:
+				driver = initChromeDriver();
+				break;
+			case iexplorer:
+				driver = initInternetExplorerDriver();
+				break;
+			}
+
+		} catch (NullPointerException e) {
+			SystemUtils.reportInvalidSystemProperty(SYSTEM_PROPERTY_NAME_BROWSER, e);
+		} catch (IllegalArgumentException e) {
+			SystemUtils.reportInvalidSystemProperty(SYSTEM_PROPERTY_NAME_BROWSER, e);
 		}
 
 	}
@@ -96,10 +102,8 @@ public abstract class CdmDataPortalTestBase {
 		FirefoxProfile firefoxProfile = new FirefoxProfile();
 		try {
 
-			firefoxProfile.addExtension(CdmDataPortalTestBase.class,
-					"/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
-			firefoxProfile.setPreference("extensions.firebug.currentVersion",
-					FIREBUG_VERSION); // avoid displaying firt run page
+			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
+			firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying firt run page
 
 			// --- allow enabling incompatible addons
 			// firefoxProfile.addExtension(this.getClass(),
@@ -122,6 +126,16 @@ public abstract class CdmDataPortalTestBase {
 		driver = new FirefoxDriver(firefoxProfile);
 
 		return driver;
+	}
+
+	/**
+	 * Return the {@link DataPortalContext#getBaseUri()} of the currently active
+	 * context as String
+	 * 
+	 * @return string representatoin of the DataPortal base URI
+	 */
+	public String getBaseUrl() {
+		return DataPortalManager.currentDataPortalContext().getBaseUri().toString();
 	}
 
 }
