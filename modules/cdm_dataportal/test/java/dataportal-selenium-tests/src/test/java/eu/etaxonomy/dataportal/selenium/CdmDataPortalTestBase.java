@@ -17,8 +17,8 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import eu.etaxonomy.dataportal.Browser;
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.DataPortalContextSuite;
 import eu.etaxonomy.dataportal.SystemUtils;
+import eu.etaxonomy.dataportal.junit.DataPortalContextSuite;
 
 /**
  * @author a.kohlbecker
@@ -29,14 +29,14 @@ public abstract class CdmDataPortalTestBase {
 
 	public static final Logger logger = Logger.getLogger(CdmDataPortalTestBase.class);
 
-	private static final String SYSTEM_PROPERTY_NAME_BROWSER = "browser";
+	public static final String SYSTEM_PROPERTY_NAME_BROWSER = "browser";
 
 	private static final String FIREBUG_VERSION = "1.6.2";
 
 	protected static WebDriver driver;
 
-	private DataPortalContext context;
-	
+	private final DataPortalContext context;
+
 	public DataPortalContext getContext() {
 		return context;
 	}
@@ -79,8 +79,6 @@ public abstract class CdmDataPortalTestBase {
 	}
 
 	public static WebDriver initChromeDriver() {
-		// System.setProperty("webdriver.chrome.bin",
-		// "C:\\Dokumente und Einstellungen\\a.kohlbecker.BGBM\\Lokale Einstellungen\\Anwendungsdaten\\Google\\Chrome\\Application\\chrome.exe");
 		return new ChromeDriver();
 	}
 
@@ -96,11 +94,8 @@ public abstract class CdmDataPortalTestBase {
 	 * @return
 	 */
 	public static WebDriver initFirefoxDriver() {
-		// System.setProperty("webdriver.firefox.bin",
-		// "C:\\Programme\\Mozilla Firefox 3\\firefox.exe");
-		// System.out.println("##:" +
-		// System.getProperty("webdriver.firefox.bin"));
-		
+		CdmDataPortalTestBase.logger.debug(("##:" + System.getProperty("webdriver.firefox.bin")));
+
 		FirefoxProfile firefoxProfile = new FirefoxProfile();
 		try {
 
@@ -108,21 +103,15 @@ public abstract class CdmDataPortalTestBase {
 			firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying firt run page
 
 			// --- allow enabling incompatible addons
-			// firefoxProfile.addExtension(this.getClass(),
-			// "/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi");
+			// firefoxProfile.addExtension(this.getClass(), "/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi");
 			// firefoxProfile.setPreference("extensions.acr.firstrun", false);
-			// firefoxProfile.setPreference("extensions.enabledAddons",
-			// "fxdriver@googlecode.com,compatibility@addons.mozilla.org:0.8.3,fxdriver@googlecode.com:0.9.7376,{CAFEEFAC-0016-0000-0024-ABCDEFFEDCBA}:6.0.24,{20a82645-c095-46ed-80e3-08825760534b}:0.0.0,meetinglauncher@iconf.net:4.10.12.316,jqs@sun.com:1.0,{972ce4c6-7e08-4474-a285-3208198ce6fd}:4.0");
-			// firefoxProfile.setPreference("extensions.checkCompatibility",
-			// false);
-			// firefoxProfile.setPreference("extensions.checkCompatibility.4.0",
-			// false);
-			// firefoxProfile.setPreference("extensions.checkCompatibility.4.1",
-			// false);
+			// firefoxProfile.setPreference("extensions.enabledAddons", "fxdriver@googlecode.com,compatibility@addons.mozilla.org:0.8.3,fxdriver@googlecode.com:0.9.7376,{CAFEEFAC-0016-0000-0024-ABCDEFFEDCBA}:6.0.24,{20a82645-c095-46ed-80e3-08825760534b}:0.0.0,meetinglauncher@iconf.net:4.10.12.316,jqs@sun.com:1.0,{972ce4c6-7e08-4474-a285-3208198ce6fd}:4.0");
+			// firefoxProfile.setPreference("extensions.checkCompatibility", false);
+			// firefoxProfile.setPreference("extensions.checkCompatibility.4.0", false);
+			// firefoxProfile.setPreference("extensions.checkCompatibility.4.1", false);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			CdmDataPortalTestBase.logger.error(e);
 			System.exit(-1);
 		}
 		driver = new FirefoxDriver(firefoxProfile);

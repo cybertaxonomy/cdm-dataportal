@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.dataportal;
+package eu.etaxonomy.dataportal.junit;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +14,9 @@ import org.junit.runners.Suite;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
+
+import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalContexts;
 
 
 /**
