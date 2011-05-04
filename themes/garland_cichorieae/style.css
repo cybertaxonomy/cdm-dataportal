@@ -222,7 +222,6 @@ span.submitted, .description {
 }
 
 .description {
-  line-height: 150%;
   margin-bottom: 0.75em;
   color: #000000;
 }
@@ -713,7 +712,7 @@ ul.links li, ul.inline li {
 .node .content, .comment .content {
   margin: 0.6em 0;
   font-size: 1em;
-  line-height: 1.3em;
+  line-height: 1.5em;
 }
 
 /**
