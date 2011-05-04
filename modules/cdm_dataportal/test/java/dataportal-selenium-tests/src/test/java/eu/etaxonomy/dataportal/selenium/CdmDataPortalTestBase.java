@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.dataportal.selenium;
 
@@ -22,7 +22,7 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite;
 
 /**
  * @author a.kohlbecker
- * 
+ *
  */
 @RunWith(DataPortalContextSuite.class)
 public abstract class CdmDataPortalTestBase {
@@ -35,14 +35,15 @@ public abstract class CdmDataPortalTestBase {
 
 	protected static WebDriver driver;
 
-	private final DataPortalContext context;
+	private DataPortalContext context;
 
 	public DataPortalContext getContext() {
 		return context;
 	}
 
-	public CdmDataPortalTestBase(DataPortalContext context){
+	public void setContext(DataPortalContext context) {
 		this.context = context;
+
 	}
 
 	@BeforeClass
@@ -88,9 +89,9 @@ public abstract class CdmDataPortalTestBase {
 
 	/**
 	 * -Dwebdriver.firefox.bin=/usr/lib/iceweasel/firefox-bin
-	 * 
+	 *
 	 * See http://code.google.com/p/selenium/wiki/FirefoxDriverInternals
-	 * 
+	 *
 	 * @return
 	 */
 	public static WebDriver initFirefoxDriver() {
@@ -122,7 +123,7 @@ public abstract class CdmDataPortalTestBase {
 	/**
 	 * Return the {@link DataPortalContext#getBaseUri()} of the currently active
 	 * context as String
-	 * 
+	 *
 	 * @return string representatoin of the DataPortal base URI
 	 */
 	public String getBaseUrl() {

@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -11,7 +11,6 @@ package eu.etaxonomy.dataportal.selenium;
 
 import junit.framework.Assert;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
@@ -23,13 +22,6 @@ import eu.etaxonomy.dataportal.DataPortalContexts;
 @SuppressWarnings("deprecation")
 @DataPortalContexts( { DataPortalContext.cichorieae })
 public class ExampleTest extends CdmDataPortalSeleniumRCTestBase {
-
-	/**
-	 * @param context
-	 */
-	public ExampleTest(DataPortalContext context) {
-		super(context);
-	}
 
 	@Test
 	public void testSearchLCommunis() throws Exception {
@@ -58,7 +50,7 @@ public class ExampleTest extends CdmDataPortalSeleniumRCTestBase {
 
 	/**
 	 * This test emulates the Selenium RC API
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test

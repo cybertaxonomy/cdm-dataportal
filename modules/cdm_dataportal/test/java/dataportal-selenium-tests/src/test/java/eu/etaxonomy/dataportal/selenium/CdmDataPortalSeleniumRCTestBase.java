@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -22,7 +22,7 @@ import eu.etaxonomy.dataportal.DataPortalManager;
 
 /**
  * http://seleniumhq.org/docs/03_webdriver.html#emulating-selenium-rc
- * 
+ *
  * @author a.kohlbecker
  * @deprecated SeleniumRCTests should only be used if you are really desperatly
  *             shor in time and you need to use the Selenium 1 IDE in order to
@@ -30,13 +30,6 @@ import eu.etaxonomy.dataportal.DataPortalManager;
  */
 @Deprecated
 public abstract class CdmDataPortalSeleniumRCTestBase extends CdmDataPortalTestBase {
-
-	/**
-	 * @param context
-	 */
-	public CdmDataPortalSeleniumRCTestBase(DataPortalContext context) {
-		super(context);
-	}
 
 	protected static Selenium selenium;
 
