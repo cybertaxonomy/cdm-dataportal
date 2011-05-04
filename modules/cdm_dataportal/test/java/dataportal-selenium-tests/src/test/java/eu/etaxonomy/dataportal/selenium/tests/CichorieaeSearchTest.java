@@ -17,7 +17,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.DataPortalContexts;
+import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase;
 
 @DataPortalContexts( { DataPortalContext.cichorieae })

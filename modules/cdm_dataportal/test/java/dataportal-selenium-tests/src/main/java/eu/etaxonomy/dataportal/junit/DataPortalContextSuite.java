@@ -3,6 +3,11 @@
  */
 package eu.etaxonomy.dataportal.junit;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,10 +19,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
-import org.junit.runners.model.TestClass;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.DataPortalContexts;
 import eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase;
 
 
@@ -26,6 +29,22 @@ import eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase;
  *
  */
 public class DataPortalContextSuite extends Suite{
+
+	/**
+	 * Only to be used for test calsses which extend {@link CdmDataPortalTestBase}
+	 *
+	 * @author a.kohlbecker
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	@Inherited
+	public @interface DataPortalContexts {
+		/**
+		 * @return an array of DataPortalContext to which the annotated test
+		 *         class is applicable
+		 */
+		DataPortalContext[] value();
+	}
 
 	private final List<Runner> runners = new ArrayList<Runner>();
 
