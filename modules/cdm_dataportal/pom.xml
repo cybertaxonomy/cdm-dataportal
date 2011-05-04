@@ -22,7 +22,7 @@
 
 	<scm>
 		<connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/drupal/</connection>
-		<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdm-drupal/</developerConnection>
+		<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/drupal/</developerConnection>
 		<url>http://dev.e-taxonomy.eu/trac/browser/trunk/drupal/</url>
 	</scm>
 
