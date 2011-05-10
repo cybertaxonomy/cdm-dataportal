@@ -17,6 +17,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.junit.CdmDataPortalSeleniumRCTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 
 @SuppressWarnings("deprecation")

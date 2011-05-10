@@ -1,7 +1,7 @@
 /**
  *
  */
-package eu.etaxonomy.dataportal.selenium;
+package eu.etaxonomy.dataportal.junit;
 
 import java.io.IOException;
 
@@ -18,7 +18,6 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import eu.etaxonomy.dataportal.Browser;
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.SystemUtils;
-import eu.etaxonomy.dataportal.junit.DataPortalContextSuite;
 
 /**
  * @author a.kohlbecker

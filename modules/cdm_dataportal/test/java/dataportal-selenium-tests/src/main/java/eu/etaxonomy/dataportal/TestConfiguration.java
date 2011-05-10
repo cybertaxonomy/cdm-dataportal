@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase;
+import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 
 /**
  * @author a.kohlbecker
