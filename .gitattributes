@@ -256,6 +256,7 @@ modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etax
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/SystemUtils.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/TestConfiguration.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/junit/DataPortalContextSuite.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/testutils/PolytomousKeyTestTool.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/eu/etaxonomy/dataportal/DataPortalTest.properties -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/log4j.properties -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/CdmDataPortalSeleniumRCTestBase.java -text
@@ -263,8 +264,10 @@ modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etax
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/ExampleTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/CichorieaeSearchTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/CyprusSearchTest.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/FloraMalesianaPolytomousKeyTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/resources/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/resources/org/mozilla/addons/firebug-1.6.2.xpi -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/resources/org/mozilla/addons/firexpath-0.9.6.1-fx.xpi -text
 modules/cdm_dataportal/test/phpUnit/TestUtils.php -text
 modules/cdm_dataportal/test/phpUnit/bootstrap.php -text
 modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml -text

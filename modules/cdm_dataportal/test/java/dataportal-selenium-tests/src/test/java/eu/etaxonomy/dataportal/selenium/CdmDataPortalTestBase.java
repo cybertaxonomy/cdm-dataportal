@@ -32,6 +32,7 @@ public abstract class CdmDataPortalTestBase {
 	public static final String SYSTEM_PROPERTY_NAME_BROWSER = "browser";
 
 	private static final String FIREBUG_VERSION = "1.6.2";
+	private static final String FIREXPATH_VERSION = "0.9.6.1";
 
 	protected static WebDriver driver;
 
@@ -102,6 +103,8 @@ public abstract class CdmDataPortalTestBase {
 
 			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
 			firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying firt run page
+
+			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firexpath-" + FIREXPATH_VERSION + "-fx.xpi");
 
 			// --- allow enabling incompatible addons
 			// firefoxProfile.addExtension(this.getClass(), "/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi");

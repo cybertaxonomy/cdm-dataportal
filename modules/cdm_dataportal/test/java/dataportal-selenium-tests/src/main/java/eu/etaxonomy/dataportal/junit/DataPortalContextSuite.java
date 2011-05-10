@@ -31,7 +31,7 @@ import eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase;
 public class DataPortalContextSuite extends Suite{
 
 	/**
-	 * Only to be used for test calsses which extend {@link CdmDataPortalTestBase}
+	 * Only to be used for test classes which extend {@link CdmDataPortalTestBase}
 	 *
 	 * @author a.kohlbecker
 	 */
