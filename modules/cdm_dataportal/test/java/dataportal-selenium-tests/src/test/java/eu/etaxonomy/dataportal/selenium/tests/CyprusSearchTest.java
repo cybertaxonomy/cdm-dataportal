@@ -10,6 +10,7 @@
 package eu.etaxonomy.dataportal.selenium.tests;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
@@ -31,6 +32,7 @@ public class CyprusSearchTest extends CdmDataPortalTestBase{
 	 * see http://dev.e-taxonomy.eu/trac/ticket/2350
 	 */
 	@Test
+	@Ignore
 	public void searchResultsWithoutAnnotationFootnotes(){
 		driver.get(getBaseUrl() + "?query=Genis*&search[tree]=0c2b5d25-7b15-4401-8b51-dd4be0ee5cab&q=cdm_dataportal%2Fsearch%2Ftaxon&search[pageSize]=25&search[pageNumber]=0&search[doTaxa]=1&search[doSynonyms]=1&search[doTaxaByCommonNames]=0");
 

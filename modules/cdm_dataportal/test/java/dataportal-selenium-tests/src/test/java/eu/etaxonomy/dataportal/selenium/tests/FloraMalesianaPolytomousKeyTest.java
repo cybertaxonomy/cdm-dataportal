@@ -43,7 +43,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase{
 
 		// Page title
 		RenderedWebElement element = (RenderedWebElement)driver.findElement(By.xpath(".//*[@id='squeeze']/div/div/h2"));
-		Assert.assertEquals("Key to Malaysian Sapindaceae Genera (based on vegetative and flower characters)", element.getText());
+		Assert.assertEquals("KEY I TO THE MALESIAN GENERA (based on vegetative and flower characters) (F. Adema)", element.getText());
 
 		List<WebElement> keyTableList = driver.findElements(By.className("polytomousKey"));
 		Assert.assertEquals("Only one polytomousKey table expected", 1, keyTableList.size());

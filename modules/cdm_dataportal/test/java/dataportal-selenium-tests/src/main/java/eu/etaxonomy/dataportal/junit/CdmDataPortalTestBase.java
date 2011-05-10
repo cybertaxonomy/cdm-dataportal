@@ -101,7 +101,7 @@ public abstract class CdmDataPortalTestBase {
 		try {
 
 			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
-			firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying firt run page
+			firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying first run page
 
 			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firexpath-" + FIREXPATH_VERSION + "-fx.xpi");
 
