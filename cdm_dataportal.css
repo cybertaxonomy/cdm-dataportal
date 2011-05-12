@@ -1,0 +1,396 @@
+@CHARSET "ISO-8859-1";
+/* $Id$ */
+
+div.debug, h6.debug{
+  background-color: #252525;
+  color: #AAAAAA;
+  font-family: monospace;
+  font-size: 90%;	
+  overflow: auto;
+}
+
+body .messages{
+	clear: both;
+	margin-top: 25px;
+}
+
+body h6.debug {
+	color: #FFFFFF;
+	padding: 0 1em;
+  margin-top: 10px;
+	margin-bottom: -0.75em;
+	border:1px solid #B8D3E5; 
+	clear: both;
+}
+
+div.debug a.valid {
+  color: #1BDF00;	
+}
+div.debug a.invalid {
+  color: #F3000A; 
+}
+
+div.debug .uri{
+	color: #FFFFFF;
+}
+
+.name{
+  font-style: italic;
+}
+
+.rank, .authors{
+	font-style: normal;
+}
+	
+
+.relation_sign{
+	margin-left: -1em; /* same as ul.typeDesignations */
+	margin-right: 0.3em;
+	float: left;
+	font-family: Arial, sans-serif;
+}
+
+.highlite {
+  background-color: yellow;	
+}
+
+li .taxon{
+}
+
+#synonymy ul li {
+	padding-bottom: 0px;
+  padding-top: 0px;
+  margin-bottom: 0px;
+  margin-top:0px;
+}
+.heterotypicSynonymyGroup li{
+  margin-left: 26px;
+}
+
+ul.homotypicSynonyms, ul.heterotypicSynonymyGroup{
+	 border-bottom: 1px solid #D4EBF9;
+	 
+}
+
+ul.typeDesignations{
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: -1em; /* same as .relation_sign */
+}
+
+ul.typeDesignations li{
+	background-image: none;
+}
+
+.form-item fieldset {
+	font-size: 80%;
+	margin-top: -3px;
+	margin-left: 25px;
+  	
+}
+
+.form-item fieldset .featuretree_structure{
+  height: 13em;
+  overflow: auto;	
+}
+
+.misapplied .name{
+ 	/*font-style: normal;*/
+}
+.misapplied .authors{
+	display: none;
+}
+
+img.preview {
+	margin: 5px 30px;
+}
+
+ul li.synonym{
+  list-style-type: none;
+  background-image: none;  
+}
+
+li.firstentry{
+  margin-left: 6px;
+}
+
+
+ul.cdm_names, ul.cdm_names li{
+	 background-image: none;
+	 list-style-type: none;
+	 list-style-image: none;
+}
+
+/*
+ul.cdm_names a:link, ul.cdm_names .Synonym a:visited {
+color:#7C7C7F;
+}
+*/
+
+.dynabox .label:hover{
+ color: #0174BB;
+}
+ 
+ul.cdm_names .dynabox_content{
+  margin-top:-1em;
+}
+
+
+.tickbox_content{
+	display: none;
+}
+
+.pager strong, .pager a {
+	-moz-border-radius-bottomleft:2px;
+	-moz-border-radius-bottomright:2px;
+	-moz-border-radius-topleft:2px;
+	-moz-border-radius-topright:2px;
+	background-color:#DFEDF7;
+	border:1px solid #90C2E1;
+	margin:0px 0.25em;
+	padding:2px 5px;
+}
+
+.pager strong {
+	background-color:#0174BB;
+	color:#FFFFFF;
+}
+
+.pager-list-dots-right, .pager-list-dots-left {
+  display: inline;
+}
+
+a.filter_add:link, a.filter_add:visited{
+
+}
+
+a.filter_remove:link, a.filter_remove:visited{
+  color: red;
+}
+
+a.synonym:link, a.synonym:visited, .Synonym a:link, .Synonym a:visited {
+  color: #7C7C7F;
+}
+
+/* Synonyms with more than one accepted taxa */
+a.label:link, a.label:visited {
+  color: #7C7C7F;
+}
+
+/*
+a.toc:link, a.toc:visited {
+  color: #F03300;
+}
+*/
+.block-cdm_taxontree .content, .block-cdm_dataportal-3 .content{
+   font-size: 90%;
+}
+
+.content dt {
+	float: left;
+	font-weight: bold;
+  margin-right: 0.3em;
+}
+
+.content dd {
+	margin-left: 0;
+	font-weight: normal;
+}
+
+.block-cdm_taxontree div.settings{
+	/*background-color: #2587C3;*/
+	border-bottom: 1px solid #E0DFE3;
+	border-top: 1px solid #E0DFE3;
+}
+
+.concept_switch {
+  padding:0 0.2em;
+}
+
+.descriptionText, .descriptionReference{
+	vertical-align: top;
+}
+
+.annotation_box {
+	display: none;	
+	background: #FFFFCC;
+	border: 1px solid #FFCC66;
+	font-size: 9pt;
+	padding: 5px
+}
+.annotation_box ul, .annotation_box li{
+	list-style-type: none;	
+	line-height: 11pt;
+	padding: 0;
+	margin: 0;
+}
+
+.annotation_box li{
+	padding-left: 15px;	
+}
+
+.annotation_create{
+	margin-top: 20px;
+	text-align: right;
+}
+
+.annotation_create textarea {
+	width: 100%;	
+}
+
+.annotation_create form{
+	margin-bottom: 0;
+}
+
+#openlayers{ 
+    margin-bottom:0.75em;	/* should match the margin-bottom of .description */
+}
+
+#openlayers_map{
+	width: 100%;
+	height: 200px;
+	border: 1px solid;
+}
+
+.openlayers_legend{
+    background-color: white;
+    filter:alpha(opacity=75); /* IE's opacity*/
+    opacity: 0.75;
+}
+
+.distribution_map_caption{
+	font-size: 90%;
+	font-style: italic;
+}
+
+.media .viewer{
+	margin-top: 20px;
+}
+
+.media ul.primary li a
+, .media ul.primary li.active a
+, .media ul.primary li a:hover
+, .media ul.primary li a:visited
+, .media ul.secondary li a
+, .media ul.secondary li.active a
+, .media ul.secondary li a:hover
+ , .media ul.secondary li a:visited{
+	margin-left : 0px;
+}
+
+.media ul.primary li a.active{
+  font-weight: bold;
+}
+
+.media_thumbnails{
+  margin-top: 0px;
+  margin-left: 0.3em; 
+}
+	
+.media_gallery tbody {
+	border: 0px none;
+}
+.media-caption{
+	line-height: 1.3em;
+	margin-left: 0;
+}
+
+.media-caption dt.title{
+    display: none;
+}
+.media-caption dd.title{
+    font-weight: bold;
+    font-size: 130%;
+}
+
+.cdm_names .media-caption{
+    font-size: 60%;	
+}
+
+.image-passe-partout, .image_viewer {
+  border: 1px solid;
+  background-color: #eeeeee;	
+}
+
+.distribution_map{
+  border: 1px solid #ddd;
+  background-color: #ffffff;
+}
+
+/* The print button text with underline and different color on hover */
+#print_button{
+  cursor:pointer;
+}
+#print_button span{
+  color:#027AC6;
+  margin-left: 0.3em; /* spacing between image and text */
+}
+#print_button span:hover {
+  color:#0062A0;
+  text-decoration:underline;
+}
+.annotations {
+	font-size: 90%;
+}
+	
+.footnote{
+	font-size: 90%;
+}
+
+.footnote-key{
+  vertical-align: super;
+  font-size: 80%;
+  line-height: 100%; /* compensate line-height increasement by vertical-align: super; */
+  font-style: italic;
+}
+
+.footnote-anchor {
+  font-weight: bold;
+}
+
+.heterotypicSynonymyGroup li.footnotes, .homotypicSynonymyGroup li.footnotes, .homotypicSynonyms li.footnotes, .misapplied li.footnotes, .content li.descriptionText{
+	margin-top: 10px;
+  margin-left: 6px;
+  padding-left: 6px;
+  list-style: none;
+  list-style-image: none;
+  background-image: none;
+}
+#synonymy li.footnotes{
+	list-style: none;
+  list-style-image: none;
+  background-image: none;
+}
+.content
+
+/* footnotes margin when listing the synonymy*/
+/*
+.heterotypicSynonymyGroup .footnote{
+  margin-left: 3em;
+}
+.homotypicSynonyms .footnote{
+  margin-left: 1em;
+}
+*/
+/* -- */
+.featuretree_structure {
+	 font-size: 90%;
+	 line-height: 1em;
+	 color: #999999;
+}
+
+.polytomousKey_linkedStyle td{
+	vertical-align: top;
+	padding-top: 0;
+}
+.polytomousKey_linkedStyle tr.childCount_0 td{
+  padding-top: 1em;
+}
+.polytomousKey_linkedStyle tr:hover {
+  background-color: #eeeeee;
+}
+
+.polytomousKey_linkedStyle .nodeLink {
+	float: right;
+  text-align: right;
+}
