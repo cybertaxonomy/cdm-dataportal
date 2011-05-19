@@ -156,11 +156,6 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 		// theme
 		if(count($node->children) > 0){
 			//TODO support more than one level of childen http://dev.e-taxonomy.eu/trac/ticket/2393
-			/*
-			 $out .= '<div class="nested_description_elements">';
-			 $out .= theme('cdm_feature_nodes', $node->children, $taxon);
-			 $out .= '</div>';
-			 */
 			$text = '';
 			foreach ($node->children as $child){
 			 //$out .= theme('cdm_descriptionElementTextData', $child->descriptionElements[0], false);
