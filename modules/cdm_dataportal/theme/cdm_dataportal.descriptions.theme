@@ -38,6 +38,15 @@ function theme_cdm_feature_name($feature_name){
 	}
 }
 
+/**
+ * Renders the taxon profile. The taxon profile consists of description elements
+ * which are ordered by the structure defined by specific FeatureTree. The chosen
+ * FeatureTree is merged with the list of desctiprion elements prior to using this
+ * method (see function cdm_ws_descriptions_by_featuretree() ).
+ *
+ * @param unknown_type $mergedTrees
+ * @param unknown_type $taxon The taxon whose sprofile to show
+ */
 function theme_cdm_featureTrees($mergedTrees, $taxon){
 	if(!$mergedTrees){
 		return;
@@ -146,6 +155,7 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 		}
 		// theme
 		if(count($node->children) > 0){
+			//TODO support more than one level of childen http://dev.e-taxonomy.eu/trac/ticket/2393
 			/*
 			 $out .= '<div class="nested_description_elements">';
 			 $out .= theme('cdm_feature_nodes', $node->children, $taxon);
@@ -157,9 +167,10 @@ function theme_cdm_feature_nodes($featureNodes, $taxon){
 			 if (is_array($child->descriptionElements)){//if condition added to avoid warnings
 			 	foreach ($child->descriptionElements as $element) {
 			 		$description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+					//TODO use localized version of feature name, the locale must match the locale of the multilanguage text (http://dev.e-taxonomy.eu/trac/ticket/2394)
 			 		$description = str_replace($element->feature->titleCache, '<em>' . $element->feature->titleCache . '</em>', $description);
 			 	}
-			 	$text .= $description;
+			 	$text .= " " . $description;
 			 	$description = '';
 			 }
 			}

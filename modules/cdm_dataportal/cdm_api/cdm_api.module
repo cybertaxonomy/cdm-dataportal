@@ -700,16 +700,6 @@ function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
 
     // recurse into node children
     if(is_array($node->children)){
-    	/*
-    	var_dump('++++++++++++++++++++');
-    	var_dump($node->children);
-    	var_dump('####################');
-
-      foreach($node->children as $nodes){
-        $mergedChildNodes = _mergeFeatureTreeDesciptions($nodes, $descriptionElements);
-        $node->children = $mergedChildNodes;
-      }
-      */
     	$mergedChildNodes = _mergeFeatureTreeDesciptions($node->children, $descriptionElements);
       $node->children = $mergedChildNodes;
     }
