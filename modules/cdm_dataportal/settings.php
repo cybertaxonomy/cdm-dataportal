@@ -1036,7 +1036,7 @@ function cdm_settings_geo(){
     );
 
     if (variable_get('edit_map_server', EDIT_MAPSERVER_V1_URI) !=  EDIT_MAPSERVER_V11_URI) {
-      $form['map_image']['#description'] = '<div class="messages warning">' . t("EDIT map service version to low! ") . '</div>'
+      $form['map_image']['#description'] = '<div class="messages warning">' . t("EDIT map service version is too low! ") . '</div>'
       . $form['map_image']['#description'];
     }
 
