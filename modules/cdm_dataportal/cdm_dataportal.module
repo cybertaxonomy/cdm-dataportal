@@ -901,6 +901,26 @@ function _load_taxonBase(&$taxonBase){
 }
 
 /**
+ * similar to the variable_get() function of Drupal, except of thst this function
+ * is able to handle arrays correctly. This function is especially useful
+ * when dealing with collections of setting form elemens (#tree = true)
+ *
+ * @param String $variableKey
+ * @param String $defaultValueString a sting as for example derived from a CONSTANT
+ * @return mixed, usually an array
+ */
+function mixed_variable_get($variableKey, $defaultValueString){
+    $systemDefaults = unserialize($defaultValueString);
+    $storedSettings = variable_get($variableKey, array());
+    if(is_array($storedSettings)){
+      $settings =  array_merge($systemDefaults, $storedSettings);
+    } else {
+      $settings = $systemDefaults;
+    }
+    return $settings;
+}
+
+/**
  * Loads the subgraph of the given PolytomousKeyNode recursively from the cdm REST service.
  * @param PolytomousKeyNode $polytomousKeyNode passed by reference
  * @return nothing

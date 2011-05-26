@@ -32,6 +32,17 @@ define('EDIT_MAPSERVER_V1_URI', 'http://edit.br.fgov.be/edit_wp5/v1');
 define('EDIT_MAPSERVER_V11_URI', 'http://edit.br.fgov.be/edit_wp5/v1.1');
 define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
 
+// --- Taxon profile settings --- /
+define (LAYOUT_SETTING_PREFIX, 'layout_');
+define (FEATURE_TREE_LAYOUT_DEFAULTS, serialize(
+    array(
+    'enabled'=> false,
+    'enclosingTag' => 'ul',
+    'entryEnclosingTag' => 'li',
+    'glue' => ' '
+    )
+  ));
+
 /**
  * default settings for all gallerys
  * @var unknown_type
@@ -637,31 +648,7 @@ function cdm_settings_layout_taxon(){
               to be renderized will be the synonymy of the accepted taxon and not the above selected tab.'),
   );
 
-/* THIS SECTION HAS BEEN MOVED TO LAYOUT
-  //---- footnotes ---//
-  $form['taxon_profile']['footnotes'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Footnotes'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-    '#description' => t('Taxa data such authors, synonyms names or some taxa description text may have annotations or footnotes. When the footnotes are enabled
-                         they will be visible (if they exist). Taxon synonymy and taxon speciemens sections or tabs may contain also footnotes.'),
-  );
 
-  $form['taxon_profile']['footnotes']['cdm_dataportal_all_footnotes'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Do not show footnotes'),
-      '#default_value' => variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES),
-      '#description' => t('Check this if you do not want to show any footnotes')
-  );
-
-  $form['taxon_profile']['footnotes']['cdm_dataportal_annotations_footnotes'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Do not show annotations footnotes'),
-      '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
-      '#description' => t('Check this if you do not want to show annotation footnotes')
-  );
-*/
   // ---- PROFILE PICTURE ----//
   $form['taxon_profile']['picture'] = array(
       '#type' => 'fieldset',
@@ -699,7 +686,7 @@ function cdm_settings_layout_taxon(){
       '#description'   => t('Show the profil pictures current taxon\'s children.')
   );
 
-  //-- FEATURE TREE --//
+  // ---- FEATURE TREE ---- //
   $form['taxon_profile']['taxon_profile'] = array(
   '#type' => 'fieldset',
      '#title' => t('Features'),
@@ -708,54 +695,125 @@ function cdm_settings_layout_taxon(){
   '#description' => t('This section covers settings related to the taxon\'s <em>Feature Tree</em>. The <em>feature tree</em> are the taxon\'s
                         features such description, distribution, common names, etc. that drupal will render at his taxon profile page.'),
   );
-  $form['taxon_profile']['taxon_profile'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
+
+  $form['taxon_profile']['feature_trees'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
       '#type' => 'radios',
       '#title'         => t('Taxon profile sections'),
       '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
       '#options' => cdm_get_featureTrees_as_options(TRUE),
       '#description'   => t('Select the Feature Tree to be displayed at the taxon profile. Click "Show Details" to see the Feature Tree elemets.'
       )
-      );
+  );
 
-      $form['taxon_profile']['taxon_profile'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
-      '#type' => 'radios',
-      '#title'         => t('Natural language representation of structured descriptions'),
-      '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, null),
-      '#options' => cdm_get_featureTrees_as_options(),
-      '#description'   => t('Taxon descriptions can be stored in a highly structured form.'.
-        ' The feature tree selected here will be used to generate textual representation in natural language.'
-        //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
-      )
-      );
+  $form['taxon_profile']['feature_trees'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
+    '#type' => 'radios',
+    '#title'         => t('Natural language representation of structured descriptions'),
+    '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, null),
+    '#options' => cdm_get_featureTrees_as_options(),
+    '#description'   => t('Taxon descriptions can be stored in a highly structured form.'.
+      ' The feature tree selected here will be used to generate textual representation in natural language.'
+      //.' If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
+    )
+  );
 
+  //---- LAYOUT PER FEATURE ---- //
+  $feature_tree = cdm_ws_get(CDM_WS_FEATURETREES, variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
 
-  /* ------ DISTRIBUTION LAYOUT ------ */
+  if( isset($feature_tree->root->children) ){
 
-      $form['taxon_profile']['distribution_layout'] = array(
-        '#title' => t('Distribution'),
-        '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
-        '#type' => 'fieldset',
-        '#description' => t('Select if you want to sort or not the distribution text located below the distribution map.'),
-      );
-
-    $form['taxon_profile']['distribution_layout']['distribution_sort'] =  array(
-    '#type'          => 'radios',
-    '#title'         => t('Sort'),
-    '#default_value' => variable_get('distribution_sort', 'NO_SORT'),
-    '#options' => array(
-        'NO_SORT' => t('Standard (No sort)'),
-        'HIDE_TDWG2' => t('Sorted without TDWG Level 2'),
-      ));
-
-     $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] =  array(
-    '#type'          => 'checkbox',
-    '#title'         => t('Show TextData elements on top of the map'),
-    '#default_value' => variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0),
-    '#description' => t('Check this if you want to appear all <code>TextData</code> elements on top of the map.
-      Otherwise all <code>TextData</code> distribution elements will be listed below the other area elements.
-      This option is useful if you need to have descriptive texts for each distribution map.'),
+    $form_feature_list_layout = array(
+      '#title' => t('Taxon profile layout'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#type' => 'fieldset',
+      '#description' => t('Will be availbale in a future release.'),
     );
+
+    $feature_list_layout_settings_disabled = true;
+    foreach( $feature_tree->root->children as $featureNode ){
+
+
+      if( !$feature_list_layout_settings_disabled && isset($featureNode->feature) ) {
+
+        $subform_id = LAYOUT_SETTING_PREFIX . $featureNode->feature->uuid; // must not exceed 45 characters !!!
+
+        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
+
+
+        $form_feature_list_layout[$subform_id] = array(
+          '#tree' => TRUE,
+     			'#title' => $featureNode->feature->representation_L10n,
+          '#collapsible' => FALSE,
+          '#collapsed' => FALSE,
+          '#type' => 'fieldset',
+          '#description' => t('')
+        );
+
+        $form_feature_list_layout[$subform_id]['enabled'] = array(
+          '#type' => 'checkbox',
+     			'#title' => t('Enable'),
+  				'#default_value' => $settings['enabled'],
+          '#description' => t('Enable user defined layout for this feature')
+        );
+
+        $form_feature_list_layout[$subform_id]['enclosingTag'] = array(
+          '#type' => 'textfield',
+     			'#title' => t('Enclosing tag'),
+          '#disabled' => !$settings['enabled'],
+  				'#default_value' => $settings['enclosingTag'],
+          '#description' => t('Default is: ') . "'<code>" . $systemDefaults['enclosingTag'] . "</code>'"
+        );
+
+        $form_feature_list_layout[$subform_id]['entryEnclosingTag'] = array(
+          '#type' => 'textfield',
+     			'#title' => t('Entry enclosing tag'),
+          '#disabled' => !$settings['enabled'],
+  				'#default_value' => $settings['entryEnclosingTag'],
+          '#description' => t('Default is: ') . "'<code>". $systemDefaults['entryEnclosingTag'] ."</code>'"
+        );
+
+        $form_feature_list_layout[$subform_id]['glue'] = array(
+          '#type' => 'textfield',
+     			'#title' => t('Glue'),
+          '#disabled' => !$settings['enabled'],
+  				'#default_value' => $settings['glue'],
+          '#description' => t('Default is: ') . "'<code>" . $systemDefaults['glue'] . "</code>'"
+        );
+
+      }
+
+      $form['taxon_profile']['feature_list_layout'] = $form_feature_list_layout;
+    }
+  }
+
+
+  //---- DISTRIBUTION LAYOUT ---- //
+
+  $form['taxon_profile']['distribution_layout'] = array(
+    '#title' => t('Distribution'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#type' => 'fieldset',
+    '#description' => t('Select if you want to sort or not the distribution text located below the distribution map.'),
+  );
+
+  $form['taxon_profile']['distribution_layout']['distribution_sort'] =  array(
+  '#type'          => 'radios',
+  '#title'         => t('Sort'),
+  '#default_value' => variable_get('distribution_sort', 'NO_SORT'),
+  '#options' => array(
+      'NO_SORT' => t('Standard (No sort)'),
+      'HIDE_TDWG2' => t('Sorted without TDWG Level 2'),
+    ));
+
+   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] =  array(
+  '#type'          => 'checkbox',
+  '#title'         => t('Show TextData elements on top of the map'),
+  '#default_value' => variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0),
+  '#description' => t('Check this if you want to appear all <code>TextData</code> elements on top of the map.
+    Otherwise all <code>TextData</code> distribution elements will be listed below the other area elements.
+    This option is useful if you need to have descriptive texts for each distribution map.'),
+  );
 
 
 /* ====== SYNONYMY ====== */
@@ -1036,7 +1094,7 @@ function cdm_settings_geo(){
     );
 
     if (variable_get('edit_map_server', EDIT_MAPSERVER_V1_URI) !=  EDIT_MAPSERVER_V11_URI) {
-      $form['map_image']['#description'] = '<div class="messages warning">' . t("EDIT map service version is too low! ") . '</div>'
+      $form['map_image']['#description'] = '<div class="messages warning">' . t("The selected EDIT map service version has to small version number! ") . '</div>'
       . $form['map_image']['#description'];
     }
 
@@ -1109,76 +1167,75 @@ function cdm_settings_geo(){
       '#description' => t('Choose the baselayer layer you prefer to use as map background in the OpenLayers dynamic mapviewer.')
      );
 
-    // cdm_dataportal_geoservice_showLayerSwitcher
-    $form['openlayers']['cdm_dataportal_geoservice_showLayerSwitcher'] = array(
-      '#type' => 'checkbox',
-      '#title' => '<b>'.t('Show Layer Switcher').'</b>',
-      '#default_value' => variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE),
-      '#description' => t('The Layer Switcher control displays a table of contents for the map.  This allows the user interface to switch between BaseLasyers and to show or hide Overlays.  By default the switcher is shown minimized on the right edge of the map, the user may expand it by clicking on the handle.')
-    );
+  // cdm_dataportal_geoservice_showLayerSwitcher
+  $form['openlayers']['cdm_dataportal_geoservice_showLayerSwitcher'] = array(
+    '#type' => 'checkbox',
+    '#title' => '<b>'.t('Show Layer Switcher').'</b>',
+    '#default_value' => variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE),
+    '#description' => t('The Layer Switcher control displays a table of contents for the map.  This allows the user interface to switch between BaseLasyers and to show or hide Overlays.  By default the switcher is shown minimized on the right edge of the map, the user may expand it by clicking on the handle.')
+  );
 
-    $localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
-    $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
-    $form['openlayers']['gmap_api_key'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Gogle maps API key'),
-      '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
-      '#description' => t('If you want to use the Google Maps Layer a key is needed. If you need a key visit <a href="http://code.google.com/intl/en/apis/maps/signup.html">google maps api key</a>.<br>
-           <b>Note:</b> The following key: <code>'.$localhostkey.'</code> is the default key for the localhost (127.0.0.1). The key in use is the one above this text.')
-     );
+  $localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
+  $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
+  $form['openlayers']['gmap_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Gogle maps API key'),
+    '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
+    '#description' => t('If you want to use the Google Maps Layer a key is needed. If you need a key visit <a href="http://code.google.com/intl/en/apis/maps/signup.html">google maps api key</a>.<br>
+         <b>Note:</b> The following key: <code>'.$localhostkey.'</code> is the default key for the localhost (127.0.0.1). The key in use is the one above this text.')
+   );
 
-     $form['cdm_dataportal_geoservice_map_legend'] = array(
-       '#type' => 'fieldset',
-       '#title' => t('Map legend'),
-       '#collapsible' => TRUE,
-       '#collapsed' => TRUE,
-       '#description' => t('Configure the maps legend.')
-     );
+  $form['cdm_dataportal_geoservice_map_legend'] = array(
+     '#type' => 'fieldset',
+     '#title' => t('Map legend'),
+     '#collapsible' => TRUE,
+     '#collapsed' => TRUE,
+     '#description' => t('Configure the maps legend.')
+  );
 
-    $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_on'] = array(
-      '#type' => 'checkbox',
-      '#title' => '<b>'.t('Display a map legend').'</b>',
-      '#default_value' => variable_get('cdm_dataportal_geoservice_legend_on', TRUE),
-      '#description' => t('Check this if you like a legend to be displayed with the maps.')
-    );
+  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_on'] = array(
+    '#type' => 'checkbox',
+    '#title' => '<b>'.t('Display a map legend').'</b>',
+    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_on', TRUE),
+    '#description' => t('Check this if you like a legend to be displayed with the maps.')
+  );
 
-        $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legendOpacity'] = array(
+  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legendOpacity'] = array(
     '#type' => 'textfield',
     '#title' => t('Legend opacity'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5'),
     '#description' => t('Valid values range from 0.0 to 1.0. Value 1.0 means the legend will be fully visible, while a value near
                          to 0.0 will be not much visible.')
-        );
+  );
 
-        $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_font_size'] = array(
+  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_font_size'] = array(
     '#type' => 'textfield',
     '#title' => t('Font size'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_legend_font_size', 10),
     '#description' => t('Font size in pixels.')
-        );
+  );
 
-        $fontStyles = array(0 => "plane", 1 => "italic");
-        $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_font_style'] = array(
+  $fontStyles = array(0 => "plane", 1 => "italic");
+  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_font_style'] = array(
     '#type' => 'select',
     '#title' => t('Available font styles'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_legend_font_style', false),
     '#options' => $fontStyles,
     '#description'   => t('Select a font style for the map legend.')
-        );
+  );
 
-        $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_icon_width'] = array(
+  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_icon_width'] = array(
     '#type' => 'textfield',
     '#title' => t('Legend icon width'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_legend_icon_width', 35),
     '#description' => t('Legend icon width in pixels.')
-        );
-
-        $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_icon_height'] = array(
+  );
+  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_icon_height'] = array(
     '#type' => 'textfield',
     '#title' => t('Legend icon height'),
     '#default_value' => variable_get('cdm_dataportal_geoservice_legend_icon_height', 15),
     '#description' => t('Legend icon height in pixels.')
-        );
+  );
 
         return system_settings_form($form);
 }
