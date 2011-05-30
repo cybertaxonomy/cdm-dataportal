@@ -773,7 +773,7 @@ function theme_cdm_distribution_map($taxon){
 
     $query_string .= ($display_width ? '&ms=' . $display_width: '').
     ($bounding_box ? '&bbox=' .  $bounding_box : '')
-    . ($labels_on ? '&labels=' .  $labels_on : '');
+    . ($labels_on ? '&label=' .  $labels_on : '');
 
     /* ------ choose the display mode, either openlayers or static image ------ */
 
