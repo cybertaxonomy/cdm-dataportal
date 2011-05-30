@@ -841,14 +841,25 @@ function theme_cdm_distribution_map($taxon){
         }
 
         //TODO HACK to replace the default base layer which currently is tdwg4 !!!
-        if(variable_get('map_base_layer', '')){
-          $query_string = str_replace("l=tdwg4", "l=".variable_get('map_base_layer', ''). ":" . $baselayer_areaStyleId, $query_string);
+        if(strpos($query_string, "?l=") !== FALSE){
+          $layer_param_token = "?l=";
         } else {
-          $query_string = str_replace("l=tdwg4", "l=l=tdwg4:".$baselayer_areaStyleId . ",", $query_string);
+          $layer_param_token = "&l=";
+        }
+        if(strpos($query_string, "?as=") !== FALSE){
+          $areystyle_param_token = "?as=";
+        } else {
+          $areystyle_param_token = "&as=";
+        }
+
+        if(variable_get('map_base_layer', '')){
+          $query_string = str_replace($layer_param_token."tdwg4", "$layer_param_token".variable_get('map_base_layer', ''). ":" . $baselayer_areaStyleId, $query_string);
+        } else {
+          $query_string = str_replace($layer_param_token."tdwg4", $layer_param_token."tdwg4:".$baselayer_areaStyleId . ",", $query_string);
         }
 
         if($bgcolor_layer){
-          $query_string = str_replace("l=", "l=" . $bgcolor_layer . ",", $query_string);
+          $query_string = str_replace($layer_param_token, $layer_param_token . $bgcolor_layer . ",", $query_string);
         }
 
         if(variable_get('map_base_layer_style', '')){
@@ -856,7 +867,7 @@ function theme_cdm_distribution_map($taxon){
         }
 
         foreach ($additional_area_styles as $as) {
-          $query_string = str_replace("as=", "as=" . $as . "|", $query_string);
+          $query_string = str_replace($areystyle_param_token, $areystyle_param_token . $as . "|", $query_string);
         }
 
       }
