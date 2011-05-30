@@ -258,6 +258,9 @@ modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etax
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/junit/CdmDataPortalSeleniumRCTestBase.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/junit/CdmDataPortalTestBase.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/junit/DataPortalContextSuite.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/JUnitWebDriverWait.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/VisibilityOfElementLocated.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/WebDriverFactory.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/testutils/PolytomousKeyTestTool.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/eu/etaxonomy/dataportal/DataPortalTest.properties -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/log4j.properties -text

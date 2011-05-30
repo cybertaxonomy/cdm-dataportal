@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
+import eu.etaxonomy.dataportal.selenium.WebDriverFactory;
 
 /**
  * @author a.kohlbecker
@@ -79,7 +80,7 @@ public class TestConfiguration {
 			String key = (String)o;
 
 			// update all webdriver properties and the browser property
-			if(key.startsWith("webdriver.") || key.equals(CdmDataPortalTestBase.SYSTEM_PROPERTY_NAME_BROWSER)){
+			if(key.startsWith("webdriver.") || key.equals(WebDriverFactory.SYSTEM_PROPERTY_NAME_BROWSER)){
 				if(doOverride || System.getProperty(key) == null){
 					System.setProperty(key, properties.getProperty(key));
 				}

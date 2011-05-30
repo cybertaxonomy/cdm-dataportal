@@ -36,6 +36,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase{
 
 	/**
 	 * see http://dev.e-taxonomy.eu/trac/ticket/2350
+	 * @param WebDriver
 	 */
 	@Test
 	public void key_to_Malaysian_Sapindaceae_Genera(){
@@ -84,7 +85,8 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase{
 				LinkClass.nodeLinkToTaxon,
 				"Trigonachras"));
 
-		PolytomousKeyTestTool tester = new PolytomousKeyTestTool(tableRows, keyLineDataMap);
+		PolytomousKeyTestTool tester = new PolytomousKeyTestTool(tableRows, keyLineDataMap, driver);
+
 		tester.runTest();
 	}
 
