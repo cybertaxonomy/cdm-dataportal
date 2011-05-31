@@ -3,9 +3,9 @@
 
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
 */
@@ -29,11 +29,11 @@ function theme_cdm_reference_pager($referencePager, $path, $parameters = array()
 
 
 /**
- * used by 
+ * used by
  *  - theme_cdm_typedesignations
  *  - theme_cdm_reference_pager
  *  - theme_cdm_taxonRelationships
- *  
+ *
  */
 function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE, $referenceStyle = NULL ){
   global $theme_key; //TODO: implement in the palmae theme the concrete case
@@ -42,13 +42,15 @@ function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE
 	if($style == "zoology"){
 		$year = partialToYear($reference->datePublished->start);
 		$citation = $author_team->titleCache . ($year ? '. '.$year : '');
-	}elseif ($theme_key == 'palmweb_2') {
+	}else
+	  //FIXME move palmweb specific lines to palweb theme !!!!
+	  if ($theme_key == 'palmweb_2') {
 		$year = partialToYear($reference->datePublished->start);
     $citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
     $citation = str_replace('..', '.', $citation);
 	} else {
 		$citation = $reference->titleCache;
-		
+
 		//$year = partialToYear($reference->datePublished->start);
 		//$citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
 		//$citation = str_replace('..', '.', $citation);
@@ -65,7 +67,7 @@ function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE
     if(!empty($descriptionElementSource->citationMicroReference)){
         $out .= ': '. $descriptionElementSource->citationMicroReference;
      }
-     
+
     return $out;
 }
 
@@ -83,7 +85,7 @@ function short_form_of_author_team ($author_team){
 			break;
 		default:
 			$result_parts = explode(' & ', $author_team);
-      $result = $result_parts[0] . ' et al.';	  
+      $result = $result_parts[0] . ' et al.';
 	}
 	return $result;
 }
