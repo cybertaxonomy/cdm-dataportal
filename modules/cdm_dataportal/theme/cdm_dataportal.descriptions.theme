@@ -1037,7 +1037,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
               $out .= ($i++ > 0 ? ', ' : '') . '<span class="modifyingText">'. $languageString->text . '</span> ';
             }
           }
-          $out .=  theme("cdm_taxonName", $taxonChild->taxon->name, path_to_taxon($taxonChild->taxon->uuid));
+          $out .=  theme("cdm_taxonName", $taxonChild->taxon->name, url(path_to_taxon($taxonChild->taxon->uuid)));
           $out .=  '</div>';
         }
 
