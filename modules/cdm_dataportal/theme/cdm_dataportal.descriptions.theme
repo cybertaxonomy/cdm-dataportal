@@ -515,6 +515,11 @@ function theme_cdm_description_element_image_source($image_sources, $asListEleme
  */
 function theme_cdm_descriptionElementDistribution($descriptionElements, $enclosingTag = "span"){
 
+
+	if(!$enclosingTag){
+		$enclosingTag = "span";
+	}
+
   $out = '';
   $separator = ',';
   RenderHints::pushToRenderStack('descriptionElementDistribution');
