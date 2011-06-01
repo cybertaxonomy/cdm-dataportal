@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.php.debug.core.launching.webPageLaunch">
 <booleanAttribute key="auto_generated_url" value="false"/>
-<stringAttribute key="base_url" value="http://127.0.0.1/cyprus/?q=admin/settings/cdm_dataportal/geo"/>
+<stringAttribute key="base_url" value="http://127.0.0.1/palmae/?q=cdm_dataportal/taxon/de8a2f5a-3c2c-42c9-a02f-5264d31727ae"/>
 <stringAttribute key="debugOutputEncoding" value="UTF-8"/>
 <stringAttribute key="debugPages" value="debugAllPages"/>
 <stringAttribute key="debugTransferEncoding" value="UTF-8"/>

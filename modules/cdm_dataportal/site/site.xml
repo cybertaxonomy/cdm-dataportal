@@ -14,12 +14,16 @@
 			<item name="Download" href="download.html"/>
 
 		</menu>
-		
+
+		<menu name="Getting Help">
+			<item name="Admin FAQ" href="admin-faq.html"/>
+		</menu>
+
 		<menu name="Developer">
 			<item name="Getting started" href="getting-started.html"/>
 			<item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/CdmDataportalDev"/>
 		</menu>
-		
+
 		<menu name="Project">
 			<item name="Mailing Lists" href="mail-lists.html"/>
 			<item name="Project Team" href="team-list.html"/>

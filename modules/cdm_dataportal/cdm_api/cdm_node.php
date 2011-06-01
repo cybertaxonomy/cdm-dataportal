@@ -74,10 +74,13 @@ function cdm_node_show($cdm_node_type, $uuid, $title, $content){
  * @return unknown_type
  */
 function cdm_add_node_content(&$node, &$content, $weight){
+
 	$cdm_content = array(
-        '#value' => $content,
+		// wrap content in cdm_dataportal specific container
+        '#value' => '<div id="cdm_dataportal.node">' . $content . '</div>',
         '#weight' => variable_get('cdm_content_weight', -1)
 	);
+
 	$node->content['cdm'] = $cdm_content;
 }
 

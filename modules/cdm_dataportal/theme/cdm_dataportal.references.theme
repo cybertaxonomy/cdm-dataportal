@@ -44,10 +44,10 @@ function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE
 		$citation = $author_team->titleCache . ($year ? '. '.$year : '');
 	}else
 	  //FIXME move palmweb specific lines to palweb theme !!!!
-	  if ($theme_key == 'palmweb_2') {
+	if ($theme_key == 'palmweb_2') {
 		$year = partialToYear($reference->datePublished->start);
-    $citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
-    $citation = str_replace('..', '.', $citation);
+    	$citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
+    	$citation = str_replace('..', '.', $citation);
 	} else {
 		$citation = $reference->titleCache;
 

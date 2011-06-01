@@ -12,10 +12,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>portal</artifactId>
-	<version>2.5</version>
+	<version>3.0.5</version>
 	<packaging>jar</packaging>
 	<name>CDM Dataportal</name>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -79,7 +79,7 @@
 <!-- your SVN account id please! -->
 			<id>f.revilla</id>
 			<name>
-				Francisco Revilla	
+				Francisco Revilla
 			</name>
 			<email>f.revilla [at] bgbm.org</email>
 			<organization>
@@ -173,7 +173,7 @@
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
-			</plugin>			
+			</plugin>
 			<!-- DEPLOY -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -186,7 +186,7 @@
 								<!--
 									${project.patchversion} is explicitly set in this pom
 								-->
-								<property name="project.fullversionstring" 
+								<property name="project.fullversionstring"
 								    value="${project.fullversionstring}" />
 								<ant antfile="${project.basedir}/src/main/installer/linux/build-deb.xml"
 									dir="${project.basedir}" />

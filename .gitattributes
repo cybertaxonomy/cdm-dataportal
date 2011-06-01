@@ -233,7 +233,7 @@ modules/cdm_dataportal/site/apt/index.apt -text
 modules/cdm_dataportal/site/apt/installation.apt -text
 modules/cdm_dataportal/site/apt/screenshots.apt -text
 modules/cdm_dataportal/site/changes/changes.xml -text
-modules/cdm_dataportal/site/fml/faq.fml -text
+modules/cdm_dataportal/site/fml/admin-faq.fml -text
 modules/cdm_dataportal/site/fml/troubleshooting.fml -text
 modules/cdm_dataportal/site/resources/images/cichorieae-search.PNG -text
 modules/cdm_dataportal/site/resources/images/cichorieae1.PNG -text
