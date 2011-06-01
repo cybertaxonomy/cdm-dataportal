@@ -10,6 +10,7 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import eu.etaxonomy.dataportal.TestConfiguration;
 import eu.etaxonomy.dataportal.selenium.JUnitWebDriverWait;
 
 public class PortalPage {
@@ -32,7 +33,8 @@ public class PortalPage {
 		this.driver = driver;
 		this.initialUrl = new URL(driver.getCurrentUrl());
 		this.wait = new JUnitWebDriverWait(driver, 25);
-		logger.info("new " + this.getClass().getSimpleName() + " for " + initialUrl);
+
+		logger.info("loading " + initialUrl);
 	}
 
 	public void goToInitialPage() {
@@ -40,10 +42,19 @@ public class PortalPage {
 		PageFactory.initElements(driver, this);
 	}
 
+	/**
+	 * returns the string from the <code>title</code> tag.
+	 * @return
+	 */
 	public String getTitle() {
 		return title.getText();
 	}
 
+
+	/**
+	 * Returns the current URL string from the {@link WebDriver}
+	 * @return
+	 */
 	public String getURL() {
 		return driver.getCurrentUrl();
 	}
@@ -59,8 +70,7 @@ public class PortalPage {
 	public boolean equals(Object obj) {
 		if (PortalPage.class.isAssignableFrom(obj.getClass())) {
 			PortalPage page = (PortalPage) obj;
-			return this.getTitle().equals(page.getTitle())
-					&& this.getURL().equals(page.getURL());
+			return this.getURL().equals(page.getURL());
 
 		} else {
 			return false;

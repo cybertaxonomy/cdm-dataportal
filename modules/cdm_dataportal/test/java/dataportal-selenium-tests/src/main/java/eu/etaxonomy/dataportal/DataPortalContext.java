@@ -15,10 +15,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 /**
- * TODO 1. allow overwriting the hard coded contexts configuration by {user.home}/.cdmLibrary/DataPortalTest.properties
- * TODO 2. let constructor read from a dataPortalTestContext.properties located in the jar (/dataportal-selenium-tests/src/main/resources/eu/etaxonomy/dataportal/DataPortalTest.properties)
- * TODO 3. DataPortalTest.properties should allow setting the defalut eu.etaxonomy.dataportal.selenium.CdmDataPortalTestBase.SYSTEM_PROPERTY_NAME_BROWSER
- * TODO 4. DataPortalTest.properties should allow setting webdriver.firefox.bin etc in order to circumven the need to set it by -Dwebdriver.firefox.bin
  *
  * @author a.kohlbecker
  *
@@ -33,7 +29,9 @@ public enum DataPortalContext {
 	URI baseUri;
 	URI cdmServerUri;
 	UUID classificationUUID;
+	String siteName; //TODO could be read with drush: $ drush vget site_name
 	String themeName;
+
 
 	public final Logger logger = Logger.getLogger(DataPortalContext.class);
 
@@ -41,6 +39,7 @@ public enum DataPortalContext {
 		this.baseUri = TestConfiguration.getProperty(composePropertyKey("baseUri"), URI.class);
 		this.cdmServerUri = TestConfiguration.getProperty(composePropertyKey("cdmServerUri"), URI.class);
 		this.classificationUUID = TestConfiguration.getProperty(composePropertyKey("classificationUUID"), UUID.class);
+		this.siteName = TestConfiguration.getProperty(composePropertyKey("siteName"));
 	}
 
 	private String composePropertyKey(String fieldName) {
@@ -58,6 +57,10 @@ public enum DataPortalContext {
 
 	public UUID getClassificationUUID() {
 		return classificationUUID;
+	}
+
+	public String getSiteName() {
+		return siteName;
 	}
 
 }
