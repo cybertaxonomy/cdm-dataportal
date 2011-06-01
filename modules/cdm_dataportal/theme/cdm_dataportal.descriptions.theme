@@ -386,10 +386,10 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
 
 	if(variable_get('distribution_sort', 'NO_SORT')  != 'NO_SORT'){
 		$glue = '';
-		$enclosingHtml = 'dl';
+		$enclosingTag = 'dl';
 	} else {
 		$glue = '';
-		$enclosingHtml = 'ul';
+		$enclosingTag = 'ul';
 	}
 
   $sortOutArray = false;
