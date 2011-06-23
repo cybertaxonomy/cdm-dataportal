@@ -162,10 +162,6 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
     $out .= $taxon_image_gallery;
 
     $out .= '</div>';
-
-    if($theme == 'garland_cichorieae'){
-      $out .= theme('cdm_taxon_page_images_cichorieae_copyright');
-    }
   }
 
   // --- PAGE PART: SYNONYMY --- //
@@ -519,50 +515,13 @@ function taxon_image_gallery_fsi($taxon, $media){
 
   if($flashLink){
 
-    $taggedName = $taxon->name->taggedName;
-
-    $nameArray = array();
-    foreach($taggedName as $taggedText){
-      if($taggedText->type == 'name'){
-        $nameArray[] = $taggedText->text;
-      }
+    if(module_exists("fsi_gallery")){
+    	$out = theme("fsi_gallery", $taxon, $media );
+    } else {
+    	$message = t('In order to use the FSI gallery you must enable the according ') . l(t("module"), "admin/build/modules");
+    	drupal_set_message($message, "error");
+    	$out = '<h3>' . $message . '</h3>';
     }
-
-    $query = join("%5F", $nameArray) . '%20AND%20EditWP6%20AND%20jpg';
-
-    $out = '
-
-<script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
-
-<script type="text/javascript">
-<!--
-  writeFlashCode( "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=textbox,fullscreen",
-    "http://media.bgbm.org/erez/erez?src=erez-private/flashrequired.svg&tmp=Large&quality=97&width=620&height=400",
-    "width=620;height=400;bgcolor=454343;wmode=opaque");
-// -->
-</script>
-<noscript>
-  <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,65,0" width="470" height="400">
-    <param name="movie" value="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=textbox,fullscreen"/>
-    <param name="bgcolor" value="454343" />
-    <param name="wmode" value="opaque" />
-    <param name="allowscriptaccess" value="always" />
-    <param name="allowfullscreen" value="true" />
-    <param name="quality" value="high" />
-    <embed src="http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='.$query.'&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343plugins=PrintSave,textbox,fullscreen"
-      width="620"
-      height="400"
-      bgcolor="454343"
-      wmode="opaque"
-      allowscriptaccess="always"
-      allowfullscreen="true"
-      quality="high"
-      type="application/x-shockwave-flash"
-      pluginspage="http://www.adobe.com/go/getflashplayer">
-    </embed>
-  </object>
-
-</noscript>';
 
   }else{
     $out = 'No images available.';
