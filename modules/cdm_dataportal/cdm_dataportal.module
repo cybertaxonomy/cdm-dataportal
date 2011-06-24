@@ -1343,15 +1343,20 @@ function cdm_read_media_metadata($media){
 		//		$metadata_caption['title'] = $media_metadata->ObjectName;
 	} else if ($media_metadata_aux['Object Name']){
 		$metadata_caption['title'] = $media_metadata_aux['Object Name'];
+	} else if ($media->title_L10n){
+		$metadata_caption['title'] = $media->title_L10n;
 	} else if ($media->titleCache){
 		$metadata_caption['title'] = $media->titleCache;
-		if ($media->description_L10n)
-		$metadata_caption['title'] .= ' - ' . $media->description_L10n;
-	}else{ //if there is no title on the db and metadata get file title
+	} else{ //if there is no title on the db and metadata get file title
 		$aux = $media->representations[0]->parts[0]->uri;
 		$aux = explode("/", $aux);
 		$aux = end($aux);
 		$metadata_caption['title'] = $aux;
+	}
+
+	// append description to title
+	if ($media->description_L10n) {
+		$metadata_caption['title'] .= '<span class="media-description"> -' . $media->description_L10n . '<span>';
 	}
 
 	//artist
