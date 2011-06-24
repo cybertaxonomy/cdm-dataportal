@@ -80,13 +80,20 @@ function theme_cdm_featureTreeTOCs($mergedTrees){
 }
 
 
-
-function theme_cdm_feature_nodes($featureNodes, $taxon){
+/**
+ * Renders the $mergedFeatureNodes fro the given $taxon.
+ * The merged nodes can be obtained by making use of the
+ * function cdm_ws_descriptions_by_featuretree()
+ *
+ * @param unknown_type $featureNodes
+ * @param unknown_type $taxon
+ */
+function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
 
   RenderHints::pushToRenderStack('feature_nodes');
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
-  foreach($featureNodes as $node){
+  foreach($mergedFeatureNodes as $node){
     // process $descriptionElements with content only
     if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0 || count($node->children) > 0){
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
@@ -410,6 +417,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
           $repr = theme ('cdm_descriptionElementTextData', $descriptionElement, $asListElement, $descriptionElement->feature->uuid);
 
           if( !array_search($repr, $outArray)){
+          	$outArray[] = $repr;
             //TODO HINT: sorting in theme_cdm_descriptionElementArray will not work since this array contains html attributes with uuids !!!!
             $sortOutArray = true;
             $glue = '<br/> ';
