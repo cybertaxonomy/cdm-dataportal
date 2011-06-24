@@ -52,12 +52,15 @@ function fsi_gallery_admin() {
 			. "</p>"
 
 	);
+	/*
+	 * not yet used
 	$form['fsi_name_substitutions'] = array(
       '#type' => 'textarea',
       '#title' => t('Taxon name subtitution rules'),
       '#default_value' => variable_get('fsi_name_substitutions', false),
       '#description' => t("One regex substitution rule per line")
 	);
+	*/
 	$form['fsi_caption'] = array(
       '#type' => 'textarea',
       '#title' => t("Gallery caption"),
@@ -76,7 +79,7 @@ function fsi_gallery_menu($may_cache) {
 
   $items = array();
 
-  	if ($may_cache) {
+  	if (!$may_cache) {
 
 	  $items[] = array(
 	    'path' => 'admin/settings/cdm_dataportal/fsi_gallery',
@@ -86,6 +89,7 @@ function fsi_gallery_menu($may_cache) {
 	    'callback arguments' => 'fsi_gallery_admin',
 	    'access' => user_access('access administration pages'),
 	    'type' => MENU_NORMAL_ITEM,
+	  	'weight' => 10
 	   );
   	}
 
@@ -101,10 +105,10 @@ function _showcase_query_name($taxon){
       if($taggedText->type == 'name'){
         $nameArray[] = $taggedText->text;
       }
+      if($taggedText->type == 'rank'){
+        $nameArray[] = substr($taggedText->text, 0 ,1);
+      }
     }
-
-    //TODO apply substitution rules
-
 
 	return join("%5F", $nameArray);
 }
