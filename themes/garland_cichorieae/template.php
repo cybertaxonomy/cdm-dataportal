@@ -459,8 +459,8 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
 		$captionElements = array('title', '#uri'=>t('open Image'));
 	}
 
-	$galleryLinkUri = path_to_taxon($taxon->uuid, true).'/images';
-	$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+	$mediaQueryParameters = array("type"=>"ImageFile");
+	$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid), queryString($mediaQueryParameters));
 	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'NORMAL', $galleryLinkUri, null);
 
 	return $out;

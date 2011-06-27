@@ -347,9 +347,6 @@ function theme_cdm_back_to_search_result_button(){
 }
 
 function theme_cdm_back_to_image_gallery_button(){
-	//$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
-	//$gallery_name = $taxon->uuid;
-	//$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
 
 	$out = '<div id="backToGalleryButton">'.l(t('Back to Images'), $_SESSION['cdm']['last_gallery'] ).'</div>';
 

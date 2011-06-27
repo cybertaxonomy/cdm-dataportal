@@ -63,13 +63,14 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
 
 
   // --- GET Images --- //
-  $prefMimeTypeRegex = 'image:.*';
-  $prefMediaQuality = '*';
+
+  $mediaQueryParameters = array("type"=>"ImageFile");
+
   $selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
   if ($selectShowMedia == 0){
-    $media = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+    $media = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid), queryString($mediaQueryParameters));
   }else{
-    $media = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+    $media = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array($taxon->uuid), queryString($mediaQueryParameters));
   }
   if(!isset($media[0])) {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Images');

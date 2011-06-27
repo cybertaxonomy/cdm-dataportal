@@ -166,18 +166,18 @@ function theme_cdm_acceptedFor(){
 function theme_cdm_list_of_taxa($records, $showMedia = false){
 
 	RenderHints::pushToRenderStack('list_of_taxa');
-    
+
 	$form_name = 'search_gallery';
 	//$default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
     //$gallery_settings = variable_get($form_name, $default_values);
-    
+
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
-    
+
 	$showMedia_taxa = $gallery_settings['cdm_dataportal_show_taxon_thumbnails'];
-	$showMedia_synonyms = $gallery_settings['cdm_dataportal_show_synonym_thumbnails'];	
+	$showMedia_synonyms = $gallery_settings['cdm_dataportal_show_synonym_thumbnails'];
 	//$showMedia_taxa = variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1);
 	//$showMedia_synonyms = variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0);
-		
+
 	$classification_uuid = get_taxonomictree_uuid_selected();
 
 	// .. well, for sure not as performant as before, but better than nothing.
@@ -372,8 +372,6 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 	$gallery_name = $taxon->uuid;
 
 	$showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 1);
-	$prefMimeTypeRegex = 'image:.*';
-	$prefMediaQuality = '*';
 
 	$gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
     $showCaption = $gallery_settings['cdm_dataportal_show_thumbnail_captions'];
@@ -381,13 +379,13 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 		//$captionElements = array('title', '#uri'=>t('open Image'));
 		$captionElements = array('title', 'rights');
 	}
-
+ 	$mediaQueryParameters = array("type"=>"ImageFile");
 	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
 	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
 	if ($selectShowMedia == 0){
-		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid), queryString( $mediaQueryParameters ));
 	}else{
-		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array($taxon->uuid, $prefMimeTypeRegex, $prefMediaQuality));
+		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array($taxon->uuid), queryString( $mediaQueryParameters ));
 	}
 	//$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_MEDIA, array(variable_get('cdm_taxonomictree_uuid', false), $taxon ->rank, $taxon->uuid ));
 	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,

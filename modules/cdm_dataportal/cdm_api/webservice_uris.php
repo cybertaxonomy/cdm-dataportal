@@ -73,8 +73,8 @@ define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
  */
 define('CDM_WS_PORTAL_TAXON_ACCEPTED', 'portal/taxon/$0/accepted/$1');
 
-define('CDM_WS_PORTAL_TAXON_MEDIA', 'portal/taxon/$0/media/$1/$2');
-define('CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA', 'portal/taxon/$0/subtree/media/$1/$2');
+define('CDM_WS_PORTAL_TAXON_MEDIA', 'portal/taxon/$0/media');
+define('CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA', 'portal/taxon/$0/subtree/media');
 
 /**
  *
