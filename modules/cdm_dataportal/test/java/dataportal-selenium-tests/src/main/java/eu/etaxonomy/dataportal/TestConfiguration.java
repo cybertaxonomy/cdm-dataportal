@@ -28,7 +28,7 @@ public class TestConfiguration {
 	/**
 	 *
 	 */
-	private static final String DATA_PORTAL_TEST_PROPERTIES_FILE = "DataPortalTest.properties";
+	private static final String DATA_PORTAL_TEST_PROPERTIES_FILE = "DataPortalTest.xml";
 
 	public final static Logger logger = Logger.getLogger(TestConfiguration.class);
 
@@ -58,7 +58,7 @@ public class TestConfiguration {
 					propertySourceUri = this.getClass().getResource("/eu/etaxonomy/dataportal/DataPortalTest.properties");
 				}
 				logger.info("Loading test configuration from " + propertySourceUri);
-				properties.load(in);
+				properties.loadFromXML(in);
 				in.close();
 
 				updateSystemProperties(false);
