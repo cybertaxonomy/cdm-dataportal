@@ -11,7 +11,7 @@
 
 #general h2{
 	font-size: 120%;
-	color: #97ac2d;	
+	color: #97ac2d;
 }
 
 */
@@ -20,12 +20,12 @@
 }
 
 
-.preferredImage {
+#taxonProfileImage {
 	float: right;
 }
 
 .Taxon .reference, .Synonym .reference, .Taxon .status, .Synonym .status {
-	font-size: 90%; 
+	font-size: 90%;
 }
 
 h2.with-tabs .authors{
@@ -54,10 +54,10 @@ background-color: transparent;
 
 /* switch off highlighting of synonyms */
 .synonym span.highlite{
-  background-color: #96AB2C;	
+  background-color: #96AB2C;
 }
 
-/* HACK for DEMO 
+/* HACK for DEMO
 div.error{
 		display: none;
 	}

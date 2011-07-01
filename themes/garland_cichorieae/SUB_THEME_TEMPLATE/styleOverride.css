@@ -6,7 +6,7 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 }
 
 #splash {
-  background:#EAEAE2 url(images/flora-malesiana-header2.jpg) no-repeat scroll 0 0; 
+  background:#EAEAE2 url(images/flora-malesiana-header2.jpg) no-repeat scroll 0 0;
   height:92px;
   float:left;
   width:570px;
@@ -25,6 +25,6 @@ background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
 	z-index:4;
 }
 
-.featureTOC{
+#featureTOC{
 	float: left;
 }

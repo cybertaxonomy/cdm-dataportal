@@ -36,7 +36,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h2 .synonym_title {
-  display: block;	
+  display: block;
   font-size: 50%;
   color: #96AB2C;
   margin: 0;
@@ -509,7 +509,7 @@ body.sidebars #footer {
 }
 
 #wrapper #container #general img.left{
-	float: right;	
+	float: right;
 }
 
 #wrapper #container #general .clear-block{
@@ -521,10 +521,10 @@ body.sidebars #footer {
 	/*font-weight: bold;
 	/*color: #97ac2d;*/
 }
-#wrapper #container #general .featureTOC h2{
+#wrapper #container #general #featureTOC h2{
 	color: #222;
 }
-#wrapper #container #general .featureTOC ul li{
+#wrapper #container #general #featureTOC ul li{
 	list-style-type: none;
 	color: #F03300;
 	padding: 0;
@@ -549,7 +549,7 @@ body.sidebars #footer {
   background-color: #fff;
   border: 1px solid #e0e5fb;
   margin-bottom: 2em;
-  font-size: 80%;	
+  font-size: 80%;
 }
 
 /**
@@ -635,7 +635,7 @@ ul.primary, ul.primary li, ul.secondary, ul.secondary li {
 
 #backButton{
 	margin: 0 0 10px;
-	font-size: 80%;	
+	font-size: 80%;
 }
 
 #funded-by{
@@ -668,7 +668,7 @@ ul.secondary li a, ul.secondary li.active a, ul.secondary li a:hover, ul.seconda
   text-decoration: none;
   position: relative;
   top: -2px;
-  
+
   border: 1px solid #ddd;
 }
 ul.primary li.active a, ul.primary li.active a:link, ul.primary li.active a:visited, ul.primary li a:hover,

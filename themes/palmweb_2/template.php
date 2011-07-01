@@ -6,7 +6,7 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hideImages = false){
+function palmweb_2_cdm_taxon_page_profile($taxon, $mergedTrees, $media, $hideImages = false){
 
 
   if(!$hideImages){
@@ -19,7 +19,7 @@ function palmweb_2_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hid
 
     // preferred image size 184px × 144
     $imageMaxExtend = 184;
-    $out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
+    $out .= '<div id="taxonProfileImage">'.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
   }
 
   // description TOC

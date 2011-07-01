@@ -29,7 +29,7 @@ function theme_cdm_taxon_page_title($taxon, $uuid){
 
 /**
  * Default title for a name page
- * @param $taxon_name The taxon name object
+ * @param string $taxon_name The taxon name object
  * @return the formatted name title
  */
 function theme_cdm_name_page_title($taxon_name){
@@ -54,7 +54,7 @@ function theme_cdm_name_page_title($taxon_name){
  * @param $page_part name of the part to display,
  *         valid values are: 'description', 'images', 'synonymy', 'all'
  */
-function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
+function theme_cdm_taxon_page($taxon, $page_part = 'description') {
 
   global $theme;
 
@@ -146,7 +146,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
     $mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $nonStructuredDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
 
     $out .= '<div id="general">';
-    $out .= theme('cdm_taxon_page_description', $taxon, $mergedTrees, $media, $hideImages);
+    $out .= theme('cdm_taxon_page_profile', $taxon, $mergedTrees, $media, $hideImages);
     $out .= '</div>';
   }
 
@@ -205,7 +205,7 @@ function theme_cdm_taxon_page_general($taxon, $page_part = 'description') {
  * accepted taxon.
  *
  */
-function theme_cdm_taxon_page_description($taxon, $mergedTrees, $media = null, $hideImages = false){
+function theme_cdm_taxon_page_profile($taxon, $mergedTrees, $media = null, $hideImages = false){
 
   if( variable_get('cdm_dataportal_show_default_image', false) && !$hideImages){
     // preferred image
@@ -217,7 +217,7 @@ function theme_cdm_taxon_page_description($taxon, $mergedTrees, $media = null, $
 
     // preferred image size 184px × 144
     $imageMaxExtend = 184;
-    $out .= '<div class="preferredImage">'.$defaultRepresentationPart->uri.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
+    $out .= '<div id="taxonProfileImage">'.$defaultRepresentationPart->uri.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend).'</div>';
   }
   // description TOC
   $out .= theme('cdm_featureTreeTOCs', $mergedTrees);

@@ -12,7 +12,7 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $media, $hideImages = false){
+function garland_cichorieae_cdm_taxon_page_profile($taxon, $mergedTrees, $media, $hideImages = false){
 
 	RenderHints::pushToRenderStack('taxon_page_description');
 	// description TOC
@@ -31,7 +31,7 @@ function garland_cichorieae_cdm_taxon_page_description($taxon, $mergedTrees, $me
 		$imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
 
 		$imageMaxExtend = 400;
-		$out .= '<div class="preferredImage">'.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend, $imageUriParams).'</div>';
+		$out .= '<div id="taxonProfileImage">'.theme('cdm_preferredImage', $media, $defaultRepresentationPart, $imageMaxExtend, $imageUriParams).'</div>';
 	}
 
 	// description

@@ -1033,7 +1033,7 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = null
 	}
 
 	// render the taxon page
-	$taxonpage->content = theme('cdm_taxon_page_general', $taxon, $chapter);
+	$taxonpage->content = theme('cdm_taxon_page', $taxon, $chapter);
 
 	return $taxonpage;
 }

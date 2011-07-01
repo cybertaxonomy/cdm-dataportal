@@ -66,7 +66,7 @@ function theme_cdm_featureTreeTOCs($mergedTrees){
     return;
   }
   //FIXME
-  $out = '<div class="featureTOC">';
+  $out = '<div id="featureTOC">';
   $out .= '<h2>' . t('Content') .'</h2>';
 
   //TODO diplay title and reference in case of multiple $mergedTrees -> theme

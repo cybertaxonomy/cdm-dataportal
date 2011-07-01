@@ -21,10 +21,10 @@ body {
 }
 */
 
-heterotypicSynonymyGroup li.footnotes, 
-.homotypicSynonymyGroup li.footnotes, 
-.homotypicSynonyms li.footnotes, 
-.misapplied li.footnotes, 
+heterotypicSynonymyGroup li.footnotes,
+.homotypicSynonymyGroup li.footnotes,
+.homotypicSynonyms li.footnotes,
+.misapplied li.footnotes,
 .content li.descriptionText {
     background-image: none;
     list-style-image: none;
@@ -96,10 +96,10 @@ heterotypicSynonymyGroup li.footnotes,
 }
 
 #splash {
-	/* 
-	background:#EAEAE2 url(images/splashChichorium_wide.jpg) no-repeat scroll 0 0; 
+	/*
+	background:#EAEAE2 url(images/splashChichorium_wide.jpg) no-repeat scroll 0 0;
 	*/
-	background:#EAEAE2 url(images/test3_Vicia_lunata_CSC_6051.jpg) no-repeat scroll 0 0; 
+	background:#EAEAE2 url(images/test3_Vicia_lunata_CSC_6051.jpg) no-repeat scroll 0 0;
 	height:92px;
 	/*float:left;*/
 	width:780px;
@@ -116,7 +116,7 @@ heterotypicSynonymyGroup li.footnotes,
 #contento {
 	position: relative;
 	float: left;
-	clear: both;	
+	clear: both;
 	z-index: 3;
 }
 
@@ -128,16 +128,16 @@ ul.homotypicSynonyms, ul.heterotypicSynonymyGroup {
 	border-bottom:1px solid #dedede;
 }
 
-.featureTOC{
+#featureTOC{
 	float:right;
 }
 
-.featureTOC li{
+#featureTOC li{
   line-height: 1.2em;
 }
 
-.featureTOC h2 {
-  margin-top: 0;	
+#featureTOC h2 {
+  margin-top: 0;
 }
 
 ul.cdm_names li {
@@ -162,13 +162,13 @@ span.cluetip {
 }
 
 /* img.left {
-	float: left;	
+	float: left;
 	padding: 0 5px 5px 0;
 }
 */
 
 .clear-block {
-	clear: both;	
+	clear: both;
 }
 
 
@@ -182,11 +182,11 @@ ul.cdm_taxontree li .active {
 }
 
 #sidebar-left {
-	float: left;	
+	float: left;
 }
 
 #wrapper #container #center, #wrapper #container .sidebar {
-	margin-top: 20px ;	
+	margin-top: 20px ;
 }
 
 #wrapper #container .breadcrumb {
@@ -210,7 +210,7 @@ ul.cdm_taxontree li .active {
 ul.primary, ul.secondary {
   clear: both;
   float:right;
-  
+
 }
 
 ul.secondary {
@@ -257,12 +257,12 @@ ul.primary-links li a:hover, ul.primary-links li a.active{
 }
 
 ul.primary-links li a, ul.primary-links li a:link, ul.primary-links li a:visited{
-	background-image: none;	
+	background-image: none;
 }
 
 
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited {
-	white-space:normal;	
+	white-space:normal;
 }
 
 ul.primary-links li{
@@ -287,7 +287,7 @@ a:active, a.active {
 }
 
 ul.tab-menu{
-	border-bottom: 1px solid #000;	
+	border-bottom: 1px solid #000;
 	text-align: right;
 }
 
@@ -298,27 +298,27 @@ ul.tab-menu{
   padding: 4px 4px 2px 4px;
   margin: 2px;
   border: 1px solid #000;
-  display: inline;	
+  display: inline;
   background: #ddd;
 }
 
 li.ui-tabs-selected{
 	background: #fff;
-	border-bottom: 1px solid #fff;	
+	border-bottom: 1px solid #fff;
 }
 
 .ui-tabs-hide{
-	display: none;	
+	display: none;
 }
 
 #tabs-wrapper{
 	margin: 0;
-	padding: 0;	
+	padding: 0;
 }
 
 
 #tab-synonymy{
-	line-height: 150%;	
+	line-height: 150%;
 }
 
 .node {
@@ -328,7 +328,7 @@ li.ui-tabs-selected{
 }
 
 span.acceptedFor, #backButton {
-	font-size: 0.9em;	
+	font-size: 0.9em;
 }
 
 #backButton {
@@ -336,7 +336,7 @@ span.acceptedFor, #backButton {
 }
 
 #cdm-dataportal-settings .form-item fieldset {
-	padding: 0.5em;	
+	padding: 0.5em;
 }
 
 .cdm_taxontree_scroller_xy{
@@ -402,7 +402,7 @@ span.submitted, .description {
 }
 
 li.toclevel-1 {
-	background-image: none;	
+	background-image: none;
 }
 
 li.toclevel-2 {
