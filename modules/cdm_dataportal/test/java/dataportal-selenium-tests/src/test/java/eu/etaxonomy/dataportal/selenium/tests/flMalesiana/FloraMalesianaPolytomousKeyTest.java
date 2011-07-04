@@ -7,7 +7,10 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.dataportal.selenium.tests;
+package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
+
+import java.net.MalformedURLException;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,16 +34,16 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 
 	/**
 	 * see http://dev.e-taxonomy.eu/trac/ticket/2350
+	 * @throws MalformedURLException
 	 *
 	 */
 	@Test
-	public void key_to_Malaysian_Sapindaceae_Genera() {
+	public void key_to_Malaysian_Sapindaceae_Genera() throws MalformedURLException {
 
-		String pageUrlString = getBaseUrl() + "?q=cdm_dataportal/polytomousKey/40cf3253-ce7a-4ad6-9a32-27695c36eb5d";
+		UUID keyUuid = UUID.fromString("40cf3253-ce7a-4ad6-9a32-27695c36eb5d");
 
-		driver.get(pageUrlString);
+		PolytomousKeyPage p = new PolytomousKeyPage(driver, getContext(), keyUuid);
 
-		PolytomousKeyPage p = PageFactory.initElements(driver, PolytomousKeyPage.class);
 		PortalPage targetPage;
 		KeyLineData keyLineData;
 
@@ -59,7 +62,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 				LinkClass.nodeLinkToTaxon, "Cardiospermum");
 		targetPage = p.followPolytomousKeyLine(1, keyLineData);
 		Assert.assertEquals(prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
-		p.goToInitialPage();
+		p.get();
 
 		// -------- //
 		keyLineData = new KeyLineData("1", "Leaves simple, unifoliolate, (im)paripinnate or digitate", LinkClass.nodeLinkToNode, "2");
@@ -70,7 +73,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 		keyLineData = new KeyLineData("1'", "Leaves bipinnate", LinkClass.nodeLinkToTaxon, "Tristiropsis");
 		targetPage = p.followPolytomousKeyLine(3, keyLineData);
 		Assert.assertEquals(prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
-		p.goToInitialPage();
+		p.get();
 
 		// -------- //
 		keyLineData = new KeyLineData(
@@ -79,7 +82,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 				LinkClass.nodeLinkToTaxon, "Synima cordierorum");
 		targetPage = p.followPolytomousKeyLine(126, keyLineData);
 		Assert.assertEquals(prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
-		p.goToInitialPage();
+		p.get();
 
 		// -------- //
 		keyLineData = new KeyLineData(

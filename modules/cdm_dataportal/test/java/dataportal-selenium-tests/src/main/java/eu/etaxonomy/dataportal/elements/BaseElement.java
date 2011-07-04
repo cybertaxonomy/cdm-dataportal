@@ -21,9 +21,17 @@ import org.openqa.selenium.RenderedWebElement;
  */
 public class BaseElement {
 
-	public List<String> classAttributes = null;
+
+	private RenderedWebElement element;
+
+	private List<String> classAttributes = null;
 
 	private String text = null;
+
+
+	public RenderedWebElement getElement() {
+		return element;
+	}
 
 	public String getText() {
 		return text;
@@ -46,6 +54,8 @@ public class BaseElement {
 	 */
 	public BaseElement(RenderedWebElement element) {
 
+		this.element = element;
+
 		// read text
 		text = element.getText();
 
@@ -55,5 +65,6 @@ public class BaseElement {
 			setClassAttributes(Arrays.asList(classTokens));
 		}
 	}
+
 
 }

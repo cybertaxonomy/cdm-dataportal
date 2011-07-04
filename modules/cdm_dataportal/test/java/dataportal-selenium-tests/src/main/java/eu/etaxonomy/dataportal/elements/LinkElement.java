@@ -10,11 +10,6 @@
 
 package eu.etaxonomy.dataportal.elements;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-
 import org.openqa.selenium.RenderedWebElement;
 
 /**
@@ -24,13 +19,13 @@ import org.openqa.selenium.RenderedWebElement;
  */
 public class LinkElement extends BaseElement {
 
-	private URL url = null;
-	public URL getUrl() {
-		return url;
+	private String href = null;
+	public String getUrl() {
+		return href;
 	}
 
-	public void setUrl(URL url) {
-		this.url = url;
+	public void setHref(String href) {
+		this.href = href;
 	}
 
 
@@ -40,11 +35,7 @@ public class LinkElement extends BaseElement {
 
 		// read src url
 		if (a.getAttribute("href") != null) {
-			try {
-				setUrl(new URL(a.getAttribute("href")));
-			} catch (MalformedURLException e) {
-				// IGNORE //
-			}
+				setHref(a.getAttribute("href"));
 		}
 
 	}

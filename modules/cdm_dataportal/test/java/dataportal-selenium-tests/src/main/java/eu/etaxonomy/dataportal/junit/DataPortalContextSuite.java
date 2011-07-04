@@ -48,8 +48,7 @@ public class DataPortalContextSuite extends Suite{
 	private final List<Runner> runners = new ArrayList<Runner>();
 
 
-	private class TestClassRunnerWithDataPortalContext extends
-	BlockJUnit4ClassRunner {
+	private class TestClassRunnerWithDataPortalContext extends BlockJUnit4ClassRunner {
 
 		private final DataPortalContext context;
 

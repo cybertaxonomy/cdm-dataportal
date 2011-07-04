@@ -3,21 +3,13 @@
  */
 package eu.etaxonomy.dataportal.junit;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 
-import eu.etaxonomy.dataportal.Browser;
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.SystemUtils;
 import eu.etaxonomy.dataportal.selenium.WebDriverFactory;
 
 /**
@@ -44,11 +36,13 @@ public abstract class CdmDataPortalTestBase {
 
 	@BeforeClass
 	public static void setUpDriver() {
+		logger.debug("@BeforeClass: setUpDriver()");
 		driver = WebDriverFactory.newWebDriver();
 	}
 
 	@AfterClass
 	public static void closeDriver() {
+		logger.debug("@AfterClass: closeDriver()");
 		if (driver != null) {
 			driver.quit();
 		}
