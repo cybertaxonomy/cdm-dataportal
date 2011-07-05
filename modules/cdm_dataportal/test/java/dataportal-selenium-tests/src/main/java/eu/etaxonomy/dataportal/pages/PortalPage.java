@@ -118,7 +118,7 @@ public abstract class  PortalPage {
 		driver.get(url.toString());
 
 		if(!isOnPage()){
-			throw new Exception("Not on the expected portal page: " + driver.getCurrentUrl());
+			throw new Exception("Not on the expected portal page ( current: " + driver.getCurrentUrl() + ", expected: " +  pageUrl + " )");
 		}
 
 		this.pageUrl = url;
@@ -145,7 +145,7 @@ public abstract class  PortalPage {
 		this.pageUrl = new URL(context.getBaseUri().toString() + DRUPAL_PAGE_QUERY_BASE + getDrupalPageBase());
 
 		if(!isOnPage()){
-			throw new Exception("Not on the expected portal page: " + driver.getCurrentUrl());
+			throw new Exception("Not on the expected portal page ( current: " + driver.getCurrentUrl() + ", expected: " +  pageUrl + " )");
 		}
 
 	    // This call sets the WebElement fields.

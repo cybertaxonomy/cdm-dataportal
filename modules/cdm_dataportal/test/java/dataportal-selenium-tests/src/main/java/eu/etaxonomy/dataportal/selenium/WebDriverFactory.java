@@ -82,7 +82,9 @@ public class WebDriverFactory {
 		try {
 
 			CdmDataPortalTestBase.logger.debug("FirefoxProfile: " + firefoxProfile.getClass().getSimpleName() + "(" + firefoxProfile.hashCode() + ")");
+
 			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
+
 			firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying first run page
 
 			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firexpath-" + FIREXPATH_VERSION + "-fx.xpi");
@@ -102,6 +104,7 @@ public class WebDriverFactory {
 			System.exit(-1);
 		}
 		driver = new FirefoxDriver(firefoxProfile);
+
 
 		return driver;
 	}
