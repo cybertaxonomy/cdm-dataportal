@@ -34,11 +34,11 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 
 	/**
 	 * see http://dev.e-taxonomy.eu/trac/ticket/2350
-	 * @throws MalformedURLException
+	 * @throws Exception
 	 *
 	 */
 	@Test
-	public void key_to_Malaysian_Sapindaceae_Genera() throws MalformedURLException {
+	public void key_to_Malaysian_Sapindaceae_Genera() throws Exception {
 
 		UUID keyUuid = UUID.fromString("40cf3253-ce7a-4ad6-9a32-27695c36eb5d");
 

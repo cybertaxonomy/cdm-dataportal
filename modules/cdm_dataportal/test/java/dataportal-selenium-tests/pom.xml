@@ -12,6 +12,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<selenium-version>2.0rc3</selenium-version>
 	</properties>
 
 	<scm>
@@ -39,6 +40,18 @@
 			<url></url>
 		</developer>
 	</developers>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>http://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 
 	<!-- **** PLUGINS **** -->
@@ -77,32 +90,49 @@
 			selenium 2 webdriver, see
 			http://seleniumhq.org/docs/03_webdriver.html#with-maven
 		-->
+		<!--
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-firefox</artifactId>
-			<version>0.9.7376</version>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-parent</artifactId>
+			<version>${selenium-version}</version>
 		</dependency>
+		 -->
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-chrome</artifactId>
-			<version>0.9.7376</version>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-ie</artifactId>
-			<version>0.9.7376</version>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-htmlunit</artifactId>
-			<version>0.9.7376</version>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-firefox-driver</artifactId>
+			<version>${selenium-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium</artifactId>
-			<version>2.0a7</version>
+			<artifactId>selenium-support</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-api</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<!-- Selenese emulation -->
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-chrome-driver</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-ie-driver</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-htmlunit-driver</artifactId>
+			<version>${selenium-version}</version>
 		</dependency>
 	</dependencies>
-
 
 </project>

@@ -13,7 +13,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
@@ -32,19 +31,19 @@ public class CichorieaeSearchTest extends CdmDataPortalTestBase {
 
 		WebElement nameElement = taxonElement.findElement(By.className("BotanicalName"));
 
-		RenderedWebElement namePart1 = (RenderedWebElement) nameElement.findElement(By.xpath("span[1]"));
+		WebElement namePart1 = nameElement.findElement(By.xpath("span[1]"));
 		Assert.assertEquals("Lapsana", namePart1.getText());
-		Assert.assertEquals("italic", namePart1.getValueOfCssProperty("font-style"));
+		Assert.assertEquals("italic", namePart1.getCssValue("font-style"));
 
-		RenderedWebElement namePart2 = (RenderedWebElement) nameElement.findElement(By.xpath("span[2]"));
+		WebElement namePart2 = nameElement.findElement(By.xpath("span[2]"));
 		Assert.assertEquals("communis", namePart2.getText());
-		Assert.assertEquals("italic", namePart2.getValueOfCssProperty("font-style"));
+		Assert.assertEquals("italic", namePart2.getCssValue("font-style"));
 
-		RenderedWebElement authorPart = (RenderedWebElement) nameElement.findElement(By.xpath("span[3]"));
+		WebElement authorPart = nameElement.findElement(By.xpath("span[3]"));
 		Assert.assertEquals("L.", authorPart.getText());
-		Assert.assertEquals("normal", authorPart.getValueOfCssProperty("font-style"));
+		Assert.assertEquals("normal", authorPart.getCssValue("font-style"));
 
-		RenderedWebElement referenceElement = (RenderedWebElement) taxonElement.findElement(By.className("reference"));
+		WebElement referenceElement = taxonElement.findElement(By.className("reference"));
 		Assert.assertEquals("Sp. Pl.: 811. 1753", referenceElement.findElement((By.className("reference"))).getText());
 	}
 

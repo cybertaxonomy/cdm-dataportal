@@ -22,6 +22,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
@@ -95,11 +96,20 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 //		assertEquals("Systematics\nTaxonomy and nomenclature follow Mathew (1996).\nMathew B. 1996: A review of Allium section Allium . - Kew.", featureBlock.getText());
 
 		featureBlock = p.getFeatureBlockAt(4, "distribution", "div", "span");
-		assertEquals("Distribution Division 2 1 1. R. D. Meikle, Flora of Cyprus 1. 1977", featureBlock.getText());
+		assertEquals("Distribution\nDivision 21\n1. R. D. Meikle, Flora of Cyprus 1. 1977", featureBlock.getText());
 		assertEquals("Distribution", featureBlock.getHeader());
 		assertEquals("expecting one footnote key", 1, featureBlock.getFootNoteKeys().size());
-		assertTrue("expecting one footnote 0 to be the footnote for key 0",featureBlock.getFootNotes().get(0).startsWith(featureBlock.getFootNoteKeys().get(0)));
-		assertEquals("1. R. D. Meikle, Flora of Cyprus 1. 1977", featureBlock.getFootNotes().get(0));
+
+		LinkElement footNoteKey_1 = featureBlock.getFootNoteKeys().get(0);
+		BaseElement footNote_1 = featureBlock.getFootNotes().get(0);
+		assertTrue("expecting one footnote 0 to be the footnote for key 0",footNote_1.getText().startsWith(footNoteKey_1.getText()));
+	// FIXME hovering does not jet work
+//		footNoteKey_1.getElement().hover();
+//		assertEquals("yellow", footNoteKey_1.getElement().getValueOfCssProperty("background-color"));
+//		assertEquals("yellow", footNote_1.getElement().getValueOfCssProperty("background-color"));
+
+		assertEquals("1. R. D. Meikle, Flora of Cyprus 1. 1977", footNote_1.getText());
+
 		WebElement distributionMapImage = featureBlock.getElement().findElement(By.className("distribution_map"));
 		assertEquals("http://edit.br.fgov.be/edit_wp5/v1.1/rest_gen.php?title=a:Indigenous&ad=cyprusdivs:bdcode:a:2&as=z:ffffff,606060,,|y:1874CD,,|a:339966,,0.1,&l=background_gis:y,cyprusdivs:z&ms=500&bbox=32,34,35,36&label=1&img=true&legend=1&mlp=3&mc_s=Georgia,15,blue&mc=&recalculate=false", distributionMapImage.getAttribute("src"));
 

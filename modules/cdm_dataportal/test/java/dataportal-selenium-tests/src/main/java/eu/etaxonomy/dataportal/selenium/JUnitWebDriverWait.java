@@ -22,7 +22,7 @@ public class JUnitWebDriverWait extends WebDriverWait {
 	}
 
 	@Override
-	protected void throwTimeoutException(String message, Exception lastException) {
+	protected RuntimeException timeoutException(String message, RuntimeException lastException) {
 	    throw new AssertionError(message);
 	 }
 

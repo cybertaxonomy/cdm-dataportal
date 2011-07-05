@@ -1,10 +1,10 @@
 package eu.etaxonomy.dataportal.elements;
 
-import java.awt.Dimension;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.WebElement;
 
 public class ImgElement extends BaseElement {
 
@@ -12,7 +12,7 @@ public class ImgElement extends BaseElement {
 	private Dimension dimension = null;
 	private String altText = null;
 
-	public ImgElement(RenderedWebElement img) {
+	public ImgElement(WebElement img) {
 
 		super(img);
 

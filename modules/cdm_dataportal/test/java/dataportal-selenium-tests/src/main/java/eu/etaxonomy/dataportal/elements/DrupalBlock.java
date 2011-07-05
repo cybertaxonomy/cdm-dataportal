@@ -11,7 +11,6 @@ package eu.etaxonomy.dataportal.elements;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 
 
@@ -24,16 +23,16 @@ public class DrupalBlock extends BaseElement {
 
 	private String header;
 
-	protected RenderedWebElement content;
+	protected WebElement content;
 
 	/**
 	 * @param element
 	 */
-	public DrupalBlock(RenderedWebElement element) {
+	public DrupalBlock(WebElement element) {
 
 		super(element);
 
-		content = (RenderedWebElement) element.findElement(By.className("content"));
+		content = element.findElement(By.className("content"));
 
 		try {
 			WebElement headerElement = element.findElement(By.tagName("h2"));
@@ -47,7 +46,7 @@ public class DrupalBlock extends BaseElement {
 		return header;
 	}
 
-	public RenderedWebElement getContent() {
+	public WebElement getContent() {
 		return content;
 	}
 

@@ -6,20 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.LoadableComponent;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.TestConfiguration;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.selenium.JUnitWebDriverWait;
 
@@ -35,7 +31,7 @@ public abstract class  PortalPage {
 
 
 	/**
-	 * Implementations of this method will supply the raltive
+	 * Implementations of this method will supply the relative
 	 * path to the Drupal page. This path will usally have the form
 	 * <code>cdm_dataportal/{nodetype}</code>. For example the taxon pages all
 	 * have the page base <code>cdm_dataportal/taxon</code>
@@ -50,28 +46,44 @@ public abstract class  PortalPage {
 	// ==== WebElements === //
 
 	@FindBy(id="cdm_dataportal.node")
-	protected RenderedWebElement portalContent;
+	protected WebElement portalContent;
 
 	@FindBy(tagName="title")
 	@CacheLookup
-	protected RenderedWebElement title;
+	protected WebElement title;
 
 	@FindBy(className="node")
-	protected RenderedWebElement node;
+	protected WebElement node;
 
 
 	@FindBys({@FindBy(id="tabs-wrapper"), @FindBy(className="primary")})
 	@CacheLookup
-	protected RenderedWebElement primaryTabs;
+	protected WebElement primaryTabs;
 
 
+	/**
+	 * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
+	 * implementing the method {@link #getDrupalPageBase()}. The constructor argument <code>pagePathSuffix</code>
+	 * specifies the specific page to navigate to. For example:
+	 * <ol>
+	 * <li>{@link #getDrupalPageBase()} returns <code>/cdm_dataportal/taxon</code></li>
+	 * <li><code>pagePathSuffix</code> gives <code>7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code></li>
+	 * </ol>
+	 * Both are combined to form the URL pathelement <code>/cdm_dataportal/taxon/7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code>
+	 *
+	 *
+	 * @param driver
+	 * @param context
+	 * @param pagePathSuffix
+	 * @throws MalformedURLException
+	 */
 	public PortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix) throws MalformedURLException {
 
 		this.driver = driver;
 
 		this.wait = new JUnitWebDriverWait(driver, 25);
 
-		this.drupalPagePath = getDrupalPageBase() + "/" + pagePathSuffix;
+		this.drupalPagePath = getDrupalPageBase() + (pagePathSuffix != null ? "/" + pagePathSuffix: "");
 
 		this.pageUrl = new URL(context.getBaseUri().toString() + DRUPAL_PAGE_QUERY_BASE + drupalPagePath);
 
@@ -81,8 +93,71 @@ public abstract class  PortalPage {
 	    // This call sets the WebElement fields.
 	    PageFactory.initElements(driver, this);
 
+		logger.info("loading " + pageUrl);
+
+	}
+
+	/**
+	 * Creates a new PortaPage at given URL location. An Exception is thrown if
+	 * this URL is not matching the expected URL for the specific page type.
+	 *
+	 * @param driver
+	 * @param context
+	 * @param url
+	 * @throws Exception
+	 */
+	public PortalPage(WebDriver driver, DataPortalContext context, URL url) throws Exception {
+		this.driver = driver;
+
+		this.wait = new JUnitWebDriverWait(driver, 25);
+
+		this.pageUrl = new URL(context.getBaseUri().toString() + DRUPAL_PAGE_QUERY_BASE + getDrupalPageBase());
+
+		// tell browser to navigate to the given URL
+		driver.get(url.toString());
+
+		if(!isOnPage()){
+			throw new Exception("Not on the expected portal page: " + driver.getCurrentUrl());
+		}
+
+		this.pageUrl = url;
+
+	    // This call sets the WebElement fields.
+	    PageFactory.initElements(driver, this);
 
 		logger.info("loading " + pageUrl);
+	}
+
+	/**
+	 * Creates a new PortaPage at the WebDrivers current URL location. An Exception is thrown if
+	 * driver.getCurrentUrl() is not matching the expected URL for the specific page type.
+	 *
+	 * @param driver
+	 * @param context
+	 * @throws Exception
+	 */
+	public PortalPage(WebDriver driver, DataPortalContext context) throws Exception {
+		this.driver = driver;
+
+		this.wait = new JUnitWebDriverWait(driver, 25);
+
+		this.pageUrl = new URL(context.getBaseUri().toString() + DRUPAL_PAGE_QUERY_BASE + getDrupalPageBase());
+
+		if(!isOnPage()){
+			throw new Exception("Not on the expected portal page: " + driver.getCurrentUrl());
+		}
+
+	    // This call sets the WebElement fields.
+	    PageFactory.initElements(driver, this);
+
+		logger.info("loading " + pageUrl);
+	}
+
+	/**
+	 * @return
+	 */
+	protected boolean isOnPage() {
+		return driver.getCurrentUrl().startsWith(pageUrl.toString());
 	}
 
 	public void get() {
@@ -106,10 +181,10 @@ public abstract class  PortalPage {
 
 	public String getAuthorInformationText() {
 
-		RenderedWebElement authorInformation = null;
+		WebElement authorInformation = null;
 
 		try {
-			authorInformation  = (RenderedWebElement)node.findElement(By.className("submitted"));
+			authorInformation  = node.findElement(By.className("submitted"));
 		} catch (NoSuchElementException e) {
 			// IGNORE //
 		}
@@ -126,7 +201,7 @@ public abstract class  PortalPage {
 		List<LinkElement> tabs = new ArrayList<LinkElement>();
 		List<WebElement> links = primaryTabs.findElements(By.tagName("a"));
 		for(WebElement a : links) {
-			RenderedWebElement renderedLink = (RenderedWebElement)a;
+			WebElement renderedLink = a;
 			if(renderedLink.isDisplayed()){
 				tabs.add(new LinkElement(renderedLink));
 			}

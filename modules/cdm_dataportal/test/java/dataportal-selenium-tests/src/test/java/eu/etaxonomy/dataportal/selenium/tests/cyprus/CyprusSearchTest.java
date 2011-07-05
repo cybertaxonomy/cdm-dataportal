@@ -13,7 +13,6 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
@@ -41,7 +40,7 @@ public class CyprusSearchTest extends CdmDataPortalTestBase{
 		//		RenderedWebElement element = (RenderedWebElement)container.findElement(By.xpath("div/div/ul/li/span[contains(@class, 'footnote-key')]"));
 
 		// --- using the full xpath
-		RenderedWebElement element = (RenderedWebElement)driver.findElement(By.xpath("/html/body/div/div/div[2]/div[2]/div/div/div/ul/li/span[contains(@class, 'footnote-key')]"));
+		WebElement element = driver.findElement(By.xpath("/html/body/div/div/div[2]/div[2]/div/div/div/ul/li/span[contains(@class, 'footnote-key')]"));
 		Assert.assertNull("result set entries must not have footnote keys", element);
 	}
 

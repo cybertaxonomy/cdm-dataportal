@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 
 public class DescriptionElementRepresentation extends BaseElement{
@@ -27,14 +26,14 @@ public class DescriptionElementRepresentation extends BaseElement{
 	/**
 	 * @param element
 	 */
-	public DescriptionElementRepresentation(RenderedWebElement element) {
+	public DescriptionElementRepresentation(WebElement element) {
 		super(element);
 
 		for (WebElement source : element.findElements(By.className("sources"))) {
 			if(source.getTagName().equals("a")){
-				sources.add(new LinkElement((RenderedWebElement) source));
+				sources.add(new LinkElement(source));
 			} else {
-				sources.add(new BaseElement((RenderedWebElement) source));
+				sources.add(new BaseElement(source));
 			}
 		}
 	}

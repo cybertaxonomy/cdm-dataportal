@@ -10,7 +10,7 @@
 
 package eu.etaxonomy.dataportal.elements;
 
-import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebElement;
 
 /**
  * @author andreas
@@ -29,7 +29,7 @@ public class LinkElement extends BaseElement {
 	}
 
 
-	public LinkElement(RenderedWebElement a) {
+	public LinkElement(WebElement a) {
 
 		super(a);
 

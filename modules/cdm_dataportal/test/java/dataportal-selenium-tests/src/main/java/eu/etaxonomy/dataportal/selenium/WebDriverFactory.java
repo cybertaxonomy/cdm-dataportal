@@ -76,11 +76,12 @@ public class WebDriverFactory {
 
 		WebDriver driver;
 
-		CdmDataPortalTestBase.logger.debug(("##:" + System.getProperty("webdriver.firefox.bin")));
+		CdmDataPortalTestBase.logger.info(("firefox binary:" + System.getProperty("webdriver.firefox.bin")));
 
 		FirefoxProfile firefoxProfile = new FirefoxProfile();
 		try {
 
+			CdmDataPortalTestBase.logger.debug("FirefoxProfile: " + firefoxProfile.getClass().getSimpleName() + "(" + firefoxProfile.hashCode() + ")");
 			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
 			firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying first run page
 

@@ -19,19 +19,19 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.elements.DrupalBlock;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 
 /**
+ * TODO: subpages like /cdm_dataportal/taxon/{uuid}/images are not jet suported, implement means to handle page parts
+ *
  * @author andreas
  * @date Jul 1, 2011
  *
@@ -54,19 +54,35 @@ public class TaxonProfilePage extends PortalPage {
 
 	@FindBy(id = "taxonProfileImage")
 	@CacheLookup
-	private RenderedWebElement taxonProfileImage;
+	private WebElement taxonProfileImage;
 
 	@FindBy(id = "featureTOC")
 	@CacheLookup
-	private RenderedWebElement tableOfContent;
+	private WebElement tableOfContent;
 
 
 
+	/**
+	 * @param driver
+	 * @param context
+	 * @param taxonUuid
+	 * @throws MalformedURLException
+	 */
 	public TaxonProfilePage(WebDriver driver, DataPortalContext context, UUID taxonUuid) throws MalformedURLException {
 
 		super(driver, context, taxonUuid.toString());
 
 		this.taxonUuid = taxonUuid;
+	}
+
+
+	/**
+	 * @param driver
+	 * @param context
+	 * @throws Exception
+	 */
+	public TaxonProfilePage(WebDriver driver, DataPortalContext context) throws Exception {
+		super(driver, context);
 	}
 
 
@@ -81,7 +97,7 @@ public class TaxonProfilePage extends PortalPage {
 		ImgElement imgElement = null;
 		try {
 			if(taxonProfileImage.isDisplayed()){
-				RenderedWebElement img = (RenderedWebElement) taxonProfileImage.findElement(By.tagName("img"));
+				WebElement img =  taxonProfileImage.findElement(By.tagName("img"));
 				if (img != null) {
 					imgElement = new ImgElement(img);
 				}
@@ -106,7 +122,7 @@ public class TaxonProfilePage extends PortalPage {
 			linkList = new ArrayList<LinkElement>();
 			List<WebElement> listItems = tableOfContent.findElements(By.tagName("a"));
 			for (WebElement li : listItems) {
-				linkList.add( new LinkElement((RenderedWebElement) li) );
+				linkList.add( new LinkElement( li) );
 			}
 		}
 		return linkList;
@@ -118,7 +134,7 @@ public class TaxonProfilePage extends PortalPage {
 		Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
 		for(WebElement b : featureBlocks){
 			if (b.getAttribute("id").equals("block-cdm_dataportal-feature-" + featureName)){
-				return new FeatureBlock((RenderedWebElement) b, enclosingTag, elementTag);
+				return new FeatureBlock( b, enclosingTag, elementTag);
 			}
 		}
 		return null;

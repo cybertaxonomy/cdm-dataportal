@@ -15,7 +15,7 @@ import java.util.List;
 import static junit.framework.Assert.*;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -25,20 +25,20 @@ import org.openqa.selenium.WebElement;
  */
 public class FeatureBlock extends DrupalBlock {
 
-	private List<String> footNoteKeys = new ArrayList<String>();
+	private List<LinkElement> footNoteKeys = new ArrayList<LinkElement>();
 
-	private List<String> footNotes = new ArrayList<String>();
+	private List<BaseElement> footNotes = new ArrayList<BaseElement>();
 
 	private List<DescriptionElementRepresentation> descriptionElements = new ArrayList<DescriptionElementRepresentation>();
 
 	private String featureType = null;
 
 
-	public List<String> getFootNoteKeys() {
+	public List<LinkElement> getFootNoteKeys() {
 		return footNoteKeys;
 	}
 
-	public List<String> getFootNotes() {
+	public List<BaseElement> getFootNotes() {
 		return footNotes;
 	}
 
@@ -54,25 +54,25 @@ public class FeatureBlock extends DrupalBlock {
 	/**
 	 * @param element
 	 */
-	public FeatureBlock(RenderedWebElement element, String enclosingTag, String elementTag) {
+	public FeatureBlock(WebElement element, String enclosingTag, String elementTag) {
 		super(element);
 
 		List<WebElement> fnkList = element.findElements(By.className("footnote-key"));
 		for(WebElement fnk : fnkList) {
-			footNoteKeys.add(fnk.getText());
+			footNoteKeys.add(new LinkElement(fnk));
 		}
 
 		List<WebElement> fnList = element.findElements(By.className("footnote"));
 		for(WebElement fn : fnList) {
-			footNotes.add(fn.getText());
+			footNotes.add(new BaseElement(fn));
 		}
 
-		RenderedWebElement descriptionElementsRepresentation = (RenderedWebElement) element.findElement(By.className("description"));
+		WebElement descriptionElementsRepresentation =  element.findElement(By.className("description"));
 		featureType = descriptionElementsRepresentation.getAttribute("id");
 		assertEquals("Unexpected tag enclosing description element representations", enclosingTag, descriptionElementsRepresentation.getTagName());
 
 		for(WebElement el : descriptionElementsRepresentation.findElements(By.tagName(elementTag))){
-			descriptionElements.add(new DescriptionElementRepresentation((RenderedWebElement)el));
+			descriptionElements.add(new DescriptionElementRepresentation(el));
 		}
 
 	}

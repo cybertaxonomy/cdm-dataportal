@@ -12,7 +12,7 @@ package eu.etaxonomy.dataportal.elements;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebElement;
 
 /**
  * @author andreas
@@ -22,14 +22,14 @@ import org.openqa.selenium.RenderedWebElement;
 public class BaseElement {
 
 
-	private RenderedWebElement element;
+	private WebElement element;
 
 	private List<String> classAttributes = null;
 
 	private String text = null;
 
 
-	public RenderedWebElement getElement() {
+	public WebElement getElement() {
 		return element;
 	}
 
@@ -52,7 +52,7 @@ public class BaseElement {
 	/**
 	 * @param element
 	 */
-	public BaseElement(RenderedWebElement element) {
+	public BaseElement(WebElement element) {
 
 		this.element = element;
 

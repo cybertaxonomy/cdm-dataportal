@@ -266,6 +266,7 @@ modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etax
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/junit/CdmDataPortalSeleniumRCTestBase.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/junit/CdmDataPortalTestBase.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/junit/DataPortalContextSuite.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/GenericPortalPage.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/PolytomousKeyPage.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/PortalPage.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/TaxonProfilePage.java -text
