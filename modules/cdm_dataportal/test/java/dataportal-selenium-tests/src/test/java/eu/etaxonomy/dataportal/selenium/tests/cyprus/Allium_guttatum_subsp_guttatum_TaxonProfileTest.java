@@ -103,10 +103,10 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 		LinkElement footNoteKey_1 = featureBlock.getFootNoteKeys().get(0);
 		BaseElement footNote_1 = featureBlock.getFootNotes().get(0);
 		assertTrue("expecting one footnote 0 to be the footnote for key 0",footNote_1.getText().startsWith(footNoteKey_1.getText()));
-	// FIXME hovering does not jet work
-//		footNoteKey_1.getElement().hover();
-//		assertEquals("yellow", footNoteKey_1.getElement().getValueOfCssProperty("background-color"));
-//		assertEquals("yellow", footNote_1.getElement().getValueOfCssProperty("background-color"));
+
+		p.hover(footNoteKey_1.getElement());
+		assertEquals("#ffff00", footNoteKey_1.getElement().getCssValue("background-color"));
+		assertEquals("#ffff00", footNote_1.getElement().getCssValue("background-color"));
 
 		assertEquals("1. R. D. Meikle, Flora of Cyprus 1. 1977", footNote_1.getText());
 

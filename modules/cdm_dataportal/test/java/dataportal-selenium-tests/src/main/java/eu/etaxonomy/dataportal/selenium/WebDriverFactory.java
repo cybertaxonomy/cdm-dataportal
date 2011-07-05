@@ -87,6 +87,8 @@ public class WebDriverFactory {
 
 			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firexpath-" + FIREXPATH_VERSION + "-fx.xpi");
 
+			firefoxProfile.setEnableNativeEvents(true);
+
 			// --- allow enabling incompatible addons
 			// firefoxProfile.addExtension(this.getClass(), "/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi");
 			// firefoxProfile.setPreference("extensions.acr.firstrun", false);

@@ -59,7 +59,7 @@ public class FeatureBlock extends DrupalBlock {
 
 		List<WebElement> fnkList = element.findElements(By.className("footnote-key"));
 		for(WebElement fnk : fnkList) {
-			footNoteKeys.add(new LinkElement(fnk));
+			footNoteKeys.add(new LinkElement(fnk.findElement(By.tagName("a"))));
 		}
 
 		List<WebElement> fnList = element.findElements(By.className("footnote"));
