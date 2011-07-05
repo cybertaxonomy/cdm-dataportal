@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -43,13 +44,57 @@ public class TestConfiguration {
 	private static TestConfiguration testConfiguration = null;
 
 	private TestConfiguration() {
+		InputStream in = null;
+
+		in = readFromUserHome();
+		if(in == null){
+			in = readFromClassPath();
+		}
+		if(in == null){
+			String message = "Test configuration file " + DATA_PORTAL_TEST_PROPERTIES_FILE + " not found!";
+			logger.error(message);
+			System.exit(-1);
+		}
+
+		logger.info("Loading test configuration from " + propertySourceUri);
+		try {
+			properties.loadFromXML(in);
+		} catch (InvalidPropertiesFormatException e) {
+			logger.error(e);
+		} catch (IOException e) {
+			logger.error(e);
+		} finally {
+				try {
+					in.close();
+				} catch (IOException e) {
+					/* IGNORE */
+				}
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	private InputStream readFromClassPath() {
+		ClassLoader cl = getClass().getClassLoader();
+		return cl.getResourceAsStream("eu/etaxonomy/dataportal/"+DATA_PORTAL_TEST_PROPERTIES_FILE);
+	}
+
+	/**
+	 * @param userHome
+	 * @param in
+	 * @return
+	 */
+	public InputStream readFromUserHome() {
+
+		InputStream in = null;
 		String userHome = System.getProperty("user.home");
 		if (userHome != null) {
+
 			File propertiesFile = new File(userHome, ".cdmLibrary" + File.separator + DATA_PORTAL_TEST_PROPERTIES_FILE);
 
 			try {
 
-				InputStream in;
 				if (propertiesFile.exists()) {
 					propertySourceUri = propertiesFile.toURI().toURL();
 					in = new FileInputStream(propertiesFile);
@@ -57,9 +102,6 @@ public class TestConfiguration {
 					in =  this.getClass().getResourceAsStream("/eu/etaxonomy/dataportal/DataPortalTest.properties");
 					propertySourceUri = this.getClass().getResource("/eu/etaxonomy/dataportal/DataPortalTest.properties");
 				}
-				logger.info("Loading test configuration from " + propertySourceUri);
-				properties.loadFromXML(in);
-				in.close();
 
 				updateSystemProperties(false);
 
@@ -68,8 +110,8 @@ public class TestConfiguration {
 			} catch (IOException e) {
 				logger.error(e);
 			}
-
 		}
+		return in;
 	}
 
 	/**
