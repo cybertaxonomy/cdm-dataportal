@@ -222,8 +222,8 @@ public abstract class  PortalPage {
 	 * Returns the current URL string from the {@link WebDriver}
 	 * @return
 	 */
-	public String getURL() {
-		return driver.getCurrentUrl();
+	public URL getPageURL() {
+		return pageUrl;
 	}
 
 
@@ -238,7 +238,7 @@ public abstract class  PortalPage {
 	public boolean equals(Object obj) {
 		if (PortalPage.class.isAssignableFrom(obj.getClass())) {
 			PortalPage page = (PortalPage) obj;
-			return this.getURL().equals(page.getURL());
+			return this.getPageURL().toString().equals(page.getPageURL().toString());
 
 		} else {
 			return false;
