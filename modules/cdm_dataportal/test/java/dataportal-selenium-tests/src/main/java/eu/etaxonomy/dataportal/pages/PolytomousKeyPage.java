@@ -100,6 +100,8 @@ public class PolytomousKeyPage extends PortalPage {
 		WebElement link = linkContainer.findElement(By.tagName("a"));
 		Assert.assertEquals("link text", data.linkText, link.getText());
 		logger.info("testing " +  data.linkClass.name() + " : " + getInitialUrlBase() + ":" + link.getAttribute("href"));
+
+		// click and wait
 		link.click();
 		wait.until(new VisibilityOfElementLocated(By.id("container")));
 
