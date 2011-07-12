@@ -15,6 +15,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.selenium.AllTrue;
+import eu.etaxonomy.dataportal.selenium.UrlLoaded;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 
 public class PolytomousKeyPage extends PortalPage {
@@ -99,11 +101,13 @@ public class PolytomousKeyPage extends PortalPage {
 		WebElement linkContainer = keyEntry.findElement(By.className(data.linkClass.name()));
 		WebElement link = linkContainer.findElement(By.tagName("a"));
 		Assert.assertEquals("link text", data.linkText, link.getText());
-		logger.info("testing " +  data.linkClass.name() + " : " + getInitialUrlBase() + ":" + link.getAttribute("href"));
+		String linkUrl = link.getAttribute("href");
+
+		logger.info("clicking on " +  data.linkClass.name() + " : " + linkUrl);
 
 		// click and wait
 		link.click();
-		wait.until(new VisibilityOfElementLocated(By.id("container")));
+		wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("container"))));
 
 		PortalPage nextPage = null;
 		if(data.linkClass.equals(LinkClass.nodeLinkToTaxon)){

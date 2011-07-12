@@ -3,7 +3,6 @@
  */
 package eu.etaxonomy.dataportal.selenium;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import com.google.common.base.Function;
@@ -12,20 +11,19 @@ import com.google.common.base.Function;
  * @author andreas
  *
  */
-public class VisibilityOfElementLocated implements Function<WebDriver, Boolean> {
+public class UrlLoaded implements Function<WebDriver, Boolean> {
 
-	By findCondition;
+	String url;
 
-	public VisibilityOfElementLocated(By by) {
-		this.findCondition = by;
+	public UrlLoaded(String url) {
+		this.url = url;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.google.common.base.Function#apply(java.lang.Object)
 	 */
 	public Boolean apply(WebDriver driver) {
-		driver.findElement(this.findCondition);
-		return Boolean.valueOf(true);
+		return driver.getCurrentUrl().equals(url);
 	}
 
 }
