@@ -66,6 +66,8 @@ modules/cdm_dataportal/classes/footnote.php -text
 modules/cdm_dataportal/classes/footnotekey.php -text
 modules/cdm_dataportal/classes/footnotemanager.php -text
 modules/cdm_dataportal/classes/renderhints.php -text
+modules/cdm_dataportal/drush/README -text
+modules/cdm_dataportal/drush/migrate.drush.inc -text
 modules/cdm_dataportal/ext_links/ext_links.info -text
 modules/cdm_dataportal/ext_links/ext_links.js -text
 modules/cdm_dataportal/ext_links/ext_links.module -text
