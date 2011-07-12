@@ -123,10 +123,11 @@ public abstract class  PortalPage {
 
 		this.pageUrl = url;
 
+		logger.info("loading " + pageUrl);
+
 	    // This call sets the WebElement fields.
 	    PageFactory.initElements(driver, this);
 
-		logger.info("loading " + pageUrl);
 	}
 
 	/**
@@ -142,16 +143,22 @@ public abstract class  PortalPage {
 
 		this.wait = new JUnitWebDriverWait(driver, 25);
 
+		// preliminary set the pageUrl to the base path of this page, this is used in the next setp to check if the
+		// driver.getCurrentUrl() is a sub path of the base path
 		this.pageUrl = new URL(context.getBaseUri().toString() + DRUPAL_PAGE_QUERY_BASE + getDrupalPageBase());
 
 		if(!isOnPage()){
 			throw new Exception("Not on the expected portal page ( current: " + driver.getCurrentUrl() + ", expected: " +  pageUrl + " )");
 		}
 
+		// now set the real URL
+		this.pageUrl = new URL(driver.getCurrentUrl());
+
+		logger.info("loading " + pageUrl);
+
 	    // This call sets the WebElement fields.
 	    PageFactory.initElements(driver, this);
 
-		logger.info("loading " + pageUrl);
 	}
 
 	/**

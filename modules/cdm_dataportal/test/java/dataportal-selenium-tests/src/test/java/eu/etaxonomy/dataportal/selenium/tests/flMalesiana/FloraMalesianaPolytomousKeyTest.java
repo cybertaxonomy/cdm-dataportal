@@ -9,12 +9,10 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
 
-import java.net.MalformedURLException;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.support.PageFactory;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
