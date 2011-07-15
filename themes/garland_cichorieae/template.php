@@ -443,25 +443,43 @@ function garland_cichorieae_get_nameRenderTemplate($renderPath){
 }
 
 /**
+ * theme specific mods:
+ * 	$captionElements = array('title', '#uri'=>t('open Image'));
+ * 	$mediaLinkType:
+ *      "NORMAL": link to the image page or to the $alternativeMediaUri if it is defined
+ *      instead of
+ *      "LIGHTBOX": open the link in a light box,
+ * TODO expose those in admin section, by adding 'em to gallery_settings
  */
 function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
 
-	$gallery_name = $taxon->uuid;
 
-	$showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 0);
-	$prefMimeTypeRegex = 'image:.*';
-	$prefMediaQuality = '*';
-	$cols = variable_get('cdm_dataportal_findtaxa_media_cols', 3);
-	$maxRows = variable_get('cdm_dataportal_findtaxa_media_maxRows', 1);
-	$maxExtend = variable_get('cdm_dataportal_findtaxa_media_maxextend', 120);
+	$gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
 
+	$mediaLinkType = 'NORMAL';
+	$showCaption = $gallery_settings['cdm_dataportal_show_thumbnail_captions'];
 	if($showCaption){
 		$captionElements = array('title', '#uri'=>t('open Image'));
 	}
 
-	$mediaQueryParameters = array("type"=>"ImageFile");
-	$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid), queryString($mediaQueryParameters));
-	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name ,$maxExtend, $cols, $maxRows, $captionElements, 'NORMAL', $galleryLinkUri, null);
+	$gallery_name = $taxon->uuid;
+
+ 	$mediaQueryParameters = array("type"=>"ImageFile");
+	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
+
+    // cdm_dataportal_show_media = ???? TODO
+	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
+	if ($selectShowMedia == 0){
+		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array($taxon->uuid), queryString( $mediaQueryParameters ));
+	}else{
+		$mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array($taxon->uuid), queryString( $mediaQueryParameters ));
+	}
+
+	$out .= theme('cdm_media_gallerie', $mediaList, $gallery_name,
+    	$gallery_settings['cdm_dataportal_media_maxextend'],
+    	$gallery_settings['cdm_dataportal_media_cols'],
+    	$gallery_settings['cdm_dataportal_media_maxRows'],
+	    $captionElements, $mediaLinkType, $galleryLinkUri, null);
 
 	return $out;
 }

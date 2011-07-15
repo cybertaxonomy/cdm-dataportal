@@ -742,7 +742,7 @@ function cdm_settings_layout_taxon(){
 
         $form_feature_list_layout[$subform_id] = array(
           '#tree' => TRUE,
-     			'#title' => $featureNode->feature->representation_L10n,
+           '#title' => $featureNode->feature->representation_L10n,
           '#collapsible' => FALSE,
           '#collapsed' => FALSE,
           '#type' => 'fieldset',
@@ -751,32 +751,32 @@ function cdm_settings_layout_taxon(){
 
         $form_feature_list_layout[$subform_id]['enabled'] = array(
           '#type' => 'checkbox',
-     			'#title' => t('Enable'),
-  				'#default_value' => $settings['enabled'],
+           '#title' => t('Enable'),
+          '#default_value' => $settings['enabled'],
           '#description' => t('Enable user defined layout for this feature')
         );
 
         $form_feature_list_layout[$subform_id]['enclosingTag'] = array(
           '#type' => 'textfield',
-     			'#title' => t('Enclosing tag'),
+           '#title' => t('Enclosing tag'),
           '#disabled' => !$settings['enabled'],
-  				'#default_value' => $settings['enclosingTag'],
+          '#default_value' => $settings['enclosingTag'],
           '#description' => t('Default is: ') . "'<code>" . $systemDefaults['enclosingTag'] . "</code>'"
         );
 
         $form_feature_list_layout[$subform_id]['entryEnclosingTag'] = array(
           '#type' => 'textfield',
-     			'#title' => t('Entry enclosing tag'),
+           '#title' => t('Entry enclosing tag'),
           '#disabled' => !$settings['enabled'],
-  				'#default_value' => $settings['entryEnclosingTag'],
+          '#default_value' => $settings['entryEnclosingTag'],
           '#description' => t('Default is: ') . "'<code>". $systemDefaults['entryEnclosingTag'] ."</code>'"
         );
 
         $form_feature_list_layout[$subform_id]['glue'] = array(
           '#type' => 'textfield',
-     			'#title' => t('Glue'),
+           '#title' => t('Glue'),
           '#disabled' => !$settings['enabled'],
-  				'#default_value' => $settings['glue'],
+          '#default_value' => $settings['glue'],
           '#description' => t('Default is: ') . "'<code>" . $systemDefaults['glue'] . "</code>'"
         );
 
@@ -915,15 +915,15 @@ function cdm_settings_layout_search(){
   $form = array();
 
   $form['search_settings'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Taxa Search'),
-      '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
+    '#type' => 'fieldset',
+    '#title' => t('Taxa Search'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
     '#description' => t('<p>The data portal allows the users to perform searchs.</p><p>To perform searchs
-                         the block <em>CDM Taxon Search</em> should be enabled and visible for users
-                         where they can write the text to be searched. You can find Drupal block configuration
-                         site at <a href="./?q=admin/build/block">Administer&#45&#62Site building&#45&#62Blocks</a></p> '),
-      );
+         the block <em>CDM Taxon Search</em> should be enabled and visible for users
+         where they can write the text to be searched. You can find Drupal block configuration
+         site at <a href="./?q=admin/build/block">Administer&#45&#62Site building&#45&#62Blocks</a></p> '),
+  );
 
   $form['search_settings']['cdm_dataportal_search_items_on_page'] = array(
     '#type' => 'textfield',
@@ -1026,11 +1026,11 @@ function cdm_settings_geo(){
    */
 
     $form['map_settings'] = array(
-			'#type' => 'fieldset',
+      '#type' => 'fieldset',
       '#title' => t('Maps settings'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-    	'#description' => t('Configuration of the renderized maps.'),
+      '#description' => t('Configuration of the renderized maps.'),
      );
 
     $form['map_settings']['cdm_dataportal_geoservice_display_width'] = array(
