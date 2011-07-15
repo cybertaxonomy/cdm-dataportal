@@ -449,7 +449,7 @@ function garland_cichorieae_get_nameRenderTemplate($renderPath){
  *      "NORMAL": link to the image page or to the $alternativeMediaUri if it is defined
  *      instead of
  *      "LIGHTBOX": open the link in a light box,
- * TODO expose those in admin section, by adding 'em to gallery_settings
+ * TODO expose those in admin section, by adding 'em to gallery_settings see http://dev.e-taxonomy.eu/trac/ticket/2494
  */
 function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
 
