@@ -119,7 +119,7 @@ function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $ski
  * @return an array with the texts mapped by $tag_type
  */
 function cdm_taggedtext_values(array &$taggedtxt = array(), $tag_type){
-	$tokens = array();
+  $tokens = array();
   foreach($taggedtxt as $tagtxt){
     if($tagtxt->type == $tag_type)
     $tokens[] = $tagtxt->text;
@@ -151,11 +151,11 @@ function set_last_taxon_page_tab($taxonPageTab){
 }
 
 function get_last_taxon_page_tab(){
-	if(isset($_SESSION['cdm']['taxon_page_tab'])){
+  if(isset($_SESSION['cdm']['taxon_page_tab'])){
     return $_SESSION['cdm']['taxon_page_tab'];
-	} else {
-		return false;
-	}
+  } else {
+    return false;
+  }
 }
 
 
@@ -194,12 +194,12 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
 
     foreach($media->representations as &$representation){
 
-    	//if the mimetype is not known, try inferring it
-    	if(!$representation->mimeType){
-    		if(isset($representation->parts[0])){
-    		  $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
-    		}
-    	}
+      //if the mimetype is not known, try inferring it
+      if(!$representation->mimeType){
+        if(isset($representation->parts[0])){
+          $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
+        }
+      }
 
       if($representation->mimeType == $mimeType){
         // preffered mimetype found -> erase all remaining mimetypes to end loop
@@ -233,27 +233,27 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
  * @return the mimetype to the file or false if the according mime type could not be found
  */
 function infer_mime_type($filepath){
-	static $mimemap = null;
-	if(!$mimemap){
-		$mimemap = array(
-			'jpg'=>'image/jpeg',
-		  'jpeg'=>'image/jpeg',
-		  'png'=>'image/png',
-		  'gif'=>'image/gif',
-		  'giff'=>'image/gif',
-		  'tif'=>'image/tif',
+  static $mimemap = null;
+  if(!$mimemap){
+    $mimemap = array(
+      'jpg'=>'image/jpeg',
+      'jpeg'=>'image/jpeg',
+      'png'=>'image/png',
+      'gif'=>'image/gif',
+      'giff'=>'image/gif',
+      'tif'=>'image/tif',
       'tiff'=>'image/tif',
-		  'pdf'=>'application/pdf',
-		  'html'=>'text/html',
-		  'htm'=>'text/html'
-		);
-	}
-	$extension = substr($filepath, strrpos($filepath, '.') + 1);
-	if(isset($mimemap[$extension])){
-		return $mimemap[$extension];
-	} else {
-		return 'text/html'; //FIXME remove this hack just return false;
-	}
+      'pdf'=>'application/pdf',
+      'html'=>'text/html',
+      'htm'=>'text/html'
+    );
+  }
+  $extension = substr($filepath, strrpos($filepath, '.') + 1);
+  if(isset($mimemap[$extension])){
+    return $mimemap[$extension];
+  } else {
+    return 'text/html'; //FIXME remove this hack just return false;
+  }
 }
 
 /**
@@ -317,9 +317,9 @@ function partialToDay($partial){
  */
 function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL ){
 
-	if(!isset($pathParameters)){
-		$pathParameters = array();
-	}
+  if(!isset($pathParameters)){
+    $pathParameters = array();
+  }
 
   $request_params = '';
   $path_params = '';
@@ -337,9 +337,9 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
   $i = 0;
   while(strpos($uri_pattern, "$".$i) !== FALSE){
     if(count($pathParameters) <= $i){
-    	if(user_access('administer')){
+      if(user_access('administer')){
         drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
-    	}
+      }
       break;
     }
     $uri_pattern = str_replace("$".$i, rawurlencode($pathParameters[$i]), $uri_pattern);
@@ -384,10 +384,10 @@ function proxy_content($uri, $theme = null){
 
   // find and deserialize arrays
     foreach($args as &$arg){
-		  if( strpos($arg, "a:") === 0){ //FIXME use regex to find serialized arrays
-		    $arg = unserialize($arg);
-		  }
-		  //find comma sepatated string in all args
+      if( strpos($arg, "a:") === 0){ //FIXME use regex to find serialized arrays
+        $arg = unserialize($arg);
+      }
+      //find comma sepatated string in all args
 //  	if(strpos($arg, ',')){
 //  		$arg = explode(',', $arg);
 //  	}
@@ -435,10 +435,10 @@ function proxy_content($uri, $theme = null){
 function setvalue_session(){
 
   if( $_REQUEST['var'] && strlen( $_REQUEST['var']) > 4){
-  	$keys = substr( $_REQUEST['var'], 1, strlen( $_REQUEST['var']) - 2);
+    $keys = substr( $_REQUEST['var'], 1, strlen( $_REQUEST['var']) - 2);
     $keys = explode('][', $keys);
   } else {
-  	return;
+    return;
   }
   $val =  $_REQUEST['val'] ?  $_REQUEST['val'] : null;
 
@@ -469,7 +469,7 @@ function cdm_compose_annotations_url($cdmBase){
         return;
     }
 
-	$ws_base_uri = null;
+  $ws_base_uri = null;
     switch($cdmBase->class){
         case 'TaxonBase':
         case 'Taxon':
@@ -499,8 +499,8 @@ function cdm_compose_annotations_url($cdmBase){
         case 'Distribution':
         case 'CommonTaxonName':
         case 'CategoricalData':
-        	$ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
-        	break;
+          $ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
+          break;
         case 'PolytomousKey':
         case 'MediaKey':
         case 'MultiAccessKey':
@@ -544,18 +544,18 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber){
  */
 function cdm_compose_taxonomy_path($taxonUuid = false){
 
-	$viewUuid = get_taxonomictree_uuid_selected();
-	$rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
+  $viewUuid = get_taxonomictree_uuid_selected();
+  $rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
 
-	if($taxonUuid){
-		return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array($viewUuid, $taxonUuid));
-	} else {
-		if($rankUuid){
-			return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK, array($viewUuid, $rankUuid));
-		} else {
-			return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY, array($viewUuid));
-		}
-	}
+  if($taxonUuid){
+    return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array($viewUuid, $taxonUuid));
+  } else {
+    if($rankUuid){
+      return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK, array($viewUuid, $rankUuid));
+    } else {
+      return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY, array($viewUuid));
+    }
+  }
 }
 
 function cdm_ws_taxonomy($taxonUuid = null){
@@ -563,22 +563,22 @@ function cdm_ws_taxonomy($taxonUuid = null){
     $response = null;
     $response = cdm_ws_get(cdm_compose_taxonomy_path($taxonUuid), null, null, null, TRUE);
 
-	  if($response == null){
-	    // error handing
-	    if(is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
-	      // delete the session value and try again with the default
-	      unset($_SESSION['cdm']['taxonomictree_uuid']);
-	      return cdm_ws_taxonomy($taxonUuid);
-	    } else {
-	    	// check if taxonomictree_uuid is valid
-	    	$test = cdm_ws_get(cdm_compose_taxonomy_path(), null, null, null, TRUE);
+    if($response == null){
+      // error handing
+      if(is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
+        // delete the session value and try again with the default
+        unset($_SESSION['cdm']['taxonomictree_uuid']);
+        return cdm_ws_taxonomy($taxonUuid);
+      } else {
+        // check if taxonomictree_uuid is valid
+        $test = cdm_ws_get(cdm_compose_taxonomy_path(), null, null, null, TRUE);
         if($test == null){
-	    	  print ($_SESSION['cdm']['taxonomictree_uuid']);
+          print ($_SESSION['cdm']['taxonomictree_uuid']);
           // the default set by the admin seems to be invalid or is not even set
           drupal_set_message(_no_classfication_uuid_message(), 'warning');
-	    	}
-	    }
-	  }
+        }
+      }
+    }
 
     return $response;
 }
@@ -597,27 +597,27 @@ function cdm_ws_taxonomy_pathFromRoot($taxonUuid){
 
   $response = null;
   if($rankUuid){
-  	$response = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK, array($viewUuid, $taxonUuid, $rankUuid));
+    $response = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK, array($viewUuid, $taxonUuid, $rankUuid));
   } else {
     $response = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_PATH_FROM, array($viewUuid, $taxonUuid));
   }
 
   if($response == null){
-  	// error handing
-	  if(is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
-		  // delete the session value and try again with the default
-	  	unset($_SESSION['cdm']['taxonomictree_uuid']);
-	  	return cdm_ws_taxonomy_pathFromRoot($taxonUuid);
-	  } else {
-	  	  // check if taxonomictree_uuid is valid
+    // error handing
+    if(is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
+      // delete the session value and try again with the default
+      unset($_SESSION['cdm']['taxonomictree_uuid']);
+      return cdm_ws_taxonomy_pathFromRoot($taxonUuid);
+    } else {
+        // check if taxonomictree_uuid is valid
         $test = cdm_ws_get(cdm_compose_taxonomy_path(), null, null, null, TRUE);
         if($test == null){
-			  	// the default set by the admin seems to be invalid or is not even set
+          // the default set by the admin seems to be invalid or is not even set
           print ($_SESSION['cdm']['taxonomictree_uuid']);
           // the default set by the admin seems to be invalid or is not even set
           drupal_set_message(_no_classfication_uuid_message(), 'warning');
         }
-	  }
+    }
   }
 
   return $response;
@@ -629,10 +629,10 @@ function cdm_rankVocabulary_as_option(){
     $vocab = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_RANK);
     $rankVocabularyOptions = array();
     if($vocab){
-	    foreach($vocab->terms as $term){
-	      $rankVocabularyOptions[$term->uuid] = t($term->representation_L10n);
-	    }
-	    array_reverse($rankVocabularyOptions);
+      foreach($vocab->terms as $term){
+        $rankVocabularyOptions[$term->uuid] = t($term->representation_L10n);
+      }
+      array_reverse($rankVocabularyOptions);
     }
   }
   return $rankVocabularyOptions;
@@ -652,7 +652,7 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
   if($isDescriptionsSeparated){
     // merge any description into a sparate feature tree
     foreach($descriptions as $desc){
-      $mergedNodes = _mergeFeatureTreeDesciptions($featureTree->root->children, $desc->elements);
+      $mergedNodes = _mergeFeatureTreeDescriptions($featureTree->root->children, $desc->elements);
 
       $mergedTree = clone $featureTree;
       $mergedTree->root->children = $mergedNodes;
@@ -661,7 +661,7 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
   } else {
     // combine all descripions into one feature tree
     foreach($descriptions as $desc){
-      $mergedNodes = _mergeFeatureTreeDesciptions($featureTree->root->children, $desc->elements);
+      $mergedNodes = _mergeFeatureTreeDescriptions($featureTree->root->children, $desc->elements);
       $featureTree->root->children = $mergedNodes;
     }
     $mergedTrees[] = $featureTree;
@@ -684,7 +684,7 @@ function cdm_ws_getAnnotationsFor($cdmBase){
     }
 }
 
-function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
+function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements){
 
   foreach($featureNodes as &$node){
 
@@ -700,7 +700,7 @@ function _mergeFeatureTreeDesciptions($featureNodes, $descriptionElements){
 
     // recurse into node children
     if(is_array($node->children)){
-    	$mergedChildNodes = _mergeFeatureTreeDesciptions($node->children, $descriptionElements);
+      $mergedChildNodes = _mergeFeatureTreeDescriptions($node->children, $descriptionElements);
       $node->children = $mergedChildNodes;
     }
 
@@ -768,7 +768,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
       //
       $obj = $cacheL1_obj;
       if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
-      	_add_status_message_toggler();
+        _add_status_message_toggler();
         _add_debugMessageStr('Using cacheL1 for: '.$uri);
       }
     } else if($cacheL2_entry) {
@@ -841,10 +841,10 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
   $message .= 'parsed in '.sprintf('%3.3f', $time_parse).' s('.sprintf('%3.3f', $cummulated_time_parse).'s); ';
   $message .= 'size:'.sprintf('%3.1f', ($datasize / 1024)).' kb of '.$success_msg.' data: ';
   if(_is_cdm_ws_uri($path)){
-	  $message .= '<a href="'.url($path.'.xml', $query).'" target="data" class="'.$success_msg.'">xml</a>,';
-	  $message .= '<a href="'.url($path.'.json', $query).'" target="data" class="'.$success_msg.'">json</a>';
+    $message .= '<a href="'.url($path.'.xml', $query).'" target="data" class="'.$success_msg.'">xml</a>,';
+    $message .= '<a href="'.url($path.'.json', $query).'" target="data" class="'.$success_msg.'">json</a>';
   } else {
-  	  $message .= '<a href="'.url($path, $query).'" target="data" class="'.$success_msg.'">open</a>';
+      $message .= '<a href="'.url($path, $query).'" target="data" class="'.$success_msg.'">open</a>';
   }
   $message .= '] ';
   drupal_set_message($message, 'debug');
@@ -880,15 +880,15 @@ function cdm_http_request($uri, $method="GET", $parameters = array(), $header = 
   static $acceptLanguage = null;
 
   if(!$acceptLanguage) {
-  	if(function_exists('apache_request_headers')){
-  		$headers = apache_request_headers();
-	  	if($headers['Accept-Language']){
-	  		$acceptLanguage = $headers['Accept-Language'];
-	  	}
-  	}
-  	if( !$acceptLanguage ) {
-  		$acceptLanguage = "en"; // DEFAULT TODO make configurable
-  	}
+    if(function_exists('apache_request_headers')){
+      $headers = apache_request_headers();
+      if($headers['Accept-Language']){
+        $acceptLanguage = $headers['Accept-Language'];
+      }
+    }
+    if( !$acceptLanguage ) {
+      $acceptLanguage = "en"; // DEFAULT TODO make configurable
+    }
   }
 
   if($method != "GET" && $method != "POST"){
@@ -903,7 +903,7 @@ function cdm_http_request($uri, $method="GET", $parameters = array(), $header = 
   }
 
   if(false && function_exists('curl_init')){
-  	// !!!!! CURL Disabled due to problems with forllowing redirects (CURLOPT_FOLLOWLOCATION=1) and safe_mode = on
+    // !!!!! CURL Disabled due to problems with forllowing redirects (CURLOPT_FOLLOWLOCATION=1) and safe_mode = on
     // use the CURL lib if installed it is supposed to be 20x faster
     return _http_request_using_curl($uri, $header, $method, $parameters);
   } else {
@@ -981,19 +981,19 @@ function _http_request_using_curl($uri, $headers = array(), $method = "GET", $pa
 }
 
 function _featureTree_elements_toString($rootNode, $separator = ', '){
-	$out = '';
-	$featureLabels = array();
+  $out = '';
+  $featureLabels = array();
   foreach ($rootNode->children as $featureNode){
-  	$out .= ($out ? $separator : '');
+    $out .= ($out ? $separator : '');
     $out .= $featureNode->feature->representation_L10n;
     if (is_array($featureNode->children)){
-    	$childlabels = '';
-    	foreach ($featureNode->children as $childNode)
-    	$childlabels .= ($childlabels ? $separator : '');
-    	$childlabels .= _featureTree_elements_toString($childNode);
+      $childlabels = '';
+      foreach ($featureNode->children as $childNode)
+      $childlabels .= ($childlabels ? $separator : '');
+      $childlabels .= _featureTree_elements_toString($childNode);
     }
     if($childlabels){
-    	$out .= '['.$childlabels.' ]';
+      $out .= '['.$childlabels.' ]';
     }
   }
   return $out;
@@ -1020,20 +1020,20 @@ function cdm_get_featureTrees_as_options($addDefaultFeatureTree = false){
             $treeRepresentation = $featureTree->titleCache;
 
             if(is_array($featureTree->root->children) && count($featureTree->root->children) > 0){
-	            $treeDetails = '<div class="featuretree_structure">'
-	              //._featureTree_elements_toString($featureTree->root)
-	              .theme('featureTree_hierarchy', $featureTree->uuid)
-	              .'</div>';
-		          $form = array();
-	            $form['featureTree-'.$featureTree->uuid] = array(
-	                '#type' => 'fieldset',
-						      '#title' => t('Show details'),
-						      '#collapsible' => TRUE,
-						      '#collapsed' => TRUE,
-						  );
-						  $form['featureTree-'.$featureTree->uuid]['details'] = array('#value'=>$treeDetails);
+              $treeDetails = '<div class="featuretree_structure">'
+                //._featureTree_elements_toString($featureTree->root)
+                .theme('featureTree_hierarchy', $featureTree->uuid)
+                .'</div>';
+              $form = array();
+              $form['featureTree-'.$featureTree->uuid] = array(
+                  '#type' => 'fieldset',
+                  '#title' => t('Show details'),
+                  '#collapsible' => TRUE,
+                  '#collapsed' => TRUE,
+              );
+              $form['featureTree-'.$featureTree->uuid]['details'] = array('#value'=>$treeDetails);
 
-						  $treeRepresentation .= drupal_render($form);
+              $treeRepresentation .= drupal_render($form);
             }
 
             $feature_trees[$featureTree->uuid] = $treeRepresentation;
@@ -1047,9 +1047,9 @@ function cdm_get_taxontrees_as_options(){
    $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
    $taxonomicTreeOptions = array();
    if($taxonTrees){
-	    foreach($taxonTrees as $tree){
-	        $taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
-	    }
+      foreach($taxonTrees as $tree){
+          $taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
+      }
    }
    return $taxonomicTreeOptions;
 }
@@ -1092,7 +1092,7 @@ function cdm_api_secref_cache_clear(){
 }
 
 function is_uuid($str){
-	return is_string($str) && strlen($str) == 36 && strpos($str, '-');
+  return is_string($str) && strlen($str) == 36 && strpos($str, '-');
 }
 
 function _cdm_api_secref_cache_add($secUuidsStr){
@@ -1110,7 +1110,7 @@ function _cdm_api_secref_cache_add($secUuidsStr){
 }
 
 function _is_cdm_ws_uri($uri){
-	return str_beginsWith($uri, variable_get('cdm_webservice_url', '#EMPTY#'));
+  return str_beginsWith($uri, variable_get('cdm_webservice_url', '#EMPTY#'));
 }
 
 function queryString($elements) {
@@ -1187,8 +1187,8 @@ function _add_status_message_toggler() {
 }
 
 function _no_classfication_uuid_message(){
-	return
-	t('This DataPortal is not configured properly.')
+  return
+  t('This DataPortal is not configured properly.')
       . l(t('Please choose a valid classification'), 'admin/settings/cdm_dataportal/general')
       . t(', or contact the maintainer of this DataPortal.');
 }
