@@ -93,14 +93,16 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
   RenderHints::pushToRenderStack('feature_nodes');
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
-  $media_list = array();
-
   foreach($mergedFeatureNodes as $node){
+
 
     // process $descriptionElements with content only
     if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0 || count($node->children) > 0){
+
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       $block->module = 'cdm_dataportal';
+
+      $media_list = array();
 
       if($node->feature->uuid != UUID_IMAGE){
 
