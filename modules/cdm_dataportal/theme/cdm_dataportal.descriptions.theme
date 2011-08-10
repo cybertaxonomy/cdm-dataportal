@@ -52,7 +52,7 @@ function theme_cdm_featureTrees($mergedTrees, $taxon){
     return;
   }
   foreach($mergedTrees as &$mTree){
-    //TODO diplay title and reference in case of multiple $mergedTrees -> theme
+    //TODO display title and reference in case of multiple $mergedTrees -> theme
     $out .= theme('cdm_feature_nodes', $mTree->root->children, $taxon);
   }
   return $out;
@@ -81,7 +81,7 @@ function theme_cdm_featureTreeTOCs($mergedTrees){
 
 
 /**
- * Renders the $mergedFeatureNodes fro the given $taxon.
+ * Renders the $mergedFeatureNodes for the given $taxon.
  * The merged nodes can be obtained by making use of the
  * function cdm_ws_descriptions_by_featuretree()
  *
@@ -94,6 +94,9 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
   foreach($mergedFeatureNodes as $node){
+
+      var_dump($node->feature->representation_L10n);
+
     // process $descriptionElements with content only
     if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0 || count($node->children) > 0){
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
@@ -128,7 +131,6 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
         }
 
         //get the text for the feature block
-        //if ($node->feature->titleCache == 'Common Name'){
         if ($node->feature->uuid == UUID_COMMON_NAME){
           $block->content .= theme('cdm_common_names', $node->descriptionElements);
         /*
@@ -142,15 +144,15 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
         // get media for the feature block
         $media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
         $captionElements = array('title', 'rights');
-        //$block->content .= theme('cdm_media_gallerie', $media_list, "test", 150, 4, false, $captionElements);
-        $block->content .= theme('cdm_media_gallery', $media_list,
-        CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
-        $gallery_settings['cdm_dataportal_media_maxextend'],
-        $gallery_settings['cdm_dataportal_media_cols'],
-        $gallery_settings['cdm_dataportal_media_maxRows'],
-        $captionElements
+
+        $gallery = theme('cdm_media_gallerie', $media_list, CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
+              $gallery_settings['cdm_dataportal_media_maxextend'],
+              $gallery_settings['cdm_dataportal_media_cols'],
+              $gallery_settings['cdm_dataportal_media_maxRows'],
+              $captionElements
         );
 
+        $block->content .= $gallery;
         $block->content .= theme('cdm_footnotes', $node->feature->uuid);
         $block->content .= theme('cdm_annotation_footnotes', $node->feature->uuid);
 
@@ -206,7 +208,7 @@ function theme_FeatureTree_hierarchy_children($node){
 
     foreach($node->children as $childNode){
       $out .= '<li>'.check_plain($childNode->feature->representation_L10n);
-      if($childNode->childen && count($childNode->childen) > 0){
+      if($childNode->children && count($childNode->children) > 0){
         $out .= '<ul>'.theme('FeatureTree_hierarchy_children', $childNode).'</ul>';
       }
       $out .= '</li>';
@@ -217,7 +219,15 @@ function theme_FeatureTree_hierarchy_children($node){
 
 
 
-
+/**
+ *
+ * Join the texts in $elementArray and enclose with a HTML tag
+ * @param unknown_type $elementArray
+ * @param unknown_type $feature the feature to which the elements given in $elementArray are belonging to
+ * @param unknown_type $glue defaults to empty string
+ * @param unknown_type $sortArray whether to sort the $elementArray alphabetically
+ * @param unknown_type $enclosingHtml
+ */
 function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
   $out = '<'.$enclosingHtml.' class="description" id="'.$feature->representation_L10n.'">';
 
