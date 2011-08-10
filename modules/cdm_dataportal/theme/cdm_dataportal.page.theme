@@ -283,12 +283,12 @@ function theme_cdm_taxon_page_specimens($taxon){
           $captionElements = array('#uri'=>t('open media'));
           $gallery_html = theme(
               'cdm_media_gallerie',
-          $mediaList,
-          $gallery_name ,
-          $gallery_settings['cdm_dataportal_media_maxextend'],
-          $gallery_settings['cdm_dataportal_media_cols'],
-          $gallery_settings['cdm_dataportal_media_maxRows'],
-          $captionElements, 'LIGHTBOX', null, null);
+              $mediaList,
+              $gallery_name ,
+              $gallery_settings['cdm_dataportal_media_maxextend'],
+              $gallery_settings['cdm_dataportal_media_cols'],
+              $gallery_settings['cdm_dataportal_media_maxRows'],
+              $captionElements, 'LIGHTBOX', null, null);
         } else {
           $gallery_html = '';
         }

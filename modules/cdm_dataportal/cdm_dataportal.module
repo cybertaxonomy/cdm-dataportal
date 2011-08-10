@@ -1435,7 +1435,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 		foreach($descriptionElements as $descriptionElement){
 			if(is_array($descriptionElement->media)){
 				foreach($descriptionElement->media as $media){
-					if(isset($media)){
+					if(is_object($media)){
 						$outArrayOfMedia[] = $media;
 					}
 				}

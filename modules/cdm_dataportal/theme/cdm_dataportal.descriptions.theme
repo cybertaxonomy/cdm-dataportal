@@ -93,9 +93,9 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
   RenderHints::pushToRenderStack('feature_nodes');
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
-  foreach($mergedFeatureNodes as $node){
+  $media_list = array();
 
-      var_dump($node->feature->representation_L10n);
+  foreach($mergedFeatureNodes as $node){
 
     // process $descriptionElements with content only
     if(is_array($node->descriptionElements) && count($node->descriptionElements) > 0 || count($node->children) > 0){
@@ -103,11 +103,15 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
       $block->module = 'cdm_dataportal';
 
       if($node->feature->uuid != UUID_IMAGE){
+
         $block->delta = generalizeString($featureRepresentation);
         $block->subject = theme('cdm_feature_name', $featureRepresentation);
         $block->module = "cdm_dataportal-feature";
         $block->content = '';
 
+        /*
+         * Content/DISTRIBUTION
+         */
         if($node->feature->uuid == UUID_DISTRIBUTION){
 
           if(variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)){
@@ -130,19 +134,62 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
           $block->content .= theme('cdm_distribution_map', $taxon);
         }
 
-        //get the text for the feature block
-        if ($node->feature->uuid == UUID_COMMON_NAME){
+        /*
+         * Content/COMMON_NAME
+         */
+        else if ($node->feature->uuid == UUID_COMMON_NAME){
           $block->content .= theme('cdm_common_names', $node->descriptionElements);
         /*
         }else if($node->feature->uuid == UUID_IMAGE_SOURCES) {
           $block->content .= theme('cdm_image_sources', $node->descriptionElements);
         */
-        } else {
-          $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
         }
 
-        // get media for the feature block
-        $media_list = cdm_dataportal_media_from_descriptionElements($node->descriptionElements);
+        /*
+         * Content/ALL OTHER FEATURES
+         */
+        else {
+          $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
+
+          /*
+           *  Content/ALL OTHER FEATURES/Subordinate Features
+           *
+           *  subordinate features are printed inline in one floating text,
+           *  it is expected that supordinate features only "contain" TextData elements
+           */
+          // TODO move into own theme
+          if(count($node->children) > 0){
+
+            //TODO support more than one level of childen http://dev.e-taxonomy.eu/trac/ticket/2393
+            $text = '';
+            foreach ($node->children as $child){
+
+             if (is_array($child->descriptionElements)){
+               foreach ($child->descriptionElements as $element) {
+
+                 if(is_array($element->media)){
+                   // append media of supordinate emelents to list of main feature
+                   $media_list = array_merge($media_list, $element->media);
+                 }
+
+                 $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+                //TODO use localized version of feature name, the locale must match the locale of the multilanguage text (http://dev.e-taxonomy.eu/trac/ticket/2394)
+                 $description = str_replace($element->feature->titleCache, '<em>' . $element->feature->titleCache . '</em>', $description);
+               }
+               $text .= " " . $description;
+               $description = '';
+             }
+
+            }
+            $block->content .= $text;
+          }
+
+        }
+
+        /*
+         * Media/ALL FEATURES
+         */
+        $media_list = array_merge($media_list, cdm_dataportal_media_from_descriptionElements($node->descriptionElements));
         $captionElements = array('title', 'rights');
 
         $gallery = theme('cdm_media_gallerie', $media_list, CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME.'_'.$node->feature->uuid,
@@ -161,24 +208,6 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
         $out .= theme('block', $block);
 
       }
-    }
-    // theme
-    if(count($node->children) > 0){
-      //TODO support more than one level of childen http://dev.e-taxonomy.eu/trac/ticket/2393
-      $text = '';
-      foreach ($node->children as $child){
-       //$out .= theme('cdm_descriptionElementTextData', $child->descriptionElements[0], false);
-       if (is_array($child->descriptionElements)){//if condition added to avoid warnings
-         foreach ($child->descriptionElements as $element) {
-           $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
-          //TODO use localized version of feature name, the locale must match the locale of the multilanguage text (http://dev.e-taxonomy.eu/trac/ticket/2394)
-           $description = str_replace($element->feature->titleCache, '<em>' . $element->feature->titleCache . '</em>', $description);
-         }
-         $text .= " " . $description;
-         $description = '';
-       }
-      }
-      $out .= $text;
     }
 
   }

@@ -224,12 +224,12 @@ function theme_cdm_media_caption($media, $elements = array('title', 'description
 function theme_cdm_media_gallerie(
 	$mediaList,
     $galleryName,
-	$maxExtend = 150, 
-	$cols = 4, 
-	$maxRows = false, 
+	$maxExtend = 150,
+	$cols = 4,
+	$maxRows = false,
 	$captionElements = array('title'),
-	$mediaLinkType = 'LIGHTBOX', 
-	$alternativeMediaUri = null, 
+	$mediaLinkType = 'LIGHTBOX',
+	$alternativeMediaUri = null,
 	$galleryLinkUri = null,
 	$showCaption = true){
 
@@ -303,7 +303,7 @@ function theme_cdm_media_gallerie(
 
 				_add_js_ahah();
 				$content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
-				
+
 				$cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/cdm_media_caption/".serialize($captionElements));
 				$captionPartHtml = '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading" style="display: none;">Loading ....</span></div>';
 
