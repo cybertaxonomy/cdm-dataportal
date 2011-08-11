@@ -1476,3 +1476,22 @@ function cdm_dynabox($label, $content_url, $theme, $link_alt_text, $enclosingtag
   return $out;
 }
 
+/**
+ * returns true if the given $featureNode or any of its subordinate nodes contains at least one
+ * DescriptionElement
+ * @param unknown_type $featureNode A heature node as produced by the function _mergeFeatureTreeDescriptions()
+ */
+function hasFeatureNodeDescriptionElements($featureNode) {
+
+  if(is_array($featureNode->descriptionElements) && count($featureNode->descriptionElements) > 0) {
+    return true;
+  } else if(is_array($featureNode->children)) {
+    foreach ($featureNode->children as $child) {
+      if(hasFeatureNodeDescriptionElements($child)){
+        return true;
+      }
+  }
+  return false;
+}
+
+}

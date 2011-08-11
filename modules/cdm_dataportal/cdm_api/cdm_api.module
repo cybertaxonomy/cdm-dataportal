@@ -689,9 +689,9 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements){
   foreach($featureNodes as &$node){
 
     // append corresponding elements to an additional node field: $node->descriptionElements
-    foreach($descriptionElements as $element){
-      if($element->feature->uuid == $node->feature->uuid){
-        if(!isset($node->descriptionElements)){
+    foreach($descriptionElements as $element) {
+      if($element->feature->uuid == $node->feature->uuid) {
+        if(!isset($node->descriptionElements)) {
           $node->descriptionElements = array();
         }
         $node->descriptionElements[] = $element;
