@@ -104,7 +104,7 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
 
       $media_list = array();
 
-      if($node->feature->uuid != UUID_IMAGE){
+      if($node->feature->uuid != UUID_IMAGE) {
 
         $block->delta = generalizeString($featureRepresentation);
         $block->subject = theme('cdm_feature_name', $featureRepresentation);
@@ -134,6 +134,7 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
 
           // Display cdm distribution map TODO this is a HACK to a proper generic implementation?
           $block->content .= theme('cdm_distribution_map', $taxon);
+          $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
         }
 
         /*
@@ -286,6 +287,7 @@ function theme_cdm_descriptionElement_CommonTaxonName($element){
  * @return unknown_type Html to be renderized in drupal
  */
 function theme_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid = null){
+
   $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   $sourceRefs = '';
   $result = array();
@@ -489,6 +491,8 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
   if($descriptionElement->feature->uuid == UUID_NAME_USAGE){
     sort($outArray);
   }
+
+
   if($image_sources){
       $outArray[] = theme('cdm_description_element_image_source', $image_sources, true);
 
