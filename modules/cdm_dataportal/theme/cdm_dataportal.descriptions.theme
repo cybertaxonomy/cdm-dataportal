@@ -105,7 +105,7 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
       if($node->feature->uuid != UUID_IMAGE) {
 
         $block->delta = generalizeString($featureRepresentation);
-        $block->subject = theme('cdm_feature_name', $featureRepresentation);
+        $block->subject = '<span class="uuid-'.$node->feature->uuid.'">' . theme('cdm_feature_name', $featureRepresentation) . '</span>';
         $block->module = "cdm_dataportal-feature";
         $block->content = '';
 
@@ -320,7 +320,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
         if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
           $out .= ': ';
         }
-        $out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+        $out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid) . '</li>';
       }else{
         if ($name_used_in_source_link_to_show){
           $name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
@@ -333,10 +333,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
   if(!isset($out)) {
     $out = $description;
   }
-  //printing annotations footnotes
-  //$out .= theme('cdm_annotations_as_footnotekeys', $element);
-  // add annotations as footnote key
-  //$out .= theme('cdm_annotations_as_footnotekeys', $element); move above
+
   return $out;
 }
 

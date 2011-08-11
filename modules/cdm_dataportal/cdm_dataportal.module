@@ -1438,7 +1438,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
   return $outArrayOfMedia;
 }
 
-function cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array()){
+function cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = null){
   $footNoteKeys = array();
   //is argument cdmBase an array?
   if (!is_array($cdmBase)){
@@ -1448,7 +1448,7 @@ function cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array())
     $cdmBase_array = $cdmBase;
   }
   //getting the key for the footnotemanager
-  if((bool) $footnote_list_key){
+  if( $footnote_list_key ){
     $footnoteListKey = $footnote_list_key;
   }else{
     $footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';

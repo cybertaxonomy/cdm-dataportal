@@ -154,10 +154,8 @@ function theme_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' '
  *	TaxonNode
  *  WorkingSet
  *
- * TODO it should be configurable which objects can be annotated as this might differ in dataportals
- *
  */
-function theme_cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = array()){
+function theme_cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = null){
   if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)){
     return '';
   }

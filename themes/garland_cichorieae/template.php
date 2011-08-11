@@ -132,14 +132,14 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 				if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
 					$out .= ': ';
 				}
-				$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+				$out .= $description . $sourceRefs .theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid) . '</li>';
 			}else if ($asListElement){
 				$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
 				//adding ":" if necesary
 				if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
 					$out .= ': ';
 				}
-				$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element) . '</li>';
+				$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid) . '</li>';
 			//special handling for flora malesiana TODO: possible better way to implement this case?
 			}else{
 				if ($name_used_in_source_link_to_show){
@@ -155,7 +155,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
       $out = $description;
     }
     //printing annotations footnotes
-    $out .= theme('cdm_annotations_as_footnotekeys', $element);
+    $out .=  theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid);
 /*
 	if ($feature_uuid == UUID_NAME_USAGE){
 		foreach($element->sources as $source){
