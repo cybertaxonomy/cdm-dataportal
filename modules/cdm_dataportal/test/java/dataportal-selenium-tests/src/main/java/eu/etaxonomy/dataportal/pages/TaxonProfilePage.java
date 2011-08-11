@@ -128,6 +128,14 @@ public class TaxonProfilePage extends PortalPage {
 		return linkList;
 	}
 
+	/**
+	 * @param position Zero based index of position in list of feature blocks
+	 * 			(only used to check against total number of feature blocks)
+	 * @param featureName
+	 * @param enclosingTag
+	 * @param elementTag
+	 * @return
+	 */
 	public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String elementTag){
 
 		List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm_dataportal-feature"));
