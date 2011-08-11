@@ -37,7 +37,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 	 *
 	 */
 	@Test
-	@Ignore // imposible to test FloraMalesiana by now, database is changing to frequently
+	@Ignore // imposible to test FloraMalesiana by now, database is changing too frequently
 	public void key_to_Malaysian_Sapindaceae_Genera() throws Exception {
 
 		UUID keyUuid = UUID.fromString("40cf3253-ce7a-4ad6-9a32-27695c36eb5d");
