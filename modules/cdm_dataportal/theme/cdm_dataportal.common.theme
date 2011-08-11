@@ -49,14 +49,17 @@ function absolute_path_to_drupal() {
 function taxon_in_current_tree ($taxon_uuid) {
   $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon_uuid);
   $taxon_in_current_tree = false;
-  foreach($taxon_nodes as $node){
-    if(get_taxonomictree_uuid_selected() == $node->classification->uuid){
-      $taxon_in_current_tree = true;
-      break;
+  if(is_array($taxon_nodes)){
+    foreach($taxon_nodes as $node){
+      if(get_taxonomictree_uuid_selected() == $node->classification->uuid){
+        $taxon_in_current_tree = true;
+        break;
+      }
     }
   }
   return $taxon_in_current_tree;
 }
+
 /**
  * TODO if getting fragment from request is possible remove $_REQUEST['highlite'] HACK
  * NOT WORKING since fragments are not available to the server
