@@ -255,6 +255,18 @@ function theme_cdm_media_gallerie(
 		return;
 	}
 
+	// --- duplicate supression: media can be reused but should only be shown once.
+	$tempMediaList = array();
+	$tempMediaUuids = array();
+	foreach ($mediaList as $media) {
+      if(!in_array($media->uuid, $tempMediaUuids)) {
+        $tempMediaList[] = $media;
+        $tempMediaUuids[] = $media->uuid;
+      }
+	}
+	$mediaList = $tempMediaList;
+
+	// ---
 	$galleryID = "media_gallery_".$galleryName;
 	$mediaPartLinkAttributes = array();
 	$openMediaLinkAttributes = array();
@@ -276,11 +288,14 @@ function theme_cdm_media_gallerie(
 		$out .= '<col width="'.(100 / $cols).'%">';
 	}
 	$out .= '</colgroup>';
+
+
 	for($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++){
 		$captionParts = array();
 		$out .= '<tr>';
 		for($c = 0; $c < $cols; $c++){
 			$media = array_shift($mediaList);
+
 			if(isset($media->representations[0]->parts[0])){
 
 				//
