@@ -347,6 +347,10 @@ span.submitted, .description {
   font-weight:normal;
 }
 
+.media-caption dd.title span.media-description{
+	display: block;
+}
+
 /*
  * GLOSSARY
  */
