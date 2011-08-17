@@ -408,7 +408,7 @@ function proxy_content($uri, $theme = null){
     $post_data = implode(',', $post_data);
 
     // testing
-    $data = cdm_http_request($uri, "POST", $post_data);
+    $data = drupal_http_request($uri, "POST", $post_data);
     print $data;
 
   }else if(strpos($theme, '/') > 0){ // must be a mimetype
@@ -421,8 +421,11 @@ function proxy_content($uri, $theme = null){
     //TODO reconsider caching logic in this function
     if(!$theme){
       // print out JSON, the cache cannot be used since it contains objects
-      $data = cdm_http_request($uri);
-      print $data;
+      $http_response = drupal_http_request($uri);
+      foreach($http_response->headers as $hname=>$hvalue) {
+        drupal_set_header($hname . ":" . $hvalue);
+      }
+      print $http_response->data;
       exit;
     } else {
       $obj = cdm_ws_get($uri, null, null, null, TRUE);
@@ -841,8 +844,10 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
   $message .= 'parsed in '.sprintf('%3.3f', $time_parse).' s('.sprintf('%3.3f', $cummulated_time_parse).'s); ';
   $message .= 'size:'.sprintf('%3.1f', ($datasize / 1024)).' kb of '.$success_msg.' data: ';
   if(_is_cdm_ws_uri($path)){
-    $message .= '<a href="'.url($path.'.xml', $query).'" target="data" class="'.$success_msg.'">xml</a>,';
-    $message .= '<a href="'.url($path.'.json', $query).'" target="data" class="'.$success_msg.'">json</a>';
+    $message .= '<a href="'.url($path.'.xml', $query).'" target="data" class="'.$success_msg.'">xml</a>-';
+    $message .= '<a href="'.url('cdm_api/proxy/'.urlencode(url($path.'.xml', $query))).'" target="data" class="'.$success_msg.'">proxied</a>,';
+    $message .= '<a href="'.url($path.'.json', $query).'" target="data" class="'.$success_msg.'">json</a>-';
+    $message .= '<a href="'.url('cdm_api/proxy/'.urlencode(url($path.'.json', $query))).'" target="data" class="'.$success_msg.'">proxied</a>';
   } else {
       $message .= '<a href="'.url($path, $query).'" target="data" class="'.$success_msg.'">open</a>';
   }
