@@ -536,7 +536,7 @@ function cdm_settings_layout_synonymy(){
       '#type' => 'fieldset',
       '#title' => t('Synonymy'),
       '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
+      '#collapsed' => TRUE,
       '#description' => t('This section covers the settings related to the taxon <b>synonymy</b> tab.'),
   );
 
@@ -602,26 +602,8 @@ function cdm_settings_layout_taxon(){
   $collapsed = false;
   $form = array();
 
-  /* ======  TAXON_PROFILE ====== */
-
-  $form['taxon_profile'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Taxon profile'),
-      '#description' => t('<p>This section covers the setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.
-                      It is possible to split the taxon profile in different tabs, visit the section Taxon tabs to discover and configure the tabs</p>'),
-      '#collapsible' => FALSE,
-      '#collapsed' => FALSE,
-  );
-
-  $form['taxon_profile']['cdm_dataportal_show_back_to_search_results'] = array(
-      '#type' => 'checkbox',
-        '#title' => t('Show <em>Back to search results</em> link at the taxon site.'),
-        '#default_value' => variable_get('cdm_dataportal_show_back_to_search_results', 1),
-        '#description' => t('<p>If checked the link to search results is rendererized at the top of the taxon site. Clicking on the link the last search performed is renderized again.</p>')
-  );
-
   //--------- TABBED TAXON -------//
-  $form['taxon_profile']['taxon_tabs'] = array(
+  $form['taxon_tabs'] = array(
     '#type' => 'fieldset',
       '#title' => t('Taxon tabs'),
       '#collapsible' => TRUE,
@@ -630,7 +612,8 @@ function cdm_settings_layout_taxon(){
              General, Synonymy, Images and Specimens. If the taxon has no information for any of the tabs/sections such tab will be not displayed.'),
   );
 
-  $form['taxon_profile']['taxon_tabs']['cdm_dataportal_taxonpage_tabs'] = array(
+
+    $form['taxon_tabs']['cdm_dataportal_taxonpage_tabs'] = array(
     '#type' => 'checkbox',
     '#title' => t('Tabbed taxon page'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
@@ -638,7 +621,7 @@ function cdm_settings_layout_taxon(){
                             If not the taxon data is renderized as a long single page without tabs.</p>')
   );
 
-  $form['taxon_profile']['taxon_tabs']['cdm_dataportal_detault_tab'] =  array(
+  $form['taxon_tabs']['cdm_dataportal_detault_tab'] =  array(
       '#type'          => 'select',
       '#title'         => t('Default tab to display'),
       '#default_value' => variable_get('cdm_dataportal_detault_tab', 0),
@@ -646,6 +629,23 @@ function cdm_settings_layout_taxon(){
       '#description'   => t('<p>Select the default tab to display when visiting a taxon page. Only available if Tabbed Taxon Page is enable.</p>
               <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab
               to be renderized will be the synonymy of the accepted taxon and not the above selected tab.'),
+  );
+
+  $form['cdm_dataportal_show_back_to_search_results'] = array(
+      '#type' => 'checkbox',
+        '#title' => t('Show <em>Back to search results</em> link at the taxon site.'),
+        '#default_value' => variable_get('cdm_dataportal_show_back_to_search_results', 1),
+        '#description' => t('<p>If checked the link to search results is rendererized at the top of the taxon site. Clicking on the link the last search performed is renderized again.</p>')
+  );
+
+  /* ======  TAXON_PROFILE ====== */
+
+  $form['taxon_profile'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Taxon profile (tab)'),
+      '#description' => t('<p>This section covers the setting related to the taxon profile tab, also known as the <strong>"General"</strong> tab.</p>'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
   );
 
 
@@ -685,6 +685,12 @@ function cdm_settings_layout_taxon(){
       '#options' => $selectShowMedia,
       '#description'   => t('Show the profil pictures current taxon\'s children.')
   );
+
+  //-- MEDIA THUMBNAILS --//
+  $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
+  $form_title = 'Taxon Profile Images';
+  $form_description = '<p>The different section in the taxon  profile can have images associated with them. These images are displayed in a gallery of thumbnails wich can be configuered here:</p>';
+  $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
   // ---- FEATURE TREE ---- //
   $form['taxon_profile']['taxon_profile'] = array(
@@ -817,15 +823,15 @@ function cdm_settings_layout_taxon(){
 
 
 /* ====== SYNONYMY ====== */
-  $form['taxon_profile']['synonymy'] = array(
+  $form['taxon_synonymy'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Taxon Synonymy (Tab)'),
+      '#title' => t('Taxon synonymy (tab)'),
       '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
+      '#collapsed' => TRUE,
       '#description' => t('This section covers the settings related to the taxon <b>synonymy</b> tab.'),
   );
 
-  $form['taxon_profile']['synonymy']['cdm_dataportal_nomref_in_title'] = array(
+  $form['taxon_synonymy']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show accepted taxon on top of the synonymy'),
     '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE),
@@ -833,7 +839,7 @@ function cdm_settings_layout_taxon(){
                         with the full nomenclatural reference (depending on the currently chosen theme).')
   );
 
-  $form['taxon_profile']['synonymy']['cdm_dataportal_display_is_accepted_for'] = array(
+  $form['taxon_synonymy']['cdm_dataportal_display_is_accepted_for'] = array(
     '#type' => 'checkbox',
     '#title' => t('Display <em>is accepted for ...</em> on taxon pages when coming from a synonym link.'),
     '#default_value' => variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR),
@@ -855,7 +861,7 @@ function cdm_settings_layout_taxon(){
     '#description' => t('Select the name relationships you want to show for the accepted taxa.'),
   );
 
-  $form['taxon_profile']['synonymy']['name_relationships'] = $name_relationships_form;
+  $form['taxon_synonymy']['name_relationships'] = $name_relationships_form;
       /*
        $form['synonymy'][CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
        '#type' => 'checkbox',
@@ -865,7 +871,7 @@ function cdm_settings_layout_taxon(){
        '#description' => t('Check this if you want the synonymy list to show all the name relationships of accepted taxa.')
        );
      */
-  $form['taxon_profile']['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+  $form['taxon_synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show taxon relations of accepted taxa on taxon page'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
@@ -873,11 +879,11 @@ function cdm_settings_layout_taxon(){
   );
 
   // ====== SPECIMENS ====== //
-  $form['taxon_profile']['specimens'] = array(
+  $form['taxon_specimens'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Taxon Specimens (Tab)'),
+      '#title' => t('Taxon specimens (tab)'),
       '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
+      '#collapsed' => TRUE,
       '#description' => t('This section covers the settings related to the taxon <b>specimens</b> tab.'),
   );
   $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
@@ -885,26 +891,20 @@ function cdm_settings_layout_taxon(){
   $form_description = 'Specimens may have media which is displayed at the Specimen tab/section as a gallery.
    It is possible to configure the thumbnails gallery here, however for configuring how a single media should
    be displayed please go to <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a></p>';
-  $form['taxon_profile']['specimens'][] =
+  $form['taxon_specimens'][] =
     cdm_dataportal_create_gallery_settings_form($form_name, $form_title, FALSE, $form_description);
 
-  //-- MEDIA THUMBNAILS --//
-  //$form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
-  //$form_tittle = 'Taxon Images (Tab)';
-  //$form_description = 'This section covers the settings related to the taxon images tab. Taxon images display all the media (in this case images) found for a given taxon as a thumbnails.';
-  //$form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description);
+
   // --- MEDIA GALLERY ---- //
-  //$form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
   $form_name = CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB;
-  $form_title = 'Media gallery (Tab)';
+  $form_title = 'Media gallery (tab)';
   $form_description = '<p>This section covers the settings related to the taxon <strong>media</strong> tab.
    Taxa may have media (usually images) and they are as thumbnails displayed. It is possible to configure
    the thumbnails gallery here, however for configuring how a single media should be displayed please go to
    <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a></p>
    <p><strong>Note:</strong> These settings are only taken into account when the standard
    gallery viewer is selected at <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a>.</p>';
-  //$form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
-  $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
+  $form['taxon_media'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, TRUE, $form_description);
 
 
   return system_settings_form($form);
@@ -918,7 +918,7 @@ function cdm_settings_layout_search(){
     '#type' => 'fieldset',
     '#title' => t('Taxa Search'),
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
+    '#collapsed' => TRUE,
     '#description' => t('<p>The data portal allows the users to perform searchs.</p><p>To perform searchs
          the block <em>CDM Taxon Search</em> should be enabled and visible for users
          where they can write the text to be searched. You can find Drupal block configuration
