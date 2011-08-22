@@ -1250,7 +1250,7 @@ function cdm_settings_cache(){
       '#title' => t('Cache Settings'),
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
-    '#description' => t('<p>TODO: cache process does not work, check java script.</p><p>When caching is enabled all single taxon sites are stored in an internal drupal cache doing
+    '#description' => t('<p>When caching is enabled all single taxon sites are stored in an internal drupal cache doing
                            the portal response of taxa pages faster. This is possible because the sites are loaded from
                            the cache and are not created from scratch.</p>'),
       );
@@ -1280,7 +1280,7 @@ function cdm_view_cache_site(){
 
   $out = '';
 
-    _add_js_progressbar();
+  _add_js_progressbar();
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cache_all_taxa.js');
 
   $request_params = array();
@@ -1289,7 +1289,8 @@ function cdm_view_cache_site(){
   $request_params['doTaxa'] = 1;
   $request_params['doSynonyms'] = 0;
   $request_params['doTaxaByCommonNames'] = 0;
-  $search_url = cdm_compose_url(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
+
+  $search_url = cdm_compose_url(CDM_WS_PORTAL_TAXON_FIND . ".json", null, queryString($request_params));
   $search_url = uri_uriByProxy($search_url);
   $taxon_page_url = url('cdm_dataportal/taxon/');
 

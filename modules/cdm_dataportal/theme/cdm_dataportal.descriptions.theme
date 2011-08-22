@@ -105,7 +105,7 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
       if($node->feature->uuid != UUID_IMAGE) {
 
         $block->delta = generalizeString($featureRepresentation);
-        $block->subject = '<span class="uuid-'.$node->feature->uuid.'">' . theme('cdm_feature_name', $featureRepresentation) . '</span>';
+        $block->subject = '<span class="feature.uuid:'.$node->feature->uuid.'">' . theme('cdm_feature_name', $featureRepresentation) . '</span>';
         $block->module = "cdm_dataportal-feature";
         $block->content = '';
 

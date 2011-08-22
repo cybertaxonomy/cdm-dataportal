@@ -472,7 +472,7 @@ function cdm_compose_annotations_url($cdmBase){
         return;
     }
 
-  $ws_base_uri = null;
+    $ws_base_uri = null;
     switch($cdmBase->class){
         case 'TaxonBase':
         case 'Taxon':
@@ -798,7 +798,11 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET
 
       $time_parse = microtime(true) - $time_parse_start;
       if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
-        $success_msg = $obj || $datastr == "[]" ? 'valid':'invalid';
+        if($obj || $datastr == "[]" ){
+          $success_msg = 'valid';
+        } else {
+          $success_msg = 'invalid';
+        }
         _add_debugMessage($uri, $time_get, $time_parse, strlen($datastr), $success_msg);
       }
       if($set_cacheL2) {

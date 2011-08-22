@@ -51,7 +51,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 	var requestNextDataPage = function(callback){
 		var uri = searchTaxaUrl + escape("&pageSize=" + pageSize);
 		if(dataPager != null){
-			uri += escape("&page="+ dataPager.nextIndex);
+			uri += escape("&pageNumber="+ dataPager.nextIndex);
 		}
 		log('page->'+uri);
 		$.ajax({
