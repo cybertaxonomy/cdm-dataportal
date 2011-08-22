@@ -1,18 +1,18 @@
 function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, readyCallback, doneCallback, errorCallback){
-		
+
 	var taxonPageUrl = taxonPageUrl;
 	var searchTaxaUrl = searchTaxaUrl;
 	var pageSize;
-	
+
 	var progress = 0;
 	var i = 0;
 	var doRun = false;
-	
+
 	var dataPager = null;
-	
+
 	this.elapsedMillies = 0;
 	this.estimatedMillies = 0;
-	
+
 	/**
 	 * Log to the Firebug Console if Firebug is available
 	 * @param msg the massage to show in the firebug Console
@@ -23,9 +23,9 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 			console.log(msg);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param data
 	 * @param statusText
 	 * @return
@@ -40,9 +40,9 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 	 	}
 	 	elapsedMillies = 0;
 	};
-	
+
 	/**
-	 * 
+	 *
 	 * @param callback
 	 * @return
 	 */
@@ -56,27 +56,27 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 			url: uri,
 			dataType: 'json',
 			cache: false, // browser will not cache
-			success: callback, 
+			success: callback,
 			error: function(XMLHttpRequest, statusText ){
 					stop();
 					errorCallback(statusText, 'A network error occurred, please start again.', unescape(uri), true);
 				}
 		});
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	this.run = function(lastMillies){
-		
-		 // 
+
+		 //
 		var now = new Date();
 		var nowMillies = now.getTime();
 		if(lastMillies != undefined){
 			elapsedMillies += (nowMillies - lastMillies);
 			estimatedMillies = (elapsedMillies / i) * dataPager.count;
 		}
-		
+
 		var parent = this;
 		// get next page of data
 		if( i > dataPager.lastRecord - 1 && i < dataPager.count && dataPager.nextIndex != undefined){
@@ -124,22 +124,22 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 			}
 		}
 	};
-	
+
 	/**
-	 * 
+	 *
 	 */
 	this.start =  function(){
 			doRun = true;
 			this.run();
 		};
-	
+
 	/**
-	 * 
-	 */	
+	 *
+	 */
     this.stop = function(){
 			doRun = false;
 		};
-		
+
 	// get list of taxa and initialize the Bot
 	progressCallback(0, null, null, "Initializing, please wait ...");
 	requestNextDataPage(function(data, statusText){
@@ -151,18 +151,18 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 
 $(document).ready(function() {
 
-	var searchTaxaUrl = $('#cache_site [name=searchTaxaUrl]').val();
-	var taxonPageUrl = $('#cache_site [name=taxonPageUrl]').val();
-	
-	$('#cache_site [name=start]').attr('disabled', 'disabled');
-	$('#cache_site [name=stop]').attr('disabled', 'disabled');
-	$('#cache_site #progress').css({background: '#012456', color: '#349AAF', fontSize: '100%', padding: '10px'})
-    $('#cache_site #progress').html(
+	var searchTaxaUrl = $('#cdm-settings-cache [name=searchTaxaUrl]').val();
+	var taxonPageUrl = $('#cdm-settings-cache [name=taxonPageUrl]').val();
+
+	$('#cdm-settings-cache [name=start]').attr('disabled', 'disabled');
+	$('#cdm-settings-cache [name=stop]').attr('disabled', 'disabled');
+	$('#cdm-settings-cache #progress').css({background: '#012456', color: '#349AAF', fontSize: '100%', padding: '10px'})
+    $('#cdm-settings-cache #progress').html(
     		'<div id="usermessage" style="font-size:95%; width: 50%; float:right; font-weight:light; padding:10px; border-left: 1px solid; height: 3.9em;"></div>'
     		+'<div id="counter" style="font-size:300%; padding:10px;"></div>'
     		+'<div id="time" style="clear:both; border-top:1px solid #349AAF;"></div>'
     		+'<div id="log" style="border-top:1px solid #349AAF; font-size:85%; overflow: auto; white-space:nowrap;"></div>');
-    
+
 	var formatTime = function(date){
 		var h = parseInt(date.getTime() / 1000 / 60 / 60);
 		var m = parseInt( (date.getTime() / 1000/ 60) % 60);
@@ -170,13 +170,13 @@ $(document).ready(function() {
 		return '' + h +'h '+ m +'m '+ s +'s ';
 	}
 
-	
+
 	var progressCallback = function(progress, elapsedTime, estimatedTime, userMessage){
 		var percent = Math.floor(progress * 10000) / 100;
 		$('#counter').text(percent + '%');
 		if(elapsedTime != null){
 			var timehtml =
-				'elapsed time: ' + formatTime(elapsedTime) 
+				'elapsed time: ' + formatTime(elapsedTime)
 				+ '<br />estimated time: ' + formatTime(estimatedTime)
 				+ '<br />remainig time: ' + formatTime(new Date(estimatedTime.getTime() - elapsedTime.getTime()));
 			$('#time').html(timehtml);
@@ -185,27 +185,27 @@ $(document).ready(function() {
 			userMessage = '';
 		}
 		$('#usermessage').html(userMessage);
-		
+
 	}
-	
+
 	var readyCallback = function(message){
-		$('#cache_site [name=start]').removeAttr('disabled');
+		$('#cdm-settings-cache [name=start]').removeAttr('disabled');
 		if(message != undefined){
-			$('#cache_site').append('<div class="error">'+message+'</div>');
+			$('#cdm-settings-cache').append('<div class="error">'+message+'</div>');
 
 		}
 	}
-	
+
 	var doneCallback = function(progress){
 		var percent = Math.floor(progress * 10000) / 100;
-		$('#cache_site #progress').text('DONE');
-		$('#cache_site [name=stop]').removeAttr('disabled');
+		$('#cdm-settings-cache #progress').text('DONE');
+		$('#cdm-settings-cache [name=stop]').removeAttr('disabled');
 	}
-	
+
 	var errorCallback = function(errorMessage, userMessage, taxonUrl, doStop){
 		var logentry = '<div>' + errorMessage + ' : ' + taxonUrl + '' + '</div>';
 		if($('#log div').length == 0){
-			$('#log').html(logentry);			
+			$('#log').html(logentry);
 		} else {
 			$('#log div:last').append(logentry)
 		}
@@ -214,21 +214,21 @@ $(document).ready(function() {
 		}
 		$('#usermessage').html(userMessage);
 		if(doStop){
-			$('#cache_site [name=stop]').attr('disabled', 'disabled');
-			$('#cache_site [name=start]').removeAttr('disabled');
+			$('#cdm-settings-cache [name=stop]').attr('disabled', 'disabled');
+			$('#cdm-settings-cache [name=start]').removeAttr('disabled');
 		}
 	}
-	
+
 	var cacheBot = new CacheBot(searchTaxaUrl, taxonPageUrl, 25, progressCallback, readyCallback, doneCallback, errorCallback);
 
-	$('#cache_site [name=start]').click(function(){
+	$('#cdm-settings-cache [name=start]').click(function(){
 		cacheBot.start();
-		$('#cache_site [name=start]').attr('disabled', 'disabled');
-		$('#cache_site [name=stop]').removeAttr('disabled');
+		$('#cdm-settings-cache [name=start]').attr('disabled', 'disabled');
+		$('#cdm-settings-cache [name=stop]').removeAttr('disabled');
 		$('#usermessage').html(' ');
 	}).attr('disabled', 'disabled');
-	$('#cache_site [name=stop]').click(function(){
+	$('#cdm-settings-cache [name=stop]').click(function(){
 		cacheBot.stop();
-		$('#cache_site [name=stop]').attr('disabled', 'disabled');
+		$('#cdm-settings-cache [name=stop]').attr('disabled', 'disabled');
 	}).attr('disabled', 'disabled');
 });
