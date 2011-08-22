@@ -10,8 +10,8 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 
 	var dataPager = null;
 
-	this.elapsedMillies = 0;
-	this.estimatedMillies = 0;
+//	this.elapsedMillies = 0;
+//	this.estimatedMillies = 0;
 
 	/**
 	 * Log to the Firebug Console if Firebug is available
@@ -39,6 +39,8 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 	 		readyCallback();
 	 	}
 	 	elapsedMillies = 0;
+	 	estimatedMillies = 0;
+
 	};
 
 	/**
