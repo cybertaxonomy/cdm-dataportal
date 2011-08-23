@@ -1228,6 +1228,23 @@ function rank_compare($thisRankUuid, $thatRankUuid){
   return $result->Integer;
 }
 
+/**
+ * Composes an HTML element class attribute value composed of
+ * the shortname of the cdm class and the uuid of the entity.
+ * This class attribute should be used whereever an cdm-entity is rendered.
+ *
+ * These according class selectors in css must be escaped, eg:
+ *    .cdm\:TextData
+ *
+ * @param $cdmEntity
+ */
+function html_class_atttibute_ref($cdmEntity){
+
+  if(is_cdm_entity($cdmEntity)) {
+    return "cdm:".$cdmEntity->class." uuid:".$cdmEntity->uuid;
+  }
+}
+
 function theme_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
   $acceptedPath = path_to_taxon($acceptedUuid, true);
   return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid, $synonymUuid);

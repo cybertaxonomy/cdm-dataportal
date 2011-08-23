@@ -87,6 +87,9 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 		$asListElement = false;
 	}
 
+	    //printing annotations footnotes
+    $annotation_fkeys =  theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid);
+
 	if ($feature_uuid == UUID_NAME_USAGE || $feature_uuid == UUID_CHROMOSOMES){
 		$no_links = true;
 	}
@@ -132,30 +135,29 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 				if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
 					$out .= ': ';
 				}
-				$out .= $description . $sourceRefs .theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid) . '</li>';
+				$out .= $description . $sourceRefs .theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid) . $annotation_fkeys . '</li>';
 			}else if ($asListElement){
 				$out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
 				//adding ":" if necesary
 				if ($name_used_in_source_link_to_show && ($description || $sourceRefs)){
 					$out .= ': ';
 				}
-				$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid) . '</li>';
+				$out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid) . $annotation_fkeys . '</li>';
 			//special handling for flora malesiana TODO: possible better way to implement this case?
 			}else{
 				if ($name_used_in_source_link_to_show){
 					$name_used_in_source_link_to_show = ' (name in source: '. $name_used_in_source_link_to_show . ')';
 				}
-				$out = $description . $sourceRefs . $name_used_in_source_link_to_show;
+				$out = '<span class="'. html_class_atttibute_ref($element) . '"> '. $description . $sourceRefs . $name_used_in_source_link_to_show . $annotation_fkeys. '</span>';
 			}
 		}
 	}
 
     //if no sources, print the description
     if(!isset($out)) {
-      $out = $description;
+      $out = '<span class="'. html_class_atttibute_ref($element) . '"> ' . $description . $annotation_fkeys. '</span>';
     }
-    //printing annotations footnotes
-    $out .=  theme('cdm_annotations_as_footnotekeys', $element, $feature_uuid);
+
 /*
 	if ($feature_uuid == UUID_NAME_USAGE){
 		foreach($element->sources as $source){

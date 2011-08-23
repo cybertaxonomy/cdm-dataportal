@@ -396,3 +396,8 @@ li.toclevel-3 {
 	margin-left: 45px;
 	background-image: none;
 }
+
+
+#block-cdm_dataportal-feature-credits span.cdm\:TextData {
+	display: block;
+}

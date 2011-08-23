@@ -1103,8 +1103,25 @@ function cdm_api_secref_cache_clear(){
   $secref_cache = array();
 }
 
+/**
+ * Validates if the given string is a uuid.
+ *
+ * @param unknown_type $str
+ */
 function is_uuid($str){
   return is_string($str) && strlen($str) == 36 && strpos($str, '-');
+}
+
+/**
+ * Checks if the given $object is a valid cdm entity. An object is consirered
+ * cdm entity if it has a string field $object->class with at least 3 characters and
+ * if it has a valid uuid in $object->uuid.
+ *
+ * @author a.kohlbecker
+ * @param unknown_type $object
+ */
+function is_cdm_entity($object){
+  return is_string($object->class) && strlen($object->class) > 2 && is_string($object->uuid) && is_uuid($object->uuid);
 }
 
 function _cdm_api_secref_cache_add($secUuidsStr){
@@ -1121,6 +1138,13 @@ function _cdm_api_secref_cache_add($secUuidsStr){
   $secref_cache[$ref->uuid] = $ref;
 }
 
+/**
+ * Checks if the given $uri starts with the cdm webservice url stored in the
+ * Drupal variable 'cdm_webservice_url'. The 'cdm_webservice_url' can be set in the
+ * admins section of the portal.
+ *
+ * @param $uri the URI to test
+ */
 function _is_cdm_ws_uri($uri){
   return str_beginsWith($uri, variable_get('cdm_webservice_url', '#EMPTY#'));
 }
