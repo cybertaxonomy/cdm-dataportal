@@ -1507,8 +1507,9 @@ function hasFeatureNodeDescriptionElements($featureNode) {
       if(hasFeatureNodeDescriptionElements($child)){
         return true;
       }
+    }
+    return false;
   }
-  return false;
-}
 
 }
+

@@ -387,10 +387,6 @@ function cdm_settings_general(){
     return system_settings_form($form);
 }
 
-function gen_layout_form_submit ($form, $form_values) {
-  drupal_set_message('This is a test!');
-}
-
 
 /**
  * LAYOUT settings
@@ -1093,8 +1089,9 @@ function cdm_settings_geo(){
         .'and can onyl be used with the EDIT map service version 1.1 or above.'
     );
 
-    if (variable_get('edit_map_server', EDIT_MAPSERVER_V1_URI) !=  EDIT_MAPSERVER_V11_URI) {
-      $form['map_image']['#description'] = '<div class="messages warning">' . t("The selected EDIT map service version has to small version number! ") . '</div>'
+    $edit_mapserver_version = getEDITMapServiceVersionNumber();
+    if ($edit_mapserver_version < 1.1) {
+      $form['map_image']['#description'] = '<div class="messages warning">' . t("The selected EDIT map service version has to small version number: $edit_mapserver_version") . '</div>'
       . $form['map_image']['#description'];
     }
 
@@ -1348,6 +1345,26 @@ function getEDITMapServiceURI(){
     return EDIT_MAPSERVER_V1_URI;
   }
 
+}
+
+/**
+ *
+ * @return float the version number of the currently selected edit mapserver as a float. Returns 0 on error
+ */
+function getEDITMapServiceVersionNumber() {
+
+      $pattern = '/v(\d+\.\d+)/';
+
+      $url = getEDITMapServiceURI();
+      preg_match($pattern, $url, $matches, PREG_OFFSET_CAPTURE, 3);
+      if( isset($matches[1]) ){
+        $version = 1 + $matches[1][0] -1; // convert string to float
+        return $version;
+      } else {
+        // report error
+        drupal_set_message(" Invalid version number in EDIT map service URL: '" + variable_get('edit_map_server', EDIT_MAPSERVER_V1_URI) + "'", "waring");
+        return 0;
+      }
 }
 
 /**

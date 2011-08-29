@@ -866,7 +866,7 @@ function theme_cdm_distribution_map($taxon){
       $map_service_script_name = "areas.php";
 
       // apply Plain Image map settings
-      if (variable_get('edit_map_server', EDIT_MAPSERVER_V1_URI) ==  EDIT_MAPSERVER_V11_URI){
+      if (getEDITMapServiceVersionNumber() >= 1.1){
         /*
          * example : title=a:Naturalized++non-invasive
          * &ad=cyprusdivs:bdcode:a:5&as=a:ff9900,,0.1,&l=tdwg4
