@@ -58,7 +58,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 	@Test
 	public void testPage() {
 
-		assertEquals(prepareTitle("Allium guttatum subsp. guttatum"), p.getTitle());
+		assertEquals(getContext().prepareTitle("Allium guttatum subsp. guttatum"), p.getTitle());
 		assertNull("Authorship information should be hidden", p.getAuthorInformationText());
 
 		List<LinkElement> primaryTabs = p.getPrimaryTabs();
@@ -76,11 +76,11 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 		assertEquals("Content", p.getTableOfContentHeader());
 		List<LinkElement> links = p.getTableOfContentLinks();
 		assertNotNull("Expecting a list of TOC links in the profile page.", links);
-		subtestTableOfContentEntry(0, "Endemism", "endemism");
-		subtestTableOfContentEntry(1, "Red Data Book category", "red_data_book_category");
-		subtestTableOfContentEntry(2, "Status", "status");
-		subtestTableOfContentEntry(3, "Systematics", "systematics");
-		subtestTableOfContentEntry(4, "Distribution", "distribution");
+		p.testTableOfContentEntry(0, "Endemism", "endemism");
+		p.testTableOfContentEntry(1, "Red Data Book category", "red_data_book_category");
+		p.testTableOfContentEntry(2, "Status", "status");
+		p.testTableOfContentEntry(3, "Systematics", "systematics");
+		p.testTableOfContentEntry(4, "Distribution", "distribution");
 
 		FeatureBlock featureBlock = p.getFeatureBlockAt(0, "endemism", "div", "div");
 		assertEquals("Endemism\nnot endemic", featureBlock.getText());
@@ -113,18 +113,6 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 		WebElement distributionMapImage = featureBlock.getElement().findElement(By.className("distribution_map"));
 		assertEquals("http://edit.br.fgov.be/edit_wp5/v1.1/rest_gen.php?title=a:indigenous&ad=cyprusdivs:bdcode:a:2&as=z:ffffff,606060,,|y:1874CD,,|a:339966,,0.1,&l=background_gis:y,cyprusdivs:z&ms=500&bbox=32,34,35,36&label=1&img=true&legend=1&mlp=3&mc_s=Georgia,15,blue&mc=&recalculate=false", distributionMapImage.getAttribute("src"));
 
-	}
-
-
-	/**
-	 * @param index
-	 * @param tocLinkText
-	 * @param tocLinkFragment
-	 */
-	private void subtestTableOfContentEntry(int index, String tocLinkText, String tocLinkFragment) {
-		assertEquals(tocLinkText, p.getTableOfContentLinks().get(index).getText());
-		String expectedHref = p.getDrupalPagePath() + "#" + tocLinkFragment;
-		assertTrue("Expecting the toc link to end with " + expectedHref,  p.getTableOfContentLinks().get(index).getUrl().toString().endsWith(expectedHref));
 	}
 
 }

@@ -23,6 +23,7 @@ public enum DataPortalContext {
 
 	cichorieae,
 	palmae,
+	diptera,
 	cyprus,
 	floramalesiana;
 
@@ -36,10 +37,16 @@ public enum DataPortalContext {
 	public final Logger logger = Logger.getLogger(DataPortalContext.class);
 
 	private DataPortalContext() {
-		this.baseUri = TestConfiguration.getProperty(composePropertyKey("baseUri"), URI.class);
-		this.cdmServerUri = TestConfiguration.getProperty(composePropertyKey("cdmServerUri"), URI.class);
-		this.classificationUUID = TestConfiguration.getProperty(composePropertyKey("classificationUUID"), UUID.class);
-		this.siteName = TestConfiguration.getProperty(composePropertyKey("siteName"));
+
+		try {
+			this.baseUri = TestConfiguration.getProperty(composePropertyKey("baseUri"), URI.class, true);
+			this.cdmServerUri = TestConfiguration.getProperty(composePropertyKey("cdmServerUri"), URI.class, false);
+			this.classificationUUID = TestConfiguration.getProperty(composePropertyKey("classificationUUID"), UUID.class, true);
+			this.siteName = TestConfiguration.getProperty(composePropertyKey("siteName"));
+		} catch (TestConfigurationException e) {
+			logger.error("Configuration Error: ", e);
+			System.exit(-1);
+		}
 	}
 
 	private String composePropertyKey(String fieldName) {
@@ -61,6 +68,10 @@ public enum DataPortalContext {
 
 	public String getSiteName() {
 		return siteName;
+	}
+
+	public String prepareTitle(String pageHeader) {
+		return pageHeader + " | " + getSiteName();
 	}
 
 }

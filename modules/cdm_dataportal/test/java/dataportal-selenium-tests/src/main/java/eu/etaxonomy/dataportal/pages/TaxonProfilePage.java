@@ -10,6 +10,9 @@
  */
 package eu.etaxonomy.dataportal.pages;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +149,17 @@ public class TaxonProfilePage extends PortalPage {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @param index
+	 * @param tocLinkText
+	 * @param tocLinkFragment
+	 */
+	public void testTableOfContentEntry(int index, String tocLinkText, String tocLinkFragment) {
+		assertEquals(tocLinkText, getTableOfContentLinks().get(index).getText());
+		String expectedHref = getDrupalPagePath() + "#" + tocLinkFragment;
+		assertTrue("Expecting the toc link to end with " + expectedHref,  getTableOfContentLinks().get(index).getUrl().toString().endsWith(expectedHref));
 	}
 
 }

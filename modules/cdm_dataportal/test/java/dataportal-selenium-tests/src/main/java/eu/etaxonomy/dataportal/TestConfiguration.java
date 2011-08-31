@@ -91,34 +91,39 @@ public class TestConfiguration {
 
 	}
 
-	public static String getProperty(String key){
-		return getProperty(key, String.class);
+	public static String getProperty(String key) throws TestConfigurationException{
+		return getProperty(key, String.class, false);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T getProperty(String key, Class<T> type){
+	public static <T> T getProperty(String key, Class<T> type, boolean nonNull) throws TestConfigurationException{
 		if(testConfiguration == null){
 			testConfiguration = new TestConfiguration();
 		}
 		String value = testConfiguration.getProperties().getProperty(key);
+
 
 		if(value != null){
 			if(URI.class.isAssignableFrom(type)){
 				try {
 					return (T) new URI(value);
 				} catch (URISyntaxException e) {
-					logger.error("Invalid URI " + value + " in property " + key + " of " + testConfiguration.propertySourceUri.toString());
+					throw new TestConfigurationException("Invalid URI " + value + " in property " + key + " of " + testConfiguration.propertySourceUri.toString(), e);
 				}
 			} else if(UUID.class.isAssignableFrom(type)){
 				try {
 					return (T) UUID.fromString(value);
 				} catch (IllegalArgumentException e) {
-					logger.error("Invalid UUID " + value + " in property " + key + " of " + testConfiguration.propertySourceUri.toString());
+					throw new TestConfigurationException("Invalid UUID " + value + " in property " + key + " of " + testConfiguration.propertySourceUri.toString(), e);
 				}
 			} else if(String.class.isAssignableFrom(type)){
 				return (T) value;
 			} else {
-				throw new RuntimeException("Unsupported type " + type.toString());
+				throw new TestConfigurationException("Unsupported type " + type.toString());
+			}
+		} else {
+			if( nonNull) {
+				throw new TestConfigurationException("Property " + key + " of " + testConfiguration.propertySourceUri.toString() + " must not be null");
 			}
 		}
 

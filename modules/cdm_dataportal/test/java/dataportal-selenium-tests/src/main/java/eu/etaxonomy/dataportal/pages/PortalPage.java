@@ -28,6 +28,8 @@ public abstract class  PortalPage {
 
 	protected WebDriver driver;
 
+	protected DataPortalContext context;
+
 	protected final JUnitWebDriverWait wait;
 
 
@@ -56,11 +58,17 @@ public abstract class  PortalPage {
 	@FindBy(className="node")
 	protected WebElement node;
 
-
 	@FindBys({@FindBy(id="tabs-wrapper"), @FindBy(className="primary")})
 	@CacheLookup
 	protected WebElement primaryTabs;
 
+	@FindBy(id="block-cdm_dataportal-2")
+	@CacheLookup
+	protected WebElement searchBlockElement;
+
+	@FindBy(id="block-cdm_taxontree-cdm_tree")
+	@CacheLookup
+	protected WebElement classificationBrowserBlock;
 
 	/**
 	 * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
@@ -81,6 +89,8 @@ public abstract class  PortalPage {
 	public PortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix) throws MalformedURLException {
 
 		this.driver = driver;
+
+		this.context = context;
 
 		this.wait = new JUnitWebDriverWait(driver, 25);
 
@@ -108,11 +118,14 @@ public abstract class  PortalPage {
 	 * @throws Exception
 	 */
 	public PortalPage(WebDriver driver, DataPortalContext context, URL url) throws Exception {
+
 		this.driver = driver;
+
+		this.context = context;
 
 		this.wait = new JUnitWebDriverWait(driver, 25);
 
-		this.pageUrl = new URL(context.getBaseUri().toString() + DRUPAL_PAGE_QUERY_BASE + getDrupalPageBase());
+		this.pageUrl = new URL(context.getBaseUri().toString());
 
 		// tell browser to navigate to the given URL
 		driver.get(url.toString());
@@ -139,13 +152,16 @@ public abstract class  PortalPage {
 	 * @throws Exception
 	 */
 	public PortalPage(WebDriver driver, DataPortalContext context) throws Exception {
+
 		this.driver = driver;
+
+		this.context = context;
 
 		this.wait = new JUnitWebDriverWait(driver, 25);
 
 		// preliminary set the pageUrl to the base path of this page, this is used in the next setp to check if the
 		// driver.getCurrentUrl() is a sub path of the base path
-		this.pageUrl = new URL(context.getBaseUri().toString() + DRUPAL_PAGE_QUERY_BASE + getDrupalPageBase());
+		this.pageUrl = new URL(context.getBaseUri().toString());
 
 		if(!isOnPage()){
 			throw new Exception("Not on the expected portal page ( current: " + driver.getCurrentUrl() + ", expected: " +  pageUrl + " )");
@@ -185,6 +201,22 @@ public abstract class  PortalPage {
 	 */
 	public String getTitle() {
 		return title.getText();
+	}
+
+	/**
+	 * returns the warning messages from the Drupal message box
+	 * @return
+	 */
+	public String getWarnings() {
+		return null; //TODO unimplemented
+	}
+
+	/**
+	 * returns the error messages from the Drupal message box
+	 * @return
+	 */
+	public String getErrors() {
+		return null; //TODO unimplemented
 	}
 
 	public String getAuthorInformationText() {

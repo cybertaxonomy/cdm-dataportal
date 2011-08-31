@@ -29,6 +29,8 @@ public class FeatureBlock extends DrupalBlock {
 
 	private List<BaseElement> footNotes = new ArrayList<BaseElement>();
 
+	private List<BaseElement> originalSources = new ArrayList<BaseElement>();
+
 	private List<DescriptionElementRepresentation> descriptionElements = new ArrayList<DescriptionElementRepresentation>();
 
 	private String featureType = null;
@@ -41,6 +43,11 @@ public class FeatureBlock extends DrupalBlock {
 	public List<BaseElement> getFootNotes() {
 		return footNotes;
 	}
+
+	public List<BaseElement> getOriginalSources() {
+		return originalSources;
+	}
+
 
 	public List<DescriptionElementRepresentation> getDescriptionElements() {
 		return descriptionElements;
@@ -67,6 +74,11 @@ public class FeatureBlock extends DrupalBlock {
 			footNotes.add(new BaseElement(fn));
 		}
 
+		List<WebElement> sourcesList = element.findElements(By.className("sources"));
+		for(WebElement source : sourcesList) {
+			originalSources.add(new BaseElement(source));
+		}
+
 		WebElement descriptionElementsRepresentation =  element.findElement(By.className("description"));
 		featureType = descriptionElementsRepresentation.getAttribute("id");
 		assertEquals("Unexpected tag enclosing description element representations", enclosingTag, descriptionElementsRepresentation.getTagName());
@@ -76,6 +88,7 @@ public class FeatureBlock extends DrupalBlock {
 		}
 
 	}
+
 
 
 

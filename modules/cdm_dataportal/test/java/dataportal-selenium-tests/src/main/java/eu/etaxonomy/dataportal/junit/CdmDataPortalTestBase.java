@@ -58,9 +58,5 @@ public abstract class CdmDataPortalTestBase {
 		return context.getBaseUri().toString();
 	}
 
-	protected String prepareTitle(String pageHeader) {
-		return pageHeader + " | " + getContext().getSiteName();
-	}
-
 
 }

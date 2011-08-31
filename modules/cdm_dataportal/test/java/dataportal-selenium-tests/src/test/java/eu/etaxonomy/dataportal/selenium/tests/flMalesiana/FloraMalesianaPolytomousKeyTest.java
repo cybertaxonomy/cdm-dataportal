@@ -48,7 +48,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 		KeyLineData keyLineData;
 
 
-		Assert.assertEquals(prepareTitle("KEY I TO THE MALESIAN GENERA (based on vegetative and flower characters) (F. Adema)"), p.getTitle());
+		Assert.assertEquals(getContext().prepareTitle("KEY I TO THE MALESIAN GENERA (based on vegetative and flower characters) (F. Adema)"), p.getTitle());
 
 		// -------- //
 		keyLineData = new KeyLineData("0",
@@ -61,7 +61,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 		keyLineData = new KeyLineData("0'", "Herbaceous or woody climbers. Leaves biternate. Inflorescences with basal tendrils",
 				LinkClass.nodeLinkToTaxon, "Cardiospermum");
 		targetPage = p.followPolytomousKeyLine(1, keyLineData);
-		Assert.assertEquals(prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
+		Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
 		p.get();
 
 		// -------- //
@@ -72,7 +72,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 		// -------- //
 		keyLineData = new KeyLineData("1'", "Leaves bipinnate", LinkClass.nodeLinkToTaxon, "Tristiropsis");
 		targetPage = p.followPolytomousKeyLine(3, keyLineData);
-		Assert.assertEquals(prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
+		Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
 		p.get();
 
 		// -------- //
@@ -81,7 +81,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 				"Leaflets entire or crenulate, lower surface without small glands. Inflorescences axillary, sometimes together pseudoterminal; cymes dense, many-flowered",
 				LinkClass.nodeLinkToTaxon, "Synima cordierorum");
 		targetPage = p.followPolytomousKeyLine(126, keyLineData);
-		Assert.assertEquals(prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
+		Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
 		p.get();
 
 		// -------- //
@@ -90,7 +90,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 				"Leaflets entire, lower surface usually with small glands. Inflorescences axillary, together mostly pseudoterminal, by the shifting aside and suppression of the terminal bud sometimes seemingly truly terminal; cymes lax, 1- or few-flowered",
 				LinkClass.nodeLinkToTaxon, "Trigonachras");
 		targetPage = p.followPolytomousKeyLine(127, keyLineData);
-		Assert.assertEquals(prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
+		Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkText()), targetPage.getTitle());
 
 	}
 

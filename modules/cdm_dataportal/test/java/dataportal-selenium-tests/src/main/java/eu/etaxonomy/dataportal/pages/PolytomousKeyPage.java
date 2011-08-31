@@ -25,8 +25,6 @@ public class PolytomousKeyPage extends PortalPage {
 
 	private static String drupalPagePathBase = "cdm_dataportal/polytomousKey";
 
-	private DataPortalContext context;
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.dataportal.pages.PortalPage#getDrupalPageBase()
 	 */
@@ -43,7 +41,6 @@ public class PolytomousKeyPage extends PortalPage {
 
 	public PolytomousKeyPage(WebDriver driver, DataPortalContext context, UUID keyUuid) throws MalformedURLException {
 		super(driver, context, keyUuid.toString());
-		this.context = context;
 	}
 
 	/**
