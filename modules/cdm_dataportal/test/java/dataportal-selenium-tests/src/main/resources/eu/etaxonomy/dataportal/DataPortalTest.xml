@@ -30,7 +30,7 @@
 	<entry key="dataPortalContext.floramalesiana.themeName"></entry>
 	<entry key="dataPortalContext.floramalesiana.siteName">Flora Malesiana</entry>
 
-	<entry key="dataPortalContext.diptera.baseUri">http://160.45.63.201/dataportal/diptera/</entry>
+	<entry key="dataPortalContext.diptera.baseUri">http://160.45.63.201/dataportal/preview/diptera/</entry>
 	<entry key="dataPortalContext.diptera.cdmServerUri">http://127.0.0.1:8080/diptera/</entry>
 	<entry key="dataPortalContext.diptera.classificationUUID">1e3093f6-c761-4e96-8065-2c1334ddd0c1</entry>
 	<entry key="dataPortalContext.diptera.themeName"></entry>
