@@ -9,27 +9,47 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
+import static org.junit.Assert.assertEquals;
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.elements.TaxonListElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
+import eu.etaxonomy.dataportal.pages.GenericPortalPage;
+import eu.etaxonomy.dataportal.pages.PortalPage;
+import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
 
 @DataPortalContexts( { DataPortalContext.cichorieae })
 public class CichorieaeSearchTest extends CdmDataPortalTestBase {
 
+	private GenericPortalPage homePage;
+
+	@Before
+	public void setUp() throws Exception {
+
+		driver.get(getContext().getBaseUri().toString());
+		homePage = new GenericPortalPage(driver, getContext());
+
+	}
+
 	@Test
 	public void testSearchLCommunis() throws Exception {
-		driver.get(getBaseUrl()
-						+ "?query=Lapsana+com*&search[tree]=534e190f-3339-49ba-95d9-fa27d5493e3e&q=cdm_dataportal%2Fsearch%2Ftaxon&search[pageSize]=25&search[pageNumber]=0&search[doTaxa]=1&search[doSynonyms]=1&search[doTaxaByCommonNames]=0");
-		WebElement taxonElement = driver.findElement(By
-				.xpath("/html/body/div/div/div[2]/div[2]/div/div/div/ul/li/span[@ref='/name/f280f79f-5903-47b0-8352-53e4204c6cf1']"));
 
-		WebElement nameElement = taxonElement.findElement(By.className("BotanicalName"));
+		TaxonSearchResultPage searchResultPage = homePage.submitQuery("Lapsana com*");
+
+		assertEquals(getContext().prepareTitle("Search results"), searchResultPage.getTitle());
+
+		TaxonListElement lapsanaCommunnis = searchResultPage.getResultItem(1);
+
+		assertEquals("Lapsana communis L. Sp. Pl.: 811. 1753", lapsanaCommunnis.getFullTaxonName());
+
+		WebElement nameElement = lapsanaCommunnis.getElement().findElement(By.className("BotanicalName"));
 
 		WebElement namePart1 = nameElement.findElement(By.xpath("span[1]"));
 		Assert.assertEquals("Lapsana", namePart1.getText());
@@ -43,8 +63,10 @@ public class CichorieaeSearchTest extends CdmDataPortalTestBase {
 		Assert.assertEquals("L.", authorPart.getText());
 		Assert.assertEquals("normal", authorPart.getCssValue("font-style"));
 
-		WebElement referenceElement = taxonElement.findElement(By.className("reference"));
+		WebElement referenceElement = lapsanaCommunnis.getElement().findElement(By.className("reference"));
 		Assert.assertEquals("Sp. Pl.: 811. 1753", referenceElement.findElement((By.className("reference"))).getText());
+
+		PortalPage taxonProfilLapsanaCommunnis = searchResultPage.clickTaxonName(lapsanaCommunnis);
 	}
 
 }
