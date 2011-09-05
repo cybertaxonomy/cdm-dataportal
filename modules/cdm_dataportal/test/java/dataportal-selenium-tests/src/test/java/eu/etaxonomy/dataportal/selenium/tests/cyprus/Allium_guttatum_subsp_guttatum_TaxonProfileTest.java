@@ -113,7 +113,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 		assertEquals("1. R. D. Meikle, Flora of Cyprus 1. 1977", footNote_1.getText());
 
 		WebElement distributionMapImage = featureBlock.getElement().findElement(By.className("distribution_map"));
-		assertEquals("http://edit.br.fgov.be/edit_wp5/v1.1/rest_gen.php?title=a:indigenous&ad=cyprusdivs:bdcode:a:2&as=z:ffffff,606060,,|y:1874CD,,|a:339966,,0.1,&l=background_gis:y,cyprusdivs:z&ms=500,380&bbox=32,34,35,36&label=1&img=true&legend=1&mlp=3&mc_s=Georgia,15,blue&mc=&recalculate=false", distributionMapImage.getAttribute("src"));
+//		assertEquals("http://edit.br.fgov.be/edit_wp5/v1.1/rest_gen.php?title=a:indigenous&ad=cyprusdivs:bdcode:a:2&as=z:ffffff,606060,,|y:1874CD,,|a:339966,,0.1,&l=background_gis:y,cyprusdivs:z&ms=500,380&bbox=32,34,35,36&label=1&img=true&legend=1&mlp=3&mc_s=Georgia,15,blue&mc=&recalculate=false", distributionMapImage.getAttribute("src"));
 
 	}
 
