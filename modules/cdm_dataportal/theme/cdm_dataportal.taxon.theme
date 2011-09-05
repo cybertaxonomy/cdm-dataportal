@@ -48,7 +48,9 @@ function theme_cdm_search_results($pager, $path, $parameters){
 
 	$out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form></div>';
 	if(count($pager->records) > 0){
+	    $out .= '<div id="search_results">';
 		$out .= theme('cdm_list_of_taxa', $pager->records);
+		$out .= '</div>';
 		$out .= theme('cdm_pager', $pager, $path, $parameters);
 	} else {
 		$out = '<h4 class="error">Sorry, no matching entries found.</h4>';
@@ -381,7 +383,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
 
  	$mediaQueryParameters = array("type"=>"ImageFile");
 	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
-	
+
 	// cdm_dataportal_show_media = ???? TODO
 	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
 	if ($selectShowMedia == 0){
