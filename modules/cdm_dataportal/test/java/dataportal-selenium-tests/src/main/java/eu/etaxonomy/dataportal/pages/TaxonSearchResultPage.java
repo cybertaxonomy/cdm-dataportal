@@ -11,6 +11,7 @@ package eu.etaxonomy.dataportal.pages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -106,7 +107,7 @@ public class TaxonSearchResultPage extends GenericPortalPage {
 		WebElement taxonlink = taxonListElement.getElement().findElement(By.tagName("a"));
 		logger.info("clicking on link to " + taxonlink.getAttribute("href"));
 		taxonlink.click();
-		wait.until(new AllTrue(new PageTitleValidated(context.prepareTitle("Illicium")), new VisibilityOfElementLocated(By.id("container"))));
+		wait.withTimeout(2, TimeUnit.MINUTES).until(new VisibilityOfElementLocated(By.id("featureTOC")));
 		return (T) new TaxonProfilePage(driver, context);
 
 	}

@@ -47,7 +47,7 @@ public class CichorieaeSearchTest extends CdmDataPortalTestBase {
 
 		TaxonListElement lapsanaCommunnis = searchResultPage.getResultItem(1);
 
-		assertEquals("Lapsana communis L. Sp. Pl.: 811. 1753", lapsanaCommunnis.getFullTaxonName());
+		assertEquals("Lapsana communis L., Sp. Pl.: 811. 1753", lapsanaCommunnis.getFullTaxonName());
 
 		WebElement nameElement = lapsanaCommunnis.getElement().findElement(By.className("BotanicalName"));
 

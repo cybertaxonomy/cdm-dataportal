@@ -26,7 +26,7 @@ public abstract class  PortalPage {
 	/**
 	 *
 	 */
-	private static final int WAIT_SECONDS = 25;
+	public static final int WAIT_SECONDS = 25;
 
 	public static final Logger logger = Logger.getLogger(PortalPage.class);
 
