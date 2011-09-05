@@ -61,7 +61,7 @@ public class Diptera_OriginalSourceTest extends CdmDataPortalTestBase{
 	public void testPage() {
 
 		assertEquals(getContext().prepareTitle("Milichia speciosa"), p.getTitle());
-		assertNull("Authorship information should be hidden", p.getAuthorInformationText());
+//		assertNull("Authorship information should be hidden", p.getAuthorInformationText());
 
 		List<LinkElement> primaryTabs = p.getPrimaryTabs();
 		assertEquals("Expecting 3 tabs", 3, primaryTabs.size());

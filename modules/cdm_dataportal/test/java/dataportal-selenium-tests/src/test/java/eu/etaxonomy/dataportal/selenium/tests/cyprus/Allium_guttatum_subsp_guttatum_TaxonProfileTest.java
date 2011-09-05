@@ -76,20 +76,22 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 		assertEquals("Content", p.getTableOfContentHeader());
 		List<LinkElement> links = p.getTableOfContentLinks();
 		assertNotNull("Expecting a list of TOC links in the profile page.", links);
-		p.testTableOfContentEntry(0, "Endemism", "endemism");
-		p.testTableOfContentEntry(1, "Red Data Book category", "red_data_book_category");
-		p.testTableOfContentEntry(2, "Status", "status");
+		p.testTableOfContentEntry(0, "Status", "status");
+		p.testTableOfContentEntry(1, "Endemism", "endemism");
+		p.testTableOfContentEntry(2, "Red Data Book category", "red_data_book_category");
 		p.testTableOfContentEntry(3, "Systematics", "systematics");
 		p.testTableOfContentEntry(4, "Distribution", "distribution");
 
-		FeatureBlock featureBlock = p.getFeatureBlockAt(0, "endemism", "div", "div");
+		FeatureBlock featureBlock;
+
+		featureBlock = p.getFeatureBlockAt(0, "status", "div", "div");
+		assertEquals("Status\nIndigenous (IN)", featureBlock.getText());
+
+		featureBlock = p.getFeatureBlockAt(2, "endemism", "div", "div");
 		assertEquals("Endemism\nnot endemic", featureBlock.getText());
 
-		featureBlock = p.getFeatureBlockAt(1, "red_data_book_category", "div", "div");
+		featureBlock = p.getFeatureBlockAt(2, "red_data_book_category", "div", "div");
 		assertEquals("Red Data Book category\nData deficient (DD)", featureBlock.getText());
-
-		featureBlock = p.getFeatureBlockAt(2, "status", "div", "div");
-		assertEquals("Status\nIndigenous (IN)", featureBlock.getText());
 
 		//FIXME
 //		featureBlock = p.getFeatureBlockAt(3, "systematics", "div", null);
@@ -111,7 +113,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 		assertEquals("1. R. D. Meikle, Flora of Cyprus 1. 1977", footNote_1.getText());
 
 		WebElement distributionMapImage = featureBlock.getElement().findElement(By.className("distribution_map"));
-		assertEquals("http://edit.br.fgov.be/edit_wp5/v1.1/rest_gen.php?title=a:indigenous&ad=cyprusdivs:bdcode:a:2&as=z:ffffff,606060,,|y:1874CD,,|a:339966,,0.1,&l=background_gis:y,cyprusdivs:z&ms=500&bbox=32,34,35,36&label=1&img=true&legend=1&mlp=3&mc_s=Georgia,15,blue&mc=&recalculate=false", distributionMapImage.getAttribute("src"));
+		assertEquals("http://edit.br.fgov.be/edit_wp5/v1.1/rest_gen.php?title=a:indigenous&ad=cyprusdivs:bdcode:a:2&as=z:ffffff,606060,,|y:1874CD,,|a:339966,,0.1,&l=background_gis:y,cyprusdivs:z&ms=500,380&bbox=32,34,35,36&label=1&img=true&legend=1&mlp=3&mc_s=Georgia,15,blue&mc=&recalculate=false", distributionMapImage.getAttribute("src"));
 
 	}
 

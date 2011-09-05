@@ -21,6 +21,9 @@ import org.openqa.selenium.support.FindBy;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.elements.TaxonListElement;
+import eu.etaxonomy.dataportal.selenium.AllTrue;
+import eu.etaxonomy.dataportal.selenium.PageTitleValidated;
+import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 
 /**
  * @author andreas
@@ -93,6 +96,21 @@ public class TaxonSearchResultPage extends GenericPortalPage {
 		}
 		return taxonListElements;
 	}
+
+	/**
+	 * @throws Exception
+	 *
+	 */
+	public <T extends PortalPage> T  clickTaxonName(TaxonListElement taxonListElement) throws Exception {
+
+		WebElement taxonlink = taxonListElement.getElement().findElement(By.tagName("a"));
+		logger.info("clicking on link to " + taxonlink.getAttribute("href"));
+		taxonlink.click();
+		wait.until(new AllTrue(new PageTitleValidated(context.prepareTitle("Illicium")), new VisibilityOfElementLocated(By.id("container"))));
+		return (T) new TaxonProfilePage(driver, context);
+
+	}
+
 
 
 }

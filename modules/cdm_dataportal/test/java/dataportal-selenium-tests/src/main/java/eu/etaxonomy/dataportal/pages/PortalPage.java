@@ -15,12 +15,18 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.selenium.JUnitWebDriverWait;
 
 public abstract class  PortalPage {
+
+	/**
+	 *
+	 */
+	private static final int WAIT_SECONDS = 25;
 
 	public static final Logger logger = Logger.getLogger(PortalPage.class);
 
@@ -31,6 +37,10 @@ public abstract class  PortalPage {
 	protected DataPortalContext context;
 
 	protected final JUnitWebDriverWait wait;
+
+	public WebDriverWait getWait() {
+		return wait;
+	}
 
 
 	/**
@@ -92,7 +102,7 @@ public abstract class  PortalPage {
 
 		this.context = context;
 
-		this.wait = new JUnitWebDriverWait(driver, 25);
+		this.wait = new JUnitWebDriverWait(driver, WAIT_SECONDS);
 
 		this.drupalPagePath = getDrupalPageBase() + (pagePathSuffix != null ? "/" + pagePathSuffix: "");
 

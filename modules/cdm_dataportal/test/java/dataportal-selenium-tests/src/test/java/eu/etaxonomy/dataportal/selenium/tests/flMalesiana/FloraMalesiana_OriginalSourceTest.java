@@ -75,6 +75,8 @@ public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
 
 		assertEquals("Illicium L. in Syst. Nat. ed. 10: 1050. 1759", entryIillicium.getFullTaxonName());
 
+		PortalPage taxonProfileIillicium = searchResultPage.clickTaxonName(entryIillicium);
+
 //		assertNull("Authorship information should be hidden", p.getAuthorInformationText());
 //
 //		List<LinkElement> primaryTabs = p.getPrimaryTabs();
