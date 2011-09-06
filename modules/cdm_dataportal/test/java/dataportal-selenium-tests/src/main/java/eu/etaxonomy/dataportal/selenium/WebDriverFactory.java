@@ -76,7 +76,8 @@ public class WebDriverFactory {
 
 		WebDriver driver;
 
-		CdmDataPortalTestBase.logger.info(("firefox binary:" + System.getProperty("webdriver.firefox.bin")));
+		CdmDataPortalTestBase.logger.info(("fwebdriver.firefox.bin = " + System.getProperty("webdriver.firefox.bin")));
+		CdmDataPortalTestBase.logger.info(("webdriver.firefox.library.path = " + System.getProperty("webdriver.firefox.library.path")));
 
 		FirefoxProfile firefoxProfile = new FirefoxProfile();
 		try {
@@ -89,7 +90,6 @@ public class WebDriverFactory {
 
 			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firexpath-" + FIREXPATH_VERSION + "-fx.xpi");
 
-			firefoxProfile.setEnableNativeEvents(true);
 
 			// --- allow enabling incompatible addons
 			// firefoxProfile.addExtension(this.getClass(), "/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi");
@@ -103,6 +103,9 @@ public class WebDriverFactory {
 			CdmDataPortalTestBase.logger.error(e);
 			System.exit(-1);
 		}
+
+		firefoxProfile.setEnableNativeEvents(true);
+
 		driver = new FirefoxDriver(firefoxProfile);
 
 

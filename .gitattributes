@@ -278,6 +278,7 @@ modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etax
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/PortalPage.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/TaxonProfilePage.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/TaxonSearchResultPage.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/TaxonSynonymyPage.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/AllTrue.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/JUnitWebDriverWait.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/PageTitleValidated.java -text
@@ -288,8 +289,10 @@ modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/eu
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/log4j.properties -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/ExampleTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/CichorieaeSearchTest.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_HybridTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/Allium_guttatum_subsp_guttatum_TaxonProfileTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/CyprusSearchTest.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/Cyprus_HybridTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/Cyprus_OriginalSourceTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/diptera/Diptera_OriginalSourceTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/flMalesiana/FloraMalesianaPolytomousKeyTest.java -text
