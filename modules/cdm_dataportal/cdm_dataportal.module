@@ -1251,6 +1251,45 @@ function theme_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null)
 }
 
 /**
+ * Preprocess the taggedName to normalize newly introduced tagtypes like hybridSign, separator, .. more?
+ *
+ * @param unknown_type $taggedTextList
+ */
+function normalize_TaggedName(&$taggedTextList){
+
+    if(is_array($taggedTextList)) {
+
+      // first pass: rename
+      for($i = 0; $i < count($taggedTextList); $i++){
+
+        if($taggedTextList[$i]->type == "hybridSign"){
+          $taggedTextList[$i]->type = "name";
+        }
+
+      }
+
+      // second pass: resolve separators
+      $taggedNameListNew = array();
+      for($i = 0; $i < count($taggedTextList); $i++){
+
+        if($i + 1 < count($taggedTextList) && $taggedTextList[$i + 1]->type == "separator" ) {
+
+          if($taggedTextList[$i]->type == $taggedTextList[$i + 2]->type){
+            $taggedName = $taggedTextList[$i];
+            $taggedName->text = $taggedName->text . $taggedTextList[$i + 1]->text . $taggedTextList[$i + 2]->text;
+            $taggedNameListNew[] = $taggedName;
+            ++$i;
+            ++$i;
+          }
+        } else {
+          $taggedNameListNew[] = $taggedTextList[$i];
+        }
+	  }
+	   $taggedTextList = $taggedNameListNew;
+    }
+}
+
+/**
  * Creates a short taxonname by using the taggename field of NameSTO or NameTO instances.
  * If the taggename if empty the fullname will be returned.
  *
@@ -1259,6 +1298,9 @@ function theme_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null)
  */
 function cdm_dataportal_shortname_of($name){
   $nameStr = '';
+
+  normalize_TaggedName($name->taggedTitle);
+
   // get all tagged text tokens of the scientific name
   foreach($name->taggedTitle as $tagtxt){
     if($tagtxt->type == 'name' || $tagtxt->type == 'rank'){

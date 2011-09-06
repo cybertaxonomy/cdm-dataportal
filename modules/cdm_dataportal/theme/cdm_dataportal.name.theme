@@ -517,6 +517,7 @@ function get_partDefinition($taxonNameType){
 
 function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 	$show_annotations = true, $is_type_designation = false, $skiptags = array()){
+
 	$renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
 	$partDefinition = get_partDefinition($taxonName->class);
 
@@ -529,6 +530,8 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 			$renderTemplate[$part]['#uri'] = $uri['#uri'];
 		}
 	}
+
+   normalize_TaggedName($taxonName->taggedName);
 
 	$firstEntryIsValidNamePart = is_array($taxonName->taggedName)
 			&& is_string($taxonName->taggedName[0]->text)
