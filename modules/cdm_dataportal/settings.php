@@ -10,6 +10,16 @@ define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 4);
 
+$annotationTypeKeys = array_keys( cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE) );
+if(in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
+  $annotationTypeKeys = array_flip($annotationTypeKeys);
+  // technical annotation are off by default
+  unset($annotationTypeKeys[UUID_ANNOTATION_TYPE_TECHNICAL]);
+  $annotationTypeKeys = array_flip($annotationTypeKeys);
+}
+define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
+
+
 /* gallery variables */
 $gallery_settings = array(
     "cdm_dataportal_show_taxon_thumbnails" => 1,
@@ -437,6 +447,16 @@ function cdm_settings_layout(){
       '#description' => t('Check this if you do not want to show annotation footnotes')
   );
 
+  $annotationTypeOptions = cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE);
+  $form['gen_layout']['footnotes']['annotations_types_as_footnotes'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Annotation types as footnotes'),
+      '#description' => t('Only annotations of the selected type will be displayed as footnotes. You may want to turn \'technical annotations\' off.'),
+      '#options' => $annotationTypeOptions,
+      '#default_value' => variable_get('annotations_types_as_footnotes', unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT))
+
+  );
+
   //--- Advanced Search ---//
   $form['gen_layout']['asearch'] = array(
       '#type' => 'fieldset',
@@ -607,7 +627,6 @@ function cdm_settings_layout_taxon(){
     '#description' => t('If tabbed taxon page is enabled the taxon profile will be splitted in four diferent tabs;
              General, Synonymy, Images and Specimens. If the taxon has no information for any of the tabs/sections such tab will be not displayed.'),
   );
-
 
     $form['taxon_tabs']['cdm_dataportal_taxonpage_tabs'] = array(
     '#type' => 'checkbox',
