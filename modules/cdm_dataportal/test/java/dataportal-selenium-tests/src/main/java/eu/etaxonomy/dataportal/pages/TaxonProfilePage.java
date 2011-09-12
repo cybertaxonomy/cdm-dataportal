@@ -134,7 +134,7 @@ public class TaxonProfilePage extends PortalPage {
 	/**
 	 * @param position Zero based index of position in list of feature blocks
 	 * 			(only used to check against total number of feature blocks)
-	 * @param featureName
+	 * @param featureName the fature name as it is used in the class attribute: <code>block-cdm_dataportal-feature-${featureName}</code>
 	 * @param enclosingTag
 	 * @param elementTag
 	 * @return

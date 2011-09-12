@@ -37,15 +37,11 @@ public class BaseElement {
 		return text;
 	}
 
-	public void setText(String text) {
-		this.text = text;
-	}
-
 	public List<String> getClassAttributes() {
 		return classAttributes;
 	}
 
-	public void setClassAttributes(List<String> classAttributes) {
+	void setClassAttributes(List<String> classAttributes) {
 		this.classAttributes = classAttributes;
 	}
 
