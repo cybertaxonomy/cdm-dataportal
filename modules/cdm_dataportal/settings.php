@@ -451,7 +451,7 @@ function cdm_settings_layout(){
   $form['gen_layout']['footnotes']['annotations_types_as_footnotes'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Annotation types as footnotes'),
-      '#description' => t('Only annotations of the selected type will be displayed as footnotes. You may want to turn \'technical annotations\' off.'),
+      '#description' => t('Only annotations of the selected type will be displayed as footnotes. You may want to turn \'technical annotations\' off. Untyped annotations will always be displayed.'),
       '#options' => $annotationTypeOptions,
       '#default_value' => variable_get('annotations_types_as_footnotes', unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT))
 
