@@ -31,8 +31,10 @@ function migrate_drush_command() {
 
 function drush_migrate_refresh() {
 	drush_print("migrate-refresh");
+	drush_invoke("cache-clear");
 	$modules = module_list(TRUE);
 	drush_print( count($modules) . " modules loaded");
 	$themes = list_themes(TRUE);
 	drush_print( count($themes) . " available themes");
+	drush_invoke("cache-clear");
 }
