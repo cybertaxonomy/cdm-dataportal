@@ -9,6 +9,7 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.net.MalformedURLException;
@@ -37,6 +38,8 @@ public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
 
 	static UUID soroseris_hookeriana_uuid = UUID.fromString("adaabef1-02f9-41a4-8a39-bf13564559f7");
 
+	static UUID pilosella_uuid = UUID.fromString("f42a07d1-d959-4838-b8ea-192b523ad5cc");
+
 
 	@Test
 	public void soroseris_hookeriana() throws MalformedURLException {
@@ -55,6 +58,20 @@ public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
 		assertEquals("Credits\nBoufford D. E. 2009: Images (12 added)\nSmalla M. 2009: Images (1 added)\nSun H. 2009: Images (3 added)\nYue J. 2009: Images (1 added)\nZhang J. 2009: Images (1 added).", creditsBlock.getText());
 		assertEquals("expecting no footnoteKeys", 0, creditsBlock.getFootNoteKeys().size());
 		assertEquals("expecting no footnotes", 0, creditsBlock.getFootNotes().size());
+	}
+
+	@Test
+	public void pilosella() throws MalformedURLException {
+		TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), pilosella_uuid);
+		String expectedName = "Pilosella";
+		assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
+
+		assertEquals("Pilosella Vaill. in Königl. Akad. Wiss. Paris Phys. Abh. 5: 703. 1754", p.getAcceptedName());
+		assertEquals("Expecting one footnote key", 1, p.getAcceptedNameFootNoteKeys().size());
+		assertEquals("Expecting one footnote", 1, p.getHomotypicalGroupFootNotes().size());
+		String expectetToStartWith = "1. As has been discovered by Greuter & al. in Taxon 54: 166 (2005),";
+		assertTrue("Expecting footnote to start with: '" + expectetToStartWith + "' but was '" + p.getHomotypicalGroupFootNotes().get(0).getText() + "'"
+				, p.getHomotypicalGroupFootNotes().get(0).getText().startsWith(expectetToStartWith));
 	}
 
 }

@@ -42,7 +42,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
 		String expectedName = "×Orchiserapias";
 		assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
 		assertEquals(expectedName, p.getAcceptedName());
-		assertEquals("≡ Orchis × Serapias", p.getHomotypicalSynonymName(1));
+		assertEquals("≡ Orchis × Serapias", p.getHomotypicalGroupSynonymName(1));
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
 		String expectedName = "Epilobium ×aschersonianum Hausskn.";
 		assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
 		assertEquals(expectedName, p.getAcceptedName());
-		assertEquals("≡ Epilobium lanceolatum × parviflorum", p.getHomotypicalSynonymName(1));
+		assertEquals("≡ Epilobium lanceolatum × parviflorum", p.getHomotypicalGroupSynonymName(1));
 	}
 
 

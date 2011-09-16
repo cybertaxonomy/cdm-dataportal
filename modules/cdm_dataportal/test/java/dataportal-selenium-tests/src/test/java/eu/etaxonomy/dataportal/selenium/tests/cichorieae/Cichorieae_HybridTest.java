@@ -53,7 +53,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
 		TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), lactuca_favratii_Uuid);
 		assertEquals(getContext().prepareTitle("Lactuca ×\"favratii\""), p.getTitle());
 	    assertEquals("Lactuca ×\"favratii\" , nom. provis.", p.getAcceptedName());
-		assertEquals("≡ Cicerbita ×favratii Wilczek in Bull. Soc. Vaud. Sci. Nat. 51: 333. 1917", p.getHomotypicalSynonymName(1));
+		assertEquals("≡ Cicerbita ×favratii Wilczek in Bull. Soc. Vaud. Sci. Nat. 51: 333. 1917", p.getHomotypicalGroupSynonymName(1));
 	}
 
 	@Test
@@ -61,9 +61,9 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
 		TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_oenipontana_Uuid);
 		assertEquals(getContext().prepareTitle("Crepis ×oenipontana"), p.getTitle());
 	    assertEquals("Crepis ×oenipontana Murr in Österr. Bot. Z. 43: 178. 1893", p.getAcceptedName());
-		assertEquals("= Crepis alpestris f. pseudalpestris Murr in Allg. Bot. Z. Syst. 14: 9. 1908", p.getHeterotypicalSynonymName(1, 1));
-		assertEquals("≡ Crepis alpestris var. pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 14: 9. 1908", p.getHeterotypicalSynonymName(1, 2));
-		assertEquals("≡ Crepis ×pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 22: 66. 1916", p.getHeterotypicalSynonymName(1, 3));
+		assertEquals("= Crepis alpestris f. pseudalpestris Murr in Allg. Bot. Z. Syst. 14: 9. 1908", p.getHeterotypicalGroupSynonymName(1, 1));
+		assertEquals("≡ Crepis alpestris var. pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 14: 9. 1908", p.getHeterotypicalGroupSynonymName(1, 2));
+		assertEquals("≡ Crepis ×pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 22: 66. 1916", p.getHeterotypicalGroupSynonymName(1, 3));
 	}
 
 	@Test

@@ -28,6 +28,8 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.ElementUtils;
+import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
@@ -93,8 +95,17 @@ public class TaxonSynonymyPage extends PortalPage {
 	 * @return The Url of the profile image or null if the image is not visible.
 	 */
 	public String getAcceptedName() {
-		WebElement acceptedName = synonymy.findElement(By.xpath("./span[contains(@class,'accepted-name')]"));
+		WebElement acceptedName = synonymy.findElement(
+				By.xpath("./span[contains(@class,'accepted-name')]")
+		);
 		return acceptedName.getText();
+	}
+
+	public List<LinkElement> getAcceptedNameFootNoteKeys() {
+		List<WebElement> fnkListElements = synonymy.findElements(
+				By.xpath("./span[contains(@class,'accepted-name')]/following-sibling::span[contains(@class, 'footnote-key')]/a")
+		);
+		return ElementUtils.linkElementsFromFootNoteKeyListElements(fnkListElements);
 	}
 
 	/**
@@ -105,10 +116,29 @@ public class TaxonSynonymyPage extends PortalPage {
 	 *         and all information rendered after the name. All whitespace is
 	 *         normalized to the SPACE character.
 	 */
-	public String getHomotypicalSynonymName(Integer synonymIndex) {
-		WebElement acceptedName = synonymy.findElement(By.xpath("./ul[contains(@class,'homotypicSynonyms')]/li[" + synonymIndex + "]"));
+	public String getHomotypicalGroupSynonymName(Integer synonymIndex) {
+		WebElement acceptedName = synonymy.findElement(
+				By.xpath("./ul[contains(@class,'homotypicSynonyms')]/li[" + synonymIndex + "]")
+		);
 		return acceptedName.getText().replaceAll("\\s", " ");
 	}
+
+	public List<LinkElement> getHomotypicalGroupFootNoteKeys() {
+		List<WebElement> fnkListElements = synonymy.findElements(
+				By.xpath("./ul[contains(@class,'homotypicSynonyms')]/*/span[contains(@class, 'footnote-key')]/a")
+		);
+		return ElementUtils.linkElementsFromFootNoteKeyListElements(fnkListElements);
+	}
+
+	public List<BaseElement> getHomotypicalGroupFootNotes() {
+		List<WebElement> fnListElements = synonymy.findElements(
+				By.xpath("./ul[contains(@class,'homotypicSynonyms')]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
+		);
+		return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
+
+	}
+
+
 
 	/**
 	 * @param heterotypicalGroupIndex
@@ -120,8 +150,23 @@ public class TaxonSynonymyPage extends PortalPage {
 	 *         and all information rendered after the name. All whitespace is
 	 *         normalized to the SPACE character.
 	 */
-	public String getHeterotypicalSynonymName(Integer heterotypicalGroupIndex, Integer synonymIndex) {
-		WebElement acceptedName = synonymy.findElement(By.xpath("./ul[contains(@class,'heterotypicSynonymyGroup')]/li[" + synonymIndex + "]"));
+	public String getHeterotypicalGroupSynonymName(Integer heterotypicalGroupIndex, Integer synonymIndex) {
+		WebElement acceptedName = synonymy.findElement(By.xpath("./ul[contains(@class,'heterotypicSynonymyGroup')][" + heterotypicalGroupIndex + "]/li[" + synonymIndex + "]"));
 		return acceptedName.getText().replaceAll("\\s", " ");
 	}
+
+	public List<LinkElement> getHeterotypicalGroupFootNoteKeys(Integer heterotypicalGroupIndex) {
+		List<WebElement> fnkListElements = synonymy.findElements(
+				By.xpath("./ul[contains(@class,'heterotypicSynonymyGroup')][" + heterotypicalGroupIndex + "]/*/span[contains(@class, 'footnote-key')]/a")
+		);
+		return ElementUtils.linkElementsFromFootNoteKeyListElements(fnkListElements);
+	}
+
+	public List<BaseElement> getHeterotypicalGroupFootNotes(Integer heterotypicalGroupIndex) {
+		List<WebElement> fnListElements = synonymy.findElements(
+				By.xpath("./ul[contains(@class,'heterotypicSynonymyGroup')][" + heterotypicalGroupIndex + "]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnotes')]")
+		);
+		return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
+	}
+
 }
