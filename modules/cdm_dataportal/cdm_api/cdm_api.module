@@ -576,7 +576,6 @@ function cdm_ws_taxonomy($taxonUuid = null){
         // check if taxonomictree_uuid is valid
         $test = cdm_ws_get(cdm_compose_taxonomy_path(), null, null, null, TRUE);
         if($test == null){
-          print ($_SESSION['cdm']['taxonomictree_uuid']);
           // the default set by the admin seems to be invalid or is not even set
           drupal_set_message(_no_classfication_uuid_message(), 'warning');
         }
@@ -615,8 +614,6 @@ function cdm_ws_taxonomy_pathFromRoot($taxonUuid){
         // check if taxonomictree_uuid is valid
         $test = cdm_ws_get(cdm_compose_taxonomy_path(), null, null, null, TRUE);
         if($test == null){
-          // the default set by the admin seems to be invalid or is not even set
-          print ($_SESSION['cdm']['taxonomictree_uuid']);
           // the default set by the admin seems to be invalid or is not even set
           drupal_set_message(_no_classfication_uuid_message(), 'warning');
         }
@@ -1237,6 +1234,13 @@ function _add_status_message_toggler() {
 }
 
 function _no_classfication_uuid_message(){
+
+  if(!cdm_ws_get(CDM_WS_PORTAL_TAXONOMY)){
+    return t('This DataPortal is not configured properly or the CDM-Sever may be absent.')
+      . 'Please check the ' . l(t('CDM web service URL'), 'admin/settings/cdm_dataportal/general')
+      . t(', or contact the maintainer of this DataPortal.');
+  }
+
   return
   t('This DataPortal is not configured properly.')
       . l(t('Please choose a valid classification'), 'admin/settings/cdm_dataportal/general')
