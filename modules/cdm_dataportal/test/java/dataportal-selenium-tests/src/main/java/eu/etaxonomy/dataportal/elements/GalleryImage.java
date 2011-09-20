@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -19,21 +20,37 @@ import org.openqa.selenium.WebElement;
 public class GalleryImage extends ImgElement {
 
 
-	private WebElement captionElement;
+	private WebElement captionCell;
+	private WebElement mediaCell;
 
 	/**
 	 * @param img
 	 */
-	public GalleryImage(WebElement img, WebElement caption) {
-		super(img);
-		this.captionElement = caption;
+	public GalleryImage(WebElement mediaCell, WebElement captionCell) {
+		super(mediaCell.findElement(By.tagName("img")));
+		this.captionCell = captionCell;
+		this.mediaCell = mediaCell;
 	}
 
 	public String getCaptionText() {
-		if(captionElement == null){
+		if(captionCell == null){
 			return null;
 		}
-		return captionElement.getText();
+		return captionCell.findElement(By.tagName("dl")).getText();
+	}
+
+	public LinkElement getCaptionLink() {
+		if(captionCell == null){
+			return null;
+		}
+		return new LinkElement(captionCell.findElement(By.xpath("./div[contains(@class,'media-caption-link')]/a")));
+	}
+
+	public LinkElement getImageLink() {
+		if(mediaCell == null){
+			return null;
+		}
+		return new LinkElement(mediaCell.findElement(By.tagName("a")));
 	}
 
 }

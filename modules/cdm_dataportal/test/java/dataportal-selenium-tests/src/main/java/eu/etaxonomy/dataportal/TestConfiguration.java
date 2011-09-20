@@ -82,9 +82,16 @@ public class TestConfiguration {
 			String key = (String)o;
 
 			// update all webdriver properties and the browser property
-			if(key.startsWith("webdriver.") || key.equals(WebDriverFactory.SYSTEM_PROPERTY_NAME_BROWSER)){
+			if(key.startsWith("webdriver.") || key.equals(WebDriverFactory.SYSTEM_PROPERTY_NAME_BROWSER)) {
 				if(doOverride || System.getProperty(key) == null){
+					String oldValue = "";
+					if(System.getProperty(key) != null) {
+						oldValue = " ,overriding old value: " + System.getProperty(key) + ")";
+					}
+					logger.info("Setting system property: " + key + ": " + properties.getProperty(key) + oldValue);
 					System.setProperty(key, properties.getProperty(key));
+				} else {
+					logger.info("Not overriding system property: " + key + ": " + properties.getProperty(key) + " ,property already exists");
 				}
 			}
 		}

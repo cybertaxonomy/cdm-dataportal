@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -27,8 +28,8 @@ public class WebDriverFactory {
 
 	public static final String SYSTEM_PROPERTY_NAME_BROWSER = "browser";
 
-	private static final String FIREBUG_VERSION = "1.6.2";
-	private static final String FIREXPATH_VERSION = "0.9.6.1";
+	private static final String FIREBUG_VERSION = "1.8.3";
+	private static final String FIREXPATH_VERSION = "0.9.7";
 
 	public static WebDriver newWebDriver() {
 
@@ -76,40 +77,44 @@ public class WebDriverFactory {
 
 		WebDriver driver;
 
-		CdmDataPortalTestBase.logger.info(("fwebdriver.firefox.bin = " + System.getProperty("webdriver.firefox.bin")));
+		CdmDataPortalTestBase.logger.info(("webdriver.firefox.bin = " + System.getProperty("webdriver.firefox.bin")));
 		CdmDataPortalTestBase.logger.info(("webdriver.firefox.library.path = " + System.getProperty("webdriver.firefox.library.path")));
 
 		FirefoxProfile firefoxProfile = new FirefoxProfile();
-		try {
 
-			CdmDataPortalTestBase.logger.debug("FirefoxProfile: " + firefoxProfile.getClass().getSimpleName() + "(" + firefoxProfile.hashCode() + ")");
+		boolean addons = true;
 
-			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
+		if(addons){
+			try {
+				CdmDataPortalTestBase.logger.debug("FirefoxProfile: " + firefoxProfile.getClass().getSimpleName() + "(" + firefoxProfile.hashCode() + ")");
+				firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firebug-" + FIREBUG_VERSION + ".xpi");
+				firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying first run page
+				firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firepath-" + FIREXPATH_VERSION + "-fx.xpi");
 
-			firefoxProfile.setPreference("extensions.firebug.currentVersion", FIREBUG_VERSION); // avoid displaying first run page
-
-			firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firexpath-" + FIREXPATH_VERSION + "-fx.xpi");
-
-
-			// --- allow enabling incompatible addons
-			// firefoxProfile.addExtension(this.getClass(), "/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi");
-			// firefoxProfile.setPreference("extensions.acr.firstrun", false);
-			// firefoxProfile.setPreference("extensions.enabledAddons", "fxdriver@googlecode.com,compatibility@addons.mozilla.org:0.8.3,fxdriver@googlecode.com:0.9.7376,{CAFEEFAC-0016-0000-0024-ABCDEFFEDCBA}:6.0.24,{20a82645-c095-46ed-80e3-08825760534b}:0.0.0,meetinglauncher@iconf.net:4.10.12.316,jqs@sun.com:1.0,{972ce4c6-7e08-4474-a285-3208198ce6fd}:4.0");
-			// firefoxProfile.setPreference("extensions.checkCompatibility", false);
-			// firefoxProfile.setPreference("extensions.checkCompatibility.4.0", false);
-			// firefoxProfile.setPreference("extensions.checkCompatibility.4.1", false);
-
-		} catch (IOException e) {
-			CdmDataPortalTestBase.logger.error(e);
-			System.exit(-1);
+			} catch (IOException e) {
+				CdmDataPortalTestBase.logger.error(e);
+				System.exit(-1);
+			}
 		}
 
-		firefoxProfile.setEnableNativeEvents(true);
+		// NativeEvents can only be used with official binary releases of firefox !!!
+		// firefoxProfile.setEnableNativeEvents(true);
+		// see http://groups.google.com/group/webdriver/browse_thread/thread/ab68c413f17ae1ba/b5cbdcebe859aa56?lnk=gst&q=setEnableNativeEvents+firefox#msg_339ac1870da6d975
 
 		driver = new FirefoxDriver(firefoxProfile);
 
-
 		return driver;
+	}
+
+	 public static void main(String[] args){
+
+		 initFirefoxDriver();
+		 try {
+			Thread.currentThread().sleep(1000);
+		} catch (InterruptedException e) {
+			System.err.println("InterruptedException");
+		}
+
 	}
 
 

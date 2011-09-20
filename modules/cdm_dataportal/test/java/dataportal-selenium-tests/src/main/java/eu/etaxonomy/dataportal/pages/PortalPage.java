@@ -1,9 +1,11 @@
 package eu.etaxonomy.dataportal.pages;
 
+import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -17,9 +19,13 @@ import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.google.common.base.Function;
+
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.selenium.JUnitWebDriverWait;
+import eu.etaxonomy.dataportal.selenium.UrlLoaded;
 
 public abstract class  PortalPage {
 
@@ -194,11 +200,22 @@ public abstract class  PortalPage {
 		return driver.getCurrentUrl().startsWith(pageUrl.toString());
 	}
 
+	/**
+	 * navigate and reload the page if not jet there
+	 */
 	public void get() {
 		if(!driver.getCurrentUrl().equals(pageUrl.toString())){
 			driver.get(pageUrl.toString());
+			wait.until(new UrlLoaded(pageUrl.toString()));
 			PageFactory.initElements(driver, this);
 		}
+	}
+
+	/**
+	 * go back in history
+	 */
+	public void back() {
+		driver.navigate().back();
 	}
 
 	public String getDrupalPagePath() {
@@ -292,6 +309,81 @@ public abstract class  PortalPage {
 		} else {
 			return false;
 		}
+	}
+
+
+	/**
+	 * @param <T>
+	 * @param link the link to click
+	 * @param isTrue see {@link org.openqa.selenium.support.ui.FluentWait#until(Function)}
+	 * @param type the return type
+	 * @param duration may be null, if this in null <code>waitUnit</code> will be ignored.
+	 * @param waitUnit may be null, is ignored if <code>duration</code> is null defaults to {@link TimeUnit.SECONDS}
+	 * @return
+	 * @throws SecurityException
+	 */
+	public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> type, Long duration, TimeUnit waitUnit) {
+
+		String targetWindow = null;
+
+
+		if(targetWindow == null){
+			if(element instanceof LinkElement){
+				targetWindow = element.getElement().getAttribute("target");
+			} else {
+				try {
+					targetWindow = element.getElement().findElement(By.xpath("./a[@target]")).getAttribute("target");
+				} catch (NoSuchElementException e) {
+					logger.debug("No target window found");
+					/* IGNORE */
+				}
+			}
+
+		}
+
+		logger.info("clicking on " + element + (targetWindow == null? "" : " with target window: '" + targetWindow + "'"));
+
+		element.getElement().click();
+		if(targetWindow != null){
+			driver.switchTo().window(targetWindow);
+		}
+
+		try {
+			if(duration != null){
+				if(waitUnit == null){
+					waitUnit = TimeUnit.SECONDS;
+				}
+				wait.withTimeout(duration, waitUnit).until(isTrue);
+			} else {
+				wait.until(isTrue);
+			}
+		} catch (AssertionError timeout){
+			logger.info("current WindowHandles:" + driver.getWindowHandles());
+			throw timeout;
+		}
+
+
+		Constructor<T> constructor;
+		T pageInstance;
+		try {
+			constructor = type.getConstructor(WebDriver.class, DataPortalContext.class);
+			pageInstance = constructor.newInstance(driver, context);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return pageInstance;
+	}
+
+
+	/**
+	 * @param <T>
+	 * @param link the link to click
+	 * @param isTrue see {@link org.openqa.selenium.support.ui.FluentWait#until(Function)}
+	 * @param type the return type
+	 * @return
+	 */
+	public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> type) {
+		return clickLink(element, isTrue, type, null, null);
 	}
 
 

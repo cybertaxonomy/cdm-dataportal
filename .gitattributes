@@ -281,6 +281,7 @@ modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etax
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/TaxonSearchResultPage.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/pages/TaxonSynonymyPage.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/AllTrue.java -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/ChildElementVisible.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/JUnitWebDriverWait.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/PageTitleValidated.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/UrlLoaded.java -text
@@ -288,6 +289,11 @@ modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etax
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/WebDriverFactory.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/eu/etaxonomy/dataportal/DataPortalTest.xml -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/log4j.properties -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.6.2.xpi -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.8.3.xpi -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firepath-0.9.7-fx.xpi -text
+modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firexpath-0.9.6.1-fx.xpi -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/ExampleTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/CichorieaeSearchTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_HybridTest.java -text
@@ -299,9 +305,6 @@ modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etax
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/diptera/Diptera_OriginalSourceTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/flMalesiana/FloraMalesianaPolytomousKeyTest.java -text
 modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/flMalesiana/FloraMalesiana_OriginalSourceTest.java -text
-modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/resources/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi -text
-modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/resources/org/mozilla/addons/firebug-1.6.2.xpi -text
-modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/resources/org/mozilla/addons/firexpath-0.9.6.1-fx.xpi -text
 modules/cdm_dataportal/test/phpUnit/TestUtils.php -text
 modules/cdm_dataportal/test/phpUnit/bootstrap.php -text
 modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml -text

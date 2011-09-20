@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 
 public class ImgElement extends BaseElement {
 
-	private URL url = null;
+	private URL srcUrl = null;
 	private Dimension dimension = null;
 	private String altText = null;
 
@@ -19,7 +19,7 @@ public class ImgElement extends BaseElement {
 		// read src url
 		if (img.getAttribute("src") != null) {
 			try {
-				setUrl(new URL(img.getAttribute("src")));
+				setSrcUrl(new URL(img.getAttribute("src")));
 			} catch (MalformedURLException e) {
 				// IGNORE //
 			}
@@ -31,12 +31,16 @@ public class ImgElement extends BaseElement {
 		setAltText(img.getAttribute("alt"));
 	}
 
-	public void setUrl(URL url) {
-		this.url = url;
+	public void setSrcUrl(URL url) {
+		this.srcUrl = url;
 	}
 
-	public URL getUrl() {
-		return url;
+	/**
+	 * Returns the image source URL from the src attribute
+	 * @return
+	 */
+	public URL getSrcUrl() {
+		return srcUrl;
 	}
 
 	public void setDimension(Dimension dimension) {

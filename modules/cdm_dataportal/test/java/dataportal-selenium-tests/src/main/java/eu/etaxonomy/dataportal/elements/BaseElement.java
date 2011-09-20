@@ -62,5 +62,12 @@ public class BaseElement {
 		}
 	}
 
+	/**
+	 * @return
+	 */
+	public String toSting() {
+		return this.getClass().getSimpleName() + "<" + this.getElement().getTagName() + ">" ;
+	}
+
 
 }

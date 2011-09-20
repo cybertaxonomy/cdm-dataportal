@@ -15,6 +15,8 @@ import java.sql.PreparedStatement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import com.google.common.base.Function;
+
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.selenium.AllTrue;
 import eu.etaxonomy.dataportal.selenium.PageTitleValidated;
@@ -59,13 +61,12 @@ public class GenericPortalPage extends PortalPage {
 	}
 
 	public TaxonSearchResultPage submitQuery(String query) throws Exception{
+		searchBlockElement.findElement(By.id("edit-query")).clear();
 		searchBlockElement.findElement(By.id("edit-query")).sendKeys(query);
 		searchBlockElement.findElement(By.id("edit-submit")).submit();//Search results
 
 		wait.until(new AllTrue(new PageTitleValidated(context.prepareTitle("Search results")), new VisibilityOfElementLocated(By.id("container"))));
 		return new TaxonSearchResultPage(driver, context);
 	}
-
-
 
 }

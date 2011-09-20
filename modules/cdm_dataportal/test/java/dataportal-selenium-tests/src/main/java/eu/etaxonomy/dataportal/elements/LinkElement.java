@@ -33,11 +33,20 @@ public class LinkElement extends BaseElement {
 
 		super(a);
 
+		if(!a.getTagName().equals("a")){
+			throw new RuntimeException("Invalid WebElement: <" + a.getTagName() + "> given, but must be <a>");
+		}
+
 		// read src url
 		if (a.getAttribute("href") != null) {
 				setHref(a.getAttribute("href"));
 		}
 
+	}
+
+	@Override
+	public String toSting(){
+		return super.toSting() + ": " + getUrl() + "";
 	}
 
 }

@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box.Filler;
@@ -54,47 +55,6 @@ public class TaxonListElement extends BaseElement {
 
 	public String getFullTaxonName() {
 		return fullTaxonName;
-	}
-
-	/**
-	 * @return a two dimensional array representing the media items in the gallery, or null if no gallery exists.
-	 */
-	public GalleryImage[][] getGalleryImages() {
-
-
-		WebElement gallery = getElement().findElement(By.className("media_gallery"));
-
-		if( gallery == null){
-			return null;
-		}
-
-		GalleryImage[][] galleryImages = new GalleryImage[][]{};
-
-		List<WebElement> tableRows = gallery.findElements(By.tagName("tr"));
-
-		// loop table rows
-		for(int rowId = 0; rowId < tableRows.size(); rowId++ ){
-			List<WebElement> imageCells = tableRows.get(rowId * 2).findElements(By.tagName("td"));
-			List<WebElement> captionCells = null;
-			if(tableRows.size() > rowId * 2 + 1){
-				captionCells = tableRows.get(rowId * 2 + 1).findElements(By.tagName("td"));
-			}
-
-			galleryImages[rowId] = new GalleryImage[]{};
-
-			// loop table cells in row
-			for(int cellId = 0; cellId < imageCells.size(); cellId++) {
-				WebElement image = imageCells.get(cellId).findElement(By.tagName("img"));
-				WebElement caption = null;
-				if(captionCells != null && captionCells.size() > cellId){
-					caption = captionCells.get(cellId).findElement(By.tagName("dl"));
-				}
-				galleryImages[rowId][cellId] = new GalleryImage(image, caption);
-			}
-
-		}
-
-		return null;
 	}
 
 
