@@ -348,9 +348,9 @@ function theme_cdm_media_gallerie(
 
 				if(isset($captionElements['#uri'])){
 					if($contentTypeDirectory == 'image'){
-						$captionPartHtml .= '<div>'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
+						$captionPartHtml .= '<div class="media-caption-link">'.l($captionElements['#uri'], path_to_media($media->uuid), null, null, null, FALSE, TRUE).'</div>';
 					} else {
-						$captionPartHtml .= '<div>'.l($captionElements['#uri'], $mediaLinkUri, $openMediaLinkAttributes, null, null, TRUE, TRUE).'</div>';
+						$captionPartHtml .= '<div class="media-caption-link">'.l($captionElements['#uri'], $mediaLinkUri, $openMediaLinkAttributes, null, null, TRUE, TRUE).'</div>';
 					}
 				}
 				$captionParts[] = $captionPartHtml;
