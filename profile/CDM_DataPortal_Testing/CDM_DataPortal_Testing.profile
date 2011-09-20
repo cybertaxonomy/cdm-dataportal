@@ -45,5 +45,3 @@ function CDM_DataPortal_Testing_profile_final() {
 
   return;
 }
-
-?>

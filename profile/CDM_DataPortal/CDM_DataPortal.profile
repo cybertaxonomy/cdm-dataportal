@@ -7,24 +7,18 @@
 ************************************************************/
 function CDM_DataPortal_profile_modules() {
     return array (
-        0 => 'admin_menu',
-        1 => 'block',
-        2 => 'cdm_api',
-        3 => 'jquery_update',
-        4 => 'taxonomy',
-        5 => 'color',
-        6 => 'comment',
-        7 => 'cdm_taxontree',
-        8 => 'filter',
-        9 => 'help',
-        10 => 'cdm_dataportal',
-        11 => 'menu',
-        12 => 'node',
-        13 => 'system',
-        14 => 'ext_links',
-        15 => 'user',
-        16 => 'watchdog',
-       // 17 => 'profile_generator',
+        // core modules
+        'block', 'color', 'comment', 'filter', 'help', 'menu', 'node', 'system', 'taxonomy', 'user', 'watchdog', 'taxonomy',
+        // admin
+        'admin_menu',
+        // requirement for cdm
+       	'jquery_update',
+        // CDM modules
+        'cdm_api', 'cdm_taxontree',
+        'cdm_dataportal',
+        'ext_links',
+       // additional:
+       //profile_generator' // uncomment to enable
       );
 }
 
@@ -170,5 +164,3 @@ function CDM_DataPortal_profile_final() {
 
     return;
 }
-
-?>
