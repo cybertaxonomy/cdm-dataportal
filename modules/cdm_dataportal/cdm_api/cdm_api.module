@@ -337,7 +337,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
   $i = 0;
   while(strpos($uri_pattern, "$".$i) !== FALSE){
     if(count($pathParameters) <= $i){
-      if(user_access('administer')){
+      if(drupal_check_module("user") && user_access('administer')){
         drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
       }
       break;
