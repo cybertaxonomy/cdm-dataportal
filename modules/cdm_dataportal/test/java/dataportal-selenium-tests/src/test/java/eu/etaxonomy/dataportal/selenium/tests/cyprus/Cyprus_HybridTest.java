@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import java.net.MalformedURLException;
 import java.util.UUID;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
@@ -37,6 +38,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
 
 
 	@Test
+	@Ignore //update to latest data base
 	public void orchiserapias() throws MalformedURLException {
 		TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), orchiserapias_Uuid);
 		String expectedName = "×Orchiserapias";
