@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -44,7 +45,7 @@ public class FeatureBlock extends DrupalBlock {
 		return footNotes;
 	}
 
-	public List<BaseElement> getOriginalSources() {
+	public List<BaseElement> getOriginalSourcesSections() {
 		return originalSources;
 	}
 
@@ -81,6 +82,8 @@ public class FeatureBlock extends DrupalBlock {
 
 		WebElement descriptionElementsRepresentation =  element.findElement(By.className("description"));
 		featureType = descriptionElementsRepresentation.getAttribute("id");
+
+		//TODO throw exception instead of making an assetion! selenium should have appropriate exeptions
 		assertEquals("Unexpected tag enclosing description element representations", enclosingTag, descriptionElementsRepresentation.getTagName());
 
 		for(WebElement el : descriptionElementsRepresentation.findElements(By.tagName(elementTag))){
@@ -89,7 +92,32 @@ public class FeatureBlock extends DrupalBlock {
 
 	}
 
+	/**
+	 * @param indent
+	 * @param computedFontSize
+	 * @param expectedCssDisplay
+	 * @param expectedListStyleType only applies if cssDisplay equals list-item
+	 * @param expectedListStylePosition only applies if cssDisplay equals list-item
+	 * @param expectedListStyleImage only applies if cssDisplay equals list-item
+	 */
+	public void testDescriptionElementLayout(int descriptionElementId, int indent, int computedFontSize
+			, String expectedCssDisplay, String expectedListStyleType, String expectedListStylePosition, String expectedListStyleImage) {
 
+		DescriptionElementRepresentation firstDescriptionElement = getDescriptionElements().get(descriptionElementId);
 
+		int parentX = getElement().getLocation().getX();
+		int elementX = firstDescriptionElement.getElement().getLocation().getX();
+		double elementPadLeft = pxSizeToDouble(firstDescriptionElement.getElement().getCssValue("padding-left"));
+
+		assertEquals(indent, elementX - parentX + elementPadLeft, PIXEL_TOLERANCE);
+		assertEquals(computedFontSize, firstDescriptionElement.getComputedFontSize(), 0.5);
+		assertEquals(expectedCssDisplay, firstDescriptionElement.getElement().getCssValue("display"));
+
+		if(expectedCssDisplay.equals("list-item")){
+			assertEquals(expectedListStylePosition, firstDescriptionElement.getElement().getCssValue("list-style-position"));
+			assertEquals(expectedListStyleImage, firstDescriptionElement.getElement().getCssValue("list-style-image"));
+			assertEquals(expectedListStyleType, firstDescriptionElement.getElement().getCssValue("list-style-type"));
+		}
+	}
 
 }

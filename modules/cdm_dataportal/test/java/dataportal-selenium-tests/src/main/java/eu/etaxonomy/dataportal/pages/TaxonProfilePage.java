@@ -132,9 +132,23 @@ public class TaxonProfilePage extends PortalPage {
 	}
 
 	/**
+	 * Finds the {@link FeatureBlock} specified by the <code>featureName</code> parameter.
+	 * The following document structure is expected:
+	 * <pre>
+	 * &lt;div id="block-cdm_dataportal-feature-${featureName}" class="clear-block block block-cdm_dataportal-feature"&gt;
+	 *   &lt;div class="content"&gt;
+	 *     &lt;${enclosingTag} id="${featureName}" class="description"&gt;
+	 *       &lt;${elementTag}&gt;DescriptionElement 1&lt;/${elementTag}&gt;
+	 *       &lt;${elementTag}&gt;DescriptionElement 2&lt;/${elementTag}&gt;
+	 *     &lt;/${enclosingTag}&gt;
+	 *    &lt;/div&gt;
+	 * </pre>
+	 *
+	 * The DescriptionElements can be get from the <code>FeatureBlock</code> by {@link FeatureBlock#getDescriptionElements()}.
+	 *
 	 * @param position Zero based index of position in list of feature blocks
 	 * 			(only used to check against total number of feature blocks)
-	 * @param featureName the fature name as it is used in the class attribute: <code>block-cdm_dataportal-feature-${featureName}</code>
+	 * @param featureName the feature name as it is used in the class attribute: <code>block-cdm_dataportal-feature-${featureName}</code>
 	 * @param enclosingTag
 	 * @param elementTag
 	 * @return

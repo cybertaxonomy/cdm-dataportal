@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.dataportal.elements;
 
+import static org.junit.Assert.assertEquals;
+
 import org.openqa.selenium.WebElement;
 
 /**
@@ -47,6 +49,17 @@ public class LinkElement extends BaseElement {
 	@Override
 	public String toSting(){
 		return super.toSting() + ": " + getUrl() + "";
+	}
+
+	public static boolean testIfLinkElement(BaseElement element, String text, String href) {
+		return testIfLinkElement(element.getElement(), text, href);
+	}
+
+	public static boolean testIfLinkElement(WebElement element, String text, String href) {
+		assertEquals("a", element.getTagName());
+		assertEquals(href, element.getAttribute("href"));
+		assertEquals(text, element.getText());
+		return true;
 	}
 
 }
