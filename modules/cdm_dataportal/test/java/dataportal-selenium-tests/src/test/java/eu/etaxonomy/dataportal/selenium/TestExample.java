@@ -22,10 +22,9 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 
 @SuppressWarnings("deprecation")
 @DataPortalContexts( { DataPortalContext.cichorieae })
-public class ExampleTest extends CdmDataPortalSeleniumRCTestBase {
+public class TestExample extends CdmDataPortalSeleniumRCTestBase {
 
-	@Test
-	@Ignore
+//	@Test
 	public void testSearchLCommunis() throws Exception {
 		driver.get(getBaseUrl()
 						+ "?query=Lapsana+com*&search[tree]=534e190f-3339-49ba-95d9-fa27d5493e3e&q=cdm_dataportal%2Fsearch%2Ftaxon&search[pageSize]=25&search[pageNumber]=0&search[doTaxa]=1&search[doSynonyms]=1&search[doTaxaByCommonNames]=0");
@@ -55,8 +54,7 @@ public class ExampleTest extends CdmDataPortalSeleniumRCTestBase {
 	 *
 	 * @throws Exception
 	 */
-	@Test
-	@Ignore
+//	@Test
 	public void testSearchLCommunisUsingSeleniumRC() throws Exception {
 		selenium.open("?query=Lapsana+com*&search[tree]=534e190f-3339-49ba-95d9-fa27d5493e3e&q=cdm_dataportal%2Fsearch%2Ftaxon&search[pageSize]=25&search[pageNumber]=0&search[doTaxa]=1&search[doSynonyms]=1&search[doTaxaByCommonNames]=0");
 		selenium.isTextPresent("Lapsana");
