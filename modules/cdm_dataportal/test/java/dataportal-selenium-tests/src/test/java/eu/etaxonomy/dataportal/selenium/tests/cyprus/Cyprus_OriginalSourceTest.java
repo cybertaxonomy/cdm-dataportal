@@ -22,9 +22,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
-import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
@@ -64,23 +62,25 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
 		assertNull("Authorship information should be hidden", p.getAuthorInformationText());
 
 		List<LinkElement> primaryTabs = p.getPrimaryTabs();
-		assertEquals("Expecting 2 tabs", 2, primaryTabs.size());
-		assertEquals("General", primaryTabs.get(0).getText());
-		assertEquals("Synonymy", primaryTabs.get(1).getText());
+		int tabIndex = 0;
+		assertEquals("General", primaryTabs.get(tabIndex++).getText());
+		assertEquals("Synonymy", primaryTabs.get(tabIndex++).getText());
+		assertEquals("Images", primaryTabs.get(tabIndex++).getText());
+		assertEquals("Expecting " + tabIndex + " tabs", tabIndex++, primaryTabs.size());
 
 		assertEquals("Content", p.getTableOfContentHeader());
 		List<LinkElement> tocLinks = p.getTableOfContentLinks();
 		assertNotNull("Expecting a list of TOC links in the profile page.", tocLinks);
-		p.testTableOfContentEntry(0, "Status", "status");
-		p.testTableOfContentEntry(1, "Endemism", "endemism");
-//		p.testTableOfContentEntry(2, "Red Data Book category", "red_data_book_category");
-//		p.testTableOfContentEntry(3, "Systematics", "systematics");
-		p.testTableOfContentEntry(2, "Chromosome Numbers", "chromosome_numbers");
-		p.testTableOfContentEntry(3, "Distribution", "distribution");
+		int tocIndex = 0;
+		p.testTableOfContentEntry(tocIndex++, "Status", "status");
+		p.testTableOfContentEntry(tocIndex++, "Endemism", "endemism");
+		p.testTableOfContentEntry(tocIndex++, "Systematics", "systematics");
+		p.testTableOfContentEntry(tocIndex++, "Chromosome numbers", "chromosome_numbers");
+		p.testTableOfContentEntry(tocIndex++, "Distribution", "distribution");
 
 		FeatureBlock featureBlock = p.getFeatureBlockAt(2, "chromosome_numbers", "div", "li"); //FIXME <div><li> bug in portal
-		assertEquals("Chromosome Numbers\nCistus creticus L.: 2n = 18 (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus in Candollea 48. 1993) (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus. 2 in Acta Univ. Carol., Biol. 46. 2002)", featureBlock.getText());
-		assertEquals("Chromosome Numbers", featureBlock.getHeader());
+		assertEquals("Chromosome numbers\nCistus creticus L.: 2n = 18 (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus in Candollea 48. 1993) (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus. 2 in Acta Univ. Carol., Biol. 46. 2002)", featureBlock.getText());
+		assertEquals("Chromosome numbers", featureBlock.getHeader());
 		assertEquals("expecting no footnote keys", 0, featureBlock.getFootNoteKeys().size());
 		List<WebElement> linksInFeatureBlock = featureBlock.getElement().findElements(By.tagName("a"));
 		assertEquals("Expecting 4 anchor tags in \"Chromosome Numbers\"", 4, linksInFeatureBlock.size());
