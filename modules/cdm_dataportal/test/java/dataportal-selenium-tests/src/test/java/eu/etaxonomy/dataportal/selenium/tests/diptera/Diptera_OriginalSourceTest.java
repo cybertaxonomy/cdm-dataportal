@@ -87,25 +87,25 @@ public class Diptera_OriginalSourceTest extends CdmDataPortalTestBase{
 		assertEquals("Argyrites speciosa (Meigen, 1830): Croatia", listElements.get(0).getText());
 		List<WebElement> anchorTags = listElements.get(0).findElements(By.tagName("a"));
 		assertEquals("Expecting one link", 1, anchorTags.size());
-		assertTrue(anchorTags.get(0).getAttribute("href").endsWith("?q=cdm_dataportal/name/8d117f24-c9ba-44cd-bf9a-54f2b41e4a0f"));
+		assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
 
 		// ---
 		assertEquals("Milichia speciosa Meigen, 1830: type information (Becker 1902: 314)", listElements.get(2).getText());
 		anchorTags = listElements.get(2).findElements(By.tagName("a"));
 		assertEquals("Expecting two links", 2, anchorTags.size());
 		assertEquals("Milichia speciosa Meigen, 1830", anchorTags.get(0).getText());
-		assertTrue(anchorTags.get(0).getAttribute("href").endsWith("?q=cdm_dataportal/name/031ab38f-54a7-4012-8595-31929a6f7f45"));
+		assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
 		assertEquals("Becker 1902", anchorTags.get(1).getText());
-		assertTrue(anchorTags.get(1).getAttribute("href").endsWith("?q=cdm_dataportal/reference/96d55a98-4811-4ad9-94d2-a306a212070b"));
+		assertTrue(anchorTags.get(1).getAttribute("href").contains("?q=cdm_dataportal/reference/"));
 
 		// ---
 		assertEquals("Milichia speciosa Meigen, 1830: checklist, Italy (Canzoneri & Gorodkov & Krivosheina & Munari & Nartshuk & Papp & Süss 1995: 25)", listElements.get(9).getText());
 		anchorTags = listElements.get(9).findElements(By.tagName("a"));
 		assertEquals("Expecting two links", 2, anchorTags.size());
 		assertEquals("Milichia speciosa Meigen, 1830", anchorTags.get(0).getText());
-		assertTrue(anchorTags.get(0).getAttribute("href").endsWith("?q=cdm_dataportal/name/031ab38f-54a7-4012-8595-31929a6f7f45"));
+		assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
 		assertEquals("Canzoneri & Gorodkov & Krivosheina & Munari & Nartshuk & Papp & Süss 1995", anchorTags.get(1).getText());
-		assertTrue(anchorTags.get(1).getAttribute("href").endsWith("?q=cdm_dataportal/reference/338a6b6b-a26a-43e9-bf4a-6077b5a84668"));
+		assertTrue(anchorTags.get(1).getAttribute("href").contains("?q=cdm_dataportal/reference/"));
 	}
 
 }
