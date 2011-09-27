@@ -10,14 +10,18 @@
 package eu.etaxonomy.dataportal.elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WebElement;
+
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 /**
  * @author andreas
@@ -62,7 +66,7 @@ public class FeatureBlock extends DrupalBlock {
 	/**
 	 * @param element
 	 */
-	public FeatureBlock(WebElement element, String enclosingTag, String elementTag) {
+	public FeatureBlock(WebElement element, String enclosingTag, String ... elementTags) {
 		super(element);
 
 		List<WebElement> fnkList = element.findElements(By.className("footnote-key"));
@@ -86,8 +90,34 @@ public class FeatureBlock extends DrupalBlock {
 		//TODO throw exception instead of making an assetion! selenium should have appropriate exeptions
 		assertEquals("Unexpected tag enclosing description element representations", enclosingTag, descriptionElementsRepresentation.getTagName());
 
-		for(WebElement el : descriptionElementsRepresentation.findElements(By.tagName(elementTag))){
-			descriptionElements.add(new DescriptionElementRepresentation(el));
+		if(elementTags.length > 1){
+
+			// handle multipart elements e.g. <dt></dt><dd></dd>
+			HashMap<String, List<WebElement>> elementsByTag = new HashMap<String, List<WebElement>>();
+			Integer lastSize = null;
+			for (String elementTag : elementTags) {
+				List<WebElement> foundElements = descriptionElementsRepresentation.findElements(By.tagName(elementTag));
+				if(lastSize != null && foundElements.size() != lastSize){
+					throw new NoSuchElementException("Mulitpart element lists differ in size");
+				}
+				lastSize = foundElements.size();
+				elementsByTag.put(elementTag, foundElements);
+			}
+
+			for (int descriptionElementIndex = 0; descriptionElementIndex < lastSize; descriptionElementIndex++){
+				List<WebElement> elementsByIndex = new ArrayList<WebElement>();
+				for (String elementTag : elementTags) {
+					elementsByIndex.add(elementsByTag.get(elementTag).get(descriptionElementIndex));
+				}
+				descriptionElements.add(new MultipartDescriptionElementRepresentation(elementsByIndex.toArray(new WebElement[elementsByIndex.size()])));
+
+			}
+		} else {
+			// handle single elements
+			String elementTag = elementTags[0];
+			for(WebElement el : descriptionElementsRepresentation.findElements(By.tagName( elementTag ))) {
+				descriptionElements.add(new DescriptionElementRepresentation(el));
+			}
 		}
 
 	}
@@ -105,6 +135,10 @@ public class FeatureBlock extends DrupalBlock {
 
 		DescriptionElementRepresentation firstDescriptionElement = getDescriptionElements().get(descriptionElementId);
 
+		if(firstDescriptionElement instanceof MultipartDescriptionElementRepresentation){
+			int multipartElementIndex = 0;
+			firstDescriptionElement = ((MultipartDescriptionElementRepresentation)firstDescriptionElement).multipartElements.get(multipartElementIndex);
+		}
 		int parentX = getElement().getLocation().getX();
 		int elementX = firstDescriptionElement.getElement().getLocation().getX();
 		double elementPadLeft = pxSizeToDouble(firstDescriptionElement.getElement().getCssValue("padding-left"));
