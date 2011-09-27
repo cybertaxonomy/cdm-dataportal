@@ -139,6 +139,7 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
          * Content/COMMON_NAME
          */
         else if ($node->feature->uuid == UUID_COMMON_NAME){
+          //TODO why is theme_cdm_descriptionElement_CommonTaxonName not beeing used???
           $block->content .= theme('cdm_common_names', $node->descriptionElements);
         /*
         }else if($node->feature->uuid == UUID_IMAGE_SOURCES) {
@@ -271,7 +272,7 @@ function theme_cdm_descriptionElementArray($elementArray, $feature, $glue = '', 
 
 
 function theme_cdm_descriptionElement_CommonTaxonName($element){
-  $out = $element->language->representation_L10n . ' (' . $element->area->titleCache . '): ' . $element->name;
+  $out = '<span class="' .  html_class_atttibute_ref($element). '">' . $element->language->representation_L10n . ' (' . $element->area->titleCache . '): ' . $element->name .'</span>';
   return $out;
 }
 
@@ -378,7 +379,7 @@ function theme_cdm_common_names($elements){
           }
         }
         if($element->name){
-          $rendered_element_list .= (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList;
+          $rendered_element_list .= '<span class="' .  html_class_atttibute_ref($element). '">' . (strlen($rendered_element_list) > 0 ? ', ': '') . $element->name . $sourcesFootnoteKeyList . '</span>';
         }
       }
       if ($key){
