@@ -85,6 +85,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	foreach($taxonRelationships as $taxonRelation){
 
 	    if( in_array($taxonRelation->type->uuid, $taxon_relationship_types)) {
+
     		if( $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
 
     			$name = $taxonRelation->fromTaxon->name->titleCache;
@@ -269,7 +270,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false, $relsign = null)
 
 	$skiptags = array();
 
-	if(!is_string($relsign)) {
+	if(!$relsign) {
 
        	switch ($reltype_uuid){
     		case UUID_HETEROTYPIC_SYNONYM_OF:

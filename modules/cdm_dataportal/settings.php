@@ -873,7 +873,7 @@ function cdm_settings_layout_taxon(){
       '#title' => t('Taxon relationship types'),
       '#description' => t('Only taxon relationships of the selected type will be displayed'),
       '#options' => $taxonRelationshipTypeOptions,
-      '#default_value' => variable_get('CDM_TAXON_RELATIONSHIP_TYPES', unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT)),
+      '#default_value' => variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT)),
       '#disabled' => !variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)
   );
 
