@@ -106,10 +106,11 @@ function theme_cdm_taxonRelationships($taxonRelationships){
     				$joinedAuthorTeams[$authorteam] = 'sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec);
     			}
 
-    		}
-	    } else {
-	       $taxonRelationshipsLines[] = theme('cdm_related_taxon',$taxonRelation->fromTaxon, $taxonRelation->type->uuid, $taxonRelation->type->representation_L10n_abbreviatedLabel);
-	    }
+    	    } else {
+    	      // all relationsship types but misapplied_name_for invalid_designation_for
+    	       $taxonRelationshipsLines[] = theme('cdm_related_taxon',$taxonRelation->fromTaxon, $taxonRelation->type->uuid, $taxonRelation->type->representation_L10n_abbreviatedLabel);
+    	    }
+   		}
 	}
 
 	// sort the joinedAuthorTeams and create footnotes and footnotekeys
@@ -120,23 +121,33 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	}
 
 	// generate output
-	$out = '<ul class="misapplied">';
+	if(is_array($misapplied) && count($misapplied) >0 ){
+    	$out .= '<ul class="misapplied">';
+    	foreach($misapplied as $misapplied_name){
 
-	foreach($misapplied as $misapplied_name){
+    		$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
+    		if(isset($misapplied_name['authorteam'])){
+    			// fill authors with the renderedFootnoteKey and sorting 'em
+    			foreach($misapplied_name['authorteam'] as $authorteam=>&$renderedFootnoteKey) {
+    				$renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
+    			}
+    				ksort($misapplied_name['authorteam']);
+    				$out .= join('; ', $misapplied_name['authorteam']);
+    		}
+    		$out .= '</li>';
 
-		$out .= '<li class="synonym">'.$misapplied_name['out'] . " ";
-		if(isset($misapplied_name['authorteam'])){
-			// fill authors with the renderedFootnoteKey and sorting 'em
-			foreach($misapplied_name['authorteam'] as $authorteam=>&$renderedFootnoteKey) {
-				$renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
-			}
-				ksort($misapplied_name['authorteam']);
-				$out .= join('; ', $misapplied_name['authorteam']);
-		}
-		$out .= '</li>';
-
+    	}
+    	$out .= '</ul>';
 	}
-	$out .= '</ul>';
+
+	if(is_array($taxonRelationshipsLines) && count($taxonRelationshipsLines) >0 ){
+    	$out .= '<ul class="taxonRelationships">';
+    	foreach($taxonRelationshipsLines as $taxonRelationshipLine){
+    		$out .= '<li class="synonym">'. $taxonRelationshipLine . '</li>';
+    	}
+    	$out .= '</ul>';
+	}
+
 
 	$tr_footnotes = theme('cdm_footnotes', $footnoteListKey, 'li');
 	$tr_footnotes_exploded = explode('sensu', $tr_footnotes);
@@ -149,6 +160,8 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	RenderHints::popFromRenderStack();
 	return $out;
 }
+
+
 
 function theme_cdm_acceptedFor(){
 	RenderHints::pushToRenderStack('acceptedFor');
@@ -172,6 +185,8 @@ function theme_cdm_acceptedFor(){
 	RenderHints::popFromRenderStack();
 	return $out;
 }
+
+
 
 function theme_cdm_list_of_taxa($records, $showMedia = false){
 
