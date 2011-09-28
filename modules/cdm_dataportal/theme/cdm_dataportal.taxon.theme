@@ -108,7 +108,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 
     	    } else {
     	      // all relationsship types but misapplied_name_for invalid_designation_for
-    	       $taxonRelationshipsLines[] = theme('cdm_related_taxon',$taxonRelation->fromTaxon, $taxonRelation->type->uuid, $taxonRelation->type->representation_L10n_abbreviatedLabel);
+    	       $taxonRelationshipsLines[] = theme('cdm_related_taxon',$taxonRelation->fromTaxon, $taxonRelation->type->uuid, $taxonRelation->type->representation_L10n_abbreviatedLabel, true);
     	    }
    		}
 	}
@@ -273,7 +273,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 }
 
 
-function theme_cdm_related_taxon($taxon, $reltype_uuid = false, $relsign = null){
+function theme_cdm_related_taxon($taxon, $reltype_uuid = false, $relsign = null, $doLinkTaxon = false){
 
 	static $relsign_homo = '≡';
 	static $relsign_hetero = '=';
@@ -323,9 +323,11 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false, $relsign = null)
 
 	RenderHints::pushToRenderStack('related_taxon');
 
-	//$taxonUri = url(path_to_taxon($taxon->uuid));
 	if($taxon->name->nomenclaturalReference){
 		$referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+	}
+	if($doLinkTaxon){
+	  $taxonUri = url(path_to_taxon($taxon->uuid));
 	}
 	//printing the taxonName and the handling the special case of annotations
 	$nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, true, false, $skiptags);
