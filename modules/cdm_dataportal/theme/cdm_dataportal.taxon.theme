@@ -108,7 +108,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 
     		}
 	    } else {
-	       $taxonRelationshipsLines[] = theme('cdm_related_taxon',$taxonRelation->fromTaxon, $taxonRelation->type->uuid, $taxonRelation->type->abbreviatedLabel);
+	       $taxonRelationshipsLines[] = theme('cdm_related_taxon',$taxonRelation->fromTaxon, $taxonRelation->type->uuid, $taxonRelation->type->representation_L10n_abbreviatedLabel);
 	    }
 	}
 

@@ -630,7 +630,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 		if(array_setr('status', true, $renderTemplate)){
 			if(isset($taxonName->status[0])){
 				foreach($taxonName->status as $status){
-					$statusHtml .= ', '.$status->type->representation_L10n_abbreviated;
+					$statusHtml .= ', '.$status->type->representation_L10n_abbreviatedLabel;
 				}
 			}
 			array_setr('status', ' <span class="nomenclatural_status">'.$statusHtml.'</span>', $renderTemplate);
