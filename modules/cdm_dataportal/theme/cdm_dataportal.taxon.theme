@@ -79,29 +79,36 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 	$misapplied = array();
 	$joinedAuthorTeams = array();
 
+	$taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
+
 	// aggregate misapplied names having the same fullname:
 	foreach($taxonRelationships as $taxonRelation){
-		if(true || $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
 
-			$name = $taxonRelation->fromTaxon->name->titleCache;
+	    if( in_array($taxonRelation->type->uuid, $taxon_relationship_types)) {
+    		if( $taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR ){
 
-			$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
-			$authorteam = $author_team->titleCache;
+    			$name = $taxonRelation->fromTaxon->name->titleCache;
 
-			if(!isset($misapplied[$name])){
-				$misapplied[$name]['out'] =
-				  '<span class="misapplied">'
-				  .theme('cdm_related_taxon',$taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR, false).
-				  '</span>';
-			}
+    			$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
+    			$authorteam = $author_team->titleCache;
 
-			// collect all authors for this fullname
-			if(isset($authorteam)){
-				$misapplied[$name]['authorteam'][$authorteam] = '';
-				$joinedAuthorTeams[$authorteam] = 'sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec);
-			}
+    			if(!isset($misapplied[$name])){
+    				$misapplied[$name]['out'] =
+    				  '<span class="misapplied">'
+    				  .theme('cdm_related_taxon',$taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR).
+    				  '</span>';
+    			}
 
-		}
+    			// collect all authors for this fullname
+    			if(isset($authorteam)){
+    				$misapplied[$name]['authorteam'][$authorteam] = '';
+    				$joinedAuthorTeams[$authorteam] = 'sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec);
+    			}
+
+    		}
+	    } else {
+	       $taxonRelationshipsLines[] = theme('cdm_related_taxon',$taxonRelation->fromTaxon, $taxonRelation->type->uuid, $taxonRelation->type->abbreviatedLabel);
+	    }
 	}
 
 	// sort the joinedAuthorTeams and create footnotes and footnotekeys
@@ -250,7 +257,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 }
 
 
-function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
+function theme_cdm_related_taxon($taxon, $reltype_uuid = false, $relsign = null){
 
 	static $relsign_homo = '≡';
 	static $relsign_hetero = '=';
@@ -262,23 +269,26 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false){
 
 	$skiptags = array();
 
-	switch ($reltype_uuid){
-		case UUID_HETEROTYPIC_SYNONYM_OF:
-		case UUID_SYNONYM_OF:
-			$relsign = $relsign_hetero;
-			break;
-		case UUID_HOMOTYPIC_SYNONYM_OF:
-			$relsign = $relsign_homo;
-			break;
-		case UUID_MISAPPLIED_NAME_FOR:
-		case UUID_INVALID_DESIGNATION_FOR:
-			$skiptags[] = 'authors';
-			$relsign = $relsign_invalid;
-			$name_prefix = '"';
-			$name_postfix = '"';
-			break;
-		default :
-			$relsign = $relsign_invalid;
+	if(!is_string($relsign)) {
+
+       	switch ($reltype_uuid){
+    		case UUID_HETEROTYPIC_SYNONYM_OF:
+    		case UUID_SYNONYM_OF:
+    			$relsign = $relsign_hetero;
+    			break;
+    		case UUID_HOMOTYPIC_SYNONYM_OF:
+    			$relsign = $relsign_homo;
+    			break;
+    		case UUID_MISAPPLIED_NAME_FOR:
+    		case UUID_INVALID_DESIGNATION_FOR:
+    			$skiptags[] = 'authors';
+    			$relsign = $relsign_invalid;
+    			$name_prefix = '"';
+    			$name_postfix = '"';
+    			break;
+    		default :
+    			$relsign = $relsign_invalid;
+	    }
 	}
 	/*
 	 * names with status invalid or nudum are to be displayed with the $relsign_invalid,

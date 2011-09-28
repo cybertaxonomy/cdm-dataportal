@@ -10,6 +10,7 @@ define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 4);
 
+/* annotationTypeKeys */
 $annotationTypeKeys = array_keys( cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE) );
 if(in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
   $annotationTypeKeys = array_flip($annotationTypeKeys);
@@ -18,6 +19,9 @@ if(in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
   $annotationTypeKeys = array_flip($annotationTypeKeys);
 }
 define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
+
+/* taxonRelationshipTypes */
+define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
 
 
 /* gallery variables */
@@ -53,10 +57,7 @@ define (FEATURE_TREE_LAYOUT_DEFAULTS, serialize(
     )
   ));
 
-/**
- * default settings for all gallerys
- * @var unknown_type
- */
+
 define('CDM_DATAPORTAL_DEFAULT_TAXON_TAB', serialize($taxon_tab_options));
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
@@ -69,6 +70,7 @@ define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name
 //define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_2', array("default" => t('Display all')));
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
+define('CDM_TAXON_RELATIONSHIP_TYPES', 'cdm_taxon_relationship_types');
 define('CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
 define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal_structdesc_featuretree_uuid');
 
@@ -308,7 +310,7 @@ function cdm_settings_general(){
   $form['cdm_webservice']['cdm_webservice_cache'] =  array(
     '#type' => 'checkbox',
     '#title'         => t('<b>Enable caching</b>'),
-  '#options'		 => cdm_help_general_cache(),
+  '#options'     => cdm_help_general_cache(),
     '#default_value' => variable_get('cdm_webservice_cache', 1),
     '#description'   => t('When caching is enabled all single taxon sites are stored in an internal drupal cache doing
                            the portal response of taxa sites faster. This is possible because the sites are loaded from
@@ -545,9 +547,9 @@ function cdm_dataportal_theming_form_submit (&$form, &$form_values){
 
     //use the banners as default theme
 }
-
+/*
 function cdm_settings_layout_synonymy(){
-  /* ====== SYNONYMY ====== */
+  / * ====== SYNONYMY ====== * /
   $form['synonymy'] = array(
       '#type' => 'fieldset',
       '#title' => t('Synonymy'),
@@ -571,48 +573,35 @@ function cdm_settings_layout_synonymy(){
     '#description' => t('Check this if after doing a search and clicking on a synonym you want to see the "accept of" text for the accepted synonym.')
   );
 
-  $name_relationships_terms = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_NAME_RELATIONSHIP_TYPE);
-  $name_rel_options = array();
-  //$name_rel_options['default'] = 'Show all';
-  foreach ($name_relationships_terms->terms as $element){
-    $name_rel_options[$element->uuid] = t('Show "' . $element->representation_L10n_abbreviated . '" relationships');
-  }
-
-  $name_relationships_form['name_relationships_to_show']= array(
+  $form['synonymy']['name_relationships']['name_relationships_to_show'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Display name relationships'),
     '#default_value' => variable_get('name_relationships_to_show', 0),
-    '#options' => $name_rel_options,
+    '#options' => $nameRelationshipTypeOptions,
     '#description' => t('Select the name relationships you want to show for the accepted taxa.'),
   );
 
-  $form['synonymy']['name_relationships'] = $name_relationships_form;
-      /*
-       $form['synonymy'][CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
-       '#type' => 'checkbox',
-       '#title' => t('Show name relations of accepted taxa on taxon page'),
-       '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT),
-       //'#description' => t('Check this if you want the synonymy list to show all the name relationships where other names implies the accepted taxa.')
-       '#description' => t('Check this if you want the synonymy list to show all the name relationships of accepted taxa.')
-       );
-     */
   $form['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show taxon relations of accepted taxa on taxon page'),
+    '#title' => t('Show taxon relations ships of accepted taxon'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
-    '#description' => t('Check this if you want the synonymy list to show the <em>"Misapplied Name for"</em> and <em>"Invalid Designation for"</em> relationships of accepted taxa.')
+    '#description' => t('If this option is enabled the synonymy will show the below selected taxon relationships of accepted taxa.')
+  );
+
+  $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE);
+  $form['synonymy'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Taxon relationship types'),
+      '#description' => t('Only taxon relationships of the selected type will be displayed'),
+      '#options' => $taxonRelationshipTypeOptions,
+      '#default_value' => variable_get('CDM_TAXON_RELATIONSHIP_TYPES', unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT)),
+      '#disabled' => !variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)
   );
 
   return system_settings_form($form);
-      /*
-       $form['synonymy']['cdm_dataportal_name_relations_skiptype_basionym'] = array(
-       '#type' => 'checkbox',
-       '#title' => t('Exclude the basionym relationship type from the taxon page'),
-       '#default_value' => variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1),
-       '#description' => t('')
-       );
-       */
+
 }
+*/
 
 function cdm_settings_layout_taxon(){
   $collapsed = false;
@@ -843,7 +832,7 @@ function cdm_settings_layout_taxon(){
       '#title' => t('Taxon synonymy (tab)'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-      '#description' => t('This section covers the settings related to the taxon <b>synonymy</b> tab.'),
+      '#description' => t('This section covers the settings related to the taxon <b>synonymy</b> tab.####'),
   );
 
   $form['taxon_synonymy']['cdm_dataportal_nomref_in_title'] = array(
@@ -861,36 +850,31 @@ function cdm_settings_layout_taxon(){
     '#description' => t('Check this if after doing a search and clicking on a synonym you want to see the "accept of" text for the accepted synonym.')
   );
 
-  $name_relationships_terms = cdm_ws_get(CDM_WS_TERMVOCABULARY, UUID_NAME_RELATIONSHIP_TYPE);
-  $name_rel_options = array();
-  //$name_rel_options['default'] = 'Show all';
-  foreach ($name_relationships_terms->terms as $element){
-    $name_rel_options[$element->uuid] = t('Show "' . $element->representation_L10n_abbreviated . '" relationships');
-  }
-
-  $name_relationships_form['name_relationships_to_show']= array(
+  $nameRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE);
+  $form['synonymy']['name_relationships']['name_relationships_to_show'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Display name relationships'),
     '#default_value' => variable_get('name_relationships_to_show', 0),
-    '#options' => $name_rel_options,
+    '#options' => $nameRelationshipTypeOptions,
     '#description' => t('Select the name relationships you want to show for the accepted taxa.'),
   );
 
-  $form['taxon_synonymy']['name_relationships'] = $name_relationships_form;
-      /*
-       $form['synonymy'][CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS] = array(
-       '#type' => 'checkbox',
-       '#title' => t('Show name relations of accepted taxa on taxon page'),
-       '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT),
-       //'#description' => t('Check this if you want the synonymy list to show all the name relationships where other names implies the accepted taxa.')
-       '#description' => t('Check this if you want the synonymy list to show all the name relationships of accepted taxa.')
-       );
-     */
-  $form['taxon_synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+
+ $form['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show taxon relations of accepted taxa on taxon page'),
+    '#title' => t('Show taxon relations ships of accepted taxon'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
-    '#description' => t('Check this if you want the synonymy list to show the <em>"Misapplied Name for"</em> and <em>"Invalid Designation for"</em> relationships of accepted taxa.')
+    '#description' => t('If this option is enabled the synonymy will show the below selected taxon relationships of accepted taxa.')
+  );
+
+   $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE);
+  $form['synonymy'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Taxon relationship types'),
+      '#description' => t('Only taxon relationships of the selected type will be displayed'),
+      '#options' => $taxonRelationshipTypeOptions,
+      '#default_value' => variable_get('CDM_TAXON_RELATIONSHIP_TYPES', unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT)),
+      '#disabled' => !variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)
   );
 
   // ====== SPECIMENS ====== //
@@ -1274,7 +1258,7 @@ function cdm_settings_cache(){
   $form['cache_settings']['cdm_webservice_cache'] =  array(
     '#type'          => 'checkbox',
     '#title'         => t('<strong>Enable caching</strong>'),
-  '#options'		 => cdm_help_general_cache(),
+  '#options'     => cdm_help_general_cache(),
     '#default_value' => variable_get('cdm_webservice_cache', 1),
     '#description'   => t('<p>Enable drupal to load taxa pages from the cache.</p>' .
                          '<p><strong>Note:</strong> If taxa are modified by the editor or any other application the changes will be not

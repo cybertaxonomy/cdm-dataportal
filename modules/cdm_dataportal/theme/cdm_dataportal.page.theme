@@ -439,16 +439,7 @@ function theme_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon){
       $out .= theme('cdm_nameRelationships', $nameRelationships, $skip);
     }
   }
-  /*
-   if(variable_get(CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT)){
-   $nameRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
-   // TODO is it correct to skip relationsFromThisName since all relationships are to be understood as 'is .... of'
-   if(variable_get('cdm_dataportal_name_relations_skiptype_basionym', 1)){
-   $skip = array(UUID_BASIONYM);
- }
-   $out .= theme('cdm_nameRelationships', $nameRelationships, $skip);
-   }
-   */
+
 
   //render the annontations text for the accepted taxa
   if ($addAcceptedTaxon){
