@@ -1083,22 +1083,22 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
   //show the taxa list or go to the singular taxon
   if (sizeof($taxon_pager->records) == 1){ //sigle taxon case
     reset($taxon_pager->records);
-    $first_key = key($taxon_pager->records);
-    if($taxon_pager->records[$first_key]->class != "Taxon"){
-      $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($taxon_pager->records[$first_key]->uuid, get_taxonomictree_uuid_selected()));
+    $singleTaxon = $taxon_pager->records[0];
+    if($singleTaxon->class != "Taxon"){
+      // it is a Synonym -> look for the accepted
+      $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid, get_taxonomictree_uuid_selected()));
       if($synonym_uuid){
         drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', 'highlite=' . $synonym_uuid);
-      }else{
-        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid);
+      }else {
+        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', 'highlite=' . $singleTaxon->uuid);
       }
     }else{
+      // it is an accepted taxon 
       if($synonym_uuid){
-        drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid . '/synonymy',
-                      'highlite=' . $synonym_uuid);
+        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', 'highlite=' . $synonym_uuid);
       }else{
-        drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid);
+        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid);
       }
-      //drupal_goto('cdm_dataportal/taxon/' . $taxon_pager->records[$first_key]->uuid);
     }
   }else{ //more than one taxa case
     $taxon_name_page->title = theme('cdm_name_page_title', $taxon_name);
@@ -1165,8 +1165,7 @@ function path_to_taxon($uuid, $no_tab = false){
 
   if (!$tab){
     return 'cdm_dataportal/taxon/'.$uuid;
-  }elseif(get_last_taxon_page_tab() &&
-     $tab == $values[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX]){
+  }else if(get_last_taxon_page_tab() &&  $tab == $values[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX]){
     return 'cdm_dataportal/taxon/'.$uuid . '/' . get_last_taxon_page_tab();
   } else {
     return 'cdm_dataportal/taxon/'.$uuid . '/' . strtolower($tab);

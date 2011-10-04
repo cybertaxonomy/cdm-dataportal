@@ -309,8 +309,8 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
 
       if ($source->nameUsedInSource->uuid){ //do a link to name page
         $name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache,
-        path_to_name($source->nameUsedInSource->uuid),
-        array(), NULL, NULL, FALSE ,TRUE);
+	        path_to_name($source->nameUsedInSource->uuid),
+	        array(), NULL, NULL, FALSE ,TRUE);
       }else if (strlen($source->nameUsedInSource->originalNameString) > 0){ //show a text without link
         $name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
       }
