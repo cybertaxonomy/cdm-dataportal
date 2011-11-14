@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.php.debug.core.launching.webPageLaunch">
 <booleanAttribute key="auto_generated_url" value="false"/>
-<stringAttribute key="base_url" value="http://127.0.0.1/cyprus/?q=cdm_dataportal/taxon/5c229bd5-c1d4-4352-b764-a6d453216995"/>
+<stringAttribute key="base_url" value="http://127.0.0.1/cichorieae/install.php"/>
 <stringAttribute key="debugOutputEncoding" value="UTF-8"/>
 <stringAttribute key="debugPages" value="debugAllPages"/>
 <stringAttribute key="debugTransferEncoding" value="UTF-8"/>
-<stringAttribute key="file_name" value="/Drupal5/index.php"/>
+<stringAttribute key="file_name" value="/Drupal5/install.php"/>
 <booleanAttribute key="firstLineBreakpoint" value="false"/>
 <stringAttribute key="name" value="Default PHP Web Server"/>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
