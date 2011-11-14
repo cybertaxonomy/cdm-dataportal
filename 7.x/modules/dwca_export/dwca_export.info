@@ -6,3 +6,7 @@ dependencies[] = views_data_export
 package = "Scratchpads"
 
 core = 7.x
+
+; manually configured version since this module is not yet hosted on the drupal.org infrastructure
+; see also bhttp://drupal.org/node/542202#version
+version = "7.x-0.1-dev"
