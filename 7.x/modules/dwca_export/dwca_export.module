@@ -28,6 +28,15 @@ function dwca_export_menu() {
 }
 
 /**
+ * Implementation of hook_views_api()
+ *
+ * drupal will load dwca_export.views_default.inc when this hook is implemented
+ */
+function dwca_export_views_api() {
+	return array('api' => 3.0);
+}
+
+/**
  * Form function, called by drupal_get_form()
  * in dwca_export_menu().
  */
@@ -80,7 +89,6 @@ function dwca_export_create_archive($views_map) {
 function _get_views_map() {
 
 	return array(
-		'taxon' => 'taxon.txt',
-		'extension' => 'extension.txt'
+		'dwca_export/classification/csv' => 'classification.txt'
 	);
 }
