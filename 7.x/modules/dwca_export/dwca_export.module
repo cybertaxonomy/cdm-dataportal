@@ -48,10 +48,11 @@ function dwca_export_deliver_archive() {
 
 	$tmp_archive_file_name = dwca_export_create_archive( _get_views_map() );
 
-	// 1. http://api.drupal.org/api/drupal/includes--file.inc/function/file_copy/7
-	// 2. file_transfer($tmp_archive_file_name, $headers)
-
-	print "TODO export";
+	if($tmp_archive_file_name){
+		file_transfer($tmp_archive_file_name, array('Content-Type' => 'application/zip'));
+	} else {
+		print "ERROR";
+	}
 }
 
 /**
@@ -61,11 +62,12 @@ function dwca_export_deliver_archive() {
  *
  * @param - $views_map maps a view paths to dwca filenames
  *
- * @return the path in the filesystem to the final archive
+ * @return the path in the filesystem to the final archive,
+ * or FALSE in case of an error.
  */
 function dwca_export_create_archive($views_map) {
 
-	$tmp_archive_file_name = drupal_tempnam(file_directory_temp(), "dwca_export_");
+	$tmp_archive_file_name = drupal_tempnam("temporary://", "dwca_export_");
 
 	return $tmp_archive_file_name;
 }
