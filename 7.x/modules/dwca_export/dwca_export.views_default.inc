@@ -25,11 +25,11 @@ function dwca_export_views_default_views() {
 function _view_classification() {
 
 	$view = new view;
-	$view->name = 'classification_export_view';
+	$view->name = 'dwca_export_classification';
 	$view->description = '';
 	$view->tag = 'default';
 	$view->base_table = 'taxonomy_term_data';
-	$view->human_name = 'Classification Export View';
+	$view->human_name = 'Classification Export';
 	$view->core = 7;
 	$view->api_version = '3.0-alpha1';
 	$view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
