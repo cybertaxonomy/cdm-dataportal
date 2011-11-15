@@ -14,6 +14,7 @@ function dwca_export_views_default_views() {
 		$function = '_view_' . $function_postfix;
 		$view = $function();
 		$views[$view->name] = $view;
+		watchdog("dwca_export", "hook_views_default_views() : view '".$view->name."'");
 	}
 	return $views;
 }
