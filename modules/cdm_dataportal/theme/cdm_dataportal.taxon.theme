@@ -15,7 +15,9 @@ function theme_cdm_search_results($pager, $path, $parameters){
 
 	$showThumbnails = $_SESSION['pageoptions']['searchtaxa']['showThumbnails'];
 	if( !is_numeric($showThumbnails)){
-		$showThumbnails = 1;
+		//AT RBG KEW - 14/11/2011 - Set the show thumbnails to 0 by default 
+		//$showThumbnails = 1;
+		$showThumbnails = 0;
 	}
 	$setSessionUri = url('cdm_api/setvalue/session', "var=[pageoption][searchtaxa][showThumbnails]&val=");
 	drupal_add_js('$(document).ready(function() {
@@ -45,8 +47,9 @@ function theme_cdm_search_results($pager, $path, $parameters){
 	drupal_set_title(t('Search results'));
 
 	$out = ''; //l('Advanced Search', '/cdm_dataportal/search');
-
-	$out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form></div>';
+	//AT RBG KEW - 14/11/2011 - Changed the wording of the Show Thumbnails tick box text 
+	//$out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form></div>';
+	$out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Image Thumbnails').'</form></div>';
 	if(count($pager->records) > 0){
 	    $out .= '<div id="search_results">';
 		$out .= theme('cdm_list_of_taxa', $pager->records);

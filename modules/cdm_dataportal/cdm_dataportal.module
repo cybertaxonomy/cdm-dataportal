@@ -484,6 +484,7 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
   $form['#process'] = array('cdm_dataportal_search_process' => array());
   $form['#action'] = url($url, NULL, NULL, true);
 
+  if(!$advancedForm) {
   $form['query'] = array(
     '#delta' => 0,
     '#type' => 'textfield',
@@ -491,6 +492,17 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
     '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
     '#value' => $preset_query,
   );
+  }
+  //AT RBG KEW - 14/11/2011 Added to extend the text box in the Advanced form only
+  else {
+	  	 $form['query'] = array(
+	    '#delta' => 0,
+	    '#type' => 'textfield',
+	    '#size' => 68,
+	    '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
+	    '#value' => $preset_query,
+	  );
+  }
 
   $form['search'] = array(
       '#delta' => 1,
@@ -564,14 +576,16 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
     '#options' => array(
     t('TDWG level-1, i.e. a continent'),
     t('TDWG level-2'),
-    t('TDWG level-3, i.e. a country'),
-    t('TDWG level-4')
+    t('TDWG level-3, i.e. a country')
+    //AT RBG KEW - 14/11/2011 - Removed TDWG Level 4 since we have no TDWG Lvl 4 data
+    //t('TDWG level-4')
     )
     );
     $tdwg[1] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '1');
     $tdwg[2] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '2');
     $tdwg[3] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '3');
-    $tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
+    //AT RBG KEW - 14/11/2011 - Removed TDWG Level 4 since we have no TDWG Lvl 4 data
+    //$tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
 
     $tdwg_js = '';
     foreach($tdwg as $key=>$tdwg_level){
