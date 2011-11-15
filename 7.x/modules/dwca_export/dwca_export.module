@@ -1,1 +1,84 @@
-<?php 
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function dwca_export_menu() {
+
+	$items = array();
+
+	$items['admin/config/system/dwca_export/settings'] = array(
+
+		'title' => t('DarwinCore-Archive export'),
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('dwca_export_config_form'),
+		'access arguments' => array('access administration pages'),
+		'type' => MENU_LOCAL_TASK,
+		//'file' => 'dwca_export.admin.inc'
+	);
+
+	$items['dwca_export'] = array(
+		'page callback' => 'dwca_export_deliver_archive',
+		'access arguments' => TRUE,
+		'type' => MENU_CALLBACK
+	);
+
+
+	return $items;
+}
+
+/**
+ * Form function, called by drupal_get_form()
+ * in dwca_export_menu().
+ */
+function dwca_export_config_form($form, &$form_state) {
+
+	$form['dwca_export_todo'] = array(
+		'#markup' => '<p>No settings implemented yet.</p>'
+	);
+
+	return system_settings_form($form);
+}
+
+
+/**
+ * menu callback
+ */
+function dwca_export_deliver_archive() {
+
+	$tmp_archive_file_name = dwca_export_create_archive( _get_views_map() );
+
+	// 1. http://api.drupal.org/api/drupal/includes--file.inc/function/file_copy/7
+	// 2. file_transfer($tmp_archive_file_name, $headers)
+
+	print "TODO export";
+}
+
+/**
+ * Walks all view export paths defined in the $views_map.
+ * Each file is downloaded to the tmp folder and a zip file
+ * is bundeled of the resulting csv files plus the meta file.
+ *
+ * @param - $views_map maps a view paths to dwca filenames
+ *
+ * @return the path in the filesystem to the final archive
+ */
+function dwca_export_create_archive($views_map) {
+
+	$tmp_archive_file_name = drupal_tempnam(file_directory_temp(), "dwca_export_");
+
+	return $tmp_archive_file_name;
+}
+
+/**
+ * provides the settings which map a view path to
+ * a dwca filename.
+ *
+ */
+function _get_views_map() {
+
+	return array(
+		'taxon' => 'taxon.txt',
+		'extension' => 'extension.txt'
+	);
+}
