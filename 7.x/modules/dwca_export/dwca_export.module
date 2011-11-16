@@ -33,7 +33,9 @@ function dwca_export_menu() {
  * drupal will load dwca_export.views_default.inc when this hook is implemented
  */
 function dwca_export_views_api() {
-	return array('api' => 3.0);
+	return array(
+		'api' => 3.0
+	);
 }
 
 /**
@@ -43,7 +45,7 @@ function dwca_export_views_api() {
 function dwca_export_config_form($form, &$form_state) {
 
 	$form['dwca_export_todo'] = array(
-		'#markup' => '<p>No settings implemented yet.</p>'
+		'#markup' => '<p>No settings implemented yet...</p>'
 	);
 
 	return system_settings_form($form);
@@ -57,10 +59,10 @@ function dwca_export_deliver_archive() {
 
 	$tmp_archive_file_name = dwca_export_create_archive( _get_views_map() );
 
-	if($tmp_archive_file_name){
+	if($tmp_archive_file_name && file_valid_uri($tmp_archive_file_name)){
 		file_transfer($tmp_archive_file_name, array('Content-Type' => 'application/zip'));
 	} else {
-		print "ERROR";
+		throw new Exception(t('Error creating the archive'));
 	}
 }
 
@@ -78,7 +80,55 @@ function dwca_export_create_archive($views_map) {
 
 	$tmp_archive_file_name = drupal_tempnam("temporary://", "dwca_export_");
 
-	return $tmp_archive_file_name;
+	// Unfortunately we cannot use drupals ArchiverZip because there ís
+	// no way to pass in ZipArchive::CREATE to the constructor to create the archive
+	// TODO test if zip functionality is available (i.e. if(function_exists('zip_open'))
+	// but I don't know where the proper location for such a check would be
+	$zip = new ZipArchive();
+	// it is safe to use drupal_realpath as the tmp file will be certainly local
+	// and php's ZipArchive does not handle stream URIs
+	$result = $zip->open(drupal_realpath($tmp_archive_file_name), ZipArchive::CREATE);
+
+	// there might be a better way to get at this information
+	$module_static_dir_absolute = realpath(drupal_get_path('module', 'dwca_export')) . "/static/";
+
+	// at the moment we are using a static meta.xml file
+	$metadata = "meta.xml";
+
+	$zip_root_dir = "dwca_export/";
+
+	if ($result !== TRUE) {
+		throw new Exception(t('Could not create zip_archive %tmp_archive_file_name', array('%tmp_archive_file_name' => $tmp_archive_file_name)));
+	}else{
+		// add metadata
+		$zip->addFile($module_static_dir_absolute.$metadata, $zip_root_dir.$metadata);
+		// add the csv data files
+		foreach($views_map as $view => $file){
+			$view_temp_file = _create_views_file($view);
+			if($view_temp_file){
+				$zip->addFile(drupal_realpath($view_temp_file), $zip_root_dir.$file);
+			}else{
+				throw new Exception(t('Cannot create %file', array('%file' => $file)));
+			}
+		}
+		$zip->close();
+
+		return $tmp_archive_file_name;
+	} 
+}
+
+/**
+ * TODO Downloads the view and returns the filepath
+ *
+ * @param string $view 
+ * @param string $file 
+ * @return a filepath to the downloaded view
+ * @author Niels Hoffmann
+ */
+function _create_views_file($view, $file) {
+	// FIXME this is a mock
+	$view_temp_file = drupal_tempnam("temporary://", "dwca_export_view_");
+	return $view_temp_file;
 }
 
 /**
@@ -89,6 +139,7 @@ function dwca_export_create_archive($views_map) {
 function _get_views_map() {
 
 	return array(
-		'dwca_export/classification/csv' => 'classification.txt'
+		'dwca_export/classification/csv' => 'classification.txt',
+		'dwca_export/extension/test/csv' => 'test.txt',
 	);
 }
