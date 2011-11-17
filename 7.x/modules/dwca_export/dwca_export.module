@@ -18,7 +18,7 @@ function dwca_export_menu() {
 
 	$items['dwca_export'] = array(
 		'page callback' => 'dwca_export_deliver_archive',
-		'access arguments' => TRUE,
+		'access arguments' => array('access content'),
 		'type' => MENU_CALLBACK
 	);
 
@@ -43,8 +43,12 @@ function dwca_export_views_api() {
  */
 function dwca_export_config_form($form, &$form_state) {
 
+	global $base_url;
+
 	$form['dwca_export_todo'] = array(
-		'#markup' => '<p>No settings implemented yet...</p>'
+		'#markup' => '<p><em>No settings implemented yet...</em></p><p>The DarwinCore Archive export is available at '.
+		l('dwca_export', 'dwca_export')
+		.'</p>'
 	);
 
 	return system_settings_form($form);
