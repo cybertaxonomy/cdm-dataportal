@@ -7,12 +7,12 @@ function dwca_export_menu() {
 
 	$items = array();
 
-	$items['admin/config/system/dwca_export/settings'] = array(
-		'title' => 'DarwinCore-Archive export',
+	$items['admin/config/system/dwca_export'] = array(
+		'title' => 'Darwin Core Archive export',
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array('dwca_export_config_form'),
 		'access arguments' => array('access administration pages'),
-		'type' => MENU_LOCAL_TASK,
+		'type' => MENU_NORMAL_ITEM,
 		//'file' => 'dwca_export.admin.inc'
 	);
 
@@ -46,8 +46,10 @@ function dwca_export_config_form($form, &$form_state) {
 	global $base_url;
 
 	$form['dwca_export_todo'] = array(
-		'#markup' => '<p><em>No settings implemented yet...</em></p><p>The DarwinCore Archive export is available at '.
-		l('dwca_export', 'dwca_export')
+		'#markup' => '<p><em>No settings implemented yet...</em></p>'
+		.'<p>The DarwinCore Archive export is available at '. l('dwca_export', 'dwca_export').'</p>'
+		.'<p>For general information on the DarwinCore Archive format please refer to  '
+		. l('GBIF - Standards and Tools - Darwin Core Archives', 'http://www.gbif.org/informatics/standards-and-tools/publishing-data/data-standards/darwin-core-archives/')
 		.'</p>'
 	);
 
