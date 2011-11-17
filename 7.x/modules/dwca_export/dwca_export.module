@@ -8,8 +8,7 @@ function dwca_export_menu() {
 	$items = array();
 
 	$items['admin/config/system/dwca_export/settings'] = array(
-
-		'title' => t('DarwinCore-Archive export'),
+		'title' => 'DarwinCore-Archive export',
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array('dwca_export_config_form'),
 		'access arguments' => array('access administration pages'),
@@ -57,7 +56,7 @@ function dwca_export_config_form($form, &$form_state) {
  */
 function dwca_export_deliver_archive() {
 
-	$tmp_archive_file_name = dwca_export_create_archive( _get_views_map() );
+	$tmp_archive_file_name = dwca_export_create_archive( _dwca_export_archive_descriptor_file_map() );
 
 	if($tmp_archive_file_name && file_valid_uri($tmp_archive_file_name)){
 		file_transfer($tmp_archive_file_name, array('Content-Type' => 'application/zip'));
@@ -66,19 +65,70 @@ function dwca_export_deliver_archive() {
 	}
 }
 
+
+/**
+ * Provides the archive_descriptor_file_map which maps dwca file name to a set of view information.
+ * The view information contains the fields 'view_name', 'display_id', 'out_file_url'.
+ * The 'out_file_url' is initailly empty and will be set when this function is called
+ * with both parameters.
+ *
+ * @param unknown_type $file_name
+ * @param unknown_type $out_file_url
+ *
+ * @return the archive_descriptor_file_map
+ */
+function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_url = null){
+	static $file_map;
+
+	if(!isset($file_map)){
+		//TODO load from variables, consider using strongarm
+		$file_map = array(
+			'classification.txt' => array(
+				'view_name'=> 'dwca_export_classification',
+				'display_id' => 'views_data_export_1',
+				'out_file_url' => NULL
+			)
+		);
+	}
+
+	if($file_name && $out_file_url){
+		$file_map[$file_name]['out_file_url'] = $out_file_url;
+	}
+
+	return $file_map;
+}
+
 /**
  * Walks all view export paths defined in the $views_map.
  * Each file is downloaded to the tmp folder and a zip file
  * is bundeled of the resulting csv files plus the meta file.
  *
- * @param - $views_map maps a view paths to dwca filenames
+ * @param $views_map - maps a view paths to dwca filenames
  *
  * @return the path in the filesystem to the final archive,
  * or FALSE in case of an error.
  */
 function dwca_export_create_archive($views_map) {
 
-	$tmp_archive_file_name = drupal_tempnam("temporary://", "dwca_export_");
+	global $base_url;
+
+	// execute all views to export the data into
+	// temporary csv files (temporary://dwca_export_*). the resulting filenames
+	// will be stored in _dwca_export_archive_descriptor_file_map()
+	foreach($views_map as $filename=>$view_data){
+
+		$view = views_get_view($view_data['view_name']);
+		$options = array (
+		    'output_file' => $filename
+		);
+		_dwca_export_views_data_export_override_batch($view, $view_data['display_id'], $options);
+		$view->execute_display($view_data['display_id']);
+
+	}
+
+	// all data is exported to temporary://dwca_export_*
+	// now we can start bundeling the actual archive
+	$tmp_archive_file_name = drupal_tempnam("temporary://", "dwca_export_archive_");
 
 	// Unfortunately we cannot use drupals ArchiverZip because there ís
 	// no way to pass in ZipArchive::CREATE to the constructor to create the archive
@@ -103,43 +153,109 @@ function dwca_export_create_archive($views_map) {
 		// add metadata
 		$zip->addFile($module_static_dir_absolute.$metadata, $zip_root_dir.$metadata);
 		// add the csv data files
-		foreach($views_map as $view => $file){
-			$view_temp_file = _create_views_file($view);
-			if($view_temp_file){
-				$zip->addFile(drupal_realpath($view_temp_file), $zip_root_dir.$file);
-			}else{
-				throw new Exception(t('Cannot create %file', array('%file' => $file)));
-			}
+	}
+
+	foreach(_dwca_export_archive_descriptor_file_map() as $dwca_filename=>$view_data){
+
+		$view_temp_file = $view_data['out_file_url'];
+		if($view_temp_file){
+			$zip->addFile(drupal_realpath($view_temp_file), $zip_root_dir.$dwca_filename);
+		}else{
+			throw new Exception(t('Cannot create %file', array('%file' => $dwca_filename)));
 		}
-		$zip->close();
+	}
 
-		return $tmp_archive_file_name;
-	} 
+	$zip->close();
+
+	return $tmp_archive_file_name;
+
+
 }
 
 /**
- * TODO Downloads the view and returns the filepath
+ * Helper function that indicates that we want to
+ * override the batch that the views_data_export view creates
+ * on it's initial time through.
  *
- * @param string $view 
- * @param string $file 
- * @return a filepath to the downloaded view
- * @author Niels Hoffmann
+ * Also provides a place to stash options that need to stay around
+ * until the end of the batch
+ *
+ * adapted fom views_data_export.drush.inc
  */
-function _create_views_file($view, $file) {
-	// FIXME this is a mock
-	$view_temp_file = drupal_tempnam("temporary://", "dwca_export_view_");
-	return $view_temp_file;
+function _dwca_export_views_data_export_override_batch($view = NULL, $display = NULL, $options = TRUE) {
+	static $_views;
+	if (isset($view)) {
+		$_views[$view->name][$display] = $options;
+	}
+	return $_views;
 }
 
-/**
- * provides the settings which map a view path to
- * a dwca filename.
- *
- */
-function _get_views_map() {
 
-	return array(
-		'dwca_export/classification/csv' => 'classification.txt',
-		'dwca_export/extension/test/csv' => 'test.txt',
+/**
+ * Implementation of hook_views_data_export_batch_alter()
+ *
+ * adapted fom views_data_export.drush.inc
+ *
+ *  @see batch_process() in form.inc
+ */
+function dwca_export_views_data_export_batch_alter(&$batch, &$final_destination, &$querystring) {
+
+	$view_name = $batch['view_name'];
+	$display_id = $batch['display_id'];
+
+	$ok_to_override = _dwca_export_views_data_export_override_batch();
+
+	// Make sure we do nothing if we are called not following the execution of
+	// our drush command. This could happen if the file with this function in it
+	// is included during the normal execution of the view
+	if (!$ok_to_override[$view_name][$display_id]) {
+		return;
+	}
+
+	$options = $ok_to_override[$view_name][$display_id];
+
+	// We actually never return from the drupal_alter, but
+	// use drush's batch system to run the same batch
+
+	// Add a final callback
+	$batch['operations'][] = array(
+	    '_dwca_export_views_data_export_batch_finished', array($batch['eid'], $options['output_file']),
 	);
+
+	$batch['progressive'] = FALSE;
+}
+
+/**
+* Implementation of hook_views_data_export_batch_alter()
+*
+* @see batch_process() in form.inc
+*/
+function dwca_export_batch_alter(&$batch, &$final_destination, &$querystring) {
+	if($batch['source_url'] == 'dwca_export'){
+		$batch['progressive'] = FALSE;
+	}
+}
+
+
+
+/**
+* Get's called at the end of the drush batch process that generated our export
+*
+* adapted fom views_data_export.drush.inc
+*/
+function _dwca_export_views_data_export_batch_finished($eid, $output_file, &$context) {
+	// Fetch export info
+	$export = views_data_export_get($eid);
+
+	// Perform cleanup
+	$view = views_data_export_view_retrieve($eid);
+	$view->set_display($export->view_display_id);
+	$view->display_handler->batched_execution_state = $export;
+	$view->display_handler->remove_index();
+
+	// Get path to temp file
+	$temp_file = $view->display_handler->outputfile_path();
+
+	_dwca_export_archive_descriptor_file_map($output_file, $temp_file);
+
 }
