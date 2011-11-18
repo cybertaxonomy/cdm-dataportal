@@ -2,14 +2,12 @@
 <archive xmlns="http://rs.tdwg.org/dwc/text/">
 	<core encoding="UTF-8" linesTerminatedBy="\r\n" fieldsTerminatedBy="," fieldsEnclosedBy="&quot;" ignoreHeaderLines="1" rowType="http://rs.tdwg.org/dwc/terms/Taxon">
 		<files>
-			<location></location>
+			<location>core.txt</location>
 		</files>
 		<id index="0"/>
-		<field index="1" term="http://rs.tdwg.org/dwc/terms/scientificNameID"/>
+		<field index="1" term="http://rs.tdwg.org/dwc/terms/scientificName"/>
 		<field index="2" term="http://rs.tdwg.org/dwc/terms/parentNameUsageID"/>
-		<field index="3" term="http://rs.tdwg.org/dwc/terms/namePublishedInID"/>
-		<field index="4" term="http://rs.tdwg.org/dwc/terms/parentNameUsage"/>
-		<field index="5" term="http://rs.tdwg.org/dwc/terms/namePublishedIn"/>
-		<field index="6" term="http://rs.tdwg.org/dwc/terms/phylum"/>
+		<field index="3" term="http://rs.tdwg.org/dwc/terms/parentNameUsage"/>
+		<field index="4" term="http://rs.tdwg.org/dwc/terms/datasetName"/>
 	</core>
 </archive>
