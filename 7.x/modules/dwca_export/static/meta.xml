@@ -2,7 +2,7 @@
 <archive xmlns="http://rs.tdwg.org/dwc/text/">
 	<core encoding="UTF-8" linesTerminatedBy="\r\n" fieldsTerminatedBy="," fieldsEnclosedBy="&quot;" ignoreHeaderLines="1" rowType="http://rs.tdwg.org/dwc/terms/Taxon">
 		<files>
-			<location>core.txt</location>
+			<location>dwca_export_classification.txt</location>
 		</files>
 		<id index="0"/>
 		<field index="1" term="http://rs.tdwg.org/dwc/terms/scientificName"/>
