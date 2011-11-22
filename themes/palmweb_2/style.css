@@ -93,6 +93,10 @@ a:active, a.active {
   color: #5895be;
 }
 
+#search_results a.taxon:link, a.taxon:visited, .Taxon a:link, .Taxon a:visited {
+    font-weight: bold;
+}
+
 hr {
   margin: 0;
   padding: 0;
