@@ -108,7 +108,7 @@ function theme_cdm_taxonRelationships($taxonRelationships){
 
     	    } else {
     	      // all relationsship types but misapplied_name_for invalid_designation_for
-    	       $taxonRelationshipsLines[] = theme('cdm_related_taxon',$taxonRelation->fromTaxon, $taxonRelation->type->uuid, $taxonRelation->type->representation_L10n_abbreviatedLabel, true);
+    	       $taxonRelationshipsLines[] = theme('cdm_related_taxon',$taxonRelation->fromTaxon, $taxonRelation->type->uuid, $taxonRelation->type, true);
     	    }
    		}
 	}
@@ -273,20 +273,29 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
 }
 
 
-function theme_cdm_related_taxon($taxon, $reltype_uuid = false, $relsign = null, $doLinkTaxon = false){
+function theme_cdm_related_taxon($taxon, $reltype_uuid = false, $taxonRelationType = null, $doLinkTaxon = false){
 
 	static $relsign_homo = '≡';
 	static $relsign_hetero = '=';
 	static $relsign_invalid = '&ndash;';
 
-  $relsign = '';
 	$name_prefix = '';
 	$name_postfix = '';
 
 	$skiptags = array();
 
+	if(isset($taxonRelationType->representation_L10n_abbreviatedLabel)){
+		$relsign = $taxonRelationType->representation_L10n_abbreviatedLabel;
+	}
+
+	$reltype_representation = '';
+	if(isset($taxonRelationType->representation_L10n)){
+		$reltype_representation = $taxonRelationType->representation_L10n;
+	}
+
 	if(!$relsign) {
 
+		$relsign = '';
        	switch ($reltype_uuid){
     		case UUID_HETEROTYPIC_SYNONYM_OF:
     		case UUID_SYNONYM_OF:
@@ -387,7 +396,7 @@ function theme_cdm_related_taxon($taxon, $reltype_uuid = false, $relsign = null,
 		}
 	}
   //geneal output
-	$out = '<span class="relation_sign">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $name_relations_html;
+	$out = '<span class="relation_sign" title="' . $reltype_representation . '">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $name_relations_html;
 	$out = uuid_anchor($taxon->uuid, $out);
 
 	RenderHints::popFromRenderStack();
