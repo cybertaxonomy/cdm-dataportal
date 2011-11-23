@@ -867,7 +867,7 @@ function cdm_settings_layout_taxon(){
     '#description' => t('If this option is enabled the synonymy will show the below selected taxon relationships of accepted taxa.')
   );
 
-   $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE);
+  $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, _cdm_relationship_type_term_label_callback);
   $form['synonymy'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
       '#type' => 'checkboxes',
       '#title' => t('Taxon relationship types'),
