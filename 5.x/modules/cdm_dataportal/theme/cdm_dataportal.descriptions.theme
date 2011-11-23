@@ -1029,7 +1029,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
 
   if(is_array($polytomousKeyNode->children)){
 
-    $childCount = 0;
+    $childIndex = 0;
 
     // render edges of the current node
     foreach($polytomousKeyNode->children as &$child){
@@ -1038,10 +1038,6 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
         // skip node with empty statements (see below for explanation: "Special case")
         continue;
       }
-
-      $out .= '<tr class="childCount_' . $childCount . '">';
-
-      $out .= '<td class="nodeNumber">'. uuid_anchor($polytomousKeyNode->uuid, $polytomousKeyNode->nodeNumber . str_pad("", $childCount++ , $statementCountCharacter)) . "</td>";
 
       /*
        * Special case:
@@ -1053,12 +1049,31 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
       $islinkToSubKey = isset($child->subkey->uuid);
       $islinkToOtherNode = isset($child->otherNode);
       $islinkToNode = $child->nodeNumber && !$islinkToManyTaxa && !$islinkToOtherNode; // either null or 0
+      $hasQuestion = isset($polytomousKeyNode->question->label_l10n);
 
-      $out .= '<td ' . RenderHints::getHtmlElementID($child) . '  class="edge">';
-      if(isset($polytomousKeyNode->question->label_l10n)){
-        $out .= $polytomousKeyNode->question->label_l10n .  ": ";
+      //$indentEdge = $hasQuestion && $childIndex > 0;
+
+      // Questions
+      if($hasQuestion && $childIndex == 0){
+          // place question, as extra table row
+          $out .= '<tr class="question new_section">';
+          $out .= '<td class="nodeNumber">'. uuid_anchor($polytomousKeyNode->uuid, $polytomousKeyNode->nodeNumber) . "</td>";
+          $out .= '<td class="question">' . $polytomousKeyNode->question->label_l10n . '</td>';
+          $out .= '</tr>';
       }
-      $out .= $child->statement->label_l10n;
+
+      $out .= '<tr class="childCount_' . $childIndex . (!$hasQuestion && $childIndex == 0 ? ' new_section':''). '">';
+
+      if($hasQuestion){
+        $out .= '<td class="nodeNumber"></td>';
+      } else {
+        $out .= '<td class="nodeNumber">'. uuid_anchor($polytomousKeyNode->uuid, $polytomousKeyNode->nodeNumber . str_pad("", $childIndex , $statementCountCharacter)) . "</td>";
+      }
+
+      $out .= '<td ' . RenderHints::getHtmlElementID($child) . '  class="edge'.($hasQuestion? ' edge-indent': '').'">';
+
+
+      $out .=  $child->statement->label_l10n;
 
       // --- links to nodes taxa and subkeys
       $out .= '<div class="nodeLink">';
@@ -1111,6 +1126,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
       $out .= '</td>'; // end edge
       $out .= '</tr>';
 
+      $childIndex++;
     }
 
     // recurse into child nodes
@@ -1119,6 +1135,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
     }
 
   }
+
   return $out;
 }
 

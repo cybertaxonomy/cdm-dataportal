@@ -389,7 +389,7 @@ a.toc:link, a.toc:visited {
 	vertical-align: top;
 	padding-top: 0;
 }
-.polytomousKey_linkedStyle tr.childCount_0 td{
+.polytomousKey_linkedStyle tr.new_section td{
   padding-top: 1em;
 }
 .polytomousKey_linkedStyle tr:hover {
@@ -399,4 +399,8 @@ a.toc:link, a.toc:visited {
 .polytomousKey_linkedStyle .nodeLink {
 	float: right;
   text-align: right;
+}
+
+.polytomousKey_linkedStyle td.edge-indent {
+	padding-left: 2em;
 }
