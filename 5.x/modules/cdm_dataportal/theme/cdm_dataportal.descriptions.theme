@@ -1065,12 +1065,20 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
 
      // link to a PolytomousKeyNode
       if($islinkToNode){
-        $out .= '<div class="nodeLinkToNode">' . l($child->nodeNumber, $_REQUEST["q"], null, null, $child->uuid) . '</div>';
+        $out .= '<div class="nodeLinkToNode">';
+        if(is_object($child->modifyingText)){
+            $out .= theme('cdm_poytomousKeyNode_modifyingText', $child->modifyingText);
+        }
+        $out .= l($child->nodeNumber, $_REQUEST["q"], null, null, $child->uuid) . '</div>';
       }
 
       // link to a PolytomousKeyNode
       if($islinkToOtherNode){
-        $out .= '<div class="nodeLinkToOtherNode">' . l($child->otherNode->nodeNumber, $_REQUEST["q"], null, null, $child->otherNode->uuid) . '</div>';
+        $out .= '<div class="nodeLinkToOtherNode">';
+        if(is_object($child->modifyingText)){
+            $out .= theme('cdm_poytomousKeyNode_modifyingText', $child->modifyingText);
+        }
+        $out .= l($child->otherNode->nodeNumber, $_REQUEST["q"], null, null, $child->otherNode->uuid) . '</div>';
       }
 
       // link to one or many taxa
@@ -1086,10 +1094,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
           // TODO many taxa $child->children->taxon
           $out .= '<div class="nodeLinkToTaxon">';
           if(is_object($taxonChild->modifyingText)){
-            $i = 0;
-            foreach(get_object_vars($taxonChild->modifyingText) as $language=>$languageString){
-              $out .= ($i++ > 0 ? ', ' : '') . '<span class="modifyingText">'. $languageString->text . '</span> ';
-            }
+            $out .= theme('cdm_poytomousKeyNode_modifyingText', $taxonChild->modifyingText);
           }
           $out .=  theme("cdm_taxonName", $taxonChild->taxon->name, url(path_to_taxon($taxonChild->taxon->uuid)));
           $out .=  '</div>';
@@ -1113,6 +1118,16 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
       $out .= theme('cdm_polytomousKey_linkedStyle_subgraph', $child);
     }
 
+  }
+  return $out;
+}
+
+function theme_cdm_poytomousKeyNode_modifyingText($modifyingText){
+  if(is_object($modifyingText)){
+    $i = 0;
+    foreach(get_object_vars($modifyingText) as $language=>$languageString){
+      $out .= ($i++ > 0 ? ', ' : '') . '<span class="modifyingText">'. $languageString->text . '</span> ';
+    }
   }
   return $out;
 }
