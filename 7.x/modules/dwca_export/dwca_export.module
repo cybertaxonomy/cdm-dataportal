@@ -93,6 +93,11 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 				'view_name'=> 'dwca_export_classification',
 				'display_id' => 'views_data_export_1',
 				'out_file_url' => NULL
+			),
+			'specimen.txt' => array(
+				'view_name'=> 'view_test_specimen_export',
+				'display_id' => 'views_data_export_1',
+				'out_file_url' => NULL
 			)
 		);
 	}
@@ -155,12 +160,12 @@ function dwca_export_create_archive($views_map) {
 
 	if ($result !== TRUE) {
 		throw new Exception(t('Could not create zip_archive %tmp_archive_file_name', array('%tmp_archive_file_name' => $tmp_archive_file_name)));
-	}else{
-		// add metadata
-		$zip->addFile($module_static_dir_absolute.$metadata, $zip_root_dir.$metadata);
-		// add the csv data files
 	}
-
+	
+	
+	// add metadata
+	$zip->addFile($module_static_dir_absolute.$metadata, $zip_root_dir.$metadata);
+	// add the csv data files
 	foreach(_dwca_export_archive_descriptor_file_map() as $dwca_filename=>$view_data){
 
 		$view_temp_file = $view_data['out_file_url'];

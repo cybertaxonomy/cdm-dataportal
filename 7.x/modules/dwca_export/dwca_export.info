@@ -6,6 +6,7 @@ core = 7.x
 
 files[] = dwca_export.module
 dependencies[] = views_data_export
+dependencies[] = darwincore
 
 ; Theme
 files[] = theme/dwca_export.theme.inc
