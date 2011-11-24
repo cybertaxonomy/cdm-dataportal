@@ -1513,6 +1513,10 @@ function _is_original_source_type($source){
   return !$source->idNamespace && strlen($source->idNamespace) == 0;
 }
 
+function _is_invers_taxonRelationship($taxonRelationship, $focusedTaxon){
+  return $taxonRelationship->fromTaxon->uuid == $focusedTaxon->uuid;
+}
+
 
 
 /**

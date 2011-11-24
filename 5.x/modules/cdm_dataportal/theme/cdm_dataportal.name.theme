@@ -267,7 +267,7 @@ function theme_cdm_nameRelationships($nameRelationships, $skipTypes = false){
 
 function theme_cdm_homotypicSynonymLine($taxon){
 	$out = '';
-	$out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+	$out .= '<li class="synonym">'.cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 
 	return $out;
 }
@@ -288,9 +288,9 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 			$is_first_entry = false;
 			$typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
 			// is first list entry
-			$out .= '<li class="firstentry synonym">'.theme('cdm_related_taxon',$synonym, UUID_HETEROTYPIC_SYNONYM_OF).'</li>';
+			$out .= '<li class="firstentry synonym">'.cdm_related_taxon($synonym, UUID_HETEROTYPIC_SYNONYM_OF).'</li>';
 		} else {
-			$out .= '<li class="synonym">'.theme('cdm_related_taxon',$synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+			$out .= '<li class="synonym">'.cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 		}
 	}
 	//$test =  theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
@@ -332,12 +332,12 @@ function theme_cdm_homotypicSynonymyGroup($synonymList, $accepted_taxon_uuid, $p
 
 	if(!empty($prependedSynonyms)){
 		foreach($prependedSynonyms as $taxon){
-			$out .= '<li class="synonym">'.theme('cdm_related_taxon', $taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+			$out .= '<li class="synonym">'.cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 		}
 	}
 
 	foreach($synonymList as $synonym){
-		$out .= '<li class="synonym">'.theme('cdm_related_taxon', $synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
+		$out .= '<li class="synonym">'.cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 	}
 
 	$homonym_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
