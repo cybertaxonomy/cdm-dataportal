@@ -1050,10 +1050,11 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
       $islinkToOtherNode = isset($child->otherNode);
       $islinkToNode = $child->nodeNumber && !$islinkToManyTaxa && !$islinkToOtherNode; // either null or 0
       $hasQuestion = isset($polytomousKeyNode->question->label_l10n);
+      $hasFeature = isset($polytomousKeyNode->feature);
 
       //$indentEdge = $hasQuestion && $childIndex > 0;
 
-      // Questions
+      // Question
       if($hasQuestion && $childIndex == 0){
           // place question, as extra table row
           $out .= '<tr class="question new_section">';
@@ -1072,7 +1073,12 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
 
       $out .= '<td ' . RenderHints::getHtmlElementID($child) . '  class="edge'.($hasQuestion? ' edge-indent': '').'">';
 
+      // Feature
+      if($hasFeature){
+        $out .= $polytomousKeyNode->feature->representation_L10n . " ";
+      }
 
+      // Statement
       $out .=  $child->statement->label_l10n;
 
       // --- links to nodes taxa and subkeys
