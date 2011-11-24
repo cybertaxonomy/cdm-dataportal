@@ -10,4 +10,14 @@
 		<field index="3" term="http://rs.tdwg.org/dwc/terms/parentNameUsage"/>
 		<field index="4" term="http://rs.tdwg.org/dwc/terms/datasetName"/>
 	</core>
+	<extension encoding="UTF-8" linesTerminatedBy="\r\n" fieldsTerminatedBy="," fieldsEnclosedBy="&quot;" ignoreHeaderLines="1" rowType="http://rs.gbif.org/terms/1.0/TypesAndSpecimen">
+		<files>
+			<location>dwca_export_typesandspecimen.txt</location>
+		</files>
+		<coreid index="0"/>
+		<field index="1" term="http://rs.tdwg.org/dwc/terms/typeStatus"/>
+		<field index="2" term="http://rs.tdwg.org/dwc/terms/institutionCode"/>
+		<field index="3" term="http://rs.tdwg.org/dwc/terms/collectionCode"/>
+		<field index="4" term="http://rs.tdwg.org/dwc/terms/catalogNumber"/>
+	</extension>
 </archive>
