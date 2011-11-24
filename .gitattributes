@@ -757,6 +757,7 @@
 6.x/themes/summertime_cdm/summertime_cdm.info -text
 6.x/themes/summertime_cdm/template.php -text
 6.x/themes/summertime_cdm/theme-settings.php -text
+7.x/modules/dwca_export/README.txt -text
 7.x/modules/dwca_export/dwca_export.info -text
 7.x/modules/dwca_export/dwca_export.module -text
 7.x/modules/dwca_export/dwca_export.views_default.inc -text

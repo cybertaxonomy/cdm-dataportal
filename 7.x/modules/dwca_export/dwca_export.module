@@ -94,7 +94,7 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 				'display_id' => 'views_data_export_1',
 				'out_file_url' => NULL
 			),
-			'specimen.txt' => array(
+			'typesandspecimen.txt' => array(
 				'view_name'=> 'view_test_specimen_export',
 				'display_id' => 'views_data_export_1',
 				'out_file_url' => NULL

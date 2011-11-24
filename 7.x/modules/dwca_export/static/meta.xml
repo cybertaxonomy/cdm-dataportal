@@ -2,7 +2,7 @@
 <archive xmlns="http://rs.tdwg.org/dwc/text/">
 	<core encoding="UTF-8" linesTerminatedBy="\r\n" fieldsTerminatedBy="," fieldsEnclosedBy="&quot;" ignoreHeaderLines="1" rowType="http://rs.tdwg.org/dwc/terms/Taxon">
 		<files>
-			<location>dwca_export_classification.txt</location>
+			<location>classification.txt</location>
 		</files>
 		<id index="0"/>
 		<field index="1" term="http://rs.tdwg.org/dwc/terms/scientificName"/>
@@ -12,7 +12,7 @@
 	</core>
 	<extension encoding="UTF-8" linesTerminatedBy="\r\n" fieldsTerminatedBy="," fieldsEnclosedBy="&quot;" ignoreHeaderLines="1" rowType="http://rs.gbif.org/terms/1.0/TypesAndSpecimen">
 		<files>
-			<location>dwca_export_typesandspecimen.txt</location>
+			<location>typesandspecimen.txt</location>
 		</files>
 		<coreid index="0"/>
 		<field index="1" term="http://rs.tdwg.org/dwc/terms/typeStatus"/>
