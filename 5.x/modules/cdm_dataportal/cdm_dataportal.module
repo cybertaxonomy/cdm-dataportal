@@ -92,29 +92,173 @@ function _add_js_openlayers_map(){
 
 }
 
+/**
+ *
+ * Enter description here ...
+ * @param unknown_type $width
+ * @param unknown_type $occurrenceQuery
+ * @param unknown_type $distributionQuery
+ * @param unknown_type $legendFormatQuery
+ * @param unknown_type $map_caption
+ */
+function get_image_map($width,  $bounding_box=false, $occurrenceQuery = false, $distributionQuery = false, $legendFormatQuery = false, $map_caption = false ){
 
-function get_openlayers_map($width, $occurrenceQuery = false, $distributionQuery = false, $legendFormatQuery = false, $map_caption = false ){
+  $server = getEDITMapServiceURI();
+
+  if(!$server){
+    //warning message
+    drupal_set_message('No \'Geoservice Access Point\' has been set so far. '
+    . 'Please configure the variable \'Geoservice Access Point\' here '
+    . l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/geo'), 'warning');
+    //message to render
+    return "<p>No geoservice specified</p>";
+  }
+
+  // additional query parameters as set in the data portal admin section
+  $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
+
+  $query_string .= '&image=true&recalculate=false&legend=1&ms=' . $width
+    . ($bounding_box ? '&bbox=' .  $bounding_box : '')
+    . ($labels_on ? '&label=' .  $labels_on : '');
+
+  if($map_caption){
+    $query_string .= '&mlp=3&mc_s=Georgia,15,blue&mc=' . $map_caption;
+  }
+
+  // either occurrence or distribution - combined maps will be possible in future
+  if ($occurrenceQuery){
+
+    $map_service_script_name = "points.php";
+
+    //fix $occurrenceQuery
+    $occurrenceQuery = str_replace("&image=false", "", $occurrenceQuery);
+    //$occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0';
+    $occurrenceQuery .= '&l=v:e_w_0';
+
+    $query_string .= "&" .$occurrenceQuery;
+
+  } else if($distributionQuery){
+
+    $query_string .= "&" .$distributionQuery;
+
+    $map_service_script_name = "areas.php";
+
+    // apply Plain Image map settings
+    if (getEDITMapServiceVersionNumber() >= 1.1){
+      /*
+       * example : title=a:Naturalized++non-invasive
+      * &ad=cyprusdivs:bdcode:a:5&as=a:ff9900,,0.1,&l=tdwg4
+      * &ms=500&bbox=32,34,35,36&img=true&legend=1&mlp=3
+      * &mc_s=Georgia,15,blue&mc=&recalculate=false
+      *
+      * http://edit.br.fgov.be/edit_wp5/v1/rest_gen.php?
+      * l=background_gis:b,cyprusdivs&ad=cyprusdivs%3Abdcode%3Aa%3A8%2C4
+      * &as=a%3A339966%2C%2C0.1%2C|b:0000ff,,
+      * &bbox=32%2C34%2C35%2C36&img=true&legend=1&mc=&mc_s=Georgia%2C15%2Cblue
+      * &mlp=3&ms=500&recalculate=false&title=a%3Aindigenous
+      */
+
+      $map_service_script_name = "rest_gen.php";
+
+      $bgcolor_areaStyleId= "y";
+      $baselayer_areaStyleId= "z";
+      $bgcolor_layer='';
+      $additional_area_styles = array();
+
+      // background color:
+      if(variable_get('map_bg_color', '')){
+        $bgcolor_layer = "background_gis:".$bgcolor_areaStyleId;
+        $additional_area_styles[] = $bgcolor_areaStyleId . ":" . variable_get('map_bg_color', '') . ",,";
+      }
+
+      //TODO HACK to replace the default base layer which currently is tdwg4 !!!
+      if(strpos($query_string, "?l=") !== FALSE){
+        $layer_param_token = "?l=";
+      } else {
+        $layer_param_token = "&l=";
+      }
+      if(strpos($query_string, "?as=") !== FALSE){
+        $areystyle_param_token = "?as=";
+      } else {
+        $areystyle_param_token = "&as=";
+      }
+
+      if(variable_get('map_base_layer', '')){
+        $query_string = str_replace($layer_param_token."tdwg4", "$layer_param_token".variable_get('map_base_layer', ''). ":" . $baselayer_areaStyleId, $query_string);
+      } else {
+        $query_string = str_replace($layer_param_token."tdwg4", $layer_param_token."tdwg4:".$baselayer_areaStyleId . ",", $query_string);
+      }
+
+      if($bgcolor_layer){
+        $query_string = str_replace($layer_param_token, $layer_param_token . $bgcolor_layer . ",", $query_string);
+      }
+
+      if(variable_get('map_base_layer_style', '')){
+        $additional_area_styles[] = $baselayer_areaStyleId . ":" . variable_get('map_base_layer_style', '');
+      }
+
+      foreach ($additional_area_styles as $as) {
+        $query_string = str_replace($areystyle_param_token, $areystyle_param_token . $as . "|", $query_string);
+      }
+
+    }
+  } // end of if($distributionQuery)
+
+  $mapUri = url("$server/$map_service_script_name?$query_string");
+  $out = '<img class="distribution_map" src="' . $mapUri . '" alt="Map" />';
+  // showing map caption
+  if($map_caption){
+    $out .= '<div class="distribution_map_caption">' . $map_caption . '</div>' . '<br />'; //FIXME: replace <br> by according css style
+    $out .= '</div>';
+  }
+
+  return $out;
+
+
+}
+
+/**
+ *
+ * Enter description here ...
+ * @param unknown_type $width
+ * @param unknown_type $occurrenceQuery
+ * @param unknown_type $distributionQuery
+ * @param unknown_type $legendFormatQuery
+ * @param unknown_type $map_caption
+ */
+function get_openlayers_map($width, $bounding_box=false, $occurrenceQuery = false, $distributionQuery = false, $legendFormatQuery = false, $map_caption = false ){
 
   _add_js_openlayers_map();
 
   $out = '<div id="openlayers">';
   $out .= '<div id="openlayers_map" class="smallmap"';
   $out .= ' style="width: ' . $width . 'px; height:'.( $width / 2).'px"';
-  if($occurrenceQuery){
 
+  // additional query parameters as set in the data portal admin section
+  $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
+
+  $openlayers_map_query_string .= '&img=false&ms=' . $width
+    . ($bounding_box ? '&bbox=' .  $bounding_box : '')
+    . ($labels_on ? '&label=' .  $labels_on : '');
+
+  if($occurrenceQuery){
     //fix $occurrenceQuery
-    $occurrenceQuery .= '&ms=400,350';
+    $occurrenceQuery .= '&bbox=-180,-90,180,90';
     $occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0';
+    //$occurrenceQuery .= '&l=v:e_w_0';
     $occurrenceQuery .= '&legend=0'; //TODO add to cdm service?
 
-    $out .= ' occurrenceQuery="'.$occurrenceQuery.'"';
+    $out .= ' occurrenceQuery="' . $occurrenceQuery . '&' . $openlayers_map_query_string . '"';
   }
+
   if($distributionQuery){
-    $out .= ' distributionQuery="'.$distributionQuery.'"';
+    $out .= ' distributionQuery="' . $distributionQuery . '&' . $openlayers_map_query_string . '"';
   }
+
   if($legendFormatQuery){
     $out .= ' legendFormatQuery="'.$legendFormatQuery.'"';
   }
+
   $out .= '></div></div>';
 
   // showing map caption
@@ -1093,7 +1237,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
         drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', 'highlite=' . $singleTaxon->uuid);
       }
     }else{
-      // it is an accepted taxon 
+      // it is an accepted taxon
       if($synonym_uuid){
         drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', 'highlite=' . $synonym_uuid);
       }else{

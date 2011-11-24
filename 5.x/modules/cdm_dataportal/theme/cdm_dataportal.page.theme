@@ -234,17 +234,39 @@ function theme_cdm_taxon_page_specimens($taxon){
   $specimensOrObersvations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObersvations') );
 
   //collect media (fieldObjectMedia, derivedUnitMedia) and add as fields
-   foreach($specimensOrObersvations as $specimensOrObersvation) {
-      $specimensOrObersvation->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($specimensOrObersvation->uuid, 'fieldObjectMedia') );
-      $specimensOrObersvation->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($specimensOrObersvation->uuid, 'derivedUnitMedia') );
+   foreach($specimensOrObersvations as &$occurrence) {
+      $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($occurrence->uuid, 'fieldObjectMedia') );
+      $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($occurrence->uuid, 'derivedUnitMedia') );
       //	  	$derivedUnitFacde = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($descriptionElement->associatedSpecimenOrObservation->uuid) );
       //	  	$descriptionElement->_titleCache = $derivedUnitFacde->titleCache;
   }
 
-  if(variable_get('cdm_dataportal_map_openlayers', 1)){
+  if(count($specimensOrObersvations) > 0){
+
     $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
     $occurrenceQuery = $occurrenceQuery->String;
-    $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', false), $occurrenceQuery);
+
+    if(variable_get('cdm_dataportal_map_openlayers', 1)){
+      $out .= get_openlayers_map(
+        variable_get('cdm_dataportal_geoservice_display_width', false),
+        variable_get('cdm_dataportal_geoservice_bounding_box', false),
+        $occurrenceQuery,
+        null,
+        $legendFormatQueryStr,
+        variable_get('cdm_dataportal_geoservice_map_caption', '')
+      );
+    } else {
+      //get_image_map($width, $occurrenceQuery = false, $distributionQuery = false, $legendFormatQuery = false, $map_caption = false )
+      $out .= get_image_map(
+        variable_get('cdm_dataportal_geoservice_display_width', false),
+        variable_get('cdm_dataportal_geoservice_bounding_box', false),
+        $occurrenceQuery,
+        null,
+        $legendFormatQueryStr,
+        variable_get('cdm_dataportal_geoservice_map_caption', '')
+      );
+    }
+
   }
 
 
