@@ -1029,14 +1029,14 @@ function cdm_settings_geo(){
       '#title' => t('Maps settings'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-      '#description' => t('Configuration of the renderized maps.'),
+      '#description' => t('General configuration for all map types.'),
      );
 
     $form['map_settings']['cdm_dataportal_geoservice_display_width'] = array(
       '#type' => 'textfield',
-      '#title' => t('Maps size'),
+      '#title' => t('Maps width'),
       '#default_value' => variable_get('cdm_dataportal_geoservice_display_width', 390),
-      '#description' => t('Choose the size of your Maps. A value of 500 means the size will be 500x500, a value of 300 means the size will be 300x300.')
+      '#description' => t('Choose the width of your maps, the height will always be the half of the width. A value of 500 means the size will be 500 pixels witdh and 250 pixels height.')
     );
 
     $form['map_settings']['cdm_dataportal_geoservice_bounding_box'] = array(
