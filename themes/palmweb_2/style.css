@@ -97,6 +97,19 @@ a:active, a.active {
     font-weight: bold;
 }
 
+/*#jquery-lightbox a img {
+	max-height:250px;
+	max-width: 250px;
+}*/
+
+#images .image-gallerie td.caption {
+	padding-bottom:33px;	
+}
+
+#images .image-gallerie dl.media-caption {
+	margin-bottom:0px;	
+}
+
 hr {
   margin: 0;
   padding: 0;
