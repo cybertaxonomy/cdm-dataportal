@@ -26,8 +26,11 @@ function theme_cdm_feature_nodesTOC($featureNodes){
       }
     }
   }
-  //$out .= '<a class="toc active" href="/PW_BugFix/?q=cdm_dataportal/taxon/1d91bd71-7109-4916-872f-a82b710a9cdf#bibliography"> Bibliography </a>';
-  $out .= '<li>'.l(t(theme('cdm_feature_name', 'Bibliography')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Bibliography')).'</li>';
+  //Setting the Anchor to the Bibliography section if the option is enabled
+  $show_bibliography = variable_get('cdm_dataportal_show_bibliography', 1);
+  if ($show_bibliography) {
+  	$out .= '<li>'.l(t(theme('cdm_feature_name', 'Bibliography')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Bibliography')).'</li>';
+  }
   $out .= '</ul>';
   return $out;
 }
@@ -94,6 +97,7 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
 
   RenderHints::pushToRenderStack('feature_nodes');
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
+  //Creating an array to place the description elements in 
   $bibliographyOut = array();
   foreach($mergedFeatureNodes as $node){
 
@@ -101,7 +105,11 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       $block->module = 'cdm_dataportal';
-      $bibliographyOut[] =  $node->descriptionElements;
+      //if the option is enabled the description elements will be added to the array
+      $show_bibliography = variable_get('cdm_dataportal_show_bibliography', 1);
+  	  if ($show_bibliography) {
+      	$bibliographyOut[] =  $node->descriptionElements;
+  	  }
       //Building bibliography output with all the available description elements
       //$bibliographyOut .= theme('cdm_descriptionElementBibliography', $node->descriptionElements);
 
@@ -227,13 +235,11 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
     }
     
   }
-  
-  
-  //adding Bibliography output at the end of the node
-  //$out .= theme('cdm_descriptionElementBibliography', $node->descriptionElements);
-  //$out .= $bibliographyOut;
-
-  $out .= theme('cdm_descriptionElementBibliography', $bibliographyOut);
+  //calling the theme function for Bibliography to add it to the output
+  $show_bibliography = variable_get('cdm_dataportal_show_bibliography', 1);
+  if ($show_bibliography) {
+  	$out .= theme('cdm_descriptionElementBibliography', $bibliographyOut);
+  }
 
   RenderHints::popFromRenderStack();
   return $out;
@@ -537,18 +543,14 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
   return $out;
 }
 
+//Bibluiography theming function
 function theme_cdm_descriptionElementBibliography($descriptionElementsBibliogragphy) {
 	$listOfReferences = array();
-	$out = '<a name="bibliography"> </a><H2>Bibliography</H2> <ul>';
-	//$out .= print_r($descriptionElementsBibliogragphy); 
 	foreach ($descriptionElementsBibliogragphy as $descriptionElementsBiblio) {
-	//$out .= "[Class] " . $descriptionElementsBiblio->feature->titleCache . "[/class]";
-		
 		foreach ($descriptionElementsBiblio as $descriptionElementBiblio) {
 			if(is_array($descriptionElementBiblio->sources)){
 				foreach($descriptionElementBiblio->sources as $source){
 					$isAlreadySelected = false;
-					//$referenceCitation = theme('cdm_DescriptionElementSource', $source, true);
 					if(empty($listOfReferences)) {
 						$listOfReferences[] = $source;
 					}
@@ -558,6 +560,7 @@ function theme_cdm_descriptionElementBibliography($descriptionElementsBibliograg
 								$isAlreadySelected = true;
 							}
 						}
+						//add the source in the list of reference/ This is to remove duplicates from the Bibliography section.
 						if (!$isAlreadySelected) {
 							$listOfReferences[] = $source;
 						}
@@ -568,26 +571,237 @@ function theme_cdm_descriptionElementBibliography($descriptionElementsBibliograg
 		}
 		
 	}
-	foreach ($listOfReferences as $reference)
-	{
-		
-		$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->citation->uuid);
-		if(!empty($author_team->titleCache)) {
-		//$out.= print_r($reference->citation);
-		$out .= '<li class="descriptionText DescriptionElement">' . "<b>" . $reference->citation->title . ":" . "</b>" . $author_team->titleCache .   '</li>';
-		}
-		else
-		{
-			$out .= '<li class="descriptionText DescriptionElement">' ."<b>" . $reference->citation->titleCache . "</b>" . '</li>';
-		}
-		if ($referenceCitation){
-			$sourceRefs = $referenceCitation;
-			//$out .= "[titleccache] " . $descriptionElementBiblio->feature->titleCache . "[/titlecache]";
-			//$out .= "[Class] " . $descriptionElementBiblio->class . "[/class]";
-			//$out .= "[sourceref]" . $sourceRefs . "[/sourceRef]";
+	//Call the reference formatting function, it will do the heavy lifting
+	$out = formatReference_for_Bibliogrpahy($listOfReferences);
+	return $out;
+}
+
+function formatReference_for_Bibliogrpahy($references) {
+	$out = '<a name="bibliography"> </a><H2>Bibliography</H2><div class="content"> <ul class="description">';
+	foreach ($references as $reference) {
+		print_r($reference);
+		switch ($reference->citation->type) {
+			case "Journal":
+				$out .= "<li class=\"descriptionText DescriptionElement\">[Journal]";
+				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+				$currentRecord = 1;
+				if (!empty($reference->citation->authorTeam->teamMembers)) {
+					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
+						if(!empty($teamMember->lastname)) {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+							}
+							else {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname . ". ";
+							}
+							$currentRecord += 1;
+						}
+						else {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->titleCache. " & ";	
+							}
+							else {
+								$out .= $teamMember->titleCache . ". ";
+							}
+							$currentRecord += 1;
+						}
+					}
+					$out .= substr($reference->citation->datePublished->start,0,4) . ". " .$reference->citation->title . ". " . $reference->citation->publisher . ".";
+					
+				}
+				$out .= "</li>";
+				break;
+
+			case "Article":
+				$out .= "<li class=\"descriptionText DescriptionElement\">[Article]";
+				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+				$currentRecord = 1;
+				if (!empty($reference->citation->authorTeam->teamMembers)) {
+					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
+						if(!empty($teamMember->lastname)) {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+							}
+							else {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname . ". ";
+							}
+							$currentRecord += 1;
+						}
+						else {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->titleCache. " & ";	
+							}
+							else {
+								$out .= $teamMember->titleCache . ". ";
+							}
+							$currentRecord += 1;
+						}
+					}
+					$out .= substr($reference->citation->datePublished->start,0,4) . ". " .$reference->citation->title . ". " . $reference->citation->publisher . ".";
+					
+				}
+				$out .= "</li>";
+				break;
+			case "Book":
+				$out .= "<li class=\"descriptionText DescriptionElement\">[Book]";
+				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+				$currentRecord = 1;
+				if (!empty($reference->citation->authorTeam->teamMembers) || $reference->citation->authorTeam->titleCache != "-empty team-") {
+					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
+						if(!empty($teamMember->lastname)) {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+							}
+							else {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname . ". ";
+							}
+							$currentRecord += 1;
+						}
+						else {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->titleCache. " & ";	
+							}
+							else {
+								$out .= $teamMember->titleCache . ". ";
+							}
+							$currentRecord += 1;
+						}
+					}
+					
+					
+				}
+				else if ($reference->citation->authorTeam->titleCache != "-empty team-"){
+					$out .= $reference->citation->authorTeam->titleCache . ". ";
+				}
+				 else {
+				 	$out .=  $reference->citation->titleCache;
+				 }
+				if (!empty($reference->citation->datePublished->start)) {
+					$out .= substr($reference->citation->datePublished->start,0,4) . ". ";
+				}
+				$out .= $reference->citation->title . ". " . $reference->citation->publisher . ".";
+				$out .= "</li>";
+				break;
+			case "BookSection":
+				$out .= "<li class=\"descriptionText DescriptionElement\">[BookSection]";
+				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+				$currentRecord = 1;
+				if (!empty($reference->citation->authorTeam->teamMembers)) {
+					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
+						if(!empty($teamMember->lastname)) {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+							}
+							else {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname . ". ";
+							}
+							$currentRecord += 1;
+						}
+						else {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->titleCache. " & ";	
+							}
+							else {
+								$out .= $teamMember->titleCache . ". ";
+							}
+							$currentRecord += 1;
+						}
+					}
+				}
+				$out .= substr($reference->citation->inReference->datePublished->start,0,4) . ". " . $reference->citation->title . ". " . "Pages ". $reference->citation->pages . ". In ";
+				$numberOfTeamMembersInReference = count($reference->citation->inReference->authorTeam->teamMembers);
+				$currentRecordinReference = 1;
+				if (!empty($reference->citation->inReference->authorTeam->teamMembers)) {
+					foreach ($reference->citation->inReference->authorTeam->teamMembers as $teamMember) {
+						if(!empty($teamMember->lastname)) {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+							}
+							else {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname . ". ";
+							}
+							$currentRecord += 1;
+						}
+						else {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->titleCache. " & ";	
+							}
+							else {
+								$out .= $teamMember->titleCache . ". ";
+							}
+							$currentRecord += 1;
+						}
+					}
+				}
+				
+				$out .= $reference->citation->inReference->title . ". " . $reference->citation->inReference->publisher . ". " . $reference->citation->inReference->placePublished . ".";
+					
+				
+				$out .= "</li>";
+				break;
+				
+				
+			case "WebPage" :
+				$out .= "<li class=\"descriptionText DescriptionElement\">[WebPage]" . $reference->citation->titleCache . "</li>";
+				break;
+			case "Generic" :
+				$out .= "<li class=\"descriptionText DescriptionElement\">[Generic]";
+				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+				$currentRecord = 1;
+				if (!empty($reference->citation->authorTeam->teamMembers)) {
+					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
+						if(!empty($teamMember->lastname)) {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+							}
+							else {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname . ". ";
+							}
+							$currentRecord += 1;
+						}
+						else {
+							if ($numberOfTeamMembers != $currentRecord) {
+								$out .= $teamMember->titleCache. " & ";	
+							}
+							else {
+								$out .= $teamMember->titleCache . ". ";
+							}
+							$currentRecord += 1;
+						}
+					}
+					
+					
+				}
+				else {
+					$out .= $reference->citation->authorTeam->titleCache . ". ";
+				}
+				if (!empty($reference->citation->datePublished->start)) {
+					$out .= substr($reference->citation->datePublished->start,0,4) . ". ";
+				}
+				$out .= $reference->citation->title . ". " . $reference->citation->publisher . ".";
+				$out .= "</li>";
+				break;
+			default:
+				
+				//$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->citation->uuid);
+				
+				/*if(!empty($author_team->titleCache)) {
+					$out.= print_r($reference->citation);
+					$out .= '<li class="descriptionText DescriptionElement">' . "<b>" . $reference->citation->title . ":" . "</b>" . $author_team->titleCache .   '</li>';
+				}
+				else {
+					$out .= '<li class="descriptionText DescriptionElement">' ."<b>" . $reference->citation->titleCache . "</b>" . '</li>';
+				}
+				if ($referenceCitation){
+					$sourceRefs = $referenceCitation;
+					//$out .= "[titleccache] " . $descriptionElementBiblio->feature->titleCache . "[/titlecache]";
+					//$out .= "[Class] " . $descriptionElementBiblio->class . "[/class]";
+					//$out .= "[sourceref]" . $sourceRefs . "[/sourceRef]";
+				}*/
+				break;
 		}
 	}
-	$out .= "</ul>";
+	$out .= "</ul></div>";
 	return $out;
 }
 
