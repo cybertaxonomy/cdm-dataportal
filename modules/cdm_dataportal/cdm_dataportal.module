@@ -473,9 +473,9 @@ function cdm_dataportal_block($op='list', $delta=0) {
 function cdm_dataportal_search_taxon_form($advancedForm = false){
 
   $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
-  $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 0);
-  $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
-  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
+  $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 1);
+  $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 1);
+  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 0 : 0);
   $tdwg_level_select =  (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
   $selected_areas =  (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : false);
 
