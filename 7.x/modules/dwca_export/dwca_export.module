@@ -9,9 +9,10 @@ function dwca_export_menu() {
 
 	$items['admin/config/system/dwca_export'] = array(
 		'title' => 'Darwin Core Archive export',
+		'description' => t('Create a DarwinCore Archive of this scratchpad.'),
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array('dwca_export_config_form'),
-		'access arguments' => array('access administration pages'),
+		'access arguments' => array('access DwC-A export settings'),
 		'type' => MENU_NORMAL_ITEM,
 		//'file' => 'dwca_export.admin.inc'
 	);
