@@ -17,6 +17,7 @@ function dwca_export_menu() {
 		//'file' => 'dwca_export.admin.inc'
 	);
 
+
 	$items['dwca_export'] = array(
 		'page callback' => 'dwca_export_deliver_archive',
 		'access arguments' => array('access content'),
@@ -54,7 +55,87 @@ function dwca_export_config_form($form, &$form_state) {
 		.'</p>'
 	);
 
+	$form['views'] = dwca_export_select_view_form();
+
+	$form['#submit'][] = 'dwca_export_config_form_submit';
 	return system_settings_form($form);
+
+}
+
+
+function dwca_export_select_view_form() {
+
+	$views = array(
+    		'#type' => 'fieldset',
+    		'#title' => t('Select views'),
+    		//'#tree' => TRUE,
+  	);
+
+	$default_value = _dwca_export_archive_descriptor_file_map();
+
+	$views['classification_view'] = array(
+  	'#type' => 'textfield',
+  	'#title' => t('classification:'),
+  	'#default_value' => $default_value['classification.txt']['view_name'],
+  	'#size' => 60,
+  	'#maxlength' => 64,
+  	'#description' => t('specify view for classification.txt'),
+	);
+
+	$views['specimen_view'] = array(
+  	'#type' => 'textfield',
+  	'#title' => t('specimen:'),
+	'#default_value' => variable_get('specimen.txt', 'dwca_export_specimen'),
+  	'#size' => 60,
+  	'#maxlength' => 64,
+  	'#description' => t('specify view for specimen.txt'),
+	);
+
+	$views['reference_view'] = array(
+  	'#type' => 'textfield',
+  	'#title' => t('reference:'),
+  	'#size' => 60,
+  	'#maxlength' => 64,
+  	'#description' => t('specify view for reference.txt'),
+	);
+
+	$views['description_view'] = array(
+  	'#type' => 'textfield',
+  	'#title' => t('description:'),
+  	'#size' => 60,
+  	'#maxlength' => 64,
+  	'#description' => t('specify view for description.txt'),
+	);
+
+	$views['distribution_view'] = array(
+  	'#type' => 'textfield',
+  	'#title' => t('distribution:'),
+  	'#size' => 60,
+  	'#maxlength' => 64,
+  	'#description' => t('specify view for distribution.txt'),
+	);
+
+	$views['image_view'] = array(
+  	'#type' => 'textfield',
+  	'#title' => t('image:'),
+  	'#size' => 60,
+  	'#maxlength' => 64,
+  	'#description' => t('specify view for image.txt'),
+	);
+
+//variable_get('classification.txt', 'test'),
+	//$views['submit'] = array('#type' => 'submit', '#value' => t('Save selected'));
+
+	return $views;
+}
+
+function dwca_export_config_form_submit($form, &$form_state) {  
+
+// 	db_query("INSERT INTO {table} (classification_view) VALUES ('%s')", $form_state['values']['classification_view']);  
+//variable_set($name, $value)
+	drupal_set_message(t('Your config form has been saved.'));
+
+//throw new Exception(t('Could not create zip_archive %tmp_archive_file_name', array('%tmp_archive_file_name' => $tmp_archive_file_name)));
 }
 
 
@@ -109,6 +190,7 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 
 	return $file_map;
 }
+
 
 /**
  * Walks all view export paths defined in the $views_map.
