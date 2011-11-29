@@ -14,6 +14,7 @@ define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 4);
 $annotationTypeKeys = array_keys( cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE) );
 if(in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
   $annotationTypeKeys = array_flip($annotationTypeKeys);
+
   // technical annotation are off by default
   unset($annotationTypeKeys[UUID_ANNOTATION_TYPE_TECHNICAL]);
   $annotationTypeKeys = array_flip($annotationTypeKeys);
@@ -450,6 +451,8 @@ function cdm_settings_layout(){
   );
 
   $annotationTypeOptions = cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE);
+  // additional option for the null case
+  $annotationTypeOptions['NULL_VALUE']=t('unset (null)');
   $form['gen_layout']['footnotes']['annotations_types_as_footnotes'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Annotation types as footnotes'),

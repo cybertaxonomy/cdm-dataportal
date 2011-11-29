@@ -90,8 +90,8 @@ function theme_cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
 
           $name = $taxonRelation->fromTaxon->name->titleCache;
 
-          $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
-          $authorteam = $author_team->titleCache;
+          $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
+          $authorteam = $authorteam->titleCache;
 
           if(!isset($misapplied[$name])){
             $misapplied[$name]['out'] =
@@ -106,11 +106,11 @@ function theme_cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
             $joinedAuthorTeams[$authorteam] = 'sensu '.theme('cdm_reference', $taxonRelation->fromTaxon->sec);
           }
 
-          } else {
-            // all relationsship types but misapplied_name_for invalid_designation_for
-             $taxonRelationshipsLines[] = cdm_taxonRelationship($taxonRelation, true, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon));
-          }
-       }
+        } else {
+          // all relationsship types but misapplied_name_for invalid_designation_for
+           $taxonRelationshipsLines[] = cdm_taxonRelationship($taxonRelation, true, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon), true);
+        }
+     }
   }
 
   // sort the joinedAuthorTeams and create footnotes and footnotekeys
@@ -156,7 +156,7 @@ function theme_cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
     $tr_footnotes_aux .= $element;
   }
   $out .= '<ul>' . $tr_footnotes_aux . '</ul>';
-  //$out .= '</ul>';
+
   RenderHints::popFromRenderStack();
   return $out;
 }
@@ -282,7 +282,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
  * @param unknown_type $taxonRelationType
  * @param unknown_type $doLinkTaxon
  */
-function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = false, $inverse = false){
+function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = false, $inverse = false, $showSecReference = false){
 
   // validate object
   if( ! (isset($taxonRelationship->toTaxon) && isset($taxonRelationship->fromTaxon) && isset($taxonRelationship->type)) ) {
@@ -307,7 +307,7 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = false, $invers
     $reltype_representation = $taxonRelationType->representation_L10n;
   }
 
-  return cdm_related_taxon($toTaxon, null, $relsign, $reltype_representation, $doLinkTaxon);
+  return cdm_related_taxon($toTaxon, null, $relsign, $reltype_representation, $doLinkTaxon, $showSecReference);
 }
 
 /**
@@ -320,11 +320,13 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = false, $invers
 * @param unknown_type $taxonRelationType
 * @param unknown_type $doLinkTaxon
 */
-function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $reltype_representation = null, $doLinkTaxon = false){
+function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $reltype_representation = null, $doLinkTaxon = false, $showSecReference = false){
 
   static $relsign_homo = '≡';
   static $relsign_hetero = '=';
   static $relsign_invalid = '&ndash;';
+
+  $footnoteListKey = 'taxonRelationships';
 
   $name_prefix = '';
   $name_postfix = '';
@@ -378,8 +380,11 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
   }
   //printing the taxonName and the handling the special case of annotations
   $out_taxon_part = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, true, false, $skiptags);
-  $out_taxon_part .= theme('cdm_annotations_as_footnotekeys', array($taxon->name, $taxon) );
-  $out_taxon_part .= ' sec. ' . theme('cdm_reference',  $taxon->sec);
+  $out_taxon_part .= theme('cdm_annotations_as_footnotekeys', array($taxon->name, $taxon), $footnoteListKey);
+
+  if($showSecReference) {
+    $out_taxon_part .= ' sensu ' . theme('cdm_reference',  $taxon->sec);
+  }
 
 
   //later homonym or trated as later homonym AND bloking names
