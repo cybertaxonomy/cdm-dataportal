@@ -1,19 +1,18 @@
 <?php
 
-define ("CSV_FILE_EXTENSION", ".txt");
 // at the moment we are using a static meta.xml file
-define ("METADATA_FILE", "meta.xml");
-
+define ("METADATA_FILE_NAME", "meta.xml");
+define ("STATIC_DIR", "/static/");
 define ("ARCHIVE_ROOT_DIR", "dwca_export/");
 
-function _get_static_file_map(){
+function _dwca_export_get_static_file_map(){
 	$static_file_map = array(
-		'classification' => array(
+		'classification.txt' => array(
 			'view_name'=> 'dwca_export_classification',
 			'display_id' => 'views_data_export_1',
 			'out_file_url' => NULL
 		),
-		'typesandspecimen' => array(
+		'typesandspecimen.txt' => array(
 			'view_name'=> 'view_test_specimen_export',
 			'display_id' => 'views_data_export_1',
 			'out_file_url' => NULL
@@ -112,7 +111,7 @@ function dwca_export_select_view_form() {
 	  	'#default_value' => $view_data['view_name'],
 	  	'#size' => 60,
 	  	'#maxlength' => 64,
-	  	'#description' => t('specify view for ' . $dwca_filename . CSV_FILE_EXTENSION),
+	  	'#description' => t('specify view for ' . $dwca_filename),
 		);
 	}
 
@@ -161,7 +160,7 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 	if(!isset($file_map)){
 		//TODO load from variables, consider using strongarm
 		// current implementation uses a static filemap
-		$file_map = _get_static_file_map();
+		$file_map = _dwca_export_get_static_file_map();
 	}
 
 	if($file_name && $out_file_url){
@@ -214,7 +213,7 @@ function dwca_export_create_archive($views_map) {
 	$result = $zip->open(drupal_realpath($tmp_archive_file_name), ZipArchive::CREATE);
 
 	// there might be a better way to get at this information
-	$module_static_dir_absolute = realpath(drupal_get_path('module', 'dwca_export')) . "/static/";
+	$module_static_dir_absolute_path = realpath(drupal_get_path('module', 'dwca_export')) . STATIC_DIR;
 
 	if ($result !== TRUE) {
 		throw new Exception(t('Could not create zip_archive %tmp_archive_file_name', array('%tmp_archive_file_name' => $tmp_archive_file_name)));
@@ -222,15 +221,15 @@ function dwca_export_create_archive($views_map) {
 
 	
 	// add metadata
-	$zip->addFile($module_static_dir_absolute.$metadata, ARCHIVE_ROOT_DIR.METADATA_FILE);
+	$zip->addFile($module_static_dir_absolute_path.METADATA_FILE_NAME, ARCHIVE_ROOT_DIR.METADATA_FILE_NAME);
 	// add the csv data files
 	foreach(_dwca_export_archive_descriptor_file_map() as $dwca_filename=>$view_data){
 
 		$view_temp_file = $view_data['out_file_url'];
 		if($view_temp_file){
-			$zip->addFile(drupal_realpath($view_temp_file), ARCHIVE_ROOT_DIR.$dwca_filename.CSV_FILE_EXTENSION);
+			$zip->addFile(drupal_realpath($view_temp_file), ARCHIVE_ROOT_DIR.$dwca_filename);
 		}else{
-			throw new Exception(t('Cannot create %file', array('%file' => $dwca_filename.CSV_FILE_EXTENSION)));
+			throw new Exception(t('Cannot create %file', array('%file' => $dwca_filename)));
 		}
 	}
 
