@@ -1296,24 +1296,43 @@ function cdm_view_xml2json(){
 
 
 /**
- * Enter description here...
+ * Creates a URL to the taxon page specified by the $uuid parameter.
+ * The URL will be prepended with a path element to a specific taxon page tab.
+ *
+ * This tab is either taken from the CDM_DATAPORTAL_DEFAULT_TAXON_TAB which can
+ * be set globally in the administrative settings or individually in the user
+ * profile. If the CDM_DATAPORTAL_DEFAULT_TAXON_TAB value is set to LAST_VISITED_TAB
+ * the last portal will stay on this last tab.
+ *
+ * A third option is offerered by the $page_tab parameter which allows overwriting this
+ * internal mechanism by a specific value.
  *
  * @param String $uuid the UUID of the taxon
+ * @param String $page_tab overwriting the preset mechanism by defining specific valuefor the taxon page tab.
+ *
  * @return the URL
  */
-function path_to_taxon($uuid, $no_tab = false){
+function path_to_taxon($uuid, $page_tab = false){
+
   $tab = get_default_taxon_tab();
   $values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
 
   if(!$uuid) return false;
 
-  if (!$tab){
+  if($page_tab){
+    return 'cdm_dataportal/taxon/'.$uuid . '/' . $page_tab;
+  } else if (!$tab){
     return 'cdm_dataportal/taxon/'.$uuid;
   }else if(get_last_taxon_page_tab() &&  $tab == $values[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX]){
     return 'cdm_dataportal/taxon/'.$uuid . '/' . get_last_taxon_page_tab();
   } else {
     return 'cdm_dataportal/taxon/'.$uuid . '/' . strtolower($tab);
   }
+}
+
+function uri_to_synonym($synonymUuid, $acceptedUuid){
+  $acceptedPath = path_to_taxon($acceptedUuid, "synonymy");
+  return url($acceptedPath, 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid, $synonymUuid);
 }
 
 function path_to_key($keyType, $keyUuid){
@@ -1388,10 +1407,6 @@ function html_class_atttibute_ref($cdmEntity){
   }
 }
 
-function theme_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
-  $acceptedPath = path_to_taxon($acceptedUuid, true);
-  return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid, $synonymUuid);
-}
 
 /**
  * Preprocess the taggedName to normalize newly introduced tagtypes like hybridSign, separator, .. more?
@@ -1514,7 +1529,7 @@ function _is_original_source_type($source){
 }
 
 function _is_invers_taxonRelationship($taxonRelationship, $focusedTaxon){
-  return $taxonRelationship->fromTaxon->uuid == $focusedTaxon->uuid;
+  return $taxonRelationship->toTaxon->uuid == $focusedTaxon->uuid;
 }
 
 
@@ -1644,14 +1659,19 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
   return $outArrayOfMedia;
 }
 
-function cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = null){
+/**
+ *
+ * @param - $cdmBase_list @param $cdmBase_list an array of CdmBase instances or a single instance
+ * @param - $footnote_list_key
+ */
+function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = null){
   $footNoteKeys = array();
   //is argument cdmBase an array?
-  if (!is_array($cdmBase)){
+  if (!is_array($cdmBase_list)){
     $cdmBase_array = array();
-    $cdmBase_array[] = $cdmBase;
+    $cdmBase_array[] = $cdmBase_list;
   }else{
-    $cdmBase_array = $cdmBase;
+    $cdmBase_array = $cdmBase_list;
   }
   //getting the key for the footnotemanager
   if( $footnote_list_key ){

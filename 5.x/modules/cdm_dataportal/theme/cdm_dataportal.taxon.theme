@@ -245,7 +245,7 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
       $acceptedTaxa = $table_of_accepted[$uuid];
       if(count($acceptedTaxa) == 1){
         $acceptedTaxon = $acceptedTaxa[0];
-        $taxonUri = theme('cdm_uri_to_synonym', $taxon->uuid, $acceptedTaxon->uuid, 'synonymy');
+        $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid, 'synonymy');
         if(isset($acceptedTaxon->name->nomenclaturalReference)){
           $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
         }
@@ -296,16 +296,18 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = false, $invers
   $reltype_representation = '';
 
   if($inverse) {
-    $taxon = $taxonRelationship->toTaxon;
+    $toTaxon = $taxonRelationship->fromTaxon;
+    $fromTaxon = $taxonRelationship->toTaxon;
     $relsign = $taxonRelationType->inverseRepresentation_L10n_abbreviatedLabel;
     $reltype_representation = $taxonRelationType->inverseRepresentation_L10n;
   } else {
-    $taxon = $taxonRelationship->fromTaxon;
+    $toTaxon = $taxonRelationship->toTaxon;
+    $fromTaxon = $taxonRelationship->fromTaxon;
     $relsign = $taxonRelationType->representation_L10n_abbreviatedLabel;
     $reltype_representation = $taxonRelationType->representation_L10n;
   }
 
-  return cdm_related_taxon($taxon, null, $relsign, $reltype_representation, $doLinkTaxon);
+  return cdm_related_taxon($toTaxon, null, $relsign, $reltype_representation, $doLinkTaxon);
 }
 
 /**
@@ -372,19 +374,20 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
     $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
   }
   if($doLinkTaxon){
-    $taxonUri = url(path_to_taxon($taxon->uuid));
+    $taxonUri = url(path_to_taxon($taxon->uuid, "synonymy"));
   }
   //printing the taxonName and the handling the special case of annotations
-  $nameHtml = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, true, false, $skiptags);
-  $special_annotations_array = array();
-  $special_annotations_array[] = $taxon->name;
-  $special_annotations_array[] = $taxon;
-  $nameHtml .= theme('cdm_annotations_as_footnotekeys', $special_annotations_array);
+  $out_taxon_part = theme('cdm_taxonName', $taxon->name, $taxonUri, $referenceUri, true, false, $skiptags);
+  $out_taxon_part .= theme('cdm_annotations_as_footnotekeys', array($taxon->name, $taxon) );
+  $out_taxon_part .= ' sec. ' . theme('cdm_reference',  $taxon->sec);
+
 
   //later homonym or trated as later homonym AND bloking names
   $from_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
   $to_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
+
   //first the FROM RELS
+  //FIXME use UUID below instad of representation_L10n
   if ($from_name_relations){
     foreach($from_name_relations as $element){
       switch ($element->type->representation_L10n){
@@ -432,7 +435,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
     }
   }
   //geneal output
-  $out = '<span class="relation_sign" title="' . $reltype_representation . '">'.$relsign.'</span>'.$name_prefix . $nameHtml . $name_postfix . $name_relations_html;
+  $out = '<span class="relation_sign" title="' . $reltype_representation . '">'.$relsign.'</span>'.$name_prefix . $out_taxon_part . $name_postfix . $name_relations_html;
   $out = uuid_anchor($taxon->uuid, $out);
 
   RenderHints::popFromRenderStack();
@@ -455,7 +458,7 @@ function theme_cdm_taxon_list_thumbnails($taxon){
   $gallery_name = $taxon->uuid;
 
    $mediaQueryParameters = array("type"=>"ImageFile");
-  $galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
+  $galleryLinkUri = path_to_taxon($taxon->uuid, 'images');
 
   // cdm_dataportal_show_media = ???? TODO
   $selectShowMedia = variable_get('cdm_dataportal_show_media', 0);

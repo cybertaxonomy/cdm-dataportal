@@ -1079,7 +1079,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
 
       // Feature
       if($hasFeature){
-        $out .= $polytomousKeyNode->feature->representation_L10n . " ";
+        $out .= $polytomousKeyNode->feature->representation_L10n . ": ";
       }
 
       // Statement

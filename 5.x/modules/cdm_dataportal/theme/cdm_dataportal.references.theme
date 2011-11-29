@@ -36,42 +36,34 @@ function theme_cdm_reference_pager($referencePager, $path, $parameters = array()
  *
  */
 function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE, $referenceStyle = NULL ){
-  global $theme_key; //TODO: implement in the palmae theme the concrete case
+
   $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
 
-	if($style == "zoology"){
-		$year = partialToYear($reference->datePublished->start);
-		$citation = $author_team->titleCache . ($year ? '. '.$year : '');
-	}else
-	  //FIXME move palmweb specific lines to palweb theme !!!!
-	if ($theme_key == 'palmweb_2') {
-		$year = partialToYear($reference->datePublished->start);
-    	$citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
-    	$citation = str_replace('..', '.', $citation);
-	} else {
-		$citation = $reference->titleCache;
+  if($referenceStyle == "zoology"){
+  	$year = partialToYear($reference->datePublished->start);
+  	$citation = $author_team->titleCache . ($year ? '. '.$year : '');
+  } else {
+  	$citation = $reference->titleCache;
+  }
 
-		//$year = partialToYear($reference->datePublished->start);
-		//$citation = short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
-		//$citation = str_replace('..', '.', $citation);
-	}
-
-	if($doLink){
-		$out = l('<span class="reference">'.$citation.'</span>'
+  if($doLink){
+  	$out = l('<span class="reference">'.$citation.'</span>'
           , path_to_reference($reference->uuid)
           , array("class"=>"reference")
           , NULL, NULL, FALSE ,TRUE);
     } else {
-		$out = '<span class="reference">'.$citation.'</span>';
-	}
-    if(!empty($descriptionElementSource->citationMicroReference)){
-        $out .= ': '. $descriptionElementSource->citationMicroReference;
-     }
+  	$out = '<span class="reference">'.$citation.'</span>';
+  }
 
-    return $out;
+  //FIXME use microreference webservice instead
+  if(!empty($descriptionElementSource->citationMicroReference)){
+      $out .= ': '. $descriptionElementSource->citationMicroReference;
+  }
+
+  return $out;
 }
 
-function short_form_of_author_team ($author_team){
+function _short_form_of_author_team ($author_team){
 
 	$number_of_authors = substr_count($author_team, ' & ') + 1;
 	//var_dump($author_team);
