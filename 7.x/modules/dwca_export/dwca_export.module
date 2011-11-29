@@ -1,5 +1,28 @@
 <?php
 
+define ("CSV_FILE_EXTENSION", ".txt");
+// at the moment we are using a static meta.xml file
+define ("METADATA_FILE", "meta.xml");
+
+define ("ARCHIVE_ROOT_DIR", "dwca_export/");
+
+function _get_static_file_map(){
+	$static_file_map = array(
+		'classification' => array(
+			'view_name'=> 'dwca_export_classification',
+			'display_id' => 'views_data_export_1',
+			'out_file_url' => NULL
+		),
+		'typesandspecimen' => array(
+			'view_name'=> 'view_test_specimen_export',
+			'display_id' => 'views_data_export_1',
+			'out_file_url' => NULL
+		)
+	);
+	return $static_file_map;
+}
+
+
 /**
  * Implements hook_menu().
  */
@@ -47,15 +70,22 @@ function dwca_export_config_form($form, &$form_state) {
 
 	global $base_url;
 
-	$form['dwca_export_todo'] = array(
-		'#markup' => '<p><em>No settings implemented yet...</em></p>'
-		.'<p>The DarwinCore Archive export is available at '. l('dwca_export', 'dwca_export').'</p>'
-		.'<p>For general information on the DarwinCore Archive format please refer to  '
+	$form['dwca_export_info'] = array(
+		'#markup' => '<p>For general information on the DarwinCore Archive format please refer to  '
 		. l('GBIF - Standards and Tools - Darwin Core Archives', 'http://www.gbif.org/informatics/standards-and-tools/publishing-data/data-standards/darwin-core-archives/')
 		.'</p>'
 	);
 
-	$form['views'] = dwca_export_select_view_form();
+	$form['dwca_export_execute'] = array(
+		'#markup' => '<p>The DarwinCore Archive export is available at '. l('dwca_export', 'dwca_export').'</p>'
+		//'#type' => 'button',
+		//'#value' => t('Export Scratchpad to DarwinCore Archive'), 
+	  //'#weight' => 19,
+	);
+	
+	$form['dwca_export_view_mapping'] = dwca_export_select_view_form();
+	
+	
 
 	$form['#submit'][] = 'dwca_export_config_form_submit';
 	return system_settings_form($form);
@@ -67,64 +97,24 @@ function dwca_export_select_view_form() {
 
 	$views = array(
     		'#type' => 'fieldset',
-    		'#title' => t('Select views'),
+    		'#title' => t('View to file mapping'),
     		//'#tree' => TRUE,
   	);
 
-	$default_value = _dwca_export_archive_descriptor_file_map();
+	//$default_value = _dwca_export_archive_descriptor_file_map();
 
-	$views['classification_view'] = array(
-  	'#type' => 'textfield',
-  	'#title' => t('classification:'),
-  	'#default_value' => $default_value['classification.txt']['view_name'],
-  	'#size' => 60,
-  	'#maxlength' => 64,
-  	'#description' => t('specify view for classification.txt'),
-	);
-
-	$views['specimen_view'] = array(
-  	'#type' => 'textfield',
-  	'#title' => t('specimen:'),
-	'#default_value' => variable_get('specimen.txt', 'dwca_export_specimen'),
-  	'#size' => 60,
-  	'#maxlength' => 64,
-  	'#description' => t('specify view for specimen.txt'),
-	);
-
-	$views['reference_view'] = array(
-  	'#type' => 'textfield',
-  	'#title' => t('reference:'),
-  	'#size' => 60,
-  	'#maxlength' => 64,
-  	'#description' => t('specify view for reference.txt'),
-	);
-
-	$views['description_view'] = array(
-  	'#type' => 'textfield',
-  	'#title' => t('description:'),
-  	'#size' => 60,
-  	'#maxlength' => 64,
-  	'#description' => t('specify view for description.txt'),
-	);
-
-	$views['distribution_view'] = array(
-  	'#type' => 'textfield',
-  	'#title' => t('distribution:'),
-  	'#size' => 60,
-  	'#maxlength' => 64,
-  	'#description' => t('specify view for distribution.txt'),
-	);
-
-	$views['image_view'] = array(
-  	'#type' => 'textfield',
-  	'#title' => t('image:'),
-  	'#size' => 60,
-  	'#maxlength' => 64,
-  	'#description' => t('specify view for image.txt'),
-	);
-
-//variable_get('classification.txt', 'test'),
-	//$views['submit'] = array('#type' => 'submit', '#value' => t('Save selected'));
+	foreach(_dwca_export_archive_descriptor_file_map() as $dwca_filename => $view_data){
+		
+		
+		$views[$dwca_filename . '_view'] = array(
+	  	'#type' => 'textfield',
+	  	'#title' => t($dwca_filename),
+	  	'#default_value' => $view_data['view_name'],
+	  	'#size' => 60,
+	  	'#maxlength' => 64,
+	  	'#description' => t('specify view for ' . $dwca_filename . CSV_FILE_EXTENSION),
+		);
+	}
 
 	return $views;
 }
@@ -160,8 +150,8 @@ function dwca_export_deliver_archive() {
  * The 'out_file_url' is initailly empty and will be set when this function is called
  * with both parameters.
  *
- * @param unknown_type $file_name
- * @param unknown_type $out_file_url
+ * @param String $file_name
+ * @param String $out_file_url
  *
  * @return the archive_descriptor_file_map
  */
@@ -170,18 +160,8 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 
 	if(!isset($file_map)){
 		//TODO load from variables, consider using strongarm
-		$file_map = array(
-			'classification.txt' => array(
-				'view_name'=> 'dwca_export_classification',
-				'display_id' => 'views_data_export_1',
-				'out_file_url' => NULL
-			),
-			'typesandspecimen.txt' => array(
-				'view_name'=> 'view_test_specimen_export',
-				'display_id' => 'views_data_export_1',
-				'out_file_url' => NULL
-			)
-		);
+		// current implementation uses a static filemap
+		$file_map = _get_static_file_map();
 	}
 
 	if($file_name && $out_file_url){
@@ -221,7 +201,7 @@ function dwca_export_create_archive($views_map) {
 	}
 
 	// all data is exported to temporary://dwca_export_*
-	// now we can start bundeling the actual archive
+	// now we can start bundling the actual archive
 	$tmp_archive_file_name = drupal_tempnam("temporary://", "dwca_export_archive_");
 
 	// Unfortunately we cannot use drupals ArchiverZip because there ís
@@ -236,34 +216,27 @@ function dwca_export_create_archive($views_map) {
 	// there might be a better way to get at this information
 	$module_static_dir_absolute = realpath(drupal_get_path('module', 'dwca_export')) . "/static/";
 
-	// at the moment we are using a static meta.xml file
-	$metadata = "meta.xml";
-
-	$zip_root_dir = "dwca_export/";
-
 	if ($result !== TRUE) {
 		throw new Exception(t('Could not create zip_archive %tmp_archive_file_name', array('%tmp_archive_file_name' => $tmp_archive_file_name)));
 	}
-	
+
 	
 	// add metadata
-	$zip->addFile($module_static_dir_absolute.$metadata, $zip_root_dir.$metadata);
+	$zip->addFile($module_static_dir_absolute.$metadata, ARCHIVE_ROOT_DIR.METADATA_FILE);
 	// add the csv data files
 	foreach(_dwca_export_archive_descriptor_file_map() as $dwca_filename=>$view_data){
 
 		$view_temp_file = $view_data['out_file_url'];
 		if($view_temp_file){
-			$zip->addFile(drupal_realpath($view_temp_file), $zip_root_dir.$dwca_filename);
+			$zip->addFile(drupal_realpath($view_temp_file), ARCHIVE_ROOT_DIR.$dwca_filename.CSV_FILE_EXTENSION);
 		}else{
-			throw new Exception(t('Cannot create %file', array('%file' => $dwca_filename)));
+			throw new Exception(t('Cannot create %file', array('%file' => $dwca_filename.CSV_FILE_EXTENSION)));
 		}
 	}
 
 	$zip->close();
 
 	return $tmp_archive_file_name;
-
-
 }
 
 /**
