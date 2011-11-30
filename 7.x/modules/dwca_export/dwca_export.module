@@ -131,12 +131,31 @@ function dwca_export_config_form_submit($form, &$form_state) {
 	
 	variable_del(FILE_MAP);
 	variable_set(FILE_MAP, $dwca_export_archive_descriptor_file_map);
-	
-	
-	//drupal_set_message(t('The classification view is ') . $save_variables . '<pre>' . print_r($form_state,true) . '</pre>');//$save_variables);
-
+		
+	//drupal_set_message(t('The classification view is ') . $save_variables);// . '<pre>' . print_r($form_state,true) . '</pre>');//$save_variables);
 }
 
+// TODO: Modify this so it reports errors in multiple fields. Currently it form_set_error will only indicate if a single view does not exist
+function dwca_export_config_form_validate($form, &$form_state) {
+	
+	$variables = $form_state['input'];
+	$dwca_export_archive_descriptor_file_map = variable_get(FILE_MAP);
+	$view_names = array();
+	
+	foreach ($variables as $key => $value) {
+		
+		if (array_key_exists($key, $dwca_export_archive_descriptor_file_map)) {
+			//if ($value = 'dwca_export_classification') {
+					
+			$view = views_get_view($value);
+			// check whether there is a view named with this value 
+			if(!$view) {
+				form_set_error('', t('This view - ' . $value . ' - does not exist. Please input another view name.'));
+			}
+		}
+	}
+	
+}
 
 /**
  * menu callback
