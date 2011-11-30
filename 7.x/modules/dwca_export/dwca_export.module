@@ -4,22 +4,7 @@
 define ("METADATA_FILE_NAME", "meta.xml");
 define ("STATIC_DIR", "/static/");
 define ("ARCHIVE_ROOT_DIR", "dwca_export/");
-
-function _dwca_export_get_static_file_map(){
-	$static_file_map = array(
-		'classification.txt' => array(
-			'view_name'=> 'dwca_export_classification',
-			'display_id' => 'views_data_export_1',
-			'out_file_url' => NULL
-		),
-		'typesandspecimen.txt' => array(
-			'view_name'=> 'view_test_specimen_export',
-			'display_id' => 'views_data_export_1',
-			'out_file_url' => NULL
-		)
-	);
-	return $static_file_map;
-}
+define ('FILE_MAP', 'dwca_export_archive_descriptor_file_map');
 
 
 /**
@@ -62,6 +47,18 @@ function dwca_export_views_api() {
 }
 
 /**
+* Implementation of hook_ctools_plugin_api().
+*/
+function dwca_export_ctools_plugin_api(){
+	list($module, $api) = func_get_args();
+	if($module == "strongarm" && $api == "strongarm"){
+		return array(
+      "version" => 1
+		);
+	}
+}
+
+/**
  * Form function, called by drupal_get_form()
  * in dwca_export_menu().
  */
@@ -100,18 +97,17 @@ function dwca_export_select_view_form() {
     		//'#tree' => TRUE,
   	);
 
-	//$default_value = _dwca_export_archive_descriptor_file_map();
-
-	foreach(_dwca_export_archive_descriptor_file_map() as $dwca_filename => $view_data){
+	foreach(variable_get(FILE_MAP) as $dwca_filename => $view_data){
 		
 		
-		$views[$dwca_filename . '_view'] = array(
-	  	'#type' => 'textfield',
-	  	'#title' => t($dwca_filename),
-	  	'#default_value' => $view_data['view_name'],
-	  	'#size' => 60,
-	  	'#maxlength' => 64,
-	  	'#description' => t('specify view for ' . $dwca_filename),
+		$views[$dwca_filename] = array(
+		  	'#type' => 'textfield',
+		  	'#title' => t($dwca_filename),
+		  	'#default_value' => $view_data['view_name'],
+		  	'#size' => 60,
+		  	'#maxlength' => 64,
+		  	'#description' => t('specify view for ' . $dwca_filename),
+		  	
 		);
 	}
 
@@ -120,11 +116,25 @@ function dwca_export_select_view_form() {
 
 function dwca_export_config_form_submit($form, &$form_state) {  
 
-// 	db_query("INSERT INTO {table} (classification_view) VALUES ('%s')", $form_state['values']['classification_view']);  
-//variable_set($name, $value)
-	drupal_set_message(t('Your config form has been saved.'));
+	$variables = $form_state['input'];
+	$save_variables = '';
+	$dwca_export_archive_descriptor_file_map = variable_get(FILE_MAP);
+	
+	foreach ($variables as $key => $value) {
+		
+		if (array_key_exists($key, $dwca_export_archive_descriptor_file_map)) {
+		
+			$dwca_export_archive_descriptor_file_map[$key]['view_name'] = $value;
+			//$save_variables .= '<p>' . $key . ' ' . $value . '</p>';			
+		}		
+	}
+	
+	variable_del(FILE_MAP);
+	variable_set(FILE_MAP, $dwca_export_archive_descriptor_file_map);
+	
+	
+	//drupal_set_message(t('The classification view is ') . $save_variables . '<pre>' . print_r($form_state,true) . '</pre>');//$save_variables);
 
-//throw new Exception(t('Could not create zip_archive %tmp_archive_file_name', array('%tmp_archive_file_name' => $tmp_archive_file_name)));
 }
 
 
@@ -158,9 +168,7 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 	static $file_map;
 
 	if(!isset($file_map)){
-		//TODO load from variables, consider using strongarm
-		// current implementation uses a static filemap
-		$file_map = _dwca_export_get_static_file_map();
+		$file_map = variable_get(FILE_MAP);
 	}
 
 	if($file_name && $out_file_url){

@@ -6,7 +6,7 @@
  * @see dwca_export_views_api()
  */
 function dwca_export_views_default_views() {
-	static $view_functions = array('classification');
+	static $view_functions = array('classification', 'specimen');
 
 	$views = array();
 
