@@ -454,11 +454,11 @@ function cdm_settings_layout(){
 
   $annotationTypeOptions = cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE);
   // additional option for the null case
-  $annotationTypeOptions['NULL_VALUE']=t('unset (null)');
+  $annotationTypeOptions['NULL_VALUE']=t('untyped');
   $form['gen_layout']['footnotes']['annotations_types_as_footnotes'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Annotation types as footnotes'),
-      '#description' => t('Only annotations of the selected type will be displayed as footnotes. You may want to turn \'technical annotations\' off. Untyped annotations will always be displayed.'),
+      '#description' => t('Only annotations of the selected type will be displayed as footnotes. You may want to turn \'technical annotations\' off.'),
       '#options' => $annotationTypeOptions,
       '#default_value' => variable_get('annotations_types_as_footnotes', unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT))
 

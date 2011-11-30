@@ -701,8 +701,9 @@ function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
       if(is_array($annotationPager->records)){
         $annotations = array();
         foreach($annotationPager->records as $annotation){
-          if(!$includeTypes || !isset($annotation->annotationType->uuid)) {
-            if(in_array($annotation->annotationType->uuid, $includeTypes) || ($annotation->annotationType === null && in_array('NULL_VALUE', $includeTypes))){
+          if($includeTypes) {
+            if( (isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, true))
+              || ($annotation->annotationType === null && in_array('NULL_VALUE', $includeTypes, true))){
               $annotations[] = $annotation;
             }
           }
