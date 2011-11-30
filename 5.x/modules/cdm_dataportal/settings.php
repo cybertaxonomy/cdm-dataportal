@@ -18,6 +18,8 @@ if(in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
   // technical annotation are off by default
   unset($annotationTypeKeys[UUID_ANNOTATION_TYPE_TECHNICAL]);
   $annotationTypeKeys = array_flip($annotationTypeKeys);
+  //additional value for the null case
+  $annotationTypeKeys[] = 'NULL_VALUE';
 }
 define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
 
