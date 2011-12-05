@@ -817,7 +817,7 @@ function theme_cdm_taxontree($tree, $filterIncludes = null, $show_filter_switch 
 }
 
 function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = false, $tree_node_callback = false){
-
+	//print_r($node);
 	$is_leaf = !$node->taxonomicChildrenCount || $node->taxonomicChildrenCount == 0;
 	$is_expanded = isset($node->expanded) && $node->expanded = 'expanded';
 
@@ -878,7 +878,21 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
 
 	// taxon name
 	$out .= $name;
-
+	
+	
+	
+	
+	//Add the display of the number of taxa in the selected genus
+	/*if(!empty($node->children)) {
+		$out.= " (" . count($node->children) . ")";
+	}*/
+	
+	//add the display of the number of taxa in all genera
+	$numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), $node->taxonUuid)));
+	if ($numberOfChildren != 0) {
+		$out.= " (" . $numberOfChildren . ")";
+	}
+	
 	// concept_switch or other theme callbacks
 	if($tree_node_callback){
 		$out .= theme($tree_node_callback, $node);
