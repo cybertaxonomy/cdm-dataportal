@@ -471,11 +471,19 @@ function cdm_dataportal_block($op='list', $delta=0) {
  */
 
 function cdm_dataportal_search_taxon_form($advancedForm = false){
-
+  global $theme_key;
   $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
-  $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 1);
-  $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 1);
-  $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 0 : 0);
+  if ($theme_key == "palmweb_2") {
+  	$preset_doTaxa = 1;
+  	$preset_doSynonyms = 1;
+ 	$preset_doTaxaByCommonNames = 0;
+  }
+  else {
+  	$preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 0);
+  	$preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
+  	$preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);	
+  }
+  
   $tdwg_level_select =  (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
   $selected_areas =  (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : false);
 
@@ -568,25 +576,43 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       '#tree' => true,
       '#title' => t('Geographic range'),
     );
-
-    $form['search']['geographic_range']['tdwg_level_select'] = array(
-    '#type' => 'radios',
-    '#title' => t('Select a TDWG distribution level and code'),
-    '#default_value' => $tdwg_level_select,
-    '#options' => array(
-    t('TDWG level-1, i.e. a continent'),
-    t('TDWG level-2'),
-    t('TDWG level-3, i.e. a country')
-    //AT RBG KEW - 14/11/2011 - Removed TDWG Level 4 since we have no TDWG Lvl 4 data
-    //t('TDWG level-4')
-    )
-    );
-    $tdwg[1] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '1');
-    $tdwg[2] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '2');
-    $tdwg[3] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '3');
-    //AT RBG KEW - 14/11/2011 - Removed TDWG Level 4 since we have no TDWG Lvl 4 data
-    //$tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
-
+    if ($theme_key == 'palmweb_2') {
+    	$form['search']['geographic_range']['tdwg_level_select'] = array(
+    	'#type' => 'radios',
+    	'#title' => t('Select a TDWG distribution level and code'),
+   		'#default_value' => $tdwg_level_select,
+    	'#options' => array(
+    	t('TDWG level-1, i.e. a continent'),
+    	t('TDWG level-2'),
+    	t('TDWG level-3, i.e. a country')
+    	//AT RBG KEW - 14/11/2011 - Removed TDWG Level 4 since we have no TDWG Lvl 4 data
+    	//t('TDWG level-4')
+    	)
+    	);
+    	$tdwg[1] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '1');
+    	$tdwg[2] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '2');
+    	$tdwg[3] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '3');
+	    //AT RBG KEW - 14/11/2011 - Removed TDWG Level 4 since we have no TDWG Lvl 4 data
+	    //$tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
+    }
+    else {
+    	    	$form['search']['geographic_range']['tdwg_level_select'] = array(
+    	'#type' => 'radios',
+    	'#title' => t('Select a TDWG distribution level and code'),
+   		'#default_value' => $tdwg_level_select,
+    	'#options' => array(
+    	t('TDWG level-1, i.e. a continent'),
+    	t('TDWG level-2'),
+    	t('TDWG level-3, i.e. a country'),
+    	t('TDWG level-4')
+    	)
+    	);
+    	$tdwg[1] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '1');
+    	$tdwg[2] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '2');
+    	$tdwg[3] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '3');
+	    $tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
+    }
+	
     $tdwg_js = '';
     foreach($tdwg as $key=>$tdwg_level){
       $tdwgOptions = array();
