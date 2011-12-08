@@ -14,8 +14,6 @@
 function theme_cdm_feature_nodesTOC($featureNodes){
 
   $out .= '<ul>';
-
-  $out .= '<li>'.l(t(theme('cdm_feature_name', 'Number of Species')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Number Of Species')).'</li>';
   
   foreach($featureNodes as $node){
 
