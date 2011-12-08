@@ -604,6 +604,97 @@ function formatReference_for_Bibliogrpahy($references) {
 	return $out;
 }
 
+function palmweb_2_cdm_media_caption($media, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
+
+	$media_metadata = cdm_read_media_metadata($media);
+
+	$doTitle= !$elements || array_search('title', $elements)!== false;
+	$doDescription = !$elements || array_search('description', $elements)!== false;
+	$doArtist = !$elements || array_search('artist', $elements)!== false;
+	$doLocation = !$elements || array_search('location', $elements)!== false;
+	$doRights = !$elements || array_search('rights', $elements)!== false;
+
+	$descriptionPrefix = "";
+
+	$out = '<dl class="media-caption">';
+	//title
+	if($doTitle) {
+	    if($media_metadata['title']){
+		  $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
+		  $descriptionPrefix = "- ";
+	    } else if(!($doDescription && $media_metadata['description'])) {
+	      // use filename as fallbackoption if no description will be shown
+          $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['filename'] . '</dd>';
+          $descriptionPrefix = "- ";
+	    }
+	}
+	//description
+	if($media_metadata['description'] && $doDescription) {
+		$out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $descriptionPrefix . $media_metadata['description'] . '</dd>';
+	}
+	//artist
+	if($media_metadata['artist'] && $doArtist) {
+		$out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $media_metadata['artist'] . '</dd>';
+	}
+	//location
+	if($doLocation){
+		$location = '';
+		$location .= $media_metadata['location']['sublocation'];
+		if ($location && $media_metadata['location']['city']){
+			$location .= ', ';
+		}
+		$location .= $media_metadata['location']['city'];
+		if ($location && $media_metadata['location']['province']){
+			$location .= ', ';
+		}
+		$location .= $media_metadata['location']['province'];
+		if ($location && $media_metadata['location']['country']){
+			$location .= ' (' . $media_metadata['location']['country'] . ')';
+		} else {
+			$location .= $media_metadata['location']['country'];
+		}
+		if ($location){
+			$out .= '<dt class = "location">' . t('Location') . '</dt> <dd class = "location">' . $location  . '</dd>';
+		}
+	}
+	//rights
+	if($doRights){
+		$rights = '';
+		//copyrights
+		$cnt = count($media_metadata['rights']['copyright']['agentNames']);
+		if($cnt > 0){
+			$rights .= '<dt class="rights">&copy;</dt> <dd class="rights"> ';
+			for($i = 0; $i < $cnt; $i++){
+				$rights .= str_replace("'","", $media_metadata['rights']['copyright']['agentNames'][$i]);
+				if($i+1 < $cnt){
+					$rights .= ' / ';
+				}
+			}
+			$rights .= '</dd>';
+		}
+		//license
+		$cnt = count($media_metadata['rights']['license']['agentNames']);
+		if($cnt > 0){
+			$rights .= '<dt class ="license">' . t('License') . '</dt> <dd class = "license">';
+			for($i = 0; $i < $cnt; $i++){
+				$rights .= $media_metadata['rights']['license']['agentNames'][$i];
+				if ($i+1 < $cnt){
+					$rights .= ' / ';
+				}
+			}
+			$rights .= '</dd>';
+		}
+		if($rights){
+			$out .=  $rights . '</dt>';
+		}
+	}
+	//TODO add all other metadata elemenst generically
+	$out .= '</dl>';
+	//return value
+	return $out;
+}
+
+
 
 
 
