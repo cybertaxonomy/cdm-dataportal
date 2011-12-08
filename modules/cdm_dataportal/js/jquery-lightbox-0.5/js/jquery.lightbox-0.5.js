@@ -42,9 +42,8 @@
 			keyToClose:				'c',		// (string) (c = close) Letter to close the jQuery lightBox interface. Beyond this letter, the letter X and the SCAPE key is used to.
 			keyToPrev:				'p',		// (string) (p = previous) Letter to show the previous image
 			keyToNext:				'n',		// (string) (n = next) Letter to show the next image.
-			//implement a maxHeight and maxwidth
-			maxWidth: null,
-		    maxHeight: null,
+			//implement an adjust to window setting
+			adjustToWindow: null,
 			// Don�t alter these variables in any way
 			imageArray:				[],
 			activeImage:			0
@@ -203,12 +202,15 @@
 		 * @param integer intImageHeight The image�s height that will be showed
 		 */
 		function _resize_container_image_box(intImageWidth,intImageHeight) {
-			if((settings.maxWidth != null && settings.maxHeight != null) && (intImageWidth > settings.maxWidth || intImageHeight > settings.maxHeight)){
-		    	var isWider = intImageWidth > intImageHeight;//is the image wide or tall?
-		    	var scale = isWider ?  settings.maxWidth/intImageWidth : settings.maxHeight/intImageHeight;
+			if(settings.adjustToWindow == true && settings.adjustToWindow != null) {
+				//get the height and width of the window to resize the image appropriately, Height is at -100 to compensate the 90px padding at the top of the page as well as the 10px of white border
+				var myHeight = $(window).height() -100;
+				var myWidth = $(window).width();
+				var isWider = intImageWidth > intImageHeight;//is the image wide or tall?
+		    	var scale = isWider ?  myWidth/intImageWidth : myHeight/intImageHeight;
 		    	intImageWidth = intImageWidth * scale;
 		    	intImageHeight = intImageHeight * scale;
-		     }
+			}
 		     $('#lightbox-image').height(intImageHeight); 
 		     $('#lightbox-image').width(intImageWidth);  
 			// Get current width and height
