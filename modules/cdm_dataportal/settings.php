@@ -644,10 +644,10 @@ function cdm_settings_layout_taxon(){
   );
   if ($theme_key == "palmweb_2") {
   	//AT - Option to include the Bibliography section in a taxon page
-  	$form['cdm_dataportal_show_bibliography'] = array(
+  	$form['cdm_show_bibliography'] = array(
     	'#type' => 'checkbox',
         '#title' => t('Show the <em>Bibliography section</em> on taxon pages.'),
-        '#default_value' => variable_get('cdm_dataportal_show_bibliography', 1),
+        '#default_value' => variable_get('cdm_show_bibliography', 1),
         '#description' => t('<p>If checked the Bibliography section will be visible at the bottom of taxon pages.</p>')
   	);
   }
