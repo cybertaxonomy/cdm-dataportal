@@ -101,7 +101,7 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
     }
   }
   //Setting the Anchor to the Bibliography section if the option is enabled
-  $show_bibliography = variable_get('cdm_dataportal_show_bibliography', 1);
+  $show_bibliography = variable_get('cdm_show_bibliography', 1);
   if ($show_bibliography) {
   	$out .= '<li>'.l(t(theme('cdm_feature_name', 'Bibliography')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Bibliography')).'</li>';
   }
@@ -127,7 +127,7 @@ RenderHints::pushToRenderStack('feature_nodes');
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       $block->module = 'cdm_dataportal';
       //if the option is enabled the description elements will be added to the array
-      $show_bibliography = variable_get('cdm_dataportal_show_bibliography', 1);
+      $show_bibliography = variable_get('cdm_show_bibliography', 1);
   	  if ($show_bibliography) {
       	$bibliographyOut[] =  $node->descriptionElements;
   	  }
@@ -249,7 +249,7 @@ RenderHints::pushToRenderStack('feature_nodes');
   //Add the display of the number of taxa in the selected genus
  
 	
-  $show_bibliography = variable_get('cdm_dataportal_show_bibliography', 1);
+  $show_bibliography = variable_get('cdm_show_bibliography', 1);
   if ($show_bibliography) {
   	$out .= theme('cdm_descriptionElementBibliography', $bibliographyOut);
   }
