@@ -473,16 +473,10 @@ function cdm_dataportal_block($op='list', $delta=0) {
 function cdm_dataportal_search_taxon_form($advancedForm = false){
   global $theme_key;
   $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
-  if ($theme_key == "palmweb_2") {
-  	$preset_doTaxa = 1;
-  	$preset_doSynonyms = 1;
- 	$preset_doTaxaByCommonNames = 0;
-  }
-  else {
-  	$preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 0);
-  	$preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
-  	$preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);	
-  }
+  $preset_doTaxa = variable_get('cdm_search_taxa', 1);
+  $preset_doSynonyms = variable_get('cdm_search_synonyms', 1);
+ $preset_doTaxaByCommonNames = variable_get('cdm_search_common_names', 0);
+
   
   $tdwg_level_select =  (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
   $selected_areas =  (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : false);
