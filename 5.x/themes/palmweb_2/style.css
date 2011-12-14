@@ -1054,3 +1054,7 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
   background-color: #dfd;
   border-color: #beb;
 }
+
+#edit-search-geographic-range-tdwg-level-select-3-wrapper {
+	display: none;
+}
