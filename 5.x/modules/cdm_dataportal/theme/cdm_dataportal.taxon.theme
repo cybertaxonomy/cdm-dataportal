@@ -398,20 +398,20 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
       switch ($element->type->representation_L10n){
         case 'later homonym for':
           if(isset($name_relations_html)){
-            $name_relations_html .= ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+            $name_relations_html .= 'nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
                 'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid);
           }else{
-            $name_relations_html = ' non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+            $name_relations_html = 'non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
                         'cdm_dataportal/name/' . $element->toName->uuid . '/' . $taxon->uuid . '/' . $element->toName->taxonBases[0]->uuid)
             . ' ' . $element->toName->datePublished->start;
           }
           break;
         case 'treated as later homonym for':
           if(isset($name_relations_html)){
-            $name_relations_html = ' nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+            $name_relations_html = 'nec ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
                               'cdm_dataportal/name/' . $element->toName->uuid);
           }else{
-            $name_relations_html = ' non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
+            $name_relations_html = 'non ' . l($element->toName->titleCache . ' ' .  substr($element->toName->nomenclaturalReference->datePublished->start, 0, 4),
                              'cdm_dataportal/name/' . $element->toName->uuid);
           }
           break;
@@ -423,10 +423,10 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
         switch ($element->type->representation_L10n){
           case 'blocking name for':
             if(isset($name_relations_html) ){
-              $name_relations_html .= ' nec ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
+              $name_relations_html .= 'nec ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
                 'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid . '/' . $element->fromName->taxonBases[0]->uuid);
             }else{
-              $name_relations_html = ' non ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
+              $name_relations_html = 'non ' . l($element->fromName->titleCache . ' ' .  substr($element->fromName->nomenclaturalReference->datePublished->start, 0, 4),
                         'cdm_dataportal/name/' . $element->fromName->uuid . '/' . $taxon->uuid . '/' . $element->fromName->taxonBases[0]->uuid)
               . ' ' . $element->fromName->datePublished->start;
             }
@@ -436,11 +436,11 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
     }
     //rels output
     if(isset($name_relations_html)){
-      $name_relations_html = '['. $name_relations_html .']';
+      $name_relations_html = '['. trim($name_relations_html) .']';
     }
   }
   //geneal output
-  $out = '<span class="relation_sign" title="' . $reltype_representation . '">'.$relsign.'</span>'.$name_prefix . $out_taxon_part . $name_postfix . $name_relations_html;
+  $out = '<span class="relation_sign" title="' . $reltype_representation . '">'.$relsign.'</span>'.$name_prefix . $out_taxon_part . $name_postfix . ' ' . $name_relations_html;
   $out = uuid_anchor($taxon->uuid, $out);
 
   RenderHints::popFromRenderStack();
