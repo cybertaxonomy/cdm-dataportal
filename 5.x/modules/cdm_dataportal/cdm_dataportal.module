@@ -577,7 +577,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
   // listing of blocks, such as on the admin/block page
   if ($op == "list") {
     //$block[0]["info"] = t("CDM DataPortal DevLinks");
-    //		$block[1]["info"] = t("CDM DataPortal Credits");
+    //$block[1]["info"] = t("CDM DataPortal Credits");
     $block[2]["info"] = t("CDM Search Taxa");
     //$block[3]["info"] = t("CDM Filters");
     $block[4]["info"] = t("CDM Dataportal Print");

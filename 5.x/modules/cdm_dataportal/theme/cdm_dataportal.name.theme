@@ -633,7 +633,7 @@ function theme_cdm_taxonName($taxonName, $nameLink = NULL, $refenceLink = NULL,
 					$statusHtml .= ', '.$status->type->representation_L10n_abbreviatedLabel;
 				}
 			}
-			array_setr('status', ' <span class="nomenclatural_status">'.$statusHtml.'</span>', $renderTemplate);
+			array_setr('status', '<span class="nomenclatural_status">'.$statusHtml.'</span>', $renderTemplate);
 		}
 	}
 

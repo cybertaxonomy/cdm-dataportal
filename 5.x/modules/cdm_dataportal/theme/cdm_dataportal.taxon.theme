@@ -383,7 +383,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
   $out_taxon_part .= theme('cdm_annotations_as_footnotekeys', array($taxon->name, $taxon), $footnoteListKey);
 
   if($showSecReference) {
-    $out_taxon_part .= ' sensu ' . theme('cdm_reference',  $taxon->sec);
+    $out_taxon_part .= ' sec. ' . theme('cdm_reference',  $taxon->sec);
   }
 
 
