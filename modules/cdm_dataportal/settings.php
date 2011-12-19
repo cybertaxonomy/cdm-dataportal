@@ -606,7 +606,6 @@ function cdm_settings_layout_synonymy(){
 function cdm_settings_layout_taxon(){
   $collapsed = false;
   $form = array();
-  global $theme_key;
 
   //--------- TABBED TAXON -------//
   $form['taxon_tabs'] = array(
@@ -642,15 +641,7 @@ function cdm_settings_layout_taxon(){
         '#default_value' => variable_get('cdm_dataportal_show_back_to_search_results', 1),
         '#description' => t('<p>If checked the link to search results is rendererized at the top of the taxon site. Clicking on the link the last search performed is renderized again.</p>')
   );
-  /*if ($theme_key == "palmweb_2") {
-  	//AT - Option to include the Bibliography section in a taxon page
-  	$form['cdm_show_bibliography'] = array(
-    	'#type' => 'checkbox',
-        '#title' => t('Show the <em>Bibliography section</em> on taxon pages.'),
-        '#default_value' => variable_get('cdm_show_bibliography', 1),
-        '#description' => t('<p>If checked the Bibliography section will be visible at the bottom of taxon pages.</p>')
-  	);
-  }*/
+
 
   /* ======  TAXON_PROFILE ====== */
 
