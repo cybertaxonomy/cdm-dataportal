@@ -642,7 +642,7 @@ function cdm_settings_layout_taxon(){
         '#default_value' => variable_get('cdm_dataportal_show_back_to_search_results', 1),
         '#description' => t('<p>If checked the link to search results is rendererized at the top of the taxon site. Clicking on the link the last search performed is renderized again.</p>')
   );
-  if ($theme_key == "palmweb_2") {
+  /*if ($theme_key == "palmweb_2") {
   	//AT - Option to include the Bibliography section in a taxon page
   	$form['cdm_show_bibliography'] = array(
     	'#type' => 'checkbox',
@@ -650,7 +650,7 @@ function cdm_settings_layout_taxon(){
         '#default_value' => variable_get('cdm_show_bibliography', 1),
         '#description' => t('<p>If checked the Bibliography section will be visible at the bottom of taxon pages.</p>')
   	);
-  }
+  }*/
 
   /* ======  TAXON_PROFILE ====== */
 
@@ -967,6 +967,13 @@ function cdm_settings_layout_search(){
         '#title' => t('Sets the default value of <em>Search for common names</em> in the advanced search form.'),
         '#default_value' => variable_get('cdm_search_common_names', 0),
         '#description' => t('<p>If checked the <em>Search for common names</em> option will be enabled in the advanced form.</p>')
+  	);
+  	
+  	$form['search_settings']['cdm_search_use_default_values'] = array(
+  	    	'#type' => 'checkbox',
+  	        '#title' => t('Sets use of default values in the advanced search form.'),
+  	        '#default_value' => variable_get('cdm_search_use_default_values', 1),
+  	        '#description' => t('<p>If checked the defqult values set abovewill be used for the search.</p>')
   	);
   
 
