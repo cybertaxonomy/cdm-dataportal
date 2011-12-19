@@ -346,18 +346,21 @@ function formatReference_for_Bibliogrpahy($references) {
 		//print_r($reference);
 		switch ($reference->citation->type) {
 			case "Journal":
-				$out .= "<li class=\"descriptionText DescriptionElement\">[Journal]";
+				$out .= "<li class=\"descriptionText DescriptionElement\">";
 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
 				$currentRecord = 1;
 				if (!empty($reference->citation->authorTeam->teamMembers)) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
 						if(!empty($teamMember->lastname)) {
-							if ($numberOfTeamMembers != $currentRecord) {
-								$out .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+							if ($currentRecord == 1) {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname;
+							}
+							else if ($numberOfTeamMembers != $currentRecord) {
+								$out .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
 							}
 							else {
-								$out .= $teamMember->lastname . ", " . $teamMember->firstname;
-								$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
+								$out .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
+								$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? ' ' : ". ");
 							}
 							$currentRecord += 1;
 						}
@@ -367,33 +370,45 @@ function formatReference_for_Bibliogrpahy($references) {
 							}
 							else {
 								$out .= $teamMember->titleCache;
-								$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
+								$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? ' ' : ". ");
 							}
-							
 							$currentRecord += 1;
 						}
-						$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
 					}
-					$out .= substr($reference->citation->datePublished->start,0,4) . ". " .$reference->citation->title . ". " . $reference->citation->publisher;
-					$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
-					
 				}
+				else {
+					$out .= $reference->citation->authorTeam->titleCache;
+					$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? " " : ". ");
+				}
+				/*else {
+					$out .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
+				}*/
+				if (!empty($reference->citation->datePublished->start)) {
+					$out .= substr($reference->citation->datePublished->start,0,4);
+					$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
+				}
+				$out .= $reference->citation->title . ". " . $reference->citation->publisher;
+				$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
 				$out .= "</li>";
 				break;
+				
 
 			case "Article":
-				$out .= "<li class=\"descriptionText DescriptionElement\">[Article]";
+				$out .= "<li class=\"descriptionText DescriptionElement\">";
 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
 				$currentRecord = 1;
 				if (!empty($reference->citation->authorTeam->teamMembers)) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
 						if(!empty($teamMember->lastname)) {
-							if ($numberOfTeamMembers != $currentRecord) {
-								$out .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+							if ($currentRecord == 1) {
+								$out .= $teamMember->lastname . ", " . $teamMember->firstname;
+							}
+							else if ($numberOfTeamMembers != $currentRecord) {
+								$out .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
 							}
 							else {
-								$out .= $teamMember->lastname . ", " . $teamMember->firstname;
-								$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
+								$out .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
+								$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? ' ' : ". ");
 							}
 							$currentRecord += 1;
 						}
@@ -403,19 +418,31 @@ function formatReference_for_Bibliogrpahy($references) {
 							}
 							else {
 								$out .= $teamMember->titleCache;
-								$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
+								$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? ' ' : ". ");
 							}
 							$currentRecord += 1;
 						}
 					}
-					$out .= substr($reference->citation->datePublished->start,0,4) . ". " .$reference->citation->title . ". " . $reference->citation->publisher;
-					$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
-					
 				}
+				else {
+					$out .= $reference->citation->authorTeam->titleCache;
+					$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? " " : ". ");
+				}
+				/*else {
+					$out .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
+				}*/
+				if (!empty($reference->citation->datePublished->start)) {
+					$out .= substr($reference->citation->datePublished->start,0,4);
+					$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
+				}
+				$out .= $reference->citation->title . ". " . $reference->citation->publisher;
+				$out .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? "" : ". ");
 				$out .= "</li>";
 				break;
+				
+				
 			case "Book":
-				$out .= "<li class=\"descriptionText DescriptionElement\">[Book]";
+				$out .= "<li class=\"descriptionText DescriptionElement\">";
 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
 				$currentRecord = 1;
 				if (!empty($reference->citation->authorTeam->teamMembers) || $reference->citation->authorTeam->titleCache != "-empty team-") {
@@ -468,7 +495,7 @@ function formatReference_for_Bibliogrpahy($references) {
 				$out .= "</li>";
 				break;
 			case "BookSection":
-				$out .= "<li class=\"descriptionText DescriptionElement\">[BookSection]";
+				$out .= "<li class=\"descriptionText DescriptionElement\">";
 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
 				$currentRecord = 1;
 				if (!empty($reference->citation->authorTeam->teamMembers)) {
@@ -532,10 +559,10 @@ function formatReference_for_Bibliogrpahy($references) {
 				
 				
 			case "WebPage" :
-				$out .= "<li class=\"descriptionText DescriptionElement\">[WebPage]" . $reference->citation->titleCache . "</li>";
+				$out .= "<li class=\"descriptionText DescriptionElement\">" . $reference->citation->titleCache . "</li>";
 				break;
 			case "Generic" :
-				$out .= "<li class=\"descriptionText DescriptionElement\">[Generic]";
+				$out .= "<li class=\"descriptionText DescriptionElement\">";
 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
 				$currentRecord = 1;
 				if (!empty($reference->citation->authorTeam->teamMembers)) {
