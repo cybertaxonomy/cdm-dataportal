@@ -1,0 +1,6 @@
+name = Expertsdb Address Field German Support
+description = Adds support for Germany
+dependencies = content expertsdb_address
+package = EDIT CCK
+
+

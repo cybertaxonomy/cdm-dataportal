@@ -1,0 +1,1060 @@
+<?php
+
+/*
+ * @todo hide default value php code field in widget settings; values in there are not used.
+ */
+
+/*
+ * Definition of privacy levels
+ */
+define('PRIVACY_CONTACT_PRIVATE', 'ContactPrivate');
+define('PRIVACY_PRIVATE', 'Private');
+define('PRIVACY_PUBLIC', 'Public');
+
+/**
+ * Implementation of hook_perm()
+ *
+ * Valid permissions for this module
+ * @return array An array of valid permissions for the portfolio module
+ */
+function expertsdb_email_perm() {
+	return array(
+    	'view private expertsdb_email addresses',
+  		'access expertsdb_email mail form',
+  		'create email for other users',
+	//TODO which else permission are required?
+	);
+}
+
+/**
+ * Implementation of hook_help().
+ *
+ * @param unknown_type $section
+ * @return unknown
+ */
+function expertsdb_email_help($section) {
+	switch ($section) {
+		case 'admin/modules#description':
+			return t('Defines a field type for email addresses. Data will be integrated as serialized array into the according content type database. <em>Note: Requires content.module.</em>');
+	}
+}
+
+/**
+ * Implementation of hook_menu().
+ *
+ * @param unknown_type $may_cache
+ * @return unknown
+ */
+function expertsdb_email_menu($may_cache) {
+	$items = array();
+	if ($may_cache) {
+
+		$items[] = array('path' => 'expertsdb_email',
+      'title' => t('Email Contact Form'),
+      'callback' => 'expertsdb_email_mail_page',
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK,
+		);
+
+		// implement js callback
+		$items[] = array(
+      'path' => 'expertsdb_email/widget/js',
+      'callback' => 'expertsdb_email_widget_js',
+      'access' => user_access('access content'),
+      'type' => MENU_CALLBACK,
+		);
+	}
+	return $items;
+}
+
+/**
+ * Implementation of hook_user().
+ */
+function expertsdb_email_user($op, &$edit, &$account, $category = NULL) {
+
+	switch ($op) {
+		case 'update':
+
+			// only invoke update, if user updated his account manually
+			if(!$edit['mail'] || !count($edit)>1 || !$edit['timezone'] || $category != 'account') return;
+
+			// find cck expertsdb_email field tables
+			// search through them for matching user ids and load those nodes
+			$types = content_types();
+
+			// Find the table and columns to search through, if the same
+			// table comes up in more than one content type, we only need
+			// to search it once.
+			$search_tables = array();
+			$field_names = array();
+			foreach ($types as $type_name => $type) {
+				foreach ($type['fields'] as $field) {
+					// Only add tables where the expertsdb_field is present
+					if ($field['type'] == 'expertsdb_email') {
+						$db_info = content_database_info($field);
+						$search_tables[$db_info['table']] = $db_info['columns']['expertsdb_email']['column'];
+						$field_names[$db_info['table']] = $field['field_name'];
+					}
+				}
+			}
+
+			foreach ($search_tables as $table => $column) {
+				$ids = db_query(db_rewrite_sql("SELECT DISTINCT(n.nid), " . $column . " FROM {node} n LEFT JOIN {" . $table . "} f ON n.vid = f.vid WHERE n.uid=" . $account->uid . " AND f." . $column . " IS NOT NULL AND n.status = 1"));
+				while ($data = db_fetch_object($ids)) {
+					// load the node and extract the email data
+					$node = node_load($data->nid);
+					$node_field = $node->$field_names[$table];
+
+					if($node_field && strstr($node_field[0]['expertsdb_email'],':{')){
+						$node_field = unserialize($node_field[0]['expertsdb_email']);
+
+						// check, if new email is already present in email list
+						// if present, set to preferred; set all other emails to not preferred
+						foreach($node_field as $delta => $item){
+							if($item['email'] == $edit['mail']){
+								if($item['preferred_email']['preferred_email'] === 'preferred_email') return; // nothing to do!
+								$node_field[$delta]['preferred_email']['preferred_email'] = 'preferred_email';
+								$email_present = TRUE;
+							}
+							else{
+								$node_field[$delta]['preferred_email']['preferred_email'] = FALSE;
+							}
+						}
+
+						// add email to the top if not already present and set preferred
+						if(!$email_present){
+							$delta++;
+							$node_field[$delta]['email'] = $edit['mail'];
+							$node_field[$delta]['preferred_email']['preferred_email'] = 'preferred_email';
+						}
+					}
+					// clean up and sort
+					_expertsdb_email_cleanup_and_sort($node_field);
+
+					// serialize data and write back to db
+					_expertsdb_email_serialize($node_field);
+
+					// write to db
+					$node->$field_names[$table] = $node_field;
+					node_save($node);
+
+					// notify user about change
+					if($email_present){
+						drupal_set_message(t('Your user account email address has been set as your preferred email address.'));
+					}
+					else{
+						drupal_set_message(t('Your user account email address has been added to your list as your preferred email address.'));
+					}
+
+				}
+			}
+
+			return;
+	}
+}
+
+/**
+ * Implementation of hook_field_info().
+ *
+ * @return unknown
+ */
+function expertsdb_email_field_info() {
+	return array(
+    'expertsdb_email' => array('label' => t('Expertsdb E-Mail')),
+	);
+}
+
+/**
+ *  Implementation of hook_field_settings().
+ *
+ * @param unknown_type $op
+ * @param unknown_type $field
+ * @return unknown
+ */
+function expertsdb_email_field_settings($op, $field) {
+
+	switch ($op) {
+
+		case 'database columns':
+			$columns = array(
+        'expertsdb_email' => array('type' => 'mediumtext', 'not null' => FALSE),
+			);
+			return $columns;
+
+		case 'form':
+			$form = array();
+
+			$form['user_email_default'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Use user account email as default'),
+          '#default_value' => isset($field['user_email_default']) ? $field['user_email_default'] : 1,
+          '#description' => t('Checking will force the users account email into the list of email addresses and will keep the preferred email address in sync with the user account.'),
+			);
+
+			// disable multiple
+			$form['multiple'] = array('#type' => 'hidden','#value' => '0');
+			return $form;
+
+		case 'save':
+			return array('user_email_default');
+
+		case 'callbacks': //pairs up with cck_fullname_field::view
+			return array(
+        'view' => CONTENT_CALLBACK_CUSTOM,
+			);
+	}
+}
+
+/**
+ * Implemantation of hook_field()
+ *
+ * @param unknown_type $op
+ * @param unknown_type $node
+ * @param unknown_type $field
+ * @param unknown_type $items
+ * @param unknown_type $teaser
+ * @param unknown_type $page
+ * @return unknown
+ */
+function expertsdb_email_field($op, &$node, $field, &$items, $teaser, $page) {
+	switch ($op) {
+
+		case 'view':
+			$context = $teaser ? 'teaser' : 'full';
+			$formatter = isset($field['display_settings'][$context]['format']) ? $field['display_settings'][$context]['format'] : 'default';
+			$items = content_format($field, $items, $formatter, $node);
+			if(!empty($items) && is_array($items) && count($items) > 0){
+				return theme('expertsdb_email_container', $node, $field, $items, $teaser, $page);
+			}
+			return;
+	}
+}
+
+/**
+ * Implementation of hook_widget_info().
+ *
+ * @return unknown
+ */
+function expertsdb_email_widget_info() {
+	return array(
+    'expertsdb_email' => array(
+      'label' => t('Text Fields for Email Addresses'),
+      'field types' => array('expertsdb_email'),
+	),
+	);
+}
+
+/**
+ * Implementation of hook_widget_settings().
+ *
+ * @param unknown_type $op
+ * @param unknown_type $widget
+ * @return unknown
+ */
+function expertsdb_email_widget_settings($op, $widget) {
+
+	switch ($op) {
+
+		case 'form':
+			$form = array();
+			$form['size'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Size'),
+        '#default_value' => isset($widget['size']) ? $widget['size'] : 60,
+        '#required' => FALSE,
+        '#description' => t('Size of textfield'),
+			);
+
+			return $form;
+
+		case 'validate':
+			if (!empty($widget['size']) && (!is_numeric($widget['size']) || intval($widget['size']) != $widget['size'] || $widget['size'] <= 0)) {
+				form_set_error('size', t('"Size" must be a positive integer.'));
+			}
+			break;
+
+		case 'save':
+			return array('size');
+
+	}
+}
+
+/**
+ * Implementation of hook_widget().
+ *
+ * @param unknown_type $op
+ * @param unknown_type $node
+ * @param unknown_type $field
+ * @param unknown_type $node_field
+ * @return unknown
+ */
+function expertsdb_email_widget($op, &$node, $field, &$node_field) {
+
+	switch ($op) {
+
+		case 'prepare form values':
+			// unserialize and prepare data
+			_expertsdb_email_widget_prepare($node_field);
+
+			// get posted values in both node edit and profile edit mode
+			if ($_POST[$field['field_name']] || $_POST[$field['type_name'].'_node_form'][$field['field_name']]) {
+				$node_field = ($_POST['form_id'] == 'user_edit') ?  $_POST[$field['type_name'].'_node_form'][$field['field_name']] : $_POST[$field['field_name']];
+				unset($node_field['count'], $node_field['more-url'], $node_field['more']);
+			}
+			return;
+
+		case 'form':
+			$form = array();
+			$form[$field['field_name']] = array(
+        '#tree' => TRUE,
+        '#theme' => 'expertsdb_email_widget_form',
+        '#type' => 'fieldset',
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#title' => t($field['widget']['label']),
+        '#description' => t($field['widget']['description']),
+        '#weight' => $field['widget']['weight'],
+			);
+
+			// render multiple values
+			if(module_exists('jquery_plugin')){
+				// pull in jquery checkbox plugin to make radioCheckboxes
+				jquery_plugin_add('checkboxes');
+			}
+			// add javascript for 'more' button
+			drupal_add_js(drupal_get_path('module', 'expertsdb_email') .'/expertsdb_email.js');
+
+			$delta = 0;
+			// Render expertsdb_email fields for all the entered values
+			if(is_array($node_field)){
+				foreach ($node_field as $data) {
+					if (is_array($data) && $data['email']) {
+						_expertsdb_email_widget_form($form[$field['field_name']][$delta], $field, $data, $delta);
+						$delta++;
+					}
+				}
+			}
+			// Render one more new expertsdb_email field
+			_expertsdb_email_widget_form($form[$field['field_name']][$delta], $field, array(), $delta);
+
+			// Create a wrapper for additional fields
+			$form[$field['field_name']]['wrapper'] = array(
+          '#type' => 'markup',
+          '#value' => '<div id="' . str_replace('_', '-', $field['field_name']) . '-wrapper" class="clear-block"></div>',
+			);
+
+			// Add 'More' Javascript Callback
+			$form[$field['field_name']]['more-url'] = array(
+          '#type' => 'hidden',
+          '#value' => url('expertsdb_email/widget/js/' . $field['type_name'] . '/' . $field['field_name'], NULL, NULL, TRUE),
+          '#attributes' => array('class' => 'more-email-addresses'),
+          '#id' => str_replace('_', '-', $field['field_name']) . '-more-url',
+			);
+
+			// Add Current Field Count
+			$form[$field['field_name']]['count'] = array(
+          '#type' => 'hidden',
+          '#value' => $delta,
+          '#id' => str_replace('_', '-', $field['field_name']) . '-count',
+			);
+
+			// Add More Button
+			$form[$field['field_name']]['more'] = array(
+        '#name' => 'more',
+        '#id' => str_replace('_', '-', $field['field_name']) . '-more',
+        '#weight' => 10,
+				'#type' => 'views_imagebutton',
+				'#title' => t('More Emails'),
+    		'#image' => drupal_get_path('module','expertsdb_email') . '/images/button_add_element.png',  // provide the path to your image here
+    		'#default_value' => t('More emails'), // original value of button text
+			);
+
+			return $form;
+
+		case 'validate':
+			if (is_array($node_field)) {
+
+				$email_counter = 0;
+				$preferred_counter = 0;
+				foreach ($node_field as $delta => $item) {
+					if(is_numeric($delta) && $item['email']){
+						$email_counter ++;
+					}
+					// check for empty or invalid email addresses
+					if(is_numeric($delta) && $item['email'] != '' && !valid_email_address(trim($item['email']))) {
+						form_set_error($field['field_name'] .']['. $delta. '][email', t('"%mail" is not a valid email address',array('%mail' => $item['expertsdb_email'])));
+					}
+
+					// check for multiple preferred emails and if new preferred email already exists as another users email account
+					if(is_numeric($delta) && $item['preferred_email']['preferred_email'] === 'preferred_email'){
+						$preferred_counter ++;
+
+						global $user;
+						// check, if new preferred email is not the current users account email
+						if(!user_access('create email for other users') && $user->mail != $item['email']){
+							if (db_num_rows(db_query("SELECT uid FROM {users} WHERE uid != %d AND LOWER(mail) = LOWER('%s')", $user->uid, $item['email'])) > 0) {
+								form_set_error($field['field_name'] .']['. $delta. '][email', t('Sorry, but "%mail" is already in use as preferred email address of another user account. Please choose a different preferred email address.',array('%mail' => $item['email'])));
+							}
+						}
+						else if(user_access('create email for other users')){
+							$alien_user = user_load(array('uid' => $node->uid));
+							if($alien_user->mail != $item['email']){
+								if (db_num_rows(db_query("SELECT uid FROM {users} WHERE uid != %d AND LOWER(mail) = LOWER('%s')", $alien_user->uid, $item['email'])) > 0) {
+									form_set_error($field['field_name'] .']['. $delta. '][email', t('Sorry, but "%mail" is already in use as preferred email address of another user account. Please choose a different preferred email address.',array('%mail' => $item['email'])));
+								}
+							}
+						}
+
+						// warn in case of multiple preferred email addresses
+						if($preferred_counter != 1){
+							form_set_error($field['field_name'] .']['. $delta. '][email', t('Please select exactly one preferred email address.'));
+						}
+
+						if($email_counter < 1 && $field['required']){
+							form_set_error($field['field_name'] .'][0][email', t('Please provide at least one email address as your preferred email address.'));
+						}
+
+					}
+				}
+			}
+			return;
+
+		case 'process form values':
+			// run a cleanup cycle
+			if(!strstr($node_field[0]['expertsdb_email'],':{')){
+				_expertsdb_email_cleanup_and_sort($node_field);
+			}
+			// apply some trimming
+			_expertsdb_email_widget_process($node_field);
+			return;
+
+		case 'submit':
+			if($field['user_email_default']){
+				// make sure, that the users account email address is present
+				_expertsdb_email_force_default($node_field);
+			}
+
+			// do not save empty values and bring preferred email to the top
+			_expertsdb_email_cleanup_and_sort($node_field);
+			// apply some trimming
+			_expertsdb_email_widget_process($node_field);
+
+			if($field['user_email_default']){
+				// sync the (potentially new) preferred email addres to user account
+				_expertsdb_email_sync_primary_email($node->uid, $node_field[0]['email']);
+			}
+
+			// serialize data
+			_expertsdb_email_serialize($node_field);
+			return;
+
+	}
+}
+
+/**
+ * AHAH generation of additional form fields
+ *
+ * @param unknown_type $type_name
+ * @param unknown_type $field_name
+ */
+function expertsdb_email_widget_js($type_name, $field_name) {
+	$field = content_fields($field_name, $type_name);
+	$type = content_types($type_name);
+	// get the correct delta and field_name depending on being in node_form or user_edit
+	// $delta = ($_POST['form_id'] == 'user_edit') ? $_POST[$type['type'].'_node_form'][$field_name]['count']: $_POST[$field_name]['count'];
+	$delta = $_POST[$field_name]['count'];
+	$form = array();
+
+	_expertsdb_email_widget_form($form, $field, $node_field, $delta);
+
+	// Assign parents matching the original form
+	foreach (element_children($form) as $key) {
+		$form[$key]['#parents'] = array($field_name, $delta, $key);
+	}
+
+	// Add names, ids, and other form properties
+	foreach (module_implements('form_alter') as $module) {
+		$function = $module .'_form_alter';
+		$function('expertsdb_email_widget_js', $form);
+	}
+	$form = form_builder('expertsdb_email_widget_js', $form);
+
+	// if form is rendered as part of the user profile page, we need to alter name and id of newly generated form elements
+	/*	if($_POST['form_id'] == 'user_edit'){
+	foreach (element_children($form) as $key) {
+	$element_name = explode('[',$form[$key]['#name']);
+	array_walk($element_name,'_expertsdb_email_widget_alter_elements');
+	$form[$key]['#name'] = $type['type'] . '_node_form' . '[' . implode('][',$element_name).']';
+	}
+	}*/
+
+	$output = drupal_render($form);
+
+	print drupal_to_js(array('status' => TRUE, 'data' => $output));
+	exit;
+}
+
+/**
+ * Helper function renders the expertsdb_email widget only for multiple values.
+ *
+ * @param unknown_type $form_item
+ * @param unknown_type $field
+ * @param unknown_type $node_field
+ * @param integer $delta
+ */
+function _expertsdb_email_widget_form(&$form_item, $field, $node_field, $delta = 0) {
+	global $user;
+	$form_item = array(
+    '#tree' => TRUE,
+    '#theme' => 'expertsdb_email_widget_form_row',
+	);
+
+	$default_value = "";
+	// pull in users account email address as default value
+	if ($delta === 0 && $field['user_email_default']) {
+		$default_value = $user->mail;
+	}
+
+	// always use the email address set in the user account as default value for the first item
+	$form_item['email'] = array(
+		'#type' => 'textfield',
+		'#title' => ($delta === 0) ? t('Email address') : NULL,
+		'#default_value' =>  ($node_field['email']) ? $node_field['email'] : (($default_value) ? $default_value : NULL),
+		'#required' =>  FALSE,
+		'#maxlength' => 255,
+		'#size' => isset($field['widget']['size']) ? $field['widget']['size'] : 60,
+		'#description' => ($delta === 0) ? t('Enter a fully qualified email address here.') : NULL,
+	);
+
+	// add preferred_email flag for multiple values; first item is always the preferred email
+	$form_item['preferred_email'] = array(
+  	'#type' => 'checkboxes',
+		'#title' => ($delta === 0) ? t('Preferred email') : NULL,
+   	'#description' => ($delta === 0) ? t("Check, if this address is your preferred email address.") : NULL,
+    '#required' => FALSE,
+    '#default_value' => ($node_field['preferred_email']['preferred_email'] === 'preferred_email') ? 'preferred_email' : (($delta === 0) ? 'preferred_email' : NULL),
+		'#attributes' => array(
+			'class' => 'preferred-email',
+	),
+    '#options' => array(
+    	'preferred_email' => t("Preferred email address"),
+	),
+	);
+}
+
+function _expertsdb_email_widget_process(&$node_field) {
+	foreach($node_field as $delta => $value) {
+		if (is_numeric($delta)) {
+			// Trim whitespace from email and
+			$node_field[$delta]['email'] = check_plain(trim($node_field[$delta]['email']));
+		}
+	}
+}
+
+function _expertsdb_email_widget_alter_elements(&$element){
+	$element = preg_replace('@\]@', '', $element);
+}
+
+/**
+ * Theme the display of a single form row
+ *
+ * @param unknown_type $element
+ * @return unknown
+ */
+function theme_expertsdb_email_widget_form_row($element) {
+	$output = '';
+	$output .= '<div class="expertsdb-email-field-row clear-block"><div class="expertsdb-email-field-subrow clear-block">';
+	$output .= '<div class="expertsdb-email-field-preferred-email preferred-email-field-column">' . drupal_render($element['preferred_email']) . '</div>';
+	$output .= '<div class="expertsdb-email-field-expertsdb-email">' . drupal_render($element['email']) . '</div>';
+	$output .= '</div>';
+	$output .= '</div>';
+	return $output;
+}
+
+/**
+ * Theme the display of the entire expertsdb_email set
+ *
+ * @param unknown_type $element
+ * @return unknown
+ */
+function theme_expertsdb_email_widget_form($element) {
+	// pull in the stylesheet
+	drupal_add_css(drupal_get_path('module', 'expertsdb_email') .'/expertsdb_email_form.css');
+	$output = drupal_render($element);
+	return $output;
+}
+
+/**
+ * Theme to display a complete container with all email addresses in view mode
+ *
+ * @param unknown_type $node
+ * @param unknown_type $field
+ * @param unknown_type $items
+ * @param unknown_type $teaser
+ * @param unknown_type $page
+ * @return unknown
+ */
+function theme_expertsdb_email_container($node, $field, $items, $teaser, $page){
+	// pull in the stylesheet
+	drupal_add_css(drupal_get_path('module', 'expertsdb_email') .'/expertsdb_email_view.css');
+	$output = '';
+	$output .= '<div class="expertsdb-email-container">';
+	$output .= theme('field', $node, $field, $items, $teaser, $page);
+	$output .= '</div>';
+	return $output;
+}
+
+
+/**
+ * Helper function to unserailize serialized data
+ *
+ * @param unknown_type $node_field
+ */
+function _expertsdb_email_widget_prepare(&$node_field){
+	// only prepare, if data is actually serialized
+	if(strstr($node_field[0]['expertsdb_email'],':{')){
+		$node_field[0] = unserialize($node_field[0]['expertsdb_email']);
+		if(count($node_field) > 0){
+			// return content of first array element
+			$node_field = $node_field[0];
+		}
+	}
+}
+
+/**
+ * Helper function to serialize data
+ *
+ * @param unknown_type $node_field
+ */
+function _expertsdb_email_serialize(&$node_field){
+	$node_field = array(array('expertsdb_email' => serialize($node_field)));
+}
+
+/**
+ * function to overwrite the user account email address with the newly set preferred email address
+ *
+ * @param unknown_type $new_mail
+ */
+function _expertsdb_email_sync_primary_email($uid = FALSE, $new_mail = FALSE){
+	if(!$new_mail || !$uid) return;
+
+	global $user;
+	// determine, wether actual user is the owner of this node
+	if($foreign_account = ($user && $uid != $user->uid)){
+		// replace current user object with authors user object
+		$account = user_load(array('uid' => $uid));
+		
+	} 
+	else {
+		$account = $user;	
+	}
+	if($account && $new_mail != $account->mail){
+		// invoke account update: write preferred email address to users account
+		$result = user_save($account,array('mail' => $new_mail));
+		drupal_set_message($foreign_account? t('The users preferred email address has been set as his user account email.') : t('Your preferred email address has been set as your user account email.'));
+	}
+
+}
+
+/**
+ * Function to ensure, that the users account email is present in the list of emails
+ * which might occure in case of submitting a completely emptied form
+ * or by submitting a form, where no email is set to preferred
+ *
+ * @param array $node_field
+ */
+function _expertsdb_email_force_default(&$node_field){
+	global $user;
+	$preferred_email = FALSE;
+	$account_email = array();
+
+	// Remove the JS helper fields
+	unset($node_field['count'], $node_field['more-url'], $node_field['more']);
+
+	foreach($node_field as $delta => $data){
+		if($data['preferred_email']['preferred_email'] === 'preferred_email'){
+			$preferred_email = $data['email'];
+		}
+		if($data['email'] == $user->mail){
+			$account_email = array($user->mail => $delta);
+		}
+	}
+	// inject users account email, if not present and if no preferred email is choosen
+	if(count($account_email)<1 && !$preferred_email){
+		$default = array('email' => $user->mail, 'preferred_email' => array('preferred_email' => 'preferred_email'));
+		array_unshift($node_field,$default);
+		drupal_set_message(t("Your account email address has been re-appended to the list of your email addresses."));
+		return;
+	}
+
+	if(!$preferred_email){
+		$node_field[$account_email[$user->mail]]['preferred_email']['preferred_email'] = 'preferred_email';
+	}
+}
+
+/**
+ * Function to remove unwanted elements from the node_field array
+ * and to move the preffered email address to the top of the list
+ *
+ * @param array $node_field
+ */
+function _expertsdb_email_cleanup_and_sort(&$node_field){
+	$save_field = array();
+	$registered_emails =array();
+
+	// Remove the JS helper fields
+	unset($node_field['count'], $node_field['more-url'], $node_field['more']);
+
+	// keep privacy settings
+	array_push($save_field,$node_field['custom_privacy']);
+
+	foreach ($node_field as $delta => $value) {
+		if (!empty($value['email']) || $delta == 0) {
+			// skip duplicates emails
+			if(in_array($value['email'], $registered_emails)){
+				continue;
+			}
+			// register email to avoid duplicates
+			array_push($registered_emails, $value['email']);
+
+			// resort email addresses; preferred address goes to top
+			if($node_field[$delta]['preferred_email'] && $node_field[$delta]['preferred_email']['preferred_email'] === 'preferred_email'){
+				// put email as first element into the list of emails to save
+				array_unshift($save_field,$node_field[$delta]);
+			}else{
+				$node_field[$delta]['preferred_email']['preferred_email'] = FALSE;
+				array_push($save_field,$node_field[$delta]);
+			}
+		}
+	}
+	$node_field = $save_field;
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ *
+ * @return array array of available formats
+ */
+function expertsdb_email_field_formatter_info() {
+	$formats = array(
+    'default' => array(
+      'label' => 'Default Email-Link',
+      'field types' => array('expertsdb_email'),
+	),
+    'contact' => array(
+      'label' => 'Email-Contact Form',
+      'field types' => array('expertsdb_email'),
+	),
+	);
+
+	if (module_exists('invisimail')) {
+		$formats['invisi'] = array(
+      'label' => 'Email-Invisimail',
+      'field types' => array('expertsdb_email'),
+		);
+	}
+	return $formats;
+}
+
+
+/**
+ * implementationof field_formatter()
+ *
+ * @param unknown_type $field
+ * @param unknown_type $item
+ * @param unknown_type $formatter
+ * @param unknown_type $node
+ * @return unknown
+ */
+function expertsdb_email_field_formatter($field, $item, $formatter, $node) {
+	// item comes in as either serialized or unserilaized item
+	if (empty($item[0]['expertsdb_email']) && empty($item[0]['email'])) {
+		return array();
+	}
+	if(strstr($item[0]['expertsdb_email'],':{')){
+		$items = unserialize($item[0]['expertsdb_email']);
+	}else{
+		unset($item['count'], $item['more-url'], $item['more']);
+		$items = $item;
+	}
+
+	/*
+	 * Force formatter depending of privacy level
+	 * - use contact forms, if
+	 * 	- privacy level is set to ContactPrivate
+	 * 	- AND current user is not the author of this node
+	 * 	- AND current user is not Admin or Director
+	 *
+	 * - use normal email addresses, if
+	 * 	- current user is the author of this node
+	 */
+	if($node->field_privacy){
+		global $user;
+		$term = taxonomy_get_term($node->field_privacy[0]['tid']);
+		switch($term->name){
+
+			case PRIVACY_CONTACT_PRIVATE:
+				if($user->uid != $node->uid && !user_access('view private expertsdb_email addresses',$user)){
+					$formatter = 'contact';
+				}else{
+					$formatter = ($formatter == 'invisi') ? 'invisi' : 'default';
+				}
+				break;
+
+			case PRIVACY_PRIVATE:
+				// show information only to roles with access and node author
+				if($user->uid != $node->uid && !user_access('view private expertsdb_email addresses',$user)){
+					return;
+				}
+				break;
+
+			case PRIVACY_PUBLIC:
+				// allow everybody to view email addresses as configured in the field formatter (display field)
+				break;
+
+		}
+	}
+
+	foreach ($items as $delta => $item) {
+		if (empty($item['email'])) {
+			// don't stop on empty values
+			continue;
+		}
+		else {
+
+			// prepare label
+			$wrapper = ($item['preferred_email']['preferred_email']) ? '<div class="item-label label-column">' . t('Primary Email:') . ' </div><div class="field-email email-data-column">%s</div>' : '<div class="item-label label-column">' . t('Additional Email:') . ' </div><div class="field-email email-data-column">%s</div>' ;
+			if ($formatter == 'contact') {
+				$entry = $delta+1; // avoid NULL values
+				$mailto = l(t('Email Contact Form'), 'expertsdb_email/'.$node->nid.'/'.$field['field_name'].'/'.$entry);
+
+				// only display the first email address, which is the preferred email address
+				// attach wrapper and put into items
+				$items[$delta]['view'] = sprintf($wrapper,$mailto);
+				break;
+			}
+			elseif ($formatter == 'invisi' && module_exists('invisimail')) {
+				// use html filter format as default format.
+				$format = ($GLOBALS['invisimail_format']) ? $GLOBALS['invisimail_format'] : 1;
+				if (!(variable_get('invisimail_link_'.$format, TRUE))) {
+					variable_set('invisimail_link_'.$format, TRUE);
+					variable_set('invisimail_js_'.$format, TRUE);
+				}
+				$js = variable_get('invisimail_js_'.$format, FALSE);
+				$link = variable_get('invisimail_link_'.$format, FALSE);
+
+				$mailto = invisimail_ascii_encode($item['email'], $js, $link);
+			}
+			else {
+				$mailto =  '<a href="mailto:'. $item['email']. '">'. check_plain($item['email']) .'</a>';
+			}
+
+			// attach wrapper and put into items
+			$items[$delta]['view'] = sprintf($wrapper,$mailto);
+		}
+
+	}
+	return $items;
+}
+
+/**
+ * The contact form page.
+ *
+ * @param unknown_type $nid
+ * @param unknown_type $fieldname
+ * @return unknown
+ */
+function expertsdb_email_mail_page($nid = NULL, $fieldname = NULL, $item = NULL) {
+	global $user;
+
+	if (empty($nid) || empty($fieldname)) {
+		drupal_not_found();
+		return;
+	}
+	$node = node_load(intval($nid));
+	if (!$node) {
+		drupal_not_found();
+		return;
+	}
+	// Validate field name
+	$types = content_types($node->type);
+	if (!isset($types['fields'][$fieldname]) ||
+	$types['fields'][$fieldname]['type'] != 'expertsdb_email') {
+		drupal_not_found();
+		return;
+	}
+	if(!user_access('access expertsdb_email mail form',$user)){
+		drupal_access_denied();
+		return;
+	}
+	$field = $node->$fieldname;
+	if (empty($field) || empty($field[0]['expertsdb_email'])) {
+		drupal_not_found();
+		return;
+	}
+
+	if (!flood_is_allowed('expertsdb_email', variable_get('expertsdb_email_hourly_threshold', 3))) {
+		$output = t("You cannot send more than %number messages per hour. Please try again later.", array('%number' => variable_get('expertsdb_email_hourly_threshold', 3)));
+	}
+	else {
+		$output = drupal_get_form('expertsdb_email_mail_page_form');
+	}
+
+	return $output;
+}
+
+/**
+ * Enter description here...
+ *
+ * @return unknown
+ */
+function expertsdb_email_mail_page_form() {
+	global $user;
+
+	if ($user->uid) {
+		$edit['name'] = $user->name;
+		$edit['mail'] = $user->mail;
+	}
+
+	$form['#token'] = $user->name . $user->mail;
+	$form['name'] = array('#type' => 'textfield',
+    '#title' => t('Your name'),
+    '#maxlength' => 255,
+    '#default_value' => $edit['name'],
+    '#required' => TRUE,
+	);
+	$form['mail'] = array('#type' => 'textfield',
+    '#title' => t('Your e-mail address'),
+    '#maxlength' => 255,
+    '#default_value' => $edit['mail'],
+    '#required' => TRUE,
+	);
+	$form['subject'] = array('#type' => 'textfield',
+    '#title' => t('Subject'),
+    '#maxlength' => 255,
+    '#required' => TRUE,
+	);
+	$form['message'] = array('#type' => 'textarea',
+    '#title' => t('Message'),
+    '#required' => TRUE,
+	);
+	$form['submit'] = array('#type' => 'submit',
+    '#value' => t('Send e-mail'),
+	);
+	return $form;
+}
+
+/**
+ * Validate the site-wide contact page form submission.
+ *
+ * @param unknown_type $form_id
+ * @param unknown_type $form_values
+ */
+function expertsdb_email_mail_page_form_validate($form_id, $form_values) {
+	if (!valid_email_address($form_values['mail'])) {
+		form_set_error('mail', t('You must enter a valid e-mail address.'));
+	}
+	if (preg_match("/\r|\n/", $form_values['subject'])) {
+		form_set_error('subject', t('The subject cannot contain linebreaks.'));
+		watchdog('mail', 'Email injection exploit attempted in email form subject: '.check_plain($form_values['subject']), WATCHDOG_NOTICE);
+	}
+}
+
+/**
+ * Process the site-wide contact page form submission.
+ *
+ * @param unknown_type $form_id
+ * @param unknown_type $edit
+ * @return unknown
+ */
+function expertsdb_email_mail_page_form_submit($form_id, $edit) {
+	$nid = intval(arg(1));
+	$fieldname = arg(2);
+	$email_entry = intval(arg(3));
+	if (empty($nid) || empty($fieldname) || empty($email_entry)) {
+		drupal_not_found();
+		return;
+	}
+	$node = node_load($nid);
+	if (!$node) {
+		drupal_not_found();
+		return;
+	}
+	// Validate field name
+	$types = content_types($node->type);
+	if (!isset($types['fields'][$fieldname]) ||
+	$types['fields'][$fieldname]['type'] != 'expertsdb_email') {
+		drupal_not_found();
+		return;
+	}
+	$field = $node->$fieldname;
+	if (empty($field) || empty($field[0]['expertsdb_email'])) {
+		drupal_not_found();
+		return;
+	}
+	$email_addresses = unserialize($field[0]['expertsdb_email']);
+	$delta = $email_entry-1;
+	$email = $email_addresses[$delta]['expertsdb_email'];
+
+	// E-mail address of the sender: as the form field is a text field,
+	// all instances of \r and \n have been automatically stripped from it.
+	$from = $edit['mail'];
+
+	// Compose the body:
+	$message[] = t("@name sent a message using the contact form at @form.", array('@name' => $edit['name'], '@form' => url($_GET['q'], NULL, NULL, TRUE)));
+	$message[] = $edit['message'];
+
+	// Tidy up the body:
+	foreach ($message as $key => $value) {
+		$message[$key] = wordwrap($value);
+	}
+
+	// Format the category:
+	$subject = t('[@title - @contact] @subject', array('@title' => preg_replace("/\r|\n/",'',$node->title), '@contact' => $types['fields'][$fieldname]['widget']['label'], '@subject' => $edit['subject']));
+
+	// Prepare the body:
+	$body = implode("\n\n", $message);
+
+	// Send the e-mail to the recipients:
+	drupal_mail($fieldname, $email, $subject, $body, $from);
+
+	// Log the operation:
+	flood_register_event('expertsdb_email');
+	watchdog('mail', t('%name-from sent an e-mail at %form.', array('%name-from' => theme('placeholder', $edit['name'] ." <$from>"), '%form' => url($_GET['q'], NULL, NULL, TRUE))));
+
+	// Update user:
+	drupal_set_message(t('Your message has been sent.'));
+
+	// Jump to home page rather than back to contact page to avoid contradictory messages if flood control has been activated.
+	return 'node/'.$node->nid;
+}
+
+
+/**
+ * Token Integration
+ *
+ * @param unknown_type $type
+ * @return unknown
+ */
+function expertsdb_email_token_list($type = 'all') {
+	if ($type == 'field' || $type == 'all') {
+		$tokens['email']['email'] = t("Email Address");
+		return $tokens;
+	}
+}
+
+/**
+ * Implementation of hook token_values
+ *
+ * @param unknown_type $type
+ * @param unknown_type $object
+ * @param unknown_type $options
+ * @return unknown
+ */
+function expertsdb_email_token_values($type, $object = NULL, $options = array()) {
+	if ($type == 'field') {
+		$item = $object[0];
+		$tokens['email'] = check_plain($item['expertsdb_email']);
+		return $tokens;
+	}
+}

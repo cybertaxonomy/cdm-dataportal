@@ -1,0 +1,23 @@
+div.expertsdb-timespan-field-timespan-from{
+float:left;
+clear:left;
+width: 14em;
+margin: 0 2em 0 0;
+}
+div.expertsdb-timespan-field-timespan-to{
+width: 14em;
+float:left;
+}
+
+.expertsdb-timespan-field-row input {
+width: 12em;
+}
+
+legend, legend a:link,legend a:active,legend a:visited{
+font-weight:700;
+color:#236abf;
+}
+
+legend a:hover{
+text-decoration: underline;
+}

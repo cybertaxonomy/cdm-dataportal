@@ -1,0 +1,173 @@
+<?php
+/**
+ * This is the expertsdb_address_india module for use with expertsdb_address.
+ *
+ * <p>This module simply adds support for Indian Provinces</p>
+ *
+ * @version $Id: expertsdb_address_india.module,v 1.1 2007/12/04 21:18:09 rconstantine Exp $;
+ * @package CCK
+ * @category CCK
+ * @author Vinay Yadav - VinayRas
+ * @filesource
+ * @license http://www.gnu.org/licenses/gpl.txt GNU_GENERAL_PUBLIC_LICENSE
+ * @link none yet
+ */
+
+/**
+ * Implementation of hook_help
+ *
+ * Display help and module information
+ * @param string section which section of the site we're displaying help
+ * @return help text for section
+ */
+function expertsdb_address_india_help($section='') {
+
+  $output = '';
+
+  switch ($section) {
+    case "admin/help#expertsdb_address_india":
+      $output = '<p>'.  t("Adds support for Indian Provinces to expertsdb_address."). '</p>';
+      break;
+  }
+
+  return $output;
+} // function expertsdb_address_india_help()
+
+/**
+ * Adds all Indian Provinces to the states table. Adds India to the countries table. Returns whether all queries succeeded.
+ *
+ * @return boolean $query_ok
+ */
+function expertsdb_address_india_installstates($query_ok = TRUE) {
+  if (db_table_exists('expertsdb_address_states')) {
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Andhra Pradesh', 'AP', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Arunachal Pradesh', 'AR', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Assam', 'AS', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Bihar', 'BR', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Chhattisgarh', 'CG', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Goa', 'GA', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Gujarat', 'GJ', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Haryana', 'HR', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Himachal Pradesh', 'HP', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Jammu & Kashmir', 'JK', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Jharkhand', 'JH', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Karnataka', 'KA', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Kerala', 'KL', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Madhya Pradesh', 'MP', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Maharashtra', 'MH', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Manipur', 'MN', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Meghalaya', 'ML', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Mizoram', 'MZ', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Nagaland', 'NL', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Orissa', 'OR', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Punjab', 'PB', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Rajasthan', 'RJ', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Sikkim', 'SK', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Tamil Nadu', 'TN', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Tripura', 'TR', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Uttar Pradesh', 'UP', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Uttarakhand', 'UA', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Andaman & Nicobar', 'AN', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Puducherry', 'PY', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Chandigarh', 'CH', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Lakshadweep', 'LD', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Dadra and Nagar Haveli', 'DN', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Daman and Diu', 'DD', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+
+    $query2 = db_query("INSERT INTO {expertsdb_address_states} (state_name, state_abbrv, country_code) VALUES ('Delhi', 'DL', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+
+  }
+  if (db_table_exists('expertsdb_address_countries')) {
+    $query2 = db_query("INSERT INTO {expertsdb_address_countries} (country_name, country_code) VALUES ('India', 'IN')");
+    if (!$query2) {$query_ok = FALSE;}
+  }
+  return $query_ok;
+} // function expertsdb_address_india_installstates()
+
+/**
+ * Implementation of hook_validate_address_fields
+ *
+ * This hook is used by expertsdb_address and any supporting modules which add country-specific field validation.
+ * The first argument is an array, passed in by reference in 'fieldname=>error string' pairs. The error string should remain empty
+ * so long as there are no errors. If there is an error, the string should be replaced with an appropriate t-ified message. The
+ * second argument is the country code of the address. The first thing an implementation of this hook should do is check to see if
+ * the country code matches the country for which the module was made to support. If not, it should return immediately, without
+ * modifying the $errors array. This will ensure that only the country which SHOULD validate, does the validation. The third argument
+ * is the item containing the values of the form.
+ *
+ * NOTE TO INDIAN USERS: You may need to remove some or most of the language codes in the $val_locale array below as none of them were
+ * tested on my (rconstantine) machine. With so many languages in your country, I assume that en_IN is your common language, but I don't know.
+ *
+ * ANOTHER NOTE TO INDIAN USERS: I was able to look up postal codes for your country and contruct a validation REGEX for it, but I don't know
+ * about the rest of the fields. Do they need changing? Post problems to the issue queue.
+ */
+function expertsdb_address_india_validate_address_fields(&$errors, $country_code, $item, $field_name) {
+  if ($country_code != 'IN' && $country_code != 'India'){
+    return;
+  }
+  $val_locale = array('en_IN' => 'en_IN', 'as_IN' => 'as_IN', 'bn_IN' => 'bn_IN', 'gu_IN' => 'gu_IN', 'hi_IN' => 'hi_IN', 'kn_IN' => 'kn_IN', 'kok_IN' => 'kok_IN', 'ml_IN' => 'ml_IN', 'mr_IN' => 'mr_IN', 'ne_IN' => 'ne_IN', 'or_IN' => 'or_IN', 'pa_IN' => 'pa_IN', 'sa_IN' => 'sa_IN', 'te_IN' => 'te_IN', 'ta_IN' => 'ta_IN', 'tr_IN' => 'tr_IN');//I don't know if these are all valid codes
+
+  $locales = expertsdb_address_get_all_locales();
+  $default_locale = setlocale(LC_ALL, 0);
+
+  foreach ($val_locale as $key => $value) {
+    if ($current_locale = expertsdb_address_setLocaleCP($value)) {
+      if (($item['street1'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\/\s]+$/", $item['street1']))) {
+        $errors['street1'] = t('(India): Illegal value for %name\'s Street field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+      }
+      if (($item['street2'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\/\s]+$/", $item['street2']))) {
+        $errors['street2'] = t('(India):Illegal value for %name\'s Street Continued field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+      }
+      if (($item['apt'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\/]+$/", $item['apt']))) {
+        $errors['apt'] = t('(India):Illegal value for %name\'s Apt/Suite Number field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+      }
+      if (($item['city'] != '') && (!preg_match("/^[\.\'\-[:alpha:]\s]+$/", $item['city']))) {
+        $errors['city'] = t('(India):Illegal value for %name\'s City field. Only letters, \' and - are valid. No numbers or other special characters allowed.', array('%name' => $field_name));
+      }
+      if (($item['zip'] != '') && (!preg_match("^[1-9]{3}\s{0,1}[0-9]{3}$", $item['zip']))) {//zip code is 6 digits with a possible space after third. first set is 1-9, second is 0-9
+        $errors['zip'] = t('(India):Illegal value for %name\'s ZIP field.', array('%name' => $field_name));
+      }
+      if (($item['other'] != '') && (!preg_match("/^[\.\'\-[:alpha:]0-9\s]+$/", $item['other']))) {
+        $errors['other'] = t('(India):Illegal value for %name\'s Other field. Only letters, numbers, \' and - are valid. No other special characters allowed.', array('%name' => $field_name));
+      }
+    }
+  }
+  setlocale(LC_ALL, $default_locale);
+  return;
+}

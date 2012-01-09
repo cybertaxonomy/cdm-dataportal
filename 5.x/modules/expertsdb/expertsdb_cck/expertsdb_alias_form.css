@@ -1,0 +1,28 @@
+div.expertsdb-title-field-column {
+	float:left;
+	clear:left;	
+	padding: 0 1em 0 0;
+}
+
+div.expertsdb-link-field-title {
+	  width: 33%;
+}
+
+
+div. expertsdb-link-field-column {
+	width: 61%;
+}
+
+div.expertsdb-link-field-url {
+	float:left;
+  width: 61%;
+}
+
+legend, legend a:link,legend a:active,legend a:visited{
+font-weight:700;
+color:#236abf;
+}
+
+legend a:hover{
+text-decoration: underline;
+}

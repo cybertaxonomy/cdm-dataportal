@@ -1,0 +1,45 @@
+<?xml version="1.0" standalone="no"?> <!DOCTYPE taxonomy SYSTEM "taxonomy.dtd"> <vocabulary> <vid>12</vid> <name>expertdb_methods</name> <description></description> <help></help> <relations>0</relations> <hierarchy>1</hierarchy> <multiple>1</multiple> <required>0</required> <nodes></nodes> <weight>0</weight>
+<term><tid>1</tid><vid>11</vid><name>Microscopy</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>2</tid><vid>11</vid><name>standard light microscopy</name><description></description><weight>0</weight><parent>1</parent></term>
+<term><tid>3</tid><vid>11</vid><name>photomicroscopy</name><description></description><weight>0</weight><parent>1</parent></term>
+<term><tid>4</tid><vid>11</vid><name>scanning eletron microscopy</name><description></description><weight>0</weight><parent>1</parent></term>
+<term><tid>5</tid><vid>11</vid><name>transmission electron microscopy</name><description></description><weight>0</weight><parent>1</parent></term>
+<term><tid>6</tid><vid>11</vid><name>laser confocal microscopy</name><description></description><weight>0</weight><parent>1</parent></term>
+<term><tid>7</tid><vid>11</vid><name>interference contrast microscopy</name><description></description><weight>0</weight><parent>1</parent></term>
+<term><tid>8</tid><vid>11</vid><name>fluorescence microscopy</name><description></description><weight>0</weight><parent>1</parent></term>
+<term><tid>9</tid><vid>11</vid><name>video microscopy</name><description></description><weight>0</weight><parent>1</parent></term>
+<term><tid>10</tid><vid>11</vid><name>Other microscopy</name><description></description><weight>0</weight><parent>1</parent></term>
+<term><tid>11</tid><vid>11</vid><name>Statistics</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>12</tid><vid>11</vid><name>multivariate statistics</name><description></description><weight>0</weight><parent>11</parent></term>
+<term><tid>13</tid><vid>11</vid><name>Other statistics</name><description></description><weight>0</weight><parent>11</parent></term>
+<term><tid>14</tid><vid>11</vid><name>Key construction </name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>15</tid><vid>11</vid><name>Phylogeny reconstruction</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>16</tid><vid>11</vid><name>morphological </name><description></description><weight>0</weight><parent>15</parent></term>
+<term><tid>17</tid><vid>11</vid><name>molecular</name><description></description><weight>0</weight><parent>15</parent></term>
+<term><tid>18</tid><vid>11</vid><name>parsimony</name><description></description><weight>0</weight><parent>15</parent></term>
+<term><tid>19</tid><vid>11</vid><name>maximum likelihood</name><description></description><weight>0</weight><parent>15</parent></term>
+<term><tid>20</tid><vid>11</vid><name>Bayesian analysis</name><description></description><weight>0</weight><parent>15</parent></term>
+<term><tid>21</tid><vid>11</vid><name>Other phylogeny reconstruction</name><description></description><weight>0</weight><parent>15</parent></term>
+<term><tid>22</tid><vid>11</vid><name>Morphometry</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>23</tid><vid>11</vid><name>Automatic image recognition</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>24</tid><vid>11</vid><name>3D reconstruction</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>25</tid><vid>11</vid><name>Acoustics</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>26</tid><vid>11</vid><name>vital taxonomy</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>27</tid><vid>11</vid><name>Behavioural studies</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>28</tid><vid>11</vid><name>Genome analysis</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>29</tid><vid>11</vid><name>chromosome counts</name><description></description><weight>0</weight><parent>28</parent></term>
+<term><tid>30</tid><vid>11</vid><name>fluorescence in situ hybridization (FISH)</name><description></description><weight>0</weight><parent>28</parent></term>
+<term><tid>31</tid><vid>11</vid><name>Genomic in situ hybridization (GISH)</name><description></description><weight>0</weight><parent>28</parent></term>
+<term><tid>32</tid><vid>11</vid><name>meiotics paring analysis</name><description></description><weight>0</weight><parent>28</parent></term>
+<term><tid>33</tid><vid>11</vid><name>Embryology</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>34</tid><vid>11</vid><name>Molecular methods</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>35</tid><vid>11</vid><name>DNA barcoding</name><description></description><weight>0</weight><parent>34</parent></term>
+<term><tid>36</tid><vid>11</vid><name>other sequence approaches</name><description></description><weight>0</weight><parent>34</parent></term>
+<term><tid>37</tid><vid>11</vid><name>RFLP/AFLP</name><description></description><weight>0</weight><parent>34</parent></term>
+<term><tid>38</tid><vid>11</vid><name>allozymes</name><description></description><weight>0</weight><parent>34</parent></term>
+<term><tid>39</tid><vid>11</vid><name>Other molecular methods</name><description></description><weight>0</weight><parent>34</parent></term>
+<term><tid>40</tid><vid>11</vid><name>Chemical methods</name><description></description><weight>0</weight><parent></parent></term>
+<term><tid>41</tid><vid>11</vid><name>secondary compunds analysis</name><description></description><weight>0</weight><parent>40</parent></term>
+<term><tid>42</tid><vid>11</vid><name>high performance liquid chromatography (HPLC)</name><description></description><weight>0</weight><parent>40</parent></term>
+<term><tid>43</tid><vid>11</vid><name>Other</name><description></description><weight>0</weight><parent></parent></term>
+</vocabulary>
