@@ -42,6 +42,8 @@
 			keyToClose:				'c',		// (string) (c = close) Letter to close the jQuery lightBox interface. Beyond this letter, the letter X and the SCAPE key is used to.
 			keyToPrev:				'p',		// (string) (p = previous) Letter to show the previous image
 			keyToNext:				'n',		// (string) (n = next) Letter to show the next image.
+			//implement an adjust to window setting
+			adjustToWindow: null,
 			// Don�t alter these variables in any way
 			imageArray:				[],
 			activeImage:			0
@@ -200,6 +202,18 @@
 		 * @param integer intImageHeight The image�s height that will be showed
 		 */
 		function _resize_container_image_box(intImageWidth,intImageHeight) {
+			var myHeight = $(window).height() -150;
+			var myWidth = $(window).width() -200;
+			if((settings.adjustToWindow == true && settings.adjustToWindow != null)  && (intImageWidth > myWidth || intImageHeight > myHeight)) {
+				//get the height and width of the window to resize the image appropriately, Height is at -150 to compensate for various padding and borders
+				
+				var isWider = intImageWidth > intImageHeight;//is the image wide or tall?
+		    	var scale = isWider ?  myWidth/intImageWidth : myHeight/intImageHeight;
+		    	intImageWidth = intImageWidth * scale;
+		    	intImageHeight = intImageHeight * scale;
+			}
+		     $('#lightbox-image').height(intImageHeight); 
+		     $('#lightbox-image').width(intImageWidth);  
 			// Get current width and height
 			var intCurrentWidth = $('#lightbox-container-image-box').width();
 			var intCurrentHeight = $('#lightbox-container-image-box').height();
@@ -209,6 +223,9 @@
 			// Diferences
 			var intDiffW = intCurrentWidth - intWidth;
 			var intDiffH = intCurrentHeight - intHeight;
+			//Set the maxSize and max 
+			
+
 			// Perfomance the effect
 			$('#lightbox-container-image-box').animate({ width: intWidth, height: intHeight },settings.containerResizeSpeed,function() { _show_image(); });
 			if ( ( intDiffW == 0 ) && ( intDiffH == 0 ) ) {
@@ -220,6 +237,9 @@
 			} 
 			$('#lightbox-container-image-data-box').css({ width: intImageWidth });
 			$('#lightbox-nav-btnPrev,#lightbox-nav-btnNext').css({ height: intImageHeight + (settings.containerBorderSize * 2) });
+			//rescale if necessary
+		    
+
 		};
 		/**
 		 * Show the prepared image

@@ -409,7 +409,8 @@ function _add_js_lightbox($galleryID){
         imageBtnPrev:     \''.$lightBoxBasePath.'/images/lightbox-btn-prev.gif\',
         imageBtnNext:     \''.$lightBoxBasePath.'/images/lightbox-btn-next.gif\',
         imageBtnClose:    \''.$lightBoxBasePath.'/images/lightbox-btn-close.gif\',
-        imageBlank:       \''.$lightBoxBasePath.'/images/lightbox-blank.gif\'
+        imageBlank:       \''.$lightBoxBasePath.'/images/lightbox-blank.gif\',
+        adjustToWindow: true
       });
     });
     ', 'inline');

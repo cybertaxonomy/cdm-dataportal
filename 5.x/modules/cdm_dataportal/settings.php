@@ -647,6 +647,7 @@ function cdm_settings_layout_taxon(){
         '#description' => t('<p>If checked the link to search results is rendererized at the top of the taxon site. Clicking on the link the last search performed is renderized again.</p>')
   );
 
+
   /* ======  TAXON_PROFILE ====== */
 
   $form['taxon_profile'] = array(
@@ -935,6 +936,42 @@ function cdm_settings_layout_search(){
     '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
     '#description' => t('Number of results to display per page.')
   );
+   
+  $form['search_settings']['cdm_dataportal_search_items_on_page'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Results per page'),
+    '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
+    '#description' => t('Number of results to display per page.')
+  );
+  
+    $form['search_settings']['cdm_search_taxa'] = array(
+    	'#type' => 'checkbox',
+        '#title' => t('Sets the default value of <em>Search for accepted taxa</em> in the advanced search form.'),
+        '#default_value' => variable_get('cdm_search_taxa', 1),
+        '#description' => t('<p>If checked the <em>Search for accepted taxa </em> option will be enabled in the advanced form.</p>')
+  	);
+  	
+  	$form['search_settings']['cdm_search_synonyms'] = array(
+    	'#type' => 'checkbox',
+        '#title' => t('Sets the default value of <em>Search for synonyms</em> in the advanced search form.'),
+        '#default_value' => variable_get('cdm_search_synonyms', 1),
+        '#description' => t('<p>If checked the <em>Search for synonyms</em> option will be enabled in the advanced form.</p>')
+  	);
+  	
+  	$form['search_settings']['cdm_search_common_names'] = array(
+    	'#type' => 'checkbox',
+        '#title' => t('Sets the default value of <em>Search for common names</em> in the advanced search form.'),
+        '#default_value' => variable_get('cdm_search_common_names', 0),
+        '#description' => t('<p>If checked the <em>Search for common names</em> option will be enabled in the advanced form.</p>')
+  	);
+  	
+  	$form['search_settings']['cdm_search_use_default_values'] = array(
+  	    	'#type' => 'checkbox',
+  	        '#title' => t('Sets use of default values in the advanced search form.'),
+  	        '#default_value' => variable_get('cdm_search_use_default_values', 1),
+  	        '#description' => t('<p>If checked the defqult values set abovewill be used for the search.</p>')
+  	);
+  
 
   // --- SEARCH TAXA GALLERY ---- //
   $items = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);

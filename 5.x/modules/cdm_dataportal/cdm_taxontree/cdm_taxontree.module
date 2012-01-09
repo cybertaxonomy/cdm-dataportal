@@ -817,7 +817,6 @@ function theme_cdm_taxontree($tree, $filterIncludes = null, $show_filter_switch 
 }
 
 function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = false, $tree_node_callback = false){
-
 	$is_leaf = !$node->taxonomicChildrenCount || $node->taxonomicChildrenCount == 0;
 	$is_expanded = isset($node->expanded) && $node->expanded = 'expanded';
 
@@ -878,7 +877,7 @@ function theme_cdm_taxontree_node($node, $filterIncludes, $show_filter_switch = 
 
 	// taxon name
 	$out .= $name;
-
+	
 	// concept_switch or other theme callbacks
 	if($tree_node_callback){
 		$out .= theme($tree_node_callback, $node);

@@ -14,7 +14,7 @@
 function theme_cdm_feature_nodesTOC($featureNodes){
 
   $out .= '<ul>';
-
+  
   foreach($featureNodes as $node){
 
     if(hasFeatureNodeDescriptionElements($node)){
@@ -26,7 +26,7 @@ function theme_cdm_feature_nodesTOC($featureNodes){
       }
     }
   }
-
+  
   $out .= '</ul>';
   return $out;
 }
@@ -55,9 +55,9 @@ function theme_cdm_featureTrees($mergedTrees, $taxon){
     //TODO display title and reference in case of multiple $mergedTrees -> theme
     $out .= theme('cdm_feature_nodes', $mTree->root->children, $taxon);
   }
+  
   return $out;
 }
-
 
 
 function theme_cdm_featureTreeTOCs($mergedTrees){
@@ -92,14 +92,14 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
 
   RenderHints::pushToRenderStack('feature_nodes');
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
-
+  //Creating an array to place the description elements in 
+  
   foreach($mergedFeatureNodes as $node){
 
     if(hasFeatureNodeDescriptionElements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       $block->module = 'cdm_dataportal';
-
       $media_list = array();
 
       if($node->feature->uuid != UUID_IMAGE) {
@@ -204,14 +204,22 @@ function theme_cdm_feature_nodes($mergedFeatureNodes, $taxon){
         $block->content .= $gallery;
         $block->content .= theme('cdm_footnotes', $node->feature->uuid);
         $block->content .= theme('cdm_annotation_footnotes', $node->feature->uuid);
-
-        // add anchor to subject
+        
+        
+        
+        // add anchor to subject        
         $block->subject = '<a name="'.$block->delta.'"></a>'.  $block->subject;
-
+       	
+  		
         $out .= theme('block', $block);
+        
       }
+    
+      
+      
+      
     }
-
+    
   }
   RenderHints::popFromRenderStack();
   return $out;
@@ -509,6 +517,8 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
   return $out;
 }
 
+
+
 /**
  *
  * Enter description here ...
@@ -737,7 +747,7 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
 function theme_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
 
   if(isset($descriptionElementSource->citation)){
-    $out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
+  	$out = theme('cdm_reference', $descriptionElementSource->citation, $descriptionElementSource->citationMicroReference, $doLink);
   }
   return $out;
 }
