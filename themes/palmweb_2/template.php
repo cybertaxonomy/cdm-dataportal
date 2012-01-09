@@ -85,7 +85,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enc
 function palmweb_2_cdm_feature_nodesTOC($featureNodes){
 
   $out .= '<ul>';
-  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), $taxon->uuid)));
+  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), substr(strrchr($_GET["q"], '/'), 1))));
   if ($numberOfChildren != 0) {
  	 $out .= '<li>'.l(t(theme('cdm_feature_name', 'Number of Species')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Number Of Species')).'</li>';
   }
