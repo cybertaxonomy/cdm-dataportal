@@ -1,6 +1,0 @@
-name = Expertsdb Address Field Indian Support
-description = Adds support for Indian Provinces.
-dependencies = content expertsdb_address
-package = EDIT CCK
-
-

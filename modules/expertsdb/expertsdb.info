@@ -1,6 +1,0 @@
-; $Id: expertsdb.info 992 2007-12-05 10:32:02Z a.kohlbecker $
-name = EDIT - Taxonomic Experts Database
-package = EDIT
-description = "A online information service on  taxonomic experts, their expertise and ongoing and planned taxonomic research projects. This module is brought to you by the European Distributed Institute of Taxonomy - EDIT"
-version = 5.x-1.0
-dependencies = noderef_parent

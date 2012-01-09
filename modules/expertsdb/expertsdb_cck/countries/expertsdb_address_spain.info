@@ -1,4 +1,0 @@
-name = Expertsdb Address Field Spain Support
-description = Adds support for Spanish Provinces.
-dependencies = content expertsdb_address
-package = EDIT CCK

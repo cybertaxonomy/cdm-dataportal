@@ -1,5 +1,0 @@
-name = Expertsdb Address Field Canadian Support
-description = Adds support for Canadian Provinces.
-dependencies = content expertsdb_address
-package = EDIT CCK
-

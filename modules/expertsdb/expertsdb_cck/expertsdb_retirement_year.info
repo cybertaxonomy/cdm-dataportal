@@ -1,6 +1,0 @@
-name = Expertsdb Retirement Year
-description = Defines a date field type for CCK taking only 2 or 4 digit year values
-dependencies = content
-package = EDIT CCK
-
-

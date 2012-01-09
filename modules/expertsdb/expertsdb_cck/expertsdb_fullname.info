@@ -1,4 +1,0 @@
-name = Expertsdb Fullname Field
-description = Defines fullname field so first, middle and last names are treated as a single unit.
-dependencies = content
-package = EDIT CCK
