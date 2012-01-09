@@ -628,7 +628,7 @@ function cdm_rankVocabulary_as_option() {
   return cdm_Vocabulary_as_option(UUID_RANK);
 }
 
-function cdm_Vocabulary_as_option($vocabularyUuid){
+function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = null){
   static $vocabularyOptions;
 
   if(!$rankVocabularyOptions){
@@ -638,13 +638,25 @@ function cdm_Vocabulary_as_option($vocabularyUuid){
       $vocabularyOptions[$vocabularyUuid] = array();
       if($vocab){
         foreach($vocab->terms as $term){
-          $vocabularyOptions[$vocabularyUuid][$term->uuid] = t($term->representation_L10n);
+          if($term_label_callback && function_exists($term_label_callback)){
+            $vocabularyOptions[$vocabularyUuid][$term->uuid] = call_user_func($term_label_callback, $term);
+          } else {
+	        $vocabularyOptions[$vocabularyUuid][$term->uuid] = t($term->representation_L10n);
+          }
         }
         array_reverse($vocabularyOptions[$vocabularyUuid]);
       }
     }
   }
   return $vocabularyOptions[$vocabularyUuid];
+}
+
+function _cdm_relationship_type_term_label_callback($term){
+  if(isset($term->representation_L10n_abbreviatedLabel)) {
+    return $term->representation_L10n_abbreviatedLabel . ' : ' . t($term->representation_L10n);
+  } else {
+    return t($term->representation_L10n);
+  }
 }
 
 
@@ -690,8 +702,11 @@ function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
       if(is_array($annotationPager->records)){
         $annotations = array();
         foreach($annotationPager->records as $annotation){
-          if(!$includeTypes || !isset($annotation->annotationType) || !isset($annotation->annotationType->uuid) ||in_array($annotation->annotationType->uuid, $includeTypes)){
-            $annotations[] = $annotation;
+          if($includeTypes) {
+            if( (isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, true))
+              || ($annotation->annotationType === null && in_array('NULL_VALUE', $includeTypes, true))){
+              $annotations[] = $annotation;
+            }
           }
         }
         return $annotations;

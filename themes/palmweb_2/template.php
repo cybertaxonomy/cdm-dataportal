@@ -727,6 +727,39 @@ function palmweb_2_cdm_media_caption($media, $elements = array('title', 'descrip
 
 
 /**
+ *
+ * Enter description here ...
+ * @param unknown_type $reference
+ * @param unknown_type $microReference
+ * @param unknown_type $doLink
+ * @param unknown_type $referenceStyle
+ */
+function palmweb_2_cdm_reference($reference, $microReference = null, $doLink = FALSE, $referenceStyle = NULL ){
+
+  $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
+
+  $year = partialToYear($reference->datePublished->start);
+  $citation = _short_form_of_author_team ($author_team->titleCache) . ($year ? '. '.$year : '');
+  $citation = str_replace('..', '.', $citation);
+
+  if($doLink){
+    $out = l('<span class="reference">'.$citation.'</span>'
+    , path_to_reference($reference->uuid)
+    , array("class"=>"reference")
+    , NULL, NULL, FALSE ,TRUE);
+  } else {
+    $out = '<span class="reference">'.$citation.'</span>';
+  }
+  //FIXME use microreference webservice instead
+  if(!empty($descriptionElementSource->citationMicroReference)){
+    $out .= ': '. $descriptionElementSource->citationMicroReference;
+  }
+
+  return $out;
+}
+
+
+/**
  * Sets the body-tag class attribute.
  *
  * Adds 'sidebar-left', 'sidebar-right' or 'sidebars' classes as needed.

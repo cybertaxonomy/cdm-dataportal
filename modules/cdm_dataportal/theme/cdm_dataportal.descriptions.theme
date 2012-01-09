@@ -821,132 +821,136 @@ function theme_cdm_distribution_map($taxon){
     . l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/geo'), 'warning');
     //message to render
     return "<p>No geoservice specified</p>";
-  }else{
-    $fontStyles = array(0 => "plane", 1 => "italic");
+  }
 
-    // query cdm server for map service uri parameters
-    $map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
-    $out .= "<!-- map_data_parameters:". print_r($map_data_parameters, true) . " -->";
-    $query_string = $map_data_parameters->String;
-    if(!$query_string){
-      // the $query_string is empty if there are no distribution areas defined
-      return ;
-    }
 
-    // some cleaning of the URI paramters, TODO is this still needed?
-    $query_string = str_replace('%3A', ":", $query_string);
+  $fontStyles = array(0 => "plane", 1 => "italic");
 
-    // additional query parameters as set in the data portal admin section
-    $display_width = variable_get('cdm_dataportal_geoservice_display_width', false);
-    $bounding_box = variable_get('cdm_dataportal_geoservice_bounding_box', false);
-    $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
+  // query cdm server for map service uri parameters
+  $map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
+  $out .= "<!-- map_data_parameters:". print_r($map_data_parameters, true) . " -->";
+  $query_string = $map_data_parameters->String;
+  if(!$query_string){
+    // the $query_string is empty if there are no distribution areas defined
+    return ;
+  }
 
-    $query_string .= ($display_width ? '&ms=' . $display_width: '').
-    ($bounding_box ? '&bbox=' .  $bounding_box : '')
-    . ($labels_on ? '&label=' .  $labels_on : '');
+  // some cleaning of the URI paramters, TODO is this still needed?
+  $query_string = str_replace('%3A', ":", $query_string);
 
-    /* ------ choose the display mode, either openlayers or static image ------ */
 
-    if(variable_get('cdm_dataportal_map_openlayers', 1)){
+  /* ------ choose the display mode, either openlayers or static image ------ */
 
-      $query_string .= '&img=false';
+  if(variable_get('cdm_dataportal_map_openlayers', 1)){
 
-      /* =========== display distributions using the openlayers map viewer =========== */
+    /* =========== display distributions using the openlayers map viewer =========== */
 
-      $legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
-      $legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
-      $legend_url_font_style = $fontStyles[$legend_url_font_style];
-      $legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
-      $legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
+    $legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
+    $legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
+    $legend_url_font_style = $fontStyles[$legend_url_font_style];
+    $legend_url_icon_width  = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
+    $legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
 
-      $legendFormatQueryStr  = "format=image".urlencode('/')."png&TRANSPARENT=TRUE";
-      $legendFormatQueryStr .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
-      //TODO why is the layer=topp:tdwg_level_4 parameter neede at all here??
-      $legendFormatQueryStr .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
+    $legendFormatQueryStr  = "format=image".urlencode('/')."png&TRANSPARENT=TRUE";
+    $legendFormatQueryStr .= "&WIDTH=".$legend_url_icon_width."&HEIGHT=".$legend_url_icon_height."&";
+    //TODO why is the layer=topp:tdwg_level_4 parameter neede at all here??
+    $legendFormatQueryStr .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
 
-      $out .= get_openlayers_map(
-        $display_width,
+    $out .= get_openlayers_map(
+      variable_get('cdm_dataportal_geoservice_display_width', 300),
+      variable_get('cdm_dataportal_geoservice_bounding_box', false),
+      null,
+      $query_string,
+      $legendFormatQueryStr,
+      variable_get('cdm_dataportal_geoservice_map_caption', '')
+    );
+
+  } else {
+
+    return get_image_map(
+        variable_get('cdm_dataportal_geoservice_display_width', 300),
+        variable_get('cdm_dataportal_geoservice_bounding_box', false),
         null,
         $query_string,
         $legendFormatQueryStr,
         variable_get('cdm_dataportal_geoservice_map_caption', '')
       );
 
-    } else {
 
-      // simple image
-      $mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
+    // simple image
+    $mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
 
-      $query_string .= '&img=true';
-      $query_string .= '&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
 
-      $map_service_script_name = "areas.php";
+    $query_string .= '&img=true';
+    $query_string .= '&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
 
-      // apply Plain Image map settings
-      if (getEDITMapServiceVersionNumber() >= 1.1){
-        /*
-         * example : title=a:Naturalized++non-invasive
-         * &ad=cyprusdivs:bdcode:a:5&as=a:ff9900,,0.1,&l=tdwg4
-         * &ms=500&bbox=32,34,35,36&img=true&legend=1&mlp=3
-         * &mc_s=Georgia,15,blue&mc=&recalculate=false
-         *
-         * http://edit.br.fgov.be/edit_wp5/v1/rest_gen.php?
-         * l=background_gis:b,cyprusdivs&ad=cyprusdivs%3Abdcode%3Aa%3A8%2C4
-         * &as=a%3A339966%2C%2C0.1%2C|b:0000ff,,
-         * &bbox=32%2C34%2C35%2C36&img=true&legend=1&mc=&mc_s=Georgia%2C15%2Cblue
-         * &mlp=3&ms=500&recalculate=false&title=a%3Aindigenous
-         */
+    $map_service_script_name = "areas.php";
 
-        $map_service_script_name = "rest_gen.php";
+    // apply Plain Image map settings
+    if (getEDITMapServiceVersionNumber() >= 1.1){
+      /*
+       * example : title=a:Naturalized++non-invasive
+       * &ad=cyprusdivs:bdcode:a:5&as=a:ff9900,,0.1,&l=tdwg4
+       * &ms=500&bbox=32,34,35,36&img=true&legend=1&mlp=3
+       * &mc_s=Georgia,15,blue&mc=&recalculate=false
+       *
+       * http://edit.br.fgov.be/edit_wp5/v1/rest_gen.php?
+       * l=background_gis:b,cyprusdivs&ad=cyprusdivs%3Abdcode%3Aa%3A8%2C4
+       * &as=a%3A339966%2C%2C0.1%2C|b:0000ff,,
+       * &bbox=32%2C34%2C35%2C36&img=true&legend=1&mc=&mc_s=Georgia%2C15%2Cblue
+       * &mlp=3&ms=500&recalculate=false&title=a%3Aindigenous
+       */
 
-        $bgcolor_areaStyleId= "y";
-        $baselayer_areaStyleId= "z";
-        $bgcolor_layer='';
-        $additional_area_styles = array();
+      $map_service_script_name = "rest_gen.php";
 
-        // background color:
-        if(variable_get('map_bg_color', '')){
-          $bgcolor_layer = "background_gis:".$bgcolor_areaStyleId;
-          $additional_area_styles[] = $bgcolor_areaStyleId . ":" . variable_get('map_bg_color', '') . ",,";
-        }
+      $bgcolor_areaStyleId= "y";
+      $baselayer_areaStyleId= "z";
+      $bgcolor_layer='';
+      $additional_area_styles = array();
 
-        //TODO HACK to replace the default base layer which currently is tdwg4 !!!
-        if(strpos($query_string, "?l=") !== FALSE){
-          $layer_param_token = "?l=";
-        } else {
-          $layer_param_token = "&l=";
-        }
-        if(strpos($query_string, "?as=") !== FALSE){
-          $areystyle_param_token = "?as=";
-        } else {
-          $areystyle_param_token = "&as=";
-        }
-
-        if(variable_get('map_base_layer', '')){
-          $query_string = str_replace($layer_param_token."tdwg4", "$layer_param_token".variable_get('map_base_layer', ''). ":" . $baselayer_areaStyleId, $query_string);
-        } else {
-          $query_string = str_replace($layer_param_token."tdwg4", $layer_param_token."tdwg4:".$baselayer_areaStyleId . ",", $query_string);
-        }
-
-        if($bgcolor_layer){
-          $query_string = str_replace($layer_param_token, $layer_param_token . $bgcolor_layer . ",", $query_string);
-        }
-
-        if(variable_get('map_base_layer_style', '')){
-          $additional_area_styles[] = $baselayer_areaStyleId . ":" . variable_get('map_base_layer_style', '');
-        }
-
-        foreach ($additional_area_styles as $as) {
-          $query_string = str_replace($areystyle_param_token, $areystyle_param_token . $as . "|", $query_string);
-        }
-
+      // background color:
+      if(variable_get('map_bg_color', '')){
+        $bgcolor_layer = "background_gis:".$bgcolor_areaStyleId;
+        $additional_area_styles[] = $bgcolor_areaStyleId . ":" . variable_get('map_bg_color', '') . ",,";
       }
 
-      $mapUri = url("$server/$map_service_script_name?$query_string");
-      $out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
+      //TODO HACK to replace the default base layer which currently is tdwg4 !!!
+      if(strpos($query_string, "?l=") !== FALSE){
+        $layer_param_token = "?l=";
+      } else {
+        $layer_param_token = "&l=";
+      }
+      if(strpos($query_string, "?as=") !== FALSE){
+        $areystyle_param_token = "?as=";
+      } else {
+        $areystyle_param_token = "&as=";
+      }
+
+      if(variable_get('map_base_layer', '')){
+        $query_string = str_replace($layer_param_token."tdwg4", "$layer_param_token".variable_get('map_base_layer', ''). ":" . $baselayer_areaStyleId, $query_string);
+      } else {
+        $query_string = str_replace($layer_param_token."tdwg4", $layer_param_token."tdwg4:".$baselayer_areaStyleId . ",", $query_string);
+      }
+
+      if($bgcolor_layer){
+        $query_string = str_replace($layer_param_token, $layer_param_token . $bgcolor_layer . ",", $query_string);
+      }
+
+      if(variable_get('map_base_layer_style', '')){
+        $additional_area_styles[] = $baselayer_areaStyleId . ":" . variable_get('map_base_layer_style', '');
+      }
+
+      foreach ($additional_area_styles as $as) {
+        $query_string = str_replace($areystyle_param_token, $areystyle_param_token . $as . "|", $query_string);
+      }
+
     }
-    return $out;
+
+    $mapUri = url("$server/$map_service_script_name?$query_string");
+    $out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
   }
+  return $out;
+
 }
 
 /**
@@ -1045,7 +1049,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
 
   if(is_array($polytomousKeyNode->children)){
 
-    $childCount = 0;
+    $childIndex = 0;
 
     // render edges of the current node
     foreach($polytomousKeyNode->children as &$child){
@@ -1054,10 +1058,6 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
         // skip node with empty statements (see below for explanation: "Special case")
         continue;
       }
-
-      $out .= '<tr class="childCount_' . $childCount . '">';
-
-      $out .= '<td class="nodeNumber">'. uuid_anchor($polytomousKeyNode->uuid, $polytomousKeyNode->nodeNumber . str_pad("", $childCount++ , $statementCountCharacter)) . "</td>";
 
       /*
        * Special case:
@@ -1069,24 +1069,57 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
       $islinkToSubKey = isset($child->subkey->uuid);
       $islinkToOtherNode = isset($child->otherNode);
       $islinkToNode = $child->nodeNumber && !$islinkToManyTaxa && !$islinkToOtherNode; // either null or 0
+      $hasQuestion = isset($polytomousKeyNode->question->label_l10n);
+      $hasFeature = isset($polytomousKeyNode->feature);
 
-      $out .= '<td ' . RenderHints::getHtmlElementID($child) . '  class="edge">';
-      if(isset($polytomousKeyNode->question->label_l10n)){
-        $out .= $polytomousKeyNode->question->label_l10n .  ": ";
+      //$indentEdge = $hasQuestion && $childIndex > 0;
+
+      // Question
+      if($hasQuestion && $childIndex == 0){
+          // place question, as extra table row
+          $out .= '<tr class="question new_section">';
+          $out .= '<td class="nodeNumber">'. uuid_anchor($polytomousKeyNode->uuid, $polytomousKeyNode->nodeNumber) . "</td>";
+          $out .= '<td class="question">' . $polytomousKeyNode->question->label_l10n . '</td>';
+          $out .= '</tr>';
       }
-      $out .= $child->statement->label_l10n;
+
+      $out .= '<tr class="childCount_' . $childIndex . (!$hasQuestion && $childIndex == 0 ? ' new_section':''). '">';
+
+      if($hasQuestion){
+        $out .= '<td class="nodeNumber"></td>';
+      } else {
+        $out .= '<td class="nodeNumber">'. uuid_anchor($polytomousKeyNode->uuid, $polytomousKeyNode->nodeNumber . str_pad("", $childIndex , $statementCountCharacter)) . "</td>";
+      }
+
+      $out .= '<td ' . RenderHints::getHtmlElementID($child) . '  class="edge'.($hasQuestion? ' edge-indent': '').'">';
+
+      // Feature
+      if($hasFeature){
+        $out .= $polytomousKeyNode->feature->representation_L10n . ": ";
+      }
+
+      // Statement
+      $out .=  $child->statement->label_l10n;
 
       // --- links to nodes taxa and subkeys
       $out .= '<div class="nodeLink">';
 
      // link to a PolytomousKeyNode
       if($islinkToNode){
-        $out .= '<div class="nodeLinkToNode">' . l($child->nodeNumber, $_REQUEST["q"], null, null, $child->uuid) . '</div>';
+        $out .= '<div class="nodeLinkToNode">';
+        if(is_object($child->modifyingText)){
+            $out .= theme('cdm_poytomousKeyNode_modifyingText', $child->modifyingText);
+        }
+        $out .= l($child->nodeNumber, $_REQUEST["q"], null, null, $child->uuid) . '</div>';
       }
 
       // link to a PolytomousKeyNode
       if($islinkToOtherNode){
-        $out .= '<div class="nodeLinkToOtherNode">' . l($child->otherNode->nodeNumber, $_REQUEST["q"], null, null, $child->otherNode->uuid) . '</div>';
+        $out .= '<div class="nodeLinkToOtherNode">';
+        if(is_object($child->modifyingText)){
+            $out .= theme('cdm_poytomousKeyNode_modifyingText', $child->modifyingText);
+        }
+        $out .= l($child->otherNode->nodeNumber, $_REQUEST["q"], null, null, $child->otherNode->uuid) . '</div>';
       }
 
       // link to one or many taxa
@@ -1102,10 +1135,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
           // TODO many taxa $child->children->taxon
           $out .= '<div class="nodeLinkToTaxon">';
           if(is_object($taxonChild->modifyingText)){
-            $i = 0;
-            foreach(get_object_vars($taxonChild->modifyingText) as $language=>$languageString){
-              $out .= ($i++ > 0 ? ', ' : '') . '<span class="modifyingText">'. $languageString->text . '</span> ';
-            }
+            $out .= theme('cdm_poytomousKeyNode_modifyingText', $taxonChild->modifyingText);
           }
           $out .=  theme("cdm_taxonName", $taxonChild->taxon->name, url(path_to_taxon($taxonChild->taxon->uuid)));
           $out .=  '</div>';
@@ -1122,6 +1152,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
       $out .= '</td>'; // end edge
       $out .= '</tr>';
 
+      $childIndex++;
     }
 
     // recurse into child nodes
@@ -1129,6 +1160,17 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
       $out .= theme('cdm_polytomousKey_linkedStyle_subgraph', $child);
     }
 
+  }
+
+  return $out;
+}
+
+function theme_cdm_poytomousKeyNode_modifyingText($modifyingText){
+  if(is_object($modifyingText)){
+    $i = 0;
+    foreach(get_object_vars($modifyingText) as $language=>$languageString){
+      $out .= ($i++ > 0 ? ', ' : '') . '<span class="modifyingText">'. $languageString->text . '</span> ';
+    }
   }
   return $out;
 }

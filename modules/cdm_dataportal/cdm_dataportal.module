@@ -92,29 +92,188 @@ function _add_js_openlayers_map(){
 
 }
 
+/**
+ *
+ * Enter description here ...
+ * @param unknown_type $width
+ * @param unknown_type $occurrenceQuery
+ * @param unknown_type $distributionQuery
+ * @param unknown_type $legendFormatQuery
+ * @param unknown_type $map_caption
+ */
+function get_image_map($width,  $bounding_box=false, $occurrenceQuery = false, $distributionQuery = false, $legendFormatQuery = false, $map_caption = false ){
 
-function get_openlayers_map($width, $occurrenceQuery = false, $distributionQuery = false, $legendFormatQuery = false, $map_caption = false ){
+  $server = getEDITMapServiceURI();
+
+  if(!$server){
+    //warning message
+    drupal_set_message('No \'Geoservice Access Point\' has been set so far. '
+    . 'Please configure the variable \'Geoservice Access Point\' here '
+    . l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/geo'), 'warning');
+    //message to render
+    return "<p>No geoservice specified</p>";
+  }
+
+  // additional query parameters as set in the data portal admin section
+  $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
+
+  $query_string .= '&image=true&recalculate=false&legend=1&ms=' . $width
+    . ($bounding_box ? '&bbox=' .  $bounding_box : '')
+    . ($labels_on ? '&label=' .  $labels_on : '');
+
+  if($map_caption){
+    $query_string .= '&mlp=3&mc_s=Georgia,15,blue&mc=' . $map_caption;
+  }
+
+  if (getEDITMapServiceVersionNumber() >= 1.1) {
+
+    // either occurrence or distribution - combined maps will be possible in future
+    if ($occurrenceQuery){
+
+      //fix $occurrenceQuery
+      $occurrenceQuery = str_replace("&image=false", "", $occurrenceQuery);
+      //$occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0';
+      $occurrenceQuery .= '&l=tdwg4&as='; // will be replaced below // HACK!!!
+      $query_string .= "&" .$occurrenceQuery;
+
+    } else if($distributionQuery){
+
+      $query_string .= "&" .$distributionQuery;
+
+    }
+
+    //  apply Plain Image map settings special for version >= 1.1
+    /*
+     * example : title=a:Naturalized++non-invasive
+    * &ad=cyprusdivs:bdcode:a:5&as=a:ff9900,,0.1,&l=tdwg4
+    * &ms=500&bbox=32,34,35,36&img=true&legend=1&mlp=3
+    * &mc_s=Georgia,15,blue&mc=&recalculate=false
+    *
+    * http://edit.br.fgov.be/edit_wp5/v1/rest_gen.php?
+    * l=background_gis:b,cyprusdivs&ad=cyprusdivs%3Abdcode%3Aa%3A8%2C4
+    * &as=a%3A339966%2C%2C0.1%2C|b:0000ff,,
+    * &bbox=32%2C34%2C35%2C36&img=true&legend=1&mc=&mc_s=Georgia%2C15%2Cblue
+    * &mlp=3&ms=500&recalculate=false&title=a%3Aindigenous
+    */
+
+    $map_service_script_name = "rest_gen.php";
+
+    $bgcolor_areaStyleId= "y";
+    $baselayer_areaStyleId= "z";
+    $bgcolor_layer='';
+    $additional_area_styles = array();
+
+    // background color:
+    if(variable_get('map_bg_color', '')){
+      $bgcolor_layer = "background_gis:".$bgcolor_areaStyleId;
+      $additional_area_styles[] = $bgcolor_areaStyleId . ":" . variable_get('map_bg_color', '') . ",,";
+    }
+
+    //TODO HACK to replace the default base layer which currently is tdwg4 !!! only needed for distribution maps
+    if(strpos($query_string, "?l=") !== FALSE){
+      $layer_param_token = "?l=";
+    } else {
+      $layer_param_token = "&l=";
+    }
+    if(strpos($query_string, "?as=") !== FALSE){
+      $areystyle_param_token = "?as=";
+    } else {
+      $areystyle_param_token = "&as=";
+    }
+    if(variable_get('map_base_layer', '')){
+      $query_string = str_replace($layer_param_token."tdwg4", "$layer_param_token".variable_get('map_base_layer', ''). ":" . $baselayer_areaStyleId, $query_string);
+    } else {
+      $query_string = str_replace($layer_param_token."tdwg4", $layer_param_token."tdwg4:".$baselayer_areaStyleId . ",", $query_string);
+    }
+
+    if($bgcolor_layer){
+      $query_string = str_replace($layer_param_token, $layer_param_token . $bgcolor_layer . ",", $query_string);
+    }
+
+    if(variable_get('map_base_layer_style', '')){
+      $additional_area_styles[] = $baselayer_areaStyleId . ":" . variable_get('map_base_layer_style', '');
+    }
+
+    foreach ($additional_area_styles as $as) {
+      $query_string = str_replace($areystyle_param_token, $areystyle_param_token . $as . "|", $query_string);
+    }
+
+  } else {
+    // pre 1.1. version of map service
+    if ($occurrenceQuery){
+
+      $map_service_script_name = "point.php";
+
+      //fix $occurrenceQuery
+      $occurrenceQuery = str_replace("&image=false", "", $occurrenceQuery);
+      //$occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0';
+      $occurrenceQuery .= '&l=v:e_w_0';
+      $query_string .= "&" .$occurrenceQuery;
+
+    } else if($distributionQuery){
+
+      $query_string .= "&" .$distributionQuery;
+      $map_service_script_name = "areas.php";
+
+    }
+
+  }
+
+  $mapUri = url("$server/$map_service_script_name?$query_string");
+  $out = '<img class="distribution_map" src="' . $mapUri . '" alt="Map" />';
+  // showing map caption
+  if($map_caption){
+    $out .= '<div class="distribution_map_caption">' . $map_caption . '</div>' . '<br />'; //FIXME: replace <br> by according css style
+    $out .= '</div>';
+  }
+
+  return $out;
+
+
+}
+
+/**
+ *
+ * Enter description here ...
+ * @param unknown_type $width
+ * @param unknown_type $occurrenceQuery
+ * @param unknown_type $distributionQuery
+ * @param unknown_type $legendFormatQuery
+ * @param unknown_type $map_caption
+ */
+function get_openlayers_map($width, $bounding_box=false, $occurrenceQuery = false, $distributionQuery = false, $legendFormatQuery = false, $map_caption = false ){
 
   _add_js_openlayers_map();
 
   $out = '<div id="openlayers">';
   $out .= '<div id="openlayers_map" class="smallmap"';
   $out .= ' style="width: ' . $width . 'px; height:'.( $width / 2).'px"';
-  if($occurrenceQuery){
 
+  // additional query parameters as set in the data portal admin section
+  $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
+
+  $openlayers_map_query_string .= '&img=false&ms=' . $width
+    . ($bounding_box ? '&bbox=' .  $bounding_box : '')
+    . ($labels_on ? '&label=' .  $labels_on : '');
+
+  if($occurrenceQuery){
     //fix $occurrenceQuery
-    $occurrenceQuery .= '&ms=400,350';
+    $occurrenceQuery .= '&bbox=-180,-90,180,90';
     $occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0';
+    //$occurrenceQuery .= '&l=v:e_w_0';
     $occurrenceQuery .= '&legend=0'; //TODO add to cdm service?
 
-    $out .= ' occurrenceQuery="'.$occurrenceQuery.'"';
+    $out .= ' occurrenceQuery="' . $occurrenceQuery . '&' . $openlayers_map_query_string . '"';
   }
+
   if($distributionQuery){
-    $out .= ' distributionQuery="'.$distributionQuery.'"';
+    $out .= ' distributionQuery="' . $distributionQuery . '&' . $openlayers_map_query_string . '"';
   }
+
   if($legendFormatQuery){
     $out .= ' legendFormatQuery="'.$legendFormatQuery.'"';
   }
+
   $out .= '></div></div>';
 
   // showing map caption
@@ -418,7 +577,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
   // listing of blocks, such as on the admin/block page
   if ($op == "list") {
     //$block[0]["info"] = t("CDM DataPortal DevLinks");
-    //		$block[1]["info"] = t("CDM DataPortal Credits");
+    //$block[1]["info"] = t("CDM DataPortal Credits");
     $block[2]["info"] = t("CDM Search Taxa");
     //$block[3]["info"] = t("CDM Filters");
     $block[4]["info"] = t("CDM Dataportal Print");
@@ -1117,7 +1276,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
         drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', 'highlite=' . $singleTaxon->uuid);
       }
     }else{
-      // it is an accepted taxon 
+      // it is an accepted taxon
       if($synonym_uuid){
         drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', 'highlite=' . $synonym_uuid);
       }else{
@@ -1176,24 +1335,43 @@ function cdm_view_xml2json(){
 
 
 /**
- * Enter description here...
+ * Creates a URL to the taxon page specified by the $uuid parameter.
+ * The URL will be prepended with a path element to a specific taxon page tab.
+ *
+ * This tab is either taken from the CDM_DATAPORTAL_DEFAULT_TAXON_TAB which can
+ * be set globally in the administrative settings or individually in the user
+ * profile. If the CDM_DATAPORTAL_DEFAULT_TAXON_TAB value is set to LAST_VISITED_TAB
+ * the last portal will stay on this last tab.
+ *
+ * A third option is offerered by the $page_tab parameter which allows overwriting this
+ * internal mechanism by a specific value.
  *
  * @param String $uuid the UUID of the taxon
+ * @param String $page_tab overwriting the preset mechanism by defining specific valuefor the taxon page tab.
+ *
  * @return the URL
  */
-function path_to_taxon($uuid, $no_tab = false){
+function path_to_taxon($uuid, $page_tab = false){
+
   $tab = get_default_taxon_tab();
   $values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
 
   if(!$uuid) return false;
 
-  if (!$tab){
+  if($page_tab){
+    return 'cdm_dataportal/taxon/'.$uuid . '/' . $page_tab;
+  } else if (!$tab){
     return 'cdm_dataportal/taxon/'.$uuid;
   }else if(get_last_taxon_page_tab() &&  $tab == $values[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX]){
     return 'cdm_dataportal/taxon/'.$uuid . '/' . get_last_taxon_page_tab();
   } else {
     return 'cdm_dataportal/taxon/'.$uuid . '/' . strtolower($tab);
   }
+}
+
+function uri_to_synonym($synonymUuid, $acceptedUuid){
+  $acceptedPath = path_to_taxon($acceptedUuid, "synonymy");
+  return url($acceptedPath, 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid, $synonymUuid);
 }
 
 function path_to_key($keyType, $keyUuid){
@@ -1268,10 +1446,6 @@ function html_class_atttibute_ref($cdmEntity){
   }
 }
 
-function theme_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null){
-  $acceptedPath = path_to_taxon($acceptedUuid, true);
-  return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid.'&acceptedFor='.$synonymUuid, $synonymUuid);
-}
 
 /**
  * Preprocess the taggedName to normalize newly introduced tagtypes like hybridSign, separator, .. more?
@@ -1391,6 +1565,10 @@ function compose_url_prameterstr($parameters = array(), $parentPropertyName = fa
  */
 function _is_original_source_type($source){
   return !$source->idNamespace && strlen($source->idNamespace) == 0;
+}
+
+function _is_invers_taxonRelationship($taxonRelationship, $focusedTaxon){
+  return $taxonRelationship->toTaxon->uuid == $focusedTaxon->uuid;
 }
 
 
@@ -1520,30 +1698,46 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
   return $outArrayOfMedia;
 }
 
-function cdm_annotations_as_footnotekeys($cdmBase, $footnote_list_key = null){
-  $footNoteKeys = array();
-  //is argument cdmBase an array?
-  if (!is_array($cdmBase)){
-    $cdmBase_array = array();
-    $cdmBase_array[] = $cdmBase;
-  }else{
-    $cdmBase_array = $cdmBase;
+/**
+ *
+ * @param - $cdmBase_list @param $cdmBase_list an array of CdmBase instances or a single instance
+ * @param - $footnote_list_key
+ */
+function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = null){
+  static $annotations_types_filter;
+
+  if(!$annotations_types_filter) {
+    unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT);
   }
+
+  $footNoteKeys = array();
+
+  //is argument cdmBase an array?
+  if (!is_array($cdmBase_list)){
+    $cdmBase_array = array();
+    $cdmBase_array[] = $cdmBase_list;
+  }else{
+    $cdmBase_array = $cdmBase_list;
+  }
+
   //getting the key for the footnotemanager
   if( $footnote_list_key ){
     $footnoteListKey = $footnote_list_key;
   }else{
     $footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
   }
+
   //adding the footnotes keys
+  $annotations_types_filter = unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT);
   foreach($cdmBase_array as $cdmBase_element){
-    $annotations = cdm_ws_getAnnotationsFor($cdmBase_element, variable_get('annotations_types_as_footnotes', unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT)));
+    $annotations = cdm_ws_getAnnotationsFor($cdmBase_element, variable_get('annotations_types_as_footnotes', $annotations_types_filter));
     if(is_array($annotations)){
       foreach($annotations as $annotation){
           $footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
       }
     }
   }
+
   return $footNoteKeys;
 }
 

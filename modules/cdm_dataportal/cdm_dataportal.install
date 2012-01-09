@@ -43,7 +43,7 @@ function cdm_dataportal_update_5101() {
  *    2 digits for sequential counting starting with 00
  * The 2nd digit should be 0 for initial porting of your module to a new Drupal core API.
  *
- * Update 1 for version 5.x-1.0
+ * Update 2 for version 5.x-1.0
  */
 function cdm_dataportal_update_5102() {
   $items = array();
@@ -58,6 +58,28 @@ function cdm_dataportal_update_5102() {
   $items[] = _create_variable('cdm_dataportal_geoservice_distributionOpacity', '1.0');
   $items[] = _create_variable('cdm_dataportal_geoservice_legendOpacity', '0.75');
 
+  return $items;
+}
+
+/**
+ * Implementation of hook_api_update_N().
+ *
+ * Database updates consist of 3 parts:
+ *    1 digit for Drupal core compatibility
+ *    1 digit for your module's major release version (e.g. is this the 5.x-1.* (1) or 5.x-2.* (2) series of your module?)
+ *    2 digits for sequential counting starting with 00
+ * The 2nd digit should be 0 for initial porting of your module to a new Drupal core API.
+ *
+ * Update 1 for version 5.x-3.0
+ */
+function cdm_dataportal_update_5301() {
+  $items = array();
+  // add new default to
+  $annotation_types_filter = variable_get('annotations_types_as_footnotes', FALSE);
+  if($annotation_types_filter) {
+    $annotation_types_filter['NULL_VALUE'] = 'NULL_VALUE';
+  }
+  $items[] = _modify_variable('annotations_types_as_footnotes', $annotation_types_filter);
   return $items;
 }
 

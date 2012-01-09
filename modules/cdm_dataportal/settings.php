@@ -14,9 +14,12 @@ define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 4);
 $annotationTypeKeys = array_keys( cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE) );
 if(in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
   $annotationTypeKeys = array_flip($annotationTypeKeys);
+
   // technical annotation are off by default
   unset($annotationTypeKeys[UUID_ANNOTATION_TYPE_TECHNICAL]);
   $annotationTypeKeys = array_flip($annotationTypeKeys);
+  //additional value for the null case
+  $annotationTypeKeys[] = 'NULL_VALUE';
 }
 define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
 
@@ -450,10 +453,12 @@ function cdm_settings_layout(){
   );
 
   $annotationTypeOptions = cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE);
+  // additional option for the null case
+  $annotationTypeOptions['NULL_VALUE']=t('untyped');
   $form['gen_layout']['footnotes']['annotations_types_as_footnotes'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Annotation types as footnotes'),
-      '#description' => t('Only annotations of the selected type will be displayed as footnotes. You may want to turn \'technical annotations\' off. Untyped annotations will always be displayed.'),
+      '#description' => t('Only annotations of the selected type will be displayed as footnotes. You may want to turn \'technical annotations\' off.'),
       '#options' => $annotationTypeOptions,
       '#default_value' => variable_get('annotations_types_as_footnotes', unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT))
 
@@ -868,7 +873,7 @@ function cdm_settings_layout_taxon(){
     '#description' => t('If this option is enabled the synonymy will show the below selected taxon relationships of accepted taxa.')
   );
 
-   $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE);
+  $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, _cdm_relationship_type_term_label_callback);
   $form['synonymy'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
       '#type' => 'checkboxes',
       '#title' => t('Taxon relationship types'),
@@ -1066,14 +1071,14 @@ function cdm_settings_geo(){
       '#title' => t('Maps settings'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-      '#description' => t('Configuration of the renderized maps.'),
+      '#description' => t('General configuration for all map types.'),
      );
 
     $form['map_settings']['cdm_dataportal_geoservice_display_width'] = array(
       '#type' => 'textfield',
-      '#title' => t('Maps size'),
+      '#title' => t('Maps width'),
       '#default_value' => variable_get('cdm_dataportal_geoservice_display_width', 390),
-      '#description' => t('Choose the size of your Maps. A value of 500 means the size will be 500x500, a value of 300 means the size will be 300x300.')
+      '#description' => t('Choose the width of your maps, the height will always be the half of the width. A value of 500 means the size will be 500 pixels witdh and 250 pixels height.')
     );
 
     $form['map_settings']['cdm_dataportal_geoservice_bounding_box'] = array(
