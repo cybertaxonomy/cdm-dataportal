@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.php.debug.core.launching.webPageLaunch">
 <booleanAttribute key="auto_generated_url" value="false"/>
-<stringAttribute key="base_url" value="http://127.0.0.1/cichorieae/?q=cdm_dataportal/taxon/d0ae2121-1c32-4737-8c49-f871d429fd90/synonymy"/>
+<stringAttribute key="base_url" value="http://127.0.0.1/cyprus/?q=cdm_dataportal/taxon/f86d8925-beb2-4bf9-8836-db62e5452b3a"/>
 <stringAttribute key="debugOutputEncoding" value="UTF-8"/>
 <stringAttribute key="debugPages" value="debugAllPages"/>
 <stringAttribute key="debugTransferEncoding" value="UTF-8"/>
