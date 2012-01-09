@@ -956,7 +956,7 @@ function cdm_settings_layout_media(){
       '#title' => t('Media display settings'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
-    '#description' => t('This section covers the settings related to the taxa media, that is how each single media should be displayed.'),
+      '#description' => t('This section covers the settings related to the taxa media, that is how each single media should be displayed.'),
       );
 
   $form['media_settings']['image_gallery_viewer'] =  array(

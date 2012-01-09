@@ -575,10 +575,8 @@ function theme_cdm_preferredImage($media, $defaultRepresentationPart, $imageMaxE
 		$representationPart = $defaultRepresentationPart;
 	}
 
-	//$widthAndHeight = ($imageWidth ? ' width="'.$imageWidth : '').($imageHeight ? '" height="'.$imageHeight : '');
-	//  $imageUri = $preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri . $parameters : $defaultImage;
-	$attributes = array('alt'=>($preferredMedia ? $preferredMedia->representations[0]->parts[0]->uri : "no image available"));
+	$attributes = array('alt'=>($media ? $media->representations[0]->parts[0]->uri : "no image available"));
 	$out .= theme('cdm_media_gallerie_image', $representationPart, $imageMaxExtend, false, $attributes);
-	// $out = '<img class="left" '.$widthAndHeight.' " src="'.$imageUri.'" alt="'.$altText.'" />';
+
 	return $out;
 }
