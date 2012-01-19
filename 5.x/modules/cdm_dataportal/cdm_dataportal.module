@@ -631,24 +631,13 @@ function cdm_dataportal_block($op='list', $delta=0) {
 
 function cdm_dataportal_search_taxon_form($advancedForm = false){
   global $theme_key;
-  $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
-// get presets from settings
-  $preset_doTaxa = variable_get('cdm_search_doTaxa', 1);
-  $preset_doSynonyms = variable_get('cdm_search_doSynonyms', 1);
-  $preset_doTaxaByCommonNames = variable_get('cdm_search_doTaxaByCommonNames', 0);
-  $preset_UseDefaults = variable_get('cdm_search_use_default_values', 1);
 
-  // overwrite presets by user choice stored in session
-  if(isset($_SESSION['cdm']['search']) && !$preset_UseDefaults) {
-    $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
-    $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 0);
-    $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
-    $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
-  }
-
-  
   $tdwg_level_select =  (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
   $selected_areas =  (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : false);
+
+  if(isset($_SESSION['cdm']['search']) && !$preset_UseDefaults) {
+    $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
+  }
 
   $url = 'cdm_dataportal/search/taxon';
   $form['#method'] = 'get';
@@ -666,13 +655,13 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
   }
   //AT RBG KEW - 14/11/2011 Added to extend the text box in the Advanced form only
   else {
-	  	 $form['query'] = array(
-	    '#delta' => 0,
-	    '#type' => 'textfield',
-	    '#size' => 68,
-	    '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
-	    '#value' => $preset_query,
-	  );
+       $form['query'] = array(
+      '#delta' => 0,
+      '#type' => 'textfield',
+      '#size' => 68,
+      '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
+      '#value' => $preset_query,
+    );
   }
 
   $form['search'] = array(
@@ -712,7 +701,23 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
   );
 
   if($advancedForm){
+
+    // get presets from settings
+    $preset_doTaxa = variable_get('cdm_search_doTaxa', 1);
+    $preset_doSynonyms = variable_get('cdm_search_doSynonyms', 1);
+    $preset_doTaxaByCommonNames = variable_get('cdm_search_doTaxaByCommonNames', 0);
+    $preset_doMisappliedNames = variable_get('cdm_search_doMisappliedNames', 1);
+    $preset_UseDefaults = variable_get('cdm_search_use_default_values', 1);
+
+    // overwrite presets by user choice stored in session
+    if(isset($_SESSION['cdm']['search']) && !$preset_UseDefaults) {
+      $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 0);
+      $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
+      $preset_doMisappliedNames = (isset($_SESSION['cdm']['search']['doMisappliedNames']) ? 1 : 0);
+      $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
+    }
     // general search parameters
+
     $form['search']['doTaxa'] = array(
       '#delta' => 2,
       '#type' => 'checkbox',
@@ -725,8 +730,14 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       '#title' => t('Search for synonyms'),
       '#value' => $preset_doSynonyms
     );
+    $form['search']['doMisappliedNames'] = array(
+          '#delta' => 4,
+          '#type' => 'checkbox',
+          '#title' => t('Search for misapplied names'),
+          '#value' => $preset_doMisappliedNames
+    );
     $form['search']['doTaxaByCommonNames'] = array(
-      '#delta' => 4,
+      '#delta' => 5,
       '#type' => 'checkbox',
       '#title' => t('Search for common names'),
       '#value' => $preset_doTaxaByCommonNames
@@ -740,22 +751,22 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       '#title' => t('Geographic range'),
     );
 
-	$form['search']['geographic_range']['tdwg_level_select'] = array(
-    	'#type' => 'radios',
-    	'#title' => t('Select a TDWG distribution level and code'),
-   		'#default_value' => $tdwg_level_select,
-    	'#options' => array(
-    		t('TDWG level-1, i.e. a continent'),
-    		t('TDWG level-2'),
-    		t('TDWG level-3, i.e. a country'),
-    		t('TDWG level-4')
-    	)
+  $form['search']['geographic_range']['tdwg_level_select'] = array(
+      '#type' => 'radios',
+      '#title' => t('Select a TDWG distribution level and code'),
+       '#default_value' => $tdwg_level_select,
+      '#options' => array(
+        t('TDWG level-1, i.e. a continent'),
+        t('TDWG level-2'),
+        t('TDWG level-3, i.e. a country'),
+        t('TDWG level-4')
+      )
     );
     $tdwg[1] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '1');
     $tdwg[2] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '2');
     $tdwg[3] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '3');
-	$tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
-	
+  $tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
+
     $tdwg_js = '';
     foreach($tdwg as $key=>$tdwg_level){
       $tdwgOptions = array();
@@ -802,20 +813,37 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
     'inline');
 
   } else {
+    $preset_doTaxa = variable_get('cdm_search_doTaxa', 1);
+    $preset_doSynonyms = variable_get('cdm_search_doSynonyms', 1);
+    $preset_doTaxaByCommonNames = variable_get('cdm_search_doTaxaByCommonNames', 0);
+    $preset_doMisappliedNames = variable_get('cdm_search_doMisappliedNames', 1);
+    $preset_UseDefaults = variable_get('cdm_search_use_default_values', 1);
+
+    // overwrite presets by user choice stored in session
+    if(isset($_SESSION['cdm']['search']) && !$preset_UseDefaults) {
+      $preset_doMisappliedNames = (isset($_SESSION['cdm']['search']['doMisappliedNames']) ? 1 : 0);
+    }
+
     $form['search']['doTaxa'] = array(
         '#delta' => -2,
         '#type' => 'hidden',
-        '#value' => 1
+        '#value' => $preset_doTaxa
     );
     $form['search']['doSynonyms'] = array(
         '#delta' => -3,
         '#type' => 'hidden',
-        '#value' => 1
+        '#value' => $preset_doSynonyms
+    );
+    $form['search']['doMisappliedNames'] = array(
+        '#delta' => -4,
+        '#type' => 'checkbox',
+        '#title' => t('Misapplied names'),
+        '#value' => $preset_doMisappliedNames
     );
     $form['search']['doTaxaByCommonNames'] = array(
-        '#delta' => -4,
+        '#delta' => -5,
         '#type' => 'hidden',
-        '#value' => 0
+        '#value' => $preset_doTaxaByCommonNames
     );
   }
 
@@ -1481,8 +1509,8 @@ function normalize_TaggedName(&$taggedTextList){
         } else {
           $taggedNameListNew[] = $taggedTextList[$i];
         }
-	  }
-	   $taggedTextList = $taggedNameListNew;
+    }
+     $taggedTextList = $taggedNameListNew;
     }
 }
 
