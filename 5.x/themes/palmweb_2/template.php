@@ -774,14 +774,14 @@ function palmweb_2_cdm_reference($reference, $microReference = null, $doLink = F
 }
 
 
-function palmweb_2_cdm_reference_page($referenceTO){
+/*function palmweb_2_cdm_reference_page($referenceTO){
 	//print_r($referenceTO);
-	//$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $referenceTO->uuid);
+	$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $referenceTO->uuid);
 	$nomenclatural = cdm_ws_get('portal/taxon/$0/descriptions', '1d91bd71-7109-4916-872f-a82b710a9cdf');
 	
 	print_r($nomenclatural);
 	return "TOTO";
-}
+}*/
 
 
 /**
