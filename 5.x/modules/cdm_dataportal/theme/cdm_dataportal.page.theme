@@ -548,7 +548,7 @@ function taxon_image_gallery_fsi($taxon, $media){
  * Show a reference in it's atomized form
  */
 function theme_cdm_reference_page($referenceTO){
-
+	print_r($referenceTO);
   /*
    if($referenceTO->titleCache) {
     drupal_set_title($referenceTO->titleCache);
