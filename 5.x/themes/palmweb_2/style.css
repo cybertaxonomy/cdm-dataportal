@@ -97,6 +97,10 @@ a:active, a.active {
     font-weight: bold;
 }
 
+#edit-search-doTaxaByCommonNames-wrapper {
+	display:none;	
+}
+
 /*#jquery-lightbox a img {
 	max-height:250px;
 	max-width: 250px;
@@ -784,6 +788,10 @@ ul.links li, ul.inline li {
 
 .comment h3 a.active {
   color: #222;
+}
+
+li a.active, a:active {
+  color: #5895BE;
 }
 
 .node .content, .comment .content {
