@@ -1382,8 +1382,7 @@ function path_to_key($keyType, $keyUuid){
 
 function path_to_reference($uuid){
   if(!$uuid) return false;
-  //return 'cdm_dataportal/reference/'.$uuid;
-  return "cdm_dataportal/taxon/1d91bd71-7109-4916-872f-a82b710a9cdf#bibliography";
+  return 'cdm_dataportal/reference/'.$uuid;
 }
 
 function path_to_name($name_uuid){
