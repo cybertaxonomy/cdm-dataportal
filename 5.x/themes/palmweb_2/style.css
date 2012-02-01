@@ -97,6 +97,10 @@ a:active, a.active {
     font-weight: bold;
 }
 
+#edit-search-doTaxaByCommonNames-wrapper {
+	display:none;	
+}
+
 /*#jquery-lightbox a img {
 	max-height:250px;
 	max-width: 250px;
@@ -786,6 +790,10 @@ ul.links li, ul.inline li {
   color: #222;
 }
 
+li a.active, a:active {
+  color: #5895BE;
+}
+
 .node .content, .comment .content {
   margin: 0.6em 0;
 }
@@ -1072,6 +1080,6 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
   border-color: #beb;
 }
 
-#edit-search-geographic-range-tdwg-level-select-3-wrapper {
+#edit-search-geographic-range-tdwg-level-select-3-wrapper { 
 	display: none;
 }
