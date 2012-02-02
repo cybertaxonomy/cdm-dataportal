@@ -383,5 +383,6 @@ function _view_specimen() {
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
   $handler->display->display_options['path'] = 'dwca_typesandspecimen';
-  
+ 
+  return $view; 
 }
