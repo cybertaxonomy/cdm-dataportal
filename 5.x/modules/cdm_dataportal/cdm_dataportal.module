@@ -1561,13 +1561,27 @@ function cdm_dataportal_shortname_of($name){
 function _cdm_dataportal_acceptedByCurrentView($taxon){
 
   $defaultTreeUuid = get_taxonomictree_uuid_selected();
-  if($taxon->class == "Taxon" && isset($taxon->taxonNodes)){
-    foreach($taxon->taxonNodes as $node){
-      if($node->classification == $defaultTreeUuid) {
-        return true;
+
+  if(isset($taxon->taxonNodes)) {
+    $taxonNodes = $taxon->taxonNodes;
+  } else {
+    $taxonNodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon->uuid);
+  }
+
+  if($taxon->class == "Taxon" && isset($taxonNodes)){
+    foreach($taxonNodes as $node){
+      if(is_object($node->classification)){
+        if($node->classification->uuid == $defaultTreeUuid) {
+          return true;
+        }
+      } else {
+        if($node->classification == $defaultTreeUuid) {
+          return true;
+        }
       }
     }
   }
+
   return false;
 }
 
