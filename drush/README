@@ -1,0 +1,23 @@
+This folder contains the drush command:
+
+migrate-refresh
+
+Refresh the drupal site by reloading all modules [ module_list(TRUE) ] and then all themes [ list_themes(TRUE); ] . This will
+update the database with the server specific path to the themes and modules. Use this command after migrating to a different
+server via sql dump, before opening any page.
+
+Usage notes:
+
+After restoring a dump from a remote server on a different machine the paths to the modules and themes in the drupal database are
+pointing to locations invalid on the new server. Since this module is also affected by the messed up module paths the first step
+always is to fix that path by re-enabling the cdm_dataportal module:
+
+drush -r <path to the drupal root directory> -l <url of the dataportal site> pm-enable cdm_dataportal
+
+e.g.:  drush -r /home/andreas/workspaces/www/Drupal5 -l http://127.0.0.1/cyprus/ pm-enable cdm_dataportal
+
+Now drush can find the migrate command file and you can resfresh the installation:
+
+drush -r <path to the drupal root directory> -l <url of the dataportal site> migrate-refresh
+
+e.g.: drush -r /home/andreas/workspaces/www/Drupal5 -l http://127.0.0.1/cyprus/ migrate-refresh
