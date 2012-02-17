@@ -414,3 +414,7 @@ li.toclevel-3 {
 	margin-left: 45px;
 	background-image: none;
 }
+
+#edit-logo {
+    background: url("images/title_flower_logo.jpg")
+}
