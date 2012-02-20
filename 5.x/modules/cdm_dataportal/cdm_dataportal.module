@@ -582,6 +582,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
     //$block[3]["info"] = t("CDM Filters");
     $block[4]["info"] = t("CDM Dataportal Print");
     $block["keys"]["info"] = t("CDM identification keys");
+    $block["fundedByEDIT"]["info"] = t('Funded by EDIT');
     return $block;
   }
   else if ($op == 'view') {
@@ -604,6 +605,12 @@ function cdm_dataportal_block($op='list', $delta=0) {
       case "keys":
         $block['subject'] = t('Identification Keys');
         $block['content'] = theme('cdm_block_IdentificationKeys');
+        return $block;
+      case "fundedByEDIT":
+        $text = '<none>'; //t('Funded by EDIT');
+        $block['subject'] = $text;
+        $img_tag = '<img src="' . drupal_get_path('module', 'cdm_dataportal').'/images/funded_by_EDIT.png' . '" alt="'.$text.'"/>';
+        $block['content'] = l($img_tag, "http://www.e-taxonomy.eu/", array("target"=>"EDIT"), NULL, NULL, TRUE, TRUE);
         return $block;
     }
   }
