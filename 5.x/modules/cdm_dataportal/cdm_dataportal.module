@@ -1803,7 +1803,8 @@ function cdm_dynabox($label, $content_url, $theme, $link_alt_text, $enclosingtag
 
 /**
  * returns true if the given $featureNode or any of its subordinate nodes contains
- * at least one non empty TextData or at leas one DescriptionElement of an other type.
+ * at least one non empty TextData or at least one DescriptionElement of an other type.
+ * A TextData element holding a multilanguageText or a source reference is considered to be not empty.
  *
  * @param unknown_type $featureNode A heature node as produced by the function _mergeFeatureTreeDescriptions()
  */
@@ -1811,7 +1812,7 @@ function hasFeatureNodeDescriptionElements($featureNode) {
 
   if(is_array($featureNode->descriptionElements) && count($featureNode->descriptionElements) > 0) {
     foreach ($featureNode->descriptionElements as $descriptionElement) {
-      if($descriptionElement->class != "TextData" || $descriptionElement->multilanguageText_L10n->text){
+      if($descriptionElement->class != "TextData" || $descriptionElement->multilanguageText_L10n->text || isset($descriptionElement->sources[0]) ){
         return true;
       }
     }
