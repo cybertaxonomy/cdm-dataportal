@@ -582,6 +582,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
     //$block[3]["info"] = t("CDM Filters");
     $block[4]["info"] = t("CDM Dataportal Print");
     $block["keys"]["info"] = t("CDM identification keys");
+    $block["uses"]["info"] = t("CDM Uses");
     return $block;
   }
   else if ($op == 'view') {
@@ -603,6 +604,10 @@ function cdm_dataportal_block($op='list', $delta=0) {
         return $block;
       case "keys":
         $block['subject'] = t('Identification Keys');
+        $block['content'] = theme('cdm_block_IdentificationKeys');
+        return $block;
+      case "uses":
+      	$block['subject'] = t('Uses');
         $block['content'] = theme('cdm_block_IdentificationKeys');
         return $block;
     }

@@ -246,6 +246,13 @@ span.form-required {
   color: #ffae00;
 }
 
+.useTag {
+  float:left;
+  margin: 0em 0 0em;
+  padding: .0em .25em;
+  
+}
+
 span.submitted, .description {
   font-size: 0.92em;
   color: #898989;
@@ -1083,3 +1090,8 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
 #edit-search-geographic-range-tdwg-level-select-3-wrapper { 
 	display: none;
 }
+
+.clear {
+  clear:both;
+}
+
