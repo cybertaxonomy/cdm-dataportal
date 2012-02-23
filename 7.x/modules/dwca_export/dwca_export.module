@@ -225,6 +225,22 @@ function dwca_export_create_archive($views_map) {
 	foreach($views_map as $filename=>$view_data){
 
 		$view = views_get_view($view_data['view_name']);
+		
+		//lorna
+		// Get the view and its fields.
+		$view->set_display();
+		$fields = $view->display_handler->get_field_labels();
+		foreach ($fields as $field_key => $field_label) {
+			//$field_properties = $field_copy;
+			//$field_properties['title'] = $field_label;
+			//$fields[$field_key] = $field_properties;
+			if ($field_label == 'uninomial') {
+				drupal_set_message(t('The field label is... ') . $field_label);
+			}
+		}
+		//end lorna
+		
+		
 		$options = array (
 		    'output_file' => $filename
 		);
