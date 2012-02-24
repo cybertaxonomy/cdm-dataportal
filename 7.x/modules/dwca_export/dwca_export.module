@@ -99,41 +99,73 @@ function dwca_export_select_view_form() {
 
 	foreach(variable_get(FILE_MAP) as $dwca_filename => $view_data){
 		
-		
-		$views[$dwca_filename] = array(
-		  	'#type' => 'textfield',
-		  	'#title' => t($dwca_filename),
-		  	'#default_value' => $view_data['view_name'],
-		  	'#size' => 60,
-		  	'#maxlength' => 64,
-		  	'#description' => t('specify view for ' . $dwca_filename),
-		  	
-		);
+		if ($dwca_filename == 'description') {
+			
+			foreach($view_data as $dwca_filename_inner => $view_data_inner){
+				$views[$dwca_filename][$dwca_filename_inner] = array(
+									  	'#type' => 'textfield',
+									  	'#title' => t($dwca_filename . '_' . $dwca_filename_inner),
+									  	'#default_value' => $view_data_inner['view_name'],
+									  	'#size' => 60,
+									  	'#maxlength' => 64,
+									  	'#description' => t('specify view for ' . $dwca_filename_inner),
+			
+				);
+			}
+			
+		} else {
+			$views[$dwca_filename] = array(
+					  	'#type' => 'textfield',
+					  	'#title' => t($dwca_filename),
+					  	'#default_value' => $view_data['view_name'],
+					  	'#size' => 60,
+					  	'#maxlength' => 64,
+					  	'#description' => t('specify view for ' . $dwca_filename),
+			
+			);
+		}
 	}
 
 	return $views;
 }
 
-function dwca_export_config_form_submit($form, &$form_state) {  
+function dwca_export_config_form_submit($form, &$form_state) {
 
 	$variables = $form_state['input'];
 	$save_variables = '';
 	$dwca_export_archive_descriptor_file_map = variable_get(FILE_MAP);
-	
+
 	foreach ($variables as $key => $value) {
-		
+
 		if (array_key_exists($key, $dwca_export_archive_descriptor_file_map)) {
-		
+
 			$dwca_export_archive_descriptor_file_map[$key]['view_name'] = $value;
-			//$save_variables .= '<p>' . $key . ' ' . $value . '</p>';			
-		}		
+			//$save_variables .= '<p>' . $key . ' ' . $value . '</p>';
+		} else {
+
+			$description_key = 'description';
+			
+			if (array_key_exists($description_key, $dwca_export_archive_descriptor_file_map)) {
+				
+				//get the inner array containing the different description data types
+				$description_map = $dwca_export_archive_descriptor_file_map[$description_key];
+				//if (array_key_exists($key, $dwca_export_archive_descriptor_file_map['description'])) {
+				if (array_key_exists($key, $description_map)) {
+					drupal_set_message(t('The ooKEY is... ') . $key . t('The ooVALUE is... ') . $value);
+					$dwca_export_archive_descriptor_file_map[$description_key][$key]['view_name'] = $value;
+				}
+			}
+		}
 	}
-	
+
 	variable_del(FILE_MAP);
 	variable_set(FILE_MAP, $dwca_export_archive_descriptor_file_map);
-		
+
 	//drupal_set_message(t('The classification view is ') . $save_variables);// . '<pre>' . print_r($form_state,true) . '</pre>');//$save_variables);
 }
+
+
+
 
 // Reports an error if view name entered by the user does not exist in the database.
 function dwca_export_config_form_validate($form, &$form_state) {
@@ -146,6 +178,7 @@ function dwca_export_config_form_validate($form, &$form_state) {
 	
 	foreach ($variables as $key => $value) {
 		
+		//TODO: Check whether the views for the inner array cotaining all the description views exist
 		if (array_key_exists($key, $dwca_export_archive_descriptor_file_map)) {
 					
 			$view = views_get_view($value);
@@ -196,9 +229,22 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 	if(!isset($file_map)){
 		$file_map = variable_get(FILE_MAP);
 	}
+	
+	//lorna - there's no file_name for description
+	drupal_set_message(t('The file_name... ') . $file_name);
 
 	if($file_name && $out_file_url){
+		
+		//lorna
+		drupal_set_message(t('The file_name... ') . $file_name . t('The out_file_url... ') . $out_file_url);
+		
+		if (($file_name == 'general') || ($file_name == 'morphology')) {
+			$file_map['description'][$file_name]['out_file_url'] = $out_file_url;
+			//$file_map[$file_name]['morphology']['out_file_url'] = $out_file_url;
+		} else {
+		///
 		$file_map[$file_name]['out_file_url'] = $out_file_url;
+		}
 	}
 
 	return $file_map;
@@ -216,43 +262,11 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
  * or FALSE in case of an error.
  */
 function dwca_export_create_archive($views_map) {
-
-	global $base_url;
-
-	// execute all views to export the data into
-	// temporary csv files (temporary://dwca_export_*). the resulting filenames
-	// will be stored in _dwca_export_archive_descriptor_file_map()
-	foreach($views_map as $filename=>$view_data){
-
-		$view = views_get_view($view_data['view_name']);
-		
-		//lorna
-		// Get the view and its fields.
-		$view->set_display();
-		$fields = $view->display_handler->get_field_labels();
-		foreach ($fields as $field_key => $field_label) {
-			//$field_properties = $field_copy;
-			//$field_properties['title'] = $field_label;
-			//$fields[$field_key] = $field_properties;
-			if ($field_label == 'uninomial') {
-				drupal_set_message(t('The field label is... ') . $field_label);
-			}
-		}
-		//end lorna
-		
-		
-		$options = array (
-		    'output_file' => $filename
-		);
-		_dwca_export_views_data_export_override_batch($view, $view_data['display_id'], $options);
-		$view->execute_display($view_data['display_id']);
-
-	}
-
+	
 	// all data is exported to temporary://dwca_export_*
 	// now we can start bundling the actual archive
 	$tmp_archive_file_name = drupal_tempnam("temporary://", "dwca_export_archive_");
-
+	
 	// Unfortunately we cannot use drupals ArchiverZip because there ís
 	// no way to pass in ZipArchive::CREATE to the constructor to create the archive
 	// TODO test if zip functionality is available (i.e. if(function_exists('zip_open'))
@@ -261,31 +275,128 @@ function dwca_export_create_archive($views_map) {
 	// it is safe to use drupal_realpath as the tmp file will be certainly local
 	// and php's ZipArchive does not handle stream URIs
 	$result = $zip->open(drupal_realpath($tmp_archive_file_name), ZipArchive::CREATE);
-
+	
 	// there might be a better way to get at this information
 	$module_static_dir_absolute_path = realpath(drupal_get_path('module', 'dwca_export')) . STATIC_DIR;
-
+	
 	if ($result !== TRUE) {
 		throw new Exception(t('Could not create zip_archive %tmp_archive_file_name', array('%tmp_archive_file_name' => $tmp_archive_file_name)));
 	}
-
+	
 	
 	// add metadata
 	$zip->addFile($module_static_dir_absolute_path.METADATA_FILE_NAME, ARCHIVE_ROOT_DIR.METADATA_FILE_NAME);
+
+	global $base_url;
+
+	// execute all views to export the data into
+	// temporary csv files (temporary://dwca_export_*). the resulting filenames
+	// will be stored in _dwca_export_archive_descriptor_file_map()
+	foreach($views_map as $filename=>$view_data){
+	
+		//lorna
+		if ($filename == 'description') {
+			
+			//lorna: this foreach iterates through all the description types in the inner array
+			foreach($view_data as $filename_inner => $view_data_inner){
+				$view = views_get_view($view_data_inner['view_name']);
+					
+				$options = array (
+				//'output_file' => $view_data['general']['view_name']
+			'output_file' => $filename_inner
+				);//The filename is description, but we have mulitple description views - where do we merge them?
+					
+				//lorna
+				drupal_set_message(t('CREATED A FILE NAME FOR DESCRIPTION: ') . $view_data['general']['view_name']);
+				drupal_set_message(t('The display name is: ') . $view_data['general']['display_id']);
+				drupal_set_message(t('The filename_inner is: ') . $filename_inner);
+					
+				//_dwca_export_views_data_export_override_batch($view, $view_data['general']['display_id'], $options);
+				_dwca_export_views_data_export_override_batch($view, $view_data_inner['display_id'], $options);
+					
+				//$view->execute_display($view_data['general']['display_id']);
+				$view->execute_display($view_data_inner['display_id']);
+			}
+			
+		}
+		else {
+			$view = views_get_view($view_data['view_name']);
+			$options = array (
+					    'output_file' => $filename
+			);
+			_dwca_export_views_data_export_override_batch($view, $view_data['display_id'], $options);
+			$view->execute_display($view_data['display_id']);			
+		}
+		//end lorna
+		
+	}
+
 	// add the csv data files
 	foreach(_dwca_export_archive_descriptor_file_map() as $dwca_filename=>$view_data){
 
-		$view_temp_file = $view_data['out_file_url'];
-		if($view_temp_file){
-			$zip->addFile(drupal_realpath($view_temp_file), ARCHIVE_ROOT_DIR.$dwca_filename);
-		}else{
-			throw new Exception(t('Cannot create %file', array('%file' => $dwca_filename)));
+		if ($dwca_filename == 'description') {
+			
+			//lorna TODO: loop create a new $view_temp_file for each desciption type
+			
+			////////drupal_realpath($tmp_archive_file_name)
+			$desc_file_name = drupal_tempnam("temporary://", "description");
+			$desc_file = fopen(drupal_realpath($desc_file_name), "w");
+			
+
+			
+			foreach($view_data as $type=>$view_data_inner){
+				//$view_temp_file = $view_data['general']['out_file_url'];
+				$view_temp_file = $view_data_inner['out_file_url'];
+				
+				drupal_set_message(t('The TYPE is: ') . $type);
+				drupal_set_message(t('The outfile URL: ') . $view_data_inner['out_file_url']);
+				//lets start by creating a different filename for each type of desc data???
+				//////
+				///////
+				///
+				$theFile = fopen($view_temp_file, "r");
+				//$theText = fgets($theFile);
+				
+				while(!feof($theFile)){
+					$lineOfText = fgets($theFile); 
+					print "$lineOfText<br />";
+					fputs($desc_file, $lineOfText);
+					drupal_set_message($lineOfText);
+				}
+				
+				////
+
+				
+				
+				_dwca_export_add_files_to_zip($view_temp_file, $type, $zip);
+			}
+			_dwca_export_add_files_to_zip($desc_file_name, $type, $zip);
+			
+		} else {
+		
+			$view_temp_file = $view_data['out_file_url'];
+			drupal_set_message(t('The outfile URL!!: ') . $view_data['out_file_url']);
+			_dwca_export_add_files_to_zip($view_temp_file, $dwca_filename, $zip);
 		}
+			
+		//lorna temp file - concatenate desc data files
+		////
+		////_dwca_export_add_files_to_zip($view_temp_file, $dwca_filename, $zip);
+		
 	}
 
 	$zip->close();
 
 	return $tmp_archive_file_name;
+}
+
+function _dwca_export_add_files_to_zip($view_temp_file = NULL, $dwca_filename, $zip){
+	
+	if($view_temp_file){
+		$zip->addFile(drupal_realpath($view_temp_file), ARCHIVE_ROOT_DIR.$dwca_filename);
+	}else{
+		throw new Exception(t('Cannot create %file', array('%file' => $dwca_filename)));
+	}
 }
 
 /**
@@ -299,8 +410,18 @@ function dwca_export_create_archive($views_map) {
  * adapted fom views_data_export.drush.inc
  */
 function _dwca_export_views_data_export_override_batch($view = NULL, $display = NULL, $options = TRUE) {
+	
+	//lorna
+	if ($view) {
+		drupal_set_message(t('in override batch WITH VIEW '));
+	} else {
+	drupal_set_message(t('in override batch: '));
+	}
 	static $_views;
 	if (isset($view)) {
+		
+		//lorna
+		drupal_set_message(t('in override batch with view: ') . $view->name);
 		$_views[$view->name][$display] = $options;
 	}
 	return $_views;
@@ -318,6 +439,9 @@ function dwca_export_views_data_export_batch_alter(&$batch, &$final_destination,
 
 	$view_name = $batch['view_name'];
 	$display_id = $batch['display_id'];
+	
+	//lorna
+	drupal_set_message(t('in batch alter 1: ') );
 
 	$ok_to_override = _dwca_export_views_data_export_override_batch();
 
@@ -347,6 +471,9 @@ function dwca_export_views_data_export_batch_alter(&$batch, &$final_destination,
 * @see batch_process() in form.inc
 */
 function dwca_export_batch_alter(&$batch, &$final_destination, &$querystring) {
+	
+	//lorna
+	drupal_set_message(t('in batch alter 2: ') );
 	if($batch['source_url'] == 'dwca_export'){
 		$batch['progressive'] = FALSE;
 	}
@@ -372,6 +499,8 @@ function _dwca_export_views_data_export_batch_finished($eid, $output_file, &$con
 	// Get path to temp file
 	$temp_file = $view->display_handler->outputfile_path();
 
+	//lorna - there's no file_name for description
+	drupal_set_message(t('CALLING _dwca_export_archive_descriptor_file_map WITH OUTPUT_FILE: ') . $output_file . t(' and temp_FILE: ') . $temp_file);
 	_dwca_export_archive_descriptor_file_map($output_file, $temp_file);
 
 }
