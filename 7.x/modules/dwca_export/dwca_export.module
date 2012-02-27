@@ -229,20 +229,14 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 	if(!isset($file_map)){
 		$file_map = variable_get(FILE_MAP);
 	}
-	
-	//lorna - there's no file_name for description
-	drupal_set_message(t('The file_name... ') . $file_name);
 
 	if($file_name && $out_file_url){
-		
-		//lorna
-		drupal_set_message(t('The file_name... ') . $file_name . t('The out_file_url... ') . $out_file_url);
 		
 		if (($file_name == 'general') || ($file_name == 'morphology')) {
 			$file_map['description'][$file_name]['out_file_url'] = $out_file_url;
 			//$file_map[$file_name]['morphology']['out_file_url'] = $out_file_url;
 		} else {
-		///
+		
 		$file_map[$file_name]['out_file_url'] = $out_file_url;
 		}
 	}
@@ -302,19 +296,12 @@ function dwca_export_create_archive($views_map) {
 				$view = views_get_view($view_data_inner['view_name']);
 					
 				$options = array (
-				//'output_file' => $view_data['general']['view_name']
-			'output_file' => $filename_inner
-				);//The filename is description, but we have mulitple description views - where do we merge them?
-					
-				//lorna
-				drupal_set_message(t('CREATED A FILE NAME FOR DESCRIPTION: ') . $view_data['general']['view_name']);
-				drupal_set_message(t('The display name is: ') . $view_data['general']['display_id']);
-				drupal_set_message(t('The filename_inner is: ') . $filename_inner);
+					'output_file' => $filename_inner
+				);
 					
 				//_dwca_export_views_data_export_override_batch($view, $view_data['general']['display_id'], $options);
 				_dwca_export_views_data_export_override_batch($view, $view_data_inner['display_id'], $options);
 					
-				//$view->execute_display($view_data['general']['display_id']);
 				$view->execute_display($view_data_inner['display_id']);
 			}
 			
@@ -353,7 +340,7 @@ function dwca_export_create_archive($views_map) {
 
 /**
  * 
- * Combines multiple Description Views for different description types into a single file
+ * Combines multiple Description Views for different description types into a single text file
  * @param $view_data The inner array containing the view data for the different description types
  * @param $zip The zip file for the files making up the DwC-A.
  */
@@ -396,7 +383,6 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 				fgets($theFile);
 			}
 
-			drupal_set_message($lineOfText);
 		}
 
 		fclose($theFile);
@@ -430,17 +416,9 @@ function _dwca_export_add_files_to_zip($view_temp_file = NULL, $dwca_filename, $
  */
 function _dwca_export_views_data_export_override_batch($view = NULL, $display = NULL, $options = TRUE) {
 	
-	//lorna
-	if ($view) {
-		drupal_set_message(t('in override batch WITH VIEW '));
-	} else {
-	drupal_set_message(t('in override batch: '));
-	}
 	static $_views;
 	if (isset($view)) {
 		
-		//lorna
-		drupal_set_message(t('in override batch with view: ') . $view->name);
 		$_views[$view->name][$display] = $options;
 	}
 	return $_views;
@@ -458,9 +436,6 @@ function dwca_export_views_data_export_batch_alter(&$batch, &$final_destination,
 
 	$view_name = $batch['view_name'];
 	$display_id = $batch['display_id'];
-	
-	//lorna
-	drupal_set_message(t('in batch alter 1: ') );
 
 	$ok_to_override = _dwca_export_views_data_export_override_batch();
 
@@ -491,8 +466,6 @@ function dwca_export_views_data_export_batch_alter(&$batch, &$final_destination,
 */
 function dwca_export_batch_alter(&$batch, &$final_destination, &$querystring) {
 	
-	//lorna
-	drupal_set_message(t('in batch alter 2: ') );
 	if($batch['source_url'] == 'dwca_export'){
 		$batch['progressive'] = FALSE;
 	}
@@ -518,8 +491,6 @@ function _dwca_export_views_data_export_batch_finished($eid, $output_file, &$con
 	// Get path to temp file
 	$temp_file = $view->display_handler->outputfile_path();
 
-	//lorna - there's no file_name for description
-	drupal_set_message(t('CALLING _dwca_export_archive_descriptor_file_map WITH OUTPUT_FILE: ') . $output_file . t(' and temp_FILE: ') . $temp_file);
 	_dwca_export_archive_descriptor_file_map($output_file, $temp_file);
 
 }
