@@ -40,7 +40,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enc
 
   $itemCnt = 0;
   foreach($descriptionElements as $descriptionElement){
-  	$out .= ($descriptionElement->class);
+  	//$out .= ($descriptionElement->class);
         // annotations as footnotes
 //        $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
 //        // source references as footnotes
@@ -257,8 +257,8 @@ RenderHints::pushToRenderStack('feature_nodes');
   
   //Add the display of the number of taxa in the selected genus
  
-  $descriptionsForUses = cdm_ws_get(CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS, $taxon->uuid);
-  $out .= theme('cdm_tempUses_part', $descriptionsForUses);
+  //$descriptionsForUses = cdm_ws_get(CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS, $taxon->uuid);
+  //$out .= theme('cdm_tempUses_part', $descriptionsForUses);
 	
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
   if ($show_bibliography && $countFeatures !=0) {
@@ -396,7 +396,7 @@ function formatReference_for_Bibliogrpahy($references) {
 				$currentRecord = 1;
 				if (!empty($reference->citation->authorTeam->teamMembers)) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
-						if(!empty($teamMember->lastname)) {
+						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($currentRecord == 1) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
 							}
@@ -444,7 +444,7 @@ function formatReference_for_Bibliogrpahy($references) {
 				$currentRecord = 1;
 				if (!empty($reference->citation->authorTeam->teamMembers)) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
-						if(!empty($teamMember->lastname)) {
+						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($currentRecord == 1) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
 							}
@@ -490,9 +490,9 @@ function formatReference_for_Bibliogrpahy($references) {
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
 				$currentRecord = 1;
-				if (!empty($reference->citation->authorTeam->teamMembers) || $reference->citation->authorTeam->titleCache != "-empty team-") {
+				if (!empty($reference->citation->authorTeam->teamMembers) && $reference->citation->authorTeam->titleCache != "-empty team-") {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
-						if(!empty($teamMember->lastname)) {
+						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($numberOfTeamMembers != $currentRecord) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
 							}
@@ -545,7 +545,7 @@ function formatReference_for_Bibliogrpahy($references) {
 				$currentRecord = 1;
 				if (!empty($reference->citation->authorTeam->teamMembers)) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
-						if(!empty($teamMember->lastname)) {
+						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($numberOfTeamMembers != $currentRecord) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
 							}
@@ -572,7 +572,7 @@ function formatReference_for_Bibliogrpahy($references) {
 				$currentRecordinReference = 1;
 				if (!empty($reference->citation->inReference->authorTeam->teamMembers)) {
 					foreach ($reference->citation->inReference->authorTeam->teamMembers as $teamMember) {
-						if(!empty($teamMember->lastname)) {
+						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($numberOfTeamMembers != $currentRecord) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
 							}
@@ -612,7 +612,7 @@ function formatReference_for_Bibliogrpahy($references) {
 				$currentRecord = 1;
 				if (!empty($reference->citation->authorTeam->teamMembers)) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
-						if(!empty($teamMember->lastname)) {
+						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($currentRecord == 1) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
 							}
@@ -637,19 +637,24 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 					}
 				}
-				else {
+				else if(!empty($reference->citation->authorTeam->titleCache)) {
 					$referenceString .= $reference->citation->authorTeam->titleCache;
 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
+				}
+				else {
+					$referenceString .= $reference->citation->titleCache;
+					$referenceString .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? " " : ". ");
 				}
 				/*else {
 					$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
 				}*/
 				if (!empty($reference->citation->datePublished->start)) {
 					$referenceString .= substr($reference->citation->datePublished->start,0,4);
-					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
 				}
 				$referenceString .= $reference->citation->title . ". " . $reference->citation->publisher;
-				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
+				$referenceString .= ((str_endsWith($referenceString, ".") ) ? " " : "");
 				$referenceString .= "</li>";
 				break;
 			default:
