@@ -336,58 +336,77 @@ function dwca_export_create_archive($views_map) {
 
 		if ($dwca_filename == 'description') {
 			
-			//lorna TODO: loop create a new $view_temp_file for each desciption type
-			
-			////////drupal_realpath($tmp_archive_file_name)
-			$desc_file_name = drupal_tempnam("temporary://", "description");
-			$desc_file = fopen(drupal_realpath($desc_file_name), "w");
-			
-
-			
-			foreach($view_data as $type=>$view_data_inner){
-				//$view_temp_file = $view_data['general']['out_file_url'];
-				$view_temp_file = $view_data_inner['out_file_url'];
-				
-				drupal_set_message(t('The TYPE is: ') . $type);
-				drupal_set_message(t('The outfile URL: ') . $view_data_inner['out_file_url']);
-				//lets start by creating a different filename for each type of desc data???
-				//////
-				///////
-				///
-				$theFile = fopen($view_temp_file, "r");
-				//$theText = fgets($theFile);
-				
-				while(!feof($theFile)){
-					$lineOfText = fgets($theFile); 
-					print "$lineOfText<br />";
-					fputs($desc_file, $lineOfText);
-					drupal_set_message($lineOfText);
-				}
-				
-				////
-
-				
-				
-				_dwca_export_add_files_to_zip($view_temp_file, $type, $zip);
-			}
-			_dwca_export_add_files_to_zip($desc_file_name, $type, $zip);
+			_dwca_export_concatenate_description_files($view_data, $zip);
 			
 		} else {
 		
 			$view_temp_file = $view_data['out_file_url'];
-			drupal_set_message(t('The outfile URL!!: ') . $view_data['out_file_url']);
 			_dwca_export_add_files_to_zip($view_temp_file, $dwca_filename, $zip);
 		}
-			
-		//lorna temp file - concatenate desc data files
-		////
-		////_dwca_export_add_files_to_zip($view_temp_file, $dwca_filename, $zip);
 		
 	}
 
 	$zip->close();
 
 	return $tmp_archive_file_name;
+}
+
+/**
+ * 
+ * Combines multiple Description Views for different description types into a single file
+ * @param $view_data The inner array containing the view data for the different description types
+ * @param $zip The zip file for the files making up the DwC-A.
+ */
+function _dwca_export_concatenate_description_files($view_data, $zip){
+	
+	$desc_file_name = drupal_tempnam("temporary://", "description.tmp");
+	$desc_file = fopen(drupal_realpath($desc_file_name), "w");
+
+	$first_desc_file = true;
+	foreach($view_data as $type=>$view_data_inner){
+
+		$view_temp_file = $view_data_inner['out_file_url'];
+
+		$theFile = fopen($view_temp_file, "r");
+
+		//print column names from first file
+		if ($first_desc_file) {
+			$lineOfText = fgets($theFile);
+			fputs($desc_file, $lineOfText);
+			$first_desc_file = false;
+		} else {
+			fgets($theFile);
+		}
+
+		while(!feof($theFile)){
+			$lineOfText = fgets($theFile);
+			print "$lineOfText<br />";
+
+			$items = explode(',', $lineOfText);
+
+			if (!empty($items[2])) {
+
+				fputs($desc_file, $lineOfText);
+				//add an end of line if there isn't one
+				//if (!stripos(strrev($lineOfText), '"') === 0) {
+				//fputs($desc_file, '"' . PHP_EOL);
+				fputs($desc_file, PHP_EOL);
+				//}
+			} else {
+				fgets($theFile);
+			}
+
+			drupal_set_message($lineOfText);
+		}
+
+		fclose($theFile);
+
+		//currently also adding each individual desc type to archive
+		_dwca_export_add_files_to_zip($view_temp_file, $type, $zip);
+	}
+	fclose($desc_file);
+
+	_dwca_export_add_files_to_zip($desc_file_name, 'description', $zip);
 }
 
 function _dwca_export_add_files_to_zip($view_temp_file = NULL, $dwca_filename, $zip){
