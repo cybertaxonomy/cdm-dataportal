@@ -151,7 +151,7 @@ function dwca_export_config_form_submit($form, &$form_state) {
 				$description_map = $dwca_export_archive_descriptor_file_map[$description_key];
 				//if (array_key_exists($key, $dwca_export_archive_descriptor_file_map['description'])) {
 				if (array_key_exists($key, $description_map)) {
-					drupal_set_message(t('The ooKEY is... ') . $key . t('The ooVALUE is... ') . $value);
+					//drupal_set_message(t('The ooKEY is... ') . $key . t('The ooVALUE is... ') . $value);
 					$dwca_export_archive_descriptor_file_map[$description_key][$key]['view_name'] = $value;
 				}
 			}
@@ -232,12 +232,15 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 
 	if($file_name && $out_file_url){
 		
-		if (($file_name == 'general') || ($file_name == 'morphology')) {
-			$file_map['description'][$file_name]['out_file_url'] = $out_file_url;
-			//$file_map[$file_name]['morphology']['out_file_url'] = $out_file_url;
+		//TODO: Change this - it's not very generic and will not work if we add new types to FILE_MAP
+		if (($file_name == 'classification') || ($file_name == 'typesandspecimen') ||
+				 ($file_name == 'reference') || ($file_name == 'image')) {
+			
+			$file_map[$file_name]['out_file_url'] = $out_file_url;
+			
 		} else {
 		
-		$file_map[$file_name]['out_file_url'] = $out_file_url;
+			$file_map['description'][$file_name]['out_file_url'] = $out_file_url;
 		}
 	}
 
@@ -350,42 +353,51 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 	$desc_file = fopen(drupal_realpath($desc_file_name), "w");
 
 	$first_desc_file = true;
+	drupal_set_message('CALLED _dwca_export_concatenate_description_files... ');
+	
+	
 	foreach($view_data as $type=>$view_data_inner){
 
 		$view_temp_file = $view_data_inner['out_file_url'];
 
-		$theFile = fopen($view_temp_file, "r");
+		$descTypeFile = fopen($view_temp_file, "r");
 
 		//print column names from first file
-		if ($first_desc_file) {
-			$lineOfText = fgets($theFile);
-			fputs($desc_file, $lineOfText);
+		if ($first_desc_file === true) {
+			$lineOfText = fgets($descTypeFile, 4096);
+			fwrite($desc_file, $lineOfText);
 			$first_desc_file = false;
+			//drupal_set_message(t('FIRST desc file is true... '));
+			//drupal_set_message(t('Setting desc file type to false... '));
 		} else {
-			fgets($theFile);
+			fgets($descTypeFile, 4096);
 		}
+				
 
-		while(!feof($theFile)){
-			$lineOfText = fgets($theFile);
-			print "$lineOfText<br />";
+		while(!feof($descTypeFile)){
+			$lineOfText = fgets($descTypeFile, 4096);
 
 			$items = explode(',', $lineOfText);
 
-			if (!empty($items[2])) {
+			//don't include empty descriptions or lines at the end of the view which start with the field name id
+			//if ($items[2]=="\"\""  || (!$items[0]=="\"id\"")) { //doesn't work - produces empty files
+			if (!empty($items[2])  || (!$items[0]=="id")) {
 
-				fputs($desc_file, $lineOfText);
-				//add an end of line if there isn't one
+				// fix conflict with files that have an EOL that differs from the server EOL
+				$lineOfText = rtrim($lineOfText, "\r\n") . PHP_EOL;
+				fwrite($desc_file, $lineOfText);
+				
+				//TODO: Fix - some descriptions are missing the closing "
 				//if (!stripos(strrev($lineOfText), '"') === 0) {
 				//fputs($desc_file, '"' . PHP_EOL);
-				fputs($desc_file, PHP_EOL);
-				//}
+				
 			} else {
-				fgets($theFile);
+				fgets($descTypeFile, 4096);
 			}
 
 		}
 
-		fclose($theFile);
+		fclose($descTypeFile);
 
 		//currently also adding each individual desc type to archive
 		_dwca_export_add_files_to_zip($view_temp_file, $type, $zip);
