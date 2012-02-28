@@ -203,12 +203,13 @@
 		 */
 		function _resize_container_image_box(intImageWidth,intImageHeight) {
 			var myHeight = $(window).height() -150;
-			var myWidth = $(window).width() -200;
+			var myWidth = $(window).width() -500;
 			if((settings.adjustToWindow == true && settings.adjustToWindow != null)  && (intImageWidth > myWidth || intImageHeight > myHeight)) {
 				//get the height and width of the window to resize the image appropriately, Height is at -150 to compensate for various padding and borders
 				
 				var isWider = intImageWidth > intImageHeight;//is the image wide or tall?
-		    	var scale = isWider ?  myWidth/intImageWidth : myHeight/intImageHeight;
+		    	//var scale = isWider ?  myWidth/intImageWidth : myHeight/intImageHeight;
+				var scale = myHeight/intImageHeight;
 		    	intImageWidth = intImageWidth * scale;
 		    	intImageHeight = intImageHeight * scale;
 			}
