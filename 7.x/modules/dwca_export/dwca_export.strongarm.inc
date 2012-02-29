@@ -116,7 +116,7 @@ function dwca_export_strongarm(){
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
-							'distribution' => array(
+							'distribut' => array(
 								'view_name'=> 'dwca_export_description_dist',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
