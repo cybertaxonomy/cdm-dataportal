@@ -1132,53 +1132,35 @@ function _view_specimen() {
 	$view = new view;
 	$view->name = 'dwca_export_specimen';
 	$view->description = 'DwC-A specimen extension for a Taxon';
+
 	$view->tag = 'default';
-	$view->base_table = 'node';
+	$view->base_table = 'taxonomy_term_data';
 	$view->human_name = 'DwC-A Export Specimen';
 	$view->core = 7;
 	$view->api_version = '3.0';
 	$view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
-	
+
 	/* Display: Master */
 	$handler = $view->new_display('default', 'Master', 'default');
+	$handler->display->display_options['title'] = 'test_specimen';
 	$handler->display->display_options['access']['type'] = 'perm';
 	$handler->display->display_options['cache']['type'] = 'none';
 	$handler->display->display_options['query']['type'] = 'views_query';
 	$handler->display->display_options['query']['options']['query_comment'] = FALSE;
 	$handler->display->display_options['exposed_form']['type'] = 'basic';
 	$handler->display->display_options['pager']['type'] = 'full';
-	$handler->display->display_options['style_plugin'] = 'table';
-	$handler->display->display_options['style_options']['columns'] = array(
-	  'title' => 'title',
-	);
-	$handler->display->display_options['style_options']['default'] = '-1';
-	$handler->display->display_options['style_options']['info'] = array(
-	  'title' => array(
-	    'sortable' => 0,
-	    'default_sort_order' => 'asc',
-	    'align' => '',
-	    'separator' => '',
-	),
-	);
-	$handler->display->display_options['style_options']['override'] = 1;
-	$handler->display->display_options['style_options']['sticky'] = 0;
-	$handler->display->display_options['style_options']['empty_table'] = 0;
-	/* Relationship: Content: Taxonomy terms on node */
-	$handler->display->display_options['relationships']['term_node_tid']['id'] = 'term_node_tid';
-	$handler->display->display_options['relationships']['term_node_tid']['table'] = 'node';
-	$handler->display->display_options['relationships']['term_node_tid']['field'] = 'term_node_tid';
-	$handler->display->display_options['relationships']['term_node_tid']['required'] = 1;
-	$handler->display->display_options['relationships']['term_node_tid']['vocabularies'] = array(
-	  'dwca_export_test_taxonomy' => 'dwca_export_test_taxonomy',
-	  'forums' => 0,
-	  'tags' => 0,
-	);
+	$handler->display->display_options['pager']['options']['items_per_page'] = '10';
+	$handler->display->display_options['style_plugin'] = 'default';
+	$handler->display->display_options['row_plugin'] = 'fields';
+	/* Relationship: Taxonomy term: Content using Taxonomic name */
+	$handler->display->display_options['relationships']['reverse_field_taxonomic_name_node']['id'] = 'reverse_field_taxonomic_name_node';
+	$handler->display->display_options['relationships']['reverse_field_taxonomic_name_node']['table'] = 'taxonomy_term_data';
+	$handler->display->display_options['relationships']['reverse_field_taxonomic_name_node']['field'] = 'reverse_field_taxonomic_name_node';
+	$handler->display->display_options['relationships']['reverse_field_taxonomic_name_node']['required'] = 1;
 	/* Field: Taxonomy term: Term ID */
 	$handler->display->display_options['fields']['tid']['id'] = 'tid';
 	$handler->display->display_options['fields']['tid']['table'] = 'taxonomy_term_data';
 	$handler->display->display_options['fields']['tid']['field'] = 'tid';
-	$handler->display->display_options['fields']['tid']['relationship'] = 'term_node_tid';
-	$handler->display->display_options['fields']['tid']['label'] = 'id';
 	$handler->display->display_options['fields']['tid']['alter']['alter_text'] = 0;
 	$handler->display->display_options['fields']['tid']['alter']['make_link'] = 0;
 	$handler->display->display_options['fields']['tid']['alter']['absolute'] = 0;
@@ -1188,6 +1170,7 @@ function _view_specimen() {
 	$handler->display->display_options['fields']['tid']['alter']['nl2br'] = 0;
 	$handler->display->display_options['fields']['tid']['alter']['word_boundary'] = 1;
 	$handler->display->display_options['fields']['tid']['alter']['ellipsis'] = 1;
+	$handler->display->display_options['fields']['tid']['alter']['more_link'] = 0;
 	$handler->display->display_options['fields']['tid']['alter']['strip_tags'] = 0;
 	$handler->display->display_options['fields']['tid']['alter']['trim'] = 0;
 	$handler->display->display_options['fields']['tid']['alter']['html'] = 0;
@@ -1195,37 +1178,37 @@ function _view_specimen() {
 	$handler->display->display_options['fields']['tid']['element_default_classes'] = 1;
 	$handler->display->display_options['fields']['tid']['hide_empty'] = 0;
 	$handler->display->display_options['fields']['tid']['empty_zero'] = 0;
-	$handler->display->display_options['fields']['tid']['hide_alter_empty'] = 0;
+	$handler->display->display_options['fields']['tid']['hide_alter_empty'] = 1;
 	$handler->display->display_options['fields']['tid']['format_plural'] = 0;
 	/* Field: Content: Type status */
-	$handler->display->display_options['fields']['field_type_status_1']['id'] = 'field_type_status_1';
-	$handler->display->display_options['fields']['field_type_status_1']['table'] = 'field_data_field_type_status';
-	$handler->display->display_options['fields']['field_type_status_1']['field'] = 'field_type_status';
-	$handler->display->display_options['fields']['field_type_status_1']['label'] = 'typeStatus';
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['alter_text'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['make_link'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['absolute'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['external'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['replace_spaces'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['trim_whitespace'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['nl2br'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['word_boundary'] = 1;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['ellipsis'] = 1;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['more_link'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['strip_tags'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['trim'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['alter']['html'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['element_label_colon'] = 1;
-	$handler->display->display_options['fields']['field_type_status_1']['element_default_classes'] = 1;
-	$handler->display->display_options['fields']['field_type_status_1']['hide_empty'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['empty_zero'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['hide_alter_empty'] = 0;
-	$handler->display->display_options['fields']['field_type_status_1']['field_api_classes'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['id'] = 'field_type_status';
+	$handler->display->display_options['fields']['field_type_status']['table'] = 'field_data_field_type_status';
+	$handler->display->display_options['fields']['field_type_status']['field'] = 'field_type_status';
+	$handler->display->display_options['fields']['field_type_status']['relationship'] = 'reverse_field_taxonomic_name_node';
+	$handler->display->display_options['fields']['field_type_status']['alter']['alter_text'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['make_link'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['absolute'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['external'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['replace_spaces'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['trim_whitespace'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['nl2br'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['word_boundary'] = 1;
+	$handler->display->display_options['fields']['field_type_status']['alter']['ellipsis'] = 1;
+	$handler->display->display_options['fields']['field_type_status']['alter']['more_link'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['strip_tags'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['trim'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['alter']['html'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['element_label_colon'] = 1;
+	$handler->display->display_options['fields']['field_type_status']['element_default_classes'] = 1;
+	$handler->display->display_options['fields']['field_type_status']['hide_empty'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['empty_zero'] = 0;
+	$handler->display->display_options['fields']['field_type_status']['hide_alter_empty'] = 1;
+	$handler->display->display_options['fields']['field_type_status']['field_api_classes'] = 0;
 	/* Field: Content: Institution code */
 	$handler->display->display_options['fields']['field_institution_code']['id'] = 'field_institution_code';
 	$handler->display->display_options['fields']['field_institution_code']['table'] = 'field_data_field_institution_code';
 	$handler->display->display_options['fields']['field_institution_code']['field'] = 'field_institution_code';
-	$handler->display->display_options['fields']['field_institution_code']['label'] = 'institutionCode';
+	$handler->display->display_options['fields']['field_institution_code']['relationship'] = 'reverse_field_taxonomic_name_node';
 	$handler->display->display_options['fields']['field_institution_code']['alter']['alter_text'] = 0;
 	$handler->display->display_options['fields']['field_institution_code']['alter']['make_link'] = 0;
 	$handler->display->display_options['fields']['field_institution_code']['alter']['absolute'] = 0;
@@ -1243,13 +1226,13 @@ function _view_specimen() {
 	$handler->display->display_options['fields']['field_institution_code']['element_default_classes'] = 1;
 	$handler->display->display_options['fields']['field_institution_code']['hide_empty'] = 0;
 	$handler->display->display_options['fields']['field_institution_code']['empty_zero'] = 0;
-	$handler->display->display_options['fields']['field_institution_code']['hide_alter_empty'] = 0;
+	$handler->display->display_options['fields']['field_institution_code']['hide_alter_empty'] = 1;
 	$handler->display->display_options['fields']['field_institution_code']['field_api_classes'] = 0;
 	/* Field: Content: Collection code */
 	$handler->display->display_options['fields']['field_collection_code']['id'] = 'field_collection_code';
 	$handler->display->display_options['fields']['field_collection_code']['table'] = 'field_data_field_collection_code';
 	$handler->display->display_options['fields']['field_collection_code']['field'] = 'field_collection_code';
-	$handler->display->display_options['fields']['field_collection_code']['label'] = 'collectionCode';
+	$handler->display->display_options['fields']['field_collection_code']['relationship'] = 'reverse_field_taxonomic_name_node';
 	$handler->display->display_options['fields']['field_collection_code']['alter']['alter_text'] = 0;
 	$handler->display->display_options['fields']['field_collection_code']['alter']['make_link'] = 0;
 	$handler->display->display_options['fields']['field_collection_code']['alter']['absolute'] = 0;
@@ -1267,13 +1250,13 @@ function _view_specimen() {
 	$handler->display->display_options['fields']['field_collection_code']['element_default_classes'] = 1;
 	$handler->display->display_options['fields']['field_collection_code']['hide_empty'] = 0;
 	$handler->display->display_options['fields']['field_collection_code']['empty_zero'] = 0;
-	$handler->display->display_options['fields']['field_collection_code']['hide_alter_empty'] = 0;
+	$handler->display->display_options['fields']['field_collection_code']['hide_alter_empty'] = 1;
 	$handler->display->display_options['fields']['field_collection_code']['field_api_classes'] = 0;
 	/* Field: Content: Catalogue number */
 	$handler->display->display_options['fields']['field_catalogue_number']['id'] = 'field_catalogue_number';
 	$handler->display->display_options['fields']['field_catalogue_number']['table'] = 'field_data_field_catalogue_number';
 	$handler->display->display_options['fields']['field_catalogue_number']['field'] = 'field_catalogue_number';
-	$handler->display->display_options['fields']['field_catalogue_number']['label'] = 'catalogNumber';
+	$handler->display->display_options['fields']['field_catalogue_number']['relationship'] = 'reverse_field_taxonomic_name_node';
 	$handler->display->display_options['fields']['field_catalogue_number']['alter']['alter_text'] = 0;
 	$handler->display->display_options['fields']['field_catalogue_number']['alter']['make_link'] = 0;
 	$handler->display->display_options['fields']['field_catalogue_number']['alter']['absolute'] = 0;
@@ -1291,37 +1274,26 @@ function _view_specimen() {
 	$handler->display->display_options['fields']['field_catalogue_number']['element_default_classes'] = 1;
 	$handler->display->display_options['fields']['field_catalogue_number']['hide_empty'] = 0;
 	$handler->display->display_options['fields']['field_catalogue_number']['empty_zero'] = 0;
-	$handler->display->display_options['fields']['field_catalogue_number']['hide_alter_empty'] = 0;
+	$handler->display->display_options['fields']['field_catalogue_number']['hide_alter_empty'] = 1;
 	$handler->display->display_options['fields']['field_catalogue_number']['field_api_classes'] = 0;
-	/* Sort criterion: Content: Post date */
-	$handler->display->display_options['sorts']['created']['id'] = 'created';
-	$handler->display->display_options['sorts']['created']['table'] = 'node';
-	$handler->display->display_options['sorts']['created']['field'] = 'created';
-	$handler->display->display_options['sorts']['created']['order'] = 'DESC';
-	/* Filter criterion: Content: Published */
-	$handler->display->display_options['filters']['status']['id'] = 'status';
-	$handler->display->display_options['filters']['status']['table'] = 'node';
-	$handler->display->display_options['filters']['status']['field'] = 'status';
-	$handler->display->display_options['filters']['status']['value'] = 1;
-	$handler->display->display_options['filters']['status']['group'] = 0;
-	$handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
 	/* Filter criterion: Content: Type */
 	$handler->display->display_options['filters']['type']['id'] = 'type';
 	$handler->display->display_options['filters']['type']['table'] = 'node';
 	$handler->display->display_options['filters']['type']['field'] = 'type';
+	$handler->display->display_options['filters']['type']['relationship'] = 'reverse_field_taxonomic_name_node';
 	$handler->display->display_options['filters']['type']['value'] = array(
-	  'specimen_observation' => 'specimen_observation',
+  'specimen_observation' => 'specimen_observation',
 	);
-	
+
 	/* Display: Page */
 	$handler = $view->new_display('page', 'Page', 'page');
 	$handler->display->display_options['path'] = 'dwca_export/specimen/page';
-	
+
 	/* Display: Data export */
 	$handler = $view->new_display('views_data_export', 'Data export', 'views_data_export_1');
 	$handler->display->display_options['pager']['type'] = 'some';
 	$handler->display->display_options['style_plugin'] = 'views_data_export_csv';
-	
+
 	$handler->display->display_options['style_options']['provide_file'] = 0;
 	$handler->display->display_options['style_options']['parent_sort'] = 0;
 	$handler->display->display_options['style_options']['quote'] = 1;
@@ -1329,11 +1301,11 @@ function _view_specimen() {
 	$handler->display->display_options['style_options']['replace_newlines'] = 1;
 	$handler->display->display_options['style_options']['newline_replacement'] = '\\r';
 	$handler->display->display_options['style_options']['header'] = 0;
-	
+
 	$handler->display->display_options['path'] = 'dwca_export/specimen/csv';
-	
- 
-  return $view; 
+
+
+	return $view;
 }
 
 function _view_distribution() {
