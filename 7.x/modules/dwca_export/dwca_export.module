@@ -5,6 +5,7 @@ define ("METADATA_FILE_NAME", "meta.xml");
 define ("STATIC_DIR", "/static/");
 define ("ARCHIVE_ROOT_DIR", "dwca_export/");
 define ('FILE_MAP', 'dwca_export_archive_descriptor_file_map');
+define ('FILE_EXTENSION', ".txt");
 
 
 /**
@@ -314,8 +315,12 @@ function dwca_export_create_archive($views_map) {
 					
 				//_dwca_export_views_data_export_override_batch($view, $view_data['general']['display_id'], $options);
 				_dwca_export_views_data_export_override_batch($view, $view_data_inner['display_id'], $options);
-					
-				$view->execute_display($view_data_inner['display_id']);
+
+				if ($view) {
+					$view->execute_display($view_data_inner['display_id']);
+				}else{
+					throw new Exception(t('A view with the name %view does not exist', array('%view' => $view_data_inner['view_name'])));
+				}
 			}
 			
 		}
@@ -325,10 +330,15 @@ function dwca_export_create_archive($views_map) {
 					    'output_file' => $filename
 			);
 			_dwca_export_views_data_export_override_batch($view, $view_data['display_id'], $options);
-			$view->execute_display($view_data['display_id']);			
+				
+			if ($view) {
+				$view->execute_display($view_data['display_id']);
+			} else{
+				throw new Exception(t('A view with the name %view does not exist', array('%view' => $view_data['view_name'])));
+			}
 		}
 		//end lorna
-		
+
 	}
 
 	// add the csv data files
@@ -427,7 +437,7 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 function _dwca_export_add_files_to_zip($view_temp_file = NULL, $dwca_filename, $zip){
 	
 	if($view_temp_file){
-		$zip->addFile(drupal_realpath($view_temp_file), ARCHIVE_ROOT_DIR.$dwca_filename);
+		$zip->addFile(drupal_realpath($view_temp_file), ARCHIVE_ROOT_DIR.$dwca_filename . FILE_EXTENSION);
 	}else{
 		throw new Exception(t('Cannot create %file', array('%file' => $dwca_filename)));
 	}

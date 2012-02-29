@@ -42,32 +42,32 @@ function dwca_export_strongarm(){
 		,
 		'description' => array(
 							'general' => array(
-								'view_name'=> 'dwca_export_description_general',
+								'view_name'=> 'dwca_export_description_genera',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'morphology' => array(
-								'view_name'=> 'dwca_export_description_morph',
+								'view_name'=> 'dwca_export_description_morpho',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'behaviour' => array(
-								'view_name'=> 'dwca_export_description_behav',
+								'view_name'=> 'dwca_export_description_behavi',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'biology' => array(
-								'view_name'=> 'dwca_export_description_biol',
+								'view_name'=> 'dwca_export_description_biolog',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'conservation_status' => array(
-								'view_name'=> 'dwca_export_description_cons',
+								'view_name'=> 'dwca_export_description_conser',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'legislation' => array(
-								'view_name'=> 'dwca_export_description_leg',
+								'view_name'=> 'dwca_export_description_legisl',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
@@ -77,7 +77,7 @@ function dwca_export_strongarm(){
 								'out_file_url' => NULL
 			),
 							'procedures' => array(
-								'view_name'=> 'dwca_export_description_proc',
+								'view_name'=> 'dwca_export_description_proced',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
@@ -87,7 +87,7 @@ function dwca_export_strongarm(){
 								'out_file_url' => NULL
 			),
 							'associations' => array(
-								'view_name'=> 'dwca_export_description_assoc',
+								'view_name'=> 'dwca_export_description_associ',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
@@ -97,87 +97,82 @@ function dwca_export_strongarm(){
 								'out_file_url' => NULL
 			),
 							'diagnostic_description' => array(
-								'view_name'=> 'dwca_export_description_diag',
+								'view_name'=> 'dwca_export_description_diagno',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'diseases' => array(
-								'view_name'=> 'dwca_export_description_disease',
+								'view_name'=> 'dwca_export_description_diseas',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'dispersal' => array(
-								'view_name'=> 'dwca_export_description_disperse',
-								'display_id' => 'views_data_export_1',
-								'out_file_url' => NULL
-			),
-							'threats' => array(
-								'view_name'=> 'dwca_export_description_morph',
+								'view_name'=> 'dwca_export_description_disper',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'distribut' => array(
-								'view_name'=> 'dwca_export_description_dist',
+								'view_name'=> 'dwca_export_description_distri',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'ecology' => array(
-								'view_name'=> 'dwca_export_description_ecol',
+								'view_name'=> 'dwca_export_description_ecolog',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'evolution' => array(
-								'view_name'=> 'dwca_export_description_evolve',
+								'view_name'=> 'dwca_export_description_evolut',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'genetics' => array(
-								'view_name'=> 'dwca_export_description_genet',
+								'view_name'=> 'dwca_export_description_geneti',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'growth' => array(
-								'view_name'=> 'dwca_export_description_grow',
+								'view_name'=> 'dwca_export_description_growth',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'habitat' => array(
-								'view_name'=> 'dwca_export_description_habit',
+								'view_name'=> 'dwca_export_description_habita',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'life_cycle' => array(
-								'view_name'=> 'dwca_export_description_life',
+								'view_name'=> 'dwca_export_description_life_c',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'life_expectancy' => array(
-								'view_name'=> 'dwca_export_description_life_ex',
+								'view_name'=> 'dwca_export_description_life_e',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'look_alikes' => array(
-								'view_name'=> 'dwca_export_description_look',
+								'view_name'=> 'dwca_export_description_look_a',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'migration' => array(
-								'view_name'=> 'dwca_export_description_migr',
+								'view_name'=> 'dwca_export_description_migrat',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'molecular_biology' => array(
-								'view_name'=> 'dwca_export_description_molec',
+								'view_name'=> 'dwca_export_description_molecu',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'physiology' => array(
-								'view_name'=> 'dwca_export_description_phys',
+								'view_name'=> 'dwca_export_description_physio',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'population_biology' => array(
-								'view_name'=> 'dwca_export_description_popul',
+								'view_name'=> 'dwca_export_description_popula',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
@@ -187,7 +182,7 @@ function dwca_export_strongarm(){
 								'out_file_url' => NULL
 			),
 							'risk_statement' => array(
-								'view_name'=> 'dwca_export_description_risk',
+								'view_name'=> 'dwca_export_description_risk_s',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
@@ -197,12 +192,12 @@ function dwca_export_strongarm(){
 								'out_file_url' => NULL
 			),
 							'taxon_biology' => array(
-								'view_name'=> 'dwca_export_description_taxbio',
+								'view_name'=> 'dwca_export_description_taxon_',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
 							'trophic_strategy' => array(
-								'view_name'=> 'dwca_export_description_troph',
+								'view_name'=> 'dwca_export_description_trophi',
 								'display_id' => 'views_data_export_1',
 								'out_file_url' => NULL
 			),
