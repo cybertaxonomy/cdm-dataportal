@@ -363,7 +363,7 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 	$desc_file = fopen(drupal_realpath($desc_file_name), "w");
 
 	$first_desc_file = true;
-	drupal_set_message('CALLED _dwca_export_concatenate_description_files... ');
+	//drupal_set_message('CALLED _dwca_export_concatenate_description_files... ');
 	
 	
 	foreach($view_data as $type=>$view_data_inner){
@@ -372,38 +372,41 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 
 		$descTypeFile = fopen($view_temp_file, "r");
 
-		//print column names from first file
+		//print column names
+		
 		if ($first_desc_file === true) {
+			fwrite($desc_file, "\"id\",\"type\",\"description\"" . PHP_EOL);
+			$first_desc_file = false;
+		} 
+		
+		/*if ($first_desc_file === true) {
 			$lineOfText = fgets($descTypeFile, 4096);
 			fwrite($desc_file, $lineOfText);
 			$first_desc_file = false;
-			//drupal_set_message(t('FIRST desc file is true... '));
-			//drupal_set_message(t('Setting desc file type to false... '));
 		} else {
 			fgets($descTypeFile, 4096);
-		}
+		}*/
 				
 
 		while(!feof($descTypeFile)){
 			$lineOfText = fgets($descTypeFile, 4096);
 
 			$items = explode(',', $lineOfText);
-		
-			drupal_set_message(t('items[0]... ') . $items[0] . "!");
-			drupal_set_message(t('items[1]... ') . $items[1] . "!");
-			drupal_set_message(t('items[2]... ') . $items[2] . "!");
+			
 			//don't include empty descriptions or lines at the end of the view which start with the field name id
-			//if ($items[2]=="\"\""  || (!$items[0]=="\"id\"")) { //doesn't work - produces empty files
-			//if ($items[2]!="\"\""  || trim($items[2]!="\"\"")) {
-			if (!$items[0]=="id") {
+			//some lines just contain a single " if there is a carriage return within the description text so remove these too
+			if ($items[0]!=="\"id\""  && trim($items[2])!=="\"\"") {
 
+				//Fix - some descriptions are missing the closing " - Fixed in View now
+				//if (!stripos(strrev($lineOfText), '"') === 0) {
+						//$lineOfText = $lineOfText . "\"";
+					//}
+				
 				// fix conflict with files that have an EOL that differs from the server EOL
 				$lineOfText = rtrim($lineOfText, "\r\n") . PHP_EOL;
 				fwrite($desc_file, $lineOfText);
 				
-				//TODO: Fix - some descriptions are missing the closing "
-				//if (!stripos(strrev($lineOfText), '"') === 0) {
-				//fputs($desc_file, '"' . PHP_EOL);
+				
 				
 			} else {
 				fgets($descTypeFile, 4096);
