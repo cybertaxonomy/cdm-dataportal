@@ -372,7 +372,7 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 	$desc_file_name = drupal_tempnam("temporary://", "description.tmp");
 	$desc_file = fopen(drupal_realpath($desc_file_name), "w");
 
-	$first_desc_file = true;
+	//$first_desc_file = true;
 	//drupal_set_message('CALLED _dwca_export_concatenate_description_files... ');
 	
 	
@@ -381,22 +381,6 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 		$view_temp_file = $view_data_inner['out_file_url'];
 
 		$descTypeFile = fopen($view_temp_file, "r");
-
-		//print column names
-		
-		if ($first_desc_file === true) {
-			fwrite($desc_file, "\"id\",\"type\",\"description\"" . PHP_EOL);
-			$first_desc_file = false;
-		} 
-		
-		/*if ($first_desc_file === true) {
-			$lineOfText = fgets($descTypeFile, 4096);
-			fwrite($desc_file, $lineOfText);
-			$first_desc_file = false;
-		} else {
-			fgets($descTypeFile, 4096);
-		}*/
-				
 
 		while(!feof($descTypeFile)){
 			$lineOfText = fgets($descTypeFile, 4096);
