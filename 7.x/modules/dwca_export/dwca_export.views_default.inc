@@ -406,6 +406,16 @@ function _view_classification() {
 	$handler->display->display_options['sorts']['tid']['id'] = 'tid';
 	$handler->display->display_options['sorts']['tid']['table'] = 'taxonomy_term_data';
 	$handler->display->display_options['sorts']['tid']['field'] = 'tid';
+	/* Filter criterion: Taxonomy vocabulary: Machine name */ 
+	$handler->display->display_options['filters']['machine_name']['id'] = 'machine_name'; 
+	$handler->display->display_options['filters']['machine_name']['table'] = 'taxonomy_vocabulary'; 
+	$handler->display->display_options['filters']['machine_name']['field'] = 'machine_name'; 
+	$handler->display->display_options['filters']['machine_name']['operator'] = 'not in'; 
+	$handler->display->display_options['filters']['machine_name']['value'] = array(
+	  'image_keywords' => 'image_keywords',
+	  'imaging_technique' => 'imaging_technique',
+	  'preparation_technique' => 'preparation_technique', );
+	
 	
 	/* Display: Page */
 	$handler = $view->new_display('page', 'Page', 'page');
