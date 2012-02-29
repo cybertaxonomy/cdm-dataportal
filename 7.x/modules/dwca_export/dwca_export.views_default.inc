@@ -424,6 +424,9 @@ function _view_classification() {
 	$handler->display->display_options['style_options']['newline_replacement'] = '\\r';
 	$handler->display->display_options['style_options']['header'] = 0;
 	
+	$handler->display->display_options['pager']['type'] = 'none';
+	$handler->display->display_options['pager']['options']['offset'] = '0';
+	
 	$handler->display->display_options['path'] = 'dwca_export/classification/csv';
 	
 
@@ -912,6 +915,10 @@ function _view_reference() {
 	$handler->display->display_options['style_options']['replace_newlines'] = 1;
 	$handler->display->display_options['style_options']['newline_replacement'] = '\\r';
 	$handler->display->display_options['style_options']['header'] = 0;
+	
+	$handler->display->display_options['pager']['type'] = 'none';
+	$handler->display->display_options['pager']['options']['offset'] = '0';
+	
 	$handler->display->display_options['path'] = 'dwca-export/reference/csv';
 
 	return $view;
@@ -1122,6 +1129,9 @@ function _view_image() {
 	$handler->display->display_options['style_options']['newline_replacement'] = '\\r';
 	$handler->display->display_options['style_options']['header'] = 0;
 	
+	$handler->display->display_options['pager']['type'] = 'none';
+	$handler->display->display_options['pager']['options']['offset'] = '0';
+	
 	$handler->display->display_options['path'] = 'dwca-export/image/csv';
 	
 	return $view;
@@ -1301,6 +1311,8 @@ function _view_specimen() {
 	$handler->display->display_options['style_options']['replace_newlines'] = 1;
 	$handler->display->display_options['style_options']['newline_replacement'] = '\\r';
 	$handler->display->display_options['style_options']['header'] = 0;
+	$handler->display->display_options['pager']['type'] = 'none';
+	$handler->display->display_options['pager']['options']['offset'] = '0';
 
 	$handler->display->display_options['path'] = 'dwca_export/specimen/csv';
 
@@ -1433,6 +1445,9 @@ function _view_distribution() {
 	$handler->display->display_options['style_options']['replace_newlines'] = 1;
 	$handler->display->display_options['style_options']['newline_replacement'] = '\\r';
 	$handler->display->display_options['style_options']['header'] = 0;
+	
+	$handler->display->display_options['pager']['type'] = 'none'; 
+	$handler->display->display_options['pager']['options']['offset'] = '0';
 	
 	$handler->display->display_options['path'] = 'dwca-export/distribution/csv';
 
@@ -1584,6 +1599,10 @@ function _view_description($desc_type) {
 	$handler->display->display_options['style_options']['trim'] = 1;
 	$handler->display->display_options['style_options']['replace_newlines'] = 0;
 	$handler->display->display_options['style_options']['header'] = 0;
+	
+	$handler->display->display_options['pager']['type'] = 'none';
+	$handler->display->display_options['pager']['options']['offset'] = '0';
+	
 	$handler->display->display_options['path'] = t('dwca-export/description-' . $desc_type . '/csv');
 
 	return $view;
