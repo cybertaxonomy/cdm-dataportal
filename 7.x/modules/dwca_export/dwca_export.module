@@ -244,7 +244,7 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 		
 		//TODO: Change this - it's not very generic and will not work if we add new types to FILE_MAP
 		if (($file_name == 'classification') || ($file_name == 'typesandspecimen') ||
-				 ($file_name == 'reference') || ($file_name == 'image' || ($file_name == 'distribution')) {
+				 ($file_name == 'reference') || ($file_name == 'image') || ($file_name == 'distribution')) {
 			
 			$file_map[$file_name]['out_file_url'] = $out_file_url;
 			
