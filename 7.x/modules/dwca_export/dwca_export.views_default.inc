@@ -418,6 +418,7 @@ function _view_classification() {
 	return $view;
 }
 
+
 function _view_reference() {
 
 	$view = new view;
@@ -505,7 +506,8 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_accession_number']['id'] = 'biblio_accession_number';
 	$handler->display->display_options['fields']['biblio_accession_number']['table'] = 'biblio';
 	$handler->display->display_options['fields']['biblio_accession_number']['field'] = 'biblio_accession_number';
-	$handler->display->display_options['fields']['biblio_accession_number']['alter']['alter_text'] = 0;
+	$handler->display->display_options['fields']['biblio_accession_number']['alter']['alter_text'] = 1;
+	$handler->display->display_options['fields']['biblio_accession_number']['alter']['text'] = 'accession_number:[biblio_accession_number]';
 	$handler->display->display_options['fields']['biblio_accession_number']['alter']['make_link'] = 0;
 	$handler->display->display_options['fields']['biblio_accession_number']['alter']['absolute'] = 0;
 	$handler->display->display_options['fields']['biblio_accession_number']['alter']['external'] = 0;
@@ -514,6 +516,7 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_accession_number']['alter']['nl2br'] = 0;
 	$handler->display->display_options['fields']['biblio_accession_number']['alter']['word_boundary'] = 1;
 	$handler->display->display_options['fields']['biblio_accession_number']['alter']['ellipsis'] = 1;
+	$handler->display->display_options['fields']['biblio_accession_number']['alter']['more_link'] = 0;
 	$handler->display->display_options['fields']['biblio_accession_number']['alter']['strip_tags'] = 0;
 	$handler->display->display_options['fields']['biblio_accession_number']['alter']['trim'] = 0;
 	$handler->display->display_options['fields']['biblio_accession_number']['alter']['html'] = 0;
@@ -527,7 +530,8 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_call_number']['id'] = 'biblio_call_number';
 	$handler->display->display_options['fields']['biblio_call_number']['table'] = 'biblio';
 	$handler->display->display_options['fields']['biblio_call_number']['field'] = 'biblio_call_number';
-	$handler->display->display_options['fields']['biblio_call_number']['alter']['alter_text'] = 0;
+	$handler->display->display_options['fields']['biblio_call_number']['alter']['alter_text'] = 1;
+	$handler->display->display_options['fields']['biblio_call_number']['alter']['text'] = 'call_number:[biblio_call_number] ';
 	$handler->display->display_options['fields']['biblio_call_number']['alter']['make_link'] = 0;
 	$handler->display->display_options['fields']['biblio_call_number']['alter']['absolute'] = 0;
 	$handler->display->display_options['fields']['biblio_call_number']['alter']['external'] = 0;
@@ -536,6 +540,7 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_call_number']['alter']['nl2br'] = 0;
 	$handler->display->display_options['fields']['biblio_call_number']['alter']['word_boundary'] = 1;
 	$handler->display->display_options['fields']['biblio_call_number']['alter']['ellipsis'] = 1;
+	$handler->display->display_options['fields']['biblio_call_number']['alter']['more_link'] = 0;
 	$handler->display->display_options['fields']['biblio_call_number']['alter']['strip_tags'] = 0;
 	$handler->display->display_options['fields']['biblio_call_number']['alter']['trim'] = 0;
 	$handler->display->display_options['fields']['biblio_call_number']['alter']['html'] = 0;
@@ -549,7 +554,8 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_citekey']['id'] = 'biblio_citekey';
 	$handler->display->display_options['fields']['biblio_citekey']['table'] = 'biblio';
 	$handler->display->display_options['fields']['biblio_citekey']['field'] = 'biblio_citekey';
-	$handler->display->display_options['fields']['biblio_citekey']['alter']['alter_text'] = 0;
+	$handler->display->display_options['fields']['biblio_citekey']['alter']['alter_text'] = 1;
+	$handler->display->display_options['fields']['biblio_citekey']['alter']['text'] = 'citation_key:[biblio_citekey]';
 	$handler->display->display_options['fields']['biblio_citekey']['alter']['make_link'] = 0;
 	$handler->display->display_options['fields']['biblio_citekey']['alter']['absolute'] = 0;
 	$handler->display->display_options['fields']['biblio_citekey']['alter']['external'] = 0;
@@ -558,6 +564,7 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_citekey']['alter']['nl2br'] = 0;
 	$handler->display->display_options['fields']['biblio_citekey']['alter']['word_boundary'] = 1;
 	$handler->display->display_options['fields']['biblio_citekey']['alter']['ellipsis'] = 1;
+	$handler->display->display_options['fields']['biblio_citekey']['alter']['more_link'] = 0;
 	$handler->display->display_options['fields']['biblio_citekey']['alter']['strip_tags'] = 0;
 	$handler->display->display_options['fields']['biblio_citekey']['alter']['trim'] = 0;
 	$handler->display->display_options['fields']['biblio_citekey']['alter']['html'] = 0;
@@ -595,7 +602,9 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_isbn']['id'] = 'biblio_isbn';
 	$handler->display->display_options['fields']['biblio_isbn']['table'] = 'biblio';
 	$handler->display->display_options['fields']['biblio_isbn']['field'] = 'biblio_isbn';
-	$handler->display->display_options['fields']['biblio_isbn']['alter']['alter_text'] = 0;
+	$handler->display->display_options['fields']['biblio_isbn']['label'] = 'ISBN';
+	$handler->display->display_options['fields']['biblio_isbn']['alter']['alter_text'] = 1;
+	$handler->display->display_options['fields']['biblio_isbn']['alter']['text'] = 'isbn:[biblio_isbn]';
 	$handler->display->display_options['fields']['biblio_isbn']['alter']['make_link'] = 0;
 	$handler->display->display_options['fields']['biblio_isbn']['alter']['absolute'] = 0;
 	$handler->display->display_options['fields']['biblio_isbn']['alter']['external'] = 0;
@@ -604,6 +613,7 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_isbn']['alter']['nl2br'] = 0;
 	$handler->display->display_options['fields']['biblio_isbn']['alter']['word_boundary'] = 1;
 	$handler->display->display_options['fields']['biblio_isbn']['alter']['ellipsis'] = 1;
+	$handler->display->display_options['fields']['biblio_isbn']['alter']['more_link'] = 0;
 	$handler->display->display_options['fields']['biblio_isbn']['alter']['strip_tags'] = 0;
 	$handler->display->display_options['fields']['biblio_isbn']['alter']['trim'] = 0;
 	$handler->display->display_options['fields']['biblio_isbn']['alter']['html'] = 0;
@@ -617,7 +627,9 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_issn']['id'] = 'biblio_issn';
 	$handler->display->display_options['fields']['biblio_issn']['table'] = 'biblio';
 	$handler->display->display_options['fields']['biblio_issn']['field'] = 'biblio_issn';
-	$handler->display->display_options['fields']['biblio_issn']['alter']['alter_text'] = 0;
+	$handler->display->display_options['fields']['biblio_issn']['label'] = 'ISSN';
+	$handler->display->display_options['fields']['biblio_issn']['alter']['alter_text'] = 1;
+	$handler->display->display_options['fields']['biblio_issn']['alter']['text'] = 'issn:[biblio_issn]';
 	$handler->display->display_options['fields']['biblio_issn']['alter']['make_link'] = 0;
 	$handler->display->display_options['fields']['biblio_issn']['alter']['absolute'] = 0;
 	$handler->display->display_options['fields']['biblio_issn']['alter']['external'] = 0;
@@ -626,6 +638,7 @@ function _view_reference() {
 	$handler->display->display_options['fields']['biblio_issn']['alter']['nl2br'] = 0;
 	$handler->display->display_options['fields']['biblio_issn']['alter']['word_boundary'] = 1;
 	$handler->display->display_options['fields']['biblio_issn']['alter']['ellipsis'] = 1;
+	$handler->display->display_options['fields']['biblio_issn']['alter']['more_link'] = 0;
 	$handler->display->display_options['fields']['biblio_issn']['alter']['strip_tags'] = 0;
 	$handler->display->display_options['fields']['biblio_issn']['alter']['trim'] = 0;
 	$handler->display->display_options['fields']['biblio_issn']['alter']['html'] = 0;
@@ -889,6 +902,7 @@ function _view_reference() {
 	$handler->display->display_options['pager']['type'] = 'some';
 	$handler->display->display_options['style_plugin'] = 'views_data_export_csv';
 	$handler->display->display_options['path'] = 'dwca-export/reference/csv';
+
 
 	return $view;
 }

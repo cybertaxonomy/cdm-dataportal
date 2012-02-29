@@ -101,13 +101,24 @@ function dwca_export_select_view_form() {
 		
 		if ($dwca_filename == 'description') {
 			
+			
+		$views[$dwca_filename] = array (
+					'#type' => 'fieldset',
+  					'#title' => t('DESCRIPTIVE DATA TYPES'),
+				  	'#weight' => 3,
+				  	'#collapsible' => TRUE,
+				  	'#collapsed' => TRUE,
+				  	'#tree' => FALSE,
+			
+  		);
 			foreach($view_data as $dwca_filename_inner => $view_data_inner){
+				
+				
 				$views[$dwca_filename][$dwca_filename_inner] = array(
 									  	'#type' => 'textfield',
 									  	'#title' => t($dwca_filename . '_' . $dwca_filename_inner),
 									  	'#default_value' => $view_data_inner['view_name'],
 									  	'#size' => 60,
-									  	'#maxlength' => 64,
 									  	'#description' => t('specify view for ' . $dwca_filename_inner),
 			
 				);
@@ -119,7 +130,6 @@ function dwca_export_select_view_form() {
 					  	'#title' => t($dwca_filename),
 					  	'#default_value' => $view_data['view_name'],
 					  	'#size' => 60,
-					  	'#maxlength' => 64,
 					  	'#description' => t('specify view for ' . $dwca_filename),
 			
 			);
@@ -378,10 +388,14 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 			$lineOfText = fgets($descTypeFile, 4096);
 
 			$items = explode(',', $lineOfText);
-
+		
+			drupal_set_message(t('items[0]... ') . $items[0] . "!");
+			drupal_set_message(t('items[1]... ') . $items[1] . "!");
+			drupal_set_message(t('items[2]... ') . $items[2] . "!");
 			//don't include empty descriptions or lines at the end of the view which start with the field name id
 			//if ($items[2]=="\"\""  || (!$items[0]=="\"id\"")) { //doesn't work - produces empty files
-			if (!empty($items[2])  || (!$items[0]=="id")) {
+			//if ($items[2]!="\"\""  || trim($items[2]!="\"\"")) {
+			if (!$items[0]=="id") {
 
 				// fix conflict with files that have an EOL that differs from the server EOL
 				$lineOfText = rtrim($lineOfText, "\r\n") . PHP_EOL;
