@@ -517,3 +517,11 @@ function _dwca_export_views_data_export_batch_finished($eid, $output_file, &$con
 	_dwca_export_archive_descriptor_file_map($output_file, $temp_file);
 
 }
+
+function dwca_export_permission() {
+	return array(
+    'administer dwca-export' => array(
+      'title' => t('Access dwca-export'),
+      'description' => t('Allows user to access DwC-A export configuration page and execute export of the DwC-A data.'),
+	));
+}
