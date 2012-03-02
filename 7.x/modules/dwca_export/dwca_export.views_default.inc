@@ -7,8 +7,6 @@
  * @see dwca_export_views_api()
  */
 function dwca_export_views_default_views() {
-	
-	//static $view_functions = array('classification', 'specimen', 'reference', 'image', 'distribution');
 
 	static $view_description_names = array('general_description', 'morphology', 'behavious', 'biology',
 	'conservation_status', 'legislation', 'management', 'procedures',
@@ -23,8 +21,7 @@ function dwca_export_views_default_views() {
 	$views = array();
 
 	foreach (dwca_export_view_names_array() as $function_postfix) {
-		//foreach ($view_all_names_except_description as $function_postfix) {
-		//foreach ($view_functions as $function_postfix) {
+
 		$function = '_view_' . $function_postfix;
 		$view = $function();
 		$views[$view->name] = $view;
