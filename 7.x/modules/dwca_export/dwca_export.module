@@ -7,6 +7,8 @@ define ("ARCHIVE_ROOT_DIR", "dwca_export/");
 define ('FILE_MAP', 'dwca_export_archive_descriptor_file_map');
 define ('FILE_EXTENSION', ".txt");
 
+//$view_all_names_except_description = array('classification', 'specimen', 'reference', 'image', 'distribution');
+
 
 /**
  * Implements hook_menu().
@@ -34,6 +36,13 @@ function dwca_export_menu() {
 
 
 	return $items;
+}
+
+function dwca_export_view_names_array(){
+
+	$view_names = array('classification', 'specimen', 'reference', 'image', 'distribution');
+
+	return $view_names;
 }
 
 /**
@@ -160,7 +169,7 @@ function dwca_export_config_form_submit($form, &$form_state) {
 				
 				//get the inner array containing the different description data types
 				$description_map = $dwca_export_archive_descriptor_file_map[$description_key];
-				//if (array_key_exists($key, $dwca_export_archive_descriptor_file_map['description'])) {
+
 				if (array_key_exists($key, $description_map)) {
 					//drupal_set_message(t('The ooKEY is... ') . $key . t('The ooVALUE is... ') . $value);
 					$dwca_export_archive_descriptor_file_map[$description_key][$key]['view_name'] = $value;
@@ -243,9 +252,7 @@ function _dwca_export_archive_descriptor_file_map($file_name = NULL, $out_file_u
 
 	if($file_name && $out_file_url){
 		
-		//TODO: Change this - it's not very generic and will not work if we add new types to FILE_MAP
-		if (($file_name == 'classification') || ($file_name == 'typesandspecimen') ||
-				 ($file_name == 'reference') || ($file_name == 'image') || ($file_name == 'distribution')) {
+		if (in_array($file_name, dwca_export_view_names_array())) {
 			
 			$file_map[$file_name]['out_file_url'] = $out_file_url;
 			
@@ -313,7 +320,6 @@ function dwca_export_create_archive($views_map) {
 					'output_file' => $filename_inner
 				);
 					
-				//_dwca_export_views_data_export_override_batch($view, $view_data['general']['display_id'], $options);
 				_dwca_export_views_data_export_override_batch($view, $view_data_inner['display_id'], $options);
 
 				if ($view) {
@@ -370,11 +376,7 @@ function dwca_export_create_archive($views_map) {
 function _dwca_export_concatenate_description_files($view_data, $zip){
 	
 	$desc_file_name = drupal_tempnam("temporary://", "description.tmp");
-	$desc_file = fopen(drupal_realpath($desc_file_name), "w");
-
-	//$first_desc_file = true;
-	//drupal_set_message('CALLED _dwca_export_concatenate_description_files... ');
-	
+	$desc_file = fopen(drupal_realpath($desc_file_name), "w");	
 	
 	foreach($view_data as $type=>$view_data_inner){
 
@@ -390,11 +392,6 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 			//don't include empty descriptions or lines at the end of the view which start with the field name id
 			//some lines just contain a single " if there is a carriage return within the description text so remove these too
 			if ($items[0]!=="\"id\""  && trim($items[2])!=="\"\"") {
-
-				//Fix - some descriptions are missing the closing " - Fixed in View now
-				//if (!stripos(strrev($lineOfText), '"') === 0) {
-						//$lineOfText = $lineOfText . "\"";
-					//}
 				
 				// fix conflict with files that have an EOL that differs from the server EOL
 				$lineOfText = rtrim($lineOfText, "\r\n") . PHP_EOL;
@@ -409,9 +406,6 @@ function _dwca_export_concatenate_description_files($view_data, $zip){
 		}
 
 		fclose($descTypeFile);
-
-		//currently also adding each individual desc type to archive
-		//_dwca_export_add_files_to_zip($view_temp_file, $type, $zip);
 	}
 	fclose($desc_file);
 

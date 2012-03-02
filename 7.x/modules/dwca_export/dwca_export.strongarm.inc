@@ -18,7 +18,7 @@ function dwca_export_strongarm(){
 			'display_id' => 'views_data_export_1',
 			'out_file_url' => NULL
 		),
-		'typesandspecimen' => array(
+		'specimen' => array(
 			'view_name'=> 'dwca_export_specimen',
 			'display_id' => 'views_data_export_1',
 			'out_file_url' => NULL

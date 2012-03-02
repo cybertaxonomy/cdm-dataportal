@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Implementation of hook_views_default_views().
  *
@@ -7,9 +8,9 @@
  */
 function dwca_export_views_default_views() {
 	
-	static $view_functions = array('classification', 'specimen', 'reference', 'image', 'distribution');
+	//static $view_functions = array('classification', 'specimen', 'reference', 'image', 'distribution');
 
-	static $view_description_functions = array('general_description', 'morphology', 'behavious', 'biology',
+	static $view_description_names = array('general_description', 'morphology', 'behavious', 'biology',
 	'conservation_status', 'legislation', 'management', 'procedures',
 	'threats','associations','cyclicity','diagnostic_description',
 	'diseases', 'dispersal', 'distribution', 'ecology',
@@ -21,14 +22,16 @@ function dwca_export_views_default_views() {
 
 	$views = array();
 
-	foreach ($view_functions as $function_postfix) {
+	foreach (dwca_export_view_names_array() as $function_postfix) {
+		//foreach ($view_all_names_except_description as $function_postfix) {
+		//foreach ($view_functions as $function_postfix) {
 		$function = '_view_' . $function_postfix;
 		$view = $function();
 		$views[$view->name] = $view;
 		watchdog("dwca_export", "hook_views_default_views() : view '".$view->name."'");
 	}
 	
-	foreach ($view_description_functions as $desc_type) {
+	foreach ($view_description_names as $desc_type) {
 		$function = '_view_description';
 		$view = $function($desc_type);
 		$views[$view->name] = $view;
@@ -38,6 +41,7 @@ function dwca_export_views_default_views() {
 	
 	return $views;
 }
+
 
 /**
  * Classification Export View - exported from views module
