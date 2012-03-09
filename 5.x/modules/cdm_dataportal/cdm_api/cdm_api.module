@@ -1251,8 +1251,8 @@ function _add_status_message_toggler() {
 function _no_classfication_uuid_message(){
 
   if(!cdm_ws_get(CDM_WS_PORTAL_TAXONOMY)){
-    return t('This DataPortal is not configured properly or the CDM-Sever may be absent.')
-      . 'Please check the ' . l(t('CDM web service URL'), 'admin/settings/cdm_dataportal/general')
+    return t('This DataPortal is not configured properly or the CDM-Server may be absent.')
+      . ' Please check the ' . l(t('CDM web service URL'), 'admin/settings/cdm_dataportal/general')
       . t(', or contact the maintainer of this DataPortal.');
   }
 
