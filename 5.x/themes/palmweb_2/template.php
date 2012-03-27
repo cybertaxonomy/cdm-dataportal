@@ -256,9 +256,17 @@ RenderHints::pushToRenderStack('feature_nodes');
   //calling the theme function for Bibliography to add it to the output
   
   //Add the display of the number of taxa in the selected genus
- 
+
   //$descriptionsForUses = cdm_ws_get(CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS, $taxon->uuid);
-  //$out .= theme('cdm_tempUses_part', $descriptionsForUses);
+  $markerTypesUUIDs = '2e6e42d9-e92a-41f4-899b-03c0ac64f039';
+  $markerTypesEmpty = array(); 
+  
+  $descriptionsForUses = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid);
+  //$descriptionstestMarkerTypesNull = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid);
+  //$descriptionstestMarkerTypesEmpty = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, $markerTypesEmpty);
+  $descriptionstestMarkerwithUUIDs = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, array($taxon->uuid, $markerTypesUUIDs));
+  
+  $out .= theme('cdm_tempUses_part', $descriptionstestMarkerwithUUIDs);
 	
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
   if ($show_bibliography && $countFeatures !=0) {
