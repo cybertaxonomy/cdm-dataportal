@@ -639,7 +639,7 @@ function theme_cdm_description_ordered_distributions($taxon_uuid, $descriptionEl
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
   //getting all the taxon description for a given taxon
-  $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon_uuid);
+  $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, array($taxon_uuid, 'test'));
   foreach ($taxonDescriptions as $description){
     $descriptions_uuids[] = $description->uuid;
   }

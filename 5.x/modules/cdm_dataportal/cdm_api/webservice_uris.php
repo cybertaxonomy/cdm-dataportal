@@ -14,7 +14,7 @@ define('CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS', 'portal/name/$0/typeDesignations')
 
 define('CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS', 'portal/taxon/$0/nameTypeDesignations');
 
-define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
+define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions/$1');
 define('CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS', 'portal/taxon/$0/useDescriptions');
 
 /**
