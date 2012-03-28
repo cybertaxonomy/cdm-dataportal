@@ -1555,6 +1555,8 @@ function cdm_dataportal_shortname_of($name){
     $pattern = '/(^[a-zA-Z])([a-zA-Z]+)(\s+[^(\x2E]+\s+.+$)/';
     if (preg_match($pattern, $nameStr, $matches, PREG_OFFSET_CAPTURE)){
       return $matches[1][0] . "." . $matches[3][0];
+    } else {
+      return $nameStr;
     }
   } else {
     return $name->titleCache;
