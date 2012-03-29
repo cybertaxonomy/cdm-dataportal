@@ -241,7 +241,7 @@ RenderHints::pushToRenderStack('feature_nodes');
         $block->content .= theme('cdm_annotation_footnotes', $node->feature->uuid);
         // add anchor to subject
         $block->subject = '<a name="'.$block->delta.'"></a>'.  $block->subject;
-      // $out .= theme('block', $block) . $test . "TOTO";
+       //$out .= theme('block', $block) . $test . "TOTO";
        $out .= theme('block', $block);
 
         
@@ -258,13 +258,16 @@ RenderHints::pushToRenderStack('feature_nodes');
   //Add the display of the number of taxa in the selected genus
 
   //$descriptionsForUses = cdm_ws_get(CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS, $taxon->uuid);
-  $markerTypesUUIDs = '2e6e42d9-e92a-41f4-899b-03c0ac64f039';
-  $markerTypesEmpty = array(); 
+  //$markerTypesUUIDs = '2e6e42d9-e92a-41f4-899b-03c0ac64f039';
+  $markerTypes = array();
+  //$markerTypesEmpty['markerTypes'] = '2e6e42d9-e92a-41f4-899b-03c0ac64f039';
+  $markerTypes['markerTypes'] = '2e6e42d9-e92a-41f4-899b-03c0ac64f039';
+  $markerTypesNull = null; 
   
   $descriptionsForUses = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid);
   //$descriptionstestMarkerTypesNull = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid);
   //$descriptionstestMarkerTypesEmpty = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, $markerTypesEmpty);
-  $descriptionstestMarkerwithUUIDs = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, array($taxon->uuid, $markerTypesUUIDs));
+  $descriptionstestMarkerwithUUIDs = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, queryString($markerTypes));
   
   $out .= theme('cdm_tempUses_part', $descriptionstestMarkerwithUUIDs);
 	
