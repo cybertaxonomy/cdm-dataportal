@@ -121,7 +121,9 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   if($page_part == 'description' || $page_part == 'all'){
 
     $featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
-    $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, array($taxon->uuid, 'test')); //retrieve all description for the taxon
+        $markerTypesEmpty = array();
+  $markerTypesEmpty['markerTypes'] = '';
+    $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, queryString($markerTypesEmpty)); //retrieve all description for the taxon
 
     $nonStructuredDescriptions = array();
     if($taxonDescriptions != null){
