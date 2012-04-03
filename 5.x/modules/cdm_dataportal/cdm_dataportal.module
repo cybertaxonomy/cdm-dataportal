@@ -608,7 +608,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
         return $block;
       case "uses":
       	$block['subject'] = t('Uses');
-        $block['content'] = theme('cdm_block_IdentificationKeys');
+        $block['content'] = theme('cdm_block_uses');
         return $block;
     }
   }

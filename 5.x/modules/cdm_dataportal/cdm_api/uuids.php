@@ -73,6 +73,7 @@ define('UUID_VALIDATED_BY_NAME', 'a176c9ad-b4c2-4c57-addd-90373f8270eb');
 define('UUID_LATER_VALIDATED_BY_NAME', 'a25ee4c1-863a-4dab-9499-290bf9b89639');
 define('UUID_BLOCKING_NAME_FOR', '1dab357f-2e12-4511-97a4-e5153589e6a6');
 
+
 // Features
 define('UUID_UNKNOWN', '910307f1-dc3c-452c-a6dd-af5ac7cd365c');
 define('UUID_DESCRIPTION', '9087cdcd-8b08-4082-a1de-34c9ba9fb493');
@@ -100,6 +101,10 @@ define('UUID_NAME_USAGE', '99b2842f-9aa7-42fa-bd5f-7285311e0101');
 define('UUID_CHROMOSOMES', 'c4a60319-4978-4692-9545-58d60cf8379e');
 define('UUID_CHROMOSOMES_NUMBERS', '6f677e98-d8d5-4bc5-80bf-affdb7e3945a');
 define('UUID_IMAGE_SOURCES', 'c0cc5ebe-1f0c-4c31-af53-d486858ea415');
+//define('UUID_USE_RECORD', '8125a59d-b4d5-4485-89ea-67306297b599');
+define('UUID_USE_RECORD', 'ba773d5b-ab01-47fb-94cf-d241fcdd02ff');
+
+define('UUID_TEST', '064a64a3-92dd-4386-85a4-3c28a59d9730');
 
 // typedesignation status
 define('UUID_HOLOTYPE', 'a407dbc7-e60c-46ff-be11-eddf4c5a970d');
