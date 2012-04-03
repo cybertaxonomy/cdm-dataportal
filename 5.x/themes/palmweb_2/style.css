@@ -1095,3 +1095,7 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
   clear:both;
 }
 
+.use_record_list {
+ 	padding: 0 0 0.2em 0.5em;
+}
+	
