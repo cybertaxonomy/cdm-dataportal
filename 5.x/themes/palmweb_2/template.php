@@ -84,7 +84,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enc
 }
 
 function palmweb_2_cdm_feature_nodesTOC($featureNodes){
-
+	global $theme;
   $out .= '<ul>';
   $countFeatures = 0;
   $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), substr(strrchr($_GET["q"], '/'), 1))));
@@ -105,6 +105,23 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
   }
   //Setting the Anchor to the Bibliography section if the option is enabled
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
+  $isBlockactive = null;
+  
+  $regions = system_region_list($theme);
+  //$out.=print_r($regions);
+  
+  foreach (array_keys($regions) as $region) {
+  	//$out .= print($region['content']);
+  	$list = block_list($region);
+  	//$out.=print_r($list);
+  	foreach ($list as $block) {
+  		//$out .= print_r($block);
+  	}
+  }
+  
+  //$region['content'] = 'content';
+  //$out .= print_r($regions);
+  
   
   if ($show_bibliography && $countFeatures != 0) {
   	$out .= '<li>'.l(t(theme('cdm_feature_name', 'Bibliography')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Bibliography')).'</li>';
@@ -195,11 +212,11 @@ RenderHints::pushToRenderStack('feature_nodes');
         	$block->content .= theme('cdm_block_Uses', $taxon->uuid);
           	//$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid),
         }
-        else if ($node->feature->uuid == UUID_DESCRIPTION) {
+        /*else if ($node->feature->uuid == UUID_DESCRIPTION) {
         	//$block->content .= print_r($node);
-        }
+        }*/
         else if ($node->feature->uuid == UUID_TEST) {
-        	$block->content .= print_r($node);
+        	//$block->content .= print_r($node);
         }
         else {
           $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
@@ -257,7 +274,6 @@ RenderHints::pushToRenderStack('feature_nodes');
         $block->content .= theme('cdm_annotation_footnotes', $node->feature->uuid);
         // add anchor to subject
         $block->subject = '<a name="'.$block->delta.'"></a>'.  $block->subject;
-       //$out .= theme('block', $block) . $test . "TOTO";
        $out .= theme('block', $block);
 
         
@@ -284,37 +300,6 @@ RenderHints::pushToRenderStack('feature_nodes');
   return $out;
 }
 
-/*function palmweb_2_cdm_tempUses_part($descriptions) {
-	//$out = print_r($descriptions);
-	$out = '';
-	$out .= '<div id="block-cdm_dataportal-feature-discussion"><H2> Uses </H2> <BR />';
-	foreach($descriptions as $description) {
-		$out .= '<div id="content">' . $description->titleCache;
-		foreach ($description->sources as $source) {
-			$out .= " (" . theme('cdm_DescriptionElementSource', $source, true) . ")";
-		}
-		$out .= "<BR />Use Records: ";
-		$out .='<div><ul id="Desciption">';
-		foreach ($description->elements as $descriptionElement) {
-			$out .= '<span><li class="descriptionText">';
-			//foreach ($descriptionElement->states as $stateData) {
-			//	$out .= '<div class="useTag">' . $stateData->state->representation_L10n . '</div>';
-			//}
-			
-			//foreach ($descriptionElement->modifiers as $modifier) {
-			//	$out .= '<div class="useTag">' . $modifier->representation_L10n . '</div>' ;
-			//}
-			$out .= '<div>' . $descriptionElement->modifyingText->English->text;
-			$out .= '</li></span><div class="clear"></div>';
-		
-		}
-		$out .= "</ul></div></div>";
-		
-	}
-	$out .="</div>";
-	return $out;
-	
-}*/
 
 function palmweb_2_cdm_search_results($pager, $path, $parameters){
 
