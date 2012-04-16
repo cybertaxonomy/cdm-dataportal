@@ -73,11 +73,11 @@ function _view_classification() {
 	$handler->display->display_options['relationships']['parent']['ui_name'] = 'relParent';
 	$handler->display->display_options['relationships']['parent']['required'] = 0;
 	/* Relationship: Taxonomy term: Taxonomy term using Associated accepted name */
-	$handler->display->display_options['relationships']['field_aan_4_taxonomy_term']['id'] = 'field_aan_4_taxonomy_term';
-	$handler->display->display_options['relationships']['field_aan_4_taxonomy_term']['table'] = 'taxonomy_term_data';
-	$handler->display->display_options['relationships']['field_aan_4_taxonomy_term']['field'] = 'field_aan_4_taxonomy_term';
-	$handler->display->display_options['relationships']['field_aan_4_taxonomy_term']['label'] = 'assoc_accept_term';
-	$handler->display->display_options['relationships']['field_aan_4_taxonomy_term']['required'] = 0;
+	$handler->display->display_options['relationships']['reverse_field_aan_4_taxonomy_term']['id'] = 'reverse_field_aan_4_taxonomy_term';
+	$handler->display->display_options['relationships']['reverse_field_aan_4_taxonomy_term']['table'] = 'taxonomy_term_data';
+	$handler->display->display_options['relationships']['reverse_field_aan_4_taxonomy_term']['field'] = 'reverse_field_aan_4_taxonomy_term';
+	$handler->display->display_options['relationships']['reverse_field_aan_4_taxonomy_term']['label'] = 'assoc_accept_term';
+	$handler->display->display_options['relationships']['reverse_field_aan_4_taxonomy_term']['required'] = 0;
 	/* Field: Taxonomy term: Term ID */
 	$handler->display->display_options['fields']['tid_2']['id'] = 'tid_2';
 	$handler->display->display_options['fields']['tid_2']['table'] = 'taxonomy_term_data';
@@ -1801,8 +1801,8 @@ function _view_description($desc_type) {
 	);
 
 	/* Display: Page */
-	$handler = $view->new_display('page', 'Page', 'page');
-	$handler->display->display_options['path'] = t('dwca-export/description-' . $desc_type . '/page');
+	/*$handler = $view->new_display('page', 'Page', 'page');
+	$handler->display->display_options['path'] = t('dwca-export/description-' . $desc_type . '/page');*/
 
 	/* Display: Data export */
 	$handler = $view->new_display('views_data_export', 'Data export', 'views_data_export_1');
