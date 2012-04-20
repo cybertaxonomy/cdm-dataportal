@@ -713,6 +713,23 @@ function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
     }
 }
 
+/**
+ * returns the NomenclaturalReference string with correctly placed microreference (= reference detail) e.g. in Phytotaxa 43: 1-48. 2012
+ * @param unknown_type $referenceUuid
+ * @param unknown_type $microreference
+ * @return string
+ */
+function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference){
+
+  $obj = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($referenceUuid), "microReference=".urlencode($microreference));
+  if($obj){
+    return $obj->String;
+  } else {
+    return null;
+  }
+}
+
+
 function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements){
 
   foreach($featureNodes as &$node){
