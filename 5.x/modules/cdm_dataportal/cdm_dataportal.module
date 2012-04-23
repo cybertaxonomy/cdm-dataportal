@@ -606,6 +606,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
         $block['subject'] = t('Identification Keys');
         $block['content'] = theme('cdm_block_IdentificationKeys');
         return $block;
+      //Creating a block specific for the Use Interface.
       case "uses":
       	$block['subject'] = t('Uses');
         $block['content'] = theme('cdm_block_uses');
