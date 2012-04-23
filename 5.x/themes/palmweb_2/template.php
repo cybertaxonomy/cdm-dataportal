@@ -105,23 +105,12 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
   }
   //Setting the Anchor to the Bibliography section if the option is enabled
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
-  $isBlockactive = null;
   
-  $regions = system_region_list($theme);
-  //$out.=print_r($regions);
-  
-  foreach (array_keys($regions) as $region) {
-  	//$out .= print($region['content']);
-  	$list = block_list($region);
-  	//$out.=print_r($list);
-  	foreach ($list as $block) {
-  		//$out .= print_r($block);
-  	}
+  $markerTypes['markerTypes'] = '2e6e42d9-e92a-41f4-899b-03c0ac64f039';
+  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
+  if(!empty($useDescriptions)) {
+  		$out .= '<li>'.l(t(theme('cdm_feature_name', 'Uses')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('UseRecords')).'</li>';
   }
-  
-  //$region['content'] = 'content';
-  //$out .= print_r($regions);
-  
   
   if ($show_bibliography && $countFeatures != 0) {
   	$out .= '<li>'.l(t(theme('cdm_feature_name', 'Bibliography')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Bibliography')).'</li>';
@@ -149,8 +138,6 @@ RenderHints::pushToRenderStack('feature_nodes');
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       $block->module = 'cdm_dataportal';
       //if the option is enabled the description elements will be added to the array
-      //Testing the description title cache!	
-      //$test .= "<pre>" . print_r($node) . "</pre>";
       $show_bibliography = variable_get('cdm_show_bibliography', 1);
   	  if ($show_bibliography) {
       	$bibliographyOut[] =  $node->descriptionElements;
@@ -166,8 +153,6 @@ RenderHints::pushToRenderStack('feature_nodes');
         /*
          * Content/DISTRIBUTION
          */
-        $block->content = "Feature UUID:" . $node->feature->uuid;
-        $block->content .= ' element UUID:' . $node->uuid;
         if($node->feature->uuid == UUID_DISTRIBUTION){
 
           if(variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)){
@@ -208,15 +193,8 @@ RenderHints::pushToRenderStack('feature_nodes');
          * Content/ALL OTHER FEATURES
          */
         else if($node->feature->uuid == UUID_USE_RECORD) { 
-        	$block->content .= "TOTO";
         	$block->content .= theme('cdm_block_Uses', $taxon->uuid);
           	//$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid),
-        }
-        /*else if ($node->feature->uuid == UUID_DESCRIPTION) {
-        	//$block->content .= print_r($node);
-        }*/
-        else if ($node->feature->uuid == UUID_TEST) {
-        	//$block->content .= print_r($node);
         }
         else {
           $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
@@ -388,7 +366,6 @@ function formatReference_for_Bibliogrpahy($references) {
     $outTemp= array();
   foreach ($references as $reference) {
     $referenceString = '';
-		//print_r($reference);
 		switch ($reference->citation->type) {
 			case "Journal":
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
@@ -817,15 +794,6 @@ function palmweb_2_cdm_reference($reference, $microReference = null, $doLink = F
   return $out;
 }
 
-
-/*function palmweb_2_cdm_reference_page($referenceTO){
-	//print_r($referenceTO);
-	$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $referenceTO->uuid);
-	$nomenclatural = cdm_ws_get('portal/taxon/$0/descriptions', '1d91bd71-7109-4916-872f-a82b710a9cdf');
-	
-	print_r($nomenclatural);
-	return "TOTO";
-}*/
 
 
 /**
