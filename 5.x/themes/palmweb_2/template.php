@@ -106,7 +106,7 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
   //Setting the Anchor to the Bibliography section if the option is enabled
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
   
-  $markerTypes['markerTypes'] = '2e6e42d9-e92a-41f4-899b-03c0ac64f039';
+  $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
   $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
   if(!empty($useDescriptions)) {
   		$out .= '<li>'.l(t(theme('cdm_feature_name', 'Uses')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('UseRecords')).'</li>';
