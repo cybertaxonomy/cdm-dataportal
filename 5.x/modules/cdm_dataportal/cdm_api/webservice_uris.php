@@ -16,6 +16,8 @@ define('CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS', 'portal/taxon/$0/nameTypeDesi
 
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
 define('CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS', 'portal/taxon/$0/useDescriptions');
+define('CDM_WS_PORTAL_TAXON_FINDBESTMATCHINGTAXON', 'bestMatchingTaxon/$0');
+
 
 /**
  * $0 : taxon uud
@@ -42,6 +44,8 @@ define('CDM_WS_PORTAL_TAXON', 'portal/taxon');
 define('CDM_WS_PORTAL_TAXON_TAXONNODES', 'portal/taxon/$0/taxonNodes');
 
 define('CDM_WS_NAME_NAMECAHE', 'name/$0/nameCache');
+
+define('CDM_WS_PORTAL_NAME_NAMESBYNAME', 'namesByName/$0');
 
 define('CDM_WS_PORTAL_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');
 
