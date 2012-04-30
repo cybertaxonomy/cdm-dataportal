@@ -1219,6 +1219,7 @@ function theme_cdm_block_IdentificationKeys($taxonUuid = null, $pageSize = null)
   return $out;
 }
 
+
 //this theming function formats the use description and use record list for these descriptions 
 function theme_cdm_format_Uses ($descriptions = null, $pageSize, $pageNumber) {
 	$out = '<div id="content"><ul id="Description" class ="description">';
@@ -1228,47 +1229,30 @@ function theme_cdm_format_Uses ($descriptions = null, $pageSize, $pageNumber) {
 	$descriptionSynonyms;
 	$descriptionOut = "";
 	$synonymOut = "";
+	$useSummary = "";
 	foreach($descriptions as $description) {
-		//$out .= print_r($description);
-		//$taxonName = cdm_ws_get(CDM_WS_NAME_NAMECAHE, $description->taxon->uuid);
-		//$out .= print_r($taxonName);
-		//$taxonnameName = cdm_ws_get(CDM_WS_PORTAL_NAME_NAMESBYNAME, $taxonName . ".");
 		$synonyms = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY,$description->taxon->uuid);
-		//$out .= print_r($synonyms);
-		//$out .= print_r($taxonnameName); 
-		
-		//$out .= '<li class="descriptionText DescriptionElement">';
+		$serializedSynonyms = serialize($synonyms);
+		foreach ($description->elements as $element) {
+			
+			if($element->feature->uuid == UUID_USE_SUMMARY && !(strlen($useSummary)> 0)){
+				$useSummary = $element->multilanguageText_L10n->text;
+			}
+		}
 		foreach ($description->sources as $source) {
 			$isSynonym = false;
 			if($source->originalNameString) {
 				$originalTaxonUsedInSource = cdm_ws_get(CDM_WS_PORTAL_NAME_NAMESBYNAME, array($description->taxon->uuid, $source->originalNameString . "."));
 				
-				foreach($synonyms as $heteroSynonym) {
-					foreach ($heteroSynonym as $synonym)
-					//$out .= print_r($synonym);
-					foreach ($synonym as $toto) {
-						//$out .= print_r($toto);
-						//$out .= $toto->name->specificEpithet;
-						//$out .= $toto->name->uuid;
-						if($toto->name->uuid == $originalTaxonUsedInSource->uuid) {
-							$isSynonym = true;
-							//$descriptionSynonyms[] = $description;
-						}
-						else {
-							
-						}
-						
-					}
-					//$out .= $synonym->name->uuid;
-					
+				if (strpos($serializedSynonyms, $originalTaxonUsedInSource->uuid)) {
+					$isSynonym = true;
 				}
+				
 				if (!$isSynonym) {
 					$descriptionOut .='<li class="descriptionText DescriptionElement">';
 					$name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid),array(), NULL, NULL, FALSE ,TRUE);
-					
-					//$out .= $source->originalNameString . ': ';
 					$descriptionOut .= $name_used_in_source_link_to_show_use . ': ';
-					$descriptionOut .= $description->titleCache;
+					$descriptionOut .= $useSummary;
 					foreach ($description->sources as $source) {
 						if($source->originalNameString) {
 							//$out = $source->originalNameString . ':' . $out;
@@ -1277,20 +1261,23 @@ function theme_cdm_format_Uses ($descriptions = null, $pageSize, $pageNumber) {
 					}
 					$descriptionOut .= '<ul>';
 					foreach ($description->elements as $descriptionElement) {
-						$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
-						$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
+						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
+							$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
+							$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
+						}
 					}
 					$descriptionOut .= '</ul></li>';
 					
 					
 				}
 				else {
+					
 					$synonymOut .='<li class="descriptionText DescriptionElement">';
 					$name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid),array(), NULL, NULL, FALSE ,TRUE);
 						
 					//$out .= $source->originalNameString . ': ';
 					$synonymOut .= $name_used_in_source_link_to_show_use . ': ';
-					$synonymOut .= $description->titleCache;
+					$synonymOut .= $useSummary;
 					foreach ($description->sources as $source) {
 						if($source->originalNameString) {
 							//$out = $source->originalNameString . ':' . $out;
@@ -1299,43 +1286,20 @@ function theme_cdm_format_Uses ($descriptions = null, $pageSize, $pageNumber) {
 					}
 					$synonymOut .= '<ul>';
 					foreach ($description->elements as $descriptionElement) {
-						$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
-						$synonymOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
+						//print_r($descriptionElement);
+						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
+							$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
+							$synonymOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
+						}
 					}
 					$synonymOut .= '</ul></li>';
 					
 				}
-				
-				
-				
-				//$out .=print_r($originalTaxonUsedInSource);
-				//$name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid),array(), NULL, NULL, FALSE ,TRUE);
-				
-				//$out .= $source->originalNameString . ': ';
-				//$out .= $name_used_in_source_link_to_show_use . ': ';
+
 			}
 		}
-		//$out .= "</li>";
-		//$out .= print_r($descriptionSynonyms);
-		//$out .= $description->titleCache;
-		//foreach ($description->sources as $source) {
-		//	if($source->originalNameString) {
-				//$out = $source->originalNameString . ':' . $out;
-		//	}
-		//	$out .= " (" . theme('cdm_DescriptionElementSource', $source, true) . ")";
-		//}
-		//$out .= '<ul>';
-		//foreach ($description->elements as $descriptionElement) {
-		//	$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
-		//	$out .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
-		//}
-		//$out .= '</ul>';
-
-		//$out .= "</li>";
-		
 	}
 	$out .= $descriptionOut . $synonymOut;
-	//$out .= "</ul></div>";
 	$out .= "</ul></div>";
 	return $out;
 }
@@ -1351,6 +1315,7 @@ function theme_cdm_block_Uses ($taxonUuid = null, $pageSize = null) {
 	$markerTypes = array();
 	$markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
 	$useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxonUuid, queryString($markerTypes));
+	//$out .=  print_r($useDescriptions);
 	if(!empty($useDescriptions)) {
 		//$out .= print_r($useDescriptions);
   		//$out .= print_r($useDescriptions);
