@@ -97,7 +97,7 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       // HACK to implement images for taxa, should be removed
-      if($node->feature->uuid != UUID_IMAGE){
+      if($node->feature->uuid != UUID_IMAGE && $node->feature->uuid != UUID_USE ){
       	$countFeatures++;
         $out .= '<li>'.l(t(theme('cdm_feature_name', $featureRepresentation)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($featureRepresentation)).'</li>';
       }
@@ -143,7 +143,7 @@ RenderHints::pushToRenderStack('feature_nodes');
       	$bibliographyOut[] =  $node->descriptionElements;
   	  }
       $media_list = array();
-      if($node->feature->uuid != UUID_IMAGE) {
+      if($node->feature->uuid != UUID_IMAGE && $node->feature->uuid != UUID_USE ) {
       	$countFeatures++;
         $block->delta = generalizeString($featureRepresentation);
         $block->subject = '<span class="'. html_class_atttibute_ref($node->feature) . '">' . theme('cdm_feature_name', $featureRepresentation) . '</span>';
