@@ -337,8 +337,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL 
   $i = 0;
   while(strpos($uri_pattern, "$".$i) !== FALSE){
     if(count($pathParameters) <= $i){
-      //if(drupal_check_module("user") && user_access('administer')){
-    	if(true){
+      if(module_exists("user") && user_access('administer')){
         drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
       }
       break;
@@ -713,6 +712,23 @@ function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
       }
     }
 }
+
+/**
+ * returns the NomenclaturalReference string with correctly placed microreference (= reference detail) e.g. in Phytotaxa 43: 1-48. 2012
+ * @param unknown_type $referenceUuid
+ * @param unknown_type $microreference
+ * @return string
+ */
+function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference){
+
+  $obj = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array($referenceUuid), "microReference=".urlencode($microreference));
+  if($obj){
+    return $obj->String;
+  } else {
+    return null;
+  }
+}
+
 
 function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements){
 
@@ -1252,8 +1268,8 @@ function _add_status_message_toggler() {
 function _no_classfication_uuid_message(){
 
   if(!cdm_ws_get(CDM_WS_PORTAL_TAXONOMY)){
-    return t('This DataPortal is not configured properly or the CDM-Sever may be absent.')
-      . 'Please check the ' . l(t('CDM web service URL'), 'admin/settings/cdm_dataportal/general')
+    return t('This DataPortal is not configured properly or the CDM-Server may be absent.')
+      . ' Please check the ' . l(t('CDM web service URL'), 'admin/settings/cdm_dataportal/general')
       . t(', or contact the maintainer of this DataPortal.');
   }
 

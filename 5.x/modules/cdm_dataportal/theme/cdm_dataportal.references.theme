@@ -46,6 +46,7 @@ function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE
   	$citation = $reference->titleCache;
   }
 
+
   if($doLink){
   	$out = l('<span class="reference">'.$citation.'</span>'
           , path_to_reference($reference->uuid)
@@ -55,9 +56,8 @@ function theme_cdm_reference($reference, $microReference = null, $doLink = FALSE
   	$out = '<span class="reference">'.$citation.'</span>';
   }
 
-  //FIXME use microreference webservice instead
-  if(!empty($descriptionElementSource->citationMicroReference)){
-      $out .= ': '. $descriptionElementSource->citationMicroReference;
+  if(!empty($microReference)){
+      $out .= ": " . $microReference;
   }
 
   return $out;

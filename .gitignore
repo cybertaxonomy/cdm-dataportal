@@ -1,7 +1,9 @@
 /.buildpath
 /.cache
+/.directory
 /.project
 /.settings
+5.x/.directory
 5.x/modules/cdm_dataportal/.buildpath
 5.x/modules/cdm_dataportal/.directory
 5.x/modules/cdm_dataportal/.project
@@ -19,5 +21,6 @@
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/target
 5.x/themes/.project
 5.x/themes/garland_cichorieae/Thumbs.db
+5.x/themes/garland_cichorieae/flore_gabon/images/.directory
 5.x/themes/garland_cichorieae/images/Thumbs.db
 /target

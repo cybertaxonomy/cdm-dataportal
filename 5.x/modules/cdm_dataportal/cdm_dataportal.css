@@ -168,7 +168,7 @@ a.filter_remove:link, a.filter_remove:visited{
   color: red;
 }
 
-a.synonym:link, a.synonym:visited, .Synonym a:link, .Synonym a:visited {
+a.synonym:LINK, a.synonym:VISITED, .Synonym a:LINK, .Synonym a:VISITED, .misapplied-name a:LINK, .misapplied-name a:VISITED {
   color: #7C7C7F;
 }
 
@@ -335,12 +335,13 @@ a.toc:link, a.toc:visited {
   color:#0062A0;
   text-decoration:underline;
 }
+
 .annotations {
-	font-size: 90%;
+	font-size: 88%;
 }
 
 .footnote{
-	font-size: 90%;
+	font-size: 88%;
 }
 
 .footnote-key{

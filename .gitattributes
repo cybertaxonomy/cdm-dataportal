@@ -87,6 +87,7 @@
 5.x/modules/cdm_dataportal/images/clear.gif -text
 5.x/modules/cdm_dataportal/images/external_link.gif -text
 5.x/modules/cdm_dataportal/images/favicon.ico -text
+5.x/modules/cdm_dataportal/images/funded_by_EDIT.png -text
 5.x/modules/cdm_dataportal/images/loading.gif -text
 5.x/modules/cdm_dataportal/images/loading_circle_grey_16.gif -text
 5.x/modules/cdm_dataportal/images/macFFBgHack.png -text
@@ -566,6 +567,18 @@
 5.x/themes/garland_cichorieae/flore_afrique_centrale/screenshot.png -text
 5.x/themes/garland_cichorieae/flore_afrique_centrale/style.css -text
 5.x/themes/garland_cichorieae/flore_afrique_centrale/styleOverride.css -text
+5.x/themes/garland_cichorieae/flore_gabon/fix-ie7.css -text
+5.x/themes/garland_cichorieae/flore_gabon/images/bg-tab.png -text
+5.x/themes/garland_cichorieae/flore_gabon/images/edit-logo.gif -text
+5.x/themes/garland_cichorieae/flore_gabon/images/edit-logo.png -text
+5.x/themes/garland_cichorieae/flore_gabon/images/test2_Vicia_lunata_CSC_6051.jpg -text
+5.x/themes/garland_cichorieae/flore_gabon/images/test3_Vicia_lunata_CSC_6051.jpg -text
+5.x/themes/garland_cichorieae/flore_gabon/images/test_Origanum_cordifolium_CSC_3120.jpg -text
+5.x/themes/garland_cichorieae/flore_gabon/images/test_Vicia_lunata_CSC_6051.jpg -text
+5.x/themes/garland_cichorieae/flore_gabon/images/title_flower_klein.jpg -text
+5.x/themes/garland_cichorieae/flore_gabon/images/title_flower_logo.jpg -text
+5.x/themes/garland_cichorieae/flore_gabon/style.css -text
+5.x/themes/garland_cichorieae/flore_gabon/styleOverride.css -text
 5.x/themes/garland_cichorieae/images/a1.gif -text
 5.x/themes/garland_cichorieae/images/a16.gif -text
 5.x/themes/garland_cichorieae/images/a18.gif -text
@@ -759,6 +772,7 @@
 6.x/themes/summertime_cdm/template.php -text
 6.x/themes/summertime_cdm/theme-settings.php -text
 7.x/modules/dwca_export/README.txt -text
+7.x/modules/dwca_export/archive-genus-Abies-bl4.zip -text
 7.x/modules/dwca_export/dwca_export.info -text
 7.x/modules/dwca_export/dwca_export.module -text
 7.x/modules/dwca_export/dwca_export.strongarm.inc -text

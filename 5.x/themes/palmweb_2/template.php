@@ -99,6 +99,7 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
       // HACK to implement images for taxa, should be removed
       if($node->feature->uuid != UUID_IMAGE && $node->feature->uuid != UUID_USE ){
       	$countFeatures++;
+      	$countFeatures++;
         $out .= '<li>'.l(t(theme('cdm_feature_name', $featureRepresentation)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($featureRepresentation)).'</li>';
       }
     }
@@ -144,6 +145,7 @@ RenderHints::pushToRenderStack('feature_nodes');
   	  }
       $media_list = array();
       if($node->feature->uuid != UUID_IMAGE && $node->feature->uuid != UUID_USE ) {
+      	$countFeatures++;
       	$countFeatures++;
         $block->delta = generalizeString($featureRepresentation);
         $block->subject = '<span class="'. html_class_atttibute_ref($node->feature) . '">' . theme('cdm_feature_name', $featureRepresentation) . '</span>';

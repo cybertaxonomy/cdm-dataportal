@@ -582,7 +582,11 @@ function cdm_dataportal_block($op='list', $delta=0) {
     //$block[3]["info"] = t("CDM Filters");
     $block[4]["info"] = t("CDM Dataportal Print");
     $block["keys"]["info"] = t("CDM identification keys");
+<<<<<<< .working
     $block["uses"]["info"] = t("CDM Uses");
+=======
+    $block["fundedByEDIT"]["info"] = t('Funded by EDIT');
+>>>>>>> .merge-right.r14872
     return $block;
   }
   else if ($op == 'view') {
@@ -606,11 +610,20 @@ function cdm_dataportal_block($op='list', $delta=0) {
         $block['subject'] = t('Identification Keys');
         $block['content'] = theme('cdm_block_IdentificationKeys');
         return $block;
+<<<<<<< .working
       //Creating a block specific for the Use Interface.
       case "uses":
       	$block['subject'] = t('Uses');
         $block['content'] = theme('cdm_block_uses');
         return $block;
+=======
+      case "fundedByEDIT":
+        $text = '<none>'; //t('Funded by EDIT');
+        $block['subject'] = $text;
+        $img_tag = '<img src="' . drupal_get_path('module', 'cdm_dataportal').'/images/funded_by_EDIT.png' . '" alt="'.$text.'"/>';
+        $block['content'] = l($img_tag, "http://www.e-taxonomy.eu/", array("target"=>"EDIT"), NULL, NULL, TRUE, TRUE);
+        return $block;
+>>>>>>> .merge-right.r14872
     }
   }
 }
@@ -1539,15 +1552,22 @@ function cdm_dataportal_shortname_of($name){
     }
   }
   $nameStr = trim($nameStr);
+
   if($nameStr){
     // do not return short names for these
-    //if (stristr(strtolower($nameStr), 'incertae sedis') !== FALSE ||
-    //	stristr(strtolower($nameStr), 'nomina excludenda') !== FALSE) {
     if ($name->unplaced || $name->excluded){
       return $nameStr;
     }
-    if($pos = stripos($nameStr, ' ')){
-      return substr($nameStr, 0, 1).'. '.substr($nameStr, $pos);
+    /*
+     * - 1st capture group (^[a-zA-Z]): Fist letter of uninomial
+     * - second capture group ([a-zA-Z]+): remaining letters of uninomial
+     * - third capture group (\s+[^(\x2E]+\s+.+$): letters of name,
+     *       but only matching if no '(' or '.' in second word of name, ( \x2E = '.' )
+     *       OR only one specific epithet \s+[a-zA-Z]+$
+     */
+    $pattern = '/(^[a-zA-Z])([a-zA-Z]+)(\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z]+$)/';
+    if (preg_match($pattern, $nameStr, $matches, PREG_OFFSET_CAPTURE)){
+      return $matches[1][0] . "." . $matches[3][0];
     } else {
       return $nameStr;
     }
@@ -1567,13 +1587,27 @@ function cdm_dataportal_shortname_of($name){
 function _cdm_dataportal_acceptedByCurrentView($taxon){
 
   $defaultTreeUuid = get_taxonomictree_uuid_selected();
-  if($taxon->class == "Taxon" && isset($taxon->taxonNodes)){
-    foreach($taxon->taxonNodes as $node){
-      if($node->classification == $defaultTreeUuid) {
-        return true;
+
+  if(isset($taxon->taxonNodes)) {
+    $taxonNodes = $taxon->taxonNodes;
+  } else {
+    $taxonNodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon->uuid);
+  }
+
+  if($taxon->class == "Taxon" && isset($taxonNodes)){
+    foreach($taxonNodes as $node){
+      if(is_object($node->classification)){
+        if($node->classification->uuid == $defaultTreeUuid) {
+          return true;
+        }
+      } else {
+        if($node->classification == $defaultTreeUuid) {
+          return true;
+        }
       }
     }
   }
+
   return false;
 }
 
@@ -1788,7 +1822,8 @@ function cdm_dynabox($label, $content_url, $theme, $link_alt_text, $enclosingtag
 
 /**
  * returns true if the given $featureNode or any of its subordinate nodes contains
- * at least one non empty TextData or at leas one DescriptionElement of an other type.
+ * at least one non empty TextData or at least one DescriptionElement of an other type.
+ * A TextData element holding a multilanguageText or a source reference is considered to be not empty.
  *
  * @param unknown_type $featureNode A heature node as produced by the function _mergeFeatureTreeDescriptions()
  */
@@ -1796,7 +1831,7 @@ function hasFeatureNodeDescriptionElements($featureNode) {
 
   if(is_array($featureNode->descriptionElements) && count($featureNode->descriptionElements) > 0) {
     foreach ($featureNode->descriptionElements as $descriptionElement) {
-      if($descriptionElement->class != "TextData" || $descriptionElement->multilanguageText_L10n->text){
+      if($descriptionElement->class != "TextData" || $descriptionElement->multilanguageText_L10n->text || isset($descriptionElement->sources[0]) ){
         return true;
       }
     }
