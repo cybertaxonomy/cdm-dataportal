@@ -477,6 +477,10 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
       else if($descriptionElement->feature->uuid == UUID_IMAGE_SOURCES){
         $image_sources[] = $descriptionElement;
       }
+      // --- USE TEXTDATA --- //
+      else if($descriptionElement->feature->uuid == UUID_USE){
+      	//Do nothing to avoid rendering	
+      }
 
       // ---- class == TextData ---- //
       else if($descriptionElement->class == 'TextData'){
@@ -1221,7 +1225,7 @@ function theme_cdm_block_IdentificationKeys($taxonUuid = null, $pageSize = null)
 
 
 //this theming function formats the use description and use record list for these descriptions 
-function theme_cdm_format_Uses ($descriptions = null, $pageSize, $pageNumber) {
+function theme_cdm_UseDescription($descriptions = null, $pageSize, $pageNumber) {
 	$out = '<div id="content"><ul id="Description" class ="description">';
 	if ($descriptions == null) {
 		return;
@@ -1229,20 +1233,20 @@ function theme_cdm_format_Uses ($descriptions = null, $pageSize, $pageNumber) {
 	$descriptionSynonyms;
 	$descriptionOut = "";
 	$synonymOut = "";
-	$useSummary = "";
 	foreach($descriptions as $description) {
+		$useSummary = "";
 		$synonyms = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY,$description->taxon->uuid);
 		$serializedSynonyms = serialize($synonyms);
 		foreach ($description->elements as $element) {
 			
-			if($element->feature->uuid == UUID_USE_SUMMARY && !(strlen($useSummary)> 0)){
+			if($element->feature->uuid == UUID_USE && !(strlen($useSummary)> 0)){
 				$useSummary = $element->multilanguageText_L10n->text;
 			}
 		}
 		foreach ($description->sources as $source) {
 			$isSynonym = false;
 			if($source->originalNameString) {
-				$originalTaxonUsedInSource = cdm_ws_get(CDM_WS_PORTAL_NAME_NAMESBYNAME, array($description->taxon->uuid, $source->originalNameString . "."));
+				$originalTaxonUsedInSource = cdm_ws_get(CDM_WS_PORTAL_NAME_NAMESBYNAME, $source->originalNameString . ".");
 				
 				if (strpos($serializedSynonyms, $originalTaxonUsedInSource->uuid)) {
 					$isSynonym = true;
@@ -1263,7 +1267,8 @@ function theme_cdm_format_Uses ($descriptions = null, $pageSize, $pageNumber) {
 					foreach ($description->elements as $descriptionElement) {
 						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
 							$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
-							$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
+							//$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
+							$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
 						}
 					}
 					$descriptionOut .= '</ul></li>';
@@ -1289,7 +1294,8 @@ function theme_cdm_format_Uses ($descriptions = null, $pageSize, $pageNumber) {
 						//print_r($descriptionElement);
 						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
 							$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
-							$synonymOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
+							//$synonymOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
+							$synonymOut .='<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
 						}
 					}
 					$synonymOut .= '</ul></li>';
@@ -1320,7 +1326,7 @@ function theme_cdm_block_Uses ($taxonUuid = null, $pageSize = null) {
 		//$out .= print_r($useDescriptions);
   		//$out .= print_r($useDescriptions);
 		$out .= '<div id="block-cdm_dataportal-feature-description" class="clear-block block block-cdm_dataportal-feature"><H2><a name="userecords"> </a> Uses </H2>';
-  		$formatUseDescriptions = theme('cdm_format_Uses', $useDescriptions, $pageSize, $pageNumber);
+  		$formatUseDescriptions = theme('cdm_UseDescription', $useDescriptions, $pageSize, $pageNumber);
 		$out .= $formatUseDescriptions;
 		$out .="</div>";
   	}
