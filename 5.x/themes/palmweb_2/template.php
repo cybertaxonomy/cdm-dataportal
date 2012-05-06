@@ -333,7 +333,12 @@ function palmweb_2_cdm_search_results($pager, $path, $parameters){
 //Bibluiography theming function
 function theme_cdm_descriptionElementBibliography($descriptionElementsBibliogragphy) {
 	$listOfReferences = array();
-	foreach ($descriptionElementsBibliogragphy as $descriptionElementsBiblio) {
+	//$useDescriptions = cdm_ws_get()
+	$markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
+	$useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
+	 //= substr(strrchr($_GET["q"], '/'), 1);
+	//$descout = print_r($useDescriptions);
+    foreach ($descriptionElementsBibliogragphy as $descriptionElementsBiblio) {
 		foreach ($descriptionElementsBiblio as $descriptionElementBiblio) {
 			if(is_array($descriptionElementBiblio->sources)){
 				foreach($descriptionElementBiblio->sources as $source){
@@ -358,6 +363,27 @@ function theme_cdm_descriptionElementBibliography($descriptionElementsBibliograg
 		}
 		
 	}
+	foreach($useDescriptions as $useDescription) {
+		if (is_array($useDescription->sources)) {
+			foreach ($useDescription->sources as $source) {
+				$isAlreadySelected = false;
+				if(empty($listOfReferences)) {
+					$listOfReferences[] = $source;
+				}
+				else {
+					foreach ($listOfReferences as $selectedReference) {
+						if ($selectedReference->citation->uuid == $source->citation->uuid) {
+							$isAlreadySelected = true;
+						}
+					}
+					if (!$isAlreadySelected) {
+						$listOfReferences[] = $source;
+					}
+				}
+			}
+		}
+	}
+	
 	//Call the reference formatting function, it will do the heavy lifting
 	$out = formatReference_for_Bibliogrpahy($listOfReferences);
 	return $out;
