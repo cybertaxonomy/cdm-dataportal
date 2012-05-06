@@ -1227,7 +1227,7 @@ function theme_cdm_block_IdentificationKeys($taxonUuid = null, $pageSize = null)
 
 
 //this theming function formats the use description and use record list for these descriptions 
-function theme_cdm_UseDescription($descriptions = null, $pageSize, $pageNumber) {
+function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $pageSize, $pageNumber) {
 	$out = '<div id="content"><ul id="Description" class ="description">';
 	if ($descriptions == null) {
 		return;
@@ -1235,9 +1235,9 @@ function theme_cdm_UseDescription($descriptions = null, $pageSize, $pageNumber) 
 	$descriptionSynonyms;
 	$descriptionOut = "";
 	$synonymOut = "";
+	$currentTaxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxonUuid);
 	foreach($descriptions as $description) {
 		$useSummary = "";
-		$synonyms = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY,$description->taxon->uuid);
 		$serializedSynonyms = serialize($synonyms);
 		foreach ($description->elements as $element) {
 			
@@ -1247,10 +1247,11 @@ function theme_cdm_UseDescription($descriptions = null, $pageSize, $pageNumber) 
 		}
 		foreach ($description->sources as $source) {
 			$isSynonym = false;
+			$originalTaxonUsedInSource = null;
 			if($source->originalNameString) {
-				$originalTaxonUsedInSource = cdm_ws_get(CDM_WS_PORTAL_NAME_NAMESBYNAME, $source->originalNameString . ".");
 				
-				if (strpos($serializedSynonyms, $originalTaxonUsedInSource->uuid)) {
+				$originalTaxonUsedInSource = cdm_ws_get(CDM_WS_PORTAL_NAME_NAMESBYNAME, $source->originalNameString . ".");
+				if($currentTaxon->name->uuid != $originalTaxonUsedInSource->uuid){
 					$isSynonym = true;
 				}
 				
@@ -1301,6 +1302,7 @@ function theme_cdm_UseDescription($descriptions = null, $pageSize, $pageNumber) 
 						}
 					}
 					$synonymOut .= '</ul></li>';
+					$isSynonym = false;
 					
 				}
 
@@ -1328,7 +1330,7 @@ function theme_cdm_block_Uses ($taxonUuid = null, $pageSize = null) {
 		//$out .= print_r($useDescriptions);
   		//$out .= print_r($useDescriptions);
 		$out .= '<div id="block-cdm_dataportal-feature-description" class="clear-block block block-cdm_dataportal-feature"><H2><a name="userecords"> </a> Uses </H2>';
-  		$formatUseDescriptions = theme('cdm_UseDescription', $useDescriptions, $pageSize, $pageNumber);
+  		$formatUseDescriptions = theme('cdm_UseDescription', $useDescriptions, $taxonUuid, $pageSize, $pageNumber);
 		$out .= $formatUseDescriptions;
 		$out .="</div>";
   	}
