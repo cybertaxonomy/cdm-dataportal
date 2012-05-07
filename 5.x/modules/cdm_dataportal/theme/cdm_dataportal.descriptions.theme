@@ -1270,7 +1270,6 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 					foreach ($description->elements as $descriptionElement) {
 						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
 							$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
-							//$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
 							$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
 						}
 					}
@@ -1294,10 +1293,8 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 					}
 					$synonymOut .= '<ul>';
 					foreach ($description->elements as $descriptionElement) {
-						//print_r($descriptionElement);
 						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
 							$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
-							//$synonymOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']' . ' - ' . $useRecordTags[2] . ' - ' . $useRecordTags[3]. '[' .$useRecordTags[4]. ']' . ' - ' .   $useRecordTags[5] . '</li>';
 							$synonymOut .='<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
 						}
 					}
@@ -1325,10 +1322,7 @@ function theme_cdm_block_Uses ($taxonUuid = null, $pageSize = null) {
 	$markerTypes = array();
 	$markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
 	$useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxonUuid, queryString($markerTypes));
-	//$out .=  print_r($useDescriptions);
 	if(!empty($useDescriptions)) {
-		//$out .= print_r($useDescriptions);
-  		//$out .= print_r($useDescriptions);
 		$out .= '<div id="block-cdm_dataportal-feature-description" class="clear-block block block-cdm_dataportal-feature"><H2><a name="userecords"> </a> Uses </H2>';
   		$formatUseDescriptions = theme('cdm_UseDescription', $useDescriptions, $taxonUuid, $pageSize, $pageNumber);
 		$out .= $formatUseDescriptions;
