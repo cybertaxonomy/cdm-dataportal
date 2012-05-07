@@ -582,7 +582,9 @@ function cdm_dataportal_block($op='list', $delta=0) {
     //$block[3]["info"] = t("CDM Filters");
     $block[4]["info"] = t("CDM Dataportal Print");
     $block["keys"]["info"] = t("CDM identification keys");
+    $block["uses"]["info"] = t("CDM Uses");
     $block["fundedByEDIT"]["info"] = t('Funded by EDIT');
+
     return $block;
   }
   else if ($op == 'view') {
@@ -605,6 +607,11 @@ function cdm_dataportal_block($op='list', $delta=0) {
       case "keys":
         $block['subject'] = t('Identification Keys');
         $block['content'] = theme('cdm_block_IdentificationKeys');
+        return $block;
+      //Creating a block specific for the Use Interface.
+      case "uses":
+      	$block['subject'] = t('Uses');
+        $block['content'] = theme('cdm_block_uses');
         return $block;
       case "fundedByEDIT":
         $text = '<none>'; //t('Funded by EDIT');

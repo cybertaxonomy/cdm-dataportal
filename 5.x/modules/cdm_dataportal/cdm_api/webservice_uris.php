@@ -15,6 +15,9 @@ define('CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS', 'portal/name/$0/typeDesignations')
 define('CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS', 'portal/taxon/$0/nameTypeDesignations');
 
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
+define('CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS', 'portal/taxon/$0/useDescriptions');
+define('CDM_WS_PORTAL_TAXON_FINDBESTMATCHINGTAXON', 'bestMatchingTaxon/$0');
+
 
 /**
  * $0 : taxon uud
@@ -42,6 +45,9 @@ define('CDM_WS_PORTAL_TAXON_TAXONNODES', 'portal/taxon/$0/taxonNodes');
 
 define('CDM_WS_NAME_NAMECAHE', 'name/$0/nameCache');
 
+define('CDM_WS_PORTAL_NAME_FINDBYNAME', 'name/findByName/');
+
+
 define('CDM_WS_PORTAL_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');
 
 define('CDM_WS_PORTAL_TAXON_RELATIONS', 'portal/taxon/$0/taxonRelationships');
@@ -60,6 +66,7 @@ define('CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA', 'description/$0/hasStructuredD
 define('CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION', 'description/$0/naturalLanguageDescription/$1');
 
 define('CDM_WS_DESCRIPTIONELEMENT', 'descriptionElement/$0');
+
 
 define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
 

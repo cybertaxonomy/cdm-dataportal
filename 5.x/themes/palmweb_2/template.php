@@ -32,7 +32,6 @@ function palmweb_2_cdm_taxon_page_profile($taxon, $mergedTrees, $media, $hideIma
 
 
 function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enclosingTag = "span") {
-
   $out = '';
   $separator = ', ';
 
@@ -41,6 +40,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enc
 
   $itemCnt = 0;
   foreach($descriptionElements as $descriptionElement){
+  	//$out .= ($descriptionElement->class);
         // annotations as footnotes
 //        $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
 //        // source references as footnotes
@@ -52,6 +52,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enc
 //        if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
 //            $annotationFootnoteKeys .= $separator;
 //        }
+		
         $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class .'">';
         $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList;
         if(++$itemCnt < count($descriptionElements)){
@@ -83,7 +84,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enc
 }
 
 function palmweb_2_cdm_feature_nodesTOC($featureNodes){
-
+	global $theme;
   $out .= '<ul>';
   $countFeatures = 0;
   $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), substr(strrchr($_GET["q"], '/'), 1))));
@@ -96,7 +97,8 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       // HACK to implement images for taxa, should be removed
-      if($node->feature->uuid != UUID_IMAGE){
+      if($node->feature->uuid != UUID_IMAGE && $node->feature->uuid != UUID_USE ){
+      	$countFeatures++;
       	$countFeatures++;
         $out .= '<li>'.l(t(theme('cdm_feature_name', $featureRepresentation)), $_GET['q'], array("class"=>"toc"), NULL, generalizeString($featureRepresentation)).'</li>';
       }
@@ -104,6 +106,12 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
   }
   //Setting the Anchor to the Bibliography section if the option is enabled
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
+  
+  $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
+  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
+  if(!empty($useDescriptions)) {
+  		$out .= '<li>'.l(t(theme('cdm_feature_name', 'Uses')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('UseRecords')).'</li>';
+  }
   
   if ($show_bibliography && $countFeatures != 0) {
   	$out .= '<li>'.l(t(theme('cdm_feature_name', 'Bibliography')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Bibliography')).'</li>';
@@ -114,6 +122,7 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
 
 function palmweb_2_cdm_feature_nodes($mergedFeatureNodes, $taxon){
 RenderHints::pushToRenderStack('feature_nodes');
+
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
   //Creating an array to place the description elements in 
   $bibliographyOut = array();
@@ -135,12 +144,14 @@ RenderHints::pushToRenderStack('feature_nodes');
       	$bibliographyOut[] =  $node->descriptionElements;
   	  }
       $media_list = array();
-      if($node->feature->uuid != UUID_IMAGE) {
+      if($node->feature->uuid != UUID_IMAGE && $node->feature->uuid != UUID_USE ) {
+      	$countFeatures++;
       	$countFeatures++;
         $block->delta = generalizeString($featureRepresentation);
         $block->subject = '<span class="'. html_class_atttibute_ref($node->feature) . '">' . theme('cdm_feature_name', $featureRepresentation) . '</span>';
         $block->module = "cdm_dataportal-feature";
         $block->content = '';
+        
         /*
          * Content/DISTRIBUTION
          */
@@ -150,6 +161,7 @@ RenderHints::pushToRenderStack('feature_nodes');
             $distributionTextDataList = array();
             $distributionElementsList = array();
             foreach($node->descriptionElements as $descriptionElement){
+            	
               if($descriptionElement->class == "TextData"){
                 $distributionTextDataList[] = $descriptionElement;
               } else {
@@ -182,6 +194,10 @@ RenderHints::pushToRenderStack('feature_nodes');
         /*
          * Content/ALL OTHER FEATURES
          */
+        else if($node->feature->uuid == UUID_USE_RECORD) { 
+        	$block->content .= theme('cdm_block_Uses', $taxon->uuid);
+          	//$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid),
+        }
         else {
           $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid);
 
@@ -197,7 +213,7 @@ RenderHints::pushToRenderStack('feature_nodes');
             //TODO support more than one level of childen http://dev.e-taxonomy.eu/trac/ticket/2393
             $text = '';
             foreach ($node->children as $child){
-
+            
              if (is_array($child->descriptionElements)){
                foreach ($child->descriptionElements as $element) {
 
@@ -239,6 +255,7 @@ RenderHints::pushToRenderStack('feature_nodes');
         // add anchor to subject
         $block->subject = '<a name="'.$block->delta.'"></a>'.  $block->subject;
        $out .= theme('block', $block);
+
         
       }
     
@@ -251,7 +268,8 @@ RenderHints::pushToRenderStack('feature_nodes');
   //calling the theme function for Bibliography to add it to the output
   
   //Add the display of the number of taxa in the selected genus
- 
+  $out .= theme('cdm_block_Uses', $taxon->uuid);
+
 	
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
   if ($show_bibliography && $countFeatures !=0) {
@@ -261,6 +279,7 @@ RenderHints::pushToRenderStack('feature_nodes');
   RenderHints::popFromRenderStack();
   return $out;
 }
+
 
 function palmweb_2_cdm_search_results($pager, $path, $parameters){
 
@@ -314,7 +333,12 @@ function palmweb_2_cdm_search_results($pager, $path, $parameters){
 //Bibluiography theming function
 function theme_cdm_descriptionElementBibliography($descriptionElementsBibliogragphy) {
 	$listOfReferences = array();
-	foreach ($descriptionElementsBibliogragphy as $descriptionElementsBiblio) {
+	//$useDescriptions = cdm_ws_get()
+	$markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
+	$useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
+	 //= substr(strrchr($_GET["q"], '/'), 1);
+	//$descout = print_r($useDescriptions);
+    foreach ($descriptionElementsBibliogragphy as $descriptionElementsBiblio) {
 		foreach ($descriptionElementsBiblio as $descriptionElementBiblio) {
 			if(is_array($descriptionElementBiblio->sources)){
 				foreach($descriptionElementBiblio->sources as $source){
@@ -339,17 +363,37 @@ function theme_cdm_descriptionElementBibliography($descriptionElementsBibliograg
 		}
 		
 	}
+	foreach($useDescriptions as $useDescription) {
+		if (is_array($useDescription->sources)) {
+			foreach ($useDescription->sources as $source) {
+				$isAlreadySelected = false;
+				if(empty($listOfReferences)) {
+					$listOfReferences[] = $source;
+				}
+				else {
+					foreach ($listOfReferences as $selectedReference) {
+						if ($selectedReference->citation->uuid == $source->citation->uuid) {
+							$isAlreadySelected = true;
+						}
+					}
+					if (!$isAlreadySelected) {
+						$listOfReferences[] = $source;
+					}
+				}
+			}
+		}
+	}
+	
 	//Call the reference formatting function, it will do the heavy lifting
 	$out = formatReference_for_Bibliogrpahy($listOfReferences);
 	return $out;
 }
 
 function formatReference_for_Bibliogrpahy($references) {
-	    $out = '<a name="bibliography"> </a><H2>Bibliography</H2><div class="content"> <ul class="description">';
+	$out = '<div id="block-cdm_dataportal-feature-discussion"><a name="bibliography"> </a><H2>Bibliography</H2><div class="content"> <ul class="description">';
     $outTemp= array();
   foreach ($references as $reference) {
     $referenceString = '';
-		//print_r($reference);
 		switch ($reference->citation->type) {
 			case "Journal":
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
@@ -645,7 +689,7 @@ function formatReference_for_Bibliogrpahy($references) {
 		$out .= $refString;
 	}
 	
-	$out .= "</ul></div>";
+	$out .= "</ul></div></div>";
 	return $out;
 }
 
@@ -778,15 +822,6 @@ function palmweb_2_cdm_reference($reference, $microReference = null, $doLink = F
   return $out;
 }
 
-
-/*function palmweb_2_cdm_reference_page($referenceTO){
-	//print_r($referenceTO);
-	$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $referenceTO->uuid);
-	$nomenclatural = cdm_ws_get('portal/taxon/$0/descriptions', '1d91bd71-7109-4916-872f-a82b710a9cdf');
-	
-	print_r($nomenclatural);
-	return "TOTO";
-}*/
 
 
 /**
