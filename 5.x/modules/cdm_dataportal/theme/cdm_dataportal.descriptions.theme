@@ -1248,12 +1248,19 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 		foreach ($description->sources as $source) {
 			$isSynonym = false;
 			$originalTaxonUsedInSource = null;
+			$originalTaxonPager = null;
 			if($source->originalNameString) {
-				
-				$originalTaxonUsedInSource = cdm_ws_get(CDM_WS_PORTAL_NAME_NAMESBYNAME, $source->originalNameString . ".");
-				if ($originalTaxonUsedInSource == null) {
+				$request_params = array();
+				$request_params['query'] = $source->originalNameString;
+				$request_params['matchMode'] = "EXACT";
+				$originalTaxonPager = cdm_ws_get(CDM_WS_PORTAL_NAME_FINDBYNAME,  null, queryString($request_params));
+				if ($originalTaxonPager->count >0) {
+					$originalTaxonUsedInSource = $originalTaxonPager->records[0]; 
+					
+				} else {
 					$originalTaxonUsedInSource = $currentTaxon->name;
 				}
+				
 				if($currentTaxon->name->uuid != $originalTaxonUsedInSource->uuid){
 					$isSynonym = true;
 				}
