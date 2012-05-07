@@ -1251,6 +1251,9 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 			if($source->originalNameString) {
 				
 				$originalTaxonUsedInSource = cdm_ws_get(CDM_WS_PORTAL_NAME_NAMESBYNAME, $source->originalNameString . ".");
+				if ($originalTaxonUsedInSource == null) {
+					$originalTaxonUsedInSource = $currentTaxon->name;
+				}
 				if($currentTaxon->name->uuid != $originalTaxonUsedInSource->uuid){
 					$isSynonym = true;
 				}
