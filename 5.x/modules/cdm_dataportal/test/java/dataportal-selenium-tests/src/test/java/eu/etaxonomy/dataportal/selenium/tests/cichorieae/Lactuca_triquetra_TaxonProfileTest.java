@@ -44,148 +44,148 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 @DataPortalContexts( { DataPortalContext.cichorieae })
 public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
 
-	public static final Logger logger = Logger.getLogger(Lactuca_triquetra_TaxonProfileTest.class);
+    public static final Logger logger = Logger.getLogger(Lactuca_triquetra_TaxonProfileTest.class);
 
-	static UUID taxonUuid = UUID.fromString("ecb7a76e-694a-4706-b1ab-a2eb334173ff");
+    static UUID taxonUuid = UUID.fromString("ecb7a76e-694a-4706-b1ab-a2eb334173ff");
 
-	TaxonProfilePage p = null;
+    TaxonProfilePage p = null;
 
-	@Before
-	public void setUp() throws MalformedURLException {
+    @Before
+    public void setUp() throws MalformedURLException {
 
-		if(p != null && driver != null ){
-			logger.debug("TaxonProfilePage p:" + p.getPageURL() + ", driver is at " + driver.getCurrentUrl());
-		}
-		p = new TaxonProfilePage(driver, getContext(), taxonUuid);
+        if(p != null && driver != null ){
+            logger.debug("TaxonProfilePage p:" + p.getPageURL() + ", driver is at " + driver.getCurrentUrl());
+        }
+        p = new TaxonProfilePage(driver, getContext(), taxonUuid);
 
-	}
-
-
-	@Test
-	public void testTitleAndTabs() {
-
-		assertEquals(getContext().prepareTitle("Lactuca triquetra"), p.getTitle());
-		assertNull("Authorship information should be hidden", p.getAuthorInformationText());
-
-		List<LinkElement> primaryTabs = p.getPrimaryTabs();
-		int tabId = 0;
-		assertEquals("General", primaryTabs.get(tabId++).getText());
-		assertEquals("Synonymy", primaryTabs.get(tabId++).getText());
-		assertEquals("Images", primaryTabs.get(tabId++).getText());
-		assertEquals("Specimens", primaryTabs.get(tabId++).getText());
-		assertEquals("Expecting " + tabId + " tabs", tabId, primaryTabs.size());
-
-	}
-
-	@Test
-	public void testProfileImage() {
-		ImgElement profileImage = p.getProfileImage();
-		assertNotNull("Expecting profile images to be switched on", profileImage);
-		assertTrue("Expoecting image Lactuca_triquetra_Bc_01.JPG", profileImage.getSrcUrl().toString().endsWith("/Lactuca_triquetra_Bc_01.JPG"));
-	}
+    }
 
 
-	@Test
-	public void testFeatures() {
-		assertEquals("Content", p.getTableOfContentHeader());
-		List<LinkElement> links = p.getTableOfContentLinks();
-		assertNotNull("Expecting a list of TOC links in the profile page.", links);
+    @Test
+    public void testTitleAndTabs() {
 
-		FeatureBlock featureBlock;
-		int featureId = 0;
+        assertEquals(getContext().prepareTitle("Lactuca triquetra"), p.getTitle());
+        assertNull("Authorship information should be hidden", p.getAuthorInformationText());
 
-		int descriptionElementFontSize = 12;
-		String expectedCssDisplay = "inline";
-		String expectedListStyleType = "none";
-		String expectedListStylePosition = "outside";
-		String expectedListStyleImage = "none";
-		int indent = 0;
+        List<LinkElement> primaryTabs = p.getPrimaryTabs();
+        int tabId = 0;
+        assertEquals("General", primaryTabs.get(tabId++).getText());
+        assertEquals("Synonymy", primaryTabs.get(tabId++).getText());
+        assertEquals("Images", primaryTabs.get(tabId++).getText());
+        assertEquals("Specimens", primaryTabs.get(tabId++).getText());
+        assertEquals("Expecting " + tabId + " tabs", tabId, primaryTabs.size());
 
-		/* Description */
-		String featureClass = "description";
-		String featureLabel = "Description";
-		String blockTextFull = null;
-		String blockTextBegin = featureLabel + "\nHerb, perennial, scoparious, 40-80 cm high. Flowering stems erect, triangular, medullary, glaucous-green, soon leafless, strongly branched; branches erect, slender. Cauline leaves few, glabrous.";
-		String blockTextEnd = "Pappus white, 6.0-7.0 mm long, persistent, fragile, shortly barbellate or scabridulous.\n\nbased on: Meikle, R.D. 1985: Flora auf Cyprus 2. - Kew (as Prenanthes triquetra).";
-		expectedListStyleType = "none";
+    }
 
-		p.testTableOfContentEntry(featureId++,featureLabel, featureClass);
-		featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
-
-		assertTrue(featureBlock.getText().startsWith(blockTextBegin));
-		assertTrue(featureBlock.getText().endsWith(blockTextEnd));
-		featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-		assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-
-		/* Distribution */
-		expectedCssDisplay = "block";
-		featureClass = "distribution";
-		featureLabel = "Distribution";
-		blockTextFull = featureLabel + "\n\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 19336. (N)";
-		p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-		featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "dt", "dd");
-
-		assertEquals(blockTextFull, featureBlock.getText());
-
-		MultipartDescriptionElementRepresentation descriptionElement = (MultipartDescriptionElementRepresentation) featureBlock.getDescriptionElements().get(0);
-		logger.info(descriptionElement.getText());
-		featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-		assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-		assertEquals("Expecting 7 FootnoteKeys", 7, featureBlock.getFootNoteKeys().size());
-		assertEquals("Expecting 6 Footnotes", 6, featureBlock.getFootNotes().size());
-
-		assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers_map")));
-		WebElement mapCaptionElement = null;
-		try {
-			mapCaptionElement = featureBlock.getElement().findElement(By.className("distribution_map_caption"));
-		} catch (NoSuchElementException e){
-			/* IGNORE */
-		}
-		assertNull(mapCaptionElement);
-
-		/* Uses */
-		featureClass = "ecology";
-		featureLabel = "Ecology";
-		blockTextFull = featureLabel + "\n500 m. On chalky cliffs or in flushes on serpentine.\n\nfrom: Meikle, R. D. 1985: Flora of Cyprus 2. – Kew. (as Prenanthes triquetra)";
-		expectedCssDisplay = "inline";
-
-		p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-		featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
-
-		assertEquals(blockTextFull, featureBlock.getText());
-		featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-		assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-		assertEquals("Expecting no FootnoteKeys", 0, featureBlock.getFootNoteKeys().size());
-		assertEquals("Expecting no Footnotes", 0, featureBlock.getFootNotes().size());
+    @Test
+    public void testProfileImage() {
+        ImgElement profileImage = p.getProfileImage();
+        assertNotNull("Expecting profile images to be switched on", profileImage);
+        assertTrue("Expecting image Lactuca_triquetra_Bc_01.JPG", profileImage.getSrcUrl().toString().endsWith("/Lactuca_triquetra_Bc_01.JPG"));
+    }
 
 
-		/* Common names */
-		featureClass = "common_names";
-		featureLabel = "Common names";
-		expectedCssDisplay = "block";
-		blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكان7\n7. Nehmé, M., Dictionnaire Etymologique de la Flore du Liban. 2000";
+    @Test
+    public void testFeatures() {
+        assertEquals("Content", p.getTableOfContentHeader());
+        List<LinkElement> links = p.getTableOfContentLinks();
+        assertNotNull("Expecting a list of TOC links in the profile page.", links);
 
-		p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-		featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "li");
+        FeatureBlock featureBlock;
+        int featureId = 0;
 
-		assertEquals(blockTextFull, featureBlock.getText());
+        int descriptionElementFontSize = 12;
+        String expectedCssDisplay = "inline";
+        String expectedListStyleType = "none";
+        String expectedListStylePosition = "outside";
+        String expectedListStyleImage = "none";
+        int indent = 0;
+
+        /* Description */
+        String featureClass = "description";
+        String featureLabel = "Description";
+        String blockTextFull = null;
+        String blockTextBegin = featureLabel + "\nHerb, perennial, scoparious, 40-80 cm high. Flowering stems erect, triangular, medullary, glaucous-green, soon leafless, strongly branched; branches erect, slender. Cauline leaves few, glabrous.";
+        String blockTextEnd = "Pappus white, 6.0-7.0 mm long, persistent, fragile, shortly barbellate or scabridulous.\n\nbased on: Meikle, R.D. 1985: Flora auf Cyprus 2. - Kew (as Prenanthes triquetra).";
+        expectedListStyleType = "none";
+
+        p.testTableOfContentEntry(featureId++,featureLabel, featureClass);
+        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
+
+        assertTrue(featureBlock.getText().startsWith(blockTextBegin));
+        assertTrue(featureBlock.getText().endsWith(blockTextEnd));
+        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(0, featureBlock.getOriginalSourcesSections().size());
+
+        /* Distribution */
+        expectedCssDisplay = "block";
+        featureClass = "distribution";
+        featureLabel = "Distribution";
+        blockTextFull = featureLabel + "\n\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 19336. (N)";
+        p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
+        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "dt", "dd");
+
+        assertEquals(blockTextFull, featureBlock.getText());
+
+        MultipartDescriptionElementRepresentation descriptionElement = (MultipartDescriptionElementRepresentation) featureBlock.getDescriptionElements().get(0);
+        logger.info(descriptionElement.getText());
+        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(0, featureBlock.getOriginalSourcesSections().size());
+        assertEquals("Expecting 7 FootnoteKeys", 7, featureBlock.getFootNoteKeys().size());
+        assertEquals("Expecting 6 Footnotes", 6, featureBlock.getFootNotes().size());
+
+        assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers_map")));
+        WebElement mapCaptionElement = null;
+        try {
+            mapCaptionElement = featureBlock.getElement().findElement(By.className("distribution_map_caption"));
+        } catch (NoSuchElementException e){
+            /* IGNORE */
+        }
+        assertNull(mapCaptionElement);
+
+        /* Uses */
+        featureClass = "ecology";
+        featureLabel = "Ecology";
+        blockTextFull = featureLabel + "\n500 m. On chalky cliffs or in flushes on serpentine.\n\nfrom: Meikle, R. D. 1985: Flora of Cyprus 2. – Kew. (as Prenanthes triquetra)";
+        expectedCssDisplay = "inline";
+
+        p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
+        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
+
+        assertEquals(blockTextFull, featureBlock.getText());
+        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(0, featureBlock.getOriginalSourcesSections().size());
+        assertEquals("Expecting no FootnoteKeys", 0, featureBlock.getFootNoteKeys().size());
+        assertEquals("Expecting no Footnotes", 0, featureBlock.getFootNotes().size());
 
 
-		/* Uses */
-		featureClass = "credits";
-		featureLabel = "Credits";
-		blockTextFull = featureLabel + "\nChristodoulou C. S. 2009: Images (1 added).\nMakris C. 2009: Images (1 added).";
-		expectedCssDisplay = "block";
+        /* Common names */
+        featureClass = "common_names";
+        featureLabel = "Common names";
+        expectedCssDisplay = "block";
+        blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكان7\n7. Nehmé, M., Dictionnaire Etymologique de la Flore du Liban. 2000";
 
-		p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-		featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
+        p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
+        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "li");
 
-		assertEquals(blockTextFull, featureBlock.getText());
-		featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-		assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-		assertEquals("Expecting no FootnoteKeys", 0, featureBlock.getFootNoteKeys().size());
-		assertEquals("Expecting no Footnotes", 0, featureBlock.getFootNotes().size());
+        assertEquals(blockTextFull, featureBlock.getText());
 
-	}
+
+        /* Uses */
+        featureClass = "credits";
+        featureLabel = "Credits";
+        blockTextFull = featureLabel + "\nChristodoulou C. S. 2009: Images (1 added).\nMakris C. 2009: Images (1 added).";
+        expectedCssDisplay = "block";
+
+        p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
+        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
+
+        assertEquals(blockTextFull, featureBlock.getText());
+        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(0, featureBlock.getOriginalSourcesSections().size());
+        assertEquals("Expecting no FootnoteKeys", 0, featureBlock.getFootNoteKeys().size());
+        assertEquals("Expecting no Footnotes", 0, featureBlock.getFootNotes().size());
+
+    }
 
 }
