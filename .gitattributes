@@ -264,6 +264,8 @@
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/TestConfiguration.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/TestConfigurationException.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/elements/BaseElement.java -text
+5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/elements/ClassificationTreeBlock.java -text
+5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/elements/ClassificationTreeElement.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/elements/DescriptionElementRepresentation.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/elements/DrupalBlock.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/elements/FeatureBlock.java -text
