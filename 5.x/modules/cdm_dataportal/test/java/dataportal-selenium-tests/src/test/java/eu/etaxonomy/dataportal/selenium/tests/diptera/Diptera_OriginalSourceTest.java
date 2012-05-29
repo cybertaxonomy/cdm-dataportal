@@ -39,73 +39,73 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 @DataPortalContexts( { DataPortalContext.diptera})
 public class Diptera_OriginalSourceTest extends CdmDataPortalTestBase{
 
-	// Milichia speciosa
-	static UUID taxonUuid = UUID.fromString("1f1f8356-a172-4f7d-ad98-e8a37489ce9f");
+    // Milichia speciosa
+    static UUID taxonUuid = UUID.fromString("1f1f8356-a172-4f7d-ad98-e8a37489ce9f");
 
-	TaxonProfilePage p = null;
+    TaxonProfilePage p = null;
 
-	@Before
-	public void setUp() throws MalformedURLException {
+    @Before
+    public void setUp() throws MalformedURLException {
 
-		p = new TaxonProfilePage(driver, getContext(), taxonUuid);
+        p = new TaxonProfilePage(driver, getContext(), taxonUuid);
 
-	}
+    }
 
-	@After
-	public void tearDown(){
-		logger.debug("@After");
-	}
+    @After
+    public void tearDown(){
+        logger.debug("@After");
+    }
 
 
-	@Test
-	public void testPage() {
+    @Test
+    public void testPage() {
 
-		assertEquals(getContext().prepareTitle("Milichia speciosa"), p.getTitle());
+        assertEquals(getContext().prepareTitle("Milichia speciosa"), p.getTitle());
 //		assertNull("Authorship information should be hidden", p.getAuthorInformationText());
 
-		List<LinkElement> primaryTabs = p.getPrimaryTabs();
-		assertEquals("Expecting 3 tabs", 3, primaryTabs.size());
-		assertEquals("General", primaryTabs.get(0).getText());
-		assertEquals("Nomenclature", primaryTabs.get(1).getText());
-		assertEquals("Specimens", primaryTabs.get(2).getText());
+        List<LinkElement> primaryTabs = p.getPrimaryTabs();
+        assertEquals("Expecting 3 tabs", 3, primaryTabs.size());
+        assertEquals("General", primaryTabs.get(0).getText());
+        assertEquals("Nomenclature", primaryTabs.get(1).getText());
+        assertEquals("Specimens", primaryTabs.get(2).getText());
 
-		assertEquals("Content", p.getTableOfContentHeader());
-		List<LinkElement> tocLinks = p.getTableOfContentLinks();
-		assertNotNull("Expecting a list of TOC links in the profile page.", tocLinks);
+        assertEquals("Content", p.getTableOfContentHeader());
+        List<LinkElement> tocLinks = p.getTableOfContentLinks();
+        assertNotNull("Expecting a list of TOC links in the profile page.", tocLinks);
 
-		p.testTableOfContentEntry(0, "Citations", "citation");
-		p.testTableOfContentEntry(1, "Distribution", "distribution");
-		p.testTableOfContentEntry(2, "Occurrence", "occurrence");
+        p.testTableOfContentEntry(0, "Citations", "citation");
+        p.testTableOfContentEntry(1, "Distribution", "distribution");
+        p.testTableOfContentEntry(2, "Occurrence", "occurrence");
 
-		FeatureBlock featureBlock = p.getFeatureBlockAt(0, "citation", "ul", "li");
-		assertEquals("expecting no footnote keys", 0, featureBlock.getFootNoteKeys().size());
+        FeatureBlock featureBlock = p.getFeatureBlockAt(0, "citation", "ul", "li");
+        assertEquals("expecting no footnote keys", 0, featureBlock.getFootNoteKeys().size());
 
-		List<WebElement> listElements = featureBlock.getElement().findElements(By.tagName("li"));
-		assertEquals("Expecting 48 listElements tags in \"Citations\"", 48, listElements.size());
+        List<WebElement> listElements = featureBlock.getElement().findElements(By.tagName("li"));
+        assertEquals("Expecting 48 listElements tags in \"Citations\"", 48, listElements.size());
 
-		// ---
-		assertEquals("Argyrites speciosa (Meigen, 1830): Croatia", listElements.get(0).getText());
-		List<WebElement> anchorTags = listElements.get(0).findElements(By.tagName("a"));
-		assertEquals("Expecting one link", 1, anchorTags.size());
-		assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
+        // ---
+        assertEquals("Argyrites speciosa (Meigen, 1830): Croatia", listElements.get(0).getText());
+        List<WebElement> anchorTags = listElements.get(0).findElements(By.tagName("a"));
+        assertEquals("Expecting one link", 1, anchorTags.size());
+        assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
 
-		// ---
-		assertEquals("Milichia speciosa Meigen, 1830: type information (Becker 1902: 314)", listElements.get(2).getText());
-		anchorTags = listElements.get(2).findElements(By.tagName("a"));
-		assertEquals("Expecting two links", 2, anchorTags.size());
-		assertEquals("Milichia speciosa Meigen, 1830", anchorTags.get(0).getText());
-		assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
-		assertEquals("Becker 1902", anchorTags.get(1).getText());
-		assertTrue(anchorTags.get(1).getAttribute("href").contains("?q=cdm_dataportal/reference/"));
+        // ---
+        assertEquals("Milichia speciosa Meigen, 1830: type information (Becker 1902: 314)", listElements.get(2).getText());
+        anchorTags = listElements.get(2).findElements(By.tagName("a"));
+        assertEquals("Expecting two links", 2, anchorTags.size());
+        assertEquals("Milichia speciosa Meigen, 1830", anchorTags.get(0).getText());
+        assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
+        assertEquals("Becker 1902", anchorTags.get(1).getText());
+        assertTrue(anchorTags.get(1).getAttribute("href").contains("?q=cdm_dataportal/reference/"));
 
-		// ---
-		assertEquals("Milichia speciosa Meigen, 1830: checklist, Italy (Canzoneri & Gorodkov & Krivosheina & Munari & Nartshuk & Papp & Süss 1995: 25)", listElements.get(9).getText());
-		anchorTags = listElements.get(9).findElements(By.tagName("a"));
-		assertEquals("Expecting two links", 2, anchorTags.size());
-		assertEquals("Milichia speciosa Meigen, 1830", anchorTags.get(0).getText());
-		assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
-		assertEquals("Canzoneri & Gorodkov & Krivosheina & Munari & Nartshuk & Papp & Süss 1995", anchorTags.get(1).getText());
-		assertTrue(anchorTags.get(1).getAttribute("href").contains("?q=cdm_dataportal/reference/"));
-	}
+        // ---
+        assertEquals("Milichia speciosa Meigen, 1830: checklist, Italy (Canzoneri, Gorodkov, Krivosheina, Munari, Nartshuk, Papp & Süss 1995: 25)", listElements.get(9).getText());
+        anchorTags = listElements.get(9).findElements(By.tagName("a"));
+        assertEquals("Expecting two links", 2, anchorTags.size());
+        assertEquals("Milichia speciosa Meigen, 1830", anchorTags.get(0).getText());
+        assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
+        assertEquals("Canzoneri & Gorodkov & Krivosheina & Munari & Nartshuk & Papp & Süss 1995", anchorTags.get(1).getText());
+        assertTrue(anchorTags.get(1).getAttribute("href").contains("?q=cdm_dataportal/reference/"));
+    }
 
 }
