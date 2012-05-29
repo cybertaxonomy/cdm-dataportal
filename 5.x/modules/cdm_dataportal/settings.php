@@ -290,11 +290,7 @@ function cdm_settings_general(){
   $form['cdm_webservice']['cdm_webservice_url'] =  array(
     '#type' => 'textfield',
     '#title'         => t('CDM web service URL'),
-    '#description'   => t('This is the ip address of the location of the CDM Web Server which contains
-                           your collection database. The address must follow the format <em>"http://X:Y/Z"</em>
-                           where "<em>X</em>" is the ip address of the machine where the server is running, "<em>Y</em>" is
-                           the port number where the server is listening and "<em>Z</em>" the name of the database
-                           where your collection is, e.g. <em>"http://160.45.63.201:8080/palmae"</em>'),
+    '#description'   => t('This is the URL to the CDM-Server exposing your data e.g. <em>"http://localhost:8080/palmae/"</em> The URL <strong>must end with a slash</strong> character!'),
     '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
 
