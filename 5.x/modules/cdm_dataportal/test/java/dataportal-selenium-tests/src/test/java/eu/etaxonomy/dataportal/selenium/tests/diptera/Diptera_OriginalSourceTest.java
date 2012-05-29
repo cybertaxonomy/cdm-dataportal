@@ -104,7 +104,7 @@ public class Diptera_OriginalSourceTest extends CdmDataPortalTestBase{
         assertEquals("Expecting two links", 2, anchorTags.size());
         assertEquals("Milichia speciosa Meigen, 1830", anchorTags.get(0).getText());
         assertTrue(anchorTags.get(0).getAttribute("href").contains("?q=cdm_dataportal/name/"));
-        assertEquals("Canzoneri & Gorodkov & Krivosheina & Munari & Nartshuk & Papp & Süss 1995", anchorTags.get(1).getText());
+        assertEquals("Canzoneri, Gorodkov, Krivosheina, Munari, Nartshuk, Papp & Süss 1995", anchorTags.get(1).getText());
         assertTrue(anchorTags.get(1).getAttribute("href").contains("?q=cdm_dataportal/reference/"));
     }
 
