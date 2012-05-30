@@ -74,21 +74,18 @@ heterotypicSynonymyGroup li.footnotes,
 }
 
 #wrapper #container #header #logo-floater {
-	/*position: relative;*/
 	background:#663350 url(images/a8.gif) repeat-x scroll 0 0;
-	color:#FFFFFF;
-	height:40px;
-	/*margin-left:7px;*/
-	/*margin-right: 7px;*/
-	padding-left:15px;
-	float:left;
-	/*width:865px;*/
-	z-index: 10;
-	margin-top: 97px;
+	color: #FFFFFF;
+    float: left;
+    height: 40px;
+    margin-top: 97px;
+    width: 100%;
+    z-index: 10;
 }
 
-#logo-floater {
-  /* min-width: 200px;	*/
+#wrapper #container #header #logo-floater h1{
+	margin-left: 15px;
+	padding-top: 5px;
 }
 
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited{
@@ -226,20 +223,11 @@ div.clear {
 
 ul.primary-links {
 	background:#663350 url(images/a16.gif) repeat-x scroll 0 0;
-	/*float:left;
-	clear: both;*/
 	font-family:Tahoma,Georgia,Arial,Verdana,Serif;
-	/*height:67px;*/
-	/*height:46px;*/
 	width: 100%;
-	/*margin:7px 0;*/
-	padding:0;
-	/*position:relative;*/
 	text-transform:uppercase;
 	z-index:4;
 	height: 40px;
-	margin-top: -35px;
-	padding-top: 40px;
 }
 
 ul.primary-links li a, ul.primary-links li a:hover, ul.primary-links li a:visited, ul.primary-links li a:active{
