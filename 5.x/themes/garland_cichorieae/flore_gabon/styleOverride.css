@@ -99,7 +99,7 @@ heterotypicSynonymyGroup li.footnotes,
 	/*
 	background:#EAEAE2 url(images/splashChichorium_wide.jpg) no-repeat scroll 0 0;
 	*/
-	background:#EAEAE2 url(images/test3_Vicia_lunata_CSC_6051.jpg) no-repeat scroll 0 0;
+	background:#EAEAE2 url(images/banner.jpg) no-repeat scroll 0 0;
 	height:92px;
 	/*float:left;*/
 	width:780px;
@@ -416,5 +416,5 @@ li.toclevel-3 {
 }
 
 #edit-logo {
-    background: url("images/title_flower_logo.jpg")
+    background: url("images/logo.jpg")
 }
