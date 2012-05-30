@@ -545,6 +545,13 @@
 5.x/themes/garland_cichorieae/cyprus/styleOverride.css -text
 5.x/themes/garland_cichorieae/fix-ie.css -text
 5.x/themes/garland_cichorieae/fix-ie7.css -text
+5.x/themes/garland_cichorieae/flora_guianas/fix-ie7.css -text
+5.x/themes/garland_cichorieae/flora_guianas/images/.directory -text
+5.x/themes/garland_cichorieae/flora_guianas/images/banner.jpg -text
+5.x/themes/garland_cichorieae/flora_guianas/images/bg-tab.png -text
+5.x/themes/garland_cichorieae/flora_guianas/images/logo.png -text
+5.x/themes/garland_cichorieae/flora_guianas/style.css -text
+5.x/themes/garland_cichorieae/flora_guianas/styleOverride.css -text
 5.x/themes/garland_cichorieae/flora_malesiana/images/edit-logo.png -text
 5.x/themes/garland_cichorieae/flora_malesiana/images/flora-malesiana-header.jpg -text
 5.x/themes/garland_cichorieae/flora_malesiana/images/flora-malesiana-header2.jpg -text
