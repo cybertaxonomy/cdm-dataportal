@@ -87,7 +87,7 @@ function theme_cdm_mediaTypeTerm($feature, $mediaUrl = false){
 
 	$icon_image = $feature->representation_L10n.'-media'.$provider.'.png';
 	$icon_url = drupal_get_path('module', 'cdm_dataportal').'/images/'.$icon_image;
-	return '<img src="'.$icon_url.'" height="14px" alt="'.$feature->representation_L10n.'" />';
+	return '<img src="'.url($icon_url).'" height="14px" alt="'.$feature->representation_L10n.'" />';
 }
 
 function theme_cdm_media_mime_application($mediaRepresentation, $feature){
@@ -430,7 +430,6 @@ function theme_cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $a
 			}
 		}
 
-		//return  '<img src="'."http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/photos/Lapsana_communis_A_01.jpg".'" width="'.$maxExtend.'" height="'.$maxExtend.'" />';
 		if($addPassePartout){
 			$out .= '<div class="image-passe-partout" style="width:'.$maxExtend.'px; height:'.$maxExtend.'px;">';
 		} else {
