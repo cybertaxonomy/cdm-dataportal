@@ -359,6 +359,8 @@ function theme_cdm_back_to_image_gallery_button(){
 
 function theme_cdm_print_button(){
 
+  global $base_url;
+
   drupal_add_js ('$(document).ready(function() {
          $(\'#print_button\').click(function () {
          window.print();
