@@ -293,22 +293,13 @@ function theme_cdm_heterotypicSynonymyGroup($homotypicalGroup){
 			$out .= '<li class="synonym">'.cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF).'</li>';
 		}
 	}
-	//$test =  theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
-	//tuypedesignations footnotes
 
 	if($typeDesignations){
 		$out .= theme('cdm_typedesignations', $typeDesignations);
-
 	}
 
-	//annotation footnotes
-	//$annotation_key = ( isset($homotypicalGroup[0]) ? $homotypicalGroup[0]->uuid : 'NULL');
-	//$fkey_annotations = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-annotations-' . $annotation_key, $annotation_key);
-	//$out .= theme('cdm_footnotes', RenderHints::getRenderPath() . '-annotations-' . $annotation_key);
 	$out .= theme('cdm_annotation_footnotes', $footnoteListKey, 'li');
-	//$out .= theme('cdm_annotation_footnotes', $footnoteListKey);
 	$out .= '</ul>';
-
 
 	RenderHints::popFromRenderStack();
 	return $out;
