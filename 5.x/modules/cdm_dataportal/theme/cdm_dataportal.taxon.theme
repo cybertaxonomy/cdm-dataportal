@@ -356,7 +356,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
   static $relsign_hetero = '=';
   static $relsign_invalid = '&ndash;';
 
-  $footnoteListKey = 'taxonRelationships';
+  $footnoteListKey = null; //'taxonRelationships';
 
   $name_prefix = '';
   $name_postfix = '';
