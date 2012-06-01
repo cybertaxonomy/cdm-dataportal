@@ -1763,7 +1763,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 
 /**
  *
- * @param - $cdmBase_list @param $cdmBase_list an array of CdmBase instances or a single instance
+ * @param - $cdmBase_list an array of CdmBase instances or a single instance
  * @param - $footnote_list_key
  */
 function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = null){
