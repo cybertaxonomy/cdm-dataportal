@@ -254,7 +254,6 @@
 5.x/modules/cdm_dataportal/site/resources/images/palmae5.png -text
 5.x/modules/cdm_dataportal/site/resources/images/settings1.PNG -text
 5.x/modules/cdm_dataportal/site/site.xml -text
-5.x/modules/cdm_dataportal/test/TestSuite-search.html -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/pom.xml -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/Browser.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/DataPortalContext.java -text
@@ -313,16 +312,17 @@
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/flMalesiana/FloraMalesianaPolytomousKeyTest.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/flMalesiana/FloraMalesiana_OriginalSourceTest.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/palmae/Calamus_acanthospathus_TaxonProfileTest.java -text
+5.x/modules/cdm_dataportal/test/phpUnit/README -text
 5.x/modules/cdm_dataportal/test/phpUnit/TestUtils.php -text
 5.x/modules/cdm_dataportal/test/phpUnit/bootstrap.php -text
 5.x/modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml -text
-5.x/modules/cdm_dataportal/test/phpUnit/phpunit.php -text
+5.x/modules/cdm_dataportal/test/phpUnit/phpunitRunner.php -text
 5.x/modules/cdm_dataportal/test/phpUnit/resources/theme/cdm_dataportal.name.themeTest-taxon1.json -text
 5.x/modules/cdm_dataportal/test/phpUnit/src/README.txt -text
+5.x/modules/cdm_dataportal/test/phpUnit/src/SimpleNameTest.php -text
 5.x/modules/cdm_dataportal/test/phpUnit/src/cdm_dataportal.moduleTest.php -text
 5.x/modules/cdm_dataportal/test/phpUnit/src/testTest.php -text
 5.x/modules/cdm_dataportal/test/phpUnit/src/theme/cdm_dataportal.name.themeTest.php -text
-5.x/modules/cdm_dataportal/test/search-L.communis.html -text
 5.x/modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text
 5.x/modules/cdm_dataportal/theme/cdm_dataportal.descriptions.theme -text
 5.x/modules/cdm_dataportal/theme/cdm_dataportal.media.theme -text
