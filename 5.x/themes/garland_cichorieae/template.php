@@ -14,6 +14,8 @@
  */
 function garland_cichorieae_cdm_taxon_page_profile($taxon, $mergedTrees, $media, $hideImages = false){
 
+    global $base_url;
+
 	RenderHints::pushToRenderStack('taxon_page_description');
 	// description TOC
 	$out = theme('cdm_featureTreeTOCs', $mergedTrees);
@@ -26,7 +28,7 @@ function garland_cichorieae_cdm_taxon_page_profile($taxon, $mergedTrees, $media,
 		$defaultRepresentationPart = false;
 		$defaultRepresentationPart->width = 400;
 		$defaultRepresentationPart->height = 300;
-		$defaultRepresentationPart->uri = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300_4x3cm.jpg';
+		$defaultRepresentationPart->uri = $base_url . '/' .drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300_4x3cm.jpg';
 
 		$imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
 
