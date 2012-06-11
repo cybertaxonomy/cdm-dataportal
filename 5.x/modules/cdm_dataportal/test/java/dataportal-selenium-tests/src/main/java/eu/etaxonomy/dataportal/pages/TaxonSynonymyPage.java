@@ -123,7 +123,7 @@ public class TaxonSynonymyPage extends PortalPage {
 
 
     /**
-     * @param synonymIndex
+     * @param synonymIndex the 1-based index of the synonym in the group
      * @return
      */
     public WebElement getHomotypicalGroupSynonym(Integer synonymIndex) {
@@ -179,16 +179,26 @@ public class TaxonSynonymyPage extends PortalPage {
         return synonym;
     }
 
+    /**
+     * @param heterotypicalGroupIndex
+     * 				the 1-based index of the heterotypical group
+     * @return
+     */
     public List<LinkElement> getHeterotypicalGroupFootNoteKeys(Integer heterotypicalGroupIndex) {
         List<WebElement> fnkListElements = synonymy.findElements(
-                By.xpath("./ul[contains(@class,'heterotypicSynonymyGroup')][" + heterotypicalGroupIndex + "]/*/span[contains(@class, 'footnote-key')]/a")
-        );
+                By.xpath("./ul[contains(@class,'heterotypicSynonymyGroup')][" + heterotypicalGroupIndex + "]/*/*/span[contains(@class, 'footnote-key')]/a")
+         );
         return ElementUtils.linkElementsFromFootNoteKeyListElements(fnkListElements);
     }
 
+    /**
+     * @param heterotypicalGroupIndex
+     * 				the 1-based index of the heterotypical group
+     * @return
+     */
     public List<BaseElement> getHeterotypicalGroupFootNotes(Integer heterotypicalGroupIndex) {
         List<WebElement> fnListElements = synonymy.findElements(
-                By.xpath("./ul[contains(@class,'heterotypicSynonymyGroup')][" + heterotypicalGroupIndex + "]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnotes')]")
+                By.xpath("./ul[contains(@class,'heterotypicSynonymyGroup')][" + heterotypicalGroupIndex + "]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
         );
         return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
     }

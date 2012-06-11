@@ -299,6 +299,7 @@
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firepath-0.9.7-fx.xpi -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firexpath-0.9.6.1-fx.xpi -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/CichorieaeSearchTest.java -text
+5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_FootnoteTest.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_HybridTest.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_NamePageTest.java -text
 5.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_TechnicalAnnnotationsTest.java -text
