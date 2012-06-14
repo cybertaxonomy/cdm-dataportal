@@ -89,7 +89,7 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
   $countFeatures = 0;
   $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), substr(strrchr($_GET["q"], '/'), 1))));
   if ($numberOfChildren != 0) {
- 	 $out .= '<li>'.l(t(theme('cdm_feature_name', 'Number of Species')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Number Of Species')).'</li>';
+ 	 $out .= '<li>'.l(t(theme('cdm_feature_name', 'Number of Taxa')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Number Of Taxa')).'</li>';
   }
   foreach($featureNodes as $node){
 
@@ -128,9 +128,16 @@ RenderHints::pushToRenderStack('feature_nodes');
   $bibliographyOut = array();
   $countFeatures = 0;
   $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), $taxon->uuid)));
+  if ($taxon->name->rank->titleCache == "Genus") {
+  	$subRank = "species";
+  }
+  if($taxon->name->rank->titleCache == "Species") {
+  	$subRank = "infraspecific taxa";
+  }
   if ($numberOfChildren != 0) {
-  	$out .= '<a name="number_of_species"> </a><H2>Number of Species</H2><div class="content"> <ul class="description">';
-	$out .= '<li class=\"descriptionText DescriptionElement\">' . $numberOfChildren . " Species." . '</li></ul>';
+  	
+  	$out .= '<a name="number_of_taxa"> </a><H2>Number of Taxa</H2><div class="content"> <ul class="description">';
+	$out .= '<li class=\"descriptionText DescriptionElement\">' . $numberOfChildren . " " . $subRank . '</li></ul>';
   }
 
   foreach($mergedFeatureNodes as $node){
