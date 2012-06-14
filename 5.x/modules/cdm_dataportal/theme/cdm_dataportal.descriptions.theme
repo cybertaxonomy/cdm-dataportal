@@ -1296,7 +1296,7 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 						$descriptionOut .= " (" . theme('cdm_DescriptionElementSource', $source, true) . ")";
 					}
 					$hasUseRecords = false;
-					$descriptionUseRecordOut = '<table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
+					$descriptionUseRecordOut = '<div id=useRecords><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
 					foreach ($description->elements as $descriptionElement) {
 						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
 							$hasUseRecords = true;
@@ -1307,10 +1307,10 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 							//$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
 						}
 					}
-					$descriptionUseRecordOut .= '</table>';
+					$descriptionUseRecordOut .= '</table></div>';
 					//$descriptionOut .= '</ul></li>';
 					if ($hasUseRecords) {
-						$descriptionOut .= $descriptionUseRecordOut;
+						$descriptionOut .= $descriptionUseRecordOut . '</li>';
 					}
 					
 				}
@@ -1353,7 +1353,7 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 					
 					//$synonymOut .= '<ul>';
 					$hasUseRecords = false;
-					$useRecordTableOut = '<table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
+					$useRecordTableOut = '<div id=useRecords><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
 					foreach ($description->elements as $descriptionElement) {
 						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
 							$hasUseRecords = true;
@@ -1365,9 +1365,9 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 							//$synonymOut .='<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
 						}
 					}
-					$useRecordTableOut .= '</table>';
+					$useRecordTableOut .= '</table></div>';
 					if($hasUseRecords) {
-						$synonymOut .= $useRecordTableOut; 
+						$synonymOut .= $useRecordTableOut . '</li>'; 
 					}
 					
 					//$synonymOut .= '</ul></li>';
