@@ -14,6 +14,8 @@
  */
 function garland_cichorieae_cdm_taxon_page_profile($taxon, $mergedTrees, $media, $hideImages = false){
 
+    global $base_url;
+
 	RenderHints::pushToRenderStack('taxon_page_description');
 	// description TOC
 	$out = theme('cdm_featureTreeTOCs', $mergedTrees);
@@ -26,7 +28,7 @@ function garland_cichorieae_cdm_taxon_page_profile($taxon, $mergedTrees, $media,
 		$defaultRepresentationPart = false;
 		$defaultRepresentationPart->width = 400;
 		$defaultRepresentationPart->height = 300;
-		$defaultRepresentationPart->uri = drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300_4x3cm.jpg';
+		$defaultRepresentationPart->uri = $base_url . '/' .drupal_get_path('theme', 'garland_cichorieae').'/images/nopic_400x300_4x3cm.jpg';
 
 		$imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
 
@@ -231,26 +233,27 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 }
 
 
-
-/**
- * @overrides theme_cdm_taggedtext2html in order to replace t.infr and t.infgen. with '[unranked]'
- */
-function garland_cichorieae_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
-	$out = '';
-	$i = 0;
-	foreach($taggedtxt as $tt){
-		if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
-			$out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">';
-			if($tt->type == "rank" && ($tt->text == "t.infr." || $tt->text == "t.infgen.")){
-				$out .= t('[unranked]');
-			}else{
-				$out .= t($tt->text);
-			}
-			$out .= '</'.$tag.'>';
-		}
-	}
-	return $out;
-}
+//  NO LONGER NEEDED - since term representation is changed now in the cdm for the cichorieae
+//      ====> delete
+// /**
+//  * @overrides theme_cdm_taggedtext2html in order to replace t.infr and t.infgen. with '[unranked]'
+//  */
+// function garland_cichorieae_cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
+// 	$out = '';
+// 	$i = 0;
+// 	foreach($taggedtxt as $tt){
+// 		if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
+// 			$out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">';
+// 			if($tt->type == "rank" && ($tt->text == "t.infr." || $tt->text == "t.infgen.")){
+// 				$out .= t('[unranked]');
+// 			}else{
+// 				$out .= t($tt->text);
+// 			}
+// 			$out .= '</'.$tag.'>';
+// 		}
+// 	}
+// 	return $out;
+// }
 
 function garland_cichorieae_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
 	$enclosingHtml = 'div';

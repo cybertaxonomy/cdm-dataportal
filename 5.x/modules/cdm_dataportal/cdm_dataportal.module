@@ -1554,13 +1554,13 @@ function cdm_dataportal_shortname_of($name){
       return $nameStr;
     }
     /*
-     * - 1st capture group (^[a-zA-Z]): Fist letter of uninomial
-     * - second capture group ([a-zA-Z]+): remaining letters of uninomial
-     * - third capture group (\s+[^(\x2E]+\s+.+$): letters of name,
-     *       but only matching if no '(' or '.' in second word of name, ( \x2E = '.' )
-     *       OR only one specific epithet \s+[a-zA-Z]+$
+     * 1st capture group (^[a-zA-Z]): Fist letter of uninomial
+     * second capture group ([a-zA-Z]+): remaining letters of uninomial
+     * third capture group (\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z]+$): letters of name,
+     *       but only matching if no '(' or '.' in second word of name, ( \x2E = '.')
+     *       OR only one specific epithet \s+[a-zA-Z]+$                 (\x22= '"', \x2D='-', \xD7='×' )
      */
-    $pattern = '/(^[a-zA-Z])([a-zA-Z]+)(\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z]+$)/';
+    $pattern = '/(^[a-zA-Z])([a-zA-Z]+)(\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z\x22\x2D\xD7]+$)/u';
     if (preg_match($pattern, $nameStr, $matches, PREG_OFFSET_CAPTURE)){
       return $matches[1][0] . "." . $matches[3][0];
     } else {
@@ -1763,7 +1763,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements){
 
 /**
  *
- * @param - $cdmBase_list @param $cdmBase_list an array of CdmBase instances or a single instance
+ * @param - $cdmBase_list an array of CdmBase instances or a single instance
  * @param - $footnote_list_key
  */
 function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = null){

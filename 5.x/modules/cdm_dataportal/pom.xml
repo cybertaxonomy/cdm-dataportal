@@ -301,7 +301,7 @@
 		<site>
 			<id>wp5.e-taxonomy.eu</id>
 			<url>
-				scpexe://160.45.63.151/var/www/wp5.e-taxonomy.eu/portal/
+				scpexe://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/portal/
 			</url>
 		</site>
 	</distributionManagement>

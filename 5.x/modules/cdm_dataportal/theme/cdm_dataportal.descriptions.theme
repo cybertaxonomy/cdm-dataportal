@@ -301,7 +301,7 @@ function theme_cdm_descriptionElementTextData($element, $asListElement, $feature
   $out;
   $res_author;
   $res_date;
-  
+
   if(is_array($element->sources)){
     foreach($element->sources as $source){
       $referenceCitation = theme('cdm_DescriptionElementSource', $source);
@@ -479,7 +479,7 @@ function theme_cdm_descriptionElements($descriptionElements, $featureUuid, $taxo
       }
       // --- USE TEXTDATA --- //
       else if($descriptionElement->feature->uuid == UUID_USE){
-      	//Do nothing to avoid rendering	
+      	//Do nothing to avoid rendering
       }
 
       // ---- class == TextData ---- //
@@ -1033,7 +1033,7 @@ function theme_cdm_IdentificationKey($identificationKey, $doLinkToKeyPage = true
 
 function theme_cdm_polytomousKey(&$polytomousKey){
 
-  $keyStyle = "linkedStyle"; // TODO settings needed
+  $keyStyle = "linkedStyle"; // TODO settings needed see http://en.wikipedia.org/wiki/Single_access_key#Presentation_styles and http://dev.e-taxonomy.eu/trac/ticket/2152
 
   RenderHints::pushToRenderStack("polytomousKey");
   // key nodes in linked style
@@ -1044,6 +1044,12 @@ function theme_cdm_polytomousKey(&$polytomousKey){
   return $out;
 }
 
+/**
+ *
+ *
+ * @param unknown_type $polytomousKeyNode
+ * @return Ambigous <string, An, mixed>
+ */
 function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
 
   static $statementCountCharacter = '\'';
@@ -1168,6 +1174,12 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph(&$polytomousKeyNode){
   return $out;
 }
 
+/**
+ *
+ * Enter description here ...
+ * @param unknown_type $modifyingText
+ * @return string
+ */
 function theme_cdm_poytomousKeyNode_modifyingText($modifyingText){
   if(is_object($modifyingText)){
     $i = 0;
@@ -1226,7 +1238,7 @@ function theme_cdm_block_IdentificationKeys($taxonUuid = null, $pageSize = null)
 }
 
 
-//this theming function formats the use description and use record list for these descriptions 
+//this theming function formats the use description and use record list for these descriptions
 function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $pageSize, $pageNumber) {
 	$out = '<div id="content"><ul id="Description" class ="description">';
 	if ($descriptions == null) {
@@ -1240,7 +1252,7 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 		$useSummary = "";
 		$serializedSynonyms = serialize($synonyms);
 		foreach ($description->elements as $element) {
-			
+
 			if($element->feature->uuid == UUID_USE && !(strlen($useSummary)> 0)){
 				$useSummary = $element->multilanguageText_L10n->text;
 			}
@@ -1255,16 +1267,16 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 				$request_params['matchMode'] = "EXACT";
 				$originalTaxonPager = cdm_ws_get(CDM_WS_PORTAL_NAME_FINDBYNAME,  null, queryString($request_params));
 				if ($originalTaxonPager->count >0) {
-					$originalTaxonUsedInSource = $originalTaxonPager->records[0]; 
-					
+					$originalTaxonUsedInSource = $originalTaxonPager->records[0];
+
 				} else {
 					$originalTaxonUsedInSource = $currentTaxon->name;
 				}
-				
+
 				if($currentTaxon->name->uuid != $originalTaxonUsedInSource->uuid){
 					$isSynonym = true;
 				}
-				
+
 				if (!$isSynonym) {
 					/*$descriptionOut .='<li class="descriptionText DescriptionElement">';
 					$name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid),array(), NULL, NULL, FALSE ,TRUE);
@@ -1315,10 +1327,10 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 					
 				}
 				else {
-					
+
 					/*$synonymOut .='<li class="descriptionText DescriptionElement">';
 					$name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid),array(), NULL, NULL, FALSE ,TRUE);
-						
+
 					//$out .= $source->originalNameString . ': ';
 					$synonymOut .= $name_used_in_source_link_to_show_use . ': ';
 					$synonymOut .= $useSummary;
@@ -1373,7 +1385,7 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 					//$synonymOut .= '</ul></li>';
 					
 					$isSynonym = false;
-					
+
 				}
 
 			}
@@ -1384,10 +1396,10 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 	return $out;
 }
 
-//The Use theming function here will handle the display of the Use Descriptions 
+//The Use theming function here will handle the display of the Use Descriptions
 function theme_cdm_block_Uses ($taxonUuid = null, $pageSize = null) {
 	RenderHints::pushToRenderStack('block_Uses');
-	
+
 	if ($taxonUuid == null) {
 		return;
 	}
@@ -1401,6 +1413,6 @@ function theme_cdm_block_Uses ($taxonUuid = null, $pageSize = null) {
 		$out .= $formatUseDescriptions;
 		$out .="</div>";
   	}
-	
+
 	return $out;
 }

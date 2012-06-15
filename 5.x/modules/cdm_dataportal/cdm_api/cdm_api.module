@@ -59,7 +59,6 @@ function cdm_api_menu($may_cache) {
     );
 
     $items[] = array(
-    // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
       'path' => 'cdm_api/setvalue/session',
       'callback' => 'setvalue_session',
       'access' => true,
