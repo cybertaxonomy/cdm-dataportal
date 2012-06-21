@@ -1248,6 +1248,7 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 	$descriptionOut = "";
 	$synonymOut = "";
 	$currentTaxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxonUuid);
+	
 	foreach($descriptions as $description) {
 		$useSummary = "";
 		$serializedSynonyms = serialize($synonyms);
@@ -1278,33 +1279,12 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 				}
 
 				if (!$isSynonym) {
-					/*$descriptionOut .='<li class="descriptionText DescriptionElement">';
-					$name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid),array(), NULL, NULL, FALSE ,TRUE);
-					$descriptionOut .= $name_used_in_source_link_to_show_use . ': ';
-					$descriptionOut .= $useSummary;
-					foreach ($description->sources as $source) {
-						if($source->originalNameString) {
-							//$out = $source->originalNameString . ':' . $out;
-						}
-						$descriptionOut .= " (" . theme('cdm_DescriptionElementSource', $source, true) . ")";
-					}
-					$descriptionOut .= '<ul>';
-					foreach ($description->elements as $descriptionElement) {
-						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
-							$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
-							$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
-						}
-					}
-					$descriptionOut .= '</ul></li>';*/
-					
+
 					$descriptionOut .='<li class="descriptionText DescriptionElement">';
 					$name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid),array(), NULL, NULL, FALSE ,TRUE);
 					$descriptionOut .= $name_used_in_source_link_to_show_use . ': ';
 					$descriptionOut .= $useSummary;
 					foreach ($description->sources as $source) {
-						if($source->originalNameString) {
-							//$out = $source->originalNameString . ':' . $out;
-						}
 						$descriptionOut .= " (" . theme('cdm_DescriptionElementSource', $source, true) . ")";
 					}
 					$hasUseRecords = false;
@@ -1316,11 +1296,9 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 							$descriptionUseRecordOut .= '<tr>'; 
 							$descriptionUseRecordOut .= '<td>' .$useRecordTags[0] . '</td>' . '<td>' .$useRecordTags[1] . '</td>' .'<td>' .$useRecordTags[3] . '</td>'.'<td>' .$useRecordTags[4]. '</td>'.'<td>' .$useRecordTags[5] . '</td>'.'<td>' .$useRecordTags[2] . '</td>';
 							$descriptionUseRecordOut .= '</tr>';
-							//$descriptionOut .= '<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
 						}
 					}
 					$descriptionUseRecordOut .= '</table></div>';
-					//$descriptionOut .= '</ul></li>';
 					if ($hasUseRecords) {
 						$descriptionOut .= $descriptionUseRecordOut . '</li>';
 					}
@@ -1328,42 +1306,15 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 				}
 				else {
 
-					/*$synonymOut .='<li class="descriptionText DescriptionElement">';
-					$name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid),array(), NULL, NULL, FALSE ,TRUE);
-
-					//$out .= $source->originalNameString . ': ';
-					$synonymOut .= $name_used_in_source_link_to_show_use . ': ';
-					$synonymOut .= $useSummary;
-					foreach ($description->sources as $source) {
-						if($source->originalNameString) {
-							//$out = $source->originalNameString . ':' . $out;
-						}
-						$synonymOut .= " (" . theme('cdm_DescriptionElementSource', $source, true) . ")";
-					}
-					$synonymOut .= '<ul>';
-					
-					foreach ($description->elements as $descriptionElement) {
-						if($descriptionElement->feature->uuid == UUID_USE_RECORD){
-							$useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
-							$synonymOut .='<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
-						}
-					}
-					$synonymOut .= '</ul></li>';
-					$isSynonym = false;*/
 					$synonymOut .='<li class="descriptionText DescriptionElement">';
 					$name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid),array(), NULL, NULL, FALSE ,TRUE);
 						
-					//$out .= $source->originalNameString . ': ';
 					$synonymOut .= $name_used_in_source_link_to_show_use . ': ';
 					$synonymOut .= $useSummary;
 					foreach ($description->sources as $source) {
-						if($source->originalNameString) {
-							//$out = $source->originalNameString . ':' . $out;
-						}
 						$synonymOut .= " (" . theme('cdm_DescriptionElementSource', $source, true) . ")";
 					}
 					
-					//$synonymOut .= '<ul>';
 					$hasUseRecords = false;
 					$useRecordTableOut = '<div id=useRecords><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
 					foreach ($description->elements as $descriptionElement) {
@@ -1373,17 +1324,12 @@ function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null, $page
 							$useRecordTableOut .= '<tr>'; 
 							$useRecordTableOut .= '<td>' .$useRecordTags[0] . '</td>' . '<td>' .$useRecordTags[1] . '</td>' .'<td>' .$useRecordTags[3] . '</td>'.'<td>' .$useRecordTags[4]. '</td>'.'<td>' .$useRecordTags[5] . '</td>'.'<td>' .$useRecordTags[2] . '</td>';
 							$useRecordTableOut .= '</tr>';
-						
-							//$synonymOut .='<li class="use_record_list">- ' . $useRecordTags[0] . '[' . $useRecordTags[1] . ']'  . ' - ' . $useRecordTags[3]. ' - ' . $useRecordTags[4]. '[' .   $useRecordTags[5] . ']' .  ' - ' . $useRecordTags[2] . '</li>';
 						}
 					}
 					$useRecordTableOut .= '</table></div>';
 					if($hasUseRecords) {
 						$synonymOut .= $useRecordTableOut . '</li>'; 
 					}
-					
-					//$synonymOut .= '</ul></li>';
-					
 					$isSynonym = false;
 
 				}
