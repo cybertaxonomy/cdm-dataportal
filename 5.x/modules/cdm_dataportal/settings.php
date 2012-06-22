@@ -643,6 +643,12 @@ function cdm_settings_layout_taxon(){
     '#default_value' => variable_get('cdm_dataportal_taxonpage_specimenstab', 1),
     '#description' => t('<p>If selected the taxon page will display the specimens tab, provided there is at least one specimen for this taxon.</p>')
   );
+    $form['taxon_tabs']['cdm_dataportal_taxonpage_keystab'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display keys Tab'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_keystab', 1),
+    '#description' => t('<p>If selected the taxon page will display the keys tab, provided there is at least one specimen for this taxon.</p>')
+  );
 
   $form['taxon_tabs']['cdm_dataportal_detault_tab'] =  array(
       '#type'          => 'select',
