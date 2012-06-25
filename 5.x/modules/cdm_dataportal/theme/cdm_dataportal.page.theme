@@ -98,7 +98,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   if($identificationKeyCount == 0 || !(variable_get('cdm_dataportal_taxonpage_keystab', 1))){
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Keys');
   }
-  if(!(variable_get('cdm_dataportal_taxonpage_synonymytab', $default))) {
+  if(!(variable_get('cdm_dataportal_taxonpage_synonymytab', 1))) {
 	$hideTabs[] = theme('cdm_taxonpage_tab', 'Synonymy');
   }
   
