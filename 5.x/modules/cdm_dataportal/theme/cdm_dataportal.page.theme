@@ -72,7 +72,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   }else{
     $media = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array($taxon->uuid), queryString($mediaQueryParameters));
   }
-  if(!isset($media[0])) {
+  if(!isset($media[0]) || !(variable_get('cdm_dataportal_taxonpage_imagestab', 1))) {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
   }
   // hideImage flag depending on administative preset
@@ -85,7 +85,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   // --- GET specimensOrObersvations --- //
   $specimensOrObersvations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObersvations') );
   $specimensOrObersvationsCount = is_array($specimensOrObersvations) ? count($specimensOrObersvations) : 0;
-  if($specimensOrObersvationsCount == 0) {
+  if($specimensOrObersvationsCount == 0 || !(variable_get('cdm_dataportal_taxonpage_specimenstab', 1))) {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Specimens');
   }
 
@@ -95,9 +95,13 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   if($polytomousKeysPager){
    $identificationKeyCount += $polytomousKeysPager->count;
   }
-  if($identificationKeyCount == 0){
+  if($identificationKeyCount == 0 || !(variable_get('cdm_dataportal_taxonpage_keystab', 1))){
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Keys');
   }
+  if(!(variable_get('cdm_dataportal_taxonpage_synonymytab', $default))) {
+	$hideTabs[] = theme('cdm_taxonpage_tab', 'Synonymy');
+  }
+  
   // -------------------------------------------- //
 
   // hide tabs
@@ -154,7 +158,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: IMAGES --- //
-  if(!$hideImages && $page_part == 'images' || $page_part == 'all'){
+  if((!$hideImages && $page_part == 'images' || $page_part == 'all') ){
     $out .= '<div id="images">';
     if($page_part == 'all'){
       $out .= '<h2>'.t('Images').'</h2>';
@@ -169,7 +173,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: SYNONYMY --- //
-  if($page_part == 'synonymy' || $page_part == 'all'){
+  if(($page_part == 'synonymy' || $page_part == 'all')){
     $out .= '<div id="synonymy">';
     if($page_part == 'all'){
       $out .= '<h2>'.t('Synonymy').'</h2>';
@@ -181,7 +185,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: SPECIMENS --- //
-  if($specimensOrObersvationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all') ){
+  if($specimensOrObersvationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')){
     $out .= '<div id="specimens">';
     if($page_part == 'all'){
       $out .= '<h2>'.t('Specimens').'</h2>';
@@ -191,7 +195,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: KEYS --- //
-  if($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all') ){
+  if($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
     $out .= '<div id="keys">';
         if($page_part == 'all'){
       $out .= '<h2>'.t('Keys').'</h2>';

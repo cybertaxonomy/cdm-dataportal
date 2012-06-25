@@ -405,3 +405,6 @@ a.toc:link, a.toc:visited {
 .polytomousKey_linkedStyle td.edge-indent {
 	padding-left: 2em;
 }
+#useRecords th {
+	font-weight: normal;
+}

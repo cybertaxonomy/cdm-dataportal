@@ -1098,4 +1098,7 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
 .use_record_list {
  	padding: 0 0 0.2em 0.5em;
 }
-	
+
+.category {
+	padding: 0 0 0.9em 0em;
+}

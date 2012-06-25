@@ -625,6 +625,30 @@ function cdm_settings_layout_taxon(){
     '#description' => t('<p>If selected split the taxon page into individual tabs for description, images, synonymy and specimens.
                             If not the taxon data is renderized as a long single page without tabs.</p>')
   );
+  $form['taxon_tabs']['cdm_dataportal_taxonpage_synonymytab'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display Synonymy Tab'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_synonymytab', 1),
+    '#description' => t('<p>If selected the taxon page will display the synonymy tab, provided there is at least one synonym for this taxon.</p>')
+  );
+  $form['taxon_tabs']['cdm_dataportal_taxonpage_imagestab'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display Images Tab'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_imagestab', 1),
+    '#description' => t('<p>If selected the taxon page will display the images tab, provided there is at least one image for this taxon.</p>')
+  );
+  $form['taxon_tabs']['cdm_dataportal_taxonpage_specimenstab'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display Specimens Tab'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_specimenstab', 1),
+    '#description' => t('<p>If selected the taxon page will display the specimens tab, provided there is at least one specimen for this taxon.</p>')
+  );
+    $form['taxon_tabs']['cdm_dataportal_taxonpage_keystab'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display keys Tab'),
+    '#default_value' => variable_get('cdm_dataportal_taxonpage_keystab', 1),
+    '#description' => t('<p>If selected the taxon page will display the keys tab, provided there is at least one specimen for this taxon.</p>')
+  );
 
   $form['taxon_tabs']['cdm_dataportal_detault_tab'] =  array(
       '#type'          => 'select',
