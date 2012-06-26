@@ -39,17 +39,10 @@ $gallery_settings = array(
     "cdm_dataportal_media_maxRows" => 1);
 
 
-$taxon_tab = array(
-  0 => 'General',
-  1 => 'Synonymy',
-  2 => 'Images',
-  3 => 'Specimens',
-  4 => 'Keys',
-  
-);
 
 
-$taxon_tab_options = $taxon_tab;
+
+$taxon_tab_options = get_taxon_tabs_list();
 $taxon_tab_options[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX] = 'Last visited tab';
 
 
@@ -70,7 +63,7 @@ define (FEATURE_TREE_LAYOUT_DEFAULTS, serialize(
 
 
 define('CDM_DATAPORTAL_DEFAULT_TAXON_TAB', serialize($taxon_tab_options));
-define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize($taxon_tab));
+define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize(get_taxon_tabs_list()));
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
 define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
@@ -89,6 +82,18 @@ define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal
 function getGallerySettings($gallery_config_form_name){
   $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
   return variable_get($gallery_config_form_name, $default_values);
+}
+
+function get_taxon_tabs_list() {
+	$taxon_tab = array(
+  		0 => 'General',
+  		1 => 'Synonymy',
+  		2 => 'Images',
+  		3 => 'Specimens',
+ 		4 => 'Keys',
+  
+	);
+	return $taxon_tab;
 }
 
 function get_default_taxon_tab($index = false) {
@@ -618,7 +623,6 @@ function cdm_settings_layout_taxon(){
   $collapsed = false;
   $form = array();
 
-  global $taxon_tab_options;
   //--------- TABBED TAXON -------//
   $form['taxon_tabs'] = array(
     '#type' => 'fieldset',
@@ -638,13 +642,21 @@ function cdm_settings_layout_taxon(){
   );
 
 
-  //$taxonTabsFlipped = array_flip(unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+  $taxonTabsFlipped = array_flip(unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+  $taxon_tab_options = array_flip(get_taxon_tabs_list());
+  for ($i=0;$i<count($taxon_tab_options);$i++) {
+  	
+  }
+  foreach ($taxon_tab_options as $key => $value) {
+  		$taxon_tab_options[$key] = t($key);
+  }
+  
   $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array ( 
  	'#type' => 'checkboxes', 
  	'#title' => t('Tabs visibility options'), 
-  	'#default_value' => variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT)),
-  //variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT)),
-  	'#options' => unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT), 
+  	'#default_value' => variable_get('cdm_taxonpage_tabs_visibility', $taxon_tab_options),
+  	//variable_get('cdm_taxonpage_tabs_visibility', $taxonTabsFlipped),
+  	'#options' => $taxon_tab_options, 
   	'#description' => t("Enable or disable Tabs in the Tabbed page display"),
   );
 
