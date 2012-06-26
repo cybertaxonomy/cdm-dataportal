@@ -57,7 +57,9 @@ function theme_cdm_name_page_title($taxon_name){
 function theme_cdm_taxon_page($taxon, $page_part = 'description') {
 
   global $theme;
+  $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));//variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
 
+  
   $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
   $hideTabs = array();
 
@@ -98,7 +100,8 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   if($identificationKeyCount == 0 || !(variable_get('cdm_dataportal_taxonpage_keystab', 1))){
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Keys');
   }
-  if(!(variable_get('cdm_dataportal_taxonpage_synonymytab', 1))) {
+  //if(!(variable_get('cdm_dataportal_taxonpage_synonymytab', $default))) {
+  if(in_array('Synonymy', $tabsToDisplay)) {
 	$hideTabs[] = theme('cdm_taxonpage_tab', 'Synonymy');
   }
   
@@ -203,7 +206,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
     $out .= theme('cdm_block_IdentificationKeys', $taxon->uuid);
     $out .= '</div>';
   }
-  return $out;
+  return $out . print_r($tabsToDisplay);
 }
 
 

@@ -8,7 +8,7 @@ define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
 define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
 define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
-define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 4);
+define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
 
 /* annotationTypeKeys */
 $annotationTypeKeys = array_keys( cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE) );
@@ -22,6 +22,8 @@ if(in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
   $annotationTypeKeys[] = 'NULL_VALUE';
 }
 define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
+
+
 
 /* taxonRelationshipTypes */
 define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
@@ -37,13 +39,19 @@ $gallery_settings = array(
     "cdm_dataportal_media_maxRows" => 1);
 
 
-$taxon_tab_options = array(
+$taxon_tab = array(
   0 => 'General',
   1 => 'Synonymy',
   2 => 'Images',
   3 => 'Specimens',
-  CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX => 'Last visited tab',
+  4 => 'Keys',
+  
 );
+
+
+$taxon_tab_options = $taxon_tab;
+$taxon_tab_options[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX] = 'Last visited tab';
+
 
 define('EDIT_MAPSERVER_V1_URI', 'http://edit.br.fgov.be/edit_wp5/v1');
 define('EDIT_MAPSERVER_V11_URI', 'http://edit.br.fgov.be/edit_wp5/v1.1');
@@ -62,6 +70,7 @@ define (FEATURE_TREE_LAYOUT_DEFAULTS, serialize(
 
 
 define('CDM_DATAPORTAL_DEFAULT_TAXON_TAB', serialize($taxon_tab_options));
+define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize($taxon_tab));
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
 define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
@@ -459,6 +468,7 @@ function cdm_settings_layout(){
       '#default_value' => variable_get('annotations_types_as_footnotes', unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT))
 
   );
+  
 
   //--- Advanced Search ---//
   $form['gen_layout']['asearch'] = array(
@@ -608,6 +618,7 @@ function cdm_settings_layout_taxon(){
   $collapsed = false;
   $form = array();
 
+  global $taxon_tab_options;
   //--------- TABBED TAXON -------//
   $form['taxon_tabs'] = array(
     '#type' => 'fieldset',
@@ -625,7 +636,20 @@ function cdm_settings_layout_taxon(){
     '#description' => t('<p>If selected split the taxon page into individual tabs for description, images, synonymy and specimens.
                             If not the taxon data is renderized as a long single page without tabs.</p>')
   );
-  $form['taxon_tabs']['cdm_dataportal_taxonpage_synonymytab'] = array(
+
+
+  //$taxonTabsFlipped = array_flip(unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+  $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array ( 
+ 	'#type' => 'checkboxes', 
+ 	'#title' => t('Tabs visibility options'), 
+  	'#default_value' => variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT)),
+  //variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT)),
+  	'#options' => unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT), 
+  	'#description' => t("Enable or disable Tabs in the Tabbed page display"),
+  );
+
+  
+  /*$form['taxon_tabs']['cdm_dataportal_taxonpage_synonymytab'] = array(
     '#type' => 'checkbox',
     '#title' => t('Display Synonymy Tab'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_synonymytab', 1),
@@ -648,7 +672,7 @@ function cdm_settings_layout_taxon(){
     '#title' => t('Display keys Tab'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_keystab', 1),
     '#description' => t('<p>If selected the taxon page will display the keys tab, provided there is at least one specimen for this taxon.</p>')
-  );
+  );*/
 
   $form['taxon_tabs']['cdm_dataportal_detault_tab'] =  array(
       '#type'          => 'select',
