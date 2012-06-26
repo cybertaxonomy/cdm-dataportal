@@ -63,7 +63,17 @@ define (FEATURE_TREE_LAYOUT_DEFAULTS, serialize(
 
 
 define('CDM_DATAPORTAL_DEFAULT_TAXON_TAB', serialize($taxon_tab_options));
-define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize(get_taxon_tabs_list()));
+
+function get_taxon_options_list() {
+  $taxon_tab_options = array_flip(get_taxon_tabs_list());
+  foreach ($taxon_tab_options as $key => $value) {
+  		$taxon_tab_options[$key] = t($key);
+  }
+  return $taxon_tab_options;
+	
+}
+
+define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize(get_taxon_options_list()));
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
 define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
@@ -642,7 +652,7 @@ function cdm_settings_layout_taxon(){
   );
 
 
-  $taxonTabsFlipped = array_flip(unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+  //$taxonTabsFlipped = array_flip(unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
   $taxon_tab_options = array_flip(get_taxon_tabs_list());
   for ($i=0;$i<count($taxon_tab_options);$i++) {
   	
@@ -654,37 +664,10 @@ function cdm_settings_layout_taxon(){
   $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array ( 
  	'#type' => 'checkboxes', 
  	'#title' => t('Tabs visibility options'), 
-  	'#default_value' => variable_get('cdm_taxonpage_tabs_visibility', $taxon_tab_options),
-  	//variable_get('cdm_taxonpage_tabs_visibility', $taxonTabsFlipped),
-  	'#options' => $taxon_tab_options, 
+  	'#default_value' => variable_get('cdm_taxonpage_tabs_visibility', get_taxon_options_list()),
+  	'#options' => get_taxon_options_list(), 
   	'#description' => t("Enable or disable Tabs in the Tabbed page display"),
   );
-
-  
-  /*$form['taxon_tabs']['cdm_dataportal_taxonpage_synonymytab'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display Synonymy Tab'),
-    '#default_value' => variable_get('cdm_dataportal_taxonpage_synonymytab', 1),
-    '#description' => t('<p>If selected the taxon page will display the synonymy tab, provided there is at least one synonym for this taxon.</p>')
-  );
-  $form['taxon_tabs']['cdm_dataportal_taxonpage_imagestab'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display Images Tab'),
-    '#default_value' => variable_get('cdm_dataportal_taxonpage_imagestab', 1),
-    '#description' => t('<p>If selected the taxon page will display the images tab, provided there is at least one image for this taxon.</p>')
-  );
-  $form['taxon_tabs']['cdm_dataportal_taxonpage_specimenstab'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display Specimens Tab'),
-    '#default_value' => variable_get('cdm_dataportal_taxonpage_specimenstab', 1),
-    '#description' => t('<p>If selected the taxon page will display the specimens tab, provided there is at least one specimen for this taxon.</p>')
-  );
-    $form['taxon_tabs']['cdm_dataportal_taxonpage_keystab'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display keys Tab'),
-    '#default_value' => variable_get('cdm_dataportal_taxonpage_keystab', 1),
-    '#description' => t('<p>If selected the taxon page will display the keys tab, provided there is at least one specimen for this taxon.</p>')
-  );*/
 
   $form['taxon_tabs']['cdm_dataportal_detault_tab'] =  array(
       '#type'          => 'select',
