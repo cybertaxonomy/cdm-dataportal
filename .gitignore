@@ -3,7 +3,10 @@
 /.directory
 /.project
 /.settings
+5.x/.buildpath
 5.x/.directory
+5.x/.project
+5.x/.settings
 5.x/modules/cdm_dataportal/.buildpath
 5.x/modules/cdm_dataportal/.directory
 5.x/modules/cdm_dataportal/.project
