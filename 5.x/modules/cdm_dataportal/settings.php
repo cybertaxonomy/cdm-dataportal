@@ -8,7 +8,7 @@ define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
 define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
 define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
-define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 4);
+define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
 
 /* annotationTypeKeys */
 $annotationTypeKeys = array_keys( cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE) );
@@ -23,6 +23,8 @@ if(in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
 }
 define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
 
+
+
 /* taxonRelationshipTypes */
 define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
 
@@ -35,15 +37,6 @@ $gallery_settings = array(
     "cdm_dataportal_media_maxextend" => 120,
     "cdm_dataportal_media_cols" => 3,
     "cdm_dataportal_media_maxRows" => 1);
-
-
-$taxon_tab_options = array(
-  0 => 'General',
-  1 => 'Synonymy',
-  2 => 'Images',
-  3 => 'Specimens',
-  CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX => 'Last visited tab',
-);
 
 define('EDIT_MAPSERVER_V1_URI', 'http://edit.br.fgov.be/edit_wp5/v1');
 define('EDIT_MAPSERVER_V11_URI', 'http://edit.br.fgov.be/edit_wp5/v1.1');
@@ -60,8 +53,31 @@ define (FEATURE_TREE_LAYOUT_DEFAULTS, serialize(
     )
   ));
 
+function get_taxon_tabs_list() {
+	return array(
+  		0 => 'General',
+  		1 => 'Synonymy',
+  		2 => 'Images',
+  		3 => 'Specimens',
+ 		4 => 'Keys',
+	);
+}
+
+$taxon_tab_options = get_taxon_tabs_list();
+$taxon_tab_options[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX] = 'Last visited tab';
 
 define('CDM_DATAPORTAL_DEFAULT_TAXON_TAB', serialize($taxon_tab_options));
+
+function get_taxon_options_list() {
+  $taxon_tab_options = array_flip(get_taxon_tabs_list());
+  foreach ($taxon_tab_options as $key => $value) {
+  		$taxon_tab_options[$key] = t($key);
+  }
+  return $taxon_tab_options;
+	
+}
+
+define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize(get_taxon_options_list()));
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
 define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
@@ -81,6 +97,7 @@ function getGallerySettings($gallery_config_form_name){
   $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
   return variable_get($gallery_config_form_name, $default_values);
 }
+
 
 function get_default_taxon_tab($index = false) {
 
@@ -460,6 +477,7 @@ function cdm_settings_layout(){
 
   );
 
+
   //--- Advanced Search ---//
   $form['gen_layout']['asearch'] = array(
       '#type' => 'fieldset',
@@ -648,6 +666,24 @@ function cdm_settings_layout_taxon(){
     '#title' => t('Display keys Tab'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_keystab', 1),
     '#description' => t('<p>If selected the taxon page will display the keys tab, provided there is at least one specimen for this taxon.</p>')
+  );
+
+
+  //$taxonTabsFlipped = array_flip(unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+  $taxon_tab_options = array_flip(get_taxon_tabs_list());
+  for ($i=0;$i<count($taxon_tab_options);$i++) {
+
+  }
+  foreach ($taxon_tab_options as $key => $value) {
+  		$taxon_tab_options[$key] = t($key);
+  }
+
+ $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array ( 
+ 	'#type' => 'checkboxes', 
+ 	'#title' => t('Tabs visibility options'), 
+  	'#default_value' => variable_get('cdm_taxonpage_tabs_visibility', get_taxon_options_list()),
+  	'#options' => get_taxon_options_list(), 
+  	'#description' => t("Enable or disable Tabs in the Tabbed page display"),
   );
 
   $form['taxon_tabs']['cdm_dataportal_detault_tab'] =  array(

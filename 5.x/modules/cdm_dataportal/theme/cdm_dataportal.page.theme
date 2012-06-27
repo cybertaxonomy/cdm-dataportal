@@ -58,6 +58,9 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
 
   global $theme;
 
+
+  $tabsToDisplay =  variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+
   $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
   $hideTabs = array();
 
@@ -72,7 +75,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   }else{
     $media = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array($taxon->uuid), queryString($mediaQueryParameters));
   }
-  if(!isset($media[0]) || !(variable_get('cdm_dataportal_taxonpage_imagestab', 1))) {
+  if(!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Images');
   }
   // hideImage flag depending on administative preset
@@ -85,7 +88,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   // --- GET specimensOrObersvations --- //
   $specimensOrObersvations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObersvations') );
   $specimensOrObersvationsCount = is_array($specimensOrObersvations) ? count($specimensOrObersvations) : 0;
-  if($specimensOrObersvationsCount == 0 || !(variable_get('cdm_dataportal_taxonpage_specimenstab', 1))) {
+  if($specimensOrObersvationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Specimens');
   }
 
@@ -95,13 +98,14 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   if($polytomousKeysPager){
    $identificationKeyCount += $polytomousKeysPager->count;
   }
-  if($identificationKeyCount == 0 || !(variable_get('cdm_dataportal_taxonpage_keystab', 1))){
+  if($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')){
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Keys');
   }
-  if(!(variable_get('cdm_dataportal_taxonpage_synonymytab', 1))) {
+  //if(!(variable_get('cdm_dataportal_taxonpage_synonymytab', $default))) {
+  if($tabsToDisplay["Synonymy"] == '0') {
 	$hideTabs[] = theme('cdm_taxonpage_tab', 'Synonymy');
   }
-  
+
   // -------------------------------------------- //
 
   // hide tabs
