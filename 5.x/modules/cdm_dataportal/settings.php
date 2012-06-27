@@ -644,16 +644,6 @@ function cdm_settings_layout_taxon(){
                             If not the taxon data is renderized as a long single page without tabs.</p>')
   );
 
-// UNUSED CODE?? ---> remove
-//   //$taxonTabsFlipped = array_flip(unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
-//   $taxon_tab_options = array_flip(get_taxon_tabs_list());
-//   for ($i=0;$i<count($taxon_tab_options);$i++) {
-
-//   }
-//   foreach ($taxon_tab_options as $key => $value) {
-//   		$taxon_tab_options[$key] = t($key);
-//   }
-
  $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array (
  	'#type' => 'checkboxes',
  	'#title' => t('Tabs visibility options'),
