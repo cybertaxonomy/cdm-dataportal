@@ -38,14 +38,6 @@ $gallery_settings = array(
     "cdm_dataportal_media_cols" => 3,
     "cdm_dataportal_media_maxRows" => 1);
 
-
-
-
-
-$taxon_tab_options = get_taxon_tabs_list();
-$taxon_tab_options[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX] = 'Last visited tab';
-
-
 define('EDIT_MAPSERVER_V1_URI', 'http://edit.br.fgov.be/edit_wp5/v1');
 define('EDIT_MAPSERVER_V11_URI', 'http://edit.br.fgov.be/edit_wp5/v1.1');
 define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
@@ -61,6 +53,18 @@ define (FEATURE_TREE_LAYOUT_DEFAULTS, serialize(
     )
   ));
 
+function get_taxon_tabs_list() {
+	return array(
+  		0 => 'General',
+  		1 => 'Synonymy',
+  		2 => 'Images',
+  		3 => 'Specimens',
+ 		4 => 'Keys',
+	);
+}
+
+$taxon_tab_options = get_taxon_tabs_list();
+$taxon_tab_options[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX] = 'Last visited tab';
 
 define('CDM_DATAPORTAL_DEFAULT_TAXON_TAB', serialize($taxon_tab_options));
 
@@ -94,17 +98,6 @@ function getGallerySettings($gallery_config_form_name){
   return variable_get($gallery_config_form_name, $default_values);
 }
 
-function get_taxon_tabs_list() {
-	$taxon_tab = array(
-  		0 => 'General',
-  		1 => 'Synonymy',
-  		2 => 'Images',
-  		3 => 'Specimens',
- 		4 => 'Keys',
-  
-	);
-	return $taxon_tab;
-}
 
 function get_default_taxon_tab($index = false) {
 
@@ -483,7 +476,7 @@ function cdm_settings_layout(){
       '#default_value' => variable_get('annotations_types_as_footnotes', unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT))
 
   );
-  
+
 
   //--- Advanced Search ---//
   $form['gen_layout']['asearch'] = array(
@@ -655,13 +648,13 @@ function cdm_settings_layout_taxon(){
   //$taxonTabsFlipped = array_flip(unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
   $taxon_tab_options = array_flip(get_taxon_tabs_list());
   for ($i=0;$i<count($taxon_tab_options);$i++) {
-  	
+
   }
   foreach ($taxon_tab_options as $key => $value) {
   		$taxon_tab_options[$key] = t($key);
   }
-  
-  $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array ( 
+
+ $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array ( 
  	'#type' => 'checkboxes', 
  	'#title' => t('Tabs visibility options'), 
   	'#default_value' => variable_get('cdm_taxonpage_tabs_visibility', get_taxon_options_list()),
