@@ -597,7 +597,7 @@ function cdm_dataportal_block($op='list', $delta=0) {
         $block['subject'] = t('Search taxa');
         $block['content'] = drupal_get_form('cdm_dataportal_search_taxon_form');
         if (variable_get('cdm_dataportal_show_advanced_search', 1)){
-            $block['content'] .= '<div>'.l('Advanced Search', '/cdm_dataportal/search').'</div>';
+            $block['content'] .= '<div>'.l('Advanced Search', 'cdm_dataportal/search').'</div>';
         }
         return $block;
       case 4:
