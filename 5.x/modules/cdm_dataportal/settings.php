@@ -307,7 +307,7 @@ function cdm_settings_general(){
   $form['cdm_webservice']['cdm_webservice_url'] =  array(
     '#type' => 'textfield',
     '#title'         => t('CDM web service URL'),
-    '#description'   => t('This is the URL to the CDM-Server exposing your data e.g. <em>"http://localhost:8080/palmae/"</em> The URL <strong>must end with a slash</strong> character!'),
+    '#description'   => t('This is the URL to the CDM-Server exposing your data e.g. <em>"http://localhost:8080/chichorieae/"</em> The URL <strong>must end with a slash</strong> character!'),
     '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
 

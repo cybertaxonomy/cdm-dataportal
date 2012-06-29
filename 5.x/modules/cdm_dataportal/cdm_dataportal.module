@@ -370,6 +370,7 @@ function cdm_dataportal_menu($may_cache) {
     );
 
     $items[] = array(
+      'access' => TRUE,
       'path' => 'cdm_dataportal/search',
       'callback' => 'cdm_dataportal_view_search_advanced',
       'access' => true,
@@ -377,10 +378,28 @@ function cdm_dataportal_menu($may_cache) {
     );
 
     $items[] = array(
-      'path' => 'cdm_dataportal/search/taxon',
-      'callback' => 'cdm_dataportal_view_search_taxon',
-      'access' => true,
-      'type' => MENU_CALLBACK,
+    	 'title' => t('Advanced'),
+        'access' => TRUE,
+        'path' => 'cdm_dataportal/search/advanced',
+        'callback' => 'cdm_dataportal_view_search_advanced',
+        'access' => true,
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+    );
+
+    $items[] = array(
+      	'title' => t('By description full text'),
+        'access' => TRUE,
+        'path' => 'cdm_dataportal/search/taxon_by_description',
+        'callback' => 'cdm_dataportal_view_search_taxon_by_description',
+        'access' => true,
+        'type' => MENU_LOCAL_TASK,
+    );
+
+    $items[] = array(
+          'path' => 'cdm_dataportal/search/results/taxon',
+          'callback' => 'cdm_dataportal_view_search_results_taxon',
+          'access' => true,
+          'type' => MENU_CALLBACK,
     );
 
     $items[] = array(
@@ -643,6 +662,64 @@ function cdm_dataportal_block($op='list', $delta=0) {
  }
  */
 
+/**
+ * prepares a form array for gfeneral purpose search functiality in the dataportal.
+ * The form returned is populated with all nessecary fields for interla processing
+ * and has the textfield element $form['query'] with holds the query term,
+ * the sub tree array can be extended to contain additinal search parameters.
+ *
+ * @param - $action_path the drupal path to be put into the action url to which the form will be submitted.
+ * @param - $process the value for #process, defaults to  'cdm_dataportal_search_process'
+ * @param - $query_field_default_value
+ * @param - $query_field_description
+ */
+function cdm_dataportal_search_form_prepare($action_path, $process = null, $query_field_default_value, $query_field_description){
+
+  if($process == null){
+    $process = 'cdm_dataportal_search_process';
+  }
+  $form['#method'] = 'get';
+  $form['#process'] = array($process => array());
+  $form['#action'] = url($action_path, NULL, NULL, true);
+
+  $form['query'] = array(
+            '#weight' => 0,
+            '#type' => 'textfield',
+            '#size' => 68,
+            '#attributes' => array('title' => $query_field_description),
+            '#value' => $query_field_default_value,
+  );
+
+  $form['search'] = array(
+          '#weight' => 3,
+          '#tree' => true,
+           //'#type' => $advancedForm ? 'fieldset': 'hidden',
+          '#title' => t('Options')
+  );
+
+  // clean URL get forms breaks if we don't give it a 'q'.
+  if (!(bool)variable_get('clean_url', '0')) {
+    $form['search']['q'] = array(
+          '#type' => 'hidden',
+          '#value' => $action_path,
+          '#name' => 'q',
+    );
+  }
+
+  $form['submit'] = array(
+          '#weight' => 5,
+          '#type' => 'submit',
+          '#name' => '',
+          '#value' => t('Search')
+  );
+
+  return $form;
+}
+
+/**
+ * @param - $advancedForm
+ * @return
+ */
 function cdm_dataportal_search_taxon_form($advancedForm = false){
   global $theme_key;
 
@@ -650,66 +727,35 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
   $selected_areas =  (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : false);
 
   if(isset($_SESSION['cdm']['search']) && !$preset_UseDefaults) {
-    $preset_query = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
+    $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
   }
 
-  $url = 'cdm_dataportal/search/taxon';
-  $form['#method'] = 'get';
-  $form['#process'] = array('cdm_dataportal_search_process' => array());
-  $form['#action'] = url($url, NULL, NULL, true);
+  $form = cdm_dataportal_search_form_prepare(
+    'cdm_dataportal/search/results/taxon',
+    null,
+    $query_field_default_value,
+    t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')
+  );
 
   if(!$advancedForm) {
-  $form['query'] = array(
-    '#delta' => 0,
-    '#type' => 'textfield',
-    '#size' => 20,
-    '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
-    '#value' => $preset_query,
-  );
+    $form['query']['#size'] = 20;
   }
-  //AT RBG KEW - 14/11/2011 Added to extend the text box in the Advanced form only
-  else {
-       $form['query'] = array(
-      '#delta' => 0,
-      '#type' => 'textfield',
-      '#size' => 68,
-      '#attributes' => array('title' => t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')),
-      '#value' => $preset_query,
-    );
-  }
-
-  $form['search'] = array(
-      '#delta' => 1,
-      '#tree' => true,
-  //'#type' => $advancedForm ? 'fieldset': 'hidden',
-      '#title' => t('Options')
-  );
 
   $form['search']['tree'] = array(
-    '#delta' => -1,
+    '#weight' => -1,
     '#type' => 'hidden',
     '#value' => get_taxonomictree_uuid_selected()
   );
 
 
-  // clean URL get forms breaks if we don't give it a 'q'.
-  if (!(bool)variable_get('clean_url', '0')) {
-    $form['search']['q'] = array(
-      '#delta' => -1,
-      '#type' => 'hidden',
-      '#value' => $url,
-      '#name' => 'q',
-    );
-  }
-
   $form['search']['pageSize'] = array(
-      '#delta' => -1,
+      '#weight' => -1,
       '#type' => 'hidden',
       '#value' => variable_get('cdm_dataportal_search_items_on_page', 25)
   );
 
   $form['search']['pageNumber'] = array(
-      '#delta' => -1,
+      '#weight' => -1,
       '#type' => 'hidden',
       '#value' => 0
   );
@@ -733,25 +779,25 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
     // general search parameters
 
     $form['search']['doTaxa'] = array(
-      '#delta' => 2,
+      '#weight' => 2,
       '#type' => 'checkbox',
       '#title' => t('Search for accepted taxa'),
       '#value' => $preset_doTaxa
     );
     $form['search']['doSynonyms'] = array(
-      '#delta' => 3,
+      '#weight' => 3,
       '#type' => 'checkbox',
       '#title' => t('Search for synonyms'),
       '#value' => $preset_doSynonyms
     );
     $form['search']['doMisappliedNames'] = array(
-          '#delta' => 4,
+          '#weight' => 4,
           '#type' => 'checkbox',
           '#title' => t('Search for misapplied names'),
           '#value' => $preset_doMisappliedNames
     );
     $form['search']['doTaxaByCommonNames'] = array(
-      '#delta' => 5,
+      '#weight' => 5,
       '#type' => 'checkbox',
       '#title' => t('Search for common names'),
       '#value' => $preset_doTaxaByCommonNames
@@ -760,7 +806,7 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
     // Geographic Range
     $form['search']['geographic_range'] = array(
       '#type' => 'fieldset',
-      '#delta' => 5,
+      '#weight' => 5,
       '#tree' => true,
       '#title' => t('Geographic range'),
     );
@@ -839,34 +885,27 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
     }
 
     $form['search']['doTaxa'] = array(
-        '#delta' => -2,
+        '#weight' => -2,
         '#type' => 'hidden',
         '#value' => $preset_doTaxa
     );
     $form['search']['doSynonyms'] = array(
-        '#delta' => -3,
+        '#weight' => -3,
         '#type' => 'hidden',
         '#value' => $preset_doSynonyms
     );
     $form['search']['doMisappliedNames'] = array(
-        '#delta' => -4,
+        '#weight' => -4,
         '#type' => 'checkbox',
         '#title' => t('Misapplied names'),
         '#value' => $preset_doMisappliedNames
     );
     $form['search']['doTaxaByCommonNames'] = array(
-        '#delta' => -5,
+        '#weight' => -5,
         '#type' => 'hidden',
         '#value' => $preset_doTaxaByCommonNames
     );
   }
-
-  $form['submit'] = array(
-    '#delta' => 9,
-    '#type' => 'submit',
-    '#name' => '',
-    '#value' => t('Search')
-  );
 
   return $form;
 }
@@ -875,6 +914,27 @@ function cdm_dataportal_search_taxon_form_advanced(){
   return cdm_dataportal_search_taxon_form(true);
 }
 
+/**
+ * Search form for the searching taxa by the findByDescriptionElementFullText rest service.
+ */
+function cdm_dataportal_search_taxon_by_description_form() {
+
+  $form = cdm_dataportal_search_form_prepare(
+      'cdm_dataportal/search/results/taxon',
+  null,
+  $query_field_default_value,
+  t('Enter the text you wish to search for. The asterisk character * can always be used as wildcard. For more syntactial elements please refer to the lucene query syntax reference.')
+  );
+
+  return $form;
+
+}
+
+/**
+ *
+ * Enter description here ...
+ * @return
+ */
 function cdm_taxonomictree_selector(){
   _add_js_treeselector();
 
@@ -890,25 +950,25 @@ function cdm_taxonomictree_selector_form(){
   $form['#action'] = $url;
 
   $form['var'] = array(
-        '#delta' => -3,
+        '#weight' => -3,
         '#type' => 'hidden',
         '#value' => '[cdm][taxonomictree_uuid]'
         );
 
-        $form['destination'] = array(
-     '#delta' => -3,
+  $form['destination'] = array(
+     '#weight' => -3,
      '#type' => 'hidden',
      '#value' => substr(drupal_get_destination(), strlen('destination='))
         );
 
-        $form['val'] = array(
+  $form['val'] = array(
       '#type' => 'select',
       '#title'         => t('Available classifications'),
       '#default_value' => get_taxonomictree_uuid_selected(),
       '#options' => cdm_get_taxontrees_as_options()
-        );
+  );
 
-        return $form;
+  return $form;
 
 }
 
@@ -927,7 +987,8 @@ function cdm_dataportal_search_process($form) {
 
 /**
  * Filters $_REQUEST by a list of valid request  parameters and also sets defaults if required.
- * returns the processed request parameters submitted by the search form.
+ * returns the processed request parameters submitted by the search form and also stores them
+ * in $_SESSION['cdm']['search']
  */
 function cdm_dataportal_search_form_request(){
 
@@ -1344,6 +1405,29 @@ function cdm_dataportal_view_search_advanced(){
 
   return drupal_get_form('cdm_dataportal_search_taxon_form_advanced');
 
+}
+
+function cdm_dataportal_view_search_taxon_by_description() {
+  drupal_set_title(t('Search by description full text'));
+
+  $searchForm = cdm_dataportal_search_taxon_by_description_form();
+
+  return drupal_get_form('cdm_dataportal_search_taxon_by_description_form');
+}
+
+/**
+ * executes the search and generates the result list of taxa
+ */
+function cdm_dataportal_view_search_results_taxon(){
+
+  $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
+
+  $request_params = cdm_dataportal_search_form_request();
+  $taxonPager = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
+
+  $search_params = $_REQUEST;
+  unset($search_params['q']);
+  return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/results/taxon', $search_params);
 }
 
 function cdm_view_xml2json(){
