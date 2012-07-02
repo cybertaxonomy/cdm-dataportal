@@ -13,7 +13,7 @@
 /**
  * render the given result page including a pager
  *
- * @param unknown_type $pager the cdmlib pager object containing the result set of cdm base objects (currently thhis function can only handle taxon instances => TODO)
+ * @param unknown_type $pager the cdmlib pager object containing the result set of cdm base objects (currently this function can only handle taxon instances => TODO)
  * @param unknown_type $path the target path for the pager links, this will usually point to 'cdm_dataportal/search/results/taxon'
  * @param unknown_type $query_parameters the query parameters to be used in the pager links
  */
@@ -22,6 +22,15 @@ function theme_cdm_search_results($pager, $path, $query_parameters){
   // the $query_parameters must not conhatin the 'q' parameter
   // since this would conflict with the desired target $path
   unset($search_params['q']);
+
+  // if the pager contains records of SearchResults, extract the taxa and use them a records instead
+  if(isset($pager->records[0]) && $pager->records[0]->class=="SearchResult"){
+    $taxa = array();
+    foreach ($pager->records as $searchResult) {
+      $taxa[] = $searchResult->entity;
+    }
+    $pager->records = $taxa;
+  }
 
   $showThumbnails = $_SESSION['pageoptions']['searchtaxa']['showThumbnails'];
   if( !is_numeric($showThumbnails)){

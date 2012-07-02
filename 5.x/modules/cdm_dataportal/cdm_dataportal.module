@@ -1032,15 +1032,7 @@ function cdm_dataportal_view_search_taxon_by_description() {
  * executes the search and generates the result list of taxa
  */
 function cdm_dataportal_view_search_results_taxon(){
-
-  // store as last search in session
-  // $_SERVER['REQUEST_URI'] consists of base path and GET parameters
-  $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
-
-  $request_params = cdm_dataportal_search_form_request();
-  $taxonPager = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
-
-  // $_REQUEST contains all HTTP query parameters (POST & GET)
+  $taxonPager = cdm_dataportal_search_execute();
   return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/results/taxon', $_REQUEST);
 }
 

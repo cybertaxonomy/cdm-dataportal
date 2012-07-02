@@ -22,11 +22,12 @@
  * the sub tree array can be extended to contain additinal search parameters.
  *
  * @param - $action_path the drupal path to be put into the action url to which the form will be submitted.
+ * @param - $search_webservice the cdm-remote webservice to be used, valid values are defined by the constants: FIXME
  * @param - $process the value for #process, defaults to  'cdm_dataportal_search_process'
  * @param - $query_field_default_value
  * @param - $query_field_description
  */
-function cdm_dataportal_search_form_prepare($action_path, $process = null, $query_field_default_value, $query_field_description){
+function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $process = null, $query_field_default_value, $query_field_description){
 
   if($process == null){
     $process = 'cdm_dataportal_search_process';
@@ -35,35 +36,41 @@ function cdm_dataportal_search_form_prepare($action_path, $process = null, $quer
   $form['#process'] = array($process => array());
   $form['#action'] = url($action_path, NULL, NULL, true);
 
+  $form['ws'] = array(
+    '#type' => 'hidden',
+    '#value' => $search_webservice,
+    '#name' => 'ws',
+  );
+
   $form['query'] = array(
-            '#weight' => 0,
-            '#type' => 'textfield',
-            '#size' => 68,
-            '#attributes' => array('title' => $query_field_description),
-            '#value' => $query_field_default_value,
+    '#weight' => 0,
+    '#type' => 'textfield',
+    '#size' => 68,
+    '#attributes' => array('title' => $query_field_description),
+    '#value' => $query_field_default_value,
   );
 
   $form['search'] = array(
-          '#weight' => 3,
-          '#tree' => true,
+      '#weight' => 3,
+      '#tree' => true,
   //'#type' => $advancedForm ? 'fieldset': 'hidden',
-          '#title' => t('Options')
+      '#title' => t('Options')
   );
 
   // clean URL get forms breaks if we don't give it a 'q'.
   if (!(bool)variable_get('clean_url', '0')) {
     $form['search']['q'] = array(
-          '#type' => 'hidden',
-          '#value' => $action_path,
-          '#name' => 'q',
+      '#type' => 'hidden',
+      '#value' => $action_path,
+      '#name' => 'q',
     );
   }
 
   $form['submit'] = array(
-          '#weight' => 5,
-          '#type' => 'submit',
-          '#name' => '',
-          '#value' => t('Search')
+      '#weight' => 5,
+      '#type' => 'submit',
+      '#name' => '',
+      '#value' => t('Search')
   );
 
   return $form;
@@ -85,9 +92,10 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
 
   $form = cdm_dataportal_search_form_prepare(
     'cdm_dataportal/search/results/taxon',
-  null,
-  $query_field_default_value,
-  t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')
+    CDM_WS_PORTAL_TAXON_FIND,
+    null,
+    $query_field_default_value,
+    t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard')
   );
 
   if(!$advancedForm) {
@@ -273,10 +281,11 @@ function cdm_dataportal_search_taxon_form_advanced(){
 function cdm_dataportal_search_taxon_by_description_form() {
 
   $form = cdm_dataportal_search_form_prepare(
-      'cdm_dataportal/search/results/taxon',
-  null,
-  $query_field_default_value,
-  t('Enter the text you wish to search for. The asterisk character * can always be used as wildcard. For more syntactial elements please refer to the lucene query syntax reference.')
+    'cdm_dataportal/search/results/taxon',
+    CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT,
+    null,
+    $query_field_default_value,
+    t('Enter the text you wish to search for. The asterisk character * can always be used as wildcard. For more syntactial elements please refer to the lucene query syntax reference.')
   );
 
   return $form;
@@ -292,7 +301,9 @@ function cdm_dataportal_search_form_request(){
 
 
   $form_params = array();
-  array_deep_copy($_REQUEST['search'], $form_params);
+  if(is_array($_REQUEST['search'])){
+    array_deep_copy($_REQUEST['search'], $form_params);
+  }
   $form_params['query'] =  trim($_REQUEST['query']);
 
   // --- handle geographic range
@@ -317,8 +328,8 @@ function cdm_dataportal_search_form_request(){
 
 
 /**
- * Implementation #process method call, see form_builder()
- * <p>
+ * Implementation of #process method call, see form_builder()
+ *
  * Removes Drupal internal form elements from query
  * @param $form
  * @return unknown_type
@@ -327,4 +338,21 @@ function cdm_dataportal_search_process($form) {
   unset($form['form_id']);
   unset($form['form_token']);
   return $form;
+}
+
+function cdm_dataportal_search_execute(){
+
+  // store as last search in session
+  $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
+
+  // valiate the search webservice parameter:
+  if($_REQUEST['ws'] != CDM_WS_PORTAL_TAXON_FIND && $_REQUEST['ws'] != CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT){
+    drupal_set_message("Invalid search webservice parameter given");
+    return null;
+  }
+
+  $request_params = cdm_dataportal_search_form_request();
+  $taxonPager = cdm_ws_get($_REQUEST['ws'], null, queryString($request_params));
+
+  return $taxonPager;
 }

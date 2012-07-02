@@ -1231,7 +1231,8 @@ function array_deep_copy (&$array, &$copy, $maxdepth=50, $depth=0) {
   if($depth > $maxdepth) { $copy = $array; return; }
   if(!is_array($copy)) $copy = array();
   foreach($array as $k => &$v) {
-    if(is_array($v)) {        array_deep_copy($v,$copy[$k],$maxdepth,++$depth);
+    if(is_array($v)) {
+      array_deep_copy($v,$copy[$k],$maxdepth,++$depth);
     } else {
       $copy[$k] = $v;
     }

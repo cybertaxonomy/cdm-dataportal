@@ -323,29 +323,26 @@ function cdm_settings_general(){
                            select here which rank should be at the top level of the tree structure.'),
   );
   */
-/*
-  $form['cdm_webservice']['cdm_webservice_cache'] =  array(
-    '#type' => 'checkbox',
-    '#title'         => t('<b>Enable caching</b>'),
-  '#options'     => cdm_help_general_cache(),
-    '#default_value' => variable_get('cdm_webservice_cache', 1),
-    '#description'   => t('When caching is enabled all single taxon sites are stored in an internal drupal cache doing
-                           the portal response of taxa sites faster. This is possible because the sites are loaded from
-                           the cache and are not created from scratch.
-                           You can manage and find more information about the cache at the <a href="./?q=admin/settings/cdm_dataportal/cachesite">cache configuration site</a>.<br>' .
-                         '<b>Note:</b> If taxa are modified by the editor or any other application the changes will be not
-                         visible till the cache is erased. Therefore developers should deactived this feature when they
-                         are working on the CDM Dataportal Module')
-    );
-*/
+
     $form['cdm_webservice']['cdm_webservice_debug'] =  array(
     '#type' => 'checkbox',
     '#title'         => t('<b>Debug CDM Web Service</b>'),
     '#default_value' => variable_get('cdm_webservice_debug', 1),
-    '#description'   => t('When enabled is possible to see which web services from CDM Server have been called and its
-                           results. A black box will appear at the top of the web site with the information.<br>' .
-                          '<b>Note:</b> this is meanly a feature for developers.')
+    '#description'   =>
+          t('The black web service debug box will appear at the top of each page. When clicked it toggles open and provides a list of all HTTP requests which have been made while building of this page.<br />'.
+                '<strong>Note:</strong> this is a feature dedicated to developers. It will only be visible when logged in and if the user has suffucicient rights to see this debug box.')
     );
+
+    $form['cdm_webservice']['freetext_index'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Freetext index'),
+          '#collapsible' => FALSE,
+          '#collapsed' => FALSE,
+          '#description'   =>
+            t('Operations').": ".l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE))
+            ." ". l("Reindex", cdm_compose_url(CDM_WS_MANAGE_REINDEX))
+    );
+
 
     $form['cdm_webservice']['proxy'] = array(
       '#type' => 'fieldset',
