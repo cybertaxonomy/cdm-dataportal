@@ -19,6 +19,7 @@
 5.x/modules/cdm_dataportal/cdm_dataportal.info -text
 5.x/modules/cdm_dataportal/cdm_dataportal.install -text
 5.x/modules/cdm_dataportal/cdm_dataportal.module -text
+5.x/modules/cdm_dataportal/cdm_dataportal.search.php -text
 5.x/modules/cdm_dataportal/cdm_dataportal_print.css -text
 5.x/modules/cdm_dataportal/cdm_dataportal_screen.css -text
 5.x/modules/cdm_dataportal/cdm_mediauri/LICENSE.txt -text
