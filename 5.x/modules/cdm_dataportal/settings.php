@@ -99,6 +99,7 @@ function getGallerySettings($gallery_config_form_name){
 }
 
 
+
 function get_default_taxon_tab($index = false) {
 
   global $user;
@@ -621,6 +622,81 @@ function cdm_settings_layout_synonymy(){
 
 }
 */
+
+function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description = ''){
+  $form[$form_name] = array(
+    '#type' => 'fieldset',
+    '#title' => t($form_tittle),
+    '#collapsible' => TRUE,
+    '#collapsed' => $collapsed,
+    '#tree' => true,
+  '#description' => t($form_description),
+  );
+
+  $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
+  $gallery_settings = variable_get($form_name, $default_values);
+  //$test = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);
+
+  if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
+    /* TODO: why cdm_dataportal_search_items_on_page does not save the value on $test???
+     $form[$form_name]['cdm_dataportal_search_items_on_page'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search Page Size'),
+    '#default_value' => $test,
+    '#description' => t('Number of Names to display per page in search results.')
+    );
+    */
+    $form[$form_name]['cdm_dataportal_show_taxon_thumbnails'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show media thumbnails for accepted taxa'),
+      '#default_value' => $gallery_settings['cdm_dataportal_show_taxon_thumbnails'],
+    );
+
+    $form[$form_name]['cdm_dataportal_show_synonym_thumbnails'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show media thumbnails for synonyms'),
+      '#default_value' => $gallery_settings['cdm_dataportal_show_synonym_thumbnails'],
+      '#description' => t('')
+    );
+  }
+
+  //$showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 0);
+  $form[$form_name]['cdm_dataportal_show_thumbnail_captions'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show captions under thumbnails'),
+    '#default_value' => $gallery_settings['cdm_dataportal_show_thumbnail_captions'],
+    '#description' => t('')
+  );
+
+  $form[$form_name]['cdm_dataportal_media_maxextend'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Thumbnail size'),
+    '#default_value' => $gallery_settings['cdm_dataportal_media_maxextend'],
+    '#description' => t('Select the size of each individual thumbnail.')
+  );
+
+  if($form_name != CDM_DATAPORTAL_MEDIA_GALLERY_NAME){
+    $form[$form_name]['cdm_dataportal_media_cols'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Number of columns'),
+        '#default_value' => $gallery_settings['cdm_dataportal_media_cols'],
+        '#description' => t('Group the thumbnails in columns: select how many columns should the gallery display.')
+    );
+  }
+
+  if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
+    $form[$form_name]['cdm_dataportal_media_maxRows'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum number of rows'),
+      '#default_value' => $gallery_settings['cdm_dataportal_media_maxRows'],
+      '#description' => t('You can group the thumbnails in rows, select in how many rows should be the thumbnails grouped.<br>
+                           <b>Note:</b> If you want an unlimited number of rows please set to 0')
+    );
+  }
+
+  return $form;
+}
+
 
 function cdm_settings_layout_taxon(){
   $collapsed = false;
