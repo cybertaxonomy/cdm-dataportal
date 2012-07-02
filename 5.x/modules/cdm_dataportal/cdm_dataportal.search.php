@@ -16,7 +16,7 @@
 
 
 /**
- * prepares a form array for gfeneral purpose search functiality in the dataportal.
+ * prepares a form array for general purpose search functiality in the dataportal.
  * The form returned is populated with all nessecary fields for interla processing
  * and has the textfield element $form['query'] with holds the query term,
  * the sub tree array can be extended to contain additinal search parameters.
@@ -284,10 +284,10 @@ function cdm_dataportal_search_taxon_by_description_form() {
 }
 
 /**
-* Filters $_REQUEST by a list of valid request  parameters and also sets defaults if required.
-* returns the processed request parameters submitted by the search form and also stores them
-* in $_SESSION['cdm']['search']
-*/
+ * Filters $_REQUEST by a list of valid request parameters and also sets defaults if required.
+ * returns the processed request parameters submitted by the search form and also stores them
+ * in $_SESSION['cdm']['search']
+ */
 function cdm_dataportal_search_form_request(){
 
 
@@ -295,15 +295,12 @@ function cdm_dataportal_search_form_request(){
   array_deep_copy($_REQUEST['search'], $form_params);
   $form_params['query'] =  trim($_REQUEST['query']);
 
+  // --- handle geographic range
   // split of  geographic range
-  if(isset($_REQUEST['search']['geographic_range'])){
+  if(is_array($_REQUEST['search']['geographic_range'])){
     $geographicRange = $_REQUEST['search']['geographic_range'];
-    // remove
+    // remove from form
     unset($form_params['geographic_range']);
-  }
-
-  // add geographic range
-  if($geographicRange){
     $form_params['tdwg_level_select'] = $geographicRange['tdwg_level_select'];
     for($i = 1; $i < 5; $i++){
       if(isset($geographicRange['tdwg_level_'.$i])){

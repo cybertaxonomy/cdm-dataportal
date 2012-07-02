@@ -1033,16 +1033,20 @@ function cdm_dataportal_view_search_taxon_by_description() {
  */
 function cdm_dataportal_view_search_results_taxon(){
 
+  // store as last search in session
+  // $_SERVER['REQUEST_URI'] consists of base path and GET parameters
   $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
 
   $request_params = cdm_dataportal_search_form_request();
   $taxonPager = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIND, null, queryString($request_params));
 
-  $search_params = $_REQUEST;
-  unset($search_params['q']);
-  return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/results/taxon', $search_params);
+  // $_REQUEST contains all HTTP query parameters (POST & GET)
+  return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/results/taxon', $_REQUEST);
 }
 
+/**
+ * view wich transforms a xml output from a given webservice endpoint into json
+ */
 function cdm_view_xml2json(){
   $file = arg(2);
   $datastr = get_content(variable_get('cdm_webservice_url', '').$file);
