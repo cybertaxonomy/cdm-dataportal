@@ -59,6 +59,17 @@ div.debug .uri{
 	margin-top: 0.3em;
 }
 
+.score-bar{
+	width: 50px;
+	height: 5px;
+	border: 1px solid #DEDEDE;
+	background-color: #F3F3F3;
+}
+.score-bar .score-bar-indicator{
+	background-color: #ACD575;
+	height: 5px;
+}
+
 li .taxon{
 }
 

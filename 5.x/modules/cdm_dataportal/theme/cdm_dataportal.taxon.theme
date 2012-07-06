@@ -25,14 +25,15 @@ function theme_cdm_search_results($pager, $path, $query_parameters){
 
   // if the pager contains records of SearchResults, extract the taxa and use them a records instead
   if(isset($pager->records[0]) && $pager->records[0]->class=="SearchResult"){
+    $freetextSearchResults =  $pager->records;
     $taxa = array();
-    $highlightedFragments = array();
+//     $highlightedFragments = array();
     foreach ($pager->records as $searchResult) {
-      $taxa[] = $searchResult->entity;
-      if(!isset($searchResult->fieldHighlightMap)){
-        $searchResult->fieldHighlightMap = null;
-      }
-      $fragmentHighlighting[] = $searchResult->fieldHighlightMap;
+      $taxa[] = &$searchResult->entity;
+//       if(!isset($searchResult->fieldHighlightMap)){
+//         $searchResult->fieldHighlightMap = null;
+//       }
+//       $fragmentHighlighting[] = $searchResult->fieldHighlightMap;
     }
     $pager->records = $taxa;
   }
@@ -73,7 +74,7 @@ function theme_cdm_search_results($pager, $path, $query_parameters){
   $out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form></div>';
   if(count($pager->records) > 0){
     $out .= '<div id="search_results">';
-    $out .= theme('cdm_list_of_taxa', $pager->records,  $fragmentHighlighting);
+    $out .= theme('cdm_list_of_taxa', $pager->records,  $freetextSearchResults);
     $out .= '</div>';
     $out .= theme('cdm_pager', $pager, $path, $query_parameters);
   } else {
@@ -220,7 +221,7 @@ function theme_cdm_acceptedFor(){
  * @param unknown_type $fragmentHighlighting
  * @return string
  */
-function theme_cdm_list_of_taxa($records, $fragmentHighlighting){
+function theme_cdm_list_of_taxa($records, $freetextSearchResults){
 
   RenderHints::pushToRenderStack('list_of_taxa');
 
@@ -322,16 +323,19 @@ function theme_cdm_list_of_taxa($records, $fragmentHighlighting){
       }
     }
 
+    if(isset($freetextSearchResults[$itemCnt])) {
+      $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . ($freetextSearchResults[$itemCnt]->score * 100.0) .'% "></div></div>';
+    }
+
     // render highlighted fragments, these are made available by free text searches
-    if(isset($fragmentHighlighting[$itemCnt])){
-      $field_fragments = (array)$fragmentHighlighting[$itemCnt];
+    if(isset($freetextSearchResults[$itemCnt]->fieldHighlightMap)){
+      $field_fragments = (array)$freetextSearchResults[$itemCnt]->fieldHighlightMap;
       if( count($field_fragments) > 0 ){
-          $fragments_out = "";
+          $fragments_out = '';
           foreach($field_fragments as $fieldName => $fragments) {
-            $fragments_out .= ($fragments_out ? ' ... ' : '');
-            $fragments_out .= '<span class="' . $fieldName. '">' . join(" ... ", $fragments) . '</span>';
+            $fragments_out .= '... <span class="' . $fieldName. '">' . join(" ... ", $fragments) . '</span>';
           }
-          $out .= '<div class="fragment_highlight">' . $fragments_out . '</div>';
+          $out .= '<div class="fragment_highlight">' . $fragments_out . ' ...</div>';
       }
     }
 
