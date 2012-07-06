@@ -54,6 +54,11 @@ div.debug .uri{
   background-color: yellow;
 }
 
+.fragment_highlight {
+	font-size: 90%;
+	margin-top: 0.3em;
+}
+
 li .taxon{
 }
 

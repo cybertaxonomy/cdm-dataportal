@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.php.debug.core.launching.webPageLaunch">
 <booleanAttribute key="auto_generated_url" value="false"/>
-<stringAttribute key="base_url" value="http://127.0.0.1/cichorieae/?q=cdm_dataportal/search/taxon_by_description"/>
+<stringAttribute key="base_url" value="http://127.0.0.1/flora-malesiana/?query=flower&amp;ws=portal%2Ftaxon%2FfindByDescriptionElementFullText&amp;search[hl]=1&amp;q=cdm_dataportal%2Fsearch%2Fresults%2Ftaxon"/>
 <stringAttribute key="debugOutputEncoding" value="UTF-8"/>
 <stringAttribute key="debugPages" value="debugAllPages"/>
 <stringAttribute key="debugTransferEncoding" value="UTF-8"/>

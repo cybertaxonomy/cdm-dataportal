@@ -288,6 +288,12 @@ function cdm_dataportal_search_taxon_by_description_form() {
     t('Enter the text you wish to search for. The asterisk character * can always be used as wildcard. For more syntactial elements please refer to the lucene query syntax reference.')
   );
 
+  $form['search']['hl'] = array(
+        '#weight' => -1,
+        '#type' => 'hidden',
+        '#value' => 1
+  );
+
   return $form;
 
 }
