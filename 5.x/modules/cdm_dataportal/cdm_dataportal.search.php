@@ -314,11 +314,19 @@ function cdm_dataportal_search_taxon_by_description_form() {
         '#value' => 1
   );
 
-  $form['search']['clazz']['tdwg_level_'.$key] = array(
-          '#type' => 'select',
-          '#title'         => t('Limit to DescriptionElement type'),
-          '#default_value' => $_SESSION['cdm']['search']['clazz'],
-          '#options' => cdm_descriptionElementTypes_as_option(true)
+  $form['search']['clazz'] = array(
+            '#type' => 'select',
+            '#title'         => t('Limit to DescriptionElement type'),
+            '#default_value' => $_SESSION['cdm']['search']['clazz'],
+            '#options' => cdm_descriptionElementTypes_as_option(true)
+  );
+
+
+  $form['search']['features'] = array(
+          '#type' => 'checkboxes',
+          '#title'         => t('Limit to selected features'),
+          '#default_value' => $_SESSION['cdm']['search']['features'],
+          '#options' => cdm_Vocabulary_as_option(UUID_FEATURE)
   );
 
 

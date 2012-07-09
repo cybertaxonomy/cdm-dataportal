@@ -87,7 +87,7 @@ function theme_cdm_search_results($pager, $path, $query_parameters){
     $out .= '</div>';
     $out .= theme('cdm_pager', $pager, $path, $query_parameters);
   } else {
-    $out = '<h4 class="error">Sorry, no matching entries found.</h4>';
+    $out .= '<h4 class="error">Sorry, no matching entries found.</h4>';
   }
   return $out;
 }
