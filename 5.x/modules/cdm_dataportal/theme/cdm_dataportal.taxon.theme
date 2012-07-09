@@ -67,11 +67,20 @@ function theme_cdm_search_results($pager, $path, $query_parameters){
           });
         });', "inline");
 
+
   drupal_set_title(t('Search results'));
 
   $out = '';
 
-  $out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form></div>';
+  // add thumbnails checkbox and refince search link
+  $out = '<div class="page_options">';
+  if($_REQUEST['ws'] && cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])){
+    $out .= '<div id="backButton">' . l("Modify search", cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
+  }
+  $out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form>';
+  $out .= '</div>';
+
+  // list results
   if(count($pager->records) > 0){
     $out .= '<div id="search_results">';
     $out .= theme('cdm_list_of_taxa', $pager->records,  $freetextSearchResults);

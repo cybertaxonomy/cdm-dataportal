@@ -622,8 +622,38 @@ function cdm_ws_taxonomy_pathFromRoot($taxonUuid){
   return $response;
 }
 
+
 function cdm_rankVocabulary_as_option() {
   return cdm_Vocabulary_as_option(UUID_RANK);
+}
+
+/**
+* eu.etaxonomy.cdm.model.description.
+* CategoricalData
+* CommonTaxonName
+* Distribution
+* IndividualsAssociation
+* QuantitativeData
+* TaxonInteraction
+* TextData
+*/
+function cdm_descriptionElementTypes_as_option($prependEmptyElement = false){
+
+  static $types = array("CategoricalData", "CommonTaxonName",
+  	"Distribution", "IndividualsAssociation", "QuantitativeData",
+  	 "TaxonInteraction", "TextData");
+
+  static $options = null;
+  if($options == null){
+    $options = array();
+    if($prependEmptyElement){
+      $options[' '] = '';
+    }
+    foreach($types as $type){
+      $options["eu.etaxonomy.cdm.model.description." . $type] = $type; // no internatianalization here since these are purely technical terms
+    }
+  }
+  return $options;
 }
 
 function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = null){

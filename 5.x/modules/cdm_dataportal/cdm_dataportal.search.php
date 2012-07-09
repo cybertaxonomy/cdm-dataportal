@@ -14,6 +14,19 @@
  */
 
 
+/**
+ * returns for a given cdm webservice end point the  drupal page path to the
+ * according search form. cdm webservice end points are defined in constant variables like:
+ * <code>CDM_WS_PORTAL_TAXON_FIND</code> and <code>CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT</code>
+ *
+ */
+function cdm_dataportal_search_form_path_for_ws($ws_endpoint){
+  static $form_ws_map = array(
+  CDM_WS_PORTAL_TAXON_FIND => "cdm_dataportal/search",
+  CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT => "cdm_dataportal/search/taxon_by_description"
+  );
+  return $form_ws_map[$ws_endpoint];
+}
 
 /**
  * prepares a form array for general purpose search functiality in the dataportal.
@@ -86,9 +99,8 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
   $tdwg_level_select =  (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
   $selected_areas =  (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : false);
 
-  if(isset($_SESSION['cdm']['search']) && !$preset_UseDefaults) {
-    $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
-  }
+
+  $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
 
   $form = cdm_dataportal_search_form_prepare(
     'cdm_dataportal/search/results/taxon',
@@ -152,10 +164,10 @@ function cdm_dataportal_search_taxon_form($advancedForm = false){
       '#value' => $preset_doSynonyms
     );
     $form['search']['doMisappliedNames'] = array(
-          '#weight' => 4,
-          '#type' => 'checkbox',
-          '#title' => t('Search for misapplied names'),
-          '#value' => $preset_doMisappliedNames
+      '#weight' => 4,
+      '#type' => 'checkbox',
+      '#title' => t('Search for misapplied names'),
+      '#value' => $preset_doMisappliedNames
     );
     $form['search']['doTaxaByCommonNames'] = array(
       '#weight' => 5,
@@ -280,6 +292,8 @@ function cdm_dataportal_search_taxon_form_advanced(){
  */
 function cdm_dataportal_search_taxon_by_description_form() {
 
+  $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
+
   $form = cdm_dataportal_search_form_prepare(
     'cdm_dataportal/search/results/taxon',
     CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT,
@@ -288,11 +302,28 @@ function cdm_dataportal_search_taxon_by_description_form() {
     t('Enter the text you wish to search for. The asterisk character * can always be used as wildcard. For more syntactial elements please refer to the lucene query syntax reference.')
   );
 
+  $form['search']['tree'] = array(
+      '#weight' => -1,
+      '#type' => 'hidden',
+      '#value' => get_taxonomictree_uuid_selected()
+  );
+
   $form['search']['hl'] = array(
         '#weight' => -1,
         '#type' => 'hidden',
         '#value' => 1
   );
+
+  $form['search']['clazz']['tdwg_level_'.$key] = array(
+          '#type' => 'select',
+          '#title'         => t('Limit to DescriptionElement type'),
+          '#default_value' => $_SESSION['cdm']['search']['clazz'],
+          '#options' => cdm_descriptionElementTypes_as_option(true)
+  );
+
+
+//             @RequestParam(value = "tree", required = false) UUID treeUuid,
+//             @RequestParam(value = "languages", required = false) List<Language> languages,
 
   return $form;
 
@@ -346,13 +377,14 @@ function cdm_dataportal_search_process($form) {
   return $form;
 }
 
+
 function cdm_dataportal_search_execute(){
 
   // store as last search in session
   $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
 
   // valiate the search webservice parameter:
-  if($_REQUEST['ws'] != CDM_WS_PORTAL_TAXON_FIND && $_REQUEST['ws'] != CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT){
+  if(!cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])){ // check is ws endpoint is un known
     drupal_set_message("Invalid search webservice parameter given");
     return null;
   }
@@ -362,3 +394,4 @@ function cdm_dataportal_search_execute(){
 
   return $taxonPager;
 }
+

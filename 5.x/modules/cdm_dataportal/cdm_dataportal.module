@@ -1032,7 +1032,9 @@ function cdm_dataportal_view_search_taxon_by_description() {
  * executes the search and generates the result list of taxa
  */
 function cdm_dataportal_view_search_results_taxon(){
+
   $taxonPager = cdm_dataportal_search_execute();
+
   return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/results/taxon', $_REQUEST);
 }
 
