@@ -505,14 +505,17 @@ function taxon_image_gallery_fsi($taxon, $media){
  */
 function theme_cdm_reference_page($referenceTO){
 
-  /*
+
    if($referenceTO->titleCache) {
     drupal_set_title($referenceTO->titleCache);
+    return $referenceTO->titleCache;
     } else {
     drupal_set_title($referenceTO->fullCitation);
+    return $referenceTO->fullCitation;
     }
-    */
 
+
+/// ================= all code below of this is old and dead and a complete mess ====================== ////
   $field_order = array(
     "title",
   //"titleCache",
@@ -722,19 +725,19 @@ function theme_cdm_reference_page($referenceTO){
   }
   $author_team =  cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $referenceTO->uuid);
   //return "" . ((strlen($referenceData["authorTeam"])>0) ? ($referenceData["authorTeam"] . '. ') : '')
-  return "" . ((strlen($author_team->titleCache)>0) ? ($author_team->titleCache . '. ') : '')
-  . ((strlen($referenceData["datePublished"])>0) ? ($referenceData["datePublished"] . '. ') : '')
-  . ((strlen($referenceData["title"])>0) ? ($referenceData["title"] . '. ') : "")
-  . ((strlen($referenceData["placePublished"])>0) ? ($referenceData["placePublished"] . '. ') : '')
-  . ((strlen($referenceData["editor"])>0) ? ($referenceData["editor"] . '. ') : '')
-  . ((strlen($referenceData["publisher"])>0) ? ($referenceData["publisher"] . '. ') : '')
-  . ((strlen($referenceData["inReference"])>0) ? ($referenceData["inReference"] . '. ') : '')
-  . ((strlen($referenceData["series"])>0) ? ($referenceData["series"] . '. ') : '')
-  . ((strlen($referenceData["volume"])>0) ? ($referenceData["volume"] . '. ') : '')
-  . ((strlen($referenceData["pages"])>0) ? ($referenceData["pages"] . '. ') : '')
-  . ((strlen($referenceData["isbn"])>0) ? ($referenceData["isbn"] . '. ') : '')
-  . ((strlen($referenceData["issn"])>0) ? ($referenceData["issn"] . '. ') : '')
-  . ((strlen($referenceData["uri"])>0) ? ($referenceData["uri"] . '. ') : '');
+//   return "" . ((strlen($author_team->titleCache)>0) ? ($author_team->titleCache . '. ') : '')
+//   . ((strlen($referenceData["datePublished"])>0) ? ($referenceData["datePublished"] . '. ') : '')
+//   . ((strlen($referenceData["title"])>0) ? ($referenceData["title"] . '. ') : "")
+//   . ((strlen($referenceData["placePublished"])>0) ? ($referenceData["placePublished"] . '. ') : '')
+//   . ((strlen($referenceData["editor"])>0) ? ($referenceData["editor"] . '. ') : '')
+//   . ((strlen($referenceData["publisher"])>0) ? ($referenceData["publisher"] . '. ') : '')
+//   . ((strlen($referenceData["inReference"])>0) ? ($referenceData["inReference"] . '. ') : '')
+//   . ((strlen($referenceData["series"])>0) ? ($referenceData["series"] . '. ') : '')
+//   . ((strlen($referenceData["volume"])>0) ? ($referenceData["volume"] . '. ') : '')
+//   . ((strlen($referenceData["pages"])>0) ? ($referenceData["pages"] . '. ') : '')
+//   . ((strlen($referenceData["isbn"])>0) ? ($referenceData["isbn"] . '. ') : '')
+//   . ((strlen($referenceData["issn"])>0) ? ($referenceData["issn"] . '. ') : '')
+//   . ((strlen($referenceData["uri"])>0) ? ($referenceData["uri"] . '. ') : '');
 
 }
 
