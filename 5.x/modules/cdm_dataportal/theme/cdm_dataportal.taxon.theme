@@ -227,10 +227,10 @@ function theme_cdm_acceptedFor(){
  *
  * Enter description here ...
  * @param unknown_type $records
- * @param unknown_type $fragmentHighlighting
+ * @param unknown_type $fragmentHighlighting (optional)
  * @return string
  */
-function theme_cdm_list_of_taxa($records, $freetextSearchResults){
+function theme_cdm_list_of_taxa($records, $freetextSearchResults = null){
 
   RenderHints::pushToRenderStack('list_of_taxa');
 
