@@ -1553,14 +1553,14 @@ function cdm_dataportal_shortname_of($name){
     if ($name->unplaced || $name->excluded){
       return $nameStr;
     }
-    /*
-     * 1st capture group (^[a-zA-Z]): Fist letter of uninomial
-     * second capture group ([a-zA-Z]+): remaining letters of uninomial
-     * third capture group (\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z]+$): letters of name,
-     *       but only matching if no '(' or '.' in second word of name, ( \x2E = '.')
-     *       OR only one specific epithet \s+[a-zA-Z]+$                 (\x22= '"', \x2D='-', \xD7='×' )
-     */
-    $pattern = '/(^[a-zA-Z])([a-zA-Z]+)(\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z\x22\x2D\xD7]+$)/u';
+/*
+ * 1st capture group (^[a-zA-Z]): Fist letter of uninomial
+ * second capture group ([\p{L}]+): remaining letters of uninomial         ([\p{L} = an UTF-8 letter)
+ * third capture group (\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z]+$): letters of name,
+ *       but only matching if no '(' or '.' in second word of name,        ( \x2E = '.')
+ *       OR only one specific epithet \s+[\p{L}\x22\x2D\xD7]+$             (\x22= '"', \x2D='-', \xD7='×' )
+ */
+$pattern = '/(^[a-zA-Z])([\p{L}]+)(\s+[^(\x2E]+\s+.+$|\s+[\p{L}\x22\x2D\xD7]+$)/u';
     if (preg_match($pattern, $nameStr, $matches, PREG_OFFSET_CAPTURE)){
       return $matches[1][0] . "." . $matches[3][0];
     } else {

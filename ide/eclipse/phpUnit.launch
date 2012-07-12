@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.php.debug.core.launching.PHPExeLaunchConfigurationType">
-<stringAttribute key="ATTR_FILE" value="/Drupal_WP5/5.x/modules/cdm_dataportal/test/phpUnit/phpunitRunner.php"/>
-<stringAttribute key="ATTR_FILE_FULL_PATH" value="/home/andreas/workspaces/_svn-trunk/drupal/5.x/modules/cdm_dataportal/test/phpUnit/phpunitRunner.php"/>
+<stringAttribute key="ATTR_FILE" value="/Drupal-GIT/5.x/modules/cdm_dataportal/test/phpUnit/src/SimpleNameTest.php"/>
+<stringAttribute key="ATTR_FILE_FULL_PATH" value="/home/andreas/workspaces/_svn-trunk/drupal-git/5.x/modules/cdm_dataportal/test/phpUnit/src/SimpleNameTest.php"/>
 <stringAttribute key="ATTR_LOCATION" value="/usr/bin/php52/php"/>
 <stringAttribute key="debugOutputEncoding" value="UTF-8"/>
 <stringAttribute key="debugTransferEncoding" value="UTF-8"/>
@@ -17,7 +17,7 @@
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.php.debug.core.PHP_Project" value="/Drupal_WP5"/>
+<stringAttribute key="org.eclipse.php.debug.core.PHP_Project" value="/Drupal-GIT"/>
 <booleanAttribute key="org.eclipse.php.debug.core.RunWithDebugInfo" value="true"/>
 <stringAttribute key="org.eclipse.php.debug.coreconfiguration_delegate_class" value="org.eclipse.php.internal.debug.core.launching.XDebugExeLaunchConfigurationDelegate"/>
 <stringAttribute key="org.eclipse.php.debug.corephp_debugger_id" value="org.eclipse.php.debug.core.xdebugDebugger"/>
