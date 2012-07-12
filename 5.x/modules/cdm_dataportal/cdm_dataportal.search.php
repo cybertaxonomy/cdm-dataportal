@@ -61,6 +61,7 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $p
     '#size' => 68,
     '#attributes' => array('title' => $query_field_description),
     '#value' => $query_field_default_value,
+    '#description' => $query_field_description
   );
 
   $form['search'] = array(
@@ -299,7 +300,8 @@ function cdm_dataportal_search_taxon_by_description_form() {
     CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT,
     null,
     $query_field_default_value,
-    t('Enter the text you wish to search for. The asterisk character * can always be used as wildcard. For more syntactial elements please refer to the lucene query syntax reference.')
+    t('Enter the text you wish to search for. The asterisk character * can be used as wildcard. Terms can be combined with \'AND\'. To search for a full phrase enclose the terms in parentheses. For more syntactial options please refer to the ')
+    . l('Apache Lucene - Query Parser Syntax', 'http://lucene.apache.org/core/old_versioned_docs/versions/2_9_1/queryparsersyntax.html', null, null, null, null, true)
   );
 
   $form['search']['tree'] = array(
@@ -314,13 +316,15 @@ function cdm_dataportal_search_taxon_by_description_form() {
         '#value' => 1
   );
 
-  $form['search']['clazz'] = array(
-            '#type' => 'select',
-            '#title'         => t('Limit to DescriptionElement type'),
-            '#default_value' => $_SESSION['cdm']['search']['clazz'],
-            '#options' => cdm_descriptionElementTypes_as_option(true)
-  );
-
+  // only avaiable to admins:
+  if(module_exists("user") && user_access('administer')){
+    $form['search']['clazz'] = array(
+              '#type' => 'select',
+              '#title'         => t('Limit to DescriptionElement type'),
+              '#default_value' => $_SESSION['cdm']['search']['clazz'],
+              '#options' => cdm_descriptionElementTypes_as_option(true)
+    );
+  }
 
   $form['search']['features'] = array(
           '#type' => 'checkboxes',

@@ -54,6 +54,14 @@ div.debug .uri{
   background-color: yellow;
 }
 
+/*
+ * ======= Search =====
+ */
+
+#block-cdm_dataportal-2 .description {
+	display: none;
+}
+
 .fragment_highlight {
 	font-size: 90%;
 	margin-top: 0.3em;
