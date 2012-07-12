@@ -334,6 +334,7 @@ function theme_cdm_list_of_taxa($records, $freetextSearchResults = null){
 
     if(isset($freetextSearchResults[$itemCnt])) {
       $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . ($freetextSearchResults[$itemCnt]->score * 100.0) .'% "></div></div>';
+      $out .= '<div class="score-bar-value">' . number_format($freetextSearchResults[$itemCnt]->score * 100.0, 2) .'%</div>';
     }
 
     // render highlighted fragments, these are made available by free text searches
