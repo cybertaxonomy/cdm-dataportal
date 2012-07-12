@@ -37,7 +37,8 @@ class ShortnameTest extends PHPUnit_Framework_TestCase {
       	"Asterolampra marylandica" => "A. marylandica",
           "Ophrys ×\"kreutziana\"" => "O. ×\"kreutziana\"",
           "Ophrys bornmuelleri subsp. bornmuelleri × subsp. grandiflora" => "O. bornmuelleri subsp. bornmuelleri × subsp. grandiflora",
-          "Aegilops ×insulae-cypri" => "A. ×insulae-cypri"
+          "Aegilops ×insulae-cypri" => "A. ×insulae-cypri",
+          "Hieracium harjuënse Sennikov" => "Hieracium harjuënse Sennikov"
       );
 
       foreach ($testStrings as $nameString => $shortname){
