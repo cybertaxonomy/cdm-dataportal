@@ -137,6 +137,18 @@ function get_taxonomictree_uuid_selected(){
   }
 }
 
+/**
+ * Returns the profile FeatureTree as selected in the dataportal setting (layout->taxon:profile)
+ * The the chosen FeatureTree is not found in the database the standart feature tree (UUID_DEFAULT_FEATURETREE) will be returned.
+ */
+function get_profile_featureTree(){
+  $profile_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
+  if(!$profile_featureTree){
+    $profile_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
+  }
+  return $profile_featureTree;
+}
+
 function switch_to_taxonomictree_uuid($taxonomictree_uuid){
   $_SESSION['cdm']['taxonomictree_uuid'] = $taxonomictree_uuid;
 }
@@ -1063,7 +1075,7 @@ function _http_request_using_curl($uri, $headers = array(), $method = "GET", $pa
 
 function _featureTree_elements_toString($rootNode, $separator = ', '){
   $out = '';
-  $featureLabels = array();
+
   foreach ($rootNode->children as $featureNode){
     $out .= ($out ? $separator : '');
     $out .= $featureNode->feature->representation_L10n;
@@ -1078,6 +1090,34 @@ function _featureTree_elements_toString($rootNode, $separator = ', '){
     }
   }
   return $out;
+}
+
+/**
+ * Creates a one dimensional form options array of all features in the feature tree of feature nodes,
+ * the node labels are indented by $node_char and $childIndent depending on the hierachy level.
+ *
+ * @param - $rootNode
+ * @param - $node_char
+ * @param - $childIndentStr
+ * @param - $childIndent  ONLY USED INTERNALLY!
+ * @return a one dimensional drupal form options array
+ */
+function _featureTree_nodes_as_feature_options($rootNode, $node_char = "&#9500;&#9472; ",  $childIndentStr = '&nbsp;', $childIndent = ''){
+  $options = array();
+  foreach ($rootNode->children as $featureNode){
+    $indent_prefix = '';
+    if($childIndent){
+      $indent_prefix = $childIndent . $node_char . " ";
+    }
+    $options[$featureNode->feature->uuid] = $indent_prefix . $featureNode->feature->representation_L10n;
+    if (is_array($featureNode->children)){
+//       foreach ($featureNode->children as $childNode){
+        $childList = _featureTree_nodes_as_feature_options($featureNode, $node_char, $childIndentStr, $childIndent . $childIndentStr);
+        $options = array_merge_recursive($options, $childList);
+//       }
+    }
+  }
+  return $options;
 }
 
 function cdm_get_featureTrees_as_options($addDefaultFeatureTree = false){

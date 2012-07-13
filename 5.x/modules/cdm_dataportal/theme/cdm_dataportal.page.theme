@@ -128,9 +128,8 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   // --- PAGE PART: DESCRIPTION --- //
   if($page_part == 'description' || $page_part == 'all'){
 
-    $featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
-        $markerTypesEmpty = array();
-  $markerTypesEmpty['markerTypes'] = '';
+    $markerTypesEmpty = array();
+    $markerTypesEmpty['markerTypes'] = '';
     $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, queryString($markerTypesEmpty)); //retrieve all description for the taxon
 	$nonStructuredDescriptions = array();
     if($taxonDescriptions != null){
@@ -154,7 +153,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
       $taxonDescriptions = null; // release memory
     }
 
-    $mergedTrees = cdm_ws_descriptions_by_featuretree($featureTree, $nonStructuredDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
+    $mergedTrees = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $nonStructuredDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
 
     $out .= '<div id="general">';
     $out .= theme('cdm_taxon_page_profile', $taxon, $mergedTrees, $media, $hideImages);

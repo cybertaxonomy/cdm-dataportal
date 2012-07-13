@@ -326,16 +326,41 @@ function cdm_dataportal_search_taxon_by_description_form() {
     );
   }
 
+  /*
+   * see cdm_get_featureTrees_as_options()
+   * ...
+   *
+   * $treeRepresentation = $featureTree->titleCache;
+
+            if(is_array($featureTree->root->children) && count($featureTree->root->children) > 0){
+
+              // render the hierarchic tree structure
+              $treeDetails = '<div class="featuretree_structure">'
+                //._featureTree_elements_toString($featureTree->root)
+                .theme('featureTree_hierarchy', $featureTree->uuid)
+                .'</div>';
+
+              $form = array();
+              $form['featureTree-'.$featureTree->uuid] = array(
+                  '#type' => 'fieldset',
+                  '#title' => t('Show details'),
+                  '#collapsible' => TRUE,
+                  '#collapsed' => TRUE,
+              );
+              $form['featureTree-'.$featureTree->uuid]['details'] = array('#value'=>$treeDetails);
+
+              $treeRepresentation .= drupal_render($form);
+   */
+
+  $profile_featureTree = get_profile_featureTree();
+  $feature_options = _featureTree_nodes_as_feature_options($profile_featureTree->root);
+
   $form['search']['features'] = array(
           '#type' => 'checkboxes',
           '#title'         => t('Limit to selected features'),
           '#default_value' => $_SESSION['cdm']['search']['features'],
-          '#options' => cdm_Vocabulary_as_option(UUID_FEATURE)
+          '#options' => $feature_options
   );
-
-
-//             @RequestParam(value = "tree", required = false) UUID treeUuid,
-//             @RequestParam(value = "languages", required = false) List<Language> languages,
 
   return $form;
 

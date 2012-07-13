@@ -90,7 +90,7 @@ define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_TAXON_RELATIONSHIP_TYPES', 'cdm_taxon_relationship_types');
-define('CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
+define('CDM_PROFILE_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
 define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal_structdesc_featuretree_uuid');
 
 function getGallerySettings($gallery_config_form_name){
@@ -807,10 +807,10 @@ function cdm_settings_layout_taxon(){
                         features such description, distribution, common names, etc. that drupal will render at his taxon profile page.'),
   );
 
-  $form['taxon_profile']['feature_trees'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
+  $form['taxon_profile']['feature_trees'][CDM_PROFILE_FEATURETREE_UUID] = array(
       '#type' => 'radios',
       '#title'         => t('Taxon profile sections'),
-      '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
+      '#default_value' => variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
       '#options' => cdm_get_featureTrees_as_options(TRUE),
       '#description'   => t('Select the Feature Tree to be displayed at the taxon profile. Click "Show Details" to see the Feature Tree elemets.'
       )
@@ -828,8 +828,7 @@ function cdm_settings_layout_taxon(){
   );
 
   //---- LAYOUT PER FEATURE ---- //
-  $feature_tree = cdm_ws_get(CDM_WS_FEATURETREES, variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
-
+  $feature_tree = get_profile_featureTree();
   if( isset($feature_tree->root->children) ){
 
     $form_feature_list_layout = array(
