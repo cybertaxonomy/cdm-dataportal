@@ -46,7 +46,7 @@
         <echo>${dbname} created</echo>
         
 <!-- delete unzipped file -->        
-        <delete file="${sqlfilename}" />
+        <delete file="${gzdir}/${sqlfilename}" />
     </target>    
 
     <target name="build" depends="install_databases" />
