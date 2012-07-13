@@ -1,0 +1,9 @@
+Database | Tableprefix
+----------------------
+
+drupal_dataportal_cichorieae | cdm_cichorieae_
+drupal_dataportal_cyprus | cdm_cyprus_
+drupal_dataportal_flora_malesiana | cdm_flora_malesiana_
+drupal_dataportal_flore_afrique_centrale | flore_afrique_centrale_
+drupal_dataportal_flore_gabon | flore_gabon_
+drupal_dataportal_palmae | cdm_palm_
