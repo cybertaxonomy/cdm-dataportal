@@ -1,0 +1,1 @@
+This directory contains helper scripts to perform a migration from Drupal 5 to Drupal 7.

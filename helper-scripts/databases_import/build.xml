@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build">
+
+    <property file="build.properties" /> 
+    
+    
+    <target name="install_databases">
+        <foreach param="filename" absparam="absfilename" target="create_database">
+            <fileset dir="${gzdir}">
+                <include name="*.sql.gz"/>
+            </fileset>
+        </foreach>
+    </target>
+    
+    <target name="create_database" >
+<!-- unzip gz file -->     
+        <php expression="substr('${filename}',0,strlen('${filename}')-3)" returnProperty="sqlfilename"/>
+        
+        <exec dir="${gzdir}"
+            command="gzip -dc ${filename} > ${sqlfilename}" checkreturn="true">
+        </exec>
+        
+        
+<!-- construct database name (dbname) from file name -->  
+        <php expression="substr('${filename}',0,strpos('${filename}','_') )" returnProperty="dbtype"/>
+                
+        <if>
+        <equals arg1="${dbtype}" arg2="${db_drupal}" />
+        <then>
+            <php expression="substr('${filename}',strlen('${file_prefix_drupal}'),strpos('${filename}','_20')-strlen('${file_prefix_drupal}') )" returnProperty="dbname"/>
+            <php expression="'${db_prefix_drupal}' . '${dbname}'" returnProperty="dbname"/>
+        </then>
+        </if>
+        <if>
+        <equals arg1="${dbtype}" arg2="${db_cdm}" />
+        <then>
+            <php expression="substr('${filename}',strlen('${file_prefix_cdm}'),strpos('${filename}','_20')-strlen('${file_prefix_cdm}') )" returnProperty="dbname"/>
+            <php expression="'${db_prefix_cdm}' . '${dbname}'" returnProperty="dbname"/>
+        </then>
+        </if>
+        
+<!-- create database from sql file, drop existing database -->
+        <exec command="mysql -u${db.username} -p${db.password} -e &quot;drop database if exists ${dbname};&quot;" />
+        <exec command="mysql -u${db.username} -p${db.password} -e &quot;create database ${dbname};&quot;" />
+        <exec command="mysql -u${db.username} -p${db.password} ${dbname} &lt; ${gzdir}/${sqlfilename}" />
+        <echo>${dbname} created</echo>
+        
+<!-- delete unzipped file -->        
+        <delete file="${sqlfilename}" />
+    </target>    
+
+    <target name="build" depends="install_databases" />
+</project>

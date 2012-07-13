@@ -799,3 +799,7 @@
 7.x/modules/dwca_export/dwca_export.views_default.inc -text
 7.x/modules/dwca_export/static/meta.xml -text
 7.x/modules/dwca_export/theme/dwca_export.theme.inc -text
+helper-scripts/README.TXT -text
+helper-scripts/databases_import/README.TXT -text
+helper-scripts/databases_import/build.properties.tpl -text
+helper-scripts/databases_import/build.xml -text
