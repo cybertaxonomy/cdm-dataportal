@@ -1102,10 +1102,3 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
 .category {
 	padding: 0 0 0.9em 0em;
 }
-#tabs-wrapper {
-    border:0;
-    margin:0;
-}
-h2.with-tabs {
-    margin:0;
-}
