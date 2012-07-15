@@ -48,6 +48,16 @@
 <!-- delete unzipped file -->        
         <delete file="${gzdir}/${sqlfilename}" />
     </target>    
+    
+<!-- alter admin users to a user/password that is easy to remember, to use in development -->
+    <target name="alter_database_users">
+        <foreach list="${db_array}" param="db_params" target="change_admin_user" />
+    </target>
+    <target name="change_admin_user">
+        <php expression="substr('${db_params}',0, strpos('${db_params}','|'))" returnProperty="dbname"/>
+        <php expression="substr('${db_params}', 1+ strpos('${db_params}','|'))" returnProperty="tableprefix"/>
+        <exec command="mysql -u${db.username} -p${db.password} -e &quot; UPDATE `${db_prefix_drupal}${dbname}`.`${tableprefix}users` SET `name` = '${admin.name}',`pass` = MD5( '${admin.password}' ) ,`mail` = '${admin.email}',`init` = '${admin.email}' WHERE `${tableprefix}users`.`uid` =1; &quot;" />
+    </target>
 
-    <target name="build" depends="install_databases" />
+    <target name="build" depends="install_databases,alter_database_users" />
 </project>

@@ -17,9 +17,12 @@ db_prefix_drupal = drupal_dataportal_
 db.username = my_username
 db.password = my_password
 
-#@TODO: replace admin users with admin user for development
-#example:
-#UPDATE `drupal_dataportal_cichorieae`.`cdm_cichorieae_users` SET `name` = 'admin',
-#`pass` = MD5( 'admin' ) ,
-#`mail` = 'waddink@eti.uva.nl',
-#`init` = 'waddink@eti.uva.nl' WHERE `cdm_cichorieae_users`.`uid` =1;
+#easy to remember name and password to use in temporary admin account for development usage only
+admin.name = admin
+admin.password = admin
+#your email to use in admin account
+admin.email = your_email@your_domain
+
+#databases (without db_prefix_drupal) and table prefixes
+# multiline properties seem not yet supported in older phing versions, so here on one line
+db_array = cichorieae|cdm_cichorieae_,cyprus|cdm_cyprus_,flora_malesiana|cdm_flora_malesiana_,flore_afrique_centrale|flore_afrique_centrale_,flore_gabon|flore_gabon_,palmae|cdm_palm_
