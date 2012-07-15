@@ -1,7 +1,7 @@
 <?php
 ?>
   <?php print render($page['header']); ?>
-
+  
   <div id="wrapper">
     <div id="container" class="clearfix">
 
