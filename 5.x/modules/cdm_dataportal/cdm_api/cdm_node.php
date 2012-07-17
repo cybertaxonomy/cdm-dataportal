@@ -39,7 +39,7 @@ function cdm_load_node($nodetype, $uuid, $title){
 
 			// ---- checking for problems, see http://dev.e-taxonomy.eu/trac/ticket/2964
 			if($nid == 0){
-			  $message = t('Error creating node for') . $nodetype . '  Cause: new node id was 0';
+			  $message = t('Error creating node for ') . $nodetype . '  Cause: new node id was 0';
 			  drupal_set_message($message ,'error');
 			  watchdog('content', $message . ' $pathelements was :' . $pathelements, WATCHDOG_ERROR);
 			  return null;
