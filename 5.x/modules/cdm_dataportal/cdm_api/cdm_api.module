@@ -502,7 +502,7 @@ function cdm_compose_annotations_url($cdmBase){
         case 'Media':
             $ws_base_uri = CDM_WS_MEDIA;
             break;
-        case 'ReferenceBase':
+        case 'Reference':
             $ws_base_uri = CDM_WS_REFERENCE;
             break;
         case 'Distribution':
@@ -733,7 +733,7 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
 
 /**
  * @param $cdmBase
- * @return an array or empty
+ * @return an array of Annotation objects or an empty array
  */
 function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
     $annotationUrl = cdm_compose_annotations_url($cdmBase);

@@ -625,7 +625,14 @@ function theme_cdm_reference_page($reference){
     }
   }
 
-  return theme_table(array(), $table_rows);
+  $out = theme_table(array(), $table_rows);
+
+  // annotations below the table
+  $annotations = cdm_ws_getAnnotationsFor($reference);
+  var_dump($annotations);
+  $out .= theme("cdm_annotations", $annotations);
+
+  return $out;
 }
 
 
