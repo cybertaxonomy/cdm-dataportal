@@ -278,7 +278,7 @@ function infer_mime_type($filepath){
 function partialToYear($partial){
   if(is_string($partial)){
     $year = substr($partial, 0, 4);
-    if($year != '??'){
+    if(preg_match("/[0-9][0-9][0-9][0-9]/", $year)){
       return $year;
     }
   }
@@ -295,7 +295,7 @@ function partialToYear($partial){
 function partialToMonth($partial){
   if(is_string($partial)){
     $month = substr($partial, 5, 2);
-    if($month != '??'){
+    if(preg_match("/[0-9][0-9]/", $month)){
       return $month;
     }
   }
@@ -312,11 +312,55 @@ function partialToMonth($partial){
 function partialToDay($partial){
   if(is_string($partial)){
     $day = substr($partial, 7, 2);
-    if($day != '??'){
+    if(preg_match("/[0-9][0-9]/", $day)){
       return $day;
     }
   }
   return;
+}
+
+/**
+ * expects an ISO 8601 time representations of a org.joda.time.Partial
+ * of the form yyyy-MM-dd and returns four digit year, month and day with dashes:
+ * 	YYYY-MM-DD  eg:	"2012-06-30", "1956-00-00"
+ *
+ * The partial may contain question marks eg: "1973-��-��",
+ * these are turned in to '00' or are stripped depending of the $stripZeros parameter.
+ *
+ * @param $partial
+ * @param $stripZeros is set to true the zeo month and days will be hidden:
+ *   eg 1956-00-00 becomes 1956 the default is true.
+ */
+function partialToDate($partial, $stripZeros=true){
+
+  $y = partialToYear($partial);
+  $m = partialToMonth($partial);
+  $d = partialToDay($partial);
+
+  $y = $y ? $y : '00';
+  $m = $m ? $m : '00';
+  $d = $d ? $d : '00';
+
+  $date = '';
+
+  if($y == '00' && $stripZeros){
+    return;
+  } else {
+    $date = $y;
+  }
+
+  if($m == '00' && $stripZeros){
+    return $date;
+  } else {
+    $date .= "-" . $m;
+  }
+
+  if($d == '00'  && $stripZeros){
+    return $date;
+  } else {
+    $date .= "-" . $d;
+  }
+  return $date;
 }
 
 /**

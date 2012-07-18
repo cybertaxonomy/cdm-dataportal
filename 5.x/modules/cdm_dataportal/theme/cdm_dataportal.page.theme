@@ -557,22 +557,10 @@ function theme_cdm_reference_page($reference){
         $partial = $reference->$fieldname;
         $datePublished = '';
         if($partial->start){
-          //var_dump ($partial->start);
-          $datePublishedYear = substr($partial->start, 0, 4);
-          $datePublishedMonth = substr($partial->start, 5, 2);
-
-          if (!(preg_match('#[0-9]#',$datePublishedMonth))){
-            $datePublishedMonth = '00';
-          }
-
-          $datePublishedDay = substr($partial->start, 7, 2);
-          if (!(preg_match('#[0-9]#',$datePublishedDay))){
-            $datePublishedDay = '00';
-          }
-          $datePublished = $datePublishedYear.'-'.$datePublishedMonth.'-'.$datePublishedDay;
+          $datePublished = partialToDate($partial->start);
         }
         if($partial->end){
-          $datePublished = (strlen($datePublished) > 0 ? ' '.t('to').' ' : '').substr($partial->end, 0, 4).'-'.substr($partial->end, 4, 2).'-'.substr($partial->end, 6, 2);
+          $datePublished .= (strlen($datePublished) > 0 ? ' '.t('to').' ' : '#').partialToDate($partial->end);
         }
         $table_rows[] = array(t(ucfirst(strtolower($fieldname))), $datePublished);
         //$datePublished = array(t(ucfirst(strtolower($fieldname))), $datePublished);
