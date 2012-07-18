@@ -629,7 +629,6 @@ function theme_cdm_reference_page($reference){
 
   // annotations below the table
   $annotations = cdm_ws_getAnnotationsFor($reference);
-  var_dump($annotations);
   $out .= theme("cdm_annotations", $annotations);
 
   return $out;

@@ -732,7 +732,9 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
 }
 
 /**
- * @param $cdmBase
+ * @param $cdmBase an annotatable cdm entity
+ * @param $includeTypes if an array of annotation type uuids is supplied by this parameter the
+ * 		list of annotations is resticted to those which belong to this type.
  * @return an array of Annotation objects or an empty array
  */
 function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
@@ -747,6 +749,8 @@ function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
               || ($annotation->annotationType === null && in_array('NULL_VALUE', $includeTypes, true))){
               $annotations[] = $annotation;
             }
+          } else {
+            $annotations[] = $annotation;
           }
         }
         return $annotations;
