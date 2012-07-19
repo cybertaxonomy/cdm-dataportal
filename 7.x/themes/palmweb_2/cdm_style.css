@@ -5,7 +5,7 @@
 	margin-top: 25px;
 }
 
-#general .clear-block{
+#general .clearfix{
 	clear: both;
 }
 
