@@ -1478,12 +1478,20 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = nul
   return $footNoteKeys;
 }
 
+/**
+ * @param $label the clickable text to show
+ * @param $content_url the cdm REST service request url wich will deliver the content to be shown once the dynabox toggles open
+ * @param $theme the theme to be used for rendering the cdm REST service reponse with is returned from the $content_url
+ * @param $link_alt_text the value for the alt attribute of the dynabox link
+ * @param $enclosingtags an array with two elements: $enclosingtags[0] will be used for the dynabox element itself, $enclosingtags[1] is the tag to be used for the dynabox_content
+ */
 function cdm_dynabox($label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul')){
 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
 
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
-  $out .= '<'. $enclosingtags[0]. ' class="dynabox"><a href="'.$content_url.'" class="label" alt="'.t($link_alt_text).'">'.$label.'</a>';
+  $out .= '<!-- ' . $content_url . ' -->';
+  $out .= '<'. $enclosingtags[0]. ' class="dynabox"><a href="#" class="label" alt="'.t($link_alt_text).'">'.$label.'</a>';
   $out .= '<'. $enclosingtags[1]. ' class="dynabox_content" title="'.$cdm_proxy_url.'"><'. $enclosingtags[0]. '><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/images/loading_circle_grey_16.gif" style="display:none;"></'. $enclosingtags[0]. '></'. $enclosingtags[1]. '>';
   $out .= '</'. $enclosingtags[0]. '>';
   return $out;

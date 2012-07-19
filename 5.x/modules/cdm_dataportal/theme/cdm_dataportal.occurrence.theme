@@ -96,7 +96,7 @@ function theme_cdm_derivedUnitFacade($derivedUnitFacade){
 	  		switch($field){
 	  			case 'locality': $stringValue = $value->language->representation_L10n; break;
 	  			case 'country' : $stringValue = $value->representation_L10n; break;
-	  			case 'collector':
+	  			case 'collector': $stringValue = $value->titleCache; break;
 	  			case 'collection' : $stringValue = $value->titleCache; break;
 	  			case 'exactLocation': $stringValue = $value->sexagesimalString; break;
 	  			default: $stringValue = $value;
