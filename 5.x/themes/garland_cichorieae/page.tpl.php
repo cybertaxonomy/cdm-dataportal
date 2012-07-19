@@ -27,7 +27,7 @@
   <body<?php print phptemplate_body_class($sidebar_left, $sidebar_right); ?>>
 
 <!-- Layout -->
-  
+
 
     <div id="wrapper">
     <div id="container" class="clear-block">
@@ -58,7 +58,7 @@
             print $site_html .'</a></h1>';
           }
         ?>
-        
+
         </div>
         <?php
             //var_dump(theme_get_setting('banner_right_path'));
@@ -70,19 +70,10 @@
         <div id="splash" <?php print($splash_style); ?>></div>
 
         <div id="header-region" class="clear-block"><?php print $header; ?></div>
-        
+
 		<div id="menu">
           <?php if (isset($primary_links)) : ?>
-
-            <?php
-              foreach($primary_links as &$link) {
-                $link_title = $link['title'];
-                if(module_exists('cdm_api')){
-                  $link_title = generalizeString($link_title);
-                }
-                $link['attributes']['target'] = $link_title;
-              }
-              print theme('links', $primary_links, array('class' => 'links primary-links')) ?>
+            <?php print theme('links', $primary_links, array('class' => 'links primary-links')) ?>
           <?php endif; ?>
           <?php if (isset($secondary_links)) : ?>
             <?php print theme('links', $secondary_links, array('class' => 'links secondary-links')) ?>

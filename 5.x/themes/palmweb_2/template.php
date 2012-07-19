@@ -52,7 +52,7 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enc
 //        if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
 //            $annotationFootnoteKeys .= $separator;
 //        }
-		
+
         $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class .'">';
         $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList;
         if(++$itemCnt < count($descriptionElements)){
@@ -106,13 +106,13 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
   }
   //Setting the Anchor to the Bibliography section if the option is enabled
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
-  
+
   $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
   $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
   if(!empty($useDescriptions)) {
   		$out .= '<li>'.l(t(theme('cdm_feature_name', 'Uses')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('UseRecords')).'</li>';
   }
-  
+
   if ($show_bibliography && $countFeatures != 0) {
   	$out .= '<li>'.l(t(theme('cdm_feature_name', 'Bibliography')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Bibliography')).'</li>';
   }
@@ -124,7 +124,7 @@ function palmweb_2_cdm_feature_nodes($mergedFeatureNodes, $taxon){
 RenderHints::pushToRenderStack('feature_nodes');
 
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
-  //Creating an array to place the description elements in 
+  //Creating an array to place the description elements in
   $bibliographyOut = array();
   $countFeatures = 0;
   $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), $taxon->uuid)));
@@ -135,7 +135,7 @@ RenderHints::pushToRenderStack('feature_nodes');
   	$subRank = "infraspecific taxa";
   }
   if ($numberOfChildren != 0) {
-  	
+
   	$out .= '<a name="number_of_taxa"> </a><H2>Number of Taxa</H2><div class="content"> <ul class="description">';
 	$out .= '<li class=\"descriptionText DescriptionElement\">' . $numberOfChildren . " " . $subRank . '</li></ul>';
   }
@@ -158,7 +158,7 @@ RenderHints::pushToRenderStack('feature_nodes');
         $block->subject = '<span class="'. html_class_atttibute_ref($node->feature) . '">' . theme('cdm_feature_name', $featureRepresentation) . '</span>';
         $block->module = "cdm_dataportal-feature";
         $block->content = '';
-        
+
         /*
          * Content/DISTRIBUTION
          */
@@ -168,7 +168,7 @@ RenderHints::pushToRenderStack('feature_nodes');
             $distributionTextDataList = array();
             $distributionElementsList = array();
             foreach($node->descriptionElements as $descriptionElement){
-            	
+
               if($descriptionElement->class == "TextData"){
                 $distributionTextDataList[] = $descriptionElement;
               } else {
@@ -201,7 +201,7 @@ RenderHints::pushToRenderStack('feature_nodes');
         /*
          * Content/ALL OTHER FEATURES
          */
-        else if($node->feature->uuid == UUID_USE_RECORD) { 
+        else if($node->feature->uuid == UUID_USE_RECORD) {
         	$block->content .= theme('cdm_block_Uses', $taxon->uuid);
           	//$block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid),
         }
@@ -220,7 +220,7 @@ RenderHints::pushToRenderStack('feature_nodes');
             //TODO support more than one level of childen http://dev.e-taxonomy.eu/trac/ticket/2393
             $text = '';
             foreach ($node->children as $child){
-            
+
              if (is_array($child->descriptionElements)){
                foreach ($child->descriptionElements as $element) {
 
@@ -263,21 +263,21 @@ RenderHints::pushToRenderStack('feature_nodes');
         $block->subject = '<a name="'.$block->delta.'"></a>'.  $block->subject;
        $out .= theme('block', $block);
 
-        
+
       }
-    
-      
-      
-      
+
+
+
+
     }
-    
+
   }
   //calling the theme function for Bibliography to add it to the output
-  
+
   //Add the display of the number of taxa in the selected genus
   $out .= theme('cdm_block_Uses', $taxon->uuid);
 
-	
+
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
   if ($show_bibliography && $countFeatures !=0) {
   	$out .= theme('cdm_descriptionElementBibliography', $bibliographyOut);
@@ -288,12 +288,26 @@ RenderHints::pushToRenderStack('feature_nodes');
 }
 
 
-function palmweb_2_cdm_search_results($pager, $path, $parameters){
+function palmweb_2_cdm_search_results($pager, $path, $query_parameters){
+
+  // the $query_parameters must not conhatin the 'q' parameter
+  // since this would conflict with the desired target $path
+  unset($search_params['q']);
+
+  // if the pager contains records of SearchResults, extract the taxa and use them a records instead
+  if(isset($pager->records[0]) && $pager->records[0]->class=="SearchResult"){
+    $freetextSearchResults =  $pager->records;
+    $taxa = array();
+    foreach ($pager->records as $searchResult) {
+      $taxa[] = &$searchResult->entity;
+    }
+    $pager->records = $taxa;
+  }
 
 
 	$showThumbnails = $_SESSION['pageoptions']['searchtaxa']['showThumbnails'];
 	if( !is_numeric($showThumbnails)){
-		//AT RBG KEW - 14/11/2011 - Set the show thumbnails to 0 by default 
+		//AT RBG KEW - 14/11/2011 - Set the show thumbnails to 0 by default
 		$showThumbnails = 0;
 	}
 	$setSessionUri = url('cdm_api/setvalue/session', "var=[pageoption][searchtaxa][showThumbnails]&val=");
@@ -324,13 +338,20 @@ function palmweb_2_cdm_search_results($pager, $path, $parameters){
 	drupal_set_title(t('Search results'));
 
 	$out = ''; //l('Advanced Search', '/cdm_dataportal/search');
-	//AT RBG KEW - 14/11/2011 - Changed the wording of the Show Thumbnails tick box text 
-	$out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Image Thumbnails').'</form></div>';
+	//AT RBG KEW - 14/11/2011 - Changed the wording of the Show Thumbnails tick box text
+	// add thumbnails checkbox and refince search link
+	$out = '<div class="page_options">';
+	if($_REQUEST['ws'] && cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])){
+	  $out .= '<div id="backButton">' . l("Modify search", cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
+	}
+	$out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Image Thumbnails').'</form>';
+	$out .= '</div>';
+
 	if(count($pager->records) > 0){
 	    $out .= '<div id="search_results">';
-		$out .= theme('cdm_list_of_taxa', $pager->records);
+		$out .= theme('cdm_list_of_taxa', $pager->records, $freetextSearchResults);
 		$out .= '</div>';
-		$out .= theme('cdm_pager', $pager, $path, $parameters);
+		$out .= theme('cdm_pager', $pager, $path, $query_parameters);
 	} else {
 		$out = '<h4 class="error">Sorry, no matching entries found.</h4>';
 	}
@@ -364,11 +385,11 @@ function theme_cdm_descriptionElementBibliography($descriptionElementsBibliograg
 							$listOfReferences[] = $source;
 						}
 					}
-					
+
 				}
 			}
 		}
-		
+
 	}
 	foreach($useDescriptions as $useDescription) {
 		if (is_array($useDescription->sources)) {
@@ -390,7 +411,7 @@ function theme_cdm_descriptionElementBibliography($descriptionElementsBibliograg
 			}
 		}
 	}
-	
+
 	//Call the reference formatting function, it will do the heavy lifting
 	$out = formatReference_for_Bibliogrpahy($listOfReferences);
 	return $out;
@@ -413,7 +434,7 @@ function formatReference_for_Bibliogrpahy($references) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
+								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else {
 								$referenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
@@ -423,7 +444,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->titleCache. " & ";	
+								$referenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->titleCache;
@@ -448,7 +469,7 @@ function formatReference_for_Bibliogrpahy($references) {
 				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
 				$referenceString .= "</li>";
 				break;
-				
+
 
 			case "Article":
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
@@ -461,7 +482,7 @@ function formatReference_for_Bibliogrpahy($references) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
+								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else {
 								$referenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
@@ -471,7 +492,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->titleCache. " & ";	
+								$referenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->titleCache;
@@ -496,8 +517,8 @@ function formatReference_for_Bibliogrpahy($references) {
 				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
 				$referenceString .= "</li>";
 				break;
-				
-				
+
+
 			case "Book":
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
@@ -506,7 +527,7 @@ function formatReference_for_Bibliogrpahy($references) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
@@ -516,7 +537,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->titleCache. " & ";	
+								$referenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->titleCache;
@@ -525,8 +546,8 @@ function formatReference_for_Bibliogrpahy($references) {
 							$currentRecord += 1;
 						}
 					}
-					
-					
+
+
 				}
 				else if ($reference->citation->authorTeam->titleCache != "-empty team-"){
 					$referenceString .= $reference->citation->authorTeam->titleCache;
@@ -541,7 +562,7 @@ function formatReference_for_Bibliogrpahy($references) {
 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
 				}
 				if ($isCitationTitleCache == false && !empty($reference->citation->title)) {
-					$referenceString .= $reference->citation->title; 
+					$referenceString .= $reference->citation->title;
 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
 				}
 				if (!empty($reference->citation->publisher)) {
@@ -559,7 +580,7 @@ function formatReference_for_Bibliogrpahy($references) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
@@ -569,7 +590,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->titleCache. " & ";	
+								$referenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->titleCache;
@@ -586,7 +607,7 @@ function formatReference_for_Bibliogrpahy($references) {
 					foreach ($reference->citation->inReference->authorTeam->teamMembers as $teamMember) {
 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
@@ -596,7 +617,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->titleCache. " & ";	
+								$referenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->titleCache;
@@ -606,15 +627,15 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 					}
 				}
-				
+
 				$referenceString .= $reference->citation->inReference->title . ". " . $reference->citation->inReference->publisher . ". " . $reference->citation->inReference->placePublished;
 				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
-					
-				
+
+
 				$referenceString .= "</li>";
 				break;
-				
-				
+
+
 			case "WebPage" :
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">" . $reference->citation->titleCache . "</li>";
 				break;
@@ -629,7 +650,7 @@ function formatReference_for_Bibliogrpahy($references) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
+								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else {
 								$referenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
@@ -639,7 +660,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->titleCache. " & ";	
+								$referenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->titleCache;
@@ -670,9 +691,9 @@ function formatReference_for_Bibliogrpahy($references) {
 				$referenceString .= "</li>";
 				break;
 			default:
-				
+
 				//$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->citation->uuid);
-				
+
 				/*if(!empty($author_team->titleCache)) {
 					$referenceString.= print_r($reference->citation);
 					$referenceString .= '<li class="descriptionText DescriptionElement">' . "<b>" . $reference->citation->title . ":" . "</b>" . $author_team->titleCache .   '</li>';
@@ -691,11 +712,11 @@ function formatReference_for_Bibliogrpahy($references) {
 		$outTemp[] = $referenceString;
 	}
 	sort($outTemp);
-  	
+
 	foreach ($outTemp as $refString) {
 		$out .= $refString;
 	}
-	
+
 	$out .= "</ul></div></div>";
 	return $out;
 }
@@ -813,7 +834,7 @@ function palmweb_2_cdm_reference($reference, $microReference = null, $doLink = F
 
   if($doLink){
     $out = l('<span class="reference">'.$citation.'</span>'
-   	, path_to_reference($reference->uuid) 
+   	, path_to_reference($reference->uuid)
     //, $_GET['q']
     , array("class"=>"reference")
     //, NULL, generalizeString('Bibliography'), FALSE ,TRUE);

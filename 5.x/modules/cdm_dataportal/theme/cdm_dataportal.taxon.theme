@@ -25,9 +25,15 @@ function theme_cdm_search_results($pager, $path, $query_parameters){
 
   // if the pager contains records of SearchResults, extract the taxa and use them a records instead
   if(isset($pager->records[0]) && $pager->records[0]->class=="SearchResult"){
+    $freetextSearchResults =  $pager->records;
     $taxa = array();
+//     $highlightedFragments = array();
     foreach ($pager->records as $searchResult) {
-      $taxa[] = $searchResult->entity;
+      $taxa[] = &$searchResult->entity;
+//       if(!isset($searchResult->fieldHighlightMap)){
+//         $searchResult->fieldHighlightMap = null;
+//       }
+//       $fragmentHighlighting[] = $searchResult->fieldHighlightMap;
     }
     $pager->records = $taxa;
   }
@@ -61,18 +67,27 @@ function theme_cdm_search_results($pager, $path, $query_parameters){
           });
         });', "inline");
 
+
   drupal_set_title(t('Search results'));
 
   $out = '';
 
-  $out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form></div>';
+  // add thumbnails checkbox and refince search link
+  $out = '<div class="page_options">';
+  if($_REQUEST['ws'] && cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])){
+    $out .= '<div id="backButton">' . l("Modify search", cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
+  }
+  $out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Thumbnails').'</form>';
+  $out .= '</div>';
+
+  // list results
   if(count($pager->records) > 0){
     $out .= '<div id="search_results">';
-    $out .= theme('cdm_list_of_taxa', $pager->records);
+    $out .= theme('cdm_list_of_taxa', $pager->records,  $freetextSearchResults);
     $out .= '</div>';
     $out .= theme('cdm_pager', $pager, $path, $query_parameters);
   } else {
-    $out = '<h4 class="error">Sorry, no matching entries found.</h4>';
+    $out .= '<h4 class="error">Sorry, no matching entries found.</h4>';
   }
   return $out;
 }
@@ -208,9 +223,14 @@ function theme_cdm_acceptedFor(){
   return $out;
 }
 
-
-
-function theme_cdm_list_of_taxa($records, $showMedia = false){
+/**
+ *
+ * Enter description here ...
+ * @param unknown_type $records
+ * @param unknown_type $fragmentHighlighting (optional)
+ * @return string
+ */
+function theme_cdm_list_of_taxa($records, $freetextSearchResults = null){
 
   RenderHints::pushToRenderStack('list_of_taxa');
 
@@ -231,7 +251,6 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
   $synonym_uuids = array();
   $misappied_uuids = array();
   foreach($records as $taxon){
-
     if($taxon->class == "Synonym") {
       if(!array_key_exists($taxon->uuid, $synonym_uuids)){
         $synonym_uuids[$taxon->uuid] = $taxon->uuid;
@@ -262,9 +281,10 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
   }
 
   $out = '<ul class="cdm_names" style="background-image: none;">';
-
+  $itemCnt = -1;
   foreach($records as $taxon){
 
+    $itemCnt++;
     if( isset($table_of_accepted[$taxon->uuid])) {
       // its a synonym or misapplied name
       $is_synonym = isset($synonym_uuids[$taxon->uuid]);
@@ -287,8 +307,6 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
         if($showMedia_synonyms){
           $out .= theme('cdm_taxon_list_thumbnails', $acceptedTaxon);
         }
-        $out .= '</li>';
-
       } else {
 
         //TODO avoid using Ajax in the cdm_dynabox .... why?
@@ -312,8 +330,26 @@ function theme_cdm_list_of_taxa($records, $showMedia = false){
       if($showMedia_taxa){
         $out .= theme('cdm_taxon_list_thumbnails', $taxon);
       }
-      $out .= '</li>';
     }
+
+    if(isset($freetextSearchResults[$itemCnt])) {
+      $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . ($freetextSearchResults[$itemCnt]->score * 100.0) .'% "></div></div>';
+      $out .= '<div class="score-bar-value">' . number_format($freetextSearchResults[$itemCnt]->score * 100.0, 2) .'%</div>';
+    }
+
+    // render highlighted fragments, these are made available by free text searches
+    if(isset($freetextSearchResults[$itemCnt]->fieldHighlightMap)){
+      $field_fragments = (array)$freetextSearchResults[$itemCnt]->fieldHighlightMap;
+      if( count($field_fragments) > 0 ){
+          $fragments_out = '';
+          foreach($field_fragments as $fieldName => $fragments) {
+            $fragments_out .= '... <span class="' . $fieldName. '">' . join(" ... ", $fragments) . '</span>';
+          }
+          $out .= '<div class="fragment_highlight">' . $fragments_out . ' ...</div>';
+      }
+    }
+
+    $out .= '</li>';
   }
 
   $out .= '</ul>';

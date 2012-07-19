@@ -1032,7 +1032,9 @@ function cdm_dataportal_view_search_taxon_by_description() {
  * executes the search and generates the result list of taxa
  */
 function cdm_dataportal_view_search_results_taxon(){
+
   $taxonPager = cdm_dataportal_search_execute();
+
   return theme('cdm_search_results', $taxonPager, 'cdm_dataportal/search/results/taxon', $_REQUEST);
 }
 
@@ -1225,14 +1227,14 @@ function cdm_dataportal_shortname_of($name){
     if ($name->unplaced || $name->excluded){
       return $nameStr;
     }
-    /*
-     * 1st capture group (^[a-zA-Z]): Fist letter of uninomial
-     * second capture group ([a-zA-Z]+): remaining letters of uninomial
-     * third capture group (\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z]+$): letters of name,
-     *       but only matching if no '(' or '.' in second word of name, ( \x2E = '.')
-     *       OR only one specific epithet \s+[a-zA-Z]+$                 (\x22= '"', \x2D='-', \xD7='×' )
-     */
-    $pattern = '/(^[a-zA-Z])([a-zA-Z]+)(\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z\x22\x2D\xD7]+$)/u';
+/*
+ * 1st capture group (^[a-zA-Z]): Fist letter of uninomial
+ * second capture group ([\p{L}]+): remaining letters of uninomial         ([\p{L} = an UTF-8 letter)
+ * third capture group (\s+[^(\x2E]+\s+.+$|\s+[a-zA-Z]+$): letters of name,
+ *       but only matching if no '(' or '.' in second word of name,        ( \x2E = '.')
+ *       OR only one specific epithet \s+[\p{L}\x22\x2D\xD7]+$             (\x22= '"', \x2D='-', \xD7='×' )
+ */
+$pattern = '/(^[a-zA-Z])([\p{L}]+)(\s+[^(\x2E]+\s+.+$|\s+[\p{L}\x22\x2D\xD7]+$)/u';
     if (preg_match($pattern, $nameStr, $matches, PREG_OFFSET_CAPTURE)){
       return $matches[1][0] . "." . $matches[3][0];
     } else {
@@ -1476,12 +1478,20 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = nul
   return $footNoteKeys;
 }
 
+/**
+ * @param $label the clickable text to show
+ * @param $content_url the cdm REST service request url wich will deliver the content to be shown once the dynabox toggles open
+ * @param $theme the theme to be used for rendering the cdm REST service reponse with is returned from the $content_url
+ * @param $link_alt_text the value for the alt attribute of the dynabox link
+ * @param $enclosingtags an array with two elements: $enclosingtags[0] will be used for the dynabox element itself, $enclosingtags[1] is the tag to be used for the dynabox_content
+ */
 function cdm_dynabox($label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul')){
 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_dynabox.js');
 
   $cdm_proxy_url = url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
-  $out .= '<'. $enclosingtags[0]. ' class="dynabox"><a href="'.$content_url.'" class="label" alt="'.t($link_alt_text).'">'.$label.'</a>';
+  $out .= '<!-- ' . $content_url . ' -->';
+  $out .= '<'. $enclosingtags[0]. ' class="dynabox"><a href="#" class="label" alt="'.t($link_alt_text).'">'.$label.'</a>';
   $out .= '<'. $enclosingtags[1]. ' class="dynabox_content" title="'.$cdm_proxy_url.'"><'. $enclosingtags[0]. '><img class="loading" src="'.drupal_get_path('module', 'cdm_dataportal').'/images/loading_circle_grey_16.gif" style="display:none;"></'. $enclosingtags[0]. '></'. $enclosingtags[1]. '>';
   $out .= '</'. $enclosingtags[0]. '>';
   return $out;

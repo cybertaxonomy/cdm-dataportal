@@ -137,6 +137,18 @@ function get_taxonomictree_uuid_selected(){
   }
 }
 
+/**
+ * Returns the profile FeatureTree as selected in the dataportal setting (layout->taxon:profile)
+ * The the chosen FeatureTree is not found in the database the standart feature tree (UUID_DEFAULT_FEATURETREE) will be returned.
+ */
+function get_profile_featureTree(){
+  $profile_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
+  if(!$profile_featureTree){
+    $profile_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
+  }
+  return $profile_featureTree;
+}
+
 function switch_to_taxonomictree_uuid($taxonomictree_uuid){
   $_SESSION['cdm']['taxonomictree_uuid'] = $taxonomictree_uuid;
 }
@@ -266,7 +278,7 @@ function infer_mime_type($filepath){
 function partialToYear($partial){
   if(is_string($partial)){
     $year = substr($partial, 0, 4);
-    if($year != '??'){
+    if(preg_match("/[0-9][0-9][0-9][0-9]/", $year)){
       return $year;
     }
   }
@@ -283,7 +295,7 @@ function partialToYear($partial){
 function partialToMonth($partial){
   if(is_string($partial)){
     $month = substr($partial, 5, 2);
-    if($month != '??'){
+    if(preg_match("/[0-9][0-9]/", $month)){
       return $month;
     }
   }
@@ -300,11 +312,73 @@ function partialToMonth($partial){
 function partialToDay($partial){
   if(is_string($partial)){
     $day = substr($partial, 7, 2);
-    if($day != '??'){
+    if(preg_match("/[0-9][0-9]/", $day)){
       return $day;
     }
   }
   return;
+}
+
+/**
+ * expects an ISO 8601 time representations of a org.joda.time.Partial
+ * of the form yyyy-MM-dd and returns four digit year, month and day with dashes:
+ * 	YYYY-MM-DD  eg:	"2012-06-30", "1956-00-00"
+ *
+ * The partial may contain question marks eg: "1973-��-��",
+ * these are turned in to '00' or are stripped depending of the $stripZeros parameter.
+ *
+ * @param $partial
+ * @param $stripZeros if set to true the zero (00) month and days will be hidden:
+ *   eg 1956-00-00 becomes 1956 the default is true.
+ */
+function partialToDate($partial, $stripZeros=true){
+
+  $y = partialToYear($partial);
+  $m = partialToMonth($partial);
+  $d = partialToDay($partial);
+
+  $y = $y ? $y : '00';
+  $m = $m ? $m : '00';
+  $d = $d ? $d : '00';
+
+  $date = '';
+
+  if($y == '00' && $stripZeros){
+    return;
+  } else {
+    $date = $y;
+  }
+
+  if($m == '00' && $stripZeros){
+    return $date;
+  } else {
+    $date .= "-" . $m;
+  }
+
+  if($d == '00'  && $stripZeros){
+    return $date;
+  } else {
+    $date .= "-" . $d;
+  }
+  return $date;
+}
+
+/**
+ * see also partialToDate($partial, $stripZeros)
+ *
+ * @param $period an JodaTime org.joda.time.Period object
+ * @param $stripZeros if set to true the zero (00) month and days will be hidden:
+ *   eg 1956-00-00 becomes 1956 the default is true.
+ */
+function timePeriodToString($period, $stripZeros=true){
+  $dateString = '';
+  if($period->start){
+    $dateString = partialToDate($period->start, $stripZeros);
+  }
+  if($period->end){
+    $dateString .= (strlen($dateString) > 0 ? ' '.t('to').' ' : '').partialToDate($period->end, $stripZeros);
+  }
+  return $dateString;
 }
 
 /**
@@ -490,7 +564,7 @@ function cdm_compose_annotations_url($cdmBase){
         case 'Media':
             $ws_base_uri = CDM_WS_MEDIA;
             break;
-        case 'ReferenceBase':
+        case 'Reference':
             $ws_base_uri = CDM_WS_REFERENCE;
             break;
         case 'Distribution':
@@ -622,8 +696,38 @@ function cdm_ws_taxonomy_pathFromRoot($taxonUuid){
   return $response;
 }
 
+
 function cdm_rankVocabulary_as_option() {
   return cdm_Vocabulary_as_option(UUID_RANK);
+}
+
+/**
+* eu.etaxonomy.cdm.model.description.
+* CategoricalData
+* CommonTaxonName
+* Distribution
+* IndividualsAssociation
+* QuantitativeData
+* TaxonInteraction
+* TextData
+*/
+function cdm_descriptionElementTypes_as_option($prependEmptyElement = false){
+
+  static $types = array("CategoricalData", "CommonTaxonName",
+  	"Distribution", "IndividualsAssociation", "QuantitativeData",
+  	 "TaxonInteraction", "TextData");
+
+  static $options = null;
+  if($options == null){
+    $options = array();
+    if($prependEmptyElement){
+      $options[' '] = '';
+    }
+    foreach($types as $type){
+      $options["eu.etaxonomy.cdm.model.description." . $type] = $type; // no internatianalization here since these are purely technical terms
+    }
+  }
+  return $options;
 }
 
 function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = null){
@@ -690,8 +794,10 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
 }
 
 /**
- * @param $cdmBase
- * @return an array or empty
+ * @param $cdmBase an annotatable cdm entity
+ * @param $includeTypes if an array of annotation type uuids is supplied by this parameter the
+ * 		list of annotations is resticted to those which belong to this type.
+ * @return an array of Annotation objects or an empty array
  */
 function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
     $annotationUrl = cdm_compose_annotations_url($cdmBase);
@@ -705,6 +811,8 @@ function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
               || ($annotation->annotationType === null && in_array('NULL_VALUE', $includeTypes, true))){
               $annotations[] = $annotation;
             }
+          } else {
+            $annotations[] = $annotation;
           }
         }
         return $annotations;
@@ -1033,7 +1141,7 @@ function _http_request_using_curl($uri, $headers = array(), $method = "GET", $pa
 
 function _featureTree_elements_toString($rootNode, $separator = ', '){
   $out = '';
-  $featureLabels = array();
+
   foreach ($rootNode->children as $featureNode){
     $out .= ($out ? $separator : '');
     $out .= $featureNode->feature->representation_L10n;
@@ -1048,6 +1156,34 @@ function _featureTree_elements_toString($rootNode, $separator = ', '){
     }
   }
   return $out;
+}
+
+/**
+ * Creates a one dimensional form options array of all features in the feature tree of feature nodes,
+ * the node labels are indented by $node_char and $childIndent depending on the hierachy level.
+ *
+ * @param - $rootNode
+ * @param - $node_char
+ * @param - $childIndentStr
+ * @param - $childIndent  ONLY USED INTERNALLY!
+ * @return a one dimensional drupal form options array
+ */
+function _featureTree_nodes_as_feature_options($rootNode, $node_char = "&#9500;&#9472; ",  $childIndentStr = '&nbsp;', $childIndent = ''){
+  $options = array();
+  foreach ($rootNode->children as $featureNode){
+    $indent_prefix = '';
+    if($childIndent){
+      $indent_prefix = $childIndent . $node_char . " ";
+    }
+    $options[$featureNode->feature->uuid] = $indent_prefix . $featureNode->feature->representation_L10n;
+    if (is_array($featureNode->children)){
+//       foreach ($featureNode->children as $childNode){
+        $childList = _featureTree_nodes_as_feature_options($featureNode, $node_char, $childIndentStr, $childIndent . $childIndentStr);
+        $options = array_merge_recursive($options, $childList);
+//       }
+    }
+  }
+  return $options;
 }
 
 function cdm_get_featureTrees_as_options($addDefaultFeatureTree = false){

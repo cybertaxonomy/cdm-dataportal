@@ -54,6 +54,39 @@ div.debug .uri{
   background-color: yellow;
 }
 
+/*
+ * ======= Search =====
+ */
+
+#block-cdm_dataportal-2 .description {
+	display: none;
+}
+
+.fragment_highlight {
+	font-size: 90%;
+	margin-top: 0.3em;
+}
+
+.score-bar {
+	width: 50px;
+	height: 10px;
+	border: 1px solid #DEDEDE;
+	background-color: #F3F3F3;
+}
+.score-bar .score-bar-indicator{
+	background-color: #ACD575;
+	height: 10px;
+}
+.score-bar-value {
+	width: 50px;
+	height: 10px;
+	margin-top: -11px; /* 10px plus 1px border */
+	font-size: 8px;
+	line-height: 10px;
+	background-color:transparent;
+	text-align: center;
+}
+
 li .taxon{
 }
 
