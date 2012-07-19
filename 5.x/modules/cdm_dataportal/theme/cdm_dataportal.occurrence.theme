@@ -88,20 +88,33 @@ function theme_cdm_specimen($specimenTypeDesignation){
 function theme_cdm_derivedUnitFacade($derivedUnitFacade){
 
 	static $excludeFields = array('class', 'titleCache', 'derivedUnitMedia');
+	static $fieldLabels = array(
+		'fieldNumber'=>'Collectors number',
+		'absoluteElevation' => 'Altitude',
+		'absoluteElevationMinimum' => 'Altitude maximum',
+		'absoluteElevationMaximum' => 'Altitude minimum',
+		'getGatheringPeriod' => 'Gathering period'
+	);
 
 	if(is_object($derivedUnitFacade)){
 		$out = '<dl>';
 	  foreach (get_object_vars($derivedUnitFacade) as $field=>$value){
 	  	if(!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class) ))){
 	  		switch($field){
-	  			case 'locality': $stringValue = $value->language->representation_L10n; break;
+	  			case 'locality': $stringValue = $value->text; break;
 	  			case 'country' : $stringValue = $value->representation_L10n; break;
 	  			case 'collector': $stringValue = $value->titleCache; break;
 	  			case 'collection' : $stringValue = $value->titleCache; break;
 	  			case 'exactLocation': $stringValue = $value->sexagesimalString; break;
+	  			case 'getGatheringPeriod': $stringValue = timePeriodToString($value); break;
 	  			default: $stringValue = $value;
 	  		}
-	  	  $out .= '<dt>' . t(ucfirst($field)) . ':</dt><dd>' . $stringValue . '</dd>';
+	  		// relabel field names
+            if(isset($fieldLabels[$field])){
+              $field = $fieldLabels[$field];
+            }
+            $field = preg_replace('/([a-z])([A-Z])/e', "'\\1 '.strtolower('\\2')", $field);
+	  	    $out .= '<dt>' . t(ucfirst($field)) . ':</dt><dd>' . $stringValue . '</dd>';
 	  	}
 	  }
 		$out .= '</dl>';

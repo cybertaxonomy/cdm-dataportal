@@ -328,7 +328,7 @@ function partialToDay($partial){
  * these are turned in to '00' or are stripped depending of the $stripZeros parameter.
  *
  * @param $partial
- * @param $stripZeros is set to true the zeo month and days will be hidden:
+ * @param $stripZeros if set to true the zero (00) month and days will be hidden:
  *   eg 1956-00-00 becomes 1956 the default is true.
  */
 function partialToDate($partial, $stripZeros=true){
@@ -361,6 +361,24 @@ function partialToDate($partial, $stripZeros=true){
     $date .= "-" . $d;
   }
   return $date;
+}
+
+/**
+ * see also partialToDate($partial, $stripZeros)
+ *
+ * @param $period an JodaTime org.joda.time.Period object
+ * @param $stripZeros if set to true the zero (00) month and days will be hidden:
+ *   eg 1956-00-00 becomes 1956 the default is true.
+ */
+function timePeriodToString($period, $stripZeros=true){
+  $dateString = '';
+  if($period->start){
+    $dateString = partialToDate($period->start, $stripZeros);
+  }
+  if($period->end){
+    $dateString .= (strlen($dateString) > 0 ? ' '.t('to').' ' : '').partialToDate($period->end, $stripZeros);
+  }
+  return $dateString;
 }
 
 /**

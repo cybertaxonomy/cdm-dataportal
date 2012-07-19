@@ -554,14 +554,8 @@ function theme_cdm_reference_page($reference){
     if($reference->$fieldname){
 
       if($fieldname == "datePublished") {
-        $partial = $reference->$fieldname;
-        $datePublished = '';
-        if($partial->start){
-          $datePublished = partialToDate($partial->start);
-        }
-        if($partial->end){
-          $datePublished .= (strlen($datePublished) > 0 ? ' '.t('to').' ' : '#').partialToDate($partial->end);
-        }
+        $period = $reference->$fieldname;
+        $datePublished = timePeriodToString($period);
         $table_rows[] = array(t(ucfirst(strtolower($fieldname))), $datePublished);
         //$datePublished = array(t(ucfirst(strtolower($fieldname))), $datePublished);
       } else if(is_object($reference->$fieldname)){
