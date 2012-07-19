@@ -45,7 +45,7 @@ function cdm_load_node($nodetype, $uuid, $title){
 			  return null;
 			}
 			if(!referer_uri() || !isset($_SERVER['REMOTE_ADDR'])){
-			  $message = t('Stopping creating node for') . $nodetype . '  Cause: referer uri or host address was empty';
+			  $message = t('Stopping creating node for ') . $nodetype . '.  cause: referer uri or host address was empty';
 			  drupal_set_message($message ,'error');
 			  watchdog('content', $message, WATCHDOG_ERROR);
 			  return null;
