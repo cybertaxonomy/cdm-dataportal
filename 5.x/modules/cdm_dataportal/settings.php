@@ -337,12 +337,16 @@ function cdm_settings_general(){
           '#type' => 'fieldset',
           '#title' => t('Freetext index'),
           '#collapsible' => FALSE,
-          '#collapsed' => FALSE,
-          '#description'   =>
-            t('Operations').": ".l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE))
-            ." ". l("Reindex", cdm_compose_url(CDM_WS_MANAGE_REINDEX))
-    );
+          '#collapsed' => FALSE
 
+    );
+    $form['cdm_webservice']['freetext_index']['operations'] = array(
+         '#value' => t('Operations')
+            .": " . l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE))
+            ." " . l("Reindex", cdm_compose_url(CDM_WS_MANAGE_REINDEX), array("id"=>"reindex"))
+    		.'<div id="reindex_progress"></div>'
+    );
+    _add_js_cdm_ws_progressbar("#reindex", "#reindex_progress");
 
     $form['cdm_webservice']['proxy'] = array(
       '#type' => 'fieldset',

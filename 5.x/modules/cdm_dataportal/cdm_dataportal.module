@@ -34,6 +34,16 @@ function _add_js_progressbar(){
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.progressbar/js/jquery.progressbar.js');
 }
 
+function _add_js_cdm_ws_progressbar($link_element_selector, $progress_element_selector){
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_ws_progress.js');
+  drupal_add_js("
+  	  if (Drupal.jsEnabled) {
+        $(document).ready(function() {
+      		$('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');
+        });
+      }", 'inline');
+}
+
 function _add_js_treeselector(){
   //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/treeselector.js');
   drupal_add_js("
