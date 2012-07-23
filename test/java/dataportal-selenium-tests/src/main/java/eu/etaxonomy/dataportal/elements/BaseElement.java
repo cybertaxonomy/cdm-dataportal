@@ -74,7 +74,7 @@ public class BaseElement {
         if(linksInElement == null){
             linksInElement = new ArrayList<LinkElement>();
 
-            if(getElement().getTagName().equals("a") && getElement().getAttribute("href") != null){
+            if(getElement().getTagName().equals("a") && getElement().getAttribute("href") != null && getElement().getAttribute("href").length() > 0){
                 // BaseElement is link itself
                 linksInElement.add(new LinkElement(getElement()));
             } else {
@@ -92,7 +92,7 @@ public class BaseElement {
 
         List<String> targets = new ArrayList<String>();
 
-        if(element instanceof LinkElement){
+        if(getElement().getTagName().equals("a") && getElement().getAttribute("target") != null  && getElement().getAttribute("target").length() > 0){
             targets.add(getElement().getAttribute("target"));
         } else {
             try {
