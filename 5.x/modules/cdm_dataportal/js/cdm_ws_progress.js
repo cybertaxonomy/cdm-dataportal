@@ -15,8 +15,9 @@
 
 		var showProgress = function(monitor){
 			$progress_titel.text(monitor.taskName);
-			$progress_bar_value.text(monitor.percentage + "%");
-			$progress_bar_indicator.css('width', monitor.percentage + "%");
+			var percentTwoDecimalDigits = Math.floor(monitor.percentage * 100) / 100;
+			$progress_bar_value.text(percentTwoDecimalDigits + "%");
+			$progress_bar_indicator.css('width', percentTwoDecimalDigits + "%");
 			if(monitor.failed){
 				$progress_status.text("An error occurred");
 			} else if (monitor.done) {
