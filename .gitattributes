@@ -215,17 +215,6 @@
 5.x/modules/cdm_dataportal/js/jquery.dimensions.pack.js -text
 5.x/modules/cdm_dataportal/js/jquery.form.js -text
 5.x/modules/cdm_dataportal/js/jquery.imagetool.min.js -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/demo.php -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/demo.txt -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/images/progressbar.gif -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/images/progressbg_black.gif -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/images/progressbg_green.gif -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/images/progressbg_orange.gif -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/images/progressbg_red.gif -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/images/progressbg_yellow.gif -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/js/jquery.js -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/js/jquery.progressbar.js -text
-5.x/modules/cdm_dataportal/js/jquery.progressbar/js/jquery.progressbar.min.js -text
 5.x/modules/cdm_dataportal/js/openlayers_map.js -text
 5.x/modules/cdm_dataportal/js/thickbox/cdm_thickbox.css -text
 5.x/modules/cdm_dataportal/js/thickbox/thickbox.js -text
