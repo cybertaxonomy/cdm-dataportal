@@ -50,8 +50,8 @@
 			$progress_bar_value = $('<div class="progress_bar_value">0%</div>');
 			$progress_bar_indicator = $('<div class="progress_bar_indicator"></div>')
 			$progress_bar = $('<div class="progress_bar"></div>').append($progress_bar_indicator).append($progress_bar_value);
-			$progress_status = $('<div class="progress_status">initializing ...</div>');
-			$progress_titel = $('<h4 class="progress_title">CDM REST serivce - progress</h4>');
+			$progress_titel = $('<h4 class="progress_title">CDM REST service progress</h4>');
+			$progress_status = $('<div class="progress_status">waiting ...</div>');
 			$ws_progress_outer = $('<div class="cdm_ws_progress" id="cdm_ws_progress_' + index + '"></div>').append($progress_titel).append($progress_bar).append($progress_status);
 
 			// styling element
