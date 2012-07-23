@@ -47,11 +47,11 @@
 			var $this = $(this);
 
 			// creating progressbar and other display lements
-			$progress_bar_value = $('<div class="progress_bar_value">100%</div>');
+			$progress_bar_value = $('<div class="progress_bar_value">0%</div>');
 			$progress_bar_indicator = $('<div class="progress_bar_indicator"></div>')
 			$progress_bar = $('<div class="progress_bar"></div>').append($progress_bar_indicator).append($progress_bar_value);
-			$progress_status = $('<div class="progress_status">Status</div>');
-			$progress_titel = $('<h4 class="progress_title">Progress</h4>');
+			$progress_status = $('<div class="progress_status">initializing ...</div>');
+			$progress_titel = $('<h4 class="progress_title">CDM REST serivce - progress</h4>');
 			$ws_progress_outer = $('<div class="cdm_ws_progress" id="cdm_ws_progress_' + index + '"></div>').append($progress_titel).append($progress_bar).append($progress_status);
 
 			// styling element
@@ -60,7 +60,7 @@
 			$progress_bar_value.css('text-align', 'center').css('vertical-align', 'middle').css('margin-top', '-'+opts.bar_height);
 			$ws_progress_outer.css('border', opts.border).css('padding', opts.padding);
 			// >>> DEBUG
-			$progress_bar_indicator.css('width', '50%');
+			$progress_bar_indicator.css('width', '0%');
 			$ws_progress_outer.css('display', 'none');
 			// <<<<
 
