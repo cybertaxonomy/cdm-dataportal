@@ -44,8 +44,8 @@ function cdm_load_node($nodetype, $uuid, $title){
 			  watchdog('content', $message . ' $pathelements was :' . $pathelements, WATCHDOG_ERROR);
 			  return null;
 			}
-			if(!referer_uri() || !isset($_SERVER['REMOTE_ADDR'])){
-			  $message = t('Stopping creating node for ') . $nodetype . '.  cause: referer uri or host address was empty';
+			if(!isset($_SERVER['REMOTE_ADDR'])){
+			  $message = t('Stopping creating node for ') . $nodetype . '.  since remote address was empty';
 			  drupal_set_message($message ,'error');
 			  watchdog('content', $message, WATCHDOG_ERROR);
 			  return null;
