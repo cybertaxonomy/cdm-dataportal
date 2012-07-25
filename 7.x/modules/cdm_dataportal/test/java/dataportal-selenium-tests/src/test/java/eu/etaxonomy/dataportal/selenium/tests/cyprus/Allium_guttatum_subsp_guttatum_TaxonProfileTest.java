@@ -107,8 +107,8 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
         assertTrue("expecting one footnote 0 to be the footnote for key 0",footNote_1.getText().startsWith(footNoteKey_1.getText()));
 
         p.hover(footNoteKey_1.getElement());
-        assertEquals("rgb(255, 255, 0)", footNoteKey_1.getElement().getCssValue("background-color"));
-        assertEquals("rgb(255, 255, 0)", footNote_1.getElement().getCssValue("background-color"));
+        assertEquals("rgba(255,255,0,1)", footNoteKey_1.getElement().getCssValue("background-color"));
+        assertEquals("rgba(255,255,0,1)", footNote_1.getElement().getCssValue("background-color"));
 
         assertEquals("1. R. D. Meikle, Flora of Cyprus 2. 1985", footNote_1.getText());
 

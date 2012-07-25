@@ -1416,7 +1416,6 @@ function cdm_view_cache_site(){
 
   $out = '';
 
-  _add_js_progressbar();
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cache_all_taxa.js');
 
   $request_params = array();
