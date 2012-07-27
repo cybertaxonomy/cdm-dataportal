@@ -81,7 +81,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
     public void testProfileImage() {
         ImgElement profileImage = p.getProfileImage();
         assertNotNull("Expecting profile images to be switched on", profileImage);
-        assertTrue("Expecting image Lactuca_triquetra_Bc_01.JPG", profileImage.getSrcUrl().toString().endsWith("/Lactuca_triquetra_Bc_01.JPG"));
+        assertTrue("Expecting image Lactuca_triquetra_Bf_09.jpg", profileImage.getSrcUrl().toString().endsWith("/Lactuca_triquetra_Bf_09.jpg"));
     }
 
 
