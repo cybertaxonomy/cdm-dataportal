@@ -42,6 +42,22 @@
 			});
 		};
 
+		var addFileExtension = function(url, extension){
+			var new_url;
+			if(url.indexOf('?') > 0){
+				new_url = url.substring(0, url.indexOf('?'));
+				new_url +=  "." + extension;
+				new_url += url.substring(url.indexOf('?'));
+			} else  if(url.indexOf('#') > 0){
+				new_url = url.substring(0, url.indexOf('#'));
+				new_url +=  "." + extension;
+				new_url += url.substring(url.indexOf('#'));
+			} else {
+				new_url =  url + "." + extension;
+			}
+			return new_url;
+		};
+
 		$progress_container = $(progress_container_selector);
 
 		return this.each(function(index) {
@@ -81,7 +97,7 @@
 
 					var url = $this.attr('href');
 					$.ajax({
-						url: url + '.json',
+						url: addFileExtension(url, 'json'),
 						dataType: "jsonp",
 						success: function(data){
 							monitorProgess(data);
