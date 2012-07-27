@@ -27,10 +27,10 @@
 				$progress_status.text(monitor.subTask + " [chunk " + monitor.workDone + "/" + monitor.totalWork + "]");
 			}
 			monitorProgess();
-		}
+		};
 
 		var monitorProgess = function(jsonpRedirect){
-			if(jsonpRedirect != undefined){
+			if(jsonpRedirect !== undefined){
 				monitorUrl = jsonpRedirect.redirectURL;
 			}
 			$.ajax({
@@ -38,9 +38,9 @@
 				dataType: "jsonp",
 				success: function(data){
 					showProgress(data);
-				},
+				}
 			});
-		}
+		};
 
 		$progress_container = $(progress_container_selector);
 
@@ -49,7 +49,7 @@
 
 			// creating progressbar and other display lements
 			$progress_bar_value = $('<div class="progress_bar_value">0%</div>');
-			$progress_bar_indicator = $('<div class="progress_bar_indicator"></div>')
+			$progress_bar_indicator = $('<div class="progress_bar_indicator"></div>');
 			$progress_bar = $('<div class="progress_bar"></div>').append($progress_bar_indicator).append($progress_bar_value);
 			$progress_titel = $('<h4 class="progress_title">CDM REST service progress</h4>');
 			$progress_status = $('<div class="progress_status">waiting ...</div>');
@@ -85,7 +85,7 @@
 						dataType: "jsonp",
 						success: function(data){
 							monitorProgess(data);
-						},
+						}
 					});
 						// show progress indicator
 						$ws_progress_outer.css('display', 'block');
