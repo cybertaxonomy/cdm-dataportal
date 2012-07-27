@@ -444,7 +444,7 @@ function cdm_settings_layout(){
     '#type' => 'checkbox',
     '#title' => t('Tabbed taxon page'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
-    '#description' => t('If selected split the taxon page into individual tabs for description, images, synonymy. If not the taxon data is renderized as a long single page without tabs.')
+    '#description' => t('If selected split the taxon page into individual tabs for description, images, synonymy. If not the taxon data is rendered as a long single page without tabs.')
   );
 */
   $form['gen_layout'] = array(
@@ -730,7 +730,7 @@ function cdm_settings_layout_taxon(){
     '#title' => t('Tabbed taxon page'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
     '#description' => t('<p>If selected split the taxon page into individual tabs for description, images, synonymy and specimens.
-                            If not the taxon data is renderized as a long single page without tabs.</p>')
+                            If not the taxon data is rendered as a long single page without tabs.</p>')
   );
 
  $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array (
@@ -748,14 +748,14 @@ function cdm_settings_layout_taxon(){
       '#options'       => unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB),
       '#description'   => t('<p>Select the default tab to display when visiting a taxon page. Only available if Tabbed Taxon Page is enable.</p>
               <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab
-              to be renderized will be the synonymy of the accepted taxon and not the above selected tab.'),
+              to be rendered will be the synonymy of the accepted taxon and not the above selected tab.'),
   );
 
   $form['cdm_dataportal_show_back_to_search_results'] = array(
       '#type' => 'checkbox',
         '#title' => t('Show <em>Back to search results</em> link at the taxon site.'),
         '#default_value' => variable_get('cdm_dataportal_show_back_to_search_results', 1),
-        '#description' => t('<p>If checked the link to search results is rendererized at the top of the taxon site. Clicking on the link the last search performed is renderized again.</p>')
+        '#description' => t('<p>If checked the link to search results is rendered at the top of the taxon site. Clicking on the link the last search performed is rendered again.</p>')
   );
 
 
@@ -967,7 +967,7 @@ function cdm_settings_layout_taxon(){
   );
 
   $nameRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE);
-  $form['synonymy']['name_relationships']['name_relationships_to_show'] = array(
+  $form['taxon_synonymy']['name_relationships']['name_relationships_to_show'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Display name relationships'),
     '#default_value' => variable_get('name_relationships_to_show', 0),
@@ -976,7 +976,7 @@ function cdm_settings_layout_taxon(){
   );
 
 
- $form['synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+ $form['taxon_synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show taxon relations ships of accepted taxon'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
@@ -984,7 +984,7 @@ function cdm_settings_layout_taxon(){
   );
 
   $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, _cdm_relationship_type_term_label_callback);
-  $form['synonymy'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
+  $form['taxon_synonymy'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
       '#type' => 'checkboxes',
       '#title' => t('Taxon relationship types'),
       '#description' => t('Only taxon relationships of the selected type will be displayed'),
@@ -1001,11 +1001,13 @@ function cdm_settings_layout_taxon(){
       '#collapsed' => TRUE,
       '#description' => t('This section covers the settings related to the taxon <b>specimens</b> tab.'),
   );
+
   $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
   $form_title = 'Specimen media';
   $form_description = 'Specimens may have media which is displayed at the Specimen tab/section as a gallery.
    It is possible to configure the thumbnails gallery here, however for configuring how a single media should
    be displayed please go to <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a></p>';
+
   $form['taxon_specimens'][] =
     cdm_dataportal_create_gallery_settings_form($form_name, $form_title, FALSE, $form_description);
 
@@ -1227,7 +1229,7 @@ function cdm_settings_geo(){
       '#default_value' => variable_get('cdm_dataportal_map_openlayers', 1),
       '#description' => t('You can choose from two different map viewers:<ul><li><em>OpenLayers</em> displays the maps in an interactive viewer which allows zooming and panning. If not enabled the maps will consist
                            on a static image. If enabled you can configure the default layer (background of your maps) below. Only one of
-                           them will be renderized.</li><li><em>Plain image</em> displays the map as a plain non interactive image</li></ul>')
+                           them will be rendered.</li><li><em>Plain image</em> displays the map as a plain non interactive image</li></ul>')
     );
 
     $openLayersEnabled = variable_get('cdm_dataportal_map_openlayers', 1) == 1;
