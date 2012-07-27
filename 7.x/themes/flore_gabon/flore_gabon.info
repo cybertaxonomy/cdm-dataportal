@@ -1,0 +1,8 @@
+name = Flore_Gabon
+description = Subtheme from Garland Cichorieae for Flore_Gabon
+package = CDM_Portal
+base theme = garland_cichorieae
+version = 1.0
+core = 7.x
+stylesheets[all][] = style.css
+stylesheets[all][] = styleOverride.css

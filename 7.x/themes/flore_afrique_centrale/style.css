@@ -1,0 +1,11 @@
+@IMPORT url("../garland_cichorieae/style.css");
+
+#test{
+  color:inherit;	
+}
+#wrapper #container #header h1, 
+#wrapper #container #header h1 a:link, 
+wrapper #container #header h1 a:visited {
+  position: inherit;	
+}
+

@@ -139,7 +139,7 @@ ul.inline li {
   padding: 0 1em 0 0;
 }
 
-fieldset ul.clearfix li {
+fieldset ul.clear-block li {
   margin: 0;
   padding: 0;
   background-image: none;
@@ -222,6 +222,7 @@ span.submitted, .description {
 }
 
 .description {
+  line-height: 150%;
   margin-bottom: 0.75em;
   color: #000000;
 }
@@ -321,7 +322,7 @@ table .form-button, table .form-submit {
 }
 
 #wrapper #container #header {
-  height: 80px;
+  /*height: 80px;*/
 }
 
 #wrapper #container #header #logo-floater {
@@ -577,7 +578,7 @@ ul.primary, ul.primary li, ul.secondary, ul.secondary li {
   padding: 0;
 }
 
-#tabs-wrapper, #tabs-wrapper2 {
+#tabs-wrapper {
   margin: 0 -26px 1em;
   padding: 0 26px;
   border-bottom: 1px solid #e9eff3;
@@ -712,7 +713,7 @@ ul.links li, ul.inline li {
 .node .content, .comment .content {
   margin: 0.6em 0;
   font-size: 1em;
-  line-height: 1.5em;
+  line-height: 1.3em;
 }
 
 /**

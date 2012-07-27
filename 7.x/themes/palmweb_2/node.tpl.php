@@ -19,7 +19,11 @@
       // We hide the comments and links now so that we can render them later.
       hide($content['comments']);
       hide($content['links']);
+      // we are going to use a body with fixed file urls, see template.php
+      hide($content['body']);
+      
       print render($content);
+      print $fixed_body;
     ?>
   </div>
 

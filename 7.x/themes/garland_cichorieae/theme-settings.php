@@ -12,12 +12,12 @@
 */
 function phptemplate_settings($saved_settings) {
 
-	$key = sub_theme();
+    $key = sub_theme();
 
-	$defaults = array(
-	    'default_banner_right' => 1,
-	    'banner_right_path' => '',
-	);
+    $defaults = array(
+        'default_banner_right' => 1,
+        'banner_right_path' => '',
+    );
 
   $settings = array_merge($defaults, $saved_settings);
 
@@ -39,25 +39,25 @@ function phptemplate_settings($saved_settings) {
   }
 
   if (true || $file) {
-		$form['default_banner_right'] = array(
-	      '#type' => 'checkbox',
-	      '#title' => t('Use the right default header image'),
-	      '#default_value' => $settings['default_banner_right'],
-	      '#tree' => FALSE,
-	      '#description' => t('Check here if you want the theme to use the right header image supplied with it.')
-		 );
+        $form['default_banner_right'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Use the right default header image'),
+          '#default_value' => $settings['default_banner_right'],
+          '#tree' => FALSE,
+          '#description' => t('Check here if you want the theme to use the right header image supplied with it.')
+         );
 
-		$form['banner_right_path'] = array(
-		  '#type' => 'textfield',
-		  '#title' => t('Right banner image path'),
-		  '#default_value' => $settings['banner_right_path'],
-		  '#maxlength' => 255
-		  );
+        $form['banner_right_path'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Right banner image path'),
+          '#default_value' => $settings['banner_right_path'],
+          '#maxlength' => 255
+          );
 
-		$form['banner_right_upload'] = array(
-		  '#type' => 'file',
-		  '#title' => t('Upload new right banner image'),
-		  );
+        $form['banner_right_upload'] = array(
+          '#type' => 'file',
+          '#title' => t('Upload new right banner image'),
+          );
   }
 
   return $form;

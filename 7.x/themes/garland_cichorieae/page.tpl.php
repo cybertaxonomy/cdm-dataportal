@@ -1,125 +1,70 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php print $language ?>" lang="<?php print $language ?>">
-  <head>
-    <title><?php print $head_title ?></title>
-    <?php print $head ?>
-    <?php print $styles ?>
+  <?php print render($page['header']); ?>
 
-    <style type="text/css" media="all">@import "<?php
-      print base_path();
-	    $subThemePath = path_to_sub_theme();
-	    print $subThemePath;
-
-      ?>/styleOverride.css";</style>
-<?php
-  print $scripts
-?>
-<!--    <style type="text/css" media="print">@import "<?php print base_path() . path_to_theme() ?>/print.css";</style>-->
-<!--    -->
-    <!--[if IE]>
-    <style type="text/css" media="all">@import "<?php print base_path() . path_to_theme() ?>/fix-ie.css";</style>
-    <![endif]-->
-    <!--[if gte IE 7]>
-    <style type="text/css" media="all">@import "<?php print base_path() . path_to_theme() ?>/fix-ie7.css";</style>
-    <![endif]-->
-  </head>
-  <body<?php print phptemplate_body_class($sidebar_left, $sidebar_right); ?>>
-
-<!-- Layout -->
-
-
-    <div id="wrapper">
-    <div id="container" class="clear-block">
-
-	  <?php /* <div id="upbg"></div> */ ?>
+  <div id="wrapper">
+    <div id="container" class="clearfix">
 
       <div id="header">
-      	<div id="edit-logo"></div>
+        <div id="edit-logo"></div>
         <div id="logo-floater">
-        <?php
-          // Prepare header
-          $site_fields = array();
-          if ($site_name) {
-            $site_fields[] = check_plain($site_name);
-          }
-          if ($site_slogan) {
-            $site_fields[] = check_plain($site_slogan);
-          }
-          $site_title = implode(' ', $site_fields);
-          $site_fields[0] = $site_fields[0];
-          $site_html = implode(' ', $site_fields);
+        
+        <?php if ($site_title): ?>
 
-          if ($logo || $site_title) {
-            print '<h1><a href="'. check_url($base_path) .'" title="'. $site_title .'">';
-           /* if ($logo) {
-              print '<img src="'. check_url($logo) .'" alt="'. $site_title .'" id="logo" />';
-            }*/
-            print $site_html .'</a></h1>';
-          }
-        ?>
+            <h1 id="branding"><a href="<?php print $front_page ?>" title="<?php print $site_name_and_slogan ?>">
+            <?php print $site_title ?>
+            </a></h1>
 
+        <?php endif; ?>
         </div>
-        <?php
-            //var_dump(theme_get_setting('banner_right_path'));
-            //   var_dump(theme_get_setting('logo_path'));
-//            if(!theme_get_setting('default_banner_right') && theme_get_setting('banner_right_path')){
-//              $splash_style = 'style="background: url('.theme_get_setting('banner_right_path').')"';
-//            }
-            ?>
-        <div id="splash" <?php print($splash_style); ?>></div>
+        <div id="splash"></div>
+        <?php if ($primary_nav): print $primary_nav; ?>
+        <?php else: ?><div id="menu"> </div><?php endif; ?>
+        <?php if ($secondary_nav): print $secondary_nav; endif; ?>
+      </div> <!-- /#header -->
+      <div id="contento">
+      <?php if ($page['sidebar_first']): ?>
+        <div id="sidebar-first" class="sidebar">
 
-        <div id="header-region" class="clear-block"><?php print $header; ?></div>
+          <?php if(!empty($page['search'])): ?>
+            <div class="block block-theme">
+            <?php print render($page['search']); ?>
+            </div>
+         <?php endif; ?>
 
-		<div id="menu">
-          <?php if (isset($primary_links)) : ?>
-            <?php print theme('links', $primary_links, array('class' => 'links primary-links')) ?>
-          <?php endif; ?>
-          <?php if (isset($secondary_links)) : ?>
-            <?php print theme('links', $secondary_links, array('class' => 'links secondary-links')) ?>
-          <?php endif; ?>
-        </div>
-
-      </div> <!-- /header -->
-
-	<div id="contento">
-
-      <?php if ($sidebar_left): ?>
-        <div id="sidebar-left" class="sidebar">
-          <?php if ($search_box): ?><div class="block block-theme"><?php print $search_box ?></div><?php endif; ?>
-          <?php print $sidebar_left ?>
+          <?php print render($page['sidebar_first']); ?>
+          
         </div>
       <?php endif; ?>
 
       <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
-          <?php //if ($breadcrumb): print $breadcrumb; endif; ?>
-          <?php if ($mission): print '<div id="mission">'. $mission .'</div>'; endif; ?>
-
-          <?php if ($tabs): print '<div id="tabs-wrapper" class="clear-block">'; endif; ?>
-          <?php if ($title): print '<h2'. ($tabs ? ' class="with-tabs"' : '') .'>'. $title .'</h2>'; endif; ?>
-          <?php if ($tabs): print '<div class="clear"></div>'.$tabs .'</div>'; endif; ?>
-
-          <?php if (isset($tabs2)): print '<div id="tabs-wrapper2" class="clear-block">' . $tabs2 . '</div><div class="clear"></div>'; endif; ?>
-
-          <?php if ($help): print $help; endif; ?>
-          <?php if ($messages): print $messages; endif; ?>
-          <?php print $content ?>
-          <span class="clear"></span>
+          <?php //print $breadcrumb; ?>
+          <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
+          <a id="main-content"></a>
+          <?php // unfortunately in D7 tabs are always set, even if there are none.. ?>
+          <?php if ($tabs = render($tabs)): ?><div id="tabs-wrapper" class="clearfix"><?php endif; ?>
+          
+          <?php print render($title_prefix); ?>
+          <?php if ($title): ?>
+            <h2<?php if($tabs = render($tabs)):?><?php print ' class="with-tabs"' ; ?><?php endif; ?>><?php print $title ?></h2>
+          <?php endif; ?>
+          <?php print render($title_suffix); ?>
+          <?php if ($tabs = render($tabs)): ?><?php print render($tabs); ?></div><?php endif; ?>
+          <?php print render($tabs2); ?>
+          <?php print render($page['help']); ?>
+          <?php print $messages; ?>
+          
+          <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>
+          <div class="clearfix">
+            <?php print render($page['content']); ?>
+          </div>
           <?php print $feed_icons ?>
-          <div id="footer"><?php print $footer_message ?></div>
+          <?php print render($page['footer']); ?>
       </div></div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
 
-      <?php if ($sidebar_right): ?>
-        <div id="sidebar-right" class="sidebar">
-          <?php if (!$sidebar_left && $search_box): ?><div class="block block-theme"><?php print $search_box ?></div><?php endif; ?>
-          <?php print $sidebar_right ?>
+      <?php if ($page['sidebar_second']): ?>
+        <div id="sidebar-second" class="sidebar">
+          <?php print render($page['sidebar_second']); ?>
         </div>
       <?php endif; ?>
-	</div> <!-- contento -->
-    </div> <!-- /container -->
-  </div>
-<!-- /layout -->
-
-  <?php print $closure ?>
-  </body>
-</html>
+    </div> <!-- contento -->
+    </div> <!-- /#container -->
+  </div> <!-- /#wrapper --> 

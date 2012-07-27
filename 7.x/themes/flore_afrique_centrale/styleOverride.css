@@ -1,0 +1,60 @@
+@IMPORT url("../garland_cichorieae/styleOverride.css");
+
+#edit-logo {
+background:url("images/edit-logo.png") no-repeat scroll 0 0 #FFFFFF;
+}
+
+#splash {
+  background:#EAEAE2 url(images/banner_website_Ericaceae2.jpg) no-repeat scroll 0 0;
+  height:92px;
+  /*float:left;*/
+  width:880px;
+  overflow:hidden;
+  /*float: right;*/
+  margin-top: -92px;
+  z-index: 2;
+}
+
+#wrapper #container #header #logo-floater {
+	/*background:url("images/flora-malesiana-logo-floater-bg-1.jpg") repeat-x scroll 0 0 #FF7800;*/
+	/*border-right:7px solid white;*/
+	background-color: transparent;
+	background-image: none;
+	width: 328px;
+	z-index: 10;
+	/* position: static; */
+	float: right;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+}
+
+#featureTOC{
+	float: left;
+}
+
+#wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited
+{
+	font-family: Georgia, Times, serif;
+	font-weight: normal;
+	font-size: 135%;
+	/*color: #6db8d8;*/
+	color: #7fbde0;
+	margin-left: 16px;
+	margin-top: 15px;
+	z-index: 20;
+}
+
+#edit-logo-small {
+    float: right;
+    margin-top: -51px;
+}
+
+#bel-logo-small {
+    float: right;
+    margin-top: -2px;
+    margin-right: 55px;
+}
+
+#header-region .block {
+    margin-right: 0;
+}

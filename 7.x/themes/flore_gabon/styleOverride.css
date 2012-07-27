@@ -21,6 +21,21 @@ body {
 }
 */
 
+heterotypicSynonymyGroup li.footnotes,
+.homotypicSynonymyGroup li.footnotes,
+.homotypicSynonyms li.footnotes,
+.misapplied li.footnotes,
+.content li.descriptionText {
+    background-image: none;
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+    margin-left: 0px;
+    margin-top: 10px;
+    padding-left: 0px;
+}
+
+
 #edit-logo {
 	background:#FFFFFF url(images/edit-logo.gif) no-repeat scroll 0 0;
 	float: left;
@@ -28,6 +43,7 @@ body {
 	height:92px;
 	width:93px;
 	z-index: 2;
+	margin-right: 7px;
 }
 
 #wrapper #container {
@@ -58,20 +74,19 @@ body {
 }
 
 #wrapper #container #header #logo-floater {
-	position: relative;
-	background:#FF7800 url(images/a8.gif) repeat-x scroll 0 0;
-	color:#FFFFFF;
-	height:92px;
-	margin-left:7px;
-	margin-right: 7px;
-	padding-left:15px;
-	float:left;
-	width:187px;
-	z-index: 2;
+	/*position: relative;*/
+	background:#663350 url(images/a8.gif) repeat-x scroll 0 0;
+	color: #FFFFFF;
+    float: left;
+    height: 40px;
+    margin-top: 97px;
+    width: 100%;
+    z-index: 10;
 }
 
-#logo-floater {
-  /* min-width: 200px;	*/
+#wrapper #container #header #logo-floater h1{
+	margin-left: 15px;
+	padding-top: 5px;
 }
 
 #wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited{
@@ -82,10 +97,10 @@ body {
 	/*
 	background:#EAEAE2 url(images/splashChichorium_wide.jpg) no-repeat scroll 0 0;
 	*/
-	background:#EAEAE2 url(images/splash2xChichorium.jpg) no-repeat scroll 0 0;
+	background:#EAEAE2 url(images/test3_Vicia_lunata_CSC_6051.jpg) no-repeat scroll 0 0;
 	height:92px;
-	float:left;
-	width:570px;
+	/*float:left;*/
+	width:780px;
 	overflow:hidden;
 	z-index: 2;
 }
@@ -150,7 +165,7 @@ span.cluetip {
 }
 */
 
-.clearfix {
+.clear-block {
 	clear: both;
 }
 
@@ -187,6 +202,7 @@ ul.cdm_taxontree li .active {
 	width: 100%;
 	float:left;
 	clear: both;
+	margin-top: 40px;
 }
 
 ul.primary, ul.secondary {
@@ -207,17 +223,12 @@ div.clear {
 
 
 ul.primary-links {
-	background:#46461F url(images/a16.gif) repeat-x scroll 0 0;
-	/*float:left;
-	clear: both;*/
+	background:#663350 url(images/a16.gif) repeat-x scroll 0 0;
 	font-family:Tahoma,Georgia,Arial,Verdana,Serif;
-	height:67px;
 	width: 100%;
-	margin:7px 0;
-	padding:0;
-	/*position:relative;*/
 	text-transform:uppercase;
 	z-index:4;
+	height: 40px;
 }
 
 ul.primary-links li a, ul.primary-links li a:hover, ul.primary-links li a:visited, ul.primary-links li a:active{
@@ -289,7 +300,7 @@ li.ui-tabs-selected{
 	display: none;
 }
 
-#tabs-wrapper, #tabs-wrapper2{
+#tabs-wrapper{
 	margin: 0;
 	padding: 0;
 }
@@ -347,10 +358,6 @@ span.submitted, .description {
   font-weight:normal;
 }
 
-.media-caption dd.title span.media-description{
-	display: block;
-}
-
 /*
  * GLOSSARY
  */
@@ -397,7 +404,6 @@ li.toclevel-3 {
 	background-image: none;
 }
 
-
-#block-cdm_dataportal-feature-credits span.cdm\:TextData {
-	display: block;
+#edit-logo {
+    background: url("images/title_flower_logo.jpg")
 }
