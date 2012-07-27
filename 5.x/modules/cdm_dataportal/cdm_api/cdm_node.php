@@ -33,16 +33,35 @@ function cdm_load_node($nodetype, $uuid, $title){
 		$_SESSION['messages'] = $messages;
 
 		if(!is_array($result)){
-			// result should contain the path the newly created node; e.g.: node/32
+			// result should contain the path to the newly created node; e.g.: node/32
 			$pathelements = explode('/', $result);
 			$nid = array_pop($pathelements);
+
+			// ---- checking for problems, see http://dev.e-taxonomy.eu/trac/ticket/2964
+			if($nid == 0){
+			  $message = t('Error creating node for ') . $nodetype . ',  cause: new node id was 0';
+			  drupal_set_message($message ,'error');
+			  watchdog('content', $message . ' $pathelements was :' . $pathelements, WATCHDOG_ERROR);
+			  return null;
+			}
+			if(!isset($_SERVER['REMOTE_ADDR'])){
+			  $message = t('Stopping creating node for ') . $nodetype . '.  since remote address was empty';
+			  drupal_set_message($message ,'error');
+			  watchdog('content', $message, WATCHDOG_ERROR);
+			  return null;
+			}
+			// ---- END of checking for problems
+
 			$node->nid = $nid;
-      $hash = md5( variable_get('cdm_webservice_url', NULL) . $uuid ); // hash as a 32-character hexadecimal number.
+            $hash = md5( variable_get('cdm_webservice_url', NULL) . $uuid ); // hash as a 32-character hexadecimal number.
 			db_query('INSERT INTO {node_cdm} (nid, wsuri, hash, cdmtype, uuid) VALUES (%d, \'%s\', \'%s\', \'%s\', \'%s\');'
 			, $nid, variable_get('cdm_webservice_url', NULL), $hash,  $nodetype, $uuid);
 
 		} else {
-			drupal_set_message(t('Could not create node for ' . $nodetype),'error');
+            $message = t('Could not create node for') . $nodetype;
+			drupal_set_message($message ,'error');
+			watchdog('content', $message, WATCHDOG_ERROR);
+			return null;
 		}
 	}
 

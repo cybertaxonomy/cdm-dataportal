@@ -74,7 +74,7 @@ function get_taxon_options_list() {
   		$taxon_tab_options[$key] = t($key);
   }
   return $taxon_tab_options;
-	
+
 }
 
 define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize(get_taxon_options_list()));
@@ -90,13 +90,14 @@ define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_TAXON_RELATIONSHIP_TYPES', 'cdm_taxon_relationship_types');
-define('CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
+define('CDM_PROFILE_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
 define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal_structdesc_featuretree_uuid');
 
 function getGallerySettings($gallery_config_form_name){
   $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
   return variable_get($gallery_config_form_name, $default_values);
 }
+
 
 
 function get_default_taxon_tab($index = false) {
@@ -307,7 +308,7 @@ function cdm_settings_general(){
   $form['cdm_webservice']['cdm_webservice_url'] =  array(
     '#type' => 'textfield',
     '#title'         => t('CDM web service URL'),
-    '#description'   => t('This is the URL to the CDM-Server exposing your data e.g. <em>"http://localhost:8080/palmae/"</em> The URL <strong>must end with a slash</strong> character!'),
+    '#description'   => t('This is the URL to the CDM-Server exposing your data e.g. <em>"http://localhost:8080/chichorieae/"</em> The URL <strong>must end with a slash</strong> character!'),
     '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
 
@@ -322,29 +323,30 @@ function cdm_settings_general(){
                            select here which rank should be at the top level of the tree structure.'),
   );
   */
-/*
-  $form['cdm_webservice']['cdm_webservice_cache'] =  array(
-    '#type' => 'checkbox',
-    '#title'         => t('<b>Enable caching</b>'),
-  '#options'     => cdm_help_general_cache(),
-    '#default_value' => variable_get('cdm_webservice_cache', 1),
-    '#description'   => t('When caching is enabled all single taxon sites are stored in an internal drupal cache doing
-                           the portal response of taxa sites faster. This is possible because the sites are loaded from
-                           the cache and are not created from scratch.
-                           You can manage and find more information about the cache at the <a href="./?q=admin/settings/cdm_dataportal/cachesite">cache configuration site</a>.<br>' .
-                         '<b>Note:</b> If taxa are modified by the editor or any other application the changes will be not
-                         visible till the cache is erased. Therefore developers should deactived this feature when they
-                         are working on the CDM Dataportal Module')
-    );
-*/
+
     $form['cdm_webservice']['cdm_webservice_debug'] =  array(
     '#type' => 'checkbox',
     '#title'         => t('<b>Debug CDM Web Service</b>'),
     '#default_value' => variable_get('cdm_webservice_debug', 1),
-    '#description'   => t('When enabled is possible to see which web services from CDM Server have been called and its
-                           results. A black box will appear at the top of the web site with the information.<br>' .
-                          '<b>Note:</b> this is meanly a feature for developers.')
+    '#description'   =>
+          t('The black web service debug box will appear at the top of each page. When clicked it toggles open and provides a list of all HTTP requests which have been made while building of this page.<br />'.
+                '<strong>Note:</strong> this is a feature dedicated to developers. It will only be visible when logged in and if the user has suffucicient rights to see this debug box.')
     );
+
+    $form['cdm_webservice']['freetext_index'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Freetext index'),
+          '#collapsible' => FALSE,
+          '#collapsed' => FALSE
+
+    );
+    $form['cdm_webservice']['freetext_index']['operations'] = array(
+         '#value' => t('Operations')
+            .": " . l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE))
+            ." " . l("Reindex", cdm_compose_url(CDM_WS_MANAGE_REINDEX), array("id"=>"reindex"))
+    		.'<div id="reindex_progress"></div>'
+    );
+    _add_js_cdm_ws_progressbar("#reindex", "#reindex_progress");
 
     $form['cdm_webservice']['proxy'] = array(
       '#type' => 'fieldset',
@@ -622,6 +624,81 @@ function cdm_settings_layout_synonymy(){
 }
 */
 
+function cdm_dataportal_create_gallery_settings_form($form_name, $form_tittle, $collapsed, $form_description = ''){
+  $form[$form_name] = array(
+    '#type' => 'fieldset',
+    '#title' => t($form_tittle),
+    '#collapsible' => TRUE,
+    '#collapsed' => $collapsed,
+    '#tree' => true,
+  '#description' => t($form_description),
+  );
+
+  $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
+  $gallery_settings = variable_get($form_name, $default_values);
+  //$test = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);
+
+  if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
+    /* TODO: why cdm_dataportal_search_items_on_page does not save the value on $test???
+     $form[$form_name]['cdm_dataportal_search_items_on_page'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search Page Size'),
+    '#default_value' => $test,
+    '#description' => t('Number of Names to display per page in search results.')
+    );
+    */
+    $form[$form_name]['cdm_dataportal_show_taxon_thumbnails'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show media thumbnails for accepted taxa'),
+      '#default_value' => $gallery_settings['cdm_dataportal_show_taxon_thumbnails'],
+    );
+
+    $form[$form_name]['cdm_dataportal_show_synonym_thumbnails'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show media thumbnails for synonyms'),
+      '#default_value' => $gallery_settings['cdm_dataportal_show_synonym_thumbnails'],
+      '#description' => t('')
+    );
+  }
+
+  //$showCaption = variable_get('cdm_dataportal_findtaxa_show_thumbnail_captions', 0);
+  $form[$form_name]['cdm_dataportal_show_thumbnail_captions'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show captions under thumbnails'),
+    '#default_value' => $gallery_settings['cdm_dataportal_show_thumbnail_captions'],
+    '#description' => t('')
+  );
+
+  $form[$form_name]['cdm_dataportal_media_maxextend'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Thumbnail size'),
+    '#default_value' => $gallery_settings['cdm_dataportal_media_maxextend'],
+    '#description' => t('Select the size of each individual thumbnail.')
+  );
+
+  if($form_name != CDM_DATAPORTAL_MEDIA_GALLERY_NAME){
+    $form[$form_name]['cdm_dataportal_media_cols'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Number of columns'),
+        '#default_value' => $gallery_settings['cdm_dataportal_media_cols'],
+        '#description' => t('Group the thumbnails in columns: select how many columns should the gallery display.')
+    );
+  }
+
+  if($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME){
+    $form[$form_name]['cdm_dataportal_media_maxRows'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum number of rows'),
+      '#default_value' => $gallery_settings['cdm_dataportal_media_maxRows'],
+      '#description' => t('You can group the thumbnails in rows, select in how many rows should be the thumbnails grouped.<br>
+                           <b>Note:</b> If you want an unlimited number of rows please set to 0')
+    );
+  }
+
+  return $form;
+}
+
+
 function cdm_settings_layout_taxon(){
   $collapsed = false;
   $form = array();
@@ -644,21 +721,11 @@ function cdm_settings_layout_taxon(){
                             If not the taxon data is renderized as a long single page without tabs.</p>')
   );
 
-
-  //$taxonTabsFlipped = array_flip(unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
-  $taxon_tab_options = array_flip(get_taxon_tabs_list());
-  for ($i=0;$i<count($taxon_tab_options);$i++) {
-
-  }
-  foreach ($taxon_tab_options as $key => $value) {
-  		$taxon_tab_options[$key] = t($key);
-  }
-
- $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array ( 
- 	'#type' => 'checkboxes', 
- 	'#title' => t('Tabs visibility options'), 
+ $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array (
+ 	'#type' => 'checkboxes',
+ 	'#title' => t('Tabs visibility options'),
   	'#default_value' => variable_get('cdm_taxonpage_tabs_visibility', get_taxon_options_list()),
-  	'#options' => get_taxon_options_list(), 
+  	'#options' => get_taxon_options_list(),
   	'#description' => t("Enable or disable Tabs in the Tabbed page display"),
   );
 
@@ -744,10 +811,10 @@ function cdm_settings_layout_taxon(){
                         features such description, distribution, common names, etc. that drupal will render at his taxon profile page.'),
   );
 
-  $form['taxon_profile']['feature_trees'][CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID] = array(
+  $form['taxon_profile']['feature_trees'][CDM_PROFILE_FEATURETREE_UUID] = array(
       '#type' => 'radios',
       '#title'         => t('Taxon profile sections'),
-      '#default_value' => variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
+      '#default_value' => variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
       '#options' => cdm_get_featureTrees_as_options(TRUE),
       '#description'   => t('Select the Feature Tree to be displayed at the taxon profile. Click "Show Details" to see the Feature Tree elemets.'
       )
@@ -765,8 +832,7 @@ function cdm_settings_layout_taxon(){
   );
 
   //---- LAYOUT PER FEATURE ---- //
-  $feature_tree = cdm_ws_get(CDM_WS_FEATURETREES, variable_get(CDM_DATAPORTAL_DEFAULT_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE));
-
+  $feature_tree = get_profile_featureTree();
   if( isset($feature_tree->root->children) ){
 
     $form_feature_list_layout = array(
@@ -1354,7 +1420,6 @@ function cdm_view_cache_site(){
 
   $out = '';
 
-  _add_js_progressbar();
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cache_all_taxa.js');
 
   $request_params = array();
