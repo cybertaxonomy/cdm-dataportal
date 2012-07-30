@@ -99,50 +99,36 @@ function getGallerySettings($gallery_config_form_name){
 }
 
 
-
-function get_default_taxon_tab($index = false) {
+/**
+ * Returns the string representation of the default tab.
+ *
+ * @param boolean $returnTabIndex defaults to FALSE, if set true this function will
+ * return the index number of the default tab. (used to supply default values to form elements)
+ */
+function get_default_taxon_tab($returnTabIndex = false) {
 
   global $user;
   $values = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
   $user_tab_active = 'cdm_dataportal_' .$user->uid . '_default_tab_active';
   $user_tab = 'cdm_dataportal_' .$user->uid . '_default_tab';
-  //get the user value
+
+  // get the user value if the used has chosen to overwrite the system settings
   $user_tab_on = variable_get($user_tab_active, false);
   if($user_tab_on){
     $user_value = variable_get($user_tab, 0);
     $index_value = $user_value;
-  //get the system value
+  // get the system value
   }else{
     $system_value = variable_get('cdm_dataportal_default_tab', 0);
     $index_value = $system_value;
   }
-  if (!index){
-     return ($values[$index_value]);
-  }else{
+
+  // return the index value or the string representatoin
+  if ($returnTabIndex){
      return $index_value;
+  }else{
+     return ($values[$index_value]);
   }
-
-
-  switch ($value){
-    case 0:
-      $res = 'General';
-      break;
-    case 1:
-      $res = 'Synonymy';
-      break;
-    case 2:
-      $res = 'Images';
-      break;
-    case 3:
-      $res = 'Specimens';
-      break;
-    case 4:
-      $res = 'last_visited_tab';
-      break;
-    default:
-      $res = 'General';
-  }
-  return $res;
 }
 
 function cdm_dataportal_menu_admin($may_cache, &$items){
