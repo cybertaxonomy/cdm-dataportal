@@ -48,7 +48,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), orchiserapias_Uuid);
         String expectedName = "×Orchiserapias";
         assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
-        assertEquals(expectedName, p.getAcceptedName());
+        assertEquals(expectedName, p.getAcceptedNameText());
         assertEquals("≡ Orchis × Serapias", p.getHomotypicalGroupSynonymName(1));
     }
 
@@ -56,7 +56,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
     public void epilobium_aschersonianum() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), epilobium_aschersonianum_Uuid);
         assertEquals(getContext().prepareTitle("Epilobium ×aschersonianum"), p.getTitle());
-        assertEquals("Epilobium ×aschersonianum Hausskn.", p.getAcceptedName());
+        assertEquals("Epilobium ×aschersonianum Hausskn.", p.getAcceptedNameText());
         assertEquals("≡ Epilobium lanceolatum × parviflorum", p.getHomotypicalGroupSynonymName(1));
     }
 
