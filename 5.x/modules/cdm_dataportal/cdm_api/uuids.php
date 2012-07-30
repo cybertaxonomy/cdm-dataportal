@@ -105,7 +105,7 @@ define('UUID_USE_RECORD', '8125a59d-b4d5-4485-89ea-67306297b599');
 define('UUID_USE', '6acb0348-c070-4512-a37c-67bcac016279');
 
 
-// typedesignation status
+// SpecimenTypeDesignationStatus status
 define('UUID_HOLOTYPE', 'a407dbc7-e60c-46ff-be11-eddf4c5a970d');
 define('UUID_LECTOTYPE', '05002d46-083e-4b27-8731-2e7c28a8825c');
 define('UUID_NEOTYPE', '26e13359-8f77-4e40-a85a-56c01782fce0');
@@ -124,6 +124,17 @@ define('UUID_ICONOTYPE', '643513d0-32f5-46ba-840b-d9b9caf8160f');
 define('UUID_PHOTOTYPE', 'b7807acc-f559-474e-ad4a-e7a41e085e34');
 define('UUID_UNSPECIFIC', '230fd762-b143-49de-ac2e-744bcc48a63b');
 define('UUID_ORIGINALMATERIAL', '49c96cae-6be6-401e-9b36-1bc12d9dc8f9');
+
+// NameTypeDesignationStatus status
+define('UUID_NTD_AUTOMATIC', "e89d8b21-615a-4602-913f-1625bf39a69f");
+define('UUID_NTD_MONOTYPY', "3fc639b2-9a64-45f8-9a81-657a4043ad74");
+define('UUID_NTD_NOT APPLICABLE', "91a9d6a9-7754-41cd-9f7e-be136f599f7e");
+define('UUID_NTD_ORIGNAL DESIGNATION', "40032a44-973b-4a64-b25e-76f86c3a753c");
+define('UUID_NTD_PRESENT DESIGNATION', "e5f38f5d-995d-4470-a036-1a9792a543fc");
+define('UUID_NTD_SUBSEQUENT MONOTYPY', "2b5806d8-31b0-406e-a32a-4adac0c89ae4");
+define('UUID_NTD_SUBSEQUENT DESIGNATION', "3e449e7d-a03c-4431-a7d3-aa258406f6b2");
+define('UUID_NTD_TAUTONYMY', "84521f09-3e10-43f5-aa6f-2173a55a6790");
+define('UUID_NTD_LECTOTYPE', "4177c938-b741-40e1-95e5-4c53bd1ed87d");
 
 // rights term
 

@@ -93,7 +93,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			// SpecimenTypeDesignations should be ordered. collect theme here only
 			$specimenTypeDesignations[] = $typeDesignation;
 		}else{ //it is a lectotype?
-			if(strcmp($typeDesignation->typeStatus->titleCache, 'lectotype') == 0){
+		   if(isset($typeDesignation->typeStatus->uuid) && $typeDesignation->typeStatus->uuid == UUID_NTD_LECTOTYPE){
 				$is_lectotype = true;
 			}
 			// it's a NameTypeDesignation
