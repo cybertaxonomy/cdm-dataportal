@@ -711,10 +711,10 @@ function cdm_settings_layout_taxon(){
   	'#description' => t("Enable or disable Tabs in the Tabbed page display"),
   );
 
-  $form['taxon_tabs']['cdm_dataportal_detault_tab'] =  array(
+  $form['taxon_tabs']['cdm_dataportal_default_tab'] =  array(
       '#type'          => 'select',
       '#title'         => t('Default tab to display'),
-      '#default_value' => variable_get('cdm_dataportal_detault_tab', 0),
+      '#default_value' => variable_get('cdm_dataportal_default_tab', 0),
       '#options'       => unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB),
       '#description'   => t('<p>Select the default tab to display when visiting a taxon page. Only available if Tabbed Taxon Page is enable.</p>
               <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab
