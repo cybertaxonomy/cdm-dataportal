@@ -848,6 +848,7 @@ function cdm_settings_layout_taxon(){
         $subform_id = LAYOUT_SETTING_PREFIX . $featureNode->feature->uuid; // must not exceed 45 characters !!!
 
         $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
+        $systemDefaults = unserialize(FEATURE_TREE_LAYOUT_DEFAULTS);
 
 
         $form_feature_list_layout[$subform_id] = array(
