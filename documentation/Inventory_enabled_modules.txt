@@ -1,7 +1,7 @@
 This document describes the CDM modules that were enabled in the D5 portals before migration.
 It also describes the used content types and the original drupal admin databaserecord.
 
-All portals have the custom content types: 
+All portals have the custom content types:
 Media (cdm_media)
 Name (cdm_name)
 Reference (cdm_reference)
@@ -67,9 +67,9 @@ X) CDM Taxon Tree
 Admin users:
 Fields:                 name 	pass 	mail 	mode 	sort 	threshold 	theme 	signature 	created 	access 	login 	status 	timezone 	language 	picture 	init 	data
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Cichorieae:             wp5Admin 	00a81ba78bfcab2bc80d7773ba3081ab 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1340636039 	1340636032 	1 	0 	  	  	a.kohlbecker@bgbm.org 	a:1:{s:18:"admin_compact_mode";b:1;}
-Cyprus:                 wp5Admin 	00a81ba78bfcab2bc80d7773ba3081ab 	a.mueller@bgbm.org 	0 	0 	0 	  	  	0 	1340961514 	1340880991 	1 	0 	  	  	  	a:0:{}
-Flora malesiana:        wp5Admin 	00a81ba78bfcab2bc80d7773ba3081ab 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1338530354 	1338530333 	1 	0 	  	  	a.kohlbecker@bgbm.org 	a:0:{}
-Flore afrique centrale: wp5Admin 	00a81ba78bfcab2bc80d7773ba3081ab 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1340009164 	1339079536 	1 	0 	en 	  	a.kohlbecker@bgbm.org 	a:0:{}
-Flore gabon:            wp5Admin 	00a81ba78bfcab2bc80d7773ba3081ab 	admin@dataportal.net 	0 	0 	0 	  	  	1285671981 	1338530310 	1338530280 	1 	0 	  	  	wp5Admin@bgbm.org 	a:0:{}
-Palmae:                 wp5Admin 	00a81ba78bfcab2bc80d7773ba3081ab 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1341584222 	1341584206 	1 	0 	  	  	a.kohlbecker@bgbm.org 	a:1:{s:18:"admin_compact_mode";b:1;}
+Cichorieae:             wp5Admin 	....... pass hash hidden ....... 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1340636039 	1340636032 	1 	0 	  	  	a.kohlbecker@bgbm.org 	a:1:{s:18:"admin_compact_mode";b:1;}
+Cyprus:                 wp5Admin 	....... pass hash hidden ....... 	a.mueller@bgbm.org 	0 	0 	0 	  	  	0 	1340961514 	1340880991 	1 	0 	  	  	  	a:0:{}
+Flora malesiana:        wp5Admin 	....... pass hash hidden ....... 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1338530354 	1338530333 	1 	0 	  	  	a.kohlbecker@bgbm.org 	a:0:{}
+Flore afrique centrale: wp5Admin 	....... pass hash hidden ....... 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1340009164 	1339079536 	1 	0 	en 	  	a.kohlbecker@bgbm.org 	a:0:{}
+Flore gabon:            wp5Admin 	....... pass hash hidden ....... 	admin@dataportal.net 	0 	0 	0 	  	  	1285671981 	1338530310 	1338530280 	1 	0 	  	  	wp5Admin@bgbm.org 	a:0:{}
+Palmae:                 wp5Admin 	....... pass hash hidden ....... 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1341584222 	1341584206 	1 	0 	  	  	a.kohlbecker@bgbm.org 	a:1:{s:18:"admin_compact_mode";b:1;}
