@@ -45,14 +45,14 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_malyi_Uuid);
         String expectedName = "Crepis ×malyi";
         assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
-        assertEquals("Crepis ×malyi Stadlm. in Oesterr. Bot. Z. 58: 425. 1908", p.getAcceptedName());
+        assertEquals("Crepis ×malyi Stadlm. in Oesterr. Bot. Z. 58: 425. 1908", p.getAcceptedNameText());
     }
 
     @Test
     public void lactuca_favratii() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), lactuca_favratii_Uuid);
         assertEquals(getContext().prepareTitle("Lactuca ×\"favratii\""), p.getTitle());
-        assertEquals("Lactuca ×\"favratii\", nom. provis.", p.getAcceptedName());
+        assertEquals("Lactuca ×\"favratii\", nom. provis.", p.getAcceptedNameText());
         assertEquals("≡ Cicerbita ×favratii Wilczek in Bull. Soc. Vaud. Sci. Nat. 51: 333. 1917", p.getHomotypicalGroupSynonymName(1));
     }
 
@@ -60,7 +60,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
     public void crepis_oenipontana() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_oenipontana_Uuid);
         assertEquals(getContext().prepareTitle("Crepis ×oenipontana"), p.getTitle());
-        assertEquals("Crepis ×oenipontana Murr in Österr. Bot. Z. 43: 178. 1893", p.getAcceptedName());
+        assertEquals("Crepis ×oenipontana Murr in Österr. Bot. Z. 43: 178. 1893", p.getAcceptedNameText());
         assertEquals("= Crepis alpestris f. pseudalpestris Murr in Allg. Bot. Z. Syst. 14: 9. 1908", p.getHeterotypicalGroupSynonymName(1, 1));
         assertEquals("≡ Crepis alpestris var. pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 14: 9. 1908", p.getHeterotypicalGroupSynonymName(1, 2));
         assertEquals("≡ Crepis ×pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 22: 66. 1916", p.getHeterotypicalGroupSynonymName(1, 3));
@@ -70,7 +70,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
     public void crepis_artificialis() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_artificialis_Uuid);
         assertEquals(getContext().prepareTitle("Crepis x artificialis"), p.getTitle());
-        assertEquals("Crepis x artificialis J. Collins & al. in Genetics 14: 310. 1929", p.getAcceptedName());
+        assertEquals("Crepis x artificialis J. Collins & al. in Genetics 14: 310. 1929", p.getAcceptedNameText());
     }
 
 }
