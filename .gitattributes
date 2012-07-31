@@ -1331,6 +1331,13 @@
 documentation/Inventory_enabled_modules.txt -text
 documentation/table[!!-~]prefixes.txt -text
 helper-scripts/README.TXT -text
+helper-scripts/change_admin/README.TXT -text
+helper-scripts/change_admin/build.properties.tpl -text
+helper-scripts/change_admin/build.xml -text
+helper-scripts/databases_export/README.TXT -text
+helper-scripts/databases_export/aliases.drushrc.php -text
+helper-scripts/databases_export/build.properties.tpl -text
+helper-scripts/databases_export/build.xml -text
 helper-scripts/databases_import/README.TXT -text
 helper-scripts/databases_import/build.properties.tpl -text
 helper-scripts/databases_import/build.xml -text

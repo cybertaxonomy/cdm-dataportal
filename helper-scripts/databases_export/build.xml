@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build">
+
+    <property file="build.properties"/>
+    
+    <target name="warning">
+        <if>
+            <not>
+                <!-- make sure warning is only given once -->
+                <equals arg1="${warningGiven}" arg2="1"/>
+                
+            </not>
+            <then>
+                <input message="Warning: this will overwrite existing dump file(s). Continue?" 
+                        propertyname="userInput" 
+                        validargs="y,n"
+                        defaultValue="y" 
+                />
+                <if>
+                    <equals arg1="n" arg2="${userInput}"/>
+                    <then>
+                        <php expression="exit();"/>
+                    </then>
+                </if>
+                <property name="warningGiven" value="1"/>
+            </then>
+        </if>
+    </target>
+    
+    <tstamp>
+        <format property="datetime" pattern="%Y-%m-%d_%Hh%Mm%Ss"/>
+    </tstamp>
+    
+    <!-- export all databases to the svn and webdav directories-->
+    <target name="export_all" depends="warning,export_all_to_svn,export_all_to_webdav">
+    </target>
+    
+    <target name="export_all_to_svn" depends="warning">
+        <foreach list="${db_array}" param="db" target="export_database_to_svn"/>
+    </target>
+    <target name="export_all_to_webdav" depends="warning">
+        <foreach list="${db_array}" param="db" target="export_database_to_webdav"/>
+    </target>
+    
+    <!-- export one database to the svn and webdav directories-->
+    <target name="export_database" depends="warning,export_database_to_svn,export_database_to_webdav">
+    </target>
+
+    <target name="export_database_to_svn" depends="warning">
+    <if>
+        <isset property="db"/>
+        <then>    
+            <delete file="${dir.svn}/${db}.sql.gz" quiet="true"/>
+            <echo>Exporting ${db} database...</echo>
+            <!-- delete watchdog logs-->
+            <exec command="drush @${db} wd-delete"/>
+            <!-- clear cache tables-->
+            <exec command="drush @${db} cc all"/>
+            <!-- ordered-dump orders by primary key and add line-breaks for efficient diff in revision control -->
+            <exec command="drush @${db} sql-dump --ordered-dump --result-file=${dir.svn}/${db}.sql --gzip"/> 
+            <echo>Database exported to ${dir.svn}</echo>
+        </then>
+        <else>
+            <echo>Please specify a database to export with -Ddb=your_database or specify in build.properties</echo>
+        </else>
+    </if>
+    </target>
+    
+    <target name="export_database_to_webdav" depends="warning">
+    <if>
+        <isset property="db"/>
+        <then>    
+            <!-- unlikely that the file already exists, but just to be sure...-->
+            <delete file="${dir.webdav}/${datetime}_${db}.sql.gz" quiet="true"/>
+            <echo>Exporting ${db} database...</echo>
+            <!-- delete watchdog logs-->
+            <exec command="drush @${db} wd-delete"/>
+            <!-- clear cache tables-->
+            <exec command="drush @${db} cc all"/>
+            <!-- ordered-dump orders by primary key and adds line-breaks for efficient diff in revision control -->
+            <exec command="drush @${db} sql-dump --result-file=${dir.webdav}/${datetime}_${db}.sql --gzip"/> 
+            <echo>Database exported to ${dir.webdav}</echo>
+        </then>
+        <else>
+            <echo>Please specify a database to export with -Ddb=your_database or specify in build.properties</echo>
+        </else>
+    </if>
+    </target>
+    
+    <target name="build" depends="export_all"/>
+</project>

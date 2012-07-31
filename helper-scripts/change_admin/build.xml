@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build">
+
+    <property file="build.properties"/>
+    
+    <!-- updates drupal admin user back to the original EDIT admin in all portal databases -->
+    <target name="to_orig_admin">
+         <property name="admin.username" value="${orig.admin.username}"/>
+         <property name="admin.password_encr" value="${orig.admin.password_encr}"/>
+         <property name="admin.email" value="${orig.admin.email}"/>
+         <foreach list="${db_array}" param="db" target="update_admin"/>
+    </target>
+    
+    <!-- updates drupal admin user to admin, passwd = admin for development usage in all portal databases -->
+    
+    <target name="to_dev_admin">
+         <property name="admin.username" value="${dev.admin.username}"/>
+         <property name="admin.password_encr" value="${dev.admin.password_encr}"/>
+         <property name="admin.email" value="${dev.admin.email}"/>
+        <foreach list="${db_array}" param="db_params" target="update_admin"/>
+    </target>  
+    
+    <target name="update_admin">    
+        <php expression="substr('${db_params}',0, strpos('${db_params}','|'))" returnProperty="dbname"/>
+        <php expression="substr('${db_params}', 1+ strpos('${db_params}','|'))" returnProperty="tableprefix"/>        
+        
+        <!-- on linux backtics need to be escaped and backslashes as well -->
+        <property name="sqlQuery" value="UPDATE \\\`${db_prefix_drupal}${dbname}\\\`.\\\`${tableprefix}users\\\`"/>
+        <property name="sqlQuery2" value="${sqlQuery} SET \\\`name\\\` = '${admin.username}',\\\`pass\\\` =  '${admin.password_encr}' ,\\\`mail\\\` = '${admin.email}',\\\`init\\\` = '${admin.email}'"/>
+        <property name="sqlQuery3" value="${sqlQuery2} WHERE \\\`${tableprefix}users\\\`.\\\`uid\\\` =1;" />
+        <exec command="mysql -u${db.username} -p${db.password} -e &quot; ${sqlQuery3} &quot;" />
+    </target>
+    <!-- use with to_orig_admin or to_dev_admin -->
+    <target name="build" depends="to_orig_admin"/>
+</project>     
