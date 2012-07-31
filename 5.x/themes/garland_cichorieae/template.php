@@ -470,7 +470,7 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
 	$gallery_name = $taxon->uuid;
 
  	$mediaQueryParameters = array("type"=>"ImageFile");
-	$galleryLinkUri = path_to_taxon($taxon->uuid).'/images';
+	$galleryLinkUri = path_to_taxon($taxon->uuid, 'images');
 
     // cdm_dataportal_show_media = ???? TODO
 	$selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
