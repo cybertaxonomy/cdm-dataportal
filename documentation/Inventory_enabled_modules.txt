@@ -1,7 +1,7 @@
 This document describes the CDM modules that were enabled in the D5 portals before migration.
 It also describes the used content types and the original drupal admin databaserecord.
 
-All portals have the custom content types:
+All portals have the custom content types: 
 Media (cdm_media)
 Name (cdm_name)
 Reference (cdm_reference)
@@ -63,13 +63,196 @@ X) CDM Media-URI Conversion
 X) CDM Taxon Tree
 -) FSI Gallery
 
+Enabled Custom modules are:
 
-Admin users:
-Fields:                 name 	pass 	mail 	mode 	sort 	threshold 	theme 	signature 	created 	access 	login 	status 	timezone 	language 	picture 	init 	data
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Cichorieae:             wp5Admin 	....... pass hash hidden ....... 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1340636039 	1340636032 	1 	0 	  	  	a.kohlbecker@bgbm.org 	a:1:{s:18:"admin_compact_mode";b:1;}
-Cyprus:                 wp5Admin 	....... pass hash hidden ....... 	a.mueller@bgbm.org 	0 	0 	0 	  	  	0 	1340961514 	1340880991 	1 	0 	  	  	  	a:0:{}
-Flora malesiana:        wp5Admin 	....... pass hash hidden ....... 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1338530354 	1338530333 	1 	0 	  	  	a.kohlbecker@bgbm.org 	a:0:{}
-Flore afrique centrale: wp5Admin 	....... pass hash hidden ....... 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1340009164 	1339079536 	1 	0 	en 	  	a.kohlbecker@bgbm.org 	a:0:{}
-Flore gabon:            wp5Admin 	....... pass hash hidden ....... 	admin@dataportal.net 	0 	0 	0 	  	  	1285671981 	1338530310 	1338530280 	1 	0 	  	  	wp5Admin@bgbm.org 	a:0:{}
-Palmae:                 wp5Admin 	....... pass hash hidden ....... 	wp5Admin@bgbm.org 	0 	0 	0 	  	  	1177596006 	1341584222 	1341584206 	1 	0 	  	  	a.kohlbecker@bgbm.org 	a:1:{s:18:"admin_compact_mode";b:1;}
+Cichorieae
+----------
+-) Content Access 5.x-1.2
+x) Administration Menu 5.x-2.8
+-) Javascript tools - Active Search 5.x-1.2
+-) Javascript tools - Activeedit 5.x-0.6
+-) Javascript tools - Activeedit Theme Assist 5.x-1.2
+-) Javascript tools - Activemenu 5.x-0.6
+-) Javascript tools - AJAX Submit 5.x-0.6
+-) Javascript tools - Collapsiblock 5.x-0.6
+-) Javascript tools - Dynamicload 5.x-0.6
+-) Javascript tools - Javascript tools 5.x-0.6
+-) Javascript tools - JS Calendar 5.x-0.6
+-) Javascript tools - Tabs 5.x-0.6
+-) Javascript tools - Tabs Example 5.x-1.2
+x) IMCE 5.x-1.2
+x) Installation Profile Generator 5.x-.1.3
+-) RoleAssign 5.x-1.1
+-) Shibboleth authentication 5.x-3.3
+-) Taxonomy Menu 5.x-1.x-dev
+x) User Protect 5.x-1.3
+-) Spam control - Captcha 5.x-3.0-rc3
+-) Spam control - Image captcha 5.x-3.0-rc3
+-) Spam control - Text captcha 5.x-3.0-rc3
+x) jQuery Update 5.x-2.0
+x) IMCE Wysiwyg API bridge 5.x-1.0
+x) Wysiwyg 5.x-2.0
+-) Views 5.x-1.6
+-) Views Rss 5.x-1.6
+-) Views Theme Wizard 5.x-1.6
+-) Views UI 5.x-1.6
+
+Cyprus
+----------
+-) Content Access 5.x-1.2
+x) Administration Menu 5.x-2.8
+-) Javascript tools - Active Search 5.x-1.2
+-) Javascript tools - Activeedit 5.x-0.6
+-) Javascript tools - Activeedit Theme Assist 5.x-1.2
+-) Javascript tools - Activemenu 5.x-0.6
+-) Javascript tools - AJAX Submit 5.x-0.6
+-) Javascript tools - Collapsiblock 5.x-0.6
+-) Javascript tools - Dynamicload 5.x-0.6
+-) Javascript tools - Javascript tools 5.x-0.6
+-) Javascript tools - JS Calendar 5.x-0.6
+-) Javascript tools - Tabs 5.x-0.6
+-) Javascript tools - Tabs Example 5.x-1.2
+x) IMCE 5.x-1.2
+-) Installation Profile Generator 5.x-.1.3
+-) RoleAssign 5.x-1.1
+-) Shibboleth authentication 5.x-3.3
+-) Taxonomy Menu 5.x-1.x-dev
+x) User Protect 5.x-1.3
+-) Spam control - Captcha 5.x-3.0-rc3
+-) Spam control - Image captcha 5.x-3.0-rc3
+-) Spam control - Text captcha 5.x-3.0-rc3
+x) jQuery Update 5.x-2.0
+x) IMCE Wysiwyg API bridge 5.x-1.0
+x) Wysiwyg 5.x-2.0
+-) Views 5.x-1.6
+-) Views Rss 5.x-1.6
+-) Views Theme Wizard 5.x-1.6
+-) Views UI 5.x-1.6
+
+Flore Afrique Centrale
+----------
+-) Content Access 5.x-1.2
+x) Administration Menu 5.x-2.8
+-) Javascript tools - Active Search 5.x-1.2
+-) Javascript tools - Activeedit 5.x-0.6
+-) Javascript tools - Activeedit Theme Assist 5.x-1.2
+-) Javascript tools - Activemenu 5.x-0.6
+-) Javascript tools - AJAX Submit 5.x-0.6
+-) Javascript tools - Collapsiblock 5.x-0.6
+-) Javascript tools - Dynamicload 5.x-0.6
+-) Javascript tools - Javascript tools 5.x-0.6
+-) Javascript tools - JS Calendar 5.x-0.6
+-) Javascript tools - Tabs 5.x-0.6
+-) Javascript tools - Tabs Example 5.x-1.2
+x) IMCE 5.x-1.2
+-) Installation Profile Generator 5.x-.1.3
+-) RoleAssign 5.x-1.1
+-) Shibboleth authentication 5.x-3.3
+-) Taxonomy Menu 5.x-1.x-dev
+-) User Protect 5.x-1.3
+-) Spam control - Captcha 5.x-3.0-rc3
+-) Spam control - Image captcha 5.x-3.0-rc3
+-) Spam control - Text captcha 5.x-3.0-rc3
+x) jQuery Update 5.x-2.0
+x) IMCE Wysiwyg API bridge 5.x-1.0
+x) Wysiwyg 5.x-2.0
+-) Views 5.x-1.6
+-) Views Rss 5.x-1.6
+-) Views Theme Wizard 5.x-1.6
+-) Views UI 5.x-1.6
+
+Flora Malesiana
+----------
+-) Content Access 5.x-1.2
+x) Administration Menu 5.x-2.8
+-) Javascript tools - Active Search 5.x-1.2
+-) Javascript tools - Activeedit 5.x-0.6
+-) Javascript tools - Activeedit Theme Assist 5.x-1.2
+-) Javascript tools - Activemenu 5.x-0.6
+-) Javascript tools - AJAX Submit 5.x-0.6
+-) Javascript tools - Collapsiblock 5.x-0.6
+-) Javascript tools - Dynamicload 5.x-0.6
+-) Javascript tools - Javascript tools 5.x-0.6
+-) Javascript tools - JS Calendar 5.x-0.6
+-) Javascript tools - Tabs 5.x-0.6
+-) Javascript tools - Tabs Example 5.x-1.2
+x) IMCE 5.x-1.2
+-) Installation Profile Generator 5.x-.1.3
+-) RoleAssign 5.x-1.1
+-) Shibboleth authentication 5.x-3.3
+-) Taxonomy Menu 5.x-1.x-dev
+-) User Protect 5.x-1.3
+-) Spam control - Captcha 5.x-3.0-rc3
+-) Spam control - Image captcha 5.x-3.0-rc3
+-) Spam control - Text captcha 5.x-3.0-rc3
+x) jQuery Update 5.x-2.0
+x) IMCE Wysiwyg API bridge 5.x-1.0
+x) Wysiwyg 5.x-2.0
+-) Views 5.x-1.6
+-) Views Rss 5.x-1.6
+-) Views Theme Wizard 5.x-1.6
+-) Views UI 5.x-1.6
+
+Flore Gabon
+----------
+-) Content Access 5.x-1.2
+x) Administration Menu 5.x-2.8
+-) Javascript tools - Active Search 5.x-1.2
+-) Javascript tools - Activeedit 5.x-0.6
+-) Javascript tools - Activeedit Theme Assist 5.x-1.2
+-) Javascript tools - Activemenu 5.x-0.6
+-) Javascript tools - AJAX Submit 5.x-0.6
+-) Javascript tools - Collapsiblock 5.x-0.6
+-) Javascript tools - Dynamicload 5.x-0.6
+-) Javascript tools - Javascript tools 5.x-0.6
+-) Javascript tools - JS Calendar 5.x-0.6
+-) Javascript tools - Tabs 5.x-0.6
+-) Javascript tools - Tabs Example 5.x-1.2
+x) IMCE 5.x-1.2
+-) Installation Profile Generator 5.x-.1.3
+-) RoleAssign 5.x-1.1
+-) Shibboleth authentication 5.x-3.3
+-) Taxonomy Menu 5.x-1.x-dev
+-) User Protect 5.x-1.3
+-) Spam control - Captcha 5.x-3.0-rc3
+-) Spam control - Image captcha 5.x-3.0-rc3
+-) Spam control - Text captcha 5.x-3.0-rc3
+x) jQuery Update 5.x-2.0
+x) IMCE Wysiwyg API bridge 5.x-1.0
+x) Wysiwyg 5.x-2.0
+-) Views 5.x-1.6
+-) Views Rss 5.x-1.6
+-) Views Theme Wizard 5.x-1.6
+-) Views UI 5.x-1.6
+
+Palmae
+----------
+-) Content Access 5.x-1.2
+x) Administration Menu 5.x-2.8
+-) Javascript tools - Active Search 5.x-1.2
+-) Javascript tools - Activeedit 5.x-0.6
+-) Javascript tools - Activeedit Theme Assist 5.x-1.2
+-) Javascript tools - Activemenu 5.x-0.6
+-) Javascript tools - AJAX Submit 5.x-0.6
+-) Javascript tools - Collapsiblock 5.x-0.6
+-) Javascript tools - Dynamicload 5.x-0.6
+-) Javascript tools - Javascript tools 5.x-0.6
+-) Javascript tools - JS Calendar 5.x-0.6
+-) Javascript tools - Tabs 5.x-0.6
+-) Javascript tools - Tabs Example 5.x-1.2
+x) IMCE 5.x-1.2
+-) Installation Profile Generator 5.x-.1.3
+-) RoleAssign 5.x-1.1
+-) Shibboleth authentication 5.x-3.3
+-) Taxonomy Menu 5.x-1.x-dev
+x) User Protect 5.x-1.3
+-) Spam control - Captcha 5.x-3.0-rc3
+-) Spam control - Image captcha 5.x-3.0-rc3
+-) Spam control - Text captcha 5.x-3.0-rc3
+x) jQuery Update 5.x-2.0
+x) IMCE Wysiwyg API bridge 5.x-1.0
+x) Wysiwyg 5.x-2.0
+-) Views 5.x-1.6
+-) Views Rss 5.x-1.6
+-) Views Theme Wizard 5.x-1.6
+-) Views UI 5.x-1.6
