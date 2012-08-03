@@ -1055,7 +1055,7 @@ function palmweb_2_preprocess_page(&$vars) {
 function palmweb_2_preprocess_node(&$vars) {
     $body =  $vars['node']->body['und'][0]['value'];
     
-    $file_path = variable_get('file_public_path', conf_path() . '/files');
+    $file_path = '/' . variable_get('file_public_path', conf_path() . '/files');
     global $base_url;
     $fixed_file_path = $base_url . '/' . $file_path ;
     $preg_file_path = preg_quote($file_path, '/');
