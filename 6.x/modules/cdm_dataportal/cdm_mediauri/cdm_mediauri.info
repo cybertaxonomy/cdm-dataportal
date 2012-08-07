@@ -1,0 +1,6 @@
+; $Id: cdm_mediauri.info 7873 2010-01-19 10:55:04Z a.kohlbecker $
+name = "CDM Media-URI Conversion"
+description = "Allows to create conversion rules for media uris"
+version = 6.x-0.5
+package = "CDM"
+core = 6.x

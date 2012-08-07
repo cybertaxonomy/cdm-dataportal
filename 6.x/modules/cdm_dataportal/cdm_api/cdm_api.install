@@ -1,0 +1,59 @@
+<?php
+// $Id: cdm_api.install 10075 2010-09-02 15:12:31Z a.kohlbecker $
+
+/**
+ * Implementation of hook_install().
+ */
+function cdm_api_install() {
+  // Create tables.
+  drupal_install_schema('cdm_api');  
+  //db_query(_get_sql_fix_watchdog());
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function cdm_api_uninstall() {
+  // Remove tables
+  drupal_uninstall_schema('cdm_api');
+ 
+  // according nodes are deleted by cdm_dataportal_uninstall
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function cdm_api_schema(){
+  $schema['cache_cdm_ws'] = array(
+    'fields' => array(
+      'cid' => array('type' => 'varchar', 'length' => '333', 'not null' => TRUE, 'default' => ''),
+      'data' => array('type' => 'blob', 'size' => 'big', 'not null' => FALSE),
+      'expire' => array('type' => 'int', 'not null' => TRUE, 'default' => 0, 'disp-width' => '11'),
+      'created' => array('type' => 'int', 'not null' => TRUE, 'default' => 0, 'disp-width' => '11'),
+      'headers' => array('type' => 'text', 'not null' => FALSE),
+      ),
+    'primary key' => array('cid'),
+    'indexes' => array(
+      'expire' => array('expire'),
+    ),
+  );
+  $schema['node_cdm'] = array(
+    'fields' => array(
+      'nid' => array('type' => 'int', 'not null' => TRUE, 'disp-width' => '11'),
+      'wsuri' => array('type' => 'varchar', 'length' => '255', 'not null' => FALSE),
+      'hash' => array('type' => 'char', 'length' => '32', 'not null' => TRUE),
+      'cdmtype' => array('type' => 'varchar', 'length' => '255', 'not null' => FALSE),
+      'uuid' => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
+      ),
+    'primary key' => array('hash'),
+  );
+  
+  return $schema;
+}
+
+/*
+ * @WA fix is obsolete in Drupal 7
+function _get_sql_fix_watchdog() {
+  return "ALTER TABLE {watchdog} CHANGE referer referer TEXT NOT NULL ;";
+}
+*/

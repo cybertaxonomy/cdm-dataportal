@@ -1,0 +1,8 @@
+; $Id: cdm_dataportal.info 11012 2010-12-16 09:47:59Z a.kohlbecker $
+name = "CDM Dataportal"
+description = "The dataportal publishes CDM data hosted in a CommunityStore on the web."
+version = 6.x-3.0
+package = "CDM"
+dependencies[] = cdm_api
+dependencies[] = cdm_taxontree
+core = 6.x

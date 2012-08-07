@@ -1,0 +1,6 @@
+; $Id: cdm_api.info 11012 2010-12-16 09:47:59Z a.kohlbecker $
+name = "CDM API"
+description = "CDM Web Service API"
+version = 6.x-3.0
+package = "CDM"
+core = 6.x

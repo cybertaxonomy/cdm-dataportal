@@ -1,0 +1,63 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install().
+ */
+function cdm_dataportal_install(){
+   db_query(_get_sql_fix_module_weight());
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function cdm_dataportal_uninstall(){
+
+   cdm_delete_all_cdm_nodes();
+}
+
+function _get_sql_fix_module_weight() {
+    return  "UPDATE {system} SET weight = 20 WHERE name = 'cdm_dataportal'";
+}
+
+function _rename_variable($old_name, $new_name) {
+	$success = FALSE;
+	$value = variable_get($old_name, FALSE);
+	variable_del($old_name);
+	if($value !== FALSE){
+		variable_set($new_name, $value);
+		$success = variable_get($new_name, FALSE) === $value;
+	} else {
+		$success = TRUE;
+	}
+
+	return array('success' => $success, 'query' => "Renaming variable $old_name to $new_name");
+}
+
+function _remove_variable($name) {
+  variable_del($name);
+  return array('success' => TRUE, 'query' => "Removing variable $name");
+}
+
+
+function _create_variable($name, $value) {
+  variable_set($name, $value);
+  return array('success' => TRUE, 'query' => "Creating variable $name new value: $value");
+}
+
+function _modify_variable($name, $value_override) {
+
+  /*
+   * FIXME take care for correct handling of tree variables
+   * for example description_gallery contains the array:
+   * Array
+            (
+                [cdm_dataportal_show_thumbnail_captions] => 1
+                [cdm_dataportal_media_maxextend] => 120
+                [cdm_dataportal_media_cols] => 4
+            )
+    * -----> solutions merge arrays !!!
+   */
+
+  return _create_variable($name, $value_override);
+}

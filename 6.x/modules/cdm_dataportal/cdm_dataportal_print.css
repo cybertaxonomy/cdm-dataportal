@@ -1,0 +1,7 @@
+@CHARSET "ISO-8859-1";
+/* $Id: cdm_dataportal_print.css 1628 2008-02-25 15:51:59Z a.kohlbecker $ */
+
+
+	.no-print{
+  display: none;
+ }
