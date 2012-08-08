@@ -528,18 +528,19 @@ function garland_cichorieae_preprocess_page(&$vars) {
 
   if (isset($vars['main_menu'])) {
   
+  /* obsolete, see http://dev.e-taxonomy.eu/trac/ticket/2191
     if(module_exists('cdm_api')){
         foreach($vars['main_menu'] as $key => $menu_item){
-        /* nb this makes each menu item you click opening a new browser window.. */
+        // nb this makes each menu item you click opening a new browser window.. 
             $menu_item['attributes']['target']=generalizeString($menu_item['title']);
             $main_menu[] = $menu_item;
         };
     }else{
         $main_menu = $vars['main_menu'] ;
     };
-
+*/
     $vars['primary_nav'] = theme('links__system_main_menu', array(
-      'links' => $main_menu,
+      'links' => $vars['main_menu'],
       'attributes' => array(
         'class' => array('links', 'inline', 'main-menu', 'primary-links'),
       ),
