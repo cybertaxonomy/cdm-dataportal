@@ -12,8 +12,13 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function garland_cichorieae_cdm_taxon_page_profile($taxon, $mergedTrees, $media, $hideImages = false){
+function garland_cichorieae_cdm_taxon_page_profile($variables){
 
+  $taxon = $variables['taxon'];
+  $mergedTrees = $variables['mergedTrees'];
+  $media = $variables['media'];
+  $hideImages = $variables['hideImages'];
+  
     global $base_url;
 
     RenderHints::pushToRenderStack('taxon_page_description');
@@ -70,7 +75,12 @@ function garland_cichorieae_cdm_taxon_page_profile($taxon, $mergedTrees, $media,
  return '<p class="descriptionText">' . $description . $sourceRefs . '</p>';
  }
  */
-function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid){
+function garland_cichorieae_cdm_descriptionElementTextData($variables){
+
+  $element = $variables['element'];
+  $asListElement = $variables['asListElement'];
+  $feature_uuid = $variables['feature_uuid'];
+ 
 
     $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
     $sourceRefs = '';
@@ -255,7 +265,13 @@ function garland_cichorieae_cdm_descriptionElementTextData($element, $asListElem
 //     return $out;
 // }
 
-function garland_cichorieae_cdm_descriptionElementArray($elementArray, $feature, $glue = '', $sortArray = false, $enclosingHtml = 'ul'){
+function garland_cichorieae_cdm_descriptionElementArray($variables){
+  $elementArray = $variables['elementArray'];
+  $feature = $variables['feature'];
+  $glue = $variables['glue'];
+  $sortArray = $variables['sortArray'];
+  $enclosingHtml = $variables['enclosingHtml'];
+  
     $enclosingHtml = 'div';
     $out = '<'.$enclosingHtml.' class="description" id="'.$feature->representation_L10n.'">';
 
@@ -387,8 +403,8 @@ function phptemplate_menu_local_tasks() {
     return $output;
 }
 
-function garland_cichorieae_get_partDefinition($nameType){
-    if($nameType == 'BotanicalName'){
+function garland_cichorieae_get_partDefinition($variables){
+    if($variables['nameType'] == 'BotanicalName'){
         return array(
         'namePart' => array(
           'name' => true
@@ -412,9 +428,9 @@ function garland_cichorieae_get_partDefinition($nameType){
     return false;
 }
 
-function garland_cichorieae_get_nameRenderTemplate($renderPath){
+function garland_cichorieae_get_nameRenderTemplate($variables){
 
-    switch($renderPath) {
+    switch($variables['renderPath']) {
         case 'taxon_page_title':
         case 'polytomousKey':
             $template = array(
@@ -456,8 +472,8 @@ function garland_cichorieae_get_nameRenderTemplate($renderPath){
  *      "LIGHTBOX": open the link in a light box,
  * TODO expose those in admin section, by adding 'em to gallery_settings see http://dev.e-taxonomy.eu/trac/ticket/2494
  */
-function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
-
+function garland_cichorieae_cdm_taxon_list_thumbnails($variables){
+    $taxon = $variables['taxon'];
 
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
 
@@ -489,10 +505,11 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($taxon){
     return $out;
 }
 
-function garland_cichorieae_cdm_feature_name($feature_name){
-  switch($feature_name){
+function garland_cichorieae_cdm_feature_name($variables){
+
+  switch($variables['feature_name']){
     case "Protologue": return t("Original Publication");
-    default: return t(ucfirst($feature_name));
+    default: return ucfirst($feature_name);
   }
 }
 

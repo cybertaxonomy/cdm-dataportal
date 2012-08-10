@@ -6,9 +6,13 @@
  * @param TaxonTO $taxonTO
  * @return
  */
-function palmweb_2_cdm_taxon_page_profile($taxon, $mergedTrees, $media, $hideImages = false){
+function palmweb_2_cdm_taxon_page_profile($variables){
 
-
+  $taxon = $variables['taxon'];
+  $mergedTrees = $variables['mergedTrees'];
+  $media = $variables['media'];
+  $hideImages = $variables['hideImages'];
+  
   if(!$hideImages){
     // preferred image
     // hardcoded for testing;
@@ -31,7 +35,10 @@ function palmweb_2_cdm_taxon_page_profile($taxon, $mergedTrees, $media, $hideIma
 }
 
 
-function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enclosingTag = "span") {
+function palmweb_2_cdm_descriptionElementDistribution($variables) {
+  $descriptionElements = $variables['descriptionElements'];
+  $enclosingTag = $variables['enclosingTag'];
+  
   $out = '';
   $separator = ', ';
 
@@ -83,13 +90,15 @@ function palmweb_2_cdm_descriptionElementDistribution($descriptionElements, $enc
 
 }
 
-function palmweb_2_cdm_feature_nodesTOC($featureNodes){
-	global $theme;
+function palmweb_2_cdm_feature_nodesTOC($variables){
+  $featureNodes = $variables['featureNodes'];
+  
+  global $theme;
   $out .= '<ul>';
   $countFeatures = 0;
   $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), substr(strrchr($_GET["q"], '/'), 1))));
   if ($numberOfChildren != 0) {
- 	 $out .= '<li>'.l(t(theme('cdm_feature_name', 'Number of Taxa')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Number Of Taxa')).'</li>';
+    $out .= '<li>'.l(t(theme('cdm_feature_name', 'Number of Taxa')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Number Of Taxa')).'</li>';
   }
   foreach($featureNodes as $node){
 
@@ -120,8 +129,11 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
   return $out;
 }
 
-function palmweb_2_cdm_feature_nodes($mergedFeatureNodes, $taxon){
-RenderHints::pushToRenderStack('feature_nodes');
+function palmweb_2_cdm_feature_nodes($variables){
+  $mergedFeatureNodes = $variables['mergedFeatureNodes'];
+  $taxon = $variables['taxon'];
+
+  RenderHints::pushToRenderStack('feature_nodes');
 
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
   //Creating an array to place the description elements in 
@@ -288,8 +300,10 @@ RenderHints::pushToRenderStack('feature_nodes');
 }
 
 
-function palmweb_2_cdm_search_results($pager, $path, $parameters){
-
+function palmweb_2_cdm_search_results($variables){
+  $pager = $variables['pager'];
+  $path = $variables['path'];
+  $query_parameters = $variables['query_parameters'];
 
 	$showThumbnails = $_SESSION['pageoptions']['searchtaxa']['showThumbnails'];
 	if( !is_numeric($showThumbnails)){
@@ -330,14 +344,16 @@ function palmweb_2_cdm_search_results($pager, $path, $parameters){
 	    $out .= '<div id="search_results">';
 		$out .= theme('cdm_list_of_taxa', $pager->records);
 		$out .= '</div>';
-		$out .= theme('cdm_pager', $pager, $path, $parameters);
+		$out .= theme('cdm_pager', $pager, $path, $query_parameters);
 	} else {
 		$out = '<h4 class="error">Sorry, no matching entries found.</h4>';
 	}
 	return $out;
 }
 
-//Bibluiography theming function
+//Bibliography theming function
+//@WA this theme function does not exist..
+/*
 function theme_cdm_descriptionElementBibliography($descriptionElementsBibliogragphy) {
 	$listOfReferences = array();
 	//$useDescriptions = cdm_ws_get()
@@ -395,7 +411,9 @@ function theme_cdm_descriptionElementBibliography($descriptionElementsBibliograg
 	$out = formatReference_for_Bibliogrpahy($listOfReferences);
 	return $out;
 }
-
+*/
+//@WA not used..
+/*
 function formatReference_for_Bibliogrpahy($references) {
 	$out = '<div id="block-cdm_dataportal-feature-discussion"><a name="bibliography"> </a><H2>Bibliography</H2><div class="content"> <ul class="description">';
     $outTemp= array();
@@ -437,9 +455,9 @@ function formatReference_for_Bibliogrpahy($references) {
 					$referenceString .= $reference->citation->authorTeam->titleCache;
 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
 				}
-				/*else {
-					$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
-				}*/
+				//else {
+					//$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
+				//}
 				if (!empty($reference->citation->datePublished->start)) {
 					$referenceString .= substr($reference->citation->datePublished->start,0,4);
 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
@@ -485,9 +503,9 @@ function formatReference_for_Bibliogrpahy($references) {
 					$referenceString .= $reference->citation->authorTeam->titleCache;
 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
 				}
-				/*else {
-					$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
-				}*/
+				//else {
+					//$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
+				//}
 				if (!empty($reference->citation->datePublished->start)) {
 					$referenceString .= substr($reference->citation->datePublished->start,0,4);
 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
@@ -657,9 +675,9 @@ function formatReference_for_Bibliogrpahy($references) {
 					$referenceString .= $reference->citation->titleCache;
 					$referenceString .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? " " : ". ");
 				}
-				/*else {
-					$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
-				}*/
+				//else {
+					//$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
+				//}
 				if (!empty($reference->citation->datePublished->start)) {
 					$referenceString .= substr($reference->citation->datePublished->start,0,4);
 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
@@ -673,19 +691,19 @@ function formatReference_for_Bibliogrpahy($references) {
 				
 				//$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->citation->uuid);
 				
-				/*if(!empty($author_team->titleCache)) {
-					$referenceString.= print_r($reference->citation);
-					$referenceString .= '<li class="descriptionText DescriptionElement">' . "<b>" . $reference->citation->title . ":" . "</b>" . $author_team->titleCache .   '</li>';
-				}
-				else {
-					$referenceString .= '<li class="descriptionText DescriptionElement">' ."<b>" . $reference->citation->titleCache . "</b>" . '</li>';
-				}
-				if ($referenceCitation){
-					$sourceRefs = $referenceCitation;
-					//$referenceString .= "[titleccache] " . $descriptionElementBiblio->feature->titleCache . "[/titlecache]";
-					//$referenceString .= "[Class] " . $descriptionElementBiblio->class . "[/class]";
-					//$referenceString .= "[sourceref]" . $sourceRefs . "[/sourceRef]";
-				}*/
+				//if(!empty($author_team->titleCache)) {
+					//$referenceString.= print_r($reference->citation);
+					//$referenceString .= '<li class="descriptionText DescriptionElement">' . "<b>" . $reference->citation->title . ":" . "</b>" . $author_team->titleCache .   '</li>';
+				//}
+				//else {
+					//$referenceString .= '<li class="descriptionText DescriptionElement">' ."<b>" . $reference->citation->titleCache . "</b>" . '</li>';
+				//}
+				//if ($referenceCitation){
+					//$sourceRefs = $referenceCitation;
+					////$referenceString .= "[titleccache] " . $descriptionElementBiblio->feature->titleCache . "[/titlecache]";
+					////$referenceString .= "[Class] " . $descriptionElementBiblio->class . "[/class]";
+					////$referenceString .= "[sourceref]" . $sourceRefs . "[/sourceRef]";
+				//}
 				break;
 		}
 		$outTemp[] = $referenceString;
@@ -699,9 +717,12 @@ function formatReference_for_Bibliogrpahy($references) {
 	$out .= "</ul></div></div>";
 	return $out;
 }
-
-function palmweb_2_cdm_media_caption($media, $elements = array('title', 'description', 'artist', 'location', 'rights'), $fileUri = null){
-
+*/
+function palmweb_2_cdm_media_caption($variables){
+  $media = $variables['media'];
+  $elements = $variables['elements'];
+  $fileUri = $variables['fileUri'];
+  
 	$media_metadata = cdm_read_media_metadata($media);
 
 	$doTitle= !$elements || array_search('title', $elements)!== false;
@@ -803,8 +824,12 @@ function palmweb_2_cdm_media_caption($media, $elements = array('title', 'descrip
  * @param unknown_type $doLink
  * @param unknown_type $referenceStyle
  */
-function palmweb_2_cdm_reference($reference, $microReference = null, $doLink = FALSE, $referenceStyle = NULL ){
-
+function palmweb_2_cdm_reference($variables ){
+  $reference = $variables['reference'];
+  $microReference = $variables['microReference'];
+  $doLink = $variables['doLink'];
+  $referenceStyle = $variables['referenceStyle'];
+  
   $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
 
   $year = partialToYear($reference->datePublished->start);
@@ -919,8 +944,9 @@ function phptemplate_menu_local_tasks() {
   return $output;
 }
 
-function palmweb_2_get_partDefinition($nameType){
-  if($nameType == 'BotanicalName'){
+function palmweb_2_get_partDefinition($variables){
+   
+  if($variables['nameType'] == 'BotanicalName'){
     return array(
         'namePart' => array(
           'name' => true,
@@ -943,9 +969,9 @@ function palmweb_2_get_partDefinition($nameType){
   return false;
 }
 
-function palmweb_2_get_nameRenderTemplate($renderPath){
+function palmweb_2_get_nameRenderTemplate($variables){
 
-  switch($renderPath) {
+  switch($variables['renderPath']) {
       case 'acceptedFor':
         $template = array(
           'namePart' => array('#uri'=>true),
@@ -972,14 +998,18 @@ function palmweb_2_get_nameRenderTemplate($renderPath){
   return $template;
 }
 
-function palmweb_2_cdm_feature_name($feature_name){
-  switch($feature_name){
+function palmweb_2_cdm_feature_name($variables){
+  switch($variables['feature_name']){
     case "Protologue": return t("Original Publication");
     default: return t(ucfirst($feature_name));
   }
 }
 
 function palmweb_2_cdm_taxon_page_title($taxon, $uuid, $synonym_uuid){
+  $taxon = $variables['taxon']; 
+  $uuid = $variables['uuid'];
+  $synonym_uuid = $variables['synonym_uuid'];
+  
 	RenderHints::pushToRenderStack('taxon_page_title');
 	$synonym = cdm_ws_get(CDM_WS_PORTAL_TAXON, $synonym_uuid);
 	if(isset($taxon->name->nomenclaturalReference)){
@@ -998,12 +1028,15 @@ function palmweb_2_cdm_taxon_page_title($taxon, $uuid, $synonym_uuid){
 
 }
 
+//@WA this theme function does not exist..
+/*
 function palmweb_2_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = null) {
 	$acceptedPath = path_to_taxon($acceptedUuid, true);
 	return url($acceptedPath . ($pagePart ? '/'.$pagePart : '') . '/'.$synonymUuid, 'highlite='.$synonymUuid);
 	//return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid, $synonymUuid."/$synonymUuid");
 	//return url("$acceptedPath/$synonymUuid".($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid);
 }
+*/
 
 /* assign the css classes primary-links and secondary-links to the menus */
 function palmweb_2_preprocess_page(&$vars) {
