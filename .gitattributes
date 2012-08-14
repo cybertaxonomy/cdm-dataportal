@@ -784,7 +784,10 @@
 6.x/themes/summertime_cdm/theme-settings.php -text
 7.x/modules/dwca_export/README.txt -text
 7.x/modules/dwca_export/archive-genus-Abies-bl4.zip -text
+7.x/modules/dwca_export/dwca_export.admin.inc -text
+7.x/modules/dwca_export/dwca_export.cron.inc -text
 7.x/modules/dwca_export/dwca_export.info -text
+7.x/modules/dwca_export/dwca_export.install -text
 7.x/modules/dwca_export/dwca_export.module -text
 7.x/modules/dwca_export/dwca_export.strongarm.inc -text
 7.x/modules/dwca_export/dwca_export.views_default.inc -text
