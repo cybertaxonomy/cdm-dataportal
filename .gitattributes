@@ -1649,6 +1649,7 @@
 7.x/themes/palmweb_2/style.css -text
 7.x/themes/palmweb_2/template.php -text
 7.x/themes/palmweb_2/translations/en-trans/cdm_dataportal.po -text
+documentation/Drupal[!!-~]7[!!-~]cdm[!!-~]portal[!!-~]multisite[!!-~]setup.pdf -text
 documentation/Inventory_enabled_modules.txt -text
 documentation/table[!!-~]prefixes.txt -text
 helper-scripts/README.TXT -text
