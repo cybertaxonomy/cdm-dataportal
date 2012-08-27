@@ -180,27 +180,25 @@ function _dwca_export_views_meta_xml_update($field_term_map){
 		
 		foreach ($field_term_map as $key => $value) {
 			
+			$term_array[$key] = array();
+			
+			//drupal_set_message(t(' THE key... ') . $key);
 			//if the value is an array with key names dwca_export_
 			if ( (array) $value === $value ) {
 				
 				foreach ($value as $key2 => $value2) {
 					
-					drupal_set_message(t(' THE key2... ') . $key);
+					/////////drupal_set_message(t(' THE key2... ') . $key2);
 					//$term_array[] = $key;
-					$term_array[$key] = array();
+					//////////////////////////////////////////////$term_array[$key] = array();
 					if (substr($key, 0, 11) == 'dwca_export') {
 						
 						$term_array[$key][] = $value2;
-						//$index = current($field_term_map);
-						drupal_set_message(t(' THE value IS... ') . $value2);
 					}
 			}
-		}
+		}		
+		
 }
-
-
-
-
 	
 	//check if the array size is the same as the number of fields in the meta.xml for either the
 	//core or the particular extension
@@ -218,15 +216,12 @@ function _dwca_export_views_meta_xml_update($field_term_map){
 	
 	$core_string = $meta_string->core->files->location[0];
 	$classification_view_name = "dwca_export_" . substr($core_string, 0, -4);
-	//echo $classification_view_name;
-	echo "Theclassviewnameis:" . $classification_view_name . "\n";
-	drupal_set_message(t(' THE class view name is ') . $classification_view_name);
 	
 	//the first position in the dwca is always the id and this doesn't point to a term so use the empty string
 	$views[$classification_view_name][0] = '';
 	
 	//set the core node of the meta.xml with dwca_export_classifcation values from the form
-	//currently we're relying on the order of fields in the view corresponding to the order of fields in the meta.xml
+	//currently we're relying on the order of fields in the view to correspond to the order of fields in the meta.xml
 	
 	//in the meta.xml id index="0" fields start at index 1
 	$index = 1;
@@ -234,40 +229,48 @@ function _dwca_export_views_meta_xml_update($field_term_map){
 	foreach($meta_string->core->field as $field)
 	{
 		$term = (string)$field[@term];
-		//drupal_set_message(t(' THE META TERM IS ') . $term);
-		//$field[@term] = $field_term_map['name_1'];
-		$field[@term] = $term_array['dwca_export_classification'][$index];
+		
+		if (isset($term_array['dwca_export_classification'][$index])) {
+			$field[@term] = $term_array['dwca_export_classification'][$index];
+		}
+		
 		$index++;
 		//$views[$classification_view_name][] = $term;	
 	}
 	
-	$index = 1;
 	
+	
+	//only modify the extensions which have been modified in the form	
 	foreach($meta_string->extension as $extension)
 	{
 		//echo $extension->files->location[0] . "\n";
-		$extension_string = $extension->files->location[0] . "\n";
-	
+		$extension_string = $extension->files->location[0] . "\n";	
 		$extension_view_name = "dwca_export_" . substr($extension_string, 0, -5);
 		//echo "The ext view name is:" . $classification_view_name . "\n";
-		drupal_set_message(t(' THE ext view name is ') . $extension_view_name);
-		echo "Theclassviewnameis:" . $classification_view_name . "\n";
+		//drupal_set_message(t(' THE ext view name is ') . $extension_view_name);
+				
+		if ( array_key_exists($extension_view_name, $term_array)) {
 		$views[$extension_view_name][0] = '';
+		
+		$index2 = 1;
 	
-		foreach($extension->field as $field)
-		{
-			$term = (string)$field[@term];
-			//$views[$extension_view_name][] = $term;
-			$field[@term] = $term_array[$extension_view_name][$index];
-			$index++;
+		foreach($extension->field as $field2)
+			{
+				$term = (string)$field2[@term];
+				//$views[$extension_view_name][] = $term;
+				if (isset($term_array[(string)$extension_view_name][$index2])) {
+					$field2[@term] = $term_array[(string)$extension_view_name][$index2];
+				}
+				$index2++;
+			}
 		}
 	}
 
 	// Saving the whole modified XML to a new filename
-	$meta_string->asXml('updated.xml');
+	$meta_string->asXml('updated_meta.xml');
 	//$meta_string->asXml($xml_file);
 	
-	drupal_set_message(t('UPDATE THE META XML file WITH THE VALUES COLLECTED: <pre>@result</pre>', array('@num' => 1, '@result' => print_r($field_term_map, TRUE))));
+	//drupal_set_message(t('VALUES: <pre>@result</pre>', array('@num' => 1, '@result' => print_r($term_array, TRUE))));
 }
 
 //TODO Lorna - could we modify this method with a boolean to indicate whether we want to create the map or whether we want to modify the xml with values in the map
@@ -319,8 +322,6 @@ function _dwca_export_views_meta_xml_map(){
 	foreach($meta_string->children() as $child)
 	{
 		// core or extension
-		//echo $child->getName() . ": " . $child . "<br />";
-
 		//foreach($child->children() as $child2)
 		//{
 		// core or extension
@@ -487,7 +488,6 @@ function dwca_export_views_wizard_submit($form, &$form_state) {
 
 	// In this case we've completed the final page of the wizard, so process the
 	// submitted information.
-	drupal_set_message(t('This information was collected by this wizard:'));
 	foreach ($form_state['step_information'] as $index => $value) {
 		// Remove FAPI fields included in the values (form_token, form_id and form_build_id
 		// This is not required, you may access the values using $value['stored_values']
