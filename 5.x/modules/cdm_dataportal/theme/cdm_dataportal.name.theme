@@ -21,8 +21,8 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
 	$citation = $typeDesignation->citation;
 	$pages = $typeDesignation->citationMicroReference;
 
-	if ($typeDesignation->typeStatus->uuid == UUID_ORIGINAL_DESIGNATION ||
-	$typeDesignation->typeStatus->uuid == UUID_MONOTYPE){
+	if ($typeDesignation->typeStatus->uuid == UUID_NTD_ORIGNAL_DESIGNATION ||
+	$typeDesignation->typeStatus->uuid == UUID_NTD_MONOTYPY){
 		$res = ' ('. $typeDesignation->typeStatus->representation_L10n . ')';
 		return $res;
 	}
@@ -93,7 +93,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 			// SpecimenTypeDesignations should be ordered. collect theme here only
 			$specimenTypeDesignations[] = $typeDesignation;
 		}else{ //it is a lectotype?
-			if(strcmp($typeDesignation->typeStatus->titleCache, 'lectotype') == 0){
+		   if(isset($typeDesignation->typeStatus->uuid) && $typeDesignation->typeStatus->uuid == UUID_NTD_LECTOTYPE){
 				$is_lectotype = true;
 			}
 			// it's a NameTypeDesignation
@@ -127,7 +127,7 @@ function theme_cdm_typedesignations($typeDesignations = array()){
 		foreach($specimenTypeDesignations as $std){
 			$typeReference = '';
 			//show citation only for Lectotype or Neotype
-			$showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_NEOTYPE || $std->typeStatus->uuid == UUID_LECTOTYPE);
+			$showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_STD_NEOTYPE || $std->typeStatus->uuid == UUID_STD_LECTOTYPE);
 			if($showCitation && !empty($std->citation)){
 				//$shortCitation = $std->citation->authorTeam->titleCache;
 

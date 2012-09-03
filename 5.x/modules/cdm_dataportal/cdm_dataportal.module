@@ -30,9 +30,6 @@ require_once('classes/footnote.php');
 require_once('classes/footnotekey.php');
 require_once('classes/renderhints.php');
 
-function _add_js_progressbar(){
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/jquery.progressbar/js/jquery.progressbar.js');
-}
 
 function _add_js_treeselector(){
   //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/treeselector.js');
@@ -756,23 +753,14 @@ function cdm_dataportal_form_alter($form_id, &$form) {
  */
 function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted = false ){
 
-  $request_params  = array(
-    'q' => $beginsWith,
-  //'sec' = '',
-  //'higherTaxa' => getFiters(),
-  // 'matchAnywhere' => false, // default is false
-    'page' => $page,
-    'onlyAccepted' => $onlyAccepted,
-    'pagesize' => 20  /*$_SESSION['cdm']['namelist_pagesize'] */);
-
-  $taxonPager = cdm_ws_find(CDM_WS_PORTAL_TAXON_FIND, $request_params);
+  $out = "<h3>Sorry, the name list feature is not yet available in this version of the DataPortal software<h3>";
   /*
    * FIXME the filter for accepted names will be a form element, thus this widget
    * should be generated via form api preferably as block
    */
   //$out  = theme('cdm_dataportal_widget_filter_accepted', $onlyAccepted);
   //$out .= theme('cdm_dataportal_widget_names_list', $names, $page);
-  $out .= theme('cdm_listof_taxa', $taxonPager);
+  //$out .= theme('cdm_listof_taxa', $taxonPager);
   return $out;
 }
 

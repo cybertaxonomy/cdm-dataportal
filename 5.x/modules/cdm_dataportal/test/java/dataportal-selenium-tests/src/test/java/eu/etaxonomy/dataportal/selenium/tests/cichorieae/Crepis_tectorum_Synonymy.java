@@ -36,7 +36,7 @@ public class Crepis_tectorum_Synonymy extends CdmDataPortalTestBase{
     public void crepis_oenipontana() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_tectorum_Uuid);
         assertEquals(getContext().prepareTitle("Crepis tectorum"), p.getTitle());
-        assertEquals("Crepis tectorum L., Sp. Pl.: 807. 1753", p.getAcceptedName());
+        assertEquals("Crepis tectorum L., Sp. Pl.: 807. 1753", p.getAcceptedNameText());
         assertEquals("≡ Crepis varia Moench, Methodus: 534. 1794, nom. illeg.", p.getHomotypicalGroupSynonymName(4));
         assertEquals("≡ Crepis stricta Schultz, Prodr. Fl. Starg. Suppl.: 41. 1819 [non Crepis stricta Scop. 1772]", p.getHeterotypicalGroupSynonymName(1, 2));
         assertEquals("= Crepis lanceolata Kit. [non Crepis lanceolata Sch. Bip. 1854]", p.getHeterotypicalGroupSynonymName(9, 1));

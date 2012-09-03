@@ -339,9 +339,6 @@ function theme_cdm_media_gallerie(
 				// generate gallery caption
 				if($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image'){
 					$mediaPartLinkAttributes['class'] = "lightbox";
-				} else {
-					$mediaPartLinkAttributes['target'] = "specimen";
-					$openMediaLinkAttributes['target'] = "specimen";
 				}
 				// generate & add caption to lightbox
 				$lightBoxCaptionElements = null;

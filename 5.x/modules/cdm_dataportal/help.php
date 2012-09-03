@@ -28,7 +28,7 @@ function cdm_dataportal_menu_help ($may_cache, &$items) {
 	  'access' => true,
       'type' => MENU_LOCAL_TASK,
 		);
-		
+
 		$items[] = array(
 	  'path' => 'admin/help/cdm_dataportal_geo',
       'title' => t('geo'),
@@ -37,7 +37,7 @@ function cdm_dataportal_menu_help ($may_cache, &$items) {
 	  'access' => true,
       'type' => MENU_LOCAL_TASK,
 		);
-			
+
 		$items[] = array(
 	  'path' => 'admin/help/cdm_dataportal_layout',
       'title' => t('layout'),
@@ -46,7 +46,7 @@ function cdm_dataportal_menu_help ($may_cache, &$items) {
 	  'access' => true,
       'type' => MENU_LOCAL_TASK,
 		);
-		
+
 		$items[] = array(
 	  'path' => 'admin/help/cdm_dataportal_cache',
       'title' => t('cache'),
@@ -64,7 +64,7 @@ function cdm_dataportal_menu_help ($may_cache, &$items) {
 function cdm_dataportal_help($path) {
 	//result to return
 	$res = '';
-	
+
 	switch ($path) {
 
 		case 'admin/help#cdm_dataportal':
@@ -83,15 +83,15 @@ function cdm_dataportal_help($path) {
 }
 
 function cdm_dataportal_file_get_content ($path) {
-	
-	//modyfing the html file to get the drupal paths 
+
+	//modyfing the html file to get the drupal paths
 	$content = file_get_contents($path);
 	$content_result = str_replace("{MODULE_PATH}", file_directory_path(), $content);
 
-	/* XXXXX change made because of problems with SVN!!! XXXXX 
+	/* XXXXX change made because of problems with SVN!!! XXXXX
 	//converting from html to apt for maven documentation
 	$apt_content = $content_result;
-	//general modifications	
+	//general modifications
 	$apt_content = str_replace('<p>', '', $apt_content);
 	$apt_content = str_replace('</p>', '', $apt_content);
 	$apt_content = str_replace('<b>', '<<', $apt_content);
@@ -108,37 +108,37 @@ function cdm_dataportal_file_get_content ($path) {
 	$apt_content = str_replace('<li>', '*', $apt_content);
 	$apt_content = str_replace('</li>', '', $apt_content);
     //special modifications
-	$apt_content = str_replace('<a target="_blank" href="./?q=admin/build/modules">Administer&#45&#62Site buildin&#45&#62Modules</a>', 
-	                           '<Administer-\>Site building-\>Modules>', 
+	$apt_content = str_replace('<a target="_blank" href="./?q=admin/build/modules">Administer&#45&#62Site buildin&#45&#62Modules</a>',
+	                           '<Administer-\>Site building-\>Modules>',
 	                           $apt_content);
     $apt_content = str_replace('<a target="_blank" href="./?q=admin/build/themes">Administer&#45&#62Site buildin&#45&#62Themes</a>',
-	                           '<Administer-\>Site building-\>Themes>', 
+	                           '<Administer-\>Site building-\>Themes>',
 	                           $apt_content);
 	$apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal">Administer&#45&#62Site Configuration&#45&#62CDM Dataportal</a>',
-	                           '<Administer-\>Site Configuration-\>CDM Dataportal>', 
+	                           '<Administer-\>Site Configuration-\>CDM Dataportal>',
 	                           $apt_content);
 	$apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/general" title="General">here</a>',
-	                           '<Administer-\>Site Configuration-\>CDM Dataportal>', 
-	                           $apt_content);         
+	                           '<Administer-\>Site Configuration-\>CDM Dataportal>',
+	                           $apt_content);
 	$apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/geo" title="General">Geo &amp Map settings</a>',
-	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>geo & Map>', 
+	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>geo & Map>',
 	                           $apt_content);
 	$apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/search">Search Layout Settings</a>',
-	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Search>', 
+	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Search>',
 	                           $apt_content);
 	$apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
-	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>', 
+	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>',
 	                           $apt_content);
-//	                           
+//
 //    $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
-//	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>', 
+//	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>',
 //	                           $apt_content);
-//	 
-		                           
+//
+
 	//regular expressions
 	$apt_content = preg_replace('/<!--.*-->/', '', $apt_content);
 	$apt_content = preg_replace('/\<a target="(.*)" href="(.*)" title="(.*)"\>(.*)\<\/a\>/', '{{{$2}$4}}', $apt_content);
-	                                      
+
 	$apt_file = str_replace('html', 'apt', $path);
 	$fd = fopen($apt_file, 'w');
 	fwrite($fd, $apt_content);
@@ -153,7 +153,7 @@ function theme_cdm_dataportal_admin_settings_cdm_dataportal_general () {
 }
 
 function theme_cdm_dataportal_admin_settings_cdm_dataportal_geo () {
-	$res = t('<p>Help text for this page</p>');	
+	$res = t('<p>Help text for this page</p>');
 	return $res;
 }
 
@@ -162,7 +162,7 @@ function theme_cdm_dataportal_admin_settings_cdm_dataportal_layout () {
 	return $res;
 }
 
-function theme_cdm_dataportal_admin_settings_cdm_dataportal_cache () {
-	$res = t('<p>Help text for this page</p>');
+function theme_cdm_dataportal_admin_settings_cdm_dataportal_cachesite () {
+	$res = t('<p>Help text for the cache site settings page</p>');
 	return $res;
 }

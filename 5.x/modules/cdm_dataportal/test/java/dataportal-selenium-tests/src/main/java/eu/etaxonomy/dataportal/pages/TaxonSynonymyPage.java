@@ -33,6 +33,7 @@ import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
+import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
 
 /**
  * TODO: subpages like /cdm_dataportal/taxon/{uuid}/images are not jet suported, implement means to handle page parts
@@ -87,20 +88,41 @@ public class TaxonSynonymyPage extends PortalPage {
     }
 
 
+
     /**
-     * Returns the profile image of the taxon profile page. This image is
-     * located at the top of the page. The Profile Image can be disabled in the
-     * DataPortal settings.
-     *
-     * @return The Url of the profile image or null if the image is not visible.
+     * @return
      */
-    public String getAcceptedName() {
+    public String getAcceptedNameText() {
+        return getAcceptedName().getText();
+    }
+
+    /**
+     * @return
+     */
+    public WebElement getAcceptedName() {
         WebElement acceptedName = synonymy.findElement(
                 By.xpath("./span[contains(@class,'accepted-name')]")
         );
-        return acceptedName.getText();
+        return acceptedName;
     }
 
+    /**
+     * @return
+     */
+    public List<TypeDesignationElement> getAcceptedNameTypeDesignations() {
+        List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
+        List<WebElement> typeDesignationElements = synonymy.findElements(
+                By.xpath("./span[contains(@class,'accepted-name')]/following-sibling::ul[contains(@class, 'typeDesignations')]/li")
+        );
+        for(WebElement el : typeDesignationElements){
+            typeDesignations.add(new TypeDesignationElement(el));
+        }
+        return typeDesignations;
+    }
+
+    /**
+     * @return
+     */
     public List<LinkElement> getAcceptedNameFootNoteKeys() {
         List<WebElement> fnkListElements = synonymy.findElements(
                 By.xpath("./span[contains(@class,'accepted-name')]/following-sibling::span[contains(@class, 'footnote-key')]/a")

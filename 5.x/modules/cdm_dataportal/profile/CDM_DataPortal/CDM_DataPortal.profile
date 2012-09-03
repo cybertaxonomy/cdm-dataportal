@@ -37,7 +37,7 @@ function CDM_DataPortal_profile_final() {
 *                          VARIABLES                        *
 ************************************************************/
     variable_set('anonymous', 'Anonymous');
-    variable_set('comment_page', 0);
+    variable_set('comment_page', 0); // = COMMENT_NODE_DISABLED
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
       variable_set('file_directory_temp', 'c:\\windows\\temp');
     } else {
@@ -116,12 +116,45 @@ function CDM_DataPortal_profile_final() {
     $user_id['admin'] = $user->uid;
 
 /************************************************************
-*                   USERS <=> ROLES MAPPING                 *
-************************************************************/
+ *                   USERS <=> ROLES MAPPING                *
+ ************************************************************/
 
 /************************************************************
-*                       EXPORTING NODES                     *
-************************************************************/
+ *                   NODE TYPES                             *
+ ************************************************************/
+
+
+      // Insert default user-defined node types into the database.
+      $types = array(
+        array(
+            'type' => 'page',
+            'name' => st('Page'),
+            'module' => 'node',
+            'description' => st('If you want to add a static page, like a contact page or an about page, use a page.'),
+            'custom' => TRUE,
+            'modified' => TRUE,
+            'locked' => FALSE,
+        ),
+        array(
+            'type' => 'story',
+            'name' => st('Story'),
+            'module' => 'node',
+            'description' => st('Stories are articles in their simplest form: they have a title, a teaser and a body, but can be extended by other modules. The teaser is part of the body too. Stories may be used as a personal blog or for news articles.'),
+            'custom' => TRUE,
+            'modified' => TRUE,
+            'locked' => FALSE,
+        ),
+      );
+
+      foreach ($types as $type) {
+        $type = (object) _node_type_set_defaults($type);
+        node_type_save($type);
+      }
+
+
+/************************************************************
+ *                       NODES                              *
+ ************************************************************/
     // exporting nodes of type: Page
     db_query(
         "INSERT INTO {node} (nid,vid,type,title,uid,status,created,changed,comment,promote,moderate,sticky)

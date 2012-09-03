@@ -135,7 +135,7 @@ public class TaxonProfilePage extends PortalPage {
 	 * Finds the {@link FeatureBlock} specified by the <code>featureName</code> parameter.
 	 * The following document structure is expected:
 	 * <pre>
-	 * &lt;div id="block-cdm_dataportal-feature-${featureName}" class="clear-block block block-cdm_dataportal-feature"&gt;
+	 * &lt;div id="block-cdm-dataportal-feature-${featureName}" class="clear-block block block-cdm-dataportal-feature"&gt;
 	 *   &lt;div class="content"&gt;
 	 *     &lt;${enclosingTag} id="${featureName}" class="description"&gt;
 	 *       &lt;${elementTag}&gt;DescriptionElement 1&lt;/${elementTag}&gt;
@@ -148,17 +148,17 @@ public class TaxonProfilePage extends PortalPage {
 	 *
 	 * @param position Zero based index of position in list of feature blocks
 	 * 			(only used to check against total number of feature blocks)
-	 * @param featureName the feature name as it is used in the class attribute: <code>block-cdm_dataportal-feature-${featureName}</code>
+	 * @param featureName the feature name as it is used in the class attribute: <code>block-cdm-dataportal-feature-${featureName}</code>
 	 * @param enclosingTag
 	 * @param elementTag
 	 * @return
 	 */
 	public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String elementTag){
 
-		List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm_dataportal-feature"));
+		List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm-dataportal-feature"));
 		Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
 		for(WebElement b : featureBlocks){
-			if (b.getAttribute("id").equals("block-cdm_dataportal-feature-" + featureName)){
+			if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + featureName)){
 				return new FeatureBlock( b, enclosingTag, elementTag);
 			}
 		}
@@ -167,10 +167,10 @@ public class TaxonProfilePage extends PortalPage {
 
 	public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String ... elementTag){
 
-		List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm_dataportal-feature"));
+		List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm-dataportal-feature"));
 		Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
 		for(WebElement b : featureBlocks){
-			if (b.getAttribute("id").equals("block-cdm_dataportal-feature-" + featureName)){
+			if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + featureName)){
 				return new FeatureBlock( b, enclosingTag, elementTag);
 			}
 		}
