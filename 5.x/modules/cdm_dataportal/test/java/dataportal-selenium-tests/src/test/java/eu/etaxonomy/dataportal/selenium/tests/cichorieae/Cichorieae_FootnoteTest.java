@@ -47,7 +47,6 @@ public class Cichorieae_FootnoteTest extends CdmDataPortalTestBase{
      * @throws MalformedURLException
      */
     @Test
-    @Ignore // test data has been lost somehow, thus this test is ignored. Valid test data is available in the production portal
     public void crepidiastrum_chelidoniifolium_issue_2772() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepidiastrum_chelidoniifolium_uuid);
         String expectedName = "Crepidiastrum chelidoniifolium";
