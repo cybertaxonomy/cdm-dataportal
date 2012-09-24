@@ -1,20 +1,88 @@
 /**
- * NOTE: due to a bug you can only use one progress bar per page
- */
+ USAGE:
 
+  A) one progressbar for multiple processes:
+
+  <script src=".jquery.js" type="text/javascript" />
+
+	<script type="text/javascript">
+	if (Drupal.jsEnabled) {
+	$(document).ready(function() {
+	$('.index-trigger').cdm_ws_progress('#index_progress');
+	});
+	}
+  </script>
+
+  <h3>Operations:</h3>
+	<a class="index-trigger" href="http://127.0.0.1:8080/manage/purge?frontendBaseUrl=http%3A%2F%2F127.0.0.1%3A8080%2F">Purge</a>
+	<a class="index-trigger" href="http://127.0.0.1:8080/manage/reindex?frontendBaseUrl=http%3A%2F%2F127.0.0.1%3A8080%2F">Reindex</a>
+	<div id="index_progress" />
+
+
+  B) one progressbar for each processes:
+
+  <script src=".jquery.js" type="text/javascript" />
+  <script type="text/javascript">
+	if (Drupal.jsEnabled) {
+	$(document).ready(function() {
+	$('#reindex').cdm_ws_progress('#reindex_progress');
+	});
+	}
+
+	<script type="text/javascript">
+	if (Drupal.jsEnabled) {
+	$(document).ready(function() {
+	$('#purge').cdm_ws_progress('#purge_progress');
+	});
+	}
+ </script>
+
+  <h3>Operations:</h3>
+	<a id="purge" href="http://127.0.0.1:8080/manage/purge?frontendBaseUrl=http%3A%2F%2F127.0.0.1%3A8080%2F">Purge</a>
+	<a id="reindex" href="http://127.0.0.1:8080/manage/reindex?frontendBaseUrl=http%3A%2F%2F127.0.0.1%3A8080%2F">Reindex</a>
+	<div id="reindex_progress" />
+	<div id="purge_progress" />
+
+ *
+ */
 (function($){
 
-	var $progress_container; // and other dom elements?
 	$.fn.cdm_ws_progress = function(progress_container_selector, options) {
 
 		var opts = $.extend({},$.fn.cdm_ws_progress.defaults, options);
 
 		var pollInterval_ms = 2000; // 2 seconds
-		var $progress_bar_value, $progress_bar_indicator, $progress_status, $progress_titel;
+
+		// defining some jQuery objects in the scope of this function, to be referenced in the sub functions
+		var $progress_container, $ws_progress_outer, $progress_bar_value, $progress_bar_indicator, $progress_status, $progress_titel;
 
 		var monitorUrl;
 
 		var isRunning = false;
+
+		var startProcess = function(event) {
+
+			//Cancel the default action (navigation) of the click.
+			event.preventDefault();
+
+			// prevent from starting again if isBlocking flag is set
+			if(!opts.isBlocking || !isRunning){
+
+				isRunning = true;
+
+				var url = $(this).attr('href');
+				$.ajax({
+					url: addFileExtension(url, 'json'),
+					dataType: "jsonp",
+					success: function(data){
+						monitorProgess(data);
+					}
+				});
+
+				// show progress indicator by showing the progress outer div
+				$ws_progress_outer.css('display', 'block');
+			}  // END !isRunning
+		};
 
 		var monitorProgess = function(jsonpRedirect){
 			if(jsonpRedirect !== undefined){
@@ -65,7 +133,6 @@
 		$progress_container = $(progress_container_selector);
 
 		return this.each(function(index) {
-			var $this = $(this);
 
 			// creating progressbar and other display lements
 			$progress_bar_value = $('<div class="progress_bar_value">0%</div>');
@@ -89,29 +156,7 @@
 			$progress_container.append($ws_progress_outer);
 
 			// register onClick for each of the elements
-			$this.click(function(event){
-
-				//Cancel the default action (navigation) of the click.
-				event.preventDefault();
-
-				// prevent from starting again if isBlocking flag is set
-				if(!opts.isBlocking || !isRunning){
-
-					isRunning = true;
-
-					var url = $this.attr('href');
-					$.ajax({
-						url: addFileExtension(url, 'json'),
-						dataType: "jsonp",
-						success: function(data){
-							monitorProgess(data);
-						}
-					});
-
-					// show progress indicator
-					$ws_progress_outer.css('display', 'block');
-				}  // END !isRunning
-			}); // END click()
+			$(this).click(startProcess);
 
 		});
 
