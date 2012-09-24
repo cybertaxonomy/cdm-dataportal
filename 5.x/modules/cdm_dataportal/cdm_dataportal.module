@@ -30,7 +30,12 @@ require_once('classes/footnote.php');
 require_once('classes/footnotekey.php');
 require_once('classes/renderhints.php');
 
-
+/**
+ * NOTE: due to a bug you can only use one progress bar per page
+ *
+ * @param unknown_type $link_element_selector
+ * @param unknown_type $progress_element_selector
+ */
 function _add_js_cdm_ws_progressbar($link_element_selector, $progress_element_selector){
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/cdm_ws_progress.js');
   drupal_add_js("

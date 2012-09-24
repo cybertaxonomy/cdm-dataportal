@@ -340,12 +340,14 @@ function cdm_settings_general(){
     $form['cdm_webservice']['freetext_index']['operations'] = array(
          '#value' => "<div>"
             .t('Operations')
-            .": " . l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE))
-            ." " . l("Reindex",cdm_compose_url(CDM_WS_MANAGE_REINDEX, null, "frontendBaseUrl=".$frontentURL), array("id"=>"reindex"))
-    		.'<div id="reindex_progress"></div>'
+            .": " . l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE, null, "frontendBaseUrl=".$frontentURL), array("class"=>"index_trigger"))
+            ." "  . l("Reindex", cdm_compose_url(CDM_WS_MANAGE_REINDEX, null, "frontendBaseUrl=".$frontentURL), array("class"=>"index_trigger"))
+    		.'<div id="index_progress"></div>'
+//     		.'<div id="purge_progress"></div>'
     		.'</div>'
     );
-    _add_js_cdm_ws_progressbar("#reindex", "#reindex_progress");
+    _add_js_cdm_ws_progressbar(".index_trigger", "#index_progress");
+//     _add_js_cdm_ws_progressbar("#purge", "#purge_progress");
 
     $form['cdm_webservice']['proxy'] = array(
       '#type' => 'fieldset',

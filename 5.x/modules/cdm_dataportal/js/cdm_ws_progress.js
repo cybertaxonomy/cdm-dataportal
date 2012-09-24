@@ -1,4 +1,6 @@
-
+/**
+ * NOTE: due to a bug you can only use one progress bar per page
+ */
 
 (function($){
 
@@ -7,11 +9,25 @@
 
 		var opts = $.extend({},$.fn.cdm_ws_progress.defaults, options);
 
+		var pollInterval_ms = 2000; // 2 seconds
 		var $progress_bar_value, $progress_bar_indicator, $progress_status, $progress_titel;
 
 		var monitorUrl;
 
 		var isRunning = false;
+
+		var monitorProgess = function(jsonpRedirect){
+			if(jsonpRedirect !== undefined){
+				monitorUrl = jsonpRedirect.redirectURL;
+			}
+			$.ajax({
+				url: monitorUrl,
+				dataType: "jsonp",
+				success: function(data){
+					showProgress(data);
+				}
+			});
+		};
 
 		var showProgress = function(monitor){
 			$progress_titel.text(monitor.taskName);
@@ -26,21 +42,9 @@
 			} else {
 				$progress_status.text(monitor.subTask + " [chunk " + monitor.workDone + "/" + monitor.totalWork + "]");
 			}
-			monitorProgess();
+			window.setTimeout(monitorProgess, pollInterval_ms);
 		};
 
-		var monitorProgess = function(jsonpRedirect){
-			if(jsonpRedirect !== undefined){
-				monitorUrl = jsonpRedirect.redirectURL;
-			}
-			$.ajax({
-				url: monitorUrl,
-				dataType: "jsonp",
-				success: function(data){
-					showProgress(data);
-				}
-			});
-		};
 
 		var addFileExtension = function(url, extension){
 			var new_url;
@@ -69,7 +73,7 @@
 			$progress_bar = $('<div class="progress_bar"></div>').append($progress_bar_indicator).append($progress_bar_value);
 			$progress_titel = $('<h4 class="progress_title">CDM REST service progress</h4>');
 			$progress_status = $('<div class="progress_status">waiting ...</div>');
-			$ws_progress_outer = $('<div class="cdm_ws_progress" id="cdm_ws_progress_' + index + '"></div>').append($progress_titel).append($progress_bar).append($progress_status);
+			$ws_progress_outer = $('<div class="cdm_ws_progress" id="cdm_ws_progress_' + progress_container_selector.substring(1) + '_' + index + '"></div>').append($progress_titel).append($progress_bar).append($progress_status);
 
 			// styling element
 			$progress_bar.css('with', opts.width).css('background-color', opts.background_color).css('height', opts.bar_height);
@@ -90,8 +94,8 @@
 				//Cancel the default action (navigation) of the click.
 				event.preventDefault();
 
-				// prevent from starting again
-				if(!isRunning){
+				// prevent from starting again if isBlocking flag is set
+				if(!opts.isBlocking || !isRunning){
 
 					isRunning = true;
 
@@ -103,8 +107,9 @@
 							monitorProgess(data);
 						}
 					});
-						// show progress indicator
-						$ws_progress_outer.css('display', 'block');
+
+					// show progress indicator
+					$ws_progress_outer.css('display', 'block');
 				}  // END !isRunning
 			}); // END click()
 
@@ -118,7 +123,8 @@
 			width: 				"100%",
 			bar_height: 		"1.5em",
 			border:				"1px solid #D9EAF5",
-			padding:			"1em"
+			padding:			"1em",
+			isBlocking:			false
 	};
 
 })(jQuery);
