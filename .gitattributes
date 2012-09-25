@@ -163,7 +163,6 @@
 5.x/modules/cdm_dataportal/js/cache_all_taxa.js -text
 5.x/modules/cdm_dataportal/js/cdm_annotations.js -text
 5.x/modules/cdm_dataportal/js/cdm_dynabox.js -text
-5.x/modules/cdm_dataportal/js/cdm_ws_progress.js -text
 5.x/modules/cdm_dataportal/js/cluetip/Changelog.txt -text
 5.x/modules/cdm_dataportal/js/cluetip/images/arrowdown.gif -text
 5.x/modules/cdm_dataportal/js/cluetip/images/arrowleft.gif -text
