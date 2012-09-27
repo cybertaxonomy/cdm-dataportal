@@ -332,7 +332,12 @@ function theme_cdm_list_of_taxa($records, $freetextSearchResults = null){
       }
     }
 
-    if(isset($freetextSearchResults[$itemCnt])) {
+    /*
+     * the score field will be empty in case of MultiTermQueries like
+     * WildcardQueries, since these are  constant score by default
+     * since Lucene 2.9
+     */
+    if(isset($freetextSearchResults[$itemCnt]) && $freetextSearchResults[$itemCnt]->score) {
       $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . ($freetextSearchResults[$itemCnt]->score * 100.0) .'% "></div></div>';
       $out .= '<div class="score-bar-value">' . number_format($freetextSearchResults[$itemCnt]->score * 100.0, 2) .'%</div>';
     }
