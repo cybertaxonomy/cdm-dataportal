@@ -337,14 +337,8 @@ function theme_cdm_list_of_taxa($records, $freetextSearchResults = null){
      * WildcardQueries, since these are  constant score by default
      * since Lucene 2.9
      */
-    if(isset($freetextSearchResults[$itemCnt]) && $freetextSearchResults[$itemCnt]->score) {
-      if($freetextSearchResults[$itemCnt]->maxScore){
-        $maxScore = $freetextSearchResults[$itemCnt]->maxScore;
-      } else {
-        $maxScore = 1;
-      }
-
-      $percentage =  ( $freetextSearchResults[$itemCnt]->score / $maxScore ) * 100;
+    if(isset($freetextSearchResults[$itemCnt]) && $freetextSearchResults[$itemCnt]->score && $freetextSearchResults[$itemCnt]->maxScore){
+      $percentage =  ( $freetextSearchResults[$itemCnt]->score / $freetextSearchResults[$itemCnt]->maxScore ) * 100;
       $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . $percentage .'% "></div></div>';
       $out .= '<div class="score-bar-value">' . number_format($percentage, 2) .'%</div>';
     }
