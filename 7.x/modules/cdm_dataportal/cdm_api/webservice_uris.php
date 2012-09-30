@@ -23,10 +23,10 @@ define('CDM_WS_PORTAL_TAXON_NAMERELATIONS', 'portal/taxon/$0/nameRelationships')
 define('CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS', 'portal/taxon/$0/nameTypeDesignations');
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
 /**
-* $0 : taxon uud
-* $1 : simple name of class extending DescriptionElementBase
-*
-*/
+ * $0 : taxon uud
+ * $1 : simple name of class extending DescriptionElementBase
+ *
+ */
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE', 'portal/taxon/$0/descriptions/elementsByType/$1');
 define('CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS', 'portal/taxon/$0/useDescriptions');
 define('CDM_WS_PORTAL_TAXON_FINDBESTMATCHINGTAXON', 'bestMatchingTaxon/$0');
@@ -68,12 +68,12 @@ define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
  *
  * stub: treenode_root
  */
-define('CDM_WS_PORTAL_TAXONOMY',  'portal/classification');
-define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES',  'portal/classification/$0/childNodes');
-define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK',  'portal/classification/$0/childNodesAt/$1');
-define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON',  'portal/classification/$0/childNodesOf/$1');
-define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM',  'portal/classification/$0/pathFrom/$1');
-define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK',  'portal/classification/$0/pathFrom/$1/toRank/$2');
+define('CDM_WS_PORTAL_TAXONOMY',   'portal/classification');
+define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES',   'portal/classification/$0/childNodes');
+define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK',   'portal/classification/$0/childNodesAt/$1');
+define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON',   'portal/classification/$0/childNodesOf/$1');
+define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM',   'portal/classification/$0/pathFrom/$1');
+define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK',   'portal/classification/$0/pathFrom/$1/toRank/$2');
 define('CDM_WS_PORTAL_TAXONOMY_MEDIA', 'portal/classification/$0/$1');
 
 define('CDM_WS_TERMVOCABULARY', 'termVocabulary/$0');
@@ -89,6 +89,7 @@ define('CDM_WS_TDWG_LEVEL', 'term/tdwg/$0');
 define('CDM_WS_FEATURETREE', 'featureTree/$0');
 define('CDM_WS_FEATURETREES', 'featureTree');
 //define('CDM_WS_FEATURETREE_CHILDREN', 'featuretree/$0/children');
+
 
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'ext/edit/mapServiceParameters/taxonDistributionFor/$0');
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');

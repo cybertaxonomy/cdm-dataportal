@@ -113,7 +113,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
 
 
         /* Biology And Ecology */
-        featureClass = "biology_and_ecology";
+        featureClass = "biology-and-ecology";
         featureLabel = "Biology And Ecology";
         blockTextFull = featureLabel + "\nEvergreen forest. In Laos at 1800 m, in Thailand at 1500 - 1700 m, in South Yunnan at 1600 m. (T. Evans et al. 2002)";
         expectedCssDisplay = "list-item";
@@ -144,7 +144,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "T. Evans et al. 2002", getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
 
         /* Common Name */
-        featureClass = "common_name";
+        featureClass = "common-name";
         featureLabel = "Common Name";
         blockTextFull = featureLabel + "\nwai hom (Lao Loum), blong eur (Khamu), wai hawm (Thailand) (T. Evans et al. 2002)";
         expectedCssDisplay = "list-item";
@@ -191,7 +191,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "T. Evans et al. 2002", getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
 
         /* Discussion */
-        featureClass = "materials_examined";
+        featureClass = "materials-examined";
         featureLabel = "Materials Examined";
         blockTextBegin = featureLabel + "\nINDIA (NORTH-EAST): Sikkim, undated, (fr.), Hooker s.n. E72 (K); Khasia, undated, (pist.), Griffith 503 (K). BHUTAN: Sarbhang Distr., 2.5 km below Getchu on Chirang Road, 12 March 1982, (ster.)";
         blockTextEnd = "A. 5293 (K, BM, BK). LAOS (NORTH): Huaphanh Province, Viengthong Distr., Ban Sakok, Phou Loeuy Noy, 21 June 1999, (fr.), Oulathong OL 231 (FRCL, K). (T. Evans et al. 2002)";

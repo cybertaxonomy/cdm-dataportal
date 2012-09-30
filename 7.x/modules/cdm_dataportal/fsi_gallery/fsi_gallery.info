@@ -1,6 +1,7 @@
 ; $Id$
 name = "FSI Gallery"
 description = An optional media gallery for the CDM DataPortal based on the FSI viewer
-version = "5.x-1.0"
+version = "7.x-1.0"
 package = "CDM"
-dependencies = cdm_dataportal
+dependencies[] = cdm_dataportal
+core = 7.x

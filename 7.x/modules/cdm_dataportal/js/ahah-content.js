@@ -5,7 +5,7 @@
  *  '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading">Loading ....</span></div>';
  */
 
-Drupal.ahahContentAutoAttach = function () {
+Drupal.ahahContentAutoAttach = (function ($) {
 	  
 	  $(".ahah-content").each(function(i){
 		  var ahahContent = $(this);
@@ -37,9 +37,8 @@ Drupal.ahahContentAutoAttach = function () {
     	  }
       });
       
-    }
+    }(jQuery))
 	
 
-if (Drupal.jsEnabled) {
-  $(document).ready(Drupal.ahahContentAutoAttach);
-}
+
+  jQuery(document).ready(Drupal.ahahContentAutoAttach);

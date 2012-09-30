@@ -89,7 +89,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 
 			mapServiceRequest = mapserverBaseUrl + '/areas.php?' + distributionQuery;
 
-			$.ajax({
+			jQuery.ajax({
 				  url: mapServiceRequest,
 				  dataType: "jsonp",
 				  success: function(data){
@@ -113,7 +113,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 
 			mapServiceRequest = mapserverBaseUrl + '/points.php?' + occurrenceQuery;
 
-			$.ajax({
+			jQuery.ajax({
 				  url: mapServiceRequest,
 				  dataType: "jsonp",
 				  success: function(data){
@@ -130,7 +130,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 	 */
 	var initOpenLayers = function(){
 
-		// instatiate the openlayers viewer
+		// instantiate the openlayers viewer
 		if(defaultBaseLayer.projection == mapOptions.EPSG900913.projection){
 			map = new OpenLayers.Map('openlayers_map', mapOptions.EPSG900913);
 		} else {
@@ -156,7 +156,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 		}
 
 		// adjust height of openlayers container div
-		$('#openlayers').css('height', $('#openlayers #openlayers_map').height());
+		jQuery('#openlayers').css('height', jQuery('#openlayers #openlayers_map').height());
 
 	};
 
@@ -238,12 +238,12 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 
 		mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
 		mapElement.next('.openlayers_legend').css('opacity', options.legendOpacity).find('img').load(function () {
-			$(this).parent()
+			jQuery(this).parent()
 				.css('position', 'relative')
 				.css('z-index', '1002')
 				.css('top', -mapElement.height())
-				.css('left', mapElement.width()- $(this).width())
-				.width($(this).width());
+				.css('left', mapElement.width()- jQuery(this).width())
+				.width(jQuery(this).width());
 		});
 	};
 
@@ -499,7 +499,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 
 })(jQuery);
 
-
+(function($){
 $.fn.cdm_openlayers_map.defaults = {  // set up default options
 		legendPosition:  null,			// 1,2,3,4,5,6 = display a legend in the corner specified by the number
 		displayWidth: 400,
@@ -512,4 +512,5 @@ $.fn.cdm_openlayers_map.defaults = {  // set up default options
 		maxZoom: 4,
 		minZoom: 0
 };
+})(jQuery);
 

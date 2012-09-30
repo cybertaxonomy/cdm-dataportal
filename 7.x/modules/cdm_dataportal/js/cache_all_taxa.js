@@ -54,7 +54,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 			uri += escape("&pageNumber="+ dataPager.nextIndex);
 		}
 		log('page->'+uri);
-		$.ajax({
+		jQuery.ajax({
 			url: uri,
 			dataType: 'json',
 			cache: false, // browser will not cache
@@ -151,7 +151,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 
 // -----------------------------------------------------------------------------
 
-$(document).ready(function() {
+jQuery(document).ready(function($) {
 
 	var searchTaxaUrl = $('#cdm-settings-cache [name=searchTaxaUrl]').val();
 	var taxonPageUrl = $('#cdm-settings-cache [name=taxonPageUrl]').val();

@@ -1,123 +1,46 @@
 <?php
+/**
+ * @file
+ * Install, update and uninstall functions for the cdm_dataportal module.
+ *
+ */
+
 // $Id$
 
+
 /**
- * Implementation of hook_install().
+ * Implements hook_install().().
  */
-function cdm_dataportal_install(){
-   db_query(_get_sql_fix_module_weight());
+function cdm_dataportal_install() {
+  // TODO Please convert this statement to the D7 database API syntax.
+  db_query(_get_sql_fix_module_weight());
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().().
  */
-function cdm_dataportal_uninstall(){
+function cdm_dataportal_uninstall() {
 
-   cdm_delete_all_cdm_nodes();
+  cdm_delete_all_cdm_nodes();
 }
-
-
-/**
- * Implementation of hook_api_update_N().
- *
- * Database updates consist of 3 parts:
- *    1 digit for Drupal core compatibility
- *    1 digit for your module's major release version (e.g. is this the 5.x-1.* (1) or 5.x-2.* (2) series of your module?)
- *    2 digits for sequential counting starting with 00
- * The 2nd digit should be 0 for initial porting of your module to a new Drupal core API.
- *
- * Update 1 for version 5.x-1.0
- */
-function cdm_dataportal_update_5101() {
-	$items = array();
-	$items[] = update_sql(_get_sql_fix_module_weight());
-	return $items;
-}
-
-/**
- * Implementation of hook_api_update_N().
- *
- * Database updates consist of 3 parts:
- *    1 digit for Drupal core compatibility
- *    1 digit for your module's major release version (e.g. is this the 5.x-1.* (1) or 5.x-2.* (2) series of your module?)
- *    2 digits for sequential counting starting with 00
- * The 2nd digit should be 0 for initial porting of your module to a new Drupal core API.
- *
- * Update 2 for version 5.x-1.0
- */
-function cdm_dataportal_update_5102() {
-  $items = array();
-  $items[] = _remove_variable('cdm_currentSecRef');
-
-  if(variable_get('distribution_sort', false) == 1){
-	  $items[] = _modify_variable('distribution_sort', 'HIDE_TDWG2');
-  } else {
-  	$items[] = _modify_variable('distribution_sort', 'NO_SORT');
-  }
-
-  $items[] = _create_variable('cdm_dataportal_geoservice_distributionOpacity', '1.0');
-  $items[] = _create_variable('cdm_dataportal_geoservice_legendOpacity', '0.75');
-
-  return $items;
-}
-
-/**
- * Implementation of hook_api_update_N().
- *
- * Database updates consist of 3 parts:
- *    1 digit for Drupal core compatibility
- *    1 digit for your module's major release version (e.g. is this the 5.x-1.* (1) or 5.x-2.* (2) series of your module?)
- *    2 digits for sequential counting starting with 00
- * The 2nd digit should be 0 for initial porting of your module to a new Drupal core API.
- *
- * Update 1 for version 5.x-3.0
- */
-function cdm_dataportal_update_5301() {
-  $items = array();
-  // add new default to
-  $annotation_types_filter = variable_get('annotations_types_as_footnotes', FALSE);
-  if($annotation_types_filter) {
-    $annotation_types_filter['NULL_VALUE'] = 'NULL_VALUE';
-  }
-  $items[] = _modify_variable('annotations_types_as_footnotes', $annotation_types_filter);
-  return $items;
-}
-
-/**
-* Implementation of hook_api_update_N().
-*
-* Database updates consist of 3 parts:
-*    1 digit for Drupal core compatibility
-*    1 digit for your module's major release version (e.g. is this the 5.x-1.* (1) or 5.x-2.* (2) series of your module?)
-*    2 digits for sequential counting starting with 00
-* The 2nd digit should be 0 for initial porting of your module to a new Drupal core API.
-*
-* Update 2 for version 5.x-3.0
-*/
-function cdm_dataportal_update_5302() {
-  _remove_variable("cdm_dataportal_detault_tab"); // remove typo
-}
-
-
-// ------------------------- SQL  Scripts ------------------------ //
-
 
 function _get_sql_fix_module_weight() {
-	return  "UPDATE {system} SET weight = 20 WHERE name = 'cdm_dataportal'";
+  return "UPDATE {system} SET weight = 20 WHERE name = 'cdm_dataportal'";
 }
 
 function _rename_variable($old_name, $new_name) {
-	$success = FALSE;
-	$value = variable_get($old_name, FALSE);
-	variable_del($old_name);
-	if($value !== FALSE){
-		variable_set($new_name, $value);
-		$success = variable_get($new_name, FALSE) === $value;
-	} else {
-		$success = TRUE;
-	}
+  $success = FALSE;
+  $value = variable_get($old_name, FALSE);
+  variable_del($old_name);
+  if ($value !== FALSE) {
+    variable_set($new_name, $value);
+    $success = variable_get($new_name, FALSE) === $value;
+  }
+  else {
+    $success = TRUE;
+  }
 
-	return array('success' => $success, 'query' => "Renaming variable $old_name to $new_name");
+  return array('success' => $success, 'query' => "Renaming variable $old_name to $new_name");
 }
 
 function _remove_variable($name) {
@@ -137,12 +60,12 @@ function _modify_variable($name, $value_override) {
    * FIXME take care for correct handling of tree variables
    * for example description_gallery contains the array:
    * Array
-			(
-			    [cdm_dataportal_show_thumbnail_captions] => 1
-			    [cdm_dataportal_media_maxextend] => 120
-			    [cdm_dataportal_media_cols] => 4
-			)
-	 * -----> solutions merge arrays !!!
+   (
+   [cdm_dataportal_show_thumbnail_captions] => 1
+   [cdm_dataportal_media_maxextend] => 120
+   [cdm_dataportal_media_cols] => 4
+   )
+   * -----> solutions merge arrays !!!
    */
 
   return _create_variable($name, $value_override);

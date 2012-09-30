@@ -160,7 +160,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
 
 
         /* Common names */
-        featureClass = "common_names";
+        featureClass = "common-names";
         featureLabel = "Common names";
         expectedCssDisplay = "block";
         blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكان7\n7. Nehmé, M., Dictionnaire Etymologique de la Flore du Liban. 2000";

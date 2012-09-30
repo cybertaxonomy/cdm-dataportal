@@ -11,7 +11,7 @@ var tb_pathToImage = "images/loadingAnimation.gif";
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
 
 //on page load call tb_init
-$(document).ready(function(){   
+jQuery(document).ready(function(){   
 	tb_init('a.thickbox, area.thickbox, input.thickbox');//pass where to apply thickbox
 	imgLoader = new Image();// preload image
 	imgLoader.src = tb_pathToImage;
@@ -19,7 +19,7 @@ $(document).ready(function(){
 
 //add thickbox to href & area elements that have a class of .thickbox
 function tb_init(domChunk){
-	$(domChunk).click(function(){
+	jQuery(domChunk).click(function(){
 	var t = this.title || this.name || null;
 	var a = this.href || this.alt;
 	var g = this.rel || false;
@@ -291,13 +291,13 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 	} catch(e) {
 		//nothing here
 	}
-}
+}(jQuery)
 
 //helper functions below
 function tb_showIframe(){
 	$("#TB_load").remove();
 	$("#TB_window").css({display:"block"});
-}
+}(jQuery)
 
 function tb_remove() {
  	$("#TB_imageOff").unbind("click");
@@ -311,14 +311,14 @@ function tb_remove() {
 	document.onkeydown = "";
 	document.onkeyup = "";
 	return false;
-}
+}(jQuery)
 
 function tb_position() {
 $("#TB_window").css({marginLeft: '-' + parseInt((TB_WIDTH / 2),10) + 'px', width: TB_WIDTH + 'px'});
 	if ( !(jQuery.browser.msie && jQuery.browser.version < 7)) { // take away IE6
 		$("#TB_window").css({marginTop: '-' + parseInt((TB_HEIGHT / 2),10) + 'px'});
 	}
-}
+}(jQuery)
 
 function tb_parseQuery ( query ) {
    var Params = {};
@@ -333,7 +333,7 @@ function tb_parseQuery ( query ) {
       Params[key] = val;
    }
    return Params;
-}
+}(jQuery)
 
 function tb_getPageSize(){
 	var de = document.documentElement;
@@ -341,13 +341,13 @@ function tb_getPageSize(){
 	var h = window.innerHeight || self.innerHeight || (de&&de.clientHeight) || document.body.clientHeight;
 	arrayPageSize = [w,h];
 	return arrayPageSize;
-}
+}(jQuery)
 
 function tb_detectMacXFF() {
   var userAgent = navigator.userAgent.toLowerCase();
   if (userAgent.indexOf('mac') != -1 && userAgent.indexOf('firefox')!=-1) {
     return true;
   }
-}
+}(jQuery)
 
 

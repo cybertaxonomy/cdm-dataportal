@@ -22,7 +22,9 @@ body h6.debug {
 	border:1px solid #B8D3E5;
 	clear: both;
 }
-
+#block-system-main div.content {
+  margin: 0.3em 0;
+}
 div.debug a.valid {
   color: #1BDF00;
 }
@@ -58,7 +60,7 @@ div.debug .uri{
  * ======= Search =====
  */
 
-#block-cdm_dataportal-2 .description {
+#block-cdm-dataportal-2 .description {
 	display: none;
 }
 
@@ -132,6 +134,9 @@ ul.typeDesignations li{
 }
 .misapplied .authors{
 	display: none;
+}
+#edit-search-domisappliednames {
+  vertical-align:baseline;
 }
 
 img.preview {
@@ -216,7 +221,7 @@ a.toc:link, a.toc:visited {
 }
 */
 
-.block-cdm_taxontree .content, .block-cdm_dataportal-3 .content{
+.block-cdm-taxontree .content, .block-cdm-dataportal-3 .content{
    font-size: 90%;
 }
 
@@ -231,7 +236,7 @@ a.toc:link, a.toc:visited {
 	font-weight: normal;
 }
 
-.block-cdm_taxontree div.settings{
+.block-cdm-taxontree div.settings{
 	/*background-color: #2587C3;*/
 	border-bottom: 1px solid #E0DFE3;
 	border-top: 1px solid #E0DFE3;
@@ -418,6 +423,10 @@ a.toc:link, a.toc:visited {
 	 line-height: 1em;
 	 color: #999999;
 }
+/* for compatibility with d5 themes */
+.block-cdm-dataportal-feature {
+  clear:both;
+}
 
 .polytomousKey_linkedStyle td{
 	vertical-align: top;
@@ -440,4 +449,9 @@ a.toc:link, a.toc:visited {
 }
 #useRecords th {
 	font-weight: normal;
+}
+/* for compatibility with d5 themes */
+.block-cdm-dataportal-feature ul {
+    margin: 0;
+    padding: 0 0 0.25em 1em;
 }

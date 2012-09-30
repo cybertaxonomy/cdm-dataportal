@@ -1,6 +1,8 @@
 ; $Id$
 name = "CDM Taxon Tree"
 description = "A Taxon Tree Browser for the CDM"
-version = 5.x-3.0
+version = 7.x-3.0
 package = "CDM"
-dependencies = jquery_update taxonomy
+;dependencies[] = jquery_update
+dependencies[] = taxonomy
+core = 7.x

@@ -90,7 +90,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
         featureBlock = p.getFeatureBlockAt(2, "endemism", "div", "div");
         assertEquals("Endemism\nnot endemic", featureBlock.getText());
 
-        featureBlock = p.getFeatureBlockAt(2, "red_data_book_category", "div", "div");
+        featureBlock = p.getFeatureBlockAt(2, "red-data-book-category", "div", "div");
         assertEquals("Red Data Book category\nData deficient (DD)", featureBlock.getText());
 
         //FIXME

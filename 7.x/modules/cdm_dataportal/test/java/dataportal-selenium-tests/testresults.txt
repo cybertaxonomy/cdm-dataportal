@@ -1,0 +1,233 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eu.etaxonomy:dataportal-selenium-tests:jar:1.0-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-compiler-plugin is missing. @ line 60, column 15
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-eclipse-plugin is missing. @ line 67, column 15
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building dataportal-selenium-tests 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ dataportal-selenium-tests ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 7 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:compile (default-compile) @ dataportal-selenium-tests ---
+[INFO] Compiling 38 source files to c:\htdocs\cybertax_d7\sites\all\modules\cdm_dataportal\test\java\dataportal-selenium-tests\target\classes
+[WARNING] \htdocs\cybertax_d7\sites\all\modules\cdm_dataportal\test\java\dataportal-selenium-tests\src\main\java\eu\etaxonomy\dataportal\pages\PortalPage.java:[24,16] StringUIClientPropertyKey is internal proprietary API and may be removed in a future release
+[WARNING] \htdocs\cybertax_d7\sites\all\modules\cdm_dataportal\test\java\dataportal-selenium-tests\src\main\java\eu\etaxonomy\dataportal\pages\PortalPage.java:[17,22] PINoOpHandlerImpl is internal proprietary API and may be removed in a future release
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ dataportal-selenium-tests ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:testCompile (default-testCompile) @ dataportal-selenium-tests ---
+[INFO] Compiling 16 source files to c:\htdocs\cybertax_d7\sites\all\modules\cdm_dataportal\test\java\dataportal-selenium-tests\target\test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ dataportal-selenium-tests ---
+[INFO] Surefire report directory: c:\htdocs\cybertax_d7\sites\all\modules\cdm_dataportal\test\java\dataportal-selenium-tests\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+2012-09-30 15:25:12,926 INFO [eu.etaxonomy.dataportal.TestConfiguration] - Loading test configuration from file:/C:/Users/waddink/.cdmLibrary/DataPortalTest.xml
+2012-09-30 15:25:13,144 INFO [eu.etaxonomy.dataportal.TestConfiguration] - Setting system property: webdriver.firefox.bin: C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+Running eu.etaxonomy.dataportal.selenium.tests.cichorieae.CichorieaeSearchTest
+2012-09-30 15:25:13,269 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:25:13,269 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:25:13,269 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:25:13,269 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:25:13,316 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(849286339)
+2012-09-30 15:29:18,807 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/
+2012-09-30 15:29:59,306 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/cdm_dataportal/search/results/taxon?ws=portal%2Ftaxon%2Ffind&query=Lapsana+com*&form_build_id=form-xD_zG2pU1oLIff30bEgLPxxWypUl33Zp0rVRIDxLBUc&form_id=cdm_dataportal_search_taxon_form&search%5BdoTaxaByCommonNames%5D=0&search%5BdoMisappliedNames%5D=1&search%5BdoSynonyms%5D=1&search%5BdoTaxa%5D=1&search%5BpageSize%5D=25&search%5BpageNumber%5D=0&search%5Btree%5D=534e190f-3339-49ba-95d9-fa27d5493e3e
+2012-09-30 15:30:00,133 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 291.045 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_FootnoteTest
+2012-09-30 15:30:04,251 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:30:04,251 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:30:04,251 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:30:04,251 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:30:04,251 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(602049689)
+2012-09-30 15:31:39,385 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/3e0cdb93-020c-4e2f-be85-e9eb1ec107be/synonymy
+2012-09-30 15:31:39,619 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 97.848 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_HybridTest
+2012-09-30 15:31:42,131 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:31:42,147 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:31:42,147 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:31:42,147 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:31:42,147 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(1374519087)
+2012-09-30 15:32:30,324 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/a4050699-ace9-45fb-a807-249531da5566/synonymy
+2012-09-30 15:32:47,501 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/6027e1fa-9fe5-4ddc-a2de-f72bfa7378c0/synonymy
+2012-09-30 15:33:01,931 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/31b8757f-6acb-4826-ba7f-b2d116dc713c/synonymy
+2012-09-30 15:33:12,446 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/3eabdf89-ddeb-461c-b6f8-341bb8deb7bf/synonymy
+2012-09-30 15:33:12,570 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 93.559 sec
+Running eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_NamePageTest
+2012-09-30 15:33:15,690 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:33:15,690 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:33:15,690 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:33:15,690 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:33:15,690 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(736271865)
+2012-09-30 15:34:13,939 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/name/b8f725f0-320a-49e5-aa9a-82cef1c47c17
+2012-09-30 15:34:14,283 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/cdm_dataportal/taxon/ae7578ed-a15d-4447-b607-ed6dca92f333/synonymy?highlite=%27%20.%20%24singleTaxon-%3Euuid
+2012-09-30 15:34:40,728 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/name/fee25b71-537b-48b5-a18d-7c863000c7af
+2012-09-30 15:34:40,774 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/cdm_dataportal/taxon/4ab40ac3-2e99-4f87-9871-3e6c3bc0ef26/synonymy?highlite=%27%20.%20%24singleTaxon-%3Euuid
+2012-09-30 15:34:40,806 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 87.674 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_TechnicalAnnnotationsTest
+2012-09-30 15:34:43,364 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:34:43,364 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:34:43,364 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:34:43,364 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:34:43,364 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(2101662907)
+2012-09-30 15:35:14,068 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/f42a07d1-d959-4838-b8ea-192b523ad5cc/synonymy
+2012-09-30 15:35:44,644 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/adaabef1-02f9-41a4-8a39-bf13564559f7
+2012-09-30 15:35:45,003 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 63.027 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_TypeTest
+2012-09-30 15:35:46,391 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:35:46,391 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:35:46,407 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:35:46,407 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:35:46,407 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(1318415704)
+2012-09-30 15:36:17,922 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/21d7161a-455e-4f4d-9d61-7f0100c38ff3/synonymy
+2012-09-30 15:36:30,402 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/296b4758-048a-47bb-a394-affca64dfc40/synonymy
+2012-09-30 15:36:30,573 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 46.007 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.cichorieae.Lactuca_triquetra_TaxonProfileTest
+2012-09-30 15:36:32,414 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:36:32,414 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:36:32,414 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:36:32,414 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:36:32,414 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(1044041405)
+2012-09-30 15:37:06,756 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/ecb7a76e-694a-4706-b1ab-a2eb334173ff
+2012-09-30 15:37:25,167 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/ecb7a76e-694a-4706-b1ab-a2eb334173ff
+2012-09-30 15:37:38,614 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cichorieae.cdmportal_d7/?q=cdm_dataportal/taxon/ecb7a76e-694a-4706-b1ab-a2eb334173ff
+2012-09-30 15:37:38,786 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 3, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 66.871 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.cyprus.Allium_guttatum_subsp_guttatum_TaxonProfileTest
+2012-09-30 15:37:39,332 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:37:39,332 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:37:39,332 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:37:39,332 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:37:39,332 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(683776629)
+2012-09-30 15:38:19,227 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cyprus.cdmportal_d7/?q=cdm_dataportal/taxon/6d04598b-3852-4038-91c9-13c7581b21a6
+2012-09-30 15:38:19,633 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @After
+2012-09-30 15:38:19,633 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 40.815 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.cyprus.CyprusSearchTest
+2012-09-30 15:38:20,147 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:38:20,147 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:38:20,147 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:38:20,147 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:38:20,147 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(1331779205)
+2012-09-30 15:38:33,115 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cyprus.cdmportal_d7/
+2012-09-30 15:38:38,982 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cyprus.cdmportal_d7/cdm_dataportal/search/results/taxon?ws=portal%2Ftaxon%2Ffind&query=Genis*&form_build_id=form-FmM0cclclIS06yZTaX_0fBW6vT09iGWQYM0tga5Fidk&form_id=cdm_dataportal_search_taxon_form&search%5BdoTaxaByCommonNames%5D=0&search%5BdoMisappliedNames%5D=1&search%5BdoSynonyms%5D=1&search%5BdoTaxa%5D=1&search%5BpageSize%5D=25&search%5BpageNumber%5D=0&search%5Btree%5D=0c2b5d25-7b15-4401-8b51-dd4be0ee5cab
+2012-09-30 15:38:38,997 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 19.662 sec
+Running eu.etaxonomy.dataportal.selenium.tests.cyprus.Cyprus_HybridTest
+2012-09-30 15:38:39,809 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:38:39,809 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:38:39,809 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:38:39,809 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:38:39,809 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(1479991999)
+2012-09-30 15:38:55,148 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cyprus.cdmportal_d7/?q=cdm_dataportal/taxon/88ff0fbb-c0df-46c1-9969-cf318ea97dbb
+2012-09-30 15:39:00,952 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cyprus.cdmportal_d7/?q=cdm_dataportal/taxon/0aee7eea-84e7-4b61-8cb6-d17313cc9b80/synonymy
+2012-09-30 15:39:06,459 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cyprus.cdmportal_d7/?q=cdm_dataportal/taxon/e13ea422-5d45-477b-ade3-8dc84dbc9dbc/synonymy
+2012-09-30 15:39:06,615 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 27.321 sec
+Running eu.etaxonomy.dataportal.selenium.tests.cyprus.Cyprus_OriginalSourceTest
+2012-09-30 15:39:07,130 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:39:07,130 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:39:07,130 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:39:07,130 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:39:07,130 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(37023679)
+2012-09-30 15:39:22,436 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://cyprus.cdmportal_d7/?q=cdm_dataportal/taxon/2e58b1ab-03a9-4693-bcec-3b8e7f04b572
+2012-09-30 15:39:22,763 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @After
+2012-09-30 15:39:22,763 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 16.148 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.diptera.Diptera_OriginalSourceTest
+2012-09-30 15:39:23,278 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:39:23,278 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:39:23,278 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:39:23,278 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:39:23,278 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(2137315958)
+2012-09-30 15:39:41,704 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://160.45.63.201/dataportal/integration/diptera/?q=cdm_dataportal/taxon/1f1f8356-a172-4f7d-ad98-e8a37489ce9f
+2012-09-30 15:39:43,435 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @After
+2012-09-30 15:39:43,451 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 20.781 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.flMalesiana.FloraMalesianaPolytomousKeyTest
+2012-09-30 15:39:44,059 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:39:44,059 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:39:44,059 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:39:44,059 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:39:44,059 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(1960764652)
+2012-09-30 15:39:52,299 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 8.661 sec
+Running eu.etaxonomy.dataportal.selenium.tests.flMalesiana.FloraMalesiana_OriginalSourceTest
+2012-09-30 15:39:52,720 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:39:52,720 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:39:52,720 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:39:52,720 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:39:52,720 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(2115569617)
+2012-09-30 15:40:03,549 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @After
+2012-09-30 15:40:03,549 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 11.344 sec <<< FAILURE!
+Running eu.etaxonomy.dataportal.selenium.tests.palmae.Calamus_acanthospathus_TaxonProfileTest
+2012-09-30 15:40:04,064 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @BeforeClass: setUpDriver()
+2012-09-30 15:40:04,064 INFO [eu.etaxonomy.dataportal.selenium.WebDriverFactory] - Using browser: firefox
+2012-09-30 15:40:04,064 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.bin = C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+2012-09-30 15:40:04,064 INFO [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - webdriver.firefox.library.path = null
+2012-09-30 15:40:04,064 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - FirefoxProfile: FirefoxProfile(790051365)
+2012-09-30 15:40:47,701 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://palmae.cdmportal_d7/?q=cdm_dataportal/taxon/bb340c78-880e-4dd0-91ff-81788a482b31
+2012-09-30 15:41:03,225 INFO [eu.etaxonomy.dataportal.pages.PortalPage] - loading http://palmae.cdmportal_d7/?q=cdm_dataportal/taxon/bb340c78-880e-4dd0-91ff-81788a482b31
+2012-09-30 15:41:03,381 DEBUG [eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase] - @AfterClass: closeDriver()
+Tests run: 3, Failures: 1, Errors: 0, Skipped: 1, Time elapsed: 59.863 sec <<< FAILURE!
+
+Results :
+
+Failed tests:   crepidiastrum_chelidoniifolium_issue_2772@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_FootnoteTest): expected:<1. As [has been noted first by Sennikov (in Bot Zhurn. 82(5): 114. 1997), the names Lactuca saxatilis]> but was:<1. As [first Sennikov (in Bot Zhurn. 82(5): 114. 1997) correctly stated, the names Lactuca saxatilis ]>
+  soroseris_hookeriana@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_TechnicalAnnnotationsTest): expected:<D[istribu]tion> but was:<D[escrip]tion>
+  scorzonera_tuzgoluensis@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_TypeTest): expected:<...21'11.28"E, A. Duran[, B. Do?an & S. Makbul] (KNYA).> but was:<...21'11.28"E, A. Duran[ & B. Do?an] (KNYA).>
+  testFeatures@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.Lactuca_triquetra_TaxonProfileTest): Too few feature block elements
+  testTitleAndTabs@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.Lactuca_triquetra_TaxonProfileTest): expected:<General[]> but was:<General[
+  testProfileImage@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.Lactuca_triquetra_TaxonProfileTest): Expecting image Lactuca_triquetra_Bf_09.jpg
+  testPage@cyprus(eu.etaxonomy.dataportal.selenium.tests.cyprus.Allium_guttatum_subsp_guttatum_TaxonProfileTest): expected:<General[]> but was:<General[
+  testPage@cyprus(eu.etaxonomy.dataportal.selenium.tests.cyprus.Cyprus_OriginalSourceTest): expected:<General[]> but was:<General[
+  testTitleAndTabs@palmae(eu.etaxonomy.dataportal.selenium.tests.palmae.Calamus_acanthospathus_TaxonProfileTest): expected:<General[]> but was:<General[
+
+Tests in error: 
+  testSearchLCommunis_ImageLinks@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.CichorieaeSearchTest): Not on the expected portal page ( current: about:blank, expected: http://cichorieae.cdmportal_d7/ )
+  testSearchLCommunis@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.CichorieaeSearchTest): Unable to locate element: {"method":"id","selector":"search_results"}
+  intybellia_rosea_cass@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_NamePageTest): Unable to locate element: {"method":"class name","selector":"highlite"}
+  lapsana_zacintha_L@cichorieae(eu.etaxonomy.dataportal.selenium.tests.cichorieae.Cichorieae_NamePageTest): Unable to locate element: {"method":"class name","selector":"highlite"}
+  testPage@diptera(eu.etaxonomy.dataportal.selenium.tests.diptera.Diptera_OriginalSourceTest)
+  Illicium@floramalesiana(eu.etaxonomy.dataportal.selenium.tests.flMalesiana.FloraMalesiana_OriginalSourceTest): Not on the expected portal page ( current: http://www.flora-malesiana.cdmportal_d7/, expected: http://flora-malesiana.cdmportal_d7/ )
+
+Tests run: 28, Failures: 9, Errors: 6, Skipped: 2
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 16:04.963s
+[INFO] Finished at: Sun Sep 30 15:41:03 CEST 2012
+[INFO] Final Memory: 18M/111M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.10:test (default-test) on project dataportal-selenium-tests: There are test failures.
+[ERROR] 
+[ERROR] Please refer to c:\htdocs\cybertax_d7\sites\all\modules\cdm_dataportal\test\java\dataportal-selenium-tests\target\surefire-reports for the individual test results.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.bcel.verifier.exc.LinkingConstraintException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -18,6 +20,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import sun.swing.StringUIClientPropertyKey;
 
 import com.google.common.base.Function;
 
@@ -330,24 +334,14 @@ public abstract class  PortalPage {
     public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> type, Long duration, TimeUnit waitUnit) {
 
         String targetWindow = null;
-
-
-        if(targetWindow == null){
-            if(element instanceof LinkElement){
-                targetWindow = element.getElement().getAttribute("target");
-            } else {
-                try {
-                    targetWindow = element.getElement().findElement(By.xpath("./a[@target]")).getAttribute("target");
-                } catch (NoSuchElementException e) {
-                    logger.debug("No target window found");
-                    /* IGNORE */
-                }
-            }
-
+        List<String> targets = element.getLinkTargets();
+        if(targets.size() > 0){
+            targetWindow = targets.get(0);
         }
 
-        logger.info("clicking on " + element + (targetWindow == null? "" : " with target window: '" + targetWindow + "'"));
-
+        if(logger.isInfoEnabled()){
+            logger.info("clicking on " + element.toStringWithLinks());
+        }
         element.getElement().click();
         if(targetWindow != null){
             driver.switchTo().window(targetWindow);

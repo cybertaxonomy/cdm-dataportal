@@ -126,21 +126,21 @@
 /**
  *
  */
-$.fn.set_background_image = function (imageFile)
+jQuery.fn.set_background_image = function (imageFile)
 {
-	var bg_image_tmp = $(this).css('background-image');
+	var bg_image_tmp = jQuery(this).css('background-image');
 	var bg_image_new = bg_image_tmp.replace(/^(.*)(\/.*)(\))$/, '$1/'+imageFile+'$3');
-	if($.browser.mozilla){
+	if(jQuery.browser.mozilla){
 		// special bug handling for mozilla: strip of last closing bracket
 		bg_image_new = bg_image_new.substr(0, bg_image_new.length - 1);
 	}
-	$(this).css('background-image', bg_image_new);
+	jQuery(this).css('background-image', bg_image_new);
 }
 
 /**
  *
  */
-$.fn.cdm_taxontree_container_resize = function() 
+jQuery.fn.cdm_taxontree_container_resize = function() 
 {
     var current_w = $(this).parent().width();
     
@@ -160,16 +160,16 @@ $.fn.cdm_taxontree_container_resize = function()
     }
     
     if(current_w < w){
-      $(this).parent().width(w);
-      $(this).children().width(w);
+    	jQuery(this).parent().width(w);
+    	jQuery(this).children().width(w);
     }
-    return $(this).children().outerWidth();
+    return jQuery(this).children().outerWidth();
 }
 
 /**
  *
  */
-$.fn.cdm_taxontree_container_debug_size = function(msg) 
+jQuery.fn.cdm_taxontree_container_debug_size = function(msg) 
 {
   var out = msg 
      + '<br />    scoll_x: ' + $(this).parent().width()
@@ -177,13 +177,13 @@ $.fn.cdm_taxontree_container_debug_size = function(msg)
      + '<br />    scoll_y: ' + $(this).children().width()
      + '<br />    ul: ' + $(this).find('.cdm_taxontree_scroller_y > ul').width()
      + '<br />';
-  $('#DEBUG_JS').append(out);
+  jQuery('#DEBUG_JS').append(out);
 }
 
 /**
  *
  */
-$.fn.cdm_taxontree_magicbox = function() 
+jQuery.fn.cdm_taxontree_magicbox = function() 
 {  
 	// exclude IE6 and lower versions
 	if(!(jQuery.browser['msie'] && jQuery.browser['version'].charAt(0) < '7')){
@@ -225,8 +225,8 @@ $.fn.cdm_taxontree_magicbox = function()
 			function() 
 			{
 				//return; 
-				var container = $(this);
-				var scroller_x = $(this).parent('.cdm_taxontree_scroller_x');
+				var container = jQuery(this);
+				var scroller_x = jQuery(this).parent('.cdm_taxontree_scroller_x');
 				var scroller_y = container.children('.cdm_taxontree_scroller_y');
 				var border_color = scroller_y.css('border-top-color');
 				
@@ -245,7 +245,7 @@ $.fn.cdm_taxontree_magicbox = function()
 	// END exclude IE6    
 }
 
-$.fn.cdm_taxontree.defaults = {  // set up default options
+jQuery.fn.cdm_taxontree.defaults = {  // set up default options
 	widget:                 false,			// true = enable widget mode
 	magicbox:				false,			// true = enable quirky magicbox
 	element_name:           'widgetval',	// 
@@ -254,9 +254,9 @@ $.fn.cdm_taxontree.defaults = {  // set up default options
 
 /* ========================== auto activate ========================== 
 
-if (Drupal.jsEnabled) {
-  $(document).ready(function() {
-    $('ul.cdm_taxontree').cdm_taxontree();
+
+  jQuery(document).ready(function() {
+    jQuery('ul.cdm_taxontree').cdm_taxontree();
   });
-}
+
 */ 

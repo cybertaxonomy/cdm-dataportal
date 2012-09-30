@@ -1,6 +1,6 @@
 
 
-Drupal.cdm_annotationsAutoAttach = function(){
+Drupal.cdm_annotationsAutoAttach = (function($){
 
 	$('span.annotation_toggle').click( function(){
 	
@@ -35,9 +35,8 @@ Drupal.cdm_annotationsAutoAttach = function(){
 		
 	});
 		
-}
+}(jQuery)
 
 
-if (Drupal.jsEnabled) {
-  $(document).ready(Drupal.cdm_annotationsAutoAttach);
-}
+
+jQuery(document).ready(Drupal.cdm_annotationsAutoAttach);

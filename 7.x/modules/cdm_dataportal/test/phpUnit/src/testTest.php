@@ -6,7 +6,7 @@
  *
  */
 class TestTests extends PHPUnit_Framework_TestCase {
-    function test_fancymodule() {
-        $this->assertInternalType("string", "true");
-    }
+  function test_fancymodule() {
+    $this->assertInternalType("string", "true");
+  }
 }

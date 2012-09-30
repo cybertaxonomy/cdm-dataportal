@@ -9,7 +9,7 @@
  */
 
 
-Drupal.cdm_dynaboxAutoAttach = function () {
+Drupal.cdm_dynaboxAutoAttach = (function ($) {
 
   var loadDynaContent =  function(event) {
 	  event.preventDefault(); //Cancel the default action (navigation) of the click.
@@ -31,9 +31,8 @@ Drupal.cdm_dynaboxAutoAttach = function () {
   $('.dynabox a.label').click(loadDynaContent);
 
     //$('li.dynabox> span').click(function(event){event.stopPropagation();});
-}
+})(jQuery)
 
 
-if (Drupal.jsEnabled) {
-  $(document).ready(Drupal.cdm_dynaboxAutoAttach);
-}
+
+jQuery(document).ready(Drupal.cdm_dynaboxAutoAttach);

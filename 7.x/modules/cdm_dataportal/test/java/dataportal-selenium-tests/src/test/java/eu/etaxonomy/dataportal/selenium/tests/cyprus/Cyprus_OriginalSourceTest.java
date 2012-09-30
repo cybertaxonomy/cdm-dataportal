@@ -78,7 +78,7 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
 		p.testTableOfContentEntry(tocIndex++, "Chromosome numbers", "chromosome_numbers");
 		p.testTableOfContentEntry(tocIndex++, "Distribution", "distribution");
 
-		FeatureBlock featureBlock = p.getFeatureBlockAt(2, "chromosome_numbers", "div", "li"); //FIXME <div><li> bug in portal
+		FeatureBlock featureBlock = p.getFeatureBlockAt(2, "chromosome-numbers", "div", "li"); //FIXME <div><li> bug in portal
 		assertEquals("Chromosome numbers\nCistus creticus L.: 2n = 18 (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus in Candollea 48. 1993) (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus. 2 in Acta Univ. Carol., Biol. 46. 2002)", featureBlock.getText());
 		assertEquals("Chromosome numbers", featureBlock.getHeader());
 		assertEquals("expecting no footnote keys", 0, featureBlock.getFootNoteKeys().size());

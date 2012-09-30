@@ -1127,12 +1127,10 @@
 7.x/modules/cdm_dataportal/cdm_mediauri/cdm_mediauri.module -text
 7.x/modules/cdm_dataportal/cdm_mediauri/rule-examples.txt -text
 7.x/modules/cdm_dataportal/cdm_taxontree/LICENSE.txt -text
-7.x/modules/cdm_dataportal/cdm_taxontree/cdm_taxontree-widget.css -text
 7.x/modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.css -text
 7.x/modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.info -text
 7.x/modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.install -text
 7.x/modules/cdm_dataportal/cdm_taxontree/cdm_taxontree.module -text
-7.x/modules/cdm_dataportal/cdm_taxontree/cdm_taxontree_widget.php -text
 7.x/modules/cdm_dataportal/cdm_taxontree/concept_switch.gif -text
 7.x/modules/cdm_dataportal/cdm_taxontree/images/btn_expand.gif -text
 7.x/modules/cdm_dataportal/cdm_taxontree/images/button_master.xcf -text
@@ -1177,6 +1175,10 @@
 7.x/modules/cdm_dataportal/help.php -text
 7.x/modules/cdm_dataportal/help/overview.apt -text
 7.x/modules/cdm_dataportal/help/overview.html -text
+7.x/modules/cdm_dataportal/help/settings_cache.html -text
+7.x/modules/cdm_dataportal/help/settings_general.html -text
+7.x/modules/cdm_dataportal/help/settings_geo.html -text
+7.x/modules/cdm_dataportal/help/settings_layout.html -text
 7.x/modules/cdm_dataportal/ide/eclipse/cdm_dataportal[!!-~]install.launch -text
 7.x/modules/cdm_dataportal/ide/eclipse/cdm_dataportal.launch -text
 7.x/modules/cdm_dataportal/ide/eclipse/phpUnit.launch -text
@@ -1344,6 +1346,11 @@
 7.x/modules/cdm_dataportal/site/resources/images/palmae5.png -text
 7.x/modules/cdm_dataportal/site/resources/images/settings1.PNG -text
 7.x/modules/cdm_dataportal/site/site.xml -text
+7.x/modules/cdm_dataportal/test/.buildpath -text
+7.x/modules/cdm_dataportal/test/.project -text
+7.x/modules/cdm_dataportal/test/.settings/org.eclipse.php.core.prefs -text
+7.x/modules/cdm_dataportal/test/java/.classpath -text
+7.x/modules/cdm_dataportal/test/java/.project -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/pom.xml -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/Browser.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/DataPortalContext.java -text
@@ -1406,6 +1413,7 @@
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/flMalesiana/FloraMalesianaPolytomousKeyTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/flMalesiana/FloraMalesiana_OriginalSourceTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/palmae/Calamus_acanthospathus_TaxonProfileTest.java -text
+7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/testresults.txt -text
 7.x/modules/cdm_dataportal/test/phpUnit/README -text
 7.x/modules/cdm_dataportal/test/phpUnit/TestUtils.php -text
 7.x/modules/cdm_dataportal/test/phpUnit/bootstrap.php -text
@@ -1417,6 +1425,7 @@
 7.x/modules/cdm_dataportal/test/phpUnit/src/cdm_dataportal.moduleTest.php -text
 7.x/modules/cdm_dataportal/test/phpUnit/src/testTest.php -text
 7.x/modules/cdm_dataportal/test/phpUnit/src/theme/cdm_dataportal.name.themeTest.php -text
+7.x/modules/cdm_dataportal/theme/cdm_dataportal.bibliography.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.descriptions.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.media.theme -text

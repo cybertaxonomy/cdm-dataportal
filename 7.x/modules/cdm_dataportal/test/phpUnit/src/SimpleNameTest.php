@@ -9,46 +9,46 @@ class ShortnameTest extends PHPUnit_Framework_TestCase {
 
   /*
    --------'BACILLARIOPHYCEAE (FOSS.)'---------
---------'BACILLUS OBSCURUS (FOSS.)'---------
->>> B. OBSCURUS (FOSS.)
---------'Lapsana communis L.'---------
->>> L. communis L.
---------'Lapsana L.'---------
---------'Lapsana communis subsp. adenophora (Boiss.) Rech.'---------
->>> L. communis subsp. adenophora (Boiss.) Rech.
---------'Asterolampra marylandica'---------
->>> A. marylandica
---------'Ophrys ×"kreutziana"'---------
->>> O. ×"kreutziana"
---------'Ophrys bornmuelleri subsp. bornmuelleri × subsp. grandiflora'---------
->>> O. bornmuelleri subsp. bornmuelleri × subsp. grandiflora
---------'Aegilops ×insulae-cypri'---------
->>> A. ×insulae-cypri
+   --------'BACILLUS OBSCURUS (FOSS.)'---------
+   >>> B. OBSCURUS (FOSS.)
+   --------'Lapsana communis L.'---------
+   >>> L. communis L.
+   --------'Lapsana L.'---------
+   --------'Lapsana communis subsp. adenophora (Boiss.) Rech.'---------
+   >>> L. communis subsp. adenophora (Boiss.) Rech.
+   --------'Asterolampra marylandica'---------
+   >>> A. marylandica
+   --------'Ophrys ×"kreutziana"'---------
+   >>> O. ×"kreutziana"
+   --------'Ophrys bornmuelleri subsp. bornmuelleri × subsp. grandiflora'---------
+   >>> O. bornmuelleri subsp. bornmuelleri × subsp. grandiflora
+   --------'Aegilops ×insulae-cypri'---------
+   >>> A. ×insulae-cypri
 
    */
 
-    function test_cdm_dataportal_shortname_of() {
-      $testStrings = array(
-      	"BACILLARIOPHYCEAE (FOSS.)" => "BACILLARIOPHYCEAE (FOSS.)",
-      	"BACILLUS OBSCURUS (FOSS.)" => "B. OBSCURUS (FOSS.)",
-      	"Lapsana communis L." => "L. communis L.",
-      	"Lapsana L." => "Lapsana L.",
-      	"Lapsana communis subsp. adenophora (Boiss.) Rech." => "L. communis subsp. adenophora (Boiss.) Rech.",
-      	"Asterolampra marylandica" => "A. marylandica",
-          "Ophrys ×\"kreutziana\"" => "O. ×\"kreutziana\"",
-          "Ophrys bornmuelleri subsp. bornmuelleri × subsp. grandiflora" => "O. bornmuelleri subsp. bornmuelleri × subsp. grandiflora",
-          "Aegilops ×insulae-cypri" => "A. ×insulae-cypri",
-          "Hieracium harjuënse Sennikov" => "H. harjuënse Sennikov",
-          "Hieracium harjuënse" => "H. harjuënse"
-      );
+  function test_cdm_dataportal_shortname_of() {
+    $testStrings = array(
+      "BACILLARIOPHYCEAE (FOSS.)" => "BACILLARIOPHYCEAE (FOSS.)",
+      "BACILLUS OBSCURUS (FOSS.)" => "B. OBSCURUS (FOSS.)",
+      "Lapsana communis L." => "L. communis L.",
+      "Lapsana L." => "Lapsana L.",
+      "Lapsana communis subsp. adenophora (Boiss.) Rech." => "L. communis subsp. adenophora (Boiss.) Rech.",
+      "Asterolampra marylandica" => "A. marylandica",
+      "Ophrys ×\"kreutziana\"" => "O. ×\"kreutziana\"",
+      "Ophrys bornmuelleri subsp. bornmuelleri × subsp. grandiflora" => "O. bornmuelleri subsp. bornmuelleri × subsp. grandiflora",
+      "Aegilops ×insulae-cypri" => "A. ×insulae-cypri",
+      "Hieracium harjuënse Sennikov" => "H. harjuënse Sennikov",
+      "Hieracium harjuënse" => "H. harjuënse",
+    );
 
-      foreach ($testStrings as $nameString => $shortname){
-        $tagtxt->type = "name";
-        $tagtxt->text = $nameString;
-        $name->taggedTitle = array($tagtxt);
-        $result = cdm_dataportal_shortname_of($name);
+    foreach ($testStrings as $nameString => $shortname) {
+      $tagtxt->type = "name";
+      $tagtxt->text = $nameString;
+      $name->taggedTitle = array($tagtxt);
+      $result = cdm_dataportal_shortname_of($name);
 
-        $this->assertEquals($shortname, $result);
-      }
+      $this->assertEquals($shortname, $result);
     }
+  }
 }

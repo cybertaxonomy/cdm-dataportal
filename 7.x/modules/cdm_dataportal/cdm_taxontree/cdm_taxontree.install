@@ -1,27 +1,54 @@
 <?php
 // $Id: cdm_taxontree.install 2857 2008-06-26 16:48:16Z a.kohlbecker $
 
-/**
- * Implementation of hook_install().
- */
-function cdm_taxontree_install(){
-  
-  db_query(" CREATE TABLE  {cache_cdm_taxontree} (
-      `cid` varchar(333) NOT NULL default '',
-      `data` longblob,
-      `expire` int(11) NOT NULL default '0',
-      `created` int(11) NOT NULL default '0',
-      `headers` text,
-      PRIMARY KEY  (`cid`),
-      KEY `expire` (`expire`)
-    ) ENGINE=MyISAM DEFAULT CHARSET=utf8; ");
-  
-}
 
 /**
- * Implementation of hook_uninstall().
+ * @file
+ * Install, update and uninstall functions for the cdm_taxontree module.
+ *
  */
-function cdm_taxontree_uninstall(){
-    db_query("DROP TABLE {cache_cdm_taxontree};");
+
+/**
+ * Implements hook_schema().
+ * The drupal_(un)install_schema functions are called automatically in D7.
+ */
+function cdm_taxontree_schema() {
+
+  $schema['cache_cdm_taxontree'] = array(
+    'fields' => array(
+      'cid' => array(
+        'type' => 'varchar',
+        'length' => '333',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'expire' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'disp-width' => '11',
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'disp-width' => '11',
+      ),
+      'headers' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('cid'),
+    'indexes' => array(
+      'expire' => array('expire'),
+    ),
+  );
+
 }
- ?>
+?>
