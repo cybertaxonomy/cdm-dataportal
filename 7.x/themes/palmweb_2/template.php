@@ -773,16 +773,24 @@ function palmweb_2_preprocess_page(&$vars) {
  * @return void
  */
 function palmweb_2_preprocess_node(&$vars) {
-    $body =  $vars['node']->body['und'][0]['value'];
-    
-    $file_path = '/' . variable_get('file_public_path', conf_path() . '/files');
-    global $base_url;
-    $fixed_file_path = $base_url . '/' . $file_path ;
-    $preg_file_path = preg_quote($file_path, '/');
-    $body = preg_replace ('/src\s*=\s*["]\s*' . $preg_file_path.'/', 'src="'.$fixed_file_path , $body);
-    $body = preg_replace ('/src\s*=\s*[\']\s*' . $preg_file_path.'/', 'src=\''.$fixed_file_path , $body);
-    $body = preg_replace ('/href\s*=\s*["]\s*' . $preg_file_path.'/', 'href="'.$fixed_file_path , $body);
-    $body = preg_replace ('/href\s*=\s*[\']\s*' . $preg_file_path.'/', 'href=\''.$fixed_file_path , $body);
-    
-    $vars['fixed_body'] = $body;    
+  $body = '';
+  // Warning: use #markup value, for which filters like php, html etc are applied!
+  if (isset($vars['content']['body'][0]['#markup'])) {
+    $body = $vars['content']['body'][0]['#markup']; 
+  }
+  else {
+    $vars['fixed_body'] = '';
+    return;
+  }
+
+  $file_path = '/' . variable_get('file_public_path', conf_path() . '/files');
+  global $base_url;
+  $fixed_file_path = $base_url . '/' . $file_path ;
+  $preg_file_path = preg_quote($file_path, '/');
+  $body = preg_replace ('/src\s*=\s*["]\s*' . $preg_file_path.'/', 'src="'.$fixed_file_path , $body);
+  $body = preg_replace ('/src\s*=\s*[\']\s*' . $preg_file_path.'/', 'src=\''.$fixed_file_path , $body);
+  $body = preg_replace ('/href\s*=\s*["]\s*' . $preg_file_path.'/', 'href="'.$fixed_file_path , $body);
+  $body = preg_replace ('/href\s*=\s*[\']\s*' . $preg_file_path.'/', 'href=\''.$fixed_file_path , $body);
+
+  $vars['fixed_body'] = $body;    
 }
