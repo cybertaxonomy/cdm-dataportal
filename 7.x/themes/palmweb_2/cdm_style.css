@@ -49,7 +49,8 @@ a.toc:link, a.toc:visited {
 }
 
 ul.cdm_taxontree {
-background-color: transparent;
+  background-color: transparent;
+  margin: 0
 }
 
 /* switch off highlighting of synonyms */
@@ -62,3 +63,29 @@ div.error{
 		display: none;
 	}
 */
+/* display imce browser in small font and less padding to have enough space in the Palmweb_2 body */
+#file-list td {
+    padding: 2px;
+}
+#imce-content, #imce-content * {
+	font: 10px/10px Verdana,sans-serif;
+}
+
+/*style for maintenance page */
+.maintenance-page {
+  background: url("images/druplicon.png") no-repeat scroll 5.6em 5.3em #FFFFFF;
+  border: 1px solid #BBBBBB;
+  color: #000000;
+  line-height: 1.2;
+  margin: 4em;
+  padding: 1em 1em 1em 128px;
+  font-family: sans-serif;
+}
+.maintenance-page h1 {
+  margin: 1.7em 0 1.1em;    
+  font-size: 2.7em;
+  font-weight: bold;
+}
+.maintenance-page #content-content {
+  font-size: 1.12em;     
+}

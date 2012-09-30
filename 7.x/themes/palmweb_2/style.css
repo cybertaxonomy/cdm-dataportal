@@ -10,7 +10,7 @@
 /**
  * Generic elements
  */
-html, body {
+body {
   margin: 0;
   padding: 0;
   background: #efefef;
@@ -452,7 +452,12 @@ body.sidebars #squeeze {
 
 .block .content p { /* same indent as ul + li */
   margin:0.15em 0 0.40em 1.5em;
-  padding:0 0 0.2em 1.5em;
+  padding:0 0 0.2em 1.5em; 
+}
+
+p#Distribution {
+  margin-left: 23px;
+  padding: 0;
 }
 
 #sidebar-first .block-region {
@@ -560,7 +565,7 @@ body.sidebars #footer {
 	font-size: 90%;
 }
 
-.common_names_as_common_names, .footnote, p.description{
+.common-names-as-common-names, .footnote, p.description{
 	margin-left: 23px;
 }
 
@@ -1101,4 +1106,12 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
 
 .category {
 	padding: 0 0 0.9em 0em;
+}
+
+.pager {
+    clear: both;
+    text-align: center;
+}
+#cdm-dataportal-search-taxon-form .form-item .description {
+    display:none;
 }

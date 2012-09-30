@@ -227,7 +227,7 @@ span.submitted, .description {
   color: #000000;
 }
 
-.block-cdm_dataportal-feature    li.descriptionText {
+.block-cdm-dataportal-feature    li.descriptionText {
   list-style: none;
   list-style-image: none;
   background-image: none;
@@ -447,7 +447,7 @@ body.sidebars #squeeze {
   min-height: 400px;
 }
 
-#wrapper #container #footer {
+#wrapper #container .region-footer {
   float: none;
   clear: both;
   text-align: center;
@@ -462,15 +462,15 @@ body.sidebars #squeeze {
   z-index: 3;
 }
 
-body.sidebar-first  #footer {
+body.sidebar-first  .region-footer {
   margin-left: -210px;
 }
 
-body.sidebar-second #footer {
+body.sidebar-second .region-footer {
   margin-right: -210px;
 }
 
-body.sidebars #footer {
+body.sidebars .region-footer {
   margin: 0 -210px;
 }
 

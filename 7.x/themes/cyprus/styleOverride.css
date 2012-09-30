@@ -327,6 +327,10 @@ li.ui-tabs-selected{
 	padding:1.5em 0;
 }
 
+.node-cdm-taxon {
+  padding:0.4em 0;
+}
+
 span.acceptedFor, #backButton {
 	font-size: 0.9em;
 }
@@ -413,4 +417,31 @@ li.toclevel-2 {
 li.toclevel-3 {
 	margin-left: 45px;
 	background-image: none;
+}
+
+.pager {
+    clear: both;
+    text-align: center;
+}
+#cdm-dataportal-search-taxon-form .form-item .description {
+    display:none;
+}
+
+/*style for maintenance page */
+.maintenance-page {
+  background: url("images/druplicon.png") no-repeat scroll 5.6em 5.3em #FFFFFF;
+  border: 1px solid #BBBBBB;
+  color: #000000;
+  line-height: 1.2;
+  margin: 4em;
+  padding: 1em 1em 1em 128px;
+  font-family: sans-serif;
+}
+.maintenance-page h1 {
+  margin: 1.7em 0 1.1em;
+  font-size: 2.7em;
+  font-weight: bold;
+}
+.maintenance-page #content-content {
+  font-size: 1.12em;
 }
