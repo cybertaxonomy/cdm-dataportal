@@ -355,7 +355,7 @@ function palmweb_2_cdm_search_results($variables){
 	$out = ''; //l('Advanced Search', '/cdm_dataportal/search');
 	//AT RBG KEW - 14/11/2011 - Changed the wording of the Show Thumbnails tick box text 
 	$out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Image Thumbnails').'</form></div>';
-	if(count($pager->records) > 0){
+	if(!empty($pager) && count($pager->records) > 0){
 	    $out .= '<div id="search_results">';
 		$out .= theme('cdm_list_of_taxa', array('records' => $pager->records));
 		$out .= '</div>';
