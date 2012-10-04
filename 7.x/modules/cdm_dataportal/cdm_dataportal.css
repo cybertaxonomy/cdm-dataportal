@@ -452,6 +452,59 @@ a.toc:link, a.toc:visited {
 }
 /* for compatibility with d5 themes */
 .block-cdm-dataportal-feature ul {
-    margin: 0;
-    padding: 0 0 0.25em 1em;
+  margin: 0;
+  padding: 0 0 0.25em 1em;
 }
+/* do not display the fieldset down arrow twice in the setup forms */
+#cdm-settings-general fieldset.collapsible .fieldset-legend,
+#cdm-settings-geo fieldset.collapsible .fieldset-legend,
+#cdm-settings-layout fieldset.collapsible .fieldset-legend,
+#cdm-settings-layout-taxon fieldset.collapsible .fieldset-legend,
+#cdm-settings-layout-search fieldset.collapsible .fieldset-legend,
+#cdm-settings-layout-media fieldset.collapsible .fieldset-legend,
+#cdm-settings-cache fieldset.collapsible .fieldset-legend,
+#cdm-settings-layout-media fieldset.collapsible .fieldset-legend,
+#ext-links-admin fieldset.collapsible .fieldset-legend,
+#cdm-mediauri-rule-add fieldset.collapsible .fieldset-legend {
+  background-image: none;
+  padding-left: 0;
+}
+
+/* do not display the descriptions indented in the setup forms, D5 style */
+#cdm-settings-general .form-type-radio .description, .form-type-checkbox .description,
+#cdm-settings-geo .form-type-radio .description, .form-type-checkbox .description,
+#cdm-settings-layout .form-type-radio .description, .form-type-checkbox .description,
+#cdm-settings-layout-taxon .form-type-radio .description, .form-type-checkbox .description,
+#cdm-settings-layout-search .form-type-radio .description, .form-type-checkbox .description,
+#cdm-settings-layout-media .form-type-radio .description, .form-type-checkbox .description,
+#cdm-settings-cache .form-type-radio .description, .form-type-checkbox .description,
+#cdm-settings-layout-media .form-type-radio .description, .form-type-checkbox .description,
+#ext-links-admin .form-type-radio .description, .form-type-checkbox .description,
+#cdm-mediauri-rule-add .form-type-radio .description, .form-type-checkbox .description {
+  margin-left: 0;
+}
+/* align checkboxes and radios as D5 style */
+#cdm-settings-general input.form-checkbox, input.form-radio,
+#cdm-settings-geo input.form-checkbox, input.form-radio,
+#cdm-settings-layout input.form-checkbox, input.form-radio,
+#cdm-settings-layout-taxon input.form-checkbox, input.form-radio,
+#cdm-settings-layout-search input.form-checkbox, input.form-radio,
+#cdm-settings-layout-media input.form-checkbox, input.form-radio,
+#cdm-settings-cache input.form-checkbox, input.form-radio,
+#cdm-settings-layout-media input.form-checkbox, input.form-radio,
+#ext-links-admin input.form-checkbox, input.form-radio,
+#cdm-mediauri-rule-add input.form-checkbox, input.form-radio {
+  vertical-align: baseline;
+}
+
+/* Custom style for the more-help links on the cdm settings pages. */
+.cdm-dataportal-settings-more-help-link {
+  font-size: 0.85em;
+}
+.cdm-dataportal-settings-more-help-link a {
+  background-image: none;
+  padding: 0;
+}
+#block-system-help .content {
+  margin:0;
+} 

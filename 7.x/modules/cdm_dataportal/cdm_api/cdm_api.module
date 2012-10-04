@@ -491,7 +491,7 @@ function proxy_content($uri, $theme = null) {
     if (strpos($arg, "a:") === 0) { // FIXME use regex to find serialized arrays
       $arg = unserialize($arg);
     }
-    // find comma sepatated string in all args
+    // find comma separated string in all args
     // if(strpos($arg, ',')){
     // $arg = explode(',', $arg);
     // }
@@ -524,7 +524,7 @@ function proxy_content($uri, $theme = null) {
   else {
     // in all other cases perform a simple get request
     // TODO reconsider caching logic in this function
-    if (! $theme) {
+    if (empty($theme)) {
       // print out JSON, the cache cannot be used since it contains objects
       $http_response = drupal_http_request($uri);
       if (isset($http_response->headers)) {
@@ -571,7 +571,7 @@ function setvalue_session() {
 }
 function uri_uriByProxy($uri, $theme = false) {
   // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");)
-  return url('cdm_api/proxy/' . urlencode($uri) . ($theme ? "/$theme" : ''));
+  return url('cdm_api/proxy/' . urlencode($uri) . (isset($theme) ? "/$theme" : ''));
 }
 function cdm_compose_annotations_url($cdmBase) {
   if (! $cdmBase->uuid) {

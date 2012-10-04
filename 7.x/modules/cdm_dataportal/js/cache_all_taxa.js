@@ -105,7 +105,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 				var taxon = dataPager.records[ri];
 				var taxonUrl = taxonPageUrl + taxon.uuid + '/all';
 				log('taxon->'+taxonUrl);
-				$.ajax({
+				jQuery.ajax({
 					url: taxonUrl,
 					cache: false, // browser will not cache
 					complete: function(xmlHttpRequest, statusText){
@@ -180,7 +180,7 @@ jQuery(document).ready(function($) {
 			var timehtml =
 				'elapsed time: ' + formatTime(elapsedTime)
 				+ '<br />estimated time: ' + formatTime(estimatedTime)
-				+ '<br />remainig time: ' + formatTime(new Date(estimatedTime.getTime() - elapsedTime.getTime()));
+				+ '<br />remaining time: ' + formatTime(new Date(estimatedTime.getTime() - elapsedTime.getTime()));
 			$('#time').html(timehtml);
 		}
 		if(userMessage == undefined || userMessage == null ){

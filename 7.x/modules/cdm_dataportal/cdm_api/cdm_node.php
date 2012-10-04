@@ -7,10 +7,10 @@ function cdm_dataportal_node_view($node, $view_mode = 'full') {
   // see cdm_add_node_content
   switch ($node->type) {
     case 'cdm_' . NODETYPE_TAXON:
-      $node->content['cdm'] = $node->cdm;
+      $node->content['cdm'] = isset($node->cdm) ? $node->cdm : '';
       break;
     case 'cdm_' . NODETYPE_TAXON:
-      $node->content['cdm'] = $node->cdm;
+      $node->content['cdm'] = isset($node->cdm) ? $node->cdm : '';
       break;
   }
 }

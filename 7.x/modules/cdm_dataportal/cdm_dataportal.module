@@ -772,14 +772,15 @@ function cdm_taxonomictree_selector_form($form, &$form_state) {
 function cdm_dataportal_theme() {
   return array(
     //themes in help.php 
-    'cdm_dataportal_admin_settings_cdm_dataportal_general' => array('variables' => array()),
-    'cdm_dataportal_admin_settings_cdm_dataportal_geo' => array('variables' => array()),
-    'cdm_dataportal_admin_settings_cdm_dataportal_layout' => array('variables' => array()),
-    'cdm_dataportal_admin_settings_cdm_dataportal_cachesite' => array('variables' => array()),    //themes in settings.php
-    
+    'cdm_dataportal_admin_config_cdm_dataportal_general' => array('variables' => array()),
+    'cdm_dataportal_admin_config_cdm_dataportal_geo' => array('variables' => array()),
+    'cdm_dataportal_admin_config_cdm_dataportal_layout' => array('variables' => array()),
+    'cdm_dataportal_admin_config_cdm_dataportal_cachesite' => array('variables' => array()),
+    'cdm_dataportal_admin_config_more_help_link' => array('variables' => array()),
+
     //themes in settings.php  
     'checkboxes_preferred' => array('render element' => 'element'),
-  
+
     //themes in cdm_dataportal.common.theme 
     'cdm_taggedtext2html' => array('variables' => array('taggedtxt' => array(), 'tag' => 'span', 'glue' => ' ', 'skiptags' => array())),
     'cdm_annotations_as_footnotekeys' => array('variables' => array('cdmBase_list' => null, 'footnote_list_key' => null)),

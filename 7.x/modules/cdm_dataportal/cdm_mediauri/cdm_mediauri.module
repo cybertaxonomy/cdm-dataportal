@@ -87,7 +87,7 @@ function cdm_mediauri_menu() {
  * Returns an overview list of existing media uri rules
  */
 function cdm_mediauri_overview($rules = false) {
-  if (! $rules) {
+  if (!$rules) {
     $rules = cdm_mediauri_rules();
   }
 
@@ -117,6 +117,7 @@ function cdm_mediauri_overview($rules = false) {
       ),
     );
   }
+  
   return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
@@ -125,15 +126,20 @@ function cdm_mediauri_overview($rules = false) {
  */
 function cdm_mediauri_rule_add($form, &$form_state) {
   $form = cdm_mediauri_rule_edit_form('new');
-  return system_settings_form($form);
+ // Comment @WA: we cannot use system settings form here because we want to
+ // use our own submit function (cdm_mediauri_rule_add_submit)
+ // return system_settings_form($form);
+  return $form;
 }
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function cdm_mediauri_rule_edit($form, $rid) {
+function cdm_mediauri_rule_edit($form, &$form_state) {
+  $rid = arg(4);
   $form = cdm_mediauri_rule_edit_form($rid);
-  return system_settings_form($form);
+  //return system_settings_form($form);
+  return $form;
 }
 /**
  * @todo Please document this function.
@@ -159,7 +165,7 @@ function cdm_mediauri_rule_edit_submit($form, &$form_state) {
   if (is_numeric($form_state['values']['rid'])) {
     $rules = cdm_mediauri_rules();
     // determine if the menu has changed
-    if ($rules[$form_state['values']['rid']]['embed'] != $form_state['values']['rule']['embed'] || $rules[$form_state['values']['rid']]['path'] != $form_state['values']['rule']['path']) {
+    if (isset($rules[$form_state['values']['rid']]['embed']) && $rules[$form_state['values']['rid']]['embed'] != $form_state['values']['rule']['embed'] || $rules[$form_state['values']['rid']]['path'] != $form_state['values']['rule']['path']) {
       menu_rebuild();
       drupal_set_message(t('Menu Rebuild'));
     }
@@ -170,7 +176,7 @@ function cdm_mediauri_rule_edit_submit($form, &$form_state) {
   else {
     drupal_set_message(t('Cannot save rule (invalid rule id)'), 'error');
   }
-  return 'admin/config/cdm_mediauri';
+  $form_state['redirect'] = 'admin/config/cdm_mediauri';
 }
 /**
  * @todo Please document this function.
@@ -186,22 +192,33 @@ function cdm_mediauri_rule_delete_submit($form, &$form_state) {
   else {
     drupal_set_message(t('Cannot delete rule (invalid rule id)'), 'error');
   }
-  return 'admin/config/cdm_mediauri';
+  $form_state['redirect'] = 'admin/config/cdm_mediauri';
 }
 
 /**
  * Menu callback; confirm deletion of mediauri rule.
  */
-function cdm_mediauri_rule_delete($form, $rid = 0) {
+function cdm_mediauri_rule_delete($form, &$form_state) {
+  $rid = arg(4);
   $rules = cdm_mediauri_rules();
   $form['rid'] = array(
     '#type' => 'hidden',
     '#value' => $rid,
   );
-
-  return confirm_form($form, t('Are you sure you want to delete the following rule:' . cdm_mediauri_overview(array(
-    $rules[$rid],
-  ))), 'admin/config/cdm_mediauri', '', t('Delete'), t('Cancel'));
+  
+  // Comment @WA: I removed the rule table from the <h2> title to the
+  // description so it is consistent with the rest of the interface,
+  // instead of displaying the table enlarged like in D5. I would recommend 
+  // also to hide the Operations column from the table because it may
+  // be confusing here.  
+  return confirm_form(
+      $form, 
+      t('Are you sure you want to delete the following rule:'),
+      'admin/config/cdm_mediauri',
+      cdm_mediauri_overview(array($rules[$rid])), 
+      t('Delete'), 
+      t('Cancel')
+    );
 }
 /**
  * @todo Please document this function.
@@ -218,7 +235,7 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
     }
     // --- END
 
-    if (! $rule) {
+    if (!isset($rule)) {
       $rule = array();
       $rule['type'] = 'empty';
       $rule['pattern'] = '';
@@ -229,6 +246,8 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
       $rule['embed_html'] = 0;
       $rule['path'] = '';
       $rule['title'] = '';
+      $rule['size_x'] = '';
+      $rule['size_y'] = '';
     }
   }
   else {
@@ -255,13 +274,13 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
 
   $form['rule'] = array(
     '#type' => 'fieldset',
-    '#title' => check_plain($rule['type'] == 'empty' ? t('New Rule') : t('Rule ' . $rid)),
+    '#title' => $rule['type'] == 'empty' ? t('New Rule') : t('Rule ' . $rid),
     '#tree' => TRUE,
   );
 
   $form['rule']['type'] = array(
     '#type' => 'select',
-    '#title' => check_plain(t('Type')),
+    '#title' => t('Type') . ':',
     '#default_value' => $rule['type'],
     '#options' => array(
       'preview' => t('Preview Quality'),
@@ -272,7 +291,7 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
 
   $form['rule']['pattern'] = array(
     '#type' => 'textarea',
-    '#title' => t('Pattern'),
+    '#title' => t('Pattern') . ':',
     '#description' => t('php PCRE regex pattern (see: ') . l('php manual', 'http://www.php.net/manual/reference.pcre.pattern.syntax.php') . ')',
     '#default_value' => $rule['pattern'],
     '#rows' => 1,
@@ -280,7 +299,7 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
 
   $form['rule']['replace'] = array(
     '#type' => 'textarea',
-    '#title' => check_plain(t('Replacement')),
+    '#title' => t('Replacement') . ':',
     '#default_value' => $rule['replace'],
     '#rows' => 1,
   );
@@ -289,49 +308,52 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
 
   $form['rule']['embed_html'] = array(
     '#type' => 'checkbox',
-    '#title' => check_plain(t('Embed')),
+    '#title' => t('Embed'),
     '#default_value' => $rule['embed_html'],
-    '#description' => check_plain(t('Embed the construct of prefix + url + affix into the page as plain html')),
+    '#description' => t('Embed the construct of prefix + url + affix into the page as plain html'),
   );
 
   $form['rule']['url_encode'] = array(
     '#type' => 'checkbox',
-    '#title' => check_plain(t('Url Encode')),
+    '#title' => t('Url Encode'),
     '#default_value' => $rule['url_encode'],
-    '#description' => check_plain(t('Whether the converted url is to be url encoded')),
+    '#description' => t('Whether the converted url is to be url encoded'),
   );
 
   $form['rule']['path'] = array(
     '#type' => 'textfield',
-    '#title' => check_plain(t('Drupal Path')),
+    '#title' => t('Drupal Path') . ':',
     '#default_value' => $rule['path'],
-    '#description' => check_plain(t('Drupal Path under which the media is to be embedded into a page')),
+    '#description' => t('Drupal Path under which the media is to be embedded into a page'),
   );
 
   $form['rule']['title'] = array(
     '#type' => 'textfield',
-    '#title' => check_plain(t('Page Title')),
+    '#title' => t('Page Title') . ':',
     '#default_value' => $rule['title'],
-    '#description' => check_plain(t('Page Title')),
+    '#description' => t('Page Title'),
   );
 
   $form['rule']['prefix'] = array(
     '#type' => 'textarea',
-    '#title' => check_plain(t('Prefix')),
+    '#title' => t('Prefix') . ':',
     '#default_value' => $rule['prefix'],
     '#rows' => 1,
   );
 
   $form['rule']['affix'] = array(
     '#type' => 'textarea',
-    '#title' => check_plain(t('Affix')),
+    '#title' => t('Affix') . ':',
     '#default_value' => $rule['affix'],
     '#rows' => 1,
   );
 
+  // Comment @WA: I think this is not implemented the right way?
+  // Should the field not be enabled if 'Preview' is selected as type in 
+  // the form, for instance with ajax? 
   $form['rule']['size_x'] = array(
     '#type' => 'textfield',
-    '#title' => check_plain(t('Preview Image Width')),
+    '#title' => t('Preview Image Width') . ':',
     '#default_value' => $rule['size_x'],
     '#disabled' => $rule['type'] != 'preview',
     '#description' => check_plain(t('Width of preview image in px')),
@@ -340,13 +362,24 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
 
   $form['rule']['size_y'] = array(
     '#type' => 'textfield',
-    '#title' => check_plain(t('Preview Image Height')),
+    '#title' => t('Preview Image Height') . ':',
     '#default_value' => $rule['size_y'],
     '#disabled' => $rule['type'] != 'preview',
-    '#description' => check_plain(t('Height of preview image in px')),
+    '#description' => t('Height of preview image in px'),
     '#size' => 4,
   );
-
+  
+  $form['actions']['submit'] = array(
+  '#type' => 'submit',
+  '#value' => t('Save configuration'),
+  );
+  
+  // @WA: D7 form api does not support reset buttons,
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+  '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+  '#weight' => 1000,
+  );
   return $form;
 }
 /**

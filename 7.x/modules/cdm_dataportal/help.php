@@ -14,7 +14,8 @@
 
 define('HELP_OVERVIEW', drupal_get_path('module', 'cdm_dataportal') . '/help/overview.html');
 
-//comment @WA: @TODO: fill these html files with help texts
+//comment @WA: @TODO: fill these html files with help texts. 
+// but why to use different help texts here from the ones sused in the settings forms?
 define('HELP_SETTINGS_GENERAL', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_general.html');
 define('HELP_SETTINGS_GEO', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_geo.html');
 define('HELP_SETTINGS_LAYOUT', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_layout.html');
@@ -66,7 +67,7 @@ function cdm_dataportal_menu_help(&$items) {
  * Implements hook_help().
 ().
  */
-function cdm_dataportal_help($path) {
+function cdm_dataportal_help($path, $arg) {
   //result to return
 
   $res = '';
@@ -75,7 +76,6 @@ function cdm_dataportal_help($path) {
 
     case 'admin/help#cdm_dataportal':
       //$popup = (module_exists('advanced_help')) ? theme('advanced_help_topic', 'cdm_help', 'website-overview') : '';
-
       //var_dump($popup);
 
       $content = cdm_dataportal_file_get_content(HELP_OVERVIEW);
@@ -84,7 +84,9 @@ function cdm_dataportal_help($path) {
 
     default:
       $path_aux = str_replace('/', '_', $path);
-      $res = theme('cdm_dataportal_' . $path_aux, array());
+      if(function_exists('theme_cdm_portal_' . $path_aux)){
+        $res = theme('cdm_dataportal_' . $path_aux, array());
+      }
   }
 
   return $res;
@@ -162,13 +164,17 @@ function cdm_dataportal_file_get_content($path) {
 
 // see hook_theme in cdm_dataportal.module
 
-
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_dataportal_admin_settings_cdm_dataportal_general() {
+function theme_cdm_dataportal_admin_config_cdm_dataportal_general() {
   $res = t('<p>Help text for this page</p>');
+  // @WA this could also link to admin/help/cdm_dataportal_cache ?
+  // Instead of theme_more_help_link we use a custom one here, to mimic a D5 style link.
+  $res .= theme('cdm_dataportal_admin_config_more_help_link', array(
+    'url' =>'admin/help/cdm_dataportal')
+  );
   return $res;
 }
 
@@ -176,8 +182,11 @@ function theme_cdm_dataportal_admin_settings_cdm_dataportal_general() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_dataportal_admin_settings_cdm_dataportal_geo() {
+function theme_cdm_dataportal_admin_config_cdm_dataportal_geo() {
   $res = t('<p>Help text for this page</p>');
+  $res .= theme('cdm_dataportal_admin_config_more_help_link', array(
+    'url' =>'admin/help/cdm_dataportal')
+  );
   return $res;
 }
 
@@ -185,8 +194,11 @@ function theme_cdm_dataportal_admin_settings_cdm_dataportal_geo() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_dataportal_admin_settings_cdm_dataportal_layout() {
+function theme_cdm_dataportal_admin_config_cdm_dataportal_layout() {
   $res = t('<p>Help text for this page</p>');
+  $res .= theme('cdm_dataportal_admin_config_more_help_link', array(
+    'url' =>'admin/help/cdm_dataportal')
+  );
   return $res;
 }
 
@@ -194,7 +206,24 @@ function theme_cdm_dataportal_admin_settings_cdm_dataportal_layout() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_dataportal_admin_settings_cdm_dataportal_cachesite() {
+function theme_cdm_dataportal_admin_config_cdm_dataportal_cachesite() {
   $res = t('<p>Help text for the cache site settings page</p>');
+  $res .= theme('cdm_dataportal_admin_config_more_help_link', array(
+    'url' =>'admin/help/cdm_dataportal')
+  );
   return $res;
 }
+
+/**
+ * Custom theme to use in admin config pages instead of theme_more_help_link
+ * to have D5 style more-help links instead of D7 style. 
+ * 
+ * @author w.addink <w.addink@eti.uva.nl>
+ */
+function theme_cdm_dataportal_admin_config_more_help_link($variables) {
+  $html = '<div class="more-help-link cdm-dataportal-settings-more-help-link">[';
+  $html .= l(t('more help...'), $variables['url']) ;
+  $html .= ']</div>';
+  return $html;
+}
+

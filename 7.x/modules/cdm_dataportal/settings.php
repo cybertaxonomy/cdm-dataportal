@@ -287,7 +287,7 @@ function cdm_settings_general() {
 
   $form['cdm_webservice']['cdm_webservice_url'] =  array(
     '#type' => 'textfield',
-    '#title' => t('CDM web service URL'),
+    '#title' => t('CDM web service URL') . ':',
     '#description' => t('This is the URL to the CDM-Server exposing your data e.g. <em>"http://localhost:8080/cichorieae/"</em> The URL <strong>must end with a slash</strong> character!'),
     '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
@@ -331,7 +331,7 @@ function cdm_settings_general() {
 
   $form['cdm_webservice']['proxy']['cdm_webservice_proxy_url'] =  array(
     '#type' => 'textfield',
-    '#title' => t('Proxy URL'),
+    '#title' => t('Proxy URL') . ':',
     '#description' => t('If this proxy url is set the cdm api tries
     to connect the web service over the given proxy server.
     Otherwise proxy usage is deactivated.'),
@@ -340,19 +340,19 @@ function cdm_settings_general() {
 
   $form['cdm_webservice']['proxy']['cdm_webservice_proxy_port'] =  array(
     '#type' => 'textfield',
-    '#title' => t('Proxy port'),
+    '#title' => t('Proxy port') . ':',
     '#default_value' => variable_get('cdm_webservice_proxy_port', '80'),
   );
 
   $form['cdm_webservice']['proxy']['cdm_webservice_proxy_usr'] =  array(
     '#type' => 'textfield',
-    '#title' => t('Login'),
+    '#title' => t('Login') . ':',
     '#default_value' => variable_get('cdm_webservice_proxy_usr', false),
   );
 
   $form['cdm_webservice']['proxy']['cdm_webservice_proxy_pwd'] =  array(
     '#type' => 'textfield',
-    '#title' => t('Password'),
+    '#title' => t('Password') . ':',
     '#default_value' => variable_get('cdm_webservice_proxy_pwd', false),
   );
 
@@ -372,7 +372,7 @@ function cdm_settings_general() {
 
   $form['cdm_dataportal'][CDM_TAXONOMICTREE_UUID] = array(
     '#type' => 'select',
-    '#title' => t('Available classifications'),
+    '#title' => t('Available classifications') . ':',
     '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, false),
     '#options' => cdm_get_taxontrees_as_options(),
     '#description' => t('Select the default taxa classification for your <em>taxon tree</em>,
@@ -381,11 +381,18 @@ function cdm_settings_general() {
 
   $form['cdm_dataportal']['taxontree_ranklimit'] =  array(
     '#type' => 'select',
-    '#title' => t('Rank of highest displayed taxon'),
+    '#title' => t('Rank of highest displayed taxon') . ':',
     '#default_value' => variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT), //before DEFAULT_TAXONTREE_RANKLIMIT_UUID
     '#options' => cdm_rankVocabulary_as_option(),
     '#description' => t('This is the rank of the highest displayed taxon in the <em>taxon tree</em>. You can
                            select here which rank should be at the top level of the tree structure.'),
+  );
+
+  // @WA: D7 form api does not support reset buttons, 
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+    '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+    '#weight' => 1000,
   );
 
   return system_settings_form($form);
@@ -468,7 +475,13 @@ function cdm_settings_layout() {
     '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
     '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
   );
-
+  
+  // @WA: D7 form api does not support reset buttons,
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+  '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+  '#weight' => 1000,
+  );
   return system_settings_form($form);
 }
 
@@ -667,7 +680,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $c
 
   $form[$form_name]['cdm_dataportal_media_maxextend'] = array(
     '#type' => 'textfield',
-    '#title' => t('Thumbnail size'),
+    '#title' => t('Thumbnail size') . ':',
     '#default_value' => $gallery_settings['cdm_dataportal_media_maxextend'],
     '#description' => t('Select the size of each individual thumbnail.'),
   );
@@ -675,7 +688,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $c
   if ($form_name != CDM_DATAPORTAL_MEDIA_GALLERY_NAME) {
     $form[$form_name]['cdm_dataportal_media_cols'] = array(
       '#type' => 'textfield',
-      '#title' => t('Number of columns'),
+      '#title' => t('Number of columns') . ':',
       '#default_value' => $gallery_settings['cdm_dataportal_media_cols'],
       '#description' => t('Group the thumbnails in columns: select how many columns should the gallery display.'),
     );
@@ -684,7 +697,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $c
   if ($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME) {
     $form[$form_name]['cdm_dataportal_media_maxRows'] = array(
       '#type' => 'textfield',
-      '#title' => t('Maximum number of rows'),
+      '#title' => t('Maximum number of rows') . ':',
       '#default_value' => $gallery_settings['cdm_dataportal_media_maxRows'],
       '#description' => t('You can group the thumbnails in rows, select in how many rows should be the thumbnails grouped.<br>
                            <b>Note:</b> If you want an unlimited number of rows please set to 0'),
@@ -719,7 +732,7 @@ function cdm_settings_layout_taxon() {
 
   $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Tabs visibility options'),
+    '#title' => t('Tabs visibility options') . ':',
     '#default_value' => variable_get('cdm_taxonpage_tabs_visibility', get_taxon_options_list()),
     '#options' => get_taxon_options_list(),
     '#description' => t("Enable or disable Tabs in the Tabbed page display"),
@@ -727,7 +740,7 @@ function cdm_settings_layout_taxon() {
 
   $form['taxon_tabs']['cdm_dataportal_default_tab'] =  array(
     '#type' => 'select',
-    '#title' => t('Default tab to display'),
+    '#title' => t('Default tab to display') . ':',
     '#default_value' => variable_get('cdm_dataportal_default_tab', 0),
     '#options' => unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB),
     '#description' => t('<p>Select the default tab to display when visiting a taxon page. Only available if Tabbed Taxon Page is enable.</p>
@@ -774,7 +787,7 @@ function cdm_settings_layout_taxon() {
   array_unshift($options, '-- DISABLED --');
   $form['taxon_profile']['picture']['image_hide_rank'] =  array(
     '#type' => 'select',
-    '#title' => t('Hide picture for taxa above'),
+    '#title' => t('Hide picture for taxa above') . ':',
     '#default_value' => variable_get('image_hide_rank', '0'),
     '#options' => $options,
     '#description' => t('Select which rank of pictures should not have a profil picture.'),
@@ -787,7 +800,7 @@ function cdm_settings_layout_taxon() {
 
   $form['taxon_profile']['picture']['cdm_dataportal_show_media'] = array(
     '#type' => 'select',
-    '#title' => t('Available picture files'),
+    '#title' => t('Available picture files') . ':',
     '#default_value' => variable_get('cdm_dataportal_show_media', false),
     '#options' => $selectShowMedia,
     '#description' => t('Show the profil pictures current taxon\'s children.'),
@@ -811,7 +824,7 @@ function cdm_settings_layout_taxon() {
   $featureTrees = cdm_get_featureTrees_as_options(TRUE); 
   $form['taxon_profile']['feature_trees'][CDM_PROFILE_FEATURETREE_UUID] = array(
     '#type' => 'radios',
-    '#title' => t('Taxon profile sections'),
+    '#title' => t('Taxon profile sections') . ':',
     '#default_value' => variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
     '#options' =>  $featureTrees['options'],
     // @WA: because #options are sanitized in D7, it would
@@ -823,7 +836,7 @@ function cdm_settings_layout_taxon() {
   $featureTrees = cdm_get_featureTrees_as_options();
   $form['taxon_profile']['feature_trees'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
     '#type' => 'radios',
-    '#title' => t('Natural language representation of structured descriptions'),
+    '#title' => t('Natural language representation of structured descriptions') . ':',
     '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, null),
     '#options' => $featureTrees['options'],
       // @WA: because #options are sanitized in D7, it would
@@ -917,7 +930,7 @@ function cdm_settings_layout_taxon() {
 
   $form['taxon_profile']['distribution_layout']['distribution_sort'] =  array(
     '#type' => 'radios',
-    '#title' => t('Sort'),
+    '#title' => t('Sort') . ':',
     '#default_value' => variable_get('distribution_sort', 'NO_SORT'),
     '#options' => array(
       'NO_SORT' => t('Standard (No sort)'),
@@ -960,15 +973,15 @@ function cdm_settings_layout_taxon() {
   );
 
   $nameRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE);
-  $form['taxon_synonymy']['name_relationships']['name_relationships_to_show'] = array(
+  $form['name_relationships']['name_relationships_to_show'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Display name relationships'),
+    '#title' => t('Display name relationships') . ':',
     '#default_value' => variable_get('name_relationships_to_show', 0),
     '#options' => $nameRelationshipTypeOptions,
     '#description' => t('Select the name relationships you want to show for the accepted taxa.'),
   );
 
-  $form['taxon_synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+  $form[CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show taxon relations ships of accepted taxon'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
@@ -976,9 +989,9 @@ function cdm_settings_layout_taxon() {
   );
 
   $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
-  $form['taxon_synonymy'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
+  $form[CDM_TAXON_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Taxon relationship types'),
+    '#title' => t('Taxon relationship types') . ':',
     '#description' => t('Only taxon relationships of the selected type will be displayed'),
     '#options' => $taxonRelationshipTypeOptions,
     '#default_value' => variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT)),
@@ -1014,7 +1027,12 @@ function cdm_settings_layout_taxon() {
    gallery viewer is selected at <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a>.</p>';
   $form['taxon_media'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, TRUE, $form_description);
 
-
+  // @WA: D7 form api does not support reset buttons,
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+    '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+    '#weight' => 1000,
+  );
   return system_settings_form($form);
 }
 
@@ -1035,14 +1053,7 @@ function cdm_settings_layout_search() {
 
   $form['search_settings']['cdm_dataportal_search_items_on_page'] = array(
     '#type' => 'textfield',
-    '#title' => t('Results per page'),
-    '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
-    '#description' => t('Number of results to display per page.'),
-  );
-
-  $form['search_settings']['cdm_dataportal_search_items_on_page'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Results per page'),
+    '#title' => t('Results per page') . ':',
     '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
     '#description' => t('Number of results to display per page.'),
   );
@@ -1084,6 +1095,12 @@ function cdm_settings_layout_search() {
   $form_description = 'Search results may show thumbnails. ';
   $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
+  // @WA: D7 form api does not support reset buttons,
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+    '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+    '#weight' => 1000,
+  );
   return system_settings_form($form);
 }
 
@@ -1101,7 +1118,7 @@ function cdm_settings_layout_media() {
 
   $form['media_settings']['image_gallery_viewer'] =  array(
     '#type' => 'select',
-    '#title' => t('Image viewer'),
+    '#title' => t('Image viewer') . ':',
     '#default_value' => variable_get('image_gallery_viewer', 'default'),
     '#options' => array(
       'default' => t('Standard image viewer'),
@@ -1119,7 +1136,12 @@ function cdm_settings_layout_media() {
   //$form['media_settings'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
   $form['media_settings'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, false, $form_description);
 
-
+  // @WA: D7 form api does not support reset buttons,
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+    '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+    '#weight' => 1000,
+  );
   return system_settings_form($form);
 }
 
@@ -1146,7 +1168,7 @@ function cdm_settings_geo() {
 
   $form['geoserver']['edit_map_server'] = array(
     '#type' => 'select',
-    '#title' => t('Geoservice access point URL'),
+    '#title' => t('Geoservice access point URL') . ':',
     '#default_value' => variable_get('edit_map_server', EDIT_MAPSERVER_V1_URI),
     '#options' => array(
       EDIT_MAPSERVER_V1_URI => 'EDIT Map Server v1',
@@ -1164,7 +1186,7 @@ function cdm_settings_geo() {
 
   $form['geoserver']['edit_map_server_alternative'] = array(
     '#type' => 'textfield',
-    '#title' => t('Geoservice access point - alternative URL'),
+    '#title' => t('Geoservice access point - alternative URL') . ':',
     '#default_value' => variable_get('edit_map_server_alternative', ''),
     '#description' => t('Alternative URL of a EDIT Map Service to be used by this portal. You must choose the option <i>-- Alternative URL --</i> in the chooser abofe to enable this url.'),
   );
@@ -1184,14 +1206,14 @@ function cdm_settings_geo() {
 
   $form['map_settings']['cdm_dataportal_geoservice_display_width'] = array(
     '#type' => 'textfield',
-    '#title' => t('Maps width'),
+    '#title' => t('Maps width') . ':',
     '#default_value' => variable_get('cdm_dataportal_geoservice_display_width', 390),
     '#description' => t('Choose the width of your maps, the height will always be the half of the width. A value of 500 means the size will be 500 pixels witdh and 250 pixels height.'),
   );
 
   $form['map_settings']['cdm_dataportal_geoservice_bounding_box'] = array(
     '#type' => 'textfield',
-    '#title' => t('Fixed bounding box'),
+    '#title' => t('Fixed bounding box') . ':',
     '#default_value' => variable_get('cdm_dataportal_geoservice_bounding_box', '-180,-90,180,90'),
     '#description' => t('Define surrounding of area to be displayed in maps. Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong> to let the map <strong>automatically zoom</strong> to the distribution area.'),
   );
@@ -1205,14 +1227,14 @@ function cdm_settings_geo() {
 
   $form['map_settings']['cdm_dataportal_geoservice_map_caption'] = array(
     '#type' => 'textfield',
-    '#title' => t('Map caption'),
+    '#title' => t('Map caption') . ':',
     '#default_value' => variable_get('cdm_dataportal_geoservice_map_caption', ''),
     '#description' => t('Define a caption for the map.'),
   );
 
   $form['map_settings']['cdm_dataportal_geoservice_distributionOpacity'] = array(
     '#type' => 'textfield',
-    '#title' => t('Distribution layer opacity'),
+    '#title' => t('Distribution layer opacity') . ':',
     '#default_value' => variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5'),
     '#description' => t('Valid values range from 0.0 to 1.0. Value 1.0 means the distributions (the countries or regions) will
                            fully visible, while a value near to 0.0 will be not much visible.'),
@@ -1220,7 +1242,7 @@ function cdm_settings_geo() {
 
   $form['map_settings']['cdm_dataportal_map_openlayers'] = array(
     '#type' => 'radios',
-    '#title' => '<b>' . t('Map Viewer') . '</b>',
+    '#title' => t('Map Viewer') . ':',
     '#options' => array(
       1 => "OpenLayers dynamic mapviewer",
       0 => "Plain image",
@@ -1253,7 +1275,7 @@ function cdm_settings_geo() {
 
   $form['map_image']['map_base_layer'] = array(
     '#type' => 'textfield',
-    '#title' => t('Background layer'),
+    '#title' => t('Background layer') . ':',
     '#default_value' => variable_get('map_base_layer', 'cyprusdivs'),
     '#description' => t('Background layer. for available layers inspect')
         . l(" deegree-csw ",   "http://edit2.br.fgov.be:8080/deegree-csw/md_search.jsp") . t('or')
@@ -1262,13 +1284,13 @@ function cdm_settings_geo() {
 
   $form['map_image']['map_bg_color'] = array(
     '#type' => 'textfield',
-    '#title' => t('Background color'),
+    '#title' => t('Background color') . ':',
     '#default_value' => variable_get('map_bg_color', '1874CD'),
   );
 
   $form['map_image']['map_base_layer_style'] = array(
     '#type' => 'textfield',
-    '#title' => t('Background layer area style'),
+    '#title' => t('Background layer area style') . ':',
     '#default_value' => variable_get('map_base_layer_style', 'ffffff,606060,,'), // only line color by now
     '#description' => t('Syntax: {Area fill color},{Area stroke color},{Area stroke width},{Area stroke dash style}'),
   );
@@ -1312,7 +1334,7 @@ function cdm_settings_geo() {
 
   $form['openlayers']['baselayers'] = array(
     '#type' => 'checkboxes_preferred',
-    '#title' => t('Base Layers'),
+    '#title' => t('Base Layers') . ':',
     '#options' => $baselayer_options,
     '#default_value' => variable_get('baselayers', array('metacarta_vmap0' => "metacarta_vmap0", 'PREFERRED' => 'metacarta_vmap0')),
     '#description' => t('Choose the baselayer layer you prefer to use as map background in the OpenLayers dynamic mapviewer.'),
@@ -1336,7 +1358,7 @@ function cdm_settings_geo() {
   $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
   $form['openlayers']['gmap_api_key'] = array(
     '#type' => 'textfield',
-    '#title' => t('Google maps API key'),
+    '#title' => t('Google maps API key') . ':',
     '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
     '#description' => t('If you want to use the Google Maps Layer, a key is needed. If you need a key, visit <a href="http://code.google.com/intl/en/apis/maps/signup.html">google maps api key</a>.<br>
          <b>Note:</b> The following key: <code>' . $localhostkey . '</code> is the default key for the localhost (127.0.0.1). The key in use is the one above this text.'),
@@ -1396,7 +1418,13 @@ function cdm_settings_geo() {
     '#default_value' => variable_get('cdm_dataportal_geoservice_legend_icon_height', 15),
     '#description' => t('Legend icon height in pixels.'),
   );
-
+  
+  // @WA: D7 form api does not support reset buttons,
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+  '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+  '#weight' => 1000,
+  );
   return system_settings_form($form);
 }
 
@@ -1427,9 +1455,15 @@ function cdm_settings_cache() {
   );
 
   $form['cache_settings']['cdm_run_cache'] = array(
-    '#value' => cdm_view_cache_site(),
+    '#markup' => cdm_view_cache_site(),
   );
 
+  // @WA: D7 form api does not support reset buttons,
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+    '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+    '#weight' => 1000,
+  );
   return system_settings_form($form);
 }
 
@@ -1450,15 +1484,16 @@ function cdm_view_cache_site() {
   $request_params['doTaxaByCommonNames'] = 0;
 
   $search_url = cdm_compose_url(CDM_WS_PORTAL_TAXON_FIND . ".json", null, queryString($request_params));
-  $search_url = uri_uriByProxy($search_url);
-  $taxon_page_url = url('cdm_dataportal/taxon/');
 
+  $search_url = uri_uriByProxy($search_url);
+  $search_url = rtrim($search_url,'/');
+  $taxon_page_url = url('cdm_dataportal/taxon/');
 
   $out .= t('<p><strong>Cache all taxon pages</strong></p>');
   $out .= '<p>When you lunch the cache process the cache is filled and ready to be enabled.<br/>
   Remember that when you load the taxa from the cache last changes on taxa will be not visible till you erase
   the cache and fill it again.</p>';
-  $out .= '<p>Before  running the cache bot you have to empty the cache manually</p>';
+  $out .= '<p>Before  running the cache bot you have to empty the cache manually.</p>';
 
   $out .= '<form id="cache_site">';
   $out .= '<div>' . t('This caching process may take long time and could cause heavy load on your server') . '</div>';
@@ -1543,7 +1578,7 @@ function cdm_dataportal_element_info() {
     '#process' => array('expand_checkboxes_preferred'),
     '#after_build' => array('checkboxes_preferred_after_build'),
     '#theme' => array('checkboxes_preferred'),
-    '#theme_wrapper' => array('form_element'),
+    //'#theme_wrapper' => array('form_element'),
   );
   return $type;
 }
@@ -1551,15 +1586,17 @@ function cdm_dataportal_element_info() {
 /**
  * #process function for the custom form element type 'checkbox_preferred'
  */
-function expand_checkboxes_preferred($element) {
-
+function expand_checkboxes_preferred($element, &$form_state, $form) {
   // first of all create the checkboxes
   $element = form_process_checkboxes($element);
+
   $children = element_children($element);
+  
   $element['table_start'] = array(
     '#markup' => '<table class="checkboxes_preferred"><tr><th></th><th>' . t('Enabled') . '</th><th>' . t('Default') . '</th></tr>',
-    '#weight' => -1,
+      '#weight' => -1,
   );
+
   $weight = 0;
   foreach ($children as $key) {
     $odd_even = $weight % 4 == 0 ? 'odd' : 'even';
@@ -1580,12 +1617,10 @@ function expand_checkboxes_preferred($element) {
           '#return_value' => check_plain($key),
           '#default_value' => empty($element['#default_value_2'])? NULL : $element['#default_value_2'] ,
           '#attributes' => $element['#attributes'],
-          '#parents' => $element['#parents'],
-          '#spawned' => TRUE,
+         //'#spawned' => TRUE,
           '#weight' => $weight + 1,
           '#prefix' => '<td>',
           '#suffix' => '</td></tr>',
-          //'#submit' => 'submit_checkboxes_preferred'
         );
       }
       $weight += 2;
@@ -1593,36 +1628,31 @@ function expand_checkboxes_preferred($element) {
   }
 
   $element['table_end'] = array(
-    //'#type'=>'value',
-    '#value' => '</table>',
+    '#markup' => '</table>',
     '#weight' => $weight++,
   );
+
   return $element;
 }
 
+/**
+ * Theme function for the custom form field 'checkboxes_preferred'.
+ */
+function theme_checkboxes_preferred($variables) {
+  $element = $variables['element'];
+  $out = '<div id="edit-baselayers-wrapper" class="form-item">';
+  $out .= '<label for="edit-baselayers">' . $element['#title'] . '</label>';
+  $out .= drupal_render_children($element);
+  $out .= '<div class="description">' . $element['#description'] . '</div>';
+  $out .= '</div>';
+  return $out;
+}
 
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_checkboxes_preferred($variables) {
-  $element = $variables['element'];
-  /*
-  return theme('form_element',
-  array(
-    '#title' => $element['#title'],
-    '#description' => $element['#description'],
-    '#id' => $element['#id'],
-    '#required' => $element['#required'],
-    '#error' => $element['#error'],
-  ),
-  $element['#children']);
-  */
-  $element['#theme'] = 'form_element';
-  return drupal_render_children($element);
-}
-
-function checkboxes_preferred_after_build($form, &$form_values) {
+function checkboxes_preferred_after_build($form, &$form_state) {
 
   $parent_id = $form['#parents'][0];
 
@@ -1630,7 +1660,7 @@ function checkboxes_preferred_after_build($form, &$form_values) {
     // first pass of form processing
     $preferred_layer = $_POST[$parent_id . '_preferred'];
     $form['#value']['PREFERRED'] = $preferred_layer;
-    $form_values[$parent_id] = $form['#value'];
+    $form_state[$parent_id] = $form['#value'];
   }
   else {
     // second pass of form processing
@@ -1643,9 +1673,8 @@ function checkboxes_preferred_after_build($form, &$form_values) {
       $form[$key]['#value'] = $preferred_layer;
     }
   }
-  // the default layer mus always be enabled
+  // the default layer must always be enabled
   $form[$preferred_layer]['#value'] = $preferred_layer;
-
 
   return $form;
 }
