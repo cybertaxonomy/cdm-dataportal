@@ -349,7 +349,8 @@ function theme_cdm_list_of_taxa($records, $freetextSearchResults = null){
       if( count($field_fragments) > 0 ){
           $fragments_out = '';
           foreach($field_fragments as $fieldName => $fragments) {
-            $fragments_out .= '... <span class="' . $fieldName. '">' . join(" ... ", $fragments) . '</span>';
+
+            $fragments_out .= '... <span class="' . $fieldName. '">' . filter_xss(join(" ... ", $fragments), array('b') ) . '</span>';
           }
           $out .= '<div class="fragment_highlight">' . $fragments_out . ' ...</div>';
       }
