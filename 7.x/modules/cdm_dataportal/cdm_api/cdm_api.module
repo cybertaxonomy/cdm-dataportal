@@ -1146,7 +1146,7 @@ function cdm_http_request($uri, $method = "GET", $parameters = array(), $header 
   if (! $acceptLanguage) {
     if (function_exists('apache_request_headers')) {
       $headers = apache_request_headers();
-      if ($headers['Accept-Language']) {
+      if (isset($headers['Accept-Language'])) {
         $acceptLanguage = $headers['Accept-Language'];
       }
     }

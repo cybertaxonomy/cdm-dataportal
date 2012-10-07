@@ -355,8 +355,10 @@ function theme_cdm_descriptionElementTextData($variables) {
   $element = $variables['element'];
   $asListElement = $variables['asListElement'];
   $feature_uuid = $variables['feature_uuid'];
-  $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
-
+  $description = '';
+  if(isset($element->multilanguageText_L10n->text)) {
+    $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+  }
   $sourceRefs = '';
   $result = array();
   $out = '';

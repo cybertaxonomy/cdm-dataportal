@@ -2,17 +2,29 @@
 
 /**
  * Implements hook_node_view().
+ * Comment @WA should this also be used for other cdm node types like name page?
  */
 function cdm_dataportal_node_view($node, $view_mode = 'full') {
   // see cdm_add_node_content
   switch ($node->type) {
     case 'cdm_' . NODETYPE_TAXON:
-      $node->content['cdm'] = isset($node->cdm) ? $node->cdm : '';
-      break;
-    case 'cdm_' . NODETYPE_TAXON:
+      if(!isset($node->cdm) && arg(0) == 'node') {
+        // If a node page is loaded directly, e.g. node/%nid instead of
+        // cdm_dataportal/taxon/%uuid, try to load the taxon page content
+        // into $node->cdm.
+        // only do this for node pages (where arg(0) = node), 
+        // not for pages like comment/reply/%nid.
+        $cdmnode = db_query('SELECT uuid FROM {node_cdm} WHERE nid = :nid', array (
+          ':nid' => $node->nid,
+        ))->fetch();
+        if(isset($cdmnode->uuid)){
+          cdm_dataportal_taxon_page_view($cdmnode->uuid);
+        }
+      }
       $node->content['cdm'] = isset($node->cdm) ? $node->cdm : '';
       break;
   }
+
 }
 
 /**
@@ -55,8 +67,11 @@ function cdm_load_node($nodetype, $uuid, $title) {
     $title = substr($title, 0, 128);
     $node->title = $title;
     $node->uid = 0; // @WA this was used in the D5 module version. Remove this to change it to the current user.
-    $node->comment = variable_get('comment__' . $node->type . $nodetype, false);
+    // $node->comment = variable_get('comment__' . $node->type . $nodetype, false);
     
+    //2 = comments on, 1 = comments off
+    $node->comment = variable_get('comment_' . $node->type);
+
     // preserve the current messages but before saving the node,
     $messages = drupal_set_message();
     
@@ -89,9 +104,9 @@ function cdm_load_node($nodetype, $uuid, $title) {
       'hash' => $hash,
       'cdmtype' => $nodetype,
       'uuid' => $uuid,
-    ))->execute();    
+    ))->execute();
   }
-    
+
   return $node;
 }
 
@@ -110,7 +125,7 @@ function cdm_load_node($nodetype, $uuid, $title) {
 function cdm_node_show($cdm_node_type, $uuid, $title, $content) {
   $node = cdm_load_node($cdm_node_type, $uuid, $title);
   drupal_set_title($title, PASS_THROUGH);
-  cdm_add_node_content($node, $content, variable_get('cdm_content_weight', - 1));
+  cdm_add_node_content($node, $content);
   return node_show($node);
 }
 
@@ -124,7 +139,7 @@ function cdm_node_show($cdm_node_type, $uuid, $title, $content) {
  *          $weight
  * @return unknown_type
  */
-function cdm_add_node_content(&$node, $content, $weight) {
+function cdm_add_node_content(&$node, $content) {
   $cdm_content = array (
   // wrap content in cdm_dataportal specific container
   '#markup' => '<div id="cdm_dataportal.node">' . $content . '</div>', '#weight' => variable_get('cdm_content_weight', - 1) 

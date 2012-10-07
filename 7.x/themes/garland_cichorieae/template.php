@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * Overrides of generic themeing functions in cdm_datportal.theme.php
  */
@@ -56,7 +55,7 @@ function garland_cichorieae_cdm_taxon_page_profile($variables) {
   return $out;
 }
 
-/*
+/**
  * function garland_cichorieae_cdm_descriptionElementTextData($element){
  * $description = str_replace("\n", "<br/>",
  * $element->multilanguageText_L10n->text); $referenceCitation = ''; $sourceRefs
@@ -274,6 +273,11 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
 // }
 // return $out;
 // }
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function garland_cichorieae_cdm_descriptionElementArray($variables) {
   $elementArray = $variables['elementArray'];
   $feature = $variables['feature'];
@@ -364,6 +368,7 @@ function phptemplate_breadcrumb($breadcrumb) {
 /**
  * Allow themable wrapping of all comments.
  */
+/*
 function phptemplate_comment_wrapper($content, $type = null) {
   static $node_type;
   if (isset($type)) $node_type = $type;
@@ -375,6 +380,7 @@ function phptemplate_comment_wrapper($content, $type = null) {
     return '<div id="comments"><h2 class="comments">' . t('Comments') . '</h2>' . $content . '</div>';
   }
 }
+*/
 
 /**
  * Override or insert PHPTemplate variables into the templates.
@@ -394,7 +400,7 @@ function _phptemplate_variables($hook, $vars) {
     }
     return $vars;
   }
-  return array ();
+  return array();
 }
 
 /**
@@ -413,6 +419,11 @@ function phptemplate_menu_local_tasks() {
   
   return $output;
 }
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function garland_cichorieae_get_partDefinition($variables) {
   if ($variables['nameType'] == 'BotanicalName') {
     return array (
@@ -431,6 +442,11 @@ function garland_cichorieae_get_partDefinition($variables) {
   }
   return false;
 }
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function garland_cichorieae_get_nameRenderTemplate($variables) {
   $template = array();
 
@@ -521,6 +537,11 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($variables) {
   
   return $out;
 }
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function garland_cichorieae_cdm_feature_name($variables) {
   $feature_name = $variables['feature_name'];
   switch ($feature_name) {
@@ -531,7 +552,7 @@ function garland_cichorieae_cdm_feature_name($variables) {
   }
 }
 
-/*
+/**
  * ======================== Special functions for subtheme handling
  * ================
  */
@@ -558,12 +579,13 @@ function path_to_sub_theme() {
   return dirname($themes[$theme]->filename);
 }
 
-/* assign the css classes primary-links and secondary-links to the menus */
-/* modify primary-links if cdm_api module exists */
+/**
+ * Assign the css classes primary-links and secondary-links to the menus.
+ * Modify primary-links if cdm_api module exists.
+ */
 function garland_cichorieae_preprocess_page(&$vars) {
   if (isset($vars['main_menu'])) {
-    
-    /*
+    /**
      * obsolete, see http://dev.e-taxonomy.eu/trac/ticket/2191
      * if(module_exists('cdm_api')){ foreach($vars['main_menu'] as $key =>
      * $menu_item){ // nb this makes each menu item you click opening a new
@@ -573,15 +595,13 @@ function garland_cichorieae_preprocess_page(&$vars) {
      */
     $vars['primary_nav'] = theme('links__system_main_menu', array (
       'links' => $vars['main_menu'], 'attributes' => array (
-      'class' => array (
-      'links', 'inline', 'main-menu', 'primary-links' 
-    ) 
-    ), 'heading' => array (
-      'text' => t('Main menu'), 'level' => 'h2', 'class' => array (
-      'element-invisible' 
-    ) 
-    ) 
-    ));
+        'class' => array (
+          'links', 'inline', 'main-menu', 'primary-links' 
+      )), 
+        'heading' => array (
+          'text' => t('Main menu'), 'level' => 'h2', 'class' => array (
+            'element-invisible' 
+      ))));
   }
   else {
     $vars['primary_nav'] = FALSE;
@@ -589,21 +609,30 @@ function garland_cichorieae_preprocess_page(&$vars) {
   if (isset($vars['secondary_menu'])) {
     $vars['secondary_nav'] = theme('links__system_secondary_menu', array (
       'links' => $vars['secondary_menu'], 'attributes' => array (
-      'class' => array (
-      'links', 'inline', 'secondary-menu', 'secondary-links' 
-    ) 
-    ), 'heading' => array (
-      'text' => t('Secondary menu'), 'level' => 'h2', 'class' => array (
-      'element-invisible' 
-    ) 
-    ) 
-    ));
+        'class' => array (
+          'links', 'inline', 'secondary-menu', 'secondary-links' 
+      )), 
+        'heading' => array (
+          'text' => t('Secondary menu'), 'level' => 'h2', 'class' => array (
+            'element-invisible' 
+      ))));
   }
   else {
     $vars['secondary_nav'] = FALSE;
   }
+
+  /**
+   *  Display node title as page title for the comment form. 
+   * Comment @WA: it would probably be better to select $uuid from node_cdm 
+   * table and link to cdm_dataportal/taxon/%uuid instead.
+   */
+  if(arg(0) == 'comment' && arg(1) == 'reply') {
+    $node = $vars['page']['content']['system_main']['comment_node']['#node'];
+    $vars['title'] = l(check_plain($node->title),'node/' . $node->nid);
+  }
 }
-/*
+
+/**
  * Fix file urls in nodes In nodes, relative urls are used to include files like
  * <img src="/files/.. 
  * 
@@ -638,4 +667,49 @@ function garland_cichorieae_preprocess_node(&$vars) {
   $body = preg_replace('/href\s*=\s*[\']\s*' . $preg_file_path . '/', 'href=\'' . $fixed_file_path, $body);
   
   $vars['fixed_body'] = $body;
+}
+
+/**
+ * Alter the comment form to make it look like a D5 style comment form.
+ *
+ * @author W.Addink <w.addink@eti.uva.nl>
+ *
+ * @return void
+ */
+function garland_cichorieae_form_comment_form_alter(&$form, &$form_state) {
+
+  if(!isset($form['comment_preview'])) {
+    $form['header'] = array(
+      '#markup' => '<h2>' . t('Reply') . '</h2>',
+      '#weight' => -2,
+    );
+  }
+  $form['subject']['#title'] = $form['subject']['#title'] . ':';
+  $form['comment_body']['und'][0]['#title'] = $form['comment_body']['und'][0]['#title'] . ':';
+  if(isset($form['author']['_author']['#title'])) {
+    $form['author']['_author']['#title'] = $form['author']['_author']['#title'] . ':';
+  }
+  $form['actions']['submit']['#value'] = t('Post comment');
+  $form['actions']['submit']['#weight'] = 1000;
+  $form['actions']['preview']['#value'] = t('Preview comment');
+}
+
+/**
+ * Alter the comment dislpay to make it look like a D5 style comment.
+ *
+ * @author W.Addink <w.addink@eti.uva.nl>
+ *
+ * @return void
+ */
+function garland_cichorieae_preprocess_comment(&$variables) {
+  $comment = $variables['elements']['#comment'];
+  if(isset( $comment->subject)) {
+    // Print title without link.
+    $variables['title'] = $comment->subject;
+    if($variables['status'] == 'comment-preview') {
+      // Add 'new' to preview.
+      $variables['new'] = t('new');
+    }
+  }
+
 }

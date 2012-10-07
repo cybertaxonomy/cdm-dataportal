@@ -1,5 +1,4 @@
   <?php print render($page['header']); ?>
-
   <div id="wrapper">
     <div id="container" class="clearfix">
 
@@ -41,7 +40,6 @@
           <a id="main-content"></a>
           <?php // unfortunately in D7 tabs are always set, even if there are none.. ?>
           <?php if ($tabs = render($tabs)): ?><div id="tabs-wrapper" class="clearfix"><?php endif; ?>
-          
           <?php print render($title_prefix); ?>
           <?php if ($title): ?>
             <h2<?php if($tabs = render($tabs)):?><?php print ' class="with-tabs"' ; ?><?php endif; ?>><?php print $title ?></h2>

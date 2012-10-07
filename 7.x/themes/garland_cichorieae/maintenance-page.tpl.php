@@ -3,10 +3,11 @@
  * @file
  * Custom theme implementation to display a single Drupal page while offline.
  *
- * This file controls the page that is displayed when the site is in "maintenance mode" 
- * but the database connection and database are still functioning correctly
+ * This file controls the page that is displayed when the site is in 
+ * "maintenance mode" but the database connection and database are still 
+ * functioning correctly.
  *
- * @author w.addink <w.addink@eti.uva.nl>
+ * @author W. Addink <w.addink@eti.uva.nl>
  *
  * @see template_preprocess()
  * @see template_preprocess_maintenance_page()

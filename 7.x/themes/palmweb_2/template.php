@@ -36,7 +36,10 @@ function palmweb_2_cdm_taxon_page_profile($variables){
   return $out;
 }
 
-
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function palmweb_2_cdm_descriptionElementDistribution($variables) {
   $descriptionElements = $variables['descriptionElements'];
   $enclosingTag = $variables['enclosingTag'];
@@ -97,6 +100,10 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
 
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function palmweb_2_cdm_feature_nodesTOC($variables){
   $featureNodes = $variables['featureNodes'];
   $out = '';
@@ -140,6 +147,10 @@ function palmweb_2_cdm_feature_nodesTOC($variables){
   return $out;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function palmweb_2_cdm_feature_nodes($variables){
   $mergedFeatureNodes = $variables['mergedFeatureNodes'];
   $taxon = $variables['taxon'];
@@ -314,7 +325,10 @@ function palmweb_2_cdm_feature_nodes($variables){
   return $out;
 }
 
-
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function palmweb_2_cdm_search_results($variables){
   $pager = $variables['pager'];
   $path = $variables['path'];
@@ -602,6 +616,10 @@ function phptemplate_menu_local_tasks() {
   return $output;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function palmweb_2_get_partDefinition($variables){
    
   if($variables['nameType'] == 'BotanicalName'){
@@ -627,6 +645,10 @@ function palmweb_2_get_partDefinition($variables){
   return false;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function palmweb_2_get_nameRenderTemplate($variables){
 
   switch($variables['renderPath']) {
@@ -656,6 +678,10 @@ function palmweb_2_get_nameRenderTemplate($variables){
   return $template;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function palmweb_2_cdm_feature_name($variables){
   $feature_name = $variables['feature_name'];
   switch($feature_name){
@@ -664,6 +690,10 @@ function palmweb_2_cdm_feature_name($variables){
   }
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function palmweb_2_cdm_taxon_page_title($variables){
   $taxon = $variables['taxon']; 
   $uuid = $variables['uuid'];
@@ -698,7 +728,7 @@ function palmweb_2_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = n
 }
 */
 
-/* 
+/**
  * Hook prepocess_page
  * 
  * Assign the css classes primary-links and secondary-links to the menus and
@@ -760,8 +790,19 @@ function palmweb_2_preprocess_page(&$vars) {
       }
     }
   }
+
+
+  /* Display node title as page title for the comment form.
+   * Comment @WA: it would probably be better to select $uuid from node_cdm
+  * table and link to cdm_dataportal/taxon/%uuid instead.
+  */
+  if(arg(0) == 'comment' && arg(1) == 'reply') {
+      $node = $vars['page']['content']['system_main']['comment_node']['#node'];
+      $vars['title'] = l(check_plain($node->title),'node/' . $node->nid);
+  }
 }
-/*
+
+/**
  * Fix file urls in nodes
  *
  * In nodes, relative urls are used to include files like <img src="/files/..
@@ -793,4 +834,48 @@ function palmweb_2_preprocess_node(&$vars) {
   $body = preg_replace ('/href\s*=\s*[\']\s*' . $preg_file_path.'/', 'href=\''.$fixed_file_path , $body);
 
   $vars['fixed_body'] = $body;    
+}
+
+/**
+ * Alter the comment form to make it look like a D5 style comment form.
+ *
+ * @author W.Addink <w.addink@eti.uva.nl>
+ *
+ * @return void
+ */
+function palmweb_2_form_comment_form_alter(&$form, &$form_state) {
+
+  if(!isset($form['comment_preview'])) {
+    $form['header'] = array(
+      '#markup' => '<h2>' . t('Reply') . '</h2>',
+      '#weight' => -2,
+    );
+  }
+  $form['subject']['#title'] = $form['subject']['#title'] . ':';
+  $form['comment_body']['und'][0]['#title'] = $form['comment_body']['und'][0]['#title'] . ':';
+  if(isset($form['author']['_author']['#title'])) {
+    $form['author']['_author']['#title'] = $form['author']['_author']['#title'] . ':';
+  }
+  $form['actions']['submit']['#value'] = t('Post comment');
+  $form['actions']['submit']['#weight'] = 1000;
+  $form['actions']['preview']['#value'] = t('Preview comment');
+}
+
+/**
+ * Alter the comment dislpay to make it look like a D5 style comment.
+ *
+ * @author W.Addink <w.addink@eti.uva.nl>
+ *
+ * @return void
+ */
+function palmweb_2_preprocess_comment(&$variables) {
+  $comment = $variables['elements']['#comment'];
+  if(isset( $comment->subject)) {
+    // Print title without link.
+    $variables['title'] = $comment->subject;
+    if($variables['status'] == 'comment-preview') {
+      // Add 'new' to preview.
+      $variables['new'] = t('new');
+    }
+  }
 }

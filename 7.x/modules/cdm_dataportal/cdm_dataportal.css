@@ -1,4 +1,3 @@
-@CHARSET "ISO-8859-1";
 /* $Id$ */
 
 div.debug, h6.debug{
@@ -23,7 +22,7 @@ body h6.debug {
 	clear: both;
 }
 #block-system-main div.content {
-  margin: 0.3em 0;
+  /* margin: 0 0 0.3em 0; */
 }
 div.debug a.valid {
   color: #1BDF00;
@@ -455,22 +454,8 @@ a.toc:link, a.toc:visited {
   margin: 0;
   padding: 0 0 0.25em 1em;
 }
-/* do not display the fieldset down arrow twice in the setup forms */
-#cdm-settings-general fieldset.collapsible .fieldset-legend,
-#cdm-settings-geo fieldset.collapsible .fieldset-legend,
-#cdm-settings-layout fieldset.collapsible .fieldset-legend,
-#cdm-settings-layout-taxon fieldset.collapsible .fieldset-legend,
-#cdm-settings-layout-search fieldset.collapsible .fieldset-legend,
-#cdm-settings-layout-media fieldset.collapsible .fieldset-legend,
-#cdm-settings-cache fieldset.collapsible .fieldset-legend,
-#cdm-settings-layout-media fieldset.collapsible .fieldset-legend,
-#ext-links-admin fieldset.collapsible .fieldset-legend,
-#cdm-mediauri-rule-add fieldset.collapsible .fieldset-legend {
-  background-image: none;
-  padding-left: 0;
-}
 
-/* do not display the descriptions indented in the setup forms, D5 style */
+/* Do not display the descriptions indented in the setup forms, D5 style. */
 #cdm-settings-general .form-type-radio .description, .form-type-checkbox .description,
 #cdm-settings-geo .form-type-radio .description, .form-type-checkbox .description,
 #cdm-settings-layout .form-type-radio .description, .form-type-checkbox .description,

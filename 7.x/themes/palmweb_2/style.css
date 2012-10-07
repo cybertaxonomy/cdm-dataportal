@@ -1,5 +1,6 @@
 /**
- * Garland, for Drupal 5.0
+ * Garland, for Drupal 5.0 (modified for Drupal 7 by W. Addink, 
+ * waddink@eti.uva.nl)
  * Stefan Nagtegaal, iStyledThis [dot] nl
  * Steven Wittens, acko [dot] net`
  *
@@ -28,7 +29,12 @@ textarea, select {
   color: #222;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   padding: 0;
   font-weight: normal;
@@ -38,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
 h2 .synonym_title {
   display: block;
   font-size: 50%;
-  color: #96AB2C;
+  color: #96ab2c;
   margin: 0;
   padding: 0;
   font-weight: normal;
@@ -70,7 +76,10 @@ h6 {
   font-size: 110%;
 }
 
-ul, quote, code, fieldset {
+ul,
+quote,
+code,
+fieldset {
   margin: .5em 0;
 }
 
@@ -79,39 +88,46 @@ p {
   padding: 0;
 }
 
-a:link, a:visited {
-  color: #027AC6;
+a:link,
+a:visited {
+  color: #027ac6;
   text-decoration: none;
 }
 
 a:hover {
-  color: #0062A0;
+  color: #0062a0;
   text-decoration: underline;
 }
 
-a:active, a.active {
+a:active,
+a.active {
   color: #5895be;
 }
 
-#search_results a.taxon:link, a.taxon:visited, .Taxon a:link, .Taxon a:visited {
-    font-weight: bold;
+#search_results a.taxon:link,
+a.taxon:visited,
+.Taxon a:link,
+.Taxon a:visited {
+  font-weight: bold;
 }
 
 #edit-search-doTaxaByCommonNames-wrapper {
-	display:none;	
+  display:none;  
 }
 
-/*#jquery-lightbox a img {
-	max-height:250px;
-	max-width: 250px;
-}*/
+/*
+#jquery-lightbox a img {
+  max-height:250px;
+  max-width: 250px;
+}
+*/
 
 #images .image-gallerie td.caption {
-	padding-bottom:33px;	
+  padding-bottom:33px;
 }
 
 #images .image-gallerie dl.media-caption {
-	margin-bottom:0px;	
+  margin-bottom:0px;
 }
 
 hr {
@@ -131,20 +147,27 @@ ul li {
   margin: 0.4em 0 0.4em .5em;
 }
 
-ul.menu, .item-list ul {
+ul.menu,
+.item-list ul {
   margin: 0.35em 0 0 -0.5em;
   padding: 0;
 }
 
-ul.menu ul, .item-list ul ul {
+ul.menu ul,
+.item-list ul ul {
   margin-left: 0em;
 }
 
-ul li, ul.menu li, .item-list ul li, li.leaf {
+ul li,
+ul.menu li,
+.item-list ul li,
+li.leaf {
   margin: 0.15em 0 0.15em .5em;
 }
 
-ul li, ul.menu li, .item-list ul li, li.leaf {
+ul li, ul.menu li,
+.item-list ul li,
+li.leaf {
   padding: 0 0 .2em 1.5em;
   list-style-type: none;
   list-style-image: none;
@@ -159,7 +182,9 @@ ul li.collapsed {
   /* background: transparent url(images/menu-collapsed.gif) no-repeat 0px .35em; */
 }
 
-ul li.leaf a, ul li.expanded a, ul li.collapsed a {
+ul li.leaf a,
+ul li.expanded a,
+ul li.collapsed a {
   display: block;
 }
 
@@ -201,20 +226,25 @@ thead th {
   font-weight: bold;
 }
 
-th a:link, th a:visited {
+th a:link,
+th a:visited {
   color: #6f9dbd;
 }
 
-td, th {
+td,
+th {
   padding: .3em .5em;
 }
 
-tr.even, tr.odd, tbody th {
+tr.even,
+tr.odd,
+tbody th {
   border: solid #d3e7f4;
   border-width: 1px 0;
 }
 
-tr.odd, tr.info {
+tr.odd,
+tr.info {
   background-color: #edf5fa;
 }
 
@@ -230,7 +260,9 @@ tr.even td.active {
   background-color: #e6f1f7;
 }
 
-td.region, td.module, td.container {
+td.region,
+td.module,
+td.container {
   border-top: 1.5em solid #fff;
   border-bottom: 1px solid #b4d7f0;
   background-color: #d4e7f3;
@@ -238,7 +270,9 @@ td.region, td.module, td.container {
   font-weight: bold;
 }
 
-tr:first-child td.region, tr:first-child td.module, tr:first-child td.container {
+tr:first-child td.region,
+tr:first-child td.module,
+tr:first-child td.container {
   border-top-width: 0;
 }
 
@@ -247,13 +281,13 @@ span.form-required {
 }
 
 .useTag {
-  float:left;
+  float: left;
   margin: 0em 0 0em;
   padding: .0em .25em;
-  
 }
 
-span.submitted, .description {
+span.submitted,
+.description {
   font-size: 0.92em;
   color: #898989;
 }
@@ -261,10 +295,11 @@ span.submitted, .description {
 .description {
   line-height: 150%;
   margin-bottom: 0.75em;
-  color: #000000;
+  color: #000;
 }
 
-.messages, .preview {
+.messages,
+.preview {
   margin: .75em 0 .75em;
   padding: .5em 1em;
 }
@@ -273,7 +308,10 @@ span.submitted, .description {
   margin: 0;
 }
 
-.form-checkboxes, .form-radios, .form-checkboxes .form-item, .form-radios .form-item {
+.form-checkboxes,
+.form-radios,
+.form-checkboxes .form-item,
+.form-radios .form-item {
   margin: 0.25em 0;
 }
 
@@ -289,9 +327,12 @@ span.submitted, .description {
 .confirmation .form-submit,
 .search-form .form-submit,
 .poll .form-submit,
-fieldset .form-button, fieldset .form-submit,
-.sidebar .form-button, .sidebar .form-submit,
-table .form-button, table .form-submit {
+fieldset .form-button,
+fieldset .form-submit,
+.sidebar .form-button,
+.sidebar .form-submit,
+table .form-button,
+table .form-submit {
   margin: 0;
 }
 
@@ -326,7 +367,8 @@ table .form-button, table .form-submit {
   margin-bottom: 0;
 }
 
-#header-region p, #header-region img {
+#header-region p,
+#header-region img {
   margin-top: 0.5em;
 }
 
@@ -334,7 +376,9 @@ table .form-button, table .form-submit {
   margin: 0 1em 0 0;
 }
 
-#header-region h3, #header-region label, #header-region li {
+#header-region h3,
+#header-region label,
+#header-region li {
   margin: 0 1em;
   padding: 0;
   background: none;
@@ -360,7 +404,9 @@ table .form-button, table .form-submit {
   position: relative;
 }
 
-#wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited {
+#wrapper #container #header h1,
+#wrapper #container #header h1 a:link,
+#wrapper #container #header h1 a:visited {
   line-height: 120px;
   position: relative;
   z-index: 2;
@@ -375,23 +421,30 @@ table .form-button, table .form-submit {
   float: left;
 }
 
-/* With 3 columns, require a minimum width of 1000px to ensure there is enough horizontal space. */
+/**
+ * With 3 columns, require a minimum width of 1000px to
+ * ensure there is enough horizontal space.
+ */
 body.sidebars {
   min-width: 980px;
 }
-/* With 2 columsn, require a minimum width of 800px. */
-body.sidebar-first, body.sidebar-second {
+/* With 2 columns, require a minimum width of 800px. */
+body.sidebar-first,
+body.sidebar-second {
   min-width: 740px;
 }
 
-/* We must define 100% width to avoid the body being too narrow for near-empty pages */
+/**
+ * We must define 100% width to avoid the body being too narrow 
+ * for near-empty pages,
+ */
 #wrapper #container #center {
   float: left;
   width: 100%;
   border-top: 1px solid #000;
 }
 
-/* So we move the #center container over the sidebars to compensate */
+/* so we move the #center container over the sidebars to compensate, */
 body.sidebar-first #center {
   margin-left: -190px;
 }
@@ -402,7 +455,7 @@ body.sidebars #center {
   margin: 0 -190px;
 }
 
-/* And add blanks left and right for the sidebars to fill */
+/* and add blanks left and right for the sidebars to fill. */
 body.sidebar-first #squeeze {
   margin-left: 190px;
 }
@@ -413,7 +466,7 @@ body.sidebars #squeeze {
   margin: 0 190px;
 }
 
-/* We ensure the sidebars are still clickable using z-index */
+/* We ensure the sidebars are still clickable using z-index. */
 #wrapper #container .sidebar {
   margin: 30px 0 5em;
   width: 190px;
@@ -428,14 +481,14 @@ body.sidebars #squeeze {
 }
 
 #wrapper #container .sidebar .block h2 {
-	color: #fff;
-	font-size: 120%;
-	background: #96ab2c;
-	padding: 0 5px;
+  color: #fff;
+  font-size: 120%;
+  background: #96ab2c;
+  padding: 0 5px;
 }
 
 #wrapper #container .sidebar .block .content {
-	padding: 0 5px;
+  padding: 0 5px;
 }
 
 #sidebar-first .block {
@@ -450,9 +503,10 @@ body.sidebars #squeeze {
   margin: 0;
 }
 
-.block .content p { /* same indent as ul + li */
-  margin:0.15em 0 0.40em 1.5em;
-  padding:0 0 0.2em 1.5em; 
+.block .content p { 
+  /* same indent as ul + li */
+  /* margin:0.15em 0 0.40em 1.5em; */
+  /* padding:0 0 0.2em 1.5em; */ 
 }
 
 p#Distribution {
@@ -476,7 +530,7 @@ p#Distribution {
   font-size: 1.3em;
 }
 
-/* Now we add the backgrounds for the main content shading */
+/* Now we add the backgrounds for the main content shading. */
 #wrapper #container #center #squeeze {
   /* background: #fff url(images/bg-content.png) repeat-x 50% 0; */
   position: relative;
@@ -490,9 +544,9 @@ p#Distribution {
 }
 
 #wrapper #container #center .right-corner .left-corner {
-  padding: 30px 0 0 0; /* 25px 5em 35px;*/
+  padding: 30px 0 0 0; /* 25px 5em 35px; */
   /* background: transparent url(images/bg-content-left.png) no-repeat 0 0; */
- /* margin-left: -10px;*/
+ /* margin-left: -10px; */
   position: relative;
   /*left: -10px;*/
   min-height: 400px;
@@ -513,11 +567,11 @@ p#Distribution {
   z-index: 3;
 }
 
-body.sidebar-first  #footer {
+body.sidebar-first .region-footer {
   margin-left: -190px;
 }
 
-body.sidebar-second #footer {
+body.sidebar-second .region-footer {
   margin-right: -190px;
 }
 
@@ -528,52 +582,54 @@ body.sidebars #footer {
 /**
  * Header
  */
-#wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited {
+#wrapper #container #header h1,
+#wrapper #container #header h1 a:link,
+#wrapper #container #header h1 a:visited {
   color: #fff;
   font-weight: normal;
   text-shadow: #1659ac 0px 1px 3px;
   font-size: 1.5em;
 }
 
-
-
 #wrapper #container #header h1 a:hover {
   text-decoration: none;
 }
 
 #wrapper #container #general img.left{
-	float: right;
+  float: right;
 }
 
 #wrapper #container #general .clearfix{
-	clear: both;
+  clear: both;
 }
 
 #wrapper #container #general h2{
-	font-size: 160%;
-	/*font-weight: bold;
-	/*color: #97ac2d;*/
+  font-size: 160%;
+  /* font-weight: bold; */
+  /* color: #97ac2d; */
 }
 #wrapper #container #general #featureTOC h2{
-	color: #222;
+  color: #222;
 }
 #wrapper #container #general #featureTOC ul li{
-	list-style-type: none;
-	color: #F03300;
-	padding: 0;
-	margin: 0;
-	font-size: 90%;
+  list-style-type: none;
+  color: #f03300;
+  padding: 0;
+  margin: 0;
+  font-size: 90%;
 }
 
-.common-names-as-common-names, .footnote, p.description{
-	margin-left: 23px;
+.common-names-as-common-names,
+.footnote, p.description{
+  margin-left: 23px;
 }
 
 #wrapper #container .breadcrumb {
   font-size: 0.92em;
 }
 
-#wrapper #container .breadcrumb, #wrapper #container .breadcrumb a {
+#wrapper #container .breadcrumb,
+#wrapper #container .breadcrumb a {
   color: #529ad6;
 }
 
@@ -604,15 +660,18 @@ ul.primary-links li {
   background-image: none;
 }
 
-ul.primary-links li a, ul.primary-links li a:link, ul.primary-links li a:visited {
+ul.primary-links li a,
+ul.primary-links li a:link,
+ul.primary-links li a:visited {
   display: block;
   margin: 0 0 0 0.3em;
   padding: .75em 0;
-  color: #529AD6;
+  color: #529ad6;
   /* background: transparent url(images/bg-navigation-item.png) no-repeat 50% 0; */
 }
 
-ul.primary-links li a:hover, ul.primary-links li a.active {
+ul.primary-links li a:hover,
+ul.primary-links li a.active {
   color: #222;
   /* background: transparent url(images/bg-navigation-item-hover.png) no-repeat 50% 0; */
 }
@@ -636,7 +695,9 @@ ul.secondary-links li {
   background-image: none;
 }
 
-ul.secondary-links li a, ul.secondary-links li a:link, ul.secondary-links li a:visited {
+ul.secondary-links li a,
+ul.secondary-links li a:link,
+ul.secondary-links li a:visited {
   display: block;
   margin: 0 1em;
   padding: .75em 0 0;
@@ -644,7 +705,8 @@ ul.secondary-links li a, ul.secondary-links li a:link, ul.secondary-links li a:v
   background: transparent;
 }
 
-ul.secondary-links li a:hover, ul.secondary-links li a.active {
+ul.secondary-links li a:hover,
+ul.secondary-links li a.active {
   color: #cde3f1;
   background: transparent;
 }
@@ -652,7 +714,8 @@ ul.secondary-links li a:hover, ul.secondary-links li a.active {
 /**
  * Local tasks
  */
-ul.primary, ul.primary li, ul.secondary, ul.secondary li {
+ul.primary, ul.primary li,
+ul.secondary, ul.secondary li {
   border: 0;
   background: none;
   margin: 0;
@@ -666,13 +729,13 @@ ul.primary, ul.primary li, ul.secondary, ul.secondary li {
   position: relative;
 }
 
-#backButton{
-	margin: 0 0 10px;
-	font-size: 80%;
+#backButton {
+  margin: 0 0 10px;
+  font-size: 80%;
 }
 
-#funded-by{
-	text-align: center;
+#funded-by {
+  text-align: center;
 }
 
 ul.primary {
@@ -691,9 +754,14 @@ h2.with-tabs {
   padding: 0;
 }
 
-ul.primary li a, ul.primary li.active a, ul.primary li a:hover, ul.primary li a:visited,
-ul.secondary li a, ul.secondary li.active a, ul.secondary li a:hover, ul.secondary li a:visited {
-  border: 0;
+ul.primary li a,
+ul.primary li.active a,
+ul.primary li a:hover,
+ul.primary li a:visited,
+ul.secondary li a,
+ul.secondary li.active a,
+ul.secondary li a:hover,
+ul.secondary li a:visited {
   background: #eee;
   padding: 2px 1.3em;
   margin: 0 0 0 1.3em;
@@ -701,11 +769,16 @@ ul.secondary li a, ul.secondary li.active a, ul.secondary li a:hover, ul.seconda
   text-decoration: none;
   position: relative;
   top: -2px;
-
   border: 1px solid #ddd;
 }
-ul.primary li.active a, ul.primary li.active a:link, ul.primary li.active a:visited, ul.primary li a:hover,
-ul.secondary li.active a, ul.secondary li.active a:link, ul.secondary li.active a:visited, ul.secondary li a:hover {
+ul.primary li.active a,
+ul.primary li.active a:link,
+ul.primary li.active a:visited,
+ul.primary li a:hover,
+ul.secondary li.active a,
+ul.secondary li.active a:link,
+ul.secondary li.active a:visited,
+ul.secondary li a:hover {
   color: #222;
 }
 ul.primary li.active a,
@@ -723,7 +796,8 @@ ul.secondary li.active a {
   padding: 1.5em 26px;
 }
 
-ul.links li, ul.inline li {
+ul.links li,
+ul.inline li {
   margin-left: 0;
   margin-right: 0;
   padding-left: 1em;
@@ -731,11 +805,15 @@ ul.links li, ul.inline li {
   background-image: none;
 }
 
-.node .links, .comment .links {
+.node .links,
+.comment .links {
   text-align: left;
 }
 
-.node .links ul.links li, .comment .links ul.links li {}
+.node .links ul.links li,
+.comment .links ul.links li {
+}
+
 .terms ul.links li {
   margin-left: 0;
   margin-right: 0;
@@ -743,7 +821,8 @@ ul.links li, ul.inline li {
   padding-left: 1em;
 }
 
-.picture, .comment .submitted {
+.picture,
+.comment .submitted {
   float: right;
   clear: right;
   padding-left: 1em;
@@ -760,7 +839,9 @@ ul.links li, ul.inline li {
   float: right;
 }
 
-.preview .node, .preview .comment, .sticky {
+.preview .node,
+.preview .comment,
+.sticky {
   margin: 0;
   padding: 0.5em 0;
   border: 0;
@@ -802,11 +883,13 @@ ul.links li, ul.inline li {
   color: #222;
 }
 
-li a.active, a:active {
-  color: #5895BE;
+li a.active,
+a:active {
+  color: #5895be;
 }
 
-.node .content, .comment .content {
+.node .content,
+.comment .content {
   margin: 0.6em 0;
 }
 
@@ -982,12 +1065,16 @@ table.system-status-report th {
   border-color: #d3e7f4;
 }
 
-#autocomplete li.selected, tr.selected td, tr.selected td.active {
+#autocomplete li.selected,
+tr.selected td,
+tr.selected td.active {
   background: #027ac6;
   color: #fff;
 }
 
-tr.selected td a:link, tr.selected td a:visited, tr.selected td a:active {
+tr.selected td a:link,
+tr.selected td a:visited,
+tr.selected td a:active {
   color: #d3e7f4;
 }
 
@@ -1029,7 +1116,8 @@ div.error {
   color: #c52020;
 }
 
-.form-item input.error, .form-item textarea.error {
+.form-item input.error,
+.form-item textarea.error {
   border: 1px solid #c52020;
   color: #222;
 }
@@ -1068,32 +1156,37 @@ tr.watchdog-error {
 tr.watchdog-error td.active {
   background-color: #fbdbdb;
 }
-tr.watchdog-page-not-found, tr.watchdog-access-denied {
+tr.watchdog-page-not-found,
+tr.watchdog-access-denied {
   background: #d7ffd7;
 }
-tr.watchdog-page-not-found td.active, tr.watchdog-access-denied td.active {
+tr.watchdog-page-not-found td.active,
+tr.watchdog-access-denied td.active {
   background: #c7eec7;
 }
 
 /**
  * Status report colors.
  */
-table.system-status-report tr.error, table.system-status-report tr.error th {
+table.system-status-report tr.error,
+table.system-status-report tr.error th {
   background-color: #fcc;
   border-color: #ebb;
   color: #200;
 }
-table.system-status-report tr.warning, table.system-status-report tr.warning th {
+table.system-status-report tr.warning,
+table.system-status-report tr.warning th {
   background-color: #ffd;
   border-color: #eeb;
 }
-table.system-status-report tr.ok, table.system-status-report tr.ok th {
+table.system-status-report tr.ok,
+table.system-status-report tr.ok th {
   background-color: #dfd;
   border-color: #beb;
 }
 
 #edit-search-geographic-range-tdwg-level-select-3-wrapper { 
-	display: none;
+  display: none;
 }
 
 .clear {
@@ -1101,11 +1194,11 @@ table.system-status-report tr.ok, table.system-status-report tr.ok th {
 }
 
 .use_record_list {
- 	padding: 0 0 0.2em 0.5em;
+   padding: 0 0 0.2em 0.5em;
 }
 
 .category {
-	padding: 0 0 0.9em 0em;
+  padding: 0 0 0.9em 0em;
 }
 
 .pager {

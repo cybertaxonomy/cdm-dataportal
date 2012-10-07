@@ -1,9 +1,7 @@
 <?php
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?>"<?php print $attributes; ?>>
-
   <?php print $user_picture; ?>
-
   <?php /*print render($title_prefix); ?>
   <?php if (!$page): ?>
     <h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
@@ -13,7 +11,6 @@
   <?php if ($display_submitted): ?>
     <span class="submitted"><?php print $submitted ?></span>
   <?php endif; ?>
-
   <div class="content clearfix"<?php print $content_attributes; ?>>
     <?php
       // We hide the comments and links now so that we can render them later.
@@ -21,7 +18,7 @@
       hide($content['links']);
       // we are going to use a body with fixed file urls, see template.php
       hide($content['body']);
-      
+      //$content['comments']['#printed'] = FALSE;
       print render($content);
       print $fixed_body;
     ?>

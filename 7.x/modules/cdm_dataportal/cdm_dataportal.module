@@ -913,6 +913,7 @@ function cdm_dataportal_theme() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
+/*
 function cdm_dataportal_form_alter(&$form, &$form_state, $form_id) {
 
   static $comment_node_disabled =  0;
@@ -933,7 +934,7 @@ function cdm_dataportal_form_alter(&$form, &$form_state, $form_id) {
     );
   }
 }
-
+*/
 
 
 
@@ -1100,11 +1101,8 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
 function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid = null) {
   // display the page for the taxon defined by $uuid
   set_last_taxon_page_tab(arg(3));
- 
-  $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter, $synonym_uuid);   
- 
+  $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter, $synonym_uuid);
   return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title, $taxonpage->content);
-    
 }
 
 /**
