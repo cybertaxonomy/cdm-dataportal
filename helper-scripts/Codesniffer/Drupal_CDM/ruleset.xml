@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!-- See http://pear.php.net/manual/en/package.php.php-codesniffer.annotated-ruleset.php -->
+<ruleset name="Drupal_CDM">
+  <description>
+  Coding standard for Drupal CDM Portals
+  Difference with Drupal standard: no checks for camelcase variable names.
+  </description>
+
+  <rule ref="Drupal"/>
+  <rule ref="Drupal.NamingConventions.ValidVariableName">
+    <severity>0</severity>
+  </rule>
+</ruleset>
