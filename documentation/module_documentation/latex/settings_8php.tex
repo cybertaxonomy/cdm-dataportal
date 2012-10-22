@@ -1,0 +1,429 @@
+\hypertarget{settings_8php}{\section{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/settings.php File Reference}
+\label{settings_8php}\index{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/settings.\-php@{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/settings.\-php}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{settings_8php_a8824b906ed3a77e5d4d5e43086a3b0f8}{get\-\_\-taxon\-\_\-tabs\-\_\-list} ()
+\item 
+\hyperlink{settings_8php_a4d07113672784863c05b954f12ee136d}{get\-\_\-taxon\-\_\-options\-\_\-list} ()
+\item 
+\hyperlink{settings_8php_adf7b27ac5925d0af4ca5e2077a6b2684}{get\-Gallery\-Settings} (\$gallery\-\_\-config\-\_\-form\-\_\-name)
+\item 
+\hyperlink{settings_8php_a9fb7880dd8b1a24fd79648df6b94fae5}{get\-\_\-default\-\_\-taxon\-\_\-tab} (\$return\-Tab\-Index=F\-A\-L\-S\-E)
+\item 
+\hyperlink{settings_8php_aa66904455bb5f27f3ad3700b0bc78458}{cdm\-\_\-dataportal\-\_\-menu\-\_\-admin} (\&\$items)
+\item 
+\hyperlink{settings_8php_a8b8883e7f2174714bd52dea3cc88abd3}{cdm\-\_\-help\-\_\-general\-\_\-cache} ()
+\item 
+\hyperlink{settings_8php_a963379db4847cd2c217383b5525e84d8}{cdm\-\_\-settings\-\_\-general} ()
+\item 
+\hyperlink{settings_8php_a4d4f1fa0b7987f310c511a2846e381d0}{cdm\-\_\-settings\-\_\-layout} ()
+\item 
+\hyperlink{settings_8php_accc017467fb7da89f7fc9907c81cac95}{cdm\-\_\-dataportal\-\_\-theming\-\_\-form} ()
+\item 
+\hyperlink{settings_8php_a63349f5d3061b3bc12df0887a8edc17a}{cdm\-\_\-dataportal\-\_\-theming\-\_\-form\-\_\-submit} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{settings_8php_a78861abbb3fbc421ab3e1ed42f6ef9d8}{cdm\-\_\-dataportal\-\_\-create\-\_\-gallery\-\_\-settings\-\_\-form} (\$form\-\_\-name, \$form\-\_\-title, \$collapsed, \$form\-\_\-description= '')
+\item 
+\hyperlink{settings_8php_ab2641ddc8fc000e9ccb64f3ae3db67dd}{cdm\-\_\-settings\-\_\-layout\-\_\-taxon} ()
+\item 
+\hyperlink{settings_8php_ab0d387d6f5390e0a7d18480c464cc186}{cdm\-\_\-settings\-\_\-layout\-\_\-search} ()
+\item 
+\hyperlink{settings_8php_ad04830ecc109e419dab7ce9ec775d498}{cdm\-\_\-settings\-\_\-layout\-\_\-media} ()
+\item 
+\hyperlink{settings_8php_a4455a01b680b2e33cf06cf4a790ab01b}{cdm\-\_\-settings\-\_\-geo} ()
+\item 
+\hyperlink{settings_8php_a6b007fdce3ad1dff4a3c07a146f30038}{cdm\-\_\-settings\-\_\-cache} ()
+\item 
+\hyperlink{settings_8php_a8394ada1e39276bdf416788798d07d9b}{cdm\-\_\-view\-\_\-cache\-\_\-site} ()
+\item 
+\hyperlink{settings_8php_a607d28d4bba2141a0bffde4b34181505}{cdm\-\_\-settings\-\_\-validate} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{settings_8php_aa3784149590edb223228eac3f8b57efe}{get\-E\-D\-I\-T\-Map\-Service\-U\-R\-I} ()
+\item 
+\hyperlink{settings_8php_a7e06996b60ea5a7b37544dae04e8035c}{get\-E\-D\-I\-T\-Map\-Service\-Version\-Number} ()
+\item 
+\hyperlink{settings_8php_a888fce3c9ba3f3abf673c1c46f73cbdf}{cdm\-\_\-dataportal\-\_\-element\-\_\-info} ()
+\item 
+\hyperlink{settings_8php_a5f83fcc5e0f91f3126b9feaed83f1b4a}{expand\-\_\-checkboxes\-\_\-preferred} (\$element, \&\$form\-\_\-state, \$form)
+\item 
+\hyperlink{settings_8php_a18a9a67e442c9e18af01bf8a90e01b0d}{theme\-\_\-checkboxes\-\_\-preferred} (\$variables)
+\item 
+\hyperlink{settings_8php_ab51f397ae011891adc151c40b3574218}{checkboxes\-\_\-preferred\-\_\-after\-\_\-build} (\$form, \&\$form\-\_\-state)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{settings_8php_a7269e57d008b6455e0d0d0a8bb42933b}{const {\bfseries D\-E\-F\-A\-U\-L\-T\-\_\-\-T\-A\-X\-O\-N\-T\-R\-E\-E\-\_\-\-R\-A\-N\-K\-L\-I\-M\-I\-T} '1b11c34c-\/48a8-\/4efa-\/98d5-\/84f7f66ef43a'}\label{settings_8php_a7269e57d008b6455e0d0d0a8bb42933b}
+
+\item 
+\hypertarget{settings_8php_a58c3b289a0c52da46df791e74db5234d}{const {\bfseries C\-D\-M\-\_\-\-T\-A\-X\-O\-N\-O\-M\-I\-C\-T\-R\-E\-E\-\_\-\-U\-U\-I\-D} 'cdm\-\_\-taxonomictree\-\_\-uuid'}\label{settings_8php_a58c3b289a0c52da46df791e74db5234d}
+
+\item 
+\hypertarget{settings_8php_aa9d08b0bab4caa9fe20e62eec4ec4f3c}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-S\-E\-A\-R\-C\-H\-\_\-\-I\-T\-E\-M\-S\-\_\-\-O\-N\-\_\-\-P\-A\-G\-E} 25}\label{settings_8php_aa9d08b0bab4caa9fe20e62eec4ec4f3c}
+
+\item 
+\hypertarget{settings_8php_a27c8a6a4e90c5fbc685838cd37e819b2}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-N\-O\-M\-R\-E\-F\-\_\-\-I\-N\-\_\-\-T\-I\-T\-L\-E} 1}\label{settings_8php_a27c8a6a4e90c5fbc685838cd37e819b2}
+
+\item 
+\hypertarget{settings_8php_ac92c2a43d987fef24a019de4844905d9}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-D\-I\-S\-P\-L\-A\-Y\-\_\-\-I\-S\-\_\-\-A\-C\-C\-E\-P\-T\-E\-D\-\_\-\-F\-O\-R} 0}\label{settings_8php_ac92c2a43d987fef24a019de4844905d9}
+
+\item 
+\hypertarget{settings_8php_a347e9a851cc8a6e9d142ef7c6211ccfc}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-A\-L\-L\-\_\-\-F\-O\-O\-T\-N\-O\-T\-E\-S} 0}\label{settings_8php_a347e9a851cc8a6e9d142ef7c6211ccfc}
+
+\item 
+\hypertarget{settings_8php_a5a561ea7685889dd5c6bbd692122e68d}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-A\-N\-N\-O\-T\-A\-T\-I\-O\-N\-S\-\_\-\-F\-O\-O\-T\-N\-O\-T\-E\-S} 0}\label{settings_8php_a5a561ea7685889dd5c6bbd692122e68d}
+
+\item 
+\hypertarget{settings_8php_a69c245f235a67504e1552d59ad8bf906}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-L\-A\-S\-T\-\_\-\-V\-I\-S\-I\-T\-E\-D\-\_\-\-T\-A\-B\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-I\-N\-D\-E\-X} 999}\label{settings_8php_a69c245f235a67504e1552d59ad8bf906}
+
+\item 
+\hypertarget{settings_8php_aa04a4ca462bc68e54f0b2c1f94346a1c}{{\bfseries \$annotation\-Type\-Keys} = array\-\_\-keys(\hyperlink{cdm__api_8module_af45890cc79e537b562e586872c73b9f4}{cdm\-\_\-\-Vocabulary\-\_\-as\-\_\-option}(U\-U\-I\-D\-\_\-\-A\-N\-N\-O\-T\-A\-T\-I\-O\-N\-\_\-\-T\-Y\-P\-E))}\label{settings_8php_aa04a4ca462bc68e54f0b2c1f94346a1c}
+
+\item 
+\hypertarget{settings_8php_ac7ed6f3eb224dda97aeb0aecb24920e0}{const {\bfseries A\-N\-N\-O\-T\-A\-T\-I\-O\-N\-S\-\_\-\-T\-Y\-P\-E\-S\-\_\-\-A\-S\-\_\-\-F\-O\-O\-T\-N\-O\-T\-E\-S\-\_\-\-D\-E\-F\-A\-U\-L\-T} (in\-\_\-array(U\-U\-I\-D\-\_\-\-A\-N\-N\-O\-T\-A\-T\-I\-O\-N\-\_\-\-T\-Y\-P\-E\-\_\-\-T\-E\-C\-H\-N\-I\-C\-A\-L, \$annotation\-Type\-Keys)) serialize(\$annotation\-Type\-Keys)}\label{settings_8php_ac7ed6f3eb224dda97aeb0aecb24920e0}
+
+\item 
+\hypertarget{settings_8php_abe3788f418983b33a23c416b99b7ac01}{const {\bfseries C\-D\-M\-\_\-\-T\-A\-X\-O\-N\-\_\-\-R\-E\-L\-A\-T\-I\-O\-N\-S\-H\-I\-P\-\_\-\-T\-Y\-P\-E\-S\-\_\-\-D\-E\-F\-A\-U\-L\-T} serialize(array(U\-U\-I\-D\-\_\-\-M\-I\-S\-A\-P\-P\-L\-I\-E\-D\-\_\-\-N\-A\-M\-E\-\_\-\-F\-O\-R, U\-U\-I\-D\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-D\-E\-S\-I\-G\-N\-A\-T\-I\-O\-N\-\_\-\-F\-O\-R))}\label{settings_8php_abe3788f418983b33a23c416b99b7ac01}
+
+\item 
+{\bfseries \$gallery\-\_\-settings}
+\item 
+\hypertarget{settings_8php_a5934c7fca067e87fb985d9528fadd92c}{const {\bfseries E\-D\-I\-T\-\_\-\-M\-A\-P\-S\-E\-R\-V\-E\-R\-\_\-\-V1\-\_\-\-U\-R\-I} 'http\-://edit.\-br.\-fgov.\-be/edit\-\_\-wp5/v1'}\label{settings_8php_a5934c7fca067e87fb985d9528fadd92c}
+
+\item 
+\hypertarget{settings_8php_ae1b29d8a60d09990703eae7e4cc82fd4}{const {\bfseries E\-D\-I\-T\-\_\-\-M\-A\-P\-S\-E\-R\-V\-E\-R\-\_\-\-V11\-\_\-\-U\-R\-I} 'http\-://edit.\-br.\-fgov.\-be/edit\-\_\-wp5/v1.\-1'}\label{settings_8php_ae1b29d8a60d09990703eae7e4cc82fd4}
+
+\item 
+\hypertarget{settings_8php_af7769a39f6537f9636aeffe531c90ce2}{const {\bfseries D\-I\-S\-T\-R\-I\-B\-U\-T\-I\-O\-N\-\_\-\-T\-E\-X\-T\-D\-A\-T\-A\-\_\-\-D\-I\-S\-P\-L\-A\-Y\-\_\-\-O\-N\-\_\-\-T\-O\-P} 'distribution\-\_\-textdata\-\_\-on\-\_\-top'}\label{settings_8php_af7769a39f6537f9636aeffe531c90ce2}
+
+\item 
+\hypertarget{settings_8php_a7eb7bec661d11400eadfc33b6beb0c4f}{const {\bfseries L\-A\-Y\-O\-U\-T\-\_\-\-S\-E\-T\-T\-I\-N\-G\-\_\-\-P\-R\-E\-F\-I\-X} 'layout\-\_\-'}\label{settings_8php_a7eb7bec661d11400eadfc33b6beb0c4f}
+
+\item 
+\hypertarget{settings_8php_aa32f7e54bebd2225f9c593856536c193}{const {\bfseries F\-E\-A\-T\-U\-R\-E\-\_\-\-T\-R\-E\-E\-\_\-\-L\-A\-Y\-O\-U\-T\-\_\-\-D\-E\-F\-A\-U\-L\-T\-S} serialize( array( 'enabled' =$>$ F\-A\-L\-S\-E, 'enclosing\-Tag' =$>$ 'ul', 'entry\-Enclosing\-Tag' =$>$ 'li', 'glue' =$>$ ' ', ))}\label{settings_8php_aa32f7e54bebd2225f9c593856536c193}
+
+\item 
+\hypertarget{settings_8php_a39ab68d75519e86e4e8ae05aab436d94}{{\bfseries \$taxon\-\_\-tab\-\_\-options} = \hyperlink{settings_8php_a8824b906ed3a77e5d4d5e43086a3b0f8}{get\-\_\-taxon\-\_\-tabs\-\_\-list}()}\label{settings_8php_a39ab68d75519e86e4e8ae05aab436d94}
+
+\item 
+\hypertarget{settings_8php_a2538d394cb3c485e0d2793d5dea6cf3a}{{\bfseries \$taxon\-\_\-tab\-\_\-options} \mbox{[}C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-L\-A\-S\-T\-\_\-\-V\-I\-S\-I\-T\-E\-D\-\_\-\-T\-A\-B\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-I\-N\-D\-E\-X\mbox{]} = 'Last visited tab'}\label{settings_8php_a2538d394cb3c485e0d2793d5dea6cf3a}
+
+\item 
+\hypertarget{settings_8php_a181006915f45765ad4a94d64f1dd201e}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-D\-E\-F\-A\-U\-L\-T\-\_\-\-T\-A\-X\-O\-N\-\_\-\-T\-A\-B} serialize(\$taxon\-\_\-tab\-\_\-options)}\label{settings_8php_a181006915f45765ad4a94d64f1dd201e}
+
+\item 
+\hypertarget{settings_8php_a3f5b2884fc2ffbd7bdac742cc8bdbfdf}{const {\bfseries T\-A\-X\-O\-N\-P\-A\-G\-E\-\_\-\-V\-I\-S\-I\-B\-I\-L\-I\-T\-Y\-\_\-\-O\-P\-T\-I\-O\-N\-S\-\_\-\-D\-E\-F\-A\-U\-L\-T} serialize(\hyperlink{settings_8php_a4d07113672784863c05b954f12ee136d}{get\-\_\-taxon\-\_\-options\-\_\-list}())}\label{settings_8php_a3f5b2884fc2ffbd7bdac742cc8bdbfdf}
+
+\item 
+\hypertarget{settings_8php_a20a7530a52fba59e6acc0234d5cc7f9c}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-G\-A\-L\-L\-E\-R\-Y\-\_\-\-S\-E\-T\-T\-I\-N\-G\-S} serialize(\$gallery\-\_\-settings)}\label{settings_8php_a20a7530a52fba59e6acc0234d5cc7f9c}
+
+\item 
+\hypertarget{settings_8php_ace5ec0dc5f1b56bfb78be3c547f5f37a}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-S\-P\-E\-C\-I\-M\-E\-N\-\_\-\-G\-A\-L\-L\-E\-R\-Y\-\_\-\-N\-A\-M\-E} 'specimen\-\_\-gallery'}\label{settings_8php_ace5ec0dc5f1b56bfb78be3c547f5f37a}
+
+\item 
+\hypertarget{settings_8php_aee992b83cdd65431c4b2fcc3bbc335f2}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-D\-E\-S\-C\-R\-I\-P\-T\-I\-O\-N\-\_\-\-G\-A\-L\-L\-E\-R\-Y\-\_\-\-N\-A\-M\-E} \char`\"{}description\-\_\-gallery\char`\"{}}\label{settings_8php_aee992b83cdd65431c4b2fcc3bbc335f2}
+
+\item 
+\hypertarget{settings_8php_afbc5db0c766674e0e33014493f1f1138}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-M\-E\-D\-I\-A\-\_\-\-G\-A\-L\-L\-E\-R\-Y\-\_\-\-N\-A\-M\-E} \char`\"{}media\-\_\-gallery\char`\"{}}\label{settings_8php_afbc5db0c766674e0e33014493f1f1138}
+
+\item 
+\hypertarget{settings_8php_ab263781121d1c50a0ea394c6a93f8940}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-T\-A\-X\-O\-N\-\_\-\-M\-E\-D\-I\-A\-\_\-\-G\-A\-L\-L\-E\-R\-Y\-\_\-\-N\-A\-M\-E\-\_\-\-T\-A\-B} \char`\"{}taxon\-\_\-tab\-\_\-media\-\_\-gallery\char`\"{}}\label{settings_8php_ab263781121d1c50a0ea394c6a93f8940}
+
+\item 
+\hypertarget{settings_8php_a8b9e567eae20d6f1c41f113c0c898411}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-S\-E\-A\-R\-C\-H\-\_\-\-G\-A\-L\-L\-E\-R\-Y\-\_\-\-N\-A\-M\-E} \char`\"{}search\-\_\-gallery\char`\"{}}\label{settings_8php_a8b9e567eae20d6f1c41f113c0c898411}
+
+\item 
+\hypertarget{settings_8php_a1fb137a3202b50e5c4a3649b06f169d9}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-D\-I\-S\-P\-L\-A\-Y\-\_\-\-T\-A\-X\-O\-N\-\_\-\-R\-E\-L\-A\-T\-I\-O\-N\-S\-H\-I\-P\-S} 'cdm\-\_\-dataportal\-\_\-display\-\_\-taxon\-\_\-relationships'}\label{settings_8php_a1fb137a3202b50e5c4a3649b06f169d9}
+
+\item 
+\hypertarget{settings_8php_ace725e5a21b0fb90b75d0ffabe13e25d}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-D\-I\-S\-P\-L\-A\-Y\-\_\-\-N\-A\-M\-E\-\_\-\-R\-E\-L\-A\-T\-I\-O\-N\-S\-H\-I\-P\-S} 'cdm\-\_\-dataportal\-\_\-display\-\_\-name\-\_\-relations'}\label{settings_8php_ace725e5a21b0fb90b75d0ffabe13e25d}
+
+\item 
+\hypertarget{settings_8php_affc055c8642d7048f54f338862b37267}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-D\-I\-S\-P\-L\-A\-Y\-\_\-\-T\-A\-X\-O\-N\-\_\-\-R\-E\-L\-A\-T\-I\-O\-N\-S\-H\-I\-P\-S\-\_\-\-D\-E\-F\-A\-U\-L\-T} 1}\label{settings_8php_affc055c8642d7048f54f338862b37267}
+
+\item 
+\hypertarget{settings_8php_a0460e0f37eb814becc4f1a7129c00ede}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-D\-I\-S\-P\-L\-A\-Y\-\_\-\-N\-A\-M\-E\-\_\-\-R\-E\-L\-A\-T\-I\-O\-N\-S\-H\-I\-P\-S\-\_\-\-D\-E\-F\-A\-U\-L\-T} 1}\label{settings_8php_a0460e0f37eb814becc4f1a7129c00ede}
+
+\item 
+\hypertarget{settings_8php_a10973eb2bdf3b0cd4c41ae948eac241e}{const {\bfseries C\-D\-M\-\_\-\-T\-A\-X\-O\-N\-\_\-\-R\-E\-L\-A\-T\-I\-O\-N\-S\-H\-I\-P\-\_\-\-T\-Y\-P\-E\-S} 'cdm\-\_\-taxon\-\_\-relationship\-\_\-types'}\label{settings_8php_a10973eb2bdf3b0cd4c41ae948eac241e}
+
+\item 
+\hypertarget{settings_8php_a41ed605bac8f103bb8fbbbb26f1fa30e}{const {\bfseries C\-D\-M\-\_\-\-P\-R\-O\-F\-I\-L\-E\-\_\-\-F\-E\-A\-T\-U\-R\-E\-T\-R\-E\-E\-\_\-\-U\-U\-I\-D} 'cdm\-\_\-dataportal\-\_\-featuretree\-\_\-uuid'}\label{settings_8php_a41ed605bac8f103bb8fbbbb26f1fa30e}
+
+\item 
+\hypertarget{settings_8php_a5046aad4f92d568fa7f7eb9264f55e40}{const {\bfseries C\-D\-M\-\_\-\-D\-A\-T\-A\-P\-O\-R\-T\-A\-L\-\_\-\-S\-T\-R\-U\-C\-T\-U\-R\-E\-D\-\_\-\-D\-E\-S\-C\-R\-I\-P\-T\-I\-O\-N\-\_\-\-F\-E\-A\-T\-U\-R\-E\-T\-R\-E\-E\-\_\-\-U\-U\-I\-D} 'cdm\-\_\-dataportal\-\_\-structdesc\-\_\-featuretree\-\_\-uuid'}\label{settings_8php_a5046aad4f92d568fa7f7eb9264f55e40}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+C\-D\-M Dataportal settings. 
+
+\subsection{Function Documentation}
+\hypertarget{settings_8php_a78861abbb3fbc421ab3e1ed42f6ef9d8}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-dataportal\-\_\-create\-\_\-gallery\-\_\-settings\-\_\-form@{cdm\-\_\-dataportal\-\_\-create\-\_\-gallery\-\_\-settings\-\_\-form}}
+\index{cdm\-\_\-dataportal\-\_\-create\-\_\-gallery\-\_\-settings\-\_\-form@{cdm\-\_\-dataportal\-\_\-create\-\_\-gallery\-\_\-settings\-\_\-form}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-create\-\_\-gallery\-\_\-settings\-\_\-form}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-create\-\_\-gallery\-\_\-settings\-\_\-form (
+\begin{DoxyParamCaption}
+\item[{}]{\$form\-\_\-name, }
+\item[{}]{\$form\-\_\-title, }
+\item[{}]{\$collapsed, }
+\item[{}]{\$form\-\_\-description = {\ttfamily ''}}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a78861abbb3fbc421ab3e1ed42f6ef9d8}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000044}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{settings_8php_a888fce3c9ba3f3abf673c1c46f73cbdf}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-dataportal\-\_\-element\-\_\-info@{cdm\-\_\-dataportal\-\_\-element\-\_\-info}}
+\index{cdm\-\_\-dataportal\-\_\-element\-\_\-info@{cdm\-\_\-dataportal\-\_\-element\-\_\-info}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-element\-\_\-info}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-element\-\_\-info (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a888fce3c9ba3f3abf673c1c46f73cbdf}
+Implements hook\-\_\-element\-\_\-info().
+
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/37862}{\tt http\-://drupal.\-org/node/37862} 
+\end{DoxySeeAlso}
+\hypertarget{settings_8php_aa66904455bb5f27f3ad3700b0bc78458}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-dataportal\-\_\-menu\-\_\-admin@{cdm\-\_\-dataportal\-\_\-menu\-\_\-admin}}
+\index{cdm\-\_\-dataportal\-\_\-menu\-\_\-admin@{cdm\-\_\-dataportal\-\_\-menu\-\_\-admin}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-menu\-\_\-admin}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-menu\-\_\-admin (
+\begin{DoxyParamCaption}
+\item[{\&}]{\$items}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_aa66904455bb5f27f3ad3700b0bc78458}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000040}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{settings_8php_accc017467fb7da89f7fc9907c81cac95}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-dataportal\-\_\-theming\-\_\-form@{cdm\-\_\-dataportal\-\_\-theming\-\_\-form}}
+\index{cdm\-\_\-dataportal\-\_\-theming\-\_\-form@{cdm\-\_\-dataportal\-\_\-theming\-\_\-form}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-theming\-\_\-form}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-theming\-\_\-form (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_accc017467fb7da89f7fc9907c81cac95}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000042}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{settings_8php_a63349f5d3061b3bc12df0887a8edc17a}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-dataportal\-\_\-theming\-\_\-form\-\_\-submit@{cdm\-\_\-dataportal\-\_\-theming\-\_\-form\-\_\-submit}}
+\index{cdm\-\_\-dataportal\-\_\-theming\-\_\-form\-\_\-submit@{cdm\-\_\-dataportal\-\_\-theming\-\_\-form\-\_\-submit}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-theming\-\_\-form\-\_\-submit}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-theming\-\_\-form\-\_\-submit (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a63349f5d3061b3bc12df0887a8edc17a}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000043}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{settings_8php_a8b8883e7f2174714bd52dea3cc88abd3}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-help\-\_\-general\-\_\-cache@{cdm\-\_\-help\-\_\-general\-\_\-cache}}
+\index{cdm\-\_\-help\-\_\-general\-\_\-cache@{cdm\-\_\-help\-\_\-general\-\_\-cache}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-help\-\_\-general\-\_\-cache}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-help\-\_\-general\-\_\-cache (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a8b8883e7f2174714bd52dea3cc88abd3}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000041}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{settings_8php_a6b007fdce3ad1dff4a3c07a146f30038}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-settings\-\_\-cache@{cdm\-\_\-settings\-\_\-cache}}
+\index{cdm\-\_\-settings\-\_\-cache@{cdm\-\_\-settings\-\_\-cache}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-settings\-\_\-cache}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-settings\-\_\-cache (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a6b007fdce3ad1dff4a3c07a146f30038}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000048}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{settings_8php_a963379db4847cd2c217383b5525e84d8}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-settings\-\_\-general@{cdm\-\_\-settings\-\_\-general}}
+\index{cdm\-\_\-settings\-\_\-general@{cdm\-\_\-settings\-\_\-general}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-settings\-\_\-general}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-settings\-\_\-general (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a963379db4847cd2c217383b5525e84d8}
+Configures the settings form for the C\-D\-M-\/\-A\-P\-I module.
+
+\begin{DoxyReturn}{Returns}
+array Drupal settings form. 
+\end{DoxyReturn}
+\hypertarget{settings_8php_a4455a01b680b2e33cf06cf4a790ab01b}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-settings\-\_\-geo@{cdm\-\_\-settings\-\_\-geo}}
+\index{cdm\-\_\-settings\-\_\-geo@{cdm\-\_\-settings\-\_\-geo}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-settings\-\_\-geo}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-settings\-\_\-geo (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a4455a01b680b2e33cf06cf4a790ab01b}
+G\-E\-O\-S\-E\-R\-V\-I\-C\-E and Map settings. \hypertarget{settings_8php_a4d4f1fa0b7987f310c511a2846e381d0}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-settings\-\_\-layout@{cdm\-\_\-settings\-\_\-layout}}
+\index{cdm\-\_\-settings\-\_\-layout@{cdm\-\_\-settings\-\_\-layout}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-settings\-\_\-layout}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-settings\-\_\-layout (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a4d4f1fa0b7987f310c511a2846e381d0}
+L\-A\-Y\-O\-U\-T settings \begin{DoxyReturn}{Returns}
+unknown\-\_\-type 
+\end{DoxyReturn}
+\hypertarget{settings_8php_ad04830ecc109e419dab7ce9ec775d498}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-settings\-\_\-layout\-\_\-media@{cdm\-\_\-settings\-\_\-layout\-\_\-media}}
+\index{cdm\-\_\-settings\-\_\-layout\-\_\-media@{cdm\-\_\-settings\-\_\-layout\-\_\-media}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-settings\-\_\-layout\-\_\-media}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-settings\-\_\-layout\-\_\-media (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_ad04830ecc109e419dab7ce9ec775d498}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000047}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{settings_8php_ab0d387d6f5390e0a7d18480c464cc186}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-settings\-\_\-layout\-\_\-search@{cdm\-\_\-settings\-\_\-layout\-\_\-search}}
+\index{cdm\-\_\-settings\-\_\-layout\-\_\-search@{cdm\-\_\-settings\-\_\-layout\-\_\-search}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-settings\-\_\-layout\-\_\-search}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-settings\-\_\-layout\-\_\-search (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_ab0d387d6f5390e0a7d18480c464cc186}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000046}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{settings_8php_ab2641ddc8fc000e9ccb64f3ae3db67dd}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-settings\-\_\-layout\-\_\-taxon@{cdm\-\_\-settings\-\_\-layout\-\_\-taxon}}
+\index{cdm\-\_\-settings\-\_\-layout\-\_\-taxon@{cdm\-\_\-settings\-\_\-layout\-\_\-taxon}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-settings\-\_\-layout\-\_\-taxon}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-settings\-\_\-layout\-\_\-taxon (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_ab2641ddc8fc000e9ccb64f3ae3db67dd}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000045}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{settings_8php_a607d28d4bba2141a0bffde4b34181505}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-settings\-\_\-validate@{cdm\-\_\-settings\-\_\-validate}}
+\index{cdm\-\_\-settings\-\_\-validate@{cdm\-\_\-settings\-\_\-validate}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-settings\-\_\-validate}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-settings\-\_\-validate (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a607d28d4bba2141a0bffde4b34181505}
+Form validation handler for ?
+
+Comment \-: currently this handler is not used. It seems partly for cdm\-\_\-settings\-\_\-general en partly for cdm\-\_\-settings\-\_\-cache? Then you can change the name into cdm\-\_\-settings\-\_\-general\-\_\-validate() or cdm\-\_\-settings\-\_\-cache\-\_\-validate(). But cdm\-\_\-api\-\_\-secref\-\_\-cache\-\_\-clear is not doing anything (yet)? \hypertarget{settings_8php_a8394ada1e39276bdf416788798d07d9b}{\index{settings.\-php@{settings.\-php}!cdm\-\_\-view\-\_\-cache\-\_\-site@{cdm\-\_\-view\-\_\-cache\-\_\-site}}
+\index{cdm\-\_\-view\-\_\-cache\-\_\-site@{cdm\-\_\-view\-\_\-cache\-\_\-site}!settings.php@{settings.\-php}}
+\subsubsection[{cdm\-\_\-view\-\_\-cache\-\_\-site}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-view\-\_\-cache\-\_\-site (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a8394ada1e39276bdf416788798d07d9b}
+Walk and cache all taxon pages. \hypertarget{settings_8php_ab51f397ae011891adc151c40b3574218}{\index{settings.\-php@{settings.\-php}!checkboxes\-\_\-preferred\-\_\-after\-\_\-build@{checkboxes\-\_\-preferred\-\_\-after\-\_\-build}}
+\index{checkboxes\-\_\-preferred\-\_\-after\-\_\-build@{checkboxes\-\_\-preferred\-\_\-after\-\_\-build}!settings.php@{settings.\-php}}
+\subsubsection[{checkboxes\-\_\-preferred\-\_\-after\-\_\-build}]{\setlength{\rightskip}{0pt plus 5cm}checkboxes\-\_\-preferred\-\_\-after\-\_\-build (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_ab51f397ae011891adc151c40b3574218}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000051}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{settings_8php_a5f83fcc5e0f91f3126b9feaed83f1b4a}{\index{settings.\-php@{settings.\-php}!expand\-\_\-checkboxes\-\_\-preferred@{expand\-\_\-checkboxes\-\_\-preferred}}
+\index{expand\-\_\-checkboxes\-\_\-preferred@{expand\-\_\-checkboxes\-\_\-preferred}!settings.php@{settings.\-php}}
+\subsubsection[{expand\-\_\-checkboxes\-\_\-preferred}]{\setlength{\rightskip}{0pt plus 5cm}expand\-\_\-checkboxes\-\_\-preferred (
+\begin{DoxyParamCaption}
+\item[{}]{\$element, }
+\item[{\&}]{\$form\-\_\-state, }
+\item[{}]{\$form}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a5f83fcc5e0f91f3126b9feaed83f1b4a}
+\#process function for the custom form element type 'checkbox\-\_\-preferred' \hypertarget{settings_8php_a9fb7880dd8b1a24fd79648df6b94fae5}{\index{settings.\-php@{settings.\-php}!get\-\_\-default\-\_\-taxon\-\_\-tab@{get\-\_\-default\-\_\-taxon\-\_\-tab}}
+\index{get\-\_\-default\-\_\-taxon\-\_\-tab@{get\-\_\-default\-\_\-taxon\-\_\-tab}!settings.php@{settings.\-php}}
+\subsubsection[{get\-\_\-default\-\_\-taxon\-\_\-tab}]{\setlength{\rightskip}{0pt plus 5cm}get\-\_\-default\-\_\-taxon\-\_\-tab (
+\begin{DoxyParamCaption}
+\item[{}]{\$return\-Tab\-Index = {\ttfamily FALSE}}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a9fb7880dd8b1a24fd79648df6b94fae5}
+Returns the string representation of the default tab.
+
+
+\begin{DoxyParams}[1]{Parameters}
+bool & {\em \$return\-Tab\-Index} & Defaults to F\-A\-L\-S\-E, if set true this function will return the index number of the default tab. (used to supply default values to form elements). \\
+\hline
+\end{DoxyParams}
+\hypertarget{settings_8php_a4d07113672784863c05b954f12ee136d}{\index{settings.\-php@{settings.\-php}!get\-\_\-taxon\-\_\-options\-\_\-list@{get\-\_\-taxon\-\_\-options\-\_\-list}}
+\index{get\-\_\-taxon\-\_\-options\-\_\-list@{get\-\_\-taxon\-\_\-options\-\_\-list}!settings.php@{settings.\-php}}
+\subsubsection[{get\-\_\-taxon\-\_\-options\-\_\-list}]{\setlength{\rightskip}{0pt plus 5cm}get\-\_\-taxon\-\_\-options\-\_\-list (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a4d07113672784863c05b954f12ee136d}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000038}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{settings_8php_a8824b906ed3a77e5d4d5e43086a3b0f8}{\index{settings.\-php@{settings.\-php}!get\-\_\-taxon\-\_\-tabs\-\_\-list@{get\-\_\-taxon\-\_\-tabs\-\_\-list}}
+\index{get\-\_\-taxon\-\_\-tabs\-\_\-list@{get\-\_\-taxon\-\_\-tabs\-\_\-list}!settings.php@{settings.\-php}}
+\subsubsection[{get\-\_\-taxon\-\_\-tabs\-\_\-list}]{\setlength{\rightskip}{0pt plus 5cm}get\-\_\-taxon\-\_\-tabs\-\_\-list (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a8824b906ed3a77e5d4d5e43086a3b0f8}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000037}{Todo}]document this function \end{DoxyRefDesc}
+\hypertarget{settings_8php_aa3784149590edb223228eac3f8b57efe}{\index{settings.\-php@{settings.\-php}!get\-E\-D\-I\-T\-Map\-Service\-U\-R\-I@{get\-E\-D\-I\-T\-Map\-Service\-U\-R\-I}}
+\index{get\-E\-D\-I\-T\-Map\-Service\-U\-R\-I@{get\-E\-D\-I\-T\-Map\-Service\-U\-R\-I}!settings.php@{settings.\-php}}
+\subsubsection[{get\-E\-D\-I\-T\-Map\-Service\-U\-R\-I}]{\setlength{\rightskip}{0pt plus 5cm}get\-E\-D\-I\-T\-Map\-Service\-U\-R\-I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_aa3784149590edb223228eac3f8b57efe}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000049}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{settings_8php_a7e06996b60ea5a7b37544dae04e8035c}{\index{settings.\-php@{settings.\-php}!get\-E\-D\-I\-T\-Map\-Service\-Version\-Number@{get\-E\-D\-I\-T\-Map\-Service\-Version\-Number}}
+\index{get\-E\-D\-I\-T\-Map\-Service\-Version\-Number@{get\-E\-D\-I\-T\-Map\-Service\-Version\-Number}!settings.php@{settings.\-php}}
+\subsubsection[{get\-E\-D\-I\-T\-Map\-Service\-Version\-Number}]{\setlength{\rightskip}{0pt plus 5cm}get\-E\-D\-I\-T\-Map\-Service\-Version\-Number (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a7e06996b60ea5a7b37544dae04e8035c}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000050}{Todo}]document this function.\end{DoxyRefDesc}
+
+
+\begin{DoxyReturn}{Returns}
+float The version number of the currently selected edit mapserver as a float. Returns 0 on error. 
+\end{DoxyReturn}
+\hypertarget{settings_8php_adf7b27ac5925d0af4ca5e2077a6b2684}{\index{settings.\-php@{settings.\-php}!get\-Gallery\-Settings@{get\-Gallery\-Settings}}
+\index{get\-Gallery\-Settings@{get\-Gallery\-Settings}!settings.php@{settings.\-php}}
+\subsubsection[{get\-Gallery\-Settings}]{\setlength{\rightskip}{0pt plus 5cm}get\-Gallery\-Settings (
+\begin{DoxyParamCaption}
+\item[{}]{\$gallery\-\_\-config\-\_\-form\-\_\-name}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_adf7b27ac5925d0af4ca5e2077a6b2684}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000039}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{settings_8php_a18a9a67e442c9e18af01bf8a90e01b0d}{\index{settings.\-php@{settings.\-php}!theme\-\_\-checkboxes\-\_\-preferred@{theme\-\_\-checkboxes\-\_\-preferred}}
+\index{theme\-\_\-checkboxes\-\_\-preferred@{theme\-\_\-checkboxes\-\_\-preferred}!settings.php@{settings.\-php}}
+\subsubsection[{theme\-\_\-checkboxes\-\_\-preferred}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-checkboxes\-\_\-preferred (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{settings_8php_a18a9a67e442c9e18af01bf8a90e01b0d}
+Theme function for the custom form field 'checkboxes\-\_\-preferred'. 
+
+\subsection{Variable Documentation}
+\hypertarget{settings_8php_a9ad94685f3b5334065542770433d4ca7}{\index{settings.\-php@{settings.\-php}!\$gallery\-\_\-settings@{\$gallery\-\_\-settings}}
+\index{\$gallery\-\_\-settings@{\$gallery\-\_\-settings}!settings.php@{settings.\-php}}
+\subsubsection[{\$gallery\-\_\-settings}]{\setlength{\rightskip}{0pt plus 5cm}\$gallery\-\_\-settings}}\label{settings_8php_a9ad94685f3b5334065542770433d4ca7}
+{\bfseries Initial value\-:}
+\begin{DoxyCode}
+= array(
+  \textcolor{stringliteral}{"cdm\_dataportal\_show\_taxon\_thumbnails"} => 1,
+  \textcolor{stringliteral}{"cdm\_dataportal\_show\_synonym\_thumbnails"} => 0,
+  \textcolor{stringliteral}{"cdm\_dataportal\_show\_thumbnail\_captions"} => 1,
+  \textcolor{stringliteral}{"cdm\_dataportal\_media\_maxextend"} => 120,
+  \textcolor{stringliteral}{"cdm\_dataportal\_media\_cols"} => 3,
+  \textcolor{stringliteral}{"cdm\_dataportal\_media\_maxRows"} => 1,
+)
+\end{DoxyCode}

@@ -1,0 +1,118 @@
+\hypertarget{class_footnote_manager}{\section{Footnote\-Manager Class Reference}
+\label{class_footnote_manager}\index{Footnote\-Manager@{Footnote\-Manager}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_footnote_manager_afc31a41101a63b4826ec67a5e378edef}{\-\_\-\-\_\-clone} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{class_footnote_manager_a8135454391d1bad6e9e74b3b22f2f68f}{get\-Footnote\-List} (\$footnote\-List\-Key)
+\item 
+static \hyperlink{class_footnote_manager_a257c10216e61863ec649804540bc61bc}{remove\-Footnote\-List} (\$footnote\-List\-Key)
+\item 
+static \hyperlink{class_footnote_manager_accbb468c7c39bc796700e426d2ef6117}{render\-Footnote\-List} (\$footnote\-List\-Key, \$separator= ', ')
+\item 
+static \hyperlink{class_footnote_manager_a9c0282e7a31f22e71a09e739753c8240}{add\-New\-Footnote} (\$footnote\-List\-Key, \$object=N\-U\-L\-L, \$theme=N\-U\-L\-L, \$theme\-Arguments=array())
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Manages footnotes. 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_footnote_manager_afc31a41101a63b4826ec67a5e378edef}{\index{Footnote\-Manager@{Footnote\-Manager}!\-\_\-\-\_\-clone@{\-\_\-\-\_\-clone}}
+\index{\-\_\-\-\_\-clone@{\-\_\-\-\_\-clone}!FootnoteManager@{Footnote\-Manager}}
+\subsubsection[{\-\_\-\-\_\-clone}]{\setlength{\rightskip}{0pt plus 5cm}Footnote\-Manager\-::\-\_\-\-\_\-clone (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_footnote_manager_afc31a41101a63b4826ec67a5e378edef}
+Stop users from cloning. \hypertarget{class_footnote_manager_a9c0282e7a31f22e71a09e739753c8240}{\index{Footnote\-Manager@{Footnote\-Manager}!add\-New\-Footnote@{add\-New\-Footnote}}
+\index{add\-New\-Footnote@{add\-New\-Footnote}!FootnoteManager@{Footnote\-Manager}}
+\subsubsection[{add\-New\-Footnote}]{\setlength{\rightskip}{0pt plus 5cm}static Footnote\-Manager\-::add\-New\-Footnote (
+\begin{DoxyParamCaption}
+\item[{}]{\$footnote\-List\-Key, }
+\item[{}]{\$object = {\ttfamily NULL}, }
+\item[{}]{\$theme = {\ttfamily NULL}, }
+\item[{}]{\$theme\-Arguments = {\ttfamily array()}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_footnote_manager_a9c0282e7a31f22e71a09e739753c8240}
+Add a new footnote.
+
+
+\begin{DoxyParams}{Parameters}
+{\em \$footnote\-List\-Key} & \\
+\hline
+{\em \$object} & \\
+\hline
+{\em \$theme} & \\
+\hline
+{\em \$theme\-Arguments} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+unknown\-\_\-type 
+\end{DoxyReturn}
+\hypertarget{class_footnote_manager_a8135454391d1bad6e9e74b3b22f2f68f}{\index{Footnote\-Manager@{Footnote\-Manager}!get\-Footnote\-List@{get\-Footnote\-List}}
+\index{get\-Footnote\-List@{get\-Footnote\-List}!FootnoteManager@{Footnote\-Manager}}
+\subsubsection[{get\-Footnote\-List}]{\setlength{\rightskip}{0pt plus 5cm}static Footnote\-Manager\-::get\-Footnote\-List (
+\begin{DoxyParamCaption}
+\item[{}]{\$footnote\-List\-Key}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_footnote_manager_a8135454391d1bad6e9e74b3b22f2f68f}
+Get a list of footnotes.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$footnote\-List\-Key} & A string as key to the list of footnotes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array An array of footnotes objects. 
+\end{DoxyReturn}
+\hypertarget{class_footnote_manager_a257c10216e61863ec649804540bc61bc}{\index{Footnote\-Manager@{Footnote\-Manager}!remove\-Footnote\-List@{remove\-Footnote\-List}}
+\index{remove\-Footnote\-List@{remove\-Footnote\-List}!FootnoteManager@{Footnote\-Manager}}
+\subsubsection[{remove\-Footnote\-List}]{\setlength{\rightskip}{0pt plus 5cm}static Footnote\-Manager\-::remove\-Footnote\-List (
+\begin{DoxyParamCaption}
+\item[{}]{\$footnote\-List\-Key}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_footnote_manager_a257c10216e61863ec649804540bc61bc}
+Remove a list of footnotes.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$footnote\-List\-Key} & A string as key to the list of footnotes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{class_footnote_manager_accbb468c7c39bc796700e426d2ef6117}{\index{Footnote\-Manager@{Footnote\-Manager}!render\-Footnote\-List@{render\-Footnote\-List}}
+\index{render\-Footnote\-List@{render\-Footnote\-List}!FootnoteManager@{Footnote\-Manager}}
+\subsubsection[{render\-Footnote\-List}]{\setlength{\rightskip}{0pt plus 5cm}static Footnote\-Manager\-::render\-Footnote\-List (
+\begin{DoxyParamCaption}
+\item[{}]{\$footnote\-List\-Key, }
+\item[{}]{\$separator = {\ttfamily '}, }
+\item[{'}]{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_footnote_manager_accbb468c7c39bc796700e426d2ef6117}
+Render a footnote list
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$footnote\-List\-Key} & \\
+\hline
+string & {\em \$separator} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The rendered footnotelist. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/classes/\hyperlink{footnotemanager_8php}{footnotemanager.\-php}\end{DoxyCompactItemize}

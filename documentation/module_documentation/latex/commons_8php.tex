@@ -1,0 +1,128 @@
+\hypertarget{commons_8php}{\section{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-api/commons.php File Reference}
+\label{commons_8php}\index{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-api/commons.\-php@{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-api/commons.\-php}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{commons_8php_a5b76239a4b400cf99c228e21553e9e44}{str\-\_\-trunk} (\&\$string, \$length, \$appendix= '')
+\item 
+\hyperlink{commons_8php_af4b2fc149636eb3ca97576fbc20cd7ef}{str\-\_\-begins\-With} (\$str, \$sub)
+\item 
+\hyperlink{commons_8php_ab283ca87ab2f87ac56c32a4124630973}{str\-\_\-ends\-With} (\$str, \$sub)
+\item 
+\hyperlink{commons_8php_a92a6ce7ba95576c5486d816d11478633}{array\-\_\-replace\-\_\-key} (\$array, \$replace\-\_\-map)
+\item 
+\hyperlink{commons_8php_a138c48b25adeb62a172a0a708dcbf48d}{generalize\-String} (\$string)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+String functions. 
+
+\subsection{Function Documentation}
+\hypertarget{commons_8php_a92a6ce7ba95576c5486d816d11478633}{\index{commons.\-php@{commons.\-php}!array\-\_\-replace\-\_\-key@{array\-\_\-replace\-\_\-key}}
+\index{array\-\_\-replace\-\_\-key@{array\-\_\-replace\-\_\-key}!commons.php@{commons.\-php}}
+\subsubsection[{array\-\_\-replace\-\_\-key}]{\setlength{\rightskip}{0pt plus 5cm}array\-\_\-replace\-\_\-key (
+\begin{DoxyParamCaption}
+\item[{}]{\$array, }
+\item[{}]{\$replace\-\_\-map}
+\end{DoxyParamCaption}
+)}}\label{commons_8php_a92a6ce7ba95576c5486d816d11478633}
+Replaces all keys in an array with the given values.
+
+All occurences in \$array of the key defined in \$replace\-\_\-map are replaced with the according values in the \$replace\-\_\-map.
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$array} & The array to modify. \\
+\hline
+array & {\em \$replace\-\_\-map} & The values to replace.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array The modified array. 
+\end{DoxyReturn}
+\hypertarget{commons_8php_a138c48b25adeb62a172a0a708dcbf48d}{\index{commons.\-php@{commons.\-php}!generalize\-String@{generalize\-String}}
+\index{generalize\-String@{generalize\-String}!commons.php@{commons.\-php}}
+\subsubsection[{generalize\-String}]{\setlength{\rightskip}{0pt plus 5cm}generalize\-String (
+\begin{DoxyParamCaption}
+\item[{}]{\$string}
+\end{DoxyParamCaption}
+)}}\label{commons_8php_a138c48b25adeb62a172a0a708dcbf48d}
+Replaces spaces in a string to underscores and returns the string lowercase.
+
+All occurrences of space characters are replaced with an underscore. The string is also transformed to lowercase.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$string} & The string to modify.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The transformed string. 
+\end{DoxyReturn}
+\hypertarget{commons_8php_af4b2fc149636eb3ca97576fbc20cd7ef}{\index{commons.\-php@{commons.\-php}!str\-\_\-begins\-With@{str\-\_\-begins\-With}}
+\index{str\-\_\-begins\-With@{str\-\_\-begins\-With}!commons.php@{commons.\-php}}
+\subsubsection[{str\-\_\-begins\-With}]{\setlength{\rightskip}{0pt plus 5cm}str\-\_\-begins\-With (
+\begin{DoxyParamCaption}
+\item[{}]{\$str, }
+\item[{}]{\$sub}
+\end{DoxyParamCaption}
+)}}\label{commons_8php_af4b2fc149636eb3ca97576fbc20cd7ef}
+Checks if a string starts with some substring.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$str} & The string to test. \\
+\hline
+string & {\em \$sub} & The substring that the string should start with.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool T\-R\-U\-E if the string starts with the substring. 
+\end{DoxyReturn}
+\hypertarget{commons_8php_ab283ca87ab2f87ac56c32a4124630973}{\index{commons.\-php@{commons.\-php}!str\-\_\-ends\-With@{str\-\_\-ends\-With}}
+\index{str\-\_\-ends\-With@{str\-\_\-ends\-With}!commons.php@{commons.\-php}}
+\subsubsection[{str\-\_\-ends\-With}]{\setlength{\rightskip}{0pt plus 5cm}str\-\_\-ends\-With (
+\begin{DoxyParamCaption}
+\item[{}]{\$str, }
+\item[{}]{\$sub}
+\end{DoxyParamCaption}
+)}}\label{commons_8php_ab283ca87ab2f87ac56c32a4124630973}
+Checks if a string ends with some substring.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$str} & The string to test. \\
+\hline
+string & {\em \$sub} & The substring that the string should end with.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool T\-R\-U\-E if the string ends with the substring. 
+\end{DoxyReturn}
+\hypertarget{commons_8php_a5b76239a4b400cf99c228e21553e9e44}{\index{commons.\-php@{commons.\-php}!str\-\_\-trunk@{str\-\_\-trunk}}
+\index{str\-\_\-trunk@{str\-\_\-trunk}!commons.php@{commons.\-php}}
+\subsubsection[{str\-\_\-trunk}]{\setlength{\rightskip}{0pt plus 5cm}str\-\_\-trunk (
+\begin{DoxyParamCaption}
+\item[{\&}]{\$string, }
+\item[{}]{\$length, }
+\item[{}]{\$appendix = {\ttfamily ''}}
+\end{DoxyParamCaption}
+)}}\label{commons_8php_a5b76239a4b400cf99c228e21553e9e44}
+Truncates a \$string to the specified \$length.
+
+If the supplied string is equal to or shorter than the \$length, the original is returned. If an \$appendix is defined, the resulting string will have the specified \$length including the \$appendix.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$string} & The string to truncate. \\
+\hline
+int & {\em \$length} & The maximun length. \\
+\hline
+string & {\em \$appendix} & An optional appendix.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The truncated string. 
+\end{DoxyReturn}

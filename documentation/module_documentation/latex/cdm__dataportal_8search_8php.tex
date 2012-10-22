@@ -1,0 +1,136 @@
+\hypertarget{cdm__dataportal_8search_8php}{\section{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-dataportal.search.\-php File Reference}
+\label{cdm__dataportal_8search_8php}\index{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-dataportal.\-search.\-php@{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-dataportal.\-search.\-php}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{cdm__dataportal_8search_8php_aa6bad6c8d9e823292ccae452c1a1c83c}{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-path\-\_\-for\-\_\-ws} (\$ws\-\_\-endpoint)
+\item 
+\hyperlink{cdm__dataportal_8search_8php_a7392d35974969116c8cb946ebf66ce47}{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-prepare} (\$action\-\_\-path, \$search\-\_\-webservice, \$query\-\_\-field\-\_\-default\-\_\-value, \$query\-\_\-field\-\_\-description, \$process=N\-U\-L\-L)
+\item 
+\hyperlink{cdm__dataportal_8search_8php_af22aba84981842e3921ad032b405c0cb}{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form} (\$form, \&\$form\-\_\-state, \$advanced\-Form=F\-A\-L\-S\-E)
+\item 
+\hyperlink{cdm__dataportal_8search_8php_a423e571230961ee67f89cadf7f221493}{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form\-\_\-advanced} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{cdm__dataportal_8search_8php_aab01bbe2184eb69661b28772206ed5aa}{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-by\-\_\-description\-\_\-form} ()
+\item 
+\hyperlink{cdm__dataportal_8search_8php_ac5b5523ae336e57fc99f6892028d7e6b}{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-request} ()
+\item 
+\hyperlink{cdm__dataportal_8search_8php_aa11304aadf0b08ee128fb5618f7e0f74}{cdm\-\_\-dataportal\-\_\-search\-\_\-process} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{cdm__dataportal_8search_8php_a323826267b052894f83f1fa11b7eced2}{cdm\-\_\-dataportal\-\_\-search\-\_\-execute} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Search related functions. 
+
+\subsection{Function Documentation}
+\hypertarget{cdm__dataportal_8search_8php_a323826267b052894f83f1fa11b7eced2}{\index{cdm\-\_\-dataportal.\-search.\-php@{cdm\-\_\-dataportal.\-search.\-php}!cdm\-\_\-dataportal\-\_\-search\-\_\-execute@{cdm\-\_\-dataportal\-\_\-search\-\_\-execute}}
+\index{cdm\-\_\-dataportal\-\_\-search\-\_\-execute@{cdm\-\_\-dataportal\-\_\-search\-\_\-execute}!cdm_dataportal.search.php@{cdm\-\_\-dataportal.\-search.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-search\-\_\-execute}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-search\-\_\-execute (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8search_8php_a323826267b052894f83f1fa11b7eced2}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000031}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8search_8php_aa6bad6c8d9e823292ccae452c1a1c83c}{\index{cdm\-\_\-dataportal.\-search.\-php@{cdm\-\_\-dataportal.\-search.\-php}!cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-path\-\_\-for\-\_\-ws@{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-path\-\_\-for\-\_\-ws}}
+\index{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-path\-\_\-for\-\_\-ws@{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-path\-\_\-for\-\_\-ws}!cdm_dataportal.search.php@{cdm\-\_\-dataportal.\-search.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-path\-\_\-for\-\_\-ws}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-path\-\_\-for\-\_\-ws (
+\begin{DoxyParamCaption}
+\item[{}]{\$ws\-\_\-endpoint}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8search_8php_aa6bad6c8d9e823292ccae452c1a1c83c}
+Returns a Drupal path to a search form for a C\-D\-M webservice.
+
+For a given C\-D\-M webservice end-\/point, the drupal page path to the according search form is returned. cdm webservice end points are defined in constant variables like\-: {\ttfamily C\-D\-M\-\_\-\-W\-S\-\_\-\-P\-O\-R\-T\-A\-L\-\_\-\-T\-A\-X\-O\-N\-\_\-\-F\-I\-N\-D} and {\ttfamily C\-D\-M\-\_\-\-W\-S\-\_\-\-P\-O\-R\-T\-A\-L\-\_\-\-T\-A\-X\-O\-N\-\_\-\-F\-I\-N\-D\-B\-Y\-\_\-\-D\-E\-S\-C\-R\-I\-P\-T\-I\-O\-N\-E\-L\-E\-M\-E\-N\-T\-\_\-\-F\-U\-L\-L\-T\-E\-X\-T}
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$ws\-\_\-endpoint} & The cdm webservice endpoint for which to find the search form path.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The Drupal path found. 
+\end{DoxyReturn}
+\hypertarget{cdm__dataportal_8search_8php_a7392d35974969116c8cb946ebf66ce47}{\index{cdm\-\_\-dataportal.\-search.\-php@{cdm\-\_\-dataportal.\-search.\-php}!cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-prepare@{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-prepare}}
+\index{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-prepare@{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-prepare}!cdm_dataportal.search.php@{cdm\-\_\-dataportal.\-search.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-prepare}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-prepare (
+\begin{DoxyParamCaption}
+\item[{}]{\$action\-\_\-path, }
+\item[{}]{\$search\-\_\-webservice, }
+\item[{}]{\$query\-\_\-field\-\_\-default\-\_\-value, }
+\item[{}]{\$query\-\_\-field\-\_\-description, }
+\item[{}]{\$process = {\ttfamily NULL}}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8search_8php_a7392d35974969116c8cb946ebf66ce47}
+Prepares a form array for a general purpose search form.
+
+The form is used for general purpose search functionality in the dataportal. The form returned is populated with all nessecary fields for internal processing and has the textfield element \$form\mbox{[}'query'\mbox{]} which holds the query term. he sub tree array can be extended to contain additional search parameters.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$action\-\_\-path} & The Drupal path to be put into the action url to which the form will be submitted. \\
+\hline
+string & {\em \$search\-\_\-webservice} & The cdm-\/remote webservice to be used, valid values are defined by the constants\-: F\-I\-X\-M\-E. \\
+\hline
+string & {\em \$query\-\_\-field\-\_\-default\-\_\-value} & \\
+\hline
+string & {\em \$query\-\_\-field\-\_\-description} & \\
+\hline
+string & {\em \$process} & The value for \#process, if N\-U\-L\-L (default), 'cdm\-\_\-dataportal\-\_\-search\-\_\-process' is used.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array The prepared form array. 
+\end{DoxyReturn}
+\hypertarget{cdm__dataportal_8search_8php_ac5b5523ae336e57fc99f6892028d7e6b}{\index{cdm\-\_\-dataportal.\-search.\-php@{cdm\-\_\-dataportal.\-search.\-php}!cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-request@{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-request}}
+\index{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-request@{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-request}!cdm_dataportal.search.php@{cdm\-\_\-dataportal.\-search.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-request}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-search\-\_\-form\-\_\-request (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8search_8php_ac5b5523ae336e57fc99f6892028d7e6b}
+Filters \$\-\_\-\-R\-E\-Q\-U\-E\-S\-T by a list of valid request parameters and also sets defaults if required. returns the processed request parameters submitted by the search form and also stores them in \$\-\_\-\-S\-E\-S\-S\-I\-O\-N\mbox{[}'cdm'\mbox{]}\mbox{[}'search'\mbox{]} \hypertarget{cdm__dataportal_8search_8php_aa11304aadf0b08ee128fb5618f7e0f74}{\index{cdm\-\_\-dataportal.\-search.\-php@{cdm\-\_\-dataportal.\-search.\-php}!cdm\-\_\-dataportal\-\_\-search\-\_\-process@{cdm\-\_\-dataportal\-\_\-search\-\_\-process}}
+\index{cdm\-\_\-dataportal\-\_\-search\-\_\-process@{cdm\-\_\-dataportal\-\_\-search\-\_\-process}!cdm_dataportal.search.php@{cdm\-\_\-dataportal.\-search.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-search\-\_\-process}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-search\-\_\-process (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8search_8php_aa11304aadf0b08ee128fb5618f7e0f74}
+Removes Drupal internal form elements from query. \hypertarget{cdm__dataportal_8search_8php_aab01bbe2184eb69661b28772206ed5aa}{\index{cdm\-\_\-dataportal.\-search.\-php@{cdm\-\_\-dataportal.\-search.\-php}!cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-by\-\_\-description\-\_\-form@{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-by\-\_\-description\-\_\-form}}
+\index{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-by\-\_\-description\-\_\-form@{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-by\-\_\-description\-\_\-form}!cdm_dataportal.search.php@{cdm\-\_\-dataportal.\-search.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-by\-\_\-description\-\_\-form}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-by\-\_\-description\-\_\-form (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8search_8php_aab01bbe2184eb69661b28772206ed5aa}
+Search form for the searching taxa by the find\-By\-Description\-Element\-Full\-Text rest service. \hypertarget{cdm__dataportal_8search_8php_af22aba84981842e3921ad032b405c0cb}{\index{cdm\-\_\-dataportal.\-search.\-php@{cdm\-\_\-dataportal.\-search.\-php}!cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form@{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form}}
+\index{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form@{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form}!cdm_dataportal.search.php@{cdm\-\_\-dataportal.\-search.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state, }
+\item[{}]{\$advanced\-Form = {\ttfamily FALSE}}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8search_8php_af22aba84981842e3921ad032b405c0cb}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000029}{Todo}]document ths function. \end{DoxyRefDesc}
+\hypertarget{cdm__dataportal_8search_8php_a423e571230961ee67f89cadf7f221493}{\index{cdm\-\_\-dataportal.\-search.\-php@{cdm\-\_\-dataportal.\-search.\-php}!cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form\-\_\-advanced@{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form\-\_\-advanced}}
+\index{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form\-\_\-advanced@{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form\-\_\-advanced}!cdm_dataportal.search.php@{cdm\-\_\-dataportal.\-search.\-php}}
+\subsubsection[{cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form\-\_\-advanced}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-dataportal\-\_\-search\-\_\-taxon\-\_\-form\-\_\-advanced (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8search_8php_a423e571230961ee67f89cadf7f221493}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000030}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}

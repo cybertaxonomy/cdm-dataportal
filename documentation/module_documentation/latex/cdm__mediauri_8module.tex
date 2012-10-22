@@ -1,0 +1,192 @@
+\hypertarget{cdm__mediauri_8module}{\section{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-mediauri/cdm\-\_\-mediauri.module File Reference}
+\label{cdm__mediauri_8module}\index{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-mediauri/cdm\-\_\-mediauri.\-module@{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-mediauri/cdm\-\_\-mediauri.\-module}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{cdm__mediauri_8module_acb2704c6cfc4aa74c07646c4a42c3ee8}{cdm\-\_\-mediauri\-\_\-menu} ()
+\item 
+\hyperlink{cdm__mediauri_8module_a6b57a5309291876f466e77d2ca81338b}{cdm\-\_\-mediauri\-\_\-overview} (\$rules=F\-A\-L\-S\-E)
+\item 
+\hyperlink{cdm__mediauri_8module_a0f319c803786d6c24b3565726a7ed411}{cdm\-\_\-mediauri\-\_\-rule\-\_\-add} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{cdm__mediauri_8module_af92efba927fc0052a23bce6e1a61726e}{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{cdm__mediauri_8module_ab6d1d859993ec544bc33aad76e3b49a5}{cdm\-\_\-mediauri\-\_\-rule\-\_\-add\-\_\-submit} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{cdm__mediauri_8module_ad216e921909e40bc05b379685743b8fd}{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-submit} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{cdm__mediauri_8module_a2da31aa84de56277247fa9affb3005cb}{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete\-\_\-submit} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{cdm__mediauri_8module_a0c8ff8ae2e3fc28eba506d96f222b6d3}{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{cdm__mediauri_8module_a55e64c614658f5846e8655e9eae4ed86}{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-form} (\$rid= 'new')
+\item 
+\hyperlink{cdm__mediauri_8module_a938c537e0b3e48f9fe83606b2a6a4800}{cdm\-\_\-mediauri\-\_\-rules} (\$default=F\-A\-L\-S\-E)
+\item 
+\hyperlink{cdm__mediauri_8module_a10d698d8ff170ae432a8ecf427834ae0}{cdm\-\_\-mediauri\-\_\-conversion} (\$media\-Uri)
+\item 
+\hyperlink{cdm__mediauri_8module_ad65acdec2eef70a324cbc0334223273f}{cdm\-\_\-mediauri\-\_\-view\-\_\-embed} (\$uri)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Allows to create media U\-R\-I conversion rules.
+
+\begin{DoxyCopyright}{Copyright}
+(C) 2007-\/2012 E\-D\-I\-T European Distributed Institute of Taxonomy \href{http://www.e-taxonomy.eu}{\tt http\-://www.\-e-\/taxonomy.\-eu}
+\end{DoxyCopyright}
+The contents of this module are subject to the Mozilla Public License Version 1.\-1. \begin{DoxySeeAlso}{See Also}
+\href{http://www.mozilla.org/MPL/MPL-1.1.html}{\tt http\-://www.\-mozilla.\-org/\-M\-P\-L/\-M\-P\-L-\/1.\-1.\-html}
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+
+\begin{DoxyItemize}
+\item Andreas Kohlbecker \href{mailto:a.kohlbecker@BGBM.org}{\tt a.\-kohlbecker@\-B\-G\-B\-M.\-org}
+\item Wouter Addink \href{mailto:w.addink@eti.uva.nl}{\tt w.\-addink@eti.\-uva.\-nl} (migration from Drupal 5 to Drupal7) 
+\end{DoxyItemize}
+\end{DoxyAuthor}
+
+
+\subsection{Function Documentation}
+\hypertarget{cdm__mediauri_8module_a10d698d8ff170ae432a8ecf427834ae0}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-conversion@{cdm\-\_\-mediauri\-\_\-conversion}}
+\index{cdm\-\_\-mediauri\-\_\-conversion@{cdm\-\_\-mediauri\-\_\-conversion}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-conversion}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-conversion (
+\begin{DoxyParamCaption}
+\item[{}]{\$media\-Uri}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_a10d698d8ff170ae432a8ecf427834ae0}
+Converts a media uri.
+
+Converts according to all matching conversion rules which are currently defined.
+
+Format of a returned array element\-:
+
+\$return\-\_\-array\mbox{[}\{type\}\mbox{]} \{ // values for \{type\}\-:(preview, webapp, media, original) \mbox{[}'size\-\_\-x'\mbox{]}, // dimensions of preview image in px \mbox{[}'size\-\_\-y'\mbox{]}, // dimensions of preview image in px \mbox{[}'uri'\mbox{]} // the uri possibly prefixed with path \mbox{[}'embed\-\_\-html'\mbox{]} // the uri embedded into some string \}
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$media\-Uri} & The media uri to convert.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array Returns an associative array of the original media uri and all conversions whereas the rule type becomes the array key of the array entries. All uris are again packed into associative arrays by means to submit additional information as defined in the rules applied. 
+\end{DoxyReturn}
+\hypertarget{cdm__mediauri_8module_acb2704c6cfc4aa74c07646c4a42c3ee8}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-menu@{cdm\-\_\-mediauri\-\_\-menu}}
+\index{cdm\-\_\-mediauri\-\_\-menu@{cdm\-\_\-mediauri\-\_\-menu}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-menu}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-menu (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_acb2704c6cfc4aa74c07646c4a42c3ee8}
+Implements hook\-\_\-menu(). \hypertarget{cdm__mediauri_8module_a6b57a5309291876f466e77d2ca81338b}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-overview@{cdm\-\_\-mediauri\-\_\-overview}}
+\index{cdm\-\_\-mediauri\-\_\-overview@{cdm\-\_\-mediauri\-\_\-overview}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-overview}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-overview (
+\begin{DoxyParamCaption}
+\item[{}]{\$rules = {\ttfamily FALSE}}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_a6b57a5309291876f466e77d2ca81338b}
+Returns an overview list of existing media uri rules \hypertarget{cdm__mediauri_8module_a0f319c803786d6c24b3565726a7ed411}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-rule\-\_\-add@{cdm\-\_\-mediauri\-\_\-rule\-\_\-add}}
+\index{cdm\-\_\-mediauri\-\_\-rule\-\_\-add@{cdm\-\_\-mediauri\-\_\-rule\-\_\-add}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-rule\-\_\-add}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-rule\-\_\-add (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_a0f319c803786d6c24b3565726a7ed411}
+Menu callback; add new mediauri rule. \hypertarget{cdm__mediauri_8module_ab6d1d859993ec544bc33aad76e3b49a5}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-rule\-\_\-add\-\_\-submit@{cdm\-\_\-mediauri\-\_\-rule\-\_\-add\-\_\-submit}}
+\index{cdm\-\_\-mediauri\-\_\-rule\-\_\-add\-\_\-submit@{cdm\-\_\-mediauri\-\_\-rule\-\_\-add\-\_\-submit}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-rule\-\_\-add\-\_\-submit}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-rule\-\_\-add\-\_\-submit (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_ab6d1d859993ec544bc33aad76e3b49a5}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000087}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__mediauri_8module_a0c8ff8ae2e3fc28eba506d96f222b6d3}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-rule\-\_\-delete@{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete}}
+\index{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete@{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-rule\-\_\-delete (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_a0c8ff8ae2e3fc28eba506d96f222b6d3}
+Menu callback; confirm deletion of mediauri rule. \hypertarget{cdm__mediauri_8module_a2da31aa84de56277247fa9affb3005cb}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-rule\-\_\-delete\-\_\-submit@{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete\-\_\-submit}}
+\index{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete\-\_\-submit@{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete\-\_\-submit}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-rule\-\_\-delete\-\_\-submit}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-rule\-\_\-delete\-\_\-submit (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_a2da31aa84de56277247fa9affb3005cb}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000089}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__mediauri_8module_af92efba927fc0052a23bce6e1a61726e}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-rule\-\_\-edit@{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit}}
+\index{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit@{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-rule\-\_\-edit (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_af92efba927fc0052a23bce6e1a61726e}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000086}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__mediauri_8module_a55e64c614658f5846e8655e9eae4ed86}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-form@{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-form}}
+\index{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-form@{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-form}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-form}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-form (
+\begin{DoxyParamCaption}
+\item[{}]{\$rid = {\ttfamily 'new'}}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_a55e64c614658f5846e8655e9eae4ed86}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000090}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__mediauri_8module_ad216e921909e40bc05b379685743b8fd}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-submit@{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-submit}}
+\index{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-submit@{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-submit}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-submit}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-rule\-\_\-edit\-\_\-submit (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_ad216e921909e40bc05b379685743b8fd}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000088}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__mediauri_8module_a938c537e0b3e48f9fe83606b2a6a4800}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-rules@{cdm\-\_\-mediauri\-\_\-rules}}
+\index{cdm\-\_\-mediauri\-\_\-rules@{cdm\-\_\-mediauri\-\_\-rules}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-rules}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-rules (
+\begin{DoxyParamCaption}
+\item[{}]{\$default = {\ttfamily FALSE}}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_a938c537e0b3e48f9fe83606b2a6a4800}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000091}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__mediauri_8module_ad65acdec2eef70a324cbc0334223273f}{\index{cdm\-\_\-mediauri.\-module@{cdm\-\_\-mediauri.\-module}!cdm\-\_\-mediauri\-\_\-view\-\_\-embed@{cdm\-\_\-mediauri\-\_\-view\-\_\-embed}}
+\index{cdm\-\_\-mediauri\-\_\-view\-\_\-embed@{cdm\-\_\-mediauri\-\_\-view\-\_\-embed}!cdm_mediauri.module@{cdm\-\_\-mediauri.\-module}}
+\subsubsection[{cdm\-\_\-mediauri\-\_\-view\-\_\-embed}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-mediauri\-\_\-view\-\_\-embed (
+\begin{DoxyParamCaption}
+\item[{}]{\$uri}
+\end{DoxyParamCaption}
+)}}\label{cdm__mediauri_8module_ad65acdec2eef70a324cbc0334223273f}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000092}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}

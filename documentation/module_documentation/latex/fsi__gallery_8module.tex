@@ -1,0 +1,107 @@
+\hypertarget{fsi__gallery_8module}{\section{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/fsi\-\_\-gallery/fsi\-\_\-gallery.module File Reference}
+\label{fsi__gallery_8module}\index{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/fsi\-\_\-gallery/fsi\-\_\-gallery.\-module@{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/fsi\-\_\-gallery/fsi\-\_\-gallery.\-module}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{fsi__gallery_8module_ae1a4e58572ca1e45ffeb8c40141d1dd0}{fsi\-\_\-gallery\-\_\-help} (\$path, \$arg)
+\item 
+\hyperlink{fsi__gallery_8module_ab76efd9eefaa09210c64a19670218fd3}{fsi\-\_\-gallery\-\_\-admin} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{fsi__gallery_8module_ad62322856fbeb710159cc7481487cef2}{fsi\-\_\-gallery\-\_\-menu} ()
+\item 
+\hyperlink{fsi__gallery_8module_afbe781b4045905b65432e9900e1c212a}{\-\_\-showcase\-\_\-query\-\_\-name} (\$taxon)
+\item 
+\hyperlink{fsi__gallery_8module_a22de70c14f447ff5ff894a8603340a34}{theme\-\_\-fsi\-\_\-gallery} (\$variables)
+\item 
+\hyperlink{fsi__gallery_8module_a6104c012dd1330816d99c056b8277da9}{fsi\-\_\-gallery\-\_\-theme} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+An optional media gallery for the C\-D\-M Data\-Portal based on the F\-S\-I viewer.
+
+\begin{DoxyCopyright}{Copyright}
+(C) 2007-\/2012 E\-D\-I\-T European Distributed Institute of Taxonomy \href{http://www.e-taxonomy.eu}{\tt http\-://www.\-e-\/taxonomy.\-eu}
+\end{DoxyCopyright}
+The contents of this module are subject to the Mozilla Public License Version 1.\-1. \begin{DoxySeeAlso}{See Also}
+\href{http://www.mozilla.org/MPL/MPL-1.1.html}{\tt http\-://www.\-mozilla.\-org/\-M\-P\-L/\-M\-P\-L-\/1.\-1.\-html}
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+
+\begin{DoxyItemize}
+\item Andreas Kohlbecker \href{mailto:a.kohlbecker@BGBM.org}{\tt a.\-kohlbecker@\-B\-G\-B\-M.\-org}
+\item Wouter Addink \href{mailto:w.addink@eti.uva.nl}{\tt w.\-addink@eti.\-uva.\-nl} (migration from Drupal 5 to Drupal7) 
+\end{DoxyItemize}
+\end{DoxyAuthor}
+
+
+\subsection{Function Documentation}
+\hypertarget{fsi__gallery_8module_afbe781b4045905b65432e9900e1c212a}{\index{fsi\-\_\-gallery.\-module@{fsi\-\_\-gallery.\-module}!\-\_\-showcase\-\_\-query\-\_\-name@{\-\_\-showcase\-\_\-query\-\_\-name}}
+\index{\-\_\-showcase\-\_\-query\-\_\-name@{\-\_\-showcase\-\_\-query\-\_\-name}!fsi_gallery.module@{fsi\-\_\-gallery.\-module}}
+\subsubsection[{\-\_\-showcase\-\_\-query\-\_\-name}]{\setlength{\rightskip}{0pt plus 5cm}\-\_\-showcase\-\_\-query\-\_\-name (
+\begin{DoxyParamCaption}
+\item[{}]{\$taxon}
+\end{DoxyParamCaption}
+)}}\label{fsi__gallery_8module_afbe781b4045905b65432e9900e1c212a}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000118}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{fsi__gallery_8module_ab76efd9eefaa09210c64a19670218fd3}{\index{fsi\-\_\-gallery.\-module@{fsi\-\_\-gallery.\-module}!fsi\-\_\-gallery\-\_\-admin@{fsi\-\_\-gallery\-\_\-admin}}
+\index{fsi\-\_\-gallery\-\_\-admin@{fsi\-\_\-gallery\-\_\-admin}!fsi_gallery.module@{fsi\-\_\-gallery.\-module}}
+\subsubsection[{fsi\-\_\-gallery\-\_\-admin}]{\setlength{\rightskip}{0pt plus 5cm}fsi\-\_\-gallery\-\_\-admin (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{fsi__gallery_8module_ab76efd9eefaa09210c64a19670218fd3}
+Generate the H\-T\-M\-L text for the ext\-\_\-link login block. \hypertarget{fsi__gallery_8module_ae1a4e58572ca1e45ffeb8c40141d1dd0}{\index{fsi\-\_\-gallery.\-module@{fsi\-\_\-gallery.\-module}!fsi\-\_\-gallery\-\_\-help@{fsi\-\_\-gallery\-\_\-help}}
+\index{fsi\-\_\-gallery\-\_\-help@{fsi\-\_\-gallery\-\_\-help}!fsi_gallery.module@{fsi\-\_\-gallery.\-module}}
+\subsubsection[{fsi\-\_\-gallery\-\_\-help}]{\setlength{\rightskip}{0pt plus 5cm}fsi\-\_\-gallery\-\_\-help (
+\begin{DoxyParamCaption}
+\item[{}]{\$path, }
+\item[{}]{\$arg}
+\end{DoxyParamCaption}
+)}}\label{fsi__gallery_8module_ae1a4e58572ca1e45ffeb8c40141d1dd0}
+Display help and module information.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$path} & Which path of the site we're displaying help. \\
+\hline
+array & {\em \$arg} & Array that holds the current path as would be returned from arg() function.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string Help text for the path. 
+\end{DoxyReturn}
+\hypertarget{fsi__gallery_8module_ad62322856fbeb710159cc7481487cef2}{\index{fsi\-\_\-gallery.\-module@{fsi\-\_\-gallery.\-module}!fsi\-\_\-gallery\-\_\-menu@{fsi\-\_\-gallery\-\_\-menu}}
+\index{fsi\-\_\-gallery\-\_\-menu@{fsi\-\_\-gallery\-\_\-menu}!fsi_gallery.module@{fsi\-\_\-gallery.\-module}}
+\subsubsection[{fsi\-\_\-gallery\-\_\-menu}]{\setlength{\rightskip}{0pt plus 5cm}fsi\-\_\-gallery\-\_\-menu (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{fsi__gallery_8module_ad62322856fbeb710159cc7481487cef2}
+Implements hook\-\_\-menu(). \hypertarget{fsi__gallery_8module_a6104c012dd1330816d99c056b8277da9}{\index{fsi\-\_\-gallery.\-module@{fsi\-\_\-gallery.\-module}!fsi\-\_\-gallery\-\_\-theme@{fsi\-\_\-gallery\-\_\-theme}}
+\index{fsi\-\_\-gallery\-\_\-theme@{fsi\-\_\-gallery\-\_\-theme}!fsi_gallery.module@{fsi\-\_\-gallery.\-module}}
+\subsubsection[{fsi\-\_\-gallery\-\_\-theme}]{\setlength{\rightskip}{0pt plus 5cm}fsi\-\_\-gallery\-\_\-theme (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{fsi__gallery_8module_a6104c012dd1330816d99c056b8277da9}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000120}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{fsi__gallery_8module_a22de70c14f447ff5ff894a8603340a34}{\index{fsi\-\_\-gallery.\-module@{fsi\-\_\-gallery.\-module}!theme\-\_\-fsi\-\_\-gallery@{theme\-\_\-fsi\-\_\-gallery}}
+\index{theme\-\_\-fsi\-\_\-gallery@{theme\-\_\-fsi\-\_\-gallery}!fsi_gallery.module@{fsi\-\_\-gallery.\-module}}
+\subsubsection[{theme\-\_\-fsi\-\_\-gallery}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-fsi\-\_\-gallery (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{fsi__gallery_8module_a22de70c14f447ff5ff894a8603340a34}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000119}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}

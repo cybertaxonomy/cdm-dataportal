@@ -1,0 +1,278 @@
+\hypertarget{cdm__dataportal_8name_8theme}{\section{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/theme/cdm\-\_\-dataportal.name.\-theme File Reference}
+\label{cdm__dataportal_8name_8theme}\index{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/theme/cdm\-\_\-dataportal.\-name.\-theme@{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/theme/cdm\-\_\-dataportal.\-name.\-theme}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_a6b59cd4450f87a941ca91b91768b0992}{type\-\_\-designation\-\_\-citation\-\_\-layout} (\$type\-Designation, \$footnote\-\_\-separator= ',')
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_ab7dc81cf086a42ecb7565d677e8ea613}{contains\-\_\-type\-\_\-designation} (\$element, \$collection)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_a51efa3b24584097d57c872c5944fc5eb}{cdm\-\_\-add\-\_\-type\-\_\-designations} (\$source, \$extra)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_a854555b925e3cff92dba7606c056ced1}{theme\-\_\-cdm\-\_\-typedesignations} (\$variables)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_a02e4625fb38a9bb2a7f6f322d3f200e2}{compare\-\_\-specimen\-Type\-Designation\-Status} (\$a, \$b)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_a015f42191ac1385eeda0533a1e28f7ef}{theme\-\_\-cdm\-\_\-name\-Relationships} (\$variables)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_ae1b64c95028dbccdda7ac88633fc93bd}{theme\-\_\-cdm\-\_\-homotypic\-Synonym\-Line} (\$variables)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_a73b7a363e62b50ea172a99a305ab7b98}{theme\-\_\-cdm\-\_\-heterotypic\-Synonymy\-Group} (\$variables)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_ae1b89f64ae55cbb1be64d70c79f65266}{theme\-\_\-cdm\-\_\-homotypic\-Synonymy\-Group} (\$variables)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_a04e753dcb5e2a7a2e2b025f76a0f4439}{get\-\_\-name\-Render\-Template} (\$render\-Path, \$name\-Link=N\-U\-L\-L, \$refence\-Link=N\-U\-L\-L)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_a369519511b9546fbe03c9392fd222c9a}{get\-\_\-part\-Definition} (\$taxon\-Name\-Type)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_a90422d3429b4a2292bfd211747375cf7}{theme\-\_\-cdm\-\_\-taxon\-Name} (\$variables)
+\item 
+\& \hyperlink{cdm__dataportal_8name_8theme_a8aeb749efb6925249a66718355008467}{array\-\_\-setr} (\$key, \$value, array \&\$array)
+\item 
+\& \hyperlink{cdm__dataportal_8name_8theme_ac60cc40a1303e332927c1362d6af4a9d}{get\-\_\-preceding\-\_\-content\-Element} (\$content\-Element\-Key, array \&\$render\-Template)
+\item 
+\& \hyperlink{cdm__dataportal_8name_8theme_adf590864a0ac87814989601732ba1c98}{get\-\_\-preceding\-\_\-content\-Element\-Key} (\$content\-Element\-Key, array \&\$render\-Template)
+\item 
+\hyperlink{cdm__dataportal_8name_8theme_af4692c4178ea09d7a6658d02d7e28c6e}{theme\-\_\-get\-\_\-name\-Render\-Template} (\$variables)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Name theming functions.
+
+\begin{DoxyCopyright}{Copyright}
+(C) 2007-\/2012 E\-D\-I\-T European Distributed Institute of Taxonomy \href{http://www.e-taxonomy.eu}{\tt http\-://www.\-e-\/taxonomy.\-eu}
+\end{DoxyCopyright}
+The contents of this module are subject to the Mozilla Public License Version 1.\-1. \begin{DoxySeeAlso}{See Also}
+\href{http://www.mozilla.org/MPL/MPL-1.1.html}{\tt http\-://www.\-mozilla.\-org/\-M\-P\-L/\-M\-P\-L-\/1.\-1.\-html} 
+\end{DoxySeeAlso}
+
+
+\subsection{Function Documentation}
+\hypertarget{cdm__dataportal_8name_8theme_a8aeb749efb6925249a66718355008467}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!array\-\_\-setr@{array\-\_\-setr}}
+\index{array\-\_\-setr@{array\-\_\-setr}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{array\-\_\-setr}]{\setlength{\rightskip}{0pt plus 5cm}\& array\-\_\-setr (
+\begin{DoxyParamCaption}
+\item[{}]{\$key, }
+\item[{}]{\$value, }
+\item[{array \&}]{\$array}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a8aeb749efb6925249a66718355008467}
+Recursively searches the array for the \$key and sets the given value.
+
+
+\begin{DoxyParams}[1]{Parameters}
+mixed & {\em \$key} & Key to search for. \\
+\hline
+mixed & {\em \$value} & Value to set. \\
+\hline
+array & {\em \$array} & Array to search in.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool True if the key has been found. 
+\end{DoxyReturn}
+\hypertarget{cdm__dataportal_8name_8theme_a51efa3b24584097d57c872c5944fc5eb}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!cdm\-\_\-add\-\_\-type\-\_\-designations@{cdm\-\_\-add\-\_\-type\-\_\-designations}}
+\index{cdm\-\_\-add\-\_\-type\-\_\-designations@{cdm\-\_\-add\-\_\-type\-\_\-designations}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{cdm\-\_\-add\-\_\-type\-\_\-designations}]{\setlength{\rightskip}{0pt plus 5cm}cdm\-\_\-add\-\_\-type\-\_\-designations (
+\begin{DoxyParamCaption}
+\item[{}]{\$source, }
+\item[{}]{\$extra}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a51efa3b24584097d57c872c5944fc5eb}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000177}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_a02e4625fb38a9bb2a7f6f322d3f200e2}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!compare\-\_\-specimen\-Type\-Designation\-Status@{compare\-\_\-specimen\-Type\-Designation\-Status}}
+\index{compare\-\_\-specimen\-Type\-Designation\-Status@{compare\-\_\-specimen\-Type\-Designation\-Status}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{compare\-\_\-specimen\-Type\-Designation\-Status}]{\setlength{\rightskip}{0pt plus 5cm}compare\-\_\-specimen\-Type\-Designation\-Status (
+\begin{DoxyParamCaption}
+\item[{}]{\$a, }
+\item[{}]{\$b}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a02e4625fb38a9bb2a7f6f322d3f200e2}
+F\-I\-X\-M\-E this definitively has to be in another spot. just didn't know where to put it right now. Compares the status of two Specimen\-Type\-Designations
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$a} & A Specimen\-Type\-Designations. \\
+\hline
+string & {\em \$b} & Specimen\-Type\-Designations. \\
+\hline
+\end{DoxyParams}
+\hypertarget{cdm__dataportal_8name_8theme_ab7dc81cf086a42ecb7565d677e8ea613}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!contains\-\_\-type\-\_\-designation@{contains\-\_\-type\-\_\-designation}}
+\index{contains\-\_\-type\-\_\-designation@{contains\-\_\-type\-\_\-designation}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{contains\-\_\-type\-\_\-designation}]{\setlength{\rightskip}{0pt plus 5cm}contains\-\_\-type\-\_\-designation (
+\begin{DoxyParamCaption}
+\item[{}]{\$element, }
+\item[{}]{\$collection}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_ab7dc81cf086a42ecb7565d677e8ea613}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000176}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_a04e753dcb5e2a7a2e2b025f76a0f4439}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!get\-\_\-name\-Render\-Template@{get\-\_\-name\-Render\-Template}}
+\index{get\-\_\-name\-Render\-Template@{get\-\_\-name\-Render\-Template}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{get\-\_\-name\-Render\-Template}]{\setlength{\rightskip}{0pt plus 5cm}get\-\_\-name\-Render\-Template (
+\begin{DoxyParamCaption}
+\item[{}]{\$render\-Path, }
+\item[{}]{\$name\-Link = {\ttfamily NULL}, }
+\item[{}]{\$refence\-Link = {\ttfamily NULL}}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a04e753dcb5e2a7a2e2b025f76a0f4439}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000183}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{cdm__dataportal_8name_8theme_a369519511b9546fbe03c9392fd222c9a}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!get\-\_\-part\-Definition@{get\-\_\-part\-Definition}}
+\index{get\-\_\-part\-Definition@{get\-\_\-part\-Definition}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{get\-\_\-part\-Definition}]{\setlength{\rightskip}{0pt plus 5cm}get\-\_\-part\-Definition (
+\begin{DoxyParamCaption}
+\item[{}]{\$taxon\-Name\-Type}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a369519511b9546fbe03c9392fd222c9a}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000184}{Todo}]document this function. \end{DoxyRefDesc}
+\hypertarget{cdm__dataportal_8name_8theme_ac60cc40a1303e332927c1362d6af4a9d}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!get\-\_\-preceding\-\_\-content\-Element@{get\-\_\-preceding\-\_\-content\-Element}}
+\index{get\-\_\-preceding\-\_\-content\-Element@{get\-\_\-preceding\-\_\-content\-Element}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{get\-\_\-preceding\-\_\-content\-Element}]{\setlength{\rightskip}{0pt plus 5cm}\& get\-\_\-preceding\-\_\-content\-Element (
+\begin{DoxyParamCaption}
+\item[{}]{\$content\-Element\-Key, }
+\item[{array \&}]{\$render\-Template}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_ac60cc40a1303e332927c1362d6af4a9d}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000186}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_adf590864a0ac87814989601732ba1c98}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!get\-\_\-preceding\-\_\-content\-Element\-Key@{get\-\_\-preceding\-\_\-content\-Element\-Key}}
+\index{get\-\_\-preceding\-\_\-content\-Element\-Key@{get\-\_\-preceding\-\_\-content\-Element\-Key}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{get\-\_\-preceding\-\_\-content\-Element\-Key}]{\setlength{\rightskip}{0pt plus 5cm}\& get\-\_\-preceding\-\_\-content\-Element\-Key (
+\begin{DoxyParamCaption}
+\item[{}]{\$content\-Element\-Key, }
+\item[{array \&}]{\$render\-Template}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_adf590864a0ac87814989601732ba1c98}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000187}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_a73b7a363e62b50ea172a99a305ab7b98}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!theme\-\_\-cdm\-\_\-heterotypic\-Synonymy\-Group@{theme\-\_\-cdm\-\_\-heterotypic\-Synonymy\-Group}}
+\index{theme\-\_\-cdm\-\_\-heterotypic\-Synonymy\-Group@{theme\-\_\-cdm\-\_\-heterotypic\-Synonymy\-Group}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{theme\-\_\-cdm\-\_\-heterotypic\-Synonymy\-Group}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-cdm\-\_\-heterotypic\-Synonymy\-Group (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a73b7a363e62b50ea172a99a305ab7b98}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000181}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_ae1b64c95028dbccdda7ac88633fc93bd}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!theme\-\_\-cdm\-\_\-homotypic\-Synonym\-Line@{theme\-\_\-cdm\-\_\-homotypic\-Synonym\-Line}}
+\index{theme\-\_\-cdm\-\_\-homotypic\-Synonym\-Line@{theme\-\_\-cdm\-\_\-homotypic\-Synonym\-Line}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{theme\-\_\-cdm\-\_\-homotypic\-Synonym\-Line}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-cdm\-\_\-homotypic\-Synonym\-Line (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_ae1b64c95028dbccdda7ac88633fc93bd}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000180}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_ae1b89f64ae55cbb1be64d70c79f65266}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!theme\-\_\-cdm\-\_\-homotypic\-Synonymy\-Group@{theme\-\_\-cdm\-\_\-homotypic\-Synonymy\-Group}}
+\index{theme\-\_\-cdm\-\_\-homotypic\-Synonymy\-Group@{theme\-\_\-cdm\-\_\-homotypic\-Synonymy\-Group}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{theme\-\_\-cdm\-\_\-homotypic\-Synonymy\-Group}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-cdm\-\_\-homotypic\-Synonymy\-Group (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_ae1b89f64ae55cbb1be64d70c79f65266}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000182}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_a015f42191ac1385eeda0533a1e28f7ef}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!theme\-\_\-cdm\-\_\-name\-Relationships@{theme\-\_\-cdm\-\_\-name\-Relationships}}
+\index{theme\-\_\-cdm\-\_\-name\-Relationships@{theme\-\_\-cdm\-\_\-name\-Relationships}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{theme\-\_\-cdm\-\_\-name\-Relationships}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-cdm\-\_\-name\-Relationships (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a015f42191ac1385eeda0533a1e28f7ef}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000179}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_a90422d3429b4a2292bfd211747375cf7}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!theme\-\_\-cdm\-\_\-taxon\-Name@{theme\-\_\-cdm\-\_\-taxon\-Name}}
+\index{theme\-\_\-cdm\-\_\-taxon\-Name@{theme\-\_\-cdm\-\_\-taxon\-Name}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{theme\-\_\-cdm\-\_\-taxon\-Name}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-cdm\-\_\-taxon\-Name (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a90422d3429b4a2292bfd211747375cf7}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000185}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_a854555b925e3cff92dba7606c056ced1}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!theme\-\_\-cdm\-\_\-typedesignations@{theme\-\_\-cdm\-\_\-typedesignations}}
+\index{theme\-\_\-cdm\-\_\-typedesignations@{theme\-\_\-cdm\-\_\-typedesignations}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{theme\-\_\-cdm\-\_\-typedesignations}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-cdm\-\_\-typedesignations (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a854555b925e3cff92dba7606c056ced1}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000178}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{cdm__dataportal_8name_8theme_af4692c4178ea09d7a6658d02d7e28c6e}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!theme\-\_\-get\-\_\-name\-Render\-Template@{theme\-\_\-get\-\_\-name\-Render\-Template}}
+\index{theme\-\_\-get\-\_\-name\-Render\-Template@{theme\-\_\-get\-\_\-name\-Render\-Template}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{theme\-\_\-get\-\_\-name\-Render\-Template}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-get\-\_\-name\-Render\-Template (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_af4692c4178ea09d7a6658d02d7e28c6e}
+Returns H\-T\-M\-L for a name in your theme, when implemented.
+
+This function returns currently nothing, but can be used to override how names are rendered in your theme. See the code that is commented out for an example usage. it is used in the function get\-\_\-name\-Render\-Template. See that function to find out how the create template is used.
+
+\begin{DoxySeeAlso}{See Also}
+\hyperlink{cdm__dataportal_8name_8theme_a04e753dcb5e2a7a2e2b025f76a0f4439}{get\-\_\-name\-Render\-Template()}
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$variables} & An associative array containing\-:
+\begin{DoxyItemize}
+\item render\-Path\-: feature in which the name is displayed.
+\end{DoxyItemize}\\
+\hline
+\end{DoxyParams}
+\-: \hypertarget{cdm__dataportal_8name_8theme_a6b59cd4450f87a941ca91b91768b0992}{\index{cdm\-\_\-dataportal.\-name.\-theme@{cdm\-\_\-dataportal.\-name.\-theme}!type\-\_\-designation\-\_\-citation\-\_\-layout@{type\-\_\-designation\-\_\-citation\-\_\-layout}}
+\index{type\-\_\-designation\-\_\-citation\-\_\-layout@{type\-\_\-designation\-\_\-citation\-\_\-layout}!cdm_dataportal.name.theme@{cdm\-\_\-dataportal.\-name.\-theme}}
+\subsubsection[{type\-\_\-designation\-\_\-citation\-\_\-layout}]{\setlength{\rightskip}{0pt plus 5cm}type\-\_\-designation\-\_\-citation\-\_\-layout (
+\begin{DoxyParamCaption}
+\item[{}]{\$type\-Designation, }
+\item[{}]{\$footnote\-\_\-separator = {\ttfamily ','}}
+\end{DoxyParamCaption}
+)}}\label{cdm__dataportal_8name_8theme_a6b59cd4450f87a941ca91b91768b0992}
+Return H\-T\-M\-L for the lectotype citation with the correct layout.
+
+This function prints the lectotype citation with the correct layout. Lectotypes are renderized in the synonymy tab of a taxon if they exist.
+
+
+\begin{DoxyParams}[1]{Parameters}
+mixed & {\em \$type\-Designation} & Object containing the lectotype citation to print.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string Valid html string. 
+\end{DoxyReturn}

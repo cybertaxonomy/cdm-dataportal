@@ -1,0 +1,63 @@
+\hypertarget{classxml2json}{\section{xml2json Class Reference}
+\label{classxml2json}\index{xml2json@{xml2json}}
+}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{classxml2json_a44b5ec960ad965f6e504947780955fa4}{transform\-Xml\-String\-To\-Json} (\$xml\-String\-Contents)
+\item 
+static \hyperlink{classxml2json_ae416959e661e8c390fe8d1d6f39a99fe}{convert\-Simple\-Xml\-Element\-Object\-Into\-Array} (\$simple\-Xml\-Element\-Object, \&\$recursion\-Depth=0)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classxml2json_ae416959e661e8c390fe8d1d6f39a99fe}{\index{xml2json@{xml2json}!convert\-Simple\-Xml\-Element\-Object\-Into\-Array@{convert\-Simple\-Xml\-Element\-Object\-Into\-Array}}
+\index{convert\-Simple\-Xml\-Element\-Object\-Into\-Array@{convert\-Simple\-Xml\-Element\-Object\-Into\-Array}!xml2json@{xml2json}}
+\subsubsection[{convert\-Simple\-Xml\-Element\-Object\-Into\-Array}]{\setlength{\rightskip}{0pt plus 5cm}static xml2json\-::convert\-Simple\-Xml\-Element\-Object\-Into\-Array (
+\begin{DoxyParamCaption}
+\item[{}]{\$simple\-Xml\-Element\-Object, }
+\item[{\&}]{\$recursion\-Depth = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{classxml2json_ae416959e661e8c390fe8d1d6f39a99fe}
+Converts a Simple\-Xml\-Element\-Object into an associative array.
+
+This function accepts a Simple\-Xml\-Element\-Object as a single argument. If the input X\-M\-L is in table format (i.\-e. non-\/nested), the resulting associative array will also be in a table format. Conversely, if the input X\-M\-L is in tree (i.\-e. nested) format, this function will return an associative array (tree/nested) representation of that X\-M\-L.
+
+There are so many ways to turn an X\-M\-L document into a P\-H\-P array. Out of all those options, the recursive logic here uses a method that is very nicely documented by the P\-H\-P open source community in the Simple\-X\-M\-L\-Element section of the P\-H\-P manual available at www.\-php.\-net. Credit goes to all those kind P\-H\-P (People Helping People!!!) souls.
+
+Caution and Remarks\-: I\-T I\-S A R\-E\-C\-U\-R\-S\-I\-V\-E F\-U\-N\-C\-T\-I\-O\-N.
+
+
+\begin{DoxyParams}[1]{Parameters}
+mixed & {\em \$simple\-Xml\-Element\-Object} & Simple X\-M\-L Element Object. \\
+\hline
+int & {\em \$recursion\-Depth} & Needs to be used only when this function is called recursively. It can be omitted when this function is called from another function.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array If everything is successful, it returns an associate array containing the data collected from the X\-M\-L format. Otherwise, it returns N\-U\-L\-L. 
+\end{DoxyReturn}
+\hypertarget{classxml2json_a44b5ec960ad965f6e504947780955fa4}{\index{xml2json@{xml2json}!transform\-Xml\-String\-To\-Json@{transform\-Xml\-String\-To\-Json}}
+\index{transform\-Xml\-String\-To\-Json@{transform\-Xml\-String\-To\-Json}!xml2json@{xml2json}}
+\subsubsection[{transform\-Xml\-String\-To\-Json}]{\setlength{\rightskip}{0pt plus 5cm}static xml2json\-::transform\-Xml\-String\-To\-Json (
+\begin{DoxyParamCaption}
+\item[{}]{\$xml\-String\-Contents}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{classxml2json_a44b5ec960ad965f6e504947780955fa4}
+Transforms the X\-M\-L based String data into J\-S\-O\-N format.
+
+If the input X\-M\-L string is in table format, the resulting J\-S\-O\-N output will also be in table format. Conversely, if the input X\-M\-L string is in tree format, the resulting J\-S\-O\-N output will also be in tree format.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$xml\-String\-Contents} & X\-M\-L data string.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+mixed J\-S\-O\-N. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/cdm\-\_\-api/\hyperlink{xml2json_8php}{xml2json.\-php}\end{DoxyCompactItemize}

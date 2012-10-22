@@ -1,0 +1,165 @@
+\hypertarget{ext__links_8module}{\section{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/ext\-\_\-links/ext\-\_\-links.module File Reference}
+\label{ext__links_8module}\index{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/ext\-\_\-links/ext\-\_\-links.\-module@{C\-:/htdocs/cybertax\-\_\-d7/sites/all/modules/cdm\-\_\-dataportal/ext\-\_\-links/ext\-\_\-links.\-module}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{ext__links_8module_a4cf3001d529baa755cdbf80ddcd67069}{ext\-\_\-links\-\_\-help} (\$path, \$arg)
+\item 
+\hyperlink{ext__links_8module_af119d961d02bb331ef2f7e00600c8e25}{ext\-\_\-links\-\_\-admin} (\$form, \&\$form\-\_\-state)
+\item 
+\hyperlink{ext__links_8module_a1a8f4cfbc2b4c51d154da1e241f7295a}{ext\-\_\-links\-\_\-permission} ()
+\item 
+\hyperlink{ext__links_8module_a9e52affd3fcc41066061cb3996d06593}{ext\-\_\-links\-\_\-menu} ()
+\item 
+\hyperlink{ext__links_8module_a0fd33372225dae9bb0accf5ddc68d376}{get\-Species\-Name} (\$taxon)
+\item 
+\hyperlink{ext__links_8module_aaf09582c1c00cb4075c62d0bac8c1fe6}{ext\-\_\-links\-\_\-block\-\_\-info} ()
+\item 
+\hyperlink{ext__links_8module_a8ca7327c642f258979acf512fff1ebac}{ext\-\_\-links\-\_\-block\-\_\-view} (\$delta)
+\item 
+\hyperlink{ext__links_8module_ab7b773677d26f78620a416d28a6e66c1}{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-grouped} (\$variables)
+\item 
+\hyperlink{ext__links_8module_a47b7e1bd8d110a45c727fe476b3ea7d6}{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-plain} (\$variables)
+\item 
+\hyperlink{ext__links_8module_af066e6db9ea192e7763c348f722d0dc4}{ext\-\_\-links\-\_\-theme} ()
+\item 
+\hyperlink{ext__links_8module_a4e19644e34a58ead6c611cbce1b7aedd}{ext\-\_\-links\-\_\-get\-\_\-default} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Provides external links for sources to taxa information.
+
+\begin{DoxyCopyright}{Copyright}
+(C) 2007-\/2012 E\-D\-I\-T European Distributed Institute of Taxonomy \href{http://www.e-taxonomy.eu}{\tt http\-://www.\-e-\/taxonomy.\-eu}
+\end{DoxyCopyright}
+The contents of this module are subject to the Mozilla Public License Version 1.\-1. \begin{DoxySeeAlso}{See Also}
+\href{http://www.mozilla.org/MPL/MPL-1.1.html}{\tt http\-://www.\-mozilla.\-org/\-M\-P\-L/\-M\-P\-L-\/1.\-1.\-html}
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+
+\begin{DoxyItemize}
+\item Andreas Kohlbecker \href{mailto:a.kohlbecker@BGBM.org}{\tt a.\-kohlbecker@\-B\-G\-B\-M.\-org}
+\item Wouter Addink \href{mailto:w.addink@eti.uva.nl}{\tt w.\-addink@eti.\-uva.\-nl} (migration from Drupal 5 to Drupal7) 
+\end{DoxyItemize}
+\end{DoxyAuthor}
+
+
+\subsection{Function Documentation}
+\hypertarget{ext__links_8module_af119d961d02bb331ef2f7e00600c8e25}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!ext\-\_\-links\-\_\-admin@{ext\-\_\-links\-\_\-admin}}
+\index{ext\-\_\-links\-\_\-admin@{ext\-\_\-links\-\_\-admin}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{ext\-\_\-links\-\_\-admin}]{\setlength{\rightskip}{0pt plus 5cm}ext\-\_\-links\-\_\-admin (
+\begin{DoxyParamCaption}
+\item[{}]{\$form, }
+\item[{\&}]{\$form\-\_\-state}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_af119d961d02bb331ef2f7e00600c8e25}
+Generate the H\-T\-M\-L text for the ext\-\_\-link login block. \hypertarget{ext__links_8module_aaf09582c1c00cb4075c62d0bac8c1fe6}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!ext\-\_\-links\-\_\-block\-\_\-info@{ext\-\_\-links\-\_\-block\-\_\-info}}
+\index{ext\-\_\-links\-\_\-block\-\_\-info@{ext\-\_\-links\-\_\-block\-\_\-info}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{ext\-\_\-links\-\_\-block\-\_\-info}]{\setlength{\rightskip}{0pt plus 5cm}ext\-\_\-links\-\_\-block\-\_\-info (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_aaf09582c1c00cb4075c62d0bac8c1fe6}
+Implements hook\-\_\-block\-\_\-info(). \hypertarget{ext__links_8module_a8ca7327c642f258979acf512fff1ebac}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!ext\-\_\-links\-\_\-block\-\_\-view@{ext\-\_\-links\-\_\-block\-\_\-view}}
+\index{ext\-\_\-links\-\_\-block\-\_\-view@{ext\-\_\-links\-\_\-block\-\_\-view}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{ext\-\_\-links\-\_\-block\-\_\-view}]{\setlength{\rightskip}{0pt plus 5cm}ext\-\_\-links\-\_\-block\-\_\-view (
+\begin{DoxyParamCaption}
+\item[{}]{\$delta}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_a8ca7327c642f258979acf512fff1ebac}
+Implements hook\-\_\-block\-\_\-view(). \hypertarget{ext__links_8module_a4e19644e34a58ead6c611cbce1b7aedd}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!ext\-\_\-links\-\_\-get\-\_\-default@{ext\-\_\-links\-\_\-get\-\_\-default}}
+\index{ext\-\_\-links\-\_\-get\-\_\-default@{ext\-\_\-links\-\_\-get\-\_\-default}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{ext\-\_\-links\-\_\-get\-\_\-default}]{\setlength{\rightskip}{0pt plus 5cm}ext\-\_\-links\-\_\-get\-\_\-default (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_a4e19644e34a58ead6c611cbce1b7aedd}
+Get the default external links.
+
+\begin{DoxyReturn}{Returns}
+array Returns an array with default external links values. 
+\end{DoxyReturn}
+\hypertarget{ext__links_8module_a4cf3001d529baa755cdbf80ddcd67069}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!ext\-\_\-links\-\_\-help@{ext\-\_\-links\-\_\-help}}
+\index{ext\-\_\-links\-\_\-help@{ext\-\_\-links\-\_\-help}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{ext\-\_\-links\-\_\-help}]{\setlength{\rightskip}{0pt plus 5cm}ext\-\_\-links\-\_\-help (
+\begin{DoxyParamCaption}
+\item[{}]{\$path, }
+\item[{}]{\$arg}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_a4cf3001d529baa755cdbf80ddcd67069}
+Display help and module information.
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$path} & For which path of the site we're displaying help. \\
+\hline
+array & {\em \$arg} & Array that holds the current path as would be returned from arg() function.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string Help text for the path. 
+\end{DoxyReturn}
+\hypertarget{ext__links_8module_a9e52affd3fcc41066061cb3996d06593}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!ext\-\_\-links\-\_\-menu@{ext\-\_\-links\-\_\-menu}}
+\index{ext\-\_\-links\-\_\-menu@{ext\-\_\-links\-\_\-menu}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{ext\-\_\-links\-\_\-menu}]{\setlength{\rightskip}{0pt plus 5cm}ext\-\_\-links\-\_\-menu (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_a9e52affd3fcc41066061cb3996d06593}
+Implements hook\-\_\-menu(). \hypertarget{ext__links_8module_a1a8f4cfbc2b4c51d154da1e241f7295a}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!ext\-\_\-links\-\_\-permission@{ext\-\_\-links\-\_\-permission}}
+\index{ext\-\_\-links\-\_\-permission@{ext\-\_\-links\-\_\-permission}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{ext\-\_\-links\-\_\-permission}]{\setlength{\rightskip}{0pt plus 5cm}ext\-\_\-links\-\_\-permission (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_a1a8f4cfbc2b4c51d154da1e241f7295a}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000114}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{ext__links_8module_af066e6db9ea192e7763c348f722d0dc4}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!ext\-\_\-links\-\_\-theme@{ext\-\_\-links\-\_\-theme}}
+\index{ext\-\_\-links\-\_\-theme@{ext\-\_\-links\-\_\-theme}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{ext\-\_\-links\-\_\-theme}]{\setlength{\rightskip}{0pt plus 5cm}ext\-\_\-links\-\_\-theme (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_af066e6db9ea192e7763c348f722d0dc4}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000117}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{ext__links_8module_a0fd33372225dae9bb0accf5ddc68d376}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!get\-Species\-Name@{get\-Species\-Name}}
+\index{get\-Species\-Name@{get\-Species\-Name}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{get\-Species\-Name}]{\setlength{\rightskip}{0pt plus 5cm}get\-Species\-Name (
+\begin{DoxyParamCaption}
+\item[{}]{\$taxon}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_a0fd33372225dae9bb0accf5ddc68d376}
+Returns the genus and the first epithet from the object taxon. \hypertarget{ext__links_8module_ab7b773677d26f78620a416d28a6e66c1}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-grouped@{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-grouped}}
+\index{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-grouped@{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-grouped}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-grouped}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-grouped (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_ab7b773677d26f78620a416d28a6e66c1}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000115}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
+\hypertarget{ext__links_8module_a47b7e1bd8d110a45c727fe476b3ea7d6}{\index{ext\-\_\-links.\-module@{ext\-\_\-links.\-module}!theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-plain@{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-plain}}
+\index{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-plain@{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-plain}!ext_links.module@{ext\-\_\-links.\-module}}
+\subsubsection[{theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-plain}]{\setlength{\rightskip}{0pt plus 5cm}theme\-\_\-ext\-\_\-links\-\_\-list\-\_\-plain (
+\begin{DoxyParamCaption}
+\item[{}]{\$variables}
+\end{DoxyParamCaption}
+)}}\label{ext__links_8module_a47b7e1bd8d110a45c727fe476b3ea7d6}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000116}{Todo}]Please document this function. \end{DoxyRefDesc}
+\begin{DoxySeeAlso}{See Also}
+\href{http://drupal.org/node/1354}{\tt http\-://drupal.\-org/node/1354} 
+\end{DoxySeeAlso}
