@@ -8,7 +8,7 @@
          <property name="admin.username" value="${orig.admin.username}"/>
          <property name="admin.password_encr" value="${orig.admin.password_encr}"/>
          <property name="admin.email" value="${orig.admin.email}"/>
-         <foreach list="${db_array}" param="db" target="update_admin"/>
+         <foreach list="${db_array}" param="db_params" target="update_admin"/>
     </target>
     
     <!-- updates drupal admin user to admin, passwd = admin for development usage in all portal databases -->
