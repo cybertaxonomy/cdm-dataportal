@@ -115,12 +115,12 @@ body.mceContentBody {
 }
 
 .page-node #block-system-main div.content {
-  margin-top: -10px;
   margin-bottom: 0;
 }
 
 #general {
-  margin-top: 25px;
+  margin-top: 21px;
+  margin-bottom:13px;
 }
 
 ul.homotypicSynonyms,
@@ -170,6 +170,9 @@ img.left {
 
 .clearfix {
   clear: both;
+}
+.admin .clearfix {
+  clear: none;
 }
 
 a{
@@ -499,3 +502,7 @@ div.error, .error {
   font-size: 1.12em;
 }
 
+/* Style the admin config page a little if no overlay is used. */
+dl.admin-list dd {
+  clear: both;
+}

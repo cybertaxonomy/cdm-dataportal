@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Node type definitions.
+ */
 
 define('NODETYPE_TAXON', 'taxon');
 define('NODETYPE_MEDIA', 'media');
@@ -7,7 +11,6 @@ define('NODETYPE_NAME', 'name');
 
 /**
  * Implements hook_cdm_nodetypes().
-().
  */
 function cdm_dataportal_cdm_nodetypes() {
   static $nodetypes;
@@ -24,27 +27,25 @@ function cdm_dataportal_cdm_nodetypes() {
 
 /**
  * Implements hook_node_info().
-().
  */
 function cdm_dataportal_node_info() {
-
   $nodeinfo = array();
-  foreach ( cdm_get_nodetypes() as $nodeType => $type) {
+  foreach (cdm_get_nodetypes() as $nodeType => $type) {
     $nodeinfo[$nodeType] = array(
       'name' => t(ucfirst($type)),
       'has_title' => TRUE,
       'base' => 'cdm_dataportal',
-      'description' => t('This node type is being used internally to create peer nodes in drupal for cdm entities of the type ' . $type . '.'),
+      'description' => t(
+        'This node type is being used internally to create peer nodes
+         in drupal for cdm entities of the type !type.', array('!type' => $type)),
     );
   }
 
   return $nodeinfo;
 }
 
-
 /**
- * Implements hook_form()
-().
+ * Implements hook_form().
  */
 function cdm_dataportal_form(&$node) {
 
@@ -60,8 +61,8 @@ function cdm_dataportal_form(&$node) {
     '#value' => '<div class="cdm_node_notice warning">' . $cdm_node_notice . '</div>',
     '#weight' => -5,
   );
-  // We need to define form elements for the node's title and body.
 
+  // We need to define form elements for the node's title and body.
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => check_plain($type->title_label),
@@ -74,12 +75,10 @@ function cdm_dataportal_form(&$node) {
   return $form;
 }
 
-function cdm_get_nodetypes() {
-    $nodetypes = module_invoke_all('cdm_nodetypes');
-    return $nodetypes;
-}
-
 /**
- * Implements hook_nodeapi().
+ * @todo document this function.
  */
-//function cdm_dataportal_nodeapi_OLD(&$node, $op, $teaser, $page) { }
+function cdm_get_nodetypes() {
+  $nodetypes = module_invoke_all('cdm_nodetypes');
+  return $nodetypes;
+}

@@ -1,24 +1,31 @@
 <?php
-// $Id$
-
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
+ * @file
+ * Page theming functions.
  *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1
- * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
  */
 
 /**
- * default title for a taxon page
+ * Returns HTML for the default title of a taxon page.
+ *  * The returned title is a formatted taxon name.
  *
- * @param NameTO $nameTO
- * @return the formatted taxon name
+ * @param array $variables
+ *   An associative array containing:
+ *   - taxon: The taxon name being formatted for the title.
+ *   - uuid: UUID for the taxon.
+ *
+ * @ingroup themeable
  */
 function theme_cdm_taxon_page_title($variables) {
-  $taxon = $variables['taxon']; 
+  $taxon = $variables['taxon'];
   $uuid = $variables['uuid'];
   RenderHints::pushToRenderStack('taxon_page_title');
   $referenceUri = '';
@@ -27,18 +34,27 @@ function theme_cdm_taxon_page_title($variables) {
     $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
   }
 
-  $out .= theme('cdm_taxonName', array('taxonName' => $taxon->name, 'nameLink' => null, 'refenceLink' => $referenceUri, 'show_annotations' => false));
+  $out .= theme('cdm_taxonName', array(
+    'taxonName' => $taxon->name,
+    'nameLink' => NULL,
+    'refenceLink' => $referenceUri,
+    'show_annotations' => FALSE,
+  ));
   RenderHints::popFromRenderStack();
 
   return '<span class="' . $taxon->class . '">' . $out . '</span>';
 }
 
 /**
- * Default title for a name page
+ * Returns HTML for the default title for a name page.
  *
- * @param string $taxon_name
- *          The taxon name object
- * @return the formatted name title
+ * The returned title is a formatted name.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - taxon_name: The taxon name object.
+ *
+ * @ingroup themeable
  */
 function theme_cdm_name_page_title($variables) {
   $taxon_name = $variables['taxon_name'];
@@ -47,40 +63,48 @@ function theme_cdm_name_page_title($variables) {
     $referenceUri = url(path_to_reference($taxon_name->nomenclaturalReference->uuid));
   }
 
-  $out = '<span class="' . $taxon_name->class . '">' . theme('cdm_taxonName', array('taxonName' => $taxon_name, 'nameLink' => null, 'refenceLink' => $referenceUri, 'show_annotations' => false)) . '</span>';
+  $out = '<span class="' . $taxon_name->class . '">' . theme('cdm_taxonName', array(
+    'taxonName' => $taxon_name,
+    'nameLink' => NULL,
+    'refenceLink' => $referenceUri,
+    'show_annotations' => FALSE,
+  )) . '</span>';
   RenderHints::popFromRenderStack();
   return $out;
 }
 
 /**
- * A wrapper function that groups available information to show by default, when
- * a taxon page is requested by the browser.
+ * Returns HTML for a taxon page.
+ *
+ * A wrapper function that groups available information to show by default,
+ * when a taxon page is requested by the browser.
  * Individual themeing has to decide what this page should include (see methods
- * beneath)
- * and what information should go into tabs or should not be shown at all.
+ * beneath) and what information should go into tabs or should not be shown
+ * at all.
  *
  * It is headed by the name of the accepted taxon without author and reference.
  *
- * @param $taxonTO the
- *          taxon object
- * @param $page_part name
- *          of the part to display,
- *          valid values are: 'description', 'images', 'synonymy', 'all'
+ * @param array $variables
+ *   An associative array containing:
+ *   - taxon: The taxon object for which to theme the page.
+ *   - page_part: Name of the part to display, valid values are:
+ *   'description', 'images', 'synonymy', 'all'.
+ *
+ * @ingroup themeable
  */
 function theme_cdm_taxon_page($variables) {
-    
+
   $taxon = $variables['taxon'];
   $page_part = $variables['page_part'];
   global $theme;
 
   $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
-  
+
   $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
-  
+
   $hideTabs = array();
 
   // --- GET Images --- //
-
   $mediaQueryParameters = array(
     "type" => "ImageFile",
   );
@@ -96,31 +120,30 @@ function theme_cdm_taxon_page($variables) {
       $taxon->uuid,
     ), queryString($mediaQueryParameters));
   }
-  if (! isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
+  if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
     $hideTabs[] = theme('cdm_taxonpage_tab', array('tabname' => 'Images'));
   }
-  // hideImage flag depending on administative preset
-  $hideImages = false;
+  // HideImage flag depending on administative preset.
+  $hideImages = FALSE;
   if (variable_get('image_hide_rank', '0') != '0') {
     $rankCompare = rank_compare($taxon->name->rank->uuid, variable_get('image_hide_rank', '-99'));
-    $hideImages = ($rankCompare > - 1);
+    $hideImages = ($rankCompare > -1);
   }
 
   // --- GET specimensOrObservations --- //
-  //@WA note the spelling error!
+  // Comment @WA Note the spelling error!
   $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array(
     $taxon->uuid,
     'specimensOrObersvations',
   ));
 
-  
   $specimensOrObservationsCount = is_array($specimensOrObservations) ? count($specimensOrObservations) : 0;
   if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
     $hideTabs[] = theme('cdm_taxonpage_tab', array('tabname' => 'Specimens'));
   }
-  
+
   // --- GET polytomousKeys --- //
-  $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, null, "findByTaxonomicScope=$taxon->uuid");
+  $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
   $identificationKeyCount = 0;
   if ($polytomousKeysPager) {
     $identificationKeyCount += $polytomousKeysPager->count;
@@ -134,8 +157,7 @@ function theme_cdm_taxon_page($variables) {
   }
 
   // -------------------------------------------- //
-
-  // hide tabs
+  // Hide tabs.
   $tabhide_js = '';
   foreach ($hideTabs as $tabText) {
     $tabhide_js .= "jQuery('.tabs.primary').children('li').children('a:contains(\"$tabText\")').hide();\n";
@@ -143,11 +165,11 @@ function theme_cdm_taxon_page($variables) {
   drupal_add_js("
   jQuery(document).ready(function(){
   $tabhide_js
-    });", array('type' => 'inline', ));
+    });", array('type' => 'inline'));
 
   $out = '';
   $out .= theme('cdm_back_to_search_result_button');
- 
+
   // var_dump(variable_get('cdm_dataportal_display_is_accepted_for',
   // CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR));
   if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR)) {
@@ -159,51 +181,56 @@ function theme_cdm_taxon_page($variables) {
 
     $markerTypesEmpty = array();
     $markerTypesEmpty['markerTypes'] = '';
-    // retrieve all descriptions for the taxon
-    $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, queryString($markerTypesEmpty)); 
-    
-    $nonStructuredDescriptions = array();
-    if ($taxonDescriptions != null) {
-      foreach ($taxonDescriptions as $taxonDescription) {
-        // check if structured description
-        $hasStructuredData = cdm_ws_get(CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA, $taxonDescription->uuid);
+    // Retrieve all descriptions for the taxon.
+    $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, queryString($markerTypesEmpty));
 
-        $hasStructuredData = $hasStructuredData->Boolean == 'true';
+    $nonStructuredDescriptions = array();
+    if ($taxonDescriptions != NULL) {
+      foreach ($taxonDescriptions as $taxonDescription) {
+        // Check if structured description.
+        $hasStructuredData = cdm_ws_get(CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA, $taxonDescription->uuid);
+        $hasStructuredData = $hasStructuredData->Boolean == 'TRUE';
         if ($hasStructuredData) {
-          $structured_description_featuretree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, false);
+          $structured_description_featuretree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, FALSE);
           $naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array(
             $taxonDescription->uuid,
             $structured_description_featuretree_uuid,
           ));
-          
+
           // $out .= print_r($naturallanguage_textData);
-          if (! $naturallanguage_textData) {
-            drupal_set_message(t("The 'FeatureTree' for the generation of natural language representations is not configured correctly, please select a 'FeatureTree' in the !settings", array('!settings' => l('CDM Dataportal Settings', 'admin/config/cdm_dataportal/layout/taxon'))), 'warning');
+          if (!$naturallanguage_textData) {
+            drupal_set_message(t("The 'FeatureTree' for the generation of natural language representations is not configured correctly, please select a 'FeatureTree' in the !settings", array('!settings' => l(t('CDM Dataportal Settings'), 'admin/config/cdm_dataportal/layout/taxon'))), 'warning');
           }
-          $taxonDescription->elements = null;
+          $taxonDescription->elements = NULL;
           $taxonDescription->elements = array(
             $naturallanguage_textData,
           );
         }
         $nonStructuredDescriptions[] = $taxonDescription;
       }
-      $taxonDescriptions = null; // release memory
+      // Release memory.
+      $taxonDescriptions = NULL;
     }
 
     $mergedTrees = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $nonStructuredDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
 
     $out .= '<div id="general">';
-    $out .= theme('cdm_taxon_page_profile', array('taxon' => $taxon, 'mergedTrees' => $mergedTrees, 'media' => $media, 'hideImages' => $hideImages));
+    $out .= theme('cdm_taxon_page_profile', array(
+      'taxon' => $taxon,
+      'mergedTrees' => $mergedTrees,
+      'media' => $media,
+      'hideImages' => $hideImages,
+      ));
     $out .= '</div>';
   }
- 
+
   // --- PAGE PART: IMAGES --- //
-  if ((! $hideImages && $page_part == 'images' || $page_part == 'all')) {
+  if ((!$hideImages && $page_part == 'images' || $page_part == 'all')) {
     $out .= '<div id="images">';
     if ($page_part == 'all') {
       $out .= '<h2>' . t('Images') . '</h2>';
     }
-    // get the image gallery as configured by the admin
+    // Get the image gallery as configured by the admin.
     $taxon_image_gallery = call_user_func_array('taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'), array(
       $taxon,
       $media,
@@ -212,7 +239,7 @@ function theme_cdm_taxon_page($variables) {
 
     $out .= '</div>';
   }
-  
+
   // --- PAGE PART: SYNONYMY --- //
   if (($page_part == 'synonymy' || $page_part == 'all')) {
     $out .= '<div id="synonymy">';
@@ -234,7 +261,7 @@ function theme_cdm_taxon_page($variables) {
     $out .= theme('cdm_taxon_page_specimens', array('taxon' => $taxon));
     $out .= '</div>';
   }
-  
+
   // --- PAGE PART: KEYS --- //
   if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
     $out .= '<div id="keys">';
@@ -243,13 +270,24 @@ function theme_cdm_taxon_page($variables) {
     }
     $out .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
     $out .= '</div>';
-  }  
+  }
   return $out;
 }
 
 /**
+ * Returns HTML containing descriptive data and preferred picture.
+ *
  * Outputs all descriptive data and shows the preferred picture of the
  * accepted taxon.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - taxon
+ *   - mergedTrees
+ *   - media:
+ *   - hideImages
+ *
+ * @ingroup themeable
  */
 function theme_cdm_taxon_page_profile($variables) {
   $taxon = $variables['taxon'];
@@ -257,26 +295,32 @@ function theme_cdm_taxon_page_profile($variables) {
   $media = $variables['media'];
   $hideImages = $variables['hideImages'];
   $out = '';
-  if (variable_get('cdm_dataportal_show_default_image', false) && ! $hideImages) {
-    // preferred image
-    // hardcoded for testing;
-    $defaultRepresentationPart = false;
+  if (variable_get('cdm_dataportal_show_default_image', FALSE) && !$hideImages) {
+
+    // Preferred image hardcoded for testing.
+    $defaultRepresentationPart = FALSE;
     $defaultRepresentationPart->width = 184;
     $defaultRepresentationPart->height = 144;
     $defaultRepresentationPart->uri = drupal_get_path('theme', 'palmweb_2') . '/images/no_picture.png';
 
-    // preferred image size 184px × 144
+    // Preferred image size 184px × 144.
     $imageMaxExtend = 184;
-    $out .= '<div id="taxonProfileImage">' . $defaultRepresentationPart->uri . theme('cdm_preferredImage', array('media' => $media, 'defaultRepresentationPart' => $defaultRepresentationPart, 'imageMaxExtend' => $imageMaxExtend)) . '</div>';
+    $out .= '<div id="taxonProfileImage">' . $defaultRepresentationPart->uri . theme('cdm_preferredImage', array(
+      'media' => $media,
+      'defaultRepresentationPart' => $defaultRepresentationPart,
+      'imageMaxExtend' => $imageMaxExtend,
+      )) . '</div>';
   }
-  
-  // description TOC
+
+  // Description TOC.
   $out .= theme('cdm_featureTreeTOCs', array('mergedTrees' => $mergedTrees));
-  // description  
+
+  // Description.
   $out .= theme('cdm_featureTrees', array('mergedTrees' => $mergedTrees, 'taxon' => $taxon));
-  
+
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -286,13 +330,13 @@ function theme_cdm_taxon_page_specimens($variables) {
   $taxon = $variables['taxon'];
   RenderHints::pushToRenderStack('taxon_page_specimens');
 
-  // @WA Note the spelling error.
+  // Comment @WA: Note the spelling error.
   $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array(
     $taxon->uuid,
     'specimensOrObersvations',
   ));
-  
-  // collect media (fieldObjectMedia, derivedUnitMedia) and add as fields
+
+  // Collect media (fieldObjectMedia, derivedUnitMedia) and add as fields.
   foreach ($specimensOrObservations as &$occurrence) {
     $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
       $occurrence->uuid,
@@ -302,32 +346,32 @@ function theme_cdm_taxon_page_specimens($variables) {
       $occurrence->uuid,
       'derivedUnitMedia',
     ));
-    // $derivedUnitFacde = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE,
-    // array($descriptionElement->associatedSpecimenOrObservation->uuid) );
-    // $descriptionElement->_titleCache = $derivedUnitFacde->titleCache;
+    /*
+    $derivedUnitFacde = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE,
+    array($descriptionElement->associatedSpecimenOrObservation->uuid) );
+    $descriptionElement->_titleCache = $derivedUnitFacde->titleCache;
+    */
   }
 
   if (count($specimensOrObservations) > 0) {
-
     $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
     $occurrenceQuery = $occurrenceQuery->String;
 
     if (variable_get('cdm_dataportal_map_openlayers', 1)) {
-      $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', false), variable_get('cdm_dataportal_geoservice_bounding_box', false), $occurrenceQuery, null,
-          // @WA: not defined
+      $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
+          // Comment @WA: not defined.
           // $legendFormatQueryStr,
-          null, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+          NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
     }
     else {
-      // get_image_map($width, $occurrenceQuery = false, $distributionQuery =
-      // false, $legendFormatQuery = false, $map_caption = false )
-      $out .= get_image_map(variable_get('cdm_dataportal_geoservice_display_width', false), variable_get('cdm_dataportal_geoservice_bounding_box', false), $occurrenceQuery, null,
+      // get_image_map($width, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE )
+      $out .= get_image_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
           // @WA: not defined
           // $legendFormatQueryStr,
-          null, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+          NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
     }
   }
-  
+
   if ($specimensOrObservations) {
     $out_specimenList = '<table class="specimens">';
     $i = 1;
@@ -342,7 +386,7 @@ function theme_cdm_taxon_page_specimens($variables) {
         $mediaList = array_merge($mediaList, $specimensOrObservation->_derivedUnitMedia);
       }
 
-      // --- render the title cache
+      // --- Render the title cache.
       $out_row = '<tr class="descriptionElement descriptionElement_IndividualsAssociation ' . ($i % 2 ? 'odd' : 'even') . '">';
       if ($specimensOrObservation->class != 'FieldObservation') {
         $label_html = cdm_dynabox($specimensOrObservation->titleCache, cdm_compose_url('portal/' . CDM_WS_DERIVEDUNIT_FACADE, array(
@@ -357,15 +401,25 @@ function theme_cdm_taxon_page_specimens($variables) {
       }
       $out_row .= '<td>' . $label_html . '</td>';
 
-      // --- render associated media
+      // --- Render associated media.
       if (count($mediaList) > 0) {
         $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
         $gallery_name = $specimensOrObservation->uuid;
         $captionElements = array(
           '#uri' => t('open media'),
         );
-        
-        $gallery_html = theme('cdm_media_gallerie', array('mediaList' => $mediaList, 'galleryName' => $gallery_name, 'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'], 'cols' => $gallery_settings['cdm_dataportal_media_cols'], 'maxRows' => $gallery_settings['cdm_dataportal_media_maxRows'], 'captionElements' => $captionElements, 'mediaLinkType' => 'LIGHTBOX', 'alternativeMediaUri' => null, 'galleryLinkUri' => null));
+
+        $gallery_html = theme('cdm_media_gallerie', array(
+          'mediaList' => $mediaList,
+          'galleryName' => $gallery_name,
+          'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+          'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+          'maxRows' => $gallery_settings['cdm_dataportal_media_maxRows'],
+          'captionElements' => $captionElements,
+          'mediaLinkType' => 'LIGHTBOX',
+          'alternativeMediaUri' => NULL,
+          'galleryLinkUri' => NULL,
+          ));
       }
       else {
         $gallery_html = '';
@@ -377,15 +431,24 @@ function theme_cdm_taxon_page_specimens($variables) {
   }
 
   $out .= $out_specimenList;
- 
+
   RenderHints::popFromRenderStack();
   return $out;
 }
 
 /**
- * Show whole synonymy for the accepted taxon.
- * Synonymy list is headed by the complete scientific name
+ * Returns HTML containing the synonymy for the accepted taxon.
+ *
+ * Shows the whole synonymy for the accepted taxon.
+ * The synonymy list is headed by the complete scientific name
  * of the accepted taxon with nomenclatural reference.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - taxon
+ *   - addAcceptedTaxon
+ *
+ * @ingroup themeable
  */
 function theme_cdm_taxon_page_synonymy($variables) {
   $taxon = $variables['taxon'];
@@ -397,7 +460,7 @@ function theme_cdm_taxon_page_synonymy($variables) {
   );
   $out = '';
 
-  // render accepted taxon
+  // Render accepted taxon.
   $referenceUri = '';
   if ($addAcceptedTaxon) {
     if (isset($taxon->name->nomenclaturalReference)) {
@@ -405,7 +468,11 @@ function theme_cdm_taxon_page_synonymy($variables) {
     }
 
     $accepted_name = '<span class="accepted-name">';
-    $accepted_name .= theme('cdm_taxonName', array('taxonName' => $taxon->name, 'nameLink' => null, 'refenceLink' => $referenceUri));
+    $accepted_name .= theme('cdm_taxonName', array(
+      'taxonName' => $taxon->name,
+      'nameLink' => NULL,
+      'refenceLink' => $referenceUri,
+      ));
     $accepted_name .= '</span>';
 
     $special_annotations_array = array();
@@ -415,42 +482,42 @@ function theme_cdm_taxon_page_synonymy($variables) {
     RenderHints::setFootnoteListKey(RenderHints::getRenderPath() . '-annotations');
   }
 
-  // render homotypic synonymy group
+  // Render homotypic synonymy group.
   $hasHomotypicSynonyms = isset($synomymie->homotypicSynonymsByHomotypicGroup[0]->name->uuid);
 
   if (!empty($accepted_name)) {
     $out .= $accepted_name;
   }
 
-  if (! $hasHomotypicSynonyms) {
-    // show typeDesignations even if the homotypic synonymy group is empty
+  if (!$hasHomotypicSynonyms) {
+    // Show typeDesignations even if the homotypic synonymy group is empty.
     $typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $taxon->uuid);
     if ($typeDesignations) {
       $out .= theme('cdm_typedesignations', array('typeDesignations' => $typeDesignations));
     }
     if (!empty($typeDesignations) || !empty($accepted_name)) {
-      // add empty list for coherent layout
-      $out .= '<ul class="homotypicSynonyms">' . '</ul>';
+      // Add empty list for coherent layout.
+      $out .= '<ul class="homotypicSynonyms"></ul>';
     }
   }
   else {
-    // render the homotypicSynonymyGroup including the type information
+    // Render the homotypicSynonymyGroup including the type information.
     $out .= theme('cdm_homotypicSynonymyGroup', array('synonymList' => $synomymie->homotypicSynonymsByHomotypicGroup, 'accepted_taxon_uuid' => $taxon->uuid));
   }
 
-  // render accepted taxon heterotypic synonymy groups
+  // Render accepted taxon heterotypic synonymy groups.
   if ($synomymie->heterotypicSynonymyGroups) {
     foreach ($synomymie->heterotypicSynonymyGroups as $homotypicalGroup) {
       $out .= theme('cdm_heterotypicSynonymyGroup', array('homotypicalGroup' => $homotypicalGroup));
     }
   }
-  // render taxon relationships
+  // Render taxon relationships.
   if (variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)) {
     $taxonRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, $taxon->uuid);
     $out .= theme('cdm_taxonRelationships', array('taxonRelationships' => $taxonRelationships, 'focusedTaxon' => $taxon));
   }
-  // render name relationships
-  $name_rels_to_show = variable_get('name_relationships_to_show', null);
+  // Render name relationships.
+  $name_rels_to_show = variable_get('name_relationships_to_show', NULL);
   $skip = array();
   if ($name_rels_to_show) {
     foreach ($name_rels_to_show as $key => $value) {
@@ -464,7 +531,7 @@ function theme_cdm_taxon_page_synonymy($variables) {
     }
   }
 
-  // render the annontations text for the accepted taxa
+  // Render the annontations text for the accepted taxa.
   if ($addAcceptedTaxon) {
     $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-annotations', 'enclosingTag' => 'li'));
   }
@@ -478,17 +545,18 @@ function theme_cdm_taxon_page_synonymy($variables) {
  *
  * @param unknown_type $taxon
  * @param unknown_type $media
+ *
  * @return unknown_type
  */
 function taxon_image_gallery_default($taxon, $media) {
   $hasImages = isset($media[0]);
- 
+
   if ($hasImages) {
-    //
+
     $maxExtend = 150;
     $cols = 3;
-    $maxRows = false;
-    $alternativeMediaUri = null;
+    $maxRows = FALSE;
+    $alternativeMediaUri = NULL;
     $captionElements = array(
       'title',
       'rights',
@@ -497,13 +565,22 @@ function taxon_image_gallery_default($taxon, $media) {
     $gallery_name = $taxon->uuid;
     $mediaLinkType = 'LIGHTBOX';
 
-    // $gallery_settings =
-    // getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
+    // $gallery_settings = getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB);
-       
+
     $out = '<div class="image-gallerie">';
-    $out .= theme('cdm_media_gallerie', array('mediaList' => $media, 'galleryName' => $gallery_name, 'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'], 'cols' => $gallery_settings['cdm_dataportal_media_cols'], 'maxRows' => 0, 'captionElements' =>      // ignore maxrows settings
-    $captionElements, 'mediaLinkType' => $mediaLinkType, 'alternativeMediaUri' => null, 'galleryLinkUri' => null, 'showCaption' => $gallery_settings['cdm_dataportal_show_thumbnail_captions']));
+    $out .= theme('cdm_media_gallerie', array(
+      'mediaList' => $media,
+      'galleryName' => $gallery_name,
+      'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+      'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+      'maxRows' => 0, // Ignore maxrows settings.
+      'captionElements' => $captionElements,
+      'mediaLinkType' => $mediaLinkType,
+      'alternativeMediaUri' => NULL,
+      'galleryLinkUri' => NULL,
+      'showCaption' => $gallery_settings['cdm_dataportal_show_thumbnail_captions'],
+    ));
     $out .= '</div>';
   }
   else {
@@ -517,6 +594,7 @@ function taxon_image_gallery_default($taxon, $media) {
  *
  * @param unknown_type $taxon
  * @param unknown_type $media
+ *
  * @return unknown_type
  */
 function taxon_image_gallery_fsi($taxon, $media) {
@@ -540,13 +618,21 @@ function taxon_image_gallery_fsi($taxon, $media) {
 }
 
 /**
- * Renders a page with all data on a single reference
+ * Returns HTML for a single reference page.
+ *
+ * Renders a page with all data on a single reference.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - reference: Object.
+ *
+ * @ingroup themeable
  */
 function theme_cdm_reference_page($variables) {
   $reference = $variables['reference'];
-  
+
   $out = '';
-  
+
   if (isset($reference->titleCache)) {
     drupal_set_title($reference->titleCache, PASS_THROUGH);
   }
@@ -561,20 +647,20 @@ function theme_cdm_reference_page($variables) {
     "placePublished",
     "datePublished",
     "year",
-    "edition", // class Book
-    "volume", // class Article
+    "edition",// Class Book.
+    "volume",// Class Article.
     "seriesPart",
     "inReference",
-    "nomRefBase", // class BookSection, Book, Article
-    "pages", // class Article
-    "series", // class Article, PrintSeries
-    "school", // class Thesis
-    "institution", // class Report
-    "organization", // class Proceedings
+    "nomRefBase", // Class BookSection, Book, Article.
+    "pages",// Class Article.
+    "series",// Class Article, PrintSeries.
+    "school",// Class Thesis.
+    "institution",// Class Report.
+    "organization",// Class Proceedings.
     "nextVersion",
     "previousVersion",
-    "isbn", // class Book
-    "issn", // class Journal
+    "isbn",// Class Book.
+    "issn",// Class Journal.
     "uri",
   );
 
@@ -603,7 +689,7 @@ function theme_cdm_reference_page($variables) {
       if ($fieldname == "datePublished") {
         $period = $reference->$fieldname;
         $datePublished = timePeriodToString($period);
-        if(isset($datePublished) && $datePublished !=''){
+        if (isset($datePublished) && $datePublished != '') {
           $table_rows[] = array(
             t(ucfirst(strtolower($fieldname))),
             $datePublished,
@@ -612,7 +698,7 @@ function theme_cdm_reference_page($variables) {
         // $datePublished = array(t(ucfirst(strtolower($fieldname))),
         // $datePublished);
       }
-      else if (is_object($reference->$fieldname)) {
+      elseif (is_object($reference->$fieldname)) {
         if ($fieldname == "authorTeam") {
           $dump = $reference->$fieldname;
           $teammembers = "teamMembers";
@@ -637,7 +723,7 @@ function theme_cdm_reference_page($variables) {
           }
           $value = join($nameArray, ", ");
         }
-        else if ($fieldname == "inReference") {
+        elseif ($fieldname == "inReference") {
           $type = $reference->$fieldname->type;
           $value = l($reference->$fieldname->titleCache, path_to_reference($reference->$fieldname->uuid));
           switch ($type) {
@@ -655,7 +741,7 @@ function theme_cdm_reference_page($variables) {
         else {
           $value = $reference->$fieldname->titleCache;
         }
-        if(isset( $value) && $value !=''){
+        if (isset($value) && $value != '') {
           $table_rows[] = array(
             t(ucfirst(strtolower($fieldname))),
             $value,
@@ -663,7 +749,7 @@ function theme_cdm_reference_page($variables) {
         }
       }
       else {
-        if(isset( $reference->$fieldname) && $reference->$fieldname !=''){
+        if (isset($reference->$fieldname) && $reference->$fieldname != '') {
           $table_rows[] = array(
             t(ucfirst(strtolower($fieldname))),
             $reference->$fieldname,
@@ -673,7 +759,7 @@ function theme_cdm_reference_page($variables) {
     }
   }
 
-  $out = theme_table( array(
+  $out = theme_table(array(
       'header' => array(),
       'rows' => $table_rows,
       'attributes' => array(),
@@ -683,12 +769,13 @@ function theme_cdm_reference_page($variables) {
      'empty' => NULL,
   ));
 
-  // annotations below the table
+  // Annotations below the table.
   $annotations = cdm_ws_getAnnotationsFor($reference);
   $out .= theme("cdm_annotations", array('annotations' => $annotations));
 
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -698,7 +785,7 @@ function theme_cdm_media_page($variables) {
   $mediarepresentation_uuid = $variables['mediarepresentation_uuid'];
   $partId = $variables['partId'];
   $out = '';
-  // determine which reprresentation and which part to show
+  // Determine which reprresentation and which part to show.
   $representationIdx = 0;
   if ($mediarepresentation_uuid) {
     $i = 0;
@@ -714,8 +801,8 @@ function theme_cdm_media_page($variables) {
   }
 
   $partIdx = 0;
-  if (! is_numeric($partId)) {
-    // assuming it is an uuid
+  if (!is_numeric($partId)) {
+    // Assuming it is an uuid.
     $i = 0;
     foreach ($media->representations[$representationIdx]->parts as $part) {
       if ($part->uuid == $partId) {
@@ -725,7 +812,7 @@ function theme_cdm_media_page($variables) {
     }
   }
   else {
-    // assuming it is an index
+    // Assuming it is an index.
     $partIdx = $partId;
   }
 
@@ -735,13 +822,13 @@ function theme_cdm_media_page($variables) {
 
   $imageMaxExtend = variable_get('image-page-maxextend', 400);
 
-  if (! $title) {
+  if (!$title) {
     $title = 'Media ' . $media->uuid . '';
   }
 
   drupal_set_title($title, PASS_THROUGH);
 
-  $out .= '<div class="media">';
+  $out .= '<div class="media cdm_media_viewer_image">';
 
   // $out .= '<div class="viewer">';
   $out .= theme('cdm_back_to_image_gallery_button', array());
@@ -751,16 +838,18 @@ function theme_cdm_media_page($variables) {
   $out .= theme('cdm_openlayers_image', array('mediaRepresentationPart' => $media->representations[$representationIdx]->parts[$partIdx], 'maxExtend' => $imageMaxExtend));
   $out .= '</div>';
 
-  // general media metadata
-  // $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
-  // vardump("PRINTING MEDIA METADATA");
-  // vardump($media_metadata);
-  // vardump("PRINTING MEDIA");
-  // vardump($media);
+  // General media metadata.
+  /*
+  $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
+  vardump("PRINTING MEDIA METADATA");
+  vardump($media_metadata);
+  vardump("PRINTING MEDIA");
+  vardump($media);
+  */
   $metadataToPrint = theme('cdm_media_caption', array('media' => $media));
   $out .= $metadataToPrint;
 
-  // tabs for the different representations
+  // Tabs for the different representations.
   // ul.secondary
   $out .= '<ul class="primary">';
   foreach ($media->representations as $representation) {
@@ -768,7 +857,7 @@ function theme_cdm_media_page($variables) {
   }
   $out .= '</ul>';
 
-  // representation(-part) specific metadata
+  // Representation(-part) specific metadata.
   $thumbnailMaxExtend = 100;
   $out .= '<table>';
   // $out .= '<tr><th colspan="3">'.t('MimeType').':
@@ -787,8 +876,8 @@ function theme_cdm_media_page($variables) {
       default:
         $out .= $part->size . 'k';
     }
-    
-    $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $mediarepresentation_uuid, $i)) . '">' . theme('cdm_media_gallerie_image', array('mediaRepresentationPart' => $part, 'maxExtend' => $thumbnailMaxExtend, 'addPassePartout' => true));
+
+    $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $mediarepresentation_uuid, $i)) . '">' . theme('cdm_media_gallerie_image', array('mediaRepresentationPart' => $part, 'maxExtend' => $thumbnailMaxExtend, 'addPassePartout' => TRUE));
     $i++;
   }
   $out .= '</table>';
@@ -796,6 +885,7 @@ function theme_cdm_media_page($variables) {
 
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -804,23 +894,31 @@ function theme_cdm_polytomousKey_page($variables) {
   $polytomousKey = $variables['polytomousKey'];
   drupal_set_title($polytomousKey->titleCache, PASS_THROUGH);
 
-  $out = theme("cdm_IdentificationKey", array('identificationKey' => $polytomousKey, 'doLinkToKeyPage' => false, 'showIdentificationKeyTitle' => false));
+  $out = theme("cdm_IdentificationKey", array(
+    'identificationKey' => $polytomousKey,
+    'doLinkToKeyPage' => FALSE,
+    'showIdentificationKeyTitle' => FALSE,
+    ));
 
-  // key nodes in linked style
+  // Key nodes in linked style.
   $out .= theme('cdm_polytomousKey', array('polytomousKey' => $polytomousKey));
   /*
-   * FIXME implement node type for keys !!! (wrapping the content in the
-   * cdm_dataportal.node becomes obsolete then)
-   */
+  FIXME implement node type for keys !!! (wrapping the content in the
+  cdm_dataportal.node becomes obsolete then).
+  */
   return '<div id="cdm_dataportal.node">' . $out . '</div>';
 }
 
 /**
- * Allows theming of the taxon page tabs
+ * Returns HTML for taxon page tabs.
  *
- * @param
- *          $tabname
- * @return unknown_type
+ * Allows theming of the taxon page tabs.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - tabname
+ *
+ * @ingroup themeable
  */
 function theme_cdm_taxonpage_tab($variables) {
   $tabname = $variables['tabname'];
@@ -830,4 +928,3 @@ function theme_cdm_taxonpage_tab($variables) {
       return t($tabname);
   }
 }
-

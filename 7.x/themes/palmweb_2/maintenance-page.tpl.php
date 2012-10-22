@@ -3,8 +3,8 @@
  * @file
  * Custom theme implementation to display a single Drupal page while offline.
  *
- * This file controls the page that is displayed when the site is in 
- * "maintenance mode" but the database connection and database are still 
+ * This file controls the page that is displayed when the site is in
+ * "maintenance mode" but the database connection and database are still
  * functioning correctly.
  *
  * @author W. Addink <w.addink@eti.uva.nl>
@@ -37,5 +37,4 @@
     </div> <!-- /content -->
   </div><!-- /page -->
 </body>
-
 </html>

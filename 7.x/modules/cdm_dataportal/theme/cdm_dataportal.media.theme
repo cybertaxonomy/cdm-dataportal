@@ -1,16 +1,23 @@
 <?php
-// $Id$
+/**
+ * @file
+ * Media theming functions.
+ *
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ */
 
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1
- * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
-function media_content_type_dir($media_representation, $default = false) {
+function media_content_type_dir($media_representation, $default = FALSE) {
   if ($media_representation->mimeType) {
     return substr($media_representation->mimeType, 0, stripos($media_representation->mimeType, '/'));
   }
@@ -18,23 +25,29 @@ function media_content_type_dir($media_representation, $default = false) {
     return $default;
   }
 }
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function getimagesize_remote($image_url) {
   $contents = cdm_http_request($image_url);
-  if (! $contents) {
-    return false;
+  if (!$contents) {
+    return FALSE;
   }
 
-  $im = @ImageCreateFromString($contents); // using@ to avoid php user warnings
-  if (! $im) {
-    return false;
+  $im = @ImageCreateFromString($contents); // Using @ to avoid php warnings.
+  if (!$im) {
+    return FALSE;
   }
   $gis[0] = ImageSX($im);
   $gis[1] = ImageSY($im);
-  // array member 3 is used below to keep with current getimagesize standards
+  // Array member 3 is used below to keep with current getimagesize standards.
   $gis[3] = "width={$gis[0]} height={$gis[1]}";
   ImageDestroy($im);
   return $gis;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -58,31 +71,33 @@ function theme_cdm_media($variables) {
       $contentTypeDirectory = media_content_type_dir($mediaRepresentation);
 
       $out .= theme('cdm_media_mime_' . $contentTypeDirectory, array('mediaRepresentation' => $mediaRepresentation, 'feature' => $feature));
-
-      // $attributes = array('class'=>'thickbox',
-      // 'rel'=>'descriptionElement-'.$uuid, 'title'=>$feature->term);
-      // for($i = 0; $part = $mediaRepresentation->representationParts[$i];
-      // $i++){
-      // if($i == 0){
-      // $image_url = drupal_get_path('module',
-      // 'cdm_dataportal').'/images/'.$feature->term.'-media.png';
-      // $media = '<img src="'.$image_url.'" height="14px"
-      // alt="'.$feature->term.'" />';
-      // $out .= l($media, $part->uri, array('attributes' => $attributes,
-      // 'absolute' => TRUE, 'html' => TRUE));
-      // } else {
-      // $out .= l('', $part->uri, array('attributes' => $attributes, 'absolute'
-      // => TRUE));
-      // }
-      // }
+      /*
+      $attributes = array('class'=>'thickbox',
+      'rel'=>'descriptionElement-'.$uuid, 'title'=>$feature->term);
+      for($i = 0; $part = $mediaRepresentation->representationParts[$i];
+      $i++){
+      if($i == 0){
+      $image_url = drupal_get_path('module',
+      'cdm_dataportal').'/images/'.$feature->term.'-media.png';
+      $media = '<img src="'.$image_url.'" height="14px"
+      alt="'.$feature->term.'" />';
+      $out .= l($media, $part->uri, array('attributes' => $attributes,
+      'absolute' => TRUE, 'html' => TRUE));
+      } else {
+      $out .= l('', $part->uri, array('attributes' => $attributes, 'absolute'
+      => TRUE));
+      }
+      }
+      */
     }
     else {
-      // no media available, so display just the type term
+      // No media available, so display just the type term.
       $out .= $feature->representation_L10n;
     }
   }
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -94,15 +109,17 @@ function theme_cdm_mediaTypeTerm($variables) {
 
   $provider = '';
   // TODO directly use favicon from referred URI and overlay on $icon_image, but
-  // for now we comment this out
-  // if(strpos($mediaUrl, 'biodiversitylibrary.org') > 0){
-  // $provider = '-BHL';
-  // }
-
+  // for now we comment this out.
+  /*
+  if(strpos($mediaUrl, 'biodiversitylibrary.org') > 0){
+    $provider = '-BHL';
+  }
+  */
   $icon_image = $feature->representation_L10n . '-media' . $provider . '.png';
   $icon_url = $base_url . '/' . drupal_get_path('module', 'cdm_dataportal') . '/images/' . $icon_image;
   return '<img src="' . url($icon_url) . '" height="14px" alt="' . $feature->representation_L10n . '" />';
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -116,9 +133,10 @@ function theme_cdm_media_mime_application($variables) {
       'title' => theme('cdm_feature_name', array('feature_name' => $feature->representation_L10n)),
       'target' => '_blank',
     );
-    // $attributes = array('title'=>$feature->representation_L10n,
-    // 'target'=>'_blank');
-    // $attributes = array('title'=>'original publication', 'target'=>'_blank');
+    /*
+    $attributes = array('title'=>$feature->representation_L10n,'target'=>'_blank');
+    $attributes = array('title'=>'original publication', 'target'=>'_blank');
+    */
     $out .= l(theme('cdm_mediaTypeTerm', array('feature' => $feature, 'mediaUrl' => $part->uri)), $part->uri, array(
       'attributes' => $attributes,
       'absolute' => TRUE,
@@ -127,6 +145,7 @@ function theme_cdm_media_mime_application($variables) {
   }
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -135,7 +154,7 @@ function theme_cdm_media_mime_image($variables) {
   $mediaRepresentation = $variables['mediaRepresentation'];
   $feature = $variables['feature'];
   $out = '';
-  // TODO thickbox is not used anymore -> delete ?
+  // TODO thickbox is not used anymore -> delete?
   $attributes = array(
     'class' => 'thickbox',
     'rel' => 'representation-' . $representation->uuid,
@@ -150,7 +169,8 @@ function theme_cdm_media_mime_image($variables) {
       ));
     }
     else {
-      $out .= l('', $part->uri, array(
+      // Comment @WA: should this really be an empty link?
+      $out .= l(t(''), $part->uri, array(
         'attributes' => $attributes,
         'absolute' => TRUE,
       ));
@@ -158,6 +178,7 @@ function theme_cdm_media_mime_image($variables) {
   }
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -166,7 +187,7 @@ function theme_cdm_media_mime_text($variables) {
   $representation = $variables['representation'];
   $feature = $variables['feature'];
   $out = '';
-  if(!empty($representation->parts)){
+  if (!empty($representation->parts)) {
     foreach ($representation->parts as $part) {
       $attributes = array(
         'title' => theme('cdm_feature_name', array('feature_name' => $feature->representation_L10n)),
@@ -183,6 +204,7 @@ function theme_cdm_media_mime_text($variables) {
   }
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -193,36 +215,36 @@ function theme_cdm_media_caption($variables) {
   $fileUri = $variables['fileUri'];
   $media_metadata = cdm_read_media_metadata($media);
 
-  $doTitle = ! $elements || array_search('title', $elements) !== false;
-  $doDescription = ! $elements || array_search('description', $elements) !== false;
-  $doArtist = ! $elements || array_search('artist', $elements) !== false;
-  $doLocation = ! $elements || array_search('location', $elements) !== false;
-  $doRights = ! $elements || array_search('rights', $elements) !== false;
+  $doTitle = !$elements || array_search('title', $elements) !== FALSE;
+  $doDescription = !$elements || array_search('description', $elements) !== FALSE;
+  $doArtist = !$elements || array_search('artist', $elements) !== FALSE;
+  $doLocation = !$elements || array_search('location', $elements) !== FALSE;
+  $doRights = !$elements || array_search('rights', $elements) !== FALSE;
 
   $descriptionPrefix = "";
 
   $out = '<dl class="media-caption">';
-  // title
+  // Title.
   if ($doTitle) {
     if ($media_metadata['title']) {
       $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
       $descriptionPrefix = "- ";
     }
-    else if (! ($doDescription && $media_metadata['description'])) {
-      // use filename as fallbackoption if no description will be shown
+    elseif (!($doDescription && $media_metadata['description'])) {
+      // Use filename as fallbackoption if no description will be shown.
       $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['filename'] . '</dd>';
       $descriptionPrefix = "- ";
     }
   }
-  // description
+  // Description.
   if ($media_metadata['description'] && $doDescription) {
     $out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $descriptionPrefix . $media_metadata['description'] . '</dd>';
   }
-  // artist
+  // Artist.
   if ($media_metadata['artist'] && $doArtist) {
     $out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $media_metadata['artist'] . '</dd>';
   }
-  // location
+  // Location.
   if ($doLocation) {
     $location = '';
     $location .= $media_metadata['location']['sublocation'];
@@ -244,10 +266,11 @@ function theme_cdm_media_caption($variables) {
       $out .= '<dt class = "location">' . t('Location') . '</dt> <dd class = "location">' . $location . '</dd>';
     }
   }
-  // rights
+  // Rights.
   if ($doRights) {
     $rights = '';
-    // copyrights
+
+    // Copyrights.
     $cnt = count($media_metadata['rights']['copyright']['agentNames']);
     if ($cnt > 0) {
       $rights .= '<dt class="rights">&copy;</dt> <dd class="rights"> ';
@@ -259,7 +282,7 @@ function theme_cdm_media_caption($variables) {
       }
       $rights .= '</dd>';
     }
-    // license
+    // License.
     $cnt = count($media_metadata['rights']['license']['agentNames']);
     if ($cnt > 0) {
       $rights .= '<dt class ="license">' . t('License') . '</dt> <dd class = "license">';
@@ -275,52 +298,49 @@ function theme_cdm_media_caption($variables) {
       $out .= $rights . '</dt>';
     }
   }
-  // TODO add all other metadata elemenst generically
+  // TODO add all other metadata elemenst generically.
   $out .= '</dl>';
-  // return value
+  // Return value,
   return $out;
 }
 
 /**
+ * Return HTML for a media gallery
  *
- * @param $mediaList an
- *          array of Media entities
- * @param
- *          $maxExtend
- * @param
- *          $cols
- * @param
- *          $maxRows
- * @param $captionElements an
- *          array possible values are like in the following example:
- *          array('title', 'description', 'file', 'filename'),
- *          to add a link to the caption: array('titlecache', '#uri'=>t('open
- *          Image'));
- * @param $mediaLinkType valid
- *          values:
- *          "NONE": do not link the images,
- *          "LIGHTBOX": open the link in a light box,
- *          "NORMAL": link to the image page or to the $alternativeMediaUri if
- *          it is defined
- * @param $alternativeMediaUri an
- *          array of alternative URIs to link the images wich will overwrite the
- *          URIs of the media parts.
- *          The order of URI in this array must correspond with the order of
- *          images in $mediaList
- * @param $galleryLinkUri an
- *          URI to link the the hint on more images to; if null no link is
- *          created
- * @return unknown_type
+ * @param array $variables
+ *   An associative array containing:
+ *   - mediaList: An array of Media entities.
+ *   - maxExtend
+ *   - cols
+ *   - maxRows
+ *   - captionElements: An array, possible values are like in the following
+ *     example:
+ *       array('title', 'description', 'file', 'filename'),
+ *       //to add a link to the caption:
+ *       array('titlecache', '#uri'=>t('open Image'));
+ *   - mediaLinkType: Valid values:
+ *      - "NONE": do not link the images,
+ *      - "LIGHTBOX": open the link in a light box,
+ *      - "NORMAL": link to the image page or to the $alternativeMediaUri if
+ *        it is defined.
+ *   - alternativeMediaUri: An array of alternative URIs to link the images
+ *     which will overwrite the URIs of the media parts.
+ *     The order of URI in this array must correspond with the order of
+ *     images in $mediaList.
+ *   - galleryLinkUri: An URI to link the the hint on more images to;
+ *     if NULL no link is created.
+ *
+ * @ingroup: themeable
  */
 function theme_cdm_media_gallerie($variables) {
 
   $mediaList = $variables['mediaList'];
-  
-  //do not show an empty gallery
-  if (count($mediaList) == 0){
-      return;
+
+  // Do not show an empty gallery.
+  if (count($mediaList) == 0) {
+    return;
   }
-  
+
   $galleryName = $variables['galleryName'];
   $maxExtend = $variables['maxExtend'];
   $cols = $variables['cols'];
@@ -330,25 +350,27 @@ function theme_cdm_media_gallerie($variables) {
   $alternativeMediaUri = $variables['alternativeMediaUri'];
   $galleryLinkUri = $variables['galleryLinkUri'];
   $showCaption = $variables['showCaption'];
-  if (! is_array($captionElements)) {
+
+  if (!is_array($captionElements)) {
     $captionElements = array();
   }
+
   // TODO correctly handle multiple media representation parts
-  //@WA this does not work when clean_urls is enabled..
+  // Comment @WA: this does not work when clean_urls is enabled..
   // $_SESSION['cdm']['last_gallery'] = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "?q=") + 3);
-  //..this works.
-  $_SESSION['cdm']['last_gallery'] =  current_path();
-  // prevent from errors
-  if (! isset($mediaList[0])) {
+  // ..this works.
+  $_SESSION['cdm']['last_gallery'] = current_path();
+  // Prevent from errors.
+  if (!isset($mediaList[0])) {
    // return;
   }
 
-  // --- duplicate supression: media can be reused but should only be shown
+  // --- Duplicate supression: media can be reused but should only be shown
   // once.
   $tempMediaList = array();
   $tempMediaUuids = array();
   foreach ($mediaList as $media) {
-    if (! in_array($media->uuid, $tempMediaUuids)) {
+    if (!in_array($media->uuid, $tempMediaUuids)) {
       $tempMediaList[] = $media;
       $tempMediaUuids[] = $media->uuid;
     }
@@ -357,21 +379,21 @@ function theme_cdm_media_gallerie($variables) {
 
   // ---
   $galleryID = "media_gallery_" . $galleryName;
-  
+
   $mediaPartLinkAttributes = array();
   $openMediaLinkAttributes = array();
 
-  // prepare media links
-  $doLink = false;
+  // Prepare media links.
+  $doLink = FALSE;
   if ($mediaLinkType != 'NONE') {
-    $doLink = true;
+    $doLink = TRUE;
   }
   if ($mediaLinkType == 'LIGHTBOX') {
-    $doLink = true;
+    $doLink = TRUE;
     _add_js_lightbox($galleryID);
   }
 
-  // render the media gallery grid
+  // Render the media gallery grid.
   $out = '<table id="' . $galleryID . '" class="media_gallery">';
   $out .= '<colgroup>';
   for ($c = 0; $c < $cols; $c++) {
@@ -379,7 +401,7 @@ function theme_cdm_media_gallerie($variables) {
   }
   $out .= '</colgroup>';
 
-  for ($r = 0; ($r < $maxRows || ! $maxRows) && count($mediaList) > 0; $r++) {
+  for ($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++) {
     $captionParts = array();
     $mediaIndex = 0;
     $out .= '<tr>';
@@ -389,7 +411,7 @@ function theme_cdm_media_gallerie($variables) {
       if (isset($media->representations[0]->parts[0])) {
 
         //
-        // find preferred representation
+        // Find preferred representation.
         //
         $preferred_media_representations_list = cdm_preferred_media_representations($media, array(
           'image/jpg',
@@ -398,7 +420,7 @@ function theme_cdm_media_gallerie($variables) {
           'image/gif',
         ), $maxExtend, $maxExtend);
         if (count($preferred_media_representations_list) == 0) {
-          // fallback to using the first one in the list
+          // Fallback to using the first one in the list.
           $preferred_media_representations_list = $media->representations;
         }
         $preferred_media_representation = array_shift($preferred_media_representations_list);
@@ -407,15 +429,14 @@ function theme_cdm_media_gallerie($variables) {
         // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
         $contentTypeDirectory = media_content_type_dir($preferred_media_representation, 'application');
         $mediaIndex++;
-       
-         $mediaPartHtml = theme('cdm_media_gallerie_' . $contentTypeDirectory, 
-         array(
-            'mediaRepresentationPart' => $preferred_media_representation->parts[0], 
-            'maxExtend' => $maxExtend, 
-            'addPassePartout' => TRUE
+
+         $mediaPartHtml = theme('cdm_media_gallerie_' . $contentTypeDirectory, array(
+            'mediaRepresentationPart' => $preferred_media_representation->parts[0],
+            'maxExtend' => $maxExtend,
+            'addPassePartout' => TRUE,
          ));
-        // --- compose Media Link
-        $mediaLinkUri = false;
+        // --- Compose Media Link.
+        $mediaLinkUri = FALSE;
         if ($alternativeMediaUri) {
           if (isset($alternativeMediaUri[$mediaIndex])) {
             $mediaLinkUri = $alternativeMediaUri[$mediaIndex];
@@ -434,7 +455,7 @@ function theme_cdm_media_gallerie($variables) {
         $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
         $captionPartHtml = '<div class="ahah-content" rel="' . $cdm_proxy_url . '"><span class="loading" style="display: none;">Loading ....</span></div>';
 
-        // generate gallery caption
+        // Generate gallery caption.
         if ($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image') {
           $mediaPartLinkAttributes['class'] = array('lightbox');
         }
@@ -442,14 +463,15 @@ function theme_cdm_media_gallerie($variables) {
           $mediaPartLinkAttributes['target'] = "specimen";
           $openMediaLinkAttributes['target'] = "specimen";
         }
-        // generate & add caption to lightbox
-        $lightBoxCaptionElements = null;
-        $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption"); // .($lightBoxCaptionElements?'/'.join
-        // (',',$lightBoxCaptionElements):''));
+        // Generate & add caption to lightbox.
+        $lightBoxCaptionElements = NULL;
+        // .($lightBoxCaptionElements?'/'.join(',',$lightBoxCaptionElements):''));
+        $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption");
+
         $mediaPartLinkAttributes['alt'] = '<div class="ahah-content" rel="' . $cdm_proxy_url . '"><span class="loading" style="display: none;">Loading ....</span></div>';
 
         if (isset($captionElements['#uri'])) {
-          if ($contentTypeDirectory == 'image') {            
+          if ($contentTypeDirectory == 'image') {
             $captionPartHtml .= '<div class="media-caption-link">' . l($captionElements['#uri'], path_to_media($media->uuid), array(
               'attributes' => array(), 'html' => TRUE,
             )) . '</div>';
@@ -463,7 +485,7 @@ function theme_cdm_media_gallerie($variables) {
         }
         $captionParts[] = $captionPartHtml;
 
-        // --- surround imagePart with link
+        // --- Surround imagePart with link.
         if ($doLink) {
           $mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, array(
             'attributes' => $mediaPartLinkAttributes, 'html' => TRUE,
@@ -476,11 +498,11 @@ function theme_cdm_media_gallerie($variables) {
       }
       $out .= '<td class="media">' . $mediaPartHtml . '</td>';
     }
-    $out .= '</tr>'; // end of media parts
+    $out .= '</tr>'; // End of media parts.
     if ($showCaption) {
       if (count($captionElements) > 0) {
         $out .= '<tr>';
-        // add caption row
+        // Add caption row.
         foreach ($captionParts as $captionPartHtml) {
           $out .= '<td class="caption">' . $captionPartHtml . '</td>';
         }
@@ -488,7 +510,7 @@ function theme_cdm_media_gallerie($variables) {
       }
     }
   }
-  
+
   if ($galleryLinkUri) {
     if (count($mediaList) > 0) {
       $moreHtml = count($mediaList) . ' ' . t('more in gallery');
@@ -507,27 +529,24 @@ function theme_cdm_media_gallerie($variables) {
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_media_gallerie_image($variables) {
-    
+
   $mediaRepresentationPart = $variables['mediaRepresentationPart'];
   $maxExtend = $variables['maxExtend'];
   $addPassePartout = $variables['addPassePartout'];
   $attributes = $variables['attributes'];
-  
+
   $out = '';
-  
+
   // TODO merge with theme_cdm_media_mime_image?
   if (isset($mediaRepresentationPart)) {
 
     $h = $mediaRepresentationPart->height;
     $w = $mediaRepresentationPart->width;
     if ($w == 0 || $h == 0) {
-      $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri); // take
-      // url
-      // and
-      // replace
-      // spaces
+      // Take url and replace spaces.
+      $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri);
       $imageDimensions = getimagesize_remote($image_uri);
-      if (! $imageDimensions) {
+      if (!$imageDimensions) {
         return '<div>' . t('Image unavailable, uri: ') . $mediaRepresentationPart->uri . '</div>';
       }
       $w = $imageDimensions[0];
@@ -548,7 +567,7 @@ function theme_cdm_media_gallerie_image($variables) {
       $margins = 'margin:0 ' . $m . 'px 0 ' . $m . 'px;';
     }
 
-    // turn attributes array into string
+    // Turn attributes array into string.
     $attrStr = ' ';
     // $attributes['title'] = 'h:'.$h.', w:'.$w.',ratio:'.$ratio;
     if (is_array($attributes)) {
@@ -561,7 +580,7 @@ function theme_cdm_media_gallerie_image($variables) {
       $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
     }
     else {
-      // do not add margins if no pass partout is shown
+      // Do not add margins if no pass partout is shown.
       $margins = '';
     }
     $out .= '<img src="' . $mediaRepresentationPart->uri . '" width="' . $displayWidth . '" height="' . $displayHeight . '" style="' . $margins . '"' . $attrStr . ' />';
@@ -572,6 +591,7 @@ function theme_cdm_media_gallerie_image($variables) {
     return $out;
   }
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -587,7 +607,7 @@ function theme_cdm_media_gallerie_application($variables) {
       $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
     }
     else {
-      // do not add margins if no pass partout is shown
+      // Do not add margins if no pass partout is shown.
       $margins = '';
     }
     $out .= '<div class="appication">Web Application</div>';
@@ -598,6 +618,7 @@ function theme_cdm_media_gallerie_application($variables) {
     return $out;
   }
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -613,7 +634,7 @@ function theme_cdm_media_gallerie_text($variables) {
       $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
     }
     else {
-      // do not add margins if no pass partout is shown
+      // Do not add margins if no pass partout is shown.
       $margins = '';
     }
     $out .= '<div class="appication">Web Application</div>';
@@ -624,6 +645,7 @@ function theme_cdm_media_gallerie_text($variables) {
     return $out;
   }
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -632,9 +654,9 @@ function theme_cdm_openlayers_image($variables) {
   $mediaRepresentationPart = $variables['mediaRepresentationPart'];
   $maxExtend = $variables['maxExtend'];
 
-  // see
-  // http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
-  // and http://trac.openlayers.org/wiki/SettingZoomLevels
+  // @see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
+  // and
+  // @see http://trac.openlayers.org/wiki/SettingZoomLevels
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/OpenLayers/OpenLayers.js', array('type' => 'file', 'weight' => JS_LIBRARY));
 
   // TODO merge code below with code from theme_cdm_media_gallerie_image
@@ -644,20 +666,17 @@ function theme_cdm_openlayers_image($variables) {
   $h = $mediaRepresentationPart->height;
 
   if ($w == 0 || $h == 0) {
-    $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri); // take
-    // url
-    // and
-    // replace
-    // spaces
+    // Take url and replace spaces.
+    $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri);
     $imageDimensions = getimagesize_remote($image_uri);
-    if (! $imageDimensions) {
+    if (!$imageDimensions) {
       return '<div>' . t('Image unavailable, uri:') . $mediaRepresentationPart->uri . '</div>';
     }
     $w = $imageDimensions[0];
     $h = $imageDimensions[1];
   }
 
-  // calculate maxResolution (default is 360 deg / 256 px) and the bounds
+  // Calculate maxResolution (default is 360 deg / 256 px) and the bounds.
   if ($w > $h) {
     $lat = 90;
     $lon = 90 * ($h / $w);
@@ -703,24 +722,24 @@ function theme_cdm_openlayers_image($variables) {
 
 jQuery(document).ready(function(){
   init();
-
-});', array('type' => 'inline',));
+});', array('type' => 'inline'));
   $out = '<div id="openlayers_image" class="image_viewer" style="width: ' . $maxExtend . 'px; height:' . ($maxExtend) . 'px"></div>';
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_preferredImage($variables) {
-   
+
   $media = $variables['media'];
   $defaultRepresentationPart = $variables['defaultRepresentationPart'];
   $imageMaxExtend = $variables['imageMaxExtend'];
   $parameters = $variables['parameters'];
-  
+
   $out = '';
-  
+
   if (isset($media[0])) {
     $representationPart = $media[0]->representations[0]->parts[0];
     if ($parameters) {
@@ -734,7 +753,12 @@ function theme_cdm_preferredImage($variables) {
   $attributes = array(
     'alt' => (isset($media->representations[0]->parts[0]->uri) ? $media->representations[0]->parts[0]->uri : "no image available"),
   );
-  $out .= theme('cdm_media_gallerie_image', array('mediaRepresentationPart' => $representationPart, 'maxExtend' => $imageMaxExtend, 'addPassePartout' => false, 'attributes' => $attributes));
+  $out .= theme('cdm_media_gallerie_image', array(
+    'mediaRepresentationPart' => $representationPart,
+    'maxExtend' => $imageMaxExtend,
+    'addPassePartout' => FALSE,
+    'attributes' => $attributes,
+  ));
 
   return $out;
 }

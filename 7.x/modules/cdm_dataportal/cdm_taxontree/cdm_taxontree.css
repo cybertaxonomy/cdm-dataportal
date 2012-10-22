@@ -1,27 +1,23 @@
-@CHARSET "ISO-8859-1";
-
 /* ==== tree containers ==== */
- 
+
 /* --- one scrollable container for plain box --- */
 
-div.cdm_taxontree_scroller_xy{
-	overflow: auto;
-	height: 300px;
-}
-
-/* ---- separate horizontal and vertical scrollable 
-   containers in case of magic box mode,
-   plus container to span the tree to its maximum width --- */
-   
-div.cdm_taxontree_scroller_x{
-  border: 1px solid #ADDDFA;
+div.cdm_taxontree_scroller_xy {
   overflow: auto;
-	overflow-x: auto; 
-  overflow-y: auto;
-	
+  height: 300px;
 }
 
-div.cdm_taxontree_container{
+/* ---- separate horizontal and vertical scrollable
+containers in case of magic box mode,
+plus container to span the tree to its maximum width --- */
+div.cdm_taxontree_scroller_x {
+  border: 1px solid #adddfa;
+  overflow: auto;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+div.cdm_taxontree_container {
   width: 250px; /* should be greater than the sidebar width (e.g. 250px for the garland theme) */
 }
 
@@ -30,21 +26,21 @@ div.cdm_taxontree_scroller_y {
   overflow-y: visible;
   padding: 5px;
   border: 1px solid transparent;
-  background-color: #EDF5FA;
+  background-color: #edf5fa;
   height: 300px; /* this defines the height of the treebrowser box */
 }
 
 /* ==== styling the tree ==== */
 
-ul.cdm_taxontree{
-  background-color: #EDF5FA;
-  padding:0pt 0pt 0.25em 1em;
+ul.cdm_taxontree {
+  background-color: #edf5fa;
+  padding: 0pt 0pt 0.25em 1em;
   left: 0px; /* fix IE7? */
   margin: 0;
 }
-	
-ul.cdm_taxontree li{
-  padding:0pt 1em 0pt 1em;
+
+ul.cdm_taxontree li {
+  padding: 0pt 1em 0pt 1em;
   margin-left: -1em;
   list-style-image: none;
   list-style-type: none;
@@ -52,53 +48,55 @@ ul.cdm_taxontree li{
   font-weight: normal;
 }
 
-ul.cdm_taxontree li .active{
-	color: #027AC6;
-	font-weight: bold;
+ul.cdm_taxontree li .active {
+  color: #027ac6;
+  font-weight: bold;
 }
 
-ul.cdm_taxontree li.expanded, ul.cdm_taxontree cdm_taxontree_filter li.expanded{
+ul.cdm_taxontree li.expanded,
+ul.cdm_taxontree cdm_taxontree_filter li.expanded {
   background: transparent url(minus.png) no-repeat scroll 0px 0.35em;
   cursor: pointer;
 }
 
-ul.cdm_taxontree li.collapsed, ul.cdm_taxontree cdm_taxontree_filter li.collapsed {
+ul.cdm_taxontree li.collapsed,
+ul.cdm_taxontree cdm_taxontree_filter li.collapsed {
   background: transparent url(plus.png) no-repeat scroll 0px 0.35em;
   cursor: pointer;
 }
 
 ul.cdm_taxontree li.focused {
-  font-weight: bold;	
+  font-weight: bold;
 }
 
-ul.cdm_taxontree li.leaf{
-	background:transparent url(menu-leaf.gif) no-repeat scroll 0px 0.35em;
+ul.cdm_taxontree li.leaf {
+  background:transparent url(menu-leaf.gif) no-repeat scroll 0px 0.35em;
 }
 
 ul.cdm_taxontree li.filter_excluded {
-	background-image: none;
-	cursor: default;
-	color: #888888;
+  background-image: none;
+  cursor: default;
+  color: #888888;
 }
 
-ul.cdm_taxontree li.leaf a,ul.cdm_taxontree li.expanded a,ul.cdm_taxontree li.collapsed a
-	{
-  display:inline;
+ul.cdm_taxontree li.leaf a,
+ul.cdm_taxontree li.expanded a,
+ul.cdm_taxontree li.collapsed a {
+  display: inline;
   white-space: nowrap;
 }
 
-div.taxontree_header{
-height:2em;
-display:block;
+div.taxontree_header {
+  height: 2em;
+  display: block;
 }
 
-#cdm-taxonomictree-selector-form .form-item{
-    margin-bottom: 0px;
-    /*background-color:#F3F3F3;
-    border:1px solid #DEDEDE; */
+#cdm-taxonomictree-selector-form .form-item {
+  margin-bottom: 0px;
+  /*background-color:#f3f3f3;*/
+  /*border:1px solid #dedede;*/
 }
 
-#cdm-taxonomictree-selector-form select{
-    width: 100%;
+#cdm-taxonomictree-selector-form select {
+  width: 100%;
 }
-

@@ -1,4 +1,4 @@
-/*
+/**
  * jQuery Form Plugin
  * version: 2.12 (06/07/2008)
  * @requires jQuery v1.2.2 or later
@@ -7,8 +7,6 @@
  * Dual licensed under the MIT and GPL licenses:
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
- *
- * Revision: $Id$
  */
 (function($) {
 
@@ -146,7 +144,7 @@ $.fn.ajaxSubmit = function(options) {
         var form = $form[0];
         
         if ($(':input[@name=submit]', form).length) {
-            alert('Error: Form elements must not be named "submit".');
+            alert(t('Error: Form elements must not be named "submit".'));
             return;
         }
         
@@ -172,7 +170,7 @@ $.fn.ajaxSubmit = function(options) {
 
         var g = opts.global;
         // trigger ajax global events so that activity/block indicators work like normal
-        if (g && ! $.active++) $.event.trigger("ajaxStart");
+        if (g && !$.active++) $.event.trigger("ajaxStart");
         if (g) $.event.trigger("ajaxSend", [xhr, opts]);
 
         var cbInvoked = 0;

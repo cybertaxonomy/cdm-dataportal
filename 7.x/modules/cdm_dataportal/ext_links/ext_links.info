@@ -5,3 +5,5 @@ version = "7.x-1.0"
 package = "CDM"
 dependencies[] = cdm_dataportal
 core = 7.x
+
+configure = admin/config/cdm_dataportal/extlinks

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ * Template file to theme a Drupal node ($node object).
+ *
+ * See modules/node/node.tpl.php for more information about available variables.
+ */
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?>"<?php print $attributes; ?>>
   <?php print $user_picture; ?>
@@ -16,9 +22,9 @@
       // We hide the comments and links now so that we can render them later.
       hide($content['comments']);
       hide($content['links']);
-      // we are going to use a body with fixed file urls, see template.php
+      // We are going to use a body with fixed file urls, see template.php.
       hide($content['body']);
-      //$content['comments']['#printed'] = FALSE;
+      // $content['comments']['#printed'] = FALSE;
       print render($content);
       print $fixed_body;
     ?>

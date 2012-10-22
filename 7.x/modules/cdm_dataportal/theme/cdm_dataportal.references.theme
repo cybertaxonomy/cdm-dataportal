@@ -1,14 +1,21 @@
 <?php
-// $Id$
+/**
+ * @file
+ * Reference theming functions.
+ *
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ */
 
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1
- * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
 function theme_cdm_reference_pager($variables) {
   $referencePager = $variables['referencePager'];
@@ -19,13 +26,21 @@ function theme_cdm_reference_pager($variables) {
   if (count($referencePager->records) > 0) {
     $out .= '<ul>';
     foreach ($referencePager->records as $reference) {
-      $reference->fullCitation = $reference->titleCache; // FIXME remove hack
-      // for matching cdm
-      // entity to STO
-      $out .= '<li>' . theme('cdm_reference', array('reference' => $reference, 'microReference' => null, 'doLink' => TRUE)) . '</li>';
+      // FIXME remove hack.
+      $reference->fullCitation = $reference->titleCache;
+      // For matching cdm entity to STO.
+      $out .= '<li>' . theme('cdm_reference', array(
+        'reference' => $reference,
+        'microReference' => NULL,
+        'doLink' => TRUE,
+        )) . '</li>';
     }
     $out .= '</ul>';
-    $out .= theme('cdm_pager', array('pager' => $referencePager, 'path' => $path, 'parameters' => $parameters));
+    $out .= theme('cdm_pager', array(
+      'pager' => $referencePager,
+      'path' => $path,
+      'parameters' => $parameters,
+    ));
   }
   else {
     $out = '<h4 class="error">Sorry, this page contains not entries.</h4>';
@@ -34,10 +49,21 @@ function theme_cdm_reference_pager($variables) {
 }
 
 /**
- * used by
+ * Returns HTML for a reference.
+ *
+ * Used by:
  * - theme_cdm_typedesignations
  * - theme_cdm_reference_pager
  * - theme_cdm_taxonRelationships
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - reference
+ *   - microReference
+ *   - doLink
+ *   - referenceStyle
+ *
+ * @ingroup themeable
  */
 function theme_cdm_reference($variables) {
   $reference = $variables['reference'];
@@ -55,7 +81,7 @@ function theme_cdm_reference($variables) {
   }
 
   if (isset($doLink) && $doLink === TRUE) {
-    $out ='<span class="reference">';
+    $out = '<span class="reference">';
     $out .= l($citation, path_to_reference($reference->uuid), array(
       'attributes' => array(
         "class" => "reference",
@@ -69,12 +95,17 @@ function theme_cdm_reference($variables) {
     $out = '<span class="reference">' . $citation . '</span>';
   }
 
-  if (! empty($microReference)) {
+  if (!empty($microReference)) {
     $out .= ": " . $microReference;
   }
 
   return $out;
 }
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function _short_form_of_author_team($author_team) {
   $number_of_authors = substr_count($author_team, ' & ') + 1;
   // var_dump($author_team);
@@ -83,9 +114,11 @@ function _short_form_of_author_team($author_team) {
     case 1:
       $result = $author_team;
       break;
+
     case 2:
       $result = str_replace(' & ', ' and ', $author_team);
       break;
+
     default:
       $result_parts = explode(' & ', $author_team);
       $result = $result_parts[0] . ' et al.';

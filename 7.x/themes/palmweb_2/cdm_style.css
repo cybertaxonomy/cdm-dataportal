@@ -131,3 +131,7 @@ div.error, .error {
 .maintenance-page #content-content {
   font-size: 1.12em;
 }
+/* Style the admin config page a little if no overlay is used. */
+dl.admin-list dd {
+  clear: both;
+}

@@ -1,14 +1,21 @@
 <?php
-// $Id$
+/**
+ * @file
+ * Description theming functions.
+ *
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ */
 
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1
- * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
 function theme_cdm_feature_nodesTOC($variables) {
   $featureNodes = $variables['featureNodes'];
@@ -20,11 +27,10 @@ function theme_cdm_feature_nodesTOC($variables) {
     if (hasFeatureNodeDescriptionElements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
-      // HACK to implement images for taxa, should be removed
+      // HACK to implement images for taxa, should be removed.
       if ($node->feature->uuid != UUID_IMAGE) {
         $out .= '<li>' . l(t(theme('cdm_feature_name', array('feature_name' => $featureRepresentation))), $_GET['q'], array(
          'attributes' => array('class' => array('toc')), 'fragment' => generalizeString($featureRepresentation))) . '</li>';
-       
       }
     }
   }
@@ -32,6 +38,7 @@ function theme_cdm_feature_nodesTOC($variables) {
   $out .= '</ul>';
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -39,33 +46,33 @@ function theme_cdm_feature_nodesTOC($variables) {
 function theme_cdm_feature_name($variables) {
   $feature_name = $variables['feature_name'];
   // TODO replace by using translations ?
-  switch ($feature_name) {
-    default:
-      return t(ucfirst($feature_name));
-  }
+  return t(ucfirst($feature_name));
 }
 
 /**
- * Renders the taxon profile.
- * The taxon profile consists of description elements
- * which are ordered by the structure defined by specific FeatureTree. The
- * chosen
- * FeatureTree is merged with the list of desctiprion elements prior to using
- * this
- * method (see function cdm_ws_descriptions_by_featuretree() ).
+ * Returns HTML for a taxon profile.
  *
- * @param unknown_type $mergedTrees
- * @param unknown_type $taxon
- *          The taxon whose sprofile to show
+ * The taxon profile consists of description elements which are ordered by the
+ * structure defined by specific FeatureTree. The chosen FeatureTree is merged
+ * with the list of desctiprion elements prior to using this method.
+ *
+ * @see cdm_ws_descriptions_by_featuretree()
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - mergedTrees
+ *   - taxon: The taxon whose sprofile to show.
+ *
+ * @ingroup themeable
  */
 function theme_cdm_featureTrees($variables) {
   $mergedTrees = $variables['mergedTrees'];
   $taxon = $variables['taxon'];
   $out = '';
-  if (! $mergedTrees) {
+  if (!isset($mergedTrees)) {
     return;
   }
-  
+
   foreach ($mergedTrees as &$mTree) {
     // TODO display title and reference in case of multiple $mergedTrees ->
     // theme
@@ -74,21 +81,21 @@ function theme_cdm_featureTrees($variables) {
 
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_featureTreeTOCs($variables) {
   $mergedTrees = $variables['mergedTrees'];
-  if (! $mergedTrees) {
+  if (!$mergedTrees) {
     return;
   }
-  // FIXME
+  // FIXME.
   $out = '<div id="featureTOC">';
   $out .= '<h2>' . t('Content') . '</h2>';
 
-  // TODO diplay title and reference in case of multiple $mergedTrees -> theme
-
+  // TODO diplay title and reference in case of multiple $mergedTrees -> theme.
   foreach ($mergedTrees as &$mTree) {
     $out .= theme('cdm_feature_nodesTOC', array('featureNodes' => $mTree->root->children));
   }
@@ -98,26 +105,31 @@ function theme_cdm_featureTreeTOCs($variables) {
 }
 
 /**
- * Renders the $mergedFeatureNodes for the given $taxon.
- * The merged nodes can be obtained by making use of the
- * function cdm_ws_descriptions_by_featuretree()
+ * Returns HTML for the $mergedFeatureNodes of a given $taxon.
  *
- * @param unknown_type $featureNodes
- * @param unknown_type $taxon
+ * The merged nodes can be obtained by making use of the
+ * function cdm_ws_descriptions_by_featuretree().
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - mergedFeatureNodes
+ *   -taxon
+ *
+ * @ingroup themeable
  */
 function theme_cdm_feature_nodes($variables) {
-  
+
   $mergedFeatureNodes = $variables['mergedFeatureNodes'];
   $taxon = $variables['taxon'];
   $out = '';
-  
+
   RenderHints::pushToRenderStack('feature_nodes');
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
-  // Creating an array to place the description elements in
-  $block = new stdclass(); // empty object
+  // Creating an array to place the description elements in.
+  $block = new stdclass(); // Empty object.
   foreach ($mergedFeatureNodes as $node) {
-    
+
     if (hasFeatureNodeDescriptionElements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
@@ -132,7 +144,7 @@ function theme_cdm_feature_nodes($variables) {
         $block->content = '';
 
         /*
-         * Content/DISTRIBUTION
+        Content/DISTRIBUTION.
          */
         if ($node->feature->uuid == UUID_DISTRIBUTION) {
 
@@ -149,48 +161,59 @@ function theme_cdm_feature_nodes($variables) {
             }
             if (count($distributionTextDataList) > 0) {
               $node->descriptionElements = $distributionElementsList;
-              $block->content .= theme('cdm_descriptionElements', array('descriptionElements' => $distributionTextDataList, 'featureUuid' => $node->feature->uuid, 'taxon_uuid' => $taxon->uuid));
+              $block->content .= theme('cdm_descriptionElements', array(
+                'descriptionElements' => $distributionTextDataList,
+                'featureUuid' => $node->feature->uuid,
+                'taxon_uuid' => $taxon->uuid,
+              ));
             }
-            
           }
 
           // Display cdm distribution map TODO this is a HACK to a proper
           // generic implementation?
           $block->content .= theme('cdm_distribution_map', array('taxon' => $taxon));
-          $block->content .= theme('cdm_descriptionElements', array('descriptionElements' => $node->descriptionElements, 'featureUuid' => $node->feature->uuid, 'taxon_uuid' => $taxon->uuid));
+          $block->content .= theme('cdm_descriptionElements', array(
+            'descriptionElements' => $node->descriptionElements,
+            'featureUuid' => $node->feature->uuid,
+            'taxon_uuid' => $taxon->uuid,
+          ));
         }
 
         /*
-         * Content/COMMON_NAME
-         */
-        else if ($node->feature->uuid == UUID_COMMON_NAME) {
+        Content/COMMON_NAME.
+        */
+        elseif ($node->feature->uuid == UUID_COMMON_NAME) {
           // TODO why is theme_cdm_descriptionElement_CommonTaxonName not
           // beeing used???
          $block->content .= theme('cdm_common_names', array('elements' => $node->descriptionElements));
           /*
-           * }else if($node->feature->uuid == UUID_IMAGE_SOURCES) {
-           * $block->content .= theme('cdm_image_sources',
-           * $node->descriptionElements);
-           */
+          }else if($node->feature->uuid == UUID_IMAGE_SOURCES) {
+          $block->content .= theme('cdm_image_sources',
+          $node->descriptionElements);
+          */
         }
 
         /*
-         * Content/ALL OTHER FEATURES
-         */
+        Content/ALL OTHER FEATURES.
+        */
         else {
-          if(isset($node->descriptionElements)) {
-            $block->content .= theme('cdm_descriptionElements', array('descriptionElements' => $node->descriptionElements, 'featureUuid' => $node->feature->uuid, 'taxon_uuid' => $taxon->uuid));
+          if (isset($node->descriptionElements)) {
+            $block->content .= theme('cdm_descriptionElements', array(
+              'descriptionElements' => $node->descriptionElements,
+              'featureUuid' => $node->feature->uuid,
+              'taxon_uuid' => $taxon->uuid,
+            ));
           }
           /*
-           * Content/ALL OTHER FEATURES/Subordinate Features subordinate
-           * features are printed inline in one floating text, it is expected
-           * that supordinate features only "contain" TextData elements
-           */
-          // TODO move into own theme
+          Content/ALL OTHER FEATURES/Subordinate Features subordinate
+          features are printed inline in one floating text, it is expected
+          hat supordinate features only "contain" TextData elements
+          */
+          // TODO move into own theme.
           if (count($node->children) > 0) {
 
-            // TODO support more than one level of childen
-            // http://dev.e-taxonomy.eu/trac/ticket/2393
+            // TODO support more than one level of children.
+            // @see http://dev.e-taxonomy.eu/trac/ticket/2393
             $text = '';
             foreach ($node->children as $child) {
 
@@ -198,16 +221,15 @@ function theme_cdm_feature_nodes($variables) {
                 foreach ($child->descriptionElements as $element) {
 
                   if (is_array($element->media)) {
-                    // append media of supordinate emelents to list of main
-                    // feature
-                    
+                    // Append media of supordinate elements to list of main
+                    // feature.
                     $media_list = array_merge($media_list, $element->media);
                   }
 
                   $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
                   // TODO use localized version of feature name, the locale
-                  // must match the locale of the multilanguage text
-                  // (http://dev.e-taxonomy.eu/trac/ticket/2394)
+                  // must match the locale of the multilanguage text.
+                  // @see http://dev.e-taxonomy.eu/trac/ticket/2394
                   $description = str_replace($element->feature->titleCache, '<em>' . $element->feature->titleCache . '</em>', $description);
                 }
                 $text .= " " . $description;
@@ -219,55 +241,60 @@ function theme_cdm_feature_nodes($variables) {
         }
 
         /*
-         * Media/ALL FEATURES
+        Media/ALL FEATURES.
          */
-        if (isset($node->descriptionElements)){
+        if (isset($node->descriptionElements)) {
           $media_list = array_merge($media_list, cdm_dataportal_media_from_descriptionElements($node->descriptionElements));
         }
-        $captionElements = array(
-          'title',
-          'rights',
-        );
+        $captionElements = array('title', 'rights');
         $gallery = '';
         if (isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_maxRows']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
-          $gallery = theme('cdm_media_gallerie', array('mediaList' => $media_list, 'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $node->feature->uuid, 'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'], 'cols' => $gallery_settings['cdm_dataportal_media_cols'], 'maxRows' => $gallery_settings['cdm_dataportal_media_maxRows'], 'captionElements' => $captionElements));
+          $gallery = theme('cdm_media_gallerie', array(
+            'mediaList' => $media_list,
+            'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $node->feature->uuid,
+            'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+            'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+            'maxRows' => $gallery_settings['cdm_dataportal_media_maxRows'],
+            'captionElements' => $captionElements,
+          ));
         }
         $block->content .= $gallery;
         $block->content .= theme('cdm_footnotes', array('footnoteListKey' => $node->feature->uuid));
         $block->content .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $node->feature->uuid));
-        
-        // add anchor to subject
+
+        // Add anchor to subject.
         $block->subject = '<a name="' . $block->delta . '"></a>' . $block->subject;
-        
-        // in D6: $out .= theme('block', $block);
-        //WA @TODO check if need to set a region, and which one 
-        $block->region = false;
-        $out .= theme('block', array( 'elements' => array('#block' => $block, '#children' => $block->content )));
-        
+
+        // In D6: $out .= theme('block', $block);
+        // Comment @WA @TODO check if need to set a region, and which one.
+        $block->region = FALSE;
+        $out .= theme('block', array('elements' => array(
+          '#block' => $block,
+          '#children' => $block->content,
+        )));
       }
     }
   }
-  
   RenderHints::popFromRenderStack();
   return $out;
-  
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
 function theme_FeatureTree_hierarchy($variables) {
-  
+
   $FeatureTreeUuid = $variables['FeatureTreeUuid'];
-  if (! is_uuid($FeatureTreeUuid)) {
+  if (!is_uuid($FeatureTreeUuid)) {
     return;
   }
-  
+
   $out = '';
   $featureTree = cdm_ws_get(CDM_WS_FEATURETREE, array(
     $FeatureTreeUuid,
   ));
-  
+
   if (isset($featureTree) && isset($featureTree->root)) {
     $out = '<ul class="' . $featureTree->class . '">';
     $out .= theme('FeatureTree_hierarchy_children', array('node' => $featureTree->root));
@@ -275,12 +302,13 @@ function theme_FeatureTree_hierarchy($variables) {
   }
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
 function theme_FeatureTree_hierarchy_children($variables) {
-  
+
   $node = $variables['node'];
   $out = '';
   if (isset($node->children)) {
@@ -293,28 +321,28 @@ function theme_FeatureTree_hierarchy_children($variables) {
       $out .= '</li>';
     }
   }
-  
   return $out;
 }
 
 /**
+ * Returns HTML for the texts in a description $elementArray.
  *
+ * Joins the texts in $elementArray and encloses with a HTML tag.
  *
- * Join the texts in $elementArray and enclose with a HTML tag
+ * @param array $variables
+ *   An associative array containing:
+ *   - elementArray
+ *   - feature: The feature to which the elements given in $elementArray are
+ *     belonging to.
+ *   - glue: Defaults to empty string.
+ *   - sortArray: Whether to sort the $elementArray alphabetically.
+ *   - enclosingHtml
  *
- * @param unknown_type $elementArray
- * @param unknown_type $feature
- *          the feature to which the elements given in $elementArray are
- *          belonging to
- * @param unknown_type $glue
- *          defaults to empty string
- * @param unknown_type $sortArray
- *          whether to sort the $elementArray alphabetically
- * @param unknown_type $enclosingHtml
+ * @ingroup themeable
  */
 function theme_cdm_descriptionElementArray($variables) {
   $elementArray = $variables['elementArray'];
-  
+
   $feature = $variables['feature'];
   $glue = $variables['glue'];
   $sortArray = $variables['sortArray'];
@@ -330,6 +358,7 @@ function theme_cdm_descriptionElementArray($variables) {
   $out .= '</' . $enclosingHtml . '>';
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -341,22 +370,26 @@ function theme_cdm_descriptionElement_CommonTaxonName($variables) {
 }
 
 /**
- * TODO: assign a new name to the function? because it is used for the citations
- * textdata elements and not for all text data description elements
+ * Returns HTML for citations textdata elements.
  *
- * @param $element The
- *          description element which contains the text information
- * @param $asListElement A
- *          boolean which determines whether the citations should
- *          be renderer as a list or not
- * @return unknown_type Html to be renderized in drupal
+ * TODO: assign a new name to the function? Because it is used for the citations
+ * textdata elements and not for all text data description elements.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: The description element which contains the text information.
+ *   - asListElement: A boolean which determines whether the citations should
+ *     be rendered as a list or not.
+ *   - feature_uuid
+ *
+ * @ingroup themeable
  */
 function theme_cdm_descriptionElementTextData($variables) {
   $element = $variables['element'];
   $asListElement = $variables['asListElement'];
   $feature_uuid = $variables['feature_uuid'];
   $description = '';
-  if(isset($element->multilanguageText_L10n->text)) {
+  if (isset($element->multilanguageText_L10n->text)) {
     $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   }
   $sourceRefs = '';
@@ -364,14 +397,13 @@ function theme_cdm_descriptionElementTextData($variables) {
   $out = '';
   $res_author = '';
   $res_date = '';
-  if (is_array($element->sources) && count($element->sources) > 0) {
+  if (isset($element->sources) && is_array($element->sources) && count($element->sources) > 0) {
     foreach ($element->sources as $source) {
-      
       $referenceCitation = theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source));
       if ($description && strlen($description) > 0 && $referenceCitation) {
         $sourceRefs .= ' (' . $referenceCitation . ')';
       }
-      else if ($referenceCitation) {
+      elseif ($referenceCitation) {
         $sourceRefs = $referenceCitation;
       }
 
@@ -379,25 +411,23 @@ function theme_cdm_descriptionElementTextData($variables) {
         $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
       }
       $name_used_in_source_link_to_show = '';
-      if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) { // do a link to name page
+      // Do a link to name page.
+      if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
         $name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache, path_to_name($source->nameUsedInSource->uuid), array(
           'attributes' => array(),
           'absolute' => TRUE,
           'html' => TRUE,
         ));
       }
-      else if (isset($source->nameUsedInSource->originalNameString) && strlen($source->nameUsedInSource->originalNameString) > 0) { // show
-        // a
-        // text
-        // without
-        // link
+      // Show a text without link.
+      elseif (isset($source->nameUsedInSource->originalNameString) && strlen($source->nameUsedInSource->originalNameString) > 0) {
         $name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
       }
 
       if ($asListElement) {
 
         $out = '<li class="descriptionText DescriptionElement">' . $name_used_in_source_link_to_show;
-        // adding ":" if necesary
+        // Adding ":" if necessary.
         if ($name_used_in_source_link_to_show && ($description || $sourceRefs)) {
           $out .= ': ';
         }
@@ -413,11 +443,12 @@ function theme_cdm_descriptionElementTextData($variables) {
     }
   }
   else {
-    // if no sources, print the description
+    // If no sources, print the description.
     $out = $description;
   }
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -436,31 +467,41 @@ function theme_cdm_common_names($variables) {
         // $element->area->titleCache . ')';
         if (isset($element->language->representation_L10n)) {
           $key = '<b>' . $element->language->representation_L10n . '</b>';
-          $key .= (strlen($element->area->titleCache) > 0) ? ' (' . $element->area->titleCache . ')' : '';
+          $key .= (isset($element->area->titleCache) && strlen($element->area->titleCache) > 0) ? ' (' . $element->area->titleCache . ')' : '';
+          $common_names[$key][] = $element;
         }
-        $common_names[$key][] = $element;
+        else {
+          // @Comment WA: common name without a language, should this happen?
+          // example: flore_gabon/cdm_dataportal/taxon/24f36d18-a6e8-4edb-93bf-4a30f3394bf5.
+          // if(!isset($key)) { // Just to mimic same behaviour as in D5.
+          $key = '';
+          // }
+          $common_names[$key][] = $element;
+        }
       }
-      else if ($element->class == 'TextData') {
+      elseif ($element->class == 'TextData') {
         // else if ($element->class == 'TextData' && $element->feature->uuid
         // == UUID_COMMON_NAME){
         $textData_commonNames[] = $element;
       }
     }
   }
-  // handling common names
-
+  // Handling common names.
   if (isset($common_names) && count($common_names) > 0) {
-    // sorting the a-array based on the area (key)
+    // Sorting the array based on the key (language, + area if set).
+    // Comment @WA there are common names without a language, so this sorting
+    // can give strange results.
     ksort($common_names);
-    // creating the output to be render by drupal
+
+    // Creating the output to be render by Drupal.
     foreach ($common_names as $key => $elements) {
       $rendered_element_list = '';
       foreach ($elements as $element) {
         $sourcesFootnoteKeyList = '';
-        // adding footnotes sources
+        // Adding footnotes sources.
         foreach ($element->sources as $source) {
           if (_is_original_source_type($source)) {
-            $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => false)));
+            $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
             $sourcesFootnoteKeyList .= theme('cdm_footnote_key', array('footnoteKey' => $_fkey, 'separator' => ($sourcesFootnoteKeyList ? $separator : '')));
           }
         }
@@ -476,9 +517,13 @@ function theme_cdm_common_names($variables) {
       }
     }
   }
-  // handling commons names as text data
+  // Handling commons names as text data.
   foreach ($textData_commonNames as $text_data_element) {
-    $text_data_out .= theme('cdm_descriptionElementTextData', array('element' => $text_data_element, 'asListElement' => true, 'feature_uuid' => $text_data_element->feature->uuid));
+    $text_data_out .= theme('cdm_descriptionElementTextData', array(
+      'element' => $text_data_element,
+      'asListElement' => TRUE,
+      'feature_uuid' => $text_data_element->feature->uuid,
+    ));
   }
 
   $common_name_out = "<div class=common_names_as_common_names> $common_name_out </div>";
@@ -486,18 +531,26 @@ function theme_cdm_common_names($variables) {
   $common_name_out_text_data = '<div class=common_names_as_text_data>' . theme('cdm_descriptionElementArray', array('elementArray' => $out_array, 'feature' => $element->feature)) . '</div>';
 
   return $common_name_out . $common_name_out_text_data;
-  // return $common_name_out . theme('cdm_descriptionElementArray', $out_array,
-  // $element->feature);
-  // return "<div class=common_names> $common_name_out
-  // $common_name_out_text_data";
+  /*
+  return $common_name_out . theme('cdm_descriptionElementArray', $out_array,
+  $element->feature);
+  return "<div class=common_names> $common_name_out
+  $common_name_out_text_data";
+  */
 }
 
 /**
- * Theme a list of description elements, usually of a specific feature type
+ * Return HTML for a list of description elements.
  *
- * @param
- *          $descriptionElements
- * @return unknown_type
+ * Usually these are of a specific feature type.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - descriptionElements
+ *   - featureUuid
+ *   - taxon_uuid
+ *
+ * @ingroup themeable
  */
 function theme_cdm_descriptionElements($variables) {
   $descriptionElements = $variables['descriptionElements'];
@@ -506,17 +559,17 @@ function theme_cdm_descriptionElements($variables) {
   $outArray = array();
 
   /*
-   * $userDefined = mixed_variable_get(LAYOUT_SETTING_PREFIX . $featureUuid,
-   * FEATURE_TREE_LAYOUT_DEFAULTS); if(variable_get('distribution_sort',
-   * 'NO_SORT') != 'NO_SORT'){ $glue = ''; $enclosingTag = 'dl';
-   * $entryEnclosingTag = null; } else if($userDefined &&
-   * $userDefined['enabled']){ $glue = $userDefined['glue']; $enclosingTag =
-   * $userDefined['enclosingTag']; $entryEnclosingTag =
-   * $userDefined['entryEnclosingTag']; } else { // TODO remove once
-   * LAYOUT_SETTING_PREFIX-{uuid} seeting are confired to work for all portals
-   * (selenium test still missing!!!) $glue = ''; $enclosingTag = 'ul';
-   * $entryEnclosingTag = null ; }
-   */
+  $userDefined = mixed_variable_get(LAYOUT_SETTING_PREFIX . $featureUuid,
+  FEATURE_TREE_LAYOUT_DEFAULTS); if(variable_get('distribution_sort',
+  'NO_SORT') != 'NO_SORT'){ $glue = ''; $enclosingTag = 'dl';
+  $entryEnclosingTag = NULL; } else if($userDefined &&
+  $userDefined['enabled']){ $glue = $userDefined['glue']; $enclosingTag =
+  $userDefined['enclosingTag']; $entryEnclosingTag =
+  $userDefined['entryEnclosingTag']; } else { // TODO remove once
+  LAYOUT_SETTING_PREFIX-{uuid} seeting are confired to work for all portals
+  (selenium test still missing!!!) $glue = ''; $enclosingTag = 'ul';
+  $entryEnclosingTag = NULL ; }
+  */
 
   if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
     $glue = '';
@@ -527,13 +580,13 @@ function theme_cdm_descriptionElements($variables) {
     $enclosingTag = 'ul';
   }
 
-  $sortOutArray = false;
+  $sortOutArray = FALSE;
   $distributionElements = array();
 
   RenderHints::pushToRenderStack('cdm_descriptionElements');
 
-  if (is_array($descriptionElements)) { // avoiding warning box in drupal for
-    // flora malesiana
+  // Avoiding warning box in drupal for flora malesiana.
+  if (is_array($descriptionElements)) {
     foreach ($descriptionElements as $descriptionElement) {
 
       // --- DISTRIBUTION ---- //
@@ -542,16 +595,20 @@ function theme_cdm_descriptionElements($variables) {
           $sortKey = $descriptionElement->area->representation_L10n;
           $distributionElements[$sortKey] = $descriptionElement;
         }
-        else if ($descriptionElement->class == 'TextData') {
-          $asListElement = false;
-          $repr = theme('cdm_descriptionElementTextData', array('element' => $descriptionElement, 'asListElement' => $asListElement, 'feature_uuid' => $descriptionElement->feature->uuid));
+        elseif ($descriptionElement->class == 'TextData') {
+          $asListElement = FALSE;
+          $repr = theme('cdm_descriptionElementTextData', array(
+            'element' => $descriptionElement,
+            'asListElement' => $asListElement,
+            'feature_uuid' => $descriptionElement->feature->uuid,
+          ));
 
-          if (! array_search($repr, $outArray)) {
+          if (!array_search($repr, $outArray)) {
             $outArray[] = $repr;
             // TODO HINT: sorting in theme_cdm_descriptionElementArray will
             // not work since this array contains html attributes with uuids
             // !!!!
-            $sortOutArray = true;
+            $sortOutArray = TRUE;
             $glue = '<br/> ';
             $enclosingTag = 'p';
           }
@@ -559,25 +616,29 @@ function theme_cdm_descriptionElements($variables) {
       }
 
       // --- IMAGE_SOURCES --- //
-      else if ($descriptionElement->feature->uuid == UUID_IMAGE_SOURCES) {
+      elseif ($descriptionElement->feature->uuid == UUID_IMAGE_SOURCES) {
         $image_sources[] = $descriptionElement;
       }
       // --- USE TEXTDATA --- //
-      else if ($descriptionElement->feature->uuid == UUID_USE) {
-        // Do nothing to avoid rendering
+      elseif ($descriptionElement->feature->uuid == UUID_USE) {
+        // Do nothing to avoid rendering.
       }
 
       // ---- class == TextData ---- //
-      else if ($descriptionElement->class == 'TextData') {
-        $asListElement = true;      
-        $outArray[] = theme('cdm_descriptionElementTextData', array('element' => $descriptionElement, 'asListElement' => $asListElement, 'feature_uuid' => $descriptionElement->feature->uuid));
+      elseif ($descriptionElement->class == 'TextData') {
+        $asListElement = TRUE;
+        $outArray[] = theme('cdm_descriptionElementTextData', array(
+          'element' => $descriptionElement,
+          'asListElement' => $asListElement,
+          'feature_uuid' => $descriptionElement->feature->uuid,
+        ));
       }
-      else if ($descriptionElement->class == 'CommonTaxonName') {
+      elseif ($descriptionElement->class == 'CommonTaxonName') {
         $outArray[] = theme('cdm_descriptionElement_CommonTaxonName', array('element' => $descriptionElement));
       }
-      else if ($descriptionElement->class == 'Uses') {
-        //@WA theme_cdm_descriptionElement_Uses does not exist..
-        //$outArray[] = theme('cdm_descriptionElement_Uses', array('descriptionElement' => $descriptionElement));
+      elseif ($descriptionElement->class == 'Uses') {
+        // Comment @WA: theme_cdm_descriptionElement_Uses does not exist..
+        // $outArray[] = theme('cdm_descriptionElement_Uses', array('descriptionElement' => $descriptionElement));
       }
       else {
         $outArray[] = '<li>No method for rendering unknown description class: ' . $descriptionElement->classType . '</li>';
@@ -585,14 +646,14 @@ function theme_cdm_descriptionElements($variables) {
     }
   }
 
-  // if feature = NAME USAGE sort the list of sources
-  // this is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE
+  // If feature = NAME USAGE sort the list of sources.
+  // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
   if ($descriptionElement->feature->uuid == UUID_NAME_USAGE) {
     sort($outArray);
   }
 
   if (isset($image_sources)) {
-    $outArray[] = theme('cdm_description_element_image_source', array('image_sources' => $image_sources, 'asListElement' => true));
+    $outArray[] = theme('cdm_description_element_image_source', array('image_sources' => $image_sources, 'asListElement' => TRUE));
   }
 
   if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
@@ -600,36 +661,41 @@ function theme_cdm_descriptionElements($variables) {
   }
   else {
     ksort($distributionElements);
-    $outArray[] = theme('cdm_descriptionElementDistribution', array('descriptionElements' => $distributionElements)); // TODO
-    // ,
-    // $entryEnclosingTag);
+    // TODO , $entryEnclosingTag);
+    $outArray[] = theme('cdm_descriptionElementDistribution', array(
+      'descriptionElements' => $distributionElements,
+    ));
   }
 
-  // take the feature of the last $descriptionElement
+  // Take the feature of the last $descriptionElement.
   $feature = $descriptionElement->feature;
 
-  $out = theme('cdm_descriptionElementArray', array('elementArray' => $outArray, 'feature' => $feature, 'glue' => $glue, 'sortArray' => $sortOutArray, 'enclosingHtml' => $enclosingTag));
+  $out = theme('cdm_descriptionElementArray', array(
+    'elementArray' => $outArray,
+    'feature' => $feature,
+    'glue' => $glue,
+    'sortArray' => $sortOutArray,
+    'enclosingHtml' => $enclosingTag,
+  ));
 
   RenderHints::popFromRenderStack();
   return $out;
 }
 
 /**
- *
- *
- * Enter description here ...
- *
- * @param unknown_type $a
- * @param unknown_type $b
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
 function compare_image_sources($a, $b) {
   if ($a->multilanguageText_L10n->text == $b->multilanguageText_L10n->text) {
     return 0;
   }
-  return ($a->multilanguageText_L10n->text < $b->multilanguageText_L10n->text) ? - 1 : 1;
+  return ($a->multilanguageText_L10n->text < $b->multilanguageText_L10n->text) ? -1 : 1;
 }
 
 /**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
 function theme_cdm_description_element_image_source($variables) {
   $image_sources = $variables['image_sources'];
@@ -639,26 +705,28 @@ function theme_cdm_description_element_image_source($variables) {
   RenderHints::pushToRenderStack('descriptionElementImageSource');
   RenderHints::setFootnoteListKey(UUID_IMAGE_SOURCES);
 
-  // sorting the image sources
+  // Sorting the image sources.
   usort($image_sources, "compare_image_sources");
-  // generate the footnotes
+  // Generate the footnotes.
   foreach ($image_sources as $image_source) {
     $footNoteKeys = cdm_annotations_as_footnotekeys($image_source);
     foreach ($image_source->sources as $source) {
       if (_is_original_source_type($source)) {
-        $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => false)));
-        cdm_add_footnote_to_array($footNoteKeys, $fn_key); // ensure uniqueness
-        // of the footnote
-        // keys
+        $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array(
+          'descriptionElementSource' => $source,
+          'doLink' => FALSE,
+        )));
+        // Ensure uniqueness of the footnote keys.
+        cdm_add_footnote_to_array($footNoteKeys, $fn_key);
       }
     }
-    // sort and render footnote keys
+    // Sort and render footnote keys.
     $footnoteKeyListStr = '';
     asort($footNoteKeys);
     foreach ($footNoteKeys as $footNoteKey) {
       $footnoteKeyListStr .= theme('cdm_footnote_key', array('footnoteKey' => $footNoteKey, 'separator' => ($footnoteKeyListStr ? $separator : '')));
     }
-    // return value!
+    // Return value!
     $out .= '<span class="descriptionElement descriptionElement-' . $image_source->uuid . '">' . $image_source->multilanguageText_L10n->text . $footnoteKeyListStr . '; </span>';
   }
 
@@ -667,14 +735,13 @@ function theme_cdm_description_element_image_source($variables) {
 }
 
 /**
- *
- * @param unknown_type $descriptionElements
- * @param String $enclosingTag
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
 function theme_cdm_descriptionElementDistribution($variables) {
   $descriptionElements = $variables['descriptionElements'];
   $enclosingTag = $variables['enclosingTag'];
-  if (! $enclosingTag) {
+  if (!$enclosingTag) {
     $enclosingTag = "span";
   }
 
@@ -685,18 +752,20 @@ function theme_cdm_descriptionElementDistribution($variables) {
 
   foreach ($descriptionElements as $descriptionElement) {
 
-    // annotations as footnotes
+    // Annotations as footnotes.
     $footNoteKeys = cdm_annotations_as_footnotekeys($descriptionElement);
-    // source references as footnotes
+    // Source references as footnotes.
     foreach ($descriptionElement->sources as $source) {
       if (_is_original_source_type($source)) {
-        $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => false)));
-        cdm_add_footnote_to_array($footNoteKeys, $fn_key); // ensure uniqueness
-        // of the footnote
-        // keys
+        $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array(
+          'descriptionElementSource' => $source,
+          'doLink' => FALSE,
+        )));
+        // Ensure uniqueness of the footnote keys.
+        cdm_add_footnote_to_array($footNoteKeys, $fn_key);
       }
     }
-    // sort and render footnote keys
+    // Sort and render footnote keys.
     $footnoteKeyListStr = '';
     asort($footNoteKeys);
     foreach ($footNoteKeys as $footNoteKey) {
@@ -711,25 +780,30 @@ function theme_cdm_descriptionElementDistribution($variables) {
 }
 
 /**
- * Function target is to compare two different foootnotes objects.
- * The comparation is based on the footnote key. The one which is
+ * Compare two different footnotes objects.
+ *
+ * The comparison is based on the footnote key. The one which is
  * displayed as footnote number.
  *
- * @param
- *          footnote object $a
- * @param
- *          footnote object $b
+ * @param mixed $a
+ *   Footnote object $a.
+ * @param mixed $b
+ *   Footnote object $b.
  */
 function footnotes_key_compare($a, $b) {
   $res = 0;
+  if (empty($a) || empty($b)) {
+    return $res;
+  }
   if ($a->keyStr < $b->keyStr) {
-    $res = - 1;
+    $res = -1;
   }
   elseif ($a->keyStr > $b->keyStr) {
     $res = 1;
   }
   return $res;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -737,16 +811,16 @@ function footnotes_key_compare($a, $b) {
 function theme_cdm_description_ordered_distributions($variables) {
   $taxon_uuid = $variables['taxon_uuid'];
   $descriptionElements = $variables['descriptionElements'];
-  // returning null if no description elements
-  if ($descriptionElements == null) {
+  // Returning NULL if there are no description elements.
+  if ($descriptionElements == NULL) {
     return '';
   }
-  // initialization some variables
+  // Initialization of some variables.
   $out = '';
   $separator = ',';
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
-  // getting all the taxon description for a given taxon
+  // Getting all the taxon description for a given taxon.
   $markerTypesEmpty = array();
   // $markerTypesEmpty['markerTypes'] = 'af9860ff-08f5-4b4d-863c-49ae96985115';
   $markerTypesEmpty['markerTypes'] = '';
@@ -754,21 +828,21 @@ function theme_cdm_description_ordered_distributions($variables) {
   foreach ($taxonDescriptions as $description) {
     $descriptions_uuids[] = $description->uuid;
   }
-  // getting the sortered distributions (omiting level ??)
+  // Getting the sortered distributions (omitting level ??).
   $request_params = array();
   $request_params['omitLevels'] = UUID_NAMEDAREALEVEL_TDWGLEVEL_2;
   $ordered_areas = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE, join(',', $descriptions_uuids), queryString($request_params));
   $ordered_areas = $ordered_areas->rootElement->children;
 
-  // printing the distributions
+  // Printing the distributions.
   foreach ($ordered_areas as $element_level1) {
-    // level1
+    // Level1.
     if ($element_level1->data) {
       $out .= '<dt>' . $element_level1->data->area->representation_L10n . ':</dt> ';
     }
     $out .= '<dd>';
 
-    // level3
+    // Level3.
     foreach ($element_level1->children as $element_level3) {
       if ($element_level3->data) {
         $text_l3 = $element_level3->data->area->representation_L10n;
@@ -777,11 +851,11 @@ function theme_cdm_description_ordered_distributions($variables) {
       $fnKeysLevel3 = cdm_annotations_as_footnotekeys($element_level3->data);
       foreach ($element_level3->data->sources as $source) {
         if (_is_original_source_type($source)) {
-          $fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => false)));
+          $fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
           cdm_add_footnote_to_array($fnKeysLevel3, $fn_key3);
         }
       }
-      // level4
+      // Level4.
       $l4_regions = array();
       foreach ($element_level3->children as $element_level4) {
         if ($element_level4->data) {
@@ -791,15 +865,15 @@ function theme_cdm_description_ordered_distributions($variables) {
           $fnKeysLevel4 = cdm_annotations_as_footnotekeys($element_level4->data);
           foreach ($element_level4->data->sources as $source) {
             if (_is_original_source_type($source)) {
-              $fn_key4 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => false)));
+              $fn_key4 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
               cdm_add_footnote_to_array($fnKeysLevel4, $fn_key4);
             }
           }
           usort($fnKeysLevel4, "footnotes_key_compare");
           $l4_regions[$text_l4] = $fnKeysLevel4;
         }
-      } // level4
-      // managing level3 and level4 for generating the right output
+      }// Level4.
+      // Managing level3 and level4 for generating the right output.
       usort($fnKeysLevel3, "footnotes_key_compare");
       foreach ($fnKeysLevel3 as $key3) {
         foreach ($l4_regions as $key4 => $value4) {
@@ -814,9 +888,9 @@ function theme_cdm_description_ordered_distributions($variables) {
           $fnStr .= theme('cdm_footnote_key', array('footnoteKey' => $key, 'separator' => ($fnStr ? $separator : '')));
         }
         $out .= "$text_l3 $fnStr; ";
-        // removing whitespaces when &fnStr is empty
-        if (substr($out, - 3) == ' ; ') {
-          $out = substr($out, 0, - 3) . '; ';
+        // Removing whitespaces when &fnStr is empty.
+        if (substr($out, -3) == ' ; ') {
+          $out = substr($out, 0, -3) . '; ';
         }
       }
       else {
@@ -828,7 +902,7 @@ function theme_cdm_description_ordered_distributions($variables) {
         foreach ($l4_regions as $key => $value) {
           $fnKeysLevel4Str = '';
           if (is_array($l4_regions[$key])) {
-            foreach ($l4_regions[$key] as $fnkey) { // warning why?
+            foreach ($l4_regions[$key] as $fnkey) {// Warning why?
               $fnKeysLevel4Str .= theme('cdm_footnote_key', array('footnoteKey' => $fnkey, 'separator' => ($fnKeysLevel4Str ? $separator : '')));
             }
           }
@@ -837,7 +911,7 @@ function theme_cdm_description_ordered_distributions($variables) {
             $text_l4_aux .= "$key $fnKeysLevel4Str, ";
           }
         }
-        $text_l4_aux = substr($text_l4_aux, 0, - 2);
+        $text_l4_aux = substr($text_l4_aux, 0, -2);
 
         if (strlen($text_l4_aux) > 0) {
           $out .= "$text_l3 $fnKeysLevel3Str ($text_l4_aux); ";
@@ -846,11 +920,10 @@ function theme_cdm_description_ordered_distributions($variables) {
           $out .= "$text_l3 $fnKeysLevel3Str; ";
         }
       }
-    } // level3
-    $out = substr($out, 0, - 2);
+    }// Level3.
+    $out = substr($out, 0, -2);
     $out .= '.</dd>';
-  } // level1
-
+  }// Level1.
   RenderHints::popFromRenderStack();
   return $out;
 }
@@ -859,10 +932,15 @@ function theme_cdm_description_ordered_distributions($variables) {
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_DescriptionElementSource($variables) {
+  $out = '';
   $descriptionElementSource = $variables['descriptionElementSource'];
   $doLink = $variables['doLink'];
   if (isset($descriptionElementSource->citation)) {
-    $out = theme('cdm_reference', array('reference' => $descriptionElementSource->citation, 'microReference' => $descriptionElementSource->citationMicroReference, 'doLink' => $doLink));
+    $out = theme('cdm_reference', array(
+     'reference' => $descriptionElementSource->citation,
+     'microReference' => $descriptionElementSource->citationMicroReference,
+     'doLink' => $doLink,
+    ));
   }
   return $out;
 }
@@ -871,54 +949,54 @@ function theme_cdm_DescriptionElementSource($variables) {
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_IdentifieableSource($variables) {
+  $out = '';
   $source = $variables['source'];
   $doLink = $variables['doLink'];
   if (isset($source->citation)) {
-    $out = theme('cdm_reference', array('reference' => $source->citation, 'microReference' => $source->citationMicroReference, 'doLink' => $doLink));
+    $out = theme('cdm_reference', array(
+      'reference' => $source->citation,
+      'microReference' => $source->citationMicroReference,
+      'doLink' => $doLink,
+    ));
   }
   return $out;
 }
 
 /*
- * function theme_cdm_descriptionElementDistribution($descriptionElements){ $out
- * = ''; $separator = ',';
- * RenderHints::pushToRenderStack('descriptionElementDistribution');
- * RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
- * foreach($descriptionElements as $descriptionElement){ // annotations as
- * footnotes $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys',
- * $descriptionElement); // source references as footnotes
- * $sourcesFootnoteKeyList = ''; foreach($descriptionElement->sources as
- * $source){ if(_is_original_source_type($source)){ $_fkey =
- * FootnoteManager::addNewFootnote(UUID_DISTRIBUTION,
- * theme('cdm_DescriptionElementSource', $source, false));
- * $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey,
- * UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : '')); } }
- * if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
- * $annotationFootnoteKeys .= $separator; } $out .=
- * $descriptionElement->area->representation_L10n . $annotationFootnoteKeys .
- * $sourcesFootnoteKeyList . ' '; } $out = substr($out, 0,
- * strlen($out)-strlen($separator) ); RenderHints::popFromRenderStack(); return
- * $out; }
- */
+function theme_cdm_descriptionElementDistribution($descriptionElements){ $out
+  = ''; $separator = ',';
+  RenderHints::pushToRenderStack('descriptionElementDistribution');
+  RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+  foreach($descriptionElements as $descriptionElement){ // annotations as
+  footnotes $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys',
+  $descriptionElement); // source references as footnotes
+  $sourcesFootnoteKeyList = ''; foreach($descriptionElement->sources as
+  $source){ if(_is_original_source_type($source)){ $_fkey =
+  FootnoteManager::addNewFootnote(UUID_DISTRIBUTION,
+  theme('cdm_DescriptionElementSource', $source, FALSE));
+  $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey,
+  UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : '')); } }
+  if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
+  $annotationFootnoteKeys .= $separator; } $out .=
+  $descriptionElement->area->representation_L10n . $annotationFootnoteKeys .
+  $sourcesFootnoteKeyList . ' '; } $out = substr($out, 0,
+  strlen($out)-strlen($separator) ); RenderHints::popFromRenderStack(); return
+  $out; }
+*/
 
 /**
  * TODO
- * Quick-and-dirty solution to show distribution service to exemplar groups
- *
- * @param unknown_type $featureTo
- * @return unknown
+ * Quick-and-dirty solution to show distribution service to exemplar groups.
  */
 function theme_cdm_distribution_map($variables) {
   $taxon = $variables['taxon'];
-  
   $out = '';
-  
   $server = getEDITMapServiceURI();
 
-  if (! $server) {
-    // warning message
-    drupal_set_message(t("No 'Geoservice Access Point' has been set so far. Please configure the variable 'Geoservice Access Point' here ") . l('CDM Dataportal Settings', 'admin/config/cdm_dataportal/geo'), 'warning');
-    // message to render
+  if (!$server) {
+    // Warning message.
+    drupal_set_message(t("No 'Geoservice Access Point' has been set so far. Please configure the variable 'Geoservice Access Point' here ") . l(t('CDM Dataportal Settings'), 'admin/config/cdm_dataportal/geo'), 'warning');
+    // Message to render.
     return "<p>No geoservice specified</p>";
   }
 
@@ -927,27 +1005,22 @@ function theme_cdm_distribution_map($variables) {
     1 => "italic",
   );
 
-  // query cdm server for map service uri parameters
+  // Query cdm server for map service uri parameters.
   $map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
-  $out .= "<!-- map_data_parameters:" . print_r($map_data_parameters, true) . " -->";
+  $out .= "<!-- map_data_parameters:" . print_r($map_data_parameters, TRUE) . " -->";
   $query_string = $map_data_parameters->String;
-  if (! $query_string) {
-    // the $query_string is empty if there are no distribution areas defined
+  if (!$query_string) {
+    // The $query_string is empty if there are no distribution areas defined.
     return;
   }
 
-  // some cleaning of the URI paramters, TODO is this still needed?
+  // Some cleaning of the URI paramters, TODO is this still needed?
   $query_string = str_replace('%3A', ":", $query_string);
 
   /* ------ choose the display mode, either openlayers or static image ------ */
-
   if (variable_get('cdm_dataportal_map_openlayers', 1)) {
 
-    /*
-     * =========== display distributions using the openlayers map viewer
-     * ===========
-     */
-
+    /* =========== display distributions using the openlayers map viewer =========== */
     $legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
     $legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
     $legend_url_font_style = $fontStyles[$legend_url_font_style];
@@ -957,37 +1030,37 @@ function theme_cdm_distribution_map($variables) {
     $legendFormatQueryStr = "format=image" . urlencode('/') . "png&TRANSPARENT=TRUE";
     $legendFormatQueryStr .= "&WIDTH=" . $legend_url_icon_width . "&HEIGHT=" . $legend_url_icon_height . "&";
     // TODO why is the layer=topp:tdwg_level_4 parameter neede at all here??
-    // @WA $sldLegend is not used
+    // Comment @WA $sldLegend is not used.
     // $legendFormatQueryStr
     // .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
     $legendFormatQueryStr .= "layer=topp" . urlencode(':') . "tdwg_level_4&LEGEND_OPTIONS=forceLabels" . urlencode(':') . "on;fontStyle" . urlencode(':') . $legend_url_font_style . ";fontSize" . urlencode(':') . $legend_url_font_size . "&SLD=";
 
-    $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', 300), variable_get('cdm_dataportal_geoservice_bounding_box', false), null, $query_string, $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+    $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', 300), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), NULL, $query_string, $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
   }
   else {
     $legendFormatQueryStr = '';
-    return get_image_map(variable_get('cdm_dataportal_geoservice_display_width', 300), variable_get('cdm_dataportal_geoservice_bounding_box', false), null, $query_string, $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+    return get_image_map(variable_get('cdm_dataportal_geoservice_display_width', 300), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), NULL, $query_string, $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
 
-    // simple image
+    // Simple image.
     $mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
 
     $query_string .= '&img=true';
-    $query_string .= '&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=false';
+    $query_string .= '&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=FALSE';
 
     $map_service_script_name = "areas.php";
 
-    // apply Plain Image map settings
+    // Apply Plain Image map settings.
     if (getEDITMapServiceVersionNumber() >= 1.1) {
       /*
        * example : title=a:Naturalized++non-invasive
        * &ad=cyprusdivs:bdcode:a:5&as=a:ff9900,,0.1,&l=tdwg4
        * &ms=500&bbox=32,34,35,36&img=true&legend=1&mlp=3
-       * &mc_s=Georgia,15,blue&mc=&recalculate=false
+       * &mc_s=Georgia,15,blue&mc=&recalculate=FALSE
        * http://edit.br.fgov.be/edit_wp5/v1/rest_gen.php?
        * l=background_gis:b,cyprusdivs&ad=cyprusdivs%3Abdcode%3Aa%3A8%2C4
        * &as=a%3A339966%2C%2C0.1%2C|b:0000ff,,
        * &bbox=32%2C34%2C35%2C36&img=true&legend=1&mc=&mc_s=Georgia%2C15%2Cblue
-       * &mlp=3&ms=500&recalculate=false&title=a%3Aindigenous
+       * &mlp=3&ms=500&recalculate=FALSE&title=a%3Aindigenous
        */
 
       $map_service_script_name = "rest_gen.php";
@@ -997,7 +1070,7 @@ function theme_cdm_distribution_map($variables) {
       $bgcolor_layer = '';
       $additional_area_styles = array();
 
-      // background color:
+      // Background color.
       if (variable_get('map_bg_color', '')) {
         $bgcolor_layer = "background_gis:" . $bgcolor_areaStyleId;
         $additional_area_styles[] = $bgcolor_areaStyleId . ":" . variable_get('map_bg_color', '') . ",,";
@@ -1045,36 +1118,43 @@ function theme_cdm_distribution_map($variables) {
 }
 
 /**
- * Returns a list of a specific type of IdentificationKeys, the list can be
- * restricteded by a taxon.
+ * Returns a list of a specific type of IdentificationKeys.
  *
- * @param $type The
- *          simple name of the cdm class implementing the interface
- *          IIdentificationKey,
- *          valid values are : PolytomousKey, MediaKey, MultiAccessKey
- * @param $taxonUuid if
- *          given this parameter restrict the listed keys to
- *          those which have the taxon identified be this uuid in scope.
+ * The list can be restricteded by a taxon.
+ *
+ * @param string $type
+ *   The simple name of the cdm class implementing the interface
+ *   IdentificationKey, valid values are:
+ *   PolytomousKey, MediaKey, MultiAccessKey.
+ * @param string $taxonUuid
+ *   If given this parameter restrict the listed keys to those which have
+ *   the taxon identified be this uuid in scope.
+ *
+ * @return array
+ *   List with identification keys.
  */
-function _list_IdentificationKeys($type, $taxonUuid = null, $pageSize = null, $pageNumber = null) {
-  if (! $type) {
+function _list_IdentificationKeys($type, $taxonUuid = NULL, $pageSize = NULL, $pageNumber = NULL) {
+  if (!$type) {
     drupal_set_message(t('Type parameter is missing'), 'error');
     return;
   }
-  $cdm_ws_pasepath = null;
+  $cdm_ws_pasepath = NULL;
   switch ($type) {
     case "PolytomousKey":
       $cdm_ws_pasepath = CDM_WS_POLYTOMOUSKEY;
       break;
+
     case "MediaKey":
       $cdm_ws_pasepath = CDM_WS_MEDIAKEY;
       break;
+
     case "MultiAccessKey":
       $cdm_ws_pasepath = CDM_WS_MULTIACCESSKEY;
       break;
+
   }
 
-  if (! $cdm_ws_pasepath) {
+  if (!$cdm_ws_pasepath) {
     drupal_set_message(t('Type parameter is not valid: ') . $type, 'error');
   }
 
@@ -1092,17 +1172,18 @@ function _list_IdentificationKeys($type, $taxonUuid = null, $pageSize = null, $p
   else {
     $queryParameters = "pageNumber=0";
   }
-  $queryParameters = null;
+  $queryParameters = NULL;
   if ($taxonUuid) {
     $queryParameters = "findByTaxonomicScope=$taxonUuid";
   }
-  $pager = cdm_ws_get($cdm_ws_pasepath, null, $queryParameters);
+  $pager = cdm_ws_get($cdm_ws_pasepath, NULL, $queryParameters);
 
-  if (! $pager || $pager->count == 0) {
+  if (!$pager || $pager->count == 0) {
     return array();
   }
   return $pager->records;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -1124,7 +1205,7 @@ function theme_cdm_IdentificationKey($variables) {
     }
   }
   if (isset($identificationKey->sources) && is_array($identificationKey->sources)) {
-    // display sources
+    // Display sources.
     $i = 0;
     $out .= '<div>';
     foreach ($identificationKey->sources as $source) {
@@ -1132,23 +1213,26 @@ function theme_cdm_IdentificationKey($variables) {
     }
     $out .= '</div>';
   }
-  // display annotations
+  // Display annotations.
   $out .= theme('cdm_annotations', array('annotations' => cdm_ws_getAnnotationsFor($identificationKey), 'enclosingTag' => 'div'));
   RenderHints::popFromRenderStack();
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_polytomousKey($variables) {
   $polytomousKey = $variables['polytomousKey'];
-  $keyStyle = "linkedStyle"; // TODO settings needed see
-  // http://en.wikipedia.org/wiki/Single_access_key#Presentation_styles
-  // and http://dev.e-taxonomy.eu/trac/ticket/2152
+
+  // TODO settings needed.
+  // @see http://en.wikipedia.org/wiki/Single_access_key#Presentation_styles
+  // @see http://dev.e-taxonomy.eu/trac/ticket/2152
+  $keyStyle = "linkedStyle";
 
   RenderHints::pushToRenderStack("polytomousKey");
-  // key nodes in linked style
+  // Key nodes in linked style.
   $out = '<table class="polytomousKey polytomousKey_' . $keyStyle . '">';
   $out .= theme('cdm_polytomousKey_' . $keyStyle . '_subgraph', array('polytomousKeyNode' => $polytomousKey->root));
   $out .= '</table>';
@@ -1157,26 +1241,23 @@ function theme_cdm_polytomousKey($variables) {
 }
 
 /**
- *
- * @param unknown_type $polytomousKeyNode
- * @return Ambigous <string, An, mixed>
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
 function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
   $polytomousKeyNode = $variables['polytomousKeyNode'];
   static $statementCountCharacter = '\'';
-
   $out = "";
 
   if (is_array($polytomousKeyNode->children)) {
-
     $childIndex = 0;
 
-    // render edges of the current node
+    // Render edges of the current node.
     foreach ($polytomousKeyNode->children as &$child) {
 
-      if (! isset($child->statement)) {
-        // skip node with empty statements (see below for explanation: "Special
-        // case")
+      if (!isset($child->statement)) {
+        // Skip node with empty statements (see below for explanation: "Special
+        // case").
         continue;
       }
 
@@ -1184,29 +1265,26 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
        * Special case: Child nodes with empty statements but taxa as leaf are to
        * treated as if all those taxa where direct children of the source node.
        */
-      $islinkToManyTaxa = ! isset($child->children[0]->statement) && isset($child->children[0]->taxon->uuid);
+      $islinkToManyTaxa = !isset($child->children[0]->statement) && isset($child->children[0]->taxon->uuid);
       $islinkToTaxon = isset($child->taxon->uuid);
       $islinkToSubKey = isset($child->subkey->uuid);
       $islinkToOtherNode = isset($child->otherNode);
-      $islinkToNode = $child->nodeNumber && ! $islinkToManyTaxa && ! $islinkToOtherNode; // either
-      // null
-      // or
-      // 0
+      // Either NULL or 0.
+      $islinkToNode = $child->nodeNumber && !$islinkToManyTaxa && !$islinkToOtherNode;
       $hasQuestion = isset($polytomousKeyNode->question->label_l10n);
       $hasFeature = isset($polytomousKeyNode->feature);
 
       // $indentEdge = $hasQuestion && $childIndex > 0;
-
-      // Question
+      // Question.
       if ($hasQuestion && $childIndex == 0) {
-        // place question, as extra table row
+        // Place question, as extra table row.
         $out .= '<tr class="question new_section">';
         $out .= '<td class="nodeNumber">' . uuid_anchor($polytomousKeyNode->uuid, $polytomousKeyNode->nodeNumber) . "</td>";
         $out .= '<td class="question">' . $polytomousKeyNode->question->label_l10n . '</td>';
         $out .= '</tr>';
       }
 
-      $out .= '<tr class="childCount_' . $childIndex . (! $hasQuestion && $childIndex == 0 ? ' new_section' : '') . '">';
+      $out .= '<tr class="childCount_' . $childIndex . (!$hasQuestion && $childIndex == 0 ? ' new_section' : '') . '">';
 
       if ($hasQuestion) {
         $out .= '<td class="nodeNumber"></td>';
@@ -1217,44 +1295,44 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
 
       $out .= '<td ' . RenderHints::getHtmlElementID($child) . '  class="edge' . ($hasQuestion ? ' edge-indent' : '') . '">';
 
-      // Feature
+      // Feature.
       if ($hasFeature) {
         $out .= $polytomousKeyNode->feature->representation_L10n . ": ";
       }
 
-      // Statement
+      // Statement.
       $out .= $child->statement->label_l10n;
 
-      // --- links to nodes taxa and subkeys
+      // --- Links to nodes taxa and subkeys.
       $out .= '<div class="nodeLink">';
 
-      // link to a PolytomousKeyNode
+      // Link to a PolytomousKeyNode.
       if ($islinkToNode) {
         $out .= '<div class="nodeLinkToNode">';
         if (is_object($child->modifyingText)) {
           $out .= theme('cdm_poytomousKeyNode_modifyingText', array('modifyingText' => $child->modifyingText));
         }
         $out .= l($child->nodeNumber, request_path(), array(
-          'attributes' => null,
-          'query' => null,
+          'attributes' => NULL,
+          'query' => NULL,
           'fragment' => $child->uuid,
         )) . '</div>';
       }
 
-      // link to a PolytomousKeyNode
+      // Link to a PolytomousKeyNode.
       if ($islinkToOtherNode) {
         $out .= '<div class="nodeLinkToOtherNode">';
         if (is_object($child->modifyingText)) {
           $out .= theme('cdm_poytomousKeyNode_modifyingText', array('modifyingText' => $child->modifyingText));
         }
         $out .= l($child->otherNode->nodeNumber, $_REQUEST["q"], array(
-          'attributes' => null,
-          'query' => null,
+          'attributes' => NULL,
+          'query' => NULL,
           'fragment' => $child->otherNode->uuid,
         )) . '</div>';
       }
 
-      // link to one or many taxa
+      // Link to one or many taxa.
       if ($islinkToTaxon || $islinkToManyTaxa) {
 
         if ($islinkToManyTaxa) {
@@ -1267,7 +1345,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
         }
 
         foreach ($taxonChildren as $taxonChild) {
-          // TODO many taxa $child->children->taxon
+          // TODO many taxa $child->children->taxon.
           $out .= '<div class="nodeLinkToTaxon">';
           if (is_object($taxonChild->modifyingText)) {
             $out .= theme('cdm_poytomousKeyNode_modifyingText', array('modifyingText' => $taxonChild->modifyingText));
@@ -1276,20 +1354,20 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
           $out .= '</div>';
         }
 
-        // link to a subkey
+        // Link to a subkey.
         if ($islinkToSubKey) {
           $out .= '<div class="nodeLinkToSubkey">' . theme('cdm_IdentificationKey', array('identificationKey' => $child->subkey)) . '</div>';
         }
       }
 
-      $out .= '</div>'; // end node link
-      $out .= '</td>'; // end edge
+      $out .= '</div>'; // End node link.
+      $out .= '</td>'; // End edge.
       $out .= '</tr>';
 
       $childIndex++;
     }
 
-    // recurse into child nodes
+    // Recurse into child nodes.
     foreach ($polytomousKeyNode->children as &$child) {
       $out .= theme('cdm_polytomousKey_linkedStyle_subgraph', array('polytomousKeyNode' => $child));
     }
@@ -1299,12 +1377,8 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
 }
 
 /**
- *
- *
- * Enter description here ...
- *
- * @param unknown_type $modifyingText
- * @return string
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
 function theme_cdm_poytomousKeyNode_modifyingText($variables) {
   $out = '';
@@ -1319,22 +1393,25 @@ function theme_cdm_poytomousKeyNode_modifyingText($variables) {
 }
 
 /**
- * Renders a list of a specific type of IdentificationKeys, the list can be
- * restricteded by a taxon.
+ * Returns HTML for a list of a specific type of IdentificationKeys.
  *
- * @param $type The
- *          simple name of the cdm class implementing the interface
- *          IIdentificationKey,
- *          valid values are : PolytomousKey, MediaKey, MultiAccessKey
- * @param $taxonUuid if
- *          given this parameter restrict the listed keys to
- *          those which have the taxon identified be this uuid in scope.
+ * The list can be restricteded by a taxon.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - type: The simple name of the cdm class implementing the interface
+ *     IdentificationKey, valid values are:
+ *     PolytomousKey, MediaKey, MultiAccessKey
+ *   - taxonUuid: If given, this parameter restrict the listed keys to those
+ *     which have the taxon identified be this uuid in scope.
+ *
+ * @ingroup themeable
  */
 function theme_cdm_list_IdentificationKeys($variables) {
   $type = $variables['type'];
   $taxonUuid = $variables['taxonUuid'];
   $keyList = _list_IdentificationKeys($type, $taxonUuid);
-  if (! $keyList || count($keyList) == 0) {
+  if (!$keyList || count($keyList) == 0) {
     return;
   }
 
@@ -1374,7 +1451,7 @@ function theme_cdm_block_IdentificationKeys($variables) {
     // $keylist = theme('cdm_list_IdentificationKeys', $type, $taxonUuid,
     // $pageSize, $pageNumber);
     $keylist = theme('cdm_list_IdentificationKeys', array('type' => $type, 'taxonUuid' => $taxonUuid));
-    if (! $keylist) {
+    if (!$keylist) {
       continue;
     }
     $out .= '<div class="' . $type . '">';
@@ -1386,10 +1463,10 @@ function theme_cdm_block_IdentificationKeys($variables) {
   return $out;
 }
 
-// this theming function formats the use description and use record list for
-// these descriptions
-// @WA $pageSize and $pageNumber are not used
-// function theme_cdm_UseDescription($descriptions = null, $taxonUuid = null,
+// This theming function formats the use description and use record list for
+// these descriptions.
+// Comment @WA: $pageSize and $pageNumber are not used.
+// function theme_cdm_UseDescription($descriptions = NULL, $taxonUuid = NULL,
 // $pageSize, $pageNumber) {
 /**
  * @todo Please document this function.
@@ -1399,7 +1476,7 @@ function theme_cdm_UseDescription($variables) {
   $descriptions = $variables['description'];
   $taxonUuid = $variables['taxonUuid'];
   $out = '<div id="content"><ul id="Description" class ="description">';
-  if ($descriptions == null) {
+  if ($descriptions == NULL) {
     return;
   }
   $descriptionSynonyms = '';
@@ -1409,23 +1486,23 @@ function theme_cdm_UseDescription($variables) {
 
   foreach ($descriptions as $description) {
     $useSummary = "";
-    // @WA $synonymes is not defined
-    // $serializedSynonyms = serialize($synonyms);
+    // Comment @WA: $synonyms is not defined.
+    // $serializedSynonyms = serialize($synonyms).
     foreach ($description->elements as $element) {
 
-      if ($element->feature->uuid == UUID_USE && ! (strlen($useSummary) > 0)) {
+      if ($element->feature->uuid == UUID_USE && !(strlen($useSummary) > 0)) {
         $useSummary = $element->multilanguageText_L10n->text;
       }
     }
     foreach ($description->sources as $source) {
-      $isSynonym = false;
-      $originalTaxonUsedInSource = null;
-      $originalTaxonPager = null;
+      $isSynonym = FALSE;
+      $originalTaxonUsedInSource = NULL;
+      $originalTaxonPager = NULL;
       if ($source->originalNameString) {
         $request_params = array();
         $request_params['query'] = $source->originalNameString;
         $request_params['matchMode'] = "EXACT";
-        $originalTaxonPager = cdm_ws_get(CDM_WS_PORTAL_NAME_FINDBYNAME, null, queryString($request_params));
+        $originalTaxonPager = cdm_ws_get(CDM_WS_PORTAL_NAME_FINDBYNAME, NULL, queryString($request_params));
         if ($originalTaxonPager->count > 0) {
           $originalTaxonUsedInSource = $originalTaxonPager->records[0];
         }
@@ -1438,10 +1515,10 @@ function theme_cdm_UseDescription($variables) {
       }
 
       if ($currentTaxon->name->uuid != $originalTaxonUsedInSource->uuid) {
-        $isSynonym = true;
+        $isSynonym = TRUE;
       }
 
-      if (! $isSynonym) {
+      if (!$isSynonym) {
         $descriptionOut .= '<li class="descriptionText DescriptionElement">';
         $name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid), array(
           'absolute' => TRUE,
@@ -1450,13 +1527,13 @@ function theme_cdm_UseDescription($variables) {
         $descriptionOut .= $name_used_in_source_link_to_show_use . ': ';
         $descriptionOut .= $useSummary;
         foreach ($description->sources as $source) {
-          $descriptionOut .= " (" . theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => true)) . ")";
+          $descriptionOut .= " (" . theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => TRUE)) . ")";
         }
-        $hasUseRecords = false;
+        $hasUseRecords = FALSE;
         $descriptionUseRecordOut = '<div id=useRecords><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
         foreach ($description->elements as $descriptionElement) {
           if ($descriptionElement->feature->uuid == UUID_USE_RECORD) {
-            $hasUseRecords = true;
+            $hasUseRecords = TRUE;
             $useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
             $descriptionUseRecordOut .= '<tr>';
             $descriptionUseRecordOut .= '<td>' . $useRecordTags[0] . '</td>' . '<td>' . $useRecordTags[1] . '</td>' . '<td>' . $useRecordTags[3] . '</td>' . '<td>' . $useRecordTags[4] . '</td>' . '<td>' . $useRecordTags[5] . '</td>' . '<td>' . $useRecordTags[2] . '</td>';
@@ -1479,14 +1556,14 @@ function theme_cdm_UseDescription($variables) {
         $synonymOut .= $name_used_in_source_link_to_show_use . ': ';
         $synonymOut .= $useSummary;
         foreach ($description->sources as $source) {
-          $synonymOut .= " (" . theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => true)) . ")";
+          $synonymOut .= " (" . theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => TRUE)) . ")";
         }
 
-        $hasUseRecords = false;
+        $hasUseRecords = FALSE;
         $useRecordTableOut = '<div id=useRecords><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
         foreach ($description->elements as $descriptionElement) {
           if ($descriptionElement->feature->uuid == UUID_USE_RECORD) {
-            $hasUseRecords = true;
+            $hasUseRecords = TRUE;
             $useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
             $useRecordTableOut .= '<tr>';
             $useRecordTableOut .= '<td>' . $useRecordTags[0] . '</td>' . '<td>' . $useRecordTags[1] . '</td>' . '<td>' . $useRecordTags[3] . '</td>' . '<td>' . $useRecordTags[4] . '</td>' . '<td>' . $useRecordTags[5] . '</td>' . '<td>' . $useRecordTags[2] . '</td>';
@@ -1497,7 +1574,7 @@ function theme_cdm_UseDescription($variables) {
         if ($hasUseRecords) {
           $synonymOut .= $useRecordTableOut . '</li>';
         }
-        $isSynonym = false;
+        $isSynonym = FALSE;
       }
 
       // }
@@ -1508,9 +1585,10 @@ function theme_cdm_UseDescription($variables) {
   return $out;
 }
 
-// The Use theming function here will handle the display of the Use Descriptions
-// @WA $pageSize is not used
-// function theme_cdm_block_Uses ($taxonUuid = null, $pageSize = null) {
+// The Uses theming function here will handle the display of the
+// Uses Descriptions.
+// Comment @WA: $pageSize is not used.
+// function theme_cdm_block_Uses ($taxonUuid = NULL, $pageSize = NULL {
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -1519,14 +1597,14 @@ function theme_cdm_block_Uses($variables) {
   $taxonUuid = $variables['taxonUuid'];
   RenderHints::pushToRenderStack('block_Uses');
 
-  if ($taxonUuid == null) {
+  if ($taxonUuid == NULL) {
     return;
   }
   $out = '';
   $markerTypes = array();
   $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
   $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxonUuid, queryString($markerTypes));
-  if (! empty($useDescriptions)) {
+  if (!empty($useDescriptions)) {
     $out .= '<div id="block-cdm_dataportal-feature-description" class="clear-block block block-cdm_dataportal-feature"><H2><a name="userecords"> </a> Uses </H2>';
     // @WA $pageNumber is not defined
     // $formatUseDescriptions = theme('cdm_UseDescription', $useDescriptions,

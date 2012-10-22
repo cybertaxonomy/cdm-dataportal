@@ -1,4 +1,13 @@
-  <?php print render($page['header']); ?>
+<?php
+/**
+ * @file
+ * Custom theme implementation to display a Drupal page.
+ *
+ * See modules/system/page.tpl.php for more information about available
+ * variables.
+ */
+?>
+<?php print render($page['header']); ?>
   <div id="wrapper">
     <div id="container" class="clearfix">
 
@@ -35,10 +44,10 @@
       <?php endif; ?>
 
       <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
-          <?php //print $breadcrumb; ?>
+          <?php // print $breadcrumb; ?>
           <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
           <a id="main-content"></a>
-          <?php // unfortunately in D7 tabs are always set, even if there are none.. ?>
+          <?php // Unfortunately in D7 tabs are always set, even if there are none.. ?>
           <?php if ($tabs = render($tabs)): ?><div id="tabs-wrapper" class="clearfix"><?php endif; ?>
           <?php print render($title_prefix); ?>
           <?php if ($title): ?>

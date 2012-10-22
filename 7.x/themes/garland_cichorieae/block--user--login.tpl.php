@@ -1,7 +1,7 @@
 <?php 
 /**
  * @file
- * Custom theme implementation to display the 'Request new password' link below 
+ * Custom theme implementation to display the 'Request new password' link below
  * the 'Log in' button.
  *
  * @author w.addink <w.addink@eti.uva.nl>
@@ -20,6 +20,10 @@
 <?php
 
   $elements = drupal_get_form('user_login_block');
+
+  // Add colon to labels for D5 look.
+  $elements['name']['#title'] .= ':';
+  $elements['pass']['#title'] .= ':';
 
  /*
   *  drupal_render seems to add html to the elements array

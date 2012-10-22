@@ -320,22 +320,22 @@ $("#TB_window").css({marginLeft: '-' + parseInt((TB_WIDTH / 2),10) + 'px', width
 	}
 }(jQuery)
 
-function tb_parseQuery ( query ) {
+function tb_parseQuery(query) {
    var Params = {};
-   if ( ! query ) {return Params;}// return empty object
+   if (!query) {return Params;} // Return empty object.
    var Pairs = query.split(/[;&]/);
-   for ( var i = 0; i < Pairs.length; i++ ) {
+   for (var i = 0; i < Pairs.length; i++) {
       var KeyVal = Pairs[i].split('=');
-      if ( ! KeyVal || KeyVal.length != 2 ) {continue;}
-      var key = unescape( KeyVal[0] );
-      var val = unescape( KeyVal[1] );
+      if (!KeyVal || KeyVal.length != 2) {continue;}
+      var key = unescape(KeyVal[0]);
+      var val = unescape(KeyVal[1]);
       val = val.replace(/\+/g, ' ');
       Params[key] = val;
    }
    return Params;
 }(jQuery)
 
-function tb_getPageSize(){
+function tb_getPageSize() {
 	var de = document.documentElement;
 	var w = window.innerWidth || self.innerWidth || (de&&de.clientWidth) || document.body.clientWidth;
 	var h = window.innerHeight || self.innerHeight || (de&&de.clientHeight) || document.body.clientHeight;

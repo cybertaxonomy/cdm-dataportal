@@ -1,32 +1,23 @@
 <?php
-// $Id$
-
-
-
-
 /**
  * @file
  * Adds helpful messages for website administrators
- * and provides documentation in /admin/help
+ * and provides documentation in /admin/help.
  */
 
-//html paths for differents documentation sections:
-
+// Html paths for differents documentation sections:
 define('HELP_OVERVIEW', drupal_get_path('module', 'cdm_dataportal') . '/help/overview.html');
 
-//comment @WA: @TODO: fill these html files with help texts. 
-// but why to use different help texts here from the ones sused in the settings forms?
+// Comment @WA: @todo: fill these html files with help texts.
+// But why to use different help texts here from the ones used in
+// the settings forms?
 define('HELP_SETTINGS_GENERAL', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_general.html');
 define('HELP_SETTINGS_GEO', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_geo.html');
 define('HELP_SETTINGS_LAYOUT', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_layout.html');
 define('HELP_SETTINGS_CACHE', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_cache.html');
 
-
-// used in cdm_dataportal.module
-
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Used in cdm_dataportal.module.
  */
 function cdm_dataportal_menu_help(&$items) {
 
@@ -65,26 +56,22 @@ function cdm_dataportal_menu_help(&$items) {
 
 /**
  * Implements hook_help().
-().
  */
 function cdm_dataportal_help($path, $arg) {
-  //result to return
-
+  // Result to return.
   $res = '';
 
   switch ($path) {
-
     case 'admin/help#cdm_dataportal':
-      //$popup = (module_exists('advanced_help')) ? theme('advanced_help_topic', 'cdm_help', 'website-overview') : '';
-      //var_dump($popup);
-
+      // $popup = (module_exists('advanced_help')) ? theme('advanced_help_topic', 'cdm_help', 'website-overview') : '';
+      // var_dump($popup);
       $content = cdm_dataportal_file_get_content(HELP_OVERVIEW);
       $res = $content;
       break;
 
     default:
       $path_aux = str_replace('/', '_', $path);
-      if(function_exists('theme_cdm_portal_' . $path_aux)){
+      if (function_exists('theme_cdm_portal_' . $path_aux)) {
         $res = theme('cdm_dataportal_' . $path_aux, array());
       }
   }
@@ -98,8 +85,7 @@ function cdm_dataportal_help($path, $arg) {
  */
 function cdm_dataportal_file_get_content($path) {
 
-  //modifing the html file to get the drupal paths
-
+  // Modifing the html file to get the drupal paths.
   $content = file_get_contents($path);
   $content_result = str_replace("{MODULE_PATH}", file_build_uri($path), $content);
 
@@ -146,8 +132,8 @@ function cdm_dataportal_file_get_content($path) {
    $apt_content);
    //
    //    $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
-   //	                           '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>',
-   //	                           $apt_content);
+   //                             '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>',
+   //                             $apt_content);
    //
 
    //regular expressions
@@ -162,16 +148,14 @@ function cdm_dataportal_file_get_content($path) {
   return $content_result;
 }
 
-// see hook_theme in cdm_dataportal.module
-
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * See hook_theme in cdm_dataportal.module.
  */
 function theme_cdm_dataportal_admin_config_cdm_dataportal_general() {
   $res = t('<p>Help text for this page</p>');
   // @WA this could also link to admin/help/cdm_dataportal_cache ?
-  // Instead of theme_more_help_link we use a custom one here, to mimic a D5 style link.
+  // Instead of theme_more_help_link we use a custom one here, to mimic
+  // a D5 style link.
   $res .= theme('cdm_dataportal_admin_config_more_help_link', array(
     'url' =>'admin/help/cdm_dataportal')
   );
@@ -215,15 +199,16 @@ function theme_cdm_dataportal_admin_config_cdm_dataportal_cachesite() {
 }
 
 /**
- * Custom theme to use in admin config pages instead of theme_more_help_link
- * to have D5 style more-help links instead of D7 style. 
- * 
+ * Custom theme to use in admin config pages.
+ *
+ * Use instead of theme_more_help_link to have D5 style more-help links
+ * instead of D7 style.
+ *
  * @author w.addink <w.addink@eti.uva.nl>
  */
 function theme_cdm_dataportal_admin_config_more_help_link($variables) {
   $html = '<div class="more-help-link cdm-dataportal-settings-more-help-link">[';
-  $html .= l(t('more help...'), $variables['url']) ;
+  $html .= l(t('more help...'), $variables['url']);
   $html .= ']</div>';
   return $html;
 }
-

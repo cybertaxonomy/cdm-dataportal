@@ -4,3 +4,5 @@ description = "Allows to create conversion rules for media uris"
 version = 7.x-0.5
 package = "CDM"
 core = 7.x
+
+configure = admin/config/cdm_dataportal/cdm_mediauri

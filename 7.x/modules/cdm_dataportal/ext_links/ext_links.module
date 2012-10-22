@@ -1,22 +1,38 @@
 <?php
-// $Id: ext_links.module,v 1.3.4.5.2.10.2.5 2008/09/26 11:58:24 niif Exp $
-
 /**
  * @file
- * Provides external links for sources to taxa information
+ * Provides external links for sources to taxa information.
+ *
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * @author
+ *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
+ *   - Wouter Addink <w.addink@eti.uva.nl> (migration from Drupal 5 to Drupal7)
  */
 
 /**
- * Display help and module information
- * @param path which path of the site we're displaying help
- * @param arg array that holds the current path as would be returned from arg() function
- * @return help text for the path
+ * Display help and module information.
+ *
+ * @param string $path
+ *   For which path of the site we're displaying help.
+ * @param array $arg
+ *   Array that holds the current path as would be returned from arg() function.
+ *
+ * @return string
+ *   Help text for the path.
  */
 function ext_links_help($path, $arg) {
   $output = '';
   switch ($path) {
     case 'admin/help#ext_links':
-      //TODO
+      // TODO.
       $output = '<p>' . t("Link to external sources like ## for taxa.") . '</p>';
       break;
   }
@@ -24,15 +40,12 @@ function ext_links_help($path, $arg) {
 } // function ext_links_help
 
 /**
- * Generate the HTML text for the ext_link login block
- * @param op the operation from the URL
- * @param delta offset
- * @returns block HTML
+ * Generate the HTML text for the ext_link login block.
  */
 function ext_links_admin($form, &$form_state) {
   // Default values for the external links.
   $ext_links_default = ext_links_get_default();
-  
+
   $ext_links[0] = array(
     'form' => 'gbif',
     'form_title' => 'GBIF',
@@ -299,8 +312,8 @@ function ext_links_admin($form, &$form_state) {
   // @WA: D7 form api does not support reset buttons,
   // so to mimic the D5 reset button we add one like this.
   $form['actions']['reset'] = array(
-  '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
-  '#weight' => 1000,
+    '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+    '#weight' => 1000,
   );
 
   return system_settings_form($form);
@@ -315,40 +328,36 @@ function ext_links_permission() {
   return array(
     'access extlinks content' => array(
       'title' => t('access extlinks content'),
-      'description' => t('TODO Add a description for \'access extlinks content\''),
+      'description' => t("TODO Add a description for 'access extlinks content'"),
     ),
     'administer extlinks' => array(
       'title' => t('administer extlinks'),
-      'description' => t('TODO Add a description for \'administer extlinks\''),
+      'description' => t("TODO Add a description for 'administer extlinks'"),
     ),
   );
-
-} // function onthisdate_perm
+} /* function ext_links_permission() */
 
 /**
  * Implements hook_menu().
  */
 function ext_links_menu() {
-
-
   $items = array();
 
-  $items['admin/config/extlinks'] = array(
+  $items['admin/config/cdm_dataportal/extlinks'] = array(
     'title' => 'External links',
-    'description' => 'Description of your External links',
+    'description' => 'Description of your External links.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('ext_links_admin'),
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
+    'weight' =>30,
   );
 
   return $items;
-} // function ext_links_menu()
+} /* function ext_links_menu() */
 
 /**
- * returns the genus and the first epithet from the object taxon
- * @param $taxon
- * @return unknown_type
+ * Returns the genus and the first epithet from the object taxon.
  */
 function getSpeciesName($taxon) {
   $speciesName = array();
@@ -366,6 +375,7 @@ function getSpeciesName($taxon) {
   }
   return $speciesName;
 }
+
 /**
  * Implements hook_block_info().
  */
@@ -389,8 +399,8 @@ function ext_links_block_view($delta) {
         $uuid = arg(2);
         $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $uuid);
 
-        //$taxon->titleCache;
-        //var_export()
+        // $taxon->titleCache;
+        // var_export()
         if (!empty($taxon)) {
           drupal_add_js(drupal_get_path('module', 'ext_links') . '/ext_links.js');
           $speciesName = getSpeciesName($taxon);
@@ -406,8 +416,8 @@ function ext_links_block_view($delta) {
             $block['content'] = theme('ext_links_list_plain', array('speciesName' => $speciesName, 'genus' => $genus, 'species' => $species ));
           }
 
-          //if(variable_get('ext_links_gbif_check', true)) {
-          //$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', $ext_links_default[gbif][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_gbif_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_gbif_text', $ext_links_default[gbif][text_default_value]).'</a><br />';
+          // if(variable_get('ext_links_gbif_check', TRUE)) {
+          // $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', $ext_links_default[gbif][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_gbif_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_gbif_text', $ext_links_default[gbif][text_default_value]).'</a><br />';
           /*
            $block_content .=
            /* TODO
@@ -447,16 +457,15 @@ function ext_links_block_view($delta) {
            $block['content'] = $block_content;
            $block['content'] = theme('ext_links_list_plain');
 
-
-
            }
 
            }*/
           // if taxon
         }
       }
-      return $block; // if path
-  } // switch
+      // If path.
+      return $block; 
+  } /* switch */
 
 }
 
@@ -477,18 +486,20 @@ function theme_ext_links_list_grouped($variables) {
   $genus = $variables['genus'];
   $species = $variables['species'];
   $block_content = '';
-  $categories = null;
+  $categories = NULL;
   $ext_links_default = ext_links_get_default();
 
 
-  /*foreach ($ext_links_default as $ext_link) {
+  /*
+  foreach ($ext_links_default as $ext_link) {
 
    //$block_content .= $ext_link['ext_links_bhl_category'];
    $category[] = variable_get('ext_links_bhl_category', $ext_links_default[][text_default_value]);
    $block_content .= variable_get('ext_links_bhl_category', $ext_links_default[][text_default_value]);
-   }*/
+   }
+   */
 
-  //images section
+  // Images section.
   if (variable_get('ext_links_google_check', 1)) {
     $categoryTitles[] = variable_get('ext_links_google_category', $ext_links_default['google']['category_default_value']);
     $categories['google']['title'] = variable_get('ext_links_google_category', $ext_links_default['google']['category_default_value']);
@@ -501,8 +512,8 @@ function theme_ext_links_list_grouped($variables) {
     $categories['flickr']['content'] = '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_flickr_link', $ext_links_default['flickr']['link_default_value']) . str_replace('"', '%22', $speciesName['genus']) . variable_get('ext_links_flickr_concat', ' ') . str_replace('"', '%22', $speciesName['species']) . '\')">' . variable_get('ext_links_flickr_text', $ext_links_default['flickr']['text_default_value']) . '</a><br />';
   }
 
-  //Specimen/occurences section
-  if (variable_get('ext_links_gbif_check', true)) {
+  // Specimen/occurences section.
+  if (variable_get('ext_links_gbif_check', TRUE)) {
     $categoryTitles[] = variable_get('ext_links_gbif_category', $ext_links_default['gbif']['category_default_value']);
     $categories['gbif']['title'] = variable_get('ext_links_gbif_category', $ext_links_default['gbif']['category_default_value']);
     $categories['gbif']['content'] = '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_gbif_link', $ext_links_default['gbif']['link_default_value']) . str_replace('"', '%22', $speciesName['genus']) . variable_get('ext_links_gbif_concat', ' ') . str_replace('"', '%22', $speciesName['species']) . '\')">' . variable_get('ext_links_gbif_text', $ext_links_default['gbif']['text_default_value']) . '</a><br />';
@@ -515,10 +526,10 @@ function theme_ext_links_list_grouped($variables) {
   if (variable_get('ext_links_nybg_check', 1)) {
     $genusQuery = '';
     $speciesQuery = '';
-    if ($speciesName['genus'] != null) {
+    if ($speciesName['genus'] != NULL) {
       $genusQuery = 'DetFiledAsGenusLocal+%3D+\%27' . $speciesName['genus'] . '\%27';
     }
-    if ($speciesName['species'] != null) {
+    if ($speciesName['species'] != NULL) {
       $speciesQuery = 'DetFiledAsSpeciesLocal+%3D+\%27' . $speciesName['species'] . '\%27';
     }
     $categoryTitles[] = variable_get('ext_links_nybg_category', $ext_links_default['nybg']['category_default_value']);
@@ -532,7 +543,7 @@ function theme_ext_links_list_grouped($variables) {
     $categories['tropicos']['content'] = '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_tropicos_link', $ext_links_default['tropicos']['link_default_value']) . str_replace('"', '%22', $speciesName['genus']) . variable_get('ext_links_tropicos_concat', ' ') . str_replace('"', '%22', $speciesName['species']) . '\')">' . variable_get('ext_links_tropicos_text', $ext_links_default['tropicos']['text_default_value']) . '</a><br />';
   }
 
-  //Literature
+  // Literature.
   if (variable_get('ext_links_scholar_check', 1)) {
     $categoryTitles[] = variable_get('ext_links_scholar_category', $ext_links_default['scholar']['category_default_value']);
     $categories['scholar']['title'] = variable_get('ext_links_scholar_category', $ext_links_default['scholar']['category_default_value']);
@@ -544,7 +555,7 @@ function theme_ext_links_list_grouped($variables) {
     $categories['bhl']['content'] = '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_bhl_link', $ext_links_default['bhl']['link_default_value']) . str_replace('"', '%22', $speciesName['genus']) . variable_get('ext_links_bhl_concat', ' ') . str_replace('"', '%22', $speciesName['species']) . '\')">' . variable_get('ext_links_bhl_text', $ext_links_default['bhl']['text_default_value']) . '</a><br />';
   }
 
-  //Molecular resources
+  // Molecular resources.
   if (variable_get('ext_links_ncbi_check', 1)) {
     $categoryTitles[] = variable_get('ext_links_ncbi_category', $ext_links_default['ncbi']['category_default_value']);
     $categories['ncbi']['title'] = variable_get('ext_links_ncbi_category', $ext_links_default['ncbi']['category_default_value']);
@@ -609,7 +620,7 @@ function theme_ext_links_list_grouped($variables) {
 
   $categoryTitles = array_unique($categoryTitles);
   foreach ($categoryTitles as $categoryTitle) {
-    //$block_content .= "specName" . $speciesName;
+    // $block_content .= "specName" . $speciesName;
     $block_content .= "<div class=\"category\"><h5>" . $categoryTitle . "</h5>";
     foreach ($categories as $category) {
       if ($category['title'] == $categoryTitle) {
@@ -629,17 +640,17 @@ function theme_ext_links_list_grouped($variables) {
  */
 function theme_ext_links_list_plain($variables) {
   $speciesName = $variables['speciesName'];
-  if(!isset($speciesName['genus'])) {
+  if (!isset($speciesName['genus'])) {
     $speciesName['genus'] = '';
   }
-  if(!isset($speciesName['species'])) {
+  if (!isset($speciesName['species'])) {
     $speciesName['species'] = '';
   }
   $genus = $variables['genus'];
   $species = $variables['species'];
   $ext_links_default = ext_links_get_default();
   $block_content = '';
-  if (variable_get('ext_links_gbif_check', true)) {
+  if (variable_get('ext_links_gbif_check', TRUE)) {
     $block_content .= '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_gbif_link', $ext_links_default['gbif']['link_default_value']) . str_replace('"', '%22', $speciesName['genus']) . variable_get('ext_links_gbif_concat', ' ') . str_replace('"', '%22', $speciesName['species']) . '\')">' . variable_get('ext_links_gbif_text', $ext_links_default['gbif']['text_default_value']) . '</a><br />';
     /*
      $block_content .= /* TODO
@@ -656,13 +667,13 @@ function theme_ext_links_list_plain($variables) {
     $block_content .= '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_biocase_link', $ext_links_default['biocase']['link_default_value']) . str_replace('"', '%22', $speciesName['genus']) . variable_get('ext_links_biocase_concat', ' ') . str_replace('"', '%22', $speciesName['species']) . '\')">' . variable_get('ext_links_biocase_text', $ext_links_default['biocase']['text_default_value']) . '</a><br />';
   }
   if (variable_get('ext_links_nybg_check', 1)) {
-    //$block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default[nybg][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_nybg_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_nybg_text', $ext_links_default[nybg][text_default_value]).'</a><br />';
+    // $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default[nybg][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_nybg_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_nybg_text', $ext_links_default[nybg][text_default_value]).'</a><br />';
     $genusQuery = '';
     $speciesQuery = '';
-    if ($speciesName['genus'] != null) {
+    if ($speciesName['genus'] != NULL) {
       $genusQuery = 'DetFiledAsGenusLocal+%3D+\%27' . $speciesName['genus'] . '\%27';
     }
-    if ($speciesName['species'] != null) {
+    if ($speciesName['species'] != NULL) {
       $speciesQuery = 'DetFiledAsSpeciesLocal+%3D+\%27' . $speciesName['species'] . '\%27';
     }
     $block_content .= '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_nybg_link', $ext_links_default['nybg']['link_default_value']) . $genusQuery . variable_get('ext_links_nybg_concat', '+AND+') . $speciesQuery . '\')">' . variable_get('ext_links_nybg_text', $ext_links_default['nybg']['text_default_value']) . '</a><br />';
@@ -726,10 +737,12 @@ function theme_ext_links_list_plain($variables) {
   return $block_content;
 }
 
-// include the admin form if it really want to use
-//if (arg(0) === 'admin' AND arg(1) === 'user' AND arg(2) === 'ext_link') {
-//  module_load_include('inc', 'ext_links', 'xt_link_admin');
-//}
+// Include the admin form if we really want it to use.
+/*
+if (arg(0) === 'admin' AND arg(1) === 'user' AND arg(2) === 'ext_link') {
+  module_load_include('inc', 'ext_links', 'xt_link_admin');
+}
+*/
 
 /**
  * @todo Please document this function.
@@ -737,15 +750,24 @@ function theme_ext_links_list_plain($variables) {
  */
 function ext_links_theme() {
   return array(
-    'ext_links_list_grouped' => array('variables' => array('speciesName' => null, 'genus' => null, 'species' => null)),
-    'ext_links_list_plain' => array('variables' => array('speciesName' => null, 'genus' => null, 'species' => null)),
+    'ext_links_list_grouped' => array('variables' => array(
+      'speciesName' => NULL,
+      'genus' => NULL,
+      'species' => NULL,
+      )),
+    'ext_links_list_plain' => array('variables' => array(
+      'speciesName' => NULL,
+      'genus' => NULL,
+      'species' => NULL,
+      )),
   );
 }
 
 /**
  * Get the default external links.
- * 
- * @return Returns an array with default external links values.
+ *
+ * @return array
+ *   Returns an array with default external links values.
  */
 function ext_links_get_default() {
   $ext_links_default["gbif"] = array(
@@ -812,7 +834,7 @@ function ext_links_get_default() {
     'link_default_value' => 'http://www.ipni.org/ipni/advPlantNameSearch.do?',
     'text_default_value' => 'Search IPNI...',
     'category_default_value' => 'Classification',
-  );  
+  );
   $ext_links_default["wcsp"] = array(
     'link_default_value' => 'http://apps.kew.org/wcsp/prepareChecklist.do?checklist=monocots%40%40150290520121019541',
     'text_default_value' => 'Search World Checklist Monocots...',

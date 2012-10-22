@@ -2,32 +2,34 @@
 /**
  * @file
  * Install, update and uninstall functions for the cdm_dataportal module.
- *
  */
-
-// $Id$
-
 
 /**
- * Implements hook_install().().
- */
+ * Implements hook_install(). */
 function cdm_dataportal_install() {
-  // TODO Please convert this statement to the D7 database API syntax.
-  db_query(_get_sql_fix_module_weight());
+  db_update('system')
+    ->fields(array(
+      'weight' => 20,
+    ))
+    ->condition('name', 'cdm_dataportal')
+    ->execute();
 }
 
 /**
- * Implements hook_uninstall().().
- */
+ * Implements hook_uninstall(). */
 function cdm_dataportal_uninstall() {
-
-  cdm_delete_all_cdm_nodes();
+  // Delete all nodes with a cdm content type from the node table.
+  // Comment @WA: you also may want to delete these content types from the
+  // node_type table.
+  db_delete('node')
+    ->condition('type', 'cdm_%')
+    ->execute();
 }
 
-function _get_sql_fix_module_weight() {
-  return "UPDATE {system} SET weight = 20 WHERE name = 'cdm_dataportal'";
-}
-
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function _rename_variable($old_name, $new_name) {
   $success = FALSE;
   $value = variable_get($old_name, FALSE);
@@ -43,19 +45,29 @@ function _rename_variable($old_name, $new_name) {
   return array('success' => $success, 'query' => "Renaming variable $old_name to $new_name");
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function _remove_variable($name) {
   variable_del($name);
   return array('success' => TRUE, 'query' => "Removing variable $name");
 }
 
-
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function _create_variable($name, $value) {
   variable_set($name, $value);
   return array('success' => TRUE, 'query' => "Creating variable $name new value: $value");
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function _modify_variable($name, $value_override) {
-
   /*
    * FIXME take care for correct handling of tree variables
    * for example description_gallery contains the array:
@@ -67,6 +79,5 @@ function _modify_variable($name, $value_override) {
    )
    * -----> solutions merge arrays !!!
    */
-
   return _create_variable($name, $value_override);
 }

@@ -1,58 +1,62 @@
 <?php
-// $Id$
-
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
+ * @file
+ * Taxon Theming functions.
  *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1
- * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
  */
 
 /**
- * render the given result page including a pager
+ * Returns HTML for the given result page including a pager.
  *
- * @param unknown_type $pager
- *          the cdmlib pager object containing the result set of cdm base
- *          objects (currently this function can only handle taxon instances =>
- *          TODO)
- * @param unknown_type $path
- *          the target path for the pager links, this will usually point to
- *          'cdm_dataportal/search/results/taxon'
- * @param unknown_type $query_parameters
- *          the query parameters to be used in the pager links
+ * @param array $variables
+ *   An associative array containing:
+ *   - pager: The cdmlib pager object containing the result set of cdm base
+ *     objects (currently this function can only handle taxon instances =>
+ *     TODO)
+ *   - path: The target path for the pager links, this will usually point to
+ *     'cdm_dataportal/search/results/taxon'.
+ *   - query_parameters: The query parameters to be used in the pager links.
+ *
+ * @ingroup themeable
  */
 function theme_cdm_search_results($variables) {
   $pager = $variables['pager'];
   $path = $variables['path'];
   $query_parameters = $variables['query_parameters'];
   $freetextSearchResults = array();
-  // the $query_parameters must not contain the 'q' parameter
-  // since this would conflict with the desired target $path
+  // The $query_parameters must not contain the 'q' parameter
+  // since this would conflict with the desired target $path.
   // unset($search_params['q']);
-
-  // if the pager contains records of SearchResults, extract the taxa and use
-  // them a records instead
+  // If the pager contains records of SearchResults, extract the taxa and use
+  // them as records instead.
   if (isset($pager->records[0]) && $pager->records[0]->class == "SearchResult") {
     $freetextSearchResults = $pager->records;
     $taxa = array();
     // $highlightedFragments = array();
     foreach ($pager->records as $searchResult) {
       $taxa[] = &$searchResult->entity;
-      // if(!isset($searchResult->fieldHighlightMap)){
-      // $searchResult->fieldHighlightMap = null;
-      // }
-      // $fragmentHighlighting[] = $searchResult->fieldHighlightMap;
+      /*
+      if(!isset($searchResult->fieldHighlightMap)){
+        $searchResult->fieldHighlightMap = NULL;
+      }
+      $fragmentHighlighting[] = $searchResult->fieldHighlightMap;
+      */
     }
     $pager->records = $taxa;
   }
-  $showThumbnails = false;
+  $showThumbnails = FALSE;
   if (isset($_SESSION['pageoptions']['searchtaxa']['showThumbnails'])) {
     $showThumbnails = $_SESSION['pageoptions']['searchtaxa']['showThumbnails'];
   }
-  if (! is_numeric($showThumbnails)) {
+  if (!is_numeric($showThumbnails)) {
     $showThumbnails = 1;
   }
   $setSessionUri = url('cdm_api/setvalue/session', array(
@@ -86,21 +90,24 @@ function theme_cdm_search_results($variables) {
 
   $out = '';
 
-  // add thumbnails checkbox and refince search link
+  // Add thumbnails checkbox and refince search link.
   $out = '<div class="page_options">';
   if ($_REQUEST['ws'] && cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) {
-    $out .= '<div id="backButton">' . l("Modify search", cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
+    $out .= '<div id="backButton">' . l(t('Modify search'), cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
   }
   $out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" ' . ($showThumbnails == 1 ? 'checked="checked"' : '') . '> ' . t('Show Thumbnails') . '</form>';
   $out .= '</div>';
 
-  // list results
-
+  // List results.
   if (isset($pager->records) && count($pager->records) > 0) {
     $out .= '<div id="search_results">';
     $out .= theme('cdm_list_of_taxa', array('records' => $pager->records, 'freetextSearchResults' => $freetextSearchResults));
     $out .= '</div>';
-    $out .= theme('cdm_pager', array('pager' => $pager, 'path' => $path, 'parameters' => $query_parameters));
+    $out .= theme('cdm_pager', array(
+      'pager' => $pager,
+      'path' => $path,
+      'parameters' => $query_parameters,
+      ));
   }
   else {
     $out .= '<h4 class="error">Sorry, no matching entries found.</h4>';
@@ -109,17 +116,22 @@ function theme_cdm_search_results($variables) {
 }
 
 /**
- * renders misapplied names and invalid designations.
+ * Returns HTML for misapplied names and invalid designations.
+ *
  * Both relation types are currently treated the same!
  *
- * @param unknown_type $taxonRelationships
- * @return unknown
+ * @param array $variables
+ *   An associative array containing:
+ *   - taxonRelationships
+ *   - focusedTaxon
+ *
+ * @ingroup themeable
  */
 function theme_cdm_taxonRelationships($variables) {
   $taxonRelationships = $variables['taxonRelationships'];
   $focusedTaxon = $variables['focusedTaxon'];
   $out = '';
-  if (! $taxonRelationships) {
+  if (!$taxonRelationships) {
     return;
   }
 
@@ -132,7 +144,7 @@ function theme_cdm_taxonRelationships($variables) {
 
   $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
 
-  // aggregate misapplied names having the same fullname:
+  // Aggregate misapplied names having the same fullname:
   foreach ($taxonRelationships as $taxonRelation) {
 
     if (in_array($taxonRelation->type->uuid, $taxon_relationship_types)) {
@@ -144,49 +156,49 @@ function theme_cdm_taxonRelationships($variables) {
         $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
         $authorteam = $authorteam->titleCache;
 
-        if (! isset($misapplied[$name])) {
-          // render the first name found as reprensntative for all others
+        if (!isset($misapplied[$name])) {
+          // Render the first name found as representative for all others.
           $misapplied[$name]['out'] = cdm_related_taxon($taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR);
         }
         else {
-          // we need to add the anchors for all of the other mispplied names not
-          // being rendered explicitely.
+          // We need to add the anchors for all of the other mispplied names not
+          // being rendered explicitly.
           $misapplied[$name]['out'] = uuid_anchor($taxonRelation->fromTaxon->uuid, $misapplied[$name]['out']);
         }
 
-        // collect all authors for this fullname
+        // Collect all authors for this fullname.
         if (isset($authorteam)) {
           $misapplied[$name]['authorteam'][$authorteam] = '';
           $joinedAuthorTeams[$authorteam] = 'sensu ' . theme('cdm_reference', array('reference' => $taxonRelation->fromTaxon->sec));
         }
       }
       else {
-        // all relationsship types but misapplied_name_for
-        // invalid_designation_for
-        $taxonRelationshipsLines[] = cdm_taxonRelationship($taxonRelation, true, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon), true);
+        // All relationsship types but misapplied_name_for
+        // invalid_designation_for.
+        $taxonRelationshipsLines[] = cdm_taxonRelationship($taxonRelation, TRUE, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon), TRUE);
       }
     }
   }
 
-  // sort the joinedAuthorTeams and create footnotes and footnotekeys
+  // Sort the joinedAuthorTeams and create footnotes and footnotekeys.
   ksort($joinedAuthorTeams);
   foreach ($joinedAuthorTeams as $authorteam => $sensuCitation) {
     $footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensuCitation);
     $joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu ' . $authorteam . theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey)) . '</span>';
   }
 
-  // generate output
+  // Generate output.
   if (is_array($misapplied) && count($misapplied) > 0) {
     $out .= '<ul class="misapplied">';
     foreach ($misapplied as $misapplied_name) {
 
-      // @WA $other_anchors is not defined
+      // Comment @WA $other_anchors is not defined.
       // $out .= '<li class="synonym"><span class="misapplied">' .
       // $other_anchors . $misapplied_name['out'] . ' </span>';
       $out .= '<li class="synonym"><span class="misapplied">' . $misapplied_name['out'] . ' </span>';
 
       if (isset($misapplied_name['authorteam'])) {
-        // fill authors with the renderedFootnoteKey and sorting 'em
+        // Fill authors with the renderedFootnoteKey and sorting 'em.
         foreach ($misapplied_name['authorteam'] as $authorteam => &$renderedFootnoteKey) {
           $renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
         }
@@ -217,6 +229,7 @@ function theme_cdm_taxonRelationships($variables) {
   RenderHints::popFromRenderStack();
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -235,7 +248,11 @@ function theme_cdm_acceptedFor() {
       if (isset($synonym->name->nomenclaturalReference)) {
         $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
       }
-      $out .= theme('cdm_taxonName', array('taxonName' => $synonym->name, 'nameLink' => null, 'refenceLink' => $referenceUri));
+      $out .= theme('cdm_taxonName', array(
+        'taxonName' => $synonym->name,
+        'nameLink' => NULL,
+        'refenceLink' => $referenceUri,
+        ));
       $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $synonym));
       $out .= '</span>';
     }
@@ -245,14 +262,7 @@ function theme_cdm_acceptedFor() {
 }
 
 /**
- *
- *
- * Enter description here ...
- *
- * @param unknown_type $records
- * @param unknown_type $fragmentHighlighting
- *          (optional)
- * @return string
+ * @todo document this function.
  */
 function theme_cdm_list_of_taxa($variables) {
   $records = $variables['records'];
@@ -262,7 +272,6 @@ function theme_cdm_list_of_taxa($variables) {
   $form_name = 'search_gallery';
   // $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
   // $gallery_settings = variable_get($form_name, $default_values);
-
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
 
   $showMedia_taxa = $gallery_settings['cdm_dataportal_show_taxon_thumbnails'];
@@ -271,25 +280,24 @@ function theme_cdm_list_of_taxa($variables) {
   // variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1);
   // $showMedia_synonyms =
   // variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0);
-
   $classification_uuid = get_taxonomictree_uuid_selected();
 
-  // .. well, for sure not as performant as before, but better than nothing.
+  // .. Well, for sure not as performant as before, but better than nothing.
   $synonym_uuids = array();
   $misappied_uuids = array();
   foreach ($records as $taxon) {
     if ($taxon->class == "Synonym") {
-      if (! array_key_exists($taxon->uuid, $synonym_uuids)) {
+      if (!array_key_exists($taxon->uuid, $synonym_uuids)) {
         $synonym_uuids[$taxon->uuid] = $taxon->uuid;
       }
     }
-    else if (! _cdm_dataportal_acceptedByCurrentView($taxon)) {
-      // assuming that it is a misappied name, will be further examined below
+    elseif (!_cdm_dataportal_acceptedByCurrentView($taxon)) {
+      // Assuming that it is a misappied name, will be further examined below.
       $misappied_uuids[$taxon->uuid] = $taxon->uuid;
     }
   }
 
-  // batch service not jet implemented:
+  // Batch service not jet implemented:
   // $table_of_accepted = cdm_ws_property(CDM_WS_PORTAL_TAXON_ACCEPTED,
   // join(',', $synonym_uuids));
   // thus ...
@@ -314,11 +322,11 @@ function theme_cdm_list_of_taxa($variables) {
   }
 
   $out = '<ul class="cdm_names" style="background-image: none;">';
-  $itemCnt = - 1;
+  $itemCnt = -1;
   foreach ($records as $taxon) {
     $itemCnt++;
     if (isset($table_of_accepted[$taxon->uuid])) {
-      // its a synonym or misapplied name
+      // Its a synonym or misapplied name.
       $is_synonym = isset($synonym_uuids[$taxon->uuid]);
       $class_name = $is_synonym ? "Synonym" : "misapplied-name";
 
@@ -332,8 +340,12 @@ function theme_cdm_list_of_taxa($variables) {
         if (isset($acceptedTaxon->name->nomenclaturalReference)) {
           $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
         }
-        $out .= '<li class="' . $class_name . '">' . theme('cdm_taxonName', array('taxonName' => $taxon->name, 'nameLink' => $taxonUri, 'refenceLink' => $referenceUri));
-        if (! $is_synonym) {
+        $out .= '<li class="' . $class_name . '">' . theme('cdm_taxonName', array(
+          'taxonName' => $taxon->name,
+          'nameLink' => $taxonUri,
+          'refenceLink' => $referenceUri,
+          ));
+        if (!$is_synonym) {
           $out .= '<span class="sensu"> sensu ' . theme('cdm_reference', array('reference' => $taxon->sec)) . '</span>';
         }
         $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
@@ -344,24 +356,33 @@ function theme_cdm_list_of_taxa($variables) {
       else {
 
         // TODO avoid using Ajax in the cdm_dynabox .... why?
-        // TODO add media
-        $out .= cdm_dynabox(theme('cdm_taxonName', array('taxonName' => $taxon->name, 'nameLink' => null, 'refenceLink' => null, 'show_annotations' => false)), cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array(
-          $taxon->uuid,
-          $classification_uuid,
-        )), 'cdm_list_of_taxa', 'Click for accepted taxon');
+        // TODO add media.
+        $out .= cdm_dynabox(theme('cdm_taxonName', array(
+          'taxonName' => $taxon->name,
+          'nameLink' => NULL,
+          'refenceLink' => NULL,
+          'show_annotations' => FALSE,
+          )), cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array(
+            $taxon->uuid,
+            $classification_uuid,
+            )), 'cdm_list_of_taxa', 'Click for accepted taxon');
       }
     }
     else {
-      // its a Taxon
+      // Its a Taxon.
       $taxonUri = url(path_to_taxon($taxon->uuid));
       $referenceUri = '';
       if (isset($taxon->name->nomenclaturalReference)) {
         $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
       }
-      $out .= '<li class="Taxon">' . theme('cdm_taxonName', array('taxonName' => $taxon->name, 'nameLink' => $taxonUri, 'refenceLink' => $referenceUri));
+      $out .= '<li class="Taxon">' . theme('cdm_taxonName', array(
+        'taxonName' => $taxon->name,
+        'nameLink' => $taxonUri,
+        'refenceLink' => $referenceUri,
+        ));
       $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
 
-      if ($showMedia_taxa) {                    
+      if ($showMedia_taxa) {
         $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
       }
     }
@@ -371,8 +392,8 @@ function theme_cdm_list_of_taxa($variables) {
       $out .= '<div class="score-bar-value">' . number_format($freetextSearchResults[$itemCnt]->score * 100.0, 2) . '%</div>';
     }
 
-    // render highlighted fragments, these are made available by free text
-    // searches
+    // Render highlighted fragments, these are made available by free text
+    // searches.
     if (isset($freetextSearchResults[$itemCnt]->fieldHighlightMap)) {
       $field_fragments = (array) $freetextSearchResults[$itemCnt]->fieldHighlightMap;
       if (count($field_fragments) > 0) {
@@ -394,19 +415,14 @@ function theme_cdm_list_of_taxa($variables) {
 }
 
 /**
- * renders a representation of the given taxon relationship.
- * According name relatinships are also being rendered.
+ * Renders a representation of the given taxon relationship.
  *
- *
- * @param unknown_type $taxon
- * @param unknown_type $reltype_uuid
- * @param unknown_type $taxonRelationType
- * @param unknown_type $doLinkTaxon
+ * According name relationships are also being rendered.
  */
-function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = false, $inverse = false, $showSecReference = false) {
+function cdm_taxonRelationship($taxonRelationship, $taxonRelationship = FALSE, $inverse = FALSE, $showSecReference = FALSE) {
 
-  // validate object
-  if (! (isset($taxonRelationship->toTaxon) && isset($taxonRelationship->fromTaxon) && isset($taxonRelationship->type))) {
+  // Validate object.
+  if (!(isset($taxonRelationship->toTaxon) && isset($taxonRelationship->fromTaxon) && isset($taxonRelationship->type))) {
     return;
   }
 
@@ -428,26 +444,21 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = false, $invers
     $reltype_representation = $taxonRelationType->representation_L10n;
   }
 
-  return cdm_related_taxon($toTaxon, null, $relsign, $reltype_representation, $doLinkTaxon, $showSecReference);
+  return cdm_related_taxon($toTaxon, NULL, $relsign, $reltype_representation, $doLinkTaxon, $showSecReference);
 }
 
 /**
- * renders a representation of the given taxon relationship.
+ * Renders a representation of the given taxon relationship.
+ *
  * According name relatinships are also being rendered.
- *
- *
- * @param unknown_type $taxon
- * @param unknown_type $reltype_uuid
- * @param unknown_type $taxonRelationType
- * @param unknown_type $doLinkTaxon
- *
  */
-function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $reltype_representation = null, $doLinkTaxon = false, $showSecReference = false) {
+function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $reltype_representation = NULL, $doLinkTaxon = FALSE, $showSecReference = FALSE) {
   static $relsign_homo = '≡';
   static $relsign_hetero = '=';
   static $relsign_invalid = '&ndash;';
 
-  $footnoteListKey = null; // 'taxonRelationships';
+  // 'taxonRelationships';
+  $footnoteListKey = NULL;
 
   $name_prefix = '';
   $name_postfix = '';
@@ -462,9 +473,11 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
       case UUID_SYNONYM_OF:
         $relsign = $relsign_hetero;
         break;
+
       case UUID_HOMOTYPIC_SYNONYM_OF:
         $relsign = $relsign_homo;
         break;
+
       case UUID_MISAPPLIED_NAME_FOR:
       case UUID_INVALID_DESIGNATION_FOR:
         $skiptags[] = 'authors';
@@ -472,15 +485,16 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
         $name_prefix = '"';
         $name_postfix = '"';
         break;
+
       default:
         $relsign = $relsign_invalid;
     }
   }
   /*
-   * names with status invalid or nudum are to be displayed with the
-   * $relsign_invalid, these names appear at the end of all names in their
-   * homotypic group (ordered correctly by the java cdm_lib)
-   */
+  Names with status invalid or nudum are to be displayed with the
+  $relsign_invalid, these names appear at the end of all names in their
+  homotypic group (ordered correctly by the java cdm_lib).
+  */
   if (isset($taxon->name->status) && is_array($taxon->name->status)) {
     foreach ($taxon->name->status as $status) {
       if ($status->type->uuid == UUID_NOMENCLATURALSTATUS_TYPE_INVALID || $status->type->uuid == UUID_NOMENCLATURALSTATUS_TYPE_NUDUM) {
@@ -489,8 +503,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
     }
   }
 
-  // now rendering starts ..
-
+  // Now rendering starts ..
   RenderHints::pushToRenderStack('related_taxon');
 
   if (isset($taxon->name->nomenclaturalReference)) {
@@ -500,11 +513,18 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
   if ($doLinkTaxon) {
     $taxonUri = url(path_to_taxon($taxon->uuid, "synonymy"));
   }
-  // printing the taxonName and the handling the special case of annotations
+  // Printing the taxonName and the handling the special case of annotations.
   if (!isset($referenceUri)) {
-    $referenceUri = false;
+    $referenceUri = FALSE;
   }
-  $out_taxon_part = theme('cdm_taxonName', array('taxonName' => $taxon->name, 'nameLink' => $taxonUri, 'refenceLink' => $referenceUri, 'show_annotations' => true, 'is_type_designation' => false, 'skiptags' => $skiptags));
+  $out_taxon_part = theme('cdm_taxonName', array(
+    'taxonName' => $taxon->name,
+    'nameLink' => $taxonUri,
+    'refenceLink' => $referenceUri,
+    'show_annotations' => TRUE,
+    'is_type_designation' => FALSE,
+    'skiptags' => $skiptags,
+    ));
   $out_taxon_part .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => array(
   $taxon->name,
   $taxon,
@@ -514,15 +534,15 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
     $out_taxon_part .= ' sec. ' . theme('cdm_reference', array('reference' => $taxon->sec));
   }
 
-  // later homonym or treated as later homonym AND bloking names
+  // Later homonym or treated as later homonym AND bloking names.
   $from_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
   $to_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
 
-  // first the FROM RELS
-  // FIXME use UUID below instad of representation_L10n
+  // First the FROM RELS.
+  // FIXME use UUID below instead of representation_L10n.
   if ($from_name_relations) {
     foreach ($from_name_relations as $element) {
-        $elementTitleCache = isset($element->toName->titleCache) ? $element->toName->titleCache : ''; 
+        $elementTitleCache = isset($element->toName->titleCache) ? $element->toName->titleCache : '';
         $elementReferenceDateStart = isset($element->toName->nomenclaturalReference->datePublished->start) ? $element->toName->nomenclaturalReference->datePublished->start : '';
         $elementUuid = isset($element->toName->uuid) ? $element->toName->uuid : '';
         $elementTaxonBasesUuid = isset($element->toName->taxonBases[0]->uuid) ? $element->toName->taxonBases[0]->uuid : '';
@@ -546,7 +566,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
           break;
       }
     }
-    // second the TO RELS
+    // Second the TO RELS.
     if ($to_name_relations) {
       foreach ($to_name_relations as $element) {
           $elementTitleCache = isset($element->fromName->titleCache) ? $element->fromName->titleCache : '';
@@ -557,22 +577,22 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
         switch ($element->type->representation_L10n) {
           case 'blocking name for':
             if (isset($name_relations_html)) {
-              $name_relations_html .= 'nec ' . l( $elementTitleCache . ' ' . substr($elementReferenceDateStart, 0, 4), 'cdm_dataportal/name/' .  $elementUuid . '/' . $taxon->uuid . '/' . $elementTaxonBasesUuid);
+              $name_relations_html .= 'nec ' . l($elementTitleCache . ' ' . substr($elementReferenceDateStart, 0, 4), 'cdm_dataportal/name/' .  $elementUuid . '/' . $taxon->uuid . '/' . $elementTaxonBasesUuid);
             }
             else {
-              $name_relations_html = 'non ' . l( $elementTitleCache . ' ' . substr($elementReferenceDateStart, 0, 4), 'cdm_dataportal/name/' .  $elementUuid . '/' . $taxon->uuid . '/' . $elementTaxonBasesUuid) . ' ' . $elementDateStart;
+              $name_relations_html = 'non ' . l($elementTitleCache . ' ' . substr($elementReferenceDateStart, 0, 4), 'cdm_dataportal/name/' .  $elementUuid . '/' . $taxon->uuid . '/' . $elementTaxonBasesUuid) . ' ' . $elementDateStart;
             }
             break;
         }
       }
     }
-    // rels output
+    // Rels output.
     if (isset($name_relations_html)) {
       $name_relations_html = '[' . trim($name_relations_html) . ']';
     }
   }
-  // general output
-  if (! isset($name_relations_html)) {
+  // General output.
+  if (!isset($name_relations_html)) {
     $name_relations_html = '';
   }
   $out = '<span class="relation_sign" title="' . $reltype_representation . '">' . $relsign . '</span>' . $name_prefix . $out_taxon_part . $name_postfix . ' ' . $name_relations_html;
@@ -584,9 +604,10 @@ function cdm_related_taxon($taxon, $reltype_uuid = null, $relsign = null, $relty
 }
 
 /**
+ * @todo document this function.
  */
 function theme_cdm_taxon_list_thumbnails($variables) {
-  
+
   $taxon = $variables['taxon'];
   $out = '';
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
@@ -606,7 +627,7 @@ function theme_cdm_taxon_list_thumbnails($variables) {
   );
   $galleryLinkUri = path_to_taxon($taxon->uuid, 'images');
 
-  // cdm_dataportal_show_media = ???? TODO
+  // TODO cdm_dataportal_show_media = ????
   $selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
   if ($selectShowMedia == 0) {
     $mediaList = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array(
@@ -618,10 +639,18 @@ function theme_cdm_taxon_list_thumbnails($variables) {
       $taxon->uuid,
     ), queryString($mediaQueryParameters));
   }
-  
-  $out .= theme('cdm_media_gallerie', array('mediaList' => $mediaList, 'galleryName' => $gallery_name, 'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'], 'cols' => $gallery_settings['cdm_dataportal_media_cols'], 'maxRows' => $gallery_settings['cdm_dataportal_media_maxRows'], 'captionElements' => $captionElements, 'mediaLinkType' => 'LIGHTBOX', 'alternativeMediaUri' => null, 'galleryLinkUri' => $galleryLinkUri));
+
+  $out .= theme('cdm_media_gallerie', array(
+    'mediaList' => $mediaList,
+    'galleryName' => $gallery_name,
+    'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+    'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+    'maxRows' => $gallery_settings['cdm_dataportal_media_maxRows'],
+    'captionElements' => $captionElements,
+    'mediaLinkType' => 'LIGHTBOX',
+    'alternativeMediaUri' => NULL,
+    'galleryLinkUri' => $galleryLinkUri,
+     ));
 
   return $out;
 }
-
-

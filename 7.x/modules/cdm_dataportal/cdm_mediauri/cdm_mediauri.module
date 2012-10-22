@@ -1,9 +1,20 @@
 <?php
-// $Id$
-
-/*
- * @file cdm_mediauri.module Copyright (C) 2007 EDIT European Distributed
- * Institute of Taxonomy http://www.e-taxonomy.eu
+/**
+ * @file
+ * Allows to create media URI conversion rules.
+ *
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * @author
+ *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
+ *   - Wouter Addink <w.addink@eti.uva.nl> (migration from Drupal 5 to Drupal7)
  */
 
 /**
@@ -12,60 +23,45 @@
 function cdm_mediauri_menu() {
   $items = array();
 
-  $items['admin/config/cdm_mediauri'] = array(
+  $items['admin/config/cdm_dataportal/cdm_mediauri'] = array(
     'title' => 'CDM Media URI Conversion',
-    'description' => 'Media URI Conversion Rules',
-    'access arguments' => array(
-      'administer cdm_dataportal',
-    ),
+    'description' => 'Media URI Conversion Rules.',
+    'access arguments' => array('administer cdm_dataportal'),
     'page callback' => 'cdm_mediauri_overview',
     'type' => MENU_NORMAL_ITEM,
+    'weight' => 20,
   );
 
-  $items['admin/config/cdm_mediauri/list'] = array(
+  $items['admin/config/cdm_dataportal/cdm_mediauri/list'] = array(
     'title' => 'List',
     'description' => 'Media URI Conversion Rules',
-    'access arguments' => array(
-      'administer cdm_dataportal',
-    ),
+    'access arguments' => array('administer cdm_dataportal'),
     'page callback' => 'cdm_mediauri_overview',
     'weight' => 1,
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
 
-  $items['admin/config/cdm_mediauri/add'] = array(
+  $items['admin/config/cdm_dataportal/cdm_mediauri/add'] = array(
     'title' => 'Add Rule',
     'description' => 'Add Media URI Conversion Rule',
-    'access arguments' => array(
-      'administer cdm_dataportal',
-    ),
+    'access arguments' => array('administer cdm_dataportal'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array(
-      'cdm_mediauri_rule_add',
-    ),
+    'page arguments' => array('cdm_mediauri_rule_add'),
     'weight' => 2,
     'type' => MENU_LOCAL_TASK,
   );
 
-  $items['admin/config/cdm_mediauri/edit'] = array(
-    'access arguments' => array(
-      'administer cdm_dataportal',
-    ),
+  $items['admin/config/cdm_dataportal/cdm_mediauri/edit'] = array(
+    'access arguments' => array('administer cdm_dataportal'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array(
-      'cdm_mediauri_rule_edit',
-    ),
+    'page arguments' => array('cdm_mediauri_rule_edit'),
     'type' => MENU_CALLBACK,
   );
 
-  $items['admin/config/cdm_mediauri/delete'] = array(
-    'access arguments' => array(
-      'administer cdm_dataportal',
-    ),
+  $items['admin/config/cdm_dataportal/cdm_mediauri/delete'] = array(
+    'access arguments' => array('administer cdm_dataportal'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array(
-      'cdm_mediauri_rule_delete',
-    ),
+    'page arguments' => array('cdm_mediauri_rule_delete'),
     'type' => MENU_CALLBACK,
   );
 
@@ -73,7 +69,8 @@ function cdm_mediauri_menu() {
   foreach ($rules as $rule) {
     if ($rule['embed_html'] && $rule['path']) {
       $items[$rule['path']] = array(
-        'access arguments' => true, // TODO restrict access
+        // TODO restrict access.
+        'access arguments' => TRUE,
         'page callback' => 'cdm_mediauri_view_embed',
         'type' => MENU_CALLBACK,
       );
@@ -86,7 +83,7 @@ function cdm_mediauri_menu() {
 /**
  * Returns an overview list of existing media uri rules
  */
-function cdm_mediauri_overview($rules = false) {
+function cdm_mediauri_overview($rules = FALSE) {
   if (!$rules) {
     $rules = cdm_mediauri_rules();
   }
@@ -96,14 +93,14 @@ function cdm_mediauri_overview($rules = false) {
     t('Replacement'),
     t('Operations'),
   );
-  $rid = - 1;
+  $rid = -1;
   if (count($rules)) {
     foreach ($rules as $rule) {
       $rid++;
       $rows[] = array(
         $rule['pattern'],
         $rule['replace'],
-        l('edit', 'admin/config/cdm_mediauri/edit/' . $rid) . ' | ' . l('delete', 'admin/config/cdm_mediauri/delete/' . $rid),
+        l(t('edit'), 'admin/config/cdm_mediauri/edit/' . $rid) . ' | ' . l(t('delete'), 'admin/config/cdm_mediauri/delete/' . $rid),
       );
     }
   }
@@ -117,7 +114,7 @@ function cdm_mediauri_overview($rules = false) {
       ),
     );
   }
-  
+
   return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
@@ -126,9 +123,9 @@ function cdm_mediauri_overview($rules = false) {
  */
 function cdm_mediauri_rule_add($form, &$form_state) {
   $form = cdm_mediauri_rule_edit_form('new');
- // Comment @WA: we cannot use system settings form here because we want to
- // use our own submit function (cdm_mediauri_rule_add_submit)
- // return system_settings_form($form);
+  // Comment @WA: we cannot use system settings form here because we want to
+  // use our own submit function (cdm_mediauri_rule_add_submit)
+  // return system_settings_form($form);
   return $form;
 }
 /**
@@ -138,7 +135,7 @@ function cdm_mediauri_rule_add($form, &$form_state) {
 function cdm_mediauri_rule_edit($form, &$form_state) {
   $rid = arg(4);
   $form = cdm_mediauri_rule_edit_form($rid);
-  //return system_settings_form($form);
+  // return system_settings_form($form);
   return $form;
 }
 /**
@@ -164,7 +161,7 @@ function cdm_mediauri_rule_add_submit($form, &$form_state) {
 function cdm_mediauri_rule_edit_submit($form, &$form_state) {
   if (is_numeric($form_state['values']['rid'])) {
     $rules = cdm_mediauri_rules();
-    // determine if the menu has changed
+    // Determine if the menu has changed.
     if (isset($rules[$form_state['values']['rid']]['embed']) && $rules[$form_state['values']['rid']]['embed'] != $form_state['values']['rule']['embed'] || $rules[$form_state['values']['rid']]['path'] != $form_state['values']['rule']['path']) {
       menu_rebuild();
       drupal_set_message(t('Menu Rebuild'));
@@ -205,18 +202,18 @@ function cdm_mediauri_rule_delete($form, &$form_state) {
     '#type' => 'hidden',
     '#value' => $rid,
   );
-  
+
   // Comment @WA: I removed the rule table from the <h2> title to the
   // description so it is consistent with the rest of the interface,
-  // instead of displaying the table enlarged like in D5. I would recommend 
+  // instead of displaying the table enlarged like in D5. I would recommend
   // also to hide the Operations column from the table because it may
-  // be confusing here.  
+  // be confusing here.
   return confirm_form(
-      $form, 
+      $form,
       t('Are you sure you want to delete the following rule:'),
       'admin/config/cdm_mediauri',
-      cdm_mediauri_overview(array($rules[$rid])), 
-      t('Delete'), 
+      cdm_mediauri_overview(array($rules[$rid])),
+      t('Delete'),
       t('Cancel')
     );
 }
@@ -226,14 +223,15 @@ function cdm_mediauri_rule_delete($form, &$form_state) {
  */
 function cdm_mediauri_rule_edit_form($rid = 'new') {
   if ($rid == 'new') {
-    // ---- little code snipped used to import default rules during development
-    $default_rule_id = FALSE; // 0 or 1 or FALSE
+    // ---- Little code snippet used to import default rules during development.
+    // 0 or 1 or FALSE.
+    $default_rule_id = FALSE;
 
-    if ($default_rule_id !== false) {
-      $default_rules = cdm_mediauri_rules(true);
+    if ($default_rule_id !== FALSE) {
+      $default_rules = cdm_mediauri_rules(TRUE);
       $rule = $default_rules[$default_rule_id];
     }
-    // --- END
+    /* --- END */
 
     if (!isset($rule)) {
       $rule = array();
@@ -274,7 +272,7 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
 
   $form['rule'] = array(
     '#type' => 'fieldset',
-    '#title' => $rule['type'] == 'empty' ? t('New Rule') : t('Rule ' . $rid),
+    '#title' => check_plain($rule['type'] == 'empty' ? t('New Rule') : t('Rule !rule', array('!rule' => $rid))),
     '#tree' => TRUE,
   );
 
@@ -292,7 +290,9 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
   $form['rule']['pattern'] = array(
     '#type' => 'textarea',
     '#title' => t('Pattern') . ':',
-    '#description' => t('php PCRE regex pattern (see: ') . l('php manual', 'http://www.php.net/manual/reference.pcre.pattern.syntax.php') . ')',
+    '#description' => check_plain(t('php PCRE regex pattern (see: !php_manual)', array(
+      '!php_manual' => l(t('php manual'), 'http://www.php.net/manual/reference.pcre.pattern.syntax.php'),
+    ))),
     '#default_value' => $rule['pattern'],
     '#rows' => 1,
   );
@@ -305,7 +305,6 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
   );
 
   // ['embed_html'] = 1;
-
   $form['rule']['embed_html'] = array(
     '#type' => 'checkbox',
     '#title' => t('Embed'),
@@ -349,8 +348,8 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
   );
 
   // Comment @WA: I think this is not implemented the right way?
-  // Should the field not be enabled if 'Preview' is selected as type in 
-  // the form, for instance with ajax? 
+  // Should the field not be enabled if 'Preview' is selected as type in
+  // the form, for instance with ajax?
   $form['rule']['size_x'] = array(
     '#type' => 'textfield',
     '#title' => t('Preview Image Width') . ':',
@@ -368,17 +367,17 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
     '#description' => t('Height of preview image in px'),
     '#size' => 4,
   );
-  
+
   $form['actions']['submit'] = array(
-  '#type' => 'submit',
-  '#value' => t('Save configuration'),
+    '#type' => 'submit',
+    '#value' => t('Save configuration'),
   );
-  
+
   // @WA: D7 form api does not support reset buttons,
   // so to mimic the D5 reset button we add one like this.
   $form['actions']['reset'] = array(
-  '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
-  '#weight' => 1000,
+    '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+    '#weight' => 1000,
   );
   return $form;
 }
@@ -386,19 +385,19 @@ function cdm_mediauri_rule_edit_form($rid = 'new') {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function cdm_mediauri_rules($default = false) {
+function cdm_mediauri_rules($default = FALSE) {
   /*
-   * rules ['type']: values(preview, webapp, media) ['size_x'], ['size_y']:
-   * dimensions of preview image in px ['pattern']: php PCRE regex pattern (see:
-   * http://www.php.net/manual/reference.pcre.pattern.syntax.php) ['replace']:
-   * replacement string ['prefix']: string by which the converted url is to be
-   * prefixed ['affix']: string by which the converted url is to be affixed
-   * ['url_encode']: values(TRUE, FALSE) if the converted url to be url encoded
-   * ['embed_html']: embes the construct of prefix + url + affix into the page
-   * as plain html
-   */
+  rules ['type']: values(preview, webapp, media) ['size_x'], ['size_y']:
+  dimensions of preview image in px ['pattern']: php PCRE regex pattern (see:
+  http://www.php.net/manual/reference.pcre.pattern.syntax.php) ['replace']:
+  replacement string ['prefix']: string by which the converted url is to be
+  prefixed ['affix']: string by which the converted url is to be affixed
+  ['url_encode']: values(TRUE, FALSE) if the converted url to be url encoded
+  ['embed_html']: embes the construct of prefix + url + affix into the page
+  as plain html
+  */
   if ($default) {
-    // default rules
+    // Default rules.
     $rule1 = array();
     $rule1['type'] = 'preview';
     $rule1['pattern'] = '/^(http:\/\/ww2.bgbm.org\/herbarium\/images(?:\/\w+)(?:\/\d+){4})(\/)(.*)$/';
@@ -411,13 +410,13 @@ function cdm_mediauri_rules($default = false) {
     $rule2['pattern'] = '/^http:\/\/ww2.bgbm.org\/herbarium\/images\/((?:\w+\/)(?:\d+\/){4}[\w_]+?\.)(.*)$/';
     $rule2['replace'] = '$1fpx';
     $rule2['prefix'] = '<div style="float: left; width: 10em;">
-  <p>© BGBM: <br>
-  Access is granted under the following conditions:<br>
+  <p>© BGBM: <br/>
+  Access is granted under the following conditions:<br/>
   The images may not passed on to any third party without our written
   consent and due mention of the copyright restrictions, and may not be
   used for commercial or non-scientific purposes. Reproduction in
   scientific publications is authorized on the condition that the source
-  and the copyright are fully acknowledged:<br>
+  and the copyright are fully acknowledged:<br/>
   © Botanischer Garten und Botanisches Museum Berlin-Dahlem, FU Berlin.</li>
 </p>
 <p><a href="http://www.bgbm.org/bgbm/verantwo_e.htm"
@@ -445,7 +444,9 @@ function cdm_mediauri_rules($default = false) {
 }
 
 /**
- * Converts a media uri according to all matching conversion rules which are
+ * Converts a media uri.
+ *
+ * Converts according to all matching conversion rules which are
  * currently defined.
  *
  * Format of a returned array element:
@@ -458,11 +459,14 @@ function cdm_mediauri_rules($default = false) {
  * ['embed_html'] // the uri embedded into some string
  * }
  *
- * @return returns an associative array of the original media uri and all
- *         convered
- *         whereas the rule type becomes the array key of the array entries.
- *         All uris are again packed into associative arrays by means to submit
- *         additional information as defined in the rules applied.
+ * @param string $mediaUri
+ *   The media uri to convert.
+ *
+ * @return array
+ *   Returns an associative array of the original media uri and all conversions
+ *   whereas the rule type becomes the array key of the array entries.
+ *   All uris are again packed into associative arrays by means to submit
+ *   additional information as defined in the rules applied.
  */
 function cdm_mediauri_conversion($mediaUri) {
   $rules = cdm_mediauri_rules();
@@ -470,8 +474,8 @@ function cdm_mediauri_conversion($mediaUri) {
   $muris = array();
   $muris['original'] = array(
     'uri' => $mediaUri,
-    'size_x' => null,
-    'size_y' => null,
+    'size_x' => NULL,
+    'size_y' => NULL,
   );
 
   foreach ($rules as $rule) {
@@ -487,11 +491,11 @@ function cdm_mediauri_conversion($mediaUri) {
       );
       if (isset($rule['embed_html']) && $rule['embed_html']) {
         if ($rule['path']) {
-          // embed later on other page
+          // Embed later on other page.
           $muris[$rule['type']]['uri'] = $rule['path'] . '/' . $uri_converted;
         }
         else {
-          // direct embed
+          // Direct embed.
           $muris[$rule['type']]['embed_html'] = $rule['prefix'] . $uri_converted . $rule['affix'];
         }
       }
@@ -514,7 +518,7 @@ function cdm_mediauri_view_embed($uri) {
     }
   }
 
-  $rule = false;
+  $rule = FALSE;
   foreach (cdm_mediauri_rules() as $r) {
     if ($r['embed_html'] && $r['path'] == $path) {
       $rule = $r;

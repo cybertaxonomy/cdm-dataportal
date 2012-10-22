@@ -1,11 +1,7 @@
 <?php
-// $Id: cdm_taxontree.install 2857 2008-06-26 16:48:16Z a.kohlbecker $
-
-
 /**
  * @file
  * Install, update and uninstall functions for the cdm_taxontree module.
- *
  */
 
 /**
@@ -13,34 +9,40 @@
  * The drupal_(un)install_schema functions are called automatically in D7.
  */
 function cdm_taxontree_schema() {
-
+  // Comment @WA: this cache table is not (yet?) used.
   $schema['cache_cdm_taxontree'] = array(
     'fields' => array(
       'cid' => array(
+        'description' => 'Primary Key: Unique cache ID.',
         'type' => 'varchar',
         'length' => '333',
         'not null' => TRUE,
         'default' => '',
       ),
       'data' => array(
+        'description' => 'The data to cache.',
         'type' => 'blob',
         'size' => 'big',
         'not null' => FALSE,
       ),
       'expire' => array(
+        'description' => 'A Unix timestamp indicating when the cache entry should expire, or 0 for never.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
         'disp-width' => '11',
       ),
       'created' => array(
+        'description' => 'Unix timestamp indicating when the cache entry was created.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
         'disp-width' => '11',
       ),
-      'headers' => array(
-        'type' => 'text',
+      'serialized' => array(
+        'description' => 'A flag to indicate whether content is serialized by Drupal (1) or not (0).',
+        'type' => 'int',
+        'size' => 'small',
         'not null' => FALSE,
       ),
     ),
@@ -48,7 +50,22 @@ function cdm_taxontree_schema() {
     'indexes' => array(
       'expire' => array('expire'),
     ),
+    // Important, since the 'cid' field is too big to create a key on in INNODB.
+    // InnoDB allows a max. key length of 767 bytes, MyISAM 1000 bytes, which is
+    // for utf8 (333*3)+1, so 333 characters max. instead of 255 chars.
+    'mysql_engine' => 'MyISAM',
   );
-
+  return $schema;
 }
-?>
+
+/**
+ * Update D5 cache table to match Drupal 7 cache table columns.
+ */
+function cdm_taxontree_update_7000() {
+  $schema = cdm_taxontree_schema();
+
+  // No need to use db_change_field() here.
+  // We simply drop and recreate the cache tables to start clean.
+  db_drop_table('cache_cdm_taxontree');
+  db_create_table('cache_cdm_taxontree', $schema);
+}

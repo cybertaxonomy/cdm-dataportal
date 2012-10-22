@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ * Template file to theme a Drupal node ($node object).
+ *
+ * See modules/node/node.tpl.php for more information about available variables.
+ */
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?>"<?php print $attributes; ?>>
 

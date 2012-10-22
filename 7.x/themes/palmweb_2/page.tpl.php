@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file
+ * Custom theme implementation to display a Drupal page.
+ *
+ * See modules/system/page.tpl.php for more information about available
+ * variables.
+ */
 ?>
   <?php print render($page['header']); ?>
 
@@ -35,16 +42,16 @@
           <?php print render($page['sidebar_first']); ?>
           
           <div id="funded-by">
-            <img src="<?php print base_path().path_to_theme(); ?>/images/funded_by.png" alt="Funded by EDIT" />
+            <img src="<?php print base_path() . path_to_theme(); ?>/images/funded_by.png" alt="Funded by EDIT" />
           </div>
         </div>
       <?php endif; ?>
 
       <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
-          <?php //print $breadcrumb; ?>
+          <?php // print $breadcrumb; ?>
           <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
           <a id="main-content"></a>
-          <?php // unfortunately in D7 tabs are always set, even if there are none.. ?>
+          <?php // Unfortunately in D7 tabs are always set, even if there are none.. ?>
           <?php if ($tabs = render($tabs)): ?><div id="tabs-wrapper" class="clearfix"><?php endif; ?>
           
           <?php print render($title_prefix); ?>

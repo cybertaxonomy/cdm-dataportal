@@ -1,21 +1,26 @@
 <?php
-// $Id$
-
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
+ * @file
+ * Occurrence theming functions.
  *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1
- * See http://www.mozilla.org/MPL/MPL-1.1.html for the full license terms.
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
  */
 
 /**
+ * Returns HTML for a specimen.
  *
- * @param
- *          $specimenTypeDesignation
- * @return unknown_type
+ * @param array $variables
+ *   An associative array containing:
+ *   - specimenTypeDesignation: Object.
+ *
+ * @ingroup themeable
  */
 function theme_cdm_specimen($variables) {
   $specimenTypeDesignation = $variables['specimenTypeDesignation'];
@@ -29,9 +34,9 @@ function theme_cdm_specimen($variables) {
   if (isset($specimenTypeDesignation->media[0])) {
 
     $image_url = drupal_get_path('module', 'cdm_dataportal') . '/images/external_link.gif';
-    // thickbox has problems reading the first url parameter, so a litte hack is
+    // Thickbox has problems reading the first url parameter, so a litte hack is
     // needed here:
-    // adding a meaningless patameter &tb_hack=1& ....
+    // Adding a meaningless parameter &tb_hack=1& ....
     $out .= '&nbsp;<a href="#TB_inline?tb_hack=1&width=300&amp;height=330&amp;inlineId=specimen_media_' . $specimenTypeDesignation->uuid . '" class="thickbox">' . '<img src="' . $image_url . '" title="' . t('Show media') . '" /></a>';
 
     $out .= '<div id="specimen_media_' . $specimenTypeDesignation->uuid . '" class="tickbox_content"><table>';
@@ -43,16 +48,15 @@ function theme_cdm_specimen($variables) {
       foreach ($media->representations as $representation) {
 
         // TODO this this is PART 2/2 of a HACK - select preferred
-        // representation by mimetype and size
-        //
-        if (true || $representation->mimeType == 'image/jpeg') {
+        // representation by mimetype and size.
+        if (TRUE || $representation->mimeType == 'image/jpeg') {
           foreach ($representation->parts as $part) {
-            // get media uri conversion rules if the module is installed and
-            // activated
+            // Get media uri conversion rules if the module is installed and
+            // activated.
             if (module_exists('cdm_mediauri')) {
               $muris = cdm_mediauri_conversion($part->uri);
             }
-            // --- handle media preview rules
+            // --- Handle media preview rules.
             if (isset($muris['preview'])) {
 
               $a_child = '<img src="' . $muris['preview']['uri'] . '" class="preview" ' . ($muris['preview']['size_x'] ? 'width="' . $muris['preview']['size_x'] . '"' : '') . ($muris['preview']['size_y'] ? 'width="' . $muris['preview']['size_y'] . '"' : '') . '/>';
@@ -61,11 +65,11 @@ function theme_cdm_specimen($variables) {
               $a_child = '<img src="' . $part->uri . '" />';
             }
 
-            // --- handle web application rules
+            // --- Handle web application rules.
             $webapp = '';
             if (isset($muris['webapp'])) {
               if ($muris['webapp']['embed_html']) {
-                // embed in same page
+                // Embed in same page.
                 $webapp = $muris['webapp']['embed_html'];
               }
               else {
@@ -74,11 +78,11 @@ function theme_cdm_specimen($variables) {
             }
             $media_row .= '<td><a href="' . $part->uri . '" target="' . $part->uuid . '">' . $a_child . '</a></td>';
             $meta_row .= '<td><span class="label">' . check_plain($specimenTypeDesignation->titleCache) . '</span><div class="webapp">' . $webapp . '</div></td>';
-          } // END parts
-          // TODO this is PART 2/2 of a hack
+          } // END parts.
+          // TODO this is PART 2/2 of a hack.
           break;
-        } // END representations
-      } // END media
+        } // END representations.
+      } // END media.
     }
     $out .= $media_row . '</tr>';
     $out .= $meta_row . '</tr>';
@@ -87,6 +91,7 @@ function theme_cdm_specimen($variables) {
   }
   return $out;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -109,30 +114,36 @@ function theme_cdm_derivedUnitFacade($variables) {
   if (is_object($derivedUnitFacade)) {
     $out = '<dl>';
     foreach (get_object_vars($derivedUnitFacade) as $field => $value) {
-      if (! in_array($field, $excludeFields) && ($value && (! is_object($value) || isset($value->class)))) {
+      if (!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class)))) {
         switch ($field) {
           case 'locality':
             $stringValue = $value->text;
             break;
+
           case 'country':
             $stringValue = $value->representation_L10n;
             break;
+
           case 'collector':
             $stringValue = $value->titleCache;
             break;
+
           case 'collection':
             $stringValue = $value->titleCache;
             break;
+
           case 'exactLocation':
             $stringValue = $value->sexagesimalString;
             break;
+
           case 'getGatheringPeriod':
             $stringValue = timePeriodToString($value);
             break;
+
           default:
             $stringValue = $value;
         }
-        // relabel field names
+        // Relabel field names.
         if (isset($fieldLabels[$field])) {
           $field = $fieldLabels[$field];
         }
