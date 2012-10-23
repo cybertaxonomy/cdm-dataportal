@@ -87,7 +87,7 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
 	global $theme;
   $out .= '<ul>';
   $countFeatures = 0;
-  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), substr(strrchr($_GET["q"], '/'), 1))));
+  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), arg(2))));
   if ($numberOfChildren != 0) {
  	 $out .= '<li>'.l(t(theme('cdm_feature_name', 'Number of Taxa')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Number Of Taxa')).'</li>';
   }
@@ -108,7 +108,7 @@ function palmweb_2_cdm_feature_nodesTOC($featureNodes){
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
 
   $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
-  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
+  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, arg(2), queryString($markerTypes));
   if(!empty($useDescriptions)) {
   		$out .= '<li>'.l(t(theme('cdm_feature_name', 'Uses')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('UseRecords')).'</li>';
   }
@@ -363,8 +363,7 @@ function theme_cdm_descriptionElementBibliography($descriptionElementsBibliograg
 	$listOfReferences = array();
 	//$useDescriptions = cdm_ws_get()
 	$markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
-	$useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
-	 //= substr(strrchr($_GET["q"], '/'), 1);
+	$useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, arg(2), queryString($markerTypes));
 	//$descout = print_r($useDescriptions);
     foreach ($descriptionElementsBibliogragphy as $descriptionElementsBiblio) {
 		foreach ($descriptionElementsBiblio as $descriptionElementBiblio) {
@@ -438,7 +437,7 @@ function formatReference_for_Bibliogrpahy($references) {
 								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
+								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else {
 								$referenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
@@ -448,7 +447,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$referenceString .= $teamMember->titleCache. " & ";	
+								$referenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$referenceString .= $teamMember->titleCache;
@@ -490,10 +489,10 @@ function formatReference_for_Bibliogrpahy($references) {
 				if($isPublisherEmpty || $isAuthorEmpty || $isDateEmpty || $isTitleEmpty) {
 					$referenceString = $reference->citation->titleCache;
 				}
-				
+
 				$referenceString .= "</li>";
 				break;
-				
+
 
 			case "Article":
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
@@ -507,7 +506,7 @@ function formatReference_for_Bibliogrpahy($references) {
 								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
+								$stagingReferenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else {
 								$stagingReferenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
@@ -517,7 +516,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= $teamMember->titleCache. " & ";	
+								$stagingReferenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$stagingReferenceString .= $teamMember->titleCache;
@@ -562,8 +561,8 @@ function formatReference_for_Bibliogrpahy($references) {
 				$referenceString .= $stagingReferenceString;
 				$referenceString .= "</li>";
 				break;
-				
-				
+
+
 			case "Book":
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
 				$stagingReferenceString = "";
@@ -573,7 +572,7 @@ function formatReference_for_Bibliogrpahy($references) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";
 							}
 							else {
 								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
@@ -583,7 +582,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= $teamMember->titleCache. " & ";	
+								$stagingReferenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$stagingReferenceString .= $teamMember->titleCache;
@@ -592,8 +591,8 @@ function formatReference_for_Bibliogrpahy($references) {
 							$currentRecord += 1;
 						}
 					}
-					
-					
+
+
 				}
 				else if ($reference->citation->authorTeam->titleCache != "-empty team-"){
 					$stagingReferenceString .= $reference->citation->authorTeam->titleCache;
@@ -610,7 +609,7 @@ function formatReference_for_Bibliogrpahy($references) {
 					$isDateEmpty = true;
 				}
 				if (!empty($reference->citation->title)) {
-					$stagingReferenceString .= $reference->citation->title; 
+					$stagingReferenceString .= $reference->citation->title;
 					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
 				}
 				else {
@@ -626,9 +625,9 @@ function formatReference_for_Bibliogrpahy($references) {
 					$stagingReferenceString = $reference->citation->titleCache;
 				}
 				$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
-				$referenceString .= $stagingReferenceString; 
+				$referenceString .= $stagingReferenceString;
 				$referenceString .= "</li>";
-				
+
 				break;
 			case "BookSection":
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
@@ -639,7 +638,7 @@ function formatReference_for_Bibliogrpahy($references) {
 					foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";
 							}
 							else {
 								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
@@ -649,7 +648,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= $teamMember->titleCache. " & ";	
+								$stagingReferenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$stagingReferenceString .= $teamMember->titleCache;
@@ -665,7 +664,7 @@ function formatReference_for_Bibliogrpahy($references) {
 					$isAuthorEmpty = true;
 				}
 				if (!empty($reference->citation->inReference->datePublished->start)) {
-					$stagingReferenceString .= substr($reference->citation->inReference->datePublished->start,0,4); 
+					$stagingReferenceString .= substr($reference->citation->inReference->datePublished->start,0,4);
 					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
 				} else {
 					$isDateEmpty = true;
@@ -688,7 +687,7 @@ function formatReference_for_Bibliogrpahy($references) {
 					foreach ($reference->citation->inReference->authorTeam->teamMembers as $teamMember) {
 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
+								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";
 							}
 							else {
 								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
@@ -698,7 +697,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= $teamMember->titleCache. " & ";	
+								$stagingReferenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$stagingReferenceString .= $teamMember->titleCache;
@@ -728,13 +727,13 @@ function formatReference_for_Bibliogrpahy($references) {
 				if ($isPublisherEmpty || $isAuthorEmpty || $isDateEmpty || $isTitleEmpty) {
 					$stagingReferenceString = $reference->citation->titleCache;
 				}
-				
+
 				$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
-				
+
 				$referenceString .= $stagingReferenceString . "</li>";
 				break;
-				
-				
+
+
 			case "WebPage" :
 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">" . $reference->citation->titleCache . "</li>";
 				break;
@@ -750,7 +749,7 @@ function formatReference_for_Bibliogrpahy($references) {
 								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
+								$stagingReferenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;
 							}
 							else {
 								$stagingReferenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
@@ -760,7 +759,7 @@ function formatReference_for_Bibliogrpahy($references) {
 						}
 						else {
 							if ($numberOfTeamMembers != $currentRecord) {
-								$stagingReferenceString .= $teamMember->titleCache. " & ";	
+								$stagingReferenceString .= $teamMember->titleCache. " & ";
 							}
 							else {
 								$stagingReferenceString .= $teamMember->titleCache;
@@ -780,7 +779,7 @@ function formatReference_for_Bibliogrpahy($references) {
 				if(!empty($reference->citation->datePublished->start)){
 					$stagingReferenceString .= substr($reference->citation->datePublished->start,0,4);
 					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? " " : ". ");
-						
+
 				} else {
 					$isDateEmpty = true;
 				}
@@ -800,7 +799,7 @@ function formatReference_for_Bibliogrpahy($references) {
 				else {
 					$isPublisherEmpty = true;
 				}
-				
+
 				if ($isAuthorEmpty || $isTitleEmpty || $isDateEmpty || $isPublisherEmpty) {
 					$stagingReferenceString = $reference->citation->titleCache;
 					$stagingReferenceString .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? " " : ". ");
@@ -819,9 +818,9 @@ function formatReference_for_Bibliogrpahy($references) {
 				$referenceString .= "</li>";
 				break;
 			default:
-				
+
 				//$author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->citation->uuid);
-				
+
 				/*if(!empty($author_team->titleCache)) {
 					$referenceString.= print_r($reference->citation);
 					$referenceString .= '<li class="descriptionText DescriptionElement">' . "<b>" . $reference->citation->title . ":" . "</b>" . $author_team->titleCache .   '</li>';
@@ -840,11 +839,11 @@ function formatReference_for_Bibliogrpahy($references) {
 		$outTemp[] = $referenceString;
 	}
 	sort($outTemp);
-  	
+
 	foreach ($outTemp as $refString) {
 		$out .= $refString;
 	}
-	
+
 	$out .= "</ul></div></div>";
 	return $out;
 }
