@@ -67,5 +67,5 @@ function cdm_taxontree_update_7000() {
   // No need to use db_change_field() here.
   // We simply drop and recreate the cache tables to start clean.
   db_drop_table('cache_cdm_taxontree');
-  db_create_table('cache_cdm_taxontree', $schema);
+  db_create_table('cache_cdm_taxontree', $schema['cache_cdm_taxontree']);
 }
