@@ -29,7 +29,7 @@ export DISPLAY
 cd $MODULE_ROOT/test/java/dataportal-selenium-tests/
 
 if [ -n $2 ]; then
-  CONF_FILE_OPTION="  -Ddataportal.test.conf=$2 "
+  CONF_FILE_OPTION="-DargLine=\"-Ddataportal.test.conf=$2\""
 fi
 
-mvn -Dwebdriver.firefox.bin=$FIREFOX_BIN $CONF_FILE_OPTION test
+mvn -Dwebdriver.firefox.bin=$FIREFOX_BIN test $CONF_FILE_OPTION
