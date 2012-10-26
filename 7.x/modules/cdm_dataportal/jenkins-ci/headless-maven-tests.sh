@@ -27,4 +27,9 @@ fi
 export DISPLAY
 
 cd $MODULE_ROOT/test/java/dataportal-selenium-tests/
-mvn -Dwebdriver.firefox.bin=$FIREFOX_BIN test
+
+if [ -n $2 ]; then
+  CONF_FILE_OPTION=" -Ddataportal.test.conf=$2 "
+fi
+
+mvn -Dwebdriver.firefox.bin=$FIREFOX_BIN $CONF_FILE_OPTION test

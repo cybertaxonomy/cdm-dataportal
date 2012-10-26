@@ -51,9 +51,7 @@ public class TestConfiguration {
 
 		if(userDefinedFile != null){
 			propertiesFile = new File(userDefinedFile);
-		}
-
-		if (userHome != null) {
+		} else if (userHome != null) {
 			propertiesFile = new File(userHome, ".cdmLibrary" + File.separator + DATA_PORTAL_TEST_PROPERTIES_FILE);
 		}
 
