@@ -1348,7 +1348,6 @@
 7.x/modules/cdm_dataportal/site/site.xml -text
 7.x/modules/cdm_dataportal/test/.settings/org.eclipse.php.core.prefs -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/pom.xml -text
-7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/results.txt -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/Browser.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/DataPortalContext.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/DataPortalManager.java -text

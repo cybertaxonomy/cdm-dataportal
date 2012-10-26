@@ -29,6 +29,7 @@ public class TestConfiguration {
 	 *
 	 */
 	private static final String DATA_PORTAL_TEST_PROPERTIES_FILE = "DataPortalTest.xml";
+	private static final String DATAPORTAL_TEST_CONF = "dataportal.test.conf";
 
 	public final static Logger logger = Logger.getLogger(TestConfiguration.class);
 
@@ -43,35 +44,43 @@ public class TestConfiguration {
 	private static TestConfiguration testConfiguration = null;
 
 	private TestConfiguration() {
+
 		String userHome = System.getProperty("user.home");
-		if (userHome != null) {
-			File propertiesFile = new File(userHome, ".cdmLibrary" + File.separator + DATA_PORTAL_TEST_PROPERTIES_FILE);
+		String userDefinedFile = System.getProperty(DATAPORTAL_TEST_CONF);
+		File propertiesFile = null;
 
-			try {
-
-				InputStream in;
-				if (propertiesFile.exists()) {
-					propertySourceUri = propertiesFile.toURI().toURL();
-					in = new FileInputStream(propertiesFile);
-				} else {
-					String resourceName = "/eu/etaxonomy/dataportal/"+ DATA_PORTAL_TEST_PROPERTIES_FILE;
-
-					in =  this.getClass().getResourceAsStream(resourceName);
-					propertySourceUri = this.getClass().getResource(resourceName);
-				}
-				logger.info("Loading test configuration from " + propertySourceUri);
-				properties.loadFromXML(in);
-				in.close();
-
-				updateSystemProperties(false);
-
-			} catch (FileNotFoundException e) {
-				logger.error(e);
-			} catch (IOException e) {
-				logger.error(e);
-			}
-
+		if(userDefinedFile != null){
+			propertiesFile = new File(userDefinedFile);
 		}
+
+		if (userHome != null) {
+			propertiesFile = new File(userHome, ".cdmLibrary" + File.separator + DATA_PORTAL_TEST_PROPERTIES_FILE);
+		}
+
+		try {
+			InputStream in;
+			if (propertiesFile != null && propertiesFile.exists()) {
+				propertySourceUri = propertiesFile.toURI().toURL();
+				in = new FileInputStream(propertiesFile);
+			} else {
+				String resourceName = "/eu/etaxonomy/dataportal/"+ DATA_PORTAL_TEST_PROPERTIES_FILE;
+
+				in =  this.getClass().getResourceAsStream(resourceName);
+				propertySourceUri = this.getClass().getResource(resourceName);
+			}
+			logger.info("Loading test configuration from " + propertySourceUri);
+			properties.loadFromXML(in);
+			in.close();
+
+			updateSystemProperties(false);
+
+		} catch (FileNotFoundException e) {
+			logger.error(e);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+
+
 	}
 
 	/**
