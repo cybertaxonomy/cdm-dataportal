@@ -56,7 +56,8 @@ public class TestConfiguration {
 		}
 
 		try {
-			InputStream in;
+			InputStream in = null;
+
 			if (propertiesFile != null) {
 				if(propertiesFile.exists()) {
 					propertySourceUri = propertiesFile.toURI().toURL();
@@ -64,8 +65,9 @@ public class TestConfiguration {
 				} else{
 					logger.info(propertiesFile +  " does not exist");
 				}
-			} else {
+			}
 
+			if (in == null) {
 				String resourceName = "/eu/etaxonomy/dataportal/"+ DATA_PORTAL_TEST_PROPERTIES_FILE;
 
 				in =  this.getClass().getResourceAsStream(resourceName);
