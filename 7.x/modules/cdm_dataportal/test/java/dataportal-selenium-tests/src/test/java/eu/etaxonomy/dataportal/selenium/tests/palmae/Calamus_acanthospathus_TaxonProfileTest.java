@@ -61,7 +61,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
 
         List<LinkElement> primaryTabs = p.getPrimaryTabs();
         int tabId = 0;
-        assertEquals("General", primaryTabs.get(tabId++).getText());
+        assertEquals("General\n(active tab)", primaryTabs.get(tabId++).getText());
         assertEquals("Synonymy", primaryTabs.get(tabId++).getText());
         assertEquals("Images", primaryTabs.get(tabId++).getText());
         assertEquals("Specimens", primaryTabs.get(tabId++).getText());

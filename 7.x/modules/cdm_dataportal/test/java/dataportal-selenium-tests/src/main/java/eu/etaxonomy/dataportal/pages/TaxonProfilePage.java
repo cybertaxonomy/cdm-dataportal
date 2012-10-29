@@ -41,151 +41,151 @@ import eu.etaxonomy.dataportal.elements.LinkElement;
  */
 public class TaxonProfilePage extends PortalPage {
 
-	public static final Logger logger = Logger.getLogger(TaxonProfilePage.class);
+    public static final Logger logger = Logger.getLogger(TaxonProfilePage.class);
 
-	private UUID taxonUuid;
+    private UUID taxonUuid;
 
-	protected static String drupalPagePathBase = "cdm_dataportal/taxon";
+    protected static String drupalPagePathBase = "cdm_dataportal/taxon";
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.dataportal.pages.PortalPage#getDrupalPageBase()
-	 */
-	@Override
-	protected String getDrupalPageBase() {
-		return drupalPagePathBase;
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.dataportal.pages.PortalPage#getDrupalPageBase()
+     */
+    @Override
+    protected String getDrupalPageBase() {
+        return drupalPagePathBase;
+    }
 
-	@FindBy(id = "taxonProfileImage")
-	@CacheLookup
-	private WebElement taxonProfileImage;
+    @FindBy(id = "taxonProfileImage")
+    @CacheLookup
+    private WebElement taxonProfileImage;
 
-	@FindBy(id = "featureTOC")
-	@CacheLookup
-	private WebElement tableOfContent;
-
-
-
-	/**
-	 * @param driver
-	 * @param context
-	 * @param taxonUuid
-	 * @throws MalformedURLException
-	 */
-	public TaxonProfilePage(WebDriver driver, DataPortalContext context, UUID taxonUuid) throws MalformedURLException {
-
-		super(driver, context, taxonUuid.toString());
-
-		this.taxonUuid = taxonUuid;
-	}
+    @FindBy(id = "featureTOC")
+    @CacheLookup
+    private WebElement tableOfContent;
 
 
-	/**
-	 * @param driver
-	 * @param context
-	 * @throws Exception
-	 */
-	public TaxonProfilePage(WebDriver driver, DataPortalContext context) throws Exception {
-		super(driver, context);
-	}
+
+    /**
+     * @param driver
+     * @param context
+     * @param taxonUuid
+     * @throws MalformedURLException
+     */
+    public TaxonProfilePage(WebDriver driver, DataPortalContext context, UUID taxonUuid) throws MalformedURLException {
+
+        super(driver, context, taxonUuid.toString());
+
+        this.taxonUuid = taxonUuid;
+    }
 
 
-	/**
-	 * Returns the profile image of the taxon profile page. This image is
-	 * located at the top of the page. The Profile Image can be disabled in the
-	 * DataPortal settings.
-	 *
-	 * @return The Url of the profile image or null if the image is not visible.
-	 */
-	public ImgElement getProfileImage() {
-		ImgElement imgElement = null;
-		try {
-			if(taxonProfileImage.isDisplayed()){
-				WebElement img =  taxonProfileImage.findElement(By.tagName("img"));
-				if (img != null) {
-					imgElement = new ImgElement(img);
-				}
-			}
-		} catch (NoSuchElementException e) {
-			// IGNORE //
-		}
-		return imgElement;
-	}
+    /**
+     * @param driver
+     * @param context
+     * @throws Exception
+     */
+    public TaxonProfilePage(WebDriver driver, DataPortalContext context) throws Exception {
+        super(driver, context);
+    }
 
-	public String getTableOfContentHeader() {
-		if(tableOfContent != null) {
-			WebElement header = tableOfContent.findElement(By.tagName("h2"));
-			return header.getText();
-		}
-		return null;
-	}
 
-	public List<LinkElement> getTableOfContentLinks() {
-		List<LinkElement> linkList = null;
-		if(tableOfContent != null) {
-			linkList = new ArrayList<LinkElement>();
-			List<WebElement> listItems = tableOfContent.findElements(By.tagName("a"));
-			for (WebElement li : listItems) {
-				linkList.add( new LinkElement( li) );
-			}
-		}
-		return linkList;
-	}
+    /**
+     * Returns the profile image of the taxon profile page. This image is
+     * located at the top of the page. The Profile Image can be disabled in the
+     * DataPortal settings.
+     *
+     * @return The Url of the profile image or null if the image is not visible.
+     */
+    public ImgElement getProfileImage() {
+        ImgElement imgElement = null;
+        try {
+            if(taxonProfileImage.isDisplayed()){
+                WebElement img =  taxonProfileImage.findElement(By.tagName("img"));
+                if (img != null) {
+                    imgElement = new ImgElement(img);
+                }
+            }
+        } catch (NoSuchElementException e) {
+            // IGNORE //
+        }
+        return imgElement;
+    }
 
-	/**
-	 * Finds the {@link FeatureBlock} specified by the <code>featureName</code> parameter.
-	 * The following document structure is expected:
-	 * <pre>
-	 * &lt;div id="block-cdm-dataportal-feature-${featureName}" class="clear-block block block-cdm-dataportal-feature"&gt;
-	 *   &lt;div class="content"&gt;
-	 *     &lt;${enclosingTag} id="${featureName}" class="description"&gt;
-	 *       &lt;${elementTag}&gt;DescriptionElement 1&lt;/${elementTag}&gt;
-	 *       &lt;${elementTag}&gt;DescriptionElement 2&lt;/${elementTag}&gt;
-	 *     &lt;/${enclosingTag}&gt;
-	 *    &lt;/div&gt;
-	 * </pre>
-	 *
-	 * The DescriptionElements can be get from the <code>FeatureBlock</code> by {@link FeatureBlock#getDescriptionElements()}.
-	 *
-	 * @param position Zero based index of position in list of feature blocks
-	 * 			(only used to check against total number of feature blocks)
-	 * @param featureName the feature name as it is used in the class attribute: <code>block-cdm-dataportal-feature-${featureName}</code>
-	 * @param enclosingTag
-	 * @param elementTag
-	 * @return
-	 */
-	public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String elementTag){
+    public String getTableOfContentHeader() {
+        if(tableOfContent != null) {
+            WebElement header = tableOfContent.findElement(By.tagName("h2"));
+            return header.getText();
+        }
+        return null;
+    }
 
-		List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm-dataportal-feature"));
-		Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
-		for(WebElement b : featureBlocks){
-			if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + featureName)){
-				return new FeatureBlock( b, enclosingTag, elementTag);
-			}
-		}
-		return null;
-	}
+    public List<LinkElement> getTableOfContentLinks() {
+        List<LinkElement> linkList = null;
+        if(tableOfContent != null) {
+            linkList = new ArrayList<LinkElement>();
+            List<WebElement> listItems = tableOfContent.findElements(By.tagName("a"));
+            for (WebElement li : listItems) {
+                linkList.add( new LinkElement( li) );
+            }
+        }
+        return linkList;
+    }
 
-	public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String ... elementTag){
+    /**
+     * Finds the {@link FeatureBlock} specified by the <code>featureName</code> parameter.
+     * The following document structure is expected:
+     * <pre>
+     * &lt;div id="block-cdm-dataportal-feature-${featureName}" class="clear-block block block-cdm-dataportal-feature"&gt;
+     *   &lt;div class="content"&gt;
+     *     &lt;${enclosingTag} id="${featureName}" class="description"&gt;
+     *       &lt;${elementTag}&gt;DescriptionElement 1&lt;/${elementTag}&gt;
+     *       &lt;${elementTag}&gt;DescriptionElement 2&lt;/${elementTag}&gt;
+     *     &lt;/${enclosingTag}&gt;
+     *    &lt;/div&gt;
+     * </pre>
+     *
+     * The DescriptionElements can be get from the <code>FeatureBlock</code> by {@link FeatureBlock#getDescriptionElements()}.
+     *
+     * @param position Zero based index of position in list of feature blocks
+     * 			(only used to check against total number of feature blocks)
+     * @param featureName the feature name as it is used in the class attribute: <code>block-cdm-dataportal-feature-${featureName}</code>
+     * @param enclosingTag
+     * @param elementTag
+     * @return
+     */
+    public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String elementTag){
 
-		List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm_dataportal-feature"));
-		Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
-		for(WebElement b : featureBlocks){
-			if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + featureName)){
-				return new FeatureBlock( b, enclosingTag, elementTag);
-			}
-		}
-		return null;
-	}
+        List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm-dataportal-feature"));
+        Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
+        for(WebElement b : featureBlocks){
+            if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + featureName)){
+                return new FeatureBlock( b, enclosingTag, elementTag);
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * @param index
-	 * @param tocLinkText
-	 * @param tocLinkFragment
-	 */
-	public void testTableOfContentEntry(int index, String tocLinkText, String tocLinkFragment) {
-		assertEquals(tocLinkText, getTableOfContentLinks().get(index).getText());
-		String expectedHref = getDrupalPagePath() + "#" + tocLinkFragment;
-		assertTrue("Expecting the toc link to end with " + expectedHref,  getTableOfContentLinks().get(index).getUrl().toString().endsWith(expectedHref));
-	}
+    public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String ... elementTag){
+
+        List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm-dataportal-feature"));
+        Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
+        for(WebElement b : featureBlocks){
+            if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + featureName)){
+                return new FeatureBlock( b, enclosingTag, elementTag);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param index
+     * @param tocLinkText
+     * @param tocLinkFragment
+     */
+    public void testTableOfContentEntry(int index, String tocLinkText, String tocLinkFragment) {
+        assertEquals(tocLinkText, getTableOfContentLinks().get(index).getText());
+        String expectedHref = getDrupalPagePath() + "#" + tocLinkFragment.replace('-', '_');
+        assertTrue("Expecting the toc link to end with " + expectedHref,  getTableOfContentLinks().get(index).getUrl().toString().endsWith(expectedHref));
+    }
 
 }

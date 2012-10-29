@@ -1388,11 +1388,9 @@
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/java/eu/etaxonomy/dataportal/selenium/WebDriverFactory.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/eu/etaxonomy/dataportal/DataPortalTest.xml -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/log4j.properties -text
-7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi -text
-7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.6.2.xpi -text
-7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.8.3.xpi -text
+7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/disable_add_on_compatibility_checks-1.3.xpi -text
+7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.10.5-fx.xpi -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firepath-0.9.7-fx.xpi -text
-7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firexpath-0.9.6.1-fx.xpi -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/CichorieaeSearchTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_FootnoteTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_HybridTest.java -text
