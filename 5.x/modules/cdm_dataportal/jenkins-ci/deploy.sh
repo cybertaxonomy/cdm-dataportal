@@ -66,9 +66,9 @@ rm -r drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz drupal${DRUPAL_VERSION}-cdm_
 ssh root@160.45.63.172 "mkdir /var/www/download/dataportal/$VERSION"
 ssh root@160.45.63.172 "rm -r /var/www/download/dataportal/stable"
 ssh root@160.45.63.172 "ln -s /var/www/download/dataportal/$VERSION /var/www/download/dataportal/stable"
-scp drupal${DRUPAL_VERSION}-cdm_dataportal root@wp5.e-taxonomy.eu:/var/www/download/dataportal/$VERSION/
-scp drupal${DRUPAL_VERSION}-cdm_dataportal-$VERSION.tar.gz root@wp5.e-taxonomy.eu:/var/www/download/dataportal/$VERSION/ 
-ssh root@160.45.63.172 "chown -R www-data:www-data /var/www/download/dataportal/$VERSION"
+scp cdm_dataportal-${VERSION}.tar.gz root@wp5.e-.axonomy.eu:/var/www/download/dataportal/${VERSION}/
+scp drupal${DRUPAL_VERSION}-cdm_dataportal-${VERSION}.tar.gz root@wp5.e-taxonomy.eu:/var/www/download/dataportal/${VERSION}/ 
+ssh root@160.45.63.172 "chown -R www-data:www-data /var/www/download/dataportal/${VERSION}"
 ssh root@160.45.63.172 "chown -R www-data:www-data /var/www/download/dataportal/stable"
 
 # DONE
