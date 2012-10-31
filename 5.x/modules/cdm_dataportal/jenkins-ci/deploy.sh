@@ -8,14 +8,13 @@
 if [ -z "$1" ]; then
 	echo "version parameter missing\nUsage: deploy.sh <version-number>"
 fi 
+VERSION=$1
 
 # $WORKSPACE is an environment variable set by jenkins
 if [ -n "$WORKSPACE" ]; then
 	cd $WORKSPACE
 for 
 
-
-VERSION=$1
 
 # check if tag exists
 TAG_EXISTS=(`svn info http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION 2> /dev/null | grep URL`)
@@ -30,7 +29,6 @@ if [ -z "$TAG_EXISTS" ]; then
 	svn copy http://dev.e-taxonomy.eu/svn/trunk/drupal/themes http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION
 	svn copy http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/themes-RELEASE-$VERSION
 fi 
-
 
 #create the target folder
 if [ !-d target ]; then 
