@@ -18,7 +18,6 @@ if [ -n "$WORKSPACE" ]; then
 	cd $WORKSPACE
 fi 
 
-
 # check if tag exists
 TAG_EXISTS=(`svn info http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION 2> /dev/null | grep URL`)
 if [ -z "$TAG_EXISTS" ]; then 
