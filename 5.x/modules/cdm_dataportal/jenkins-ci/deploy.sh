@@ -5,6 +5,7 @@
 #
 # 
 DRUPAL_VERSION="5"
+SVN_USER="edit-jenkins"
 
 if [ -z "$1" ]; then
 	echo "version parameter missing\nUsage: deploy.sh <version-number>"
@@ -23,12 +24,12 @@ if [ -z "$TAG_EXISTS" ]; then
 	# it is a new version number ...
 
 	# create release tag and branch for the module 
-	svn copy -m "release tag for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/trunk/drupal/${DRUPAL_VERSION}.x/modules/cdm_dataportal http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION
-	svn copy -m "branch for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/${DRUPAL_VERSION}.x/module-cdm_dataportal/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/module-cdm_dataportal-RELEASE-$VERSION
+	svn --username=$SVN_USER copy -m "release tag for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/trunk/drupal/${DRUPAL_VERSION}.x/modules/cdm_dataportal http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION
+	svn --username=$SVN_USER copy -m "branch for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/${DRUPAL_VERSION}.x/module-cdm_dataportal/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/module-cdm_dataportal-RELEASE-$VERSION
 
 	#create release tag and branch for the themes 
-	svn copy -m "release tag for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/trunk/drupal/${DRUPAL_VERSION}.x/themes http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION
-	svn copy -m "branch for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/${DRUPAL_VERSION}.x/themes/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/themes-RELEASE-$VERSION
+	svn --username=$SVN_USER copy -m "release tag for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/trunk/drupal/${DRUPAL_VERSION}.x/themes http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION
+	svn --username=$SVN_USER copy -m "branch for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/${DRUPAL_VERSION}.x/themes/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/themes-RELEASE-$VERSION
 fi 
 
 #create the target folder
@@ -38,7 +39,7 @@ fi
 cd target
 
 # create the module-cdm_dataportal archive 
-svn export http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION ./cdm_dataportal
+svn --username=$SVN_USER export http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION ./cdm_dataportal
 tar czf cdm_dataportal-$VERSION.tar.gz ./cdm_dataportal 
 
 # create the drupal${DRUPAL_VERSION}-cdm_dataportal archive ...
