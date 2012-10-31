@@ -1,0 +1,1244 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Functions which are required or useful when accessing and processing CDM Data Store Webservices
+ *
+ * Naming conventions:
+ * ----------------------
+ *
+ *  - all webservice access methods are prefixed with cdm_ws
+ *
+ *
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ */
+require_once ('xml2json.php');
+require_once ('commons.php');
+require_once ('uuids.php');
+require_once ('webservice_uris.php');
+require_once ('cdm_node.php');
+
+/**
+ * Implementation of hook_requirements()
+ */
+function cdm_api_requirements() {
+
+  $requirements['cdm_api'] = array(
+    'title' => t('CDM API')
+  );
+
+  if( function_exists('curl_init') ){
+    $requirements['cdm_api']['description'] = ''; // description below title is not jet in use
+    $requirements['cdm_api']['value'] =  'CURL php extension is available and will be used by the cdm api. HTTP requests thus will be up to 20x faster';
+  } else {
+    $requirements['cdm_api']['value'] =  'CURL php extension is missing. If CURL lib is installed HTTP requests will be up to 20x faster';
+  }
+
+  //FIXME: once _get_content_fsockopen is implemented change  severity to  REQUIREMENT_WARNING,
+  $requirements['cdm_api']['severity'] =  (function_exists('curl_init') ? REQUIREMENT_OK : REQUIREMENT_INFO);
+
+  return $requirements;
+}
+
+
+/**
+ * Implementation of hook_menu()
+ */
+function cdm_api_menu($may_cache) {
+  $items = array();
+  if ($may_cache) {
+    $items[] = array(
+    // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
+      'path' => 'cdm_api/proxy',
+      'callback' => 'proxy_content',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    );
+
+    $items[] = array(
+    // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");
+      'path' => 'cdm_api/setvalue/session',
+      'callback' => 'setvalue_session',
+      'access' => true,
+      'type' => MENU_CALLBACK,
+    );
+
+  }
+
+  return $items;
+}
+
+
+/**
+ * Implementation of hook_cron().
+ *
+ * Expire outdated cache entries
+ */
+function cdm_api_cron() {
+  cache_clear_all(NULL, 'cache_cdm_ws');
+}
+
+function cdm_api_perm() {
+  return array(
+      'administer cdm_api'
+      );
+}
+
+// ----------------------------------------------------------- //
+
+
+/**
+ * Converts an array of TagedText items into a sequence of corresponding html tags whereas
+ * each item will provided with a class attribute which set to the key of the TaggedText item.
+ *
+ * @param array $taggedtxt
+ * @param String $tag
+ * @param String $glue the string by which the chained text tokens are concatenated together.
+ *       Default is a blank character
+ * @return String of HTML
+ */
+function cdm_taggedtext2html(array &$taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()){
+  $out = '';
+  $i = 0;
+  foreach($taggedtxt as $tt){
+    if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
+      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.' class="'.$tt->type.'">'.t($tt->text).'</'.$tag.'>';
+    }
+  }
+  return $out;
+}
+
+/**
+ * Finds the text tagged with $tag_type in an array of taggedText instances
+ *
+ * @param array $taggedtxt
+ * @param string $tag_type
+ * @return an array with the texts mapped by $tag_type
+ */
+function cdm_taggedtext_values(array &$taggedtxt = array(), $tag_type){
+  $tokens = array();
+  foreach($taggedtxt as $tagtxt){
+    if($tagtxt->type == $tag_type)
+    $tokens[] = $tagtxt->text;
+  }
+  return $tokens;
+}
+
+/**
+ * Returns the currently classification tree in use
+ */
+function get_taxonomictree_uuid_selected(){
+  if(is_uuid($_SESSION['cdm']['taxonomictree_uuid']) ){
+    return $_SESSION['cdm']['taxonomictree_uuid'];
+  } else {
+    return variable_get(CDM_TAXONOMICTREE_UUID, false);
+  }
+}
+
+function switch_to_taxonomictree_uuid($taxonomictree_uuid){
+  $_SESSION['cdm']['taxonomictree_uuid'] = $taxonomictree_uuid;
+}
+
+function reset_taxonomictree_uuid($taxonomictree_uuid){
+  unset($_SESSION['cdm']['taxonomictree_uuid']);
+}
+
+function set_last_taxon_page_tab($taxonPageTab){
+  $_SESSION['cdm']['taxon_page_tab'] = $taxonPageTab;
+}
+
+function get_last_taxon_page_tab(){
+  if(isset($_SESSION['cdm']['taxon_page_tab'])){
+    return $_SESSION['cdm']['taxon_page_tab'];
+  } else {
+    return false;
+  }
+}
+
+
+/**
+ * media Array [4]
+ *   representations Array [3]
+ *       mimeType  image/jpeg
+ *       representationParts Array [1]
+ *           duration  0
+ *           heigth  0
+ *           size  0
+ *           uri http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/jpeg/Acanthocephalus_p1.jpg
+ *           uuid  15c687f1-f79d-4b79-992f-7ba0f55e610b
+ *           width 0
+ *       suffix  jpg
+ *       uuid  930b7d51-e7b6-4350-b21e-8124b14fe29b
+ *   title
+ *   uuid  17e514f1-7a8e-4daa-87ea-8f13f8742cf9
+ *
+ * @param unknown_type $media
+ * @param array $mimeTypes
+ * @param unknown_type $width
+ * @param unknown_type $height
+ * @return unknown
+ */
+function cdm_preferred_media_representations($media, array $mimeTypes, $width = 400, $height = 300){
+
+  $prefRepr = array();
+  if(!isset($media->representations[0])){
+    return $prefRepr;
+  }
+
+  while(count($mimeTypes) > 0){
+    // getRepresentationByMimeType
+    $mimeType = array_shift($mimeTypes);
+
+    foreach($media->representations as &$representation){
+
+      //if the mimetype is not known, try inferring it
+      if(!$representation->mimeType){
+        if(isset($representation->parts[0])){
+          $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
+        }
+      }
+
+      if($representation->mimeType == $mimeType){
+        // preffered mimetype found -> erase all remaining mimetypes to end loop
+        $mimeTypes = array();
+        $dwa = 0;
+        // look for part with the best matching size
+        foreach($representation->parts as $part){
+          $dw = $part->width * $part->height - $height * $width;
+          if($dw < 0){
+            $dw *= -1;
+          }
+          $dwa+= $dw;
+        }
+        $dwa = (count($representation->parts)>0) ? $dwa / count($representation->parts) : 0;
+        $prefRepr[$dwa.'_'.$mimeTypeKey] = $representation;
+      }
+
+    }
+
+  }
+  // sort
+  krsort($prefRepr);
+  // return
+  return $prefRepr;
+}
+
+/**
+ * Infers the mime type of a file using the filename extension.
+ * @param $filepath the path to the respective file.
+ *        The filename extension will be used to infer the mime type.
+ * @return the mimetype to the file or false if the according mime type could not be found
+ */
+function infer_mime_type($filepath){
+  static $mimemap = null;
+  if(!$mimemap){
+    $mimemap = array(
+      'jpg'=>'image/jpeg',
+      'jpeg'=>'image/jpeg',
+      'png'=>'image/png',
+      'gif'=>'image/gif',
+      'giff'=>'image/gif',
+      'tif'=>'image/tif',
+      'tiff'=>'image/tif',
+      'pdf'=>'application/pdf',
+      'html'=>'text/html',
+      'htm'=>'text/html'
+    );
+  }
+  $extension = substr($filepath, strrpos($filepath, '.') + 1);
+  if(isset($mimemap[$extension])){
+    return $mimemap[$extension];
+  } else {
+    return 'text/html'; //FIXME remove this hack just return false;
+  }
+}
+
+/**
+ * expects an ISO 8601 time representations of a org.joda.time.Partial
+ * of the form yyyy-MM-dd and returns the year as String.
+ * In case the year is unknown (= ????) null is returned.
+ *
+ * @param ISO 8601 time representations of a org.joda.time.Partial
+ * @return String
+ */
+function partialToYear($partial){
+  if(is_string($partial)){
+    $year = substr($partial, 0, 4);
+    if($year != '??'){
+      return $year;
+    }
+  }
+  return;
+}
+/**
+ * expects an ISO 8601 time representations of a org.joda.time.Partial
+ * of the form yyyy-MM-dd and returns the month as String.
+ * In case the month is unknown (= ???) null is returned.
+ *
+ * @param ISO 8601 time representations of a org.joda.time.Partial
+ * @return String
+ */
+function partialToMonth($partial){
+  if(is_string($partial)){
+    $month = substr($partial, 5, 2);
+    if($month != '??'){
+      return $month;
+    }
+  }
+  return;
+}
+/**
+ * expects an ISO 8601 time representations of a org.joda.time.Partial
+ * of the form yyyy-MM-dd and returns the day as String.
+ * In case the day is unknown (= ???) null is returned.
+ *
+ * @param ISO 8601 time representations of a org.joda.time.Partial
+ * @return String
+ */
+function partialToDay($partial){
+  if(is_string($partial)){
+    $day = substr($partial, 7, 2);
+    if($day != '??'){
+      return $day;
+    }
+  }
+  return;
+}
+
+/**
+ *
+ * @param $uri_pattern
+ * @param $pathParameters an array of path elements, or a single element
+ * @param $query  A query string to append to the URL.
+ * @return unknown_type
+ */
+function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL ){
+
+  if(!isset($pathParameters)){
+    $pathParameters = array();
+  }
+
+  $request_params = '';
+  $path_params = '';
+
+  /* (1)
+   * substitute all place holders ($0, $1, ..) in the
+   * $uri_pattern by the according element of the $pathParameters array
+   */
+  static $helperArray = array();
+  if($pathParameters && !is_array($pathParameters)){
+    $helperArray[0] = $pathParameters;
+    $pathParameters = $helperArray;
+  }
+
+  $i = 0;
+  while(strpos($uri_pattern, "$".$i) !== FALSE){
+    if(count($pathParameters) <= $i){
+      if(user_access('administer')){
+        drupal_set_message('cdm_compose_url(): missing pathParameters', 'debug');
+      }
+      break;
+    }
+    $uri_pattern = str_replace("$".$i, rawurlencode($pathParameters[$i]), $uri_pattern);
+    ++$i;
+  }
+
+  /* (2)
+   * Append all remaining element of the $pathParameters array as path elements
+   */
+  if(count($pathParameters) > $i){
+    // strip trailing slashes
+    if(strrchr($uri_pattern, '/') == strlen($uri_pattern)){
+      $uri_pattern = substr($uri_pattern, 0, strlen($uri_pattern) - 1);
+    }
+    while(count($pathParameters) > $i){
+      $uri_pattern .= '/' . rawurlencode($pathParameters[$i]);
+      ++$i;
+    }
+  }
+
+  /* (3)
+   * Append the query string supplied by $query
+   */
+  if (isset($query)) {
+    $uri_pattern .= (strpos($uri_pattern, '?') !== FALSE ? '&' : '?') . $query;
+  }
+
+  $path = $ws_name.$uri_pattern;
+
+  $uri = variable_get('cdm_webservice_url', '').$path;
+  return $uri;
+}
+
+
+function proxy_content($uri, $theme = null){
+
+  $args = func_get_args();
+
+  $uriEncoded = array_shift($args);
+  $uri = urldecode($uriEncoded);
+  $theme = array_shift($args);
+
+  // find and deserialize arrays
+    foreach($args as &$arg){
+      if( strpos($arg, "a:") === 0){ //FIXME use regex to find serialized arrays
+        $arg = unserialize($arg);
+      }
+      //find comma sepatated string in all args
+//  	if(strpos($arg, ',')){
+//  		$arg = explode(',', $arg);
+//  	}
+  }
+
+
+  $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
+
+  if($request_method == "POST"){
+
+    $parameters = $_POST;
+
+    $post_data = array();
+    foreach ($parameters as $k=>$v)
+    {
+      $post_data[] = "$k=".utf8_encode($v);
+    }
+    $post_data = implode(',', $post_data);
+
+    // testing
+    $data = drupal_http_request($uri, "POST", $post_data);
+    print $data;
+
+  }else if(strpos($theme, '/') > 0){ // must be a mimetype
+    header('Content-Type: '.$theme);
+    $data = _http_request_binary($uri);
+    print $data;
+    exit;
+  } else {
+    // in all other cases perform a simple get request
+    //TODO reconsider caching logic in this function
+    if(!$theme){
+      // print out JSON, the cache cannot be used since it contains objects
+      $http_response = drupal_http_request($uri);
+      foreach($http_response->headers as $hname=>$hvalue) {
+        drupal_set_header($hname . ":" . $hvalue);
+      }
+      print $http_response->data;
+      exit;
+    } else {
+      $obj = cdm_ws_get($uri, null, null, null, TRUE);
+      array_unshift($args, $theme, $obj);
+      print call_user_func_array('theme', $args);
+    }
+  }
+}
+
+function setvalue_session(){
+
+  if( $_REQUEST['var'] && strlen( $_REQUEST['var']) > 4){
+    $keys = substr( $_REQUEST['var'], 1, strlen( $_REQUEST['var']) - 2);
+    $keys = explode('][', $keys);
+  } else {
+    return;
+  }
+  $val =  $_REQUEST['val'] ?  $_REQUEST['val'] : null;
+
+  // prevent from malicous tags
+  $val = strip_tags($val);
+
+  $var = &$_SESSION;
+  $i = 0;
+  foreach($keys as $key){
+    $hasMoreKeys = ++$i < count($var);
+    if($hasMoreKeys && (!isset($var[$key]) || !is_array($var[$key]))){
+      $var[$key] = array();
+    }
+    $var = &$var[$key];
+  }
+  $var = $val;
+  drupal_goto($_REQUEST['destination']);
+}
+
+function uri_uriByProxy($uri, $theme = false){
+  // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");)
+  return url('cdm_api/proxy/'.urlencode($uri).($theme?"/$theme":''));
+}
+
+function cdm_compose_annotations_url($cdmBase){
+
+    if(!$cdmBase->uuid){
+        return;
+    }
+
+    $ws_base_uri = null;
+    switch($cdmBase->class){
+        case 'TaxonBase':
+        case 'Taxon':
+        case 'Synonym':
+            $ws_base_uri = CDM_WS_TAXON;
+            break;
+        case 'TaxonNameBase':
+        case 'NonViralName':
+        case 'BacterialName':
+        case 'BotanicalName':
+        case 'CultivarPlantName':
+        case 'ZoologicalName':
+        case 'ViralName':
+            $ws_base_uri = CDM_WS_NAME;
+            break;
+        case 'Media':
+            $ws_base_uri = CDM_WS_MEDIA;
+            break;
+        case 'ReferenceBase':
+            $ws_base_uri = CDM_WS_REFERENCE;
+            break;
+        case 'Distribution':
+        case 'TextData':
+        case 'TaxonInteraction':
+        case 'QuantitativeData':
+        case 'IndividualsAssociation':
+        case 'Distribution':
+        case 'CommonTaxonName':
+        case 'CategoricalData':
+          $ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
+          break;
+        case 'PolytomousKey':
+        case 'MediaKey':
+        case 'MultiAccessKey':
+          $ws_base_uri = $cdmBase->class;
+          $ws_base_uri{0} = strtolower($ws_base_uri{0});
+          break;
+        default:  trigger_error('Unsupported CDM Class - no annotations available for ' . $cdmBase->class, E_USER_ERROR);
+            return;
+    }
+    return  cdm_compose_url($ws_base_uri, array($cdmBase->uuid, 'annotations'));
+}
+
+/**
+ * Enter description here...
+ *
+ * @param String $resourceURI
+ * @param pageSize
+ *            the maximum number of entities returned per page (can be null
+ *            to return all entities in a single page)
+ * @param pageNumber
+ *            the number of the page to be returned, the first page has the
+ *            pageNumber = 1
+ * @return unknown
+ */
+function cdm_ws_page($resourceURI, $pageSize, $pageNumber){
+  return cdm_ws_get($resourceURI, null, queryString(array("page" => $pageNumber, 'pageSize'=>$pageSize)));
+}
+
+//function cdm_ws_taxonomy_compose_resourcePath($path = null){
+//  $viewrank =  _cdm_taxonomy_compose_viewrank();
+//  return CDM_WS_PORTAL_TAXONOMY . '/' . ($viewrank ? $viewrank : '' ) . ($path ? '/' . $path : '') ;
+//}
+
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $secUuid
+ * @param unknown_type $path
+ * @return unknown
+ */
+function cdm_compose_taxonomy_path($taxonUuid = false){
+
+  $viewUuid = get_taxonomictree_uuid_selected();
+  $rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
+
+  if($taxonUuid){
+    return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array($viewUuid, $taxonUuid));
+  } else {
+    if($rankUuid){
+      return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK, array($viewUuid, $rankUuid));
+    } else {
+      return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY, array($viewUuid));
+    }
+  }
+}
+
+function cdm_ws_taxonomy($taxonUuid = null){
+
+    $response = null;
+    $response = cdm_ws_get(cdm_compose_taxonomy_path($taxonUuid), null, null, null, TRUE);
+
+    if($response == null){
+      // error handing
+      if(is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
+        // delete the session value and try again with the default
+        unset($_SESSION['cdm']['taxonomictree_uuid']);
+        return cdm_ws_taxonomy($taxonUuid);
+      } else {
+        // check if taxonomictree_uuid is valid
+        $test = cdm_ws_get(cdm_compose_taxonomy_path(), null, null, null, TRUE);
+        if($test == null){
+          print ($_SESSION['cdm']['taxonomictree_uuid']);
+          // the default set by the admin seems to be invalid or is not even set
+          drupal_set_message(_no_classfication_uuid_message(), 'warning');
+        }
+      }
+    }
+
+    return $response;
+}
+
+/**
+ * Enter description here...
+ *
+ * @param UUID $secUuid
+ * @param String $path
+ * @return unknown
+ */
+function cdm_ws_taxonomy_pathFromRoot($taxonUuid){
+
+  $viewUuid = get_taxonomictree_uuid_selected();
+  $rankUuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
+
+  $response = null;
+  if($rankUuid){
+    $response = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK, array($viewUuid, $taxonUuid, $rankUuid));
+  } else {
+    $response = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_PATH_FROM, array($viewUuid, $taxonUuid));
+  }
+
+  if($response == null){
+    // error handing
+    if(is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
+      // delete the session value and try again with the default
+      unset($_SESSION['cdm']['taxonomictree_uuid']);
+      return cdm_ws_taxonomy_pathFromRoot($taxonUuid);
+    } else {
+        // check if taxonomictree_uuid is valid
+        $test = cdm_ws_get(cdm_compose_taxonomy_path(), null, null, null, TRUE);
+        if($test == null){
+          // the default set by the admin seems to be invalid or is not even set
+          print ($_SESSION['cdm']['taxonomictree_uuid']);
+          // the default set by the admin seems to be invalid or is not even set
+          drupal_set_message(_no_classfication_uuid_message(), 'warning');
+        }
+    }
+  }
+
+  return $response;
+}
+
+function cdm_rankVocabulary_as_option() {
+  return cdm_Vocabulary_as_option(UUID_RANK);
+}
+
+function cdm_Vocabulary_as_option($vocabularyUuid){
+  static $vocabularyOptions;
+
+  if(!$rankVocabularyOptions){
+    $vocabularyOptions = array();
+    if(!isset($vocabularyOptions[$vocabularyUuid])){
+      $vocab = cdm_ws_get(CDM_WS_TERMVOCABULARY, $vocabularyUuid);
+      $vocabularyOptions[$vocabularyUuid] = array();
+      if($vocab){
+        foreach($vocab->terms as $term){
+          $vocabularyOptions[$vocabularyUuid][$term->uuid] = t($term->representation_L10n);
+        }
+        array_reverse($vocabularyOptions[$vocabularyUuid]);
+      }
+    }
+  }
+  return $vocabularyOptions[$vocabularyUuid];
+}
+
+
+function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDescriptionsSeparated = false){
+
+  if(!$featureTree){
+    drupal_set_message('No \'FeatureTree\' has been set so far. '
+    .'In order to see the species profiles of your taxa, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/layout'), 'warning');
+    return false;
+  }
+
+  $mergedTrees = array();
+
+  if($isDescriptionsSeparated){
+    // merge any description into a sparate feature tree
+    foreach($descriptions as $desc){
+      $mergedNodes = _mergeFeatureTreeDescriptions($featureTree->root->children, $desc->elements);
+
+      $mergedTree = clone $featureTree;
+      $mergedTree->root->children = $mergedNodes;
+      $mergedTrees[] = $mergedTree;
+    }
+  } else {
+    // combine all descripions into one feature tree
+    foreach($descriptions as $desc){
+      $mergedNodes = _mergeFeatureTreeDescriptions($featureTree->root->children, $desc->elements);
+      $featureTree->root->children = $mergedNodes;
+    }
+    $mergedTrees[] = $featureTree;
+  }
+
+  return $mergedTrees;
+}
+
+/**
+ * @param $cdmBase
+ * @return an array or empty
+ */
+function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = false){
+    $annotationUrl = cdm_compose_annotations_url($cdmBase);
+    if($annotationUrl){
+      $annotationPager = cdm_ws_get($annotationUrl, null, null, null, true);
+      if(is_array($annotationPager->records)){
+        $annotations = array();
+        foreach($annotationPager->records as $annotation){
+          if(!$includeTypes || !isset($annotation->type) || !isset($annotation->type->uuid) ||in_array($annotation->type->uuid, $includeTypes)){
+            $annotations[] = $annotation;
+          }
+        }
+        return $annotations;
+      }
+    }
+}
+
+function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements){
+
+  foreach($featureNodes as &$node){
+
+    // append corresponding elements to an additional node field: $node->descriptionElements
+    foreach($descriptionElements as $element) {
+      if($element->feature->uuid == $node->feature->uuid) {
+        if(!isset($node->descriptionElements)) {
+          $node->descriptionElements = array();
+        }
+        $node->descriptionElements[] = $element;
+      }
+    }
+
+    // recurse into node children
+    if(is_array($node->children)){
+      $mergedChildNodes = _mergeFeatureTreeDescriptions($node->children, $descriptionElements);
+      $node->children = $mergedChildNodes;
+    }
+
+  }
+  return $featureNodes;
+}
+
+
+/**
+ * Send a HTTP GET request to the RESTService and deserializes
+ * and returns the response as object.
+ * The response objects coming from the webservice configured in the 'cdm_webservice_url' variable
+ * are beeing cached in a level 1 (L1) and or in a level 2 (L2) cache.
+ *
+ * Since the L1 cache is implemented as static variable of the cdm_ws_get() function,
+ * this cache persists only per each single page executiuon. Any object coming from the webservice is stored into it by default.
+ * Incontrast to this default cacheich mechanism the L2 cache only is used if the 'cdm_webservice_cache' varialby is set to TRUE
+ * which can be set using the modules administrative settings section. Object stored in this L2 cache are serialized and stored
+ * using the drupal cache in the '{prefix}cache_cdm_ws' cache table. So the objects are sored in a database will persist as
+ * log as the drupal cache is not beeing cleared and are availabel across multiple sript executions.
+ *
+ * @param $uri
+ * @param $pathParameters an array of path parameters
+ * @param $query  A query string to be appended to the URL.
+ * @param $method the HTTP method to use, valuid values are "GET" or "POST";
+ * @param $absoluteURI
+ * @return unknown_type
+ */
+function cdm_ws_get($uri, $pathParameters = array(), $query = null, $method="GET", $absoluteURI = false){
+
+  static $cacheL1;
+  if(!isset($cacheL1)){
+    $cacheL1 = array();
+  }
+
+  // transform the given uri path or patthern into a proper webservice uri
+  if(!$absoluteURI){
+    $uri = cdm_compose_url($uri, $pathParameters, $query);
+  }
+
+  $is_cdm_ws_uri = _is_cdm_ws_uri($uri);
+  $use_cacheL2 = variable_get('cdm_webservice_cache', 1);
+
+  if(array_key_exists($uri, $cacheL1)){
+    $cacheL1_obj = $cacheL1[$uri];
+  }
+  //print $cacheL1_obj;
+  $set_cacheL1 = false;
+  if($is_cdm_ws_uri && !$cacheL1_obj){
+    $set_cacheL1 = true;
+  }
+
+  // only cache cdm webservice URIs
+  $set_cacheL2 = $use_cacheL2 && $is_cdm_ws_uri && $set_cacheL1;
+  $cacheL2_entry = false;
+
+  if($use_cacheL2){
+    // try to get object from cacheL2
+    $cacheL2_entry = cache_get($uri, 'cache_cdm_ws');
+  }
+
+  if($cacheL1_obj){
+      //
+      // The object has been found in the L1 cache
+      //
+      $obj = $cacheL1_obj;
+      if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
+        _add_status_message_toggler();
+        _add_debugMessageStr('Using cacheL1 for: '.$uri);
+      }
+    } else if($cacheL2_entry) {
+      //
+      // The object has been found in the L2 cache
+      //
+      $obj = unserialize($cacheL2_entry->data);
+      if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
+        _add_status_message_toggler();
+        _add_debugMessageStr('Using cacheL2 for: '.$uri);
+      }
+    } else {
+      //
+      // Get the object from the webservice and cache it
+      //
+      $time_get_start = microtime(true);
+      // request data from webservice JSON or XML
+      $datastr = cdm_http_request($uri, $method);
+      $time_get = microtime(true) - $time_get_start;
+
+      $time_parse_start = microtime(true);
+      // parse data and create object
+      $obj = cdm_load_obj($datastr);
+
+      $time_parse = microtime(true) - $time_parse_start;
+      if(variable_get('cdm_webservice_debug', 1) && user_access('administer')){
+        if($obj || $datastr == "[]" ){
+          $success_msg = 'valid';
+        } else {
+          $success_msg = 'invalid';
+        }
+        _add_debugMessage($uri, $time_get, $time_parse, strlen($datastr), $success_msg);
+      }
+      if($set_cacheL2) {
+        // store the object in cacheL2
+        cache_set($uri, 'cache_cdm_ws', serialize($obj), CACHE_TEMPORARY);
+      }
+
+  }
+  if($obj){
+    // store the object in cacheL1
+    if($set_cacheL1) {
+      $cacheL1[$uri] = $obj;
+    }
+  }
+
+  return $obj;
+}
+function _add_debugMessageStr($message){
+  _add_status_message_toggler();
+  drupal_set_message($message, 'debug');
+}
+
+function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg){
+
+  static $cummulated_time_parse;
+  static $cummulated_time_get;
+  _add_status_message_toggler();
+
+  $cummulated_time_get += $time_get;
+  $cummulated_time_parse += $time_parse;
+
+  // decompose uri into path and query element
+  $uri_parts = explode("?", $uri);
+  if(count($uri_parts) == 2){
+    $path = $uri_parts[0];
+    $query = $uri_parts[1];
+  } else {
+    $path = $uri;
+  }
+
+  $message = '<span class="uri">'.$uri.'</span><br />';
+  $message .= '[fetched in: '.sprintf('%3.3f', $time_get).'s('.sprintf('%3.3f', $cummulated_time_get).'s); ';
+  $message .= 'parsed in '.sprintf('%3.3f', $time_parse).' s('.sprintf('%3.3f', $cummulated_time_parse).'s); ';
+  $message .= 'size:'.sprintf('%3.1f', ($datasize / 1024)).' kb of '.$success_msg.' data: ';
+  if(_is_cdm_ws_uri($path)){
+    $message .= '<a href="'.url($path.'.xml', $query).'" target="data" class="'.$success_msg.'">xml</a>-';
+    $message .= '<a href="'.url('cdm_api/proxy/'.urlencode(url($path.'.xml', $query))).'" target="data" class="'.$success_msg.'">proxied</a>,';
+    $message .= '<a href="'.url($path.'.json', $query).'" target="data" class="'.$success_msg.'">json</a>-';
+    $message .= '<a href="'.url('cdm_api/proxy/'.urlencode(url($path.'.json', $query))).'" target="data" class="'.$success_msg.'">proxied</a>';
+  } else {
+      $message .= '<a href="'.url($path, $query).'" target="data" class="'.$success_msg.'">open</a>';
+  }
+  $message .= '] ';
+  drupal_set_message($message, 'debug');
+
+}
+
+
+function cdm_load_obj($datastr){
+
+  $obj = json_decode($datastr);
+
+  if(!(is_object($obj) || is_array($obj)) ){
+    ob_start();
+    $obj_dump = ob_get_contents();
+    ob_clean();
+    return false;
+  }
+
+  return $obj;
+}
+
+/**
+ *
+ * @param $uri
+ * @param $method the HTTP method to use, valuid values are "GET" or "POST"; efaults to "GET" even if null,
+ *        false or any invalid value is supplied.
+ * @param $parameters
+ * @param $header
+ * @return the response data
+ */
+function cdm_http_request($uri, $method="GET", $parameters = array(), $header = false){
+
+  static $acceptLanguage = null;
+
+  if(!$acceptLanguage) {
+    if(function_exists('apache_request_headers')){
+      $headers = apache_request_headers();
+      if($headers['Accept-Language']){
+        $acceptLanguage = $headers['Accept-Language'];
+      }
+    }
+    if( !$acceptLanguage ) {
+      $acceptLanguage = "en"; // DEFAULT TODO make configurable
+    }
+  }
+
+  if($method != "GET" && $method != "POST"){
+    $method  = "GET";
+  }
+
+  $header = array();
+  if(!$header && _is_cdm_ws_uri($uri)){
+    $header['Accept'] = (variable_get('cdm_webservice_type', 'json') == 'json' ? 'application/json' : 'text/xml');
+    $header['Accept-Language'] = $acceptLanguage;
+    $header['Accept-Charset'] = 'UTF-8';
+  }
+
+  if(false && function_exists('curl_init')){
+    // !!!!! CURL Disabled due to problems with forllowing redirects (CURLOPT_FOLLOWLOCATION=1) and safe_mode = on
+    // use the CURL lib if installed it is supposed to be 20x faster
+    return _http_request_using_curl($uri, $header, $method, $parameters);
+  } else {
+    return _http_request_using_fsockopen($uri, $header, $method, $parameters);
+  }
+}
+
+function _http_request_using_fsockopen($uri, $header = array(), $method = "GET"){
+ $response = drupal_http_request($uri, $header, $method);
+ return $response->data;
+}
+
+
+/**
+ * Return string content from a remote file
+ *
+ * @param string $uri
+ * @return string
+ *
+ * @author Luiz Miguel Axcar (lmaxcar@yahoo.com.br)
+ */
+function _http_request_using_curl($uri, $headers = array(), $method = "GET", $parameters = array())
+{
+  $ch = curl_init();
+
+  curl_setopt ($ch, CURLOPT_URL, $uri);
+  curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+  curl_setopt ($ch, CURLOPT_MAXREDIRS, 5);
+
+  // set proxy settings
+  if(variable_get('cdm_webservice_proxy_url', false)){
+    curl_setopt($ch, CURLOPT_PROXY, variable_get('cdm_webservice_proxy_url', ''));
+    curl_setopt($ch, CURLOPT_PROXYPORT, variable_get('cdm_webservice_proxy_port', '80'));
+    if(variable_get('cdm_webservice_proxy_usr', false)){
+      curl_setopt ($ch, CURLOPT_PROXYUSERPWD, variable_get('cdm_webservice_proxy_usr', '').':'.variable_get('cdm_webservice_proxy_pwd', ''));
+    }
+  }
+
+  // modify headers array to be used by curl
+  foreach($headers as $header_key=>$header_val){
+    $curl_headers[] = $header_key.': '.$header_val;
+  }
+  if(isset($curl_headers)){
+    curl_setopt ($ch, CURLOPT_HTTPHEADER, $curl_headers);
+  }
+
+  // set method if not default
+  if($method != "GET"){
+    if($method == "POST"){
+
+      curl_setopt ($ch, CURLOPT_POST, 1);
+      curl_setopt ($ch, CURLOPT_POSTFIELDS, $parameters);
+
+    }else{
+      // other obscure http methods get passed to curl directly
+      // TODO generic parameter/body handling
+      curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, $method);
+    }
+  }
+
+  ob_start();
+  curl_exec($ch);
+  $info = curl_getinfo($ch);
+  if(curl_errno($ch)){
+    watchdog('CDM_API', '_http_request_curl() - '.curl_error($ch).'; REQUEST-METHOD:'.$method.' URL: '.substr($uri.' ', 0, 150), WATCHDOG_ERROR);
+    if(variable_get('cdm_webservice_debug', 1)  && user_access('administer') ){
+      drupal_set_message('_http_request_curl() - '.curl_error($ch).'; REQUEST-METHOD:'.$method.' URL: '.substr($uri.' ', 0, 150), 'error');
+    }
+  }
+  curl_close ($ch);
+  $string = ob_get_contents();
+  ob_end_clean();
+
+  return $string;
+}
+
+function _featureTree_elements_toString($rootNode, $separator = ', '){
+  $out = '';
+  $featureLabels = array();
+  foreach ($rootNode->children as $featureNode){
+    $out .= ($out ? $separator : '');
+    $out .= $featureNode->feature->representation_L10n;
+    if (is_array($featureNode->children)){
+      $childlabels = '';
+      foreach ($featureNode->children as $childNode)
+      $childlabels .= ($childlabels ? $separator : '');
+      $childlabels .= _featureTree_elements_toString($childNode);
+    }
+    if($childlabels){
+      $out .= '['.$childlabels.' ]';
+    }
+  }
+  return $out;
+}
+
+function cdm_get_featureTrees_as_options($addDefaultFeatureTree = false){
+    $feature_trees = array();
+
+    // set tree that contains all features
+    if($addDefaultFeatureTree){
+      $feature_trees[UUID_DEFAULT_FEATURETREE] = t('Default Featuretree (contains all features)');
+    }
+
+    // get features from database
+    $persisted_trees = cdm_ws_get(CDM_WS_FEATURETREES);
+    if(is_array($persisted_trees)){
+
+        foreach($persisted_trees as $featureTree){
+            // do not add the DEFAULT_FEATURETREE again
+            if($featureTree->uuid == UUID_DEFAULT_FEATURETREE){
+                continue;
+            }
+
+            $treeRepresentation = $featureTree->titleCache;
+
+            if(is_array($featureTree->root->children) && count($featureTree->root->children) > 0){
+
+              // render the hierarchic tree structure
+              $treeDetails = '<div class="featuretree_structure">'
+                //._featureTree_elements_toString($featureTree->root)
+                .theme('featureTree_hierarchy', $featureTree->uuid)
+                .'</div>';
+
+              $form = array();
+              $form['featureTree-'.$featureTree->uuid] = array(
+                  '#type' => 'fieldset',
+                  '#title' => t('Show details'),
+                  '#collapsible' => TRUE,
+                  '#collapsed' => TRUE,
+              );
+              $form['featureTree-'.$featureTree->uuid]['details'] = array('#value'=>$treeDetails);
+
+              $treeRepresentation .= drupal_render($form);
+            }
+
+            $feature_trees[$featureTree->uuid] = $treeRepresentation;
+        }
+
+    }
+    return $feature_trees;
+}
+
+function cdm_get_taxontrees_as_options(){
+   $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
+   $taxonomicTreeOptions = array();
+   if($taxonTrees){
+      foreach($taxonTrees as $tree){
+          $taxonomicTreeOptions[$tree->uuid] = $tree->titleCache;
+      }
+   }
+   return $taxonomicTreeOptions;
+}
+
+
+function cdm_api_secref_cache_prefetch(&$secUuids){
+  global $secref_cache;
+  if(!is_array($secref_cache)){
+    $secref_cache = array();
+  }
+  $uniqueUuids = array_unique($secUuids);
+  $i = 0;
+  $param = '';
+  while($i++ < count($uniqueUuids)){
+    $param .= $secUuids[$i].',';
+    if(strlen($param) + 37 > 2000){
+      _cdm_api_secref_cache_add($param);
+      $param = '';
+    }
+  }
+  if($param){
+    _cdm_api_secref_cache_add($param);
+  }
+}
+
+function cdm_api_secref_cache_get($secUuid){
+  global $secref_cache;
+  if(!is_array($secref_cache)){
+    $secref_cache = array();
+  }
+  if(!array_key_exists($secUuid, $secref_cache)){
+    _cdm_api_secref_cache_add($secUuid);
+  }
+  return $secref_cache[$secUuid];
+}
+
+function cdm_api_secref_cache_clear(){
+  global $secref_cache;
+  $secref_cache = array();
+}
+
+/**
+ * Validates if the given string is a uuid.
+ *
+ * @param unknown_type $str
+ */
+function is_uuid($str){
+  return is_string($str) && strlen($str) == 36 && strpos($str, '-');
+}
+
+/**
+ * Checks if the given $object is a valid cdm entity. An object is consirered
+ * cdm entity if it has a string field $object->class with at least 3 characters and
+ * if it has a valid uuid in $object->uuid.
+ *
+ * @author a.kohlbecker
+ * @param unknown_type $object
+ */
+function is_cdm_entity($object){
+  return is_string($object->class) && strlen($object->class) > 2 && is_string($object->uuid) && is_uuid($object->uuid);
+}
+
+function _cdm_api_secref_cache_add($secUuidsStr){
+  global $secref_cache;
+  $ref = cdm_ws_get(CDM_WS_REFERENCE, $secUuidsStr);
+  // batch fetching not jet reimplemented thus:
+  /*$assocRefSTOs = array();
+   if($refSTOs) {
+   foreach($refSTOs as $ref){
+   $assocRefSTOs[$ref->uuid] = $ref;
+   }
+   $secref_cache = array_merge($secref_cache, $assocRefSTOs);
+   }*/
+  $secref_cache[$ref->uuid] = $ref;
+}
+
+/**
+ * Checks if the given $uri starts with the cdm webservice url stored in the
+ * Drupal variable 'cdm_webservice_url'. The 'cdm_webservice_url' can be set in the
+ * admins section of the portal.
+ *
+ * @param $uri the URI to test
+ */
+function _is_cdm_ws_uri($uri){
+  return str_beginsWith($uri, variable_get('cdm_webservice_url', '#EMPTY#'));
+}
+
+function queryString($elements) {
+  $query = '';
+  foreach($elements as $key=>$value){
+    if(is_array($value)){
+      foreach($value as $v){
+        $query .= (strlen($query) > 0 ? '&' : '').$key.'='.urlencode($v);
+      }
+    } else{
+      $query .= (strlen($query) > 0 ? '&' : '').$key.'='.urlencode($value);
+    }
+  }
+  return $query;
+}
+
+/**
+ * implementation of the magic method __clone to allow deep cloning of objects and arrays
+ */
+function __clone(){
+  foreach($this as $name => $value){
+    if(gettype($value)=='object' || gettype($value)=='array'){
+      $this->$name= clone($this->$name);
+    }
+  }
+}
+
+/**
+ * Make a complete deep copy of an array replacing
+ * references with deep copies until a certain depth is reached
+ * ($maxdepth) whereupon references are copied as-is...
+ * [From http://us3.php.net/manual/en/ref.array.php]
+ * @param $array
+ * @param $copy
+ * @param $maxdepth
+ * @param $depth
+ * @return unknown_type
+ */
+function array_deep_copy (&$array, &$copy, $maxdepth=50, $depth=0) {
+  if($depth > $maxdepth) { $copy = $array; return; }
+  if(!is_array($copy)) $copy = array();
+  foreach($array as $k => &$v) {
+    if(is_array($v)) {        array_deep_copy($v,$copy[$k],$maxdepth,++$depth);
+    } else {
+      $copy[$k] = $v;
+    }
+  }
+}
+
+/**
+ * Implementation of theme_status_messages($display = NULL)
+ * @see includes/theme.inc
+ *
+ * @param $display
+ * @return unknown_type
+ */
+function _add_status_message_toggler() {
+  static $isAdded;
+  if(!$isAdded){
+
+    drupal_add_js(
+          '$(document).ready(function(){
+
+            $(\'.messages.debug\').before( \'<h6 class="messages_toggler debug">Debug Messages (klick to toggle)</h6>\' );
+            $(\'.messages_toggler\').click(function(){
+              $(this).next().slideToggle(\'fast\');
+                return false;
+            }).next().hide();
+
+          });'
+          , 'inline');
+          $isAdded = TRUE;
+  }
+}
+
+function _no_classfication_uuid_message(){
+  return
+  t('This DataPortal is not configured properly.')
+      . l(t('Please choose a valid classification'), 'admin/settings/cdm_dataportal/general')
+      . t(', or contact the maintainer of this DataPortal.');
+}
