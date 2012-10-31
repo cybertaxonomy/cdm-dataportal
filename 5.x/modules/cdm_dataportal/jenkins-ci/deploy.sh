@@ -9,6 +9,7 @@ SVN_USER="edit-jenkins"
 
 if [ -z "$1" ]; then
 	echo "version parameter missing\nUsage: deploy.sh <version-number>"
+  exit -1
 fi 
 VERSION=$1
 
