@@ -38,3 +38,17 @@
 3.0.3/cdm_taxontree/resources/Thumbs.db
 3.0.3/images/Thumbs.db
 3.0.3/target
+3.0.4/.buildpath
+3.0.4/.project
+3.0.4/cdm_api/ws-taxon.json
+3.0.4/cdm_api/ws-taxonomy-root.json
+3.0.4/cdm_api/ws-whatis.json
+3.0.4/cdm_taxontree/Presets
+3.0.4/cdm_taxontree/Thumbs.db
+3.0.4/cdm_taxontree/resources/Thumbs.db
+3.0.4/images/Thumbs.db
+3.0.4/target
+3.0.4/test/java/dataportal-selenium-tests/.classpath
+3.0.4/test/java/dataportal-selenium-tests/.project
+3.0.4/test/java/dataportal-selenium-tests/.settings
+3.0.4/test/java/dataportal-selenium-tests/target
