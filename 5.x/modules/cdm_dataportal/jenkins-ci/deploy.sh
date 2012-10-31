@@ -7,7 +7,7 @@
 
 if [ -z "$1" ]; then
 	echo "version parameter missing\nUsage: deploy.sh <version-number>"
-for 
+fi 
 
 # $WORKSPACE is an environment variable set by jenkins
 if [ -n "$WORKSPACE" ]; then
