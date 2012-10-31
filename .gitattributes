@@ -93,6 +93,9 @@
 5.x/modules/cdm_dataportal/images/loading_circle_grey_16.gif -text
 5.x/modules/cdm_dataportal/images/macFFBgHack.png -text
 5.x/modules/cdm_dataportal/images/print_icon.gif -text
+5.x/modules/cdm_dataportal/jenkins-ci/dataportal-version-update/HOWTO-UPDATE -text
+5.x/modules/cdm_dataportal/jenkins-ci/dataportal-version-update/README.txt -text
+5.x/modules/cdm_dataportal/jenkins-ci/dataportal-version-update/update-to.sh -text
 5.x/modules/cdm_dataportal/jenkins-ci/deploy.sh -text
 5.x/modules/cdm_dataportal/jenkins-ci/headless-maven-tests.sh -text
 5.x/modules/cdm_dataportal/jenkins-ci/integration.sh -text
