@@ -52,7 +52,7 @@ curl --output drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz $ARCHIVE_URL
 tar xzf drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz
 
 # update the update script update-to.sh
-cp -f ../jenkins-ci/dataportal-version-update/* drupal${DRUPAL_VERSION}-cdm_dataportal/sites/all
+rsync -r --exclude=.svn ../jenkins-ci/dataportal-version-update/ drupal${DRUPAL_VERSION}-cdm_dataportal/sites/all
 
 # update the module and themes
 cd drupal${DRUPAL_VERSION}-cdm_dataportal/sites/all  
