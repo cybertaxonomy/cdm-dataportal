@@ -38,6 +38,7 @@ if [ ! -d target ]; then
 	mkdir target 
 fi
 cd target
+rm -rf *
 
 # create the module-cdm_dataportal archive 
 svn --username=$SVN_USER export http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION ./cdm_dataportal
@@ -58,10 +59,11 @@ cd drupal${DRUPAL_VERSION}-cdm_dataportal/sites/all
 ./update-to.sh $VERSION
 
 # copy the profiles
-cd ../../../
+cd ../../
 cp -r sites/all/modules/cdm_dataportal/profile/CDM_DataPortal* profiles/
 
 # make tar 
+cd ../
 tar czf drupal${DRUPAL_VERSION}-cdm_dataportal-$VERSION.tar.gz drupal${DRUPAL_VERSION}-cdm_dataportal
 rm -rf drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz drupal${DRUPAL_VERSION}-cdm_dataportal/
 
