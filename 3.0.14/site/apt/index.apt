@@ -1,0 +1,106 @@
+EDIT CDM Data Portal
+
+    The EDIT Data Portal publishes taxonomic data data hosted in a CommunityStore
+    either to a closed community or to the public at large. It has been implemented 
+    as a module for the content management system Drupal. The term
+    {{{http://en.wikipedia.org/wiki/Web_content_management_system}content managent system}}
+    is somewhat misleading here: since the actual content is stored and managed 
+    by the CDM, ensuring scientific accuracy and reusability of data. Drupal offers 
+    a great deal of flexibility and can be extended almost indefinitely, making it 
+    possible to adapt the EDIT Data Portal to the individual needs of a community.
+    Custom web pages, forums, and blogs are only a few of Drupal's capabilities 
+    available out of the box, and there is practically no limit to the number of 
+    modules that can be added to enhance a site with for example image galleries. 
+    The layout and look and feel of the application can be easily adapted to fit 
+    any taste.
+
+    The EDIT Data Portal supports zoological and botanical names (support for viral 
+    and bacterial names should be available soon), as well as multiple concurrent 
+    taxonomies. Rules as specified by the nomenclatural codes ICBN and ICZN are 
+    built into the CDM, ensuring that taxon names conform to these standards.
+
+    User interface design was guided by the following design principles: provide 
+    easy access to all taxa and names; display all relevant information in one 
+    place where possible; and reduce complexity without compromising scientific 
+    accuracy. A challenge particular to taxonomy is keeping the user from losing 
+    his or her bearings while navigating through vast taxonomic trees; to this 
+    end, a sophisticated taxonomic tree browser has been developed to reduce 
+    confusion and make daily work with such trees more productive. A search 
+    function provides an additional way to access taxa.
+
+    Each taxon is represented by an individual page, which displays the list 
+    of synonyms, related taxa, occurrences, descriptions, media, and more. The
+    list of homotypic and heterotypic synonyms is ordered historically and grouped
+    by types; its layout resembles that found in printed publications. Images of 
+    protologues and of type specimens are linked directly from taxon names and 
+    synonym lists. In addition, taxon pages will allow users to contribute 
+    annotations as text or images.
+
+    Currently, EDIT Data Portals and CDM Community Stores are used to store and 
+    publish the work of the EDIT exemplar groups focusing on the taxonomic groups 
+    Cichorieae, Diptera and Palmae. Links to the demosites are found below.
+
+
+Drupal    
+
+    The open source content management system Drupal becomes more and more widely 
+    used in the area of biodiversity informatics. This popularity is not only
+    due to its capabilities to just manage content for
+    websites. The genius of what the Drupal community has done, is to reduce all 
+    of the aspects of social software to the core and then build a platform that 
+    could be infinitely extended to allow the assembly of almost any styles of 
+    online social interaction. During the past years the community contributed 
+    over 3000 different modules extending the Drupal core and thus on one hand 
+    providing a highly flexible construction kit and on the other hand showing by 
+    many examples that nearly everything is possible, perhaps only limited by the 
+    human imagination.
+    
+    The EDIT Data Portal has been developed as a drupal module to take the 
+    advantage of the community support and already available resources. Since we
+    offer CDM Data Portal as a package with drupal together it is not necessary 
+    to spend extra time learning about drupal.
+
+~~Constructing the EDIT platform for cybertaxonomy
+
+~~   Drupal is used to build up 
+~~   general web applications like forums, blogs, a central repository for users 
+~~   and taxonomists, the Experts Database and a software tracker and rating 
+~~   system. Last but not least also taxonomy related software like the 
+~~   Scratchpads and the CDM DataPortal is based on this system.
+~~
+~~   The CDM DataPortal is using Drupal as an application framework to publish 
+~~   taxonomic treatments to a closed community or to the public. The treatments, 
+~~   stored in database are, accessible via web services to which the 
+~~   CDM DataPortal connects to fetch the information to be displayed. 
+~~   Furthermore does the CDM DataPortal act as an easy to use web service 
+~~   allowing reusing fragments of its pages in other contexts already rendered 
+~~   as HTML.
+~~
+~~   The new TDWG standards architecture relies among others on semantic web 
+~~   technologies, which are tailored around a data format called RDF.
+~~   Unfortunately there has always been a lack of common tools for easy 
+~~   processing and visualising data provided by the RDF based ontology.
+~~
+~~   Since the last big version switch to Drupal 6, some very interesting 
+~~   modules are being simmered, which will allow storing, aggregating and 
+~~   processing RDF data, making Drupal an highly interesting candidate for 
+~~   building applications which benefit from the new semantic capabilities 
+~~   of the TDWG standards architecture. Drupal is promising not only because 
+~~   of the interesting technical implementations but also because of its 
+~~   popularity and support from a vast community.
+~~
+~~   Some RDF related modules are already available although most of them 
+~~   still are in alpha status. One of these incorporates RDF taxonomies 
+~~   into Drupal, another one is actually an ensemble of modules providing 
+~~   comprehensive RDF functionality and interoperability.
+~~   
+~~   With Exhibit and Potluck the SIMILE (Semantic Interoperability of 
+~~   Metadata and Information in unLike Environments) project of the MIT 
+~~   has developed interesting tools for visualizing, browsing and mixing 
+~~   data. Exhibit for example displays structured data in the form of rich 
+~~   visualizations that can be searched, filtered and sorted using faceted 
+~~   browsing. The Exhibit module will bring these abilities to Drupal.
+~~
+~~   Tools for efficiently using the TDWQG RDF ontology are in reach and 
+~~   await their evaluation. So the time has come to find out what is 
+~~   possible to vision the next generation biodiversity network tools.
