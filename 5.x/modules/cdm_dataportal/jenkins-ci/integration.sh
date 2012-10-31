@@ -8,6 +8,11 @@
 #   http://thinkshout.com/blog/2010/09/sean/beginners-guide-using-hudson-continuous-integration-drupal
 #   http://drush.ws/help/3
 
+echo "do not run this script - only kept for reference."
+exit 0
+
+#------------------
+
 WORKSPACE=$1
 JOB_NAME=$2
 dbUser=$3

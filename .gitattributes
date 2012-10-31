@@ -95,8 +95,11 @@
 5.x/modules/cdm_dataportal/images/print_icon.gif -text
 5.x/modules/cdm_dataportal/jenkins-ci/config.xml -text
 5.x/modules/cdm_dataportal/jenkins-ci/config.xml.2011-03-11 -text
+5.x/modules/cdm_dataportal/jenkins-ci/deploy.sh -text
 5.x/modules/cdm_dataportal/jenkins-ci/headless-maven-tests.sh -text
 5.x/modules/cdm_dataportal/jenkins-ci/integration.sh -text
+5.x/modules/cdm_dataportal/jenkins-ci/job-config/config.xml -text
+5.x/modules/cdm_dataportal/jenkins-ci/job-config/config.xml.2011-03-11 -text
 5.x/modules/cdm_dataportal/js/OpenLayers/OpenLayers.js -text
 5.x/modules/cdm_dataportal/js/OpenLayers/img/blank.gif -text
 5.x/modules/cdm_dataportal/js/OpenLayers/img/cloud-popup-relative.png -text
