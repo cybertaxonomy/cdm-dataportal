@@ -26,11 +26,11 @@ if [ -z "$TAG_EXISTS" ]; then
 
 	# create release tag and branch for the module 
 	svn --username=$SVN_USER copy -m "release tag for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/trunk/drupal/${DRUPAL_VERSION}.x/modules/cdm_dataportal http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION
-	svn --username=$SVN_USER copy -m "branch for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/${DRUPAL_VERSION}.x/module-cdm_dataportal/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/module-cdm_dataportal-RELEASE-$VERSION
+	svn --username=$SVN_USER copy -m "branch for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/module-cdm_dataportal-RELEASE-$VERSION
 
 	#create release tag and branch for the themes 
 	svn --username=$SVN_USER copy -m "release tag for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/trunk/drupal/${DRUPAL_VERSION}.x/themes http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION
-	svn --username=$SVN_USER copy -m "branch for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/${DRUPAL_VERSION}.x/themes/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/themes-RELEASE-$VERSION
+	svn --username=$SVN_USER copy -m "branch for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/themes-RELEASE-$VERSION
 fi 
 
 #create the target folder
@@ -55,19 +55,19 @@ cd drupal${DRUPAL_VERSION}-cdm_dataportal/sites/all
 ./update-to.sh $VERSION
 
 # copy the profiles
-cd ../../
-cp -R  modules/cdm_dataportal/profile/* profiles/
+cd ../
+cp -r modules/cdm_dataportal/profile/CDM_DataPortal* profiles/
 
 # make tar 
-cd ../
+cd ../../
 tar czf drupal${DRUPAL_VERSION}-cdm_dataportal-$VERSION.tar.gz drupal${DRUPAL_VERSION}-cdm_dataportal
-rm -r drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz drupal${DRUPAL_VERSION}-cdm_dataportal/
+rm -rf drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz drupal${DRUPAL_VERSION}-cdm_dataportal/
 
 # create the new folder on the server and upload everything
 ssh root@160.45.63.172 "mkdir /var/www/download/dataportal/$VERSION"
 ssh root@160.45.63.172 "rm -r /var/www/download/dataportal/stable"
 ssh root@160.45.63.172 "ln -s /var/www/download/dataportal/$VERSION /var/www/download/dataportal/stable"
-scp cdm_dataportal-${VERSION}.tar.gz root@wp5.e-.axonomy.eu:/var/www/download/dataportal/${VERSION}/
+scp cdm_dataportal-${VERSION}.tar.gz root@wp5.e-taxonomy.eu:/var/www/download/dataportal/${VERSION}/
 scp drupal${DRUPAL_VERSION}-cdm_dataportal-${VERSION}.tar.gz root@wp5.e-taxonomy.eu:/var/www/download/dataportal/${VERSION}/ 
 ssh root@160.45.63.172 "chown -R www-data:www-data /var/www/download/dataportal/${VERSION}"
 ssh root@160.45.63.172 "chown -R www-data:www-data /var/www/download/dataportal/stable"
