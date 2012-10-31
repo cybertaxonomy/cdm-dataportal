@@ -1,0 +1,138 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>eu.etaxonomy</groupId>
+	<artifactId>dataportal-selenium-tests</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>dataportal-selenium-tests</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<selenium-version>2.0rc3</selenium-version>
+	</properties>
+
+	<scm>
+		<connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/test/java/dataportal-selenium-tests</connection>
+		<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/test/java/dataportal-selenium-tests</developerConnection>
+		<url>http://dev.e-taxonomy.eu/trac/browser/trunk/drupal/modules/cdm_dataportal/test/java/dataportal-selenium-tests</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<!-- your SVN account id please! -->
+			<id>a.kohlbecker</id>
+			<name>
+				Andreas Kohlbecker
+			</name>
+			<email>a.kohlbecker [at] bgbm.org</email>
+			<organization>
+				Botanical Garden Botanical Museum Berlin
+			</organization>
+			<organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+			<timezone>+1</timezone>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<url></url>
+		</developer>
+	</developers>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>http://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+
+	<!-- **** PLUGINS **** -->
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.6</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		<!--
+			selenium 2 webdriver, see
+			http://seleniumhq.org/docs/03_webdriver.html#with-maven
+		-->
+		<!--
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-parent</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		 -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-firefox-driver</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-support</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-api</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<!-- Selenese emulation -->
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-chrome-driver</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-ie-driver</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-htmlunit-driver</artifactId>
+			<version>${selenium-version}</version>
+		</dependency>
+	</dependencies>
+
+</project>
