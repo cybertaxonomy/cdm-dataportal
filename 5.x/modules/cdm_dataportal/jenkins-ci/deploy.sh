@@ -60,7 +60,7 @@ cd drupal${DRUPAL_VERSION}-cdm_dataportal/sites/all
 
 # copy the profiles
 cd ../../
-cp -r sites/all/modules/cdm_dataportal/profile/CDM_DataPortal* profiles/
+rsync -r --exclude=.svn sites/all/modules/cdm_dataportal/profile/ profiles/
 
 # make tar 
 cd ../
