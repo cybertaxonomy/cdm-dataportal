@@ -323,12 +323,29 @@ function cdm_settings_general(){
           '#type' => 'fieldset',
           '#title' => t('Freetext index'),
           '#collapsible' => FALSE,
-          '#collapsed' => FALSE,
-          '#description'   =>
-            t('Operations').": ".l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE))
-            ." ". l("Reindex", cdm_compose_url(CDM_WS_MANAGE_REINDEX))
-    );
+          '#collapsed' => FALSE
 
+    );
+    preg_match("#http[s]?://[0-9\p{L}\.]*:([0-9]*)/.*#u", variable_get('cdm_webservice_url', ''), $portNumberMatch, PREG_OFFSET_CAPTURE);
+    if(isset($portNumberMatch[1]) && $portNumberMatch[1] != '80'){
+      $form['cdm_webservice']['freetext_index']['message'] = array(
+               '#value' => "<div class=\"description\">The CDM web service URL contains a portnumber other than standart HTTP port 80: '" . $portNumberMatch[1][0] . "'."
+               ." Due to this the reindex and purge fuctions may not be working if there is a firewall in between you and the CDM Server."
+               ." You may want to contact the maintainer of the according CDM Server in order to solve this problem."
+               ."</div>"
+      );
+    };
+
+    $frontentURL = urlencode(variable_get('cdm_webservice_url', ''));
+    $form['cdm_webservice']['freetext_index']['operations'] = array(
+         '#value' => "<div>"
+            .t('Operations')
+            .": " . l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE, null, "frontendBaseUrl=".$frontentURL), array("class"=>"index-trigger"))
+            ." "  . l("Reindex", cdm_compose_url(CDM_WS_MANAGE_REINDEX, null, "frontendBaseUrl=".$frontentURL), array("class"=>"index-trigger"))
+    		.'<div id="index_progress"></div>'
+    		.'</div>'
+    );
+    _add_js_cdm_ws_progressbar(".index-trigger", "#index_progress");
 
     $form['cdm_webservice']['proxy'] = array(
       '#type' => 'fieldset',

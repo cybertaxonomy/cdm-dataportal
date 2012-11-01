@@ -534,8 +534,14 @@ function setvalue_session(){
   drupal_goto($_REQUEST['destination']);
 }
 
+/**
+ * Constructs from a given URI a cdm_api/proxy URI.
+ *
+ * @param unknown_type $uri
+ * @param unknown_type $theme
+ */
 function uri_uriByProxy($uri, $theme = false){
-  // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");)
+  //
   return url('cdm_api/proxy/'.urlencode($uri).($theme?"/$theme":''));
 }
 

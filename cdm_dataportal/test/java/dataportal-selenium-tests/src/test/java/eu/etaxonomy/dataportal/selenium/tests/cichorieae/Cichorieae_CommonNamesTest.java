@@ -16,7 +16,6 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
@@ -35,28 +34,28 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  */
 
 @DataPortalContexts( { DataPortalContext.cichorieae })
-public class Cichorieae_FootnoteTest extends CdmDataPortalTestBase{
+public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
 
 
-    static UUID crepidiastrum_chelidoniifolium_uuid = UUID.fromString("3e0cdb93-020c-4e2f-be85-e9eb1ec107be");
+    static UUID lactuca_serriola_uuid = UUID.fromString("85176c77-e4b6-4899-a08b-e257ab09350a");
 
 
     /**
-     * test for issue #2772 (some footnotes in synonymy missing)
+     * regression test for issue ##3160 (Cichorieae Portal: Common names not correctly orderd)
      *
      * @throws MalformedURLException
      */
     @Test
-    public void crepidiastrum_chelidoniifolium_issue_2772() throws MalformedURLException {
-        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepidiastrum_chelidoniifolium_uuid);
-        String expectedName = "Crepidiastrum chelidoniifolium";
+    public void lactuca_serriola() throws MalformedURLException {
+        TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), lactuca_serriola_uuid);
+        String expectedName = "Lactuca serriola";
         assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
+        FeatureBlock commonNamesBlock = p.getFeatureBlockAt(3, "common_names", "div", "span");
+        assertNotNull(commonNamesBlock);
 
-        assertEquals("expecting one footnoteKey", 1, p.getHeterotypicalGroupFootNoteKeys(2).size());
-        List<BaseElement> footNotes = p.getHeterotypicalGroupFootNotes(2);
-        assertEquals("expecting one footnotw", 1, footNotes.size());
-        String first100Chars = footNotes.get(0).getText().substring(0, 100);
-        assertEquals("1. As has been noted first by Sennikov (in Bot Zhurn. 82(5): 114. 1997), the names Lactuca saxatilis", first100Chars);
+        String expected = "Common names\nAlbanian (Albania): Ogrisht145; Arabic (Lebanon): خَسّ الزَّيْت146; Arabic (Saudi Arabia): Khass-al-Hammar147; Arabic (Syria): خَسّ الزَّيْت148; Armenian (Armenia): Կաթնուկ կողմնացույց149; Bulgarian (Bulgaria): Компасна салата150; Czech (Czech Republic): Locika kompasová151; Danish (Denmark): Tornet Salat152; English (Australia): compass plant153";
+        String firstChars = commonNamesBlock.getText().substring(0, expected.length());
+        assertEquals(expected, firstChars);
     }
 
 }
