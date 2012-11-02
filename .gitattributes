@@ -1667,6 +1667,14 @@
 7.x/themes/palmweb_2/style.css -text
 7.x/themes/palmweb_2/template.php -text
 7.x/themes/palmweb_2/translations/en-trans/cdm_dataportal.po -text
+7.x/themes/patches/diff-trunk_drupal_5.x_themes-from-r15273-to-r16261.diff -text
+7.x/themes/patches/diptera.profile.patch -text
+7.x/themes/patches/dipterablock.profile.patch -text
+7.x/themes/patches/page.tpl.php.patch -text
+7.x/themes/patches/patch-protocol.txt -text
+7.x/themes/patches/splitpatch.rb -text
+7.x/themes/patches/template.php.patch -text
+7.x/themes/patches/template.php.patch.0 -text
 documentation/Drupal[!!-~]7[!!-~]cdm[!!-~]portal[!!-~]multisite[!!-~]setup.pdf -text
 documentation/Inventory_enabled_modules.txt -text
 documentation/module_documentation/README.txt -text

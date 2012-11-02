@@ -18,7 +18,7 @@
  *
  * @ingroup themeable
  */
-function palmweb_2_cdm_taxon_page_profile($variables){
+function palmweb_2_cdm_taxon_page_profile($variables) {
 
   $taxon = $variables['taxon'];
   $mergedTrees = $variables['mergedTrees'];
@@ -85,13 +85,13 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
       $annotationFootnoteKeys .= $separator;
     }
     */
-        $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class . '">';
-        // $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList;
-        $out .= $descriptionElement->area->representation_L10n;
-        if (++$itemCnt < count($descriptionElements)) {
-          $out .= $separator;
-        }
-        $out .= "</" . $enclosingTag . ">";
+    $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class . '">';
+    // $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList;
+    $out .= $descriptionElement->area->representation_L10n;
+    if (++$itemCnt < count($descriptionElements)) {
+      $out .= $separator;
+    }
+    $out .= "</" . $enclosingTag . ">";
   }
   $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   $reference = new stdClass();
@@ -128,7 +128,7 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function palmweb_2_cdm_feature_nodesTOC($variables){
+function palmweb_2_cdm_feature_nodesTOC($variables) {
   $featureNodes = $variables['featureNodes'];
   $out = '';
 
@@ -136,9 +136,9 @@ function palmweb_2_cdm_feature_nodesTOC($variables){
 
   $out .= '<ul>';
   $countFeatures = 0;
-  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (
+  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array(
     get_taxonomictree_uuid_selected(),
-    substr(strrchr($_GET["q"],'/'), 1),
+    arg(2),
   )));
   if ($numberOfChildren != 0) {
     $out .= '<li>';
@@ -167,7 +167,7 @@ function palmweb_2_cdm_feature_nodesTOC($variables){
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
 
   $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
-  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
+  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, arg(2), queryString($markerTypes));
   if (!empty($useDescriptions)) {
     $out .= '<li>';
     $out .= l(t(theme('cdm_feature_name', array('feature_name' => 'Uses'))), $_GET['q'], array(
@@ -188,7 +188,7 @@ function palmweb_2_cdm_feature_nodesTOC($variables){
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function palmweb_2_cdm_feature_nodes($variables){
+function palmweb_2_cdm_feature_nodes($variables) {
   $mergedFeatureNodes = $variables['mergedFeatureNodes'];
   $taxon = $variables['taxon'];
 
@@ -199,7 +199,7 @@ function palmweb_2_cdm_feature_nodes($variables){
   // Creating an array to place the description elements in.
   $bibliographyOut = array();
   $countFeatures = 0;
-  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), $taxon->uuid)));
+  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array(get_taxonomictree_uuid_selected(), $taxon->uuid)));
   if ($taxon->name->rank->titleCache == "Genus") {
     $subRank = "species";
   }
@@ -228,7 +228,7 @@ function palmweb_2_cdm_feature_nodes($variables){
         $countFeatures++;
         $countFeatures++;
         $block->delta = generalizeString($featureRepresentation);
-        $block->subject = '<span class="' . html_class_atttibute_ref($node->feature) . '">' . theme('cdm_feature_name',  array('feature_name' => $featureRepresentation)) . '</span>';
+        $block->subject = '<span class="' . html_class_atttibute_ref($node->feature) . '">' . theme('cdm_feature_name', array('feature_name' => $featureRepresentation)) . '</span>';
         $block->module = "cdm_dataportal-feature";
         $block->content = '';
 
@@ -276,10 +276,10 @@ function palmweb_2_cdm_feature_nodes($variables){
           // TODO why is theme_cdm_descriptionElement_CommonTaxonName
           // not beeing used???
           $block->content .= theme('cdm_common_names', array('elements' => $node->descriptionElements));
-        /*
-        }else if($node->feature->uuid == UUID_IMAGE_SOURCES) {
-          $block->content .= theme('cdm_image_sources', $node->descriptionElements);
-        */
+          /* Disabled
+          }else if($node->feature->uuid == UUID_IMAGE_SOURCES) {
+            $block->content .= theme('cdm_image_sources', $node->descriptionElements);
+          */
         }
 
         /*
@@ -309,24 +309,24 @@ function palmweb_2_cdm_feature_nodes($variables){
             // @see http://dev.e-taxonomy.eu/trac/ticket/2393/
             $text = '';
             foreach ($node->children as $child) {
-             if (is_array($child->descriptionElements)) {
-               foreach ($child->descriptionElements as $element) {
+              if (is_array($child->descriptionElements)) {
+                foreach ($child->descriptionElements as $element) {
 
-                 if (is_array($element->media)) {
-                   // Append media of subordinate elements to the list of
-                   // main features.
-                   $media_list = array_merge($media_list, $element->media);
-                 }
+                  if (is_array($element->media)) {
+                    // Append media of subordinate elements to the list of
+                    // main features.
+                    $media_list = array_merge($media_list, $element->media);
+                  }
 
-                 $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
-                // TODO use localized version of feature name, the locale must
-                // match the locale of the multilanguage text
-                // (http://dev.e-taxonomy.eu/trac/ticket/2394).
-                 $description = str_replace($element->feature->titleCache, '<em>' . $element->feature->titleCache . '</em>', $description);
-               }
-               $text .= " " . $description;
-               $description = '';
-             }
+                  $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+                  // TODO use localized version of feature name, the locale must
+                  // match the locale of the multilanguage text
+                  // (http://dev.e-taxonomy.eu/trac/ticket/2394).
+                  $description = str_replace($element->feature->titleCache, '<em>' . $element->feature->titleCache . '</em>', $description);
+                }
+                $text .= " " . $description;
+                $description = '';
+              }
             }
             $block->content .= $text;
           }
@@ -355,10 +355,11 @@ function palmweb_2_cdm_feature_nodes($variables){
         $block->subject = '<a name="' . $block->delta . '"></a>' . $block->subject;
 
         $block->region = FALSE;
-        $out .= theme('block', array('elements' => array(
-          '#block' => $block,
-          '#children' => $block->content,
-        )));
+        $out .= theme('block', array(
+          'elements' => array(
+            '#block' => $block,
+            '#children' => $block->content,
+          )));
       }
     }
   }
@@ -384,6 +385,20 @@ function palmweb_2_cdm_search_results($variables){
   $path = $variables['path'];
   $query_parameters = $variables['query_parameters'];
   $out = '';
+
+  // the $query_parameters must not conhatin the 'q' parameter
+  // since this would conflict with the desired target $path
+  unset($search_params['q']);
+
+  // if the pager contains records of SearchResults, extract the taxa and use them a records instead
+  if(isset($pager->records[0]) && $pager->records[0]->class=="SearchResult"){
+   $freetextSearchResults =  $pager->records;
+   $taxa = array();
+   foreach ($pager->records as $searchResult) {
+     $taxa[] = &$searchResult->entity;
+   }
+   $pager->records = $taxa;
+  }
 
   $showThumbnails = isset($_SESSION['pageoptions']['searchtaxa']['showThumbnails']) ? $_SESSION['pageoptions']['searchtaxa']['showThumbnails'] : 0;
   if (!is_numeric($showThumbnails)) {
@@ -420,18 +435,21 @@ function palmweb_2_cdm_search_results($variables){
   // AT RBG KEW - 14/11/2011 - Changed the wording of the Show Thumbnails
   // tickbox text.
   $out .= '<div class="page_options">';
+  if($_REQUEST['ws'] && cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])){
+    $out .= '<div id="backButton">' . l("Modify search", cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
+  }
   $out .= '<form name="pageoptions">';
   $out .= '<input id="showThumbnails" type="checkbox" name="showThumbnails" ';
   $out .= $showThumbnails == 1 ? 'checked="checked"' : '';
   $out .= '> ' . t('Show Image Thumbnails') . '</form></div>';
   if (!empty($pager) && count($pager->records) > 0) {
       $out .= '<div id="search_results">';
-    $out .= theme('cdm_list_of_taxa', array('records' => $pager->records));
-    $out .= '</div>';
-    $out .= theme('cdm_pager', array(
-      'pager' => $pager,
-      'path' => $path,
-      'parameters' => $query_parameters,
+      $out .= theme('cdm_list_of_taxa', $pager->records, $freetextSearchResults);
+      $out .= '</div>';
+      $out .= theme('cdm_pager', array(
+        'pager' => $pager,
+        'path' => $path,
+        'parameters' => $query_parameters,
     ));
   }
   else {

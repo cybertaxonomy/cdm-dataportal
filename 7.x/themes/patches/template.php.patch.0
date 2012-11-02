@@ -1,0 +1,500 @@
+--- trunk/drupal/5.x/themes/palmweb_2/template.php	(revision 15273)
++++ trunk/drupal/5.x/themes/palmweb_2/template.php	(revision 16261)
+@@ -88,5 +88,5 @@
+   $out .= '<ul>';
+   $countFeatures = 0;
+-  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), substr(strrchr($_GET["q"], '/'), 1))));
++  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), arg(2))));
+   if ($numberOfChildren != 0) {
+  	 $out .= '<li>'.l(t(theme('cdm_feature_name', 'Number of Taxa')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('Number Of Taxa')).'</li>';
+@@ -109,5 +109,5 @@
+   
+   $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
+-  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
++  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, arg(2), queryString($markerTypes));
+   if(!empty($useDescriptions)) {
+   		$out .= '<li>'.l(t(theme('cdm_feature_name', 'Uses')), $_GET['q'], array("class"=>"toc"), NULL, generalizeString('UseRecords')).'</li>';
+@@ -289,5 +289,19 @@
+ 
+ 
+-function palmweb_2_cdm_search_results($pager, $path, $parameters){
++function palmweb_2_cdm_search_results($pager, $path, $query_parameters){
++
++  // the $query_parameters must not conhatin the 'q' parameter
++  // since this would conflict with the desired target $path
++  unset($search_params['q']);
++
++  // if the pager contains records of SearchResults, extract the taxa and use them a records instead
++  if(isset($pager->records[0]) && $pager->records[0]->class=="SearchResult"){
++    $freetextSearchResults =  $pager->records;
++    $taxa = array();
++    foreach ($pager->records as $searchResult) {
++      $taxa[] = &$searchResult->entity;
++    }
++    $pager->records = $taxa;
++  }
+ 
+ 
+@@ -325,11 +339,18 @@
+ 
+ 	$out = ''; //l('Advanced Search', '/cdm_dataportal/search');
+-	//AT RBG KEW - 14/11/2011 - Changed the wording of the Show Thumbnails tick box text 
+-	$out = '<div class="page_options"><form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Image Thumbnails').'</form></div>';
++	//AT RBG KEW - 14/11/2011 - Changed the wording of the Show Thumbnails tick box text
++	// add thumbnails checkbox and refince search link
++	$out = '<div class="page_options">';
++	if($_REQUEST['ws'] && cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])){
++	  $out .= '<div id="backButton">' . l("Modify search", cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
++	}
++	$out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" '.($showThumbnails == 1? 'checked="checked"': '').'> '.t('Show Image Thumbnails').'</form>';
++	$out .= '</div>';
++
+ 	if(count($pager->records) > 0){
+ 	    $out .= '<div id="search_results">';
+-		$out .= theme('cdm_list_of_taxa', $pager->records);
++		$out .= theme('cdm_list_of_taxa', $pager->records, $freetextSearchResults);
+ 		$out .= '</div>';
+-		$out .= theme('cdm_pager', $pager, $path, $parameters);
++		$out .= theme('cdm_pager', $pager, $path, $query_parameters);
+ 	} else {
+ 		$out = '<h4 class="error">Sorry, no matching entries found.</h4>';
+@@ -343,6 +364,5 @@
+ 	//$useDescriptions = cdm_ws_get()
+ 	$markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
+-	$useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
+-	 //= substr(strrchr($_GET["q"], '/'), 1);
++	$useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, arg(2), queryString($markerTypes));
+ 	//$descout = print_r($useDescriptions);
+     foreach ($descriptionElementsBibliogragphy as $descriptionElementsBiblio) {
+@@ -402,4 +422,8 @@
+   foreach ($references as $reference) {
+     $referenceString = '';
++    $isAuthorEmpty = false;
++    $isTitleEmpty = false;
++    $isDateEmpty = false;
++    $isPublisherEmpty = false;
+ 		switch ($reference->citation->type) {
+ 			case "Journal":
+@@ -434,7 +458,10 @@
+ 					}
+ 				}
+-				else {
++				else if (!empty($reference->citation->authorTeam->titleCache) && $reference->citation->authorTeam->titleCache != "-empty team-") {
+ 					$referenceString .= $reference->citation->authorTeam->titleCache;
+ 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
++				}
++				else {
++					$isAuthorEmpty = true;
+ 				}
+ 				/*else {
+@@ -445,6 +472,23 @@
+ 					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+ 				}
+-				$referenceString .= $reference->citation->title . ". " . $reference->citation->publisher;
+-				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++				else {
++					$isDateEmpty = true;
++				}
++				if (!empty($reference->citation->title)) {
++					$referenceString .= $reference->citation->title;
++					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++				} else {
++					$isTitleEmpty = true;
++				}
++				if (!empty($reference->citation->publisher)) {
++					$referenceString .= $reference->citation->publisher;
++					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++				} else {
++					$isPublisherEmpty = true;
++				}
++				if($isPublisherEmpty || $isAuthorEmpty || $isDateEmpty || $isTitleEmpty) {
++					$referenceString = $reference->citation->titleCache;
++				}
++
+ 				$referenceString .= "</li>";
+ 				break;
+@@ -453,4 +497,5 @@
+ 			case "Article":
+ 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
++				$stagingReferenceString = "";
+ 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+ 				$currentRecord = 1;
+@@ -459,12 +504,12 @@
+ 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
+ 							if ($currentRecord == 1) {
+-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
++								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
+ 							}
+ 							else if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
++								$stagingReferenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;
+ 							}
+ 							else {
+-								$referenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? ' ' : ". ");
++								$stagingReferenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? ' ' : ". ");
+ 							}
+ 							$currentRecord += 1;
+@@ -472,9 +517,9 @@
+ 						else {
+ 							if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= $teamMember->titleCache. " & ";	
++								$stagingReferenceString .= $teamMember->titleCache. " & ";
+ 							}
+ 							else {
+-								$referenceString .= $teamMember->titleCache;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? ' ' : ". ");
++								$stagingReferenceString .= $teamMember->titleCache;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? ' ' : ". ");
+ 							}
+ 							$currentRecord += 1;
+@@ -482,17 +527,37 @@
+ 					}
+ 				}
++				else if (!empty($reference->citation->authorTeam->titleCache) && $reference->citation->authorTeam->titleCache != "-empty team-") {
++					$stagingReferenceString .= $reference->citation->authorTeam->titleCache;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? " " : ". ");
++				}
+ 				else {
+-					$referenceString .= $reference->citation->authorTeam->titleCache;
+-					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
++					$isAuthorEmpty = true;
+ 				}
+ 				/*else {
+-					$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
++					$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
+ 				}*/
+ 				if (!empty($reference->citation->datePublished->start)) {
+-					$referenceString .= substr($reference->citation->datePublished->start,0,4);
+-					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+-				}
+-				$referenceString .= $reference->citation->title . ". " . $reference->citation->publisher;
+-				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++					$stagingReferenceString .= substr($reference->citation->datePublished->start,0,4);
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				}
++				else {
++					$isDateEmpty = true;
++				}
++				if (!empty($reference->citation->title)) {
++					$stagingReferenceString .= $reference->citation->title;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				} else {
++					$isTitleEmpty = true;
++				}
++				if (!empty($reference->citation->publisher)) {
++					$stagingReferenceString .= $reference->citation->publisher;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				} else {
++					$isPublisherEmpty = true;
++				}
++				if($isPublisherEmpty || $isAuthorEmpty || $isDateEmpty || $isTitleEmpty) {
++					$stagingReferenceString = $reference->citation->titleCache;
++				}
++				$referenceString .= $stagingReferenceString;
+ 				$referenceString .= "</li>";
+ 				break;
+@@ -501,4 +566,5 @@
+ 			case "Book":
+ 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
++				$stagingReferenceString = "";
+ 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+ 				$currentRecord = 1;
+@@ -507,9 +573,9 @@
+ 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
+ 							if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
++								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";
+ 							}
+ 							else {
+-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
+ 							}
+ 							$currentRecord += 1;
+@@ -517,9 +583,9 @@
+ 						else {
+ 							if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= $teamMember->titleCache. " & ";	
++								$stagingReferenceString .= $teamMember->titleCache. " & ";
+ 							}
+ 							else {
+-								$referenceString .= $teamMember->titleCache;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++								$stagingReferenceString .= $teamMember->titleCache;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
+ 							}
+ 							$currentRecord += 1;
+@@ -530,28 +596,41 @@
+ 				}
+ 				else if ($reference->citation->authorTeam->titleCache != "-empty team-"){
+-					$referenceString .= $reference->citation->authorTeam->titleCache;
+-					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++					$stagingReferenceString .= $reference->citation->authorTeam->titleCache;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
+ 				}
+ 				 else {
+-				 	$isCitationTitleCache  = true;
+-				 	$referenceString .=  $reference->citation->titleCache;
++				 	$isAuthorEmpty  = true;
+ 				 }
+ 				if (!empty($reference->citation->datePublished->start)) {
+-					$referenceString .= substr($reference->citation->datePublished->start,0,4);
+-					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+-				}
+-				if ($isCitationTitleCache == false && !empty($reference->citation->title)) {
+-					$referenceString .= $reference->citation->title; 
+-					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++					$stagingReferenceString .= substr($reference->citation->datePublished->start,0,4);
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				}
++				else {
++					$isDateEmpty = true;
++				}
++				if (!empty($reference->citation->title)) {
++					$stagingReferenceString .= $reference->citation->title;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				}
++				else {
++					$isTitleEmpty = true;
+ 				}
+ 				if (!empty($reference->citation->publisher)) {
+-					$referenceString .= $reference->citation->publisher;
+-					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+-				}
+-				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++					$stagingReferenceString .= $reference->citation->publisher;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				} else {
++					$isPublisherEmpty = true;
++				}
++				if($isPublisherEmpty || $isAuthorEmpty || $isDateEmpty || $isTitleEmpty) {
++					$stagingReferenceString = $reference->citation->titleCache;
++				}
++				$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				$referenceString .= $stagingReferenceString;
+ 				$referenceString .= "</li>";
+ 				break;
+ 			case "BookSection":
+ 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
++				$stagingReferenceString = "";
+ 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+ 				$currentRecord = 1;
+@@ -560,9 +639,9 @@
+ 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
+ 							if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
++								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";
+ 							}
+ 							else {
+-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
+ 							}
+ 							$currentRecord += 1;
+@@ -570,15 +649,37 @@
+ 						else {
+ 							if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= $teamMember->titleCache. " & ";	
++								$stagingReferenceString .= $teamMember->titleCache. " & ";
+ 							}
+ 							else {
+-								$referenceString .= $teamMember->titleCache;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++								$stagingReferenceString .= $teamMember->titleCache;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
+ 							}
+ 							$currentRecord += 1;
+ 						}
+ 					}
+-				}
+-				$referenceString .= substr($reference->citation->inReference->datePublished->start,0,4) . ". " . $reference->citation->title . ". " . "Pages ". $reference->citation->pages . ". In ";
++				} else if ($reference->citation->authorTeam->titleCache != "-empty team-") {
++					$stagingReferenceString .= $reference->citation->authorTeam->titleCache;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				} else {
++					$isAuthorEmpty = true;
++				}
++				if (!empty($reference->citation->inReference->datePublished->start)) {
++					$stagingReferenceString .= substr($reference->citation->inReference->datePublished->start,0,4);
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				} else {
++					$isDateEmpty = true;
++				}
++				if(!empty($reference->citation->title)) {
++					$stagingReferenceString .= $reference->citation->title;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				}
++				else {
++					$isTitleEmpty = true;
++				}
++				if(!empty($reference->citation->pages)) {
++					$stagingReferenceString .= "Pages ". $reference->citation->pages;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				}
++				$stagingReferenceString .= "In ";
+ 				$numberOfTeamMembersInReference = count($reference->citation->inReference->authorTeam->teamMembers);
+ 				$currentRecordinReference = 1;
+@@ -587,9 +688,9 @@
+ 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
+ 							if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";	
++								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname. " & ";
+ 							}
+ 							else {
+-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
+ 							}
+ 							$currentRecord += 1;
+@@ -597,20 +698,38 @@
+ 						else {
+ 							if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= $teamMember->titleCache. " & ";	
++								$stagingReferenceString .= $teamMember->titleCache. " & ";
+ 							}
+ 							else {
+-								$referenceString .= $teamMember->titleCache;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
++								$stagingReferenceString .= $teamMember->titleCache;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
+ 							}
+ 							$currentRecord += 1;
+ 						}
+ 					}
+-				}
+-				
+-				$referenceString .= $reference->citation->inReference->title . ". " . $reference->citation->inReference->publisher . ". " . $reference->citation->inReference->placePublished;
+-				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+-					
+-				
+-				$referenceString .= "</li>";
++				} else if($reference->citation->inReference->authorTeam->teamMembers->titleCache != "-empty team-")  {
++					$stagingReferenceString .= $reference->citation->inReference->authorTeam->teamMembers->titleCache;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				} else {
++					$isAuthorEmpty = true;
++				}
++				if (!empty($reference->citation->inReference->title)) {
++					$stagingReferenceString .=  $reference->citation->inReference->title;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				} else {
++					$isTitleEmpty = true;
++				}
++				if(!empty($reference->citation->inReference->publisher)) {
++					$stagingReferenceString .= $reference->citation->inReference->placePublished;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++				} else {
++					$isPublisherEmpty = true;
++				}
++				if ($isPublisherEmpty || $isAuthorEmpty || $isDateEmpty || $isTitleEmpty) {
++					$stagingReferenceString = $reference->citation->titleCache;
++				}
++
++				$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? "" : ". ");
++
++				$referenceString .= $stagingReferenceString . "</li>";
+ 				break;
+ 				
+@@ -621,4 +740,5 @@
+ 			case "Generic" :
+ 				$referenceString .= "<li class=\"descriptionText DescriptionElement\">";
++				$stagingReferenceString = "";
+ 				$numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+ 				$currentRecord = 1;
+@@ -627,12 +747,12 @@
+ 						if(!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
+ 							if ($currentRecord == 1) {
+-								$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
++								$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
+ 							}
+ 							else if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;	
++								$stagingReferenceString .= " , " . $teamMember->lastname . ", " . $teamMember->firstname;
+ 							}
+ 							else {
+-								$referenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? ' ' : ". ");
++								$stagingReferenceString .= " & " . $teamMember->lastname . ", " . $teamMember->firstname;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? ' ' : ". ");
+ 							}
+ 							$currentRecord += 1;
+@@ -640,9 +760,9 @@
+ 						else {
+ 							if ($numberOfTeamMembers != $currentRecord) {
+-								$referenceString .= $teamMember->titleCache. " & ";	
++								$stagingReferenceString .= $teamMember->titleCache. " & ";
+ 							}
+ 							else {
+-								$referenceString .= $teamMember->titleCache;
+-								$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? ' ' : ". ");
++								$stagingReferenceString .= $teamMember->titleCache;
++								$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? ' ' : ". ");
+ 							}
+ 							$currentRecord += 1;
+@@ -651,21 +771,49 @@
+ 				}
+ 				else if(!empty($reference->citation->authorTeam->titleCache)) {
+-					$referenceString .= $reference->citation->authorTeam->titleCache;
+-					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
++					$stagingReferenceString .= $reference->citation->authorTeam->titleCache;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? " " : ". ");
+ 				}
+ 				else {
+-					$referenceString .= $reference->citation->titleCache;
+-					$referenceString .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? " " : ". ");
++					$isAuthorEmpty = true;
++				}
++				if(!empty($reference->citation->datePublished->start)){
++					$stagingReferenceString .= substr($reference->citation->datePublished->start,0,4);
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? " " : ". ");
++
++				} else {
++					$isDateEmpty = true;
++				}
++				if (!empty($reference->citation->title)) {
++					$stagingReferenceString .= $reference->citation->title;
++					$stagingReferenceString .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? " " : ". ");
++				}
++				else {
++					$isTitleEmpty = true;
++				}
++				//TODO remove the resolution of the full title cache IF the other elements are empty
++
++				if (!empty($reference->citation->publisher)) {
++					$stagingReferenceString .= $reference->citation->publisher;
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? " " : ". ");
++				}
++				else {
++					$isPublisherEmpty = true;
++				}
++
++				if ($isAuthorEmpty || $isTitleEmpty || $isDateEmpty || $isPublisherEmpty) {
++					$stagingReferenceString = $reference->citation->titleCache;
++					$stagingReferenceString .= ((str_endsWith($out, ".") || str_endsWith($out, ". ")) ? " " : ". ");
+ 				}
+ 				/*else {
+-					$referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
++					$stagingReferenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " ";
+ 				}*/
+-				if (!empty($reference->citation->datePublished->start)) {
+-					$referenceString .= substr($reference->citation->datePublished->start,0,4);
+-					$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
+-				}
+-				$referenceString .= $reference->citation->title . ". " . $reference->citation->publisher;
+-				$referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? " " : ". ");
+-				$referenceString .= ((str_endsWith($referenceString, ".") ) ? " " : "");
++				/*if (!empty($reference->citation->datePublished->start)) {
++					$stagingReferenceString .= substr($reference->citation->datePublished->start,0,4);
++					$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? " " : ". ");
++				}
++				$stagingReferenceString .= $reference->citation->title . ". " . $reference->citation->publisher;
++				$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") || str_endsWith($stagingReferenceString, ". ")) ? " " : ". ");*/
++				$stagingReferenceString .= ((str_endsWith($stagingReferenceString, ".") ) ? " " : "");
++				$referenceString .= $stagingReferenceString;
+ 				$referenceString .= "</li>";
+ 				break;

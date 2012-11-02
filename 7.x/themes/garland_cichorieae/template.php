@@ -214,6 +214,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
   }
 
   /*
+   * Disabled code; can this be removed?
   if ($feature_uuid == UUID_NAME_USAGE){ foreach($element->sources as
   $source){ $referenceCitation =
   cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
@@ -656,7 +657,7 @@ function garland_cichorieae_preprocess_page(&$vars) {
   */
   if (arg(0) == 'comment' && arg(1) == 'reply') {
     $node = $vars['page']['content']['system_main']['comment_node']['#node'];
-    $vars['title'] = l(check_plain($node->title),'node/' . $node->nid);
+    $vars['title'] = l(check_plain($node->title), 'node/' . $node->nid);
   }
 }
 
@@ -677,7 +678,7 @@ function garland_cichorieae_preprocess_page(&$vars) {
  */
 function garland_cichorieae_preprocess_node(&$vars) {
   $body = '';
-// Warning: use #markup value, for which filters like php, html etc are applied!
+  // Warning: use #markup value, for which filters like php, html etc are applied!
   if (isset($vars['content']['body'][0]['#markup'])) {
     $body = $vars['content']['body'][0]['#markup'];
   }
