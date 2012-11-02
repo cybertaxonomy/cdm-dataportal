@@ -1,0 +1,26 @@
+--- theme/cdm_dataportal.page.theme	(revision 16421)
++++ theme/cdm_dataportal.page.theme	(revision 15801)
+@@ -140,12 +140,10 @@
+         $hasStructuredData = $hasStructuredData->Boolean == 'true';
+         if($hasStructuredData){
+           $structured_description_featuretree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, false);
+-          if($structured_description_featuretree_uuid) {
+-            $naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array($taxonDescription->uuid, $structured_description_featuretree_uuid));
+-            //$out .= print_r($naturallanguage_textData);
+-            if(!$naturallanguage_textData){
+-              drupal_set_message('The \'FeatureTree\' for the generation of natural language representations is not configured correctly, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/layout/taxon'), 'warning');
+-            }
++          $naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array($taxonDescription->uuid, $structured_description_featuretree_uuid));
++          //$out .= print_r($naturallanguage_textData);
++          if(!$naturallanguage_textData){
++            drupal_set_message('The \'FeatureTree\' for the generation of natural language representations is not configured correctly, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/layout/taxon'), 'warning');
+           }
+           $taxonDescription->elements = null;
+           $taxonDescription->elements = array($naturallanguage_textData);
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:mergeinfo
+   Reverse-merged /trunk/drupal/5.x/modules/cdm_dataportal:r15656-15660,15662-15663,15665-15667,15669-15688,15690-15710,15712-15755,15758-15762,15764-15774,15776-15777,15780-15781,15783-15784,15786,15788,15791-15798,15800-16420
+   Reverse-merged /branches/drupal/Kew_dataportal/5.x/modules/cdm_dataportal:r15317-15754
+

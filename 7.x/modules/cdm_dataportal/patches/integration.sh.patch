@@ -1,0 +1,16 @@
+--- jenkins-ci/integration.sh	(revision 16421)
++++ jenkins-ci/integration.sh	(revision 15801)
+@@ -8,11 +8,6 @@
+ #   http://thinkshout.com/blog/2010/09/sean/beginners-guide-using-hudson-continuous-integration-drupal
+ #   http://drush.ws/help/3
+ 
+-echo "do not run this script - only kept for reference."
+-exit 0
+-
+-#------------------
+-
+ WORKSPACE=$1
+ JOB_NAME=$2
+ dbUser=$3
+Index: cdm_api/cdm_api.module
+===================================================================

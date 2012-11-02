@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.dataportal.DataPortalContext;

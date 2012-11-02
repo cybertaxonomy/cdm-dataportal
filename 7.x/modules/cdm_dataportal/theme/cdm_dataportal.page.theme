@@ -192,10 +192,12 @@ function theme_cdm_taxon_page($variables) {
         $hasStructuredData = $hasStructuredData->Boolean == 'TRUE';
         if ($hasStructuredData) {
           $structured_description_featuretree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, FALSE);
-          $naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array(
-            $taxonDescription->uuid,
-            $structured_description_featuretree_uuid,
-          ));
+          if($structured_description_featuretree_uuid) {
+            $naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array(
+              $taxonDescription->uuid,
+              $structured_description_featuretree_uuid,
+            ));
+          }
 
           // $out .= print_r($naturallanguage_textData);
           if (!$naturallanguage_textData) {

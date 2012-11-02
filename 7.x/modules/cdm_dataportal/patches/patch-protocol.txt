@@ -1,0 +1,30 @@
+remaining-changesets-for-dataportal-to-drupal7.diff
+
+has been split up in to individual files:
+
+
+done | patch
+-----+---------------------------------
+[i]    cdm_api.module.patch
+[i]    cdm_dataportal.launch.patch
+[m]    cdm_dataportal.module.patch
+[m]    cdm_dataportal.page.theme.patch
+[m]    cdm_dataportal.taxon.theme.patch
+[i]    Cichorieae_CommonNamesTest.java.patch - was already there
+[a]    Cichorieae_FootnoteTest.java.patch
+[a]    config.xml.2011-03-11.patch
+[a]    config.xml.patch
+[a]    deploy.sh.patch
+[m]    ext_links.module.patch
+[a]    integration.sh.patch
+[i]    pom.xml.patch
+[m]    settings.php.patch
+
+[x]	   check diff manually for binary files to be copied over
+---------------------------------------
+
+legend
+i: ignored
+m: manually
+p: hunks partially
+a: all hunks

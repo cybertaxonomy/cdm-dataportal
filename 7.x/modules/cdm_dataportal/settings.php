@@ -349,12 +349,34 @@ function cdm_settings_general() {
     '#title' => t('Freetext index'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
-    '#description' => t('Operations: !url1 !url2', array(
-      '!url1' => l(t('Purge'), cdm_compose_url(CDM_WS_MANAGE_PURGE)),
-      '!url2' => l(t('Reindex'), cdm_compose_url(CDM_WS_MANAGE_REINDEX)),
-    )),
   );
 
+  // Check the cdmserver port number and display a waring if it is not port 80
+  preg_match("#http[s]?://[0-9\p{L}\.]*:([0-9]*)/.*#u", variable_get('cdm_webservice_url', ''), $portNumberMatch, PREG_OFFSET_CAPTURE);
+  if (isset($portNumberMatch[1]) && $portNumberMatch[1] != '80') {
+    $form['cdm_webservice']['freetext_index']['message'] = array(
+      '#markup' => "<div class=\"description\">"
+      . t("The CDM web service URL contains a portnumber other than standart HTTP port 80: '!port'."
+      . " Due to this the reindex and purge fuctions may not be working if there is a firewall in between you and the CDM Server."
+      . " You may want to contact the maintainer of the according CDM Server in order to solve this problem.", array('!port' => $portNumberMatch[1][0]))
+      . "</div>",
+    );
+  };
+
+  $frontentURL = urlencode(variable_get('cdm_webservice_url', ''));
+  $trigger_link_options = array(
+    'attributes' => array(
+      'class' => 'index-trigger',
+    ),
+  );
+  $form['cdm_webservice']['freetext_index']['operations'] = array(
+    '#markup' => "<div>" . t('Operations: !url1 !url2', array(
+        '!url1' => l(t("Purge"), cdm_compose_url(CDM_WS_MANAGE_PURGE, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
+        '!url2' => l(t("Reindex"), cdm_compose_url(CDM_WS_MANAGE_REINDEX, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
+      ))
+    . '<div id="index-progress"></div></div>',
+  );
+  _add_js_cdm_ws_progressbar(".index-trigger", "#index-progress");
 
   $form['cdm_webservice']['proxy'] = array(
     '#type' => 'fieldset',
@@ -441,6 +463,7 @@ function cdm_settings_general() {
 /**
  * LAYOUT settings
  * @return unknown_type
+ *   todo
  */
 function cdm_settings_layout() {
 
@@ -1078,7 +1101,8 @@ function cdm_settings_layout_taxon() {
   $form_description = t('Specimens may have media which is displayed at the
      Specimen tab/section as a gallery. It is possible to configure the
      thumbnails gallery here, however for configuring how a single media should
-     be displayed please go to !url.</p>', array(
+     be displayed please go to !url.</p>',
+     array(
        '!url' => l(t('Layout -> Media'), 'admin/config/cdm_dataportal/settings/layout/media'),
      ));
   $form['taxon_specimens'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, FALSE, $form_description);
@@ -1396,7 +1420,8 @@ function cdm_settings_geo() {
    NOTICE: must correspond to the layers defined in
    js/openlayers_,ap.js#getLayersByName()
    */
-    'osgeo_vmap0' => "Metacarta Vmap0", // EPSG:4326: EPSG:900913
+    // osgeo_vmap0 projections: EPSG:4326: EPSG:900913
+    'osgeo_vmap0' => "Metacarta Vmap0",
     // 'metacarta_vmap0' => "Metacarta Vmap0" , // EPSG:4326, EPSG:900913
     // all others EPSG:900913
     // 'edit-vmap0_world_basic' => 'EDIT Vmap0',
@@ -1428,10 +1453,10 @@ function cdm_settings_geo() {
     '#title' => '<b>' . t('Show Layer Switcher') . '</b>',
     '#default_value' => variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE),
     '#description' => t('
-      The Layer Switcher control displays a table of contents 
-      for the map.  This allows the user interface to switch between 
-      BaseLayers and to show or hide Overlays.  By default the switcher is 
-      shown minimized on the right edge of the map, the user may expand it 
+      The Layer Switcher control displays a table of contents
+      for the map.  This allows the user interface to switch between
+      BaseLayers and to show or hide Overlays.  By default the switcher is
+      shown minimized on the right edge of the map, the user may expand it
       by clicking on the handle.'
     ),
   );
@@ -1577,7 +1602,7 @@ function cdm_view_cache_site() {
   $search_url = cdm_compose_url(CDM_WS_PORTAL_TAXON_FIND . ".json", NULL, queryString($request_params));
 
   $search_url = uri_uriByProxy($search_url);
-  $search_url = rtrim($search_url,'/');
+  $search_url = rtrim($search_url, '/');
   $taxon_page_url = url('cdm_dataportal/taxon/');
 
   $out .= t('<p><strong>Cache all taxon pages</strong></p>');
@@ -1599,11 +1624,11 @@ function cdm_view_cache_site() {
   $out .= '<input type="button" name="stop" value="' . t('Stop') . '"/>';
   // $out .= '</form>';
   $out .= '</div>';
-/*
+  /*
   foreach($taxonPager->records as $taxon){
     cdm_dataportal_taxon_view($uuid);
   }
-*/
+  */
   return $out;
 }
 
