@@ -1318,16 +1318,16 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
       // It is a Synonym -> look for the accepted.
       $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid, get_taxonomictree_uuid_selected()));
       if (!empty($synonym_uuid)) {
-        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => '\' . $synonym_uuid')));
+        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => $synonym_uuid)));
       }
       else {
-        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => '\' . $singleTaxon->uuid')));
+        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => $singleTaxon->uuid)));
       }
     }
     else {
       // It is an accepted taxon.
       if (!empty($synonym_uuid)) {
-        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', array('query' => array('highlite' => '\' . $synonym_uuid')));
+        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', array('query' => array('highlite' => $synonym_uuid)));
       }
       else {
         drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid);

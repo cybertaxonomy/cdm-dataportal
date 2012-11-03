@@ -3,13 +3,14 @@
  *  '<div class="ahah-content" rel="'.$cdm_proxy_url.'"><span class="loading">Loading ....</span></div>';
  */
 
-Drupal.ahahContentAutoAttach = (function ($) {
-    
+(Drupal.ahahContentAutoAttach = (function ($) {
+
     $(".ahah-content").each(function(i){
+      
       var ahahContent = $(this);
       url = ahahContent.attr("rel");
       ahahContent.removeAttr('rel').find('.loading').css('display', 'block');
-      
+
       $.get(url, function(html){
         ahahContent.find('.loading').remove();
         ahahContent.append(html);
@@ -35,7 +36,7 @@ Drupal.ahahContentAutoAttach = (function ($) {
         }
       });
       
-    }(jQuery))
+    }))(jQuery)
   
 
 
