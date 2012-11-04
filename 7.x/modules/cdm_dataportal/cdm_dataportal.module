@@ -59,7 +59,11 @@ function _add_js_treeselector() {
  */
 function _add_js_openlayers_map() {
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/OpenLayers/OpenLayers.js', array('type' => 'file', 'weight' => JS_LIBRARY));
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/OpenLayers/OpenLayers.js', array(
+    'type' => 'file',
+    'weight' => JS_LIBRARY,
+    'cache' => FALSE,
+  ));
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/openlayers_map.js');
 
   $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
@@ -1233,7 +1237,9 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = NULL
     else {
       $trees = '';
       foreach ($taxon_nodes as $node) {
-        $trees .= ($trees ? ', ' : '') . '<strong>' . $node->classification->titleCache . '</strong>';
+        if (isset($node->classification->titleCache)) {
+          $trees .= ($trees ? ', ' : '') . '<strong>' . $node->classification->titleCache . '</strong>';
+        }
       }
 
       drupal_set_message(format_plural(count($taxon_nodes),
@@ -1797,7 +1803,7 @@ function cdm_read_media_metadata($media) {
   if ($media_metadata->Copyright) {
     $metadata_caption['rights']['copyright']['agentNames'][] = $media_metadata->Copyright;
   }
-  elseif ($media->rights) {
+  elseif (isset($media->rights) && is_array($media->rights)) {
     foreach ($media->rights as $right) {
       switch ($right->term->uuid) {
         case UUID_RIGHTS_LICENCE:

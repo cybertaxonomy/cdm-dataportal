@@ -98,6 +98,8 @@ function theme_cdm_specimen($variables) {
  */
 function theme_cdm_derivedUnitFacade($variables) {
   $derivedUnitFacade = $variables['derivedUnitFacade'];
+  $out = '';
+
   static $excludeFields = array(
     'class',
     'titleCache',

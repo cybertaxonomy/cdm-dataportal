@@ -832,98 +832,102 @@ function theme_cdm_description_ordered_distributions($variables) {
   $request_params = array();
   $request_params['omitLevels'] = UUID_NAMEDAREALEVEL_TDWGLEVEL_2;
   $ordered_areas = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE, join(',', $descriptions_uuids), queryString($request_params));
-  $ordered_areas = $ordered_areas->rootElement->children;
+  if (isset($ordered_areas->rootElement->children)) {
+    $ordered_areas = $ordered_areas->rootElement->children;
+  }
 
   // Printing the distributions.
-  foreach ($ordered_areas as $element_level1) {
-    // Level1.
-    if ($element_level1->data) {
-      $out .= '<dt>' . $element_level1->data->area->representation_L10n . ':</dt> ';
-    }
-    $out .= '<dd>';
-
-    // Level3.
-    foreach ($element_level1->children as $element_level3) {
-      if ($element_level3->data) {
-        $text_l3 = $element_level3->data->area->representation_L10n;
+  if (is_array($ordered_areas) && count($ordered_areas) > 0) {
+    foreach ($ordered_areas as $element_level1) {
+      // Level1.
+      if ($element_level1->data) {
+        $out .= '<dt>' . $element_level1->data->area->representation_L10n . ':</dt> ';
       }
-      $fnKeysLevel3Str = '';
-      $fnKeysLevel3 = cdm_annotations_as_footnotekeys($element_level3->data);
-      foreach ($element_level3->data->sources as $source) {
-        if (_is_original_source_type($source)) {
-          $fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
-          cdm_add_footnote_to_array($fnKeysLevel3, $fn_key3);
+      $out .= '<dd>';
+  
+      // Level3.
+      foreach ($element_level1->children as $element_level3) {
+        if ($element_level3->data) {
+          $text_l3 = $element_level3->data->area->representation_L10n;
         }
-      }
-      // Level4.
-      $l4_regions = array();
-      foreach ($element_level3->children as $element_level4) {
-        if ($element_level4->data) {
-          $text_l4 = $element_level4->data->area->representation_L10n;
-          $l4_regions[$element_level3->data->area->representation_L10n] = '';
-          $fnKeysLevel4Str = '';
-          $fnKeysLevel4 = cdm_annotations_as_footnotekeys($element_level4->data);
-          foreach ($element_level4->data->sources as $source) {
-            if (_is_original_source_type($source)) {
-              $fn_key4 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
-              cdm_add_footnote_to_array($fnKeysLevel4, $fn_key4);
-            }
-          }
-          usort($fnKeysLevel4, "footnotes_key_compare");
-          $l4_regions[$text_l4] = $fnKeysLevel4;
-        }
-      }// Level4.
-      // Managing level3 and level4 for generating the right output.
-      usort($fnKeysLevel3, "footnotes_key_compare");
-      foreach ($fnKeysLevel3 as $key3) {
-        foreach ($l4_regions as $key4 => $value4) {
-          cdm_add_footnote_to_array($l4_regions[$key4], $key3);
-        }
-      }
-      if ($element_level3->numberOfChildren == 1 && $text_l3 == $element_level3->children[0]->data->area->representation_L10n) {
-        // var_dump($element_level3->children[0]->data->area->representation_L10n);
-        $fnStr = '';
-        $region = array_pop($l4_regions);
-        foreach ($region as $key) {
-          $fnStr .= theme('cdm_footnote_key', array('footnoteKey' => $key, 'separator' => ($fnStr ? $separator : '')));
-        }
-        $out .= "$text_l3 $fnStr; ";
-        // Removing whitespaces when &fnStr is empty.
-        if (substr($out, -3) == ' ; ') {
-          $out = substr($out, 0, -3) . '; ';
-        }
-      }
-      else {
         $fnKeysLevel3Str = '';
-        foreach ($fnKeysLevel3 as $key) {
-          $fnKeysLevel3Str .= theme('cdm_footnote_key', array('footnoteKey' => $key, 'separator' => ($fnKeysLevel3Str ? $separator : '')));
+        $fnKeysLevel3 = cdm_annotations_as_footnotekeys($element_level3->data);
+        foreach ($element_level3->data->sources as $source) {
+          if (_is_original_source_type($source)) {
+            $fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
+            cdm_add_footnote_to_array($fnKeysLevel3, $fn_key3);
+          }
         }
-        $text_l4_aux = '';
-        foreach ($l4_regions as $key => $value) {
-          $fnKeysLevel4Str = '';
-          if (is_array($l4_regions[$key])) {
-            foreach ($l4_regions[$key] as $fnkey) {// Warning why?
-              $fnKeysLevel4Str .= theme('cdm_footnote_key', array('footnoteKey' => $fnkey, 'separator' => ($fnKeysLevel4Str ? $separator : '')));
+        // Level4.
+        $l4_regions = array();
+        foreach ($element_level3->children as $element_level4) {
+          if ($element_level4->data) {
+            $text_l4 = $element_level4->data->area->representation_L10n;
+            $l4_regions[$element_level3->data->area->representation_L10n] = '';
+            $fnKeysLevel4Str = '';
+            $fnKeysLevel4 = cdm_annotations_as_footnotekeys($element_level4->data);
+            foreach ($element_level4->data->sources as $source) {
+              if (_is_original_source_type($source)) {
+                $fn_key4 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
+                cdm_add_footnote_to_array($fnKeysLevel4, $fn_key4);
+              }
             }
+            usort($fnKeysLevel4, "footnotes_key_compare");
+            $l4_regions[$text_l4] = $fnKeysLevel4;
           }
-          // if ($key != $text_l3 || sizeof($l4_regions > 1)){
-          if ($key != $text_l3) {
-            $text_l4_aux .= "$key $fnKeysLevel4Str, ";
+        }// Level4.
+        // Managing level3 and level4 for generating the right output.
+        usort($fnKeysLevel3, "footnotes_key_compare");
+        foreach ($fnKeysLevel3 as $key3) {
+          foreach ($l4_regions as $key4 => $value4) {
+            cdm_add_footnote_to_array($l4_regions[$key4], $key3);
           }
         }
-        $text_l4_aux = substr($text_l4_aux, 0, -2);
-
-        if (strlen($text_l4_aux) > 0) {
-          $out .= "$text_l3 $fnKeysLevel3Str ($text_l4_aux); ";
+        if ($element_level3->numberOfChildren == 1 && $text_l3 == $element_level3->children[0]->data->area->representation_L10n) {
+          // var_dump($element_level3->children[0]->data->area->representation_L10n);
+          $fnStr = '';
+          $region = array_pop($l4_regions);
+          foreach ($region as $key) {
+            $fnStr .= theme('cdm_footnote_key', array('footnoteKey' => $key, 'separator' => ($fnStr ? $separator : '')));
+          }
+          $out .= "$text_l3 $fnStr; ";
+          // Removing whitespaces when &fnStr is empty.
+          if (substr($out, -3) == ' ; ') {
+            $out = substr($out, 0, -3) . '; ';
+          }
         }
         else {
-          $out .= "$text_l3 $fnKeysLevel3Str; ";
+          $fnKeysLevel3Str = '';
+          foreach ($fnKeysLevel3 as $key) {
+            $fnKeysLevel3Str .= theme('cdm_footnote_key', array('footnoteKey' => $key, 'separator' => ($fnKeysLevel3Str ? $separator : '')));
+          }
+          $text_l4_aux = '';
+          foreach ($l4_regions as $key => $value) {
+            $fnKeysLevel4Str = '';
+            if (is_array($l4_regions[$key])) {
+              foreach ($l4_regions[$key] as $fnkey) {// Warning why?
+                $fnKeysLevel4Str .= theme('cdm_footnote_key', array('footnoteKey' => $fnkey, 'separator' => ($fnKeysLevel4Str ? $separator : '')));
+              }
+            }
+            // if ($key != $text_l3 || sizeof($l4_regions > 1)){
+            if ($key != $text_l3) {
+              $text_l4_aux .= "$key $fnKeysLevel4Str, ";
+            }
+          }
+          $text_l4_aux = substr($text_l4_aux, 0, -2);
+  
+          if (strlen($text_l4_aux) > 0) {
+            $out .= "$text_l3 $fnKeysLevel3Str ($text_l4_aux); ";
+          }
+          else {
+            $out .= "$text_l3 $fnKeysLevel3Str; ";
+          }
         }
-      }
-    }// Level3.
-    $out = substr($out, 0, -2);
-    $out .= '.</dd>';
-  }// Level1.
+      }// Level3.
+      $out = substr($out, 0, -2);
+      $out .= '.</dd>';
+    }// Level1.
+  }
   RenderHints::popFromRenderStack();
   return $out;
 }

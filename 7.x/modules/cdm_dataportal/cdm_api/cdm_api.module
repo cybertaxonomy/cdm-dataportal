@@ -588,7 +588,7 @@ function proxy_content($uri, $theme = NULL) {
       $http_response = drupal_http_request($uri);
       if (isset($http_response->headers)) {
         foreach ($http_response->headers as $hname => $hvalue) {
-          drupal_add_http_header($hname . ":" . $hvalue);
+          drupal_add_http_header($hname, $hvalue);
         }
       }
       if (isset($http_response->data)) {
@@ -676,7 +676,9 @@ function setvalue_session() {
     $var = &$var[$key];
   }
   $var = $val;
-  drupal_goto($_REQUEST['destination']);
+  if (isset($_REQUEST['destination'])) {
+    drupal_goto($_REQUEST['destination']);
+  }
 }
 
 /**

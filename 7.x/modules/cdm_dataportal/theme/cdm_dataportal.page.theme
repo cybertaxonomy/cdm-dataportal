@@ -189,7 +189,9 @@ function theme_cdm_taxon_page($variables) {
       foreach ($taxonDescriptions as $taxonDescription) {
         // Check if structured description.
         $hasStructuredData = cdm_ws_get(CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA, $taxonDescription->uuid);
-        $hasStructuredData = $hasStructuredData->Boolean == 'TRUE';
+        if (isset($hasStructuredData->Boolean)) {
+          $hasStructuredData = $hasStructuredData->Boolean == 'TRUE';
+        }
         if ($hasStructuredData) {
           $structured_description_featuretree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, FALSE);
           $naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array(
