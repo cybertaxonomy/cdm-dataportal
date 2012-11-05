@@ -149,7 +149,10 @@ function formatReference_for_Bibliography($references) {
 
       case "Article":
         $referenceString .= "<li class=\"descriptionText DescriptionElement\">";
-        $numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+        $numberOfTeamMembers = 0;
+        if(!empty($reference->citation->authorTeam->teamMembers)) {
+          $numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+        }
         $currentRecord = 1;
         if (!empty($reference->citation->authorTeam->teamMembers)) {
           foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
@@ -191,7 +194,12 @@ function formatReference_for_Bibliography($references) {
           $referenceString .= substr($reference->citation->datePublished->start, 0, 4);
           $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
         }
-        $referenceString .= $reference->citation->title . ". " . $reference->citation->publisher;
+        if (!empty($reference->citation->title)) {
+          $referenceString .= $reference->citation->title . ". ";
+        }
+        if (!empty($reference->citation->publisher)) {
+          $referenceString .= $reference->citation->publisher;
+        }
         $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
         $referenceString .= "</li>";
         break;
