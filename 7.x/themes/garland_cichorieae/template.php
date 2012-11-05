@@ -63,24 +63,6 @@ function garland_cichorieae_cdm_taxon_page_profile($variables) {
   return $out;
 }
 
-/*
-function garland_cichorieae_cdm_descriptionElementTextData($element){
-  $description = str_replace("\n", "<br/>",
-  $element->multilanguageText_L10n->text); $referenceCitation = ''; $sourceRefs
-  = ''; if($element->reference){ // disabling references for cichorieae
-  description Elements because they all have faulty references
-  $referenceCitation = '; '.theme('cdm_fullreference', $element->reference,
-  TRUE); } //return '<p class="descriptionText">' . $description .
-  $referenceCitation.'</p>'; foreach($element->sources as $source){
-  $referenceCitation = theme('cdm_DescriptionElementSource', $source);
-  if($description && strlen($description) > 0 && $referenceCitation ){
-  $sourceRefs .= ' ('.$referenceCitation.')' ; /* TODO: why does not belongs
-  this code to the cichorieae theme ?? }else if ($referenceCitation){
-  $sourceRefs = $referenceCitation; } } return '<p class="descriptionText">' .
-  $description . $sourceRefs . '</p>';
-}
-*/
-
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -213,7 +195,8 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
     $out = '<span class="' . html_class_atttibute_ref($element) . '"> ' . $description . $annotation_fkeys . '</span>';
   }
 
-  /*
+  /* Dead code:
+   *
   if ($feature_uuid == UUID_NAME_USAGE){ foreach($element->sources as
   $source){ $referenceCitation =
   cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
@@ -319,35 +302,6 @@ function garland_cichorieae_cdm_descriptionElementArray($variables) {
 
   $out .= '</' . $enclosingHtml . '>';
   return $out;
-}
-
-/**
- * All reference links switched off.
- */
-function garland_cichorieae_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cssClass = '', $separator = '<br />', $enclosingTag = 'li') {
-  $doLink = FALSE;
-
-  if (isset($referenceSTO->microReference)) {
-    // It is a ReferenceTO.
-    // Comment @WA this theme does not exist..
-    // $nomref_citation = theme('cdm_fullreference', $referenceSTO);
-  }
-  else {
-    // It is ReferenceSTO.
-    $nomref_citation = $referenceSTO->fullCitation;
-  }
-
-  $is_IN_reference = str_beginsWith($nomref_citation, 'in');
-
-  if ($doLink) {
-    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/" . $referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);
-  }
-
-  if (!empty($nomref_citation)) {
-    $nomref_citation = ($is_IN_reference ? '&nbsp;' : ',&nbsp;') . $nomref_citation;
-  }
-
-  return $nomref_citation;
 }
 
 /*
@@ -656,7 +610,7 @@ function garland_cichorieae_preprocess_page(&$vars) {
   */
   if (arg(0) == 'comment' && arg(1) == 'reply') {
     $node = $vars['page']['content']['system_main']['comment_node']['#node'];
-    $vars['title'] = l(check_plain($node->title),'node/' . $node->nid);
+    $vars['title'] = l(check_plain($node->title), 'node/' . $node->nid);
   }
 }
 
@@ -677,7 +631,7 @@ function garland_cichorieae_preprocess_page(&$vars) {
  */
 function garland_cichorieae_preprocess_node(&$vars) {
   $body = '';
-// Warning: use #markup value, for which filters like php, html etc are applied!
+  // Warning: use #markup value, for which filters like php, html etc are applied!
   if (isset($vars['content']['body'][0]['#markup'])) {
     $body = $vars['content']['body'][0]['#markup'];
   }
