@@ -358,22 +358,24 @@ function theme_cdm_taxon_page_specimens($variables) {
   if (count($specimensOrObservations) > 0) {
     $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
 
-    // os=&od=&legend=0&recalculate=false&image=false
-    $occurrenceQuery = $occurrenceQuery->String;
+    if( isset($occurrenceQuery->String) ) {
+      // os=&od=&legend=0&recalculate=false&image=false
+      $occurrenceQuery = $occurrenceQuery->String;
 
-    if (variable_get('cdm_dataportal_map_openlayers', 1)) {
+      if (variable_get('cdm_dataportal_map_openlayers', 1)) {
 
-      $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
-          // Comment @WA: not defined.
-          // $legendFormatQueryStr,
-          NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
-    }
-    else {
-      // get_image_map($width, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE )
-      $out .= get_image_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
-          // @WA: not defined
-          // $legendFormatQueryStr,
-          NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+        $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
+            // Comment @WA: not defined.
+            // $legendFormatQueryStr,
+            NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+      }
+      else {
+        // get_image_map($width, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE )
+        $out .= get_image_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
+            // @WA: not defined
+            // $legendFormatQueryStr,
+            NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+      }
     }
   }
   $out_specimenList = '';
