@@ -85,13 +85,13 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
       $annotationFootnoteKeys .= $separator;
     }
     */
-    $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class . '">';
-    // $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList;
-    $out .= $descriptionElement->area->representation_L10n;
-    if (++$itemCnt < count($descriptionElements)) {
-      $out .= $separator;
-    }
-    $out .= "</" . $enclosingTag . ">";
+        $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class . '">';
+        // $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList;
+        $out .= $descriptionElement->area->representation_L10n;
+        if (++$itemCnt < count($descriptionElements)) {
+          $out .= $separator;
+        }
+        $out .= "</" . $enclosingTag . ">";
   }
   $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   $reference = new stdClass();
@@ -107,6 +107,13 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
   if (isset($reference->uuid)) {
     $referenceCitation .= '(<span class="reference">';
     $referenceCitation .= l(t('World Checklist of Monocotyledons'), path_to_reference($reference->uuid), array('attributes' => array('class' => array('reference'))));
+    $referenceCitation .= '</span>)';
+  }
+  else {
+    // Comment @WA Added for compatibility with D5, but I think it is better to
+    // remove this to not show a link rather than the wrong one.
+    $referenceCitation .= '(<span class="reference">';
+    $referenceCitation .= l(t('World Checklist of Monocotyledons'), '', array('attributes' => array('class' => array('reference'))));
     $referenceCitation .= '</span>)';
   }
 
@@ -138,7 +145,6 @@ function palmweb_2_cdm_feature_nodesTOC($variables){
   $countFeatures = 0;
   $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (
     get_taxonomictree_uuid_selected(),
-    // TODO replace with args()
     substr(strrchr($_GET["q"],'/'), 1),
   )));
   if ($numberOfChildren != 0) {
