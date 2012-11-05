@@ -386,4 +386,15 @@ public abstract class  PortalPage {
     }
 
 
+	/**
+	 * replaces all underscores '_' by hyphens '-'
+	 *
+	 * @param featureName
+	 * @return
+	 */
+	protected String normalizeClassAttribute(String featureName) {
+	    return featureName.replace('_', '-');
+	}
+
+
 }
