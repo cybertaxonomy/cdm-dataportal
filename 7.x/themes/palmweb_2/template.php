@@ -18,7 +18,7 @@
  *
  * @ingroup themeable
  */
-function palmweb_2_cdm_taxon_page_profile($variables){
+function palmweb_2_cdm_taxon_page_profile($variables) {
 
   $taxon = $variables['taxon'];
   $mergedTrees = $variables['mergedTrees'];
@@ -109,6 +109,7 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
     $referenceCitation .= l(t('World Checklist of Monocotyledons'), path_to_reference($reference->uuid), array('attributes' => array('class' => array('reference'))));
     $referenceCitation .= '</span>)';
   }
+  /* a.kohlbecker: removing this again but keeping below line as reference
   else {
     // Comment @WA Added for compatibility with D5, but I think it is better to
     // remove this to not show a link rather than the wrong one.
@@ -116,6 +117,7 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
     $referenceCitation .= l(t('World Checklist of Monocotyledons'), '', array('attributes' => array('class' => array('reference'))));
     $referenceCitation .= '</span>)';
   }
+  */
 
   $sourceRefs = '';
   if ($out && strlen($out) > 0) {
