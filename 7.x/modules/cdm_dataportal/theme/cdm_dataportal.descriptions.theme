@@ -637,8 +637,7 @@ function theme_cdm_descriptionElements($variables) {
         $outArray[] = theme('cdm_descriptionElement_CommonTaxonName', array('element' => $descriptionElement));
       }
       elseif ($descriptionElement->class == 'Uses') {
-        // Comment @WA: theme_cdm_descriptionElement_Uses does not exist..
-        // $outArray[] = theme('cdm_descriptionElement_Uses', array('descriptionElement' => $descriptionElement));
+        /* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
       }
       else {
         $outArray[] = '<li>No method for rendering unknown description class: ' . $descriptionElement->classType . '</li>';
@@ -844,7 +843,7 @@ function theme_cdm_description_ordered_distributions($variables) {
         $out .= '<dt>' . $element_level1->data->area->representation_L10n . ':</dt> ';
       }
       $out .= '<dd>';
-  
+
       // Level3.
       foreach ($element_level1->children as $element_level3) {
         if ($element_level3->data) {
@@ -915,7 +914,7 @@ function theme_cdm_description_ordered_distributions($variables) {
             }
           }
           $text_l4_aux = substr($text_l4_aux, 0, -2);
-  
+
           if (strlen($text_l4_aux) > 0) {
             $out .= "$text_l3 $fnKeysLevel3Str ($text_l4_aux); ";
           }

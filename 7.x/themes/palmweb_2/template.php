@@ -85,13 +85,13 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
       $annotationFootnoteKeys .= $separator;
     }
     */
-        $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class . '">';
-        // $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList;
-        $out .= $descriptionElement->area->representation_L10n;
-        if (++$itemCnt < count($descriptionElements)) {
-          $out .= $separator;
-        }
-        $out .= "</" . $enclosingTag . ">";
+    $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class . '">';
+    // $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList;
+    $out .= $descriptionElement->area->representation_L10n;
+    if (++$itemCnt < count($descriptionElements)) {
+      $out .= $separator;
+    }
+    $out .= "</" . $enclosingTag . ">";
   }
   $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   $reference = new stdClass();
@@ -138,6 +138,7 @@ function palmweb_2_cdm_feature_nodesTOC($variables){
   $countFeatures = 0;
   $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (
     get_taxonomictree_uuid_selected(),
+    // TODO replace with args()
     substr(strrchr($_GET["q"],'/'), 1),
   )));
   if ($numberOfChildren != 0) {
