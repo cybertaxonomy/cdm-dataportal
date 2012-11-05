@@ -194,9 +194,6 @@ function theme_cdm_taxonRelationships($variables) {
     $out .= '<ul class="misapplied">';
     foreach ($misapplied as $misapplied_name) {
 
-      // Comment @WA $other_anchors is not defined.
-      // $out .= '<li class="synonym"><span class="misapplied">' .
-      // $other_anchors . $misapplied_name['out'] . ' </span>';
       $out .= '<li class="synonym"><span class="misapplied">' . $misapplied_name['out'] . ' </span>';
 
       if (isset($misapplied_name['authorteam'])) {
