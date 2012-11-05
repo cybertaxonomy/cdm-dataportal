@@ -80,7 +80,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
   $result = array();
   $res_author;
   $res_date;
-  $no_links = FALSE;
+  $do_links = TRUE;
   $default_theme = variable_get('theme_default', 'garland_cichorieae');
 
   if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale' || $default_theme == 'flore_gabon') && $element->feature->titleCache == 'Citation') {
@@ -100,7 +100,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
   ));
 
   if ($feature_uuid == UUID_NAME_USAGE || $feature_uuid == UUID_CHROMOSOMES) {
-    $no_links = TRUE;
+    $do_links = FALSE;
   }
 
   if (is_array($element->sources)) {
@@ -117,7 +117,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
       else {
         $referenceCitation = theme('cdm_DescriptionElementSource', array(
           'descriptionElementSource' => $source,
-          'doLink' => $no_links,
+          'doLink' => $do_links,
         ));
       }
       if ($description && strlen($description) > 0 && $referenceCitation) {
