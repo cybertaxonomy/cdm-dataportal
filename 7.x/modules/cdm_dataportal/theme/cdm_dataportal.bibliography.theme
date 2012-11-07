@@ -43,7 +43,7 @@ function theme_cdm_descriptionElementBibliography($variables) {
           }
           else {
             foreach ($listOfReferences as $selectedReference) {
-              if ($selectedReference->citation->uuid == $source->citation->uuid) {
+              if (isset($selectedReference->citation->uuid) && isset($source->citation->uuid) && $selectedReference->citation->uuid == $source->citation->uuid) {
                 $isAlreadySelected = TRUE;
               }
             }
@@ -97,7 +97,8 @@ function formatReference_for_Bibliography($references) {
   $outTemp = array ();
   foreach ($references as $reference) {
     $referenceString = '';
-    switch ($reference->citation->type) {
+    $reference_type = isset($reference->citation->type) ? $reference->citation->type : '';
+    switch ($reference_type) {
       case "Journal":
         $referenceString .= "<li class=\"descriptionText DescriptionElement\">";
         $numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
@@ -206,8 +207,11 @@ function formatReference_for_Bibliography($references) {
 
       case "Book":
         $referenceString .= "<li class=\"descriptionText DescriptionElement\">";
-        $numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+        if (!empty($reference->citation->authorTeam->teamMembers)) {
+          $numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+        }
         $currentRecord = 1;
+        $isCitationTitleCache = FALSE;
         if (!empty($reference->citation->authorTeam->teamMembers) && $reference->citation->authorTeam->titleCache != "-empty team-") {
           foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
             if (!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
@@ -398,8 +402,7 @@ function formatReference_for_Bibliography($references) {
     $outTemp[] = $referenceString;
   }
   sort($outTemp);
-
-  foreach ($outTemp as $refString) {
+   foreach ($outTemp as $refString) {
     $out .= $refString;
   }
 
