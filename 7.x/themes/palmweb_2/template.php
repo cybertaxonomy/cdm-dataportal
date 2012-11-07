@@ -18,7 +18,7 @@
  *
  * @ingroup themeable
  */
-function palmweb_2_cdm_taxon_page_profile($variables) {
+function palmweb_2_cdm_taxon_page_profile($variables){
 
   $taxon = $variables['taxon'];
   $mergedTrees = $variables['mergedTrees'];
@@ -109,7 +109,6 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
     $referenceCitation .= l(t('World Checklist of Monocotyledons'), path_to_reference($reference->uuid), array('attributes' => array('class' => array('reference'))));
     $referenceCitation .= '</span>)';
   }
-  /* a.kohlbecker: removing this again but keeping below line as reference
   else {
     // Comment @WA Added for compatibility with D5, but I think it is better to
     // remove this to not show a link rather than the wrong one.
@@ -117,7 +116,6 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
     $referenceCitation .= l(t('World Checklist of Monocotyledons'), '', array('attributes' => array('class' => array('reference'))));
     $referenceCitation .= '</span>)';
   }
-  */
 
   $sourceRefs = '';
   if ($out && strlen($out) > 0) {
@@ -566,8 +564,11 @@ function palmweb_2_cdm_reference($variables) {
 
   $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
 
-  $year = partialToYear($reference->datePublished->start);
-  $citation = _short_form_of_author_team ($author_team->titleCache) . ($year ? '. ' . $year : '');
+  $year = '';
+  if (isset($reference->datePublished->start)) {
+    $year = partialToYear($reference->datePublished->start);
+  }
+  $citation = _short_form_of_author_team ($author_team->titleCache) . (!empty($year) ? '. ' . $year : '');
   $citation = str_replace('..', '.', $citation);
 
   if ($doLink) {
@@ -876,9 +877,13 @@ function palmweb_2_preprocess_node(&$vars) {
 
   $file_path = '/' . variable_get('file_public_path', conf_path() . '/files');
   global $base_url;
-
-  //$fixed_file_path = $base_url . $file_path;
-  $fixed_file_path = $file_path;
+  if ($base_url == '/') {
+    drupal_set_message(t('
+      The $base_url in this portal could not be set, please set the $base_url
+      manually your Drupal settings.php file.', 'error'
+    ));
+  }
+  $fixed_file_path = $base_url . $file_path;
 
   $preg_file_path = preg_quote($file_path, '/');
   $body = preg_replace ('/src\s*=\s*["]\s*' . $preg_file_path . '/', 'src="' . $fixed_file_path , $body);

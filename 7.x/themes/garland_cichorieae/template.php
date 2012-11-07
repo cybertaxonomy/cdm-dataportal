@@ -642,7 +642,13 @@ function garland_cichorieae_preprocess_node(&$vars) {
 
   $file_path = '/' . variable_get('file_public_path', conf_path() . '/files');
   global $base_url;
-  $fixed_file_path = $base_url . '/' . $file_path;
+  if ($base_url == '/') {
+    drupal_set_message(t('
+      The $base_url in this portal could not be set, please set the $base_url
+      manually your Drupal settings.php file.', 'error'
+    ));
+  }
+  $fixed_file_path = $base_url . $file_path;
   $preg_file_path = preg_quote($file_path, '/');
   $body = preg_replace('/src\s*=\s*["]\s*' . $preg_file_path . '/', 'src="' . $fixed_file_path, $body);
   $body = preg_replace('/src\s*=\s*[\']\s*' . $preg_file_path . '/', 'src=\'' . $fixed_file_path, $body);
