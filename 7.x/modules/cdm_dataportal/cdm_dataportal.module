@@ -842,6 +842,7 @@ function cdm_dataportal_theme() {
       'enclosingHtml' => 'ul',
       )),
     'cdm_descriptionElement_CommonTaxonName' => array('render element' => 'element'),
+    'cdm_descriptionElement_CategoricalData' => array('render element' => 'element'),
     'cdm_descriptionElementTextData' => array('variables' => array(
       'element' => NULL,
       'asListElement' => NULL,
