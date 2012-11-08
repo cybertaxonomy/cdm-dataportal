@@ -1008,7 +1008,7 @@ function theme_cdm_taxontree_node($variables) {
       $filter_class = 'filter_excluded';
     }
   }
-  $nextLevelIncluded = $node->filter == 'on' || $filterIncludes;
+  $nextLevelIncluded = isset($node->filter) && $node->filter == 'on' || $filterIncludes;
 
   $ahah_url = FALSE;
   if (!$is_leaf && !$is_expanded && $filter_class != 'filter_excluded') {

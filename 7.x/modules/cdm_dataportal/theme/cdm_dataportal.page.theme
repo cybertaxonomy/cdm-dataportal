@@ -189,7 +189,9 @@ function theme_cdm_taxon_page($variables) {
       foreach ($taxonDescriptions as $taxonDescription) {
         // Check if structured description.
         $hasStructuredData = cdm_ws_get(CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA, $taxonDescription->uuid);
-        $hasStructuredData = $hasStructuredData->Boolean == 'TRUE';
+        if (isset($hasStructuredData->Boolean)) {
+          $hasStructuredData = $hasStructuredData->Boolean == 'TRUE';
+        }
         if ($hasStructuredData) {
           $structured_description_featuretree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, FALSE);
           if($structured_description_featuretree_uuid) {
@@ -357,23 +359,28 @@ function theme_cdm_taxon_page_specimens($variables) {
 
   if (count($specimensOrObservations) > 0) {
     $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
-    $occurrenceQuery = $occurrenceQuery->String;
 
-    if (variable_get('cdm_dataportal_map_openlayers', 1)) {
-      $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
-          // Comment @WA: not defined.
-          // $legendFormatQueryStr,
-          NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
-    }
-    else {
-      // get_image_map($width, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE )
-      $out .= get_image_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
-          // @WA: not defined
-          // $legendFormatQueryStr,
-          NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+    if( isset($occurrenceQuery->String) ) {
+      // os=&od=&legend=0&recalculate=false&image=false
+      $occurrenceQuery = $occurrenceQuery->String;
+
+      if (variable_get('cdm_dataportal_map_openlayers', 1)) {
+
+        $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
+            // Comment @WA: not defined.
+            // $legendFormatQueryStr,
+            NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+      }
+      else {
+        // get_image_map($width, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE )
+        $out .= get_image_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
+            // @WA: not defined
+            // $legendFormatQueryStr,
+            NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+      }
     }
   }
-
+  $out_specimenList = '';
   if ($specimensOrObservations) {
     $out_specimenList = '<table class="specimens">';
     $i = 1;
@@ -559,8 +566,18 @@ function taxon_image_gallery_default($taxon, $media) {
     $cols = 3;
     $maxRows = FALSE;
     $alternativeMediaUri = NULL;
+    /* Comment @WA: was in D5:
     $captionElements = array(
       'title',
+      'rights',
+      '#uri' => t('open Image'),
+    );
+    */
+    $captionElements = array(
+      'title',
+      'description',
+      'artist',
+      'location',
       'rights',
       '#uri' => t('open Image'),
     );
@@ -568,6 +585,7 @@ function taxon_image_gallery_default($taxon, $media) {
     $mediaLinkType = 'LIGHTBOX';
 
     // $gallery_settings = getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
+
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB);
 
     $out = '<div class="image-gallerie">';

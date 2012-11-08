@@ -350,7 +350,6 @@ function theme_cdm_media_gallerie($variables) {
   $alternativeMediaUri = $variables['alternativeMediaUri'];
   $galleryLinkUri = $variables['galleryLinkUri'];
   $showCaption = $variables['showCaption'];
-
   if (!is_array($captionElements)) {
     $captionElements = array();
   }

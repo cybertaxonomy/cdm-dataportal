@@ -53,8 +53,8 @@ function theme_cdm_search_results($variables) {
     $pager->records = $taxa;
   }
   $showThumbnails = FALSE;
-  if (isset($_SESSION['pageoptions']['searchtaxa']['showThumbnails'])) {
-    $showThumbnails = $_SESSION['pageoptions']['searchtaxa']['showThumbnails'];
+  if (isset($_SESSION['pageoption']['searchtaxa']['showThumbnails'])) {
+    $showThumbnails = $_SESSION['pageoption']['searchtaxa']['showThumbnails'];
   }
   if (!is_numeric($showThumbnails)) {
     $showThumbnails = 1;
@@ -90,10 +90,12 @@ function theme_cdm_search_results($variables) {
 
   $out = '';
 
-  // Add thumbnails checkbox and refince search link.
+  // Add thumbnails checkbox and refine search link.
   $out = '<div class="page_options">';
-  if ($_REQUEST['ws'] && cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) {
-    $out .= '<div id="backButton">' . l(t('Modify search'), cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
+  if (isset($_REQUEST['ws'])) {
+    if (cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) {
+      $out .= '<div id="backButton">' . l(t('Modify search'), cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
+    }
   }
   $out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" ' . ($showThumbnails == 1 ? 'checked="checked"' : '') . '> ' . t('Show Thumbnails') . '</form>';
   $out .= '</div>';
@@ -192,9 +194,6 @@ function theme_cdm_taxonRelationships($variables) {
     $out .= '<ul class="misapplied">';
     foreach ($misapplied as $misapplied_name) {
 
-      // Comment @WA $other_anchors is not defined.
-      // $out .= '<li class="synonym"><span class="misapplied">' .
-      // $other_anchors . $misapplied_name['out'] . ' </span>';
       $out .= '<li class="synonym"><span class="misapplied">' . $misapplied_name['out'] . ' </span>';
 
       if (isset($misapplied_name['authorteam'])) {

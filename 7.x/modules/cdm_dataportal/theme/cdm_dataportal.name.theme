@@ -29,16 +29,17 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
   $res = '';
   $citation = $typeDesignation->citation;
   $pages = $typeDesignation->citationMicroReference;
-
-  if ($typeDesignation->typeStatus->uuid == UUID_NTD_ORIGINAL_DESIGNATION || $typeDesignation->typeStatus->uuid == UUID_NTD_MONOTYPY) {
-    $res = ' (' . $typeDesignation->typeStatus->representation_L10n . ')';
-    return $res;
+  if(isset($typeDesignation->typeStatus->uuid) && isset($typeDesignation->typeStatus->representation_L10n)) {
+    if ( $typeDesignation->typeStatus->uuid == UUID_NTD_ORIGINAL_DESIGNATION || $typeDesignation->typeStatus->uuid == UUID_NTD_MONOTYPY) {
+      $res = ' (' . $typeDesignation->typeStatus->representation_L10n . ')';
+      return $res;
+    }
   }
 
   if ($citation) {
     // $type = $typeDesignation_citation->type;
-    $year = substr($citation->datePublished->start, 0, 4);
-    $author = $citation->authorTeam->titleCache;
+    $year = isset($citation->datePublished->start) ? substr($citation->datePublished->start, 0, 4) : '';
+    $author = isset($citation->authorTeam->titleCache) ? $citation->authorTeam->titleCache : '';
     $res .= ' (designated by ';
     $res .= $author;
     $res .= ($year ? ' ' . $year : '');

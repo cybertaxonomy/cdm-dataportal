@@ -98,6 +98,8 @@ function theme_cdm_specimen($variables) {
  */
 function theme_cdm_derivedUnitFacade($variables) {
   $derivedUnitFacade = $variables['derivedUnitFacade'];
+  $out = '';
+
   static $excludeFields = array(
     'class',
     'titleCache',
@@ -148,9 +150,11 @@ function theme_cdm_derivedUnitFacade($variables) {
           $field = $fieldLabels[$field];
         }
         $field = preg_replace('/([a-z])([A-Z])/e', "'\\1 '.strtolower('\\2')", $field);
-        $out .= '<dt>' . t(ucfirst($field)) . ':</dt><dd>' . $stringValue . '</dd>';
+        $values[] = '<dt>' . t(ucfirst($field)) . ':</dt><dd>' . $stringValue . '</dd>';
       }
     }
+    sort($values);
+    $out .= implode('', $values);
     $out .= '</dl>';
   }
   return $out;

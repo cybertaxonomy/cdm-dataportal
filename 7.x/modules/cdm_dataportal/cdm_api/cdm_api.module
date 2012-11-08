@@ -557,7 +557,6 @@ function proxy_content($uri, $theme = NULL) {
   }
 
   $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
-
   if ($request_method == "POST") {
     $parameters = $_POST;
     $post_data = array();
@@ -571,6 +570,7 @@ function proxy_content($uri, $theme = NULL) {
     $data = drupal_http_request($uri, array('headers' => "POST", 'method' => $post_data));
     print $data;
   }
+
   // Must be a mimetype.
   elseif (strpos($theme, '/') > 0) {
     header('Content-Type: ' . $theme);
@@ -588,7 +588,7 @@ function proxy_content($uri, $theme = NULL) {
       $http_response = drupal_http_request($uri);
       if (isset($http_response->headers)) {
         foreach ($http_response->headers as $hname => $hvalue) {
-          drupal_add_http_header($hname . ":" . $hvalue);
+          drupal_add_http_header($hname, $hvalue);
         }
       }
       if (isset($http_response->data)) {
@@ -598,8 +598,53 @@ function proxy_content($uri, $theme = NULL) {
     }
     else {
       $obj = cdm_ws_get($uri, NULL, NULL, NULL, TRUE);
-      array_unshift($args, $theme, $obj);
-      print call_user_func_array('theme', $args);
+
+      // array_unshift($args, $theme, $obj);
+      // print call_user_func_array('theme', $args);
+      switch($theme) {
+        case 'cdm_taxontree':
+          $variables = array(
+            'tree' => $obj,
+            'filterIncludes' => isset($args[0]) ? $args[0] : NULL,
+            'show_filter_switch' => isset($args[1]) ? $args[1] : FALSE,
+            'tree_node_callback' => isset($args[2]) ? $args[2] : FALSE,
+            'element_name'=> isset($args[3]) ? $args[3] : FALSE,
+          );
+          print theme($theme, $variables);
+          break;
+        
+        case 'cdm_media_caption':
+          $variables = array(
+            'media' => $obj,
+            // $args[0] is set in taxon_image_gallery_default in
+            // cdm_dataportal.page.theme.
+            'elements' => isset($args[0]) ? $args[0] : array(
+              'title',
+              'description',
+              'artist',
+              'location',
+              'rights',
+            ),
+            'fileUri' => isset($args[1]) ? $args[1] : NULL,
+          );
+          print theme($theme, $variables);
+          break;
+
+        case 'cdm_derivedUnitFacade':
+          $variables = array(
+            'derivedUnitFacade' => $obj,
+          );
+          print theme($theme, $variables);
+          break;
+
+        default:
+          drupal_set_message(t(
+          'Theme !theme is not supported yet by function !function.', array(
+          '!theme' => $theme,
+          '!function' => __FUNCTION__,
+          )), 'error');
+          break;
+      }
     }
   }
 }
@@ -631,7 +676,9 @@ function setvalue_session() {
     $var = &$var[$key];
   }
   $var = $val;
-  drupal_goto($_REQUEST['destination']);
+  if (isset($_REQUEST['destination'])) {
+    drupal_goto($_REQUEST['destination']);
+  }
 }
 
 /**

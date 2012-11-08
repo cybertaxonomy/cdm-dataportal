@@ -109,6 +109,13 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
     $referenceCitation .= l(t('World Checklist of Monocotyledons'), path_to_reference($reference->uuid), array('attributes' => array('class' => array('reference'))));
     $referenceCitation .= '</span>)';
   }
+  else {
+    // Comment @WA Added for compatibility with D5, but I think it is better to
+    // remove this to not show a link rather than the wrong one.
+    $referenceCitation .= '(<span class="reference">';
+    $referenceCitation .= l(t('World Checklist of Monocotyledons'), '', array('attributes' => array('class' => array('reference'))));
+    $referenceCitation .= '</span>)';
+  }
 
   $sourceRefs = '';
   if ($out && strlen($out) > 0) {
@@ -149,9 +156,7 @@ function palmweb_2_cdm_feature_nodesTOC($variables) {
     $out .= '</li>';
   }
   foreach ($featureNodes as $node) {
-
     if (hasFeatureNodeDescriptionElements($node)) {
-
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
 
       // HACK to implement images for taxa, should be removed.
@@ -400,29 +405,29 @@ function palmweb_2_cdm_search_results($variables){
    $pager->records = $taxa;
   }
 
-  $showThumbnails = isset($_SESSION['pageoptions']['searchtaxa']['showThumbnails']) ? $_SESSION['pageoptions']['searchtaxa']['showThumbnails'] : 0;
+  $showThumbnails = isset($_SESSION['pageoption']['searchtaxa']['showThumbnails']) ? $_SESSION['pageoption']['searchtaxa']['showThumbnails'] : 0;
   if (!is_numeric($showThumbnails)) {
     // AT RBG KEW - 14/11/2011 - Set the show thumbnails to 0 by default.
     $showThumbnails = 0;
   }
   $setSessionUri = url('cdm_api/setvalue/session', array('query' => array('var' => '[pageoption][searchtaxa][showThumbnails]', 'val' => '')));
-  drupal_add_js('$(document).ready(function() {
+  drupal_add_js('jQuery(document).ready(function() {
 
         // Init.
         if(' . $showThumbnails . ' == 1){
-              $(\'.media_gallery\').show(20);
+              jQuery(\'.media_gallery\').show(20);
         } else {
-          $(\'.media_gallery\').hide(20);
+          jQuery(\'.media_gallery\').hide(20);
         }
         // Add change hander.
-        $(\'#showThumbnails\').change(
+        jQuery(\'#showThumbnails\').change(
           function(event){
             var state = 0;
-            if($(this).is(\':checked\')){
-              $(\'.media_gallery\').show(20);
+            if(jQuery(this).is(\':checked\')){
+              jQuery(\'.media_gallery\').show(20);
               state = 1;
             } else {
-              $(\'.media_gallery\').hide(20);
+              jQuery(\'.media_gallery\').hide(20);
             }
             // Store state in session variable.
             var uri = \'' . $setSessionUri . '\' + state;
@@ -577,8 +582,11 @@ function palmweb_2_cdm_reference($variables) {
 
   $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
 
-  $year = partialToYear($reference->datePublished->start);
-  $citation = _short_form_of_author_team ($author_team->titleCache) . ($year ? '. ' . $year : '');
+  $year = '';
+  if (isset($reference->datePublished->start)) {
+    $year = partialToYear($reference->datePublished->start);
+  }
+  $citation = _short_form_of_author_team ($author_team->titleCache) . (!empty($year) ? '. ' . $year : '');
   $citation = str_replace('..', '.', $citation);
 
   if ($doLink) {
@@ -701,6 +709,7 @@ function palmweb_2_get_partDefinition($variables) {
  * @see http://drupal.org/node/1354
  */
 function palmweb_2_get_nameRenderTemplate($variables){
+$template = '';
 
   switch ($variables['renderPath']) {
       case 'acceptedFor':
@@ -752,6 +761,7 @@ function palmweb_2_cdm_taxon_page_title($variables){
 
   RenderHints::pushToRenderStack('taxon_page_title');
   $synonym = cdm_ws_get(CDM_WS_PORTAL_TAXON, $synonym_uuid);
+  $referenceUri = '';
   if (isset($taxon->name->nomenclaturalReference)) {
     $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
   }
@@ -885,7 +895,14 @@ function palmweb_2_preprocess_node(&$vars) {
 
   $file_path = '/' . variable_get('file_public_path', conf_path() . '/files');
   global $base_url;
-  $fixed_file_path = $base_url . '/' . $file_path ;
+  if ($base_url == '/') {
+    drupal_set_message(t('
+      The $base_url in this portal could not be set, please set the $base_url
+      manually your Drupal settings.php file.', 'error'
+    ));
+  }
+  $fixed_file_path = $base_url . $file_path;
+
   $preg_file_path = preg_quote($file_path, '/');
   $body = preg_replace ('/src\s*=\s*["]\s*' . $preg_file_path . '/', 'src="' . $fixed_file_path , $body);
   $body = preg_replace ('/src\s*=\s*[\']\s*' . $preg_file_path . '/', 'src=\'' . $fixed_file_path , $body);

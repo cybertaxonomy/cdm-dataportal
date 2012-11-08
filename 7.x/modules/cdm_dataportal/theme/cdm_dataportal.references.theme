@@ -73,8 +73,11 @@ function theme_cdm_reference($variables) {
   $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
 
   if ($referenceStyle == "zoology") {
-    $year = partialToYear($reference->datePublished->start);
-    $citation = $author_team->titleCache . ($year ? '. ' . $year : '');
+    $year = '';
+    if (isset($reference->datePublished->start)) {
+      $year = partialToYear($reference->datePublished->start);
+    }
+    $citation = $author_team->titleCache . (!empty($year) ? '. ' . $year : '');
   }
   else {
     $citation = $reference->titleCache;

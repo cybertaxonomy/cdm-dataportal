@@ -25,7 +25,6 @@
                         .parents('div.cdm_taxontree_container');
                     parent_li.set_background_image('minus.png');
                     if (opts.magicbox) {
-
                       // Preserve scroll positions.
                       var tmp_scroller_y_left = tree_container.children()
                           .scrollTop();

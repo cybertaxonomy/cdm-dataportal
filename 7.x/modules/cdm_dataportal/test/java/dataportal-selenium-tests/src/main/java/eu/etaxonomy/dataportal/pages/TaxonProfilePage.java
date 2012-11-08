@@ -158,19 +158,20 @@ public class TaxonProfilePage extends PortalPage {
         List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm-dataportal-feature"));
         Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
         for(WebElement b : featureBlocks){
-            if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + featureName)){
+            if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + normalizeClassAttribute(featureName))){
                 return new FeatureBlock( b, enclosingTag, elementTag);
             }
         }
         return null;
     }
 
+
     public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String ... elementTag){
 
         List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm-dataportal-feature"));
         Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
         for(WebElement b : featureBlocks){
-            if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + featureName)){
+            if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + normalizeClassAttribute(featureName))){
                 return new FeatureBlock( b, enclosingTag, elementTag);
             }
         }

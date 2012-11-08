@@ -63,24 +63,6 @@ function garland_cichorieae_cdm_taxon_page_profile($variables) {
   return $out;
 }
 
-/*
-function garland_cichorieae_cdm_descriptionElementTextData($element){
-  $description = str_replace("\n", "<br/>",
-  $element->multilanguageText_L10n->text); $referenceCitation = ''; $sourceRefs
-  = ''; if($element->reference){ // disabling references for cichorieae
-  description Elements because they all have faulty references
-  $referenceCitation = '; '.theme('cdm_fullreference', $element->reference,
-  TRUE); } //return '<p class="descriptionText">' . $description .
-  $referenceCitation.'</p>'; foreach($element->sources as $source){
-  $referenceCitation = theme('cdm_DescriptionElementSource', $source);
-  if($description && strlen($description) > 0 && $referenceCitation ){
-  $sourceRefs .= ' ('.$referenceCitation.')' ; /* TODO: why does not belongs
-  this code to the cichorieae theme ?? }else if ($referenceCitation){
-  $sourceRefs = $referenceCitation; } } return '<p class="descriptionText">' .
-  $description . $sourceRefs . '</p>';
-}
-*/
-
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -98,7 +80,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
   $result = array();
   $res_author;
   $res_date;
-  $no_links = FALSE;
+  $do_links = TRUE;
   $default_theme = variable_get('theme_default', 'garland_cichorieae');
 
   if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale' || $default_theme == 'flore_gabon') && $element->feature->titleCache == 'Citation') {
@@ -118,7 +100,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
   ));
 
   if ($feature_uuid == UUID_NAME_USAGE || $feature_uuid == UUID_CHROMOSOMES) {
-    $no_links = TRUE;
+    $do_links = FALSE;
   }
 
   if (is_array($element->sources)) {
@@ -135,7 +117,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
       else {
         $referenceCitation = theme('cdm_DescriptionElementSource', array(
           'descriptionElementSource' => $source,
-          'doLink' => $no_links,
+          'doLink' => $do_links,
         ));
       }
       if ($description && strlen($description) > 0 && $referenceCitation) {
@@ -213,7 +195,8 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
     $out = '<span class="' . html_class_atttibute_ref($element) . '"> ' . $description . $annotation_fkeys . '</span>';
   }
 
-  /*
+  /* Dead code:
+   *
    * Disabled code; can this be removed?
   if ($feature_uuid == UUID_NAME_USAGE){ foreach($element->sources as
   $source){ $referenceCitation =
@@ -320,35 +303,6 @@ function garland_cichorieae_cdm_descriptionElementArray($variables) {
 
   $out .= '</' . $enclosingHtml . '>';
   return $out;
-}
-
-/**
- * All reference links switched off.
- */
-function garland_cichorieae_cdm_nomenclaturalReferenceSTO($referenceSTO, $doLink = FALSE, $cssClass = '', $separator = '<br />', $enclosingTag = 'li') {
-  $doLink = FALSE;
-
-  if (isset($referenceSTO->microReference)) {
-    // It is a ReferenceTO.
-    // Comment @WA this theme does not exist..
-    // $nomref_citation = theme('cdm_fullreference', $referenceSTO);
-  }
-  else {
-    // It is ReferenceSTO.
-    $nomref_citation = $referenceSTO->fullCitation;
-  }
-
-  $is_IN_reference = str_beginsWith($nomref_citation, 'in');
-
-  if ($doLink) {
-    $nomref_citation = l($nomref_citation, "/cdm_dataportal/reference/" . $referenceSTO->uuid, array(), NULL, NULL, FALSE, TRUE);
-  }
-
-  if (!empty($nomref_citation)) {
-    $nomref_citation = ($is_IN_reference ? '&nbsp;' : ',&nbsp;') . $nomref_citation;
-  }
-
-  return $nomref_citation;
 }
 
 /*
@@ -689,7 +643,13 @@ function garland_cichorieae_preprocess_node(&$vars) {
 
   $file_path = '/' . variable_get('file_public_path', conf_path() . '/files');
   global $base_url;
-  $fixed_file_path = $base_url . '/' . $file_path;
+  if ($base_url == '/') {
+    drupal_set_message(t('
+      The $base_url in this portal could not be set, please set the $base_url
+      manually your Drupal settings.php file.', 'error'
+    ));
+  }
+  $fixed_file_path = $base_url . $file_path;
   $preg_file_path = preg_quote($file_path, '/');
   $body = preg_replace('/src\s*=\s*["]\s*' . $preg_file_path . '/', 'src="' . $fixed_file_path, $body);
   $body = preg_replace('/src\s*=\s*[\']\s*' . $preg_file_path . '/', 'src=\'' . $fixed_file_path, $body);

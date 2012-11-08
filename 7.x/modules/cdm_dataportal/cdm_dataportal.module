@@ -98,7 +98,11 @@ function _add_js_treeselector() {
  */
 function _add_js_openlayers_map() {
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/OpenLayers/OpenLayers.js', array('type' => 'file', 'weight' => JS_LIBRARY));
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/OpenLayers/OpenLayers.js', array(
+    'type' => 'file',
+    'weight' => JS_LIBRARY,
+    'cache' => FALSE,
+  ));
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/openlayers_map.js');
 
   $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
@@ -1272,7 +1276,9 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = NULL
     else {
       $trees = '';
       foreach ($taxon_nodes as $node) {
-        $trees .= ($trees ? ', ' : '') . '<strong>' . $node->classification->titleCache . '</strong>';
+        if (isset($node->classification->titleCache)) {
+          $trees .= ($trees ? ', ' : '') . '<strong>' . $node->classification->titleCache . '</strong>';
+        }
       }
 
       drupal_set_message(format_plural(count($taxon_nodes),
@@ -1357,16 +1363,16 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
       // It is a Synonym -> look for the accepted.
       $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid, get_taxonomictree_uuid_selected()));
       if (!empty($synonym_uuid)) {
-        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => '\' . $synonym_uuid')));
+        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => $synonym_uuid)));
       }
       else {
-        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => '\' . $singleTaxon->uuid')));
+        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => $singleTaxon->uuid)));
       }
     }
     else {
       // It is an accepted taxon.
       if (!empty($synonym_uuid)) {
-        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', array('query' => array('highlite' => '\' . $synonym_uuid')));
+        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', array('query' => array('highlite' => $synonym_uuid)));
       }
       else {
         drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid);
@@ -1836,7 +1842,7 @@ function cdm_read_media_metadata($media) {
   if ($media_metadata->Copyright) {
     $metadata_caption['rights']['copyright']['agentNames'][] = $media_metadata->Copyright;
   }
-  elseif ($media->rights) {
+  elseif (isset($media->rights) && is_array($media->rights)) {
     foreach ($media->rights as $right) {
       switch ($right->term->uuid) {
         case UUID_RIGHTS_LICENCE:
