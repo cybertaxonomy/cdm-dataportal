@@ -195,15 +195,16 @@ function theme_cdm_taxon_page($variables) {
         if ($hasStructuredData) {
           $structured_description_featuretree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, FALSE);
           if($structured_description_featuretree_uuid) {
+            // if a feature tree for natural language generation has been defined use it,
+            // otherwise natural language generation is skipped
             $naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array(
               $taxonDescription->uuid,
               $structured_description_featuretree_uuid,
             ));
           }
-
-          // $out .= print_r($naturallanguage_textData);
-          if (!$naturallanguage_textData) {
+          if (!isset($naturallanguage_textData)) {
             drupal_set_message(t("The 'FeatureTree' for the generation of natural language representations is not configured correctly, please select a 'FeatureTree' in the !settings", array('!settings' => l(t('CDM Dataportal Settings'), 'admin/config/cdm_dataportal/layout/taxon'))), 'warning');
+            continue;
           }
           $taxonDescription->elements = NULL;
           $taxonDescription->elements = array(
