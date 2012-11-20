@@ -1,0 +1,535 @@
+<?php
+/**
+ * @file
+ * Allows to create media URI conversion rules.
+ *
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * @author
+ *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
+ *   - Wouter Addink <w.addink@eti.uva.nl> (migration from Drupal 5 to Drupal7)
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function cdm_mediauri_menu() {
+  $items = array();
+
+  $items['admin/config/cdm_dataportal/cdm_mediauri'] = array(
+    'title' => 'CDM Media URI Conversion',
+    'description' => 'Media URI Conversion Rules.',
+    'access arguments' => array('administer cdm_dataportal'),
+    'page callback' => 'cdm_mediauri_overview',
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 20,
+  );
+
+  $items['admin/config/cdm_dataportal/cdm_mediauri/list'] = array(
+    'title' => 'List',
+    'description' => 'Media URI Conversion Rules',
+    'access arguments' => array('administer cdm_dataportal'),
+    'page callback' => 'cdm_mediauri_overview',
+    'weight' => 1,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  $items['admin/config/cdm_dataportal/cdm_mediauri/add'] = array(
+    'title' => 'Add Rule',
+    'description' => 'Add Media URI Conversion Rule',
+    'access arguments' => array('administer cdm_dataportal'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cdm_mediauri_rule_add'),
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/config/cdm_dataportal/cdm_mediauri/edit'] = array(
+    'access arguments' => array('administer cdm_dataportal'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cdm_mediauri_rule_edit'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/config/cdm_dataportal/cdm_mediauri/delete'] = array(
+    'access arguments' => array('administer cdm_dataportal'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cdm_mediauri_rule_delete'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $rules = cdm_mediauri_rules();
+  foreach ($rules as $rule) {
+    if ($rule['embed_html'] && $rule['path']) {
+      $items[$rule['path']] = array(
+        // TODO restrict access.
+        'access arguments' => TRUE,
+        'page callback' => 'cdm_mediauri_view_embed',
+        'type' => MENU_CALLBACK,
+      );
+    }
+  }
+
+  return $items;
+}
+
+/**
+ * Returns an overview list of existing media uri rules
+ */
+function cdm_mediauri_overview($rules = FALSE) {
+  if (!$rules) {
+    $rules = cdm_mediauri_rules();
+  }
+
+  $header = array(
+    t('Pattern'),
+    t('Replacement'),
+    t('Operations'),
+  );
+  $rid = -1;
+  if (count($rules)) {
+    foreach ($rules as $rule) {
+      $rid++;
+      $rows[] = array(
+        $rule['pattern'],
+        $rule['replace'],
+        l(t('edit'), 'admin/config/cdm_mediauri/edit/' . $rid) . ' | ' . l(t('delete'), 'admin/config/cdm_mediauri/delete/' . $rid),
+      );
+    }
+  }
+  else {
+    $rows[] = array(
+      array(
+        'data' => '<em>' . t('There are no existing media uri conversion rules. You may add some rule: <a href="@add">add rule</a>', array(
+          '@add' => url('admin/config/cdm_mediauri/add'),
+        )) . '</em>',
+        'colspan' => 3,
+      ),
+    );
+  }
+
+  return theme('table', array('header' => $header, 'rows' => $rows));
+}
+
+/**
+ * Menu callback; add new mediauri rule.
+ */
+function cdm_mediauri_rule_add($form, &$form_state) {
+  $form = cdm_mediauri_rule_edit_form('new');
+  // Comment @WA: we cannot use system settings form here because we want to
+  // use our own submit function (cdm_mediauri_rule_add_submit)
+  // return system_settings_form($form);
+  return $form;
+}
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_mediauri_rule_edit($form, &$form_state) {
+  $rid = arg(4);
+  $form = cdm_mediauri_rule_edit_form($rid);
+  // return system_settings_form($form);
+  return $form;
+}
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_mediauri_rule_add_submit($form, &$form_state) {
+  if ($form_state['values']['rid'] == 'new') {
+    $rules = cdm_mediauri_rules();
+    $rules[] = $form_state['values']['rule'];
+    variable_set('cdm_mediauri_rules', $rules);
+    drupal_set_message(t('Rule added'));
+  }
+  else {
+    drupal_set_message(t('Cannot add rule'), 'error');
+  }
+  $form_state['redirect'] = 'admin/config/cdm_mediauri';
+}
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_mediauri_rule_edit_submit($form, &$form_state) {
+  if (is_numeric($form_state['values']['rid'])) {
+    $rules = cdm_mediauri_rules();
+    // Determine if the menu has changed.
+    if (isset($rules[$form_state['values']['rid']]['embed']) && $rules[$form_state['values']['rid']]['embed'] != $form_state['values']['rule']['embed'] || $rules[$form_state['values']['rid']]['path'] != $form_state['values']['rule']['path']) {
+      menu_rebuild();
+      drupal_set_message(t('Menu Rebuild'));
+    }
+    $rules[$form_state['values']['rid']] = $form_state['values']['rule'];
+    variable_set('cdm_mediauri_rules', $rules);
+    drupal_set_message(t('Rule saved'));
+  }
+  else {
+    drupal_set_message(t('Cannot save rule (invalid rule id)'), 'error');
+  }
+  $form_state['redirect'] = 'admin/config/cdm_mediauri';
+}
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_mediauri_rule_delete_submit($form, &$form_state) {
+  if (is_numeric($form_state['values']['rid'])) {
+    $rules = cdm_mediauri_rules();
+    unset($rules[$form_state['values']['rid']]);
+    variable_set('cdm_mediauri_rules', $rules);
+    drupal_set_message(t('Rule deleted'));
+  }
+  else {
+    drupal_set_message(t('Cannot delete rule (invalid rule id)'), 'error');
+  }
+  $form_state['redirect'] = 'admin/config/cdm_mediauri';
+}
+
+/**
+ * Menu callback; confirm deletion of mediauri rule.
+ */
+function cdm_mediauri_rule_delete($form, &$form_state) {
+  $rid = arg(4);
+  $rules = cdm_mediauri_rules();
+  $form['rid'] = array(
+    '#type' => 'hidden',
+    '#value' => $rid,
+  );
+
+  // Comment @WA: I removed the rule table from the <h2> title to the
+  // description so it is consistent with the rest of the interface,
+  // instead of displaying the table enlarged like in D5. I would recommend
+  // also to hide the Operations column from the table because it may
+  // be confusing here.
+  return confirm_form(
+      $form,
+      t('Are you sure you want to delete the following rule:'),
+      'admin/config/cdm_mediauri',
+      cdm_mediauri_overview(array($rules[$rid])),
+      t('Delete'),
+      t('Cancel')
+    );
+}
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_mediauri_rule_edit_form($rid = 'new') {
+  if ($rid == 'new') {
+    // ---- Little code snippet used to import default rules during development.
+    // 0 or 1 or FALSE.
+    $default_rule_id = FALSE;
+
+    if ($default_rule_id !== FALSE) {
+      $default_rules = cdm_mediauri_rules(TRUE);
+      $rule = $default_rules[$default_rule_id];
+    }
+    /* --- END */
+
+    if (!isset($rule)) {
+      $rule = array();
+      $rule['type'] = 'empty';
+      $rule['pattern'] = '';
+      $rule['replace'] = '';
+      $rule['prefix'] = '';
+      $rule['affix'] = '';
+      $rule['url_encode'] = 0;
+      $rule['embed_html'] = 0;
+      $rule['path'] = '';
+      $rule['title'] = '';
+      $rule['size_x'] = '';
+      $rule['size_y'] = '';
+    }
+  }
+  else {
+    $rules = cdm_mediauri_rules();
+    $rule = $rules[$rid];
+  }
+
+  $form = array();
+
+  /*
+   * rule ['type']: values(preview, webapp, media) ['size_x'], ['size_y']:
+   * dimensions of preview image in px ['pattern']: php PCRE regex pattern (see:
+   * http://www.php.net/manual/reference.pcre.pattern.syntax.php) ['replace']:
+   * replacement string ['prefix']: string by which the converted url is to be
+   * prefixed ['affix']: string by which the converted url is to be affixed
+   * ['url_encode']: values(TRUE, FALSE) if the converted url is to be url
+   * encoded ['embed_html']: embes the construct of prefix + url + affix into
+   * the page as plain html
+   */
+  $form['rid'] = array(
+    '#type' => 'hidden',
+    '#value' => $rid,
+  );
+
+  $form['rule'] = array(
+    '#type' => 'fieldset',
+    '#title' => check_plain($rule['type'] == 'empty' ? t('New Rule') : t('Rule !rule', array('!rule' => $rid))),
+    '#tree' => TRUE,
+  );
+
+  $form['rule']['type'] = array(
+    '#type' => 'select',
+    '#title' => t('Type') . ':',
+    '#default_value' => $rule['type'],
+    '#options' => array(
+      'preview' => t('Preview Quality'),
+      'webapp' => t('Web Application'),
+    ),
+    '#description' => t('The type media representation.'),
+  );
+
+  $form['rule']['pattern'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Pattern') . ':',
+    '#description' => check_plain(t('php PCRE regex pattern (see: !php_manual)', array(
+      '!php_manual' => l(t('php manual'), 'http://www.php.net/manual/reference.pcre.pattern.syntax.php'),
+    ))),
+    '#default_value' => $rule['pattern'],
+    '#rows' => 1,
+  );
+
+  $form['rule']['replace'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Replacement') . ':',
+    '#default_value' => $rule['replace'],
+    '#rows' => 1,
+  );
+
+  // ['embed_html'] = 1;
+  $form['rule']['embed_html'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Embed'),
+    '#default_value' => $rule['embed_html'],
+    '#description' => t('Embed the construct of prefix + url + affix into the page as plain html'),
+  );
+
+  $form['rule']['url_encode'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Url Encode'),
+    '#default_value' => $rule['url_encode'],
+    '#description' => t('Whether the converted url is to be url encoded'),
+  );
+
+  $form['rule']['path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Drupal Path') . ':',
+    '#default_value' => $rule['path'],
+    '#description' => t('Drupal Path under which the media is to be embedded into a page'),
+  );
+
+  $form['rule']['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Page Title') . ':',
+    '#default_value' => $rule['title'],
+    '#description' => t('Page Title'),
+  );
+
+  $form['rule']['prefix'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Prefix') . ':',
+    '#default_value' => $rule['prefix'],
+    '#rows' => 1,
+  );
+
+  $form['rule']['affix'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Affix') . ':',
+    '#default_value' => $rule['affix'],
+    '#rows' => 1,
+  );
+
+  // Comment @WA: I think this is not implemented the right way?
+  // Should the field not be enabled if 'Preview' is selected as type in
+  // the form, for instance with ajax?
+  $form['rule']['size_x'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Preview Image Width') . ':',
+    '#default_value' => $rule['size_x'],
+    '#disabled' => $rule['type'] != 'preview',
+    '#description' => check_plain(t('Width of preview image in px')),
+    '#size' => 4,
+  );
+
+  $form['rule']['size_y'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Preview Image Height') . ':',
+    '#default_value' => $rule['size_y'],
+    '#disabled' => $rule['type'] != 'preview',
+    '#description' => t('Height of preview image in px'),
+    '#size' => 4,
+  );
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save configuration'),
+  );
+
+  // @WA: D7 form api does not support reset buttons,
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+    '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+    '#weight' => 1000,
+  );
+  return $form;
+}
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_mediauri_rules($default = FALSE) {
+  /*
+  rules ['type']: values(preview, webapp, media) ['size_x'], ['size_y']:
+  dimensions of preview image in px ['pattern']: php PCRE regex pattern (see:
+  http://www.php.net/manual/reference.pcre.pattern.syntax.php) ['replace']:
+  replacement string ['prefix']: string by which the converted url is to be
+  prefixed ['affix']: string by which the converted url is to be affixed
+  ['url_encode']: values(TRUE, FALSE) if the converted url to be url encoded
+  ['embed_html']: embes the construct of prefix + url + affix into the page
+  as plain html
+  */
+  if ($default) {
+    // Default rules.
+    $rule1 = array();
+    $rule1['type'] = 'preview';
+    $rule1['pattern'] = '/^(http:\/\/ww2.bgbm.org\/herbarium\/images(?:\/\w+)(?:\/\d+){4})(\/)(.*)$/';
+    $rule1['replace'] = '$1/thumbs/$3';
+    $rule1['size_x'] = 125;
+    $rule1['size_Y'] = 200;
+
+    $rule2 = array();
+    $rule2['type'] = 'webapp';
+    $rule2['pattern'] = '/^http:\/\/ww2.bgbm.org\/herbarium\/images\/((?:\w+\/)(?:\d+\/){4}[\w_]+?\.)(.*)$/';
+    $rule2['replace'] = '$1fpx';
+    $rule2['prefix'] = '<div style="float: left; width: 10em;">
+  <p>© BGBM: <br/>
+  Access is granted under the following conditions:<br/>
+  The images may not passed on to any third party without our written
+  consent and due mention of the copyright restrictions, and may not be
+  used for commercial or non-scientific purposes. Reproduction in
+  scientific publications is authorized on the condition that the source
+  and the copyright are fully acknowledged:<br/>
+  © Botanischer Garten und Botanisches Museum Berlin-Dahlem, FU Berlin.</li>
+</p>
+<p><a href="http://www.bgbm.org/bgbm/verantwo_e.htm"
+    class="leftnavi" title="Contact">Contact</a> | <a href="http://www.bgbm.org/bgbm/imprint.htm"
+    class="leftnavi" title="Impressum">Imprint</a> | <a href="http://www.bgbm.org/disclaim_e.htm" class="leftnavi"
+    title="Disclaimer">Disclaimer</a>
+</p>
+</div><div><embed width="490" height="700" align="middle" type="application/x-shockwave-flash" 
+       pluginspage="http://www.macromedia.com/go/getflashplayer" name="FSIViewer" 
+       bgcolor="black" quality="high" play="true" 
+       src="http://ww2.bgbm.org/fsi/fsi.swf?cfg=plugin2&FPXSrc=';
+    $rule2['affix'] = '&FPXWidth=2801&FPXHeight=4478&Effects=qlt%3D85&InitialView=&Measure_ImageWidth=270.0&Measure_Suffix=%20mm"/></div>';
+    $rule2['url_encode'] = 1;
+    $rule2['embed_html'] = 1;
+    $rule2['path'] = 'bgbm.org/herbarium';
+
+    return array(
+      $rule1,
+      $rule2,
+    );
+  }
+  else {
+    return variable_get('cdm_mediauri_rules', array());
+  }
+}
+
+/**
+ * Converts a media uri.
+ *
+ * Converts according to all matching conversion rules which are
+ * currently defined.
+ *
+ * Format of a returned array element:
+ *
+ * $return_array[{type}] { // values for {type}:(preview, webapp, media,
+ * original)
+ * ['size_x'], // dimensions of preview image in px
+ * ['size_y'], // dimensions of preview image in px
+ * ['uri'] // the uri possibly prefixed with path
+ * ['embed_html'] // the uri embedded into some string
+ * }
+ *
+ * @param string $mediaUri
+ *   The media uri to convert.
+ *
+ * @return array
+ *   Returns an associative array of the original media uri and all conversions
+ *   whereas the rule type becomes the array key of the array entries.
+ *   All uris are again packed into associative arrays by means to submit
+ *   additional information as defined in the rules applied.
+ */
+function cdm_mediauri_conversion($mediaUri) {
+  $rules = cdm_mediauri_rules();
+
+  $muris = array();
+  $muris['original'] = array(
+    'uri' => $mediaUri,
+    'size_x' => NULL,
+    'size_y' => NULL,
+  );
+
+  foreach ($rules as $rule) {
+    $uri_converted = preg_replace($rule['pattern'], $rule['replace'], $mediaUri);
+    if ($uri_converted != $mediaUri) {
+      if (isset($rule['url_encode']) && $rule['url_encode']) {
+        $uri_converted = urlencode($uri_converted);
+      }
+      $muris[$rule['type']] = array(
+        'uri' => $uri_converted,
+        'size_x' => $rule['size_x'],
+        'size_y' => $rule['size_y'],
+      );
+      if (isset($rule['embed_html']) && $rule['embed_html']) {
+        if ($rule['path']) {
+          // Embed later on other page.
+          $muris[$rule['type']]['uri'] = $rule['path'] . '/' . $uri_converted;
+        }
+        else {
+          // Direct embed.
+          $muris[$rule['type']]['embed_html'] = $rule['prefix'] . $uri_converted . $rule['affix'];
+        }
+      }
+    }
+  }
+  return $muris;
+}
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_mediauri_view_embed($uri) {
+  $path = '';
+  for ($i = 0; ($arg = arg($i)); $i++) {
+    if ($arg == $uri) {
+      break;
+    }
+    else {
+      $path .= ($path ? '/' : '') . $arg;
+    }
+  }
+
+  $rule = FALSE;
+  foreach (cdm_mediauri_rules() as $r) {
+    if ($r['embed_html'] && $r['path'] == $path) {
+      $rule = $r;
+      break;
+    }
+  }
+
+  if ($rule) {
+    drupal_set_title($rule['title'], PASS_THROUGH);
+    return $rule['prefix'] . $uri . $rule['affix'];
+  }
+
+  return 'ERROR:' . $path . $uri;
+}
