@@ -1,0 +1,56 @@
+--- jenkins-ci/config.xml	(revision 0)
++++ jenkins-ci/config.xml	(revision 15801)
+@@ -0,0 +1,50 @@
++<?xml version='1.0' encoding='UTF-8'?>
++<project>
++  <actions/>
++  <description></description>
++  <keepDependencies>false</keepDependencies>
++  <properties>
++    <hudson.model.ParametersDefinitionProperty>
++      <parameterDefinitions>
++        <hudson.model.StringParameterDefinition>
++          <name>DB_USER</name>
++          <description></description>
++          <defaultValue>drupal_user</defaultValue>
++        </hudson.model.StringParameterDefinition>
++        <hudson.model.PasswordParameterDefinition>
++          <name>DB_PWD</name>
++          <description></description>
++          <defaultValue>N6blqN9YnVSBpHyg3k3Cq1fU0z+NYwTrqH9fBsDQBXk=</defaultValue>
++        </hudson.model.PasswordParameterDefinition>
++      </parameterDefinitions>
++    </hudson.model.ParametersDefinitionProperty>
++  </properties>
++  <scm class="hudson.scm.SubversionSCM">
++    <locations>
++      <hudson.scm.SubversionSCM_-ModuleLocation>
++        <remote>http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal</remote>
++        <local>.</local>
++      </hudson.scm.SubversionSCM_-ModuleLocation>
++    </locations>
++    <excludedRegions></excludedRegions>
++    <includedRegions></includedRegions>
++    <excludedUsers></excludedUsers>
++    <excludedRevprop></excludedRevprop>
++    <excludedCommitMessages></excludedCommitMessages>
++    <workspaceUpdater class="hudson.scm.subversion.UpdateUpdater"/>
++  </scm>
++  <canRoam>true</canRoam>
++  <disabled>false</disabled>
++  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
++  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
++  <triggers class="vector"/>
++  <concurrentBuild>false</concurrentBuild>
++  <builders>
++    <hudson.tasks.Shell>
++      <command>bash -ex $WORKSPACE/jenkins-ci/integration.sh $WORKSPACE $JOB_NAME $DB_USER $DB_PWD</command>
++    </hudson.tasks.Shell>
++  </builders>
++  <publishers/>
++  <buildWrappers/>
++  <customWorkspace>/var/www/drupal/sites/all/modules/cdm_dataportal</customWorkspace>
++</project>
+\ No newline at end of file
+Index: jenkins-ci/config.xml.2011-03-11
+===================================================================

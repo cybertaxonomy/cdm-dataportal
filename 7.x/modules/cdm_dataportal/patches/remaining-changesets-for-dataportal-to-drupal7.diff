@@ -1,0 +1,630 @@
+Index: test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_CommonNamesTest.java
+===================================================================
+--- test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_CommonNamesTest.java	(revision 16421)
++++ test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_CommonNamesTest.java	(revision 15801)
+@@ -1,61 +0,0 @@
+-// $Id$
+-/**
+- * Copyright (C) 2009 EDIT
+- * European Distributed Institute of Taxonomy
+- * http://www.e-taxonomy.eu
+- *
+- * The contents of this file are subject to the Mozilla Public License Version 1.1
+- * See LICENSE.TXT at the top of this package for the full license terms.
+- */
+-package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
+-
+-import static org.junit.Assert.*;
+-import static org.junit.Assert.assertEquals;
+-
+-import java.net.MalformedURLException;
+-import java.util.List;
+-import java.util.UUID;
+-
+-import org.junit.Test;
+-
+-import eu.etaxonomy.dataportal.DataPortalContext;
+-import eu.etaxonomy.dataportal.elements.BaseElement;
+-import eu.etaxonomy.dataportal.elements.FeatureBlock;
+-import eu.etaxonomy.dataportal.elements.LinkElement;
+-import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
+-import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
+-import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
+-import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
+-
+-/**
+- *
+- * @author a.kohlbecker
+- *
+- */
+-
+-@DataPortalContexts( { DataPortalContext.cichorieae })
+-public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
+-
+-
+-    static UUID lactuca_serriola_uuid = UUID.fromString("85176c77-e4b6-4899-a08b-e257ab09350a");
+-
+-
+-    /**
+-     * regression test for issue ##3160 (Cichorieae Portal: Common names not correctly orderd)
+-     *
+-     * @throws MalformedURLException
+-     */
+-    @Test
+-    public void lactuca_serriola() throws MalformedURLException {
+-        TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), lactuca_serriola_uuid);
+-        String expectedName = "Lactuca serriola";
+-        assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
+-        FeatureBlock commonNamesBlock = p.getFeatureBlockAt(3, "common_names", "div", "span");
+-        assertNotNull(commonNamesBlock);
+-
+-        String expected = "Common names\nAlbanian (Albania): Ogrisht145; Arabic (Lebanon): خَسّ الزَّيْت146; Arabic (Saudi Arabia): Khass-al-Hammar147; Arabic (Syria): خَسّ الزَّيْت148; Armenian (Armenia): Կաթնուկ կողմնացույց149; Bulgarian (Bulgaria): Компасна салата150; Czech (Czech Republic): Locika kompasová151; Danish (Denmark): Tornet Salat152; English (Australia): compass plant153";
+-        String firstChars = commonNamesBlock.getText().substring(0, expected.length());
+-        assertEquals(expected, firstChars);
+-    }
+-
+-}
+Index: test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_FootnoteTest.java
+===================================================================
+--- test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_FootnoteTest.java	(revision 16421)
++++ test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_FootnoteTest.java	(revision 15801)
+@@ -16,7 +16,6 @@
+ import java.util.List;
+ import java.util.UUID;
+ 
+-import org.junit.Ignore;
+ import org.junit.Test;
+ 
+ import eu.etaxonomy.dataportal.DataPortalContext;
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.10.5-fx.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/disable_add_on_compatibility_checks-1.3.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.6.2.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.6.2.xpi
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.8.3.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.8.3.xpi
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firexpath-0.9.6.1-fx.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firexpath-0.9.6.1-fx.xpi
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: test/java/dataportal-selenium-tests/pom.xml
+===================================================================
+--- test/java/dataportal-selenium-tests/pom.xml	(revision 16421)
++++ test/java/dataportal-selenium-tests/pom.xml	(revision 15801)
+@@ -12,7 +12,7 @@
+ 
+   <properties>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+-    <selenium-version>2.25.0</selenium-version>
++    <selenium-version>2.24.1</selenium-version>
+   </properties>
+ 
+   <scm>
+Index: settings.php
+===================================================================
+--- settings.php	(revision 16421)
++++ settings.php	(revision 15801)
+@@ -323,29 +323,12 @@
+           '#type' => 'fieldset',
+           '#title' => t('Freetext index'),
+           '#collapsible' => FALSE,
+-          '#collapsed' => FALSE
+-
++          '#collapsed' => FALSE,
++          '#description'   =>
++            t('Operations').": ".l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE))
++            ." ". l("Reindex", cdm_compose_url(CDM_WS_MANAGE_REINDEX))
+     );
+-    preg_match("#http[s]?://[0-9\p{L}\.]*:([0-9]*)/.*#u", variable_get('cdm_webservice_url', ''), $portNumberMatch, PREG_OFFSET_CAPTURE);
+-    if(isset($portNumberMatch[1]) && $portNumberMatch[1] != '80'){
+-      $form['cdm_webservice']['freetext_index']['message'] = array(
+-               '#value' => "<div class=\"description\">The CDM web service URL contains a portnumber other than standart HTTP port 80: '" . $portNumberMatch[1][0] . "'."
+-               ." Due to this the reindex and purge fuctions may not be working if there is a firewall in between you and the CDM Server."
+-               ." You may want to contact the maintainer of the according CDM Server in order to solve this problem."
+-               ."</div>"
+-      );
+-    };
+ 
+-    $frontentURL = urlencode(variable_get('cdm_webservice_url', ''));
+-    $form['cdm_webservice']['freetext_index']['operations'] = array(
+-         '#value' => "<div>"
+-            .t('Operations')
+-            .": " . l("Purge", cdm_compose_url(CDM_WS_MANAGE_PURGE, null, "frontendBaseUrl=".$frontentURL), array("class"=>"index-trigger"))
+-            ." "  . l("Reindex", cdm_compose_url(CDM_WS_MANAGE_REINDEX, null, "frontendBaseUrl=".$frontentURL), array("class"=>"index-trigger"))
+-    		.'<div id="index_progress"></div>'
+-    		.'</div>'
+-    );
+-    _add_js_cdm_ws_progressbar(".index-trigger", "#index_progress");
+ 
+     $form['cdm_webservice']['proxy'] = array(
+       '#type' => 'fieldset',
+Index: jenkins-ci/deploy.sh
+===================================================================
+--- jenkins-ci/deploy.sh	(revision 16421)
++++ jenkins-ci/deploy.sh	(revision 15801)
+@@ -1,95 +0,0 @@
+-#!/bin/bash
+-
+-#
+-#
+-#
+-#
+-DRUPAL_VERSION="5"
+-SVN_USER="edit-jenkins"
+-
+-if [ -z "$1" ]; then
+-	echo "version parameter missing\nUsage: deploy.sh <version-number>"
+-  exit -1
+-fi
+-VERSION=$1
+-
+-# $WORKSPACE is an environment variable set by jenkins
+-if [ -n "$WORKSPACE" ]; then
+-	cd $WORKSPACE
+-fi
+-
+-# check if tag exists
+-TAG_EXISTS=(`svn info http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION 2> /dev/null | grep URL`)
+-if [ -z "$TAG_EXISTS" ]; then
+-	# it is a new version number ...
+-
+-	# create release tag and branch for the module
+-	svn --username=$SVN_USER copy -m "release tag for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/trunk/drupal/${DRUPAL_VERSION}.x/modules/cdm_dataportal http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION
+-	svn --username=$SVN_USER copy -m "branch for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/module-cdm_dataportal-RELEASE-$VERSION
+-
+-	#create release tag and branch for the themes
+-	svn --username=$SVN_USER copy -m "release tag for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/trunk/drupal/${DRUPAL_VERSION}.x/themes http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION
+-	svn --username=$SVN_USER copy -m "branch for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/themes-RELEASE-$VERSION
+-fi
+-
+-#create the target folder
+-if [ ! -d target ]; then
+-	mkdir target
+-fi
+-cd target
+-rm -rf *
+-
+-# create the module-cdm_dataportal archive
+-svn --username=$SVN_USER export http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION ./cdm_dataportal
+-tar czf cdm_dataportal-$VERSION.tar.gz ./cdm_dataportal
+-
+-# create the drupal${DRUPAL_VERSION}-cdm_dataportal archive ...
+-
+-# downlod latest and unpack
+-ARCHIVE_URL=(`lynx -dump http://wp5.e-taxonomy.eu/download/dataportal/stable/ | grep "download/dataportal/stable/drupal${DRUPAL_VERSION}-cdm_dataportal" | head -n 1 | sed -e "s/.*\(http.*\)/\1/g"`)
+-
+-if [ -z "$ARCHIVE_URL" ]; then
+-  echo "http://wp5.e-taxonomy.eu/download/dataportal/stable/ does not contain drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz file, please check this symling on the server"
+-  exit -1;
+-fi
+-
+-curl --output drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz $ARCHIVE_URL
+-tar xzf drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz
+-
+-# update the update script update-to.sh
+-rsync -r --exclude=.svn ../jenkins-ci/dataportal-version-update/ drupal${DRUPAL_VERSION}-cdm_dataportal/sites/all
+-
+-# update the module and themes
+-cd drupal${DRUPAL_VERSION}-cdm_dataportal/sites/all
+-./update-to.sh $VERSION
+-
+-# copy the profiles
+-cd ../../
+-rsync -r --exclude=.svn sites/all/modules/cdm_dataportal/profile/ profiles/
+-
+-# make tar
+-cd ../
+-tar czf drupal${DRUPAL_VERSION}-cdm_dataportal-$VERSION.tar.gz drupal${DRUPAL_VERSION}-cdm_dataportal
+-rm -rf drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz
+-
+-# create the new folder on the server and upload everything
+-ssh root@160.45.63.172 "mkdir /var/www/download/dataportal/$VERSION"
+-ssh root@160.45.63.172 "rm -r /var/www/download/dataportal/stable"
+-ssh root@160.45.63.172 "ln -s /var/www/download/dataportal/$VERSION /var/www/download/dataportal/stable"
+-scp cdm_dataportal-${VERSION}.tar.gz root@wp5.e-taxonomy.eu:/var/www/download/dataportal/${VERSION}/
+-scp drupal${DRUPAL_VERSION}-cdm_dataportal-${VERSION}.tar.gz root@wp5.e-taxonomy.eu:/var/www/download/dataportal/${VERSION}/
+-ssh root@160.45.63.172 "chown -R www-data:www-data /var/www/download/dataportal/${VERSION}"
+-ssh root@160.45.63.172 "chown -R www-data:www-data /var/www/download/dataportal/stable"
+-
+-# DONE
+-echo "cdm_dataportal deployment done!"
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+Index: jenkins-ci/config.xml
+===================================================================
+--- jenkins-ci/config.xml	(revision 0)
++++ jenkins-ci/config.xml	(revision 15801)
+@@ -0,0 +1,50 @@
++<?xml version='1.0' encoding='UTF-8'?>
++<project>
++  <actions/>
++  <description></description>
++  <keepDependencies>false</keepDependencies>
++  <properties>
++    <hudson.model.ParametersDefinitionProperty>
++      <parameterDefinitions>
++        <hudson.model.StringParameterDefinition>
++          <name>DB_USER</name>
++          <description></description>
++          <defaultValue>drupal_user</defaultValue>
++        </hudson.model.StringParameterDefinition>
++        <hudson.model.PasswordParameterDefinition>
++          <name>DB_PWD</name>
++          <description></description>
++          <defaultValue>N6blqN9YnVSBpHyg3k3Cq1fU0z+NYwTrqH9fBsDQBXk=</defaultValue>
++        </hudson.model.PasswordParameterDefinition>
++      </parameterDefinitions>
++    </hudson.model.ParametersDefinitionProperty>
++  </properties>
++  <scm class="hudson.scm.SubversionSCM">
++    <locations>
++      <hudson.scm.SubversionSCM_-ModuleLocation>
++        <remote>http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal</remote>
++        <local>.</local>
++      </hudson.scm.SubversionSCM_-ModuleLocation>
++    </locations>
++    <excludedRegions></excludedRegions>
++    <includedRegions></includedRegions>
++    <excludedUsers></excludedUsers>
++    <excludedRevprop></excludedRevprop>
++    <excludedCommitMessages></excludedCommitMessages>
++    <workspaceUpdater class="hudson.scm.subversion.UpdateUpdater"/>
++  </scm>
++  <canRoam>true</canRoam>
++  <disabled>false</disabled>
++  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
++  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
++  <triggers class="vector"/>
++  <concurrentBuild>false</concurrentBuild>
++  <builders>
++    <hudson.tasks.Shell>
++      <command>bash -ex $WORKSPACE/jenkins-ci/integration.sh $WORKSPACE $JOB_NAME $DB_USER $DB_PWD</command>
++    </hudson.tasks.Shell>
++  </builders>
++  <publishers/>
++  <buildWrappers/>
++  <customWorkspace>/var/www/drupal/sites/all/modules/cdm_dataportal</customWorkspace>
++</project>
+\ No newline at end of file
+Index: jenkins-ci/config.xml.2011-03-11
+===================================================================
+--- jenkins-ci/config.xml.2011-03-11	(revision 0)
++++ jenkins-ci/config.xml.2011-03-11	(revision 15801)
+@@ -0,0 +1,50 @@
++<?xml version='1.0' encoding='UTF-8'?>
++<project>
++  <actions/>
++  <description></description>
++  <keepDependencies>false</keepDependencies>
++  <properties>
++    <hudson.model.ParametersDefinitionProperty>
++      <parameterDefinitions>
++        <hudson.model.StringParameterDefinition>
++          <name>DB_USER</name>
++          <description></description>
++          <defaultValue>drupal_user</defaultValue>
++        </hudson.model.StringParameterDefinition>
++        <hudson.model.PasswordParameterDefinition>
++          <name>DB_PWD</name>
++          <description></description>
++          <defaultValue>N6blqN9YnVSBpHyg3k3Cq1fU0z+NYwTrqH9fBsDQBXk=</defaultValue>
++        </hudson.model.PasswordParameterDefinition>
++      </parameterDefinitions>
++    </hudson.model.ParametersDefinitionProperty>
++  </properties>
++  <scm class="hudson.scm.SubversionSCM">
++    <locations>
++      <hudson.scm.SubversionSCM_-ModuleLocation>
++        <remote>http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal</remote>
++        <local>.</local>
++      </hudson.scm.SubversionSCM_-ModuleLocation>
++    </locations>
++    <excludedRegions></excludedRegions>
++    <includedRegions></includedRegions>
++    <excludedUsers></excludedUsers>
++    <excludedRevprop></excludedRevprop>
++    <excludedCommitMessages></excludedCommitMessages>
++    <workspaceUpdater class="hudson.scm.subversion.UpdateUpdater"/>
++  </scm>
++  <canRoam>true</canRoam>
++  <disabled>false</disabled>
++  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
++  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
++  <triggers class="vector"/>
++  <concurrentBuild>false</concurrentBuild>
++  <builders>
++    <hudson.tasks.Shell>
++      <command>bash -ex $WORKSPACE/jenkins-ci/integration.sh $WORKSPACE $JOB_NAME $DB_USER $DB_PWD</command>
++    </hudson.tasks.Shell>
++  </builders>
++  <publishers/>
++  <buildWrappers/>
++  <customWorkspace>/var/www/drupal/sites/all/modules/cdm_dataportal</customWorkspace>
++</project>
+\ No newline at end of file
+Index: jenkins-ci/integration.sh
+===================================================================
+--- jenkins-ci/integration.sh	(revision 16421)
++++ jenkins-ci/integration.sh	(revision 15801)
+@@ -8,11 +8,6 @@
+ #   http://thinkshout.com/blog/2010/09/sean/beginners-guide-using-hudson-continuous-integration-drupal
+ #   http://drush.ws/help/3
+ 
+-echo "do not run this script - only kept for reference."
+-exit 0
+-
+-#------------------
+-
+ WORKSPACE=$1
+ JOB_NAME=$2
+ dbUser=$3
+Index: cdm_api/cdm_api.module
+===================================================================
+--- cdm_api/cdm_api.module	(revision 16421)
++++ cdm_api/cdm_api.module	(revision 15801)
+@@ -534,14 +534,8 @@
+   drupal_goto($_REQUEST['destination']);
+ }
+ 
+-/**
+- * Constructs from a given URI a cdm_api/proxy URI.
+- *
+- * @param unknown_type $uri
+- * @param unknown_type $theme
+- */
+ function uri_uriByProxy($uri, $theme = false){
+-  //
++  // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");)
+   return url('cdm_api/proxy/'.urlencode($uri).($theme?"/$theme":''));
+ }
+ 
+Index: ext_links/ext_links.module
+===================================================================
+--- ext_links/ext_links.module	(revision 16421)
++++ ext_links/ext_links.module	(revision 15801)
+@@ -59,7 +59,7 @@
+ 		'check_title' => 'Display NYBG link?',
+ 		'link_title' => 'NYBG link',
+ 		'link_description' => 'The link to NCBI without the taxon name.',
+-		'concat_default_value' => '+AND+',
++		'concat_default_value' => ' ',
+ 		'text_title' => 'NYBG text',
+ 		'text_description' => 'The text of the link that is displayed..',
+ 		'category' => 'Category',
+@@ -322,7 +322,7 @@
+ 	'category_default_value' => 'Specimens/Occurrences',
+ 	);
+ 	$ext_links_default["nybg"] = array(
+- 		'link_default_value' => 'http://sweetgum.nybg.org/vh/specimen_list.php?Where=',
++ 		'link_default_value' => 'http://rbg-web2.rbge.org.uk/cgi-bin/nph-readbtree.pl/dataset=NYBG/filename=names3/firstval=1/multiaddr=/multiform=multisite3.php?ETI=',
+ 		'text_default_value' => 'Search NYBG...',
+ 		'category_default_value' => 'Specimens/Occurrences',
+ 	);
+@@ -567,18 +567,17 @@
+ 		$categories['biocase']['content'] = '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_biocase_link', $ext_links_default[biocase][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_biocase_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_biocase_text', $ext_links_default[biocase][text_default_value]).'</a><br />';
+ 	}
+ 	if(variable_get('ext_links_nybg_check', 1)) {
+-	  $query = '';
+ 		$genusQuery = '';
+ 		$speciesQuery = '';
+ 		if($speciesName[genus] != null) {
+-			$query .= 'DetFiledAsGenusLocal+%3D+\%27'. $speciesName[genus]. '\%27';
++			$genusQuery = 'DetFiledAsGenusLocal+%3D+\%27'. $speciesName[genus]. '\%27';
+ 		}
+ 		if($speciesName[species] != null) {
+-			$query .= variable_get('ext_links_nybg_concat', '+AND+'). 'DetFiledAsSpeciesLocal+%3D+\%27'. $speciesName[species] . '\%27';
++			$speciesQuery = 'DetFiledAsSpeciesLocal+%3D+\%27'. $speciesName[species] . '\%27';
+ 		}
+ 		$categoryTitles[] = variable_get('ext_links_nybg_category', $ext_links_default[nybg][category_default_value]);
+ 		$categories['nybg']['title'] = variable_get('ext_links_nybg_category', $ext_links_default[nybg][category_default_value]);
+-		$categories['nybg']['content'] = '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default[nybg][link_default_value]).$query.'\')">'.variable_get('ext_links_nybg_text', $ext_links_default[nybg][text_default_value]).'</a><br />';
++		$categories['nybg']['content'] = '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default[nybg][link_default_value]).$genusQuery.variable_get('ext_links_nybg_concat', '+AND+').$speciesQuery.'\')">'.variable_get('ext_links_nybg_text', $ext_links_default[nybg][text_default_value]).'</a><br />';
+ 
+ 	}
+ 	if(variable_get('ext_links_tropicos_check', 1)) {
+Index: ide/eclipse/cdm_dataportal.launch
+===================================================================
+--- ide/eclipse/cdm_dataportal.launch	(revision 16421)
++++ ide/eclipse/cdm_dataportal.launch	(revision 15801)
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+ <launchConfiguration type="org.eclipse.php.debug.core.launching.webPageLaunch">
+ <booleanAttribute key="auto_generated_url" value="false"/>
+-<stringAttribute key="base_url" value="http://127.0.0.1/cyprus/?q=admin/settings/cdm_dataportal/general"/>
++<stringAttribute key="base_url" value="http://127.0.0.1/cyprus/?q=cdm_dataportal/taxon/2e58b1ab-03a9-4693-bcec-3b8e7f04b572"/>
+ <stringAttribute key="debugOutputEncoding" value="UTF-8"/>
+ <stringAttribute key="debugPages" value="debugAllPages"/>
+ <stringAttribute key="debugTransferEncoding" value="UTF-8"/>
+Index: cdm_dataportal.module
+===================================================================
+--- cdm_dataportal.module	(revision 16421)
++++ cdm_dataportal.module	(revision 15801)
+@@ -31,47 +31,6 @@
+ require_once('classes/renderhints.php');
+ 
+ 
+-/**
+- * loads external java script files asynchronously.
+- *
+- * @param unknown_type $script_url
+- */
+-function drupal_add_js_async($script_url, $callback){
+-
+-  drupal_add_js("
+-      if (Drupal.jsEnabled) {
+-          $(document).ready(function() {
+-            $.ajax({
+-              url: '" . $script_url . "',
+-              dataType: 'script',
+-              cache: true, // otherwise will get fresh copy every page load
+-              success: function() {
+-                    " . $callback . "
+-              }
+-            });
+-          });
+-        }"
+-        , 'inline');
+-}
+-
+-/**
+- * @param unknown_type $link_element_selector
+- * @param unknown_type $progress_element_selector
+- */
+-function _add_js_cdm_ws_progressbar($link_element_selector, $progress_element_selector){
+-
+-  $callback = "$('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');";
+-
+-  drupal_add_js_async(variable_get('cdm_webservice_url', '').'js/cdm_ws_progress.js', $callback);
+-
+-//   drupal_add_js("
+-//   	  if (Drupal.jsEnabled) {
+-//         $(document).ready(function() {
+-//       		$('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');
+-//         });
+-//       }", 'inline');
+-}
+-
+ function _add_js_treeselector(){
+   //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/treeselector.js');
+   drupal_add_js("
+@@ -80,6 +39,7 @@
+           $('#cdm-taxonomictree-selector-form #edit-val').change(function () {
+               $('#cdm-taxonomictree-selector-form').submit();
+           });
++
+       });
+     }", 'inline');
+ }
+@@ -414,7 +374,7 @@
+     );
+ 
+     $items[] = array(
+-       'title' => t('Advanced'),
++    	 'title' => t('Advanced'),
+         'access' => TRUE,
+         'path' => 'cdm_dataportal/search/advanced',
+         'callback' => 'cdm_dataportal_view_search_advanced',
+@@ -423,7 +383,7 @@
+     );
+ 
+     $items[] = array(
+-        'title' => t('By description full text'),
++      	'title' => t('By description full text'),
+         'access' => TRUE,
+         'path' => 'cdm_dataportal/search/taxon_by_description',
+         'callback' => 'cdm_dataportal_view_search_taxon_by_description',
+@@ -665,7 +625,7 @@
+         return $block;
+       //Creating a block specific for the Use Interface.
+       case "uses":
+-        $block['subject'] = t('Uses');
++      	$block['subject'] = t('Uses');
+         $block['content'] = theme('cdm_block_uses');
+         return $block;
+       case "fundedByEDIT":
+Index: theme/cdm_dataportal.taxon.theme
+===================================================================
+--- theme/cdm_dataportal.taxon.theme	(revision 16421)
++++ theme/cdm_dataportal.taxon.theme	(revision 15801)
+@@ -332,15 +332,9 @@
+       }
+     }
+ 
+-    /*
+-     * the score field will be empty in case of MultiTermQueries like
+-     * WildcardQueries, since these are  constant score by default
+-     * since Lucene 2.9
+-     */
+-    if(isset($freetextSearchResults[$itemCnt]) && $freetextSearchResults[$itemCnt]->score && $freetextSearchResults[$itemCnt]->maxScore){
+-      $percentage =  ( $freetextSearchResults[$itemCnt]->score / $freetextSearchResults[$itemCnt]->maxScore ) * 100;
+-      $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . $percentage .'% "></div></div>';
+-      $out .= '<div class="score-bar-value">' . number_format($percentage, 2) .'%</div>';
++    if(isset($freetextSearchResults[$itemCnt])) {
++      $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . ($freetextSearchResults[$itemCnt]->score * 100.0) .'% "></div></div>';
++      $out .= '<div class="score-bar-value">' . number_format($freetextSearchResults[$itemCnt]->score * 100.0, 2) .'%</div>';
+     }
+ 
+     // render highlighted fragments, these are made available by free text searches
+@@ -349,8 +343,7 @@
+       if( count($field_fragments) > 0 ){
+           $fragments_out = '';
+           foreach($field_fragments as $fieldName => $fragments) {
+-
+-            $fragments_out .= '... <span class="' . $fieldName. '">' . filter_xss(join(" ... ", $fragments), array('b') ) . '</span>';
++            $fragments_out .= '... <span class="' . $fieldName. '">' . join(" ... ", $fragments) . '</span>';
+           }
+           $out .= '<div class="fragment_highlight">' . $fragments_out . ' ...</div>';
+       }
+Index: theme/cdm_dataportal.page.theme
+===================================================================
+--- theme/cdm_dataportal.page.theme	(revision 16421)
++++ theme/cdm_dataportal.page.theme	(revision 15801)
+@@ -140,12 +140,10 @@
+         $hasStructuredData = $hasStructuredData->Boolean == 'true';
+         if($hasStructuredData){
+           $structured_description_featuretree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, false);
+-          if($structured_description_featuretree_uuid) {
+-            $naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array($taxonDescription->uuid, $structured_description_featuretree_uuid));
+-            //$out .= print_r($naturallanguage_textData);
+-            if(!$naturallanguage_textData){
+-              drupal_set_message('The \'FeatureTree\' for the generation of natural language representations is not configured correctly, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/layout/taxon'), 'warning');
+-            }
++          $naturallanguage_textData = cdm_ws_get(CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION, array($taxonDescription->uuid, $structured_description_featuretree_uuid));
++          //$out .= print_r($naturallanguage_textData);
++          if(!$naturallanguage_textData){
++            drupal_set_message('The \'FeatureTree\' for the generation of natural language representations is not configured correctly, please select a \'FeatureTree\' in the '.l('CDM Dataportal Settings', 'admin/settings/cdm_dataportal/layout/taxon'), 'warning');
+           }
+           $taxonDescription->elements = null;
+           $taxonDescription->elements = array($naturallanguage_textData);
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:mergeinfo
+   Reverse-merged /trunk/drupal/5.x/modules/cdm_dataportal:r15656-15660,15662-15663,15665-15667,15669-15688,15690-15710,15712-15755,15758-15762,15764-15774,15776-15777,15780-15781,15783-15784,15786,15788,15791-15798,15800-16420
+   Reverse-merged /branches/drupal/Kew_dataportal/5.x/modules/cdm_dataportal:r15317-15754
+

@@ -74,7 +74,7 @@ function ext_links_admin($form, &$form_state) {
     'check_title' => 'Display NYBG link?',
     'link_title' => 'NYBG link',
     'link_description' => 'The link to NCBI without the taxon name.',
-    'concat_default_value' => ' ',
+    'concat_default_value' => '+AND+',
     'text_title' => 'NYBG text',
     'text_description' => 'The text of the link that is displayed..',
     'category' => 'Category',
@@ -404,7 +404,7 @@ function ext_links_block_view($delta) {
         if (!empty($taxon)) {
           drupal_add_js(drupal_get_path('module', 'ext_links') . '/ext_links.js');
           $speciesName = getSpeciesName($taxon);
-          
+
           $genus = $taxon->name->taggedName[0]->text;
           $species = $taxon->name->taggedName[1]->text;
           $block_content = '';
@@ -464,7 +464,7 @@ function ext_links_block_view($delta) {
         }
       }
       // If path.
-      return $block; 
+      return $block;
   } /* switch */
 
 }
@@ -524,18 +524,18 @@ function theme_ext_links_list_grouped($variables) {
     $categories['biocase']['content'] = '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_biocase_link', $ext_links_default['biocase']['link_default_value']) . str_replace('"', '%22', $speciesName['genus']) . variable_get('ext_links_biocase_concat', ' ') . str_replace('"', '%22', $speciesName['species']) . '\')">' . variable_get('ext_links_biocase_text', $ext_links_default['biocase']['text_default_value']) . '</a><br />';
   }
   if (variable_get('ext_links_nybg_check', 1)) {
+    $query = '';
     $genusQuery = '';
     $speciesQuery = '';
     if ($speciesName['genus'] != NULL) {
-      $genusQuery = 'DetFiledAsGenusLocal+%3D+\%27' . $speciesName['genus'] . '\%27';
+      $query .= 'DetFiledAsGenusLocal+%3D+\%27'. $speciesName['genus']. '\%27';
     }
     if ($speciesName['species'] != NULL) {
-      $speciesQuery = 'DetFiledAsSpeciesLocal+%3D+\%27' . $speciesName['species'] . '\%27';
+      $query .= variable_get('ext_links_nybg_concat', '+AND+'). 'DetFiledAsSpeciesLocal+%3D+\%27'. $speciesName['species'] . '\%27';
     }
     $categoryTitles[] = variable_get('ext_links_nybg_category', $ext_links_default['nybg']['category_default_value']);
     $categories['nybg']['title'] = variable_get('ext_links_nybg_category', $ext_links_default['nybg']['category_default_value']);
-    $categories['nybg']['content'] = '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_nybg_link', $ext_links_default['nybg']['link_default_value']) . $genusQuery . variable_get('ext_links_nybg_concat', '+AND+') . $speciesQuery . '\')">' . variable_get('ext_links_nybg_text', $ext_links_default['nybg']['text_default_value']) . '</a><br />';
-
+    $categories['nybg']['content'] = '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default['nybg']['link_default_value']).$query.'\')">'.variable_get('ext_links_nybg_text', $ext_links_default['nybg']['text_default_value']).'</a><br />';
   }
   if (variable_get('ext_links_tropicos_check', 1)) {
     $categoryTitles[] = variable_get('ext_links_tropicos_category', $ext_links_default['tropicos']['category_default_value']);
@@ -781,7 +781,7 @@ function ext_links_get_default() {
     'category_default_value' => 'Specimens/Occurrences',
   );
   $ext_links_default["nybg"] = array(
-    'link_default_value' => 'http://rbg-web2.rbge.org.uk/cgi-bin/nph-readbtree.pl/dataset=NYBG/filename=names3/firstval=1/multiaddr=/multiform=multisite3.php?ETI=',
+    'link_default_value' => 'http://sweetgum.nybg.org/vh/specimen_list.php?Where=',
     'text_default_value' => 'Search NYBG...',
     'category_default_value' => 'Specimens/Occurrences',
   );

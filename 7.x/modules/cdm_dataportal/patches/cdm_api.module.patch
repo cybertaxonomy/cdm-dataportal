@@ -1,0 +1,20 @@
+--- cdm_api/cdm_api.module	(revision 16421)
++++ cdm_api/cdm_api.module	(revision 15801)
+@@ -534,14 +534,8 @@
+   drupal_goto($_REQUEST['destination']);
+ }
+ 
+-/**
+- * Constructs from a given URI a cdm_api/proxy URI.
+- *
+- * @param unknown_type $uri
+- * @param unknown_type $theme
+- */
+ function uri_uriByProxy($uri, $theme = false){
+-  //
++  // usage: url('cdm_api/proxy/'.urlencode($content_url)."/$theme");)
+   return url('cdm_api/proxy/'.urlencode($uri).($theme?"/$theme":''));
+ }
+ 
+Index: ext_links/ext_links.module
+===================================================================

@@ -1,0 +1,33 @@
+--- theme/cdm_dataportal.taxon.theme	(revision 16421)
++++ theme/cdm_dataportal.taxon.theme	(revision 15801)
+@@ -332,15 +332,9 @@
+       }
+     }
+ 
+-    /*
+-     * the score field will be empty in case of MultiTermQueries like
+-     * WildcardQueries, since these are  constant score by default
+-     * since Lucene 2.9
+-     */
+-    if(isset($freetextSearchResults[$itemCnt]) && $freetextSearchResults[$itemCnt]->score && $freetextSearchResults[$itemCnt]->maxScore){
+-      $percentage =  ( $freetextSearchResults[$itemCnt]->score / $freetextSearchResults[$itemCnt]->maxScore ) * 100;
+-      $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . $percentage .'% "></div></div>';
+-      $out .= '<div class="score-bar-value">' . number_format($percentage, 2) .'%</div>';
++    if(isset($freetextSearchResults[$itemCnt])) {
++      $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . ($freetextSearchResults[$itemCnt]->score * 100.0) .'% "></div></div>';
++      $out .= '<div class="score-bar-value">' . number_format($freetextSearchResults[$itemCnt]->score * 100.0, 2) .'%</div>';
+     }
+ 
+     // render highlighted fragments, these are made available by free text searches
+@@ -349,8 +343,7 @@
+       if( count($field_fragments) > 0 ){
+           $fragments_out = '';
+           foreach($field_fragments as $fieldName => $fragments) {
+-
+-            $fragments_out .= '... <span class="' . $fieldName. '">' . filter_xss(join(" ... ", $fragments), array('b') ) . '</span>';
++            $fragments_out .= '... <span class="' . $fieldName. '">' . join(" ... ", $fragments) . '</span>';
+           }
+           $out .= '<div class="fragment_highlight">' . $fragments_out . ' ...</div>';
+       }
+Index: theme/cdm_dataportal.page.theme
+===================================================================

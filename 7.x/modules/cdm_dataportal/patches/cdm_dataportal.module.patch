@@ -1,0 +1,87 @@
+--- cdm_dataportal.module	(revision 16421)
++++ cdm_dataportal.module	(revision 15801)
+@@ -31,47 +31,6 @@
+ require_once('classes/renderhints.php');
+ 
+ 
+-/**
+- * loads external java script files asynchronously.
+- *
+- * @param unknown_type $script_url
+- */
+-function drupal_add_js_async($script_url, $callback){
+-
+-  drupal_add_js("
+-      if (Drupal.jsEnabled) {
+-          $(document).ready(function() {
+-            $.ajax({
+-              url: '" . $script_url . "',
+-              dataType: 'script',
+-              cache: true, // otherwise will get fresh copy every page load
+-              success: function() {
+-                    " . $callback . "
+-              }
+-            });
+-          });
+-        }"
+-        , 'inline');
+-}
+-
+-/**
+- * @param unknown_type $link_element_selector
+- * @param unknown_type $progress_element_selector
+- */
+-function _add_js_cdm_ws_progressbar($link_element_selector, $progress_element_selector){
+-
+-  $callback = "$('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');";
+-
+-  drupal_add_js_async(variable_get('cdm_webservice_url', '').'js/cdm_ws_progress.js', $callback);
+-
+-//   drupal_add_js("
+-//   	  if (Drupal.jsEnabled) {
+-//         $(document).ready(function() {
+-//       		$('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');
+-//         });
+-//       }", 'inline');
+-}
+-
+ function _add_js_treeselector(){
+   //drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/treeselector.js');
+   drupal_add_js("
+@@ -80,6 +39,7 @@
+           $('#cdm-taxonomictree-selector-form #edit-val').change(function () {
+               $('#cdm-taxonomictree-selector-form').submit();
+           });
++
+       });
+     }", 'inline');
+ }
+@@ -414,7 +374,7 @@
+     );
+ 
+     $items[] = array(
+-       'title' => t('Advanced'),
++    	 'title' => t('Advanced'),
+         'access' => TRUE,
+         'path' => 'cdm_dataportal/search/advanced',
+         'callback' => 'cdm_dataportal_view_search_advanced',
+@@ -423,7 +383,7 @@
+     );
+ 
+     $items[] = array(
+-        'title' => t('By description full text'),
++      	'title' => t('By description full text'),
+         'access' => TRUE,
+         'path' => 'cdm_dataportal/search/taxon_by_description',
+         'callback' => 'cdm_dataportal_view_search_taxon_by_description',
+@@ -665,7 +625,7 @@
+         return $block;
+       //Creating a block specific for the Use Interface.
+       case "uses":
+-        $block['subject'] = t('Uses');
++      	$block['subject'] = t('Uses');
+         $block['content'] = theme('cdm_block_uses');
+         return $block;
+       case "fundedByEDIT":
+Index: theme/cdm_dataportal.taxon.theme
+===================================================================

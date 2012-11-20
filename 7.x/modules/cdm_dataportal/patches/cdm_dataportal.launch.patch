@@ -1,0 +1,13 @@
+--- ide/eclipse/cdm_dataportal.launch	(revision 16421)
++++ ide/eclipse/cdm_dataportal.launch	(revision 15801)
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+ <launchConfiguration type="org.eclipse.php.debug.core.launching.webPageLaunch">
+ <booleanAttribute key="auto_generated_url" value="false"/>
+-<stringAttribute key="base_url" value="http://127.0.0.1/cyprus/?q=admin/settings/cdm_dataportal/general"/>
++<stringAttribute key="base_url" value="http://127.0.0.1/cyprus/?q=cdm_dataportal/taxon/2e58b1ab-03a9-4693-bcec-3b8e7f04b572"/>
+ <stringAttribute key="debugOutputEncoding" value="UTF-8"/>
+ <stringAttribute key="debugPages" value="debugAllPages"/>
+ <stringAttribute key="debugTransferEncoding" value="UTF-8"/>
+Index: cdm_dataportal.module
+===================================================================

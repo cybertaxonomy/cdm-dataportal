@@ -370,6 +370,39 @@ function theme_cdm_descriptionElement_CommonTaxonName($variables) {
 }
 
 /**
+* @todo Please document this function.
+* @see http://drupal.org/node/1354
+*/
+function theme_cdm_descriptionElement_CategoricalData($variables) {
+  $element = $variables['element'];
+  $state_data_strings = array();
+  if (isset($element->states)) {
+    foreach ($element->states as $stateData) {
+        $state = cdm_term_representation($stateData->state);
+
+        $modifyingText = NULL;
+        if (isset($stateData->modifyingText_L10n)) {
+          $stateData->modifyingText_L10n;
+        }
+
+        $modifiers_strings = array();
+        if (isset($stateData->modifiers)) {
+          foreach ($stateData->modifiers as $modifier) {
+            $modifiers_strings[] = cdm_term_representation($modifier);
+          }
+        }
+
+        $state_data_strings[] = $state
+          . ($modifyingText ? $modifyingText : '')
+          . (count($modifiers_strings) > 0 ? implode(', ', $modifiers_strings): '');
+
+    }
+  }
+  $out = '<span class="' . html_class_atttibute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
+  return $out;
+}
+
+/**
  * Returns HTML for citations textdata elements.
  *
  * TODO: assign a new name to the function? Because it is used for the citations
@@ -622,26 +655,33 @@ function theme_cdm_descriptionElements($variables) {
       // --- USE TEXTDATA --- //
       elseif ($descriptionElement->feature->uuid == UUID_USE) {
         // Do nothing to avoid rendering.
+      } else {
+        /* decide based on the description element class
+         *
+         * TODO provide api_hook as extension point for this
+         */
+        switch ($descriptionElement->class) {
+          case 'TextData':
+            $asListElement = TRUE;
+            $outArray[] = theme('cdm_descriptionElementTextData', array(
+              'element' => $descriptionElement,
+              'asListElement' => $asListElement,
+              'feature_uuid' => $descriptionElement->feature->uuid,
+            ));
+            break;
+          case 'CommonTaxonName':
+            $outArray[] = theme('cdm_descriptionElement_CommonTaxonName', array('element' => $descriptionElement));
+          break;
+          case 'CategoricalData':
+            $outArray[] = theme('cdm_descriptionElement_CategoricalData', array('element' => $descriptionElement));
+            break;
+        case 'Uses':
+        	/* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
+          break;
+        default:
+        $outArray[] = '<li>No method for rendering unknown description class: ' . $descriptionElement->class . '</li>';
       }
-
-      // ---- class == TextData ---- //
-      elseif ($descriptionElement->class == 'TextData') {
-        $asListElement = TRUE;
-        $outArray[] = theme('cdm_descriptionElementTextData', array(
-          'element' => $descriptionElement,
-          'asListElement' => $asListElement,
-          'feature_uuid' => $descriptionElement->feature->uuid,
-        ));
-      }
-      elseif ($descriptionElement->class == 'CommonTaxonName') {
-        $outArray[] = theme('cdm_descriptionElement_CommonTaxonName', array('element' => $descriptionElement));
-      }
-      elseif ($descriptionElement->class == 'Uses') {
-        /* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
-      }
-      else {
-        $outArray[] = '<li>No method for rendering unknown description class: ' . $descriptionElement->classType . '</li>';
-      }
+    }
     }
   }
 
@@ -1258,9 +1298,11 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
     // Render edges of the current node.
     foreach ($polytomousKeyNode->children as &$child) {
 
-      if (!isset($child->statement)) {
+      if (!isset($child->statement) && isset($child->taxon->uuid)) {
         // Skip node with empty statements (see below for explanation: "Special
         // case").
+        // this skipping here happens always in the next deeper level of iteration
+        // the check below is node on the level above
         continue;
       }
 

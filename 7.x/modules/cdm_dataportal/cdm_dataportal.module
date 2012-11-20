@@ -38,12 +38,51 @@ module_load_include('php', 'cdm_dataportal', 'classes/footnotekey');
 module_load_include('php', 'cdm_dataportal', 'classes/renderhints');
 
 /**
+* loads external java script files asynchronously.
+*
+* @param unknown_type $script_url
+*/
+function drupal_add_js_async($script_url, $callback){
+
+  drupal_add_js("
+        jQuery(document).ready(function() {
+          jQuery.ajax({
+            url: '" . $script_url . "',
+            dataType: 'script',
+            cache: true, // otherwise will get fresh copy every page load
+            success: function() {
+                  " . $callback . "
+            }
+          });
+        });"
+  , 'inline');
+}
+
+/**
+ * @param unknown_type $link_element_selector
+ * @param unknown_type $progress_element_selector
+ */
+function _add_js_cdm_ws_progressbar($link_element_selector, $progress_element_selector){
+
+  $callback = "jQuery('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');";
+
+  drupal_add_js_async(variable_get('cdm_webservice_url', '').'js/cdm_ws_progress.js', $callback);
+
+  //   drupal_add_js("
+  //   	  if (Drupal.jsEnabled) {
+  //         $(document).ready(function() {
+  //       		$('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');
+  //         });
+  //       }", 'inline');
+  }
+
+/**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
 function _add_js_treeselector() {
   // drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/treeselector.js');
-  drupal_add_js("    
+  drupal_add_js("
       jQuery(document).ready(function() {
          jQuery('#cdm-taxonomictree-selector-form #edit-val').change(function () {
               jQuery('#cdm-taxonomictree-selector-form').submit();
@@ -90,7 +129,7 @@ function _add_js_openlayers_map() {
     drupal_add_js('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1', array('type' => 'external'));
   }
 
-  drupal_add_js("        
+  drupal_add_js("
           jQuery(document).ready(function() {
               jQuery('#openlayers_map').cdm_openlayers_map('"
               . getEDITMapServiceURI() . "', {
@@ -596,7 +635,7 @@ function cdm_dataportal_user_form_submit($form, &$form_state) {
       ))), $msg_type);
     }
     else {
-      drupal_set_message(check_plain(t('The user default tab wont be used for 
+      drupal_set_message(check_plain(t('The user default tab wont be used for
         the next taxon site, check the box if you want to use the user default configuration.')));
     }
     // Problem with the user id => variables wont be saved.
@@ -803,6 +842,7 @@ function cdm_dataportal_theme() {
       'enclosingHtml' => 'ul',
       )),
     'cdm_descriptionElement_CommonTaxonName' => array('render element' => 'element'),
+    'cdm_descriptionElement_CategoricalData' => array('render element' => 'element'),
     'cdm_descriptionElementTextData' => array('variables' => array(
       'element' => NULL,
       'asListElement' => NULL,

@@ -1,0 +1,27 @@
+diff-trunk_drupal_5.x_themes-from-r15273-to-r16261.diff
+
+has been split up in to individual files:
+
+
+done | patch
+-----+---------------------------------
+[a]    dipterablock.profile.patch - file has been removed
+[a]    diptera.profile.patch - file has been removed
+[a]    page.tpl.php.patch - garland_cichorieae/page.tpl.php
+[m]    template.php.patch - garland_cichorieae/template.php
+[m]    template.php.patch.0 - palmweb_2/template.php {
+	
+bibliography block changes need to be merged into the new file, this block has been moved in to 
+/home/andreas/workspaces/_svn-trunk/dataportal-to-drupal7/7.x/modules/cdm_dataportal/theme/cdm_dataportal.bibliography.theme
+
+lines 362 to 849
+mainly copied from source file 
+}
+
+---------------------------------------
+
+legend
+i: ignored
+m: manually
+p: hunks partially
+a: all hunks

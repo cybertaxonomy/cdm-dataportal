@@ -1,0 +1,44 @@
+--- ext_links/ext_links.module	(revision 16421)
++++ ext_links/ext_links.module	(revision 15801)
+@@ -59,7 +59,7 @@
+ 		'check_title' => 'Display NYBG link?',
+ 		'link_title' => 'NYBG link',
+ 		'link_description' => 'The link to NCBI without the taxon name.',
+-		'concat_default_value' => '+AND+',
++		'concat_default_value' => ' ',
+ 		'text_title' => 'NYBG text',
+ 		'text_description' => 'The text of the link that is displayed..',
+ 		'category' => 'Category',
+@@ -322,7 +322,7 @@
+ 	'category_default_value' => 'Specimens/Occurrences',
+ 	);
+ 	$ext_links_default["nybg"] = array(
+- 		'link_default_value' => 'http://sweetgum.nybg.org/vh/specimen_list.php?Where=',
++ 		'link_default_value' => 'http://rbg-web2.rbge.org.uk/cgi-bin/nph-readbtree.pl/dataset=NYBG/filename=names3/firstval=1/multiaddr=/multiform=multisite3.php?ETI=',
+ 		'text_default_value' => 'Search NYBG...',
+ 		'category_default_value' => 'Specimens/Occurrences',
+ 	);
+@@ -567,18 +567,17 @@
+ 		$categories['biocase']['content'] = '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_biocase_link', $ext_links_default[biocase][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_biocase_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_biocase_text', $ext_links_default[biocase][text_default_value]).'</a><br />';
+ 	}
+ 	if(variable_get('ext_links_nybg_check', 1)) {
+-	  $query = '';
+ 		$genusQuery = '';
+ 		$speciesQuery = '';
+ 		if($speciesName[genus] != null) {
+-			$query .= 'DetFiledAsGenusLocal+%3D+\%27'. $speciesName[genus]. '\%27';
++			$genusQuery = 'DetFiledAsGenusLocal+%3D+\%27'. $speciesName[genus]. '\%27';
+ 		}
+ 		if($speciesName[species] != null) {
+-			$query .= variable_get('ext_links_nybg_concat', '+AND+'). 'DetFiledAsSpeciesLocal+%3D+\%27'. $speciesName[species] . '\%27';
++			$speciesQuery = 'DetFiledAsSpeciesLocal+%3D+\%27'. $speciesName[species] . '\%27';
+ 		}
+ 		$categoryTitles[] = variable_get('ext_links_nybg_category', $ext_links_default[nybg][category_default_value]);
+ 		$categories['nybg']['title'] = variable_get('ext_links_nybg_category', $ext_links_default[nybg][category_default_value]);
+-		$categories['nybg']['content'] = '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default[nybg][link_default_value]).$query.'\')">'.variable_get('ext_links_nybg_text', $ext_links_default[nybg][text_default_value]).'</a><br />';
++		$categories['nybg']['content'] = '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default[nybg][link_default_value]).$genusQuery.variable_get('ext_links_nybg_concat', '+AND+').$speciesQuery.'\')">'.variable_get('ext_links_nybg_text', $ext_links_default[nybg][text_default_value]).'</a><br />';
+ 
+ 	}
+ 	if(variable_get('ext_links_tropicos_check', 1)) {
+Index: ide/eclipse/cdm_dataportal.launch
+===================================================================

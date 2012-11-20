@@ -1,0 +1,60 @@
+--- test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_FootnoteTest.java	(revision 16421)
++++ test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_FootnoteTest.java	(revision 15801)
+@@ -16,7 +16,6 @@
+ import java.util.List;
+ import java.util.UUID;
+ 
+-import org.junit.Ignore;
+ import org.junit.Test;
+ 
+ import eu.etaxonomy.dataportal.DataPortalContext;
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.10.5-fx.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/disable_add_on_compatibility_checks-1.3.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.6.2.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.6.2.xpi
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.8.3.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firebug-1.8.3.xpi
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/add_on_compatibility_reporter-0.8.3-fx+tb+sm.xpi
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firexpath-0.9.6.1-fx.xpi
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: test/java/dataportal-selenium-tests/src/main/resources/org/mozilla/addons/firexpath-0.9.6.1-fx.xpi
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: test/java/dataportal-selenium-tests/pom.xml
+===================================================================

@@ -197,6 +197,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
 
   /* Dead code:
    *
+   * Disabled code; can this be removed?
   if ($feature_uuid == UUID_NAME_USAGE){ foreach($element->sources as
   $source){ $referenceCitation =
   cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
