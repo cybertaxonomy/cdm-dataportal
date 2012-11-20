@@ -1298,9 +1298,11 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
     // Render edges of the current node.
     foreach ($polytomousKeyNode->children as &$child) {
 
-      if (!isset($child->statement)) {
+      if (!isset($child->statement) && isset($child->taxon->uuid)) {
         // Skip node with empty statements (see below for explanation: "Special
         // case").
+        // this skipping here happens always in the next deeper level of iteration
+        // the check below is node on the level above
         continue;
       }
 
