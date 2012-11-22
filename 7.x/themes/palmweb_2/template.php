@@ -30,7 +30,7 @@ function palmweb_2_cdm_taxon_page_profile($variables){
   if (!$hideImages) {
     // Preferred image.
     // Hardcoded for testing.
-    $defaultRepresentationPart = FALSE;
+    $defaultRepresentationPart = new stdClass();
     $defaultRepresentationPart->width = 184;
     $defaultRepresentationPart->height = 144;
     $defaultRepresentationPart->uri = drupal_get_path('theme', 'palmweb_2') . '/images/no_picture.png';
@@ -221,6 +221,7 @@ function palmweb_2_cdm_feature_nodes($variables){
     if (hasFeatureNodeDescriptionElements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
+      $block = new stdClass();
       $block->module = 'cdm_dataportal';
       // If the option is enabled the description elements will be added
       // to the array.
