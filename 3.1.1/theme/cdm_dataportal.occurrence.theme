@@ -1,0 +1,161 @@
+<?php
+/**
+ * @file
+ * Occurrence theming functions.
+ *
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ */
+
+/**
+ * Returns HTML for a specimen.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - specimenTypeDesignation: Object.
+ *
+ * @ingroup themeable
+ */
+function theme_cdm_specimen($variables) {
+  $specimenTypeDesignation = $variables['specimenTypeDesignation'];
+
+  // _add_js_thickbox();
+  if (isset($specimenTypeDesignation->typeSpecimen)) {
+    $derivedUnitFacade = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $specimenTypeDesignation->typeSpecimen->uuid);
+  }
+
+  $out = '';
+  if (isset($specimenTypeDesignation->media[0])) {
+
+    $image_url = drupal_get_path('module', 'cdm_dataportal') . '/images/external_link.gif';
+    // Thickbox has problems reading the first url parameter, so a litte hack is
+    // needed here:
+    // Adding a meaningless parameter &tb_hack=1& ....
+    $out .= '&nbsp;<a href="#TB_inline?tb_hack=1&width=300&amp;height=330&amp;inlineId=specimen_media_' . $specimenTypeDesignation->uuid . '" class="thickbox">' . '<img src="' . $image_url . '" title="' . t('Show media') . '" /></a>';
+
+    $out .= '<div id="specimen_media_' . $specimenTypeDesignation->uuid . '" class="tickbox_content"><table>';
+
+    $media_row = '<tr class="media_data">';
+    $meta_row = '<tr class="meta_data">';
+
+    foreach ($specimenTypeDesignation->media as $media) {
+      foreach ($media->representations as $representation) {
+
+        // TODO this this is PART 2/2 of a HACK - select preferred
+        // representation by mimetype and size.
+        if (TRUE || $representation->mimeType == 'image/jpeg') {
+          foreach ($representation->parts as $part) {
+            // Get media uri conversion rules if the module is installed and
+            // activated.
+            if (module_exists('cdm_mediauri')) {
+              $muris = cdm_mediauri_conversion($part->uri);
+            }
+            // --- Handle media preview rules.
+            if (isset($muris['preview'])) {
+
+              $a_child = '<img src="' . $muris['preview']['uri'] . '" class="preview" ' . ($muris['preview']['size_x'] ? 'width="' . $muris['preview']['size_x'] . '"' : '') . ($muris['preview']['size_y'] ? 'width="' . $muris['preview']['size_y'] . '"' : '') . '/>';
+            }
+            else {
+              $a_child = '<img src="' . $part->uri . '" />';
+            }
+
+            // --- Handle web application rules.
+            $webapp = '';
+            if (isset($muris['webapp'])) {
+              if ($muris['webapp']['embed_html']) {
+                // Embed in same page.
+                $webapp = $muris['webapp']['embed_html'];
+              }
+              else {
+                $webapp = l(t('web application'), $muris['webapp']['uri']);
+              }
+            }
+            $media_row .= '<td><a href="' . $part->uri . '" target="' . $part->uuid . '">' . $a_child . '</a></td>';
+            $meta_row .= '<td><span class="label">' . check_plain($specimenTypeDesignation->titleCache) . '</span><div class="webapp">' . $webapp . '</div></td>';
+          } // END parts.
+          // TODO this is PART 2/2 of a hack.
+          break;
+        } // END representations.
+      } // END media.
+    }
+    $out .= $media_row . '</tr>';
+    $out .= $meta_row . '</tr>';
+
+    $out .= '</div></table>';
+  }
+  return $out;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function theme_cdm_derivedUnitFacade($variables) {
+  $derivedUnitFacade = $variables['derivedUnitFacade'];
+  $out = '';
+
+  static $excludeFields = array(
+    'class',
+    'titleCache',
+    'derivedUnitMedia',
+  );
+  static $fieldLabels = array(
+    'fieldNumber' => 'Collectors number',
+    'absoluteElevation' => 'Altitude',
+    'absoluteElevationMinimum' => 'Altitude maximum',
+    'absoluteElevationMaximum' => 'Altitude minimum',
+    'getGatheringPeriod' => 'Gathering period',
+  );
+
+  if (is_object($derivedUnitFacade)) {
+    $out = '<dl>';
+    foreach (get_object_vars($derivedUnitFacade) as $field => $value) {
+      if (!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class)))) {
+        switch ($field) {
+          case 'locality':
+            $stringValue = $value->text;
+            break;
+
+          case 'country':
+            $stringValue = $value->representation_L10n;
+            break;
+
+          case 'collector':
+            $stringValue = $value->titleCache;
+            break;
+
+          case 'collection':
+            $stringValue = $value->titleCache;
+            break;
+
+          case 'exactLocation':
+            $stringValue = $value->sexagesimalString;
+            break;
+
+          case 'getGatheringPeriod':
+            $stringValue = timePeriodToString($value);
+            break;
+
+          default:
+            $stringValue = $value;
+        }
+        // Relabel field names.
+        if (isset($fieldLabels[$field])) {
+          $field = $fieldLabels[$field];
+        }
+        $field = preg_replace('/([a-z])([A-Z])/e', "'\\1 '.strtolower('\\2')", $field);
+        $values[] = '<dt>' . t(ucfirst($field)) . ':</dt><dd>' . $stringValue . '</dd>';
+      }
+    }
+    sort($values);
+    $out .= implode('', $values);
+    $out .= '</dl>';
+  }
+  return $out;
+}
