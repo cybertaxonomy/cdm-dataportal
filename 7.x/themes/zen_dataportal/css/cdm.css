@@ -54,3 +54,18 @@ ul.homotypicSynonyms,
 ul.heterotypicSynonymyGroup {
   border-bottom: 1px solid #dedede;
 }
+
+/*
+ * Theme settings page
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000352}}
+#system-theme-settings .image-preview {
+  width: 600px;
+  max-height: 150px;
+  overflow: auto;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000356}}
+#system-theme-settings .image-preview img {
+  max-width: none;
+  /* reset style in mormalize.scss */
+}

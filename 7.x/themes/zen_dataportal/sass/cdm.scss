@@ -43,3 +43,19 @@ ul.homotypicSynonyms,
 ul.heterotypicSynonymyGroup {
   border-bottom:1px solid #dedede;
 }
+
+/*
+ * Theme settings page
+ */
+#system-theme-settings {
+
+	.image-preview {
+		width: 600px;
+		max-height: 150px;
+		overflow: auto; // let it scroll
+		img {
+			max-width: none; /* reset style in mormalize.scss */ 
+		}
+		
+	}
+}
