@@ -3,7 +3,7 @@
  * ======= General styles =======
  *
  * @WA comment: these styles may affect the looks of the site, since these
- * are not CDM Dataportal specific classes or ids. 
+ * are not CDM Dataportal specific classes or ids.
  * See also http://groups.drupal.org/node/6355.
  */
 body .messages {
@@ -11,7 +11,7 @@ body .messages {
   margin-top: 25px;
 }
 
-div.debug, 
+div.debug,
 h6.debug {
   background-color: #252525;
   color: #aaa;
@@ -160,7 +160,7 @@ ul.cdm_names, ul.cdm_names li{
 }
 
 /*
-ul.cdm_names a:link, 
+ul.cdm_names a:link,
 ul.cdm_names .Synonym a:visited {
   color: #7c7c7f;
 }
@@ -312,12 +312,15 @@ a.toc:visited {
   margin-top: 20px;
 }
 
-/* 
-Important, otherwise the media viewer will be displayed over the
+/*
+WA: Important, otherwise the media viewer will be displayed over the
 Drupal Admin Overlay when this is used.
+
+AK: this is not working since 'position: absolute;' will casue the content continer to be not extended to the site of
+the image viewer
 */
 div.cdm_media_viewer_image {
-  position: absolute;
+  /* position: absolute; */
   z-index: 1;
 }
 #openlayers {
@@ -362,8 +365,8 @@ div.cdm_media_viewer_image {
   display: none;
 }
 .media-caption dd.title {
-  font-weight: bold;
-  font-size: 130%;
+  /* font-weight: bold;
+  font-size: 130%; */
 }
 
 .cdm_names .media-caption {
@@ -527,4 +530,4 @@ div.cdm_media_viewer_image {
 }
 #block-system-help .content {
   margin: 0;
-} 
+}

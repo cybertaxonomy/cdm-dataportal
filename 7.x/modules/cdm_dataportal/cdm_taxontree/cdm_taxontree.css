@@ -33,7 +33,7 @@ div.cdm_taxontree_scroller_y {
 /* ==== styling the tree ==== */
 
 ul.cdm_taxontree {
-  background-color: #edf5fa;
+  /* background-color: #edf5fa; */
   padding: 0pt 0pt 0.25em 1em;
   left: 0px; /* fix IE7? */
   margin: 0;
@@ -55,12 +55,16 @@ ul.cdm_taxontree li .active {
 
 ul.cdm_taxontree li.expanded,
 ul.cdm_taxontree cdm_taxontree_filter li.expanded {
+  list-style-image: none;
+  list-style-type: none;
   background: transparent url(minus.png) no-repeat scroll 0px 0.35em;
   cursor: pointer;
 }
 
 ul.cdm_taxontree li.collapsed,
 ul.cdm_taxontree cdm_taxontree_filter li.collapsed {
+  list-style-image: none;
+  list-style-type: none;
   background: transparent url(plus.png) no-repeat scroll 0px 0.35em;
   cursor: pointer;
 }
