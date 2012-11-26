@@ -61,6 +61,7 @@ stylesheets[all][] = css/nodes.css
 stylesheets[all][] = css/comments.css
 stylesheets[all][] = css/forms.css
 stylesheets[all][] = css/fields.css
+stylesheets[all][] = css/cdm.css
 stylesheets[all][] = css/print.css
 
 ; Built-in conditional stylesheet support has been removed from Zen 7.x-5.x.

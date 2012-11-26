@@ -1,0 +1,36 @@
+/**
+ * @file
+ * cdm_dataportal specific styling
+ *
+ * Style the markup found in the cdm_dataportal module.
+ */
+
+#featureTOC {
+	float:right;
+}
+
+#taxonProfileImage{
+	float: left;
+}
+
+.block-cdm-dataportal-feature {
+	clear: both;
+	dt {
+	    float: left;
+	    font-weight: bold;
+	    margin-right: 0.3em;
+	}
+}
+
+#backButton {
+	text-align: right;
+}
+
+/*
+ * Synonymy
+ */
+
+ul.homotypicSynonyms,
+ul.heterotypicSynonymyGroup {
+  border-bottom:1px solid #dedede;
+}

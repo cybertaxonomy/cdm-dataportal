@@ -81,6 +81,12 @@ $font-monospace:   $courier;
 //
 // Colors, etc.
 //
+$menu-bar-background-color: #DEDEDE;
+$menu-bar-font-size: 1.2 * $base-font-size;
+$menu-bar-text-color: #000;
+$menu-bar-line-height: 20px; // unit must be px !!!!
+
+$link-color: #115E92;
 
 // The amount lists, blockquotes and comments are indented.
 $indent-amount: 30px;

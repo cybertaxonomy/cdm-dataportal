@@ -31,8 +31,8 @@
 .region-sidebar-first,
 .region-sidebar-second,
 #footer {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -ms-box-sizing: border-box;
@@ -65,7 +65,7 @@
 @media all and (min-width: 480px) {
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\0000381}}
   #main {
-    padding-top: 3em;
+    padding-top: 30px;
     /* Move all the children of #main down to make room. */
     position: relative;
   }
@@ -75,7 +75,7 @@
     position: absolute;
     top: 0;
     /* Move the navbar up inside #main's padding. */
-    height: 3em;
+    height: 40px;
     width: 100%;
   }
 }
@@ -155,8 +155,8 @@
   }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003145}}
   .two-sidebars .region-sidebar-second .block {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -ms-box-sizing: border-box;

@@ -8,6 +8,20 @@
 @import "base";
 
 
+.block, .node { /* style links only for content in blocks and node */
+  a:link,
+  a:visited {
+    color: $link-color;
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:focus {
+    text-decoration: underline;
+  }
+}
+
+
 .node { /* Node wrapper */
 
   .preview & { /* Preview of the content before submitting new or updated content */
@@ -15,6 +29,7 @@
   }
 
   .node-title { /* Node title */
+    display: none;
   }
 
   .user-picture { /* The picture of the node author */

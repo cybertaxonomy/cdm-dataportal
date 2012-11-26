@@ -47,6 +47,7 @@ li a.active {
 #navigation {
   /* overflow: hidden; */ /* Sometimes you want to prevent overlapping with main div. */
 
+
   .block {
     margin-bottom: 0;
   }
@@ -64,12 +65,23 @@ li a.active {
 
     li { /* A simple method to get navigation links to appear in one line. */
       float: left; /* LTR */
-      padding: 0 10px 0 0; /* LTR */
+      line-height: $menu-bar-line-height;
+      padding: 0 $zen-gutter-width;
       list-style-type: none;
       list-style-image: none;
+      border-left: 1px solid $menu-bar-text-color;
+      border-right: 1px solid $menu-bar-text-color;
+      margin-left: -1px; /* collapse borders */
+    }
+    li.first {
+      border-left: 0;
+    }
+
+    li.last {
+      border-right: 0;
     }
   }
-}
+}  
 
 .region-navigation {
 }
@@ -79,6 +91,21 @@ li a.active {
  */
 
 #main-menu {
+    padding-top: $zen-gutter-width / 4; 
+    height: $menu-bar-line-height;
+    padding-left: 93px - $zen-gutter-width; // width of logo image
+    background-color: $menu-bar-background-color;
+    font-size: $menu-bar-font-size;
+    a:link,
+    a:visited {
+      color: $menu-bar-text-color;
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus {
+      text-decoration: underline;
+    }
 }
 
 #secondary-menu {

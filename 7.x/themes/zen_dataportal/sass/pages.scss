@@ -23,11 +23,10 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
 }
 
-
 #page {
   // single-box-shadow($color, $hoff, $voff, $blur, $spread, $inset)
-  @include single-box-shadow(black, 0px, 5px, 10px);
-  padding-top: $zen-gutter-width / 2;
+  @include single-box-shadow(black, 0px, 5px, 20px);
+  padding-top: $zen-gutter-width;
 }
 
 /*
@@ -54,11 +53,13 @@ h1, h2, h3, h4, h5, h6 {
  */
 
 #header {
+  margin-bottom: $zen-gutter-width / 2;
 }
 
 #logo { /* Wrapping link for logo */
   float: left; /* LTR */
   margin: 0;
+  margin-right: $zen-gutter-width / 2;
   padding: 0;
 
   img {
@@ -68,6 +69,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #name-and-slogan { /* Wrapper for website name and slogan */
   float: left;
+  margin-right: $zen-gutter-width / 2;
 }
 
 #site-name { /* The name of the website */
@@ -109,6 +111,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #content {
 }
+
 
 .region-highlighted {
 }
