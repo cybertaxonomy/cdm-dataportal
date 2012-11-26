@@ -1648,5 +1648,7 @@
 7.x/themes/zen_dataportal/screenshot.png -text svneol=unset#unset
 7.x/themes/zen_dataportal/template.php -text
 7.x/themes/zen_dataportal/templates/README.txt -text
+7.x/themes/zen_dataportal/templates/html.tpl.php -text
+7.x/themes/zen_dataportal/templates/page.tpl.php -text
 7.x/themes/zen_dataportal/theme-settings.php -text
 7.x/themes/zen_dataportal/zen_dataportal.info -text
