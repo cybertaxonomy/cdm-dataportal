@@ -8,24 +8,23 @@
  *
  * This layout uses the Zen Grids plugin for Compass: http://zengrids.com
  */
-
 /*
  * Center the page.
  */
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\0000344}}
 #page,
 .region-bottom {
   /* For screen sizes larger than 1200px, prevent excessively long lines of text
      by setting a max-width. */
   margin-left: auto;
   margin-right: auto;
-  max-width: 1200px;
+  max-width: 960px;
 }
 
 /*
  * Apply the shared properties of grid items in a single, efficient ruleset.
  */
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\0000362}}
 #header,
 #content,
 #navigation,
@@ -39,27 +38,21 @@
   -ms-box-sizing: border-box;
   box-sizing: border-box;
   word-wrap: break-word;
-  _display: inline;
-  _overflow: hidden;
-  _overflow-y: visible;
 }
 
 /*
  * Containers for grid items and flow items.
  */
-
-#header,
-#main,
-#footer {
-  *position: relative;
-  *zoom: 1;
-}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass-extensions\/zen-grids\/stylesheets\/zen\/_grids\.scss}line{font-family:\0000352}}
 #header:before, #header:after,
-#main:before, #main:after,
-#footer:before, #footer:after {
+#main:before,
+#main:after,
+#footer:before,
+#footer:after {
   content: "";
   display: table;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass-extensions\/zen-grids\/stylesheets\/zen\/_grids\.scss}line{font-family:\0000356}}
 #header:after,
 #main:after,
 #footer:after {
@@ -69,96 +62,98 @@
 /*
  * Navigation bar
  */
-
 @media all and (min-width: 480px) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\0000381}}
   #main {
-    padding-top: 3em; /* Move all the children of #main down to make room. */
+    padding-top: 3em;
+    /* Move all the children of #main down to make room. */
     position: relative;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\0000385}}
   #navigation {
     position: absolute;
-    top: 0; /* Move the navbar up inside #main's padding. */
+    top: 0;
+    /* Move the navbar up inside #main's padding. */
     height: 3em;
     width: 100%;
   }
 }
-
-/*
- * Use 3 grid columns for smaller screens.
- */
-
 @media all and (min-width: 480px) and (max-width: 959px) {
-
+  /*
+   * Use 3 grid columns for smaller screens.
+   */
   /*
    * The layout when there is only one sidebar, the left one.
    */
-
-  .sidebar-first #content { /* Span 2 columns, starting in 2nd column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003104}}
+  .sidebar-first #content {
+    /* Span 2 columns, starting in 2nd column from left. */
     float: left;
-    width: 66.667%;
-    margin-left: 33.333%;
+    width: 66.66667%;
+    margin-left: 33.33333%;
     margin-right: -100%;
   }
-  .sidebar-first .region-sidebar-first { /* Span 1 column, starting in 1st column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003108}}
+  .sidebar-first .region-sidebar-first {
+    /* Span 1 column, starting in 1st column from left. */
     float: left;
-    width: 33.333%;
+    width: 33.33333%;
     margin-left: 0%;
-    margin-right: -33.333%;
+    margin-right: -33.33333%;
   }
 
   /*
    * The layout when there is only one sidebar, the right one.
    */
-
-  .sidebar-second #content { /* Span 2 columns, starting in 1st column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003118}}
+  .sidebar-second #content {
+    /* Span 2 columns, starting in 1st column from left. */
     float: left;
-    width: 66.667%;
+    width: 66.66667%;
     margin-left: 0%;
-    margin-right: -66.667%;
+    margin-right: -66.66667%;
   }
-  .sidebar-second .region-sidebar-second { /* Span 1 column, starting in 3rd column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003122}}
+  .sidebar-second .region-sidebar-second {
+    /* Span 1 column, starting in 3rd column from left. */
     float: left;
-    width: 33.333%;
-    margin-left: 66.667%;
+    width: 33.33333%;
+    margin-left: 66.66667%;
     margin-right: -100%;
   }
 
   /*
    * The layout when there are two sidebars.
    */
-
-  .two-sidebars #content { /* Span 2 columns, starting in 2nd column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003132}}
+  .two-sidebars #content {
+    /* Span 2 columns, starting in 2nd column from left. */
     float: left;
-    width: 66.667%;
-    margin-left: 33.333%;
+    width: 66.66667%;
+    margin-left: 33.33333%;
     margin-right: -100%;
   }
-  .two-sidebars .region-sidebar-first { /* Span 1 column, starting in 1st column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003136}}
+  .two-sidebars .region-sidebar-first {
+    /* Span 1 column, starting in 1st column from left. */
     float: left;
-    width: 33.333%;
+    width: 33.33333%;
     margin-left: 0%;
-    margin-right: -33.333%;
+    margin-right: -33.33333%;
   }
-  .two-sidebars .region-sidebar-second { /* Start a new row and span all 3 columns. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003140}}
+  .two-sidebars .region-sidebar-second {
+    /* Start a new row and span all 3 columns. */
     float: left;
     width: 100%;
     margin-left: 0%;
     margin-right: -100%;
-    *position: relative;
-    *zoom: 1;
     padding-left: 0;
     padding-right: 0;
     clear: left;
   }
-  .two-sidebars .region-sidebar-second:before,
-  .two-sidebars .region-sidebar-second:after {
-    content: "";
-    display: table;
-  }
-  .two-sidebars .region-sidebar-second:after {
-    clear: both;
-  }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003145}}
   .two-sidebars .region-sidebar-second .block {
     padding-left: 10px;
     padding-right: 10px;
@@ -167,48 +162,51 @@
     -ms-box-sizing: border-box;
     box-sizing: border-box;
     word-wrap: break-word;
-    _display: inline;
-    _overflow: hidden;
-    _overflow-y: visible;
   }
-  .two-sidebars .region-sidebar-second .block:nth-child(3n+1) { /* Span 1 column, starting in the 1st column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003148}}
+  .two-sidebars .region-sidebar-second .block:nth-child(3n+1) {
+    /* Span 1 column, starting in the 1st column from left. */
     float: left;
-    width: 33.333%;
+    width: 33.33333%;
     margin-left: 0%;
-    margin-right: -33.333%;
+    margin-right: -33.33333%;
     clear: left;
   }
-  .two-sidebars .region-sidebar-second .block:nth-child(3n+2) { /* Span 1 column, starting in the 2nd column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003152}}
+  .two-sidebars .region-sidebar-second .block:nth-child(3n+2) {
+    /* Span 1 column, starting in the 2nd column from left. */
     float: left;
-    width: 33.333%;
-    margin-left: 33.333%;
-    margin-right: -66.667%;
+    width: 33.33333%;
+    margin-left: 33.33333%;
+    margin-right: -66.66667%;
   }
-  .two-sidebars .region-sidebar-second .block:nth-child(3n) { /* Span 1 column, starting in the 3rd column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003155}}
+  .two-sidebars .region-sidebar-second .block:nth-child(3n) {
+    /* Span 1 column, starting in the 3rd column from left. */
     float: left;
-    width: 33.333%;
-    margin-left: 66.667%;
+    width: 33.33333%;
+    margin-left: 66.66667%;
     margin-right: -100%;
   }
 }
-
-/*
- * Use 5 grid columns for larger screens.
- */
-
 @media all and (min-width: 960px) {
-
+  /*
+   * Use 5 grid columns for larger screens.
+   */
   /*
    * The layout when there is only one sidebar, the left one.
    */
-
-  .sidebar-first #content { /* Span 4 columns, starting in 2nd column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003173}}
+  .sidebar-first #content {
+    /* Span 4 columns, starting in 2nd column from left. */
     float: left;
     width: 80%;
     margin-left: 20%;
     margin-right: -100%;
   }
-  .sidebar-first .region-sidebar-first { /* Span 1 column, starting in 1st column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003177}}
+  .sidebar-first .region-sidebar-first {
+    /* Span 1 column, starting in 1st column from left. */
     float: left;
     width: 20%;
     margin-left: 0%;
@@ -218,14 +216,17 @@
   /*
    * The layout when there is only one sidebar, the right one.
    */
-
-  .sidebar-second #content { /* Span 4 columns, starting in 1st column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003187}}
+  .sidebar-second #content {
+    /* Span 4 columns, starting in 1st column from left. */
     float: left;
     width: 80%;
     margin-left: 0%;
     margin-right: -80%;
   }
-  .sidebar-second .region-sidebar-second { /* Span 1 column, starting in 5th column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003191}}
+  .sidebar-second .region-sidebar-second {
+    /* Span 1 column, starting in 5th column from left. */
     float: left;
     width: 20%;
     margin-left: 80%;
@@ -235,20 +236,25 @@
   /*
    * The layout when there are two sidebars.
    */
-
-  .two-sidebars #content { /* Span 3 columns, starting in 2nd column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003201}}
+  .two-sidebars #content {
+    /* Span 3 columns, starting in 2nd column from left. */
     float: left;
     width: 60%;
     margin-left: 20%;
     margin-right: -80%;
   }
-  .two-sidebars .region-sidebar-first { /* Span 1 column, starting in 1st column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003205}}
+  .two-sidebars .region-sidebar-first {
+    /* Span 1 column, starting in 1st column from left. */
     float: left;
     width: 20%;
     margin-left: 0%;
     margin-right: -20%;
   }
-  .two-sidebars .region-sidebar-second { /* Span 1 column, starting in 5th column from left. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\00003209}}
+  .two-sidebars .region-sidebar-second {
+    /* Span 1 column, starting in 5th column from left. */
     float: left;
     width: 20%;
     margin-left: 80%;

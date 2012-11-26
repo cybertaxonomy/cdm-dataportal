@@ -4,40 +4,55 @@
  *
  * Style anything that isn't in the $content variable.
  */
-
-
-.node { /* Node wrapper */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000311}}
+.node {
+  /* Node wrapper */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000313}}
+.preview .node {
+  /* Preview of the content before submitting new or updated content */
+  /* background-color: #ffffea; */
+  /* Drupal core uses a #ffffea background */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000317}}
+.node .node-title {
+  /* Node title */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000320}}
+.node .user-picture {
+  /* The picture of the node author */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000323}}
+.node .submitted {
+  /* The "posted by" information */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000326}}
+.node .content {
+  /* Node's content wrapper */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000329}}
+.node ul.links {
+  /* Node links. See also the ul.links declaration in the pages.css. */
 }
 
-.preview .node { /* Preview of the content before submitting new or updated content */
-  /* background-color: #ffffea; */ /* Drupal core uses a #ffffea background */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000334}}
+.node-promoted {
+  /* A node that has been promoted to the front page */
 }
 
-.node .node-title { /* Node title */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000337}}
+.node-sticky {
+  /* A sticky node (displayed before others in a list) */
 }
 
-.node .user-picture { /* The picture of the node author */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000340}}
+.node-by-viewer {
+  /* A node created by the current user */
 }
 
-.node .submitted { /* The "posted by" information */
-}
-
-.node .content { /* Node's content wrapper */
-}
-
-.node ul.links { /* Node links. See also the ul.links declaration in the pages.css. */
-}
-
-.node-promoted { /* A node that has been promoted to the front page */
-}
-
-.node-sticky { /* A sticky node (displayed before others in a list) */
-}
-
-.node-by-viewer { /* A node created by the current user */
-}
-
-.node-teaser { /* A node displayed as teaser */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000343}}
+.node-teaser {
+  /* A node displayed as teaser */
 }
 
 /*
@@ -45,19 +60,25 @@
  * it is. If you create a new content type called "my-custom-type", it will
  * receive a "node-my-custom-type" class.
  */
-
-.node-page { /* Page content node */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000352}}
+.node-page {
+  /* Page content node */
 }
 
-.node-article { /* Article content node */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000355}}
+.node-article {
+  /* Article content node */
 }
 
-.node-unpublished { /* Unpublished nodes */
-  /* background-color: #fff4f4; */ /* Drupal core uses a #fff4f4 background */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000358}}
+.node-unpublished {
+  /* Unpublished nodes */
+  /* background-color: #fff4f4; */
+  /* Drupal core uses a #fff4f4 background */
 }
-
-.node-unpublished p.unpublished,
-.comment-unpublished p.unpublished { /* The word "Unpublished" displayed underneath the content. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000361}}
+.node-unpublished p.unpublished {
+  /* The word "Unpublished" displayed underneath the content. */
   height: 0;
   overflow: visible;
   color: #d8d8d8;
@@ -67,10 +88,5 @@
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
-  word-wrap: break-word; /* A very nice CSS3 property */
-}
-
-.lt-ie8 .node-unpublished p.unpublished > *,
-.lt-ie8 .comment-unpublished > * {
-  position: relative; /* Otherwise these elements will appear below the "Unpublished" text. */
+  word-wrap: break-word;
 }

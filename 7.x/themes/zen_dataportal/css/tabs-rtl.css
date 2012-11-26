@@ -2,13 +2,13 @@
  * @file
  * RTL companion for the tabs.css file.
  */
-
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/tabs-rtl\.scss}line{font-family:\0000311}}
 ul.primary li,
 ul.secondary li {
   float: right;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/tabs-rtl\.scss}line{font-family:\0000317}}
 ul.primary li {
   margin: 0.5em 3px 0 0;
 }

@@ -2,12 +2,20 @@
  * @file
  * RTL companion for the fixed-width.css file.
  */
-
-
+/**
+ * @file
+ * Positioning for a fixed-width, desktop-centric layout.
+ *
+ * Define CSS classes to create a table-free, 3-column, 2-column, or single
+ * column layout depending on whether blocks are enabled in the left or right
+ * columns.
+ *
+ * This layout uses the Zen Grids plugin for Compass: http://zengrids.com
+ */
 /*
  * Center the page.
  */
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000343}}
 #page,
 .region-bottom {
   /* If you want to make the page a fixed width and centered in the viewport,
@@ -20,7 +28,7 @@
 /*
  * Apply the shared properties of grid items in a single, efficient ruleset.
  */
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000361}}
 #header,
 #content,
 #navigation,
@@ -31,27 +39,21 @@
   padding-right: 10px;
   border: 0 !important;
   word-wrap: break-word;
-  _display: inline;
-  _overflow: hidden;
-  _overflow-y: visible;
 }
 
 /*
  * Containers for grid items and flow items.
  */
-
-#header,
-#main,
-#footer {
-  *position: relative;
-  *zoom: 1;
-}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass-extensions\/zen-grids\/stylesheets\/zen\/_grids\.scss}line{font-family:\0000352}}
 #header:before, #header:after,
-#main:before, #main:after,
-#footer:before, #footer:after {
+#main:before,
+#main:after,
+#footer:before,
+#footer:after {
   content: "";
   display: table;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass-extensions\/zen-grids\/stylesheets\/zen\/_grids\.scss}line{font-family:\0000356}}
 #header:after,
 #main:after,
 #footer:after {
@@ -61,15 +63,18 @@
 /*
  * Navigation bar
  */
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000379}}
 #main {
-  padding-top: 3em; /* Move all the children of #main down to make room. */
+  padding-top: 3em;
+  /* Move all the children of #main down to make room. */
   position: relative;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000383}}
 #navigation {
   position: absolute;
-  top: 0; /* Move the navbar up inside #main's padding. */
+  top: 0;
+  /* Move the navbar up inside #main's padding. */
   height: 3em;
   width: 960px;
 }
@@ -77,7 +82,7 @@
 /*
  * The layout when there is only one sidebar, the left one.
  */
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000395}}
 .sidebar-first #content {
   /* Span 4 columns, starting in 2nd column from left. */
   float: right;
@@ -85,7 +90,7 @@
   margin-right: 196px;
   margin-left: -980px;
 }
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000399}}
 .sidebar-first .region-sidebar-first {
   /* Span 1 column, starting in 1st column from left. */
   float: right;
@@ -97,7 +102,7 @@
 /*
  * The layout when there is only one sidebar, the right one.
  */
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003109}}
 .sidebar-second #content {
   /* Span 4 columns, starting in 1st column from left. */
   float: right;
@@ -105,7 +110,7 @@
   margin-right: 0px;
   margin-left: -784px;
 }
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003113}}
 .sidebar-second .region-sidebar-second {
   /* Span 1 column, starting in 5th column from left. */
   float: right;
@@ -117,7 +122,7 @@
 /*
  * The layout when there are two sidebars.
  */
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003123}}
 .two-sidebars #content {
   /* Span 3 columns, starting in 2nd column from left. */
   float: right;
@@ -125,7 +130,7 @@
   margin-right: 196px;
   margin-left: -784px;
 }
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003127}}
 .two-sidebars .region-sidebar-first {
   /* Span 1 column, starting in 1st column from left. */
   float: right;
@@ -133,7 +138,7 @@
   margin-right: 0px;
   margin-left: -196px;
 }
-
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003131}}
 .two-sidebars .region-sidebar-second {
   /* Span 1 column, starting in 5th column from left. */
   float: right;
