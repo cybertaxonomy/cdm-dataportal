@@ -79,7 +79,7 @@ $zen-auto-include-item-base: false;
 
 @media all and (min-width: 480px) {
   #main {
-    padding-top: $menu-bar-line-height + $zen-gutter-width / 4; /* Move all the children of #main down to make room. */
+    padding-top: $menu-bar-line-height + $zen-gutter-width / 2; /* Move all the children of #main down to make room. */
     position: relative;
   }
   #navigation {
@@ -163,7 +163,7 @@ $zen-auto-include-item-base: false;
   /*
    * Use 5 grid columns for larger screens.
    */
-  $zen-column-count: 5;
+  $zen-column-count: 4;
 
   /*
    * The layout when there is only one sidebar, the left one.
@@ -171,7 +171,7 @@ $zen-auto-include-item-base: false;
 
   .sidebar-first {
     #content { /* Span 4 columns, starting in 2nd column from left. */
-      @include zen-grid-item(4, 2);
+      @include zen-grid-item(3, 2);
     }
 
     .region-sidebar-first { /* Span 1 column, starting in 1st column from left. */
@@ -185,11 +185,11 @@ $zen-auto-include-item-base: false;
 
   .sidebar-second {
     #content { /* Span 4 columns, starting in 1st column from left. */
-      @include zen-grid-item(4, 1);
+      @include zen-grid-item(3, 1);
     }
 
     .region-sidebar-second { /* Span 1 column, starting in 5th column from left. */
-      @include zen-grid-item(1, 5);
+      @include zen-grid-item(1, 4);
     }
   }
 
@@ -199,7 +199,7 @@ $zen-auto-include-item-base: false;
 
   .two-sidebars {
     #content { /* Span 3 columns, starting in 2nd column from left. */
-      @include zen-grid-item(3, 2);
+      @include zen-grid-item(2, 2);
     }
 
     .region-sidebar-first { /* Span 1 column, starting in 1st column from left. */
@@ -207,7 +207,7 @@ $zen-auto-include-item-base: false;
     }
 
     .region-sidebar-second { /* Span 1 column, starting in 5th column from left. */
-      @include zen-grid-item(1, 5);
+      @include zen-grid-item(1, 4);
     }
   }
 }
