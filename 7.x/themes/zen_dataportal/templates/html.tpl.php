@@ -90,7 +90,11 @@
   <meta http-equiv="cleartype" content="on">
 
   <?php print $styles; ?>
-  <?php print '<style type="text/css">'. "\n" . implode("\n", $inline_styles) . "\n</style>;" ?>
+  <?php if (is_array($inline_styles)) :?>
+  <style type="text/css"><!--
+  <?php print implode("\n", $inline_styles)  ?>
+  --></style>
+  <?php endif; ?>
   <?php print $scripts; ?>
   <?php if ($add_respond_js): ?>
     <!--[if lt IE 9]>
