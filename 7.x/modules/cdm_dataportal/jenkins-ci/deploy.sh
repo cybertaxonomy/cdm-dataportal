@@ -4,7 +4,7 @@
 #
 #
 #
-DRUPAL_VERSION="5"
+DRUPAL_VERSION="7"
 SVN_USER="edit-jenkins"
 
 if [ -z "$1" ]; then
