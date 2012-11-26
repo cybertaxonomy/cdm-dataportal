@@ -318,7 +318,7 @@ function theme_cdm_taxon_page_profile($variables) {
 
     // Preferred image size 184px × 144.
     $imageMaxExtend = 184;
-    $out .= '<div id="taxonProfileImage">' . $defaultRepresentationPart->uri . theme('cdm_preferredImage', array(
+    $out .= '<div id="taxonProfileImage">' . theme('cdm_preferredImage', array(
       'media' => $media,
       'defaultRepresentationPart' => $defaultRepresentationPart,
       'imageMaxExtend' => $imageMaxExtend,
