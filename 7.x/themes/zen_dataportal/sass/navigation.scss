@@ -61,7 +61,9 @@ li a.active {
   ul.menu { /* Menu block links */
     margin: 0;
     padding: 0;
+    margin-left: -$zen-gutter-width; 
     text-align: left; /* LTR */
+    display: block;
 
     li { /* A simple method to get navigation links to appear in one line. */
       float: left; /* LTR */
@@ -91,10 +93,10 @@ li a.active {
  */
 
 #main-menu {
-    padding-top: $zen-gutter-width / 4; 
-    height: $menu-bar-line-height;
+    padding: ($zen-gutter-width / 8) 0; 
     padding-left: 93px - $zen-gutter-width; // width of logo image
     background-color: $menu-bar-background-color;
+    display: block;
     font-size: $menu-bar-font-size;
     a:link,
     a:visited {

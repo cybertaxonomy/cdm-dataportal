@@ -59,10 +59,12 @@ li a.active {
   /* Menu block links */
   margin: 0;
   padding: 0;
+  margin-left: -20px;
   text-align: left;
   /* LTR */
+  display: block;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\0000366}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\0000368}}
 #navigation ul.links li,
 #navigation ul.menu li {
   /* A simple method to get navigation links to appear in one line. */
@@ -77,12 +79,12 @@ li a.active {
   margin-left: -1px;
   /* collapse borders */
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\0000376}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\0000378}}
 #navigation ul.links li.first,
 #navigation ul.menu li.first {
   border-left: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\0000380}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\0000382}}
 #navigation ul.links li.last,
 #navigation ul.menu li.last {
   border-right: 0;
@@ -91,27 +93,27 @@ li a.active {
 /*
  * Main menu and Secondary menu links
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\0000393}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\0000395}}
 #main-menu {
-  padding-top: 5px;
-  height: 20px;
+  padding: 2.5px 0;
   padding-left: 73px;
   background-color: #dedede;
+  display: block;
   font-size: 14.4px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\00003100}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\00003102}}
 #main-menu a:link,
 #main-menu a:visited {
   color: black;
   text-decoration: none;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\00003106}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\00003108}}
 #main-menu a:hover,
 #main-menu a:focus {
   text-decoration: underline;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\00003111}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/navigation\.scss}line{font-family:\00003113}}
 #secondary-menu {
   float: right;
   /* LTR */

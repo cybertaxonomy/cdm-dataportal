@@ -63,7 +63,7 @@
  *     - one-sidebar and sidebar-first or sidebar-second: A combination of the
  *       two classes when only one of the two sidebars have content.
  * - $body_background_url: from zen_dataportal theme-settings.php
- * - $inline_styles: custom styles for specific elements from zen_dataportal
+ * - $inline_styles: an array of custom styles for specific elements from zen_dataportal
  *    theme-settings.php
  *
  * @see template_preprocess()
@@ -90,7 +90,7 @@
   <meta http-equiv="cleartype" content="on">
 
   <?php print $styles; ?>
-  <?php print $inline_styles; ?>
+  <?php print '<style type="text/css">'. "\n" . implode("\n", $inline_styles) . "\n</style>;" ?>
   <?php print $scripts; ?>
   <?php if ($add_respond_js): ?>
     <!--[if lt IE 9]>
@@ -102,12 +102,6 @@
     <![endif]-->
   <?php endif; ?>
 </head>
-<?php
-  // FIXME is not save only works if no other style given
-//    if (isset($body_background_url)){
-//      $attributes .= ' style="background: white url(' . $body_background_url .')  fixed repeat;"';
-//    }
-?>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
   <?php if ($skip_link_text && $skip_link_anchor): ?>
     <p id="skip-link">
