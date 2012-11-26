@@ -15,21 +15,21 @@
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000318}}
-.block-cdm-dataportal-feature {
+.block-cdm-dataportal-feature, .media-caption {
   clear: both;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000320}}
-.block-cdm-dataportal-feature dt {
+.block-cdm-dataportal-feature dt, .media-caption dt {
   float: left;
   font-weight: bold;
   margin-right: 0.3em;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000325}}
-.block-cdm-dataportal-feature dd {
+.block-cdm-dataportal-feature dd, .media-caption dd {
   margin: 0;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000330}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000331}}
 #backButton {
   text-align: right;
 }
@@ -49,22 +49,40 @@
 /*
  * Synonymy
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000343}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000344}}
 ul.homotypicSynonyms,
 ul.heterotypicSynonymyGroup {
   border-bottom: 1px solid #dedede;
 }
 
 /*
+ * Media
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000351}}
+dl.media-caption {
+  margin: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000354}}
+.media-caption dd.title {
+  font-size: 100%;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000357}}
+.image-gallerie td.caption {
+  padding-bottom: 1em;
+}
+
+/*
  * Theme settings page
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000352}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000366}}
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000356}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000370}}
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */

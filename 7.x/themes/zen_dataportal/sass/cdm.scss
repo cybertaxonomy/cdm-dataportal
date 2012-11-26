@@ -15,7 +15,7 @@
 	float: left;
 }
 
-.block-cdm-dataportal-feature {
+.block-cdm-dataportal-feature,  .media-caption {
 	clear: both;
 	dt {
 	    float: left;
@@ -26,6 +26,7 @@
 		margin: 0;
 	}
 }
+
 
 #backButton {
 	text-align: right;
@@ -42,6 +43,19 @@
 ul.homotypicSynonyms,
 ul.heterotypicSynonymyGroup {
   border-bottom:1px solid #dedede;
+}
+
+/*
+ * Media
+ */
+dl.media-caption {
+	margin: 0;
+}
+.media-caption dd.title {
+	font-size: 100%;
+}
+.image-gallerie td.caption {
+	padding-bottom: 1em;
 }
 
 /*

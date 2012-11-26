@@ -5,20 +5,22 @@
  * Style anything that isn't in the $content variable.
  */
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000311}}
-.block, .node {
-  /* style links only for content in blocks and node */
+.block, .node, #backButton {
+  /* style links only for content in blocks and node and backbutton */
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/_custom\.scss}line{font-family:\0000363}}
 .block a:link,
 .block a:visited, .node a:link,
-.node a:visited {
+.node a:visited, #backButton a:link,
+#backButton a:visited {
   color: #115e92;
   text-decoration: none;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/_custom\.scss}line{font-family:\0000369}}
 .block a:hover,
 .block a:focus, .node a:hover,
-.node a:focus {
+.node a:focus, #backButton a:hover,
+#backButton a:focus {
   text-decoration: underline;
 }
 

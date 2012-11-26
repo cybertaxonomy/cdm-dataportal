@@ -8,7 +8,7 @@
 @import "base";
 
 
-.block, .node { /* style links only for content in blocks and node */
+.block, .node, #backButton { /* style links only for content in blocks and node and backbutton */
   @include cdm-link-style;
 }
 
