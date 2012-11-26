@@ -46,9 +46,13 @@ ul.cdm_taxontree li {
   list-style-type: none;
   white-space: nowrap;
   font-weight: normal;
+  list-style-image: none;
+  list-style-type: none;
 }
 
 ul.cdm_taxontree li .active {
+  list-style-image: none;
+  list-style-type: none;
   color: #027ac6;
   font-weight: bold;
 }
@@ -70,14 +74,20 @@ ul.cdm_taxontree cdm_taxontree_filter li.collapsed {
 }
 
 ul.cdm_taxontree li.focused {
+  list-style-image: none;
+  list-style-type: none;
   font-weight: bold;
 }
 
 ul.cdm_taxontree li.leaf {
+  list-style-image: none;
+  list-style-type: none;
   background:transparent url(menu-leaf.gif) no-repeat scroll 0px 0.35em;
 }
 
 ul.cdm_taxontree li.filter_excluded {
+  list-style-image: none;
+  list-style-type: none;
   background-image: none;
   cursor: default;
   color: #888888;
