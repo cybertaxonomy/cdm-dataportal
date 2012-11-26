@@ -65,7 +65,7 @@
 @media all and (min-width: 480px) {
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/layouts\/responsive-sidebars\.scss}line{font-family:\0000381}}
   #main {
-    padding-top: 40px;
+    padding-top: 60px;
     /* Move all the children of #main down to make room. */
     position: relative;
   }
