@@ -57,3 +57,16 @@
     }
   }
 }
+
+@mixin cdm-link-style {
+  a:link,
+  a:visited {
+    color: $link-color;
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:focus {
+    text-decoration: underline;
+  }
+}

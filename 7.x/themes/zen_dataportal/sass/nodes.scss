@@ -9,16 +9,7 @@
 
 
 .block, .node { /* style links only for content in blocks and node */
-  a:link,
-  a:visited {
-    color: $link-color;
-    text-decoration: none;
-  }
-
-  a:hover,
-  a:focus {
-    text-decoration: underline;
-  }
+  @include cdm-link-style;
 }
 
 

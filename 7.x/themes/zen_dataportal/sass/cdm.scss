@@ -5,6 +5,8 @@
  * Style the markup found in the cdm_dataportal module.
  */
 
+ @import "base";
+
 #featureTOC {
 	float:right;
 }
@@ -24,6 +26,10 @@
 
 #backButton {
 	text-align: right;
+}
+
+#search_results{
+	@include cdm-link-style;
 }
 
 /*
