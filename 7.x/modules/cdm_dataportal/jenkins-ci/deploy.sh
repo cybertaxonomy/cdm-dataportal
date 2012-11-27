@@ -73,6 +73,7 @@ tar czf drupal${DRUPAL_VERSION}-cdm_dataportal-$VERSION.tar.gz drupal${DRUPAL_VE
 rm -rf drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz
 
 # create the new folder on the server and upload everything
+ssh root@160.45.63.172 "rm -rf /var/www/download/dataportal/$VERSION"
 ssh root@160.45.63.172 "mkdir /var/www/download/dataportal/$VERSION"
 ssh root@160.45.63.172 "rm -r /var/www/download/dataportal/stable"
 ssh root@160.45.63.172 "ln -s /var/www/download/dataportal/$VERSION /var/www/download/dataportal/stable"
