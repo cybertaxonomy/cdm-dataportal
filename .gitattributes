@@ -846,8 +846,6 @@
 7.x/modules/cdm_dataportal/classes/footnotekey.php -text
 7.x/modules/cdm_dataportal/classes/footnotemanager.php -text
 7.x/modules/cdm_dataportal/classes/renderhints.php -text
-7.x/modules/cdm_dataportal/drush/README -text
-7.x/modules/cdm_dataportal/drush/migrate.drush.inc -text
 7.x/modules/cdm_dataportal/ext_links/ext_links.info -text
 7.x/modules/cdm_dataportal/ext_links/ext_links.js -text
 7.x/modules/cdm_dataportal/ext_links/ext_links.module -text
