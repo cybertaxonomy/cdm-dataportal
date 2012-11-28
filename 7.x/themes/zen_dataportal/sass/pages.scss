@@ -79,19 +79,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #site-name { /* The name of the website */
-  margin: 0;
-  font-size: 2em;
+  font-size: 2.5em;
+  font-weight: bold;
   line-height: 1.5em;
+  margin: 0;
 
   a:link,
   a:visited {
-    color: #000;
+    color: #fff;
     text-decoration: none;
   }
 
   a:hover,
   a:focus {
-    text-decoration: underline;
+    color: #fff;
+    text-decoration: none;
   }
 }
 
