@@ -26,18 +26,21 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
     return;
   }
 
+
+  drupal_add_css(path_to_theme() . '/js/colorpicker/css/colorpicker.css', 'file');
+  drupal_add_js(path_to_theme() . '/js/colorpicker/js/colorpicker.js', 'file');
+  drupal_add_js(path_to_theme() . '/js/settings-ui.js', 'file');
+
   $form['zen_dataportal_colors'] = array(
           '#type' => 'fieldset',
           '#title' => t('Colors'),
           '#description' => t('Configure colors where.'),
           '#attributes' => array('class' => array('theme-settings-bottom')),
   );
-  $form['zen_dataportal_colors']['site_name_color'] = array(
-      '#type'          => 'textfield',
-      '#title'         => t('Site name color'),
-      '#default_value' => theme_get_setting('site_name_color'),
-      '#description'   => t('Set the color of the site name which is shown in the header. Must be a css color value like: #000000'),
-  );
+
+  zen_dataportal_form_widget_color($form['zen_dataportal_colors'], 'site-name_color');
+  zen_dataportal_form_widget_color($form['zen_dataportal_colors'], 'main-menu_background-color');
+
 
   //
   // custom images for banner, body and page backgrounds
@@ -114,10 +117,10 @@ function zen_dataportal_theme_settings_validate($form, &$form_state) {
  * @param unknown_type $which_image
  */
 function zen_dataportal_form_widget_image(&$form, $which_image){
-  $image_label = str_replace('_', ' ', $which_image);
+  $label = str_replace('_', ' ', $which_image);
   $form['zen_dataportal_' .  $which_image] = array(
           '#type' => 'fieldset',
-          '#title' => ucfirst(t($image_label)) . ' ' . t('image settings'),
+          '#title' => ucfirst(t($label)) . ' ' . t('image settings'),
           '#description' => t('If toggled on, the following image will be displayed.'),
           '#attributes' => array('class' => array('theme-settings-bottom')),
   );
@@ -138,6 +141,7 @@ function zen_dataportal_form_widget_image(&$form, $which_image){
           ),
   );
 
+
   // If $path is a public:// URI, display the path relative to the files
   // directory; stream wrappers are not end-user friendly.
   $path = theme_get_setting($which_image . '_path');
@@ -153,15 +157,35 @@ function zen_dataportal_form_widget_image(&$form, $which_image){
   } // FIXME manully entered files without scheme public: are omitted here
   $form['zen_dataportal_' .  $which_image]['settings'][$which_image . '_path'] = array(
           '#type' => 'textfield',
-          '#title' => t('Path to custom') . ' ' . t($image_label),
-          '#description' => t('The path to the file you would like to use as your') . ' ' . t($image_label),
+          '#title' => t('Path to custom') . ' ' . t($label),
+          '#description' => t('The path to the file you would like to use as your') . ' ' . t($label),
           '#default_value' => $path,
   );
   $form['zen_dataportal_' .  $which_image]['settings'][$which_image . '_upload'] = array(
           '#type' => 'file',
-          '#title' => t('Upload') . ' ' . t($image_label) . t(' image'),
+          '#title' => t('Upload') . ' ' . t($label) . t(' image'),
           '#maxlength' => 40,
           '#description' => t("If you don't have direct file access to the server, use this field to upload your image.")
+  );
+}
+
+/**
+ *
+ * Enter description here ...
+ * @param $color_settings_key
+ *
+ */
+function zen_dataportal_form_widget_color(&$form, $color_settings_key) {
+  $label = str_replace('_', ' ', $color_settings_key);
+  $form['zen_dataportal_colors'][$color_settings_key] = array(
+          '#type'          => 'textfield',
+          '#title'         => ucfirst(t($label)),
+          '#default_value' => theme_get_setting($color_settings_key),
+          '#description'   => t('Set the color of the site name which is shown in the header. Must be a css color value like: #000000'),
+          '#attributes' => array(
+          	'class' => array('color-picker'),
+          	'size' => '7',
+          ),
   );
 }
 

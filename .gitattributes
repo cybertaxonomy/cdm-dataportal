@@ -1548,6 +1548,7 @@
 7.x/themes/zen_dataportal/.sass-cache/ea570abe83f92f7ffebe8752050015ad028a313d/_transform.scssc -text
 7.x/themes/zen_dataportal/.sass-cache/ea570abe83f92f7ffebe8752050015ad028a313d/_transition.scssc -text
 7.x/themes/zen_dataportal/README.txt -text
+7.x/themes/zen_dataportal/banner.jpg -text svneol=unset#unset
 7.x/themes/zen_dataportal/config.rb -text
 7.x/themes/zen_dataportal/css/README.txt -text
 7.x/themes/zen_dataportal/css/blocks.css -text
@@ -1581,7 +1582,45 @@
 7.x/themes/zen_dataportal/images/menu-expanded.png -text svneol=unset#unset
 7.x/themes/zen_dataportal/images/menu-leaf.png -text svneol=unset#unset
 7.x/themes/zen_dataportal/js/README.txt -text
+7.x/themes/zen_dataportal/js/colorpicker.zip -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/README -text
+7.x/themes/zen_dataportal/js/colorpicker/css/colorpicker.css -text
+7.x/themes/zen_dataportal/js/colorpicker/css/layout.css -text
+7.x/themes/zen_dataportal/js/colorpicker/images/Thumbs.db -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/blank.gif -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_background.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_hex.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_hsb_b.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_hsb_h.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_hsb_s.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_indic.gif -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_overlay.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_rgb_b.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_rgb_g.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_rgb_r.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_select.gif -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/colorpicker_submit.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_background.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_hex.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_hsb_b.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_hsb_h.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_hsb_s.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_indic.gif -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_rgb_b.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_rgb_g.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_rgb_r.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/custom_submit.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/select.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/select2.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/images/slider.png -text svneol=unset#unset
+7.x/themes/zen_dataportal/js/colorpicker/js/colorpicker.js -text
+7.x/themes/zen_dataportal/js/colorpicker/js/eye.js -text
+7.x/themes/zen_dataportal/js/colorpicker/js/jquery.js -text
+7.x/themes/zen_dataportal/js/colorpicker/js/layout.js -text
+7.x/themes/zen_dataportal/js/colorpicker/js/utils.js -text
+7.x/themes/zen_dataportal/js/index.html -text
 7.x/themes/zen_dataportal/js/script.js -text
+7.x/themes/zen_dataportal/js/settings-ui.js -text
 7.x/themes/zen_dataportal/logo.png -text svneol=unset#unset
 7.x/themes/zen_dataportal/sass-extensions/zen-grids/DO_NOT_MODIFY -text
 7.x/themes/zen_dataportal/sass-extensions/zen-grids/LICENSE.txt -text

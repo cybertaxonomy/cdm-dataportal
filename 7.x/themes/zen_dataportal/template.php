@@ -106,6 +106,8 @@
  *   name of the image, see _zen_dataportal_imagenames() for possible values
  * @param $variables
  *   An array of variables to pass to the theme template.
+ * @param $default_image
+ *  An file path relative to the theme folder
  * @param $css_selector
  *   The dom element to apply the image as background image
  * @param $background_style
@@ -113,7 +115,7 @@
  *
  * @see _zen_dataportal_imagenames() for possible values
  */
-function _set_image_url($which_image, &$variables, $css_selector = NULL, $background_style = 'scroll repeat') {
+function _set_image_url($which_image, &$variables, $default_image = null, $css_selector = NULL, $background_style = 'scroll repeat') {
 
 
   if (!theme_get_setting('default_' . $which_image)) {
@@ -122,21 +124,26 @@ function _set_image_url($which_image, &$variables, $css_selector = NULL, $backgr
       if (file_uri_scheme($path) == 'public') {
         $url = file_create_url($path);
       }
-      if(isset($url)) {
-        $variables[$which_image . '_url'] = $url;
-
-        if($css_selector) {
-          if(!isset($variables['inline_styles'])) {
-            $variables['inline_styles'] = array();
-          }
-          // FIXME is not save only works if no other style given e.g. html.php $attributes
-          $variables['inline_styles'][] = $css_selector . ' {background: white url(' . $url .')  ' . $background_style . ';}';
-        }
-      }
-
     }
   }
+
+  if(!isset($url) && isset($default_image)) {
+      $url = path_to_theme() . '/' . $default_image;
+  }
+
+  if(isset($url)) {
+    $variables[$which_image . '_url'] = $url;
+
+    if($css_selector) {
+      if(!isset($variables['inline_styles'])) {
+        $variables['inline_styles'] = array();
+      }
+      $variables['inline_styles'][] = $css_selector . ' {background: white url(' . $url .')  ' . $background_style . ';}';
+    }
+  }
+
 }
+
 /**
  *
  */
@@ -148,8 +155,11 @@ function _add_inline_styles(&$variables) {
   }
 
   // site_name
-  if(theme_get_setting('site_name_color')) {
-      $variables['inline_styles'][] = "#site-name a span {color:" . theme_get_setting('site_name_color') . ';}';
+  if(theme_get_setting('site-name_color')) {
+      $variables['inline_styles'][] = "#site-name a span {color:" . theme_get_setting('site-name_color') . ';}';
+  }
+  if(theme_get_setting('main-menu_background-color')) {
+    $variables['inline_styles'][] = "#main-menu {background-color:" . theme_get_setting('main-menu_background-color') . ';}';
   }
   if(theme_get_setting('logo_size')) {
     $logo_size = theme_get_setting('logo_size');
@@ -186,9 +196,9 @@ function STARTERKIT_preprocess_maintenance_page(&$variables, $hook) {
  *   The name of the template being rendered ("html" in this case.)
  */
 function zen_dataportal_preprocess_html(&$variables, $hook) {
-  _set_image_url('body_background', $variables, 'body');
-  _set_image_url('page_background', $variables, '#page');
-  _set_image_url('banner', $variables, '#header', 'scroll no-repeat content-box');
+  _set_image_url('body_background', $variables, NULL, 'body');
+  _set_image_url('page_background', $variables, NULL, '#page');
+  _set_image_url('banner', $variables, 'banner.jpg', '#header', 'scroll no-repeat content-box');
   _add_inline_styles($variables);
 }
 
