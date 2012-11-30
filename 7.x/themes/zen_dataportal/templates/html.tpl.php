@@ -95,16 +95,8 @@
   <?php print implode("\n", $inline_styles)  ?>
   --></style>
   <?php endif; ?>
-  <?php print $scripts; ?>
-  <?php if ($add_respond_js): ?>
-    <!--[if lt IE 9]>
-    <script src="<?php print $base_path . $path_to_zen; ?>/js/html5-respond.js"></script>
-    <![endif]-->
-  <?php elseif ($add_html5_shim): ?>
-    <!--[if lt IE 9]>
-    <script src="<?php print $base_path . $path_to_zen; ?>/js/html5.js"></script>
-    <![endif]-->
-  <?php endif; ?>
+  <!-- BEGIN javascript -->
+  <!-- END javascript -->
 </head>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
   <?php if ($skip_link_text && $skip_link_anchor): ?>
@@ -115,5 +107,17 @@
   <?php print $page_top; ?>
   <?php print $page; ?>
   <?php print $page_bottom; ?>
+ <!-- ================== javascript ======================= -->
+ <!-- Placed at the end of the document so the pages load faster -->
+  <?php print $scripts; ?>
+  <?php if ($add_respond_js): ?>
+    <!--[if lt IE 9]>
+    <script src="<?php print $base_path . $path_to_zen; ?>/js/html5-respond.js"></script>
+    <![endif]-->
+  <?php elseif ($add_html5_shim): ?>
+    <!--[if lt IE 9]>
+    <script src="<?php print $base_path . $path_to_zen; ?>/js/html5.js"></script>
+    <![endif]-->
+  <?php endif; ?>
 </body>
 </html>
