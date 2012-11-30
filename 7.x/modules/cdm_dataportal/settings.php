@@ -1701,12 +1701,14 @@ function getEDITMapServiceVersionNumber() {
 /**
  * Implements hook_element_info().
  *
- * @see http://drupal.org/node/37862
+ * Allows modules to declare their own Form API element types and specify their default values.
+ *
+ * @see http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_element_info/7
  */
 function cdm_dataportal_element_info() {
   $type['checkboxes_preferred'] = array(
     '#input' => TRUE,
-    '#process' => array('expand_checkboxes_preferred'),
+    '#process' => array('checkboxes_preferred_expand'),
     '#after_build' => array('checkboxes_preferred_after_build'),
     '#theme' => array('checkboxes_preferred'),
     // '#theme_wrapper' => array('form_element'),
@@ -1715,10 +1717,13 @@ function cdm_dataportal_element_info() {
 }
 
 /**
- * #process function for the custom form element type 'checkbox_preferred'
+ * #process callback function for the custom form element type 'checkbox_preferred'
+ *
+ *
  */
-function expand_checkboxes_preferred($element, &$form_state, $form) {
-  // First of all create the checkboxes.
+function checkboxes_preferred_expand($element, &$form_state, $form) {
+
+  // First of all create checkboxes for each of the elements
   $element = form_process_checkboxes($element);
 
   $children = element_children($element);
@@ -1728,6 +1733,7 @@ function expand_checkboxes_preferred($element, &$form_state, $form) {
     '#weight' => -1,
   );
 
+  // prepare first part each of the table rows which contains the row label
   $weight = 0;
   foreach ($children as $key) {
     $odd_even = $weight % 4 == 0 ? 'odd' : 'even';
@@ -1739,6 +1745,9 @@ function expand_checkboxes_preferred($element, &$form_state, $form) {
   }
   $weight = 0;
 
+  // add a radio button to each of the checkboxes, the
+  // check boxes have already been created at the beginning
+  // of this function
   if (count($element['#options']) > 0) {
     foreach ($element['#options'] as $key => $choice) {
       if (!isset($element[$key . '_preferred'])) {
@@ -1750,14 +1759,15 @@ function expand_checkboxes_preferred($element, &$form_state, $form) {
           '#attributes' => $element['#attributes'],
           // '#spawned' => TRUE,
           '#weight' => $weight + 1,
-          '#prefix' => '<td>',
-          '#suffix' => '</td></tr>',
+          '#prefix' => '<td>',        // add a prefix to start a new table cell
+          '#suffix' => '</td></tr>',  // add a prefix to close the tabel row
         );
       }
       $weight += 2;
     }
   }
 
+  // end the table
   $element['table_end'] = array(
     '#markup' => '</table>',
     '#weight' => $weight++,
@@ -1780,8 +1790,19 @@ function theme_checkboxes_preferred($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Callback for checkboxes preferred for widget which will
+ * be called after the form or element is built. The call
+ * back is configured in the form element by setting it as
+ * #after_build parameter.
+ *
+ * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#after_build
+ *
+ * @param $form
+ *   Nested array of form elements that comprise the form.
+ * @param $form_state
+ *   A keyed array containing the current state of the form.
+ *
+ * @return the modified form array
  */
 function checkboxes_preferred_after_build($form, &$form_state) {
 
