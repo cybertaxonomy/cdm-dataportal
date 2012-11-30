@@ -880,68 +880,75 @@
 7.x/modules/cdm_dataportal/jenkins-ci/deploy.sh -text
 7.x/modules/cdm_dataportal/jenkins-ci/headless-maven-tests.sh -text
 7.x/modules/cdm_dataportal/jenkins-ci/integration.sh -text
-7.x/modules/cdm_dataportal/js/OpenLayers/OpenLayers.js -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/blank.gif -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/cloud-popup-relative.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/drag-rectangle-off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/drag-rectangle-on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/east-mini.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/layer-switcher-maximize.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/layer-switcher-minimize.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/marker-blue.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/marker-gold.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/marker-green.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/marker.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/measuring-stick-off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/measuring-stick-on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/north-mini.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/panning-hand-off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/panning-hand-on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/slider.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/south-mini.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/west-mini.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/zoom-minus-mini.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/zoom-plus-mini.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/zoom-world-mini.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/img/zoombar.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/framedCloud.css -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/google.css -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/ie6-style.css -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/add_point_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/add_point_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/blank.gif -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/close.gif -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/drag-rectangle-off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/drag-rectangle-on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/draw_line_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/draw_line_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/draw_point_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/draw_point_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/draw_polygon_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/draw_polygon_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/editing_tool_bar.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/move_feature_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/move_feature_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/navigation_history.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/overview_replacement.gif -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/pan-panel-NOALPHA.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/pan-panel.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/pan_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/pan_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/panning-hand-off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/panning-hand-on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/remove_point_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/remove_point_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/ruler.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/save_features_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/save_features_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/view_next_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/view_next_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/view_previous_off.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/view_previous_on.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/zoom-panel-NOALPHA.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/img/zoom-panel.png -text
-7.x/modules/cdm_dataportal/js/OpenLayers/theme/default/style.css -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/OpenLayers.js -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/blank.gif -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/cloud-popup-relative.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/drag-rectangle-off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/drag-rectangle-on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/east-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/layer-switcher-maximize.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/layer-switcher-minimize.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/marker-blue.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/marker-gold.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/marker-green.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/marker.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/measuring-stick-off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/measuring-stick-on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/north-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/panning-hand-off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/panning-hand-on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/slider.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/south-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/west-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/zoom-minus-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/zoom-plus-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/zoom-world-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/zoombar.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/license.txt -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/readme.txt -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/release-license.txt -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/repository-license.txt -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/framedCloud.css -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/google.css -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/google.tidy.css -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/ie6-style.css -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/ie6-style.tidy.css -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/add_point_off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/add_point_on.png -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/blank.gif -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/close.gif -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/drag-rectangle-off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/drag-rectangle-on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/draw_line_off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/draw_line_on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/draw_point_off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/draw_point_on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/draw_polygon_off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/draw_polygon_on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/editing_tool_bar.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/move_feature_off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/move_feature_on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/navigation_history.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/overview_replacement.gif -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/pan-panel-NOALPHA.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/pan-panel.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/pan_off.png -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/pan_on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/panning-hand-off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/panning-hand-on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/remove_point_off.png -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/remove_point_on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/ruler.png -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/save_features_off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/save_features_on.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/view_next_off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/view_next_on.png -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/view_previous_off.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/view_previous_on.png -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/zoom-panel-NOALPHA.png -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/img/zoom-panel.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/style.css -text
+7.x/modules/cdm_dataportal/js/OpenLayers-2.11/theme/default/style.tidy.css -text
 7.x/modules/cdm_dataportal/js/ahah-content.js -text
 7.x/modules/cdm_dataportal/js/cache_all_taxa.js -text
 7.x/modules/cdm_dataportal/js/cdm_annotations.js -text

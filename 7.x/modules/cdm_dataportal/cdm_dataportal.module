@@ -98,11 +98,14 @@ function _add_js_treeselector() {
  */
 function _add_js_openlayers_map() {
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/OpenLayers/OpenLayers.js', array(
-    'type' => 'file',
-    'weight' => JS_LIBRARY,
-    'cache' => FALSE,
+  $openlayers = '/js/OpenLayers-2.11/OpenLayers.js';
+
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers, array(
+      'type' => 'file',
+      'weight' => JS_LIBRARY,
+      'cache' => FALSE,
   ));
+
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/openlayers_map.js');
 
   $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
@@ -129,19 +132,26 @@ function _add_js_openlayers_map() {
     drupal_add_js('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1', array('type' => 'external'));
   }
 
+  // window.onload - is executed when the document and images etc is fully loaded
+  // Query(document).ready - is executed much earlier, when the DOM is loaded
   drupal_add_js("
           jQuery(document).ready(function() {
-              jQuery('#openlayers_map').cdm_openlayers_map('"
-              . getEDITMapServiceURI() . "', {
-                legendPosition: 3,
-                displayWidth: '" . variable_get('cdm_dataportal_geoservice_display_width', FALSE) . "',
-                boundingBox: '" . variable_get('cdm_dataportal_geoservice_bounding_box', FALSE) . "',
-                distributionOpacity: '" . variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5') . "',
-                legendOpacity: '" . variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5') . "',
-                showLayerSwitcher: " . (variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE) ? 'true' : 'false') . ",
-                baseLayerNames: [" . $layerNames . "],
-                defaultBaseLayerName: '" . $preferredLayer . "',
-            });
+
+                window.onload = function () {
+    			  // ---
+                  jQuery('#openlayers_map').cdm_openlayers_map('"
+                  . getEDITMapServiceURI() . "', {
+                    legendPosition: 3,
+                    displayWidth: '" . variable_get('cdm_dataportal_geoservice_display_width', FALSE) . "',
+                    boundingBox: '" . variable_get('cdm_dataportal_geoservice_bounding_box', FALSE) . "',
+                    distributionOpacity: '" . variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5') . "',
+                    legendOpacity: '" . variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5') . "',
+                    showLayerSwitcher: " . (variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE) ? 'true' : 'false') . ",
+                    baseLayerNames: [" . $layerNames . "],
+                    defaultBaseLayerName: '" . $preferredLayer . "',
+               	  });
+               	  // ---
+				};
           });
         ", array('type' => 'inline'));
 
