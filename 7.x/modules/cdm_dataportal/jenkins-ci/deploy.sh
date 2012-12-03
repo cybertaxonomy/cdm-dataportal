@@ -19,7 +19,10 @@ if [ -n "$WORKSPACE" ]; then
 fi
 
 # check if tag exists
+set +e # turn of "exit script on failure", since we expect that svn tags may not always exist
 TAG_EXISTS=(`svn info http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION 2> /dev/null | grep URL`)
+set -e # turn on again "exit script on failure"
+
 if [ -z "$TAG_EXISTS" ]; then
 	# it is a new version number ...
 
