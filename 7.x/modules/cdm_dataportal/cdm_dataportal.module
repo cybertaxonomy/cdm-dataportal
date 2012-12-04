@@ -89,7 +89,12 @@ function _add_js_treeselector() {
           });
 
       });
-    ", array('type' => 'inline'));
+    ",
+    array(
+      'type' => 'inline',
+      'scope' => 'footer'
+    )
+  );
 }
 
 /**
@@ -1440,11 +1445,67 @@ function cdm_dataportal_view_search_results_taxon() {
 
   $taxonPager = cdm_dataportal_search_execute();
 
+  $showThumbnails = do_showThumbnails();
+
+  $setSessionUri = url('cdm_api/setvalue/session', array(
+      'query' => array('var' => '[pageoption][searchtaxa][showThumbnails]', 'val' => ''),
+  ));
+
+  drupal_add_js('jQuery(document).ready(function() {
+
+      // init
+      if(' . $showThumbnails . ' == 1){
+      jQuery(\'.media_gallery\').show(20);
+  } else {
+      jQuery(\'.media_gallery\').hide(20);
+  }
+      // add change hander
+      jQuery(\'#showThumbnails\').change(
+      function(event){
+      var state = 0;
+      if(jQuery(this).is(\':checked\')){
+      jQuery(\'.media_gallery\').show(20);
+      state = 1;
+  } else {
+      jQuery(\'.media_gallery\').hide(20);
+  }
+      // store state in session variable
+      var uri = \'' . $setSessionUri . '\' + state;
+      jQuery.get(uri);
+  });
+  });',
+  array('type' => "inline", 'scope' => JS_DEFAULT));
+
+  drupal_set_title(t('Search results'), PASS_THROUGH);
+
   return theme('cdm_search_results', array(
     'pager' => $taxonPager,
     'path' => 'cdm_dataportal/search/results/taxon',
     'query_parameters' => $_REQUEST,
     ));
+}
+
+/**
+ * Returns the state of the the showThumbnails flag set in the
+ * users session ($_SESSION['pageoption']['searchtaxa']['showThumbnails']).
+ *
+ * @return Ambigous <boolean, number>
+ *    returns 1 if the flag is set
+ */
+function do_showThumbnails() {
+  static $showThumbnails = null;
+
+  if($showThumbnails == null) {
+    $showThumbnails = FALSE;
+    if (isset($_SESSION['pageoption']['searchtaxa']['showThumbnails'])) {
+      $showThumbnails = $_SESSION['pageoption']['searchtaxa']['showThumbnails'];
+    }
+    if (!is_numeric($showThumbnails)) {
+      $showThumbnails = 1;
+    }
+  }
+
+  return $showThumbnails;
 }
 
 /**

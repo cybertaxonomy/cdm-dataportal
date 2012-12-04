@@ -52,44 +52,8 @@ function theme_cdm_search_results($variables) {
     }
     $pager->records = $taxa;
   }
-  $showThumbnails = FALSE;
-  if (isset($_SESSION['pageoption']['searchtaxa']['showThumbnails'])) {
-    $showThumbnails = $_SESSION['pageoption']['searchtaxa']['showThumbnails'];
-  }
-  if (!is_numeric($showThumbnails)) {
-    $showThumbnails = 1;
-  }
-  $setSessionUri = url('cdm_api/setvalue/session', array(
-    'query' => array('var' => '[pageoption][searchtaxa][showThumbnails]', 'val' => ''),
-  ));
-  drupal_add_js('jQuery(document).ready(function() {
-
-        // init
-        if(' . $showThumbnails . ' == 1){
-              jQuery(\'.media_gallery\').show(20);
-        } else {
-          jQuery(\'.media_gallery\').hide(20);
-        }
-        // add change hander
-        jQuery(\'#showThumbnails\').change(
-          function(event){
-            var state = 0;
-            if(jQuery(this).is(\':checked\')){
-              jQuery(\'.media_gallery\').show(20);
-              state = 1;
-            } else {
-              jQuery(\'.media_gallery\').hide(20);
-            }
-            // store state in session variable
-            var uri = \'' . $setSessionUri . '\' + state;
-            jQuery.get(uri);
-          });
-        });', array('type' => "inline", 'scope' => JS_DEFAULT));
-
-  drupal_set_title(t('Search results'), PASS_THROUGH);
 
   $out = '';
-
   // Add thumbnails checkbox and refine search link.
   $out = '<div class="page_options">';
   if (isset($_REQUEST['ws'])) {
@@ -97,7 +61,7 @@ function theme_cdm_search_results($variables) {
       $out .= '<div id="backButton">' . l(t('Modify search'), cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
     }
   }
-  $out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" ' . ($showThumbnails == 1 ? 'checked="checked"' : '') . '> ' . t('Show Thumbnails') . '</form>';
+  $out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" ' . (do_showThumbnails() == 1 ? 'checked="checked"' : '') . '> ' . t('Show Thumbnails') . '</form>';
   $out .= '</div>';
 
   // List results.
