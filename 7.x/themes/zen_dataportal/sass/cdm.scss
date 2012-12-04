@@ -32,8 +32,21 @@
 	text-align: right;
 }
 
+/*
+ * Searchresults
+ */
+
+
 #search_results{
 	@include cdm-link-style;
+
+	table {
+		margin: 1em 0;
+	}
+}
+
+ul.cdm_names li {
+  margin: 0.5em 0; 
 }
 
 /*

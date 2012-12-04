@@ -5,7 +5,7 @@
 /*
  * Header
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/pages-rtl\.scss}line{font-family:\0000313}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/pages-rtl\.scss}line{font-family:\0000313}}
 #logo {
   /* Wrapping link for logo */
   float: right;
@@ -14,7 +14,7 @@
 /*
  * Content
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/pages-rtl\.scss}line{font-family:\0000321}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/pages-rtl\.scss}line{font-family:\0000321}}
 ul.inline li {
   /* List of links */
   display: inline-block;
@@ -22,7 +22,7 @@ ul.inline li {
   padding: 0 0 0 1em;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/pages-rtl\.scss}line{font-family:\0000325}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/pages-rtl\.scss}line{font-family:\0000325}}
 span.field-label {
   /* The inline field label used by the Fences.module */
   padding: 0 0 0 1em;
