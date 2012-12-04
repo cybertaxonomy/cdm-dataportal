@@ -79,9 +79,9 @@ public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
 
         List<LinkElement> primaryTabs = taxonProfileIillicium.getPrimaryTabs();
         assertEquals("Expecting 4 tabs", 4, primaryTabs.size());
-        assertEquals("General", primaryTabs.get(0).getText());
+        assertEquals("General\n(active tab)", primaryTabs.get(0).getText());
         assertEquals("Synonymy", primaryTabs.get(1).getText());
-        assertEquals("Specimens", primaryTabs.get(2).getText());
+        assertEquals("Images", primaryTabs.get(2).getText());
         assertEquals("Keys", primaryTabs.get(3).getText());
 
     }
