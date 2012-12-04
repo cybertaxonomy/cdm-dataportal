@@ -62,8 +62,8 @@ public class WebDriverFactory {
             SystemUtils.handleInvalidSystemProperty(SYSTEM_PROPERTY_NAME_BROWSER, e);
         }
 
-        newDriver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_DEFAULT, TimeUnit.SECONDS);
-        logger.info("Implicit wait set to : " + IMPLICIT_WAIT_DEFAULT + TimeUnit.SECONDS);
+//        newDriver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_DEFAULT, TimeUnit.SECONDS);
+//        logger.info("Implicit wait set to : " + IMPLICIT_WAIT_DEFAULT + " " + TimeUnit.SECONDS);
 
         return newDriver;
     }

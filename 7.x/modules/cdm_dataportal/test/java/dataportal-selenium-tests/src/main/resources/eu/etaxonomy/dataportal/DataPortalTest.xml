@@ -49,4 +49,5 @@
     The browser to be used for testing (defaults to firefox)
   -->
   <!-- <entry key="browser">iexplorer</entry> -->
+  <!-- <entry key="browser">chrome</entry> -->
 </properties>

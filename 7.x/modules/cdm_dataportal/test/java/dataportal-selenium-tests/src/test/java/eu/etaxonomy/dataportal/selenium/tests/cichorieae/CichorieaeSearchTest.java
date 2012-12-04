@@ -73,7 +73,7 @@ public class CichorieaeSearchTest extends CdmDataPortalTestBase {
         WebElement referenceElement = lapsanaCommunnis.getElement().findElement(By.className("reference"));
         Assert.assertEquals("Sp. Pl.: 811. 1753", referenceElement.findElement((By.className("reference"))).getText());
 
-        PortalPage taxonProfilLapsanaCommunnis = searchResultPage.clickTaxonName(lapsanaCommunnis, PortalPage.class);
+        PortalPage taxonProfilLapsanaCommunnis = searchResultPage.clickTaxonName(lapsanaCommunnis, GenericPortalPage.class);
         assertEquals(getContext().prepareTitle("Lapsana communis"), taxonProfilLapsanaCommunnis.getTitle());
     }
 

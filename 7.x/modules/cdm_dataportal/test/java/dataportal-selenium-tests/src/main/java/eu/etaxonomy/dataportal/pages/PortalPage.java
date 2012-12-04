@@ -324,14 +324,17 @@ public abstract class  PortalPage {
      * @param <T>
      * @param link the link to click
      * @param isTrue see {@link org.openqa.selenium.support.ui.FluentWait#until(Function)}
-     * @param type the return type
+     * @param pageType the return type
      * @param duration may be null, if this in null <code>waitUnit</code> will be ignored.
      * @param waitUnit may be null, is ignored if <code>duration</code> is null defaults to {@link TimeUnit.SECONDS}
      * @return
      * @throws SecurityException
      */
-    public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> type, Long duration, TimeUnit waitUnit) {
+    public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> pageType, Long duration, TimeUnit waitUnit) {
 
+        if( pageType.getClass().equals(PortalPage.class) ) {
+            throw new RuntimeException("Parameter pageType must be a subclass of PortalPage");
+        }
         String targetWindow = null;
         List<String> targets = element.getLinkTargets(driver);
         if(targets.size() > 0){
@@ -364,7 +367,7 @@ public abstract class  PortalPage {
         Constructor<T> constructor;
         T pageInstance;
         try {
-            constructor = type.getConstructor(WebDriver.class, DataPortalContext.class);
+            constructor = pageType.getConstructor(WebDriver.class, DataPortalContext.class);
             pageInstance = constructor.newInstance(driver, context);
         } catch (Exception e) {
             throw new RuntimeException(e);
