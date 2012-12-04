@@ -1,0 +1,7 @@
+name = Flore_Afrique_Centrale
+description = Subtheme from Garland Cichorieae for Flore_Afrique_Centrale
+package = CDM_Portal
+base theme = garland_cichorieae
+version = 1.0
+core = 7.x
+stylesheets[all][] = flore_afrique_centrale_portal_style.css
