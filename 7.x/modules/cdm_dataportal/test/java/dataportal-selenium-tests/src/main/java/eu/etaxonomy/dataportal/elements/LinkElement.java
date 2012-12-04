@@ -22,6 +22,7 @@ import org.openqa.selenium.WebElement;
 public class LinkElement extends BaseElement {
 
 	private String href = null;
+
 	public String getUrl() {
 		return href;
 	}
@@ -47,8 +48,8 @@ public class LinkElement extends BaseElement {
 	}
 
 	@Override
-	public String toSting(){
-		return super.toSting() + ": " + getUrl() + "";
+	public String toString(){
+		return super.toString() + ": " + (getUrl() != null ? getUrl() : "NO URL") + "";
 	}
 
 	public static boolean testIfLinkElement(BaseElement element, String text, String href) {

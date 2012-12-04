@@ -4,6 +4,7 @@
 package eu.etaxonomy.dataportal.selenium;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -33,6 +34,9 @@ public class WebDriverFactory {
     private static final String FIREXPATH_VERSION = "0.9.7";
     private static final String DISABLE_ADD_ON_COMPATIBILITY_CHECKS_VERSION = "1.3";
 
+    private static final long IMPLICIT_WAIT_DEFAULT = 5;
+
+
     public static WebDriver newWebDriver() {
 
         WebDriver newDriver = null;
@@ -51,11 +55,16 @@ public class WebDriverFactory {
                 newDriver = initInternetExplorerDriver();
                 break;
             }
+
         } catch (NullPointerException e) {
             SystemUtils.handleInvalidSystemProperty(SYSTEM_PROPERTY_NAME_BROWSER, e);
         } catch (IllegalArgumentException e) {
             SystemUtils.handleInvalidSystemProperty(SYSTEM_PROPERTY_NAME_BROWSER, e);
         }
+
+        newDriver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_DEFAULT, TimeUnit.SECONDS);
+        logger.info("Implicit wait set to : " + IMPLICIT_WAIT_DEFAULT + TimeUnit.SECONDS);
+
         return newDriver;
     }
 

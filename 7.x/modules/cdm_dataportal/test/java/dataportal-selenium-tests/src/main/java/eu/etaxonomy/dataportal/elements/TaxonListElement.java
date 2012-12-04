@@ -9,22 +9,8 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.Box.Filler;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-
-import eu.etaxonomy.dataportal.pages.GenericPortalPage;
-import eu.etaxonomy.dataportal.pages.PortalPage;
-import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
-import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
-import eu.etaxonomy.dataportal.selenium.AllTrue;
-import eu.etaxonomy.dataportal.selenium.JUnitWebDriverWait;
-import eu.etaxonomy.dataportal.selenium.PageTitleValidated;
-import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 
 /**
  * @author andreas

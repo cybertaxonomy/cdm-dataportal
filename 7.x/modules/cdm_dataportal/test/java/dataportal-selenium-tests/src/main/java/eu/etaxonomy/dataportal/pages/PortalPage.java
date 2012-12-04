@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.bcel.verifier.exc.LinkingConstraintException;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -334,13 +333,13 @@ public abstract class  PortalPage {
     public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> type, Long duration, TimeUnit waitUnit) {
 
         String targetWindow = null;
-        List<String> targets = element.getLinkTargets();
+        List<String> targets = element.getLinkTargets(driver);
         if(targets.size() > 0){
             targetWindow = targets.get(0);
         }
 
-        if(logger.isInfoEnabled()){
-            logger.info("clicking on " + element.toStringWithLinks());
+        if(logger.isInfoEnabled() || logger.isDebugEnabled()){
+            logger.info("clickLink() on " + element.toStringWithLinks());
         }
         element.getElement().click();
         if(targetWindow != null){
@@ -386,15 +385,15 @@ public abstract class  PortalPage {
     }
 
 
-	/**
-	 * replaces all underscores '_' by hyphens '-'
-	 *
-	 * @param featureName
-	 * @return
-	 */
-	protected String normalizeClassAttribute(String featureName) {
-	    return featureName.replace('_', '-');
-	}
+    /**
+     * replaces all underscores '_' by hyphens '-'
+     *
+     * @param featureName
+     * @return
+     */
+    protected String normalizeClassAttribute(String featureName) {
+        return featureName.replace('_', '-');
+    }
 
 
 }

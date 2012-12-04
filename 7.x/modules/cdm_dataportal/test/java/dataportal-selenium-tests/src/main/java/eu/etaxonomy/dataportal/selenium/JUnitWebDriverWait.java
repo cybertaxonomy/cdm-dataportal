@@ -13,17 +13,17 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class JUnitWebDriverWait extends WebDriverWait {
 
 
-	/**
-	 * @param driver
-	 * @param timeOutInSeconds
-	 */
-	public JUnitWebDriverWait(WebDriver driver, long timeOutInSeconds) {
-		super(driver, timeOutInSeconds);
-	}
+    /**
+     * @param driver
+     * @param timeOutInSeconds
+     */
+    public JUnitWebDriverWait(WebDriver driver, long timeOutInSeconds) {
+        super(driver, timeOutInSeconds);
+    }
 
-	@Override
-	protected RuntimeException timeoutException(String message, RuntimeException lastException) {
-	    throw new AssertionError(message);
-	 }
+    @Override
+    protected RuntimeException timeoutException(String message, Throwable lastException) {
+        throw new AssertionError(message);
+     }
 
 }

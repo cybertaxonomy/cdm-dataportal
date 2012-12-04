@@ -68,7 +68,7 @@ public class MultipartDescriptionElementRepresentation extends DescriptionElemen
 	}
 
 	@Override
-	public String toSting() {
+	public String toString() {
 		StringBuilder toStringRepresentatin = new StringBuilder(this.getClass().getSimpleName());
 		for (DescriptionElementRepresentation element : multipartElements) {
 			toStringRepresentatin.append("<" + element.getElement().getTagName() + ">");

@@ -17,7 +17,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * @author Andreas Kohlbecker
@@ -37,6 +41,8 @@ public class BaseElement {
     private List<String> classAttributes = null;
 
     private List<LinkElement> linksInElement = null;
+
+    List<String> linkTargets = null;
 
     private String text = null;
 
@@ -88,21 +94,49 @@ public class BaseElement {
         return linksInElement;
     }
 
-    public List<String> getLinkTargets(){
+    /**
+     *
+     * @param driver the currently used  WebDriver instance
+     * @return
+     */
+    public List<String> getLinkTargets(WebDriver driver){
 
-        List<String> targets = new ArrayList<String>();
+        if(linkTargets == null){
+            linkTargets = new ArrayList<String>();
+            if(getElement().getTagName().equals("a") && getElement().getAttribute("target") != null  && getElement().getAttribute("target").length() > 0){
+                linkTargets.add(getElement().getAttribute("target"));
+            } else {
+                try {
+                    WebDriverWait wait = new WebDriverWait(driver, 5);
 
-        if(getElement().getTagName().equals("a") && getElement().getAttribute("target") != null  && getElement().getAttribute("target").length() > 0){
-            targets.add(getElement().getAttribute("target"));
-        } else {
-            try {
-                targets.add(getElement().findElement(By.xpath("./a[@target]")).getAttribute("target"));
-            } catch (NoSuchElementException e) {
-                logger.debug("No target window found");
-                /* IGNORE */
+                    List<WebElement> anchorTags = wait.until(new ExpectedCondition<List<WebElement>>(){
+                        @Override
+                        public List<WebElement> apply(WebDriver d) {
+                            return d.findElements(By.tagName("a"));
+                        }
+                      }
+                    );
+
+                    WebElement linkWithTarget = null;
+                    if(anchorTags.size() > 0){
+                        if(anchorTags.get(0).getAttribute("target") != null) {
+                            linkWithTarget = anchorTags.get(0);
+                        }
+                    }
+
+                    if(linkWithTarget != null){ // assuming that there is only one
+                        linkTargets.add(linkWithTarget.getAttribute("target"));
+                    }
+                } catch (NoSuchElementException e) {
+                    logger.debug("No target window found");
+                    /* IGNORE */
+                } catch (WebDriverException e) {
+                    logger.debug("timed out", e);
+                    /* IGNORE */
+                }
             }
         }
-        return targets;
+        return linkTargets;
     }
 
     /**
@@ -125,7 +159,8 @@ public class BaseElement {
     /**
      * @return
      */
-    public String toSting() {
+    @Override
+    public String toString() {
         return this.getClass().getSimpleName() + "<" + this.getElement().getTagName() + ">" ;
     }
 
@@ -150,9 +185,11 @@ public class BaseElement {
         if(textSnipped.length() > 50){
             textSnipped = textSnipped.substring(0, 50) + "...";
         }
-        List<String> targets = getLinkTargets();
-        return "<" + getElement().getTagName() + " class=\""+ getElement().getAttribute("class")+ "\"/>" + textSnipped + " ;Links:" + links + (targets.isEmpty()? "" : ", LinkTargets: '" + StringUtils.join(targets,	", ") + "'");
+        String targets = "LinkTargets UN-INITIALIZED";
+        if(linkTargets != null) {
+            targets = linkTargets.isEmpty()? "" : ", LinkTargets: '" + StringUtils.join(linkTargets.toArray(),	", ") + "'";
+        }
+        return "<" + getElement().getTagName() + " class=\""+ getElement().getAttribute("class")+ "\"/>" + textSnipped + " ;Links:" + links + targets;
     }
-
 
 }
