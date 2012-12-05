@@ -105,7 +105,7 @@ function theme_cdm_derivedUnitFacade($variables) {
     'titleCache',
     'derivedUnitMedia',
   );
-  static $fieldLabels = array(
+  static $field_labels = array(
     'type' => 'Basis of Record',
     'fieldNumber' => 'Collectors number',
     'absoluteElevation' => 'Altitude',
@@ -117,49 +117,85 @@ function theme_cdm_derivedUnitFacade($variables) {
   if (is_object($derivedUnitFacade)) {
     $out = '<dl>';
     foreach (get_object_vars($derivedUnitFacade) as $field => $value) {
+      $entries = array();
       if (!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class)))) {
         switch ($field) {
+
+          /* CONVENTION:
+           *
+           * a '-' characters used in the 'order_key'
+           * increases the indent of the resulting entry
+           *
+           * 'order_key' => 'collector' : normal indent
+           * 'order_key' => 'collector-1' : indent plus one
+           *
+           */
           case 'locality':
-            $stringValue = $value->text;
+            $entries[$field] = @array('value' => $value->text);
             break;
 
           case 'country':
-            $stringValue = $value->representation_L10n;
+            $entries[$field] = @array('value' => $value->representation_L10n);
             break;
 
           case 'collector':
-            $stringValue = $value->titleCache;
+            $entries['collector'] = @array('value' => $value->titleCache, 'order_key' => 'collector');
+            $entries['code'] = @array('value' => $value->code, 'order_key' => 'collector-1');
+            $entries['codeStandard'] = @array('value' => $value->codeStandard, 'order_key' => 'collector-2');
+//             $entries['data'] = ???;
+            $entries['institute'] = @array('value' => $value->institute, 'order_key' => 'collector-3');
+//             $entries['superCollection'] = ??;
+            $entries['townOrLocation'] = @array('value' => $value->townOrLocation, 'order_key' => 'collector-4');
             break;
 
           case 'collection':
-            $stringValue = $value->titleCache;
+            $entries[$field] = array('value' => $value->titleCache);
             break;
 
           case 'exactLocation':
-            $stringValue = $value->sexagesimalString;
+            $entries['exactLocation'] = array('value' => $value->sexagesimalString, 'order_key' => 'exactLocation');
+//             $entries['exactLocation longitude'] = $value->latitude;
+//             $entries['exactLocation latitude'] = $value->latitude;
+            $entries['errorRadius'] = @array('value' => $value->errorRadius, 'order_key' => 'exactLocation-1');
             break;
 
           case 'getGatheringPeriod':
-            $stringValue = timePeriodToString($value);
+            $entries[$field] = @array('value' => timePeriodToString($value));
             break;
 
           default:
-            $stringValue = $value;
+            $entries[$field] = array('value' => $value);
         }
-        $stringValue = drupal_html_to_text($stringValue);
-        if (!$stringValue) {
+
+        if (count($entries) == 0) {
           continue;
         }
-        // Relabel field names.
-        if (isset($fieldLabels[$field])) {
-          $field = $fieldLabels[$field];
+
+        foreach ($entries as $field=>$data) {
+
+          $value_str = trim(drupal_html_to_text($data['value']));
+          if (!$value_str) {
+            continue;
+          }
+
+          if(!isset($data['order_key'])) {
+            $data['order_key'] = $field;
+          }
+
+          // Relabel field names.
+          if (isset($field_labels[$field])) {
+            $field = $field_labels[$field];
+          }
+
+          // determine indet
+          $indent_class = strpos($data['order_key'], '-') ? ' indent-1' : '';
+          $field = preg_replace('/([a-z])([A-Z])/e', "'\\1 '.strtolower('\\2')", $field);
+          $entry_html[] = '<dt class="'. $data['order_key'] . $indent_class . '">' . t(ucfirst($field)) . ':</dt><dd>' . $value_str . '</dd>';
         }
-        $field = preg_replace('/([a-z])([A-Z])/e', "'\\1 '.strtolower('\\2')", $field);
-        $values[] = '<dt>' . t(ucfirst($field)) . ':</dt><dd>' . $stringValue . '</dd>';
       }
     }
-    sort($values);
-    $out .= implode('', $values);
+    sort($entry_html);
+    $out .= implode('', $entry_html);
     $out .= '</dl>';
   }
   return $out;
