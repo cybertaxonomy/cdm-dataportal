@@ -327,7 +327,9 @@ function get_openlayers_map($width, $bounding_box = FALSE, $occurrenceQuery = FA
 
   $out = '<div id="openlayers">';
   $out .= '<div id="openlayers_map" class="smallmap"';
-  $out .= ' style="width: ' . $width . 'px; height:' . ($width / 2) . 'px"';
+  if($width) {
+    $out .= ' style="width: ' . $width . 'px; height:' . ($width / 2) . 'px"';
+  }
 
   // Additional query parameters as set in the data portal admin section.
   $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);

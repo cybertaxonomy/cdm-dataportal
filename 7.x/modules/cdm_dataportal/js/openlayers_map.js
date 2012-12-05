@@ -59,7 +59,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
   /**
    *
    */
-  this.init = function(){
+  this.init = function(){ // public function
 
     createLayers(options.baseLayerNames, options.defaultBaseLayerName);
 
@@ -294,32 +294,27 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
     } else {
       return queryStr1 + queryStr2;
     }
-  };
 
-  /**
-   *
-   */
-  var createLayers = function( baseLayerNames, defaultBaseLayerName){
-    //var baseLayers = new Array();
-    for(var i = 0; i <  baseLayerNames.length; i++) {
-      //var layerName in baseLayerNames ){
-      baseLayers[i] = getLayersByName(baseLayerNames[i]);
-      // set the default base layer
-      if(baseLayerNames[i] == defaultBaseLayerName){
-        defaultBaseLayer = baseLayers[i];
-      }
-    }
+   };
 
-    //return baseLayers;
-  };
-
+   /**
+    *
+    */
+   var createLayers = function( baseLayerNames, defaultBaseLayerName){
+     for(var i = 0; i <  baseLayerNames.length; i++) {
+       baseLayers[i] = getLayersByName(baseLayerNames[i]);
+       if(baseLayerNames[i] == defaultBaseLayerName){
+         defaultBaseLayer = baseLayers[i];
+       }
+     }
+   };
 
   /**
    *
    */
   var getLayersByName = function(layerName){
 
-    var baseLayer;
+    var baseLayer = null;
 
     switch(layerName){
 
@@ -474,7 +469,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
                );
       break;
 
-    };
+    }
 
     return baseLayer;
   };
