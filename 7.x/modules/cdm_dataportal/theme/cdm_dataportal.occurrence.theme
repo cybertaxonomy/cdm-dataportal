@@ -146,6 +146,10 @@ function theme_cdm_derivedUnitFacade($variables) {
           default:
             $stringValue = $value;
         }
+        $stringValue = drupal_html_to_text($stringValue);
+        if (!$stringValue) {
+          continue;
+        }
         // Relabel field names.
         if (isset($fieldLabels[$field])) {
           $field = $fieldLabels[$field];
