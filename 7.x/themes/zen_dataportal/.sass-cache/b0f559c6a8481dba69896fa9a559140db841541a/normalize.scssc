@@ -1,7 +1,7 @@
 3.2.1 (Media Mark)
-b38f0c781da5b4ca91683ad67a60582653de12cb
+1c0d0248f55af50371f6fa072cc4d3a0e9b29f84
 o:Sass::Tree::RootNode
-:@template"x8/* normalize.css 2012-03-11T12:53 UTC - http://github.com/necolas/normalize.css */
+:@template"≠8/* normalize.css 2012-03-11T12:53 UTC - http://github.com/necolas/normalize.css */
 
 /* =============================================================================
    Normalize.css is intended to be used as an alternative to CSS resets.
@@ -655,11 +655,17 @@ th {
   border-bottom: none;
 }
 
+
 tbody {
   border-top: none;
 }
+
+td  {
+  vertical-align: top;
+  text-align: left;
+}
 :@options{ :
-@linei:@has_childrenT:@children[yo:Sass::Tree::CommentNode
+@linei:@has_childrenT:@children[zo:Sass::Tree::CommentNode
 :@value["W/* normalize.css 2012-03-11T12:53 UTC - http://github.com/necolas/normalize.css */;@;i;
 [ :
 @type:normalo;
@@ -1538,8 +1544,12 @@ table;i{;o;; { ;	T;
 [ ;;o;!;i ;o;";"0;@;;#;@;["padding;iã;$;%;
 [ o;!;i ;o;";"	none;@;;#;@;["border-bottom;iå;$;%;
 [ o;;i ;["
-tbody;@;iè;o;;" ;iè;[o;;[o;
-;0;@';iè;[o;	;0;@';["
-tbody;iè;o;; { ;	T;
-[o;!;i ;o;";"	none;@;;#;@;["border-top;iê;$;%;
+tbody;@;iê;o;;" ;iê;[o;;[o;
+;0;@';iê;[o;	;0;@';["
+tbody;iê;o;; { ;	T;
+[o;!;i ;o;";"	none;@;;#;@;["border-top;ië;$;%;
+[ o;;i ;["td;@;iî;o;;" ;iî;[o;;[o;
+;0;@=;iî;[o;	;0;@=;["td;iî;o;; { ;	T;
+[o;!;i ;o;";"top;@;;#;@;["vertical-align;iï;$;%;
+[ o;!;i ;o;";"	left;@;;#;@;["text-align;iñ;$;%;
 [ 

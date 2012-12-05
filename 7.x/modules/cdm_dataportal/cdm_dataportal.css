@@ -533,3 +533,10 @@ div.cdm_media_viewer_image {
 #block-system-help .content {
   margin: 0;
 }
+
+/*
+ * specimens
+ */
+#specimens table.specimens {
+    width: 100%;
+}
