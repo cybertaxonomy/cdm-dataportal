@@ -581,12 +581,13 @@ function theme_cdm_taxon_list_thumbnails($variables) {
   $out = '';
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
   $showCaption = $gallery_settings['cdm_dataportal_show_thumbnail_captions'];
-  $captionElements = '';
   if ($showCaption) {
     $captionElements = array(
       'title',
       'rights',
     );
+  } else {
+    $captionElements = array();
   }
 
   $gallery_name = $taxon->uuid;

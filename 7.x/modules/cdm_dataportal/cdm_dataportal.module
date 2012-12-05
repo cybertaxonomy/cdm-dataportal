@@ -908,7 +908,6 @@ function cdm_dataportal_theme() {
     'cdm_media_caption' => array('variables' => array(
       'media' => NULL,
       'elements' => array('title', 'description', 'artist', 'location', 'rights'),
-      'fileUri' => NULL,
       )),
     'cdm_media_gallerie' => array('variables' => array(
       'mediaList' => NULL,

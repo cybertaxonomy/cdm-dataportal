@@ -71,13 +71,13 @@ function taxon_in_current_tree($taxon_uuid) {
  * TODO if getting fragment from request is possible remove
  * $_REQUEST['highlite'] HACK
  * NOT WORKING since fragments are not available to the server
+ *
  * function fragment(){
- * global $fragment;
- * if(!$fragment){
- * $fragment = substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['REQUEST_URI'],
- * '#'));
- * }
- * return $fragment;
+ *    global $fragment;
+ *    if(!$fragment){
+ *       $fragment = substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['REQUEST_URI'], '#'));
+ *    }
+ *   return $fragment;
  * }
  */
 function uuid_anchor($uuid, $innerHTML) {

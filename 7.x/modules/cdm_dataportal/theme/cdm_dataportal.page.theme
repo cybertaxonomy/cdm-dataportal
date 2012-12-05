@@ -131,11 +131,7 @@ function theme_cdm_taxon_page($variables) {
   }
 
   // --- GET specimensOrObservations --- //
-  // Comment @WA Note the spelling error!
-  $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array(
-    $taxon->uuid,
-    'specimensOrObersvations',
-  ));
+  $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
 
   $specimensOrObservationsCount = is_array($specimensOrObservations) ? count($specimensOrObservations) : 0;
   if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
@@ -343,10 +339,9 @@ function theme_cdm_taxon_page_specimens($variables) {
   $taxon = $variables['taxon'];
   RenderHints::pushToRenderStack('taxon_page_specimens');
 
-  // Comment @WA: Note the spelling error.
   $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array(
     $taxon->uuid,
-    'specimensOrObersvations',
+    'specimensOrObservations',
   ));
 
   // Collect media (fieldObjectMedia, derivedUnitMedia) and add as fields.
@@ -373,19 +368,15 @@ function theme_cdm_taxon_page_specimens($variables) {
       // os=&od=&legend=0&recalculate=false&image=false
       $occurrenceQuery = $occurrenceQuery->String;
 
+      $legendFormatQueryStr = null;
       if (variable_get('cdm_dataportal_map_openlayers', 1)) {
-
         $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
-            // Comment @WA: not defined.
-            // $legendFormatQueryStr,
-            NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+            $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
       }
       else {
         // get_image_map($width, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE )
         $out .= get_image_map(variable_get('cdm_dataportal_geoservice_display_width', FALSE), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
-            // @WA: not defined
-            // $legendFormatQueryStr,
-            NULL, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+            $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
       }
     }
   }
@@ -406,13 +397,17 @@ function theme_cdm_taxon_page_specimens($variables) {
 
       // --- Render the title cache.
       $out_row = '<tr class="descriptionElement descriptionElement_IndividualsAssociation ' . ($i % 2 ? 'odd' : 'even') . '">';
+
       if ($specimensOrObservation->class != 'FieldObservation') {
-        $label_html = cdm_dynabox($specimensOrObservation->titleCache, cdm_compose_url('portal/' . CDM_WS_DERIVEDUNIT_FACADE, array(
-          $specimensOrObservation->uuid,
-        )), 'cdm_derivedUnitFacade', 'Click for details', array(
-          'div',
-          'div',
-        ));
+        // details are loaded on request via the cdm_dynabox by AJAX
+        $derived_unit_ws_request = cdm_compose_url('portal/' . CDM_WS_DERIVEDUNIT_FACADE, array( $specimensOrObservation->uuid));
+        $label_html = cdm_dynabox(
+            $specimensOrObservation->titleCache,
+            $derived_unit_ws_request,
+            'cdm_derivedUnitFacade',
+            'Click for details',
+            array('div','div')
+        );
       }
       else {
         $label_html = $specimensOrObservation->titleCache;
@@ -420,6 +415,7 @@ function theme_cdm_taxon_page_specimens($variables) {
       $out_row .= '<td>' . $label_html . '</td>';
 
       // --- Render associated media.
+      $gallery_html = '';
       if (count($mediaList) > 0) {
         $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
         $gallery_name = $specimensOrObservation->uuid;
@@ -432,15 +428,12 @@ function theme_cdm_taxon_page_specimens($variables) {
           'galleryName' => $gallery_name,
           'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
           'cols' => $gallery_settings['cdm_dataportal_media_cols'],
-          'maxRows' => $gallery_settings['cdm_dataportal_media_maxRows'],
+          'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
           'captionElements' => $captionElements,
           'mediaLinkType' => 'LIGHTBOX',
           'alternativeMediaUri' => NULL,
           'galleryLinkUri' => NULL,
           ));
-      }
-      else {
-        $gallery_html = '';
       }
       $out_row .= '<td>' . $gallery_html . '</td></tr>';
       $out_specimenList .= $out_row;
@@ -859,11 +852,8 @@ function theme_cdm_media_page($variables) {
 
   $out .= '<div class="media cdm_media_viewer_image">';
 
-  // $out .= '<div class="viewer">';
   $out .= theme('cdm_back_to_image_gallery_button', array());
   $out .= '<div class="viewer">';
-  // $out .= theme('cdm_media_gallerie_image', $representation->parts[$partIdx],
-  // $imageMaxExtend);
   $out .= theme('cdm_openlayers_image', array('mediaRepresentationPart' => $media->representations[$representationIdx]->parts[$partIdx], 'maxExtend' => $imageMaxExtend));
   $out .= '</div>';
 
@@ -889,8 +879,6 @@ function theme_cdm_media_page($variables) {
   // Representation(-part) specific metadata.
   $thumbnailMaxExtend = 100;
   $out .= '<table>';
-  // $out .= '<tr><th colspan="3">'.t('MimeType').':
-  // '.$media->representations[$representationIdx]->mimeType.'</th></tr>';
   $i = 0;
   foreach ($media->representations[$representationIdx]->parts as $part) {
     $out .= '<tr><th>' . t('Part') . ' ' . ($i + 1) . '</th><td>';

@@ -1773,7 +1773,7 @@ function _add_status_message_toggler() {
        $(\'.messages.debug\').before( \'<h6 class="messages_toggler debug">Debug Messages (click to toggle)</h6>\' );
        $(\'.messages_toggler\').click(function(){
          $(this).next().slideToggle(\'fast\');
-         return FALSE;
+         return false;
        }).next().hide();
      });', array('type' => 'inline'));
 

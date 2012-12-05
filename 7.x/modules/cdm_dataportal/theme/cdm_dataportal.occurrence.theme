@@ -106,6 +106,7 @@ function theme_cdm_derivedUnitFacade($variables) {
     'derivedUnitMedia',
   );
   static $fieldLabels = array(
+    'type' => 'Basis of Record',
     'fieldNumber' => 'Collectors number',
     'absoluteElevation' => 'Altitude',
     'absoluteElevationMinimum' => 'Altitude maximum',

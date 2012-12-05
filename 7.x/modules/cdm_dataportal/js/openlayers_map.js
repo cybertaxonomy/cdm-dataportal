@@ -10,7 +10,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
   var defaultBaseLayer;
 
   var defaultControls = [
-             new OpenLayers.Control.PanZoom(),
+           new OpenLayers.Control.PanZoom(),
            new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
          ];
   /*

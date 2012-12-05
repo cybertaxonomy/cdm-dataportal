@@ -205,14 +205,26 @@ function theme_cdm_media_mime_text($variables) {
   return $out;
 }
 
+
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Theme function for captions of media elements. This method is usually called from
+ * within the theme_cdm_media_gallerie() function or indirectly via AHAH.
+ *
+ * @param array $variables
+ *   an associative array with the following elements:
+ *   - 'media': the cdm media object to show the captions for
+ *   - 'elements':
+ *         an array which defining the caption elements to show up
+ *         example:
+ *          Show 'title', 'description', 'file', 'filename' in the caption:
+ *          array('title', 'description', 'file', 'filename')
+ *
+ * @return string
+ *   the themed html output
  */
 function theme_cdm_media_caption($variables) {
   $media = $variables['media'];
   $elements = $variables['elements'];
-  $fileUri = $variables['fileUri'];
   $media_metadata = cdm_read_media_metadata($media);
 
   $doTitle = !$elements || array_search('title', $elements) !== FALSE;
@@ -313,11 +325,17 @@ function theme_cdm_media_caption($variables) {
  *   - maxExtend
  *   - cols
  *   - maxRows
- *   - captionElements: An array, possible values are like in the following
- *     example:
- *       array('title', 'description', 'file', 'filename'),
- *       //to add a link to the caption:
- *       array('titlecache', '#uri'=>t('open Image'));
+ *   - showCaption:  boolean value, whether to show captions or not.
+ *   - captionElements: An array of caption elements to be shown. In case the array
+ *        is empty of NULL  all available caption elements will be show. In order to
+ *        supress all captions  set 'showCaption' to FALSE
+ *        example:
+ *          1) Show 'title', 'description', 'file', 'filename' in the caption:
+ *            array('title', 'description', 'file', 'filename'),
+ *          2) To add an addtional link at the bottom of  the caption:
+ *            array('titlecache', '#uri'=>t('open Image')) this will cause a link
+ *            to be rendered with label 'open Image' which will open the accoring
+ *            media object.
  *   - mediaLinkType: Valid values:
  *      - "NONE": do not link the images,
  *      - "LIGHTBOX": open the link in a light box,
@@ -350,14 +368,17 @@ function theme_cdm_media_gallerie($variables) {
   $alternativeMediaUri = $variables['alternativeMediaUri'];
   $galleryLinkUri = $variables['galleryLinkUri'];
   $showCaption = $variables['showCaption'];
-  if (!is_array($captionElements)) {
-    $captionElements = array();
+
+  $caption_link_uri = '';
+  if(isset($captionElements['#uri'])){
+    $caption_link_uri = $captionElements['#uri'];
+    unset($captionElements['#uri']);
+  }
+  if (!is_array($captionElements) || count($captionElements) == 0) {
+    $captionElements = NULL;
   }
 
   // TODO correctly handle multiple media representation parts
-  // Comment @WA: this does not work when clean_urls is enabled..
-  // $_SESSION['cdm']['last_gallery'] = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "?q=") + 3);
-  // ..this works.
   $_SESSION['cdm']['last_gallery'] = current_path();
   // Prevent from errors.
   if (!isset($mediaList[0])) {
@@ -448,13 +469,16 @@ function theme_cdm_media_gallerie($variables) {
           $mediaLinkUri = $preferred_media_representation->parts[0]->uri;
         }
 
+        // media captions will be loaded via AHAH
         _add_js_ahah();
         $content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
+        $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
 
-        $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
-        $captionPartHtml = '<div class="ahah-content" rel="' . $cdm_proxy_url . '"><span class="loading" style="display: none;">Loading ....</span></div>';
 
-        // Generate gallery caption.
+        // preparing the part link (= click on image iteself) which can be handled in two ways
+        //
+        //  1. open image in lightbox, the captions in the lighhtbox will be loaded via AHAH
+        //  2. open the media in a new window with target 'specimen'
         if ($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image') {
           $mediaPartLinkAttributes['class'] = array('lightbox');
         }
@@ -462,29 +486,32 @@ function theme_cdm_media_gallerie($variables) {
           $mediaPartLinkAttributes['target'] = "specimen";
           $openMediaLinkAttributes['target'] = "specimen";
         }
-        // Generate & add caption to lightbox.
-        $lightBoxCaptionElements = NULL;
-        // .($lightBoxCaptionElements?'/'.join(',',$lightBoxCaptionElements):''));
-        $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption");
+        $mediaPartLinkAttributes['alt'] = '<div class="ahah-content" rel="' . $cdm_proxy_url_caption . '">'
+          . '<span class="loading" style="display: none;">Loading ....</span></div>';
 
-        $mediaPartLinkAttributes['alt'] = '<div class="ahah-content" rel="' . $cdm_proxy_url . '"><span class="loading" style="display: none;">Loading ....</span></div>';
 
-        if (isset($captionElements['#uri'])) {
+        // preparing the media caption - no caption elements to show up here except the $caption_link_uri, if at all
+        //
+        $captionPartHtml = '';
+        if ($caption_link_uri) {
           if ($contentTypeDirectory == 'image') {
-            $captionPartHtml .= '<div class="media-caption-link">' . l($captionElements['#uri'], path_to_media($media->uuid), array(
+          // it is an image, so open it in the media page
+            $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, path_to_media($media->uuid), array(
               'attributes' => array(), 'html' => TRUE,
             )) . '</div>';
           }
           else {
+            // otherwise open it directly and let the the browser handle the media type
             $openMediaLinkAttributes['absolute'] = TRUE;
-            $captionPartHtml .= '<div class="media-caption-link">' . l($captionElements['#uri'], $mediaLinkUri, array(
+            $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, $mediaLinkUri, array(
               'attributes' => $openMediaLinkAttributes, 'html' => TRUE,
             )) . '</div>';
           }
         }
+
         $captionParts[] = $captionPartHtml;
 
-        // --- Surround imagePart with link.
+        // --- Surround imagePart with link, this .
         if ($doLink) {
           $mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, array(
             'attributes' => $mediaPartLinkAttributes, 'html' => TRUE,
@@ -499,7 +526,7 @@ function theme_cdm_media_gallerie($variables) {
     }
     $out .= '</tr>'; // End of media parts.
     if ($showCaption) {
-      if (count($captionElements) > 0) {
+      if ( (is_array($captionElements) && count($captionElements) > 0) || $caption_link_uri) {
         $out .= '<tr>';
         // Add caption row.
         foreach ($captionParts as $captionPartHtml) {
