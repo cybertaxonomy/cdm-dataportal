@@ -85,10 +85,10 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
     $hideImages =  ($rankCompare > -1);
   }
 
-  // --- GET specimensOrObersvations --- //
-  $specimensOrObersvations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObersvations') );
-  $specimensOrObersvationsCount = is_array($specimensOrObersvations) ? count($specimensOrObersvations) : 0;
-  if($specimensOrObersvationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
+  // --- GET specimensOrObservations --- //
+  $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObservations') );
+  $specimensOrObservationsCount = is_array($specimensOrObservations) ? count($specimensOrObservations) : 0;
+  if($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
     $hideTabs[] = theme('cdm_taxonpage_tab', 'Specimens');
   }
 
@@ -190,7 +190,7 @@ function theme_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: SPECIMENS --- //
-  if($specimensOrObersvationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')){
+  if($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')){
     $out .= '<div id="specimens">';
     if($page_part == 'all'){
       $out .= '<h2>'.t('Specimens').'</h2>';
@@ -243,17 +243,17 @@ function theme_cdm_taxon_page_specimens($taxon){
 
   RenderHints::pushToRenderStack('taxon_page_specimens');
 
-  $specimensOrObersvations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObersvations') );
+  $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObservations') );
 
   //collect media (fieldObjectMedia, derivedUnitMedia) and add as fields
-   foreach($specimensOrObersvations as &$occurrence) {
+   foreach($specimensOrObservations as &$occurrence) {
       $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($occurrence->uuid, 'fieldObjectMedia') );
       $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($occurrence->uuid, 'derivedUnitMedia') );
       //	  	$derivedUnitFacde = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array($descriptionElement->associatedSpecimenOrObservation->uuid) );
       //	  	$descriptionElement->_titleCache = $derivedUnitFacde->titleCache;
   }
 
-  if(count($specimensOrObersvations) > 0){
+  if(count($specimensOrObservations) > 0){
 
     $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
     $occurrenceQuery = $occurrenceQuery->String;
@@ -283,10 +283,10 @@ function theme_cdm_taxon_page_specimens($taxon){
 
 
 
-  if($specimensOrObersvations){
+  if($specimensOrObservations){
     $out_specimenList = '<table class="specimens">';
     $i = 1;
-    foreach($specimensOrObersvations as $specimensOrObersvation) {
+    foreach($specimensOrObservations as $specimensOrObersvation) {
       $i++;
 
         $mediaList = array();
