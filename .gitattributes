@@ -1092,7 +1092,6 @@
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/CyprusSearchTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/Cyprus_HybridTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/Cyprus_OriginalSourceTest.java -text
-7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/diptera/Diptera_OriginalSourceTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/flMalesiana/FloraMalesianaPolytomousKeyTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/flMalesiana/FloraMalesiana_OriginalSourceTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/palmae/Calamus_acanthospathus_TaxonProfileTest.java -text
