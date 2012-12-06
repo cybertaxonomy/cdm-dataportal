@@ -141,7 +141,7 @@ function theme_cdm_taxonRelationships($variables) {
       else {
         // All relationsship types but misapplied_name_for
         // invalid_designation_for.
-        $taxonRelationshipsLines[] = cdm_taxonRelationship($taxonRelation, TRUE, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon), TRUE);
+        $taxon_relationships_lines[] = cdm_taxonRelationship($taxonRelation, TRUE, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon), TRUE);
       }
     }
   }
@@ -173,10 +173,10 @@ function theme_cdm_taxonRelationships($variables) {
     $out .= '</ul>';
   }
 
-  if (isset($taxonRelationshipsLines) && is_array($taxonRelationshipsLines) && count($taxonRelationshipsLines) > 0) {
+  if (isset($taxon_relationships_lines) && is_array($taxon_relationships_lines) && count($taxon_relationships_lines) > 0) {
     $out .= '<ul class="taxonRelationships">';
-    foreach ($taxonRelationshipsLines as $taxonRelationshipLine) {
-      $out .= '<li class="synonym">' . $taxonRelationshipLine . '</li>';
+    foreach ($taxon_relationships_lines as $taxon_relationship_line) {
+      $out .= '<li class="synonym">' . $taxon_relationship_line . '</li>';
     }
     $out .= '</ul>';
   }
@@ -387,8 +387,18 @@ function theme_cdm_list_of_taxa($variables) {
  * Renders a representation of the given taxon relationship.
  *
  * According name relationships are also being rendered.
+ *
+ * @param unknown_type $taxonRelationship
+ * @param boolean $doLinkTaxon
+ *     whether to create a link to the related taxon
+ * @param boolean $inverse
+ *     whether the $taxonRelationship should be treaded as invers relation
+ * @param unknown_type $showSecReference
+ *     whether the secundum reference for the related taxon should be shown
+ *
+ * @return void|string
  */
-function cdm_taxonRelationship($taxonRelationship, $taxonRelationship = FALSE, $inverse = FALSE, $showSecReference = FALSE) {
+function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $inverse = FALSE, $showSecReference = FALSE) {
 
   // Validate object.
   if (!(isset($taxonRelationship->toTaxon) && isset($taxonRelationship->fromTaxon) && isset($taxonRelationship->type))) {
