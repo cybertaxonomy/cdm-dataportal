@@ -11,7 +11,7 @@ body {
   font: 12px/170% Verdana;
 }
 /**
- * If this stylesheet is used in TinyMCE, then use a white background. 
+ * If this stylesheet is used in TinyMCE, then use a white background.
  * CSS in TinyMCE is cached in the browser, so when making any changes here,
  * make sure you clear your browser cache!
  */
@@ -123,11 +123,6 @@ body.mceContentBody {
   margin-bottom:13px;
 }
 
-ul.homotypicSynonyms,
-ul.heterotypicSynonymyGroup {
-  border-bottom:1px solid #dedede;
-}
-
 #featureTOC {
   float:right;
 }
@@ -161,7 +156,7 @@ span.cluetip {
   color: #f03300;
 }
 
-/* 
+/*
 img.left {
   float: left;
   padding: 0 5px 5px 0;
@@ -367,13 +362,13 @@ ul.cdm_taxontree {
   font-size: 80%;
 }
 
-span.submitted, 
+span.submitted,
 .description {
   font-size: 1em;
 }
 
-.media_gallery a:link, 
-.media_gallery a:visited, 
+.media_gallery a:link,
+.media_gallery a:visited,
 .media_gallery .image-passe-partout {
   border-width: 0px;
 }
