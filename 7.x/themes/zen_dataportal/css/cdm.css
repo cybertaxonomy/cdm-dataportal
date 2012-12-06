@@ -65,12 +65,6 @@ ul.cdm_names li {
 /*
  * Synonymy
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000360}}
-ul.homotypicSynonyms,
-ul.heterotypicSynonymyGroup {
-  border-bottom: 1px solid #dedede;
-}
-
 /*
  * Media
  */

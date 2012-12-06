@@ -96,6 +96,22 @@ div.debug .uri {
 li .taxon {
 }
 
+/*
+ * ======= synonymy =======
+ */
+
+#synonymy ul {
+    margin: 0;
+}
+
+#synonymy ul.heterotypicSynonymyGroup,
+#synonymy ul.homotypicSynonymyGroup,
+#synonymy ul.homotypicSynonyms,
+#synonymy ul.taxonRelationships,
+#synonymy ul.misapplied {
+	margin-bottom: 0.5em;
+}
+
 #synonymy ul li {
   padding-bottom: 0px;
   padding-top: 0px;
@@ -106,9 +122,36 @@ li .taxon {
 .heterotypicSynonymyGroup li {
   margin-left: 26px;
 }
-ul.homotypicSynonyms,
-ul.heterotypicSynonymyGroup {
-   border-bottom: 1px solid #d4ebf9;
+.homotypic-synonymy-group,
+.heterotypic-synonymy-group,
+.taxon-relationships {
+   border-bottom: 1px solid #dedede;
+   padding: 1em 0;
+}
+
+/* footnotes in synonymy */
+#synonymy ul.foototes {
+	margin: 0;
+}
+
+.heterotypicSynonymyGroup li.footnotes,
+.homotypicSynonymyGroup li.footnotes,
+.homotypicSynonyms li.footnotes,
+.misapplied li.footnotes,
+.content li.descriptionText {
+  margin-top: 10px;
+  margin-left: 6px;
+  padding-left: 6px;
+  list-style: none;
+  list-style-image: none;
+  background-image: none;
+}
+
+
+#synonymy li.footnotes {
+  list-style: none;
+  list-style-image: none;
+  background-image: none;
 }
 
 ul.typeDesignations {
@@ -160,13 +203,6 @@ ul.cdm_names, ul.cdm_names li{
   list-style-type: none;
   list-style-image: none;
 }
-
-/*
-ul.cdm_names a:link,
-ul.cdm_names .Synonym a:visited {
-  color: #7c7c7f;
-}
-*/
 
 .dynabox .label:hover {
   color: #0174bb;
@@ -221,13 +257,6 @@ a.label:link,
 a.label:visited {
   color: #7c7c7f;
 }
-
-/*
-a.toc:link,
-a.toc:visited {
-  color: #F03300;
-}
-*/
 
 .block-cdm-taxontree .content,
 .block-cdm-dataportal-3 .content {
@@ -290,6 +319,10 @@ a.toc:visited {
   margin-bottom: 0;
 }
 
+/*
+ * ==== Maps ====
+ */
+
 #openlayers {
   /* Should match the margin-bottom of .description. */
   margin-bottom: 0.75em;
@@ -310,6 +343,15 @@ a.toc:visited {
   font-style: italic;
 }
 
+
+.distribution_map {
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+
+/*
+ * ======= Media =======
+ */
 .media .viewer {
   margin-top: 20px;
 }
@@ -381,12 +423,11 @@ div.cdm_media_viewer_image {
   background-color: #eee;
 }
 
-.distribution_map {
-  border: 1px solid #ddd;
-  background-color: #fff;
-}
 
-/* The print button text with underline and different color on hover. */
+/*
+ * ======= specific blocks =======
+ */
+
 #print_button {
   cursor: pointer;
 }
@@ -399,13 +440,13 @@ div.cdm_media_viewer_image {
   text-decoration: underline;
 }
 
-.annotations {
+/*
+ * ======= footnotes and annotations =======
+ */
+.annotations, .footnote{
   font-size: 88%;
 }
 
-.footnote{
-  font-size: 88%;
-}
 .footnote-key {
   vertical-align: super;
   font-size: 80%;
@@ -415,33 +456,10 @@ div.cdm_media_viewer_image {
 .footnote-anchor {
   font-weight: bold;
 }
-.heterotypicSynonymyGroup li.footnotes,
-.homotypicSynonymyGroup li.footnotes,
-.homotypicSynonyms li.footnotes,
-.misapplied li.footnotes,
-.content li.descriptionText {
-  margin-top: 10px;
-  margin-left: 6px;
-  padding-left: 6px;
-  list-style: none;
-  list-style-image: none;
-  background-image: none;
-}
-#synonymy li.footnotes {
-  list-style: none;
-  list-style-image: none;
-  background-image: none;
-}
 
-/* Footnotes margin when listing the synonymy. */
 /*
-.heterotypicSynonymyGroup .footnote {
-  margin-left: 3em;
-}
-.homotypicSynonyms .footnote {
-  margin-left: 1em;
-}
-*/
+ * Feature tree
+ */
 
 .featuretree_structure {
    font-size: 90%;

@@ -345,7 +345,7 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
   RenderHints::pushToRenderStack('heterotypicSynonymyGroup');
 
   $out = '';
-  $out = '<ul class="heterotypicSynonymyGroup">';
+  $out = '<div class="heterotypic-synonymy-group"><ul class="heterotypicSynonymyGroup">';
   $footnoteListKey = (isset($homotypicalGroup[0]) ? $homotypicalGroup[0]->uuid : 'NULL');
   RenderHints::setFootnoteListKey($footnoteListKey);
 
@@ -366,9 +366,14 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
   if ($typeDesignations) {
     $out .= theme('cdm_typedesignations', array('typeDesignations' => $typeDesignations));
   }
+  $out .= '</ul>';
 
+  // ------- footnotes ------- //
+  $out .= '<ul class="footnotes">';
   $out .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
   $out .= '</ul>';
+
+  $out .= '</div>';
 
   RenderHints::popFromRenderStack();
   return $out;
@@ -392,7 +397,7 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
     return;
   }
 
-  $out = '<ul class="homotypicSynonyms">';
+  $out = '<div class="homotypic-synonymy-group"><ul class="homotypicSynonyms">';
 
   if (!empty($prependedSynonyms)) {
     foreach ($prependedSynonyms as $taxon) {
@@ -415,14 +420,20 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
   if ($typeDesignations) {
     $out .= theme('cdm_typedesignations', array('typeDesignations' => $typeDesignations));
   }
+  $out .= '</ul>';
+
+  // ------- footnotes ------- //
+  $out .= '<ul class="footnotes">';
   // To avoiding drupal warnings (#1830).
   if ($accepted_taxon_footnoteListKey) {
     // Why FALSE???
     $out .= theme('cdm_footnotes', array('footnoteListKey' => $accepted_taxon_footnoteListKey, 'enclosingTag' => 'li'));
   }
-
   $out .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
   $out .= '</ul>';
+
+  $out .= '</div>';
+
 
   RenderHints::popFromRenderStack();
   return $out;

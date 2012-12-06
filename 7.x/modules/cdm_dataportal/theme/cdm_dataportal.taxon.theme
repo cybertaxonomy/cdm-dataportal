@@ -96,7 +96,6 @@ function theme_cdm_search_results($variables) {
 function theme_cdm_taxonRelationships($variables) {
   $taxonRelationships = $variables['taxonRelationships'];
   $focusedTaxon = $variables['focusedTaxon'];
-  $out = '';
   if (!$taxonRelationships) {
     return;
   }
@@ -153,7 +152,9 @@ function theme_cdm_taxonRelationships($variables) {
     $joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu ' . $authorteam . theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey)) . '</span>';
   }
 
-  // Generate output.
+  // ---- Generate output ---- //
+
+  $out = '<div class="taxon-relationships">';
   if (is_array($misapplied) && count($misapplied) > 0) {
     $out .= '<ul class="misapplied">';
     foreach ($misapplied as $misapplied_name) {
@@ -181,13 +182,20 @@ function theme_cdm_taxonRelationships($variables) {
     $out .= '</ul>';
   }
 
-  $tr_footnotes = theme('cdm_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
-  $tr_footnotes_exploded = explode('sensu', $tr_footnotes);
-  $tr_footnotes_aux = '';
-  foreach ($tr_footnotes_exploded as $element) {
-    $tr_footnotes_aux .= $element;
-  }
-  $out .= '<ul>' . $tr_footnotes_aux . '</ul>';
+  $footnotes = theme('cdm_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
+  $footnotes .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
+
+// AK: why splitting footnotes at the sennsu string ??? this is weired and hacky
+//     TODO remove below dead code
+//   $tr_footnotes_exploded = explode('sensu', $tr_footnotes);
+//   $tr_footnotes_aux = '';
+//   foreach ($tr_footnotes_exploded as $element) {
+//     $tr_footnotes_aux .= $element;
+//   }
+
+  $out .= '<ul class="footnotes">' . $footnotes . '</ul>';
+
+  $out .= '</div>';
 
   RenderHints::popFromRenderStack();
   return $out;
@@ -504,10 +512,13 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
     'is_type_designation' => FALSE,
     'skiptags' => $skiptags,
     ));
-  $out_taxon_part .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => array(
-  $taxon->name,
-  $taxon,
-), 'footnote_list_key' => $footnoteListKey));
+  $out_taxon_part .= theme('cdm_annotations_as_footnotekeys',
+       array('cdmBase_list' => array(
+         $taxon->name,
+         $taxon,
+       ),
+       'footnote_list_key' => $footnoteListKey)
+  );
 
   if ($showSecReference) {
     $out_taxon_part .= ' sec. ' . theme('cdm_reference', array('reference' => $taxon->sec));

@@ -300,7 +300,10 @@ function theme_cdm_footnote($variables) {
   $footnoteKey = $variables['footnoteKey'];
   $footnoteText = $variables['footnoteText'];
   _add_js_footnotes();
-  $out = '<span class="footnote footnote-' . $footnoteKey . '"><a name="footnote-' . $footnoteKey . '"></a><span class="footnote-anchor">' . $footnoteKey . '.</span>&nbsp;' . $footnoteText . '</span>';
+  $out = '<span class="footnote footnote-' . $footnoteKey . '">'
+    . '<a name="footnote-' . $footnoteKey . '"></a>'
+    . '<span class="footnote-anchor">' . $footnoteKey . '.</span>&nbsp;' . $footnoteText
+    . '</span>';
   return $out;
 }
 
@@ -314,7 +317,11 @@ function theme_cdm_footnotes($variables) {
   if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
   }
-  $out = '<' . $enclosingTag . ' class="footnotes footnotes-' . $footnoteListKey . ' ">' . FootnoteManager::renderFootnoteList($footnoteListKey) . '</' . $enclosingTag . '>';
+
+  $out = '<' . $enclosingTag . ' class="footnotes footnotes-' . $footnoteListKey . ' ">'
+    . FootnoteManager::renderFootnoteList($footnoteListKey)
+    . '</' . $enclosingTag . '>';
+
   FootnoteManager::removeFootnoteList($footnoteListKey);
   return $out;
 }
