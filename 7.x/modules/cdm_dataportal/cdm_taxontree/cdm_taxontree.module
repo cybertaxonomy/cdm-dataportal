@@ -336,7 +336,7 @@ function _get_block_region($delta) {
     WHERE b.theme = :b.theme
     AND b.status = :b.status
     AND (r.rid IN (:r.rid) OR r.rid IS NULL)
-    AND b.module = :b.module 
+    AND b.module = :b.module
     AND b.delta = :b.delta
   ", array(
     ':b.theme' => $theme_key,
@@ -408,7 +408,7 @@ function cdm_taxontree_taxonomy_children($tid, $vid, $theme) {
 }
 
 /**
- * @todo document this function.
+ * Get the root level of the tree
  */
 function cdm_taxontree_get_root($vid = NULL) {
   if (is_numeric($vid)) {
@@ -417,7 +417,7 @@ function cdm_taxontree_get_root($vid = NULL) {
     return cdm_taxontree_terms2treenodes($terms);
   }
   else {
-    return cdm_ws_taxonomy();
+    return cdm_ws_taxonomy_root_level();
   }
 }
 
@@ -437,7 +437,7 @@ function cdm_taxontree_get_children($uuid, $vid = NULL) {
   }
   else {
     // FIXME Replace $uuid by path of parent $uuids.
-    return cdm_ws_taxonomy($uuid);
+    return cdm_ws_taxonomy_root_level($uuid);
   }
 }
 
@@ -1016,7 +1016,7 @@ function theme_cdm_taxontree_node($variables) {
       $ahah_url = url('cdm_taxontree/taxonomy/children/' . $node->tid . '/' . $node->vid . '/cdm_taxontree/' . ($nextLevelIncluded ? 1 : 0) . '/' . ($show_filter_switch ? 1 : 0) . '/' . $tree_node_callback);
     }
     elseif (module_exists('cdm_dataportal')) {
-      $ws_url = cdm_compose_taxonomy_path($node->taxonUuid);
+      $ws_url = cdm_compose_taxonomy_root_level_path($node->taxonUuid);
       $ahah_url = url('cdm_api/proxy/' . urlencode($ws_url) . '/cdm_taxontree/' . ($nextLevelIncluded ? 1 : 0) . '/' . ($show_filter_switch ? 1 : 0) . '/' . $tree_node_callback);
     }
   }

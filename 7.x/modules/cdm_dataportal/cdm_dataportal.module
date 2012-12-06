@@ -1288,7 +1288,7 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = NULL
   $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $uuid);
   if (!$taxon_in_current_tree) {
     if (count($taxon_nodes) == 0) {
-      drupal_set_message(check_plain(t('This concept of the taxon !taxonname is not contained any classification.', array(
+      drupal_set_message(check_plain(t('This concept of the taxon !taxonname is not contained as an accepted taxon in currently chosen classification.', array(
         '!taxonname' => theme('cdm_taxonName', array('taxonName' => $taxon->name)),
       ))), 'warning');
     }
@@ -1301,8 +1301,8 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = NULL
       }
 
       drupal_set_message(format_plural(count($taxon_nodes),
-          'This concept of the taxon !taxonname is not contained in the currently chosen classification, but in this one: !trees',
-          'This concept of the taxon !taxonname is not contained in the currently chosen classification, but in one of these: !trees',
+          'This concept of the taxon !taxonname is not contained as an accepted taxon in currently chosen classification, but in this one: !trees',
+          'This concept of the taxon !taxonname is not contained as an accepted taxon in currently chosen classification, but in one of these: !trees',
           array('!taxonname' => theme('cdm_taxonName', array('taxonName' => $taxon->name)), '!trees' => $trees)) , 'warning');
     }
   }
