@@ -1,0 +1,201 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for CDM_DataPortal install profile.
+ *
+ * This profile performs the same actions as the standard profile, but with 
+ * some customizations for CDM portals.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Perform actions to set up the site for this profile.
+ *
+ * @see system_install()
+ */
+function CDM_Portal_install() {
+  variable_set('theme_default', 'garland');
+
+  include_once DRUPAL_ROOT . '/profiles/standard/standard.install';
+  standard_install();
+  
+  // Disable the blocks that were enabled for the dashboard in the standard install.
+  // In the CDM dataportals we use the admin_menu module instead of taskbar and dashboard.
+  $query = db_update('block')->fields(array('status' => '0'))
+  ->condition('region', 'dashboard_main', '=')
+  ->execute();
+  $query = db_update('block')->fields(array('status' => '0'))
+  ->condition('region', 'dashboard_sidebar', '=')
+  ->execute();  
+
+  // CDM Portal specific settings.
+    variable_set('anonymous', 'Anonymous');
+  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    variable_set('file_temporary_path', 'c:\\windows\\temp');
+  }
+  else {
+    variable_set('file_temporary_path', '/tmp');
+  }
+
+  // Do not use the line-break filter for the full_html input format.
+  $full_html_format = array(
+    'format' => 'full_html',
+    'name' => 'Full HTML',
+    'weight' => 1,
+    'filters' => array(
+      // URL filter.
+      'filter_url' => array(
+        'weight' => 0,
+        'status' => 1,
+      ),
+      // HTML corrector filter.
+      'filter_htmlcorrector' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+    ),
+  );
+  $full_html_format = (object) $full_html_format;
+  filter_format_save($full_html_format);
+  
+  // variable_set('filter_html_1', 1);
+  // variable_set('menu_primary_menu', 2);
+  // variable_set('menu_secondary_menu', 2);
+  variable_set('node_options_forum', array (0 => 'status'));
+  variable_set('node_options_page', array (0 => 'status'));
+  // variable_set('site_footer', '');
+  variable_set('site_frontpage', 'node/1');
+  variable_set('site_mail', '');
+  // variable_set('site_mission', '');
+  variable_set('site_name', 'CDM Dataportal');
+  variable_set('site_slogan', '');
+  variable_set('cdm_dataportal_geoservice_display_width', '600');
+  
+  // Enable the Garland theme.
+  db_update('system')
+  ->fields(array('status' => 1))
+  ->condition('type', 'theme')
+  ->condition('name', 'garland')
+  ->execute();
+
+// a:16:{s:11:"toggle_logo";i:1;s:11:"toggle_name";i:1;s:13:"toggle_slogan";i:0;s:14:"toggle_mission";i:0;s:24:"toggle_node_user_picture";i:0;s:27:"toggle_comment_user_picture";i:0;s:13:"toggle_search";i:1;s:14:"toggle_favicon";i:1;s:12:"default_logo";i:1;s:9:"logo_path";s:0:"";s:11:"logo_upload";s:0:"";s:15:"default_favicon";i:1;s:12:"favicon_path";s:0:"";s:14:"favicon_upload";s:0:"";s:2:"op";s:18:"Save configuration";s:10:"form_token";s:32:"3e11e7c40e73cf4b3e70ae5703d87d72";}
+  variable_set('theme_settings', array (
+    'toggle_node_info_page' => FALSE,
+    'toggle_node_info_cdm_media' => FALSE,
+    'toggle_node_info_cdm_name' => FALSE,
+    'toggle_node_info_cdm_taxon' => FALSE,
+    'toggle_node_info_cdm_reference' => FALSE,
+  ));
+
+  variable_set('cdm_webservice_debug', 0);
+  variable_set('cdm_webservice_cache', 0);
+  variable_set('distribution_sort', 'HIDE_TDWG2');
+
+  variable_set('baselayers', array(
+    'metacarta_vmap0' => 'metacarta_vmap0',
+    'PREFERRED' => 'metacarta_vmap0'
+  ));
+
+  // USER_REGISTER_ADMINISTRATORS_ONLY = 0
+  // USER_REGISTER_VISITORS = 1
+  // USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL = 2
+  variable_set('user_register', USER_REGISTER_ADMINISTRATORS_ONLY);
+
+  // Create a role for CDM administrator.
+  $admin_role = new stdClass();
+  $admin_role->name = 'CDM admin';
+  $admin_role->weight = 3;
+  user_role_save($admin_role);
+
+  // Make sure these permissions are present, e.g. that the modules defining these permissions are installed.
+  // This because user_role_grant_permissions() will create the permission in the role_permision table if it does not
+  // exist, and for that it needs to find a module that defines the permission (there is a module column in this table).
+  $permissions = array(
+    // Roles same as in D5 portals.
+    'access administration menu',
+    'administer blocks',
+    'administer cdm_dataportal',
+    'cdm_dataportal view notes',
+    // @comment WA: Devel and IMCE modules are not required modules in this profile.
+    // 'access devel information',
+    // 'access imce',
+    // 'administer imce',
+    'administer menu',
+    'access content',
+    'administer content types',
+    'administer nodes',
+    'create page content',
+    'edit own page content',
+    'view revisions',
+    'access administration pages',
+    'administer site configuration',
+    'administer users',
+
+    // Roles as in D5 but with different name.
+    'edit any page content',
+    'edit any article content',
+    'create article content',
+    'edit own article content',
+    'administer themes',
+
+    // New roles for D7.
+    'access content overview',
+    'access site in maintenance mode',
+    'bypass node access',
+    'view the administration theme',
+    // 'use text format 3',
+  );
+  user_role_grant_permissions($admin_role->rid, $permissions);
+
+  /*
+  // Create a portal admin user (uid = 1).
+  $user = user_save(new stdClass(), array(
+    'name' => 'admin',
+    'mail' => 'admin@dataportal.net',
+    'status' => '1',
+    'init' => 'wp5Admin@bgbm.org',
+    'pass' => 'admin',
+  ));
+*/
+  // Assign user 1 the "CDM admin" role.
+  db_insert('users_roles')
+  ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
+  ->execute();
+
+  // Create a first node page.
+  $node = new stdClass();
+  $node->uid = 1;
+  $node->type = 'page';
+
+  // Sets some defaults.
+  node_object_prepare($node);
+
+  $node->status = 1;
+  $node->language = LANGUAGE_NONE;
+  
+  // Promoted to front page.
+  $node->promote = 0;
+  
+  // Comments on.
+  $node->comment = 1;
+  $node->title = 'CDM DataPortal';
+  // Format to use = full html.
+  $node->body[$node->language][0]['format'] = 'full_html';
+  $node->body[$node->language][0]['value'] = sprintf(
+    '<h3>Welcome to your CDM DataPortal. </h3>
+    This data portal makes full use of the Common Data Model (CDM),
+    a central component of the Internet Platform for Cybertaxonomy being
+    developed by EDIT workpackage 5. All taxon pages are created as dynamic
+    web pages from the underlying database.
+    In order to finish the setup of your DataPortal please visit the %s.
+    The CDM Dataportal provides several Drupal Blocks (<i>taxon search</i>,
+    <i>classification browser</i>, <i>external links</i>,
+    <i>print this page</i>) which you may want to activate in the
+    %s.',
+    l('CDM Dataportal settings','admin/config/cdm_dataportal'),
+    l('Blocks Settings', 'admin/structure/block')
+  );
+  node_save($node);
+
+ }

@@ -1009,8 +1009,13 @@
 7.x/modules/cdm_dataportal/js/thickbox/thickbox.js -text
 7.x/modules/cdm_dataportal/node_types.php -text
 7.x/modules/cdm_dataportal/pom.xml -text
-7.x/modules/cdm_dataportal/profile/CDM_DataPortal/CDM_DataPortal.profile -text
-7.x/modules/cdm_dataportal/profile/CDM_DataPortal_Testing/CDM_DataPortal_Testing.profile -text
+7.x/modules/cdm_dataportal/profile/CDM_Portal/CDM_Portal.info -text
+7.x/modules/cdm_dataportal/profile/CDM_Portal/CDM_Portal.install -text
+7.x/modules/cdm_dataportal/profile/CDM_Portal/CDM_Portal.profile -text
+7.x/modules/cdm_dataportal/profile/CDM_Portal_Testing/CDM_Portal_Testing.info -text
+7.x/modules/cdm_dataportal/profile/CDM_Portal_Testing/CDM_Portal_Testing.install -text
+7.x/modules/cdm_dataportal/profile/CDM_Portal_Testing/CDM_Portal_Testing.profile -text
+7.x/modules/cdm_dataportal/profile/READMe.txt -text
 7.x/modules/cdm_dataportal/settings.php -text
 7.x/modules/cdm_dataportal/site/apt/configuration.apt -text
 7.x/modules/cdm_dataportal/site/apt/download.apt -text
