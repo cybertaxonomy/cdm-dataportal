@@ -3,15 +3,27 @@
 if [ -z $1 ]
 then
   echo "USAGE: update-to.sh <VERSION NUMBER>"
+  echo "       - VERSION NUMBER e.g. '1.3.1'"
+  echo "       - 'trunk' can also be used to refer to the trunk version"
+  echo ""
   echo "  e.g.: update-to.sh 3.0.6 to install branches/drupal/module-cdm_dataportal-RELEASE-3.0.6 and branches/drupal/themes-RELEASE-3.0.6"
 fi
 
 VERSION=$1
 
-rm -rf modules/cdm_dataportal
-svn co http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION modules/cdm_dataportal
-rm -rf themes
-svn co http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION themes
+rm -r modules/cdm_dataportal
+if [ $VERSION == "trunk" ]; then
+  svn co http://dev.e-taxonomy.eu/svn/trunk/drupal/7.x/modules/cdm_dataportal modules/cdm_dataportal
+else
+  svn co http://dev.e-taxonomy.eu/svn/branches/drupal/module-cdm_dataportal-RELEASE-$VERSION modules/cdm_dataportal
+fi
+rm -r themes
+if [ $VERSION == "trunk" ]; then
+  svn co http://dev.e-taxonomy.eu/svn/trunk/drupal/7.x/themes themes
+else
+  svn co http://dev.e-taxonomy.eu/svn/branches/drupal/themes-RELEASE-$VERSION themes
+fi
+
 
 echo "========================================================================"
 echo "NOTE:"
