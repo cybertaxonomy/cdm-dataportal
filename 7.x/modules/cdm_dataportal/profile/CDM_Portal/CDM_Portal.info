@@ -6,7 +6,10 @@ description = CDM DataPortal installation profile.
 version = 7.x-3.0
 core = 7.x
 
-;Core modules. Note: the taskbar and dashboard Drupal modules are not used in CDM Portals and therefore not enabled.
+; Core modules.
+; Notes:taskbar and dashboard Drupal modules are not used in CDM Portals and therefore not enabled.
+; also disabled is the overlay module
+;
 dependencies[] = block
 dependencies[] = color
 dependencies[] = comment

@@ -12,9 +12,9 @@
 function CDM_Portal_form_install_configure_form_alter(&$form, $form_state) {
   // Pre-populate the form.
   $form['site_information']['site_name']['#default_value'] = st('EDIT CDM DataPortal');
-  $form['site_information']['site_mail']['#default_value'] = 'admin@dataportal.net';
+  $form['site_information']['site_mail']['#default_value'] = 'admin@edit.cdm.dataportal.eu';
   $form['admin_account']['account']['name']['#default_value'] = 'admin';
-  $form['admin_account']['account']['mail']['#default_value'] = 'wp5Admin@bgbm.org';
+  $form['admin_account']['account']['mail']['#default_value'] = 'admin@edit.cdm.dataportal.eu';
 
   // @Comment WA: enable if default password is required (drupal password_confirm field does not allow default value).
   // $form['admin_account']['account']['pass']['#type'] = 'textfield';
