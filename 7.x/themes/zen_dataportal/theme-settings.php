@@ -26,20 +26,38 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
     return;
   }
 
+  // will be available in the page.tpl.php
+   $form['zen_dataportal_misc'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Miscellaneous settings'),
+          '#description' => t('Miscellaneous settings for the DataPoral Zen theme.')
+  );
+  $form['zen_dataportal_misc']['site_name_position'] = array(
+    '#type'          => 'select',
+    '#title'         => t('Site name posistion'),
+    '#description'   => t('The site name can be positioned over the banner or below the banner.'
+        . '<br/><stong>NOTE:</strong> If your are choosing to position the site name below the banner you may also want to '
+        . 'adapt the <em>site name color</em>.' ),
+    '#options' => array(
+      'over_banner' => t('Over banner'),
+      'below_banner' => t('Below banner'),
+    ),
+    '#default_value' => theme_get_setting('site_name_position'),
+  );
+
 
   drupal_add_css(path_to_theme() . '/js/colorpicker/css/colorpicker.css', 'file');
   drupal_add_js(path_to_theme() . '/js/colorpicker/js/colorpicker.js', 'file');
   drupal_add_js(path_to_theme() . '/js/settings-ui.js', 'file');
-
   $form['zen_dataportal_colors'] = array(
           '#type' => 'fieldset',
           '#title' => t('Colors'),
           '#description' => t('Configure colors where.'),
           '#attributes' => array('class' => array('theme-settings-bottom')),
   );
-
   zen_dataportal_form_widget_color($form['zen_dataportal_colors'], 'site-name_color');
   zen_dataportal_form_widget_color($form['zen_dataportal_colors'], 'main-menu_background-color');
+  zen_dataportal_form_widget_color($form['zen_dataportal_colors'], 'sub-header_background-color');
 
 
   //
@@ -64,7 +82,6 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
  */
 function zen_dataportal_theme_settings_submit($form, &$form_state) {
 
-
   foreach(_zen_dataportal_imagenames() as $which_image) {
     zen_dataportal_form_widget_image_submit($form_state, $which_image);
   }
@@ -72,7 +89,7 @@ function zen_dataportal_theme_settings_submit($form, &$form_state) {
   // update logo information like wich one to use and size, this is needed to
   // offset the banner and menu bar
   $values = &$form_state['values'];
-  if(!theme_get_setting('default_logo')) {
+  if(theme_get_setting('default_logo')) {
     $logo_file = path_to_theme() . '/logo.png';
   } else {
     $logo_file = theme_get_setting('logo_path');

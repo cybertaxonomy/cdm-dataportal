@@ -12,8 +12,8 @@
 ; page at admin/appearance.
 
 screenshot  = screenshot.png
-name        = DataPortal base theme based on Zen
-description = DataPortal base theme based on the Zen theme. Read the <a href="http://drupal.org/node/873778">online docs</a> or the included README.txt on how to create a theme with Zen.
+name        = CDM DataPortal base theme
+description = CDM DataPortal standart theme which has been created on base of the Zen theme. Read the <a href="http://drupal.org/node/873778">online docs</a> or the included README.txt on how to create a theme with Zen.
 
 
 

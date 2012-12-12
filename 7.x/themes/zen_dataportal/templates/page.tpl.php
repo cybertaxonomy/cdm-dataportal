@@ -51,8 +51,7 @@
  *   associated with the page, and the node ID is the second argument
  *   in the page's path (e.g. node/12345 and node/12345/revisions, but not
  *   comment/reply/12345).
- * - $banner_url: from zen_dataportal theme-settings.php
- * - $page_background_url: from zen_dataportal theme-settings.php
+ * - $site_name_position: where the site-name should show up ('over_banner','below_banner')
  *
  * Regions:
  * - $page['header']: Items for the header region.
@@ -81,7 +80,7 @@
 
     <?php if ($site_name || $site_slogan): ?>
       <hgroup id="name-and-slogan">
-        <?php if ($site_name): ?>
+        <?php if ($site_name && $site_name_position == 'over_banner'): ?>
           <h1 id="site-name">
             <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
           </h1>
@@ -110,6 +109,13 @@
     <?php endif; ?>
 
     <?php print render($page['header']); ?>
+      <div id="sub-header">
+      <?php if ($site_name && $site_name_position == 'below_banner'): ?>  
+          <h1 id="site-name">
+            <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
+          </h1>
+      <?php endif; ?>
+      </div>
   </header>
 
   <div id="main">

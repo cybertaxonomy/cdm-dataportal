@@ -54,7 +54,17 @@ h1, h2, h3, h4, h5, h6 {
  */
 
 #header {
-  margin-bottom: $zen-gutter-width / 2;
+  // margin-bottom: $zen-gutter-width / 2; // disabled since we are now having the subheader
+}
+
+#sub-header {
+  clear: both;
+  min-height: $zen-gutter-width / 2;
+  #site-name {
+    /* in this position the site-name needs different styles */
+    font-size: 2em;
+    font-weight: lighter;
+  }
 }
 
 #logo { /* Wrapping link for logo */

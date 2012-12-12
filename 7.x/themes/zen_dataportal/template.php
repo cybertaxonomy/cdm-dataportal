@@ -161,10 +161,13 @@ function _add_inline_styles(&$variables) {
   if(theme_get_setting('main-menu_background-color')) {
     $variables['inline_styles'][] = "#main-menu {background-color:" . theme_get_setting('main-menu_background-color') . ';}';
   }
+  if(theme_get_setting('sub-header_background-color')) {
+    $variables['inline_styles'][] = "#sub-header {background-color:" . theme_get_setting('sub-header_background-color') . ';}';
+  }
   if(theme_get_setting('logo_size')) {
     $logo_size = theme_get_setting('logo_size');
     $variables['inline_styles'][] = '#header {background-position:' . $logo_size['width'] . 'px 0;}';
-    $variables['inline_styles'][] = '#main-menu {padding-left:' . $logo_size['width'] . 'px;}';
+    $variables['inline_styles'][] = '#main-menu, #sub-header {padding-left:' . $logo_size['width'] . 'px;}';
   }
 }
 
@@ -200,6 +203,7 @@ function zen_dataportal_preprocess_html(&$variables, $hook) {
   _set_image_url('page_background', $variables, NULL, '#page');
   _set_image_url('banner', $variables, 'banner.jpg', '#header', 'scroll no-repeat content-box');
   _add_inline_styles($variables);
+
 }
 
 /**
@@ -211,6 +215,12 @@ function zen_dataportal_preprocess_html(&$variables, $hook) {
  *   The name of the template being rendered ("page" in this case.)
  */
 function zen_dataportal_preprocess_page(&$variables, $hook) {
+
+  $variables['site_name_position'] = 'over_banner';
+  if(theme_get_setting('site_name_position')) {
+    $variables['site_name_position'] = theme_get_setting('site_name_position');
+  }
+  
 }
 
 /**
