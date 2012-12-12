@@ -1,3 +1,17 @@
+ZEN DATAPORTAL THEME
+----------------------
+
+This zen based dataportal theme offers simple but efficient settings to adapt
+the dataportal layout quickly to project needs so the layout can now be done
+by users and developers are no longer required for these styling tasks.
+
+Moreover it is no longer necessary to create subthemes for each project.
+
+When you also utilize the delta module it is even possible to copy layouts from
+one portal to a new one.
+
+==================== original zen readme below ============================
+
 BUILD A THEME WITH ZEN
 ----------------------
 

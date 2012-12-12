@@ -39,6 +39,7 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
         . '<br/><stong>NOTE:</strong> If your are choosing to position the site name below the banner you may also want to '
         . 'adapt the <em>site name color</em>.' ),
     '#options' => array(
+      'hide' => t('Hidden'),
       'over_banner' => t('Over banner'),
       'below_banner' => t('Below banner'),
     ),
@@ -89,10 +90,10 @@ function zen_dataportal_theme_settings_submit($form, &$form_state) {
   // update logo information like wich one to use and size, this is needed to
   // offset the banner and menu bar
   $values = &$form_state['values'];
-  if(theme_get_setting('default_logo')) {
+  if($values['default_logo']) {
     $logo_file = path_to_theme() . '/logo.png';
   } else {
-    $logo_file = theme_get_setting('logo_path');
+    $logo_file = 'public://' . $values['logo_path'];
   }
   $logo_file_info = image_get_info($logo_file);
   if(isset($logo_file_info['width'])) {
