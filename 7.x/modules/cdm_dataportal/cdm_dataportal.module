@@ -1400,7 +1400,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
   }
   else {// More than one taxa case.
     $taxon_name_page = new stdClass();
-    $taxon_name_page->title = theme('cdm_name_page_title', array('taxon_name' => $taxon_name . ''));
+    $taxon_name_page->title = theme('cdm_name_page_title', array('taxon_name' => $taxon_name));
     if ($taxon_pager->records) {
       $taxon_name_page->content = theme_cdm_list_of_taxa($taxon_pager->records, FALSE);
     }
