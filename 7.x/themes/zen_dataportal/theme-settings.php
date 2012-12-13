@@ -60,6 +60,8 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
           ),
   );
 
+  // TODO : site-name shadow: text-shadow: black 0 10px 20px, black 0 5px
+
 
   drupal_add_css(path_to_theme() . '/js/colorpicker/css/colorpicker.css', 'file');
   drupal_add_js(path_to_theme() . '/js/colorpicker/js/colorpicker.js', 'file');
@@ -70,9 +72,26 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
           '#description' => t('Configure colors where.'),
           '#attributes' => array('class' => array('theme-settings-bottom')),
   );
-  zen_dataportal_form_widget_color($form['zen_dataportal_colors'], 'site-name_color');
-  zen_dataportal_form_widget_color($form['zen_dataportal_colors'], 'main-menu_background-color');
-  zen_dataportal_form_widget_color($form['zen_dataportal_colors'], 'sub-header_background-color');
+  zen_dataportal_form_widget_color(
+      $form['zen_dataportal_colors'],
+      'site-name_color',
+      t('The color of the site name which is shown in the header.')
+  );
+  zen_dataportal_form_widget_color(
+      $form['zen_dataportal_colors'],
+      'main-menu_background-color',
+      t('The color of the menu background.')
+  );
+  zen_dataportal_form_widget_color(
+      $form['zen_dataportal_colors'],
+      'main-menu_background-color-2',
+      t('The second color of the menu background. If this is also set the menu background will have a grandiend.')
+  );
+  zen_dataportal_form_widget_color(
+      $form['zen_dataportal_colors'],
+      'sub-header_background-color',
+      t('The background color sub-header.')
+  );
 
 
   //
@@ -205,13 +224,13 @@ function zen_dataportal_form_widget_image(&$form, $which_image){
  * @param $color_settings_key
  *
  */
-function zen_dataportal_form_widget_color(&$form, $color_settings_key) {
+function zen_dataportal_form_widget_color(&$form, $color_settings_key, $description) {
   $label = str_replace('_', ' ', $color_settings_key);
   $form['zen_dataportal_colors'][$color_settings_key] = array(
           '#type'          => 'textfield',
           '#title'         => ucfirst(t($label)),
           '#default_value' => theme_get_setting($color_settings_key),
-          '#description'   => t('Set the color of the site name which is shown in the header. Must be a css color value like: #000000'),
+          '#description'   => $description, //t('Set the color of the site name which is shown in the header. Must be a css color value like: #000000'),
           '#attributes' => array(
           	'class' => array('color-picker'),
           	'size' => '7',

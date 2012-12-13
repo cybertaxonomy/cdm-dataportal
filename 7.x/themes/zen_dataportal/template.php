@@ -141,7 +141,16 @@ function _set_image_url($which_image, &$variables, $default_image = null, $css_s
       $variables['inline_styles'][] = $css_selector . ' {background: white url(' . check_url($url) .')  ' . $background_style . ';}';
     }
   }
+}
 
+function _color_gradient($color_1, $color_2) {
+
+  $css = '';
+  $css .= sprintf('background: %1$s; /* for non-css3 browsers */', $color_1) . "\n";
+  $css .= sprintf('filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=\'%1$s\', endColorstr=\'%2$s\'); /* for IE */', $color_1, $color_2) . "\n";
+  $css .= sprintf('background: -webkit-gradient(linear, left top, left bottom, from(%1$s), to(%2$s)); /* for webkit browsers */', $color_1, $color_2) . "\n";
+  $css .= sprintf('background: -moz-linear-gradient(top,  %1$s,  %2$s); /* for firefox 3.6+ */', $color_1, $color_2) . "\n";
+  return $css;
 }
 
 /**
@@ -156,16 +165,25 @@ function _add_inline_styles(&$variables) {
 
   // site_name
   if(theme_get_setting('site-name_color')) {
-      $variables['inline_styles'][] = "#site-name a span {color:" . check_plain(theme_get_setting('site-name_color')) . ';}';
+      $variables['inline_styles'][] = '#site-name a span {color:' . check_plain(theme_get_setting('site-name_color')) . ';}';
   }
   if(theme_get_setting('main-menu_background-color')) {
-    $variables['inline_styles'][] = "#main-menu {background-color:" . check_plain(theme_get_setting('main-menu_background-color')) . ';}';
+    if(theme_get_setting('main-menu_background-color-2')) {
+      // with gradient
+      $variables['inline_styles'][] = '#main-menu {'
+        . _color_gradient(
+              theme_get_setting('main-menu_background-color'),
+              theme_get_setting('main-menu_background-color-2'))
+        . '}';
+    } else {
+      $variables['inline_styles'][] = '#main-menu {background-color:' . check_plain(theme_get_setting('main-menu_background-color')) . ';}';
+    }
   }
   if(theme_get_setting('sub-header_background-color')) {
-    $variables['inline_styles'][] = "#sub-header {background-color:" . check_plain(theme_get_setting('sub-header_background-color')) . ';}';
+    $variables['inline_styles'][] = '#sub-header {background-color:' . check_plain(theme_get_setting('sub-header_background-color')) . ';}';
   }
   if(theme_get_setting('header_margin_bottom') && theme_get_setting('site_name_position') != 'below_banner') {
-    $variables['inline_styles'][] = "#sub-header {min-height: 0; height:" . check_plain(theme_get_setting('header_margin_bottom')) . ';}';
+    $variables['inline_styles'][] = '#sub-header {min-height: 0; height:' . check_plain(theme_get_setting('header_margin_bottom')) . ';}';
   }
   if(theme_get_setting('logo_size')) {
     $logo_size = theme_get_setting('logo_size');
