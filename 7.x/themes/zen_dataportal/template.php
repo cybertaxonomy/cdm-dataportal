@@ -138,7 +138,7 @@ function _set_image_url($which_image, &$variables, $default_image = null, $css_s
       if(!isset($variables['inline_styles'])) {
         $variables['inline_styles'] = array();
       }
-      $variables['inline_styles'][] = $css_selector . ' {background: white url(' . $url .')  ' . $background_style . ';}';
+      $variables['inline_styles'][] = $css_selector . ' {background: white url(' . check_url($url) .')  ' . $background_style . ';}';
     }
   }
 
@@ -156,13 +156,16 @@ function _add_inline_styles(&$variables) {
 
   // site_name
   if(theme_get_setting('site-name_color')) {
-      $variables['inline_styles'][] = "#site-name a span {color:" . theme_get_setting('site-name_color') . ';}';
+      $variables['inline_styles'][] = "#site-name a span {color:" . check_plain(theme_get_setting('site-name_color')) . ';}';
   }
   if(theme_get_setting('main-menu_background-color')) {
-    $variables['inline_styles'][] = "#main-menu {background-color:" . theme_get_setting('main-menu_background-color') . ';}';
+    $variables['inline_styles'][] = "#main-menu {background-color:" . check_plain(theme_get_setting('main-menu_background-color')) . ';}';
   }
   if(theme_get_setting('sub-header_background-color')) {
-    $variables['inline_styles'][] = "#sub-header {background-color:" . theme_get_setting('sub-header_background-color') . ';}';
+    $variables['inline_styles'][] = "#sub-header {background-color:" . check_plain(theme_get_setting('sub-header_background-color')) . ';}';
+  }
+  if(theme_get_setting('header_margin_bottom') && theme_get_setting('site_name_position') != 'below_banner') {
+    $variables['inline_styles'][] = "#sub-header {min-height: 0; height:" . check_plain(theme_get_setting('header_margin_bottom')) . ';}';
   }
   if(theme_get_setting('logo_size')) {
     $logo_size = theme_get_setting('logo_size');
@@ -170,7 +173,6 @@ function _add_inline_styles(&$variables) {
     $variables['inline_styles'][] = '#main-menu, #sub-header {padding-left:' . $logo_size['width'] . 'px;}';
   }
 }
-
 
 /**
  * Override or insert variables into the maintenance page template.
@@ -218,9 +220,13 @@ function zen_dataportal_preprocess_page(&$variables, $hook) {
 
   $variables['site_name_position'] = 'over_banner';
   if(theme_get_setting('site_name_position')) {
-    $variables['site_name_position'] = theme_get_setting('site_name_position');
+    $variables['site_name_position'] = check_plain(theme_get_setting('site_name_position'));
   }
-  
+  $variables['header_margin_bottom'] = 'over_banner';
+  if(theme_get_setting('header_margin_bottom')) {
+    $variables['header_margin_bottom'] = check_plain(theme_get_setting('header_margin_bottom'));
+  }
+
 }
 
 /**

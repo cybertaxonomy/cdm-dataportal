@@ -52,6 +52,7 @@
  *   in the page's path (e.g. node/12345 and node/12345/revisions, but not
  *   comment/reply/12345).
  * - $site_name_position: where the site-name should show up ('over_banner','below_banner')
+ * - $header_margin_bottom: This margin instroduces space between the header and the main menu. A css length measurement.
  *
  * Regions:
  * - $page['header']: Items for the header region.
@@ -110,7 +111,7 @@
 
     <?php print render($page['header']); ?>
       <div id="sub-header">
-      <?php if ($site_name && $site_name_position == 'below_banner'): ?>  
+      <?php if ($site_name && $site_name_position == 'below_banner'): ?>
           <h1 id="site-name">
             <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
           </h1>

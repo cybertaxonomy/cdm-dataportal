@@ -45,6 +45,20 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
     ),
     '#default_value' => theme_get_setting('site_name_position'),
   );
+  $form['zen_dataportal_misc']['header_margin_bottom'] = array(
+      '#type'          => 'textfield',
+      '#title'         => t('Header margin at bottom'),
+      '#default_value' => theme_get_setting('header_margin_bottom'),
+      '#disabled'      => theme_get_setting('site_name_position') == 'below_banner',
+      '#description'   => t('This margin instroduces space between the header and the main menu. This setting not applies if @site-name-pos" is set to "@below-banner'
+          . 'The entered value can be any css length measurement. It is a <number> immediately followed by a length unit (px, em, pc, in, mm, …). See @link for more information',
+            array(
+                '@site-name-pos' => '<b>' . t('Site name posistion') . '</b>',
+                '@below-banner' => '<b>' . t('Below banner') . '</b>',
+                '@link' => l('https://developer.mozilla.org/en-US/docs/CSS/length', 'https://developer.mozilla.org/en-US/docs/CSS/length'),
+             )
+          ),
+  );
 
 
   drupal_add_css(path_to_theme() . '/js/colorpicker/css/colorpicker.css', 'file');
@@ -99,8 +113,6 @@ function zen_dataportal_theme_settings_submit($form, &$form_state) {
   if(isset($logo_file_info['width'])) {
    $values['logo_size'] = array('width' => $logo_file_info['width'], 'height' => $logo_file_info['height']);
   }
-
-
 
   /*
    * Ok, we are done here the $values will be saved in the theme
