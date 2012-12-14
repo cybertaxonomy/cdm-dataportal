@@ -339,10 +339,22 @@ function theme_cdm_taxon_page_specimens($variables) {
   $taxon = $variables['taxon'];
   RenderHints::pushToRenderStack('taxon_page_specimens');
 
-  $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array(
-    $taxon->uuid,
-    'specimensOrObservations',
-  ));
+  $congruentTo = "60974c98-64ab-4574-bb5c-c110f6db634d"; //TODO make configurable in settings
+  $specimensOrObservations = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+      null,
+      drupal_http_build_query(array(
+        'taxonUuid' => $taxon->uuid,
+        'relationshipUuids' => $congruentTo,
+        'relationshipInversUuids' => $congruentTo,
+        'pageSize' => null // al hits in one page
+        )
+      )
+    );
+
+//   $specimensOrObservations = array();
+//   if(isset($pager->records[0])){
+//     $specimensOrObservations =  $pager->records;
+//   }
 
   // Collect media (fieldObjectMedia, derivedUnitMedia) and add as fields.
   foreach ($specimensOrObservations as &$occurrence) {

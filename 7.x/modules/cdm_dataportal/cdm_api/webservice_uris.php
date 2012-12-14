@@ -92,6 +92,20 @@ define('CDM_WS_FEATURETREES', 'featureTree');
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'ext/edit/mapServiceParameters/taxonDistributionFor/$0');
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');
 
+define('CDM_WS_OCCURRENCE', 'occurrence');
+/**
+ * url query paramaters:
+ *
+ * @param taxonUuid
+ * @param relationshipUuids e.g. CongruentTo;  "60974c98-64ab-4574-bb5c-c110f6db634d"
+ * @param relationshipInversUuids
+ * @param maxDepth null for unlimited
+ * @param pageNumber
+ * @param pageSize
+ * @var unknown_type
+ */
+define('CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON', 'occurrence/byAssociatedTaxon');
+
 define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedUnitFacade/$0');
 
 define('CDM_WS_IDENTIFICATIONKEY', 'identificationKey');
