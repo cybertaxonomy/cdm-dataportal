@@ -340,7 +340,7 @@ function get_openlayers_map($width, $bounding_box = FALSE, $occurrenceQuery = FA
 
   if ($occurrenceQuery) {
     // @todo Fix $occurrenceQuery.
-    $occurrenceQuery .= '&bbox=-180,-90,180,90';
+//     $occurrenceQuery .= '&bbox=-180,-90,180,90';
     $occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0';
     // $occurrenceQuery .= '&l=v:e_w_0';
     // TODO add to cdm service?
@@ -1800,22 +1800,6 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
   }
 
   return FALSE;
-}
-
-/**
- * @deprecated
- */
-function compose_url_prameterstr($parameters = array(), $parentPropertyName = FALSE) {
-  $pstr = '';
-  foreach ($parameters as $key => $value) {
-    if (is_array($value)) {
-
-    }
-    else {
-      $pstr .= ($pstr ? '&' : '') . $key . '=' . urlencode($value);
-    }
-  }
-  return $pstr;
 }
 
 /**
