@@ -876,6 +876,8 @@
 7.x/modules/cdm_dataportal/images/loading_circle_grey_16.gif -text
 7.x/modules/cdm_dataportal/images/macFFBgHack.png -text
 7.x/modules/cdm_dataportal/images/print_icon.gif -text
+7.x/modules/cdm_dataportal/includes/occurrences.inc -text
+7.x/modules/cdm_dataportal/includes/pages.inc -text
 7.x/modules/cdm_dataportal/jenkins-ci/dataportal-version-update/HOWTO-UPDATE -text
 7.x/modules/cdm_dataportal/jenkins-ci/dataportal-version-update/update-to.sh -text
 7.x/modules/cdm_dataportal/jenkins-ci/deploy.sh -text
