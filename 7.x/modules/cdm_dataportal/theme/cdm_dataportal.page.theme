@@ -339,6 +339,7 @@ function theme_cdm_taxon_page_specimens($variables) {
   $taxon = $variables['taxon'];
   RenderHints::pushToRenderStack('taxon_page_specimens');
 
+
   $congruentTo = "60974c98-64ab-4574-bb5c-c110f6db634d"; //TODO make configurable in settings
   $specimensOrObservations = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
       null,
@@ -351,12 +352,14 @@ function theme_cdm_taxon_page_specimens($variables) {
       )
     );
 
+//   TODO uncomment once CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON is returing a pager
 //   $specimensOrObservations = array();
 //   if(isset($pager->records[0])){
 //     $specimensOrObservations =  $pager->records;
 //   }
 
-  // Collect media (fieldObjectMedia, derivedUnitMedia) and add as fields.
+  // Collect media (fieldObjectMedia, derivedUnitMedia) and add as field a custom field
+  // $occurrence->_fieldObjectMedia
   foreach ($specimensOrObservations as &$occurrence) {
     $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
       $occurrence->uuid,
@@ -366,13 +369,9 @@ function theme_cdm_taxon_page_specimens($variables) {
       $occurrence->uuid,
       'derivedUnitMedia',
     ));
-    /*
-    $derivedUnitFacde = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE,
-    array($descriptionElement->associatedSpecimenOrObservation->uuid) );
-    $descriptionElement->_titleCache = $derivedUnitFacde->titleCache;
-    */
   }
 
+  // get map service HTTP query paramaters
   if (count($specimensOrObservations) > 0) {
     $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
 
@@ -391,6 +390,8 @@ function theme_cdm_taxon_page_specimens($variables) {
       }
     }
   }
+
+  // generate the specimen list
   $out_specimenList = '';
   if ($specimensOrObservations) {
     $out_specimenList = '<table class="specimens">';
@@ -410,7 +411,9 @@ function theme_cdm_taxon_page_specimens($variables) {
       $out_row = '<tr class="descriptionElement descriptionElement_IndividualsAssociation ' . ($i % 2 ? 'odd' : 'even') . '">';
 
       if ($specimensOrObservation->class != 'FieldObservation') {
-        // details are loaded on request via the cdm_dynabox by AJAX
+        // details are loaded on request via the cdm_dynabox by AJAX from the
+        // CDM_WS_DERIVEDUNIT_FACADE (derivedUnitFacade/{uuid}) webservice
+        // and will be rendered by the theme_cdm_derivedUnitFacade() function
         $derived_unit_ws_request = cdm_compose_url('portal/' . CDM_WS_DERIVEDUNIT_FACADE, array( $specimensOrObservation->uuid));
         $label_html = cdm_dynabox(
             $specimensOrObservation->titleCache,
@@ -419,8 +422,8 @@ function theme_cdm_taxon_page_specimens($variables) {
             'Click for details',
             array('div','div')
         );
-      }
-      else {
+      } else {
+        // Fieldobservations are not yet fully handled,  only the titleChach will be displayed
         $label_html = $specimensOrObservation->titleCache;
       }
       $out_row .= '<td>' . $label_html . '</td>';

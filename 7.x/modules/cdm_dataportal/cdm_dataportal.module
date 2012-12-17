@@ -22,6 +22,9 @@ module_load_include('php', 'cdm_dataportal', 'settings');
 module_load_include('php', 'cdm_dataportal', 'help');
 module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.search');
 
+module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.page.php');
+module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.occurrences.php');
+
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.common');
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.descriptions');
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.media');
@@ -1259,14 +1262,21 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid =
 }
 
 /**
- * @todo improve documentation for this function.
+ * This function will genreate the taxon page part ($chapter) and returns a taxonpage object
+ * which has two fields, one for the page title and one for the content. Later on in the
+ * process chain the value contained in these fields will be passed to the cdm_node_show()
+ * function as the function parameters $title and $content.
  *
  * @param string $uuid
+ *   the uuid of the taxon to show
  * @param string $chapter
  *   Name of the part to display, valid values are:
  *   'description', 'images', 'synonymy', 'all'.
  *
- * @return unknown_type
+ * @return taxonpage object with the following fields:
+ *   - title : the title of the page
+ *   - content: the content of the page
+ *
  */
 function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = NULL) {
   // Taxon object.

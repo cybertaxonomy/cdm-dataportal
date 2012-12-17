@@ -143,28 +143,88 @@ function cdm_load_node($nodetype, $uuid, $title) {
 }
 
 /**
- * @todo document this function.
+ * Wrapper function around node_show()
+ *
+ * Just like the drupal function node_show() this function will generate an
+ * array which displays a node detail page. Prior calling node_show() this
+ * function assures that the special cdm node types are undegone the nessecary
+ * preprocessing.
+ *
+ * This function will be called by a cdm_dataportal_{CDM_NODE_TYPE}_view function.
+ *
+ *
+ * @param String $cdm_node_type
+ *     one of the cdm content type names as defined in
+ *     the file node_types.php. Possible values are 'taxon', 'media', 'reference', 'name'.
+ *     you may want to use the according contstants instred of the string: NODETYPE_TAXON,
+ *     NODETYPE_MEDIA, NODETYPE_REFERENCE, NODETYPE_NAME.
+ * @param String $uuid
+ *     the UUID string of the cdm entitiy to be shown. The cdm type is of cource defined by
+ *     the  $cdm_node_type value
+ * @param String $title
+ *     the Page title
+ * @param String or render array? $content
+ *
+ * @return
+ *     A $page element suitable for use by drupal_render().
  */
 function cdm_node_show($cdm_node_type, $uuid, $title, $content) {
+  // tell drupal code to load the node
   $node = cdm_load_node($cdm_node_type, $uuid, $title);
+  // set the title coming supplied by a cdm_dataportal_{CDM_NODE_TYPE}_view function
   drupal_set_title($title, PASS_THROUGH);
+
   cdm_add_node_content($node, $content);
   return node_show($node);
 }
 
 /**
- * @todo document this function.
+ * Sets the $content given a paramater to the $node object
+ *
+ * The $content can either be a string or an array.
+ *
+ * see:
+ *  - element_children()
+ *  - drupal_render()
+ *  - http://api.drupal.org/api/drupal/includes!common.inc/function/drupal_render/7#comment-6644
+ *
+ * TODO see notes near bottom of function
+ *
+ * @param object $node
+ *   A $node object
+ * @param string|array $content
+ *   The content to set for the $node
+ *
  */
 function cdm_add_node_content(&$node, $content) {
-  $cdm_content = array(
-    // Wrap content in cdm_dataportal specific container.
-    '#markup' => '<div id="cdm_dataportal.node">' . $content . '</div>',
-    '#weight' => variable_get('cdm_content_weight', -1),
-  );
+
+  if(is_array($content)) {
+    // $content seems to be a render array suitable for drupal_render()
+    $cdm_content = array(
+        // Wrap content in cdm_dataportal specific container.
+        '#prefix' => '<div id="cdm_dataportal.node">',
+        '#suffix' => '</div>',
+        // the key of child elements can be chosen arbitrarily it only must not start with a '#'
+        'content' => $content,
+        '#weight' => variable_get('cdm_content_weight', -1),
+    );
+  } else {
+    $cdm_content = array(
+      // Wrap content in cdm_dataportal specific container.
+      '#markup' => '<div id="cdm_dataportal.node">' . $content . '</div>',
+      '#weight' => variable_get('cdm_content_weight', -1),
+    );
+  }
 
   // Comment @WA: for some reason $node->content is lost or recreated in
-  // node_show($node) in D7, so we attach to $node->cdm here and re-attach to
-  // $node->content in hook_node_view.
+  //   node_show($node) in D7, so we attach to $node->cdm here and re-attach to
+  //   $node->content in hook_node_view.
+  //
+  // Followup by @AK:
+  //   $node->content is removed in node_build_content() we need to
+  //   implement the 'view' hook in order to set the  $node->content
+  //   properly in the drupal way. => TODO
+  //
   $node->cdm = $cdm_content;
 }
 
