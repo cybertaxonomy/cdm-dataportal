@@ -349,12 +349,10 @@ function theme_cdm_taxon_page_profile($variables) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function cdm_dataportal_taxon_page_specimens($variables) {
+function cdm_dataportal_taxon_page_specimens($taxon) {
 
   $render_array = array();
-  $taxon = $variables['taxon'];
   RenderHints::pushToRenderStack('taxon_page_specimens');
-
 
   $congruentTo = "60974c98-64ab-4574-bb5c-c110f6db634d"; //TODO make configurable in settings
   $specimensOrObservations = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
