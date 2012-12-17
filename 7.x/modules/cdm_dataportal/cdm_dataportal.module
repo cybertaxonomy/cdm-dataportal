@@ -976,7 +976,6 @@ function cdm_dataportal_theme() {
 
     // Themes in cdm_dataportal.occurrence.theme.
     'cdm_specimen' => array('variables' => array('specimenTypeDesignation' => NULL)),
-    'cdm_derivedUnitFacade' => array('variables' => array('derivedUnitFacade' => NULL)),
 
     // Themes in cdm_dataportal.page.theme.
     'cdm_taxon_page_title' => array('variables' => array('taxon' => NULL, 'uuid' => NULL)),

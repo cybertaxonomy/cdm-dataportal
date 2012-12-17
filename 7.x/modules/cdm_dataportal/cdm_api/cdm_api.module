@@ -632,10 +632,11 @@ function proxy_content($uri, $theme = NULL) {
           break;
 
         case 'cdm_derivedUnitFacade':
-          $variables = array(
-            'derivedUnitFacade' => $obj,
-          );
-          $theme_result = theme($theme, $variables);
+//           $variables = array(
+//             'derivedUnitFacade' => $obj,
+//           );
+//           $theme_result = theme($theme, $variables);
+          $theme_result = prepare_cdm_derivedUnitFacade($obj);
           break;
 
         default:
@@ -649,11 +650,12 @@ function proxy_content($uri, $theme = NULL) {
 
       if(is_array($theme_result)) {
         // treat as render array
-        print drupal_render($theme_result);
+        $out =  drupal_render($theme_result);
       } else {
         // treat as string
-        print $theme_result;
+        $out = $theme_result;
       }
+      print $out;
 
     }
   }

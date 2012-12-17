@@ -93,12 +93,19 @@ function theme_cdm_specimen($variables) {
 }
 
 /**
+ * Prepares an render array from a CDM DerivedUnitFacade object.
+ *
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_derivedUnitFacade($variables) {
-  $derivedUnitFacade = $variables['derivedUnitFacade'];
-  $out = '';
+function prepare_cdm_derivedUnitFacade($derivedUnitFacade) {
+
+  $render_array = array(
+      // '#theme' => 'definition_list' 'dl' ? not yet ready
+      '#prefix' => '<dl>',
+      'items' => array(),
+      '#suffix' => '</dl>',
+  );
 
   static $excludeFields = array(
     'class',
@@ -187,7 +194,7 @@ function theme_cdm_derivedUnitFacade($variables) {
             $field = $field_labels[$field];
           }
 
-          // determine indet
+          // determine indent
           $indent_class = strpos($data['order_key'], '-') ? ' indent-1' : '';
           $field = preg_replace('/([a-z])([A-Z])/e', "'\\1 '.strtolower('\\2')", $field);
           $entry_html[] = '<dt class="'. $data['order_key'] . $indent_class . '">' . t(ucfirst($field)) . ':</dt><dd>' . $value_str . '</dd>';
@@ -195,8 +202,10 @@ function theme_cdm_derivedUnitFacade($variables) {
       }
     }
     sort($entry_html);
-    $out .= implode('', $entry_html);
-    $out .= '</dl>';
+    foreach($entry_html as $html){
+      $render_array['items'][] = markup_to_render_array($html);
+    }
+
   }
-  return $out;
+  return $render_array;
 }
