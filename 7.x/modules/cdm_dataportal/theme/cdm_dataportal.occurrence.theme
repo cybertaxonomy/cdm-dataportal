@@ -100,112 +100,101 @@ function theme_cdm_specimen($variables) {
  */
 function prepare_cdm_derivedUnitFacade($derivedUnitFacade) {
 
-  $render_array = array(
-      // '#theme' => 'definition_list' 'dl' ? not yet ready
-      '#prefix' => '<dl>',
-      'items' => array(),
-      '#suffix' => '</dl>',
-  );
-
   static $excludeFields = array(
     'class',
     'titleCache',
     'derivedUnitMedia',
   );
-  static $field_labels = array(
-    'type' => 'Basis of Record',
-    'fieldNumber' => 'Collectors number',
-    'absoluteElevation' => 'Altitude',
-    'absoluteElevationMinimum' => 'Altitude maximum',
-    'absoluteElevationMaximum' => 'Altitude minimum',
-    'getGatheringPeriod' => 'Gathering period',
-  );
 
+  $groups = array();
   if (is_object($derivedUnitFacade)) {
-    $out = '<dl>';
     foreach (get_object_vars($derivedUnitFacade) as $field => $value) {
-      $entries = array();
       if (!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class)))) {
         switch ($field) {
 
-          /* CONVENTION:
-           *
-           * a '-' characters used in the 'order_key'
-           * increases the indent of the resulting entry
-           *
-           * 'order_key' => 'collector' : normal indent
-           * 'order_key' => 'collector-1' : indent plus one
-           *
-           */
           case 'locality':
-            $entries[$field] = @array('value' => $value->text);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->text);
             break;
 
           case 'country':
-            $entries[$field] = @array('value' => $value->representation_L10n);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->representation_L10n);
             break;
 
           case 'collector':
-            $entries['collector'] = @array('value' => $value->titleCache, 'order_key' => 'collector');
-            $entries['code'] = @array('value' => $value->code, 'order_key' => 'collector-1');
-            $entries['codeStandard'] = @array('value' => $value->codeStandard, 'order_key' => 'collector-2');
-//             $entries['data'] = ???;
-            $entries['institute'] = @array('value' => $value->institute, 'order_key' => 'collector-3');
-//             $entries['superCollection'] = ??;
-            $entries['townOrLocation'] = @array('value' => $value->townOrLocation, 'order_key' => 'collector-4');
+            $sub_dl_groups = array();
+            @_description_list_group_add($sub_dl_groups, 'code', $value->code, 1);
+            @_description_list_group_add($sub_dl_groups, 'codeStandard',  $value->codeStandard, 2);
+            @_description_list_group_add($sub_dl_groups, 'institute', $value->institute, 3);
+            @_description_list_group_add($sub_dl_groups, 'townOrLocation', $value->townOrLocation, 4);
+
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
+                array(
+                  array('#markup' => $value->titleCache),
+                  array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
+                )
+              );
             break;
 
           case 'collection':
-            $entries[$field] = array('value' => $value->titleCache);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->titleCache);
             break;
 
           case 'exactLocation':
-            $entries['exactLocation'] = array('value' => $value->sexagesimalString, 'order_key' => 'exactLocation');
-//             $entries['exactLocation longitude'] = $value->latitude;
-//             $entries['exactLocation latitude'] = $value->latitude;
-            $entries['errorRadius'] = @array('value' => $value->errorRadius, 'order_key' => 'exactLocation-1');
+            $sub_dl_groups = array();
+            @_description_list_group_add($sub_dl_groups, 'errorRadius', $value->errorRadius, 1);
+            @_description_list_group_add($sub_dl_groups, 'longitude', $value->longitude, 2);
+            @_description_list_group_add($sub_dl_groups, 'latitude', $value->latitude, 3);
+
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
+                array(
+                    array('#markup' => $value->sexagesimalString),
+                    array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
+                )
+             );
             break;
 
           case 'getGatheringPeriod':
-            $entries[$field] = @array('value' => timePeriodToString($value));
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), timePeriodToString($value));
             break;
 
           default:
-            $entries[$field] = array('value' => $value);
+            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
         }
 
-        if (count($entries) == 0) {
-          continue;
-        }
-
-        foreach ($entries as $field=>$data) {
-
-          $value_str = trim(drupal_html_to_text($data['value']));
-          if (!$value_str) {
-            continue;
-          }
-
-          if(!isset($data['order_key'])) {
-            $data['order_key'] = $field;
-          }
-
-          // Relabel field names.
-          if (isset($field_labels[$field])) {
-            $field = $field_labels[$field];
-          }
-
-          // determine indent
-          $indent_class = strpos($data['order_key'], '-') ? ' indent-1' : '';
-          $field = preg_replace('/([a-z])([A-Z])/e', "'\\1 '.strtolower('\\2')", $field);
-          $entry_html[] = '<dt class="'. $data['order_key'] . $indent_class . '">' . t(ucfirst($field)) . ':</dt><dd>' . $value_str . '</dd>';
-        }
       }
-    }
-    sort($entry_html);
-    foreach($entry_html as $html){
-      $render_array['items'][] = markup_to_render_array($html);
-    }
+    } // END of loop over $derivedUnitFacade fields
+
+    $render_array = array(
+        '#theme' => 'description_list',
+        '#groups' => $groups,
+    );
 
   }
   return $render_array;
 }
+
+/**
+ *
+ * @param unknown_type $field
+ */
+function cdm_occurrence_field_name_label($field){
+
+  static $field_labels = array(
+      'type' => 'Basis of Record',
+      'fieldNumber' => 'Collectors number',
+      'absoluteElevation' => 'Altitude',
+      'absoluteElevationMinimum' => 'Altitude maximum',
+      'absoluteElevationMaximum' => 'Altitude minimum',
+      'getGatheringPeriod' => 'Gathering period',
+  );
+
+  if (isset($field_labels[$field])) {
+    $field = $field_labels[$field];
+  }
+
+  $field = preg_replace('/([a-z])([A-Z])/e', "'\\1 '.strtolower('\\2')", $field);
+
+  return t(ucfirst($field));
+}
+
+

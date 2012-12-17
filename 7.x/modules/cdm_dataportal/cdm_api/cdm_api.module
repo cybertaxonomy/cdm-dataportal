@@ -652,11 +652,8 @@ function proxy_content($uri, $theme = NULL) {
           break;
 
         case 'cdm_derivedUnitFacade':
-//           $variables = array(
-//             'derivedUnitFacade' => $obj,
-//           );
-//           $theme_result = theme($theme, $variables);
-          $theme_result = prepare_cdm_derivedUnitFacade($obj);
+          $render_array = prepare_cdm_derivedUnitFacade($obj);
+          $theme_result = theme($render_array['#theme'], $render_array);
           break;
 
         default:
