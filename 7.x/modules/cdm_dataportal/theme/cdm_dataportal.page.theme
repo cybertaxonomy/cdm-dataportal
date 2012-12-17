@@ -98,6 +98,9 @@ function theme_cdm_taxon_page($variables) {
   $page_part = $variables['page_part'];
   global $theme;
 
+  $render_array = array();
+  $weight = 0; // the weight for the render array elements
+
   $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
 
   $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
@@ -163,8 +166,8 @@ function theme_cdm_taxon_page($variables) {
   $tabhide_js
     });", array('type' => 'inline'));
 
-  $out = '';
-  $out .= theme('cdm_back_to_search_result_button');
+
+  $render_array['back_to_search'] = markup_to_render_array(theme('cdm_back_to_search_result_button'), $weight++);
 
   // var_dump(variable_get('cdm_dataportal_display_is_accepted_for',
   // CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR));
@@ -223,64 +226,75 @@ function theme_cdm_taxon_page($variables) {
 
     $mergedTrees = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $nonStructuredDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
 
-    $out .= '<div id="general">';
-    $out .= theme('cdm_taxon_page_profile', array(
+    $profile_html = '<div id="general">';
+    $profile_html .= theme('cdm_taxon_page_profile', array(
       'taxon' => $taxon,
       'mergedTrees' => $mergedTrees,
       'media' => $media,
       'hideImages' => $hideImages,
       ));
-    $out .= '</div>';
+    $profile_html .= '</div>';
+    $render_array['profile'] = markup_to_render_array($profile_html, $weight++);
   }
 
   // --- PAGE PART: IMAGES --- //
   if ((!$hideImages && $page_part == 'images' || $page_part == 'all')) {
-    $out .= '<div id="images">';
+    $images_html = '<div id="images">';
     if ($page_part == 'all') {
-      $out .= '<h2>' . t('Images') . '</h2>';
+      $images_html .= '<h2>' . t('Images') . '</h2>';
     }
     // Get the image gallery as configured by the admin.
     $taxon_image_gallery = call_user_func_array('taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'), array(
       $taxon,
       $media,
     ));
-    $out .= $taxon_image_gallery;
-
-    $out .= '</div>';
+    $images_html .= $taxon_image_gallery;
+    $images_html .= '</div>';
+    $render_array['images'] = markup_to_render_array($images_html, $weight++);
   }
 
   // --- PAGE PART: SYNONYMY --- //
   if (($page_part == 'synonymy' || $page_part == 'all')) {
-    $out .= '<div id="synonymy">';
+    $synonymy_html = '<div id="synonymy">';
     if ($page_part == 'all') {
-      $out .= '<h2>' . t('Synonymy') . '</h2>';
+      $synonymy_html .= '<h2>' . t('Synonymy') . '</h2>';
     }
     $addAcceptedTaxon = variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
-    $out .= theme('cdm_taxon_page_synonymy', array('taxon' => $taxon, 'addAcceptedTaxon' => $addAcceptedTaxon));
+    $synonymy_html .= theme('cdm_taxon_page_synonymy', array('taxon' => $taxon, 'addAcceptedTaxon' => $addAcceptedTaxon));
 
-    $out .= '</div>';
+    $synonymy_html .= '</div>';
+    $render_array['synonymy'] = markup_to_render_array($synonymy_html, $weight++);
   }
 
   // --- PAGE PART: SPECIMENS --- //
   if ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')) {
-    $out .= '<div id="specimens">';
-    if ($page_part == 'all') {
-      $out .= '<h2>' . t('Specimens') . '</h2>';
-    }
-    $out .= theme('cdm_taxon_page_specimens', array('taxon' => $taxon));
-    $out .= '</div>';
+    // #prefix/#suffix
+//     $specimens_prefix = '<div id="specimens">';
+//     if ($page_part == 'all') {
+//       $specimens_prefix .= '<h2>' . t('Specimens') . '</h2>';
+//     }
+
+//     $specimens_html .= theme('cdm_taxon_page_specimens', array('taxon' => $taxon));
+//     $specimens_suffix = '</div>';
+    $render_array['specimens'] = array(
+        '#prefix' => '<div id="specimens">' . ($page_part == 'all' ? '<h2>' . t('Specimens') . '</h2>' : ''),
+        'content' => theme('cdm_taxon_page_specimens', array('taxon' => $taxon)), // returns render array
+        '#suffix' => '</div>',
+    );
   }
 
   // --- PAGE PART: KEYS --- //
   if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
-    $out .= '<div id="keys">';
+    $keys_html = '<div id="keys">';
     if ($page_part == 'all') {
-      $out .= '<h2>' . t('Keys') . '</h2>';
+      $keys_html .= '<h2>' . t('Keys') . '</h2>';
     }
-    $out .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
-    $out .= '</div>';
+    $keys_html .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
+    $keys_html .= '</div>';
+    $render_array['keys'] = markup_to_render_array($keys_html, $weight++);
   }
-  return $out;
+
+  return $render_array;
 }
 
 /**
@@ -330,12 +344,22 @@ function theme_cdm_taxon_page_profile($variables) {
   return $out;
 }
 
+
+
 /**
+ *
+ * @param array $variables
+ *   An array with the following keys:
+ *     - 'taxon': A cdm Taxon object
+ * @return
+ *   A render array suitable for drupal_render()
+ *
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_taxon_page_specimens($variables) {
-  $out = '';
+
+  $render_array = array();
   $taxon = $variables['taxon'];
   RenderHints::pushToRenderStack('taxon_page_specimens');
 
@@ -380,14 +404,15 @@ function theme_cdm_taxon_page_specimens($variables) {
 
       $legendFormatQueryStr = null;
       if (variable_get('cdm_dataportal_map_openlayers', 1)) {
-        $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', 680), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
+        $map_html = get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', 680), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
             $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
       }
       else {
         // get_image_map($width, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE )
-        $out .= get_image_map(variable_get('cdm_dataportal_geoservice_display_width', 680), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
+        $map_html = get_image_map(variable_get('cdm_dataportal_geoservice_display_width', 680), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
             $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
       }
+      $render_array['map'] = markup_to_render_array($map_html, 0);
     }
   }
 
@@ -455,10 +480,10 @@ function theme_cdm_taxon_page_specimens($variables) {
     $out_specimenList .= '</table>';
   }
 
-  $out .= $out_specimenList;
+  $render_array['specimen_list'] = markup_to_render_array($out_specimenList, 2);
 
   RenderHints::popFromRenderStack();
-  return $out;
+  return $render_array;
 }
 
 /**

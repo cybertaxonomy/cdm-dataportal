@@ -209,11 +209,8 @@ function cdm_add_node_content(&$node, $content) {
         '#weight' => variable_get('cdm_content_weight', -1),
     );
   } else {
-    $cdm_content = array(
-      // Wrap content in cdm_dataportal specific container.
-      '#markup' => '<div id="cdm_dataportal.node">' . $content . '</div>',
-      '#weight' => variable_get('cdm_content_weight', -1),
-    );
+    // Wrap content in cdm_dataportal specific container.
+    $cdm_content = markup_to_render_array( $content, variable_get('cdm_content_weight', -1));
   }
 
   // Comment @WA: for some reason $node->content is lost or recreated in

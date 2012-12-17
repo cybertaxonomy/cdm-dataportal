@@ -1165,6 +1165,27 @@ function mixed_variable_get($variableKey, $defaultValueString) {
 }
 
 /**
+ * Wrapps the given $html string into a reder array suitable for drupal_render()
+ *
+ * @param string $html
+ *   the html string, see
+ *   http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#markup
+ * @param number $weight
+ *   A positive or negative number (integer or decimal).
+ *   see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#weightval
+ *
+ * @return
+ *   A render array
+ *
+ */
+function markup_to_render_array($html, $weight = 0) {
+  return array(
+          '#markup' => $html,
+          '#weight' => $weight,
+      );
+}
+
+/**
  * Loads the subgraph of a given PolytomousKeyNode.
  *
  * Loads the subgraph of the given PolytomousKeyNode recursively from
