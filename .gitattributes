@@ -800,7 +800,6 @@
 7.x/modules/cdm_dataportal/cdm_dataportal.info -text
 7.x/modules/cdm_dataportal/cdm_dataportal.install -text
 7.x/modules/cdm_dataportal/cdm_dataportal.module -text
-7.x/modules/cdm_dataportal/cdm_dataportal.occurrences.php -text
 7.x/modules/cdm_dataportal/cdm_dataportal.search.php -text
 7.x/modules/cdm_dataportal/cdm_dataportal_print.css -text
 7.x/modules/cdm_dataportal/cdm_dataportal_screen.css -text
