@@ -534,6 +534,16 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
 }
 
 /**
+ *
+ *
+ * @param string $uri
+ *     A URI to a CDM Rest service from which to retrieve an object
+ * @param string|null $theme
+ *     (optional) The name suffix of the callbackfunction to which the retriueved obecjt should be passed
+ *     The prefix, which is not supplied to this function can either be 'theme' or 'prepare'
+ *     theme functions ususally return a string whereas 'prepare' usually rea returning render arrays
+ *     suitable for drupal_render()
+ *
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
@@ -597,6 +607,16 @@ function proxy_content($uri, $theme = NULL) {
       exit();
     }
     else {
+      // do a security check since the $uri is passed as absolute URI to
+      // cdm_ws_get()
+      if( !_is_cdm_ws_uri($uri)) {
+        drupal_set_message(
+            'Invalid call of proxy_content() with callback parameter \'' . $theme . '\' and URI:' . $uri,
+            'error'
+        );
+        return '';
+      }
+
       $obj = cdm_ws_get($uri, NULL, NULL, NULL, TRUE);
       $theme_result = '';
 
@@ -1195,7 +1215,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
   // static $cacheL1; if(!isset($cacheL1)){ $cacheL1 = array(); }
   static $cacheL1 = array();
 
-  // Transform the given uri path or patthern into a proper webservice uri.
+  // Transform the given uri path or pattern into a proper webservice uri.
   if (!$absoluteURI) {
     $uri = cdm_compose_url($uri, $pathParameters, $query);
   }
