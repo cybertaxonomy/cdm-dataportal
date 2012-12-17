@@ -268,17 +268,9 @@ function theme_cdm_taxon_page($variables) {
 
   // --- PAGE PART: SPECIMENS --- //
   if ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')) {
-    // #prefix/#suffix
-//     $specimens_prefix = '<div id="specimens">';
-//     if ($page_part == 'all') {
-//       $specimens_prefix .= '<h2>' . t('Specimens') . '</h2>';
-//     }
-
-//     $specimens_html .= theme('cdm_taxon_page_specimens', array('taxon' => $taxon));
-//     $specimens_suffix = '</div>';
     $render_array['specimens'] = array(
         '#prefix' => '<div id="specimens">' . ($page_part == 'all' ? '<h2>' . t('Specimens') . '</h2>' : ''),
-        'content' => theme('cdm_taxon_page_specimens', array('taxon' => $taxon)), // returns render array
+        'content' => cdm_dataportal_taxon_page_specimens($taxon), // returns render array
         '#suffix' => '</div>',
     );
   }
@@ -357,7 +349,7 @@ function theme_cdm_taxon_page_profile($variables) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_taxon_page_specimens($variables) {
+function cdm_dataportal_taxon_page_specimens($variables) {
 
   $render_array = array();
   $taxon = $variables['taxon'];
@@ -376,7 +368,7 @@ function theme_cdm_taxon_page_specimens($variables) {
       )
     );
 
-//   TODO uncomment once CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON is returing a pager
+//   TODO uncomment once CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON is returning a pager
 //   $specimensOrObservations = array();
 //   if(isset($pager->records[0])){
 //     $specimensOrObservations =  $pager->records;
@@ -395,7 +387,7 @@ function theme_cdm_taxon_page_specimens($variables) {
     ));
   }
 
-  // get map service HTTP query paramaters
+  // --- get map service HTTP query paramaters
   if (count($specimensOrObservations) > 0) {
     $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
 
@@ -416,13 +408,19 @@ function theme_cdm_taxon_page_specimens($variables) {
     }
   }
 
-  // generate the specimen list
-  $out_specimenList = '';
+  // --- generate the specimen list as table
+  $specimen_table = array(
+      '#theme' => 'table',
+      '#weight' => 2,
+      // prefix attributes and rows with '#' to let it pass to the theme function,
+      // otherwise it is handled as child render array
+      '#attributes' => array('class' => 'specimens'),
+      '#rows' => array(),
+      );
+
   if ($specimensOrObservations) {
-    $out_specimenList = '<table class="specimens">';
-    $i = 1;
+
     foreach ($specimensOrObservations as $specimensOrObservation) {
-      $i++;
 
       $mediaList = array();
       if (is_array($specimensOrObservation->_fieldObjectMedia)) {
@@ -433,8 +431,6 @@ function theme_cdm_taxon_page_specimens($variables) {
       }
 
       // --- Render the title cache.
-      $out_row = '<tr class="descriptionElement descriptionElement_IndividualsAssociation ' . ($i % 2 ? 'odd' : 'even') . '">';
-
       if ($specimensOrObservation->class != 'FieldObservation') {
         // details are loaded on request via the cdm_dynabox by AJAX from the
         // CDM_WS_DERIVEDUNIT_FACADE (derivedUnitFacade/{uuid}) webservice
@@ -451,7 +447,6 @@ function theme_cdm_taxon_page_specimens($variables) {
         // Fieldobservations are not yet fully handled,  only the titleChach will be displayed
         $label_html = $specimensOrObservation->titleCache;
       }
-      $out_row .= '<td>' . $label_html . '</td>';
 
       // --- Render associated media.
       $gallery_html = '';
@@ -474,13 +469,23 @@ function theme_cdm_taxon_page_specimens($variables) {
           'galleryLinkUri' => NULL,
           ));
       }
-      $out_row .= '<td>' . $gallery_html . '</td></tr>';
-      $out_specimenList .= $out_row;
+
+      $specimen_table['#rows'][] = array(
+          // An array of table rows. Every row is an array of cells, or an associative array
+          'data' => array(
+              // Each cell can be either a string or an associative array
+              $label_html,
+              $gallery_html,
+           ),
+          'class' =>  array(
+              'descriptionElement',
+              'descriptionElement_IndividualsAssociation'
+           ),
+       );
     }
-    $out_specimenList .= '</table>';
   }
 
-  $render_array['specimen_list'] = markup_to_render_array($out_specimenList, 2);
+  $render_array['specimen_list'] = $specimen_table;
 
   RenderHints::popFromRenderStack();
   return $render_array;

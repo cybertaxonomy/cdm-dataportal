@@ -988,7 +988,6 @@ function cdm_dataportal_theme() {
       'media' => NULL,
       'hideImages' => FALSE,
       )),
-    'cdm_taxon_page_specimens' => array('variables' => array('taxon' => NULL)),
     'cdm_taxon_page_synonymy' => array('variables' => array('taxon' => NULL, 'addAcceptedTaxon' => NULL)),
     'cdm_reference_page' => array('variables' => array('reference' => NULL)),
     'cdm_media_page' => array('variables' => array(

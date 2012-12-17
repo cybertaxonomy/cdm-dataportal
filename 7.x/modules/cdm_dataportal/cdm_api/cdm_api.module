@@ -598,6 +598,7 @@ function proxy_content($uri, $theme = NULL) {
     }
     else {
       $obj = cdm_ws_get($uri, NULL, NULL, NULL, TRUE);
+      $theme_result = '';
 
       // array_unshift($args, $theme, $obj);
       // print call_user_func_array('theme', $args);
@@ -610,7 +611,7 @@ function proxy_content($uri, $theme = NULL) {
             'tree_node_callback' => isset($args[2]) ? $args[2] : FALSE,
             'element_name'=> isset($args[3]) ? $args[3] : FALSE,
           );
-          print theme($theme, $variables);
+          $theme_result = theme($theme, $variables);
           break;
 
         case 'cdm_media_caption':
@@ -627,14 +628,14 @@ function proxy_content($uri, $theme = NULL) {
             ),
             'fileUri' => isset($args[1]) ? $args[1] : NULL,
           );
-          print theme($theme, $variables);
+          $theme_result = theme($theme, $variables);
           break;
 
         case 'cdm_derivedUnitFacade':
           $variables = array(
             'derivedUnitFacade' => $obj,
           );
-          print theme($theme, $variables);
+          $theme_result = theme($theme, $variables);
           break;
 
         default:
@@ -645,6 +646,15 @@ function proxy_content($uri, $theme = NULL) {
           )), 'error');
           break;
       }
+
+      if(is_array($theme_result)) {
+        // treat as render array
+        print drupal_render($theme_result);
+      } else {
+        // treat as string
+        print $theme_result;
+      }
+
     }
   }
 }
