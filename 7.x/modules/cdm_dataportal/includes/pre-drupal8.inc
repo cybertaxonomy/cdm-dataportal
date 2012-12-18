@@ -152,7 +152,7 @@ function theme_description_list($variables) {
     $output = '<dl' . drupal_attributes($variables['attributes']) . '>' . $output . '</dl>'; // using drupal_attributes() instead of D8 new Attribute()
     $title = '';
     if (isset($variables['title'])) {
-      $title = '<h3>' . $variables['title'] . '</h3>';
+      $title = '<h4>' . $variables['title'] . '</h4>';
     }
     // If not used for styling purposes, this DIV should be an ASIDE.
     $output = '<div class="definition-list">' . $title . $output . '</div>';

@@ -37,22 +37,23 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
   RenderHints::pushToRenderStack('taxon_page_specimens');
 
   $congruentTo = "60974c98-64ab-4574-bb5c-c110f6db634d"; //TODO make configurable in settings
-  $specimensOrObservations = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+  $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
       null,
       drupal_http_build_query(array(
           'taxonUuid' => $taxon->uuid,
           'relationshipUuids' => $congruentTo,
           'relationshipInversUuids' => $congruentTo,
           'pageSize' => null // al hits in one page
-      )
-      )
+        )
+     )
   );
 
-  //   TODO uncomment once CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON is returning a pager
-  //   $specimensOrObservations = array();
-  //   if(isset($pager->records[0])){
-  //     $specimensOrObservations =  $pager->records;
-  //   }
+  $specimensOrObservations = array();
+  if(isset($pager->records[0])){
+    $specimensOrObservations =  $pager->records;
+  } else {
+    $specimensOrObservations = $pager;
+  }
 
   // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
   // $occurrence->_fieldObjectMedia
@@ -111,17 +112,17 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
       }
 
       // ---- complex
-        $derived_unit_ws_request = cdm_compose_url('portal/' . CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
-        $label_html = cdm_dynabox(
-            $specimenOrObservation->titleCache,
-            $derived_unit_ws_request,
-            'cdm_specimenOrObservation', // the theme or compose function to use
-            'Click for details',
-            array('div','div')
-        );
+//         $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
+//         $label_html = cdm_dynabox(
+//             $specimenOrObservation->titleCache,
+//             $derived_unit_ws_request,
+//             'cdm_specimenOrObservation', // the theme or compose function to use
+//             'Click for details',
+//             array('div','div')
+//         );
 
       // ---- simple via cdm_derivedUnitFacade - TURNED OFF
-      if (false) {
+      if (true) {
         // --- Render the title cache and add dynabox for the details
         if ($specimenOrObservation->class != 'FieldObservation') {
           // details are loaded on request via the cdm_dynabox by AJAX from the
