@@ -21,9 +21,6 @@
 	    float: left;
 	    font-weight: bold;
 	    margin-right: 0.3em;
-	    &.indent-1 {
-	    	padding-left: $base-font-size; 
-	    }
 	}
 	dd {
 		margin: 0;

@@ -37,6 +37,16 @@ div.debug .uri {
   color: #fff;
 }
 
+/*
+ * when nesting description lists the inner dl should
+ * not have a margin at top and bottom, but should be
+ * indented
+ * Used in occurence details.
+ */
+dl dl {
+    margin: 0 0 0 2em;
+}
+
 #block-system-main div.content {
   /* margin: 0 0 0.3em 0; */
 }
