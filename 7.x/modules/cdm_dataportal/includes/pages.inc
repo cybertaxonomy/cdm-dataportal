@@ -100,32 +100,46 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
   if ($specimensOrObservations) {
 
-    foreach ($specimensOrObservations as $specimensOrObservation) {
+    foreach ($specimensOrObservations as $specimenOrObservation) {
 
       $mediaList = array();
-      if (is_array($specimensOrObservation->_fieldObjectMedia)) {
-        $mediaList = array_merge($mediaList, $specimensOrObservation->_fieldObjectMedia);
+      if (is_array($specimenOrObservation->_fieldObjectMedia)) {
+        $mediaList = array_merge($mediaList, $specimenOrObservation->_fieldObjectMedia);
       }
-      if (is_array($specimensOrObservation->_derivedUnitMedia)) {
-        $mediaList = array_merge($mediaList, $specimensOrObservation->_derivedUnitMedia);
+      if (is_array($specimenOrObservation->_derivedUnitMedia)) {
+        $mediaList = array_merge($mediaList, $specimenOrObservation->_derivedUnitMedia);
       }
 
-      // --- Render the title cache.
-      if ($specimensOrObservation->class != 'FieldObservation') {
-        // details are loaded on request via the cdm_dynabox by AJAX from the
-        // CDM_WS_DERIVEDUNIT_FACADE (derivedUnitFacade/{uuid}) webservice
-        // and will be rendered by the theme_cdm_derivedUnitFacade() function
-        $derived_unit_ws_request = cdm_compose_url('portal/' . CDM_WS_DERIVEDUNIT_FACADE, array( $specimensOrObservation->uuid));
+      // ---- complex
+        $derived_unit_ws_request = cdm_compose_url('portal/' . CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
         $label_html = cdm_dynabox(
-            $specimensOrObservation->titleCache,
+            $specimenOrObservation->titleCache,
             $derived_unit_ws_request,
-            'cdm_derivedUnitFacade', // the theme function to use
+            'cdm_specimenOrObservation', // the theme or compose function to use
             'Click for details',
             array('div','div')
         );
-      } else {
-        // Fieldobservations are not yet fully handled,  only the titleChach will be displayed
-        $label_html = $specimensOrObservation->titleCache;
+
+      // ---- simple via cdm_derivedUnitFacade - TURNED OFF
+      if (false) {
+        // --- Render the title cache and add dynabox for the details
+        if ($specimenOrObservation->class != 'FieldObservation') {
+          // details are loaded on request via the cdm_dynabox by AJAX from the
+          // CDM_WS_DERIVEDUNIT_FACADE (derivedUnitFacade/{uuid}) webservice
+          // and will be rendered by the theme_cdm_derivedUnitFacade() function
+
+          $derived_unit_ws_request = cdm_compose_url('portal/' . CDM_WS_DERIVEDUNIT_FACADE, array( $specimenOrObservation->uuid));
+          $label_html = cdm_dynabox(
+              $specimenOrObservation->titleCache,
+              $derived_unit_ws_request,
+              'cdm_derivedUnitFacade', // the theme function to use
+              'Click for details',
+              array('div','div')
+          );
+        } else {
+          // Fieldobservations are not yet fully handled,  only the titleCache will be displayed
+          $label_html = $specimenOrObservation->titleCache;
+        }
       }
 
       // --- Render associated media.

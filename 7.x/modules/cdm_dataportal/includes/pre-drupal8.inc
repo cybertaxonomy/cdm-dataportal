@@ -136,6 +136,8 @@ function template_preprocess_description_list(&$variables) {
  *
  * @return string
  *   The rendered description list.
+ *
+ * @ingroup themeable
  */
 function theme_description_list($variables) {
   $items = $variables['items'];
