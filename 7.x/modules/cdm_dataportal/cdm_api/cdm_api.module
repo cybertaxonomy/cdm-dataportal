@@ -534,7 +534,10 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
 }
 
 /**
- *
+ * @todo wouldn't it more elegant and secure to only pass a uuid and additional function parameters
+ *     together with a theme name to such a proxy function?
+ *     Well this would not be covering all use cases but maybe all which involve AHAH.
+ *     Maybe we want to have two different proxy functions, one with theming and one without?
  *
  * @param string $uri
  *     A URI to a CDM Rest service from which to retrieve an object
@@ -560,10 +563,6 @@ function proxy_content($uri, $theme = NULL) {
     if (strpos($arg, "a:") === 0) {
       $arg = unserialize($arg);
     }
-    // Find comma separated string in all args.
-    // if(strpos($arg, ',')){
-    // $arg = explode(',', $arg);
-    // }
   }
 
   $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
