@@ -783,6 +783,12 @@
 6.x/themes/summertime_cdm/summertime_cdm.info -text
 6.x/themes/summertime_cdm/template.php -text
 6.x/themes/summertime_cdm/theme-settings.php -text
+7.x/modules/cdm_csv_export/cdm_csv_export.info -text
+7.x/modules/cdm_csv_export/cdm_csv_export.module -text
+7.x/modules/cdm_csv_export/css/cdm_csv_export.css -text
+7.x/modules/cdm_csv_export/js/cdm_csv_export.js -text
+7.x/modules/cdm_csv_export/js/jquery.blockUI.js -text
+7.x/modules/cdm_csv_export/js/jquery.cookie.js -text
 7.x/modules/cdm_dataportal/INSTALL.txt -text
 7.x/modules/cdm_dataportal/LICENSE.txt -text
 7.x/modules/cdm_dataportal/cdm_api/LICENSE.txt -text
