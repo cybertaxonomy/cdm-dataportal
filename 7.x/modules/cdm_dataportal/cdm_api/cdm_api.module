@@ -1315,11 +1315,14 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
 
   // Decompose uri into path and query element.
   $uri_parts = explode("?", $uri);
-  $query = '';
+  $query = array();
   if (count($uri_parts) == 2) {
     $path = $uri_parts[0];
-    $queryparts = explode("=", $uri_parts[1]);
-    $query = array($queryparts[0] => $queryparts[1]);
+    $queryparts = explode("&", $uri_parts[1]);
+    foreach ($queryparts as $querypart) {
+      $querypart = explode("=", $querypart);
+      $query[$querypart[0]] = $querypart[1];
+    }
   }
   else {
     $path = $uri;
@@ -1339,9 +1342,9 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
     $message .= '<a href="' . url($path . '.json', array(
       'query' => $query,
     )) . '" target="data" class="' . $success_msg . '">json</a>-';
-    $message .= '<a href="' . url('cdm_api/proxy/' . urlencode(url($path . '.json', array(
+    $message .= '<a href="' . url('cdm_api/proxy/' . url($path . '.json', array(
       'query' => $query,
-    )))) . '" target="data" class="' . $success_msg . '">proxied</a>';
+    ))) . '" target="data" class="' . $success_msg . '">proxied</a>';
   }
   else {
     $message .= '<a href="' . url($path, array(
