@@ -159,7 +159,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
       elseif ($asListElement) {
         $out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
         // Adding ":" if necesary.
-        if (isset($name_used_in_source_link_to_show) && (!empty($description) || !empty($sourceRefs))) {
+        if (isset($name_used_in_source_link_to_show) && (!empty($description) || !empty($sourceRefs)) && $feature_uuid != UUID_CHROMOSOMES_NUMBERS) {
           $out .= ': ';
         }
         $out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', array(
