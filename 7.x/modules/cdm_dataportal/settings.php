@@ -1244,7 +1244,7 @@ function cdm_settings_layout_media() {
 /**
  * GEOSERVICE and Map settings.
  */
-function cdm_settings_geo() {
+function cdm_settings_geo($form, &$form_state) {
 
   $form = array();
 
@@ -1420,9 +1420,8 @@ function cdm_settings_geo() {
    NOTICE: must correspond to the layers defined in
    js/openlayers_,ap.js#getLayersByName()
    */
-    // osgeo_vmap0 projections: EPSG:4326: EPSG:900913
-    'osgeo_vmap0' => "Metacarta Vmap0",
-    // 'metacarta_vmap0' => "Metacarta Vmap0" , // EPSG:4326, EPSG:900913
+    'osgeo_vmap0' => "Metacarta Vmap0 (OSGeo server)", // EPSG:4326: EPSG:900913
+    'metacarta_vmap0' => "Metacarta Vmap0 (MetaCarta Labs server)", // EPSG:4326, EPSG:900913
     // all others EPSG:900913
     // 'edit-vmap0_world_basic' => 'EDIT Vmap0',
     'edit-etopo1' => "ETOPO1 Global Relief Model",
@@ -1536,6 +1535,7 @@ function cdm_settings_geo() {
     '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
     '#weight' => 1000,
   );
+
   return system_settings_form($form);
 }
 
@@ -1757,6 +1757,7 @@ function checkboxes_preferred_expand($element, &$form_state, $form) {
           '#return_value' => check_plain($key),
           '#default_value' => empty($element['#default_value_2']) ? NULL : $element['#default_value_2'],
           '#attributes' => $element['#attributes'],
+          '#parents' => $element['#parents'],
           // '#spawned' => TRUE,
           '#weight' => $weight + 1,
           '#prefix' => '<td>',        // add a prefix to start a new table cell
@@ -1813,6 +1814,7 @@ function checkboxes_preferred_after_build($form, &$form_state) {
     $preferred_layer = $_POST[$parent_id . '_preferred'];
     $form['#value']['PREFERRED'] = $preferred_layer;
     $form_state[$parent_id] = $form['#value'];
+    $form_state['values']['baselayers'] = $form['#value'];
   }
   else {
     // Second pass of form processing.
