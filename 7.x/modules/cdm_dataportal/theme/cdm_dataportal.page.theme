@@ -128,7 +128,7 @@ function theme_cdm_taxon_page($variables) {
   }
   // HideImage flag depending on administative preset.
   $hideImages = FALSE;
-  if (variable_get('image_hide_rank', '0') != '0') {
+  if (variable_get('image_hide_rank', '0') != '0' && isset($taxon->name->rank->uuid)) {
     $rankCompare = rank_compare($taxon->name->rank->uuid, variable_get('image_hide_rank', '-99'));
     $hideImages = ($rankCompare > -1);
   }
