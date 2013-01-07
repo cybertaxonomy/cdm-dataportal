@@ -128,7 +128,7 @@ function _set_image_url($which_image, &$variables, $default_image = null, $css_s
   }
 
   if(!isset($url) && isset($default_image)) {
-      $url = path_to_theme() . '/' . $default_image;
+      $url = base_path() . path_to_theme() . '/' . $default_image;
   }
 
   if(isset($url)) {
