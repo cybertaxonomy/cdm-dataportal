@@ -1314,6 +1314,8 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
   $cumulated_time_parse += $time_parse;
 
   // Decompose uri into path and query element.
+  // URI query elements are stored in an array
+  // suitable for drupal_http_build_query()
   $uri_parts = explode("?", $uri);
   $query = array();
   if (count($uri_parts) == 2) {
@@ -1321,7 +1323,11 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
     $queryparts = explode("&", $uri_parts[1]);
     foreach ($queryparts as $querypart) {
       $querypart = explode("=", $querypart);
-      $query[$querypart[0]] = $querypart[1];
+      if(count($querypart) == 2){
+        $query[$querypart[0]] = $querypart[1];
+      } else {
+        $query[$querypart[0]] = null;
+      }
     }
   }
   else {
