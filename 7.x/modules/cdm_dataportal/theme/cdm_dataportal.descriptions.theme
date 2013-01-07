@@ -459,10 +459,14 @@ function theme_cdm_descriptionElementTextData($variables) {
 
       if ($asListElement) {
 
-        $out = '<li class="descriptionText DescriptionElement">' . $name_used_in_source_link_to_show;
+       $out = '<li class="descriptionText DescriptionElement">';
         // Adding ":" if necessary.
-        if ($name_used_in_source_link_to_show && ($description || $sourceRefs)) {
-          $out .= ': ';
+        if (!empty($name_used_in_source_link_to_show)) {
+          if ( (!empty($description)|| !empty($sourceRefs)) && $feature_uuid != UUID_CHROMOSOMES_NUMBERS) {
+            $out .= $name_used_in_source_link_to_show . ': ';
+          } else {
+            $out .= $name_used_in_source_link_to_show . ' ';
+          }
         }
         $out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $element, 'footnote_list_key' => $feature_uuid)) . '</li>';
       }
