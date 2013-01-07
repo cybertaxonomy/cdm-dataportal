@@ -1342,9 +1342,9 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
     $message .= '<a href="' . url($path . '.json', array(
       'query' => $query,
     )) . '" target="data" class="' . $success_msg . '">json</a>-';
-    $message .= '<a href="' . url('cdm_api/proxy/' . url($path . '.json', array(
+    $message .= '<a href="' . url('cdm_api/proxy/' . urlencode(url($path . '.json', array(
       'query' => $query,
-    ))) . '" target="data" class="' . $success_msg . '">proxied</a>';
+    )))) . '" target="data" class="' . $success_msg . '">proxied</a>';
   }
   else {
     $message .= '<a href="' . url($path, array(
