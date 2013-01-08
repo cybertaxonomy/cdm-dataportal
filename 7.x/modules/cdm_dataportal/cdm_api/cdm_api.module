@@ -1626,17 +1626,45 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Provides the list of availbale classifications in form of an options array.
+ *
+ * The options array is suitable for drupal form API elements that allow multiple choices.
+ * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#options
+ *
+ * The classifications are ordered alphabetically whereas the classification
+ * chosen as default will always appear on top of the array, followed by a
+ * blank line below.
+ *
+ * @return array
+ *   classifications in an array as options for a form element that allows multiple choices.
  */
 function cdm_get_taxontrees_as_options() {
   $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
+
+  $default_classification_uuid = variable_get(CDM_TAXONOMICTREE_UUID, FALSE);
+  $default_classification_label = '';
+
+  // add all classifications
   $taxonomic_tree_options = array();
   if ($taxonTrees) {
     foreach ($taxonTrees as $tree) {
-      $taxonomic_tree_options[$tree->uuid] = $tree->titleCache;
+      if (!$default_classification_uuid || $default_classification_uuid != $tree->uuid) {
+        $taxonomic_tree_options[$tree->uuid] = $tree->titleCache;
+      } else {
+        $taxonomic_tree_options[$tree->uuid] = ' '; // one Space characters to force on top, will be replaced below by titleCache
+        $taxonomic_tree_options[''] = '  '; // two Space characters for an empy line below
+        $default_classification_label = $tree->titleCache;
+      }
     }
   }
+  // oder alphabetically
+  asort($taxonomic_tree_options);
+
+  // add default on top
+  if ($default_classification_uuid) {
+    $taxonomic_tree_options[$default_classification_uuid] = $default_classification_label . ' - ' . t('DEFAULT CLASSIFICATION');
+  }
+
   return $taxonomic_tree_options;
 }
 
