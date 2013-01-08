@@ -1,0 +1,135 @@
+<?php
+
+/**
+ * @file
+ * Allows to export classifications into a flat csv file.
+ *
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * @author
+ * Oppermann, Alexander <a.oppermann@BGBM.org>
+ *
+ */
+
+
+/**
+ * 
+ * @param unknown $path
+ *  Which path of the site we're using to display help
+ * @param unknown $arg
+ *  Array that holds the current path as returned from arg() function
+ * @return string
+ */
+function cdm_csv_export_help($path, $arg){
+
+switch ($path) {
+  case "admin/help#cdm_csv_export":
+  return '<h1>'.t('CDM CSV Export Help'). '</h1>'. '<p>' . t("In order 
+    to export the data with special export options, it is essential 
+    to configure a feature tree with the desired features. Then set
+    this feature tree as the default feature tree for this portal."
+    ) . '</p>';
+  break;
+  }
+}
+
+/**
+ * Implements hook_block_info() 
+ * 
+ * Prepares the content for the help menu
+ * 
+ * @return multitype:string Ambigous <The, string, A, Optional>
+ */
+function cdm_csv_export_block_info() {
+  $blocks['cdm_csv_export'] = array(
+    'info' => t('CDM CSV Export Module'), //The name that will appear in the block list.
+    'cache' => DRUPAL_CACHE_PER_ROLE, //Default
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ * 
+ * Prepares the contents of the block.
+ *  
+ * @param string $delta
+ * @return multitype:Ambigous <The, boolean, string>
+ */
+function cdm_csv_export_block_view($delta='') {
+  $block['subject'] = t('Export into CSV');
+  $block['content']= array(
+      drupal_get_form('cdm_csv_export_my_form'),
+  );
+  return $block;
+}
+
+/**
+ * Creates the drupal form and returns it
+ * 
+ * @param unknown $form_state
+ * @return multitype:string multitype:string  
+ *          multitype:string multitype:string   
+ *          Ambigous <A, string> multitype:NULL  
+ *          multitype:string multitype: Ambigous <The, string, A, Optional>  The
+ */
+function cdm_csv_export_my_form($form_state) {
+  $form['combobox'] = array(
+    '#type' => 'select',
+    '#title' => t('Classification').':',
+    '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, FALSE),
+    '#options' => cdm_get_taxontrees_as_options(),
+    '#attributes' => array('name' => 'classification'),
+  );
+
+  $form['csvExportOptions'] = array(
+      '#type'=>'checkboxes',
+      '#title'	=>t('Download Options'),
+      '#options' => array(),
+  );
+    
+   // ---- LAYOUT PER FEATURE ---- //
+$feature_tree = get_profile_featureTree();
+  if (isset($feature_tree->root->children)) {
+    foreach ($feature_tree->root->children as $featureNode) {
+      if (isset($featureNode->feature)) {
+
+       // Must not exceed 45 characters !!!
+        $subform_id =  $featureNode->feature->uuid; //LAYOUT_SETTING_PREFIX .
+        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
+        $systemDefaults = unserialize(FEATURE_TREE_LAYOUT_DEFAULTS);
+        $form['csvExportOptions'][$subform_id] = array(
+          '#type' => 'checkbox',
+          '#title' => $featureNode->feature->representation_L10n,
+          '#default_value' => $featureNode->feature->uuid,//$settings,
+          '#attributes' => array('value' => $featureNode->feature->uuid,
+                                  'name' => 'features'
+            ),
+        );
+      }
+    }
+  }
+  $form['downloadTokenValueId'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array('name' => 'downloadTokenValueId',
+                           'id' => 'downloadTokenValueId',                     
+      ),
+    );
+
+  $form['button'] = array(
+    '#type'  => 'submit',
+    '#value' => 'Export',
+    );
+  
+  $form['#action'] = url('../../csv/exportRedlist');
+  $form['#attributes'] = array('onsubmit' => 'return blockUIForDownload()');
+  
+  return $form;
+}

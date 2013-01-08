@@ -802,6 +802,12 @@
 7.x/modules/cdm_dataportal/cdm_api/uuids.php -text
 7.x/modules/cdm_dataportal/cdm_api/webservice_uris.php -text
 7.x/modules/cdm_dataportal/cdm_api/xml2json.php -text
+7.x/modules/cdm_dataportal/cdm_csv_export/cdm_csv_export.info -text
+7.x/modules/cdm_dataportal/cdm_csv_export/cdm_csv_export.module -text
+7.x/modules/cdm_dataportal/cdm_csv_export/css/cdm_csv_export.css -text
+7.x/modules/cdm_dataportal/cdm_csv_export/js/cdm_csv_export.js -text
+7.x/modules/cdm_dataportal/cdm_csv_export/js/jquery.blockUI.js -text
+7.x/modules/cdm_dataportal/cdm_csv_export/js/jquery.cookie.js -text
 7.x/modules/cdm_dataportal/cdm_dataportal.css -text
 7.x/modules/cdm_dataportal/cdm_dataportal.info -text
 7.x/modules/cdm_dataportal/cdm_dataportal.install -text
