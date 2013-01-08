@@ -359,7 +359,7 @@ public abstract class  PortalPage {
                 wait.until(isTrue);
             }
         } catch (AssertionError timeout){
-            logger.info("current WindowHandles:" + driver.getWindowHandles());
+            logger.info("clickLink timed out. Current WindowHandles:" + driver.getWindowHandles());
             throw timeout;
         }
 

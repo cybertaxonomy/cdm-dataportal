@@ -121,7 +121,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         expectedCssDisplay = "block";
         featureClass = "distribution";
         featureLabel = "Distribution";
-        blockTextFull = featureLabel + "\n\n\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 19336. (N)";
+        blockTextFull = featureLabel + "\n\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 19336. (N)";
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
         featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "dt", "dd");
 
