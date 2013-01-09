@@ -164,8 +164,7 @@ function theme_description_list($variables) {
  * Adds one term and one description entry to the given description_list_group $group.
  *
  * Creation of a new entry does not take place if the $description is a string
- * which can be trimmed to ''.
- * is an empty string. The $group array will be associating in order to
+ * which can be trimmed to an empty string. The $group array will be associating in order to
  * ease aplphabetical ordering of the enties.
  *
  * NOTE: To be used onyl for themable description_list as proposed in
@@ -175,17 +174,24 @@ function theme_description_list($variables) {
  *  The description_list_groups
  * @param string $term
  *
- * @param string $description
+ * @param string|array $description
+ *   a text string or an form element array
+ *
+ * @param string $suffix
+ *   to be appended to the $description if it is not an array
  *
  * @param number $weight
  *
  */
-function _description_list_group_add(&$groups, $term, $description, $weight=NULL) {
+function _description_list_group_add(&$groups, $term, $description, $suffix = '', $weight=NULL) {
 
   if (!is_array($description)) {
     $description = trim(drupal_html_to_text($description));
   }
   if ($description) {
+    if (!is_array($description)) {
+      $description .= $suffix;
+    }
     $groups[$term] = array(
         'term' => $term,
         'description' => $description,

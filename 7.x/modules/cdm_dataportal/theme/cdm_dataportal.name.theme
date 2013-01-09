@@ -604,13 +604,14 @@ function get_partDefinition($taxonNameType) {
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_taxonName($variables) {
-  $taxonName = $variables['taxonName'];
 
+  $taxonName = $variables['taxonName'];
   $nameLink = $variables['nameLink'];
   $refenceLink = $variables['refenceLink'];
   $show_annotations = $variables['show_annotations'];
   $is_type_designation = $variables['is_type_designation'];
   $skiptags = $variables['skiptags'];
+
   $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
   $partDefinition = get_partDefinition($taxonName->class);
 

@@ -102,7 +102,7 @@ function theme_cdm_specimen($variables) {
 function cdm_occurrence_field_name_label($field){
 
   static $field_labels = array(
-      'type' => 'Basis of Record',
+      'class' => 'Basis of Record',
       'fieldNumber' => 'Collectors number',
       'absoluteElevation' => 'Altitude',
       'absoluteElevationMinimum' => 'Altitude maximum',

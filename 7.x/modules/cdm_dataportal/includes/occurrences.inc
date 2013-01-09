@@ -32,6 +32,7 @@ function compose_cdm_derivedUnitFacade($derivedUnitFacade) {
       'derivedUnitMedia',
   );
 
+/*
   $groups = array();
   if (is_object($derivedUnitFacade)) {
     foreach (get_object_vars($derivedUnitFacade) as $field => $value) {
@@ -94,8 +95,8 @@ function compose_cdm_derivedUnitFacade($derivedUnitFacade) {
         '#theme' => 'description_list',
         '#groups' => $groups,
     );
-
   }
+*/
   return $render_array;
 }
 
@@ -109,10 +110,9 @@ function compose_cdm_derivedUnitFacade($derivedUnitFacade) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives = array()) {
+function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives = null) {
 
   static $excludeFields = array(
-      'class',
       'derivedFrom',
       'derivationEvents',
       'titleCache',
@@ -122,23 +122,39 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
       'uuid'
   );
 
-  static $init_strategy_json = NULL;
-  if (!$init_strategy_json) {
-    $init_array = array(
-        "derivedFrom.derivatives",
-        "derivedFrom.originals",
-    );
-    $init_strategy_json = json_encode($init_array);
+  /*
+   * $field_labels:
+   *
+   *
+   * 'type' => 'Basis of Record',
+    'fieldNumber' => 'Collectors number',
+    'absoluteElevation' => 'Altitude',
+    'absoluteElevationMinimum' => 'Altitude maximum',
+    'absoluteElevationMaximum' => 'Altitude minimum',
+    'getGatheringPeriod' => 'Gathering period',
+   */
+
+//   static $init_strategy_json = NULL;
+//   if (!$init_strategy_json) {
+//     $init_array = array(
+//         "derivedFrom.derivatives",
+//         "derivedFrom.originals",
+//     );
+//     $init_strategy_json = json_encode($init_array);
+//   }
+  if (!isset($derivatives)) {
+    $derivatives = array();
   }
+
+  $descriptions = null;
+  $original = null;
 
   if (is_object($specimenOrObservation)) {
 
     // request again for deeper initialization
     $specimenOrObservation = cdm_ws_get("portal/" . CDM_WS_OCCURRENCE, $specimenOrObservation->uuid);
 
-    $title = (count($derivatives) > 0 ? 'derived from ' : '')
-      . $specimenOrObservation->class . ': '
-      .  $specimenOrObservation->titleCache;
+    $title = $specimenOrObservation->class . ': ' . $specimenOrObservation->titleCache;
 
     $groups = array();
     // --- add initialized fields
@@ -146,39 +162,41 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
       if (!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class)))) {
         switch ($field) {
 
-          case 'locality':
-            break;
+          /* ---- java.lang.Object --- */
+          case 'class':
+            if($value != '' /* FieldObservation' */){
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
+            }
+          break;
 
-          case 'country':
+          /* ---- SpecimenOrObservationBase --- */
+          case 'sex':
+          case 'lifeStage':
             @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->representation_L10n);
             break;
 
-          case 'collector':
-            $sub_dl_groups = array();
-            @_description_list_group_add($sub_dl_groups, 'code', $value->code, 1);
-            @_description_list_group_add($sub_dl_groups, 'codeStandard',  $value->codeStandard, 2);
-            @_description_list_group_add($sub_dl_groups, 'institute', $value->institute, 3);
-            @_description_list_group_add($sub_dl_groups, 'townOrLocation', $value->townOrLocation, 4);
-
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
-                array(
-                    array('#markup' => $value->titleCache),
-                    array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
-                )
-            );
+          case 'definition':
+            // TODO
             break;
 
           case 'determinations':
-              $sub_dl_groups = array();
-              @_description_list_group_add($sub_dl_groups, 'taxon', $value->taxon->titleCache, 1);
+            // TODO webservice for DeterminationEvent needed
+//               $sub_dl_groups = array();
+//               @_description_list_group_add($sub_dl_groups, 'taxon', $value->taxon->titleCache, NULL, 1);
 
-              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
-                  array(
-                      array('#markup' => $value->titleCache),
-                      array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
-                  )
-              );
+//               @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
+//                   array(
+//                       array('#markup' => $value->titleCache),
+//                       array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
+//                   )
+//               );
               break;
+
+          case 'descriptions':
+            // store in variable so we don't need to ask the cdmserver for them again
+            $descriptions = $value;
+            // TODO compose descriptions
+            break;
 
           case 'sources':
               $dd_array = array();
@@ -193,26 +211,72 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 //               );
               break;
 
+          /* ---- DerivedUnitBase --- */
           case 'collection':
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->titleCache);
-            break;
-
-          case 'exactLocation':
             $sub_dl_groups = array();
-            @_description_list_group_add($sub_dl_groups, 'errorRadius', $value->errorRadius, 1);
-            @_description_list_group_add($sub_dl_groups, 'longitude', $value->longitude, 2);
-            @_description_list_group_add($sub_dl_groups, 'latitude', $value->latitude, 3);
+            @_description_list_group_add($sub_dl_groups, 'code', $value->code, 1);
+            @_description_list_group_add($sub_dl_groups, 'codeStandard',  $value->codeStandard, NULL, 2);
+            @_description_list_group_add($sub_dl_groups, 'institute', $value->institute, NULL, 3);
+            @_description_list_group_add($sub_dl_groups, 'townOrLocation', $value->townOrLocation, NULL, 4);
+            // TODO "superCollection"
+            // TODO may have media
 
             @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
                 array(
-                    array('#markup' => $value->sexagesimalString),
+                    array('#markup' => $value->titleCache),
                     array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
                 )
             );
             break;
 
-          case 'getGatheringPeriod':
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), timePeriodToString($value));
+            case 'storedUnder':
+              @_description_list_group_add($groups, 'storedUnder', theme('cdm_taxonName', $value));
+              break;
+
+
+          /* ---- Specimen --- */
+          // TODO preservation
+          // TODO exsiccatum
+
+
+          /* ---- FieldObservation --- */
+          case 'gatheringEvent':
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('collector'), $value->actor->titleCache);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('timeperiod'), timePeriodToString($value->timeperiod));
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('description'), $value->description);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $value->absoluteElevation);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevationError'), $value->absoluteElevationError);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $value->distanceToGround);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $value->distanceToWaterSurface);
+            if (isset($value->collectingAreas)) {
+              $area_representations = array();
+              foreach($value->collectingAreas as $area) {
+                $area_representations[] = $area->representation_L10n;
+              }
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingAreas'), implode(', ', $area_representations));
+            }
+            if (isset($value->exactLocation)) {
+              $sub_dl_groups = array();
+              @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('errorRadius'), $value->exactLocation->errorRadius, ' m', 1);
+              @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('longitude'), $value->exactLocation->longitude, '°', 2);
+              @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('latitude'), $value->exactLocation->latitude, '°', 3);
+              if (isset($value->exactLocation->referenceSystem)) {
+                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('referenceSystem'), $value->exactLocation->referenceSystem->representation_L10n, '', 4);
+              }
+
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label('exactLocation'),
+                  array(
+                      array('#markup' => $value->exactLocation->sexagesimalString),
+                      array(
+                          '#theme' => 'description_list',
+                          '#groups' => $sub_dl_groups
+                      ),
+                  )
+              );
+            }
             break;
 
           default:
@@ -227,41 +291,34 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
       }
     } // END of loop over $derivedUnitFacade fields
 
-//     // --- retrieve and add additional fields
-
-//     switch ($specimenOrObservation->class) {
-//       case 'LivingBeing':
-//       case 'Observation':
-//       case 'DerivedUnit':
-
-//         break;
-
-//      case 'Specimen':
-//      case 'Fossil':
-//      case 'DnaSample':
-//        // TODO
-//        // - preservation: PreservationMethod
-//        // - PreservationMethod
-//         break;
-//     }
-
 
     $occurrence_elements = array(
         '#title' => $title,
         '#theme' => 'description_list',
         '#groups' => $groups,
+        '#attributes' => array('class' => html_class_atttibute_ref($specimenOrObservation)),
     );
 
     $derivatives[] = $occurrence_elements;
 
     // --- recurse into originals
-    $derivationEvent = cdm_ws_get(
-        CDM_WS_OCCURRENCE,
-        array($specimenOrObservation->uuid, 'derivedFrom'),
-        queryString(array('init' => $init_strategy_json))
+    if (!is_array($original)) {
+      $derivationEvent = cdm_ws_get(
+          CDM_WS_OCCURRENCE,
+          array($specimenOrObservation->uuid, 'derivedFrom')
+//         ,  queryString(array('init' => $init_strategy_json))
+        );
+      if (isset($derivationEvent->originals)) {
+        $originals = $derivationEvent->originals;
+      }
+    }
+
+    if (isset($originals)) {
+      if ($originals)
+      $derivatives[] = array(
+          '#markup' => '<div>' . t('derived from') . ': </div>',
       );
-    if (isset($derivationEvent->originals)) {
-      foreach ($derivationEvent->originals as $original) {
+      foreach ($originals as $original) {
         compose_cdm_specimenOrObservation($original, $derivatives);
       }
     }

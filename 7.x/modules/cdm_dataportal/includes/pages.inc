@@ -112,36 +112,36 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
       }
 
       // ---- complex
-//         $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
-//         $label_html = cdm_dynabox(
-//             $specimenOrObservation->titleCache,
-//             $derived_unit_ws_request,
-//             'cdm_specimenOrObservation', // the theme or compose function to use
-//             'Click for details',
-//             array('div','div')
-//         );
+        $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
+        $label_html = cdm_dynabox(
+            $specimenOrObservation->titleCache,
+            $derived_unit_ws_request,
+            'cdm_specimenOrObservation', // the theme or compose function to use
+            'Click for details',
+            array('div','div')
+        );
 
       // ---- simple via cdm_derivedUnitFacade - TURNED OFF
-      if (true) {
-        // --- Render the title cache and add dynabox for the details
-        if ($specimenOrObservation->class != 'FieldObservation') {
-          // details are loaded on request via the cdm_dynabox by AJAX from the
-          // CDM_WS_DERIVEDUNIT_FACADE (derivedUnitFacade/{uuid}) webservice
-          // and will be rendered by the theme_cdm_derivedUnitFacade() function
+//       if (true) {
+//         // --- Render the title cache and add dynabox for the details
+//         if ($specimenOrObservation->class != 'FieldObservation') {
+//           // details are loaded on request via the cdm_dynabox by AJAX from the
+//           // CDM_WS_DERIVEDUNIT_FACADE (derivedUnitFacade/{uuid}) webservice
+//           // and will be rendered by the theme_cdm_derivedUnitFacade() function
 
-          $derived_unit_ws_request = cdm_compose_url('portal/' . CDM_WS_DERIVEDUNIT_FACADE, array( $specimenOrObservation->uuid));
-          $label_html = cdm_dynabox(
-              $specimenOrObservation->titleCache,
-              $derived_unit_ws_request,
-              'cdm_derivedUnitFacade', // the theme function to use
-              'Click for details',
-              array('div','div')
-          );
-        } else {
-          // Fieldobservations are not yet fully handled,  only the titleCache will be displayed
-          $label_html = $specimenOrObservation->titleCache;
-        }
-      }
+//           $derived_unit_ws_request = cdm_compose_url('portal/' . CDM_WS_DERIVEDUNIT_FACADE, array( $specimenOrObservation->uuid));
+//           $label_html = cdm_dynabox(
+//               $specimenOrObservation->titleCache,
+//               $derived_unit_ws_request,
+//               'cdm_derivedUnitFacade', // the theme function to use
+//               'Click for details',
+//               array('div','div')
+//           );
+//         } else {
+//           // Fieldobservations are not yet fully handled,  only the titleCache will be displayed
+//           $label_html = $specimenOrObservation->titleCache;
+//         }
+//       }
 
       // --- Render associated media.
       $gallery_html = '';
