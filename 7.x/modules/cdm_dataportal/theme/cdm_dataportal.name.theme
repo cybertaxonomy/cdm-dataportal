@@ -600,6 +600,14 @@ function get_partDefinition($taxonNameType) {
 }
 
 /**
+ * @param $variables
+ *    - taxonName : cdm TaxonNameBase instance
+ *    - nameLink: URI to the taxon, @see path_to_taxon()
+ *    - refenceLink: URI to the reference, @see path_to_reference()
+ *    - show_annotations: ...
+ *    - is_type_designation: ...
+ *    - skiptags: an array of tags to skip ....
+ *
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */

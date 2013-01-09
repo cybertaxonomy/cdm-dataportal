@@ -180,16 +180,31 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
           case 'determinations':
-            // TODO webservice for DeterminationEvent needed
-//               $sub_dl_groups = array();
-//               @_description_list_group_add($sub_dl_groups, 'taxon', $value->taxon->titleCache, NULL, 1);
+              foreach  ($value as $determinationEvent){
+                $sub_dl_groups = array();
+                $weight = $determinationEvent->preferred == 1 ? 0 : (isset ($determinationEvent->timeperiod) ? $determinationEvent->timeperiod : 1);
+                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('actor'), $determinationEvent->actor->titleCache);
+                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('timeperiod'), timePeriodToString($determinationEvent->timeperiod));
+                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('description'), $determinationEvent->description);
 
-//               @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
-//                   array(
-//                       array('#markup' => $value->titleCache),
-//                       array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
-//                   )
-//               );
+                $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
+                $taxon_html = theme('cdm_taxonName',
+                    array(
+                      'taxonName' => $taxon_name,
+                      'nameLink' => path_to_taxon($determinationEvent->taxon->uuid),
+                    )
+                );
+                @_description_list_group_add(
+                    $groups,
+                    cdm_occurrence_field_name_label('determination'),
+                    array(
+                        array('#markup' => $taxon_html),
+                        array('#theme' => 'description_list', '#groups' => $sub_dl_groups),
+                      ),
+                    NULL,
+                    $weight
+                );
+              }
               break;
 
           case 'descriptions':
@@ -214,10 +229,10 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
           /* ---- DerivedUnitBase --- */
           case 'collection':
             $sub_dl_groups = array();
-            @_description_list_group_add($sub_dl_groups, 'code', $value->code, 1);
-            @_description_list_group_add($sub_dl_groups, 'codeStandard',  $value->codeStandard, NULL, 2);
-            @_description_list_group_add($sub_dl_groups, 'institute', $value->institute, NULL, 3);
-            @_description_list_group_add($sub_dl_groups, 'townOrLocation', $value->townOrLocation, NULL, 4);
+            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('code'), $value->code, 1);
+            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('codeStandard'),  $value->codeStandard, NULL, 2);
+            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('institute'), $value->institute, NULL, 3);
+            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('townOrLocation'), $value->townOrLocation, NULL, 4);
             // TODO "superCollection"
             // TODO may have media
 
@@ -230,7 +245,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
             case 'storedUnder':
-              @_description_list_group_add($groups, 'storedUnder', theme('cdm_taxonName', $value));
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), theme('cdm_taxonName', $value));
               break;
 
 
