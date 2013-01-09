@@ -175,7 +175,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 
         layer = new OpenLayers.Layer.WMS.Untiled(
             'points',
-            "http://193.190.116.6:8080/geoserver/wms/wms",
+            "http://edit.africamuseum.be/geoserver/wms/wms",
             {layers: 'topp:rest_points' ,transparent:"true", format:"image/png"},
             dataLayerOptions );
 

@@ -41,8 +41,8 @@ $gallery_settings = array(
   "cdm_dataportal_media_maxRows" => 1,
 );
 
-define('EDIT_MAPSERVER_V1_URI', 'http://edit.br.fgov.be/edit_wp5/v1');
-define('EDIT_MAPSERVER_V11_URI', 'http://edit.br.fgov.be/edit_wp5/v1.1');
+define('EDIT_MAPSERVER_V1_URI', 'http://edit.africamuseum.be/geoserver/edit_wp5/v1'); // fall back server is http://edit.br.fgov.be
+define('EDIT_MAPSERVER_V11_URI', 'http://edit.africamuseum.be/geoserver/edit_wp5/v1.1'); // fall back server is http://edit.br.fgov.be
 define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
 
 // --- Taxon profile settings --- /
@@ -1267,10 +1267,6 @@ function cdm_settings_geo($form, &$form_state) {
     '#options' => array(
       EDIT_MAPSERVER_V1_URI => 'EDIT Map Server v1',
       EDIT_MAPSERVER_V11_URI => 'EDIT Map Server v1.1',
-      /*
-      'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server - Mirror 1',
-      'http://edit.br.fgov.be/edit_wp5/v1/' => 'EDIT Map Server - Mirror 2',
-      */
       'ALTERNATIVE' => '-- Alternative URL --',
     ),
     '#description' => t('Select the Map Server you want the data portal to
