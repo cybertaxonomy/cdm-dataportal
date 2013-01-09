@@ -41,8 +41,8 @@ $gallery_settings = array(
   "cdm_dataportal_media_maxRows" => 1,
 );
 
-define('EDIT_MAPSERVER_V1_URI', 'http://edit.africamuseum.be/geoserver/edit_wp5/v1'); // fall back server is http://edit.br.fgov.be
-define('EDIT_MAPSERVER_V11_URI', 'http://edit.africamuseum.be/geoserver/edit_wp5/v1.1'); // fall back server is http://edit.br.fgov.be
+define('EDIT_MAPSERVER_V1_URI', 'http://edit.africamuseum.be/edit_wp5/v1'); // fall back server is http://edit.br.fgov.be
+define('EDIT_MAPSERVER_V11_URI', 'http://edit.africamuseum.be/edit_wp5/v1.1'); // fall back server is http://edit.br.fgov.be
 define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
 
 // --- Taxon profile settings --- /
@@ -1377,8 +1377,8 @@ function cdm_settings_geo($form, &$form_state) {
     '#title' => t('Background layer') . ':',
     '#default_value' => variable_get('map_base_layer', 'cyprusdivs'),
     '#description' => t('Background layer. For available layers inspect !url1 or !url2.', array(
-      '!url1' => l(t('deegree-csw'), 'http://edit2.br.fgov.be:8080/deegree-csw/md_search.jsp'),
-      '!url2' => l(t('geoserver layers'), 'http://edit.br.fgov.be:8080/geoserver/rest/layers'),
+      '!url1' => l(t('deegree-csw'), 'http://edit.africamuseum.be:8080/deegree-csw/md_search.jsp'),
+      '!url2' => l(t('geoserver layers'), 'http://edit.africamuseum.be/geoserver/web/'), // http://edit.africamuseum.be/geoserver/rest/layers
     )),
   );
 

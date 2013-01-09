@@ -181,7 +181,11 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 
         var sld = mapResponseObj.points_sld;
         if(sld.indexOf("http://") !== 0){
-          sld = "http://edit.br.fgov.be/synthesys/www/v1/sld/" + sld;
+
+          //  http://edit.africamuseum.be/synthesys/www/v1/sld/
+          //  http://edit.br.fgov.be/synthesys/www/v1/sld/
+          sld = "http://edit.africamuseum.be/synthesys/www/v1/sld/" + sld;
+
         }
 
         layer.params.SLD = sld;
