@@ -170,6 +170,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
           case 'determinations':
             $dd_array = array();
+            $glue = ', ';
             foreach  ($value as $determinationEvent){
               $timeperiod_string = NULL;
               if (isset($determinationEvent->timeperiod)) {
@@ -188,18 +189,14 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
                   )
               );
               $dd_array[$weight] = $taxon_html;
-              $glue = '; ';
               if ($timeperiod_string) {
                 $dd_array[$weight] .= $glue . $timeperiod_string;
-                $glue = ', ';
               }
               if (isset($determinationEvent->actor->titleCache)) {
                 $dd_array[$weight] .= $glue . $determinationEvent->actor->titleCache;
-                $glue = ', ';
               }
               if (isset($determinationEvent->description)) {
                 $dd_array[$weight] .= $glue . $determinationEvent->description;
-                $glue = ', ';
               }
             }
             ksort($dd_array);
