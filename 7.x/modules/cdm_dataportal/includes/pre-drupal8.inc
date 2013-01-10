@@ -15,6 +15,7 @@
  *   Add a theme_description_list() function to theme a description list
  *   (ex. definition list)
  *   http://drupal.org/node/54898
+ *   http://drupal.org/files/drupal8.theme-dl.54.patch
  *****************************************************************************/
 /**
  * Preprocesses variables for theme_description_list().
@@ -152,7 +153,7 @@ function theme_description_list($variables) {
     $output = '<dl' . drupal_attributes($variables['attributes']) . '>' . $output . '</dl>'; // using drupal_attributes() instead of D8 new Attribute()
     $title = '';
     if (isset($variables['title'])) {
-      $title = '<h4>' . $variables['title'] . '</h4>';
+      $title = '<h3>' . $variables['title'] . '</h3>';
     }
     // If not used for styling purposes, this DIV should be an ASIDE.
     $output = '<div class="definition-list">' . $title . $output . '</div>';

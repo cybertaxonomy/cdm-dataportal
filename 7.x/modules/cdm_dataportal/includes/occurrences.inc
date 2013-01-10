@@ -119,20 +119,9 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
       'derivedUnitMedia',
       'created',
       'updated',
-      'uuid'
+//       'uuid'
   );
 
-  /*
-   * $field_labels:
-   *
-   *
-   * 'type' => 'Basis of Record',
-    'fieldNumber' => 'Collectors number',
-    'absoluteElevation' => 'Altitude',
-    'absoluteElevationMinimum' => 'Altitude maximum',
-    'absoluteElevationMaximum' => 'Altitude minimum',
-    'getGatheringPeriod' => 'Gathering period',
-   */
 
 //   static $init_strategy_json = NULL;
 //   if (!$init_strategy_json) {
@@ -180,32 +169,42 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
           case 'determinations':
-              foreach  ($value as $determinationEvent){
-                $sub_dl_groups = array();
-                $weight = $determinationEvent->preferred == 1 ? 0 : (isset ($determinationEvent->timeperiod) ? $determinationEvent->timeperiod : 1);
-                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('actor'), $determinationEvent->actor->titleCache);
-                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('timeperiod'), timePeriodToString($determinationEvent->timeperiod));
-                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('description'), $determinationEvent->description);
-
-                $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
-                $taxon_html = theme('cdm_taxonName',
-                    array(
+            $dd_array = array();
+            foreach  ($value as $determinationEvent){
+              $timeperiod_string = NULL;
+              if (isset($determinationEvent->timeperiod)) {
+                $timeperiod_string = timePeriodToString($determinationEvent->timeperiod);
+              }
+              $weight = isset($determinationEvent->preferred) && $determinationEvent->preferred == 1 ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
+              // check key exists
+              while (array_key_exists($weight, $dd_array)) {
+                $weight .= '0';
+              }
+              $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
+              $taxon_html = theme('cdm_taxonName',
+                  array(
                       'taxonName' => $taxon_name,
                       'nameLink' => path_to_taxon($determinationEvent->taxon->uuid),
-                    )
-                );
-                @_description_list_group_add(
-                    $groups,
-                    cdm_occurrence_field_name_label('determination'),
-                    array(
-                        array('#markup' => $taxon_html),
-                        array('#theme' => 'description_list', '#groups' => $sub_dl_groups),
-                      ),
-                    NULL,
-                    $weight
-                );
+                  )
+              );
+              $dd_array[$weight] = $taxon_html;
+              $glue = '; ';
+              if ($timeperiod_string) {
+                $dd_array[$weight] .= $glue . $timeperiod_string;
+                $glue = ', ';
               }
-              break;
+              if (isset($determinationEvent->actor->titleCache)) {
+                $dd_array[$weight] .= $glue . $determinationEvent->actor->titleCache;
+                $glue = ', ';
+              }
+              if (isset($determinationEvent->description)) {
+                $dd_array[$weight] .= $glue . $determinationEvent->description;
+                $glue = ', ';
+              }
+            }
+            ksort($dd_array);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('determinations'), $dd_array);
+            break;
 
           case 'descriptions':
             // store in variable so we don't need to ask the cdmserver for them again
@@ -215,15 +214,10 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
           case 'sources':
               $dd_array = array();
-//               foreach ($value as $reference) {
-//                 $dd_array[] =
-//               }
-//               @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
-//                   array(
-//                       array('#markup' => $value->titleCache),
-//                       array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
-//                   )
-//               );
+              foreach ($value as $identifiable_source) {
+                $dd_array[] = theme('cdm_OriginalSource', array('source' => $identifiable_source));
+              }
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_array);
               break;
 
           /* ---- DerivedUnitBase --- */
@@ -262,10 +256,10 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $value->absoluteElevation);
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevationError'), $value->absoluteElevationError);
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $value->distanceToGround);
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $value->distanceToWaterSurface);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $value->absoluteElevation, ' m');
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevationError'), $value->absoluteElevationError, ' m');
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $value->distanceToGround, ' m');
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $value->distanceToWaterSurface, ' m');
             if (isset($value->collectingAreas)) {
               $area_representations = array();
               foreach($value->collectingAreas as $area) {

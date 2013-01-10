@@ -432,7 +432,7 @@ function theme_cdm_descriptionElementTextData($variables) {
   $res_date = '';
   if (isset($element->sources) && is_array($element->sources) && count($element->sources) > 0) {
     foreach ($element->sources as $source) {
-      $referenceCitation = theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source));
+      $referenceCitation = theme('cdm_OriginalSource', array('source' => $source));
       if ($description && strlen($description) > 0 && $referenceCitation) {
         $sourceRefs .= ' (' . $referenceCitation . ')';
       }
@@ -538,7 +538,7 @@ function theme_cdm_common_names($variables) {
         // Adding footnotes sources.
         foreach ($element->sources as $source) {
           if (_is_original_source_type($source)) {
-            $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
+            $_fkey = FootnoteManager::addNewFootnote(UUID_COMMON_NAME, theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)));
             $sourcesFootnoteKeyList .= theme('cdm_footnote_key', array('footnoteKey' => $_fkey, 'separator' => ($sourcesFootnoteKeyList ? $separator : '')));
           }
         }
@@ -755,8 +755,8 @@ function theme_cdm_description_element_image_source($variables) {
     $footNoteKeys = cdm_annotations_as_footnotekeys($image_source);
     foreach ($image_source->sources as $source) {
       if (_is_original_source_type($source)) {
-        $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array(
-          'descriptionElementSource' => $source,
+        $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array(
+          'source' => $source,
           'doLink' => FALSE,
         )));
         // Ensure uniqueness of the footnote keys.
@@ -800,8 +800,8 @@ function theme_cdm_descriptionElementDistribution($variables) {
     // Source references as footnotes.
     foreach ($descriptionElement->sources as $source) {
       if (_is_original_source_type($source)) {
-        $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array(
-          'descriptionElementSource' => $source,
+        $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array(
+          'source' => $source,
           'doLink' => FALSE,
         )));
         // Ensure uniqueness of the footnote keys.
@@ -897,7 +897,7 @@ function theme_cdm_description_ordered_distributions($variables) {
         $fnKeysLevel3 = cdm_annotations_as_footnotekeys($element_level3->data);
         foreach ($element_level3->data->sources as $source) {
           if (_is_original_source_type($source)) {
-            $fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
+            $fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)));
             cdm_add_footnote_to_array($fnKeysLevel3, $fn_key3);
           }
         }
@@ -911,7 +911,7 @@ function theme_cdm_description_ordered_distributions($variables) {
             $fnKeysLevel4 = cdm_annotations_as_footnotekeys($element_level4->data);
             foreach ($element_level4->data->sources as $source) {
               if (_is_original_source_type($source)) {
-                $fn_key4 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => FALSE)));
+                $fn_key4 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)));
                 cdm_add_footnote_to_array($fnKeysLevel4, $fn_key4);
               }
             }
@@ -974,40 +974,7 @@ function theme_cdm_description_ordered_distributions($variables) {
   RenderHints::popFromRenderStack();
   return $out;
 }
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_DescriptionElementSource($variables) {
-  $out = '';
-  $descriptionElementSource = $variables['descriptionElementSource'];
-  $doLink = $variables['doLink'];
-  if (isset($descriptionElementSource->citation)) {
-    $out = theme('cdm_reference', array(
-     'reference' => $descriptionElementSource->citation,
-     'microReference' => $descriptionElementSource->citationMicroReference,
-     'doLink' => $doLink,
-    ));
-  }
-  return $out;
-}
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_IdentifieableSource($variables) {
-  $out = '';
-  $source = $variables['source'];
-  $doLink = $variables['doLink'];
-  if (isset($source->citation)) {
-    $out = theme('cdm_reference', array(
-      'reference' => $source->citation,
-      'microReference' => $source->citationMicroReference,
-      'doLink' => $doLink,
-    ));
-  }
-  return $out;
-}
+
 
 /*
 function theme_cdm_descriptionElementDistribution($descriptionElements){ $out
@@ -1020,7 +987,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){ $out
   $sourcesFootnoteKeyList = ''; foreach($descriptionElement->sources as
   $source){ if(_is_original_source_type($source)){ $_fkey =
   FootnoteManager::addNewFootnote(UUID_DISTRIBUTION,
-  theme('cdm_DescriptionElementSource', $source, FALSE));
+  theme('cdm_OriginalSource', $source, FALSE));
   $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey,
   UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : '')); } }
   if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
@@ -1256,7 +1223,7 @@ function theme_cdm_IdentificationKey($variables) {
     $i = 0;
     $out .= '<div>';
     foreach ($identificationKey->sources as $source) {
-      $out .= ($i++ > 0 ? ', ' : '') . theme("cdm_IdentifieableSource", array('source' => $source));
+      $out .= ($i++ > 0 ? ', ' : '') . theme('cdm_OriginalSource', array('source' => $source));
     }
     $out .= '</div>';
   }
@@ -1576,7 +1543,7 @@ function theme_cdm_UseDescription($variables) {
         $descriptionOut .= $name_used_in_source_link_to_show_use . ': ';
         $descriptionOut .= $useSummary;
         foreach ($description->sources as $source) {
-          $descriptionOut .= " (" . theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => TRUE)) . ")";
+          $descriptionOut .= " (" . theme('cdm_OriginalSource', array('source' => $source, 'doLink' => TRUE)) . ")";
         }
         $hasUseRecords = FALSE;
         $descriptionUseRecordOut = '<div id=useRecords><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
@@ -1605,7 +1572,7 @@ function theme_cdm_UseDescription($variables) {
         $synonymOut .= $name_used_in_source_link_to_show_use . ': ';
         $synonymOut .= $useSummary;
         foreach ($description->sources as $source) {
-          $synonymOut .= " (" . theme('cdm_DescriptionElementSource', array('descriptionElementSource' => $source, 'doLink' => TRUE)) . ")";
+          $synonymOut .= " (" . theme('cdm_OriginalSource', array('source' => $source, 'doLink' => TRUE)) . ")";
         }
 
         $hasUseRecords = FALSE;

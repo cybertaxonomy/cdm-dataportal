@@ -99,7 +99,7 @@ function phptemplate_menu_local_tasks() {
  */
 function compare_citations($x, $y)
 {
-	
+
 	if( !$x->sources[0]->citation->uuid){// && !$y->sources[0]->citation->uuid){
 		$res = -1;
 		//var_dump($y->sources[0]->citation->uuid);
@@ -108,13 +108,13 @@ function compare_citations($x, $y)
 		//var_dump($x->sources[0]->citation->uuid);
 	}
 	else{
-		
-	
+
+
   $author_team_x = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $x->sources[0]->citation->uuid);
   $author_team_y = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $y->sources[0]->citation->uuid);
 
 	 //same author, and different year
-	if($author_team_x->titleCache == $author_team_y->titleCache){   	
+	if($author_team_x->titleCache == $author_team_y->titleCache){
 		$x_year = substr(
 		        $x->sources[0]->citation->datePublished->start,
 		        0,
@@ -148,7 +148,7 @@ function compare_citations($x, $y)
 	else{
 		$res = 1;
 	}
-	
+
   }
 	//var_dump($res);
 	//var_dump(' ============ ');
@@ -162,7 +162,7 @@ function garland_diptera_cdm_descriptionElements($descriptionElements){
   $glue = '';
   $sortOutArray = false;
   $enclosingHtml = 'ul';
-  
+
 	$citations = array();
 
   // only for diptera
@@ -170,7 +170,7 @@ function garland_diptera_cdm_descriptionElements($descriptionElements){
     foreach($descriptionElements as $element){
       $tokens = split(":", $element->multilanguageText_L10n->text);
       if(count($tokens) == 2){
-        // token[0]: taxon name; token[1]: note; 
+        // token[0]: taxon name; token[1]: note;
         $element->multilanguageText_L10n->text = $tokens[1] . ' [<span class="name">' . $tokens[0] . '</span>]';
       }
       if(isset($element->citation->datePublished->start)){
@@ -205,14 +205,14 @@ function garland_diptera_cdm_descriptionElements($descriptionElements){
 
 /**
  * Allows theaming of the taxon page tabs
- * 
+ *
  * @param $tabname
  * @return unknown_type
  */
 function garland_diptera_cdm_taxonpage_tab($tabname){
   switch($tabname){
     case 'Synonymy' : return t('Nomenclature'); break;
-    default : return t($tabname); 
+    default : return t($tabname);
   }
 }
 
@@ -226,7 +226,7 @@ function garland_diptera_cdm_feature_name($feature_name){
 
 
 function garland_diptera_get_partDefinition($nameType){
-  
+
   if($nameType == 'ZoologicalName'){
     return array(
         'namePart' => array(
@@ -252,21 +252,21 @@ function garland_diptera_get_partDefinition($nameType){
 }
 
 function garland_diptera_get_nameRenderTemplate($renderPath){
-  
+
   switch ($renderPath){
-    case 'taxon_page_title': 
+    case 'taxon_page_title':
       $template = array(
           'namePart' => array('#uri'=>true),
         );
       break;
     case  'acceptedFor':
-    case 'list_of_taxa': 
+    case 'list_of_taxa':
       $template = array(
         'namePart' => array('#uri'=>true),
         'referencePart' => array('#uri'=>true),
       );
       break;
-    case 'typedesignations': 
+    case 'typedesignations':
       $template = array(
         'namePart' => array('#uri'=>true),
         'referencePart' => array('#uri'=>true)
@@ -285,7 +285,7 @@ function garland_diptera_get_nameRenderTemplate($renderPath){
   return $template;
 }
 
-function garland_diptera_cdm_DescriptionElementSource($descriptionElementSource, $doLink = TRUE){
+function garland_diptera_cdm_OriginalSource($descriptionElementSource, $doLink = TRUE){
 
     //ev. delegate to theme_cdm_ReferencedEntityBase
     $out = '';

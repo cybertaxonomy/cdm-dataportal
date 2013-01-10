@@ -889,8 +889,6 @@ function cdm_dataportal_theme() {
       'taxon_uuid' => NULL,
       'descriptionElements' => NULL,
       )),
-    'cdm_DescriptionElementSource' => array('variables' => array('descriptionElementSource' => NULL, 'doLink' => TRUE)),
-    'cdm_IdentifieableSource' => array('variables' => array('source' => NULL, 'doLink' => TRUE)),
     'cdm_distribution_map' => array('variables' => array('taxon' => NULL)),
     'cdm_IdentificationKey' => array('variables' => array(
       'identificationKey' => NULL,
@@ -1010,6 +1008,7 @@ function cdm_dataportal_theme() {
       'doLink' => FALSE,
       'referenceStyle' => NULL,
       )),
+    'cdm_OriginalSource' => array('variables' => array('source' => NULL, 'doLink' => TRUE)),
 
     // Themes in cdm_dataportal.taxon.theme.
     'cdm_search_results' => array('variables' => array(

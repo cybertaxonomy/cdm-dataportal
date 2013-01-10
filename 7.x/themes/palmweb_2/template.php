@@ -78,7 +78,7 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
     // Source references as footnotes.
     $sourcesFootnoteKeyList = '';
     foreach($descriptionElement->sources as $source){
-      $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_DescriptionElementSource', $source, FALSE));
+      $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_OriginalSource', $source, FALSE));
       $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));
     }
     if($annotationFootnoteKeys && $sourcesFootnoteKeyList){

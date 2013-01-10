@@ -128,3 +128,24 @@ function _short_form_of_author_team($author_team) {
   }
   return $result;
 }
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function theme_cdm_OriginalSource($variables) {
+  $out = '';
+  $source = $variables['source'];
+  $doLink = $variables['doLink'];
+  if (isset($source->citation)) {
+    $out = theme('cdm_reference', array(
+        'reference' => $source->citation,
+        'microReference' => $source->citationMicroReference,
+        'doLink' => $doLink,
+    ));
+    if( isset($source->idInSource) ) {
+      $out .=  ' <span class="idInSource">[' . $source->idInSource . ']</span>';
+    }
+  }
+  return $out;
+}

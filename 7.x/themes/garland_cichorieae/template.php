@@ -115,8 +115,8 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
         $referenceCitation = $referenceCitation->String;
       }
       else {
-        $referenceCitation = theme('cdm_DescriptionElementSource', array(
-          'descriptionElementSource' => $source,
+        $referenceCitation = theme('cdm_OriginalSource', array(
+          'source' => $source,
           'doLink' => $do_links,
         ));
       }
@@ -213,7 +213,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
   strlen($description) > 0 && $referenceCitation ){ $sourceRefs .= '
   ('.$referenceCitation.')' ; }else if ($referenceCitation){ $sourceRefs =
   $referenceCitation; } } }else{ foreach($element->sources as $source){
-  $referenceCitation = theme('cdm_DescriptionElementSource', $source,
+  $referenceCitation = theme('cdm_OriginalSource', $source,
   ($feature_uuid == UUID_NAME_USAGE) ? FALSE : TRUE); if($description &&
   strlen($description) > 0 && $referenceCitation ){ $sourceRefs .= '
   ('.$referenceCitation.')' ; }else if ($referenceCitation){ $sourceRefs =
