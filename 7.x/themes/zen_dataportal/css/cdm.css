@@ -24,16 +24,12 @@
   font-weight: bold;
   margin-right: 0.3em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000324}}
-.block-cdm-dataportal-feature dt.indent-1, .media-caption dt.indent-1, .specimens dt.indent-1 {
-  padding-left: 12px;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000328}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000325}}
 .block-cdm-dataportal-feature dd, .media-caption dd, .specimens dd {
   margin: 0;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000334}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000331}}
 #backButton {
   text-align: right;
 }
@@ -52,12 +48,12 @@
 #search_results a:focus {
   text-decoration: underline;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000346}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000343}}
 #search_results table {
   margin: 1em 0;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000351}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000348}}
 ul.cdm_names li {
   margin: 0.5em 0;
 }
@@ -68,17 +64,17 @@ ul.cdm_names li {
 /*
  * Media
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000367}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000364}}
 dl.media-caption {
   margin: 0;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000370}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000367}}
 .media-caption dd.title {
   font-size: 100%;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000373}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000370}}
 .image-gallerie td.caption {
   padding-bottom: 1em;
 }
@@ -86,21 +82,31 @@ dl.media-caption {
 /*
  * specimens
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000381}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000378}}
 #specimens table.media_gallery {
   margin-top: 0.2em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000383}}
+#specimens .description_list h3 {
+  margin-top: 0;
+  background-color: #ddd;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000388}}
+#specimens .dynabox_content {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 /*
  * Theme settings page
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000391}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000399}}
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000395}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\00003103}}
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */

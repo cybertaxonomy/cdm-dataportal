@@ -113,7 +113,6 @@ function compose_cdm_derivedUnitFacade($derivedUnitFacade) {
 function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives = null) {
 
   static $excludeFields = array(
-      'derivedFrom',
       'derivationEvents',
       'titleCache',
       'derivedUnitMedia',
@@ -122,21 +121,12 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 //       'uuid'
   );
 
-
-//   static $init_strategy_json = NULL;
-//   if (!$init_strategy_json) {
-//     $init_array = array(
-//         "derivedFrom.derivatives",
-//         "derivedFrom.originals",
-//     );
-//     $init_strategy_json = json_encode($init_array);
-//   }
   if (!isset($derivatives)) {
     $derivatives = array();
   }
 
   $descriptions = null;
-  $original = null;
+  $derivedFrom = null;
 
   if (is_object($specimenOrObservation)) {
 
@@ -217,7 +207,12 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
               @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_array);
               break;
 
+
           /* ---- DerivedUnitBase --- */
+          case 'derivedFrom':
+            $derivedFrom = $value;
+            break;
+
           case 'collection':
             $sub_dl_groups = array();
             @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('code'), $value->code, 1);
@@ -308,24 +303,25 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
     $derivatives[] = $occurrence_elements;
 
     // --- recurse into originals
-    if (!is_array($original)) {
-      $derivationEvent = cdm_ws_get(
+    if (!isset($derivedFrom)) {
+      $derivedFrom = cdm_ws_get(
           CDM_WS_OCCURRENCE,
           array($specimenOrObservation->uuid, 'derivedFrom')
-//         ,  queryString(array('init' => $init_strategy_json))
         );
-      if (isset($derivationEvent->originals)) {
-        $originals = $derivationEvent->originals;
-      }
     }
 
-    if (isset($originals)) {
-      if ($originals)
-      $derivatives[] = array(
-          '#markup' => '<div>' . t('derived from') . ': </div>',
-      );
-      foreach ($originals as $original) {
-        compose_cdm_specimenOrObservation($original, $derivatives);
+    if (isset($derivedFrom)) {
+      if (isset($derivedFrom->originals)) {
+        $derived_from_label = t('derived');
+        if(isset($derivedFrom->type)){
+          $derived_from_label = $derivedFrom->representation_L10n;
+        }
+        $derivatives[] = array(
+            '#markup' => '<div>' . $derived_from_label . ' ' . t('from') . ': </div>',
+        );
+        foreach ($derivedFrom->originals as $original) {
+          compose_cdm_specimenOrObservation($original, $derivatives);
+        }
       }
     }
 

@@ -156,7 +156,7 @@ function theme_description_list($variables) {
       $title = '<h3>' . $variables['title'] . '</h3>';
     }
     // If not used for styling purposes, this DIV should be an ASIDE.
-    $output = '<div class="definition-list">' . $title . $output . '</div>';
+    $output = '<div class="description_list">' . $title . $output . '</div>';
   }
   return $output;
 }
