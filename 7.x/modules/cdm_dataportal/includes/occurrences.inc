@@ -118,6 +118,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
       'derivedUnitMedia',
       'created',
       'updated',
+      'class'
 //       'uuid'
   );
 
@@ -194,9 +195,12 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
           case 'descriptions':
+            // TODO compose descriptions
             // store in variable so we don't need to ask the cdmserver for them again
             $descriptions = $value;
-            // TODO compose descriptions
+            foreach ($value as $description) {
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $description->titleCache . ' ' . $description->uuid);
+            }
             break;
 
           case 'sources':
