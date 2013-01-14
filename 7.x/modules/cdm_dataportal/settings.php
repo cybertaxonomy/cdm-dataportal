@@ -1263,7 +1263,7 @@ function cdm_settings_geo($form, &$form_state) {
   $form['geoserver']['edit_map_server'] = array(
     '#type' => 'select',
     '#title' => t('Geoservice access point URL') . ':',
-    '#default_value' => variable_get('edit_map_server', EDIT_MAPSERVER_V1_URI),
+    '#default_value' => variable_get('edit_map_server', EDIT_MAPSERVER_V11_URI),
     '#options' => array(
       EDIT_MAPSERVER_V1_URI => 'EDIT Map Server v1',
       EDIT_MAPSERVER_V11_URI => 'EDIT Map Server v1.1',
