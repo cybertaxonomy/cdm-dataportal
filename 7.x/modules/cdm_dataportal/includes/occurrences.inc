@@ -198,9 +198,21 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             // TODO compose descriptions
             // store in variable so we don't need to ask the cdmserver for them again
             $descriptions = $value;
+            $occurrence_featureTree = cdm_get_occurrence_featureTree();
+            $dd_elements = array();
+
             foreach ($value as $description) {
-              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $description->titleCache . ' ' . $description->uuid);
+              $dd_elements[] = array('#markup' => $description->titleCache . ' ' . $description->uuid);
+              $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, $description->uuid);
+              $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->children, $description->elements);
+              $rendered_description = theme(
+                 'cdm_feature_nodes',
+                 array('mergedFeatureNodes' => $elements_by_feature)
+              );
+              $dd_elements[] = array('#markup' => $rendered_description);
             }
+
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
             break;
 
           case 'sources':

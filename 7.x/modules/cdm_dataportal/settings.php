@@ -99,6 +99,7 @@ define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_TAXON_RELATIONSHIP_TYPES', 'cdm_taxon_relationship_types');
 define('CDM_PROFILE_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
+define('CDM_OCCURRENCE_FEATURETREE_UUID', 'cdm_occurrence_featuretree_uuid');
 define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal_structdesc_featuretree_uuid');
 
 /**
@@ -1096,6 +1097,19 @@ function cdm_settings_layout_taxon() {
       <strong>specimens</strong> tab.'),
   );
 
+  $featureTrees = cdm_get_featureTrees_as_options(TRUE);
+  $form['taxon_specimens']['feature_trees'][CDM_OCCURRENCE_FEATURETREE_UUID] = array(
+      '#type' => 'radios',
+      '#title' => t('Specimen description feature tree') . ':',
+      '#default_value' => variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
+      '#options' =>  $featureTrees['options'],
+      // Comment @WA: because #options are sanitized in D7, it would
+      // strip html like <fieldset>, so we put the fieldset in a suffix.
+      '#field_suffix' => $featureTrees['treeRepresentations'],
+      '#description' => t('Select the feature tree to be used for displaying specimen descriptions. Click "Show Details" to see the Feature Tree elements.'
+      ),
+  );
+
   $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
   $form_title = t('Specimen media');
   $form_description = t('Specimens may have media which is displayed at the
@@ -1693,6 +1707,7 @@ function getEDITMapServiceVersionNumber() {
     return 0;
   }
 }
+
 
 /**
  * Implements hook_element_info().

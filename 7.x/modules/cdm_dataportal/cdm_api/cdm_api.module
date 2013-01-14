@@ -142,7 +142,7 @@ function get_taxonomictree_uuid_selected() {
 }
 
 /**
- * Returns the FeatureTree profile as selected.
+ * Returns the chosen FeatureTree for the taxon profile.
  *
  * The FeatureTree profile returned is the one that has been set in the
  * dataportal settings (layout->taxon:profile).
@@ -150,20 +150,76 @@ function get_taxonomictree_uuid_selected() {
  * the standard feature tree (UUID_DEFAULT_FEATURETREE) will be returned.
  *
  * @return mixed
- *   A feature profile tree object.
+ *   A cdm FeatureTree object.
  */
 function get_profile_featureTree() {
-  $profile_featureTree = cdm_ws_get(
-    CDM_WS_FEATURETREE,
-    variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE)
-  );
-  if (!$profile_featureTree) {
+  static $profile_featureTree;
+
+  if($profile_featureTree == NULL) {
     $profile_featureTree = cdm_ws_get(
       CDM_WS_FEATURETREE,
-      UUID_DEFAULT_FEATURETREE
+      variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE)
     );
+    if (!$profile_featureTree) {
+      $profile_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
+    }
   }
   return $profile_featureTree;
+}
+
+/**
+ * Returns the chosen FeatureTree for SpecimenDescriptions.
+ *
+ * The FeatureTree returned is the one that has been set in the
+ * dataportal settings (layout->taxon:specimen).
+ * When the chosen FeatureTree is not found in the database,
+ * the standard feature tree (UUID_DEFAULT_FEATURETREE) will be returned.
+ *
+ * @return mixed
+ *   A cdm FeatureTree object.
+ */
+function cdm_get_occurrence_featureTree() {
+  static $occurrence_featureTree;
+
+  if($occurrence_featureTree == NULL) {
+    $occurrence_featureTree = cdm_ws_get(
+      CDM_WS_FEATURETREE,
+      variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE)
+    );
+    if (!$occurrence_featureTree) {
+      $occurrence_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
+    }
+  }
+  return $occurrence_featureTree;
+}
+
+/**
+ * Returns the FeatureTree for structured descriptions
+ *
+ * The FeatureTree returned is the one that has been set in the
+ * dataportal settings (layout->taxon:profile).
+ * When the chosen FeatureTree is not found in the database,
+ * the standard feature tree (UUID_DEFAULT_FEATURETREE) will be returned.
+ *
+ * @return mixed
+ *   A cdm FeatureTree object.
+ */
+function get_structured_description_featureTree() {
+  static $structured_description_featureTree;
+
+  if($structured_description_featureTree == NULL) {
+    $structured_description_featureTree = cdm_ws_get(
+        CDM_WS_FEATURETREE,
+        variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE)
+    );
+    if (!$structured_description_featureTree) {
+      $structured_description_featureTree = cdm_ws_get(
+          CDM_WS_FEATURETREE,
+          UUID_DEFAULT_FEATURETREE
+      );
+    }
+  }
+  return $structured_description_featureTree;
 }
 
 /**
@@ -1142,8 +1198,20 @@ function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Merges the given featureNodes structure with the descriptionElements.
+ *
+ * This method is used in preparation for rendering the descriptionElements.
+ * The descriptionElements wich belong to a specific feature node are appended
+ * to a the feature node by creating a new field: FeatureNode->descriptionElements
+ * which originally is not existing in the cdm.
+ *
+ * @param array $featureNodes
+ *    An array of cdm FeatureNodes which may be hierachical since feature nodes
+ *    may have children.
+ * @param array $descriptionElements
+ *    An flat array of cdm DescriptionElements
+ * @return array
+ *    The $featureNodes structure enriched with the accoding $descriptionElements
  */
 function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
   foreach ($featureNodes as &$node) {

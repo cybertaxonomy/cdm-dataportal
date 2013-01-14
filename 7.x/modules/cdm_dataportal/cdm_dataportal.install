@@ -35,7 +35,8 @@ function cdm_dataportal_uninstall() {
  */
 
 /**
- * update function for RELEASE 3.13
+ * update for RELEASE 3.13:
+ *  - reset edit_map_server variable to default
  */
 function cdm_dataportal_update_7301() {
   // reset edit_map_server variable to default

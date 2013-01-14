@@ -198,10 +198,14 @@ function theme_cdm_feature_nodes($variables) {
         */
         else {
           if (isset($node->descriptionElements)) {
+            $taxon_uuid = NULL;
+            if(isset($taxon) ) {
+              $taxon_uuid = $taxon->uuid;
+            }
             $block->content .= theme('cdm_descriptionElements', array(
               'descriptionElements' => $node->descriptionElements,
               'featureUuid' => $node->feature->uuid,
-              'taxon_uuid' => $taxon->uuid,
+              'taxon_uuid' => $taxon_uuid,
             ));
           }
           /*
@@ -583,9 +587,12 @@ function theme_cdm_common_names($variables) {
  *
  * @param array $variables
  *   An associative array containing:
- *   - descriptionElements
- *   - featureUuid
- *   - taxon_uuid
+ *   - array of descriptionElements which belong to the same feature.
+ *     These descriptions elements of a Description must be ordered by the chosen feature tree by
+ *     calling the function _mergeFeatureTreeDescriptions().
+ *     @see _mergeFeatureTreeDescriptions()
+ *   - featureUuid: currently unused, accoding code disabled
+ *   - taxon_uuid: only used for ordered dditributions (will be removed!)
  *
  * @ingroup themeable
  */
@@ -596,17 +603,23 @@ function theme_cdm_descriptionElements($variables) {
   $outArray = array();
 
   /*
-  $userDefined = mixed_variable_get(LAYOUT_SETTING_PREFIX . $featureUuid,
-  FEATURE_TREE_LAYOUT_DEFAULTS); if(variable_get('distribution_sort',
-  'NO_SORT') != 'NO_SORT'){ $glue = ''; $enclosingTag = 'dl';
-  $entryEnclosingTag = NULL; } else if($userDefined &&
-  $userDefined['enabled']){ $glue = $userDefined['glue']; $enclosingTag =
-  $userDefined['enclosingTag']; $entryEnclosingTag =
-  $userDefined['entryEnclosingTag']; } else { // TODO remove once
-  LAYOUT_SETTING_PREFIX-{uuid} seeting are confired to work for all portals
-  (selenium test still missing!!!) $glue = ''; $enclosingTag = 'ul';
-  $entryEnclosingTag = NULL ; }
+  $userDefined = mixed_variable_get(LAYOUT_SETTING_PREFIX . $featureUuid, FEATURE_TREE_LAYOUT_DEFAULTS);
+  if(variable_get('distribution_sort',
+      'NO_SORT') != 'NO_SORT'){
+      $glue = '';
+      $enclosingTag = 'dl';
+      $entryEnclosingTag = NULL;
+  } else if($userDefined &&
+      $userDefined['enabled']){
+    $glue = $userDefined['glue'];
+    $enclosingTag =  $userDefined['enclosingTag'];
+    $entryEnclosingTag = $userDefined['entryEnclosingTag'];
+  } else { // TODO remove once  LAYOUT_SETTING_PREFIX-{uuid} setting are configured to work for all portals(selenium test still missing!!!)
+    $glue = ''; $enclosingTag = 'ul';
+    $entryEnclosingTag = NULL ;
+  }
   */
+
 
   if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
     $glue = '';
@@ -852,17 +865,21 @@ function footnotes_key_compare($a, $b) {
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_description_ordered_distributions($variables) {
+
   $taxon_uuid = $variables['taxon_uuid'];
   $descriptionElements = $variables['descriptionElements'];
+
   // Returning NULL if there are no description elements.
-  if ($descriptionElements == NULL) {
-    return '';
+  if ($taxon_uuid == null || $descriptionElements == NULL) {
+    return NULL;
   }
+
   // Initialization of some variables.
   $out = '';
   $separator = ',';
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+
   // Getting all the taxon description for a given taxon.
   $markerTypesEmpty = array();
   // $markerTypesEmpty['markerTypes'] = 'af9860ff-08f5-4b4d-863c-49ae96985115';
@@ -871,6 +888,7 @@ function theme_cdm_description_ordered_distributions($variables) {
   foreach ($taxonDescriptions as $description) {
     $descriptions_uuids[] = $description->uuid;
   }
+
   // Getting the sortered distributions (omitting level ??).
   $request_params = array();
   $request_params['omitLevels'] = UUID_NAMEDAREALEVEL_TDWGLEVEL_2;

@@ -56,6 +56,7 @@ define('CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'portal/taxon/f
 define('CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION', 'description/$0/naturalLanguageDescription/$1');
 define('CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA', 'description/$0/hasStructuredData');
 
+define('CDM_WS_PORTAL_DESCRIPTION', 'portal/description/$0');
 define('CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE', 'portal/description/$0/namedAreaTree');
 define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE', 'portal/description/$0/DistributionTree');
 
