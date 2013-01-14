@@ -143,7 +143,7 @@ function theme_cdm_OriginalSource($variables) {
         'microReference' => $source->citationMicroReference,
         'doLink' => $doLink,
     ));
-    if( isset($source->idInSource) ) {
+    if( isset($source->idInSource) && $source->idInSource ) {
       $out .=  ' <span class="idInSource">[' . $source->idInSource . ']</span>';
     }
   }
