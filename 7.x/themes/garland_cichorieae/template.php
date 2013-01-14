@@ -37,7 +37,7 @@ function garland_cichorieae_cdm_taxon_page_profile($variables) {
 
     // $defaultPreferredImage = drupal_get_path('theme',
     // 'garland_cichorieae').'/images/nopic_400x300.jpg';
-    $defaultRepresentationPart = FALSE;
+    $defaultRepresentationPart = new stdClass();
     $defaultRepresentationPart->width = 400;
     $defaultRepresentationPart->height = 300;
     $defaultRepresentationPart->uri = $base_url . '/' . drupal_get_path('theme', 'garland_cichorieae') . '/images/nopic_400x300_4x3cm.jpg';
