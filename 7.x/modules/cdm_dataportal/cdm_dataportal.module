@@ -24,6 +24,7 @@ module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.search');
 
 module_load_include('inc', 'cdm_dataportal', 'includes/pages');
 module_load_include('inc', 'cdm_dataportal', 'includes/occurrences');
+module_load_include('inc', 'cdm_dataportal', 'includes/descriptions');
 module_load_include('inc', 'cdm_dataportal', 'includes/pre-drupal8');
 
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.common');
@@ -866,6 +867,7 @@ function cdm_dataportal_theme() {
       )),
     'cdm_descriptionElement_CommonTaxonName' => array('render element' => 'element'),
     'cdm_descriptionElement_CategoricalData' => array('render element' => 'element'),
+    'cdm_descriptionElement_QuantitativeData' => array('render element' => 'element'),
     'cdm_descriptionElementTextData' => array('variables' => array(
       'element' => NULL,
       'asListElement' => NULL,

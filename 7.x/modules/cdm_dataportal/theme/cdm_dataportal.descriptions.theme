@@ -383,31 +383,73 @@ function theme_cdm_descriptionElement_CategoricalData($variables) {
   $state_data_strings = array();
   if (isset($element->states)) {
     foreach ($element->states as $stateData) {
+
       $state  = NULL;
+
       if(isset($stateData->state)){
         $state = cdm_term_representation($stateData->state);
       }
 
-      $modifyingText = NULL;
       if (isset($stateData->modifyingText_L10n)) {
-        $stateData->modifyingText_L10n;
+        $state = ' ' . $stateData->modifyingText_L10n;
       }
 
-      $modifiers_strings = array();
-      if (isset($stateData->modifiers)) {
-        foreach ($stateData->modifiers as $modifier) {
-          $modifiers_strings[] = cdm_term_representation($modifier);
-        }
-      }
+      $modifiers_strings = cdm_modifers_representations($stateData);
 
-      $state_data_strings[] = $state
-        . ($modifyingText ? $modifyingText : '')
-        . (count($modifiers_strings) > 0 ? implode(', ', $modifiers_strings): '');
+      $state_data_strings[] = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
+
+      // FIXME render sources
 
     }
   }
   $out = '<span class="' . html_class_atttibute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
   return $out;
+}
+
+function theme_cdm_descriptionElement_QuantitativeData($variables) {
+  /*
+   * - statisticalValues
+   *   - value
+   *   - modifiers
+   *   - type
+   * - unit->representation_L10n
+   * - modifyingText
+   * - modifiers
+   * - sources
+   */
+  $element = $variables['element'];
+
+  $out = '';
+
+  $type_representation = NULL;
+  $modifiers_strings = array();
+
+
+  if (isset($element->statisticalValues)) {
+    $value_array = array();
+    foreach ($element->statisticalValues as $val) {
+      if (isset($val->value)) {
+        $value_array[] = $val->value;
+      }
+    }
+
+    $out .= implode($value_array, ', ');
+  }
+
+  if (isset($element->unit)) {
+    $out .= ' '. cdm_term_representation($element->unit);
+  }
+
+  if (isset($element->statisticalValues->modifyingText_L10n)) {
+    $out .=  ' ' . $element->statisticalValues->modifyingText_L10n;
+  }
+  $modifers_string = cdm_modifers_representations($element->statisticalValues);
+  $out .= ($modifers_string ? ' ' . cdm_modifers_representations($element->statisticalValues) : '');
+
+  // FIXME render sources
+
+  return $out;
+
 }
 
 /**
@@ -696,7 +738,10 @@ function theme_cdm_descriptionElements($variables) {
           case 'CategoricalData':
             $outArray[] = theme('cdm_descriptionElement_CategoricalData', array('element' => $descriptionElement));
             break;
-        case 'Uses':
+          case 'QuantitativeData':
+            $outArray[] = theme('cdm_descriptionElement_QuantitativeData', array('element' => $descriptionElement));
+            break;
+          case 'Uses':
         	/* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
           break;
         default:
@@ -1532,8 +1577,9 @@ function theme_cdm_UseDescription($variables) {
         $useSummary = $element->multilanguageText_L10n->text;
       }
     }
+    // uses will be ordered by source
     foreach ($description->sources as $source) {
-      $isSynonym = FALSE;
+      $is_about_current_taxon = FALSE;
       $originalTaxonUsedInSource = NULL;
       $originalTaxonPager = NULL;
       if ($source->originalNameString) {
@@ -1552,11 +1598,9 @@ function theme_cdm_UseDescription($variables) {
         $originalTaxonUsedInSource = $currentTaxon->name;
       }
 
-      if ($currentTaxon->name->uuid != $originalTaxonUsedInSource->uuid) {
-        $isSynonym = TRUE;
-      }
+      $is_about_current_taxon = $currentTaxon->name->uuid == $originalTaxonUsedInSource->uuid;
 
-      if (!$isSynonym) {
+      if (!$is_about_current_taxon) {
         $descriptionOut .= '<li class="descriptionText DescriptionElement">';
         $name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid), array(
           'absolute' => TRUE,
@@ -1572,6 +1616,7 @@ function theme_cdm_UseDescription($variables) {
         foreach ($description->elements as $descriptionElement) {
           if ($descriptionElement->feature->uuid == UUID_USE_RECORD) {
             $hasUseRecords = TRUE;
+            // FIXME localization hardcoded to English
             $useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
             $descriptionUseRecordOut .= '<tr>';
             $descriptionUseRecordOut .= '<td>' . $useRecordTags[0] . '</td>' . '<td>' . $useRecordTags[1] . '</td>' . '<td>' . $useRecordTags[3] . '</td>' . '<td>' . $useRecordTags[4] . '</td>' . '<td>' . $useRecordTags[5] . '</td>' . '<td>' . $useRecordTags[2] . '</td>';
@@ -1584,7 +1629,7 @@ function theme_cdm_UseDescription($variables) {
         }
       }
       else {
-
+        // TODO +/- duplicate of above, unify this code
         $synonymOut .= '<li class="descriptionText DescriptionElement">';
         $name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid), array(
           'absolute' => TRUE,
@@ -1612,7 +1657,6 @@ function theme_cdm_UseDescription($variables) {
         if ($hasUseRecords) {
           $synonymOut .= $useRecordTableOut . '</li>';
         }
-        $isSynonym = FALSE;
       }
 
       // }
@@ -1643,6 +1687,7 @@ function theme_cdm_block_Uses($variables) {
   $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
   $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxonUuid, queryString($markerTypes));
   if (!empty($useDescriptions)) {
+    // FIXME use theme_block instaed of hardcoding the block html here !!!!
     $out .= '<div id="block-cdm_dataportal-feature-description" class="clear-block block block-cdm_dataportal-feature"><H2><a name="userecords"> </a> Uses </H2>';
     // @WA $pageNumber is not defined
     // $formatUseDescriptions = theme('cdm_UseDescription', $useDescriptions,
