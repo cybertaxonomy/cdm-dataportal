@@ -124,6 +124,7 @@ function theme_cdm_feature_nodes($variables) {
   $out = '';
 
   RenderHints::pushToRenderStack('feature_nodes');
+
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
   // Creating an array to place the description elements in.
@@ -136,7 +137,7 @@ function theme_cdm_feature_nodes($variables) {
       $block->module = 'cdm_dataportal';
       $media_list = array();
 
-      if ($node->feature->uuid != UUID_IMAGE) {
+      if (true || $node->feature->uuid != UUID_IMAGE) {
 
         $block->delta = generalizeString($featureRepresentation);
         $block->subject = '<span class="' . html_class_atttibute_ref($node->feature) . '">' . theme('cdm_feature_name', array('feature_name' => $featureRepresentation)) . '</span>';
@@ -252,13 +253,12 @@ function theme_cdm_feature_nodes($variables) {
         }
         $captionElements = array('title', 'rights');
         $gallery = '';
-        if (isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_maxRows']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
+        if (isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
           $gallery = theme('cdm_media_gallerie', array(
             'mediaList' => $media_list,
             'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $node->feature->uuid,
             'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
             'cols' => $gallery_settings['cdm_dataportal_media_cols'],
-            'maxRows' => $gallery_settings['cdm_dataportal_media_maxRows'],
             'captionElements' => $captionElements,
           ));
         }
@@ -468,9 +468,11 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
  * @ingroup themeable
  */
 function theme_cdm_descriptionElementTextData($variables) {
+
   $element = $variables['element'];
   $asListElement = $variables['asListElement'];
   $feature_uuid = $variables['feature_uuid'];
+
   $description = '';
   if (isset($element->multilanguageText_L10n->text)) {
     $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
@@ -643,6 +645,7 @@ function theme_cdm_common_names($variables) {
  * @ingroup themeable
  */
 function theme_cdm_descriptionElements($variables) {
+
   $descriptionElements = $variables['descriptionElements'];
   $featureUuid = $variables['featureUuid'];
   $taxon_uuid = $variables['taxon_uuid'];

@@ -103,12 +103,18 @@ function compose_cdm_derivedUnitFacade($derivedUnitFacade) {
 /**
  * Compose an render array from a CDM DerivedUnitFacade object.
  *
- *
- *
  * compose_hook() implementation
  *
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * @param object $specimenOrObservation
+ *   the CDM instance of type SpecimenOrObservation to compose
+ *   the render array for
+ * @param array $derivatives
+ *   the render array which contains the compositions of the derivatives
+ *   of the supplied $specimenOrObservation
+ *
+ * @return array
+ *   the supplied render array $derivatives to which the composition of the supplied
+ *   $specimenOrObservation has been added to
  */
 function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives = null) {
 

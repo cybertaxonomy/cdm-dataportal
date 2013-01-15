@@ -2109,7 +2109,7 @@ function hasFeatureNodeDescriptionElements($featureNode) {
 
   if (isset($featureNode->descriptionElements) && is_array($featureNode->descriptionElements) && count($featureNode->descriptionElements) > 0) {
     foreach ($featureNode->descriptionElements as $descriptionElement) {
-      if ($descriptionElement->class != "TextData" || isset($descriptionElement->multilanguageText_L10n->text) && $descriptionElement->multilanguageText_L10n->text != '' || isset($descriptionElement->sources[0])) {
+      if ($descriptionElement->class != "TextData" || isset($descriptionElement->multilanguageText_L10n->text) && $descriptionElement->multilanguageText_L10n->text != '' || isset($descriptionElement->sources[0]) || isset($descriptionElement->media[0]) ) {
         return TRUE;
       }
     }
