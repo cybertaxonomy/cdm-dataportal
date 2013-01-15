@@ -46,7 +46,7 @@
 }
 
 ul.cdm_names li {
-  margin: 0.5em 0; 
+  margin: $zen-gutter-width 0; 
 }
 
 /*
@@ -81,13 +81,27 @@ dl.media-caption {
 
 	.description_list {
 		h3 {
-		margin-top: 0;
-		background-color: #ddd;
+			margin-top: 0;
+			background-color: #ddd;
+		}
+		h4 {
+			clear: left;
+			margin-bottom: 0;
+			font-style: italic;
 		}
 	}
 	.dynabox_content {
 		margin-left: $zen-gutter-width / 2;
 		margin-right: $zen-gutter-width / 2;
+	}
+	.block-cdm-dataportal-feature {
+		margin-left: $zen-gutter-width;
+		margin-bottom: 0;
+		h2 {
+			font-size: $base-font-size;
+			line-height: $base-line-height;
+			font-weight: bold;
+		}
 	}
 }
 

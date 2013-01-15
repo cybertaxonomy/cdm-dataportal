@@ -200,14 +200,16 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             $dd_elements = array();
 
             foreach ($value as $description) {
-              $dd_elements[] = array('#markup' => $description->titleCache . ' ' . $description->uuid);
               $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, $description->uuid);
               $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->children, $description->elements);
               $rendered_description = theme(
                  'cdm_feature_nodes',
                  array('mergedFeatureNodes' => $elements_by_feature)
               );
-              $dd_elements[] = array('#markup' => $rendered_description);
+              $dd_elements[] = array(
+                  array('#markup' => '<h4>'. $description->titleCache . '</h4>'),
+                  array('#markup' => $rendered_description),
+              );
             }
 
             @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
