@@ -379,26 +379,30 @@ function theme_cdm_descriptionElement_CommonTaxonName($variables) {
 */
 function theme_cdm_descriptionElement_CategoricalData($variables) {
   $element = $variables['element'];
+
   $state_data_strings = array();
   if (isset($element->states)) {
     foreach ($element->states as $stateData) {
+      $state  = NULL;
+      if(isset($stateData->state)){
         $state = cdm_term_representation($stateData->state);
+      }
 
-        $modifyingText = NULL;
-        if (isset($stateData->modifyingText_L10n)) {
-          $stateData->modifyingText_L10n;
+      $modifyingText = NULL;
+      if (isset($stateData->modifyingText_L10n)) {
+        $stateData->modifyingText_L10n;
+      }
+
+      $modifiers_strings = array();
+      if (isset($stateData->modifiers)) {
+        foreach ($stateData->modifiers as $modifier) {
+          $modifiers_strings[] = cdm_term_representation($modifier);
         }
+      }
 
-        $modifiers_strings = array();
-        if (isset($stateData->modifiers)) {
-          foreach ($stateData->modifiers as $modifier) {
-            $modifiers_strings[] = cdm_term_representation($modifier);
-          }
-        }
-
-        $state_data_strings[] = $state
-          . ($modifyingText ? $modifyingText : '')
-          . (count($modifiers_strings) > 0 ? implode(', ', $modifiers_strings): '');
+      $state_data_strings[] = $state
+        . ($modifyingText ? $modifyingText : '')
+        . (count($modifiers_strings) > 0 ? implode(', ', $modifiers_strings): '');
 
     }
   }

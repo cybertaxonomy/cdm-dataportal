@@ -195,8 +195,6 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
           case 'descriptions':
-            // TODO compose descriptions
-            // store in variable so we don't need to ask the cdmserver for them again
             $descriptions = $value;
             $occurrence_featureTree = cdm_get_occurrence_featureTree();
             $dd_elements = array();
