@@ -180,8 +180,9 @@ function theme_cdm_taxon_page($variables) {
 
     $markerTypesEmpty = array();
     $markerTypesEmpty['markerTypes'] = '';
+    $queryString = $markerTypesEmpty['markerTypes'] ? queryString($markerTypesEmpty) : '';
     // Retrieve all descriptions for the taxon.
-    $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, queryString($markerTypesEmpty));
+    $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, $queryString);
 
     $nonStructuredDescriptions = array();
     if ($taxonDescriptions != NULL) {

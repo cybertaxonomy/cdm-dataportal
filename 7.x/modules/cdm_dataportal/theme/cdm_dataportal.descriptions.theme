@@ -936,7 +936,9 @@ function theme_cdm_description_ordered_distributions($variables) {
   $markerTypesEmpty = array();
   // $markerTypesEmpty['markerTypes'] = 'af9860ff-08f5-4b4d-863c-49ae96985115';
   $markerTypesEmpty['markerTypes'] = '';
-  $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon_uuid, queryString($markerTypesEmpty));
+  $queryString = $markerTypesEmpty['markerTypes'] ? queryString($markerTypesEmpty) : '';
+
+  $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon_uuid, $queryString);
   foreach ($taxonDescriptions as $description) {
     $descriptions_uuids[] = $description->uuid;
   }
