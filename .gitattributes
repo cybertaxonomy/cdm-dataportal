@@ -1130,6 +1130,7 @@
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.page.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.references.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.taxon.theme -text
+7.x/modules/cdm_dataportal/theme/theme_registry.inc -text
 7.x/modules/cdm_dataportal/translations/README.txt -text
 7.x/modules/cdm_dataportal/translations/cdm_dataportal_general.pot.template -text
 7.x/modules/cdm_dataportal/translations/cdm_dataportal_installer.pot.template -text
