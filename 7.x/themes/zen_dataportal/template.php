@@ -319,3 +319,61 @@ function STARTERKIT_preprocess_block(&$variables, $hook) {
   //}
 }
 // */
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function zen_dataportal_get_partDefinition($variables) {
+  if ($variables['nameType'] == 'BotanicalName') {
+    return array(
+        'namePart' => array('name' => TRUE),
+        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
+        'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
+        'statusPart' => array('status' => TRUE),
+        'descriptionPart' => array('description' => TRUE),
+    );
+  }
+  return FALSE;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function zen_dataportal_get_nameRenderTemplate($variables) {
+  $template = array();
+
+  switch ($variables['renderPath']) {
+    case 'taxon_page_title':
+    case 'polytomousKey':
+      $template = array(
+      'namePart' => array('#uri' => TRUE),
+      );
+      break;
+    case 'taxon_page_synonymy':
+    case 'related_taxon':
+      $template = array(
+      'nameAuthorPart' => array('#uri' => TRUE),
+      'referencePart' => TRUE,
+      'statusPart' => TRUE,
+      'descriptionPart' => TRUE,
+      );
+      break;
+    case 'acceptedFor':
+      $template = array(
+      'nameAuthorPart' => array('#uri' => TRUE),
+      'referencePart' => TRUE,
+      );
+      break;
+    case 'typedesignations':
+    case 'list_of_taxa':
+    case '#DEFAULT':
+      $template = array(
+      'nameAuthorPart' => array('#uri' => TRUE),
+      'referencePart' => TRUE,
+      );
+  }
+  return $template;
+}
+
