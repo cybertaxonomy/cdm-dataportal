@@ -289,7 +289,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
           /* ---- FieldObservation --- */
           case 'gatheringEvent':
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('collector'), $value->actor->titleCache);
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('timeperiod'), timePeriodToString($value->timeperiod));
+            @_description_list_group_add($groups, t('Gathering time'), timePeriodToString($value->timeperiod));
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('description'), $value->description);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n);
