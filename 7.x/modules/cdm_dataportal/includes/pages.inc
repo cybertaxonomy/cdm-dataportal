@@ -52,6 +52,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
   if(isset($pager->records[0])){
     $specimensOrObservations =  $pager->records;
   } else {
+    // TODO remove after relase 3.1.3
     $specimensOrObservations = $pager;
   }
 
@@ -111,10 +112,26 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $mediaList = array_merge($mediaList, $specimenOrObservation->_derivedUnitMedia);
       }
 
+      // typelabel will contain the typeStatus
+      $type_label = '';
+      $typeDesignations = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $specimenOrObservation->uuid);
+      if (isset($typeDesignations)) {
+        $type_status = array();
+        foreach ($typeDesignations->records as $typeDesignation) {
+          if (isset($typeDesignation->typeStatus->representation_L10n)){
+            $type_status[] = $typeDesignation->typeStatus->representation_L10n;
+          }
+        }
+        $type_label = implode(', ', $type_status);
+        if($type_label){
+          $type_label .= ': ' ;
+        }
+      }
+
       // ---- complex
         $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
         $label_html = cdm_dynabox(
-            $specimenOrObservation->titleCache,
+            $type_label . $specimenOrObservation->titleCache,
             $derived_unit_ws_request,
             'cdm_specimenOrObservation', // the theme or compose function to use
             'Click for details',
@@ -147,7 +164,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
       $gallery_html = '';
       if (count($mediaList) > 0) {
         $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
-        $gallery_name = $specimensOrObservation->uuid;
+        $gallery_name = $specimenOrObservation->uuid;
         $captionElements = array(
             '#uri' => t('open media'),
         );

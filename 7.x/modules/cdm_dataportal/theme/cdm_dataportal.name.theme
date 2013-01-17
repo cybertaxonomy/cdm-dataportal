@@ -93,8 +93,10 @@ function cdm_add_type_designations($source, $extra) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Renders and array of CDM TypeDesignations
+ *
+ * @param array $variables
+ *   - typeDesignations: an array of cdm TypeDesignation entities to render
  */
 function theme_cdm_typedesignations($variables) {
   $typeDesignations = $variables['typeDesignations'];
