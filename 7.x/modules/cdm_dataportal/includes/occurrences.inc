@@ -261,7 +261,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
           case 'collection':
             $sub_dl_groups = array();
-            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('code'), $value->code, 1);
+            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('code'), $value->code, NULL, 1);
             @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('codeStandard'),  $value->codeStandard, NULL, 2);
             @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('institute'), $value->institute, NULL, 3);
             @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('townOrLocation'), $value->townOrLocation, NULL, 4);
