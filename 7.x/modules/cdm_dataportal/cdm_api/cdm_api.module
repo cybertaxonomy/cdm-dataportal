@@ -430,7 +430,7 @@ function partialToMonth($partial) {
  */
 function partialToDay($partial) {
   if (is_string($partial)) {
-    $day = substr($partial, 7, 2);
+    $day = substr($partial, 8, 2);
     if (preg_match("/[0-9][0-9]/", $day)) {
       return $day;
     }
