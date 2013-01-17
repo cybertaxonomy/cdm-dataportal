@@ -154,9 +154,12 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
         }
       }
       $type_label = implode(', ', $type_status);
+      if($type_label){
+        $type_label .= ': ' ;
+      }
     }
 
-    $title = $type_label . ': ' . $specimenOrObservation->titleCache;
+    $title = $type_label . $specimenOrObservation->titleCache;
 
     $groups = array();
     // --- add initialized fields
