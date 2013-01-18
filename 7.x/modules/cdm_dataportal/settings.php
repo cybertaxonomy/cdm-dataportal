@@ -1059,7 +1059,7 @@ function cdm_settings_layout_taxon() {
   );
 
   $nameRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE);
-  $form['name_relationships']['name_relationships_to_show'] = array(
+  $form['taxon_synonymy']['name_relationships']['name_relationships_to_show'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Display name relationships') . ':',
     '#default_value' => variable_get('name_relationships_to_show', 0),
@@ -1068,7 +1068,7 @@ function cdm_settings_layout_taxon() {
       accepted taxa.'),
   );
 
-  $form[CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+  $form['taxon_synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show taxon relations ships of accepted taxon'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
@@ -1077,7 +1077,7 @@ function cdm_settings_layout_taxon() {
   );
 
   $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
-  $form[CDM_TAXON_RELATIONSHIP_TYPES] = array(
+  $form['taxon_synonymy'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Taxon relationship types') . ':',
     '#description' => t('Only taxon relationships of the selected type will be
