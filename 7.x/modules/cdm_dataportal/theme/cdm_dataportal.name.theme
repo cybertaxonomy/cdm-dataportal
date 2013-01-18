@@ -173,7 +173,11 @@ function theme_cdm_typedesignations($variables) {
     foreach ($specimenTypeDesignations as $std) {
       $typeReference = '';
       // Show citation only for Lectotype or Neotype.
-      $showCitation = isset($std->typeStatus) && ($std->typeStatus->uuid == UUID_STD_NEOTYPE || $std->typeStatus->uuid == UUID_STD_LECTOTYPE);
+      $showCitation = isset($std->typeStatus) && (
+          $std->typeStatus->uuid == UUID_STD_NEOTYPE
+          || $std->typeStatus->uuid == UUID_STD_LECTOTYPE
+          || $std->typeStatus->uuid == UUID_STD_HOLOTYPE
+          );
       if ($showCitation && !empty($std->citation)) {
         // $shortCitation = $std->citation->authorTeam->titleCache;
         $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std->citation->uuid);
