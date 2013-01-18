@@ -229,10 +229,11 @@ function theme_cdm_typedesignations($variables) {
   if (isset($render_footnote_lectotypes)) {
     $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-lectotypes'));
   }
-  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-acronyms', 'enclosingTag' => 'li'));
-  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-typeDesignations', 'enclosingTag' => 'li'));
+  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-acronyms'));
+  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-typeDesignations'));
   // $out .= theme('cdm_footnotes', RenderHints::getRenderPath() .
   // '-typeDesignations-' . $typeDesignation->uuid, 'li');
+
   RenderHints::popFromRenderStack();
 
   return $out;

@@ -184,8 +184,11 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
           case 'specimenTypeDesignations':
-              // FIXME citation is missing !
-              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), theme('cdm_typedesignations', array('typeDesignations' => $value)));
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
+                array(
+                  '#markup'=>theme('cdm_typedesignations', array('typeDesignations' => $value))
+                )
+              );
             break;
 
           case 'determinations':
