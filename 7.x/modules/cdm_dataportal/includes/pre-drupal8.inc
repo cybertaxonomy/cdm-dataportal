@@ -182,19 +182,36 @@ function theme_description_list($variables) {
  *   to be appended to the $description if it is not an array
  *
  * @param number $weight
+ *   the weight to be used for ordering the TD,DD element groups in the description list
+ *
+ * @param array $dt_attributes
+ *   an array of attributes of the DT element
  *
  */
-function _description_list_group_add(&$groups, $term, $description, $suffix = '', $weight=NULL) {
+function _description_list_group_add(&$groups, $term, $description, $suffix = '', $weight=NULL, array $dt_attributes=NULL) {
 
   if (!is_array($description)) {
     $description = trim(drupal_html_to_text($description));
   }
+
   if ($description) {
     if (!is_array($description)) {
       $description .= $suffix;
     }
+
+    if(is_array($dt_attributes)) {
+      $term_elements = array(
+        array(
+            '#wrapper_attributes' => $dt_attributes,
+            '#markup' => $term
+        )
+      );
+    } else {
+      $term_elements = $term;
+    }
+
     $groups[$term] = array(
-        'term' => $term,
+        'term' => $term_elements,
         'description' => $description,
     );
     if ($weight) {

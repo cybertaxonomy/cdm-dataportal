@@ -580,3 +580,7 @@ div.cdm_media_viewer_image {
     font-weight: bold;
 }
 
+#specimens ul.footnotes {
+    padding: 0;
+}
+
