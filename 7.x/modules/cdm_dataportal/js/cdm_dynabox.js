@@ -26,8 +26,10 @@
 			var dynabox_content = $(event.target).parent('.dynabox').find('.dynabox_content');
 
 			if(dynabox_content.find('.content').length > 0) {
+				// content has already been loaded
 				dynabox_content.slideToggle("fast");
 			} else {
+				// no content so far, so load it
 				var url = dynabox_content.attr('title');
 				if(url !== undefined && url.length > 1){
 					dynabox_content.removeAttr('title').find('.loading').show();
