@@ -153,13 +153,12 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
           $type_status[] = $typeDesignation->typeStatus->representation_L10n;
         }
       }
-      $type_label = implode(', ', $type_status);
-      if($type_label){
-        $type_label .= ': ' ;
+      if (count($type_status) > 0){
+        $type_label = implode(', ', $type_status);
       }
     }
 
-    $title = $type_label . $specimenOrObservation->titleCache;
+    $title = $type_label . ': '. $specimenOrObservation->titleCache;
 
     $groups = array();
     // --- add initialized fields
@@ -185,6 +184,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
           case 'specimenTypeDesignations':
+              // FIXME citation is missing !
               @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), theme('cdm_typedesignations', array('typeDesignations' => $value)));
             break;
 
