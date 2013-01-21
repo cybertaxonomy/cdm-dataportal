@@ -239,10 +239,12 @@ function theme_cdm_feature_nodes($variables) {
                       $out_child_elements = str_replace($child->feature->titleCache, '<em>' . $child->feature->representation_L10n . '</em>', $out_child_elements);
                       break;
                     case 'CategoricalData':
-                      $out_child_elements  = '<em>' . $child->feature->representation_L10n . '</em> ' . theme('cdm_descriptionElement_CategoricalData', array('element' => $element));
+                      $out_child_elements  = '<em>' . $child->feature->representation_L10n . '</em> '
+                        . theme('cdm_descriptionElement_CategoricalData', array('element' => $element));
                       break;
                     case 'QuantitativeData':
-                      $out_child_elements = '<em>' . $child->feature->representation_L10n . '</em> ' . theme('cdm_descriptionElement_QuantitativeData', array('element' => $element));
+                      $out_child_elements = '<em>' . $child->feature->representation_L10n . '</em> '
+                        . theme('cdm_descriptionElement_QuantitativeData', array('element' => $element));
 
                   }
 
