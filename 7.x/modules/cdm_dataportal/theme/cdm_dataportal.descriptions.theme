@@ -145,7 +145,7 @@ function theme_cdm_feature_nodes($variables) {
         $block->content = '';
 
         /*
-        Content/DISTRIBUTION.
+         * Content/DISTRIBUTION.
          */
         if ($node->feature->uuid == UUID_DISTRIBUTION) {
 
@@ -181,8 +181,8 @@ function theme_cdm_feature_nodes($variables) {
         }
 
         /*
-        Content/COMMON_NAME.
-        */
+         * Content/COMMON_NAME.
+         */
         elseif ($node->feature->uuid == UUID_COMMON_NAME) {
           // TODO why is theme_cdm_descriptionElement_CommonTaxonName not
           // beeing used???
@@ -195,8 +195,8 @@ function theme_cdm_feature_nodes($variables) {
         }
 
         /*
-        Content/ALL OTHER FEATURES.
-        */
+         * Content/ALL OTHER FEATURES.
+         */
         else {
           if (isset($node->descriptionElements)) {
             $taxon_uuid = NULL;
@@ -212,12 +212,13 @@ function theme_cdm_feature_nodes($variables) {
           /*
           Content/ALL OTHER FEATURES/Subordinate Features subordinate
           features are printed inline in one floating text, it is expected
-          hat supordinate features only "contain" TextData elements
+          hat supordinate features can "contain" TextData, Qualitative- and
+          Qualitative- DescriptioneElements
           */
-          // TODO move into own theme.
           if (count($node->children) > 0) {
 
             // TODO support more than one level of children.
+            // can this be solved by resursively calling this very function?
             // @see http://dev.e-taxonomy.eu/trac/ticket/2393
             $text = '';
             foreach ($node->children as $child) {
@@ -231,11 +232,23 @@ function theme_cdm_feature_nodes($variables) {
                     $media_list = array_merge($media_list, $element->media);
                   }
 
-                  $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
-                  $description = str_replace($element->feature->representation_L10n, '<em>' . $element->feature->titleCache . '</em>', $description);
+                  switch ($element->class) {
+                    case 'TextData':
+                      // TODO use theme_cdm_descriptionElementTextData()
+                      $out_child_elements = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+                      $out_child_elements = str_replace($child->feature->titleCache, '<em>' . $child->feature->representation_L10n . '</em>', $out_child_elements);
+                      break;
+                    case 'CategoricalData':
+                      $out_child_elements  = '<em>' . $child->feature->representation_L10n . '</em> ' . theme('cdm_descriptionElement_CategoricalData', array('element' => $element));
+                      break;
+                    case 'QuantitativeData':
+                      $out_child_elements = '<em>' . $child->feature->representation_L10n . '</em> ' . theme('cdm_descriptionElement_QuantitativeData', array('element' => $element));
+
+                  }
+
                 }
-                $text .= " " . $description;
-                $description = '';
+                $text .= " " . $out_child_elements;
+                $out_child_elements = '';
               }
             }
             $block->content .= $text;
@@ -243,7 +256,7 @@ function theme_cdm_feature_nodes($variables) {
         }
 
         /*
-        Media/ALL FEATURES.
+         * Media/ALL FEATURES.
          */
         if (isset($node->descriptionElements)) {
           $media_list = array_merge($media_list, cdm_dataportal_media_from_descriptionElements($node->descriptionElements));
