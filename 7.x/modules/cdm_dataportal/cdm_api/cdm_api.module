@@ -1227,7 +1227,7 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
     }
 
     // Recurse into node children.
-    if (isset($node->children) && is_array($node->children)) {
+    if (isset($node->children[0])) {
       $mergedChildNodes = _mergeFeatureTreeDescriptions($node->children, $descriptionElements);
       $node->children = $mergedChildNodes;
     }
@@ -1729,7 +1729,7 @@ function cdm_get_taxontrees_as_options() {
   asort($taxonomic_tree_options);
 
   // add default on top
-  if ($default_classification_uuid) {
+  if (is_uuid($default_classification_uuid)) {
     $taxonomic_tree_options[$default_classification_uuid] = $default_classification_label . ' - ' . t('DEFAULT CLASSIFICATION');
   }
 

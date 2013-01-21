@@ -232,10 +232,7 @@ function theme_cdm_feature_nodes($variables) {
                   }
 
                   $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
-                  // TODO use localized version of feature name, the locale
-                  // must match the locale of the multilanguage text.
-                  // @see http://dev.e-taxonomy.eu/trac/ticket/2394
-                  $description = str_replace($element->feature->titleCache, '<em>' . $element->feature->titleCache . '</em>', $description);
+                  $description = str_replace($element->feature->representation_L10n, '<em>' . $element->feature->titleCache . '</em>', $description);
                 }
                 $text .= " " . $description;
                 $description = '';
