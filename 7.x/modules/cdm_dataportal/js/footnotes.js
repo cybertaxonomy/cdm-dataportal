@@ -46,6 +46,6 @@
 
 jQuery(document).ready(
     function() {
-      dynabox();
+      footnotes();
     }
 );

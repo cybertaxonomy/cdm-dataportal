@@ -41,8 +41,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
       null,
       drupal_http_build_query(array(
           'taxonUuid' => $taxon->uuid,
-//           'relationships' => $congruentTo,
-          'relationshipsInvers' => $congruentTo,
+          'relationshipsInvers' => $congruentTo, // only in this direction
           'pageSize' => null // al hits in one page
         )
      )
@@ -51,9 +50,6 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
   $specimensOrObservations = array();
   if(isset($pager->records[0])){
     $specimensOrObservations =  $pager->records;
-  } else {
-    // TODO remove after relase 3.1.3
-    $specimensOrObservations = $pager;
   }
 
   // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
