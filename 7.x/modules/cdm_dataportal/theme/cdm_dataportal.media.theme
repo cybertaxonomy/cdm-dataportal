@@ -673,17 +673,24 @@ function theme_cdm_media_gallerie_text($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Adds the OpenLayers based image viewer to the page.
+ *
+ * The OpenLayers based image viewer allows to zoom and pan the displayed image.
+ *
+ * Documentation related to using Openlayers in order to view images is found here:
+ *  - @see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
+ *  - @see http://trac.openlayers.org/wiki/SettingZoomLevels
+ *
+ * @param array $variables
+ *   An associative array of theme variables:
+ *   - mediaRepresentationPart: The CDM MediaRepresentationPart instance to be displayed.
+ *   - maxExtend: The maximum extend of the image viewer view port.
  */
 function theme_cdm_openlayers_image($variables) {
   $mediaRepresentationPart = $variables['mediaRepresentationPart'];
   $maxExtend = $variables['maxExtend'];
 
-  // @see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
-  // and
-  // @see http://trac.openlayers.org/wiki/SettingZoomLevels
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/OpenLayers/OpenLayers.js', array('type' => 'file', 'weight' => JS_LIBRARY));
+  _add_js_openlayers();
 
   // TODO merge code below with code from theme_cdm_media_gallerie_image
   // var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);

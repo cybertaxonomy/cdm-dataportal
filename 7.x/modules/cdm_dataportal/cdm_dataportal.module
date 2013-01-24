@@ -103,12 +103,7 @@ function _add_js_treeselector() {
   );
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _add_js_openlayers_map() {
-
+function _add_js_openlayers() {
   $openlayers = '/js/OpenLayers-2.11/OpenLayers.js';
 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers, array(
@@ -116,6 +111,15 @@ function _add_js_openlayers_map() {
       'weight' => JS_LIBRARY,
       'cache' => FALSE,
   ));
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function _add_js_openlayers_map() {
+
+  _add_js_openlayers();
 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/openlayers_map.js');
 
@@ -1651,7 +1655,7 @@ function cdm_read_media_metadata($media) {
   $media_metadata_aux = (array) $media_metadata;
 
   // Filename.
-  if (isset($media->representations[0]->parts[0]->uri)) {
+  if (!empty($media->representations[0]->parts[0]->uri)) {
     $fileUri = $media->representations[0]->parts[0]->uri;
     $filename = substr($fileUri, strrpos($fileUri, "/") + 1);
     $metadata_caption['filename'] = $filename;
@@ -1664,13 +1668,13 @@ function cdm_read_media_metadata($media) {
   if (!empty($media_metadata->ObjectName)) {
     $metadata_caption['title'] = $media_metadata->ObjectName;
   }
-  elseif ($media_metadata_aux['Object Name']) {
+  elseif (!empty($media_metadata_aux['Object Name'])) {
     $metadata_caption['title'] = $media_metadata_aux['Object Name'];
   }
-  elseif ($media->title_L10n) {
+  elseif (!empty($media->title_L10n)) {
     $metadata_caption['title'] = $media->title_L10n;
   }
-  elseif ($media->titleCache) {
+  elseif (!empty($media->titleCache)) {
     $metadata_caption['title'] = $media->titleCache;
   }
 
@@ -1683,7 +1687,7 @@ function cdm_read_media_metadata($media) {
   if ($media_metadata->Artist) {
     $metadata_caption['artist'] = ($media_metadata->Artist ? '' . $media_metadata->Artist : '');
   }
-  elseif ($media->artist->titleCache) {
+  elseif (!empty($media->artist->titleCache)) {
     $metadata_caption['artist'] = $media->artist->titleCache;
   }
 
@@ -1697,7 +1701,7 @@ function cdm_read_media_metadata($media) {
       'uris' => array(),
     ),
   );
-  if ($media_metadata->Copyright) {
+  if (!empty($media_metadata->Copyright)) {
     $metadata_caption['rights']['copyright']['agentNames'][] = $media_metadata->Copyright;
   }
   elseif (isset($media->rights) && is_array($media->rights)) {
