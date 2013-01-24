@@ -8,7 +8,7 @@
 
 // the semi-colon before function invocation is a safety net against concatenated
 // scripts and/or other plugins which may not be closed properly.
-;(function($){
+;(function($) {
   this.footnotes = function() {
 
       function getFootnoteClassName(object){
@@ -41,7 +41,7 @@
         $(fnClassName).css('background-color', 'yellow').addClass('active');
         $(fnKeyClassName).css('background-color', 'yellow').addClass('active');
       });
-
+  }
 })(jQuery);
 
 jQuery(document).ready(
