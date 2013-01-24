@@ -41,8 +41,8 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
       null,
       drupal_http_build_query(array(
           'taxonUuid' => $taxon->uuid,
-          'relationshipUuids' => $congruentTo,
-          'relationshipInversUuids' => $congruentTo,
+//           'relationships' => $congruentTo,
+          'relationshipsInvers' => $congruentTo,
           'pageSize' => null // al hits in one page
         )
      )
