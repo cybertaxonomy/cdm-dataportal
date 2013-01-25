@@ -67,7 +67,11 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
   // --- get map service HTTP query paramaters
   if (count($specimensOrObservations) > 0) {
-    $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid);
+    $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid, drupal_http_build_query(array(
+          'relationshipsInvers' => $congruentTo, // only in this direction
+          'pageSize' => null // al hits in one page
+        )
+     ));
 
     if( isset($occurrenceQuery->String) ) {
       $occurrenceQuery = $occurrenceQuery->String;
