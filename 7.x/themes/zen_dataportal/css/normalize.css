@@ -471,7 +471,7 @@ form {
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/normalize\.scss}line{font-family:\00003490}}
 fieldset {
   border-color: #c0c0c0;
-  margin: 0 2px;
+  margin: 0 2px 2px 0;
   /* Apply borders and padding that keep the vertical rhythm. */
   border-top-style: solid;
   border-top-width: 0.08333em;

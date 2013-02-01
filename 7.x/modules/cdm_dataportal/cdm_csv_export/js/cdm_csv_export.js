@@ -24,3 +24,12 @@ function finishDownload() {
   jQuery.unblockUI();
 }
 
+/**
+ *  function to select & deselect all
+ *  checkboxes in one fieldset.
+ */
+jQuery(function () {
+    jQuery("#checkall").click(function () {
+        jQuery(this).parents("fieldset:eq(0)").find(":checkbox").attr("checked", this.checked);
+    });
+});

@@ -13,3 +13,5 @@ stylesheets[all][] = css/cdm_csv_export.css
 scripts[] = js/jquery.cookie.js
 scripts[] = js/jquery.blockUI.js  
 scripts[] = js/cdm_csv_export.js
+
+configure = admin/config/cdm_dataportal/csvexport

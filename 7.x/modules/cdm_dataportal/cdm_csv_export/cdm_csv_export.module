@@ -89,9 +89,15 @@ function cdm_csv_export_my_form($form_state) {
     '#attributes' => array('name' => 'classification'),
   );
 
-  $form['csvExportOptions'] = array(
+  $form['redListField'] = array(
+      '#type' => 'fieldset',
+      '#title'	=>t('Redlist Attributes'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+  
+  $form['redListField']['csvExportOptions'] = array(
       '#type'=>'checkboxes',
-      '#title'	=>t('Download Options'),
       '#options' => array(),
   );
     
@@ -105,7 +111,7 @@ $feature_tree = get_profile_featureTree();
         $subform_id =  $featureNode->feature->uuid; //LAYOUT_SETTING_PREFIX .
         $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
         $systemDefaults = unserialize(FEATURE_TREE_LAYOUT_DEFAULTS);
-        $form['csvExportOptions'][$subform_id] = array(
+        $form['redListField']['csvExportOptions'][$subform_id] = array(
           '#type' => 'checkbox',
           '#title' => $featureNode->feature->representation_L10n,
           '#default_value' => $featureNode->feature->uuid,//$settings,
@@ -123,13 +129,140 @@ $feature_tree = get_profile_featureTree();
       ),
     );
 
+  $form['regionFilter'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Geographical filter'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    );
+
+  //TODO: #title value needs to be fetched from 'area_filter_country' 
+  $form['regionFilter']['country'] = array (
+    '#type' => 'checkbox',
+    '#title' => 'Germany',
+    '#attributes' => array('name' => 'area',
+                            'id' => 'checkall',
+                            'value' => variable_get('area_filter_country')
+     ),
+    );
+  
+  //GermanFederalStates
+  $nameRelationshipTypeOptions = cdm_Vocabulary_as_option(variable_get('area_filter_state'));
+  $form['regionFilter']['area'] = array(
+    '#type' => 'checkboxes',
+    '#description' =>t('Select an area to filter the list of taxa'),
+    '#options' => $nameRelationshipTypeOptions,
+    '#attributes' => array('name' => 'area',
+                            'id' => 'area',
+      ),
+    );
+  
   $form['button'] = array(
     '#type'  => 'submit',
     '#value' => 'Export',
     );
   
-  $form['#action'] = url('../../csv/exportRedlist');
+  $form['#action'] = url(variable_get('cdm_csv_export_webservice_url'));
   $form['#attributes'] = array('onsubmit' => 'return blockUIForDownload()');
   
   return $form;
+}
+
+
+
+/**
+ * Implements Admin configuration hook_menu().
+ */
+function cdm_csv_export_menu() {
+ $items = array();
+
+ $items['admin/config/cdm_dataportal/csvexport'] = array(
+   'title' => 'CDM CSV Export',
+   'description' => 'Settings of CSV Export module.',
+   'page callback' => 'drupal_get_form',
+   'page arguments' => array('cdm_csv_export_admin'),
+   'access arguments' => array('access administration pages'),
+   'type' => MENU_NORMAL_ITEM,
+ );
+
+ return $items;
+}
+
+/**
+ * Generate the HTML form for the CSV Export Settings.
+ */
+function cdm_csv_export_admin() {
+ 
+ $form['cdm_csv_export_webservice'] = array(
+   '#type' => 'fieldset',
+   '#title' => t('CDM CSV Export web service'),
+   '#collapsible' => TRUE,
+   '#collapsed' => FALSE,
+   '#description' => t('<em>CDM Server</em> makes the dialogue possible with
+      <em>CDM Data Portal</em> thanks to its web services.'),
+ );
+ 
+ $form['cdm_csv_export_webservice']['cdm_csv_export_webservice_url'] = array(
+   '#type' => 'textfield',
+   '#title' => t('CSV Export web service URL') . ':',
+   '#description' => t('This is the URL to the CDM-Server webservice exposing its controller
+      e.g. <em>"http://localhost:8080/csv/exportRedlist"</em>'),
+   '#default_value' => variable_get('cdm_csv_export_webservice_url', NULL),
+ );
+ 
+ // ---- Regional Filter ---- //
+ $form['csv_export_area_filter'] = array(
+   '#type' => 'fieldset',
+   '#title' => t('CDM CSV Export Area Filter'),
+   '#collapsible' => TRUE,
+   '#collapsed' => FALSE,
+   '#description' => t('The <em>Area Filter</em> can be freely configured to the need 
+       of the specific <em>CDM Data Portal</em> and its catchment area. Right now it will 
+       be only distinguished between two levels. If necessary it can be programmatically
+       extended for a third level e.g. "continent level".'),
+ );
+ 
+ $form['csv_export_area_filter']['area_filter_country'] = array(
+   '#type' => 'textfield',
+   '#title' => t('Country Level') . ':',
+   '#description' => t('This is the UUID for the country level, in order to be able to filter Germany,
+      you should paste e.g. <em>"7b7c2db5-aa44-4302-bdec-6556fd74b0b9"</em> in the above text field'),
+   '#default_value' => variable_get('area_filter_country', NULL),
+ );
+ 
+ $form['csv_export_area_filter']['area_filter_state'] = array(
+   '#type' => 'textfield',
+   '#title' => t('State Level') . ':',
+   '#description' => t('This is the UUID for the state level, in order to be able to filter the german federal states,
+      you should paste e.g. <em>"44a448f9-f4ca-49f6-b58c-d27d8a69efdb"</em> in the above text field'),
+   '#default_value' => variable_get('area_filter_state', NULL),
+ );
+ 
+ // ---- FEATURE TREE ---- //
+ $form['taxon_profile'] = array(
+   '#type' => 'fieldset',
+   '#title' => t('Features'),
+   '#collapsible' => TRUE,
+   '#collapsed' => FALSE,
+   '#description' => t("This section covers settings related to the taxon's
+      <em>Feature Tree</em>. The <em>feature tree</em> are the taxon's
+      features such as description, distribution, common names, etc. that Drupal
+      will render at the taxon profile page."),
+ );
+ 
+ $featureTrees = cdm_get_featureTrees_as_options(TRUE);
+ $form['taxon_profile']['feature_trees'][CDM_PROFILE_FEATURETREE_UUID] = array(
+   '#type' => 'radios',
+   '#title' => t('Taxon profile sections') . ':',
+   '#default_value' => variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
+   '#options' =>  $featureTrees['options'],
+   // Comment @WA: because #options are sanitized in D7, it would
+   // strip html like <fieldset>, so we put the fieldset in a suffix.
+   '#field_suffix' => $featureTrees['treeRepresentations'],
+   '#description' => t('Select the Feature Tree to be displayed at the taxon
+      profile. Click "Show Details" to see the Feature Tree elements.'
+   ),
+ );
+
+ return system_settings_form($form);
 }
