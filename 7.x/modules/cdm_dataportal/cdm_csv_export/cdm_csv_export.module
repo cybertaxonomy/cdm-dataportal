@@ -136,10 +136,12 @@ $feature_tree = get_profile_featureTree();
     '#collapsed' => TRUE,
     );
 
-  //TODO: #title value needs to be fetched from 'area_filter_country' 
+  define('CDM_WS_TERM', 'term/$0');
+  $term = cdm_ws_get(CDM_WS_TERM, variable_get('area_filter_country'));
+  $cdmRepresentationTitleCache = cdm_term_representation($term);
   $form['regionFilter']['country'] = array (
     '#type' => 'checkbox',
-    '#title' => 'Germany',
+    '#title' => t($cdmRepresentationTitleCache),
     '#attributes' => array('name' => 'area',
                             'id' => 'checkall',
                             'value' => variable_get('area_filter_country')
