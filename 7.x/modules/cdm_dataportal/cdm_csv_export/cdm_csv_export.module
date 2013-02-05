@@ -86,7 +86,9 @@ function cdm_csv_export_my_form($form_state) {
     '#title' => t('Classification').':',
     '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, FALSE),
     '#options' => cdm_get_taxontrees_as_options(),
-    '#attributes' => array('name' => 'classification'),
+    '#attributes' => array(
+         'name' => 'classification',
+          'onchange' => 'return validateForm()'),
   );
 
   $form['redListField'] = array(
@@ -128,6 +130,15 @@ $feature_tree = get_profile_featureTree();
                            'id' => 'downloadTokenValueId',                     
       ),
     );
+  
+  $form['dialogMessage'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array(
+      'name' => 'dialogMessage',
+      'id' => 'dialogMessage',
+    ),
+  );
+  
 
   $form['regionFilter'] = array(
     '#type' => 'fieldset',
@@ -165,7 +176,9 @@ $feature_tree = get_profile_featureTree();
     );
   
   $form['#action'] = url(variable_get('cdm_csv_export_webservice_url'));
-  $form['#attributes'] = array('onsubmit' => 'return blockUIForDownload()');
+  $form['#attributes'] = array(
+                 'name' => 'exportForm',
+                 'onsubmit' => 'return blockUIForDownload()');
   
   return $form;
 }
