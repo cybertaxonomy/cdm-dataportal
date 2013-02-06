@@ -21,6 +21,8 @@
  *   - specimenTypeDesignation: Object.
  *
  * @ingroup themeable
+ *
+ * TODO: this function is not being used at all - can we remove it?
  */
 function theme_cdm_specimen($variables) {
   $specimenTypeDesignation = $variables['specimenTypeDesignation'];

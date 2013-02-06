@@ -213,14 +213,14 @@ function theme_cdm_typedesignations($variables) {
       $out .= '<span class="status">'
         . ((isset($std->typeStatus->representation_L10n)) ? $std->typeStatus->representation_L10n : t('Type'))
         . $typeReference
-        . '</span>';
+        . '</span>: ';
 
 
       if (isset($std->typeSpecimen)) {
         $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std->typeSpecimen->uuid);
       }
-      if ( isset($derivedUnitFacadeInstance) ){
-        $out .= $derivedUnitFacadeInstance->titleCache . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
+      if ( isset($derivedUnitFacadeInstance ) ){
+        $out .= $derivedUnitFacadeInstance->titleCache; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
       }
 
       // Footnotes for synonymy acronyms.
