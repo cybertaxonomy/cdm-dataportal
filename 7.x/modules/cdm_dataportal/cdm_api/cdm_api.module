@@ -1732,7 +1732,8 @@ function cdm_get_taxontrees_as_options() {
 
   // add default on top
   if (is_uuid($default_classification_uuid)) {
-    $taxonomic_tree_options[$default_classification_uuid] = $default_classification_label
+    $taxonomic_tree_options[$default_classification_uuid] =
+      $default_classification_label ? $default_classification_label : '--- INVALID CHOICE ---'
       . (count($taxonTrees) > 1 ? ' [' . t('DEFAULT CLASSIFICATION') . ']': '');
   }
 
