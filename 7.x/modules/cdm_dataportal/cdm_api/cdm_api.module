@@ -1720,7 +1720,9 @@ function cdm_get_taxontrees_as_options() {
         $taxonomic_tree_options[$tree->uuid] = $tree->titleCache;
       } else {
         $taxonomic_tree_options[$tree->uuid] = ' '; // one Space characters to force on top, will be replaced below by titleCache
-        $taxonomic_tree_options[''] = '  '; // two Space characters for an empy line below
+        if (count($taxonTrees) > 1) {
+          $taxonomic_tree_options[''] = '  '; // two Space characters for an empy line below
+        }
         $default_classification_label = $tree->titleCache;
       }
     }
@@ -1730,7 +1732,8 @@ function cdm_get_taxontrees_as_options() {
 
   // add default on top
   if (is_uuid($default_classification_uuid)) {
-    $taxonomic_tree_options[$default_classification_uuid] = $default_classification_label . ' - ' . t('DEFAULT CLASSIFICATION');
+    $taxonomic_tree_options[$default_classification_uuid] = $default_classification_label
+      . (count($taxonTrees) > 1 ? ' [' . t('DEFAULT CLASSIFICATION') . ']': '');
   }
 
   return $taxonomic_tree_options;
