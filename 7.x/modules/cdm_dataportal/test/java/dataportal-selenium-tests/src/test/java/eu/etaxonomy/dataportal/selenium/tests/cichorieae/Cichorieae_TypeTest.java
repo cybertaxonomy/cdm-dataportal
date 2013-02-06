@@ -49,7 +49,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         List<TypeDesignationElement> typeDesignations = p.getAcceptedNameTypeDesignations();
         assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-        assertEquals("Lectotype (designated by Green 1929: 1781): Cichorium intybus L.", typeDesignations.get(0).getText());
+        assertEquals("Lectotype (designated by Green 1929: 1781): Cichorium intybus L.\n1. Green, Proposals by British Botanists. 1929", typeDesignations.get(0).getText());
     }
 
     @Test
