@@ -45,7 +45,7 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
     $res .= ($year ? ' ' . $year : '');
     $res .= ($pages ? ': ' . $pages : '');
     // $res .= ')';
-    $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-typeDesignations', $typeDesignation->citation->titleCache);
+    $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath(), $typeDesignation->citation->titleCache);
     $res .= theme('cdm_footnote_key', array(
       'footnoteKey' => $fkey_typeDesignation,
       'separator' => $footnote_separator,
@@ -100,17 +100,9 @@ function cdm_add_type_designations($source, $extra) {
  */
 function theme_cdm_typedesignations($variables) {
   $typeDesignations = $variables['typeDesignations'];
-  /*
-   * if(isset($renderTemplate['referencePart']['reference']) &&
-   * $taxonName->nomenclaturalReference){ $microreference = NULL;
-   * if(isset($renderTemplate['referencePart']['microreference'])){
-   * $microreference = $taxonName->nomenclaturalMicroReference; } $citation =
-   * cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
-   * array($typeDesignation->uuid),
-   * "microReference=".urlencode($microreference)); $citation =
-   * $citation->String;
-   */
-  RenderHints::pushToRenderStack('typedesignations');
+
+//   RenderHints::pushToRenderStack('typeDesignations');
+
   $out = '<ul class="typeDesignations">';
   $typeDesignation_footnotes = FALSE;
   $is_lectotype = FALSE;
@@ -138,18 +130,7 @@ function theme_cdm_typedesignations($variables) {
 
         if ($typeDesignation->citation) {
           $out .= type_designation_citation_layout($typeDesignation, $separator);
-          // footnotes
-          // $fkey_typeDesignation =
-          // FootnoteManager::addNewFootnote(RenderHints::getRenderPath() .
-          // '-typeDesignations-' . $typeDesignation->uuid,
-          // $typeDesignation->citation->titleCache);
-          /*
-          $fkey_typeDesignation =
-          FootnoteManager::addNewFootnote(RenderHints::getRenderPath() .
-          '-typeDesignations', $typeDesignation->citation->titleCache);
-          $out .= theme('cdm_footnote_key', $fkey_typeDesignation,
-          $separator, TRUE, TRUE) . ')';
-          */
+
         }
         $referenceUri = '';
         if (isset($typeDesignation->typeName->nomenclaturalReference)) {
@@ -198,7 +179,7 @@ function theme_cdm_typedesignations($variables) {
         }
         $typeReference .= ')';
 
-        $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getRenderPath() . '-lectotypes', $std->citation->titleCache);
+        $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getRenderPath(), $std->citation->titleCache);
         $typeReference .= theme('cdm_footnote_key', array(
           'footnoteKey' => $_fkey2,
           'separator' => $separator,
@@ -223,35 +204,26 @@ function theme_cdm_typedesignations($variables) {
         $out .= $derivedUnitFacadeInstance->titleCache; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
       }
 
-      // Footnotes for synonymy acronyms.
+      // Footnotes for collection acronyms.
       $_fkey = FootnoteManager::addNewFootnote(
-          RenderHints::getRenderPath() . '-acronyms',
+          RenderHints::getRenderPath(),
           (isset($derivedUnitFacadeInstance->collection->titleCache) ? $derivedUnitFacadeInstance->collection->titleCache : FALSE)
         );
       $out .= theme('cdm_footnote_key', array('footnoteKey' => $_fkey, 'separator' => $separator));
       $out .= '</li>';
 
-      if (!empty($std->citation)) {
-        $render_footnote_lectotypes = TRUE;
-        // $out .= theme('cdm_footnotes', RenderHints::getRenderPath() .
-        // '-lectotypes');
-      }
     }
   }
 
-  // Nest footnotes at into another list the end of the types
-  $out .= '<ul class="footnotes">';
-  if (isset($render_footnote_lectotypes)) {
-    $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-lectotypes', 'enclosingTag' => 'li'));
-  }
-  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-acronyms', 'enclosingTag' => 'li'));
-  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-typeDesignations', 'enclosingTag' => 'li'));
-  $out .= '</ul>';
+//   // Nest footnotes at into another list the end of the types
+//   $out .= '<ul class="footnotes">';
+//   $out .= RenderHints::getRenderPath() . theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'li'));
+//   $out .= '</ul>';
 
 
   $out .= '</ul>';
 
-  RenderHints::popFromRenderStack();
+//   RenderHints::popFromRenderStack();
 
   return $out;
 }
@@ -454,6 +426,7 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
     $out .= theme('cdm_footnotes', array('footnoteListKey' => $accepted_taxon_footnoteListKey, 'enclosingTag' => 'li'));
   }
   $out .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
+  $out .= RenderHints::getRenderPath() . theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'li'));
   $out .= '</ul>';
 
   $out .= '</div>';

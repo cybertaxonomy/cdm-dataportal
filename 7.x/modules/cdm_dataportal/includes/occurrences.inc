@@ -125,7 +125,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
       'created',
       'updated',
       'class',
-//       'uuid'
+      'uuid'
   );
 
 //   if(user_is_logged_in()) {
@@ -353,8 +353,14 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
         '#groups' => $groups,
         '#attributes' => array('class' => html_class_atttibute_ref($specimenOrObservation)),
     );
-
     $derivatives[] = $occurrence_elements;
+    // all footnotes which has been assembled so far (e.g. from typeDesignations) to here
+    $foonote_li_elements = theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'li'));
+    if (!empty($foonote_li_elements)) {
+      $derivatives[] =  array(
+          '#markup' =>  '<ul class="footnotes">' . $foonote_li_elements . '</ul>',
+      );
+    }
 
     // --- recurse into originals
     if (!isset($derivedFrom)) {

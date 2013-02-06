@@ -407,6 +407,11 @@ function theme_cdm_taxon_page_synonymy($variables) {
     // Render the homotypicSynonymyGroup including the type information.
     $out .= theme('cdm_homotypicSynonymyGroup', array('synonymList' => $synomymie->homotypicSynonymsByHomotypicGroup, 'accepted_taxon_uuid' => $taxon->uuid));
   }
+  // all footnotes which has been assembled so far (e.g. from typeDesignations) to here
+  $out .= '<ul class="footnotes">';
+  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'li'));
+  $out .= '</ul>';
+
 
   // Render accepted taxon heterotypic synonymy groups.
   if ($synomymie->heterotypicSynonymyGroups) {
