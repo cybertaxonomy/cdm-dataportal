@@ -1855,7 +1855,7 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
  * @return string
  *   Returns HTML for a dynabox.
  */
-function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul'), $open_callback = NULL, $close_callback = NULL) {
+function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul'), $open_callback = 'function(){}', $close_callback = 'function(){}') {
   $out = '';
 
   // check for plain class attribute string
@@ -1867,8 +1867,8 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
 		function() {
 			dynabox('". $dynabox_id ."',
 			{
-              open_callback: '" . $open_callback ."',
-              close_callback: '" . $close_callback ."',
+              open_callback: " . $open_callback .",
+              close_callback: " . $close_callback .",
             }
           );
 		}

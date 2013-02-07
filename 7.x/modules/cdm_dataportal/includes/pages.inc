@@ -130,21 +130,24 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
       }
 
       // --- Dynabox for the specimenOrObservation
-        $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
-        $label_html = cdm_dynabox(
-            $specimenOrObservation->uuid,
-            $type_label . $specimenOrObservation->titleCache,
-            $derived_unit_ws_request,
-            'cdm_specimenOrObservation', // the theme or compose function to use
-            'Click for details',
-            array('div','div')
-        );
+      $gallery_name = $specimenOrObservation->uuid;
+
+      $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
+      $label_html = cdm_dynabox(
+          $specimenOrObservation->uuid,
+          $type_label . $specimenOrObservation->titleCache,
+          $derived_unit_ws_request,
+          'cdm_specimenOrObservation', // the theme or compose function to use
+          'Click for details',
+          array('div','div'),
+          'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', // open_callback
+          'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
+      );
 
       // --- Render associated media.
       $gallery_html = '';
       if (count($mediaList) > 0) {
         $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
-        $gallery_name = $specimenOrObservation->uuid;
         $captionElements = array(
             '#uri' => t('open media'),
         );
