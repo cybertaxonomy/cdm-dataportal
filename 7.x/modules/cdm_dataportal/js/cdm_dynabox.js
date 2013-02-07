@@ -10,20 +10,20 @@
 // the semi-colon before function invocation is a safety net against concatenated
 // scripts and/or other plugins which may not be closed properly.
 ;(function($) {
-	this.dynabox = function() {
+	this.dynabox = function(dynabox_id) {
 
 
-		$('.dynabox .label').click(function(event) {
+		$('.dynabox-' + dynabox_id + ' .label').click(function(event) {
 			loadContent(event);
 		});
 
-		$('.dynabox').find('.dynabox_content').click(function(event){event.stopPropagation();});
+		$('.dynabox-' + dynabox_id).find('.dynabox-' + dynabox_id + '-content').click(function(event){event.stopPropagation();});
 
 		//$('li.dynabox> span').click(function(event){event.stopPropagation();});
 
 		var loadContent = function(event) {
 			event.preventDefault(); //Cancel the default action (navigation) of the click.
-			var dynabox_content = $(event.target).parent('.dynabox').find('.dynabox_content');
+			var dynabox_content = $(event.target).parent('.dynabox-' + dynabox_id).find('.dynabox-' + dynabox_id + '-content');
 
 			if(dynabox_content.find('.content').length > 0) {
 				// content has already been loaded
@@ -43,10 +43,3 @@
 	}
 })(jQuery);
 
-
-
-jQuery(document).ready(
-		function() {
-			dynabox();
-		}
-);

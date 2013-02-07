@@ -328,12 +328,16 @@ function theme_cdm_list_of_taxa($variables) {
 
         // TODO avoid using Ajax in the cdm_dynabox .... why?
         // TODO add media.
-        $out .= cdm_dynabox(theme('cdm_taxonName', array(
-          'taxonName' => $taxon->name,
-          'nameLink' => NULL,
-          'refenceLink' => NULL,
-          'show_annotations' => FALSE,
-          )), cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array(
+        $out .= cdm_dynabox(
+            $taxon->uuid,
+            // taxon name as label
+            theme('cdm_taxonName', array(
+              'taxonName' => $taxon->name,
+              'nameLink' => NULL,
+              'refenceLink' => NULL,
+              'show_annotations' => FALSE,
+            )),
+            cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED, array(
             $taxon->uuid,
             $classification_uuid,
             )), 'cdm_list_of_taxa', 'Click for accepted taxon');

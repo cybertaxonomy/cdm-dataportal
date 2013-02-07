@@ -132,6 +132,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
       // --- Dynabox for the specimenOrObservation
         $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
         $label_html = cdm_dynabox(
+            $specimenOrObservation->uuid,
             $type_label . $specimenOrObservation->titleCache,
             $derived_unit_ws_request,
             'cdm_specimenOrObservation', // the theme or compose function to use

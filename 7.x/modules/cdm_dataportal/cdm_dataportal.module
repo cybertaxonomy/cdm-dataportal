@@ -1829,7 +1829,8 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
 // @WA Comment: should this not be a theme function?
 /**
  *  Creates a CDM Dynabox.
- *
+ * @param string $dynabox_id
+ *   a uninque name for tha dynabox, using a cdm entity uuid herefore is good pratice
  * @param string $label
  *   The clickable text to show.
  * @param string $content_url
@@ -1843,19 +1844,45 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
  * @param array $enclosingtags
  *   An array with two elements: $enclosingtags[0] will be used for the dynabox
  *   element itself, $enclosingtags[1] is the tag to be used for the
- *   dynabox_content.
+ *   dynabox_content (optional)
+ * @param string $open_callback
+ *   optional javascript call back function to be triggered after toggeling the box to
+ *   the open state.
+ * @param string $close_callback
+ *   optional javascript call back function to be triggered after toggeling the box to
+ *   the closed state.
  *
  * @return string
  *   Returns HTML for a dynabox.
  */
-function cdm_dynabox($label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul')) {
+function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul'), $open_callback = NULL, $close_callback = NULL) {
   $out = '';
+
+  // check for plain class attribute string
+  $dynabox_id = preg_replace('/[^a-zA-Z0-9\-]/', '', $dynabox_id);
+
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cdm_dynabox.js');
+  drupal_add_js("
+      jQuery(document).ready(
+		function() {
+			dynabox('". $dynabox_id ."',
+			{
+              open_callback: '" . $open_callback ."',
+              close_callback: '" . $close_callback ."',
+            }
+          );
+		}
+      );",
+      array(
+        'type'=>'inline',
+        'scope'=>'footer'
+      )
+    );
 
   $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/$theme");
   $out .= '<!-- ' . $content_url . ' -->';
-  $out .= '<' . $enclosingtags[0] . ' class="dynabox"><a href="#" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
-  $out .= '<' . $enclosingtags[1] . ' class="dynabox_content" title="' . $cdm_proxy_url . '"><' . $enclosingtags[0] . '><img class="loading" src="' . drupal_get_path('module', 'cdm_dataportal') . '/images/loading_circle_grey_16.gif" style="display:none;"></' . $enclosingtags[0] . '></' . $enclosingtags[1] . '>';
+  $out .= '<' . $enclosingtags[0] . ' class="dynabox-' . $dynabox_id . '"><a href="#" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
+  $out .= '<' . $enclosingtags[1] . ' class="dynabox-' . $dynabox_id . '-content" title="' . $cdm_proxy_url . '"><' . $enclosingtags[0] . '><img class="loading" src="' . drupal_get_path('module', 'cdm_dataportal') . '/images/loading_circle_grey_16.gif" style="display:none;"></' . $enclosingtags[0] . '></' . $enclosingtags[1] . '>';
   $out .= '</' . $enclosingtags[0] . '>';
   return $out;
 }
