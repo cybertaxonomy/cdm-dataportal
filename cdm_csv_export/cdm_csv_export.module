@@ -86,7 +86,9 @@ function cdm_csv_export_my_form($form_state) {
     '#title' => t('Classification').':',
     '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, FALSE),
     '#options' => cdm_get_taxontrees_as_options(),
-    '#attributes' => array('name' => 'classification'),
+    '#attributes' => array(
+         'name' => 'classification',
+          'onchange' => 'return validateForm()'),
   );
 
   $form['redListField'] = array(
@@ -128,28 +130,45 @@ $feature_tree = get_profile_featureTree();
                            'id' => 'downloadTokenValueId',                     
       ),
     );
-
+  
+  $form['dialogMessage'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array(
+      'name' => 'dialogMessage',
+      'id' => 'dialogMessage',
+    ),
+  );
+  
+  $country = variable_get('area_filter_country');
+  $state = variable_get('area_filter_state');
+if($country != null || $state != null){
   $form['regionFilter'] = array(
     '#type' => 'fieldset',
     '#title' => t('Geographical filter'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
-    );
+  );
+ }
 
+  
+  
   define('CDM_WS_TERM', 'term/$0');
-  $term = cdm_ws_get(CDM_WS_TERM, variable_get('area_filter_country'));
+  $term = cdm_ws_get(CDM_WS_TERM, $country);
   $cdmRepresentationTitleCache = cdm_term_representation($term);
+  if($country != null){
   $form['regionFilter']['country'] = array (
     '#type' => 'checkbox',
     '#title' => t($cdmRepresentationTitleCache),
     '#attributes' => array('name' => 'area',
                             'id' => 'checkall',
-                            'value' => variable_get('area_filter_country')
+                            'value' =>  $country
      ),
     );
+  }
   
   //GermanFederalStates
-  $nameRelationshipTypeOptions = cdm_Vocabulary_as_option(variable_get('area_filter_state'));
+  if($state != null){
+  $nameRelationshipTypeOptions = cdm_Vocabulary_as_option($state);
   $form['regionFilter']['area'] = array(
     '#type' => 'checkboxes',
     '#description' =>t('Select an area to filter the list of taxa'),
@@ -158,6 +177,7 @@ $feature_tree = get_profile_featureTree();
                             'id' => 'area',
       ),
     );
+  }
   
   $form['button'] = array(
     '#type'  => 'submit',
@@ -165,9 +185,11 @@ $feature_tree = get_profile_featureTree();
     );
   
   $form['#action'] = url(variable_get('cdm_csv_export_webservice_url'));
-  $form['#attributes'] = array('onsubmit' => 'return blockUIForDownload()');
+  $form['#attributes'] = array(
+                 'name' => 'exportForm',
+                 'onsubmit' => 'return blockUIForDownload()');
   
-  return $form;
+ return $form;
 }
 
 

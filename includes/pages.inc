@@ -36,15 +36,20 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
   $render_array = array();
   RenderHints::pushToRenderStack('taxon_page_specimens');
 
-  $congruentTo = "60974c98-64ab-4574-bb5c-c110f6db634d"; //TODO make configurable in settings
+  $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
+  $relationship_choice['direct'] = get_selection($relationship_choice['direct']);
+  $relationship_choice['invers'] = get_selection($relationship_choice['invers']);
+
+  $by_associatedtaxon_query = http_build_query(array(
+      'relationshipsInvers' => implode(',', $relationship_choice['invers']),
+      'relationships' => implode(',', $relationship_choice['direct']),
+      'pageSize' => null // all hits in one page
+      )
+    );
+
   $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
       null,
-      drupal_http_build_query(array(
-          'taxonUuid' => $taxon->uuid,
-          'relationshipsInvers' => $congruentTo, // only in this direction
-          'pageSize' => null // al hits in one page
-        )
-     )
+      $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
   );
 
   $specimensOrObservations = array();
@@ -67,11 +72,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
   // --- get map service HTTP query paramaters
   if (count($specimensOrObservations) > 0) {
-    $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid, drupal_http_build_query(array(
-          'relationshipsInvers' => $congruentTo, // only in this direction
-          'pageSize' => null // al hits in one page
-        )
-     ));
+    $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
 
     if( isset($occurrenceQuery->String) ) {
       $occurrenceQuery = $occurrenceQuery->String;
@@ -128,7 +129,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         }
       }
 
-      // ---- complex
+      // --- Dynabox for the specimenOrObservation
         $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
         $label_html = cdm_dynabox(
             $type_label . $specimenOrObservation->titleCache,
@@ -137,28 +138,6 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             'Click for details',
             array('div','div')
         );
-
-      // ---- simple via cdm_derivedUnitFacade - TURNED OFF
-//       if (true) {
-//         // --- Render the title cache and add dynabox for the details
-//         if ($specimenOrObservation->class != 'FieldObservation') {
-//           // details are loaded on request via the cdm_dynabox by AJAX from the
-//           // CDM_WS_DERIVEDUNIT_FACADE (derivedUnitFacade/{uuid}) webservice
-//           // and will be rendered by the theme_cdm_derivedUnitFacade() function
-
-//           $derived_unit_ws_request = cdm_compose_url('portal/' . CDM_WS_DERIVEDUNIT_FACADE, array( $specimenOrObservation->uuid));
-//           $label_html = cdm_dynabox(
-//               $specimenOrObservation->titleCache,
-//               $derived_unit_ws_request,
-//               'cdm_derivedUnitFacade', // the theme function to use
-//               'Click for details',
-//               array('div','div')
-//           );
-//         } else {
-//           // Fieldobservations are not yet fully handled,  only the titleCache will be displayed
-//           $label_html = $specimenOrObservation->titleCache;
-//         }
-//       }
 
       // --- Render associated media.
       $gallery_html = '';

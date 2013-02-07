@@ -8,3 +8,6 @@
 #edit-area{
   font-size:10px;
 }
+.error {
+    border: solid 1px #FF0000;  
+}

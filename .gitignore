@@ -1,6 +1,7 @@
 /.buildpath
 /.directory
 /.project
+/.settings
 cdm_api/ws-taxon.json
 cdm_api/ws-taxonomy-root.json
 cdm_api/ws-whatis.json

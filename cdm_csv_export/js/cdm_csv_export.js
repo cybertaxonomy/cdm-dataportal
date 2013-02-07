@@ -25,6 +25,23 @@ function finishDownload() {
 }
 
 /**
+ * 
+ * function validates combobox 
+ * and if selected item is empty,
+ * it jumps back to default value. 
+ * 
+ */
+function validateForm(){
+	var select = document.getElementById("edit-combobox");
+	if(select.value==null || select.value == -1|| select.value==""){
+		//alert('Please select a valid classification');
+		//jQuery('#edit-combobox').addClass("error");
+		select.selectedIndex = 0;
+	}
+}
+
+
+/**
  *  function to select & deselect all
  *  checkboxes in one fieldset.
  */

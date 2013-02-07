@@ -40,13 +40,25 @@ function theme_cdm_feature_nodesTOC($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Theme function to alter the feature representation.
+ *
+ * It is highly qeutionalbe if this function should be completely removed.
+ * If a feature needs a different representation this should be edited directly
+ * in the cdm data but it shoud not be tweeked like this in the portal.
+ *
+ * Used in:
+ *  - theme_cdm_feature_nodesTOC()
+ *  - theme_cdm_feature_nodes()
+ *  - theme_cdm_media_mime_application()
+ *  - theme_cdm_media_mime_text()
+ *
+ * TODO delete this function? (a.kohlbecker feb 2013)
+ *
  */
 function theme_cdm_feature_name($variables) {
   $feature_name = $variables['feature_name'];
   // TODO replace by using translations ?
-  return t(ucfirst($feature_name));
+  return t($feature_name);
 }
 
 /**
@@ -209,12 +221,11 @@ function theme_cdm_feature_nodes($variables) {
               'taxon_uuid' => $taxon_uuid,
             ));
           }
-          /*
-          Content/ALL OTHER FEATURES/Subordinate Features subordinate
-          features are printed inline in one floating text, it is expected
-          hat supordinate features can "contain" TextData, Qualitative- and
-          Qualitative- DescriptioneElements
-          */
+
+//           Content/ALL OTHER FEATURES/Subordinate Features
+//           subordinate features are printed inline in one floating text,
+//           it is expected hat supordinate features can "contain" TextData,
+//           Qualitative- and Qualitative- DescriptioneElements
           if (count($node->children) > 0) {
 
             // TODO support more than one level of children.
