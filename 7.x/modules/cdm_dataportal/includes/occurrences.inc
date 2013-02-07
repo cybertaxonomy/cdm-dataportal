@@ -292,9 +292,12 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
         if(isset($derivedFrom->type)){
           $derived_from_label = $derivedFrom->representation_L10n;
         }
-        $derivatives[] = array(
-            '#markup' => '<div>' . $derived_from_label . ' ' . t('from') . ': </div>',
-        );
+        if (count($groups) > 0) {
+          // only display the derived from information when the derivative has any element which will be diplayed
+          $derivatives[] = array(
+              '#markup' => '<div>' . $derived_from_label . ' ' . t('from') . ': </div>',
+          );
+        }
         foreach ($derivedFrom->originals as $original) {
           compose_cdm_specimenOrObservation($original, $derivatives);
         }
