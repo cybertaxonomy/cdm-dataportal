@@ -890,6 +890,16 @@ html.js fieldset.collapsed {
   padding-bottom: .6em;
 }
 
+html.js fieldset.collapsible .fieldset-legend {
+  background: url(images/menu-expanded.gif) no-repeat 0% 50%;
+  padding-left: 2em;
+}
+
+html.js fieldset.collapsed .fieldset-legend {
+  background: url(images/menu-collapsed.gif) no-repeat 0% 50%;
+}
+
+/*
 html.js fieldset.collapsible legend a {
   padding-left: 2em;
   background: url(images/menu-expanded.gif) no-repeat 0% 50%;
@@ -898,6 +908,7 @@ html.js fieldset.collapsible legend a {
 html.js fieldset.collapsed legend a {
   background: url(images/menu-collapsed.gif) no-repeat 0% 50%;
 }
+*/
 
 /**
  * Syndication icons and block
