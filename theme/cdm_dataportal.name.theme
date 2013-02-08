@@ -407,7 +407,7 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
     $out .= theme('cdm_footnotes', array('footnoteListKey' => $accepted_taxon_footnoteListKey, 'enclosingTag' => 'li'));
   }
   $out .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
-  $out .= RenderHints::getRenderPath() . theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'li'));
+  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'li'));
   $out .= '</ul>';
 
   $out .= '</div>';
