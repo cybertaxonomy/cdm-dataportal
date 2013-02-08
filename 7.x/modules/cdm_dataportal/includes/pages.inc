@@ -29,7 +29,6 @@
  * @return
  *   A render array suitable for drupal_render()
  *
- * FIXME: map not including locations of related taxa !!!!
  */
 function cdm_dataportal_taxon_page_specimens($taxon) {
 
@@ -129,7 +128,8 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         }
       }
 
-      // --- Dynabox for the specimenOrObservation
+      // --- Specimen entry as dynamic label:
+      //     -> Dynabox for the specimenOrObservation
       $gallery_name = $specimenOrObservation->uuid;
 
       $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
@@ -169,8 +169,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
           // An array of table rows. Every row is an array of cells, or an associative array
           'data' => array(
               // Each cell can be either a string or an associative array
-              $label_html,
-              $gallery_html,
+              $label_html . $gallery_html
           ),
           'class' =>  array(
               'descriptionElement',

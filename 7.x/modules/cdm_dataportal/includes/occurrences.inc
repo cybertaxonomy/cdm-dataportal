@@ -44,9 +44,10 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
       'uuid'
   );
 
-//   if(user_is_logged_in()) {
-//     unset($excludeFields['uuid']);
-//   }
+  // only show uuid it the user is logged in
+  if(user_is_logged_in()) {
+    unset($excludeFields[array_search('uuid', $excludeFields)]);
+  }
 
   if (!isset($derivatives)) {
     $derivatives = array();
