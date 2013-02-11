@@ -147,6 +147,7 @@ function _add_js_openlayers_map() {
     drupal_add_js('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1', array('type' => 'external'));
   }
 
+  $edit_map_service = get_edit_map_service_settings();
   // window.onload - is executed when the document and images etc is fully loaded
   // Query(document).ready - is executed much earlier, when the DOM is loaded
   drupal_add_js("
@@ -154,8 +155,10 @@ function _add_js_openlayers_map() {
 
                 window.onload = function () {
     			  // ---
-                  jQuery('#openlayers_map').cdm_openlayers_map('"
-                  . getEDITMapServiceURI() . "', {
+                  jQuery('#openlayers_map').cdm_openlayers_map(
+                   '" . $edit_map_service['base_uri'] . "',
+                   '" . $edit_map_service['version'] . "',
+                   {
                     legendPosition: 3,
                     displayWidth: '" . variable_get('cdm_dataportal_geoservice_display_width', FALSE) . "',
                     boundingBox: '" . variable_get('cdm_dataportal_geoservice_bounding_box', FALSE) . "',
@@ -164,9 +167,10 @@ function _add_js_openlayers_map() {
                     showLayerSwitcher: " . (variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE) ? 'true' : 'false') . ",
                     baseLayerNames: [" . $layerNames . "],
                     defaultBaseLayerName: '" . $preferredLayer . "',
-               	  });
-               	  // ---
-				};
+               	  }
+                );
+               	// ---
+			  };
           });
         ", array('type' => 'inline'));
 
@@ -186,20 +190,6 @@ function _add_js_openlayers_map() {
  */
 function get_image_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE) {
 
-  $server = getEDITMapServiceURI();
-
-  if (!$server) {
-    // Warning message.
-    drupal_set_message(t(
-      "No 'Geoservice Access Point' has been set so far.
-      Please configure the variable 'Geoservice Access Point' here !url", array(
-        '!url' => l(t('CDM Dataportal Settings'), 'admin/config/cdm_dataportal/geo'),
-      )), 'warning');
-
-    // Message to render.
-    return '<p>' . t('No geoservice specified') . '</p>';
-  }
-
   // Additional query parameters as set in the data portal admin section.
   $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
 
@@ -211,7 +201,7 @@ function get_image_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, 
     $query_string .= '&mlp=3&mc_s=Georgia,15,blue&mc=' . $map_caption;
   }
 
-  if (getEDITMapServiceVersionNumber() >= 1.1) {
+  if (get_edit_map_service_version_number() >= 1.1) {
 
     // Either occurrence or distribution - combined maps will be possible
     // in the future.
@@ -307,7 +297,7 @@ function get_image_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, 
     }
   }
 
-  $mapUri = url("$server/$map_service_script_name?$query_string");
+  $mapUri = url(get_edit_map_service_full_uri() . '/' . $map_service_script_name . '?' .  $query_string);
   $out = '<img class="distribution_map" src="' . $mapUri . '" alt="Map" />';
   // Showing map caption.
   if ($map_caption) {

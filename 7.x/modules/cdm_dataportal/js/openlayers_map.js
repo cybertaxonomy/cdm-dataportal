@@ -1,4 +1,6 @@
-function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
+function CdmOpenlayersMap(mapElement, mapserverBaseUrl, mapserverVersion, options){
+
+  var mapServicePath = '/edit_wp5';
 
   var legendImgSrc = null;
 
@@ -87,7 +89,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
         legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
       }
 
-      mapServiceRequest = mapserverBaseUrl + '/areas.php?' + distributionQuery;
+      mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/areas.php?' + distributionQuery;
 
       jQuery.ajax({
           url: mapServiceRequest,
@@ -111,7 +113,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 //        legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
 //      }
 
-      mapServiceRequest = mapserverBaseUrl + '/points.php?' + occurrenceQuery;
+      mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/points.php?' + occurrenceQuery;
 
       jQuery.ajax({
           url: mapServiceRequest,
@@ -166,25 +168,32 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
   var addDataLayer = function(mapResponseObj){
 
     var layer;
-    // add additional layers, get them from
-    // the mapResponseObj
+    // add additional layers, get them from the mapResponseObj
     if(mapResponseObj !== undefined){
       if(mapResponseObj.points_sld !== undefined){
         // it is a response from the points.php
-        //TODO points_sld should be renamed to sld in response + fill path to sld should be given
 
+    	var geoserverUri;
+    	if(mapResponseObj.geoserver) {
+    		geoserverUri = mapResponseObj.geoserver;
+    	} else {
+    		// it is an old servive which is not providing the corresponding geoserver URI, so we guess it
+    		geoserverUri = mapserverBaseUrl + "/geoserver/wms";
+    	}
+
+    	//TODO points_sld should be renamed to sld in response + fill path to sld should be given
         layer = new OpenLayers.Layer.WMS.Untiled(
             'points',
-            "http://edit.africamuseum.be/geoserver/wms/wms",
+            geoserverUri,
             {layers: 'topp:rest_points' ,transparent:"true", format:"image/png"},
             dataLayerOptions );
 
         var sld = mapResponseObj.points_sld;
         if(sld.indexOf("http://") !== 0){
-
+          // it is an old servive which is not providing the full sdl URI, so we guess it
           //  http://edit.africamuseum.be/synthesys/www/v1/sld/
           //  http://edit.br.fgov.be/synthesys/www/v1/sld/
-          sld = "http://edit.africamuseum.be/synthesys/www/v1/sld/" + sld;
+          sld =  mapserverBaseUrl + "/synthesys/www/v1/sld/" + sld;
 
         }
 
@@ -312,6 +321,21 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
        }
      }
    };
+
+   /**
+    * returns the version number contained in the version string:
+    *   v1.1 --> 1.1
+    *   v1.2_dev --> 1.2
+    */
+   var mapServerVersionNumber = function() {
+	   var pattern = /v([\d\.]+).*$/;
+	   var result;
+	   if (result = mapserverVersion.match(pattern) !== null) {
+		   return result[0];
+	   } else {
+		   return null;
+	   }
+   }
 
   /**
    *
@@ -483,13 +507,13 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, options){
 
 (function($){
 
-  $.fn.cdm_openlayers_map = function(mapserverBaseUrl, options) {
+  $.fn.cdm_openlayers_map = function(mapserverBaseUrl, mapserverVersion, options) {
 
     var opts = $.extend({},$.fn.cdm_openlayers_map.defaults, options);
 
     return this.each(function(){
 
-      var openlayers_map = new CdmOpenlayersMap($(this), mapserverBaseUrl, opts);
+      var openlayers_map = new CdmOpenlayersMap($(this), mapserverBaseUrl, mapserverVersion, options);
       openlayers_map.init();
 
      }); // END each

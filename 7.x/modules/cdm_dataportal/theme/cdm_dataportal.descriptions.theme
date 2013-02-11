@@ -1100,14 +1100,7 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){ $out
 function theme_cdm_distribution_map($variables) {
   $taxon = $variables['taxon'];
   $out = '';
-  $server = getEDITMapServiceURI();
-
-  if (!$server) {
-    // Warning message.
-    drupal_set_message(t("No 'Geoservice Access Point' has been set so far. Please configure the variable 'Geoservice Access Point' here ") . l(t('CDM Dataportal Settings'), 'admin/config/cdm_dataportal/geo'), 'warning');
-    // Message to render.
-    return "<p>No geoservice specified</p>";
-  }
+  $settings = get_edit_map_service_settings();
 
   $fontStyles = array(
     0 => "plane",
@@ -1159,7 +1152,7 @@ function theme_cdm_distribution_map($variables) {
     $map_service_script_name = "areas.php";
 
     // Apply Plain Image map settings.
-    if (getEDITMapServiceVersionNumber() >= 1.1) {
+    if (get_edit_map_service_version_number() >= 1.1) {
       /*
        * example : title=a:Naturalized++non-invasive
        * &ad=cyprusdivs:bdcode:a:5&as=a:ff9900,,0.1,&l=tdwg4
@@ -1220,7 +1213,7 @@ function theme_cdm_distribution_map($variables) {
       }
     }
 
-    $mapUri = url("$server/$map_service_script_name?$query_string");
+    $mapUri = url(get_edit_map_service_full_uri() . '/' . $map_service_script_name . '? '. $query_string);
     $out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
   }
   return $out;

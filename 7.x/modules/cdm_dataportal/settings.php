@@ -41,9 +41,33 @@ $gallery_settings = array(
   "cdm_dataportal_media_maxRows" => 1,
 );
 
-define('EDIT_MAPSERVER_V1_URI', 'http://edit.africamuseum.be/edit_wp5/v1'); // fall back server is http://edit.br.fgov.be
-define('EDIT_MAPSERVER_V11_URI', 'http://edit.africamuseum.be/edit_wp5/v1.1'); // fall back server is http://edit.br.fgov.be
-define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
+/* ---- MAP SETTING CONSTANTS ---- */
+/**
+ * @var array of URIs eg. http://edit.africamuseum.be"
+ *   An options array
+ */
+define('EDIT_MAPSERVER_URI', serialize(
+    array(
+      'http://edit.africamuseum.be'=>'Primary (http://edit.africamuseum.be)',
+      'http://edit.br.fgov.be'=>'Secondary (http://edit.br.fgov.be)',
+    )
+  )
+);
+define('EDIT_MAPSERVER_PATH', '/edit_wp5');
+/**
+ * @var array of versions eg. "v1.2"
+ *   An options array
+ */
+define('EDIT_MAPSERVER_VERSION', serialize(
+    array(
+      'v1' => 'v1' ,
+      'v1.1' => 'v1.1',
+      'v1.2_dev' => 'v1.2_dev'
+    )
+  )
+);
+define('EDIT_MAPSERVER_URI_DEFAULT', 'http://edit.africamuseum.be');
+define('EDIT_MAPSERVER_VERSION_DEFAULT', 'v1.1');
 
 // --- Taxon profile settings --- /
 define('LAYOUT_SETTING_PREFIX', 'layout_');
@@ -54,6 +78,9 @@ define('FEATURE_TREE_LAYOUT_DEFAULTS', serialize(
     'entryEnclosingTag' => 'li',
     'glue' => ' ',
   )));
+
+define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
+
 
 /**
  * @todo document this function
@@ -1305,37 +1332,31 @@ function cdm_settings_geo($form, &$form_state) {
   /*
   GEO SERVER
   */
-  $form['geoserver'] = array(
+  $form['edit_map_server'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Geo Server Settings'),
+    '#tree' => true,
+    '#title' => t('EDIT map service'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
     '#description' => t('Configuration and selection of your geo server.
       The Geo Server is responsible for generating the maps.'),
   );
 
-  $form['geoserver']['edit_map_server'] = array(
-    '#type' => 'select',
-    '#title' => t('Geoservice access point URL') . ':',
-    '#default_value' => variable_get('edit_map_server', EDIT_MAPSERVER_V11_URI),
-    '#options' => array(
-      EDIT_MAPSERVER_V1_URI => 'EDIT Map Server v1',
-      EDIT_MAPSERVER_V11_URI => 'EDIT Map Server v1.1',
-      'ALTERNATIVE' => '-- Alternative URL --',
-    ),
-    '#description' => t('Select the Map Server you want the data portal to
-      connect. If you want to introduce a custom address just select the
-      Alternative URL value and fill the field Geoservice Access Point
-      - Alternative URL with the custom ip address.'),
-  );
+  $current_geoserver_settings = get_edit_map_service_settings();
 
-  $form['geoserver']['edit_map_server_alternative'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Geoservice access point - alternative URL') . ':',
-    '#default_value' => variable_get('edit_map_server_alternative', ''),
-    '#description' => t('Alternative URL of a EDIT Map Service to be used by
-      this portal. You must choose the option <i>-- Alternative URL --</i> in
-      the chooser above to enable this url.'),
+  $form['edit_map_server']['base_uri'] = array(
+    '#type' => 'select',
+    '#title' => t('EDIT map service') . ':',
+    '#default_value' => $current_geoserver_settings['base_uri'],
+    '#options' => unserialize(EDIT_MAPSERVER_URI),
+    '#description' => t('Select the EDIT map server you want to use within your data portal.'),
+  );
+  $form['edit_map_server']['version'] = array(
+      '#type' => 'select',
+      '#title' => t('Version') . ':',
+      '#default_value' => $current_geoserver_settings['version'],
+      '#options' => unserialize(EDIT_MAPSERVER_VERSION),
+      '#description' => t('The version of the EDIT map services'),
   );
 
   /*
@@ -1420,7 +1441,7 @@ function cdm_settings_geo($form, &$form_state) {
       and can only be used with the EDIT map service version 1.1 or above.'),
   );
 
-  $edit_mapserver_version = getEDITMapServiceVersionNumber();
+  $edit_mapserver_version = get_edit_map_service_version_number();
   if ($edit_mapserver_version < 1.1) {
     $form['map_image']['#description'] = '<div class="messages warning">' . t("The selected EDIT map service version has to small version number: $edit_mapserver_version") . '</div>'
       . $form['map_image']['#description'];
@@ -1707,35 +1728,56 @@ function cdm_settings_validate($form, &$form_state) {
 }
 
 /**
- * @todo document this function.
+ * Returns an associative array of the currently chosen settings for the EDIT map service or the defaults as
+ * specified in EDIT_MAPSERVER_URI_DEFAULT and EDIT_MAPSERVER_VERSION_DEFAULT:
+ *  - base_uri: the protocol and host part , e.g.: http://edit.africamuseum.be
+ *  - version: the version, e.g.: v1.1
+ *
+ * @return array
+ *    An associative array of the currently chosen settings for the EDIT map service or the defaults.
  */
-function getEDITMapServiceURI() {
+function get_edit_map_service_settings() {
 
-  if (variable_get('edit_map_server', FALSE) == 'ALTERNATIVE') {
-    return (variable_get('edit_map_server_alternative', FALSE));
-  }
-  elseif (variable_get('edit_map_server', FALSE)) {
-    return variable_get('edit_map_server', FALSE);
-  }
-  else {
-    return EDIT_MAPSERVER_V1_URI;
+  $settings = variable_get('edit_map_server', array(
+      'base_uri' => EDIT_MAPSERVER_URI_DEFAULT,
+      'version' => EDIT_MAPSERVER_VERSION_DEFAULT
+      )
+  );
+  // replace old non tree like settings by default
+  // TODO to be removed after release 3.1.5
+  if(!is_array($settings)){
+    variable_del('edit_map_server');
+    return get_edit_map_service_settings();
   }
 
+  return $settings;
 }
 
 /**
- * @todo document this function.
+ * Returns the full edit map service URI e.g.: http://edit.africamuseum.be/edit_wp5/v1.1
+ *
+ * @return string
+ *   The full edit map service URI e.g.: http://edit.africamuseum.be/edit_wp5/v1.1
+ */
+function get_edit_map_service_full_uri() {
+  $settings = get_edit_map_service_settings();
+  return $settings['base_uri'] . EDIT_MAPSERVER_PATH .  '/' . $settings['version'];
+}
+
+
+/**
+ * Returns the version number of the currently selected edit mapserver as a float
  *
  * @return float
  *   The version number of the currently selected edit mapserver as a float.
  *   Returns 0 on error.
  */
-function getEDITMapServiceVersionNumber() {
+function get_edit_map_service_version_number() {
 
-  $pattern = '/v([\d\.]+)$/';
+  $pattern = '/v([\d\.]+).*$/';
 
-  $url = getEDITMapServiceURI();
-  preg_match($pattern, $url, $matches, PREG_OFFSET_CAPTURE, 3);
+  $settings = get_edit_map_service_settings();
+  preg_match($pattern, $settings['version'], $matches, PREG_OFFSET_CAPTURE);
   if (isset($matches[1])) {
     // Convert string to float.
     $version = 1 + $matches[1][0] - 1;
@@ -1743,13 +1785,18 @@ function getEDITMapServiceVersionNumber() {
   }
   else {
     // Report error.
-    drupal_set_message(t(" Invalid version number in EDIT map service URL: '!edit_mapserver'", array('!edit_mapserver' => variable_get('edit_map_server', EDIT_MAPSERVER_V1_URI))), 'warning');
+    drupal_set_message(t(" Invalid EDIT map service version number: '!version'",
+        array(
+          '!version' => $settings['version'],
+          'warning')
+        )
+      );
     return 0;
   }
 }
 
 /**
- * returns the array of selected items in a options array
+ * Returns the array of selected items in a options array
  *
  * @param array $options
  *   An options array as generated by a form element like checkoxes, select ...,

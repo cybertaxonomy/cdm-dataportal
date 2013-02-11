@@ -27,7 +27,7 @@ function cdm_dataportal_uninstall() {
 }
 
 /*
- * update funktions:
+ * update functions:
  *
  * - 1 digit for Drupal core compatibility.
  * - 1 digit for your module's major release version (e.g., is this the 7.x-1.* (1) or 7.x-2.* (2) series of your module?). This digit should be 0 for initial porting of your module to a new Drupal core API.
@@ -35,11 +35,20 @@ function cdm_dataportal_uninstall() {
  */
 
 /**
- * update for RELEASE 3.13:
+ * update for RELEASE 3.1.3:
  *  - reset edit_map_server variable to default
  */
 function cdm_dataportal_update_7301() {
   // reset edit_map_server variable to default
+  variable_del('edit_map_server');
+}
+
+/**
+ * update for RELEASE 3.1.4:
+ *  - reset edit_map_server variable to default
+ */
+function cdm_dataportal_update_7302() {
+  // once again reset edit_map_server variable to default
   variable_del('edit_map_server');
 }
 
