@@ -41,6 +41,7 @@ function cdm_dataportal_uninstall() {
 function cdm_dataportal_update_7301() {
   // reset edit_map_server variable to default
   variable_del('edit_map_server');
+  return t('Resetting setting for EDIT map server (edit_map_server) to default');
 }
 
 /**
@@ -50,6 +51,7 @@ function cdm_dataportal_update_7301() {
 function cdm_dataportal_update_7302() {
   // once again reset edit_map_server variable to default
   variable_del('edit_map_server');
+  return t('Resetting setting for EDIT map server (edit_map_server) to default');
 }
 
 /**
