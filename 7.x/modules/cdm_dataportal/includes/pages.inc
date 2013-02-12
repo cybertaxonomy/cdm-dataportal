@@ -127,10 +127,10 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
       // typelabel will contain the typeStatus
       $type_label = '';
-      $typeDesignations = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $specimenOrObservation->uuid);
-      if (isset($typeDesignations)) {
+      $typeDesignationPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $specimenOrObservation->uuid);
+      if (isset($typeDesignationPager)) {
         $type_status = array();
-        foreach ($typeDesignations->records as $typeDesignation) {
+        foreach ($typeDesignationPager->records as $typeDesignation) {
           if (isset($typeDesignation->typeStatus->representation_L10n)){
             $type_status[] = $typeDesignation->typeStatus->representation_L10n;
           }
