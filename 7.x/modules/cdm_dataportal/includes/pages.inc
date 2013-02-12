@@ -56,6 +56,19 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     $specimensOrObservations =  $pager->records;
   }
 
+  // order occurrences by date but types should be on top of the list
+  $type_specimens = array();
+  $other_occurrences = array();
+  foreach ($specimensOrObservations as &$occurrence) {
+    $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
+    if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
+      $type_specimens[] = $occurrence;
+    } else {
+      $other_occurrences[] = $occurrence;
+    }
+  }
+  $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
+
   // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
   // $occurrence->_fieldObjectMedia
   foreach ($specimensOrObservations as &$occurrence) {
