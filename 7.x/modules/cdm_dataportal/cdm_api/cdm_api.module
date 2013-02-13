@@ -1638,8 +1638,14 @@ function _featureTree_nodes_as_feature_options($rootNode, $node_char = "&#9500;&
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * 
+ * Returns an array with all available Feature 
+ * Trees and the representations of the selected
+ * Feature Tree as a detail view.
+ * 
+ * @param string $add_default_feature_free
+ * @return multitype:string multitype:NULL
+ * 
  */
 function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
   $feature_trees = array();
@@ -1659,35 +1665,36 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
       if ($featureTree->uuid == UUID_DEFAULT_FEATURETREE) {
         continue;
       }
-
-      // $tree_representation = $featureTree->titleCache;
-      $tree_representation = '';
-      if (is_array($featureTree->root->children) && count($featureTree->root->children) > 0) {
-
-        // Render the hierarchic tree structure.
-        $treeDetails = '<div class="featuretree_structure">'
-          // ._featureTree_elements_toString($featureTree->root)
-          . theme('FeatureTree_hierarchy', array('FeatureTreeUuid' => $featureTree->uuid))
-          . '</div>';
-
-        $form = array();
-        $form['featureTree-' . $featureTree->uuid] = array(
-          '#type' => 'fieldset',
-          '#title' => 'Show details',
-          '#attributes' => array('class' => array('collapsible collapsed')),
-          // '#collapsible' => TRUE,
-          // '#collapsed' => TRUE,
-        );
-        $form['featureTree-' . $featureTree->uuid]['details'] = array(
-          '#markup' => $treeDetails,
-        );
-        // echo drupal_render($form);
-        $tree_representation .= drupal_render($form);
-      }
       $feature_trees[$featureTree->uuid] = $featureTree->titleCache;
       // $feature_trees[$featureTree->uuid] = $tree_representation;
     }
   }
+  $selected_feature_tree = get_profile_featureTree();
+  // $tree_representation = $featureTree->titleCache;
+  $tree_representation = '';
+  if (is_array( $selected_feature_tree->root->children) && count( $selected_feature_tree->root->children) > 0) {
+
+    // Render the hierarchic tree structure.
+    $treeDetails = '<div class="featuretree_structure">'
+      // ._featureTree_elements_toString($featureTree->root)
+      . theme('FeatureTree_hierarchy', array('FeatureTreeUuid' =>  $selected_feature_tree->uuid))
+      . '</div>';
+
+    $form = array();
+    $form['featureTree-' .  $selected_feature_tree->uuid] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Show details',
+      '#attributes' => array('class' => array('collapsible collapsed')),
+      // '#collapsible' => TRUE,
+      // '#collapsed' => TRUE,
+    );
+    $form['featureTree-' .  $selected_feature_tree->uuid]['details'] = array(
+      '#markup' => $treeDetails,
+    );
+    // echo drupal_render($form);
+    $tree_representation .= drupal_render($form);
+  }
+
 
   // return $feature_trees;
   return array('options' => $feature_trees, 'treeRepresentations' => $tree_representation);
