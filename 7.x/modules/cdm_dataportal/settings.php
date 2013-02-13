@@ -802,7 +802,7 @@ function cdm_settings_layout_taxon() {
   $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
   // ---- FEATURE TREE ---- //
-  $form['taxon_profile']['taxon_profile'] = array(
+  $form['taxon_profile']['feature_trees'] = array(
     '#type' => 'fieldset',
     '#title' => t('Features'),
     '#collapsible' => TRUE,
