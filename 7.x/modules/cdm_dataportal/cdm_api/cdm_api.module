@@ -1639,12 +1639,11 @@ function _featureTree_nodes_as_feature_options($rootNode, $node_char = "&#9500;&
 
 /**
  * 
- * Returns an array with all available Feature 
- * Trees and the representations of the selected
- * Feature Tree as a detail view.
- * 
- * @param string $add_default_feature_free
- * @return multitype:string multitype:NULL
+ * @param boolean $add_default_feature_free
+ * @return array 
+ *  associative array with following keys:
+ *  -options: Returns an array with all available Feature Trees
+ *  -treeRepresentations: Returns representations of the selected Feature Tree as a detail view
  * 
  */
 function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {

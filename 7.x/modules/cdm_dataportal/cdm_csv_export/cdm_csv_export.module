@@ -18,8 +18,6 @@
  *
  */
 
-
-
 define('CDM_WS_TERM', 'term/$0');
 define('CDM_CSV_FEATURETREE_UUID', 'cdm_csv_featuretree_uuid');
 
@@ -51,7 +49,7 @@ switch ($path) {
  * 
  * Prepares the content for the help menu
  * 
- * @return multitype:string Ambigous <The, string, A, Optional>
+ * @return array
  */
 function cdm_csv_export_block_info() {
   $blocks['cdm_csv_export'] = array(
@@ -67,7 +65,7 @@ function cdm_csv_export_block_info() {
  * Prepares the contents of the block.
  *  
  * @param string $delta
- * @return multitype:Ambigous <The, boolean, string>
+ * @return array
  */
 function cdm_csv_export_block_view($delta='') {
   $block['subject'] = t('Export into CSV');
@@ -81,10 +79,8 @@ function cdm_csv_export_block_view($delta='') {
  * Creates the drupal form and returns it
  * 
  * @param unknown $form_state
- * @return multitype:string multitype:string  
- *          multitype:string multitype:string   
- *          Ambigous <A, string> multitype:NULL  
- *          multitype:string multitype: Ambigous <The, string, A, Optional>  The
+ * @return array
+ * 
  */
 function cdm_csv_export_my_form($form_state) {
   $form['combobox'] = array(
@@ -130,6 +126,7 @@ $feature_tree = get_csv_featureTree();
       }
     }
   }
+  
   $form['downloadTokenValueId'] = array(
     '#type' => 'hidden',
     '#attributes' => array('name' => 'downloadTokenValueId',
@@ -155,9 +152,6 @@ if($country != null || $state != null){
     '#collapsed' => TRUE,
   );
  }
-
-  
-  
 
   $term = cdm_ws_get(CDM_WS_TERM, $country);
   $cdmRepresentationTitleCache = cdm_term_representation($term);
@@ -194,7 +188,6 @@ if($country != null || $state != null){
   $form['#attributes'] = array(
                  'name' => 'exportForm',
                  'onsubmit' => 'return blockUIForDownload()');
-  
  return $form;
 }
 
@@ -202,7 +195,10 @@ if($country != null || $state != null){
 
 /**
  * Implements Admin configuration hook_menu().
+ * 
+ * @return array
  */
+
 function cdm_csv_export_menu() {
  $items = array();
 
@@ -214,12 +210,13 @@ function cdm_csv_export_menu() {
    'access arguments' => array('access administration pages'),
    'type' => MENU_NORMAL_ITEM,
  );
-
  return $items;
 }
 
 /**
  * Generates the HTML form for the CSV Export Settings.
+ * 
+ * @return array
  */
 function cdm_csv_export_admin() {
  
@@ -323,8 +320,12 @@ function get_csv_featureTree() {
  * Trees and the representations of the selected
  * Feature Tree as a detail view.
  * 
- * @param string $add_default_feature_tree
- * @return multitype:Ambigous <NULL, string> multitype:NULL
+ * @param boolean $add_default_feature_free
+ * @return array 
+ * associative array with following keys:
+ * -options: Returns an array with all available Feature Trees
+ * -treeRepresentations: Returns representations of the selected Feature Tree as a detail view
+ * 
  */
 
 function get_csv_featureTree_as_options($add_default_feature_tree = FALSE) {
