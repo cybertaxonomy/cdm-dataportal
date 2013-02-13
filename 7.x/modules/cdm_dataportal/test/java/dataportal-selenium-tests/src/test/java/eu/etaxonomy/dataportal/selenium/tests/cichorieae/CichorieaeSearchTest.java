@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -35,6 +36,7 @@ import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 @DataPortalContexts( { DataPortalContext.cichorieae })
 public class CichorieaeSearchTest extends CdmDataPortalTestBase {
 
+    private static final UUID UUID_L_COMMUNIS = UUID.fromString("5d65f017-0c23-43e4-888d-9649de50dd45");
     private static GenericPortalPage homePage = null;
 
     @Before
@@ -73,7 +75,7 @@ public class CichorieaeSearchTest extends CdmDataPortalTestBase {
         WebElement referenceElement = lapsanaCommunnis.getElement().findElement(By.className("reference"));
         Assert.assertEquals("Sp. Pl.: 811. 1753", referenceElement.findElement((By.className("reference"))).getText());
 
-        PortalPage taxonProfilLapsanaCommunnis = searchResultPage.clickTaxonName(lapsanaCommunnis, GenericPortalPage.class);
+        PortalPage taxonProfilLapsanaCommunnis = searchResultPage.clickTaxonName(lapsanaCommunnis, GenericPortalPage.class, UUID_L_COMMUNIS);
         assertEquals(getContext().prepareTitle("Lapsana communis"), taxonProfilLapsanaCommunnis.getTitle());
     }
 

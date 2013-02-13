@@ -44,6 +44,8 @@ import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
 @DataPortalContexts( { DataPortalContext.floramalesiana})
 public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
 
+    private static final UUID UUID_ILLICIUM = UUID.fromString("502e28ca-23d0-44a8-9c13-85fb3d076bff");
+
     private GenericPortalPage homePage;
 
     @Before
@@ -73,7 +75,7 @@ public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
         assertEquals("Illicium L. in Syst. Nat. ed. 10: 1050. 1759", entryIillicium.getFullTaxonName());
 
         logger.debug("clicking TaxonName" + entryIillicium.getElement().toString());
-        TaxonProfilePage taxonProfileIillicium = searchResultPage.clickTaxonName(entryIillicium, TaxonProfilePage.class);
+        TaxonProfilePage taxonProfileIillicium = searchResultPage.clickTaxonName(entryIillicium, TaxonProfilePage.class, UUID_ILLICIUM);
 
 //        assertNull("Authorship information should be hidden", taxonProfileIillicium.getAuthorInformationText());  // FF WebDriver hangs here
 

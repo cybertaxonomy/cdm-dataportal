@@ -11,6 +11,7 @@ package eu.etaxonomy.dataportal.pages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -105,11 +106,13 @@ public class TaxonSearchResultPage extends GenericPortalPage {
      *
      */
     @SuppressWarnings("unchecked")
-    public <T extends PortalPage> T  clickTaxonName(TaxonListElement taxonListElement, Class<T> pageClass) throws Exception {
+    public <T extends PortalPage> T  clickTaxonName(TaxonListElement taxonListElement, Class<T> pageClass, UUID taxonUuid) throws Exception {
 
         LinkElement taxonlink = new LinkElement(taxonListElement.getElement().findElement(By.tagName("a")));
         logger.debug("taxonlink to click: " + taxonlink.toString() + " [" + taxonlink.getElement().toString() + "]");
-        return (T) clickLink(taxonlink, new VisibilityOfElementLocated(By.id("featureTOC")), pageClass, 2l, TimeUnit.MINUTES);
+        logger.debug("  waiting for visibility of css selector: .page-cdm-dataportal-taxon-" + taxonUuid.toString() + " ...");
+        return (T) clickLink(taxonlink, new VisibilityOfElementLocated(By.cssSelector(".page-cdm-dataportal-taxon-" + taxonUuid.toString())),
+                    pageClass, 2l, TimeUnit.MINUTES);
 
     }
 
