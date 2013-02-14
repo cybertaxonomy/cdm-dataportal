@@ -476,7 +476,7 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
 
   // --- preliminar solution: using themes.
   $render_templates = theme('get_nameRenderTemplate', array());
-  if (!isset($template)) {
+  if (!isset($render_templates)) {
     // from the variables
     $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
   }
