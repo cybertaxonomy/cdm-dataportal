@@ -2045,7 +2045,11 @@ function form_element_validate_json($element, &$form_state, $form) {
 function submit_json_as_php_array($form, &$form_state) {
   if (is_array($form['#json_elements'])) {
     foreach ($form['#json_elements'] as $element){
-      $form_state['values'][$element] = (array) json_decode($form_state['values'][$element]);
+      if (trim($form_state['values'][$element])) {
+        $form_state['values'][$element] = (array) json_decode($form_state['values'][$element]);
+      } else {
+        $form_state['values'][$element] = NULL;
+      }
     }
   }
 }

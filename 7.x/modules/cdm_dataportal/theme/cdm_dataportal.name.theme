@@ -478,10 +478,7 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
   $render_templates = theme('get_nameRenderTemplate', array());
   if (!isset($template)) {
     // from the variables
-    $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT));
-  } else {
-    // use the default
-    $render_templates = $default_render_templates;
+    $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
   }
 
   // 1. try to find a template using the render path base element
