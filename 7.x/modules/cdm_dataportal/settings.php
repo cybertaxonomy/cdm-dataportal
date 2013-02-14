@@ -112,6 +112,67 @@ function get_taxon_options_list() {
 
 }
 
+define('CDM_PART_DEFINITIONS', 'cdm-part-definitions');
+define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
+  array(
+      'ZoologicalName' => array(
+          'namePart' => array('name' => TRUE),
+          'referencePart' => array('authorTeam' => TRUE),
+          'microreferencePart' => array('microreference' => TRUE),
+          'statusPart' => array('status' => TRUE),
+          'descriptionPart' => array('description' => TRUE),
+      ),
+      'BotanicalName'=> array(
+        'namePart' => array('name' => TRUE),
+        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
+        'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
+        'statusPart' => array('status' => TRUE),
+        'descriptionPart' => array('description' => TRUE),
+      ),
+     '#DEFAULT' => array(
+          'namePart' => array(
+              'name' => TRUE,
+              'authorTeam' => TRUE
+          ),
+          'referencePart' => array(
+              'reference' => TRUE
+          ),
+          'microreferencePart' => array(
+              'microreference' => TRUE,
+          ),
+          'statusPart' => array(
+              'status' => TRUE,
+          ),
+          'descriptionPart' => array(
+              'description' => TRUE,
+          ),
+      )
+    )
+  )
+);
+define('CDM_NAME_RENDER_TEMPLATES', 'cdm-name-render-templates');
+define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
+    array (
+        'list_of_taxa, acceptedFor, taxon_page_synonymy, typedesignations, taxon_page_title, polytomousKey, na' => array(
+            'namePart' => array('#uri' => TRUE),
+        ),
+        'nar'=> array(
+            'namePart' => array('#uri' => TRUE),
+            'authorshipPart' => TRUE,
+            'referencePart' => array('#uri' => TRUE),
+            'microreferencePart' => TRUE,
+        ),
+        '#DEFAULT' => array(
+            'namePart' => array('#uri' => TRUE),
+            'authorshipPart' => TRUE,
+            'referencePart' => array('#uri' => TRUE),
+            'microreferencePart' => TRUE,
+            'statusPart' => TRUE,
+            'descriptionPart' => TRUE,
+        ),
+    )
+));
+
 define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize(get_taxon_options_list()));
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
@@ -523,29 +584,16 @@ function cdm_settings_general() {
  */
 function cdm_settings_layout() {
 
-  // drupal_goto('admin/config/cdm_dataportal/layout/taxon');
   $form = array();
-  /*
-   // -- tabbed pages -- //
-   $form['cdm_dataportal_taxonpage_tabs'] = array(
-   '#type' => 'checkbox',
-   '#title' => t('Tabbed taxon page'),
-   '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
-   '#description' => t('If selected split the taxon page into individual tabs for description, images, synonymy. If not the taxon data is rendered as a long single page without tabs.')
-   );
-   */
-  $form['gen_layout'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Portal Layout'),
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
-    '#description' => t('This settings contains the general configurations
+
+  $form['about'] = array(
+    '#markup' => '<h4>' . t('Portal Layout') . '</h4><p>' . t('This settings contains the general configurations
       layout. If you want to configure the specific sites layout visit the
-      respective configuration site for taxon, search or media.'),
+      respective configuration site for taxon, search or media.') . '</p>',
   );
 
   // ---- footnotes --- //
-  $form['gen_layout']['footnotes'] = array(
+  $form['footnotes'] = array(
     '#type' => 'fieldset',
     '#title' => t('Footnotes'),
     '#collapsible' => FALSE,
@@ -555,14 +603,14 @@ function cdm_settings_layout() {
       footnotes are enabled they will be visible (if they exist).'),
   );
 
-  $form['gen_layout']['footnotes']['cdm_dataportal_all_footnotes'] = array(
+  $form['footnotes']['cdm_dataportal_all_footnotes'] = array(
     '#type' => 'checkbox',
     '#title' => t('Do not show footnotes'),
     '#default_value' => variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES),
     '#description' => t('Check this if you do not want to show any footnotes'),
   );
 
-  $form['gen_layout']['footnotes']['cdm_dataportal_annotations_footnotes'] = array(
+  $form['footnotes']['cdm_dataportal_annotations_footnotes'] = array(
     '#type' => 'checkbox',
     '#title' => t('Do not show annotations footnotes'),
     '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
@@ -572,7 +620,7 @@ function cdm_settings_layout() {
   $annotationTypeOptions = cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE);
   // Additional option for the NULL case.
   $annotationTypeOptions['NULL_VALUE'] = t('untyped');
-  $form['gen_layout']['footnotes']['annotations_types_as_footnotes'] = array(
+  $form['footnotes']['annotations_types_as_footnotes'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Annotation types as footnotes'),
     '#description' => t("Only annotations of the selected type will be displayed
@@ -581,21 +629,187 @@ function cdm_settings_layout() {
   );
   $annotationsTypesAsFootnotes = variable_get('annotations_types_as_footnotes', unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT));
   if (!empty($annotationsTypesAsFootnotes)) {
-    $form['gen_layout']['footnotes']['annotations_types_as_footnotes']['#default_value'] = $annotationsTypesAsFootnotes;
+    $form['footnotes']['annotations_types_as_footnotes']['#default_value'] = $annotationsTypesAsFootnotes;
   }
 
   // --- Advanced Search --- //
-  $form['gen_layout']['asearch'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Advanced search'),
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
+  $form['asearch'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Advanced search'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
   );
-  $form['gen_layout']['asearch']['cdm_dataportal_show_advanced_search'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show advanced search link'),
-    '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
-    '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
+  $form['asearch']['cdm_dataportal_show_advanced_search'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show advanced search link'),
+      '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
+      '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
+  );
+
+  // ---- Taxon Name Rendering --- //
+  $form['taxon_name'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Taxon name display'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#description' => t('The display of taxon names is configured by two parts.'
+          . 'The <srong>name render templates</strong> define the parts of the name to be displayed in the different areas of the data portal pages.'
+          . 'The name parts are defined in the <stong>part definitions</strong>'),
+  );
+
+  drupal_add_js(
+      'jQuery(document).ready( function( ) {
+         // pretty print json
+         var json_text = jQuery(\'#edit-' . CDM_PART_DEFINITIONS . '\').val();
+         var obj = JSON.parse(json_text);
+         jQuery(\'#edit-' . CDM_PART_DEFINITIONS . '\').val(JSON.stringify(obj, undefined, 2));
+
+         json_text = jQuery(\'#edit-' . CDM_NAME_RENDER_TEMPLATES . '\').val();
+         obj = JSON.parse(json_text);
+         jQuery(\'#edit-' . CDM_NAME_RENDER_TEMPLATES . '\').val(JSON.stringify(obj, undefined, 2));
+       });'
+      ,array(
+          'type' => 'inline',
+          'scope' => 'footer'
+      )
+  );
+
+  //TODO remove after all portals are using the settings
+  $default_part_definitions = theme('get_partDefinition', array());
+  if(!is_array($default_part_definitions)) {
+    $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
+  }
+
+  $form['taxon_name'][CDM_PART_DEFINITIONS] = array(
+      '#type' => 'textarea',
+      '#title' => t('Part definitions'),
+      '#element_validate' => array('form_element_validate_json'),
+      '#default_value' =>  json_encode(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions)),
+      '#description' => '
+          <p>
+          (Clearing the text area will reset it to the default)
+          </p>
+          <p>
+           The part definitions define the specific parts of which a rendered taxon name plus additional information will consist.
+          </p>
+          <p>
+           A full taxon name plus additional information can consist of the following elements:
+          <ul>
+             <li>name: the taxon name inclugin rank nbut without author</li>
+             <li>authorTeam:  The authors of a reference, also used in taxon names</li>
+             <li>authors:  The authors of a reference, also used in taxon names</li>
+             <li>reference: the nomenclatural reference,</li>
+             <li>microreference:  Volume, page number etc.</li>
+             <li>status:  The nomenclatural status of a name</li>
+             <li>description: name descriptions like protologues etc ...</li>
+          </ul>
+          </p>
+          <p>
+           These elements are combined in the part definitions array to from the specific parts to be rendered.
+           (The taxon name "Lapsana communis L., Sp. Pl.: 811. 1753" shall be an example in the following)
+           Usually the following parts are formed:
+          <ul>
+            <li>namePart: the name and rank (in example: "Lapsana communis")</li>
+            <li>authorshipPart: the author (in example: "L.")</li>
+            <li>nameAuthorPart: the combination of name and author part (in example: "Lapsana communis L.").</li>
+               This is useful for zoological names where the authorshipPart belongs to the name and both should</li>
+               be combined when a link to the taxon is rendered.</li>
+            <li>referencePart: the nomencaltural reference (in example: "Sp. Pl. 1753")</li>
+            <li>microreferencePart: usually the page number (in example ": 811.")</li>
+            <li>statusPart: the nomenclatorical status</li>
+            <li>descriptionPart: name descriptions like protologues etc ...</li>
+          </ul>
+          </p>
+          <p>
+           Each set of parts is dedicated to render a specific TaxonName type, the type names are used as keys for the
+           specific parts part definitions:
+          <ul>
+            <li>BotanicalName</li>
+            <li>ZoologicalName</li>
+            <li>#DEFAULT: covers ViralNames and other NonViralNames
+          </ul>
+           An example:
+          <pre>
+           {
+            "ZoologicalName": {
+              "namePart": {
+                "name": true
+              },
+              "referencePart": {
+                "authorTeam": true
+              },
+              "microreferencePart": {
+                "microreference": true
+              },
+              "statusPart": {
+                "status": true
+              },
+              "descriptionPart": {
+                "description": true
+              }
+            },
+            "BotanicalName": {
+              "namePart": {
+                "name": true,
+                "authors": true
+              },
+              "referencePart": {
+                "reference": true,
+                "microreference": true
+              },
+              "statusPart": {
+                "status": true
+              },
+              "descriptionPart": {
+                "description": true
+              }
+            }
+          }
+           </pre>',
+  );
+
+  //TODO remove after all portals are using the settings
+  $default_render_templates = theme('get_nameRenderTemplate', array());
+  if(!is_array($default_render_templates)) {
+    $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
+  }
+
+  $form['taxon_name'][CDM_NAME_RENDER_TEMPLATES] = array(
+      '#type' => 'textarea',
+      '#title' => t('Name render templates'),
+      '#element_validate' => array('form_element_validate_json'),
+      '#default_value' =>  json_encode(variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates)),
+      '#description' => '
+          <p>
+          (Clearing the text area will reset it to the default)
+          </p>
+          <p>
+          The render templates array contains one or more name render templates to be used within the page areas identified by the
+          render path. The render path is used as key of the array sub subelements whereas the name render template array is set as value.
+          The following render Path keys are curretly recognized:
+          <ul>
+          	<li>list_of_taxa:</li>
+            <li>acceptedFor:</li>
+            <li>taxon_page_synonymy</li>
+            <li>typedesignations</li>
+            <li>taxon_page_title</li>
+            <li>polytomousKey</li>
+            <li>na: name + authorship</li>
+            <li>nar:name + authorship + reference</li>
+            <li>#DEFAULT</li>
+          </ul>
+          A single render template can be used for multiple render paths. In this case the according key of the render templates
+          array element should be a comma separated list of render paths, without any whitespace!.
+          </p>
+          <p>
+          A render template is an associative array. The keys of this array are referring to the keys as defined in the part
+          definitions array. See <a href="#edit-cdm-part-definitions">Part definitions</a> above for more information.
+          <p>
+          The value of the render template element must be set to TRUE in order to let this part being rendered.
+          The namePart, nameAuthorPart and referencePart can also hold an associative array with a single
+          element: array(\'#uri\' => TRUE). The value of the #uri element will be replaced by the according
+          links if the paramters $nameLink or $refenceLink are given to the name render function
+          (this is hard coded and cannot be configured here).',
   );
 
   // @WA: D7 form api does not support reset buttons,
@@ -604,6 +818,10 @@ function cdm_settings_layout() {
     '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
     '#weight' => 1000,
   );
+
+  $form['#submit'] = array('submit_json_as_php_array');
+  // #json_elements especially defined for submit_json_as_php_array()
+  $form['#json_elements'] = array(CDM_NAME_RENDER_TEMPLATES, CDM_PART_DEFINITIONS);
   return system_settings_form($form);
 }
 
@@ -1789,4 +2007,45 @@ function checkboxes_preferred_after_build($form, &$form_state) {
   $form[$preferred_layer]['#value'] = $preferred_layer;
 
   return $form;
+}
+
+/**
+ * Element validate callback for text field and arrays containing json.
+ *
+ * @param $element
+ *   The form element to validate
+ * @param $form
+ *   Nested array of form elements that comprise the form.
+ * @param $form_state
+ *   A keyed array containing the current state of the form.
+ */
+function form_element_validate_json($element, &$form_state, $form) {
+   if (!empty($element['#value'])) {
+     json_decode($element['#value']);
+     if(json_last_error() != JSON_ERROR_NONE){
+       form_error($element, t('The form element %title contains invalid JSON. You can check the syntax with ', array('%title' => $element['#title'])) . l('JSONLint', 'http://jsonlint.com/'));
+     }
+   }
+}
+
+/**
+ * Form submission handler for textareas and textfields containing JSON.
+ *
+ * The contained JSON will be converted into an php array
+ * or object and will be stores in the variables as such.
+ *
+ * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#submit
+ *
+ * @param $form
+ *   Nested array of form elements that comprise the form.
+ * @param $form_state
+ *   A keyed array containing the current state of the form.
+ *
+ */
+function submit_json_as_php_array($form, &$form_state) {
+  if (is_array($form['#json_elements'])) {
+    foreach ($form['#json_elements'] as $element){
+      $form_state['values'][$element] = (array) json_decode($form_state['values'][$element]);
+    }
+  }
 }

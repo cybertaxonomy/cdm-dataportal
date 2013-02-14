@@ -418,80 +418,104 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
 }
 
 /**
- * @todo document this function.
+ * Provides the name render template to be used within the page elements identified the the $renderPath.
+ *
+ * The render templates arrays contains one or more name render template to be used within the page elements identified the the
+ * renderPath. The renderPath is the key of the subelements whereas the value is the name render template.
+ * The following keys are curretly recogized:
+ *
+ *   - list_of_taxa:
+ *   - acceptedFor:
+ *   - taxon_page_synonymy
+ *   - typedesignations
+ *   - taxon_page_title
+ *   - polytomousKey
+ *   - na: name + authorship
+ *   - nar:name + authorship + reference
+ *   - #DEFAULT
+ *
+ * A single render template can be used for multiple render paths. In this case the according key of the render templates
+ * array element should be the list of these render paths concatenated by ONLY a comma character without any whitespace.
+ *
+ * A render template is an associative array. The keys of this array are referring to the keys as defined in the part
+ * definitions array.
+ * @see get_partDefinition($taxonNameType) for more information
+ *
+ * The value of the render template element must be set to TRUE in order to let this part being rendered.
+ * The namePart, nameAuthorPart and referencePart can also hold an associative array with a single
+ * element: array('#uri' => TRUE). The value of the #uri element will be replaced by the according
+ * links if the paramters $nameLink or $refenceLink are set.
+ *
+ * @param string $renderPath
+ *   The render path can consist of multiple dot separated elements
+ *   @see RenderHints::getRenderPath()
+ * @param string $nameLink
+ *   The link path ot URL to be used for name parts if a link is forseen in the template
+ *   matching the given $renderPath.
+ * @param string $referenceLink
+ *   The link path ot URL to be used for nomencaltural reference parts if a link is forseen
+ *   in the template matching the given $renderPath.
+ * @return array
+ *   An assciative array, the render template
  */
 function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NULL) {
-  // TODO implement admin user interface to replace switch statement
-  // preliminar solution: using themes.
+
   $template = NULL;
 
-  // Find best matching default RenderTemplate in theme.
-  /*
-  echo "<br/><br/>RENDER PATH: ".$renderPath;
-  var_dump('RENDER PATH: ' . $renderPath);
-  */
+  static $default_render_templates = NULL;
+  if (!isset($default_render_templates)) {
+    $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
+  }
 
-  // Preserve renderPath_base.
-  // if (($separatorPos = strpos($renderPath, '.')) >= 0) {
+  // get the base element of the renderPath
   if (($separatorPos = strpos($renderPath, '.')) > 0) {
+    $renderPath_base = substr($renderPath, 0, $separatorPos);
+  } else {
+    $renderPath_base = $renderPath;
   }
-  else {
-    $separatorPos = strlen($renderPath);
+
+  // --- preliminar solution: using themes.
+  $render_templates = theme('get_nameRenderTemplate', array());
+  if (!isset($template)) {
+    // from the variables
+    $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT));
+  } else {
+    // use the default
+    $render_templates = $default_render_templates;
   }
-  $renderPath_base = substr($renderPath, 0, $separatorPos);
 
-  $template = theme('get_nameRenderTemplate', array('renderPath' => $renderPath_base));
+  // 1. try to find a template using the render path base element
+  if(array_key_exists($renderPath_base, $render_templates)){
+    $template = $render_templates[$renderPath_base];
+  }
 
-  if (!empty($template)) {
-    while (!is_array($template) && strlen($renderPath) > 0) {
-      $template = theme('get_nameRenderTemplate', array('renderPath' => $renderPath));
+  // 2. Find best matching default RenderTemplate in theme
+  // by stripping the dot separated render path element by element
+  // is no matching template is found the DEFAULT will be used.
+  while (!is_array($template) && strlen($renderPath) > 0) {
 
-      $renderPath = substr($renderPath, 0, strrpos($renderPath, '.'));
-      /*
-      if(!is_array($template)){
-        echo "<br/>->".$renderPath;
+    foreach ($render_templates as $k => $t) {
+      if (strpos(',' . $k . ',', $renderPath ) !== FALSE) {
+        $template = $t;
+        break;
       }
-      */
     }
-    // Otherwise get default RenderTemplate from theme.
-    if (!is_array($template)) {
-        $template = theme('get_nameRenderTemplate', array('renderPath' => '#DEFAULT'));
+
+    // shorten by one element
+    $renderPath = substr($renderPath, 0, strrpos($renderPath, '.'));
+    /*
+    if(!is_array($template)){
+      echo "<br/>->".$renderPath;
     }
-  }
-  else {
-    switch ($renderPath_base) {
-      case 'list_of_taxa':
-      case 'acceptedFor':
-      case 'taxon_page_synonymy':
-      case 'typedesignations':
-      case 'taxon_page_title':
-      case 'polytomousKey':
-      case 'na':
-        $template = array(
-          'namePart' => array('#uri' => TRUE),
-          // 'authorshipPart' => TRUE,
-        );
-        break;
-      case 'nar':
-        $template = array(
-          'namePart' => array('#uri' => TRUE),
-          'authorshipPart' => TRUE,
-          'referencePart' => array('#uri' => TRUE),
-          'microreferencePart' => TRUE,
-        );
-        break;
-      default:
-        $template = array(
-          'namePart' => array('#uri' => TRUE),
-          'authorshipPart' => TRUE,
-          'referencePart' => array('#uri' => TRUE),
-          'microreferencePart' => TRUE,
-          'statusPart' => TRUE,
-          'descriptionPart' => TRUE,
-        );
-    }
+    */
   }
 
+  // 3. Otherwise get default RenderTemplate from theme.
+  if (!is_array($template)) {
+      $template = $render_templates['#DEFAULT'];
+  }
+
+  // --- set the link uris to the according template fields if they exist
   if ($nameLink && isset($template['nameAuthorPart']['#uri'])) {
     $template['nameAuthorPart']['#uri'] = $nameLink;
   }
@@ -517,64 +541,88 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
 }
 
 /**
+ * The part definitions define the specific parts of which a rendered taxon name plus additional information will consist.
+ *
+ * A full taxon name plus additional information can consist of the following elements:
+ *
+ *   - name: the taxon name inclugin rank nbut without author
+ *   - authorTeam:  The authors of a reference, also used in taxon names
+ *   - authors:  The authors of a reference, also used in taxon names
+ *   - reference: the nomenclatural reference,
+ *   - microreference:  Volume, page number etc.
+ *   - status:  The nomenclatural status of a name
+ *   - description: name descriptions like protologues etc ...
+ *
+ * These elements are combined in the part definitions array to from the specific parts to be rendered.
+ * Usually the following parts are formed:
+ *
+ * The name "Lapsana communis L., Sp. Pl.: 811. 1753" shall be an example here:
+ *  - namePart: the name and rank (in example: "Lapsana communis")
+ *  - authorshipPart: the author (in example: "L.")
+ *  - nameAuthorPart: the combination of name and author part (in example: "Lapsana communis L.").
+ *     This is useful for zoological names where the authorshipPart belongs to the name and both should
+ *     be combined when a link to the taxon is rendered.
+ *  - referencePart: the nomencaltural reference (in example: "Sp. Pl. 1753")
+ *  - microreferencePart: usually the page number (in example ": 811.")
+ *  - statusPart: the nomenclatorical status
+ *  - descriptionPart:
+ *
+ * Each set of parts is dedicated to render a specific TaxonName type, the type names are used as keys for the
+ * specific parts part definitions:
+ *
+ *  - BotanicalName
+ *  - ZoologicalName
+ *  - #DEFAULT:  covers ViralNames and general NonViralNames
+ *
+ * An example:
+ * @code
+ * array(
+ *    'ZoologicalName' => array(
+ *        'namePart' => array('name' => TRUE),
+ *        'referencePart' => array('authorTeam' => TRUE),
+ *        'microreferencePart' => array('microreference' => TRUE),
+ *        'statusPart' => array('status' => TRUE),
+ *        'descriptionPart' => array('description' => TRUE),
+ *    ),
+ *    'BotanicalName' => array(
+ *        'namePart' => array(
+ *            'name' => TRUE,
+ *            'authors' => TRUE,
+ *        ),
+ *        'referencePart' => array(
+ *            'reference' => TRUE,
+ *            'microreference' => TRUE,
+ *        ),
+ *        'statusPart' => array('status' => TRUE),
+ *        'descriptionPart' => array('description' => TRUE),
+ *    ),
+ *  );
+ * @endcode
+ *
  * @todo document this function.
  */
 function get_partDefinition($taxonNameType) {
 
-  // TODO implement admin user interface to allow specify the partdefinitions
-  // for any type.
-  // Preliminar solution: using themes.
-  $partdef = theme('get_partDefinition', array('nameType' => $taxonNameType));
-
-  if (!is_array($partdef)) {
-    switch ($taxonNameType) {
-      case 'ZoologicalName':
-        $partdef = array(
-          'namePart' => array('name' => TRUE),
-          'referencePart' => array('authorTeam' => TRUE),
-          'microreferencePart' => array('microreference' => TRUE),
-          'statusPart' => array('status' => TRUE),
-          'descriptionPart' => array('description' => TRUE),
-        );
-        break;
-      case 'BotanicalName':
-      default:
-        $partdef = array(
-          'namePart' => array(
-            'name' => TRUE,
-            'authors' => TRUE,
-          ),
-          'referencePart' => array(
-            'reference' => TRUE,
-            'microreference' => TRUE,
-          ),
-          'statusPart' => array('status' => TRUE),
-          'descriptionPart' => array('description' => TRUE),
-        );
-        break;
-        /*
-        default: $partdef = array(
-          'namePart' => array(
-          'name' => TRUE,
-          'authorTeam' => TRUE
-        ),
-        'referencePart' => array(
-          'reference' => TRUE
-        ),
-        'microreferencePart' => array(
-          'microreference' => TRUE,
-        ),
-        'statusPart' => array(
-          'status' => TRUE,
-        ),
-        'descriptionPart' => array(
-          'description' => TRUE,
-        ),
-        );
-        */
-    }
+  static $default_part_definitions = null;
+  if (!isset($default_part_definitions)) {
+    $default_part_definitions= unserialize(CDM_PART_DEFINITIONS_DEFAULT);
   }
-  return $partdef;
+
+  // Preliminar solution: using themes.
+  // TODO remove this once all themes are using the newly introcuded part_definition settings
+  $part_definitions = theme('get_partDefinition', array());
+
+  // try to get get part definitions from variables
+  if(!is_array($part_definitions)) {
+    $part_definitions = variable_get(CDM_PART_DEFINITIONS, $default_part_definitions);
+  }
+
+  if (array_key_exists($taxonNameType, $part_definitions)) {
+    return $part_definitions[$taxonNameType];
+  } else {
+    return $part_definitions['#DEFAULT']; // covers ViralNames and general NonViralNames
+  }
+
 }
 
 /**
@@ -739,13 +787,17 @@ function theme_cdm_taxonName($variables) {
             $second_citation = '[& ' . $description_element->multilanguageText_L10n->text . '].';
           }
           $descriptionHtml .= $second_citation;
-          $descriptionHtml .= theme("cdm_media", array('descriptionElement' => $description_element, 'mimeTypePreference' => array(
-  'application/pdf',
-  'image/png',
-  'image/jpeg',
-  'image/gif',
-  'text/html',
-)));
+          $descriptionHtml .= theme("cdm_media", array(
+              'descriptionElement' => $description_element,
+              'mimeTypePreference' => array(
+                  'application/pdf',
+                  'image/png',
+                  'image/jpeg',
+                  'image/gif',
+                  'text/html',
+                )
+              )
+            );
 
         }
       }
@@ -872,51 +924,47 @@ function &get_preceding_contentElementKey($contentElementKey, array &$renderTemp
  *
  * @see get_nameRenderTemplate()
  *
- * @param array $variables
- *   An associative array containing:
- *   - renderPath: feature in which the name is displayed.
+ * @deprecated define name render templates via the layout settings
  *
  * @ingroup: themeable
  */
-function theme_get_nameRenderTemplate($variables) {
+function theme_get_nameRenderTemplate() {
   /*
   // Example usage:
-  $render_path = $variables['renderPath'];
-  $template = array();
-  switch ($render_path) {
-    case 'taxon_page_title':
-    case 'polytomousKey':
-      $template = array(
+//   $render_path = $variables['renderPath'];
+
+  $templates = array(
+    'taxon_page_title,polytomousKey' => array(
         'namePart' => array(
           '#uri' => TRUE
         )
-      );
-      break;
-    case 'taxon_page_synonymy':
-    case 'related_taxon':
-      $template = array(
+      ),
+    'taxon_page_synonymy,related_taxon' => array(
         'nameAuthorPart' => array(
           '#uri' => TRUE
-        ), 'referencePart' => TRUE, 'statusPart' => TRUE, 'descriptionPart' => TRUE
-      );
-      break;
-    case 'acceptedFor':
-      $template = array(
+        ),
+        'referencePart' => TRUE,
+        'statusPart' => TRUE,
+        'descriptionPart' => TRUE
+      ),
+     'acceptedFor' => array(
         'nameAuthorPart' => array(
           '#uri' => TRUE
-        ), 'referencePart' => TRUE
-      );
-      break;
-    case 'typedesignations':
-    case 'list_of_taxa':
-    case '#DEFAULT':
-      $template = array(
+        ),
+        'referencePart' => TRUE
+      ),
+     'typedesignations,list_of_taxa' => array(
         'nameAuthorPart' => array(
            '#uri' => TRUE
         ), 'referencePart' => TRUE
-      );
-  }
-  return $template;
+      ),
+    '#DEFAULT'=> array(
+        'nameAuthorPart' => array(
+           '#uri' => TRUE
+        ), 'referencePart' => TRUE
+      )
+  );
+  return $templates;
   */
-  return FALSE;
+
 }

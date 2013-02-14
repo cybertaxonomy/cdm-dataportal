@@ -394,60 +394,48 @@ function phptemplate_menu_local_tasks() {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * @deprecated define name render templates via the layout settings
  */
-function garland_cichorieae_get_partDefinition($variables) {
-  if ($variables['nameType'] == 'BotanicalName') {
-    return array(
-      'namePart' => array('name' => TRUE),
-      'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
-      'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
-      'statusPart' => array('status' => TRUE),
-      'descriptionPart' => array('description' => TRUE),
-    );
-  }
-  return FALSE;
+function garland_cichorieae_get_partDefinition() {
+  return array(
+     'BotanicalName' => array(
+        'namePart' => array('name' => TRUE),
+        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
+        'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
+        'statusPart' => array('status' => TRUE),
+        'descriptionPart' => array('description' => TRUE),
+    )
+  );
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * @deprecated define name render templates via the layout settings
  */
 function garland_cichorieae_get_nameRenderTemplate($variables) {
-  $template = array();
-
-  switch ($variables['renderPath']) {
-    case 'taxon_page_title':
-    case 'polytomousKey':
-      $template = array(
+  $templates = array(
+   'taxon_page_title,polytomousKey'=> array(
         'namePart' => array('#uri' => TRUE),
-      );
-      break;
-    case 'taxon_page_synonymy':
-    case 'related_taxon':
-      $template = array(
+      ),
+    'taxon_page_synonymy','related_taxon'=> array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
         'statusPart' => TRUE,
         'descriptionPart' => TRUE,
-      );
-      break;
-    case 'acceptedFor':
-      $template = array(
+      ),
+    'acceptedFor' => array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
-      );
-      break;
-    case 'typedesignations':
-    case 'list_of_taxa':
-    case '#DEFAULT':
-      $template = array(
+      ),
+    'typedesignations,list_of_taxa' => array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
-      );
-  }
-  return $template;
+      ),
+    '#DEFAULT' => array(
+        'nameAuthorPart' => array('#uri' => TRUE),
+        'referencePart' => TRUE,
+      )
+    );
+  return $templates;
 }
 
 /**

@@ -321,59 +321,81 @@ function STARTERKIT_preprocess_block(&$variables, $hook) {
 // */
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ *  @deprecated define name render templates via the layout settings
  */
-function zen_dataportal_get_partDefinition($variables) {
-  if ($variables['nameType'] == 'BotanicalName') {
-    return array(
+function zen_dataportal_get_partDefinition() {
+  return array(
+    'BotanicalName'=> array(
         'namePart' => array('name' => TRUE),
         'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
         'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
         'statusPart' => array('status' => TRUE),
         'descriptionPart' => array('description' => TRUE),
+    ),
+    'ZoologicalName' => array(
+          'namePart' => array('name' => TRUE),
+          'referencePart' => array('authorTeam' => TRUE),
+          'microreferencePart' => array('microreference' => TRUE),
+          'statusPart' => array('status' => TRUE),
+          'descriptionPart' => array('description' => TRUE),
+      ),
+    '#DEFAULT' => array(
+        'namePart' => array(
+            'name' => TRUE,
+            'authorTeam' => TRUE
+        ),
+        'referencePart' => array(
+            'reference' => TRUE
+        ),
+        'microreferencePart' => array(
+            'microreference' => TRUE,
+        ),
+        'statusPart' => array(
+            'status' => TRUE,
+        ),
+        'descriptionPart' => array(
+            'description' => TRUE,
+        ),
+      )
     );
-  }
-  return FALSE;
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * @deprecated define name render templates via the layout settings
  */
-function zen_dataportal_get_nameRenderTemplate($variables) {
-  $template = array();
+function zen_dataportal_get_nameRenderTemplate() {
 
-  switch ($variables['renderPath']) {
-    case 'taxon_page_title':
-    case 'polytomousKey':
-      $template = array(
-      'namePart' => array('#uri' => TRUE),
-      );
-      break;
-    case 'taxon_page_synonymy':
-    case 'related_taxon':
-      $template = array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referencePart' => TRUE,
-      'statusPart' => TRUE,
-      'descriptionPart' => TRUE,
-      );
-      break;
-    case 'acceptedFor':
-      $template = array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referencePart' => TRUE,
-      );
-      break;
-    case 'typedesignations':
-    case 'list_of_taxa':
-    case '#DEFAULT':
-      $template = array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referencePart' => TRUE,
-      );
-  }
-  return $template;
+  $templates = array(
+    'taxon_page_title,polytomousKey' => array(
+        'namePart' => array(
+          '#uri' => TRUE
+        )
+      ),
+    'taxon_page_synonymy,related_taxon' => array(
+        'nameAuthorPart' => array(
+          '#uri' => TRUE
+        ),
+        'referencePart' => TRUE,
+        'statusPart' => TRUE,
+        'descriptionPart' => TRUE
+      ),
+     'acceptedFor' => array(
+        'nameAuthorPart' => array(
+          '#uri' => TRUE
+        ),
+        'referencePart' => TRUE
+      ),
+     'typedesignations,list_of_taxa' => array(
+        'nameAuthorPart' => array(
+           '#uri' => TRUE
+        ), 'referencePart' => TRUE
+      ),
+    '#DEFAULT'=> array(
+        'nameAuthorPart' => array(
+           '#uri' => TRUE
+        ), 'referencePart' => TRUE
+      )
+  );
+  return $templates;
 }
 

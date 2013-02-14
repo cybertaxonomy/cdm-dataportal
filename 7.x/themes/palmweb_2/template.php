@@ -670,55 +670,72 @@ function phptemplate_menu_local_tasks() {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ *  @deprecated define name render templates via the layout settings
  */
 function palmweb_2_get_partDefinition($variables) {
 
-  if ($variables['nameType'] == 'BotanicalName') {
-    return array(
-      'namePart' => array('name' => TRUE, 'authors' => TRUE),
-      'authorshipPart' => array(),
-      'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
-      'statusPart' => array('status' => TRUE),
-      'descriptionPart' => array('description' => TRUE),
-    );
-  }
-  return FALSE;
+  return array(
+    'BotanicalName'=> array(
+        'namePart' => array('name' => TRUE),
+        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
+        'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
+        'statusPart' => array('status' => TRUE),
+        'descriptionPart' => array('description' => TRUE),
+    ),
+    'ZoologicalName' => array(
+          'namePart' => array('name' => TRUE),
+          'referencePart' => array('authorTeam' => TRUE),
+          'microreferencePart' => array('microreference' => TRUE),
+          'statusPart' => array('status' => TRUE),
+          'descriptionPart' => array('description' => TRUE),
+      ),
+    '#DEFAULT' => array(
+        'namePart' => array(
+            'name' => TRUE,
+            'authorTeam' => TRUE
+        ),
+        'referencePart' => array(
+            'reference' => TRUE
+        ),
+        'microreferencePart' => array(
+            'microreference' => TRUE,
+        ),
+        'statusPart' => array(
+            'status' => TRUE,
+        ),
+        'descriptionPart' => array(
+            'description' => TRUE,
+        ),
+      )
+  );
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ *  @deprecated define name render templates via the layout settings
  */
 function palmweb_2_get_nameRenderTemplate($variables){
-$template = '';
-
-  switch ($variables['renderPath']) {
-      case 'acceptedFor':
-        $template = array(
-          'namePart' => array('#uri'=>TRUE),
-        );
-        break;
-      case 'typedesignations':
-        $template = array(
-          'namePart' => array('#uri'=>TRUE),
-          'referencePart' => TRUE,
-        );
-      case 'taxon_page_title':
-      case 'list_of_taxa':
-      case 'taxon_page_synonymy':
-      case 'related_taxon':
-      case 'polytomousKey':
-      case '#DEFAULT':
-        $template = array(
-          'namePart' => array('#uri'=>TRUE),
-          'referencePart' => TRUE,
-          'descriptionPart' => TRUE,
-          'statusPart' => TRUE,
-        );
-  }
-  return $template;
+  return array(
+    'acceptedFor' =>
+      $template = array(
+        'namePart' => array('#uri'=>TRUE),
+      ),
+    'typedesignations' => array(
+        'namePart' => array('#uri'=>TRUE),
+        'referencePart' => TRUE,
+      ),
+    'taxon_page_title,list_of_taxa,taxon_page_synonymy,related_taxon,polytomousKey' => array(
+        'namePart' => array('#uri'=>TRUE),
+        'referencePart' => TRUE,
+        'descriptionPart' => TRUE,
+        'statusPart' => TRUE,
+      ),
+    '#DEFAULT' => array(
+        'namePart' => array('#uri'=>TRUE),
+        'referencePart' => TRUE,
+        'descriptionPart' => TRUE,
+        'statusPart' => TRUE,
+     )
+  );
 }
 
 /**

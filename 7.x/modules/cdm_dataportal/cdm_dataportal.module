@@ -1467,7 +1467,8 @@ function html_class_atttibute_ref($cdmEntity) {
 }
 
 /**
- * Preprocess the taggedName to normalize newly introduced tagtypes like hybridSign, separator, .. more?
+ * Preprocess the taggedName to normalize newly introduced
+ * tagtypes like hybridSign, separator, .. more?
  *
  * @param unknown_type $taggedTextList
  */

@@ -192,9 +192,8 @@ function cdm_dataportal_theme() {
           'accepted_taxon_uuid' => NULL,
           'prependedSynonyms' => array(),
       )),
-      'get_nameRenderTemplate' => array('variables' => array('renderPath' => NULL)),
-      'get_partDefinition' => array('variables' => array('nameType' => NULL)),
-      'get_nameRenderTemplate' => array('variables' => array('renderPath' => NULL)),
+      'get_nameRenderTemplate' => array('variables' => array()),
+      'get_partDefinition' => array('variables' => array()),
 
       // Themes in cdm_dataportal.occurrence.theme.
       'cdm_specimen' => array('variables' => array('specimenTypeDesignation' => NULL)),
