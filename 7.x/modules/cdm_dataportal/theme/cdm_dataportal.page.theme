@@ -105,8 +105,6 @@ function theme_cdm_taxon_page($variables) {
 
   $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
 
-  $hideTabs = array();
-
   // --- GET Images --- //
   $mediaQueryParameters = array(
     "type" => "ImageFile",
@@ -124,7 +122,7 @@ function theme_cdm_taxon_page($variables) {
     ), queryString($mediaQueryParameters));
   }
   if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
-    $hideTabs[] = theme('cdm_taxonpage_tab', array('tabname' => 'Images'));
+    taxon_page_tabs_hidden('images');
   }
   // HideImage flag depending on administative preset.
   $hideImages = FALSE;
@@ -138,7 +136,7 @@ function theme_cdm_taxon_page($variables) {
 
   $specimensOrObservationsCount = is_array($specimensOrObservations) ? count($specimensOrObservations) : 0;
   if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
-    $hideTabs[] = theme('cdm_taxonpage_tab', array('tabname' => 'Specimens'));
+    taxon_page_tabs_hidden('specimens');
   }
 
   // --- GET polytomousKeys --- //
@@ -148,29 +146,17 @@ function theme_cdm_taxon_page($variables) {
     $identificationKeyCount += $polytomousKeysPager->count;
   }
   if ($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')) {
-    $hideTabs[] = theme('cdm_taxonpage_tab', array('tabname' => 'Keys'));
+    taxon_page_tabs_hidden('keys');
   }
 
   if ($tabsToDisplay["Synonymy"] == '0') {
-    $hideTabs[] = theme('cdm_taxonpage_tab', array('tabname' => 'Synonymy'));
+    taxon_page_tabs_hidden('synonymy');
   }
 
   // -------------------------------------------- //
-  // Hide tabs.
-  $tabhide_js = '';
-  foreach ($hideTabs as $tabText) {
-    $tabhide_js .= "jQuery('.tabs.primary').children('li').children('a:contains(\"$tabText\")').hide();\n";
-  }
-  drupal_add_js("
-  jQuery(document).ready(function(){
-  $tabhide_js
-    });", array('type' => 'inline'));
-
 
   $render_array['back_to_search'] = markup_to_render_array(theme('cdm_back_to_search_result_button'), $weight++);
 
-  // var_dump(variable_get('cdm_dataportal_display_is_accepted_for',
-  // CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR));
   if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR)) {
     $render_array['accepted_for'] = theme('cdm_acceptedFor', 'page_general');
   }

@@ -197,3 +197,58 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
   RenderHints::popFromRenderStack();
   return $render_array;
 }
+
+/**
+ * Manages the tab to be hidden in the taxon page.
+ *
+ * The tabs are identified by their last menu link path element:
+ *  - description
+ *  - synonymy
+ *  - images
+ *  - specimens
+ *  - key
+ *
+ * Internally the tabs are stored in a static variable which is
+ * managed by drupal_static().
+ *
+ * @param string $add_tab
+ *   Optinal parameter. The given string will be added to the array of tabs
+ *
+ * @return
+ *   The array of tabs
+ */
+function taxon_page_tabs_hidden($add_tab = NULL) {
+  $tabs = &drupal_static(__FUNCTION__);
+
+  if(!isset($tabs)){
+    $tabs = array();
+  }
+
+  if (isset($add_tab) && !array_key_exists($add_tab, $tabs)) {
+    $tabs[] = $add_tab;
+  }
+
+  return $tabs;
+}
+
+/**
+ * Implements the hook_preprocess_HOOK() for theme_menu_local_tasks()
+ *
+ * Removes the tabs to be hidden, @see taxon_page_tabs_hidden()
+ *
+ * @param array $variables
+ *   The variables array
+ */
+function cdm_dataportal_preprocess_menu_local_tasks(&$variables) {
+
+  $hidden_tabs = taxon_page_tabs_hidden();
+
+  foreach ($variables['primary'] as $key => &$element) {
+    foreach ($hidden_tabs as $tab) {
+      if ($element['#link']['path'] == 'cdm_dataportal/taxon/%/' . $tab) {
+        // remove the tab
+        unset($variables['primary'][$key]);
+      }
+    }
+  }
+}
