@@ -169,6 +169,7 @@ if($country != null || $state != null){
   //GermanFederalStates
   if($state != null){
   $nameRelationshipTypeOptions = cdm_Vocabulary_as_option($state);
+  asort($nameRelationshipTypeOptions);
   $form['regionFilter']['area'] = array(
     '#type' => 'checkboxes',
     '#description' =>t('Select an area to filter the list of taxa'),
