@@ -32,6 +32,8 @@ function cdm_dataportal_uninstall() {
  * - 1 digit for Drupal core compatibility.
  * - 1 digit for your module's major release version (e.g., is this the 7.x-1.* (1) or 7.x-2.* (2) series of your module?). This digit should be 0 for initial porting of your module to a new Drupal core API.
  * - 2 digits for sequential counting, starting with 00.
+ *
+ * @see http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_update_N/7
  */
 
 /**
@@ -40,8 +42,8 @@ function cdm_dataportal_uninstall() {
  */
 function cdm_dataportal_update_7301() {
   // reset edit_map_server variable to default
-  variable_del('edit_map_server');
-  return t('Resetting setting for EDIT map server (edit_map_server) to default');
+   return
+  _remove_variable('edit_map_server');
 }
 
 /**
@@ -49,14 +51,17 @@ function cdm_dataportal_update_7301() {
  *  - reset edit_map_server variable to default
  */
 function cdm_dataportal_update_7302() {
-  // once again reset edit_map_server variable to default
-  variable_del('edit_map_server');
-  return t('Resetting setting for EDIT map server (edit_map_server) to default');
+
+  return
+  _remove_variable('edit_map_server') . // once again reset edit_map_server variable to default
+  _rename_variable('cdm_dataportal_show_media', 'cdm_images_include_children');
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Renames a persistent variable.
+ *
+ * @return
+ *   A message string of the performed operation.
  */
 function _rename_variable($old_name, $new_name) {
   $success = FALSE;
@@ -70,30 +75,42 @@ function _rename_variable($old_name, $new_name) {
     $success = TRUE;
   }
 
-  return array('success' => $success, 'query' => "Renaming variable $old_name to $new_name");
+  return "Variable \'$old_name\' to \'$new_name\' renamed. ";
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Unsets a persistent variable.
+ *
+ * Calls variable_del() and returns a message string.
+ *
+ * @return
+ *   A message string of the performed operation.
  */
 function _remove_variable($name) {
   variable_del($name);
-  return array('success' => TRUE, 'query' => "Removing variable $name");
+  return "Variable \'$name\' removed. ";
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Sets a persistent variable.
+ *
+ * Calls variable_set() and returns a message string.
+ *
+ * @return
+ *   A message string of the performed operation.
  */
 function _create_variable($name, $value) {
   variable_set($name, $value);
-  return array('success' => TRUE, 'query' => "Creating variable $name new value: $value");
+  return "Variable \'$name\' created with value: \'$value\'. ";
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Overwrites a persistent variable.
+ *
+ * Calls _create_variable() and returns a message string.
+ *
+ * @return
+ *   A message string of the performed operation.
  */
 function _modify_variable($name, $value_override) {
   /*

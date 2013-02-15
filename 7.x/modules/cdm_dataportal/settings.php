@@ -406,8 +406,9 @@ function cdm_settings_general() {
     '#title' => t('CDM Server'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
-    '#description' => t('<em>CDM Server</em> makes the dialogue possible with
-      <em>CDM Data Portal</em> thanks to its web services.'),
+    '#description' => t('The <em>CDM Server</em> exposes data stored in a
+        CDM data base to the web via RESTful web services and thus is the source of the data
+        to be displayed by a CDM DataPotal.'),
   );
 
   $form['cdm_webservice']['cdm_webservice_url'] = array(
@@ -501,7 +502,7 @@ function cdm_settings_general() {
 
   // TODO: settings are still incomplete, compare with
   // trunk/dataportal/inc/config_default.php.inc.
-  $form['cdm_dataportal'] = array(
+  $form['taxon_tree'] = array(
     '#type' => 'fieldset',
     '#title' => t('Taxon Tree'),
     '#collapsible' => FALSE,
@@ -515,7 +516,7 @@ function cdm_settings_general() {
       </a></p>'),
   );
 
-  $form['cdm_dataportal'][CDM_TAXONOMICTREE_UUID] = array(
+  $form['taxon_tree'][CDM_TAXONOMICTREE_UUID] = array(
     '#type' => 'select',
     '#title' => t('Available classifications') . ':',
     '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, FALSE),
@@ -525,7 +526,7 @@ function cdm_settings_general() {
       with a manual user change.'),
   );
 
-  $form['cdm_dataportal']['taxontree_ranklimit'] = array(
+  $form['taxon_tree']['taxontree_ranklimit'] = array(
     '#type' => 'select',
     '#title' => t('Rank of highest displayed taxon') . ':',
      // Before DEFAULT_TAXONTREE_RANKLIMIT_UUID.
@@ -536,10 +537,40 @@ function cdm_settings_general() {
       level of the tree structure.'),
   );
 
-  $form['cdm_dataportal'][CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS] = array(
+  $form['aggregation'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Aggregation of data'),
+      '#collapsible' => FALSE,
+      '#description' => t("This section covers the different aspects of aggregating information.
+          <p>
+          <strong>NOTICE:</strong> Aggregation may slow down your data portal, so you may want to sensibly apply these setting and you may also
+          whant to make use of the caching capabilities of the dataportal.</p>"),
+
+  );
+
+  $form['aggregation']['media_aggregation'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Media aggregation'),
+      '#collapsible' => FALSE,
+      '#collapsed' => TRUE,
+      '#description' => t("The media aggregation is also affected by the settigs in \"<strong>Aggregation via taxon relationsships</strong>\" below."),
+
+  );
+  $form['aggregation']['media_aggregation']['cdm_images_include_children'] = array(
+      '#type' => 'select',
+      '#title' => t('Aggregation of taxon pictures') . ':',
+      '#default_value' => variable_get('cdm_images_include_children', FALSE),
+      '#options' => array(
+          0 => "Show only pictures of the current taxon",
+          1 => "Include pictures of taxonomic children",
+      ),
+      '#description' => t("Choose whether to include the images of the taxonomic children. This will affect the <em>Images</em> tab and image tumbnails like in the search results."),
+  );
+
+  $form['aggregation']['aggregate_by_taxon_relationships'][CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS] = array(
       '#type' => 'fieldset',
       '#attributes' => array('class'=>array('clearfix')),
-      '#title' => t('Information aggregation via taxon relationsships'),
+      '#title' => t('Aggregation via taxon relationsships'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#tree' => TRUE,
@@ -553,13 +584,13 @@ function cdm_settings_general() {
   $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
   $aggregate_by_taxon_relationships = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
 
-  $form['cdm_dataportal'][CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS]['direct'] = array(
+  $form['aggregation']['aggregate_by_taxon_relationships'][CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS]['direct'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Direct'),
       '#options' => $taxonRelationshipTypeOptions,
       '#default_value' => $aggregate_by_taxon_relationships['direct'],
   );
-  $form['cdm_dataportal'][CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS]['invers'] = array(
+  $form['aggregation']['aggregate_by_taxon_relationships'][CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS]['invers'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Invers'),
       '#options' => $taxonRelationshipTypeOptions,
@@ -967,7 +998,7 @@ function cdm_settings_layout_taxon() {
   $form['taxon_profile'] = array(
     '#type' => 'fieldset',
     '#title' => t('Taxon profile (tab)'),
-    '#description' => t('<p>This section covers the setting related to the taxon
+    '#description' => t('<p>This section covers the settings related to the taxon
       profile tab, also known as the <strong>"General"</strong> tab.</p>'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
@@ -976,10 +1007,10 @@ function cdm_settings_layout_taxon() {
   // ---- PROFILE PICTURE ----//
   $form['taxon_profile']['picture'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Profile Picture'),
+    '#title' => t('Taxon profile picture'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
-    '#description' => t('Select a profile picture for taxa. Like a facebook of plants.'),
+    '#description' => t('This sections allows configuring the display of the so called taxon profile image which is displayed in the taxon profile tab.'),
   );
 
   $form['taxon_profile']['picture']['cdm_dataportal_show_default_image'] = array(
@@ -993,24 +1024,10 @@ function cdm_settings_layout_taxon() {
   array_unshift($options, '-- DISABLED --');
   $form['taxon_profile']['picture']['image_hide_rank'] = array(
     '#type' => 'select',
-    '#title' => t('Hide picture for taxa above') . ':',
+    '#title' => t('Hide profile picture for higher ranks') . ':',
     '#default_value' => variable_get('image_hide_rank', '0'),
     '#options' => $options,
-    '#description' => t('Select which rank of pictures should not have
-      a profile picture.'),
-  );
-  // Show picture.
-  $selectShowMedia = array(
-    0 => "Show only taxon pictures",
-    1 => "Show taxon and child taxa pictures",
-  );
-
-  $form['taxon_profile']['picture']['cdm_dataportal_show_media'] = array(
-    '#type' => 'select',
-    '#title' => t('Available picture files') . ':',
-    '#default_value' => variable_get('cdm_dataportal_show_media', FALSE),
-    '#options' => $selectShowMedia,
-    '#description' => t("Show the profile pictures current taxon's children."),
+    '#description' => t('The taxon profile picture will not be shown for taxa with rank higher that the selected.'),
   );
 
   // -- MEDIA THUMBNAILS -- //

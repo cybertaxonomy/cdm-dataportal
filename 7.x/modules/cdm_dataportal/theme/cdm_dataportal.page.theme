@@ -105,25 +105,13 @@ function theme_cdm_taxon_page($variables) {
 
   $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
 
-  // --- GET Images --- //
-  $mediaQueryParameters = array(
-    "type" => "ImageFile",
-  );
+  $media = _load_media_for_taxon($taxon);
 
-  $selectShowMedia = variable_get('cdm_dataportal_show_media', 0);
-  if ($selectShowMedia == 0) {
-    $media = cdm_ws_get(CDM_WS_PORTAL_TAXON_MEDIA, array(
-      $taxon->uuid,
-    ), queryString($mediaQueryParameters));
-  }
-  else {
-    $media = cdm_ws_get(CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA, array(
-      $taxon->uuid,
-    ), queryString($mediaQueryParameters));
-  }
+
   if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
     taxon_page_tabs_hidden('images');
   }
+
   // HideImage flag depending on administative preset.
   $hideImages = FALSE;
   if (variable_get('image_hide_rank', '0') != '0' && isset($taxon->name->rank->uuid)) {

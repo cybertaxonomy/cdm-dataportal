@@ -900,6 +900,99 @@ function _load_taxonBase(&$taxonBase) {
 }
 
 /**
+ * Loads the media associated to the given taxon from the cdm server.
+ * The aggregation settings regarding taxon relathionships and
+ * taxonnomic childen are taken into account.
+ *
+ * The media lists are cached in a static variable.
+ *
+ * @param Taxon $taxon
+ *   A CDM Taxon entitiy
+ *
+ * @return array
+ *   An array of CDM Media entities
+ *
+ */
+function _load_media_for_taxon($taxon) {
+
+  static $media = NULL;
+
+  if(!isset($media)) {
+    $media = array();
+  }
+  if (!isset($media[$taxon->uuid])) {
+
+    // --- GET Images --- //
+    $mediaQueryParameters = array(
+        "type" => "ImageFile",
+    );
+
+    $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
+    $mediaQueryParameters['relationships'] = implode(',', get_selection($relationship_choice['direct']));
+    $mediaQueryParameters['relationshipsInvers'] = implode(',', get_selection($relationship_choice['invers']));
+
+    $ws_endpoint = NULL;
+    if ( variable_get('cdm_images_include_children', 0) == 0) {
+      $ws_endpoint = CDM_WS_PORTAL_TAXON_MEDIA;
+    } else {
+      $ws_endpoint = CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA;
+    }
+
+    $media[$taxon->uuid] = cdm_ws_get($ws_endpoint,
+        array(
+            $taxon->uuid,
+        ),
+        queryString($mediaQueryParameters)
+       );
+  }
+
+  return $media[$taxon->uuid];
+}
+
+/**
+ *
+ * @param Taxon $taxon
+ *   A CDM Taxon entitiy
+ *
+ * @return array
+ *   An array of CDM SpecimenOrObservation entities
+ *
+function _load_occurences_for_taxon($taxon){
+
+  static $occurences = NULL;
+
+  if(!isset($occurences)) {
+    $occurences = array();
+  }
+
+  if (!isset($occurences[$taxon->uuid])){
+
+    $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
+    $relationship_choice['direct'] = get_selection($relationship_choice['direct']);
+    $relationship_choice['invers'] = get_selection($relationship_choice['invers']);
+
+    $by_associatedtaxon_query = http_build_query(array(
+        'relationshipsInvers' => implode(',', $relationship_choice['invers']),
+        'relationships' => implode(',', $relationship_choice['direct']),
+        'pageSize' => null // all hits in one page
+    )
+    );
+
+    $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+        null,
+        $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
+    );
+
+
+    if(isset($pager->records[0])){
+      $occurences[$taxon->uuid] =  $pager->records;
+    }
+  }
+  return $occurences[$taxon->uuid];
+}
+ */
+
+/**
  * Gets a Drupal variable, string or array and returns it.
  *
  * Similar to the variable_get() function of Drupal, except that this function

@@ -234,7 +234,8 @@ function taxon_page_tabs_hidden($add_tab = NULL) {
 /**
  * Implements the hook_preprocess_HOOK() for theme_menu_local_tasks()
  *
- * Removes the tabs to be hidden, @see taxon_page_tabs_hidden()
+ *  - Removes the tabs to be hidden, @see taxon_page_tabs_hidden()
+ *  - Renames tabs according to the settings // TODO (this will replace the theme_cdm_taxonpage_tab() function !!!)
  *
  * @param array $variables
  *   The variables array
@@ -243,11 +244,13 @@ function cdm_dataportal_preprocess_menu_local_tasks(&$variables) {
 
   $hidden_tabs = taxon_page_tabs_hidden();
 
-  foreach ($variables['primary'] as $key => &$element) {
-    foreach ($hidden_tabs as $tab) {
-      if ($element['#link']['path'] == 'cdm_dataportal/taxon/%/' . $tab) {
-        // remove the tab
-        unset($variables['primary'][$key]);
+  if (is_array($variables['primary'])) {
+    foreach ($variables['primary'] as $key => &$element) {
+      foreach ($hidden_tabs as $tab) {
+        if ($element['#link']['path'] == 'cdm_dataportal/taxon/%/' . $tab) {
+          // remove the tab
+          unset($variables['primary'][$key]);
+        }
       }
     }
   }
