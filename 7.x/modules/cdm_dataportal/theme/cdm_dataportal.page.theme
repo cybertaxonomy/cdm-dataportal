@@ -172,7 +172,7 @@ function theme_cdm_taxon_page($variables) {
   // var_dump(variable_get('cdm_dataportal_display_is_accepted_for',
   // CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR));
   if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR)) {
-    $out .= theme('cdm_acceptedFor', 'page_general');
+    $render_array['accepted_for'] = theme('cdm_acceptedFor', 'page_general');
   }
 
   // --- PAGE PART: DESCRIPTION --- //
