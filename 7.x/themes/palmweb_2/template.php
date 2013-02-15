@@ -676,8 +676,8 @@ function palmweb_2_get_partDefinition($variables) {
 
   return array(
     'BotanicalName'=> array(
-        'namePart' => array('name' => TRUE),
-        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
+        'namePart' => array('name' => TRUE, 'authors' => TRUE),
+        'authorshipPart' => array(),
         'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
         'statusPart' => array('status' => TRUE),
         'descriptionPart' => array('description' => TRUE),

@@ -416,7 +416,7 @@ function garland_cichorieae_get_nameRenderTemplate($variables) {
    'taxon_page_title,polytomousKey'=> array(
         'namePart' => array('#uri' => TRUE),
       ),
-    'taxon_page_synonymy','related_taxon'=> array(
+    'taxon_page_synonymy,related_taxon'=> array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
         'statusPart' => TRUE,
