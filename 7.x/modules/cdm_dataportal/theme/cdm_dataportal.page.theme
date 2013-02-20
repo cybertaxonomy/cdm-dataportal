@@ -422,6 +422,76 @@ function theme_cdm_taxon_page_synonymy($variables) {
   return $out;
 }
 
+
+/**
+ * Returns HTML for the given result page including a pager.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - pager: The cdmlib pager object containing the result set of cdm base
+ *     objects (currently this function can only handle taxon instances =>
+ *     TODO)
+ *   - path: The target path for the pager links, this will usually point to
+ *     'cdm_dataportal/search/results/taxon'.
+ *   - query_parameters: The query parameters to be used in the pager links.
+ *
+ * @ingroup themeable
+ */
+function theme_cdm_search_results($variables) {
+  $pager = $variables['pager'];
+  $path = $variables['path'];
+  $query_parameters = $variables['query_parameters'];
+  $freetextSearchResults = array();
+  // The $query_parameters must not contain the 'q' parameter
+  // since this would conflict with the desired target $path.
+  // unset($search_params['q']);
+  // If the pager contains records of SearchResults, extract the taxa and use
+  // them as records instead.
+  if (isset($pager->records[0]) && $pager->records[0]->class == "SearchResult") {
+    $freetextSearchResults = $pager->records;
+    $taxa = array();
+    // $highlightedFragments = array();
+    foreach ($pager->records as $searchResult) {
+      $taxa[] = &$searchResult->entity;
+      /*
+       if(!isset($searchResult->fieldHighlightMap)){
+      $searchResult->fieldHighlightMap = NULL;
+      }
+      $fragmentHighlighting[] = $searchResult->fieldHighlightMap;
+      */
+    }
+    $pager->records = $taxa;
+  }
+
+  $out = '';
+  // Add thumbnails checkbox and refine search link.
+  $out = '<div class="page_options">';
+  if (isset($_REQUEST['ws'])) {
+    if (cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) {
+      $out .= '<div id="backButton">' . l(t('Modify search'), cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
+    }
+  }
+  $out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" ' . (do_showThumbnails() == 1 ? 'checked="checked"' : '') . '> ' . t('Show Thumbnails') . '</form>';
+  $out .= '</div>';
+
+  // List results.
+  if (isset($pager->records) && count($pager->records) > 0) {
+    $out .= '<div id="search_results">';
+    $out .= theme('cdm_list_of_taxa', array('records' => $pager->records, 'freetextSearchResults' => $freetextSearchResults));
+    $out .= '</div>';
+    $out .= theme('cdm_pager', array(
+        'pager' => $pager,
+        'path' => $path,
+        'parameters' => $query_parameters,
+    ));
+  }
+  else {
+    $out .= '<h4 class="error">Sorry, no matching entries found.</h4>';
+  }
+  return $out;
+}
+
+
 /**
  * TODO Implementation of Hook taxon_image_gallery()
  *
