@@ -114,9 +114,24 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
 }
 
 /**
- * @todo document ths function.
+ * Creates a search form for searching on taxa.
+ *
+ * If advanced $advancedForm id TRUE the form will offer additinal choices
+ *
+ * @param unknown_type $form
+ * @param unknown_type $form_state
+ * @param bool $advancedForm
+ *    default is FALSE
+ * @param bool $classificationSelect
+ *    set TRUE to offer a classifiaction selector in the form - default is FALSE
+ *    if only available in the advanced mode
+ *
+ * @return
+ *   the form array
+ *
+ *
  */
-function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = FALSE) {
+function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = FALSE, $classificationSelect = TRUE) {
   global $theme_key;
 
   $tdwg_level_select = (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
@@ -129,12 +144,6 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
   if (!$advancedForm) {
     $form['query']['#size'] = 20;
   }
-
-  $form['search']['tree'] = array(
-    '#weight' => -1,
-    '#type' => 'hidden',
-    '#value' => get_taxonomictree_uuid_selected(),
-  );
 
   $form['search']['pageSize'] = array(
     '#weight' => -1,
@@ -150,6 +159,8 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
 
   if ($advancedForm) {
 
+
+
     // Get presets from settings.
     $preset_doTaxa = variable_get('cdm_search_doTaxa', 1);
     $preset_doSynonyms = variable_get('cdm_search_doSynonyms', 1);
@@ -164,6 +175,17 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       $preset_doMisappliedNames = (isset($_SESSION['cdm']['search']['doMisappliedNames']) ? 1 : 0);
       $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
     }
+
+
+   if ($classificationSelect === TRUE) {
+      $form['search']['tree'] = array(
+        '#weight' => 1,
+        '#type' => 'select',
+        '#default_value' => get_taxonomictree_uuid_selected(),
+        '#options' => cdm_get_taxontrees_as_options(),
+      );
+   }
+
     // General search parameters.
     $form['search']['doTaxa'] = array(
       '#weight' => 2,
@@ -244,7 +266,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
           var selectId = $(\"input[name='search[geographic_range][tdwg_level_select]']:checked\").val();
           var i;
           for(i = 0; i < 4; i++){
-          
+
             if(selectId == i){
               $('#edit-search-geographic-range-tdwg-level-' + (i + 1) ).parent().fadeIn('slow');
               $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).children().removeAttr('selected');
@@ -386,11 +408,18 @@ function cdm_dataportal_search_taxon_by_description_form() {
 }
 
 /**
- * Filters $_REQUEST by a list of valid request parameters and also sets
- * defaults if required.
- * returns the processed request parameters submitted by the search form and
- * also stores them
- * in $_SESSION['cdm']['search']
+ * Reads the query parameters from $_REQUEST and modifies and adds additional query parameters if nessecary.
+ *
+ *  - Filters $_REQUEST by a list of valid request parameters
+ *  - modifies geographic_range parameters
+ *  - adds taxon tree uuid if it is missing and if it should not be
+ *    ignored (parameter value = 'IGNORE')
+ *  - and more
+ *
+ *
+ * @return
+ *   the processed request parameters submitted by the search form and
+ *   also stores them in $_SESSION['cdm']['search']
  */
 function cdm_dataportal_search_form_request() {
   $form_params = array();
@@ -413,6 +442,12 @@ function cdm_dataportal_search_form_request() {
     }
   }
 
+  if (!isset($form_params['tree'])) {
+    $form_params['tree'] = get_taxonomictree_uuid_selected();
+  } else if ($form_params['tree'] != 'IGNORE') {
+    unset($form_params['tree']);
+  }
+
   // Store in session.
   $_SESSION['cdm']['search'] = $form_params;
 
@@ -429,8 +464,14 @@ function cdm_dataportal_search_process($form, &$form_state) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Sends a search request at the cdm web server.
+ *
+ * The parameters to build the query are taken obtained by calling
+ * cdm_dataportal_search_form_request() which reads the query parameters
+ * from $_REQUEST and add additional query parameters if nessecary.
+ *
+ * @see cdm_dataportal_search_form_request()
+ *
  */
 function cdm_dataportal_search_execute() {
 
@@ -444,7 +485,9 @@ function cdm_dataportal_search_execute() {
     return NULL;
   }
 
+  // read the query parameters from $_REQUEST and add additional query parameters if nessecary.
   $request_params = cdm_dataportal_search_form_request();
+
   $taxonPager = cdm_ws_get($_REQUEST['ws'], NULL, queryString($request_params));
 
   return $taxonPager;
