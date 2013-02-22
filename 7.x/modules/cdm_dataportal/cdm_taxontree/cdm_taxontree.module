@@ -49,8 +49,10 @@ function cdm_taxontree_menu() {
  * Implements hook_block_info().
  */
 function cdm_taxontree_block_info() {
-  $block['cdm_tree']['info'] = t('CDM taxon tree');
-  $block['cdm_tree']['cache'] = DRUPAL_NO_CACHE;
+  $block['cdm_tree'] = array(
+        "info" => t('CDM taxon tree'),
+        "cache" => DRUPAL_NO_CACHE
+      );
 
   $block['filters']['info'] = t('Active filters');
   $block[1]['info'] = t('Drupal taxonomy tree');
