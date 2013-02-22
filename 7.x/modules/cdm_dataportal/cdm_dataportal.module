@@ -1171,18 +1171,19 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = NULL
 
   // Check if the taxon id contained in the currently selected tree.
   $taxon_in_current_tree = taxon_in_current_tree($uuid);
-  $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $uuid);
+
   if (!$taxon_in_current_tree) {
-    if (count($taxon_nodes) == 0) {
+    $classifications = get_classifications_for_taxon($taxon);
+    if (count($classifications) == 0) {
       drupal_set_message(check_plain(t('This concept of the taxon !taxonname is not contained as an accepted taxon in currently chosen classification.', array(
         '!taxonname' => theme('cdm_taxonName', array('taxonName' => $taxon->name)),
       ))), 'warning');
     }
     else {
       $trees = '';
-      foreach ($taxon_nodes as $node) {
-        if (isset($node->classification->titleCache)) {
-          $trees .= ($trees ? ', ' : '') . '<strong>' . $node->classification->titleCache . '</strong>';
+      foreach ($classifications as $classification) {
+        if (isset($classification->titleCache)) {
+          $trees .= ($trees ? ', ' : '') . '<strong>' . $classification->titleCache . '</strong>';
         }
       }
 

@@ -142,6 +142,20 @@ function get_taxonomictree_uuid_selected() {
 }
 
 /**
+ * Lists the classifications a taxon belongs to
+ *
+ * @param CDM type Taxon $taxon
+ *   the taxon
+ *
+ * @return array
+ *   aray of CDM instances of Type Classification
+ */
+function get_classifications_for_taxon($taxon) {
+
+  return cdm_ws_get(CDM_WS_TAXON_CLASSIFICATIONS, $taxon->uuid);;
+}
+
+/**
  * Returns the chosen FeatureTree for the taxon profile.
  *
  * The FeatureTree profile returned is the one that has been set in the
@@ -1711,10 +1725,14 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
  * chosen as default will always appear on top of the array, followed by a
  * blank line below.
  *
+ * @param bool $add_none_option
+ *   is true an addtional 'none' option will be added, optional parameter, defaults to FALSE
+ *
  * @return array
  *   classifications in an array as options for a form element that allows multiple choices.
  */
-function cdm_get_taxontrees_as_options() {
+function cdm_get_taxontrees_as_options($add_none_option = FALSE) {
+
   $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
 
   $default_classification_uuid = variable_get(CDM_TAXONOMICTREE_UUID, FALSE);
@@ -1722,23 +1740,32 @@ function cdm_get_taxontrees_as_options() {
 
   // add all classifications
   $taxonomic_tree_options = array();
+  if ($add_none_option) {
+    $taxonomic_tree_options['NONE'] = ' '; // one Space character at beginning to force on top;
+  }
   if ($taxonTrees) {
     foreach ($taxonTrees as $tree) {
       if (!$default_classification_uuid || $default_classification_uuid != $tree->uuid) {
         $taxonomic_tree_options[$tree->uuid] = $tree->titleCache;
       } else {
-        $taxonomic_tree_options[$tree->uuid] = ' '; // one Space characters to force on top, will be replaced below by titleCache
+        $taxonomic_tree_options[$tree->uuid] = '  '; // two Space characters to force on top but below 'none' option , will be replaced below by titleCache
         if (count($taxonTrees) > 1) {
-          $taxonomic_tree_options[''] = '  '; // two Space characters for an empy line below
+          $taxonomic_tree_options[''] = '   '; // three Space characters for an empy line below
         }
         $default_classification_label = $tree->titleCache;
       }
     }
   }
-  // oder alphabetically
+  // oder alphabetically the space
   asort($taxonomic_tree_options);
 
-  // add default on top
+  // now set the labels
+  //   for none
+  if ($add_none_option) {
+    $taxonomic_tree_options['NONE'] = t('-- None --');
+  }
+
+  //   for default_classification
   if (is_uuid($default_classification_uuid)) {
     $taxonomic_tree_options[$default_classification_uuid] =
       $default_classification_label ? $default_classification_label : '--- INVALID CHOICE ---'

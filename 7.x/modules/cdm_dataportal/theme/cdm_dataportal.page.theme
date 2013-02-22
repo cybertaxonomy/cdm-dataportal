@@ -473,11 +473,25 @@ function theme_cdm_search_results($variables) {
   }
   $out .= '<form name="pageoptions"><input id="showThumbnails" type="checkbox" name="showThumbnails" ' . (do_showThumbnails() == 1 ? 'checked="checked"' : '') . '> ' . t('Show Thumbnails') . '</form>';
   $out .= '</div>';
+  $out .= '<div id="search-summary">' . t('results for') . ' ';
+  $classification = cdm_dataportal_searched_in_classification();
+  if ($classification != NULL) {
+    $out .=  $classification->titleCache ;
+  } else {
+   $out .= t('any classification');
+  }
+  $out .= ':</div>';
 
   // List results.
   if (isset($pager->records) && count($pager->records) > 0) {
     $out .= '<div id="search_results">';
-    $out .= theme('cdm_list_of_taxa', array('records' => $pager->records, 'freetextSearchResults' => $freetextSearchResults));
+    $out .= theme('cdm_list_of_taxa',
+        array(
+          'records' => $pager->records,
+          'freetextSearchResults' => $freetextSearchResults,
+          'show_classification' => $classification === NULL
+        )
+      );
     $out .= '</div>';
     $out .= theme('cdm_pager', array(
         'pager' => $pager,

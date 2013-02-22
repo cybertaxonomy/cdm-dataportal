@@ -129,14 +129,12 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
  * @return
  *   the form array
  *
- *
  */
 function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = FALSE, $classificationSelect = TRUE) {
   global $theme_key;
 
   $tdwg_level_select = (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
   $selected_areas = (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : FALSE);
-
   $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
 
   $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_FIND, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
@@ -159,7 +157,8 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
 
   if ($advancedForm) {
 
-
+    // --- ADVANCED SEARCH FORM ---
+    //
 
     // Get presets from settings.
     $preset_doTaxa = variable_get('cdm_search_doTaxa', 1);
@@ -167,6 +166,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
     $preset_doTaxaByCommonNames = variable_get('cdm_search_doTaxaByCommonNames', 0);
     $preset_doMisappliedNames = variable_get('cdm_search_doMisappliedNames', 1);
     $preset_UseDefaults = variable_get('cdm_search_use_default_values', 1);
+    $preset_classification_uuid = get_taxonomictree_uuid_selected();
 
     // Overwrite presets by user choice stored in session.
     if (isset($_SESSION['cdm']['search']) && !$preset_UseDefaults) {
@@ -174,6 +174,9 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
       $preset_doMisappliedNames = (isset($_SESSION['cdm']['search']['doMisappliedNames']) ? 1 : 0);
       $preset_doTaxaByCommonNames = (isset($_SESSION['cdm']['search']['doTaxaByCommonNames']) ? 1 : 0);
+      if (isset($_SESSION['cdm']['search']['tree'])) {
+        $preset_classification_uuid = $_SESSION['cdm']['search']['tree'];
+      }
     }
 
 
@@ -182,7 +185,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
         '#weight' => 1,
         '#type' => 'select',
         '#default_value' => get_taxonomictree_uuid_selected(),
-        '#options' => cdm_get_taxontrees_as_options(),
+        '#options' => cdm_get_taxontrees_as_options(TRUE),
       );
    }
 
@@ -209,7 +212,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       '#weight' => 5,
       '#type' => 'checkbox',
       '#title' => t('Search for common names'),
-      '#value' => $preset_doTaxaByCommonNames,
+      '#value' => $preset_doTaxaByCommonNames
     );
 
     // Geographic Range.
@@ -283,6 +286,9 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
     array('type' => 'inline'));
   }
   else {
+    // --- SIMPLE SEARCH FORM ---
+    //
+
     $preset_doTaxa = variable_get('cdm_search_doTaxa', 1);
     $preset_doSynonyms = variable_get('cdm_search_doSynonyms', 1);
     $preset_doTaxaByCommonNames = variable_get('cdm_search_doTaxaByCommonNames', 0);
@@ -422,7 +428,9 @@ function cdm_dataportal_search_taxon_by_description_form() {
  *   also stores them in $_SESSION['cdm']['search']
  */
 function cdm_dataportal_search_form_request() {
+
   $form_params = array();
+
   if (is_array($_REQUEST['search'])) {
     array_deep_copy($_REQUEST['search'], $form_params);
   }
@@ -442,16 +450,51 @@ function cdm_dataportal_search_form_request() {
     }
   }
 
-  if (!isset($form_params['tree'])) {
+  // simple search will not submit a 'tree' query parameter, so we add it here from
+  // what is stored in the session unless 'simple_search_ignore_classification'
+  // is checked in the settings
+  if (!isset($form_params['tree']) && !variable_get('simple_search_ignore_classification', 1)) {
     $form_params['tree'] = get_taxonomictree_uuid_selected();
-  } else if ($form_params['tree'] != 'IGNORE') {
+  }
+  // if the 'NONE' classification has been chosen (adanced search) delete the tree information
+  // to avoid unknown uuid exceptions in the cdm service
+  if (isset($form_params['tree']) && $form_params['tree'] == 'NONE') {
+//     $form_params['ignore_classification'] =  TRUE;
     unset($form_params['tree']);
   }
+//   else {
+//     $form_params['ignore_classification'] =  NULL;
+//   }
 
   // Store in session.
   $_SESSION['cdm']['search'] = $form_params;
 
   return $form_params;
+}
+
+/**
+ * Provides the classification the last search has been run on if any.
+ *
+ * This function should only be used after the cdm_dataportal_search_execute() handler has been run,
+ * otherwise it will return the infomation from the last search executed. The information is retrieved from
+ * the $_SESSION variable:  $_SESSION['cdm']['search']['tree']
+ *
+ * @return bool
+ *    the classification the last processed search has been run on or NULL, it it was on all classifications
+ */
+function cdm_dataportal_searched_in_classification() {
+
+  $classification = &drupal_static(__FUNCTION__);
+
+  if (!isset($classification)) {
+    if (isset($_SESSION['cdm']['search']['tree'])) {
+      $classification = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY, ($_SESSION['cdm']['search']['tree']));
+    } else {
+      $classification = FALSE;
+    }
+  }
+
+  return $classification !== FALSE ?  $classification : NULL;
 }
 
 /**
@@ -479,9 +522,14 @@ function cdm_dataportal_search_execute() {
   $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
 
   // Validate the search webservice parameter:
+  if (!isset($_REQUEST['ws'])) {// Check is ws.
+    // Endpoint is unknown.
+    drupal_set_message(t('webservice parameter \'ws\' missing'), 'warning');
+    return NULL;
+  }
   if (!cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) {// Check is ws.
     // Endpoint is unknown.
-    drupal_set_message(t('Invalid search webservice parameter given'));
+    drupal_set_message(t('Invalid search webservice parameter  \'ws\' given'), 'warning');
     return NULL;
   }
 

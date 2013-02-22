@@ -1297,12 +1297,22 @@ function cdm_settings_layout_search() {
   $form['search_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Taxa Search'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
     '#description' => t('<p>The data portal allows the users to perform searchs.</p><p>To perform searchs
          the block <em>CDM Taxon Search</em> should be enabled and visible for users
          where they can write the text to be searched. You can find Drupal block configuration
          site at <a href="./?q=admin/build/block">Administer&#45&#62Site building&#45&#62Blocks</a></p> '),
+  );
+
+  $form['search_settings']['simple_search_ignore_classification'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Ignore the chosen classification in simple search'),
+      '#default_value' => variable_get('simple_search_ignore_classification', TRUE),
+      '#description' => t('The simple search, which can be executed via the search block,
+          will by default search on all classifications. Remove the tick if you want your
+          portal to search on the classification selected in the classification browser
+          selector.'),
   );
 
   $form['search_settings']['cdm_dataportal_search_items_on_page'] = array(

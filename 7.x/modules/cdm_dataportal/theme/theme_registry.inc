@@ -240,7 +240,7 @@ function cdm_dataportal_theme() {
       )),
       'cdm_taxonRelationships' => array('variables' => array('taxonRelationships' => NULL, 'focusedTaxon' => NULL)),
       'cdm_acceptedFor' => array('variables' => array()),
-      'cdm_list_of_taxa' => array('variables' => array('records' => NULL, 'freetextSearchResults' => array())),
+      'cdm_list_of_taxa' => array('variables' => array('records' => NULL, 'freetextSearchResults' => array(), 'show_classification' => FALSE)),
       'cdm_taxon_list_thumbnails' => array('variables' => array('taxon' => NULL)),
 
       // Themes in cdm_dataportal.bibliography.theme.

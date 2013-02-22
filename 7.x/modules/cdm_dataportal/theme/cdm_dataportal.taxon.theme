@@ -168,8 +168,11 @@ function theme_cdm_acceptedFor() {
  * @todo document this function.
  */
 function theme_cdm_list_of_taxa($variables) {
+
   $records = $variables['records'];
   $freetextSearchResults = $variables['freetextSearchResults'];
+  $show_classification = $variables['show_classification'];
+
   RenderHints::pushToRenderStack('list_of_taxa');
 
   $form_name = 'search_gallery';
@@ -251,6 +254,16 @@ function theme_cdm_list_of_taxa($variables) {
         if (!$is_synonym) {
           $out .= '<span class="sensu"> sensu ' . theme('cdm_reference', array('reference' => $taxon->sec)) . '</span>';
         }
+        if ($show_classification) {
+          $classifications = get_classifications_for_taxon($taxon);
+          $classification_titles = array();
+          foreach ($classifications as $classification) {
+            if (isset($classification->titleCache)) {
+              $classification_titles[] = $classification->titleCache;
+            }
+          }
+          $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
+        }
         $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
         if ($showMedia_synonyms) {
           $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
@@ -287,6 +300,16 @@ function theme_cdm_list_of_taxa($variables) {
         'nameLink' => $taxonUri,
         'refenceLink' => $referenceUri,
         ));
+      if ($show_classification) {
+        $classifications = get_classifications_for_taxon($taxon);
+        $classification_titles = array();
+        foreach ($classifications as $classification) {
+          if (isset($classification->titleCache)) {
+            $classification_titles[] = $classification->titleCache;
+          }
+        }
+        $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
+      }
       $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
 
       if ($showMedia_taxa) {
