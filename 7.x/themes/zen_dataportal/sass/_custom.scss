@@ -69,4 +69,14 @@
   a:focus {
     text-decoration: underline;
   }
+
+  //synonyms and mispplied name links have different color
+  // a.synonym:visited
+  // a.synonym:link,
+  .Synonym, .misapplied-name {
+    a:link,
+    a:visited {
+        color: $link-color-synonym;
+    }
+  }
 }

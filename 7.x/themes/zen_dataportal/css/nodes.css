@@ -23,6 +23,16 @@
 #backButton a:focus {
   text-decoration: underline;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/_custom\.scss}line{font-family:\0000378}}
+.block .Synonym a:link,
+.block .Synonym a:visited, .block .misapplied-name a:link,
+.block .misapplied-name a:visited, .node .Synonym a:link,
+.node .Synonym a:visited, .node .misapplied-name a:link,
+.node .misapplied-name a:visited, #backButton .Synonym a:link,
+#backButton .Synonym a:visited, #backButton .misapplied-name a:link,
+#backButton .misapplied-name a:visited {
+  color: #7c7c7f;
+}
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000316}}
 .node {
