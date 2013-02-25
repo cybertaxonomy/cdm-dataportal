@@ -880,6 +880,7 @@
 7.x/modules/cdm_dataportal/images/loadingAnimation.gif -text
 7.x/modules/cdm_dataportal/images/loading_circle_grey_16.gif -text
 7.x/modules/cdm_dataportal/images/macFFBgHack.png -text
+7.x/modules/cdm_dataportal/images/no_picture.png -text svneol=unset#unset
 7.x/modules/cdm_dataportal/images/print_icon.gif -text
 7.x/modules/cdm_dataportal/includes/descriptions.inc -text
 7.x/modules/cdm_dataportal/includes/occurrences.inc -text
