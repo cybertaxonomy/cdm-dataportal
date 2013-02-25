@@ -1087,7 +1087,7 @@ function theme_cdm_taxontree_node_filter_switch($variables) {
   $filter_op = $node->filter == 'on' ? 'remove' : 'add';
 
   $out .= '&nbsp;'
-    . l('<img src="' . drupal_get_path('module', 'cdm_taxontree') . '/' . $filter_icon . '" alt="[f]" />',
+    . l('<img src="' . base_path() . drupal_get_path('module', 'cdm_taxontree') . '/' . $filter_icon . '" alt="[f]" />',
         'cdm_taxontree/filter/' . $filter_op . '/' . $node->taxonUuid, array(
           'attributes' => array('class' => 'filter_' . $filter_op),
           'query' => 'destination=' . path_to_taxon($node->taxonUuid),
@@ -1114,7 +1114,7 @@ function theme_cdm_taxontree_node_concept_switch($variables) {
 
   if (isset($node->alternativeConceptRefs[0])) {
     $out = l(
-      '<img src="' . drupal_get_path('module', 'cdm_taxontree') . '/concept_switch.gif" alt="[-&gt;]" />',
+      '<img src="' . base_path() . drupal_get_path('module', 'cdm_taxontree') . '/concept_switch.gif" alt="[-&gt;]" />',
       'cdm_dataportal/taxon/alternative/' . $node->taxonUuid, array(
         'attributes' => array('rel' => 'cdm_dataportal/taxon/alternative/' . $node->taxonUuid, 'class' => 'concept_switch'),
         'query' => NULL,

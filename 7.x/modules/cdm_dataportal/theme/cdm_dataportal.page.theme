@@ -291,7 +291,7 @@ function theme_cdm_taxon_page_profile($variables) {
     $defaultRepresentationPart = new stdClass();
     $defaultRepresentationPart->width = 184;
     $defaultRepresentationPart->height = 144;
-    $defaultRepresentationPart->uri = drupal_get_path('theme', 'palmweb_2') . '/images/no_picture.png';
+    $defaultRepresentationPart->uri = base_path() .  drupal_get_path('module', 'cdm_dataportal') . '/images/no_picture.png';
 
     // Preferred image size 184px × 144.
     $imageMaxExtend = 184;

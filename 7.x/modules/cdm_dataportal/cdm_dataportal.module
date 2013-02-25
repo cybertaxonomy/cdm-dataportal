@@ -719,7 +719,7 @@ function cdm_dataportal_block_view($delta) {
       // t('Funded by EDIT');
       $text = '<none>';
       $block['subject'] = $text;
-      $img_tag = '<img src="' . drupal_get_path('module', 'cdm_dataportal') . '/images/funded_by_EDIT.png' . '" alt="' . $text . '"/>';
+      $img_tag = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/funded_by_EDIT.png' . '" alt="' . $text . '"/>';
       $block['content'] = l($img_tag, "http://www.e-taxonomy.eu/", array(
         'attributes' => array("target" => "EDIT"),
         'absolute' => TRUE,
@@ -1970,7 +1970,7 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
   $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/$theme");
   $out .= '<!-- ' . $content_url . ' -->';
   $out .= '<' . $enclosingtags[0] . ' class="dynabox-' . $dynabox_id . '"><a href="#" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
-  $out .= '<' . $enclosingtags[1] . ' class="dynabox-' . $dynabox_id . '-content" title="' . $cdm_proxy_url . '"><' . $enclosingtags[0] . '><img class="loading" src="' . drupal_get_path('module', 'cdm_dataportal') . '/images/loading_circle_grey_16.gif" style="display:none;"></' . $enclosingtags[0] . '></' . $enclosingtags[1] . '>';
+  $out .= '<' . $enclosingtags[1] . ' class="dynabox-' . $dynabox_id . '-content" title="' . $cdm_proxy_url . '"><' . $enclosingtags[0] . '><img class="loading" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/loading_circle_grey_16.gif" style="display:none;"></' . $enclosingtags[0] . '></' . $enclosingtags[1] . '>';
   $out .= '</' . $enclosingtags[0] . '>';
   return $out;
 }

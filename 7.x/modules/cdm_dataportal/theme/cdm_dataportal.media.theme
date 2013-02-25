@@ -105,7 +105,6 @@ function theme_cdm_media($variables) {
 function theme_cdm_mediaTypeTerm($variables) {
   $feature = $variables['feature'];
   $mediaUrl = $variables['mediaUrl'];
-  global $base_url;
 
   $provider = '';
   // TODO directly use favicon from referred URI and overlay on $icon_image, but
@@ -116,7 +115,7 @@ function theme_cdm_mediaTypeTerm($variables) {
   }
   */
   $icon_image = $feature->representation_L10n . '-media' . $provider . '.png';
-  $icon_url = $base_url . '/' . drupal_get_path('module', 'cdm_dataportal') . '/images/' . $icon_image;
+  $icon_url = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/' . $icon_image;
   return '<img src="' . url($icon_url) . '" height="14px" alt="' . $feature->representation_L10n . '" />';
 }
 

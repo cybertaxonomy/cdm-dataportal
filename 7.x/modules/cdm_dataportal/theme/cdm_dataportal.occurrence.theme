@@ -35,7 +35,7 @@ function theme_cdm_specimen($variables) {
   $out = '';
   if (isset($specimenTypeDesignation->media[0])) {
 
-    $image_url = drupal_get_path('module', 'cdm_dataportal') . '/images/external_link.gif';
+    $image_url = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/external_link.gif';
     // Thickbox has problems reading the first url parameter, so a litte hack is
     // needed here:
     // Adding a meaningless parameter &tb_hack=1& ....
