@@ -116,7 +116,7 @@ function theme_cdm_mediaTypeTerm($variables) {
   */
   $icon_image = $feature->representation_L10n . '-media' . $provider . '.png';
   $icon_url = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/' . $icon_image;
-  return '<img src="' . url($icon_url) . '" height="14px" alt="' . $feature->representation_L10n . '" />';
+  return '<img src="' . $icon_url . '" height="14px" alt="' . $feature->representation_L10n . '" />';
 }
 
 /**
