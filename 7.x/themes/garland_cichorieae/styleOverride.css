@@ -509,3 +509,13 @@ dl.admin-list dd {
     background-color: #DDDDDD;
     margin-top: 0;
 }
+
+.homotypic-synonymy-group, .heterotypic-synonymy-group, .taxon-relationships {
+    border-bottom-color: #DEDEDE;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding-bottom: 0.5em;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0.5em;
+}
