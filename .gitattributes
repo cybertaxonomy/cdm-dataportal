@@ -77,10 +77,6 @@
 5.x/modules/cdm_dataportal/help.php -text
 5.x/modules/cdm_dataportal/help/overview.apt -text
 5.x/modules/cdm_dataportal/help/overview.html -text
-5.x/modules/cdm_dataportal/ide/eclipse/cdm_dataportal[!!-~]install.launch -text
-5.x/modules/cdm_dataportal/ide/eclipse/cdm_dataportal.launch -text
-5.x/modules/cdm_dataportal/ide/eclipse/phpUnit.launch -text
-5.x/modules/cdm_dataportal/ide/eclipse/phpunit[!!-~](external[!!-~]tools).launch -text
 5.x/modules/cdm_dataportal/images/Protologue-media-BHL.png -text
 5.x/modules/cdm_dataportal/images/Protologue-media.png -text
 5.x/modules/cdm_dataportal/images/btn_collapse.gif -text
@@ -864,7 +860,6 @@
 7.x/modules/cdm_dataportal/help/settings_general.html -text
 7.x/modules/cdm_dataportal/help/settings_geo.html -text
 7.x/modules/cdm_dataportal/help/settings_layout.html -text
-7.x/modules/cdm_dataportal/ide/eclipse/cdm_dataportal[!!-~]install.launch -text
 7.x/modules/cdm_dataportal/ide/eclipse/cdm_dataportal.launch -text
 7.x/modules/cdm_dataportal/ide/eclipse/phpUnit.launch -text
 7.x/modules/cdm_dataportal/ide/eclipse/phpunit[!!-~](external[!!-~]tools).launch -text
