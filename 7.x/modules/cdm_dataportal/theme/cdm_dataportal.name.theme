@@ -406,13 +406,6 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
 
   $homonym_typeDesignations = NULL;
 
-// no new $footnoteListKey since homotypic group and accepted taxon should share the same key!
-//   $footnoteListKey = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
-//   // store the FootnoteListKey from the parent element which is the accepted taxon
-//   $accepted_taxon_footnoteListKey = RenderHints::getFootnoteListKey();
-//   // new FootnoteListKey for this homotypicSynonymyGroup
-//   RenderHints::setFootnoteListKey($footnoteListKey);
-
   // TODO improve typeDesignations retrieval: wouldn't it be suffcient to retrieve all typeDesignations
   // only from the accepted taxon?
   $accepted_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $accepted_taxon_uuid);
