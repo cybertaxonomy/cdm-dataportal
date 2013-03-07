@@ -513,7 +513,7 @@ function CdmOpenlayersMap(mapElement, mapserverBaseUrl, mapserverVersion, option
 
     return this.each(function(){
 
-      var openlayers_map = new CdmOpenlayersMap($(this), mapserverBaseUrl, mapserverVersion, options);
+      var openlayers_map = new CdmOpenlayersMap($(this), mapserverBaseUrl, mapserverVersion, opts);
       openlayers_map.init();
 
      }); // END each
