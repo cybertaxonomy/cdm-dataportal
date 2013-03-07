@@ -43,11 +43,12 @@ public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
 
 
         // check type designation for accepted taxon
-        List<TypeDesignationElement> typeDesignations = p.getAcceptedNameTypeDesignations();
+        List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
         assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Lectotype (designated by Green 1929: 1771): Scorzonera humilis L.", typeDesignations.get(0).getText()); // last digit of 1771 is footnote key !!!
-        assertEquals("1. Green, Proposals by British Botanists. 1929", p.getAcceptedNameFootNotes().get(0).getText());
+        assertEquals("should have one footnote from type designation", 1, p.getAcceptedNameFootNotes().size());
+        assertEquals("", "1. Green, Proposals by British Botanists. 1929", p.getAcceptedNameFootNotes().get(0).getText());
 //        assertNull("The typified name should not have a name description (protologue)", typeDesignations.get(0).getNameDescription()); // FIXME
 
         assertEquals("= Gelasia Cass. in Bull. Sci. Soc. Philom. Paris 1818: 33. 1818", p.getHeterotypicalGroupSynonymName(1, 1));
@@ -55,7 +56,7 @@ public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals("Type: Gelasia villosa (Scop.) Cass.", heterotypicalGroupTypeDesignations.get(0).getText());
         assertEquals(TypeDesignationType.nameTypeDesignation, heterotypicalGroupTypeDesignations.get(0).getTypeDesignationType());
 
-//        test case only available in produciton portal
+//        test case only available in production portal
 //        assertEquals("≡ Scorzonera subg. Lasiospora (Cass.) Peterm., Deutschl. Fl.: 334. 1846-1849", p.getHeterotypicalGroupSynonymName(2, 3));
 //        heterotypicalGroupTypeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
 //        assertEquals("Lectotype (designated by Tzvelev 1989: 452): Lasiospora hirsuta (Gouan) Cass.", heterotypicalGroupTypeDesignations.get(0).getText());

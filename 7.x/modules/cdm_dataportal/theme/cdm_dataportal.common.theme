@@ -523,9 +523,13 @@ function _add_js_thickbox() {
   //
   // Add a setting for the path to cdm_dataportal module, used to find the path
   // for the loading animation image in thickbox.
-  drupal_add_js(array('cdm_dataportal' => array(
-  'cdm_dataportal_path' => drupal_get_path('module', 'cdm_dataportal'),
-  )), 'setting');
+  drupal_add_js(array(
+  			'cdm_dataportal' => array(
+  				'cdm_dataportal_path' => base_path() . drupal_get_path('module', 'cdm_dataportal'),
+  			)
+  		),
+  		'setting'
+  	);
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/thickbox/thickbox.js');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/js/thickbox/cdm_thickbox.css');
 }

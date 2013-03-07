@@ -14,7 +14,19 @@
  */
 
 /**
- * Singleton to provide render hints.
+ * A Singleton class wich holds and manages information on the render path in the
+ * page element hierarchy and also stored the current FootnoteListKey.
+ *
+ * RenderPath:
+ * The render path is manages as a stack.
+ * Usually you will push a new element to this stack at the begining of a theme
+ * method: RenderHints::pushToRenderStack('mypageElement');
+ * After the output is generated you again pop the current path element from the stack:
+ * RenderHints::popFromRenderStack()
+ * The current render path can be retrieved by @see getRenderPath().
+ *
+ * FootnoteListKey
+ *
  */
 class RenderHints {
   private static $renderStack = array();

@@ -100,21 +100,18 @@ public class TaxonSynonymyPage extends PortalPage {
     }
 
     /**
+     * TypeDesignation of the accepted name are found in the HomotypicalGroup block element
+     * thus this method will delegate to {@link #getHomotypicalGroupTypeDesignations()}
      * @return
+     * @deprecated use {@link #getHomotypicalGroupTypeDesignations()} instead
      */
+    @Deprecated
     public List<TypeDesignationElement> getAcceptedNameTypeDesignations() {
-        List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
-        List<WebElement> typeDesignationElements = synonymy.findElements(
-                By.xpath("./span[contains(@class,'accepted-name')]/following-sibling::ul[contains(@class, 'typeDesignations')]/li")
-        );
-        for(WebElement el : typeDesignationElements){
-            typeDesignations.add(new TypeDesignationElement(el));
-        }
-        return typeDesignations;
+        return getHomotypicalGroupTypeDesignations();
     }
 
     /**
-     * @return
+     * @return the getHomotypicalGroupFootNoteKeys()
      */
     public List<LinkElement> getAcceptedNameFootNoteKeys() {
         List<WebElement> fnkListElements = synonymy.findElements(
@@ -124,13 +121,19 @@ public class TaxonSynonymyPage extends PortalPage {
     }
 
     /**
+     * Footnotes of the accepted name are found in the HomotypicalGroup block element
+     * thus this method will delegate to {@link #getHomotypicalGroupFootNotes()}
+     *
      * @return
+     * @deprecated
      */
+    @Deprecated
     public List<BaseElement> getAcceptedNameFootNotes() {
-        List<WebElement> fnListElements = synonymy.findElements(
-                By.xpath("./span[contains(@class,'accepted-name')]/following-sibling::ul[contains(@class, 'footnotes')]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
-        );
-        return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
+//        List<WebElement> fnListElements = synonymy.findElements(
+//                By.xpath("./span[contains(@class,'accepted-name')]/following-sibling::ul[contains(@class, 'footnotes')]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
+//        );
+//        return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
+        return getHomotypicalGroupFootNotes();
     }
 
     /**
@@ -156,6 +159,19 @@ public class TaxonSynonymyPage extends PortalPage {
                 By.xpath("./div[contains(@class,'homotypic-synonymy-group')]/ul[contains(@class,'homotypicSynonyms')]/li[" + synonymIndex + "]")
         );
         return synonym;
+    }
+
+    /**
+     * @return
+     */
+    public List<TypeDesignationElement> getHomotypicalGroupTypeDesignations() {
+        List<WebElement> typeDesignationElements = synonymy.findElements(By
+                .xpath("./div[contains(@class,'homotypic-synonymy-group')]/ul[contains(@class,'homotypicSynonyms')]/ul[contains(@class,'typeDesignations')]/li"));
+        List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
+        for (WebElement el : typeDesignationElements) {
+            typeDesignations.add(new TypeDesignationElement(el));
+        }
+        return typeDesignations;
     }
 
     public List<LinkElement> getHomotypicalGroupFootNoteKeys() {

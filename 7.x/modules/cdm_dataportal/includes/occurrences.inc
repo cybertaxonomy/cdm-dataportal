@@ -61,7 +61,10 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
     // request again for deeper initialization
     $specimenOrObservation = cdm_ws_get("portal/" . CDM_WS_OCCURRENCE, $specimenOrObservation->uuid);
 
+
     $type_label = $specimenOrObservation->class;
+    RenderHints::setFootnoteListKey($type_label . '-' . $specimenOrObservation->uuid);
+
     // collect typeStatus as label
     if (isset($specimenOrObservation->specimenTypeDesignations)) {
       $type_status = array();
@@ -272,7 +275,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
     );
     $derivatives[] = $occurrence_elements;
     // all footnotes which has been assembled so far (e.g. from typeDesignations) to here
-    $foonote_li_elements = theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'span'));
+    $foonote_li_elements = theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey(), 'enclosingTag' => 'span'));
     if (!empty($foonote_li_elements)) {
       $derivatives[] =  array(
           '#markup' =>  '<div class="footnotes">' . $foonote_li_elements . '</div>',

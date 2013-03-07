@@ -14,7 +14,11 @@
  */
 
 /**
- * Manages footnotes.
+ * Manages footnotes in multiple list. Each of these footnote lists is
+ * identified by a footnoteListKey.
+ *
+ * The $footnoteListKey for the curtent page part that should be stored in the
+ * the RenderHints class by calling @see RenderHints::setFootnoteListKey($footnoteListKey)
  */
 class FootnoteManager {
   private static $fnstore = array();

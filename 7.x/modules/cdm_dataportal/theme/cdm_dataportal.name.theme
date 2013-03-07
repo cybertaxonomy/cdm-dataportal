@@ -45,7 +45,10 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
     $res .= ($year ? ' ' . $year : '');
     $res .= ($pages ? ': ' . $pages : '');
     // $res .= ')';
-    $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getRenderPath(), $typeDesignation->citation->titleCache);
+
+    // footnotes should be rendered in the parent element so we
+    // are relying on the FootnoteListKey set there
+    $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $typeDesignation->citation->titleCache);
     $res .= theme('cdm_footnote_key', array(
       'footnoteKey' => $fkey_typeDesignation,
       'separator' => $footnote_separator,
@@ -57,10 +60,20 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Searches the $collection for the cdm entitiy given as $element.
+ *
+ * The elements are compared by their UUID.
+ *
+ * @param $element
+ *  the CDM entitiy to search for
+ * @param $collection
+ *  the list of CDM entities to search in
+ *
+ * @return boolean TRUE if the $collection contains the $element, otheriwse FALSE
+ *
+ * TODO move into module file
  */
-function contains_type_designation($element, $collection) {
+function contains_cdm_entitiy($element, $collection) {
   $result = FALSE;
   foreach ($collection as $a) {
     if ($a->uuid == $element->uuid) {
@@ -71,24 +84,26 @@ function contains_type_designation($element, $collection) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Fiters the array $entity_list of CDM entities by the list
+ * of $excludes. Any element contained in the $excludes will be removed
+ * from included int the retuned list.
+ *
+ * If the $entity_list is not an array the $excludes will be returned.
  */
-function cdm_add_type_designations($source, $extra) {
-  if (is_array($source)) {
-    $result = $source;
-    if ($extra) {
-      foreach ($extra as $element) {
-        if (!contains_type_designation($element, $source)) {
-          $result[] = $element;
+function filter_cdm_entity_list($entity_list, $excludes) {
+  if (is_array($entity_list)) {
+    $result = $entity_list;
+    if ($excludes) {
+      foreach ($excludes as $exclude) {
+        if (!contains_cdm_entitiy($exclude, $entity_list)) {
+          $result[] = $exclude;
         }
       }
     }
   }
   else {
-    $result = $extra;
+    $result = $excludes;
   }
-
   return $result;
 }
 
@@ -104,6 +119,7 @@ function theme_cdm_typedesignations($variables) {
   // need to add element to render path since type designations
   // need other name render template
   RenderHints::pushToRenderStack('typedesignations');
+
   $out = '<ul class="typeDesignations">';
   $typeDesignation_footnotes = FALSE;
   $is_lectotype = FALSE;
@@ -171,7 +187,9 @@ function theme_cdm_typedesignations($variables) {
         }
         $typeReference .= ')';
 
-        $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getRenderPath(), $std->citation->titleCache);
+        // footnotes should be rendered in the parent element so we
+        // are relying on the FootnoteListKey set there
+        $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $std->citation->titleCache);
         $typeReference .= theme('cdm_footnote_key', array(
           'footnoteKey' => $_fkey2,
           'separator' => $separator,
@@ -197,8 +215,10 @@ function theme_cdm_typedesignations($variables) {
       }
 
       // Footnotes for collection acronyms.
+      // footnotes should be rendered in the parent element so we
+      // are relying on the FootnoteListKey set there
       $_fkey = FootnoteManager::addNewFootnote(
-          RenderHints::getRenderPath(),
+          RenderHints::getFootnoteListKey(),
           (isset($derivedUnitFacadeInstance->collection->titleCache) ? $derivedUnitFacadeInstance->collection->titleCache : FALSE)
         );
       $out .= theme('cdm_footnote_key', array('footnoteKey' => $_fkey, 'separator' => $separator));
@@ -352,7 +372,8 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
 
   // ------- footnotes ------- //
   $out .= '<ul class="footnotes">';
-  $out .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
+  $out .= theme('cdm_annotation_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey(), 'enclosingTag' => 'li'));
+  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey(), 'enclosingTag' => 'li'));
   $out .= '</ul>';
 
   $out .= '</div>';
@@ -362,57 +383,80 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Renders the homotypic synonymy group for the accepted taxon in the synonymy.
+ *
+ * Foonotes of the accepted taxon will also be rendered here in the
+ * homotypic synonymy group even if the synonymList or prependedSynonyms are
+ * empty. Therefore  the homotypic group and accepted taxon share the  same
+ * footnote key.
+ *
+ * @param $variables
+ *   an associative array:
+ *   - synonymList: the list of cdm Synonym entities
+ *   - accepted_taxon_uuid: the uuid of the accepted taxon
+ *   - prependedSynonyms: further synonyms which should be prepended
+ *      before the actual list of synonyms
  */
 function theme_cdm_homotypicSynonymyGroup($variables) {
   $synonymList = $variables['synonymList'];
   $accepted_taxon_uuid = $variables['accepted_taxon_uuid'];
   $prependedSynonyms = $variables['prependedSynonyms'];
+
   RenderHints::pushToRenderStack('homotypicSynonymyGroup');
 
-  $footnoteListKey = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
-  $accepted_taxon_footnoteListKey = RenderHints::getFootnoteListKey();
-  RenderHints::setFootnoteListKey($footnoteListKey);
+  $homonym_typeDesignations = NULL;
 
-  if (!is_array($synonymList) || count($synonymList) == 0) {
-    return;
-  }
+// no new $footnoteListKey since homotypic group and accepted taxon should share the same key!
+//   $footnoteListKey = isset($prependedSynonyms[0]) ? $prependedSynonyms[0]->uuid : (isset($synonymList[0]) ? $synonymList[0]->uuid : 'NULL');
+//   // store the FootnoteListKey from the parent element which is the accepted taxon
+//   $accepted_taxon_footnoteListKey = RenderHints::getFootnoteListKey();
+//   // new FootnoteListKey for this homotypicSynonymyGroup
+//   RenderHints::setFootnoteListKey($footnoteListKey);
 
-  $out = '<div class="homotypic-synonymy-group"><ul class="homotypicSynonyms">';
-
-  if (!empty($prependedSynonyms)) {
-    foreach ($prependedSynonyms as $taxon) {
-      $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
-    }
-  }
-
-  foreach ($synonymList as $synonym) {
-    $out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
-  }
-
-  $homonym_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
+  // TODO improve typeDesignations retrieval: wouldn't it be suffcient to retrieve all typeDesignations
+  // only from the accepted taxon?
   $accepted_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $accepted_taxon_uuid);
-  if ($accepted_typeDesignations) {
-    $typeDesignations = cdm_add_type_designations($homonym_typeDesignations, $accepted_typeDesignations);
+
+  $out = '<div class="homotypic-synonymy-group">';
+
+  if (isset ($accepted_typeDesignations) || is_array($prependedSynonyms) || is_array($synonymList)) {
+  	$out .= '<ul class="homotypicSynonyms">';
+	if (!empty($prependedSynonyms)) {
+	  foreach ($prependedSynonyms as $taxon) {
+	    $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+	  }
+	}
+
+	$homonym_typeDesignations = NULL;
+	if (isset($synonymList[0])) {
+		foreach ($synonymList as $synonym) {
+			$out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+		}
+		$homonym_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
+	}
+
+	// type designations
+	if ($accepted_typeDesignations) {
+	  $type_designations = filter_cdm_entity_list($homonym_typeDesignations, $accepted_typeDesignations);
+	}
+	else {
+	  $type_designations = $homonym_typeDesignations;
+	}
+	if ($type_designations) {
+	  $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
+	}
+
   }
-  else {
-    $typeDesignations = $homonym_typeDesignations;
-  }
-  if ($typeDesignations) {
-    $out .= theme('cdm_typedesignations', array('typeDesignations' => $typeDesignations));
-  }
+
   $out .= '</ul>';
 
   // ------- footnotes ------- //
+
+  // all foonotes of the homotypic group and also of the accepted taxon are
+  // rendered here, both should have the same footnote key
   $out .= '<ul class="footnotes">';
-  // To avoiding drupal warnings (#1830).
-  if ($accepted_taxon_footnoteListKey) {
-    // Why FALSE???
-    $out .= theme('cdm_footnotes', array('footnoteListKey' => $accepted_taxon_footnoteListKey, 'enclosingTag' => 'li'));
-  }
-  $out .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
-  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'li'));
+  $out .= theme('cdm_annotation_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey(), 'enclosingTag' => 'li'));
+  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey(), 'enclosingTag' => 'li'));
   $out .= '</ul>';
 
   $out .= '</div>';

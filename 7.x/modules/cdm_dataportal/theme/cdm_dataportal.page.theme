@@ -330,7 +330,13 @@ function theme_cdm_taxon_page_profile($variables) {
 function theme_cdm_taxon_page_synonymy($variables) {
   $taxon = $variables['taxon'];
   $addAcceptedTaxon = $variables['addAcceptedTaxon'];
+
   RenderHints::pushToRenderStack('taxon_page_synonymy');
+
+  // footnote key for the homotypic group and accepted taxon,
+  // both should have the same footnote key
+  RenderHints::setFootnoteListKey(RenderHints::getRenderPath());
+
   $synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, $taxon->uuid);
   $skip = array(
     UUID_BASIONYM,
@@ -338,6 +344,10 @@ function theme_cdm_taxon_page_synonymy($variables) {
   $out = '';
 
   // Render accepted taxon.
+  //
+  // foonotes of the accepted taxon will be rendered in the homotypic group section
+  // even if there are not synonyms in the homotypic group
+  // homotypic group and accepted taxon should have the same footnote key
   $referenceUri = '';
   if ($addAcceptedTaxon) {
     if (isset($taxon->name->nomenclaturalReference)) {
@@ -355,12 +365,13 @@ function theme_cdm_taxon_page_synonymy($variables) {
     $special_annotations_array = array();
     $special_annotations_array[] = $taxon->name;
     $special_annotations_array[] = $taxon;
-    $accepted_name .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $special_annotations_array, 'footnote_list_key' => RenderHints::getRenderPath() . '-annotations'));
-    RenderHints::setFootnoteListKey(RenderHints::getRenderPath() . '-annotations');
+    $accepted_name .= theme('cdm_annotations_as_footnotekeys', array(
+    		'cdmBase_list' => $special_annotations_array,
+    		'footnote_list_key' => RenderHints::getRenderPath() . '-annotations'));
   }
 
   // Render homotypic synonymy group.
-  $hasHomotypicSynonyms = isset($synomymie->homotypicSynonymsByHomotypicGroup[0]->name->uuid);
+  $hasHomotypicSynonyms = TRUE; //isset($synomymie->homotypicSynonymsByHomotypicGroup[0]->name->uuid);
 
   if (!empty($accepted_name)) {
     $out .= $accepted_name;
@@ -382,9 +393,10 @@ function theme_cdm_taxon_page_synonymy($variables) {
     $out .= theme('cdm_homotypicSynonymyGroup', array('synonymList' => $synomymie->homotypicSynonymsByHomotypicGroup, 'accepted_taxon_uuid' => $taxon->uuid));
   }
   // all footnotes which has been assembled so far (e.g. from typeDesignations) to here
-  $out .= '<ul class="footnotes">';
-  $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'li'));
-  $out .= '</ul>';
+// no longer needed here, all foonotes of the accepted taxon will be rendered int the homotypic group section
+//   $out .= '<ul class="footnotes">';
+//   $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath(), 'enclosingTag' => 'li'));
+//   $out .= '</ul>';
 
 
   // Render accepted taxon heterotypic synonymy groups.
@@ -413,10 +425,11 @@ function theme_cdm_taxon_page_synonymy($variables) {
     }
   }
 
-  // Render the annontations text for the accepted taxa.
-  if ($addAcceptedTaxon) {
-    $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-annotations', 'enclosingTag' => 'li'));
-  }
+  // Render all footnotes and annontations text for the accepted taxa.
+ // no longer needed here, all foonotes of the accepted taxon will be rendered int the homotypic group section
+//   if ($addAcceptedTaxon) {
+//     $out .= theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getRenderPath() . '-annotations', 'enclosingTag' => 'li'));
+//   }
   RenderHints::popFromRenderStack();
 
   return $out;
