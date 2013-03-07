@@ -362,12 +362,14 @@ function theme_cdm_taxon_page_synonymy($variables) {
       ));
     $accepted_name .= '</span>';
 
+    // handle annotations of the name and taxon
     $special_annotations_array = array();
     $special_annotations_array[] = $taxon->name;
     $special_annotations_array[] = $taxon;
     $accepted_name .= theme('cdm_annotations_as_footnotekeys', array(
     		'cdmBase_list' => $special_annotations_array,
-    		'footnote_list_key' => RenderHints::getRenderPath() . '-annotations'));
+    		'footnote_list_key' => RenderHints::getRenderPath() . '-annotations')
+    	);
   }
 
   // --- Render homotypic synonymy group
