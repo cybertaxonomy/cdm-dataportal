@@ -34,7 +34,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 
 @DataPortalContexts( { DataPortalContext.cichorieae })
-public class CichorieaeSearchTest extends CdmDataPortalTestBase {
+public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
 
     private static final UUID UUID_L_COMMUNIS = UUID.fromString("5d65f017-0c23-43e4-888d-9649de50dd45");
     private static GenericPortalPage homePage = null;

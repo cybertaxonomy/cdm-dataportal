@@ -10,6 +10,7 @@
 package eu.etaxonomy.dataportal.elements;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -19,13 +20,20 @@ import org.openqa.selenium.WebElement;
  */
 public class TypeDesignationElement extends BaseElement {
 
-    private WebElement status;
+    private final WebElement status;
 
-    private TypeDesignationType typeDesignationType;
+    private WebElement nameDescription = null;
+
+    private final TypeDesignationType typeDesignationType;
 
     public TypeDesignationElement(WebElement element) {
         super(element);
         status = element.findElement(By.cssSelector(".status"));
+        try {
+            nameDescription = element.findElement(By.cssSelector(".description"));
+        } catch (NoSuchElementException e) {
+            // IGNORE
+        }
         typeDesignationType = TypeDesignationType.valueOf(element.getAttribute("class"));
     }
 
@@ -35,6 +43,15 @@ public class TypeDesignationElement extends BaseElement {
 
     public TypeDesignationType getTypeDesignationType() {
         return typeDesignationType;
+    }
+
+    /**
+     * contains nomenclatorical status, protologues, etc.
+     *
+     * @return the nameDescription
+     */
+    public WebElement getNameDescription() {
+        return nameDescription;
     }
 
 }

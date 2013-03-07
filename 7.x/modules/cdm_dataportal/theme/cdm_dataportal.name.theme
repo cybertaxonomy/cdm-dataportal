@@ -101,6 +101,9 @@ function cdm_add_type_designations($source, $extra) {
 function theme_cdm_typedesignations($variables) {
   $typeDesignations = $variables['typeDesignations'];
 
+  // need to add element to render path since type designations
+  // need other name render template
+  RenderHints::pushToRenderStack('typedesignations');
   $out = '<ul class="typeDesignations">';
   $typeDesignation_footnotes = FALSE;
   $is_lectotype = FALSE;
@@ -205,6 +208,8 @@ function theme_cdm_typedesignations($variables) {
   }
 
   $out .= '</ul>';
+
+  RenderHints::popFromRenderStack();
 
   return $out;
 }

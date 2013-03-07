@@ -10,28 +10,21 @@
  */
 package eu.etaxonomy.dataportal.pages;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.ElementUtils;
 import eu.etaxonomy.dataportal.elements.BaseElement;
-import eu.etaxonomy.dataportal.elements.FeatureBlock;
-import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
 
@@ -131,6 +124,16 @@ public class TaxonSynonymyPage extends PortalPage {
     }
 
     /**
+     * @return
+     */
+    public List<BaseElement> getAcceptedNameFootNotes() {
+        List<WebElement> fnListElements = synonymy.findElements(
+                By.xpath("./span[contains(@class,'accepted-name')]/following-sibling::ul[contains(@class, 'footnotes')]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
+        );
+        return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
+    }
+
+    /**
      * @param synonymIndex
      *            the 1-based position of the synonym in the list of homotypical
      *            synonyms
@@ -197,8 +200,24 @@ public class TaxonSynonymyPage extends PortalPage {
      * @return
      */
     public WebElement getHeterotypicalGroupSynonym(Integer heterotypicalGroupIndex, Integer synonymIndex) {
-        WebElement synonym = synonymy.findElement(By.xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex + "]/ul/li[" + synonymIndex + "]"));
+        WebElement synonym = synonymy.findElement(By.xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/li[" + synonymIndex + "]"));
         return synonym;
+    }
+
+    /**
+     * @param heterotypicalGroupIndex
+     *            the 1-based index of the heterotypical group
+     * @return
+     */
+    public List<TypeDesignationElement> getHeterotypicalGroupTypeDesignations(Integer heterotypicalGroupIndex) {
+        List<WebElement> typeDesignationElements = synonymy.findElements(By
+                .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
+                        + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'typeDesignations')]/li"));
+        List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
+        for (WebElement el : typeDesignationElements) {
+            typeDesignations.add(new TypeDesignationElement(el));
+        }
+        return typeDesignations;
     }
 
     /**

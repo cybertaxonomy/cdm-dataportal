@@ -28,7 +28,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  */
 
 @DataPortalContexts( { DataPortalContext.cichorieae })
-public class Crepis_tectorum_Synonymy extends CdmDataPortalTestBase{
+public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
 
     static UUID crepis_tectorum_Uuid = UUID.fromString("c62dff09-3f04-4f05-9aac-904d51ac1b77");
 
