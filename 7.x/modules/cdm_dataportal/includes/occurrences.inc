@@ -341,13 +341,7 @@ function compose_cdm_sequence($sequence) {
       'created',
       'updated',
       'class',
-      'uuid'
   );
-
-  // only show uuid it the user is logged in
-  if(user_is_logged_in()) {
-    unset($excludeFields[array_search('uuid', $excludeFields)]);
-  }
 
   $groups = array();
 
@@ -355,18 +349,38 @@ function compose_cdm_sequence($sequence) {
     if (!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class)))) {
       switch ($field) {
 
+        // TODO
+        //      annotations
+        //      markers?
+        //      rights
         case 'genBankAccession';
-          // TODO Set<GenBankAccession>
-          //     "accessionNumber",
-          if (isset($value->url) ){
-            @_description_list_group_add($groups, t('Sequencing date'),  l($value->accessionNumber, $value->url), NULL, 1);
-          } else {
-            @_description_list_group_add($groups, t('Sequencing date'), $value->accessionNumber, NULL, 1);
+          $dd_elements = array();
+          foreach ($value as $accession) {
+            if (isset($accession->uri) ){
+              $dd_elements[] = l($accession->accessionNumber, $accession->uri);
+            } else {
+              $dd_elements[] = $accession->accessionNumber;
+            }
           }
+          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),  $dd_elements, NULL, 1);
           break;
 
         case 'length':
           @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),  $value , ' ' . t('Nucleotites'), 2);
+          break;
+
+        case 'locus':
+          $locus = '';
+          if (isset($value->name)) {
+            $locus .= $value->name;
+          }
+          if (isset($value->name) && isset($value->description)) {
+            $locus .= ': ';
+          }
+          if (isset($value->description)) {
+            $locus .= $value->description;
+          }
+          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),  $locus, NULL, 3);
           break;
 
         case 'sequence':
@@ -395,14 +409,23 @@ function compose_cdm_sequence($sequence) {
         case 'citation':
           @_description_list_group_add($groups,
             cdm_occurrence_field_name_label($field),
-            theme('cdm_reference', array('reference'=>value, 'microReference'=>$sequence->microReference)),
+            theme('cdm_reference', array('reference' =>$value, 'microReference' => $sequence->microReference)),
             NULL,
             6
           );
           break;
 
+        case 'publishedIn':
+          @_description_list_group_add($groups,
+            cdm_occurrence_field_name_label($field),
+            theme('cdm_reference', array('reference'=>$value)),
+            NULL,
+            7
+          );
+          break;
+
         case 'chromatograms':
-          @_description_list_group_add($groups, t('Sequencing date'),
+          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
               array(
                   '#markup'=>theme('cdm_media_gallerie', array('medialist'=>$value)),
               )
@@ -413,7 +436,7 @@ function compose_cdm_sequence($sequence) {
           if(is_object($value) || is_array($value)){
             drupal_set_message("Unhandled type in compose_cdm_sequence() for field " . $field, "warning");
           } else {
-            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 6);
+            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL);
           }
       }
     }

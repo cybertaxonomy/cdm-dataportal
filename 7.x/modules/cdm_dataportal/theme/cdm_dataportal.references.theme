@@ -70,6 +70,7 @@ function theme_cdm_reference($variables) {
   $microReference = $variables['microReference'];
   $doLink = $variables['doLink'];
   $referenceStyle = $variables['referenceStyle'];
+
   $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
 
   if ($referenceStyle == "zoology") {
