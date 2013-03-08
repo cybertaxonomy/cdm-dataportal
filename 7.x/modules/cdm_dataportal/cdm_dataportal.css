@@ -119,7 +119,7 @@ li .taxon {
 #synonymy ul.homotypicSynonyms,
 #synonymy ul.taxonRelationships,
 #synonymy ul.misapplied {
-	margin-bottom: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 #synonymy ul li {
@@ -141,7 +141,7 @@ li .taxon {
 
 /* footnotes in synonymy */
 #synonymy ul.foototes {
-	margin: 0;
+  margin: 0;
 }
 
 .heterotypicSynonymyGroup li.footnotes,
@@ -570,17 +570,21 @@ div.cdm_media_viewer_image {
 }
 
 #specimens .description_list h4 {
-	clear: left;
+  clear: left;
     margin-bottom: 0;
     font-style: italic;
 }
 
 #specimens  .block-cdm-dataportal-feature h2 {
-	font-size: 11px;
+  font-size: 11px;
     font-weight: bold;
 }
 
 #specimens ul.footnotes {
     padding: 0;
+}
+
+#specimens .dna-sequence div {
+    font-family: monospace;
 }
 

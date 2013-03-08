@@ -37,6 +37,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
   static $excludeFields = array(
       'derivationEvents',
       'titleCache',
+      'protectedTitleCache',
       'derivedUnitMedia',
       'created',
       'updated',
@@ -209,9 +210,17 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
               break;
 
 
-          /* ---- Specimen --- */
-          // TODO preservation
-          // TODO exsiccatum
+            /* ---- Specimen --- */
+            case 'sequences':
+              $dd_elements = array();
+              foreach ($value as $sequence) {
+                $dd_elements[] = compose_cdm_sequence($sequence);
+              }
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+            break;
+
+            // TODO preservation
+            // TODO exsiccatum
 
 
           /* ---- FieldObservation --- */
@@ -294,7 +303,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
       if (isset($derivedFrom->originals)) {
         $derived_from_label = t('derived');
         if(isset($derivedFrom->type)){
-          $derived_from_label = $derivedFrom->representation_L10n;
+          $derived_from_label = $derivedFrom->type->representation_L10n;
         }
         if (count($groups) > 0) {
           // only display the derived from information when the derivative has any element which will be diplayed
@@ -311,4 +320,109 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
   } // END of $specimenOrObservation exists
 
   return $derivatives;
+}
+
+/**
+ * Compose an render array from a CDM Sequence object.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $sequence
+ *   CDM instance of type Sequence
+ * @return array
+ *   A render array containing the fields of the supplied $sequence
+ */
+function compose_cdm_sequence($sequence) {
+
+  static $excludeFields = array(
+      'titleCache',
+      'protectedTitleCache',
+      'microReference',
+      'created',
+      'updated',
+      'class',
+      'uuid'
+  );
+
+  // only show uuid it the user is logged in
+  if(user_is_logged_in()) {
+    unset($excludeFields[array_search('uuid', $excludeFields)]);
+  }
+
+  $groups = array();
+
+  foreach (get_object_vars($sequence) as $field => $value) {
+    if (!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class)))) {
+      switch ($field) {
+
+        case 'genBankAccession';
+          // TODO Set<GenBankAccession>
+          //     "accessionNumber",
+          if (isset($value->url) ){
+            @_description_list_group_add($groups, t('Sequencing date'),  l($value->accessionNumber, $value->url), NULL, 1);
+          } else {
+            @_description_list_group_add($groups, t('Sequencing date'), $value->accessionNumber, NULL, 1);
+          }
+          break;
+
+        case 'length':
+          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),  $value , ' ' . t('Nucleotites'), 2);
+          break;
+
+        case 'sequence':
+          // format in genbank style, force linebreaks after each 70 nucleotites
+          // see also http://stackoverflow.com/questions/499137/css-how-can-i-force-a-long-string-without-any-blank-to-be-wrapped-in-xul-and
+          @_description_list_group_add(
+            $groups,
+            cdm_occurrence_field_name_label($field),
+            array(
+              array(
+                '#markup' => '<div>' . wordwrap($value, 70, '</br>', TRUE) . '</div>',
+                '#wrapper_attributes' => array('class'=>'dna-sequence')
+                )
+              ),
+            3);
+          break;
+
+        case 'dateSequenced':
+          @_description_list_group_add($groups, t('Sequencing date'),  timePeriodToString($value), NULL, 4);
+          break;
+
+        case 'barcode': // boolean
+          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value ? 'Yes': 'No', NULL, 5);
+          break;
+
+        case 'citation':
+          @_description_list_group_add($groups,
+            cdm_occurrence_field_name_label($field),
+            theme('cdm_reference', array('reference'=>value, 'microReference'=>$sequence->microReference)),
+            NULL,
+            6
+          );
+          break;
+
+        case 'chromatograms':
+          @_description_list_group_add($groups, t('Sequencing date'),
+              array(
+                  '#markup'=>theme('cdm_media_gallerie', array('medialist'=>$value)),
+              )
+              , 10);
+          break;
+
+        default:
+          if(is_object($value) || is_array($value)){
+            drupal_set_message("Unhandled type in compose_cdm_sequence() for field " . $field, "warning");
+          } else {
+            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 6);
+          }
+      }
+    }
+  }
+
+  $sequence_elements = array(
+      '#theme' => 'description_list',
+      '#groups' => $groups
+  );
+
+  return $sequence_elements;
 }

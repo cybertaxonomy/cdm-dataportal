@@ -80,6 +80,7 @@ dl.media-caption {
 		margin-top: 0.2em;
 	}
 	.description_list {
+		clear: both;
 		h3 {
 			margin-top: 0;
 			background-color: #ddd;
@@ -106,8 +107,14 @@ dl.media-caption {
 	ul.typeDesignations {
 		clear: both;
 	}
-
+	.dna-sequence div {
+		font-size: $base-font-size;
+    	font-family: monospace;
+		clear: left;
+		padding-left: $zen-gutter-width;
+	}
 }
+
 
 /*
  * Theme settings page
