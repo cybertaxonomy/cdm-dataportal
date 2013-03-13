@@ -552,9 +552,25 @@ function cdm_settings_general() {
       '#collapsible' => FALSE,
       '#description' => t("This section covers the different aspects of aggregating information.
           <p>
-          <strong>NOTICE:</strong> Aggregation may slow down your data portal, so you may want to sensibly apply these setting and you may also
-          whant to make use of the caching capabilities of the dataportal.</p>"),
+          </p>"),
 
+  );
+
+  $form['aggregation'][CDM_TAXON_MEDIA_FILTER] = array(
+      '#type' => 'checkboxes',
+      '#title' => 'Taxon media filter',
+      '#default_value' => variable_get(CDM_TAXON_MEDIA_FILTER, unserialize(CDM_TAXON_MEDIA_FILTER_DEFAULT)),
+      '#options' => array(
+          'includeTaxonDescriptions' => 'Media in taxon descriptions',
+          'includeTaxonNameDescriptions' => 'Media in name descriptions',
+          'includeOccurrences' => 'Media related to specimens and occurrences',
+      ),
+      '#description' => 'This filter configures which images should be taken into account.',
+  );
+
+  $form['aggregation']['notice'] = array(
+      '#markup' => '<strong>NOTICE:</strong> The below aggregation seetings can slow down the data portal, so you may want to sensibly apply these setting and you may also
+          want to make use of the caching capabilities of the dataportal.',
   );
 
   $form['aggregation']['media_aggregation'] = array(
@@ -1389,20 +1405,8 @@ function cdm_settings_layout_media() {
     '#title' => t('Media settings'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
-    '#description' => 'This section covers the general settings related to the media.'
-      . 'Other related settings may be found under the layout settings and on the general settings.',
-  );
-
-  $form['media_settings'][CDM_TAXON_MEDIA_FILTER] = array(
-    '#type' => 'checkboxes',
-    '#title' => 'Taxon media filter',
-    '#default_value' => variable_get(CDM_TAXON_MEDIA_FILTER, unserialize(CDM_TAXON_MEDIA_FILTER_DEFAULT)),
-    '#options' => array(
-      'includeTaxonDescriptions' => 'Media in taxon descriptions',
-      'includeTaxonNameDescriptions' => 'Media in name descriptions',
-      'includeOccurrences' => 'Media related to specimens and occurrences',
-    ),
-    '#description' => 'This filter configures which images should be taken into account.',
+    '#description' => 'This section covers layout settings for media pages.'
+      . 'Further media related settings may be found under the taxon layout settings and on the general settings.',
   );
 
   $form['media_settings']['image_gallery_viewer'] = array(
