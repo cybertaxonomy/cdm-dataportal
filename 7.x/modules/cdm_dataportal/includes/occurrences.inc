@@ -388,17 +388,12 @@ function compose_cdm_sequence($sequence) {
           break;
 
         case 'locus':
-          $locus = '';
           if (isset($value->name)) {
-            $locus .= $value->name;
-          }
-          if (isset($value->name) && isset($value->description)) {
-            $locus .= ': ';
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),  $value->name, NULL, 3);
           }
           if (isset($value->description)) {
-            $locus .= $value->description;
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field) . ' ' . t('description') , $value->description, NULL, 4);
           }
-          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),  $locus, NULL, 3);
           break;
 
         case 'sequence':
@@ -413,15 +408,15 @@ function compose_cdm_sequence($sequence) {
                 '#wrapper_attributes' => array('class'=>'dna-sequence')
                 )
               ),
-            3);
+            5);
           break;
 
         case 'dateSequenced':
-          @_description_list_group_add($groups, t('Sequencing date'),  timePeriodToString($value), NULL, 4);
+          @_description_list_group_add($groups, t('Sequencing date'),  timePeriodToString($value), NULL, 6);
           break;
 
         case 'barcode': // boolean
-          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value ? 'Yes': 'No', NULL, 5);
+          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value ? 'Yes': 'No', NULL, 7);
           break;
 
         case 'citation':
@@ -429,7 +424,7 @@ function compose_cdm_sequence($sequence) {
             cdm_occurrence_field_name_label($field),
             theme('cdm_reference', array('reference' =>$value, 'microReference' => $sequence->microReference)),
             NULL,
-            6
+            8
           );
           break;
 
@@ -458,8 +453,9 @@ function compose_cdm_sequence($sequence) {
           @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
               array(
                   '#markup'=>theme('cdm_media_gallerie', array('medialist'=>$value)),
-              )
-              , 10);
+              ),
+              NULL,
+              10);
           break;
 
         default:
