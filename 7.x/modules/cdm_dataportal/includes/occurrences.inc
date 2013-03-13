@@ -361,7 +361,10 @@ function compose_cdm_sequence($sequence) {
   $groups = array();
 
   // -- retrieve additional data if neesscary
-  cdm_load_annotations($sequence);
+  // TODO bellow call disabled since sequences are not yet supported,
+  //      see  #3347 (services and REST service controller for molecular classes implemented)
+  //
+  // cdm_load_annotations($sequence);
 
   foreach (get_object_vars($sequence) as $field => $value) {
 

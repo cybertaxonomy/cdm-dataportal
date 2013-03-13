@@ -213,6 +213,15 @@ define('CDM_PROFILE_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
 define('CDM_OCCURRENCE_FEATURETREE_UUID', 'cdm_occurrence_featuretree_uuid');
 define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal_structdesc_featuretree_uuid');
 
+define('CDM_TAXON_MEDIA_FILTER', 'cdm_taxon_media_filter');
+define('CDM_TAXON_MEDIA_FILTER_DEFAULT', serialize(
+    array(
+        'includeTaxonDescriptions' => 'includeTaxonDescriptions',
+        'includeOccurrences' => 0,
+        'includeTaxonNameDescriptions' => 0
+     )
+  ));
+
 /**
  * @todo document this function.
  */
@@ -819,7 +828,7 @@ function cdm_settings_layout() {
           render path. The render path is used as key of the array sub subelements whereas the name render template array is set as value.
           The following render Path keys are curretly recognized:
           <ul>
-          	<li>list_of_taxa:</li>
+            <li>list_of_taxa:</li>
             <li>acceptedFor:</li>
             <li>taxon_page_synonymy</li>
             <li>typedesignations</li>
@@ -1377,10 +1386,23 @@ function cdm_settings_layout_media() {
 
   $form['media_settings'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Media display settings'),
-    '#collapsible' => TRUE,
+    '#title' => t('Media settings'),
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
-    '#description' => t('This section covers the settings related to the taxa media, that is how each single media should be displayed.'),
+    '#description' => 'This section covers the general settings related to the media.'
+      . 'Other related settings may be found under the layout settings and on the general settings.',
+  );
+
+  $form['media_settings'][CDM_TAXON_MEDIA_FILTER] = array(
+    '#type' => 'checkboxes',
+    '#title' => 'Taxon media filter',
+    '#default_value' => variable_get(CDM_TAXON_MEDIA_FILTER, unserialize(CDM_TAXON_MEDIA_FILTER_DEFAULT)),
+    '#options' => array(
+      'includeTaxonDescriptions' => 'Media in taxon descriptions',
+      'includeTaxonNameDescriptions' => 'Media in name descriptions',
+      'includeOccurrences' => 'Media related to specimens and occurrences',
+    ),
+    '#description' => 'This filter configures which images should be taken into account.',
   );
 
   $form['media_settings']['image_gallery_viewer'] = array(

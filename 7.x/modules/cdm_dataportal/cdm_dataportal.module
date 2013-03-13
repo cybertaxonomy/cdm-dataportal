@@ -935,6 +935,11 @@ function _load_media_for_taxon($taxon) {
     $mediaQueryParameters['relationships'] = implode(',', get_selection($relationship_choice['direct']));
     $mediaQueryParameters['relationshipsInvers'] = implode(',', get_selection($relationship_choice['invers']));
 
+    $taxon_media_filter_choice = variable_get(CDM_TAXON_MEDIA_FILTER, unserialize(CDM_TAXON_MEDIA_FILTER_DEFAULT));
+    $mediaQueryParameters['includeTaxonDescriptions'] = (boolean) $taxon_media_filter_choice['includeTaxonDescriptions'] != 0;
+    $mediaQueryParameters['includeOccurrences'] = (boolean) $taxon_media_filter_choice['includeOccurrences'] != 0;
+    $mediaQueryParameters['includeTaxonNameDescriptions'] = (boolean) $taxon_media_filter_choice['includeTaxonNameDescriptions'] != 0;
+
     $ws_endpoint = NULL;
     if ( variable_get('cdm_images_include_children', 0) == 0) {
       $ws_endpoint = CDM_WS_PORTAL_TAXON_MEDIA;
