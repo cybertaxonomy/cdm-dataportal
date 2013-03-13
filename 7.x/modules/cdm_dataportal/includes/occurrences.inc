@@ -34,20 +34,24 @@
  */
 function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives = null) {
 
-  static $excludeFields = array(
-      'derivationEvents',
-      'titleCache',
-      'protectedTitleCache',
-      'derivedUnitMedia',
-      'created',
-      'updated',
-      'class',
-      'uuid'
-  );
+  $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
+  if (!isset($exclude_occurrence_fields)) {
+     $exclude_occurrence_fields = array(
+        'derivationEvents',
+        'titleCache',
+        'protectedTitleCache',
+        'derivedUnitMedia',
+        'created',
+        'updated',
+        'class',
+        'uuid'
+    );
+  }
+
 
   // only show uuid it the user is logged in
   if(user_is_logged_in()) {
-    unset($excludeFields[array_search('uuid', $excludeFields)]);
+    unset($exclude_occurrence_fields[array_search('uuid', $exclude_occurrence_fields)]);
   }
 
   if (!isset($derivatives)) {
@@ -84,7 +88,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
     $groups = array();
     // --- add initialized fields
     foreach (get_object_vars($specimenOrObservation) as $field => $value) {
-      if (!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class)))) {
+      if (!in_array($field, $exclude_occurrence_fields) && ($value && (!is_object($value) || isset($value->class)))) {
         switch ($field) {
 
           /* ---- java.lang.Object --- */
@@ -93,6 +97,9 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
               @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
             }
           break;
+
+          // TODO
+          //      annotations
 
           /* ---- SpecimenOrObservationBase --- */
           case 'sex':
@@ -276,6 +283,9 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
     } // END of loop over $derivedUnitFacade fields
 
 
+    // template_preprocess_description_list() is not worting by weight so we do it right here
+    uasort($groups, 'element_sort');
+
     $occurrence_elements = array(
         '#title' => $title,
         '#theme' => 'description_list',
@@ -306,6 +316,8 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
           $derived_from_label = $derivedFrom->type->representation_L10n;
         }
         if (count($groups) > 0) {
+          // TODO  annotations
+
           // only display the derived from information when the derivative has any element which will be diplayed
           $derivatives[] = array(
               '#markup' => '<div>' . $derived_from_label . ' ' . t('from') . ': </div>',
@@ -334,25 +346,31 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
  */
 function compose_cdm_sequence($sequence) {
 
-  static $excludeFields = array(
+  $exclude_sequence_fields = &drupal_static(__FUNCTION__);
+  if (!isset($exclude_sequence_fields)) {
+    $exclude_sequence_fields = array(
       'titleCache',
       'protectedTitleCache',
       'microReference',
       'created',
       'updated',
       'class',
-  );
+    );
+  }
 
   $groups = array();
 
+  // -- retrieve additional data if neesscary
+  cdm_load_annotations($sequence);
+
   foreach (get_object_vars($sequence) as $field => $value) {
-    if (!in_array($field, $excludeFields) && ($value && (!is_object($value) || isset($value->class)))) {
+
+
+    if (!in_array($field, $exclude_sequence_fields) && ($value && (!is_object($value) || isset($value->class)))) {
       switch ($field) {
 
         // TODO
-        //      annotations
-        //      markers?
-        //      rights
+        //      markers
         case 'genBankAccession';
           $dd_elements = array();
           foreach ($value as $accession) {
@@ -366,7 +384,7 @@ function compose_cdm_sequence($sequence) {
           break;
 
         case 'length':
-          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),  $value , ' ' . t('Nucleotites'), 2);
+          @_description_list_group_add($groups, t('Sequence length'),  $value , ' ' . t('Nucleotites'), 2);
           break;
 
         case 'locus':
@@ -422,6 +440,18 @@ function compose_cdm_sequence($sequence) {
             NULL,
             7
           );
+
+        case 'rights':
+          array_merge($groups, cdm_rights_as_dl_groups($value));
+        break;
+
+        case 'annotations':
+          $dd_elements = array();
+          foreach ($value as $annotation) {
+            // TODO respect annotation type filter settings
+            $dd_elements[] = $annotation->text;
+          }
+          @_description_list_group_add($groups, t('Notes'), $dd_elements, NULL, 9);
           break;
 
         case 'chromatograms':
@@ -436,11 +466,14 @@ function compose_cdm_sequence($sequence) {
           if(is_object($value) || is_array($value)){
             drupal_set_message("Unhandled type in compose_cdm_sequence() for field " . $field, "warning");
           } else {
-            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL);
+            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 20);
           }
       }
     }
   }
+
+  // template_preprocess_description_list() is not worting by weight so we do it right here
+  uasort($groups, 'element_sort');
 
   $sequence_elements = array(
       '#theme' => 'description_list',

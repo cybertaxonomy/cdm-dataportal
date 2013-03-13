@@ -63,6 +63,7 @@ function template_preprocess_description_list(&$variables) {
   $groups = &$variables['groups'];
   $variables['items'] = array();
   $items = &$variables['items'];
+
   // Loop over all groups and contained terms and descriptions to prepare the
   // simplified 'items' variable for theme_description_list(). But also
   // harmonize all items within 'groups' so subsequently invoked preprocess

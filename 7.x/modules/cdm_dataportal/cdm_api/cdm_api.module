@@ -1184,6 +1184,21 @@ function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = FALSE) {
 }
 
 /**
+ * Loads the annotations from the REST service an adds them as field to the given $annotatable_entity.
+ *
+ * @param object $annotatable_entity
+ *   The CDM AnnotatableEntity to load annotations for
+ */
+function cdm_load_annotations(&$annotatable_entity) {
+  if (isset($annotatable_entity) && !isset($annotatable_entity->annotations)) {
+    $annotations = cdm_ws_getAnnotationsFor($annotatable_entity);
+    if (is_array($annotations)) {
+      $annotatable_entity->annotations = $annotations;
+    }
+  }
+}
+
+/**
  * Get a NomenclaturalReference string.
  *
  * Returns the NomenclaturalReference string with correctly placed

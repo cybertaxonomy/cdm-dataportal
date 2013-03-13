@@ -280,6 +280,7 @@ function theme_cdm_media_caption($variables) {
   // Rights.
   if ($doRights) {
     $rights = '';
+    // TODO use cdm_rights_as_dl_groups() to create dl entries
 
     // Copyrights.
     $cnt = count($media_metadata['rights']['copyright']['agentNames']);

@@ -23,6 +23,7 @@ module_load_include('php', 'cdm_dataportal', 'help');
 module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.search');
 
 module_load_include('inc', 'cdm_dataportal', 'includes/pages');
+module_load_include('inc', 'cdm_dataportal', 'includes/media');
 module_load_include('inc', 'cdm_dataportal', 'includes/occurrences');
 module_load_include('inc', 'cdm_dataportal', 'includes/descriptions');
 module_load_include('inc', 'cdm_dataportal', 'includes/pre-drupal8');
@@ -154,7 +155,7 @@ function _add_js_openlayers_map() {
           jQuery(document).ready(function() {
 
                 window.onload = function () {
-    			  // ---
+            // ---
                   jQuery('#openlayers_map').cdm_openlayers_map(
                    '" . $edit_map_service['base_uri'] . "',
                    '" . $edit_map_service['version'] . "',
@@ -167,10 +168,10 @@ function _add_js_openlayers_map() {
                     showLayerSwitcher: " . (variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE) ? 'true' : 'false') . ",
                     baseLayerNames: [" . $layerNames . "],
                     defaultBaseLayerName: '" . $preferredLayer . "',
-               	  }
+                   }
                 );
-               	// ---
-			  };
+                 // ---
+        };
           });
         ", array('type' => 'inline'));
 
@@ -1952,14 +1953,14 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cdm_dynabox.js');
   drupal_add_js("
       jQuery(document).ready(
-		function() {
-			dynabox('". $dynabox_id ."',
-			{
+    function() {
+      dynabox('". $dynabox_id ."',
+      {
               open_callback: " . $open_callback .",
               close_callback: " . $close_callback .",
             }
           );
-		}
+    }
       );",
       array(
         'type'=>'inline',
