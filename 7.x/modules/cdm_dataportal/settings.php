@@ -569,7 +569,7 @@ function cdm_settings_general() {
   );
 
   $form['aggregation']['notice'] = array(
-      '#markup' => '<strong>NOTICE:</strong> The below aggregation seetings can slow down the data portal, so you may want to sensibly apply these setting and you may also
+      '#markup' => '<strong>NOTICE:</strong> The below aggregation settings can slow down the data portal, so you may want to sensibly apply these setting and you may also
           want to make use of the caching capabilities of the dataportal.',
   );
 
