@@ -25,6 +25,10 @@
 	}
 	dd {
 		margin: 0;
+		margin-left: $zen-gutter-width;
+	}
+	dl dl {
+		margin: 0; /* reset default from cdm_dataportal.css */
 	}
 }
 
