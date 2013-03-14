@@ -69,8 +69,13 @@ ul.cdm_names li {
 dl.media-caption {
 	margin: 0;
 }
-.media-caption dd.title {
-	font-size: 100%;
+.media-caption {
+	dd {
+		margin-left: 0;
+		.title {
+			font-size: 100%;
+		}
+	}
 }
 .image-gallerie td.caption {
 	padding-bottom: 1em;

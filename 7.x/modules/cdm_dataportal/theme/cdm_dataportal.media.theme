@@ -473,7 +473,8 @@ function theme_cdm_media_gallerie($variables) {
         _add_js_ahah();
         $content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
         $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
-
+        $ahah_media_caption =  '<div class="ahah-content" rel="' . $cdm_proxy_url_caption . '">'
+          . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
 
         // preparing the part link (= click on image iteself) which can be handled in two ways
         //
@@ -486,13 +487,19 @@ function theme_cdm_media_gallerie($variables) {
           $mediaPartLinkAttributes['target'] = "specimen";
           $openMediaLinkAttributes['target'] = "specimen";
         }
-        $mediaPartLinkAttributes['alt'] = '<div class="ahah-content" rel="' . $cdm_proxy_url_caption . '">'
-          . '<span class="loading" style="display: none;">Loading ....</span></div>';
+        $mediaPartLinkAttributes['alt'] = $ahah_media_caption;
 
+        // --- preparing the media caption
 
-        // preparing the media caption - no caption elements to show up here except the $caption_link_uri, if at all
-        //
-        $captionPartHtml = '';
+        /* old comment: "no caption elements to show up here except the $caption_link_uri, if at all"
+         *
+         * a.kohlbecker 2013-03-14 :
+         *   It is unclear why no caption elements should be shown, Was it a technical reason?
+         *   see commit r16723 740177eb-a1d8-4ec3-a630-accd905eb3da
+         *   If not problems arise with this remove it after some weeks
+         */
+        $captionPartHtml = $ahah_media_caption;
+
         if ($caption_link_uri) {
           if ($contentTypeDirectory == 'image') {
           // it is an image, so open it in the media page
