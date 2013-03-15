@@ -39,12 +39,16 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
   $relationship_choice['direct'] = get_selection($relationship_choice['direct']);
   $relationship_choice['invers'] = get_selection($relationship_choice['invers']);
 
-  $by_associatedtaxon_query = http_build_query(array(
+  $by_associatedtaxon_query_parameters = array(
       'relationshipsInvers' => implode(',', $relationship_choice['invers']),
       'relationships' => implode(',', $relationship_choice['direct']),
-      'pageSize' => null // all hits in one page
-      )
-    );
+  );
+
+  if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
+    $by_associatedtaxon_query_parameters = array_merge($by_associatedtaxon_query_parameters, $_REQUEST['pager']);
+  }
+
+  $by_associatedtaxon_query = http_build_query($by_associatedtaxon_query_parameters);
 
   $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
       null,
@@ -193,6 +197,14 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
   }
 
   $render_array['specimen_list'] = $specimen_table;
+  $render_array['pager'] = markup_to_render_array(
+      theme('cdm_pager', array(
+          'pager' => $pager,
+          'path' => $_REQUEST['q'],
+          'parameters' => $_REQUEST,
+      )),
+      10 // weight
+  );
 
   RenderHints::popFromRenderStack();
   return $render_array;

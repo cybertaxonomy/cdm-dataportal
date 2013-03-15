@@ -1477,7 +1477,6 @@ function cdm_dataportal_view_search_results_taxon() {
   return theme('cdm_search_results', array(
     'pager' => $taxonPager,
     'path' => 'cdm_dataportal/search/results/taxon',
-    'query_parameters' => $_REQUEST,
     ));
 }
 

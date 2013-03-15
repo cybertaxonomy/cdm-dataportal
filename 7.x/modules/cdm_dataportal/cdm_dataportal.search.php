@@ -431,9 +431,14 @@ function cdm_dataportal_search_form_request() {
 
   $form_params = array();
 
-  if (is_array($_REQUEST['search'])) {
+  if (isset($_REQUEST['search']) && is_array($_REQUEST['search'])) {
     array_deep_copy($_REQUEST['search'], $form_params);
   }
+
+  if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
+    $form_params = array_merge($form_params, $_REQUEST['pager']);
+  }
+
   $form_params['query'] = trim($_REQUEST['query']);
 
   // --- handle geographic range

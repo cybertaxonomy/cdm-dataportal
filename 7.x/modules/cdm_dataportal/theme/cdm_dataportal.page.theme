@@ -182,9 +182,9 @@ function theme_cdm_taxon_page($variables) {
                 "The 'FeatureTree' for the generation of natural language representations is not configured correctly,"
                 ." please select a 'FeatureTree' in the !settings",
                 array(
-              		'!settings' => l(t('CDM Dataportal Settings'), 'admin/config/cdm_dataportal/layout/taxon'))
-              		),
-              	'warning');
+                  '!settings' => l(t('CDM Dataportal Settings'), 'admin/config/cdm_dataportal/layout/taxon'))
+                  ),
+                'warning');
             } else {
               $taxonDescription->elements = NULL;
               $taxonDescription->elements = array(
@@ -367,9 +367,9 @@ function theme_cdm_taxon_page_synonymy($variables) {
     $special_annotations_array[] = $taxon->name;
     $special_annotations_array[] = $taxon;
     $accepted_name .= theme('cdm_annotations_as_footnotekeys', array(
-    		'cdmBase_list' => $special_annotations_array,
-    		'footnote_list_key' => RenderHints::getRenderPath() . '-annotations')
-    	);
+        'cdmBase_list' => $special_annotations_array,
+        'footnote_list_key' => RenderHints::getRenderPath() . '-annotations')
+      );
   }
 
   // --- Render homotypic synonymy group
@@ -422,16 +422,16 @@ function theme_cdm_taxon_page_synonymy($variables) {
  *     objects (currently this function can only handle taxon instances =>
  *     TODO)
  *   - path: The target path for the pager links, this will usually point to
- *     'cdm_dataportal/search/results/taxon'.
- *   - query_parameters: The query parameters to be used in the pager links.
+ *     'cdm_dataportal/search/results/taxon'
  *
  * @ingroup themeable
  */
 function theme_cdm_search_results($variables) {
   $pager = $variables['pager'];
   $path = $variables['path'];
-  $query_parameters = $variables['query_parameters'];
+
   $freetextSearchResults = array();
+
   // The $query_parameters must not contain the 'q' parameter
   // since this would conflict with the desired target $path.
   // unset($search_params['q']);
@@ -486,7 +486,7 @@ function theme_cdm_search_results($variables) {
     $out .= theme('cdm_pager', array(
         'pager' => $pager,
         'path' => $path,
-        'parameters' => $query_parameters,
+        'parameters' => $_REQUEST,
     ));
   }
   else {

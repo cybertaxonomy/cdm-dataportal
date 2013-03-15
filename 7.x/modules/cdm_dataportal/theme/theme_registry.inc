@@ -235,8 +235,7 @@ function cdm_dataportal_theme() {
       // Themes in cdm_dataportal.taxon.theme.
       'cdm_search_results' => array('variables' => array(
           'pager' => NULL,
-          'path' => NULL,
-          'query_parameters' => NULL,
+          'path' => NULL
       )),
       'cdm_taxonRelationships' => array('variables' => array('taxonRelationships' => NULL, 'focusedTaxon' => NULL)),
       'cdm_acceptedFor' => array('variables' => array()),

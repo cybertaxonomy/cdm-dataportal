@@ -443,8 +443,9 @@ function theme_cdm_pager_link($variables) {
   $path = $variables['path'];
   $parameters = $variables['parameters'];
   $attributes = $variables['attributes'];
+
   $out = '';
-  $parameters['search']['pageNumber'] = $linkIndex;
+  $parameters['pager']['pageNumber'] = $linkIndex;
   if ($linkIndex == $pager->currentIndex) {
     $out = '<strong>' . $text . '</strong>';
   }

@@ -388,7 +388,6 @@ function palmweb_2_cdm_feature_nodes($variables){
 function palmweb_2_cdm_search_results($variables){
   $pager = $variables['pager'];
   $path = $variables['path'];
-  $query_parameters = $variables['query_parameters'];
   $out = '';
 
   $showThumbnails = isset($_SESSION['pageoption']['searchtaxa']['showThumbnails']) ? $_SESSION['pageoption']['searchtaxa']['showThumbnails'] : 0;
@@ -437,7 +436,7 @@ function palmweb_2_cdm_search_results($variables){
     $out .= theme('cdm_pager', array(
       'pager' => $pager,
       'path' => $path,
-      'parameters' => $query_parameters,
+      'parameters' => $_REQUEST,
     ));
   }
   else {
