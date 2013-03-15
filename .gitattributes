@@ -987,6 +987,7 @@
 7.x/modules/cdm_dataportal/js/cluetip/jquery.dimensions.js -text
 7.x/modules/cdm_dataportal/js/cluetip/jquery.hoverIntent.js -text
 7.x/modules/cdm_dataportal/js/cluetip/wait.gif -text
+7.x/modules/cdm_dataportal/js/domEvent.js -text
 7.x/modules/cdm_dataportal/js/footnotes.js -text
 7.x/modules/cdm_dataportal/js/jquery-lightbox-0.5/css/jquery.lightbox-0.5.css -text
 7.x/modules/cdm_dataportal/js/jquery-lightbox-0.5/images/lightbox-blank.gif -text

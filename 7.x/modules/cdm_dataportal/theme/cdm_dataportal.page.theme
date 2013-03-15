@@ -94,6 +94,9 @@ function theme_cdm_name_page_title($variables) {
  */
 function theme_cdm_taxon_page($variables) {
 
+  // add all mandatory js sources
+  _add_js_footnotes();
+
   $taxon = $variables['taxon'];
   $page_part = $variables['page_part'];
   global $theme;

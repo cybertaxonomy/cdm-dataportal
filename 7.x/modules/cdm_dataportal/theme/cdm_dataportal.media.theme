@@ -473,7 +473,7 @@ function theme_cdm_media_gallerie($variables) {
         _add_js_ahah();
         $content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
         $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
-        $ahah_media_caption =  '<div class="ahah-content" rel="' . $cdm_proxy_url_caption . '">'
+        $ahah_media_caption =  '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
           . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
 
         // preparing the part link (= click on image iteself) which can be handled in two ways

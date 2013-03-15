@@ -217,17 +217,18 @@ function _add_js_lightbox($galleryID) {
   * allow using the "alt" attribute for captions instead of the "title"
   * attribute
   */
-  $lightBoxBasePath = drupal_get_path('module', 'cdm_dataportal') . '/js/jquery-lightbox-0.5';
-  drupal_add_js($lightBoxBasePath . '/js/jquery.lightbox-0.5.js');
-  drupal_add_css($lightBoxBasePath . '/css/jquery.lightbox-0.5.css');
+  $lightbox_base_path =  drupal_get_path('module', 'cdm_dataportal') . '/js/jquery-lightbox-0.5';
+  $lightbox_image_path = base_path() . $lightbox_base_path . '/images/';
+  drupal_add_js($lightbox_base_path . '/js/jquery.lightbox-0.5.js');
+  drupal_add_css($lightbox_base_path . '/css/jquery.lightbox-0.5.css');
   drupal_add_js('jQuery(document).ready(function() {
       jQuery(\'#' . $galleryID . ' a.lightbox\').lightBox({
         fixedNavigation:  true,
-        imageLoading:     \'' . $lightBoxBasePath . '/images/lightbox-ico-loading.gif\',
-        imageBtnPrev:     \'' . $lightBoxBasePath . '/images/lightbox-btn-prev.gif\',
-        imageBtnNext:     \'' . $lightBoxBasePath . '/images/lightbox-btn-next.gif\',
-        imageBtnClose:    \'' . $lightBoxBasePath . '/images/lightbox-btn-close.gif\',
-        imageBlank:       \'' . $lightBoxBasePath . '/images/lightbox-blank.gif\',
+        imageLoading:     \'' . $lightbox_image_path . 'lightbox-ico-loading.gif\',
+        imageBtnPrev:     \'' . $lightbox_image_path . 'lightbox-btn-prev.gif\',
+        imageBtnNext:     \'' . $lightbox_image_path . 'lightbox-btn-next.gif\',
+        imageBtnClose:    \'' . $lightbox_image_path . 'lightbox-btn-close.gif\',
+        imageBlank:       \'' . $lightbox_image_path . 'lightbox-blank.gif\',
         adjustToWindow: true
       });
     });
@@ -239,6 +240,7 @@ function _add_js_lightbox($galleryID) {
  * @see http://drupal.org/node/1354
  */
 function _add_js_footnotes() {
+  _add_js_domEvent();
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/footnotes.js');
 }
 
@@ -272,7 +274,18 @@ function _add_js_cluetip() {
  * @see http://drupal.org/node/1354
  */
 function _add_js_ahah() {
+
+  _add_js_domEvent(); // requires domEvent.js
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/ahah-content.js');
+}
+
+/**
+ * Adds the external javascript file for domEvent.js.
+ *
+ * @see drupal_add_js()
+ */
+function _add_js_domEvent() {
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/domEvent.js');
 }
 
 
@@ -2064,6 +2077,7 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
   // check for plain class attribute string
   $dynabox_id = preg_replace('/[^a-zA-Z0-9\-]/', '', $dynabox_id);
 
+  _add_js_domEvent(); // requires domEvent.js
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cdm_dynabox.js');
   drupal_add_js("
       jQuery(document).ready(
