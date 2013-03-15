@@ -411,21 +411,13 @@ div.cdm_media_viewer_image {
 }
 
 .media-caption {
-  line-height: 1.3em;
   margin-left: 0;
 }
 
 .media-caption dt.title {
   display: none;
 }
-.media-caption dd.title {
-  /* font-weight: bold;
-  font-size: 130%; */
-}
 
-.cdm_names .media-caption {
-  font-size: 60%;
-}
 
 .image-passe-partout,
 .image_viewer {
