@@ -51,7 +51,7 @@
             }
           );
           $.get(url, function(html){
-            dynabox_content.find('.loading').remove().end().append('<div class="content">' + html + '</div>').triggerElementsAdded()
+            dynabox_content.find('.loading').remove().end().append('<div class="content">' + html + '</div>').triggerElementsAdded();
           });
         }
       }
@@ -68,8 +68,8 @@
       } else {
         options.open_callback();
       }
-    }
-  }
+    };
+  };
 
 
 })(jQuery);

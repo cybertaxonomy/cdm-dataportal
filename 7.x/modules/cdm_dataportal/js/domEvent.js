@@ -15,7 +15,7 @@
                     handler(element);
                 }
            );
-    }
+    };
 
     /**
      * can be used in two forms:

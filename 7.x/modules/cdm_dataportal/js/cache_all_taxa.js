@@ -2,7 +2,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 
   var taxonPageUrl = taxonPageUrl;
   var searchTaxaUrl = searchTaxaUrl;
-  var pageSize;
+  var pageSize = null;
 
   var progress = 0;
   var i = 0;
@@ -22,7 +22,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
     if (window.console && window.console.firebug){
       console.log(msg);
     }
-  }
+  };
 
   /**
    *
@@ -49,7 +49,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
    * @return
    */
   var requestNextDataPage = function(callback){
-    var uri = searchTaxaUrl + escape("&pageSize=" + pageSize);
+    var uri = searchTaxaUrl + (pageSize != null ? escape("&pageSize=" + pageSize) : '');
     if(dataPager != null){
       uri += escape("&pageNumber="+ dataPager.nextIndex);
     }
@@ -64,7 +64,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
           errorCallback(statusText, 'A network error occurred, please start again.', unescape(uri), true);
         }
     });
-  }
+  };
 
   /**
    *
@@ -158,8 +158,8 @@ jQuery(document).ready(function($) {
 
   $('#cdm-settings-cache [name=start]').attr('disabled', 'disabled');
   $('#cdm-settings-cache [name=stop]').attr('disabled', 'disabled');
-  $('#cdm-settings-cache #progress').css({background: '#012456', color: '#349AAF', fontSize: '100%', padding: '10px'})
-    $('#cdm-settings-cache #progress').html(
+  $('#cdm-settings-cache #progress').css({background: '#012456', color: '#349AAF', fontSize: '100%', padding: '10px'});
+  $('#cdm-settings-cache #progress').html(
         '<div id="usermessage" style="font-size:95%; width: 50%; float:right; font-weight:light; padding:10px; border-left: 1px solid; height: 3.9em;"></div>'
         +'<div id="counter" style="font-size:300%; padding:10px;"></div>'
         +'<div id="time" style="clear:both; border-top:1px solid #349AAF;"></div>'
@@ -170,7 +170,7 @@ jQuery(document).ready(function($) {
     var m = parseInt( (date.getTime() / 1000/ 60) % 60);
     var s = parseInt( (date.getTime() / 1000 ) % 60);
     return '' + h +'h '+ m +'m '+ s +'s ';
-  }
+  };
 
 
   var progressCallback = function(progress, elapsedTime, estimatedTime, userMessage){
@@ -188,7 +188,7 @@ jQuery(document).ready(function($) {
     }
     $('#usermessage').html(userMessage);
 
-  }
+  };
 
   var readyCallback = function(message){
     $('#cdm-settings-cache [name=start]').removeAttr('disabled');
@@ -196,20 +196,20 @@ jQuery(document).ready(function($) {
       $('#cdm-settings-cache').append('<div class="error">'+message+'</div>');
 
     }
-  }
+  };
 
   var doneCallback = function(progress){
     var percent = Math.floor(progress * 10000) / 100;
     $('#cdm-settings-cache #progress').text('DONE');
     $('#cdm-settings-cache [name=stop]').removeAttr('disabled');
-  }
+  };
 
   var errorCallback = function(errorMessage, userMessage, taxonUrl, doStop){
     var logentry = '<div>' + errorMessage + ' : ' + taxonUrl + '' + '</div>';
     if($('#log div').length == 0){
       $('#log').html(logentry);
     } else {
-      $('#log div:last').append(logentry)
+      $('#log div:last').append(logentry);
     }
     if(userMessage == undefined || userMessage == null ){
       userMessage = '';
@@ -219,7 +219,7 @@ jQuery(document).ready(function($) {
       $('#cdm-settings-cache [name=stop]').attr('disabled', 'disabled');
       $('#cdm-settings-cache [name=start]').removeAttr('disabled');
     }
-  }
+  };
 
   var cacheBot = new CacheBot(searchTaxaUrl, taxonPageUrl, 25, progressCallback, readyCallback, doneCallback, errorCallback);
 
