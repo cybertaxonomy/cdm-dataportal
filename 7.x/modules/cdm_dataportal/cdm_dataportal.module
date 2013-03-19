@@ -22,6 +22,7 @@ module_load_include('php', 'cdm_dataportal', 'settings');
 module_load_include('php', 'cdm_dataportal', 'help');
 module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.search');
 
+module_load_include('inc', 'cdm_dataportal', 'includes/common');
 module_load_include('inc', 'cdm_dataportal', 'includes/pages');
 module_load_include('inc', 'cdm_dataportal', 'includes/media');
 module_load_include('inc', 'cdm_dataportal', 'includes/occurrences');

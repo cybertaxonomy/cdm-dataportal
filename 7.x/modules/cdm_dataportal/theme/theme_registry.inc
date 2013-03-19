@@ -58,6 +58,7 @@ function cdm_dataportal_theme() {
           'enclosingTag' => 'span',
       )),
       'cdm_annotations' => array('variables' => array('annotations' => NULL, 'enclosingTag' => 'span')),
+      'cdm_marker' => array('variables' => array('label' => NULL, 'attributes' => NULL)),
       'cdm_pager' => array('variables' => array('pager' => NULL, 'path' => NULL, 'parameters' => NULL)),
       'cdm_pager_link' => array('variables' => array(
           'text' => NULL,

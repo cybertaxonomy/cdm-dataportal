@@ -371,6 +371,22 @@ function cdm_add_footnote_to_array(&$footnote_list, $footnote) {
   }
 }
 
+/**
+ * Theme function for CDM marker instances
+ *
+ * @see compose_cdm_marker();
+ * @param array $variables
+ *   - markerType_representation_l10n: the localized representation of the marker.markerType field
+ */
+function theme_cdm_marker($variables) {
+  $class_attribute = null;
+  //TODO class attribute hacked?, use generic drupal way?
+  if(isset($variables['attributes']['class'])){
+    $class_attribute = $variables['attributes']['class'];
+  }
+  return '<span class="' . $class_attribute . '">' . $variables['label'] . '</span>';
+}
+
 /* ============================ pager ============================= */
 /**
  * @todo Please document this function.

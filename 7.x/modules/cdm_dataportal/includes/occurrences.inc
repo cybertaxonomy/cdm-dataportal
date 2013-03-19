@@ -98,8 +98,24 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             }
           break;
 
-          // TODO
-          //      annotations
+          case 'markers':
+            $dd_elements = array();
+            foreach ($value as $marker) {
+              $dd_elements[] = compose_cdm_marker($marker);
+            }
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+            break;
+
+
+            case 'annotations':
+              $dd_elements = array();
+              foreach ($value as $annotation) {
+                // TODO respect annotation type filter settings
+                $dd_elements[] = $annotation->text;
+              }
+              @_description_list_group_add($groups, t('Notes'), $dd_elements);
+              break;
+
 
           /* ---- SpecimenOrObservationBase --- */
           case 'sex':
@@ -372,8 +388,6 @@ function compose_cdm_sequence($sequence) {
     if (!in_array($field, $exclude_sequence_fields) && ($value && (!is_object($value) || isset($value->class)))) {
       switch ($field) {
 
-        // TODO
-        //      markers
         case 'genBankAccession';
           $dd_elements = array();
           foreach ($value as $accession) {
@@ -452,13 +466,21 @@ function compose_cdm_sequence($sequence) {
           @_description_list_group_add($groups, t('Notes'), $dd_elements, NULL, 9);
           break;
 
+        case 'markers':
+          $dd_elements = array();
+          foreach ($value as $marker) {
+            $dd_elements[] = compose_cdm_marker($marker);
+          }
+          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements, NULL, 10);
+          break;
+
         case 'chromatograms':
           @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
               array(
                   '#markup'=>theme('cdm_media_gallerie', array('medialist'=>$value)),
               ),
               NULL,
-              10);
+              11);
           break;
 
         default:
