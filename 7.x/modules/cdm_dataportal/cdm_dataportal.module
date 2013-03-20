@@ -1142,6 +1142,25 @@ function mixed_variable_get($variableKey, $defaultValueString) {
 }
 
 /**
+ * Recusive funciton to convert an object into an array.
+ * also subordinate objects will be converted.
+ *
+ * @param object $object
+ * @return the array
+ */
+function convert_to_array($object) {
+  if(is_object($object) || is_array($object)) {
+    $array = (array)$object;
+    foreach ($array as $key=>$value){
+      $array[$key] = convert_to_array($value);
+    }
+    return $array;
+  } else {
+    return $object;
+  }
+}
+
+/**
  * Wrapps the given $html string into a reder array suitable for drupal_render()
  *
  * @param string $html
