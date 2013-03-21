@@ -152,24 +152,24 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
 );
 define('CDM_NAME_RENDER_TEMPLATES', 'cdm-name-render-templates');
 define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
-    array (
-        'list_of_taxa, acceptedFor, taxon_page_synonymy, typedesignations, taxon_page_title, polytomousKey, na' => array(
-            'namePart' => array('#uri' => TRUE),
+   array (
+     'taxon_page_title,polytomousKey'=> array(
+          'namePart' => array('#uri' => TRUE),
         ),
-        'nar'=> array(
-            'namePart' => array('#uri' => TRUE),
-            'authorshipPart' => TRUE,
-            'referencePart' => array('#uri' => TRUE),
-            'microreferencePart' => TRUE,
+      'taxon_page_synonymy,related_taxon'=> array(
+          'nameAuthorPart' => array('#uri' => TRUE),
+          'referencePart' => TRUE,
+          'statusPart' => TRUE,
+          'descriptionPart' => TRUE,
         ),
-        '#DEFAULT' => array(
-            'namePart' => array('#uri' => TRUE),
-            'authorshipPart' => TRUE,
-            'referencePart' => array('#uri' => TRUE),
-            'microreferencePart' => TRUE,
-            'statusPart' => TRUE,
-            'descriptionPart' => TRUE,
+      'acceptedFor,typedesignations,list_of_taxa' => array(
+          'nameAuthorPart' => array('#uri' => TRUE),
+          'referencePart' => TRUE,
         ),
+      '#DEFAULT' => array(
+          'nameAuthorPart' => array('#uri' => TRUE),
+          'referencePart' => TRUE,
+       )
     )
 ));
 
