@@ -277,7 +277,7 @@ function cdm_dataportal_menu_admin(&$items) {
     'position' => 'right',
     'weight' => 10,
     'page callback' => 'system_admin_menu_block_page',
-    'access arguments' => array('cdm_settings_general'),
+    'access arguments' => array('administer cdm_dataportal'),
     'file' => 'system.admin.inc',
     'file path' => drupal_get_path('module', 'system'),
   );
