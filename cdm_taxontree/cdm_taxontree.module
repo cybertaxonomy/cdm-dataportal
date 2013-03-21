@@ -626,7 +626,7 @@ function cdm_taxontree_populate($tree, $expand_excluded, $filter_default = NULL)
   }
   foreach (array_keys($tree) as $uuid) {
 
-    if (!isset($tree[$uuid]->filter) && !is_null($filter_default)) {
+    if (!isset($tree[$uuid]->filter)) {
       $tree[$uuid]->filter = $filter_default;
     }
 

@@ -117,7 +117,7 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
   array(
       'ZoologicalName' => array(
           'namePart' => array('name' => TRUE),
-          'referencePart' => array('authorTeam' => TRUE),
+          'referencePart' => array('authors' => TRUE),
           'microreferencePart' => array('microreference' => TRUE),
           'statusPart' => array('status' => TRUE),
           'descriptionPart' => array('description' => TRUE),
@@ -132,7 +132,7 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
      '#DEFAULT' => array(
           'namePart' => array(
               'name' => TRUE,
-              'authorTeam' => TRUE
+              'authors' => TRUE
           ),
           'referencePart' => array(
               'reference' => TRUE
@@ -752,7 +752,6 @@ function cdm_settings_layout() {
            A full taxon name plus additional information can consist of the following elements:
           <ul>
              <li>name: the taxon name inclugin rank nbut without author</li>
-             <li>authorTeam:  The authors of a reference, also used in taxon names</li>
              <li>authors:  The authors of a reference, also used in taxon names</li>
              <li>reference: the nomenclatural reference,</li>
              <li>microreference:  Volume, page number etc.</li>
@@ -792,7 +791,7 @@ function cdm_settings_layout() {
                 "name": true
               },
               "referencePart": {
-                "authorTeam": true
+                "authors": true
               },
               "microreferencePart": {
                 "microreference": true

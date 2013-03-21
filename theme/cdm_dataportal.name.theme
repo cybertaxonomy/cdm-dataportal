@@ -413,31 +413,31 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
   $out = '<div class="homotypic-synonymy-group">';
 
   if (isset ($accepted_typeDesignations) || is_array($prependedSynonyms) || is_array($synonymList)) {
-  	$out .= '<ul class="homotypicSynonyms">';
-	if (!empty($prependedSynonyms)) {
-	  foreach ($prependedSynonyms as $taxon) {
-	    $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
-	  }
-	}
+    $out .= '<ul class="homotypicSynonyms">';
+  if (!empty($prependedSynonyms)) {
+    foreach ($prependedSynonyms as $taxon) {
+      $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+    }
+  }
 
-	$homonym_typeDesignations = NULL;
-	if (isset($synonymList[0])) {
-		foreach ($synonymList as $synonym) {
-			$out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
-		}
-		$homonym_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
-	}
+  $homonym_typeDesignations = NULL;
+  if (isset($synonymList[0])) {
+    foreach ($synonymList as $synonym) {
+      $out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+    }
+    $homonym_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
+  }
 
-	// type designations
-	if ($accepted_typeDesignations) {
-	  $type_designations = filter_cdm_entity_list($homonym_typeDesignations, $accepted_typeDesignations);
-	}
-	else {
-	  $type_designations = $homonym_typeDesignations;
-	}
-	if ($type_designations) {
-	  $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
-	}
+  // type designations
+  if ($accepted_typeDesignations) {
+    $type_designations = filter_cdm_entity_list($homonym_typeDesignations, $accepted_typeDesignations);
+  }
+  else {
+    $type_designations = $homonym_typeDesignations;
+  }
+  if ($type_designations) {
+    $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
+  }
 
   }
 
@@ -508,6 +508,17 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
   if (!isset($default_render_templates)) {
     $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
   }
+  // --- preliminar solution: using themes.
+  static $render_templates = NULL;
+  if($render_templates == NULL) {
+    $render_templates = theme('get_nameRenderTemplate', array());
+    if (!isset($render_templates) || empty($render_templates)) {
+      // from the variables
+      $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
+      // needs to be converted to an array
+      $render_templates = convert_to_array($render_templates);
+    }
+  }
 
   // get the base element of the renderPath
   if (($separatorPos = strpos($renderPath, '.')) > 0) {
@@ -516,16 +527,9 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
     $renderPath_base = $renderPath;
   }
 
-  // --- preliminar solution: using themes.
-  $render_templates = theme('get_nameRenderTemplate', array());
-  if (!isset($render_templates)) {
-    // from the variables
-    $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
-  }
-
   // 1. try to find a template using the render path base element
   if(array_key_exists($renderPath_base, $render_templates)){
-    $template = $render_templates[$renderPath_base];
+    $template = (array)$render_templates[$renderPath_base];
   }
 
   // 2. Find best matching default RenderTemplate in theme
@@ -555,11 +559,13 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
   }
 
   // --- set the link uris to the according template fields if they exist
-  if ($nameLink && isset($template['nameAuthorPart']['#uri'])) {
-    $template['nameAuthorPart']['#uri'] = $nameLink;
-  }
-  else {
-    unset($template['nameAuthorPart']['#uri']);
+  if(isset($template['nameAuthorPart']) && isset($template['nameAuthorPart']['#uri'])) {
+    if ($nameLink) {
+      $template['nameAuthorPart']['#uri'] = $nameLink;
+    }
+    else {
+      unset($template['nameAuthorPart']['#uri']);
+    }
   }
 
   if ($nameLink && isset($template['namePart']['#uri'])) {
@@ -647,13 +653,16 @@ function get_partDefinition($taxonNameType) {
     $default_part_definitions= unserialize(CDM_PART_DEFINITIONS_DEFAULT);
   }
 
-  // Preliminar solution: using themes.
-  // TODO remove this once all themes are using the newly introcuded part_definition settings
-  $part_definitions = theme('get_partDefinition', array());
+  static $part_definitions = null;
+  if (!isset($part_definitions)) {
+    // Preliminar solution: using themes.
+    // TODO remove this once all themes are using the newly introcuded part_definition settings
+    $part_definitions = theme('get_partDefinition', array());
 
-  // try to get get part definitions from variables
-  if(!is_array($part_definitions)) {
-    $part_definitions = variable_get(CDM_PART_DEFINITIONS, $default_part_definitions);
+    // try to get get part definitions from variables
+    if(!is_array($part_definitions)) {
+      $part_definitions = convert_to_array(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
+    }
   }
 
   if (array_key_exists($taxonNameType, $part_definitions)) {
@@ -758,6 +767,9 @@ function theme_cdm_taxonName($variables) {
   // Fill with reference.
   if (isset($renderTemplate['referencePart']) && !$is_type_designation) {
 
+    // default separator
+    $separator = '';
+
     // [Eckhard]:"Komma nach dem Taxonnamen ist grunsätzlich falsch,
     // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
     if (isset($renderTemplate['referencePart']['reference']) && isset($taxonName->nomenclaturalReference)) {
@@ -775,10 +787,10 @@ function theme_cdm_taxonName($variables) {
       }
       elseif (!str_beginsWith($citation, "in") && $precedingKey == 'authors') {
         $separator = ', ';
-      }
-      else {
+      } else {
         $separator = ' ';
       }
+
 
       $referenceArray['#separator'] = $separator;
       $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>';
@@ -792,6 +804,7 @@ function theme_cdm_taxonName($variables) {
       // If the nomenclaturalReference citation is not included in the
       // reference part but diplay of the microreference
       // is wanted, append the microreference to the authorTeam.
+      $citation = '';
       if (!isset($renderTemplate['referencePart']['reference']) && isset($renderTemplate['referencePart']['microreference'])) {
         $separator = ": ";
         $citation = $taxonName->nomenclaturalMicroReference;
@@ -862,7 +875,9 @@ function theme_cdm_taxonName($variables) {
       $html = '';
       if (is_array($content)) {
         $html = $content['#html'];
-        $separator = $content['#separator'];
+        if(isset($content['#separator'])) {
+          $separator = $content['#separator'];
+        }
       }
       elseif (is_string($content)) {
         $html = $content;
@@ -951,59 +966,4 @@ function &get_preceding_contentElementKey($contentElementKey, array &$renderTemp
     }
   }
   return $res;
-}
-
-/**
- * Returns HTML for a name in your theme, when implemented.
- *
- * This function returns currently nothing, but can be used to override
- * how names are rendered in your theme. See the code that is commented out
- * for an example usage. it is used in the function get_nameRenderTemplate.
- * See that function to find out how the create template is used.
- *
- * @see get_nameRenderTemplate()
- *
- * @deprecated define name render templates via the layout settings
- *
- * @ingroup: themeable
- */
-function theme_get_nameRenderTemplate() {
-  /*
-  // Example usage:
-//   $render_path = $variables['renderPath'];
-
-  $templates = array(
-    'taxon_page_title,polytomousKey' => array(
-        'namePart' => array(
-          '#uri' => TRUE
-        )
-      ),
-    'taxon_page_synonymy,related_taxon' => array(
-        'nameAuthorPart' => array(
-          '#uri' => TRUE
-        ),
-        'referencePart' => TRUE,
-        'statusPart' => TRUE,
-        'descriptionPart' => TRUE
-      ),
-     'acceptedFor' => array(
-        'nameAuthorPart' => array(
-          '#uri' => TRUE
-        ),
-        'referencePart' => TRUE
-      ),
-     'typedesignations,list_of_taxa' => array(
-        'nameAuthorPart' => array(
-           '#uri' => TRUE
-        ), 'referencePart' => TRUE
-      ),
-    '#DEFAULT'=> array(
-        'nameAuthorPart' => array(
-           '#uri' => TRUE
-        ), 'referencePart' => TRUE
-      )
-  );
-  return $templates;
-  */
-
 }
