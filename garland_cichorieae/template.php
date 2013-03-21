@@ -397,15 +397,41 @@ function phptemplate_menu_local_tasks() {
  * @deprecated define name render templates via the layout settings
  */
 function garland_cichorieae_get_partDefinition() {
-  return array(
-     'BotanicalName' => array(
-        'namePart' => array('name' => TRUE),
-        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
-        'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
-        'statusPart' => array('status' => TRUE),
-        'descriptionPart' => array('description' => TRUE),
-    )
-  );
+  return
+    array(
+        'ZoologicalName' => array(
+            'namePart' => array('name' => TRUE),
+            'referencePart' => array('authors' => TRUE),
+            'microreferencePart' => array('microreference' => TRUE),
+            'statusPart' => array('status' => TRUE),
+            'descriptionPart' => array('description' => TRUE),
+        ),
+        'BotanicalName' => array(
+            'namePart' => array('name' => TRUE),
+            'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
+            'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
+            'statusPart' => array('status' => TRUE),
+            'descriptionPart' => array('description' => TRUE),
+        ),
+        '#DEFAULT' => array(
+            'namePart' => array(
+                'name' => TRUE,
+                'authors' => TRUE
+            ),
+            'referencePart' => array(
+                'reference' => TRUE
+            ),
+            'microreferencePart' => array(
+                'microreference' => TRUE,
+            ),
+            'statusPart' => array(
+                'status' => TRUE,
+            ),
+            'descriptionPart' => array(
+                'description' => TRUE,
+            ),
+        )
+    );
 }
 
 /**

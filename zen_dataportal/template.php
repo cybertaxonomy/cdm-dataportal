@@ -322,7 +322,6 @@ function STARTERKIT_preprocess_block(&$variables, $hook) {
 
 /**
  *  @deprecated define name render templates via the layout settings
- */
 function zen_dataportal_get_partDefinition() {
   return array(
     'BotanicalName'=> array(
@@ -334,7 +333,7 @@ function zen_dataportal_get_partDefinition() {
     ),
     'ZoologicalName' => array(
           'namePart' => array('name' => TRUE),
-          'referencePart' => array('authorTeam' => TRUE),
+          'referencePart' => array('authors' => TRUE),
           'microreferencePart' => array('microreference' => TRUE),
           'statusPart' => array('status' => TRUE),
           'descriptionPart' => array('description' => TRUE),
@@ -342,7 +341,7 @@ function zen_dataportal_get_partDefinition() {
     '#DEFAULT' => array(
         'namePart' => array(
             'name' => TRUE,
-            'authorTeam' => TRUE
+            'authors' => TRUE
         ),
         'referencePart' => array(
             'reference' => TRUE
@@ -359,10 +358,10 @@ function zen_dataportal_get_partDefinition() {
       )
     );
 }
+ */
 
 /**
  * @deprecated define name render templates via the layout settings
- */
 function zen_dataportal_get_nameRenderTemplate() {
 
   $templates = array(
@@ -398,4 +397,5 @@ function zen_dataportal_get_nameRenderTemplate() {
   );
   return $templates;
 }
+ */
 
