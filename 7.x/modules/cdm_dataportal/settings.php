@@ -116,11 +116,12 @@ define('CDM_PART_DEFINITIONS', 'cdm-part-definitions');
 define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
   array(
       'ZoologicalName' => array(
-          'namePart' => array('name' => TRUE),
-          'referencePart' => array('authors' => TRUE),
-          'microreferencePart' => array('microreference' => TRUE),
-          'statusPart' => array('status' => TRUE),
-          'descriptionPart' => array('description' => TRUE),
+        'namePart' => array('name' => TRUE),
+        'nameAuthorPart' => array('name' => TRUE),
+        'referencePart' => array('authors' => TRUE),
+        'microreferencePart' => array('microreference' => TRUE),
+        'statusPart' => array('status' => TRUE),
+        'descriptionPart' => array('description' => TRUE),
       ),
       'BotanicalName'=> array(
         'namePart' => array('name' => TRUE),
@@ -130,22 +131,25 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
         'descriptionPart' => array('description' => TRUE),
       ),
      '#DEFAULT' => array(
-          'namePart' => array(
-              'name' => TRUE,
-              'authors' => TRUE
-          ),
-          'referencePart' => array(
-              'reference' => TRUE
-          ),
-          'microreferencePart' => array(
-              'microreference' => TRUE,
-          ),
-          'statusPart' => array(
-              'status' => TRUE,
-          ),
-          'descriptionPart' => array(
-              'description' => TRUE,
-          ),
+        'namePart' => array(
+            'name' => TRUE
+        ),
+        'nameAuthorPart' => array(
+            'name' => TRUE,
+            'authors' => TRUE
+        ),
+        'referencePart' => array(
+            'reference' => TRUE
+        ),
+        'microreferencePart' => array(
+            'microreference' => TRUE,
+        ),
+        'statusPart' => array(
+            'status' => TRUE,
+        ),
+        'descriptionPart' => array(
+            'description' => TRUE,
+        ),
       )
     )
   )
@@ -1207,7 +1211,7 @@ function cdm_settings_layout_taxon() {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
     '#description' => t('This section covers the settings related to the taxon
-      <strong>synonymy</strong> tab.####'),
+      <strong>synonymy</strong> tab.'),
   );
 
   $form['taxon_synonymy']['cdm_dataportal_nomref_in_title'] = array(
