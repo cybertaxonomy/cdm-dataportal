@@ -683,7 +683,7 @@ function palmweb_2_get_partDefinition($variables) {
     ),
     'ZoologicalName' => array(
           'namePart' => array('name' => TRUE),
-          'referencePart' => array('authorTeam' => TRUE),
+          'referencePart' => array('authors' => TRUE),
           'microreferencePart' => array('microreference' => TRUE),
           'statusPart' => array('status' => TRUE),
           'descriptionPart' => array('description' => TRUE),
@@ -691,7 +691,7 @@ function palmweb_2_get_partDefinition($variables) {
     '#DEFAULT' => array(
         'namePart' => array(
             'name' => TRUE,
-            'authorTeam' => TRUE
+            'authors' => TRUE
         ),
         'referencePart' => array(
             'reference' => TRUE

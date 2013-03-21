@@ -511,8 +511,8 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
   // --- preliminar solution: using themes.
   static $render_templates = NULL;
   if($render_templates == NULL) {
-    $render_templates = null; //theme('get_nameRenderTemplate', array());
-    if (!isset($render_templates)) {
+    $render_templates = theme('get_nameRenderTemplate', array());
+    if (!isset($render_templates) || empty($render_templates)) {
       // from the variables
       $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
       // needs to be converted to an array
@@ -657,7 +657,7 @@ function get_partDefinition($taxonNameType) {
   if (!isset($part_definitions)) {
     // Preliminar solution: using themes.
     // TODO remove this once all themes are using the newly introcuded part_definition settings
-    $part_definitions = null; //theme('get_partDefinition', array());
+    $part_definitions = theme('get_partDefinition', array());
 
     // try to get get part definitions from variables
     if(!is_array($part_definitions)) {
@@ -966,59 +966,4 @@ function &get_preceding_contentElementKey($contentElementKey, array &$renderTemp
     }
   }
   return $res;
-}
-
-/**
- * Returns HTML for a name in your theme, when implemented.
- *
- * This function returns currently nothing, but can be used to override
- * how names are rendered in your theme. See the code that is commented out
- * for an example usage. it is used in the function get_nameRenderTemplate.
- * See that function to find out how the create template is used.
- *
- * @see get_nameRenderTemplate()
- *
- * @deprecated define name render templates via the layout settings
- *
- * @ingroup: themeable
- */
-function theme_get_nameRenderTemplate() {
-  /*
-  // Example usage:
-//   $render_path = $variables['renderPath'];
-
-  $templates = array(
-    'taxon_page_title,polytomousKey' => array(
-        'namePart' => array(
-          '#uri' => TRUE
-        )
-      ),
-    'taxon_page_synonymy,related_taxon' => array(
-        'nameAuthorPart' => array(
-          '#uri' => TRUE
-        ),
-        'referencePart' => TRUE,
-        'statusPart' => TRUE,
-        'descriptionPart' => TRUE
-      ),
-     'acceptedFor' => array(
-        'nameAuthorPart' => array(
-          '#uri' => TRUE
-        ),
-        'referencePart' => TRUE
-      ),
-     'typedesignations,list_of_taxa' => array(
-        'nameAuthorPart' => array(
-           '#uri' => TRUE
-        ), 'referencePart' => TRUE
-      ),
-    '#DEFAULT'=> array(
-        'nameAuthorPart' => array(
-           '#uri' => TRUE
-        ), 'referencePart' => TRUE
-      )
-  );
-  return $templates;
-  */
-
 }
