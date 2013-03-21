@@ -448,11 +448,7 @@ function garland_cichorieae_get_nameRenderTemplate($variables) {
         'statusPart' => TRUE,
         'descriptionPart' => TRUE,
       ),
-    'acceptedFor' => array(
-        'nameAuthorPart' => array('#uri' => TRUE),
-        'referencePart' => TRUE,
-      ),
-    'typedesignations,list_of_taxa' => array(
+    'acceptedFor,typedesignations,list_of_taxa' => array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
       ),
