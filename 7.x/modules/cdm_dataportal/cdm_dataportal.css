@@ -486,6 +486,7 @@ div.cdm_media_viewer_image {
 .polytomousKey_linkedStyle .nodeLink {
   float: right;
   text-align: right;
+  padding-left: 2em;
 }
 .polytomousKey_linkedStyle td.edge-indent {
   padding-left: 2em;
