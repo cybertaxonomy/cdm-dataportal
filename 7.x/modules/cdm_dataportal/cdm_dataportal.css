@@ -473,25 +473,6 @@ div.cdm_media_viewer_image {
   clear: both;
 }
 
-.polytomousKey_linkedStyle td {
-  vertical-align: top;
-  padding-top: 0;
-}
-.polytomousKey_linkedStyle tr.new_section td {
-  padding-top: 1em;
-}
-.polytomousKey_linkedStyle tr:hover {
-  background-color: #eee;
-}
-.polytomousKey_linkedStyle .nodeLink {
-  float: right;
-  text-align: right;
-  padding-left: 2em;
-}
-.polytomousKey_linkedStyle td.edge-indent {
-  padding-left: 2em;
-}
-
 #useRecords th {
   font-weight: normal;
 }
@@ -556,7 +537,7 @@ div.cdm_media_viewer_image {
 }
 
 /*
- * specimens
+ * ======= specimens =======
  */
 #specimens table.specimens {
     width: 100%;
@@ -579,5 +560,33 @@ div.cdm_media_viewer_image {
 
 #specimens .dna-sequence div {
     font-family: monospace;
+}
+
+
+/*
+ * ======= Identification keys =======
+ */
+
+#identificationKey .sources span {
+  display: block;
+}
+
+.polytomousKey_linkedStyle td {
+  vertical-align: top;
+  padding-top: 0;
+}
+.polytomousKey_linkedStyle tr.new_section td {
+  padding-top: 1em;
+}
+.polytomousKey_linkedStyle tr:hover {
+  background-color: #eee;
+}
+.polytomousKey_linkedStyle .nodeLink {
+  float: right;
+  text-align: right;
+  padding-left: 2em;
+}
+.polytomousKey_linkedStyle td.edge-indent {
+  padding-left: 2em;
 }
 

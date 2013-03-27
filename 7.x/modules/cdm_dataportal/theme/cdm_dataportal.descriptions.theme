@@ -768,7 +768,7 @@ function theme_cdm_descriptionElements($variables) {
             $outArray[] = theme('cdm_descriptionElement_QuantitativeData', array('element' => $descriptionElement));
             break;
           case 'Uses':
-        	/* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
+          /* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
           break;
         default:
         $outArray[] = '<li>No method for rendering unknown description class: ' . $descriptionElement->class . '</li>';
@@ -1309,9 +1309,9 @@ function theme_cdm_IdentificationKey($variables) {
   if (isset($identificationKey->sources) && is_array($identificationKey->sources)) {
     // Display sources.
     $i = 0;
-    $out .= '<div>';
+    $out .= '<div class="sources">';
     foreach ($identificationKey->sources as $source) {
-      $out .= ($i++ > 0 ? ', ' : '') . theme('cdm_OriginalSource', array('source' => $source));
+      $out .= theme('cdm_OriginalSource', array('source' => $source));
     }
     $out .= '</div>';
   }

@@ -868,10 +868,10 @@ function theme_cdm_polytomousKey_page($variables) {
   // Key nodes in linked style.
   $out .= theme('cdm_polytomousKey', array('polytomousKey' => $polytomousKey));
   /*
-  FIXME implement node type for keys !!! (wrapping the content in the
-  cdm_dataportal.node becomes obsolete then).
-  */
-  return '<div id="cdm_dataportal.node">' . $out . '</div>';
+   * FIXME implement node type for keys !!!
+   * (wrapping the content in the cdm_dataportal.node becomes obsolete then).
+   */
+  return '<div id="identificationKey">' . $out . '</div>';
 }
 
 /**
