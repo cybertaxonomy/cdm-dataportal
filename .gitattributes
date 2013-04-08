@@ -779,6 +779,13 @@
 6.x/themes/summertime_cdm/summertime_cdm.info -text
 6.x/themes/summertime_cdm/template.php -text
 6.x/themes/summertime_cdm/theme-settings.php -text
+7.x/.buildpath -text
+7.x/.project -text
+7.x/.settings/.jsdtscope -text
+7.x/.settings/org.eclipse.php.core.prefs -text
+7.x/.settings/org.eclipse.wst.common.project.facet.core.xml -text
+7.x/.settings/org.eclipse.wst.jsdt.ui.superType.container -text
+7.x/.settings/org.eclipse.wst.jsdt.ui.superType.name -text
 7.x/modules/cdm_dataportal/INSTALL.txt -text
 7.x/modules/cdm_dataportal/LICENSE.txt -text
 7.x/modules/cdm_dataportal/cdm_api/LICENSE.txt -text

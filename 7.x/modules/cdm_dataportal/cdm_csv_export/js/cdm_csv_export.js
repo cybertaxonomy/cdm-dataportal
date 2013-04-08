@@ -50,3 +50,17 @@ jQuery(function () {
         jQuery(this).parents("fieldset:eq(0)").find(":checkbox").attr("checked", this.checked);
     });
 });
+
+/**
+ * function to sort all checkboxes
+ * in a alpanumerical way
+ */
+
+//var elements = jQuery('input');
+//var sorted = jQuery(jQuery(elements).toArray().sort(function(a, b) {
+//  return a.value > b.value;
+//}));
+//
+//jQuery(elements).each(function(i) {
+//	jQuery(this).after(jQuery(sorted).eq(i));
+//});
