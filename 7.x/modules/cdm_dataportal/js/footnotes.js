@@ -15,6 +15,12 @@
     $.fn.footnotes = function(eventSource) {
 
         var element;
+
+        // firebug console stub (avoids errors if firebug is not active)
+        if(typeof console === "undefined") {
+            console = { log: function() { } };
+        }
+
         if( eventSource !== undefined ){
             // if ahahContent() has been called as event handler use the eventSource
             element = $(eventSource);
@@ -57,7 +63,7 @@
             return '.'+$(object).attr('href').substr(1).replace(/-/gi, '-key-') + ' a';
         }
 
-    }
+    };
 
 })(jQuery, document, window);
 
