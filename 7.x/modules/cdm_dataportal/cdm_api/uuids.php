@@ -140,6 +140,7 @@ define('UUID_RIGHTS_ACCESS_RIGHTS', 'a50b4def-b3ac-4508-b50a-e0f249e3a1d7');
 
 // MarkerType terms.
 Define('UUID_MARKERTYPE_USE', '2e6e42d9-e92a-41f4-899b-03c0ac64f039');
+Define('UUID_MARKERTYPE_COMPUTED', '5cc15a73-2947-44e3-9319-85dd20736e55');
 
 // Nomenclatural status types.
 define('UUID_NOMENCLATURALSTATUS_TYPE_UUIDAMBIGUOUS', '90f5012b-705b-4488-b4c6-002d2bc5198e');

@@ -164,6 +164,8 @@ function theme_cdm_feature_nodes($variables) {
           if (variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
             $distributionTextDataList = array();
             $distributionElementsList = array();
+
+            $node->descriptionElements = cdm_description_elements_prefer_computed($node->descriptionElements);
             foreach ($node->descriptionElements as $descriptionElement) {
               if ($descriptionElement->class == "TextData") {
                 $distributionTextDataList[] = $descriptionElement;
@@ -172,6 +174,8 @@ function theme_cdm_feature_nodes($variables) {
                 $distributionElementsList[] = $descriptionElement;
               }
             }
+
+
             if (count($distributionTextDataList) > 0) {
               $node->descriptionElements = $distributionElementsList;
               $block->content .= theme('cdm_descriptionElements', array(
@@ -190,6 +194,7 @@ function theme_cdm_feature_nodes($variables) {
             'featureUuid' => $node->feature->uuid,
             'taxon_uuid' => $taxon->uuid,
           ));
+
         }
 
         /*

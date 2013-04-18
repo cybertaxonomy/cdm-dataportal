@@ -28,7 +28,6 @@
  */
 function compose_cdm_marker($marker) {
 
-
   $render_array = array(
       // ---- generic
       //  these entries should be common to all cdm enitiy render arrays
@@ -40,4 +39,22 @@ function compose_cdm_marker($marker) {
   );
 
   return $render_array;
+}
+
+/**
+ * Checks if the given $cdm_entitiy has a marker the type references by the
+ * $marker_type_uuid and returns TRUE if a matching marker has been found.
+ *
+ * @param CdmEntity $cdm_entitiy
+ * @param string $marker_type_uuid
+ */
+function cdm_entity_has_marker($cdm_entitiy, $marker_type_uuid) {
+  if(isset($cdm_entitiy->markers[0]) && !is_uuid($marker_type_uuid)){
+    foreach ($cdm_entitiy->markers as $marker) {
+      if(isset($marker->markerType) && $marker->markerType->uuid == $marker_type_uuid){
+        return TRUE;
+      }
+    }
+  }
+  return FALSE;
 }
