@@ -1781,18 +1781,12 @@ function cdm_view_cache_site() {
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cache_all_taxa.js');
 
   $request_params = array();
-  $request_params['query'] = '%';
-  // Cache only the dafault classification.
-  $request_params['tree'] = variable_get('cdm_taxonomictree_uuid', FALSE);
-  $request_params['doTaxa'] = 1;
-  $request_params['doSynonyms'] = 0;
-  $request_params['doTaxaByCommonNames'] = 0;
+  $request_params['class'] = "Taxon";
+  $request_params['pageNumber']='0';
 
-  $search_url = cdm_compose_url(CDM_WS_PORTAL_TAXON_FIND . ".json", NULL, queryString($request_params));
-
-  $search_url = uri_uriByProxy($search_url);
-  $search_url = rtrim($search_url, '/');
-  $taxon_page_url = url('cdm_dataportal/taxon/');
+  $cdm_ws_page_taxa_url = cdm_compose_url(CDM_WS_TAXON . ".json", NULL, queryString($request_params));
+  $cdm_ws_page_taxa_url = uri_uriByProxy($cdm_ws_page_taxa_url);
+  $cdm_ws_page_taxa_url = rtrim($cdm_ws_page_taxa_url, '/');
 
   $out .= t('<p><strong>Cache all taxon pages</strong></p>');
   $out .= '<p>When you launch the cache process the cache is filled and ready to be enabled.<br/>
@@ -1807,8 +1801,8 @@ function cdm_view_cache_site() {
   // Also, it would be recommended just to include this part of the form in the
   // rest of the form array in cdm_settings_cache().
   // $out .= '<form id="cache_site">';
-  $out .= '<input type="hidden" name="searchTaxaUrl" value="' . $search_url . '"/>';
-  $out .= '<input type="hidden" name="taxonPageUrl" value="' . $taxon_page_url . '"/>';
+  $out .= '<input type="hidden" name="searchTaxaUrl" value="' . $cdm_ws_page_taxa_url . '"/>';
+  $out .= '<input type="hidden" name="taxonPageUrl" value="' . url('cdm_dataportal/taxon/') . '"/>';
   $out .= '<input type="button" name="start" value="' . t('Start') . '"/>';
   $out .= '<input type="button" name="stop" value="' . t('Stop') . '"/>';
   // $out .= '</form>';
