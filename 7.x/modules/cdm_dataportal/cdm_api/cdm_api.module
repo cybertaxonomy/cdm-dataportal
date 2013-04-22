@@ -1243,7 +1243,17 @@ function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference) {
  *    The $featureNodes structure enriched with the accoding $descriptionElements
  */
 function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
+
   foreach ($featureNodes as &$node) {
+    // since the $featureNodes array is reused for each description
+    // it is nessecary to clear the custom node fields in advance
+    if(isset($node->descriptionElements)){
+      unset($node->descriptionElements);
+    }
+    if(isset($node->children)){
+      unset($node->children);
+    }
+
     // Append corresponding elements to an additional node field:
     // $node->descriptionElements.
     foreach ($descriptionElements as $element) {
@@ -1260,7 +1270,9 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
       $mergedChildNodes = _mergeFeatureTreeDescriptions($node->children, $descriptionElements);
       $node->children = $mergedChildNodes;
     }
+
   }
+
   return $featureNodes;
 }
 

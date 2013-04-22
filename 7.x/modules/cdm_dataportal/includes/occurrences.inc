@@ -50,8 +50,8 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
 
   // only show uuid it the user is logged in
-  if(user_is_logged_in()) {
-    unset($exclude_occurrence_fields[array_search('uuid', $exclude_occurrence_fields)]);
+  if(user_is_logged_in() && ($a_idx = array_search('uuid', $exclude_occurrence_fields)) !== FALSE ) {
+    unset($exclude_occurrence_fields[$a_idx]);
   }
 
   if (!isset($derivatives)) {
@@ -183,6 +183,9 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
             foreach ($value as $description) {
               $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, $description->uuid);
+//               if($description->imageGallery == TRUE) {
+//                 continue;
+//               }
               $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->children, $description->elements);
               $rendered_description = theme(
                  'cdm_feature_nodes',

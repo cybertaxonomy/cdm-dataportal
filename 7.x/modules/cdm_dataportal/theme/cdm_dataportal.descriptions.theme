@@ -140,12 +140,12 @@ function theme_cdm_feature_nodes($variables) {
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
   // Creating an array to place the description elements in.
-  $block = new stdclass(); // Empty object.
   foreach ($mergedFeatureNodes as $node) {
 
     if (hasFeatureNodeDescriptionElements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
+      $block = new stdclass(); // Empty object.
       $block->module = 'cdm_dataportal';
       $media_list = array();
 
