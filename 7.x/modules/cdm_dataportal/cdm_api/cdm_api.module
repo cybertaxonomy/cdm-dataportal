@@ -857,6 +857,7 @@ function cdm_compose_annotations_url($cdmBase) {
  *   pageNumber = 1.
  *
  * @return unknown
+ * FIXME seems to be out of date, maybe uused? webservices are using pageNumber parameter?
  */
 function cdm_ws_page($resourceURI, $pageSize, $pageNumber) {
   return cdm_ws_get($resourceURI, NULL, queryString(array(

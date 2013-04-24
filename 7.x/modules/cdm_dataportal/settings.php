@@ -1800,7 +1800,7 @@ function cdm_view_cache_site() {
   // Also, it would be recommended just to include this part of the form in the
   // rest of the form array in cdm_settings_cache().
   // $out .= '<form id="cache_site">';
-  $out .= '<input type="hidden" name="searchTaxaUrl" value="' . $cdm_ws_page_taxa_url . '"/>';
+  $out .= '<input type="hidden" name="pageTaxaUrl" value="' . $cdm_ws_page_taxa_url . '"/>';
   $out .= '<input type="hidden" name="taxonPageUrl" value="' . url('cdm_dataportal/taxon/') . '"/>';
   $out .= '<input type="button" name="start" value="' . t('Start') . '"/>';
   $out .= '<input type="button" name="stop" value="' . t('Stop') . '"/>';

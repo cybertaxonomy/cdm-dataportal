@@ -1,7 +1,7 @@
-function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, readyCallback, doneCallback, errorCallback){
+function CacheBot(pageTaxaUrl, taxonPageUrl, pageSize, progressCallback, readyCallback, doneCallback, errorCallback){
 
   var taxonPageUrl = taxonPageUrl;
-  var searchTaxaUrl = searchTaxaUrl;
+  var pageTaxaUrl = pageTaxaUrl;
   var pageSize = null;
 
   var progress = 0;
@@ -49,11 +49,16 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
    * @return
    */
   var requestNextDataPage = function(callback){
-    var uri = searchTaxaUrl + (pageSize != null ? escape("&pageSize=" + pageSize) : '');
+
+    var nextPageIndex = 0;
     if(dataPager != null){
-      uri += escape("&pageNumber="+ dataPager.nextIndex);
+        nextPageIndex = dataPager.nextIndex;
     }
-    log('page->'+uri);
+
+    var uriParams = (pageSize != null ? "&pageSize=" + pageSize : '');
+    uriParams += "&pageNumber="+ nextPageIndex;
+    log('page->' + uriParams);
+    uri = pageTaxaUrl +  escape(escape(uriParams));
     jQuery.ajax({
       url: uri,
       dataType: 'json',
@@ -69,7 +74,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
   /**
    *
    */
-  this.run = function(lastMillies){
+  this.processNextPage = function(lastMillies){
 
      //
     var now = new Date();
@@ -79,15 +84,15 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
       estimatedMillies = (elapsedMillies / i) * dataPager.count;
     }
 
-    var parent = this;
+    var thisCacheBot = this;
     // get next page of data
     if( i > dataPager.lastRecord - 1 && i < dataPager.count && dataPager.nextIndex != undefined){
       requestNextDataPage(function(data, statusText){
         if(statusText == 'success'){
           dataPager = data;
-          parent.run(nowMillies);
+          thisCacheBot.processNextPage(nowMillies);
         } else {
-          parent.stop();
+          thisCacheBot.stop();
           readyCallback(statusText);
         }
 
@@ -99,7 +104,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
         progress = p;
         progressCallback(progress, new Date(elapsedMillies), new Date(estimatedMillies));
       }
-      // get new taxon page
+      // get the cdm_dataportal taxon page
       if (doRun == true && i++ < dataPager.count){
         var ri = i - (dataPager.firstRecord);
         var taxon = dataPager.records[ri];
@@ -112,7 +117,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
               if(xmlHttpRequest.status != 200){
                 errorCallback(statusText, null, unescape(taxonUrl), false);
               }
-              parent.run(nowMillies);
+              thisCacheBot.processNextPage(nowMillies);
             }
         });
         taxon = null;
@@ -132,7 +137,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
    */
   this.start =  function(){
       doRun = true;
-      this.run();
+      this.processNextPage();
     };
 
   /**
@@ -153,7 +158,7 @@ function CacheBot(searchTaxaUrl, taxonPageUrl, pageSize, progressCallback, ready
 
 jQuery(document).ready(function($) {
 
-  var searchTaxaUrl = $('#cdm-settings-cache [name=searchTaxaUrl]').val();
+  var pageTaxaUrl = $('#cdm-settings-cache [name=pageTaxaUrl]').val();
   var taxonPageUrl = $('#cdm-settings-cache [name=taxonPageUrl]').val();
 
   $('#cdm-settings-cache [name=start]').attr('disabled', 'disabled');
@@ -199,7 +204,6 @@ jQuery(document).ready(function($) {
   };
 
   var doneCallback = function(progress){
-    var percent = Math.floor(progress * 10000) / 100;
     $('#cdm-settings-cache #progress').text('DONE');
     $('#cdm-settings-cache [name=stop]').removeAttr('disabled');
   };
@@ -221,7 +225,7 @@ jQuery(document).ready(function($) {
     }
   };
 
-  var cacheBot = new CacheBot(searchTaxaUrl, taxonPageUrl, 25, progressCallback, readyCallback, doneCallback, errorCallback);
+  var cacheBot = new CacheBot(pageTaxaUrl, taxonPageUrl, 25, progressCallback, readyCallback, doneCallback, errorCallback);
 
   $('#cdm-settings-cache [name=start]').click(function(){
     cacheBot.start();
