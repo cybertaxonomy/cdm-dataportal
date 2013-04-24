@@ -1782,7 +1782,6 @@ function cdm_view_cache_site() {
 
   $request_params = array();
   $request_params['class'] = "Taxon";
-  $request_params['pageNumber']='0';
 
   $cdm_ws_page_taxa_url = cdm_compose_url(CDM_WS_TAXON . ".json", NULL, queryString($request_params));
   $cdm_ws_page_taxa_url = uri_uriByProxy($cdm_ws_page_taxa_url);
