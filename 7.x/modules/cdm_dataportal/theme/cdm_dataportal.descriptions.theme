@@ -161,11 +161,12 @@ function theme_cdm_feature_nodes($variables) {
          */
         if ($node->feature->uuid == UUID_DISTRIBUTION) {
 
+          $node->descriptionElements = cdm_description_elements_prefer_computed($node->descriptionElements);
+
           if (variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
             $distributionTextDataList = array();
             $distributionElementsList = array();
 
-            $node->descriptionElements = cdm_description_elements_prefer_computed($node->descriptionElements);
             foreach ($node->descriptionElements as $descriptionElement) {
               if ($descriptionElement->class == "TextData") {
                 $distributionTextDataList[] = $descriptionElement;
