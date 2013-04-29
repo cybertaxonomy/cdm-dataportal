@@ -1141,10 +1141,12 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
   }
   else {
     // Combine all descripions into one feature tree.
+    $descriptionElemens = array();
     foreach ($descriptions as $desc) {
-      $mergedNodes = _mergeFeatureTreeDescriptions($featureTree->root->children, $desc->elements);
-      $featureTree->root->children = $mergedNodes;
+      $descriptionElemens = array_merge($descriptionElemens, $desc->elements);
     }
+    $mergedNodes = _mergeFeatureTreeDescriptions($featureTree->root->children, $descriptionElemens);
+    $featureTree->root->children = $mergedNodes;
     $mergedTrees[] = $featureTree;
   }
 
@@ -1232,8 +1234,14 @@ function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference) {
  *
  * This method is used in preparation for rendering the descriptionElements.
  * The descriptionElements wich belong to a specific feature node are appended
- * to a the feature node by creating a new field: FeatureNode->descriptionElements
+ * to a the feature node by creating a new fields:
+ *  - descriptionElements: the CDM DescriptionElements which belong to this feature
+ * The descriptionElements will be cleared in advance in order to allow reusing the
+ * same feature tree without the risk of mixing sets of descrition elemens.
+ *
  * which originally is not existing in the cdm.
+ *
+ *
  *
  * @param array $featureNodes
  *    An array of cdm FeatureNodes which may be hierachical since feature nodes
@@ -1251,9 +1259,6 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
     if(isset($node->descriptionElements)){
       unset($node->descriptionElements);
     }
-    if(isset($node->children)){
-      unset($node->children);
-    }
 
     // Append corresponding elements to an additional node field:
     // $node->descriptionElements.
@@ -1270,6 +1275,10 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
     if (isset($node->children[0])) {
       $mergedChildNodes = _mergeFeatureTreeDescriptions($node->children, $descriptionElements);
       $node->children = $mergedChildNodes;
+    }
+
+    if(!isset($node->descriptionElements) && !isset($node->children[0])){
+      unset($node);
     }
 
   }

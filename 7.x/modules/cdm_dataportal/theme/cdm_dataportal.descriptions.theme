@@ -232,7 +232,7 @@ function theme_cdm_feature_nodes($variables) {
 //           subordinate features are printed inline in one floating text,
 //           it is expected hat supordinate features can "contain" TextData,
 //           Qualitative- and Qualitative- DescriptioneElements
-          if (count($node->children) > 0) {
+          if (isset($node->children[0])) {
 
             // TODO support more than one level of children.
             // can this be solved by resursively calling this very function?
