@@ -1700,56 +1700,57 @@ function _featureTree_nodes_as_feature_options($rootNode, $node_char = "&#9500;&
  *
  */
 function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
+
+  $options = array();
+  $tree_representations = array();
   $feature_trees = array();
 
   // Set tree that contains all features.
   if ($add_default_feature_free) {
-    $feature_trees[UUID_DEFAULT_FEATURETREE] = t('Default Featuretree (contains all features)');
+    $options[UUID_DEFAULT_FEATURETREE] = t('Default Featuretree (contains all features)');
+    $feature_trees[] = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
   }
 
-  // Get features from database.
-  $persisted_trees = cdm_ws_get(CDM_WS_FEATURETREES);
-  $tree_representation = NULL;
-  if (is_array($persisted_trees)) {
+  // Get feature trees from database.
+  $persited_trees = cdm_ws_get(CDM_WS_FEATURETREES);
+  if (is_array($persited_trees)) {
+    $feature_trees = array_merge($feature_trees, $persited_trees);
+  }
 
-    foreach ($persisted_trees as $featureTree) {
-      // Do not add the DEFAULT_FEATURETREE again,
-      if ($featureTree->uuid == UUID_DEFAULT_FEATURETREE) {
-        continue;
-      }
-      $feature_trees[$featureTree->uuid] = $featureTree->titleCache;
-      // $feature_trees[$featureTree->uuid] = $tree_representation;
+  foreach ($feature_trees as $featureTree) {
+
+    // Do not add the DEFAULT_FEATURETREE again,
+    if ($featureTree->uuid != UUID_DEFAULT_FEATURETREE) {
+      $options[$featureTree->uuid] = $featureTree->titleCache;
     }
-  }
-  $selected_feature_tree = get_profile_featureTree();
-  // $tree_representation = $featureTree->titleCache;
-  $tree_representation = '';
-  if (is_array( $selected_feature_tree->root->children) && count( $selected_feature_tree->root->children) > 0) {
 
-    // Render the hierarchic tree structure.
-    $treeDetails = '<div class="featuretree_structure">'
-      // ._featureTree_elements_toString($featureTree->root)
-      . theme('FeatureTree_hierarchy', array('FeatureTreeUuid' =>  $selected_feature_tree->uuid))
-      . '</div>';
+    // Render the hierarchic tree structure
+    if (is_array( $featureTree->root->children) && count( $featureTree->root->children) > 0) {
 
-    $form = array();
-    $form['featureTree-' .  $selected_feature_tree->uuid] = array(
-      '#type' => 'fieldset',
-      '#title' => 'Show details',
-      '#attributes' => array('class' => array('collapsible collapsed')),
-      // '#collapsible' => TRUE,
-      // '#collapsed' => TRUE,
-    );
-    $form['featureTree-' .  $selected_feature_tree->uuid]['details'] = array(
-      '#markup' => $treeDetails,
-    );
-    // echo drupal_render($form);
-    $tree_representation .= drupal_render($form);
-  }
+      // Render the hierarchic tree structure.
+      $treeDetails = '<div class="featuretree_structure">'
+        . theme('FeatureTree_hierarchy', array('FeatureTreeUuid' =>  $featureTree->uuid))
+        . '</div>';
 
+      $form = array();
+      $form['featureTree-' .  $featureTree->uuid] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Show details',
+        '#attributes' => array('class' => array('collapsible collapsed')),
+        // '#collapsible' => TRUE,
+        // '#collapsed' => TRUE,
+      );
+      $form['featureTree-' .  $featureTree->uuid]['details'] = array(
+        '#markup' => $treeDetails,
+      );
 
-  // return $feature_trees;
-  return array('options' => $feature_trees, 'treeRepresentations' => $tree_representation);
+      $tree_representations[$featureTree->uuid] = drupal_render($form);
+    }
+
+  } // END loop over feature trees
+
+  // return $options;
+  return array('options' => $options, 'treeRepresentations' => $tree_representations);
 }
 
 /**

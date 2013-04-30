@@ -34,6 +34,7 @@ function cdm_dataportal_theme() {
 
       // Themes in settings.php.
       'checkboxes_preferred' => array('render element' => 'element'),
+      'radio_options_suffix' => array('render element' => 'element'),
 
       // Themes in cdm_dataportal.common.theme.
       'cdm_taggedtext2html' => array('variables' => array(

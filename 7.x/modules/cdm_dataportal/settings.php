@@ -1081,9 +1081,8 @@ function cdm_settings_layout_taxon() {
     '#title' => t('Taxon profile sections') . ':',
     '#default_value' => variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
     '#options' =>  $featureTrees['options'],
-    // Comment @WA: because #options are sanitized in D7, it would
-    // strip html like <fieldset>, so we put the fieldset in a suffix.
-    '#field_suffix' => $featureTrees['treeRepresentations'],
+    '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
+    '#options_suffixes' => $featureTrees['treeRepresentations'],
     '#description' => t('Select the Feature Tree to be displayed at the taxon
       profile. Click "Show Details" to see the Feature Tree elements.'
     ),
@@ -1094,13 +1093,11 @@ function cdm_settings_layout_taxon() {
     '#title' => t('Natural language representation of structured descriptions') . ':',
     '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, NULL),
     '#options' => $featureTrees['options'],
-      // Comment @WA: because #options are sanitized in D7, it would
-      // strip html like <fieldset>, so we put the fieldset in a suffix.
-    '#field_suffix' => $featureTrees['treeRepresentations'],
+    '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
+    '#options_suffixes' => $featureTrees['treeRepresentations'],
     '#description' => t('Taxon descriptions can be stored in a highly structured
       form. The feature tree selected here will be used to generate textual
       representation in natural language.'
-      // If there is no applicable FeatureTree you can create a new one using the <a href="">FeatureTreeManager</a>'
     ),
   );
 
@@ -1277,9 +1274,8 @@ function cdm_settings_layout_taxon() {
       '#title' => t('Specimen description feature tree') . ':',
       '#default_value' => variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
       '#options' =>  $featureTrees['options'],
-      // Comment @WA: because #options are sanitized in D7, it would
-      // strip html like <fieldset>, so we put the fieldset in a suffix.
-      '#field_suffix' => $featureTrees['treeRepresentations'],
+      '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
+      '#options_suffixes' => $featureTrees['treeRepresentations'],
       '#description' => t('Select the feature tree to be used for displaying specimen descriptions. Click "Show Details" to see the Feature Tree elements.'
       ),
   );
@@ -2057,6 +2053,35 @@ function checkboxes_preferred_after_build($form, &$form_state) {
 
   return $form;
 }
+
+function radios_prepare_options_suffix(&$elements){
+
+  $childrenKeys = element_children($elements);
+  foreach($childrenKeys as $key){
+    if(!is_array($elements[$key]['#theme_wrappers'])){
+      $elements[$key]['#theme_wrappers'] = array();
+    }
+    if(isset($elements['#options_suffixes'][$key])){
+      $elements[$key]['#theme_wrappers'][] = 'radio_options_suffix';
+      $elements[$key]['#options_suffix'] = $elements['#options_suffixes'][$key];
+    }
+  }
+  return $elements;
+
+}
+
+/**
+ * TODO
+ * @param unknown $variables
+ */
+function theme_radio_options_suffix($variables) {
+  $element = $variables['element'];
+  if(isset($element['#options_suffix'])) {
+    $element['#children'] .= $element['#options_suffix'];
+  }
+  return $element['#children'];
+}
+
 
 /**
  * Element validate callback for text field and arrays containing json.
