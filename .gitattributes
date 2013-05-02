@@ -1574,6 +1574,8 @@
 7.x/themes/zen_dataportal/.sass-cache/ea570abe83f92f7ffebe8752050015ad028a313d/_transition.scssc -text
 7.x/themes/zen_dataportal/README.txt -text
 7.x/themes/zen_dataportal/banner.jpg -text svneol=unset#unset
+7.x/themes/zen_dataportal/compass-watch -text
+7.x/themes/zen_dataportal/config-dev.rb -text
 7.x/themes/zen_dataportal/config.rb -text
 7.x/themes/zen_dataportal/css/README.txt -text
 7.x/themes/zen_dataportal/css/blocks.css -text
