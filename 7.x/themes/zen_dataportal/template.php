@@ -138,7 +138,9 @@ function _set_image_url($which_image, &$variables, $default_image = null, $css_s
       if(!isset($variables['inline_styles'])) {
         $variables['inline_styles'] = array();
       }
-      $variables['inline_styles'][] = $css_selector . ' {background: white url(' . check_url($url) .')  ' . $background_style . ';}';
+      $variables['inline_styles'][] = $css_selector . ' {' . "\n"
+          . ' background: white url(\'' . check_url($url) .'\')  ' . $background_style  . ";\n"
+          . '}';
     }
   }
 }
@@ -221,7 +223,7 @@ function STARTERKIT_preprocess_maintenance_page(&$variables, $hook) {
 function zen_dataportal_preprocess_html(&$variables, $hook) {
   _set_image_url('body_background', $variables, NULL, 'body');
   _set_image_url('page_background', $variables, NULL, '#page');
-  _set_image_url('banner', $variables, 'banner.jpg', '#header', 'scroll no-repeat content-box');
+  _set_image_url('banner', $variables, 'banner.jpg', '#header', "scroll no-repeat; background-color: white; background-origin: content-box; display: block");
   _add_inline_styles($variables);
 
 }
