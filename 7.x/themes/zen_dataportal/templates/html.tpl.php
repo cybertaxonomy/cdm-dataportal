@@ -90,6 +90,7 @@
   <meta http-equiv="cleartype" content="on">
 
   <?php print $styles; ?>
+  <?php print $scripts; ?>
   <!--
     html5-respond.js and html5.js must be loaded before the body
   -->
@@ -123,7 +124,7 @@
    Placed at the end of the document so the pages load faster
    must be placed before $page_bottom;
   -->
-  <?php print $scripts; ?>
+
   <?php print $page_bottom; ?>
 </body>
 </html>
