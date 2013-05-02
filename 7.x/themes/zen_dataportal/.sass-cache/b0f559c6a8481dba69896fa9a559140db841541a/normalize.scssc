@@ -1279,17 +1279,17 @@ o;
 [ o;
 ;["C/* Apply borders and padding that keep the vertical rhythm. */;@;ií;
 [ ;;o;8;9{"
-widtho;1;2[ ;i;3["px;@;4"1px;iî"
-lineso;1;2@^;f0.34999999999999998 ff;3[ ;@;4"	0.35;iî;@;"apply-side-rhythm-border;iî;:0;
+lineso;1;2@^;f0.34999999999999998 ff;3[ ;@;4"	0.35;iî"
+widtho;1;2[ ;i;3["px;@;4"1px;iî;@;"apply-side-rhythm-border;iî;:0;
 [ ;;[o;"	;"top;@;iî;;#o;8;9{"
-widtho;1;2[ ;i;3["px;@;4"1px;iï"
-lineso;1;2@^;f0.65000000000000002 ÌÍ;3[ ;@;4"	0.65;iï;@;"apply-side-rhythm-border;iï;:0;
+lineso;1;2@^;f0.65000000000000002 ÌÍ;3[ ;@;4"	0.65;iï"
+widtho;1;2[ ;i;3["px;@;4"1px;iï;@;"apply-side-rhythm-border;iï;:0;
 [ ;;[o;"	;"bottom;@;iï;;#o;8;9{"
-widtho;1;2[ ;i;3["px;@;4"1px;ið"
-lineso;1;2@^;f0.65000000000000002 ÌÍ;3[ ;@;4"	0.65;ið;@;"apply-side-rhythm-border;ið;:0;
+lineso;1;2@^;f0.65000000000000002 ÌÍ;3[ ;@;4"	0.65;ið"
+widtho;1;2[ ;i;3["px;@;4"1px;ið;@;"apply-side-rhythm-border;ið;:0;
 [ ;;[o;"	;"	left;@;ið;;#o;8;9{"
-widtho;1;2[ ;i;3["px;@;4"1px;iñ"
-lineso;1;2@^;f0.65000000000000002 ÌÍ;3[ ;@;4"	0.65;iñ;@;"apply-side-rhythm-border;iñ;:0;
+lineso;1;2@^;f0.65000000000000002 ÌÍ;3[ ;@;4"	0.65;iñ"
+widtho;1;2[ ;i;3["px;@;4"1px;iñ;@;"apply-side-rhythm-border;iñ;:0;
 [ ;;[o;"	;"
 right;@;iñ;;#o;
 ;["–/*

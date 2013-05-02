@@ -223,7 +223,7 @@ function STARTERKIT_preprocess_maintenance_page(&$variables, $hook) {
 function zen_dataportal_preprocess_html(&$variables, $hook) {
   _set_image_url('body_background', $variables, NULL, 'body');
   _set_image_url('page_background', $variables, NULL, '#page');
-  _set_image_url('banner', $variables, 'banner.jpg', '#header', "scroll no-repeat; background-color: white; background-clip: content-box; display: block");
+  _set_image_url('banner', $variables, 'banner.jpg', '#header', "scroll no-repeat; background-color: white; background-clip: content-box");
   _add_inline_styles($variables);
 
 }

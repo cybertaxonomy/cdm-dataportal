@@ -90,6 +90,11 @@
   <meta http-equiv="cleartype" content="on">
 
   <?php print $styles; ?>
+  <?php if (is_array($inline_styles)) :?>
+  <style type="text/css">
+    <?php print implode("\n", $inline_styles)  ?>
+  </style>
+  <?php endif; ?>
   <?php print $scripts; ?>
   <!--
     html5-respond.js and html5.js must be loaded before the body
@@ -103,13 +108,6 @@
     <script src="<?php print $base_path . $path_to_zen; ?>/js/html5.js"></script>
     <![endif]-->
   <?php endif; ?>
-  <?php if (is_array($inline_styles)) :?>
-  <style type="text/css">
-  <?php print implode("\n", $inline_styles)  ?>
-  </style>
-  <?php endif; ?>
-  <!-- BEGIN javascript -->
-  <!-- END javascript -->
 </head>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
   <?php if ($skip_link_text && $skip_link_anchor): ?>
@@ -124,7 +122,6 @@
    Placed at the end of the document so the pages load faster
    must be placed before $page_bottom;
   -->
-
   <?php print $page_bottom; ?>
 </body>
 </html>
