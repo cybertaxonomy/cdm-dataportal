@@ -6,10 +6,15 @@
 # file for more information.
 #
 
+####################################################################################
+# WARNING: Do not change these settings unless you exactly know what you are doing.
+#          This configuration is for production purposes. 
+#          Changing these settings may break the theme for the Browsers <= IE8.
+####################################################################################
 
 # Change this to :production when ready to deploy the CSS to the live server.
-environment = :development
-#environment = :production
+#environment = :development
+environment = :production
 
 # In development, we can turn on the FireSass-compatible debug_info.
 firesass = false
