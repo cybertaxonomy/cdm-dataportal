@@ -8,7 +8,6 @@ SUB_THEME_TEMPLATE/images/flora-malesiana-logo-floater-bg-1.jpg -text
 SUB_THEME_TEMPLATE/logo.png -text
 SUB_THEME_TEMPLATE/screenshot.png -text
 SUB_THEME_TEMPLATE/sub_theme_template.info -text
-/compass-watch -text
 cyprus/cyprus.info -text
 cyprus/cyprus_portal_style.css -text
 cyprus/images/bg-tab.png -text
@@ -425,6 +424,8 @@ zen_dataportal/.sass-cache/ea570abe83f92f7ffebe8752050015ad028a313d/_transform.s
 zen_dataportal/.sass-cache/ea570abe83f92f7ffebe8752050015ad028a313d/_transition.scssc -text
 zen_dataportal/README.txt -text
 zen_dataportal/banner.jpg -text svneol=unset#unset
+zen_dataportal/compass-watch -text
+zen_dataportal/config-dev.rb -text
 zen_dataportal/config.rb -text
 zen_dataportal/css/README.txt -text
 zen_dataportal/css/blocks.css -text

@@ -96,10 +96,14 @@
   </style>
   <?php endif; ?>
   <?php print $scripts; ?>
-  <!--
-    html5-respond.js and html5.js must be loaded before the body
-  -->
-  <?php if ($add_respond_js): ?>
+  <?php
+    /*
+    html5-respond.js and html5.js must be included before the <body> element
+    (i.e. in the <head>) but doesn't matter if it appears before or after the
+    CSS - but for the sake of performance, it would make better sense to include
+    the CSS first then this script. see https://code.google.com/p/html5shiv/
+    */
+    if ($add_respond_js): ?>
     <!--[if lt IE 9]>
     <script src="<?php print $base_path . $path_to_zen; ?>/js/html5-respond.js"></script>
     <![endif]-->

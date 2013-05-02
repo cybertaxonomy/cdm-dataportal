@@ -1,17 +1,1 @@
-/**
- * @file
- * Wireframes Styling
- *
- * Add wireframes to the basic layout elements.
- */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/wireframes\.scss}line{font-family:\0000319}}
-.with-wireframes #header,
-.with-wireframes #main,
-.with-wireframes #content,
-.with-wireframes #navigation,
-.with-wireframes .region-sidebar-first,
-.with-wireframes .region-sidebar-second,
-.with-wireframes #footer,
-.with-wireframes .region-bottom {
-  outline: 1px solid #ccc;
-}
+.with-wireframes #header,.with-wireframes #main,.with-wireframes #content,.with-wireframes #navigation,.with-wireframes .region-sidebar-first,.with-wireframes .region-sidebar-second,.with-wireframes #footer,.with-wireframes .region-bottom{outline:1px solid #ccc}
