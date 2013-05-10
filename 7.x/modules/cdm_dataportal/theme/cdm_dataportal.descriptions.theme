@@ -719,7 +719,7 @@ function theme_cdm_descriptionElements($variables) {
 
       // --- DISTRIBUTION ---- //
       if ($descriptionElement->feature->uuid == UUID_DISTRIBUTION) {
-        if ($descriptionElement->class == 'Distribution') {
+        if ($descriptionElement->class == 'Distribution' && is_object($descriptionElement->area)) {
           $sortKey = $descriptionElement->area->representation_L10n;
           $distributionElements[$sortKey] = $descriptionElement;
         }
