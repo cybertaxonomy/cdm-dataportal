@@ -119,7 +119,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         expectedCssDisplay = "block";
         featureClass = "distribution";
         featureLabel = "Distribution";
-        blockTextFull = featureLabel + "\n\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 1933, 6. Zohary, M. & Feinbrun-Dothan, N., Flora Palaestina 3. 1978";
+        blockTextFull = featureLabel + "\n\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 19336. (N)";
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
         featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "dt", "dd");
 
@@ -129,7 +129,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         logger.info(descriptionElement.getText());
         featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-        assertEquals("Expecting 6 FootnoteKeys", 6, featureBlock.getFootNoteKeys().size());
+        assertEquals("Expecting 7 FootnoteKeys", 7, featureBlock.getFootNoteKeys().size());
         assertEquals("Expecting 6 Footnotes", 6, featureBlock.getFootNotes().size());
 
         assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers_map")));
