@@ -1381,7 +1381,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
       $islinkToOtherNode = isset($child->otherNode);
       // Either NULL or 0.
       $islinkToNode = $child->nodeNumber && !$islinkToManyTaxa && !$islinkToOtherNode;
-      $hasQuestion = isset($polytomousKeyNode->question->label_l10n);
+      $hasQuestion = !empty($polytomousKeyNode->question->label_l10n);
       $hasFeature = isset($polytomousKeyNode->feature);
 
       // $indentEdge = $hasQuestion && $childIndex > 0;
