@@ -1368,16 +1368,35 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $s
 }
 
 /**
- * Generates an object ready to be transformated to a node.
+ * View function for a TaxonNameBase page.
  *
- * This is a preparation in order to show it as a Drupal node.
+ * The name page lists all taxa for which the name specified by the
+ * $taxon_name_uuid is being used. I case there is only one name the
+ * page automatically redirects ti the according taxon page. Otherwise
+ * the list of names is displayed.
  *
- * @param string $taxon_name_uuid
+ * The parameter $taxon_to_hide_uuid allows to exclude a taxon from the
+ * list of taxa. This is useful for example when referencing from a taxon
+ * to the name page and the referring taxon should not be repeaded in the
+ * name page.
  *
- * @return mixed
- *   The object with the page content and title.
+ *
+ * @param UUID $taxon_name_uuid
+ *   The uuid of the CDM TaxonNameBase to show a name page for
+ * @param UUID $taxon_to_hide_uuid
+ *   A taxon which should not be displayed in the taxon list
+ * @param UUID $highlite_synonym_uuid
+ *   Optinal parameter wich takes another taxon uuid, if given the
+ *   target taxon pages will show the syonymy tab where the taxon
+ *   refenrenced by the $highlite_synonym_uuid will be highlighted
+ *   in case it is found on this page.
+ *
+ * @return object
+ *   An object with two fields:
+ *     - title: the page title
+ *     - content: the page content
  */
-function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = NULL) {
+function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highlite_synonym_uuid = NULL) {
   // Getting the full taxonname object from the server.
   $taxon_name = cdm_ws_get(CDM_WS_NAME, array($taxon_name_uuid));
   if (!$taxon_name) {
@@ -1404,13 +1423,12 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
   }
   // Show the taxa list or go to the singular taxon.
   if (sizeof($taxon_pager->records) == 1) {// Single taxon case.
-    reset($taxon_pager->records);
-    $singleTaxon = $taxon_pager->records[0];
+    $singleTaxon = array_pop($taxon_pager->records);
     if ($singleTaxon->class != "Taxon") {
       // It is a Synonym -> look for the accepted.
       $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid, get_taxonomictree_uuid_selected()));
-      if (!empty($synonym_uuid)) {
-        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => $synonym_uuid)));
+      if (!empty($highlite_synonym_uuid)) {
+        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => $highlite_synonym_uuid)));
       }
       else {
         drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => $singleTaxon->uuid)));
@@ -1418,8 +1436,8 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synony
     }
     else {
       // It is an accepted taxon.
-      if (!empty($synonym_uuid)) {
-        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', array('query' => array('highlite' => $synonym_uuid)));
+      if (!empty($highlite_synonym_uuid)) {
+        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', array('query' => array('highlite' => $highlite_synonym_uuid)));
       }
       else {
         drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid);
