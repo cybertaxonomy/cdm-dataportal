@@ -58,3 +58,35 @@ function cdm_entity_has_marker($cdm_entitiy, $marker_type_uuid) {
   }
   return FALSE;
 }
+
+/**
+ * Sorts an array of CDM IdentifiableSource instances by 1. publication date and 2. by the
+ * author team.
+ *
+ * @param unknown $sources
+ *    The array of CDM IdentifiableSource instances
+ * @param bool $do_theme if set TRUE the sources will be themed by theme_cdm_OriginalSource
+ * @return multitype:
+ */
+function  oder_sources($sources, $do_theme = false){
+    $sort_array = array();
+    foreach ($sources as $source) {
+      $order_key = "0000";
+      if(isset($source->citation->datePublished)){
+        $order_key = timePeriodAsOrderKey($source->citation->datePublished);
+      }
+      if(!empty($source->citation->authorTeam->titleCache)){
+        $order_key .= $source->citation->authorTeam->titleCache;
+      }
+      while(array_key_exists($order_key, $sort_array)){
+        $order_key .= "_";
+      }
+      if($do_theme) {
+        $sort_array[$order_key] = theme('cdm_OriginalSource', array('source' => $source));
+      } else {
+        $sort_array[$order_key] = $source;
+      }
+    }
+    ksort($sort_array);
+    return array_values ($sort_array);
+}

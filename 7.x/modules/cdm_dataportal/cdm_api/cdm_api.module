@@ -531,6 +531,32 @@ function timePeriodToString($period, $stripZeros = TRUE) {
   }
   return $dateString;
 }
+/**
+ * returns the earliest date available in the $period in a normalized
+ * form suitable for sorting, e.g.:
+ *
+ *  - 1956-00-00
+ *  - 0000-00-00
+ *  - 1957-03-00
+ *
+ * that is either the start date is returned if set otherwise the
+ * end date
+ *
+ * @param  $period
+ *    An JodaTime org.joda.time.Period object.
+ * @return string normalized form of the date
+ *   suitable for sorting
+ */
+function timePeriodAsOrderKey($period) {
+  $dateString = '';
+  if ($period->start) {
+    $dateString = partialToDate($period->start, false);
+  }
+  if ($period->end) {
+    $dateString .= partialToDate($period->end, false);
+  }
+  return $dateString;
+}
 
 /**
  * Composes a CDM webservice URL with parameters and querystring.

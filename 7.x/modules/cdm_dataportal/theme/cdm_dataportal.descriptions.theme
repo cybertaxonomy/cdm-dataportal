@@ -1313,12 +1313,10 @@ function theme_cdm_IdentificationKey($variables) {
     }
   }
   if (isset($identificationKey->sources) && is_array($identificationKey->sources)) {
-    // Display sources.
-    $i = 0;
+    // order and display sources.
+    $sources = oder_sources($identificationKey->sources, TRUE);
     $out .= '<div class="sources">';
-    foreach ($identificationKey->sources as $source) {
-      $out .= theme('cdm_OriginalSource', array('source' => $source));
-    }
+    $out .=  implode('', $sources);
     $out .= '</div>';
   }
   // Display annotations.
