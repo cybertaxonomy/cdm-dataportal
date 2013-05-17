@@ -58,3 +58,68 @@ function cdm_entity_has_marker($cdm_entitiy, $marker_type_uuid) {
   }
   return FALSE;
 }
+
+/**
+ * Sorts an array of CDM IdentifiableSource instances by 1. by the
+ * author teams familiy names and 2. by the publication date.
+ *
+ * @param unknown $sources
+ *    The array of CDM IdentifiableSource instances
+ * @param bool $do_theme if set TRUE the sources will be themed by theme_cdm_OriginalSource
+ * @return multitype:
+ */
+function  oder_sources($sources, $do_theme = false){
+    $sort_array = array();
+    foreach ($sources as $source) {
+
+      $order_key = '';
+
+      // find the familynames
+      if(isset($source->citation->uuid) && !isset($source->citation->authorTeam)){
+        $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $source->citation->uuid);
+
+        $persons = array();
+        if($authorteam->class == 'Team'){
+          if(isset($authorteam->teamMembers)){
+            $persons = $authorteam->teamMembers;
+          }
+        } else {
+          $persons[] = $authorteam;
+        }
+
+        foreach($persons as $person){
+          if(!empty($person->lastname)){
+            $order_key .= $person->lastname;
+          } else {
+            $order_key .= $person->titleCache;
+          }
+        }
+        if(empty($order_key)){
+          $order_key = $authorteam->titleCache;
+        }
+
+      }
+      $order_key = str_pad($order_key, 50);
+
+      // add publication date to the key
+      if(isset($source->citation->datePublished)){
+        $order_key .= '_' . timePeriodAsOrderKey($source->citation->datePublished);
+      } else {
+        $order_key .= '_' . "0000";
+      }
+
+      // padd key until unique
+      while(array_key_exists($order_key, $sort_array)){
+        $order_key .= "_";
+      }
+
+
+      if($do_theme) {
+        $sort_array[$order_key] = theme('cdm_OriginalSource', array('source' => $source));
+      } else {
+        $sort_array[$order_key] = $source;
+      }
+    }
+    ksort($sort_array);
+    return array_values ($sort_array);
+}
