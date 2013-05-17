@@ -1614,8 +1614,16 @@ function uri_to_synonym($synonymUuid, $acceptedUuid) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Compses the drupal path to the key identified by the uuid.
+ *
+ * @param string $keyType
+ *    the key typer corresponds to the specific class of the CDM
+ *    IdentificationKey. Possible values are
+ *      -PolytomousKey
+ *      -MultimediaKey
+ *      - ...
+ * @param UUID $keyUuid
+ *   The UUID of the key
  */
 function path_to_key($keyType, $keyUuid) {
   if (!$keyUuid || !$keyType) {

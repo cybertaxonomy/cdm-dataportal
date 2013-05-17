@@ -254,7 +254,10 @@ function theme_cdm_taxon_page($variables) {
   }
 
   // --- PAGE PART: KEYS --- //
-  if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
+  if ($identificationKeyCount == 1 && $page_part == 'keys'){
+    drupal_goto(path_to_key($polytomousKeysPager->records[0]->class, $polytomousKeysPager->records[0]->uuid));
+  }
+  else if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
     $keys_html = '<div id="keys">';
     if ($page_part == 'all') {
       $keys_html .= '<h2>' . t('Keys') . '</h2>';
