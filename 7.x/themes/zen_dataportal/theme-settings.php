@@ -63,9 +63,10 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
   // TODO : site-name shadow: text-shadow: black 0 10px 20px, black 0 5px
 
 
-  drupal_add_css(path_to_theme() . '/js/colorpicker/css/colorpicker.css', 'file');
-  drupal_add_js(path_to_theme() . '/js/colorpicker/js/colorpicker.js', 'file');
-  drupal_add_js(path_to_theme() . '/js/settings-ui.js', 'file');
+  $path_to_theme = drupal_get_path('theme', 'zen_dataportal');
+  drupal_add_css($path_to_theme . '/js/colorpicker/css/colorpicker.css', 'file');
+  drupal_add_js($path_to_theme. '/js/colorpicker/js/colorpicker.js', 'file');
+  drupal_add_js($path_to_theme . '/js/settings-ui.js', 'file');
   $form['zen_dataportal_colors'] = array(
           '#type' => 'fieldset',
           '#title' => t('Colors'),
@@ -199,7 +200,7 @@ function zen_dataportal_form_widget_image(&$form, $which_image){
     $url = file_create_url($path);
     $path = file_uri_target($path);
     $form['zen_dataportal_' .  $which_image]['settings'][$which_image . '_preview'] = array(
-          	'#type' => 'item',
+            '#type' => 'item',
             '#title' => t('Preview'),
             '#markup' => '<div class="image-preview"><img src="' . $url . '"/></div>',
     );
@@ -232,8 +233,8 @@ function zen_dataportal_form_widget_color(&$form, $color_settings_key, $descript
           '#default_value' => theme_get_setting($color_settings_key),
           '#description'   => $description, //t('Set the color of the site name which is shown in the header. Must be a css color value like: #000000'),
           '#attributes' => array(
-          	'class' => array('color-picker'),
-          	'size' => '7',
+            'class' => array('color-picker'),
+            'size' => '7',
           ),
   );
 }
