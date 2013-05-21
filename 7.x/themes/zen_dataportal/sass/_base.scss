@@ -23,8 +23,8 @@
 // Zen does not require special handling for IE8 or later. But Compass uses that
 // variable for a couple edge cases. We include it for completeness sake. See
 // the documentation at http://compass-style.org/reference/compass/support/
-$legacy-support-for-ie6: false;
-$legacy-support-for-ie7: false;
+$legacy-support-for-ie6: true;
+$legacy-support-for-ie7: true;
 $legacy-support-for-ie8: true;
 
 
