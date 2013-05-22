@@ -32,13 +32,24 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
 
   $path_to_theme = drupal_get_path('theme', 'zen_dataportal');
 
-  // check requirements
+  // check browser compatibility requirements
+  $browser_compatibility_issues = array();
   $response = drupal_http_request($base_root . POLYFILL_TEST_URL, array("method"=>"HEAD"));
+  // preprocess-css
   if($response->code != 200){
-    drupal_set_message('The ' . l('polyfills folder' ,'/polyfills/', array('external'=>TRUE)) .' is not found. The theme will not be rendered correctly in InternetExplorer 8 and 7'
-        . 'Please read the installation instructions in the ' .l('README', $path_to_theme . '/README.txt') .' of this theme.', 'error');
+    $browser_compatibility_issues[] = 'The ' . l('polyfills folder' ,'/polyfills/', array('external'=>TRUE))
+        .' is not found.'
+        . 'Please read the installation instructions in the ' .l('README', $path_to_theme . '/README.txt') .' of this theme.';
   }
-
+  if(variable_get('preprocess_css', 0) !== 1) {
+    $browser_compatibility_issues[] = 'The '
+        . l(t('Aggregate and compress CSS files'), 'admin/config/development/performance', array('fragment'=>'edit-preprocess-css'))
+        . ' option must be turned on. ' . variable_get('preprocess_css', 0);
+  }
+  if(count($browser_compatibility_issues) > 0 ){
+    drupal_set_message('<strong>Browser compatibility problems:</strong><ul><li>' . join('</li><li>', $browser_compatibility_issues) .
+      '</li></ul>The theme will not be rendered correctly in InternetExplorer 8, 7 or 6 until these problems are solved.', 'error');
+  }
 
   // will be available in the page.tpl.php
    $form['zen_dataportal_misc'] = array(
