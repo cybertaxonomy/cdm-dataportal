@@ -1598,6 +1598,7 @@
 7.x/themes/zen_dataportal/logo.png -text svneol=unset#unset
 7.x/themes/zen_dataportal/polyfills/box-sizing-polyfill/README.md -text
 7.x/themes/zen_dataportal/polyfills/box-sizing-polyfill/boxsizing.htc -text
+7.x/themes/zen_dataportal/polyfills/css3pie/PIE-1.0.0.htc -text
 7.x/themes/zen_dataportal/polyfills/css3pie/PIE-1.0beta5.htc -text
 7.x/themes/zen_dataportal/polyfills/css3pie/README -text
 7.x/themes/zen_dataportal/sass-extensions/zen-grids/DO_NOT_MODIFY -text

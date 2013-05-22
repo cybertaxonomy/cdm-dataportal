@@ -14,8 +14,8 @@
 
   // Default options for the plugin as a simple object
   var defaults = {
-     open_callback: function(){},
-         close_callback: function(){},
+      open_callback: function(){},
+      close_callback: function(){}
   };
 
   this.dynabox = function(dynabox_id, options) {

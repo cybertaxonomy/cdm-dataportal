@@ -172,13 +172,13 @@ function _add_js_openlayers_map() {
                     legendOpacity: '" . variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5') . "',
                     showLayerSwitcher: " . (variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE) ? 'true' : 'false') . ",
                     baseLayerNames: [" . $layerNames . "],
-                    defaultBaseLayerName: '" . $preferredLayer . "',
+                    defaultBaseLayerName: '" . $preferredLayer . "'
                    }
                 );
                  // ---
         };
-          });
-        ", array('type' => 'inline'));
+      });
+    ", array('type' => 'inline'));
 
 }
 
@@ -2126,21 +2126,21 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
   _add_js_domEvent(); // requires domEvent.js
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cdm_dynabox.js');
   drupal_add_js("
-      jQuery(document).ready(
-    function() {
-      dynabox('". $dynabox_id ."',
-      {
-              open_callback: " . $open_callback .",
-              close_callback: " . $close_callback .",
-            }
-          );
-    }
-      );",
-      array(
-        'type'=>'inline',
-        'scope'=>'footer'
-      )
-    );
+  jQuery(document).ready(
+      function() {
+        dynabox('". $dynabox_id ."',
+          {
+            open_callback: " . $open_callback .",
+            close_callback: " . $close_callback ."
+          }
+        );
+      }
+   );",
+   array(
+    'type'=>'inline',
+    'scope'=>'footer'
+    )
+  );
 
   $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/$theme");
   $out .= '<!-- ' . $content_url . ' -->';
