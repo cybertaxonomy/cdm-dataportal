@@ -73,6 +73,7 @@ stylesheets[all][] = css/print.css
 ; If you still wish to use conditional stylesheets, you must install the
 ; conditional stylesheets module: http://drupal.org/project/conditional_styles
 ;stylesheets-conditional[lte IE 8][all][] = css/ie8.css
+stylesheets-conditional[lte IE 9][all][] = css/ie-legacy.css
 
 
 

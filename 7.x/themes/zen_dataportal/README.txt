@@ -10,6 +10,17 @@ Moreover it is no longer necessary to create subthemes for each project.
 When you also utilize the delta module it is even possible to copy layouts from
 one portal to a new one.
 
+*** IMPORTANT INSTALLATION NOTE ***
+* 
+* The folder polyfills must be made available at the webservers root, so that 
+* the files contained in this folder can be accesed at e.g.:
+* 
+* http://my.server.net/polyfills/box-sizing-polyfill/boxsizing.htc
+* 
+* For installing the folder in Drupal we recommend creating a symlink 
+* in the root of you Drupal installation.
+* 
+
 ==================== original zen readme below ============================
 
 BUILD A THEME WITH ZEN

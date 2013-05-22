@@ -104,4 +104,6 @@ $indent-amount: 30px;
 @import "compass/typography/vertical_rhythm"; // Helps set up a vertical rhythm.
 @import "zen";              // Add the Zen Grids responsive layout mixins.
 
+@import "ie-legacy"; // Adds css fixes for older IE browsers and thus adds CSS3 PIE support which emulates some css3 features, see pie.scss
+
 @import "custom";           // Import our custom mixins last.

@@ -24,7 +24,7 @@ $zen-gutter-width:  40px;
 // - (Preferred) Install the box-sizing polyfill and set the variable below to
 //   the absolute path URL to the boxsizing.htc file.
 //   @see https://github.com/Schepp/box-sizing-polyfill
-$box-sizing-polyfill-path: "scripts/box-sizing-polyfill/boxsizing.htc";
+$box-sizing-polyfill-path: "/polyfills/box-sizing-polyfill/boxsizing.htc";
 // - Use the same CSS unit for grid width and gutter width (use px for both or
 //   use % for both, etc.) and set the box-sizing variable to content-box.
 //   $zen-box-sizing: content-box;

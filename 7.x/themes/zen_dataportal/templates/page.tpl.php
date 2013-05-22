@@ -72,7 +72,7 @@
  */
 ?>
 
-<div id="page">
+<div id="page" class="z-pie-element">
 
   <header id="header" role="banner">
     <?php if ($logo): ?>

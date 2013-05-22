@@ -36,14 +36,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #page {
+  @include pie(z-pie-element);
+  @include pie; // Because $pie-base-class is set, this results in an extend of .pie-element.
   // single-box-shadow($color, $hoff, $voff, $blur, $spread, $inset)
   @include single-box-shadow(black, 0px, 5px, 20px);
   padding-top: $zen-gutter-width;
   background-color: #fff;
-}
-
-.lt-ie9 #page {
-   border: 1px #aaaaaa solid;
 }
 
 /*

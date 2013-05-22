@@ -96,6 +96,9 @@
   </style>
   <?php endif; ?>
   <?php print $scripts; ?>
+  <!--[if lt IE 9]>
+  <script src="/d7/test/scripts/polyfills/PIE.htc" type="text/x-component"></script>
+  <![endif]-->
   <?php
     /*
     html5-respond.js and html5.js must be included before the <body> element

@@ -1,5 +1,7 @@
 <?php
 
+define("POLYFILL_TEST_URL", "/polyfills/box-sizing-polyfill/boxsizing.htc");
+
 /**
  * Provides the image names which can be configured in the theme settings to all
  * theme setting functions.
@@ -21,10 +23,22 @@ function _zen_dataportal_imagenames() {
  *   A keyed array containing the current state of the form.
  */
 function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $form_id = NULL)  {
+  global $base_root;
+
   // Work-around for a core bug affecting admin themes. See issue #943212.
   if (isset($form_id)) {
     return;
   }
+
+  $path_to_theme = drupal_get_path('theme', 'zen_dataportal');
+
+  // check requirements
+  $response = drupal_http_request($base_root . POLYFILL_TEST_URL, array("method"=>"HEAD"));
+  if($response->code != 200){
+    drupal_set_message('The ' . l('polyfills folder' ,'/polyfills/', array('external'=>TRUE)) .' is not found. The theme will not be rendered correctly in InternetExplorer 8 and 7'
+        . 'Please read the installation instructions in the ' .l('README', $path_to_theme . '/README.txt') .' of this theme.', 'error');
+  }
+
 
   // will be available in the page.tpl.php
    $form['zen_dataportal_misc'] = array(
@@ -62,8 +76,6 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
 
   // TODO : site-name shadow: text-shadow: black 0 10px 20px, black 0 5px
 
-
-  $path_to_theme = drupal_get_path('theme', 'zen_dataportal');
   drupal_add_css($path_to_theme . '/js/colorpicker/css/colorpicker.css', 'file');
   drupal_add_js($path_to_theme. '/js/colorpicker/js/colorpicker.js', 'file');
   drupal_add_js($path_to_theme . '/js/settings-ui.js', 'file');
