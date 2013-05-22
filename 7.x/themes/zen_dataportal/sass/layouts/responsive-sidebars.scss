@@ -63,13 +63,6 @@ $zen-auto-include-item-base: false;
   @include zen-grid-item-base();
 }
 
-/*s
- * Fix menubar for IE < 9
- */ 
-.lt-ie9 #navigation {
-  padding-right: 0;
-}
-
 
 /*
  * Containers for grid items and flow items.

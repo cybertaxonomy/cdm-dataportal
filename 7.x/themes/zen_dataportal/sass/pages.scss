@@ -42,6 +42,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #fff;
 }
 
+.lt-ie9 #page {
+   border: 1px #aaaaaa solid;
+}
+
 /*
  * The skip-link link will be completely hidden until a user tabs to the link.
  * See the element-focusable rule in system.base.css.
@@ -68,6 +72,7 @@ h1, h2, h3, h4, h5, h6 {
 #header {
   // margin-bottom: $zen-gutter-width / 2; // disabled since we are now having the subheader
 }
+
 
 #sub-header {
   clear: both;
