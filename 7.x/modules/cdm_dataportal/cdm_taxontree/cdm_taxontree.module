@@ -54,8 +54,8 @@ function cdm_taxontree_block_info() {
         "cache" => DRUPAL_NO_CACHE
       );
 
-  $block['filters']['info'] = t('Active filters');
-  $block[1]['info'] = t('Drupal taxonomy tree');
+  $block['cdm_tree_filters']['info'] = t('Active filters');
+  $block['cdm_tree_drupal_taxonomy']['info'] = t('Drupal taxonomy tree');
   return $block;
 }
 
@@ -64,12 +64,13 @@ function cdm_taxontree_block_info() {
  */
 function cdm_taxontree_block_view($delta) {
 
-  // TODO Rename block deltas (e.g. '1') to readable strings.
   switch ($delta) {
     case 'cdm_tree':
       $block['subject'] = t('Classification');
       $taxonUuid_inFocus = _cdm_get_taxonuuid();
       $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
+
+      // cdm_taxontree_magicbox_enable is not yet made available via the settings, so $magicbox_enable is always 0
       $magicbox_enable = variable_get('cdm_taxontree_magicbox_enable', 0);
 
       $block['content'] = '';
@@ -79,31 +80,20 @@ function cdm_taxontree_block_view($delta) {
       $block['content'] .= theme('cdm_taxontree_block', array(
         'tree' => $tree,
         'delta' => $delta,
-        'magicbox' => FALSE,
+        'magicbox' => $magicbox_enable == 1,
         'show_filter_switch' => FALSE,
         // 'cdm_taxontree_node_concept_switch'
        ));
-
-      // Java script.
-      $verticalSroller = $magicbox_enable ? 'cdm_taxontree_scroller_x' : 'cdm_taxontree_scroller_xy';
-      theme('cdm_taxontree_add_scripts');
-
-      drupal_add_js('
-      jQuery(document).ready(function()
-      {
-        jQuery(\'ul.cdm_taxontree\').cdm_taxontree();
-        jQuery(\'div.' . $verticalSroller . '\').scrollTo(jQuery(\'.focused\'), 400, {over:-3});
-      });
-      ', array('type' => 'inline'));
-
+      cdm_taxontree_add_js('#block-cdm-taxontree-cdm-tree', $magicbox_enable);
       return $block;
 
-    case 'filters':
+    case 'cdm_tree_filters':
       $block['subject'] = t('Active filters');
       $block['content'] = cdm_taxontree_view_filter('list');
       return $block;
 
-    case '1':
+    case 'cdm_tree_drupal_taxonomy':
+      // cdm tree for a drupal taxonomy
       $block['subject'] = t('Taxonomy tree');
       $term_inFocus = arg(0) == 'taxonomy' && arg(1) == 'term' ? arg(2) : 0;
       $tree = cdm_taxontree_build_tree($term_inFocus, TRUE, variable_get('cdm_taxontree_block_1_vid', 0));
@@ -112,15 +102,7 @@ function cdm_taxontree_block_view($delta) {
         'delta' => $delta,
         'magicbox' => FALSE,
       ));
-      theme('cdm_taxontree_add_scripts');
-      drupal_add_js('
-
-      jQuery(document).ready(function()
-      {
-        jQuery(\'ul.cdm_taxontree\').cdm_taxontree();
-        jQuery(\'div.cdm_taxontree_scroller_x\').scrollTo(jQuery(\'.active\'), 400, {over:-3});});
-      ', array('type' => 'inline'));
-
+      cdm_taxontree_add_js('#block-cdm-taxontree-cdm-tree-drupal-taxonomy');
       return $block;
 
   }
@@ -817,21 +799,38 @@ function _cdm_resultset2nodelist($resultset, $excluded = NULL, $expanded = NULL)
   return $tree;
 }
 
-
-// ------------------------ THEME --------------------------- //
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Adds all java script files and also initializes the cdm_taxontree java script behaviours
+ *
+ * @param string $parent_element_selector
+ *    jQuery selector of a parent element of the cdm_taxontree, This is usually a drupal block id
+ *    selector: #block-cdm-taxontree-cdm-tree or #block-cdm-taxontree-cdm-tree-drupal-taxonomy
+ *
+ * @param bool $magicbox_enable
+ *    If set to TRUE the cdm_taxontree will get the magic box behavoir, which means that it
+ *    will extend on mouse over events in order to
+ *    show the entrys without truncation through cropping
  */
-function theme_cdm_taxontree_add_scripts() {
+function cdm_taxontree_add_js($parent_element_selector, $magicbox_enable = FALSE) {
+
+  $vertical_sroller_selector = $magicbox_enable ? 'cdm_taxontree_scroller_x' : 'cdm_taxontree_scroller_xy';
+
   $path_cdm_taxontree = drupal_get_path('module', 'cdm_taxontree');
   $path_preferred_module = drupal_get_path('module', 'cdm_dataportal') ? drupal_get_path('module', 'cdm_dataportal') : $path_cdm_taxontree;
   drupal_add_css($path_cdm_taxontree . '/cdm_taxontree.css');
   drupal_add_js($path_preferred_module . '/js/jquery.dimensions.js');
   drupal_add_js($path_cdm_taxontree . '/js/cdm_taxontree.js');
   drupal_add_js($path_cdm_taxontree . '/js/jquery.scrollTo.js');
+  drupal_add_js('
+      jQuery(document).ready(function()
+      {
+        jQuery(\'' . $parent_element_selector . ' ul.cdm_taxontree\').cdm_taxontree();
+        jQuery(\'div.' . $vertical_sroller_selector . '\').scrollTo(jQuery(\'.focused\'), 400, {over:-3});
+      });
+      ', array('type' => 'inline'));
 }
 
+// ------------------------ THEME --------------------------- //
 
 /**
  *  Returns HTML for a Taxontree block.
@@ -872,6 +871,7 @@ function theme_cdm_taxontree_block($variables) {
   if (cdm_taxontree_filters_active()) {
     $out .= theme('cdm_taxontree_controller', array('compact_mode' => _get_compact_mode()));
   }
+  $region = null;
   if (!empty($magicbox)) {
     if (is_numeric($magicbox) || is_string($magicbox)) {
       $region = _get_block_region($magicbox);
@@ -879,7 +879,7 @@ function theme_cdm_taxontree_block($variables) {
     // The magicbox expands to the right by default,
     // if the class 'expand-left' to  the cdm_taxontree_scroller_x the box will
     // expand to the left.
-    $expand_direction = $region == 'right' ? 'expand-left' : '';
+    $expand_direction = ($region == 'right' ? 'expand-left' : '');
     $out .= '<div class="cdm_taxontree_scroller_x ' . $expand_direction . '"><div class="cdm_taxontree_container"><div class="cdm_taxontree_scroller_y">';
   }
   else {
@@ -1139,7 +1139,6 @@ function cdm_taxontree_theme() {
       'tree_node_callback' => FALSE,
       'element_name' => FALSE,
       )),
-    'cdm_taxontree_add_scripts' => array('variables' => array()),
     'cdm_taxontree_block' => array('variables' => array(
       'tree' => NULL,
       'delta' => NULL,
