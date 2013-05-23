@@ -813,8 +813,6 @@ function _cdm_resultset2nodelist($resultset, $excluded = NULL, $expanded = NULL)
  */
 function cdm_taxontree_add_js($parent_element_selector, $magicbox_enable = FALSE) {
 
-  $vertical_sroller_selector = $magicbox_enable ? 'cdm_taxontree_scroller_x' : 'cdm_taxontree_scroller_xy';
-
   $path_cdm_taxontree = drupal_get_path('module', 'cdm_taxontree');
   $path_preferred_module = drupal_get_path('module', 'cdm_dataportal') ? drupal_get_path('module', 'cdm_dataportal') : $path_cdm_taxontree;
   drupal_add_css($path_cdm_taxontree . '/cdm_taxontree.css');
@@ -824,8 +822,7 @@ function cdm_taxontree_add_js($parent_element_selector, $magicbox_enable = FALSE
   drupal_add_js('
       jQuery(document).ready(function()
       {
-        jQuery(\'' . $parent_element_selector . ' ul.cdm_taxontree\').cdm_taxontree();
-        jQuery(\'div.' . $vertical_sroller_selector . '\').scrollTo(jQuery(\'.focused\'), 400, {over:-3});
+        jQuery(\'' . $parent_element_selector . '\').cdm_taxontree();
       });
       ', array('type' => 'inline'));
 }

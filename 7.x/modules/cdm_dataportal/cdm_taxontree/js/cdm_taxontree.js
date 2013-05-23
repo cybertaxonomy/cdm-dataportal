@@ -1,7 +1,18 @@
 // see also https://github.com/geetarista/jquery-plugin-template/blob/master/jquery.plugin-template.js
 
 /**
+ * Expected DOM structure:
  *
+ * <div id="cdm_taxontree_parent">
+ *      <div class="cdm_taxontree_scroller_xy">
+ *              <ul class="cdm_taxontree">
+ *                  <li class="leaf filter_included">
+ *                      <a href="/d7/test/cdm_dataportal/taxon/996dc2b4-e73d-4d40-99f9-fac18b503d1c"></a>
+ *                  </li>
+ *                  ...
+ *              </ul>
+ *      </div>
+ * </div>
  */
 ;(function($, document, window, undefined) {
 
@@ -9,43 +20,52 @@
 
     var opts = $.extend({}, $.fn.cdm_taxontree.defaults, options);
 
+    var vertical_scroller_selector = 'cdm_taxontree_scroller_xy';
+
+    var cdm_taxontree_parent = $(this);
+    var cdm_taxontree_list = cdm_taxontree_parent.find('ul.cdm_taxontree');
+
       /* ----------- magicbox ---------- */
       if (opts.magicbox) {
-        $(this).cdm_taxontree_magicbox();
+        cdm_taxontree_parent.cdm_taxontree_magicbox();
+        vertical_sroller_selector =  'cdm_taxontree_scroller_x';
       }
 
       /* ----------- tree browser ---------- */
-      $(this).delegate("li:not(.invisible)", "click", function(event) {
+      cdm_taxontree_list.delegate("li:not(.invisible)", "click", function(event) {
               handle_taxon_node_click(event);
           }
       );
       // Stop event propagation for links (unclear why this is nessecary,
       // was this needed for the filter buttons?)
-      $(this).delegate("li a", "click", function(event) {
+      cdm_taxontree_list.delegate("li a", "click", function(event) {
               event.stopPropagation();
           }
       );
 
       /* ----------- widget ------------------- */
       if (opts.widget) {
-        var widget = $(this).parents('.cdm_taxontree_widget');
+        var widget = cdm_taxontree_parent.find('.cdm_taxontree_widget');
         var optionList = widget.find('select');
 
         // Keep all options unselected.
         optionList.change(function() {
-          $(this).children("[@selected]").remove();
-          $(this).children().removeAttr('selected');
+            cdm_taxontree_list.children("[@selected]").remove();
+            cdm_taxontree_list.children().removeAttr('selected');
         });
         optionList.children("[@selected]").click(function() {
-          $(this).remove();
+            cdm_taxontree_list.remove();
         });
         // Select all options onsubmit.
         optionList.parents('form').submit(function() {
           optionList.children().attr('selected', 'selected');
         });
 
-        bind_select_click(optionList, $(this), opts.multiselect);
+        bind_select_click(optionList, cdm_taxontree_list, opts.multiselect);
       };
+
+      // finally scroll to the focused element
+      scrollToFocused();
 
     /**
      * handler function for clicks on the li elelements which
@@ -71,21 +91,20 @@
 
               // Load DOM subtree via AHAH and append it.
               $.get(url, function(html) {
-                var tree_container = parent_li.parents('div.cdm_taxontree_container');
                 parent_li.set_background_image('minus.png');
                 if (opts.magicbox) {
                   // Preserve scroll positions.
-                  var tmp_scroller_y_left = tree_container.children().scrollTop();
+                  var tmp_scroller_y_left = parent_li.parents('div.cdm_taxontree_container').children().scrollTop();
 
-                  parent_li.append(html).find('ul'); //.cdm_taxontree(options); // no longer required since we are using live() instead of click()
+                  parent_li.append(html);
 
                   // Resize parent container.
-                  tree_container.cdm_taxontree_container_resize();
+                  cdm_taxontree_container_resize(tree_container);
 
                   // Restore scroll positions.
                   tree_container.children().scrollTop(tmp_scroller_y_left);
                 } else {
-                  parent_li.append(html).find('ul'); // .cdm_taxontree(options); // no longer required since we are using live() instead of click()
+                  parent_li.append(html);
                 }
               });
             }
@@ -135,6 +154,15 @@
             }
           });
     } // END bind_select_click()
+
+    /**
+     *
+     */
+    function scrollToFocused() {
+        var focusedElement = cdm_taxontree_parent.find('.focused');
+        cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTo(focusedElement, 400, {over:-3});
+
+    }
 
   }; // END cdm_taxontree()
 
