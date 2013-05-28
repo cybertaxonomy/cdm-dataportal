@@ -29,6 +29,15 @@ module_load_include('php', 'cdm_api', 'cdm_node');
 
 
 /**
+ * Tiemout used to override the default of 30 seconds
+ * in @see drupal_http_request()
+ *
+ * @var CDM_HTTP_REQUEST_TIMEOUT: A float representing the maximum number of seconds the function
+ *     call may take
+ */
+define('CDM_HTTP_REQUEST_TIMEOUT', 90.0);
+
+/**
  * Implements hook_menu().
  */
 function cdm_api_menu() {
@@ -675,8 +684,8 @@ function proxy_content($uri, $hook = NULL) {
     $post_data = implode(',', $post_data);
 
     // For testing.
-    $data = drupal_http_request($uri, array('headers' => "POST", 'method' => $post_data));
-    print $data;
+    $data = drupal_http_request($uri, array('headers' => "POST", 'method' => $post_data, 'timeout' => CDM_HTTP_REQUEST_TIMEOUT));
+    // print $data;
   } else {
     // Not a "POST" request
     // In all these cases perform a simple get request.
@@ -685,7 +694,7 @@ function proxy_content($uri, $hook = NULL) {
     if (empty($hook)) {
       // simply return the webservice response
       // Print out JSON, the cache cannot be used since it contains objects.
-      $http_response = drupal_http_request($uri);
+      $http_response = drupal_http_request($uri, array('timeout' => CDM_HTTP_REQUEST_TIMEOUT));
       if (isset($http_response->headers)) {
         foreach ($http_response->headers as $hname => $hvalue) {
           drupal_add_http_header($hname, $hvalue);
@@ -1581,7 +1590,7 @@ function cdm_http_request($uri, $method = "GET", $parameters = array(), $header 
  * @see http://drupal.org/node/1354
  */
 function _http_request_using_fsockopen($uri, $header = array(), $method = 'GET') {
-  $response = drupal_http_request($uri, array('headers' => $header, 'method' => $method));
+  $response = drupal_http_request($uri, array('headers' => $header, 'method' => $method, 'timeout' => CDM_HTTP_REQUEST_TIMEOUT));
   if (isset($response->data)) {
       return $response->data;
   }
