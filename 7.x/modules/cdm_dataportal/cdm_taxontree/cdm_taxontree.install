@@ -9,53 +9,8 @@
  * The drupal_(un)install_schema functions are called automatically in D7.
  */
 function cdm_taxontree_schema() {
-  // Comment @WA: this cache table is not (yet?) used.
-  $schema['cache_cdm_taxontree'] = array(
-    'fields' => array(
-      'cid' => array(
-        'description' => 'Primary Key: Unique cache ID.',
-        'type' => 'varchar',
-        'length' => '333',
-        'not null' => TRUE,
-        'default' => '',
-      ),
-      'data' => array(
-        'description' => 'The data to cache.',
-        'type' => 'blob',
-        'size' => 'big',
-        'not null' => FALSE,
-      ),
-      'expire' => array(
-        'description' => 'A Unix timestamp indicating when the cache entry should expire, or 0 for never.',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-        'disp-width' => '11',
-      ),
-      'created' => array(
-        'description' => 'Unix timestamp indicating when the cache entry was created.',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-        'disp-width' => '11',
-      ),
-      'serialized' => array(
-        'description' => 'A flag to indicate whether content is serialized by Drupal (1) or not (0).',
-        'type' => 'int',
-        'size' => 'small',
-        'not null' => FALSE,
-      ),
-    ),
-    'primary key' => array('cid'),
-    'indexes' => array(
-      'expire' => array('expire'),
-    ),
-    // Important, since the 'cid' field is too big to create a key on in INNODB.
-    // InnoDB allows a max. key length of 767 bytes, MyISAM 1000 bytes, which is
-    // for utf8 (333*3)+1, so 333 characters max. instead of 255 chars.
-    'mysql_engine' => 'MyISAM',
-  );
-  return $schema;
+  // return an empty array since we removed the cache_cdm_taxontree schema and still want to keep this hook implementation
+  return array();
 }
 
 /**
@@ -67,5 +22,17 @@ function cdm_taxontree_update_7000() {
   // No need to use db_change_field() here.
   // We simply drop and recreate the cache tables to start clean.
   db_drop_table('cache_cdm_taxontree');
-  db_create_table('cache_cdm_taxontree', $schema['cache_cdm_taxontree']);
+  // we now removed the schema for the cache_cdm_taxontree since it was unused, so there is no need to create it
+  // db_create_table('cache_cdm_taxontree', $schema['cache_cdm_taxontree']); this
+}
+
+/**
+ * update for RELEASE 3.2.1:
+ *  - drop cache_cdm_taxontree
+ */
+function cdm_taxontree_update_7301() {
+  if(db_drop_table('cache_cdm_taxontree')){
+    return t('table cache_cdm_taxontree dropped');
+
+  }
 }

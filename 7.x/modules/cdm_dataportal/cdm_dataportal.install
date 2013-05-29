@@ -42,8 +42,7 @@ function cdm_dataportal_uninstall() {
  */
 function cdm_dataportal_update_7301() {
   // reset edit_map_server variable to default
-   return
-  _remove_variable('edit_map_server');
+   return _remove_variable('edit_map_server');
 }
 
 /**
