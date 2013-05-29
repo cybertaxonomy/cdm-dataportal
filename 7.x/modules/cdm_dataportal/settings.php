@@ -1076,10 +1076,14 @@ function cdm_settings_layout_taxon() {
       will render at the taxon profile page."),
   );
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
+  $saved_uuid = variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
+  if(!isset($featureTrees['options'][$saved_uuid])) {
+    $saved_uuid = UUID_DEFAULT_FEATURETREE;
+  }
   $form['taxon_profile']['feature_trees'][CDM_PROFILE_FEATURETREE_UUID] = array(
     '#type' => 'radios',
     '#title' => t('Taxon profile sections') . ':',
-    '#default_value' => variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
+    '#default_value' => $saved_uuid,
     '#options' =>  $featureTrees['options'],
     '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
     '#options_suffixes' => $featureTrees['treeRepresentations'],
@@ -1088,10 +1092,14 @@ function cdm_settings_layout_taxon() {
     ),
   );
   $featureTrees = cdm_get_featureTrees_as_options();
+  $saved_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
+  if(!isset($featureTrees['options'][$saved_uuid])) {
+    $saved_uuid = NULL;
+  }
   $form['taxon_profile']['feature_trees'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
     '#type' => 'radios',
     '#title' => t('Natural language representation of structured descriptions') . ':',
-    '#default_value' => variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, NULL),
+    '#default_value' => $saved_uuid,
     '#options' => $featureTrees['options'],
     '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
     '#options_suffixes' => $featureTrees['treeRepresentations'],
@@ -1269,10 +1277,14 @@ function cdm_settings_layout_taxon() {
   );
 
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
+  $saved_uuid = variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
+  if(!isset($featureTrees['options'][$saved_uuid])) {
+    $saved_uuid = UUID_DEFAULT_FEATURETREE;
+  }
   $form['taxon_specimens']['feature_trees'][CDM_OCCURRENCE_FEATURETREE_UUID] = array(
       '#type' => 'radios',
       '#title' => t('Specimen description feature tree') . ':',
-      '#default_value' => variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE),
+      '#default_value' => $saved_uuid,
       '#options' =>  $featureTrees['options'],
       '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
       '#options_suffixes' => $featureTrees['treeRepresentations'],
