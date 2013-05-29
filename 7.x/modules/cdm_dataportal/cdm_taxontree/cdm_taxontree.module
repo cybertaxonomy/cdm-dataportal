@@ -816,9 +816,9 @@ function cdm_taxontree_add_js($parent_element_selector, $magicbox_enable = FALSE
   $path_cdm_taxontree = drupal_get_path('module', 'cdm_taxontree');
   $path_preferred_module = drupal_get_path('module', 'cdm_dataportal') ? drupal_get_path('module', 'cdm_dataportal') : $path_cdm_taxontree;
   drupal_add_css($path_cdm_taxontree . '/cdm_taxontree.css');
-  drupal_add_js($path_preferred_module . '/js/jquery.dimensions.js');
+  drupal_add_js($path_preferred_module . '/js/jquery.dimensions.pack.js');
   drupal_add_js($path_cdm_taxontree . '/js/cdm_taxontree.js');
-  drupal_add_js($path_cdm_taxontree . '/js/jquery.scrollTo.js');
+  drupal_add_js($path_cdm_taxontree . '/js/jquery.scrollTo-1.4.3.1-min.js');
   drupal_add_js('
       jQuery(document).ready(function()
       {

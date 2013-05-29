@@ -135,7 +135,7 @@
             } else {
               // Add to select.
               if (!isMultiselect) {
-                // Remove all from select.
+                // Remove all from select
                 optionList.children().remove();
               }
               optionList.append('<option value="' + value + '">'
@@ -160,7 +160,10 @@
      */
     function scrollToFocused() {
         var focusedElement = cdm_taxontree_parent.find('.focused');
-        cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTo(focusedElement, 400, {over:-3});
+        var lineHeight = focusedElement.css('line-height');
+        lineHeight = lineHeight.replace('px', '');
+        lineHeight = lineHeight.length == 0 ? 18 : lineHeight;
+        cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTo(focusedElement, {duration: 400, axis:'y', offset:-2 * lineHeight});
 
     }
 
