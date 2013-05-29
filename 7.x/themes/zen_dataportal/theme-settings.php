@@ -65,7 +65,7 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
         . 'adapt the <em>site name color</em>.' ),
     '#options' => array(
       'hide' => t('Hidden'),
-      'over_banner' => t('Over banner'),
+      'above_banner' => t('Above banner'),
       'below_banner' => t('Below banner'),
     ),
     '#default_value' => theme_get_setting('site_name_position'),

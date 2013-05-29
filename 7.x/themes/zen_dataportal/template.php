@@ -238,11 +238,11 @@ function zen_dataportal_preprocess_html(&$variables, $hook) {
  */
 function zen_dataportal_preprocess_page(&$variables, $hook) {
 
-  $variables['site_name_position'] = 'over_banner';
+  $variables['site_name_position'] = 'above_banner';
   if(theme_get_setting('site_name_position')) {
     $variables['site_name_position'] = check_plain(theme_get_setting('site_name_position'));
   }
-  $variables['header_margin_bottom'] = 'over_banner';
+  $variables['header_margin_bottom'] = 'above_banner';
   if(theme_get_setting('header_margin_bottom')) {
     $variables['header_margin_bottom'] = check_plain(theme_get_setting('header_margin_bottom'));
   }

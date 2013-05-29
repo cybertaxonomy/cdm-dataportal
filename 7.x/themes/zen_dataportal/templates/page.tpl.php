@@ -70,6 +70,11 @@
  * @see zen_preprocess_page()
  * @see template_process()
  */
+
+// TODO remove correction below after all portals have been reconfigured to use the new settings constant above_banner
+if($site_name_position == 'over_banner'){
+  $site_name_position == 'above_banner';
+}
 ?>
 
 <div id="page" class="z-pie-element">
@@ -81,7 +86,7 @@
 
     <?php if ($site_name || $site_slogan): ?>
       <hgroup id="name-and-slogan">
-        <?php if ($site_name && $site_name_position == 'over_banner'): ?>
+        <?php if ($site_name && $site_name_position == 'above_banner'): ?>
           <h1 id="site-name">
             <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
           </h1>
