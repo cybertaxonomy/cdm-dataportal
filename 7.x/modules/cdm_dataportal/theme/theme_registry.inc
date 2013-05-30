@@ -201,7 +201,7 @@ function cdm_dataportal_theme() {
       'cdm_specimen' => array('variables' => array('specimenTypeDesignation' => NULL)),
 
       // Themes in cdm_dataportal.page.theme.
-      'cdm_taxon_page_title' => array('variables' => array('taxon' => NULL, 'uuid' => NULL)),
+      'cdm_taxon_page_title' => array('variables' => array('taxon' => NULL)),
       'cdm_name_page_title' => array('variables' => array('taxon_name' => NULL)),
       'cdm_taxon_page' => array('variables' => array('taxon' => NULL, 'page_part' => 'description')),
       'cdm_taxon_page_profile' => array('variables' => array(

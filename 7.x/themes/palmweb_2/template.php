@@ -750,51 +750,6 @@ function palmweb_2_cdm_feature_name($variables){
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function palmweb_2_cdm_taxon_page_title($variables){
-  $taxon = $variables['taxon'];
-  $uuid = $variables['uuid'];
-  $synonym_uuid = $variables['synonym_uuid'];
-
-  RenderHints::pushToRenderStack('taxon_page_title');
-  $synonym = cdm_ws_get(CDM_WS_PORTAL_TAXON, $synonym_uuid);
-  $referenceUri = '';
-  if (isset($taxon->name->nomenclaturalReference)) {
-    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
-  }
-
-  $out = theme('cdm_taxonName', array(
-    'taxonName' => $taxon->name,
-    'nameLink' => NULL,
-    'refenceLink' => $referenceUri,
-    'show_annotations' => FALSE,
-  ));
-
-  RenderHints::popFromRenderStack();
-  if (isset($synonym->name->titleCache)) {
-  $result = '<span class = "synonym_title">' . $synonym->name->titleCache . ' is synonym of ' . '</span>' .
-       '<span class="' . $taxon->class . '">' . $out . '</span>';
-  }
-  else {
-    $result = '<span class="' . $taxon->class . '">' . $out . '</span>';
-  }
-  return $result;
-
-}
-
-// Comment @WA this theme function does not exist..
-/*
-function palmweb_2_cdm_uri_to_synonym($synonymUuid, $acceptedUuid, $pagePart = NULL) {
-  $acceptedPath = path_to_taxon($acceptedUuid, TRUE);
-  return url($acceptedPath . ($pagePart ? '/'.$pagePart : '') . '/'.$synonymUuid, 'highlite='.$synonymUuid);
-  //return url($acceptedPath.($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid, $synonymUuid."/$synonymUuid");
-  //return url("$acceptedPath/$synonymUuid".($pagePart ? '/'.$pagePart : ''), 'highlite='.$synonymUuid);
-}
-*/
-
-/**
  * Implements hook_preprocess_HOOK() for theme_page().
  *
  * Assign the css classes primary-links and secondary-links to the menus and

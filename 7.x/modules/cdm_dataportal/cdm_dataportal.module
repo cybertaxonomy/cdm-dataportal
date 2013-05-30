@@ -1295,7 +1295,7 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid =
  *   - content: the content of the page
  *
  */
-function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = NULL) {
+function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
   // Taxon object.
   $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $uuid);
   if (empty($taxon)) {
@@ -1305,9 +1305,7 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all', $synonym_uuid = NULL
   $taxonpage = new stdClass();
 
   $taxonpage->title = theme('cdm_taxon_page_title', array(
-    'taxon' => $taxon,
-    'uuid' => $uuid,
-    'synonym_uuid' => $synonym_uuid,
+    'taxon' => $taxon
   ));
 
   // Check if the taxon id contained in the currently selected tree.

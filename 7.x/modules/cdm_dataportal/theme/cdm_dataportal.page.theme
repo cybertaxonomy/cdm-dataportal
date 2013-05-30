@@ -26,7 +26,6 @@
  */
 function theme_cdm_taxon_page_title($variables) {
   $taxon = $variables['taxon'];
-  $uuid = $variables['uuid'];
   RenderHints::pushToRenderStack('taxon_page_title');
   $referenceUri = '';
   $out = '';
