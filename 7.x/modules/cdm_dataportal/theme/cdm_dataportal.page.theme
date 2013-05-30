@@ -438,9 +438,6 @@ function theme_cdm_search_results($variables) {
 
   $freetextSearchResults = array();
 
-  // The $query_parameters must not contain the 'q' parameter
-  // since this would conflict with the desired target $path.
-  // unset($search_params['q']);
   // If the pager contains records of SearchResults, extract the taxa and use
   // them as records instead.
   if (isset($pager->records[0]) && $pager->records[0]->class == "SearchResult") {

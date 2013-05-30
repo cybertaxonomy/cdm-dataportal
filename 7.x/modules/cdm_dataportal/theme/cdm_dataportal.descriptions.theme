@@ -1137,10 +1137,7 @@ function theme_cdm_distribution_map($variables) {
 
     $legendFormatQueryStr = "format=image" . urlencode('/') . "png&TRANSPARENT=TRUE";
     $legendFormatQueryStr .= "&WIDTH=" . $legend_url_icon_width . "&HEIGHT=" . $legend_url_icon_height . "&";
-    // TODO why is the layer=topp:tdwg_level_4 parameter neede at all here??
-    // Comment @WA $sldLegend is not used.
-    // $legendFormatQueryStr
-    // .="layer=topp".urlencode(':')."tdwg_level_4&LEGEND_OPTIONS=forceLabels".urlencode(':')."on;fontStyle".urlencode(':').$legend_url_font_style.";fontSize".urlencode(':').$legend_url_font_size."&SLD=".urlencode($sldLegend);
+    // TODO why is the layer=topp:tdwg_level_4 parameter needed at all here??
     $legendFormatQueryStr .= "layer=topp" . urlencode(':') . "tdwg_level_4&LEGEND_OPTIONS=forceLabels" . urlencode(':') . "on;fontStyle" . urlencode(':') . $legend_url_font_style . ";fontSize" . urlencode(':') . $legend_url_font_size . "&SLD=";
 
     $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', 300), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), NULL, $query_string, $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
@@ -1554,10 +1551,6 @@ function theme_cdm_block_IdentificationKeys($variables) {
   RenderHints::pushToRenderStack('block_IdentificationKeys');
   $out = '';
   foreach ($types as $type => $label) {
-    // @WA $pageNumber is not defined, $pageSize is not used in the theme
-    // function
-    // $keylist = theme('cdm_list_IdentificationKeys', $type, $taxonUuid,
-    // $pageSize, $pageNumber);
     $keylist = theme('cdm_list_IdentificationKeys', array('type' => $type, 'taxonUuid' => $taxonUuid));
     if (!$keylist) {
       continue;
@@ -1593,9 +1586,7 @@ function theme_cdm_UseDescription($variables) {
   $currentTaxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxonUuid);
 
   foreach ($descriptions as $description) {
-    $useSummary = "";
-    // Comment @WA: $synonyms is not defined.
-    // $serializedSynonyms = serialize($synonyms).
+    $useSummary = '';
     foreach ($description->elements as $element) {
 
       if ($element->feature->uuid == UUID_USE && !(strlen($useSummary) > 0)) {
@@ -1714,9 +1705,6 @@ function theme_cdm_block_Uses($variables) {
   if (!empty($useDescriptions)) {
     // FIXME use theme_block instaed of hardcoding the block html here !!!!
     $out .= '<div id="block-cdm_dataportal-feature-description" class="clear-block block block-cdm_dataportal-feature"><H2><a name="userecords"> </a> Uses </H2>';
-    // @WA $pageNumber is not defined
-    // $formatUseDescriptions = theme('cdm_UseDescription', $useDescriptions,
-    // $taxonUuid, $pageSize, $pageNumber);
     $formatUseDescriptions = theme('cdm_UseDescription', array('description' => $useDescriptions, 'taxonUuid' => $taxonUuid));
 
     $out .= $formatUseDescriptions;
