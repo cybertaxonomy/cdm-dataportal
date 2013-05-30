@@ -344,8 +344,6 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
           $dwa += $dw;
         }
         $dwa = (count($representation->parts) > 0) ? $dwa / count($representation->parts) : 0;
-        // @WA: $mimeTypeKey is not defined.
-        // $prefRepr[$dwa.'_'.$mimeTypeKey] = $representation;
         $prefRepr[$dwa . '_'] = $representation;
       }
     }
@@ -1354,7 +1352,7 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
  *   The deserialized webservice response object.
  */
 function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "GET", $absoluteURI = FALSE) {
-  // static $cacheL1; if(!isset($cacheL1)){ $cacheL1 = array(); }
+
   static $cacheL1 = array();
 
   // Transform the given uri path or pattern into a proper webservice uri.

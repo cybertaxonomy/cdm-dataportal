@@ -1628,7 +1628,16 @@ function path_to_taxon($uuid, $page_tab = FALSE) {
  */
 function uri_to_synonym($synonymUuid, $acceptedUuid) {
   $acceptedPath = path_to_taxon($acceptedUuid, "synonymy");
-  return url($acceptedPath, array('query' => array('highlite' => $synonymUuid)));
+  return url($acceptedPath, array(
+      'query' => array(
+        // highlite the synony in the synonymy
+        'highlite' => $synonymUuid,
+        // the taxon page is refered from a synonym and the synonym can optionally be named in the page title
+        // see theme_taxon_page_title()
+        'acceptedFor' => $synonymUuid
+      )
+  ));
+
 }
 
 /**

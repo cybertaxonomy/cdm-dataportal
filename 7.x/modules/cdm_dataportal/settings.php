@@ -1435,8 +1435,6 @@ function cdm_settings_layout_media() {
   $form_title = 'Standard viewer';
   $form_description = '<p>Configure the standard image viewer.</p><p><strong>Note:</strong> the image viewer should selected otherwise settings are not taking into account.</p>';
   // $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
-  // Comment @WA: $collapsed is not defined.
-  // $form['media_settings'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
   $form['media_settings'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, FALSE, $form_description);
 
   // @WA: D7 form api does not support reset buttons,
