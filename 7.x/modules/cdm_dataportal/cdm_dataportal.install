@@ -57,6 +57,37 @@ function cdm_dataportal_update_7302() {
 }
 
 /**
+ * update for RELEASE 3.2.1:
+ *  - adding missing permissions for role CDM Admin
+ */
+function cdm_dataportal_update_7303() {
+  $role = user_role_load_by_name('CDM admin');
+  if(!$role){
+    return "Role CDM admin not found, so the update is skipped.";
+  }
+  $new_permissions = array(
+      'access extlinks content',
+      'administer extlinks',
+      'create url aliases',
+      'delete any article content',
+      'delete any page content',
+      'delete own article content',
+      'delete own page content',
+      'delete revisions',
+      'flush caches',
+      'revert revisions',
+      'use text format full_html',
+      'view own unpublished content'
+  );
+  user_role_grant_permissions($role->rid, $new_permissions);
+
+  return "adding missing permissions for role CDM Admin";
+}
+
+
+
+
+/**
  * Renames a persistent variable.
  *
  * @return

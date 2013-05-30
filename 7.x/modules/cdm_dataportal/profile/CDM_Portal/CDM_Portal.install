@@ -231,39 +231,45 @@ function CDM_Portal_install() {
   // This because user_role_grant_permissions() will create the permission in the role_permision table if it does not
   // exist, and for that it needs to find a module that defines the permission (there is a module column in this table).
   $permissions = array(
-    // Roles same as in D5 portals.
     'access administration menu',
+    'access administration pages',
+    'access content',
+    'access content overview',
+    'access extlinks content',
+    'access site in maintenance mode',
     'administer blocks',
     'administer cdm_dataportal',
+    'administer content types',
+    'administer extlinks',
+    'administer menu',
+    'administer nodes',
+    'administer site configuration',
+    'administer themes',
+    'administer users',
+    'bypass node access',
     'cdm_dataportal view notes',
-    // @comment WA: Devel and IMCE modules are not required modules in this profile.
+    'create article content',
+    'create page content',
+    'create url aliases',
+    'delete any article content',
+    'delete any page content',
+    'delete own article content',
+    'delete own page content',
+    'delete revisions',
+    'edit any article content',
+    'edit any page content',
+    'edit own article content',
+    'edit own page content',
+    'flush caches',
+    'revert revisions',
+    'use text format full_html',
+    'view own unpublished content',
+    'view revisions',
+    'view the administration theme'
+    // Devel and IMCE modules are not yet required modules in this profile.
     // 'access devel information',
     // 'access imce',
     // 'administer imce',
-    'administer menu',
-    'access content',
-    'administer content types',
-    'administer nodes',
-    'create page content',
-    'edit own page content',
-    'view revisions',
-    'access administration pages',
-    'administer site configuration',
-    'administer users',
-
-    // Roles as in D5 but with different name.
-    'edit any page content',
-    'edit any article content',
-    'create article content',
-    'edit own article content',
-    'administer themes',
-
-    // New roles for D7.
-    'access content overview',
-    'access site in maintenance mode',
-    'bypass node access',
-    'view the administration theme',
-    // 'use text format 3',
   );
   user_role_grant_permissions($admin_role->rid, $permissions);
 
