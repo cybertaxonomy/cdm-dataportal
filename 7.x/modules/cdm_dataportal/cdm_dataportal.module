@@ -1623,8 +1623,20 @@ function path_to_taxon($uuid, $page_tab = FALSE) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates a URL to show a synonmy in the according taxon page.
+ *
+ * The URL will point to the synonymy tab of the taxon page of the accepted taxon given as parameter $acceptedUuid.
+ * The resulting URI will include query parameters to highlight the synonym, and to optionally display
+ * the accepted taxons name in aform like "Foo bar is accepted taxon for Ree doo". The URI will also
+ * include the sysnonym uuid as fragment in order to let the browser scroll to the according location
+ * in the page
+ *
+ * @param string $synonymUuid
+ *    The uuid of the synonym
+ * @param string $acceptedUuid
+ *    The uuid of the according accepted taxon
+ * @return string
+ *    The URL to show a synonmy in the according taxon page
  */
 function uri_to_synonym($synonymUuid, $acceptedUuid) {
   $acceptedPath = path_to_taxon($acceptedUuid, "synonymy");
@@ -1635,7 +1647,8 @@ function uri_to_synonym($synonymUuid, $acceptedUuid) {
         // the taxon page is refered from a synonym and the synonym can optionally be named in the page title
         // see theme_taxon_page_title()
         'acceptedFor' => $synonymUuid
-      )
+      ),
+      'fragment' => $synonymUuid
   ));
 
 }
