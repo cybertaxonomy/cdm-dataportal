@@ -137,28 +137,30 @@ function theme_cdm_taxonRelationships($variables) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_acceptedFor() {
+function theme_cdm_acceptedFor($variables) {
+  $accepted_for_uuid = $variables['acceptedFor'];
+
+  if(!is_uuid($accepted_for_uuid)){
+    return '';
+  }
+
   RenderHints::pushToRenderStack('acceptedFor');
-
   $out = '';
-  if (isset($_REQUEST['acceptedFor'])) {
 
-    $synonym = cdm_ws_get(CDM_WS_PORTAL_TAXON, $_REQUEST['acceptedFor']);
-
-    if ($synonym) {
-      $out .= '<span class="acceptedFor">';
-      $out .= t('is accepted for ');
-      if (isset($synonym->name->nomenclaturalReference)) {
-        $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
-      }
-      $out .= theme('cdm_taxonName', array(
-        'taxonName' => $synonym->name,
-        'nameLink' => NULL,
-        'refenceLink' => $referenceUri,
-        ));
-      $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $synonym));
-      $out .= '</span>';
+  $synonym = cdm_ws_get(CDM_WS_PORTAL_TAXON, $accepted_for_uuid);
+  if ($synonym) {
+    $out .= '<span class="acceptedFor">';
+    $out .= t('is accepted for ');
+    if (isset($synonym->name->nomenclaturalReference)) {
+      $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
     }
+    $out .= theme('cdm_taxonName', array(
+      'taxonName' => $synonym->name,
+      'nameLink' => NULL,
+      'refenceLink' => $referenceUri,
+      ));
+    $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $synonym));
+    $out .= '</span>';
   }
   RenderHints::popFromRenderStack();
   return $out;

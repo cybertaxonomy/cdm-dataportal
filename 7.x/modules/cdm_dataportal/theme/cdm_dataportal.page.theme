@@ -147,8 +147,8 @@ function theme_cdm_taxon_page($variables) {
 
   $render_array['back_to_search'] = markup_to_render_array(theme('cdm_back_to_search_result_button'), $weight++);
 
-  if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR)) {
-    $render_array['accepted_for'] = theme('cdm_acceptedFor', 'page_general');
+  if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR) && isset($_REQUEST['acceptedFor'])) {
+      $render_array['accepted_for'] = markup_to_render_array(theme('cdm_acceptedFor', array('acceptedFor' => $_REQUEST['acceptedFor'])), $weight++);
   }
 
   // --- PAGE PART: DESCRIPTION --- //
