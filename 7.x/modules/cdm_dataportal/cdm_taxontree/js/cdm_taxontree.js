@@ -195,7 +195,7 @@ jQuery.fn.cdm_taxontree.defaults = { // Set up default options.
 // ====================================================================================== //
 
 /**
- * jQuery function wich implements the Magicbox behavior for the taxontree.
+ * jQuery function which implements the Magicbox behavior for the taxontree.
  * A Magicbox the container of the taxon tree will extend on mouse over
  * events in order to show the entrys without truncation through cropping.
  */
