@@ -2046,14 +2046,11 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
  * @return unknown
  */
 function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NULL) {
-  // Comment @WA: undefined variable.
-  /*
-   static $annotations_types_filter;
+
+   static $annotations_types_filter = null;
    if(!$annotations_types_filter) {
-   unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT);
+     $annotations_types_filter = unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT);
    }
-   */
-  unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT);
 
   $footNoteKeys = array();
 
@@ -2075,7 +2072,6 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
   }
 
   // Adding the footnotes keys.
-  $annotations_types_filter = unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT);
   foreach ($cdmBase_array as $cdmBase_element) {
     $annotations = cdm_ws_getAnnotationsFor($cdmBase_element, variable_get('annotations_types_as_footnotes', $annotations_types_filter));
     if (is_array($annotations)) {
