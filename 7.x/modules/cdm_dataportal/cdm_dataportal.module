@@ -1966,8 +1966,8 @@ function cdm_read_media_metadata($media) {
   }
 
   // Artist.
-  if ($media_metadata->Artist) {
-    $metadata_caption['artist'] = ($media_metadata->Artist ? '' . $media_metadata->Artist : '');
+  if (!empty($media_metadata->Artist)) {
+    $metadata_caption['artist'] = '' . $media_metadata->Artist;
   }
   elseif (!empty($media->artist->titleCache)) {
     $metadata_caption['artist'] = $media->artist->titleCache;
