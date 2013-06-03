@@ -146,7 +146,7 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
   // moving logo and favicon setting also into this field set
   $form['zen_dataportal_images']['logo'] = $form['logo'];
   unset($form['logo']);
-  $form['zen_dataportal_images']['logo'] = $form['favicon'];
+  $form['zen_dataportal_images']['favicon'] = $form['favicon'];
   unset($form['favicon']);
   // custom images for banner, body and page backgrounds
   //
