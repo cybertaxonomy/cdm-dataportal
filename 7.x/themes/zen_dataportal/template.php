@@ -169,6 +169,11 @@ function _add_inline_styles(&$variables) {
   if(theme_get_setting('site-name_color')) {
       $variables['inline_styles'][] = '#site-name a span {color:' . check_plain(theme_get_setting('site-name_color')) . ';}';
   }
+  // main-menu_color
+  if(theme_get_setting('main-menu_color')) {
+    $variables['inline_styles'][] = '#main-menu a:link, #main-menu a:visited, #main-menu a.active:link {color:' . check_plain(theme_get_setting('main-menu_color')) . ';} ';
+    $variables['inline_styles'][] = '#navigation #main-menu ul.links li {border-color:' . check_plain(theme_get_setting('main-menu_color')) . ';}';
+  }
   if(theme_get_setting('main-menu_background-color')) {
     if(theme_get_setting('main-menu_background-color-2')) {
       // with gradient
@@ -191,6 +196,10 @@ function _add_inline_styles(&$variables) {
     $logo_size = theme_get_setting('logo_size');
     $variables['inline_styles'][] = '#header {background-position:' . $logo_size['width'] . 'px 0;}';
     $variables['inline_styles'][] = '#main-menu, #sub-header {padding-left:' . $logo_size['width'] . 'px;}';
+  }
+  // as last styles the user_defined_styles which can be entered into a text field
+  if(theme_get_setting('user_defined_styles')) {
+    $variables['inline_styles'][] = check_plain(theme_get_setting('user_defined_styles'));
   }
 }
 
@@ -238,11 +247,13 @@ function zen_dataportal_preprocess_html(&$variables, $hook) {
  */
 function zen_dataportal_preprocess_page(&$variables, $hook) {
 
+  // site_name_position can be 'hidden', 'above_banner', or 'below_banner'
   $variables['site_name_position'] = 'above_banner';
   if(theme_get_setting('site_name_position')) {
     $variables['site_name_position'] = check_plain(theme_get_setting('site_name_position'));
   }
-  $variables['header_margin_bottom'] = 'above_banner';
+  // header_margin_bottom value can be any css length measurement
+  $variables['header_margin_bottom'] = '0';
   if(theme_get_setting('header_margin_bottom')) {
     $variables['header_margin_bottom'] = check_plain(theme_get_setting('header_margin_bottom'));
   }

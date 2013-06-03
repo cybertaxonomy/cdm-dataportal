@@ -44,16 +44,20 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
   if(variable_get('preprocess_css', 0) !== 1) {
     $browser_compatibility_issues[] = 'The '
         . l(t('Aggregate and compress CSS files'), 'admin/config/development/performance', array('fragment'=>'edit-preprocess-css'))
-        . ' option must be turned on. ' . variable_get('preprocess_css', 0);
+        . ' option must be turned on.';
   }
   if(count($browser_compatibility_issues) > 0 ){
     drupal_set_message('<strong>Browser compatibility problems:</strong><ul><li>' . join('</li><li>', $browser_compatibility_issues) .
       '</li></ul>The theme will not be rendered correctly in InternetExplorer 8, 7 or 6 until these problems are solved.', 'error');
   }
 
+  // the 'Toggle display' setting on top
+  $form['theme_settings']['#weight'] = -11;
+
   // will be available in the page.tpl.php
    $form['zen_dataportal_misc'] = array(
           '#type' => 'fieldset',
+          '#weight' => -10,
           '#title' => t('Miscellaneous settings'),
           '#description' => t('Miscellaneous settings for the DataPoral Zen theme.')
   );
@@ -75,24 +79,32 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
       '#title'         => t('Header margin at bottom'),
       '#default_value' => theme_get_setting('header_margin_bottom'),
       '#disabled'      => theme_get_setting('site_name_position') == 'below_banner',
-      '#description'   => t('This margin instroduces space between the header and the main menu. This setting not applies if @site-name-pos" is set to "@below-banner'
-          . 'The entered value can be any css length measurement. It is a <number> immediately followed by a length unit (px, em, pc, in, mm, …). See @link for more information',
+      '#description'   => t('This margin instroduces space between the header and the main menu. This setting not applies if !site-name-pos is set to !below-banner '
+          . 'The entered value can be any css length measurement. It is a <number> immediately followed by a length unit (px, em, pc, in, mm, …). See !link for more information',
             array(
-                '@site-name-pos' => '<b>' . t('Site name posistion') . '</b>',
-                '@below-banner' => '<b>' . t('Below banner') . '</b>',
-                '@link' => l('https://developer.mozilla.org/en-US/docs/CSS/length', 'https://developer.mozilla.org/en-US/docs/CSS/length'),
+                '!site-name-pos' => '<b> '. t('Site name posistion') . '</b>',
+                '!below-banner' =>  '<b> '. t('Below banner') . '</b>',
+                '!link' => l('https://developer.mozilla.org/en-US/docs/CSS/length', 'https://developer.mozilla.org/en-US/docs/CSS/length'),
              )
           ),
   );
 
-  // TODO : site-name shadow: text-shadow: black 0 10px 20px, black 0 5px
+  $form['zen_dataportal_misc']['user_defined_styles'] = array(
+      '#type'          => 'textarea',
+      '#title'         => t('User defined styles'),
+      '#default_value' => theme_get_setting('user_defined_styles'),
+      '#description'   => t('Add any additional css style to overrride presets and customize the layout of your portal.')
+  );
 
+
+  // TODO : site-name shadow: text-shadow: black 0 10px 20px, black 0 5px
   drupal_add_css($path_to_theme . '/js/colorpicker/css/colorpicker.css', 'file');
   drupal_add_js($path_to_theme. '/js/colorpicker/js/colorpicker.js', 'file');
   drupal_add_js($path_to_theme . '/js/settings-ui.js', 'file');
   $form['zen_dataportal_colors'] = array(
           '#type' => 'fieldset',
           '#title' => t('Colors'),
+          '#weight' => -9,
           '#description' => t('Configure colors where.'),
           '#attributes' => array('class' => array('theme-settings-bottom')),
   );
@@ -102,14 +114,20 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
       t('The color of the site name which is shown in the header.')
   );
   zen_dataportal_form_widget_color(
+  $form['zen_dataportal_colors'],
+  'main-menu_color',
+  t('The font color of the main menu.')
+  );
+
+  zen_dataportal_form_widget_color(
       $form['zen_dataportal_colors'],
       'main-menu_background-color',
-      t('The color of the menu background.')
+      t('The color of the main menu background.')
   );
   zen_dataportal_form_widget_color(
       $form['zen_dataportal_colors'],
       'main-menu_background-color-2',
-      t('The second color of the menu background. If this is also set the menu background will have a grandiend.')
+      t('The second color of the main menu background. If this is also set the menu background will have a grandiend.')
   );
   zen_dataportal_form_widget_color(
       $form['zen_dataportal_colors'],
@@ -118,11 +136,23 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
   );
 
 
-  //
+  // all image related settings in one section:
+  $form['zen_dataportal_images'] =  array(
+          '#type' => 'fieldset',
+          '#weight' => -8,
+          '#title' => t('Images and Icons'),
+          '#description' => t('In this section you can define cutom banners, logos, and background images.')
+  );
+  // moving logo and favicon setting also into this field set
+  $form['zen_dataportal_images']['logo'] = $form['logo'];
+  unset($form['logo']);
+  $form['zen_dataportal_images']['logo'] = $form['favicon'];
+  unset($form['favicon']);
   // custom images for banner, body and page backgrounds
   //
+  $weight = 0;
   foreach(_zen_dataportal_imagenames() as $which_image) {
-    zen_dataportal_form_widget_image($form, $which_image);
+    zen_dataportal_form_widget_image($form['zen_dataportal_images'], $which_image, $weight++);
   }
 
 
@@ -189,7 +219,7 @@ function zen_dataportal_theme_settings_validate($form, &$form_state) {
  *   Nested array of form elements that comprise the form.
  * @param unknown_type $which_image
  */
-function zen_dataportal_form_widget_image(&$form, $which_image){
+function zen_dataportal_form_widget_image(&$form, $which_image, $weight = NULL){
   $label = str_replace('_', ' ', $which_image);
   $form['zen_dataportal_' .  $which_image] = array(
           '#type' => 'fieldset',
@@ -197,6 +227,9 @@ function zen_dataportal_form_widget_image(&$form, $which_image){
           '#description' => t('If toggled on, the following image will be displayed.'),
           '#attributes' => array('class' => array('theme-settings-bottom')),
   );
+  if($weight){
+    $form['zen_dataportal_' .  $which_image]['#weight'] = $weight;
+  }
   $form['zen_dataportal_' .  $which_image]['default_' . $which_image] = array(
           '#type' => 'checkbox',
           '#title' => t('Use the default') . t($which_image),
