@@ -418,8 +418,11 @@ div.cdm_media_viewer_image {
   display: none;
 }
 
+.image-passe-partout{
+  border: 0px none;
+  background-color: #eee;
+}
 
-.image-passe-partout,
 .image_viewer {
   border: 1px solid;
   background-color: #eee;
