@@ -8,7 +8,9 @@
 @import "base";
 
 
-.block, .node, #backButton { /* style links only for content in blocks and node and backbutton */
+/*  style links only for content in blocks and node and backbutton 
+    added also #identificationKey since there are not yet drupal nodes */
+.block, .node, #backButton, #identificationKey { 
   @include cdm-link-style;
 }
 
