@@ -180,6 +180,9 @@ function CDM_Portal_install() {
   variable_set('site_slogan', '');
   variable_set('cdm_dataportal_geoservice_display_width', '600');
 
+  // >>> admin/config/development/logging
+  //    Error messages to display: Errors and warnings
+  variable_set('error_level', '1');
 
   // >>> admin/structure/types/manage/*
   //    Display author and date information: [off]
