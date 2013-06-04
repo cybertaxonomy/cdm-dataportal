@@ -634,6 +634,7 @@ function theme_cdm_media_gallerie_application($variables) {
   $maxExtend = $variables['maxExtend'];
   $addPassePartout = $variables['addPassePartout'];
   $attributes = $variables['attributes'];
+  $out = '';
   if (isset($mediaRepresentationPart)) {
 
     if ($addPassePartout) {
