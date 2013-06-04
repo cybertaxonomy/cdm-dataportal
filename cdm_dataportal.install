@@ -86,20 +86,20 @@ function cdm_dataportal_update_7303() {
   }
 
   if(module_exists('extlinks')){
-    $new_permissions = array(
+    $extlinks_permissions = array(
         'access extlinks content',
         'administer extlinks',
     );
-    user_role_grant_permissions($role->rid, $new_permissions);
+    user_role_grant_permissions($role->rid, $extlinks_permissions);
     $tasks_performed[] = 'permissions for extlinks';
   }
 
   foreach (filter_formats() as $key=>$format){
     if($key == 'full_html' || $format->format == "Full HTML"){
-      $new_permissions = array(
+      $formats_permissions = array(
           'use text format full_html'
       );
-      user_role_grant_permissions($role->rid, $new_permissions);
+      user_role_grant_permissions($role->rid, $formats_permissions);
       $tasks_performed[] = 'use text format full_html';
     }
   }
@@ -107,17 +107,16 @@ function cdm_dataportal_update_7303() {
   // assure  'create url aliases' can be set
   if(!module_exists('path')){
     module_enable(array('path'), TRUE);
-    user_role_grant_permissions($role->rid, $new_permissions);
     $tasks_performed[] = 'module path enabled';
   }
-  $new_permissions = array(
+  $other_permissions = array(
       'create url aliases',
       'delete revisions',
       'revert revisions',
       'view own unpublished content',
       'flush caches'
   );
-  user_role_grant_permissions($role->rid, $new_permissions);
+  user_role_grant_permissions($role->rid, $other_permissions);
   $tasks_performed[] = 'and other permissions';
 
   return "adding missing permissions for role CDM Admin: " . join(', ', $tasks_performed);
