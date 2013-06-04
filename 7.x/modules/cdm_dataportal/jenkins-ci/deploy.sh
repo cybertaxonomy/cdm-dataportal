@@ -14,14 +14,28 @@ fi
 VERSION=$1
 
 # $WORKSPACE is an environment variable set by jenkins
-if [ -n "$WORKSPACE" ]; then
-	cd $WORKSPACE
+if [ -z "$WORKSPACE" ]; then
+  echo "ERROR: environment variable WORKSPACE should be set by jenkins but is missing."
+  exit -1
 fi
 
 # check if tag exists
 set +e # turn of "exit script on failure", since we expect that svn tags may not always exist
 TAG_EXISTS=(`svn info http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION 2> /dev/null | grep URL`)
 set -e # turn on again "exit script on failure"
+
+#
+# compile the sass files to css in the zen_dataportal theme
+# this will create the versions needed for production
+#
+if [ -x "$COMPASS" ]; then  
+  $COMPASS clean $WORKSPACE/themes/zen_dataportal/
+  $COMPASS compile $WORKSPACE/themes/zen_dataportal/
+  svn --username=$SVN_USER ci -m "sass compiled for production purposes prior release"
+else 
+  echo "ERROR on sass compilation since the evnvironment variable COMPASS is either missing or not the file "$COMPASS" is not executable"
+  exit 1
+fi 
 
 if [ -z "$TAG_EXISTS" ]; then
 	# it is a new version number ...
@@ -35,6 +49,11 @@ if [ -z "$TAG_EXISTS" ]; then
 	svn --username=$SVN_USER copy -m "branch for drupal themes $VERSION" http://dev.e-taxonomy.eu/svn/tags/drupal/themes/$VERSION http://dev.e-taxonomy.eu/svn/branches/drupal/themes-RELEASE-$VERSION
 fi
 
+
+#
+# pack and deploy the cdm_dataportal module
+#
+cd $WORKSPACE/cdm_dataportal
 #create the target folder
 if [ ! -d target ]; then
 	mkdir target
