@@ -24,21 +24,23 @@ set +e # turn of "exit script on failure", since we expect that svn tags may not
 TAG_EXISTS=(`svn info http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION 2> /dev/null | grep URL`)
 set -e # turn on again "exit script on failure"
 
-#
-# compile the sass files to css in the zen_dataportal theme
-# this will create the versions needed for production
-#
-if [ -x "$COMPASS" ]; then  
-  $COMPASS clean $WORKSPACE/themes/zen_dataportal/
-  $COMPASS compile $WORKSPACE/themes/zen_dataportal/
-  svn --username=$SVN_USER ci -m "sass compiled for production purposes prior release"
-else 
-  echo "ERROR on sass compilation since the evnvironment variable COMPASS is either missing or not the file "$COMPASS" is not executable"
-  exit 1
-fi 
+
 
 if [ -z "$TAG_EXISTS" ]; then
 	# it is a new version number ...
+
+  #
+  # compile the sass files to css in the zen_dataportal theme
+  # this will create the versions needed for production
+  #
+  if [ -x "$COMPASS" ]; then  
+    $COMPASS clean $WORKSPACE/themes/zen_dataportal/
+    $COMPASS compile $WORKSPACE/themes/zen_dataportal/
+    svn --username=$SVN_USER ci -m "sass compiled for production purposes prior release"
+  else 
+    echo "ERROR on sass compilation since the evnvironment variable COMPASS is either missing or not the file "$COMPASS" is not executable"
+    exit 1
+  fi
 
 	# create release tag and branch for the module
 	svn --username=$SVN_USER copy -m "release tag for cdm_dataportal $VERSION" http://dev.e-taxonomy.eu/svn/trunk/drupal/${DRUPAL_VERSION}.x/modules/cdm_dataportal http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION
