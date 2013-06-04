@@ -65,23 +65,62 @@ function cdm_dataportal_update_7303() {
   if(!$role){
     return "Role CDM admin not found, so the update is skipped.";
   }
+
+  $tasks_performed = array();
+
+  // permissions for node types
+  $node_type_names = node_type_get_names();
+  $types_to_update = array('page', 'story', 'article');
+  foreach ($types_to_update as $name){
+    if(in_array($name, $node_type_names)) {
+      $node_type_permissions = array(
+          'create ' . $name . ' content',
+          'edit any ' . $name . ' content',
+          'edit own ' . $name . ' content',
+          'delete any ' . $name . ' content',
+          'delete own ' . $name . ' content',
+      );
+      user_role_grant_permissions($role->rid, $node_type_permissions);
+      $tasks_performed[] = "node type " . $name;
+    }
+  }
+
+  if(module_exists('extlinks')){
+    $new_permissions = array(
+        'access extlinks content',
+        'administer extlinks',
+    );
+    user_role_grant_permissions($role->rid, $new_permissions);
+    $tasks_performed[] = 'permissions for extlinks';
+  }
+
+  foreach (filter_formats() as $key=>$format){
+    if($key == 'full_html' || $format->format == "Full HTML"){
+      $new_permissions = array(
+          'use text format full_html'
+      );
+      user_role_grant_permissions($role->rid, $new_permissions);
+      $tasks_performed[] = 'use text format full_html';
+    }
+  }
+
+  // assure  'create url aliases' can be set
+  if(!module_exists('path')){
+    module_enable(array('path'), TRUE);
+    user_role_grant_permissions($role->rid, $new_permissions);
+    $tasks_performed[] = 'module path enabled';
+  }
   $new_permissions = array(
-      'access extlinks content',
-      'administer extlinks',
       'create url aliases',
-      'delete any article content',
-      'delete any page content',
-      'delete own article content',
-      'delete own page content',
       'delete revisions',
-      'flush caches',
       'revert revisions',
-      'use text format full_html',
-      'view own unpublished content'
+      'view own unpublished content',
+      'flush caches'
   );
   user_role_grant_permissions($role->rid, $new_permissions);
+  $tasks_performed[] = 'and other permissions';
 
-  return "adding missing permissions for role CDM Admin";
+  return "adding missing permissions for role CDM Admin: " . join(', ', $tasks_performed);
 }
 
 
