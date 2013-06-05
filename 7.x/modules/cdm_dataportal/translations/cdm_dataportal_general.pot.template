@@ -1103,10 +1103,6 @@ msgstr ""
 msgid "No 'FeatureTree' has been set so far.\n      In order to see the species profiles of your taxa, please select a\n      'FeatureTree' in the !settings"
 msgstr ""
 
-#: cdm_api/cdm_api.module:1422
-msgid "_http_request_curl() - !curl_error; REQUEST-METHOD:!method URL: !url"
-msgstr ""
-
 #: cdm_api/cdm_api.module:1503
 msgid "Default Featuretree (contains all features)"
 msgstr ""
@@ -1129,14 +1125,6 @@ msgstr ""
 
 #: (duplicate) cdm_api/cdm_api.install:124  cdm_api/cdm_api.info:0
 msgid "CDM API"
-msgstr ""
-
-#: (duplicate) cdm_api/cdm_api.install:130 
-msgid "\n      CURL php extension is available and will be used by the CDM API.\n      HTTP requests thus will be up to 20x faster."
-msgstr ""
-
-#: (duplicate) cdm_api/cdm_api.install:136 
-msgid "CURL php extension is missing. If\n      CURL lib is installed HTTP requests will be up to 20x faster."
 msgstr ""
 
 #: cdm_api/cdm_api.info:0

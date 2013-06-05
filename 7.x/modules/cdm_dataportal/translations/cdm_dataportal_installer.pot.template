@@ -20,16 +20,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: (duplicate) cdm_api/cdm_api.install:124 
+#: (duplicate) cdm_api/cdm_api.install:124
 msgid "CDM API"
-msgstr ""
-
-#: (duplicate) cdm_api/cdm_api.install:130 
-msgid "\n      CURL php extension is available and will be used by the CDM API.\n      HTTP requests thus will be up to 20x faster."
-msgstr ""
-
-#: (duplicate) cdm_api/cdm_api.install:136 
-msgid "CURL php extension is missing. If\n      CURL lib is installed HTTP requests will be up to 20x faster."
 msgstr ""
 
 #: profile/CDM_Portal/CDM_Portal.profile:14 profile/CDM_Portal_Testing/CDM_Portal_Testing.profile:14

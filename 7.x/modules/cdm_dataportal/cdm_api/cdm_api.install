@@ -103,12 +103,6 @@ function cdm_api_update_7000() {
   db_create_table('cache_cdm_ws', $schema['cache_cdm_ws']);
 }
 
-/*
-Comment @WA: fix is obsolete in Drupal 7.
-function _get_sql_fix_watchdog() {
-  return "ALTER TABLE {watchdog} CHANGE referer referer TEXT NOT NULL ;";
-}
-*/
 
 /**
  * Implements hook_requirements().
@@ -118,28 +112,9 @@ function _get_sql_fix_watchdog() {
  * of the module if a critical requirement is missing.
  */
 function cdm_api_requirements() {
-  // t() Is not yet available in installation phase, so we use get_t instead.
-  $t = get_t();
   $requirements['cdm_api'] = array(
-    'title' => $t('CDM API'),
+    'title' => 'CDM API'
   );
-
-  if (function_exists('curl_init')) {
-    // Description below title is not yet in use.
-    $requirements['cdm_api']['description'] = '';
-    $requirements['cdm_api']['value'] = $t('
-      CURL php extension is available and will be used by the CDM API.
-      HTTP requests thus will be up to 20x faster.'
-    );
-  }
-  else {
-    $requirements['cdm_api']['value'] = $t('CURL php extension is missing. If
-      CURL lib is installed HTTP requests will be up to 20x faster.');
-  }
-
-  // FIXME: once _get_content_fsockopen is implemented change severity to
-  // REQUIREMENT_WARNING.
-  $requirements['cdm_api']['severity'] = (function_exists('curl_init') ? REQUIREMENT_OK : REQUIREMENT_INFO);
 
   return $requirements;
 }
