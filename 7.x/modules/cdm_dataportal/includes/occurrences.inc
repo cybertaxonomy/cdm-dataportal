@@ -38,6 +38,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
   if (!isset($exclude_occurrence_fields)) {
      $exclude_occurrence_fields = array(
         'derivationEvents',
+        'extensions', // TODO ignored for now, how to handle extensions?
         'titleCache',
         'protectedTitleCache',
         'derivedUnitMedia',
@@ -107,15 +108,14 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
 
-            case 'annotations':
-              $dd_elements = array();
-              foreach ($value as $annotation) {
-                // TODO respect annotation type filter settings
-                $dd_elements[] = $annotation->text;
-              }
-              @_description_list_group_add($groups, t('Notes'), $dd_elements);
-              break;
-
+          case 'annotations':
+            $dd_elements = array();
+            foreach ($value as $annotation) {
+              // TODO respect annotation type filter settings
+              $dd_elements[] = $annotation->text;
+            }
+            @_description_list_group_add($groups, t('Notes'), $dd_elements);
+            break;
 
           /* ---- SpecimenOrObservationBase --- */
           case 'sex':
@@ -254,7 +254,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('collector'), $value->actor->titleCache);
             @_description_list_group_add($groups, t('Gathering time'), timePeriodToString($value->timeperiod));
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('description'), $value->description);
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality);
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality->text);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $value->absoluteElevation, ' m');
