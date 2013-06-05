@@ -680,6 +680,7 @@ function proxy_content($uri, $hook = NULL) {
     $post_data = implode(',', $post_data);
 
     // For testing.
+    // TODO use cdm_http_request(..) instead; ( CDM_HTTP_REQUEST_TIMEOUT is already set in there )
     $data = drupal_http_request($uri, array('headers' => "POST", 'method' => $post_data, 'timeout' => CDM_HTTP_REQUEST_TIMEOUT));
     // print $data;
   } else {
@@ -690,7 +691,7 @@ function proxy_content($uri, $hook = NULL) {
     if (empty($hook)) {
       // simply return the webservice response
       // Print out JSON, the cache cannot be used since it contains objects.
-      $http_response = drupal_http_request($uri, array('timeout' => CDM_HTTP_REQUEST_TIMEOUT));
+      $http_response = cdm_http_request($uri);
       if (isset($http_response->headers)) {
         foreach ($http_response->headers as $hname => $hvalue) {
           drupal_add_http_header($hname, $hvalue);
@@ -698,8 +699,9 @@ function proxy_content($uri, $hook = NULL) {
       }
       if (isset($http_response->data)) {
         print $http_response->data;
+        flush();
       }
-      exit();
+      exit(); // leave drupal here
     } else {
       // $hook has been supplied
       // handle $hook either as compose ot theme hook
@@ -716,6 +718,7 @@ function proxy_content($uri, $hook = NULL) {
       }
 
       $obj = cdm_ws_get($uri, NULL, NULL, NULL, TRUE);
+
       $theme_result = NULL;
 
       if (function_exists('compose_' . $hook)){
@@ -767,7 +770,12 @@ function proxy_content($uri, $hook = NULL) {
             break;
         } // END of theme hook switch
       } // END of tread as theme hook
-      print $theme_result;
+
+      $compressed = gzencode($theme_result, 2, FORCE_GZIP);
+      drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
+      drupal_add_http_header('Content-Length', strlen($compressed));
+      drupal_add_http_header('Content-Encoding', 'gzip');
+      print $compressed;
     } // END of handle $hook either as compose ot theme hook
   }
 }
@@ -1408,9 +1416,12 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     //
     $time_get_start = microtime(TRUE);
     // Request data from webservice JSON or XML.
-    $datastr = cdm_http_request($uri, $method);
+    $response = cdm_http_request($uri, $method);
+    $datastr = NULL;
+    if (isset($response->data)) {
+      $datastr = $response->data;
+    }
     $time_get = microtime(TRUE) - $time_get_start;
-
     $time_parse_start = microtime(TRUE);
 
     // Parse data and create object.
@@ -1529,7 +1540,7 @@ function cdm_load_obj($datastr) {
 }
 
 /**
- * Do a http request to a CDM webservice.
+ * Do a http request to a CDM RESTful web service.
  *
  * @param string $uri
  *   The webservice url.
@@ -1541,10 +1552,26 @@ function cdm_load_obj($datastr) {
  * @param array $header
  *   The header to include in the request.
  *
- * @return
- *   The response data from the request.
+ * @return object
+ *   The object as returned by drupal_http_request():
+ *   An object that can have one or more of the following components:
+ *   - request: A string containing the request body that was sent.
+ *   - code: An integer containing the response status code, or the error code
+ *     if an error occurred.
+ *   - protocol: The response protocol (e.g. HTTP/1.1 or HTTP/1.0).
+ *   - status_message: The status message from the response, if a response was
+ *     received.
+ *   - redirect_code: If redirected, an integer containing the initial response
+ *     status code.
+ *   - redirect_url: If redirected, a string containing the URL of the redirect
+ *     target.
+ *   - error: If an error occurred, the error message. Otherwise not set.
+ *   - headers: An array containing the response headers as name/value pairs.
+ *     HTTP header names are case-insensitive (RFC 2616, section 4.2), so for
+ *     easy access the array keys are returned in lower case.
+ *   - data: A string containing the response body that was received.
  */
-function cdm_http_request($uri, $method = "GET", $parameters = array(), $header = array()) {
+function cdm_http_request($uri, $method = "GET", $parameters = array(), $header = array(), $options = NULL) {
   static $acceptLanguage = NULL;
 
   if (!$acceptLanguage) {
@@ -1570,10 +1597,12 @@ function cdm_http_request($uri, $method = "GET", $parameters = array(), $header 
     $header['Accept-Charset'] = 'UTF-8';
   }
 
-  $response = drupal_http_request($uri, array('headers' => $header, 'method' => $method, 'timeout' => CDM_HTTP_REQUEST_TIMEOUT));
-  if (isset($response->data)) {
-      return $response->data;
-  }
+  return drupal_http_request($uri, array(
+      'headers' => $header,
+      'method' => $method,
+      'timeout' => CDM_HTTP_REQUEST_TIMEOUT
+      )
+   );
 }
 
 /**

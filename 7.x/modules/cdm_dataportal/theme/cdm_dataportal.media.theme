@@ -31,8 +31,11 @@ function media_content_type_dir($media_representation, $default = FALSE) {
  * @see http://drupal.org/node/1354
  */
 function getimagesize_remote($image_url) {
-  $contents = cdm_http_request($image_url);
-  if (!$contents) {
+  $response = cdm_http_request($image_url);
+  $contents = NULL;
+  if (isset($response->data)) {
+    $contents = $response->data;
+  } else {
     return FALSE;
   }
 
