@@ -653,7 +653,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
  */
 function proxy_content($uri, $hook = NULL) {
   $args = func_get_args();
-
+  $do_gzip = function_exists('gzencode');
   $uriEncoded = array_shift($args);
   $uri = urldecode($uriEncoded);
   $hook = array_shift($args);
@@ -719,14 +719,14 @@ function proxy_content($uri, $hook = NULL) {
 
       $obj = cdm_ws_get($uri, NULL, NULL, NULL, TRUE);
 
-      $theme_result = NULL;
+      $reponse_data = NULL;
 
       if (function_exists('compose_' . $hook)){
         // call compose hook
 
         $elements =  call_user_func('compose_' . $hook, $obj);
         // pass the render array to drupal_render()
-        $theme_result = drupal_render($elements);
+        $reponse_data = drupal_render($elements);
       } else {
         // call theme hook
 
@@ -741,7 +741,7 @@ function proxy_content($uri, $hook = NULL) {
               'tree_node_callback' => isset($args[2]) ? $args[2] : FALSE,
               'element_name'=> isset($args[3]) ? $args[3] : FALSE,
             );
-            $theme_result = theme($hook, $variables);
+            $reponse_data = theme($hook, $variables);
             break;
 
           case 'cdm_media_caption':
@@ -758,7 +758,7 @@ function proxy_content($uri, $hook = NULL) {
               ),
               'fileUri' => isset($args[1]) ? $args[1] : NULL,
             );
-            $theme_result = theme($hook, $variables);
+            $reponse_data = theme($hook, $variables);
             break;
 
           default:
@@ -770,12 +770,13 @@ function proxy_content($uri, $hook = NULL) {
             break;
         } // END of theme hook switch
       } // END of tread as theme hook
-
-      $compressed = gzencode($theme_result, 2, FORCE_GZIP);
+      if($do_gzip){
+        $reponse_data = gzencode($reponse_data, 2, FORCE_GZIP);
+        drupal_add_http_header('Content-Length', strlen($reponse_data));
+      }
       drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
-      drupal_add_http_header('Content-Length', strlen($compressed));
       drupal_add_http_header('Content-Encoding', 'gzip');
-      print $compressed;
+      print $reponse_data;
     } // END of handle $hook either as compose ot theme hook
   }
 }
