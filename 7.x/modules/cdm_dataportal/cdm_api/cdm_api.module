@@ -772,10 +772,10 @@ function proxy_content($uri, $hook = NULL) {
       } // END of tread as theme hook
       if($do_gzip){
         $reponse_data = gzencode($reponse_data, 2, FORCE_GZIP);
-        drupal_add_http_header('Content-Length', strlen($reponse_data));
+        drupal_add_http_header('Content-Encoding', 'gzip');
       }
       drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
-      drupal_add_http_header('Content-Encoding', 'gzip');
+      drupal_add_http_header('Content-Length', strlen($reponse_data));
       print $reponse_data;
     } // END of handle $hook either as compose ot theme hook
   }
