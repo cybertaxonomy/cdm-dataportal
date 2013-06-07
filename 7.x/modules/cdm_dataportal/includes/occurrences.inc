@@ -271,8 +271,8 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             if (isset($value->exactLocation)) {
               $sub_dl_groups = array();
               @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('errorRadius'), $value->exactLocation->errorRadius, ' m', 1);
-              @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('longitude'), $value->exactLocation->longitude, '°', 2);
-              @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('latitude'), $value->exactLocation->latitude, '°', 3);
+              @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('longitude'), round($value->exactLocation->longitude, 7), '°', 2);
+              @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('latitude'), round($value->exactLocation->latitude, 7), '°', 3);
               if (isset($value->exactLocation->referenceSystem)) {
                 @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('referenceSystem'), $value->exactLocation->referenceSystem->representation_L10n, '', 4);
               }
