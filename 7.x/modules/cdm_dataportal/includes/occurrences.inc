@@ -331,15 +331,19 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
     if (isset($derivedFrom)) {
       if (isset($derivedFrom->originals)) {
         $derived_from_label = t('derived');
+        $preposition = t('from');
         if(isset($derivedFrom->type)){
           $derived_from_label = $derivedFrom->type->representation_L10n;
+          if($derivedFrom->type->uuid == UUID_DERIVATIONEVENTTYPE_ACCESSIONING){
+            $preposition = t('of');
+          }
         }
         if (count($groups) > 0) {
           // TODO  annotations
 
           // only display the derived from information when the derivative has any element which will be diplayed
           $derivatives[] = array(
-              '#markup' => '<div>' . $derived_from_label . ' ' . t('from') . ': </div>',
+              '#markup' => '<div class="derived_from">' . $derived_from_label . ' ' . $preposition . ': </div>',
           );
         }
         foreach ($derivedFrom->originals as $original) {
