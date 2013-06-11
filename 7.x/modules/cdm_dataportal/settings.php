@@ -82,6 +82,7 @@ define('FEATURE_TREE_LAYOUT_DEFAULTS', serialize(
 define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
 define('CDM_DEFAULT_IMAGE_MAXEXTEND', 'cdm_default_image_maxextend');
 define('CDM_DEFAULT_IMAGE_MAXEXTEND_DEFAULT', 184);
+define('CDM_DEFAULT_REPLACEMENT_IMAGE', 'cdm_default_replacement_image');
 
 
 /**
@@ -974,6 +975,8 @@ function cdm_settings_layout_taxon() {
   $collapsed = FALSE;
   $form = array();
 
+  $form['#submit'][] = 'cdm_settings_layout_taxon_submit';
+
   $form['cdm_dataportal_show_back_to_search_results'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show <em>Back to search results</em> link at the taxon site.'),
@@ -1059,6 +1062,15 @@ function cdm_settings_layout_taxon() {
       '#maxlength' => 4,
       '#size' => 4,
       '#description' => t('The maximum extend in either dimension, width or height, of the profil picture in pixels.')
+  );
+
+  $form['taxon_profile']['picture'][CDM_DEFAULT_REPLACEMENT_IMAGE] = array(
+      '#type' => 'managed_file',
+      '#name' => CDM_DEFAULT_REPLACEMENT_IMAGE,
+      '#title' => t('Default image replcement'),
+      '#size' => 40,
+      '#description' => t("This image is shown as replacement if no image of the taxon is available."),
+      '#upload_location' => 'public://'
   );
 
   $options = cdm_rankVocabulary_as_option();
@@ -1831,6 +1843,17 @@ function cdm_view_cache_site() {
   }
   */
   return $out;
+}
+
+
+function cdm_settings_layout_taxon_submit($form, &$form_state){
+  if (isset($form_state['values'][CDM_DEFAULT_REPLACEMENT_IMAGE])) {
+    $file = file_load($form_state['values'][CDM_DEFAULT_REPLACEMENT_IMAGE]);
+
+    $file->status = FILE_STATUS_PERMANENT;
+
+    file_save($file);
+  }
 }
 
 /**

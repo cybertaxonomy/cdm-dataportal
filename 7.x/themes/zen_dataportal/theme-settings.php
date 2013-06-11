@@ -283,6 +283,26 @@ function zen_dataportal_form_widget_image(&$form, $which_image, $weight = NULL){
 /**
  *
  * Enter description here ...
+ * @param $color_settings_key
+ *
+ */
+function zen_dataportal_form_widget_color(&$form, $color_settings_key, $description) {
+  $label = str_replace('_', ' ', $color_settings_key);
+  $form['zen_dataportal_colors'][$color_settings_key] = array(
+          '#type'          => 'textfield',
+          '#title'         => ucfirst(t($label)),
+          '#default_value' => theme_get_setting($color_settings_key),
+          '#description'   => $description, //t('Set the color of the site name which is shown in the header. Must be a css color value like: #000000'),
+          '#attributes' => array(
+            'class' => array('color-picker'),
+            'size' => '7',
+          ),
+  );
+}
+
+/**
+ *
+ * Enter description here ...
  * @param $form_state
  *   A keyed array containing the current state of the form.
  * @param unknown_type $which_image
