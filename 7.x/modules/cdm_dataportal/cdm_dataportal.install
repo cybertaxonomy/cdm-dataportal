@@ -123,6 +123,24 @@ function cdm_dataportal_update_7303() {
 }
 
 
+/**
+ * update for RELEASE 3.2.2:
+ *  - migrating variable cdm_dataportal_show_default_image to cdm_taxon_profile_image['show']
+ *  - enabling required module file
+ */
+function cdm_dataportal_update_7304() {
+
+    module_enable(array('file'), TRUE);
+    $tasks_performed[] = 'module file enabled';
+
+    $cdm_taxon_profile_image_settings = unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT);
+    $cdm_taxon_profile_image_settings['show'] = variable_get('cdm_dataportal_show_default_image', 0);
+    variable_set(CDM_TAXON_PROFILE_IMAGE, $cdm_taxon_profile_image_settings);
+    variable_del('cdm_dataportal_show_default_image');
+    $tasks_performed[] = 'migrating variable cdm_dataportal_show_default_image to cdm_taxon_profile_image[\'show\']';
+
+    return  join(', ',$tasks_performed);
+}
 
 
 /**

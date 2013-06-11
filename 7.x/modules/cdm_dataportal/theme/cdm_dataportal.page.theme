@@ -290,20 +290,30 @@ function theme_cdm_taxon_page_profile($variables) {
   $media = $variables['media'];
   $hideImages = $variables['hideImages'];
   $out = '';
-  if (variable_get('cdm_dataportal_show_default_image', FALSE) && !$hideImages) {
 
-    // Preferred image hardcoded for testing.
+  $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
+  if ($taxon_profile_image_settings['show'] && !$hideImages) {
+
     $defaultRepresentationPart = new stdClass();
-    $defaultRepresentationPart->width = 184;
-    $defaultRepresentationPart->height = 144;
-    $defaultRepresentationPart->uri = base_path() .  drupal_get_path('module', 'cdm_dataportal') . '/images/no_picture.png';
+    if(!empty($taxon_profile_image_settings['custom_placeholder_image_on']) && !empty($taxon_profile_image_settings['custom_placeholder_image_fid'])){
+      // use the user provided image
+      $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
+      $url = file_create_url($profile_image_file->uri);
+      $image_info = image_get_info($profile_image_file->uri);
+      $defaultRepresentationPart->width = $image_info['width'];
+      $defaultRepresentationPart->height = $image_info['height'];
+      $defaultRepresentationPart->uri = $url;
+    } else {
+      // use the hardcoded default
+      $defaultRepresentationPart->width = 184;
+      $defaultRepresentationPart->height = 144;
+      $defaultRepresentationPart->uri = base_path() .  drupal_get_path('module', 'cdm_dataportal') . '/images/no_picture.png';
+     }
 
-    // Preferred image size 184px × 144.
-    $imageMaxExtend = variable_get(CDM_DEFAULT_IMAGE_MAXEXTEND, CDM_DEFAULT_IMAGE_MAXEXTEND_DEFAULT);
     $out .= '<div id="taxonProfileImage">' . theme('cdm_preferredImage', array(
       'media' => $media,
       'defaultRepresentationPart' => $defaultRepresentationPart,
-      'imageMaxExtend' => $imageMaxExtend,
+      'imageMaxExtend' => $taxon_profile_image_settings['maxextend'],
       )) . '</div>';
   }
 

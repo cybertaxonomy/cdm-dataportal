@@ -80,10 +80,16 @@ define('FEATURE_TREE_LAYOUT_DEFAULTS', serialize(
   )));
 
 define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
-define('CDM_DEFAULT_IMAGE_MAXEXTEND', 'cdm_default_image_maxextend');
-define('CDM_DEFAULT_IMAGE_MAXEXTEND_DEFAULT', 184);
-define('CDM_DEFAULT_REPLACEMENT_IMAGE', 'cdm_default_replacement_image');
-
+define('CDM_TAXON_PROFILE_IMAGE', 'cdm_taxon_profile_image');
+define('CDM_TAXON_PROFILE_IMAGE_DEFAULT', serialize(
+    array(
+        'show' => 1,
+        'maxextend' => 184,
+        'custom_placeholder_image_on' => 0,
+        'custom_placeholder_image_fid' => ''
+    )
+  )
+);
 
 /**
  * @todo document this function
@@ -1038,40 +1044,79 @@ function cdm_settings_layout_taxon() {
   );
 
   // ---- PROFILE PICTURE ----//
-  $form['taxon_profile']['picture'] = array(
+
+  $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE] = array(
     '#type' => 'fieldset',
+    '#tree' => TRUE,
     '#title' => t('Taxon profile picture'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#description' => t('This sections allows configuring the display of the so called taxon profile image which is displayed in the taxon profile tab.'),
   );
 
-  $form['taxon_profile']['picture']['cdm_dataportal_show_default_image'] = array(
+  //FIXME migrate variables:
+  //  cdm_dataportal_show_default_image ---> CDM_TAXON_PROFILE_IMAGE['show']
+  // FIXME
+  //  eanable file modul in profile and in update
+
+  $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
+  /*
+   * 'show' => 1,
+   * 'maxextend' => 184,
+   * 'custom_placeholder_image_on' => 1,
+   * 'custom_placeholder_image_fid' => ''
+   */
+  $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['show'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable profil picture'),
-    '#default_value' => variable_get('cdm_dataportal_show_default_image', FALSE),
     '#description' => t('Show the profil picture.'),
+    '#default_value' => $taxon_profile_image_settings['show'],
   );
 
-  $form['taxon_profile']['picture'][CDM_DEFAULT_IMAGE_MAXEXTEND] = array(
+  $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['maxextend'] = array(
       '#type' => 'textfield',
       '#tree' => TRUE,
       '#title' => t('Profil picture maximum extend'),
-      '#default_value' =>  variable_get(CDM_DEFAULT_IMAGE_MAXEXTEND, CDM_DEFAULT_IMAGE_MAXEXTEND_DEFAULT),
+      '#default_value' =>  $taxon_profile_image_settings['maxextend'],
       '#field_suffix' => 'px',
       '#maxlength' => 4,
       '#size' => 4,
       '#description' => t('The maximum extend in either dimension, width or height, of the profil picture in pixels.')
   );
 
-  $form['taxon_profile']['picture'][CDM_DEFAULT_REPLACEMENT_IMAGE] = array(
-      '#type' => 'managed_file',
-      '#name' => CDM_DEFAULT_REPLACEMENT_IMAGE,
-      '#title' => t('Default image replcement'),
-      '#size' => 40,
+  $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_image_on'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Use a custom placeholder image'),
       '#description' => t("This image is shown as replacement if no image of the taxon is available."),
-      '#upload_location' => 'public://'
+      '#default_value' => $taxon_profile_image_settings['custom_placeholder_image_on']
   );
+
+  if($taxon_profile_image_settings['custom_placeholder_image_on'] == 1){
+    $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_image_fid'] = array(
+        '#type' => 'managed_file',
+        '#title' => t('Custom placeholder image file'),
+        '#progress_indicator' => 'bar',
+        '#default_value' => $taxon_profile_image_settings['custom_placeholder_image_fid'],
+    //       '#name' => 'custom_placeholder_image',
+        '#upload_location' => 'public://' . CDM_TAXON_PROFILE_IMAGE .'/'
+    );
+
+    if($taxon_profile_image_settings['custom_placeholder_image_fid']){
+      $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
+      $url = file_create_url($profile_image_file->uri);
+      $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['preview'] = array(
+                '#type' => 'item',
+                '#markup' => '<div class="image-preview"><img src="' . $url . '"/></div>',
+      );
+    }
+  } else {
+    $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_image_fid'] = array(
+        '#type' => 'hidden',
+        '#default_value' => $taxon_profile_image_settings['custom_placeholder_image_fid']
+    );
+  }
+
+
 
   $options = cdm_rankVocabulary_as_option();
   array_unshift($options, '-- DISABLED --');
@@ -1847,12 +1892,13 @@ function cdm_view_cache_site() {
 
 
 function cdm_settings_layout_taxon_submit($form, &$form_state){
-  if (isset($form_state['values'][CDM_DEFAULT_REPLACEMENT_IMAGE])) {
-    $file = file_load($form_state['values'][CDM_DEFAULT_REPLACEMENT_IMAGE]);
-
-    $file->status = FILE_STATUS_PERMANENT;
-
-    file_save($file);
+  if (isset($form_state['values'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_image_fid'])) {
+    $file = file_load($form_state['values'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_image_fid']);
+    if(is_object($file)){
+      $file->status = FILE_STATUS_PERMANENT;
+      file_save($file);
+      file_usage_add($file, 'cdm_dataportal', CDM_TAXON_PROFILE_IMAGE, 0);
+    }
   }
 }
 
