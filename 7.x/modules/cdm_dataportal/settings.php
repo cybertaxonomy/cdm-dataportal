@@ -80,6 +80,8 @@ define('FEATURE_TREE_LAYOUT_DEFAULTS', serialize(
   )));
 
 define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
+define('CDM_DEFAULT_IMAGE_MAXEXTEND', 'cdm_default_image_maxextend');
+define('CDM_DEFAULT_IMAGE_MAXEXTEND_DEFAULT', 184);
 
 
 /**
@@ -972,6 +974,15 @@ function cdm_settings_layout_taxon() {
   $collapsed = FALSE;
   $form = array();
 
+  $form['cdm_dataportal_show_back_to_search_results'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show <em>Back to search results</em> link at the taxon site.'),
+      '#default_value' => variable_get('cdm_dataportal_show_back_to_search_results', 1),
+      '#description' => t('<p>If checked the link to search results is rendered at
+       the top of the taxon site. Clicking on the link the last search performed
+       is rendered again.</p>'),
+  );
+
   // --------- TABBED TAXON ------- //
   $form['taxon_tabs'] = array(
     '#type' => 'fieldset',
@@ -1013,15 +1024,6 @@ function cdm_settings_layout_taxon() {
       taxon and not the above selected tab.'),
   );
 
-  $form['cdm_dataportal_show_back_to_search_results'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show <em>Back to search results</em> link at the taxon site.'),
-    '#default_value' => variable_get('cdm_dataportal_show_back_to_search_results', 1),
-    '#description' => t('<p>If checked the link to search results is rendered at
-       the top of the taxon site. Clicking on the link the last search performed
-       is rendered again.</p>'),
-  );
-
   /* ======  TAXON_PROFILE ====== */
   $form['taxon_profile'] = array(
     '#type' => 'fieldset',
@@ -1046,6 +1048,17 @@ function cdm_settings_layout_taxon() {
     '#title' => t('Enable profil picture'),
     '#default_value' => variable_get('cdm_dataportal_show_default_image', FALSE),
     '#description' => t('Show the profil picture.'),
+  );
+
+  $form['taxon_profile']['picture'][CDM_DEFAULT_IMAGE_MAXEXTEND] = array(
+      '#type' => 'textfield',
+      '#tree' => TRUE,
+      '#title' => t('Profil picture maximum extend'),
+      '#default_value' =>  variable_get(CDM_DEFAULT_IMAGE_MAXEXTEND, CDM_DEFAULT_IMAGE_MAXEXTEND_DEFAULT),
+      '#field_suffix' => 'px',
+      '#maxlength' => 4,
+      '#size' => 4,
+      '#description' => t('The maximum extend in either dimension, width or height, of the profil picture in pixels.')
   );
 
   $options = cdm_rankVocabulary_as_option();

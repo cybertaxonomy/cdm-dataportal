@@ -30,6 +30,11 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
     return;
   }
 
+  if(!module_exists('cdm_dataportal')) {
+    drupal_set_message('<strong>FATAL MISCONFIGURATION:</strong>The zen_dataportal theme requires the cdm_dataportal module to be installed and enabled.', 'error');
+    return;
+  }
+
   $path_to_theme = drupal_get_path('theme', 'zen_dataportal');
 
   // check browser compatibility requirements
@@ -272,26 +277,6 @@ function zen_dataportal_form_widget_image(&$form, $which_image, $weight = NULL){
           '#title' => t('Upload') . ' ' . t($label) . t(' image'),
           '#maxlength' => 40,
           '#description' => t("If you don't have direct file access to the server, use this field to upload your image.")
-  );
-}
-
-/**
- *
- * Enter description here ...
- * @param $color_settings_key
- *
- */
-function zen_dataportal_form_widget_color(&$form, $color_settings_key, $description) {
-  $label = str_replace('_', ' ', $color_settings_key);
-  $form['zen_dataportal_colors'][$color_settings_key] = array(
-          '#type'          => 'textfield',
-          '#title'         => ucfirst(t($label)),
-          '#default_value' => theme_get_setting($color_settings_key),
-          '#description'   => $description, //t('Set the color of the site name which is shown in the header. Must be a css color value like: #000000'),
-          '#attributes' => array(
-            'class' => array('color-picker'),
-            'size' => '7',
-          ),
   );
 }
 
