@@ -771,38 +771,3 @@ jQuery(document).ready(function(){
   return $out;
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_preferredImage($variables) {
-
-  $media = $variables['media'];
-  $defaultRepresentationPart = $variables['defaultRepresentationPart'];
-  $imageMaxExtend = $variables['imageMaxExtend'];
-  $parameters = $variables['parameters'];
-
-  $out = '';
-
-  if (isset($media[0])) {
-    $representationPart = $media[0]->representations[0]->parts[0];
-    if ($parameters) {
-      $representationPart->uri . $parameters;
-    }
-  }
-  else {
-    $representationPart = $defaultRepresentationPart;
-  }
-
-  $attributes = array(
-    'alt' => (isset($media->representations[0]->parts[0]->uri) ? $media->representations[0]->parts[0]->uri : "no image available"),
-  );
-  $out .= theme('cdm_media_gallerie_image', array(
-    'mediaRepresentationPart' => $representationPart,
-    'maxExtend' => $imageMaxExtend,
-    'addPassePartout' => FALSE,
-    'attributes' => $attributes,
-  ));
-
-  return $out;
-}

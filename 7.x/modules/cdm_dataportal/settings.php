@@ -85,6 +85,7 @@ define('CDM_TAXON_PROFILE_IMAGE_DEFAULT', serialize(
     array(
         'show' => 1,
         'maxextend' => 184,
+        'media_uri_query' => '',
         'custom_placeholder_image_on' => 0,
         'custom_placeholder_image_fid' => ''
     )
@@ -1063,6 +1064,7 @@ function cdm_settings_layout_taxon() {
   /*
    * 'show' => 1,
    * 'maxextend' => 184,
+   * 'media_uri_query' => ''
    * 'custom_placeholder_image_on' => 1,
    * 'custom_placeholder_image_fid' => ''
    */
@@ -1082,6 +1084,19 @@ function cdm_settings_layout_taxon() {
       '#maxlength' => 4,
       '#size' => 4,
       '#description' => t('The maximum extend in either dimension, width or height, of the profil picture in pixels.')
+  );
+
+  $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['media_uri_query'] = array(
+      '#type' => 'textfield',
+      '#tree' => TRUE,
+      '#title' => t('Additional URI query parameter'),
+      '#default_value' =>  $taxon_profile_image_settings['media_uri_query'],
+      '#maxlength' => 1024,
+      '#size' => 60,
+      '#description' => t('Additional query parameters to be used when requesting for the '
+          . 'profile image. E.g.: <code>width=400&height=300&quality=95&format=jpeg</code>.'
+          . 'The query parameters will be appendend to the uri of the media representation part'
+          . ' as stored in the cdm. The query parameter string must not start with a \'&\' or  \'?\'')
   );
 
   $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_image_on'] = array(

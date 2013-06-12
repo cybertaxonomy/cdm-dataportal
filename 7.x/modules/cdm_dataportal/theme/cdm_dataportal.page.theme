@@ -294,27 +294,44 @@ function theme_cdm_taxon_page_profile($variables) {
   $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
   if ($taxon_profile_image_settings['show'] && !$hideImages) {
 
-    $defaultRepresentationPart = new stdClass();
-    if(!empty($taxon_profile_image_settings['custom_placeholder_image_on']) && !empty($taxon_profile_image_settings['custom_placeholder_image_fid'])){
-      // use the user provided image
-      $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
-      $url = file_create_url($profile_image_file->uri);
-      $image_info = image_get_info($profile_image_file->uri);
-      $defaultRepresentationPart->width = $image_info['width'];
-      $defaultRepresentationPart->height = $image_info['height'];
-      $defaultRepresentationPart->uri = $url;
-    } else {
-      // use the hardcoded default
-      $defaultRepresentationPart->width = 184;
-      $defaultRepresentationPart->height = 144;
-      $defaultRepresentationPart->uri = base_path() .  drupal_get_path('module', 'cdm_dataportal') . '/images/no_picture.png';
-     }
+    $representationPart = new stdClass();
+    $attributes = array();
+    if (isset($media[0]->representations[0]->parts[0])) {
+      $representationPart = $media[0]->representations[0]->parts[0];
+      $attributes['alt'] = $representationPart->uri;
 
-    $out .= '<div id="taxonProfileImage">' . theme('cdm_preferredImage', array(
-      'media' => $media,
-      'defaultRepresentationPart' => $defaultRepresentationPart,
-      'imageMaxExtend' => $taxon_profile_image_settings['maxextend'],
-      )) . '</div>';
+      if(!empty($taxon_profile_image_settings['media_uri_query'])){
+        $representationPart->uri = $representationPart->uri
+            . (strpos($representationPart->uri, '?') !== FALSE ? '&' : '?')
+            . $taxon_profile_image_settings['media_uri_query'];
+      }
+    }
+    else {
+      // show placeholder image instead
+      if(!empty($taxon_profile_image_settings['custom_placeholder_image_on']) && !empty($taxon_profile_image_settings['custom_placeholder_image_fid'])){
+        // use the user provided image
+        $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
+        $url = file_create_url($profile_image_file->uri);
+        $image_info = image_get_info($profile_image_file->uri);
+        $representationPart->width = $image_info['width'];
+        $representationPart->height = $image_info['height'];
+        $representationPart->uri = $url;
+      } else {
+        // use the hard coded default
+        $representationPart->width = 184;
+        $representationPart->height = 144;
+        $representationPart->uri = base_path() .  drupal_get_path('module', 'cdm_dataportal') . '/images/no_picture.png';
+      }
+      $attributes['alt'] = "no image available";
+    }
+
+    $profile_image = theme('cdm_media_gallerie_image', array(
+        'mediaRepresentationPart' => $representationPart,
+        'maxExtend' => $taxon_profile_image_settings['maxextend'],
+        'addPassePartout' => FALSE,
+        'attributes' => $attributes,
+    ));
+    $out .= '<div id="taxonProfileImage">' . $profile_image. '</div>';
   }
 
   // Description TOC.

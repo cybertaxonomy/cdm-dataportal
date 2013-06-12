@@ -5,57 +5,6 @@
  */
 
 /**
- * Returns HTML for a cdm_taxon_page_profile.
- *
- * The description page is supposed to be the front page for a taxon.
- *
- * @param array $variables
- *   An associative array containing:
- *   - taxon: The taxon object displayed on the taxon page.
- *   - mergedTrees
- *   - media:
- *   - hideImages: boolean, FALSE if images should be hided.
- *
- * @ingroup themeable
- */
-function palmweb_2_cdm_taxon_page_profile($variables){
-
-  $taxon = $variables['taxon'];
-  $mergedTrees = $variables['mergedTrees'];
-  $media = $variables['media'];
-  $hideImages = $variables['hideImages'];
-
-  $out = '';
-
-  if (!$hideImages) {
-    // Preferred image.
-    // Hardcoded for testing.
-    $defaultRepresentationPart = new stdClass();
-    $defaultRepresentationPart->width = 184;
-    $defaultRepresentationPart->height = 144;
-    $defaultRepresentationPart->uri = base_path() .drupal_get_path('theme', 'palmweb_2') . '/images/no_picture.png';
-
-    // Preferred image size 184px × 144.
-    $imageMaxExtend = 184;
-    $out .= '<div id="taxonProfileImage">';
-    $out .= theme('cdm_preferredImage', array(
-      'media' => $media,
-      'defaultRepresentationPart' => $defaultRepresentationPart,
-      'imageMaxExtend' => $imageMaxExtend,
-    ));
-    $out .= '</div>';
-  }
-
-  // Description TOC.
-  $out .= theme('cdm_featureTreeTOCs', array('mergedTrees' => $mergedTrees));
-
-  // Description.
-  $out .= theme('cdm_featureTrees', array('mergedTrees' => $mergedTrees, 'taxon' => $taxon));
-
-  return $out;
-}
-
-/**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */

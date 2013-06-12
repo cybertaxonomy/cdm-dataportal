@@ -5,65 +5,6 @@
  */
 
 /**
- * Returns HTML for a cdm_taxon_page_profile.
- *
- * The description page is supposed to be the front page for a taxon.
- *
- * @param array $variables
- *   An associative array containing:
- *   - taxon: The taxon object displayed on the taxon page.
- *   - mergedTrees
- *   - media:
- *   - hideImages: boolean, FALSE if images should be hided.
- *
- * @ingroup themeable
- */
-function garland_cichorieae_cdm_taxon_page_profile($variables) {
-  $taxon = $variables['taxon'];
-  $mergedTrees = $variables['mergedTrees'];
-  $media = $variables['media'];
-  $hideImages = $variables['hideImages'];
-
-  $out = '';
-  global $base_url;
-
-  RenderHints::pushToRenderStack('taxon_page_description');
-  // Description TOC.
-  $out = theme('cdm_featureTreeTOCs', array('mergedTrees' => $mergedTrees));
-
-  // Preferred image.
-  // 2 lines hard coded for testing.
-  if (variable_get('cdm_dataportal_show_default_image', FALSE) && !$hideImages) {
-
-    // $defaultPreferredImage = drupal_get_path('theme',
-    // 'garland_cichorieae').'/images/nopic_400x300.jpg';
-    $defaultRepresentationPart = new stdClass();
-    $defaultRepresentationPart->width = 400;
-    $defaultRepresentationPart->height = 300;
-    $defaultRepresentationPart->uri = base_path() . drupal_get_path('theme', 'garland_cichorieae') . '/images/nopic_400x300_4x3cm.jpg';
-
-    $imageUriParams = '&width=400&height=300&quality=95&format=jpeg';
-
-    $imageMaxExtend = 400;
-    $out .= '<div id="taxonProfileImage">' . theme('cdm_preferredImage', array(
-      'media' => $media,
-      'defaultRepresentationPart' => $defaultRepresentationPart,
-      'imageMaxExtend' => $imageMaxExtend,
-      'parameters' => $imageUriParams,
-      )) . '</div>';
-  }
-
-  // Description.
-  $out .= theme('cdm_featureTrees', array(
-    'mergedTrees' => $mergedTrees,
-    'taxon' => $taxon,
-  ));
-  RenderHints::popFromRenderStack();
-
-  return $out;
-}
-
-/**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */

@@ -169,13 +169,6 @@ function cdm_dataportal_theme() {
           'attributes' => NULL,
       )),
       'cdm_openlayers_image' => array('variables' => array('mediaRepresentationPart' => NULL, 'maxExtend' => NULL)),
-      'cdm_preferredImage' => array('variables' => array(
-          'media' => NULL,
-          'defaultRepresentationPart' => NULL,
-          'imageMaxExtend' => NULL,
-          'parameters' => '',
-      )),
-
       // Themes in cdm_dataportal.name.theme.
       'cdm_taxonName' => array('variables' => array(
           'taxonName' => NULL,
