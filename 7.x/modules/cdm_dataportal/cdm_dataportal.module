@@ -701,10 +701,18 @@ function cdm_dataportal_menu() {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Implements hook_init().
+ *
+ * Initialize date formats according to the user's current locale.
  */
 function cdm_dataportal_init() {
+  //FIXME code added temporarily to fix problem in test and integration portals >>>>>>
+  $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
+  if(!isset($taxon_profile_image_settings['media_uri_query'])){
+    $taxon_profile_image_settings['media_uri_query'] = '';
+    variable_set(CDM_TAXON_PROFILE_IMAGE, $taxon_profile_image_settings);
+  }
+  // <<<<<<<<<<<
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal.css');
   // drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal_screen.css', array('type' => 'screen'));
