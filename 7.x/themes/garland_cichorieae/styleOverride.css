@@ -123,6 +123,10 @@ body.mceContentBody {
   margin-bottom:13px;
 }
 
+#taxonProfileImage {
+  float:left;
+}
+
 #featureTOC {
   float:right;
 }
@@ -503,7 +507,7 @@ dl.admin-list dd {
 }
 
 #specimens .description_list h3 {
-	font-size: 100%;
+  font-size: 100%;
     font-weight: bold;
     line-height: 18px;
     background-color: #DDDDDD;
