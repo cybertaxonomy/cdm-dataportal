@@ -83,7 +83,7 @@ define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
 define('CDM_TAXON_PROFILE_IMAGE', 'cdm_taxon_profile_image');
 define('CDM_TAXON_PROFILE_IMAGE_DEFAULT', serialize(
     array(
-        'show' => 1,
+        'show' => 0,
         'maxextend' => 184,
         'media_uri_query' => '',
         'custom_placeholder_image_on' => 0,
