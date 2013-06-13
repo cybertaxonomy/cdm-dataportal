@@ -125,6 +125,7 @@ body.mceContentBody {
 
 #taxonProfileImage {
   float:left;
+  margin-bottom: 2em;
 }
 
 #featureTOC {
