@@ -858,7 +858,7 @@ function theme_cdm_taxonName($variables) {
   }
 
   // Render.
-  $out = '<span ref="/name/' . $taxonName->uuid . '">';
+  $out = '<span data-cdm-ref="/name/' . $taxonName->uuid . '">';
 
   foreach ($renderTemplate as $partName => $part) {
     $separator = '';

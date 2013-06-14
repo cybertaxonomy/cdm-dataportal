@@ -1025,7 +1025,7 @@ function theme_cdm_taxontree_node($variables) {
     . (isset($node->focused) && $node->focused === TRUE ? 'focused ' : '')
     . ($is_leaf ? 'leaf ' : ($is_expanded ? 'expanded ' : 'collapsed '))
     . $filter_class . '"'
-    . ($ahah_url ? 'ref="' . $ahah_url . '"' : '')
+    . ($ahah_url ? ' data-cdm-ahahurl="' . $ahah_url . '"' : '')
     . '>';
 
   if ($show_filter_switch) {
