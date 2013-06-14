@@ -83,9 +83,9 @@
         if (li.hasClass('collapsed')) {
           var bindChildren = (li.find('ul').length == 0);
           if (bindChildren) {
-            var url = li.attr('data-cdm-ahahurl');
+            var url = li.attr('data-cdm-ahah-url');
             if (url != undefined) {
-              li.removeAttr('data-cdm-ahahurl');
+              li.removeAttr('data-cdm-ahah-url');
               var parent_li = li;
               li.set_background_image('loading_subtree.gif');
 

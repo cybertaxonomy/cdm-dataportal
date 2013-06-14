@@ -420,7 +420,7 @@ function theme_cdm_media_gallerie($variables) {
   $out = '<table id="' . $galleryID . '" class="media_gallery">';
   $out .= '<colgroup>';
   for ($c = 0; $c < $cols; $c++) {
-    $out .= '<col width="' . (100 / $cols) . '%">';
+    $out .= '<col style="width:' . (100 / $cols) . '%;">';
   }
   $out .= '</colgroup>';
 
@@ -490,7 +490,7 @@ function theme_cdm_media_gallerie($variables) {
           $mediaPartLinkAttributes['target'] = "specimen";
           $openMediaLinkAttributes['target'] = "specimen";
         }
-        $mediaPartLinkAttributes['alt'] = $ahah_media_caption;
+        $mediaPartLinkAttributes['alt'] = htmlentities($ahah_media_caption);
 
         // --- preparing the media caption
 
@@ -619,7 +619,7 @@ function theme_cdm_media_gallerie_image($variables) {
       // Do not add margins if no pass partout is shown.
       $margins = '';
     }
-    $out .= '<img src="' . $mediaRepresentationPart->uri . '" width="' . $displayWidth . '" height="' . $displayHeight . '" style="' . $margins . '"' . $attrStr . ' />';
+    $out .= '<img src="' . $mediaRepresentationPart->uri . '" alt="' . check_plain($mediaRepresentationPart->uri) .'" width="' . $displayWidth . '" height="' . $displayHeight . '" style="' . $margins . '"' . $attrStr . ' />';
 
     if ($addPassePartout) {
       $out .= '</div>';
