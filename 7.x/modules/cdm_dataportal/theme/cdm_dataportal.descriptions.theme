@@ -1217,7 +1217,7 @@ function theme_cdm_distribution_map($variables) {
     }
 
     $mapUri = url(get_edit_map_service_full_uri() . '/' . $map_service_script_name . '? '. $query_string);
-    $out .= '<img class="distribution_map" src="' . $mapUri . '" alt="Distribution Map" />';
+    $out .= '<img class="distribution_map" src="' . urlencode($mapUri) . '" alt="Distribution Map" />';
   }
   return $out;
 }

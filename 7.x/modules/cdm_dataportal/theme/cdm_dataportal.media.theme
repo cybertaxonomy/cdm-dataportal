@@ -604,6 +604,12 @@ function theme_cdm_media_gallerie_image($variables) {
     }
 
     // Turn attributes array into string.
+    if(!is_array($attributes)){
+      $attributes = array();
+    }
+    if(!isset($attributes['alt'])){
+      $attributes['alt'] = check_plain($mediaRepresentationPart->uri);
+    }
     $attrStr = ' ';
     // $attributes['title'] = 'h:'.$h.', w:'.$w.',ratio:'.$ratio;
     if (is_array($attributes)) {
@@ -619,7 +625,7 @@ function theme_cdm_media_gallerie_image($variables) {
       // Do not add margins if no pass partout is shown.
       $margins = '';
     }
-    $out .= '<img src="' . $mediaRepresentationPart->uri . '" alt="' . check_plain($mediaRepresentationPart->uri) .'" width="' . $displayWidth . '" height="' . $displayHeight . '" style="' . $margins . '"' . $attrStr . ' />';
+    $out .= '<img src="' . $mediaRepresentationPart->uri . '" width="' . $displayWidth . '" height="' . $displayHeight . '" style="' . $margins . '"' . $attrStr . ' />';
 
     if ($addPassePartout) {
       $out .= '</div>';
