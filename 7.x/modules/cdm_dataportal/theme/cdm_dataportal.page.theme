@@ -331,7 +331,8 @@ function theme_cdm_taxon_page_profile($variables) {
         'addPassePartout' => FALSE,
         'attributes' => $attributes,
     ));
-    $out .= '<div id="taxonProfileImage">' . $profile_image. '</div>';
+    // NOTE: style="width:${maxextend}px' is needed for IE8 !!!
+    $out .= '<div id="taxonProfileImage" style="width:' . $taxon_profile_image_settings['maxextend'] . 'px">' . $profile_image. '</div>';
   }
 
   // Description TOC.
