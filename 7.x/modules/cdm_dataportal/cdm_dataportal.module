@@ -819,7 +819,7 @@ function cdm_dataportal_block_view($delta) {
       }
       return $block;
     case '4':
-      $block['subject'] = t('<none>');
+      $block['subject'] = '';
       $block['content'] = theme('cdm_print_button');
       return $block;
     case "keys":
