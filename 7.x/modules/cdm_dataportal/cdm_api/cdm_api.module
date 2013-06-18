@@ -889,21 +889,54 @@ function cdm_compose_annotations_url($cdmBase) {
  * Enter description here...
  *
  * @param string $resourceURI
- * @param mixed $pageSize
- *   The maximum number of entities returned per page (can be NULL
+ * @param int $pageSize
+ *   The maximum number of entities returned per page.
+ *   The default page size as configured in the cdm server
+ *   will be used if set to NULL
  *   to return all entities in a single page).
  * @param int $pageNumber
  *   The number of the page to be returned, the first page has the
- *   pageNumber = 1.
+ *   pageNumber = 0
  *
- * @return unknown
- * FIXME seems to be out of date, maybe uused? webservices are using pageNumber parameter?
+ * @return the a CDM Pager object
+ *
  */
 function cdm_ws_page($resourceURI, $pageSize, $pageNumber) {
   return cdm_ws_get($resourceURI, NULL, queryString(array(
-    "page" => $pageNumber,
+    "pageNumber" => $pageNumber,
     'pageSize' => $pageSize,
   )));
+}
+
+/**
+ * Fetches all entities from the given REST endpoint using the pager mechanism.
+ *
+ * @param string $resourceURI
+ *
+ * @return array
+ *     A list of CDM entitites
+ *
+ */
+function cdm_ws_fetch_all($resourceURI) {
+  $page_index = 0;
+  // using a bigger page size to avoid to many multiple requests
+  $page_size = 200;
+  $entities = array();
+
+  while ($page_index !== FALSE){
+    $pager =  cdm_ws_page($resourceURI, $page_size, $page_index);
+    if(isset($pager->records) && is_array($pager->records)) {
+      $entities = $pager->records;
+      if(!empty($pager->nextIndex)){
+        $page_index = $pager->nextIndex;
+      } else {
+        $page_index = FALSE;
+      }
+    } else {
+      $page_index = FALSE;
+    }
+  }
+  return $entities;
 }
 
 /*
@@ -1209,20 +1242,12 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
  */
 function cdm_ws_getAnnotationsFor(&$cdmBase, $includeTypes = FALSE) {
 
-  $annotations = array();
-
   if(!isset($cdmBase->annotations)){
     $annotationUrl = cdm_compose_annotations_url($cdmBase);
-    if ($annotationUrl) {
-      $annotationPager = cdm_ws_get($annotationUrl, NULL, NULL, NULL, TRUE);
-      if (isset($annotationPager->records) && is_array($annotationPager->records)) {
-        $cdmBase->annotations = $annotationPager->records;
-      } else {
-        $cdmBase->annotations = array();
-      }
-    }
+    $cdmBase->annotations = cdm_ws_fetch_all($annotationUrl);
   }
 
+  $annotations = array();
   foreach ($cdmBase->annotations as $annotation) {
     if ($includeTypes) {
       if ((isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, TRUE)) || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $includeTypes, TRUE))) {

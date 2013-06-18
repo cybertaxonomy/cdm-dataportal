@@ -982,8 +982,9 @@ function cdm_dataportal_view_reference($uuid, $arg2 = NULL) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Created a view on a all references contained in the portal.
+ *
+ * This function is used at the path cdm_dataportal/reference/list
  */
 function cdm_dataportal_view_reference_list($pageNumber) {
   $referencePager = cdm_ws_page(CDM_WS_REFERENCE, variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE), $pageNumber);
