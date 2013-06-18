@@ -1194,7 +1194,9 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
 }
 
 /**
- * Get a list of annotations for a cdm entity.
+ * Returns a filtered a list of annotations for the cdm entity given as parameter $cdmBase.
+ * If the annotations are not yet already loded with the cdm entity the cdm REST service will
+ * be requested for the annotations.
  *
  * @param string $cdmBase
  *   An annotatable cdm entity.
@@ -1205,25 +1207,34 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
  * @return array
  *   An array of Annotation objects or an empty array.
  */
-function cdm_ws_getAnnotationsFor($cdmBase, $includeTypes = FALSE) {
-  $annotationUrl = cdm_compose_annotations_url($cdmBase);
-  if ($annotationUrl) {
-    $annotationPager = cdm_ws_get($annotationUrl, NULL, NULL, NULL, TRUE);
-    if (isset($annotationPager->records) && is_array($annotationPager->records)) {
-      $annotations = array();
-      foreach ($annotationPager->records as $annotation) {
-        if ($includeTypes) {
-          if ((isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, TRUE)) || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $includeTypes, TRUE))) {
-            $annotations[] = $annotation;
-          }
-        }
-        else {
-          $annotations[] = $annotation;
-        }
+function cdm_ws_getAnnotationsFor(&$cdmBase, $includeTypes = FALSE) {
+
+  $annotations = array();
+
+  if(!isset($cdmBase->annotations)){
+    $annotationUrl = cdm_compose_annotations_url($cdmBase);
+    if ($annotationUrl) {
+      $annotationPager = cdm_ws_get($annotationUrl, NULL, NULL, NULL, TRUE);
+      if (isset($annotationPager->records) && is_array($annotationPager->records)) {
+        $cdmBase->annotations = $annotationPager->records;
+      } else {
+        $cdmBase->annotations = array();
       }
-      return $annotations;
     }
   }
+
+  foreach ($cdmBase->annotations as $annotation) {
+    if ($includeTypes) {
+      if ((isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, TRUE)) || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $includeTypes, TRUE))) {
+        $annotations[] = $annotation;
+      }
+    }
+    else {
+      $annotations[] = $annotation;
+    }
+  }
+  return $annotations;
+
 }
 
 /**
