@@ -2,7 +2,8 @@
 <launchConfiguration type="org.eclipse.php.debug.core.launching.PHPExeLaunchConfigurationType">
 <stringAttribute key="ATTR_FILE" value="/Drupal-GIT/5.x/modules/cdm_dataportal/test/phpUnit/src/SimpleNameTest.php"/>
 <stringAttribute key="ATTR_FILE_FULL_PATH" value="/home/andreas/workspaces/_svn-trunk/drupal-git/5.x/modules/cdm_dataportal/test/phpUnit/src/SimpleNameTest.php"/>
-<stringAttribute key="ATTR_LOCATION" value="/usr/bin/php52/php"/>
+<stringAttribute key="ATTR_INI_LOCATION" value="/etc/php5/apache2/php.ini"/>
+<stringAttribute key="ATTR_LOCATION" value="/usr/bin/php53/php"/>
 <stringAttribute key="debugOutputEncoding" value="UTF-8"/>
 <stringAttribute key="debugTransferEncoding" value="UTF-8"/>
 <stringAttribute key="exeDebugArguments" value="--stderr --configuration ${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml} ${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/src/}"/>

@@ -6,35 +6,31 @@
  * are not CDM Dataportal specific classes or ids.
  * See also http://groups.drupal.org/node/6355.
  */
-body .messages {
-  clear: both;
-  margin-top: 25px;
+
+#block-cdm-api-cdm-ws-debug {
+  background-color: #252525;
+  color: #fff;
+  border: 1px solid #b8d3e5;
 }
 
-div.debug,
-h6.debug {
-  background-color: #252525;
-  color: #aaa;
-  font-family: monospace;
-  font-size: 90%;
-  overflow: auto;
+#block-cdm-api-cdm-ws-debug h2 {
+  margin: 0;
 }
-body h6.debug {
-  color: #fff;
-  padding: 0 1em;
-  margin-top: 10px;
-  margin-bottom: -0.75em;
-  border: 1px solid #b8d3e5;
-  clear: both;
+
+#cdm-ws-debug-table td.data_links a {
+  color: #999;
 }
-div.debug a.valid {
+#cdm-ws-debug-table tr.valid td.data_links a {
   color: #1bdf00;
 }
-div.debug a.invalid {
+#cdm-ws-debug-table tr.invalid td.data_links a {
   color: #f3000a;
 }
-div.debug .uri {
-  color: #fff;
+#cdm-ws-debug-table tr.cacheL1, #cdm-ws-debug-table tr.cacheL2 {
+  color: #999;
+}
+#cdm-ws-debug-table .ws_uri {
+  width: 50%;
 }
 
 /*

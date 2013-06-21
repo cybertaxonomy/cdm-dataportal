@@ -890,6 +890,61 @@
 7.x/modules/cdm_dataportal/jenkins-ci/deploy.sh -text
 7.x/modules/cdm_dataportal/jenkins-ci/headless-maven-tests.sh -text
 7.x/modules/cdm_dataportal/jenkins-ci/integration.sh -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/Readme.txt -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/license-bsd.txt -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/license-gpl2.txt -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/css/cdm_debug_table.css -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/css/demo_page.css -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/css/demo_table.css -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/css/demo_table_jui.css -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/css/jquery.dataTables.css -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/css/jquery.dataTables_themeroller.css -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/Sorting[!!-~]icons.psd -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/back_disabled.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/back_enabled.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/back_enabled_hover.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/favicon.ico -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/forward_disabled.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/forward_enabled.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/forward_enabled_hover.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/sort_asc.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/sort_asc_disabled.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/sort_both.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/sort_desc.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/sort_desc_disabled.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/js/jquery.dataTables.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/js/jquery.dataTables.min.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/DataTables.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/api/api.internal.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/api/api.methods.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/api/api.static.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.ajax.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.columns.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.constructor.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.data.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.draw.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.filter.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.info.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.init.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.length.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.page.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.processing.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.scrolling.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.sizing.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.sort.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.state.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.support.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/ext/ext.classes.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/ext/ext.paging.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/ext/ext.sorting.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/ext/ext.types.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.column.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.defaults.columns.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.defaults.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.ext.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.row.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.search.js -text
+7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.settings.js -text
 7.x/modules/cdm_dataportal/js/OpenLayers-2.11/OpenLayers.js -text
 7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/blank.gif -text
 7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/cloud-popup-relative.png -text svneol=unset#unset
@@ -990,6 +1045,41 @@
 7.x/modules/cdm_dataportal/js/cluetip/jquery.dimensions.js -text
 7.x/modules/cdm_dataportal/js/cluetip/jquery.hoverIntent.js -text
 7.x/modules/cdm_dataportal/js/cluetip/wait.gif -text
+7.x/modules/cdm_dataportal/js/colorbox-master.zip -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/colorbox/README.md -text
+7.x/modules/cdm_dataportal/js/colorbox/colorbox.css -text
+7.x/modules/cdm_dataportal/js/colorbox/colorbox.jquery.json -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-ar.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-bg.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-cs.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-da.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-de.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-es.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-fa.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-fi.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-fr.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-hr.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-hu.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-it.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-ja.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-kr.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-lv.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-nl.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-no.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-pl.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-pt-br.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-ro.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-ru.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-sk.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-tr.js -text
+7.x/modules/cdm_dataportal/js/colorbox/i18n/jquery.colorbox-zh-CN.js -text
+7.x/modules/cdm_dataportal/js/colorbox/images/border.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/colorbox/images/controls.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/colorbox/images/loading.gif -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/colorbox/images/loading_background.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/colorbox/images/overlay.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/colorbox/jquery.colorbox-min.js -text
+7.x/modules/cdm_dataportal/js/colorbox/jquery.colorbox.js -text
 7.x/modules/cdm_dataportal/js/domEvent.js -text
 7.x/modules/cdm_dataportal/js/footnotes.js -text
 7.x/modules/cdm_dataportal/js/jquery-lightbox-0.5/css/jquery.lightbox-0.5.css -text
@@ -1018,6 +1108,7 @@
 7.x/modules/cdm_dataportal/js/openlayers_map.js -text
 7.x/modules/cdm_dataportal/js/thickbox/cdm_thickbox.css -text
 7.x/modules/cdm_dataportal/js/thickbox/thickbox.js -text
+7.x/modules/cdm_dataportal/js/ws_debug_block.js -text
 7.x/modules/cdm_dataportal/node_types.php -text
 7.x/modules/cdm_dataportal/pom.xml -text
 7.x/modules/cdm_dataportal/profile/CDM_Portal/CDM_Portal.info -text

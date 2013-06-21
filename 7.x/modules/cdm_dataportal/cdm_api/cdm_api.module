@@ -64,6 +64,70 @@ function cdm_api_menu() {
 }
 
 /**
+ * Implements hook_block_info().
+ */
+function cdm_api_block_info() {
+
+  $block['cdm_ws_debug'] = array(
+      "info" => t("CDM web service debug"),
+      "cache" => DRUPAL_NO_CACHE
+  );
+  return $block;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function cdm_api_block_view($delta) {
+  switch ($delta) {
+    case 'cdm_ws_debug':
+
+    $field_map = array(
+        'ws_uri' => t('URI'),
+        'time' => t('Time'),
+        'fetch_seconds' => t('Fetching [s]'),
+        'parse_seconds' => t('Parsing [s]'),
+        'size_kb' => t('Size [kb]'),
+        'status' => t('Status'),
+        'data_links' =>  t('Links'),
+    );
+
+
+    if (!isset($_SESSION['cdm']['ws_debug'])) {
+      $_SESSION['cdm']['ws_debug'] = array();
+    }
+
+    $header = '<thead><tr><th>' . join('</th><th>' , array_values($field_map)) . '</th></thead>';
+    $footer = '<tfoot><tr><th>' . join('</th><th>' , array_values($field_map)) . '</th></tfoot>';
+    $rows = array();
+
+    foreach ($_SESSION['cdm']['ws_debug'] as $data){
+      $cells = array();
+      $data = unserialize($data);
+      foreach ($field_map as $field => $label){
+        $cells[] = '<td class="' . $field . '">' .  $data[$field] . '</td>';
+      }
+      $rows[] = '<tr class="' . $data['status']  . '">' . join('' , $cells). '</tr>';
+    }
+    // clear session again
+    $_SESSION['cdm']['ws_debug'] = array();
+
+    _add_js_ws_debug();
+
+    $block['subject'] = t('CDM Debug');
+    // cannot use theme_tabel() since table footer is not jet supported in D7
+    $block['content'] =
+        '<table id="cdm-ws-debug-table">'
+        . $header
+        . '<tbody>' . join('', $rows) . '</tbody>'
+        . $footer
+        . '</table>';
+
+    return $block;
+  }
+}
+
+/**
  * Implements hook_cron().
  *
  * Expire outdated cache entries.
@@ -1432,47 +1496,47 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     //
     $obj = $cacheL1_obj;
     if (variable_get('cdm_webservice_debug', 1) && user_access('administer')) {
-      _add_status_message_toggler();
-      _add_debugMessageStr('Using cacheL1 for: ' . $uri);
+      cdm_ws_debug_add($uri, 0, 0, NULL, 'cacheL1');
     }
   }
   elseif ($cacheL2_entry) {
     //
     // The object has been found in the L2 cache.
     //
+    $duration_parse_start = microtime(TRUE);
     $obj = unserialize($cacheL2_entry->data);
+    $duration_parse = microtime(TRUE) - $duration_parse_start;
 
     if (variable_get('cdm_webservice_debug', 1) && user_access('administer')) {
-      _add_status_message_toggler();
-      _add_debugMessageStr('Using cacheL2 for: ' . $uri);
+      cdm_ws_debug_add($uri, 0, $duration_parse, NULL, 'cacheL2');
     }
   }
   else {
     //
     // Get the object from the webservice and cache it.
     //
-    $time_get_start = microtime(TRUE);
+    $duration_fetch_start = microtime(TRUE);
     // Request data from webservice JSON or XML.
     $response = cdm_http_request($uri, $method);
     $datastr = NULL;
     if (isset($response->data)) {
       $datastr = $response->data;
     }
-    $time_get = microtime(TRUE) - $time_get_start;
-    $time_parse_start = microtime(TRUE);
+    $duration_fetch = microtime(TRUE) - $duration_fetch_start;
+    $duration_parse_start = microtime(TRUE);
 
     // Parse data and create object.
     $obj = cdm_load_obj($datastr);
 
-    $time_parse = microtime(TRUE) - $time_parse_start;
+    $duration_parse = microtime(TRUE) - $duration_parse_start;
     if (variable_get('cdm_webservice_debug', 1) && user_access('administer')) {
       if ($obj || $datastr == "[]") {
-        $success_msg = 'valid';
+        $status = 'valid';
       }
       else {
-        $success_msg = 'invalid';
+        $status = 'invalid';
       }
-      _add_debugMessage($uri, $time_get, $time_parse, strlen($datastr), $success_msg);
+      cdm_ws_debug_add($uri, $duration_fetch, $duration_parse, strlen($datastr), $status);
     }
     if ($set_cacheL2) {
       // Store the object in cache L2.
@@ -1491,25 +1555,30 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Processes and stores the given information in $_SESSION['cdm']['ws_debug'] as table row.
+ *
+ * The cdm_ws_debug block will display the debug information.
+ *
+ * @param $uri
+ *    The CDM REST URI to which the request has been send
+ * @param $duration_fetch
+ *    The time in seconds it took to fetch the data from the web service
+ * @param $duration_parse
+ *    Time in seconds which was needed to parse the json response
+ * @param $datasize
+ *    Size of the data received from the server
+ * @param $status
+ *    A status string, possible values are: 'valid', 'invalid', 'cacheL1', 'cacheL2'
+ * @return bool
+ *    TRUE if adding the debug information was successful
  */
-function _add_debugMessageStr($message) {
-  _add_status_message_toggler();
-  drupal_set_message(check_plain($message), 'debug');
-}
+function cdm_ws_debug_add($uri, $duration_fetch, $duration_parse, $datasize, $status) {
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg) {
-  static $cumulated_time_parse = 0;
-  static $cumulated_time_get = 0;
-  _add_status_message_toggler();
-
-  $cumulated_time_get += $time_get;
-  $cumulated_time_parse += $time_parse;
+  static $initial_time = NULL;
+  if(!$initial_time) {
+    $initial_time = microtime(TRUE);
+  }
+  $time = microtime(TRUE) - $initial_time;
 
   // Decompose uri into path and query element.
   // URI query elements are stored in an array
@@ -1532,31 +1601,49 @@ function _add_debugMessage($uri, $time_get, $time_parse, $datasize, $success_msg
     $path = $uri;
   }
 
-  $message = '<span class="uri">' . $uri . '</span><br />';
-  $message .= '[fetched in: ' . sprintf('%3.3f', $time_get) . 's(' . sprintf('%3.3f', $cumulated_time_get) . 's); ';
-  $message .= 'parsed in ' . sprintf('%3.3f', $time_parse) . ' s(' . sprintf('%3.3f', $cumulated_time_parse) . 's); ';
-  $message .= 'size:' . sprintf('%3.1f', ($datasize / 1024)) . ' kb of ' . $success_msg . ' data: ';
+  // data links to make data accecsible as json and xml
+  $data_links = '';
   if (_is_cdm_ws_uri($path)) {
-    $message .= '<a href="' . url($path . '.xml', array(
-      'query' => $query,
-    )) . '" target="data" class="' . $success_msg . '">xml</a>-';
-    $message .= '<a href="' . url('cdm_api/proxy/' . urlencode(url($path . '.xml', array(
-      'query' => $query,
-    )))) . '" target="data" class="' . $success_msg . '">proxied</a>,';
-    $message .= '<a href="' . url($path . '.json', array(
-      'query' => $query,
-    )) . '" target="data" class="' . $success_msg . '">json</a>-';
-    $message .= '<a href="' . url('cdm_api/proxy/' . urlencode(url($path . '.json', array(
-      'query' => $query,
-    )))) . '" target="data" class="' . $success_msg . '">proxied</a>';
+    $data_links .= '<a href="'
+        . url($path . '.xml', array('query' => $query))
+        . '" target="data">xml</a>-';
+    $data_links .= '<a href="'
+        . url('cdm_api/proxy/' . urlencode(url($path . '.xml', array('query' => $query))))
+        . '" target="data">proxied</a>';
+    $data_links .= '<br/>';
+    $data_links .= '<a href="'
+        . url($path . '.json', array('query' => $query))
+        . '" target="data">json</a>-';
+    $data_links .= '<a href="'
+        . url('cdm_api/proxy/' . urlencode(url($path . '.json', array('query' => $query))))
+        . '" target="data">proxied</a>';
   }
   else {
-    $message .= '<a href="' . url($path, array(
-      'query' => $query,
-    )) . '" target="data" class="' . $success_msg . '">open</a>';
+    $data_links .= '<a href="' . url($path, array(
+        'query' => $query)) . '" target="data">open</a>';
   }
-  $message .= '] ';
-  drupal_set_message(($message), 'debug');
+
+  //
+  $data = array(
+      'ws_uri' => $uri,
+      'time' => sprintf('%3.3f', $time),
+      'fetch_seconds' => sprintf('%3.3f', $duration_fetch),
+      'parse_seconds' => sprintf('%3.3f', $duration_parse),
+      'size_kb' => sprintf('%3.1f', ($datasize / 1024)) ,
+      'status' => $status,
+      'data_links' => $data_links
+  );
+  if (!isset($_SESSION['cdm']['ws_debug'])) {
+    $_SESSION['cdm']['ws_debug'] = array();
+  }
+  $_SESSION['cdm']['ws_debug'][] = serialize($data);
+
+  // Mark this page as being uncacheable.
+  // taken over from drupal_get_messages() but it is unsure if we really need this here
+  drupal_page_is_cacheable(FALSE);
+
+  // Messages not set when DB connection fails.
+  return isset($_SESSION['cdm']['ws_debug']) ? $_SESSION['cdm']['ws_debug'] : NULL;
 }
 
 /**
@@ -2005,26 +2092,34 @@ function array_deep_copy(&$array, &$copy, $maxdepth = 50, $depth = 0) {
 }
 
 /**
- * Implementation of theme_status_messages($display = NULL).
+ * Adds java script to create and enable a toggler for the cdm webservice debug block content.
  *
- * @see includes/theme.inc
- *
- * @return void
  */
-function _add_status_message_toggler() {
-  static $isAdded = FALSE;
-  if (!$isAdded) {
-    drupal_add_js(
-    'jQuery(document).ready(function($){
-       $(\'.messages.debug\').before( \'<h6 class="messages_toggler debug">Debug Messages (click to toggle)</h6>\' );
-       $(\'.messages_toggler\').click(function(){
-         $(this).next().slideToggle(\'fast\');
-         return false;
-       }).next().hide();
-     });', array('type' => 'inline'));
+function _add_js_ws_debug() {
 
-    $isAdded = TRUE;
-  }
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/DataTables-1.9.4/media/js/jquery.dataTables.min.js',
+    array(
+      'type' => 'file',
+      'weight' => JS_LIBRARY,
+      'cache' => TRUE)
+    );
+
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/colorbox/jquery.colorbox-min.js',
+    array(
+      'type' => 'file',
+      'weight' => JS_LIBRARY,
+      'cache' => TRUE)
+    );
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/js/colorbox/colorbox.css');
+  drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/js/DataTables-1.9.4/media/css/cdm_debug_table.css');
+
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/ws_debug_block.js',
+    array(
+      'type' => 'file',
+      'weight' => JS_LIBRARY,
+      'cache' => TRUE)
+    );
+
 }
 
 /**

@@ -160,10 +160,12 @@
      */
     function scrollToFocused() {
         var focusedElement = cdm_taxontree_parent.find('.focused');
-        var lineHeight = focusedElement.css('line-height');
-        lineHeight = lineHeight.replace('px', '');
-        lineHeight = lineHeight.length == 0 ? 18 : lineHeight;
-        cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTo(focusedElement, {duration: 400, axis:'y', offset:-2 * lineHeight});
+        if(focusedElement.length > 0){
+            var lineHeight = focusedElement.css('line-height');
+            lineHeight = lineHeight.replace('px', '');
+            lineHeight = lineHeight.length == 0 ? 18 : lineHeight;
+            cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTo(focusedElement, {duration: 400, axis:'y', offset:-2 * lineHeight});
+        }
 
     }
 
