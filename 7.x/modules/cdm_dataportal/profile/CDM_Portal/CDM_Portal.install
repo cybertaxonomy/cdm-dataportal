@@ -74,59 +74,6 @@ function CDM_Portal_install() {
       'zen_rebuild_registry' => 0,
   ));
 
-
-  /****************************************
-   *  Blocks
-   ****************************************/
-
-  // >>> admin/structure/block
-  //    Disable the blocks that were enabled for the dashboard in the standard install.
-  //    In the CDM dataportals we use the admin_menu module instead of taskbar and dashboard.
-  $query = db_update('block')->fields(array('status' => '0'))
-    ->condition('region', 'dashboard_main', '=')
-    ->execute();
-  $query = db_update('block')->fields(array('status' => '0'))
-    ->condition('region', 'dashboard_sidebar', '=')
-    ->execute();
-
-  // disable "Search form"  block for all themes
-  $query = db_update('block')->fields(array('status' => '0'))
-    ->condition(
-        db_and()
-          ->condition('module', 'search', '=')
-          ->condition('delta', 'form', '=')
-        )
-    ->execute();
-
-  // disable the "Powered by Drupal" block for all themes
-  $query = db_update('block')->fields(array('status' => '0'))
-    ->condition(
-        db_and()
-          ->condition('module', 'system', '=')
-          ->condition('delta', 'powered-by', '=')
-        )
-    ->execute();
-
-  // enable "CDM Search Taxa" block for all themes
-  $new_blocks = array(
-      array(
-          'module' => 'cdm_dataportal',
-          'delta' => '2',
-          'theme' => $default_theme,
-          'status' => 1,
-          'weight' => -11,
-          'region' => 'sidebar_first',
-          'pages' => '',
-          'cache' => -1,
-      ),
-   );
-  $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
-  foreach ($new_blocks as $block) {
-    $query->values($block);
-  }
-  $query->execute();
-
-
  /****************************************
   *  Reconfigure Drupal core modules
   ****************************************/
@@ -282,8 +229,84 @@ function CDM_Portal_install() {
     ->execute();
 
   /****************************************
-   *  Create the front page
+   *  Blocks
    ****************************************/
+
+  // >>> admin/structure/block
+  //    Disable the blocks that were enabled for the dashboard in the standard install.
+  //    In the CDM dataportals we use the admin_menu module instead of taskbar and dashboard.
+  $query = db_update('block')->fields(array('status' => '0'))
+  ->condition('region', 'dashboard_main', '=')
+  ->execute();
+  $query = db_update('block')->fields(array('status' => '0'))
+  ->condition('region', 'dashboard_sidebar', '=')
+  ->execute();
+
+  // disable "Search form"  block for all themes
+  $query = db_update('block')->fields(array('status' => '0'))
+  ->condition(
+      db_and()
+      ->condition('module', 'search', '=')
+      ->condition('delta', 'form', '=')
+  )
+  ->execute();
+
+  // disable the "Powered by Drupal" block for all themes
+  $query = db_update('block')->fields(array('status' => '0'))
+  ->condition(
+      db_and()
+      ->condition('module', 'system', '=')
+      ->condition('delta', 'powered-by', '=')
+  )
+  ->execute();
+
+  $new_blocks = array(
+      // enable "CDM Search Taxa" block for all themes
+      array(
+          'block' => array(
+              'module' => 'cdm_dataportal',
+              'delta' => '2',
+              'theme' => $default_theme,
+              'status' => 1,
+              'weight' => -11,
+              'region' => 'sidebar_first',
+              'pages' => '',
+              'cache' => -1,
+          )
+      ),
+      // CDM web service debug block
+      array(
+          'block' => array(
+              'module' => 'cdm_api',
+              'delta' => 'cdm_ws_debug',
+              'theme' => $default_theme,
+              'status' => 1,
+              'weight' => -50,
+              'region' => 'sidebar_first',
+              'pages' => '',
+              'cache' => -1,
+          ),
+          'block_role' => array(
+              'module' => 'cdm_api',
+              'delta' => 'cdm_ws_debug',
+              'rid' => $admin_role->rid
+          )
+      )
+  );
+  $block_insert = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
+  $block_role_insert = db_insert('block_role')->fields(array('module', 'delta', 'rid'));
+  foreach ($new_blocks as $block) {
+    $block_insert->values($block['block']);
+    if(isset($block['block_role'])){
+      $block_role_insert->values($block['block_role']);
+    }
+  }
+  $block_insert->execute();
+  $block_role_insert->execute();
+
+ /****************************************
+  *  Create the front page
+  ****************************************/
   $node = new stdClass();
   $node->uid = 1;
   $node->type = 'page';

@@ -127,17 +127,77 @@ function cdm_dataportal_update_7303() {
  * update for RELEASE 3.2.2:
  *  - migrating variable cdm_dataportal_show_default_image to cdm_taxon_profile_image['show']
  *  - enabling required module file
+ *  - enable new debug block for all dataportals
  */
 function cdm_dataportal_update_7304() {
 
     module_enable(array('file'), TRUE);
     $tasks_performed[] = 'module file enabled';
 
-    $cdm_taxon_profile_image_settings = unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT);
-    $cdm_taxon_profile_image_settings['show'] = variable_get('cdm_dataportal_show_default_image', 0);
-    variable_set(CDM_TAXON_PROFILE_IMAGE, $cdm_taxon_profile_image_settings);
-    variable_del('cdm_dataportal_show_default_image');
-    $tasks_performed[] = 'migrating variable cdm_dataportal_show_default_image to cdm_taxon_profile_image[\'show\']';
+    if(!variable_get(CDM_TAXON_PROFILE_IMAGE, FALSE)){
+      $cdm_taxon_profile_image_settings = unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT);
+      $cdm_taxon_profile_image_settings['show'] = variable_get('cdm_dataportal_show_default_image', 0);
+      variable_set(CDM_TAXON_PROFILE_IMAGE, $cdm_taxon_profile_image_settings);
+      variable_del('cdm_dataportal_show_default_image');
+      $tasks_performed[] = 'migrating variable cdm_dataportal_show_default_image to cdm_taxon_profile_image[\'show\']';
+    }
+
+    $cdm_admin_role = user_role_load_by_name('CDM admin');
+    $admin_role = user_role_load_by_name("admin");
+    if(!$admin_role){
+      $admin_role = user_role_load_by_name("administrator");
+    }
+    user_multiple_role_edit(array(1), 'add_role', $admin_role->rid);
+    $tasks_performed[] = 'admin user (uid=1) added to role ' . $admin_role->name;
+
+    // CDM web service debug block
+    $cdm_ws_debug_block = array(
+        'block' => array(
+            'module' => 'cdm_api',
+            'delta' => 'cdm_ws_debug',
+            'theme' => NULL,
+            'status' => 1,
+            'weight' => -50,
+            'region' => 'sidebar_first',
+            'pages' => '',
+            'cache' => -1,
+        ),
+        'block_role' =>
+            array(
+                array(
+                  'module' => 'cdm_api',
+                  'delta' => 'cdm_ws_debug',
+                  'rid' => $cdm_admin_role->rid
+               ),
+                array(
+                  'module' => 'cdm_api',
+                  'delta' => 'cdm_ws_debug',
+                  'rid' => $admin_role->rid
+               )
+        )
+    );
+    // clean up existing block configuration which might be set by drupal automatically, we need to override this
+    db_delete('block')->condition('module', 'cdm_api')->execute();
+    db_delete('block_role')->condition('module', 'cdm_api')->execute();
+    // insert
+    $block_insert = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
+    $block_role_insert = db_insert('block_role')->fields(array('module', 'delta', 'rid'));
+
+    $themes = system_list('theme');
+    foreach ($themes as $theme) {
+      if($theme->status == "1"){ // only for enabled themes
+        $cdm_ws_debug_block['block']['theme'] = $theme->name;
+        $block_insert->values($cdm_ws_debug_block['block']);
+      }
+    }
+    foreach($cdm_ws_debug_block['block_role'] as $block_role){
+      $block_role_insert->values($block_role);
+    }
+    $block_insert->execute();
+    $block_role_insert->execute();
+    $tasks_performed[] = 'CDM web service debug block enabled for \'CDM admin\' users in all themes';
+    $tasks_performed[] = _remove_variable('cdm_webservice_debug');
+    $tasks_performed[] = _remove_variable('cdm_webservice_isStub');
 
     return  join(', ',$tasks_performed);
 }
@@ -161,7 +221,7 @@ function _rename_variable($old_name, $new_name) {
     $success = TRUE;
   }
 
-  return "Variable \'$old_name\' to \'$new_name\' renamed. ";
+  return "Variable '$old_name' to '$new_name' renamed. ";
 }
 
 /**
@@ -174,7 +234,7 @@ function _rename_variable($old_name, $new_name) {
  */
 function _remove_variable($name) {
   variable_del($name);
-  return "Variable \'$name\' removed. ";
+  return "Variable '$name' removed. ";
 }
 
 /**
@@ -187,7 +247,7 @@ function _remove_variable($name) {
  */
 function _create_variable($name, $value) {
   variable_set($name, $value);
-  return "Variable \'$name\' created with value: \'$value\'. ";
+  return "Variable '$name' created with value: '$value'. ";
 }
 
 /**

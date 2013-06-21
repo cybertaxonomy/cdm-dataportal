@@ -7,14 +7,27 @@
  * See also http://groups.drupal.org/node/6355.
  */
 
+
 #block-cdm-api-cdm-ws-debug {
-  background-color: #252525;
+  background-color: #373737;
   color: #fff;
-  border: 1px solid #b8d3e5;
+  border: 1px solid #fff;
+  -moz-box-shadow: inset 0 0 3px 2px #fff;
+  -webkit-box-shadow: inset 0 0 3px 2px #fff;
+  box-shadow: inset 0 0 3px 2px #fff;
 }
 
-#block-cdm-api-cdm-ws-debug h2 {
-  margin: 0;
+#cdm-ws-debug-table-container {
+  display: none;
+}
+
+#block-cdm-api-cdm-ws-debug h4 {
+  margin: 3px;
+  padding: 0;
+}
+
+#cdm-ws-debug-table {
+  width: 100%;
 }
 
 #cdm-ws-debug-table td.data_links a {

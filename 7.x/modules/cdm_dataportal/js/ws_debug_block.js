@@ -4,8 +4,6 @@
  */
 jQuery(document).ready(function($) {
 
-    $('#block-cdm-api-cdm-ws-debug .content').hide(); // hide parent element
-
     $('#cdm-ws-debug-table').dataTable({
         "bPaginate" : false,
         "bFilter" : true,
@@ -26,7 +24,7 @@ jQuery(document).ready(function($) {
                     for(var rowIndex = iStart; rowIndex < iEnd; rowIndex++){
                         sum += Number(aData[rowIndex][colIndex]);
                     }
-                    newHtml = sum;
+                    newHtml = sum.toFixed(3);
                 } else if(colums_to_sum_up[colIndex]) {
                     newHtml = colums_to_sum_up[colIndex];
                 }
@@ -38,7 +36,7 @@ jQuery(document).ready(function($) {
         }
     });
 
-    $('#block-cdm-api-cdm-ws-debug .title').css('cursor', 'pointer').colorbox({
+    $('#cdm-ws-debug-button').css('cursor', 'pointer').colorbox({
         "href" : '#cdm-ws-debug-table_wrapper', // wrapper created by dataTable()
         "inline" : true,
         "width" : '90%',

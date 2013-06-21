@@ -114,14 +114,16 @@ function cdm_api_block_view($delta) {
 
     _add_js_ws_debug();
 
-    $block['subject'] = t('CDM Debug');
-    // cannot use theme_tabel() since table footer is not jet supported in D7
+    $block['subject'] = ''; // no subject, title in content for having a defined element id
+    // otherwise it would depend on the theme
     $block['content'] =
-        '<table id="cdm-ws-debug-table">'
+        '<h4 id="cdm-ws-debug-button">' . t('CDM Debug') . '</h4>'
+          // cannot use theme_table() since table footer is not jet supported in D7
+        . '<div id="cdm-ws-debug-table-container"><table id="cdm-ws-debug-table">'
         . $header
         . '<tbody>' . join('', $rows) . '</tbody>'
         . $footer
-        . '</table>';
+        . '</table></div>';
 
     return $block;
   }
