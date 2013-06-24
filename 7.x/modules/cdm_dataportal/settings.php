@@ -445,8 +445,8 @@ function cdm_settings_general() {
 
   $form['cdm_webservice']['cdm_webservice_debug'] = array(
     '#type' => 'markup',
-    '#markup' => '<b>Debug CDM Web Service:</b> The web service debug box has completely been replaced'
-      . 'by  the ' . l('CDM webservice debug block', 'admin/structure/block/manage/cdm_api/cdm_ws_debug/configure')
+    '#markup' => '<b>Debug CDM Web Service:</b> The web service debug box has completely been replaced '
+      . 'by  the ' . l('CDM web service debug block', 'admin/structure/block/manage/cdm_api/cdm_ws_debug/configure')
       . '. It is usually only visible for administrative roles like <i>administrator</i> and <i>CDM admin</i>'
   );
 
