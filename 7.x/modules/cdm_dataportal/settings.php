@@ -444,15 +444,10 @@ function cdm_settings_general() {
   );
 
   $form['cdm_webservice']['cdm_webservice_debug'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('<b>Debug CDM Web Service</b>'),
-    '#default_value' => variable_get('cdm_webservice_debug', 1),
-    '#description' => t('The black web service debug box will appear at the top
-      of each page. When clicked it toggles open and provides a list of all HTTP
-      requests which have been made while building of this page.<br />
-      <strong>Note:</strong> this is a feature dedicated to developers. It will
-      only be visible when logged in and if the user has suffucicient rights to
-      see this debug box.'),
+    '#type' => 'markup',
+    '#markup' => '<b>Debug CDM Web Service:</b> The web service debug box has completely been replaced'
+      . 'by  the ' . l('CDM webservice debug block', 'admin/structure/block/manage/cdm_api/cdm_ws_debug/configure')
+      . '. It is usually only visible for administrative roles like <i>administrator</i> and <i>CDM admin</i>'
   );
 
   $form['cdm_webservice']['freetext_index'] = array(
