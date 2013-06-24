@@ -142,13 +142,6 @@ function cdm_dataportal_update_7304() {
       $tasks_performed[] = 'migrating variable cdm_dataportal_show_default_image to cdm_taxon_profile_image[\'show\']';
     }
 
-    $cdm_admin_role = user_role_load_by_name('CDM admin');
-    $admin_role = user_role_load_by_name("admin");
-    if(!$admin_role){
-      $admin_role = user_role_load_by_name("administrator");
-    }
-    user_multiple_role_edit(array(1), 'add_role', $admin_role->rid);
-    $tasks_performed[] = 'admin user (uid=1) added to role ' . $admin_role->name;
 
     // CDM web service debug block
     $cdm_ws_debug_block = array(
@@ -164,18 +157,56 @@ function cdm_dataportal_update_7304() {
         ),
         'block_role' =>
             array(
-                array(
-                  'module' => 'cdm_api',
-                  'delta' => 'cdm_ws_debug',
-                  'rid' => $cdm_admin_role->rid
-               ),
-                array(
-                  'module' => 'cdm_api',
-                  'delta' => 'cdm_ws_debug',
-                  'rid' => $admin_role->rid
-               )
+
         )
     );
+
+    $admin_user = user_load(1);
+
+    // harmonize cdm admin role names if needed
+    $cdm_admin_role = user_role_load_by_name('CDM Admin');
+    if(is_object($cdm_admin_role) && $cdm_admin_role->name !== 'CDM admin'){
+      $cdm_admin_role->name = 'CDM admin';
+      user_role_save($cdm_admin_role);
+      $tasks_performed[] = $cdm_admin_role->name . ' role name harmonized';
+    }
+    $cdm_admin_role = user_role_load_by_name('CDM admin');
+
+    if(is_object($cdm_admin_role)) {
+      // make sure admin is member of role CDM admin
+      if (!isset($admin_user->roles[$admin_role->rid])) {
+        user_multiple_role_edit(array(1), 'add_role', $cdm_admin_role->rid);
+        $tasks_performed[] = 'admin user (uid=1) added to role ' . $cdm_admin_role->name;
+      }
+      $cdm_ws_debug_block['block_role'][] =  array(
+        'module' => 'cdm_api',
+        'delta' => 'cdm_ws_debug',
+        'rid' => $cdm_admin_role->rid
+      );
+    }
+
+    $admin_role = user_role_load_by_name("admin"); // Drupal 5
+
+    if(is_object($admin_role)){
+      $admin_role->name == 'administrator';
+      user_role_save($admin_role);
+      $tasks_performed[] = 'administrator role name harmonized';
+    } else {
+      $admin_role = user_role_load_by_name("administrator"); // Drupal 7
+    }
+    if(is_object($admin_role)){
+      // make sure admin is member of role admin
+      if (!isset($admin_user->roles[$admin_role->rid])) {
+        user_multiple_role_edit(array(1), 'add_role', $admin_role->rid);
+        $tasks_performed[] = 'admin user (uid=1) added to role ' . $admin_role->name;
+      }
+      $cdm_ws_debug_block['block_role'][] =  array(
+          'module' => 'cdm_api',
+          'delta' => 'cdm_ws_debug',
+          'rid' => $admin_role->rid
+      );
+    }
+
     // clean up existing block configuration which might be set by drupal automatically, we need to override this
     db_delete('block')->condition('module', 'cdm_api')->execute();
     db_delete('block_role')->condition('module', 'cdm_api')->execute();
