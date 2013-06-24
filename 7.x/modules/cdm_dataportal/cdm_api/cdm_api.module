@@ -82,8 +82,10 @@ function cdm_api_block_view($delta) {
   switch ($delta) {
     case 'cdm_ws_debug':
 
+    $cdm_ws_url = variable_get('cdm_webservice_url', '');
+
     $field_map = array(
-        'ws_uri' => t('URI'),
+        'ws_uri' => t('URI') . ' <code>(' . $cdm_ws_url .'...)</code>',
         'time' => t('Time'),
         'fetch_seconds' => t('Fetching [s]'),
         'parse_seconds' => t('Parsing [s]'),
@@ -102,8 +104,13 @@ function cdm_api_block_view($delta) {
     $rows = array();
 
     foreach ($_SESSION['cdm']['ws_debug'] as $data){
-      $cells = array();
+
       $data = unserialize($data);
+
+      // stip of webservice base url
+      $data['ws_uri'] = str_replace($cdm_ws_url, '', $data['ws_uri']);
+
+      $cells = array();
       foreach ($field_map as $field => $label){
         $cells[] = '<td class="' . $field . '">' .  $data[$field] . '</td>';
       }

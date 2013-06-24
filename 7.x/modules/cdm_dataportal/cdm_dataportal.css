@@ -30,6 +30,10 @@
   width: 100%;
 }
 
+#cdm-ws-debug-table code {
+  font-weight: normal;
+}
+
 #cdm-ws-debug-table td.data_links a {
   color: #999;
 }
