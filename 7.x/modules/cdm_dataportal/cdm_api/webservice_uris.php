@@ -88,9 +88,9 @@ define('CDM_WS_TDWG_LEVEL', 'term/tdwg/$0');
 /**
  * Returns FeatureTrees that are stored in this community store.
  */
-define('CDM_WS_FEATURETREE', 'featureTree/$0');
-define('CDM_WS_FEATURETREES', 'featureTree');
-// define('CDM_WS_FEATURETREE_CHILDREN', 'featuretree/$0/children');
+define('CDM_WS_FEATURETREE', 'portal/featureTree/$0');
+define('CDM_WS_FEATURETREES', 'portal/featureTree');
+// define('CDM_WS_FEATURETREE_CHILDREN', 'featureTree/$0/children');
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'ext/edit/mapServiceParameters/taxonDistributionFor/$0');
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');
 

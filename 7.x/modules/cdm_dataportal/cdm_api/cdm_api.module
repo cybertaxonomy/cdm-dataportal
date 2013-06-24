@@ -639,7 +639,7 @@ function timePeriodAsOrderKey($period) {
 }
 
 /**
- * Composes a CDM webservice URL with parameters and querystring.
+ * Composes a absolute CDM web service URI with parameters and querystring.
  *
  * @param string $uri_pattern
  *   String with place holders ($0, $1, ..) that should be replaced by the
@@ -896,10 +896,15 @@ function uri_uriByProxy($uri, $theme = FALSE) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Composes the the absolute REST service URI to the annotations pager
+ * for the given CDM entity.
+ *
+ * NOTE: Not all CDM Base types are yet supported.
+ *
+ * @param $cdmBase
+ *   The CDM entity to construct the annotations pager uri for
  */
-function cdm_compose_annotations_url($cdmBase) {
+function cdm_compose_annotations_uri($cdmBase) {
   if (!$cdmBase->uuid) {
     return;
   }
@@ -970,34 +975,39 @@ function cdm_compose_annotations_url($cdmBase) {
  * @param int $pageNumber
  *   The number of the page to be returned, the first page has the
  *   pageNumber = 0
- *
+ * @param bool $absoluteURI
+ *   TRUE when the URL should be treated as absolute URL.
  * @return the a CDM Pager object
  *
  */
-function cdm_ws_page($resourceURI, $pageSize, $pageNumber) {
+function cdm_ws_page($resourceURI, $pageSize, $pageNumber,  $absoluteURI = FALSE) {
   return cdm_ws_get($resourceURI, NULL, queryString(array(
-    "pageNumber" => $pageNumber,
-    'pageSize' => $pageSize,
-  )));
+      "pageNumber" => $pageNumber,
+      'pageSize' => $pageSize,
+    )),
+    'GET',
+    $absoluteURI);
 }
 
 /**
  * Fetches all entities from the given REST endpoint using the pager mechanism.
  *
  * @param string $resourceURI
+ * @param bool $absoluteURI
+ *   TRUE when the URL should be treated as absolute URL.
  *
  * @return array
  *     A list of CDM entitites
  *
  */
-function cdm_ws_fetch_all($resourceURI) {
+function cdm_ws_fetch_all($resourceURI, $absoluteURI = FALSE) {
   $page_index = 0;
   // using a bigger page size to avoid to many multiple requests
   $page_size = 200;
   $entities = array();
 
   while ($page_index !== FALSE){
-    $pager =  cdm_ws_page($resourceURI, $page_size, $page_index);
+    $pager =  cdm_ws_page($resourceURI, $page_size, $page_index, $absoluteURI);
     if(isset($pager->records) && is_array($pager->records)) {
       $entities = $pager->records;
       if(!empty($pager->nextIndex)){
@@ -1316,8 +1326,8 @@ function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDesc
 function cdm_ws_getAnnotationsFor(&$cdmBase, $includeTypes = FALSE) {
 
   if(!isset($cdmBase->annotations)){
-    $annotationUrl = cdm_compose_annotations_url($cdmBase);
-    $cdmBase->annotations = cdm_ws_fetch_all($annotationUrl);
+    $annotationUrl = cdm_compose_annotations_uri($cdmBase);
+    $cdmBase->annotations = cdm_ws_fetch_all($annotationUrl, TRUE);
   }
 
   $annotations = array();
@@ -1614,14 +1624,14 @@ function cdm_ws_debug_add($uri, $duration_fetch, $duration_parse, $datasize, $st
   $data_links = '';
   if (_is_cdm_ws_uri($path)) {
     $data_links .= '<a href="'
-        . url($path . '.xml', array('query' => $query))
+        . url($path . '.xml', array('query' => $query, 'absolute' => TRUE))
         . '" target="data">xml</a>-';
     $data_links .= '<a href="'
         . url('cdm_api/proxy/' . urlencode(url($path . '.xml', array('query' => $query))))
         . '" target="data">proxied</a>';
     $data_links .= '<br/>';
     $data_links .= '<a href="'
-        . url($path . '.json', array('query' => $query))
+        . url($path . '.json', array('query' => $query, 'absolute' => TRUE))
         . '" target="data">json</a>-';
     $data_links .= '<a href="'
         . url('cdm_api/proxy/' . urlencode(url($path . '.json', array('query' => $query))))
@@ -1820,7 +1830,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
   }
 
   // Get feature trees from database.
-  $persited_trees = cdm_ws_get(CDM_WS_FEATURETREES);
+  $persited_trees = cdm_ws_fetch_all(CDM_WS_FEATURETREES);
   if (is_array($persited_trees)) {
     $feature_trees = array_merge($feature_trees, $persited_trees);
   }
