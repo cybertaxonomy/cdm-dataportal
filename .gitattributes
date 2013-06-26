@@ -914,37 +914,6 @@
 7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/images/sort_desc_disabled.png -text svneol=unset#unset
 7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/js/jquery.dataTables.js -text
 7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/js/jquery.dataTables.min.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/DataTables.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/api/api.internal.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/api/api.methods.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/api/api.static.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.ajax.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.columns.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.constructor.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.data.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.draw.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.filter.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.info.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.init.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.length.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.page.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.processing.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.scrolling.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.sizing.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.sort.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.state.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/core/core.support.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/ext/ext.classes.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/ext/ext.paging.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/ext/ext.sorting.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/ext/ext.types.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.column.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.defaults.columns.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.defaults.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.ext.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.row.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.search.js -text
-7.x/modules/cdm_dataportal/js/DataTables-1.9.4/media/src/model/model.settings.js -text
 7.x/modules/cdm_dataportal/js/OpenLayers-2.11/OpenLayers.js -text
 7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/blank.gif -text
 7.x/modules/cdm_dataportal/js/OpenLayers-2.11/img/cloud-popup-relative.png -text svneol=unset#unset
