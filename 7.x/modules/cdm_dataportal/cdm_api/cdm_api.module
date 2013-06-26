@@ -1601,46 +1601,34 @@ function cdm_ws_debug_add($uri, $duration_fetch, $duration_parse, $datasize, $st
   $time = microtime(TRUE) - $initial_time;
 
   // Decompose uri into path and query element.
-  // URI query elements are stored in an array
-  // suitable for drupal_http_build_query()
   $uri_parts = explode("?", $uri);
   $query = array();
   if (count($uri_parts) == 2) {
     $path = $uri_parts[0];
-    $queryparts = explode("&", $uri_parts[1]);
-    foreach ($queryparts as $querypart) {
-      $querypart = explode("=", $querypart);
-      if(count($querypart) == 2){
-        $query[$querypart[0]] = $querypart[1];
-      } else {
-        $query[$querypart[0]] = null;
-      }
-    }
   }
   else {
     $path = $uri;
   }
 
+  if(strpos($uri, '?') > 0){
+    $json_uri = str_replace('?', '.json?', $uri);
+    $xml_uri = str_replace('?', '.xml?', $uri);
+  } else {
+    $json_uri = $uri . '.json';
+    $xml_uri = $json_uri . '.xml';
+  }
+
   // data links to make data accecsible as json and xml
   $data_links = '';
   if (_is_cdm_ws_uri($path)) {
-    $data_links .= '<a href="'
-        . url($path . '.xml', array('query' => $query, 'absolute' => TRUE))
-        . '" target="data">xml</a>-';
-    $data_links .= '<a href="'
-        . url('cdm_api/proxy/' . urlencode(url($path . '.xml', array('query' => $query))))
-        . '" target="data">proxied</a>';
+    $data_links .= '<a href="' . $xml_uri . '" target="data">xml</a>-';
+    $data_links .= '<a href="' . url('cdm_api/proxy/' . urlencode($xml_uri)) . '" target="data">proxied</a>';
     $data_links .= '<br/>';
-    $data_links .= '<a href="'
-        . url($path . '.json', array('query' => $query, 'absolute' => TRUE))
-        . '" target="data">json</a>-';
-    $data_links .= '<a href="'
-        . url('cdm_api/proxy/' . urlencode(url($path . '.json', array('query' => $query))))
-        . '" target="data">proxied</a>';
+    $data_links .= '<a href="' . $json_uri . '" target="data">json</a>-';
+    $data_links .= '<a href="' . url('cdm_api/proxy/' . urlencode($json_uri)) . '" target="data">proxied</a>';
   }
   else {
-    $data_links .= '<a href="' . url($path, array(
-        'query' => $query)) . '" target="data">open</a>';
+    $data_links .= '<a href="' . $uri . '" target="data">open</a>';
   }
 
   //
