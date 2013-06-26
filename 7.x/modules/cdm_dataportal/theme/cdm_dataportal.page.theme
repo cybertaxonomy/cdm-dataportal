@@ -341,7 +341,7 @@ function theme_cdm_taxon_page_profile($variables) {
   }
 
   // Description TOC.
-  $out = '<div id="featureTOC">';
+  $out .= '<div id="featureTOC">';
   $out .= '<h2>' . t('Content') . '</h2>';
   $out .= theme('cdm_feature_nodesTOC', array('featureNodes' => $merged_tree->root->children));
   $out .= '</div>';
