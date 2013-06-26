@@ -62,65 +62,16 @@ function theme_cdm_feature_name($variables) {
 }
 
 /**
- * Returns HTML for a taxon profile.
+ * Returns HTML for a taxon profile from the $mergedFeatureNodes of a given $taxon.
  *
  * The taxon profile consists of description elements which are ordered by the
  * structure defined by specific FeatureTree. The chosen FeatureTree is merged
  * with the list of desctiprion elements prior to using this method.
  *
- * @see cdm_ws_descriptions_by_featuretree()
- *
- * @param array $variables
- *   An associative array containing:
- *   - mergedTrees
- *   - taxon: The taxon whose sprofile to show.
- *
- * @ingroup themeable
- */
-function theme_cdm_featureTrees($variables) {
-  $mergedTrees = $variables['mergedTrees'];
-  $taxon = $variables['taxon'];
-  $out = '';
-  if (!isset($mergedTrees)) {
-    return;
-  }
-
-  foreach ($mergedTrees as &$mTree) {
-    // TODO display title and reference in case of multiple $mergedTrees ->
-    // theme
-    $out .= theme('cdm_feature_nodes', array('mergedFeatureNodes' => $mTree->root->children, 'taxon' => $taxon));
-  }
-
-  return $out;
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_featureTreeTOCs($variables) {
-  $mergedTrees = $variables['mergedTrees'];
-  if (!$mergedTrees) {
-    return;
-  }
-  // FIXME.
-  $out = '<div id="featureTOC">';
-  $out .= '<h2>' . t('Content') . '</h2>';
-
-  // TODO diplay title and reference in case of multiple $mergedTrees -> theme.
-  foreach ($mergedTrees as &$mTree) {
-    $out .= theme('cdm_feature_nodesTOC', array('featureNodes' => $mTree->root->children));
-  }
-
-  $out .= '</div>';
-  return $out;
-}
-
-/**
- * Returns HTML for the $mergedFeatureNodes of a given $taxon.
- *
  * The merged nodes can be obtained by making use of the
  * function cdm_ws_descriptions_by_featuretree().
+ *
+ * @see cdm_ws_descriptions_by_featuretree()
  *
  * @param array $variables
  *   An associative array containing:

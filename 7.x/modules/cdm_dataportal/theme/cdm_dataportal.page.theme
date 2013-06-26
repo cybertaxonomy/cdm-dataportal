@@ -154,16 +154,19 @@ function theme_cdm_taxon_page($variables) {
   // --- PAGE PART: DESCRIPTION --- //
   if ($page_part == 'description' || $page_part == 'all') {
 
+  /*
     $markerTypesEmpty = array();
     $markerTypesEmpty['markerTypes'] = '';
     $queryString = $markerTypesEmpty['markerTypes'] ? queryString($markerTypesEmpty) : '';
+
     // Retrieve all descriptions for the taxon.
     $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon->uuid, $queryString);
-
     $nonStructuredDescriptions = array();
     if ($taxonDescriptions != NULL) {
       foreach ($taxonDescriptions as $taxonDescription) {
-        // Check if structured description.
+        // handling of structured data:
+        // structured data will be transformed in to natural language and is then readded
+        // to the array of descriptions
         $hasStructuredData = cdm_ws_get(CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA, $taxonDescription->uuid);
         if (isset($hasStructuredData->Boolean)) {
           $hasStructuredData = $hasStructuredData->Boolean == 'TRUE';
@@ -197,16 +200,18 @@ function theme_cdm_taxon_page($variables) {
         }
         $nonStructuredDescriptions[] = $taxonDescription;
       }
+      // ...............................................END
       // Release memory.
       $taxonDescriptions = NULL;
     }
+    */
 
-    $mergedTrees = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $nonStructuredDescriptions, variable_get('cdm_dataportal_descriptions_separated', FALSE));
+    $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $taxon->uuid);
 
     $profile_html = '<div id="general">';
     $profile_html .= theme('cdm_taxon_page_profile', array(
       'taxon' => $taxon,
-      'mergedTrees' => $mergedTrees,
+      'merged_tree' => $merged_tree,
       'media' => $media,
       'hideImages' => $hideImages,
       ));
@@ -286,7 +291,7 @@ function theme_cdm_taxon_page($variables) {
  */
 function theme_cdm_taxon_page_profile($variables) {
   $taxon = $variables['taxon'];
-  $mergedTrees = $variables['mergedTrees'];
+  $merged_tree = $variables['merged_tree'];
   $media = $variables['media'];
   $hideImages = $variables['hideImages'];
   $out = '';
@@ -336,10 +341,13 @@ function theme_cdm_taxon_page_profile($variables) {
   }
 
   // Description TOC.
-  $out .= theme('cdm_featureTreeTOCs', array('mergedTrees' => $mergedTrees));
+  $out = '<div id="featureTOC">';
+  $out .= '<h2>' . t('Content') . '</h2>';
+  $out .= theme('cdm_feature_nodesTOC', array('featureNodes' => $merged_tree->root->children));
+  $out .= '</div>';
 
   // Description.
-  $out .= theme('cdm_featureTrees', array('mergedTrees' => $mergedTrees, 'taxon' => $taxon));
+  $out .= theme('cdm_feature_nodes', array('mergedFeatureNodes' => $merged_tree->root->children, 'taxon' => $taxon));
 
   return $out;
 }

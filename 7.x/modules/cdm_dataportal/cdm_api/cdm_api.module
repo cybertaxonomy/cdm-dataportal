@@ -1272,41 +1272,42 @@ function _cdm_relationship_type_term_label_callback($term) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Fetches all TaxonDescription descriptions elements wich are accociated to the
+ * Taxon specified by the $taxon_uuid and megres the elements into the given
+ * feature tree.
+ * @param $feature_tree
+ *     The CDM FeatureTree to be used as template
+ * @param $taxon_uuid
+ *     The UUID of the taxon
+ * @return$feature_tree
+ *     The CDM FeatureTree wich was given as parameter merged tree wheras the
+ *     CDM FeatureNodes are extended by an additinal field 'descriptionElements'
+ *     witch will hold the accoding $descriptionElements.
  */
-function cdm_ws_descriptions_by_featuretree($featureTree, $descriptions, $isDescriptionsSeparated = FALSE) {
-  if (!$featureTree) {
+function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid) {
+
+  if (!$feature_tree) {
     drupal_set_message(check_plain(t("No 'FeatureTree' has been set so far.
       In order to see the species profiles of your taxa, please select a
       'FeatureTree' in the !settings"), array('!settings' => l(t('CDM Dataportal Settings'), 'admin/config/cdm_dataportal/layout'))), 'warning');
     return FALSE;
   }
 
-  $mergedTrees = array();
+  $merged_trees = array();
 
-  if ($isDescriptionsSeparated) {
-    // Merge any description into a separate feature tree.
-    foreach ($descriptions as $desc) {
-      $mergedNodes = _mergeFeatureTreeDescriptions($featureTree->root->children, $desc->elements);
+  $description_elemens = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON . '?' . queryString(
+      array(
+      'taxon' => $taxon_uuid,
+      'features' => cdm_featureTree_elements_toString($feature_tree->root, ',', 'uuid')
+      )
+    )
+  );
 
-      $mergedTree = clone $featureTree;
-      $mergedTree->root->children = $mergedNodes;
-      $mergedTrees[] = $mergedTree;
-    }
-  }
-  else {
-    // Combine all descripions into one feature tree.
-    $descriptionElemens = array();
-    foreach ($descriptions as $desc) {
-      $descriptionElemens = array_merge($descriptionElemens, $desc->elements);
-    }
-    $mergedNodes = _mergeFeatureTreeDescriptions($featureTree->root->children, $descriptionElemens);
-    $featureTree->root->children = $mergedNodes;
-    $mergedTrees[] = $featureTree;
-  }
+  // Combine all descripions into one feature tree.
+  $merged_nodes = _mergeFeatureTreeDescriptions($feature_tree->root->children, $description_elemens);
+  $feature_tree->root->children = $merged_nodes;
 
-  return $mergedTrees;
+  return $feature_tree;
 }
 
 /**
@@ -1749,24 +1750,34 @@ function cdm_http_request($uri, $method = "GET", $parameters = array(), $header 
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Concatenates recursively the fields of all features contained in the given
+ * CDM FeatureTree root node.
+ *
+ * @param $rootNode
+ *     A CDM FeatureTree node
+ * @param
+ *     The character to be used as glue for concatenation, default is ', '
+ * @param $field_name
+ *     The field name of the CDM Features
  */
-function _featureTree_elements_toString($rootNode, $separator = ', ') {
+function cdm_featureTree_elements_toString($root_node, $separator = ', ', $field_name = 'representation_L10n') {
   $out = '';
 
-  foreach ($rootNode->children as $featureNode) {
+  $pre_child_separator = $separator;
+  $post_child_separator = '';
+
+  foreach ($root_node->children as $feature_node) {
     $out .= ($out ? $separator : '');
-    $out .= $featureNode->feature->representation_L10n;
-    if (is_array($featureNode->children)) {
+    $out .= $feature_node->feature->$field_name;
+    if (is_array($feature_node->children)) {
       $childlabels = '';
-      foreach ($featureNode->children as $childNode) {
+      foreach ($feature_node->children as $child_node) {
         $childlabels .= ($childlabels ? $separator : '');
+        $childlabels .= cdm_featureTree_elements_toString($child_node, $separator, $field_name);
       }
-      $childlabels .= _featureTree_elements_toString($childNode);
-    }
-    if ($childlabels) {
-      $out .= '[' . $childlabels . ' ]';
+      if (strlen($childlabels)) {
+        $out .=  $pre_child_separator . $childlabels . $post_child_separator;
+      }
     }
   }
   return $out;

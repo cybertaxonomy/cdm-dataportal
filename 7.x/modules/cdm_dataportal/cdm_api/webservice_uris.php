@@ -62,7 +62,7 @@ define('CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE', 'portal/description/$0/namedAreaT
 define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE', 'portal/description/$0/DistributionTree');
 
 define('CDM_WS_DESCRIPTIONELEMENT', 'descriptionElement/$0');
-
+define('CDM_WS_DESCRIPTIONELEMENT_BY_TAXON', 'portal/descriptionElement/byTaxon');
 define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
 
 /**

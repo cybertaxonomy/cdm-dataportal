@@ -384,7 +384,7 @@ function cdm_dataportal_search_taxon_by_description_form() {
   $featureTree->titleCache; if(is_array($featureTree->root->children) &&
   count($featureTree->root->children) > 0){ // render the hierarchic tree
   structure $treeDetails = '<div class="featuretree_structure">'
-  //._featureTree_elements_toString($featureTree->root)
+  //.cdm_featureTree_elements_toString($featureTree->root)
   .theme('featureTree_hierarchy', $featureTree->uuid) .'</div>'; $form =
   array(); $form['featureTree-'.$featureTree->uuid] = array( '#type' =>
   'fieldset', '#title' => t('Show details'), '#collapsible' => TRUE,

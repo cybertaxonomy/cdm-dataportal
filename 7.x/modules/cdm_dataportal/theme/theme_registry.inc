@@ -76,8 +76,6 @@ function cdm_dataportal_theme() {
       // Themes in cdm_dataportal.descriptions.theme.
       'cdm_feature_nodesTOC' => array('variables' => array('featureNodes' => NULL)),
       'cdm_feature_name' => array('variables' => array('feature_name' => NULL)),
-      'cdm_featureTrees' => array('variables' => array('mergedTrees' => NULL, 'taxon' => NULL)),
-      'cdm_featureTreeTOCs' => array('variables' => array('mergedTrees' => NULL)),
       'cdm_feature_nodes' => array('variables' => array('mergedFeatureNodes' => NULL, 'taxon' => NULL)),
       'FeatureTree_hierarchy' => array('variables' => array('FeatureTreeUuid' => NULL)),
       'FeatureTree_hierarchy_children' => array('variables' => array('node' => NULL)),
@@ -199,7 +197,7 @@ function cdm_dataportal_theme() {
       'cdm_taxon_page' => array('variables' => array('taxon' => NULL, 'page_part' => 'description')),
       'cdm_taxon_page_profile' => array('variables' => array(
           'taxon' => NULL,
-          'mergedTrees' => NULL,
+          'merged_tree' => NULL,
           'media' => NULL,
           'hideImages' => FALSE,
       )),
