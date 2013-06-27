@@ -1003,7 +1003,7 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber,  $absoluteURI = FALSE
 function cdm_ws_fetch_all($resourceURI, $absoluteURI = FALSE) {
   $page_index = 0;
   // using a bigger page size to avoid to many multiple requests
-  $page_size = 200;
+  $page_size = 500;
   $entities = array();
 
   while ($page_index !== FALSE){
