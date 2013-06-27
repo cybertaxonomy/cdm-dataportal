@@ -532,25 +532,26 @@ function theme_cdm_common_names($variables) {
   if (is_array($elements)) {
     foreach ($elements as $element) {
       if ($element->class == 'CommonTaxonName') {
-        // $key = '<b>' . $element->language->representation_L10n . '</b> (' .
-        // $element->area->titleCache . ')';
         if (isset($element->language->representation_L10n)) {
-          $key = '<b>' . $element->language->representation_L10n . '</b>';
-          $key .= (isset($element->area->titleCache) && strlen($element->area->titleCache) > 0) ? ' (' . $element->area->titleCache . ')' : '';
-          $common_names[$key][] = $element;
+          $language_area_key = '<b>' . $element->language->representation_L10n . '</b>';
+          if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
+            $language_area_key .= ' (' . $element->area->titleCache . ')';
+          }
         }
         else {
-          // @Comment WA: common name without a language, should this happen?
+          // common name without a language, should not happen but is possible
           // example: flore_gabon/cdm_dataportal/taxon/24f36d18-a6e8-4edb-93bf-4a30f3394bf5.
-          // if(!isset($key)) { // Just to mimic same behaviour as in D5.
-          $key = '';
-          // }
-          $common_names[$key][] = $element;
+          $language_area_key = '';
+        }
+        if(isset($common_names[$language_area_key][$element->name])) {
+          // same name already exists for language and areae combination, se we merge the description elements
+          cdm_merge_description_elements($common_names[$language_area_key][$element->name], $element);
+        } else{
+          // otherwise add as new entry
+          $common_names[$language_area_key][$element->name] = $element;
         }
       }
       elseif ($element->class == 'TextData') {
-        // else if ($element->class == 'TextData' && $element->feature->uuid
-        // == UUID_COMMON_NAME){
         $textData_commonNames[] = $element;
       }
     }
@@ -564,6 +565,7 @@ function theme_cdm_common_names($variables) {
 
     // Creating the output to be render by Drupal.
     foreach ($common_names as $key => $elements) {
+      ksort($elements); // sort names alphabetically
       $rendered_element_list = '';
       foreach ($elements as $element) {
         $sourcesFootnoteKeyList = '';
@@ -1485,9 +1487,6 @@ function theme_cdm_list_IdentificationKeys($variables) {
   return $out;
 }
 
-// @WA $pageSize is not used..
-// function theme_cdm_block_IdentificationKeys($taxonUuid = null, $pageSize =
-// null){
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -1515,13 +1514,10 @@ function theme_cdm_block_IdentificationKeys($variables) {
   return $out;
 }
 
-// This theming function formats the use description and use record list for
-// these descriptions.
-// Comment @WA: $pageSize and $pageNumber are not used.
-// function theme_cdm_UseDescription($descriptions = NULL, $taxonUuid = NULL,
-// $pageSize, $pageNumber) {
 /**
- * @todo Please document this function.
+ * This theming function formats the use description and use record list for
+ * these descriptions.
+ *
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_UseDescription($variables) {

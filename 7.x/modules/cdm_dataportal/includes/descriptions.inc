@@ -47,3 +47,25 @@ function cdm_description_elements_prefer_computed($description_elements){
     return $other_elements;
   }
 }
+
+/**
+ * Merge the fields 'annotations', 'markers', 'sources', 'media' from the source CDM DescriptionElement into  the target.
+ *
+ * @param $target
+ *     The source CDM DescriptionElement
+ * @param $source
+ *     The target CDM DescriptionElement
+ */
+function cdm_merge_description_elements(&$target, &$source){
+  static $fields_to_merge = array('annotations', 'markers', 'sources', 'media');
+
+  foreach ($fields_to_merge as $field){
+    if(is_array($source->$field)) {
+      if(!is_array($target->$field)){
+        $target->$field = $source->$field;
+      } else {
+        $target->$field = array_merge($target->$field, $source->$field);
+      }
+    }
+  }
+}
