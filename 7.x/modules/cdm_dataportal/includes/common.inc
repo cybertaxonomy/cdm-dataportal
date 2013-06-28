@@ -17,6 +17,20 @@
  */
 
 /**
+ * @defgroup compose Compose functions
+ * @{
+ * Functions which are composing Drupal render arays
+ *
+ * The cdm_dataporal module needs to compose rather complex render arrays from
+ * the data returned by the CDM REST service. The compose functions are responsible
+ * for creating the render arrays.
+ *
+ * All these functions are also implementations of the compose_hook() which is used
+ * in the proxy_content() function.
+ * @}
+ */
+
+/**
  * Compose an render array from a CDM Marker object.
  *
  * compose_hook() implementation
@@ -25,6 +39,8 @@
  *   CDM instance of type Marker
  * @return array
  *   A drupal render array
+ *
+ * @ingroup compose
  */
 function compose_cdm_marker($marker) {
 

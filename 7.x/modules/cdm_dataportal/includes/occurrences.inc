@@ -31,6 +31,8 @@
  * @return array
  *   the supplied render array $derivatives to which the composition of the supplied
  *   $specimenOrObservation has been added to
+ *
+ * @ingroup compose
  */
 function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives = null) {
 
@@ -366,6 +368,8 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
  *   CDM instance of type Sequence
  * @return array
  *   A render array containing the fields of the supplied $sequence
+ *
+ * @ingroup compose
  */
 function compose_cdm_sequence($sequence) {
 
