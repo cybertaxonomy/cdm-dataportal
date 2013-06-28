@@ -532,17 +532,16 @@ function theme_cdm_common_names($variables) {
   if (is_array($elements)) {
     foreach ($elements as $element) {
       if ($element->class == 'CommonTaxonName') {
+
+        // common name without a language or area, should not happen but is possible
+        $language_area_key = '';
         if (isset($element->language->representation_L10n)) {
-          $language_area_key = '<b>' . $element->language->representation_L10n . '</b>';
-          if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
-            $language_area_key .= ' (' . $element->area->titleCache . ')';
-          }
+          $language_area_key .= '<b>' . $element->language->representation_L10n . '</b>';
         }
-        else {
-          // common name without a language, should not happen but is possible
-          // example: flore_gabon/cdm_dataportal/taxon/24f36d18-a6e8-4edb-93bf-4a30f3394bf5.
-          $language_area_key = '';
+        if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
+          $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->titleCache . ')';
         }
+
         if(isset($common_names[$language_area_key][$element->name])) {
           // same name already exists for language and areae combination, se we merge the description elements
           cdm_merge_description_elements($common_names[$language_area_key][$element->name], $element);
@@ -550,6 +549,7 @@ function theme_cdm_common_names($variables) {
           // otherwise add as new entry
           $common_names[$language_area_key][$element->name] = $element;
         }
+
       }
       elseif ($element->class == 'TextData') {
         $textData_commonNames[] = $element;
