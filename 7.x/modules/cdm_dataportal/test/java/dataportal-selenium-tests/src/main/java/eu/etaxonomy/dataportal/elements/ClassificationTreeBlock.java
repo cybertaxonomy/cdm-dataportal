@@ -15,8 +15,6 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 
-import com.sun.corba.se.impl.interceptors.PINoOpHandlerImpl;
-
 /**
  *
  * <div class="cdm_taxontree_scroller_xy">
@@ -28,9 +26,9 @@ import com.sun.corba.se.impl.interceptors.PINoOpHandlerImpl;
  */
 public class ClassificationTreeBlock extends DrupalBlock {
 
-    private ClassificationTreeElement focusedElement;
+    private final ClassificationTreeElement focusedElement;
 
-    private RemoteWebElement viewPortElement;
+    private final RemoteWebElement viewPortElement;
 
     public ClassificationTreeElement getFocusedElement(){
         return focusedElement;
@@ -43,14 +41,8 @@ public class ClassificationTreeBlock extends DrupalBlock {
         viewPortElement = (RemoteWebElement)element.findElement(By.className("cdm_taxontree_scroller_xy"));
     }
 
-    public Point positionInViewPort(ClassificationTreeElement element){
-        Point elementLocation = ((RemoteWebElement)element.getElement()).getLocationOnScreenOnceScrolledIntoView();
-        Point viewPortLocation = viewPortElement.getLocationOnScreenOnceScrolledIntoView();
-        return new Point(elementLocation.x - viewPortLocation.x, elementLocation.y - viewPortLocation.y);
-    }
-
     public boolean isVisibleInViewPort(ClassificationTreeElement element){
-        Point elementOffset = positionInViewPort(element);
+        Point elementOffset = ((RemoteWebElement)element.getElement()).getCoordinates().inViewPort();
         Dimension viewPortDimension = viewPortElement.getSize();
         return elementOffset.y < viewPortDimension.height;
     }
