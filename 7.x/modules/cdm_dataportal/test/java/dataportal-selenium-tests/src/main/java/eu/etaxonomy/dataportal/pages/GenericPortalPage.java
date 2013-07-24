@@ -10,21 +10,13 @@
 package eu.etaxonomy.dataportal.pages;
 
 import java.net.MalformedURLException;
-import java.sql.PreparedStatement;
-import java.util.List;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import com.google.common.base.Function;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.elements.ClassificationTreeBlock;
 import eu.etaxonomy.dataportal.selenium.AllTrue;
 import eu.etaxonomy.dataportal.selenium.PageTitleValidated;
-import eu.etaxonomy.dataportal.selenium.UrlLoaded;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 
 /**
@@ -69,7 +61,12 @@ public class GenericPortalPage extends PortalPage {
         searchBlockElement.findElement(By.id("edit-query")).sendKeys(query);
         searchBlockElement.findElement(By.id("edit-submit")).submit();//Search results
 
-        wait.until(new AllTrue(new PageTitleValidated(context.prepareTitle("Search results")), new VisibilityOfElementLocated(By.id("container"))));
+        wait.until(
+                    new AllTrue(
+                                new PageTitleValidated(context.prepareTitle("Search results")),
+                                new VisibilityOfElementLocated(By.id("container"))
+                                )
+                    );
         return new TaxonSearchResultPage(driver, context);
     }
 

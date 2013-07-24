@@ -3,7 +3,6 @@
  */
 package eu.etaxonomy.dataportal.selenium;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import com.google.common.base.Function;
@@ -14,18 +13,19 @@ import com.google.common.base.Function;
  */
 public class PageTitleValidated implements Function<WebDriver, Boolean> {
 
-	private String title;
+    private final String title;
 
-	public PageTitleValidated(String title) {
-		this.title = title;
-	}
+    public PageTitleValidated(String title) {
+        this.title = title;
+    }
 
-	/* (non-Javadoc)
-	 * @see com.google.common.base.Function#apply(java.lang.Object)
-	 */
-	public Boolean apply(WebDriver driver) {
-		boolean validated = driver.findElement(By.tagName("title")).getText().equals(title);
-		return Boolean.valueOf(validated);
-	}
+    /* (non-Javadoc)
+     * @see com.google.common.base.Function#apply(java.lang.Object)
+     */
+    @Override
+    public Boolean apply(WebDriver driver) {
+        boolean validated = driver.getTitle().equals(title);
+        return Boolean.valueOf(validated);
+    }
 
 }
