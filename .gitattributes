@@ -1050,6 +1050,7 @@
 7.x/modules/cdm_dataportal/js/colorbox/jquery.colorbox.js -text
 7.x/modules/cdm_dataportal/js/domEvent.js -text
 7.x/modules/cdm_dataportal/js/footnotes.js -text
+7.x/modules/cdm_dataportal/js/http-method-link.js -text
 7.x/modules/cdm_dataportal/js/jquery-lightbox-0.5/css/jquery.lightbox-0.5.css -text
 7.x/modules/cdm_dataportal/js/jquery-lightbox-0.5/images/lightbox-blank.gif -text
 7.x/modules/cdm_dataportal/js/jquery-lightbox-0.5/images/lightbox-btn-close.gif -text
