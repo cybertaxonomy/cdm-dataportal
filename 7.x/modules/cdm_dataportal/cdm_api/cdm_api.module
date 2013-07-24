@@ -1331,7 +1331,7 @@ function cdm_ws_getAnnotationsFor(&$cdmBase, $includeTypes = FALSE) {
 
   if(!isset($cdmBase->annotations)){
     $annotationUrl = cdm_compose_annotations_uri($cdmBase);
-    $cdmBase->annotations = cdm_ws_fetch_all($annotationUrl, NULL, 'GET', TRUE);
+    $cdmBase->annotations = cdm_ws_fetch_all($annotationUrl, array(), 'GET', TRUE);
   }
 
   $annotations = array();
