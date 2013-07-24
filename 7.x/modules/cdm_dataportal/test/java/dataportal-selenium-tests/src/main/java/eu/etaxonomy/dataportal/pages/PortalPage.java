@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.bcel.verifier.exc.LinkingConstraintException;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -19,8 +18,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import sun.swing.StringUIClientPropertyKey;
 
 import com.google.common.base.Function;
 
@@ -71,9 +68,9 @@ public abstract class  PortalPage {
     @FindBy(id="cdm_dataportal.node")
     protected WebElement portalContent;
 
-    @FindBy(tagName="title")
-    @CacheLookup
-    protected WebElement title;
+//    @FindBy(tagName="title")
+//    @CacheLookup
+//    protected WebElement title;
 
     @FindBy(className="node")
     protected WebElement node;
@@ -227,11 +224,13 @@ public abstract class  PortalPage {
     }
 
     /**
-     * returns the string from the <code>title</code> tag.
-     * @return
+     *
+     * @return the page title
+     * @deprecated use {@link driver#getTitle()}
      */
+    @Deprecated
     public String getTitle() {
-        return title.getText();
+        return driver.getTitle();
     }
 
     /**
@@ -309,6 +308,7 @@ public abstract class  PortalPage {
         return pageUrl.getProtocol() + "://" + pageUrl.getHost() + pageUrl.getPort();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (PortalPage.class.isAssignableFrom(obj.getClass())) {
             PortalPage page = (PortalPage) obj;

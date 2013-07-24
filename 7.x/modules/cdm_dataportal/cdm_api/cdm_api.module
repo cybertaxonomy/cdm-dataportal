@@ -1737,6 +1737,7 @@ function cdm_load_obj($response_body) {
  */
 function cdm_http_request($uri, $method = "GET", $data = NULL) {
   static $acceptLanguage = NULL;
+  $header = array();
 
   if (!$acceptLanguage) {
     if (function_exists('apache_request_headers')) {
@@ -1755,7 +1756,7 @@ function cdm_http_request($uri, $method = "GET", $data = NULL) {
     drupal_set_message('cdm_api.module#cdm_http_request() : unsupported HTTP request method ', 'error');
   }
 
-  if (empty($header) && _is_cdm_ws_uri($uri)) {
+  if (_is_cdm_ws_uri($uri)) {
     $header['Accept'] = 'application/json';
     $header['Accept-Language'] = $acceptLanguage;
     $header['Accept-Charset'] = 'UTF-8';
