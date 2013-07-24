@@ -109,6 +109,9 @@ function cdm_api_block_view($delta) {
 
       // stip of webservice base url
       $data['ws_uri'] = str_replace($cdm_ws_url, '', $data['ws_uri']);
+      if($data['method'] == 'POST'){
+        $data['ws_uri'] = 'POST: ' . $data['ws_uri'] . '?' . $data['post_data'];
+      }
 
       $cells = array();
       foreach ($field_map as $field => $label){
@@ -725,133 +728,125 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
  * @see http://drupal.org/node/1354
  */
 function proxy_content($uri, $hook = NULL) {
+
   $args = func_get_args();
   $do_gzip = function_exists('gzencode');
   $uriEncoded = array_shift($args);
   $uri = urldecode($uriEncoded);
   $hook = array_shift($args);
+  $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
+
+  if ($request_method == "POST" || $request_method == "PUT") {
+    // read response body via inputstream module
+    $post_data = file_get_contents("php://input");
+  }
 
   // Find and deserialize arrays.
   foreach ($args as &$arg) {
     // FIXME use regex to find serialized arrays.
-    //       or should we accept json instead pf php serializations?
+    //       or should we accept json instead of php serializations?
     if (strpos($arg, "a:") === 0) {
       $arg = unserialize($arg);
     }
   }
 
-  $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
-  if ($request_method == "POST") {
-    // this is an experimental feature which will allow to
-    // write data inot the cdm via the RESTfull web service
-    $parameters = $_POST;
-    $post_data = array();
+  // In all these cases perform a simple get request.
+  // TODO reconsider caching logic in this function.
 
-    foreach ($parameters as $k => $v) {
-      $post_data[] = "$k=" . utf8_encode($v);
+  if (empty($hook)) {
+    // simply return the webservice response
+    // Print out JSON, the cache cannot be used since it contains objects.
+    $http_response = cdm_http_request($uri, $request_method, $post_data);
+    if (isset($http_response->headers)) {
+      foreach ($http_response->headers as $hname => $hvalue) {
+        drupal_add_http_header($hname, $hvalue);
+      }
     }
-    $post_data = implode(',', $post_data);
-
-    // For testing.
-    // TODO use cdm_http_request(..) instead; ( CDM_HTTP_REQUEST_TIMEOUT is already set in there )
-    $data = drupal_http_request($uri, array('headers' => "POST", 'method' => $post_data, 'timeout' => CDM_HTTP_REQUEST_TIMEOUT));
-    // print $data;
+    if (isset($http_response->data)) {
+      print $http_response->data;
+      flush();
+    }
+    exit(); // leave drupal here
   } else {
-    // Not a "POST" request
-    // In all these cases perform a simple get request.
-    // TODO reconsider caching logic in this function.
+    // $hook has been supplied
+    // handle $hook either as compose ot theme hook
+    // pass through theme or comose hook
 
-    if (empty($hook)) {
-      // simply return the webservice response
-      // Print out JSON, the cache cannot be used since it contains objects.
-      $http_response = cdm_http_request($uri);
-      if (isset($http_response->headers)) {
-        foreach ($http_response->headers as $hname => $hvalue) {
-          drupal_add_http_header($hname, $hvalue);
-        }
-      }
-      if (isset($http_response->data)) {
-        print $http_response->data;
-        flush();
-      }
-      exit(); // leave drupal here
+    // do a security check since the $uri will be passed
+    // as absolute URI to cdm_ws_get()
+    if( !_is_cdm_ws_uri($uri)) {
+      drupal_set_message(
+      'Invalid call of proxy_content() with callback parameter \'' . $hook . '\' and URI:' . $uri,
+      'error'
+          );
+          return '';
+    }
+
+    $obj = cdm_ws_get($uri, NULL, $post_data, $request_method, TRUE);
+
+    $reponse_data = NULL;
+
+    if (function_exists('compose_' . $hook)){
+      // call compose hook
+
+      $elements =  call_user_func('compose_' . $hook, $obj);
+      // pass the render array to drupal_render()
+      $reponse_data = drupal_render($elements);
     } else {
-      // $hook has been supplied
-      // handle $hook either as compose ot theme hook
-      // pass through theme or comose hook
+      // call theme hook
 
-      // do a security check since the $uri will be passed
-      // as absolute URI to cdm_ws_get()
-      if( !_is_cdm_ws_uri($uri)) {
-        drupal_set_message(
-            'Invalid call of proxy_content() with callback parameter \'' . $hook . '\' and URI:' . $uri,
-            'error'
-        );
-        return '';
-      }
+      // TODO use theme registry to get the registered hook info and
+      //    use these defaults
+      switch($hook) {
+        case 'cdm_taxontree':
+          $variables = array(
+          'tree' => $obj,
+          'filterIncludes' => isset($args[0]) ? $args[0] : NULL,
+          'show_filter_switch' => isset($args[1]) ? $args[1] : FALSE,
+          'tree_node_callback' => isset($args[2]) ? $args[2] : FALSE,
+          'element_name'=> isset($args[3]) ? $args[3] : FALSE,
+          );
+          $reponse_data = theme($hook, $variables);
+          break;
 
-      $obj = cdm_ws_get($uri, NULL, NULL, NULL, TRUE);
+        case 'cdm_media_caption':
+          $variables = array(
+          'media' => $obj,
+          // $args[0] is set in taxon_image_gallery_default in
+          // cdm_dataportal.page.theme.
+          'elements' => isset($args[0]) ? $args[0] : array(
+          'title',
+          'description',
+          'artist',
+          'location',
+          'rights',
+          ),
+          'fileUri' => isset($args[1]) ? $args[1] : NULL,
+          );
+          $reponse_data = theme($hook, $variables);
+          break;
 
-      $reponse_data = NULL;
+        default:
+          drupal_set_message(t(
+          'Theme !theme is not supported yet by function !function.', array(
+          '!theme' => $hook,
+          '!function' => __FUNCTION__,
+          )), 'error');
+          break;
+      } // END of theme hook switch
+    } // END of tread as theme hook
 
-      if (function_exists('compose_' . $hook)){
-        // call compose hook
 
-        $elements =  call_user_func('compose_' . $hook, $obj);
-        // pass the render array to drupal_render()
-        $reponse_data = drupal_render($elements);
-      } else {
-        // call theme hook
+    if($do_gzip){
+      $reponse_data = gzencode($reponse_data, 2, FORCE_GZIP);
+      drupal_add_http_header('Content-Encoding', 'gzip');
+    }
+    drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
+    drupal_add_http_header('Content-Length', strlen($reponse_data));
 
-        // TODO use theme registry to get the registered hook info and
-        //    use these defaults
-        switch($hook) {
-          case 'cdm_taxontree':
-            $variables = array(
-              'tree' => $obj,
-              'filterIncludes' => isset($args[0]) ? $args[0] : NULL,
-              'show_filter_switch' => isset($args[1]) ? $args[1] : FALSE,
-              'tree_node_callback' => isset($args[2]) ? $args[2] : FALSE,
-              'element_name'=> isset($args[3]) ? $args[3] : FALSE,
-            );
-            $reponse_data = theme($hook, $variables);
-            break;
+    print $reponse_data;
+  } // END of handle $hook either as compose ot theme hook
 
-          case 'cdm_media_caption':
-            $variables = array(
-              'media' => $obj,
-              // $args[0] is set in taxon_image_gallery_default in
-              // cdm_dataportal.page.theme.
-              'elements' => isset($args[0]) ? $args[0] : array(
-                'title',
-                'description',
-                'artist',
-                'location',
-                'rights',
-              ),
-              'fileUri' => isset($args[1]) ? $args[1] : NULL,
-            );
-            $reponse_data = theme($hook, $variables);
-            break;
-
-          default:
-            drupal_set_message(t(
-            'Theme !theme is not supported yet by function !function.', array(
-            '!theme' => $hook,
-            '!function' => __FUNCTION__,
-            )), 'error');
-            break;
-        } // END of theme hook switch
-      } // END of tread as theme hook
-      if($do_gzip){
-        $reponse_data = gzencode($reponse_data, 2, FORCE_GZIP);
-        drupal_add_http_header('Content-Encoding', 'gzip');
-      }
-      drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
-      drupal_add_http_header('Content-Length', strlen($reponse_data));
-      print $reponse_data;
-    } // END of handle $hook either as compose ot theme hook
-  }
 }
 
 /**
@@ -975,24 +970,32 @@ function cdm_compose_annotations_uri($cdmBase) {
  * @param int $pageNumber
  *   The number of the page to be returned, the first page has the
  *   pageNumber = 0
+ * @param array $query
+ *   A array holding the HTTP request query parameters for the request
+ * @param string $method
+ *   The HTTP method to use, valid values are "GET" or "POST"
  * @param bool $absoluteURI
  *   TRUE when the URL should be treated as absolute URL.
+ *
  * @return the a CDM Pager object
  *
  */
-function cdm_ws_page($resourceURI, $pageSize, $pageNumber,  $absoluteURI = FALSE) {
-  return cdm_ws_get($resourceURI, NULL, queryString(array(
-      "pageNumber" => $pageNumber,
-      'pageSize' => $pageSize,
-    )),
-    'GET',
-    $absoluteURI);
+function cdm_ws_page($resourceURI, $pageSize, $pageNumber, array $query = array(), $method = 'GET', $absoluteURI = FALSE) {
+
+  $query['pageNumber'] = $pageNumber;
+  $query['pageSize'] = $pageSize;
+
+  return cdm_ws_get($resourceURI, NULL, queryString($query), $method, $absoluteURI);
 }
 
 /**
  * Fetches all entities from the given REST endpoint using the pager mechanism.
  *
  * @param string $resourceURI
+ * @param array $query
+ *   A array holding the HTTP request query parameters for the request
+ * @param string $method
+ *   The HTTP method to use, valid values are "GET" or "POST";
  * @param bool $absoluteURI
  *   TRUE when the URL should be treated as absolute URL.
  *
@@ -1000,14 +1003,14 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber,  $absoluteURI = FALSE
  *     A list of CDM entitites
  *
  */
-function cdm_ws_fetch_all($resourceURI, $absoluteURI = FALSE) {
+function cdm_ws_fetch_all($resourceURI, array $query = array(), $method = 'GET', $absoluteURI = FALSE) {
   $page_index = 0;
   // using a bigger page size to avoid to many multiple requests
   $page_size = 500;
   $entities = array();
 
   while ($page_index !== FALSE){
-    $pager =  cdm_ws_page($resourceURI, $page_size, $page_index, $absoluteURI);
+    $pager =  cdm_ws_page($resourceURI, $page_size, $page_index, $query,  $method, $absoluteURI);
     if(isset($pager->records) && is_array($pager->records)) {
       $entities = $pager->records;
       if(!empty($pager->nextIndex)){
@@ -1093,11 +1096,11 @@ function cdm_ws_taxonomy_root_level($taxon_uuid = NULL) {
     $response = NULL;
 
     // 1st try
-    $response = cdm_ws_get(cdm_compose_taxonomy_root_level_path($taxon_uuid), NULL, NULL, NULL, TRUE);
+    $response = cdm_ws_get(cdm_compose_taxonomy_root_level_path($taxon_uuid), NULL, NULL, 'GET', TRUE);
 
     if ($response == NULL) {
       // 2dn try by ignoring the rank limit
-      $response = cdm_ws_get(cdm_compose_taxonomy_root_level_path($taxon_uuid, TRUE), NULL, NULL, NULL, TRUE);
+      $response = cdm_ws_get(cdm_compose_taxonomy_root_level_path($taxon_uuid, TRUE), NULL, NULL, 'GET', TRUE);
     }
 
     if ($response == NULL) {
@@ -1110,7 +1113,7 @@ function cdm_ws_taxonomy_root_level($taxon_uuid = NULL) {
       }
       else {
         // Check if taxonomictree_uuid is valid.
-        $test = cdm_ws_get(cdm_compose_taxonomy_root_level_path(), NULL, NULL, NULL, TRUE);
+        $test = cdm_ws_get(cdm_compose_taxonomy_root_level_path(), NULL, NULL, 'GET', TRUE);
         if ($test == NULL) {
           // The default set by the admin seems to be invalid or is not even set.
           drupal_set_message(_no_classfication_uuid_message(), 'warning');
@@ -1156,7 +1159,7 @@ function cdm_ws_taxonomy_pathFromRoot($taxon_uuid) {
     }
     else {
       // Check if taxonomictree_uuid is valid.
-      $test = cdm_ws_get(cdm_compose_taxonomy_root_level_path(), NULL, NULL, NULL, TRUE);
+      $test = cdm_ws_get(cdm_compose_taxonomy_root_level_path(), NULL, NULL, 'GET', TRUE);
       if ($test == NULL) {
         // The default set by the admin seems to be invalid or is not even set.
         drupal_set_message(_no_classfication_uuid_message(), 'warning');
@@ -1295,12 +1298,12 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid) {
 
   $merged_trees = array();
 
-  $description_elemens = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON . '?' . queryString(
+  $description_elemens = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
       array(
       'taxon' => $taxon_uuid,
       'features' => cdm_featureTree_elements_toString($feature_tree->root, ',', 'uuid')
-      )
-    )
+      ),
+      'POST'
   );
 
   // Combine all descripions into one feature tree.
@@ -1447,7 +1450,7 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
 }
 
 /**
- * Sends a GET request to a CDM RESTService and returns a deserialized object.
+ * Sends a GET or POST request to a CDM RESTService and returns a deserialized object.
  *
  * The response from the HTTP GET request is returned as object.
  * The response objects coming from the webservice configured in the
@@ -1484,6 +1487,13 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
 
   static $cacheL1 = array();
 
+  $data = NULL;
+  // store query string in $data and clear the query, $data will be set as HTTP request body
+  if($method == 'POST'){
+    $data = $query;
+    $query = NULL;
+  }
+
   // Transform the given uri path or pattern into a proper webservice uri.
   if (!$absoluteURI) {
     $uri = cdm_compose_url($uri, $pathParameters, $query);
@@ -1492,7 +1502,15 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
   $is_cdm_ws_uri = _is_cdm_ws_uri($uri);
   $use_cacheL2 = variable_get('cdm_webservice_cache', 1);
 
-  if (array_key_exists($uri, $cacheL1)) {
+  if($method == 'GET'){
+    $cache_key = $uri;
+  } else {
+    // sha1 creates longer hashes and thus will cause fewer collisions than md5.
+    // crc32 is faster but creates much shorter hashes
+    $cache_key = $uri . '[' . $method . ':' . sha1($data) .']';
+  }
+
+  if (array_key_exists($cache_key, $cacheL1)) {
     $cacheL1_obj = $cacheL1[$uri];
   }
 
@@ -1507,7 +1525,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
 
   if ($use_cacheL2) {
     // Try to get object from cacheL2.
-    $cacheL2_entry = cache_get($uri, 'cache_cdm_ws');
+    $cacheL2_entry = cache_get($cache_key, 'cache_cdm_ws');
   }
 
   if (isset($cacheL1_obj)) {
@@ -1516,7 +1534,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     //
     $obj = $cacheL1_obj;
     if (variable_get('cdm_webservice_debug', 1) && user_access('administer')) {
-      cdm_ws_debug_add($uri, 0, 0, NULL, 'cacheL1');
+      cdm_ws_debug_add($uri, $method, $data, 0, 0, NULL, 'cacheL1');
     }
   }
   elseif ($cacheL2_entry) {
@@ -1528,7 +1546,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     $duration_parse = microtime(TRUE) - $duration_parse_start;
 
     if (variable_get('cdm_webservice_debug', 1) && user_access('administer')) {
-      cdm_ws_debug_add($uri, 0, $duration_parse, NULL, 'cacheL2');
+      cdm_ws_debug_add($uri, $method, $data, 0, $duration_parse, NULL, 'cacheL2');
     }
   }
   else {
@@ -1537,38 +1555,38 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     //
     $duration_fetch_start = microtime(TRUE);
     // Request data from webservice JSON or XML.
-    $response = cdm_http_request($uri, $method);
-    $datastr = NULL;
+    $response = cdm_http_request($uri, $method, $data);
+    $response_body = NULL;
     if (isset($response->data)) {
-      $datastr = $response->data;
+      $response_body = $response->data;
     }
     $duration_fetch = microtime(TRUE) - $duration_fetch_start;
     $duration_parse_start = microtime(TRUE);
 
     // Parse data and create object.
-    $obj = cdm_load_obj($datastr);
+    $obj = cdm_load_obj($response_body);
 
     $duration_parse = microtime(TRUE) - $duration_parse_start;
     if (variable_get('cdm_webservice_debug', 1) && user_access('administer')) {
-      if ($obj || $datastr == "[]") {
+      if ($obj || $response_body == "[]") {
         $status = 'valid';
       }
       else {
         $status = 'invalid';
       }
-      cdm_ws_debug_add($uri, $duration_fetch, $duration_parse, strlen($datastr), $status);
+      cdm_ws_debug_add($uri, $method, $data, $duration_fetch, $duration_parse, strlen($response_body), $status);
     }
     if ($set_cacheL2) {
       // Store the object in cache L2.
-      // Comment @WA perhaps better if Drupal serializes here? Then the
+      // Comment @WA perhaps better if Drupal serializedatas here? Then the
       // flag serialized is set properly in the cache table.
-      cache_set($uri, serialize($obj), 'cache_cdm_ws', CACHE_TEMPORARY);
+      cache_set($cache_key, serialize($obj), 'cache_cdm_ws', CACHE_TEMPORARY);
     }
   }
   if ($obj) {
     // Store the object in cache L1.
     if ($set_cacheL1) {
-      $cacheL1[$uri] = $obj;
+      $cacheL1[$cache_key] = $obj;
     }
   }
   return $obj;
@@ -1581,6 +1599,10 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
  *
  * @param $uri
  *    The CDM REST URI to which the request has been send
+ * @param string $method
+ *    The HTTP request method, either 'GET' or 'POST'
+ * @param string $post_data
+ *    The datastring send with a post request
  * @param $duration_fetch
  *    The time in seconds it took to fetch the data from the web service
  * @param $duration_parse
@@ -1592,7 +1614,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
  * @return bool
  *    TRUE if adding the debug information was successful
  */
-function cdm_ws_debug_add($uri, $duration_fetch, $duration_parse, $datasize, $status) {
+function cdm_ws_debug_add($uri, $method, $post_data, $duration_fetch, $duration_parse, $datasize, $status) {
 
   static $initial_time = NULL;
   if(!$initial_time) {
@@ -1621,11 +1643,21 @@ function cdm_ws_debug_add($uri, $duration_fetch, $duration_parse, $datasize, $st
   // data links to make data accecsible as json and xml
   $data_links = '';
   if (_is_cdm_ws_uri($path)) {
-    $data_links .= '<a href="' . $xml_uri . '" target="data">xml</a>-';
-    $data_links .= '<a href="' . url('cdm_api/proxy/' . urlencode($xml_uri)) . '" target="data">proxied</a>';
-    $data_links .= '<br/>';
-    $data_links .= '<a href="' . $json_uri . '" target="data">json</a>-';
-    $data_links .= '<a href="' . url('cdm_api/proxy/' . urlencode($json_uri)) . '" target="data">proxied</a>';
+
+    // see ./js/http-method-link.js
+
+    if($method == 'GET'){
+      $data_links .= '<a href="' . $xml_uri . '" target="data">xml</a>-';
+      $data_links .= '<a href="' . url('cdm_api/proxy/' . urlencode($xml_uri)) . '" target="data">proxied</a>';
+      $data_links .= '<br/>';
+      $data_links .= '<a href="' . $json_uri . '" target="data">json</a>-';
+      $data_links .= '<a href="' . url('cdm_api/proxy/' . urlencode($json_uri)) . '" target="data">proxied</a>';
+    } else {
+      $js_link_activation = 'class="http-' . $method . '-link" data-cdm-http-post="' . $post_data . '" type="application/x-www-form-urlencoded"';
+      $data_links .= '<a ' . $js_link_activation . ' href="' . url('cdm_api/proxy/' . urlencode($xml_uri)) . '" target="data">xml-proxied</a>';
+      $data_links .= '<br/>';
+      $data_links .= '<a ' . $js_link_activation . ' href="' . url('cdm_api/proxy/' . urlencode($json_uri)) . '" target="data">json-proxied</a>';
+    }
   }
   else {
     $data_links .= '<a href="' . $uri . '" target="data">open</a>';
@@ -1634,6 +1666,8 @@ function cdm_ws_debug_add($uri, $duration_fetch, $duration_parse, $datasize, $st
   //
   $data = array(
       'ws_uri' => $uri,
+      'method' => $method,
+      'post_data' => $post_data,
       'time' => sprintf('%3.3f', $time),
       'fetch_seconds' => sprintf('%3.3f', $duration_fetch),
       'parse_seconds' => sprintf('%3.3f', $duration_parse),
@@ -1658,8 +1692,8 @@ function cdm_ws_debug_add($uri, $duration_fetch, $duration_parse, $datasize, $st
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function cdm_load_obj($datastr) {
-  $obj = json_decode($datastr);
+function cdm_load_obj($response_body) {
+  $obj = json_decode($response_body);
 
   if (!(is_object($obj) || is_array($obj))) {
     ob_start();
@@ -1679,10 +1713,8 @@ function cdm_load_obj($datastr) {
  * @param string $method
  *   The HTTP method to use, valid values are "GET" or "POST"; defaults to
  *   "GET" even if NULL, FALSE or any invalid value is supplied.
- * @param array $parameters
- *   Parameters to use in the request.
- * @param array $header
- *   The header to include in the request.
+ * @param $data: A string containing the request body, formatted as
+ *     'param=value&param=value&...'. Defaults to NULL.
  *
  * @return object
  *   The object as returned by drupal_http_request():
@@ -1703,7 +1735,7 @@ function cdm_load_obj($datastr) {
  *     easy access the array keys are returned in lower case.
  *   - data: A string containing the response body that was received.
  */
-function cdm_http_request($uri, $method = "GET", $parameters = array(), $header = array(), $options = NULL) {
+function cdm_http_request($uri, $method = "GET", $data = NULL) {
   static $acceptLanguage = NULL;
 
   if (!$acceptLanguage) {
@@ -1720,7 +1752,7 @@ function cdm_http_request($uri, $method = "GET", $parameters = array(), $header 
   }
 
   if ($method != "GET" && $method != "POST") {
-    $method = "GET";
+    drupal_set_message('cdm_api.module#cdm_http_request() : unsupported HTTP request method ', 'error');
   }
 
   if (empty($header) && _is_cdm_ws_uri($uri)) {
@@ -1729,9 +1761,15 @@ function cdm_http_request($uri, $method = "GET", $parameters = array(), $header 
     $header['Accept-Charset'] = 'UTF-8';
   }
 
+  if($method == "POST") {
+    // content type is application/x-www-form-urlencoded, so the request body uses the same format as the query string
+    $header['Content-Type'] = 'application/x-www-form-urlencoded';
+  }
+
   return drupal_http_request($uri, array(
       'headers' => $header,
       'method' => $method,
+      'data' => $data,
       'timeout' => CDM_HTTP_REQUEST_TIMEOUT
       )
    );
@@ -1757,14 +1795,10 @@ function cdm_featureTree_elements_toString($root_node, $separator = ', ', $field
   foreach ($root_node->children as $feature_node) {
     $out .= ($out ? $separator : '');
     $out .= $feature_node->feature->$field_name;
-    if (is_array($feature_node->children)) {
-      $childlabels = '';
-      foreach ($feature_node->children as $child_node) {
-        $childlabels .= ($childlabels ? $separator : '');
-        $childlabels .= cdm_featureTree_elements_toString($child_node, $separator, $field_name);
-      }
+    if (is_array($feature_node->children) && count($feature_node->children) > 0) {
+      $childlabels = cdm_featureTree_elements_toString($feature_node, $separator, $field_name);
       if (strlen($childlabels)) {
-        $out .=  $pre_child_separator . $childlabels . $post_child_separator;
+          $out .=  $pre_child_separator . $childlabels . $post_child_separator;
       }
     }
   }
@@ -2136,6 +2170,12 @@ function _add_js_ws_debug() {
       'type' => 'file',
       'weight' => JS_LIBRARY,
       'cache' => TRUE)
+    );
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/http-method-link.js',
+    array(
+    'type' => 'file',
+    'weight' => JS_LIBRARY,
+    'cache' => TRUE)
     );
 
 }
