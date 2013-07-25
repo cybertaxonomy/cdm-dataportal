@@ -881,6 +881,7 @@
 7.x/modules/cdm_dataportal/images/print_icon.gif -text
 7.x/modules/cdm_dataportal/includes/common.inc -text
 7.x/modules/cdm_dataportal/includes/descriptions.inc -text
+7.x/modules/cdm_dataportal/includes/maps.inc -text
 7.x/modules/cdm_dataportal/includes/media.inc -text
 7.x/modules/cdm_dataportal/includes/occurrences.inc -text
 7.x/modules/cdm_dataportal/includes/pages.inc -text
