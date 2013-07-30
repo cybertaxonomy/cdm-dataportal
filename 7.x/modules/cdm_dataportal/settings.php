@@ -1533,9 +1533,24 @@ function cdm_settings_geo($form, &$form_state) {
 
   $form = array();
 
+  $form['map_preview'] = array(
+      '#type' => 'fieldset',
+      '#tree' => FALSE,
+      '#title' => t('Map preview'),
+      '#collapsible' => FALSE,
+      '#description' => t('Preview of the map.'),
+  );
+
+  $form['map_preview']['map'] = compose_map(NULL, NULL, NULL,
+      array(
+          'move' => "this.cdmOpenlayersMap.printInfo",
+          '#execute' => "this.cdmOpenlayersMap.printInfo"
+      )
+  );
+
   /*
-  GEO SERVER
-  */
+   * GEO SERVER
+   */
   $form['edit_map_server'] = array(
     '#type' => 'fieldset',
     '#tree' => true,
@@ -1564,8 +1579,8 @@ function cdm_settings_geo($form, &$form_state) {
   );
 
   /*
-  MAP SETTINGS
-  */
+   * MAP SETTINGS
+   */
   $form['map_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Maps settings'),
@@ -1578,9 +1593,11 @@ function cdm_settings_geo($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Maps width') . ':',
     '#default_value' => variable_get('cdm_dataportal_geoservice_display_width', 390),
-    '#description' => t('Choose the width of your maps, the height will always
+    '#description' => 'Choose the width of your maps, the height will always
       be the half of the width. A value of 500 means the size will be 500 pixels
-      width and 250 pixels height.'),
+      width and 250 pixels height.To allow OSM baselayers to zoom out to the full extend of the world the map width must be
+      a multiple of 256px since the osm tiles from tile.openstreetmap.org have a size of 256px x 256px and frational zoom
+      levels are not possible in this case.',
   );
 
   $form['map_settings']['cdm_dataportal_geoservice_bounding_box'] = array(

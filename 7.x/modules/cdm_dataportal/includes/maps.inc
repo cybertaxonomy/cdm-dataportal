@@ -16,16 +16,83 @@
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
 
+/**
+ * Compose an render array for distribution and occurrence
+ * maps.
+ *
+ * The map can either be a plain image or a dynamic open layers map
+ * depending on the settings
+ *
+ * compose_hook() implementation
+ *
+ * @param string $occurrence_query
+ * @param string $distribution_query
+ * @param string $legend_format_query
+ * @param array $event_listeners
+ *   An associative array of with OpenLayers.Map event names as key and corresponding js callbacks.
+ *   In addition to the event names '#execute' as key is also allowed.
+ *   Valid events are:
+ *      - move
+ *      - moveend
+ *      - zoomend
+ *      - changelayer
+ *      - changebaselayer
+ *      - #execute:
+ *            force execution of the given callback after registration of the event handlers
+ *   see http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html#OpenLayers.Map.events for more
+ *
+ * @return array
+ *    A drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_map($occurrence_query, $distribution_query, $legend_format_query, array $event_listeners = array()) {
+
+  if (variable_get('cdm_dataportal_map_openlayers', 1)) {
+    $map_html = get_openlayers_map(
+        variable_get('cdm_dataportal_geoservice_display_width', 680),
+        variable_get('cdm_dataportal_geoservice_bounding_box', FALSE),
+        $occurrence_query,
+        $distribution_query,
+        $legend_format_query,
+        variable_get('cdm_dataportal_geoservice_map_caption', ''),
+        $event_listeners
+    );
+  }
+  else {
+    $map_html = get_image_map(
+        variable_get('cdm_dataportal_geoservice_display_width', 680),
+        variable_get('cdm_dataportal_geoservice_bounding_box', FALSE),
+        $occurrence_query,
+        $distribution_query,
+        $legend_format_query,
+        variable_get('cdm_dataportal_geoservice_map_caption', '')
+    );
+  }
+  return markup_to_render_array($map_html, 0);
+}
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ *
+ * @param array $event_listeners
+ *   An associative array of with OpenLayers.Map event names as key and corresponding js callbacks.
+ *   In addition to the event names '#execute' as key is also allowed.
+ *   Valid events are:
+ *      - move
+ *      - moveend
+ *      - zoomend
+ *      - changelayer
+ *      - changebaselayer
+ *      - #execute:
+ *            force execution of the given callback after registration of the event handlers
+ *   see http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html#OpenLayers.Map.events for more
  */
-function _add_js_openlayers_map() {
+function _add_js_openlayers_map(array $event_listeners = array()) {
 
   _add_js_openlayers();
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/openlayers_map.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_map.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_layers.js');
 
   $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
 
@@ -47,8 +114,21 @@ function _add_js_openlayers_map() {
   }
 
   if (isset($baseLayers['gmap']) || isset($baseLayers['gsat']) || isset($baseLayers['ghyb'])) {
-    drupal_add_html_head('<script src=http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=' . $gmap_api_key . '" type="text/javascript"></script>', $key = NULL /* TODO Set this variable. */);
+    // gmaps version 2 (needs api key)
+    drupal_add_js('http://maps.google.com/maps?file=api&v=2&key=' . $gmap_api_key . '', array('type' => 'external'));
+    // gmaps version 3 (does not need api key)
+//     drupal_add_js('http://maps.google.com/maps?file=api&v=3&sensor=false', array('type' => 'external'));
     drupal_add_js('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1', array('type' => 'external'));
+  }
+
+  $event_listeners_js = '';
+  $execute_handler = '';
+  foreach($event_listeners as $event=>$js_callback){
+    if($event == '#execute'){
+      $execute_handler = 'map_container.each(function(){' . $js_callback . '();});';
+    } else {
+      $event_listeners_js .= ($event_listeners_js ? ",\n": "\n") .'"' . $event . '": ' . $js_callback;
+    }
   }
 
   $edit_map_service = get_edit_map_service_settings();
@@ -56,15 +136,12 @@ function _add_js_openlayers_map() {
   // Query(document).ready - is executed much earlier, when the DOM is loaded
   drupal_add_js("
           jQuery(document).ready(function() {
-
                 window.onload = function () {
-            // ---
-                  jQuery('#openlayers_map').cdm_openlayers_map(
+                  var map_container = jQuery('#openlayers_map').cdm_openlayers_map(
                    '" . $edit_map_service['base_uri'] . "',
                    '" . $edit_map_service['version'] . "',
                    {
                     legendPosition: 3,
-                    displayWidth: '" . variable_get('cdm_dataportal_geoservice_display_width', FALSE) . "',
                     boundingBox: '" . variable_get('cdm_dataportal_geoservice_bounding_box', FALSE) . "',
                     distributionOpacity: '" . variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5') . "',
                     legendOpacity: '" . variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5') . "',
@@ -73,7 +150,10 @@ function _add_js_openlayers_map() {
                     defaultBaseLayerName: '" . $preferredLayer . "'
                    }
                 );
-                 // ---
+                map_container.each(function(){
+                        this.cdmOpenlayersMap.registerEvents({" . $event_listeners_js . "});
+                });
+                " . $execute_handler . "
         };
       });
     ", array('type' => 'inline'));
@@ -90,12 +170,25 @@ function _add_js_openlayers_map() {
  * @param unknown_type $distributionQuery
  * @param unknown_type $legendFormatQuery
  * @param unknown_type $map_caption
+ * @param array $event_listeners
+ *   An associative array of with OpenLayers.Map event names as key and corresponding js callbacks.
+ *   In addition to the event names '#execute' as key is also allowed.
+ *   Valid events are:
+ *      - move
+ *      - moveend
+ *      - zoomend
+ *      - changelayer
+ *      - changebaselayer
+ *      - #execute:
+ *            force execution of the given callback after registration of the event handlers
+ *   see http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html#OpenLayers.Map.events for more
  *
- * @return unknown
+ * @return String
+ *    rendered html
  */
-function get_openlayers_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE) {
+function get_openlayers_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array()) {
 
-  _add_js_openlayers_map();
+  _add_js_openlayers_map($event_listeners);
 
   $out = '<div id="openlayers">';
   $out .= '<div id="openlayers_map" class="smallmap"';
@@ -152,7 +245,8 @@ function get_openlayers_map($width, $bounding_box = FALSE, $occurrenceQuery = FA
  * @param unknown_type $legendFormatQuery
  * @param unknown_type $map_caption
  *
- * @return unknown
+* @return String
+ *    rendered html
  */
 function get_image_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE) {
 

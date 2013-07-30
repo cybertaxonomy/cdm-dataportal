@@ -111,13 +111,24 @@ function _add_js_treeselector() {
 }
 
 function _add_js_openlayers() {
-  $openlayers = '/js/OpenLayers-2.11/OpenLayers.js';
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers, array(
-  'type' => 'file',
-  'weight' => JS_LIBRARY,
-  'cache' => FALSE,
-  ));
+  $openlayers = '/js/map/OpenLayers-2.13.1/lib/OpenLayers.js';
+  $proj4js = '/js/map/proj4js-1.1.0/proj4js-compressed.js';
+
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers,
+    array(
+      'type' => 'file',
+      'weight' => JS_LIBRARY,
+      'cache' => FALSE,
+    )
+  );
+//   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $proj4js,
+//     array(
+//       'type' => 'file',
+//       'weight' => JS_LIBRARY,
+//       'cache' => FALSE,
+//     )
+//   );
 }
 
 /**

@@ -88,22 +88,14 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
   // --- get map service HTTP query paramaters
   if (count($specimensOrObservations) > 0) {
-    $occurrenceQuery = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
+    $occurrence_query = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
 
-    if( isset($occurrenceQuery->String) ) {
-      $occurrenceQuery = $occurrenceQuery->String;
+    if( isset($occurrence_query->String) ) {
+      $occurrence_query = $occurrence_query->String;
+      $legend_format_query = null;
+      $distribution_query = NULL;
 
-      $legendFormatQueryStr = null;
-      if (variable_get('cdm_dataportal_map_openlayers', 1)) {
-        $map_html = get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', 680), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
-            $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
-      }
-      else {
-        // get_image_map($width, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE )
-        $map_html = get_image_map(variable_get('cdm_dataportal_geoservice_display_width', 680), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), $occurrenceQuery, NULL,
-            $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
-      }
-      $render_array['map'] = markup_to_render_array($map_html, 0);
+      $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query);
     }
   }
 
