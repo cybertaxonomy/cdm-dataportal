@@ -62,12 +62,14 @@ define('EDIT_MAPSERVER_VERSION', serialize(
     array(
       'v1' => 'v1' ,
       'v1.1' => 'v1.1',
-      'v1.2_dev' => 'v1.2_dev'
+      'v1.2_dev' => 'v1.2_dev',
+      'v1.2' => 'v1.2',
+      'v1.3_dev' => 'v1.3_dev'
     )
   )
 );
 define('EDIT_MAPSERVER_URI_DEFAULT', 'http://edit.africamuseum.be');
-define('EDIT_MAPSERVER_VERSION_DEFAULT', 'v1.1');
+define('EDIT_MAPSERVER_VERSION_DEFAULT', 'v1.2');
 
 // --- Taxon profile settings --- /
 define('LAYOUT_SETTING_PREFIX', 'layout_');
