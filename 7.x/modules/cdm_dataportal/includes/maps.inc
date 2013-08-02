@@ -78,7 +78,8 @@ function compose_map($occurrence_query, $distribution_query, $legend_format_quer
 }
 
 /**
- *
+ * @param $map_settings
+ *   The map settings array as retrieved by e.g. get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
  * @param array $event_listeners
  *   An associative array of with OpenLayers.Map event names as key and corresponding js callbacks.
  *   In addition to the event names '#execute' as key is also allowed.
@@ -92,42 +93,55 @@ function compose_map($occurrence_query, $distribution_query, $legend_format_quer
  *            force execution of the given callback after registration of the event handlers
  *   see http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html#OpenLayers.Map.events for more
  */
-function _add_js_openlayers_map(array $event_listeners = array()) {
+function _add_js_openlayers_map($map_settings, array $event_listeners = array()) {
 
   _add_js_openlayers();
 
-  $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
-  $baseLayers = $map_settings['openlayers']['base_layers'];
+  $edit_map_service = get_edit_map_service_settings();
+
   $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_map.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_layers.js');
 
+  $cdm_openlayers_options = array(
+      'legendPosition'  => '3',
+      'boundingBox' => "'" . $map_settings['bbox'] . "'",
+      'distributionOpacity' => "'" . $map_settings['distribution_opacity'] . "'",
+      'legendOpacity' => "'" . $map_settings['legend']['opacity'] . "'",
+      'showLayerSwitcher' => $map_settings['openlayers']['show_layer_switcher']  ==  1,
+      'displayOutsideMaxExtent' => $map_settings['openlayers']['display_outside_max_extent'] == 1
+      // if no baseLayerNames or defaultBaseLayerName are not defined
+      // the defaults in cdm_openlayers.js will be used
+  );
 
-  if (!is_array($baseLayers) || count($baseLayers) == 0) {
-    $baseLayers = array(
-        'metacarta_vmap0' => 'Metacarta Vmap0',
-        'PREFERRED' => 'metacarta_vmap0',
-    );
-  }
-  $layerNames = '';
-  foreach ($baseLayers as $layerName => $layerLabel) {
-    if ($layerName == 'PREFERRED') {
-      $preferredLayer = $baseLayers['PREFERRED'];
+  // --- setting the base layer options
+  if (is_array($map_settings['openlayers']['base_layers']) && count($map_settings['openlayers']['base_layers']) > 0) {
+
+    $layer_names = $map_settings['openlayers']['base_layers'];
+
+    if(isset($layer_names['PREFERRED'])){
+      $cdm_openlayers_options['defaultBaseLayerName'] = $layer_names['PREFERRED'];
+      unset($layer_names['PREFERRED']);
     }
-    else {
-      $layerNames .= ($layerNames ? ', ' : '') . "'$layerName'";
+
+    $cdm_openlayers_options['baseLayerNames'] = array_values($layer_names);
+
+    if (isset($layer_names['gmap']) || isset($layer_names['gsat']) || isset($layer_names['ghyb'])) {
+      // gmaps version 2 (needs api key)
+      drupal_add_js('http://maps.google.com/maps?file=api&v=2&key=' . $gmap_api_key . '', array('type' => 'external'));
+      // gmaps version 3 (does not need api key)
+  //     drupal_add_js('http://maps.google.com/maps?file=api&v=3&sensor=false', array('type' => 'external'));
+      drupal_add_js('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1', array('type' => 'external'));
     }
+
   }
 
-  if (isset($baseLayers['gmap']) || isset($baseLayers['gsat']) || isset($baseLayers['ghyb'])) {
-    // gmaps version 2 (needs api key)
-    drupal_add_js('http://maps.google.com/maps?file=api&v=2&key=' . $gmap_api_key . '', array('type' => 'external'));
-    // gmaps version 3 (does not need api key)
-//     drupal_add_js('http://maps.google.com/maps?file=api&v=3&sensor=false', array('type' => 'external'));
-    drupal_add_js('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1', array('type' => 'external'));
-  }
+  // --- custom wms base layer
+  $map_settings['openlayers']['custom_wms_base_layer']['params'] = json_decode($map_settings['openlayers']['custom_wms_base_layer']['params']);
+  $cdm_openlayers_options['customWMSBaseLayerData'] = $map_settings['openlayers']['custom_wms_base_layer'];
 
+  // --- eventhandlers
   $event_listeners_js = '';
   $execute_handler = '';
   foreach($event_listeners as $event=>$js_callback){
@@ -138,7 +152,11 @@ function _add_js_openlayers_map(array $event_listeners = array()) {
     }
   }
 
-  $edit_map_service = get_edit_map_service_settings();
+//   // combine keys and values
+//   foreach($cdm_openlayers_options as $key=>&$val){
+//     $val = $key . ": " . $val;
+//   };
+
   // window.onload - is executed when the document and images etc is fully loaded
   // Query(document).ready - is executed much earlier, when the DOM is loaded
   drupal_add_js("
@@ -147,15 +165,7 @@ function _add_js_openlayers_map(array $event_listeners = array()) {
                   var map_container = jQuery('#openlayers_map').cdm_openlayers_map(
                    '" . $edit_map_service['base_uri'] . "',
                    '" . $edit_map_service['version'] . "',
-                   {
-                    legendPosition: 3,
-                    boundingBox: '" . $map_settings['bbox'] . "',
-                    distributionOpacity: '" . $map_settings['distribution_opacity'] . "',
-                    legendOpacity: '" . $map_settings['legend']['opacity'] . "',
-                    showLayerSwitcher: " . ($map_settings['openlayers']['show_layer_switcher'] ? 'true' : 'false') . ",
-                    baseLayerNames: [" . $layerNames . "],
-                    defaultBaseLayerName: '" . $preferredLayer . "'
-                   }
+                   " .  json_encode($cdm_openlayers_options) . "
                 );
                 map_container.each(function(){
                         this.cdmOpenlayersMap.registerEvents({" . $event_listeners_js . "});
@@ -195,9 +205,9 @@ function _add_js_openlayers_map(array $event_listeners = array()) {
  */
 function get_openlayers_map($width, $height, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array()) {
 
-  _add_js_openlayers_map($event_listeners);
-
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+
+  _add_js_openlayers_map($map_settings, $event_listeners);
 
   $out = '<div id="openlayers">';
   $out .= '<div id="openlayers_map" class="smallmap"';

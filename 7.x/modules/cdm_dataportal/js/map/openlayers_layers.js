@@ -97,7 +97,8 @@
               return  new OpenLayers.Layer.OSM();
 
           case 'mapquest_open':
-              baselayer = new OpenLayers.Layer.XYZ(
+              // see http://developer.mapquest.com/web/products/open/map
+              return new OpenLayers.Layer.XYZ(
                       "MapQuest",
                       [
                           "http://otile1.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
@@ -106,21 +107,24 @@
                           "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png"
                       ],
                       {
+                          // If using the MapQuest-OSM tiles, OpenStreetMap must be given credit for the data
                           attribution: "Data, imagery and map information provided by <a href='http://www.mapquest.com/'  target='_blank'>MapQuest</a>, <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a> and contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/' target='_blank'>CC-BY-SA</a>  <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
                           transitionEffect: "resize"
                       }
                   );
 
           case 'mapquest_sat':
-              baselayer = new OpenLayers.Layer.XYZ(
+              // see http://developer.mapquest.com/web/products/open/map
+              return new OpenLayers.Layer.XYZ(
                       "MapQuest Sattelite",
                       [
-                          "http://otile1.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                          "http://otile2.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                          "http://otile3.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                          "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png"
+                          "http://otile1.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+                          "http://otile2.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+                          "http://otile3.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+                          "http://otile4.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png"
                       ],
                       {
+                          // If using the MapQuest-OSM tiles, OpenStreetMap must be given credit for the data
                           attribution: "Data, imagery and map information provided by <a href='http://www.mapquest.com/'  target='_blank'>MapQuest</a>, <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a> and contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/' target='_blank'>CC-BY-SA</a>  <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
                           transitionEffect: "resize"
                       }

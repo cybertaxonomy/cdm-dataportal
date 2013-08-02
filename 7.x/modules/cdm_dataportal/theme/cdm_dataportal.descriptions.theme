@@ -1081,16 +1081,13 @@ function compose_distribution_map($taxon) {
   );
 
   // Query cdm server for map service uri parameters.
-  $map_data_parameters = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
-  $out .= "<!-- map_data_parameters:" . print_r($map_data_parameters, TRUE) . " -->";
-  $query_string = $map_data_parameters->String;
+  $query_string = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid);
+  $query_string = $query_string->String;
+  $out .= "<!-- map_data_parameters:" . print_r($query_string, TRUE) . " -->";
   if (!$query_string) {
     // The $query_string is empty if there are no distribution areas defined.
     return;
   }
-
-  // Some cleaning of the URI paramters, TODO is this still needed?
-  $query_string = str_replace('%3A', ":", $query_string);
 
   /* ------ choose the display mode, either openlayers or static image ------ */
 

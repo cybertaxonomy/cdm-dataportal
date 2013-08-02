@@ -261,7 +261,16 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
       // it is sufficient to define the preferred layer,
       // since it will automatically be enabled:
       'PREFERRED' => 'osgeo_vmap0'),
-    'show_layer_switcher' => TRUE
+     'custom_wms_base_layer' => array(
+            'name' => NULL,
+            'url' => NULL,
+            'params' =>  NULL,
+            'projection' => NULL,
+            'max_extent' => NULL,
+            'units' => NULL
+     ),
+    'show_layer_switcher' => TRUE,
+    'display_outside_max_extent' => FALSE
   ),
   'legend' => array(
     'show' => TRUE,
@@ -1605,7 +1614,9 @@ function cdm_settings_geo($form, &$form_state) {
       '#title' => t('Map preview'),
       '#collapsible' => FALSE,
       '#description' => 'The preview of the map'
-       . ($dummy_distribution_query != null ? ' may not be accurate in case if image maps, please check the map display in the taxon pages.': '.')
+       . ($dummy_distribution_query != null ?
+           ' may not be accurate in case if image maps, please check the map display in the taxon pages.':
+           '.<br/>Hold down Strg and drag with your mouse to select a bbox to zoom to. <br/>The bbox of the visisble area of the map is always displayed below the map.')
   );
   $form['map_preview']['map'] = compose_map(NULL, $dummy_distribution_query, NULL,
       array(
@@ -1701,7 +1712,10 @@ function cdm_settings_geo($form, &$form_state) {
     '#default_value' => $map_distribution['bbox'],
     '#description' => t('The bounding box defines the area to be initially displayed in maps.
       Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong>
-      to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.'),
+      to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.</p>
+      <strong>TIP: </strong>You can use the map preview above to choose a bbox from the map. Maybe you need to change the map type to OpeLayers.
+      Hold down Strg and drag with your mouse to select a bbox to zoom to. The bbox of the visisble area of the map is always displayed
+      below the map from where you can copy the bbox string.</p>'),
   );
 
   $form[CDM_MAP_DISTRIBUTION]['show_labels'] = array(
@@ -1795,6 +1809,27 @@ function cdm_settings_geo($form, &$form_state) {
     '#description' => '',
   );
 
+
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['display_outside_max_extent'] = array(
+      '#type' => 'checkbox',
+      '#title' => 'Display outside max extent',
+      '#default_value' => $map_distribution['openlayers']['display_outside_max_extent'],
+      '#description' => t('Allows the map to display parts of the layers which are outside
+         the max extent if the aspect ratio of the map and of the baselayer
+         are not equal.'),
+  );
+
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['show_layer_switcher'] = array(
+      '#type' => 'checkbox',
+      '#title' => 'Show Layer Switcher',
+      '#default_value' => $map_distribution['openlayers']['show_layer_switcher'],
+      '#description' => 'The Layer Switcher control displays a table of contents
+      for the map.  This allows the user interface to switch between
+      base layers and to show or hide overlays.  By default the switcher is
+      shown minimized on the right edge of the map, the user may expand it
+      by clicking on the handle.',
+  );
+
   if (!$open_layers_is_enabled) {
     $form[CDM_MAP_DISTRIBUTION]['openlayers']['#description'] = '<div class="messages warning">'
         . 'The Openlayers viewer is currently not enabled! (see section Maps settings above )</div>'
@@ -1812,7 +1847,9 @@ function cdm_settings_geo($form, &$form_state) {
     // 'edit-vmap0_world_basic' => 'EDIT Vmap0',
     'edit-etopo1' => "ETOPO1 Global Relief Model",
     'mapnik' => 'OpenStreetMap',
-    'osmarender' => 'OpenStreetMap (Tiles@home)',
+    'mapquest_open' => "MapQuest",
+    'mapquest_sat' => "MapQuest Sattelite",
+//     'osmarender' => 'OpenStreetMap (Tiles@home)',
     'gmap' => 'Google Streets',
     'gsat' => 'Google Satellite',
     'ghyb' => 'Google Hybrid',
@@ -1822,6 +1859,7 @@ function cdm_settings_geo($form, &$form_state) {
     // 'yahoo' => 'Yahoo Street',
     // 'yahoosat' => 'Yahoo Satellite',
     // 'yahoohyb' => 'Yahoo Hybrid',
+     'custom_wms_base_layer_1' => 'Custom WMS base layer (needs to be manually configured below!)',
   );
 
   $form[CDM_MAP_DISTRIBUTION]['openlayers']['base_layers'] = array(
@@ -1832,16 +1870,56 @@ function cdm_settings_geo($form, &$form_state) {
     '#description' => 'Choose the baselayer layer you prefer to use as map background in the OpenLayers dynamic mapviewer.',
   );
 
-  // cdm_dataportal_geoservice_showLayerSwitcher
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['show_layer_switcher'] = array(
-    '#type' => 'checkbox',
-    '#title' => 'Show Layer Switcher',
-    '#default_value' => $map_distribution['openlayers']['show_layer_switcher'],
-    '#description' => 'The Layer Switcher control displays a table of contents
-      for the map.  This allows the user interface to switch between
-      base layers and to show or hide overlays.  By default the switcher is
-      shown minimized on the right edge of the map, the user may expand it
-      by clicking on the handle.',
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Custom WMS base layer',
+      '#tree' => TRUE,
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+      '#description' => 'Here you an define a custom wms layer as additional base layer.',
+  );
+
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['name'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Layer name',
+      // Only line color by now.
+      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['name'],
+      '#description' => 'A arbitrary name for the layer.',
+  );
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['url'] = array(
+      '#type' => 'textfield',
+      '#title' => 'WMS url',
+      // Only line color by now.
+      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['url'],
+      '#description' => 'Base url for the WMS (e.g.  http://wms.jpl.nasa.gov/wms.cgi)'
+  );
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['params'] = array(
+      '#type' => 'textarea',
+      '#title' => 'WMS parameters',
+      '#element_validate' => array('form_element_validate_json'),
+      // Only line color by now.
+      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['params'],
+      '#description' => 'An javasript object with key/value pairs representing the GetMap query string parameters and parameter values, entered in valid JSON.'
+  );
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['projection'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Projection',
+      // Only line color by now.
+      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['projection'],
+      '#description' => 'The desired projection for the layer (e.g. EPSG:4326, EPSG:900913, EPSG:3857)'
+  );
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['max_extent'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Maximum extent',
+      // Only line color by now.
+      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['max_extent'],
+      '#description' => 'The maximum extent of the map as boundin box in the units of the map.'
+  );
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['units'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Units',
+      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['units'],
+      '#description' => 'The layer map units.  Defaults to null.  Possible values are ‘degrees’ (or ‘dd’), ‘m’, ‘ft’, ‘km’, ‘mi’, ‘inches’.  Normally taken from the projection.  Only required if both map and layers do not define a projection, or if they define a projection which does not define units.'
   );
 
   /*
@@ -2325,7 +2403,7 @@ function form_element_validate_json($element, &$form_state, $form) {
  * Form submission handler for textareas and textfields containing JSON.
  *
  * The contained JSON will be converted into an php array
- * or object and will be stores in the variables as such.
+ * or object and will be stored in the variables as such.
  *
  * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#submit
  *

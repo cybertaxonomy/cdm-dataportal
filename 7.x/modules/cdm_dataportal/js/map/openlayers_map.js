@@ -35,15 +35,23 @@
          * the maxExtent if the aspect ratio of the map and of the baselayer
          * are not equal
          */
-        displayOutsideMaxExtent: true,
+        displayOutsideMaxExtent: false,
         customWMSBaseLayerData: {
-            name: "Euro+Med",
-            url: "http://edit.africamuseum.be/geoserver/topp/wms",
-            params: {layers: "topp:em_tiny_jan2003", format:"image/png", tiled: true},
-            projection: "EPSG:7777777",
-            maxExtent: "-1600072.75, -1800000, 5600000, 5850093",
-            unit: 'm'
+            name: null,
+            url: null,
+            params: null,
+            projection: null,
+            max_extent: null,
+            units: null
         }
+//        customWMSBaseLayerData: {
+//            name: "Euro+Med",
+//            url: "http://edit.africamuseum.be/geoserver/topp/wms",
+//            params: {layers: "topp:em_tiny_jan2003", format:"image/png", tiled: true},
+//            projection: "EPSG:7777777",
+//            maxExtent: "-1600072.75, -1800000, 5600000, 5850093",
+//            units: 'm'
+//        }
     };
 })(jQuery);
 
@@ -87,16 +95,23 @@ window.CdmOpenLayers  = (function () {
    * @param mapElement
    * @param mapserverBaseUrl
    * @param mapserverVersion
-   * @param options
+   * @param opts
    * @returns
    */
-window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersion, options){
+window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersion, opts){
 
     var mapServicePath = '/edit_wp5';
 
     // firebug console stub (avoids errors if firebug is not active)
     if(typeof console === "undefined") {
         console = { log: function() { } };
+    }
+
+    // sanitize given options
+    try {
+        opts.customWMSBaseLayerData.max_extent = OpenLayers.Bounds.fromString(opts.customWMSBaseLayerData.max_extent);
+    } catch(e){
+        opts.customWMSBaseLayerData.max_extent = null;
     }
 
 
@@ -138,7 +153,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
      */
     this.init = function(){ // public function
 
-      createLayers(options.baseLayerNames, options.defaultBaseLayerName, options.customWMSBaseLayerData);
+      createLayers(opts.baseLayerNames, opts.defaultBaseLayerName, opts.customWMSBaseLayerData);
 
       initMap();
 
@@ -148,7 +163,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
 
       if(distributionQuery !== undefined){
         if(typeof legendPosition == 'number'){
-          distributionQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + options.legendPosition);
+          distributionQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + opts.legendPosition);
         }
 
         distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
@@ -172,7 +187,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       var occurrenceQuery = mapElement.attr('occurrenceQuery');
       if(occurrenceQuery !== undefined){
 //        if(typeof legendPosition == 'number'){
-//          occurrenceQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + options.legendPosition);
+//          occurrenceQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + opts.legendPosition);
 //        }
 
         occurrenceQuery = mergeQueryStrings(occurrenceQuery, 'callback=?');
@@ -215,7 +230,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
 
     /**
      * Prints info on the current map into the jQuery element
-     * as set in the options (options.infoElement)
+     * as set in the options (opts.infoElement)
      * public function
      *
      * @param jQuery $element
@@ -227,12 +242,16 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
 
         var info = "<dl>";
         info += "<dt>zoom:<dt><dd>" + map.getZoom() + "</dd>";
-        info += "<dt>map resolution:<dt><dd>" + map.getResolution() + "</dd>";
-        info += "<dt>map max resolution:<dt><dd>" + map.getMaxResolution() + "</dd>";
-        info += "<dt>map scale:<dt><dd>" + map.getScale() + "</dd>";
-        info += "<dt>map extent bbox:<dt><dd>" + map.getExtent().toBBOX() + " (" + mapExtendDegree.toBBOX() + ")</dd>";
-        info += "<dt>map maxExtent bbox:<dt><dd>" + map.getMaxExtent().toBBOX() + "</dd>";
-        info += "<dt>baselayer projection:<dt><dd>" + map.baseLayer.projection.getCode() + "</dd>";
+        if(opts.debug){
+            info += "<dt>map resolution:<dt><dd>" + map.getResolution() + "</dd>";
+            info += "<dt>map max resolution:<dt><dd>" + map.getMaxResolution() + "</dd>";
+            info += "<dt>map scale:<dt><dd>" + map.getScale() + "</dd>";
+            info += "<dt>map extent bbox:<dt><dd>" + map.getExtent().toBBOX() + " (" + mapExtendDegree.toBBOX() + ")</dd>";
+            info += "<dt>map maxExtent bbox:<dt><dd>" + map.getMaxExtent().toBBOX() + "</dd>";
+            info += "<dt>baselayer projection:<dt><dd>" + map.baseLayer.projection.getCode() + "</dd>";
+        } else {
+            info += "<dt>bbox:<dt><dd>" + mapExtendDegree.toBBOX() + "</dd>";
+        }
         info += "</dl>";
 
         if(infoElement == null){
@@ -248,7 +267,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
     var initMap = function(){
 
 
-      if(options.showLayerSwitcher === true){
+      if(opts.showLayerSwitcher === true){
           defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
       }
 
@@ -256,7 +275,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       var maxResolution = null;
       // gmaps has no maxExtent at this point, need to check for null
       if(defaultBaseLayer.maxExtent != null){
-          maxResolution = Math[(options.displayOutsideMaxExtent ? 'max' : 'min')](
+          maxResolution = Math[(opts.displayOutsideMaxExtent ? 'max' : 'min')](
                       defaultBaseLayer.maxExtent.getWidth() / mapWidth,
                       defaultBaseLayer.maxExtent.getHeight() / mapHeight
                     );
@@ -289,9 +308,9 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
              // fractional tiles are not supported by XYZ layers like OSM so this option would
              // however break the tile retrieval for OSM (e.g.: tile for frational zoom level
              // 1.2933333333333332 = http://b.tile.openstreetmap.org/1.2933333333333332/1/0.png)
-             // fractionalZoom: 1,
+             fractionalZoom: defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.OSM" && defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.XYZ",
 
-              eventListeners: options.eventListeners
+              eventListeners: opts.eventListeners
 
           }
       );
@@ -301,7 +320,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       map.setBaseLayer(defaultBaseLayer);
 
       // calculate the bounds to zoom to
-      zoomToBounds = zoomToBoundsFor(options.boundingBox, defaultBaseLayer);
+      zoomToBounds = zoomToBoundsFor(opts.boundingBox, defaultBaseLayer);
       zoomToBounds = cropBoundsToAspectRatio(zoomToBounds, map.getSize().w / map.getSize().h);
       console.log("zoomToBounds: " + zoomToBounds);
 
@@ -309,10 +328,10 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       map.zoomToExtent(zoomToBounds, true);
 
       // readjust if the zoom level is out side of the min max
-//      if(map.getZoom() > options.maxZoom){
-//        map.zoomTo(options.maxZoom);
-//      } else if(map.getZoom() < options.minZoom){
-//        map.zoomTo(options.minZoom);
+//      if(map.getZoom() > opts.maxZoom){
+//        map.zoomTo(opts.maxZoom);
+//      } else if(map.getZoom() < opts.minZoom){
+//        map.zoomTo(opts.minZoom);
 //      }
 
     };
@@ -366,7 +385,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
                 {layers: layerByNameMap[layerData.tdwg] ,transparent:"true", format:"image/png"},
                 dataLayerOptions );
             layer.params.SLD = layerData.sld;
-            layer.setOpacity(options.distributionOpacity);
+            layer.setOpacity(opts.distributionOpacity);
             map.addLayers([layer]);
 
           }
@@ -384,15 +403,15 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
           }
           map.zoomToExtent(dataBounds, false);
 
-          if(map.getZoom() > options.maxZoom){
-            map.zoomTo(options.maxZoom);
-          } else if(map.getZoom() < options.minZoom){
-            map.zoomTo(options.minZoom);
+          if(map.getZoom() > opts.maxZoom){
+            map.zoomTo(opts.maxZoom);
+          } else if(map.getZoom() < opts.minZoom){
+            map.zoomTo(opts.minZoom);
           }
         }
 
 
-        if(options.legendPosition !== undefined && mapResponseObj.legend !== undefined){
+        if(opts.legendPosition !== undefined && mapResponseObj.legend !== undefined){
           var legendSrcUrl = mapResponseObj.geoserver + legendImgSrc + mapResponseObj.legend;
           addLegendAsElement(legendSrcUrl);
           //addLegendAsLayer(legendSrcUrl, map);
@@ -407,7 +426,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
     var addLegendAsElement= function(legendSrcUrl){
 
       mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
-      mapElement.next('.openlayers_legend').css('opacity', options.legendOpacity).find('img').load(function () {
+      mapElement.next('.openlayers_legend').css('opacity', opts.legendOpacity).find('img').load(function () {
         jQuery(this).parent()
           .css('position', 'relative')
           .css('z-index', '1002')
@@ -423,7 +442,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
 
       // 1. download imge to find height and width
       mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
-      mapElement.next('.openlayers_legend').css('display', 'none').css('opacity', options.legendOpacity).find('img').load(function () {
+      mapElement.next('.openlayers_legend').css('display', 'none').css('opacity', opts.legendOpacity).find('img').load(function () {
 
         w = mapElement.next('.openlayers_legend').find('img').width();
         h = mapElement.next('.openlayers_legend').find('img').height();
@@ -471,25 +490,26 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       *
       */
      var createLayers = function( baseLayerNames, defaultBaseLayerName, customWMSBaseLayerData){
-       var i = 0;
-       for(; i <  baseLayerNames.length; i++) {
-         baseLayers[i] = window.CdmOpenLayers.getLayerByName(baseLayerNames[i]);
+
+       for(var i = 0; i <  baseLayerNames.length; i++) {
+          // create the layer
+          if (baseLayerNames[i] == "custom_wms_base_layer_1"){
+             baseLayers[i] = createWMSBaseLayer(
+                     customWMSBaseLayerData.name,
+                     customWMSBaseLayerData.url,
+                     customWMSBaseLayerData.params,
+                     customWMSBaseLayerData.projection,
+                     customWMSBaseLayerData.units,
+                     customWMSBaseLayerData.max_extent
+                  );
+         } else {
+             baseLayers[i] = window.CdmOpenLayers.getLayerByName(baseLayerNames[i]);
+         }
+         // set default baselayer
          if(baseLayerNames[i] == defaultBaseLayerName){
            defaultBaseLayer = baseLayers[i];
          }
-       }
-       if(false && customWMSBaseLayerData){
-            var wmsLayer = createWMSBaseLayer(
-                   customWMSBaseLayerData.name,
-                   customWMSBaseLayerData.url,
-                   customWMSBaseLayerData.params,
-                   customWMSBaseLayerData.projection,
-                   customWMSBaseLayerData.unit,
-                   OpenLayers.Bounds.fromString(customWMSBaseLayerData.maxExtent)
-                );
-           // FIXME remove HACK (customWMSBaseLayerData as default)
-           baseLayers[i++] = wmsLayer;
-           defaultBaseLayer = wmsLayer;
+
        }
      };
 
@@ -609,7 +629,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       * @param Object projection
       *    A OpenLayers.Projection object
       */
-     var createWMSBaseLayer= function(name, url, params, projection, unit, maxExtent){
+     var createWMSBaseLayer= function(name, url, params, projection, units, maxExtent){
 
          if(maxExtent == null){
              maxExtent = CdmOpenLayers.mapExtends.epsg_4326.clone();
@@ -623,7 +643,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
                  {
                    maxExtent: maxExtent,
                    projection: projection,
-                   unit: unit,
+                   units: units,
                    isBaseLayer: true,
                    displayInLayerSwitcher: true
                  }
