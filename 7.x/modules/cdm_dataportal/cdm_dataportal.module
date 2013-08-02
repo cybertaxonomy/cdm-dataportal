@@ -122,6 +122,7 @@ function _add_js_openlayers() {
       'cache' => FALSE,
     )
   );
+// TODO remove if not needed (Andreas Kohlbecker 30.07.2013)
 //   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $proj4js,
 //     array(
 //       'type' => 'file',

@@ -236,12 +236,67 @@ define('CDM_TAXON_MEDIA_FILTER_DEFAULT', serialize(
      )
   ));
 
+define('CDM_MAP_DISTRIBUTION', 'cdm_map_distribution');
+define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
+  // needs to be merged with user setting by drupal_array_merge_deep()
+  'width' => 512, // optimum size for OSM layers is 512
+  'height' => 512 / 2, // optimum size for OSM layers 256
+  'bbox' => '', // empty to allow automatic zooming to extend
+  'show_labels' => FALSE,
+  'caption' => '',
+  'distribution_opacity' => '0.5',
+  'map_type' => 1, //  1 = 'openlayers', 0 = 'image'
+  'image_map' => array(
+    'base_layer' => '', // none, formerly this was cyprusdivs
+    'bg_color' => '1874CD',
+    'layer_style' => 'ffffff,606060,,',
+  ),
+  'openlayers' => array(
+    'base_layers' =>  array(
+      // A layer MUST NOT BE SET in the defaults,
+      // otherwise it can not be overidden by the user settings:
+      // 'osgeo_vmap0' => 'osgeo_vmap0',
+      // it is sufficient to define the preferred layer,
+      // since it will automatically be enabled:
+      'PREFERRED' => 'osgeo_vmap0'),
+    'show_layer_switcher' => TRUE
+  ),
+  'legend' => array(
+    'show' => TRUE,
+    'opacity' => '0.5',
+    'font_size' => 10,
+    'font_style' => FALSE,
+    'icon_width' => 35,
+    'icon_height' => 15
+  )
+)));
+
+/**
+ * Merges the named array variable with the array of defaults.
+ *
+ * @param string $variable_name
+ *     The variable name
+ * @param string | array $default
+ *     The array containing the default values either as array or serialized as string.
+ *     Unserialization is cared for if nessecary
+ * @return array
+ *     The merged array as returnd by drupal_array_merge_deep()
+ */
+function get_array_variable_merged($variable_name, $default){
+
+    // unserialize if nessecary
+    if(!is_array($default)){
+      $default = unserialize($default);
+    }
+    $variable = variable_get($variable_name, array());
+    return drupal_array_merge_deep($default, $variable);
+}
+
 /**
  * @todo document this function.
  */
 function getGallerySettings($gallery_config_form_name) {
-  $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
-  return variable_get($gallery_config_form_name, $default_values);
+  return get_array_variable_merged($gallery_config_form_name, CDM_DATAPORTAL_GALLERY_SETTINGS);
 }
 
 /**
@@ -1531,22 +1586,32 @@ function cdm_settings_layout_media() {
  */
 function cdm_settings_geo($form, &$form_state) {
 
+  $current_geoserver_settings = get_edit_map_service_settings();
+  $map_distribution = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+
   $form = array();
 
+  $dummy_distribution_query = NULL;
+  if($map_distribution['map_type'] != 1){
+    // we need to apply a dummy query since the map serice requires for image maps
+    // at least as and ad to be defined
+    $dummy_distribution_query = "as=a:339966&ad=tdwg1:a:1,2,3,4,5,6,7,8,9";
+  }
   $form['map_preview'] = array(
       '#type' => 'fieldset',
       '#tree' => FALSE,
       '#title' => t('Map preview'),
       '#collapsible' => FALSE,
-      '#description' => t('Preview of the map.'),
+      '#description' => 'The preview of the map'
+       . ($dummy_distribution_query != null ? ' may not be accurate in case if image maps, please check the map display in the taxon pages.': '.')
   );
-
-  $form['map_preview']['map'] = compose_map(NULL, NULL, NULL,
+  $form['map_preview']['map'] = compose_map(NULL, $dummy_distribution_query, NULL,
       array(
           'move' => "this.cdmOpenlayersMap.printInfo",
           '#execute' => "this.cdmOpenlayersMap.printInfo"
       )
   );
+
 
   /*
    * GEO SERVER
@@ -1560,8 +1625,6 @@ function cdm_settings_geo($form, &$form_state) {
     '#description' => t('Configuration and selection of your geo server.
       The Geo Server is responsible for generating the maps.'),
   );
-
-  $current_geoserver_settings = get_edit_map_service_settings();
 
   $form['edit_map_server']['base_uri'] = array(
     '#type' => 'select',
@@ -1578,133 +1641,162 @@ function cdm_settings_geo($form, &$form_state) {
       '#description' => t('The version of the EDIT map services'),
   );
 
+  $localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
+  $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
+  $form['gmap_api_key'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Google maps API key') . ':',
+      '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
+      '#description' => t('If you want to use the Google Maps Layer, a key is
+      needed. If you need a key, visit
+      <a href="http://code.google.com/intl/en/apis/maps/signup.html">google maps api key</a>.
+      <br/><strong>Note:</strong> The following key: <code>!localhostkey</code>
+      is the default key for the localhost (127.0.0.1).',
+      array('!localhostkey' => $localhostkey)),
+  );
+
+
   /*
    * MAP SETTINGS
    */
-  $form['map_settings'] = array(
+
+  $form[CDM_MAP_DISTRIBUTION] = array(
     '#type' => 'fieldset',
+    '#tree' => TRUE,
     '#title' => t('Maps settings'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
     '#description' => t('General configuration for all map types.'),
   );
 
-  $form['map_settings']['cdm_dataportal_geoservice_display_width'] = array(
+  /*
+   * settings for the distribution map are used also for specimens map!!!!
+   */
+
+  $form[CDM_MAP_DISTRIBUTION]['width'] = array(
     '#type' => 'textfield',
-    '#title' => t('Maps width') . ':',
-    '#default_value' => variable_get('cdm_dataportal_geoservice_display_width', 390),
-    '#description' => 'Choose the width of your maps, the height will always
-      be the half of the width. A value of 500 means the size will be 500 pixels
-      width and 250 pixels height.To allow OSM baselayers to zoom out to the full extend of the world the map width must be
+    '#title' => 'Width',
+    '#default_value' => $map_distribution['width'],
+    '#maxlength' => 4,
+    '#size' => 4,
+    '#description' => 'Width of the map. To allow OSM baselayers to zoom out to the full extend of the world the map width must be
       a multiple of 256px since the osm tiles from tile.openstreetmap.org have a size of 256px x 256px and frational zoom
       levels are not possible in this case.',
   );
+  $form[CDM_MAP_DISTRIBUTION]['height'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Height',
+      '#default_value' => $map_distribution['height'],
+      '#maxlength' => 4,
+      '#size' => 4,
+      '#description' => 'Height of the map. Depending on the chosen base layer you may want to choose the height equal
+      to the width or half of the width. Any other aspect ratio is also possible if desired.',
+  );
 
-  $form['map_settings']['cdm_dataportal_geoservice_bounding_box'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['bbox'] = array(
     '#type' => 'textfield',
-    '#title' => t('Fixed bounding box') . ':',
-    '#default_value' => variable_get('cdm_dataportal_geoservice_bounding_box', '-180,-90,180,90'),
-    '#description' => t('Define surrounding of area to be displayed in maps.
+    '#title' => 'Bounding box',
+    '#default_value' => $map_distribution['bbox'],
+    '#description' => t('The bounding box defines the area to be initially displayed in maps.
       Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong>
-      to let the map <strong>automatically zoom</strong> to the distribution
-      area.'),
+      to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.'),
   );
 
-  $form['map_settings']['cdm_dataportal_geoservice_labels_on'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['show_labels'] = array(
     '#type' => 'checkbox',
-    '#title' => '<b>' . t('Display area labels') . '</b>',
-    '#default_value' => variable_get('cdm_dataportal_geoservice_labels_on', FALSE),
-    '#description' => t('Check this if you like area names to be displayed in the maps. DOES IT WORK???? '),
+    '#title' => 'Display area labels',
+    '#default_value' => $map_distribution['show_labels'],
+    '#description' => t('The map will show name labels of the areas'),
   );
 
-  $form['map_settings']['cdm_dataportal_geoservice_map_caption'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['caption'] = array(
     '#type' => 'textfield',
-    '#title' => t('Map caption') . ':',
-    '#default_value' => variable_get('cdm_dataportal_geoservice_map_caption', ''),
-    '#description' => t('Define a caption for the map.'),
+    '#title' => 'Map caption',
+    '#default_value' => $map_distribution['caption'],
+    '#description' => t('The caption will be shown below the map.'),
   );
 
-  $form['map_settings']['cdm_dataportal_geoservice_distributionOpacity'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['distribution_opacity'] = array(
     '#type' => 'textfield',
-    '#title' => t('Distribution layer opacity') . ':',
-    '#default_value' => variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5'),
+    '#title' => 'Distribution layer opacity',
+    '#default_value' => $map_distribution['distribution_opacity'],
     '#description' => t('Valid values range from 0.0 to 1.0. Value 1.0 means the distributions (the countries or regions) will
                            fully visible, while a value near to 0.0 will be not much visible.'),
   );
 
-  $form['map_settings']['cdm_dataportal_map_openlayers'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['map_type'] = array(
     '#type' => 'radios',
-    '#title' => t('Map Viewer') . ':',
+    '#title' => 'Map types',
     '#options' => array(
-      1 => "OpenLayers dynamic mapviewer",
+      1 => "OpenLayers dynamic map viewer",
       0 => "Plain image",
     ),
-    '#default_value' => variable_get('cdm_dataportal_map_openlayers', 1),
-    '#description' => t('You can choose from two different map viewers:
-      <ul><li><em>OpenLayers</em> displays the maps in an interactive viewer
-      which allows zooming and panning. If not enabled the maps will consist
-      on a static image. If enabled you can configure the default layer
-      (background of your maps) below. Only one of them will be rendered.</li>
-      <li><em>Plain image</em> displays the map as a plain non interactive
-      image.</li></ul>'),
+    '#default_value' => $map_distribution['map_type'],
+    '#description' => 'Two different map types are available :
+      <ul><li><em>OpenLayers</em>: Display the maps in an interactive viewer
+      which allows zooming and panning. If enabled you can configure the default layer
+      (background of your maps) below.</li>
+      <li><em>Plain image</em>: The map will be static non interactive
+      image.</li></ul>',
   );
-
-  $openLayersEnabled = variable_get('cdm_dataportal_map_openlayers', 1) == 1;
+  $open_layers_is_enabled = $map_distribution['map_type'] == 1;
 
 
   // --- Plain Image Settings --- //
-  $form['map_image'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['image_map'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Plain image map settings'),
+    '#title' => 'Plain image map settings',
+    '#tree' => TRUE,
     '#collapsible' => TRUE,
-    '#collapsed' => $openLayersEnabled,
-    '#description' => t('The settings in this section are still expertimental
-      and can only be used with the EDIT map service version 1.1 or above.'),
+    '#collapsed' => $open_layers_is_enabled,
+    '#description' => 'The settings in this section are still expertimental
+      and can only be used with the EDIT map service version 1.1 or above.',
   );
-
   $edit_mapserver_version = get_edit_map_service_version_number();
   if ($edit_mapserver_version < 1.1) {
-    $form['map_image']['#description'] = '<div class="messages warning">' . t("The selected EDIT map service version has to small version number: $edit_mapserver_version") . '</div>'
-      . $form['map_image']['#description'];
+    $form[CDM_MAP_DISTRIBUTION]['image_map']['#description'] = '<div class="messages warning">' . t("The chosen EDIT map service version ($edit_mapserver_version) is too low, it must be at least 1.1") . '</div>'
+      . $form[CDM_MAP_DISTRIBUTION]['image_map']['#description'];
   }
 
-  $form['map_image']['map_base_layer'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['image_map']['base_layer'] = array(
     '#type' => 'textfield',
-    '#title' => t('Background layer') . ':',
-    '#default_value' => variable_get('map_base_layer', 'cyprusdivs'),
+    '#title' => 'Background layer',
+    '#default_value' => $map_distribution['image_map']['base_layer'],
     '#description' => t('Background layer. For available layers inspect !url1 or !url2.', array(
-      '!url1' => l(t('deegree-csw'), 'http://edit.africamuseum.be:8080/deegree-csw/md_search.jsp'),
-      '!url2' => l(t('geoserver layers'), 'http://edit.africamuseum.be/geoserver/web/'), // http://edit.africamuseum.be/geoserver/rest/layers
+      '!url1' => l('deegree-csw', 'http://edit.africamuseum.be:8080/deegree-csw/md_search.jsp'),
+      '!url2' => l('geoserver layers', 'http://edit.africamuseum.be/geoserver/web/'),
     )),
   );
 
-  $form['map_image']['map_bg_color'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['image_map']['bg_color'] = array(
     '#type' => 'textfield',
-    '#title' => t('Background color') . ':',
-    '#default_value' => variable_get('map_bg_color', '1874CD'),
+    '#title' => 'Background color',
+    '#default_value' => $map_distribution['image_map']['bg_color'],
   );
 
-  $form['map_image']['map_base_layer_style'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['image_map']['layer_style'] = array(
     '#type' => 'textfield',
-    '#title' => t('Background layer area style') . ':',
+    '#title' => 'Background layer style',
      // Only line color by now.
-    '#default_value' => variable_get('map_base_layer_style', 'ffffff,606060,,'),
-    '#description' => t('Syntax: {Area fill color},{Area stroke color},{Area stroke width},{Area stroke dash style}'),
+    '#default_value' => $map_distribution['image_map']['layer_style'],
+    '#description' => 'Syntax: {Area fill color},{Area stroke color},{Area stroke width},{Area stroke dash style}',
   );
 
 
   // --- OpenLayers Settings --- //
-  $form['openlayers'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['openlayers'] = array(
     '#type' => 'fieldset',
-    '#title' => t('OpenLayers settings'),
+    '#title' => 'OpenLayers settings',
+    '#tree' => TRUE,
     '#collapsible' => TRUE,
-    '#collapsed' => !$openLayersEnabled,
+    '#collapsed' => !$open_layers_is_enabled,
     '#description' => '',
   );
 
-  if (!$openLayersEnabled) {
-    $form['openlayers']['#description'] = '<div class="messages warning">' . t('The Openlayers viewer is currently not enabled! (see section Maps settings above )') . '</div>'
-      . $form['openlayers']['#description'];
+  if (!$open_layers_is_enabled) {
+    $form[CDM_MAP_DISTRIBUTION]['openlayers']['#description'] = '<div class="messages warning">'
+        . 'The Openlayers viewer is currently not enabled! (see section Maps settings above )</div>'
+        . $form[CDM_MAP_DISTRIBUTION]['openlayers']['#description'];
   }
 
   $baselayer_options = array(
@@ -1722,103 +1814,91 @@ function cdm_settings_geo($form, &$form_state) {
     'gmap' => 'Google Streets',
     'gsat' => 'Google Satellite',
     'ghyb' => 'Google Hybrid',
-    'veroad' => 'Virtual Earth Roads',
-    'veaer' => 'Virtual Earth Aerial',
-    'vehyb' => 'Virtual Earth Hybrid',
+//     'veroad' => 'Virtual Earth Roads',
+//     'veaer' => 'Virtual Earth Aerial',
+//     'vehyb' => 'Virtual Earth Hybrid',
     // 'yahoo' => 'Yahoo Street',
     // 'yahoosat' => 'Yahoo Satellite',
     // 'yahoohyb' => 'Yahoo Hybrid',
   );
 
-  $form['openlayers']['baselayers'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['base_layers'] = array(
     '#type' => 'checkboxes_preferred',
-    '#title' => t('Base Layers') . ':',
+    '#title' => 'Base Layers',
     '#options' => $baselayer_options,
-    '#default_value' => variable_get('baselayers', array('metacarta_vmap0' => "metacarta_vmap0", 'PREFERRED' => 'metacarta_vmap0')),
-    '#description' => t('Choose the baselayer layer you prefer to use as map background in the OpenLayers dynamic mapviewer.'),
+    '#default_value' =>  $map_distribution['openlayers']['base_layers'],
+    '#description' => 'Choose the baselayer layer you prefer to use as map background in the OpenLayers dynamic mapviewer.',
   );
 
   // cdm_dataportal_geoservice_showLayerSwitcher
-  $form['openlayers']['cdm_dataportal_geoservice_showLayerSwitcher'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['show_layer_switcher'] = array(
     '#type' => 'checkbox',
-    '#title' => '<b>' . t('Show Layer Switcher') . '</b>',
-    '#default_value' => variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE),
-    '#description' => t('
-      The Layer Switcher control displays a table of contents
+    '#title' => 'Show Layer Switcher',
+    '#default_value' => $map_distribution['openlayers']['show_layer_switcher'],
+    '#description' => 'The Layer Switcher control displays a table of contents
       for the map.  This allows the user interface to switch between
-      BaseLayers and to show or hide Overlays.  By default the switcher is
+      base layers and to show or hide overlays.  By default the switcher is
       shown minimized on the right edge of the map, the user may expand it
-      by clicking on the handle.'
-    ),
+      by clicking on the handle.',
   );
 
-  $localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
-  $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
-  $form['openlayers']['gmap_api_key'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Google maps API key') . ':',
-    '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
-    '#description' => t('If you want to use the Google Maps Layer, a key is
-      needed. If you need a key, visit
-      <a href="http://code.google.com/intl/en/apis/maps/signup.html">google maps api key</a>.
-      <br/><strong>Note:</strong> The following key: <code>!localhostkey</code>
-      is the default key for the localhost (127.0.0.1). The key in use is the
-      one above this text.', array('!localhostkey' => $localhostkey)),
-  );
-
-  $form['cdm_dataportal_geoservice_map_legend'] = array(
+  /*
+   * Map Legend
+   */
+  $form[CDM_MAP_DISTRIBUTION]['legend'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Map legend'),
+    '#title' => 'Map legend',
+    '#tree' => TRUE,
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
-    '#description' => t('Configure the maps legend.'),
+    '#description' => 'Configure the maps legend.',
   );
 
-  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_on'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['legend']['show'] = array(
     '#type' => 'checkbox',
-    '#title' => '<b>' . t('Display a map legend') . '</b>',
-    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_on', TRUE),
-    '#description' => t('Check this if you like a legend to be displayed with the maps.'),
+    '#title' => 'Display a map legend',
+    '#default_value' => $map_distribution['legend']['show'],
+    '#description' => 'Check this if you like a legend to be displayed with the maps.',
   );
 
-  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legendOpacity'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['legend']['opacity'] = array(
     '#type' => 'textfield',
-    '#title' => t('Legend opacity'),
-    '#default_value' => variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5'),
-    '#description' => t('Valid values range from 0.0 to 1.0. Value 1.0 means the legend will be fully visible, while a value near
-                         to 0.0 will be not much visible.'),
+    '#title' => 'Legend opacity',
+    '#default_value' => $map_distribution['legend']['opacity'],
+    '#description' => 'Valid values range from 0.0 to 1.0. Value 1.0 means the legend will be fully visible, while a value near
+                         to 0.0 will be not much visible.',
   );
 
-  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_font_size'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['legend']['font_size'] = array(
     '#type' => 'textfield',
-    '#title' => t('Font size'),
-    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_font_size', 10),
-    '#description' => t('Font size in pixels.'),
+    '#title' => 'Font size',
+    '#default_value' => $map_distribution['legend']['font_size'],
+    '#description' => 'Font size in pixels.',
   );
 
   $fontStyles = array(
     0 => "plane",
     1 => "italic",
   );
-  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_font_style'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['legend']['font_style'] = array(
     '#type' => 'select',
-    '#title' => t('Available font styles'),
-    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_font_style', FALSE),
+    '#title' => 'Available font styles',
+    '#default_value' => $map_distribution['legend']['font_style'],
     '#options' => $fontStyles,
-    '#description' => t('Select a font style for the map legend.'),
+    '#description' => 'Select a font style for the map legend.',
   );
 
-  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_icon_width'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['legend']['icon_width'] = array(
     '#type' => 'textfield',
-    '#title' => t('Legend icon width'),
-    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_icon_width', 35),
-    '#description' => t('Legend icon width in pixels.'),
+    '#title' => 'Icon width',
+    '#default_value' => $map_distribution['legend']['icon_width'],
+    '#description' => 'Legend icon width in pixels.',
   );
-  $form['cdm_dataportal_geoservice_map_legend']['cdm_dataportal_geoservice_legend_icon_height'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['legend']['icon_height'] = array(
     '#type' => 'textfield',
-    '#title' => t('Legend icon height'),
-    '#default_value' => variable_get('cdm_dataportal_geoservice_legend_icon_height', 15),
-    '#description' => t('Legend icon height in pixels.'),
+    '#title' => 'Icon height',
+    '#default_value' => $map_distribution['legend']['icon_height'],
+    '#description' => 'Legend icon height in pixels.',
   );
 
   // @WA: D7 form api does not support reset buttons,
@@ -2066,6 +2146,15 @@ function checkboxes_preferred_expand($element, &$form_state, $form) {
   // First of all create checkboxes for each of the elements
   $element = form_process_checkboxes($element);
 
+  // compose the element name
+  $parents = array();
+  array_deep_copy($element['#parents'], $parents);
+  $parents[count($parents) -1 ] .= '_preferred';
+  $element_name = $parents[0];
+  for ($i=1; $i < count($parents); $i++){
+    $element_name .= '[' . $parents[$i] . ']';
+  }
+
   $children = element_children($element);
 
   $element['table_start'] = array(
@@ -2093,7 +2182,7 @@ function checkboxes_preferred_expand($element, &$form_state, $form) {
       if (!isset($element[$key . '_preferred'])) {
         $element[$key . '_preferred'] = array(
           '#type' => 'radio',
-          '#name' => $element['#parents'][0] . '_preferred',
+          '#name' => $element_name,
           '#return_value' => check_plain($key),
           '#default_value' => empty($element['#default_value_2']) ? NULL : $element['#default_value_2'],
           '#attributes' => $element['#attributes'],
@@ -2138,39 +2227,48 @@ function theme_checkboxes_preferred($variables) {
  *
  * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#after_build
  *
- * @param $form
+ * @param $element
  *   Nested array of form elements that comprise the form.
  * @param $form_state
  *   A keyed array containing the current state of the form.
+ *   This includes the current persistent storage data for the form.
+ *   Additional information, like the sanitized $_POST data,
+ *   is also accumulated here in $form_state['input']
  *
  * @return the modified form array
  */
-function checkboxes_preferred_after_build($form, &$form_state) {
+function checkboxes_preferred_after_build($element, &$form_state) {
 
-  $parent_id = $form['#parents'][0];
+  $parent_id = $element['#parents'][count($element['#parents']) - 1];
 
   if ($_POST && count($_POST) > 0) {
+    // TODO use  $form_state['input'] instead of POST !!!
     // First pass of form processing.
-    $preferred_layer = $_POST[$parent_id . '_preferred'];
-    $form['#value']['PREFERRED'] = $preferred_layer;
-    $form_state[$parent_id] = $form['#value'];
-    $form_state['values']['baselayers'] = $form['#value'];
+    $parents = array();
+    array_deep_copy($element['#parents'], $parents);
+    $parents[count($parents) - 1] .= '_preferred';
+    $preferred_layer = drupal_array_get_nested_value($_POST, $parents);
+    $element['#value']['PREFERRED'] = $preferred_layer;
+//     $form_state[$parent_id] = $element['#value'];
+//     $form_state['values']['baselayers'] = $element['#value'];
+    $form_state_element_values = &drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+    $form_state_element_values = $element['#value'];
   }
   else {
     // Second pass of form processing.
-    $preferred_layer = $form['#value']['PREFERRED'];
+    $preferred_layer = $element['#value']['PREFERRED'];
   }
 
   // Also set the chosen value (not sure if this is good Drupal style ....).
-  foreach ($children = element_children($form) as $key) {
-    if (!empty($form[$key]['#type']) && $form[$key]['#type'] == 'radio') {
-      $form[$key]['#value'] = $preferred_layer;
+  foreach ($children = element_children($element) as $key) {
+    if (!empty($element[$key]['#type']) && $element[$key]['#type'] == 'radio') {
+      $element[$key]['#value'] = $preferred_layer;
     }
   }
   // The default layer must always be enabled.
-  $form[$preferred_layer]['#value'] = $preferred_layer;
+  $element[$preferred_layer]['#value'] = $preferred_layer;
 
-  return $form;
+  return $element;
 }
 
 function radios_prepare_options_suffix(&$elements){
@@ -2207,10 +2305,10 @@ function theme_radio_options_suffix($variables) {
  *
  * @param $element
  *   The form element to validate
- * @param $form
- *   Nested array of form elements that comprise the form.
  * @param $form_state
  *   A keyed array containing the current state of the form.
+ * @param $form
+ *   Nested array of form elements that comprise the form.
  */
 function form_element_validate_json($element, &$form_state, $form) {
    if (!empty($element['#value'])) {

@@ -140,7 +140,8 @@ function theme_cdm_feature_nodes($variables) {
 
           // Display cdm distribution map TODO this is a HACK to a proper
           // generic implementation?
-          $block->content .= theme('cdm_distribution_map', array('taxon' => $taxon));
+          $map_render_element = compose_distribution_map($taxon);
+          $block->content .= $map_render_element['#markup'];
           $block->content .= theme('cdm_descriptionElements', array(
             'descriptionElements' => $node->descriptionElements,
             'featureUuid' => $node->feature->uuid,
@@ -1053,11 +1054,24 @@ function theme_cdm_descriptionElementDistribution($descriptionElements){ $out
 */
 
 /**
- * TODO
- * Quick-and-dirty solution to show distribution service to exemplar groups.
+ * Composes the render array for a distribution map of the given taxon.
+ *
+ * The distribution map can either be a plain image or a dynamic open layers map
+ * depending on the settings.
+ *
+ * compose_hook() implementation
+ *
+ * @param $taxon
+ *   The CDM Taxon instance to create the distribution map for.
+ * @return array
+ *    A drupal render array
+ *
+ * Similar compose function compose_map()
+ *
+ * @ingroup compose
  */
-function theme_cdm_distribution_map($variables) {
-  $taxon = $variables['taxon'];
+function compose_distribution_map($taxon) {
+
   $out = '';
   $settings = get_edit_map_service_settings();
 
@@ -1079,100 +1093,49 @@ function theme_cdm_distribution_map($variables) {
   $query_string = str_replace('%3A', ":", $query_string);
 
   /* ------ choose the display mode, either openlayers or static image ------ */
-  if (variable_get('cdm_dataportal_map_openlayers', 1)) {
+
+  $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+
+  if ($map_settings['map_type'] == 1) {
 
     /* =========== display distributions using the openlayers map viewer =========== */
-    $legend_url_font_size = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
-    $legend_url_font_style = variable_get('cdm_dataportal_geoservice_legend_font_style', 1);
-    $legend_url_font_style = $fontStyles[$legend_url_font_style];
-    $legend_url_icon_width = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
-    $legend_url_icon_height = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
 
-    $legendFormatQueryStr = "format=image" . urlencode('/') . "png&TRANSPARENT=TRUE";
-    $legendFormatQueryStr .= "&WIDTH=" . $legend_url_icon_width . "&HEIGHT=" . $legend_url_icon_height . "&";
-    // TODO why is the layer=topp:tdwg_level_4 parameter needed at all here??
-    $legendFormatQueryStr .= "layer=topp" . urlencode(':') . "tdwg_level_4&LEGEND_OPTIONS=forceLabels" . urlencode(':') . "on;fontStyle" . urlencode(':') . $legend_url_font_style . ";fontSize" . urlencode(':') . $legend_url_font_size . "&SLD=";
+    $legendFormatQueryStr = "format=image" . urlencode('/') . "png"
+         . "&TRANSPARENT=TRUE"
+         . "&WIDTH=" . $map_settings['legend']['icon_width']
+         . "&HEIGHT=" . $map_settings['legend']['icon_height']
+           // TODO why is the layer=topp:tdwg_level_4 parameter needed at all here??
+           // AK: i think the tdwg_level_4 is used as place holder and will be replaced later on
+           // => search for "tdwg_level_4" in the code
+         . "&layer=topp" . urlencode(':') . "tdwg_level_4"
+         . "&LEGEND_OPTIONS=forceLabels" . urlencode(':') . "on"
+             . ";fontStyle" . urlencode(':') . $fontStyles[$map_settings['legend']['font_style']]
+             . ";fontSize" . urlencode(':') .  $map_settings['legend']['font_size']
+         . "&SLD=";
 
-    $out .= get_openlayers_map(variable_get('cdm_dataportal_geoservice_display_width', 300), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), NULL, $query_string, $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
+    $out .= get_openlayers_map(
+        $map_settings['width'],
+        $map_settings['height'],
+        $map_settings['bbox'],
+        NULL,
+        $query_string,
+        $legendFormatQueryStr,
+        $map_settings['caption']
+     );
   }
   else {
     $legendFormatQueryStr = '';
-    return get_image_map(variable_get('cdm_dataportal_geoservice_display_width', 300), variable_get('cdm_dataportal_geoservice_bounding_box', FALSE), NULL, $query_string, $legendFormatQueryStr, variable_get('cdm_dataportal_geoservice_map_caption', ''));
-
-    // Simple image.
-    $mapStaticCaption = '&mc_s=Georgia,15,blue&mc=' . variable_get('cdm_dataportal_geoservice_map_caption', '');
-
-    $query_string .= '&img=true';
-    $query_string .= '&legend=1&mlp=3' . $mapStaticCaption . '&recalculate=FALSE';
-
-    $map_service_script_name = "areas.php";
-
-    // Apply Plain Image map settings.
-    if (get_edit_map_service_version_number() >= 1.1) {
-      /*
-       * example : title=a:Naturalized++non-invasive
-       * &ad=cyprusdivs:bdcode:a:5&as=a:ff9900,,0.1,&l=tdwg4
-       * &ms=500&bbox=32,34,35,36&img=true&legend=1&mlp=3
-       * &mc_s=Georgia,15,blue&mc=&recalculate=FALSE
-       * http://edit.br.fgov.be/edit_wp5/v1/rest_gen.php?
-       * l=background_gis:b,cyprusdivs&ad=cyprusdivs%3Abdcode%3Aa%3A8%2C4
-       * &as=a%3A339966%2C%2C0.1%2C|b:0000ff,,
-       * &bbox=32%2C34%2C35%2C36&img=true&legend=1&mc=&mc_s=Georgia%2C15%2Cblue
-       * &mlp=3&ms=500&recalculate=FALSE&title=a%3Aindigenous
-       */
-
-      $map_service_script_name = "rest_gen.php";
-
-      $bgcolor_areaStyleId = "y";
-      $baselayer_areaStyleId = "z";
-      $bgcolor_layer = '';
-      $additional_area_styles = array();
-
-      // Background color.
-      if (variable_get('map_bg_color', '')) {
-        $bgcolor_layer = "background_gis:" . $bgcolor_areaStyleId;
-        $additional_area_styles[] = $bgcolor_areaStyleId . ":" . variable_get('map_bg_color', '') . ",,";
-      }
-
-      // TODO HACK to replace the default base layer which currently is tdwg4
-      // !!!
-      if (strpos($query_string, "?l=") !== FALSE) {
-        $layer_param_token = "?l=";
-      }
-      else {
-        $layer_param_token = "&l=";
-      }
-      if (strpos($query_string, "?as=") !== FALSE) {
-        $areystyle_param_token = "?as=";
-      }
-      else {
-        $areystyle_param_token = "&as=";
-      }
-
-      if (variable_get('map_base_layer', '')) {
-        $query_string = str_replace($layer_param_token . "tdwg4", "$layer_param_token" . variable_get('map_base_layer', '') . ":" . $baselayer_areaStyleId, $query_string);
-      }
-      else {
-        $query_string = str_replace($layer_param_token . "tdwg4", $layer_param_token . "tdwg4:" . $baselayer_areaStyleId . ",", $query_string);
-      }
-
-      if ($bgcolor_layer) {
-        $query_string = str_replace($layer_param_token, $layer_param_token . $bgcolor_layer . ",", $query_string);
-      }
-
-      if (variable_get('map_base_layer_style', '')) {
-        $additional_area_styles[] = $baselayer_areaStyleId . ":" . variable_get('map_base_layer_style', '');
-      }
-
-      foreach ($additional_area_styles as $as) {
-        $query_string = str_replace($areystyle_param_token, $areystyle_param_token . $as . "|", $query_string);
-      }
-    }
-
-    $mapUri = url(get_edit_map_service_full_uri() . '/' . $map_service_script_name . '? '. $query_string);
-    $out .= '<img class="distribution_map" src="' . urlencode($mapUri) . '" alt="Distribution Map" />';
+    $out = get_image_map(
+        $map_settings['width'],
+        $map_settings['height'],
+        $map_settings['bbox'],
+        NULL,
+        $query_string,
+        $legendFormatQueryStr,
+        $map_settings['caption']
+    );
   }
-  return $out;
+  return markup_to_render_array($out);
 }
 
 /**

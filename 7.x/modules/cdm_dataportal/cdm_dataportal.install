@@ -128,6 +128,7 @@ function cdm_dataportal_update_7303() {
  *  - migrating variable cdm_dataportal_show_default_image to cdm_taxon_profile_image['show']
  *  - enabling required module file
  *  - enable new debug block for all dataportals
+ *  - migrating variables for map settings
  */
 function cdm_dataportal_update_7304() {
 
@@ -229,6 +230,71 @@ function cdm_dataportal_update_7304() {
     $tasks_performed[] = 'CDM web service debug block enabled for \'CDM admin\' users in all themes';
     $tasks_performed[] = _remove_variable('cdm_webservice_debug');
     $tasks_performed[] = _remove_variable('cdm_webservice_isStub');
+
+    /*
+     *  migrating variables for map settings
+     */
+    $cdm_map_distribution = array();
+
+    $cdm_map_distribution['width'] = variable_get('cdm_dataportal_geoservice_display_width', 390);
+    $cdm_map_distribution['height'] = $cdm_map_distribution['width'] / 2;
+    _remove_variable('cdm_dataportal_geoservice_display_width');
+
+    $cdm_map_distribution['bbox'] = variable_get('cdm_dataportal_geoservice_bounding_box', '-180,-90,180,90');
+    _remove_variable('cdm_dataportal_geoservice_bounding_box');
+
+    $cdm_map_distribution['show_labels'] = variable_get('cdm_dataportal_geoservice_labels_on', FALSE);
+    _remove_variable('cdm_dataportal_geoservice_labels_on');
+
+    $cdm_map_distribution['caption'] = variable_get('cdm_dataportal_geoservice_map_caption', '');
+    _remove_variable('cdm_dataportal_geoservice_map_caption');
+
+    $cdm_map_distribution['distribution_opacity'] = variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5');
+    _remove_variable('cdm_dataportal_geoservice_distributionOpacity');
+
+    $cdm_map_distribution['mapType'] = variable_get('cdm_dataportal_map_openlayers', 1);
+    _remove_variable('cdm_dataportal_map_openlayers');
+
+    // imageMap
+    $cdm_map_distribution['image_map'] = array();
+    $cdm_map_distribution['image_map']['base_layer']= variable_get('map_base_layer', 'cyprusdivs');
+    _remove_variable('map_base_layer');
+
+    $cdm_map_distribution['image_map']['bg_color'] = variable_get('map_bg_color', '1874CD');
+    _remove_variable('map_bg_color');
+
+    $cdm_map_distribution['image_map']['layer_style'] = variable_get('map_base_layer_style', 'ffffff,606060,,');
+    _remove_variable('map_base_layer_style');
+
+    // OpenLayers
+    $cdm_map_distribution['openlayers'] = array();
+    $cdm_map_distribution['openlayers']['base_layers'] = variable_get('baselayers', array('osgeo_vmap0' => 'osgeo_vmap0', 'PREFERRED' => 'osgeo_vmap0'));
+    _remove_variable('baselayers');
+
+    $cdm_map_distribution['openlayers']['show_layer_switcher'] = variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE);
+    _remove_variable('cdm_dataportal_geoservice_showLayerSwitcher');
+
+    $cdm_map_distribution['legend'] = array();
+    $cdm_map_distribution['legend']['show'] = variable_get('cdm_dataportal_geoservice_legend_on', TRUE);
+    _remove_variable('cdm_dataportal_geoservice_legend_on');
+
+    $cdm_map_distribution['legend']['opacity'] = variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5');
+    _remove_variable('cdm_dataportal_geoservice_legendOpacity');
+
+    $cdm_map_distribution['legend']['font_size'] = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
+    _remove_variable('cdm_dataportal_geoservice_legend_font_size');
+
+    $cdm_map_distribution['legend']['font_style'] = variable_get('cdm_dataportal_geoservice_legend_font_style', FALSE);
+    _remove_variable('cdm_dataportal_geoservice_legend_font_style');
+
+    $cdm_map_distribution['legend']['icon_width'] = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
+    _remove_variable('cdm_dataportal_geoservice_legend_icon_width');
+
+    $cdm_map_distribution['legend']['icon_height'] = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
+    _remove_variable('cdm_dataportal_geoservice_legend_icon_height');
+
+    variable_set('cdm_map_distribution', $cdm_map_distribution);
+    $tasks_performed[] =  'variables for map settings migrated to new variable "cdm_map_distribution"';
 
     return  join(', ',$tasks_performed);
 }

@@ -44,29 +44,34 @@
  * @return array
  *    A drupal render array
  *
+ * Similar compose function compose_distribution_map()
+ *
  * @ingroup compose
  */
 function compose_map($occurrence_query, $distribution_query, $legend_format_query, array $event_listeners = array()) {
 
-  if (variable_get('cdm_dataportal_map_openlayers', 1)) {
+  $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+  if ($map_settings['map_type'] == 1) {
     $map_html = get_openlayers_map(
-        variable_get('cdm_dataportal_geoservice_display_width', 680),
-        variable_get('cdm_dataportal_geoservice_bounding_box', FALSE),
+        $map_settings['width'],
+        $map_settings['height'],
+        $map_settings['bbox'],
         $occurrence_query,
         $distribution_query,
         $legend_format_query,
-        variable_get('cdm_dataportal_geoservice_map_caption', ''),
+        $map_settings['caption'],
         $event_listeners
     );
   }
   else {
     $map_html = get_image_map(
-        variable_get('cdm_dataportal_geoservice_display_width', 680),
-        variable_get('cdm_dataportal_geoservice_bounding_box', FALSE),
+        $map_settings['width'],
+        $map_settings['height'],
+        $map_settings['bbox'],
         $occurrence_query,
         $distribution_query,
         $legend_format_query,
-        variable_get('cdm_dataportal_geoservice_map_caption', '')
+        $map_settings['caption']
     );
   }
   return markup_to_render_array($map_html, 0);
@@ -91,12 +96,14 @@ function _add_js_openlayers_map(array $event_listeners = array()) {
 
   _add_js_openlayers();
 
+  $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+  $baseLayers = $map_settings['openlayers']['base_layers'];
+  $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
+
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_map.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_layers.js');
 
-  $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
 
-  $baseLayers = variable_get('baselayers', array());
   if (!is_array($baseLayers) || count($baseLayers) == 0) {
     $baseLayers = array(
         'metacarta_vmap0' => 'Metacarta Vmap0',
@@ -142,10 +149,10 @@ function _add_js_openlayers_map(array $event_listeners = array()) {
                    '" . $edit_map_service['version'] . "',
                    {
                     legendPosition: 3,
-                    boundingBox: '" . variable_get('cdm_dataportal_geoservice_bounding_box', FALSE) . "',
-                    distributionOpacity: '" . variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5') . "',
-                    legendOpacity: '" . variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5') . "',
-                    showLayerSwitcher: " . (variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE) ? 'true' : 'false') . ",
+                    boundingBox: '" . $map_settings['bbox'] . "',
+                    distributionOpacity: '" . $map_settings['distribution_opacity'] . "',
+                    legendOpacity: '" . $map_settings['legend']['opacity'] . "',
+                    showLayerSwitcher: " . ($map_settings['openlayers']['show_layer_switcher'] ? 'true' : 'false') . ",
                     baseLayerNames: [" . $layerNames . "],
                     defaultBaseLayerName: '" . $preferredLayer . "'
                    }
@@ -186,18 +193,23 @@ function _add_js_openlayers_map(array $event_listeners = array()) {
  * @return String
  *    rendered html
  */
-function get_openlayers_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array()) {
+function get_openlayers_map($width, $height, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array()) {
 
   _add_js_openlayers_map($event_listeners);
+
+  $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
   $out = '<div id="openlayers">';
   $out .= '<div id="openlayers_map" class="smallmap"';
   if($width) {
-    $out .= ' style="width: ' . $width . 'px; height:' . ($width / 2) . 'px"';
+    if(!$height){
+      $height = $width / 2;
+    }
+    $out .= ' style="width: ' . $width . 'px; height:' . $height . 'px"';
   }
 
   // Additional query parameters as set in the data portal admin section.
-  $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
+  $labels_on = $map_settings['show_labels'];
 
   $openlayers_map_query_string = '&img=false&ms=' . $width
   . ($bounding_box ? '&bbox=' . $bounding_box : '')
@@ -248,14 +260,14 @@ function get_openlayers_map($width, $bounding_box = FALSE, $occurrenceQuery = FA
 * @return String
  *    rendered html
  */
-function get_image_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE) {
+function get_image_map($width, $height= NULL, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE) {
 
+  $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+
+  $query_string = '&image=true&recalculate=false&legend=1&ms=' . $width . ($height ? ',' . $height : '')
   // Additional query parameters as set in the data portal admin section.
-  $labels_on = variable_get('cdm_dataportal_geoservice_labels_on', 0);
-
-  $query_string = '&image=true&recalculate=false&legend=1&ms=' . $width
   . ($bounding_box ? '&bbox=' . $bounding_box : '')
-  . ($labels_on ? '&label=' . $labels_on : '');
+  . ($map_settings['show_labels'] ? '&label=' . $map_settings['show_labels'] : '');
 
   if ($map_caption) {
     $query_string .= '&mlp=3&mc_s=Georgia,15,blue&mc=' . $map_caption;
@@ -300,9 +312,9 @@ function get_image_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, 
     $additional_area_styles = array();
 
     // Background color:
-    if (variable_get('map_bg_color', '')) {
+    if ($map_settings['image_map']['bg_color'] ) {
       $bgcolor_layer = "background_gis:" . $bgcolor_areaStyleId;
-      $additional_area_styles[] = $bgcolor_areaStyleId . ":" . variable_get('map_bg_color', '') . ",,";
+      $additional_area_styles[] = $bgcolor_areaStyleId . ":" . $map_settings['image_map']['bg_color'] . ",,";
     }
 
     // TODO HACK to replace the default base layer which currently is tdwg4 !!!
@@ -319,8 +331,8 @@ function get_image_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, 
     else {
       $areystyle_param_token = "&as=";
     }
-    if (variable_get('map_base_layer', '')) {
-      $query_string = str_replace($layer_param_token . "tdwg4", "$layer_param_token" . variable_get('map_base_layer', '') . ":" . $baselayer_areaStyleId, $query_string);
+    if ($map_settings['image_map']['base_layer']) {
+      $query_string = str_replace($layer_param_token . "tdwg4", "$layer_param_token" . $map_settings['image_map']['base_layer'] . ":" . $baselayer_areaStyleId, $query_string);
     }
     else {
       $query_string = str_replace($layer_param_token . "tdwg4", $layer_param_token . "tdwg4:" . $baselayer_areaStyleId . ",", $query_string);
@@ -330,8 +342,8 @@ function get_image_map($width, $bounding_box = FALSE, $occurrenceQuery = FALSE, 
       $query_string = str_replace($layer_param_token, $layer_param_token . $bgcolor_layer . ",", $query_string);
     }
 
-    if (variable_get('map_base_layer_style', '')) {
-      $additional_area_styles[] = $baselayer_areaStyleId . ":" . variable_get('map_base_layer_style', '');
+    if ($map_settings['image_map']['layer_style']) {
+      $additional_area_styles[] = $baselayer_areaStyleId . ":" . $map_settings['image_map']['layer_style'];
     }
 
     foreach ($additional_area_styles as $as) {

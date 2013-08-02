@@ -2120,11 +2120,9 @@ function __clone() {
  * @see http://us3.php.net/manual/en/ref.array.php
  *
  * @param array $array
- * @param array $copy
+ * @param array $copy passed by reference
  * @param int $maxdepth
  * @param int $depth
- *
- * @return void
  */
 function array_deep_copy(&$array, &$copy, $maxdepth = 50, $depth = 0) {
   if ($depth > $maxdepth) {

@@ -29,7 +29,21 @@
         baseLayerNames: ["osgeo_vmap0"],
         defaultBaseLayerName: 'osgeo_vmap0',
         maxZoom: 4,
-        minZoom: 0
+        minZoom: 0,
+        /**
+         * allows the map to display parts of the layers which are outside
+         * the maxExtent if the aspect ratio of the map and of the baselayer
+         * are not equal
+         */
+        displayOutsideMaxExtent: true,
+        customWMSBaseLayerData: {
+            name: "Euro+Med",
+            url: "http://edit.africamuseum.be/geoserver/topp/wms",
+            params: {layers: "topp:em_tiny_jan2003", format:"image/png", tiled: true},
+            projection: "EPSG:7777777",
+            maxExtent: "-1600072.75, -1800000, 5600000, 5850093",
+            unit: 'm'
+        }
     };
 })(jQuery);
 
@@ -64,20 +78,6 @@ window.CdmOpenLayers  = (function () {
             projections: projections,
             mapExtends: mapExtends,
             getLayerByName: function(layerName){} // initially empty fuction, will be populated by openlayers_layers.js
-// TODO remove below lines before release
-//            availableLayers: {
-//
-//                layers: {}, // initially empty, will be populated by openlayers_layers.js
-//
-//                createAllLayers: function() {
-//                    for (var key in this.layers) {
-//                        if (this.layers.hasOwnProperty(key)){
-//                            var layer = this.layers[key];
-//                            layer.create();
-//                        };
-//                    };
-//                }
-//            }
     };
 
 })(); // end of namespace definition for CdmOpenLayers
@@ -119,10 +119,9 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
              new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
            ];
 
-    var dataProj = new OpenLayers.Projection("EPSG:4326");
+//    var dataProj = new OpenLayers.Projection("EPSG:4326");
 
     var dataLayerOptions = {
-        maxExtent: window.CdmOpenLayers.mapExtends.epsg_900913,
         isBaseLayer: false,
         displayInLayerSwitcher: true
     };
@@ -139,9 +138,9 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
      */
     this.init = function(){ // public function
 
-      createLayers(options.baseLayerNames, options.defaultBaseLayerName);
+      createLayers(options.baseLayerNames, options.defaultBaseLayerName, options.customWMSBaseLayerData);
 
-      initOpenLayers();
+      initMap();
 
       // -- Distribution Layer --
       var mapServiceRequest;
@@ -228,11 +227,11 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
 
         var info = "<dl>";
         info += "<dt>zoom:<dt><dd>" + map.getZoom() + "</dd>";
-        info += "<dt>resolution:<dt><dd>" + map.getResolution() + "</dd>";
-        info += "<dt>max resolution:<dt><dd>" + map.getMaxResolution() + "</dd>";
-        info += "<dt>scale:<dt><dd>" + map.getScale() + "</dd>";
-        info += "<dt>extend bbox:<dt><dd>" + map.getExtent().toBBOX() + " (" + mapExtendDegree.toBBOX() + ")</dd>";
-        info += "<dt>maxExtend bbox:<dt><dd>" + map.getMaxExtent().toBBOX() + "</dd>";
+        info += "<dt>map resolution:<dt><dd>" + map.getResolution() + "</dd>";
+        info += "<dt>map max resolution:<dt><dd>" + map.getMaxResolution() + "</dd>";
+        info += "<dt>map scale:<dt><dd>" + map.getScale() + "</dd>";
+        info += "<dt>map extent bbox:<dt><dd>" + map.getExtent().toBBOX() + " (" + mapExtendDegree.toBBOX() + ")</dd>";
+        info += "<dt>map maxExtent bbox:<dt><dd>" + map.getMaxExtent().toBBOX() + "</dd>";
         info += "<dt>baselayer projection:<dt><dd>" + map.baseLayer.projection.getCode() + "</dd>";
         info += "</dl>";
 
@@ -244,24 +243,26 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
     };
 
     /**
-     * Initialize the Openlayers viewer with the base layer
+     * Initialize the Openlayers Map with the base layer
      */
-    var initOpenLayers = function(){
+    var initMap = function(){
 
 
       if(options.showLayerSwitcher === true){
           defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
       }
 
-//      var maxExtendByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, mapWidth/mapHeight);
+//      var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, mapWidth/mapHeight);
       var maxResolution = null;
+      // gmaps has no maxExtent at this point, need to check for null
       if(defaultBaseLayer.maxExtent != null){
-          // gmaps has no maxExtend at this point
-          maxResolution = defaultBaseLayer.maxExtent.getWidth()/ mapWidth;
+          maxResolution = Math[(options.displayOutsideMaxExtent ? 'max' : 'min')](
+                      defaultBaseLayer.maxExtent.getWidth() / mapWidth,
+                      defaultBaseLayer.maxExtent.getHeight() / mapHeight
+                    );
       }
-
-      console.log("maxResolution: " + maxResolution);
-//      console.log("restrictedExtent: " + maxExtendByAspectRatio.toBBOX());
+      console.log("mapOptions.maxResolution: " + maxResolution);
+      console.log("mapOptions.restrictedExtent: " + defaultBaseLayer.maxExtent);
 
       map = new OpenLayers.Map(
           "openlayers_map",
@@ -270,12 +271,15 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
               controls: defaultControls,
 
               // maxResolution determines the lowest zoom level and thus places the map
-              // in its maximum extend into the available view port so that no additinal
+              // in its maximum extent into the available view port so that no additinal
               // gutter is visible and no parts of the map are hidden
               // see http://trac.osgeo.org/openlayers/wiki/SettingZoomLevels
+              // IMPORTANT!!!
+              // the maxResulution set here will be overwritten if the baselayers maxResolution
+              // it is set
               maxResolution: maxResolution,
 
-              // setting restrictedExtent the the maxExtend prevents from panning the
+              // setting restrictedExtent the the maxExtent prevents from panning the
               // map out of its bounds
               restrictedExtent: defaultBaseLayer.maxExtent,
 //              maxExtent: defaultBaseLayer.maxExtent,
@@ -296,22 +300,20 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       map.addLayers(baseLayers);
       map.setBaseLayer(defaultBaseLayer);
 
+      // calculate the bounds to zoom to
       zoomToBounds = zoomToBoundsFor(options.boundingBox, defaultBaseLayer);
-
       zoomToBounds = cropBoundsToAspectRatio(zoomToBounds, map.getSize().w / map.getSize().h);
-
-
       console.log("zoomToBounds: " + zoomToBounds);
 
-      // zoom to the extend of the bbox
+      // zoom to the extent of the bbox
       map.zoomToExtent(zoomToBounds, true);
 
       // readjust if the zoom level is out side of the min max
-      if(map.getZoom() > options.maxZoom){
-        map.zoomTo(options.maxZoom);
-      } else if(map.getZoom() < options.minZoom){
-        map.zoomTo(options.minZoom);
-      }
+//      if(map.getZoom() > options.maxZoom){
+//        map.zoomTo(options.maxZoom);
+//      } else if(map.getZoom() < options.minZoom){
+//        map.zoomTo(options.minZoom);
+//      }
 
     };
 
@@ -374,12 +376,13 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
         // zoom to the required area
         if(mapResponseObj.bbox !== undefined){
           var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
+          newBounds.transform(layer.projection, map.getProjectionObject());
           if(dataBounds !== null){
             dataBounds.extend(newBounds);
           } else if(newBounds !== undefined){
             dataBounds = newBounds;
           }
-          map.zoomToExtent(dataBounds.transform(dataProj, map.getProjectionObject()), false);
+          map.zoomToExtent(dataBounds, false);
 
           if(map.getZoom() > options.maxZoom){
             map.zoomTo(options.maxZoom);
@@ -467,12 +470,26 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
      /**
       *
       */
-     var createLayers = function( baseLayerNames, defaultBaseLayerName){
-       for(var i = 0; i <  baseLayerNames.length; i++) {
+     var createLayers = function( baseLayerNames, defaultBaseLayerName, customWMSBaseLayerData){
+       var i = 0;
+       for(; i <  baseLayerNames.length; i++) {
          baseLayers[i] = window.CdmOpenLayers.getLayerByName(baseLayerNames[i]);
          if(baseLayerNames[i] == defaultBaseLayerName){
            defaultBaseLayer = baseLayers[i];
          }
+       }
+       if(false && customWMSBaseLayerData){
+            var wmsLayer = createWMSBaseLayer(
+                   customWMSBaseLayerData.name,
+                   customWMSBaseLayerData.url,
+                   customWMSBaseLayerData.params,
+                   customWMSBaseLayerData.projection,
+                   customWMSBaseLayerData.unit,
+                   OpenLayers.Bounds.fromString(customWMSBaseLayerData.maxExtent)
+                );
+           // FIXME remove HACK (customWMSBaseLayerData as default)
+           baseLayers[i++] = wmsLayer;
+           defaultBaseLayer = wmsLayer;
        }
      };
 
@@ -542,17 +559,22 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       * @param layer
       *     the Openlayers.Layer
       *
-      * @return the bboxstring projected onto the layer and intersected with the maximum extend of the layer
+      * @return the bboxstring projected onto the layer and intersected with the maximum extent of the layer
       */
      var zoomToBoundsFor = function(bboxString, layer){
          var zoomToBounds;
          if(typeof bboxString == 'string' && bboxString.length > 6) {
              zoomToBounds = OpenLayers.Bounds.fromString(bboxString);
+             // transform bounding box given in degree values to the projection of the base layer
+             zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, layer.projection);
+         } else if(layer.maxExtent) {
+             zoomToBounds = layer.maxExtent;
+             // no need to transform since the bounds are obtained from the layer
          } else {
              zoomToBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
+             // transform bounding box given in degree values to the projection of the base layer
+             zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, layer.projection);
          }
-         // transform bounding box given in degree values to the projection of the base layer
-         zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, layer.projection);
 
          zoomToBounds = intersectionOfBounds(layer.maxExtent, zoomToBounds);
 
@@ -574,6 +596,38 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
        } else {
          return null;
        }
+     };
+
+     /**
+      * Creates a WMS Base layer
+      * @param String name
+      *     A name for the layer
+      * @param String url
+      *     Base url for the WMS (e.g.  http://wms.jpl.nasa.gov/wms.cgi)
+      * @param Object params
+      *     An object with key/value pairs representing the GetMap query string parameters and parameter values.
+      * @param Object projection
+      *    A OpenLayers.Projection object
+      */
+     var createWMSBaseLayer= function(name, url, params, projection, unit, maxExtent){
+
+         if(maxExtent == null){
+             maxExtent = CdmOpenLayers.mapExtends.epsg_4326.clone();
+             maxExtent.transform(CdmOpenLayers.projections.epsg_4326, projection);
+         }
+
+         return  new OpenLayers.Layer.WMS(
+                 name,
+                 url,
+                 params,
+                 {
+                   maxExtent: maxExtent,
+                   projection: projection,
+                   unit: unit,
+                   isBaseLayer: true,
+                   displayInLayerSwitcher: true
+                 }
+               );
      };
 
   }; // end of CdmOpenLayers.Map

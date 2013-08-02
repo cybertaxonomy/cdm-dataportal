@@ -36,31 +36,37 @@
                   EPSG:900913
              */
             return  new OpenLayers.Layer.WMS(
-                  "Metacarta Vmap0",
+                  "OSGEO Vmap0",
                   "http://vmap0.tiles.osgeo.org/wms/vmap0",
                   {layers: 'basic', format:"png"},
                   {
-                maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
-                projection: new OpenLayers.Projection("EPSG:4326"),
-                isBaseLayer: true,
-                displayInLayerSwitcher: true
-              }
-            );
+                    maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
+                    projection: new OpenLayers.Projection("EPSG:4326"),
+                    isBaseLayer: true,
+                    displayInLayerSwitcher: true
+                  }
+                );
 
-          case 'edit-etopo1':
+         /**
+          * TODO unused, can be deleted?
+          */
+         case 'edit-etopo1':
             return  new OpenLayers.Layer.WMS(
                   "ETOPO1 Global Relief Model",
                   "http://edit.br.fgov.be:8080/geoserver/wms",
                   {layers: 'topp:color_etopo1_ice_full', format:"image/png"},
                   {
-                maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
-                projection: new OpenLayers.Projection("EPSG:4326"),
-                isBaseLayer: true,
-                displayInLayerSwitcher: true
-              }
-            );
+                    maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
+                    projection: new OpenLayers.Projection("EPSG:4326"),
+                    isBaseLayer: true,
+                    displayInLayerSwitcher: true
+                  }
+                );
 
-          case 'edit-vmap0_world_basic':
+        /**
+         * TODO unused, can be deleted?
+         */
+        case 'edit-vmap0_world_basic':
             return  new OpenLayers.Layer.WMS(
                   "EDIT Vmap0",
                   "http://edit.br.fgov.be:8080/geoserver/wms",
@@ -196,49 +202,4 @@
 
 
 })();
-
-//TODO remove below lines before release
-//var layerdef = {
-//      /**
-//       * NOTE: labs.metacarta.com is currently unavailable
-//       *
-//       * Available Projections:
-//       *     EPSG:900913
-//       *     EPSG:4326
-//       */
-//      metacarta_vmap0: new OpenLayers.Layer.WMS(
-//              "Metacarta Vmap0",
-//              "http://labs.metacarta.com/wms/vmap0",
-//              {layers: "basic", format:"png"},
-//              {
-//                  maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
-//                  projection: window.CdmOpenLayers.projections.epsg_4326,
-//                  isBaseLayer: true,
-//                  displayInLayerSwitcher: true
-//              }
-//        ),
-//
-//      osgeo_vmap0: {
-//          create: function(){
-//              this.layer = new OpenLayers.Layer.WMS(
-//                  this.name,
-//                  "http://vmap0.tiles.osgeo.org/wms/vmap0",
-//                  {layers: 'basic', format:"png"},
-//                  {
-//                    maxExtent: CdmOpenLayers.mapExtends.epsg_4326,
-//                    projection: new OpenLayers.Projection("EPSG:4326"),
-//                    isBaseLayer: true,
-//                    displayInLayerSwitcher: true
-//                  });
-//          },
-//          layer: null,
-//          name: "OSGEO Vmap0",
-//          description: ""
-//      }
-//};
-
-///**
-// * initialize all layers for testing
-// */
-//window.CdmOpenLayers.availableLayers.createAllLayers();
 

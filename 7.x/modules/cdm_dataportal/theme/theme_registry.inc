@@ -112,7 +112,6 @@ function cdm_dataportal_theme() {
           'taxon_uuid' => NULL,
           'descriptionElements' => NULL,
       )),
-      'cdm_distribution_map' => array('variables' => array('taxon' => NULL)),
       'cdm_IdentificationKey' => array('variables' => array(
           'identificationKey' => NULL,
           'doLinkToKeyPage' => TRUE,
