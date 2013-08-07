@@ -278,13 +278,17 @@ function cdm_csv_export_admin() {
       will render at the taxon profile page."),
  );
  
- $featureTrees = get_csv_featureTree_as_options(TRUE);
+ $featureTrees = cdm_get_featureTrees_as_options(TRUE);
  $form['feature_trees'][CDM_CSV_FEATURETREE_UUID] = array(
-   '#type' => 'radios',
-   '#title' => t('CSV Export Feature Tree sections') . ':',
-   '#default_value' => variable_get(CDM_CSV_FEATURETREE_UUID, NULL),
-   '#options' =>  $featureTrees['options'],
-   '#field_suffix' => $featureTrees['treeRepresentations'],
+   	'#type' => 'radios',
+   	'#title' => t('CSV Export Feature Tree sections') . ':',
+	'#default_value' => variable_get(CDM_CSV_FEATURETREE_UUID, NULL),
+ 	'#options' =>  $featureTrees['options'],
+ 	'#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
+ 	'#options_suffixes' => $featureTrees['treeRepresentations'],
+	'#description' => t('Select the Feature Tree to be displayed at the taxon
+      profile. Click "Show Details" to see the Feature Tree elements.'
+ 	),
  );
  return system_settings_form($form);
 }
@@ -314,63 +318,4 @@ function get_csv_featureTree() {
   }
  }
  return $csv_featureTree;
-}
-
-/**
- * Returns an array with all available Feature 
- * Trees and the representations of the selected
- * Feature Tree as a detail view.
- * 
- * @param boolean $add_default_feature_free
- * @return array 
- * associative array with following keys:
- * -options: Returns an array with all available Feature Trees
- * -treeRepresentations: Returns representations of the selected Feature Tree as a detail view
- * 
- */
-
-function get_csv_featureTree_as_options($add_default_feature_tree = FALSE) {
- $feature_trees = array();
- 
- // Set tree that contains all features.
- if ($add_default_feature_tree) {
-  $feature_trees[UUID_DEFAULT_FEATURETREE] = t('Default Featuretree (contains all features)');
- }
- 
- // Get features from database.
- $persisted_trees = cdm_ws_get(CDM_WS_FEATURETREES);
- $tree_representation = NULL;
- if (is_array($persisted_trees)) {
-
-  foreach ($persisted_trees as $featureTree) {
-   // Do not add the DEFAULT_FEATURETREE again,
-   if ($featureTree->uuid == UUID_DEFAULT_FEATURETREE) {
-    continue;
-   }
-   $feature_trees[$featureTree->uuid] = $featureTree->titleCache;
-  }
- }
-//Feature Tree Details
- $selected_feature_tree = get_csv_featureTree();
- //  $tree_representation = $selected_feature_tree->titleCache;
- $tree_representation = '';
- if (is_array($selected_feature_tree->root->children) && count($selected_feature_tree->root->children) > 0) {
-
-  // Render the hierarchic tree structure.
-  $treeDetails = '<div class="featuretree_structure">'
-    . theme('FeatureTree_hierarchy', array('FeatureTreeUuid' => $selected_feature_tree->uuid))
-    . '</div>';
-
-  $form = array();
-  $form['featureTree-' . $selected_feature_tree->uuid] = array(
-    '#type' => 'fieldset',
-    '#title' => 'Show details',
-    '#attributes' => array('class' => array('collapsible collapsed')),
-  );
-  $form['featureTree-' . $selected_feature_tree->uuid]['details'] = array(
-    '#markup' => $treeDetails,
-  );
-  $tree_representation .= drupal_render($form);
- }
- return array('options' => $feature_trees, 'treeRepresentations' => $tree_representation);
 }
