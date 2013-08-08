@@ -2148,14 +2148,21 @@ function array_deep_copy(&$array, &$copy, $maxdepth = 50, $depth = 0) {
  */
 function _add_js_ws_debug() {
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/DataTables-1.9.4/media/js/jquery.dataTables.min.js',
+  $data_tables_js = '/js/DataTables-1.9.4/media/js/jquery.dataTables.min.js';
+  $colorbox_js = '/js/colorbox/jquery.colorbox-min.js';
+  if (variable_get('cdm_js_devel_mode', FALSE)) {
+    // use the developer versions of js libs
+    $data_tables_js = '/js/DataTables-1.9.4/media/js/jquery.dataTables.js';
+    $colorbox_js = '/js/colorbox/jquery.colorbox.js';
+  }
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $data_tables_js,
     array(
       'type' => 'file',
       'weight' => JS_LIBRARY,
       'cache' => TRUE)
     );
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/colorbox/jquery.colorbox-min.js',
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $colorbox_js,
     array(
       'type' => 'file',
       'weight' => JS_LIBRARY,

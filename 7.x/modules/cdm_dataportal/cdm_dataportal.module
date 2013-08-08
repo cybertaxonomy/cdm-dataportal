@@ -112,8 +112,16 @@ function _add_js_treeselector() {
 
 function _add_js_openlayers() {
 
-  $openlayers = '/js/map/OpenLayers-2.13.1/lib/OpenLayers.js';
+  $openlayers = '/js/map/OpenLayers-2.13.1/OpenLayers.js';
   $proj4js = '/js/map/proj4js-1.1.0/proj4js-compressed.js';
+
+  if(variable_get('cdm_js_devel_mode', FALSE)){
+    // develooper mode libs
+//     $openlayers = '/js/map/OpenLayers-2.13.1/lib/OpenLayers.js';
+    $openlayers = '/js/map/OpenLayers-2.13.1/OpenLayers.debug.js';
+    $proj4js = '/js/map/proj4js-1.1.0/proj4js-combined.js';
+
+  }
 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers,
     array(
@@ -203,9 +211,12 @@ function _add_js_cluetip() {
 
   // TODO replace by
   // @see http://www.socialembedded.com/labs/jQuery-Tooltip-Plugin/jQuery-Tooltip-Plugin.html
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.min.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/jquery.dimensions.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.hoverIntent.js');
+  if(variable_get('cdm_js_devel_mode', FALSE)){
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.js');
+  }
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.css');
   drupal_add_js("jQuery(document).ready(function(){
       jQuery('.cluetip').css({color: '#0062C2'}).cluetip({
@@ -464,7 +475,8 @@ function cdm_dataportal_menu() {
  * can be removed after fixing the FIXME below
  */
 function cdm_dataportal_init() {
-  //FIXME To add CSS or JS that should be present on all pages, modules should not implement this hook, but declare these files in their .info file.
+  //FIXME To add CSS or JS that should be present on all pages, modules
+  //      should not implement this hook, but declare these files in their .info file.
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal.css');
   // drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal_screen.css', array('type' => 'screen'));
@@ -1032,6 +1044,17 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
  * @return unknown_type
  */
 function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid = NULL) {
+
+  // show a warning in case the javascript development mode is anabled
+  if(variable_get('cdm_js_devel_mode', FALSE)) {
+    drupal_set_message(t('The !url1 is enabled.
+        WARNING: this is a performance penalty and must be turned off on production websites.', array(
+          '!url1' => l('java-script development mode', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-cdm-js-devel-mode'))
+    )),
+    'warning'
+        );
+  }
+
   // Display the page for the taxon defined by $uuid.
   // set_last_taxon_page_tab(arg(3));
   $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter, $synonym_uuid);

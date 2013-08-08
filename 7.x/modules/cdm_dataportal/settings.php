@@ -697,6 +697,19 @@ function cdm_settings_general() {
       '#default_value' => $aggregate_by_taxon_relationships['invers'],
   );
 
+  // ----------------------
+  $form['cdm_js_devel_mode'] = array(
+      '#type' => 'checkbox',
+      '#title' => 'Java-script developer mode',
+      '#default_value' => variable_get('cdm_js_devel_mode', FALSE),
+      '#description' => 'In production envirionments the java script libraries
+      the cdm_dataportal is making use of are compressed and optimized. This
+      is good for performance but a caveat if you need to debug java-script. When the
+      java-script developer mode is enabled the uncompressed and commented developer
+      versions of java-script libraries will be used where possible.
+      <br/><strong>Do not use this option in production!</strong>'
+  );
+
   // Comment @WA: D7 form api does not support reset buttons,
   // so to mimic the D5 reset button we add one like this.
   $form['actions']['reset'] = array(
