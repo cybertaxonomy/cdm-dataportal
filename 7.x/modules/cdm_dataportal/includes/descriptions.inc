@@ -15,6 +15,7 @@ function cdm_modifers_representations($iModifieable, $glue = ', ') {
   }
   return implode(', ', $modifiers_strings);
 }
+
 /**
  * Filters the given set of description elements and prefers computed elements over
  * others. Computed description elements are identified by the MarkerType.COMPUTED()
@@ -68,4 +69,53 @@ function cdm_merge_description_elements(&$target, &$source){
       }
     }
   }
+}
+
+/**
+ * Prepares the items for a table of content list.
+ *
+ * see also hook_cdm_feature_node_toc_items_alter()
+ *
+ * @param $feature_nodes
+ *   An array of CDM FeatureNode instances
+ *
+ * @return array
+ *   The items array is an array suitable for theme_item_list().
+ */
+function cdm_feature_node_toc_items($feature_nodes) {
+  $items = array();
+
+  // FIXME !!!!!!!!!!!!!!!!
+  // implement api hook to allow adding additional toc items for other modules,
+  // implement palmweb module to preserve funcion of palmweb_2_cdm_feature_nodesTOC()
+  //
+
+  // we better cache here since drupal_get_query_parameters has no internal static cache variable
+  $http_request_params = drupal_get_query_parameters();
+
+  foreach ($feature_nodes as $node) {
+
+    if (hasFeatureNodeDescriptionElements($node)) {
+
+      $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
+      //TODO HACK to implement images for taxa, should be removed.
+      if ($node->feature->uuid != UUID_IMAGE) {
+        $items[] = array(
+            l(
+                theme('cdm_feature_name', array('feature_name' => $featureRepresentation)),
+                $_GET['q'],
+                array(
+                    'attributes' => array('class' => array('toc')),
+                    'fragment' => generalizeString($featureRepresentation),
+                    'query' => $http_request_params
+                )
+            )
+        );
+      }
+    }
+  }
+
+  $items = module_invoke_all('cdm_feature_node_toc_items_alter', $items);
+
+  return $items;
 }
