@@ -784,6 +784,7 @@
 7.x/modules/cdm_dataportal/INSTALL.txt -text
 7.x/modules/cdm_dataportal/LICENSE.txt -text
 7.x/modules/cdm_dataportal/cdm_api/LICENSE.txt -text
+7.x/modules/cdm_dataportal/cdm_api/cdm_api.api.php -text
 7.x/modules/cdm_dataportal/cdm_api/cdm_api.info -text
 7.x/modules/cdm_dataportal/cdm_api/cdm_api.install -text
 7.x/modules/cdm_dataportal/cdm_api/cdm_api.module -text
@@ -800,6 +801,7 @@
 7.x/modules/cdm_dataportal/cdm_csv_export/js/cdm_csv_export.js -text
 7.x/modules/cdm_dataportal/cdm_csv_export/js/jquery.blockUI.js -text
 7.x/modules/cdm_dataportal/cdm_csv_export/js/jquery.cookie.js -text
+7.x/modules/cdm_dataportal/cdm_dataportal.api.php -text
 7.x/modules/cdm_dataportal/cdm_dataportal.css -text
 7.x/modules/cdm_dataportal/cdm_dataportal.info -text
 7.x/modules/cdm_dataportal/cdm_dataportal.install -text
@@ -1545,6 +1547,8 @@
 7.x/modules/dwca_export/theme/dwca_export.theme.inc -text
 7.x/modules/dwca_export_views/dwca_export_views.info -text
 7.x/modules/dwca_export_views/dwca_export_views.module -text
+7.x/modules/palmweb/palmweb.info -text
+7.x/modules/palmweb/palmweb.module -text
 7.x/themes/SUB_THEME_TEMPLATE/README.txt -text
 7.x/themes/SUB_THEME_TEMPLATE/SUB_THEME_TEMPLATE.css -text
 7.x/themes/SUB_THEME_TEMPLATE/images/edit-logo.png -text

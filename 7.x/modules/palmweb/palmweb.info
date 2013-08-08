@@ -1,0 +1,6 @@
+name = "Palmweb"
+description = "Extensions to the cdm dataportal module specific for the Palmweb project."
+version = 7.x-1.0
+package = "CDM"
+dependencies[] = cdm_dataportal
+core = 7.x

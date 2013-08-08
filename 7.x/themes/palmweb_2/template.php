@@ -84,64 +84,6 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function palmweb_2_cdm_feature_nodesTOC($variables){
-  $featureNodes = $variables['featureNodes'];
-  $out = '';
-
-  global $theme;
-
-  $out .= '<ul>';
-  $countFeatures = 0;
-  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (
-    get_taxonomictree_uuid_selected(),
-    substr(strrchr($_GET["q"],'/'), 1),
-  )));
-  if ($numberOfChildren != 0) {
-    $out .= '<li>';
-    $out .= l(t(theme('cdm_feature_name', array('feature_name' => 'Number of Taxa'))), $_GET['q'], array(
-      'attributes' => array('class' => array('toc')),
-      'fragment' => generalizeString('Number Of Taxa'),
-    ));
-    $out .= '</li>';
-  }
-  foreach ($featureNodes as $node) {
-    if (hasFeatureNodeDescriptionElements($node)) {
-      $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
-
-      // HACK to implement images for taxa, should be removed.
-      if ($node->feature->uuid != UUID_IMAGE && $node->feature->uuid != UUID_USE) {
-        $countFeatures++;
-        $countFeatures++;
-        $out .= '<li>' . l(t(theme('cdm_feature_name', array('feature_name' => $featureRepresentation))), $_GET['q'],
-            array('attributes' => array('class' => array('toc')),'fragment' => generalizeString($featureRepresentation))) . '</li>';
-      }
-    }
-  }
-  // Setting the Anchor to the Bibliography section if the option is enabled.
-  $show_bibliography = variable_get('cdm_show_bibliography', 1);
-
-  $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
-  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
-  if (!empty($useDescriptions)) {
-    $out .= '<li>';
-    $out .= l(t(theme('cdm_feature_name', array('feature_name' => 'Uses'))), $_GET['q'], array(
-      'attributes' => array('class' => array('toc')),
-      'fragment' => 'userecords',
-    ));
-    $out .= '</li>';
-  }
-
-  if ($show_bibliography && $countFeatures != 0) {
-    $out .= '<li>' . l(t(theme('cdm_feature_name', array('feature_name' => 'Bibliography'))), $_GET['q'], array('attributes' => array('class' => array('toc')), 'fragment' => 'bibliography')) . '</li>';
-  }
-  $out .= '</ul>';
-  return $out;
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
 function palmweb_2_cdm_feature_nodes($variables){
   $mergedFeatureNodes = $variables['mergedFeatureNodes'];
   $taxon = $variables['taxon'];
