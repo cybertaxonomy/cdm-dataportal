@@ -489,7 +489,7 @@ function theme_cdm_back_to_search_result_button() {
     /* ['cdm']['last_search'] */
     // $out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION
     // ).'</div>';
-    $out .= '<div id="backButton">' . l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search']) . '</div>';
+    $out .= '<div id="backButton" class="clearfix">' . l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search']) . '</div>';
   }
   return $out;
 }

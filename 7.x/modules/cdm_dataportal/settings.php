@@ -2100,6 +2100,12 @@ function cdm_settings_layout_taxon_submit($form, &$form_state){
       file_usage_add($file, 'cdm_dataportal', CDM_TAXON_PROFILE_IMAGE, 0);
     }
   }
+  // rebuild the menu if the show tabs setting has changed, otherwise the change will not have a consistent effect
+  if(variable_get('cdm_dataportal_taxonpage_tabs', 1) != $form_state['values']['cdm_dataportal_taxonpage_tabs']){
+    // we first need to set the variable to persist the changes setting
+    variable_set('cdm_dataportal_taxonpage_tabs', $form_state['values']['cdm_dataportal_taxonpage_tabs']);
+    menu_rebuild();
+  }
 }
 
 /**
