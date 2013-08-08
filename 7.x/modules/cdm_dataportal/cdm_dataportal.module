@@ -477,14 +477,18 @@ function cdm_dataportal_user_form($form, &$form_state) {
   global $user;
   $checkbox_value = 'cdm_dataportal_' . $user->uid . '_default_tab_active';
 
-  $form['check'] = array(
+  $form['taxon_page_tabs'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Taxon page tabs'),
+  );
+  $form['taxon_page_tabs']['check'] = array(
     '#type' => 'checkbox',
     '#title' => t('Activate user default configuration'),
     '#default_value' => variable_get($checkbox_value, 0),
     '#description' => t('Check this if you want configure your own default tab from the below menu.'),
   );
 
-  $form['cdm_dataportal_user_form'] = array(
+  $form['taxon_page_tabs']['cdm_dataportal_user_form'] = array(
     '#type' => 'select',
     '#title' => t('Default tab to display'),
     '#default_value' => get_default_taxon_tab(TRUE),
