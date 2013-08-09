@@ -504,8 +504,7 @@ function cdm_settings_general() {
     '#type' => 'textfield',
     '#title' => t('CDM web service URL') . ':',
     '#description' => t('This is the URL to the CDM-Server exposing your data
-      e.g. <em>"http://localhost:8080/cichorieae/"</em> The URL <strong>must end
-      with a slash</strong> character!'),
+      e.g. <em>"http://myserver.net/cdmserver/myproject"</em>'),
     '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
 
@@ -2109,7 +2108,7 @@ function cdm_settings_layout_taxon_submit($form, &$form_state){
 }
 
 /**
- * Form validation handler for ?
+ * Form validation handler for cdm_settings_general
  *
  * Comment @WA: currently this handler is not used.
  * It seems partly for cdm_settings_general en partly for cdm_settings_cache?
@@ -2117,19 +2116,25 @@ function cdm_settings_layout_taxon_submit($form, &$form_state){
  * cdm_settings_cache_validate().
  * But cdm_api_secref_cache_clear is not doing anything (yet)?
  */
-function cdm_settings_validate($form, &$form_state) {
+function cdm_settings_general_validate($form, &$form_state) {
 
   if (!str_endsWith($form_state['values']['cdm_webservice_url'], '/')) {
-    // form_set_error('cdm_webservice_url', t("The URL to the CDM Web Service must end with a slash: '/'."));
     $form_state['values']['cdm_webservice_url'] .= '/';
   }
 
+}
+
+/**
+ * Form validation handler for cdm_settings_cache
+ */
+function cdm_settings_cache_validate() {
   if ($form_state['values']['cdm_webservice_cache'] != variable_get('cdm_webservice_cache', 1)) {
     cache_clear_all(NULL, 'cache_cdm_ws');
     // Better clear secref_cache since I can not be sure if the cache has not
     // be used during this response.
     cdm_api_secref_cache_clear();
   }
+
 }
 
 /**
