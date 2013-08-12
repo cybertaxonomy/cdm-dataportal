@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path="modules/cdm_dataportal"/>
+	<buildpathentry kind="src" path="modules/dwca_export"/>
+	<buildpathentry kind="src" path="modules/dwca_export_views"/>
+	<buildpathentry kind="src" path="themes/garland_cichorieae"/>
+	<buildpathentry kind="src" path="themes/garland_diptera"/>
+	<buildpathentry kind="src" path="themes/garland_EDIT"/>
+	<buildpathentry kind="src" path="themes/palmweb_2"/>
+	<buildpathentry kind="src" path="themes/zen"/>
+	<buildpathentry kind="src" path="themes/zen_dataportal"/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+</buildpath>

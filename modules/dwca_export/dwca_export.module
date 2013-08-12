@@ -1,0 +1,103 @@
+<?php
+// File extension for the CSV files in the DwC-A file.
+define('FILE_EXTENSION', ".txt");
+
+/**
+ * Implements hook_menu().
+ */
+function dwca_export_menu(){
+  return array(
+    /*'admin/config/system/dwca_export' => array(
+      'title' => 'Darwin Core Archive export',
+      'description' => t('Create a DarwinCore Archive of this scratchpad.'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array(
+        'dwca_export_config_form'
+      ),
+      'access arguments' => array(
+        'access DwC-A export settings'
+      ),
+      'file' => 'dwca_export.admin.inc',
+      'type' => MENU_NORMAL_ITEM
+    ),*/
+    'dwca.zip' => array(
+      'page callback' => 'dwca_export_deliver_archive',
+      'access arguments' => array(
+        'access content'
+      ),
+      'file' => 'dwca_export.admin.inc',
+      'type' => MENU_CALLBACK
+    )
+  );
+}
+
+/**
+ * Implementation of hook_views_api()
+ *
+ * drupal will load dwca_export.views_default.inc when this hook is implemented
+ */
+function dwca_export_views_api(){
+  return array(
+    'api' => 3.0
+  );
+}
+
+/**
+ * Implements hook_dwca_export_module()
+ */
+function dwca_export_dwca_export(){
+  return TRUE;
+}
+
+/**
+ * 
+ * Implements hook_cron().
+ */
+function dwca_export_cron(){
+  module_load_include('cron.inc', 'dwca_export');
+  _dwca_export_cron();
+}
+
+/**
+ * Implements hook_entity_insert()
+ */
+function dwca_export_entity_insert($entity, $type){
+  switch($type){
+    case 'taxonomy_term':
+      $biological_vids = variable_get('biological_vids', array());
+      if(isset($biological_vids[$entity->vid]) && $biological_vids[$entity->vid]){
+        variable_set('dwca_export_rebuild', TRUE);
+      }
+      break;
+    case 'node':
+      if($entity->type == 'spm' || $entity->type == 'biblio' || $entity->type == 'specimen_observation'){
+        variable_set('dwca_export_rebuild', TRUE);
+      }
+  }
+}
+
+/**
+ * Implements hook_entity_delete()
+ */
+function dwca_export_entity_delete($entity, $type){
+  dwca_export_entity_insert($entity, $type);
+}
+
+/**
+ * Implements hook_entity_update()
+ */
+function dwca_export_entity_update($entity, $type){
+  dwca_export_entity_insert($entity, $type);
+}
+
+/**
+ * Implements hook_permission()
+ */
+function dwca_export_permission(){
+  return array(
+    'administer dwca-export' => array(
+      'title' => t('Access dwca-export'),
+      'description' => t('Allows user to access DwC-A export configuration page and execute export of the DwC-A data.')
+    )
+  );
+}
