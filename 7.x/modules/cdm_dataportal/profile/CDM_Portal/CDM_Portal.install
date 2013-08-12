@@ -154,7 +154,7 @@ function CDM_Portal_install() {
    *  TODO consider moving these into
    *       the module
    ****************************************/
-  variable_set('cdm_webservice_debug', 0);
+
   variable_set('cdm_webservice_cache', 0);
   variable_set('distribution_sort', 'HIDE_TDWG2');
 

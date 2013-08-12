@@ -1533,7 +1533,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     // The object has been found in the L1 cache.
     //
     $obj = $cacheL1_obj;
-    if (variable_get('cdm_webservice_debug', 1) && user_access('administer')) {
+    if (cdm_debug_block_visible()) {
       cdm_ws_debug_add($uri, $method, $data, 0, 0, NULL, 'cacheL1');
     }
   }
@@ -1545,7 +1545,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     $obj = unserialize($cacheL2_entry->data);
     $duration_parse = microtime(TRUE) - $duration_parse_start;
 
-    if (variable_get('cdm_webservice_debug', 1) && user_access('administer')) {
+    if (cdm_debug_block_visible()) {
       cdm_ws_debug_add($uri, $method, $data, 0, $duration_parse, NULL, 'cacheL2');
     }
   }
@@ -1567,7 +1567,8 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     $obj = cdm_load_obj($response_body);
 
     $duration_parse = microtime(TRUE) - $duration_parse_start;
-    if (variable_get('cdm_webservice_debug', 1) && user_access('administer')) {
+
+    if (cdm_debug_block_visible()) {
       if ($obj || $response_body == "[]") {
         $status = 'valid';
       }
@@ -1686,6 +1687,28 @@ function cdm_ws_debug_add($uri, $method, $post_data, $duration_fetch, $duration_
 
   // Messages not set when DB connection fails.
   return isset($_SESSION['cdm']['ws_debug']) ? $_SESSION['cdm']['ws_debug'] : NULL;
+}
+
+/**
+ * helper function to dtermine if the cdm_debug_block should be displayed or not
+ * the visibility depends on whether
+ *  - the block is enabled
+ *  - the visibility restrictions in the block settings are satisfied
+ */
+function cdm_debug_block_visible() {
+  static $is_visible = null;
+
+  if($is_visible === null){
+      $block = block_load('cdm_api', 'cdm_ws_debug');
+      $is_visible = $block->status == 1;
+      if($is_visible){
+        $blocks = array($block);
+        // Checks the page, user role, and user-specific visibilty settings.
+        block_block_list_alter($blocks);
+        $is_visible = count($blocks) > 0;
+      }
+  }
+  return $is_visible;
 }
 
 /**
