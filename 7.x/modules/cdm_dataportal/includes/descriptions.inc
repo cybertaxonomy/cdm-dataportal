@@ -85,11 +85,6 @@ function cdm_merge_description_elements(&$target, &$source){
 function cdm_feature_node_toc_items($feature_nodes) {
   $items = array();
 
-  // FIXME !!!!!!!!!!!!!!!!
-  // implement api hook to allow adding additional toc items for other modules,
-  // implement palmweb module to preserve funcion of palmweb_2_cdm_feature_nodesTOC()
-  //
-
   // we better cache here since drupal_get_query_parameters has no internal static cache variable
   $http_request_params = drupal_get_query_parameters();
 
