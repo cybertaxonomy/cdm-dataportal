@@ -110,7 +110,7 @@ function cdm_feature_node_toc_items($feature_nodes) {
     }
   }
 
-  $items = module_invoke_all('cdm_feature_node_toc_items_alter', $items);
+  drupal_alter('cdm_feature_node_toc_items', $items);
 
   return $items;
 }
