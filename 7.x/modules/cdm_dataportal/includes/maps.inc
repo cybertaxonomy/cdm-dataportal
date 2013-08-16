@@ -48,7 +48,7 @@
  *
  * @ingroup compose
  */
-function compose_map($occurrence_query, $distribution_query, $legend_format_query, array $event_listeners = array()) {
+function compose_map($occurrence_query = NULL, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = array()) {
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
   if ($map_settings['map_type'] == 1) {
@@ -106,9 +106,9 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
 
   $cdm_openlayers_options = array(
       'legendPosition'  => '3',
-      'boundingBox' => "'" . $map_settings['bbox'] . "'",
-      'distributionOpacity' => "'" . $map_settings['distribution_opacity'] . "'",
-      'legendOpacity' => "'" . $map_settings['legend']['opacity'] . "'",
+      'boundingBox' => $map_settings['bbox'],
+      'distributionOpacity' => $map_settings['distribution_opacity'],
+      'legendOpacity' => $map_settings['legend']['opacity'],
       'showLayerSwitcher' => $map_settings['openlayers']['show_layer_switcher']  ==  1,
       'displayOutsideMaxExtent' => $map_settings['openlayers']['display_outside_max_extent'] == 1
       // if no baseLayerNames or defaultBaseLayerName are not defined

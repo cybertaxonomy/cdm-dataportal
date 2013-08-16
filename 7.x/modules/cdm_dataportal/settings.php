@@ -1611,6 +1611,9 @@ function cdm_settings_geo($form, &$form_state) {
 
   $current_geoserver_settings = get_edit_map_service_settings();
   $map_distribution = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+  // The default layer must always be enabled
+  $preferred_layer = $map_distribution['openlayers']['base_layers']['PREFERRED'];
+  $map_distribution['openlayers']['base_layers'][$preferred_layer] = $preferred_layer;
 
   $form = array();
 
@@ -1628,7 +1631,7 @@ function cdm_settings_geo($form, &$form_state) {
       '#description' => 'The preview of the map'
        . ($dummy_distribution_query != null ?
            ' may not be accurate in case if image maps, please check the map display in the taxon pages.':
-           '.<br/>Hold down Strg and drag with your mouse to select a bbox to zoom to. <br/>The bbox of the visisble area of the map is always displayed below the map.')
+           '.<br/>Hold down Strg and drag with your mouse to select a bbox to zoom to. <br/>The bbox of the visible area of the map is always displayed below the map.')
   );
   $form['map_preview']['map'] = compose_map(NULL, $dummy_distribution_query, NULL,
       array(
@@ -1726,7 +1729,7 @@ function cdm_settings_geo($form, &$form_state) {
       Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong>
       to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.</p>
       <strong>TIP: </strong>You can use the map preview above to choose a bbox from the map. Maybe you need to change the map type to OpeLayers.
-      Hold down Strg and drag with your mouse to select a bbox to zoom to. The bbox of the visisble area of the map is always displayed
+      Hold down Strg and drag with your mouse to select a bbox to zoom to. The bbox of the visible area of the map is always displayed
       below the map from where you can copy the bbox string.</p>'),
   );
 
