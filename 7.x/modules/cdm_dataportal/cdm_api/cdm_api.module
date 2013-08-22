@@ -1499,6 +1499,10 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     $uri = cdm_compose_url($uri, $pathParameters, $query);
   }
 
+  // read request parameter 'cacheL2_refresh'
+  // which allows refreshig the level 2 cache
+  $do_cacheL2_refresh = isset($_REQUEST['cacheL2_refresh']) && $_REQUEST['cacheL2_refresh'] == 1;
+
   $is_cdm_ws_uri = _is_cdm_ws_uri($uri);
   $use_cacheL2 = variable_get('cdm_webservice_cache', 1);
 
@@ -1523,7 +1527,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
   $set_cacheL2 = $use_cacheL2 && $is_cdm_ws_uri && $set_cacheL1;
   $cacheL2_entry = FALSE;
 
-  if ($use_cacheL2) {
+  if ($use_cacheL2 && !$do_cacheL2_refresh) {
     // Try to get object from cacheL2.
     $cacheL2_entry = cache_get($cache_key, 'cache_cdm_ws');
   }
