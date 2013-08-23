@@ -734,11 +734,7 @@ function cdm_settings_layout() {
       )
   );
 
-  //TODO remove after all portals are using the settings
-  $default_part_definitions = theme('get_partDefinition', array());
-  if(!is_array($default_part_definitions)) {
-    $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
-  }
+  $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
 
   $form['taxon_name'][CDM_PART_DEFINITIONS] = array(
       '#type' => 'textarea',
@@ -827,11 +823,7 @@ function cdm_settings_layout() {
            </pre>',
   );
 
-  //TODO remove after all portals are using the settings
-  $default_render_templates = theme('get_nameRenderTemplate', array());
-  if(!is_array($default_render_templates)) {
-    $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
-  }
+  $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
 
   $form['taxon_name'][CDM_NAME_RENDER_TEMPLATES] = array(
       '#type' => 'textarea',

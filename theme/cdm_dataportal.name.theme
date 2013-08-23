@@ -508,16 +508,11 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
   if (!isset($default_render_templates)) {
     $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
   }
-  // --- preliminar solution: using themes.
   static $render_templates = NULL;
   if($render_templates == NULL) {
-    $render_templates = theme('get_nameRenderTemplate', array());
-    if (!isset($render_templates) || empty($render_templates)) {
-      // from the variables
       $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
       // needs to be converted to an array
       $render_templates = convert_to_array($render_templates);
-    }
   }
 
   // get the base element of the renderPath
@@ -655,14 +650,7 @@ function get_partDefinition($taxonNameType) {
 
   static $part_definitions = null;
   if (!isset($part_definitions)) {
-    // Preliminar solution: using themes.
-    // TODO remove this once all themes are using the newly introcuded part_definition settings
-    $part_definitions = theme('get_partDefinition', array());
-
-    // try to get get part definitions from variables
-    if(!is_array($part_definitions)) {
-      $part_definitions = convert_to_array(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
-    }
+     $part_definitions = convert_to_array(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
   }
 
   if (array_key_exists($taxonNameType, $part_definitions)) {
