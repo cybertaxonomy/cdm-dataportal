@@ -100,59 +100,59 @@ function phptemplate_menu_local_tasks() {
 function compare_citations($x, $y)
 {
 
-	if( !$x->sources[0]->citation->uuid){// && !$y->sources[0]->citation->uuid){
-		$res = -1;
-		//var_dump($y->sources[0]->citation->uuid);
-	}elseif(!$y->sources[0]->citation->uuid){
-		$res = 1;
-		//var_dump($x->sources[0]->citation->uuid);
-	}
-	else{
+  if( !$x->sources[0]->citation->uuid){// && !$y->sources[0]->citation->uuid){
+    $res = -1;
+    //var_dump($y->sources[0]->citation->uuid);
+  }elseif(!$y->sources[0]->citation->uuid){
+    $res = 1;
+    //var_dump($x->sources[0]->citation->uuid);
+  }
+  else{
 
 
   $author_team_x = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $x->sources[0]->citation->uuid);
   $author_team_y = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $y->sources[0]->citation->uuid);
 
-	 //same author, and different year
-	if($author_team_x->titleCache == $author_team_y->titleCache){
-		$x_year = substr(
-		        $x->sources[0]->citation->datePublished->start,
-		        0,
-		        strpos($x->sources[0]->citation->datePublished->start,'-'));
-		$y_year = substr(
-		          $y->sources[0]->citation->datePublished->start,
-		          0,
-		          strpos($y->sources[0]->citation->datePublished->start,'-'));
-		if ($x_year < $y_year){//the year of the first publication is smaller
-			$res = -1;
-		}
-		else if($x_year == $y_year){ //if same year check the page
-			$x_page = $x->sources[0]->citationMicroReference;
-			$y_page = $y->sources[0]->citationMicroReference;
-			if($x_page < $y_page){
-				$res = -1;
-			}
-			else{
-				$res = 1;
-			}
-		}else
-		$res = 1;
-	}
-	//different author and the first one is alphabetically smaller
-	//else if($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname <
-	//$y->sources[0]->citation->authorTeam->teamMembers[0]->lastname){
-	else if ($author_team_x->titleCache < $author_team_y->titleCache)	{
-		$res = -1;
-	}
-	//different author and the second one is alphabetically smaller
-	else{
-		$res = 1;
-	}
+   //same author, and different year
+  if($author_team_x->titleCache == $author_team_y->titleCache){
+    $x_year = substr(
+            $x->sources[0]->citation->datePublished->start,
+            0,
+            strpos($x->sources[0]->citation->datePublished->start,'-'));
+    $y_year = substr(
+              $y->sources[0]->citation->datePublished->start,
+              0,
+              strpos($y->sources[0]->citation->datePublished->start,'-'));
+    if ($x_year < $y_year){//the year of the first publication is smaller
+      $res = -1;
+    }
+    else if($x_year == $y_year){ //if same year check the page
+      $x_page = $x->sources[0]->citationMicroReference;
+      $y_page = $y->sources[0]->citationMicroReference;
+      if($x_page < $y_page){
+        $res = -1;
+      }
+      else{
+        $res = 1;
+      }
+    }else
+    $res = 1;
+  }
+  //different author and the first one is alphabetically smaller
+  //else if($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname <
+  //$y->sources[0]->citation->authorTeam->teamMembers[0]->lastname){
+  else if ($author_team_x->titleCache < $author_team_y->titleCache)	{
+    $res = -1;
+  }
+  //different author and the second one is alphabetically smaller
+  else{
+    $res = 1;
+  }
 
   }
-	//var_dump($res);
-	//var_dump(' ============ ');
-	return $res;
+  //var_dump($res);
+  //var_dump(' ============ ');
+  return $res;
 }
 
 
@@ -163,7 +163,7 @@ function garland_diptera_cdm_descriptionElements($descriptionElements){
   $sortOutArray = false;
   $enclosingHtml = 'ul';
 
-	$citations = array();
+  $citations = array();
 
   // only for diptera
   if(isset($descriptionElements[0]) && $descriptionElements[0]->feature->uuid == UUID_CITATION ) {
@@ -183,7 +183,7 @@ function garland_diptera_cdm_descriptionElements($descriptionElements){
     $descriptionElements = $elementMap;
   }
   // ---
-	usort($descriptionElements, 'compare_citations');
+  usort($descriptionElements, 'compare_citations');
   foreach($descriptionElements as $element){
     if($element->class == 'TextData'){
       $asListElement = true;
@@ -219,70 +219,9 @@ function garland_diptera_cdm_taxonpage_tab($tabname){
 function garland_diptera_cdm_feature_name($feature_name){
   switch($feature_name){
     case "Citation": return t("Citations");
-		case 'Has orthographic variant': return t("Misspellings");
+    case 'Has orthographic variant': return t("Misspellings");
     default: return t(ucfirst($feature_name));
   }
-}
-
-
-function garland_diptera_get_partDefinition($nameType){
-
-  if($nameType == 'ZoologicalName'){
-    return array(
-        'namePart' => array(
-          'name' => true
-        ),
-        'nameAuthorPart' => array(
-          'name' => true,
-          'authors' => true
-        ),
-        'referencePart' => array(
-         'authors' => true,
-         'microreference' => true
-        ),
-        'statusPart' => array(
-          'status' => true,
-        ),
-        'descriptionPart' => array(
-          'description' => true,
-        ),
-      );
-  }
-  return false;
-}
-
-function garland_diptera_get_nameRenderTemplate($renderPath){
-
-  switch ($renderPath){
-    case 'taxon_page_title':
-      $template = array(
-          'namePart' => array('#uri'=>true),
-        );
-      break;
-    case  'acceptedFor':
-    case 'list_of_taxa':
-      $template = array(
-        'namePart' => array('#uri'=>true),
-        'referencePart' => array('#uri'=>true),
-      );
-      break;
-    case 'typedesignations':
-      $template = array(
-        'namePart' => array('#uri'=>true),
-        'referencePart' => array('#uri'=>true)
-      );
-      break;
-    case 'taxon_page_synonymy':
-    case 'related_taxon':
-    case '#DEFAULT':
-      $template = array(
-        'namePart' => array('#uri'=>true),
-        'referencePart' => array('#uri'=>true),
-        'statusPart' => true,
-        'descriptionPart' => true
-      );
-  }
-  return $template;
 }
 
 function garland_diptera_cdm_OriginalSource($descriptionElementSource, $doLink = TRUE){
