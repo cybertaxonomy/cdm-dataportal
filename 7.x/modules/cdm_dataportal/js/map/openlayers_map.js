@@ -356,7 +356,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
         }
 
         //TODO points_sld should be renamed to sld in response + fill path to sld should be given
-          layer = new OpenLayers.Layer.WMS.Untiled(
+          layer = new OpenLayers.Layer.WMS(
               'points',
               geoserverUri,
               {layers: 'topp:rest_points' ,transparent:"true", format:"image/png"},
