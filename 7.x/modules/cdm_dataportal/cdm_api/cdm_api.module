@@ -1109,6 +1109,7 @@ function cdm_ws_taxonomy_root_level($taxon_uuid = NULL) {
       if (isset($_SESSION['cdm']['taxonomictree_uuid']) && is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
         // Delete the session value and try again with the default.
         unset($_SESSION['cdm']['taxonomictree_uuid']);
+        drupal_set_message("Could not find a valid classification, falling back to the default classification.", 'warning');
         return cdm_ws_taxonomy_root_level($taxon_uuid);
       }
       else {
