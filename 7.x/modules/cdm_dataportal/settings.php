@@ -1480,6 +1480,8 @@ function cdm_settings_layout_search() {
 
   $form = array();
 
+  $form['#submit'][] = 'cdm_settings_layout_search_submit';
+
   $form['search_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Taxa Search'),
@@ -1533,7 +1535,7 @@ function cdm_settings_layout_search() {
     '#type' => 'checkbox',
     '#title' => t('Sets use of default values in the advanced search form.'),
     '#default_value' => variable_get('cdm_search_use_default_values', 1),
-    '#description' => t('<p>If checked the defqult values set abovewill be used for the search.</p>'),
+    '#description' => t('<p>If checked the default values set above will be used for the search.</p>'),
   );
 
 
@@ -2099,6 +2101,17 @@ function cdm_settings_layout_taxon_submit($form, &$form_state){
     // we first need to set the variable to persist the changes setting
     variable_set('cdm_dataportal_taxonpage_tabs', $form_state['values']['cdm_dataportal_taxonpage_tabs']);
     menu_rebuild();
+  }
+}
+
+function cdm_settings_layout_search_submit($form, &$form_state){
+  // the visibility of media thumbnails also affects the ui of the search results
+  // so reset the according session variable
+  //    1. in order to give the user immediate
+  //       feedback on potential setting changes
+  //    2. let refresh the default if it has changed
+  if (isset($_SESSION['pageoption']['searchtaxa']['showThumbnails'])) {
+    unset($_SESSION['pageoption']['searchtaxa']['showThumbnails']);
   }
 }
 

@@ -1332,17 +1332,29 @@ function loading_image_html() {
  * Returns the state of the the showThumbnails flag set in the
  * users session ($_SESSION['pageoption']['searchtaxa']['showThumbnails']).
  *
- * @return Ambigous <boolean, number>
+ * @return boolean
  *    returns 1 if the flag is set
  */
 function do_showThumbnails() {
   static $showThumbnails = null;
 
   if($showThumbnails == null) {
-    $showThumbnails = FALSE;
-    if (isset($_SESSION['pageoption']['searchtaxa']['showThumbnails'])) {
-      $showThumbnails = $_SESSION['pageoption']['searchtaxa']['showThumbnails'];
+    $showThumbnails = 0;
+    if (!isset($_SESSION['pageoption']['searchtaxa']['showThumbnails'])) {
+      $showThumbnails = 0;
+      $search_gallery_settings = variable_get(CDM_DATAPORTAL_SEARCH_GALLERY_NAME, null);
+      $showThumbnails = is_array($search_gallery_settings)
+        && isset($search_gallery_settings['cdm_dataportal_show_taxon_thumbnails'])
+        && (
+            $search_gallery_settings['cdm_dataportal_show_taxon_thumbnails'] +
+            $search_gallery_settings['cdm_dataportal_show_synonym_thumbnails'] +
+            $search_gallery_settings['cdm_dataportal_show_thumbnail_captions'] > 0
+            )
+         ? 1 : 0;
+
+       drupal_array_set_nested_value($_SESSION, array('pageoption', 'searchtaxa', 'showThumbnails'), $showThumbnails);
     }
+    $showThumbnails = $_SESSION['pageoption']['searchtaxa']['showThumbnails'];
     if (!is_numeric($showThumbnails)) {
       $showThumbnails = 1;
     }
