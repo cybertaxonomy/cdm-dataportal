@@ -171,6 +171,8 @@ function theme_cdm_acceptedFor($variables) {
  */
 function theme_cdm_list_of_taxa($variables) {
 
+  $unclassified_snippet = '<span class="unclassified">' . t('unclassified') . '</span>';
+
   $records = $variables['records'];
   $freetextSearchResults = $variables['freetextSearchResults'];
   $show_classification = $variables['show_classification'];
@@ -264,6 +266,9 @@ function theme_cdm_list_of_taxa($variables) {
               $classification_titles[] = $classification->titleCache;
             }
           }
+          if(count($classification_titles) == 0){
+            $classification_titles[] = $unclassified_snippet;
+          }
           $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
         }
         $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
@@ -309,6 +314,9 @@ function theme_cdm_list_of_taxa($variables) {
           if (isset($classification->titleCache)) {
             $classification_titles[] = $classification->titleCache;
           }
+        }
+        if(count($classification_titles) == 0){
+          $classification_titles[] = $unclassified_snippet;
         }
         $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
       }

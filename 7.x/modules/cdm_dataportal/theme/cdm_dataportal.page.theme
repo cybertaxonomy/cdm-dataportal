@@ -400,14 +400,18 @@ function theme_cdm_search_results($variables) {
   }
   $out .= '<form name="pageoptions"><div id="showThumbnails"><input type="checkbox" name="showThumbnails" ' . (do_showThumbnails() == 1 ? 'checked="checked"' : '') . '> ' . t('Show Thumbnails') . '</div></form>';
   $out .= '</div>';
-  $out .= '<div id="search-summary">' . t('results for') . ' ';
+
   $classification = cdm_dataportal_searched_in_classification();
-  if ($classification != NULL) {
-    $out .=  $classification->titleCache ;
-  } else {
-   $out .= t('any classification');
+
+  if (  count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY)) > 1 ) {
+    $out .= '<div id="search-summary">' . t('results for') . ' ';
+    if ($classification != NULL) {
+      $out .=  $classification->titleCache ;
+    } else {
+     $out .= t('any classification');
+    }
+    $out .= ':</div>';
   }
-  $out .= ':</div>';
 
   // List results.
   if (isset($pager->records) && count($pager->records) > 0) {
@@ -425,8 +429,7 @@ function theme_cdm_search_results($variables) {
         'path' => $path,
         'parameters' => $_REQUEST,
     ));
-  }
-  else {
+  } else {
     $out .= '<h4 class="error">Sorry, no matching entries found.</h4>';
   }
   return $out;

@@ -182,10 +182,12 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
 
    if ($classificationSelect === TRUE) {
       $form['search']['tree'] = array(
+        '#title' => t('Classification'),
         '#weight' => 1,
         '#type' => 'select',
         '#default_value' => get_taxonomictree_uuid_selected(),
         '#options' => cdm_get_taxontrees_as_options(TRUE),
+        '#description' => t('A filter to limit the search to a specific classification.')
       );
    }
 
@@ -463,7 +465,7 @@ function cdm_dataportal_search_form_request() {
   }
   // if the 'NONE' classification has been chosen (adanced search) delete the tree information
   // to avoid unknown uuid exceptions in the cdm service
-  if (isset($form_params['tree']) && $form_params['tree'] == 'NONE') {
+  if (isset($form_params['tree']) && ($form_params['tree'] == 'NONE' || ! is_uuid($form_params['tree']))) {
 //     $form_params['ignore_classification'] =  TRUE;
     unset($form_params['tree']);
   }
@@ -484,8 +486,9 @@ function cdm_dataportal_search_form_request() {
  * otherwise it will return the infomation from the last search executed. The information is retrieved from
  * the $_SESSION variable:  $_SESSION['cdm']['search']['tree']
  *
- * @return bool
- *    the classification the last processed search has been run on or NULL, it it was on all classifications
+ * @return
+ *    the CDM classification instance which has been used a filter for the last processed search
+ *    or NULL, it it was on all classifications
  */
 function cdm_dataportal_searched_in_classification() {
 
