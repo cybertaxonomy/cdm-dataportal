@@ -459,8 +459,12 @@ function palmweb_2_cdm_reference($variables) {
   if (isset($reference->datePublished->start)) {
     $year = partialToYear($reference->datePublished->start);
   }
-  $citation = _short_form_of_author_team ($author_team->titleCache) . (!empty($year) ? '. ' . $year : '');
-  $citation = str_replace('..', '.', $citation);
+  if(isset($author_team->titleCache)){
+    $citation = _short_form_of_author_team ($author_team->titleCache) . (!empty($year) ? '. ' . $year : '');
+    $citation = str_replace('..', '.', $citation);
+  } else {
+    $citation = '';
+  }
 
   if ($doLink) {
     $out = '<span class="reference">';

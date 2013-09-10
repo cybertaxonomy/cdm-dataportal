@@ -262,61 +262,68 @@ function formatReference_for_Bibliography($references) {
 
       case "BookSection":
         $referenceString .= "<li class=\"descriptionText DescriptionElement\">";
-        $numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
-        $currentRecord = 1;
-        if (!empty($reference->citation->authorTeam->teamMembers)) {
-          foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
-            if (!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
-              if ($numberOfTeamMembers != $currentRecord) {
-                $referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " & ";
+        if(isset($reference->citation->authorTeam)){
+          $numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
+          $currentRecord = 1;
+          if (!empty($reference->citation->authorTeam->teamMembers)) {
+            foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
+              if (!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
+                if ($numberOfTeamMembers != $currentRecord) {
+                  $referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " & ";
+                }
+                else {
+                  $referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
+                  $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+                }
+                $currentRecord += 1;
               }
               else {
-                $referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
-                $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+                if ($numberOfTeamMembers != $currentRecord) {
+                  $referenceString .= $teamMember->titleCache . " & ";
+                }
+                else {
+                  $referenceString .= $teamMember->titleCache;
+                  $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+                }
+                $currentRecord += 1;
               }
-              $currentRecord += 1;
-            }
-            else {
-              if ($numberOfTeamMembers != $currentRecord) {
-                $referenceString .= $teamMember->titleCache . " & ";
-              }
-              else {
-                $referenceString .= $teamMember->titleCache;
-                $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
-              }
-              $currentRecord += 1;
-            }
-          }
-        }
-        $referenceString .= substr($reference->citation->inReference->datePublished->start, 0, 4) . ". " . $reference->citation->title . ". " . "Pages " . $reference->citation->pages . ". In ";
-        $numberOfTeamMembersInReference = count($reference->citation->inReference->authorTeam->teamMembers);
-        $currentRecordinReference = 1;
-        if (!empty($reference->citation->inReference->authorTeam->teamMembers)) {
-          foreach ($reference->citation->inReference->authorTeam->teamMembers as $teamMember) {
-            if (!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
-              if ($numberOfTeamMembers != $currentRecord) {
-                $referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " & ";
-              }
-              else {
-                $referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
-                $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
-              }
-              $currentRecord += 1;
-            }
-            else {
-              if ($numberOfTeamMembers != $currentRecord) {
-                $referenceString .= $teamMember->titleCache . " & ";
-              }
-              else {
-                $referenceString .= $teamMember->titleCache;
-                $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
-              }
-              $currentRecord += 1;
             }
           }
         }
 
-        $referenceString .= $reference->citation->inReference->title . ". " . $reference->citation->inReference->publisher . ". " . $reference->citation->inReference->placePublished;
+        if(isset($reference->citation->inReference)){
+
+          $referenceString .= substr($reference->citation->inReference->datePublished->start, 0, 4) . ". " . $reference->citation->title . ". " . "Pages " . $reference->citation->pages . ". In ";
+          if (isset($reference->citation->inReference->authorTeam)) {
+            $numberOfTeamMembersInReference = count($reference->citation->inReference->authorTeam->teamMembers);
+            $currentRecordinReference = 1;
+            if (!empty($reference->citation->inReference->authorTeam->teamMembers)) {
+              foreach ($reference->citation->inReference->authorTeam->teamMembers as $teamMember) {
+                if (!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
+                  if ($numberOfTeamMembers != $currentRecord) {
+                    $referenceString .= $teamMember->lastname . ", " . $teamMember->firstname . " & ";
+                  }
+                  else {
+                    $referenceString .= $teamMember->lastname . ", " . $teamMember->firstname;
+                    $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+                  }
+                  $currentRecord += 1;
+                }
+                else {
+                  if ($numberOfTeamMembers != $currentRecord) {
+                    $referenceString .= $teamMember->titleCache . " & ";
+                  }
+                  else {
+                    $referenceString .= $teamMember->titleCache;
+                    $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
+                  }
+                  $currentRecord += 1;
+                }
+              }
+            }
+          }
+          $referenceString .= $reference->citation->inReference->title . ". " . $reference->citation->inReference->publisher . ". " . $reference->citation->inReference->placePublished;
+        }
         $referenceString .= ((str_endsWith($referenceString, ".") || str_endsWith($referenceString, ". ")) ? "" : ". ");
         $referenceString .= "</li>";
         break;
