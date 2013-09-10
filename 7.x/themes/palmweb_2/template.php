@@ -158,7 +158,8 @@ function palmweb_2_cdm_feature_nodes($variables){
 
           // Display cdm distribution map.
           // TODO this is a HACK to a proper generic implementation?
-          $block->content .= theme('cdm_distribution_map', array('taxon' => $taxon));
+                    $map_render_element = compose_distribution_map($taxon);
+          $block->content .= $map_render_element['#markup'];
           $block->content .= theme('cdm_descriptionElements', array(
             'descriptionElements' => $node->descriptionElements,
             'featureUuid' => $node->feature->uuid,
