@@ -386,7 +386,6 @@ function cdm_dataportal_menu() {
   // }
 
   // 'May not cache' in D5.
-  // --- Local tasks for Taxon.
   $items['cdm_dataportal/name/%'] = array(
     // 'page callback' => 'cdm_dataportal_view_name',
     'page callback' => 'cdm_dataportal_name_page_view',
@@ -395,6 +394,8 @@ function cdm_dataportal_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  // --- Local tasks for Taxon.
+  // --- tabbed taxon page
   if (variable_get('cdm_dataportal_taxonpage_tabs', 1)) {
     $items['cdm_dataportal/taxon/%'] = array(
       'title' => theme('cdm_taxonpage_tab', array('tabname' => 'General')),
@@ -466,6 +467,18 @@ function cdm_dataportal_menu() {
     );
   }
 
+  // --- refresh link for all cdmnode types
+  foreach (cdm_get_nodetypes() as $type=>$name) {
+    $items['cdm_dataportal/' . $name . '/%/refresh'] = array(
+        'title' => t('Refresh'),
+        'page callback' => 'cdm_dataportal_refresh_node',
+        'access arguments' => array('edit any ' . $type . ' content'),
+        'type' => MENU_LOCAL_TASK,
+        'weight' => 100,
+        'page arguments' => array($name, 2)
+    );
+  }
+
   return $items;
 }
 
@@ -480,6 +493,25 @@ function cdm_dataportal_init() {
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal.css');
   // drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal_screen.css', array('type' => 'screen'));
+}
+
+function cdm_dataportal_refresh_node($cdm_node_name, $uuid, $parameters = array()){
+
+  $base_path = 'cdm_dataportal/' . $cdm_node_name . '/' . $uuid;
+
+  if($cdm_node_name == 'taxon' && variable_get('cdm_dataportal_taxonpage_tabs', 1)){
+    // force reloading of all and notify user about this special loading
+    drupal_set_message(t('The level 2 cache has been cleared for all tabs of this taxon page at once, please click here to return to the tabbed page: ')
+        . l('Back to tabbed taxon page', $base_path));
+    $base_path .= '/all';
+  } else {
+    drupal_set_message(t('The level 2 cache has been cleared for this page'));
+  }
+
+  $parameters['cacheL2_refresh'] ='1';
+
+
+  drupal_goto($base_path, array('query' => $parameters));
 }
 
 /**

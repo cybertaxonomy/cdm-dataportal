@@ -352,6 +352,8 @@ function cdm_dataportal_preprocess_menu_local_tasks(&$variables) {
 
   if (is_array($variables['primary'])) {
     foreach ($variables['primary'] as $key => &$element) {
+
+      // 1. Remove the tabs to be hidden
       foreach ($hidden_tabs as $tab) {
         if ($element['#link']['path'] == 'cdm_dataportal/taxon/%/' . $tab) {
           // remove the tab
@@ -359,5 +361,29 @@ function cdm_dataportal_preprocess_menu_local_tasks(&$variables) {
         }
       }
     }
+  }
+}
+
+
+
+/**
+ * Implements the hook_preprocess_HOOK() for theme_menu_local_task()
+ *
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *     - element: A render element containing:
+ *          #link: A menu link array with 'title', 'href', and 'localized_options' keys.
+ *          #active: A boolean indicating whether the local task is active.
+ *
+ */
+function cdm_dataportal_preprocess_menu_local_task(&$variables) {
+
+  $link = $variables['element']['#link'];
+  if (preg_match('/cdm_dataportal\/.*\/refresh$/', $link['href'])) {
+    $link['title'] = '<img class="refresh" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/view-refresh.png' . '" alt="' . check_plain($link['title']) . '" title="' . check_plain($link['title']) . '"/>';
+    $link['localized_options']['html'] = TRUE;
+
+    $variables['element']['#link'] = $link;
   }
 }

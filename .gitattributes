@@ -881,6 +881,7 @@
 7.x/modules/cdm_dataportal/images/macFFBgHack.png -text
 7.x/modules/cdm_dataportal/images/no_picture.png -text svneol=unset#unset
 7.x/modules/cdm_dataportal/images/print_icon.gif -text
+7.x/modules/cdm_dataportal/images/view-refresh.png -text svneol=unset#unset
 7.x/modules/cdm_dataportal/includes/common.inc -text
 7.x/modules/cdm_dataportal/includes/descriptions.inc -text
 7.x/modules/cdm_dataportal/includes/maps.inc -text

@@ -84,6 +84,11 @@ dl dl {
   background-color: yellow;
 }
 
+ul.primary img.refresh {
+  height: 14px;
+  width: 14px;
+}
+
 /*
  * ======= Search =======
  */
