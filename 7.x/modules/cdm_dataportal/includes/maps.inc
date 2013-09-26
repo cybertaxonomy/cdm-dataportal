@@ -228,7 +228,7 @@ function get_openlayers_map($width, $height, $bounding_box = FALSE, $occurrenceQ
   if ($occurrenceQuery) {
     // @todo Fix $occurrenceQuery.
     //     $occurrenceQuery .= '&bbox=-180,-90,180,90';
-    $occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0';
+    $occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0'; // TODO why are we using v:atbi,e_w_0 as layer ???
     // $occurrenceQuery .= '&l=v:e_w_0';
     // TODO add to cdm service?
     $occurrenceQuery .= '&legend=0';
