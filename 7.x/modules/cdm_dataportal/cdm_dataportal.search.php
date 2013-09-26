@@ -22,6 +22,7 @@
 function cdm_dataportal_search_form_path_for_ws($ws_endpoint) {
   static $form_ws_map = array(
     CDM_WS_PORTAL_TAXON_FIND => "cdm_dataportal/search",
+      CDM_WS_PORTAL_TAXON_SEARCH => "cdm_dataportal/search",
     CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT => "cdm_dataportal/search/taxon_by_description",
   );
   return $form_ws_map[$ws_endpoint];
@@ -137,7 +138,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
   $selected_areas = (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : FALSE);
   $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
 
-  $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_FIND, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
+  $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_SEARCH, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
 
   if (!$advancedForm) {
     $form['query']['#size'] = 20;
@@ -155,21 +156,22 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
     '#value' => 0,
   );
 
+  $search_taxa_mode_settings = get_array_variable_merged(CDM_SEARCH_TAXA_MODE, CDM_SEARCH_TAXA_MODE_DEFAULT);
+  $preset_doTaxa = $search_taxa_mode_settings['doTaxa'] !== 0;
+  $preset_doSynonyms = $search_taxa_mode_settings['doSynonyms'] !== 0;
+  $preset_doTaxaByCommonNames = $search_taxa_mode_settings['doTaxaByCommonNames'] !== 0;
+  $preset_doMisappliedNames = $search_taxa_mode_settings['doMisappliedNames'] !== 0;
+
   if ($advancedForm) {
 
     // --- ADVANCED SEARCH FORM ---
     //
 
     // Get presets from settings.
-    $preset_doTaxa = variable_get('cdm_search_doTaxa', 1);
-    $preset_doSynonyms = variable_get('cdm_search_doSynonyms', 1);
-    $preset_doTaxaByCommonNames = variable_get('cdm_search_doTaxaByCommonNames', 0);
-    $preset_doMisappliedNames = variable_get('cdm_search_doMisappliedNames', 1);
-    $preset_UseDefaults = variable_get('cdm_search_use_default_values', 1);
     $preset_classification_uuid = get_taxonomictree_uuid_selected();
 
     // Overwrite presets by user choice stored in session.
-    if (isset($_SESSION['cdm']['search']) && !$preset_UseDefaults) {
+    if (isset($_SESSION['cdm']['search'])) {
       $preset_doTaxa = (isset($_SESSION['cdm']['search']['doTaxa']) ? 1 : 0);
       $preset_doSynonyms = (isset($_SESSION['cdm']['search']['doSynonyms']) ? 1 : 0);
       $preset_doMisappliedNames = (isset($_SESSION['cdm']['search']['doMisappliedNames']) ? 1 : 0);
@@ -291,14 +293,8 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
     // --- SIMPLE SEARCH FORM ---
     //
 
-    $preset_doTaxa = variable_get('cdm_search_doTaxa', 1);
-    $preset_doSynonyms = variable_get('cdm_search_doSynonyms', 1);
-    $preset_doTaxaByCommonNames = variable_get('cdm_search_doTaxaByCommonNames', 0);
-    $preset_doMisappliedNames = variable_get('cdm_search_doMisappliedNames', 1);
-    $preset_UseDefaults = variable_get('cdm_search_use_default_values', 1);
-
     // Overwrite presets by user choice stored in session.
-    if (isset($_SESSION['cdm']['search']) && !$preset_UseDefaults) {
+    if (isset($_SESSION['cdm']['search'])) {
       $preset_doMisappliedNames = (isset($_SESSION['cdm']['search']['doMisappliedNames']) ? 1 : 0);
     }
 

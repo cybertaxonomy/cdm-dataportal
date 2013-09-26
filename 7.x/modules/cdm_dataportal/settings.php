@@ -31,15 +31,7 @@ define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys))
 /* taxonRelationshipTypes */
 define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
 
-/* Gallery variables. */
-$gallery_settings = array(
-  "cdm_dataportal_show_taxon_thumbnails" => 1,
-  "cdm_dataportal_show_synonym_thumbnails" => 0,
-  "cdm_dataportal_show_thumbnail_captions" => 1,
-  "cdm_dataportal_media_maxextend" => 120,
-  "cdm_dataportal_media_cols" => 3,
-  "cdm_dataportal_media_maxRows" => 1,
-);
+
 
 /* ---- MAP SETTING CONSTANTS ---- */
 /**
@@ -188,6 +180,28 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
        )
     )
 ));
+
+define('CDM_SEARCH_TAXA_MODE','cdm_search_taxa_mode');
+define('CDM_SEARCH_TAXA_MODE_DEFAULT', serialize(
+    // to unset a default enntry set the value to 0
+    array(
+      'doTaxa'=>'doTaxa',
+      'doSynonyms' => 'doSynonyms',
+      'doTaxaByCommonNames' => 'doTaxaByCommonNames',
+      'doMisappliedNames' => 'doMisappliedNames'
+    )
+  )
+);
+
+/* Gallery variables. */
+$gallery_settings = array(
+    "cdm_dataportal_show_taxon_thumbnails" => 1,
+    "cdm_dataportal_show_synonym_thumbnails" => 0,
+    "cdm_dataportal_show_thumbnail_captions" => 1,
+    "cdm_dataportal_media_maxextend" => 120,
+    "cdm_dataportal_media_cols" => 3,
+    "cdm_dataportal_media_maxRows" => 1,
+);
 
 define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize(get_taxon_options_list()));
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
@@ -1510,34 +1524,17 @@ function cdm_settings_layout_search() {
     '#description' => t('Number of results to display per page.'),
   );
 
-  $form['search_settings']['cdm_search_taxa'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Sets the default value of <em>Search for accepted taxa</em> in the advanced search form.'),
-    '#default_value' => variable_get('cdm_search_taxa', 1),
-    '#description' => t('<p>If checked the <em>Search for accepted taxa </em> option will be enabled in the advanced form.</p>'),
-  );
-
-  $form['search_settings']['cdm_search_synonyms'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Sets the default value of <em>Search for synonyms</em> in the advanced search form.'),
-    '#default_value' => variable_get('cdm_search_synonyms', 1),
-    '#description' => t('<p>If checked the <em>Search for synonyms</em> option will be enabled in the advanced form.</p>'),
-  );
-
-  $form['search_settings']['cdm_search_common_names'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Sets the default value of <em>Search for common names</em> in the advanced search form.'),
-    '#default_value' => variable_get('cdm_search_common_names', 0),
-    '#description' => t('<p>If checked the <em>Search for common names</em> option will be enabled in the advanced form.</p>'),
-  );
-
-  $form['search_settings']['cdm_search_use_default_values'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Sets use of default values in the advanced search form.'),
-    '#default_value' => variable_get('cdm_search_use_default_values', 1),
-    '#description' => t('<p>If checked the default values set above will be used for the search.</p>'),
-  );
-
+  $search_mode_default = get_array_variable_merged(CDM_SEARCH_TAXA_MODE, CDM_SEARCH_TAXA_MODE_DEFAULT);
+  $form['search_settings']['cdm_search_taxa_mode'] = array(
+      '#type' => 'checkboxes',
+      '#title' => 'Search mode',
+      '#description' => 'The taxon search can operate in different modes in order to find only taxa, synonyms,
+          taxa by its common name and even taxa which have been used as misappied names. The settings made here will affect the default
+          for the advance search form and the behaviour of the simple search form which always will behave according to the
+          defaults set here.',
+      '#options' => drupal_map_assoc(array_keys(unserialize(CDM_SEARCH_TAXA_MODE_DEFAULT))),
+      '#default_value' => $search_mode_default
+      );
 
   // --- SEARCH TAXA GALLERY ---- //
   $items = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);

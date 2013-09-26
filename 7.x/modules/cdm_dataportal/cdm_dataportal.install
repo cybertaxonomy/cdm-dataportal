@@ -301,6 +301,16 @@ function cdm_dataportal_update_7304() {
 
 
 /**
+ * update for RELEASE 3.2.3:
+ *  - remove variable 'cdm_search_use_default_values'
+ */
+function cdm_dataportal_update_7305() {
+  $tasks_performed = array();
+  $tasks_performed[] = _remove_variable('cdm_search_use_default_values');
+}
+
+
+/**
  * Renames a persistent variable.
  *
  * @return

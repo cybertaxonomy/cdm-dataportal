@@ -49,6 +49,7 @@ define('CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA', 'portal/taxon/$0/subtree/media');
 define('CDM_WS_PORTAL_TAXON_ACCEPTED', 'portal/taxon/$0/accepted/$1');
 define('CDM_WS_PORTAL_TAXON_TAXONNODES', 'portal/taxon/$0/taxonNodes');
 define('CDM_WS_PORTAL_TAXON_FIND', 'portal/taxon/find');
+define('CDM_WS_PORTAL_TAXON_SEARCH', 'portal/taxon/search');
 define('CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'portal/taxon/findByDescriptionElementFullText');
 
 /**
