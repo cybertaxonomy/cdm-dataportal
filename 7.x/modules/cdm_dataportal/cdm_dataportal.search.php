@@ -22,7 +22,7 @@
 function cdm_dataportal_search_form_path_for_ws($ws_endpoint) {
   static $form_ws_map = array(
     CDM_WS_PORTAL_TAXON_FIND => "cdm_dataportal/search",
-      CDM_WS_PORTAL_TAXON_SEARCH => "cdm_dataportal/search",
+    CDM_WS_PORTAL_TAXON_SEARCH => "cdm_dataportal/search",
     CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT => "cdm_dataportal/search/taxon_by_description",
   );
   return $form_ws_map[$ws_endpoint];
@@ -138,10 +138,13 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
   $selected_areas = (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : FALSE);
   $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
 
-  $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_SEARCH, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
 
   if (!$advancedForm) {
+    $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_FIND, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
     $form['query']['#size'] = 20;
+  } else {
+    $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_SEARCH, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
+
   }
 
   $form['search']['pageSize'] = array(
