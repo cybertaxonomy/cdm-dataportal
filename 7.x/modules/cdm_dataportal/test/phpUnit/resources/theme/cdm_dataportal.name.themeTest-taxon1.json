@@ -3,7 +3,7 @@
     "class": "Taxon",
     "created": "2011-01-17T12:53:58.000+01:00",
     "data": [
-        
+
     ],
     "doubtful": false,
     "excluded": false,
@@ -24,7 +24,7 @@
         "class": "BotanicalName",
         "created": "2011-01-17T12:53:58.000+01:00",
         "data": [
-            
+
         ],
         "exBasionymAuthorTeam": null,
         "exCombinationAuthorTeam": null,
@@ -34,7 +34,7 @@
         "infraSpecificEpithet": "",
         "lsid": null,
         "monomHybrid": false,
-        "nomenclaturalCode": "ICBN",
+        "nomenclaturalCode": "ICNAFP",
         "nomenclaturalMicroReference": "223; 33 (1988) 319",
         "parsingProblem": 0,
         "problemEnds": -1,
@@ -52,18 +52,18 @@
             {
                 "class": "TaggedText",
                 "text": "Alectryon",
-                "type": "name" 
+                "type": "name"
             },
             {
                 "class": "TaggedText",
                 "text": "myrmecophilus",
-                "type": "name" 
+                "type": "name"
             },
             {
                 "class": "TaggedText",
                 "text": "Leenh.",
-                "type": "authors" 
-            } 
-        ] 
-    } 
+                "type": "authors"
+            }
+        ]
+    }
 }
