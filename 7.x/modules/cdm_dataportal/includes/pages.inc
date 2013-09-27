@@ -284,7 +284,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
 
   $toc = array(
       '#theme' => 'item_list',
-      '#items' => cdm_feature_node_toc_items($merged_tree->root->children),
+      '#items' => cdm_feature_node_toc_items($merged_tree->root->childNodes),
       '#title' => t('Content'),
       '#weight' => -100,
       '#suffix' => '</div>',
@@ -296,7 +296,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
   $render_array['taxon_description_features'] = markup_to_render_array(
       theme(
           'cdm_feature_nodes',
-          array('mergedFeatureNodes' => $merged_tree->root->children, 'taxon' => $taxon)
+          array('mergedFeatureNodes' => $merged_tree->root->childNodes, 'taxon' => $taxon)
       )
   );
 

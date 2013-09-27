@@ -1308,8 +1308,8 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid) {
   );
 
   // Combine all descripions into one feature tree.
-  $merged_nodes = _mergeFeatureTreeDescriptions($feature_tree->root->children, $description_elemens);
-  $feature_tree->root->children = $merged_nodes;
+  $merged_nodes = _mergeFeatureTreeDescriptions($feature_tree->root->childNodes, $description_elemens);
+  $feature_tree->root->childNodes = $merged_nodes;
 
   return $feature_tree;
 }
@@ -1398,7 +1398,7 @@ function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference) {
  *
  * This method is used in preparation for rendering the descriptionElements.
  * The descriptionElements wich belong to a specific feature node are appended
- * to a the feature node by creating a new fields:
+ * to a the feature node by creating a new field:
  *  - descriptionElements: the CDM DescriptionElements which belong to this feature
  * The descriptionElements will be cleared in advance in order to allow reusing the
  * same feature tree without the risk of mixing sets of descrition elemens.
@@ -1436,12 +1436,12 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
     }
 
     // Recurse into node children.
-    if (isset($node->children[0])) {
-      $mergedChildNodes = _mergeFeatureTreeDescriptions($node->children, $descriptionElements);
-      $node->children = $mergedChildNodes;
+    if (isset($node->childNodes[0])) {
+      $mergedChildNodes = _mergeFeatureTreeDescriptions($node->childNodes, $descriptionElements);
+      $node->childNodes = $mergedChildNodes;
     }
 
-    if(!isset($node->descriptionElements) && !isset($node->children[0])){
+    if(!isset($node->descriptionElements) && !isset($node->childNodes[0])){
       unset($node);
     }
 
@@ -1821,10 +1821,10 @@ function cdm_featureTree_elements_toString($root_node, $separator = ', ', $field
   $pre_child_separator = $separator;
   $post_child_separator = '';
 
-  foreach ($root_node->children as $feature_node) {
+  foreach ($root_node->childNodes as $feature_node) {
     $out .= ($out ? $separator : '');
     $out .= $feature_node->feature->$field_name;
-    if (is_array($feature_node->children) && count($feature_node->children) > 0) {
+    if (is_array($feature_node->childNodes) && count($feature_node->childNodes) > 0) {
       $childlabels = cdm_featureTree_elements_toString($feature_node, $separator, $field_name);
       if (strlen($childlabels)) {
           $out .=  $pre_child_separator . $childlabels . $post_child_separator;
@@ -1852,14 +1852,14 @@ function cdm_featureTree_elements_toString($root_node, $separator = ', ', $field
  */
 function _featureTree_nodes_as_feature_options($rootNode, $node_char = "&#9500;&#9472; ", $childIndentStr = '&nbsp;', $childIndent = '') {
   $options = array();
-  foreach ($rootNode->children as $featureNode) {
+  foreach ($rootNode->childNodes as $featureNode) {
     $indent_prefix = '';
     if ($childIndent) {
       $indent_prefix = $childIndent . $node_char . " ";
     }
     $options[$featureNode->feature->uuid] = $indent_prefix . $featureNode->feature->representation_L10n;
-    if (isset($featureNode->children) && is_array($featureNode->children)) {
-      // Foreach ($featureNode->children as $childNode){
+    if (isset($featureNode->childNodes) && is_array($featureNode->childNodes)) {
+      // Foreach ($featureNode->childNodes as $childNode){
       $childList = _featureTree_nodes_as_feature_options($featureNode, $node_char, $childIndentStr, $childIndent . $childIndentStr);
       $options = array_merge_recursive($options, $childList);
       // }
@@ -1905,7 +1905,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
     }
 
     // Render the hierarchic tree structure
-    if (is_array( $featureTree->root->children) && count( $featureTree->root->children) > 0) {
+    if (is_array( $featureTree->root->childNodes) && count( $featureTree->root->childNodes) > 0) {
 
       // Render the hierarchic tree structure.
       $treeDetails = '<div class="featuretree_structure">'

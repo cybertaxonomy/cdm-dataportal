@@ -1275,7 +1275,7 @@ function cdm_settings_layout_taxon() {
 
   // ---- LAYOUT PER FEATURE ---- //
   $feature_tree = get_profile_featureTree();
-  if (isset($feature_tree->root->children)) {
+  if (isset($feature_tree->root->childNodes)) {
 
     $form_feature_list_layout = array(
       '#title' => t('Taxon profile layout'),
@@ -1286,7 +1286,7 @@ function cdm_settings_layout_taxon() {
     );
 
     $feature_list_layout_settings_disabled = TRUE;
-    foreach ($feature_tree->root->children as $featureNode) {
+    foreach ($feature_tree->root->childNodes as $featureNode) {
 
       if (!$feature_list_layout_settings_disabled && isset($featureNode->feature)) {
         // Must not exceed 45 characters !!!

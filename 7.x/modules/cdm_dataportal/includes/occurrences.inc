@@ -188,7 +188,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 //               if($description->imageGallery == TRUE) {
 //                 continue;
 //               }
-              $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->children, $description->elements);
+              $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->childNodes, $description->elements);
               $rendered_description = theme(
                  'cdm_feature_nodes',
                  array('mergedFeatureNodes' => $elements_by_feature)

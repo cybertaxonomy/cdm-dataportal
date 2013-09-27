@@ -24,7 +24,7 @@ define('CDM_CSV_FEATURETREE_UUID', 'cdm_csv_featuretree_uuid');
 
 
 /**
- * 
+ *
  * @param unknown $path
  *  Which path of the site we're using to display help
  * @param unknown $arg
@@ -35,8 +35,8 @@ function cdm_csv_export_help($path, $arg){
 
 switch ($path) {
   case "admin/help#cdm_csv_export":
-  return '<h1>'.t('CDM CSV Export Help'). '</h1>'. '<p>' . t("In order 
-    to export the data with special export options, it is essential 
+  return '<h1>'.t('CDM CSV Export Help'). '</h1>'. '<p>' . t("In order
+    to export the data with special export options, it is essential
     to configure a feature tree with the desired features. Then set
     this feature tree as the default feature tree for this portal."
     ) . '</p>';
@@ -45,10 +45,10 @@ switch ($path) {
 }
 
 /**
- * Implements hook_block_info() 
- * 
+ * Implements hook_block_info()
+ *
  * Prepares the content for the help menu
- * 
+ *
  * @return array
  */
 function cdm_csv_export_block_info() {
@@ -61,9 +61,9 @@ function cdm_csv_export_block_info() {
 
 /**
  * Implements hook_block_view().
- * 
+ *
  * Prepares the contents of the block.
- *  
+ *
  * @param string $delta
  * @return array
  */
@@ -77,10 +77,10 @@ function cdm_csv_export_block_view($delta='') {
 
 /**
  * Creates the drupal form and returns it
- * 
+ *
  * @param unknown $form_state
  * @return array
- * 
+ *
  */
 function cdm_csv_export_my_form($form_state) {
   $form['combobox'] = array(
@@ -99,16 +99,16 @@ function cdm_csv_export_my_form($form_state) {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
-  
+
   $form['redListField']['csvExportOptions'] = array(
       '#type'=>'checkboxes',
       '#options' => array(),
   );
-    
+
    // ---- LAYOUT PER FEATURE ---- //
 $feature_tree = get_csv_featureTree();
-  if (isset($feature_tree->root->children)) {
-    foreach ($feature_tree->root->children as $featureNode) {
+  if (isset($feature_tree->root->childNodes)) {
+    foreach ($feature_tree->root->childNodes as $featureNode) {
       if (isset($featureNode->feature)) {
 
        // Must not exceed 45 characters !!!
@@ -126,14 +126,14 @@ $feature_tree = get_csv_featureTree();
       }
     }
   }
-  
+
   $form['downloadTokenValueId'] = array(
     '#type' => 'hidden',
     '#attributes' => array('name' => 'downloadTokenValueId',
-                           'id' => 'downloadTokenValueId',                     
+                           'id' => 'downloadTokenValueId',
       ),
     );
-  
+
   $form['dialogMessage'] = array(
     '#type' => 'hidden',
     '#attributes' => array(
@@ -141,7 +141,7 @@ $feature_tree = get_csv_featureTree();
       'id' => 'dialogMessage',
     ),
   );
-  
+
   $country = variable_get('area_filter_country');
   $state = variable_get('area_filter_state');
 if($country != null || $state != null){
@@ -165,7 +165,7 @@ if($country != null || $state != null){
      ),
     );
   }
-  
+
   //GermanFederalStates
   if($state != null){
   $nameRelationshipTypeOptions = cdm_Vocabulary_as_option($state);
@@ -179,12 +179,12 @@ if($country != null || $state != null){
       ),
     );
   }
-  
+
   $form['button'] = array(
     '#type'  => 'submit',
     '#value' => 'Export',
     );
-  
+
   $form['#action'] = url(variable_get('cdm_csv_export_webservice_url'));
   $form['#attributes'] = array(
                  'name' => 'exportForm',
@@ -196,7 +196,7 @@ if($country != null || $state != null){
 
 /**
  * Implements Admin configuration hook_menu().
- * 
+ *
  * @return array
  */
 
@@ -216,11 +216,11 @@ function cdm_csv_export_menu() {
 
 /**
  * Generates the HTML form for the CSV Export Settings.
- * 
+ *
  * @return array
  */
 function cdm_csv_export_admin() {
- 
+
  $form['cdm_csv_export_webservice'] = array(
    '#type' => 'fieldset',
    '#title' => t('CDM CSV Export web service'),
@@ -229,7 +229,7 @@ function cdm_csv_export_admin() {
    '#description' => t('<em>CDM Server</em> makes the dialogue possible with
       <em>CDM Data Portal</em> thanks to its web services.'),
  );
- 
+
  $form['cdm_csv_export_webservice']['cdm_csv_export_webservice_url'] = array(
    '#type' => 'textfield',
    '#title' => t('CSV Export web service URL') . ':',
@@ -237,19 +237,19 @@ function cdm_csv_export_admin() {
       e.g. <em>"http://localhost:8080/csv/exportRedlist"</em>'),
    '#default_value' => variable_get('cdm_csv_export_webservice_url', NULL),
  );
- 
+
  // ---- Regional Filter ---- //
  $form['csv_export_area_filter'] = array(
    '#type' => 'fieldset',
    '#title' => t('CDM CSV Export Area Filter'),
    '#collapsible' => TRUE,
    '#collapsed' => FALSE,
-   '#description' => t('The <em>Area Filter</em> can be freely configured to the need 
-       of the specific <em>CDM Data Portal</em> and its catchment area. Right now it will 
+   '#description' => t('The <em>Area Filter</em> can be freely configured to the need
+       of the specific <em>CDM Data Portal</em> and its catchment area. Right now it will
        be only distinguished between two levels. If necessary it can be programmatically
        extended for a third level e.g. "continent level".'),
  );
- 
+
  $form['csv_export_area_filter']['area_filter_country'] = array(
    '#type' => 'textfield',
    '#title' => t('Country Level') . ':',
@@ -257,7 +257,7 @@ function cdm_csv_export_admin() {
       you should paste e.g. <em>"7b7c2db5-aa44-4302-bdec-6556fd74b0b9"</em> in the above text field'),
    '#default_value' => variable_get('area_filter_country', NULL),
  );
- 
+
  $form['csv_export_area_filter']['area_filter_state'] = array(
    '#type' => 'textfield',
    '#title' => t('State Level') . ':',
@@ -265,7 +265,7 @@ function cdm_csv_export_admin() {
       you should paste e.g. <em>"44a448f9-f4ca-49f6-b58c-d27d8a69efdb"</em> in the above text field'),
    '#default_value' => variable_get('area_filter_state', NULL),
  );
- 
+
  // ---- FEATURE TREE ---- //
  $form['feature_trees'] = array(
    '#type' => 'fieldset',
@@ -277,18 +277,18 @@ function cdm_csv_export_admin() {
       features such as description, distribution, common names, etc. that Drupal
       will render at the taxon profile page."),
  );
- 
+
  $featureTrees = cdm_get_featureTrees_as_options(TRUE);
  $form['feature_trees'][CDM_CSV_FEATURETREE_UUID] = array(
-   	'#type' => 'radios',
-   	'#title' => t('CSV Export Feature Tree sections') . ':',
-	'#default_value' => variable_get(CDM_CSV_FEATURETREE_UUID, NULL),
- 	'#options' =>  $featureTrees['options'],
- 	'#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
- 	'#options_suffixes' => $featureTrees['treeRepresentations'],
-	'#description' => t('Select the Feature Tree to be displayed at the taxon
+     '#type' => 'radios',
+     '#title' => t('CSV Export Feature Tree sections') . ':',
+  '#default_value' => variable_get(CDM_CSV_FEATURETREE_UUID, NULL),
+   '#options' =>  $featureTrees['options'],
+   '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
+   '#options_suffixes' => $featureTrees['treeRepresentations'],
+  '#description' => t('Select the Feature Tree to be displayed at the taxon
       profile. Click "Show Details" to see the Feature Tree elements.'
- 	),
+   ),
  );
  return system_settings_form($form);
 }

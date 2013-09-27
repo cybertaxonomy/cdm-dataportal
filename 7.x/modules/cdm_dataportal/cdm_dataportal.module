@@ -2021,8 +2021,8 @@ function hasFeatureNodeDescriptionElements($featureNode) {
       }
     }
   }
-  elseif (isset($featureNode->children) && is_array($featureNode->children)) {
-    foreach ($featureNode->children as $child) {
+  elseif (isset($featureNode->childNodes) && is_array($featureNode->childNodes)) {
+    foreach ($featureNode->childNodes as $child) {
       if (hasFeatureNodeDescriptionElements($child)) {
         return TRUE;
       }

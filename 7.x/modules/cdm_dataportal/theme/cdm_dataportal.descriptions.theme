@@ -159,13 +159,13 @@ function theme_cdm_feature_nodes($variables) {
 //           subordinate features are printed inline in one floating text,
 //           it is expected hat supordinate features can "contain" TextData,
 //           Qualitative- and Qualitative- DescriptioneElements
-          if (isset($node->children[0])) {
+          if (isset($node->childNodes[0])) {
 
             // TODO support more than one level of children.
             // can this be solved by resursively calling this very function?
             // @see http://dev.e-taxonomy.eu/trac/ticket/2393
             $text = '';
-            foreach ($node->children as $child) {
+            foreach ($node->childNodes as $child) {
 
               if (isset($child->descriptionElements) && is_array($child->descriptionElements)) {
                 foreach ($child->descriptionElements as $element) {
@@ -271,11 +271,11 @@ function theme_FeatureTree_hierarchy_children($variables) {
 
   $node = $variables['node'];
   $out = '';
-  if (isset($node->children)) {
+  if (isset($node->childNodes)) {
 
-    foreach ($node->children as $childNode) {
+    foreach ($node->childNodes as $childNode) {
       $out .= '<li>' . check_plain($childNode->feature->representation_L10n);
-      if (isset($childNode->children) && count($childNode->children) > 0) {
+      if (isset($childNode->childNodes) && count($childNode->childNodes) > 0) {
         $out .= '<ul>' . theme('FeatureTree_hierarchy_children', array('node' => $childNode)) . '</ul>';
       }
       $out .= '</li>';

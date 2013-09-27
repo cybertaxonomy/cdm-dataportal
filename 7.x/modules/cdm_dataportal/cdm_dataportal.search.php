@@ -379,8 +379,8 @@ function cdm_dataportal_search_taxon_by_description_form() {
 
   /*
   see cdm_get_featureTrees_as_options() ... $treeRepresentation =
-  $featureTree->titleCache; if(is_array($featureTree->root->children) &&
-  count($featureTree->root->children) > 0){ // render the hierarchic tree
+  $featureTree->titleCache; if(is_array($featureTree->root->childNodes) &&
+  count($featureTree->root->childNodes) > 0){ // render the hierarchic tree
   structure $treeDetails = '<div class="featuretree_structure">'
   //.cdm_featureTree_elements_toString($featureTree->root)
   .theme('featureTree_hierarchy', $featureTree->uuid) .'</div>'; $form =
