@@ -222,77 +222,20 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       '#value' => $preset_doTaxaByCommonNames
     );
 
-    // Geographic Range.
-    $form['search']['geographic_range'] = array(
-      '#type' => 'fieldset',
-      '#weight' => 5,
-      '#tree' => TRUE,
-      '#title' => t('Geographic range'),
-    );
-
-    $form['search']['geographic_range']['tdwg_level_select'] = array(
-      '#type' => 'radios',
-      '#title' => t('Select a TDWG distribution level and code'),
-      '#default_value' => $tdwg_level_select,
-      '#options' => array(
-        t('TDWG level-1, i.e. a continent'),
-        t('TDWG level-2'),
-        t('TDWG level-3, i.e. a country'),
-        t('TDWG level-4'),
-      ),
-    );
-    $tdwg[1] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '1');
-    $tdwg[2] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '2');
-    $tdwg[3] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '3');
-    $tdwg[4] = cdm_ws_get(CDM_WS_TDWG_LEVEL, '4');
-
-    $tdwg_js = '';
-    foreach ($tdwg as $key => $tdwg_level) {
-      $tdwgOptions = array();
-      $tdwgOptionsSelected = array();
-      foreach ($tdwg_level as $area) {
-        $representation = $area->representations[0];
-        $tdwgOptions[$representation->abbreviatedLabel] = $area->representation_L10n;
-        if (is_array($selected_areas) && in_array($representation->abbreviatedLabel, $selected_areas)) {
-          // $area->uuid;
-          $tdwgOptionsSelected[] = $representation->abbreviatedLabel;
-        }
-      }
-      asort($tdwgOptions);
-      $form['search']['geographic_range']['tdwg_level_' . $key] = array(
-        '#type' => 'select',
-        '#title' => t('TDWG level') . ' ' . $key,
-        '#default_value' => $tdwgOptionsSelected,
-        '#multiple' => TRUE,
-        '#options' => $tdwgOptions,
-      );
-      $tdwg_js .= "$('#edit-search-geographic-range-tdwg-level-$key').parent()" . ($tdwg_level_select + 1 == $key ? '.show()' : '.hide()') . ";\n";
+    $areas_options = cdm_terms_as_options(cdm_ws_fetch_all(CDM_WS_DESCRIPTION_NAMEDAREAS_IN_USE));
+    $areas_defaults = array();
+    if(isset($_SESSION['cdm']['search']['area'])){
+      $areas_defaults = explode(',', $_SESSION['cdm']['search']['area']);
     }
+    $form['search']['area'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Filter by distribution areas'),
+      '#default_value' =>  $areas_defaults,
+      '#options' => $areas_options,
+      '#description' => t('Check one or multiple areas to filter by distribution.')
+    );
 
-    drupal_add_js(
-    "jQuery(document).ready(function($){
-      $(\"input[name='search[geographic_range][tdwg_level_select]']\").change(
-        function(){
-          var selectId = $(\"input[name='search[geographic_range][tdwg_level_select]']:checked\").val();
-          var i;
-          for(i = 0; i < 4; i++){
-
-            if(selectId == i){
-              $('#edit-search-geographic-range-tdwg-level-' + (i + 1) ).parent().fadeIn('slow');
-              $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).children().removeAttr('selected');
-            } else {
-              $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).parent().fadeOut('slow');
-              $('#edit-search-geographic-range-tdwg-level-' + (i + 1)).children().removeAttr('selected');
-            }
-          }
-        }
-      );
-
-    $tdwg_js
-    });",
-    array('type' => 'inline'));
-  }
-  else {
+  } else {
     // --- SIMPLE SEARCH FORM ---
     //
 
@@ -444,16 +387,9 @@ function cdm_dataportal_search_form_request() {
 
   // --- handle geographic range
   // Split of geographic range.
-  if (isset($_REQUEST['search']['geographic_range']) && is_array($_REQUEST['search']['geographic_range'])) {
-    $geographicRange = $_REQUEST['search']['geographic_range'];
-    // Remove from form.
-    unset($form_params['geographic_range']);
-    $form_params['tdwg_level_select'] = $geographicRange['tdwg_level_select'];
-    for ($i = 1; $i < 5; $i++) {
-      if (isset($geographicRange['tdwg_level_' . $i])) {
-        $form_params['area'] = $geographicRange['tdwg_level_' . $i];
-      }
-    }
+  unset($form_params['area']);
+  if (isset($_REQUEST['search']['area']) && is_array($_REQUEST['search']['area'])) {
+    $form_params['area'] = implode(',', $_REQUEST['search']['area']);
   }
 
   // simple search will not submit a 'tree' query parameter, so we add it here from

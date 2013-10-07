@@ -55,6 +55,7 @@ define('CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'portal/taxon/f
 /**
  * /description/{uuid}/naturalLanguageDescription/{featuretree_uuid}
  */
+define('CDM_WS_DESCRIPTION_NAMEDAREAS_IN_USE', 'description/namedAreasInUse');
 define('CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION', 'description/$0/naturalLanguageDescription/$1');
 define('CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA', 'description/$0/hasStructuredData');
 

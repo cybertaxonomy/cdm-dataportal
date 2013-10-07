@@ -90,7 +90,16 @@ ul.primary img.refresh {
 }
 
 /*
- * ======= Search =======
+ * ======= Search-Form =======
+ */
+
+#edit-search-area {
+  height: 10em;
+  overflow: auto;
+}
+
+/*
+ * ======= Search-Results =======
  */
 #block-cdm-dataportal-2 .description {
   display: none;

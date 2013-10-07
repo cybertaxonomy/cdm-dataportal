@@ -293,6 +293,29 @@ function cdm_get_occurrence_featureTree() {
 }
 
 /**
+ * Transforms the list of the given term base instances to a alphabetical ordered options array.
+ *
+ * The options array is suitable for drupal form API elements that allow multiple choices.
+ * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#options
+ *
+ * @param array $terms
+ *   a list of CDM DefinedTermBase instances
+ *
+ * @return array
+ *   the terms in an array as options for a form element that allows multiple choices.
+ */
+function cdm_terms_as_options($terms){
+  $options = array();
+  if(isset($terms) && is_array($terms)){
+    foreach ($terms as $term){
+      $options[$term->uuid] = $term->representation_L10n;
+    }
+  }
+  array_multisort($options, SORT_ASC);
+  return $options;
+}
+
+/**
  * Returns the FeatureTree for structured descriptions
  *
  * The FeatureTree returned is the one that has been set in the
