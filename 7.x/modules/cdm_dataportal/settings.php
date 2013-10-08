@@ -2132,7 +2132,7 @@ function cdm_settings_general_validate($form, &$form_state) {
 /**
  * Form validation handler for cdm_settings_cache
  */
-function cdm_settings_cache_validate() {
+function cdm_settings_cache_validate($form, &$form_state) {
   if ($form_state['values']['cdm_webservice_cache'] != variable_get('cdm_webservice_cache', 1)) {
     cache_clear_all(NULL, 'cache_cdm_ws');
     // Better clear secref_cache since I can not be sure if the cache has not
