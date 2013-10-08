@@ -144,6 +144,12 @@ function theme_cdm_OriginalSource($variables) {
         'microReference' => $source->citationMicroReference,
         'doLink' => $doLink,
     ));
+    if (isset($source->nameUsedInSource)) {
+      $nameInSource = theme('cdm_taxonName', array(
+          'taxonName' => $source->nameUsedInSource
+      ));
+      $out .=  ' <span class="nameUsedInSource">(' . t('as') . ' ' . $nameInSource . ')</span>';
+    }
     if( isset($source->idInSource) && $source->idInSource ) {
       $out .=  ' <span class="idInSource">[' . $source->idInSource . ']</span>';
     }
