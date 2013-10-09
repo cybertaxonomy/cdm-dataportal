@@ -9,7 +9,10 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -79,7 +82,7 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
         p.testTableOfContentEntry(tocIndex++, "Distribution", "distribution");
 
         FeatureBlock featureBlock = p.getFeatureBlockAt(2, "chromosome-numbers", "div", "li"); //FIXME <div><li> bug in portal
-        assertEquals("Chromosome numbers\nCistus creticus L. 2n = 18 (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus in Candollea 48. 1993) (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus. 2 in Acta Univ. Carol., Biol. 46. 2002)", featureBlock.getText());
+        assertEquals("Chromosome numbers\nCistus creticus L. 2n = 18 (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus in Candollea 48. 1993 (as Cistus creticus L.)) (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus. 2 in Acta Univ. Carol., Biol. 46. 2002 (as Cistus creticus L.))", featureBlock.getText());
         assertEquals("Chromosome numbers", featureBlock.getHeader());
         assertEquals("expecting no footnote keys", 0, featureBlock.getFootNoteKeys().size());
         List<WebElement> linksInFeatureBlock = featureBlock.getElement().findElements(By.tagName("a"));
