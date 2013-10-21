@@ -9,33 +9,26 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Level;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.elements.BaseElement;
-import eu.etaxonomy.dataportal.elements.FeatureBlock;
-import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.elements.TaxonListElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.GenericPortalPage;
-import eu.etaxonomy.dataportal.pages.PortalPage;
 import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
 
@@ -66,6 +59,7 @@ public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
 
 
     @Test
+    @Ignore // see #3788 (sort order of search results broken in free-text taxon search)
     public void Illicium() throws Exception {
 
         TaxonSearchResultPage searchResultPage = homePage.submitQuery("Illicium");
