@@ -237,6 +237,8 @@ function get_openlayers_map($width, $height, $bounding_box = FALSE, $occurrenceQ
   }
 
   if ($distributionQuery) {
+    //HACK for testing (this must be done in js)
+//     $distributionQuery .= "&layer=em_tiny_jan2003&dest_projection_epsg=7777777";
     $out .= ' distributionQuery="' . $distributionQuery . '&' . $openlayers_map_query_string . '"';
   }
 
@@ -274,7 +276,12 @@ function get_image_map($width, $height= NULL, $bounding_box = FALSE, $occurrence
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
-  $query_string = '&image=true&recalculate=false&legend=1&ms=' . $width . ($height ? ',' . $height : '')
+  $baselayer_name = $map_settings['image_map']['base_layer'];
+  if(empty($baselayer_name)){
+    $baselayer_name = "earth";
+  }
+
+  $query_string = '&image=true&recalculate=false&ms=' . $width . ($height ? ',' . $height : '')
   // Additional query parameters as set in the data portal admin section.
   . ($bounding_box ? '&bbox=' . $bounding_box : '')
   . ($map_settings['show_labels'] ? '&label=' . $map_settings['show_labels'] : '');
@@ -291,13 +298,14 @@ function get_image_map($width, $height= NULL, $bounding_box = FALSE, $occurrence
       // @todo Fix $occurrenceQuery.
       $occurrenceQuery = str_replace("&image=false", "", $occurrenceQuery);
       // $occurrenceQuery .= '&l=v%3Aatbi%2Ce_w_0';
+
       // Will be replaced below.. HACK!!!
-      $occurrenceQuery .= '&l=tdwg4&as=';
+      $occurrenceQuery .= '&l=' . $baselayer_name . '&as=';
 
       $query_string .= "&" . $occurrenceQuery;
     }
     elseif ($distributionQuery) {
-      $query_string .= "&" . $distributionQuery;
+      $query_string .= '&l=' . $baselayer_name . "&" .$distributionQuery;
     }
 
     // Apply Plain Image map settings special for version >= 1.1.
@@ -316,8 +324,8 @@ function get_image_map($width, $height= NULL, $bounding_box = FALSE, $occurrence
 
     $map_service_script_name = "rest_gen.php";
 
-    $bgcolor_areaStyleId = "y";
-    $baselayer_areaStyleId = "z";
+    $bgcolor_areaStyleId = "Y";
+    $baselayer_areaStyleId = "Z";
     $bgcolor_layer = '';
     $additional_area_styles = array();
 
@@ -342,10 +350,10 @@ function get_image_map($width, $height= NULL, $bounding_box = FALSE, $occurrence
       $areystyle_param_token = "&as=";
     }
     if ($map_settings['image_map']['base_layer']) {
-      $query_string = str_replace($layer_param_token . "tdwg4", "$layer_param_token" . $map_settings['image_map']['base_layer'] . ":" . $baselayer_areaStyleId, $query_string);
+      $query_string = str_replace($layer_param_token .$baselayer_name, "$layer_param_token" . $map_settings['image_map']['base_layer'] . ":" . $baselayer_areaStyleId, $query_string);
     }
     else {
-      $query_string = str_replace($layer_param_token . "tdwg4", $layer_param_token . "tdwg4:" . $baselayer_areaStyleId . ",", $query_string);
+      $query_string = str_replace($layer_param_token . $baselayer_name, $layer_param_token . $baselayer_name . ":" . $baselayer_areaStyleId . ",", $query_string);
     }
 
     if ($bgcolor_layer) {
@@ -354,6 +362,14 @@ function get_image_map($width, $height= NULL, $bounding_box = FALSE, $occurrence
 
     if ($map_settings['image_map']['layer_style']) {
       $additional_area_styles[] = $baselayer_areaStyleId . ":" . $map_settings['image_map']['layer_style'];
+    }
+
+    if(isset($map_settings['projection'])){
+      $query_string .= "&srs=" . $map_settings['projection'];
+    }
+
+    if(isset($map_settings['legend']['show']) && $map_settings['legend']['show']){
+      $query_string .= "&legend=1";
     }
 
     foreach ($additional_area_styles as $as) {

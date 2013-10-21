@@ -337,7 +337,10 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
     };
 
     /**
-     * add a distribution layer
+     * add a distribution or occurrence layer
+     *
+     * @param mapResponseObj
+     *   The reponse object returned by the edit map service
      */
     var addDataLayer = function(mapResponseObj){
 

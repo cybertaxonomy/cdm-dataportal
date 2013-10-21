@@ -56,7 +56,8 @@ define('EDIT_MAPSERVER_VERSION', serialize(
       'v1.1' => 'v1.1',
       'v1.2_dev' => 'v1.2_dev',
       'v1.2' => 'v1.2',
-      'v1.3_dev' => 'v1.3_dev'
+      'v1.3_dev' => 'v1.3_dev',
+      'v1.4_dev' => 'v1.4_dev'
     )
   )
 );
@@ -1803,6 +1804,16 @@ function cdm_settings_geo($form, &$form_state) {
     '#default_value' => $map_distribution['image_map']['layer_style'],
     '#description' => 'Syntax: {Area fill color},{Area stroke color},{Area stroke width},{Area stroke dash style}',
   );
+
+  $form[CDM_MAP_DISTRIBUTION]['image_map']['projection'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Projection',
+      '#default_value' => drupal_array_get_nested_value($map_distribution, array('image_map', 'projection')),
+      '#description' => 'Spatial Reference System (SRS) identifier ) optional ( Defines projections in WMS GetMap request.
+        Using EPSG:4326 (WGS84 lat/long) is the default but can be changed
+        on-the-fly to different UTM and much more zone specific. Examples: EPSG:4326, EPSG:900913, EPSG:3857, EPSG:7777777',
+  );
+  // projection
 
 
   // --- OpenLayers Settings --- //
