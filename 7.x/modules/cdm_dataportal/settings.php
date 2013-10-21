@@ -281,6 +281,7 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
             'url' => NULL,
             'params' =>  NULL,
             'projection' => NULL,
+            'proj4js_def' => NULL,
             'max_extent' => NULL,
             'units' => NULL
      ),
@@ -1813,7 +1814,6 @@ function cdm_settings_geo($form, &$form_state) {
         Using EPSG:4326 (WGS84 lat/long) is the default but can be changed
         on-the-fly to different UTM and much more zone specific. Examples: EPSG:4326, EPSG:900913, EPSG:3857, EPSG:7777777',
   );
-  // projection
 
 
   // --- OpenLayers Settings --- //
@@ -1924,6 +1924,29 @@ function cdm_settings_geo($form, &$form_state) {
       // Only line color by now.
       '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['projection'],
       '#description' => 'The desired projection for the layer (e.g. EPSG:4326, EPSG:900913, EPSG:3857)'
+  );
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['proj4js_def'] = array(
+      '#type' => 'textfield',
+      '#title' => 'proj4js definition',
+      // Only line color by now.
+      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['proj4js_def'],
+      '#description' => 'The <a href="http://trac.osgeo.org/openlayers/wiki/Documentation/Dev/proj4js">proj4js definition</a> for the projection named above.
+            The definitions for
+            EPSG:102067, EPSG:102757, EPSG:102758, EPSG:21781, EPSG:26591, EPSG:26912, EPSG:27200, EPSG:27563, EPSG:3857,
+            EPSG:41001, EPSG:4139, EPSG:4181, EPSG:42304, EPSG:4272, EPSG:4302, EPSG:900913
+            are already predefined and must be added here again.  If your dont know the defintion of your desired projection,
+            go to  <a href="http://spatialreference.org/">http://spatialreference.org/</a>, search for your projection and
+            choose to display the proj4js definition string.
+            <h5>Quick Reference on the proj4js definition string syntax:</h5>
+            <ul>
+              <li>+proj=lcc</li>
+              <li>+lat_1=Latitude of first standard parallel</li>
+              <li>+lat_2=Latitude of second standard parallel</li>
+              <li>+lat_0=Latitude of false origin</li>
+              <li>+lon_0=Longitude of false origin</li>
+              <li>+x_0=False Origin Easting</li>
+              <li>+y_0=False Origin Northing</li>
+            </ul>'
   );
   $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['max_extent'] = array(
       '#type' => 'textfield',

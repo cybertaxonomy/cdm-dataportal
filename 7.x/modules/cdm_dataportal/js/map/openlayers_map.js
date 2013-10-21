@@ -30,6 +30,7 @@
         defaultBaseLayerName: 'osgeo_vmap0',
         maxZoom: 4,
         minZoom: 0,
+        debug: true,
         /**
          * allows the map to display parts of the layers which are outside
          * the maxExtent if the aspect ratio of the map and of the baselayer
@@ -66,6 +67,10 @@
  * The CdmOpenLayers namespace definition
  */
 window.CdmOpenLayers  = (function () {
+
+    // EPSG:3857 from http://spatialreference.org/ref/sr-org/6864/proj4/
+    // OpenStreetMap etc
+    Proj4js.defs["EPSG:3857"] = '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
 
     var projections = {
             epsg_4326: new OpenLayers.Projection("EPSG:4326"),
@@ -270,6 +275,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       if(opts.showLayerSwitcher === true){
           defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
       }
+
 
 //      var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, mapWidth/mapHeight);
       var maxResolution = null;
@@ -504,6 +510,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
                      customWMSBaseLayerData.url,
                      customWMSBaseLayerData.params,
                      customWMSBaseLayerData.projection,
+                     customWMSBaseLayerData.proj4js_def,
                      customWMSBaseLayerData.units,
                      customWMSBaseLayerData.max_extent
                   );
@@ -634,11 +641,17 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
       * @param Object projection
       *    A OpenLayers.Projection object
       */
-     var createWMSBaseLayer= function(name, url, params, projection, units, maxExtent){
+     var createWMSBaseLayer= function(name, url, params, projection, proj4js_def, units, maxExtent){
 
          if(maxExtent == null){
              maxExtent = CdmOpenLayers.mapExtends.epsg_4326.clone();
              maxExtent.transform(CdmOpenLayers.projections.epsg_4326, projection);
+         }
+
+         if(projection && proj4js_def){
+             // in case projection has been defined for the layer and if there is also
+             // a Proj4js.defs, add it!
+             Proj4js.defs[projection] = proj4js_def;
          }
 
          return  new OpenLayers.Layer.WMS(

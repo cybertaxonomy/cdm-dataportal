@@ -120,24 +120,26 @@ function _add_js_openlayers() {
 //     $openlayers = '/js/map/OpenLayers-2.13.1/lib/OpenLayers.js';
     $openlayers = '/js/map/OpenLayers-2.13.1/OpenLayers.debug.js';
     $proj4js = '/js/map/proj4js-1.1.0/proj4js-combined.js';
-
   }
 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers,
     array(
       'type' => 'file',
       'weight' => JS_LIBRARY,
-      'cache' => FALSE,
+      'cache' => TRUE,
     )
   );
-// TODO remove if not needed (Andreas Kohlbecker 30.07.2013)
-//   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $proj4js,
-//     array(
-//       'type' => 'file',
-//       'weight' => JS_LIBRARY,
-//       'cache' => FALSE,
-//     )
-//   );
+
+  // see https://github.com/proj4js/proj4js
+  // http://openlayers.org/dev/examples/using-proj4js.html
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $proj4js,
+    array(
+      'type' => 'file',
+      'weight' => JS_LIBRARY,
+      'cache' => TRUE,
+    )
+  );
+
 }
 
 /**
