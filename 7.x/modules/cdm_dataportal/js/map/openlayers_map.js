@@ -178,7 +178,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
             url: mapServiceRequest,
             dataType: "jsonp",
             success: function(data){
-              addDataLayer(data);
+              addDataLayer(data, "AREA");
             }
           });
       }
@@ -202,7 +202,7 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
             url: mapServiceRequest,
             dataType: "jsonp",
             success: function(data){
-              addDataLayer(data);
+              addDataLayer(data, "POINT");
             }
           });
       }
@@ -341,13 +341,15 @@ window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersi
      *
      * @param mapResponseObj
      *   The reponse object returned by the edit map service
+     * @param dataType
+     *   either "AREA" or "POINT"
      */
-    var addDataLayer = function(mapResponseObj){
+    var addDataLayer = function(mapResponseObj, dataType){
 
       var layer;
       // add additional layers, get them from the mapResponseObj
       if(mapResponseObj !== undefined){
-        if(mapResponseObj.points_sld !== undefined){
+        if(dataType == "POINT" && mapResponseObj.points_sld !== undefined){
           // it is a response from the points.php
 
         var geoserverUri;
