@@ -1937,16 +1937,39 @@ function cdm_settings_geo($form, &$form_state) {
             are already predefined and must be added here again.  If your dont know the defintion of your desired projection,
             go to  <a href="http://spatialreference.org/">http://spatialreference.org/</a>, search for your projection and
             choose to display the proj4js definition string.
-            <h5>Quick Reference on the proj4js definition string syntax:</h5>
-            <ul>
-              <li>+proj=lcc</li>
-              <li>+lat_1=Latitude of first standard parallel</li>
-              <li>+lat_2=Latitude of second standard parallel</li>
-              <li>+lat_0=Latitude of false origin</li>
-              <li>+lon_0=Longitude of false origin</li>
-              <li>+x_0=False Origin Easting</li>
-              <li>+y_0=False Origin Northing</li>
-            </ul>'
+            <h5>Quick Reference on the commion proj4js definition parameters:</h5>
+            <pre>
++a         Semimajor radius of the ellipsoid axis
++alpha     ? Used with Oblique Mercator and possibly a few others
++axis      Axis orientation (new in 4.8.0)
++b         Semiminor radius of the ellipsoid axis
++datum     Datum name (see `proj -ld`)
++ellps     Ellipsoid name (see `proj -le`)
++k         Scaling factor (old name)
++k_0       Scaling factor (new name)
++lat_0     Latitude of origin
++lat_1     Latitude of first standard parallel
++lat_2     Latitude of second standard parallel
++lat_ts    Latitude of true scale
++lon_0     Central meridian
++lonc      ? Longitude used with Oblique Mercator and possibly a few others
++lon_wrap  Center longitude to use for wrapping (see below)
++nadgrids  Filename of NTv2 grid file to use for datum transforms (see below)
++no_defs   Don\'t use the /usr/share/proj/proj_def.dat defaults file
++over      Allow longitude output outside -180 to 180 range, disables wrapping (see below)
++pm        Alternate prime meridian (typically a city name, see below)
++proj      Projection name (see `proj -l`)
++south     Denotes southern hemisphere UTM zone
++to_meter  Multiplier to convert map units to 1.0m
++towgs84   3 or 7 term datum transform parameters (see below)
++units     meters, US survey feet, etc.
++vto_meter vertical conversion to meters.
++vunits    vertical units.
++x_0       False easting
++y_0       False northing
++zone      UTM zone
+            </pre>
+          For the full reference please refer to <a href="http://trac.osgeo.org/proj/wiki/GenParms">http://trac.osgeo.org/proj/wiki/GenParms</a>.'
   );
   $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['max_extent'] = array(
       '#type' => 'textfield',
