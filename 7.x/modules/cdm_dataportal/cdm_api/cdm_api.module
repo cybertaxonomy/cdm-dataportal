@@ -1267,7 +1267,7 @@ function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL) 
   static $vocabularyOptions = array();
 
   if (!isset($vocabularyOptions[$vocabularyUuid])) {
-    $terms = cdm_ws_fetch_all(cdm_compose_url(CDM_WS_TERMVOCABULARY . '/terms', $vocabularyUuid));
+    $terms = cdm_ws_fetch_all('termVocabulary/' . $vocabularyUuid . '/terms');
     $vocabularyOptions[$vocabularyUuid] = array();
 
     if ($terms) {
