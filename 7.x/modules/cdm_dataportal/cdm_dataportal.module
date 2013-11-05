@@ -1705,14 +1705,16 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
 
   if ($taxon->class == "Taxon" && isset($taxonNodes)) {
     foreach ($taxonNodes as $node) {
-      if (is_object($node->classification)) {
-        if ($node->classification->uuid == $defaultTreeUuid) {
-          return TRUE;
+      if (isset($node->classification)){
+        if(is_object($node->classification)) {
+          if ($node->classification->uuid == $defaultTreeUuid) {
+            return TRUE;
+          }
         }
-      }
-      else {
-        if ($node->classification == $defaultTreeUuid) {
-          return TRUE;
+        else {
+          if ($node->classification == $defaultTreeUuid) {
+            return TRUE;
+          }
         }
       }
     }
