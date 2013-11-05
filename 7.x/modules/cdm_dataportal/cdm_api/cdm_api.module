@@ -1267,11 +1267,11 @@ function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL) 
   static $vocabularyOptions = array();
 
   if (!isset($vocabularyOptions[$vocabularyUuid])) {
-    $vocab = cdm_ws_get(CDM_WS_TERMVOCABULARY, $vocabularyUuid);
+    $terms = cdm_ws_fetch_all(cdm_compose_url(CDM_WS_TERMVOCABULARY . '/terms', $vocabularyUuid));
     $vocabularyOptions[$vocabularyUuid] = array();
 
-    if ($vocab) {
-      foreach ($vocab->terms as $term) {
+    if ($terms) {
+      foreach ($terms as $term) {
         if ($term_label_callback && function_exists($term_label_callback)) {
           $vocabularyOptions[$vocabularyUuid][$term->uuid] = call_user_func($term_label_callback, $term);
         }
