@@ -123,7 +123,7 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
       'ZoologicalName' => array(
         'namePart' => array('name' => TRUE),
         'nameAuthorPart' => array('name' => TRUE),
-        'referencePart' => array('authors' => TRUE),
+        'referencePart' => array('authors' => TRUE, 'reference' => true),
         'microreferencePart' => array('microreference' => TRUE),
         'statusPart' => array('status' => TRUE),
         'descriptionPart' => array('description' => TRUE),
