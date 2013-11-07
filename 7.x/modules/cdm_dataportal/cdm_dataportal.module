@@ -1246,12 +1246,12 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highli
     $singleTaxon = array_pop($taxon_pager->records);
     if ($singleTaxon->class != "Taxon") {
       // It is a Synonym -> look for the accepted.
-      $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid, get_taxonomictree_uuid_selected()));
+      $accepted_taxa = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid, get_taxonomictree_uuid_selected()));
       if (!empty($highlite_synonym_uuid)) {
-        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => $highlite_synonym_uuid)));
+        drupal_goto('cdm_dataportal/taxon/' . $accepted_taxa[0]->uuid . '/synonymy', array('query' => array('highlite' => $highlite_synonym_uuid)));
       }
       else {
-        drupal_goto('cdm_dataportal/taxon/' . $taxon[0]->uuid . '/synonymy', array('query' => array('highlite' => $singleTaxon->uuid)));
+        drupal_goto('cdm_dataportal/taxon/' . $accepted_taxa[0]->uuid . '/synonymy', array('query' => array('highlite' => $singleTaxon->uuid)));
       }
     }
     else {

@@ -388,7 +388,7 @@ function formatReference_for_Bibliography($references) {
 
       default:
         /*
-        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->citation->uuid);
+        $author_team = cdm_ws_get(CDM_WS_REFERENCE  _AUTHORTEAM, $reference->citation->uuid);
 
         if(!empty($author_team->titleCache)) {
           $referenceString.= print_r($reference->citation);
