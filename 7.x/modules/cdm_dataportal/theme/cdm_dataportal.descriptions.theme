@@ -896,8 +896,8 @@ function theme_cdm_description_ordered_distributions($variables) {
   $markerTypesEmpty['markerTypes'] = '';
   $queryString = $markerTypesEmpty['markerTypes'] ? queryString($markerTypesEmpty) : '';
 
-  $taxonDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxon_uuid, $queryString);
-  foreach ($taxonDescriptions as $description) {
+  $taxonDescriptions = cdm_ws_get(CDM_WS_TAXON . "/$0/descriptions", $taxon_uuid, $queryString);
+  foreach ($taxonDescriptions->records as $description) {
     $descriptions_uuids[] = $description->uuid;
   }
 
