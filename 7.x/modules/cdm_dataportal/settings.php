@@ -1718,7 +1718,7 @@ function cdm_settings_geo($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => 'Bounding box',
     '#default_value' => $map_distribution['bbox'],
-    '#description' => t('The bounding box defines the area to be initially displayed in maps.
+    '#description' => t('The bounding box (left, bottom, right, top) defines the area to be initially displayed in maps.
       Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong>
       to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.</p>
       <strong>TIP: </strong>You can use the map preview above to choose a bbox from the map. Maybe you need to change the map type to OpeLayers.
@@ -1927,6 +1927,7 @@ function cdm_settings_geo($form, &$form_state) {
   );
   $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['proj4js_def'] = array(
       '#type' => 'textfield',
+      '#maxlength' => 256,
       '#title' => 'proj4js definition',
       // Only line color by now.
       '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['proj4js_def'],
@@ -1976,7 +1977,7 @@ function cdm_settings_geo($form, &$form_state) {
       '#title' => 'Maximum extent',
       // Only line color by now.
       '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['max_extent'],
-      '#description' => 'The maximum extent of the map as boundin box in the units of the map.'
+      '#description' => 'The maximum extent of the map as bounding box (left, bottom, right, top) in the units of the map.'
   );
   $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['units'] = array(
       '#type' => 'textfield',
