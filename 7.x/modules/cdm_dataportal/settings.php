@@ -1836,6 +1836,7 @@ function cdm_settings_geo($form, &$form_state) {
          are not equal.'),
   );
 
+
   $form[CDM_MAP_DISTRIBUTION]['openlayers']['show_layer_switcher'] = array(
       '#type' => 'checkbox',
       '#title' => 'Show Layer Switcher',
@@ -1916,7 +1917,13 @@ function cdm_settings_geo($form, &$form_state) {
       '#element_validate' => array('form_element_validate_json'),
       // Only line color by now.
       '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['params'],
-      '#description' => 'An javasript object with key/value pairs representing the GetMap query string parameters and parameter values, entered in valid JSON.'
+      '#description' => 'An javasript object with key/value pairs representing the GetMap query string parameters and parameter values, entered in valid JSON. For example:
+<pre> {
+  "Layers": "topp:em_tiny_jan2003",
+  "Format": "image/png",
+  "BGCOLOR": "0xe0faff"
+}
+</pre>'
   );
   $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['projection'] = array(
       '#type' => 'textfield',
