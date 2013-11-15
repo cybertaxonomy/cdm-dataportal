@@ -230,7 +230,7 @@ function theme_cdm_taxon_page($variables) {
         unset($toc_elements['profile']);
         unset($render_array['profile']['taxon_description_feature_toc']);
       }
-      if($render_array['profile']['taxon_profile_image']){
+      if(isset($render_array['profile']['taxon_profile_image'])){
         $render_array['profile_image'] = $render_array['profile']['taxon_profile_image'];
         $render_array['profile_image']['#weight'] = -100;
         unset($render_array['profile']['taxon_profile_image']);
