@@ -88,7 +88,8 @@ define('CDM_TAXON_PROFILE_IMAGE_DEFAULT', serialize(
 );
 
 /**
- * @todo document this function
+ * Returns the array of implemented taxon page tabs.
+ * The array has fixed integer keys which must not be changed.
  */
 function get_taxon_tabs_list() {
   return array(
@@ -99,6 +100,10 @@ function get_taxon_tabs_list() {
     4 => 'Keys',
   );
 }
+
+define('CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT', serialize(
+  array('general' => '-3', 'synonymy' => '-2', 'images' => '0', 'specimens' => '1', 'keys' => '3')
+));
 
 $taxon_tab_options = get_taxon_tabs_list();
 $taxon_tab_options[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX] = 'Last visited tab';
@@ -123,7 +128,7 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
       'ZoologicalName' => array(
         'namePart' => array('name' => TRUE),
         'nameAuthorPart' => array('name' => TRUE),
-        'referencePart' => array('authors' => TRUE, 'reference' => true),
+        'referencePart' => array('authors' => TRUE),
         'microreferencePart' => array('microreference' => TRUE),
         'statusPart' => array('status' => TRUE),
         'descriptionPart' => array('description' => TRUE),
@@ -301,6 +306,10 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
 /**
  * Merges the named array variable with the array of defaults.
  *
+ * IḾPORTANT: The array keys must be strings. When the keys are integers
+ * the merging will not take place for these enties. Number keyed enties
+ * are just appended to the result array.
+ *
  * @param string $variable_name
  *     The variable name
  * @param string | array $default
@@ -316,7 +325,8 @@ function get_array_variable_merged($variable_name, $default){
       $default = unserialize($default);
     }
     $variable = variable_get($variable_name, array());
-    return drupal_array_merge_deep($default, $variable);
+    $result = drupal_array_merge_deep($default, $variable);
+    return $result;
 }
 
 /**
@@ -1102,6 +1112,24 @@ function cdm_settings_layout_taxon() {
     '#options' => get_taxon_options_list(),
     '#description' => t('Enable or disable Tabs in the Tabbed page display'),
   );
+
+  // WEIGHT
+  $taxontabs_weights = get_array_variable_merged('cdm_taxonpage_tabs_weight', CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
+  $form['taxon_tabs']['cdm_taxonpage_tabs_weight'] = array(
+      '#tree' => true
+  );
+  // Weights range from -delta to +delta, so delta should be at least half
+  // of the amount of tabs present.
+  $tab_weight_delta = round(count(get_taxon_tabs_list()) / 2) + 1;
+  foreach (get_taxon_tabs_list() as $label) {
+    $key = strtolower($label); // turn in to string, since we need to use strings as keys
+    $form['taxon_tabs']['cdm_taxonpage_tabs_weight'][$key] = array(
+        '#title' => $label,
+        '#type'  => 'weight',
+        '#default_value' => $taxontabs_weights[$key],
+        '#delta' => $tab_weight_delta
+    );
+  }
 
   $form['taxon_tabs']['cdm_dataportal_default_tab'] = array(
     '#type' => 'select',
