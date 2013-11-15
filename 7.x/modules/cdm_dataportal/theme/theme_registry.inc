@@ -192,7 +192,6 @@ function cdm_dataportal_theme() {
       // Themes in cdm_dataportal.page.theme.
       'cdm_taxon_page_title' => array('variables' => array('taxon' => NULL)),
       'cdm_name_page_title' => array('variables' => array('taxon_name' => NULL)),
-      'cdm_taxon_page' => array('variables' => array('taxon' => NULL, 'page_part' => 'description')),
       'cdm_taxon_page_synonymy' => array('variables' => array('taxon' => NULL, 'addAcceptedTaxon' => NULL)),
       'cdm_reference_page' => array('variables' => array('reference' => NULL)),
       'cdm_media_page' => array('variables' => array(

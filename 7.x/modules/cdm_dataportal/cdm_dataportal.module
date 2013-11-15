@@ -1156,10 +1156,8 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
   }
 
   // Render the taxon page.
-  $taxonpage->content = theme('cdm_taxon_page', array(
-    'taxon' => $taxon,
-    'page_part' => $chapter,
-  ));
+  $render_array = compose_cdm_taxon_page($taxon, $chapter);
+  $taxonpage->content = drupal_render($render_array);
 
   return $taxonpage;
 }

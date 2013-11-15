@@ -73,27 +73,29 @@ function theme_cdm_name_page_title($variables) {
 }
 
 /**
- * Returns HTML for a taxon page.
- *
- * A wrapper function that groups available information to show by default,
- * when a taxon page is requested by the browser.
- * Individual themeing has to decide what this page should include (see methods
- * beneath) and what information should go into tabs or should not be shown
- * at all.
+ * Composes a taxon page which can consist of multiple parts like
+ * 'General', 'Synonymy', 'Images', 'Keys'. These parts can be displayed
+ * as tabs or as sections of a single page.
  *
  * It is headed by the name of the accepted taxon without author and reference.
  *
- * @param array $variables
- *   An associative array containing:
- *   - taxon: The taxon object for which to theme the page.
- *   - page_part: Name of the part to display, valid values are:
- *   'description', 'images', 'synonymy', 'all'.
+ * @param $taxon
+ *   The CDM Taxon Instance to compose the page for.
+ * @param $page_part
+ *   Name of the part to display, valid values are:
+ *    - 'description' -  for the general part
+ *    - 'images'
+ *    - 'synonymy'
+ *    - 'keys'
+ *    - 'all'
  *
- * @ingroup themeable
+ * @return array
+ *   A drupal render array
+ *
+ * @ingroup compose
  */
-function theme_cdm_taxon_page($variables) {
-  $taxon = $variables['taxon'];
-  $page_part = $variables['page_part'];
+function compose_cdm_taxon_page($taxon, $page_part = 'description') {
+
   global $theme;
 
   // we better cache here since drupal_get_query_parameters has no internal static cache variable
@@ -152,11 +154,10 @@ function theme_cdm_taxon_page($variables) {
 
     $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $taxon->uuid);
 
-    $render_array['profile'] = compose_cdm_taxon_page_profile($taxon, $merged_tree, $media);
-    $render_array['profile']['#weight'] = $weight++;
-    $render_array['profile']['#prefix'] = '<div id="general">';
-    $render_array['profile']['#suffix'] = '</div>';
-    $toc_elements['profile'] = l(t('General'), $_GET['q'], array('fragment' => 'general', 'query' => $http_request_params));
+    $render_array['general'] = compose_cdm_taxon_page_profile($taxon, $merged_tree, $media);
+    $render_array['general']['#weight'] = $weight++;
+    $render_array['general']['#prefix'] = '<div id="general">';
+    $render_array['general']['#suffix'] = '</div>';
   }
 
   // --- PAGE PART: IMAGES --- //
@@ -173,7 +174,6 @@ function theme_cdm_taxon_page($variables) {
     $images_html .= $taxon_image_gallery;
     $images_html .= '</div>';
     $render_array['images'] = markup_to_render_array($images_html, $weight++);
-    $toc_elements['images'] = l(t('Images'), $_GET['q'], array('fragment' => 'images', 'query' => $http_request_params));
   }
 
   // --- PAGE PART: SYNONYMY --- //
@@ -187,7 +187,7 @@ function theme_cdm_taxon_page($variables) {
 
     $synonymy_html .= '</div>';
     $render_array['synonymy'] = markup_to_render_array($synonymy_html, $weight++);
-    $toc_elements['synonymy'] = l(t('Synonymy'), $_GET['q'], array('fragment' => 'synonymy', 'query' => $http_request_params));
+
   }
 
   // --- PAGE PART: SPECIMENS --- //
@@ -197,7 +197,6 @@ function theme_cdm_taxon_page($variables) {
         'content' => cdm_dataportal_taxon_page_specimens($taxon), // returns render array
         '#suffix' => '</div>',
     );
-    $toc_elements['specimens'] = l(t('Specimens'), $_GET['q'], array('fragment' => 'specimens', 'query' => $http_request_params));
   }
 
   // --- PAGE PART: KEYS --- //
@@ -212,29 +211,48 @@ function theme_cdm_taxon_page($variables) {
     $keys_html .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
     $keys_html .= '</div>';
     $render_array['keys'] = markup_to_render_array($keys_html, $weight++);
-    $toc_elements['keys'] = l(t('Keys'), $_GET['q'], array('fragment' => 'keys', 'query' => $http_request_params));
   }
 
 
+  // adjust weights of page and toc elements according to the settings
+  $taxontabs_weights = get_array_variable_merged('cdm_taxonpage_tabs_weight', CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
+  foreach($taxontabs_weights as $tab_key => $weight){
+    if(isset($render_array[$tab_key])){
+      $render_array[$tab_key]['#weight'] = $weight;
+    }
+  }
+
+
+  // set up the TOC for the pages wich contain all pageparts
   if($page_part == 'all') {
-    if(isset($render_array['profile'])) {
-      // in case all tabs are shown at once the feature tocs
-      // should be integrated into the tabs toc as sub list
-      // and the profile image should be on top of the page
-      if(isset($render_array['profile']['taxon_description_feature_toc'])){
-//         $toc_elements['profile'] = array(
-//             'data' => $toc_elements['profile'],
-//             'children' => $render_array['profile']['taxon_description_feature_toc']['items']
-//         );
-        $toc_elements = array_merge($render_array['profile']['taxon_description_feature_toc']['#items'], $toc_elements);
-        unset($toc_elements['profile']);
-        unset($render_array['profile']['taxon_description_feature_toc']);
+
+    asort($taxontabs_weights);
+    foreach(array_keys($taxontabs_weights) as $tab_key){
+      if(isset($render_array[$tab_key])){
+        if($tab_key != 'general'){
+          $toc_elements[] = l(t(ucfirst($tab_key)), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params));
+        } else {
+          // add content of profile part instead
+          if(isset($render_array['general'])) {
+            // in case all tabs are shown at once the feature tocs
+            // should be integrated into the tabs toc as sub list
+            // and the profile image should be on top of the page
+            if(isset($render_array['general']['taxon_description_feature_toc'])){;
+            foreach ($render_array['general']['taxon_description_feature_toc']['#items'] as $profile_toc_item){
+              $toc_elements[] = $profile_toc_item;
+            }
+            unset($render_array['general']['taxon_description_feature_toc']);
+            }
+          }
+        }
       }
-      if(isset($render_array['profile']['taxon_profile_image'])){
-        $render_array['profile_image'] = $render_array['profile']['taxon_profile_image'];
-        $render_array['profile_image']['#weight'] = -100;
-        unset($render_array['profile']['taxon_profile_image']);
-      }
+    }
+
+    // move profile image in page structure
+    if(isset($render_array['general']['taxon_profile_image'])){
+      $render_array['profile_image'] = $render_array['general']['taxon_profile_image'];
+      $render_array['profile_image']['#weight'] = -100;
+      unset($render_array['general']['taxon_profile_image']);
     }
 
     // finally add the table of contents to the render array
@@ -247,6 +265,8 @@ function theme_cdm_taxon_page($variables) {
         '#prefix'=> '<div id="featureTOC">' // reusing id featureTOC even if this is semantically not correct
     );
   }
+
+
   return $render_array;
 }
 
