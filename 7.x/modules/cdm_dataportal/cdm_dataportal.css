@@ -134,6 +134,13 @@ li .taxon {
 }
 
 /*
+ * ======= Taxon Page =======
+ */
+.page-part {
+  clear: both;
+}
+
+/*
  * ======= synonymy =======
  */
 

@@ -8,6 +8,8 @@
 @import "base";
 
 
+$page-part-margin: $base-line-height * 2;
+
 #featureTOC {
 	float:right;
 }
@@ -18,6 +20,7 @@
 
 .block-cdm-dataportal-feature,  .media-caption, .specimens {
 	clear: both;
+	margin-bottom: $page-part-margin;   
 	dt {
 	    float: left;
 	    font-weight: bold;
@@ -52,6 +55,14 @@
 
 ul.cdm_names li {
   margin: $base-line-height / 2 0; 
+}
+
+/*
+ * Taxon page and parts
+ */
+
+.page-part {
+	margin-bottom: $page-part-margin;
 }
 
 /*
