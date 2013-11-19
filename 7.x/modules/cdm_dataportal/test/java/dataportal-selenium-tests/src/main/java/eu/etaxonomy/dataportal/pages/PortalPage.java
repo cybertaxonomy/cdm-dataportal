@@ -65,7 +65,7 @@ public abstract class  PortalPage {
 
     // ==== WebElements === //
 
-    @FindBy(id="cdm_dataportal.node")
+    @FindBy(className="node")
     protected WebElement portalContent;
 
 //    @FindBy(tagName="title")
