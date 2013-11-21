@@ -119,14 +119,15 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         expectedCssDisplay = "block";
         featureClass = "distribution";
         featureLabel = "Distribution";
-        // FIXME below some assertions have been adapted to a bug in the library, once this bug is fixed the
-        //       disabled lines must be reenabled !!!
+        // below some assertions have been adapted to a bug in the library: TODO remove below comments when ticket is reviewed
         //       see  #3475 (DescriptionServiceImpl.getOrderedDistributions loses distributions)
         //
-        // FIXME re enable the line below
+        // original expectation disabled as bug occured:
 //        blockTextFull = featureLabel + "\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 1933, 6. Zohary, M. & Feinbrun-Dothan, N., Flora Palaestina 3. 1978)";
-        // FIXME remove the line below
-        blockTextFull = featureLabel + "\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 1933, 6. Zohary, M. & Feinbrun-Dothan, N., Flora Palaestina 3. 1978";
+        // interim expectation as long bug was not fixed:
+//        blockTextFull = featureLabel + "\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 1933, 6. Zohary, M. & Feinbrun-Dothan, N., Flora Palaestina 3. 1978";
+        // after fixig the bug #3475, more sources are now displayed than ever before:
+        blockTextFull = featureLabel + "\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6,7).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 1933, 7. Zohary, M. & Feinbrun-Dothan, N., Flora Palaestina 3. 19786. (N)";
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
         featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "dt", "dd");
 
@@ -136,9 +137,10 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         logger.info(descriptionElement.getText());
         featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-//        assertEquals("Expecting 7 FootnoteKeys", 7, featureBlock.getFootNoteKeys().size()); //FIXME enable this line
-        assertEquals("Expecting 6 FootnoteKeys", 6, featureBlock.getFootNoteKeys().size());   //FIXME remove this line
-        assertEquals("Expecting 6 Footnotes", 6, featureBlock.getFootNotes().size());
+//        assertEquals("Expecting 7 FootnoteKeys", 7, featureBlock.getFootNoteKeys().size()); //original version
+//        assertEquals("Expecting 6 FootnoteKeys", 6, featureBlock.getFootNoteKeys().size());   //version after bug #3475
+        assertEquals("Expecting 8 FootnoteKeys", 8, featureBlock.getFootNoteKeys().size()); // new version #3475 fixed
+        assertEquals("Expecting 7 Footnotes", 7, featureBlock.getFootNotes().size());
 
         assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers_map")));
         WebElement mapCaptionElement = null;
@@ -169,7 +171,8 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         featureClass = "common-names";
         featureLabel = "Common names";
         expectedCssDisplay = "block";
-        blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكان7\n7. Nehmé, M., Dictionnaire Etymologique de la Flore du Liban. 2000 (as Scariola triquetra (Labill.) Soják)";
+        // after bug #3475 was fixed the number of footnotes increased by one
+        blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكان8\n8. Nehmé, M., Dictionnaire Etymologique de la Flore du Liban. 2000 (as Scariola triquetra (Labill.) Soják)";
 
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
         featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "li");
