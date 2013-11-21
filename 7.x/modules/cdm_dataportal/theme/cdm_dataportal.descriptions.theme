@@ -913,40 +913,48 @@ function theme_cdm_description_ordered_distributions($variables) {
   if (is_array($ordered_areas) && count($ordered_areas) > 0) {
     foreach ($ordered_areas as $element_level1) {
       // Level1.
-      if ($element_level1->data) {
-        $out .= '<dt>' . $element_level1->data->area->representation_L10n . ':</dt> ';
-      }
+      $out .= '<dt>' . $element_level1->nodeId->representation_L10n . ':</dt> ';
       $out .= '<dd>';
 
       // Level3.
       foreach ($element_level1->children as $element_level3) {
-        if ($element_level3->data) {
-          $text_l3 = $element_level3->data->area->representation_L10n;
-        }
+        $text_l3 = $element_level3->nodeId->representation_L10n;
         $fnKeysLevel3Str = '';
         $fnKeysLevel3 = cdm_annotations_as_footnotekeys($element_level3->data);
-        foreach ($element_level3->data->sources as $source) {
-          if (_is_original_source_type($source)) {
-            $fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)));
-            cdm_add_footnote_to_array($fnKeysLevel3, $fn_key3);
+        if (isset($element_level3->data[0])) {
+          foreach ($element_level3->data as $description_level3){
+            foreach ($description_level3->sources as $source) {
+              if (_is_original_source_type($source)) {
+                $fn_key3 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)));
+                cdm_add_footnote_to_array($fnKeysLevel3, $fn_key3);
+              }
+            }
           }
         }
         // Level4.
         $l4_regions = array();
         foreach ($element_level3->children as $element_level4) {
-          if ($element_level4->data) {
-            $text_l4 = $element_level4->data->area->representation_L10n;
-            $l4_regions[$element_level3->data->area->representation_L10n] = '';
+          if (isset($element_level4->data[0])) {
+            $text_l4 = $element_level4->nodeId->representation_L10n;
+            $l4_regions[$element_level3->nodeId->representation_L10n] = array();
             $fnKeysLevel4Str = '';
-            $fnKeysLevel4 = cdm_annotations_as_footnotekeys($element_level4->data);
-            foreach ($element_level4->data->sources as $source) {
-              if (_is_original_source_type($source)) {
-                $fn_key4 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)));
-                cdm_add_footnote_to_array($fnKeysLevel4, $fn_key4);
+            foreach($element_level4->data as $description_level4) {
+              $fnKeysLevel4 = cdm_annotations_as_footnotekeys($description_level4);
+              foreach ($description_level4->sources as $source) {
+                if (_is_original_source_type($source)) {
+                  $fn_key4 = FootnoteManager::addNewFootnote(
+                      RenderHints::getFootnoteListKey(),
+                      theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)));
+                  cdm_add_footnote_to_array($fnKeysLevel4, $fn_key4);
+                }
+              }
+              usort($fnKeysLevel4, "footnotes_key_compare");
+              if(!isset( $l4_regions[$text_l4])){
+                $l4_regions[$text_l4] = $fnKeysLevel4;
+              } else {
+                $l4_regions[$text_l4] = array_merge($l4_regions[$text_l4], $fnKeysLevel4);
               }
             }
-            usort($fnKeysLevel4, "footnotes_key_compare");
-            $l4_regions[$text_l4] = $fnKeysLevel4;
           }
         }// Level4.
         // Managing level3 and level4 for generating the right output.
@@ -956,7 +964,7 @@ function theme_cdm_description_ordered_distributions($variables) {
             cdm_add_footnote_to_array($l4_regions[$key4], $key3);
           }
         }
-        if ($element_level3->numberOfChildren == 1 && $text_l3 == $element_level3->children[0]->data->area->representation_L10n) {
+        if ($element_level3->numberOfChildren == 1 && $text_l3 == $element_level3->children[0]->nodeId->representation_L10n) {
           // var_dump($element_level3->children[0]->data->area->representation_L10n);
           $fnStr = '';
           $region = array_pop($l4_regions);
@@ -968,8 +976,7 @@ function theme_cdm_description_ordered_distributions($variables) {
           if (substr($out, -3) == ' ; ') {
             $out = substr($out, 0, -3) . '; ';
           }
-        }
-        else {
+        } else {
           $fnKeysLevel3Str = '';
           foreach ($fnKeysLevel3 as $key) {
             $fnKeysLevel3Str .= theme('cdm_footnote_key', array('footnoteKey' => $key, 'separator' => ($fnKeysLevel3Str ? $separator : '')));
@@ -978,7 +985,7 @@ function theme_cdm_description_ordered_distributions($variables) {
           foreach ($l4_regions as $key => $value) {
             $fnKeysLevel4Str = '';
             if (is_array($l4_regions[$key])) {
-              foreach ($l4_regions[$key] as $fnkey) {// Warning why?
+              foreach ($l4_regions[$key] as $fnkey) {
                 $fnKeysLevel4Str .= theme('cdm_footnote_key', array('footnoteKey' => $fnkey, 'separator' => ($fnKeysLevel4Str ? $separator : '')));
               }
             }

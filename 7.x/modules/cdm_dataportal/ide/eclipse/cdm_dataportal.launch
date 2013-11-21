@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.php.debug.core.launching.webPageLaunch">
 <booleanAttribute key="auto_generated_url" value="false"/>
-<stringAttribute key="base_url" value="http://127.0.0.1/flore-afrique-centrale/?q=cdm_dataportal/taxon/635e8aa8-64ad-477f-a64e-b74756d05f95/specimens"/>
+<stringAttribute key="base_url" value="http://localhost/flore-afrique-centrale/?q=cdm_dataportal/taxon/635e8aa8-64ad-477f-a64e-b74756d05f95/specimens"/>
 <stringAttribute key="debugOutputEncoding" value="UTF-8"/>
 <stringAttribute key="debugPages" value="debugAllPages"/>
 <stringAttribute key="debugTransferEncoding" value="UTF-8"/>
