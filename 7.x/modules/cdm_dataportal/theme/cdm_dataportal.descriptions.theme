@@ -330,9 +330,9 @@ function theme_cdm_descriptionElement_CommonTaxonName($variables) {
 }
 
 /**
-* @todo Please document this function.
-* @see http://drupal.org/node/1354
-*/
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function theme_cdm_descriptionElement_CategoricalData($variables) {
   $element = $variables['element'];
 
@@ -405,6 +405,55 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
   // FIXME render sources
 
   return $out;
+
+}
+
+/**
+ * Theme function to render CDM DescriptionElements of the type IndividualsAssociations.
+ *
+ */
+function theme_cdm_descriptionElement_IndividualsAssociation($variables) {
+
+  $element = $variables['element'];
+
+  $out = '';
+
+  $render_array = compose_cdm_specimenOrObservation($element->associatedSpecimenOrObservation);
+
+  if (isset($element->description_L10n)) {
+    $out .=  ' ' . $element->description_L10n;
+  }
+
+  $out .= drupal_render($render_array);
+  return $out;
+
+
+}
+
+/**
+ * Theme function to render CDM DescriptionElements of the type TaxonInteraction.
+ *
+ */
+function theme_cdm_descriptionElement_TaxonInteraction($variables) {
+
+  $element = $variables['element'];
+
+  $out = '';
+
+  if (isset($element->description_L10n)) {
+    $out .=  ' ' . $element->description_L10n;
+  }
+
+  if(isset($element->taxon2)){
+    $out = theme('cdm_taxonName',
+        array(
+            'taxonName' => $element->taxon2->name
+        )
+      );
+  }
+
+  return $out;
+
 
 }
 
@@ -701,6 +750,12 @@ function theme_cdm_descriptionElements($variables) {
             break;
           case 'QuantitativeData':
             $outArray[] = theme('cdm_descriptionElement_QuantitativeData', array('element' => $descriptionElement));
+            break;
+          case 'IndividualsAssociation':
+            $outArray[] = theme('cdm_descriptionElement_IndividualsAssociation', array('element' => $descriptionElement));
+            break;
+          case 'TaxonInteraction':
+            $outArray[] = theme('cdm_descriptionElement_TaxonInteraction', array('element' => $descriptionElement));
             break;
           case 'Uses':
           /* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */

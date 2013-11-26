@@ -87,6 +87,8 @@ function cdm_dataportal_theme() {
       )),
       'cdm_descriptionElement_CommonTaxonName' => array('render element' => 'element'),
       'cdm_descriptionElement_CategoricalData' => array('render element' => 'element'),
+      'cdm_descriptionElement_IndividualsAssociation' => array('render element' => 'element'),
+      'cdm_descriptionElement_TaxonInteraction' => array('render element' => 'element'),
       'cdm_descriptionElement_QuantitativeData' => array('render element' => 'element'),
       'cdm_descriptionElementTextData' => array('variables' => array(
           'element' => NULL,
