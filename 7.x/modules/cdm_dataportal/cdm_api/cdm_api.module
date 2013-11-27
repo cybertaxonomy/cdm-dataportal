@@ -1728,7 +1728,7 @@ function cdm_debug_block_visible() {
 
   if($is_visible === null){
       $block = block_load('cdm_api', 'cdm_ws_debug');
-      $is_visible = $block->status == 1;
+      $is_visible = isset($block) && $block->status == 1;
       if($is_visible){
         $blocks = array($block);
         // Checks the page, user role, and user-specific visibilty settings.
