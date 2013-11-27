@@ -1364,7 +1364,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
       // Link to a PolytomousKeyNode.
       if ($islinkToNode) {
         $out .= '<div class="nodeLinkToNode">';
-        if (is_object($child->modifyingText)) {
+        if (isset($child->modifyingText)) {
           $out .= theme('cdm_poytomousKeyNode_modifyingText', array('modifyingText' => $child->modifyingText));
         }
         $out .= l($child->nodeNumber, request_path(), array(
@@ -1377,7 +1377,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
       // Link to a PolytomousKeyNode.
       if ($islinkToOtherNode) {
         $out .= '<div class="nodeLinkToOtherNode">';
-        if (is_object($child->modifyingText)) {
+        if (isset($child->modifyingText)) {
           $out .= theme('cdm_poytomousKeyNode_modifyingText', array('modifyingText' => $child->modifyingText));
         }
         $out .= l($child->otherNode->nodeNumber, $_REQUEST["q"], array(
@@ -1402,7 +1402,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
         foreach ($taxonChildren as $taxonChild) {
           // TODO many taxa $child->children->taxon.
           $out .= '<div class="nodeLinkToTaxon">';
-          if (is_object($taxonChild->modifyingText)) {
+          if (isset($taxonChild->modifyingText)) {
             $out .= theme('cdm_poytomousKeyNode_modifyingText', array('modifyingText' => $taxonChild->modifyingText));
           }
           $out .= theme("cdm_taxonName", array('taxonName' => $taxonChild->taxon->name, 'nameLink' => url(path_to_taxon($taxonChild->taxon->uuid))));
