@@ -699,12 +699,12 @@ function theme_cdm_taxonName($variables) {
   normalize_TaggedName($taxonName->taggedName);
 
   $firstEntryIsValidNamePart = isset($taxonName->taggedName) && is_array($taxonName->taggedName) && isset($taxonName->taggedName[0]->text) && is_string($taxonName->taggedName[0]->text) && $taxonName->taggedName[0]->text != '' && isset($taxonName->taggedName[0]->type) && $taxonName->taggedName[0]->type == 'name';
+  $lastAuthorElementString = FALSE;
 
   // Got to use second entry as first one, see ToDo comment below ...
   if ($firstEntryIsValidNamePart) {
 
     $taggedName = $taxonName->taggedName;
-    $lastAuthorElementString = FALSE;
     $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
     $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
 
@@ -873,7 +873,13 @@ function theme_cdm_taxonName($variables) {
       $partHtml .= '<span class="' . $key . '">' . $html . '</span>';
     }
     if ($uri) {
-      $out .= $separator . '<a href="' . $uri . '" class="' . $partName . '">' . $partHtml . '</a>';
+      $out .= $separator;
+      $out .= l($partHtml, $uri,
+          array(
+              'attributes' => array('class' => array($partName)),
+              'html' => true
+          )
+      );
     }
     else {
       $out .= $separator . $partHtml;
@@ -892,7 +898,7 @@ function theme_cdm_taxonName($variables) {
  * @param mixed $key
  *   Key to search for.
  * @param mixed $value
- *   Value to set.
+ *   Value to set.'
  * @param array $array
  *   Array to search in.
  *

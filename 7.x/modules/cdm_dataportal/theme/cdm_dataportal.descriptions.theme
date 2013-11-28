@@ -448,7 +448,7 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
     $out = theme('cdm_taxonName',
         array(
             'taxonName' => $element->taxon2->name,
-          'nameLink' => path_to_taxon($element->taxon2->uuid)
+            'nameLink' => path_to_taxon($element->taxon2->uuid)
         )
       );
   }
