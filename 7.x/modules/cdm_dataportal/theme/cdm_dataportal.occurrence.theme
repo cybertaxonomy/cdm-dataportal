@@ -116,7 +116,12 @@ function cdm_occurrence_field_name_label($field){
     $field = $field_labels[$field];
   }
 
-  $field = preg_replace('/([a-z])([A-Z])/e', "'\\1 '.strtolower('\\2')", $field);
+  $field = preg_replace_callback(
+      '/([a-z])([A-Z])/',
+      function ($m) {
+        return $m[1] . ' ' . strtolower ($m[2]);
+      },
+      $field);
 
   return t(ucfirst($field));
 }
