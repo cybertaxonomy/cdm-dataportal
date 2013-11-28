@@ -354,7 +354,7 @@ function theme_cdm_descriptionElement_CategoricalData($variables) {
 
       $state_data_strings[] = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
 
-      // FIXME render sources
+      // FIXME render sources and annotations
 
     }
   }
@@ -402,9 +402,9 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
   $modifers_string = cdm_modifers_representations($element->statisticalValues);
   $out .= ($modifers_string ? ' ' . cdm_modifers_representations($element->statisticalValues) : '');
 
-  // FIXME render sources
+  $footnote_key_list_str = cdm_create_description_element_footnotes($element);
 
-  return $out;
+  return $out . $footnote_key_list_str;
 
 }
 
@@ -425,7 +425,10 @@ function theme_cdm_descriptionElement_IndividualsAssociation($variables) {
   }
 
   $out .= drupal_render($render_array);
-  return $out;
+
+  $footnote_key_list_str = cdm_create_description_element_footnotes($element);
+
+  return $out . $footnote_key_list_str;
 
 
 }
@@ -453,7 +456,9 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
       );
   }
 
-  return $out;
+  $footnote_key_list_str = cdm_create_description_element_footnotes($element);
+
+  return $out . $footnote_key_list_str;
 
 
 }
@@ -843,13 +848,13 @@ function theme_cdm_description_element_image_source($variables) {
       }
     }
     // Sort and render footnote keys.
-    $footnoteKeyListStr = '';
+    $footnote_key_list_str = '';
     asort($footNoteKeys);
     foreach ($footNoteKeys as $footNoteKey) {
-      $footnoteKeyListStr .= theme('cdm_footnote_key', array('footnoteKey' => $footNoteKey, 'separator' => ($footnoteKeyListStr ? $separator : '')));
+      $footnote_key_list_str .= theme('cdm_footnote_key', array('footnoteKey' => $footNoteKey, 'separator' => ($footnote_key_list_str ? $separator : '')));
     }
     // Return value!
-    $out .= '<span class="descriptionElement descriptionElement-' . $image_source->uuid . '">' . $image_source->multilanguageText_L10n->text . $footnoteKeyListStr . '; </span>';
+    $out .= '<span class="descriptionElement descriptionElement-' . $image_source->uuid . '">' . $image_source->multilanguageText_L10n->text . $footnote_key_list_str . '; </span>';
   }
 
   RenderHints::popFromRenderStack();
@@ -874,32 +879,17 @@ function theme_cdm_descriptionElementDistribution($variables) {
 
   foreach ($descriptionElements as $descriptionElement) {
 
-    // Annotations as footnotes.
-    $footNoteKeys = cdm_annotations_as_footnotekeys($descriptionElement);
-    // Source references as footnotes.
-    foreach ($descriptionElement->sources as $source) {
-      if (_is_original_source_type($source)) {
-        $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array(
-          'source' => $source,
-          'doLink' => FALSE,
-        )));
-        // Ensure uniqueness of the footnote keys.
-        cdm_add_footnote_to_array($footNoteKeys, $fn_key);
-      }
-    }
-    // Sort and render footnote keys.
-    $footnoteKeyListStr = '';
-    asort($footNoteKeys);
-    foreach ($footNoteKeys as $footNoteKey) {
-      $footnoteKeyListStr .= theme('cdm_footnote_key', array('footnoteKey' => $footNoteKey, 'separator' => ($footnoteKeyListStr ? $separator : '')));
-    }
+    $footnote_key_list_str = cdm_create_description_element_footnotes($descriptionElement);
 
-    $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid . '">' . $descriptionElement->area->representation_L10n . $footnoteKeyListStr . ' </' . $enclosingTag . '>';
+    $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid . '">'
+        . $descriptionElement->area->representation_L10n . $footnote_key_list_str
+        . ' </' . $enclosingTag . '>';
   }
 
   RenderHints::popFromRenderStack();
   return $out;
 }
+
 
 /**
  * Compare two different footnotes objects.

@@ -114,3 +114,36 @@ function cdm_feature_node_toc_items($feature_nodes) {
 
   return $items;
 }
+
+/**
+ * Creates the footnotes for the given CDM DescriptionElement instance.
+ *
+ * Footnotes are created for annotatins and original sources.
+ *
+ * @param $descriptionElement
+ *     A CDM DescriptionElement instance
+ * @return the string of foot note keys
+ */
+function cdm_create_description_element_footnotes($description_element){
+
+  // Annotations as footnotes.
+  $footNoteKeys = cdm_annotations_as_footnotekeys($description_element);
+  // Source references as footnotes.
+  foreach ($description_element->sources as $source) {
+    if (_is_original_source_type($source)) {
+      $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array(
+          'source' => $source,
+          'doLink' => FALSE,
+      )));
+      // Ensure uniqueness of the footnote keys.
+      cdm_add_footnote_to_array($footNoteKeys, $fn_key);
+    }
+  }
+  // Sort and render footnote keys.
+  $footnoteKeyListStr = '';
+  asort($footNoteKeys);
+  foreach ($footNoteKeys as $footNoteKey) {
+    $footnoteKeyListStr .= theme('cdm_footnote_key', array('footnoteKey' => $footNoteKey, 'separator' => ($footnoteKeyListStr ? $separator : '')));
+  }
+  return $footnoteKeyListStr;
+}
