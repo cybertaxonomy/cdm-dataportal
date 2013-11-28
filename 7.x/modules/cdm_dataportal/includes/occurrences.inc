@@ -47,7 +47,8 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
         'created',
         'updated',
         'class',
-        'uuid'
+        'uuid',
+       ''
     );
   }
 
