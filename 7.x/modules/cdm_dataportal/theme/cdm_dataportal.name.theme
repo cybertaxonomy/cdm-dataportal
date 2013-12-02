@@ -664,8 +664,8 @@ function get_partDefinition($taxonNameType) {
 /**
  * @param $variables
  *    - taxonName : cdm TaxonNameBase instance
- *    - nameLink: URI to the taxon, @see path_to_taxon()
- *    - refenceLink: URI to the reference, @see path_to_reference()
+ *    - nameLink: URI to the taxon, @see path_to_taxon(), must be processed by uri() before passing to this method
+ *    - refenceLink: URI to the reference, @see path_to_reference(), must be processed by uri() before passing to this method
  *    - show_annotations: ...
  *    - is_type_designation: ...
  *    - skiptags: an array of tags to skip ....
@@ -873,13 +873,9 @@ function theme_cdm_taxonName($variables) {
       $partHtml .= '<span class="' . $key . '">' . $html . '</span>';
     }
     if ($uri) {
-      $out .= $separator;
-      $out .= l($partHtml, $uri,
-          array(
-              'attributes' => array('class' => array($partName)),
-              'html' => true
-          )
-      );
+      // cannot use l() here since the #uri aleady should have been processed through uri() at this point
+      $out .= $separator . '<a href="' . $uri . '" class="' . $partName . '">' . $partHtml . '</a>';
+    
     }
     else {
       $out .= $separator . $partHtml;
