@@ -122,9 +122,11 @@ function cdm_feature_node_toc_items($feature_nodes) {
  *
  * @param $descriptionElement
  *     A CDM DescriptionElement instance
+ * @param $separator
+ *     Optional parameter. The separator string to concatenate the footnode ids, default is ','
  * @return the string of foot note keys
  */
-function cdm_create_description_element_footnotes($description_element){
+function cdm_create_description_element_footnotes($description_element, $separator = ','){
 
   // Annotations as footnotes.
   $footNoteKeys = cdm_annotations_as_footnotekeys($description_element);

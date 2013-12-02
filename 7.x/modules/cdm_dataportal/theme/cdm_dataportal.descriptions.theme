@@ -873,7 +873,6 @@ function theme_cdm_descriptionElementDistribution($variables) {
   }
 
   $out = '';
-  $separator = ',';
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 
