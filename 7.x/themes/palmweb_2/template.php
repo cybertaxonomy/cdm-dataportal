@@ -125,7 +125,8 @@ function palmweb_2_cdm_feature_nodes($variables){
         $countFeatures++;
         $countFeatures++;
         $block->delta = generalizeString($featureRepresentation);
-        $block->subject = '<span class="' . html_class_atttibute_ref($node->feature) . '">' . theme('cdm_feature_name',  array('feature_name' => $featureRepresentation)) . '</span>';
+        $block->subject = '<span class="' . html_class_atttibute_ref($node->feature) . '">'
+            . theme('cdm_feature_name',  array('feature_name' => $featureRepresentation)) . '</span>';
         $block->module = "cdm_dataportal-feature";
         $block->content = '';
 
@@ -184,7 +185,7 @@ function palmweb_2_cdm_feature_nodes($variables){
         Content/ALL OTHER FEATURES.
         */
         elseif ($node->feature->uuid == UUID_USE_RECORD) {
-          $block->content .= theme('cdm_block_Uses', $taxon->uuid);
+          $block->content .= theme('cdm_block_Uses', array('taxonUuid' => $taxon->uuid));
           // $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid),
         }
         else {
