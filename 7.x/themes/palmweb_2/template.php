@@ -201,18 +201,19 @@ function palmweb_2_cdm_feature_nodes($variables){
           elements.
           */
           // TODO move into own theme.
-          if (count($node->children) > 0) {
+          if (isset($node->childNodes[0])) {
 
             // TODO support more than one level of children.
             // @see http://dev.e-taxonomy.eu/trac/ticket/2393/
             $text = '';
-            foreach ($node->children as $child) {
-             if (is_array($child->descriptionElements)) {
+            foreach ($node->childNodes as $child) {
+
+              if (isset($child->descriptionElements) && is_array($child->descriptionElements)) {
                foreach ($child->descriptionElements as $element) {
 
                  if (is_array($element->media)) {
-                   // Append media of subordinate elements to the list of
-                   // main features.
+                    // Append media of supordinate elements to list of main
+                    // feature.
                    $media_list = array_merge($media_list, $element->media);
                  }
 

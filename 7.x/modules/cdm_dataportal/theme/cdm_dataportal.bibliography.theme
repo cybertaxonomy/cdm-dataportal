@@ -263,9 +263,9 @@ function formatReference_for_Bibliography($references) {
       case "BookSection":
         $referenceString .= "<li class=\"descriptionText DescriptionElement\">";
         if(isset($reference->citation->authorTeam)){
-          $numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
           $currentRecord = 1;
           if (!empty($reference->citation->authorTeam->teamMembers)) {
+            $numberOfTeamMembers = count($reference->citation->authorTeam->teamMembers);
             foreach ($reference->citation->authorTeam->teamMembers as $teamMember) {
               if (!empty($teamMember->lastname) && !empty($teamMember->firstname)) {
                 if ($numberOfTeamMembers != $currentRecord) {
