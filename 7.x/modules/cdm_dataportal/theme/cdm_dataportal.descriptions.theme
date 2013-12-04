@@ -1523,7 +1523,7 @@ function theme_cdm_UseDescription($variables) {
     $useSummary = '';
     foreach ($description->elements as $element) {
 
-      if ($element->feature->uuid == UUID_USE && !(strlen($useSummary) > 0)) {
+      if ($element->feature->uuid == UUID_USE && !(strlen($useSummary) > 0) && isset($element->multilanguageText_L10n)) {
         $useSummary = $element->multilanguageText_L10n->text;
       }
     }
@@ -1567,7 +1567,7 @@ function theme_cdm_UseDescription($variables) {
           if ($descriptionElement->feature->uuid == UUID_USE_RECORD) {
             $hasUseRecords = TRUE;
             // FIXME localization hardcoded to English
-            $useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
+            $useRecordTags = explode(';', $descriptionElement->modifyingText_l10n);
             $descriptionUseRecordOut .= '<tr>';
             $descriptionUseRecordOut .= '<td>' . $useRecordTags[0] . '</td>' . '<td>' . $useRecordTags[1] . '</td>' . '<td>' . $useRecordTags[3] . '</td>' . '<td>' . $useRecordTags[4] . '</td>' . '<td>' . $useRecordTags[5] . '</td>' . '<td>' . $useRecordTags[2] . '</td>';
             $descriptionUseRecordOut .= '</tr>';
@@ -1597,7 +1597,7 @@ function theme_cdm_UseDescription($variables) {
         foreach ($description->elements as $descriptionElement) {
           if ($descriptionElement->feature->uuid == UUID_USE_RECORD) {
             $hasUseRecords = TRUE;
-            $useRecordTags = explode(';', $descriptionElement->modifyingText->English->text);
+            $useRecordTags = explode(';', $descriptionElement->modifyingText_l10n);
             $useRecordTableOut .= '<tr>';
             $useRecordTableOut .= '<td>' . $useRecordTags[0] . '</td>' . '<td>' . $useRecordTags[1] . '</td>' . '<td>' . $useRecordTags[3] . '</td>' . '<td>' . $useRecordTags[4] . '</td>' . '<td>' . $useRecordTags[5] . '</td>' . '<td>' . $useRecordTags[2] . '</td>';
             $useRecordTableOut .= '</tr>';
