@@ -185,6 +185,13 @@ function palmweb_2_cdm_feature_nodes($variables){
         Content/ALL OTHER FEATURES.
         */
         elseif ($node->feature->uuid == UUID_USE_RECORD) {
+          /*
+           * the cdm_block_Uses is rendered here for the first time
+           * if the feature USE_RECORD is found which will usually
+           * lead to a duplicate display of this block
+           *
+           * (a.kohlbecker 2013-12-04)
+           */
           $block->content .= theme('cdm_block_Uses', array('taxonUuid' => $taxon->uuid));
           // $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid),
         }
@@ -262,10 +269,23 @@ function palmweb_2_cdm_feature_nodes($variables){
       }
     }
   }
-  // Calling the theme function for Bibliography to add it to the output.
+
   // Add the display of the number of taxa in the selected genus.
+  //
+
+
+  /* cdm_block_Uses is rendered here again
+   * this leads to duplicate display of uses data
+   * when the feature USE_RECORD is in the feature tree !!!
+   * there is also a function (moved to the palmweb module
+   * since a while) which hacks the TOC in order to add an
+   * entry for this block: palmweb_cdm_feature_node_toc_items_alter()
+   *
+   * (a.kohlbecker 2013-12-04)
+   */
   $out .= theme('cdm_block_Uses', array('taxonUuid' => $taxon->uuid));
 
+  // Calling the theme function for Bibliography to add it to the output.
   $show_bibliography = variable_get('cdm_show_bibliography', 1);
   if ($show_bibliography && $countFeatures != 0) {
     $out .= theme('cdm_descriptionElementBibliography', array('descriptionElementsBibliography' => $bibliographyOut));
