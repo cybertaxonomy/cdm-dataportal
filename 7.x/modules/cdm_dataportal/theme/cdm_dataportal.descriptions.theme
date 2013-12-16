@@ -1617,13 +1617,13 @@ function theme_cdm_UseDescription($variables) {
   return $out;
 }
 
-// The Uses theming function here will handle the display of the
-// Uses Descriptions.
-// Comment @WA: $pageSize is not used.
-// function theme_cdm_block_Uses ($taxonUuid = NULL, $pageSize = NULL {
+
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * The theming function for a block of Uses Descriptions for a given taxon.
+ *
+ * The Uses block has been removed from the code but the according theme function
+ * is kept for compatibility reasons with existing code regarding palmweb.
+ *
  */
 function theme_cdm_block_Uses($variables) {
   $taxonUuid = $variables['taxonUuid'];

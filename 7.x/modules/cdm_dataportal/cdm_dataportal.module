@@ -601,7 +601,6 @@ function cdm_dataportal_block_info() {
     // $block[3]["info"] = t("CDM Filters");
     $block["4"]["info"] = t("CDM Dataportal Print");
     $block["keys"]["info"] = t("CDM identification keys");
-    $block["uses"]["info"] = t("CDM Uses");
     $block["fundedByEDIT"]["info"] = t('Funded by EDIT');
 
     return $block;
@@ -633,11 +632,6 @@ function cdm_dataportal_block_view($delta) {
     case "keys":
       $block['subject'] = t('Identification Keys');
       $block['content'] = theme('cdm_block_IdentificationKeys', array('taxonUuid' => NULL));
-      return $block;
-      // Creating a block specific for the Use Interface.
-    case "uses":
-      $block['subject'] = t('Uses');
-      $block['content'] = theme('cdm_block_uses', array('taxonUuid' => NULL));
       return $block;
     case "fundedByEDIT":
       // t('Funded by EDIT');
