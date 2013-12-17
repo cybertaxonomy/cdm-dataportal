@@ -1,5 +1,7 @@
 package eu.etaxonomy.dataportal.pages;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -7,9 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -118,6 +123,8 @@ public abstract class  PortalPage {
         // tell browser to navigate to the page
         driver.get(pageUrl.toString());
 
+        takeScreenShot();
+
         // This call sets the WebElement fields.
         PageFactory.initElements(driver, this);
 
@@ -146,6 +153,8 @@ public abstract class  PortalPage {
 
         // tell browser to navigate to the given URL
         driver.get(url.toString());
+
+        takeScreenShot();
 
         if(!isOnPage()){
             throw new Exception("Not on the expected portal page ( current: " + driver.getCurrentUrl() + ", expected: " +  pageUrl + " )");
@@ -180,6 +189,8 @@ public abstract class  PortalPage {
         // driver.getCurrentUrl() is a sub path of the base path
         this.pageUrl = new URL(context.getBaseUri().toString());
 
+        takeScreenShot();
+
         if(!isOnPage()){
             throw new Exception("Not on the expected portal page ( current: " + driver.getCurrentUrl() + ", expected: " +  pageUrl + " )");
         }
@@ -208,6 +219,8 @@ public abstract class  PortalPage {
         if(!driver.getCurrentUrl().equals(pageUrl.toString())){
             driver.get(pageUrl.toString());
             wait.until(new UrlLoaded(pageUrl.toString()));
+            // take screenshot of new page
+            takeScreenShot();
             PageFactory.initElements(driver, this);
         }
     }
@@ -372,6 +385,8 @@ public abstract class  PortalPage {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        // take screenshot of new page
+        takeScreenShot();
         return pageInstance;
     }
 
@@ -396,6 +411,64 @@ public abstract class  PortalPage {
      */
     protected String normalizeClassAttribute(String featureName) {
         return featureName.replace('_', '-');
+    }
+
+    public File takeScreenShot(){
+
+        File destFile = fileForTestMethod(new File("screenshots"));
+
+        File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(scrFile, destFile);
+            logger.info("Screenshot taken and saved as " + destFile.getAbsolutePath());
+            return destFile;
+        } catch (IOException e) {
+            logger.error("could not copy sceenshot to " + destFile.getAbsolutePath(), e);
+        }
+
+        return null;
+
+    }
+
+    /**
+     * Finds the test class and method in the stack trace which is using the
+     * PortalPage and returns a File object consisting of:
+     * {@code $targetFolder/$className/$methodName }
+     *
+     *
+     * If no test class is found it will fall back to using
+     * "noTest" as folder name and a timestamp as filename.
+     * @return
+     */
+    private File fileForTestMethod(File targetFolder){
+
+        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+        for (StackTraceElement stackTraceElement : trace) {
+            // according to the convention all test class names should end with "Test"
+            if(stackTraceElement.getClassName().endsWith("Test")){
+                return uniqueIndexedFile(
+                            targetFolder.getAbsolutePath() + File.separator + stackTraceElement.getClassName(),
+                            stackTraceElement.getMethodName(),
+                            "png");
+
+            }
+        }
+        return uniqueIndexedFile(
+                targetFolder.getAbsolutePath() + File.separator + "noTest",
+                Long.toString(System.currentTimeMillis()),
+                "png");
+    }
+
+
+    private File uniqueIndexedFile(String folder, String fileName, String suffix){
+        File file;
+        int i = 0;
+        while(true){
+            file = new File(folder + File.separator + fileName + "_" + Integer.toString(i) + "." + suffix);
+            if(!file.exists()){
+                return file;
+            }
+        }
     }
 
 

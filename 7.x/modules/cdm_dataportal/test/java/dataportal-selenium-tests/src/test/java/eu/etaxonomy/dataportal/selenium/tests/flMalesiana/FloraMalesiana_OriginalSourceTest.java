@@ -11,17 +11,13 @@ package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.elements.LinkElement;
@@ -78,13 +74,6 @@ public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
 //        assertNull("Authorship information should be hidden", taxonProfileIillicium.getAuthorInformationText());  // FF WebDriver hangs here
 
         List<LinkElement> primaryTabs = taxonProfileIillicium.getPrimaryTabs();
-
-        // due to some obscure "magic" there are sometimes 5 tabs when the tests are run
-        // headless, thus we take a screenshot:
-        File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        File destFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "Illicium-tabs.png");
-        FileUtils.copyFile(scrFile, destFile);
-        logger.info("Screenshot taken and saved as " + destFile.getAbsolutePath());
 
         assertEquals("Expecting 4 tabs", 4, primaryTabs.size());
         assertEquals("General\n(active tab)", primaryTabs.get(0).getText());
