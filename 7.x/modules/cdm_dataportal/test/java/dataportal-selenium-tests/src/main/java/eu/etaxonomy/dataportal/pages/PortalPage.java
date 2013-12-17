@@ -415,8 +415,12 @@ public abstract class  PortalPage {
 
     public File takeScreenShot(){
 
-        File destFile = fileForTestMethod(new File("screenshots"));
 
+        logger.info("Screenshot ...");
+        File destFile = fileForTestMethod(new File("screenshots"));
+        if(logger.isDebugEnabled()){
+            logger.debug("Screenshot destFile" + destFile.getPath().toString());
+        }
         File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         try {
             FileUtils.copyFile(scrFile, destFile);
@@ -445,6 +449,9 @@ public abstract class  PortalPage {
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
         for (StackTraceElement stackTraceElement : trace) {
             // according to the convention all test class names should end with "Test"
+            if(logger.isTraceEnabled()){
+                logger.trace("fileForTestMethod() - " + stackTraceElement.toString());
+            }
             if(stackTraceElement.getClassName().endsWith("Test")){
                 return uniqueIndexedFile(
                             targetFolder.getAbsolutePath() + File.separator + stackTraceElement.getClassName(),
@@ -464,7 +471,7 @@ public abstract class  PortalPage {
         File file;
         int i = 0;
         while(true){
-            file = new File(folder + File.separator + fileName + "_" + Integer.toString(i) + "." + suffix);
+            file = new File(folder + File.separator + fileName + "_" + Integer.toString(i++) + "." + suffix);
             if(!file.exists()){
                 return file;
             }
