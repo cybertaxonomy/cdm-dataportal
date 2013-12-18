@@ -779,6 +779,9 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
  * @see http://drupal.org/node/1354
  */
 function cdm_dataportal_view_reference($uuid, $arg2 = NULL) {
+
+  cdm_check_valid_portal_page();
+
   $reference = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
   return theme('cdm_reference_page', array('reference' => $reference));
 }
@@ -801,6 +804,9 @@ function cdm_dataportal_view_reference_list($pageNumber) {
  * @see http://drupal.org/node/1354
  */
 function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE, $part = 0) {
+
+  cdm_check_valid_portal_page();
+
   $media = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $mediaUuid);
   return theme('cdm_media_page', array(
     'media' => $media,
@@ -1037,6 +1043,9 @@ function _load_polytomousKeySubGraph(&$polytomousKeyNode) {
  * @see http://drupal.org/node/1354
  */
 function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
+
+  cdm_check_valid_portal_page();
+
   $polytomousKey = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, $polytomousKeyUuid);
 
   $sourcePager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, array($polytomousKeyUuid, 'sources'));
@@ -1073,6 +1082,8 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
  */
 function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid = NULL) {
 
+  cdm_check_valid_taxon_page($chapter);
+//   dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
   // show a warning in case the javascript development mode is anabled
   if(variable_get('cdm_js_devel_mode', FALSE)) {
     drupal_set_message(t('The !url1 is enabled.
@@ -1087,9 +1098,11 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid =
   // set_last_taxon_page_tab(arg(3));
   $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter, $synonym_uuid);
   if (!empty($taxonpage)) {
+    dd("END OF TAXON PAGE [" . $chapter . "] " . $uuid);
     return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title, $taxonpage->content);
   }
   else {
+//     dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' !!! PAGE IS EMPTY !!!');
     return '';
   }
 }
@@ -1169,6 +1182,8 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
  *   The formatted name page as node.
  */
 function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = NULL) {
+
+  cdm_check_valid_portal_page();
 
   $taxonname_page = cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid);
   if (!empty($taxonname_page)) {
@@ -2025,4 +2040,43 @@ function hasFeatureNodeDescriptionElements($featureNode) {
     }
   }
   return FALSE;
+}
+
+/**
+ * Checks if the current page is a valid taxon portal page and responds with HTTP status 404 (not found) otherwise
+ *
+ * @param $chapter
+ *   The taxon page chapter or part
+ */
+function cdm_check_valid_taxon_page($chapter){
+  static $taxon_tabs = null;
+
+  cdm_check_valid_portal_page();
+
+  if($taxon_tabs == null){
+    $taxon_tabs = array('all', 'description');
+    foreach(get_taxon_tabs_list() as $tab){
+      $taxon_tabs[] = strtolower($tab);
+    }
+  }
+
+  if(!in_array($chapter, $taxon_tabs)){
+    // oops this is not a valid chapter name
+    http_send_status(404); // 404 = Not Found
+  }
+
+}
+
+/**
+ * Checks if the current page is a valid portal page and responds with HTTP status 404 (not found) otherwise
+ *
+ * @param $chapter
+ *   The taxon page chapter or part
+ */
+function cdm_check_valid_portal_page(){
+  $ends_with_file_suffix_pattern = '/\/[\w]*[\.][\w]*$/';
+  if(preg_match($ends_with_file_suffix_pattern, $_GET['q'])){
+    // oops this urls ends with a file_suffix and thus does not refer to a portal page
+    http_send_status(404); // 404 = Not Found
+  }
 }

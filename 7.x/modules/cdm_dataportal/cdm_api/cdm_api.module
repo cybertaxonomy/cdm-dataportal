@@ -1818,6 +1818,7 @@ function cdm_http_request($uri, $method = "GET", $data = NULL) {
     $header['Content-Type'] = 'application/x-www-form-urlencoded';
   }
 
+//   @dd($uri);
   return drupal_http_request($uri, array(
       'headers' => $header,
       'method' => $method,
@@ -2066,6 +2067,7 @@ function cdm_api_secref_cache_clear() {
   $_cdm_api_secref_cache = array();
 }
 
+
 /**
  * Validates if the given string is a uuid.
  *
@@ -2263,3 +2265,4 @@ function _no_classfication_uuid_message() {
 function cdm_api_flush_caches() {
   return array('cache_cdm_ws');
 }
+
