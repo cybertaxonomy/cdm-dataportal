@@ -43,8 +43,10 @@ public class ClassificationTreeBlock extends DrupalBlock {
 
     public boolean isVisibleInViewPort(ClassificationTreeElement element){
         Point elementOffset = ((RemoteWebElement)element.getElement()).getCoordinates().inViewPort();
+        Point viewPortElementOffset = viewPortElement.getCoordinates().inViewPort();
+        Point elementRelativeToViewPort = elementOffset.moveBy(-1 * viewPortElementOffset.x, -1 * viewPortElementOffset.y);
         Dimension viewPortDimension = viewPortElement.getSize();
-        return elementOffset.y < viewPortDimension.height;
+        return elementRelativeToViewPort.y < viewPortDimension.height;
     }
 
 
