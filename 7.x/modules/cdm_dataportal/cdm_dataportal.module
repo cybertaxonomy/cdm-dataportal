@@ -1098,7 +1098,7 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid =
   // set_last_taxon_page_tab(arg(3));
   $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter, $synonym_uuid);
   if (!empty($taxonpage)) {
-    dd("END OF TAXON PAGE [" . $chapter . "] " . $uuid);
+//     dd("END OF TAXON PAGE [" . $chapter . "] " . $uuid);
     return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title, $taxonpage->content);
   }
   else {
