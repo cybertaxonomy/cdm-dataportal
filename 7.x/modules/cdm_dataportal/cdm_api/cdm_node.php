@@ -7,9 +7,20 @@
 /**
  * Implements hook_node_view().
  *
- * Comment @WA should this also be used for other cdm node types like name page?
+ * TODO This should also be used for other cdm node types like name page?
  */
 function cdm_dataportal_node_view($node, $view_mode = 'full') {
+
+
+  if($view_mode == 'search_index'){
+    // this view mode is used by _node_index_node()
+    // allowing drupal search to index the cdm instance
+    // nodes can be a big performance problem, to this
+    // viewmode is ignored
+    // If you need a fearch function, use the cdm serach facilities instead.
+    return;
+  }
+
   // See cdm_add_node_content.
   switch ($node->type) {
     case 'cdm_' . NODETYPE_TAXON:
