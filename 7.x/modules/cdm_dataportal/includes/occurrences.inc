@@ -389,7 +389,7 @@ function compose_cdm_sequence($sequence) {
   $groups = array();
 
   // -- retrieve additional data if neesscary
-  // TODO bellow call disabled since sequences are not yet supported,
+  // TODO below call disabled since sequences are not yet supported,
   //      see  #3347 (services and REST service controller for molecular classes implemented)
   //
   // cdm_load_annotations($sequence);
@@ -400,7 +400,7 @@ function compose_cdm_sequence($sequence) {
     if (!in_array($field, $exclude_sequence_fields) && ($value && (!is_object($value) || isset($value->class)))) {
       switch ($field) {
 
-        case 'genBankAccession';
+        case 'geneticAccessionNumber';
           $dd_elements = array();
           foreach ($value as $accession) {
             if (isset($accession->uri) ){
@@ -412,11 +412,8 @@ function compose_cdm_sequence($sequence) {
           @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),  $dd_elements, NULL, 1);
           break;
 
-        case 'length':
-          @_description_list_group_add($groups, t('Sequence length'),  $value , ' ' . t('Nucleotites'), 2);
-          break;
 
-        case 'locus':
+        case 'locus': // FIXME 3.3 now dnaMarker (DefinedTerm)  if multiple amplifications where used to build this consensus sequence it may be the super set of the markers used in amplification.
           if (isset($value->name)) {
             @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),  $value->name, NULL, 3);
           }
@@ -425,7 +422,7 @@ function compose_cdm_sequence($sequence) {
           }
           break;
 
-        case 'sequence':
+        case 'consensusSequence':
           // format in genbank style, force linebreaks after each 70 nucleotites
           // see also http://stackoverflow.com/questions/499137/css-how-can-i-force-a-long-string-without-any-blank-to-be-wrapped-in-xul-and
           @_description_list_group_add(
@@ -433,20 +430,32 @@ function compose_cdm_sequence($sequence) {
             cdm_occurrence_field_name_label($field),
             array(
               array(
-                '#markup' => '<div>' . wordwrap($value, 70, '</br>', TRUE) . '</div>',
+                '#markup' => '<div class="sequence-length">' . $value->length . ' ' . t('pb'). '</div><div>' . wordwrap($value->string, 70, '</br>', TRUE) . '</div>',
                 '#wrapper_attributes' => array('class'=>'dna-sequence')
                 )
               ),
             5);
           break;
 
-        case 'dateSequenced':
+         case 'dnaSample': // FIXME 3.3 implement
+            break;
+        case 'singleReads': // FIXME 3.3 implement
+          break;
+        case 'contigFile': // FIXME 3.3 implement - Media
+            break;
+        case 'pherograms': // FIXME 3.3 implement - Media
+          break;
+        case 'haplotype': // FIXME 3.3 implement
+            break;
+        case 'dateSequenced': // FIXME 3.3 now in SingelRead
           @_description_list_group_add($groups, t('Sequencing date'),  timePeriodToString($value), NULL, 6);
           break;
 
         case 'barcode': // boolean
           @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value ? 'Yes': 'No', NULL, 7);
           break;
+        case 'barcodeSequencePart': // FIXME 3.3 implement, compose sequence
+            break;
 
         case 'citation':
           @_description_list_group_add($groups,
@@ -515,3 +524,5 @@ function compose_cdm_sequence($sequence) {
 
   return $sequence_elements;
 }
+
+
