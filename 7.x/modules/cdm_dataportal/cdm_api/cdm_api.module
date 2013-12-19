@@ -1818,7 +1818,8 @@ function cdm_http_request($uri, $method = "GET", $data = NULL) {
     $header['Content-Type'] = 'application/x-www-form-urlencoded';
   }
 
-//   @dd($uri);
+
+  cdm_dd($uri);
   return drupal_http_request($uri, array(
       'headers' => $header,
       'method' => $method,
@@ -2264,5 +2265,28 @@ function _no_classfication_uuid_message() {
  */
 function cdm_api_flush_caches() {
   return array('cache_cdm_ws');
+}
+
+/**
+ * Logs if the drupal variable 'cdm_debug_mode' ist set true to drupal_debug.txt in the site's temp directory.
+ *
+ * @param $data
+ *   The variable to log to the drupal_debug.txt log file.
+ * @param $label
+ *   (optional) If set, a label to output before $data in the log file.
+ *
+ * @return
+ *   No return value if successful, FALSE if the log file could not be written
+ *   to.
+ *
+ * @see cdm_dataportal_init() where the log file is reset on each requests
+ * @see dd()
+ * @see http://drupal.org/node/314112
+ *
+ */
+function cdm_dd($data, $label = NULL) {
+  if(variable_get('cdm_debug_mode', FALSE) && file_stream_wrapper_get_class('temporary') ){
+    return dd($data, $label);
+  }
 }
 

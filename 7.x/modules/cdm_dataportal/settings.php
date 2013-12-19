@@ -734,6 +734,17 @@ function cdm_settings_general() {
       versions of java-script libraries will be used where possible.
       <br/><strong>Do not use this option in production!</strong>'
   );
+  // ----------------------
+  $form['cdm_debug_mode'] = array(
+      '#type' => 'checkbox',
+      '#title' => 'CDM page debug mode',
+      '#default_value' => variable_get('cdm_debug_mode', FALSE),
+      '#description' => 'When CDM page debug mode enabled the start and end of cdm entity page
+      creation is logged as well as any http request send via the cdm_api. The log is written to a file in the teporary
+      folder configured in the' . l('File system settings', 'admin/config/media/file-system') . '. For this site the file is <code>' . file_directory_temp() . '/drupal_debug.txt</code>
+      The log is written by the drupal devel module function <code>dd()</code>.
+      <br/><strong>Note:</strong>The start and end of the page creation is currently only logged for taxon pages only.'
+  );
 
   // Comment @WA: D7 form api does not support reset buttons,
   // so to mimic the D5 reset button we add one like this.

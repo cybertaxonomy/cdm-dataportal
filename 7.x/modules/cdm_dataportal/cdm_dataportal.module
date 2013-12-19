@@ -495,6 +495,11 @@ function cdm_dataportal_init() {
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal.css');
   // drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
   drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal_screen.css', array('type' => 'screen'));
+
+  if(variable_get('cdm_debug_mode', FALSE)){
+    $file = 'temporary://drupal_debug.txt';
+    file_put_contents($file, 'CDM DEBUG LOG for ' . $_GET['q']. "\n"); // will overwrite the file
+  }
 }
 
 function cdm_dataportal_refresh_node($cdm_node_name, $uuid, $parameters = array()){
@@ -1083,7 +1088,7 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
 function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid = NULL) {
 
   cdm_check_valid_taxon_page($chapter);
-//   dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
+  cdm_dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
   // show a warning in case the javascript development mode is anabled
   if(variable_get('cdm_js_devel_mode', FALSE)) {
     drupal_set_message(t('The !url1 is enabled.
@@ -1098,11 +1103,11 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid =
   // set_last_taxon_page_tab(arg(3));
   $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter, $synonym_uuid);
   if (!empty($taxonpage)) {
-//     dd("END OF TAXON PAGE [" . $chapter . "] " . $uuid);
+    cdm_dd("END OF TAXON PAGE [" . $chapter . "] " . $uuid);
     return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title, $taxonpage->content);
   }
   else {
-//     dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' !!! PAGE IS EMPTY !!!');
+    cdm_dd("END OF TAXON PAGE [" . $chapter . "] " . $uuid . ' !!! PAGE IS EMPTY !!!');
     return '';
   }
 }
