@@ -2079,9 +2079,10 @@ function cdm_check_valid_taxon_page($chapter){
  *   The taxon page chapter or part
  */
 function cdm_check_valid_portal_page(){
-  $ends_with_file_suffix_pattern = '/\/[\w]*[\.][\w]*$/';
+  $ends_with_file_suffix_pattern = '/\/[^\.\/]*[\.][^\.\/]*$/';
   if(preg_match($ends_with_file_suffix_pattern, $_GET['q'])){
     // oops this urls ends with a file_suffix and thus does not refer to a portal page
     http_send_status(404); // 404 = Not Found
+    exit('HTTP 404');
   }
 }
