@@ -1,7 +1,0 @@
-name = Cyprus
-description = Subtheme from Garland Cichorieae for Cyprus
-package = CDM_Portal
-base theme = garland_cichorieae
-version = 1.0
-core = 7.x
-stylesheets[all][] = cyprus_portal_style.css
