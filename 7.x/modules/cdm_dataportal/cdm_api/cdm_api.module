@@ -2285,7 +2285,7 @@ function cdm_api_flush_caches() {
  *
  */
 function cdm_dd($data, $label = NULL) {
-  if(variable_get('cdm_debug_mode', FALSE) && file_stream_wrapper_get_class('temporary') ){
+  if(module_exists('devel') && variable_get('cdm_debug_mode', FALSE) && file_stream_wrapper_get_class('temporary') ){
     return dd($data, $label);
   }
 }

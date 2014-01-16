@@ -763,7 +763,7 @@ function _cdm_taxontree_merge($tree, $branch) {
 
 
 /**
- * Alter a reultset into an array of TreeNode instances with taxonUuid as keys.
+ * Alter a resultset into an array of TreeNode instances with taxonUuid as keys.
  *
  * Replaces the keys of an array of TreeNode instances
  * by the $treenode->taxonUuid of the single array elements and sets
