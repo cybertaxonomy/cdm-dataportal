@@ -1,0 +1,383 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the cdm_dataportal module.
+ */
+
+/**
+ * Implements hook_install(). */
+function cdm_dataportal_install() {
+  db_update('system')
+    ->fields(array(
+      'weight' => 20,
+    ))
+    ->condition('name', 'cdm_dataportal')
+    ->execute();
+}
+
+/**
+ * Implements hook_uninstall(). */
+function cdm_dataportal_uninstall() {
+  // Delete all nodes with a cdm content type from the node table.
+  // Comment @WA: you also may want to delete these content types from the
+  // node_type table.
+  db_delete('node')
+    ->condition('type', 'cdm_%')
+    ->execute();
+}
+
+/*
+ * update functions:
+ *
+ * - 1 digit for Drupal core compatibility.
+ * - 1 digit for your module's major release version (e.g., is this the 7.x-1.* (1) or 7.x-2.* (2) series of your module?). This digit should be 0 for initial porting of your module to a new Drupal core API.
+ * - 2 digits for sequential counting, starting with 00.
+ *
+ * @see http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_update_N/7
+ */
+
+/**
+ * update for RELEASE 3.1.3:
+ *  - reset edit_map_server variable to default
+ */
+function cdm_dataportal_update_7301() {
+  // reset edit_map_server variable to default
+   return _remove_variable('edit_map_server');
+}
+
+/**
+ * update for RELEASE 3.1.4:
+ *  - reset edit_map_server variable to default
+ */
+function cdm_dataportal_update_7302() {
+
+  return
+  _remove_variable('edit_map_server') . // once again reset edit_map_server variable to default
+  _rename_variable('cdm_dataportal_show_media', 'cdm_images_include_children');
+}
+
+/**
+ * update for RELEASE 3.2.1:
+ *  - adding missing permissions for role CDM Admin
+ */
+function cdm_dataportal_update_7303() {
+  $role = user_role_load_by_name('CDM admin');
+  if(!$role){
+    return "Role CDM admin not found, so the update is skipped.";
+  }
+
+  $tasks_performed = array();
+
+  // permissions for node types
+  $node_type_names = node_type_get_names();
+  $types_to_update = array('page', 'story', 'article');
+  foreach ($types_to_update as $name){
+    if(in_array($name, $node_type_names)) {
+      $node_type_permissions = array(
+          'create ' . $name . ' content',
+          'edit any ' . $name . ' content',
+          'edit own ' . $name . ' content',
+          'delete any ' . $name . ' content',
+          'delete own ' . $name . ' content',
+      );
+      user_role_grant_permissions($role->rid, $node_type_permissions);
+      $tasks_performed[] = "node type " . $name;
+    }
+  }
+
+  if(module_exists('extlinks')){
+    $extlinks_permissions = array(
+        'access extlinks content',
+        'administer extlinks',
+    );
+    user_role_grant_permissions($role->rid, $extlinks_permissions);
+    $tasks_performed[] = 'permissions for extlinks';
+  }
+
+  foreach (filter_formats() as $key=>$format){
+    if($key == 'full_html' || $format->format == "Full HTML"){
+      $formats_permissions = array(
+          'use text format full_html'
+      );
+      user_role_grant_permissions($role->rid, $formats_permissions);
+      $tasks_performed[] = 'use text format full_html';
+    }
+  }
+
+  // assure  'create url aliases' can be set
+  if(!module_exists('path')){
+    module_enable(array('path'), TRUE);
+    $tasks_performed[] = 'module path enabled';
+  }
+  $other_permissions = array(
+      'create url aliases',
+      'delete revisions',
+      'revert revisions',
+      'view own unpublished content',
+      'flush caches'
+  );
+  user_role_grant_permissions($role->rid, $other_permissions);
+  $tasks_performed[] = 'and other permissions';
+
+  return "adding missing permissions for role CDM Admin: " . join(', ', $tasks_performed);
+}
+
+
+/**
+ * update for RELEASE 3.2.2:
+ *  - migrating variable cdm_dataportal_show_default_image to cdm_taxon_profile_image['show']
+ *  - enabling required module file
+ *  - enable new debug block for all dataportals
+ *  - migrating variables for map settings
+ */
+function cdm_dataportal_update_7304() {
+
+    module_enable(array('file'), TRUE);
+    $tasks_performed[] = 'module file enabled';
+
+    if(!variable_get(CDM_TAXON_PROFILE_IMAGE, FALSE)){
+      $cdm_taxon_profile_image_settings = unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT);
+      $cdm_taxon_profile_image_settings['show'] = variable_get('cdm_dataportal_show_default_image', 0);
+      variable_set(CDM_TAXON_PROFILE_IMAGE, $cdm_taxon_profile_image_settings);
+      variable_del('cdm_dataportal_show_default_image');
+      $tasks_performed[] = 'migrating variable cdm_dataportal_show_default_image to cdm_taxon_profile_image[\'show\']';
+    }
+
+
+    // CDM web service debug block
+    $cdm_ws_debug_block = array(
+        'block' => array(
+            'module' => 'cdm_api',
+            'delta' => 'cdm_ws_debug',
+            'theme' => NULL,
+            'status' => 1,
+            'weight' => -50,
+            'region' => 'sidebar_first',
+            'pages' => '',
+            'cache' => -1,
+        ),
+        'block_role' =>
+            array(
+
+        )
+    );
+
+    $admin_user = user_load(1);
+
+    // harmonize cdm admin role names if needed
+    $cdm_admin_role = user_role_load_by_name('CDM Admin');
+    if(is_object($cdm_admin_role) && $cdm_admin_role->name !== 'CDM admin'){
+      $cdm_admin_role->name = 'CDM admin';
+      user_role_save($cdm_admin_role);
+      $tasks_performed[] = $cdm_admin_role->name . ' role name harmonized';
+    }
+    $cdm_admin_role = user_role_load_by_name('CDM admin');
+
+    if(is_object($cdm_admin_role)) {
+      // make sure admin is member of role CDM admin
+      if (!isset($admin_user->roles[$admin_role->rid])) {
+        user_multiple_role_edit(array(1), 'add_role', $cdm_admin_role->rid);
+        $tasks_performed[] = 'admin user (uid=1) added to role ' . $cdm_admin_role->name;
+      }
+      $cdm_ws_debug_block['block_role'][] =  array(
+        'module' => 'cdm_api',
+        'delta' => 'cdm_ws_debug',
+        'rid' => $cdm_admin_role->rid
+      );
+    }
+
+    $admin_role = user_role_load_by_name("admin"); // Drupal 5
+
+    if(is_object($admin_role)){
+      $admin_role->name == 'administrator';
+      user_role_save($admin_role);
+      $tasks_performed[] = 'administrator role name harmonized';
+    } else {
+      $admin_role = user_role_load_by_name("administrator"); // Drupal 7
+    }
+    if(is_object($admin_role)){
+      // make sure admin is member of role admin
+      if (!isset($admin_user->roles[$admin_role->rid])) {
+        user_multiple_role_edit(array(1), 'add_role', $admin_role->rid);
+        $tasks_performed[] = 'admin user (uid=1) added to role ' . $admin_role->name;
+      }
+      $cdm_ws_debug_block['block_role'][] =  array(
+          'module' => 'cdm_api',
+          'delta' => 'cdm_ws_debug',
+          'rid' => $admin_role->rid
+      );
+    }
+
+    // clean up existing block configuration which might be set by drupal automatically, we need to override this
+    db_delete('block')->condition('module', 'cdm_api')->execute();
+    db_delete('block_role')->condition('module', 'cdm_api')->execute();
+    // insert
+    $block_insert = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
+    $block_role_insert = db_insert('block_role')->fields(array('module', 'delta', 'rid'));
+
+    $themes = system_list('theme');
+    foreach ($themes as $theme) {
+      if($theme->status == "1"){ // only for enabled themes
+        $cdm_ws_debug_block['block']['theme'] = $theme->name;
+        $block_insert->values($cdm_ws_debug_block['block']);
+      }
+    }
+    foreach($cdm_ws_debug_block['block_role'] as $block_role){
+      $block_role_insert->values($block_role);
+    }
+    $block_insert->execute();
+    $block_role_insert->execute();
+    $tasks_performed[] = 'CDM web service debug block enabled for \'CDM admin\' users in all themes';
+    $tasks_performed[] = _remove_variable('cdm_webservice_debug');
+    $tasks_performed[] = _remove_variable('cdm_webservice_isStub');
+
+    /*
+     *  migrating variables for map settings
+     */
+    $cdm_map_distribution = array();
+
+    $cdm_map_distribution['width'] = variable_get('cdm_dataportal_geoservice_display_width', 390);
+    $cdm_map_distribution['height'] = $cdm_map_distribution['width'] / 2;
+    _remove_variable('cdm_dataportal_geoservice_display_width');
+
+    $cdm_map_distribution['bbox'] = variable_get('cdm_dataportal_geoservice_bounding_box', '-180,-90,180,90');
+    _remove_variable('cdm_dataportal_geoservice_bounding_box');
+
+    $cdm_map_distribution['show_labels'] = variable_get('cdm_dataportal_geoservice_labels_on', FALSE);
+    _remove_variable('cdm_dataportal_geoservice_labels_on');
+
+    $cdm_map_distribution['caption'] = variable_get('cdm_dataportal_geoservice_map_caption', '');
+    _remove_variable('cdm_dataportal_geoservice_map_caption');
+
+    $cdm_map_distribution['distribution_opacity'] = variable_get('cdm_dataportal_geoservice_distributionOpacity', '0.5');
+    _remove_variable('cdm_dataportal_geoservice_distributionOpacity');
+
+    $cdm_map_distribution['mapType'] = variable_get('cdm_dataportal_map_openlayers', 1);
+    _remove_variable('cdm_dataportal_map_openlayers');
+
+    // imageMap
+    $cdm_map_distribution['image_map'] = array();
+    $cdm_map_distribution['image_map']['base_layer']= variable_get('map_base_layer', 'cyprusdivs');
+    _remove_variable('map_base_layer');
+
+    $cdm_map_distribution['image_map']['bg_color'] = variable_get('map_bg_color', '1874CD');
+    _remove_variable('map_bg_color');
+
+    $cdm_map_distribution['image_map']['layer_style'] = variable_get('map_base_layer_style', 'ffffff,606060,,');
+    _remove_variable('map_base_layer_style');
+
+    // OpenLayers
+    $cdm_map_distribution['openlayers'] = array();
+    $cdm_map_distribution['openlayers']['base_layers'] = variable_get('baselayers', array('osgeo_vmap0' => 'osgeo_vmap0', 'PREFERRED' => 'osgeo_vmap0'));
+    _remove_variable('baselayers');
+
+    $cdm_map_distribution['openlayers']['show_layer_switcher'] = variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE);
+    _remove_variable('cdm_dataportal_geoservice_showLayerSwitcher');
+
+    $cdm_map_distribution['legend'] = array();
+    $cdm_map_distribution['legend']['show'] = variable_get('cdm_dataportal_geoservice_legend_on', TRUE);
+    _remove_variable('cdm_dataportal_geoservice_legend_on');
+
+    $cdm_map_distribution['legend']['opacity'] = variable_get('cdm_dataportal_geoservice_legendOpacity', '0.5');
+    _remove_variable('cdm_dataportal_geoservice_legendOpacity');
+
+    $cdm_map_distribution['legend']['font_size'] = variable_get('cdm_dataportal_geoservice_legend_font_size', 10);
+    _remove_variable('cdm_dataportal_geoservice_legend_font_size');
+
+    $cdm_map_distribution['legend']['font_style'] = variable_get('cdm_dataportal_geoservice_legend_font_style', FALSE);
+    _remove_variable('cdm_dataportal_geoservice_legend_font_style');
+
+    $cdm_map_distribution['legend']['icon_width'] = variable_get('cdm_dataportal_geoservice_legend_icon_width', 35);
+    _remove_variable('cdm_dataportal_geoservice_legend_icon_width');
+
+    $cdm_map_distribution['legend']['icon_height'] = variable_get('cdm_dataportal_geoservice_legend_icon_height', 15);
+    _remove_variable('cdm_dataportal_geoservice_legend_icon_height');
+
+    variable_set('cdm_map_distribution', $cdm_map_distribution);
+    $tasks_performed[] =  'variables for map settings migrated to new variable "cdm_map_distribution"';
+
+    return  join(', ',$tasks_performed);
+}
+
+
+/**
+ * update for RELEASE 3.2.3:
+ *  - remove variable 'cdm_search_use_default_values'
+ */
+function cdm_dataportal_update_7305() {
+  $tasks_performed = array();
+  $tasks_performed[] = _remove_variable('cdm_search_use_default_values');
+}
+
+
+/**
+ * Renames a persistent variable.
+ *
+ * @return
+ *   A message string of the performed operation.
+ */
+function _rename_variable($old_name, $new_name) {
+  $success = FALSE;
+  $value = variable_get($old_name, FALSE);
+  variable_del($old_name);
+  if ($value !== FALSE) {
+    variable_set($new_name, $value);
+    $success = variable_get($new_name, FALSE) === $value;
+  }
+  else {
+    $success = TRUE;
+  }
+
+  return "Variable '$old_name' to '$new_name' renamed. ";
+}
+
+/**
+ * Unsets a persistent variable.
+ *
+ * Calls variable_del() and returns a message string.
+ *
+ * @return
+ *   A message string of the performed operation.
+ */
+function _remove_variable($name) {
+  variable_del($name);
+  return "Variable '$name' removed. ";
+}
+
+/**
+ * Sets a persistent variable.
+ *
+ * Calls variable_set() and returns a message string.
+ *
+ * @return
+ *   A message string of the performed operation.
+ */
+function _create_variable($name, $value) {
+  variable_set($name, $value);
+  return "Variable '$name' created with value: '$value'. ";
+}
+
+/**
+ * Overwrites a persistent variable.
+ *
+ * Calls _create_variable() and returns a message string.
+ *
+ * @return
+ *   A message string of the performed operation.
+ */
+function _modify_variable($name, $value_override) {
+  /*
+   * FIXME take care for correct handling of tree variables
+   * for example description_gallery contains the array:
+   * Array
+   (
+   [cdm_dataportal_show_thumbnail_captions] => 1
+   [cdm_dataportal_media_maxextend] => 120
+   [cdm_dataportal_media_cols] => 4
+   )
+   * -----> solutions merge arrays !!!
+   */
+  return _create_variable($name, $value_override);
+}
+
+
