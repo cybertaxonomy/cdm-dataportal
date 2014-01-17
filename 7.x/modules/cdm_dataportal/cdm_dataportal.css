@@ -627,3 +627,10 @@ div.cdm_media_viewer_image {
   padding-left: 2em;
 }
 
+/*
+ * Overriding default style from drupal?
+ * This prohibits select elements from overflowing the parent container
+ */
+select {
+  max-width: 100%;
+}
