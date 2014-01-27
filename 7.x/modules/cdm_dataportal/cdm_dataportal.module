@@ -474,7 +474,7 @@ function cdm_dataportal_menu() {
     $items['cdm_dataportal/' . $name . '/%/refresh'] = array(
         'title' => t('Refresh'),
         'page callback' => 'cdm_dataportal_refresh_node',
-        'access arguments' => array('edit any ' . $type . ' content'),
+        'access arguments' => array('administer cdm_dataportal'),
         'type' => MENU_LOCAL_TASK,
         'weight' => 100,
         'page arguments' => array($name, 2)

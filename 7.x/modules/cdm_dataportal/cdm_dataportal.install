@@ -307,8 +307,12 @@ function cdm_dataportal_update_7304() {
 function cdm_dataportal_update_7305() {
   $tasks_performed = array();
   $tasks_performed[] = _remove_variable('cdm_search_use_default_values');
+
+  return join(', ',$tasks_performed);
 }
 
+
+/* ======================================================================== */
 
 /**
  * Renames a persistent variable.
