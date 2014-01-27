@@ -45,6 +45,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
         'protectedTitleCache',
         'derivedUnitMedia',
         'created',
+        'publish',
         'updated',
         'class',
         'uuid',
