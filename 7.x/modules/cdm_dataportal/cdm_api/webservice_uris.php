@@ -85,8 +85,6 @@ define('CDM_WS_TERMVOCABULARY', 'termVocabulary/$0');
 
 define('CDM_WS_TERM_COMPARE', 'term/$0/compareTo/$1');
 
-define('CDM_WS_TDWG_LEVEL', 'term/tdwg/$0');
-
 /**
  * Returns FeatureTrees that are stored in this community store.
  */
