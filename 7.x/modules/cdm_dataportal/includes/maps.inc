@@ -258,6 +258,90 @@ function get_openlayers_map($width, $height, $bounding_box = FALSE, $occurrenceQ
 }
 
 
+/**
+ * Composes the render array for a distribution map of the given taxon.
+ *
+ * The distribution map can either be a plain image or a dynamic open layers map
+ * depending on the settings.
+ *
+ * compose_hook() implementation
+ *
+ * @param $taxon
+ *   The CDM Taxon instance to create the distribution map for.
+ * @return array
+ *    A drupal render array
+ *
+ * Similar compose function compose_map()
+ *
+ * @ingroup compose
+ */
+function compose_distribution_map($taxon) {
+
+  $out = '';
+  $settings = get_edit_map_service_settings();
+
+  $fontStyles = array(
+      0 => "plane",
+      1 => "italic",
+  );
+
+  // Query cdm server for map service uri parameters.
+  $query_string = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid, queryString(cdm_distribution_filter_query()));
+  $query_string = $query_string->String;
+  $out .= "<!-- map_data_parameters:" . print_r($query_string, TRUE) . " -->";
+  if (!$query_string) {
+    // The $query_string is empty if there are no distribution areas defined.
+    return;
+  }
+
+  /* ------ choose the display mode, either openlayers or static image ------ */
+
+  $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+
+  if ($map_settings['map_type'] == 1) {
+
+    /* =========== display distributions using the openlayers map viewer =========== */
+
+    $legendFormatQueryStr = "format=image" . urlencode('/') . "png"
+        . "&TRANSPARENT=TRUE"
+            . "&WIDTH=" . $map_settings['legend']['icon_width']
+            . "&HEIGHT=" . $map_settings['legend']['icon_height']
+            // TODO why is the layer=topp:tdwg_level_4 parameter needed at all here??
+    // AK: i think the tdwg_level_4 is used as place holder and will be replaced later on
+    // => search for "tdwg_level_4" in the code
+    . "&layer=topp" . urlencode(':') . "tdwg_level_4"
+        . "&LEGEND_OPTIONS=forceLabels" . urlencode(':') . "on"
+            . ";fontStyle" . urlencode(':') . $fontStyles[$map_settings['legend']['font_style']]
+            . ";fontSize" . urlencode(':') .  $map_settings['legend']['font_size']
+            . "&SLD=";
+
+    $out .= get_openlayers_map(
+        $map_settings['width'],
+        $map_settings['height'],
+        $map_settings['bbox'],
+        NULL,
+        $query_string,
+        $legendFormatQueryStr,
+        $map_settings['caption']
+    );
+  }
+  else {
+    $legendFormatQueryStr = '';
+    $out = get_image_map(
+        $map_settings['width'],
+        $map_settings['height'],
+        $map_settings['bbox'],
+        NULL,
+        $query_string,
+        $legendFormatQueryStr,
+        $map_settings['caption']
+    );
+  }
+  return markup_to_render_array($out);
+}
+
+
+
 
 /**
  * @todo Enter description here ...

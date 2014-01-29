@@ -26,6 +26,7 @@ function cdm_modifers_representations($iModifieable, $glue = ', ') {
  * @param $description_elements
  *   An array of CDM DescriptionElementBase instances
  * @return only the computed description elements otherwise all others.
+ * @deprecated this is replaced by the cdmlib DistributionUtil class!!!
  */
 function cdm_description_elements_prefer_computed($description_elements){
 
@@ -47,6 +48,27 @@ function cdm_description_elements_prefer_computed($description_elements){
   } else {
     return $other_elements;
   }
+}
+
+function cdm_distribution_filter_query(){
+  $cdm_distribution_filter = get_array_variable_merged(CDM_DISTRIBUTION_FILTER, CDM_DISTRIBUTION_FILTER_DEFAULT);
+  $query = array();
+
+  if($cdm_distribution_filter['filter_rules']['statusOrderPreference']){
+    $query['statusOrderPreference'] = 1;
+  }
+  if($cdm_distribution_filter['filter_rules']['subAreaPreference']){
+    $query['subAreaPreference'] = 1;
+  }
+  if(is_array($cdm_distribution_filter['hideMarkedAreas']) && count($cdm_distribution_filter['hideMarkedAreas']) > 0){
+    $query['hideMarkedAreas'] = '';
+    foreach ($cdm_distribution_filter['hideMarkedAreas'] as $marker_type => $enabled)
+      if($enabled){
+        $query['hideMarkedAreas'] .= ($query['hideMarkedAreas'] ? ',' : '') . $marker_type;
+      }
+  }
+
+  return $query;
 }
 
 /**
@@ -149,3 +171,4 @@ function cdm_create_description_element_footnotes($description_element, $separat
   }
   return $footnoteKeyListStr;
 }
+

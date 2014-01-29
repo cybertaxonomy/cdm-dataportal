@@ -249,6 +249,18 @@ define('CDM_PROFILE_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
 define('CDM_OCCURRENCE_FEATURETREE_UUID', 'cdm_occurrence_featuretree_uuid');
 define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal_structdesc_featuretree_uuid');
 
+define('CDM_DISTRIBUTION_FILTER', 'cdm_distribution_filter');
+define('CDM_DISTRIBUTION_FILTER_DEFAULT', serialize(
+      array(
+      'filter_rules' => array(
+        'statusOrderPreference' => 0,
+        'subAreaPreference' => 0,
+      ),
+      'hideMarkedAreas' => array()
+     )
+));
+
+
 define('CDM_TAXON_MEDIA_FILTER', 'cdm_taxon_media_filter');
 define('CDM_TAXON_MEDIA_FILTER_DEFAULT', serialize(
     array(
@@ -646,14 +658,57 @@ function cdm_settings_general() {
       level of the tree structure.'),
   );
 
+  $form['distribution'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Distributions'),
+      '#collapsible' => FALSE,
+      '#description' => 'This section covers general settings regarding distributions, map related settings are found in the '
+          . l('geo & map tab', 'admin/config/cdm_dataportal/settings/geo') .
+          '<p>
+          </p>',
+  );
+
+  $form['distribution'][CDM_DISTRIBUTION_FILTER] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Distribution filter',
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+      '#tree' => TRUE,
+      '#description' => 'The Distribution filter offers the following options
+      <ul>
+      <li><strong>Status order preference rule:</strong> In case of multiple distribution status (PresenceAbsenceTermBase) for the same area the status with the highest order is preferred, see OrderedTermBase.compareTo(OrderedTermBase).</li>
+      <li><strong>Sub area preference rule:</strong>If there is an area with a direct sub area and both areas have the same computed status only the information on the sub area should be reported, whereas the super area should be ignored.</li>
+      <li><strong>Marked area filter:</strong>Skip distributions where the area has a Marker with one of the specified MarkerTypes</li>
+      </ul>'
+  );
+
+  $cdm_distribution_filter = get_array_variable_merged(CDM_DISTRIBUTION_FILTER, CDM_DISTRIBUTION_FILTER_DEFAULT);
+  $form['distribution'][CDM_DISTRIBUTION_FILTER]['filter_rules'] = array(
+      '#type' => 'checkboxes',
+      '#title' => 'Filter rules',
+      '#default_value' => $cdm_distribution_filter['filter_rules'],
+      '#options' => array(
+          'statusOrderPreference' => 'Status order preference rule',
+          'subAreaPreference' => 'Sub area preference rule'
+      ),
+  );
+
+  $marker_type_options = cdm_terms_as_options( cdm_ws_fetch_all('term', array('class' => 'MarkerType' )) );
+  $form['distribution'][CDM_DISTRIBUTION_FILTER]['hideMarkedAreas'] = array(
+      '#type' => 'checkboxes',
+      '#title' => 'Hide marked area filter',
+      '#default_value' => $cdm_distribution_filter['hideMarkedAreas'],
+      '#options' => $marker_type_options,
+      '#description' => 'Check one or more MarkerTypes to define the "hide marked area" filter .',
+  );
+
   $form['aggregation'] = array(
       '#type' => 'fieldset',
       '#title' => t('Aggregation of data'),
       '#collapsible' => FALSE,
-      '#description' => t("This section covers the different aspects of aggregating information.
+      '#description' => 'This section covers the different aspects of aggregating information.
           <p>
-          </p>"),
-
+          </p>',
   );
 
   $form['aggregation'][CDM_TAXON_MEDIA_FILTER] = array(
