@@ -110,7 +110,6 @@ function cdm_dataportal_theme() {
           'enclosingTag' => 'span',
       )),
       'cdm_description_ordered_distributions' => array('variables' => array(
-         // TODO REMOVE  'taxon_uuid' => NULL,
           'distribution_tree' => NULL,
       )),
       'cdm_IdentificationKey' => array('variables' => array(
