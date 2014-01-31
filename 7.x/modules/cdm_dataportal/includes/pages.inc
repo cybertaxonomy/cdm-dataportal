@@ -283,7 +283,45 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   // --- PAGE PART: DESCRIPTION --- //
   if ($page_part == 'description' || $page_part == 'all') {
 
-    $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $taxon->uuid);
+    // 1. fetch descriptions_by_featuretree but exclude the distribution feature
+    $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $taxon->uuid, array(UUID_DISTRIBUTION));
+
+
+    // 2. find the distribution feature node
+    $distribution_node =& cdm_feature_tree_find_node($merged_tree->root->childNodes, UUID_DISTRIBUTION);
+
+    if ( $distribution_node) {
+      // 3. get the distributionInfoDTO
+      $query_parameters = cdm_distribution_filter_query();
+      $query_parameters['part'] = array('mapUriParams');
+      if(variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT'){
+        $query_parameters['part'][] = 'tree';
+      } else {
+        $query_parameters['part'][] = 'elements';
+      }
+      $query_parameters['omitLevels'] = array(UUID_NAMEDAREALEVEL_TDWGLEVEL_2);
+
+      $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
+      // 4. get distribution TextData is there are any
+      $distribution_text_data = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
+        array(
+            'taxon' => $taxon->uuid,
+            'type'=>'TextData',
+            'features' => UUID_DISTRIBUTION
+          )
+      );
+
+      // 5. put all disitribution data into the distribution feature node
+      if($distribution_text_data || $distribution_info_dto) {
+        $distribution_node->descriptionElements = array('#type' => 'DTO');
+        if($distribution_text_data){
+          $distribution_node->descriptionElements['TextData'] = $distribution_text_data;
+        }
+        if($distribution_info_dto){
+          $distribution_node->descriptionElements['DistributionInfoDTO'] = $distribution_info_dto;
+        }
+      }
+    }
 
     $render_array['general'] = compose_cdm_taxon_page_profile($taxon, $merged_tree, $media);
     $render_array['general']['#weight'] = $weight++;
@@ -491,7 +529,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
   );
   $render_array['taxon_description_feature_toc'] = $toc; //markup_to_render_array($toc_html);
 
-  // Description.
+  // Render the sections for each feature
   $render_array['taxon_description_features'] = markup_to_render_array(
       theme(
           'cdm_feature_nodes',

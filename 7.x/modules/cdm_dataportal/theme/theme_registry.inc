@@ -98,20 +98,20 @@ function cdm_dataportal_theme() {
       'cdm_common_names' => array('render element' => 'elements'),
       'cdm_descriptionElements' => array('variables' => array(
           'descriptionElements' => NULL,
-          'featureUuid' => NULL,
+          'feature' => NULL,
           'taxon_uuid' => NULL,
       )),
       'cdm_description_element_image_source' => array('variables' => array(
           'image_sources' => NULL,
           'asListElement' => NULL,
       )),
-      'cdm_descriptionElementDistribution' => array('variables' => array(
+      'cdm_descriptionElement_Distribution' => array('variables' => array(
           'descriptionElements' => NULL,
           'enclosingTag' => 'span',
       )),
       'cdm_description_ordered_distributions' => array('variables' => array(
-          'taxon_uuid' => NULL,
-          'descriptionElements' => NULL,
+         // TODO REMOVE  'taxon_uuid' => NULL,
+          'distribution_tree' => NULL,
       )),
       'cdm_IdentificationKey' => array('variables' => array(
           'identificationKey' => NULL,

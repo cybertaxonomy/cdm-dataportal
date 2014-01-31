@@ -112,7 +112,7 @@ function cdm_feature_node_toc_items($feature_nodes) {
 
   foreach ($feature_nodes as $node) {
 
-    if (hasFeatureNodeDescriptionElements($node)) {
+    if (isset($node->descriptionElements['#type']) || hasFeatureNodeDescriptionElements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       //TODO HACK to implement images for taxa, should be removed.

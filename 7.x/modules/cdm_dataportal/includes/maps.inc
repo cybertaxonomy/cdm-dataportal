@@ -275,7 +275,7 @@ function get_openlayers_map($width, $height, $bounding_box = FALSE, $occurrenceQ
  *
  * @ingroup compose
  */
-function compose_distribution_map($taxon) {
+function compose_distribution_map($taxon, $query_string) {
 
   $out = '';
   $settings = get_edit_map_service_settings();
@@ -285,9 +285,9 @@ function compose_distribution_map($taxon) {
       1 => "italic",
   );
 
-  // Query cdm server for map service uri parameters.
-  $query_string = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid, queryString(cdm_distribution_filter_query()));
-  $query_string = $query_string->String;
+//   // Query cdm server for map service uri parameters.
+//   $query_string = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid, queryString(cdm_distribution_filter_query()));
+//   $query_string = $query_string->String;
   $out .= "<!-- map_data_parameters:" . print_r($query_string, TRUE) . " -->";
   if (!$query_string) {
     // The $query_string is empty if there are no distribution areas defined.

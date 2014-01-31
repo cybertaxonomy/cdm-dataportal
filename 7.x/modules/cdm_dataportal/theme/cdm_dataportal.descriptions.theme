@@ -68,7 +68,7 @@ function theme_cdm_feature_nodes($variables) {
   // Creating an array to place the description elements in.
   foreach ($mergedFeatureNodes as $node) {
 
-    if (hasFeatureNodeDescriptionElements($node)) {
+    if (isset($node->descriptionElements['#type']) || hasFeatureNodeDescriptionElements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       $block = new stdclass(); // Empty object.
@@ -87,42 +87,110 @@ function theme_cdm_feature_nodes($variables) {
          */
         if ($node->feature->uuid == UUID_DISTRIBUTION) {
 
-          // FIXME cdm_description_elements_prefer_computed() is deprecated and must be replaced by a REST service call wich will retrieve all distribution elements
-          $node->descriptionElements = cdm_description_elements_prefer_computed($node->descriptionElements);
+          $distributionElements = null;
+          $distribution_info_dto = null;
+          $text_data_out_array = array();
 
-          if (variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-            $distributionTextDataList = array();
-            $distributionElementsList = array();
+          $distribution_sortOutArray = FALSE;
+          if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
+            $distribution_glue = '';
+            $distribution_enclosingTag = 'dl';
+          }
+          else {
+            $distribution_glue = '';
+            $distribution_enclosingTag = 'ul';
+          }
 
-            foreach ($node->descriptionElements as $descriptionElement) {
-              if ($descriptionElement->class == "TextData") {
-                $distributionTextDataList[] = $descriptionElement;
-              }
-              else {
-                $distributionElementsList[] = $descriptionElement;
-              }
-            }
+          if(!isset($node->descriptionElements['#type']) || !$node->descriptionElements['#type']=='DTO') {
+            // skip the DISTRIBUTION section if there is no DTO type element
+            continue;
+          }
 
-
-            if (count($distributionTextDataList) > 0) {
-              $node->descriptionElements = $distributionElementsList;
-              $block->content .= theme('cdm_descriptionElements', array(
-                'descriptionElements' => $distributionTextDataList,
-                'featureUuid' => $node->feature->uuid,
-                'taxon_uuid' => $taxon->uuid,
+          if(isset($node->descriptionElements['TextData'])){
+            // --- TextData
+            foreach ($node->descriptionElements['TextData'] as $text_data_element){
+              $asListElement = FALSE;
+              $repr = theme('cdm_descriptionElementTextData', array(
+                  'element' => $text_data_element,
+                  'asListElement' => $asListElement,
+                  'feature_uuid' => $text_data_element->feature->uuid,
               ));
+
+              if (!array_search($repr, $text_data_out_array)) {
+                $text_data_out_array[] = $repr;
+                // TODO HINT: sorting in theme_cdm_descriptionElementArray will
+                // not work since this array contains html attributes with uuids
+                // !!!!
+                $text_data_sortOutArray = TRUE;
+                $text_data_glue = '<br/> ';
+                $text_data_enclosingTag = 'p';
+              }
             }
           }
 
-          // Display cdm distribution map TODO this is a HACK to a proper
-          // generic implementation?
-          $map_render_element = compose_distribution_map($taxon);
+
+          if ($text_data_out_array && variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
+            $block->content .= theme('cdm_descriptionElementArray', array(
+              'elementArray' => $text_data_out_array,
+              'feature' => $node->feature,
+              'glue' => $text_data_glue,
+              'sortArray' => $text_data_sortOutArray,
+              'enclosingHtml' => $text_data_enclosingTag,
+            ));
+          }
+
+          // --- Distribution map
+          $distribution_map_query_parameters = null;
+          if(isset($node->descriptionElements['DistributionInfoDTO'])) {
+            $distribution_map_query_parameters = $node->descriptionElements['DistributionInfoDTO']->mapUriParams;
+          }
+          $map_render_element = compose_distribution_map($taxon, $distribution_map_query_parameters);
           $block->content .= $map_render_element['#markup'];
-          $block->content .= theme('cdm_descriptionElements', array(
-            'descriptionElements' => $node->descriptionElements,
-            'featureUuid' => $node->feature->uuid,
-            'taxon_uuid' => $taxon->uuid,
-          ));
+
+            // --- tree or list
+              $dto_out_array = array();
+          if(isset($node->descriptionElements['DistributionInfoDTO'])) {
+            $distribution_info_dto = $node->descriptionElements['DistributionInfoDTO'];
+
+            // --- tree
+            if (is_object($distribution_info_dto->tree)) {
+              $dto_out_array[] = theme('cdm_description_ordered_distributions', array('distribution_tree' => $distribution_info_dto->tree));
+            }
+
+            // --- sorted element list
+            if( is_array($distribution_info_dto->elements) && count($distribution_info_dto->elements) > 0 ) {
+              foreach ($distribution_info_dto->elements as $descriptionElement){
+                if (is_object($descriptionElement->area)) {
+                  $sortKey = $descriptionElement->area->representation_L10n;
+                  $distributionElements[$sortKey] = $descriptionElement;
+                }
+              }
+              ksort($distributionElements);
+              $dto_out_array[] = theme('cdm_descriptionElement_Distribution', array(
+                  'descriptionElements' => $distributionElements,
+              ));
+
+            }
+            //
+            $block->content .= theme('cdm_descriptionElementArray', array(
+                'elementArray' => $dto_out_array,
+                'feature' => $node->feature,
+                'glue' => $distribution_glue,
+                'sortArray' => $distribution_sortOutArray,
+                'enclosingHtml' => $distribution_enclosingTag,
+            ));
+          }
+
+          // --- TextData at the bottom
+          if ($text_data_out_array && !variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
+            $block->content .= theme('cdm_descriptionElementArray', array(
+                'elementArray' => $text_data_out_array,
+                'feature' => $node->feature,
+                'glue' => $text_data_glue,
+                'sortArray' => $text_data_sortOutArray,
+                'enclosingHtml' => $text_data_enclosingTag,
+            ));
+          }
 
         }
 
@@ -151,7 +219,7 @@ function theme_cdm_feature_nodes($variables) {
             }
             $block->content .= theme('cdm_descriptionElements', array(
               'descriptionElements' => $node->descriptionElements,
-              'featureUuid' => $node->feature->uuid,
+              'feature' => $node->feature,
               'taxon_uuid' => $taxon_uuid,
             ));
           }
@@ -547,6 +615,14 @@ function theme_cdm_descriptionElementTextData($variables) {
     // If no sources, print the description.
     $out = $description;
   }
+
+  // FIXME This will create footnotes for annotatios and source, sources are already rendered though
+  // FIXME the footnoes are not shown in the page
+  // FIXME RenderHints::getFootnoteListKey() ate not set here
+  // to many problems, so the below line is diabled for now
+  //$footnote_key_list_str = cdm_create_description_element_footnotes($element);
+  // $out .= $footnote_key_list_str;
+
   return $out;
 }
 
@@ -661,12 +737,12 @@ function theme_cdm_common_names($variables) {
 function theme_cdm_descriptionElements($variables) {
 
   $descriptionElements = $variables['descriptionElements'];
-  $featureUuid = $variables['featureUuid'];
+  $feature = $variables['feature'];
   $taxon_uuid = $variables['taxon_uuid'];
   $outArray = array();
 
   /*
-  $userDefined = mixed_variable_get(LAYOUT_SETTING_PREFIX . $featureUuid, FEATURE_TREE_LAYOUT_DEFAULTS);
+  $userDefined = mixed_variable_get(LAYOUT_SETTING_PREFIX . $feature_uuid, FEATURE_TREE_LAYOUT_DEFAULTS);
   if(variable_get('distribution_sort',
       'NO_SORT') != 'NO_SORT'){
       $glue = '';
@@ -695,20 +771,66 @@ function theme_cdm_descriptionElements($variables) {
 
   $sortOutArray = FALSE;
   $distributionElements = array();
+  $distribution_tree = null;
 
   RenderHints::pushToRenderStack('cdm_descriptionElements');
 
-  // Avoiding warning box in drupal for flora malesiana.
-  if (is_array($descriptionElements)) {
+  // --- Handle DTO
+  // fully disabled !!!!!!!!!!!!!
+  if(false
+    && $feature->uuid == UUID_DISTRIBUTION && $descriptionElements['#type'] == 'DTO'){
+    // new faster DTO web services have been used
+
+    if(isset($descriptionElements['TextData'])){
+      // --- TextData
+      foreach ($descriptionElements['TextData'] as $descriptionElement){
+        $asListElement = FALSE;
+        $repr = theme('cdm_descriptionElementTextData', array(
+            'element' => $descriptionElement,
+            'asListElement' => $asListElement,
+            'feature_uuid' => $descriptionElement->feature->uuid,
+        ));
+
+        if (!array_search($repr, $outArray)) {
+          $outArray[] = $repr;
+          // TODO HINT: sorting in theme_cdm_descriptionElementArray will
+          // not work since this array contains html attributes with uuids
+          // !!!!
+          $sortOutArray = TRUE;
+          $glue = '<br/> ';
+          $enclosingTag = 'p';
+        }
+      }
+    }
+
+    // ---
+    if(isset($descriptionElements['DistributionInfoDTO'])){
+      if(isset($descriptionElements['DistributionInfoDTO']->elements)){
+        foreach ($descriptionElements['DistributionInfoDTO']->elements as $descriptionElement){
+          if (is_object($descriptionElement->area)) {
+            $sortKey = $descriptionElement->area->representation_L10n;
+            $distributionElements[$sortKey] = $descriptionElement;
+          }
+        }
+      }
+      if(isset($descriptionElements['DistributionInfoDTO']->tree)){
+        $distribution_tree = $descriptionElements['DistributionInfoDTO']->tree;
+      }
+    }
+
+  } else if (is_array($descriptionElements)) {
+    // --- normal description element arrays
     foreach ($descriptionElements as $descriptionElement) {
 
       // --- DISTRIBUTION ---- //
+      /* no longer in use, has been replaced
+       *
       if ($descriptionElement->feature->uuid == UUID_DISTRIBUTION) {
         if ($descriptionElement->class == 'Distribution' && is_object($descriptionElement->area)) {
           $sortKey = $descriptionElement->area->representation_L10n;
           $distributionElements[$sortKey] = $descriptionElement;
         }
-        elseif ($descriptionElement->class == 'TextData') {
+        else if ($descriptionElement->class == 'TextData') {
           $asListElement = FALSE;
           $repr = theme('cdm_descriptionElementTextData', array(
             'element' => $descriptionElement,
@@ -727,9 +849,10 @@ function theme_cdm_descriptionElements($variables) {
           }
         }
       }
-
+      else
+*/
       // --- IMAGE_SOURCES --- //
-      elseif ($descriptionElement->feature->uuid == UUID_IMAGE_SOURCES) {
+      if ($descriptionElement->feature->uuid == UUID_IMAGE_SOURCES) {
         $image_sources[] = $descriptionElement;
       }
       // --- USE TEXTDATA --- //
@@ -771,32 +894,30 @@ function theme_cdm_descriptionElements($variables) {
         $outArray[] = '<li>No method for rendering unknown description class: ' . $descriptionElement->class . '</li>';
       }
     }
+    } // --- END loop over normal description element arrays
+
+    // If feature = NAME USAGE sort the list of sources.
+    // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
+    if ($descriptionElement->feature->uuid == UUID_NAME_USAGE) {
+      sort($outArray);
     }
-  }
 
-  // If feature = NAME USAGE sort the list of sources.
-  // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
-  if ($descriptionElement->feature->uuid == UUID_NAME_USAGE) {
-    sort($outArray);
-  }
+    if (isset($image_sources)) {
+      $outArray[] = theme('cdm_description_element_image_source', array('image_sources' => $image_sources, 'asListElement' => TRUE));
+    }
+  } // END normal description element arrays
 
-  if (isset($image_sources)) {
-    $outArray[] = theme('cdm_description_element_image_source', array('image_sources' => $image_sources, 'asListElement' => TRUE));
-  }
 
-  if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
-    $outArray[] = theme('cdm_description_ordered_distributions', array('taxon_uuid' => $taxon_uuid, 'descriptionElements' => $distributionElements));
-  }
-  else {
-    ksort($distributionElements);
-    // TODO , $entryEnclosingTag);
-    $outArray[] = theme('cdm_descriptionElementDistribution', array(
-      'descriptionElements' => $distributionElements,
-    ));
-  }
-
-  // Take the feature of the last $descriptionElement.
-  $feature = $descriptionElement->feature;
+//   if ($distribution_tree) {
+//     $outArray[] = theme('cdm_description_ordered_distributions', array('taxon_uuid' => $taxon_uuid, 'distribution_tree' => $distribution_tree));
+//   }
+//   else {
+//     ksort($distributionElements);
+//     // TODO , $entryEnclosingTag);
+//     $outArray[] = theme('cdm_descriptionElement_Distribution', array(
+//       'descriptionElements' => $distributionElements,
+//     ));
+//   }
 
   $out = theme('cdm_descriptionElementArray', array(
     'elementArray' => $outArray,
@@ -866,7 +987,7 @@ function theme_cdm_description_element_image_source($variables) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_descriptionElementDistribution($variables) {
+function theme_cdm_descriptionElement_Distribution($variables) {
   $descriptionElements = $variables['descriptionElements'];
   $enclosingTag = $variables['enclosingTag'];
   if (!$enclosingTag) {
@@ -922,11 +1043,12 @@ function footnotes_key_compare($a, $b) {
  */
 function theme_cdm_description_ordered_distributions($variables) {
 
-  $taxon_uuid = $variables['taxon_uuid'];
-  $descriptionElements = $variables['descriptionElements'];
+//  TODO REMOVE $taxon_uuid = $variables['taxon_uuid'];
+// TODO REMOVE
+  $distribution_tree = $variables['distribution_tree'];
 
   // Returning NULL if there are no description elements.
-  if ($taxon_uuid == null || $descriptionElements == NULL) {
+  if ($distribution_tree == null) {
     return NULL;
   }
 
@@ -936,21 +1058,25 @@ function theme_cdm_description_ordered_distributions($variables) {
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 
+
+  /* TODO REMOVE
   // Getting all the taxon description for a given taxon.
   $markerTypesEmpty = array();
   // $markerTypesEmpty['markerTypes'] = 'af9860ff-08f5-4b4d-863c-49ae96985115';
   $markerTypesEmpty['markerTypes'] = '';
   $queryString = $markerTypesEmpty['markerTypes'] ? queryString($markerTypesEmpty) : '';
 
+  // Getting the sortered distributions (omitting level ??).
   $taxonDescriptions = cdm_ws_get(CDM_WS_TAXON . "/$0/descriptions", $taxon_uuid, $queryString);
   foreach ($taxonDescriptions->records as $description) {
     $descriptions_uuids[] = $description->uuid;
   }
-
-  // Getting the sortered distributions (omitting level ??).
   $request_params = cdm_distribution_filter_query();
   $request_params['omitLevels'] = UUID_NAMEDAREALEVEL_TDWGLEVEL_2;
   $ordered_areas = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE, join(',', $descriptions_uuids), queryString($request_params));
+  */
+
+  $ordered_areas = $distribution_tree;
   if (isset($ordered_areas->rootElement->children)) {
     $ordered_areas = $ordered_areas->rootElement->children;
   }
@@ -1060,7 +1186,7 @@ function theme_cdm_description_ordered_distributions($variables) {
 
 
 /*
-function theme_cdm_descriptionElementDistribution($descriptionElements){ $out
+function theme_cdm_descriptionElement_Distribution($descriptionElements){ $out
   = ''; $separator = ',';
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);

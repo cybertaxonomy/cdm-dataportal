@@ -61,7 +61,11 @@ define('CDM_WS_DESCRIPTION_HAS_STRUCTRURED_DATA', 'description/$0/hasStructuredD
 
 define('CDM_WS_PORTAL_DESCRIPTION', 'portal/description/$0');
 define('CDM_WS_PORTAL_DESCRIPTION_AREAS_TREE', 'portal/description/$0/namedAreaTree');
+/**
+ * @deprecated use CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR instead
+ */
 define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_TREE', 'portal/description/$0/DistributionTree');
+define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR', 'portal/description/distributionInfoFor/$0');
 
 define('CDM_WS_DESCRIPTIONELEMENT', 'descriptionElement/$0');
 define('CDM_WS_DESCRIPTIONELEMENT_BY_TAXON', 'portal/descriptionElement/byTaxon');

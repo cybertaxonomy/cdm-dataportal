@@ -263,6 +263,7 @@ function get_profile_featureTree() {
       $profile_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
     }
   }
+
   return $profile_featureTree;
 }
 
@@ -1306,12 +1307,14 @@ function _cdm_relationship_type_term_label_callback($term) {
  *     The CDM FeatureTree to be used as template
  * @param $taxon_uuid
  *     The UUID of the taxon
+ * @param $excludes
+ *     UUIDs of features to be excluded
  * @return$feature_tree
  *     The CDM FeatureTree wich was given as parameter merged tree wheras the
  *     CDM FeatureNodes are extended by an additinal field 'descriptionElements'
  *     witch will hold the accoding $descriptionElements.
  */
-function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid) {
+function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid, $exclude_uuids = array()) {
 
   if (!$feature_tree) {
     drupal_set_message(check_plain(t("No 'FeatureTree' has been set so far.
@@ -1322,16 +1325,16 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid) {
 
   $merged_trees = array();
 
-  $description_elemens = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
+  $description_elements = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
       array(
       'taxon' => $taxon_uuid,
-      'features' => cdm_featureTree_elements_toString($feature_tree->root, ',', 'uuid')
+      'features' => cdm_featureTree_elements_toString($feature_tree->root, ',', 'uuid', $exclude_uuids)
       ),
       'POST'
   );
 
   // Combine all descripions into one feature tree.
-  $merged_nodes = _mergeFeatureTreeDescriptions($feature_tree->root->childNodes, $description_elemens);
+  $merged_nodes = _mergeFeatureTreeDescriptions($feature_tree->root->childNodes, $description_elements);
   $feature_tree->root->childNodes = $merged_nodes;
 
   return $feature_tree;
@@ -1414,6 +1417,37 @@ function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference) {
   else {
     return NULL;
   }
+}
+
+/**
+ * finds and returns the FeatureNode denoted by the given $feature_uuid
+ *
+ * @param $feature_tree_nodes
+ *    The nodes contained in CDM FeatureTree entitiy: $feature->root->childNodes
+ * @param $feature_uuid
+ *    The UUID of the Feature
+ * @return returns the FeatureNode or null
+ */
+function &cdm_feature_tree_find_node($feature_tree_nodes, $feature_uuid){
+
+  // 1. scan this level
+  foreach ($feature_tree_nodes as $node){
+    if($node->feature->uuid == $feature_uuid){
+      return $node;
+    }
+  }
+
+  // 2. descend into childen
+  foreach ($feature_tree_nodes as $node){
+    if(is_array($node->childNodes)){
+      $node = cdm_feature_tree_find_node($node->children);
+      if($node) {
+        return $node;
+      }
+    }
+  }
+
+  return null;
 }
 
 /**
@@ -1839,8 +1873,12 @@ function cdm_http_request($uri, $method = "GET", $data = NULL) {
  *     The character to be used as glue for concatenation, default is ', '
  * @param $field_name
  *     The field name of the CDM Features
+ * @param $excludes
+ *     Allows defining a set of values to be excluded. This refers to the values
+ *     in the field denoted by the $field_name parameter
+ *
  */
-function cdm_featureTree_elements_toString($root_node, $separator = ', ', $field_name = 'representation_L10n') {
+function cdm_featureTree_elements_toString($root_node, $separator = ', ', $field_name = 'representation_L10n', $excludes = array()) {
   $out = '';
 
   $pre_child_separator = $separator;
@@ -1848,11 +1886,13 @@ function cdm_featureTree_elements_toString($root_node, $separator = ', ', $field
 
   foreach ($root_node->childNodes as $feature_node) {
     $out .= ($out ? $separator : '');
-    $out .= $feature_node->feature->$field_name;
-    if (is_array($feature_node->childNodes) && count($feature_node->childNodes) > 0) {
-      $childlabels = cdm_featureTree_elements_toString($feature_node, $separator, $field_name);
-      if (strlen($childlabels)) {
-          $out .=  $pre_child_separator . $childlabels . $post_child_separator;
+    if(!in_array($feature_node->feature->$field_name, $excludes)) {
+      $out .= $feature_node->feature->$field_name;
+      if (is_array($feature_node->childNodes) && count($feature_node->childNodes) > 0) {
+        $childlabels = cdm_featureTree_elements_toString($feature_node, $separator, $field_name);
+        if (strlen($childlabels)) {
+            $out .=  $pre_child_separator . $childlabels . $post_child_separator;
+        }
       }
     }
   }
