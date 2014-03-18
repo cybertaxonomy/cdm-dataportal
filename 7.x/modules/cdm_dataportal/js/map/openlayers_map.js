@@ -439,7 +439,7 @@
                 }
 
 
-                if(opts.legendPosition !== undefined && mapResponseObj.legend !== undefined){
+                if(legendImgSrc != null && opts.legendPosition !== undefined && mapResponseObj.legend !== undefined){
                     var legendSrcUrl = mapResponseObj.geoserver + legendImgSrc + mapResponseObj.legend;
                     addLegendAsElement(legendSrcUrl);
                     //addLegendAsLayer(legendSrcUrl, map);
