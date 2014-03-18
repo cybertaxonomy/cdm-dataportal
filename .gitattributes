@@ -1410,6 +1410,21 @@
 7.x/modules/cdm_dataportal/js/map/OpenLayers-2.13.1/theme/default/style.mobile.css -text
 7.x/modules/cdm_dataportal/js/map/OpenLayers-2.13.1/theme/default/style.mobile.tidy.css -text
 7.x/modules/cdm_dataportal/js/map/OpenLayers-2.13.1/theme/default/style.tidy.css -text
+7.x/modules/cdm_dataportal/js/map/img/dark/LICENSE.txt -text
+7.x/modules/cdm_dataportal/js/map/img/dark/README.txt -text
+7.x/modules/cdm_dataportal/js/map/img/dark/blank.gif -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/east-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/layer-switcher-maximize.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/layer-switcher-minimize.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/north-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/slider.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/south-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/west-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/zoom-minus-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/zoom-panel.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/zoom-plus-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/zoom-world-mini.png -text svneol=unset#unset
+7.x/modules/cdm_dataportal/js/map/img/dark/zoombar.png -text svneol=unset#unset
 7.x/modules/cdm_dataportal/js/map/openlayers_layers.js -text
 7.x/modules/cdm_dataportal/js/map/openlayers_map.js -text
 7.x/modules/cdm_dataportal/js/map/proj4js-1.1.0/defs/EPSG102067.js -text

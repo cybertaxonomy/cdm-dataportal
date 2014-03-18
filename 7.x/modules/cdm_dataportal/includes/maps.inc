@@ -110,7 +110,8 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
       'distributionOpacity' => $map_settings['distribution_opacity'],
       'legendOpacity' => $map_settings['legend']['opacity'],
       'showLayerSwitcher' => $map_settings['openlayers']['show_layer_switcher']  ==  1,
-      'displayOutsideMaxExtent' => $map_settings['openlayers']['display_outside_max_extent'] == 1
+      'displayOutsideMaxExtent' => $map_settings['openlayers']['display_outside_max_extent'] == 1,
+//       'imgPath' => drupal_get_path('module', 'cdm_dataportal') . '/js/map/OpenLayers-2.13.1/img/' // path to the control icons
       // if no baseLayerNames or defaultBaseLayerName are not defined
       // the defaults in cdm_openlayers.js will be used
   );

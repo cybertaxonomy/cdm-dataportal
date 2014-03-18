@@ -127,6 +127,7 @@ function _add_js_openlayers() {
       'type' => 'file',
       'weight' => JS_LIBRARY,
       'cache' => TRUE,
+      'preprocess' => FALSE
     )
   );
 
@@ -137,6 +138,24 @@ function _add_js_openlayers() {
       'type' => 'file',
       'weight' => JS_LIBRARY,
       'cache' => TRUE,
+    )
+  );
+
+  // configure the theme
+  $openlayers_theme_path = drupal_get_path('module', 'cdm_dataportal') . '/js/map/OpenLayers-2.13.1/theme/default/';
+  $openlayers_imp_path = drupal_get_path('module', 'cdm_dataportal') . '/js/map/img/dark/';
+  drupal_add_js('OpenLayers.ImgPath="' . base_path() . $openlayers_imp_path . '";', array(
+      'type' => 'inline',
+      'weight' => JS_LIBRARY,
+      'cache' => TRUE,
+      'preprocess' => FALSE
+    ));
+
+  drupal_add_css($openlayers_theme_path . 'style.tidy.css',
+    array(
+      'type' => 'file',
+      'cache' => TRUE,
+      'preprocess' => FALSE
     )
   );
 

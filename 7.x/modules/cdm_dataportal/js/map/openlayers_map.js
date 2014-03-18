@@ -314,7 +314,9 @@
                         // 1.2933333333333332 = http://b.tile.openstreetmap.org/1.2933333333333332/1/0.png)
                         fractionalZoom: defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.OSM" && defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.XYZ",
 
-                        eventListeners: opts.eventListeners
+                        eventListeners: opts.eventListeners,
+                        // creating the map with a null theme, since we include the stylesheet directly in the page
+                        theme: null
 
                     }
             );
