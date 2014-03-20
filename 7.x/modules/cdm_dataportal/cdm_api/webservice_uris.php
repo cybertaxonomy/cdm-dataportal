@@ -19,6 +19,15 @@ define('CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS', 'portal/name/$0/typeDesignations')
 define('CDM_WS_TAXON', 'taxon');
 define('CDM_WS_TAXON_CLASSIFICATIONS', 'taxon/$0/classifications');
 define('CDM_WS_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'taxon/findByDescriptionElementFullText');
+define('CDM_WS_TAXON_FINDBESTMATCHINGTAXON', '/taxon/bestMatchingTaxon/$0');
+/**
+ * Parameter $0 : the taxon uuid.
+ *
+ * Returns the taxon which is the accepted synonym for the taxon given as
+ * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
+ * accepted taxon, this one will be returned.
+ */
+define('CDM_WS_TAXON_ACCEPTED', 'taxon/$0/accepted/$1');
 
 define('CDM_WS_PORTAL_TAXON', 'portal/taxon');
 define('CDM_WS_PORTAL_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');
@@ -33,20 +42,11 @@ define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
  */
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE', 'portal/taxon/$0/descriptions/elementsByType/$1');
 define('CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS', 'portal/taxon/$0/useDescriptions');
-define('CDM_WS_PORTAL_TAXON_FINDBESTMATCHINGTAXON', 'bestMatchingTaxon/$0');
 define('CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS', 'portal/taxon/$0/toNameRelationships');
 define('CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS', 'portal/taxon/$0/fromNameRelationships');
 define('CDM_WS_PORTAL_TAXON_MEDIA', 'portal/taxon/$0/media');
 define('CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA', 'portal/taxon/$0/subtree/media');
 
-/**
- * Parameter $0 : the taxon uuid.
- *
- * Returns the taxon which is the accepted synonym for the taxon given as
- * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
- * accepted taxon, this one will be returned.
- */
-define('CDM_WS_PORTAL_TAXON_ACCEPTED', 'portal/taxon/$0/accepted/$1');
 define('CDM_WS_PORTAL_TAXON_TAXONNODES', 'portal/taxon/$0/taxonNodes');
 define('CDM_WS_PORTAL_TAXON_FIND', 'portal/taxon/find');
 define('CDM_WS_PORTAL_TAXON_SEARCH', 'portal/taxon/search');

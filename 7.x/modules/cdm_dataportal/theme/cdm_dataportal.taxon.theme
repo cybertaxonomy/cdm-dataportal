@@ -208,13 +208,13 @@ function theme_cdm_list_of_taxa($variables) {
   }
 
   // Batch service not jet implemented:
-  // $table_of_accepted = cdm_ws_property(CDM_WS_PORTAL_TAXON_ACCEPTED,
+  // $table_of_accepted = cdm_ws_property(CDM_WS_TAXON_ACCEPTED,
   // join(',', $synonym_uuids));
   // thus ...
   $table_of_accepted = array();
 
   foreach ($synonym_uuids as $relatedUuid) {
-    $table_of_accepted[$relatedUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array(
+    $table_of_accepted[$relatedUuid] = cdm_ws_get(CDM_WS_TAXON_ACCEPTED, array(
       $relatedUuid,
       $classification_uuid,
     ));
@@ -290,7 +290,7 @@ function theme_cdm_list_of_taxa($variables) {
               'show_annotations' => FALSE,
             )),
             // content_url:
-            cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED,
+            cdm_compose_url(CDM_WS_TAXON_ACCEPTED,
                 array(
                     $taxon->uuid,
                     $classification_uuid
