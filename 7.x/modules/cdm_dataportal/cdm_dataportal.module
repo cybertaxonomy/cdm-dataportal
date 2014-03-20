@@ -724,11 +724,23 @@ function cdm_taxonomictree_selector_form($form, &$form_state) {
     '#value' =>  $destination,
   );
 
+  $options = cdm_get_taxontrees_as_options();
+  $taxontree_includes = variable_get(CDM_TAXONTREE_INCLUDES, null);
+  if($taxontree_includes){
+    $filtered_options = array();
+    foreach($options as $uuid=>$label){
+      if(!empty($taxontree_includes[$uuid])){
+        $filtered_options[$uuid] = $label;
+      }
+    }
+    $options = $filtered_options;
+  }
+
   $form['val'] = array(
     '#type' => 'select',
     '#title' => t('Available classifications'),
     '#default_value' => get_taxonomictree_uuid_selected(),
-    '#options' => cdm_get_taxontrees_as_options(),
+    '#options' => $options,
   );
 
   return $form;

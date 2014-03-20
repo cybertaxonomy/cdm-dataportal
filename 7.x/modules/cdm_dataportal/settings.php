@@ -7,6 +7,7 @@
 // TODO Genus UUID.
 define('DEFAULT_TAXONTREE_RANKLIMIT', '1b11c34c-48a8-4efa-98d5-84f7f66ef43a');
 define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
+define ('CDM_TAXONTREE_INCLUDES', 'taxontree_includes');
 
 define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
 define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
@@ -656,6 +657,16 @@ function cdm_settings_general() {
     '#description' => t('This is the rank of the highest displayed taxon in the
       <em>taxon tree</em>. You can select here which rank should be at the top
       level of the tree structure.'),
+  );
+
+  $classification_uuids = array_keys(cdm_get_taxontrees_as_options());
+  $taxontree_includes_default = array_combine($classification_uuids, $classification_uuids);
+  $form['taxon_tree'][CDM_TAXONTREE_INCLUDES] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Included Classifications') . ':',
+      '#default_value' => variable_get(CDM_TAXONTREE_INCLUDES, $taxontree_includes_default),
+      '#options' => cdm_get_taxontrees_as_options(),
+      '#description' => t('Only the checked classifications will be avaliable in the classification chooser.'),
   );
 
   $form['distribution'] = array(
