@@ -1762,7 +1762,7 @@ function cdm_debug_block_visible() {
 
   if($is_visible === null){
       $block = block_load('cdm_api', 'cdm_ws_debug');
-      $is_visible = isset($block) && $block->status == 1;
+      $is_visible = isset($block->status) && $block->status == 1;
       if($is_visible){
         $blocks = array($block);
         // Checks the page, user role, and user-specific visibilty settings.
@@ -1966,7 +1966,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
 
     // Do not add the DEFAULT_FEATURETREE again,
     if ($featureTree->uuid != UUID_DEFAULT_FEATURETREE) {
-      $options[$featureTree->uuid] = $featureTree->titleCache;
+      $options[$featureTree->uuid] = $featureTree->titleCache;cdm_api.module
     }
 
     // Render the hierarchic tree structure
@@ -2009,7 +2009,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
  * blank line below.
  *
  * @param bool $add_none_option
- *   is true an addtional 'none' option will be added, optional parameter, defaults to FALSE
+ *   is true an addtional 'none' option will be added, optional parameter, defaults to FALSEcdm_api.module
  *
  * @return array
  *   classifications in an array as options for a form element that allows multiple choices.
