@@ -1966,7 +1966,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
 
     // Do not add the DEFAULT_FEATURETREE again,
     if ($featureTree->uuid != UUID_DEFAULT_FEATURETREE) {
-      $options[$featureTree->uuid] = $featureTree->titleCache;cdm_api.module
+      $options[$featureTree->uuid] = $featureTree->titleCache;
     }
 
     // Render the hierarchic tree structure
@@ -2009,7 +2009,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
  * blank line below.
  *
  * @param bool $add_none_option
- *   is true an addtional 'none' option will be added, optional parameter, defaults to FALSEcdm_api.module
+ *   is true an addtional 'none' option will be added, optional parameter, defaults to FALSE
  *
  * @return array
  *   classifications in an array as options for a form element that allows multiple choices.
