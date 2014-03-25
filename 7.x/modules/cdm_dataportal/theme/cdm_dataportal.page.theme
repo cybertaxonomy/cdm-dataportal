@@ -141,7 +141,13 @@ function theme_cdm_taxon_page_synonymy($variables) {
   }
 
   // Render the homotypicSynonymyGroup including the type information.
-  $out .= theme('cdm_homotypicSynonymyGroup', array('synonymList' => $synomymie->homotypicSynonymsByHomotypicGroup, 'accepted_taxon_uuid' => $taxon->uuid));
+  $out .= theme(
+      'cdm_homotypicSynonymyGroup',
+      array(
+          'synonymList' => $synomymie->homotypicSynonymsByHomotypicGroup,
+          'accepted_taxon_name_uuid' => $taxon->name->uuid
+      )
+    );
 
 
   // Render accepted taxon heterotypic synonymy groups.

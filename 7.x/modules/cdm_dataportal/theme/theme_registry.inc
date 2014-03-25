@@ -181,7 +181,7 @@ function cdm_dataportal_theme() {
       'cdm_heterotypicSynonymyGroup' => array('variables' => array('homotypicalGroup' => NULL)),
       'cdm_homotypicSynonymyGroup' => array('variables' => array(
           'synonymList' => NULL,
-          'accepted_taxon_uuid' => NULL,
+          'accepted_taxon_name_uuid' => NULL,
           'prependedSynonyms' => array(),
       )),
       'get_nameRenderTemplate' => array('variables' => array()),

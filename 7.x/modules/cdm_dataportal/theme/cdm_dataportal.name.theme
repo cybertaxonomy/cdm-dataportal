@@ -399,7 +399,7 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
  */
 function theme_cdm_homotypicSynonymyGroup($variables) {
   $synonymList = $variables['synonymList'];
-  $accepted_taxon_uuid = $variables['accepted_taxon_uuid'];
+  $accepted_taxon_name_uuid = $variables['accepted_taxon_name_uuid'];
   $prependedSynonyms = $variables['prependedSynonyms'];
 
   RenderHints::pushToRenderStack('homotypicSynonymyGroup');
@@ -408,7 +408,7 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
 
   // TODO improve typeDesignations retrieval: wouldn't it be suffcient to retrieve all typeDesignations
   // only from the accepted taxon?
-  $accepted_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_TAXON_NAMETYPEDESIGNATIONS, $accepted_taxon_uuid);
+  $accepted_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $accepted_taxon_name_uuid);
 
   $out = '<div class="homotypic-synonymy-group">';
 
@@ -435,6 +435,7 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
   else {
     $type_designations = $homonym_typeDesignations;
   }
+
   if ($type_designations) {
     $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
   }
@@ -875,7 +876,7 @@ function theme_cdm_taxonName($variables) {
     if ($uri) {
       // cannot use l() here since the #uri aleady should have been processed through uri() at this point
       $out .= $separator . '<a href="' . $uri . '" class="' . $partName . '">' . $partHtml . '</a>';
-    
+
     }
     else {
       $out .= $separator . $partHtml;
