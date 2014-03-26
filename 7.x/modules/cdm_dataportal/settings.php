@@ -820,6 +820,8 @@ function cdm_settings_general() {
     '#weight' => 1000,
   );
 
+  $form['#submit'][] = 'cdm_settings_general_submit';
+
   return system_settings_form($form);
 }
 
@@ -2286,11 +2288,8 @@ function cdm_settings_layout_search_submit($form, &$form_state){
 /**
  * Form validation handler for cdm_settings_general
  *
- * Comment @WA: currently this handler is not used.
- * It seems partly for cdm_settings_general en partly for cdm_settings_cache?
- * Then you can change the name into cdm_settings_general_validate() or
- * cdm_settings_cache_validate().
- * But cdm_api_secref_cache_clear is not doing anything (yet)?
+ * @param $form
+ * @param $form_state
  */
 function cdm_settings_general_validate($form, &$form_state) {
 
@@ -2298,6 +2297,20 @@ function cdm_settings_general_validate($form, &$form_state) {
     $form_state['values']['cdm_webservice_url'] .= '/';
   }
 
+}
+
+/**
+ * Form submit handler for settings general.
+ *
+ * tasks performed:
+ *  - clear the [cdm][taxonomictree_uuid] session variable since this taxonomictree_uuid might no longer bee valid
+ *
+ * @param $form
+ * @param $form_state
+ */
+function cdm_settings_general_submit($form, &$form_state){
+  // clear the [cdm][taxonomictree_uuid] session variable since this taxonomictree_uuid might no longer bee valid
+  unset($_SESSION['cdm']['taxonomictree_uuid']);
 }
 
 /**
