@@ -689,15 +689,15 @@ function cdm_dataportal_block_view($delta) {
  */
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * creates a  selector form for taxonomic trees.
+ *
+ * @return a drupal form array
  */
 function cdm_taxonomictree_selector() {
   _add_js_treeselector();
 
   $form = drupal_get_form('cdm_taxonomictree_selector_form');
-  $out = drupal_render($form);
-  return $out;
+  return $form;
 }
 
 /**

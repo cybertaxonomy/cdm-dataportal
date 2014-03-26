@@ -74,8 +74,9 @@ function cdm_taxontree_block_view($delta) {
       $magicbox_enable = variable_get('cdm_taxontree_magicbox_enable', 0);
 
       $block['content'] = '';
-      if (count(cdm_get_taxontrees_as_options()) > 1) {
-        $block['content'] = cdm_taxonomictree_selector();
+      $taxonomictree_selector_form = cdm_taxonomictree_selector();
+      if (count($taxonomictree_selector_form['val']['#options']) > 1) {
+        $block['content'] = drupal_render($taxonomictree_selector_form);
       }
       $block['content'] .= theme('cdm_taxontree_block', array(
         'tree' => $tree,
