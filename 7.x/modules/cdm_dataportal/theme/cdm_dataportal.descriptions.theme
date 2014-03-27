@@ -389,8 +389,14 @@ function theme_cdm_descriptionElementArray($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Theme function to render CDM DescriptionElements of the type CommonTaxonName.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *  - element: the CommonTaxonName element
+ * @return a html representation of the given CommonTaxonName element
+ *
+ * @ingroup themeable
  */
 function theme_cdm_descriptionElement_CommonTaxonName($variables) {
   $element = $variables['element'];
@@ -399,8 +405,14 @@ function theme_cdm_descriptionElement_CommonTaxonName($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Theme function to render CDM DescriptionElements of the type CategoricalData.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *  - element: the CategoricalData element
+ * @return a html representation of the given CategoricalData element
+ *
+ * @ingroup themeable
  */
 function theme_cdm_descriptionElement_CategoricalData($variables) {
   $element = $variables['element'];
@@ -432,6 +444,16 @@ function theme_cdm_descriptionElement_CategoricalData($variables) {
   return $out . $footnote_key_list_str;
 }
 
+/**
+ * Theme function to render CDM DescriptionElements of the type QuantitativeData.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *  - element: the QuantitativeData element
+ * @return a html representation of the given QuantitativeData element
+ *
+ * @ingroup themeable
+ */
 function theme_cdm_descriptionElement_QuantitativeData($variables) {
   /*
    * - statisticalValues
@@ -481,6 +503,12 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
 /**
  * Theme function to render CDM DescriptionElements of the type IndividualsAssociations.
  *
+ * @param array $variables
+ *   An associative array containing:
+ *  - element: the IndividualsAssociations element
+ * @return html representation of the given IndividualsAssociations element
+ *
+ * @ingroup themeable
  */
 function theme_cdm_descriptionElement_IndividualsAssociation($variables) {
 
@@ -506,6 +534,12 @@ function theme_cdm_descriptionElement_IndividualsAssociation($variables) {
 /**
  * Theme function to render CDM DescriptionElements of the type TaxonInteraction.
  *
+ * @param array $variables
+ *   An associative array containing:
+ *  - element: the TaxonInteraction element
+ * @return html representation of the given TaxonInteraction element
+ *
+ * @ingroup themeable
  */
 function theme_cdm_descriptionElement_TaxonInteraction($variables) {
 
