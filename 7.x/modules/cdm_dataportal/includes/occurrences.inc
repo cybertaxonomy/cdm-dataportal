@@ -98,7 +98,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
           /* ---- java.lang.Object --- */
           case 'class':
-            if($value != '' /* FieldObservation' */){
+            if($value != '' /* FieldUnit' */){
               @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
             }
           break;
