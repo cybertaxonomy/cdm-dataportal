@@ -124,6 +124,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
           /* ---- SpecimenOrObservationBase --- */
           case 'sex':
           case 'lifeStage':
+          case 'kindOfUnit':
             @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->representation_L10n);
             break;
 
