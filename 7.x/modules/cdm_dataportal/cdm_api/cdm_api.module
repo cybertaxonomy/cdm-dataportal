@@ -760,6 +760,8 @@ function proxy_content($uri, $hook = NULL) {
   $hook = array_shift($args);
   $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
 
+  $post_data = null;
+
   if ($request_method == "POST" || $request_method == "PUT") {
     // read response body via inputstream module
     $post_data = file_get_contents("php://input");
