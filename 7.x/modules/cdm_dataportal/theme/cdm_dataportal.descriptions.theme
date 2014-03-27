@@ -406,8 +406,8 @@ function theme_cdm_descriptionElement_CategoricalData($variables) {
   $element = $variables['element'];
 
   $state_data_strings = array();
-  if (isset($element->states)) {
-    foreach ($element->states as $stateData) {
+  if (isset($element->stateData)) {
+    foreach ($element->stateData as $stateData) {
 
       $state  = NULL;
 
@@ -423,12 +423,13 @@ function theme_cdm_descriptionElement_CategoricalData($variables) {
 
       $state_data_strings[] = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
 
-      // FIXME render sources and annotations
-
     }
   }
+
+  $footnote_key_list_str = cdm_create_description_element_footnotes($element);
+
   $out = '<span class="' . html_class_atttibute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
-  return $out;
+  return $out . $footnote_key_list_str;
 }
 
 function theme_cdm_descriptionElement_QuantitativeData($variables) {
