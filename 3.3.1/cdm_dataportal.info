@@ -1,0 +1,14 @@
+name = "CDM Dataportal"
+description = "The dataportal publishes CDM data hosted in a CommunityStore on the web."
+version = 7.x-3.x
+package = "CDM"
+dependencies[] = cdm_api
+dependencies[] = cdm_taxontree
+core = 7.x
+files[] = classes/footnote.php
+files[] = classes/footnotekey.php
+files[] = classes/footnotemanager.php
+files[] = classes/renderhints.php
+
+
+configure = admin/config/cdm_dataportal/settings
