@@ -1,0 +1,156 @@
+/**
+ * @file
+ * cdm_dataportal specific styling
+ *
+ * Style the markup found in the cdm_dataportal module.
+ */
+
+@import "base";
+
+
+$page-part-margin: $base-line-height * 2;
+
+#featureTOC {
+	float:right;
+}
+
+#taxonProfileImage{
+	float: left;
+}
+
+.block-cdm-dataportal-feature,  .media-caption, .specimens {
+	clear: both;
+	margin-bottom: $page-part-margin;   
+	dt {
+	    float: left;
+	    font-weight: bold;
+	    margin-right: 0.3em;
+	}
+	dd {
+		margin: 0;
+		margin-left: $zen-gutter-width;
+	}
+	dl dl {
+		margin: 0; /* reset default from cdm_dataportal.css */
+	}
+}
+
+
+#backButton {
+	text-align: right;
+}
+
+/*
+ * Searchresults
+ */
+
+
+#search_results{
+	@include cdm-link-style;
+
+	table {
+		margin: 1em 0;
+	}
+}
+
+ul.cdm_names li {
+  margin: $base-line-height / 2 0; 
+}
+
+/*
+ * Taxon page and parts
+ */
+
+.page-part {
+	margin-bottom: $page-part-margin;
+}
+
+/*
+ * Synonymy
+ */
+
+//ul.homotypicSynonyms,
+//ul.heterotypicSynonymyGroup {
+//  border-bottom:1px solid #dedede;
+//}
+
+/*
+ * Media
+ */
+dl.media-caption {
+	margin: 0;
+}
+.media-caption {
+	dd {
+		margin-left: 0;
+		.title {
+			font-size: 100%;
+		}
+	}
+}
+.image-gallerie td.caption {
+	padding-bottom: 1em;
+}
+
+/*
+ * specimens
+ */ 
+#specimens {
+	table.media_gallery {
+		margin-top: 0.2em;
+	}
+	.description_list {
+		clear: both;
+		h3 {
+			margin-top: 0;
+			background-color: #ddd;
+		}
+		h4 {
+			clear: left;
+			margin-bottom: 0;
+			font-style: italic;
+		}
+	}
+	.dynabox_content {
+		margin-left: $zen-gutter-width / 2;
+		margin-right: $zen-gutter-width / 2;
+	}
+	.block-cdm-dataportal-feature {
+		margin-left: $zen-gutter-width;
+		margin-bottom: 0;
+		h2 {
+			font-size: $base-font-size;
+			line-height: $base-line-height;
+			font-weight: bold;
+		}
+	}
+	ul.typeDesignations {
+		clear: both;
+	}
+	.dna-sequence div {
+		font-size: $base-font-size;
+    	font-family: monospace;
+		clear: left;
+		padding-left: $zen-gutter-width;
+	}
+	.derived_from {
+		clear: both;
+	}
+}
+
+
+/*
+ * Theme settings page
+ */
+#system-theme-settings {
+
+	.image-preview {
+		width: 600px;
+		max-height: 150px;
+		overflow: auto; // let it scroll
+		img {
+			max-width: none; /* reset style in mormalize.scss */ 
+		}
+		
+	}
+}
