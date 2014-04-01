@@ -1442,14 +1442,14 @@ function &cdm_feature_tree_find_node($feature_tree_nodes, $feature_uuid){
   // 2. descend into childen
   foreach ($feature_tree_nodes as $node){
     if(is_array($node->childNodes)){
-      $node = cdm_feature_tree_find_node($node->children);
+      $node = cdm_feature_tree_find_node($node->childNodes, $feature_uuid);
       if($node) {
         return $node;
       }
     }
   }
-
-  return null;
+  $null_var = null; // kludgy workaround to avoid "PHP Notice: Only variable references should be returned by reference"
+  return $null_var;
 }
 
 /**
