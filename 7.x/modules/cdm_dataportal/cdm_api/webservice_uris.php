@@ -32,7 +32,6 @@ define('CDM_WS_TAXON_ACCEPTED', 'taxon/$0/accepted/$1');
 define('CDM_WS_PORTAL_TAXON', 'portal/taxon');
 define('CDM_WS_PORTAL_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');
 define('CDM_WS_PORTAL_TAXON_RELATIONS', 'portal/taxon/$0/taxonRelationships');
-define('CDM_WS_PORTAL_TAXON_NAMERELATIONS', 'portal/taxon/$0/nameRelationships');
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS', 'portal/taxon/$0/descriptions');
 
 /**

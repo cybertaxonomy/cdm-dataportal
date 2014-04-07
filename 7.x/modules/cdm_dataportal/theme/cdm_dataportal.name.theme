@@ -279,57 +279,6 @@ function compare_specimenTypeDesignationStatus($a, $b) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_nameRelationships($variables) {
-  $nameRelationships = $variables['nameRelationships'];
-  $skipTypes = $variables['skipTypes'];
-  if (!$nameRelationships) {
-    return;
-  }
-
-  RenderHints::pushToRenderStack('nameRelationships');
-  $footnoteListKey = 'nameRelationships';
-  RenderHints::setFootnoteListKey($footnoteListKey);
-
-  // Group by relationship type.
-  $relationshipGroups = array();
-  foreach ($nameRelationships as $nameRelationship) {
-    if (!array_key_exists($nameRelationship->type->uuid, $relationshipGroups)) {
-      $relationshipGroups[$nameRelationship->type->uuid] = array();
-    }
-    $relationshipGroups[$nameRelationship->type->uuid][] = $nameRelationship;
-  }
-
-  // Generate output.
-  $out = '';
-  $block = new stdclass(); // Empty object.
-  foreach ($relationshipGroups as $group) {
-    $type = $group[0]->type;
-
-    if (is_array($skipTypes) && in_array($type->uuid, $skipTypes)) {
-      continue;
-    }
-
-    $block->module = 'cdm_dataportal';
-    $block->subject = t(ucfirst($type->inverseRepresentation_L10n));
-    $block->delta = generalizeString(strtolower($type->inverseRepresentation_L10n));
-
-    foreach ($group as $relationship) {
-      $relatedNames[] = cdm_taggedtext2html($relationship->fromName->taggedName);
-    }
-
-    $block->content = implode('; ', $relatedNames);
-    $out .= theme('block', array('elements'=>array('#block' =>$block)));
-  }
-  $out .= theme('cdm_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
-
-  RenderHints::popFromRenderStack();
-  return $out;
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
 function theme_cdm_homotypicSynonymLine($variables) {
   $taxon = $variables['taxon'];
   $out = '';
