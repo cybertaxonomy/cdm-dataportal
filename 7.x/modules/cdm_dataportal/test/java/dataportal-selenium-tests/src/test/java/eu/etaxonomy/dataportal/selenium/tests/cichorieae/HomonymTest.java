@@ -41,11 +41,11 @@ public class HomonymTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle("Pilosella guthnikiana"), driver.getTitle());
         assertEquals("Pilosella guthnikiana (Hegetschw.) Soják in Preslia 43: 185. 1971", p.getAcceptedNameText());
 
-//        assertEquals("= Hieracium multiflorum Gaudin, Fl. Helv. 5: 87. 1829 [non Hieracium multiflorum Gray 1821]", p.getHeterotypicalGroupSynonymName(1, 1));
-//        assertEquals("= Hieracium cruentum Nägeli & Peter, Hierac. Mitt.-Eur. 1: 455, 811. 1885, nom. illeg. [non Hieracium cruentum Jord. 1849]", p.getHeterotypicalGroupSynonymName(6, 1));
+        assertEquals("= Hieracium multiflorum Gaudin, Fl. Helv. 5: 87. 1829 [non Hieracium multiflorum Gray 1821]", p.getHeterotypicalGroupSynonymName(1, 1));
+        assertEquals("= Hieracium cruentum Nägeli & Peter, Hierac. Mitt.-Eur. 1: 455, 811. 1885, nom. illeg. [non Hieracium cruentum Jord. 1849]", p.getHeterotypicalGroupSynonymName(6, 1));
 
-        assertEquals("= Hieracium multiflorum Gaudin, Fl. Helv. 5: 87. 1829 [non Hieracium multiflorum Gray, 1821]", p.getHeterotypicalGroupSynonymName(1, 1));
-        assertEquals("= Hieracium cruentum Nägeli & Peter, Hierac. Mitt.-Eur. 1: 455, 811. 1885, nom. illeg. [non Hieracium cruentum Jord., Jard. Bot. Grenoble, Cat. Graines 1849: 18. 1849]", p.getHeterotypicalGroupSynonymName(6, 1));
+//        assertEquals("= Hieracium multiflorum Gaudin, Fl. Helv. 5: 87. 1829 [non Hieracium multiflorum Gray, 1821]", p.getHeterotypicalGroupSynonymName(1, 1));
+//        assertEquals("= Hieracium cruentum Nägeli & Peter, Hierac. Mitt.-Eur. 1: 455, 811. 1885, nom. illeg. [non Hieracium cruentum Jord., Jard. Bot. Grenoble, Cat. Graines 1849: 18. 1849]", p.getHeterotypicalGroupSynonymName(6, 1));
     }
 
     @Test
@@ -55,7 +55,9 @@ public class HomonymTest extends CdmDataPortalTestBase{
         assertEquals("Lactuca glandulifera Hook. f. in J. Linn. Soc., Bot. 7: 203. 1864", p.getAcceptedNameText());
 
 
-        assertEquals("= Lactuca integrifolia De Wild., Pl. Bequaert. 5: 456. 1932, nom. illeg. [non Lactuca integrifolia Nutt., Gen. N. Amer. Fl. 2: 124. 1818, nom. illeg. nec Lactuca integrifolia Bigelow, Fl. Boston., ed. 2: 287. 1824, nom. illeg.]", p.getHeterotypicalGroupSynonymName(3, 1));
+        assertEquals("= Lactuca integrifolia De Wild., Pl. Bequaert. 5: 456. 1932, nom. illeg. [non Lactuca integrifolia Nutt. 1818 nec Lactuca integrifolia Bigelow 1824]", p.getHeterotypicalGroupSynonymName(3, 1));
+
+//        assertEquals("= Lactuca integrifolia De Wild., Pl. Bequaert. 5: 456. 1932, nom. illeg. [non Lactuca integrifolia Nutt., Gen. N. Amer. Fl. 2: 124. 1818, nom. illeg. nec Lactuca integrifolia Bigelow, Fl. Boston., ed. 2: 287. 1824, nom. illeg.]", p.getHeterotypicalGroupSynonymName(3, 1));
    }
 
     @Test
@@ -64,8 +66,10 @@ public class HomonymTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle("Dubyaea hispida"), driver.getTitle());
         assertEquals("Dubyaea hispida DC., Prodr. 7: 247. 1838, nom. nov.", p.getAcceptedNameText());
 
+        assertEquals("≡ Hieracium hispidum D. Don, Prodr. Fl. Nepal.: 165. 1825 [non Hieracium hispidum Forssk. 1775]", p.getHomotypicalGroupSynonymName(1));
+        assertEquals("≡ Lactuca dubyaea C. B. Clarke, Compos. Ind.: 271. 1876 [non Lactuca hispida DC. ]", p.getHomotypicalGroupSynonymName(3));
 
-        assertEquals("≡ Hieracium hispidum D. Don, Prodr. Fl. Nepal.: 165. 1825 [non Hieracium hispidum Forssk., Fl. Aegypt.-Arab.: 216. 1775]", p.getHomotypicalGroupSynonymName(1));
-        assertEquals("≡ Lactuca dubyaea C. B. Clarke, Compos. Ind.: 271. 1876 [non Lactuca hispida DC.]", p.getHomotypicalGroupSynonymName(3));
+//        assertEquals("≡ Hieracium hispidum D. Don, Prodr. Fl. Nepal.: 165. 1825 [non Hieracium hispidum Forssk., Fl. Aegypt.-Arab.: 216. 1775]", p.getHomotypicalGroupSynonymName(1));
+//        assertEquals("≡ Lactuca dubyaea C. B. Clarke, Compos. Ind.: 271. 1876 [non Lactuca hispida DC.]", p.getHomotypicalGroupSynonymName(3));
    }
 }
