@@ -317,8 +317,8 @@ function theme_cdm_nameRelationships($variables) {
       $relatedNames[] = cdm_taggedtext2html($relationship->fromName->taggedName);
     }
 
-    $block->content .= implode('; ', $relatedNames);
-    $out .= theme('block', $block);
+    $block->content = implode('; ', $relatedNames);
+    $out .= theme('block', array('elements'=>array('#block' =>$block)));
   }
   $out .= theme('cdm_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
 
@@ -800,6 +800,12 @@ function theme_cdm_taxonName($variables) {
       }
       $referenceArray['#html'] = ' <span class="reference">' . $lastAuthorElementString . $separator . $citation . '</span>';
       array_setr('authors', $referenceArray, $renderTemplate);
+    }
+  }
+  if (isset($renderTemplate['referenceYearPart']['reference.year'])) {
+    if(isset($taxonName->nomenclaturalReference->datePublished)){
+      $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxonName->nomenclaturalReference->datePublished) . '</span>';
+      array_setr('reference.year', $referenceArray, $renderTemplate);
     }
   }
 

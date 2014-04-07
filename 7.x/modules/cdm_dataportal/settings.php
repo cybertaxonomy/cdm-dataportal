@@ -138,6 +138,7 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
         'namePart' => array('name' => TRUE),
         'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
         'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
+        'referenceYearPart' => array('reference.year' => TRUE),
         'statusPart' => array('status' => TRUE),
         'descriptionPart' => array('description' => TRUE),
       ),
@@ -176,6 +177,10 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
           'referencePart' => TRUE,
           'statusPart' => TRUE,
           'descriptionPart' => TRUE,
+        ),
+       'homonym'=> array(
+            'nameAuthorPart' => array('#uri' => TRUE),
+            'referenceYearPart' => TRUE,
         ),
       'acceptedFor,typedesignations,list_of_taxa' => array(
           'nameAuthorPart' => array('#uri' => TRUE),
@@ -951,15 +956,16 @@ function cdm_settings_layout() {
           <p>
            These elements are combined in the part definitions array to from the specific parts to be rendered.
            (The taxon name "Lapsana communis L., Sp. Pl.: 811. 1753" shall be an example in the following)
-           Usually the following parts are formed:
+           The following parts can be formed and are recognized by the system:
           <ul>
-            <li>namePart: the name and rank (in example: "Lapsana communis")</li>
-            <li>authorshipPart: the author (in example: "L.")</li>
-            <li>nameAuthorPart: the combination of name and author part (in example: "Lapsana communis L.").</li>
+            <li>namePart: the name and rank (for example: "Lapsana communis")</li>
+            <li>authorshipPart: the author (for example: "L.")</li>
+            <li>nameAuthorPart: the combination of name and author part (for example: "Lapsana communis L.").</li>
                This is useful for zoological names where the authorshipPart belongs to the name and both should</li>
                be combined when a link to the taxon is rendered.</li>
-            <li>referencePart: the nomencaltural reference (in example: "Sp. Pl. 1753")</li>
-            <li>microreferencePart: usually the page number (in example ": 811.")</li>
+            <li>referencePart: the nomencaltural reference (for example: "Sp. Pl. 1753")</li>
+          <li>referenceYearPart: the publication year of the nomencaltural reference (for example: "1753")</li>
+            <li>microreferencePart: usually the page number (for example ": 811.")</li>
             <li>statusPart: the nomenclatorical status</li>
             <li>descriptionPart: name descriptions like protologues etc ...</li>
           </ul>
@@ -1028,8 +1034,9 @@ function cdm_settings_layout() {
           render path. The render path is used as key of the array sub subelements whereas the name render template array is set as value.
           The following render Path keys are curretly recognized:
           <ul>
-            <li>list_of_taxa:</li>
-            <li>acceptedFor:</li>
+            <li>list_of_taxa</li>
+            <li>acceptedFor</li>
+            <li>homonym</li>
             <li>taxon_page_synonymy</li>
             <li>typedesignations</li>
             <li>taxon_page_title</li>

@@ -161,20 +161,21 @@ function theme_cdm_taxon_page_synonymy($variables) {
     $taxonRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, $taxon->uuid);
     $out .= theme('cdm_taxonRelationships', array('taxonRelationships' => $taxonRelationships, 'focusedTaxon' => $taxon));
   }
+
   // Render name relationships.
-  $name_rels_to_show = variable_get('name_relationships_to_show', NULL);
-  $skip = array();
-  if ($name_rels_to_show) {
-    foreach ($name_rels_to_show as $key => $value) {
-      if ($value === 0) {
-        $skip[] = $key;
-      }
-    }
-    if (sizeof($name_rels_to_show) != sizeof($skip)) {
-      $nameRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
-      $out .= theme('cdm_nameRelationships', array('nameRelationships' => $nameRelationships, 'skipTypes' => $skip));
-    }
-  }
+//   $name_rels_to_show = variable_get('name_relationships_to_show', NULL);
+//   $skip = array();
+//   if ($name_rels_to_show) {
+//     foreach ($name_rels_to_show as $key => $value) {
+//       if ($value === 0) {
+//         $skip[] = $key;
+//       }
+//     }
+//     if (sizeof($name_rels_to_show) != sizeof($skip)) {
+//       $nameRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
+//       $out .= theme('cdm_nameRelationships', array('nameRelationships' => $nameRelationships, 'skipTypes' => $skip));
+//     }
+//   }
 
   RenderHints::popFromRenderStack();
 

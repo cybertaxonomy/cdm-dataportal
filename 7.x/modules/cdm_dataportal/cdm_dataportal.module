@@ -1211,8 +1211,15 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
  * The node page shows the taxon name title and the list of taxon related
  * with such taxon. Name on the tree already in use.
  *
- * @param string $taxon_name_uuid
- *   A taxon name UUID.
+ * @param UUID $taxon_name_uuid
+ *   The uuid of the CDM TaxonNameBase to show a name page for
+ * @param UUID $taxon_to_hide_uuid
+ *   A taxon which should not be displayed in the taxon list
+ * @param UUID $highlite_synonym_uuid
+ *   Optinal parameter wich takes another taxon uuid, if given the
+ *   target taxon pages will show the syonymy tab where the taxon
+ *   refenrenced by the $highlite_synonym_uuid will be highlighted
+ *   in case it is found on this page.
  *
  * @return mixed
  *   The formatted name page as node.
@@ -1560,13 +1567,30 @@ function path_to_reference($uuid) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates the path to a cdm_dataportal taxon name page.
+ *
+ * @param UUID $taxon_name_uuid
+ *   The uuid of the CDM TaxonNameBase to show a name page for
+ * @param UUID $taxon_to_hide_uuid
+ *   A taxon which should not be displayed in the taxon list
+ * @param UUID $highlite_synonym_uuid
+ *   Optinal parameter wich takes another taxon uuid, if given the
+ *   target taxon pages will show the syonymy tab where the taxon
+ *   refenrenced by the $highlite_synonym_uuid will be highlighted
+ *   in case it is found on this page.
+ *
+ * @return a URI path element as string
  */
-function path_to_name($name_uuid) {
+function path_to_name($name_uuid, $taxon_to_hide_uuid = NULL, $synonym_uuid  = NULL) {
   $res = FALSE;
   if ($name_uuid) {
     $res = 'cdm_dataportal/name/' . $name_uuid;
+  }
+  if($taxon_to_hide_uuid){
+    $res .= '/' . $taxon_to_hide_uuid;
+    if($synonym_uuid){
+      $res .= '/' . $synonym_uuid;
+    }
   }
   return $res;
 }
