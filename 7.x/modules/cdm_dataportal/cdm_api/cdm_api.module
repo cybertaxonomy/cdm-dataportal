@@ -576,14 +576,27 @@ function partialToDay($partial) {
  * @param bool $stripZeros
  *   If set to TRUE the zero (00) month and days will be hidden:
  *   eg 1956-00-00 becomes 1956. The default is TRUE.
+ * @param string @format
+ * 	 Can ve used to specify the format of the date string, currently the following format strings are supported
+ *    - "YYYY": Year only
+ *    - "YYYY-MM-DD": this is the default
  *
  * @return string
  *   YYYY-MM-DD formatted year, month, day.
  */
-function partialToDate($partial, $stripZeros = TRUE) {
-  $y = partialToYear($partial);
-  $m = partialToMonth($partial);
-  $d = partialToDay($partial);
+function partialToDate($partial, $stripZeros = TRUE, $format= "YYYY-MM-DD") {
+
+  $y = NULL; $m = NULL; $d = NULL;
+
+  if(strpos($format, 'YY')){
+    $y = partialToYear($partial);
+  }
+  if(strpos($format, 'MM')){
+    $m = partialToMonth($partial);
+  }
+  if(strpos($format, 'DD')){
+    $d = partialToDay($partial);
+  }
 
   $y = $y ? $y : '00';
   $m = $m ? $m : '00';
@@ -624,20 +637,25 @@ function partialToDate($partial, $stripZeros = TRUE) {
  * @param bool $stripZeros
  *   If set to True, the zero (00) month and days will be hidden:
  *   eg 1956-00-00 becomes 1956. The default is TRUE.
+ * @param string @format
+ * 	 Can ve used to specify the format of the date string, currently the following format strings are supported
+ *    - "YYYY": Year only
+ *    - "YYYY-MM-DD": this is the default
  *
  * @return string
  *   Returns a date in the form of a string.
  */
-function timePeriodToString($period, $stripZeros = TRUE) {
+function timePeriodToString($period, $stripZeros = TRUE, $format = "YYYY-MM-DD") {
   $dateString = '';
   if ($period->start) {
-    $dateString = partialToDate($period->start, $stripZeros);
+    $dateString = partialToDate($period->start, $stripZeros, $format);
   }
   if ($period->end) {
-    $dateString .= (strlen($dateString) > 0 ? ' ' . t('to') . ' ' : '') . partialToDate($period->end, $stripZeros);
+    $dateString .= (strlen($dateString) > 0 ? ' ' . t('to') . ' ' : '') . partialToDate($period->end, $stripZeros, $format);
   }
   return $dateString;
 }
+
 /**
  * returns the earliest date available in the $period in a normalized
  * form suitable for sorting, e.g.:
