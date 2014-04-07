@@ -588,13 +588,13 @@ function partialToDate($partial, $stripZeros = TRUE, $format= "YYYY-MM-DD") {
 
   $y = NULL; $m = NULL; $d = NULL;
 
-  if(strpos($format, 'YY')){
+  if(strpos($format, 'YY') !== FALSE){
     $y = partialToYear($partial);
   }
-  if(strpos($format, 'MM')){
+  if(strpos($format, 'MM') !== FALSE){
     $m = partialToMonth($partial);
   }
-  if(strpos($format, 'DD')){
+  if(strpos($format, 'DD') !== FALSE){
     $d = partialToDay($partial);
   }
 
