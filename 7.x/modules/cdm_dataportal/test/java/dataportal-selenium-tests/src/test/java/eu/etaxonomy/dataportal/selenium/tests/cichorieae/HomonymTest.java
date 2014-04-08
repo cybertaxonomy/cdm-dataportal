@@ -62,6 +62,6 @@ public class HomonymTest extends CdmDataPortalTestBase{
         assertEquals("Dubyaea hispida DC., Prodr. 7: 247. 1838, nom. nov.", p.getAcceptedNameText());
 
         assertEquals("≡ Hieracium hispidum D. Don, Prodr. Fl. Nepal.: 165. 1825 [non Hieracium hispidum Forssk. 1775]", p.getHomotypicalGroupSynonymName(1));
-        assertEquals("≡ Lactuca dubyaea C. B. Clarke, Compos. Ind.: 271. 1876 [non Lactuca hispida DC.]", p.getHomotypicalGroupSynonymName(3));
+        assertEquals("≡ Lactuca dubyaea C. B. Clarke, Compos. Ind.: 271. 1876 [non Lactuca hispida DC. 1838]", p.getHomotypicalGroupSynonymName(3));
    }
 }
