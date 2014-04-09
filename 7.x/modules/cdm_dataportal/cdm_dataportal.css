@@ -89,6 +89,11 @@ ul.primary img.refresh {
   width: 14px;
 }
 
+/* this is used to highlite the first element in the classification chooser */
+select.highlite-first-child option:first-child {
+  font-weight: bold;
+}
+
 /*
  * ======= Search-Form =======
  */

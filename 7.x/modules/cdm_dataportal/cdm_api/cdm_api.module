@@ -2052,9 +2052,6 @@ function cdm_get_taxontrees_as_options($add_none_option = FALSE) {
         $taxonomic_tree_options[$tree->uuid] = $tree->titleCache;
       } else {
         $taxonomic_tree_options[$tree->uuid] = '  '; // two Space characters to force on top but below 'none' option , will be replaced below by titleCache
-        if (count($taxonTrees) > 1) {
-          $taxonomic_tree_options[''] = '   '; // three Space characters for an empy line below
-        }
         $default_classification_label = $tree->titleCache;
       }
     }

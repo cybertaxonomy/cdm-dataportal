@@ -741,6 +741,7 @@ function cdm_taxonomictree_selector_form($form, &$form_state) {
     '#title' => t('Available classifications'),
     '#default_value' => get_taxonomictree_uuid_selected(),
     '#options' => $options,
+    '#attributes' => array('class' => array('highlite-first-child'))
   );
 
   return $form;
