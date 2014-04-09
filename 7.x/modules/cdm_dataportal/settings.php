@@ -1518,6 +1518,7 @@ function cdm_settings_layout_taxon() {
       synonym you want to see the "accept of" text for the accepted synonym.'),
   );
 
+  /* === currently unused ===
   $nameRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE);
   $form['taxon_synonymy']['name_relationships']['name_relationships_to_show'] = array(
     '#type' => 'checkboxes',
@@ -1527,6 +1528,7 @@ function cdm_settings_layout_taxon() {
     '#description' => t('Select the name relationships you want to show for the
       accepted taxa.'),
   );
+ */
 
   $form['taxon_synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
