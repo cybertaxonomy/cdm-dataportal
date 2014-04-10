@@ -1,5 +1,0 @@
-name = "CDM API"
-description = "CDM Web Service API"
-version = 7.x-3.0
-package = "CDM"
-core = 7.x
