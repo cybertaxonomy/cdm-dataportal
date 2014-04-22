@@ -312,7 +312,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
       );
 
       // 5. put all disitribution data into the distribution feature node
-      if($distribution_text_data || $distribution_info_dto) {
+      if($distribution_text_data || ($distribution_info_dto && isset($distribution_info_dto->tree) && $distribution_info_dto->tree->rootElement->numberOfChildren>0)) {
         $distribution_node->descriptionElements = array('#type' => 'DTO');
         if($distribution_text_data){
           $distribution_node->descriptionElements['TextData'] = $distribution_text_data;
