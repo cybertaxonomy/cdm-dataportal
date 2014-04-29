@@ -100,7 +100,12 @@ function palmweb_2_cdm_feature_nodes($variables){
     $subRank = "species";
   }
   if ($taxon->name->rank->titleCache == "Species") {
-    $subRank = "infraspecific taxa";
+  	if($numberOfChildren==1){
+    	$subRank = "infraspecific taxon";
+  	}
+  	else{
+    	$subRank = "infraspecific taxa";
+  	}
   }
   if ($numberOfChildren != 0) {
     $out .= '<a name="number_of_taxa"> </a><H2>Number of Taxa</H2><div class="content"> <ul class="description">';
