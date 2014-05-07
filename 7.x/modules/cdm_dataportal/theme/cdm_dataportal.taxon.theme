@@ -516,6 +516,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
 
   if ($name_relations) {
     foreach ( $name_relations as $element ) {
+      $taxon_html = null;
       switch ($element->type->uuid) {
           case UUID_LATER_HOMONYM :
               $elementTaxonBasesUuid = isset ($element->toName->taxonBases [0]->uuid) ? $element->toName->taxonBases [0]->uuid : '';
@@ -553,7 +554,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
           default:
               $taxon_html = null;
       }
-      if ($taxon_html) {
+      if (isset($taxon_html) && $taxon_html) {
         if (count ( $homonyms_array )) {
           $homonyms_array [] = 'nec ' . $taxon_html;
         } else {
