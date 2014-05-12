@@ -1,0 +1,9 @@
+name = Palmweb_2
+description = Subtheme from Garland for Palmweb
+package = CDM_Portal
+base theme = garland
+version = 1.0
+core = 7.x
+stylesheets[all][] = style.css
+stylesheets[all][] = cdm_style.css
+scripts[] = print.js
