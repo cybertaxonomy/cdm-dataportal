@@ -521,7 +521,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
           case UUID_LATER_HOMONYM :
               $elementTaxonBasesUuid = isset ($element->toName->taxonBases [0]->uuid) ? $element->toName->taxonBases [0]->uuid : '';
 
-              //from relation ships -> only shown at after fromName-synonym
+              //from relation ships -> only shown at fromName-synonym
               if ($taxon->name->uuid == $element->fromName->uuid) {
                   $taxon_html = theme('cdm_taxonName', array(
                       'taxonName' => $element->toName,
@@ -532,7 +532,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
           case UUID_TREATED_AS_LATER_HOMONYM :
               $elementTaxonBasesUuid = isset ($element->toName->taxonBases [0]->uuid) ? $element->toName->taxonBases [0]->uuid : '';
 
-              //from relation ships -> only shown at after fromName-synonym
+              //from relation ships -> only shown at fromName-synonym
               if ($taxon->name->uuid == $element->fromName->uuid) {
                   $taxon_html = theme('cdm_taxonName', array(
                       'taxonName' => $element->toName,
@@ -543,7 +543,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
           case UUID_BLOCKING_NAME_FOR :
               $elementTaxonBasesUuid = isset ($element->fromName->taxonBases [0]->uuid) ? $element->fromName->taxonBases [0]->uuid : '';
 
-              //to relation ships -> only shown at after toName-synonym
+              //to relation ships -> only shown at toName-synonym
               if ($taxon->name->uuid == $element->toName->uuid) {
                   $taxon_html = theme('cdm_taxonName', array(
                       'taxonName' => $element->fromName,
