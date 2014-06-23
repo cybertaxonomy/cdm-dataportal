@@ -429,7 +429,6 @@ function formatReference_for_Bibliography($references) {
 function palmweb_2_cdm_media_caption($variables){
   $media = $variables['media'];
   $elements = $variables['elements'];
-  $fileUri = $variables['fileUri'];
 
   $media_metadata = cdm_read_media_metadata($media);
 
