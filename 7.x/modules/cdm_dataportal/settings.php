@@ -88,6 +88,8 @@ define('CDM_TAXON_PROFILE_IMAGE_DEFAULT', serialize(
   )
 );
 
+define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
+
 /**
  * Returns the array of implemented taxon page tabs.
  * The array has fixed integer keys which must not be changed.
@@ -1487,6 +1489,38 @@ function cdm_settings_layout_taxon() {
       distribution elements will be listed below the other area elements.
       This option is useful if you need to have descriptive texts for each
       distribution map.'),
+  );
+
+  $form['taxon_profile'][DISTRIBUTION_STATUS_COLORS] = array(
+      '#type' => 'textarea',
+      '#title' => t('Custom status colors'),
+      '#element_validate' => array('form_element_validate_json'),
+      '#default_value' => variable_get(DISTRIBUTION_STATUS_COLORS, ''),
+      '#description' => t('<strong>EXPERIMENTAL!</strong><br/>This may be changed in the next release without notification.
+          A json map object with StatusTerm.idInVocabulary as key and a hex color as value. e.g: <code>{"n":"#ff0000","p":"#00ff00"}</code>.
+          reference list of the idInVocabulary valued of absence and presence terms:
+<pre>
+c = CULTIVATED
+e = ENDEMIC_FOR_THE_RELEVANT_AREA
+i = INTRODUCED
+ia = INTRODUCED_ADVENTITIOUS
+ic = INTRODUCED_CULTIVATED
+id = INTRODUCED_DOUBTFULLY_INTRODUCED
+in = INTRODUCED_NATURALIZED
+ip = INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION
+iq = INTRODUCED_PRESENCE_QUESTIONABLE
+n = NATIVE
+nd = NATIVE_DOUBTFULLY_NATIVE
+nq = NATIVE_PRESENCE_QUESTIONABLE
+p = PRESENT
+na = NATURALISED
+iv = INVASIVE
+cf = CULTIVATED_REPORTED_IN_ERROR
+if = INTRODUCED_REPORTED_IN_ERROR
+nf = NATIVE_REPORTED_IN_ERROR
+ne = NATIVE_FORMERLY_NATIVE
+ie = INTRODUCED_FORMERLY_INTRODUCED
+</pre>'),
   );
 
 

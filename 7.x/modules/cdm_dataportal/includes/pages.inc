@@ -300,6 +300,10 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
         $query_parameters['part'][] = 'elements';
       }
       $query_parameters['omitLevels'] = array(UUID_NAMEDAREALEVEL_TDWGLEVEL_2);
+      $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, null);
+      if($customStatusColorsJson){
+        $query_parameters['statusColors'] = $customStatusColorsJson;
+      }
 
       $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
       // 4. get distribution TextData is there are any
@@ -312,7 +316,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
       );
 
       // 5. put all disitribution data into the distribution feature node
-      if($distribution_text_data //if text data exists 
+      if($distribution_text_data //if text data exists
       || ($distribution_info_dto && isset($distribution_info_dto->tree) && $distribution_info_dto->tree->rootElement->numberOfChildren>0) // OR if tree element has distribution elements
       || ($distribution_info_dto && !empty($distribution_info_dto->elements))) {  // OR if DTO has distribution elements
         $distribution_node->descriptionElements = array('#type' => 'DTO');
