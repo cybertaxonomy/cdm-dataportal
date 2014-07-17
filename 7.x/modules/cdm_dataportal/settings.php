@@ -1498,28 +1498,35 @@ function cdm_settings_layout_taxon() {
       '#default_value' => variable_get(DISTRIBUTION_STATUS_COLORS, ''),
       '#description' => t('<strong>EXPERIMENTAL!</strong><br/>This may be changed in the next release without notification.
           A json map object with StatusTerm.idInVocabulary as key and a hex color as value. e.g: <code>{"n":"#ff0000","p":"#00ff00"}</code>.
-          reference list of the idInVocabulary valued of absence and presence terms:
+          reference list of the idInVocabulary values of absence and presence terms:
 <pre>
-c = CULTIVATED
-e = ENDEMIC_FOR_THE_RELEVANT_AREA
-i = INTRODUCED
-ia = INTRODUCED_ADVENTITIOUS
-ic = INTRODUCED_CULTIVATED
-id = INTRODUCED_DOUBTFULLY_INTRODUCED
-in = INTRODUCED_NATURALIZED
-ip = INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION
-iq = INTRODUCED_PRESENCE_QUESTIONABLE
-n = NATIVE
-nd = NATIVE_DOUBTFULLY_NATIVE
-nq = NATIVE_PRESENCE_QUESTIONABLE
-p = PRESENT
-na = NATURALISED
-iv = INVASIVE
-cf = CULTIVATED_REPORTED_IN_ERROR
-if = INTRODUCED_REPORTED_IN_ERROR
-nf = NATIVE_REPORTED_IN_ERROR
-ne = NATIVE_FORMERLY_NATIVE
-ie = INTRODUCED_FORMERLY_INTRODUCED
+Presence Term
+p	present
+pd	present: doubtfully present
+n	native
+nq	native: presence questionable
+nd	native: doubtfully native
+c	cultivated
+i	introduced
+iq	introduced: presence questionable
+id	introduced: doubtfully introduced (perhaps cultivated only)
+ip	introduced: uncertain degree of naturalisation
+ia	introduced: adventitious (casual)
+in	introduced: naturalized
+ic	introduced: cultivated
+e	endemic for the relevant area
+na	naturalised
+iv	invasive
+
+AbsenceTerm
+a	absent
+f	reported in error
+nf	native: reported in error
+if	introduced: reported in error
+cf	cultivated: reported in error
+ne	native: formerly native
+ie	introduced: formerly introduced
+
 </pre>'),
   );
 
