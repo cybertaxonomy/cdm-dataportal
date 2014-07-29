@@ -218,7 +218,8 @@ function theme_cdm_search_results($variables) {
 
   $classification = cdm_dataportal_searched_in_classification();
 
-  if (  count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY)) > 1 ) {
+
+  if (  count(cdm_ws_fetch_all(CDM_WS_PORTAL_TAXONOMY)) > 1 ) { // FIXME use a count REST method for this!!!
     $out .= '<div id="search-summary">' . t('results for') . ' ';
     if ($classification != NULL) {
       $out .=  $classification->titleCache ;

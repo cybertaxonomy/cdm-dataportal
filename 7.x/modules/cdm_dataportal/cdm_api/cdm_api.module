@@ -2036,7 +2036,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
  */
 function cdm_get_taxontrees_as_options($add_none_option = FALSE) {
 
-  $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
+  $taxonTrees = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXONOMY);
 
   $default_classification_uuid = variable_get(CDM_TAXONOMICTREE_UUID, FALSE);
   $default_classification_label = '';
