@@ -1892,16 +1892,18 @@ function cdm_read_media_metadata($media) {
   }
   elseif (isset($media->rights) && is_array($media->rights)) {
     foreach ($media->rights as $right) {
-      switch ($right->term->uuid) {
-        case UUID_RIGHTS_LICENCE:
-          $metadata_caption['rights']['license']['agentNames'][] = ($right->agent ? '' . $right->agent->firstname . ' ' . $right->agent->lastname : '');
-          $metadata_caption['rights']['license']['types'][] = ($right->representation_L10n ? '' . $right->representation_L10n : '');
-          $metadata_caption['rights']['license']['abbreviatedTexts'][] = ($right->abbreviatedText ? '' . $right->abbreviatedText : '');
-          $metadata_caption['rights']['license']['uris'][] = ($right->uri ? '' . $right->uri : '');
-          break;
-        case UUID_RIGHTS_COPYRIGHT:
-          $metadata_caption['rights']['copyright']['agentNames'][] = $right->agent->firstname . ' ' . $right->agent->lastname;
-          break;
+      if(isset($right->term)){
+        switch ($right->term->uuid) {
+          case UUID_RIGHTS_LICENCE:
+            $metadata_caption['rights']['license']['agentNames'][] = ($right->agent ? '' . $right->agent->firstname . ' ' . $right->agent->lastname : '');
+            $metadata_caption['rights']['license']['types'][] = ($right->representation_L10n ? '' . $right->representation_L10n : '');
+            $metadata_caption['rights']['license']['abbreviatedTexts'][] = ($right->abbreviatedText ? '' . $right->abbreviatedText : '');
+            $metadata_caption['rights']['license']['uris'][] = ($right->uri ? '' . $right->uri : '');
+            break;
+          case UUID_RIGHTS_COPYRIGHT:
+            $metadata_caption['rights']['copyright']['agentNames'][] = $right->agent->firstname . ' ' . $right->agent->lastname;
+            break;
+        }
       }
     }
   }

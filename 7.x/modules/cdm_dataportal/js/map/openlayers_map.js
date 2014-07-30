@@ -172,7 +172,7 @@
                     legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
                 }
 
-                mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/areas.php?' + distributionQuery;
+                mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + distributionQuery;
 
                 jQuery.ajax({
                     url: mapServiceRequest,
@@ -198,7 +198,7 @@
 //              legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
 //              }
 
-                mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/points.php?' + occurrenceQuery;
+                mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + occurrenceQuery;
 
                 jQuery.ajax({
                     url: mapServiceRequest,
@@ -365,8 +365,8 @@
             // add additional layers, get them from the mapResponseObj
             if(mapResponseObj !== undefined){
                 if(dataType == "POINT" && mapResponseObj.points_sld !== undefined){
-                    // it is a response from the points.php
 
+                    // it is a response for an point map
                     var geoserverUri;
                     if(mapResponseObj.geoserver) {
                         geoserverUri = mapResponseObj.geoserver;
@@ -400,7 +400,7 @@
                     map.addLayers([layer]);
 
                 } else {
-                    // it is a response from the areas.php
+                    // it is a response from for a distribution map
                     for ( var i in mapResponseObj.layers) {
                         var layerData = mapResponseObj.layers[i];
 

@@ -5,10 +5,16 @@
  */
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * This operride theme function ignores the original sources and annotations
+ * and renders a hardcoded citation string at the end of the list of distibution
+ * elements.
+ * TODO the same output could also be achieved by collection all source citations
+ * as it is done by the footnodesystem and to print the list of citations at the end
+ * of the area list. The footnote key must be omitted in this case of course.
+ *
  */
-function palmweb_2_cdm_descriptionElementDistribution($variables) {
+
+function palmweb_2_cdm_descriptionElement_Distribution($variables) {
   $descriptionElements = $variables['descriptionElements'];
   $enclosingTag = $variables['enclosingTag'];
 
@@ -20,27 +26,13 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
 
   $itemCnt = 0;
   foreach ($descriptionElements as $descriptionElement) {
-    /*
-    $out .= ($descriptionElement->class);
-    // Annotations as footnotes.
-    $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys', $descriptionElement);
-    // Source references as footnotes.
-    $sourcesFootnoteKeyList = '';
-    foreach($descriptionElement->sources as $source){
-      $_fkey = FootnoteManager::addNewFootnote(UUID_DISTRIBUTION, theme('cdm_OriginalSource', $source, FALSE));
-      $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey, ($sourcesFootnoteKeyList ? $separator : ''));
+
+    $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class . '">';
+    $out .= $descriptionElement->area->representation_L10n;
+    if (++$itemCnt < count($descriptionElements)) {
+      $out .= $separator;
     }
-    if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
-      $annotationFootnoteKeys .= $separator;
-    }
-    */
-        $out .= '<' . $enclosingTag . ' class="DescriptionElement DescriptionElement-' . $descriptionElement->class . '">';
-        // $out .= $descriptionElement->area->representation_L10n . $annotationFootnoteKeys . $sourcesFootnoteKeyList;
-        $out .= $descriptionElement->area->representation_L10n;
-        if (++$itemCnt < count($descriptionElements)) {
-          $out .= $separator;
-        }
-        $out .= "</" . $enclosingTag . ">";
+    $out .= "</" . $enclosingTag . ">";
   }
   $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
   $reference = new stdClass();
@@ -80,6 +72,7 @@ function palmweb_2_cdm_descriptionElementDistribution($variables) {
 
 }
 
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -100,12 +93,12 @@ function palmweb_2_cdm_feature_nodes($variables){
     $subRank = "species";
   }
   if ($taxon->name->rank->titleCache == "Species") {
-  	if($numberOfChildren==1){
-    	$subRank = "infraspecific taxon";
-  	}
-  	else{
-    	$subRank = "infraspecific taxa";
-  	}
+    if($numberOfChildren==1){
+      $subRank = "infraspecific taxon";
+    }
+    else{
+      $subRank = "infraspecific taxa";
+    }
   }
   if ($numberOfChildren != 0) {
     $out .= '<a name="number_of_taxa"> </a><H2>Number of Taxa</H2><div class="content"> <ul class="description">';
@@ -436,7 +429,6 @@ function formatReference_for_Bibliography($references) {
 function palmweb_2_cdm_media_caption($variables){
   $media = $variables['media'];
   $elements = $variables['elements'];
-  $fileUri = $variables['fileUri'];
 
   $media_metadata = cdm_read_media_metadata($media);
 
@@ -529,7 +521,16 @@ function palmweb_2_cdm_media_caption($variables){
 }
 
 /**
- * @todo document this function.
+ * Overrive of the original theme_cdm_reference()
+ * the main difference here seems to be that
+ * this function is completely omitting the citation title cache and only sets the authorTeam as the
+ * _short_form_of_author_team() as $citation.
+ *
+ * If the authorteam is not set citatin was empty,
+ * this has been fixed for http://dev.e-taxonomy.eu/trac/ticket/4261
+ *
+ * TODO can this be made configuable via the dataportal
+ *      settings so that we can remove this function?
  */
 function palmweb_2_cdm_reference($variables) {
   $reference = $variables['reference'];
@@ -537,7 +538,11 @@ function palmweb_2_cdm_reference($variables) {
   $doLink = $variables['doLink'];
   $referenceStyle = $variables['referenceStyle'];
 
-  $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
+  if(!isset($reference->authorTeam)){
+    $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
+  } else {
+    $author_team = $reference->authorTeam;
+  }
 
   $year = '';
   if (isset($reference->datePublished->start)) {
@@ -547,7 +552,7 @@ function palmweb_2_cdm_reference($variables) {
     $citation = _short_form_of_author_team ($author_team->titleCache) . (!empty($year) ? '. ' . $year : '');
     $citation = str_replace('..', '.', $citation);
   } else {
-    $citation = '';
+    $citation = $reference->titleCache;
   }
 
   if ($doLink) {

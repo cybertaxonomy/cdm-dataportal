@@ -8,16 +8,16 @@ CDM Server Installation
 Drupal Installation
 
    Since the CDM Dataportal is a drupal module you will need to install at first Drupal
-   (currently we are working with <<Drupal 5>>). There are two different possibilities of
-   installing the CDM Data Portal. The first one is installing Drupal 5 and afterwards to
+   (currently we are working with <<Drupal 7>>). There are two different possibilities of
+   installing the CDM Data Portal. The first one is installing Drupal 7 and afterwards to
    enable the CDM Data Portal Module. The second and recomended is to download Drupal with
    the CDM Data Portal Module installed and already enable to use.
 
    For the first option visit {{{http://drupal.org}Drupal's site}} for more information.
-   You can download the CDM Data Portal module from our download site.
 
+   You can download the CDM Data Portal module from our download site.
    For the second option follow the instruction at our
-   {{{http://wp5.e-taxonomy.eu/node/7}cdm-setups web}}.
+   {{{http://cybertaxonomy.eu/node/7}cdm-setups web}}.
 
 CDM Data Portal Configuration
 
@@ -25,10 +25,10 @@ CDM Data Portal Configuration
    how to configure the CDM Data Portal Module inside Drupal itself.
 
    Open a browser and go to your drupal site. Once you are in your drupal web site go to
-   <<Administer->Help->CDM Data Portal>> where you will find a general documentation for
+   <<Configuration>CDM Data Portal>> where you will find a general documentation for
    configuring the module properly as well as links to specific configurations sites
-   and documentation. We recommend to read and understang the documentation before to
-   start to configure the module.
+   and documentation. We recommend to read and understand the documentation before starting
+   to configure the module.
 
 FAQ and contact
 

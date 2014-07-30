@@ -88,6 +88,8 @@ define('CDM_TAXON_PROFILE_IMAGE_DEFAULT', serialize(
   )
 );
 
+define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
+
 /**
  * Returns the array of implemented taxon page tabs.
  * The array has fixed integer keys which must not be changed.
@@ -1487,6 +1489,45 @@ function cdm_settings_layout_taxon() {
       distribution elements will be listed below the other area elements.
       This option is useful if you need to have descriptive texts for each
       distribution map.'),
+  );
+
+  $form['taxon_profile'][DISTRIBUTION_STATUS_COLORS] = array(
+      '#type' => 'textarea',
+      '#title' => t('Custom status colors'),
+      '#element_validate' => array('form_element_validate_json'),
+      '#default_value' => variable_get(DISTRIBUTION_STATUS_COLORS, ''),
+      '#description' => t('<strong>EXPERIMENTAL!</strong><br/>This may be changed in the next release without notification.
+          A json map object with StatusTerm.idInVocabulary as key and a hex color as value. e.g: <code>{"n":"#ff0000","p":"#00ff00"}</code>.
+          reference list of the idInVocabulary values of absence and presence terms:
+<pre>
+Presence Term
+p	present
+pd	present: doubtfully present
+n	native
+nq	native: presence questionable
+nd	native: doubtfully native
+c	cultivated
+i	introduced
+iq	introduced: presence questionable
+id	introduced: doubtfully introduced (perhaps cultivated only)
+ip	introduced: uncertain degree of naturalisation
+ia	introduced: adventitious (casual)
+in	introduced: naturalized
+ic	introduced: cultivated
+e	endemic for the relevant area
+na	naturalised
+iv	invasive
+
+AbsenceTerm
+a	absent
+f	reported in error
+nf	native: reported in error
+if	introduced: reported in error
+cf	cultivated: reported in error
+ne	native: formerly native
+ie	introduced: formerly introduced
+
+</pre>'),
   );
 
 
