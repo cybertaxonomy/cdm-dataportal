@@ -198,6 +198,44 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
       10 // weight
   );
 
+
+    $test = "<h1>Hello BOLD</h1>";
+
+    $xy_table = array(
+        "#theme" => "table",
+        "#weight" => 2,
+        "#header" => array("Country", "Collection", "Date", "Herbaria", "Type", "Image", "Derivates"),
+        "#rows" => array()
+    );
+
+    //["Albania", "Plitzner&Henning 786", "1.6.98", "B(2)", "true", "true"]
+    $derivateHierarchies = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'derivateHierarchy'));
+    if ($derivateHierarchies) {
+
+        foreach ($derivateHierarchies as $derivateHierarchy) {
+            $xy_table['#rows'][] = array(
+                // An array of table rows. Every row is an array of cells, or an associative array
+                'data' => [$derivateHierarchy->country,
+                    $derivateHierarchy->collection,
+                    $derivateHierarchy->date,
+                    $derivateHierarchy->herbarium,
+                    $derivateHierarchy->hasType,
+                    $derivateHierarchy->hasSpecimenScan,
+                    ($derivateHierarchy->hasDna?"DNA ":"") . ($derivateHierarchy->hasDetailImage?"Detail Image ":"")
+                ],
+                'class' =>  array(
+                    'descriptionElement',
+                    'descriptionElement_IndividualsAssociation'
+                ),
+            );
+        }
+    }
+
+    $render_array['hello'] = array(
+        'test' => markup_to_render_array($test, 0),
+        'xy' => $xy_table
+    );
+
   RenderHints::popFromRenderStack();
   return $render_array;
 }
