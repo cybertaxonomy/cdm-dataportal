@@ -201,39 +201,53 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
     $test = "<h1>Hello BOLD</h1>";
 
-    $xy_table = array(
-        "#theme" => "table",
-        "#weight" => 2,
-        "#header" => array("Country", "Collection", "Date", "Herbaria", "Type", "Image", "Derivates"),
-        "#rows" => array()
-    );
+
 
     //["Albania", "Plitzner&Henning 786", "1.6.98", "B(2)", "true", "true"]
     $derivateHierarchies = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'derivateHierarchy'));
+    $detail_image_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
+    $sequence_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
     if ($derivateHierarchies) {
-
+        $rowcount = 0;
         foreach ($derivateHierarchies as $derivateHierarchy) {
-            $xy_table['#rows'][] = array(
-                // An array of table rows. Every row is an array of cells, or an associative array
-                'data' => [$derivateHierarchy->country,
+            $rows[$rowcount] = array(
+                'data' => array("+",
+                    $derivateHierarchy->country,
                     $derivateHierarchy->collection,
                     $derivateHierarchy->date,
                     $derivateHierarchy->herbarium,
                     $derivateHierarchy->hasType,
                     $derivateHierarchy->hasSpecimenScan,
-                    ($derivateHierarchy->hasDna?"DNA ":"") . ($derivateHierarchy->hasDetailImage?"Detail Image ":"")
-                ],
-                'class' =>  array(
-                    'descriptionElement',
-                    'descriptionElement_IndividualsAssociation'
+                    ($derivateHierarchy->hasDna? $sequence_icon :"") . ($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
                 ),
+                'id' => ('derivate_hierarchy' . $rowcount++),
+            );
+            $rows[$rowcount] = array(
+                //cell
+                'data' => array("",
+                    'details' => array(
+                        'data' => $derivateHierarchy->specimenScans[0],
+                        'colspan' => 8),
+                ),
+                'id' => ('derivate_hierarchy_details' . $rowcount++),
+
             );
         }
     }
 
+    $xy_table = array(
+        "#theme" => "table",
+        "#weight" => 2,
+        "#header" => array("", "Country", "Collection", "Date", "Herbaria", "Type", "Image", "Derivates"),
+        "#rows" => $rows,
+        "#attributes" => array("id" => "OCC")
+    );
+
+    drupal_add_js_rowToggle("#OCC");
+
     $render_array['hello'] = array(
         'test' => markup_to_render_array($test, 0),
-        'xy' => $xy_table
+        'xy' => $xy_table,
     );
 
   RenderHints::popFromRenderStack();

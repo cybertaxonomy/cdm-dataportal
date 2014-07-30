@@ -92,6 +92,7 @@
 7.x/modules/cdm_dataportal/images/btn_collapse.gif -text
 7.x/modules/cdm_dataportal/images/btn_expand.gif -text
 7.x/modules/cdm_dataportal/images/clear.gif -text
+7.x/modules/cdm_dataportal/images/detail_image_derivate-16x16-32.png -text
 7.x/modules/cdm_dataportal/images/external_link.gif -text
 7.x/modules/cdm_dataportal/images/favicon.ico -text
 7.x/modules/cdm_dataportal/images/funded_by_EDIT.png -text
@@ -101,6 +102,7 @@
 7.x/modules/cdm_dataportal/images/macFFBgHack.png -text
 7.x/modules/cdm_dataportal/images/no_picture.png -text svneol=unset#unset
 7.x/modules/cdm_dataportal/images/print_icon.gif -text
+7.x/modules/cdm_dataportal/images/sequence_derivate-16x16-32.png -text
 7.x/modules/cdm_dataportal/images/view-refresh.png -text svneol=unset#unset
 7.x/modules/cdm_dataportal/includes/common.inc -text
 7.x/modules/cdm_dataportal/includes/descriptions.inc -text
@@ -666,6 +668,7 @@
 7.x/modules/cdm_dataportal/js/map/proj4js-1.1.0/defs/GOOGLE.js -text
 7.x/modules/cdm_dataportal/js/map/proj4js-1.1.0/proj4js-combined.js -text
 7.x/modules/cdm_dataportal/js/map/proj4js-1.1.0/proj4js-compressed.js -text
+7.x/modules/cdm_dataportal/js/table_modification.js -text
 7.x/modules/cdm_dataportal/js/thickbox/cdm_thickbox.css -text
 7.x/modules/cdm_dataportal/js/thickbox/thickbox.js -text
 7.x/modules/cdm_dataportal/js/ws_debug_block.js -text

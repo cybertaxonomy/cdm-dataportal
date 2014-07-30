@@ -72,6 +72,17 @@ function drupal_add_js_async($script_url, $callback){
 }
 
 /**
+ */
+function drupal_add_js_rowToggle($tableId){
+
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/table_modification.js');
+    drupal_add_js('jQuery(document).ready(function(){
+        addRowToggle("' . $tableId . '");
+    });
+    ', array('type' => 'inline'));
+}
+
+/**
  * @param unknown_type $link_element_selector
  * @param unknown_type $progress_element_selector
  */
@@ -274,7 +285,8 @@ function _add_js_domEvent() {
 
 /* ====================== hook implementations ====================== */
 /**
- * Implements hook_permission(). *
+ * Implements hook_permission().
+ *
  * Valid permissions for this module.
  *
  * @return array
@@ -296,7 +308,8 @@ function cdm_dataportal_permission() {
 }
 
 /**
- * Implements hook_menu(). */
+ * Implements hook_menu().
+ */
 function cdm_dataportal_menu() {
   $items = array();
 
@@ -1830,7 +1843,9 @@ function cdm_read_media_metadata($media) {
 
   $metadata_caption = array(
     'title' => '',// Media_metadata and media.
-    'artist' => '',// Media_metadata and media.    'rights',// Media_metadata and media.    'location',// Media_metadata.
+    'artist' => '',// Media_metadata and media.
+    'rights',// Media_metadata and media.
+    'location',// Media_metadata.
     'filename' => '',// Media.
     'mediacreated' => '',// Media.
     'description' => '',
@@ -2014,14 +2029,14 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
 /**
  *  Creates a CDM Dynabox.
  * @param string $dynabox_id
- *   a uninque name for tha dynabox, using a cdm entity uuid herefore is good pratice
+ *   a uninque name for tha dynabox, using a cdm entity uuid therefore is good practice
  * @param string $label
  *   The clickable text to show.
  * @param string $content_url
  *   The cdm REST service request url wich will deliver the content to be shown
  *   once the dynabox toggles open.
  * @param string $theme
- *   The theme to be used for rendering the cdm REST service reponse with is
+ *   The theme to be used for rendering the cdm REST service response with is
  *   returned from the $content_url.
  * @param string $link_alt_text
  *   The value for the alt attribute of the dynabox link.
@@ -2030,10 +2045,10 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
  *   element itself, $enclosingtags[1] is the tag to be used for the
  *   dynabox_content (optional)
  * @param string $open_callback
- *   optional javascript call back function to be triggered after toggeling the box to
+ *   optional javascript call back function to be triggered after toggling the box to
  *   the open state.
  * @param string $close_callback
- *   optional javascript call back function to be triggered after toggeling the box to
+ *   optional javascript call back function to be triggered after toggling the box to
  *   the closed state.
  *
  * @return string
