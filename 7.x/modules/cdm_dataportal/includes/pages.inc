@@ -210,7 +210,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     if ($derivateHierarchies) {
         $rowcount = 0;
         foreach ($derivateHierarchies as $derivateHierarchy) {
-            $rows[$rowcount] = array(
+            $rows[] = array(
                 'data' => array("+",
                     $derivateHierarchy->country,
                     $derivateHierarchy->collection,
@@ -220,30 +220,36 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     $derivateHierarchy->hasSpecimenScan,
                     ($derivateHierarchy->hasDna? $sequence_icon :"") . ($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
                 ),
-                'id' => ('derivate_hierarchy' . $rowcount++),
+                'id' => ('derivate_summary' . $rowcount), // summary row id
+                'class' => array('summary_row'),
             );
-            $rows[$rowcount] = array(
+
+            $rows[] = array(
                 //cell
                 'data' => array("",
                     'details' => array(
-                        'data' => $derivateHierarchy->specimenScans[0],
+                        //'data' => $derivateHierarchy->specimenScans[0],
+                        'data' => "TEST",
                         'colspan' => 8),
                 ),
-                'id' => ('derivate_hierarchy_details' . $rowcount++),
-
+                'id' => ('derivate_details' . $rowcount),//details row ID
+                'class' => array('detail_row'),
             );
+            $rowcount++;
         }
     }
 
+    $tableId = "derivate_hierarchy_table";
     $xy_table = array(
         "#theme" => "table",
         "#weight" => 2,
         "#header" => array("", "Country", "Collection", "Date", "Herbaria", "Type", "Image", "Derivates"),
         "#rows" => $rows,
-        "#attributes" => array("id" => "OCC")
+        "#attributes" => array("id" => $tableId)
     );
 
-    drupal_add_js_rowToggle("#OCC");
+    //add toggle functionality to derivate hierarchy table
+    drupal_add_js_rowToggle("#".$tableId);
 
     $render_array['hello'] = array(
         'test' => markup_to_render_array($test, 0),
