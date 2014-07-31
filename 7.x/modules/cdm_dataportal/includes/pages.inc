@@ -32,232 +32,228 @@
  */
 function cdm_dataportal_taxon_page_specimens($taxon) {
 
-  $render_array = array();
-  RenderHints::pushToRenderStack('taxon_page_specimens');
+    $render_array = array();
+    RenderHints::pushToRenderStack('taxon_page_specimens');
 
-  $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
-  $relationship_choice['direct'] = get_selection($relationship_choice['direct']);
-  $relationship_choice['invers'] = get_selection($relationship_choice['invers']);
+    $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
+    $relationship_choice['direct'] = get_selection($relationship_choice['direct']);
+    $relationship_choice['invers'] = get_selection($relationship_choice['invers']);
 
-  $by_associatedtaxon_query_parameters = array(
-      'relationshipsInvers' => implode(',', $relationship_choice['invers']),
-      'relationships' => implode(',', $relationship_choice['direct']),
-  );
+    $by_associatedtaxon_query_parameters = array(
+        'relationshipsInvers' => implode(',', $relationship_choice['invers']),
+        'relationships' => implode(',', $relationship_choice['direct']),
+    );
 
-  if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
-    $by_associatedtaxon_query_parameters = array_merge($by_associatedtaxon_query_parameters, $_REQUEST['pager']);
-  }
-
-  $by_associatedtaxon_query = http_build_query($by_associatedtaxon_query_parameters);
-
-  $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
-      null,
-      $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
-  );
-
-  $specimensOrObservations = array();
-  if(isset($pager->records[0])){
-    $specimensOrObservations =  $pager->records;
-  }
-
-  // order occurrences by date but types should be on top of the list
-  $type_specimens = array();
-  $other_occurrences = array();
-  foreach ($specimensOrObservations as &$occurrence) {
-    $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
-    if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
-      $type_specimens[] = $occurrence;
-    } else {
-      $other_occurrences[] = $occurrence;
+    if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
+        $by_associatedtaxon_query_parameters = array_merge($by_associatedtaxon_query_parameters, $_REQUEST['pager']);
     }
-  }
-  $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
 
-  // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
-  // $occurrence->_fieldObjectMedia
-  foreach ($specimensOrObservations as &$occurrence) {
-    $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-        $occurrence->uuid,
-        'fieldObjectMedia',
-    ));
-    $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-        $occurrence->uuid,
-        'derivedUnitMedia',
-    ));
-  }
+    $by_associatedtaxon_query = http_build_query($by_associatedtaxon_query_parameters);
 
-  // --- get map service HTTP query paramaters
-  if (count($specimensOrObservations) > 0) {
-    $occurrence_query = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
+    $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+        null,
+        $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
+    );
 
-    if( isset($occurrence_query->String) ) {
-      $occurrence_query = $occurrence_query->String;
-      $legend_format_query = null;
-      $distribution_query = NULL;
-
-      $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query);
+    $specimensOrObservations = array();
+    if(isset($pager->records[0])){
+        $specimensOrObservations =  $pager->records;
     }
-  }
 
-  // --- generate the specimen list as table
-  $specimen_table = array(
-      '#theme' => 'table',
-      '#weight' => 2,
-      // prefix attributes and rows with '#' to let it pass to the theme function,
-      // otherwise it is handled as child render array
-      '#attributes' => array('class' => 'specimens'),
-      '#rows' => array(),
-  );
-
-  if ($specimensOrObservations) {
-
-    foreach ($specimensOrObservations as $specimenOrObservation) {
-
-      $mediaList = array();
-      if (is_array($specimenOrObservation->_fieldObjectMedia)) {
-        $mediaList = array_merge($mediaList, $specimenOrObservation->_fieldObjectMedia);
-      }
-      if (is_array($specimenOrObservation->_derivedUnitMedia)) {
-        $mediaList = array_merge($mediaList, $specimenOrObservation->_derivedUnitMedia);
-      }
-
-      // typelabel will contain the typeStatus
-      $type_label = '';
-      $typeDesignationPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $specimenOrObservation->uuid);
-      if (isset($typeDesignationPager)) {
-        $type_status = array();
-        foreach ($typeDesignationPager->records as $typeDesignation) {
-          if (isset($typeDesignation->typeStatus->representation_L10n)){
-            $type_status[] = $typeDesignation->typeStatus->representation_L10n;
-          }
+    // order occurrences by date but types should be on top of the list
+    $type_specimens = array();
+    $other_occurrences = array();
+    foreach ($specimensOrObservations as &$occurrence) {
+        $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
+        if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
+            $type_specimens[] = $occurrence;
+        } else {
+            $other_occurrences[] = $occurrence;
         }
-        $type_label = implode(', ', $type_status);
-        if($type_label){
-          $type_label .= ': ' ;
+    }
+    $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
+
+    // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
+    // $occurrence->_fieldObjectMedia
+    foreach ($specimensOrObservations as &$occurrence) {
+        $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+            $occurrence->uuid,
+            'fieldObjectMedia',
+        ));
+        $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+            $occurrence->uuid,
+            'derivedUnitMedia',
+        ));
+    }
+
+    // --- get map service HTTP query paramaters
+    if (count($specimensOrObservations) > 0) {
+        $occurrence_query = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
+
+        if( isset($occurrence_query->String) ) {
+            $occurrence_query = $occurrence_query->String;
+            $legend_format_query = null;
+            $distribution_query = NULL;
+
+            $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query);
         }
-      }
+    }
 
-      // --- Specimen entry as dynamic label:
-      //     -> Dynabox for the specimenOrObservation
-      $gallery_name = $specimenOrObservation->uuid;
-
-      $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
-      $label_html = cdm_dynabox(
-          $specimenOrObservation->uuid,
-          $type_label . $specimenOrObservation->titleCache,
-          $derived_unit_ws_request,
-          'cdm_specimenOrObservation', // the theme or compose function to use
-          'Click for details',
-          array('div','div'),
-          'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', // open_callback
-          'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
-      );
-
-      // --- Render associated media.
-      $gallery_html = '';
-      if (count($mediaList) > 0) {
-        $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
-        $captionElements = array(
-            '#uri' => t('open media'),
+    if(false){
+        //BOTTOM-UP-SPECIMEN-TABLE
+        // --- generate the specimen list as table
+        $specimen_table = array(
+            '#theme' => 'table',
+            '#weight' => 2,
+            // prefix attributes and rows with '#' to let it pass to the theme function,
+            // otherwise it is handled as child render array
+            '#attributes' => array('class' => 'specimens'),
+            '#rows' => array(),
         );
 
-        $gallery_html = theme('cdm_media_gallerie', array(
-            'mediaList' => $mediaList,
-            'galleryName' => $gallery_name,
-            'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
-            'cols' => $gallery_settings['cdm_dataportal_media_cols'],
-            'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
-            'captionElements' => $captionElements,
-            'mediaLinkType' => 'LIGHTBOX',
-            'alternativeMediaUri' => NULL,
-            'galleryLinkUri' => NULL,
-        ));
-      }
+        if ($specimensOrObservations) {
 
-      $specimen_table['#rows'][] = array(
-          // An array of table rows. Every row is an array of cells, or an associative array
-          'data' => array(
-              // Each cell can be either a string or an associative array
-              $label_html . $gallery_html
-          ),
-          'class' =>  array(
-              'descriptionElement',
-              'descriptionElement_IndividualsAssociation'
-          ),
-      );
-    }
-  }
+            foreach ($specimensOrObservations as $specimenOrObservation) {
 
-  $render_array['specimen_list'] = $specimen_table;
-  $render_array['pager'] = markup_to_render_array(
-      theme('cdm_pager', array(
-          'pager' => $pager,
-          'path' => $_REQUEST['q'],
-          'parameters' => $_REQUEST,
-      )),
-      10 // weight
-  );
+                $mediaList = array();
+                if (is_array($specimenOrObservation->_fieldObjectMedia)) {
+                    $mediaList = array_merge($mediaList, $specimenOrObservation->_fieldObjectMedia);
+                }
+                if (is_array($specimenOrObservation->_derivedUnitMedia)) {
+                    $mediaList = array_merge($mediaList, $specimenOrObservation->_derivedUnitMedia);
+                }
 
+                // typelabel will contain the typeStatus
+                $type_label = '';
+                $typeDesignationPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $specimenOrObservation->uuid);
+                if (isset($typeDesignationPager)) {
+                    $type_status = array();
+                    foreach ($typeDesignationPager->records as $typeDesignation) {
+                        if (isset($typeDesignation->typeStatus->representation_L10n)){
+                            $type_status[] = $typeDesignation->typeStatus->representation_L10n;
+                        }
+                    }
+                    $type_label = implode(', ', $type_status);
+                    if($type_label){
+                        $type_label .= ': ' ;
+                    }
+                }
 
-    $test = "<h1>Hello BOLD</h1>";
+                // --- Specimen entry as dynamic label:
+                //     -> Dynabox for the specimenOrObservation
+                $gallery_name = $specimenOrObservation->uuid;
 
+                $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
+                $label_html = cdm_dynabox(
+                    $specimenOrObservation->uuid,
+                    $type_label . $specimenOrObservation->titleCache,
+                    $derived_unit_ws_request,
+                    'cdm_specimenOrObservation', // the theme or compose function to use
+                    'Click for details',
+                    array('div','div'),
+                    'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', // open_callback
+                    'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
+                );
 
+                // --- Render associated media.
+                $gallery_html = '';
+                if (count($mediaList) > 0) {
+                    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+                    $captionElements = array(
+                        '#uri' => t('open media'),
+                    );
 
-    //["Albania", "Plitzner&Henning 786", "1.6.98", "B(2)", "true", "true"]
-    $derivateHierarchies = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'derivateHierarchy'));
-    $detail_image_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
-    $sequence_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
-    if ($derivateHierarchies) {
-        $rowcount = 0;
-        foreach ($derivateHierarchies as $derivateHierarchy) {
-            $rows[] = array(
-                'data' => array("+",
-                    $derivateHierarchy->country,
-                    $derivateHierarchy->collection,
-                    $derivateHierarchy->date,
-                    $derivateHierarchy->herbarium,
-                    $derivateHierarchy->hasType,
-                    $derivateHierarchy->hasSpecimenScan,
-                    ($derivateHierarchy->hasDna? $sequence_icon :"") . ($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
-                ),
-                'id' => ('derivate_summary' . $rowcount), // summary row id
-                'class' => array('summary_row'),
-            );
+                    $gallery_html = theme('cdm_media_gallerie', array(
+                        'mediaList' => $mediaList,
+                        'galleryName' => $gallery_name,
+                        'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+                        'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+                        'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
+                        'captionElements' => $captionElements,
+                        'mediaLinkType' => 'LIGHTBOX',
+                        'alternativeMediaUri' => NULL,
+                        'galleryLinkUri' => NULL,
+                    ));
+                }
 
-            $rows[] = array(
-                //cell
-                'data' => array("",
-                    'details' => array(
-                        //'data' => $derivateHierarchy->specimenScans[0],
-                        'data' => "TEST",
-                        'colspan' => 8),
-                ),
-                'id' => ('derivate_details' . $rowcount),//details row ID
-                'class' => array('detail_row'),
-            );
-            $rowcount++;
+                $specimen_table['#rows'][] = array(
+                    // An array of table rows. Every row is an array of cells, or an associative array
+                    'data' => array(
+                        // Each cell can be either a string or an associative array
+                        $label_html . $gallery_html
+                    ),
+                    'class' =>  array(
+                        'descriptionElement',
+                        'descriptionElement_IndividualsAssociation'
+                    ),
+                );
+            }
         }
+
+        $render_array['specimen_list'] = $specimen_table;
+        $render_array['pager'] = markup_to_render_array(
+            theme('cdm_pager', array(
+                'pager' => $pager,
+                'path' => $_REQUEST['q'],
+                'parameters' => $_REQUEST,
+            )),
+            10 // weight
+        );
     }
+    else{
+        //DERIVATE_HIERARCHY
 
-    $tableId = "derivate_hierarchy_table";
-    $xy_table = array(
-        "#theme" => "table",
-        "#weight" => 2,
-        "#header" => array("", "Country", "Collection", "Date", "Herbaria", "Type", "Image", "Derivates"),
-        "#rows" => $rows,
-        "#attributes" => array("id" => $tableId)
-    );
+        $derivateHierarchies = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'derivateHierarchy'));
+        $detail_image_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
+        $sequence_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
+        if ($derivateHierarchies) {
+            $rowcount = 0;
+            foreach ($derivateHierarchies as $derivateHierarchy) {
+                $rows[] = array(
+                    'data' => array(
+                        $derivateHierarchy->country,
+                        $derivateHierarchy->collection,
+                        $derivateHierarchy->date,
+                        $derivateHierarchy->herbarium,
+                        $derivateHierarchy->hasType,
+                        $derivateHierarchy->hasSpecimenScan,
+                        ($derivateHierarchy->hasDna? $sequence_icon :"") . ($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
+                    ),
+                    'id' => ('derivate_summary' . $rowcount), // summary row id
+                    'class' => array('summary_row'),
+                );
 
-    //add toggle functionality to derivate hierarchy table
-    drupal_add_js_rowToggle("#".$tableId);
+                $rows[] = array(
+                    //cell
+                    'data' => array(
+                        'details' => array(
+                            //'data' => $derivateHierarchy->specimenScans[0],
+                            'data' => "TEST",
+                            'colspan' => 8),
+                    ),
+                    'id' => ('derivate_details' . $rowcount),//details row ID
+                    'class' => array('detail_row'),
+                );
+                $rowcount++;
+            }
+        }
 
-    $render_array['hello'] = array(
-        'test' => markup_to_render_array($test, 0),
-        'xy' => $xy_table,
-    );
+        $tableId = "derivate_hierarchy_table";
+        $derivateHierarchyTable = array(
+            "#theme" => "table",
+            "#weight" => 2,
+            "#header" => array("Country", "Collection", "Date", "Herbaria", "Type", "Image", "Derivates"),
+            "#rows" => $rows,
+            "#attributes" => array("id" => $tableId)
+        );
 
-  RenderHints::popFromRenderStack();
-  return $render_array;
+        //add toggle functionality to derivate hierarchy table
+        drupal_add_js_rowToggle("#".$tableId);
+
+        $render_array['derivate_hierarchy_table'] = $derivateHierarchyTable;
+    }
+    RenderHints::popFromRenderStack();
+    return $render_array;
 }
 
 

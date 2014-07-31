@@ -8,14 +8,14 @@
 function addRowToggle(selector) {
 
     //hide all detail rows
-    //jQuery(selector)[0].getElementsByClassName("detail_row").forEach(hide());
-    //var detailRows = jQuery(selector)[0].getElementsByClassName("detail_row");
-    //for(var i=0; i < detailRows.length; i++){
-    //    detailRows[i].hide();
-    //}
+    jQuery(selector + " .detail_row").hide();
 
-    jQuery(selector).click(function(event){
-        jQuery("#derivate_details1").toggle(1000);
-        //event.currentTarget.getElementsByClassName("detail_row").toggle(1000);
-    })
+    jQuery(selector + " .summary_row").click(function(event){//register click on every summary row
+        jQuery(event.target).parent(".summary_row").next().toggle(500);//toggle detail row when clicking on corresponding summary row
+    }).hover(function(event){//register mouse over on every summary row
+        jQuery(event.target).parent(".summary_row").css("background","#FFCC00");
+    },function(event){//register mouse over on every summary row
+        jQuery(event.target).parent(".summary_row").css("background","");
+    }).css('cursor', 'hand').css('cursor', 'pointer');//show mouse cursor as a link
+
 }
