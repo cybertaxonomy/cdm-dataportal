@@ -1908,7 +1908,7 @@ function cdm_read_media_metadata($media) {
   elseif (isset($media->rights) && is_array($media->rights)) {
     foreach ($media->rights as $right) {
       if(isset($right->term)){
-        switch ($right->term->uuid) {
+        switch ($right->type->uuid) {
           case UUID_RIGHTS_LICENCE:
             $metadata_caption['rights']['license']['agentNames'][] = ($right->agent ? '' . $right->agent->firstname . ' ' . $right->agent->lastname : '');
             $metadata_caption['rights']['license']['types'][] = ($right->representation_L10n ? '' . $right->representation_L10n : '');
