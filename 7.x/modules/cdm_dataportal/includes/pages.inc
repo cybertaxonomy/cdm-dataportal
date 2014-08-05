@@ -209,11 +209,12 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         if ($derivateHierarchies) {
             $rowcount = 0;
             foreach ($derivateHierarchies as $derivateHierarchy) {
+                //summary row
                 $rows[] = array(
                     'data' => array(
                         $derivateHierarchy->country,
-                        $derivateHierarchy->collection,
                         $derivateHierarchy->date,
+                        $derivateHierarchy->collection,
                         $derivateHierarchy->herbarium,
                         $derivateHierarchy->hasType,
                         $derivateHierarchy->hasSpecimenScan,
@@ -223,13 +224,30 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     'class' => array('summary_row'),
                 );
 
+                //assemble detail html
+                $taxonName = $derivateHierarchy->taxonName;
+                $protologue = $derivateHierarchy->protologue;
+                $citation = $derivateHierarchy->citation;
+                $types = "";
+                $specimenScans = createLinks($derivateHierarchy->specimenScans);
+                $molecularData = createLinks($derivateHierarchy->molecularData);
+                $detailImages = createLinks($derivateHierarchy->detailImages);
+
+                $detail_html = "Name: " . $taxonName . "<br>"
+                    . "Protologue: " . $protologue . "<br>"
+                    . "Citation: " . $citation . "<br>"
+                    . "Types: " . $types . "<br>"
+                    . "Specimen Scans: " . $specimenScans . "<br>"
+                    . "Molecular Data: " . $molecularData . "<br>"
+                    . "Detail Images: " . $detailImages;
+
+                    //detail row resp. one BIG detail cell
                 $rows[] = array(
-                    //cell
                     'data' => array(
                         'details' => array(
-                            //'data' => $derivateHierarchy->specimenScans[0],
-                            'data' => "TEST",
-                            'colspan' => 8),
+                            'data' => $detail_html,
+                            'colspan' => 8,
+                        ),
                     ),
                     'id' => ('derivate_details' . $rowcount),//details row ID
                     'class' => array('detail_row'),
@@ -242,7 +260,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $derivateHierarchyTable = array(
             "#theme" => "table",
             "#weight" => 2,
-            "#header" => array("Country", "Collection", "Date", "Herbaria", "Type", "Image", "Derivates"),
+            "#header" => array("Country", "Date", "Collection", "Herbaria", "Type", "Image", "Derivates"),
             "#rows" => $rows,
             "#attributes" => array("id" => $tableId)
         );
@@ -256,7 +274,21 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     return $render_array;
 }
 
-
+/**
+ * Creates HTML links from the given map concatenated by a white space.
+ * @param $uriToTextMap the map which holds the uri as keys and uriText as values
+ * @return string the assembled HTML string containing the links
+ */
+function createLinks($uriToTextMap)
+{
+    $html = "";
+    if ($uriToTextMap) {
+        foreach ($uriToTextMap as $uri => $uriText) {
+            $html .= '<a href="' . $uri . '">' . $uriText . "</a>";
+        }
+    }
+    return $html;
+}
 /**
  * Composes a taxon page which can consist of multiple parts like
  * 'General', 'Synonymy', 'Images', 'Keys'. These parts can be displayed
