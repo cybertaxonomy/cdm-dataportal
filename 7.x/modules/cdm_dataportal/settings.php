@@ -11,6 +11,7 @@ define ('CDM_TAXONTREE_INCLUDES', 'taxontree_includes');
 
 define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
 define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
+define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
 define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
 define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
@@ -1599,6 +1600,14 @@ ie	introduced: formerly introduced
     '#description' => t('This section covers the settings related to the taxon
       <strong>specimens</strong> tab.'),
   );
+
+    $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show specimen derivates in a compressed table'),
+        '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE),
+        '#description' => t('If checked, the specimen will be listed in a table. Every row represents
+        a FieldUnit and it can be expanded to get an overview of the derived specimens.'),
+    );
 
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
   $saved_uuid = variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
