@@ -229,17 +229,23 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                 $protologue = $derivateHierarchy->protologue;
                 $citation = $derivateHierarchy->citation;
                 $types = "";
+                foreach($derivateHierarchy->types as $typeStatus => $accessionList){
+                    $types .= $typeStatus;
+                    foreach($accessionList as $accessionNumber){
+                        $types .= " (" . $accessionNumber . ") ";
+                    }
+                }
                 $specimenScans = createLinks($derivateHierarchy->specimenScans);
                 $molecularData = createLinks($derivateHierarchy->molecularData);
                 $detailImages = createLinks($derivateHierarchy->detailImages);
 
-                $detail_html = "Name: " . $taxonName . "<br>"
-                    . "Protologue: " . $protologue . "<br>"
-                    . "Citation: " . $citation . "<br>"
-                    . "Types: " . $types . "<br>"
-                    . "Specimen Scans: " . $specimenScans . "<br>"
-                    . "Molecular Data: " . $molecularData . "<br>"
-                    . "Detail Images: " . $detailImages;
+                $detail_html = "<b>Name:</b> " . $taxonName . "<br>"
+                    . "<b>Protologue:</b> " . $protologue . "<br>"
+                    . "<b>Citation:</b> " . $citation . "<br>"
+                    . "<b>Types:</b> " . $types . "<br>"
+                    . "<b>Specimen Scans:</b> " . $specimenScans . "<br>"
+                    . "<b>Molecular Data:</b> " . $molecularData . "<br>"
+                    . "<b>Detail Images:</b> " . $detailImages;
 
                     //detail row resp. one BIG detail cell
                 $rows[] = array(
@@ -275,16 +281,16 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 }
 
 /**
- * Creates HTML links from the given map concatenated by a white space.
- * @param $uriToTextMap the map which holds the uri as keys and uriText as values
+ * Creates HTML links from the given pair list concatenated by a white space.
+ * @param $linkTextPairList the list with pairs which hold the uri as "first" and uriText as "second"
  * @return string the assembled HTML string containing the links
  */
-function createLinks($uriToTextMap)
+function createLinks($linkTextPairList)
 {
     $html = "";
-    if ($uriToTextMap) {
-        foreach ($uriToTextMap as $uri => $uriText) {
-            $html .= '<a href="' . $uri . '">' . $uriText . "</a>";
+    if ($linkTextPairList) {
+        foreach ($linkTextPairList as $linkTextPair) {
+            $html .= '<a href="' . $linkTextPair->first . '">' . $linkTextPair->second . "</a>";
         }
     }
     return $html;
