@@ -8,10 +8,14 @@
 @import "base";
 
 
-$page-part-margin: $base-line-height * 2;
+$page-part-margin: $base-line-height * 1;
 
 #featureTOC {
 	float:right;
+	h3 {
+		margin-top: 0;
+		line-height: $base-line-height;
+	}
 }
 
 #taxonProfileImage{
@@ -63,16 +67,26 @@ ul.cdm_names li {
 
 .page-part {
 	margin-bottom: $page-part-margin;
+	clear: none;
 }
 
 /*
  * Synonymy
  */
 
-//ul.homotypicSynonyms,
-//ul.heterotypicSynonymyGroup {
-//  border-bottom:1px solid #dedede;
-//}
+#synonymy {
+	div.accepted-name {
+		margin-bottom: -1em;
+	    margin-top: 1em;
+	}
+
+	.homotypic-synonymy-group, .heterotypic-synonymy-group, .taxon-relationships {
+    	border-bottom: 1px solid #DEDEDE;
+    	/* replace padding by margin */
+    	margin: 1em 0px;
+    	padding: 0; 
+	}
+}
 
 /*
  * Media

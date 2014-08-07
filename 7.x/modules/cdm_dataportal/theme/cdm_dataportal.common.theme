@@ -485,7 +485,7 @@ function theme_cdm_back_to_search_result_button() {
   $out = '';
 
   $show_button = variable_get('cdm_dataportal_show_back_to_search_results');
-  if (isset($_SESSION['cdm']['search']) && isset($show_button)) {
+  if (isset($_SESSION['cdm']['search']) && isset($show_button) &&  $show_button == 1) {
     /* ['cdm']['last_search'] */
     // $out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION
     // ).'</div>';

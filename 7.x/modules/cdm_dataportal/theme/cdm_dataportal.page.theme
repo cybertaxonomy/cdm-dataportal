@@ -117,13 +117,12 @@ function theme_cdm_taxon_page_synonymy($variables) {
       $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
     }
 
-    $accepted_name = '<span class="accepted-name">';
+    $accepted_name = '<div class="accepted-name">';
     $accepted_name .= theme('cdm_taxonName', array(
       'taxonName' => $taxon->name,
       'nameLink' => NULL,
       'refenceLink' => $referenceUri,
       ));
-    $accepted_name .= '</span>';
 
     // handle annotations of the name and taxon
     $special_annotations_array = array();
@@ -133,6 +132,7 @@ function theme_cdm_taxon_page_synonymy($variables) {
         'cdmBase_list' => $special_annotations_array,
         'footnote_list_key' => RenderHints::getRenderPath() . '-annotations')
       );
+    $accepted_name .= '</div>';
   }
 
   // --- Render homotypic synonymy group
