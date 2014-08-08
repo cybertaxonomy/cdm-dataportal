@@ -41,7 +41,7 @@ h1, h2, h3, h4, h5, h6 {
   // single-box-shadow($color, $hoff, $voff, $blur, $spread, $inset)
   @include single-box-shadow(black, 0px, 5px, 20px);
   padding-top: $zen-gutter-width;
-  background-color: #fff;
+  background-color: $page-background-color;
 }
 
 /*
@@ -59,7 +59,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 2px 0 3px 0;
     text-align: center;
     background-color: #666;
-    color: #fff;
+    color: $page-background-color;
   }
 }
 

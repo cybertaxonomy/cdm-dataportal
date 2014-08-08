@@ -1,1 +1,43 @@
-.pie-element,.lt-ie9 #page{behavior:url("/polyfills/css3pie/PIE-1.0.0.htc");position:relative}.pie-container{z-index:0;position:relative}.z-pie-element,.lt-ie9 #page{behavior:url("/polyfills/css3pie/PIE-1.0.0.htc");z-index:0}.lt-ie9 #header{padding-right:0;margin-right:20px}ul.primary li,ul.secondary li{float:right}ul.primary li{margin:0.5em 3px 0 0}
+/**
+ * @file
+ * RTL companion for the tabs.css file.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000330}}
+.pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000343}}
+.pie-container {
+  z-index: 0;
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000347}}
+.z-pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  z-index: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000363}}
+.lt-ie9 #header {
+  /* 
+   * reset right padding to zero and use margin-right instead,
+   * this avoids the need for background-clip: content-box
+   * which is not suppoorted in IE < 9
+   */
+  padding-right: 0;
+  margin-right: 20px;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/tabs-rtl\.scss}line{font-family:\0000311}}
+ul.primary li,
+ul.secondary li {
+  float: right;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/tabs-rtl\.scss}line{font-family:\0000317}}
+ul.primary li {
+  margin: 0.5em 3px 0 0;
+}

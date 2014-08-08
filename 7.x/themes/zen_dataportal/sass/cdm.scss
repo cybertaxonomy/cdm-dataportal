@@ -12,6 +12,7 @@ $page-part-margin: $base-line-height * 1;
 
 #featureTOC {
 	float:right;
+  	background-color: $page-background-color;
 	h3 {
 		margin-top: 0;
 		line-height: $base-line-height;
