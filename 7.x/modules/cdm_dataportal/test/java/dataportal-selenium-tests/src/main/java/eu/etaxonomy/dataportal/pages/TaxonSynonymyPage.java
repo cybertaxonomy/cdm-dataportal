@@ -94,7 +94,7 @@ public class TaxonSynonymyPage extends PortalPage {
      */
     public WebElement getAcceptedName() {
         WebElement acceptedName = synonymy.findElement(
-                By.xpath("./span[contains(@class,'accepted-name')]")
+                By.xpath("./div[contains(@class,'accepted-name')]")
         );
         return acceptedName;
     }
@@ -115,7 +115,7 @@ public class TaxonSynonymyPage extends PortalPage {
      */
     public List<LinkElement> getAcceptedNameFootNoteKeys() {
         List<WebElement> fnkListElements = synonymy.findElements(
-                By.xpath("./span[contains(@class,'accepted-name')]/following-sibling::span[contains(@class, 'footnote-key')]/a")
+                By.xpath("./div[contains(@class,'accepted-name')]/following-sibling::span[contains(@class, 'footnote-key')]/a")
         );
         return ElementUtils.linkElementsFromFootNoteKeyListElements(fnkListElements);
     }
@@ -130,7 +130,7 @@ public class TaxonSynonymyPage extends PortalPage {
     @Deprecated
     public List<BaseElement> getAcceptedNameFootNotes() {
 //        List<WebElement> fnListElements = synonymy.findElements(
-//                By.xpath("./span[contains(@class,'accepted-name')]/following-sibling::ul[contains(@class, 'footnotes')]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
+//                By.xpath("./div[contains(@class,'accepted-name')]/following-sibling::ul[contains(@class, 'footnotes')]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
 //        );
 //        return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
         return getHomotypicalGroupFootNotes();
