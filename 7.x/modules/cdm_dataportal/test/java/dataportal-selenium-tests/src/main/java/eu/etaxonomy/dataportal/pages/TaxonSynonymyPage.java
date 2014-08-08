@@ -115,7 +115,7 @@ public class TaxonSynonymyPage extends PortalPage {
      */
     public List<LinkElement> getAcceptedNameFootNoteKeys() {
         List<WebElement> fnkListElements = synonymy.findElements(
-                By.xpath("./div[contains(@class,'accepted-name')]/following-sibling::span[contains(@class, 'footnote-key')]/a")
+                By.xpath("./div[contains(@class,'accepted-name')]/span[contains(@class, 'footnote-key')]/a")
         );
         return ElementUtils.linkElementsFromFootNoteKeyListElements(fnkListElements);
     }
