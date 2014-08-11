@@ -1,5 +1,5 @@
 /**
- * Customizations for your portal theme overriding the 
+ * Customizations for your portal theme overriding the
  * Garland_cichorieae theme css.
  *
  * Put css overrides for your custom theme below.
@@ -10,7 +10,7 @@
  * from the stylesheets in the parent theme, otherwise it will override
  * the parent stylesheet. See also: http://drupal.org/node/225125.
  */
- 
+
  /**
  * Overrides for Garland_cichorieae style.css
  */
@@ -40,6 +40,6 @@
   z-index: 4;
 }
 
-#featureTOC{
+#page-toc{
   float: left;
 }

@@ -59,7 +59,7 @@ public class TaxonProfilePage extends PortalPage {
     @CacheLookup
     private WebElement taxonProfileImage;
 
-    @FindBy(id = "featureTOC")
+    @FindBy(id = "page-toc")
     @CacheLookup
     private WebElement tableOfContent;
 

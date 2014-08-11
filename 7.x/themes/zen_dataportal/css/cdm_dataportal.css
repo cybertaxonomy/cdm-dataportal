@@ -5,7 +5,7 @@
  * Style the markup found in the cdm_dataportal module.
  */
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm_dataportal\.scss}line{font-family:\000038}}
-#featureTOC {
+#page-toc {
   float: right;
 }
 

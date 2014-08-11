@@ -118,7 +118,7 @@ function cdm_feature_node_toc_items($feature_nodes) {
       //TODO HACK to implement images for taxa, should be removed.
       if ($node->feature->uuid != UUID_IMAGE) {
         $items[] = array(
-            l(
+          'data' => l(
                 theme('cdm_feature_name', array('feature_name' => $featureRepresentation)),
                 $_GET['q'],
                 array(
@@ -126,7 +126,8 @@ function cdm_feature_node_toc_items($feature_nodes) {
                     'fragment' => generalizeString($featureRepresentation),
                     'query' => $http_request_params
                 )
-            )
+            ),
+          'class' => array('feature-toc-item-' . $node->feature->uuid),
         );
       }
     }

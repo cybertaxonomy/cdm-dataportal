@@ -1,1 +1,183 @@
-.pie-element,.lt-ie9 #page{behavior:url("/polyfills/css3pie/PIE-1.0.0.htc");position:relative}.pie-container{z-index:0;position:relative}.z-pie-element,.lt-ie9 #page{behavior:url("/polyfills/css3pie/PIE-1.0.0.htc");z-index:0}.lt-ie9 #header{padding-right:0;margin-right:20px}#page,.region-bottom{margin-left:auto;margin-right:auto;width:980px}#header,#content,#navigation,.region-sidebar-first,.region-sidebar-second,#footer{padding-left:10px;padding-right:10px;border:0 !important;word-wrap:break-word;_display:inline;_overflow:hidden;_overflow-y:visible}#header,#main,#footer{*position:relative;*zoom:1}#header:before,#header:after,#main:before,#main:after,#footer:before,#footer:after{content:"";display:table}#header:after,#main:after,#footer:after{clear:both}#main{padding-top:3em;position:relative}#navigation{position:absolute;top:0;height:3em;width:960px}.sidebar-first #content{float:left;width:764px;margin-left:196px;margin-right:-980px}.sidebar-first .region-sidebar-first{float:left;width:176px;margin-left:0px;margin-right:-196px}.sidebar-second #content{float:left;width:764px;margin-left:0px;margin-right:-784px}.sidebar-second .region-sidebar-second{float:left;width:176px;margin-left:784px;margin-right:-980px}.two-sidebars #content{float:left;width:568px;margin-left:196px;margin-right:-784px}.two-sidebars .region-sidebar-first{float:left;width:176px;margin-left:0px;margin-right:-196px}.two-sidebars .region-sidebar-second{float:left;width:176px;margin-left:784px;margin-right:-980px}
+/**
+ * @file
+ * Positioning for a fixed-width, desktop-centric layout.
+ *
+ * Define CSS classes to create a table-free, 3-column, 2-column, or single
+ * column layout depending on whether blocks are enabled in the left or right
+ * columns.
+ *
+ * This layout uses the Zen Grids plugin for Compass: http://zengrids.com
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000330}}
+.pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000343}}
+.pie-container {
+  z-index: 0;
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000347}}
+.z-pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  z-index: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000363}}
+.lt-ie9 #header {
+  /* 
+   * reset right padding to zero and use margin-right instead,
+   * this avoids the need for background-clip: content-box
+   * which is not suppoorted in IE < 9
+   */
+  padding-right: 0;
+  margin-right: 20px;
+}
+
+/*
+ * Center the page.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000343}}
+#page,
+.region-bottom {
+  /* If you want to make the page a fixed width and centered in the viewport,
+   * this is the standards-compliant way to do that. */
+  margin-left: auto;
+  margin-right: auto;
+  width: 980px;
+}
+
+/*
+ * Apply the shared properties of grid items in a single, efficient ruleset.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000361}}
+#header,
+#content,
+#navigation,
+.region-sidebar-first,
+.region-sidebar-second,
+#footer {
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 0 !important;
+  word-wrap: break-word;
+  _display: inline;
+  _overflow: hidden;
+  _overflow-y: visible;
+}
+
+/*
+ * Containers for grid items and flow items.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000371}}
+#header,
+#main,
+#footer {
+  *position: relative;
+  *zoom: 1;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass-extensions\/zen-grids\/stylesheets\/zen\/_grids\.scss}line{font-family:\0000352}}
+#header:before, #header:after,
+#main:before,
+#main:after,
+#footer:before,
+#footer:after {
+  content: "";
+  display: table;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass-extensions\/zen-grids\/stylesheets\/zen\/_grids\.scss}line{font-family:\0000356}}
+#header:after,
+#main:after,
+#footer:after {
+  clear: both;
+}
+
+/*
+ * Navigation bar
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000379}}
+#main {
+  padding-top: 3em;
+  /* Move all the children of #main down to make room. */
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000383}}
+#navigation {
+  position: absolute;
+  top: 0;
+  /* Move the navbar up inside #main's padding. */
+  height: 3em;
+  width: 960px;
+}
+
+/*
+ * The layout when there is only one sidebar, the left one.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000395}}
+.sidebar-first #content {
+  /* Span 4 columns, starting in 2nd column from left. */
+  float: left;
+  width: 764px;
+  margin-left: 196px;
+  margin-right: -980px;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\0000399}}
+.sidebar-first .region-sidebar-first {
+  /* Span 1 column, starting in 1st column from left. */
+  float: left;
+  width: 176px;
+  margin-left: 0px;
+  margin-right: -196px;
+}
+
+/*
+ * The layout when there is only one sidebar, the right one.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003109}}
+.sidebar-second #content {
+  /* Span 4 columns, starting in 1st column from left. */
+  float: left;
+  width: 764px;
+  margin-left: 0px;
+  margin-right: -784px;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003113}}
+.sidebar-second .region-sidebar-second {
+  /* Span 1 column, starting in 5th column from left. */
+  float: left;
+  width: 176px;
+  margin-left: 784px;
+  margin-right: -980px;
+}
+
+/*
+ * The layout when there are two sidebars.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003123}}
+.two-sidebars #content {
+  /* Span 3 columns, starting in 2nd column from left. */
+  float: left;
+  width: 568px;
+  margin-left: 196px;
+  margin-right: -784px;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003127}}
+.two-sidebars .region-sidebar-first {
+  /* Span 1 column, starting in 1st column from left. */
+  float: left;
+  width: 176px;
+  margin-left: 0px;
+  margin-right: -196px;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/layouts\/fixed-width\.scss}line{font-family:\00003131}}
+.two-sidebars .region-sidebar-second {
+  /* Span 1 column, starting in 5th column from left. */
+  float: left;
+  width: 176px;
+  margin-left: 784px;
+  margin-right: -980px;
+}

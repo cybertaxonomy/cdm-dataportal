@@ -66,7 +66,7 @@ public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
         String expectedName = "Pilosella";
         assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
 
-        assertEquals("Pilosella Vaill. in Königl. Akad. Wiss. Paris Phys. Abh. 5: 703. 1754", p.getAcceptedNameText());
+        assertEquals("Pilosella Vaill. in Königl. Akad. Wiss. Paris Phys. Abh. 5: 703. 17541", p.getAcceptedNameText());
         assertEquals("Expecting one footnote key", 1, p.getAcceptedNameFootNoteKeys().size());
         assertEquals("Expecting one footnote", 1, p.getHomotypicalGroupFootNotes().size());
         String expectetToStartWith = "1. As has been discovered by Greuter & al. in Taxon 54: 166 (2005),";

@@ -1,5 +1,5 @@
 /**
- * Customizations for the Flore Afrique Centrale portal theme overriding the 
+ * Customizations for the Flore Afrique Centrale portal theme overriding the
  * Garland_cichorieae theme css.
  *
  * Note: To inherit the parent theme stylesheets, the child theme should have
@@ -7,7 +7,7 @@
  * from the stylesheets in the parent theme, otherwise it will override
  * the parent stylesheet. See also: http://drupal.org/node/225125.
  */
- 
+
  /**
  * Overrides for Garland_cichorieae style.css
  */
@@ -53,7 +53,7 @@ wrapper #container #header h1 a:visited {
   padding: 0 0 0 0;
 }
 
-#featureTOC {
+#page-toc {
   float: left;
 }
 
@@ -65,8 +65,8 @@ wrapper #container #header h1 a:visited {
   margin-top: 20px;
 }
 
-#wrapper #container #header h1, 
-#wrapper #container #header h1 a:link, 
+#wrapper #container #header h1,
+#wrapper #container #header h1 a:link,
 #wrapper #container #header h1 a:visited {
   font-family: Georgia, Times, serif;
   font-weight: normal;
