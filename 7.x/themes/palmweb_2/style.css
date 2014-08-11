@@ -1,5 +1,5 @@
 /**
- * Garland, for Drupal 5.0 (modified for Drupal 7 by W. Addink, 
+ * Garland, for Drupal 5.0 (modified for Drupal 7 by W. Addink,
  * waddink@eti.uva.nl)
  * Stefan Nagtegaal, iStyledThis [dot] nl
  * Steven Wittens, acko [dot] net`
@@ -112,7 +112,7 @@ a.taxon:visited,
 }
 
 #edit-search-doTaxaByCommonNames-wrapper {
-  display:none;  
+  display:none;
 }
 
 /*
@@ -435,7 +435,7 @@ body.sidebar-second {
 }
 
 /**
- * We must define 100% width to avoid the body being too narrow 
+ * We must define 100% width to avoid the body being too narrow
  * for near-empty pages,
  */
 #wrapper #container #center {
@@ -503,10 +503,10 @@ body.sidebars #squeeze {
   margin: 0;
 }
 
-.block .content p { 
+.block .content p {
   /* same indent as ul + li */
   /* margin:0.15em 0 0.40em 1.5em; */
-  /* padding:0 0 0.2em 1.5em; */ 
+  /* padding:0 0 0.2em 1.5em; */
 }
 
 p#Distribution {
@@ -608,10 +608,10 @@ body.sidebars #footer {
   /* font-weight: bold; */
   /* color: #97ac2d; */
 }
-#wrapper #container #general #featureTOC h2{
+#wrapper #container #general #page-toc h2{
   color: #222;
 }
-#wrapper #container #general #featureTOC ul li{
+#wrapper #container #general #page-toc ul li{
   list-style-type: none;
   color: #f03300;
   padding: 0;
@@ -1185,7 +1185,7 @@ table.system-status-report tr.ok th {
   border-color: #beb;
 }
 
-#edit-search-geographic-range-tdwg-level-select-3-wrapper { 
+#edit-search-geographic-range-tdwg-level-select-3-wrapper {
   display: none;
 }
 

@@ -398,14 +398,18 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
 
-  // set up the TOC for the pages wich contain all pageparts
+  // set up the TOC for the pages which contain all pageparts
   if($page_part == 'all') {
 
     asort($taxontabs_weights);
     foreach(array_keys($taxontabs_weights) as $tab_key){
       if(isset($render_array[$tab_key])){
         if($tab_key != 'general'){
-          $toc_elements[] = l(t(ucfirst($tab_key)), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params));
+          // add entry for page part
+          $toc_elements[] = array(
+              'data' => l(t(ucfirst($tab_key)), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
+              'class' => array('page-part-toc-item-' . $tab_key)
+          );
         } else {
           // add content of profile part instead
           if(isset($render_array['general'])) {
@@ -437,7 +441,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
         '#title' => t('Content'),
         '#weight' => -101,
         '#suffix' => '</div>',
-        '#prefix'=> '<div id="featureTOC">' // reusing id featureTOC even if this is semantically not correct
+        '#prefix'=> '<div id="page-toc">'
     );
   }
 
@@ -531,7 +535,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
       '#title' => t('Content'),
       '#weight' => -100,
       '#suffix' => '</div>',
-      '#prefix'=> '<div id="featureTOC">' // reusing id featureTOC even if this is semantically not correct
+      '#prefix'=> '<div id="page-toc">'
   );
   $render_array['taxon_description_feature_toc'] = $toc; //markup_to_render_array($toc_html);
 

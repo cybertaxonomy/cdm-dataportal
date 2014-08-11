@@ -24,7 +24,7 @@
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000363}}
 .lt-ie9 #header {
-  /* 
+  /*
    * reset right padding to zero and use margin-right instead,
    * this avoids the need for background-clip: content-box
    * which is not suppoorted in IE < 9
@@ -34,12 +34,12 @@
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000313}}
-#featureTOC {
+#page-toc {
   float: right;
   background-color: white;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/cdm\.scss}line{font-family:\0000316}}
-#featureTOC h3 {
+#page-toc h3 {
   margin-top: 0;
   line-height: 18px;
 }

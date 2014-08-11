@@ -128,15 +128,15 @@ body.mceContentBody {
   margin-bottom: 2em;
 }
 
-#featureTOC {
+#page-toc {
   float:right;
 }
 
-#featureTOC li {
+#page-toc li {
   line-height: 1.2em;
 }
 
-#featureTOC h2 {
+#page-toc h2 {
   margin-top: 0;
 }
 
