@@ -102,62 +102,66 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
-        $derivateHierarchies = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'derivateHierarchy'));
+        $fieldUnits = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'associatedFieldUnits'));
         $detail_image_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
         $sequence_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
-        if ($derivateHierarchies) {
+        if ($fieldUnits) {
             $rowcount = 0;
-            foreach ($derivateHierarchies as $derivateHierarchy) {
-                //summary row
-                $rows[] = array(
-                    'data' => array(
-                        $derivateHierarchy->country,
-                        $derivateHierarchy->date,
-                        $derivateHierarchy->collection,
-                        $derivateHierarchy->herbarium,
-                        $derivateHierarchy->hasType,
-                        $derivateHierarchy->hasSpecimenScan,
-                        ($derivateHierarchy->hasDna? $sequence_icon :"") . ($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
-                    ),
-                    'id' => ('derivate_summary' . $rowcount), // summary row id
-                    'class' => array('summary_row'),
-                );
-
-                //assemble detail html
-                $taxonName = $derivateHierarchy->taxonName;
-                $protologue = $derivateHierarchy->protologue;
-                $citation = $derivateHierarchy->citation;
-                $types = "";
-                foreach($derivateHierarchy->types as $typeStatus => $accessionList){
-                    $types .= $typeStatus;
-                    foreach($accessionList as $accessionNumber){
-                        $types .= " (" . $accessionNumber . ") ";
-                    }
-                }
-                $specimenScans = createLinks($derivateHierarchy->specimenScans);
-                $molecularData = createLinks($derivateHierarchy->molecularData);
-                $detailImages = createLinks($derivateHierarchy->detailImages);
-
-                $detail_html = "<b>Name:</b> " . $taxonName . "<br>"
-                    . "<b>Protologue:</b> " . $protologue . "<br>"
-                    . "<b>Citation:</b> " . $citation . "<br>"
-                    . "<b>Types:</b> " . $types . "<br>"
-                    . "<b>Specimen Scans:</b> " . $specimenScans . "<br>"
-                    . "<b>Molecular Data:</b> " . $molecularData . "<br>"
-                    . "<b>Detail Images:</b> " . $detailImages;
-
-                //detail row resp. one BIG detail cell
-                $rows[] = array(
-                    'data' => array(
-                        'details' => array(
-                            'data' => $detail_html,
-                            'colspan' => 8,
+            foreach ($fieldUnits as $fieldUnit) {
+                //get derivate hierarchy for the FieldUnit
+                $derivateHierarchy = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($fieldUnit->uuid, 'derivateHierarchy'), 'taxonUuid=' . $taxon->uuid);
+                if($derivateHierarchy){
+                    //summary row
+                    $rows[] = array(
+                        'data' => array(
+                            $derivateHierarchy->country,
+                            $derivateHierarchy->date,
+                            $derivateHierarchy->collection,
+                            $derivateHierarchy->herbarium,
+                            $derivateHierarchy->hasType,
+                            $derivateHierarchy->hasSpecimenScan,
+                            ($derivateHierarchy->hasDna? $sequence_icon :"") . ($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
                         ),
-                    ),
-                    'id' => ('derivate_details' . $rowcount),//details row ID
-                    'class' => array('detail_row'),
-                );
-                $rowcount++;
+                        'id' => ('derivate_summary' . $rowcount), // summary row id
+                        'class' => array('summary_row'),
+                    );
+
+                    //assemble detail html
+                    $taxonName = $derivateHierarchy->taxonName;
+                    $protologue = $derivateHierarchy->protologue;
+                    $citation = $derivateHierarchy->citation;
+                    $types = "";
+                    foreach($derivateHierarchy->types as $typeStatus => $accessionList){
+                        $types .= $typeStatus;
+                        foreach($accessionList as $accessionNumber){
+                            $types .= " (" . $accessionNumber . ") ";
+                        }
+                    }
+                    $specimenScans = createLinks($derivateHierarchy->specimenScans);
+                    $molecularData = createLinks($derivateHierarchy->molecularData);
+                    $detailImages = createLinks($derivateHierarchy->detailImages);
+
+                    $detail_html = "<b>Name:</b> " . $taxonName . "<br>"
+                        // . "<b>Protologue:</b> " . $protologue . "<br>"
+                        . "<b>Citation:</b> " . $citation . "<br>"
+                        . "<b>Types:</b> " . $types . "<br>"
+                        . "<b>Specimen Scans:</b> " . $specimenScans . "<br>"
+                        . "<b>Molecular Data:</b> " . $molecularData . "<br>"
+                        . "<b>Detail Images:</b> " . $detailImages;
+
+                    //detail row resp. one BIG detail cell
+                    $rows[] = array(
+                        'data' => array(
+                            'details' => array(
+                                'data' => $detail_html,
+                                'colspan' => 8,
+                            ),
+                        ),
+                        'id' => ('derivate_details' . $rowcount),//details row ID
+                        'class' => array('detail_row'),
+                    );
+                    $rowcount++;
+                }
             }
         }
 
