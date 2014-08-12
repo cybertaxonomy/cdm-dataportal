@@ -1297,7 +1297,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highli
     $singleTaxon = array_pop($taxon_pager->records);
     if ($singleTaxon->class != "Taxon") {
       // It is a Synonym -> look for the accepted.
-      $accepted_taxa = cdm_ws_get(CDM_WS_TAXON_ACCEPTED, array($singleTaxon->uuid, get_taxonomictree_uuid_selected()));
+      $accepted_taxa = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid, get_taxonomictree_uuid_selected()));
       if (!empty($highlite_synonym_uuid)) {
         drupal_goto('cdm_dataportal/taxon/' . $accepted_taxa[0]->uuid . '/synonymy', array('query' => array('highlite' => $highlite_synonym_uuid)));
       }
@@ -2014,7 +2014,7 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
 /**
  *  Creates a CDM Dynabox.
  * @param string $dynabox_id
- *   a uninque name for tha dynabox, using a cdm entity uuid herefore is good pratice
+ *   a uninque name for tha dynabox, using a cdm entity uuid herefore is good pratice.
  * @param string $label
  *   The clickable text to show.
  * @param string $content_url
@@ -2039,11 +2039,18 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
  * @return string
  *   Returns HTML for a dynabox.
  */
-function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul'), $open_callback = 'function(){}', $close_callback = 'function(){}') {
+function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul'), $attributes = array(), $open_callback = 'function(){}', $close_callback = 'function(){}') {
   $out = '';
 
   // check for plain class attribute string
   $dynabox_id = preg_replace('/[^a-zA-Z0-9\-]/', '', $dynabox_id);
+
+  if(!array_key_exists('class', $attributes)) {
+    $attributes['class'] = array();
+  }
+  $attributes['class'][] = 'dynabox-' . $dynabox_id;
+  $dynabox_attributes = drupal_attributes($attributes);
+
 
   _add_js_domEvent(); // requires domEvent.js
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cdm_dynabox.js');
@@ -2064,11 +2071,15 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
     )
   );
 
+
   $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/$theme");
-  $out .= '<!-- ' . $content_url . ' -->';
-  $out .= '<' . $enclosingtags[0] . ' class="dynabox-' . $dynabox_id . '"><a href="#" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
-  $out .= '<' . $enclosingtags[1] . ' class="dynabox-' . $dynabox_id . '-content" title="' . $cdm_proxy_url . '"><' . $enclosingtags[0] . '>' . loading_image_html() . '</' . $enclosingtags[0] . '></' . $enclosingtags[1] . '>';
+  $out .= '<!-- dynabox for ' . $content_url . ' -->';
+  $out .= '<' . $enclosingtags[0] . ' ' .  $dynabox_attributes. '><a href="#" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
+  $out .= '<' . $enclosingtags[1] . ' class="dynabox-' . $dynabox_id . '-content" title="' . $cdm_proxy_url . '">';
+  $out .= '<' . $enclosingtags[0] . ' class="dynabox-content-inner">' . loading_image_html() . '</' . $enclosingtags[0] . '>';
+  $out .= '</' . $enclosingtags[1] . '>';
   $out .= '</' . $enclosingtags[0] . '>';
+  $out .= '<!-- dynabox end -->';
   return $out;
 }
 
