@@ -256,6 +256,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     'cdm_specimenOrObservation', // the theme or compose function to use
                     'Click for details',
                     array('div','div'),
+                    array(),
                     'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', // open_callback
                     'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
                 );
