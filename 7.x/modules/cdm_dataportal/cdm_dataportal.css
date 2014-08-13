@@ -7,6 +7,14 @@
  * See also http://groups.drupal.org/node/6355.
  */
 
+#derivate_hierarchy_table {
+    width: 100%;
+}
+
+#derivate_hierarchy_table td.checkBoxCell {
+    text-align: center;
+    vertical-align: middle;
+}
 
 #block-cdm-api-cdm-ws-debug {
   background-color: #373737;

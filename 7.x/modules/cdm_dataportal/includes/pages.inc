@@ -103,8 +103,9 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
         $fieldUnits = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'associatedFieldUnits'));
-        $detail_image_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
-        $sequence_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
+        $detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
+        $checked_box_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/step_done.gif' . '"/>';
+        $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
         if ($fieldUnits) {
             $rowcount = 0;
             foreach ($fieldUnits as $fieldUnit) {
@@ -118,8 +119,14 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                             $derivateHierarchy->date,
                             $derivateHierarchy->collection,
                             $derivateHierarchy->herbarium,
-                            $derivateHierarchy->hasType,
-                            $derivateHierarchy->hasSpecimenScan,
+                            array(
+                                'data' => $derivateHierarchy->hasType? $checked_box_icon:"",
+                                'class' => array('checkBoxCell')
+                            ),
+                            array(
+                                'data' => $derivateHierarchy->hasSpecimenScan? $checked_box_icon:"",
+                                'class' => array('checkBoxCell')
+                            ),
                             ($derivateHierarchy->hasDna? $sequence_icon :"") . ($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
                         ),
                         'id' => ('derivate_summary' . $rowcount), // summary row id
@@ -141,18 +148,33 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     $molecularData = createLinks($derivateHierarchy->molecularData);
                     $detailImages = createLinks($derivateHierarchy->detailImages);
 
-                    $detail_html = "<b>Name:</b> " . $taxonName . "<br>"
-                        // . "<b>Protologue:</b> " . $protologue . "<br>"
-                        . "<b>Citation:</b> " . $citation . "<br>"
-                        . "<b>Types:</b> " . $types . "<br>"
-                        . "<b>Specimen Scans:</b> " . $specimenScans . "<br>"
-                        . "<b>Molecular Data:</b> " . $molecularData . "<br>"
-                        . "<b>Detail Images:</b> " . $detailImages;
+                    $detail_html = "";
+                    if($taxonName){
+                        $detail_html .= "<b>Name:</b> " . $taxonName . "<br>";
+                    }
+                    if($protologue){
+                        //$detail_html .= "<b>Protologue:</b> " . $protologue . "<br>"
+                    }
+                    if($citation){
+                        $detail_html .= "<b>Citation:</b> " . $citation . "<br>";
+                    }
+                    if($types){
+                        $detail_html .= "<b>Types:</b> " . $types . "<br>";
+                    }
+                    if($specimenScans){
+                        $detail_html .= "<b>Specimen Scans:</b> " . $specimenScans . "<br>";
+                    }
+                    if($molecularData){
+                        $detail_html .= "<b>Molecular Data:</b> " . $molecularData . "<br>";
+                    }
+                    if($detailImages){
+                        $detail_html .=  "<b>Detail Images:</b> " . $detailImages . "<br>";;
+                    }
 
                     //detail row resp. one BIG detail cell
                     $rows[] = array(
                         'data' => array(
-                            'details' => array(
+                            array(
                                 'data' => $detail_html,
                                 'colspan' => 8,
                             ),
@@ -171,7 +193,10 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             "#weight" => 2,
             "#header" => array("Country", "Date", "Collection", "Herbaria", "Type", "Image", "Derivates"),
             "#rows" => $rows,
-            "#attributes" => array("id" => $tableId)
+            "#attributes" => array(
+                "id" => $tableId,
+                "border" => 2
+            )
         );
 
         //add toggle functionality to derivate hierarchy table
