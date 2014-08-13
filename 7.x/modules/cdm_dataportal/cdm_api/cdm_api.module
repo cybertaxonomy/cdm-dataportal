@@ -844,14 +844,22 @@ function proxy_content($uri, $hook = NULL) {
       switch($hook) {
         case 'cdm_taxontree':
           $variables = array(
-          'tree' => $obj,
-          'filterIncludes' => isset($args[0]) ? $args[0] : NULL,
-          'show_filter_switch' => isset($args[1]) ? $args[1] : FALSE,
-          'tree_node_callback' => isset($args[2]) ? $args[2] : FALSE,
-          'element_name'=> isset($args[3]) ? $args[3] : FALSE,
-          );
+            'tree' => $obj,
+            'filterIncludes' => isset($args[0]) ? $args[0] : NULL,
+            'show_filter_switch' => isset($args[1]) ? $args[1] : FALSE,
+            'tree_node_callback' => isset($args[2]) ? $args[2] : FALSE,
+            'element_name'=> isset($args[3]) ? $args[3] : FALSE,
+            );
           $reponse_data = theme($hook, $variables);
           break;
+
+        case 'cdm_list_of_taxa':
+            $variables = array(
+              'records' => $obj,
+              'freetextSearchResults' => isset($args[0]) ? $args[0] : array(),
+              'show_classification' => isset($args[1]) ? $args[1] : FALSE);
+            $reponse_data = theme($hook, $variables);
+            break;
 
         case 'cdm_media_caption':
           $variables = array(
@@ -872,7 +880,7 @@ function proxy_content($uri, $hook = NULL) {
 
         default:
           drupal_set_message(t(
-          'Theme !theme is not supported yet by function !function.', array(
+          'Theme !theme is not yet supported by the function !function.', array(
           '!theme' => $hook,
           '!function' => __FUNCTION__,
           )), 'error');

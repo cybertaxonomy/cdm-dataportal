@@ -33,7 +33,7 @@
 
     var loadContent = function(event) {
       event.preventDefault(); //Cancel the default action (navigation) of the click.
-      var dynabox_content = $(event.target).parent('.dynabox-' + dynabox_id).find('.dynabox-' + dynabox_id + '-content');
+      var dynabox_content = $(event.target).parents('.dynabox-' + dynabox_id).find('.dynabox-' + dynabox_id + '-content');
 
       if(dynabox_content.find('.content').length > 0) {
         // content has already been loaded
@@ -51,7 +51,8 @@
             }
           );
           $.get(url, function(html){
-            dynabox_content.find('.loading').remove().end().append('<div class="content">' + html + '</div>').triggerElementsAdded();
+            dynabox_content.find('.loading').remove()
+            dynabox_content.find('.dynabox-content-inner').html('<div class="content">' + html + '</div>').triggerElementsAdded();
           });
         }
       }
