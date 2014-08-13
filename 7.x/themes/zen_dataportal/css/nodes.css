@@ -64,6 +64,14 @@
 #identificationKey .misapplied-name a:visited {
   color: #7c7c7c;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/_custom\.scss}line{font-family:\0000384}}
+.block .Taxon a:link,
+.block .Taxon a:visited, .node .Taxon a:link,
+.node .Taxon a:visited, #backButton .Taxon a:link,
+#backButton .Taxon a:visited, #identificationKey .Taxon a:link,
+#identificationKey .Taxon a:visited {
+  color: #115e92;
+}
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000318}}
 .node {

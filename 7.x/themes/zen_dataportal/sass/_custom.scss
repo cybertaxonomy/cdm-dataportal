@@ -79,4 +79,10 @@
         color: $link-color-synonym;
     }
   }
+  .Taxon {
+    a:link,
+    a:visited {
+        color: $link-color;
+    }
+  }
 }
