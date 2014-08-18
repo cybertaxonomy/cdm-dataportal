@@ -2074,7 +2074,8 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
 
   $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/$theme");
   $out .= '<!-- dynabox for ' . $content_url . ' -->';
-  $out .= '<' . $enclosingtags[0] . ' ' .  $dynabox_attributes. '><a href="#" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
+  $out .= '<' . $enclosingtags[0] . ' ' .  $dynabox_attributes. '><a href="' . $cdm_proxy_url . '" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
+  // TODO top using the title attribute, the label href now contains the same url!
   $out .= '<' . $enclosingtags[1] . ' class="dynabox-' . $dynabox_id . '-content" title="' . $cdm_proxy_url . '">';
   $out .= '<' . $enclosingtags[0] . ' class="dynabox-content-inner">' . loading_image_html() . '</' . $enclosingtags[0] . '>';
   $out .= '</' . $enclosingtags[1] . '>';
