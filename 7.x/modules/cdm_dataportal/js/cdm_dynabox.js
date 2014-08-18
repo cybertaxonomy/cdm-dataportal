@@ -45,7 +45,7 @@
         );
       } else {
         // no content so far, so load it
-        // TODO top using the title attribute, the label href now contains the same url!
+        // TODO stop using the title attribute, the label href now contains the same url!
         var url = dynabox_content.attr('title');
         if(url !== undefined && url.length > 1){
           dynabox_content.removeAttr('title').find('.loading').slideDown('fast',
