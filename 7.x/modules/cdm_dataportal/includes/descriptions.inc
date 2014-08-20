@@ -206,12 +206,19 @@ function cdm_create_description_element_footnotes($description_element, $separat
   $footNoteKeys = cdm_annotations_as_footnotekeys($description_element);
 
   // Source references as footnotes.
+  $bibliography_settings = get_bibliography_settings();
+  $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // otherwise the default
+
   foreach ($description_element->sources as $source) {
     if (_is_original_source_type($source)) {
-      $fn_key = FootnoteManager::addNewFootnote(original_source_footnote_list_key(), theme('cdm_OriginalSource', array(
+      $fn_key = FootnoteManager::addNewFootnote(
+        original_source_footnote_list_key(),
+        theme('cdm_OriginalSource', array(
           'source' => $source,
           'doLink' => FALSE,
-      )));
+        )),
+        $original_source_footnote_tag
+      );
       // Ensure uniqueness of the footnote keys.
       cdm_add_footnote_to_array($footNoteKeys, $fn_key);
     }
@@ -233,7 +240,8 @@ function original_source_footnote_list_key($key_suggestion = null) {
   if(!$key_suggestion){
     $key_suggestion = RenderHints::getFootnoteListKey();
   }
-  $footnote_list_key = variable_get(BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE,  1) == 1 ? 'BIBLIOGRAPHY' : $key_suggestion;
+  $bibliography_settings = get_bibliography_settings();
+  $footnote_list_key = $bibliography_settings['enabled'] == 1 ? 'BIBLIOGRAPHY' : $key_suggestion;
   return $footnote_list_key;
 }
 

@@ -549,10 +549,10 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
   );
   $render_array['taxon_description_feature_toc'] = $toc; //markup_to_render_array($toc_html);
 
-
-  if(variable_get(BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE, 1) == 1){
+  $bibliography_settings = get_bibliography_settings();
+  if($bibliography_settings['enabled'] == 1){
     $bibliography_block = feature_block(t('Bibliography'));
-    $bibliography_block->content = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY');
+    $bibliography_block->content = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', '');
     $render_array['taxon_description_bibliography'] =  markup_to_render_array(
       theme('block',
         array(

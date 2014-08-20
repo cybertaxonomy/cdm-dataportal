@@ -53,7 +53,7 @@ function cdm_dataportal_theme() {
           'highlightable' => TRUE,
           'separator_off' => FALSE,
       )),
-      'cdm_footnote' => array('variables' => array('footnoteKey' => NULL, 'footnoteText' => NULL)),
+      'cdm_footnote' => array('variables' => array('footnoteKey' => NULL, 'footnoteText' => NULL, 'enclosing_tag' => 'span')),
       'cdm_footnotes' => array('variables' => array(
           'footnoteListKey' => NULL,
           'enclosingTag' => 'span',

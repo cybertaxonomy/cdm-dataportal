@@ -508,7 +508,6 @@ function cdm_dataportal_menu() {
 /**
  * Implements hook_init().
  *
- * can be removed after fixing the FIXME below
  */
 function cdm_dataportal_init() {
   //FIXME To add CSS or JS that should be present on all pages, modules
@@ -520,6 +519,11 @@ function cdm_dataportal_init() {
   if(variable_get('cdm_debug_mode', FALSE)){
     $file = 'temporary://drupal_debug.txt';
     file_put_contents($file, 'CDM DEBUG LOG for ' . $_GET['q']. "\n"); // will overwrite the file
+  }
+
+  $bibliography_settings = get_bibliography_settings();
+  if($bibliography_settings['enabled'] == 1){
+    FootnoteManager::registerFootnoteSet('BIBLIOGRAPHY', 'div', $bibliography_settings['key_format']);
   }
 }
 

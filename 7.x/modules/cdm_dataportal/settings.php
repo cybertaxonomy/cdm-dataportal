@@ -30,6 +30,10 @@ if (in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
 define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
 
 define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE', 'bibliography_for_original_source');
+define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT', serialize(array(
+  'enabled' => 1,
+  'key_format' => 'roman'
+)));
 
 /* taxonRelationshipTypes */
 define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
@@ -328,17 +332,17 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
 /**
  * Merges the named array variable with the array of defaults.
  *
- * IḾPORTANT: The array keys must be strings. When the keys are integers
- * the merging will not take place for these enties. Number keyed enties
+ * IMPORTANT: The array keys must be strings. When the keys are integers
+ * the merging will not take place for these entities. Number keyed entities
  * are just appended to the result array.
  *
  * @param string $variable_name
  *     The variable name
  * @param string | array $default
  *     The array containing the default values either as array or serialized as string.
- *     Unserialization is cared for if nessecary
+ *     Unserialization is cared for if necessary
  * @return array
- *     The merged array as returnd by drupal_array_merge_deep()
+ *     The merged array as returned by drupal_array_merge_deep()
  */
 function get_array_variable_merged($variable_name, $default){
 
@@ -391,6 +395,24 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
     return ($values[$index_value]);
   }
 
+}
+
+/**
+ * returns the current setting for the original source bibliography
+ *
+ * Caches internally
+ *
+ * @return array
+ *  the setting for the original source bibliography see BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE:
+ *   - 'enabled': 1|0
+ *   - 'key_format': one of 'latin', 'ROMAN', 'roman', 'ALPHA', 'alpha'
+ */
+function get_bibliography_settings(){
+  static $bibliography_settings = null;
+  if(!$bibliography_settings){
+    $bibliography_settings = get_array_variable_merged(BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE, BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT);
+  }
+  return $bibliography_settings;
 }
 
 /**
@@ -890,34 +912,49 @@ function cdm_settings_layout() {
     $form['footnotes']['annotations_types_as_footnotes']['#default_value'] = $annotationsTypesAsFootnotes;
   }
 
-    // ---- original source --- //
-    $form['original_source'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('Source Citations'),
-        '#collapsible' => FALSE,
-        '#collapsed' => FALSE,
-    );
-
-    $form['original_source'][BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Original Source in bibliography'),
-        '#default_value' => variable_get(BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE, 1),
-        '#description' => t('Show original source citations in bibliography block, instead of rendering them with other
-         annotations in each feature block.'),
-    );
-
-  // --- Advanced Search --- //
-  $form['asearch'] = array(
+  // ---- original source --- //
+  $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE] = array(
       '#type' => 'fieldset',
-      '#title' => t('Advanced search'),
+      '#tree' => TRUE,
+      '#title' => t('Source Citations'),
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
   );
-  $form['asearch']['cdm_dataportal_show_advanced_search'] = array(
+
+  $bibliography_settings = get_bibliography_settings();
+
+  $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE]['enable'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Show advanced search link'),
-      '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
-      '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
+      '#title' => t('Original Source in bibliography'),
+      '#default_value' => $bibliography_settings['enabled'],
+      '#description' => t('Show original source citations in bibliography block, instead of rendering them with other
+       annotations in each feature block.'),
+  );
+
+  $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE]['key_format'] = array(
+    '#type' => 'select',
+    '#title' => t('The format of the key numerals'),
+    '#default_value' => $bibliography_settings['key_format'],
+    '#options' => array('latin' => 'Latin',
+      'ROMAN' => 'Roman (upper case)',
+      'roman' => 'Roman (lower case)',
+      'ALPHA'=> 'Alphabet (upper case)',
+      'alpha' => 'Alphabet (lower case)')
+  );
+
+  // --- Advanced Search --- //
+  $form['asearch'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Advanced search'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+
+  $form['asearch']['cdm_dataportal_show_advanced_search'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show advanced search link'),
+    '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
+    '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
   );
 
   // ---- Taxon Name Rendering --- //
@@ -2410,12 +2447,6 @@ function get_edit_map_service_settings() {
       'version' => EDIT_MAPSERVER_VERSION_DEFAULT
       )
   );
-  // replace old non tree like settings by default
-  // TODO to be removed after release 3.1.5
-  if(!is_array($settings)){
-    variable_del('edit_map_server');
-    return get_edit_map_service_settings();
-  }
 
   return $settings;
 }
