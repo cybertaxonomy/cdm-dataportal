@@ -32,7 +32,7 @@ define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys))
 define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE', 'bibliography_for_original_source');
 define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT', serialize(array(
   'enabled' => 1,
-  'key_format' => 'roman'
+  'key_format' => 'ALPHA'
 )));
 
 /* taxonRelationshipTypes */
@@ -407,9 +407,9 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
  *   - 'enabled': 1|0
  *   - 'key_format': one of 'latin', 'ROMAN', 'roman', 'ALPHA', 'alpha'
  */
-function get_bibliography_settings(){
+function get_bibliography_settings($clear_cache = false){
   static $bibliography_settings = null;
-  if(!$bibliography_settings){
+  if(!$bibliography_settings || $clear_cache){
     $bibliography_settings = get_array_variable_merged(BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE, BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT);
   }
   return $bibliography_settings;
@@ -921,9 +921,9 @@ function cdm_settings_layout() {
       '#collapsed' => FALSE,
   );
 
-  $bibliography_settings = get_bibliography_settings();
+  $bibliography_settings = get_bibliography_settings(true);
 
-  $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE]['enable'] = array(
+  $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE]['enabled'] = array(
       '#type' => 'checkbox',
       '#title' => t('Original Source in bibliography'),
       '#default_value' => $bibliography_settings['enabled'],
