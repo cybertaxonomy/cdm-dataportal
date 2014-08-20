@@ -274,7 +274,8 @@ function _add_js_domEvent() {
 
 /* ====================== hook implementations ====================== */
 /**
- * Implements hook_permission(). *
+ * Implements hook_permission().
+ *
  * Valid permissions for this module.
  *
  * @return array
@@ -296,7 +297,8 @@ function cdm_dataportal_permission() {
 }
 
 /**
- * Implements hook_menu(). */
+ * Implements hook_menu().
+ */
 function cdm_dataportal_menu() {
   $items = array();
 
@@ -1046,11 +1048,11 @@ function _load_polytomousKeySubGraph(&$polytomousKeyNode) {
     return;
   }
   if ($polytomousKeyNode->class != "PolytomousKeyNode") {
-    drupal_set_message(_load_polytomousKeySubGraph() . t('invalid type given.'), 'error');
+    drupal_set_message('_load_polytomousKeySubGraph(): ' . t('invalid type given.'), 'error');
     return;
   }
   if (!is_uuid($polytomousKeyNode->uuid)) {
-    drupal_set_message(_load_polytomousKeySubGraph() . t('invalid type given.'), 'error');
+    drupal_set_message('_load_polytomousKeySubGraph(): ' . t('invalid type given.'), 'error');
     return;
   }
 
@@ -1652,7 +1654,7 @@ function rank_compare($thisRankUuid, $thatRankUuid) {
  *
  * @param $cdmEntity
  */
-function html_class_atttibute_ref($cdmEntity) {
+function html_class_attribute_ref($cdmEntity) {
 
   if (is_cdm_entity($cdmEntity)) {
     return "cdm:" . $cdmEntity->class . " uuid:" . $cdmEntity->uuid;
@@ -1830,7 +1832,9 @@ function cdm_read_media_metadata($media) {
 
   $metadata_caption = array(
     'title' => '',// Media_metadata and media.
-    'artist' => '',// Media_metadata and media.    'rights',// Media_metadata and media.    'location',// Media_metadata.
+    'artist' => '',// Media_metadata and media.
+    'rights',// Media_metadata and media.
+    'location',// Media_metadata.
     'filename' => '',// Media.
     'mediacreated' => '',// Media.
     'description' => '',
@@ -2098,7 +2102,7 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
  *   of an other type. A TextData element holding a multilanguageText or a
  *   source reference is considered to be not empty.
  */
-function hasFeatureNodeDescriptionElements($featureNode) {
+function has_feature_node_description_elements($featureNode) {
 
   if (isset($featureNode->descriptionElements) && is_array($featureNode->descriptionElements) && count($featureNode->descriptionElements) > 0) {
     if(!isset($featureNode->descriptionElements['#type'])){ // #type is used to identify e.g. DTO elements: '#type' => 'DTO'
@@ -2111,7 +2115,7 @@ function hasFeatureNodeDescriptionElements($featureNode) {
   }
   else if (isset($featureNode->childNodes) && is_array($featureNode->childNodes)) {
     foreach ($featureNode->childNodes as $child) {
-      if (hasFeatureNodeDescriptionElements($child)) {
+      if (has_feature_node_description_elements($child)) {
         return TRUE;
       }
     }

@@ -29,6 +29,8 @@ if (in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
 }
 define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
 
+define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE', 'bibliography_for_original_source');
+
 /* taxonRelationshipTypes */
 define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
 
@@ -887,6 +889,22 @@ function cdm_settings_layout() {
   if (!empty($annotationsTypesAsFootnotes)) {
     $form['footnotes']['annotations_types_as_footnotes']['#default_value'] = $annotationsTypesAsFootnotes;
   }
+
+    // ---- original source --- //
+    $form['original_source'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Source Citations'),
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE,
+    );
+
+    $form['original_source'][BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Original Source in bibliography'),
+        '#default_value' => variable_get(BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE, 1),
+        '#description' => t('Show original source citations in bibliography block, instead of rendering them with other
+         annotations in each feature block.'),
+    );
 
   // --- Advanced Search --- //
   $form['asearch'] = array(

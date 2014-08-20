@@ -107,7 +107,7 @@ function palmweb_2_cdm_feature_nodes($variables){
 
   foreach ($mergedFeatureNodes as $node) {
 
-    if (isset($node->descriptionElements['#type']) || hasFeatureNodeDescriptionElements($node)) {
+    if (isset($node->descriptionElements['#type']) || has_feature_node_description_elements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       $block = new stdclass(); // Empty object.
@@ -123,7 +123,7 @@ function palmweb_2_cdm_feature_nodes($variables){
         $countFeatures++;
         $countFeatures++;
         $block->delta = generalizeString($featureRepresentation);
-        $block->subject = '<span class="' . html_class_atttibute_ref($node->feature) . '">'
+        $block->subject = '<span class="' . html_class_attribute_ref($node->feature) . '">'
             . theme('cdm_feature_name',  array('feature_name' => $featureRepresentation)) . '</span>';
         $block->module = "cdm_dataportal-feature";
         $block->content = '';

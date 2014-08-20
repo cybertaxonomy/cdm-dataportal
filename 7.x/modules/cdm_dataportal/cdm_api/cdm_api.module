@@ -2152,6 +2152,7 @@ function is_uuid($str) {
  *
  * An object is considered a cdm entity if it has a string field $object->class
  * with at least 3 characters and if it has a valid uuid in $object->uuid.
+ * The function is null save.
  *
  * @author a.kohlbecker <a.kohlbecker@bgbm.org>
  *
@@ -2162,7 +2163,7 @@ function is_uuid($str) {
  *   True if the object is a cdm entity.
  */
 function is_cdm_entity($object) {
-  return is_string($object->class) && strlen($object->class) > 2 && is_string($object->uuid) && is_uuid($object->uuid);
+  return isset($object->class) && is_string($object->class) && strlen($object->class) > 2 && is_string($object->uuid) && is_uuid($object->uuid);
 }
 
 /**

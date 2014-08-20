@@ -107,27 +107,20 @@ function cdm_merge_description_elements(&$target, &$source){
 function cdm_feature_node_toc_items($feature_nodes) {
   $items = array();
 
-  // we better cache here since drupal_get_query_parameters has no internal static cache variable
-  $http_request_params = drupal_get_query_parameters();
-
   foreach ($feature_nodes as $node) {
 
-    if (isset($node->descriptionElements['#type']) || hasFeatureNodeDescriptionElements($node)) {
+    if (isset($node->descriptionElements['#type']) || has_feature_node_description_elements($node)) {
 
-      $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
+      $feature_name = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
+      $class_attributes = 'feature-toc-item-' . $node->feature->uuid;
       //TODO HACK to implement images for taxa, should be removed.
       if ($node->feature->uuid != UUID_IMAGE) {
-        $items[] = array(
-          'data' => l(
-                theme('cdm_feature_name', array('feature_name' => $featureRepresentation)),
-                $_GET['q'],
-                array(
-                    'attributes' => array('class' => array('toc')),
-                    'fragment' => generalizeString($featureRepresentation),
-                    'query' => $http_request_params
-                )
-            ),
-          'class' => array('feature-toc-item-' . $node->feature->uuid),
+        $items[] = toc_list_item(
+          theme(
+            'cdm_feature_name',
+            array('feature_name' => $feature_name))
+          ,
+          array('class' => $class_attributes)
         );
       }
     }
@@ -136,6 +129,63 @@ function cdm_feature_node_toc_items($feature_nodes) {
   drupal_alter('cdm_feature_node_toc_items', $items);
 
   return $items;
+}
+
+/**
+ * Prepares an empty Drupal block for displaying description elements of a specific CDM Feature.
+ *
+ * The block can also be used for pseudo Features like a bibliography. Pseudo features are
+ * derived from other data on the fly and so not exist as such in the cdm data. In case
+ * of pseudo features the $feature is left empty
+ *
+ * @param $feature_name
+ *    A label describing the feature, usually the localized feature representation.
+ * @param $feature
+ *    The CDM Feature for which the block is created. (optional)
+ * @return object
+ *    A Drupal block object
+ */
+function feature_block($feature_name, $feature = null) {
+  $block = new stdclass(); // Empty object.
+  $block->module = 'cdm_dataportal';
+  $block->delta = generalizeString($feature_name);
+  $block->region = null;
+  $block->subject = '<a name="' . $block->delta . '"></a><span class="' . html_class_attribute_ref($feature) . '">'
+    . theme('cdm_feature_name', array('feature_name' => $feature_name))
+    . '</span>';
+  $block->module = "cdm_dataportal-feature";
+  $block->content = '';
+  return $block;
+}
+
+/**
+ * Creates a list item for a table of content, suitable as data element for a themed list
+ *
+ * @see theme_list()
+ *
+ * @param $label
+ * @param $http_request_params
+ * @param $attributes
+ * @return array
+ */
+function toc_list_item($label, $attributes = array()) {
+
+  // we better cache here since drupal_get_query_parameters has no internal static cache variable
+  $http_request_params = drupal_static('http_request_params', drupal_get_query_parameters());
+
+  $item =  array(
+    'data' => l(
+      $label,
+      $_GET['q'],
+      array(
+        'attributes' => array('class' => array('toc')),
+        'fragment' => generalizeString($label),
+        'query' => $http_request_params
+      )
+    )
+  );
+  $item['attributes'] = $attributes;
+  return $item;
 }
 
 /**
@@ -151,12 +201,14 @@ function cdm_feature_node_toc_items($feature_nodes) {
  */
 function cdm_create_description_element_footnotes($description_element, $separator = ','){
 
+
   // Annotations as footnotes.
   $footNoteKeys = cdm_annotations_as_footnotekeys($description_element);
+
   // Source references as footnotes.
   foreach ($description_element->sources as $source) {
     if (_is_original_source_type($source)) {
-      $fn_key = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), theme('cdm_OriginalSource', array(
+      $fn_key = FootnoteManager::addNewFootnote(original_source_footnote_list_key(), theme('cdm_OriginalSource', array(
           'source' => $source,
           'doLink' => FALSE,
       )));
@@ -171,5 +223,17 @@ function cdm_create_description_element_footnotes($description_element, $separat
     $footnoteKeyListStr .= theme('cdm_footnote_key', array('footnoteKey' => $footNoteKey, 'separator' => ($footnoteKeyListStr ? $separator : '')));
   }
   return $footnoteKeyListStr;
+}
+
+/**
+ *
+ * @return string the footnote_list_key
+ */
+function original_source_footnote_list_key($key_suggestion = null) {
+  if(!$key_suggestion){
+    $key_suggestion = RenderHints::getFootnoteListKey();
+  }
+  $footnote_list_key = variable_get(BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE,  1) == 1 ? 'BIBLIOGRAPHY' : $key_suggestion;
+  return $footnote_list_key;
 }
 

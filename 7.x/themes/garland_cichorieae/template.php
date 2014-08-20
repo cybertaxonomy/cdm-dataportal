@@ -18,9 +18,6 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
     $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   }
   $sourceRefs = '';
-  $result = array();
-  $res_author;
-  $res_date;
   $do_links = TRUE;
   $default_theme = variable_get('theme_default', 'garland_cichorieae');
 
@@ -132,14 +129,14 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
         if (!isset($annotation_fkeys)) {
             $annotation_fkeys = '';
         }
-        $out = '<span class="' . html_class_atttibute_ref($element) . '"> ' . $description . $sourceRefs . $name_used_in_source_link_to_show . $annotation_fkeys . '</span>';
+        $out = '<span class="' . html_class_attribute_ref($element) . '"> ' . $description . $sourceRefs . $name_used_in_source_link_to_show . $annotation_fkeys . '</span>';
       }
     }
   }
 
   // If no sources, print the description.
   if (!isset($out)) {
-    $out = '<span class="' . html_class_atttibute_ref($element) . '"> ' . $description . $annotation_fkeys . '</span>';
+    $out = '<span class="' . html_class_attribute_ref($element) . '"> ' . $description . $annotation_fkeys . '</span>';
   }
 
   /* Dead code:
@@ -413,6 +410,7 @@ function sub_theme() {
 
   // Only select the user selected theme if it is available in the
   // list of enabled themes.
+  $themes = list_themes();
   $theme = $user->theme && $themes[$user->theme]->status ? $user->theme : variable_get('theme_default', 'garland');
 
   // Allow modules to override the present theme... only select custom theme

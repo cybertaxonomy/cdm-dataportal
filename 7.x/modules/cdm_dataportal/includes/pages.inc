@@ -316,7 +316,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
           )
       );
 
-      // 5. put all disitribution data into the distribution feature node
+      // 5. put all distribution data into the distribution feature node
       if($distribution_text_data //if text data exists
       || ($distribution_info_dto && isset($distribution_info_dto->tree) && $distribution_info_dto->tree->rootElement->numberOfChildren>0) // OR if tree element has distribution elements
       || ($distribution_info_dto && !empty($distribution_info_dto->elements))) {  // OR if DTO has distribution elements
@@ -530,15 +530,6 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
     $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $taxon_profile_image_settings['maxextend'] . 'px">' . $profile_image. '</div>', -101);
   }
 
-  $toc = array(
-      '#theme' => 'item_list',
-      '#items' => cdm_feature_node_toc_items($merged_tree->root->childNodes),
-      '#title' => t('Content'),
-      '#weight' => -100,
-      '#suffix' => '</div>',
-      '#prefix'=> '<div id="page-toc">'
-  );
-  $render_array['taxon_description_feature_toc'] = $toc; //markup_to_render_array($toc_html);
 
   // Render the sections for each feature
   $render_array['taxon_description_features'] = markup_to_render_array(
@@ -547,6 +538,35 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
           array('mergedFeatureNodes' => $merged_tree->root->childNodes, 'taxon' => $taxon)
       )
   );
+
+  $toc = array(
+    '#theme' => 'item_list',
+    '#items' => cdm_feature_node_toc_items($merged_tree->root->childNodes),
+    '#title' => t('Content'),
+    '#weight' => -100,                  // move to the top
+    '#suffix' => '</div>',
+    '#prefix'=> '<div id="page-toc">'
+  );
+  $render_array['taxon_description_feature_toc'] = $toc; //markup_to_render_array($toc_html);
+
+
+  if(variable_get(BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE, 1) == 1){
+    $bibliography_block = feature_block(t('Bibliography'));
+    $bibliography_block->content = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY');
+    $render_array['taxon_description_bibliography'] =  markup_to_render_array(
+      theme('block',
+        array(
+          'elements' => array(
+            '#block' => $bibliography_block,
+            '#children' => $bibliography_block->content,
+          )
+        )
+      ),
+      100 // weight
+    );
+    $render_array['taxon_description_feature_toc']['#items'][] = toc_list_item('Bibliography', array('class' => 'bibliography'));
+  }
+
 
   return $render_array;
 }

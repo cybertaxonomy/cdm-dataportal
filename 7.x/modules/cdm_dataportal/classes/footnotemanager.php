@@ -84,7 +84,7 @@ class FootnoteManager {
    * @param $theme
    * @param $themeArguments
    *
-   * @return unknown_type
+   * @return FootnoteKey
    */
   public static function addNewFootnote($footnoteListKey, $object = NULL, $theme = NULL, $themeArguments = array()) {
     if (!$object) {

@@ -314,7 +314,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
         '#title' => $title,
         '#theme' => 'description_list',
         '#groups' => $groups,
-        '#attributes' => array('class' => html_class_atttibute_ref($specimenOrObservation)),
+        '#attributes' => array('class' => html_class_attribute_ref($specimenOrObservation)),
     );
     $derivatives[] = $occurrence_elements;
     // all footnotes which has been assembled so far (e.g. from typeDesignations) to here
