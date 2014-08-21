@@ -1025,7 +1025,10 @@ function theme_cdm_description_ordered_distributions($variables) {
           foreach ($element_level3->data as $description_level3){
             foreach ($description_level3->sources as $source) {
               if (_is_original_source_type($source)) {
-                $fn_key3 = FootnoteManager::addNewFootnote(original_source_footnote_list_key(), theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)));
+                $fn_key3 = FootnoteManager::addNewFootnote(
+                  original_source_footnote_list_key(),
+                  theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)
+                ));
                 cdm_add_footnote_to_array($fnKeysLevel3, $fn_key3);
               }
             }

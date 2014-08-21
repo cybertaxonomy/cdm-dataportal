@@ -110,29 +110,29 @@ class FootnoteManager {
     }
 
     $key_label = NULL;
-    if (!($fnKey = self::footnoteExists($footnoteListKey, $object))) {
+    if (!($key_label = self::footnoteExists($footnoteListKey, $object))) {
 
       $set_def = &self::findFootnoteSetDefinition($footnoteListKey);
 
-      $fnKey = $set_def['key_index']++;
-      $key_label = $fnKey;
+      $fn_index = $set_def['key_index']++;
+
       // see http://php.net/manual/de/function.base-convert.php
       switch($set_def['key_format']) {
         case 'ROMAN':
-          $key_label = roman_numerals($fnKey);
+          $key_label = roman_numerals($fn_index);
           break;
         case 'roman':
-          $key_label = strtolower(roman_numerals($fnKey));
+          $key_label = strtolower(roman_numerals($fn_index));
           break;
         case 'ALPHA':
-          $key_label = num2alpha($fnKey - 1);
+          $key_label = num2alpha($fn_index - 1);
           break;
         case 'alpha':
-          $key_label = strtolower(num2alpha($fnKey - 1));
+          $key_label = strtolower(num2alpha($fn_index - 1));
           break;
         case 'latin':
         default:
-          $key_label = $fnKey;
+          $key_label = $fn_index;
       }
 
       $fn = new Footnote($key_label, $object, $set_def['enclosing_tag']);
