@@ -859,7 +859,7 @@ function cdm_settings_general() {
 
 /**
  * LAYOUT settings
- * @return unknown_type
+ * @return
  *   todo
  */
 function cdm_settings_layout() {
@@ -897,7 +897,7 @@ function cdm_settings_layout() {
     '#description' => t('Check this if you do not want to show annotation footnotes'),
   );
 
-  $annotationTypeOptions = cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE);
+  $annotationTypeOptions = cdm_terms_by_type_as_option('AnnotationType', SORT_ASC);
   // Additional option for the NULL case.
   $annotationTypeOptions['NULL_VALUE'] = t('untyped');
   $form['footnotes']['annotations_types_as_footnotes'] = array(
