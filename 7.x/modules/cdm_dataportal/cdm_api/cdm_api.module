@@ -294,29 +294,6 @@ function cdm_get_occurrence_featureTree() {
 }
 
 /**
- * Transforms the list of the given term base instances to a alphabetical ordered options array.
- *
- * The options array is suitable for drupal form API elements that allow multiple choices.
- * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#options
- *
- * @param array $terms
- *   a list of CDM DefinedTermBase instances
- *
- * @return array
- *   the terms in an array as options for a form element that allows multiple choices.
- */
-function cdm_terms_as_options($terms){
-  $options = array();
-  if(isset($terms) && is_array($terms)){
-    foreach ($terms as $term){
-      $options[$term->uuid] = $term->representation_L10n;
-    }
-  }
-  array_multisort($options, SORT_ASC);
-  return $options;
-}
-
-/**
  * Returns the FeatureTree for structured descriptions
  *
  * The FeatureTree returned is the one that has been set in the
@@ -1223,15 +1200,8 @@ function cdm_ws_taxonomy_pathFromRoot($taxon_uuid) {
   return $response;
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function cdm_rankVocabulary_as_option() {
-  $options = cdm_Vocabulary_as_option(UUID_RANK);
-  array_unshift ($options, "");
-  return $options;
-}
+
+// =============================Terms and Vocabularies ========================================= //
 
 /**
  *
@@ -1251,6 +1221,129 @@ function cdm_term_representation($definedTermBase) {
   return '';
 }
 
+/**
+ * Transforms the list of the given term base instances to a alphabetical ordered options array.
+ *
+ * The options array is suitable for drupal form API elements that allow multiple choices.
+ * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#options
+ *
+ * @param array $terms
+ *   a list of CDM DefinedTermBase instances
+ *
+ * @param $sort_by
+ *  Optionally sort option SORT_NATURAL (default: sorts after the cdm order index ),
+ *  to sort alphabetically: SORT_ASC, SORT_DESC
+ *
+ * @param $term_label_callback
+ *   A callback function to override the term representations
+ *
+ * @return array
+ *   the terms in an array as options for a form element that allows multiple choices.
+ */
+function cdm_terms_as_options($terms, $sort_by = SORT_NATURAL, $term_label_callback = NULL){
+  $options = array();
+  if(isset($terms) && is_array($terms)){
+    foreach ($terms as $term){
+      if ($term_label_callback && function_exists($term_label_callback)) {
+        $options[$term->uuid] = call_user_func($term_label_callback, $term);
+      } else {
+        //TODO use cdm_term_representation() here?
+        $options[$term->uuid] = t($term->representation_L10n);
+      }
+    }
+  }
+  switch($sort_by){
+    case SORT_NATURAL: array_reverse($options);
+      break;
+    default: array_multisort($options, SORT_ASC);
+  }
+
+  return $options;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL) {
+  static $vocabularyOptions = array();
+
+  if (!isset($vocabularyOptions[$vocabularyUuid])) {
+    $terms = cdm_ws_fetch_all('termVocabulary/' . $vocabularyUuid . '/terms');
+    $vocabularyOptions[$vocabularyUuid] = cdm_terms_as_options($terms, SORT_NATURAL, $term_label_callback);
+  }
+  return $vocabularyOptions[$vocabularyUuid];
+}
+
+/**
+ * @param $term_type one of
+ *  - Unknown
+ *  - Language
+ *  - NamedArea
+ *  - Rank
+ *  - Feature
+ *  - AnnotationType
+ *  - MarkerType
+ *  - ExtensionType
+ *  - DerivationEventType
+ *  - PresenceAbsenceTerm
+ *  - NomenclaturalStatusType
+ *  - NameRelationshipType
+ *  - HybridRelationshipType
+ *  - SynonymRelationshipType
+ *  - TaxonRelationshipType
+ *  - NameTypeDesignationStatus
+ *  - SpecimenTypeDesignationStatus
+ *  - InstitutionType
+ *  - NamedAreaType
+ *  - NamedAreaLevel
+ *  - RightsType
+ *  - MeasurementUnit
+ *  - StatisticalMeasure
+ *  - MaterialOrMethod
+ *  - Material
+ *  - Method
+ *  - Modifier
+ *  - Scope
+ *  - Stage
+ *  - KindOfUnit
+ *  - Sex
+ *  - ReferenceSystem
+ *  - State
+ *  - NaturalLanguageTerm
+ *  - TextFormat
+ *  - DeterminationModifier
+ *  - DnaMarker
+ */
+function cdm_terms_by_type_as_option($term_type, $sort_by = SORT_NATURAL, $term_label_callback = NULL){
+  $terms = cdm_ws_fetch_all(CDM_WS_TERM, array('class' => $term_type));
+  return cdm_terms_as_options($terms, $sort_by, $term_label_callback);
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_rankVocabulary_as_option() {
+  $options = cdm_Vocabulary_as_option(UUID_RANK);
+  array_unshift ($options, "");
+  return $options;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function _cdm_relationship_type_term_label_callback($term) {
+  if (isset($term->representation_L10n_abbreviatedLabel)) {
+    return $term->representation_L10n_abbreviatedLabel . ' : ' . t($term->representation_L10n);
+  }
+else {
+    return t($term->representation_L10n);
+  }
+}
+
+// ========================================================================================== //
 /**
  * @todo Improve documentation of this function.
  *
@@ -1288,44 +1381,6 @@ function cdm_descriptionElementTypes_as_option($prependEmptyElement = FALSE) {
   return $options;
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL) {
-  static $vocabularyOptions = array();
-
-  if (!isset($vocabularyOptions[$vocabularyUuid])) {
-    $terms = cdm_ws_fetch_all('termVocabulary/' . $vocabularyUuid . '/terms');
-    $vocabularyOptions[$vocabularyUuid] = array();
-
-    if ($terms) {
-      foreach ($terms as $term) {
-        if ($term_label_callback && function_exists($term_label_callback)) {
-          $vocabularyOptions[$vocabularyUuid][$term->uuid] = call_user_func($term_label_callback, $term);
-        }
-        else {
-          $vocabularyOptions[$vocabularyUuid][$term->uuid] = t($term->representation_L10n);
-        }
-      }
-      array_reverse($vocabularyOptions[$vocabularyUuid]);
-    }
-  }
-  return $vocabularyOptions[$vocabularyUuid];
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _cdm_relationship_type_term_label_callback($term) {
-  if (isset($term->representation_L10n_abbreviatedLabel)) {
-    return $term->representation_L10n_abbreviatedLabel . ' : ' . t($term->representation_L10n);
-  }
-  else {
-    return t($term->representation_L10n);
-  }
-}
 
 /**
  * Fetches all TaxonDescription descriptions elements wich are accociated to the
@@ -1392,7 +1447,10 @@ function cdm_ws_getAnnotationsFor(&$cdmBase, $includeTypes = FALSE) {
   $annotations = array();
   foreach ($cdmBase->annotations as $annotation) {
     if ($includeTypes) {
-      if ((isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, TRUE)) || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $includeTypes, TRUE))) {
+      if (
+        ( isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, TRUE) )
+        || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $includeTypes, TRUE))
+      ) {
         $annotations[] = $annotation;
       }
     }
