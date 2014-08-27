@@ -18,7 +18,9 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
     $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   }
   $sourceRefs = '';
-  $do_links = TRUE;
+
+  // ---------------------------------------------------------------------------
+  // CUSTOM CODE (1) the below neds to become configurable in the settings
   $default_theme = variable_get('theme_default', 'garland_cichorieae');
 
   if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale' || $default_theme == 'flore_gabon') && $element->feature->titleCache == 'Citation') {
@@ -32,19 +34,22 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
   }
 
   // Printing annotations footnotes.
-  $annotation_fkeys = theme('cdm_annotations_as_footnotekeys', array(
-    'cdmBase_list' => $element,
-    'footnote_list_key' => $feature_uuid,
-  ));
+  $annotation_fkeys = theme('cdm_annotations_as_footnotekeys',
+    array(
+      'cdmBase_list' => $element,
+      'footnote_list_key' => $feature_uuid,
+    )
+  );
 
-  if ($feature_uuid == UUID_NAME_USAGE || $feature_uuid == UUID_CHROMOSOMES) {
-    $do_links = FALSE;
-  }
+  // END CUSTOM CODE (1)
+  // ---------------------------------------------------------------------------
 
   if (is_array($element->sources)) {
     foreach ($element->sources as $source) {
+      // ---------------------------------------------------------------------------
+      // CUSTOM CODE (2)
       // Initialize some variables.
-      if ($feature_uuid == UUID_NAME_USAGE) {
+      if ($feature_uuid == UUID_CITATION) {
         $referenceCitation = cdm_ws_get(
           CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
           array($source->citation->uuid),
@@ -52,10 +57,12 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
         ));
         $referenceCitation = $referenceCitation->String;
       }
+      // END CUSTOM CODE (2)
+      // ---------------------------------------------------------------------------
       else {
         $referenceCitation = theme('cdm_OriginalSource', array(
           'source' => $source,
-          'doLink' => $do_links,
+          'doLink' => ($feature_uuid != UUID_CITATION && $feature_uuid != UUID_CHROMOSOMES), // CUSTOM CODE (3): always show links exept for NAME_USAGE, CHROMOSOMES
         ));
       }
       if ($description && strlen($description) > 0 && $referenceCitation) {
@@ -64,39 +71,61 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
       elseif ($referenceCitation) {
         $sourceRefs = $referenceCitation;
       }
-      // Generate the output.
+
       if (strlen($sourceRefs) > 0) {
         $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
       }
+      // ----------------------------------------------------------------------------
+      // CITATION special cases - needs to go into core code
       $name_used_in_source_link_to_show = '';
-      if (isset($source->nameUsedInSource->uuid) && ($feature_uuid != UUID_NAME_USAGE)) {
+      if (isset($source->nameUsedInSource->uuid) && ($feature_uuid != UUID_CITATION)) {
+        // It is a DescriptionElementSource && !CITATION
         // Do a link to name page.
-        $name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache, path_to_name($source->nameUsedInSource->uuid), array(), NULL, NULL, FALSE, TRUE);
+        $name_used_in_source_link_to_show = l(
+            $source->nameUsedInSource->titleCache,
+            path_to_name($source->nameUsedInSource->uuid),
+            array(
+                'attributes' => array(),
+                'absolute' => TRUE,
+                'html' => TRUE)
+            );
       }
-      elseif (isset($source->nameUsedInSource->uuid) && ($feature_uuid == UUID_NAME_USAGE)) {
-        // Do not do link for NAME USAGE feature.
+      else if (isset($source->nameUsedInSource->uuid) && ($feature_uuid == UUID_CITATION)) {
+        // It is a DescriptionElementSource && CITATION
+        // Do not do link for CITATION feature.
         $name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
       }
-      elseif (isset($source->nameUsedInSource->originalNameString) && strlen($source->nameUsedInSource->originalNameString) > 0) {
+      elseif (isset($source->nameUsedInSource->originalNameString)
+        && strlen($source->nameUsedInSource->originalNameString) > 0) {
+        // It is NOT a DescriptionElementSource!
+        // ReferencedEntityBase.originalNameString
         // Show a text without link.
         $name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
       }
+      // ----------------------------------------------------------------------------
 
-      if ($asListElement && ($feature_uuid == UUID_NAME_USAGE)) {
+      if ($asListElement && ($feature_uuid == UUID_CITATION)) {
         $out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
-        // Adding ":" if necesary.
+        // Adding ":" if necessary.
         if (!empty($name_used_in_source_link_to_show) && (!empty($description) || !empty($sourceRefs))) {
           $out .= ': ';
         }
 
-        $out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', array(
-          'cdmBase_list' => $element,
-          'footnote_list_key' => $feature_uuid,
-        )) . $annotation_fkeys . '</li>';
+        $out .= $description . $sourceRefs
+        // THIS IS NONSENSE, should be already in $annotation_fkeys:
+//          . theme('cdm_annotations_as_footnotekeys',
+//              array(
+//                'cdmBase_list' => $element,
+//                'footnote_list_key' => $feature_uuid,
+//              )
+//            )
+          . $annotation_fkeys . '</li>';
       }
       elseif ($asListElement) {
+        // this for sure only accounts to UUID_CHROMOSOME and UUID_CHROMOSOMES_NUMBERS
 
         $out = '<li class="descriptionText DescriptionElement">';
+        // displayed like: Cerastium fontanum Baumg.: in Fl. Ceylon: 60. 1996
         // Adding ":" if necessary.
         if (!empty($name_used_in_source_link_to_show)) {
           if ( (!empty($description)|| !empty($sourceRefs)) && $feature_uuid != UUID_CHROMOSOMES_NUMBERS) {
@@ -106,28 +135,19 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
           }
         }
 
-        $out .= $description . $sourceRefs . theme('cdm_annotations_as_footnotekeys', array(
-          'cdmBase_list' => $element,
-          'footnote_list_key' => $feature_uuid,
-        )) . $annotation_fkeys . '</li>';
+        $out .= $description . $sourceRefs
+          // THIS IS NONSENSE, should be already in $annotation_fkeys:
+//          . theme('cdm_annotations_as_footnotekeys', array(
+//          'cdmBase_list' => $element,
+//          'footnote_list_key' => $feature_uuid,
+//        ))
+          . $annotation_fkeys . '</li>';
         // Special handling for flora malesiana.
         // TODO: possible better way to implement this case?
       }
       else {
         if (isset($name_used_in_source_link_to_show)) {
           $name_used_in_source_link_to_show = ' (name in source: ' . $name_used_in_source_link_to_show . ')';
-        }
-        if (!isset($description)) {
-          $description = '';
-        }
-        if (!isset($sourceRefs)) {
-            $sourceRefs = '';
-        }
-        if (!isset($name_used_in_source_link_to_show)) {
-            $name_used_in_source_link_to_show = '';
-        }
-        if (!isset($annotation_fkeys)) {
-            $annotation_fkeys = '';
         }
         $out = '<span class="' . html_class_attribute_ref($element) . '"> ' . $description . $sourceRefs . $name_used_in_source_link_to_show . $annotation_fkeys . '</span>';
       }
@@ -139,113 +159,8 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
     $out = '<span class="' . html_class_attribute_ref($element) . '"> ' . $description . $annotation_fkeys . '</span>';
   }
 
-  /* Dead code:
-   *
-   * Disabled code; can this be removed?
-  if ($feature_uuid == UUID_NAME_USAGE){ foreach($element->sources as
-  $source){ $referenceCitation =
-  cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
-  array($source->citation->uuid),
-  "microReference=".urlencode($source->citationMicroReference));
-  $referenceCitation = $referenceCitation->String; if($description &&
-  strlen($description) > 0 && $referenceCitation ){ $sourceRefs .= '
-  ('.$referenceCitation.')' ; }else if ($referenceCitation){ $sourceRefs =
-  $referenceCitation; } } }else{ foreach($element->sources as $source){
-  $referenceCitation = theme('cdm_OriginalSource', $source,
-  ($feature_uuid == UUID_NAME_USAGE) ? FALSE : TRUE); if($description &&
-  strlen($description) > 0 && $referenceCitation ){ $sourceRefs .= '
-  ('.$referenceCitation.')' ; }else if ($referenceCitation){ $sourceRefs =
-  $referenceCitation; } } } if(strlen($sourceRefs) > 0){ $sourceRefs = '<span
-  class="sources">' . $sourceRefs . '</span>'; } if
-  ($source->nameUsedInSource->uuid && ($feature_uuid != UUID_NAME_USAGE)){
-  //do a link to name page $name_used_in_source_link_to_show =
-  l($source->nameUsedInSource->titleCache,
-  path_to_name($source->nameUsedInSource->uuid), array(), NULL, NULL, FALSE
-  ,TRUE); }else if ($source->nameUsedInSource->uuid && ($feature_uuid ==
-  UUID_NAME_USAGE)){ //do not do link for NAME USAGE feature
-  $name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
-  }else if (strlen($source->nameUsedInSource->originalNameString) > 0){
-  //show a text without link $name_used_in_source_link_to_show =
-  $source->nameUsedInSource->originalNameString; } if($asListElement &&
-  ($feature_uuid == UUID_NAME_USAGE)){ $out = '<li class="descriptionText">'
-  . $name_used_in_source_link_to_show; //adding ":" if necesary if
-  ($name_used_in_source_link_to_show && ($description || $sourceRefs)){ $out
-  .= ': '; } $out .= $description . $sourceRefs .
-  theme('cdm_annotations_as_footnotekeys', $element) . '</li>'; }else if
-  ($asListElement){ $out = '<li class="descriptionText">' .
-  $name_used_in_source_link_to_show; //adding ":" if necesary if
-  ($name_used_in_source_link_to_show && ($description || $sourceRefs)){ $out
-  .= ': '; } $out .= $description . $sourceRefs .
-  theme('cdm_annotations_as_footnotekeys', $element) . '</li>'; //special
-  handling for flora malesiana TODO: possible better way to implement this
-  case? }else{ if ($name_used_in_source_link_to_show){
-  $name_used_in_source_link_to_show = ' (name in source: '.
-  $name_used_in_source_link_to_show . ')'; } $out = $description .
-  $sourceRefs . $name_used_in_source_link_to_show; $out .=
-  theme('cdm_annotations_as_footnotekeys', $element); }
-  */
   // Add annotations as footnote key.
-  // $out .= theme('cdm_annotations_as_footnotekeys', $element); move above.
-  return $out;
-}
-
-// NO LONGER NEEDED - since term representation is changed now in the cdm for
-// the cichorieae
-// ====> delete
-// /**
-// * @overrides theme_cdm_taggedtext2html in order to replace t.infr and
-// t.infgen. with '[unranked]'
-// */
-// function garland_cichorieae_cdm_taggedtext2html(array &$taggedtxt, $tag =
-// 'span', $glue = ' ', $skiptags = array()){
-// $out = '';
-// $i = 0;
-// foreach($taggedtxt as $tt){
-// if(!in_array($tt->type, $skiptags) && strlen($tt->text) > 0){
-// $out .= (strlen($out) > 0 && ++$i < count($taggedtxt)? $glue : '').'<'.$tag.'
-// class="'.$tt->type.'">';
-// if($tt->type == "rank" && ($tt->text == "t.infr." || $tt->text ==
-// "t.infgen.")){
-// $out .= t('[unranked]');
-// }else{
-// $out .= t($tt->text);
-// }
-// $out .= '</'.$tag.'>';
-// }
-// }
-// return $out;
-// }
-/**
- * Returns HTML for a cdm_feature_block_elements.
- *
- * @param array $variables
- *   An associative array containing:
- *   - elementArray: The array with CDM description elements being formatted.
- *   - feature: The description feature container object for the
- *     description element array.
- *   - glue: String for joining the description elements together.
- *   - sortArray: Boolean, TRUE if the array should be sorted before themeing.
- *   - enclosingHTML: HTML tag, e.g. 'div', in which to wrap the description.
- *
- * @ingroup themeable
- */
-function garland_cichorieae_cdm_feature_block_elements($variables) {
-  $elementArray = $variables['elementArray'];
-  $feature = $variables['feature'];
-  $glue = $variables['glue'];
-  $sortArray = $variables['sortArray'];
-  $enclosingHtml = $variables['enclosingHtml'];
-
-  $enclosingHtml = 'div';
-  $out = '<' . $enclosingHtml . ' class="feature-block-elements" id="' . $feature->representation_L10n . '">';
-
-  if ($sortArray) {
-    sort($elementArray);
-  }
-
-  $out .= '<span class="feature-block-element">' . join($elementArray, '<span class="feature-block-element">' . $glue . '</span>') . '</span>';
-
-  $out .= '</' . $enclosingHtml . '>';
+  //  $out .= theme('cdm_annotations_as_footnotekeys', $element);
   return $out;
 }
 
@@ -276,22 +191,6 @@ function phptemplate_body_class($sidebar_left, $sidebar_right) {
   }
 }
 
-/**
- * Allow themable wrapping of all comments.
- */
-/*
-function phptemplate_comment_wrapper($content, $type = NULL) {
-  static $node_type;
-  if (isset($type)) $node_type = $type;
-
-  if (! $content || $node_type == 'forum') {
-    return '<div id="comments">' . $content . '</div>';
-  }
-  else {
-    return '<div id="comments"><h2 class="comments">' . t('Comments') . '</h2>' . $content . '</div>';
-  }
-}
-*/
 
 /**
  * Override or insert PHPTemplate variables into the templates.

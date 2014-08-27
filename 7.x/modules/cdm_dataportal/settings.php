@@ -397,6 +397,61 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
 
 }
 
+  /**
+   * preliminary mock implementation
+   *
+   *  "$feature uuid": {
+   *    "as_list": div|ul|ol,                        // div: not as list, ul: as bullet list, ol: as numbered list, will be used in compose_cdm_feature_block_elements() as $enclosing_tag
+   *    "link_to_reference": boolean,                 // render the reference as link, ignored if the element is NOT a DescriptionElementSource
+   *    // references_inline:
+   *    // TRUE:
+   *    //   1. if element has text (TextData) the source references will be appended in brackets like "text (source references)"
+   *    //   2. otherwise they are the only content (e.g. use case CITATION) and afre not put into brackets
+   *    // FALSE:
+   *    //  they are put into the bibliography(=references) pseudo feature block
+   *    "references_inline": boolean
+   *    "sort_elements": SORT_ASC, SORT_DESC, NULL    // whether and how to sort the elements
+   *    "element_tag": span | div                     // only applies if "as_list" is NULL
+   *  }
+   */
+  function get_feature_block_settings(){
+    // the default must conform to the default paramter values of
+    // compose_cdm_feature_block_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
+    // theme_cdm_descriptionElementTextData() : asListElement = NULL
+
+    // currently only element_tag is used.
+    $default = array(
+      'as_list' => 'ul',
+      'link_to_reference' => FALSE,
+      'references_inline' => TRUE,
+      'sort_elements' => FALSE,
+      'glue' => '',
+      'element_tag'=> NULL
+    );
+
+    $cichorieae_default = array(
+      'as_list' => 'div',
+      'link_to_reference' => FALSE,
+      'references_inline' => TRUE,
+      'sort_elements' => FALSE,
+      'glue' => '',
+      'element_tag'=> 'div'
+    );
+
+    $default_theme = variable_get('theme_default', NULL);
+
+    switch ($default_theme){
+      case 'garland_cichorieae':
+      case 'cyprus': // no longer used in production, but is required for selenium tests see class eu.etaxonomy.dataportal.pages.PortalPage
+      case 'flore_afrique_centrale':
+      case 'flora_malesiana':
+      case 'flore_gabon':
+        return $cichorieae_default;
+      default:
+       return $default;
+    }
+  }
+
 /**
  * returns the current setting for the original source bibliography
  *

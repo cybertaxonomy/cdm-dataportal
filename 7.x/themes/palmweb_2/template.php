@@ -107,6 +107,8 @@ function palmweb_2_cdm_feature_nodes($variables){
 
   foreach ($mergedFeatureNodes as $node) {
 
+
+
     if (isset($node->descriptionElements['#type']) || has_feature_node_description_elements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
@@ -154,6 +156,11 @@ function palmweb_2_cdm_feature_nodes($variables){
 
           if(isset($node->descriptionElements['TextData'])){
             // --- TextData
+
+            $text_data_glue = '';
+            $text_data_sort = FALSE;
+            $text_data_enclosingTag = 'ul';
+
             foreach ($node->descriptionElements['TextData'] as $text_data_element){
               $asListElement = FALSE;
               $repr = theme('cdm_descriptionElementTextData', array(
@@ -167,7 +174,7 @@ function palmweb_2_cdm_feature_nodes($variables){
                 // TODO HINT: sorting in theme_cdm_feature_block_elements will
                 // not work since this array contains html attributes with uuids
                 // !!!!
-                $text_data_sortOutArray = TRUE;
+                $text_data_sort = TRUE;
                 $text_data_glue = '<br/> ';
                 $text_data_enclosingTag = 'p';
               }
@@ -176,13 +183,13 @@ function palmweb_2_cdm_feature_nodes($variables){
 
 
           if ($text_data_out_array && variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-            $block->content .= theme('cdm_feature_block_elements', array(
-              'elementArray' => $text_data_out_array,
-              'feature' => $node->feature,
-              'glue' => $text_data_glue,
-              'sortArray' => $text_data_sortOutArray,
-              'enclosingHtml' => $text_data_enclosingTag,
-            ));
+            $block->content .= compose_cdm_feature_block_elements(
+              $text_data_out_array,
+              $node->feature,
+              $text_data_glue,
+              $text_data_sort,
+              $text_data_enclosingTag
+            );
           }
 
           // --- Distribution map
@@ -218,24 +225,24 @@ function palmweb_2_cdm_feature_nodes($variables){
 
             }
             //
-            $block->content .= theme('cdm_feature_block_elements', array(
-                'elementArray' => $dto_out_array,
-                'feature' => $node->feature,
-                'glue' => $distribution_glue,
-                'sortArray' => $distribution_sortOutArray,
-                'enclosingHtml' => $distribution_enclosingTag,
-            ));
+            $block->content .= compose_cdm_feature_block_elements(
+                $dto_out_array,
+                $node->feature,
+                $distribution_glue,
+                $distribution_sortOutArray,
+                $distribution_enclosingTag
+            );
           }
 
           // --- TextData at the bottom
           if ($text_data_out_array && !variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-            $block->content .= theme('cdm_feature_block_elements', array(
-                'elementArray' => $text_data_out_array,
-                'feature' => $node->feature,
-                'glue' => $text_data_glue,
-                'sortArray' => $text_data_sortOutArray,
-                'enclosingHtml' => $text_data_enclosingTag,
-            ));
+            $block->content .= compose_cdm_feature_block_elements(
+                $text_data_out_array,
+                $node->feature,
+                $text_data_glue,
+                $text_data_sort,
+                $text_data_enclosingTag
+            );
           }
 
         }

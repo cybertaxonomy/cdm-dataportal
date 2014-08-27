@@ -257,7 +257,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
         if (!array_search($repr, $text_data_out_array)) {
           $text_data_out_array[] = $repr;
-          // TODO HINT: sorting in theme_cdm_feature_block_elements will
+          // TODO HINT: sorting in compose_cdm_feature_block_elements will
           // not work since this array contains html attributes with uuids
           // !!!!
           $text_data_sortOutArray = TRUE;
@@ -269,13 +269,13 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
 
     if ($text_data_out_array && variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-      $block->content .= theme('cdm_feature_block_elements', array(
-        'elementArray' => $text_data_out_array,
-        'feature' => $feature,
-        'glue' => $text_data_glue,
-        'sortArray' => $text_data_sortOutArray,
-        'enclosingHtml' => $text_data_enclosingTag,
-      ));
+      $block->content .= compose_cdm_feature_block_elements(
+        $text_data_out_array,
+        $feature,
+        $text_data_glue,
+        $text_data_sortOutArray,
+        $text_data_enclosingTag
+      );
     }
 
     // --- Distribution map
@@ -311,24 +311,24 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
       }
       //
-      $block->content .= theme('cdm_feature_block_elements', array(
-        'elementArray' => $dto_out_array,
-        'feature' => $feature,
-        'glue' => $distribution_glue,
-        'sortArray' => $distribution_sortOutArray,
-        'enclosingHtml' => $distribution_enclosingTag,
-      ));
+      $block->content .= compose_cdm_feature_block_elements(
+        $dto_out_array,
+        $feature,
+        $distribution_glue,
+        $distribution_sortOutArray,
+        $distribution_enclosingTag
+      );
     }
 
     // --- TextData at the bottom
     if ($text_data_out_array && !variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-      $block->content .= theme('cdm_feature_block_elements', array(
-        'elementArray' => $text_data_out_array,
-        'feature' => $feature,
-        'glue' => $text_data_glue,
-        'sortArray' => $text_data_sortOutArray,
-        'enclosingHtml' => $text_data_enclosingTag,
-      ));
+      $block->content .= compose_cdm_feature_block_elements(
+        $text_data_out_array,
+        $feature,
+        $text_data_glue,
+        $text_data_sortOutArray,
+        $text_data_enclosingTag
+      );
     }
 
     $block->content .= theme('cdm_footnotes', array('footnoteListKey' => UUID_DISTRIBUTION));
@@ -384,37 +384,39 @@ function theme_FeatureTree_hierarchy_children($variables) {
 }
 
 /**
- * Returns HTML for the texts in a description $elementArray.
+ * Returns HTML for the texts in a description $elements.
  *
- * Joins the texts in $elementArray and encloses with a HTML tag.
+ * Joins the texts in $elements and encloses with a HTML tag.
  *
- * @param array $variables
- *   An associative array containing:
- *   - elementArray
- *   - feature: The feature to which the elements given in $elementArray are
- *     belonging to.
- *   - glue: Defaults to empty string.
- *   - sortArray: Whether to sort the $elementArray alphabetically.
- *   - enclosingHtml
+ * @param  $elements
+ * @param  feature:
+ *  The feature to which the elements given in $elements are belonging to.
+ * @param  glue:
+ *  Defaults to empty string.
+ * @param $sort
+ *   Boolean Whether to sort the $elements alphabetically, default is FALSE
+ * @param  $enclosing_tag
  *
- * @ingroup themeable
+ * @ingroup compose
  */
-function theme_cdm_feature_block_elements($variables) {
-  $elementArray = $variables['elementArray'];
-  $feature = $variables['feature'];
-  $glue = $variables['glue'];
-  $sortArray = $variables['sortArray'];
-  $enclosingHtml = $variables['enclosingHtml'];
+function compose_cdm_feature_block_elements($elements, $feature, $glue = '', $sort = FALSE, $enclosing_tag = 'ul') {
 
-  $out = '<' . $enclosingHtml . ' class="feature-block-elements" id="' . $feature->representation_L10n . '">';
-
-  if ($sortArray) {
-    sort($elementArray);
+  $feature_block_settings = get_feature_block_settings();
+  if($feature_block_settings['as_list']){
+    $enclosing_tag = $feature_block_settings['as_list'];
   }
 
-  $out .= '<span class="feature-block-element">' . join($elementArray, '<span class="feature-block-element">' . $glue . '</span>') . '</span>';
+  $out = '<' . $enclosing_tag . ' class="feature-block-elements" id="' . $feature->representation_L10n . '">';
 
-  $out .= '</' . $enclosingHtml . '>';
+  if ($sort) {
+    sort($elements);
+  }
+
+  //TODO it would be nice if any element would get "feature-block-element" as additional class attribute
+  //     this will become possible once all $elemets are real Drupal render arrays
+  $out .= join($elements, $glue) ;
+
+  $out .= '</' . $enclosing_tag . '>';
   return $out;
 }
 
@@ -626,14 +628,16 @@ function theme_cdm_descriptionElementTextData($variables) {
       $name_used_in_source_link_to_show = '';
       // Do a link to name page.
       if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
+        // it is a DescriptionElementSource
         $name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache, path_to_name($source->nameUsedInSource->uuid), array(
           'attributes' => array(),
           'absolute' => TRUE,
           'html' => TRUE,
         ));
       }
-      // Show a text without link.
-      elseif (isset($source->nameUsedInSource->originalNameString) && strlen($source->nameUsedInSource->originalNameString) > 0) {
+      else if (isset($source->nameUsedInSource->originalNameString) && strlen($source->nameUsedInSource->originalNameString) > 0) {
+        // it is NOT a DescriptionElementSource
+        // Show a text without link.
         $name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
       }
 
@@ -744,19 +748,17 @@ function compose_cdm_common_names($elements, $feature) {
           . $element->name . cdm_create_description_element_footnotes($element, ',', $footnote_key_suggestion) . '</span>';
         }
       } // End of loop over set of individual elements
-      $common_name_feature_elements[] = ($language_area_key ? $language_area_key . ': ' : '' ) . join(',', $per_language_area_out);
+      $common_name_feature_elements[] = ($language_area_key ? $language_area_key . ': ' : '' ) . join(', ', $per_language_area_out);
     } // End of loop over set of elements per language area
 
 
-    $common_name_out .= theme('cdm_feature_block_elements',
-      array(
-        'elementArray' => $common_name_feature_elements,
-        'feature' => $feature,
-        'glue' => ';',
-        'sortArray' => FALSE,
-        'enclosingHtml' => 'div',
-      )
-    );
+    $common_name_out .= compose_cdm_feature_block_elements(
+        $common_name_feature_elements,
+        $feature,
+        '; ',
+        FALSE,
+        'div'
+      );
 
 
   }
@@ -775,12 +777,9 @@ function compose_cdm_common_names($elements, $feature) {
     ));
   }
 
-  $common_name_out_text_data = theme(
-        'cdm_feature_block_elements',
-        array(
-          'elementArray' => $text_data_out,
-          'feature' => $feature
-        )
+  $common_name_out_text_data = compose_cdm_feature_block_elements(
+        $text_data_out,
+        $feature
       );
 
 
@@ -897,9 +896,9 @@ function theme_cdm_descriptionElements($variables) {
     }
     } // --- END loop over normal description element arrays
 
-    // If feature = NAME USAGE sort the list of sources.
+    // If feature = CITATION sort the list of sources.
     // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
-    if ($descriptionElement->feature->uuid == UUID_NAME_USAGE) {
+    if ($descriptionElement->feature->uuid == UUID_CITATION) {
       sort($outArray);
     }
 
@@ -909,13 +908,13 @@ function theme_cdm_descriptionElements($variables) {
   } // END normal description element arrays
 
 
-  $out = theme('cdm_feature_block_elements', array(
-    'elementArray' => $outArray,
-    'feature' => $feature,
-    'glue' => $glue,
-    'sortArray' => $sortOutArray,
-    'enclosingHtml' => $enclosingTag,
-  ));
+  $out = compose_cdm_feature_block_elements(
+    $outArray,
+    $feature,
+    $glue,
+    $sortOutArray,
+    $enclosingTag
+  );
 
   RenderHints::popFromRenderStack();
   return $out;

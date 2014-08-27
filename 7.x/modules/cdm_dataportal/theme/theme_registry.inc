@@ -77,13 +77,6 @@ function cdm_dataportal_theme() {
       'cdm_feature_name' => array('variables' => array('feature_name' => NULL)),
       'FeatureTree_hierarchy' => array('variables' => array('FeatureTreeUuid' => NULL)),
       'FeatureTree_hierarchy_children' => array('variables' => array('node' => NULL)),
-      'cdm_feature_block_elements' => array('variables' => array(
-          'elementArray' => array(),
-          'feature' => NULL,
-          'glue' => '',
-          'sortArray' => FALSE,
-          'enclosingHtml' => 'ul',
-      )),
       'cdm_descriptionElement_CategoricalData' => array('render element' => 'element'),
       'cdm_descriptionElement_IndividualsAssociation' => array('render element' => 'element'),
       'cdm_descriptionElement_TaxonInteraction' => array('render element' => 'element'),
