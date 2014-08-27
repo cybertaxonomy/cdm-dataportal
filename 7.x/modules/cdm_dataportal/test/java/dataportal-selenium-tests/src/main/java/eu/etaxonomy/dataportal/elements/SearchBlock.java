@@ -22,12 +22,12 @@ import eu.etaxonomy.dataportal.pages.PortalPage;
 public class SearchBlock extends DrupalBlock {
 
 
-	/**
-	 * @param element
-	 */
-	public SearchBlock(WebElement element) {
-		super(element);
-	}
+    /**
+     * @param element
+     */
+    public SearchBlock(WebElement element) {
+        super(element);
+    }
 
 
 }
