@@ -532,12 +532,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
 
 
   // Render the sections for each feature
-  $render_array['taxon_description_features'] = markup_to_render_array(
-      theme(
-          'cdm_feature_nodes',
-          array('mergedFeatureNodes' => $merged_tree->root->childNodes, 'taxon' => $taxon)
-      )
-  );
+  $render_array['taxon_description_features'] = compose_cdm_feature_nodes($merged_tree->root->childNodes, $taxon);
 
   $toc = array(
     '#theme' => 'item_list',

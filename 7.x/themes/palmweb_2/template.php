@@ -164,7 +164,7 @@ function palmweb_2_cdm_feature_nodes($variables){
 
               if (!array_search($repr, $text_data_out_array)) {
                 $text_data_out_array[] = $repr;
-                // TODO HINT: sorting in theme_cdm_descriptionElementArray will
+                // TODO HINT: sorting in theme_cdm_feature_block_elements will
                 // not work since this array contains html attributes with uuids
                 // !!!!
                 $text_data_sortOutArray = TRUE;
@@ -176,7 +176,7 @@ function palmweb_2_cdm_feature_nodes($variables){
 
 
           if ($text_data_out_array && variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-            $block->content .= theme('cdm_descriptionElementArray', array(
+            $block->content .= theme('cdm_feature_block_elements', array(
               'elementArray' => $text_data_out_array,
               'feature' => $node->feature,
               'glue' => $text_data_glue,
@@ -218,7 +218,7 @@ function palmweb_2_cdm_feature_nodes($variables){
 
             }
             //
-            $block->content .= theme('cdm_descriptionElementArray', array(
+            $block->content .= theme('cdm_feature_block_elements', array(
                 'elementArray' => $dto_out_array,
                 'feature' => $node->feature,
                 'glue' => $distribution_glue,
@@ -229,7 +229,7 @@ function palmweb_2_cdm_feature_nodes($variables){
 
           // --- TextData at the bottom
           if ($text_data_out_array && !variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-            $block->content .= theme('cdm_descriptionElementArray', array(
+            $block->content .= theme('cdm_feature_block_elements', array(
                 'elementArray' => $text_data_out_array,
                 'feature' => $node->feature,
                 'glue' => $text_data_glue,
@@ -244,13 +244,7 @@ function palmweb_2_cdm_feature_nodes($variables){
         Content/COMMON_NAME.
         */
         elseif ($node->feature->uuid == UUID_COMMON_NAME) {
-          // TODO why is theme_cdm_descriptionElement_CommonTaxonName
-          // not beeing used???
           $block->content .= theme('cdm_common_names', array('elements' => $node->descriptionElements));
-        /*
-        }else if($node->feature->uuid == UUID_IMAGE_SOURCES) {
-          $block->content .= theme('cdm_image_sources', $node->descriptionElements);
-        */
         }
 
         /*

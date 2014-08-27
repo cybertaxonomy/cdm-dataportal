@@ -31,13 +31,19 @@ class FootnoteManager {
    * key of the  $fnstore map
    *
    * The values are associative arrays with the following optional elements:
-   *  - enclosing_tag: the enclosing tag to be used for rendering of the footnote, @see theme_cdm_footnote()
+   *  - enclosing_tag: the enclosing tag to be used for rendering of the footnote,
+   *    @see theme_cdm_footnote()
    *  - key_format: 'latin', 'ROMAN', 'roman', 'ALPHA', 'alpha'
    * and one required element:
-   *  - key_index: the set specific counter, to replace the default $footnote_key_index
+   *  - key_index: the set specific counter, to replace the
+   *    default $footnote_key_index
    */
   private static $fn_sets = array();
-  private static $default_set_definition = array('key_index' => 1, 'enclosing_tag' => null, 'key_format' => 'numeric');
+  private static $default_set_definition = array(
+    'key_index' => 1,
+    'enclosing_tag' => null,
+    'key_format' => 'numeric'
+  );
 
   /**
    * Private constructor.
@@ -148,7 +154,7 @@ class FootnoteManager {
    * @param $footnoteListKey
    * @param $object
    *
-   * @return unknown_type
+   * @return
    */
   private static function footnoteExists($footnoteListKey, $object) {
     foreach (self::$fnstore[$footnoteListKey] as $key => $fn) {

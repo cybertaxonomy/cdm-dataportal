@@ -200,7 +200,7 @@ function garland_diptera_cdm_descriptionElements($descriptionElements){
     }
   }
 
-  return theme('cdm_descriptionElementArray', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+  return theme('cdm_feature_block_elements', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
 }
 
 /**

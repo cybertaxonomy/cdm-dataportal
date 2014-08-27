@@ -1210,15 +1210,15 @@ function cdm_ws_taxonomy_pathFromRoot($taxon_uuid) {
  * @return string
  * 	  the localized representation_L10n of the term,
  *    otherwise the titleCache as fall back,
- *    otherwise an empty string
+ *    otherwise the default_representation which defaults to an empty string
  */
-function cdm_term_representation($definedTermBase) {
+function cdm_term_representation($definedTermBase, $default_representation = '') {
   if ( isset($definedTermBase->representation_L10n) ) {
     return $definedTermBase->representation_L10n;
   } elseif ( isset($definedTermBase->titleCache)) {
     return $definedTermBase->titleCache;
   }
-  return '';
+  return $default_representation;
 }
 
 /**
@@ -1540,29 +1540,29 @@ function &cdm_feature_tree_find_node($feature_tree_nodes, $feature_uuid){
  * Merges the given featureNodes structure with the descriptionElements.
  *
  * This method is used in preparation for rendering the descriptionElements.
- * The descriptionElements wich belong to a specific feature node are appended
+ * The descriptionElements which belong to a specific feature node are appended
  * to a the feature node by creating a new field:
  *  - descriptionElements: the CDM DescriptionElements which belong to this feature
  * The descriptionElements will be cleared in advance in order to allow reusing the
- * same feature tree without the risk of mixing sets of descrition elemens.
+ * same feature tree without the risk of mixing sets of description elements.
  *
  * which originally is not existing in the cdm.
  *
  *
  *
  * @param array $featureNodes
- *    An array of cdm FeatureNodes which may be hierachical since feature nodes
+ *    An array of cdm FeatureNodes which may be hierarchical since feature nodes
  *    may have children.
  * @param array $descriptionElements
  *    An flat array of cdm DescriptionElements
  * @return array
- *    The $featureNodes structure enriched with the accoding $descriptionElements
+ *    The $featureNodes structure enriched with the according $descriptionElements
  */
 function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
 
   foreach ($featureNodes as &$node) {
     // since the $featureNodes array is reused for each description
-    // it is nessecary to clear the custom node fields in advance
+    // it is necessary to clear the custom node fields in advance
     if(isset($node->descriptionElements)){
       unset($node->descriptionElements);
     }

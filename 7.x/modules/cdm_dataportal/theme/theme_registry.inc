@@ -75,17 +75,15 @@ function cdm_dataportal_theme() {
 
       // Themes in cdm_dataportal.descriptions.theme.
       'cdm_feature_name' => array('variables' => array('feature_name' => NULL)),
-      'cdm_feature_nodes' => array('variables' => array('mergedFeatureNodes' => NULL, 'taxon' => NULL)),
       'FeatureTree_hierarchy' => array('variables' => array('FeatureTreeUuid' => NULL)),
       'FeatureTree_hierarchy_children' => array('variables' => array('node' => NULL)),
-      'cdm_descriptionElementArray' => array('variables' => array(
+      'cdm_feature_block_elements' => array('variables' => array(
           'elementArray' => array(),
           'feature' => NULL,
           'glue' => '',
           'sortArray' => FALSE,
           'enclosingHtml' => 'ul',
       )),
-      'cdm_descriptionElement_CommonTaxonName' => array('render element' => 'element'),
       'cdm_descriptionElement_CategoricalData' => array('render element' => 'element'),
       'cdm_descriptionElement_IndividualsAssociation' => array('render element' => 'element'),
       'cdm_descriptionElement_TaxonInteraction' => array('render element' => 'element'),
@@ -95,7 +93,7 @@ function cdm_dataportal_theme() {
           'asListElement' => NULL,
           'feature_uuid' => NULL,
       )),
-      'cdm_common_names' => array('render element' => 'elements'),
+      'cdm_common_names' => array('render element' => 'elements', 'variables' => array('feature' => null) ),
       'cdm_descriptionElements' => array('variables' => array(
           'descriptionElements' => NULL,
           'feature' => NULL,

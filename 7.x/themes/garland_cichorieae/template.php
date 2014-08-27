@@ -216,7 +216,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
 // return $out;
 // }
 /**
- * Returns HTML for a cdm_descriptionElementArray.
+ * Returns HTML for a cdm_feature_block_elements.
  *
  * @param array $variables
  *   An associative array containing:
@@ -229,7 +229,7 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
  *
  * @ingroup themeable
  */
-function garland_cichorieae_cdm_descriptionElementArray($variables) {
+function garland_cichorieae_cdm_feature_block_elements($variables) {
   $elementArray = $variables['elementArray'];
   $feature = $variables['feature'];
   $glue = $variables['glue'];
@@ -237,13 +237,13 @@ function garland_cichorieae_cdm_descriptionElementArray($variables) {
   $enclosingHtml = $variables['enclosingHtml'];
 
   $enclosingHtml = 'div';
-  $out = '<' . $enclosingHtml . ' class="description" id="' . $feature->representation_L10n . '">';
+  $out = '<' . $enclosingHtml . ' class="feature-block-elements" id="' . $feature->representation_L10n . '">';
 
   if ($sortArray) {
     sort($elementArray);
   }
 
-  $out .= join($elementArray, $glue);
+  $out .= '<span class="feature-block-element">' . join($elementArray, '<span class="feature-block-element">' . $glue . '</span>') . '</span>';
 
   $out .= '</' . $enclosingHtml . '>';
   return $out;

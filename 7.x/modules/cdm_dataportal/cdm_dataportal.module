@@ -1975,11 +1975,11 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
  *
  * @param array $cdmBase_list
  *   An array of CdmBase instances or a single instance.
- * @param string $footnote_list_key
+ * @param string $footnote_list_key_suggestion
  *
  * @return unknown
  */
-function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NULL) {
+function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key_suggestion = NULL) {
 
    static $annotations_types_filter = null;
    if(!$annotations_types_filter) {
@@ -1998,11 +1998,11 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
   }
 
   // Getting the key for the footnotemanager.
-  if (isset($footnote_list_key)) {
-    $footnoteListKey = $footnote_list_key;
+  if (isset($footnote_list_key_suggestion)) {
+    $footnote_list_key = $footnote_list_key_suggestion;
   }
   else {
-    $footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
+    $footnote_list_key = RenderHints::getFootnoteListKey() . '-annotations';
   }
 
   // Adding the footnotes keys.
@@ -2010,7 +2010,7 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
     $annotations = cdm_ws_getAnnotationsFor($cdmBase_element, variable_get('annotations_types_as_footnotes', $annotations_types_filter));
     if (is_array($annotations)) {
       foreach ($annotations as $annotation) {
-        $footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
+        $footNoteKeys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation->text);
       }
     }
   }

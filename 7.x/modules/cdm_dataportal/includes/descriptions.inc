@@ -197,13 +197,14 @@ function toc_list_item($label, $attributes = array()) {
  *     A CDM DescriptionElement instance
  * @param $separator
  *     Optional parameter. The separator string to concatenate the footnode ids, default is ','
- * @return the string of foot note keys
+ * @return String
+ *     the string of foot note keys
  */
-function cdm_create_description_element_footnotes($description_element, $separator = ','){
+function cdm_create_description_element_footnotes($description_element, $separator = ',', $footnote_list_key_suggestion = null){
 
 
   // Annotations as footnotes.
-  $footNoteKeys = cdm_annotations_as_footnotekeys($description_element);
+  $footNoteKeys = cdm_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
 
   // Source references as footnotes.
   $bibliography_settings = get_bibliography_settings();
@@ -212,7 +213,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
   foreach ($description_element->sources as $source) {
     if (_is_original_source_type($source)) {
       $fn_key = FootnoteManager::addNewFootnote(
-        original_source_footnote_list_key(),
+        original_source_footnote_list_key($footnote_list_key_suggestion),
         theme('cdm_OriginalSource', array(
           'source' => $source,
           'doLink' => FALSE,
