@@ -8,19 +8,28 @@
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function garland_cichorieae_cdm_descriptionElementTextData($variables) {
+function DISABLED_garland_cichorieae_cdm_descriptionElementTextData($variables) {
   $element = $variables['element'];
   $asListElement = $variables['asListElement'];
   $feature_uuid = $variables['feature_uuid'];
+
+  $sourceRefs = '';
 
   $description = '';
   if (isset($element->multilanguageText_L10n->text)) {
     $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   }
-  $sourceRefs = '';
+
+  // annotations footnotes.
+  $annotation_fkeys = theme('cdm_annotations_as_footnotekeys',
+    array(
+      'cdmBase_list' => $element,
+      'footnote_list_key' => $feature_uuid,
+    )
+  );
 
   // ---------------------------------------------------------------------------
-  // CUSTOM CODE (1) the below neds to become configurable in the settings
+  // CUSTOM CODE (1) the below needs to become configurable in the settings
   $default_theme = variable_get('theme_default', 'garland_cichorieae');
 
   if (($default_theme == 'flora_malesiana' || $default_theme == 'flore_afrique_centrale' || $default_theme == 'flore_gabon') && $element->feature->titleCache == 'Citation') {
@@ -33,22 +42,14 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
     $asListElement = FALSE;
   }
 
-  // Printing annotations footnotes.
-  $annotation_fkeys = theme('cdm_annotations_as_footnotekeys',
-    array(
-      'cdmBase_list' => $element,
-      'footnote_list_key' => $feature_uuid,
-    )
-  );
-
   // END CUSTOM CODE (1)
   // ---------------------------------------------------------------------------
 
+  // original sources
   if (is_array($element->sources)) {
     foreach ($element->sources as $source) {
       // ---------------------------------------------------------------------------
       // CUSTOM CODE (2)
-      // Initialize some variables.
       if ($feature_uuid == UUID_CITATION) {
         $referenceCitation = cdm_ws_get(
           CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
@@ -77,6 +78,8 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
       }
       // ----------------------------------------------------------------------------
       // CITATION special cases - needs to go into core code
+
+      // link the nameUsedInSource to the according name page
       $name_used_in_source_link_to_show = '';
       if (isset($source->nameUsedInSource->uuid) && ($feature_uuid != UUID_CITATION)) {
         // It is a DescriptionElementSource && !CITATION
@@ -104,10 +107,12 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
       }
       // ----------------------------------------------------------------------------
 
+      // final composition of the TextData element
       if ($asListElement && ($feature_uuid == UUID_CITATION)) {
         $out = '<li class="descriptionText">' . $name_used_in_source_link_to_show;
         // Adding ":" if necessary.
-        if (!empty($name_used_in_source_link_to_show) && (!empty($description) || !empty($sourceRefs))) {
+        if (!empty($name_used_in_source_link_to_show) &&
+          (!empty($description) || !empty($sourceRefs))) {
           $out .= ': ';
         }
 
@@ -149,14 +154,16 @@ function garland_cichorieae_cdm_descriptionElementTextData($variables) {
         if (isset($name_used_in_source_link_to_show)) {
           $name_used_in_source_link_to_show = ' (name in source: ' . $name_used_in_source_link_to_show . ')';
         }
-        $out = '<span class="' . html_class_attribute_ref($element) . '"> ' . $description . $sourceRefs . $name_used_in_source_link_to_show . $annotation_fkeys . '</span>';
+        $out = '<span class="' . html_class_attribute_ref($element) . '"> '
+          . $description . $sourceRefs . $name_used_in_source_link_to_show . $annotation_fkeys . '</span>';
       }
     }
   }
 
   // If no sources, print the description.
   if (!isset($out)) {
-    $out = '<span class="' . html_class_attribute_ref($element) . '"> ' . $description . $annotation_fkeys . '</span>';
+    $out = '<span class="' . html_class_attribute_ref($element) . '"> '
+      . $description . $annotation_fkeys . '</span>';
   }
 
   // Add annotations as footnote key.

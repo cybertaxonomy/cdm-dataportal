@@ -171,7 +171,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
           'elements' => array(
             '#block' => $block,
             '#children' => $block->content,
-          )
+          ),
         )
       );
     } // END: skip empty or supressed features
@@ -244,7 +244,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
       $feature
     );
 
-    // ======== FIXME is this being used at all? seems to make no sense!!!
+    // $$descriptionElements['TextData'] is added to to the feature node in merged_taxon_feature_tree()
     if (isset($descriptionElements['TextData'])) {
       // --- TextData
       foreach ($descriptionElements['TextData'] as $text_data_element) {
@@ -401,7 +401,7 @@ function theme_FeatureTree_hierarchy_children($variables) {
  */
 function compose_cdm_feature_block_elements($elements, $feature, $glue = '', $sort = FALSE, $enclosing_tag = 'ul') {
 
-  $feature_block_settings = get_feature_block_settings();
+  $feature_block_settings = get_feature_block_settings($feature->uuid);
   if($feature_block_settings['as_list']){
     $enclosing_tag = $feature_block_settings['as_list'];
   }
@@ -602,19 +602,59 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
 function theme_cdm_descriptionElementTextData($variables) {
 
   $element = $variables['element'];
-  $asListElement = $variables['asListElement'];
   $feature_uuid = $variables['feature_uuid'];
+  $asListElement = $variables['asListElement']; // TODo remove and replace by $feature_block_settings['as_list']
+
+  $sourceRefs = '';
+  $out = '';
+
+  // FIXME $feature_block_settings should be passed as parameter!!!!!
+  $feature_block_settings = get_feature_block_settings($feature_uuid);
+
+  // FIXME remove this hack ---------------------------
+  $default_theme = variable_get('theme_default', NULL);
+  if($default_theme == 'garland_cichorieae' || $default_theme == 'cyprus'
+    || $default_theme == 'flore_afrique_centrale' || $default_theme == 'flora_malesiana' || $default_theme == 'flore_gabon' ){
+    $asListElement = $feature_block_settings['as_list'] == 'ul';
+  }
+
+  // --------------------------------------------------
 
   $description = '';
   if (isset($element->multilanguageText_L10n->text)) {
     $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   }
-  $sourceRefs = '';
-  $out = '';
 
+  // annotations footnotes.
+  $annotation_fkeys = theme('cdm_annotations_as_footnotekeys',
+    array(
+      'cdmBase_list' => $element,
+      'footnote_list_key' => $feature_uuid,
+    )
+  );
+
+  // original sources
   if (isset($element->sources) && is_array($element->sources) && count($element->sources) > 0) {
     foreach ($element->sources as $source) {
-      $referenceCitation = theme('cdm_OriginalSource', array('source' => $source));
+
+      // ---------------------------------------------------------------------------
+      // CUSTOM CODE (2) from cichorieae theme,
+      // use nomref web service to combine reference with microreference, other way to combine these?
+      // is this a general case for all features? >>> DISCUSS with Andreas M. FIXME
+      if ($feature_uuid == UUID_CITATION) {
+        $referenceCitation = cdm_ws_get(
+          CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
+          array($source->citation->uuid),
+          "microReference=" . urlencode($source->citationMicroReference
+          ));
+        $referenceCitation = $referenceCitation->String;
+
+      // END CUSTOM CODE (2)
+      // ---------------------------------------------------------------------------
+      } else {
+        $referenceCitation = theme('cdm_OriginalSource', array('source' => $source));
+      }
+
       if ($description && strlen($description) > 0 && $referenceCitation) {
         $sourceRefs .= ' (' . $referenceCitation . ')';
       }
@@ -625,22 +665,35 @@ function theme_cdm_descriptionElementTextData($variables) {
       if (strlen($sourceRefs) > 0) {
         $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
       }
+
+      // link the nameUsedInSource to the according name page
       $name_used_in_source_link_to_show = '';
       // Do a link to name page.
       if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
         // it is a DescriptionElementSource
-        $name_used_in_source_link_to_show = l($source->nameUsedInSource->titleCache, path_to_name($source->nameUsedInSource->uuid), array(
-          'attributes' => array(),
-          'absolute' => TRUE,
-          'html' => TRUE,
-        ));
+        if($feature_block_settings['link_to_name_used_in_source']){
+          $name_used_in_source_link_to_show = l(
+            $source->nameUsedInSource->titleCache,
+            path_to_name($source->nameUsedInSource->uuid),
+            array(
+            'attributes' => array(),
+            'absolute' => TRUE,
+            'html' => TRUE,
+          ));
+
+        } else {
+          $name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
+        }
       }
       else if (isset($source->nameUsedInSource->originalNameString) && strlen($source->nameUsedInSource->originalNameString) > 0) {
+        // TODO does this make sense? is $source->nameUsedInSource->originalNameString different from $source->nameUsedInSource->titleCache ?
         // it is NOT a DescriptionElementSource
         // Show a text without link.
         $name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
       }
 
+      // final composition of the TextData element
+      // FIXME this should move below after the end if (isset($element->sources) {...} and will replace the else
       if ($asListElement) {
 
        $out = '<li class="descriptionText DescriptionElement">';
@@ -652,31 +705,25 @@ function theme_cdm_descriptionElementTextData($variables) {
             $out .= $name_used_in_source_link_to_show . ' ';
           }
         }
-        $out .= $description . $sourceRefs . theme(
-            'cdm_annotations_as_footnotekeys',
-            array('cdmBase_list' => $element,
-              'footnote_list_key' => $feature_uuid)) . '</li>';
+        $out .= $description . $sourceRefs . $annotation_fkeys . '</li>';
       }
       else {
         if ($name_used_in_source_link_to_show) {
           $name_used_in_source_link_to_show = ' (name in source: ' . $name_used_in_source_link_to_show . ')';
         }
 
-        $out = '<span class="DescriptionElement DescriptionElement-' . $element->class . '">' . $description . $sourceRefs . $name_used_in_source_link_to_show . '</span>';
+        $out = '<span class="DescriptionElement DescriptionElement-'. $element->class . '
+        ' .  html_class_attribute_ref($element)  . '">'
+          . $description . $sourceRefs . $name_used_in_source_link_to_show . $annotation_fkeys . '</span>';
       }
     }
-  }
+  } // END of if (isset($element->sources)
+
   else {
     // If no sources, print the description.
-    $out = $description;
+    $out = '<span class="' . html_class_attribute_ref($element) . '"> '
+      . $description . $annotation_fkeys . '</span>';
   }
-
-  // FIXME This will create footnotes for annotations and sources, sources are already rendered though
-  // FIXME the footnoes are not shown in the page
-  // FIXME RenderHints::getFootnoteListKey() ate not set here
-  // to many problems, so the below line is diabled for now
-  //$footnote_key_list_str = cdm_create_description_element_footnotes($element);
-  // $out .= $footnote_key_list_str;
 
   return $out;
 }
@@ -834,16 +881,6 @@ function theme_cdm_descriptionElements($variables) {
   }
   */
 
-
-  if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
-    $glue = '';
-    $enclosingTag = 'dl';
-  }
-  else {
-    $glue = '';
-    $enclosingTag = 'ul';
-  }
-
   $sortOutArray = FALSE;
   $distributionElements = array();
   $distribution_tree = null;
@@ -863,6 +900,10 @@ function theme_cdm_descriptionElements($variables) {
         // Do nothing to avoid rendering.
       } else {
         /* decide based on the description element class
+         *
+         * Features handled here:
+         * all except DISTRIBUTION, COMMON_NAME, USES, IMAGES,
+         *
          *
          * TODO provide api_hook as extension point for this
          */
@@ -907,13 +948,9 @@ function theme_cdm_descriptionElements($variables) {
     }
   } // END normal description element arrays
 
-
   $out = compose_cdm_feature_block_elements(
     $outArray,
-    $feature,
-    $glue,
-    $sortOutArray,
-    $enclosingTag
+    $feature
   );
 
   RenderHints::popFromRenderStack();

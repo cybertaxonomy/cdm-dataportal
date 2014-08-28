@@ -192,7 +192,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 //                 continue;
 //               }
               $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->childNodes, $description->elements);
-              $description_render_elements = compose_cdm_feature_nodes($elements_by_feature);
+              $description_render_elements = compose_cdm_feature_nodes($elements_by_feature, null);
               $dd_elements[] = $description_render_elements;
             }
 

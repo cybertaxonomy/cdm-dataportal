@@ -39,7 +39,6 @@ define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT', serialize(array(
 define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
 
 
-
 /* ---- MAP SETTING CONSTANTS ---- */
 /**
  * @var array of URIs eg. http://edit.africamuseum.be"
@@ -393,66 +392,114 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
   }
   else {
     return ($values[$index_value]);
-  }
 
+  }
 }
 
-  /**
-   * preliminary mock implementation
-   *
-   *  "$feature uuid": {
-   *    "as_list": div|ul|ol,                        // div: not as list, ul: as bullet list, ol: as numbered list, will be used in compose_cdm_feature_block_elements() as $enclosing_tag
-   *    "link_to_reference": boolean,                 // render the reference as link, ignored if the element is NOT a DescriptionElementSource
-   *    // references_inline:
-   *    // TRUE:
-   *    //   1. if element has text (TextData) the source references will be appended in brackets like "text (source references)"
-   *    //   2. otherwise they are the only content (e.g. use case CITATION) and afre not put into brackets
-   *    // FALSE:
-   *    //  they are put into the bibliography(=references) pseudo feature block
-   *    "references_inline": boolean
-   *    "sort_elements": SORT_ASC, SORT_DESC, NULL    // whether and how to sort the elements
-   *    "element_tag": span | div                     // only applies if "as_list" is NULL
-   *  }
-   */
-  function get_feature_block_settings(){
-    // the default must conform to the default paramter values of
-    // compose_cdm_feature_block_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
-    // theme_cdm_descriptionElementTextData() : asListElement = NULL
+/**
+ * preliminary mock implementation
+ *
+ *  "$feature uuid": {
+ *    "as_list": div|ul|ol|dl,                       // div: not as list, ul: as bullet list, ol: as numbered list, dl:as definition list; will be used in compose_cdm_feature_block_elements() as $enclosing_tag
+ *    "link_to_reference": boolean,                 // render the reference as link, ignored if the element is NOT a DescriptionElementSource
+ *    "link_to_name_used_in_source": boolean
+ *    // references_inline:
+ *    // TRUE:
+ *    //   1. if element has text (TextData) the source references will be appended in brackets like "text (source references)"
+ *    //   2. otherwise they are the only content (e.g. use case CITATION) and afre not put into brackets
+ *    // FALSE:
+ *    //  they are put into the bibliography(=references) pseudo feature block
+ *    "references_inline": boolean
+ *    "sort_elements": SORT_ASC, SORT_DESC, NULL    // whether and how to sort the elements
+ *    "element_tag": span | div                     // only applies if "as_list" == 'div'
+ *  }
+ */
+function get_feature_block_settings($feature_uuid = 'DEFAULT'){
+  // the default must conform to the default parameter values of
+  // compose_cdm_feature_block_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
+  // theme_cdm_descriptionElementTextData() : asListElement = NULL
 
-    // currently only element_tag is used.
-    $default = array(
+  // currently only element_tag is used.
+  $default = array(
+    'DEFAULT' => array(
       'as_list' => 'ul',
       'link_to_reference' => FALSE,
+      'link_to_name_used_in_source' => TRUE,
       'references_inline' => TRUE,
       'sort_elements' => FALSE,
       'glue' => '',
       'element_tag'=> NULL
-    );
+    )
+  );
 
-    $cichorieae_default = array(
+  $cichorieae_default = array(
+    'DEFAULT' => array(
       'as_list' => 'div',
-      'link_to_reference' => FALSE,
+      'link_to_reference' => TRUE,
+      'link_to_name_used_in_source' => TRUE,
       'references_inline' => TRUE,
       'sort_elements' => FALSE,
       'glue' => '',
       'element_tag'=> 'div'
-    );
+    ),
+    UUID_CITATION => array(
+      'as_list' => 'div',
+      'link_to_reference' => FALSE,
+      'link_to_name_used_in_source' => FALSE,
+      'references_inline' => TRUE,
+      'sort_elements' => FALSE,
+      'glue' => '',
+      'element_tag'=> 'div'
+    ),
+    UUID_CHROMOSOMES_NUMBERS => array(
+      'as_list' => 'ul',
+      'link_to_reference' => TRUE,
+      'link_to_name_used_in_source' => TRUE,
+      'references_inline' => TRUE,
+      'sort_elements' => FALSE,
+      'glue' => '',
+      'element_tag'=> 'div'
+    ),
+    UUID_CHROMOSOMES => array(
+      'as_list' => 'ul',
+      'link_to_reference' => FALSE,
+      'link_to_name_used_in_source' => TRUE,
+      'references_inline' => TRUE,
+      'sort_elements' => FALSE,
+      'glue' => '',
+      'element_tag'=> 'div'
+    ),
+  );
 
-    $default_theme = variable_get('theme_default', NULL);
+  $default_theme = variable_get('theme_default', NULL);
 
-    switch ($default_theme){
-      case 'garland_cichorieae':
-      case 'cyprus': // no longer used in production, but is required for selenium tests see class eu.etaxonomy.dataportal.pages.PortalPage
-      case 'flore_afrique_centrale':
-      case 'flora_malesiana':
-      case 'flore_gabon':
-        return $cichorieae_default;
-      default:
-       return $default;
-    }
+  switch ($default_theme){
+    case 'garland_cichorieae':
+    case 'cyprus': // no longer used in production, but is required for selenium tests see class eu.etaxonomy.dataportal.pages.PortalPage
+      $settings_for_theme = $cichorieae_default;
+      break;
+    case 'flore_afrique_centrale':
+    case 'flora_malesiana':
+    case 'flore_gabon':
+      $settings_for_theme = $cichorieae_default;
+      $settings_for_theme[UUID_CITATION]['as_list'] = 'ul';
+      break;
+    default:
+      $settings_for_theme =  $default;
   }
 
-/**
+  if(isset($settings_for_theme[$feature_uuid])){
+    return $settings_for_theme[$feature_uuid];
+  } else if(isset($settings_for_theme['DEFAULT'])){
+    return $settings_for_theme['DEFAULT'];
+  } else if(isset($settings_for_theme[$feature_uuid])){
+    return $default[$feature_uuid];
+  } else {
+    return $default['DEFAULT'];
+  }
+}
+
+  /**
  * returns the current setting for the original source bibliography
  *
  * Caches internally
