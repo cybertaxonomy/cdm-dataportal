@@ -399,6 +399,10 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
 /**
  * preliminary mock implementation
  *
+ * these settings only apply to feature blocks which do not have a special rendering
+ * the specially handled features (e.g.: Distribution,CommonNames) may make use of the
+ * 'special' element of the settings
+ *
  *  "$feature uuid": {
  *    "as_list": div|ul|ol|dl,                       // div: not as list, ul: as bullet list, ol: as numbered list, dl:as definition list; will be used in compose_cdm_feature_block_elements() as $enclosing_tag
  *    "link_to_reference": boolean,                 // render the reference as link, ignored if the element is NOT a DescriptionElementSource
@@ -412,6 +416,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
  *    "references_inline": boolean
  *    "sort_elements": SORT_ASC, SORT_DESC, NULL    // whether and how to sort the elements
  *    "element_tag": span | div                     // only applies if "as_list" == 'div'
+ *    'special' => array()                          // can be used to extend with special settings for specialized rendering like for distributions
  *  }
  */
 function get_feature_block_settings($feature_uuid = 'DEFAULT'){

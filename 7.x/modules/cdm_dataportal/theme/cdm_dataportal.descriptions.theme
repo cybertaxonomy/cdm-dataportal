@@ -74,6 +74,8 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
       $feature_name = cdm_term_representation($node->feature, 'Unnamed Feature');
 
       $block = feature_block($feature_name, $node->feature);
+      $block->content = array();
+      $block_content_weight = 0;
 
       /*
        * Content/DISTRIBUTION.
@@ -81,14 +83,13 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
       if ($node->feature->uuid == UUID_DISTRIBUTION) {
         $block = compose_feature_block_distribution($taxon, $node->descriptionElements, $node->feature);
-
       }
       /*
        * Content/COMMON_NAME.
        */
-      elseif ($node->feature->uuid == UUID_COMMON_NAME) {
+      else if ($node->feature->uuid == UUID_COMMON_NAME) {
         $common_names_render_array = compose_cdm_common_names($node->descriptionElements, $node->feature);
-        $block->content .= drupal_render($common_names_render_array);
+        $block->content[] = $common_names_render_array;
       }
 
       /*
@@ -104,27 +105,25 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
           if(isset($taxon) ) {
             $taxon_uuid = $taxon->uuid;
           }
-          $block->content .= theme('cdm_descriptionElements', array(
-            'descriptionElements' => $node->descriptionElements,
-            'feature' => $node->feature,
-            'taxon_uuid' => $taxon_uuid,
-          ));
+          $block->content[] = compose_cdm_descriptionElements($node->descriptionElements, $node->feature, $taxon_uuid);
         }
 
           // Content/ALL OTHER FEATURES/Subordinate Features
           // subordinate features are printed inline in one floating text,
-          // it is expected hat supordinate features can "contain" TextData,
+          // it is expected hat subordinate features can "contain" TextData,
           // Qualitative- and Qualitative- DescriptioneElements
           if (isset($node->childNodes[0])) {
 
           // TODO support more than one level of children.
-          // can this be solved by resursively calling this very function?
+          // can this be solved by recursively calling this function?
           // @see http://dev.e-taxonomy.eu/trac/ticket/2393
           $text = '';
           foreach ($node->childNodes as $child) {
 
             if (isset($child->descriptionElements) && is_array($child->descriptionElements)) {
               foreach ($child->descriptionElements as $element) {
+
+                //TODO it woud be better if we could use compose_cdm_descriptionElements() directly instead of the below stuff
 
                 if (is_array($element->media)) {
                   // Append media of supordinate elements to list of main
@@ -134,7 +133,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
                 switch ($element->class) {
                   case 'TextData':
-                    // TODO use theme_cdm_descriptionElementTextData()
+                    // FIXME use theme_cdm_descriptionElementTextData()
                     $out_child_elements = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
                     $out_child_elements = str_replace($child->feature->titleCache, '<em>' . $child->feature->representation_L10n . '</em>', $out_child_elements);
                     break;
@@ -153,16 +152,16 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
               $out_child_elements = '';
             }
           }
-          $block->content .= $text;
-          $block->content .=  compose_feature_media_gallery($node, $media_list, $gallery_settings);
+          $block->content[] = markup_to_render_array($text);
+          $block->content[] = compose_feature_media_gallery($node, $media_list, $gallery_settings);
 
 
-          /*
-           * Footnotes for the feature block
-           */
-          $block->content .= theme('cdm_footnotes', array('footnoteListKey' => $node->feature->uuid));
-          $block->content .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $node->feature->uuid));
-        }
+          }
+        /*
+         * Footnotes for the feature block
+         */
+        $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => $node->feature->uuid)));
+        $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => $node->feature->uuid)));
       }
 
 
@@ -170,7 +169,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
         array(
           'elements' => array(
             '#block' => $block,
-            '#children' => $block->content,
+            '#children' => drupal_render($block->content),
           ),
         )
       );
@@ -269,7 +268,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
 
     if ($text_data_out_array && variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-      $block->content .= compose_cdm_feature_block_elements(
+      $block->content[] = compose_cdm_feature_block_elements(
         $text_data_out_array,
         $feature,
         $text_data_glue,
@@ -284,7 +283,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
       $distribution_map_query_parameters = $descriptionElements['DistributionInfoDTO']->mapUriParams;
     }
     $map_render_element = compose_distribution_map($taxon, $distribution_map_query_parameters);
-    $block->content .= $map_render_element['#markup'];
+    $block->content[] = $map_render_element;
 
     // --- tree or list
     $dto_out_array = array();
@@ -311,7 +310,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
       }
       //
-      $block->content .= compose_cdm_feature_block_elements(
+      $block->content[] = compose_cdm_feature_block_elements(
         $dto_out_array,
         $feature,
         $distribution_glue,
@@ -322,7 +321,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
     // --- TextData at the bottom
     if ($text_data_out_array && !variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-      $block->content .= compose_cdm_feature_block_elements(
+      $block->content[] = compose_cdm_feature_block_elements(
         $text_data_out_array,
         $feature,
         $text_data_glue,
@@ -331,8 +330,8 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
       );
     }
 
-    $block->content .= theme('cdm_footnotes', array('footnoteListKey' => UUID_DISTRIBUTION));
-    $block->content .= theme('cdm_annotation_footnotes', array('footnoteListKey' => UUID_DISTRIBUTION));
+    $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => UUID_DISTRIBUTION)));
+    $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => UUID_DISTRIBUTION)));
 
     return $block;
   }
@@ -417,7 +416,7 @@ function compose_cdm_feature_block_elements($elements, $feature, $glue = '', $so
   $out .= join($elements, $glue) ;
 
   $out .= '</' . $enclosing_tag . '>';
-  return $out;
+  return markup_to_render_array($out);
 }
 
 
@@ -604,12 +603,16 @@ function theme_cdm_descriptionElementTextData($variables) {
   $element = $variables['element'];
   $feature_uuid = $variables['feature_uuid'];
   $asListElement = $variables['asListElement']; // TODo remove and replace by $feature_block_settings['as_list']
+  $footnote_list_key_suggestion = $feature_uuid;
 
   $sourceRefs = '';
   $out = '';
+  $name_used_in_source = '';
 
   // FIXME $feature_block_settings should be passed as parameter!!!!!
   $feature_block_settings = get_feature_block_settings($feature_uuid);
+  $bibliography_settings = get_bibliography_settings();
+  $do_references_inline = $feature_block_settings['references_inline'] && $bibliography_settings['enabled'] !== 1;
 
   // FIXME remove this hack ---------------------------
   $default_theme = variable_get('theme_default', NULL);
@@ -617,7 +620,6 @@ function theme_cdm_descriptionElementTextData($variables) {
     || $default_theme == 'flore_afrique_centrale' || $default_theme == 'flora_malesiana' || $default_theme == 'flore_gabon' ){
     $asListElement = $feature_block_settings['as_list'] == 'ul';
   }
-
   // --------------------------------------------------
 
   $description = '';
@@ -625,18 +627,9 @@ function theme_cdm_descriptionElementTextData($variables) {
     $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   }
 
-  // annotations footnotes.
-  $annotation_fkeys = theme('cdm_annotations_as_footnotekeys',
-    array(
-      'cdmBase_list' => $element,
-      'footnote_list_key' => $feature_uuid,
-    )
-  );
-
   // original sources
-  if (isset($element->sources) && is_array($element->sources) && count($element->sources) > 0) {
+  if($do_references_inline) {
     foreach ($element->sources as $source) {
-
       // ---------------------------------------------------------------------------
       // CUSTOM CODE (2) from cichorieae theme,
       // use nomref web service to combine reference with microreference, other way to combine these?
@@ -649,8 +642,8 @@ function theme_cdm_descriptionElementTextData($variables) {
           ));
         $referenceCitation = $referenceCitation->String;
 
-      // END CUSTOM CODE (2)
-      // ---------------------------------------------------------------------------
+        // END CUSTOM CODE (2)
+        // ---------------------------------------------------------------------------
       } else {
         $referenceCitation = theme('cdm_OriginalSource', array('source' => $source));
       }
@@ -667,62 +660,66 @@ function theme_cdm_descriptionElementTextData($variables) {
       }
 
       // link the nameUsedInSource to the according name page
-      $name_used_in_source_link_to_show = '';
       // Do a link to name page.
       if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
         // it is a DescriptionElementSource
         if($feature_block_settings['link_to_name_used_in_source']){
-          $name_used_in_source_link_to_show = l(
+          $name_used_in_source = l(
             $source->nameUsedInSource->titleCache,
             path_to_name($source->nameUsedInSource->uuid),
             array(
-            'attributes' => array(),
-            'absolute' => TRUE,
-            'html' => TRUE,
-          ));
+              'attributes' => array(),
+              'absolute' => TRUE,
+              'html' => TRUE,
+            ));
 
         } else {
-          $name_used_in_source_link_to_show = $source->nameUsedInSource->titleCache;
+          $name_used_in_source = $source->nameUsedInSource->titleCache;
         }
       }
       else if (isset($source->nameUsedInSource->originalNameString) && strlen($source->nameUsedInSource->originalNameString) > 0) {
         // TODO does this make sense? is $source->nameUsedInSource->originalNameString different from $source->nameUsedInSource->titleCache ?
         // it is NOT a DescriptionElementSource
         // Show a text without link.
-        $name_used_in_source_link_to_show = $source->nameUsedInSource->originalNameString;
+        $name_used_in_source = $source->nameUsedInSource->originalNameString;
       }
+    } // END of loop over sources
 
-      // final composition of the TextData element
-      // FIXME this should move below after the end if (isset($element->sources) {...} and will replace the else
-      if ($asListElement) {
+    // annotations footnotes separate.
+    $foot_note_keys = theme('cdm_annotations_as_footnotekeys',
+      array(
+        'cdmBase_list' => $element,
+        'footnote_list_key' => $footnote_list_key_suggestion,
+      )
+    );
 
-       $out = '<li class="descriptionText DescriptionElement">';
-        // Adding ":" if necessary.
-        if (!empty($name_used_in_source_link_to_show)) {
-          if ( (!empty($description)|| !empty($sourceRefs)) && $feature_uuid != UUID_CHROMOSOMES_NUMBERS) {
-            $out .= $name_used_in_source_link_to_show . ': ';
-          } else {
-            $out .= $name_used_in_source_link_to_show . ' ';
-          }
-        }
-        $out .= $description . $sourceRefs . $annotation_fkeys . '</li>';
-      }
-      else {
-        if ($name_used_in_source_link_to_show) {
-          $name_used_in_source_link_to_show = ' (name in source: ' . $name_used_in_source_link_to_show . ')';
-        }
+  } // END of references inline
+  else {
+    $foot_note_keys = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
+  }
 
-        $out = '<span class="DescriptionElement DescriptionElement-'. $element->class . '
-        ' .  html_class_attribute_ref($element)  . '">'
-          . $description . $sourceRefs . $name_used_in_source_link_to_show . $annotation_fkeys . '</span>';
+  if ($asListElement) {
+
+    $out = '<li class="DescriptionElement DescriptionElement-' . $element->class . '
+        ' .  html_class_attribute_ref($element)  . '">';
+    // Adding ":" if necessary.
+    if (!empty($name_used_in_source)) {
+      if ( (!empty($description)|| !empty($sourceRefs)) && $feature_uuid != UUID_CHROMOSOMES_NUMBERS) {
+        $out .= $name_used_in_source . ': ';
+      } else {
+        $out .= $name_used_in_source . ' ';
       }
     }
-  } // END of if (isset($element->sources)
-
+    $out .= $description . $sourceRefs . $foot_note_keys . '</li>';
+  }
   else {
-    // If no sources, print the description.
-    $out = '<span class="' . html_class_attribute_ref($element) . '"> '
-      . $description . $annotation_fkeys . '</span>';
+    if ($name_used_in_source) {
+      $name_used_in_source = ' (name in source: ' . $name_used_in_source . ')';
+    }
+
+    $out = '<span class="DescriptionElement DescriptionElement-' . $element->class . '
+        ' .  html_class_attribute_ref($element)  . '">'
+      . $description . $sourceRefs . $name_used_in_source . $foot_note_keys . '</span>';
   }
 
   return $out;
@@ -741,7 +738,7 @@ function theme_cdm_descriptionElementTextData($variables) {
  *
  * @ingroup compose
  */
-function compose_cdm_common_names($elements, $feature) {
+function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
 
   $common_name_out = '';
   $common_name_feature_elements = array();
@@ -799,14 +796,14 @@ function compose_cdm_common_names($elements, $feature) {
     } // End of loop over set of elements per language area
 
 
-    $common_name_out .= compose_cdm_feature_block_elements(
-        $common_name_feature_elements,
-        $feature,
-        '; ',
-        FALSE,
-        'div'
+    $common_name_feature_elements_render_array = compose_cdm_feature_block_elements(
+      $common_name_feature_elements,
+      $feature,
+      '; ',
+      FALSE,
+      'div'
       );
-
+    $common_name_out .= $common_name_feature_elements_render_array['#markup'];
 
   }
 
@@ -835,8 +832,9 @@ function compose_cdm_common_names($elements, $feature) {
 
   return  markup_to_render_array(
     '<div class="common_names_as_common_names">' . $common_name_out . '</div>'
-    .'<div class="common_names_as_text_data">' . $common_name_out_text_data . '</div>'
-    .$footnotes
+    .'<div class="common_names_as_text_data">' . $common_name_out_text_data['#markup'] . '</div>'
+    .$footnotes,
+    $weight
   );
 }
 
@@ -845,23 +843,22 @@ function compose_cdm_common_names($elements, $feature) {
  *
  * Usually these are of a specific feature type.
  *
- * @param array $variables
- *   An associative array containing:
- *   - array of descriptionElements which belong to the same feature.
- *     These descriptions elements of a Description must be ordered by the chosen feature tree by
- *     calling the function _mergeFeatureTreeDescriptions().
- *     @see _mergeFeatureTreeDescriptions()
- *   - featureUuid: currently unused, according code disabled
- *   - taxon_uuid: only used for ordered distributions (will be removed!)
+ * @param $descriptionElements
+ *   array of descriptionElements which belong to the same feature.
+ *   These descriptions elements of a Description must be ordered by the chosen feature tree by
+ *   calling the function _mergeFeatureTreeDescriptions().
+ *   @see _mergeFeatureTreeDescriptions()
+ *  @param  $feature_uuid
  *
- * @ingroup themeable
+ * @ingroup compose
  */
-function theme_cdm_descriptionElements($variables) {
+function compose_cdm_descriptionElements($descriptionElements, $feature, $weight = FALSE) {
 
-  $descriptionElements = $variables['descriptionElements'];
-  $feature = $variables['feature'];
-  $taxon_uuid = $variables['taxon_uuid'];
+
   $outArray = array();
+  $sortOutArray = FALSE;
+  $distributionElements = array();
+  $distribution_tree = null;
 
   /*
   $userDefined = mixed_variable_get(LAYOUT_SETTING_PREFIX . $feature_uuid, FEATURE_TREE_LAYOUT_DEFAULTS);
@@ -881,9 +878,7 @@ function theme_cdm_descriptionElements($variables) {
   }
   */
 
-  $sortOutArray = FALSE;
-  $distributionElements = array();
-  $distribution_tree = null;
+
 
   RenderHints::pushToRenderStack('cdm_descriptionElements');
 
@@ -948,13 +943,13 @@ function theme_cdm_descriptionElements($variables) {
     }
   } // END normal description element arrays
 
-  $out = compose_cdm_feature_block_elements(
+  $render_array = compose_cdm_feature_block_elements(
     $outArray,
     $feature
   );
 
   RenderHints::popFromRenderStack();
-  return $out;
+  return $render_array;
 }
 
 /**

@@ -183,13 +183,15 @@ function palmweb_2_cdm_feature_nodes($variables){
 
 
           if ($text_data_out_array && variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-            $block->content .= compose_cdm_feature_block_elements(
+            $tmp_render_array = compose_cdm_feature_block_elements(
               $text_data_out_array,
               $node->feature,
               $text_data_glue,
               $text_data_sort,
               $text_data_enclosingTag
             );
+
+            $block->content .= $tmp_render_array['#markup'];
           }
 
           // --- Distribution map
@@ -225,24 +227,27 @@ function palmweb_2_cdm_feature_nodes($variables){
 
             }
             //
-            $block->content .= compose_cdm_feature_block_elements(
+
+            $tmp_render_array = compose_cdm_feature_block_elements(
                 $dto_out_array,
                 $node->feature,
                 $distribution_glue,
                 $distribution_sortOutArray,
                 $distribution_enclosingTag
             );
+            $block->content .= $tmp_render_array['#markup'];
           }
 
           // --- TextData at the bottom
           if ($text_data_out_array && !variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-            $block->content .= compose_cdm_feature_block_elements(
+            $tmp_render_array = compose_cdm_feature_block_elements(
                 $text_data_out_array,
                 $node->feature,
                 $text_data_glue,
                 $text_data_sort,
                 $text_data_enclosingTag
             );
+            $block->content .= $tmp_render_array['#markup'];
           }
 
         }
@@ -262,11 +267,7 @@ function palmweb_2_cdm_feature_nodes($variables){
           // $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid),
         }
         else {
-          $block->content .= theme('cdm_descriptionElements', array(
-            'descriptionElements' => $node->descriptionElements,
-            'featureUuid' => $node->feature->uuid,
-            'taxon_uuid' => $taxon->uuid,
-          ));
+          $block->content .= compose_cdm_descriptionElements($node->descriptionElements, $node->feature->uuid, $taxon->uuid);
 
           /*
           Content/ALL OTHER FEATURES/Subordinate Features

@@ -197,6 +197,7 @@ function toc_list_item($label, $attributes = array()) {
  *     A CDM DescriptionElement instance
  * @param $separator
  *     Optional parameter. The separator string to concatenate the footnote ids, default is ','
+ * @param $footnote_list_key_suggestion
  * @return String
  *    The foot note keys
  */
@@ -228,7 +229,10 @@ function cdm_create_description_element_footnotes($description_element, $separat
   $footnoteKeyListStr = '';
   asort($footNoteKeys);
   foreach ($footNoteKeys as $footNoteKey) {
-    $footnoteKeyListStr .= theme('cdm_footnote_key', array('footnoteKey' => $footNoteKey, 'separator' => ($footnoteKeyListStr ? $separator : '')));
+    $footnoteKeyListStr .= theme('cdm_footnote_key',
+      array(
+        'footnoteKey' => $footNoteKey,
+        'separator' => ($footnoteKeyListStr ? $separator : '')));
   }
   return $footnoteKeyListStr;
 }

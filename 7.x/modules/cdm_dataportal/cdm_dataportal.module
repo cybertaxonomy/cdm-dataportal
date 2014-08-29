@@ -1015,7 +1015,7 @@ function convert_to_array($object) {
 }
 
 /**
- * Wrapps the given $html string into a reder array suitable for drupal_render()
+ * Wraps the given $html string into a render array suitable for drupal_render()
  *
  * @param string $html
  *   the html string, see
@@ -1028,11 +1028,14 @@ function convert_to_array($object) {
  *   A render array
  *
  */
-function markup_to_render_array($html, $weight = 0) {
-  return array(
-          '#markup' => $html,
-          '#weight' => $weight,
-      );
+function markup_to_render_array($html, $weight = FALSE) {
+  $render_array = array(
+    '#markup' => $html
+  );
+  if (is_numeric($weight)) {
+    $render_array['#weight'] = $weight;
+  }
+  return $render_array;
 }
 
 /**
