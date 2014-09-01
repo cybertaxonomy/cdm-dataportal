@@ -396,118 +396,184 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
   }
 }
 
-/**
- * preliminary mock implementation
- *
- * these settings only apply to feature blocks which do not have a special rendering
- * the specially handled features (e.g.: Distribution,CommonNames) may make use of the
- * 'special' element of the settings
- *
- *  "$feature uuid": {
- *    "as_list": div|ul|ol|dl,                       // div: not as list, ul: as bullet list, ol: as numbered list, dl:as definition list; will be used in compose_cdm_feature_block_elements() as $enclosing_tag
- *    "link_to_reference": boolean,                 // render the reference as link, ignored if the element is NOT a DescriptionElementSource
- *    "link_to_name_used_in_source": boolean
- *    // references_inline:
- *    // TRUE:
- *    //   1. if element has text (TextData) the source references will be appended in brackets like "text (source references)"
- *    //   2. otherwise they are the only content (e.g. use case CITATION) and afre not put into brackets
- *    // FALSE:
- *    //  they are put into the bibliography(=references) pseudo feature block
- *    "references_inline": boolean
- *    "sort_elements": SORT_ASC, SORT_DESC, NULL    // whether and how to sort the elements
- *    "element_tag": span | div                     // only applies if "as_list" == 'div'
- *    'special' => array()                          // can be used to extend with special settings for specialized rendering like for distributions
- *  }
- *
- *
- */
-function get_feature_block_settings($feature_uuid = 'DEFAULT'){
-  // the default must conform to the default parameter values of
-  // compose_cdm_feature_block_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
-  // theme_cdm_descriptionElementTextData() : asListElement = NULL
 
-  // see #3257 (implement means to define the features to show up in the taxonprofile and in the specimen descriptions)
+  /**
+   * preliminary mock implementation
+   *
+   * Provides the feature block settings for a specific feature it is is provides as $feature_uuid parameter.
+   *
+   *
+   * Note: These settings only apply to feature blocks which do not have a special rendering
+   * the specially handled features (e.g.: Distribution,CommonNames) may make use of the
+   * 'special' element of the settings
+   *
+   * @param $feature_uuid
+   *   The uuid string representation of the feature to return the settings for
+   *
+   * @return array
+   *  an associative array of settings, with the following fields:
+   *    - as_list: string
+   *        this setting will be used in compose_cdm_feature_block_elements() as $enclosing_tag
+   *        possible values are:
+   *          div: not as list,
+   *          ul: as bullet list,
+   *          ol: as numbered list,
+   *          dl: as definition list
+   *    - link_to_reference: boolean,
+   *        render the reference as link, ignored if the element is NOT a DescriptionElementSource
+   *    - link_to_name_used_in_source": boolean
+   *        whether to show name is source information as link which will point to the according name page
+   *    - sources_as_content (boolean)
+   *        TRUE:
+   *          1. if element has text (TextData) the source references will be
+   *             appended in brackets like "text (source references)"
+   *          2. otherwise they are the only content (e.g. use case CITATION)
+   *             and are not put into brackets
+   *        FALSE:
+   *          they are put into the bibliography(=references) pseudo feature block
+   *    - sources_as_content_to_bibliography  (boolean)
+   *        Only valid if sources_as_content == TRUE, will cause the sources to be also shown
+   *        in the bibliography
+   *    - sort_elements
+   *        whether and how to sort the elements
+   *        possible values are the constants SORT_ASC, SORT_DESC, NULL
+   *    - element_tag
+   *        specifies the tag to be used for creating the elements, only applies if "as_list" == 'div'
+   *        possible values are span | div
+   *    - special: array()
+   *        an array with further settings, this field can be used for special
+   *        settings for specialized rendering like for distributions
+   *  }
+   *
+   */
+  function get_feature_block_settings($feature_uuid = 'DEFAULT'){
+    // the default must conform to the default parameter values of
+    // compose_cdm_feature_block_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
+    // theme_cdm_descriptionElementTextData() : asListElement = NULL
 
-  // currently only element_tag is used.
-  $default = array(
-    'DEFAULT' => array(
-      'as_list' => 'ul',
-      'link_to_reference' => FALSE,
-      'link_to_name_used_in_source' => TRUE,
-      'references_inline' => TRUE,
-      'sort_elements' => FALSE,
-      'glue' => '',
-      'element_tag'=> NULL
-    )
-  );
+    // see #3257 (implement means to define the features to show up in the taxonprofile and in the specimen descriptions)
 
-  $cichorieae_default = array(
-    'DEFAULT' => array(
-      'as_list' => 'div',
-      'link_to_reference' => TRUE,
-      'link_to_name_used_in_source' => TRUE,
-      'references_inline' => TRUE,
-      'sort_elements' => FALSE,
-      'glue' => '',
-      'element_tag'=> 'div'
-    ),
-    UUID_CITATION => array(
-      'as_list' => 'div',
-      'link_to_reference' => FALSE,
-      'link_to_name_used_in_source' => FALSE,
-      'references_inline' => TRUE,
-      'sort_elements' => FALSE,
-      'glue' => '',
-      'element_tag'=> 'div'
-    ),
-    UUID_CHROMOSOMES_NUMBERS => array(
-      'as_list' => 'ul',
-      'link_to_reference' => TRUE,
-      'link_to_name_used_in_source' => TRUE,
-      'references_inline' => TRUE,
-      'sort_elements' => FALSE,
-      'glue' => '',
-      'element_tag'=> 'div'
-    ),
-    UUID_CHROMOSOMES => array(
-      'as_list' => 'ul',
-      'link_to_reference' => FALSE,
-      'link_to_name_used_in_source' => TRUE,
-      'references_inline' => TRUE,
-      'sort_elements' => FALSE,
-      'glue' => '',
-      'element_tag'=> 'div'
-    ),
-  );
+    $default = array(
+      'DEFAULT' => array(
+        'as_list' => 'ul',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => FALSE,
+        'glue' => '',
+        'element_tag'=> NULL
+      ),
+      UUID_CITATION => array(
+        'as_list' => 'div',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => FALSE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => FALSE,
+        'glue' => '',
+        'element_tag'=> 'div'
+      )
+    );
 
-  $default_theme = variable_get('theme_default', NULL);
+    $cichorieae_default = array(
+      'DEFAULT' => array(
+        'as_list' => 'div',
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => FALSE,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_CITATION => array(
+        'as_list' => 'div',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => FALSE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => FALSE,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_CHROMOSOMES_NUMBERS => array(
+        'as_list' => 'ul',
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => FALSE,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_CHROMOSOMES => array(
+        'as_list' => 'ul',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => FALSE,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+    );
 
-  switch ($default_theme){
-    case 'garland_cichorieae':
-    case 'cyprus': // no longer used in production, but is required for selenium tests see class eu.etaxonomy.dataportal.pages.PortalPage
-      $settings_for_theme = $cichorieae_default;
-      break;
-    case 'flore_afrique_centrale':
-    case 'flora_malesiana':
-    case 'flore_gabon':
-      $settings_for_theme = $cichorieae_default;
-      $settings_for_theme[UUID_CITATION]['as_list'] = 'ul';
-      break;
-    default:
-      $settings_for_theme =  $default;
+    $palmweb_default = array(
+      'DEFAULT' => array(
+        'as_list' => 'ul',
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => TRUE,
+        'sort_elements' => FALSE,
+        'glue' => '',
+        'element_tag'=> NULL
+      ),
+      UUID_CITATION => array(
+        'as_list' => 'ul',
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => TRUE,
+        'sort_elements' => FALSE,
+        'glue' => '',
+        'element_tag'=> 'div'
+      )
+    );
+
+    $default_theme = variable_get('theme_default', NULL);
+
+    switch ($default_theme){
+      case 'garland_cichorieae':
+      case 'cyprus':
+        // cyprus: no longer used in production,
+        // but is required for selenium tests see class eu.etaxonomy.dataportal.pages.PortalPage
+        $settings_for_theme = $cichorieae_default;
+        break;
+      case 'flore_afrique_centrale':
+      case 'flora_malesiana':
+      case 'flore_gabon':
+        $settings_for_theme = $cichorieae_default;
+        $settings_for_theme[UUID_CITATION]['as_list'] = 'ul';
+        break;
+      case 'palmweb_2':
+        $settings_for_theme = $palmweb_default;
+        break;
+      default:
+        $settings_for_theme =  $default;
+    }
+
+    if(isset($settings_for_theme[$feature_uuid])){
+      return $settings_for_theme[$feature_uuid];
+    } else if(isset($settings_for_theme['DEFAULT'])){
+      return $settings_for_theme['DEFAULT'];
+    } else if(isset($settings_for_theme[$feature_uuid])){
+      return $default[$feature_uuid];
+    } else {
+      return $default['DEFAULT'];
+    }
   }
-
-  if(isset($settings_for_theme[$feature_uuid])){
-    return $settings_for_theme[$feature_uuid];
-  } else if(isset($settings_for_theme['DEFAULT'])){
-    return $settings_for_theme['DEFAULT'];
-  } else if(isset($settings_for_theme[$feature_uuid])){
-    return $default[$feature_uuid];
-  } else {
-    return $default['DEFAULT'];
-  }
-}
-
   /**
  * returns the current setting for the original source bibliography
  *
@@ -521,7 +587,10 @@ function get_feature_block_settings($feature_uuid = 'DEFAULT'){
 function get_bibliography_settings($clear_cache = false){
   static $bibliography_settings = null;
   if(!$bibliography_settings || $clear_cache){
-    $bibliography_settings = get_array_variable_merged(BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE, BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT);
+    $bibliography_settings = get_array_variable_merged(
+      BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE,
+      BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT
+    );
   }
   return $bibliography_settings;
 }

@@ -142,6 +142,7 @@ function theme_cdm_OriginalSource($variables) {
   $out = '';
   $source = $variables['source'];
   $doLink = $variables['doLink'];
+
   if (isset($source->citation)) {
     $out = theme('cdm_reference', array(
         'reference' => $source->citation,

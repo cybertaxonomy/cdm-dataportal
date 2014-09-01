@@ -611,8 +611,7 @@ function theme_cdm_descriptionElementTextData($variables) {
 
   // FIXME $feature_block_settings should be passed as parameter!!!!!
   $feature_block_settings = get_feature_block_settings($feature_uuid);
-  $bibliography_settings = get_bibliography_settings();
-  $do_references_inline = $feature_block_settings['references_inline'] && $bibliography_settings['enabled'] !== 1;
+  $do_references_inline = $feature_block_settings['sources_as_content'];
 
   // FIXME remove this hack ---------------------------
   $default_theme = variable_get('theme_default', NULL);
@@ -633,8 +632,12 @@ function theme_cdm_descriptionElementTextData($variables) {
       // ---------------------------------------------------------------------------
       // CUSTOM CODE (2) from cichorieae theme,
       // use nomref web service to combine reference with microreference, other way to combine these?
-      // is this a general case for all features? >>> DISCUSS with Andreas M. FIXME
-      if ($feature_uuid == UUID_CITATION) {
+      // is this a general case for all features?
+      // compare with theme_cdm_reference() where it is onyl appended
+      // >>> DISCUSS with Andreas M. FIXME
+      // SKIPPING THIS FOR NOW:
+      if (FALSE && $feature_uuid == UUID_CITATION) {
+
         $referenceCitation = cdm_ws_get(
           CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
           array($source->citation->uuid),
@@ -645,7 +648,12 @@ function theme_cdm_descriptionElementTextData($variables) {
         // END CUSTOM CODE (2)
         // ---------------------------------------------------------------------------
       } else {
-        $referenceCitation = theme('cdm_OriginalSource', array('source' => $source));
+        $referenceCitation = theme('cdm_OriginalSource',
+          array(
+            'source' => $source,
+            'doLink' => $feature_block_settings['link_to_reference']
+          )
+        );
       }
 
       if ($description && strlen($description) > 0 && $referenceCitation) {
@@ -694,7 +702,8 @@ function theme_cdm_descriptionElementTextData($variables) {
     );
 
   } // END of references inline
-  else {
+
+  if(!$do_references_inline || $feature_block_settings['sources_as_content_to_bibliography']) {
     $foot_note_keys = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
   }
 
@@ -897,11 +906,12 @@ function compose_cdm_descriptionElements($descriptionElements, $feature) {
          * all except DISTRIBUTION, COMMON_NAME, USES, IMAGES,
          *
          *
-         * TODO provide api_hook as extension point for this
+         * TODO provide api_hook as extension point for this?
          */
+        $feature_block_settings = get_feature_block_settings($descriptionElement->feature->uuid);
+        $asListElement  = $feature_block_settings['as_list'] == 'ul';
         switch ($descriptionElement->class) {
           case 'TextData':
-            $asListElement = TRUE;
             $outArray[] = theme('cdm_descriptionElementTextData', array(
               'element' => $descriptionElement,
               'asListElement' => $asListElement,

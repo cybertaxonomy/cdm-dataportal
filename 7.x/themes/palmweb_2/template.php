@@ -341,11 +341,12 @@ function palmweb_2_cdm_feature_nodes($variables){
   //
 
 
+// !!!!!! no longer needed !!!!
   // Calling the theme function for Bibliography to add it to the output.
-  $show_bibliography = variable_get('cdm_show_bibliography', 1);
-  if ($show_bibliography && $countFeatures != 0) {
-    $out .= theme('cdm_descriptionElementBibliography', array('descriptionElementsBibliography' => $bibliographyOut));
-  }
+//  $show_bibliography = variable_get('cdm_show_bibliography', 1);
+//  if ($show_bibliography && $countFeatures != 0) {
+//    $out .= theme('cdm_descriptionElementBibliography', array('descriptionElementsBibliography' => $bibliographyOut));
+//  }
 
   RenderHints::popFromRenderStack();
   return $out;
