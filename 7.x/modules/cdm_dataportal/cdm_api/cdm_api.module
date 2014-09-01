@@ -37,6 +37,8 @@ module_load_include('php', 'cdm_api', 'cdm_node');
  */
 define('CDM_HTTP_REQUEST_TIMEOUT', 90.0);
 
+define('SORT_ORDER_ID', 'sort_by_order_id');
+
 /**
  * Implements hook_menu().
  */
@@ -1231,7 +1233,7 @@ function cdm_term_representation($definedTermBase, $default_representation = '')
  *   a list of CDM DefinedTermBase instances
  *
  * @param $sort_by
- *  Optionally sort option SORT_NATURAL (default: sorts after the cdm order index ),
+ *  Optionally sort option SORT_ORDER_ID (default: sorts after the cdm order index ),
  *  to sort alphabetically: SORT_ASC, SORT_DESC
  *
  * @param $term_label_callback
@@ -1240,7 +1242,7 @@ function cdm_term_representation($definedTermBase, $default_representation = '')
  * @return array
  *   the terms in an array as options for a form element that allows multiple choices.
  */
-function cdm_terms_as_options($terms, $sort_by = SORT_NATURAL, $term_label_callback = NULL){
+function cdm_terms_as_options($terms, $sort_by = SORT_ORDER_ID, $term_label_callback = NULL){
   $options = array();
   if(isset($terms) && is_array($terms)){
     foreach ($terms as $term){
@@ -1253,7 +1255,7 @@ function cdm_terms_as_options($terms, $sort_by = SORT_NATURAL, $term_label_callb
     }
   }
   switch($sort_by){
-    case SORT_NATURAL: array_reverse($options);
+    case SORT_ORDER_ID: array_reverse($options);
       break;
     default: array_multisort($options, SORT_ASC);
   }
@@ -1270,7 +1272,7 @@ function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL) 
 
   if (!isset($vocabularyOptions[$vocabularyUuid])) {
     $terms = cdm_ws_fetch_all('termVocabulary/' . $vocabularyUuid . '/terms');
-    $vocabularyOptions[$vocabularyUuid] = cdm_terms_as_options($terms, SORT_NATURAL, $term_label_callback);
+    $vocabularyOptions[$vocabularyUuid] = cdm_terms_as_options($terms, SORT_ORDER_ID, $term_label_callback);
   }
   return $vocabularyOptions[$vocabularyUuid];
 }
@@ -1315,7 +1317,7 @@ function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL) 
  *  - DeterminationModifier
  *  - DnaMarker
  */
-function cdm_terms_by_type_as_option($term_type, $sort_by = SORT_NATURAL, $term_label_callback = NULL){
+function cdm_terms_by_type_as_option($term_type, $sort_by = SORT_ORDER_ID, $term_label_callback = NULL){
   $terms = cdm_ws_fetch_all(CDM_WS_TERM, array('class' => $term_type));
   return cdm_terms_as_options($terms, $sort_by, $term_label_callback);
 }

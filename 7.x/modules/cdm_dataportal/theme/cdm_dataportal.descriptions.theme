@@ -852,12 +852,9 @@ function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
  *
  * @ingroup compose
  */
-function compose_cdm_descriptionElements($descriptionElements, $feature, $weight = FALSE) {
-
+function compose_cdm_descriptionElements($descriptionElements, $feature) {
 
   $outArray = array();
-  $sortOutArray = FALSE;
-  $distributionElements = array();
   $distribution_tree = null;
 
   /*

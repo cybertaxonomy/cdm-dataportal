@@ -34,7 +34,7 @@ function palmweb_2_cdm_descriptionElement_Distribution($variables) {
     }
     $out .= "</" . $enclosingTag . ">";
   }
-  $taxonTrees = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY);
+  $taxonTrees = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXONOMY);
   $reference = new stdClass();
   foreach ($taxonTrees as $taxonTree) {
     if ($taxonTree->uuid == variable_get('cdm_taxonomictree_uuid')) {
@@ -525,16 +525,17 @@ function palmweb_2_cdm_media_caption($variables){
 /**
  * Overrive of the original theme_cdm_reference()
  * the main difference here seems to be that
- * this function is completely omitting the citation title cache and only sets the authorTeam as the
+ * this function is completely omitting the citation title cache
+ * and only sets the authorTeam as the
  * _short_form_of_author_team() as $citation.
  *
- * If the authorteam is not set citatin was empty,
+ * If the authorteam is not set citation was empty,
  * this has been fixed for http://dev.e-taxonomy.eu/trac/ticket/4261
  *
  * TODO can this be made configuable via the dataportal
  *      settings so that we can remove this function?
  */
-function palmweb_2_cdm_reference($variables) {
+function xxx_palmweb_2_cdm_reference($variables) {
   $reference = $variables['reference'];
   $microReference = $variables['microReference'];
   $doLink = $variables['doLink'];
