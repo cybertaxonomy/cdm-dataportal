@@ -142,8 +142,7 @@ dl.admin-list dd {
 }
 /* footnotes are only used in palmweb for original sources, supress them all
 TODO see #4380 */
-
 #block-cdm-dataportal-feature-citation .footnote-key,
-.feature-block-elements  .footnote-anchor {
+.feature-block-elements  .footnote-key {
     display: none;
 }
