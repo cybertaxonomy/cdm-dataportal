@@ -1493,7 +1493,7 @@ function cdm_settings_layout_taxon() {
   //FIXME migrate variables:
   //  cdm_dataportal_show_default_image ---> CDM_TAXON_PROFILE_IMAGE['show']
   // FIXME
-  //  eanable file modul in profile and in update
+  //  enable file module in profile and in update,(a.kohlbecker, 4.9.2014: is this still an open issue?)
 
   $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
   /*

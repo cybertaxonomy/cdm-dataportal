@@ -52,13 +52,13 @@ function theme_cdm_feature_name($variables) {
  * @param $taxon
  *
  * @return array
- *  A Drupal render array
+ *  A Drupal render array containing feature blocks and the table of content
  *
  * @ingroup compose
  */
 function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
-  $out = '';
+  $block_list = array();
 
   RenderHints::pushToRenderStack('feature_nodes');
 
@@ -91,6 +91,13 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
       else if ($node->feature->uuid == UUID_COMMON_NAME) {
         $common_names_render_array = compose_cdm_common_names($node->descriptionElements, $node->feature);
         $block->content[] = $common_names_render_array;
+        $block_content_is_empty = FALSE;
+      }
+
+      else if ($node->feature->uuid == UUID_USE_RECORD) {
+        $block_uses_content_html = theme('cdm_block_Uses', array('taxonUuid' => $taxon->uuid));
+        $block->content[] = markup_to_render_array($block_uses_content_html);
+        $block_content_is_empty = FALSE;
       }
 
       /*
@@ -170,21 +177,17 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
       } // END all other features
 
       if(!$block_content_is_empty){ // skip empty block content
-        $out .= theme('block',
-          array(
-            'elements' => array(
-              '#block' => $block,
-              '#children' => drupal_render($block->content),
-            ),
-          )
-        );
+        $block_list[] = $block;
         cdm_toc_list_add_item(cdm_term_representation($node->feature), $node->feature->uuid);
       } // END: skip empty block content
     } // END: skip empty or supressed features
   } // END: creating a block per feature
+
+  drupal_alter('cdm_feature_node_blocks', $block_list, $taxon);
+
   RenderHints::popFromRenderStack();
 
-  return markup_to_render_array($out);
+  return _block_get_renderable_array($block_list);
 }
 
   /**

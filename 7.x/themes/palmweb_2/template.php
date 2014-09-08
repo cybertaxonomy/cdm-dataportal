@@ -80,12 +80,15 @@ function palmweb_2_cdm_descriptionElement_Distribution($variables) {
 function palmweb_2_cdm_feature_nodes($variables){
   $mergedFeatureNodes = $variables['mergedFeatureNodes'];
   $taxon = $variables['taxon'];
-
   $out = '';
+
   RenderHints::pushToRenderStack('feature_nodes');
 
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
+
   // Creating an array to place the description elements in.
+
+  // =============== SPECIAL NUMBER OF TAXA  ================= //
   $bibliographyOut = array();
   $countFeatures = 0;
   $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), $taxon->uuid)));
@@ -104,6 +107,7 @@ function palmweb_2_cdm_feature_nodes($variables){
     $out .= '<a name="number_of_taxa"> </a><H2>Number of Taxa</H2><div class="content"> <ul class="description">';
     $out .= '<li class=\"descriptionText DescriptionElement\">' . $numberOfChildren . " " . $subRank . '</li></ul>';
   }
+  // =============== END SPECIAL NUMBER OF TAXA ================= //
 
   foreach ($mergedFeatureNodes as $node) {
 
@@ -112,13 +116,18 @@ function palmweb_2_cdm_feature_nodes($variables){
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
       $block = new stdclass(); // Empty object.
       $block->module = 'cdm_dataportal';
+      $media_list = array();
+
+      // =============== SPECIAL bibliography ================= //
       // If the option is enabled the description elements will be added
       // to the array.
       $show_bibliography = variable_get('cdm_show_bibliography', 1);
       if ($show_bibliography) {
         $bibliographyOut[] = $node->descriptionElements;
       }
-      $media_list = array();
+      // =============== SPECIAL bibliography ================= //
+
+
       if ($node->feature->uuid != UUID_IMAGE && $node->feature->uuid != UUID_USE) {
         $countFeatures++;
         $countFeatures++;
@@ -128,7 +137,7 @@ function palmweb_2_cdm_feature_nodes($variables){
         $block->module = "cdm_dataportal-feature";
         $block->content = '';
 
-      /*
+        /*
          * Content/DISTRIBUTION.
          */
         if ($node->feature->uuid == UUID_DISTRIBUTION) {
@@ -258,9 +267,9 @@ function palmweb_2_cdm_feature_nodes($variables){
         }
 
         /*
-        Content/ALL OTHER FEATURES.
+         * Content/ALL OTHER FEATURES.
         */
-        elseif ($node->feature->uuid == UUID_USE_RECORD) {
+        else if ($node->feature->uuid == UUID_USE_RECORD) {
           $block->content .= theme('cdm_block_Uses', array('taxonUuid' => $taxon->uuid));
           // $block->content .= theme('cdm_descriptionElements', $node->descriptionElements, $node->feature->uuid, $taxon->uuid),
         }

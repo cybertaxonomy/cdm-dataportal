@@ -107,7 +107,7 @@
   }
 
   /**
-   * Creates a  entry for the table of content items list
+   * Adds an entry to the end of the table of content items list
    *
    * The  table of content items are crated internally by calling
    * toc_list_item() the resulting item is added to the statically cached
@@ -121,17 +121,17 @@
    *  Optional parameter to define a url fragment different from the $label,
    *  if the $fragment is not defined the $label will be used
    */
-  function cdm_toc_list_add_item($label, $class_attribute_suffix, $fragment = NULL){
+  function cdm_toc_list_add_item($label, $class_attribute_suffix, $fragment = NULL, $as_first_element = FALSE){
     $toc_list_items = &cdm_toc_list();
 
-    // TODO normalize $fragment if necesarry, check uri()
     if(!$fragment){
       $fragment = $label;
     }
+    $fragment = generalizeString($fragment);
 
     $class_attributes = 'feature-toc-item-' . $class_attribute_suffix;
 
-    $toc_list_items[] = toc_list_item(
+    $new_item = toc_list_item(
       theme(
         'cdm_feature_name',
         array('feature_name' => $label))
@@ -139,6 +139,12 @@
       array('class' => $class_attributes),
       $fragment
     );
+
+    if($as_first_element){
+      array_unshift($toc_list_items, $new_item);
+    } else {
+      $toc_list_items[] = $new_item;
+    }
 
   }
 
