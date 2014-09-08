@@ -81,11 +81,6 @@ function cdm_dataportal_theme() {
     'cdm_descriptionElement_IndividualsAssociation' => array('render element' => 'element'),
     'cdm_descriptionElement_TaxonInteraction' => array('render element' => 'element'),
     'cdm_descriptionElement_QuantitativeData' => array('render element' => 'element'),
-    'cdm_descriptionElementTextData' => array('variables' => array(
-        'element' => NULL,
-        'asListElement' => NULL,
-        'feature_uuid' => NULL,
-    )),
     'cdm_common_names' => array('render element' => 'elements', 'variables' => array('feature' => null) ),
     'cdm_description_element_image_source' => array('variables' => array(
         'image_sources' => NULL,

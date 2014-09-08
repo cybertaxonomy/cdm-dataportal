@@ -425,15 +425,17 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *        whether to show name is source information as link which will point to the according name page
    *    - sources_as_content (boolean)
    *        TRUE:
-   *          1. if element has text (TextData) the source references will be
+   *          1. If element is of the CDM type TextData and the text is not empty the source references will be
    *             appended in brackets like "text (source references)"
-   *          2. otherwise they are the only content (e.g. use case CITATION)
-   *             and are not put into brackets
+   *          2. if the text of the TextData is not empty the original source citations are the only content
+   *             (e.g. use case CITATION) and are not put into brackets.
    *        FALSE:
-   *          they are put into the bibliography(=references) pseudo feature block
+   *          they are put into the bibliography(=references) pseudo feature block. If the original source
+   *          citations are the only content, the resulting feature block content would only consist of footnotes.
+   *          In this case the display of the respective feature block is suppressed.
    *    - sources_as_content_to_bibliography  (boolean)
    *        Only valid if sources_as_content == TRUE, will cause the sources to be also shown
-   *        in the bibliography
+   *        in the bibliography.
    *    - sort_elements
    *        whether and how to sort the elements
    *        possible values are the constants SORT_ASC, SORT_DESC, NULL
@@ -534,7 +536,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'as_list' => 'ul',
         'link_to_reference' => TRUE,
         'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => TRUE,
+        'sources_as_content' => FALSE,
         'sources_as_content_to_bibliography' => TRUE,
         'sort_elements' => FALSE,
         'glue' => '',

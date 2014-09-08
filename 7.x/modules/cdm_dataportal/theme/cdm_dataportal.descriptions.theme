@@ -75,6 +75,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
       $block = feature_block($feature_name, $node->feature);
       $block->content = array();
+      $block_content_is_empty = TRUE;
       $block_content_weight = 0;
 
       /*
@@ -83,6 +84,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
       if ($node->feature->uuid == UUID_DISTRIBUTION) {
         $block = compose_feature_block_distribution($taxon, $node->descriptionElements, $node->feature);
+        $block_content_is_empty = FALSE;
       }
       /*
        * Content/COMMON_NAME.
@@ -105,7 +107,9 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
           if(isset($taxon) ) {
             $taxon_uuid = $taxon->uuid;
           }
-          $block->content[] = compose_cdm_descriptionElements($node->descriptionElements, $node->feature, $taxon_uuid);
+          $elements_render_array = compose_cdm_descriptionElements($node->descriptionElements, $node->feature, $taxon_uuid);
+          $block_content_is_empty = empty($elements_render_array);
+          $block->content[] = $elements_render_array;
         }
 
           // Content/ALL OTHER FEATURES/Subordinate Features
@@ -152,7 +156,9 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
               $out_child_elements = '';
             }
           }
+          $block_content_is_empty = $block_content_is_empty && empty($text);
           $block->content[] = markup_to_render_array($text);
+          $block_content_is_empty = $block_content_is_empty && empty($media_list);
           $block->content[] = compose_feature_media_gallery($node, $media_list, $gallery_settings);
 
 
@@ -162,17 +168,18 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
          */
         $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => $node->feature->uuid)));
         $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => $node->feature->uuid)));
-      }
+      } // END all other features
 
-
-      $out .= theme('block',
-        array(
-          'elements' => array(
-            '#block' => $block,
-            '#children' => drupal_render($block->content),
-          ),
-        )
-      );
+      if(!$block_content_is_empty){ // skip empty block content
+        $out .= theme('block',
+          array(
+            'elements' => array(
+              '#block' => $block,
+              '#children' => drupal_render($block->content),
+            ),
+          )
+        );
+      } // END: skip empty block content
     } // END: skip empty or supressed features
   } // END: creating a block per feature
   RenderHints::popFromRenderStack();
@@ -248,17 +255,15 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
       // --- TextData
       foreach ($descriptionElements['TextData'] as $text_data_element) {
         $asListElement = FALSE;
-        $repr = theme('cdm_descriptionElementTextData', array(
-          'element' => $text_data_element,
-          'asListElement' => $asListElement,
-          'feature_uuid' => $text_data_element->feature->uuid,
-        ));
+        $text_data_render_array = compose_cdm_descriptionElementTextData($text_data_element, $asListElement, $text_data_element->feature->uuid);
+        $repr = drupal_render($text_data_render_array);
 
-        if (!array_search($repr, $text_data_out_array)) {
+        if (!array_search($repr, $text_data_out_array)) { // de-duplication !!
           $text_data_out_array[] = $repr;
           // TODO HINT: sorting in compose_cdm_feature_block_elements will
           // not work since this array contains html attributes with uuids
-          // !!!!
+          // and what is about cases like the bibliography where
+          // any content can be prefixed with some foot-note anchors?
           $text_data_sortOutArray = TRUE;
           $text_data_glue = '<br/> ';
           $text_data_enclosingTag = 'p';
@@ -587,26 +592,31 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
  * Returns HTML for citations textdata elements.
  *
  * TODO: assign a new name to the function? Because it is used for the citations
- * textdata elements and not for all text data description elements.
+ * Textdata elements and not for all text data description elements.
  *
- * @param array $variables
- *   An associative array containing:
- *   - element: The description element which contains the text information.
- *   - asListElement: A boolean which determines whether the citations should
+ * @param $element
+ *    The CDM TextData description element which contains the textual  information.
+ * @param $asListElement
+ *    A boolean which determines whether the citations should
  *     be rendered as a list or not.
- *   - feature_uuid
+ *    TODO remove and replace $asListElement by $feature_block_settings['as_list']
+ *  @param $feature_uuid
  *
- * @ingroup themeable
+ * @return array
+ *   A drupal render array with the following elements being used:
+ *    - #tag: either 'div', 'li', ...
+ *    ⁻ #attributes: class attributes
+ *    - #value_prefix: (optionally) contains footnote anchors
+ *    - #value: contains the textual content
+ *    - #value_suffix: (optionally) contains footnote keys
+ *
+ * @ingroup compose
  */
-function theme_cdm_descriptionElementTextData($variables) {
+function compose_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid) {
 
-  $element = $variables['element'];
-  $feature_uuid = $variables['feature_uuid'];
-  $asListElement = $variables['asListElement']; // TODo remove and replace by $feature_block_settings['as_list']
   $footnote_list_key_suggestion = $feature_uuid;
 
   $sourceRefs = '';
-  $out = '';
   $name_used_in_source = '';
 
   // FIXME $feature_block_settings should be passed as parameter!!!!!
@@ -621,6 +631,18 @@ function theme_cdm_descriptionElementTextData($variables) {
   }
   // --------------------------------------------------
 
+  $render_array = array(
+    '#type' => 'html_tag',
+    '#tag' => $asListElement ? 'li' : 'span',
+    '#attributes' => array(
+      'class' => 'DescriptionElement DescriptionElement-' . $element->class . '
+      ' .  html_class_attribute_ref($element)
+    ),
+    '#value' => '',
+    '#value_suffix' => NULL
+  );
+
+  // TODO this should be configurable
   $description = '';
   if (isset($element->multilanguageText_L10n->text)) {
     $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
@@ -633,8 +655,9 @@ function theme_cdm_descriptionElementTextData($variables) {
       // CUSTOM CODE (2) from cichorieae theme,
       // use nomref web service to combine reference with microreference, other way to combine these?
       // is this a general case for all features?
-      // compare with theme_cdm_reference() where it is onyl appended
-      // >>> DISCUSS with Andreas M. FIXME
+      // compare with theme_cdm_reference() where it is only appended
+      // FIXME the CDM_WS_NOMENCLATURAL_REFERENCE_CITATION service should onyl be used for nomenclatural references
+      // needs however further discussion with the users!!!
       // SKIPPING THIS FOR NOW:
       if (FALSE && $feature_uuid == UUID_CITATION) {
 
@@ -694,7 +717,7 @@ function theme_cdm_descriptionElementTextData($variables) {
     } // END of loop over sources
 
     // annotations footnotes separate.
-    $foot_note_keys = theme('cdm_annotations_as_footnotekeys',
+    $render_array['#value-suffix'] = theme('cdm_annotations_as_footnotekeys',
       array(
         'cdmBase_list' => $element,
         'footnote_list_key' => $footnote_list_key_suggestion,
@@ -704,34 +727,31 @@ function theme_cdm_descriptionElementTextData($variables) {
   } // END of references inline
 
   if(!$do_references_inline || $feature_block_settings['sources_as_content_to_bibliography']) {
-    $foot_note_keys = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
+    $render_array['#value-suffix'] = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
   }
 
-  if ($asListElement) {
 
-    $out = '<li class="DescriptionElement DescriptionElement-' . $element->class . '
-        ' .  html_class_attribute_ref($element)  . '">';
+  // FIXME the only distinction between $asListElement = TRUE and FLASE is the different display of the
+  // nameInSource which is prepended with "name in source:" in case of the 'not as list' case:
+  if ($asListElement) {
     // Adding ":" if necessary.
     if (!empty($name_used_in_source)) {
       if ( (!empty($description)|| !empty($sourceRefs)) && $feature_uuid != UUID_CHROMOSOMES_NUMBERS) {
-        $out .= $name_used_in_source . ': ';
+        $render_array['#value'] = $name_used_in_source . ': ';
       } else {
-        $out .= $name_used_in_source . ' ';
+        $render_array['#value'] .= $name_used_in_source . ' ';
       }
     }
-    $out .= $description . $sourceRefs . $foot_note_keys . '</li>';
+    $render_array['#value'] .= $description . $sourceRefs;
   }
   else {
     if ($name_used_in_source) {
       $name_used_in_source = ' (name in source: ' . $name_used_in_source . ')';
     }
-
-    $out = '<span class="DescriptionElement DescriptionElement-' . $element->class . '
-        ' .  html_class_attribute_ref($element)  . '">'
-      . $description . $sourceRefs . $name_used_in_source . $foot_note_keys . '</span>';
+    $render_array['#value'] = $description . $sourceRefs . $name_used_in_source;
   }
 
-  return $out;
+  return $render_array;
 }
 
 /**
@@ -823,11 +843,8 @@ function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
     /* footnotes are not handled correctly in theme_cdm_descriptionElementTextData,
        need to set 'common-names-feature-block' as $footnote_key_suggestion */
     RenderHints::setFootnoteListKey($footnote_key_suggestion);
-    $text_data_out[] = theme('cdm_descriptionElementTextData', array(
-      'element' => $text_data_element,
-      'asListElement' => TRUE,
-      'feature_uuid' => $text_data_element->feature->uuid,
-    ));
+    $text_data_render_array = compose_cdm_descriptionElementTextData($text_data_element, TRUE, $text_data_element->feature->uuid);
+    $text_data_out[] = drupal_render($text_data_render_array);
   }
 
   $common_name_out_text_data = compose_cdm_feature_block_elements(
@@ -857,14 +874,28 @@ function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
  *   These descriptions elements of a Description must be ordered by the chosen feature tree by
  *   calling the function _mergeFeatureTreeDescriptions().
  *   @see _mergeFeatureTreeDescriptions()
- *  @param  $feature_uuid
+ *
+ * @param  $feature_uuid
+ *
+ * @return
+ *    A drupal render array for the $descriptionElements, may be an empty array if the textual content was empty.
+ *    Footnote key or anchors are not considered to be textual content.
  *
  * @ingroup compose
  */
 function compose_cdm_descriptionElements($descriptionElements, $feature) {
 
-  $outArray = array();
+  $render_array = array();
+  $elements_out_array = array();
   $distribution_tree = null;
+
+  /*
+   * $feature_block_has_content will be set true if at least one of the
+   * $descriptionElements contains some text which makes up some content
+   * for the feature block. Footnote keys are not considered
+   * to be content in this sense.
+   */
+  $feature_block_has_content = false;
 
   /*
   $userDefined = mixed_variable_get(LAYOUT_SETTING_PREFIX . $feature_uuid, FEATURE_TREE_LAYOUT_DEFAULTS);
@@ -883,8 +914,6 @@ function compose_cdm_descriptionElements($descriptionElements, $feature) {
     $entryEnclosingTag = NULL ;
   }
   */
-
-
 
   RenderHints::pushToRenderStack('cdm_descriptionElements');
 
@@ -912,29 +941,32 @@ function compose_cdm_descriptionElements($descriptionElements, $feature) {
         $asListElement  = $feature_block_settings['as_list'] == 'ul';
         switch ($descriptionElement->class) {
           case 'TextData':
-            $outArray[] = theme('cdm_descriptionElementTextData', array(
-              'element' => $descriptionElement,
-              'asListElement' => $asListElement,
-              'feature_uuid' => $descriptionElement->feature->uuid,
-            ));
+              $text_data_render_array = compose_cdm_descriptionElementTextData($descriptionElement, $asListElement, $descriptionElement->feature->uuid);
+              $feature_block_has_content = $feature_block_has_content || !empty($text_data_render_array['#value']);
+              $elements_out_array[] = drupal_render($text_data_render_array);
             break;
           case 'CategoricalData':
-            $outArray[] = theme('cdm_descriptionElement_CategoricalData', array('element' => $descriptionElement));
+            $feature_block_has_content = true;
+            $elements_out_array[] = theme('cdm_descriptionElement_CategoricalData', array('element' => $descriptionElement));
             break;
           case 'QuantitativeData':
-            $outArray[] = theme('cdm_descriptionElement_QuantitativeData', array('element' => $descriptionElement));
+            $feature_block_has_content = true;
+            $elements_out_array[] = theme('cdm_descriptionElement_QuantitativeData', array('element' => $descriptionElement));
             break;
           case 'IndividualsAssociation':
-            $outArray[] = theme('cdm_descriptionElement_IndividualsAssociation', array('element' => $descriptionElement));
+            $feature_block_has_content = true;
+            $elements_out_array[] = theme('cdm_descriptionElement_IndividualsAssociation', array('element' => $descriptionElement));
             break;
           case 'TaxonInteraction':
-            $outArray[] = theme('cdm_descriptionElement_TaxonInteraction', array('element' => $descriptionElement));
+            $feature_block_has_content = true;
+            $elements_out_array[] = theme('cdm_descriptionElement_TaxonInteraction', array('element' => $descriptionElement));
             break;
           case 'Uses':
           /* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
           break;
         default:
-        $outArray[] = '<li>No method for rendering unknown description class: ' . $descriptionElement->class . '</li>';
+          $feature_block_has_content = true;
+          $elements_out_array[] = '<li>No method for rendering unknown description class: ' . $descriptionElement->class . '</li>';
       }
     }
     } // --- END loop over normal description element arrays
@@ -942,18 +974,20 @@ function compose_cdm_descriptionElements($descriptionElements, $feature) {
     // If feature = CITATION sort the list of sources.
     // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
     if ($descriptionElement->feature->uuid == UUID_CITATION) {
-      sort($outArray);
+      sort($elements_out_array);
     }
 
     if (isset($image_sources)) {
-      $outArray[] = theme('cdm_description_element_image_source', array('image_sources' => $image_sources, 'asListElement' => TRUE));
+      $elements_out_array[] = theme('cdm_description_element_image_source', array('image_sources' => $image_sources, 'asListElement' => TRUE));
     }
   } // END normal description element arrays
 
-  $render_array = compose_cdm_feature_block_elements(
-    $outArray,
-    $feature
-  );
+  if($feature_block_has_content){
+    $render_array = compose_cdm_feature_block_elements(
+      $elements_out_array,
+      $feature
+    );
+  }
 
   RenderHints::popFromRenderStack();
   return $render_array;

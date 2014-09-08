@@ -2108,13 +2108,20 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
  *   contains at least one non empty TextData or at least one DescriptionElement
  *   of an other type. A TextData element holding a multilanguageText or a
  *   source reference is considered to be not empty.
+ *
+ * @TODO this function may have become obsolete by the new method of detecting empty blocks,
+ *       see $block_content_is_not_empty in compose_cdm_feature_nodes() and
+ *       $feature_block_has_content in compose_cdm_descriptionElements
  */
 function has_feature_node_description_elements($featureNode) {
 
   if (isset($featureNode->descriptionElements) && is_array($featureNode->descriptionElements) && count($featureNode->descriptionElements) > 0) {
     if(!isset($featureNode->descriptionElements['#type'])){ // #type is used to identify e.g. DTO elements: '#type' => 'DTO'
       foreach ($featureNode->descriptionElements as $descriptionElement) {
-        if ($descriptionElement->class != "TextData" || isset($descriptionElement->multilanguageText_L10n->text) && $descriptionElement->multilanguageText_L10n->text != '' || isset($descriptionElement->sources[0]) || isset($descriptionElement->media[0]) ) {
+        if ($descriptionElement->class != "TextData" || isset($descriptionElement->multilanguageText_L10n->text)
+          && $descriptionElement->multilanguageText_L10n->text != ''
+          || isset($descriptionElement->sources[0])
+          || isset($descriptionElement->media[0]) ) {
           return TRUE;
         }
       }
