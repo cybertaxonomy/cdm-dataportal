@@ -550,16 +550,6 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
   // Render the sections for each feature
   $render_array['taxon_description_features'] = compose_cdm_feature_nodes($merged_tree->root->childNodes, $taxon);
 
-  $toc = array(
-    '#theme' => 'item_list',
-    '#items' => cdm_feature_node_toc_items($merged_tree->root->childNodes),
-    '#title' => t('Content'),
-    '#weight' => -100,                  // move to the top
-    '#suffix' => '</div>',
-    '#prefix'=> '<div id="page-toc">'
-  );
-  $render_array['taxon_description_feature_toc'] = $toc; //markup_to_render_array($toc_html);
-
   $bibliography_settings = get_bibliography_settings();
   if($bibliography_settings['enabled'] == 1){
     $bibliography_block = feature_block(t('Bibliography'));
@@ -575,9 +565,20 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
       ),
       100 // weight
     );
-    $render_array['taxon_description_feature_toc']['#items'][] = toc_list_item('Bibliography', array('class' => 'bibliography'));
+
+    cdm_toc_list_add_item('Bibliography', 'bibliography');
   }
 
+  // create the table of content
+  $toc = array(
+    '#theme' => 'item_list',
+    '#items' => cdm_toc_list(),
+    '#title' => t('Content'),
+    '#weight' => -100,                  // move to the top
+    '#suffix' => '</div>',
+    '#prefix'=> '<div id="page-toc">'
+  );
+  $render_array['taxon_description_feature_toc'] = $toc;
 
   return $render_array;
 }

@@ -107,8 +107,6 @@ function palmweb_2_cdm_feature_nodes($variables){
 
   foreach ($mergedFeatureNodes as $node) {
 
-
-
     if (isset($node->descriptionElements['#type']) || has_feature_node_description_elements($node)) {
 
       $featureRepresentation = isset($node->feature->representation_L10n) ? $node->feature->representation_L10n : 'Feature';
