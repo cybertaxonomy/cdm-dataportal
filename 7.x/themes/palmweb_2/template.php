@@ -14,7 +14,7 @@
  *
  */
 
-function palmweb_2_cdm_descriptionElement_Distribution($variables) {
+function xxx_palmweb_2_cdm_descriptionElement_Distribution($variables) {
   $descriptionElements = $variables['descriptionElements'];
   $enclosingTag = $variables['enclosingTag'];
 

@@ -554,7 +554,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
   if($bibliography_settings['enabled'] == 1){
     $bibliography_block = feature_block(t('Bibliography'));
     $bibliography_block->content = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', '');
-    
+
     if(!empty($bibliography_block->content)){
       $render_array['taxon_description_bibliography'] =  markup_to_render_array(
         theme('block',

@@ -404,7 +404,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *
    *
    * Note: These settings only apply to feature blocks which do not have a special rendering
-   * the specially handled features (e.g.: Distribution,CommonNames) may make use of the
+   * the specially handled features (e.g.: Distribution, CommonNames) may make use of the
    * 'special' element of the settings
    *
    * @param $feature_uuid
