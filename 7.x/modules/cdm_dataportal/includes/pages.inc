@@ -554,19 +554,22 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
   if($bibliography_settings['enabled'] == 1){
     $bibliography_block = feature_block(t('Bibliography'));
     $bibliography_block->content = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', '');
-    $render_array['taxon_description_bibliography'] =  markup_to_render_array(
-      theme('block',
-        array(
-          'elements' => array(
-            '#block' => $bibliography_block,
-            '#children' => $bibliography_block->content,
+    
+    if(!empty($bibliography_block->content)){
+      $render_array['taxon_description_bibliography'] =  markup_to_render_array(
+        theme('block',
+          array(
+            'elements' => array(
+              '#block' => $bibliography_block,
+              '#children' => $bibliography_block->content,
+            )
           )
-        )
-      ),
-      100 // weight
-    );
+        ),
+        100 // weight
+      );
+      cdm_toc_list_add_item('Bibliography', 'bibliography');
+    }
 
-    cdm_toc_list_add_item('Bibliography', 'bibliography');
   }
 
   // create the table of content
