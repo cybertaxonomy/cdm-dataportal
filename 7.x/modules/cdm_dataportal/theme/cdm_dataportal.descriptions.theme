@@ -210,9 +210,9 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
         'cols' => $gallery_settings['cdm_dataportal_media_cols'],
         'captionElements' => $captionElements,
       ));
-      return array($media_list, $gallery);
+      return markup_to_render_array($gallery);
     }
-    return array($media_list, $gallery);
+    return markup_to_render_array($gallery);
   }
 
   /**
