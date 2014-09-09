@@ -155,8 +155,19 @@ function theme_cdm_OriginalSource($variables) {
       ));
       $out .=  ' <span class="nameUsedInSource">(' . t('as') . ' ' . $nameInSource . ')</span>';
     }
+
+    $id_with_namespace = '';
+    if( isset($source->idNamespace) && $source->idNamespace ) {
+      $id_with_namespace = $source->idNamespace . '/';
+    }
     if( isset($source->idInSource) && $source->idInSource ) {
-      $out .=  ' <span class="idInSource">[' . $source->idInSource . ']</span>';
+      $id_with_namespace .= $source->idInSource;
+    } else {
+      $id_with_namespace = NULL;
+    }
+    
+    if($id_with_namespace){
+      $out .=  ' <span class="idInSource">[' . $id_with_namespace . ']</span>';
     }
   }
   return $out;
