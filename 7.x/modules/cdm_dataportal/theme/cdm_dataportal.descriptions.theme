@@ -654,33 +654,13 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
   // original sources
   if($do_references_inline) {
     foreach ($element->sources as $source) {
-      // ---------------------------------------------------------------------------
-      // CUSTOM CODE (2) from cichorieae theme,
-      // use nomref web service to combine reference with microreference, other way to combine these?
-      // is this a general case for all features?
-      // compare with theme_cdm_reference() where it is only appended
-      // FIXME the CDM_WS_NOMENCLATURAL_REFERENCE_CITATION service should onyl be used for nomenclatural references
-      // needs however further discussion with the users!!!
-      // SKIPPING THIS FOR NOW:
-      if (FALSE && $feature_uuid == UUID_CITATION) {
 
-        $referenceCitation = cdm_ws_get(
-          CDM_WS_NOMENCLATURAL_REFERENCE_CITATION,
-          array($source->citation->uuid),
-          "microReference=" . urlencode($source->citationMicroReference
-          ));
-        $referenceCitation = $referenceCitation->String;
-
-        // END CUSTOM CODE (2)
-        // ---------------------------------------------------------------------------
-      } else {
-        $referenceCitation = theme('cdm_OriginalSource',
-          array(
-            'source' => $source,
-            'doLink' => $feature_block_settings['link_to_reference']
-          )
-        );
-      }
+      $referenceCitation = theme('cdm_OriginalSource',
+        array(
+          'source' => $source,
+          'doLink' => $feature_block_settings['link_to_reference']
+        )
+      );
 
       if ($description && strlen($description) > 0 && $referenceCitation) {
         $sourceRefs .= ' (' . $referenceCitation . ')';
