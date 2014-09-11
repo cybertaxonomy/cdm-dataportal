@@ -674,7 +674,7 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
    *   - foot_note_keys: all footnote keys as markup
    *   - source_references: an array of the source references citations
    *   - names used in source: an associative array of the names in source,
-   *        the name in source string are deduplicated
+   *        the name in source string are de-duplicated
    *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
    *
    *
@@ -705,30 +705,13 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
           }
         }
 
-        if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
-          // it is a DescriptionElementSource
-          if ($feature_block_settings['link_to_name_used_in_source']) {
-            // using the titleCache as key to avoid duplicate entries
-            $annotations_and_sources['names_used_in_source'][$source->nameUsedInSource->titleCache] = l(
-              $source->nameUsedInSource->titleCache,
-              path_to_name($source->nameUsedInSource->uuid),
-              array(
-                'attributes' => array(),
-                'absolute' => TRUE,
-                'html' => TRUE,
-              ));
-          }
-          else {
-            // using the titleCache as key to avoid duplicate entries
-            $annotations_and_sources['names_used_in_source'][$source->nameUsedInSource->titleCache] = $source->nameUsedInSource->titleCache;
-          }
-        }
-        else if (isset($source->originalNameString) && !empty($source->originalNameString)) {
-          // the name used in source can not be expressed as valid taxon name,
-          // so the editor has chosen to put the freetext name into ReferencedEntityBase.originalNameString
-          // field
-          // using the originalNameString as key to avoid duplicate entries
-          $annotations_and_sources['names_used_in_source'][$source->originalNameString] = $source->originalNameString;
+        $name_in_source_render_array = compose_name_in_source(
+          $source,
+          $feature_block_settings['link_to_name_used_in_source']
+        );
+
+        if(!empty($name_in_source_render_array)){
+          $annotations_and_sources['names_used_in_source'][$name_in_source_render_array['#_plaintext']] = drupal_render($name_in_source_render_array);
         }
       } // END of loop over sources
 
@@ -744,9 +727,61 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
 
     if (!$feature_block_settings['sources_as_content'] || $feature_block_settings['sources_as_content_to_bibliography']) {
       $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
-      return $annotations_and_sources;
     }
+
     return $annotations_and_sources;
+  }
+
+  /* compose nameInSource or originalNameString as markup
+   *
+   * @param $source
+   * @param $do_link_to_name_used_in_source
+   *
+   * @return array
+   *    A Drupal render array with an additional element, the render array is empty
+   *    if the source had no name in source information
+   *    - #_plaintext: contains the plaintext version of the name (custom element)
+   *
+   * @ingroup compose
+   */
+  function compose_name_in_source($source, $do_link_to_name_used_in_source) {
+
+    $plaintext = NULL;
+    $markup = NULL;
+    $name_in_source_render_array = array();
+
+    if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
+      // it is a DescriptionElementSource !
+      $plaintext = $source->nameUsedInSource->titleCache;
+      $markup = theme('cdm_taxonName', array(
+        'taxonName' => $source->nameUsedInSource
+      ));
+      if ($do_link_to_name_used_in_source) {
+        $markup = l(
+          $markup,
+          path_to_name($source->nameUsedInSource->uuid),
+          array(
+            'attributes' => array(),
+            'absolute' => TRUE,
+            'html' => TRUE,
+          ));
+      }
+    }
+    else if (isset($source->originalNameString) && !empty($source->originalNameString)) {
+      // the name used in source can not be expressed as valid taxon name,
+      // so the editor has chosen to put the freetext name into ReferencedEntityBase.originalNameString
+      // field
+      // using the originalNameString as key to avoid duplicate entries
+      $plaintext = $source->originalNameString;
+      $markup = $source->originalNameString;
+    }
+
+    if ($plaintext) {
+      $name_in_source_render_array = markup_to_render_array($markup);
+      $name_in_source_render_array['#_plaintext'] = $plaintext;
+    }
+
+    return $name_in_source_render_array;
   }
 
   /**

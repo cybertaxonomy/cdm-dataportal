@@ -230,6 +230,7 @@ function feature_block($feature_name, $feature = null) {
    * @param $separator
    *     Optional parameter. The separator string to concatenate the footnote ids, default is ','
    * @param $footnote_list_key_suggestion
+   *     will be overridden for original sources if the bibliography block is enabled
    *
    * @return String
    *    The foot note keys

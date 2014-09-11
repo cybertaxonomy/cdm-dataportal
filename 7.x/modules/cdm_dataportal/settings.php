@@ -433,15 +433,19 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *             (e.g. use case CITATION) and are not put into brackets. In this case the nameInSource is
    *             prepended to the citation string like: "name in source: citation"
    *        FALSE:
-   *          they are put into the bibliography(=references) pseudo feature block. If the original source
+   *          Original sources are put into the bibliography(=references) pseudo feature block. If the original source
    *          citations are the only content, the resulting feature block content would only consist of footnotes.
    *          In this case the display of the respective feature block is suppressed.
+   *          TODO if the bibliography is not enabled the sources will be treated as footnotes like annotations,
+   *               in future however they will in this case be shown in a separate references section for each
+   *               feature block.
    *    - sources_as_content_to_bibliography  (boolean)
    *        Only valid if sources_as_content == TRUE, will cause the sources to be also shown
    *        in the bibliography.
    *    - sort_elements
    *        whether and how to sort the elements
-   *        possible values are the constants SORT_ASC, SORT_DESC, NULL
+   *        possible values are the constants SORT_ASC, SORT_DESC, NULL,
+   *        some feature types (Distribution) also support: SORT_HIERARCHICAL (TODO option to exclude levels)
    *    - element_tag
    *        specifies the tag to be used for creating the elements, only applies if "as_list" == 'div'
    *        possible values are span | div
@@ -465,7 +469,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'link_to_name_used_in_source' => TRUE,
         'sources_as_content' => TRUE,
         'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => FALSE,
+        'sort_elements' => NULL,
         'glue' => '',
         'element_tag'=> NULL
       ),
@@ -475,10 +479,20 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'link_to_name_used_in_source' => FALSE,
         'sources_as_content' => TRUE,
         'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => FALSE,
+        'sort_elements' => SORT_ASC,
         'glue' => '',
         'element_tag'=> 'div'
-      )
+      ),
+      UUID_DISTRIBUTION => array(
+        'as_list' => 'div', // currently ignored
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => FALSE,
+        'sources_as_content' => FALSE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL, // will cause
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
     );
 
     $cichorieae_default = array(
@@ -488,7 +502,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'link_to_name_used_in_source' => TRUE,
         'sources_as_content' => TRUE,
         'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => FALSE,
+        'sort_elements' => NULL,
         'glue' => '',
         'element_tag'=> 'div'
       ),
@@ -498,7 +512,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'link_to_name_used_in_source' => FALSE,
         'sources_as_content' => TRUE,
         'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => FALSE,
+        'sort_elements' => SORT_ASC,
         'glue' => '',
         'element_tag'=> 'div'
       ),
@@ -508,7 +522,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'link_to_name_used_in_source' => TRUE,
         'sources_as_content' => TRUE,
         'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => FALSE,
+        'sort_elements' => NULL,
         'glue' => '',
         'element_tag'=> 'div'
       ),
@@ -518,7 +532,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'link_to_name_used_in_source' => TRUE,
         'sources_as_content' => TRUE,
         'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => FALSE,
+        'sort_elements' => NULL,
         'glue' => '',
         'element_tag'=> 'div'
       ),
@@ -531,7 +545,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'link_to_name_used_in_source' => TRUE,
         'sources_as_content' => TRUE,
         'sources_as_content_to_bibliography' => TRUE,
-        'sort_elements' => FALSE,
+        'sort_elements' => NULL,
         'glue' => '',
         'element_tag'=> NULL
       ),
@@ -541,7 +555,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'link_to_name_used_in_source' => TRUE,
         'sources_as_content' => FALSE,
         'sources_as_content_to_bibliography' => TRUE,
-        'sort_elements' => FALSE,
+        'sort_elements' => SORT_ASC,
         'glue' => '',
         'element_tag'=> 'div'
       )

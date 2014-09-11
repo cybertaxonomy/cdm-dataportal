@@ -149,11 +149,21 @@ function theme_cdm_OriginalSource($variables) {
         'microReference' => $source->citationMicroReference,
         'doLink' => $doLink,
     ));
+
+    $name_in_source = '';
     if (isset($source->nameUsedInSource)) {
-      $nameInSource = theme('cdm_taxonName', array(
+      $name_in_source = theme('cdm_taxonName', array(
           'taxonName' => $source->nameUsedInSource
       ));
-      $out .=  ' <span class="nameUsedInSource">(' . t('as') . ' ' . $nameInSource . ')</span>';
+    } else if (isset($source->originalNameString) && !empty($source->originalNameString)) {
+      // the name used in source can not be expressed as valid taxon name,
+      // so the editor has chosen to put the freetext name into ReferencedEntityBase.originalNameString
+      // field
+      // using the originalNameString as key to avoid duplicate entries
+      $name_in_source = $source->originalNameString;
+    }
+    if($name_in_source) {
+      $out .=  ' <span class="nameUsedInSource">(' . t('as') . ' ' . $name_in_source . ')</span>';
     }
 
     $id_with_namespace = '';
