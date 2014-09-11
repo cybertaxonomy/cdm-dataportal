@@ -426,9 +426,12 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *    - sources_as_content (boolean)
    *        TRUE:
    *          1. If element is of the CDM type TextData and the text is not empty the source references will be
-   *             appended in brackets like "text (source references)"
-   *          2. if the text of the TextData is not empty the original source citations are the only content
-   *             (e.g. use case CITATION) and are not put into brackets.
+   *             appended in brackets like "text (source references)". If the original source has name in source
+   *             information it will be appended to the citation string,
+   *             like : "(citation, as name in source; citation, as name in source)"
+   *          2. if the text of the TextData is empty, the original source citations are the only content
+   *             (e.g. use case CITATION) and are not put into brackets. In this case the nameInSource is
+   *             prepended to the citation string like: "name in source: citation"
    *        FALSE:
    *          they are put into the bibliography(=references) pseudo feature block. If the original source
    *          citations are the only content, the resulting feature block content would only consist of footnotes.

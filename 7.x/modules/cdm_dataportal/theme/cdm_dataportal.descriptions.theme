@@ -312,9 +312,8 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
           }
         }
         ksort($distributionElements);
-        $dto_out_array[] = theme('cdm_descriptionElement_Distribution', array(
-          'descriptionElements' => $distributionElements,
-        ));
+        $distribution_element_render_array = compose_cdm_descriptionElement_Distribution($distributionElements);
+        $dto_out_array[] = drupal_render($distribution_element_render_array);
 
       }
       //
@@ -421,7 +420,7 @@ function compose_cdm_feature_block_elements($elements, $feature, $glue = '', $so
 
   //TODO it would be nice if any element would get "feature-block-element" as additional class attribute
   //     this will become possible once all $elemets are real Drupal render arrays
-  $out .= join($elements, $glue) ;
+  $out .= join($glue, $elements) ;
 
   $out .= '</' . $enclosing_tag . '>';
   return markup_to_render_array($out);
@@ -592,10 +591,7 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
 }
 
 /**
- * Returns HTML for citations textdata elements.
- *
- * TODO: assign a new name to the function? Because it is used for the citations
- * Textdata elements and not for all text data description elements.
+ * Composes a drupal render array for CDM TextData description elements.
  *
  * @param $element
  *    The CDM TextData description element which contains the textual  information.
@@ -618,9 +614,6 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
 function compose_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid) {
 
   $footnote_list_key_suggestion = $feature_uuid;
-
-  $sourceRefs = '';
-  $name_used_in_source = '';
 
   // FIXME $feature_block_settings should be passed as parameter!!!!!
   $feature_block_settings = get_feature_block_settings($feature_uuid);
@@ -645,99 +638,118 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
     '#value_suffix' => NULL
   );
 
-  // TODO this should be configurable
-  $description = '';
+  $element_text = '';
   if (isset($element->multilanguageText_L10n->text)) {
-    $description = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+    // TODO replacement of \n by <br> should be configurable
+    $element_text = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   }
 
-  // original sources
-  if($do_references_inline) {
-    foreach ($element->sources as $source) {
+  $annotations_and_sources = handle_annotations_and_sources($element, $do_references_inline, $feature_block_settings, $element_text, $footnote_list_key_suggestion);
 
-      $referenceCitation = theme('cdm_OriginalSource',
-        array(
-          'source' => $source,
-          'doLink' => $feature_block_settings['link_to_reference']
-        )
-      );
-
-      if ($description && strlen($description) > 0 && $referenceCitation) {
-        $sourceRefs .= ' (' . $referenceCitation . ')';
-      }
-      elseif ($referenceCitation) {
-        $sourceRefs = $referenceCitation;
-      }
-
-      if (strlen($sourceRefs) > 0) {
-        $sourceRefs = '<span class="sources">' . $sourceRefs . '</span>';
-      }
-
-      // link the nameUsedInSource to the according name page
-      // Do a link to name page.
-      if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
-        // it is a DescriptionElementSource
-        if($feature_block_settings['link_to_name_used_in_source']){
-          $name_used_in_source = l(
-            $source->nameUsedInSource->titleCache,
-            path_to_name($source->nameUsedInSource->uuid),
-            array(
-              'attributes' => array(),
-              'absolute' => TRUE,
-              'html' => TRUE,
-            ));
-
-        } else {
-          $name_used_in_source = $source->nameUsedInSource->titleCache;
-        }
-      }
-      else if (isset($source->nameUsedInSource->originalNameString) && strlen($source->nameUsedInSource->originalNameString) > 0) {
-        // TODO does this make sense? is $source->nameUsedInSource->originalNameString different from $source->nameUsedInSource->titleCache ?
-        // it is NOT a DescriptionElementSource
-        // Show a text without link.
-        $name_used_in_source = $source->nameUsedInSource->originalNameString;
-      }
-    } // END of loop over sources
-
-    // annotations footnotes separate.
-    $render_array['#value-suffix'] = theme('cdm_annotations_as_footnotekeys',
-      array(
-        'cdmBase_list' => $element,
-        'footnote_list_key' => $footnote_list_key_suggestion,
-      )
-    );
-
-  } // END of references inline
-
-  if(!$do_references_inline || $feature_block_settings['sources_as_content_to_bibliography']) {
-    $render_array['#value-suffix'] = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
+  $names_used_in_source_markup = '';
+  if (!empty($annotations_and_sources['names_used_in_source']) && empty($element_text)) {
+    // $element_text ==  NULL  usually occurs only in the case of CITATIONS!!!
+    $names_used_in_source_markup = join(', ', $annotations_and_sources['names_used_in_source']) . ': ';
   }
 
+  $source_references_markup = '';
+  if(!empty($annotations_and_sources['source_references'])){
+    $source_references_markup = '<span class="sources">'. join(' ', $annotations_and_sources['source_references']) . '<span>';
+  }
 
-  // FIXME the only distinction between $asListElement = TRUE and FLASE is the different display of the
-  // nameInSource which is prepended with "name in source:" in case of the 'not as list' case:
-  if ($asListElement) {
-    // Adding ":" if necessary.
-    if (!empty($name_used_in_source)) {
-      if ( (!empty($description)|| !empty($sourceRefs)) && $feature_uuid != UUID_CHROMOSOMES_NUMBERS) {
-        $render_array['#value'] = $name_used_in_source . ': ';
-      } else {
-        $render_array['#value'] .= $name_used_in_source . ' ';
-      }
-    }
-    $render_array['#value'] .= $description . $sourceRefs;
-  }
-  else {
-    if ($name_used_in_source) {
-      $name_used_in_source = ' (name in source: ' . $name_used_in_source . ')';
-    }
-    $render_array['#value'] = $description . $sourceRefs . $name_used_in_source;
-  }
+  $render_array['#value'] = $names_used_in_source_markup . $element_text . $source_references_markup;
+  $render_array['#value-suffix'] = $annotations_and_sources['foot_note_keys'];
 
   return $render_array;
 }
 
-/**
+  /**
+   * @param $element
+   * @param $do_references_inline
+   * @param $feature_block_settings
+   * @param $element_text
+   * @param $footnote_list_key_suggestion
+   * @return array
+   *   an associative array with the following elements:
+   *   - foot_note_keys: all footnote keys as markup
+   *   - source_references: an array of the source references citations
+   *   - names used in source: an associative array of the names in source,
+   *        the name in source string are deduplicated
+   *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
+   *
+   * 
+   */
+  function handle_annotations_and_sources($element, $do_references_inline, $feature_block_settings, $element_text, $footnote_list_key_suggestion) {
+    $annotations_and_sources = array(
+      'foot_note_keys' => NULL,
+      'source_references' => array(),
+      'names_used_in_source' => array()
+    );
+
+    if ($do_references_inline) {
+      foreach ($element->sources as $source) {
+
+        $referenceCitation = theme('cdm_OriginalSource',
+          array(
+            'source' => $source,
+            'doLink' => $feature_block_settings['link_to_reference']
+          )
+        );
+
+        if ($referenceCitation) {
+          if (empty($element_text)) {
+            $annotations_and_sources['source_references'][] = $referenceCitation;
+          }
+          else {
+            $annotations_and_sources['source_references'][] = ' (' . $referenceCitation . ')';
+          }
+        }
+
+        if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
+          // it is a DescriptionElementSource
+          if ($feature_block_settings['link_to_name_used_in_source']) {
+            // using the titleCache as key to avoid duplicate entries
+            $annotations_and_sources['names_used_in_source'][$source->nameUsedInSource->titleCache] = l(
+              $source->nameUsedInSource->titleCache,
+              path_to_name($source->nameUsedInSource->uuid),
+              array(
+                'attributes' => array(),
+                'absolute' => TRUE,
+                'html' => TRUE,
+              ));
+          }
+          else {
+            // using the titleCache as key to avoid duplicate entries
+            $annotations_and_sources['names_used_in_source'][$source->nameUsedInSource->titleCache] = $source->nameUsedInSource->titleCache;
+          }
+        }
+        else if (isset($source->originalNameString) && !empty($source->originalNameString)) {
+          // the name used in source can not be expressed as valid taxon name,
+          // so the editor has chosen to put the freetext name into ReferencedEntityBase.originalNameString
+          // field
+          // using the originalNameString as key to avoid duplicate entries
+          $annotations_and_sources['names_used_in_source'][$source->originalNameString] = $source->originalNameString;
+        }
+      } // END of loop over sources
+
+      // annotations footnotes separate.
+      $annotations_and_sources['foot_note_keys'] = theme('cdm_annotations_as_footnotekeys',
+        array(
+          'cdmBase_list' => $element,
+          'footnote_list_key' => $footnote_list_key_suggestion,
+        )
+      );
+
+    } // END of references inline
+
+    if (!$do_references_inline || $feature_block_settings['sources_as_content_to_bibliography']) {
+      $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
+      return $annotations_and_sources;
+    }
+    return $annotations_and_sources;
+  }
+
+  /**
  * Composes block of common names for the given DescriptionElements $elements which must be of the feature CommonName
  *
  * @parameter $elements
@@ -1029,22 +1041,25 @@ function theme_cdm_description_element_image_source($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Composes the render array for a CDM Distribution element
+ *
+ * @param $descriptionElements
+ *   The CDM Distribution element
+ * @param $enclosingTag
+ *   The html tag to be use for the enclosing element
+ *
+ * @return array
+ *   A Drupal render array
+ *
+ * @ingroup compose
  */
-function theme_cdm_descriptionElement_Distribution($variables) {
-  $descriptionElements = $variables['descriptionElements'];
-  $enclosingTag = $variables['enclosingTag'];
-  if (!$enclosingTag) {
-    $enclosingTag = "span";
-  }
+function compose_cdm_descriptionElement_Distribution($descriptionElements, $enclosingTag = "span"){
 
   $out = '';
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 
   foreach ($descriptionElements as $descriptionElement) {
-
     $footnote_key_list_str = cdm_create_description_element_footnotes($descriptionElement);
 
     $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid . '">'
@@ -1053,7 +1068,7 @@ function theme_cdm_descriptionElement_Distribution($variables) {
   }
 
   RenderHints::popFromRenderStack();
-  return $out;
+  return markup_to_render_array($out);
 }
 
 
@@ -1211,29 +1226,6 @@ function theme_cdm_description_ordered_distributions($variables) {
   RenderHints::popFromRenderStack();
   return $out;
 }
-
-
-/*
-function theme_cdm_descriptionElement_Distribution($descriptionElements){ $out
-  = ''; $separator = ',';
-  RenderHints::pushToRenderStack('descriptionElementDistribution');
-  RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
-  foreach($descriptionElements as $descriptionElement){ // annotations as
-  footnotes $annotationFootnoteKeys = theme('cdm_annotations_as_footnotekeys',
-  $descriptionElement); // source references as footnotes
-  $sourcesFootnoteKeyList = ''; foreach($descriptionElement->sources as
-  $source){ if(_is_original_source_type($source)){ $_fkey =
-  FootnoteManager::addNewFootnote(UUID_DISTRIBUTION,
-  theme('cdm_OriginalSource', $source, FALSE));
-  $sourcesFootnoteKeyList .= theme('cdm_footnote_key', $_fkey,
-  UUID_DISTRIBUTION, ($sourcesFootnoteKeyList ? $separator : '')); } }
-  if($annotationFootnoteKeys && $sourcesFootnoteKeyList){
-  $annotationFootnoteKeys .= $separator; } $out .=
-  $descriptionElement->area->representation_L10n . $annotationFootnoteKeys .
-  $sourcesFootnoteKeyList . ' '; } $out = substr($out, 0,
-  strlen($out)-strlen($separator) ); RenderHints::popFromRenderStack(); return
-  $out; }
-*/
 
 /**
  * Returns a list of a specific type of IdentificationKeys.

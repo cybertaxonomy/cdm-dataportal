@@ -222,13 +222,15 @@ function feature_block($feature_name, $feature = null) {
   /**
    * Creates the footnotes for the given CDM DescriptionElement instance.
    *
-   * Footnotes are created for annotatins and original sources.
+   * Footnotes are created for annotations and original sources,
+   * optionally the sources are put into a separate bibliography.
    *
    * @param $descriptionElement
    *     A CDM DescriptionElement instance
    * @param $separator
    *     Optional parameter. The separator string to concatenate the footnote ids, default is ','
    * @param $footnote_list_key_suggestion
+   *
    * @return String
    *    The foot note keys
    */

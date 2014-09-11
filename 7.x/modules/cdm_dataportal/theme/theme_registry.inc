@@ -86,10 +86,6 @@ function cdm_dataportal_theme() {
         'image_sources' => NULL,
         'asListElement' => NULL,
     )),
-    'cdm_descriptionElement_Distribution' => array('variables' => array(
-        'descriptionElements' => NULL,
-        'enclosingTag' => 'span',
-    )),
     'cdm_description_ordered_distributions' => array('variables' => array(
         'distribution_tree' => NULL,
     )),

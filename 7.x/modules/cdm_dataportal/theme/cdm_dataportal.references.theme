@@ -165,7 +165,7 @@ function theme_cdm_OriginalSource($variables) {
     } else {
       $id_with_namespace = NULL;
     }
-    
+
     if($id_with_namespace){
       $out .=  ' <span class="idInSource">[' . $id_with_namespace . ']</span>';
     }
