@@ -144,7 +144,9 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
                 switch ($element->class) {
                   case 'TextData':
                     // FIXME use theme_cdm_descriptionElementTextData()
-                    $out_child_elements = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+                    if(isset($element->multilanguageText_L10n->text)){
+                      $out_child_elements = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+                    }
                     $out_child_elements = str_replace($child->feature->titleCache, '<em>' . $child->feature->representation_L10n . '</em>', $out_child_elements);
                     break;
                   case 'CategoricalData':
@@ -677,7 +679,7 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
    *        the name in source string are deduplicated
    *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
    *
-   * 
+   *
    */
   function handle_annotations_and_sources($element, $do_references_inline, $feature_block_settings, $element_text, $footnote_list_key_suggestion) {
     $annotations_and_sources = array(
