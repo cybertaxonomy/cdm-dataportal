@@ -619,7 +619,6 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
 
   // FIXME $feature_block_settings should be passed as parameter!!!!!
   $feature_block_settings = get_feature_block_settings($feature_uuid);
-  $do_references_inline = $feature_block_settings['sources_as_content'];
 
   // FIXME remove this hack ---------------------------
   $default_theme = variable_get('theme_default', NULL);
@@ -646,7 +645,7 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
     $element_text = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
   }
 
-  $annotations_and_sources = handle_annotations_and_sources($element, $do_references_inline, $feature_block_settings, $element_text, $footnote_list_key_suggestion);
+  $annotations_and_sources = handle_annotations_and_sources($element, $feature_block_settings, $element_text, $footnote_list_key_suggestion);
 
   $names_used_in_source_markup = '';
   if (!empty($annotations_and_sources['names_used_in_source']) && empty($element_text)) {
@@ -667,7 +666,6 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
 
   /**
    * @param $element
-   * @param $do_references_inline
    * @param $feature_block_settings
    * @param $element_text
    * @param $footnote_list_key_suggestion
@@ -681,14 +679,14 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
    *
    *
    */
-  function handle_annotations_and_sources($element, $do_references_inline, $feature_block_settings, $element_text, $footnote_list_key_suggestion) {
+  function handle_annotations_and_sources($element, $feature_block_settings, $element_text, $footnote_list_key_suggestion) {
     $annotations_and_sources = array(
       'foot_note_keys' => NULL,
       'source_references' => array(),
       'names_used_in_source' => array()
     );
 
-    if ($do_references_inline) {
+    if ($feature_block_settings['sources_as_content']) {
       foreach ($element->sources as $source) {
 
         $referenceCitation = theme('cdm_OriginalSource',
@@ -744,7 +742,7 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
 
     } // END of references inline
 
-    if (!$do_references_inline || $feature_block_settings['sources_as_content_to_bibliography']) {
+    if (!$feature_block_settings['sources_as_content'] || $feature_block_settings['sources_as_content_to_bibliography']) {
       $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
       return $annotations_and_sources;
     }
@@ -1061,11 +1059,19 @@ function compose_cdm_descriptionElement_Distribution($descriptionElements, $encl
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 
+  $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
+
   foreach ($descriptionElements as $descriptionElement) {
-    $footnote_key_list_str = cdm_create_description_element_footnotes($descriptionElement);
+    $annotations_and_sources = handle_annotations_and_sources(
+      $descriptionElement,
+      $feature_block_settings,
+      $descriptionElement->area->representation_L10n,
+      UUID_DISTRIBUTION
+    );
+
 
     $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid . '">'
-        . $descriptionElement->area->representation_L10n . $footnote_key_list_str
+        . $descriptionElement->area->representation_L10n . $annotations_and_sources['foot_note_keys']
         . ' </' . $enclosingTag . '>';
   }
 

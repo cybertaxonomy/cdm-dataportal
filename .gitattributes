@@ -1556,7 +1556,6 @@
 7.x/modules/cdm_dataportal/test/phpUnit/src/cdm_dataportal.moduleTest.php -text
 7.x/modules/cdm_dataportal/test/phpUnit/src/testTest.php -text
 7.x/modules/cdm_dataportal/test/phpUnit/src/theme/cdm_dataportal.name.themeTest.php -text
-7.x/modules/cdm_dataportal/theme/cdm_dataportal.bibliography.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.descriptions.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.media.theme -text

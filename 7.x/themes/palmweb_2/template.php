@@ -137,16 +137,6 @@ function palmweb_2_cdm_search_results($variables){
   return $out;
 }
 
-/*
-Comment @WA: theme function moved to cdm_dataportal module,
-theme/cdm_dataportal.bibliography.theme so this can be used by other portals
-as well.
-@TODO: should this not be part of the palmweb_2 featuretree and be treated
-as a normal description feature?
-function theme_cdm_descriptionElementBibliography
-function formatReference_for_Bibliography($references) {
- */
-
 /**
  * @todo Please document this function.
  */

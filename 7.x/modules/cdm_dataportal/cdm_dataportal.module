@@ -39,7 +39,6 @@ module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.page');
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.taxon');
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.name');
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.references');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.bibliography');
 
 module_load_include('php', 'cdm_dataportal', 'classes/footnotemanager');
 module_load_include('php', 'cdm_dataportal', 'classes/footnote');

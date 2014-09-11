@@ -204,9 +204,6 @@ function cdm_dataportal_theme() {
     'cdm_list_of_taxa' => array('variables' => array('records' => NULL, 'freetextSearchResults' => array(), 'show_classification' => FALSE)),
     'cdm_taxon_list_thumbnails' => array('variables' => array('taxon' => NULL)),
 
-    // Themes in cdm_dataportal.bibliography.theme.
-    'cdm_descriptionElementBibliography' => array('variables' => array('descriptionElementsBibliography' => array())),
-
     // Themes in includes/pre-drupal8.inc
     'description_list' => array('variables' => array('items' => array(), 'groups' => array(), 'title' => NULL, 'attributes' => array())),
   );
