@@ -1105,9 +1105,13 @@ function compose_cdm_descriptionElement_Distribution($descriptionElements, $encl
     );
 
 
+
     $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid . '">'
-        . $descriptionElement->area->representation_L10n . $annotations_and_sources['foot_note_keys']
-        . ' </' . $enclosingTag . '>';
+        . $descriptionElement->area->representation_L10n;
+    if(!empty($annotations_and_sources['source_references'])){
+      $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+    }
+    $out .= $annotations_and_sources['foot_note_keys']   . ' </' . $enclosingTag . '>';
   }
 
   RenderHints::popFromRenderStack();

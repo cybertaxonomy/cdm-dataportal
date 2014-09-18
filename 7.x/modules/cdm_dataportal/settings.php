@@ -489,7 +489,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'link_to_name_used_in_source' => FALSE,
         'sources_as_content' => FALSE,
         'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => NULL, // will cause
+        'sort_elements' => NULL, // will cause ...
         'glue' => '',
         'element_tag'=> 'div'
       ),
@@ -558,7 +558,17 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'sort_elements' => SORT_ASC,
         'glue' => '',
         'element_tag'=> 'div'
-      )
+      ),
+      UUID_DISTRIBUTION => array(
+        'as_list' => 'div', // currently ignored
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE, // FIXME seems to have no effect see Acanthophoenix rousselii (palmae)
+        'sources_as_content_to_bibliography' => TRUE,
+        'sort_elements' => NULL, // will cause ...
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
     );
 
     $default_theme = variable_get('theme_default', NULL);
