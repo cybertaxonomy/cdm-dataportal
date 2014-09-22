@@ -284,3 +284,22 @@ function feature_block($feature_name, $feature = null) {
     return $footnote_list_key;
   }
 
+  /**
+   * Provides the according tag name for the description element markup which fits the  $feature_block_settings['as_list'] value
+   *
+   * @param $feature_block_settings
+   *   A feature_block_settings array, for details, please see get_feature_block_settings($feature_uuid = 'DEFAULT')
+   */
+  function cdm_feature_block_element_tag_name($feature_block_settings){
+    switch ($feature_block_settings['as_list']){
+      case 'ul':
+      case 'ol':
+        return 'li';
+      case 'div':
+        return 'span';
+      case 'dl':
+        return 'dd';
+      default:
+        return 'div'; // should never happen, throw error instead?
+    }
+  }

@@ -805,6 +805,10 @@ function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
 
   $footnote_key_suggestion = 'common-names-feature-block';
 
+  $feature_block_settings = get_feature_block_settings(UUID_COMMON_NAME);
+
+  $element_tag_name = cdm_feature_block_element_tag_name($feature_block_settings);
+
   if (is_array($elements)) {
     foreach ($elements as $element) {
 
@@ -847,8 +851,13 @@ function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
       // loop over set of individual elements
       foreach ($elements as $element) {
         if ($element->name) {
-          $per_language_area_out[] = '<span class="' . html_class_attribute_ref($element) . '">'
-          . $element->name . cdm_create_description_element_footnotes($element, ',', $footnote_key_suggestion) . '</span>';
+          $annotations_and_sources = handle_annotations_and_sources($element, $feature_block_settings, $element->name, $footnote_key_suggestion);
+          $source_references_markup = '';
+          if(!empty($annotations_and_sources['source_references'])){
+            $source_references_markup = ' ' . join(', ', $annotations_and_sources['source_references']);
+          }
+          $per_language_area_out[] = '<' . $element_tag_name. ' class="' . html_class_attribute_ref($element) . '">'
+          . $element->name . $source_references_markup . $annotations_and_sources['foot_note_keys'] . '</' . $element_tag_name. '>';
         }
       } // End of loop over set of individual elements
       $common_name_feature_elements[] = ($language_area_key ? $language_area_key . ': ' : '' ) . join(', ', $per_language_area_out);
@@ -860,7 +869,7 @@ function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
       $feature,
       '; ',
       FALSE,
-      'div'
+      $feature_block_settings['as_list']
       );
     $common_name_out .= $common_name_feature_elements_render_array['#markup'];
 

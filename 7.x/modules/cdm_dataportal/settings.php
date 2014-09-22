@@ -419,6 +419,8 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *          ul: as bullet list,
    *          ol: as numbered list,
    *          dl: as definition list
+   *        The tag used for the inner element, thus depends on the value of this field. The
+   *        inner tag name can be retrieved by the function cdm_feature_block_element_tag_name()
    *    - link_to_reference: boolean,
    *        render the reference as link, ignored if the element is NOT a DescriptionElementSource
    *    - link_to_name_used_in_source": boolean

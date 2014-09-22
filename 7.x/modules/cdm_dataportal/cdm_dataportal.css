@@ -187,8 +187,9 @@ li .taxon {
 .homotypicSynonymyGroup li.footnotes,
 .homotypicSynonyms li.footnotes,
 .misapplied li.footnotes,
-.content li.descriptionText, /* TODO this line has only left for debuggin: remove it */
-.block-cdm-dataportal-feature .content li.cdm\:TextData {
+.content li.descriptionText, /* TODO this line has only left for debugging: remove it */
+.block-cdm-dataportal-feature .content li.cdm\:TextData,
+.block-cdm-dataportal-feature .content li.cdm\:CommonTaxonName{
   margin-top: 10px;
   margin-left: 6px;
   padding-left: 6px;
