@@ -296,6 +296,9 @@ function feature_block($feature_name, $feature = null) {
       case 'ol':
         return 'li';
       case 'div':
+        if(isset($feature_block_settings['element_tag'])){
+          return $feature_block_settings['element_tag'];
+        }
         return 'span';
       case 'dl':
         return 'dd';

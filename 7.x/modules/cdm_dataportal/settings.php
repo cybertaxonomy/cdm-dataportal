@@ -450,7 +450,8 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *        some feature types (Distribution) also support: SORT_HIERARCHICAL (TODO option to exclude levels)
    *    - element_tag
    *        specifies the tag to be used for creating the elements, only applies if "as_list" == 'div'
-   *        possible values are span | div
+   *        possible values are span | div. the proper inner tag name can be retrieved by the function
+   *        cdm_feature_block_element_tag_name()
    *    - special: array()
    *        an array with further settings, this field can be used for special
    *        settings for specialized rendering like for distributions
@@ -484,7 +485,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'as_list' => 'ul',
         'link_to_reference' => FALSE,
         'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => TRUE,
+        'sources_as_content' => FALSE,
         'sources_as_content_to_bibliography' => FALSE,
         'sort_elements' => NULL,
         'glue' => '',
@@ -510,6 +511,17 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'glue' => '',
         'element_tag'=> 'div'
       ),
+      UUID_COMMON_NAME => array(
+        'as_list' => 'ul',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => FALSE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> 'span'
+      ),
+
     );
 
     $cichorieae_default = array(
@@ -552,6 +564,16 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'sort_elements' => NULL,
         'glue' => '',
         'element_tag'=> 'div'
+      ),
+      UUID_COMMON_NAME => array(
+        'as_list' => 'div',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => FALSE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> 'span'
       ),
     );
 
