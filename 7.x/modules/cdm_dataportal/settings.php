@@ -462,7 +462,22 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
 
     // see #3257 (implement means to define the features to show up in the taxonprofile and in the specimen descriptions)
 
+    // only needed as final option, when the settings are not having a default
     $default = array(
+      'DEFAULT' => array(
+        'as_list' => 'ul',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> NULL
+      )
+    );
+
+    // will be used as preset in the settings
+    $other_themes_default = array(
       'DEFAULT' => array(
         'as_list' => 'ul',
         'link_to_reference' => FALSE,
@@ -571,14 +586,28 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
       ),
     );
 
+    $cyprus_default = $cichorieae_default;
+    $cyprus_default[UUID_DISTRIBUTION ]  =  array(
+      'as_list' => 'div', // currently ignored
+      'link_to_reference' => FALSE,
+      'link_to_name_used_in_source' => FALSE,
+      'sources_as_content' => FALSE,
+      'sources_as_content_to_bibliography' => FALSE,
+      'sort_elements' => NULL, // will cause ...
+      'glue' => '',
+      'element_tag'=> 'div'
+    );
+
     $default_theme = variable_get('theme_default', NULL);
 
     switch ($default_theme){
       case 'garland_cichorieae':
+        $settings_for_theme = $cichorieae_default;
+        break;
       case 'cyprus':
         // cyprus: no longer used in production,
         // but is required for selenium tests see class eu.etaxonomy.dataportal.pages.PortalPage
-        $settings_for_theme = $cichorieae_default;
+        $settings_for_theme = $cyprus_default;
         break;
       case 'flore_afrique_centrale':
       case 'flora_malesiana':
@@ -590,15 +619,13 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         $settings_for_theme = $palmweb_default;
         break;
       default:
-        $settings_for_theme =  $default;
+        $settings_for_theme =  $other_themes_default;
     }
 
     if(isset($settings_for_theme[$feature_uuid])){
       return $settings_for_theme[$feature_uuid];
     } else if(isset($settings_for_theme['DEFAULT'])){
-      return $settings_for_theme['DEFAULT'];
-    } else if(isset($settings_for_theme[$feature_uuid])){
-      return $default[$feature_uuid];
+      return $settings_for_theme['DEFAULT']; // the fallback cascade will usually stop here since all settings should have a default
     } else {
       return $default['DEFAULT'];
     }
