@@ -512,7 +512,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'element_tag'=> 'div'
       ),
       UUID_COMMON_NAME => array(
-        'as_list' => 'ul',
+        'as_list' => 'div',
         'link_to_reference' => FALSE,
         'link_to_name_used_in_source' => TRUE,
         'sources_as_content' => FALSE,
