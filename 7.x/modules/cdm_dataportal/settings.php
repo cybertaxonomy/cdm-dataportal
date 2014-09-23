@@ -31,7 +31,7 @@ define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys))
 
 define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE', 'bibliography_for_original_source');
 define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT', serialize(array(
-  'enabled' => 1,
+  'enabled' => 0,
   'key_format' => 'ALPHA'
 )));
 
