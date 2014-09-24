@@ -1,0 +1,39 @@
+/**
+ * @file
+ * cdm_dataportal specific styling
+ *
+ * Style the markup found in the cdm_dataportal module.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm_dataportal\.scss}line{font-family:\000038}}
+#page-toc {
+  float: right;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm_dataportal\.scss}line{font-family:\0000312}}
+#taxonProfileImage {
+  float: left;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm_dataportal\.scss}line{font-family:\0000316}}
+.block-cdm-dataportal-feature {
+  clear: both;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm_dataportal\.scss}line{font-family:\0000318}}
+.block-cdm-dataportal-feature dt {
+  font-weight: bold;
+  float: left;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm_dataportal\.scss}line{font-family:\0000324}}
+#backButton {
+  text-align: right;
+}
+
+/*
+ * Synonymy
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/www\/drupal-7\.16\/sites\/all\/themes\/zen_dataportal\/sass\/cdm_dataportal\.scss}line{font-family:\0000333}}
+ul.homotypicSynonyms,
+ul.heterotypicSynonymyGroup {
+  border-bottom: 1px solid #dedede;
+}
