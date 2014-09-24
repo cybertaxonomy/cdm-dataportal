@@ -1,0 +1,148 @@
+/**
+ * If this stylesheet is used in TinyMCE, then use a white background. 
+ * CSS in TinyMCE is cached in the browser, so when making any changes here,
+ * make sure you clear your browser cache!
+ */
+body.mceContentBody {
+  background: #fff;
+}
+
+/*
+#general {
+  margin-top: 25px;
+}
+#general .clearfix{
+  clear: both;
+}
+#general h2{
+  font-size: 120%;
+  color: #97ac2d;
+}
+*/
+
+#general {
+  line-height: 145%;
+}
+
+#taxonProfileImage {
+  float: right;
+}
+
+.Taxon .reference, .Synonym .reference, .Taxon .status, .Synonym .status {
+  font-size: 90%;
+}
+
+h2.with-tabs .authors{
+  font-size: 90%;
+  font-weight:bold;
+}
+
+a.toc:link, a.toc:visited {
+  color: #f03300;
+  font-size: 90%;
+}
+
+.media_gallery{
+  font-size: 90%;
+}
+
+
+.media_gallery .media-caption dd.title {
+  font-size:100%;
+  font-weight:normal;
+}
+
+ul.cdm_taxontree {
+  background-color: transparent;
+  margin: 0
+}
+
+/* switch off highlighting of synonyms */
+.synonym span.highlite{
+  background-color: #96ab2c;
+}
+
+/* HACK for DEMO
+div.error{
+  display: none;
+  }
+*/
+/* display imce browser in small font and less padding to have enough space in the Palmweb_2 body */
+#file-list td {
+  padding: 2px;
+}
+#imce-content, #imce-content * {
+  font: 10px/10px Verdana, sans-serif;
+}
+
+/* Make user profile page look the same as in D5. */
+.content .profile dt {
+  float: none;
+  font-weight: bold;
+  margin: 1em 0 0.2em;
+}
+.content .profile dl {
+  margin: 0.5em 0 1em 1.5em;
+}
+.content .profile h3 {
+  font-size: 160%;
+  line-height: 130%;
+  margin-top: 2em;
+  border-bottom: none;
+}
+
+/* Do not display the fieldset down arrow twice in forms. */
+#block-system-main fieldset.collapsible .fieldset-legend,
+#block-system-main fieldset.collapsed .fieldset-legend {
+  background-image: none;
+  padding-left: 0;
+}
+
+.page-node #block-system-main div.content {
+  margin-bottom: 0;
+}
+
+div.error, .error {
+  color: #f00;
+}
+
+.comment-preview {
+  background-color: #fcfce8;
+  border: 1px solid #e5e58f;
+  margin: 0.75em 0;
+  padding: 0.5em 1em;
+}
+
+/* Style for maintenance page. */
+.maintenance-page {
+  background: url(images/druplicon.png) no-repeat scroll 5.6em 5.3em #fff;
+  border: 1px solid #bbb;
+  color: #000;
+  line-height: 1.2;
+  margin: 4em;
+  padding: 1em 1em 1em 128px;
+  font-family: sans-serif;
+}
+.maintenance-page h1 {
+  margin: 1.7em 0 1.1em;
+  font-size: 2.7em;
+  font-weight: bold;
+}
+.maintenance-page #content-content {
+  font-size: 1.12em;
+}
+/* Style the admin config page a little if no overlay is used. */
+dl.admin-list dd {
+  clear: both;
+}
+
+/* hide the fact that the bibliography consists of footnotes */
+#block-cdm-dataportal-feature-bibliography .footnote-anchor {
+    display: none;
+}
+/* footnotes are only used in palmweb for original sources, supress them all
+TODO see #4380 */
+#block-cdm-dataportal-feature-citation .footnote-key,
+.feature-block-elements  .footnote-key {
+    display: none;
+}

@@ -1,0 +1,72 @@
+/* normalize-rtl.css - RTL language extension of normalize.scss. */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000330}}
+.pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000343}}
+.pie-container {
+  z-index: 0;
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000347}}
+.z-pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  z-index: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000363}}
+.lt-ie9 #header {
+  /* 
+   * reset right padding to zero and use margin-right instead,
+   * this avoids the need for background-clip: content-box
+   * which is not suppoorted in IE < 9
+   */
+  padding-right: 0;
+  margin-right: 20px;
+}
+
+/* =============================================================================
+   Lists
+   ========================================================================== */
+/*
+ * Addresses margins set differently in IE6/7
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/normalize-rtl\.scss}line{font-family:\0000314}}
+dd {
+  margin: 0 30px 0 0;
+}
+
+/*
+ * Addresses paddings set differently in IE6/7
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/normalize-rtl\.scss}line{font-family:\0000325}}
+menu,
+ol,
+ul,
+.item-list ul {
+  padding: 0 30px 0 0;
+}
+
+/* =============================================================================
+   Forms
+   ========================================================================== */
+/*
+ * 3. Corrects alignment displayed oddly in IE6/7
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/normalize-rtl\.scss}line{font-family:\0000337}}
+legend {
+  *margin-left: 0;
+  *margin-right: -7px;
+  /* 3 */
+}
+
+/* =============================================================================
+   Tables
+   ========================================================================== */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/normalize-rtl\.scss}line{font-family:\0000348}}
+th {
+  text-align: right;
+}
