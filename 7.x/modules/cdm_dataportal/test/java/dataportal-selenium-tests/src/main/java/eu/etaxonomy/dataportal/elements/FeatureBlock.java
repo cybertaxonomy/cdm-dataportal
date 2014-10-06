@@ -154,4 +154,11 @@ public class FeatureBlock extends DrupalBlock {
         }
     }
 
+    public List<GalleryImage> getGalleryMedia() {
+        List<GalleryImage> galleryImages = null; //getGalleryImages(getElement());
+
+        return galleryImages;
+
+    }
+
 }

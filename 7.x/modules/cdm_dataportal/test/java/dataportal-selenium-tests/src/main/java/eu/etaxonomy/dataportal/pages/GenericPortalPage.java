@@ -10,12 +10,17 @@
 package eu.etaxonomy.dataportal.pages;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.elements.GalleryImage;
 import eu.etaxonomy.dataportal.selenium.AllTrue;
+import eu.etaxonomy.dataportal.selenium.ChildElementVisible;
 import eu.etaxonomy.dataportal.selenium.PageTitleValidated;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 
