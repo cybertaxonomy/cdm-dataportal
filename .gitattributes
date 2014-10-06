@@ -1534,6 +1534,7 @@
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_TechnicalAnnnotationsTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_TypeTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Crepis_tectorum_SynonymyTest.java -text
+7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/FeatureBlock_Media_Test.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/HomonymTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Lactuca_triquetra_TaxonProfileTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Scorzonera_SynonymyTest.java -text
