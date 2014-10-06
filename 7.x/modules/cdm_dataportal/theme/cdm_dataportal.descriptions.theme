@@ -136,7 +136,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
                 //TODO it woud be better if we could use compose_cdm_descriptionElements() directly instead of the below stuff
 
                 if (is_array($element->media)) {
-                  // Append media of supordinate elements to list of main
+                  // Append media of subordinate elements to list of main
                   // feature.
                   $media_list = array_merge($media_list, $element->media);
                 }
@@ -167,10 +167,9 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
           $block_content_is_empty = $block_content_is_empty && empty($text);
           $block->content[] = markup_to_render_array($text);
           $block_content_is_empty = $block_content_is_empty && empty($media_list);
-          $block->content[] = compose_feature_media_gallery($node, $media_list, $gallery_settings);
-
-
           }
+
+        $block->content[] = compose_feature_media_gallery($node, $media_list, $gallery_settings);
         /*
          * Footnotes for the feature block
          */
@@ -199,12 +198,14 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
    * @return array
    */
   function compose_feature_media_gallery($node, $media_list, $gallery_settings) {
+
     if (isset($node->descriptionElements)) {
       $media_list = array_merge($media_list, cdm_dataportal_media_from_descriptionElements($node->descriptionElements));
     }
+
     $captionElements = array('title', 'rights');
-    $gallery = '';
-    if (isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
+
+    if (isset($media_list[0]) && isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
       $gallery = theme('cdm_media_gallerie', array(
         'mediaList' => $media_list,
         'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $node->feature->uuid,
@@ -214,7 +215,8 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
       ));
       return markup_to_render_array($gallery);
     }
-    return markup_to_render_array($gallery);
+
+    return markup_to_render_array('');
   }
 
   /**
