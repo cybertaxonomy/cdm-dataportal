@@ -81,16 +81,18 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
         p.testTableOfContentEntry(tocIndex++, "Chromosome numbers", "chromosome_numbers");
         p.testTableOfContentEntry(tocIndex++, "Distribution", "distribution");
 
-        FeatureBlock featureBlock = p.getFeatureBlockAt(2, "chromosome-numbers", "div", "li"); //FIXME <div><li> bug in portal
-        assertEquals("Chromosome numbers\nCistus creticus L. 2n = 18 (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus in Candollea 48. 1993 (as Cistus creticus L.)) (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus. 2 in Acta Univ. Carol., Biol. 46. 2002 (as Cistus creticus L.))", featureBlock.getText());
+        FeatureBlock featureBlock = p.getFeatureBlockAt(2, "chromosome-numbers", "ul", "li");
         assertEquals("Chromosome numbers", featureBlock.getHeader());
+
+        // see  #2288 (Cyprus: ChromosomeNumbers: formating nameInSource)
+        assertEquals("Chromosome numbers\n2n = 18 (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus in Candollea 48. 1993 (as Cistus creticus L.)) (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus. 2 in Acta Univ. Carol., Biol. 46. 2002 (as Cistus creticus L.))", featureBlock.getText());
+
         assertEquals("expecting no footnote keys", 0, featureBlock.getFootNoteKeys().size());
         List<WebElement> linksInFeatureBlock = featureBlock.getElement().findElements(By.tagName("a"));
-        assertEquals("Expecting 4 anchor tags in \"Chromosome Numbers\"", 4, linksInFeatureBlock.size());
+        assertEquals("Expecting 3 anchor tags in \"Chromosome Numbers\"", 3, linksInFeatureBlock.size());
         assertEquals("chromosome_numbers", linksInFeatureBlock.get(0).getAttribute("name"));
-        assertTrue(linksInFeatureBlock.get(1).getAttribute("href").endsWith("?q=cdm_dataportal/name/a1dfcc80-2121-46bb-b8b2-c267a9e0725b"));
-        assertTrue(linksInFeatureBlock.get(2).getAttribute("href").endsWith("?q=cdm_dataportal/reference/863b9b1b-6c2a-4066-af90-ea9a3775598c"));
-        assertTrue(linksInFeatureBlock.get(3).getAttribute("href").endsWith("?q=cdm_dataportal/reference/07a97be7-b3fa-4f76-838d-ac7e1e6e9d70"));
+        assertTrue(linksInFeatureBlock.get(1).getAttribute("href").endsWith("?q=cdm_dataportal/reference/863b9b1b-6c2a-4066-af90-ea9a3775598c"));
+        assertTrue(linksInFeatureBlock.get(2).getAttribute("href").endsWith("?q=cdm_dataportal/reference/07a97be7-b3fa-4f76-838d-ac7e1e6e9d70"));
     }
 
 }

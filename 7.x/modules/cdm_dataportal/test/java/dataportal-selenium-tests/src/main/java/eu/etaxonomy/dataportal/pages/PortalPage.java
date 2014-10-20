@@ -33,6 +33,12 @@ import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.selenium.JUnitWebDriverWait;
 import eu.etaxonomy.dataportal.selenium.UrlLoaded;
 
+/**
+ * FIXME only works with the cichorieae theme
+ *
+ * @author a.kohlbecker
+ *
+ */
 public abstract class  PortalPage {
 
     /**

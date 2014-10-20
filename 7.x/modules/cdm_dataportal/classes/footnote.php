@@ -17,34 +17,30 @@
  * Provides a footnote.
  */
 class Footnote {
-  public $key, $object, $theme, $themeArguments;
+  public $key, $object, $enclosing_tag;
 
   /**
    * Private constructor.
    */
-  public function __construct($footnoteKey, $object, $theme = NULL, array $themeArguments = array()) {
+  public function __construct($footnoteKey, $object, $enclosing_tag = NULL) {
     $this->key = $footnoteKey;
     $this->object = $object;
-    $this->theme = $theme;
-    if (!is_array($themeArguments)) {
-      $themeArguments = array();
-    }
-    $this->themeArguments = $themeArguments;
+    $this->enclosing_tag = $enclosing_tag;
   }
 
   /**
    * @todo please document this function.
    */
   public function doRender() {
-    if ($this->theme) {
-      $args = $this->themeArguments;
-      array_unshift($this->object);
-      array_unshift($this->theme);
-      $out = call_user_func_array('theme', $args);
+    $variables = array(
+      'footnoteKey' => $this->key,
+      'footnoteText' => $this->object
+    );
+    if(is_string($this->enclosing_tag)){
+      $variables['enclosing_tag'] = $this->enclosing_tag;
     }
-    else {
-      $out = $this->object;
-    }
-    return theme('cdm_footnote', array('footnoteKey' => $this->key, 'footnoteText' => $out));
+    return theme('cdm_footnote',
+      $variables
+    );
   }
 }

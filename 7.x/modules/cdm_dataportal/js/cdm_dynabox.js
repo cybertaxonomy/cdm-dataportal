@@ -25,6 +25,8 @@
 
     $('.dynabox-' + dynabox_id + ' .label').click(function(event) {
       loadContent(event);
+    }).bind("contextmenu",function(e){
+        e.preventDefault(); // disable context menu to avoid opening in new tab or window
     });
 
     $('.dynabox-' + dynabox_id).find('.dynabox-' + dynabox_id + '-content').click(function(event){event.stopPropagation();});
@@ -43,6 +45,7 @@
         );
       } else {
         // no content so far, so load it
+        // TODO stop using the title attribute, the label href now contains the same url!
         var url = dynabox_content.attr('title');
         if(url !== undefined && url.length > 1){
           dynabox_content.removeAttr('title').find('.loading').slideDown('fast',

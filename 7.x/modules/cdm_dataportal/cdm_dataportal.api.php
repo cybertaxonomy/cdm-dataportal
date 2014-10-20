@@ -11,34 +11,49 @@
  */
 
 /**
- * Alter the feature toc items.
+ * Alter the feature block list.
  *
  * Modules implementing this hook can add, remove or modify
- * the items in the table of contents of features.
+ * feature blocks of the taxon general page part and of the
+ * specimen page part.
  *
- * the items array is an array suitable for theme_item_list().
+ * @param $block_list
+ *   the array of blocks as returned by list_blocks()
+ * @param $taxon
+ *   Optional CDM Taxon instance, currently only given if
+ *  called from within the taxon general page part
+ *
+ * @return array
+ *  the altered $block_list
  *
  */
-function hook_cdm_feature_node_toc_items_alter($items) {
+  function hook_cdm_feature_node_blocks_alter(&$block_list, $taxon = NULL) {
 
-  // NOTE: drupal_get_query_parameters has no internal static cache variable
-  $http_request_params = drupal_get_query_parameters();
+    if($taxon) {
+      // taxon is only given if called from within the taxon general page part
+      $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), $taxon->uuid)));
+      $subRank = 'sub taxa';
+      if ($taxon->name->rank->titleCache == "Genus") {
+        $subRank = "species";
+      } else if ($taxon->name->rank->titleCache == "Species") {
+        if($numberOfChildren==1){
+          $subRank = "infraspecific taxon";
+        }
+        else {
+          $subRank = "infraspecific taxa";
+        }
+      }
+      if ($numberOfChildren > 0) {
+        $block = feature_block('Number of Taxa');
+        // FIXME use compose_cdm_feature_block_elements() in next line
+        $block->content = array(markup_to_render_array('<ul class="feature-block-elements"><li>' . $numberOfChildren . " " . $subRank . '</li></ul>'));
+        array_unshift($block_list, $block);
+        cdm_toc_list_add_item('Number of Taxa', 'number-of-taxa', NULL, TRUE);
+      }
+    }
 
-  $items[] = array(
-              // a html link element as item:
-              l(
-                theme('cdm_feature_name', array('feature_name' => 'My new feature item')),
-                $_GET['q'],
-                array(
-                    'attributes' => array('class' => array('toc')),
-                    'fragment' => generalizeString('My new feature item'),
-                    'query' => $http_request_params
-                )
-              )
-            );
-
-  return $items;
-}
+    return $block_list;
+  }
 
 /**
  * @} End of "addtogroup hooks".

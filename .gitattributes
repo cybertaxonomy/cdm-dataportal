@@ -758,10 +758,12 @@
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_TechnicalAnnnotationsTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Cichorieae_TypeTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Crepis_tectorum_SynonymyTest.java -text
+7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/FeatureBlock_Media_Test.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/HomonymTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Lactuca_triquetra_TaxonProfileTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cichorieae/Scorzonera_SynonymyTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/Allium_guttatum_subsp_guttatum_TaxonProfileTest.java -text
+7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/Bassia_indica_TaxonProfileTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/CyprusSearchTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/Cyprus_HybridTest.java -text
 7.x/modules/cdm_dataportal/test/java/dataportal-selenium-tests/src/test/java/eu/etaxonomy/dataportal/selenium/tests/cyprus/Cyprus_OriginalSourceTest.java -text
@@ -779,7 +781,6 @@
 7.x/modules/cdm_dataportal/test/phpUnit/src/cdm_dataportal.moduleTest.php -text
 7.x/modules/cdm_dataportal/test/phpUnit/src/testTest.php -text
 7.x/modules/cdm_dataportal/test/phpUnit/src/theme/cdm_dataportal.name.themeTest.php -text
-7.x/modules/cdm_dataportal/theme/cdm_dataportal.bibliography.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.common.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.descriptions.theme -text
 7.x/modules/cdm_dataportal/theme/cdm_dataportal.media.theme -text

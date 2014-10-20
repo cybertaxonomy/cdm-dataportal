@@ -39,7 +39,6 @@ module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.page');
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.taxon');
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.name');
 module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.references');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.bibliography');
 
 module_load_include('php', 'cdm_dataportal', 'classes/footnotemanager');
 module_load_include('php', 'cdm_dataportal', 'classes/footnote');
@@ -519,7 +518,6 @@ function cdm_dataportal_menu() {
 /**
  * Implements hook_init().
  *
- * can be removed after fixing the FIXME below
  */
 function cdm_dataportal_init() {
   //FIXME To add CSS or JS that should be present on all pages, modules
@@ -531,6 +529,11 @@ function cdm_dataportal_init() {
   if(variable_get('cdm_debug_mode', FALSE)){
     $file = 'temporary://drupal_debug.txt';
     file_put_contents($file, 'CDM DEBUG LOG for ' . $_GET['q']. "\n"); // will overwrite the file
+  }
+
+  $bibliography_settings = get_bibliography_settings();
+  if($bibliography_settings['enabled'] == 1){
+    FootnoteManager::registerFootnoteSet('BIBLIOGRAPHY', 'div', $bibliography_settings['key_format']);
   }
 }
 
@@ -1022,7 +1025,7 @@ function convert_to_array($object) {
 }
 
 /**
- * Wrapps the given $html string into a reder array suitable for drupal_render()
+ * Wraps the given $html string into a render array suitable for drupal_render()
  *
  * @param string $html
  *   the html string, see
@@ -1035,11 +1038,14 @@ function convert_to_array($object) {
  *   A render array
  *
  */
-function markup_to_render_array($html, $weight = 0) {
-  return array(
-          '#markup' => $html,
-          '#weight' => $weight,
+function markup_to_render_array($html, $weight = FALSE) {
+  $render_array = array(
+    '#markup' => $html
       );
+  if (is_numeric($weight)) {
+    $render_array['#weight'] = $weight;
+}
+  return $render_array;
 }
 
 /**
@@ -1059,11 +1065,11 @@ function _load_polytomousKeySubGraph(&$polytomousKeyNode) {
     return;
   }
   if ($polytomousKeyNode->class != "PolytomousKeyNode") {
-    drupal_set_message(_load_polytomousKeySubGraph() . t('invalid type given.'), 'error');
+    drupal_set_message('_load_polytomousKeySubGraph(): ' . t('invalid type given.'), 'error');
     return;
   }
   if (!is_uuid($polytomousKeyNode->uuid)) {
-    drupal_set_message(_load_polytomousKeySubGraph() . t('invalid type given.'), 'error');
+    drupal_set_message('_load_polytomousKeySubGraph(): ' . t('invalid type given.'), 'error');
     return;
   }
 
@@ -1665,7 +1671,7 @@ function rank_compare($thisRankUuid, $thatRankUuid) {
  *
  * @param $cdmEntity
  */
-function html_class_atttibute_ref($cdmEntity) {
+function html_class_attribute_ref($cdmEntity) {
 
   if (is_cdm_entity($cdmEntity)) {
     return "cdm:" . $cdmEntity->class . " uuid:" . $cdmEntity->uuid;
@@ -1982,11 +1988,11 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
  *
  * @param array $cdmBase_list
  *   An array of CdmBase instances or a single instance.
- * @param string $footnote_list_key
+ * @param string $footnote_list_key_suggestion
  *
  * @return unknown
  */
-function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NULL) {
+function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key_suggestion = NULL) {
 
    static $annotations_types_filter = null;
    if(!$annotations_types_filter) {
@@ -2005,11 +2011,11 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
   }
 
   // Getting the key for the footnotemanager.
-  if (isset($footnote_list_key)) {
-    $footnoteListKey = $footnote_list_key;
+  if (isset($footnote_list_key_suggestion)) {
+    $footnote_list_key = $footnote_list_key_suggestion;
   }
   else {
-    $footnoteListKey = RenderHints::getFootnoteListKey() . '-annotations';
+    $footnote_list_key = RenderHints::getFootnoteListKey() . '-annotations';
   }
 
   // Adding the footnotes keys.
@@ -2017,7 +2023,7 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key = NUL
     $annotations = cdm_ws_getAnnotationsFor($cdmBase_element, variable_get('annotations_types_as_footnotes', $annotations_types_filter));
     if (is_array($annotations)) {
       foreach ($annotations as $annotation) {
-        $footNoteKeys[] = FootnoteManager::addNewFootnote($footnoteListKey, $annotation->text);
+        $footNoteKeys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation->text);
       }
     }
   }
@@ -2089,7 +2095,8 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
 
   $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/$theme");
   $out .= '<!-- dynabox for ' . $content_url . ' -->';
-  $out .= '<' . $enclosingtags[0] . ' ' .  $dynabox_attributes. '><a href="#" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
+  $out .= '<' . $enclosingtags[0] . ' ' .  $dynabox_attributes. '><a href="' . $cdm_proxy_url . '" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
+  // TODO stop using the title attribute, the label href now contains the same url!
   $out .= '<' . $enclosingtags[1] . ' class="dynabox-' . $dynabox_id . '-content" title="' . $cdm_proxy_url . '">';
   $out .= '<' . $enclosingtags[0] . ' class="dynabox-content-inner">' . loading_image_html() . '</' . $enclosingtags[0] . '>';
   $out .= '</' . $enclosingtags[1] . '>';
@@ -2111,13 +2118,20 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
  *   contains at least one non empty TextData or at least one DescriptionElement
  *   of an other type. A TextData element holding a multilanguageText or a
  *   source reference is considered to be not empty.
+ *
+ * @TODO this function may have become obsolete by the new method of detecting empty blocks,
+ *       see $block_content_is_not_empty in compose_cdm_feature_nodes() and
+ *       $feature_block_has_content in compose_cdm_descriptionElements
  */
-function hasFeatureNodeDescriptionElements($featureNode) {
+function has_feature_node_description_elements($featureNode) {
 
   if (isset($featureNode->descriptionElements) && is_array($featureNode->descriptionElements) && count($featureNode->descriptionElements) > 0) {
     if(!isset($featureNode->descriptionElements['#type'])){ // #type is used to identify e.g. DTO elements: '#type' => 'DTO'
       foreach ($featureNode->descriptionElements as $descriptionElement) {
-        if ($descriptionElement->class != "TextData" || isset($descriptionElement->multilanguageText_L10n->text) && $descriptionElement->multilanguageText_L10n->text != '' || isset($descriptionElement->sources[0]) || isset($descriptionElement->media[0]) ) {
+        if ($descriptionElement->class != "TextData" || isset($descriptionElement->multilanguageText_L10n->text)
+          && $descriptionElement->multilanguageText_L10n->text != ''
+          || isset($descriptionElement->sources[0])
+          || isset($descriptionElement->media[0]) ) {
           return TRUE;
         }
       }
@@ -2125,7 +2139,7 @@ function hasFeatureNodeDescriptionElements($featureNode) {
   }
   else if (isset($featureNode->childNodes) && is_array($featureNode->childNodes)) {
     foreach ($featureNode->childNodes as $child) {
-      if (hasFeatureNodeDescriptionElements($child)) {
+      if (has_feature_node_description_elements($child)) {
         return TRUE;
       }
     }

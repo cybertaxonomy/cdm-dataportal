@@ -52,7 +52,7 @@ public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
         assertEquals("Distribution", tocLinks.get(0).getText());
         assertEquals("Credits", tocLinks.get(1).getText());
 
-        // Credits contains an technical annotation but this mus not be displayed
+        // Credits contains an technical annotation but this must not be displayed
         FeatureBlock creditsBlock = p.getFeatureBlockAt(1, "credits", "div", "div");
         //testing this is not possible due to SCHROTT-CODE // assertEquals("expecting 1 DescriptionElements in citation", 1, creditsBlock.getDescriptionElements().size());
         assertEquals("Credits\nBoufford D. E. 2009: Images (12 added)\nSmalla M. 2009: Images (1 added)\nSun H. 2009: Images (3 added)\nYue J. 2009: Images (1 added)\nZhang J. 2009: Images (1 added).", creditsBlock.getText());

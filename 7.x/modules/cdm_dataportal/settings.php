@@ -30,6 +30,12 @@ if (in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
 }
 define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
 
+define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE', 'bibliography_for_original_source');
+define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT', serialize(array(
+  'enabled' => 0,
+  'key_format' => 'ALPHA'
+)));
+
 /* taxonRelationshipTypes */
 define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
 
@@ -327,17 +333,17 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
 /**
  * Merges the named array variable with the array of defaults.
  *
- * IḾPORTANT: The array keys must be strings. When the keys are integers
- * the merging will not take place for these enties. Number keyed enties
+ * IMPORTANT: The array keys must be strings. When the keys are integers
+ * the merging will not take place for these entities. Number keyed entities
  * are just appended to the result array.
  *
  * @param string $variable_name
  *     The variable name
  * @param string | array $default
  *     The array containing the default values either as array or serialized as string.
- *     Unserialization is cared for if nessecary
+ *     Unserialization is cared for if necessary
  * @return array
- *     The merged array as returnd by drupal_array_merge_deep()
+ *     The merged array as returned by drupal_array_merge_deep()
  */
 function get_array_variable_merged($variable_name, $default){
 
@@ -389,7 +395,285 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
   else {
     return ($values[$index_value]);
   }
+}
 
+
+  /**
+   * preliminary mock implementation
+   *
+   * Provides the feature block settings for a specific feature it is is provides as $feature_uuid parameter.
+   *
+   *
+   * Note: These settings only apply to feature blocks which do not have a special rendering
+   * the specially handled features (e.g.: Distribution, CommonNames) may make use of the
+   * 'special' element of the settings
+   *
+   * @param $feature_uuid
+   *   The uuid string representation of the feature to return the settings for
+   *
+   * @return array
+   *  an associative array of settings, with the following fields:
+   *    - as_list: string
+   *        this setting will be used in compose_cdm_feature_block_elements() as $enclosing_tag
+   *        possible values are:
+   *          div: not as list,
+   *          ul: as bullet list,
+   *          ol: as numbered list,
+   *          dl: as definition list
+   *        The tag used for the inner element, thus depends on the value of this field. The
+   *        inner tag name can be retrieved by the function cdm_feature_block_element_tag_name()
+   *    - link_to_reference: boolean,
+   *        render the reference as link, ignored if the element is NOT a DescriptionElementSource
+   *    - link_to_name_used_in_source": boolean
+   *        whether to show name is source information as link which will point to the according name page
+   *    - sources_as_content (boolean)
+   *        TRUE:
+   *          1. If element is of the CDM type TextData and the text is not empty the source references will be
+   *             appended in brackets like "text (source references)". If the original source has name in source
+   *             information it will be appended to the citation string,
+   *             like : "(citation, as name in source; citation, as name in source)"
+   *          2. if the text of the TextData is empty, the original source citations are the only content
+   *             (e.g. use case CITATION) and are not put into brackets. In this case the nameInSource is
+   *             prepended to the citation string like: "name in source: citation"
+   *        FALSE:
+   *          Original sources are put into the bibliography(=references) pseudo feature block. If the original source
+   *          citations are the only content, the resulting feature block content would only consist of footnotes.
+   *          In this case the display of the respective feature block is suppressed.
+   *          TODO if the bibliography is not enabled the sources will be treated as footnotes like annotations,
+   *               in future however they will in this case be shown in a separate references section for each
+   *               feature block.
+   *    - sources_as_content_to_bibliography  (boolean)
+   *        Only valid if sources_as_content == TRUE, will cause the sources to be also shown
+   *        in the bibliography.
+   *    - sort_elements
+   *        whether and how to sort the elements
+   *        possible values are the constants SORT_ASC, SORT_DESC, NULL,
+   *        some feature types (Distribution) also support: SORT_HIERARCHICAL (TODO option to exclude levels)
+   *    - element_tag
+   *        specifies the tag to be used for creating the elements, only applies if "as_list" == 'div'
+   *        possible values are span | div. the proper inner tag name can be retrieved by the function
+   *        cdm_feature_block_element_tag_name()
+   *    - special: array()
+   *        an array with further settings, this field can be used for special
+   *        settings for specialized rendering like for distributions
+   *  }
+   *
+   */
+  function get_feature_block_settings($feature_uuid = 'DEFAULT'){
+    // the default must conform to the default parameter values of
+    // compose_cdm_feature_block_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
+    // theme_cdm_descriptionElementTextData() : asListElement = NULL
+
+    // see #3257 (implement means to define the features to show up in the taxonprofile and in the specimen descriptions)
+
+    // only needed as final option, when the settings are not having a default
+    $default = array(
+      'DEFAULT' => array(
+        'as_list' => 'ul',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> NULL
+      )
+    );
+
+    // will be used as preset in the settings
+    $other_themes_default = array(
+      'DEFAULT' => array(
+        'as_list' => 'ul',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => FALSE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> NULL
+      ),
+      UUID_CITATION => array(
+        'as_list' => 'div',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => FALSE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => SORT_ASC,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_DISTRIBUTION => array(
+        'as_list' => 'div', // currently ignored
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => FALSE,
+        'sources_as_content' => FALSE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL, // will cause ...
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_COMMON_NAME => array(
+        'as_list' => 'div',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => FALSE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> 'span'
+      ),
+
+    );
+
+    $cichorieae_default = array(
+      'DEFAULT' => array(
+        'as_list' => 'div',
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_CITATION => array(
+        'as_list' => 'div',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => FALSE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => SORT_ASC,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_CHROMOSOMES_NUMBERS => array(
+        'as_list' => 'ul',
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_CHROMOSOMES => array(
+        'as_list' => 'ul',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_COMMON_NAME => array(
+        'as_list' => 'div',
+        'link_to_reference' => FALSE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => FALSE,
+        'sources_as_content_to_bibliography' => FALSE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> 'span'
+      ),
+    );
+
+    $palmweb_default = array(
+      'DEFAULT' => array(
+        'as_list' => 'ul',
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE,
+        'sources_as_content_to_bibliography' => TRUE,
+        'sort_elements' => NULL,
+        'glue' => '',
+        'element_tag'=> NULL
+      ),
+      UUID_CITATION => array(
+        'as_list' => 'ul',
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => FALSE,
+        'sources_as_content_to_bibliography' => TRUE,
+        'sort_elements' => SORT_ASC,
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+      UUID_DISTRIBUTION => array(
+        'as_list' => 'div', // currently ignored
+        'link_to_reference' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'sources_as_content' => TRUE, // FIXME seems to have no effect see Acanthophoenix rousselii (palmae)
+        'sources_as_content_to_bibliography' => TRUE,
+        'sort_elements' => NULL, // will cause ...
+        'glue' => '',
+        'element_tag'=> 'div'
+      ),
+    );
+
+    $cyprus_default = $cichorieae_default;
+    $cyprus_default[UUID_DISTRIBUTION ]  =  array(
+      'as_list' => 'div', // currently ignored
+      'link_to_reference' => FALSE,
+      'link_to_name_used_in_source' => FALSE,
+      'sources_as_content' => FALSE,
+      'sources_as_content_to_bibliography' => FALSE,
+      'sort_elements' => NULL, // will cause ...
+      'glue' => '',
+      'element_tag'=> 'div'
+    );
+
+    $default_theme = variable_get('theme_default', NULL);
+
+    switch ($default_theme){
+      case 'garland_cichorieae':
+        $settings_for_theme = $cichorieae_default;
+        break;
+      case 'cyprus':
+        // cyprus: no longer used in production,
+        // but is required for selenium tests see class eu.etaxonomy.dataportal.pages.PortalPage
+        $settings_for_theme = $cyprus_default;
+        break;
+      case 'flore_afrique_centrale':
+      case 'flora_malesiana':
+      case 'flore_gabon':
+        $settings_for_theme = $cichorieae_default;
+        $settings_for_theme[UUID_CITATION]['as_list'] = 'ul';
+        break;
+      case 'palmweb_2':
+        $settings_for_theme = $palmweb_default;
+        break;
+      default:
+        $settings_for_theme =  $other_themes_default;
+    }
+
+    if(isset($settings_for_theme[$feature_uuid])){
+      return $settings_for_theme[$feature_uuid];
+    } else if(isset($settings_for_theme['DEFAULT'])){
+      return $settings_for_theme['DEFAULT']; // the fallback cascade will usually stop here since all settings should have a default
+    } else {
+      return $default['DEFAULT'];
+    }
+}
+  /**
+ * returns the current setting for the original source bibliography
+ *
+ * Caches internally
+ *
+ * @return array
+ *  the setting for the original source bibliography see BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE:
+ *   - 'enabled': 1|0
+ *   - 'key_format': one of 'latin', 'ROMAN', 'roman', 'ALPHA', 'alpha'
+ */
+function get_bibliography_settings($clear_cache = false){
+  static $bibliography_settings = null;
+  if(!$bibliography_settings || $clear_cache){
+    $bibliography_settings = get_array_variable_merged(
+      BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE,
+      BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT
+    );
+  }
+  return $bibliography_settings;
 }
 
 /**
@@ -836,7 +1120,7 @@ function cdm_settings_general() {
 
 /**
  * LAYOUT settings
- * @return unknown_type
+ * @return
  *   todo
  */
 function cdm_settings_layout() {
@@ -874,7 +1158,7 @@ function cdm_settings_layout() {
     '#description' => t('Check this if you do not want to show annotation footnotes'),
   );
 
-  $annotationTypeOptions = cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE);
+  $annotationTypeOptions = cdm_terms_by_type_as_option('AnnotationType', SORT_ASC);
   // Additional option for the NULL case.
   $annotationTypeOptions['NULL_VALUE'] = t('untyped');
   $form['footnotes']['annotations_types_as_footnotes'] = array(
@@ -888,6 +1172,36 @@ function cdm_settings_layout() {
   if (!empty($annotationsTypesAsFootnotes)) {
     $form['footnotes']['annotations_types_as_footnotes']['#default_value'] = $annotationsTypesAsFootnotes;
   }
+
+  // ---- original source --- //
+  $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE] = array(
+      '#type' => 'fieldset',
+      '#tree' => TRUE,
+      '#title' => t('Source Citations'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+  );
+
+  $bibliography_settings = get_bibliography_settings(true);
+
+  $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE]['enabled'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Original Source in bibliography'),
+      '#default_value' => $bibliography_settings['enabled'],
+      '#description' => t('Show original source citations in bibliography block, instead of rendering them with other
+       annotations in each feature block.'),
+  );
+
+  $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE]['key_format'] = array(
+    '#type' => 'select',
+    '#title' => t('The format of the key numerals'),
+    '#default_value' => $bibliography_settings['key_format'],
+    '#options' => array('latin' => 'Latin',
+      'ROMAN' => 'Roman (upper case)',
+      'roman' => 'Roman (lower case)',
+      'ALPHA'=> 'Alphabet (upper case)',
+      'alpha' => 'Alphabet (lower case)')
+  );
 
   // --- Advanced Search --- //
   $form['asearch'] = array(
@@ -1257,7 +1571,7 @@ function cdm_settings_layout_taxon() {
   //FIXME migrate variables:
   //  cdm_dataportal_show_default_image ---> CDM_TAXON_PROFILE_IMAGE['show']
   // FIXME
-  //  eanable file modul in profile and in update
+  //  enable file module in profile and in update,(a.kohlbecker, 4.9.2014: is this still an open issue?)
 
   $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
   /*
@@ -2401,12 +2715,6 @@ function get_edit_map_service_settings() {
       'version' => EDIT_MAPSERVER_VERSION_DEFAULT
       )
   );
-  // replace old non tree like settings by default
-  // TODO to be removed after release 3.1.5
-  if(!is_array($settings)){
-    variable_del('edit_map_server');
-    return get_edit_map_service_settings();
-  }
 
   return $settings;
 }

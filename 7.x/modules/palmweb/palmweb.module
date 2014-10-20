@@ -18,60 +18,34 @@
  */
 
 
-/**
- * Implements hook_cdm_feature_node_toc_items_alter()
- */
-function palmweb_cdm_feature_node_toc_items_alter($items){
+  /**
+   * Implements hook_cdm_feature_node_blocks_alter()
+   *
+   */
+  function palmweb_cdm_feature_node_blocks_alter(&$block_list, $taxon){
 
-  $http_request_params = drupal_get_query_parameters();
-  $countFeatures = count($items);
+    if($taxon) {
+      // taxon is only given if called from within the taxon general page part
+      $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (get_taxonomictree_uuid_selected(), $taxon->uuid)));
+      $subRank = 'sub taxa';
+      if ($taxon->name->rank->titleCache == "Genus") {
+        $subRank = "species";
+      } else if ($taxon->name->rank->titleCache == "Species") {
+        if($numberOfChildren==1){
+          $subRank = "infraspecific taxon";
+        }
+        else {
+          $subRank = "infraspecific taxa";
+        }
+      }
+      if ($numberOfChildren > 0) {
+        $block = feature_block('Number of Taxa');
+        // FIXME use compose_cdm_feature_block_elements() in next line
+        $block->content = array(markup_to_render_array('<ul class="feature-block-elements"><li>' . $numberOfChildren . " " . $subRank . '</li></ul>'));
+        array_unshift($block_list, $block);
+        cdm_toc_list_add_item('Number of Taxa', 'number-of-taxa', NULL, TRUE);
+      }
+    }
 
-  // number of taxa
-  $numberOfChildren = count(cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array (
-      get_taxonomictree_uuid_selected(),
-      substr(strrchr($_GET["q"],'/'), 1),
-  )));
-  if ($numberOfChildren != 0) {
-    array_unshift($items,
-      l(
-        t(theme('cdm_feature_name', array('feature_name' => 'Number of Taxa'))),
-        $_GET['q'],
-        array(
-          'query' => $http_request_params,
-          'attributes' => array('class' => array('toc')),
-          'fragment' => generalizeString('Number Of Taxa'),
-        )
-      )
-    );
+    return $block_list;
   }
-
-  // Setting the Anchor to the Bibliography section if the option is enabled.
-  $show_bibliography = variable_get('cdm_show_bibliography', 1);
-
-  $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
-  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, substr(strrchr($_GET["q"], '/'), 1), queryString($markerTypes));
-  if (!empty($useDescriptions)) {
-    $items[] = l(
-          t(theme('cdm_feature_name', array('feature_name' => 'Uses'))),
-          $_GET['q'],
-          array(
-              'query' => $http_request_params,
-              'attributes' => array('class' => array('toc')),
-              'fragment' => 'userecords'
-          )
-        );
-  }
-
-  if ($show_bibliography && $countFeatures != 0) {
-    $items[] = l(
-          t(theme('cdm_feature_name', array('feature_name' => 'Bibliography'))),
-          $_GET['q'],
-          array(
-              'query' => $http_request_params,
-              'attributes' => array('class' => array('toc')),
-              'fragment' => 'bibliography'
-            )
-          );
-  }
-  return $items;
-}

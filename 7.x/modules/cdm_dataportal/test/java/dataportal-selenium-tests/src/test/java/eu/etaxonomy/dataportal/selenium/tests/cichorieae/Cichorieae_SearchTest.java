@@ -9,8 +9,8 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,8 +23,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.ElementUtils;
 import eu.etaxonomy.dataportal.elements.GalleryImage;
-import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.elements.TaxonListElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
@@ -88,7 +88,7 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
 
         TaxonListElement lapsanaCommunnis = searchResultPage.getResultItem(1);
 
-        List<List<GalleryImage>> galleryImageRows = searchResultPage.getGalleryImagesOf(lapsanaCommunnis);
+        List<List<GalleryImage>> galleryImageRows = ElementUtils.getGalleryImages(lapsanaCommunnis.getElement(), searchResultPage.getWait());
 
         assertEquals("Expecting one row of images", 1, galleryImageRows.size());
         assertEquals("Expecting 4 images in row", 4, galleryImageRows.get(0).size());

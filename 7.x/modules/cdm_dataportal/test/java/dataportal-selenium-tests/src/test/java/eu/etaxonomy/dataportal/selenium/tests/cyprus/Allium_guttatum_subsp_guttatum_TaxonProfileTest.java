@@ -97,10 +97,19 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 //		featureBlock = p.getFeatureBlockAt(3, "systematics", "div", null);
 //		assertEquals("Systematics\nTaxonomy and nomenclature follow Mathew (1996).\nMathew B. 1996: A review of Allium section Allium . - Kew.", featureBlock.getText());
 
+//        
+
         featureBlock = p.getFeatureBlockAt(4, "distribution", "div", "span");
+
         assertEquals("Distribution\nDivision 21,2\n1. R. D. Meikle, Flora of Cyprus 2. 1985, 2. R. Hand, Supplementary notes to the flora of Cyprus VI. in Willdenowia 39. 2009", featureBlock.getText());
         assertEquals("Distribution", featureBlock.getHeader());
         assertEquals("expecting two footnote keys", 2, featureBlock.getFootNoteKeys().size());
+
+//        ------- prepared for  bibliography ---------
+//        FeatureBlock bibliography = p.getFeatureBlockAt(5, "bibliography", "div", "div");
+//        List<BaseElement> bibliographyEntries = bibliography.getFootNotes();
+//        assertEquals("A. R. D. Meikle, Flora of Cyprus 2. 1985", bibliographyEntries.get(1));
+//        assertEquals("B. R. Hand, Supplementary notes to the flora of Cyprus VI. in Willdenowia 39. 2009", bibliographyEntries.get(1));
 
         LinkElement footNoteKey_1 = featureBlock.getFootNoteKeys().get(0);
         BaseElement footNote_1 = featureBlock.getFootNotes().get(0);

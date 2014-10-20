@@ -195,7 +195,9 @@ li .taxon {
 .homotypicSynonymyGroup li.footnotes,
 .homotypicSynonyms li.footnotes,
 .misapplied li.footnotes,
-.content li.descriptionText {
+.content li.descriptionText, /* TODO this line has only left for debugging: remove it */
+.block-cdm-dataportal-feature .content li.cdm\:TextData,
+.block-cdm-dataportal-feature .content li.cdm\:CommonTaxonName{
   margin-top: 10px;
   margin-left: 6px;
   padding-left: 6px;
@@ -417,7 +419,8 @@ a.label:visited {
 WA: Important, otherwise the media viewer will be displayed over the
 Drupal Admin Overlay when this is used.
 
-AK: this is not working since 'position: absolute;' will casue the content continer to be not extended to the site of
+AK: this is not working since 'position: absolute;' will cause the content container
+to be not extended to the side of
 the image viewer
 */
 div.cdm_media_viewer_image {
@@ -495,6 +498,12 @@ div.cdm_media_viewer_image {
 /*
  * ======= footnotes and annotations =======
  */
+
+.footnotes {
+    margin-top: 0.5em;
+    display: block;
+}
+
 .annotations, .footnote{
   font-size: 88%;
 }
@@ -521,6 +530,10 @@ div.cdm_media_viewer_image {
 /* For compatibility with d5 themes. */
 .block-cdm-dataportal-feature {
   clear: both;
+}
+
+#block-cdm-dataportal-feature-bibliography .footnote {
+    font-size: 100%; /* reset fontsize */
 }
 
 #useRecords th {

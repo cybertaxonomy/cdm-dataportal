@@ -192,13 +192,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 //                 continue;
 //               }
               $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->childNodes, $description->elements);
-              $rendered_description = theme(
-                 'cdm_feature_nodes',
-                 array('mergedFeatureNodes' => $elements_by_feature)
-              );
-              $description_render_elements = array();
-//               $description_render_elements[] = array('#markup' => '<h4>'. $description->titleCache . '</h4>');
-              $description_render_elements[] = array('#markup' => $rendered_description);
+              $description_render_elements = compose_cdm_feature_nodes($elements_by_feature, null);
               $dd_elements[] = $description_render_elements;
             }
 
@@ -314,7 +308,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
         '#title' => $title,
         '#theme' => 'description_list',
         '#groups' => $groups,
-        '#attributes' => array('class' => html_class_atttibute_ref($specimenOrObservation)),
+        '#attributes' => array('class' => html_class_attribute_ref($specimenOrObservation)),
     );
     $derivatives[] = $occurrence_elements;
     // all footnotes which has been assembled so far (e.g. from typeDesignations) to here

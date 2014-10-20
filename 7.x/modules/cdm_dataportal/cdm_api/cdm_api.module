@@ -37,6 +37,8 @@ module_load_include('php', 'cdm_api', 'cdm_node');
  */
 define('CDM_HTTP_REQUEST_TIMEOUT', 90.0);
 
+define('SORT_ORDER_ID', 'sort_by_order_id');
+
 /**
  * Implements hook_menu().
  */
@@ -291,29 +293,6 @@ function cdm_get_occurrence_featureTree() {
     }
   }
   return $occurrence_featureTree;
-}
-
-/**
- * Transforms the list of the given term base instances to a alphabetical ordered options array.
- *
- * The options array is suitable for drupal form API elements that allow multiple choices.
- * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#options
- *
- * @param array $terms
- *   a list of CDM DefinedTermBase instances
- *
- * @return array
- *   the terms in an array as options for a form element that allows multiple choices.
- */
-function cdm_terms_as_options($terms){
-  $options = array();
-  if(isset($terms) && is_array($terms)){
-    foreach ($terms as $term){
-      $options[$term->uuid] = $term->representation_L10n;
-    }
-  }
-  array_multisort($options, SORT_ASC);
-  return $options;
 }
 
 /**
@@ -1223,6 +1202,126 @@ function cdm_ws_taxonomy_pathFromRoot($taxon_uuid) {
   return $response;
 }
 
+
+// =============================Terms and Vocabularies ========================================= //
+
+/**
+ *
+ * @param Object $definedTermBase
+ * 	  of cdm type DefinedTermBase
+ * @return string
+ * 	  the localized representation_L10n of the term,
+ *    otherwise the titleCache as fall back,
+ *    otherwise the default_representation which defaults to an empty string
+ */
+function cdm_term_representation($definedTermBase, $default_representation = '') {
+  if ( isset($definedTermBase->representation_L10n) ) {
+    return $definedTermBase->representation_L10n;
+  } elseif ( isset($definedTermBase->titleCache)) {
+    return $definedTermBase->titleCache;
+  }
+  return $default_representation;
+}
+
+/**
+ * Transforms the list of the given term base instances to a alphabetical ordered options array.
+ *
+ * The options array is suitable for drupal form API elements that allow multiple choices.
+ * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#options
+ *
+ * @param array $terms
+ *   a list of CDM DefinedTermBase instances
+ *
+ * @param $sort_by
+ *  Optionally sort option SORT_ORDER_ID (default: sorts after the cdm order index ),
+ *  to sort alphabetically: SORT_ASC, SORT_DESC
+ *
+ * @param $term_label_callback
+ *   A callback function to override the term representations
+ *
+ * @return array
+ *   the terms in an array as options for a form element that allows multiple choices.
+ */
+function cdm_terms_as_options($terms, $sort_by = SORT_ORDER_ID, $term_label_callback = NULL){
+  $options = array();
+  if(isset($terms) && is_array($terms)){
+    foreach ($terms as $term){
+      if ($term_label_callback && function_exists($term_label_callback)) {
+        $options[$term->uuid] = call_user_func($term_label_callback, $term);
+      } else {
+        //TODO use cdm_term_representation() here?
+        $options[$term->uuid] = t($term->representation_L10n);
+      }
+    }
+  }
+  switch($sort_by){
+    case SORT_ORDER_ID: array_reverse($options);
+      break;
+    default: array_multisort($options, SORT_ASC);
+  }
+
+  return $options;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL) {
+  static $vocabularyOptions = array();
+
+  if (!isset($vocabularyOptions[$vocabularyUuid])) {
+    $terms = cdm_ws_fetch_all('termVocabulary/' . $vocabularyUuid . '/terms');
+    $vocabularyOptions[$vocabularyUuid] = cdm_terms_as_options($terms, SORT_ORDER_ID, $term_label_callback);
+  }
+  return $vocabularyOptions[$vocabularyUuid];
+}
+
+/**
+ * @param $term_type one of
+ *  - Unknown
+ *  - Language
+ *  - NamedArea
+ *  - Rank
+ *  - Feature
+ *  - AnnotationType
+ *  - MarkerType
+ *  - ExtensionType
+ *  - DerivationEventType
+ *  - PresenceAbsenceTerm
+ *  - NomenclaturalStatusType
+ *  - NameRelationshipType
+ *  - HybridRelationshipType
+ *  - SynonymRelationshipType
+ *  - TaxonRelationshipType
+ *  - NameTypeDesignationStatus
+ *  - SpecimenTypeDesignationStatus
+ *  - InstitutionType
+ *  - NamedAreaType
+ *  - NamedAreaLevel
+ *  - RightsType
+ *  - MeasurementUnit
+ *  - StatisticalMeasure
+ *  - MaterialOrMethod
+ *  - Material
+ *  - Method
+ *  - Modifier
+ *  - Scope
+ *  - Stage
+ *  - KindOfUnit
+ *  - Sex
+ *  - ReferenceSystem
+ *  - State
+ *  - NaturalLanguageTerm
+ *  - TextFormat
+ *  - DeterminationModifier
+ *  - DnaMarker
+ */
+function cdm_terms_by_type_as_option($term_type, $sort_by = SORT_ORDER_ID, $term_label_callback = NULL){
+  $terms = cdm_ws_fetch_all(CDM_WS_TERM, array('class' => $term_type));
+  return cdm_terms_as_options($terms, $sort_by, $term_label_callback);
+}
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -1234,23 +1333,19 @@ function cdm_rankVocabulary_as_option() {
 }
 
 /**
- *
- * @param Object $definedTermBase
- * 	  of cdm type DefinedTermBase
- * @return string
- * 	  the localized representation_L10n of the term,
- *    otherwise the titleCache as fall back,
- *    otherwise an empty string
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
-function cdm_term_representation($definedTermBase) {
-  if ( isset($definedTermBase->representation_L10n) ) {
-    return $definedTermBase->representation_L10n;
-  } elseif ( isset($definedTermBase->titleCache)) {
-    return $definedTermBase->titleCache;
+function _cdm_relationship_type_term_label_callback($term) {
+  if (isset($term->representation_L10n_abbreviatedLabel)) {
+    return $term->representation_L10n_abbreviatedLabel . ' : ' . t($term->representation_L10n);
   }
-  return '';
+else {
+    return t($term->representation_L10n);
+  }
 }
 
+// ========================================================================================== //
 /**
  * @todo Improve documentation of this function.
  *
@@ -1288,44 +1383,6 @@ function cdm_descriptionElementTypes_as_option($prependEmptyElement = FALSE) {
   return $options;
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL) {
-  static $vocabularyOptions = array();
-
-  if (!isset($vocabularyOptions[$vocabularyUuid])) {
-    $terms = cdm_ws_fetch_all('termVocabulary/' . $vocabularyUuid . '/terms');
-    $vocabularyOptions[$vocabularyUuid] = array();
-
-    if ($terms) {
-      foreach ($terms as $term) {
-        if ($term_label_callback && function_exists($term_label_callback)) {
-          $vocabularyOptions[$vocabularyUuid][$term->uuid] = call_user_func($term_label_callback, $term);
-        }
-        else {
-          $vocabularyOptions[$vocabularyUuid][$term->uuid] = t($term->representation_L10n);
-        }
-      }
-      array_reverse($vocabularyOptions[$vocabularyUuid]);
-    }
-  }
-  return $vocabularyOptions[$vocabularyUuid];
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _cdm_relationship_type_term_label_callback($term) {
-  if (isset($term->representation_L10n_abbreviatedLabel)) {
-    return $term->representation_L10n_abbreviatedLabel . ' : ' . t($term->representation_L10n);
-  }
-  else {
-    return t($term->representation_L10n);
-  }
-}
 
 /**
  * Fetches all TaxonDescription descriptions elements wich are accociated to the
@@ -1392,7 +1449,10 @@ function cdm_ws_getAnnotationsFor(&$cdmBase, $includeTypes = FALSE) {
   $annotations = array();
   foreach ($cdmBase->annotations as $annotation) {
     if ($includeTypes) {
-      if ((isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, TRUE)) || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $includeTypes, TRUE))) {
+      if (
+        ( isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, TRUE) )
+        || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $includeTypes, TRUE))
+      ) {
         $annotations[] = $annotation;
       }
     }
@@ -1482,29 +1542,29 @@ function &cdm_feature_tree_find_node($feature_tree_nodes, $feature_uuid){
  * Merges the given featureNodes structure with the descriptionElements.
  *
  * This method is used in preparation for rendering the descriptionElements.
- * The descriptionElements wich belong to a specific feature node are appended
+ * The descriptionElements which belong to a specific feature node are appended
  * to a the feature node by creating a new field:
  *  - descriptionElements: the CDM DescriptionElements which belong to this feature
  * The descriptionElements will be cleared in advance in order to allow reusing the
- * same feature tree without the risk of mixing sets of descrition elemens.
+ * same feature tree without the risk of mixing sets of description elements.
  *
  * which originally is not existing in the cdm.
  *
  *
  *
  * @param array $featureNodes
- *    An array of cdm FeatureNodes which may be hierachical since feature nodes
+ *    An array of cdm FeatureNodes which may be hierarchical since feature nodes
  *    may have children.
  * @param array $descriptionElements
  *    An flat array of cdm DescriptionElements
  * @return array
- *    The $featureNodes structure enriched with the accoding $descriptionElements
+ *    The $featureNodes structure enriched with the according $descriptionElements
  */
 function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
 
   foreach ($featureNodes as &$node) {
     // since the $featureNodes array is reused for each description
-    // it is nessecary to clear the custom node fields in advance
+    // it is necessary to clear the custom node fields in advance
     if(isset($node->descriptionElements)){
       unset($node->descriptionElements);
     }
@@ -2152,6 +2212,7 @@ function is_uuid($str) {
  *
  * An object is considered a cdm entity if it has a string field $object->class
  * with at least 3 characters and if it has a valid uuid in $object->uuid.
+ * The function is null save.
  *
  * @author a.kohlbecker <a.kohlbecker@bgbm.org>
  *
@@ -2162,7 +2223,7 @@ function is_uuid($str) {
  *   True if the object is a cdm entity.
  */
 function is_cdm_entity($object) {
-  return is_string($object->class) && strlen($object->class) > 2 && is_string($object->uuid) && is_uuid($object->uuid);
+  return isset($object->class) && is_string($object->class) && strlen($object->class) > 2 && is_string($object->uuid) && is_uuid($object->uuid);
 }
 
 /**

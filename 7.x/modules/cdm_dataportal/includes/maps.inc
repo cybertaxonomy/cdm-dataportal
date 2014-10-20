@@ -304,17 +304,17 @@ function compose_distribution_map($taxon, $query_string) {
     /* =========== display distributions using the openlayers map viewer =========== */
 
     $legendFormatQueryStr = "format=image" . urlencode('/') . "png"
-        . "&TRANSPARENT=TRUE"
-            . "&WIDTH=" . $map_settings['legend']['icon_width']
-            . "&HEIGHT=" . $map_settings['legend']['icon_height']
-            // TODO why is the layer=topp:tdwg_level_4 parameter needed at all here??
-    // AK: i think the tdwg_level_4 is used as place holder and will be replaced later on
-    // => search for "tdwg_level_4" in the code
-    . "&layer=topp" . urlencode(':') . "tdwg_level_4"
-        . "&LEGEND_OPTIONS=forceLabels" . urlencode(':') . "on"
-            . ";fontStyle" . urlencode(':') . $fontStyles[$map_settings['legend']['font_style']]
-            . ";fontSize" . urlencode(':') .  $map_settings['legend']['font_size']
-            . "&SLD=";
+      . "&TRANSPARENT=TRUE"
+      . "&WIDTH=" . $map_settings['legend']['icon_width']
+      . "&HEIGHT=" . $map_settings['legend']['icon_height']
+      // TODO why is the layer=topp:tdwg_level_4 parameter needed at all here??
+      // AK: i think the tdwg_level_4 is used as place holder and will be replaced later on
+      // => search for "tdwg_level_4" in the code
+      . "&layer=topp" . urlencode(':') . "tdwg_level_4"
+      . "&LEGEND_OPTIONS=forceLabels" . urlencode(':') . "on"
+      . ";fontStyle" . urlencode(':') . $fontStyles[$map_settings['legend']['font_style']]
+      . ";fontSize" . urlencode(':') .  $map_settings['legend']['font_size']
+      . "&SLD=";
 
     $out .= get_openlayers_map(
         $map_settings['width'],

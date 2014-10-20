@@ -48,7 +48,7 @@ function compose_cdm_marker($marker) {
       // ---- generic
       //  these entries should be common to all cdm enitiy render arrays
       '#theme' => 'cdm_marker', // TODO   add alternative theme funcitons: 'cdm_marker_' . marker.type.label
-      '#attributes' => array('class' => html_class_atttibute_ref($marker)),
+      '#attributes' => array('class' => html_class_attribute_ref($marker)),
 
       // ---- individual
       '#label' => $marker->markerType->representation_L10n . ': ' . (($marker->flag !== TRUE ? t('yes') : t('no'))),

@@ -86,6 +86,7 @@ define('CDM_WS_PORTAL_TAXONOMY_MEDIA', 'portal/classification/$0/$1');
 define('CDM_WS_TERMVOCABULARY', 'termVocabulary/$0');
 
 define('CDM_WS_TERM_COMPARE', 'term/$0/compareTo/$1');
+define('CDM_WS_TERM', 'term');
 
 /**
  * Returns FeatureTrees that are stored in this community store.

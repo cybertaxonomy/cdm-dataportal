@@ -79,7 +79,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
     public void testProfileImage() {
         ImgElement profileImage = p.getProfileImage();
         assertNotNull("Expecting profile images to be switched on", profileImage);
-        assertTrue("Expecting image Lactuca_triquetra_Bf_09.jpg but was " + profileImage.getSrcUrl().toString(), profileImage.getSrcUrl().toString().matches(".*Lactuca_triquetra_Bf_09\\.jpg.*"));
+        assertTrue("Expecting image Lactuca_triquetra_Bc_01.jpg but was " + profileImage.getSrcUrl().toString(), profileImage.getSrcUrl().toString().matches("(?i).*Lactuca_triquetra_Bc_01\\.jpg.*"));
     }
 
 
@@ -127,7 +127,8 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         // interim expectation as long bug was not fixed:
 //        blockTextFull = featureLabel + "\n\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 6).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 1933, 6. Zohary, M. & Feinbrun-Dothan, N., Flora Palaestina 3. 1978";
         // after fixig the bug #3475, more sources are now displayed than ever before:
-        blockTextFull = featureLabel + "\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6,7).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 1933, 7. Zohary, M. & Feinbrun-Dothan, N., Flora Palaestina 3. 19786. (N)";
+        // after layout changes there is an additional space: blockTextFull = featureLabel + "\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6,7).\n1. Meikle, R. D., Flora of Cyprus 2. 1985, 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984, 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 1933, 7. Zohary, M. & Feinbrun-Dothan, N., Flora Palaestina 3. 19786. (N)";
+        blockTextFull = featureLabel + "\n\nAsia-Temperate:\nCyprus 1,2; Lebanon-Syria (Lebanon 3,4,5); Palestine (Israel 5,6,7).\n1. Meikle, R. D., Flora of Cyprus 2. 1985 (as Prenanthes triquetra), 2. Osorio-Tafall, B. H. & Serafim, G. M., List of the vascular plants of Cyprus. 1973, 3. Mouterde, P., Nouvelle flore du Liban et de la Syrie. Texte 3. 1978-1984 (as Scariola triquetra), 4. Boissier, E., Flora Orientalis 3. 1875, 5. Post, G. E. , Flora of Syria, Palestine, and Sinai 2. 1933, 7. Zohary, M. & Feinbrun-Dothan, N., Flora Palaestina 3. 1978\n6. (N)";
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
         featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "dt", "dd");
 
@@ -174,7 +175,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         featureLabel = "Common names";
         expectedCssDisplay = "block";
         // after bug #3475 was fixed the number of footnotes increased by one
-        blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكان8\n8. Nehmé, M., Dictionnaire Etymologique de la Flore du Liban. 2000 (as Scariola triquetra (Labill.) Soják)";
+        blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكان8,9\n8. recommended, 9. Nehmé, M., Dictionnaire Etymologique de la Flore du Liban. 2000 (as Scariola triquetra (Labill.) Soják)";
 
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
         featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "li");

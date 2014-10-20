@@ -223,7 +223,7 @@ function theme_cdm_annotation_content($variables) {
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cdm_annotations.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/jquery.form.js');
 
-  $out .= theme('cdm_list_of_annotations', array('annotationElements' => $AnnotationTO->annotationElements));
+  $out = theme('cdm_list_of_annotations', array('annotationElements' => $AnnotationTO->annotationElements));
 
   $annotationUrl = cdm_compose_url(CDM_WS_ANNOTATIONS, array(
     $AnnotationTO->uuid,
@@ -299,11 +299,12 @@ function theme_cdm_footnote_key($variables) {
 function theme_cdm_footnote($variables) {
   $footnoteKey = $variables['footnoteKey'];
   $footnoteText = $variables['footnoteText'];
+  $enclosing_tag = $variables['enclosing_tag'];
   _add_js_footnotes();
-  $out = '<span class="footnote footnote-' . $footnoteKey . '">'
+  $out = '<' . $enclosing_tag . ' class="footnote footnote-' . $footnoteKey . '">'
     . '<a name="footnote-' . $footnoteKey . '"></a>'
     . '<span class="footnote-anchor">' . $footnoteKey . '.</span>&nbsp;' . $footnoteText
-    . '</span>';
+    . '</' . $enclosing_tag . '>';
   return $out;
 }
 
