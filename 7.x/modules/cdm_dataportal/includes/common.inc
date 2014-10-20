@@ -91,7 +91,7 @@ function  oder_sources($sources, $do_theme = false){
       $order_key = '';
 
       // find the familynames
-      if(isset($source->citation->uuid) && !isset($source->citation->authorTeam)){
+      if(isset($source->citation->uuid) && !isset($source->citation->authorship)){
         $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $source->citation->uuid);
 
         $persons = array();

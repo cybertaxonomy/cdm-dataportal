@@ -5,7 +5,7 @@
  */
 
 define('CDM_WS_REFERENCE', 'reference');
-define('CDM_WS_REFERENCE_AUTHORTEAM', 'reference/$0/authorTeam');
+define('CDM_WS_REFERENCE_AUTHORTEAM', 'reference/$0/authorship');
 define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCitation');
 
 define('CDM_WS_NAME', 'name');
