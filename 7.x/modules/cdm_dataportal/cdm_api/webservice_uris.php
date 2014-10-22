@@ -5,7 +5,7 @@
  */
 
 define('CDM_WS_REFERENCE', 'reference');
-define('CDM_WS_REFERENCE_AUTHORTEAM', 'reference/$0/authorTeam');
+define('CDM_WS_REFERENCE_AUTHORTEAM', 'reference/$0/authorship');
 define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCitation');
 
 define('CDM_WS_NAME', 'name');
@@ -98,6 +98,7 @@ define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'ext/edit/mapServiceParameters/taxon
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');
 
 define('CDM_WS_OCCURRENCE', 'occurrence');
+define('CDM_WS_PORTAL_OCCURRENCE', 'portal/occurrence');
 /**
  * url query paramaters:
  *

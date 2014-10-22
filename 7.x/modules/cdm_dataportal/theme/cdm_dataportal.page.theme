@@ -364,7 +364,7 @@ function theme_cdm_reference_page($variables) {
     "title",
     // "titleCache",
     // "citation",
-    "authorTeam",
+    "authorship",
     "editor",
     "publisher",
     "placePublished",
@@ -393,9 +393,9 @@ function theme_cdm_reference_page($variables) {
   );
   $table_rows = array();
 
-  if (!isset($reference->authorTeam)) {
-    $authorTeam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
-    $reference->authorTeam = isset($authorTeam->titleCache) ? $authorTeam->titleCache : '';
+  if (!isset($reference->authorship)) {
+    $authorship = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
+    $reference->authorship = isset($authorship->titleCache) ? $authorship->titleCache : '';
   }
 
   if (!isset($reference->inReference)) {
@@ -422,7 +422,7 @@ function theme_cdm_reference_page($variables) {
         // $datePublished);
       }
       elseif (is_object($reference->$fieldname)) {
-        if ($fieldname == "authorTeam") {
+        if ($fieldname == "authorship") {
           $dump = $reference->$fieldname;
           $teammembers = "teamMembers";
           $team = $dump->$teammembers;

@@ -39,7 +39,7 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
   if ($citation) {
     // $type = $typeDesignation_citation->type;
     $year = isset($citation->datePublished->start) ? substr($citation->datePublished->start, 0, 4) : '';
-    $author = isset($citation->authorTeam->titleCache) ? $citation->authorTeam->titleCache : '';
+    $author = isset($citation->authorship->titleCache) ? $citation->authorship->titleCache : '';
     $res .= ' (designated by ';
     $res .= $author;
     $res .= ($year ? ' ' . $year : '');

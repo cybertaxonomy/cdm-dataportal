@@ -238,7 +238,7 @@ function palmweb_2_cdm_media_caption($variables){
  * Overrive of the original theme_cdm_reference()
  * the main difference here seems to be that
  * this function is completely omitting the citation title cache
- * and only sets the authorTeam as the
+ * and only sets the authorship as the
  * _short_form_of_author_team() as $citation.
  *
  * If the authorteam is not set citation was empty,
@@ -253,10 +253,10 @@ function xxx_palmweb_2_cdm_reference($variables) {
   $doLink = $variables['doLink'];
   $referenceStyle = $variables['referenceStyle'];
 
-  if(!isset($reference->authorTeam)){
+  if(!isset($reference->authorship)){
     $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
   } else {
-    $author_team = $reference->authorTeam;
+    $author_team = $reference->authorship;
   }
 
   $year = '';

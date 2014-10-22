@@ -71,10 +71,10 @@ function theme_cdm_reference($variables) {
   $doLink = $variables['doLink'];
   $referenceStyle = $variables['referenceStyle'];
 
-  if(!isset($reference->authorTeam)){
+  if(!isset($reference->authorship)){
     $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
   } else {
-    $author_team = $reference->authorTeam;
+    $author_team = $reference->authorship;
   }
 
   if ($referenceStyle == "zoology") {

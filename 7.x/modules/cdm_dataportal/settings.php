@@ -11,6 +11,7 @@ define ('CDM_TAXONTREE_INCLUDES', 'taxontree_includes');
 
 define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
 define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
+define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
 define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
 define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
 define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
@@ -37,6 +38,7 @@ define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT', serialize(array(
 
 /* taxonRelationshipTypes */
 define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
+
 
 
 /* ---- MAP SETTING CONSTANTS ---- */
@@ -392,7 +394,6 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
   }
   else {
     return ($values[$index_value]);
-
   }
 }
 
@@ -653,7 +654,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
     } else {
       return $default['DEFAULT'];
     }
-  }
+}
   /**
  * returns the current setting for the original source bibliography
  *
@@ -1204,17 +1205,16 @@ function cdm_settings_layout() {
 
   // --- Advanced Search --- //
   $form['asearch'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Advanced search'),
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
+      '#type' => 'fieldset',
+      '#title' => t('Advanced search'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
   );
-
   $form['asearch']['cdm_dataportal_show_advanced_search'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show advanced search link'),
-    '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
-    '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
+      '#type' => 'checkbox',
+      '#title' => t('Show advanced search link'),
+      '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
+      '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
   );
 
   // ---- Taxon Name Rendering --- //
@@ -1914,6 +1914,14 @@ ie	introduced: formerly introduced
     '#description' => t('This section covers the settings related to the taxon
       <strong>specimens</strong> tab.'),
   );
+
+    $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show specimen derivates in a compressed table'),
+        '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE),
+        '#description' => t('If checked, the specimen will be listed in a table. Every row represents
+        a FieldUnit and it can be expanded to get an overview of the derived specimens.'),
+    );
 
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
   $saved_uuid = variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);

@@ -139,8 +139,8 @@ function compare_citations($x, $y)
     $res = 1;
   }
   //different author and the first one is alphabetically smaller
-  //else if($x->sources[0]->citation->authorTeam->teamMembers[0]->lastname <
-  //$y->sources[0]->citation->authorTeam->teamMembers[0]->lastname){
+  //else if($x->sources[0]->citation->authorship->teamMembers[0]->lastname <
+  //$y->sources[0]->citation->authorship->teamMembers[0]->lastname){
   else if ($author_team_x->titleCache < $author_team_y->titleCache)	{
     $res = -1;
   }

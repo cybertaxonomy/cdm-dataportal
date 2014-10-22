@@ -71,6 +71,17 @@ function drupal_add_js_async($script_url, $callback){
 }
 
 /**
+ */
+function drupal_add_js_rowToggle($tableId){
+
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/table_modification.js');
+    drupal_add_js('jQuery(document).ready(function(){
+        addRowToggle("' . $tableId . '");
+    });
+    ', array('type' => 'inline'));
+}
+
+/**
  * @param unknown_type $link_element_selector
  * @param unknown_type $progress_element_selector
  */
@@ -1030,10 +1041,10 @@ function convert_to_array($object) {
 function markup_to_render_array($html, $weight = FALSE) {
   $render_array = array(
     '#markup' => $html
-  );
+      );
   if (is_numeric($weight)) {
     $render_array['#weight'] = $weight;
-  }
+}
   return $render_array;
 }
 
@@ -2031,7 +2042,7 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key_sugge
  *   The cdm REST service request url wich will deliver the content to be shown
  *   once the dynabox toggles open.
  * @param string $theme
- *   The theme to be used for rendering the cdm REST service reponse with is
+ *   The theme to be used for rendering the cdm REST service response with is
  *   returned from the $content_url.
  * @param string $link_alt_text
  *   The value for the alt attribute of the dynabox link.
@@ -2040,10 +2051,10 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key_sugge
  *   element itself, $enclosingtags[1] is the tag to be used for the
  *   dynabox_content (optional)
  * @param string $open_callback
- *   optional javascript call back function to be triggered after toggeling the box to
+ *   optional javascript call back function to be triggered after toggling the box to
  *   the open state.
  * @param string $close_callback
- *   optional javascript call back function to be triggered after toggeling the box to
+ *   optional javascript call back function to be triggered after toggling the box to
  *   the closed state.
  *
  * @return string
