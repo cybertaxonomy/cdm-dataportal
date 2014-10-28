@@ -138,11 +138,13 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     $protologue = $derivateHierarchy->protologue;
                     $citation = $derivateHierarchy->citation;
                     $types = "";
-                    foreach($derivateHierarchy->types as $typeStatus => $accessionList){
-                        $types .= $typeStatus;
-                        foreach($accessionList as $accessionNumber){
-                            $types .= " (" . $accessionNumber . ") ";
-                        }
+                    if(isset($derivateHierarchy->types)){
+                    	foreach($derivateHierarchy->types as $typeStatus => $accessionList){
+                        	$types .= $typeStatus;
+                        	foreach($accessionList as $accessionNumber){
+                            	$types .= " (" . $accessionNumber . ") ";
+                        	}
+                    	}
                     }
                     $specimenScans = createLinks($derivateHierarchy->specimenScans);
                     $molecularData = createLinks($derivateHierarchy->molecularData);
@@ -320,7 +322,12 @@ function createLinks($linkTextPairList)
     $html = "";
     if ($linkTextPairList) {
         foreach ($linkTextPairList as $linkTextPair) {
+            if($linkTextPair->first!=""){
             $html .= '<a href="' . $linkTextPair->first . '">' . $linkTextPair->second . "</a>";
+        	}
+            else{
+                $html .= $linkTextPair->second;
+            }
         }
     }
     return $html;
