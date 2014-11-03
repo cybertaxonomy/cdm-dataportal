@@ -107,7 +107,6 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
         $checked_box_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/step_done.gif' . '"/>';
         $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
-
         if ($fieldUnits) {
             $rowcount = 0;
             foreach ($fieldUnits as $fieldUnit) {
@@ -145,12 +144,12 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     // - type information
                     $types = "";
                     if(isset($derivateHierarchy->types)){
-                        foreach($derivateHierarchy->types as $typeStatus => $accessionList){
-                            $types .= $typeStatus;
-                            foreach($accessionList as $accessionNumber){
-                                $types .= " (" . $accessionNumber . ") ";
-                            }
-                        }
+                    	foreach($derivateHierarchy->types as $typeStatus => $accessionList){
+                        	$types .= $typeStatus;
+                        	foreach($accessionList as $accessionNumber){
+                            	$types .= " (" . $accessionNumber . ") ";
+                        	}
+                    	}
                     }
                     // - specimen scans
                     $specimenScans = createLinks($derivateHierarchy->specimenScans);
@@ -219,7 +218,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $derivateHierarchyTable = array(
             "#theme" => "table",
             "#weight" => 2,
-            "#header" => array("Country", "Date", "Collection", "Herbaria", "Type", "Image", "Derivates"),
+            "#header" => array("Country", "Date", "Collection", "Herbaria", "Type", "Scan", "Derivates"),
             "#rows" => $rows,
             "#attributes" => array(
                 "id" => $tableId,
@@ -376,8 +375,8 @@ function createLinks($linkTextPairList)
     if ($linkTextPairList) {
         foreach ($linkTextPairList as $linkTextPair) {
             if($linkTextPair->first!=""){
-                $html .= '<a href="' . $linkTextPair->first . '">' . $linkTextPair->second . "</a>";
-            }
+            $html .= '<a href="' . $linkTextPair->first . '">' . $linkTextPair->second . "</a>";
+        	}
             else{
                 $html .= $linkTextPair->second;
             }
@@ -409,193 +408,193 @@ function createLinks($linkTextPairList)
  */
 function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
-    global $theme;
+  global $theme;
 
-    // we better cache here since drupal_get_query_parameters has no internal static cache variable
-    $http_request_params = drupal_get_query_parameters();
+  // we better cache here since drupal_get_query_parameters has no internal static cache variable
+  $http_request_params = drupal_get_query_parameters();
 
-    // add all mandatory js sources
-    _add_js_footnotes();
-
-
-    $render_array = array();
-    $weight = 0; // the weight for the render array elements
-
-    $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
-
-    $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
-
-    $media = _load_media_for_taxon($taxon);
+  // add all mandatory js sources
+  _add_js_footnotes();
 
 
-    if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
-        taxon_page_tabs_hidden('images');
+  $render_array = array();
+  $weight = 0; // the weight for the render array elements
+
+  $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+
+  $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
+
+  $media = _load_media_for_taxon($taxon);
+
+
+  if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
+    taxon_page_tabs_hidden('images');
+  }
+
+  // --- GET specimensOrObservations --- //
+  $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
+
+  $specimensOrObservationsCount = is_array($specimensOrObservations) ? count($specimensOrObservations) : 0;
+  if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
+    taxon_page_tabs_hidden('specimens');
+  }
+
+  // --- GET polytomousKeys --- //
+  $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
+  $identificationKeyCount = 0;
+  if ($polytomousKeysPager) {
+    $identificationKeyCount += $polytomousKeysPager->count;
+  }
+  if ($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')) {
+    taxon_page_tabs_hidden('keys');
+  }
+
+  if ($tabsToDisplay["Synonymy"] == '0') {
+    taxon_page_tabs_hidden('synonymy');
+  }
+
+  // -------------------------------------------- //
+
+  $render_array['back_to_search'] = markup_to_render_array(theme('cdm_back_to_search_result_button'), -103);
+
+  if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR) && isset($_REQUEST['acceptedFor'])) {
+    $render_array['accepted_for'] = markup_to_render_array(theme('cdm_acceptedFor', array('acceptedFor' => $_REQUEST['acceptedFor'])), $weight++);
+  }
+
+  // --- PAGE PART: DESCRIPTION --- //
+  if ($page_part == 'description' || $page_part == 'all') {
+
+    $merged_tree = merged_taxon_feature_tree($taxon);
+
+
+    $render_array['general'] = compose_cdm_taxon_page_profile($taxon, $merged_tree, $media);
+    $render_array['general']['#weight'] = $weight++;
+    $render_array['general']['#prefix'] = '<div id="general" class="page-part">';
+    $render_array['general']['#suffix'] = '</div>';
+  }
+
+  // --- PAGE PART: IMAGES --- //
+  if (array_search('images', taxon_page_tabs_hidden()) === FALSE && ($page_part == 'images' || $page_part == 'all')) {
+    $images_html = '<div id="images" class="page-part">';
+    if ($page_part == 'all') {
+      $images_html .= '<h2>' . t('Images') . '</h2>';
     }
+    // Get the image gallery as configured by the admin.
+    $taxon_image_gallery = call_user_func_array('taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'), array(
+        $taxon,
+        $media,
+    ));
+    $images_html .= $taxon_image_gallery;
+    $images_html .= '</div>';
+    $render_array['images'] = markup_to_render_array($images_html, $weight++);
+  }
 
-    // --- GET specimensOrObservations --- //
-    $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
-
-    $specimensOrObservationsCount = is_array($specimensOrObservations) ? count($specimensOrObservations) : 0;
-    if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
-        taxon_page_tabs_hidden('specimens');
+  // --- PAGE PART: SYNONYMY --- //
+  if (($page_part == 'synonymy' || $page_part == 'all')) {
+    $synonymy_html = '<div id="synonymy" class="page-part">';
+    if ($page_part == 'all') {
+      $synonymy_html .= '<h2>' . t('Synonymy') . '</h2>';
     }
+    $addAcceptedTaxon = variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
+    $synonymy_html .= theme('cdm_taxon_page_synonymy', array('taxon' => $taxon, 'addAcceptedTaxon' => $addAcceptedTaxon));
 
-    // --- GET polytomousKeys --- //
-    $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
-    $identificationKeyCount = 0;
-    if ($polytomousKeysPager) {
-        $identificationKeyCount += $polytomousKeysPager->count;
+    $synonymy_html .= '</div>';
+    $render_array['synonymy'] = markup_to_render_array($synonymy_html, $weight++);
+
+  }
+
+  // --- PAGE PART: SPECIMENS --- //
+  if ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')) {
+    $render_array['specimens'] = array(
+        '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t('Specimens') . '</h2>' : ''),
+        'content' => cdm_dataportal_taxon_page_specimens($taxon), // returns render array
+        '#suffix' => '</div>',
+    );
+  }
+
+  // --- PAGE PART: KEYS --- //
+  if ($identificationKeyCount == 1 && $page_part == 'keys'){
+    drupal_goto(path_to_key($polytomousKeysPager->records[0]->class, $polytomousKeysPager->records[0]->uuid));
+  }
+  else if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
+    $keys_html = '<div id="keys" class="page-part">';
+    if ($page_part == 'all') {
+      $keys_html .= '<h2>' . t('Keys') . '</h2>';
     }
-    if ($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')) {
-        taxon_page_tabs_hidden('keys');
+    $keys_html .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
+    $keys_html .= '</div>';
+    $render_array['keys'] = markup_to_render_array($keys_html, $weight++);
+  }
+
+
+  // adjust weights of page and toc elements according to the settings
+  $taxontabs_weights = get_array_variable_merged('cdm_taxonpage_tabs_weight', CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
+  foreach($taxontabs_weights as $tab_key => $weight){
+    if(isset($render_array[$tab_key])){
+      $render_array[$tab_key]['#weight'] = $weight;
     }
-
-    if ($tabsToDisplay["Synonymy"] == '0') {
-        taxon_page_tabs_hidden('synonymy');
-    }
-
-    // -------------------------------------------- //
-
-    $render_array['back_to_search'] = markup_to_render_array(theme('cdm_back_to_search_result_button'), -103);
-
-    if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR) && isset($_REQUEST['acceptedFor'])) {
-        $render_array['accepted_for'] = markup_to_render_array(theme('cdm_acceptedFor', array('acceptedFor' => $_REQUEST['acceptedFor'])), $weight++);
-    }
-
-    // --- PAGE PART: DESCRIPTION --- //
-    if ($page_part == 'description' || $page_part == 'all') {
-
-        $merged_tree = merged_taxon_feature_tree($taxon);
+  }
 
 
-        $render_array['general'] = compose_cdm_taxon_page_profile($taxon, $merged_tree, $media);
-        $render_array['general']['#weight'] = $weight++;
-        $render_array['general']['#prefix'] = '<div id="general" class="page-part">';
-        $render_array['general']['#suffix'] = '</div>';
-    }
+  // set up the TOC for the pages which contain all pageparts
+  if($page_part == 'all') {
 
-    // --- PAGE PART: IMAGES --- //
-    if (array_search('images', taxon_page_tabs_hidden()) === FALSE && ($page_part == 'images' || $page_part == 'all')) {
-        $images_html = '<div id="images" class="page-part">';
-        if ($page_part == 'all') {
-            $images_html .= '<h2>' . t('Images') . '</h2>';
-        }
-        // Get the image gallery as configured by the admin.
-        $taxon_image_gallery = call_user_func_array('taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'), array(
-            $taxon,
-            $media,
-        ));
-        $images_html .= $taxon_image_gallery;
-        $images_html .= '</div>';
-        $render_array['images'] = markup_to_render_array($images_html, $weight++);
-    }
-
-    // --- PAGE PART: SYNONYMY --- //
-    if (($page_part == 'synonymy' || $page_part == 'all')) {
-        $synonymy_html = '<div id="synonymy" class="page-part">';
-        if ($page_part == 'all') {
-            $synonymy_html .= '<h2>' . t('Synonymy') . '</h2>';
-        }
-        $addAcceptedTaxon = variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
-        $synonymy_html .= theme('cdm_taxon_page_synonymy', array('taxon' => $taxon, 'addAcceptedTaxon' => $addAcceptedTaxon));
-
-        $synonymy_html .= '</div>';
-        $render_array['synonymy'] = markup_to_render_array($synonymy_html, $weight++);
-
-    }
-
-    // --- PAGE PART: SPECIMENS --- //
-    if ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')) {
-        $render_array['specimens'] = array(
-            '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t('Specimens') . '</h2>' : ''),
-            'content' => cdm_dataportal_taxon_page_specimens($taxon), // returns render array
-            '#suffix' => '</div>',
-        );
-    }
-
-    // --- PAGE PART: KEYS --- //
-    if ($identificationKeyCount == 1 && $page_part == 'keys'){
-        drupal_goto(path_to_key($polytomousKeysPager->records[0]->class, $polytomousKeysPager->records[0]->uuid));
-    }
-    else if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
-        $keys_html = '<div id="keys" class="page-part">';
-        if ($page_part == 'all') {
-            $keys_html .= '<h2>' . t('Keys') . '</h2>';
-        }
-        $keys_html .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
-        $keys_html .= '</div>';
-        $render_array['keys'] = markup_to_render_array($keys_html, $weight++);
-    }
-
-
-    // adjust weights of page and toc elements according to the settings
-    $taxontabs_weights = get_array_variable_merged('cdm_taxonpage_tabs_weight', CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
-    foreach($taxontabs_weights as $tab_key => $weight){
-        if(isset($render_array[$tab_key])){
-            $render_array[$tab_key]['#weight'] = $weight;
-        }
-    }
-
-
-    // set up the TOC for the pages which contain all pageparts
-    if($page_part == 'all') {
-
-        asort($taxontabs_weights);
-        foreach(array_keys($taxontabs_weights) as $tab_key){
-            if(isset($render_array[$tab_key])){
-                if($tab_key != 'general'){
-                    // add entry for page part
-                    $toc_elements[] = array(
-                        'data' => l(t(ucfirst($tab_key)), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
-                        'class' => array('page-part-toc-item-' . $tab_key)
-                    );
-                } else {
-                    // add content of profile part instead
-                    if(isset($render_array['general'])) {
-                        // in case all tabs are shown at once the feature tocs
-                        // should be integrated into the tabs toc as sub list
-                        // and the profile image should be on top of the page
-                        if(isset($render_array['general']['taxon_description_feature_toc'])){;
-                            foreach ($render_array['general']['taxon_description_feature_toc']['#items'] as $profile_toc_item){
-                                $toc_elements[] = $profile_toc_item;
-                            }
-                            unset($render_array['general']['taxon_description_feature_toc']);
-                        }
-                    }
-                }
+    asort($taxontabs_weights);
+    foreach(array_keys($taxontabs_weights) as $tab_key){
+      if(isset($render_array[$tab_key])){
+        if($tab_key != 'general'){
+          // add entry for page part
+          $toc_elements[] = array(
+              'data' => l(t(ucfirst($tab_key)), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
+              'class' => array('page-part-toc-item-' . $tab_key)
+          );
+        } else {
+          // add content of profile part instead
+          if(isset($render_array['general'])) {
+            // in case all tabs are shown at once the feature tocs
+            // should be integrated into the tabs toc as sub list
+            // and the profile image should be on top of the page
+            if(isset($render_array['general']['taxon_description_feature_toc'])){;
+            foreach ($render_array['general']['taxon_description_feature_toc']['#items'] as $profile_toc_item){
+              $toc_elements[] = $profile_toc_item;
             }
+            unset($render_array['general']['taxon_description_feature_toc']);
+            }
+          }
         }
-
-        // move profile image in page structure
-        if(isset($render_array['general']['taxon_profile_image'])){
-            $render_array['profile_image'] = $render_array['general']['taxon_profile_image'];
-            $render_array['profile_image']['#weight'] = -100;
-            unset($render_array['general']['taxon_profile_image']);
-        }
-
-        // finally add the table of contents to the render array
-        $render_array['toc'] = array(
-            '#theme' => 'item_list',
-            '#items' => $toc_elements,
-            '#title' => t('Content'),
-            '#weight' => -101,
-            '#suffix' => '</div>',
-            '#prefix'=> '<div id="page-toc">'
-        );
+      }
     }
 
+    // move profile image in page structure
+    if(isset($render_array['general']['taxon_profile_image'])){
+      $render_array['profile_image'] = $render_array['general']['taxon_profile_image'];
+      $render_array['profile_image']['#weight'] = -100;
+      unset($render_array['general']['taxon_profile_image']);
+    }
 
-    return $render_array;
+    // finally add the table of contents to the render array
+    $render_array['toc'] = array(
+        '#theme' => 'item_list',
+        '#items' => $toc_elements,
+        '#title' => t('Content'),
+        '#weight' => -101,
+        '#suffix' => '</div>',
+        '#prefix'=> '<div id="page-toc">'
+    );
+  }
+
+
+  return $render_array;
 }
 
-/**
- * TODO move into description.inc or in cdm_api.module?
- *
- * @param $taxon
- * @param $distribution_node
- * @return array
- */
-function merged_taxon_feature_tree($taxon) {
+  /**
+   * TODO move into description.inc or in cdm_api.module?
+   *
+   * @param $taxon
+   * @param $distribution_node
+   * @return array
+   */
+  function merged_taxon_feature_tree($taxon) {
 
     // 1. fetch descriptions_by_featuretree but exclude the distribution feature
     $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $taxon->uuid, array(UUID_DISTRIBUTION));
@@ -605,47 +604,47 @@ function merged_taxon_feature_tree($taxon) {
     $distribution_node =& cdm_feature_tree_find_node($merged_tree->root->childNodes, UUID_DISTRIBUTION);
 
     if ($distribution_node) {
-        // 3. get the distributionInfoDTO
-        $query_parameters = cdm_distribution_filter_query();
-        $query_parameters['part'] = array('mapUriParams');
-        if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
-            $query_parameters['part'][] = 'tree';
-        }
-        else {
-            $query_parameters['part'][] = 'elements';
-        }
-        $query_parameters['omitLevels'] = array(UUID_NAMEDAREALEVEL_TDWGLEVEL_2);
-        $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
-        if ($customStatusColorsJson) {
-            $query_parameters['statusColors'] = $customStatusColorsJson;
-        }
+      // 3. get the distributionInfoDTO
+      $query_parameters = cdm_distribution_filter_query();
+      $query_parameters['part'] = array('mapUriParams');
+      if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
+        $query_parameters['part'][] = 'tree';
+      }
+      else {
+        $query_parameters['part'][] = 'elements';
+      }
+      $query_parameters['omitLevels'] = array(UUID_NAMEDAREALEVEL_TDWGLEVEL_2);
+      $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
+      if ($customStatusColorsJson) {
+        $query_parameters['statusColors'] = $customStatusColorsJson;
+      }
 
-        $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
-        // 4. get distribution TextData is there are any
-        $distribution_text_data = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
-            array(
-                'taxon' => $taxon->uuid,
-                'type' => 'TextData',
-                'features' => UUID_DISTRIBUTION
-            )
-        );
+      $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
+      // 4. get distribution TextData is there are any
+      $distribution_text_data = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
+        array(
+          'taxon' => $taxon->uuid,
+          'type' => 'TextData',
+          'features' => UUID_DISTRIBUTION
+        )
+      );
 
-        // 5. put all distribution data into the distribution feature node
-        if ($distribution_text_data //if text data exists
-            || ($distribution_info_dto && isset($distribution_info_dto->tree) && $distribution_info_dto->tree->rootElement->numberOfChildren > 0) // OR if tree element has distribution elements
-            || ($distribution_info_dto && !empty($distribution_info_dto->elements))
-        ) { // OR if DTO has distribution elements
-            $distribution_node->descriptionElements = array('#type' => 'DTO');
-            if ($distribution_text_data) {
-                $distribution_node->descriptionElements['TextData'] = $distribution_text_data;
-            }
-            if ($distribution_info_dto) {
-                $distribution_node->descriptionElements['DistributionInfoDTO'] = $distribution_info_dto;
-            }
+      // 5. put all distribution data into the distribution feature node
+      if ($distribution_text_data //if text data exists
+        || ($distribution_info_dto && isset($distribution_info_dto->tree) && $distribution_info_dto->tree->rootElement->numberOfChildren > 0) // OR if tree element has distribution elements
+        || ($distribution_info_dto && !empty($distribution_info_dto->elements))
+      ) { // OR if DTO has distribution elements
+        $distribution_node->descriptionElements = array('#type' => 'DTO');
+        if ($distribution_text_data) {
+          $distribution_node->descriptionElements['TextData'] = $distribution_text_data;
         }
+        if ($distribution_info_dto) {
+          $distribution_node->descriptionElements['DistributionInfoDTO'] = $distribution_info_dto;
+        }
+      }
     }
     return $merged_tree;
-}
+  }
 
 
 /**
@@ -674,97 +673,97 @@ function merged_taxon_feature_tree($taxon) {
  */
 function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
 
-    $render_array = array();
+  $render_array = array();
 
-    $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
+  $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
 
-    $hide_taxon_profile_image = FALSE;
-    if (variable_get('image_hide_rank', '0') != '0' && isset($taxon->name->rank->uuid)) {
-        $rankCompare = rank_compare($taxon->name->rank->uuid, variable_get('image_hide_rank', '-99'));
-        $hide_taxon_profile_image = ($rankCompare > -1);
+  $hide_taxon_profile_image = FALSE;
+  if (variable_get('image_hide_rank', '0') != '0' && isset($taxon->name->rank->uuid)) {
+    $rankCompare = rank_compare($taxon->name->rank->uuid, variable_get('image_hide_rank', '-99'));
+    $hide_taxon_profile_image = ($rankCompare > -1);
+  }
+
+  if ($taxon_profile_image_settings['show'] && !$hide_taxon_profile_image) {
+
+    $representationPart = new stdClass();
+    $attributes = array();
+    if (isset($media[0]->representations[0]->parts[0])) {
+      $representationPart = $media[0]->representations[0]->parts[0];
+      $attributes['alt'] = $representationPart->uri;
+
+      if(!empty($taxon_profile_image_settings['media_uri_query'])){
+        $representationPart->uri = $representationPart->uri
+        . (strpos($representationPart->uri, '?') !== FALSE ? '&' : '?')
+        . $taxon_profile_image_settings['media_uri_query'];
+      }
+    }
+    else {
+      // show placeholder image instead
+      if(!empty($taxon_profile_image_settings['custom_placeholder_image_on']) && !empty($taxon_profile_image_settings['custom_placeholder_image_fid'])){
+        // use the user provided image
+        $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
+        $url = file_create_url($profile_image_file->uri);
+        $image_info = image_get_info($profile_image_file->uri);
+        $representationPart->width = $image_info['width'];
+        $representationPart->height = $image_info['height'];
+        $representationPart->uri = $url;
+      } else {
+        // use the hard coded default
+        $representationPart->width = 184;
+        $representationPart->height = 144;
+        $representationPart->uri = base_path() .  drupal_get_path('module', 'cdm_dataportal') . '/images/no_picture.png';
+      }
+      $attributes['alt'] = "no image available";
     }
 
-    if ($taxon_profile_image_settings['show'] && !$hide_taxon_profile_image) {
+    $profile_image = theme('cdm_media_gallerie_image', array(
+        'mediaRepresentationPart' => $representationPart,
+        'maxExtend' => $taxon_profile_image_settings['maxextend'],
+        'addPassePartout' => FALSE,
+        'attributes' => $attributes,
+    ));
+    // NOTE: style="width:${maxextend}px' is needed for IE8 !!!
+    $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $taxon_profile_image_settings['maxextend'] . 'px">' . $profile_image. '</div>', -101);
+  }
 
-        $representationPart = new stdClass();
-        $attributes = array();
-        if (isset($media[0]->representations[0]->parts[0])) {
-            $representationPart = $media[0]->representations[0]->parts[0];
-            $attributes['alt'] = $representationPart->uri;
 
-            if(!empty($taxon_profile_image_settings['media_uri_query'])){
-                $representationPart->uri = $representationPart->uri
-                    . (strpos($representationPart->uri, '?') !== FALSE ? '&' : '?')
-                    . $taxon_profile_image_settings['media_uri_query'];
-            }
-        }
-        else {
-            // show placeholder image instead
-            if(!empty($taxon_profile_image_settings['custom_placeholder_image_on']) && !empty($taxon_profile_image_settings['custom_placeholder_image_fid'])){
-                // use the user provided image
-                $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
-                $url = file_create_url($profile_image_file->uri);
-                $image_info = image_get_info($profile_image_file->uri);
-                $representationPart->width = $image_info['width'];
-                $representationPart->height = $image_info['height'];
-                $representationPart->uri = $url;
-            } else {
-                // use the hard coded default
-                $representationPart->width = 184;
-                $representationPart->height = 144;
-                $representationPart->uri = base_path() .  drupal_get_path('module', 'cdm_dataportal') . '/images/no_picture.png';
-            }
-            $attributes['alt'] = "no image available";
-        }
+  // Render the sections for each feature
+  $render_array['taxon_description_features'] = compose_cdm_feature_nodes($merged_tree->root->childNodes, $taxon);
 
-        $profile_image = theme('cdm_media_gallerie_image', array(
-            'mediaRepresentationPart' => $representationPart,
-            'maxExtend' => $taxon_profile_image_settings['maxextend'],
-            'addPassePartout' => FALSE,
-            'attributes' => $attributes,
-        ));
-        // NOTE: style="width:${maxextend}px' is needed for IE8 !!!
-        $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $taxon_profile_image_settings['maxextend'] . 'px">' . $profile_image. '</div>', -101);
+  $bibliography_settings = get_bibliography_settings();
+  if($bibliography_settings['enabled'] == 1){
+    $bibliography_block = feature_block(t('Bibliography'));
+    $bibliography_block->content = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', '');
+
+    if(!empty($bibliography_block->content)){
+      $render_array['taxon_description_bibliography'] =  markup_to_render_array(
+        theme('block',
+          array(
+            'elements' => array(
+              '#block' => $bibliography_block,
+              '#children' => $bibliography_block->content,
+            )
+          )
+        ),
+        100 // weight
+      );
+      cdm_toc_list_add_item('Bibliography', 'bibliography');
     }
 
+  }
 
-    // Render the sections for each feature
-    $render_array['taxon_description_features'] = compose_cdm_feature_nodes($merged_tree->root->childNodes, $taxon);
+  // create the table of content
+  $toc = array(
+      '#theme' => 'item_list',
+    '#items' => cdm_toc_list(),
+      '#title' => t('Content'),
+    '#weight' => -100,                  // move to the top
+      '#suffix' => '</div>',
+      '#prefix'=> '<div id="page-toc">'
+  );
+  $render_array['taxon_description_feature_toc'] = $toc;
 
-    $bibliography_settings = get_bibliography_settings();
-    if($bibliography_settings['enabled'] == 1){
-        $bibliography_block = feature_block(t('Bibliography'));
-        $bibliography_block->content = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', '');
-
-        if(!empty($bibliography_block->content)){
-            $render_array['taxon_description_bibliography'] =  markup_to_render_array(
-                theme('block',
-                    array(
-                        'elements' => array(
-                            '#block' => $bibliography_block,
-                            '#children' => $bibliography_block->content,
-                        )
-                    )
-                ),
-                100 // weight
-            );
-            cdm_toc_list_add_item('Bibliography', 'bibliography');
-        }
-
-    }
-
-    // create the table of content
-    $toc = array(
-        '#theme' => 'item_list',
-        '#items' => cdm_toc_list(),
-        '#title' => t('Content'),
-        '#weight' => -100,                  // move to the top
-        '#suffix' => '</div>',
-        '#prefix'=> '<div id="page-toc">'
-    );
-    $render_array['taxon_description_feature_toc'] = $toc;
-
-    return $render_array;
+  return $render_array;
 }
 
 
@@ -788,17 +787,17 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
  *   The array of tabs
  */
 function taxon_page_tabs_hidden($add_tab = NULL) {
-    $tabs = &drupal_static(__FUNCTION__);
+  $tabs = &drupal_static(__FUNCTION__);
 
-    if(!isset($tabs)){
-        $tabs = array();
-    }
+  if(!isset($tabs)){
+    $tabs = array();
+  }
 
-    if (isset($add_tab) && !array_key_exists($add_tab, $tabs)) {
-        $tabs[] = $add_tab;
-    }
+  if (isset($add_tab) && !array_key_exists($add_tab, $tabs)) {
+    $tabs[] = $add_tab;
+  }
 
-    return $tabs;
+  return $tabs;
 }
 
 /**
@@ -812,20 +811,20 @@ function taxon_page_tabs_hidden($add_tab = NULL) {
  */
 function cdm_dataportal_preprocess_menu_local_tasks(&$variables) {
 
-    $hidden_tabs = taxon_page_tabs_hidden();
+  $hidden_tabs = taxon_page_tabs_hidden();
 
-    if (is_array($variables['primary'])) {
-        foreach ($variables['primary'] as $key => &$element) {
+  if (is_array($variables['primary'])) {
+    foreach ($variables['primary'] as $key => &$element) {
 
-            // 1. Remove the tabs to be hidden
-            foreach ($hidden_tabs as $tab) {
-                if ($element['#link']['path'] == 'cdm_dataportal/taxon/%/' . $tab) {
-                    // remove the tab
-                    unset($variables['primary'][$key]);
-                }
-            }
+      // 1. Remove the tabs to be hidden
+      foreach ($hidden_tabs as $tab) {
+        if ($element['#link']['path'] == 'cdm_dataportal/taxon/%/' . $tab) {
+          // remove the tab
+          unset($variables['primary'][$key]);
         }
+      }
     }
+  }
 }
 
 
@@ -843,11 +842,11 @@ function cdm_dataportal_preprocess_menu_local_tasks(&$variables) {
  */
 function cdm_dataportal_preprocess_menu_local_task(&$variables) {
 
-    $link = $variables['element']['#link'];
-    if (preg_match('/cdm_dataportal\/.*\/refresh$/', $link['href'])) {
-        $link['title'] = '<img class="refresh" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/view-refresh.png' . '" alt="' . check_plain($link['title']) . '" title="' . check_plain($link['title']) . '"/>';
-        $link['localized_options']['html'] = TRUE;
+  $link = $variables['element']['#link'];
+  if (preg_match('/cdm_dataportal\/.*\/refresh$/', $link['href'])) {
+    $link['title'] = '<img class="refresh" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/view-refresh.png' . '" alt="' . check_plain($link['title']) . '" title="' . check_plain($link['title']) . '"/>';
+    $link['localized_options']['html'] = TRUE;
 
-        $variables['element']['#link'] = $link;
-    }
+    $variables['element']['#link'] = $link;
+  }
 }
