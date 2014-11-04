@@ -161,16 +161,28 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                             $molecularData .= createHTMLLink($molecular->providerLink);
                         }
                         //contig link
-                        if(isset($molecular->contigLinkToPrimerList)){
+                        if(isset($molecular->contigFiles[0])){//FIXME check if empty
                             $molecularData .= "[";
-                            foreach($derivateHierarchy->molecularDataList->contigLinkToPrimerList as $contigLink => $primerList){
-                                $molecularData .=  createHTMLLink($contigLink);
-                                //primer links
-
+                            if(isset($molecular->contigFiles)){
+                                foreach($molecular->contigFiles as $contigFile){
+                                    if(isset($contigFile->contigLink)){
+                                        $molecularData .=  createHTMLLink($contigFile->contigLink);
+                                        $molecularData .= " ";
+                                        //primer links
+                                        $molecularData .= createHTMLLinks($contigFile->primerLinks);
+                                        if(isset($contigFile->primerLinks)){
+                                            foreach($contigFile->primerLinks as $primerLink){
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                $molecularData .= "no contig";
                             }
                             $molecularData .= "]";
-
                         }
+                        //FIXME separate with comma (remove trailing comma)
                     }
                     // - detail images
                     $detailImages = createLinks($derivateHierarchy->detailImages);
@@ -358,7 +370,7 @@ function createHTMLLinks($linkList)
     $html = "";
     if ($linkList) {
         foreach ($linkList as $link) {
-            $html .= createHTMLLink($link);
+            $html .= createHTMLLink($link)." ";
         }
     }
     return $html;
