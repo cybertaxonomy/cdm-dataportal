@@ -188,8 +188,8 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     $detailImages = createLinks($derivateHierarchy->detailImages);
 
                     $detail_html = "";
-                    if($taxonName){
-                        $detail_html .= "<b>Name:</b> " . $taxonName . "<br>";
+                    if(variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as') && $taxonName){
+                        $detail_html .= "<b>Determined as:</b> " . $taxonName . "<br>";
                     }
                     if($protologue){
                         //$detail_html .= "<b>Protologue:</b> " . $protologue . "<br>"
