@@ -470,7 +470,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
     // only needed as final option, when the settings are not having a default
     $default = array(
       'DEFAULT' => array(
-        'as_list' => 'ul',
+        'as_list' => 'div',
         'link_to_reference' => FALSE,
         'link_to_name_used_in_source' => TRUE,
         'sources_as_content' => TRUE,
@@ -484,7 +484,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
     // will be used as preset in the settings
     $other_themes_default = array(
       'DEFAULT' => array(
-        'as_list' => 'ul',
+        'as_list' => 'div',
         'link_to_reference' => FALSE,
         'link_to_name_used_in_source' => TRUE,
         'sources_as_content' => FALSE,
