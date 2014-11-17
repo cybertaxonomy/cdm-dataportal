@@ -235,7 +235,10 @@ function feature_block($feature_name, $feature = null) {
    * @return String
    *    The foot note keys
    */
-  function cdm_create_description_element_footnotes($description_element, $separator = ',', $footnote_list_key_suggestion = null){
+  function cdm_create_description_element_footnotes($description_element, $separator = ',',
+            $footnote_list_key_suggestion = null, $do_link_to_reference = FALSE,
+            $do_link_to_name_used_in_source = FALSE
+      ){
 
 
     // Annotations as footnotes.
@@ -251,7 +254,9 @@ function feature_block($feature_name, $feature = null) {
           original_source_footnote_list_key($footnote_list_key_suggestion),
           theme('cdm_OriginalSource', array(
             'source' => $source,
-            'doLink' => FALSE,
+            'doLink' => $do_link_to_reference,
+            'do_link_to_name_used_in_source' => $do_link_to_name_used_in_source
+
           )),
           $original_source_footnote_tag
         );

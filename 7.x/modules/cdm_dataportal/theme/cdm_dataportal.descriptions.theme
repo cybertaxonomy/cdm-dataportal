@@ -239,6 +239,9 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
     $distribution_info_dto = NULL;
     $distribution_sortOutArray = FALSE;
 
+    $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
+
+    // TODO use feature_block_settings instead of 'distribution_sort'
     if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
       $distribution_glue = '';
       $distribution_enclosingTag = 'dl';
@@ -694,7 +697,8 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
         $referenceCitation = theme('cdm_OriginalSource',
           array(
             'source' => $source,
-            'doLink' => $feature_block_settings['link_to_reference'] == 1
+            'doLink' => $feature_block_settings['link_to_reference'] == 1,
+            'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1,
           )
         );
 
@@ -728,7 +732,9 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
     } // END of references inline
 
     if ($feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1) {
-      $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
+      $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion,
+        $feature_block_settings['link_to_reference'] == 1,
+        $feature_block_settings['link_to_name_used_in_source'] == 1);
     }
 
     return $annotations_and_sources;
@@ -778,7 +784,7 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
       $markup = $source->originalNameString;
     }
 
-    if ($plaintext) {
+    if ($plaintext) { // checks if we have any content
       $name_in_source_render_array = markup_to_render_array($markup);
       $name_in_source_render_array['#_plaintext'] = $plaintext;
     }
@@ -1162,11 +1168,15 @@ function footnotes_key_compare($a, $b) {
 function theme_cdm_description_ordered_distributions($variables) {
 
   $distribution_tree = $variables['distribution_tree'];
+  // TODO pass as parameter
+  $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
 
   // Returning NULL if there are no description elements.
   if ($distribution_tree == null) {
     return NULL;
   }
+
+
 
   // Initialization of some variables.
   $out = '';
@@ -1197,7 +1207,11 @@ function theme_cdm_description_ordered_distributions($variables) {
               if (_is_original_source_type($source)) {
                 $fn_key3 = FootnoteManager::addNewFootnote(
                   original_source_footnote_list_key(),
-                  theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)
+                  theme('cdm_OriginalSource', array(
+                      'source' => $source,
+                      'doLink' => $feature_block_settings['link_to_reference'] == 1,
+                      'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1
+                    )
                 ));
                 cdm_add_footnote_to_array($fnKeysLevel3, $fn_key3);
               }
@@ -1217,7 +1231,11 @@ function theme_cdm_description_ordered_distributions($variables) {
                 if (_is_original_source_type($source)) {
                   $fn_key4 = FootnoteManager::addNewFootnote(
                       original_source_footnote_list_key(),
-                      theme('cdm_OriginalSource', array('source' => $source, 'doLink' => FALSE)));
+                      theme('cdm_OriginalSource', array(
+                        'source' => $source,
+                        'doLink' => $feature_block_settings['link_to_reference'] == 1,
+                        'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1
+                      )));
                   cdm_add_footnote_to_array($fnKeysLevel4, $fn_key4);
                 }
               }
@@ -1637,6 +1655,9 @@ function theme_cdm_UseDescription($variables) {
   if ($descriptions == NULL) {
     return;
   }
+
+  $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
+
   $descriptionSynonyms = '';
   $descriptionOut = '';
   $synonymOut = '';
@@ -1682,7 +1703,10 @@ function theme_cdm_UseDescription($variables) {
         $descriptionOut .= $name_used_in_source_link_to_show_use . ': ';
         $descriptionOut .= $useSummary;
         foreach ($description->sources as $source) {
-          $descriptionOut .= " (" . theme('cdm_OriginalSource', array('source' => $source, 'doLink' => TRUE)) . ")";
+          $descriptionOut .= " (" . theme('cdm_OriginalSource', array(
+              'source' => $source,
+              'doLink' => $feature_block_settings['link_to_reference'] == 1,
+              'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1)) . ")";
         }
         $hasUseRecords = FALSE;
         $descriptionUseRecordOut = '<div id=useRecords><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
@@ -1712,7 +1736,11 @@ function theme_cdm_UseDescription($variables) {
         $synonymOut .= $name_used_in_source_link_to_show_use . ': ';
         $synonymOut .= $useSummary;
         foreach ($description->sources as $source) {
-          $synonymOut .= " (" . theme('cdm_OriginalSource', array('source' => $source, 'doLink' => TRUE)) . ")";
+          $synonymOut .= " (" . theme('cdm_OriginalSource', array(
+              'source' => $source,
+              'doLink' => $feature_block_settings['link_to_reference'] == 1,
+              'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1
+            )) . ")";
         }
 
         $hasUseRecords = FALSE;

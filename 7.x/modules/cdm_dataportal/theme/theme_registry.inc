@@ -192,7 +192,7 @@ function cdm_dataportal_theme() {
         'doLink' => FALSE,
         'referenceStyle' => NULL,
     )),
-    'cdm_OriginalSource' => array('variables' => array('source' => NULL, 'doLink' => TRUE)),
+    'cdm_OriginalSource' => array('variables' => array('source' => NULL, 'doLink' => TRUE, 'do_link_to_name_used_in_source' => FALSE)),
 
     // Themes in cdm_dataportal.taxon.theme.
     'cdm_search_results' => array('variables' => array(
