@@ -609,7 +609,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   function merged_taxon_feature_tree($taxon) {
 
     // 1. fetch descriptions_by_featuretree but exclude the distribution feature
-    $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_featureTree(), $taxon->uuid, array(UUID_DISTRIBUTION));
+    $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_feature_tree(), $taxon->uuid, array(UUID_DISTRIBUTION));
 
 
     // 2. find the distribution feature node

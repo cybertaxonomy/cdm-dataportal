@@ -253,7 +253,7 @@ function get_classifications_for_taxon($taxon) {
  * @return mixed
  *   A cdm FeatureTree object.
  */
-function get_profile_featureTree() {
+function get_profile_feature_tree() {
   static $profile_featureTree;
 
   if($profile_featureTree == NULL) {

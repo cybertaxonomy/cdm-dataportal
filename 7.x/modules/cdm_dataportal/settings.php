@@ -4,99 +4,95 @@
  * CDM Dataportal settings.
  */
 
-// TODO Genus UUID.
-define('DEFAULT_TAXONTREE_RANKLIMIT', '1b11c34c-48a8-4efa-98d5-84f7f66ef43a');
-define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
-define ('CDM_TAXONTREE_INCLUDES', 'taxontree_includes');
+  // TODO Genus UUID.
 
-define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
-define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
-define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
-define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 1);
-define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
-define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
-define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
-define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
+  define('DEFAULT_TAXONTREE_RANKLIMIT', '1b11c34c-48a8-4efa-98d5-84f7f66ef43a');
+  define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
+  define('CDM_TAXONTREE_INCLUDES', 'taxontree_includes');
 
-/* annotationTypeKeys */
-$annotationTypeKeys = array_keys(cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE));
-if (in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
-  $annotationTypeKeys = array_flip($annotationTypeKeys);
+  define('NO_SORT', -1);
+  define('SORT_HIERARCHICAL', 9);
 
-  // Technical annotation are off by default.
-  unset($annotationTypeKeys[UUID_ANNOTATION_TYPE_TECHNICAL]);
-  $annotationTypeKeys = array_flip($annotationTypeKeys);
-  // Additional value for the NULL case.
-  $annotationTypeKeys[] = 'NULL_VALUE';
-}
-define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
+  define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
+  define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
+  define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
+  define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 1);
+  define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
+  define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
+  define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
+  define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
 
-define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE', 'bibliography_for_original_source');
-define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT', serialize(array(
-  'enabled' => 0,
-  'key_format' => 'ALPHA'
-)));
+  /* annotationTypeKeys */
+  $annotationTypeKeys = array_keys(cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE));
+  if (in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
+    $annotationTypeKeys = array_flip($annotationTypeKeys);
 
-/* taxonRelationshipTypes */
-define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
+    // Technical annotation are off by default.
+    unset($annotationTypeKeys[UUID_ANNOTATION_TYPE_TECHNICAL]);
+    $annotationTypeKeys = array_flip($annotationTypeKeys);
+    // Additional value for the NULL case.
+    $annotationTypeKeys[] = 'NULL_VALUE';
+  }
+  define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
 
-
-
-/* ---- MAP SETTING CONSTANTS ---- */
-/**
- * @var array of URIs eg. http://edit.africamuseum.be"
- *   An options array
- */
-define('EDIT_MAPSERVER_URI', serialize(
-    array(
-      'http://edit.africamuseum.be'=>'Primary (http://edit.africamuseum.be)',
-      'http://edit.br.fgov.be'=>'Secondary (http://edit.br.fgov.be)',
-    )
-  )
-);
-define('EDIT_MAPSERVER_PATH', '/edit_wp5');
-/**
- * @var array of versions eg. "v1.2"
- *   An options array
- */
-define('EDIT_MAPSERVER_VERSION', serialize(
-    array(
-      'v1' => 'v1' ,
-      'v1.1' => 'v1.1',
-      'v1.2_dev' => 'v1.2_dev',
-      'v1.2' => 'v1.2',
-      'v1.3_dev' => 'v1.3_dev',
-      'v1.4_dev' => 'v1.4_dev'
-    )
-  )
-);
-define('EDIT_MAPSERVER_URI_DEFAULT', 'http://edit.africamuseum.be');
-define('EDIT_MAPSERVER_VERSION_DEFAULT', 'v1.2');
-
-// --- Taxon profile settings --- /
-define('LAYOUT_SETTING_PREFIX', 'layout_');
-define('FEATURE_TREE_LAYOUT_DEFAULTS', serialize(
-  array(
-    'enabled' => FALSE,
-    'enclosingTag' => 'ul',
-    'entryEnclosingTag' => 'li',
-    'glue' => ' ',
+  define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE', 'bibliography_for_original_source');
+  define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT', serialize(array(
+    'enabled' => 0,
+    'key_format' => 'ALPHA'
   )));
 
-define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
-define('CDM_TAXON_PROFILE_IMAGE', 'cdm_taxon_profile_image');
-define('CDM_TAXON_PROFILE_IMAGE_DEFAULT', serialize(
-    array(
-        'show' => 0,
-        'maxextend' => 184,
-        'media_uri_query' => '',
-        'custom_placeholder_image_on' => 0,
-        'custom_placeholder_image_fid' => ''
-    )
-  )
-);
+  /* taxonRelationshipTypes */
+  define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
 
-define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
+
+
+    /* ---- MAP SETTING CONSTANTS ---- */
+  /**
+   * @var array of URIs eg. http://edit.africamuseum.be"
+   *   An options array
+   */
+  define('EDIT_MAPSERVER_URI', serialize(
+      array(
+        'http://edit.africamuseum.be'=>'Primary (http://edit.africamuseum.be)',
+        'http://edit.br.fgov.be'=>'Secondary (http://edit.br.fgov.be)',
+      )
+    )
+  );
+  define('EDIT_MAPSERVER_PATH', '/edit_wp5');
+  /**
+   * @var array of versions eg. "v1.2"
+   *   An options array
+   */
+  define('EDIT_MAPSERVER_VERSION', serialize(
+      array(
+        'v1' => 'v1' ,
+        'v1.1' => 'v1.1',
+        'v1.2_dev' => 'v1.2_dev',
+        'v1.2' => 'v1.2',
+        'v1.3_dev' => 'v1.3_dev',
+        'v1.4_dev' => 'v1.4_dev'
+      )
+    )
+  );
+  define('EDIT_MAPSERVER_URI_DEFAULT', 'http://edit.africamuseum.be');
+  define('EDIT_MAPSERVER_VERSION_DEFAULT', 'v1.2');
+
+    // --- Taxon profile settings --- /
+  define('DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP', 'distribution_textdata_on_top');
+  define('CDM_TAXON_PROFILE_IMAGE', 'cdm_taxon_profile_image');
+  define('CDM_TAXON_PROFILE_IMAGE_DEFAULT', serialize(
+      array(
+          'show' => 0,
+          'maxextend' => 184,
+          'media_uri_query' => '',
+          'custom_placeholder_image_on' => 0,
+          'custom_placeholder_image_fid' => ''
+      )
+    )
+  );
+  define('FEATURE_BLOCK_SETTINGS', 'feature_block_settings');
+
+  define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
 
 /**
  * Returns the array of implemented taxon page tabs.
@@ -428,7 +424,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *    - link_to_name_used_in_source": boolean
    *        whether to show name is source information as link which will point to the according name page
    *    - sources_as_content (boolean)
-   *        TRUE:
+   *        TRUE (int: 1):
    *          1. If element is of the CDM type TextData and the text is not empty the source references will be
    *             appended in brackets like "text (source references)". If the original source has name in source
    *             information it will be appended to the citation string,
@@ -436,7 +432,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *          2. if the text of the TextData is empty, the original source citations are the only content
    *             (e.g. use case CITATION) and are not put into brackets. In this case the nameInSource is
    *             prepended to the citation string like: "name in source: citation"
-   *        FALSE:
+   *        FALSE (int: 0):
    *          Original sources are put into the bibliography(=references) pseudo feature block. If the original source
    *          citations are the only content, the resulting feature block content would only consist of footnotes.
    *          In this case the display of the respective feature block is suppressed.
@@ -449,7 +445,9 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *    - sort_elements
    *        whether and how to sort the elements
    *        possible values are the constants SORT_ASC, SORT_DESC, NULL,
-   *        some feature types (Distribution) also support: SORT_HIERARCHICAL (TODO option to exclude levels)
+   *        some feature types (Distribution) also support: SORT_HIERARCHICAL (
+   *        TODO option to exclude levels, put in special?,
+   *        TODO make use of this setting in compose_cdm_feature_block_elements())
    *    - element_tag
    *        specifies the tag to be used for creating the elements, only applies if "as_list" == 'div'
    *        possible values are span | div. the proper inner tag name can be retrieved by the function
@@ -460,24 +458,26 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *  }
    *
    */
-  function get_feature_block_settings($feature_uuid = 'DEFAULT'){
+  function get_feature_block_settings($feature_uuid = 'DEFAULT') {
     // the default must conform to the default parameter values of
     // compose_cdm_feature_block_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
-    // theme_cdm_descriptionElementTextData() : asListElement = NULL
+    // compose_cdm_descriptionElementTextData() : asListElement = NULL
 
     // see #3257 (implement means to define the features to show up in the taxonprofile and in the specimen descriptions)
+
+    // ---- DEFAULTS settings
 
     // only needed as final option, when the settings are not having a default
     $default = array(
       'DEFAULT' => array(
         'as_list' => 'div',
-        'link_to_reference' => FALSE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => TRUE,
-        'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => NULL,
+        'link_to_reference' => 0,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 1,
+        'sources_as_content_to_bibliography' => 0,
+        'sort_elements' => NO_SORT,
         'glue' => '',
-        'element_tag'=> NULL
+        'element_tag' => NULL
       )
     );
 
@@ -485,148 +485,155 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
     $other_themes_default = array(
       'DEFAULT' => array(
         'as_list' => 'div',
-        'link_to_reference' => FALSE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => FALSE,
-        'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => NULL,
+        'link_to_reference' => 0,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 0,
+        'sources_as_content_to_bibliography' => 0,
+        'sort_elements' => NO_SORT,
         'glue' => '',
-        'element_tag'=> NULL
+        'element_tag' => NULL
       ),
       UUID_CITATION => array(
         'as_list' => 'div',
-        'link_to_reference' => FALSE,
-        'link_to_name_used_in_source' => FALSE,
-        'sources_as_content' => TRUE,
-        'sources_as_content_to_bibliography' => FALSE,
+        'link_to_reference' => 0,
+        'link_to_name_used_in_source' => 0,
+        'sources_as_content' => 1,
+        'sources_as_content_to_bibliography' => 0,
         'sort_elements' => SORT_ASC,
         'glue' => '',
-        'element_tag'=> 'div'
+        'element_tag' => 'div'
       ),
       UUID_DISTRIBUTION => array(
         'as_list' => 'div', // currently ignored
-        'link_to_reference' => FALSE,
-        'link_to_name_used_in_source' => FALSE,
-        'sources_as_content' => FALSE,
-        'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => NULL, // will cause ...
+        'link_to_reference' => 0,
+        'link_to_name_used_in_source' => 0,
+        'sources_as_content' => 0,
+        'sources_as_content_to_bibliography' => 0,
+        'sort_elements' => NO_SORT, // will cause ...
         'glue' => '',
-        'element_tag'=> 'div'
+        'element_tag' => 'div',
+        'special' => array()
       ),
       UUID_COMMON_NAME => array(
         'as_list' => 'div',
-        'link_to_reference' => FALSE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => FALSE,
-        'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => NULL,
+        'link_to_reference' => 0,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 0,
+        'sources_as_content_to_bibliography' => 0,
+        'sort_elements' => NO_SORT,
         'glue' => '',
-        'element_tag'=> 'span'
+        'element_tag' => 'span'
       ),
-
     );
+
+    // ---- Special DEFAULTS for existing portals
+    // TODO:
+    // this can be removed once the feature block
+    // settings have been deployed for the first time to these portals
 
     $cichorieae_default = array(
       'DEFAULT' => array(
         'as_list' => 'div',
-        'link_to_reference' => TRUE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => TRUE,
-        'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => NULL,
+        'link_to_reference' => 1,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 1,
+        'sources_as_content_to_bibliography' => 0,
+        'sort_elements' => NO_SORT,
         'glue' => '',
-        'element_tag'=> 'div'
+        'element_tag' => 'div'
       ),
       UUID_CITATION => array(
         'as_list' => 'div',
-        'link_to_reference' => FALSE,
-        'link_to_name_used_in_source' => FALSE,
-        'sources_as_content' => TRUE,
-        'sources_as_content_to_bibliography' => FALSE,
+        'link_to_reference' => 0,
+        'link_to_name_used_in_source' => 0,
+        'sources_as_content' => 1,
+        'sources_as_content_to_bibliography' => 0,
         'sort_elements' => SORT_ASC,
         'glue' => '',
-        'element_tag'=> 'div'
+        'element_tag' => 'div'
       ),
       UUID_CHROMOSOMES_NUMBERS => array(
         'as_list' => 'ul',
-        'link_to_reference' => TRUE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => TRUE,
-        'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => NULL,
+        'link_to_reference' => 1,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 1,
+        'sources_as_content_to_bibliography' => 0,
+        'sort_elements' => NO_SORT,
         'glue' => '',
-        'element_tag'=> 'div'
+        'element_tag' => 'div'
       ),
       UUID_CHROMOSOMES => array(
         'as_list' => 'ul',
-        'link_to_reference' => FALSE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => TRUE,
-        'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => NULL,
+        'link_to_reference' => 0,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 1,
+        'sources_as_content_to_bibliography' => 0,
+        'sort_elements' => NO_SORT,
         'glue' => '',
-        'element_tag'=> 'div'
+        'element_tag' => 'div'
       ),
       UUID_COMMON_NAME => array(
         'as_list' => 'div',
-        'link_to_reference' => FALSE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => FALSE,
-        'sources_as_content_to_bibliography' => FALSE,
-        'sort_elements' => NULL,
+        'link_to_reference' => 0,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 0,
+        'sources_as_content_to_bibliography' => 0,
+        'sort_elements' => NO_SORT,
         'glue' => '',
-        'element_tag'=> 'span'
+        'element_tag' => 'span'
       ),
     );
 
     $palmweb_default = array(
       'DEFAULT' => array(
         'as_list' => 'ul',
-        'link_to_reference' => TRUE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => TRUE,
-        'sources_as_content_to_bibliography' => TRUE,
-        'sort_elements' => NULL,
+        'link_to_reference' => 1,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 1,
+        'sources_as_content_to_bibliography' => 1,
+        'sort_elements' => NO_SORT,
         'glue' => '',
-        'element_tag'=> NULL
+        'element_tag' => NULL
       ),
       UUID_CITATION => array(
         'as_list' => 'ul',
-        'link_to_reference' => TRUE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => FALSE,
-        'sources_as_content_to_bibliography' => TRUE,
+        'link_to_reference' => 1,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 0,
+        'sources_as_content_to_bibliography' => 1,
         'sort_elements' => SORT_ASC,
         'glue' => '',
-        'element_tag'=> 'div'
+        'element_tag' => 'div'
       ),
       UUID_DISTRIBUTION => array(
         'as_list' => 'div', // currently ignored
-        'link_to_reference' => TRUE,
-        'link_to_name_used_in_source' => TRUE,
-        'sources_as_content' => TRUE, // FIXME seems to have no effect see Acanthophoenix rousselii (palmae)
-        'sources_as_content_to_bibliography' => TRUE,
-        'sort_elements' => NULL, // will cause ...
+        'link_to_reference' => 1,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 1, // FIXME seems to have no effect see Acanthophoenix rousselii (palmae)
+        'sources_as_content_to_bibliography' => 1,
+        'sort_elements' => NO_SORT, // will cause ...
         'glue' => '',
-        'element_tag'=> 'div'
+        'element_tag' => 'div',
+        'special' => array()
       ),
     );
 
     $cyprus_default = $cichorieae_default;
-    $cyprus_default[UUID_DISTRIBUTION ]  =  array(
+    $cyprus_default[UUID_DISTRIBUTION] = array(
       'as_list' => 'div', // currently ignored
-      'link_to_reference' => FALSE,
-      'link_to_name_used_in_source' => FALSE,
-      'sources_as_content' => FALSE,
-      'sources_as_content_to_bibliography' => FALSE,
-      'sort_elements' => NULL, // will cause ...
+      'link_to_reference' => 0,
+      'link_to_name_used_in_source' => 0,
+      'sources_as_content' => 0,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => NO_SORT, // will cause ...
       'glue' => '',
-      'element_tag'=> 'div'
+      'element_tag' => 'div',
+      'special' => array()
     );
 
     $default_theme = variable_get('theme_default', NULL);
 
-    switch ($default_theme){
+    switch ($default_theme) {
       case 'garland_cichorieae':
         $settings_for_theme = $cichorieae_default;
         break;
@@ -645,16 +652,26 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         $settings_for_theme = $palmweb_default;
         break;
       default:
-        $settings_for_theme =  $other_themes_default;
+        $settings_for_theme = $other_themes_default;
+    }
+    // ---- END of DEFAULTS
+
+    $saved_settings = variable_get(FEATURE_BLOCK_SETTINGS, NULL);
+
+    $feature_block_setting = $default['DEFAULT'];
+
+    if (isset($saved_settings[$feature_uuid])) {
+      $feature_block_setting = $saved_settings[$feature_uuid];
+    }
+    else if (isset($settings_for_theme[$feature_uuid])) {
+      $feature_block_setting = $settings_for_theme[$feature_uuid];
+    }
+    else if (isset($settings_for_theme['DEFAULT'])) {
+      $feature_block_setting = $settings_for_theme['DEFAULT'];
     }
 
-    if(isset($settings_for_theme[$feature_uuid])){
-      return $settings_for_theme[$feature_uuid];
-    } else if(isset($settings_for_theme['DEFAULT'])){
-      return $settings_for_theme['DEFAULT']; // the fallback cascade will usually stop here since all settings should have a default
-    } else {
-      return $default['DEFAULT'];
-    }
+
+    return $feature_block_setting;
 }
   /**
  * returns the current setting for the original source bibliography
@@ -1555,7 +1572,7 @@ function cdm_settings_layout_taxon() {
     '#description' => t('<p>This section covers the settings related to the taxon
       profile tab, also known as the <strong>"General"</strong> tab.</p>'),
     '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsed' => FALSE,
   );
 
   // ---- PROFILE PICTURE ----//
@@ -1640,12 +1657,10 @@ function cdm_settings_layout_taxon() {
     }
   } else {
     $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_image_fid'] = array(
-        '#type' => 'hidden',
-        '#default_value' => $taxon_profile_image_settings['custom_placeholder_image_fid']
+      '#type' => 'hidden',
+      '#default_value' => $taxon_profile_image_settings['custom_placeholder_image_fid']
     );
   }
-
-
 
   $options = cdm_rankVocabulary_as_option();
   array_unshift($options, '-- DISABLED --');
@@ -1663,42 +1678,175 @@ function cdm_settings_layout_taxon() {
   $form_description = '<p>The different section in the taxon  profile can have images associated with them. These images are displayed in a gallery of thumbnails wich can be configuered here:</p>';
   $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
-  // ---- FEATURE TREE ---- //
-  $form['taxon_profile']['feature_trees'] = array(
+  // ---- FEATURE TREE BLOCKS ---- //
+  $form['taxon_profile']['feature_blocks'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Features'),
+    '#title' => t('Feature Blocks'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#description' => t("This section covers settings related to the taxon's
       <em>Feature Tree</em>. The <em>feature tree</em> are the taxon's
-      features such as description, distribution, common names, etc. that Drupal
-      will render at the taxon profile page."),
+      features such as description, distribution, common names"),
   );
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
-  $saved_uuid = variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
-  if(!isset($featureTrees['options'][$saved_uuid])) {
-    $saved_uuid = UUID_DEFAULT_FEATURETREE;
+  $profile_feature_tree = get_profile_feature_tree();
+  $profile_feature_tree_uuid = $profile_feature_tree->uuid;
+  if(!isset($featureTrees['options'][$profile_feature_tree_uuid])) {
+    $profile_feature_tree_uuid = UUID_DEFAULT_FEATURETREE;
   }
-  $form['taxon_profile']['feature_trees'][CDM_PROFILE_FEATURETREE_UUID] = array(
+  $form['taxon_profile']['feature_blocks'][CDM_PROFILE_FEATURETREE_UUID] = array(
     '#type' => 'radios',
-    '#title' => t('Taxon profile sections') . ':',
-    '#default_value' => $saved_uuid,
+    '#title' => t('Taxon profile feature tree') . ':',
+    '#default_value' => $profile_feature_tree_uuid,
     '#options' =>  $featureTrees['options'],
     '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
     '#options_suffixes' => $featureTrees['treeRepresentations'],
-    '#description' => t('Select the Feature Tree to be displayed at the taxon
-      profile. Click "Show Details" to see the Feature Tree elements.'
+    '#description' => t('The Feature Tree selected here define the feature blocks which are visible in the taxon
+      profile page.'
     ),
   );
-  $featureTrees = cdm_get_featureTrees_as_options();
-  $saved_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
-  if(!isset($featureTrees['options'][$saved_uuid])) {
-    $saved_uuid = NULL;
+
+  // ---- FEATURE TREE BLOCKS > LAYOUT PER FEATURE BLOCK ---- //
+  $profile_feature_tree = get_profile_feature_tree();
+
+  if (isset($profile_feature_tree->root->childNodes)) {
+
+    $form_feature_block_layout = array(
+      '#type' => 'fieldset',
+      '#tree' => true,
+      '#title' => t('Taxon profile feature block settings'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#description' => 'This section let\'s you define how each of the feature blocks is displayed.
+      A sub form is for each of the features of currently selected feature tree allows to configre each feature block individually.
+      The subforms have the following settings in common:<br />
+      <h6>List type:</h6><div>Whether the description elements are displayed as list or not. Three different list types are available</div>
+      <h6>Link to reference:</h6><div>Render the reference as link, ignored if the element is NOT a DescriptionElementSource</div>
+      <h6>Link to name used in source:</h6><div>Whether to show name is source information as link which will point to the according name page</div>
+      <h6>Sources as content:</h6><div><strong>If enabled:</strong><br />
+            <ol>
+            <li>If element is of the CDM type TextData and the text is not empty the source references will be
+                appended in brackets like "text (source references)". If the original source has name in source
+                information it will be appended to the citation string,
+                like : "(citation, as name in source; citation, as name in source)"</li>
+             <li>if the text of the TextData is empty, the original source citations are the only content
+                (e.g. use case CITATION) and are not put into brackets. In this case the nameInSource is
+                prepended to the citation string like: "name in source: citation"</li>
+            </ol>
+            <strong>If disabled:</strong><br />
+             Original sources are put into the bibliography(=references) pseudo feature block. If the original source
+             citations are the only content, the resulting feature block content would only consist of footnotes.
+             In this case the display of the respective feature block is suppressed.</div>
+      </dl>
+      <h6>Sources as content to bibliography:</h6><div>Only valid if <em>Sources as content</em> is enabled, will cause the sources to be also shown
+           in the bibliography.</div>
+      <h6>Sort elements:</h6><div>Whether and how to sort the elements
+           possible values are the constants SORT_ASC, SORT_DESC, NULL,
+           some feature types (Distribution) also support: SORT_HIERARCHICAL</div>
+      <h6>Element tag:</h6><div>The tag to be used for creating the elements, only applies if "List type" is set to <em>No list</em>
+           possible values are span or div. Developers: The proper inner tag name can be retrieved by the function
+           cdm_feature_block_element_tag_name()</div>',
+    );
+
+
+    $feature_list_layout_settings_disabled = FALSE;
+    foreach ($profile_feature_tree->root->childNodes as $featureNode) {
+
+      if (!$feature_list_layout_settings_disabled && isset($featureNode->feature)) {
+
+        // $subform_id must not exceed 45 characters, a uuid has 36 characters
+        $subform_id = $featureNode->feature->uuid;
+        $feature_block_setting = get_feature_block_settings($featureNode->feature->uuid);
+
+//        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
+
+        $form_feature_block_layout[$subform_id] = array(
+          '#type' => 'fieldset',
+          '#tree' => TRUE,
+          '#title' => $featureNode->feature->representation_L10n,
+          '#collapsible' => FALSE,
+          '#collapsed' => FALSE,
+        );
+
+        $form_feature_block_layout[$subform_id]['as_list'] = array(
+          '#type' => 'select',
+          '#title' => 'List type',
+          '#default_value' => $feature_block_setting['as_list'],
+          '#options' => array(
+            'div' => 'not as list',
+            'ul' => 'bullet list',
+            'ol' => 'numbered list',
+            'dl' => 'definition list'
+          ),
+        );
+
+        $form_feature_block_layout[$subform_id]['link_to_reference'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Link to reference'),
+          '#default_value' => $feature_block_setting['link_to_reference'],
+        );
+
+        $form_feature_block_layout[$subform_id]['link_to_name_used_in_source'] = array(
+          '#type' => 'checkbox',
+          '#title' => 'Link to name used in source',
+          '#default_value' => $feature_block_setting['link_to_name_used_in_source'],
+        );
+
+        $form_feature_block_layout[$subform_id]['sources_as_content'] = array(
+          '#type' => 'checkbox',
+          '#title' => 'Sources as content',
+          '#default_value' => $feature_block_setting['sources_as_content'],
+        );
+
+        $form_feature_block_layout[$subform_id]['sources_as_content_to_bibliography'] = array(
+          '#type' => 'checkbox',
+          '#title' => 'Sources as content to bibliography',
+          '#default_value' => $feature_block_setting['sources_as_content_to_bibliography'],
+        );
+
+        $form_feature_block_layout[$subform_id]['sort_elements'] = array(
+          '#type' => 'select',
+          '#title' => t('Sort elements'),
+          '#default_value' => $feature_block_setting['sort_elements'],
+          '#options' => array(
+            NO_SORT => 'No sorting',
+            SORT_ASC => 'Ascending',
+            SORT_DESC => 'Descending',
+            SORT_HIERARCHICAL => 'Hierachical'
+          ),
+          '#description' => 'NOT YET USED! only in preparation',
+        );
+
+        $form_feature_block_layout[$subform_id]['element_tag'] = array(
+          '#type' => 'select',
+          '#title' => t('Element tag'),
+          '#options' => array(
+            'span' => 'span',
+            'div' => 'div'
+          ),
+          '#default_value' => $feature_block_setting['element_tag'],
+        );
+      }
+      $form['taxon_profile']['feature_blocks'][FEATURE_BLOCK_SETTINGS] = $form_feature_block_layout;
+    }
   }
-  $form['taxon_profile']['feature_trees'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
+
+  // ---- STRUCTURED DESCRIPTION FEATURE TREE ---- //
+  $form['taxon_profile']['structured_description_featuretree'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Structured Description Feature Tree'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $featureTrees = cdm_get_featureTrees_as_options();
+  $profile_feature_tree_uuid = variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
+  if(!isset($featureTrees['options'][$profile_feature_tree_uuid])) {
+    $profile_feature_tree_uuid = NULL;
+  }
+  $form['taxon_profile']['structured_description_featuretree'][CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID] = array(
     '#type' => 'radios',
     '#title' => t('Natural language representation of structured descriptions') . ':',
-    '#default_value' => $saved_uuid,
+    '#default_value' => $profile_feature_tree_uuid,
     '#options' => $featureTrees['options'],
     '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
     '#options_suffixes' => $featureTrees['treeRepresentations'],
@@ -1708,73 +1856,7 @@ function cdm_settings_layout_taxon() {
     ),
   );
 
-  // ---- LAYOUT PER FEATURE ---- //
-  $feature_tree = get_profile_featureTree();
-  if (isset($feature_tree->root->childNodes)) {
 
-    $form_feature_list_layout = array(
-      '#title' => t('Taxon profile layout'),
-      '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
-      '#type' => 'fieldset',
-      '#description' => t('Will be available in a future release.'),
-    );
-
-    $feature_list_layout_settings_disabled = TRUE;
-    foreach ($feature_tree->root->childNodes as $featureNode) {
-
-      if (!$feature_list_layout_settings_disabled && isset($featureNode->feature)) {
-        // Must not exceed 45 characters !!!
-        $subform_id = LAYOUT_SETTING_PREFIX . $featureNode->feature->uuid;
-
-        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
-        $systemDefaults = unserialize(FEATURE_TREE_LAYOUT_DEFAULTS);
-
-        $form_feature_list_layout[$subform_id] = array(
-          '#tree' => TRUE,
-          '#title' => 'test' . $featureNode->feature->representation_L10n,
-          '#collapsible' => FALSE,
-          '#collapsed' => FALSE,
-          '#type' => 'fieldset',
-          '#description' => t(''),
-        );
-
-        $form_feature_list_layout[$subform_id]['enabled'] = array(
-          '#type' => 'checkbox',
-          '#title' => t('Enable'),
-          '#default_value' => $settings['enabled'],
-          '#description' => t('Enable user defined layout for this feature'),
-        );
-
-        $form_feature_list_layout[$subform_id]['enclosingTag'] = array(
-          '#type' => 'textfield',
-          '#title' => t('Enclosing tag'),
-          '#disabled' => !$settings['enabled'],
-          '#default_value' => $settings['enclosingTag'],
-          '#description' => t('Default is: ') . "'<code>" . $systemDefaults['enclosingTag'] . "</code>'",
-        );
-
-        $form_feature_list_layout[$subform_id]['entryEnclosingTag'] = array(
-          '#type' => 'textfield',
-          '#title' => t('Entry enclosing tag'),
-          '#disabled' => !$settings['enabled'],
-          '#default_value' => $settings['entryEnclosingTag'],
-          '#description' => t('Default is: ') . "'<code>" . $systemDefaults['entryEnclosingTag'] . "</code>'",
-        );
-
-        $form_feature_list_layout[$subform_id]['glue'] = array(
-          '#type' => 'textfield',
-          '#title' => t('Glue'),
-          '#disabled' => !$settings['enabled'],
-          '#default_value' => $settings['glue'],
-          '#description' => t('Default is: ') . "'<code>" . $systemDefaults['glue'] . "</code>'",
-        );
-
-      }
-
-      $form['taxon_profile']['feature_list_layout'] = $form_feature_list_layout;
-    }
-  }
 
   // ---- DISTRIBUTION LAYOUT ---- //
   $form['taxon_profile']['distribution_layout'] = array(
@@ -1932,14 +2014,14 @@ ie	introduced: formerly introduced
     );
 
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
-  $saved_uuid = variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
-  if(!isset($featureTrees['options'][$saved_uuid])) {
-    $saved_uuid = UUID_DEFAULT_FEATURETREE;
+  $profile_feature_tree_uuid = variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
+  if(!isset($featureTrees['options'][$profile_feature_tree_uuid])) {
+    $profile_feature_tree_uuid = UUID_DEFAULT_FEATURETREE;
   }
   $form['taxon_specimens']['feature_trees'][CDM_OCCURRENCE_FEATURETREE_UUID] = array(
       '#type' => 'radios',
       '#title' => t('Specimen description feature tree') . ':',
-      '#default_value' => $saved_uuid,
+      '#default_value' => $profile_feature_tree_uuid,
       '#options' =>  $featureTrees['options'],
       '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
       '#options_suffixes' => $featureTrees['treeRepresentations'],

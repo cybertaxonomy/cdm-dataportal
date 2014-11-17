@@ -340,7 +340,7 @@ function cdm_dataportal_search_taxon_by_description_form() {
   array('#value'=>$treeDetails); $treeRepresentation .= drupal_render($form);
   */
 
-  $profile_featureTree = get_profile_featureTree();
+  $profile_featureTree = get_profile_feature_tree();
   $feature_options = _featureTree_nodes_as_feature_options($profile_featureTree->root);
   if (isset($_SESSION['cdm']['search']['features'])) {
     $form['search']['features'] = array(

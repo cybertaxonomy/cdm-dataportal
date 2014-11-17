@@ -143,7 +143,7 @@ function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
 
                 switch ($element->class) {
                   case 'TextData':
-                    // FIXME use theme_cdm_descriptionElementTextData()
+                    // FIXME use compose_cdm_descriptionElementTextData()
                     if(isset($element->multilanguageText_L10n->text)){
                       $out_child_elements = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
                     }
@@ -676,7 +676,7 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
    *   - foot_note_keys: all footnote keys as markup
    *   - source_references: an array of the source references citations
    *   - names used in source: an associative array of the names in source,
-   *        the name in source string are de-duplicated
+   *        the name in source strings are de-duplicated
    *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
    *
    *
@@ -688,13 +688,13 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
       'names_used_in_source' => array()
     );
 
-    if ($feature_block_settings['sources_as_content']) {
+    if ($feature_block_settings['sources_as_content'] == 1) {
       foreach ($element->sources as $source) {
 
         $referenceCitation = theme('cdm_OriginalSource',
           array(
             'source' => $source,
-            'doLink' => $feature_block_settings['link_to_reference']
+            'doLink' => $feature_block_settings['link_to_reference'] == 1
           )
         );
 
@@ -709,7 +709,7 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
 
         $name_in_source_render_array = compose_name_in_source(
           $source,
-          $feature_block_settings['link_to_name_used_in_source']
+          $feature_block_settings['link_to_name_used_in_source'] == 1
         );
 
         if(!empty($name_in_source_render_array)){
@@ -727,7 +727,7 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
 
     } // END of references inline
 
-    if (!$feature_block_settings['sources_as_content'] || $feature_block_settings['sources_as_content_to_bibliography']) {
+    if ($feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1) {
       $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes($element, ',', $footnote_list_key_suggestion);
     }
 
@@ -881,7 +881,7 @@ function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
   $text_data_out = array();
 
   foreach ($textData_commonNames as $text_data_element) {
-    /* footnotes are not handled correctly in theme_cdm_descriptionElementTextData,
+    /* footnotes are not handled correctly in compose_cdm_descriptionElementTextData,
        need to set 'common-names-feature-block' as $footnote_key_suggestion */
     RenderHints::setFootnoteListKey($footnote_key_suggestion);
     $text_data_render_array = compose_cdm_descriptionElementTextData($text_data_element, TRUE, $text_data_element->feature->uuid);
