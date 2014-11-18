@@ -1,0 +1,12 @@
+* text=auto !eol
+/README.txt -text
+/archive-genus-Abies-bl4.zip -text
+/dwca_export.admin.inc -text
+/dwca_export.cron.inc -text
+/dwca_export.info -text
+/dwca_export.install -text
+/dwca_export.module -text
+/dwca_export.strongarm.inc -text
+/dwca_export.views_default.inc -text
+static/meta.xml -text
+theme/dwca_export.theme.inc -text
