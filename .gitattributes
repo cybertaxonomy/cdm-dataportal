@@ -1573,17 +1573,6 @@
 7.x/modules/cdm_dataportal/translations/README.txt -text
 7.x/modules/cdm_dataportal/translations/cdm_dataportal_general.pot.template -text
 7.x/modules/cdm_dataportal/translations/cdm_dataportal_installer.pot.template -text
-7.x/modules/dwca_export/README.txt -text
-7.x/modules/dwca_export/archive-genus-Abies-bl4.zip -text svneol=unset#unset
-7.x/modules/dwca_export/dwca_export.admin.inc -text
-7.x/modules/dwca_export/dwca_export.cron.inc -text
-7.x/modules/dwca_export/dwca_export.info -text
-7.x/modules/dwca_export/dwca_export.install -text
-7.x/modules/dwca_export/dwca_export.module -text
-7.x/modules/dwca_export/dwca_export.strongarm.inc -text
-7.x/modules/dwca_export/dwca_export.views_default.inc -text
-7.x/modules/dwca_export/static/meta.xml -text
-7.x/modules/dwca_export/theme/dwca_export.theme.inc -text
 7.x/modules/palmweb/palmweb.info -text
 7.x/modules/palmweb/palmweb.module -text
 7.x/themes/SUB_THEME_TEMPLATE/README.txt -text
