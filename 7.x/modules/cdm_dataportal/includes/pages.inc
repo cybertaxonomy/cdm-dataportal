@@ -230,7 +230,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $derivateHierarchyTable = array(
             "#theme" => "table",
             "#weight" => 2,
-            "#header" => array("Country", "Date", "Collection", "Herbaria", "Type", "Scan", "Derivates"),
+            "#header" => array("Country", "Date", "Collector + Collecting Number", "Herbaria", "Type", "Scan", "Derivates"),
             "#rows" => $rows,
             "#attributes" => array(
                 "id" => $tableId,
