@@ -661,7 +661,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
 
     $saved_settings = variable_get(FEATURE_BLOCK_SETTINGS, NULL);
 
-    $feature_block_setting = $default['DEFAULT'];
+    $feature_block_setting = null;
 
     if (isset($saved_settings[$feature_uuid])) {
       $feature_block_setting = $saved_settings[$feature_uuid];
@@ -673,7 +673,15 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
       $feature_block_setting = $settings_for_theme['DEFAULT'];
     }
 
-    $feature_block_setting = drupal_array_merge_deep($default['DEFAULT'], $saved_settings['DEFAULT'], $feature_block_setting);
+    // now merge the default and specific settings
+    $settings_to_merge = array($default['DEFAULT']);
+    if(is_array($saved_settings)){
+      $settings_to_merge[] = $saved_settings['DEFAULT'];
+    }
+    if(isset($feature_block_setting)){
+      $settings_to_merge[] = $feature_block_setting;
+    }
+    $feature_block_setting = drupal_array_merge_deep_array($settings_to_merge);
 
     return $feature_block_setting;
 }

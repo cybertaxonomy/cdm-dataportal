@@ -246,7 +246,7 @@ function feature_block($feature_name, $feature = null) {
 
     // Source references as footnotes.
     $bibliography_settings = get_bibliography_settings();
-    $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // otherwise the default
+    $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause original_source_footnote_list_key to use the default
 
     foreach ($description_element->sources as $source) {
       if (_is_original_source_type($source)) {
@@ -278,14 +278,16 @@ function feature_block($feature_name, $feature = null) {
 
   /**
    *
-   * @return string the footnote_list_key
+   *
+   * @return string
+   *  the footnote_list_key
    */
   function original_source_footnote_list_key($key_suggestion = null) {
     if(!$key_suggestion){
       $key_suggestion = RenderHints::getFootnoteListKey();
     }
     $bibliography_settings = get_bibliography_settings();
-    $footnote_list_key = $bibliography_settings['enabled'] == 1 ? 'BIBLIOGRAPHY' : $key_suggestion;
+    $footnote_list_key = $bibliography_settings['enabled'] == 1 ? 'BIBLIOGRAPHY' : 'BIBLIOGRAPHY-' . $key_suggestion;
     return $footnote_list_key;
   }
 

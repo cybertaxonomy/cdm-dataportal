@@ -532,9 +532,8 @@ function cdm_dataportal_init() {
   }
 
   $bibliography_settings = get_bibliography_settings();
-  if($bibliography_settings['enabled'] == 1){
-    FootnoteManager::registerFootnoteSet('BIBLIOGRAPHY', 'div', $bibliography_settings['key_format']);
-  }
+  $enclosing_tag = $bibliography_settings['enabled'] == 1 ? 'div' : 'span';
+  FootnoteManager::registerFootnoteSet('BIBLIOGRAPHY', $enclosing_tag, $bibliography_settings['key_format']);
 }
 
 function cdm_dataportal_refresh_node($cdm_node_name, $uuid, $parameters = array()){

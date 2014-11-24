@@ -118,7 +118,7 @@ class FootnoteManager {
     $key_label = NULL;
     if (!($key_label = self::footnoteExists($footnoteListKey, $object))) {
 
-      $set_def = &self::findFootnoteSetDefinition($footnoteListKey);
+      $set_def = &self::matchFootnoteSetDefinition($footnoteListKey);
 
       $fn_index = $set_def['key_index']++;
 
@@ -194,15 +194,22 @@ class FootnoteManager {
   }
 
   /**
-   * Returns the footnote set definition defined via registerFootnoteSet() or returns the default.
+   * Returns the footnote set definition which has been
+   * registered with a key which matches the given $footnoteListKey.
+   * A match is the first key which is equal to or which starts with $footnoteListKey
+   * If no match is found the default is returned.
+   *
+   * @see registerFootnoteSet()
    *
    * @param $footnoteListKey
    * @return array
    */
-  public static function &findFootnoteSetDefinition($footnoteListKey){
+  public static function &matchFootnoteSetDefinition($footnoteListKey){
 
-    if(isset(self::$fn_sets[$footnoteListKey])){
-      return self::$fn_sets[$footnoteListKey];
+    foreach(self::$fn_sets as $fn_set_key => &$fn_set_def){
+      if($footnoteListKey == $fn_set_key || str_beginsWith($footnoteListKey, $fn_set_key)){
+        return $fn_set_def;
+      }
     }
     return self::$default_set_definition;
   }
