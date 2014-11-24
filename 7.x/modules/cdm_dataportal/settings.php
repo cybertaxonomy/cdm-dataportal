@@ -673,7 +673,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
       $feature_block_setting = $settings_for_theme['DEFAULT'];
     }
 
-    $feature_block_setting = drupal_array_merge_deep($default['DEFAULT'], $feature_block_setting);
+    $feature_block_setting = drupal_array_merge_deep($default['DEFAULT'], $saved_settings['DEFAULT'], $feature_block_setting);
 
     return $feature_block_setting;
 }
