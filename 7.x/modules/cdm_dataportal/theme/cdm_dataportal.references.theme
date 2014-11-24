@@ -60,7 +60,9 @@ function theme_cdm_reference_pager($variables) {
  *   An associative array containing:
  *   - reference
  *   - microReference
- *   - doLink
+ *   - doLink:
+ *      Whether to create a link to the reference page, links to the reference URI or DOI are always
+ *      created when this data is available
  *   - referenceStyle
  *
  * @ingroup themeable
@@ -71,9 +73,10 @@ function theme_cdm_reference($variables) {
   $doLink = $variables['doLink'];
   $referenceStyle = $variables['referenceStyle'];
 
-  if(!isset($reference->authorship)){
+  if (!isset($reference->authorship)) {
     $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
-  } else {
+  }
+  else {
     $author_team = $reference->authorship;
   }
 
@@ -105,6 +108,14 @@ function theme_cdm_reference($variables) {
 
   if (!empty($microReference)) {
     $out .= ": " . $microReference;
+  }
+
+  if (isset($reference->doi) && !empty($reference->doi)) {
+    $doi_resolve_uri = str_replace('doi:', 'http://doi.org/', $reference->doi);
+    $out .= l(font_awesome_icon_markup('fa-external-link-square', array('class' => array('superscript'))), $doi_resolve_uri, array('html' => TRUE));
+  }
+  if (isset($reference->uri) && !empty($reference->uri)) {
+    $out .= l(font_awesome_icon_markup('fa-external-link', array('class' => array('superscript'))), $reference->uri, array('html' => TRUE));
   }
 
   return $out;
