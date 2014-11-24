@@ -855,6 +855,39 @@
 7.x/modules/cdm_dataportal/ext_links/ext_links.info -text
 7.x/modules/cdm_dataportal/ext_links/ext_links.js -text
 7.x/modules/cdm_dataportal/ext_links/ext_links.module -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/css/font-awesome.css -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/css/font-awesome.min.css -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/fonts/FontAwesome.otf -text svneol=unset#unset
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/fonts/fontawesome-webfont.eot -text svneol=unset#unset
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/fonts/fontawesome-webfont.svg -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/fonts/fontawesome-webfont.ttf -text svneol=unset#unset
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/fonts/fontawesome-webfont.woff -text svneol=unset#unset
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/bordered-pulled.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/core.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/fixed-width.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/font-awesome.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/icons.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/larger.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/list.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/mixins.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/path.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/rotated-flipped.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/spinning.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/stacked.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/less/variables.less -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_bordered-pulled.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_core.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_fixed-width.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_icons.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_larger.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_list.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_mixins.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_path.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_rotated-flipped.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_spinning.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_stacked.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/_variables.scss -text
+7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/font-awesome.scss -text
 7.x/modules/cdm_dataportal/fsi_gallery/fsi_gallery.info -text
 7.x/modules/cdm_dataportal/fsi_gallery/fsi_gallery.module -text
 7.x/modules/cdm_dataportal/help.php -text

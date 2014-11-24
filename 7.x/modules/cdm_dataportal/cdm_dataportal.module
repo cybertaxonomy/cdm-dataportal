@@ -17,294 +17,335 @@
  *   - Wouter Addink <w.addink@eti.uva.nl> (migration from Drupal 5 to Drupal7)
  */
 
-module_load_include('php', 'cdm_dataportal', 'node_types');
-module_load_include('php', 'cdm_dataportal', 'settings');
-module_load_include('php', 'cdm_dataportal', 'help');
-module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.search');
+  module_load_include('php', 'cdm_dataportal', 'node_types');
+  module_load_include('php', 'cdm_dataportal', 'settings');
+  module_load_include('php', 'cdm_dataportal', 'help');
+  module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.search');
 
-module_load_include('inc', 'cdm_dataportal', 'includes/common');
-module_load_include('inc', 'cdm_dataportal', 'includes/pages');
-module_load_include('inc', 'cdm_dataportal', 'includes/media');
-module_load_include('inc', 'cdm_dataportal', 'includes/maps');
-module_load_include('inc', 'cdm_dataportal', 'includes/occurrences');
-module_load_include('inc', 'cdm_dataportal', 'includes/descriptions');
-module_load_include('inc', 'cdm_dataportal', 'includes/pre-drupal8');
+  module_load_include('inc', 'cdm_dataportal', 'includes/common');
+  module_load_include('inc', 'cdm_dataportal', 'includes/pages');
+  module_load_include('inc', 'cdm_dataportal', 'includes/media');
+  module_load_include('inc', 'cdm_dataportal', 'includes/maps');
+  module_load_include('inc', 'cdm_dataportal', 'includes/occurrences');
+  module_load_include('inc', 'cdm_dataportal', 'includes/descriptions');
+  module_load_include('inc', 'cdm_dataportal', 'includes/pre-drupal8');
 
-module_load_include('inc', 'cdm_dataportal', 'theme/theme_registry');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.common');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.descriptions');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.media');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.occurrence');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.page');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.taxon');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.name');
-module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.references');
+  module_load_include('inc', 'cdm_dataportal', 'theme/theme_registry');
+  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.common');
+  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.descriptions');
+  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.media');
+  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.occurrence');
+  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.page');
+  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.taxon');
+  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.name');
+  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.references');
 
-module_load_include('php', 'cdm_dataportal', 'classes/footnotemanager');
-module_load_include('php', 'cdm_dataportal', 'classes/footnote');
-module_load_include('php', 'cdm_dataportal', 'classes/footnotekey');
-module_load_include('php', 'cdm_dataportal', 'classes/renderhints');
-
-
-/* ============================ java script functions ============================= */
+  module_load_include('php', 'cdm_dataportal', 'classes/footnotemanager');
+  module_load_include('php', 'cdm_dataportal', 'classes/footnote');
+  module_load_include('php', 'cdm_dataportal', 'classes/footnotekey');
+  module_load_include('php', 'cdm_dataportal', 'classes/renderhints');
 
 
-/**
-* loads external java script files asynchronously.
-*
-* @param unknown_type $script_url
-*/
-function drupal_add_js_async($script_url, $callback){
+  /* ============================ java script functions ============================= */
 
-  drupal_add_js("
+
+  /**
+  * loads external java script files asynchronously.
+  *
+  * @param unknown_type $script_url
+  */
+  function drupal_add_js_async($script_url, $callback){
+
+    drupal_add_js("
+          jQuery(document).ready(function() {
+            jQuery.ajax({
+              url: '" . $script_url . "',
+              dataType: 'script',
+              cache: true, // otherwise will get fresh copy every page load
+              success: function() {
+                    " . $callback . "
+              }
+            });
+          });"
+    , 'inline');
+  }
+
+  /**
+   */
+  function drupal_add_js_rowToggle($tableId){
+
+      drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/table_modification.js');
+      drupal_add_js('jQuery(document).ready(function(){
+          addRowToggle("' . $tableId . '");
+      });
+      ', array('type' => 'inline'));
+  }
+
+  /**
+   * @param unknown_type $link_element_selector
+   * @param unknown_type $progress_element_selector
+   */
+  function _add_js_cdm_ws_progressbar($link_element_selector, $progress_element_selector){
+
+    $callback = "jQuery('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');";
+
+    drupal_add_js_async(variable_get('cdm_webservice_url', '').'js/cdm_ws_progress.js', $callback);
+
+    //   drupal_add_js("
+    //   	  if (Drupal.jsEnabled) {
+    //         $(document).ready(function() {
+    //       		$('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');
+    //         });
+    //       }", 'inline');
+    }
+
+  /**
+   * @todo Please document this function.
+   * @see http://drupal.org/node/1354
+   */
+  function _add_js_treeselector() {
+    // drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/treeselector.js');
+    drupal_add_js("
         jQuery(document).ready(function() {
-          jQuery.ajax({
-            url: '" . $script_url . "',
-            dataType: 'script',
-            cache: true, // otherwise will get fresh copy every page load
-            success: function() {
-                  " . $callback . "
-            }
-          });
-        });"
-  , 'inline');
-}
+           jQuery('#cdm-taxonomictree-selector-form #edit-val').change(function () {
+                jQuery('#cdm-taxonomictree-selector-form').submit();
+            });
 
-/**
- */
-function drupal_add_js_rowToggle($tableId){
-
-    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/table_modification.js');
-    drupal_add_js('jQuery(document).ready(function(){
-        addRowToggle("' . $tableId . '");
-    });
-    ', array('type' => 'inline'));
-}
-
-/**
- * @param unknown_type $link_element_selector
- * @param unknown_type $progress_element_selector
- */
-function _add_js_cdm_ws_progressbar($link_element_selector, $progress_element_selector){
-
-  $callback = "jQuery('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');";
-
-  drupal_add_js_async(variable_get('cdm_webservice_url', '').'js/cdm_ws_progress.js', $callback);
-
-  //   drupal_add_js("
-  //   	  if (Drupal.jsEnabled) {
-  //         $(document).ready(function() {
-  //       		$('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');
-  //         });
-  //       }", 'inline');
+        });
+      ",
+      array(
+        'type' => 'inline',
+        'scope' => 'footer'
+      )
+    );
   }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _add_js_treeselector() {
-  // drupal_add_js(drupal_get_path('module', 'cdm_dataportal').'/js/treeselector.js');
-  drupal_add_js("
-      jQuery(document).ready(function() {
-         jQuery('#cdm-taxonomictree-selector-form #edit-val').change(function () {
-              jQuery('#cdm-taxonomictree-selector-form').submit();
-          });
+  function _add_js_openlayers() {
 
-      });
-    ",
-    array(
-      'type' => 'inline',
-      'scope' => 'footer'
-    )
-  );
-}
+    $openlayers = '/js/map/OpenLayers-2.13.1/OpenLayers.js';
+    $proj4js = '/js/map/proj4js-1.1.0/proj4js-compressed.js';
 
-function _add_js_openlayers() {
+    if(variable_get('cdm_js_devel_mode', FALSE)){
+      // develooper mode libs
+  //     $openlayers = '/js/map/OpenLayers-2.13.1/lib/OpenLayers.js';
+      $openlayers = '/js/map/OpenLayers-2.13.1/OpenLayers.debug.js';
+      $proj4js = '/js/map/proj4js-1.1.0/proj4js-combined.js';
+    }
 
-  $openlayers = '/js/map/OpenLayers-2.13.1/OpenLayers.js';
-  $proj4js = '/js/map/proj4js-1.1.0/proj4js-compressed.js';
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers,
+      array(
+        'type' => 'file',
+        'weight' => JS_LIBRARY,
+        'cache' => TRUE,
+        'preprocess' => FALSE
+      )
+    );
 
-  if(variable_get('cdm_js_devel_mode', FALSE)){
-    // develooper mode libs
-//     $openlayers = '/js/map/OpenLayers-2.13.1/lib/OpenLayers.js';
-    $openlayers = '/js/map/OpenLayers-2.13.1/OpenLayers.debug.js';
-    $proj4js = '/js/map/proj4js-1.1.0/proj4js-combined.js';
+    // see https://github.com/proj4js/proj4js
+    // http://openlayers.org/dev/examples/using-proj4js.html
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $proj4js,
+      array(
+        'type' => 'file',
+        'weight' => JS_LIBRARY,
+        'cache' => TRUE,
+      )
+    );
+
+    // configure the theme
+    $openlayers_theme_path = drupal_get_path('module', 'cdm_dataportal') . '/js/map/OpenLayers-2.13.1/theme/default/';
+    $openlayers_imp_path = drupal_get_path('module', 'cdm_dataportal') . '/js/map/img/dark/';
+    drupal_add_js('OpenLayers.ImgPath="' . base_path() . $openlayers_imp_path . '";', array(
+        'type' => 'inline',
+        'weight' => JS_LIBRARY,
+        'cache' => TRUE,
+        'preprocess' => FALSE
+      ));
+
+    drupal_add_css($openlayers_theme_path . 'style.tidy.css',
+      array(
+        'type' => 'file',
+        'cache' => TRUE,
+        'preprocess' => FALSE
+      )
+    );
+
   }
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers,
-    array(
-      'type' => 'file',
-      'weight' => JS_LIBRARY,
-      'cache' => TRUE,
-      'preprocess' => FALSE
+  /**
+   * @todo Please document this function.
+   * @see http://drupal.org/node/1354
+   */
+  function _add_js_thickbox() {
+    // ---- jQuery thickbox:
+    /*
+    * bug: compat-1.0.js && thickbox.js line 237 .trigger("unload") -> event is
+    * not triggered because of problems with compat-1.0.js' see INSTALL.txt
+    */
+    // drupal_add_js(drupal_get_path('module',
+    // 'cdm_dataportal').'/js/jquery.imagetool.min.js');
+    //
+    // Add a setting for the path to cdm_dataportal module, used to find the path
+    // for the loading animation image in thickbox.
+    drupal_add_js(array(
+    'cdm_dataportal' => array(
+    'cdm_dataportal_path' => base_path() . drupal_get_path('module', 'cdm_dataportal'),
     )
-  );
-
-  // see https://github.com/proj4js/proj4js
-  // http://openlayers.org/dev/examples/using-proj4js.html
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $proj4js,
-    array(
-      'type' => 'file',
-      'weight' => JS_LIBRARY,
-      'cache' => TRUE,
-    )
-  );
-
-  // configure the theme
-  $openlayers_theme_path = drupal_get_path('module', 'cdm_dataportal') . '/js/map/OpenLayers-2.13.1/theme/default/';
-  $openlayers_imp_path = drupal_get_path('module', 'cdm_dataportal') . '/js/map/img/dark/';
-  drupal_add_js('OpenLayers.ImgPath="' . base_path() . $openlayers_imp_path . '";', array(
-      'type' => 'inline',
-      'weight' => JS_LIBRARY,
-      'cache' => TRUE,
-      'preprocess' => FALSE
-    ));
-
-  drupal_add_css($openlayers_theme_path . 'style.tidy.css',
-    array(
-      'type' => 'file',
-      'cache' => TRUE,
-      'preprocess' => FALSE
-    )
-  );
-
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _add_js_thickbox() {
-  // ---- jQuery thickbox:
-  /*
-  * bug: compat-1.0.js && thickbox.js line 237 .trigger("unload") -> event is
-  * not triggered because of problems with compat-1.0.js' see INSTALL.txt
-  */
-  // drupal_add_js(drupal_get_path('module',
-  // 'cdm_dataportal').'/js/jquery.imagetool.min.js');
-  //
-  // Add a setting for the path to cdm_dataportal module, used to find the path
-  // for the loading animation image in thickbox.
-  drupal_add_js(array(
-  'cdm_dataportal' => array(
-  'cdm_dataportal_path' => base_path() . drupal_get_path('module', 'cdm_dataportal'),
-  )
-  ),
-  'setting'
-      );
-      drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/thickbox/thickbox.js');
-      drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/js/thickbox/cdm_thickbox.css');
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _add_js_lightbox($galleryID) {
-  /*
-   * Important Notice: The jquery.lightbox-0.5.js has been modified in order to
-  * allow using the "alt" attribute for captions instead of the "title"
-  * attribute
-  */
-  $lightbox_base_path =  drupal_get_path('module', 'cdm_dataportal') . '/js/jquery-lightbox-0.5';
-  $lightbox_image_path = base_path() . $lightbox_base_path . '/images/';
-  drupal_add_js($lightbox_base_path . '/js/jquery.lightbox-0.5.js');
-  drupal_add_css($lightbox_base_path . '/css/jquery.lightbox-0.5.css');
-  drupal_add_js('jQuery(document).ready(function() {
-      jQuery(\'#' . $galleryID . ' a.lightbox\').lightBox({
-        fixedNavigation:  true,
-        imageLoading:     \'' . $lightbox_image_path . 'lightbox-ico-loading.gif\',
-        imageBtnPrev:     \'' . $lightbox_image_path . 'lightbox-btn-prev.gif\',
-        imageBtnNext:     \'' . $lightbox_image_path . 'lightbox-btn-next.gif\',
-        imageBtnClose:    \'' . $lightbox_image_path . 'lightbox-btn-close.gif\',
-        imageBlank:       \'' . $lightbox_image_path . 'lightbox-blank.gif\',
-        adjustToWindow: true
-      });
-    });
-    ', array('type' => 'inline'));
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _add_js_footnotes() {
-  _add_js_domEvent();
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/footnotes.js');
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _add_js_cluetip() {
-
-  // TODO replace by
-  // @see http://www.socialembedded.com/labs/jQuery-Tooltip-Plugin/jQuery-Tooltip-Plugin.html
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.min.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/jquery.dimensions.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.hoverIntent.js');
-  if(variable_get('cdm_js_devel_mode', FALSE)){
-    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.js');
-  }
-  drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.css');
-  drupal_add_js("jQuery(document).ready(function(){
-      jQuery('.cluetip').css({color: '#0062C2'}).cluetip({
-        splitTitle: '|',
-        showTitle: true,
-        activation: 'hover',
-        sicky: true,
-        arrows: true,
-        dropShadow: false,
-        cluetipClass: 'rounded'
-      });
-    });", array('type' => 'inline'));
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _add_js_ahah() {
-
-  _add_js_domEvent(); // requires domEvent.js
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/ahah-content.js');
-}
-
-/**
- * Adds the external javascript file for domEvent.js.
- *
- * @see drupal_add_js()
- */
-function _add_js_domEvent() {
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/domEvent.js');
-}
-
-
-/* ====================== hook implementations ====================== */
-/**
- * Implements hook_permission().
- *
- * Valid permissions for this module.
- *
- * @return array
- *   An array of valid permissions for the portfolio module.
- */
-function cdm_dataportal_permission() {
-  return array(
-    'administer cdm_dataportal' => array(
-      'title' => t('administer cdm_dataportal'),
-      'description' => t("TODO Add a description for 'administer cdm_dataportal'"),
     ),
-    'cdm_dataportal view notes' => array(
-      'title' => t('cdm_dataportal view notes'),
-      'description' => t("TODO Add a description for 'cdm_dataportal view notes'"),
-    ),
-    // TODO Which other permissions are required?
-    // -> check the WP6 requirements document.
-  );
-}
+    'setting'
+        );
+        drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/thickbox/thickbox.js');
+        drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/js/thickbox/cdm_thickbox.css');
+  }
+
+  /**
+   * @todo Please document this function.
+   * @see http://drupal.org/node/1354
+   */
+  function _add_js_lightbox($galleryID) {
+    /*
+     * Important Notice: The jquery.lightbox-0.5.js has been modified in order to
+    * allow using the "alt" attribute for captions instead of the "title"
+    * attribute
+    */
+    $lightbox_base_path =  drupal_get_path('module', 'cdm_dataportal') . '/js/jquery-lightbox-0.5';
+    $lightbox_image_path = base_path() . $lightbox_base_path . '/images/';
+    drupal_add_js($lightbox_base_path . '/js/jquery.lightbox-0.5.js');
+    drupal_add_css($lightbox_base_path . '/css/jquery.lightbox-0.5.css');
+    drupal_add_js('jQuery(document).ready(function() {
+        jQuery(\'#' . $galleryID . ' a.lightbox\').lightBox({
+          fixedNavigation:  true,
+          imageLoading:     \'' . $lightbox_image_path . 'lightbox-ico-loading.gif\',
+          imageBtnPrev:     \'' . $lightbox_image_path . 'lightbox-btn-prev.gif\',
+          imageBtnNext:     \'' . $lightbox_image_path . 'lightbox-btn-next.gif\',
+          imageBtnClose:    \'' . $lightbox_image_path . 'lightbox-btn-close.gif\',
+          imageBlank:       \'' . $lightbox_image_path . 'lightbox-blank.gif\',
+          adjustToWindow: true
+        });
+      });
+      ', array('type' => 'inline'));
+  }
+
+  /**
+   * @todo Please document this function.
+   * @see http://drupal.org/node/1354
+   */
+  function _add_js_footnotes() {
+    _add_js_domEvent();
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/footnotes.js');
+  }
+
+  /**
+   * @todo Please document this function.
+   * @see http://drupal.org/node/1354
+   */
+  function _add_js_cluetip() {
+
+    // TODO replace by
+    // @see http://www.socialembedded.com/labs/jQuery-Tooltip-Plugin/jQuery-Tooltip-Plugin.html
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.min.js');
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/jquery.dimensions.js');
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.hoverIntent.js');
+    if(variable_get('cdm_js_devel_mode', FALSE)){
+      drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.js');
+    }
+    drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.css');
+    drupal_add_js("jQuery(document).ready(function(){
+        jQuery('.cluetip').css({color: '#0062C2'}).cluetip({
+          splitTitle: '|',
+          showTitle: true,
+          activation: 'hover',
+          sicky: true,
+          arrows: true,
+          dropShadow: false,
+          cluetipClass: 'rounded'
+        });
+      });", array('type' => 'inline'));
+  }
+
+  /**
+   * @todo Please document this function.
+   * @see http://drupal.org/node/1354
+   */
+  function _add_js_ahah() {
+
+    _add_js_domEvent(); // requires domEvent.js
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/ahah-content.js');
+  }
+
+  /**
+   * Adds the external javascript file for domEvent.js.
+   *
+   * @see drupal_add_js()
+   */
+  function _add_js_domEvent() {
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/domEvent.js');
+  }
+
+  /**
+   * Provides the markup for an font awesome icon.
+   *
+   * The icons is created in default size without any extra features.
+   *
+   * The available icons are listed here http://fontawesome.io/cheatsheet/
+   * fontawesome icons have much more featues than implemented here in this function,
+   * for spinning icons, fixed width icons, rotation, etc please chekout the
+   * examples at http://fontawesome.io/examples/
+   *
+   * @parameter $icon_name
+   *  The name of the icon which starts with 'fa-'
+   *
+   * @return String
+   *    the markup for the icon in an <i> tag
+   *
+   */
+  function font_awesome_icon_markup($icon_name, $attributes = array()){
+
+
+    //<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    $font_awesome_css_uri=drupal_get_path('module', 'cdm_dataportal').'/font-awesome/4.2.0/css/font-awesome.min.css';
+    $font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css";
+
+    drupal_add_html_head_link(
+      array(
+        'href' => $font_awesome_css_uri,
+        'rel' => 'stylesheet'
+      )
+    );
+
+    if(!isset($attributes['class'])){
+      $attributes['class'] = array();
+    }
+    $attributes['class'][] = 'fa';
+    $attributes['class'][] = $icon_name;
+
+    return '<i ' . drupal_attributes($attributes) . '></i>';
+  }
+
+
+  /* ====================== hook implementations ====================== */
+  /**
+   * Implements hook_permission().
+   *
+   * Valid permissions for this module.
+   *
+   * @return array
+   *   An array of valid permissions for the portfolio module.
+   */
+  function cdm_dataportal_permission() {
+    return array(
+      'administer cdm_dataportal' => array(
+        'title' => t('administer cdm_dataportal'),
+        'description' => t("TODO Add a description for 'administer cdm_dataportal'"),
+      ),
+      'cdm_dataportal view notes' => array(
+        'title' => t('cdm_dataportal view notes'),
+        'description' => t("TODO Add a description for 'cdm_dataportal view notes'"),
+      ),
+      // TODO Which other permissions are required?
+      // -> check the WP6 requirements document.
+    );
+  }
 
 /**
  * Implements hook_menu().

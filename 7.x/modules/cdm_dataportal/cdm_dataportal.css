@@ -7,6 +7,13 @@
  * See also http://groups.drupal.org/node/6355.
  */
 
+
+.superscript {
+    vertical-align: super;
+    font-size: 80%;
+    line-height: 100%;
+}
+
 #derivate_hierarchy_table {
     width: 100%;
 }
