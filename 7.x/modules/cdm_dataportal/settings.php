@@ -341,6 +341,8 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
  *     Unserialization is cared for if necessary
  * @return array
  *     The merged array as returned by drupal_array_merge_deep()
+ *
+ * TODO compare with mixed_variable_get() duplicate functions?
  */
 function get_array_variable_merged($variable_name, $default){
 
@@ -396,10 +398,11 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
 
 
   /**
-   * preliminary mock implementation
+   * Provides the feature block settings for a specific feature which matches the $feature_uuid parameter.
    *
-   * Provides the feature block settings for a specific feature it is is provides as $feature_uuid parameter.
-   *
+   * In case specifically configured settings array, like these which are stored in the drupal variables, is missing
+   * one or more fields these fields are taken from the default. That is the specific settings are always merges
+   * with the default.
    *
    * Note: These settings only apply to feature blocks which do not have a special rendering
    * the specially handled features (e.g.: Distribution, CommonNames) may make use of the
@@ -473,7 +476,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'as_list' => 'div',
         'link_to_reference' => 0,
         'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 1,
+        'sources_as_content' => 0,
         'sources_as_content_to_bibliography' => 0,
         'sort_elements' => NO_SORT,
         'glue' => '',
@@ -670,6 +673,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
       $feature_block_setting = $settings_for_theme['DEFAULT'];
     }
 
+    $feature_block_setting = drupal_array_merge_deep($default['DEFAULT'], $feature_block_setting);
 
     return $feature_block_setting;
 }
@@ -1750,6 +1754,14 @@ function cdm_settings_layout_taxon() {
 
 
     $feature_list_layout_settings_disabled = FALSE;
+
+    // creating helper object to retrieve the default settings
+    $featureNode = new stdClass();
+    $featureNode->feature = new stdClass();
+    $featureNode->feature->uuid="DEFAULT";
+    $featureNode->feature->representation_L10n = "Default";
+    array_unshift($profile_feature_tree->root->childNodes, $featureNode);
+
     foreach ($profile_feature_tree->root->childNodes as $featureNode) {
 
       if (!$feature_list_layout_settings_disabled && isset($featureNode->feature)) {
@@ -1767,6 +1779,11 @@ function cdm_settings_layout_taxon() {
           '#collapsible' => FALSE,
           '#collapsed' => FALSE,
         );
+        if($featureNode->feature->uuid == "DEFAULT"){
+          $form_feature_block_layout[$subform_id]['#description']='These are the defaults which apply to
+          all feature blocks for which no specific settings have been defined. for consistency enabling links for <em>source
+          references</em> and <em>names in source</em> is only possible in the defaults';
+        }
 
         $form_feature_block_layout[$subform_id]['as_list'] = array(
           '#type' => 'select',
@@ -1780,17 +1797,19 @@ function cdm_settings_layout_taxon() {
           ),
         );
 
-        $form_feature_block_layout[$subform_id]['link_to_reference'] = array(
-          '#type' => 'checkbox',
-          '#title' => t('Link to reference'),
-          '#default_value' => $feature_block_setting['link_to_reference'],
-        );
+        if($featureNode->feature->uuid == "DEFAULT"){
+          $form_feature_block_layout[$subform_id]['link_to_reference'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Link to reference'),
+            '#default_value' => $feature_block_setting['link_to_reference'],
+          );
 
-        $form_feature_block_layout[$subform_id]['link_to_name_used_in_source'] = array(
-          '#type' => 'checkbox',
-          '#title' => 'Link to name used in source',
-          '#default_value' => $feature_block_setting['link_to_name_used_in_source'],
-        );
+          $form_feature_block_layout[$subform_id]['link_to_name_used_in_source'] = array(
+            '#type' => 'checkbox',
+            '#title' => 'Link to name used in source',
+            '#default_value' => $feature_block_setting['link_to_name_used_in_source'],
+          );
+        }
 
         $form_feature_block_layout[$subform_id]['sources_as_content'] = array(
           '#type' => 'checkbox',
@@ -1800,7 +1819,7 @@ function cdm_settings_layout_taxon() {
 
         $form_feature_block_layout[$subform_id]['sources_as_content_to_bibliography'] = array(
           '#type' => 'checkbox',
-          '#title' => 'Sources as content to bibliography',
+          '#title' => 'Put sources also as content to bibliography',
           '#default_value' => $feature_block_setting['sources_as_content_to_bibliography'],
         );
 

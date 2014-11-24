@@ -2052,6 +2052,9 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
 
   foreach ($feature_trees as $featureTree) {
 
+    if(!is_object($featureTree)){
+      continue;
+    }
     // Do not add the DEFAULT_FEATURETREE again,
     if ($featureTree->uuid != UUID_DEFAULT_FEATURETREE) {
       $options[$featureTree->uuid] = $featureTree->titleCache;

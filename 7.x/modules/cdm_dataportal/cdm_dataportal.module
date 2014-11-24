@@ -983,7 +983,7 @@ function _load_occurences_for_taxon($taxon){
  *
  * Similar to the variable_get() function of Drupal, except that this function
  * is able to handle arrays correctly. This function is especially useful
- * when dealing with collections of setting form elements (#tree = TRUE).
+ * when dealing with collections of settings form elements (#tree = TRUE).
  *
  * @param string $variableKey
  *   The Unique key of the Drupal variable in the Drupal variables table.
@@ -991,12 +991,15 @@ function _load_occurences_for_taxon($taxon){
  *   A string as for example derived from a CONSTANT.
  *
  * @return mixed
- *   Returns usally an array, depending on the nature of the variable.
+ *   usually an array, depending on the nature of the variable.
+ *
+ * TODO compare with get_array_variable_merged() duplicate functions?
  */
 function mixed_variable_get($variableKey, $defaultValueString) {
   $systemDefaults = unserialize($defaultValueString);
   $storedSettings = variable_get($variableKey, array());
   if (is_array($storedSettings)) {
+    // TODO better use drupal_array_merge_deep() ?
     $settings = array_merge($systemDefaults, $storedSettings);
   }
   else {
