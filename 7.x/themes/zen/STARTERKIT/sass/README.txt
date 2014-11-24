@@ -1,8 +1,7 @@
 ABOUT SASS AND COMPASS
 ----------------------
 
-This directory includes Sass versions of Zen's CSS files. (If you are wondering
-how these Sass files are organized, read the css/README.txt file.)
+This directory includes Sass versions of Zen's CSS files.
 
 Sass is a language that is just normal CSS plus some extra features, like
 variables, nested rules, math, mixins, etc. If your stylesheets are written in
@@ -51,7 +50,7 @@ to delete all the generated CSS files.
 
 - Delete all CSS files by running: compass clean
 - Edit the config.rb file in your theme's directory and uncomment this line by
-  deleting the "#" from the beginnning:
+  deleting the "#" from the beginning:
     #environment = :production
 - Regenerate all the CSS files by running: compass compile
 
