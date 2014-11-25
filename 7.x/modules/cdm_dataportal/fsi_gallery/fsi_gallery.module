@@ -122,19 +122,37 @@ function _showcase_query_name($taxon) {
  * @see http://drupal.org/node/1354
  */
 function theme_fsi_gallery($variables) {
+
   $taxon = $variables['taxon'];
   $media = $variables['media'];
+
   $query = variable_get('fsi_query', "{name}");
   $query = str_replace("{name}", _showcase_query_name($taxon), $query);
+
+  // see http://www.adobe.com/cn/devnet/flashplayer/articles/swfobject.html
+  drupal_add_js(drupal_get_path('module', 'fsi_gallery') . '/js/swfobject-debug.js');
+
   $out = '
-
-<script type="text/javascript" src="http://media.bgbm.org/erez/js/fsiwriter.js"></script>
-
 <script type="text/javascript">
 <!--
-  writeFlashCode( "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query=' . $query . '&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=textbox,fullscreen",
-    "http://media.bgbm.org/erez/erez?src=erez-private/flashrequired.svg&tmp=Large&quality=97&width=620&height=400",
-    "width=620;height=400;bgcolor=454343;wmode=opaque");
+    var flashvars = {}; // can be used for the swf URI query parameters
+    var params = {};
+    params.menu = "false";
+    params.quality = "low";
+    params.width="620";
+    params.height="400";
+    params.bgcolor="#454343";
+    params.wmode="opaque";
+    swfobject.embedSWF(
+        "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query=' . $query . '&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=textbox,fullscreen",
+        "default-gallery-viewer" , // id of alternative content
+        "620", // width
+        "400", // height
+        "11", // swfVersionStr (required) specifies the Flash Player version for which your content is published
+        false,
+        params,
+        flashvars
+      );
 // -->
 </script>
 <noscript>
@@ -157,7 +175,6 @@ function theme_fsi_gallery($variables) {
       pluginspage="http://www.adobe.com/go/getflashplayer">
     </embed>
   </object>
-
 </noscript>';
 
   if (variable_get('fsi_caption', FALSE)) {

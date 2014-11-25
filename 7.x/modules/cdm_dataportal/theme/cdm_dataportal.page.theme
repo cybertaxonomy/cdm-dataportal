@@ -508,7 +508,7 @@ function theme_cdm_media_page($variables) {
   $mediarepresentation_uuid = $variables['mediarepresentation_uuid'];
   $partId = $variables['partId'];
   $out = '';
-  // Determine which reprresentation and which part to show.
+  // Determine which representation and which part to show.
   $representationIdx = 0;
   if ($mediarepresentation_uuid) {
     $i = 0;

@@ -890,6 +890,8 @@
 7.x/modules/cdm_dataportal/font-awesome/4.2.0/scss/font-awesome.scss -text
 7.x/modules/cdm_dataportal/fsi_gallery/fsi_gallery.info -text
 7.x/modules/cdm_dataportal/fsi_gallery/fsi_gallery.module -text
+7.x/modules/cdm_dataportal/fsi_gallery/js/swfobject-debug.js -text
+7.x/modules/cdm_dataportal/fsi_gallery/js/swfobject.js -text
 7.x/modules/cdm_dataportal/help.php -text
 7.x/modules/cdm_dataportal/help/overview.apt -text
 7.x/modules/cdm_dataportal/help/overview.html -text

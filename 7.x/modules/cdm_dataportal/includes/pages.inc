@@ -492,10 +492,26 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
       $images_html .= '<h2>' . t('Images') . '</h2>';
     }
     // Get the image gallery as configured by the admin.
-    $taxon_image_gallery = call_user_func_array('taxon_image_gallery_' . variable_get('image_gallery_viewer', 'default'), array(
-        $taxon,
-        $media,
-    ));
+    $default_image_gallery = 'default';
+    $configured_image_gallery_viewer = variable_get('image_gallery_viewer', 'default');
+    if($configured_image_gallery_viewer == $default_image_gallery || $configured_image_gallery_viewer == 'fsi'){
+      // the fsi_gallery requires a flash plugin, in case the client browser is not supporting
+      // flash we also need to provide an the default gallery as alternative
+      $taxon_image_gallery = '<div id="default-gallery-viewer">' .
+        call_user_func_array('taxon_image_gallery_' . $default_image_gallery, array(
+          $taxon,
+          $media,
+        ))
+        . '</div>';
+    }
+    if($configured_image_gallery_viewer == 'fsi'){
+      $taxon_image_gallery .= '<div id="'. $configured_image_gallery_viewer .'-gallery-viewer">' .
+        call_user_func_array('taxon_image_gallery_' . $configured_image_gallery_viewer, array(
+          $taxon,
+          $media,
+        ))
+       . '</div>';
+    }
     $images_html .= $taxon_image_gallery;
     $images_html .= '</div>';
     $render_array['images'] = markup_to_render_array($images_html, $weight++);
