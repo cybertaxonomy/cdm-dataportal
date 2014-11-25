@@ -750,6 +750,9 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
    *
    * @param $source
    * @param $do_link_to_name_used_in_source
+   * @param $suppress_for_shown_taxon
+   *    the nameInSource will be suppressed when it has the same name as the accepted taxon
+   *    for which the taxon page is being created, Defaults to TRUE
    *
    * @return array
    *    A Drupal render array with an additional element, the render array is empty
@@ -758,15 +761,25 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
    *
    * @ingroup compose
    */
-  function compose_name_in_source($source, $do_link_to_name_used_in_source) {
+  function compose_name_in_source($source, $do_link_to_name_used_in_source, $suppress_for_shown_taxon = TRUE) {
 
     $plaintext = NULL;
     $markup = NULL;
     $name_in_source_render_array = array();
 
+    static $taxon_page_accepted_name = '';
+    if($suppress_for_shown_taxon && arg(1) == 'taxon' && empty($taxon_page_accepted_name)){
+
+      $current_taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, arg(2));
+      $taxon_page_accepted_name = $current_taxon->name->titleCache;
+    }
+
     if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
       // it is a DescriptionElementSource !
       $plaintext = $source->nameUsedInSource->titleCache;
+      if($suppress_for_shown_taxon && $taxon_page_accepted_name == $plaintext){
+        return $name_in_source_render_array; // SKIP this name
+      }
       $markup = theme('cdm_taxonName', array(
         'taxonName' => $source->nameUsedInSource
       ));
@@ -787,6 +800,9 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
       // field
       // using the originalNameString as key to avoid duplicate entries
       $plaintext = $source->originalNameString;
+      if($suppress_for_shown_taxon && $taxon_page_accepted_name == $plaintext){
+        return $name_in_source_render_array; // SKIP this name
+      }
       $markup = $source->originalNameString;
     }
 
