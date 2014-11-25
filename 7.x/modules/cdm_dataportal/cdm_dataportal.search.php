@@ -141,10 +141,19 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
 
 
   if ($advancedForm) {
-    $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_SEARCH, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
+    $form = cdm_dataportal_search_form_prepare(
+      'cdm_dataportal/search/results/taxon',
+      CDM_WS_PORTAL_TAXON_SEARCH, $query_field_default_value,
+      t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'),
+      NULL);
   } else {
-    // using CDM_WS_PORTAL_TAXON_SEARCH in all cases, for testing or the origial CDM_WS_PORTAL_TAXON_FIND for production
-    $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_FIND, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
+     // using CDM_WS_PORTAL_TAXON_SEARCH in all cases, for testing or the origial CDM_WS_PORTAL_TAXON_FIND for production
+    $form = cdm_dataportal_search_form_prepare(
+      'cdm_dataportal/search/results/taxon',
+      CDM_WS_PORTAL_TAXON_FIND, $query_field_default_value,
+      t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'),
+      NULL
+    );
 //     $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_SEARCH, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
 
     $form['query']['#size'] = 20;
@@ -195,7 +204,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
         '#type' => 'select',
         '#default_value' => get_taxonomictree_uuid_selected(),
         '#options' => cdm_get_taxontrees_as_options(TRUE),
-        '#description' => t('A filter to limit the search to a specific classification.')
+        '#description' => t('A filter to limit the search to a specific classification. Choosing <em>-- None --</em> will disable this filter.')
       );
    }
 
