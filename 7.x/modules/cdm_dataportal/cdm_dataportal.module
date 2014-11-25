@@ -287,8 +287,8 @@
    * The icons is created in default size without any extra features.
    *
    * The available icons are listed here http://fontawesome.io/cheatsheet/
-   * fontawesome icons have much more featues than implemented here in this function,
-   * for spinning icons, fixed width icons, rotation, etc please chekout the
+   * fontawesome icons have much more features than implemented here in this function,
+   * for spinning icons, fixed width icons, rotation, etc please checkout the
    * examples at http://fontawesome.io/examples/
    *
    * @parameter $icon_name
