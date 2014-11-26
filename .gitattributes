@@ -902,8 +902,6 @@
 7.x/modules/cdm_dataportal/ide/eclipse/cdm_dataportal.launch -text
 7.x/modules/cdm_dataportal/ide/eclipse/phpUnit.launch -text
 7.x/modules/cdm_dataportal/ide/eclipse/phpunit[!!-~](external[!!-~]tools).launch -text
-7.x/modules/cdm_dataportal/images/Protologue-media-BHL.png -text
-7.x/modules/cdm_dataportal/images/Protologue-media.png -text
 7.x/modules/cdm_dataportal/images/btn_collapse.gif -text
 7.x/modules/cdm_dataportal/images/btn_expand.gif -text
 7.x/modules/cdm_dataportal/images/clear.gif -text
@@ -919,6 +917,8 @@
 7.x/modules/cdm_dataportal/images/print_icon.gif -text
 7.x/modules/cdm_dataportal/images/sequence_derivate-16x16-32.png -text
 7.x/modules/cdm_dataportal/images/step_done.gif -text
+7.x/modules/cdm_dataportal/images/unused/Protologue-media-BHL.png -text
+7.x/modules/cdm_dataportal/images/unused/Protologue-media.png -text
 7.x/modules/cdm_dataportal/images/view-refresh.png -text svneol=unset#unset
 7.x/modules/cdm_dataportal/includes/common.inc -text
 7.x/modules/cdm_dataportal/includes/descriptions.inc -text
