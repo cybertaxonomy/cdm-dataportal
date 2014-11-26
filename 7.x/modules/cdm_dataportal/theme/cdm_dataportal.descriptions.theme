@@ -666,7 +666,7 @@ function compose_cdm_descriptionElementTextData($element, $asListElement, $featu
   }
 
   $render_array['#value'] = $names_used_in_source_markup . $element_text . $source_references_markup;
-  $render_array['#value-suffix'] = $annotations_and_sources['foot_note_keys'];
+  $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
 
   return $render_array;
 }
