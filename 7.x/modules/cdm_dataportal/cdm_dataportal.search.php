@@ -427,7 +427,7 @@ function cdm_dataportal_search_form_request() {
 }
 
 /**
- * Provides the classification the last search has been run on if any.
+ * Provides the classification ti which the last search has been limited to..
  *
  * This function should only be used after the cdm_dataportal_search_execute() handler has been run,
  * otherwise it will return the infomation from the last search executed. The information is retrieved from

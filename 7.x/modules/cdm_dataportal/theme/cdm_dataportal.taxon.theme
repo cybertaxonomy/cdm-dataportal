@@ -190,7 +190,7 @@ function theme_cdm_list_of_taxa($variables) {
   // variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1);
   // $showMedia_synonyms =
   // variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0);
-  $classification_uuid = get_taxonomictree_uuid_selected();
+  $classification_uuid = cdm_dataportal_searched_in_classification();
 
   // .. Well, for sure not as performant as before, but better than nothing.
   $synonym_uuids = array();
