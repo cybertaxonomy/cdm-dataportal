@@ -104,10 +104,9 @@ function cdm_dataportal_theme() {
 
     // Themes in cdm_dataportal.media.theme.
     'cdm_media' => array('variables' => array('descriptionElement' => NULL, 'mimeTypePreference' => NULL)),
-    'cdm_mediaTypeTerm' => array('variables' => array('feature' => NULL, 'mediaUrl' => FALSE)),
     'cdm_media_mime_application' => array('variables' => array('mediaRepresentation' => NULL, 'feature' => NULL)),
     'cdm_media_mime_image' => array('variables' => array('mediaRepresentation' => NULL, 'feature' => NULL)),
-    'cdm_media_mime_text' => array('variables' => array('representation' => NULL, 'feature' => NULL)),
+    'cdm_media_mime_text' => array('variables' => array('mediaRepresentation' => NULL, 'feature' => NULL)),
     'cdm_media_caption' => array('variables' => array(
         'media' => NULL,
         'elements' => array('title', 'description', 'artist', 'location', 'rights'),

@@ -22,7 +22,10 @@
  * @see theme_description_list()
  *
  * @param array $rights_list
- *    array of CDM Rights entities
+ *   array of CDM Rights entities
+ *
+ * @return array
+ *   the render array of the groups for the HTML description list
  */
 function cdm_rights_as_dl_groups($rights_list) {
 
@@ -32,7 +35,7 @@ function cdm_rights_as_dl_groups($rights_list) {
   $unknown = array();
 
   foreach ($rights_list as $right) {
-    if (!is_object($right)){
+    if (!is_object($right)) {
       continue;
     }
     $type_uuid = isset($right->type->uuid) ? $right->type->uuid : 'UNKNOWN';
@@ -56,8 +59,9 @@ function cdm_rights_as_dl_groups($rights_list) {
         if (isset($right->uri)) {
           if (strlen($license_str) > 0) {
             $license_str = l($license_str, $right->uri);
-          } else {
-            $license_str = l('link', $right->uri);
+          }
+          else {
+            $license_str = l(t('link'), $right->uri);
           }
         }
         if (strlen($license_str) > 0 && isset($right->text)) {
@@ -71,24 +75,40 @@ function cdm_rights_as_dl_groups($rights_list) {
         break;
 
       default:
-        $unknown_groups[] =  $right->text . $right->uuid; //TODO
+        $unknown_groups[] = $right->text . $right->uuid; // TODO !
     }
   }
 
   $groups = array();
-  if(count($copyrights) > 0) {
+  if (count($copyrights) > 0) {
     _description_list_group_add($groups, t('Copyright'), $copyrights);
   }
-  if(count($licenses) > 0) {
+  if (count($licenses) > 0) {
     _description_list_group_add($groups, t('Licenses'), $licenses);
   }
-  if(count($access_rights) > 0) {
+  if (count($access_rights) > 0) {
     _description_list_group_add($groups, t('Access rights'), $access_rights);
   }
-  if(count($unknown) > 0) {
+  if (count($unknown) > 0) {
     _description_list_group_add($groups, t('Rights (untyped)'), $unknown);
   }
 
   return $groups;
 
+}
+
+
+/**
+ * Provides the markup for an icon to represent a media which is associated with the given $feature.
+ *
+ * @param $feature
+ *   the cdm Feature term
+ * @param $media_url
+ *   Optional, currently unused. May be used in future to display different
+ *   icons for different media urls, like the fav-icon of the referenced
+ * @return string
+ *   The markup for the icon
+ */
+function media_feature_icon($feature, $media_url = NULL) {
+  return font_awesome_icon_markup('fa-book', array('alt' => $feature->representation_L10n));
 }

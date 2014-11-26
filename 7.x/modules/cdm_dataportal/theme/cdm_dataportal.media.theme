@@ -74,24 +74,6 @@ function theme_cdm_media($variables) {
       $contentTypeDirectory = media_content_type_dir($mediaRepresentation);
 
       $out .= theme('cdm_media_mime_' . $contentTypeDirectory, array('mediaRepresentation' => $mediaRepresentation, 'feature' => $feature));
-      /*
-      $attributes = array('class'=>'thickbox',
-      'rel'=>'descriptionElement-'.$uuid, 'title'=>$feature->term);
-      for($i = 0; $part = $mediaRepresentation->representationParts[$i];
-      $i++){
-      if($i == 0){
-      $image_url = drupal_get_path('module',
-      'cdm_dataportal').'/images/'.$feature->term.'-media.png';
-      $media = '<img src="'.$image_url.'" height="14px"
-      alt="'.$feature->term.'" />';
-      $out .= l($media, $part->uri, array('attributes' => $attributes,
-      'absolute' => TRUE, 'html' => TRUE));
-      } else {
-      $out .= l('', $part->uri, array('attributes' => $attributes, 'absolute'
-      => TRUE));
-      }
-      }
-      */
     }
     else {
       // No media available, so display just the type term.
@@ -99,27 +81,6 @@ function theme_cdm_media($variables) {
     }
   }
   return $out;
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_mediaTypeTerm($variables) {
-  $feature = $variables['feature'];
-  $mediaUrl = $variables['mediaUrl'];
-
-  $provider = '';
-  // TODO directly use favicon from referred URI and overlay on $icon_image, but
-  // for now we comment this out.
-  /*
-  if(strpos($mediaUrl, 'biodiversitylibrary.org') > 0){
-    $provider = '-BHL';
-  }
-  */
-  $icon_image = $feature->representation_L10n . '-media' . $provider . '.png';
-  $icon_url = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/' . $icon_image;
-  return '<img src="' . $icon_url . '" height="14px" alt="' . $feature->representation_L10n . '" />';
 }
 
 /**
@@ -139,7 +100,7 @@ function theme_cdm_media_mime_application($variables) {
     $attributes = array('title'=>$feature->representation_L10n,'target'=>'_blank');
     $attributes = array('title'=>'original publication', 'target'=>'_blank');
     */
-    $out .= l(theme('cdm_mediaTypeTerm', array('feature' => $feature, 'mediaUrl' => $part->uri)), $part->uri, array(
+    $out .= l(media_feature_icon($feature, $part->uri), $part->uri, array(
       'attributes' => $attributes,
       'absolute' => TRUE,
       'html' => TRUE,
@@ -164,7 +125,7 @@ function theme_cdm_media_mime_image($variables) {
   );
   for ($i = 0; $part = $representation->representationParts[$i]; $i++) {
     if ($i == 0) {
-      $out .= l(theme('cdm_mediaTypeTerm', array('feature' => $feature, 'mediaUrl' => $part->uri)), $part->uri, array(
+      $out .= l(media_feature_icon($feature, $part->uri), $part->uri, array(
         'attributes' => $attributes,
         'absolute' => TRUE,
         'html' => TRUE,
@@ -186,7 +147,7 @@ function theme_cdm_media_mime_image($variables) {
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_media_mime_text($variables) {
-  $representation = $variables['representation'];
+  $representation = $variables['mediaRepresentation'];
   $feature = $variables['feature'];
   $out = '';
   if (!empty($representation->parts)) {
@@ -197,7 +158,7 @@ function theme_cdm_media_mime_text($variables) {
       );
       // $attributes = array('title'=>t('original publication'),
       // 'target'=>'_blank');
-      $out .= l(theme('cdm_mediaTypeTerm', array('feature' => $feature, 'mediaUrl' => $part->uri)), $part->uri, array(
+      $out .= l(media_feature_icon($feature, $part->uri), $part->uri, array(
         'attributes' => $attributes,
         'absolute' => TRUE,
         'html' => TRUE,
