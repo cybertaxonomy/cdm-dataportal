@@ -97,11 +97,11 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 //		featureBlock = p.getFeatureBlockAt(3, "systematics", "div", null);
 //		assertEquals("Systematics\nTaxonomy and nomenclature follow Mathew (1996).\nMathew B. 1996: A review of Allium section Allium . - Kew.", featureBlock.getText());
 
-//        
+//
 
         featureBlock = p.getFeatureBlockAt(4, "distribution", "div", "span");
 
-        assertEquals("Distribution\nDivision 21,2\n1. R. D. Meikle, Flora of Cyprus 2. 1985, 2. R. Hand, Supplementary notes to the flora of Cyprus VI. in Willdenowia 39. 2009", featureBlock.getText());
+        assertEquals("Distribution\nDivision 2A,B\nA. R. D. Meikle, Flora of Cyprus 2. 1985, B. R. Hand, Supplementary notes to the flora of Cyprus VI. in Willdenowia 39. 2009", featureBlock.getText());
         assertEquals("Distribution", featureBlock.getHeader());
         assertEquals("expecting two footnote keys", 2, featureBlock.getFootNoteKeys().size());
 
@@ -119,7 +119,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
         assertEquals("rgba(255, 255, 0, 1)", footNoteKey_1.getElement().getCssValue("background-color"));
         assertEquals("rgba(255, 255, 0, 1)", footNote_1.getElement().getCssValue("background-color"));
 
-        assertEquals("1. R. D. Meikle, Flora of Cyprus 2. 1985", footNote_1.getText());
+        assertEquals("A. R. D. Meikle, Flora of Cyprus 2. 1985", footNote_1.getText());
 
         WebElement distributionMapImage = featureBlock.getElement().findElement(By.className("distribution_map"));
 //		assertEquals("http://edit.br.fgov.be/edit_wp5/v1.1/rest_gen.php?title=a:indigenous&ad=cyprusdivs:bdcode:a:2&as=z:ffffff,606060,,|y:1874CD,,|a:339966,,0.1,&l=background_gis:y,cyprusdivs:z&ms=500,380&bbox=32,34,35,36&label=1&img=true&legend=1&mlp=3&mc_s=Georgia,15,blue&mc=&recalculate=false", distributionMapImage.getAttribute("src"));
