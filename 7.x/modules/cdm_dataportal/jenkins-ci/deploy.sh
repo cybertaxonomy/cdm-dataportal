@@ -7,6 +7,31 @@
 DRUPAL_VERSION="7"
 SVN_USER="edit-jenkins"
 
+
+##############################################################
+# NOTE: the ssh host should be configured in the ~/.ssh/config:
+#     Host edit-deploy
+#     HostName <ip ot host name>
+#     User <deployment-user>
+# 
+# At the server to be delpoyed to you need to setup and configure the 
+
+# 1. crate the <deployment-user> 
+#
+# 2. assuming you are logged in as the <deployment-user>:
+#
+#  echo "umask 0126" >> ~/.bashrc : 
+#   
+# 3. user 'www-data' must be member of the group of the <deployment-user>
+#
+# 4. The permissions of the folders to delpoyed to must be set to 775 ownership must be adjusted:
+#   chmod -R 775 <the folders>
+#   chown -R www-data:deploy <the folders> 
+# 
+#  
+SSH_HOST='edit-deploy'
+##############################################################
+
 if [ -z "$1" ]; then
 	echo "version parameter missing\nUsage: deploy.sh <version-number>"
   exit -1
@@ -97,14 +122,12 @@ tar czf drupal${DRUPAL_VERSION}-cdm_dataportal-$VERSION.tar.gz drupal${DRUPAL_VE
 rm -rf drupal${DRUPAL_VERSION}-cdm_dataportal.tar.gz
 
 # create the new folder on the server and upload everything
-ssh root@160.45.63.172 "rm -rf /var/www/download/dataportal/$VERSION"
-ssh root@160.45.63.172 "mkdir /var/www/download/dataportal/$VERSION"
-ssh root@160.45.63.172 "rm -r /var/www/download/dataportal/stable"
-ssh root@160.45.63.172 "ln -s /var/www/download/dataportal/$VERSION /var/www/download/dataportal/stable"
-scp cdm_dataportal-${VERSION}.tar.gz root@wp5.e-taxonomy.eu:/var/www/download/dataportal/${VERSION}/
-scp drupal${DRUPAL_VERSION}-cdm_dataportal-${VERSION}.tar.gz root@wp5.e-taxonomy.eu:/var/www/download/dataportal/${VERSION}/
-ssh root@160.45.63.172 "chown -R www-data:www-data /var/www/download/dataportal/${VERSION}"
-ssh root@160.45.63.172 "chown -R www-data:www-data /var/www/download/dataportal/stable"
+ssh ${SSH_HOST} "rm -rf /var/www/download/dataportal/$VERSION"
+ssh ${SSH_HOST} "mkdir /var/www/download/dataportal/$VERSION"
+ssh ${SSH_HOST} "rm -r /var/www/download/dataportal/stable"
+ssh ${SSH_HOST} "ln -s /var/www/download/dataportal/$VERSION /var/www/download/dataportal/stable"
+scp cdm_dataportal-${VERSION}.tar.gz ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
+scp drupal${DRUPAL_VERSION}-cdm_dataportal-${VERSION}.tar.gz ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
 
 # DONE
 echo "cdm_dataportal deployment done!"
