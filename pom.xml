@@ -142,7 +142,10 @@
 				<version>2.1.1</version>
 				<configuration>
 					<locales>en</locales>
+          <outputEncoding>UTF-8</outputEncoding>
 					<siteDirectory>${basedir}/site</siteDirectory>
+          <!-- chmod: not not use chmod, rather adapt the umask of the user at the server to which the site is deployed -->
+          <chmod>false</chmod>
 				</configuration>
 			</plugin>
 			<plugin>
