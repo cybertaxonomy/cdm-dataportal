@@ -113,8 +113,8 @@ $feature_tree = get_csv_featureTree();
 
        // Must not exceed 45 characters !!!
         $subform_id =  $featureNode->feature->uuid; //LAYOUT_SETTING_PREFIX .
-        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
-        $systemDefaults = unserialize(FEATURE_TREE_LAYOUT_DEFAULTS);
+//        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
+//        $systemDefaults = unserialize(FEATURE_TREE_LAYOUT_DEFAULTS);
         $form['redListField']['csvExportOptions'][$subform_id] = array(
           '#type' => 'checkbox',
           '#title' => $featureNode->feature->representation_L10n,
