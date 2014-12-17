@@ -190,7 +190,11 @@ function theme_cdm_list_of_taxa($variables) {
   // variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1);
   // $showMedia_synonyms =
   // variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0);
-  $classification_uuid = cdm_dataportal_searched_in_classification();
+  $searched_in_classification = cdm_dataportal_searched_in_classification();
+  $searched_in_classification_uuid = null;
+  if(isset($searched_in_classification->uuid)){
+    $searched_in_classification_uuid = $searched_in_classification->uuid;
+  }
 
   // .. Well, for sure not as performant as before, but better than nothing.
   $synonym_uuids = array();
@@ -216,7 +220,7 @@ function theme_cdm_list_of_taxa($variables) {
   foreach ($synonym_uuids as $relatedUuid) {
     $table_of_accepted[$relatedUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array(
       $relatedUuid,
-      $classification_uuid,
+      $searched_in_classification_uuid,
     ));
   }
 
@@ -293,7 +297,7 @@ function theme_cdm_list_of_taxa($variables) {
             cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED,
                 array(
                     $taxon->uuid,
-                    $classification_uuid
+                    $searched_in_classification
                 )
             ),
             // theme to use for rendering:
