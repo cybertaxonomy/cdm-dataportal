@@ -131,7 +131,7 @@ function  oder_sources($sources, $do_theme = false){
 
 
       if($do_theme) {
-        $sort_array[$order_key] = wtheme('cdm_OriginalSource', array('source' => $source));
+        $sort_array[$order_key] = theme('cdm_OriginalSource', array('source' => $source));
       } else {
         $sort_array[$order_key] = $source;
       }
