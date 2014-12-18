@@ -342,7 +342,8 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
  * @return array
  *     The merged array as returned by drupal_array_merge_deep()
  *
- * TODO compare with mixed_variable_get() duplicate functions?
+ * TODO compare with mixed_variable_get() duplicate functions? => result use this function instead of mixed_variable_get()
+ * TODO force $default being an array
  */
 function get_array_variable_merged($variable_name, $default){
 

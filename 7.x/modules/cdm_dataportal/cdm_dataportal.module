@@ -1034,6 +1034,8 @@ function _load_occurences_for_taxon($taxon){
  *   usually an array, depending on the nature of the variable.
  *
  * TODO compare with get_array_variable_merged() duplicate functions?
+ * @deprecated rather use get_array_variable_merged() since this function
+ * used an array as second parameter
  */
 function mixed_variable_get($variableKey, $defaultValueString) {
   $systemDefaults = unserialize($defaultValueString);
@@ -1049,7 +1051,7 @@ function mixed_variable_get($variableKey, $defaultValueString) {
 }
 
 /**
- * Recusive funciton to convert an object into an array.
+ * Recursive function to convert an object into an array.
  * also subordinate objects will be converted.
  *
  * @param object $object
