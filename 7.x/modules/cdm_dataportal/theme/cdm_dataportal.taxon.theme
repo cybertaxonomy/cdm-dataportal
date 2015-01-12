@@ -531,7 +531,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
               if ($taxon->name->uuid == $element->fromName->uuid) {
                   $taxon_html = theme('cdm_taxonName', array(
                       'taxonName' => $element->toName,
-                      'nameLink' => path_to_name($element->toName->uuid, $taxon->uuid, $elementTaxonBasesUuid)
+                      'nameLink' => url(path_to_name($element->toName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
                   ));
               }
               break;
@@ -542,7 +542,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
               if ($taxon->name->uuid == $element->fromName->uuid) {
                   $taxon_html = theme('cdm_taxonName', array(
                       'taxonName' => $element->toName,
-                      'nameLink' => path_to_name($element->toName->uuid)
+                      'nameLink' => url(path_to_name($element->toName->uuid))
                   ));
               }
               break;
@@ -553,7 +553,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
               if ($taxon->name->uuid == $element->toName->uuid) {
                   $taxon_html = theme('cdm_taxonName', array(
                       'taxonName' => $element->fromName,
-                      'nameLink' => path_to_name($element->fromName->uuid, $taxon->uuid, $elementTaxonBasesUuid)
+                      'nameLink' => url(path_to_name($element->fromName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
                   ));
               }
               break;

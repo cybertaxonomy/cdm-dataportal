@@ -140,7 +140,7 @@ function theme_cdm_typedesignations($variables) {
         $out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated') . '</li>';
       }
       elseif ($typeDesignation->typeName) {
-        $link_to_name_page = '?q=' . path_to_name($typeDesignation->typeName->uuid);
+        $link_to_name_page = url(path_to_name($typeDesignation->typeName->uuid));
         $out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
 
         if ($typeDesignation->citation) {
@@ -614,8 +614,8 @@ function get_partDefinition($taxonNameType) {
 /**
  * @param $variables
  *    - taxonName : cdm TaxonNameBase instance
- *    - nameLink: URI to the taxon, @see path_to_taxon(), must be processed by uri() before passing to this method
- *    - refenceLink: URI to the reference, @see path_to_reference(), must be processed by uri() before passing to this method
+ *    - nameLink: URI to the taxon, @see path_to_taxon(), must be processed by url() before passing to this method
+ *    - refenceLink: URI to the reference, @see path_to_reference(), must be processed by url() before passing to this method
  *    - show_annotations: ...
  *    - is_type_designation: ...
  *    - skiptags: an array of tags to skip ....
