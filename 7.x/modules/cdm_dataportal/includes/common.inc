@@ -22,11 +22,11 @@
  * Functions which are composing Drupal render arays
  *
  * The cdm_dataporal module needs to compose rather complex render arrays from
- * the data returned by the CDM REST service. The compose functions are responsible
- * for creating the render arrays.
+ * the data returned by the CDM REST service. The compose functions are
+ * responsible for creating the render arrays.
  *
- * All these functions are also implementations of the compose_hook() which is used
- * in the proxy_content() function.
+ * All these functions are also implementations of the compose_hook()
+ * which is used in the proxy_content() function.
  * @}
  */
 
@@ -61,7 +61,7 @@ function compose_cdm_marker($marker) {
  * Checks if the given $cdm_entitiy has a marker the type references by the
  * $marker_type_uuid and returns TRUE if a matching marker has been found.
  *
- * @param CdmEntity $cdm_entitiy
+ * @param object $cdm_entitiy A CDM Entity
  * @param string $marker_type_uuid
  */
 function cdm_entity_has_marker($cdm_entitiy, $marker_type_uuid) {
@@ -77,14 +77,15 @@ function cdm_entity_has_marker($cdm_entitiy, $marker_type_uuid) {
 
 /**
  * Sorts an array of CDM IdentifiableSource instances by 1. by the
- * author teams familiy names and 2. by the publication date.
+ * author teams family names and 2. by the publication date.
  *
- * @param unknown $sources
+ * @param array $sources
  *    The array of CDM IdentifiableSource instances
- * @param bool $do_theme if set TRUE the sources will be themed by theme_cdm_OriginalSource
+ * @param bool $do_theme if set TRUE the sources will be themed
+ *        by theme_cdm_OriginalSource
  * @return multitype:
  */
-function  oder_sources($sources, $do_theme = false){
+function oder_sources($sources, $do_theme = false){
     $sort_array = array();
     foreach ($sources as $source) {
 
@@ -139,3 +140,28 @@ function  oder_sources($sources, $do_theme = false){
     ksort($sort_array);
     return array_values ($sort_array);
 }
+
+  /**
+   * Compare two different footnotes objects.
+   *
+   * The comparison is based on the footnote key. The one which is
+   * displayed as footnote number.
+   *
+   * @param mixed $a
+   *   Footnote object $a.
+   * @param mixed $b
+   *   Footnote object $b.
+   */
+  function footnotes_key_compare($a, $b) {
+    $res = 0;
+    if (empty($a) || empty($b)) {
+      return $res;
+    }
+    if ($a->keyStr < $b->keyStr) {
+      $res = -1;
+    }
+    elseif ($a->keyStr > $b->keyStr) {
+      $res = 1;
+    }
+    return $res;
+  }
