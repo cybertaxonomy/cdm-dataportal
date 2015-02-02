@@ -53,9 +53,11 @@ function cdm_dataportal_search_form_path_for_ws($ws_endpoint) {
  *   The prepared form array.
  */
 function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $query_field_default_value, $query_field_description, $process = NULL) {
+
   if ($process == NULL) {
     $process = 'cdm_dataportal_search_process';
   }
+
   $form['#method'] = 'get';
   /*
   $form['#process'] = array(
@@ -76,10 +78,10 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
     '#weight' => 0,
     '#type' => 'textfield',
     '#size' => 68,
-  // Comment @WA: this causes the description to display also when hovering over
-  // the textfield.
-  // I think this should be removed, although it is currently there in
-  // D5 portals.
+    // this causes the description to display also when hovering over
+    // the textfield.
+    // This is wanted behaviour for the simple seach but could
+    // be disabled for the advances search
     '#attributes' => array(
       'title' => $query_field_description,
     ),
@@ -132,30 +134,28 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
  *
  */
 function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = FALSE, $classificationSelect = TRUE) {
-  global $theme_key;
 
   $tdwg_level_select = (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
   $selected_areas = (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : FALSE);
   $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
 
 
-
-  if ($advancedForm) {
-    $form = cdm_dataportal_search_form_prepare(
-      'cdm_dataportal/search/results/taxon',
-      CDM_WS_PORTAL_TAXON_SEARCH, $query_field_default_value,
-      t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'),
-      NULL);
+  if ($advancedForm || variable_get(SIMPLE_SEARCH_USE_LUCENE_BACKEND, FALSE)) {
+    $search_service_endpoint = CDM_WS_PORTAL_TAXON_SEARCH;
   } else {
-     // using CDM_WS_PORTAL_TAXON_SEARCH in all cases, for testing or the origial CDM_WS_PORTAL_TAXON_FIND for production
-    $form = cdm_dataportal_search_form_prepare(
-      'cdm_dataportal/search/results/taxon',
-      CDM_WS_PORTAL_TAXON_FIND, $query_field_default_value,
-      t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'),
-      NULL
-    );
-//     $form = cdm_dataportal_search_form_prepare('cdm_dataportal/search/results/taxon', CDM_WS_PORTAL_TAXON_SEARCH, $query_field_default_value, t('Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard.'), NULL);
+    $search_service_endpoint = CDM_WS_PORTAL_TAXON_FIND;
+  }
 
+  $form = cdm_dataportal_search_form_prepare(
+    'cdm_dataportal/search/results/taxon',
+    $search_service_endpoint,
+    $query_field_default_value,
+    t('Enter the name or part of a name you wish to search for.
+      The asterisk  character * can always be used as wildcard.'),
+    NULL
+  );
+
+  if (!$advancedForm){
     $form['query']['#size'] = 20;
   }
 

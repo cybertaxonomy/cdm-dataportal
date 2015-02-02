@@ -303,14 +303,14 @@ function toc_list_item($label, $attributes = array(), $fragment = null) {
  * optionally the sources are put into a separate bibliography.
  *
  * @param $descriptionElement
- *     A CDM DescriptionElement instance
+ *   A CDM DescriptionElement instance
  * @param $separator
- *     Optional parameter. The separator string to concatenate the footnote ids, default is ','
+ *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
  * @param $footnote_list_key_suggestion
- *     will be overridden for original sources if the bibliography block is enabled
+ *   will be overridden for original sources if the bibliography block is enabled
  *
  * @return String
- *    The foot note keys
+ *   The foot note keys
  */
 function cdm_create_description_element_footnotes($description_element, $separator = ',',
           $footnote_list_key_suggestion = null, $do_link_to_reference = FALSE,

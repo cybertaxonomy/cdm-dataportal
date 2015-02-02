@@ -211,6 +211,8 @@ define('CDM_SEARCH_TAXA_MODE_DEFAULT', serialize(
   )
 );
 
+define('SIMPLE_SEARCH_USE_LUCENE_BACKEND', 'simple_search_use_lucene_backend');
+
 /* Gallery variables. */
 $gallery_settings = array(
     "cdm_dataportal_show_taxon_thumbnails" => 1,
@@ -2116,6 +2118,15 @@ function cdm_settings_layout_search() {
           will by default search on all classifications. Remove the tick if you want your
           portal to search on the classification selected in the classification browser
           selector.'),
+  );
+
+  $form['search_settings'][SIMPLE_SEARCH_USE_LUCENE_BACKEND] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Run simple search with free-text search backend.'),
+    '#default_value' => variable_get(SIMPLE_SEARCH_USE_LUCENE_BACKEND, FALSE),
+    '#description' => t('The simple search uses by default another search
+      backend as the advances search. By checking this option the simple search can be
+      configured to also use the free-text search backend.'),
   );
 
   $form['search_settings']['cdm_dataportal_search_items_on_page'] = array(
