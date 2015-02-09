@@ -116,10 +116,21 @@ function theme_cdm_descriptionElement_CategoricalData($variables) {
     }
   }
 
-  $footnote_key_list_str = cdm_create_description_element_footnotes($element);
 
   $out = '<span class="' . html_class_attribute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
-  return $out . $footnote_key_list_str;
+
+  $feature_block_settings = get_feature_block_settings($element->feature->uuid);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $element,
+    $feature_block_settings,
+    $out, // the description element text
+    $element->feature->uuid
+  );
+
+  if(!empty($annotations_and_sources['source_references'])){
+    $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+  }
+  return $out . $annotations_and_sources['foot_note_keys'];
 }
 
 /**
@@ -145,12 +156,8 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
    */
   $element = $variables['element'];
 
-  $feature_block_settings = get_feature_block_settings($element->feature->uuid);
-
   $out = '';
-
   $type_representation = NULL;
-
 
   if (isset($element->statisticalValues)) {
     $value_array = array();
@@ -187,6 +194,7 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
     $out .=  ' ' . $element->modifyingText_L10n;
   }
 
+  $feature_block_settings = get_feature_block_settings($element->feature->uuid);
   $annotations_and_sources = handle_annotations_and_sources(
     $element,
     $feature_block_settings,
@@ -194,7 +202,10 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
     $element->feature->uuid
   );
 
-  return $out . join($annotations_and_sources['source_references'], ', ') . $annotations_and_sources['foot_note_keys'];
+  if(!empty($annotations_and_sources['source_references'])){
+    $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+  }
+  return $out . $annotations_and_sources['foot_note_keys'];
 
 }
 
@@ -222,9 +233,18 @@ function theme_cdm_descriptionElement_IndividualsAssociation($variables) {
 
   $out .= drupal_render($render_array);
 
-  $footnote_key_list_str = cdm_create_description_element_footnotes($element);
+  $feature_block_settings = get_feature_block_settings($element->feature->uuid);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $element,
+    $feature_block_settings,
+    $out, // the description element text
+    $element->feature->uuid
+  );
 
-  return $out . $footnote_key_list_str;
+  if(!empty($annotations_and_sources['source_references'])){
+    $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+  }
+  return $out . $annotations_and_sources['foot_note_keys'];
 
 
 }
@@ -258,10 +278,18 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
       );
   }
 
-  $footnote_key_list_str = cdm_create_description_element_footnotes($element);
+  $feature_block_settings = get_feature_block_settings($element->feature->uuid);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $element,
+    $feature_block_settings,
+    $out, // the description element text
+    $element->feature->uuid
+  );
 
-  return $out . $footnote_key_list_str;
-
+  if(!empty($annotations_and_sources['source_references'])){
+    $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+  }
+  return $out . $annotations_and_sources['foot_note_keys'];
 
 }
 
@@ -333,8 +361,6 @@ function theme_cdm_description_ordered_distributions($variables) {
   if ($distribution_tree == null) {
     return NULL;
   }
-
-
 
   // Initialization of some variables.
   $out = '';

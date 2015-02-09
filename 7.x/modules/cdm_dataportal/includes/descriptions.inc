@@ -1248,8 +1248,6 @@ function cdm_create_description_element_footnotes($description_element, $separat
         UUID_DISTRIBUTION
       );
 
-
-
       $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid . '">'
         . $descriptionElement->area->representation_L10n;
       if(!empty($annotations_and_sources['source_references'])){
