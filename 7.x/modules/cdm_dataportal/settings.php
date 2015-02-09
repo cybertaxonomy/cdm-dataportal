@@ -1641,7 +1641,7 @@ function cdm_settings_layout_taxon() {
       '#size' => 60,
       '#description' => t('Additional query parameters to be used when requesting for the '
           . 'profile image. E.g.: <code>width=400&height=300&quality=95&format=jpeg</code>.'
-          . 'The query parameters will be appendend to the uri of the media representation part'
+          . 'The query parameters will be appended to the uri of the media representation part'
           . ' as stored in the cdm. The query parameter string must not start with a \'&\' or  \'?\'')
   );
 
@@ -1754,7 +1754,9 @@ function cdm_settings_layout_taxon() {
              In this case the display of the respective feature block is suppressed.</div>
       </dl>
       <h6>Sources as content to bibliography:</h6><div>Only valid if <em>Sources as content</em> is enabled, will cause the sources to be also shown
-           in the bibliography.</div>
+           in the bibliography. For this to work the bibliography must be enabled the <em>' .l(
+            'Layout Settings', 'admin/config/cdm_dataportal/settings/layout', array('fragment'=>'edit-bibliography-for-original-source'))
+        . '</em></div>
       <h6>Sort elements:</h6><div>Whether and how to sort the elements
            possible values are the constants SORT_ASC, SORT_DESC, NULL,
            some feature types (Distribution) also support: SORT_HIERARCHICAL</div>

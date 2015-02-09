@@ -1206,6 +1206,7 @@ function cdm_ws_taxonomy_pathFromRoot($taxon_uuid) {
 // =============================Terms and Vocabularies ========================================= //
 
 /**
+ * Returns the localized representation for the given term.
  *
  * @param Object $definedTermBase
  * 	  of cdm type DefinedTermBase
@@ -1221,6 +1222,24 @@ function cdm_term_representation($definedTermBase, $default_representation = '')
     return $definedTermBase->titleCache;
   }
   return $default_representation;
+}
+
+/**
+ * Returns the abbreviated localized representation for the given term.
+ *
+ * @param Object $definedTermBase
+ * 	  of cdm type DefinedTermBase
+ * @return string
+ * 	  the localized representation_L10n_abbreviatedLabel of the term,
+ *    if this representation is not available the function delegates the
+ *    call to cdm_term_representation()
+ */
+function cdm_term_representation_abbreviated($definedTermBase, $default_representation = '') {
+  if ( isset($definedTermBase->representation_L10n_abbreviatedLabel) ) {
+    return $definedTermBase->representation_L10n_abbreviatedLabel;
+  } else {
+    cdm_term_representation($definedTermBase, $default_representation);
+  }
 }
 
 /**

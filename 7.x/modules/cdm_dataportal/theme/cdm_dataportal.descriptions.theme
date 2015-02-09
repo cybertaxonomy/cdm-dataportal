@@ -145,36 +145,56 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
    */
   $element = $variables['element'];
 
+  $feature_block_settings = get_feature_block_settings($element->feature->uuid);
+
   $out = '';
 
   $type_representation = NULL;
-  $modifiers_strings = array();
 
 
   if (isset($element->statisticalValues)) {
     $value_array = array();
-    foreach ($element->statisticalValues as $val) {
-      if (isset($val->value)) {
-        $value_array[] = $val->value;
+    foreach ($element->statisticalValues as $statistical_val) {
+      $value = '';
+      if (isset($statistical_val->value)) {
+        $value = $statistical_val->value;
       }
+
+      if (isset($statistical_val->type)) {
+        $statistical_val_type_representation = cdm_term_representation($statistical_val->type);
+        // $statistical_val->type->termType;
+        // $statistical_val->type->userFriendlyTypeName;
+      }
+
+      $val_modifiers_strings = cdm_modifers_representations($statistical_val);
+      $value_array[] = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">' .
+        $value. ($val_modifiers_strings ? ' ' . $val_modifiers_strings : '') .
+        ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '') .
+        '</span>';
     }
 
     $out .= implode($value_array, ', ');
   }
 
   if (isset($element->unit)) {
-    $out .= ' '. cdm_term_representation($element->unit);
+    $out .= ' <span class="unit" title="' . cdm_term_representation($element->unit) . '">'. cdm_term_representation_abbreviated($element->unit) . '</span>';
   }
 
-  if (isset($element->statisticalValues->modifyingText_L10n)) {
-    $out .=  ' ' . $element->statisticalValues->modifyingText_L10n;
+  // modifiers of the description element itself
+  $modifier_string = cdm_modifers_representations($element);
+  $out .= ($modifier_string ? ' ' . $modifier_string : '');
+  if (isset($element->modifyingText_L10n)) {
+    $out .=  ' ' . $element->modifyingText_L10n;
   }
-  $modifiers_strings = cdm_modifers_representations($element->statisticalValues);
-  $out .= ($modifiers_strings ? ' ' . cdm_modifers_representations($element->statisticalValues) : '');
 
-  $footnote_key_list_str = cdm_create_description_element_footnotes($element);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $element,
+    $feature_block_settings,
+    $out, // the description element text
+    $element->feature->uuid
+  );
 
-  return $out . $footnote_key_list_str;
+  return $out . join($annotations_and_sources['source_references'], ', ') . $annotations_and_sources['foot_note_keys'];
 
 }
 

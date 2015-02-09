@@ -358,6 +358,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
    * @param $element
    * @param $feature_block_settings
    * @param $element_text
+   *   used to decide if the source references should be enclosed in brackets or not
    * @param $footnote_list_key_suggestion
    * @return array
    *   an associative array with the following elements:
@@ -1139,7 +1140,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
     }
     */
 
-    RenderHints::pushToRenderStack('cdm_descriptionElements');
+    RenderHints::pushToRenderStack($feature->uuid);
 
     if (is_array($descriptionElements)) {
       // --- normal description element arrays
