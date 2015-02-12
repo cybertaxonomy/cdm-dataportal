@@ -190,7 +190,6 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
     foreach ($element->statisticalValues as $statistical_val) {
 
       $value = '';
-      $value_markup = '';
 
       if (isset($statistical_val->value)) {
         $value = $statistical_val->value;
@@ -203,33 +202,38 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
       }
 
       $val_modifiers_strings = cdm_modifers_representations($statistical_val);
+      if ($val_modifiers_strings) {
+        $value = ' ' . $val_modifiers_strings . ' ' . $value;
+      }
+
+      $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
+        . $value . '</span>';
 
       if (array_key_exists($statistical_val->type->titleCache, $min_max)) {
         // put into min max array
-        $min_max[$statistical_val->type->titleCache] = $value;
+        $min_max[$statistical_val->type->titleCache] = $value_markup;
       }
       else {
         // otherwise generic output to be appended to 'min-max' string
-        $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">' .
-          $value. ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '') .
-          '</span>';
-      }
-
-      if ($val_modifiers_strings) {
-        $value_markup .= ' ' . $val_modifiers_strings;
-      }
-
-      if($value_markup){
+        $value_markup = $value_markup .
+          ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '');
         $value_array[] = $value_markup;
       }
 
     }
 
     // create min-max string
-    if($min_max['Min'] == $min_max['Max'] && $min_max['Min'] !== NULL){
+    if ($min_max['Min'] == $min_max['Max'] && $min_max['Min'] !== NULL) {
       $min_max['Average'] = $min_max['Min'];
       $min_max['Min'] = NULL;
       $min_max['Max'] = NULL;
+    }
+    // check for inconsistent cases, eg. only Max and average given
+    if ($min_max['Min'] === NULL && $min_max['Max'] !== NULL) {
+      $min_max['Min'] = '?';
+    }
+    if ($min_max['Min'] !== NULL && $min_max['Max'] === NULL) {
+      $min_max['Max'] = '?';
     }
 
     $min_max_markup = '';
@@ -258,7 +262,7 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
   $modifier_string = cdm_modifers_representations($element);
   $out .= ($modifier_string ? ' ' . $modifier_string : '');
   if (isset($element->modifyingText_L10n)) {
-    $out .=  ' ' . $element->modifyingText_L10n;
+    $out =  $element->modifyingText_L10n . ' ' . $out;
   }
 
   $feature_block_settings = get_feature_block_settings($element->feature->uuid);
