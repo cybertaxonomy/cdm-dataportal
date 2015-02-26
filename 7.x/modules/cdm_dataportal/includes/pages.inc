@@ -284,7 +284,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                 // typelabel will contain the typeStatus
                 $type_label = '';
                 $typeDesignationPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $specimenOrObservation->uuid);
-                if (isset($typeDesignationPager)) {
+                if (isset($typeDesignationPager) and isset($typeDesignationPager->records)) {
                     $type_status = array();
                     foreach ($typeDesignationPager->records as $typeDesignation) {
                         if (isset($typeDesignation->typeStatus->representation_L10n)){
