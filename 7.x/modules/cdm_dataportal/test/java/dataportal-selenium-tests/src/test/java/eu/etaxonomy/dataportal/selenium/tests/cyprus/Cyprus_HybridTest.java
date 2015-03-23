@@ -47,7 +47,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
     public void orchiserapias() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), orchiserapias_Uuid);
         String expectedName = "×Orchiserapias";
-        assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
+        assertEquals(getContext().prepareTitle(expectedName), driver.getTitle());
         assertEquals(expectedName, p.getAcceptedNameText());
         assertEquals("≡ Orchis × Serapias", p.getHomotypicalGroupSynonymName(1));
     }
@@ -55,7 +55,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
     @Test
     public void epilobium_aschersonianum() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), epilobium_aschersonianum_Uuid);
-        assertEquals(getContext().prepareTitle("Epilobium ×aschersonianum"), p.getTitle());
+        assertEquals(getContext().prepareTitle("Epilobium ×aschersonianum"), driver.getTitle());
         assertEquals("Epilobium ×aschersonianum Hausskn.", p.getAcceptedNameText());
         assertEquals("≡ Epilobium lanceolatum × parviflorum", p.getHomotypicalGroupSynonymName(1));
     }
@@ -63,7 +63,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
     @Test
     public void aegilops_biuncialis_x_geniculata() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), aegilops_biuncialis_x_geniculata_Uuid);
-        assertEquals(getContext().prepareTitle("Aegilops biuncialis × geniculata"), p.getTitle());
+        assertEquals(getContext().prepareTitle("Aegilops biuncialis × geniculata"), driver.getTitle());
         ClassificationTreeBlock classificationTree = p.getClassificationTree();
         ClassificationTreeElement focusedElement = classificationTree.getFocusedElement();
         assertTrue(classificationTree.isVisibleInViewPort(focusedElement));
