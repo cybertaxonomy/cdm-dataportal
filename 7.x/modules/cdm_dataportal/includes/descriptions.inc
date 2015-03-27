@@ -615,6 +615,9 @@ function cdm_create_description_element_footnotes($description_element, $separat
           $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => $node->feature->uuid)));
         } // END all other features
 
+        // allows modifying the block contents via a the hook_cdm_feature_node_block_content_alter
+        drupal_alter('cdm_feature_node_block_content', $block->content, $node->feature, $node->descriptionElements);
+
         if(!$block_content_is_empty){ // skip empty block content
           $block_list[] = $block;
           cdm_toc_list_add_item(cdm_term_representation($node->feature), $node->feature->uuid);
