@@ -119,15 +119,15 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
 /**
  * Creates a search form for searching on taxa.
  *
- * If advanced $advancedForm id TRUE the form will offer additinal choices
+ * If advanced $advancedForm id TRUE the form will offer additional choices
  *
- * @param unknown_type $form
- * @param unknown_type $form_state
+ * @param array $form
+ * @param array $form_state
  * @param bool $advancedForm
- *    default is FALSE
+ *   default is FALSE
  * @param bool $classificationSelect
- *    set TRUE to offer a classifiaction selector in the form - default is FALSE
- *    if only available in the advanced mode
+ *   set TRUE to offer a classifiaction selector in the form - default is FALSE
+ *   if only available in the advanced mode
  *
  * @return
  *   the form array
@@ -135,10 +135,7 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
  */
 function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = FALSE, $classificationSelect = TRUE) {
 
-  $tdwg_level_select = (isset($_SESSION['cdm']['search']['tdwg_level_select']) ? $_SESSION['cdm']['search']['tdwg_level_select'] : 2);
-  $selected_areas = (isset($_SESSION['cdm']['search']['area']) ? $_SESSION['cdm']['search']['area'] : FALSE);
   $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
-
 
   if ($advancedForm || variable_get(SIMPLE_SEARCH_USE_LUCENE_BACKEND, FALSE)) {
     $search_service_endpoint = CDM_WS_PORTAL_TAXON_SEARCH;
@@ -152,7 +149,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
     $query_field_default_value,
     t('Enter the name or part of a name you wish to search for.
       The asterisk  character * can always be used as wildcard.'),
-    NULL
+      NULL
   );
 
   if (!$advancedForm){
@@ -204,7 +201,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
         '#type' => 'select',
         '#default_value' => get_taxonomictree_uuid_selected(),
         '#options' => cdm_get_taxontrees_as_options(TRUE),
-        '#description' => t('A filter to limit the search to a specific classification. Choosing <em>-- None --</em> will disable this filter.')
+        '#description' => t('A filter to limit the search to a specific classification. Choosing <em>-- None --</em> will disable this filter.'),
       );
    }
 
@@ -231,7 +228,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       '#weight' => 5,
       '#type' => 'checkbox',
       '#title' => t('Search for common names'),
-      '#value' => $preset_doTaxaByCommonNames
+      '#value' => $preset_doTaxaByCommonNames,
     );
 
     $areas_options = cdm_terms_as_options(cdm_ws_fetch_all(CDM_WS_DESCRIPTION_NAMEDAREAS_IN_USE));
@@ -244,7 +241,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       '#title' => t('Filter by distribution areas'),
       '#default_value' =>  $areas_defaults,
       '#options' => $areas_options,
-      '#description' => t('Check one or multiple areas to filter by distribution.')
+      '#description' => t('Check one or multiple areas to filter by distribution.'),
     );
 
   } else {
