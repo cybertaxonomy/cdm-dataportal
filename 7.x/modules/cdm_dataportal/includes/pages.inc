@@ -93,7 +93,9 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     //assemble specimen details
                     foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
                         $detail_html .= "<hr>";
-                        $detail_html .= "<strong>" . $preservedSpecimenDTO->accessionNumber . "</strong><br>";
+                        //link to specimen page
+                        $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, path_to_specimen($preservedSpecimenDTO->uuid));
+                        $detail_html .= "<strong>".$specimenPageLink."</strong><br>";
                         // - type information
                         $types = "";
                         if (isset($preservedSpecimenDTO->types)) {
