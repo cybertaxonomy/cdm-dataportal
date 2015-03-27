@@ -366,7 +366,7 @@ function get_image_map($width, $height= NULL, $bounding_box = FALSE, $occurrence
     $baselayer_name = "earth";
   }
 
-  $query_string = '&image=true&recalculate=false&ms=' . $width . ($height ? ',' . $height : '')
+  $query_string = '&img=true&recalculate=false&ms=' . $width . ($height ? ',' . $height : '')
   // Additional query parameters as set in the data portal admin section.
   . ($bounding_box ? '&bbox=' . $bounding_box : '')
   . ($map_settings['show_labels'] ? '&label=' . $map_settings['show_labels'] : '');
