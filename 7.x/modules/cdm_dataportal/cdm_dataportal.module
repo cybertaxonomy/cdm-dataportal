@@ -372,8 +372,9 @@ function cdm_dataportal_menu() {
   );
 
    // Optional callback arguments: page.
+    //FIXME point to view/page method in this module
     $items['cdm_dataportal/specimen'] = array(
-        'page callback' => 'cdm_dataportal_specimen_page_view',
+        'page callback' => 'compose_cdm_specimen_page',
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK,
         // Expected callback arguments: uuid.
