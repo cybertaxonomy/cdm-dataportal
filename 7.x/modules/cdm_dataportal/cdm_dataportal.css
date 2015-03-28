@@ -121,9 +121,15 @@ select.highlite-first-child option:first-child {
  * ======= Search-Form =======
  */
 
-#edit-search-area {
+#edit-search-areas-area, #edit-search-areas-area-0, #edit-search-areas-area-1, #edit-search-areas-area-2, #edit-search-areas-area-3 {
   height: 10em;
   overflow: auto;
+}
+
+#edit-search-areas .parents {
+  /* faints the parent areas in the area selection */
+  color: #999;
+    font-size: 90%;
 }
 
 /*

@@ -231,18 +231,78 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       '#value' => $preset_doTaxaByCommonNames,
     );
 
-    $areas_options = cdm_terms_as_options(cdm_ws_fetch_all(CDM_WS_DESCRIPTION_NAMEDAREAS_IN_USE));
-    $areas_defaults = array();
-    if(isset($_SESSION['cdm']['search']['area'])){
-      $areas_defaults = explode(',', $_SESSION['cdm']['search']['area']);
-    }
-    $form['search']['area'] = array(
-      '#type' => 'checkboxes',
-      '#title' => t('Filter by distribution areas'),
-      '#default_value' =>  $areas_defaults,
-      '#options' => $areas_options,
-      '#description' => t('Check one or multiple areas to filter by distribution.'),
-    );
+      $area_term_dtos =  cdm_ws_fetch_all(CDM_WS_DESCRIPTION_NAMEDAREAS_IN_USE, array('includeAllParents'=>'true'));
+
+      // sort by vocabulary
+      $terms_by_vocab = array();
+      foreach($area_term_dtos as $term_dto){
+          if (!isset($terms_by_vocab[$term_dto->vocabularyUuid])) {
+              $terms_by_vocab[$term_dto->vocabularyUuid] = array();
+          }
+          $terms_by_vocab[$term_dto->vocabularyUuid][$term_dto->uuid] = $term_dto;
+      }
+      // build hierarchy for each vocabulary
+      $term_tree = array();
+      foreach ($terms_by_vocab as $vocab_uuid => $term_dto ) {
+          $term_tree[$vocab_uuid] = array();
+          foreach ($term_dto as $term) {
+              if (!empty($term->partOfUuid)) {
+                  // children
+                  $parent =& $term_dto[$term->partOfUuid];
+                  if (!isset($parent->children)) {
+                      $parent->children = array();
+                  }
+                  $parent->children[$term->uuid] = $term;
+              } else {
+                  // root nodes
+                  $term_tree[$vocab_uuid][$term->uuid] = $term;
+              }
+          }
+      }
+
+      drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/search_area_filter.js');
+
+      drupal_add_js('jQuery(document).ready(function() {
+        jQuery(\'#edit-search-areas\').search_area_filter(\'#edit-search-areas-areas-filter\');
+      });
+      ', array('type' => 'inline'));
+
+      $form['search']['areas'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Filter by distribution areas'),
+      );
+      $form['search']['areas']['areas_filter'] = array(
+        '#type' => 'textfield',
+        '#description' => 'type to filter the areas',
+      );
+      $vocab_cnt = 0;
+      foreach ($term_tree as $vocab_uuid => $term_dto_tree) {
+          $areas_options =  term_tree_as_options($term_dto_tree);
+          $form['search']['areas']['area'][$vocab_cnt++] = array(
+            '#type' => 'checkboxes',
+//            '#title' => t('Filter by distribution areas'),
+//            '#default_value' =>  $areas_defaults,
+            '#options' => $areas_options,
+//            '#description' => t('Check one or multiple areas to filter by distribution.'),
+          );
+      }
+
+
+      /* -------- the old ugly list ---------
+      $areas_options = cdm_terms_as_options($area_termDtos);
+
+      $areas_defaults = array();
+      if(isset($_SESSION['cdm']['search']['area'])){
+        $areas_defaults = explode(',', $_SESSION['cdm']['search']['area']);
+      }
+      $form['search']['area'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Filter by distribution areas'),
+        '#default_value' =>  $areas_defaults,
+        '#options' => $areas_options,
+        '#description' => t('Check one or multiple areas to filter by distribution.'),
+      );
+      */
 
   } else {
     // --- SIMPLE SEARCH FORM ---
@@ -488,7 +548,44 @@ function cdm_dataportal_search_execute() {
   // read the query parameters from $_REQUEST and add additional query parameters if nessecary.
   $request_params = cdm_dataportal_search_form_request();
 
-  $taxonPager = cdm_ws_get($_REQUEST['ws'], NULL, queryString($request_params));
+  $taxon_pager = cdm_ws_get($_REQUEST['ws'], NULL, queryString($request_params));
 
-  return $taxonPager;
+  return $taxon_pager;
+}
+
+    /**
+     * Transforms the termDTO tree into options array.
+     *
+     *   TermDto:
+     *      - partOfUuid:
+     *      - representation_L10n:
+     *      - representation_L10n_abbreviatedLabel:
+     *      - uuid:
+     *      - vocabularyUuid:
+     *      - children: array of TermDto
+     *
+     * The options array is suitable for drupal form API elements that allow multiple choices.
+     * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#options
+     *
+     * @param array $term_dto_tree
+     *   a hierarchic array of CDM TermDto instances, with additional 'children' field:
+     * @param array $options
+     *   Internally used for recursive calls
+     * @param string $prefix
+     *   Internally used for recursive calls
+     *
+     * @return array
+     *   the terms in an array as options for a form element that allows multiple choices.
+     */
+function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = ''){
+
+    foreach ($term_dto_tree as $uuid => $dto){
+        $label = $prefix . $dto->representation_L10n . ' (' . $dto->representation_L10n_abbreviatedLabel .')';
+        $options[$uuid] = $label;
+        if (is_array($dto->children)) {
+            term_tree_as_options($dto->children, $options, '<span class="parents">' .$label . ' &gt; </span>');
+        }
+    }
+
+    return $options;
 }
