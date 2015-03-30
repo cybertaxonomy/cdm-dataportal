@@ -91,9 +91,11 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                         $detail_html .= "<strong>Citation:</strong> " . $derivateHierarchy->citation . "<br>";
                     }
                     //assemble specimen details
-                    foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
-                        $detail_html .= "<hr>";
-                        $detail_html .= compose_cdm_specimen_page_html($preservedSpecimenDTO);
+                    if($derivateHierarchy->preservedSpecimenDTOs){
+                        foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
+                            $detail_html .= "<hr>";
+                            $detail_html .= compose_cdm_specimen_page_html($preservedSpecimenDTO);
+                        }
                     }
                     //detail row resp. one BIG detail cell
                     $rows[] = array(
