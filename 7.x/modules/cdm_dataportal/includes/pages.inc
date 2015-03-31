@@ -339,16 +339,13 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO)
 {
     $detail_html = "";
     //link to specimen page
-    $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, path_to_specimen($preservedSpecimenDTO->uuid));
+    $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, path_to_specimen($preservedSpecimenDTO->uuid),array('attributes' => array('target'=>'_blank')));
     $detail_html .= "<strong>" . $specimenPageLink . "</strong><br>";
     // - type information
     $types = "";
     if (isset($preservedSpecimenDTO->types)) {
-        foreach ($preservedSpecimenDTO->types as $typeStatus => $accessionList) {
-            $types .= $typeStatus;
-            foreach ($accessionList as $accessionNumber) {
-                $types .= " (" . $accessionNumber . ") ";
-            }
+        foreach ($preservedSpecimenDTO->types as $typeStatus) {
+            $types .= $typeStatus." ";
         }
     }
     $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
