@@ -49,6 +49,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
         $checked_box_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/step_done.gif' . '"/>';
         $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
+        $character_data_icon = '<img title="Character Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/character_data_derivate-16x16-32.png' . '"/>';
         if (isset($pagerFieldUnits->records[0])) {
             $rowcount = 0;
             foreach ($pagerFieldUnits->records as $fieldUnit) {
@@ -70,7 +71,9 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                                 'data' => $derivateHierarchy->hasSpecimenScan? $checked_box_icon:"",
                                 'class' => array('checkBoxCell')
                             ),
-                            ($derivateHierarchy->hasDna? $sequence_icon :"") . ($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
+                            ($derivateHierarchy->hasDna? $sequence_icon :"")
+                            .($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
+                            .($derivateHierarchy->hasCharacterData?$character_data_icon:"")
                         ),
                         'id' => ('derivate_summary' . $rowcount), // summary row id
                         'class' => array('summary_row'),
