@@ -16,6 +16,118 @@
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
 
+
+/**
+ * @param $preservedSpecimenDTO
+ * @param $detail_html
+ * @return string
+ */
+function compose_cdm_specimen_page($specimenUuid)
+{
+    drupal_set_title("Specimen Details");
+    $preservedSpecimenDTO = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimenUuid, 'specimenDerivates'));
+
+    $render_array = array();
+    RenderHints::pushToRenderStack('specimen_page');
+
+    $detail_html = compose_cdm_specimen_page_html($preservedSpecimenDTO, true);
+    $render_array['specimen_html'] = array(
+        '#markup' => $detail_html
+    );
+
+    RenderHints::popFromRenderStack();
+    return $render_array;
+}
+
+/**
+ * @param $preservedSpecimenDTO
+ * @return string
+ */
+function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage = false)
+    //FIXME remove this method and use render_array correctly in compressed table
+{
+    $detail_html = "";
+    //link to specimen page
+    $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, path_to_specimen($preservedSpecimenDTO->uuid),array('attributes' => array('target'=>'_blank')));
+    if($isSpecimenPage){
+        $detail_html .= "<br>";
+    }
+    $detail_html .= "<strong>" . $specimenPageLink . "</strong><br>";
+    if($isSpecimenPage){
+        $detail_html .= "<br>";
+    }
+    // - type information
+    $types = "";
+    if (isset($preservedSpecimenDTO->types)) {
+        foreach ($preservedSpecimenDTO->types as $typeStatus) {
+            $types .= $typeStatus." ";
+        }
+    }
+    $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
+    // - specimen scans
+    $specimenScans = createLinks($derivateDataDTO->specimenScans);
+    // - molecular data
+    $molecularData = "";
+    if ($derivateDataDTO->molecularDataList) {
+        foreach ($derivateDataDTO->molecularDataList as $molecular) {
+            //provider link
+            if (isset($molecular->providerLink)) {
+                $molecularData .= createHTMLLink($molecular->providerLink);
+            }
+            //contig link
+            if (isset($molecular->contigFiles[0])) {//FIXME check if empty
+                $molecularData .= "[";
+                if (isset($molecular->contigFiles)) {
+                    foreach ($molecular->contigFiles as $contigFile) {
+                        if (isset($contigFile->contigLink)) {
+                            $molecularData .= createHTMLLink($contigFile->contigLink);
+
+                            //primer links
+                            $molecularData .= createHTMLLinks($contigFile->primerLinks);
+                            if (isset($contigFile->primerLinks)) {
+                                foreach ($contigFile->primerLinks as $primerLink) {
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    $molecularData .= "no contig";
+                }
+                $molecularData .= "]";
+            }
+            //FIXME separate with comma (remove trailing comma)
+        }
+    }
+    // - detail images
+    $detailImages = createLinks($derivateDataDTO->detailImages);
+
+    if ($types) {
+        $detail_html .= "<strong>Types:</strong> " . $types . "<br>";
+    }
+    if ($specimenScans) {
+        $detail_html .= "<strong>Specimen Scans:</strong> " . $specimenScans . "<br>";
+    }
+    if ($molecularData) {
+        $detail_html .= "<strong>Molecular Data:</strong> " . $molecularData . "<br>";
+    }
+    if ($detailImages) {
+        $detail_html .= "<strong>Detail Images:</strong> " . $detailImages . "<br>";
+    }
+
+    //character data
+    if ($preservedSpecimenDTO->characterData) {
+        if($isSpecimenPage){
+            $detail_html .= "<br>";
+        }
+        $detail_html .= "<strong>Character Data</strong><br>";
+        foreach ($preservedSpecimenDTO->characterData as $characterStatePair) {
+            $detail_html .= "<i>" . $characterStatePair->first . ": </i>" . $characterStatePair->second;
+            $detail_html .= "<br>";
+        }
+    }
+    return $detail_html;
+}
+
 /**
  * Compose an render array from a CDM DerivedUnitFacade object.
  *
