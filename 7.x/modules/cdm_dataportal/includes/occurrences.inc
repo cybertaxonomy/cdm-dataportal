@@ -49,18 +49,40 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     $detail_html = "";
     //link to specimen page
     $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, path_to_specimen($preservedSpecimenDTO->uuid),array('attributes' => array('target'=>'_blank')));
-    if($isSpecimenPage){
+    $detail_html .= ($isSpecimenPage?"<h2>":"<strong>") . $specimenPageLink . ($isSpecimenPage?"</h2>":"</strong><br>");
+    if($isSpecimenPage) {
         $detail_html .= "<br>";
+        if($preservedSpecimenDTO->citation){
+            $detail_html .= "<strong>Citation:</strong> " . $preservedSpecimenDTO->citation . "<br>";
+        }
     }
-    $detail_html .= "<strong>" . $specimenPageLink . "</strong><br>";
     if($isSpecimenPage){
-        $detail_html .= "<br>";
+        // associated taxa
+        if($preservedSpecimenDTO->associatedTaxa){
+            $detail_html .= "<br><strong>Associated Taxa:</strong><br>";
+            foreach($preservedSpecimenDTO->associatedTaxa as $associatedTaxon){
+                $detail_html .= $associatedTaxon."<br>";
+            }
+        }
     }
     // - type information
     $types = "";
     if (isset($preservedSpecimenDTO->types)) {
-        foreach ($preservedSpecimenDTO->types as $typeStatus) {
-            $types .= $typeStatus." ";
+        foreach ($preservedSpecimenDTO->types as $typeStatus => $typedTaxa) {
+            if($isSpecimenPage){
+                //typed taxa
+                if($preservedSpecimenDTO->types){
+                    $detail_html .= "<br><strong>Type Designations:</strong><br>";
+                    $detail_html .= "<i>".$typeStatus."</i>: ";
+                    foreach($typedTaxa as $typedTaxon){
+                        $detail_html .= $typedTaxon." ";
+                    }
+                    $detail_html .= "<br>";
+                }
+            }
+            else{
+                $types .= $typeStatus." ";
+            }
         }
     }
     $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
@@ -102,23 +124,25 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     $detailImages = createLinks($derivateDataDTO->detailImages);
 
     if ($types) {
+        $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= "<strong>Types:</strong> " . $types . "<br>";
     }
     if ($specimenScans) {
+        $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= "<strong>Specimen Scans:</strong> " . $specimenScans . "<br>";
     }
     if ($molecularData) {
+        $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= "<strong>Molecular Data:</strong> " . $molecularData . "<br>";
     }
     if ($detailImages) {
+        $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= "<strong>Detail Images:</strong> " . $detailImages . "<br>";
     }
 
     //character data
     if ($preservedSpecimenDTO->characterData) {
-        if($isSpecimenPage){
-            $detail_html .= "<br>";
-        }
+        $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= "<strong>Character Data</strong><br>";
         foreach ($preservedSpecimenDTO->characterData as $characterStatePair) {
             $detail_html .= "<i>" . $characterStatePair->first . ": </i>" . $characterStatePair->second;
