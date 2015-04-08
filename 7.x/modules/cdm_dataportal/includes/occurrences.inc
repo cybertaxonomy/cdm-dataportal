@@ -294,11 +294,11 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
               }
                 if($determinationEvent->taxonName){
                     $taxon_name = $determinationEvent->taxonName;
-                    $name_link = path_to_taxon($determinationEvent->taxon->uuid);
+                    $name_link = "";
                 }
                 else if($determinationEvent->taxon){
                     $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
-                    $name_link = "";
+                    $name_link = path_to_taxon($determinationEvent->taxon->uuid);
                 }
               $taxon_html = theme('cdm_taxonName',
                   array(
