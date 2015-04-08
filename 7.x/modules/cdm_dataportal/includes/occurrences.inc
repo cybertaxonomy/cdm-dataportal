@@ -49,7 +49,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     $detail_html = "";
     //link to specimen page
     $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, path_to_specimen($preservedSpecimenDTO->uuid),array('attributes' => array('target'=>'_blank')));
-    $detail_html .= ($isSpecimenPage?"<h2>":"<strong>") . $specimenPageLink . ($isSpecimenPage?"</h2>":"</strong><br>");
+    $detail_html .= ($isSpecimenPage?"<h2>$preservedSpecimenDTO->accessionNumber</h2>":"<strong>$specimenPageLink</strong><br>");
     if($isSpecimenPage) {
         $detail_html .= "<br>";
         if($preservedSpecimenDTO->citation){
