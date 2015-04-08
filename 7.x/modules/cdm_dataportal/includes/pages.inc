@@ -35,6 +35,69 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     $render_array = array();
     RenderHints::pushToRenderStack('taxon_page_specimens');
 
+    $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
+    $relationship_choice['direct'] = get_selection($relationship_choice['direct']);
+    $relationship_choice['invers'] = get_selection($relationship_choice['invers']);
+
+    $by_associatedtaxon_query_parameters = array(
+        'relationshipsInvers' => implode(',', $relationship_choice['invers']),
+        'relationships' => implode(',', $relationship_choice['direct']),
+    );
+
+    if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
+        $by_associatedtaxon_query_parameters = array_merge($by_associatedtaxon_query_parameters, $_REQUEST['pager']);
+    }
+
+    $by_associatedtaxon_query = http_build_query($by_associatedtaxon_query_parameters);
+
+    $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+        null,
+        $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
+    );
+
+    $specimensOrObservations = array();
+    if(isset($pager->records[0])){
+        $specimensOrObservations =  $pager->records;
+    }
+
+    // order occurrences by date but types should be on top of the list
+    $type_specimens = array();
+    $other_occurrences = array();
+    foreach ($specimensOrObservations as &$occurrence) {
+        $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
+        if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
+            $type_specimens[] = $occurrence;
+        } else {
+            $other_occurrences[] = $occurrence;
+        }
+    }
+    $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
+
+    // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
+    // $occurrence->_fieldObjectMedia
+    foreach ($specimensOrObservations as &$occurrence) {
+        $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+            $occurrence->uuid,
+            'fieldObjectMedia',
+        ));
+        $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+            $occurrence->uuid,
+            'derivedUnitMedia',
+        ));
+    }
+
+    // --- get map service HTTP query paramaters
+    if (count($specimensOrObservations) > 0) {
+        $occurrence_query = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
+
+        if( isset($occurrence_query->String) ) {
+            $occurrence_query = $occurrence_query->String;
+            $legend_format_query = null;
+            $distribution_query = NULL;
+
+            $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query);
+        }
+    }
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
@@ -143,70 +206,6 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     }
     else{
         //BOTTOM-UP-SPECIMEN-TABLE
-        $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
-        $relationship_choice['direct'] = get_selection($relationship_choice['direct']);
-        $relationship_choice['invers'] = get_selection($relationship_choice['invers']);
-
-        $by_associatedtaxon_query_parameters = array(
-            'relationshipsInvers' => implode(',', $relationship_choice['invers']),
-            'relationships' => implode(',', $relationship_choice['direct']),
-        );
-
-        if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
-            $by_associatedtaxon_query_parameters = array_merge($by_associatedtaxon_query_parameters, $_REQUEST['pager']);
-        }
-
-        $by_associatedtaxon_query = http_build_query($by_associatedtaxon_query_parameters);
-
-        $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
-            null,
-            $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
-        );
-
-        $specimensOrObservations = array();
-        if(isset($pager->records[0])){
-            $specimensOrObservations =  $pager->records;
-        }
-
-        // order occurrences by date but types should be on top of the list
-        $type_specimens = array();
-        $other_occurrences = array();
-        foreach ($specimensOrObservations as &$occurrence) {
-            $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
-            if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
-                $type_specimens[] = $occurrence;
-            } else {
-                $other_occurrences[] = $occurrence;
-            }
-        }
-        $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
-
-        // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
-        // $occurrence->_fieldObjectMedia
-        foreach ($specimensOrObservations as &$occurrence) {
-            $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-                $occurrence->uuid,
-                'fieldObjectMedia',
-            ));
-            $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-                $occurrence->uuid,
-                'derivedUnitMedia',
-            ));
-        }
-
-        // --- get map service HTTP query paramaters
-        if (count($specimensOrObservations) > 0) {
-            $occurrence_query = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
-
-            if( isset($occurrence_query->String) ) {
-                $occurrence_query = $occurrence_query->String;
-                $legend_format_query = null;
-                $distribution_query = NULL;
-
-                $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query);
-            }
-        }
-
         // --- generate the specimen list as table
         $specimen_table = array(
             '#theme' => 'table',
