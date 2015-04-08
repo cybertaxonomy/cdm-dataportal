@@ -59,7 +59,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     if($isSpecimenPage){
         // associated taxa
         if($preservedSpecimenDTO->associatedTaxa){
-            $detail_html .= "<br><strong>Associated Taxa:</strong><br>";
+            $detail_html .= "<br><strong>Determined as:</strong><br>";
             foreach($preservedSpecimenDTO->associatedTaxa as $associatedTaxon){
                 $detail_html .= $associatedTaxon."<br>";
             }
