@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Functions for dealing with CDM entities of type SpeciemenOrOccurrences
+ * Functions for dealing with CDM entities of type SpecimenOrOccurrences
  *
  * @copyright
  *   (C) 2007-2012 EDIT
@@ -87,7 +87,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     }
     $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
     // - specimen scans
-    $specimenScans = createLinks($derivateDataDTO->specimenScans);
+        $specimenScans = createLinks($derivateDataDTO->specimenScans);
     // - molecular data
     $molecularData = "";
     if ($derivateDataDTO->molecularDataList) {
