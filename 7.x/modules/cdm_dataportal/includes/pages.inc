@@ -134,8 +134,8 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                                 'data' => $derivateHierarchy->hasSpecimenScan? $checked_box_icon:"",
                                 'class' => array('checkBoxCell')
                             ),
-                            ($derivateHierarchy->hasDna? $sequence_icon :"")
-                            .($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
+                            ($derivateHierarchy->hasDna? $sequence_icon :"")." "
+                            .($derivateHierarchy->hasDetailImage?$detail_image_icon:"")." "
                             .($derivateHierarchy->hasCharacterData?$character_data_icon:"")
                         ),
                         'id' => ('derivate_summary' . $rowcount), // summary row id
@@ -146,7 +146,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     $detail_html = "";
                     // - taxon name
                     if (variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as') && $derivateHierarchy->taxonName) {
-                        $detail_html .= "<strong>Determined as:</strong> " . $derivateHierarchy->taxonName . "<br>";
+                        $detail_html .= create_label("Determined as") . $derivateHierarchy->taxonName . "<br>";
                     }
                     // - prtologue
                     if ($derivateHierarchy->protologue) {
@@ -154,15 +154,16 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     }
                     // - citation
                     if ($derivateHierarchy->citation) {
-                        $detail_html .= "<strong>Citation:</strong> " . $derivateHierarchy->citation . "<br>";
+                        $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
                     }
                     //assemble specimen details
                     if($derivateHierarchy->preservedSpecimenDTOs){
                         foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
-                            $detail_html .= "<hr>";
+                            $detail_html .= "<br>";
                             $detail_html .= compose_cdm_specimen_page_html($preservedSpecimenDTO);
                         }
                     }
+                    $detail_html .= "<br>";
                     //detail row resp. one BIG detail cell
                     $rows[] = array(
                         'data' => array(
@@ -183,7 +184,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $derivateHierarchyTable = array(
             "#theme" => "table",
             "#weight" => 2,
-            "#header" => array("Country", "Date", "Collector + Collecting Number", "Herbaria", "Type", "Scan", "Derivates"),
+            "#header" => array("Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivates"),
             "#rows" => $rows,
             "#attributes" => array(
                 "id" => $tableId,
@@ -310,7 +311,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     return $render_array;
 }
 
-function createHTMLLink($link){
+function create_html_link($link){
     $html = "";
     if($link->uri!=""){
         $html .= '<a href="' . $link->uri . '">' . $link->linkText . "</a>";
@@ -326,12 +327,12 @@ function createHTMLLink($link){
  * @param $linkList the list with Link objects having "uri" and "linkText" as members
  * @return string the assembled HTML string containing the links
  */
-function createHTMLLinks($linkList)
+function create_html_links($linkList)
 {
     $html = "";
     if ($linkList) {
         foreach ($linkList as $link) {
-            $html .= createHTMLLink($link)." ";
+            $html .= create_html_link($link)." ";
         }
     }
     return $html;
@@ -342,7 +343,7 @@ function createHTMLLinks($linkList)
  * @param $linkTextPairList the list with pairs which hold the uri as "first" and uriText as "second"
  * @return string the assembled HTML string containing the links
  */
-function createLinks($linkTextPairList)
+function create_links($linkTextPairList)
 {
     $html = "";
     if ($linkTextPairList) {
