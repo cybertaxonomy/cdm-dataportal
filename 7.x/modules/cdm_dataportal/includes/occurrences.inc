@@ -59,7 +59,10 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     if($isSpecimenPage){
         // associated taxa
         if($preservedSpecimenDTO->associatedTaxa){
-            $detail_html .= "<br><strong>Determined as:</strong><br>";
+            $detail_html .= "<br><strong>Determined as: </strong>";
+                if(sizeof($preservedSpecimenDTO->associatedTaxa)>1){
+                    $detail_html .= "<br>";
+                }
             foreach($preservedSpecimenDTO->associatedTaxa as $associatedTaxon){
                 $detail_html .= $associatedTaxon."<br>";
             }
@@ -68,11 +71,14 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     // - type information
     $types = "";
     if (isset($preservedSpecimenDTO->types)) {
+        //typed taxa
+        $detail_html .= "<br><strong>Type Designations: </strong>";
+        if(sizeof($preservedSpecimenDTO->types)>1){
+            $detail_html .= "<br>";
+        }
         foreach ($preservedSpecimenDTO->types as $typeStatus => $typedTaxa) {
             if($isSpecimenPage){
-                //typed taxa
                 if($preservedSpecimenDTO->types){
-                    $detail_html .= "<br><strong>Type Designations:</strong><br>";
                     $detail_html .= "<i>".$typeStatus."</i>: ";
                     foreach($typedTaxa as $typedTaxon){
                         $detail_html .= $typedTaxon." ";
