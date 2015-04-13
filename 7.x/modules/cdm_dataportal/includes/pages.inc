@@ -88,14 +88,30 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
     // --- get map service HTTP query paramaters
     if (count($specimensOrObservations) > 0) {
-        $occurrence_query = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
+        $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
 
-        if( isset($occurrence_query->String) ) {
-            $occurrence_query = $occurrence_query->String;
+        if( isset($occurrence_queryDto->occurrenceQuery) ) {
+            $occurrence_query = $occurrence_queryDto->occurrenceQuery;
             $legend_format_query = null;
             $distribution_query = NULL;
-
-            $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query);
+            //create bounding box from occurrences points
+            $bbox = "";
+            $pointClone = null;
+            //derived units
+            if(isset($occurrence_queryDto->derivedUnitPoints) and !empty($occurrence_queryDto->derivedUnitPoints)){
+                foreach($occurrence_queryDto->derivedUnitPoints as $point){
+                    $bbox .= $point->longitude.','.$point->latitude.',';
+                }
+            }
+            //field units
+            if(isset($occurrence_queryDto->fieldUnitPoints) and !empty($occurrence_queryDto->fieldUnitPoints)){
+                foreach($occurrence_queryDto->fieldUnitPoints as $point){
+                    $bbox .= $point->longitude.','.$point->latitude.',';
+                }
+            }
+            //just add the last point twice to ensure we have at least two points for a bbox
+            $bbox .= $point->longitude.','.$point->latitude;
+            $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query, array(), $bbox);
         }
     }
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
