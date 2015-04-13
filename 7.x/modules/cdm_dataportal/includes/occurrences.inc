@@ -48,7 +48,8 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
 {
     $detail_html = "";
     //link to specimen page
-    $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, path_to_specimen($preservedSpecimenDTO->uuid),array('attributes' => array('target'=>'_blank')));
+    $pathToSpecimen = path_to_specimen($preservedSpecimenDTO->uuid);
+    $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, $pathToSpecimen,array('attributes' => array('target'=>'_blank')));
     $detail_html .= ($isSpecimenPage?"<h2>$preservedSpecimenDTO->accessionNumber</h2>":"<strong>$specimenPageLink</strong><br>");
     if($isSpecimenPage) {
         if($preservedSpecimenDTO->citation){
@@ -150,10 +151,16 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     //character data
     if ($preservedSpecimenDTO->characterData) {
         $detail_html .= $isSpecimenPage?"<br>":"";
-        $detail_html .= create_label("Character Data")."<br>";
-        foreach ($preservedSpecimenDTO->characterData as $characterStatePair) {
-            $detail_html .= "<i>" . $characterStatePair->first . "</i>:" . $characterStatePair->second;
+        $detail_html .= create_label("Character Data");
+        if($isSpecimenPage) {
             $detail_html .= "<br>";
+            foreach ($preservedSpecimenDTO->characterData as $characterStatePair) {
+                $detail_html .= "<i>" . $characterStatePair->first . "</i>:" . $characterStatePair->second;
+                $detail_html .= "<br>";
+            }
+        }
+        else{
+            $detail_html .= l("detail page", $pathToSpecimen,array('attributes' => array('target'=>'_blank')));
         }
     }
     return $detail_html;
