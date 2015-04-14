@@ -126,10 +126,18 @@ select.highlite-first-child option:first-child {
   overflow: auto;
 }
 
-#edit-search-areas .parents {
+#edit-search-areas .parent {
   /* faints the parent areas in the area selection */
   color: #999;
     font-size: 90%;
+    padding-right: 2em;
+}
+
+.selected-item-label{
+    float: left;
+    margin: 0.25em 0.3em;
+    padding: 0 0.3em;
+    background-color: #eeeeee;
 }
 
 /*

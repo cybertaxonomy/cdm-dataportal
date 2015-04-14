@@ -273,36 +273,25 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       );
       $form['search']['areas']['areas_filter'] = array(
         '#type' => 'textfield',
-        '#description' => 'type to filter the areas',
+        '#description' => 'Type an area name to filter the areas listed below.',
       );
       $vocab_cnt = 0;
+      $areas_defaults = array();
+      if(isset($_SESSION['cdm']['search']['area'])){
+          $areas_defaults = explode(',', $_SESSION['cdm']['search']['area']);
+      }
       foreach ($term_tree as $vocab_uuid => $term_dto_tree) {
           $areas_options =  term_tree_as_options($term_dto_tree);
           $form['search']['areas']['area'][$vocab_cnt++] = array(
             '#type' => 'checkboxes',
 //            '#title' => t('Filter by distribution areas'),
-//            '#default_value' =>  $areas_defaults,
+            '#default_value' =>  $areas_defaults,
             '#options' => $areas_options,
-//            '#description' => t('Check one or multiple areas to filter by distribution.'),
+            '#description' => t('The search will return taxa having distribution information for at
+                least one of the chosen areas.'),
           );
       }
 
-
-      /* -------- the old ugly list ---------
-      $areas_options = cdm_terms_as_options($area_termDtos);
-
-      $areas_defaults = array();
-      if(isset($_SESSION['cdm']['search']['area'])){
-        $areas_defaults = explode(',', $_SESSION['cdm']['search']['area']);
-      }
-      $form['search']['area'] = array(
-        '#type' => 'checkboxes',
-        '#title' => t('Filter by distribution areas'),
-        '#default_value' =>  $areas_defaults,
-        '#options' => $areas_options,
-        '#description' => t('Check one or multiple areas to filter by distribution.'),
-      );
-      */
 
   } else {
     // --- SIMPLE SEARCH FORM ---
@@ -456,10 +445,15 @@ function cdm_dataportal_search_form_request() {
 
   // --- handle geographic range
   // Split of geographic range.
-  unset($form_params['area']);
-  if (isset($_REQUEST['search']['area']) && is_array($_REQUEST['search']['area'])) {
-    $form_params['area'] = implode(',', $_REQUEST['search']['area']);
+  unset($form_params['areas']);
+  if (isset($_REQUEST['search']['areas']['area']) && is_array($_REQUEST['search']['areas']['area'])) {
+      $area_uuids = array();
+      foreach ($_REQUEST['search']['areas']['area'] as $areas) {
+          $area_uuids = array_merge($area_uuids, $areas);
+      }
+      $form_params['area'] = implode(',', $area_uuids);
   }
+
 
   // simple search will not submit a 'tree' query parameter, so we add it here from
   // what is stored in the session unless 'simple_search_ignore_classification'
@@ -484,7 +478,7 @@ function cdm_dataportal_search_form_request() {
 }
 
 /**
- * Provides the classification ti which the last search has been limited to..
+ * Provides the classification to which the last search has been limited to..
  *
  * This function should only be used after the cdm_dataportal_search_execute() handler has been run,
  * otherwise it will return the infomation from the last search executed. The information is retrieved from
@@ -545,7 +539,7 @@ function cdm_dataportal_search_execute() {
     return NULL;
   }
 
-  // read the query parameters from $_REQUEST and add additional query parameters if nessecary.
+  // read the query parameters from $_REQUEST and add additional query parameters if necessary.
   $request_params = cdm_dataportal_search_form_request();
 
   $taxon_pager = cdm_ws_get($_REQUEST['ws'], NULL, queryString($request_params));
@@ -580,10 +574,10 @@ function cdm_dataportal_search_execute() {
 function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = ''){
 
     foreach ($term_dto_tree as $uuid => $dto){
-        $label = $prefix . $dto->representation_L10n . ' (' . $dto->representation_L10n_abbreviatedLabel .')';
+        $label = $prefix . '<span class="child-label">' .  $dto->representation_L10n . ' (' . $dto->representation_L10n_abbreviatedLabel .')</span>';
         $options[$uuid] = $label;
         if (is_array($dto->children)) {
-            term_tree_as_options($dto->children, $options, '<span class="parents">' .$label . ' &gt; </span>');
+            term_tree_as_options($dto->children, $options, $prefix . '<span data-cdm-parent="' . $uuid . '" class="parent"></span>'); // ' .$label . ' &gt;
         }
     }
 
