@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Functions for dealing with CDM entities of type SpeciemenOrOccurrences
+ * Functions for dealing with CDM entities of type SpecimenOrOccurrences
  *
  * @copyright
  *   (C) 2007-2012 EDIT
@@ -15,6 +15,165 @@
  * @author
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
+
+
+/**
+ * @param $preservedSpecimenDTO
+ * @param $detail_html
+ * @return string
+ */
+function compose_cdm_specimen_page($specimenUuid)
+{
+    drupal_set_title("Specimen Details");
+    $preservedSpecimenDTO = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimenUuid, 'specimenDerivates'));
+
+    $render_array = array();
+    RenderHints::pushToRenderStack('specimen_page');
+
+    $detail_html = compose_cdm_specimen_page_html($preservedSpecimenDTO, true);
+    $render_array['specimen_html'] = array(
+        '#markup' => $detail_html
+    );
+
+    RenderHints::popFromRenderStack();
+    return $render_array;
+}
+
+/**
+ * @param $preservedSpecimenDTO
+ * @return string
+ */
+function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage = false)
+    //FIXME remove this method and use render_array correctly in compressed table
+{
+    $detail_html = "";
+    //link to specimen page
+    $pathToSpecimen = path_to_specimen($preservedSpecimenDTO->uuid);
+    $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, $pathToSpecimen,array('attributes' => array('target'=>'_blank')));
+    $detail_html .= ($isSpecimenPage?"<h2>$preservedSpecimenDTO->accessionNumber</h2>":"<strong>$specimenPageLink</strong><br>");
+    if($isSpecimenPage) {
+        if($preservedSpecimenDTO->citation){
+            $detail_html .= create_label("Citation") . $preservedSpecimenDTO->citation . "<br>";
+        }
+    }
+    if($isSpecimenPage){
+        // associated taxa
+        if($preservedSpecimenDTO->associatedTaxa){
+            $detail_html .= "<br>";
+            $detail_html .= create_label("Determined as");
+                if(sizeof($preservedSpecimenDTO->associatedTaxa)>1){
+                    $detail_html .= "<br>";
+                }
+            foreach($preservedSpecimenDTO->associatedTaxa as $associatedTaxon){
+                $detail_html .= $associatedTaxon."<br>";
+            }
+        }
+    }
+    // - type information
+    $types = "";
+    if (isset($preservedSpecimenDTO->types)) {
+        //typed taxa
+        $detail_html .= "<br>";
+        $detail_html .= create_label("Type Designations");
+        if(sizeof($preservedSpecimenDTO->types)>1){
+            $detail_html .= "<br>";
+        }
+        foreach ($preservedSpecimenDTO->types as $typeStatus => $typedTaxa) {
+            if($isSpecimenPage){
+                if($preservedSpecimenDTO->types){
+                    $detail_html .= "<i>".$typeStatus."</i>: ";
+                    foreach($typedTaxa as $typedTaxon){
+                        $detail_html .= $typedTaxon." ";
+                    }
+                    $detail_html .= "<br>";
+                }
+            }
+            else{
+                $types .= $typeStatus." ";
+            }
+        }
+    }
+    $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
+    // - specimen scans
+        $specimenScans = create_links($derivateDataDTO->specimenScans);
+    // - molecular data
+    $molecularData = "";
+    if ($derivateDataDTO->molecularDataList) {
+        foreach ($derivateDataDTO->molecularDataList as $molecular) {
+            //provider link
+            if (isset($molecular->providerLink)) {
+                $molecularData .= create_html_link($molecular->providerLink);
+            }
+            //contig link
+            if (isset($molecular->contigFiles[0])) {//FIXME check if empty
+                $molecularData .= "[";
+                if (isset($molecular->contigFiles)) {
+                    foreach ($molecular->contigFiles as $contigFile) {
+                        if (isset($contigFile->contigLink)) {
+                            $molecularData .= create_html_link($contigFile->contigLink);
+
+                            //primer links
+                            $molecularData .= create_html_links($contigFile->primerLinks);
+                            if (isset($contigFile->primerLinks)) {
+                                foreach ($contigFile->primerLinks as $primerLink) {
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    $molecularData .= "no contig";
+                }
+                $molecularData .= "]";
+            }
+            //FIXME separate with comma (remove trailing comma)
+        }
+    }
+    // - detail images
+    $detailImages = create_links($derivateDataDTO->detailImages);
+
+    if ($types) {
+        $detail_html .= $isSpecimenPage?"<br>":"";
+        $detail_html .= create_label("Types") . $types . "<br>";
+    }
+    if ($specimenScans) {
+        $detail_html .= $isSpecimenPage?"<br>":"";
+        $detail_html .= create_label("Specimen Scans") . $specimenScans . "<br>";
+    }
+    if ($molecularData) {
+        $detail_html .= $isSpecimenPage?"<br>":"";
+        $detail_html .= create_label("Molecular Data") . $molecularData . "<br>";
+    }
+    if ($detailImages) {
+        $detail_html .= $isSpecimenPage?"<br>":"";
+        $detail_html .= create_label("Detail Images") . $detailImages . "<br>";
+    }
+
+    //character data
+    if ($preservedSpecimenDTO->characterData) {
+        $detail_html .= $isSpecimenPage?"<br>":"";
+        $detail_html .= create_label("Character Data");
+        if($isSpecimenPage) {
+            $detail_html .= "<br>";
+            foreach ($preservedSpecimenDTO->characterData as $characterStatePair) {
+                $detail_html .= "<i>" . $characterStatePair->first . "</i>:" . $characterStatePair->second;
+                $detail_html .= "<br>";
+            }
+        }
+        else{
+            $detail_html .= l("detail page", $pathToSpecimen,array('attributes' => array('target'=>'_blank')));
+        }
+    }
+    return $detail_html;
+}
+
+/**
+ * Formats the given string to a label for displaying key-value pairs in HTML
+ * @return string
+ */
+function create_label($label)
+{
+    return "<span class='specimen_table_label'>".$label.": </span>";
+}
 
 /**
  * Compose an render array from a CDM DerivedUnitFacade object.
@@ -147,35 +306,42 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             $glue = ', ';
 
             foreach  ($value as $determinationEvent){
-              $timeperiod_string = NULL;
-              if (isset($determinationEvent->timeperiod)) {
-                $timeperiod_string = timePeriodToString($determinationEvent->timeperiod);
-              }
-              $weight = isset($determinationEvent->preferred) && $determinationEvent->preferred == 1 ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
-              // check key exists
-              while (array_key_exists($weight, $dd_elements)) {
-                $weight .= '0';
-              }
-              $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
-              $taxon_html = theme('cdm_taxonName',
-                  array(
-                      'taxonName' => $taxon_name,
-                      'nameLink' => path_to_taxon($determinationEvent->taxon->uuid),
-                  )
-              );
-              $dd_elements[$weight] = $taxon_html;
-              if (isset($determinationEvent->modifier)) {
-                $dd_elements[$weight] .= cdm_term_representation($determinationEvent->modifier);
-              }
-              if ($timeperiod_string) {
-                $dd_elements[$weight] .= $glue . $timeperiod_string;
-              }
-              if (isset($determinationEvent->actor->titleCache)) {
-                $dd_elements[$weight] .= $glue . $determinationEvent->actor->titleCache;
-              }
-              if (isset($determinationEvent->description)) {
-                $dd_elements[$weight] .= $glue . $determinationEvent->description;
-              }
+                $timeperiod_string = NULL;
+                if (isset($determinationEvent->timeperiod)) {
+                    $timeperiod_string = timePeriodToString($determinationEvent->timeperiod);
+                }
+                $weight = isset($determinationEvent->preferred) && $determinationEvent->preferred == 1 ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
+                // check key exists
+                while (array_key_exists($weight, $dd_elements)) {
+                    $weight .= '0';
+                }
+                if($determinationEvent->taxonName){
+                    $taxon_name = $determinationEvent->taxonName;
+                    $name_link = "";
+                }
+                else if($determinationEvent->taxon){
+                    $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
+                    $name_link = path_to_taxon($determinationEvent->taxon->uuid);
+                }
+                $taxon_html = theme('cdm_taxonName',
+                     array(
+                       'taxonName' => $taxon_name,
+                        'nameLink' => $name_link,
+                     )
+                 );
+                $dd_elements[$weight] = $taxon_html;
+                if (isset($determinationEvent->modifier)) {
+                    $dd_elements[$weight] .= cdm_term_representation($determinationEvent->modifier);
+                }
+                if ($timeperiod_string) {
+                    $dd_elements[$weight] .= $glue . $timeperiod_string;
+                }
+                if (isset($determinationEvent->actor->titleCache)) {
+                    $dd_elements[$weight] .= $glue . $determinationEvent->actor->titleCache;
+                }
+                if (isset($determinationEvent->description)) {
+                    $dd_elements[$weight] .= $glue . $determinationEvent->description;
+                }
             }
             ksort($dd_elements);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('determinations'), $dd_elements);

@@ -904,6 +904,7 @@
 7.x/modules/cdm_dataportal/ide/eclipse/phpunit[!!-~](external[!!-~]tools).launch -text
 7.x/modules/cdm_dataportal/images/btn_collapse.gif -text
 7.x/modules/cdm_dataportal/images/btn_expand.gif -text
+7.x/modules/cdm_dataportal/images/character_data_derivate-16x16-32.png -text
 7.x/modules/cdm_dataportal/images/clear.gif -text
 7.x/modules/cdm_dataportal/images/detail_image_derivate-16x16-32.png -text
 7.x/modules/cdm_dataportal/images/external_link.gif -text

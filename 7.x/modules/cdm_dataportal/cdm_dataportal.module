@@ -374,7 +374,7 @@ function cdm_dataportal_menu() {
    // Optional callback arguments: page.
     //FIXME point to view/page method in this module
     $items['cdm_dataportal/specimen'] = array(
-        'page callback' => 'compose_cdm_specimen_page',
+        'page callback' => 'cdm_dataportal_specimen_page_view',
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK,
         // Expected callback arguments: uuid.
@@ -1327,8 +1327,8 @@ function cdm_dataportal_specimen_view($uuid) {
         'specimen' => $specimen
     ));
 
-    // Render the taxon page.
-    $render_array = compose_cdm_specimenOrObservation($specimen);
+    // Render the specimen page.
+    $render_array = compose_cdm_specimen_page($uuid);
     $specimenpage->content = drupal_render($render_array);
 
     return $specimenpage;

@@ -48,10 +48,11 @@
  *
  * @ingroup compose
  */
-function compose_map($occurrence_query = NULL, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = array()) {
+function compose_map($occurrence_query = NULL, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = array(), $bbox = NULL) {
 
-  $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
-  if ($map_settings['map_type'] == 1) {
+    $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+    $map_settings['bbox'] = $bbox;
+    if ($map_settings['map_type'] == 1) {
     $map_html = get_openlayers_map(
         $map_settings['width'],
         $map_settings['height'],
@@ -62,9 +63,9 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL, $lege
         $map_settings['caption'],
         $event_listeners
     );
-  }
-  else {
-    $map_html = get_image_map(
+    }
+     else {
+      $map_html = get_image_map(
         $map_settings['width'],
         $map_settings['height'],
         $map_settings['bbox'],
@@ -72,8 +73,8 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL, $lege
         $distribution_query,
         $legend_format_query,
         $map_settings['caption']
-    );
-  }
+     );
+     }
   return markup_to_render_array($map_html, 0);
 }
 

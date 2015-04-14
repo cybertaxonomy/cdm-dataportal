@@ -35,6 +35,89 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     $render_array = array();
     RenderHints::pushToRenderStack('taxon_page_specimens');
 
+    $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
+    $relationship_choice['direct'] = get_selection($relationship_choice['direct']);
+    $relationship_choice['invers'] = get_selection($relationship_choice['invers']);
+
+    $by_associatedtaxon_query_parameters = array(
+        'relationshipsInvers' => implode(',', $relationship_choice['invers']),
+        'relationships' => implode(',', $relationship_choice['direct']),
+    );
+
+    if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
+        $by_associatedtaxon_query_parameters = array_merge($by_associatedtaxon_query_parameters, $_REQUEST['pager']);
+    }
+
+    $by_associatedtaxon_query = http_build_query($by_associatedtaxon_query_parameters);
+
+    $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+        null,
+        $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
+    );
+
+    $specimensOrObservations = array();
+    if(isset($pager->records[0])){
+        $specimensOrObservations =  $pager->records;
+    }
+
+    // order occurrences by date but types should be on top of the list
+    $type_specimens = array();
+    $other_occurrences = array();
+    foreach ($specimensOrObservations as &$occurrence) {
+        $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
+        if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
+            $type_specimens[] = $occurrence;
+        } else {
+            $other_occurrences[] = $occurrence;
+        }
+    }
+    $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
+
+    // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
+    // $occurrence->_fieldObjectMedia
+    foreach ($specimensOrObservations as &$occurrence) {
+        $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+            $occurrence->uuid,
+            'fieldObjectMedia',
+        ));
+        $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+            $occurrence->uuid,
+            'derivedUnitMedia',
+        ));
+    }
+
+    // --- get map service HTTP query paramaters
+    if (count($specimensOrObservations) > 0) {
+        $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
+
+        if( isset($occurrence_queryDto->occurrenceQuery) ) {
+            $occurrence_query = $occurrence_queryDto->occurrenceQuery;
+            $legend_format_query = null;
+            $distribution_query = NULL;
+            //create bounding box from occurrences points
+            $bbox = "";
+            $pointClone = null;
+            //derived units
+            if(isset($occurrence_queryDto->derivedUnitPoints) and !empty($occurrence_queryDto->derivedUnitPoints)){
+                foreach($occurrence_queryDto->derivedUnitPoints as $point){
+                    $bbox .= $point->longitude.','.$point->latitude.',';
+                    $pointClone = $point;
+                }
+            }
+            //field units
+            if(isset($occurrence_queryDto->fieldUnitPoints) and !empty($occurrence_queryDto->fieldUnitPoints)){
+                foreach($occurrence_queryDto->fieldUnitPoints as $point){
+                    $bbox .= $point->longitude.','.$point->latitude.',';
+                    $pointClone = $point;
+                }
+            }
+            //add the last point twice to ensure we have at least two points for a bbox
+            if(isset($pointClone)) {
+                $bbox .= $pointClone->longitude . ',' . $pointClone->latitude;
+            }
+            $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query, array(), $bbox);
+        }
+    }
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
@@ -49,6 +132,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
         $checked_box_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/step_done.gif' . '"/>';
         $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
+        $character_data_icon = '<img title="Character Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/character_data_derivate-16x16-32.png' . '"/>';
         if (isset($pagerFieldUnits->records[0])) {
             $rowcount = 0;
             foreach ($pagerFieldUnits->records as $fieldUnit) {
@@ -70,7 +154,9 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                                 'data' => $derivateHierarchy->hasSpecimenScan? $checked_box_icon:"",
                                 'class' => array('checkBoxCell')
                             ),
-                            ($derivateHierarchy->hasDna? $sequence_icon :"") . ($derivateHierarchy->hasDetailImage?$detail_image_icon:"")
+                            ($derivateHierarchy->hasDna? $sequence_icon :"")." "
+                            .($derivateHierarchy->hasDetailImage?$detail_image_icon:"")." "
+                            .($derivateHierarchy->hasCharacterData?$character_data_icon:"")
                         ),
                         'id' => ('derivate_summary' . $rowcount), // summary row id
                         'class' => array('summary_row'),
@@ -80,21 +166,25 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     $detail_html = "";
                     // - taxon name
                     if (variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as') && $derivateHierarchy->taxonName) {
-                        $detail_html .= "<strong>Determined as:</strong> " . $derivateHierarchy->taxonName . "<br>";
-                    }
+                        $detail_html .= create_label("Determined as") . $derivateHierarchy->taxonName . "<br>";
                     // - prtologue
                     if ($derivateHierarchy->protologue) {
                         //$detail_html .= "<strong>Protologue:</strong> " . $derivateHierarchy->protologue . "<br>"
                     }
                     // - citation
                     if ($derivateHierarchy->citation) {
-                        $detail_html .= "<strong>Citation:</strong> " . $derivateHierarchy->citation . "<br>";
+                        $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
                     }
                     //assemble specimen details
-                    foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
+                    if($derivateHierarchy->preservedSpecimenDTOs){
+                        foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
+                            $detail_html .= "<br>";
+                            $detail_html .= compose_cdm_specimen_page_html($preservedSpecimenDTO);
+                        }
                         $detail_html .= "<hr>";
                         $detail_html .= compose_cdm_specimen_page_html($preservedSpecimenDTO);
                     }
+                    $detail_html .= "<br>";
                     //detail row resp. one BIG detail cell
                     $rows[] = array(
                         'data' => array(
@@ -115,7 +205,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $derivateHierarchyTable = array(
             "#theme" => "table",
             "#weight" => 2,
-            "#header" => array("Country", "Date", "Collector + Collecting Number", "Herbaria", "Type", "Scan", "Derivates"),
+            "#header" => array("Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivates"),
             "#rows" => $rows,
             "#attributes" => array(
                 "id" => $tableId,
@@ -138,70 +228,6 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     }
     else{
         //BOTTOM-UP-SPECIMEN-TABLE
-        $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
-        $relationship_choice['direct'] = get_selection($relationship_choice['direct']);
-        $relationship_choice['invers'] = get_selection($relationship_choice['invers']);
-
-        $by_associatedtaxon_query_parameters = array(
-            'relationshipsInvers' => implode(',', $relationship_choice['invers']),
-            'relationships' => implode(',', $relationship_choice['direct']),
-        );
-
-        if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
-            $by_associatedtaxon_query_parameters = array_merge($by_associatedtaxon_query_parameters, $_REQUEST['pager']);
-        }
-
-        $by_associatedtaxon_query = http_build_query($by_associatedtaxon_query_parameters);
-
-        $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
-            null,
-            $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
-        );
-
-        $specimensOrObservations = array();
-        if(isset($pager->records[0])){
-            $specimensOrObservations =  $pager->records;
-        }
-
-        // order occurrences by date but types should be on top of the list
-        $type_specimens = array();
-        $other_occurrences = array();
-        foreach ($specimensOrObservations as &$occurrence) {
-            $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
-            if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
-                $type_specimens[] = $occurrence;
-            } else {
-                $other_occurrences[] = $occurrence;
-            }
-        }
-        $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
-
-        // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
-        // $occurrence->_fieldObjectMedia
-        foreach ($specimensOrObservations as &$occurrence) {
-            $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-                $occurrence->uuid,
-                'fieldObjectMedia',
-            ));
-            $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-                $occurrence->uuid,
-                'derivedUnitMedia',
-            ));
-        }
-
-        // --- get map service HTTP query paramaters
-        if (count($specimensOrObservations) > 0) {
-            $occurrence_query = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
-
-            if( isset($occurrence_query->String) ) {
-                $occurrence_query = $occurrence_query->String;
-                $legend_format_query = null;
-                $distribution_query = NULL;
-
-                $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query);
-            }
-        }
-
         // --- generate the specimen list as table
         $specimen_table = array(
             '#theme' => 'table',
@@ -410,7 +436,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO)
     return $detail_html;
 }
 
-function createHTMLLink($link){
+function create_html_link($link){
     $html = "";
     if($link->uri!=""){
         $html .= '<a href="' . $link->uri . '">' . $link->linkText . "</a>";
@@ -426,12 +452,12 @@ function createHTMLLink($link){
  * @param $linkList the list with Link objects having "uri" and "linkText" as members
  * @return string the assembled HTML string containing the links
  */
-function createHTMLLinks($linkList)
+function create_html_links($linkList)
 {
     $html = "";
     if ($linkList) {
         foreach ($linkList as $link) {
-            $html .= createHTMLLink($link)." ";
+            $html .= create_html_link($link)." ";
         }
     }
     return $html;
@@ -442,7 +468,7 @@ function createHTMLLinks($linkList)
  * @param $linkTextPairList the list with pairs which hold the uri as "first" and uriText as "second"
  * @return string the assembled HTML string containing the links
  */
-function createLinks($linkTextPairList)
+function create_links($linkTextPairList)
 {
     $html = "";
     if ($linkTextPairList) {
