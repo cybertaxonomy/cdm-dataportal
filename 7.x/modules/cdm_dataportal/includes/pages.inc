@@ -167,6 +167,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     // - taxon name
                     if (variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as') && $derivateHierarchy->taxonName) {
                         $detail_html .= create_label("Determined as") . $derivateHierarchy->taxonName . "<br>";
+                    }
                     // - prtologue
                     if ($derivateHierarchy->protologue) {
                         //$detail_html .= "<strong>Protologue:</strong> " . $derivateHierarchy->protologue . "<br>"
@@ -181,8 +182,6 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                             $detail_html .= "<br>";
                             $detail_html .= compose_cdm_specimen_page_html($preservedSpecimenDTO);
                         }
-                        $detail_html .= "<hr>";
-                        $detail_html .= compose_cdm_specimen_page_html($preservedSpecimenDTO);
                     }
                     $detail_html .= "<br>";
                     //detail row resp. one BIG detail cell
@@ -331,111 +330,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     RenderHints::popFromRenderStack();
     return $render_array;
 }
-
-/**
- * @param $preservedSpecimenDTO
- * @param $detail_html
- * @return string
- */
-function compose_cdm_specimen_page($specimenUuid)
-{
-    drupal_set_title("Specimen Details");
-    $preservedSpecimenDTO = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimenUuid, 'specimenDerivates'));
-
-    $render_array = array();
-    RenderHints::pushToRenderStack('specimen_page');
-
-    $detail_html = compose_cdm_specimen_page_html($preservedSpecimenDTO);
-    $render_array['specimen_html'] = array(
-        '#markup' => $detail_html
-    );
-
-    RenderHints::popFromRenderStack();
-    return $render_array;
-}
-
-/**
- * @param $preservedSpecimenDTO
- * @return string
- */
-function compose_cdm_specimen_page_html($preservedSpecimenDTO)
-    //FIXME remove this method and use render_array correctly in compressed table
-{
-    $detail_html = "";
-    //link to specimen page
-    $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, path_to_specimen($preservedSpecimenDTO->uuid));
-    $detail_html .= "<strong>" . $specimenPageLink . "</strong><br>";
-    // - type information
-    $types = "";
-    if (isset($preservedSpecimenDTO->types)) {
-        foreach ($preservedSpecimenDTO->types as $typeStatus => $accessionList) {
-            $types .= $typeStatus;
-            foreach ($accessionList as $accessionNumber) {
-                $types .= " (" . $accessionNumber . ") ";
-            }
-        }
-    }
-    $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
-    // - specimen scans
-    $specimenScans = createLinks($derivateDataDTO->specimenScans);
-    // - molecular data
-    $molecularData = "";
-    if ($derivateDataDTO->molecularDataList) {
-        foreach ($derivateDataDTO->molecularDataList as $molecular) {
-            //provider link
-            if (isset($molecular->providerLink)) {
-                $molecularData .= createHTMLLink($molecular->providerLink);
-            }
-            //contig link
-            if (isset($molecular->contigFiles[0])) {//FIXME check if empty
-                $molecularData .= "[";
-                if (isset($molecular->contigFiles)) {
-                    foreach ($molecular->contigFiles as $contigFile) {
-                        if (isset($contigFile->contigLink)) {
-                            $molecularData .= createHTMLLink($contigFile->contigLink);
-
-                            //primer links
-                            $molecularData .= createHTMLLinks($contigFile->primerLinks);
-                            if (isset($contigFile->primerLinks)) {
-                                foreach ($contigFile->primerLinks as $primerLink) {
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    $molecularData .= "no contig";
-                }
-                $molecularData .= "]";
-            }
-            //FIXME separate with comma (remove trailing comma)
-        }
-    }
-    // - detail images
-    $detailImages = createLinks($derivateDataDTO->detailImages);
-
-    if ($types) {
-        $detail_html .= "<strong>Types:</strong> " . $types . "<br>";
-    }
-    if ($specimenScans) {
-        $detail_html .= "<strong>Specimen Scans:</strong> " . $specimenScans . "<br>";
-    }
-    if ($molecularData) {
-        $detail_html .= "<strong>Molecular Data:</strong> " . $molecularData . "<br>";
-    }
-    if ($detailImages) {
-        $detail_html .= "<strong>Detail Images:</strong> " . $detailImages . "<br>";
-    }
-
-    //character data
-    if ($preservedSpecimenDTO->characterData) {
-        foreach ($preservedSpecimenDTO->characterData as $characterStatePair) {
-            $detail_html .= "<strong>" . $characterStatePair->first . ": </strong>" . $characterStatePair->second;
-            $detail_html .= "<br>";
-        }
-    }
-    return $detail_html;
-}
-
+ 
 function create_html_link($link){
     $html = "";
     if($link->uri!=""){
