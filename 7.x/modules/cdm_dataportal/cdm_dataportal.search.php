@@ -576,7 +576,7 @@ function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '')
     foreach ($term_dto_tree as $uuid => $dto){
         $label = $prefix . '<span class="child-label">' .  $dto->representation_L10n . ' (' . $dto->representation_L10n_abbreviatedLabel .')</span>';
         $options[$uuid] = $label;
-        if (is_array($dto->children)) {
+        if (isset($dto->children) && is_array($dto->children)) {
             term_tree_as_options($dto->children, $options, $prefix . '<span data-cdm-parent="' . $uuid . '" class="parent"></span>'); // ' .$label . ' &gt;
         }
     }
