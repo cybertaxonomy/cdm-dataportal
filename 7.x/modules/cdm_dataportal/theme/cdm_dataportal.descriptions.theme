@@ -184,50 +184,38 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
     'Max' => NULL,
     'Extreme Max' => NULL,
   );
+  $other_values = array();
 
   if (isset($element->statisticalValues)) {
-    $value_array = array();
+    $other_values_markup = array();
     foreach ($element->statisticalValues as $statistical_val) {
 
-      $value = '';
-
+      // compile the full value string which also may contain modifiers
       if (isset($statistical_val->value)) {
-        $value = $statistical_val->value;
+          $statistical_val->_value = $statistical_val->value;
       }
-
-      if (isset($statistical_val->type)) {
-        $statistical_val_type_representation = cdm_term_representation($statistical_val->type);
-        // $statistical_val->type->termType;
-        // $statistical_val->type->userFriendlyTypeName;
-      }
-
       $val_modifiers_strings = cdm_modifers_representations($statistical_val);
       if ($val_modifiers_strings) {
-        $value = ' ' . $val_modifiers_strings . ' ' . $value;
+          $statistical_val->_value = ' ' . $val_modifiers_strings . ' ' . $statistical_val->_value;
       }
 
-      $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
-        . $value . '</span>';
-
+      // either put into min max array or into $other_values
+      // for generic output to be appended to 'min-max' string
       if (array_key_exists($statistical_val->type->titleCache, $min_max)) {
-        // put into min max array
-        $min_max[$statistical_val->type->titleCache] = $value_markup;
+        $min_max[$statistical_val->type->titleCache] = $statistical_val;
       }
       else {
-        // otherwise generic output to be appended to 'min-max' string
-        $value_markup = $value_markup .
-          ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '');
-        $value_array[] = $value_markup;
+        $other_values[] = $statistical_val;
       }
-
-    }
+    } // end of loop over statisticalValues
 
     // create min-max string
-    if ($min_max['Min'] == $min_max['Max'] && $min_max['Min'] !== NULL) {
+    if ($min_max['Min'] !== NULL && $min_max['Max'] !== NULL && $min_max['Min']->_value == $min_max['Max']->_value) {
       $min_max['Average'] = $min_max['Min'];
       $min_max['Min'] = NULL;
       $min_max['Max'] = NULL;
     }
+
     // check for inconsistent cases, eg. only Max and average given
     if ($min_max['Min'] === NULL && $min_max['Max'] !== NULL) {
       $min_max['Min'] = '?';
@@ -236,22 +224,46 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
       $min_max['Max'] = '?';
     }
 
+      // create markup
     $min_max_markup = '';
 
-    foreach ($min_max as $key=>$val) {
-      if ( $val !== NULL ){
-        if ( strlen($min_max_markup) ){
+    foreach ($min_max as $key=>$statistical_val) {
+      if ( $statistical_val !== NULL ){
+
+          if($statistical_val == '?') {
+              $value_markup = $statistical_val;
+          } else {
+            $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' '
+              . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ">'
+              . $statistical_val->_value . '</span>';
+          }
+
+          if ( strlen($min_max_markup) ){
           $min_max_markup .= '–';
         }
         if(str_beginsWith($key, 'Extreme')){
-          $val = "($val)";
+            $value_markup = "($value_markup)";
         }
-        $min_max_markup .= $val;
+        $min_max_markup .= $value_markup;
       }
     }
 
+      foreach($other_values as $statistical_val){
+          $statistical_val_type_representation = NULL;
+          if (isset($statistical_val->type)) {
+              $statistical_val_type_representation = cdm_term_representation($statistical_val->type);
+              // $statistical_val->type->termType;
+              // $statistical_val->type->userFriendlyTypeName;
+          }
+          $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
+            . $statistical_val->_value . '</span>';
+          $value_markup = $value_markup .
+            ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '');
+          $other_values_markup[] = $value_markup;
+      }
 
-    $out .= $min_max_markup . ' ' . implode($value_array, ', ');
+
+    $out .= $min_max_markup . ' ' . implode($other_values_markup, ', ');
   }
 
   if (isset($element->unit)) {
