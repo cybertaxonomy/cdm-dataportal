@@ -22,12 +22,16 @@
     text-align: center;
 }
 
-#derivate_hierarchy_table td.summary_row_cell {
+#derivate_hierarchy_table td{
     vertical-align: middle;
+}
+#derivate_hierarchy_table td.summary_row_cell {
 }
 #derivate_hierarchy_table td.summary_row_icon {
     text-align: center;
-    vertical-align: middle;
+}
+#derivate_hierarchy_table .expand_column {
+    border-right: hidden;
 }
 
 .specimen_table_label{

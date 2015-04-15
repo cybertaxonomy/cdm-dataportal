@@ -9,11 +9,15 @@ function addRowToggle(selector) {
 
     //hide all detail rows and color them
     jQuery(selector + " .detail_row").hide().css("background","#F9F9F9");
+    //hide all collapse icons
+    jQuery(selector + " .collapse_icon").hide();
 
     //register click on every summary row
     jQuery(selector + " .summary_row").click(
         function(event){
             jQuery(event.target).parent(".summary_row").next().toggle(500);//toggle detail row when clicking on corresponding summary row
+            jQuery(event.target).parent(".summary_row").find(".expand_icon").toggle();//toggle collapse/expand icons
+            jQuery(event.target).parent(".summary_row").find(".collapse_icon").toggle();
         })
     //register click on every summary row icon
     jQuery(selector + " .summary_row_icon").click(
@@ -33,6 +37,7 @@ function addRowToggle(selector) {
         })
         //show mouse cursor as a link
         .css('cursor', 'hand').css('cursor', 'pointer');
+
 }
 //.hover(//register mouse hover on every summary row
 //    function(event){

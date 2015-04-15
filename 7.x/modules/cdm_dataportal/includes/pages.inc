@@ -129,8 +129,8 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $by_associatedtaxon_query = http_build_query($associatedFieldUnitsQuery_parameters);
         $pagerFieldUnits = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'associatedFieldUnits'), $by_associatedtaxon_query);
         // get icon images
-        $expand_icon = '<img title="Expand row" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/btn_expand.gif' . '"/>';
-        $collapse_icon = '<img title="Expand row" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/btn_collapse.gif' . '"/>';
+        $expand_icon = '<img class="expand_icon" title="Show details" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/btn_expand.gif' . '"/>';
+        $collapse_icon = '<img class="collapse_icon" title="Hide details" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/btn_collapse.gif' . '"/>';
         $detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
         $checked_box_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/step_done.gif' . '"/>';
         $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
@@ -145,8 +145,8 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     $rows[] = array(
                         'data' => array(
                             array(
-                                'data' => $expand_icon,
-                                'class' => array('summary_row_cell', 'summary_row_icon')
+                                'data' => $expand_icon . $collapse_icon,
+                                'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
                             ),
                             array(
                                 'data' => $derivateHierarchy->country,
@@ -210,7 +210,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                         'data' => array(
                             array(
                                 'data' => "", //empty first column
-
+                                'class' => array('expand_column')
                             ),
                             array(
                                 'data' => $detail_html,
@@ -229,7 +229,12 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $derivateHierarchyTable = array(
             "#theme" => "table",
             "#weight" => 2,
-            "#header" => array("","Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivates"),
+            "#header" => array(
+                array(
+                    'data' => "",
+                    'class' => array('expand_column')
+                ),
+                "Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivates"),
             "#rows" => $rows,
             "#attributes" => array(
                 "id" => $tableId,
