@@ -180,10 +180,11 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
         'maxExtend' => 120,
         'cols' => 5,
         'maxRows' => 2,
-        'captionElements' => array('titlecache', '#uri'=>t('open Image')),
+        'showCaption' => true,
+        'captionElements' => array('title', 'description', 'file', 'filename'),
         'mediaLinkType' => 'LIGHTBOX',
     );
-    $detail_html .= create_label("Image Gallery")."<br>";
+    $detail_html .= "<br>".create_label("Image Gallery")."<br>";
     $detail_html .= theme_cdm_media_gallerie($gallery_variables);
     return $detail_html;
 }
