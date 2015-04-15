@@ -95,7 +95,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     }
     $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
     // - specimen scans
-        $specimenScans = create_links($derivateDataDTO->specimenScans);
+    $specimenScans = create_links($derivateDataDTO->specimenScans);
     // - molecular data
     $molecularData = "";
     if ($derivateDataDTO->molecularDataList) {
@@ -163,6 +163,28 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
             $detail_html .= l("detail page", $pathToSpecimen,array('attributes' => array('target'=>'_blank')));
         }
     }
+
+    //image gallery
+
+    if($isSpecimenPage) {
+        $images = array();
+        if (isset($derivateDataDTO->imageUuids)) {
+            foreach ($derivateDataDTO->imageUuids as $imageUuid) {
+                $images[] = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $imageUuid);
+            }
+        }
+    }
+    $gallery_variables = array(
+        'mediaList' => $images,
+        'galleryName' => "Specimen images",
+        'maxExtend' => 120,
+        'cols' => 5,
+        'maxRows' => 2,
+        'captionElements' => array('titlecache', '#uri'=>t('open Image')),
+        'mediaLinkType' => 'LIGHTBOX',
+    );
+    $detail_html .= create_label("Image Gallery")."<br>";
+    $detail_html .= theme_cdm_media_gallerie($gallery_variables);
     return $detail_html;
 }
 
