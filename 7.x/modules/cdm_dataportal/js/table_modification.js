@@ -15,12 +15,19 @@ function addRowToggle(selector) {
         function(event){
             jQuery(event.target).parent(".summary_row").next().toggle(500);//toggle detail row when clicking on corresponding summary row
         })
+    //register click on every summary row icon
+    jQuery(selector + " .summary_row_icon").click(
+        function(event){
+            jQuery(event.target).parent().parent(".summary_row").next().toggle(500);//toggle detail row when clicking on corresponding summary row
+        })
+
         //color summary row when hovering over it
-        .mouseenter(
+    jQuery(selector + " .summary_row").mouseenter(
         function(event){
             jQuery(event.target).parent(".summary_row").css("background","#FFCC00");
         })
-        .mouseleave(
+
+    jQuery(selector + " .summary_row").mouseleave(
         function(event){
             jQuery(event.target).parent(".summary_row").css("background","");
         })

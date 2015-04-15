@@ -22,7 +22,10 @@
     text-align: center;
 }
 
-#derivate_hierarchy_table td.checkBoxCell {
+#derivate_hierarchy_table td.summary_row_cell {
+    vertical-align: middle;
+}
+#derivate_hierarchy_table td.summary_row_icon {
     text-align: center;
     vertical-align: middle;
 }
