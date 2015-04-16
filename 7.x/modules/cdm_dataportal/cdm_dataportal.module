@@ -1457,30 +1457,20 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highli
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates a page with the advance search form.
+ *
+ * NOTE: The advance search form allows searching for taxa.
  */
 function cdm_dataportal_view_search_advanced() {
-
   drupal_set_title(t('Advanced search'), PASS_THROUGH);
-  $form = array();
-  $form_state = array();
-  $searchForm = cdm_dataportal_search_taxon_form($form, $form_state, TRUE);
-
   return drupal_get_form('cdm_dataportal_search_taxon_form_advanced');
-
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates a page with the search form for searching by taxon descriptions.
  */
 function cdm_dataportal_view_search_taxon_by_description() {
   drupal_set_title(t('Search by description full text'), PASS_THROUGH);
-  // $form_state = false;
-  // $searchForm = cdm_dataportal_search_taxon_by_description_form($form_state);
-  $searchForm = cdm_dataportal_search_taxon_by_description_form();
-
   return drupal_get_form('cdm_dataportal_search_taxon_by_description_form');
 }
 
