@@ -65,12 +65,12 @@
    */
   define('EDIT_MAPSERVER_VERSION', serialize(
       array(
-        'v1' => 'v1' ,
-        'v1.1' => 'v1.1',
-        'v1.2_dev' => 'v1.2_dev',
+//        'v1' => 'v1' ,           // no longer recommended
+//        'v1.1' => 'v1.1',        // no longer recommended
+//        'v1.2_dev' => 'v1.2_dev',// no longer recommended
         'v1.2' => 'v1.2',
-        'v1.3_dev' => 'v1.3_dev',
-        'v1.4_dev' => 'v1.4_dev'
+        'v1.3_dev' => 'v1.3_dev (not recommended)',
+        'v1.4_dev' => 'v1.4_dev (experimental features)'
       )
     )
   );
@@ -307,15 +307,15 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
       // it is sufficient to define the preferred layer,
       // since it will automatically be enabled:
       'PREFERRED' => 'osgeo_vmap0'),
-     'custom_wms_base_layer' => array(
-            'name' => NULL,
-            'url' => NULL,
-            'params' =>  NULL,
-            'projection' => NULL,
-            'proj4js_def' => NULL,
-            'max_extent' => NULL,
-            'units' => NULL
-     ),
+    'custom_wms_base_layer' => array(
+      'name' => NULL,
+      'url' => NULL,
+      'params' =>  NULL,
+      'projection' => NULL,
+      'proj4js_def' => NULL,
+      'max_extent' => NULL,
+      'units' => NULL
+    ),
     'show_layer_switcher' => TRUE,
     'display_outside_max_extent' => FALSE
   ),
