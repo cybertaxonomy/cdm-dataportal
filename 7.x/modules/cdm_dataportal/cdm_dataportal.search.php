@@ -44,7 +44,9 @@ function cdm_dataportal_search_form_path_for_ws($ws_endpoint) {
  *   The cdm-remote webservice to be used, valid values are defined by
  *   the constants: FIXME.
  * @param string $query_field_default_value
+ *   A default text for the query field
  * @param string $query_field_description
+ *   The description text for the query field
  * @param string $process
  *   The value for #process, if NULL (default), 'cdm_dataportal_search_process'
  *   is used.
@@ -59,11 +61,11 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
   }
 
   $form['#method'] = 'get';
-  /*
-  $form['#process'] = array(
-    $process => array(),
-  );
-  */
+  //
+  //  $form['#process'] = array(
+  //  $process => array(),
+  //  );
+  //
   $form['#action'] = url($action_path, array(
     'absolute' => TRUE,
   ));
@@ -78,10 +80,10 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
     '#weight' => 0,
     '#type' => 'textfield',
     '#size' => 68,
-    // this causes the description to display also when hovering over
+    // This causes the description to display also when hovering over
     // the textfield.
     // This is wanted behaviour for the simple seach but could
-    // be disabled for the advances search
+    // be disabled for the advances search.
     '#attributes' => array(
       'title' => $query_field_description,
     ),
@@ -133,7 +135,7 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
  *   the form array
  *
  */
-function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = FALSE, $classificationSelect = TRUE) {
+function cdm_dataportal_search_taxon_form(array $form, array &$form_state, $advancedForm = FALSE, $classificationSelect = TRUE) {
 
   $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
 
@@ -194,7 +196,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
     }
 
 
-   if ($classificationSelect === TRUE) {
+    if ($classificationSelect === TRUE) {
       $form['search']['tree'] = array(
         '#title' => t('Classification'),
         '#weight' => 1,
@@ -203,7 +205,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
         '#options' => cdm_get_taxontrees_as_options(TRUE),
         '#description' => t('A filter to limit the search to a specific classification. Choosing <em>-- None --</em> will disable this filter.'),
       );
-   }
+    }
 
     // General search parameters.
     $form['search']['doTaxa'] = array(
@@ -231,34 +233,34 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       '#value' => $preset_doTaxaByCommonNames,
     );
 
-      $area_term_dtos =  cdm_ws_fetch_all(CDM_WS_DESCRIPTION_NAMEDAREAS_IN_USE, array('includeAllParents'=>'true'));
+    $area_term_dtos =  cdm_ws_fetch_all(CDM_WS_DESCRIPTION_NAMEDAREAS_IN_USE, array('includeAllParents'=>'true'));
 
-      // sort by vocabulary
-      $terms_by_vocab = array();
-      foreach($area_term_dtos as $term_dto){
-          if (!isset($terms_by_vocab[$term_dto->vocabularyUuid])) {
-              $terms_by_vocab[$term_dto->vocabularyUuid] = array();
-          }
-          $terms_by_vocab[$term_dto->vocabularyUuid][$term_dto->uuid] = $term_dto;
+    // sort by vocabulary
+    $terms_by_vocab = array();
+    foreach($area_term_dtos as $term_dto){
+      if (!isset($terms_by_vocab[$term_dto->vocabularyUuid])) {
+        $terms_by_vocab[$term_dto->vocabularyUuid] = array();
       }
-      // build hierarchy for each vocabulary
-      $term_tree = array();
-      foreach ($terms_by_vocab as $vocab_uuid => $term_dto ) {
-          $term_tree[$vocab_uuid] = array();
-          foreach ($term_dto as $term) {
-              if (!empty($term->partOfUuid)) {
-                  // children
-                  $parent =& $term_dto[$term->partOfUuid];
-                  if (!isset($parent->children)) {
-                      $parent->children = array();
-                  }
-                  $parent->children[$term->uuid] = $term;
-              } else {
-                  // root nodes
-                  $term_tree[$vocab_uuid][$term->uuid] = $term;
-              }
+      $terms_by_vocab[$term_dto->vocabularyUuid][$term_dto->uuid] = $term_dto;
+    }
+    // build hierarchy for each vocabulary
+    $term_tree = array();
+    foreach ($terms_by_vocab as $vocab_uuid => $term_dto ) {
+      $term_tree[$vocab_uuid] = array();
+      foreach ($term_dto as $term) {
+        if (!empty($term->partOfUuid)) {
+          // children
+          $parent =& $term_dto[$term->partOfUuid];
+          if (!isset($parent->children)) {
+            $parent->children = array();
           }
+          $parent->children[$term->uuid] = $term;
+        } else {
+          // root nodes
+          $term_tree[$vocab_uuid][$term->uuid] = $term;
+        }
       }
+    }
 
       drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/search_area_filter.js');
 
@@ -280,17 +282,16 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
       if(isset($_SESSION['cdm']['search']['area'])){
           $areas_defaults = explode(',', $_SESSION['cdm']['search']['area']);
       }
-      foreach ($term_tree as $vocab_uuid => $term_dto_tree) {
-          $areas_options =  term_tree_as_options($term_dto_tree);
-          $form['search']['areas']['area'][$vocab_cnt++] = array(
-            '#type' => 'checkboxes',
-//            '#title' => t('Filter by distribution areas'),
-            '#default_value' =>  $areas_defaults,
-            '#options' => $areas_options,
-            '#description' => t('The search will return taxa having distribution information for at
+    foreach ($term_tree as $vocab_uuid => $term_dto_tree) {
+      $areas_options =  term_tree_as_options($term_dto_tree);
+      $form['search']['areas']['area'][$vocab_cnt++] = array(
+        '#type' => 'checkboxes',
+        '#default_value' =>  $areas_defaults,
+        '#options' => $areas_options,
+        '#description' => t('The search will return taxa having distribution information for at
                 least one of the chosen areas.'),
-          );
-      }
+      );
+    }
 
 
   } else {
@@ -327,6 +328,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advancedForm = F
 
   return $form;
 }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -343,18 +345,18 @@ function cdm_dataportal_search_taxon_by_description_form() {
   $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
 
   $form = cdm_dataportal_search_form_prepare(
-      'cdm_dataportal/search/results/taxon',
-      CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT,
-      $query_field_default_value,
-      t("Enter the text you wish to search for. The asterisk character * can be
+    'cdm_dataportal/search/results/taxon',
+    CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT,
+    $query_field_default_value,
+    t("Enter the text you wish to search for. The asterisk character * can be
         used as wildcard. Terms can be combined with 'AND'. To search for a
         full phrase enclose the terms in parentheses. For more syntactial
         options please refer to the !link.", array(
-          '!link' => l(t('Apache Lucene - Query Parser Syntax'), 'http://lucene.apache.org/core/old_versioned_docs/versions/2_9_1/queryparsersyntax.html', array(
-             'attributes' => array('absolute' => TRUE, 'html' => TRUE))),
-        )),
-      NULL
-      );
+      '!link' => l(t('Apache Lucene - Query Parser Syntax'), 'http://lucene.apache.org/core/old_versioned_docs/versions/2_9_1/queryparsersyntax.html', array(
+        'attributes' => array('absolute' => TRUE, 'html' => TRUE))),
+    )),
+    NULL
+  );
 
   $form['search']['tree'] = array(
     '#weight' => -1,
