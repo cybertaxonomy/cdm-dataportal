@@ -36,25 +36,27 @@ function theme_cdm_feature_name($variables) {
 }
 
 
-  /**
+/**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
 function theme_FeatureTree_hierarchy($variables) {
 
-  $FeatureTreeUuid = $variables['FeatureTreeUuid'];
-  if (!is_uuid($FeatureTreeUuid)) {
-    return;
+  $feature_tree_uuid = $variables['FeatureTreeUuid'];
+  if (!is_uuid($feature_tree_uuid)) {
+    return NULL;
   }
 
   $out = '';
-  $featureTree = cdm_ws_get(CDM_WS_FEATURETREE, array(
-    $FeatureTreeUuid,
-  ));
+  $feature_tree = cdm_ws_get(CDM_WS_FEATURETREE,
+    array(
+      $feature_tree_uuid,
+    )
+  );
 
-  if (isset($featureTree) && isset($featureTree->root)) {
-    $out = '<ul class="' . $featureTree->class . '">';
-    $out .= theme('FeatureTree_hierarchy_children', array('node' => $featureTree->root));
+  if (isset($feature_tree) && isset($feature_tree->root)) {
+    $out = '<ul class="' . $feature_tree->class . '">';
+    $out .= theme('FeatureTree_hierarchy_children', array('node' => $feature_tree->root));
     $out .= '</ul>';
   }
   return $out;
@@ -70,10 +72,10 @@ function theme_FeatureTree_hierarchy_children($variables) {
   $out = '';
   if (isset($node->childNodes)) {
 
-    foreach ($node->childNodes as $childNode) {
-      $out .= '<li>' . check_plain($childNode->feature->representation_L10n);
-      if (isset($childNode->childNodes) && count($childNode->childNodes) > 0) {
-        $out .= '<ul>' . theme('FeatureTree_hierarchy_children', array('node' => $childNode)) . '</ul>';
+    foreach ($node->childNodes as $child_node) {
+      $out .= '<li>' . check_plain($child_node->feature->representation_L10n);
+      if (isset($child_node->childNodes) && count($child_node->childNodes) > 0) {
+        $out .= '<ul>' . theme('FeatureTree_hierarchy_children', array('node' => $child_node)) . '</ul>';
       }
       $out .= '</li>';
     }
@@ -88,6 +90,7 @@ function theme_FeatureTree_hierarchy_children($variables) {
  * @param array $variables
  *   An associative array containing:
  *  - element: the CategoricalData element
+ *
  * @return string
  *   a html representation of the given CategoricalData element
  *
@@ -98,19 +101,19 @@ function theme_cdm_descriptionElement_CategoricalData($variables) {
 
   $state_data_strings = array();
   if (isset($element->stateData)) {
-    foreach ($element->stateData as $stateData) {
+    foreach ($element->stateData as $state_data) {
 
       $state  = NULL;
 
-      if(isset($stateData->state)){
-        $state = cdm_term_representation($stateData->state);
+      if (isset($state_data->state)) {
+        $state = cdm_term_representation($state_data->state);
       }
 
-      if (isset($stateData->modifyingText_L10n)) {
-        $state = ' ' . $stateData->modifyingText_L10n;
+      if (isset($state_data->modifyingText_L10n)) {
+        $state = ' ' . $state_data->modifyingText_L10n;
       }
 
-      $modifiers_strings = cdm_modifers_representations($stateData);
+      $modifiers_strings = cdm_modifers_representations($state_data);
 
       $state_data_strings[] = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
 
@@ -124,12 +127,12 @@ function theme_cdm_descriptionElement_CategoricalData($variables) {
   $annotations_and_sources = handle_annotations_and_sources(
     $element,
     $feature_block_settings,
-    $out, // the description element text
+    $out, // The description element text.
     $element->feature->uuid
   );
 
-  if(!empty($annotations_and_sources['source_references'])){
-    $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+  if (!empty($annotations_and_sources['source_references'])) {
+    $out .= ' ' . implode(' ', $annotations_and_sources['source_references']);
   }
   return $out . $annotations_and_sources['foot_note_keys'];
 }
@@ -192,11 +195,11 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
 
       // compile the full value string which also may contain modifiers
       if (isset($statistical_val->value)) {
-          $statistical_val->_value = $statistical_val->value;
+        $statistical_val->_value = $statistical_val->value;
       }
       $val_modifiers_strings = cdm_modifers_representations($statistical_val);
       if ($val_modifiers_strings) {
-          $statistical_val->_value = ' ' . $val_modifiers_strings . ' ' . $statistical_val->_value;
+        $statistical_val->_value = ' ' . $val_modifiers_strings . ' ' . $statistical_val->_value;
       }
 
       // either put into min max array or into $other_values
@@ -224,57 +227,62 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
       $min_max['Max'] = '?';
     }
 
-      // create markup
+    // create markup
     $min_max_markup = '';
 
-    foreach ($min_max as $key=>$statistical_val) {
-      if ( $statistical_val !== NULL ){
+    foreach ($min_max as $key => $statistical_val) {
+      if ($statistical_val !== NULL) {
 
-          if($statistical_val == '?') {
-              $value_markup = $statistical_val;
-          } else {
-            $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' '
-              . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ">'
-              . $statistical_val->_value . '</span>';
-          }
+        if ($statistical_val == '?') {
+          $value_markup = $statistical_val;
+        }
+        else {
+          $value_markup = '<span class="'
+            . html_class_attribute_ref($statistical_val) . ' '
+            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ">'
+            . $statistical_val->_value . '</span>';
+        }
 
-          if ( strlen($min_max_markup) ){
+        if (strlen($min_max_markup)) {
           $min_max_markup .= '–';
         }
-        if(str_beginsWith($key, 'Extreme')){
-            $value_markup = "($value_markup)";
+        if (str_beginsWith($key, 'Extreme')) {
+          $value_markup = "($value_markup)";
         }
         $min_max_markup .= $value_markup;
       }
     }
 
-      foreach($other_values as $statistical_val){
-          $statistical_val_type_representation = NULL;
-          if (isset($statistical_val->type)) {
-              $statistical_val_type_representation = cdm_term_representation($statistical_val->type);
-              // $statistical_val->type->termType;
-              // $statistical_val->type->userFriendlyTypeName;
-          }
-          $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
-            . $statistical_val->_value . '</span>';
-          $value_markup = $value_markup .
-            ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '');
-          $other_values_markup[] = $value_markup;
+    foreach ($other_values as $statistical_val) {
+      $statistical_val_type_representation = NULL;
+      if (isset($statistical_val->type)) {
+        $statistical_val_type_representation = cdm_term_representation($statistical_val->type);
+        // $statistical_val->type->termType;
+        // $statistical_val->type->userFriendlyTypeName;
       }
+      $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
+        . $statistical_val->_value . '</span>';
+      $value_markup = $value_markup .
+        ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '');
+      $other_values_markup[] = $value_markup;
+    }
 
 
     $out .= $min_max_markup . ' ' . implode($other_values_markup, ', ');
   }
 
   if (isset($element->unit)) {
-    $out .= ' <span class="unit" title="' . cdm_term_representation($element->unit) . '">'. cdm_term_representation_abbreviated($element->unit) . '</span>';
+    $out .= ' <span class="unit" title="'
+      . cdm_term_representation($element->unit) . '">'
+      . cdm_term_representation_abbreviated($element->unit)
+      . '</span>';
   }
 
   // modifiers of the description element itself
   $modifier_string = cdm_modifers_representations($element);
   $out .= ($modifier_string ? ' ' . $modifier_string : '');
   if (isset($element->modifyingText_L10n)) {
-    $out =  $element->modifyingText_L10n . ' ' . $out;
+    $out = $element->modifyingText_L10n . ' ' . $out;
   }
 
   $feature_block_settings = get_feature_block_settings($element->feature->uuid);
@@ -285,8 +293,8 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
     $element->feature->uuid
   );
 
-  if(!empty($annotations_and_sources['source_references'])){
-    $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+  if (!empty($annotations_and_sources['source_references'])) {
+    $out .= ' ' . implode(' ', $annotations_and_sources['source_references']);
   }
   return $out . $annotations_and_sources['foot_note_keys'];
 
