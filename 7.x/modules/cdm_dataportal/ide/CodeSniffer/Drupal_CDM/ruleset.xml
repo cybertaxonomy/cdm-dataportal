@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- See http://pear.php.net/manual/en/package.php.php-codesniffer.annotated-ruleset.php -->
+<ruleset name="Drupal_CDM">
+    <description>
+        Coding standard for Drupal CDM Portals
+        Difference with Drupal standard:
+           - Relaxed InlineComment checks
+    </description>
+
+    <rule ref="Drupal">
+        <exclude name="Drupal.Commenting.InlineComment" />
+        <exclude name="Squiz.Commenting.PostStatementComment" />
+        <!--<exclude name="Drupal.NamingConventions.ValidVariableName" />-->
+    </rule>
+</ruleset>
