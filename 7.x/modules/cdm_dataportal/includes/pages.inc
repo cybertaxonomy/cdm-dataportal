@@ -86,7 +86,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         ));
     }
 
-    // --- get map service HTTP query paramaters
+    // --- get map service HTTP query parameters
     if (count($specimensOrObservations) > 0) {
         $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
 

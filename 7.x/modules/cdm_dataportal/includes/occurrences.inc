@@ -167,25 +167,25 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     //image gallery
 
     if($isSpecimenPage) {
-        $images = array();
+    $images = array();
         if (isset($derivateDataDTO->imageUuids)) {
             foreach ($derivateDataDTO->imageUuids as $imageUuid) {
                 $images[] = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $imageUuid);
             }
         }
+        $gallery_variables = array(
+            'mediaList' => $images,
+            'galleryName' => "Specimen images",
+            'maxExtend' => 120,
+            'cols' => 5,
+            'maxRows' => 2,
+            'showCaption' => true,
+            'captionElements' => array('title', 'description', 'file', 'filename'),
+            'mediaLinkType' => 'LIGHTBOX',
+        );
+        $detail_html .= "<br>".create_label("Image Gallery")."<br>";
+        $detail_html .= theme_cdm_media_gallerie($gallery_variables);
     }
-    $gallery_variables = array(
-        'mediaList' => $images,
-        'galleryName' => "Specimen images",
-        'maxExtend' => 120,
-        'cols' => 5,
-        'maxRows' => 2,
-        'showCaption' => true,
-        'captionElements' => array('title', 'description', 'file', 'filename'),
-        'mediaLinkType' => 'LIGHTBOX',
-    );
-    $detail_html .= "<br>".create_label("Image Gallery")."<br>";
-    $detail_html .= theme_cdm_media_gallerie($gallery_variables);
     return $detail_html;
 }
 
