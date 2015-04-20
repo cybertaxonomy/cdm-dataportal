@@ -182,6 +182,8 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
             'showCaption' => true,
             'captionElements' => array('title', 'description', 'file', 'filename'),
             'mediaLinkType' => 'LIGHTBOX',
+            'alternativeMediaUri' => NULL,
+            'galleryLinkUri' => NULL
         );
         $detail_html .= "<br>".create_label("Image Gallery")."<br>";
         $detail_html .= theme_cdm_media_gallerie($gallery_variables);
