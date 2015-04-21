@@ -45,6 +45,40 @@ function theme_cdm_taxon_page_title($variables) {
 }
 
 /**
+ * Returns HTML for the default title of a specimen page.
+ *  * The returned title is a the identifier of the specimen.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - specimen: The specimen being formatted for the title.
+ *
+ * @ingroup themeable
+ */
+function theme_cdm_specimen_page_title($variables) {
+    $specimen = $variables['specimen'];
+    RenderHints::pushToRenderStack('specimen_page_title');
+    $referenceUri = '';
+    $out = '';
+
+    $title = "";
+    if($specimen->accessionNumber){
+        $title = $specimen->accessionNumber;
+    }
+    elseif($specimen->barcode){
+        $title = $specimen->barcode;
+    }
+    elseif($specimen->catalogNumber) {
+        $title = $specimen->catalogNumber;
+    }
+
+
+  $out .= $title;
+  RenderHints::popFromRenderStack();
+
+  return '<span class="' . $specimen->class . '">' . $out . '</span>';
+}
+
+/**
  * Returns HTML for the default title for a name page.
  *
  * The returned title is a formatted name.

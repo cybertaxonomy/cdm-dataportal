@@ -44,7 +44,6 @@ function compose_cdm_specimen_page($specimenUuid)
  * @return string
  */
 function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage = false)
-    //FIXME remove this method and use render_array correctly in compressed table
 {
     $detail_html = "";
     //link to specimen page
@@ -140,7 +139,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
         $detail_html .= create_label("Specimen Scans") . $specimenScans . "<br>";
     }
     //specimen scan image gallery
-    if($isSpecimenPage and isset($derivateDataDTO->specimenScanUuids)) {
+    if($isSpecimenPage and isset($derivateDataDTO->specimenScanUuids) and !empty($derivateDataDTO->specimenScanUuids)) {
         $detail_html .= addImageGallery("Specimen scans", $derivateDataDTO->specimenScanUuids);
     }
 
@@ -155,7 +154,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     }
 
     //detail image gallery
-    if($isSpecimenPage and isset($derivateDataDTO->detailImageUuids)){
+    if($isSpecimenPage and isset($derivateDataDTO->detailImageUuids) and !empty($derivateDataDTO->detailImageUuids)){
         $detail_html .= addImageGallery("Detail Images", $derivateDataDTO->detailImageUuids);
     }
 
@@ -172,6 +171,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
         }
         else{
             $detail_html .= l("detail page", $pathToSpecimen,array('attributes' => array('target'=>'_blank')));
+            $detail_html .= "<br>";
         }
     }
     return $detail_html;
