@@ -135,17 +135,28 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
         $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= create_label("Types") . $types . "<br>";
     }
-    if ($specimenScans) {
+    if ($specimenScans and !$isSpecimenPage) {
         $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= create_label("Specimen Scans") . $specimenScans . "<br>";
     }
+    //specimen scan image gallery
+    if($isSpecimenPage and isset($derivateDataDTO->specimenScanUuids)) {
+        $detail_html .= addImageGallery("Specimen scans", $derivateDataDTO->specimenScanUuids);
+    }
+
     if ($molecularData) {
         $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= create_label("Molecular Data") . $molecularData . "<br>";
     }
-    if ($detailImages) {
+
+    if ($detailImages and !$isSpecimenPage) {
         $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= create_label("Detail Images") . $detailImages . "<br>";
+    }
+
+    //detail image gallery
+    if($isSpecimenPage and isset($derivateDataDTO->detailImageUuids)){
+        $detail_html .= addImageGallery("Detail Images", $derivateDataDTO->detailImageUuids);
     }
 
     //character data
@@ -163,33 +174,27 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
             $detail_html .= l("detail page", $pathToSpecimen,array('attributes' => array('target'=>'_blank')));
         }
     }
-
-    //image gallery
-
-    if($isSpecimenPage) {
-    $images = array();
-        if (isset($derivateDataDTO->imageUuids)) {
-            foreach ($derivateDataDTO->imageUuids as $imageUuid) {
-                $images[] = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $imageUuid);
-            }
-        }
-        $gallery_variables = array(
-            'mediaList' => $images,
-            'galleryName' => "Specimen images",
-            'maxExtend' => 120,
-            'cols' => 5,
-            'maxRows' => 2,
-            'showCaption' => true,
-            'captionElements' => array('title', 'description', 'file', 'filename'),
-            'mediaLinkType' => 'LIGHTBOX',
-            'alternativeMediaUri' => NULL,
-            'galleryLinkUri' => NULL
-        );
-        $detail_html .= "<br>".create_label("Image Gallery")."<br>";
-        $detail_html .= theme_cdm_media_gallerie($gallery_variables);
-    }
     return $detail_html;
 }
+
+function addImageGallery($galleryName, $imageUuids){
+    $images = array();
+    foreach ($imageUuids as $uuid) {
+        $images[] = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $uuid);
+    }
+    $gallery_variables = array(
+        'mediaList' => $images,
+        'galleryName' => $galleryName,
+        'maxExtend' => 120,
+        'cols' => 5,
+        'maxRows' => 2,
+        'showCaption' => true,
+        'captionElements' => array('title', 'description', 'file', 'filename'),
+        'mediaLinkType' => 'LIGHTBOX',
+    );
+    return "<br>".create_label($galleryName)."<br>".theme_cdm_media_gallerie($gallery_variables);
+}
+
 
 /**
  * Formats the given string to a label for displaying key-value pairs in HTML
