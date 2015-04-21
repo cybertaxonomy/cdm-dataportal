@@ -393,28 +393,23 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $invers
 
   // Validate object.
   if (!(isset($taxonRelationship->toTaxon) && isset($taxonRelationship->fromTaxon) && isset($taxonRelationship->type))) {
-    return;
+    return null;
   }
 
-  $reltype_uuid = $taxonRelationship->type->uuid;
   $taxonRelationType = $taxonRelationship->type;
-
-  $reltype_representation = '';
 
   if ($inverse) {
     $toTaxon = $taxonRelationship->fromTaxon;
-    $fromTaxon = $taxonRelationship->toTaxon;
     $relsign = $taxonRelationType->inverseRepresentation_L10n_abbreviatedLabel;
     $reltype_representation = $taxonRelationType->inverseRepresentation_L10n;
   }
   else {
     $toTaxon = $taxonRelationship->toTaxon;
-    $fromTaxon = $taxonRelationship->fromTaxon;
     $relsign = $taxonRelationType->representation_L10n_abbreviatedLabel;
     $reltype_representation = $taxonRelationType->representation_L10n;
   }
 
-  return cdm_related_taxon($toTaxon, NULL, $relsign, $reltype_representation, $doLinkTaxon, $showSecReference);
+  return cdm_related_taxon($toTaxon, NULL, $relsign, $reltype_representation, $taxonRelationship->doubtful, $doLinkTaxon, $showSecReference);
 }
 
 /**
@@ -422,7 +417,7 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $invers
  *
  * According name relationships are also being rendered.
  */
-function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $reltype_representation = NULL, $doLinkTaxon = FALSE, $showSecReference = FALSE) {
+function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $reltype_representation = NULL, $doubtful=false, $doLinkTaxon = FALSE, $showSecReference = FALSE) {
   static $relsign_homo = '≡';
   static $relsign_hetero = '=';
   static $relsign_invalid = '&ndash;';
@@ -461,7 +456,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
         $relsign = $relsign_invalid;
     }
 
-    if(isset($taxon->doubtful) && $taxon->doubtful) {
+    if($doubtful) {
       $relsign = '?' . $relsign; 
     }
   }
