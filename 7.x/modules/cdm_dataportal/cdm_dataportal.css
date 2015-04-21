@@ -20,6 +20,8 @@
 
 #derivate_hierarchy_table th{
     text-align: center;
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
 #derivate_hierarchy_table td{
@@ -32,6 +34,7 @@
 }
 #derivate_hierarchy_table .expand_column {
     border-right: hidden;
+    width: 18px;
 }
 
 .specimen_table_label{
