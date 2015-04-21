@@ -23,6 +23,8 @@ function addRowToggle(selector) {
     jQuery(selector + " .summary_row_icon").click(
         function(event){
             jQuery(event.target).parent().parent(".summary_row").next().toggle(500);//toggle detail row when clicking on corresponding summary row
+            jQuery(event.target).parent().parent(".summary_row").find(".expand_icon").toggle();//toggle collapse/expand icons
+            jQuery(event.target).parent().parent(".summary_row").find(".collapse_icon").toggle();
         })
 
         //color summary row when hovering over it
