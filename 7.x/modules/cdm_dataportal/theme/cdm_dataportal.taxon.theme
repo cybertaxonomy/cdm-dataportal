@@ -438,6 +438,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   if (!$relsign) {
 
     $relsign = '';
+
     switch ($reltype_uuid) {
       case UUID_HETEROTYPIC_SYNONYM_OF:
       case UUID_SYNONYM_OF:
@@ -458,6 +459,10 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
 
       default:
         $relsign = $relsign_invalid;
+    }
+
+    if(isset($taxon->doubtful) && $taxon->doubtful) {
+      $relsign = '?' . $relsign; 
     }
   }
   /*
