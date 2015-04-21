@@ -191,6 +191,8 @@ function addImageGallery($galleryName, $imageUuids){
         'showCaption' => true,
         'captionElements' => array('title', 'description', 'file', 'filename'),
         'mediaLinkType' => 'LIGHTBOX',
+        'alternativeMediaUri' => NULL,
+        'galleryLinkUri' => NULL
     );
     return "<br>".create_label($galleryName)."<br>".theme_cdm_media_gallerie($gallery_variables);
 }
