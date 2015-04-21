@@ -456,10 +456,12 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
         $relsign = $relsign_invalid;
     }
 
-    if($doubtful) {
-      $relsign = '?' . $relsign; 
-    }
   }
+
+  if($doubtful) {
+    $relsign = '?' . $relsign;
+  }
+  
   /*
   Names with status invalid or nudum are to be displayed with the
   $relsign_invalid, these names appear at the end of all names in their
