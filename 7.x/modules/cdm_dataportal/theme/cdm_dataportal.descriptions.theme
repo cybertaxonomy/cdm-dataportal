@@ -301,12 +301,14 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
 }
 
 /**
- * Theme function to render CDM DescriptionElements of the type IndividualsAssociations.
+ * Renders CDM DescriptionElements of the type IndividualsAssociations.
  *
  * @param array $variables
  *   An associative array containing:
  *  - element: the IndividualsAssociations element
- * @return html representation of the given IndividualsAssociations element
+ *
+ * @return string
+ *   html representation of the given IndividualsAssociations element
  *
  * @ingroup themeable
  */
