@@ -1920,18 +1920,36 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
 }
 
 /**
- * Workaround for missing original source type.
+ * Checks is the source has one of the given types.
  *
- * idNamespace is always set in these cases.
- * @todo improve documentation of this function.
- *
- * @param unknown_type $source
- *
- * @return unknown_type
+ * @param object $source
+ *   The original source entity
+ * @param array $types
+ *   An array of elementd of the OriginalSourceType enumeration
+ *   If not set the default will be used which is:
+ *    - Lineage
+ *    - PrimaryMediaSource
+ *    - PrimaryTaxonomicSource
+ *    - Unknown
+ *    - Other
+ * @return boolean
  */
-function _is_original_source_type($source) {
-  return !$source->idNamespace && strlen($source->idNamespace) == 0;
-}
+  function _is_original_source_type($source, $types = null) {
+    // this is the default
+    // maybe this should also be put into the settings
+    static $default = array(
+      OriginalSourceType::Lineage,
+      OriginalSourceType::PrimaryMediaSource,
+      OriginalSourceType::PrimaryTaxonomicSource,
+      OriginalSourceType::Unknown,
+      OriginalSourceType::Other,
+    );
+
+    if(!$types){
+      $types = $default;
+    }
+    return isset($source->type) && in_array($source->type, $types);
+  }
 
 /**
  * @todo Please document this function.

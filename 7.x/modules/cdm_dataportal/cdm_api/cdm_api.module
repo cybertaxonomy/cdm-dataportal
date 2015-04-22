@@ -1,43 +1,43 @@
 <?php
-/**
- * @file
- * Required or useful functions for using CDM Data Store Webservices.
- *
- * Naming conventions:
- * ----------------------
- * - All webservice access methods are prefixed with cdm_ws.
- *
- * @copyright
- *   (C) 2007-2012 EDIT
- *   European Distributed Institute of Taxonomy
- *   http://www.e-taxonomy.eu
- *
- *   The contents of this module are subject to the Mozilla
- *   Public License Version 1.1.
- * @see http://www.mozilla.org/MPL/MPL-1.1.html
- *
- * @author
- *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
- *   - Wouter Addink <w.addink@eti.uva.nl> (migration from Drupal 5 to Drupal7)
- */
+  /**
+   * @file
+   * Required or useful functions for using CDM Data Store Webservices.
+   *
+   * Naming conventions:
+   * ----------------------
+   * - All webservice access methods are prefixed with cdm_ws.
+   *
+   * @copyright
+   *   (C) 2007-2012 EDIT
+   *   European Distributed Institute of Taxonomy
+   *   http://www.e-taxonomy.eu
+   *
+   *   The contents of this module are subject to the Mozilla
+   *   Public License Version 1.1.
+   * @see http://www.mozilla.org/MPL/MPL-1.1.html
+   *
+   * @author
+   *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
+   *   - Wouter Addink <w.addink@eti.uva.nl> (migration from Drupal 5 to Drupal7)
+   */
 
-module_load_include('php', 'cdm_api', 'xml2json');
-module_load_include('php', 'cdm_api', 'commons');
-module_load_include('php', 'cdm_api', 'uuids');
-module_load_include('php', 'cdm_api', 'webservice_uris');
-module_load_include('php', 'cdm_api', 'cdm_node');
+  module_load_include('php', 'cdm_api', 'xml2json');
+  module_load_include('php', 'cdm_api', 'commons');
+  module_load_include('php', 'cdm_api', 'uuids');
+  module_load_include('php', 'cdm_api', 'enums');
+  module_load_include('php', 'cdm_api', 'webservice_uris');
+  module_load_include('php', 'cdm_api', 'cdm_node');
 
+  /**
+   * Timeout used to override the default of 30 seconds
+   * in @see drupal_http_request()
+   *
+   * @var CDM_HTTP_REQUEST_TIMEOUT: A float representing the maximum number of seconds the function
+   *     call may take
+   */
+  define('CDM_HTTP_REQUEST_TIMEOUT', 90.0);
 
-/**
- * Tiemout used to override the default of 30 seconds
- * in @see drupal_http_request()
- *
- * @var CDM_HTTP_REQUEST_TIMEOUT: A float representing the maximum number of seconds the function
- *     call may take
- */
-define('CDM_HTTP_REQUEST_TIMEOUT', 90.0);
-
-define('SORT_ORDER_ID', 'sort_by_order_id');
+  define('SORT_ORDER_ID', 'sort_by_order_id');
 
 /**
  * Implements hook_menu().
