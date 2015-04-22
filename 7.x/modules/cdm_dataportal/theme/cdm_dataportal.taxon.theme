@@ -24,12 +24,15 @@
  *   - focusedTaxon
  *
  * @ingroup themeable
+ *
+ * @return string
+ *    the rendered html
  */
 function theme_cdm_taxonRelationships($variables) {
   $taxonRelationships = $variables['taxonRelationships'];
   $focusedTaxon = $variables['focusedTaxon'];
   if (!$taxonRelationships) {
-    return;
+    return null;
   }
 
   RenderHints::pushToRenderStack('taxonRelationships');
