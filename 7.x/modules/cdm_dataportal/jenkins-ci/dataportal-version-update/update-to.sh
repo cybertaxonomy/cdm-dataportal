@@ -17,7 +17,7 @@ rm -r modules/cdm_dataportal
 case "$VERSION" in
     trunk)  svn co http://dev.e-taxonomy.eu/svn/trunk/drupal/7.x/modules/cdm_dataportal modules/cdm_dataportal
             ;;
-  develop)  svn co http://dev.e-taxonomy.eu/svn/branches/drupal/develop/drupal/7.x/modules/cdm_dataportal modules/cdm_dataportal
+  develop)  svn co http://dev.e-taxonomy.eu/svn/branches/drupal/develop/7.x/modules/cdm_dataportal modules/cdm_dataportal
             ;;
         *)  svn co http://dev.e-taxonomy.eu/svn/branches/drupal/module-cdm_dataportal-RELEASE-$VERSION modules/cdm_dataportal
             ;;
