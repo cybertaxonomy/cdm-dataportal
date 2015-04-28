@@ -56,7 +56,7 @@ $zen-auto-include-item-base: false;
 }
 
 /* Navigation bar */
-@media all and (min-width: 480px) {
+// @media all and (min-width: 480px) {
   #main {
     padding-top: $menu-bar-line-height + $zen-gutter-width; /* Move all the children of #main down to make room. */
     padding-bottom: $zen-gutter-width;
@@ -68,7 +68,7 @@ $zen-auto-include-item-base: false;
     height: $menu-bar-line-height * 2;
     width: $zen-grid-width;
   }
-}
+// }
 
 } // End of @if $zen-reverse-all-floats == true
 
@@ -150,6 +150,7 @@ $zen-auto-include-item-base: false;
       }
     }
   }
+
 }
 
 /**

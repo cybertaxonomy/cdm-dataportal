@@ -196,7 +196,14 @@ function _add_inline_styles(&$variables) {
     $logo_size = theme_get_setting('logo_size');
     $zen_gutter_width = 40; // in px; must be same as $zen-gutter-width in zen_dataportal/sass/layouts/responsive-sidebars.scss
     $variables['inline_styles'][] = '#header {background-position:' . ($logo_size['width'] + $zen_gutter_width / 2) . 'px 0;}';
-    $variables['inline_styles'][] = '#main-menu, #sub-header {padding-left:' . $logo_size['width'] . 'px;}';
+    $variables['inline_styles'][] = '
+    /**
+     * On small displays the main menu and sub-header must not have extra padding
+     * on the left side.
+     */
+     @media all and (min-width: 480px) {
+       #main-menu, #sub-header {padding-left:' . $logo_size['width'] . 'px;}
+     }';
   }
   // as last styles the user_defined_styles which can be entered into a text field
   if(theme_get_setting('user_defined_styles')) {
