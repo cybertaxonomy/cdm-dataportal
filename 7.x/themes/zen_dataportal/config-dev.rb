@@ -6,18 +6,27 @@
 # file for more information.
 #
 
-####################################################################################
-# INFO: This configuration file is only for development purposes.
-#       Using it for production will break the theme for browsert <= IE8 !!!
-####################################################################################
 
 # Change this to :production when ready to deploy the CSS to the live server.
 environment = :development
 #environment = :production
 
-# In development, we can turn on the FireSass-compatible debug_info.
-#firesass = false
-firesass = true
+# If in development (set above), we can turn on the sourcemap file generation.
+# Requires sass 3.3+ and compass 1.0.1+
+# Determine version from command line: sass --version && compass --version
+sourcemap = true
+#sourcemap = true
+
+# Alternative development debugging methods
+# If in development (above), we can enable line_comments for FireCompass plugin.
+# Requires Firebug plugin and FireCompass plugin
+firecompass = false
+#firecompass = true
+
+# If in development (above), we can enable debug_info for the FireSass plugin.
+# Requires Firebug plugin and Firesass plugin
+firesass = false
+#firesass = true
 
 
 # Location of the theme's resources.
@@ -54,6 +63,14 @@ relative_assets = true
 
 # To disable debugging comments that display the original location of your selectors. Uncomment:
 # line_comments = false
+
+# Pass options to sass. For development and sourcemap variable is true (above),
+# then pass the "--sourcemap" option flag to compass/sass.
+sass_options = (environment == :development && sourcemap == true) ? {:sourcemap => true} : {}
+
+# Pass options to sass. For development, we turn on the FireCompass-compatible
+# line_comments if the firecompass config variable above is true.
+sass_options = (environment == :development && firecompass == true) ? {:line_comments => true} : {}
 
 # Pass options to sass. For development, we turn on the FireSass-compatible
 # debug_info if the firesass config variable above is true.
