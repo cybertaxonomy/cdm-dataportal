@@ -5,10 +5,16 @@
  * Style the markup found in the cdm_dataportal module.
  */
 
-@import "base";
+@import "init";
 
 
 $page-part-margin: $base-line-height * 1;
+
+/*  style links only for content in blocks and node and backbutton
+    added also #identificationKey since there are not yet drupal nodes */
+.block, .node, #backButton, #identificationKey {
+  @include cdm-link-style;
+}
 
 #page-toc {
   float:right;
@@ -70,6 +76,20 @@ ul.cdm_names li {
   margin-bottom: $page-part-margin;
   clear: none;
 }
+
+/*
+ * definition list container rendered by the
+ * drupal theme function theme_description_list()
+ */
+.description_list {
+  h3 {
+    font-size: $base-font-size;
+    line-height: $base-line-height;
+    font-weight: bold;
+  }
+}
+
+
 
 /*
  * Synonymy
