@@ -151,7 +151,7 @@
   .menu {
     margin: 0;
     padding: 0;
-    margin-left: -$zen-gutter-width;
+    margin-left: -$zen-gutter-width / 2;
     text-align: left; /* LTR */
     display: block;
 
@@ -159,7 +159,7 @@
       /* A simple method to get navigation links to appear in one line. */
       float: left; /* LTR */
       line-height: $menu-bar-line-height;
-      padding: 0 $zen-gutter-width;
+      padding: 0 $zen-gutter-width / 2;
       list-style-type: none;
       list-style-image: none;
       border-left: 1px solid $menu-bar-text-color;
