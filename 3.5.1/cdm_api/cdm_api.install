@@ -1,0 +1,120 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the cdm_api module.
+ */
+
+/**
+ * Implements hook_schema().
+ * The drupal_(un)install_schema functions are called automatically in D7.
+ */
+function cdm_api_schema() {
+  $schema['cache_cdm_ws'] = array(
+    'fields' => array(
+      'cid' => array(
+        'description' => 'Primary Key: Unique cache ID.',
+        'type' => 'varchar',
+        'length' => '333',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'data' => array(
+        'description' => 'The data to cache.',
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'expire' => array(
+        'description' => 'A Unix timestamp indicating when the cache entry should expire, or 0 for never.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'disp-width' => '11',
+      ),
+      'created' => array(
+        'description' => 'Unix timestamp indicating when the cache entry was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'disp-width' => '11',
+      ),
+      'serialized' => array(
+        'description' => 'A flag to indicate whether content is serialized by Drupal (1) or not (0).',
+        'type' => 'int',
+        'size' => 'small',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('cid'),
+    'indexes' => array(
+      'expire' => array('expire'),
+    ),
+    // Important, since the 'cid' field is too big to create a key on in INNODB.
+    // InnoDB allows a max. key length of 767 bytes, MyISAM 1000 bytes, which is
+    // for utf8 (333*3)+1, so 333 characters max. instead of 255 chars.
+    'mysql_engine' => 'MyISAM',
+  );
+
+  // @Comment WA: please describe the fields.
+  $schema['node_cdm'] = array(
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'disp-width' => '11',
+      ),
+      'wsuri' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'hash' => array(
+        'type' => 'char',
+        'length' => '32',
+        'not null' => TRUE,
+      ),
+      'cdmtype' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'uuid' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('hash'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Update D5 cache table to match Drupal 7 cache table columns.
+ */
+function cdm_api_update_7000() {
+  $schema = cdm_api_schema();
+
+  // No need to use db_change_field() here.
+  // We simply drop and recreate the cache tables to start clean.
+  db_drop_table('cache_cdm_ws');
+  db_create_table('cache_cdm_ws', $schema['cache_cdm_ws']);
+}
+
+
+/**
+ * Implements hook_requirements().
+ *
+ * This hook, like all others dealing with installation and updates, must
+ * reside in the .install file, or it will not properly abort the installation
+ * of the module if a critical requirement is missing.
+ */
+function cdm_api_requirements() {
+  $requirements['cdm_api'] = array(
+    'title' => 'CDM API'
+  );
+
+  return $requirements;
+}
