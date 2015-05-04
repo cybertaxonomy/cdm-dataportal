@@ -1,0 +1,166 @@
+/**
+ * @file
+ * Node Styling
+ *
+ * Style anything that isn't in the $content variable.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000330}}
+.pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000343}}
+.pie-container {
+  z-index: 0;
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000347}}
+.z-pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  z-index: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/ie-legacy\.scss}line{font-family:\0000363}}
+.lt-ie9 #header {
+  /* 
+   * reset right padding to zero and use margin-right instead,
+   * this avoids the need for background-clip: content-box
+   * which is not suppoorted in IE < 9
+   */
+  padding-right: 0;
+  margin-right: 20px;
+}
+
+/*  style links only for content in blocks and node and backbutton 
+    added also #identificationKey since there are not yet drupal nodes */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/_custom\.scss}line{font-family:\0000363}}
+.block a:link,
+.block a:visited, .node a:link,
+.node a:visited, #backButton a:link,
+#backButton a:visited, #identificationKey a:link,
+#identificationKey a:visited {
+  color: #115e92;
+  text-decoration: none;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/_custom\.scss}line{font-family:\0000369}}
+.block a:hover,
+.block a:focus, .node a:hover,
+.node a:focus, #backButton a:hover,
+#backButton a:focus, #identificationKey a:hover,
+#identificationKey a:focus {
+  text-decoration: underline;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/_custom\.scss}line{font-family:\0000378}}
+.block .Synonym a:link,
+.block .Synonym a:visited, .block .misapplied-name a:link,
+.block .misapplied-name a:visited, .node .Synonym a:link,
+.node .Synonym a:visited, .node .misapplied-name a:link,
+.node .misapplied-name a:visited, #backButton .Synonym a:link,
+#backButton .Synonym a:visited, #backButton .misapplied-name a:link,
+#backButton .misapplied-name a:visited, #identificationKey .Synonym a:link,
+#identificationKey .Synonym a:visited, #identificationKey .misapplied-name a:link,
+#identificationKey .misapplied-name a:visited {
+  color: #7c7c7c;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/_custom\.scss}line{font-family:\0000384}}
+.block .Taxon a:link,
+.block .Taxon a:visited, .node .Taxon a:link,
+.node .Taxon a:visited, #backButton .Taxon a:link,
+#backButton .Taxon a:visited, #identificationKey .Taxon a:link,
+#identificationKey .Taxon a:visited {
+  color: #115e92;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000318}}
+.node {
+  /* Node wrapper */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000320}}
+.preview .node {
+  /* Preview of the content before submitting new or updated content */
+  /* background-color: #ffffea; */
+  /* Drupal core uses a #ffffea background */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000324}}
+.node .node-title {
+  /* Node title */
+  display: none;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000328}}
+.node .user-picture {
+  /* The picture of the node author */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000331}}
+.node .submitted {
+  /* The "posted by" information */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000334}}
+.node .content {
+  /* Node's content wrapper */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000337}}
+.node ul.links {
+  /* Node links. See also the ul.links declaration in the pages.css. */
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000342}}
+.node-promoted {
+  /* A node that has been promoted to the front page */
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000345}}
+.node-sticky {
+  /* A sticky node (displayed before others in a list) */
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000348}}
+.node-by-viewer {
+  /* A node created by the current user */
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000351}}
+.node-teaser {
+  /* A node displayed as teaser */
+}
+
+/*
+ * All nodes are given a node-FOO class that describes the type of content that
+ * it is. If you create a new content type called "my-custom-type", it will
+ * receive a "node-my-custom-type" class.
+ */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000360}}
+.node-page {
+  /* Page content node */
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000363}}
+.node-article {
+  /* Article content node */
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000366}}
+.node-unpublished {
+  /* Unpublished nodes */
+  /* background-color: #fff4f4; */
+  /* Drupal core uses a #fff4f4 background */
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/nodes\.scss}line{font-family:\0000369}}
+.node-unpublished p.unpublished {
+  /* The word "Unpublished" displayed underneath the content. */
+  height: 0;
+  overflow: visible;
+  color: #d8d8d8;
+  font-size: 75px;
+  line-height: 1;
+  font-family: Impact, "Arial Narrow", Helvetica, sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  word-wrap: break-word;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/home\/andreas\/workspaces\/_svn-trunk\/drupal-git\/7\.x\/themes\/zen_dataportal\/sass\/_custom\.scss}line{font-family:\0000355}}
+.lt-ie8 .node-unpublished p.unpublished > * {
+  position: relative;
+}

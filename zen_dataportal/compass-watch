@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# no need to specify the set the --debug-info here since we are 
+# using the development configuration file 
+compass watch -c config-dev.rb  ./
+
