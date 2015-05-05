@@ -1,0 +1,102 @@
+diff --git a/STARTERKIT/config.rb b/STARTERKIT/config.rb
+index b3e483a..f936b38 100644
+--- a/STARTERKIT/config.rb
++++ b/STARTERKIT/config.rb
+@@ -11,7 +11,20 @@
+ environment = :development
+ #environment = :production
+ 
+-# In development, we can turn on the FireSass-compatible debug_info.
++# If in development (set above), we can turn on the sourcemap file generation.
++# Requires sass 3.3+ and compass 1.0.1+
++# Determine version from command line: sass --version && compass --version
++sourcemap = false
++#sourcemap = true
++
++# Alternative development debugging methods
++# If in development (above), we can enable line_comments for FireCompass plugin.
++# Requires Firebug plugin and FireCompass plugin
++firecompass = false
++#firecompass = true
++
++# If in development (above), we can enable debug_info for the FireSass plugin.
++# Requires Firebug plugin and Firesass plugin
+ firesass = false
+ #firesass = true
+ 
+@@ -51,6 +64,14 @@ relative_assets = true
+ # To disable debugging comments that display the original location of your selectors. Uncomment:
+ # line_comments = false
+ 
++# Pass options to sass. For development and sourcemap variable is true (above),
++# then pass the "--sourcemap" option flag to compass/sass.
++sass_options = (environment == :development && sourcemap == true) ? {:sourcemap => true} : {}
++
++# Pass options to sass. For development, we turn on the FireCompass-compatible
++# line_comments if the firecompass config variable above is true.
++sass_options = (environment == :development && firecompass == true) ? {:line_comments => true} : {}
++
+ # Pass options to sass. For development, we turn on the FireSass-compatible
+ # debug_info if the firesass config variable above is true.
+ sass_options = (environment == :development && firesass == true) ? {:debug_info => true} : {}
+diff --git a/STARTERKIT/sass/README.txt b/STARTERKIT/sass/README.txt
+index 0fc8f2f..ac3422e 100644
+--- a/STARTERKIT/sass/README.txt
++++ b/STARTERKIT/sass/README.txt
+@@ -22,20 +22,48 @@ DEVELOPING WITH SASS AND COMPASS
+ 
+ To automatically generate the CSS versions of the scss while you are doing theme
+ development, you'll need to tell Compass to "watch" the sass directory so that
+-any time a .scss file is changed it will automatically place a generated CSS
+-file into your sub-theme's css directory:
++any time a .scss file is changed it will automatically generate a CSS file in
++your sub-theme's css directory:
+ 
+   compass watch <path to your sub-theme's directory>
+ 
+   If you are already in the root of your sub-theme's directory, you can simply
+   type:  compass watch
+ 
+-While using generated CSS with Firebug, the line numbers it reports will be
+-wrong since it will be showing the generated CSS file's line numbers and not the
+-line numbers of the source Sass files. To correct this problem, you can install
+-the FireSass plug-in into Firefox and then edit your sub-theme's config.rb file
+-to set: firesass = true
+-  https://addons.mozilla.org/en-US/firefox/addon/firesass-for-firebug/
++While using generated CSS with Firebug, the line numbers it reports will not
++match the .scss file, since it references the generated CSS file's lines, not
++the line numbers of the "source" sass files. How then do we debug? Sourcemaps to
++the rescue! To find the oringial, newer browsers have support for sourcemap
++files (*.map). These files are used by the built-in development tools of newer
++browsers to map the generated line to the SCSS source. When in development mode,
++Zen can be set to generate sourcemap files. Edit config.rb, and uncomment:
++
++  sourcemap=true
++
++
++Enabling and using sourcemap files (*.map) in your browser
++
++In short, Open Developer tools, go to settings, and enable an option to the
++effect of: 'view original sources' or 'Enable CSS source maps'.
++
++* Firefox: https://hacks.mozilla.org/2014/02/live-editing-sass-and-less-in-the-firefox-developer-tools/
++* Chrome:  https://developer.chrome.com/devtools/docs/css-preprocessors#toc-enabling-css-source-maps
++* IE: http://msdn.microsoft.com/en-US/library/ie/dn255007%28v=vs.85%29#source_maps
++
++
++Browser Plug-ins
++
++An alternative method is to install a browser plug-in, such as FireCompass or
++the older FireSass plug-in into Firefox.  Then you'll need to edit your
++sub-theme's config.rb file to uncomment and set either:
++
++  firesass = true
++  firecompass = true
++
++Finally, you'll need to install the appropriate plug-in:
++
++  Firesass:  https://addons.mozilla.org/en-US/firefox/addon/firesass-for-firebug
++  FireCompass: https://addons.mozilla.org/en-US/firefox/addon/firecompass-for-firebug
+ 
+ 
+ MOVING YOUR CSS TO PRODUCTION
