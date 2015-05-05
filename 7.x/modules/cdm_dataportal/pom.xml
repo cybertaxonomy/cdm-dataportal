@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>portal</artifactId>
-	<version>3.0.5</version>
+	<version>3.5.1</version>
 	<packaging>jar</packaging>
 	<name>CDM Dataportal</name>
 
@@ -146,15 +146,16 @@
 				<version>3.4</version>
 				<configuration>
 					<locales>en</locales>
-          <outputEncoding>UTF-8</outputEncoding>
+                    <outputEncoding>UTF-8</outputEncoding>
 					<siteDirectory>${basedir}/site</siteDirectory>
-          <!-- chmod: not not use chmod, rather adapt the umask of the user at the server to which the site is deployed -->
-          <chmod>false</chmod>
+                    <!-- chmod: not not use chmod, rather adapt the umask of the user at the server to which the site is deployed -->
+                    <chmod>false</chmod>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -168,6 +169,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.2</version>
 				<configuration>
 					<aggregate>true</aggregate>
 					<stylesheet>maven</stylesheet>
@@ -176,6 +178,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
@@ -248,6 +251,7 @@
 				<!-- you will want to start by publishing your classes' Javadocs -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
 				<configuration>
 					<links>
 						<link>http://java.sun.com/j2se/1.6.0/docs/api/</link>
@@ -264,6 +268,7 @@
 				-->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
+                <version>2.5</version>
 			</plugin>
 			<plugin>
 				<!--
@@ -273,6 +278,7 @@
 				-->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
 			</plugin>
 			<plugin>
 				<!--
@@ -283,6 +289,7 @@
 				-->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -437,4 +437,6 @@
 /target
 
 .idea/
+.classpath
+.settings/
 
