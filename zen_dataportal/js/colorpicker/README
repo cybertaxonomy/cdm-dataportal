@@ -1,0 +1,45 @@
+Color Picker
+====================================================================================
+
+http://www.eyecon.ro/colorpicker/#about
+
+
+
+Implement
+======================
+
+Attach the Javascript and CSS files to your document. Edit CSS file and fix the paths 
+to images and change colors to fit your site theme.
+
+<link rel="stylesheet" media="screen" type="text/css" href="css/colorpicker.css" />
+<script type="text/javascript" src="js/colorpicker.js"></script>
+                
+
+Invocation code
+======================
+
+All you have to do is to select the elements in a jQuery way and call the plugin.
+
+ $('input').ColorPicker(options);
+                
+
+Options
+======================
+
+A hash of parameters. All parameters are optional.
+eventName 	string 	The desired event to trigger the colorpicker. Default: 'click'
+color 	string or hash 	The default color. String for hex color or hash for RGB and HSB ({r:255, r:0, b:0}) . Default: 'ff0000'
+flat 	boolean 	Whatever if the color picker is appended to the element or triggered by an event. Default false
+livePreview 	boolean 	Whatever if the color values are filled in the fields while changing values on selector or a field. If false it may improve speed. Default true
+onShow 	function 	Callback function triggered when the color picker is shown
+onBeforeShow 	function 	Callback function triggered before the color picker is shown
+onHide 	function 	Callback function triggered when the color picker is hidden
+onChange 	function 	Callback function triggered when the color is changed
+onSubmit 	function 	Callback function triggered when the color it is chosen
+Set color
+
+If you want to set a new color.
+
+$('input').ColorPickerSetColor(color);
+
+The 'color' argument is the same format as the option color, string for hex color or hash for RGB and HSB ({r:255, r:0, b:0}).
