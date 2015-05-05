@@ -111,15 +111,12 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
                 $molecularData .= "[";
                 if (isset($molecular->contigFiles)) {
                     foreach ($molecular->contigFiles as $contigFile) {
-                        if (isset($contigFile->contigLink)) {
-                            $molecularData .= create_html_link($contigFile->contigLink);
-
+                        if (isset($contigFile->contigLink)){
+                            if($contigFile->contigLink->first!=null) {
+                               $molecularData .= create_html_link($contigFile->contigLink)." ";
+                            }
                             //primer links
                             $molecularData .= create_html_links($contigFile->primerLinks);
-                            if (isset($contigFile->primerLinks)) {
-                                foreach ($contigFile->primerLinks as $primerLink) {
-                                }
-                            }
                         }
                     }
                 } else {
