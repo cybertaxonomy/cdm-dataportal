@@ -112,7 +112,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
                 if (isset($molecular->contigFiles)) {
                     foreach ($molecular->contigFiles as $contigFile) {
                         if (isset($contigFile->contigLink)){
-                            if($contigFile->contigLink->first!=null) {
+                            if(isset($contigFile->contigLink->first) and $contigFile->contigLink->first!=null) {
                                $molecularData .= create_html_link($contigFile->contigLink)." ";
                             }
                             //primer links
