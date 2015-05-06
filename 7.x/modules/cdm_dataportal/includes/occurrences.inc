@@ -122,6 +122,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
                 } else {
                     $molecularData .= "no contig";
                 }
+                $molecularData = rtrim($molecularData, " ");
                 $molecularData .= "]";
             }
             //FIXME separate with comma (remove trailing comma)
