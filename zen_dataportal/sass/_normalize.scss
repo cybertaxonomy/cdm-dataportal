@@ -353,7 +353,7 @@ img {
 
   /* Responsive images */
   max-width: 100%;
-  height: auto !important;
+  height: auto;
   @if $legacy-support-for-ie8 {
     /* IE8 uses \0 */
     .lt-ie9  {

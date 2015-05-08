@@ -416,7 +416,7 @@ img {
   /* vertical-align: bottom; */
   /* Responsive images */
   max-width: 100%;
-  height: auto !important;
+  height: auto;
   /* IE8 uses \0 */
 }
 /* line 359, ../sass/_normalize.scss */
