@@ -353,10 +353,13 @@ img {
 
   /* Responsive images */
   max-width: 100%;
-  height: auto;
+  height: auto !important;
   @if $legacy-support-for-ie8 {
-    /* Correct IE 8 not scaling image height when resized. */
-    width: auto;
+    /* IE8 uses \0 */
+    .lt-ie9  {
+      /* Correct IE 8 not scaling image height when resized. */
+      width: auto;
+    }
   }
 }
 
