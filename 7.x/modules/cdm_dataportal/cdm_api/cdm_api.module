@@ -2152,7 +2152,7 @@ function cdm_get_taxontrees_as_options($add_none_option = FALSE) {
   // now set the labels
   //   for none
   if ($add_none_option) {
-    $taxonomic_tree_options['NONE'] = t('-- None --');
+    $taxonomic_tree_options['NONE'] = '-- ' . t('ALL (incl. w/o classification)') . ' --';
   }
 
   //   for default_classification
