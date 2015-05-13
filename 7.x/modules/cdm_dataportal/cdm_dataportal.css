@@ -132,7 +132,7 @@ select.highlite-first-child option:first-child {
  */
 
 #edit-search-areas-area, #edit-search-areas-area-0, #edit-search-areas-area-1, #edit-search-areas-area-2, #edit-search-areas-area-3 {
-  height: 10em;
+  max-height: 10em;
   overflow: auto;
 }
 
