@@ -255,28 +255,30 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
     $mixed_vocabularies = array();
 
     // Build hierarchy of the terms regardless of the vocabulary.
-      foreach ($term_map as $term_dto) {
-        if (!empty($term_dto->partOfUuid)) {
-          // Children.
-          $parent =& $term_map[$term_dto->partOfUuid];
-          if ($parent) {
-            if (!isset($parent->children)) {
-              $parent->children = array();
-            }
-            $parent->children[$term_dto->uuid] = $term_dto;
-            if ($parent->vocabularyUuid != $term_dto->vocabularyUuid) {
-              $mixed_vocabularies[$parent->vocabularyUuid] = $parent->vocabularyUuid;
-            }
+    foreach ($term_map as $term_dto) {
+      if (!empty($term_dto->partOfUuid)) {
+        // Children.
+        $parent =& $term_map[$term_dto->partOfUuid];
+        if ($parent) {
+          if (!isset($parent->children)) {
+            $parent->children = array();
           }
-        }
-        else {
-          // order root nodes by vocabulary
-          if (!isset($term_tree[$term_dto->vocabularyUuid])) {
-            $term_tree[$term_dto->vocabularyUuid] = array();
+          $parent->children[$term_dto->uuid] = $term_dto;
+          if ($parent->vocabularyUuid != $term_dto->vocabularyUuid) {
+            $mixed_vocabularies[$parent->vocabularyUuid] = $parent->vocabularyUuid;
           }
-          $term_tree[$term_dto->vocabularyUuid][$term_dto->uuid] = $term_dto;
         }
       }
+      else {
+        // group root nodes by vocabulary
+        if (!isset($term_tree[$term_dto->vocabularyUuid])) {
+          $term_tree[$term_dto->vocabularyUuid] = array();
+        }
+        $term_tree[$term_dto->vocabularyUuid][$term_dto->uuid] = $term_dto;
+      }
+    }
+
+
 
 
     drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/search_area_filter.js');
@@ -622,6 +624,7 @@ function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '')
       . ' (' . $dto->representation_L10n_abbreviatedLabel . ')</span>';
     $options[$uuid] = $label;
     if (isset($dto->children) && is_array($dto->children)) {
+      usort($dto->children, 'compare_terms_by_representationL10n');
       term_tree_as_options(
         $dto->children,
         $options, $prefix

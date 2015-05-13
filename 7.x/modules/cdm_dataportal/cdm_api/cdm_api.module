@@ -2313,6 +2313,33 @@ function __clone() {
 }
 
 /**
+ * Compares the given CDM Term instances by the  representationL10n.
+ *
+ * Can also be used with TermDTOs. To be used in usort()
+ *
+ * @see http://php.net/manual/en/function.usort.php
+ *
+ * @param $term1
+ *   The first CDM Term instance
+ * @param $term2
+ *   The second CDM Term instance
+ * @return int
+ *   The result of the comparison
+ */
+function compare_terms_by_representationL10n($term1, $term2) {
+
+  if (!isset($term1->representation_L10n)) {
+    $term1->representationL10n = '';
+  }
+  if (!isset($term2->representation_L10n)) {
+    $term2->representationL10n = '';
+  }
+
+  return strcmp($term1->representation_L10n, $term2->representation_L10n);
+}
+
+
+/**
  * Make a 'deep copy' of an array.
  *
  * Make a complete deep copy of an array replacing
