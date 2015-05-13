@@ -9,7 +9,9 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -46,7 +48,7 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
     public void lactuca_serriola() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), lactuca_serriola_uuid);
         String expectedName = "Lactuca serriola";
-        assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
+        assertEquals(getContext().prepareTitle(expectedName), driver.getTitle());
 
         FeatureBlock distributionBlock = p.getFeatureBlockAt(2, "distribution", "div", "dd");
         assertNotNull(distributionBlock);
