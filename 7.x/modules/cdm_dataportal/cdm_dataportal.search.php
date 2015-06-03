@@ -207,7 +207,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
         '#type' => 'select',
         '#default_value' => get_taxonomictree_uuid_selected(),
         '#options' => cdm_get_taxontrees_as_options(TRUE),
-        '#description' => t('A filter to limit the search to a specific classification. Choosing <em>-- None --</em> will disable this filter.'),
+        '#description' => t('A filter to limit the search to a specific classification. Choosing <em>--ALL (incl. w/o classification)--</em> will disable this filter.'),
       );
     }
 
