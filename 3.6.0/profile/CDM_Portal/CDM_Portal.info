@@ -1,0 +1,39 @@
+; @comment WA:
+; In D7 Profiles are treated like modules, so you will see this profile at the end of the list of modules installing.
+; To avoid confusion with CDM DataPortal module the name of this profile is CDM Portal, not CDM DataPortal.
+name = CDM Portal
+description = CDM DataPortal installation profile.
+version = 7.x-3.0
+core = 7.x
+
+; Core modules.
+; Notes:taskbar and dashboard Drupal modules are not used in CDM Portals and therefore not enabled.
+; also disabled is the overlay module
+;
+dependencies[] = block
+dependencies[] = color
+dependencies[] = comment
+dependencies[] = contextual
+dependencies[] = help
+dependencies[] = image
+dependencies[] = list
+dependencies[] = menu
+dependencies[] = number
+dependencies[] = options
+dependencies[] = path
+dependencies[] = taxonomy
+dependencies[] = dblog
+dependencies[] = search
+dependencies[] = shortcut
+dependencies[] = field_ui
+dependencies[] = file
+dependencies[] = rdf
+
+;Contributed modules.
+dependencies[] = admin_menu
+
+;Custom CDM modules.
+dependencies[] = cdm_api
+dependencies[] = cdm_taxontree
+dependencies[] = cdm_dataportal
+dependencies[] = ext_links
