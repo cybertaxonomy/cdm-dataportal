@@ -1,0 +1,185 @@
+<?php
+/**
+ * @file
+ * Reference theming functions.
+ *
+ * @copyright
+ *   (C) 2007-2012 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ */
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function theme_cdm_reference_pager($variables) {
+  $referencePager = $variables['referencePager'];
+  $path = $variables['path'];
+  $parameters = $variables['parameters'];
+  drupal_set_title(t('Bibliographic index'), PASS_THROUGH);
+  $out = '';
+  if (count($referencePager->records) > 0) {
+    $out .= '<ul>';
+    foreach ($referencePager->records as $reference) {
+      // FIXME remove hack.
+      $reference->fullCitation = $reference->titleCache;
+      // For matching cdm entity to STO.
+      $out .= '<li>' . theme('cdm_reference', array(
+        'reference' => $reference,
+        'microReference' => NULL,
+        'doLink' => TRUE,
+        )) . '</li>';
+    }
+    $out .= '</ul>';
+    $out .= theme('cdm_pager', array(
+      'pager' => $referencePager,
+      'path' => $path,
+      'parameters' => $parameters,
+    ));
+  }
+  else {
+    $out = '<h4 class="error">Sorry, this page contains not entries.</h4>';
+  }
+  return $out;
+}
+
+/**
+ * Returns HTML for a reference.
+ *
+ * Used by:
+ * - theme_cdm_typedesignations
+ * - theme_cdm_reference_pager
+ * - theme_cdm_taxonRelationships
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - reference
+ *   - microReference
+ *   - doLink:
+ *      Whether to create a link to the reference page, links to the reference URI or DOI are always
+ *      created when this data is available
+ *   - referenceStyle
+ *
+ * @ingroup themeable
+ */
+function theme_cdm_reference($variables) {
+  $reference = $variables['reference'];
+  $microReference = $variables['microReference'];
+  $doLink = $variables['doLink'];
+  $referenceStyle = $variables['referenceStyle'];
+
+  if (!isset($reference->authorship)) {
+    $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
+  }
+  else {
+    $author_team = $reference->authorship;
+  }
+
+  if ($referenceStyle == "zoology") {
+    $year = '';
+    if (isset($reference->datePublished->start)) {
+      $year = partialToYear($reference->datePublished->start);
+    }
+    $citation = $author_team->titleCache . (!empty($year) ? '. ' . $year : '');
+  }
+  else {
+    $citation = $reference->titleCache;
+  }
+
+  if (isset($doLink) && $doLink === TRUE) {
+    $out = '<span class="reference">';
+    $out .= l($citation, path_to_reference($reference->uuid), array(
+      'attributes' => array(
+        "class" => "reference",
+      ),
+      'absolute' => TRUE,
+      'html' => TRUE,
+    ));
+    $out .= '</span>';
+  }
+  else {
+    $out = '<span class="reference">' . $citation . '</span>';
+  }
+
+  if (!empty($microReference)) {
+    $out .= ": " . $microReference;
+  }
+
+  if (isset($reference->doi) && !empty($reference->doi)) {
+    $doi_resolve_uri = str_replace('doi:', 'http://doi.org/', $reference->doi);
+    $out .= l(font_awesome_icon_markup('fa-external-link-square', array('class' => array('superscript'))), $doi_resolve_uri, array('html' => TRUE));
+  }
+  if (isset($reference->uri) && !empty($reference->uri)) {
+    $out .= l(font_awesome_icon_markup('fa-external-link', array('class' => array('superscript'))), $reference->uri, array('html' => TRUE));
+  }
+
+  return $out;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function _short_form_of_author_team($author_team) {
+  $number_of_authors = substr_count($author_team, ' & ') + 1;
+  // var_dump($author_team);
+  // var_dump($number_of_authors);
+  switch ($number_of_authors) {
+    case 1:
+      $result = $author_team;
+      break;
+
+    case 2:
+      $result = str_replace(' & ', ' and ', $author_team);
+      break;
+
+    default:
+      $result_parts = explode(' & ', $author_team);
+      $result = $result_parts[0] . ' et al.';
+  }
+  return $result;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function theme_cdm_OriginalSource($variables) {
+  $out = '';
+  $source = $variables['source'];
+  $do_link_to_reference = $variables['doLink'];
+  $do_link_to_name_used_in_source = $variables['do_link_to_name_used_in_source'];
+
+  if (isset($source->citation)) {
+    $out = theme('cdm_reference', array(
+        'reference' => $source->citation,
+        'microReference' => $source->citationMicroReference,
+        'doLink' => $do_link_to_reference,
+    ));
+
+    $name_in_source_render_array = compose_name_in_source($source, $do_link_to_name_used_in_source);
+    if(!empty($name_in_source_render_array)) {
+      $out .=  ' <span class="nameUsedInSource">(' . t('as') . ' ' . $name_in_source_render_array['#markup'] . ')</span>';
+    }
+
+    $id_with_namespace = '';
+    if( isset($source->idNamespace) && $source->idNamespace ) {
+      $id_with_namespace = $source->idNamespace . '/';
+    }
+    if( isset($source->idInSource) && $source->idInSource ) {
+      $id_with_namespace .= $source->idInSource;
+    } else {
+      $id_with_namespace = NULL;
+    }
+
+    if($id_with_namespace){
+      $out .=  ' <span class="idInSource">[' . $id_with_namespace . ']</span>';
+    }
+  }
+  return $out;
+}
