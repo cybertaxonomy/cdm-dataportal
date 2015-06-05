@@ -1,0 +1,28 @@
+/* line 30, ../sass/ie-legacy.scss */
+.pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  position: relative;
+}
+
+/* line 43, ../sass/ie-legacy.scss */
+.pie-container {
+  z-index: 0;
+  position: relative;
+}
+
+/* line 47, ../sass/ie-legacy.scss */
+.z-pie-element, .lt-ie9 #page {
+  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
+  z-index: 0;
+}
+
+/* line 63, ../sass/ie-legacy.scss */
+.lt-ie9 #header {
+  /* 
+   * reset right padding to zero and use margin-right instead,
+   * this avoids the need for background-clip: content-box
+   * which is not suppoorted in IE < 9
+   */
+  padding-right: 0;
+  margin-right: 20px;
+}
