@@ -207,7 +207,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
         '#type' => 'select',
         '#default_value' => get_taxonomictree_uuid_selected(),
         '#options' => cdm_get_taxontrees_as_options(TRUE),
-        '#description' => t('A filter to limit the search to a specific classification. Choosing <em>-- None --</em> will disable this filter.'),
+        '#description' => t('A filter to limit the search to a specific classification. Choosing <em>--ALL (incl. w/o classification)--</em> will disable this filter.'),
       );
     }
 
@@ -242,31 +242,39 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
       array('includeAllParents' => 'true')
     );
 
-    // Sort by vocabulary.
-    $terms_by_vocab = array();
+    // create map: parent_term_uuid => term
+    $term_map = array();
     foreach ($area_term_dtos as $term_dto) {
-      if (!isset($terms_by_vocab[$term_dto->vocabularyUuid])) {
-        $terms_by_vocab[$term_dto->vocabularyUuid] = array();
-      }
-      $terms_by_vocab[$term_dto->vocabularyUuid][$term_dto->uuid] = $term_dto;
+      $term_map[$term_dto->uuid] = $term_dto;
     }
-    // Build hierarchy for each vocabulary.
+
     $term_tree = array();
-    foreach ($terms_by_vocab as $vocab_uuid => $term_dto) {
-      $term_tree[$vocab_uuid] = array();
-      foreach ($term_dto as $term) {
-        if (!empty($term->partOfUuid)) {
-          // Children.
-          $parent =& $term_dto[$term->partOfUuid];
+    // mixed_vocabularies will contain the uuid vocabularies which
+    // also contain terms of foreign vocabuaries due to the term
+    // hierarchy
+    $mixed_vocabularies = array();
+
+    // Build hierarchy of the terms regardless of the vocabulary.
+    foreach ($term_map as $term_dto) {
+      if (!empty($term_dto->partOfUuid)) {
+        // Children.
+        $parent =& $term_map[$term_dto->partOfUuid];
+        if ($parent) {
           if (!isset($parent->children)) {
             $parent->children = array();
           }
-          $parent->children[$term->uuid] = $term;
+          $parent->children[$term_dto->uuid] = $term_dto;
+          if ($parent->vocabularyUuid != $term_dto->vocabularyUuid) {
+            $mixed_vocabularies[$parent->vocabularyUuid] = $parent->vocabularyUuid;
+          }
         }
-        else {
-          // Root nodes.
-          $term_tree[$vocab_uuid][$term->uuid] = $term;
+      }
+      else {
+        // group root nodes by vocabulary
+        if (!isset($term_tree[$term_dto->vocabularyUuid])) {
+          $term_tree[$term_dto->vocabularyUuid] = array();
         }
+        $term_tree[$term_dto->vocabularyUuid][$term_dto->uuid] = $term_dto;
       }
     }
 
@@ -280,6 +288,9 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
     $form['search']['areas'] = array(
       '#type' => 'fieldset',
       '#title' => t('Filter by distribution areas'),
+      '#description' => t('The search will return taxa having distribution
+        information for at least one of the chosen areas. The areas are grouped
+        by the vocabularies to which the highest level areas belong.'),
     );
     $form['search']['areas']['areas_filter'] = array(
       '#type' => 'textfield',
@@ -291,13 +302,15 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
       $areas_defaults = explode(',', $_SESSION['cdm']['search']['area']);
     }
     foreach ($term_tree as $vocab_uuid => $term_dto_tree) {
+      $vocabulary = cdm_ws_get(CDM_WS_TERMVOCABULARY, array($vocab_uuid));
       $areas_options = term_tree_as_options($term_dto_tree);
       $form['search']['areas']['area'][$vocab_cnt++] = array(
+        '#prefix' => '<strong>' . $vocabulary->representation_L10n
+          . (isset($mixed_vocabularies[$vocab_uuid]) ? ' <span title="Contains terms of at least one other area vocabulary.">(' . t('mixed') . ')</span>': '')
+          . '</strong>',
         '#type' => 'checkboxes',
         '#default_value' => $areas_defaults,
         '#options' => $areas_options,
-        '#description' => t('The search will return taxa having distribution information for at
-                least one of the chosen areas.'),
       );
     }
 
@@ -605,9 +618,10 @@ function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '')
   foreach ($term_dto_tree as $uuid => $dto) {
     $label = $prefix . '<span class="child-label">'
       .  $dto->representation_L10n
-      . ' (' . $dto->representation_L10n_abbreviatedLabel . ')</span>';
+      . '</span><span class="child-label-abbreviated"> (' . $dto->representation_L10n_abbreviatedLabel . ')</span>';
     $options[$uuid] = $label;
     if (isset($dto->children) && is_array($dto->children)) {
+      usort($dto->children, 'compare_terms_by_representationL10n');
       term_tree_as_options(
         $dto->children,
         $options, $prefix

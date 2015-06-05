@@ -213,7 +213,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     'data' => "",
                     'class' => array('expand_column')
                 ),
-                "Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivates"),
+                "Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivatives"),
             "#rows" => $rows,
             "#attributes" => array(
                 "id" => $tableId,
