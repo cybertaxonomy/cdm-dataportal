@@ -1,0 +1,6 @@
+The content of the folders contained herein is derived from the SVN repositry.
+To switch to a newer version just run the ./update-to.sh script:
+
+  ./update-to.sh <version>
+
+ and follow the instructions given in the output

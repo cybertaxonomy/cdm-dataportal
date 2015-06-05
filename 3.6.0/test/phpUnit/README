@@ -1,0 +1,87 @@
+HOW TO RUN THE PHPUNIT TESTS IN ECLIPSE
+============================================
+Author: Andreas Kohlbecker, 2012
+
+
+NOTE: these tests are to be run from within {DRUPAL_ROOT}/sites/*/modules/cdm_dataportal/test/phpunit
+
+
+ Install PHPunit
+----------------------------------------------
+
+in the following we assume that you have installed php5.2 manually according to the
+guidance given in http://dev.e-taxonomy.eu/trac/wiki/Install_php5.3_to_php5.2_in_parallel
+
+
+update PEAR:
+
+	cd /usr/bin/php52
+	sudo ./pear config-set auto_discover 1
+	sudo ./pear install phpunit/PHPUnit
+
+ the above should be suficcient,
+ but in case something is going wrong you also can try :
+
+  	sudo ./pear upgrade pear
+	sudo ./pear channel-discover pear.phpunit.de
+
+phpUnit should now be installed in /usr/share/php52/pear/PHPUnit
+
+you may also have to install PHP_CodeCoverage:
+
+	sudo ./pear channel-discover components.ez.no
+	sudo ./pear install phpunit/PHP_CodeCoverage
+	sudo ./pear install pear.phpunit.de/PHP_CodeCoverage
+
+
+and also xdebug:
+
+	sudo ./pecl install xdebug
+
+
+
+ Adding the PEAR libraries to eclipse
+----------------------------------------------
+
+based on http://pkp.sfu.ca/wiki/index.php/Configure_Eclipse_for_PHPUnit#Configure_XDebug_Debugger_to_work_with_PHPUnit
+
+ 1. First make sure that your project has the correct include and build path.
+    Right click on your project in the navigator and select "Properties".
+    Then navigate to the "PHP Include Path" preference page.
+    Click on the "Libraries" tab, then click "Add Library..."
+    Click '"Next" ---> "Config" --> (Preferences php/php libraries) "New"
+
+    Enter the library name "PEAR" and add it to the environment.
+	After returning to the preferences page click the "Add external folder..." button
+	Find your PEAR folder (usually you find it in your PHP directory, as
+	in our case of  php5.2 installed manually where it is /usr/share/php52/pear.
+	In some distributions it is the php folder itseld rather than the PEAR folder
+	as most PEAR packages (including PHPUnit) are directly installed into /usr/share/php.)
+	Return to the preferences page and click "Ok"
+
+
+ Running phpunit tests in eclipse
+----------------------------------------------
+
+ what we are now trying to achieve with the eclipse launcher configuration is in principle
+ to run the following command:
+
+  /usr/bin/php52/php /usr/bin/php52/phpunit --verbose --bootstrap bootstrap.php
+
+therefore we provide the script phpunitRunner.php wich will execute phpUnit.
+In order to configure it properly you need to supply some environment variables.
+
+  DRUPAL_ROOT - path to the root of your Drupal installation, that is dataportal installation.
+  XDEBUG_CONFIG - mjust be set to 'idekey=ECLIPSE_DBGP'
+  SITE_BASE_PATH - set this variable to the base path of the dataportal website you want to use for testing, eg: /flora-malesiana
+
+
+Create a new php run configuration wich executes phpunitRunner.php and configure the above named
+environment variables in the "Environment" tab.
+In the "PhpScriptArgument" tab set the following:
+
+  	--stderr --configuration ${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/phpUnit.conf.xml} ${workspace_loc:/Drupal5/sites/all/modules/cdm_dataportal/test/phpUnit/src/}
+
+
+
+
