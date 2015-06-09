@@ -621,7 +621,7 @@ function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '')
       . '</span><span class="child-label-abbreviated"> (' . $dto->representation_L10n_abbreviatedLabel . ')</span>';
     $options[$uuid] = $label;
     if (isset($dto->children) && is_array($dto->children)) {
-      usort($dto->children, 'compare_terms_by_representationL10n');
+      uasort($dto->children, 'compare_terms_by_representationL10n');
       term_tree_as_options(
         $dto->children,
         $options, $prefix
