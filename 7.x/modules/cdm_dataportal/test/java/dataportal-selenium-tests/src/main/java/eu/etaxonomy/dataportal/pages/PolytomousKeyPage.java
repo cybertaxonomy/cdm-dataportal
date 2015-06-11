@@ -1,7 +1,7 @@
 package eu.etaxonomy.dataportal.pages;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,9 +12,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.selenium.AllTrue;
 import eu.etaxonomy.dataportal.selenium.UrlLoaded;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
@@ -37,6 +37,14 @@ public class PolytomousKeyPage extends PortalPage {
 	@CacheLookup
 	private WebElement keyTable;
 
+	@FindBy(css="#identificationKey .sources span.reference")
+	@CacheLookup
+	private List<WebElement> sourceReferences;
+
+	@FindBy(css="#identificationKey .annotations")
+    @CacheLookup
+    private WebElement annotations;
+
 	private List<WebElement> keyTableRows;
 
 	public PolytomousKeyPage(WebDriver driver, DataPortalContext context, UUID keyUuid) throws MalformedURLException {
@@ -50,6 +58,19 @@ public class PolytomousKeyPage extends PortalPage {
 	 */
 	public PolytomousKeyPage(WebDriver driver, DataPortalContext context) throws Exception {
 		super(driver, context);
+	}
+
+	public String getKeyAnnotationsText(){
+	    return annotations.getText();
+	}
+
+	public List<BaseElement> getSources() {
+	    List<BaseElement> baseElements = new ArrayList<BaseElement>();
+//	    List<WebElement> references = sources.findElements(By.className("reference"));
+	    for(WebElement sr : sourceReferences) {
+	        baseElements.add(new BaseElement(sr));
+	    }
+	    return baseElements;
 	}
 
 	public static class KeyLineData{
