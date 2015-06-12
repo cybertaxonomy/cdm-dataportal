@@ -36,7 +36,7 @@ public class CyprusPolytomousKeyTest extends CdmDataPortalTestBase {
     @Test
     public void key_to_Achillea() throws Exception {
 
-        UUID keyUuid = UUID.fromString("9c2e7e3b-974f-412c-b1db-3078042a417b");
+        UUID keyUuid = UUID.fromString("55527688-92b4-4750-85ed-5808ff0a265e");
 
         PolytomousKeyPage p = new PolytomousKeyPage(driver, getContext(), keyUuid);
 
