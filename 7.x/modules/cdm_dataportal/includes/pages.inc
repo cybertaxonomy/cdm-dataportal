@@ -411,8 +411,6 @@ function create_links($linkTextPairList)
  */
 function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
-  global $theme;
-
   // we better cache here since drupal_get_query_parameters has no internal static cache variable
   $http_request_params = drupal_get_query_parameters();
 
@@ -710,39 +708,49 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
       $representationPart = $media[0]->representations[0]->parts[0];
       $attributes['alt'] = $representationPart->uri;
 
-      if(!empty($taxon_profile_image_settings['media_uri_query'])){
+      if (!empty($taxon_profile_image_settings['media_uri_query'])) {
         $representationPart->uri = $representationPart->uri
-        . (strpos($representationPart->uri, '?') !== FALSE ? '&' : '?')
-        . $taxon_profile_image_settings['media_uri_query'];
+          . (strpos($representationPart->uri, '?') !== FALSE ? '&' : '?')
+          . $taxon_profile_image_settings['media_uri_query'];
       }
     }
     else {
-      // show placeholder image instead
-      if(!empty($taxon_profile_image_settings['custom_placeholder_image_on']) && !empty($taxon_profile_image_settings['custom_placeholder_image_fid'])){
-        // use the user provided image
-        $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
-        $url = file_create_url($profile_image_file->uri);
-        $image_info = image_get_info($profile_image_file->uri);
-        $representationPart->width = $image_info['width'];
-        $representationPart->height = $image_info['height'];
-        $representationPart->uri = $url;
-      } else {
-        // use the hard coded default
-        $representationPart->width = 184;
-        $representationPart->height = 144;
-        $representationPart->uri = base_path() .  drupal_get_path('module', 'cdm_dataportal') . '/images/no_picture.png';
+      if (
+        isset($taxon_profile_image_settings['custom_placeholder_enabled']) && #TODO remove this line after release 3.7.0 - #3470
+        $taxon_profile_image_settings['custom_placeholder_enabled']
+      ) {
+        // show placeholder image instead
+        if (!empty($taxon_profile_image_settings['custom_placeholder_image_on']) && !empty($taxon_profile_image_settings['custom_placeholder_image_fid'])) {
+          // use the user provided image
+          $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
+          $url = file_create_url($profile_image_file->uri);
+          $image_info = image_get_info($profile_image_file->uri);
+          $representationPart->width = $image_info['width'];
+          $representationPart->height = $image_info['height'];
+          $representationPart->uri = $url;
+        }
+        else {
+          // use the hard coded default
+          $representationPart->width = 184;
+          $representationPart->height = 144;
+          $representationPart->uri = base_path() . drupal_get_path('module',
+              'cdm_dataportal') . '/images/no_picture.png';
+        }
+        $attributes['alt'] = "no image available";
       }
-      $attributes['alt'] = "no image available";
     }
 
-    $profile_image = theme('cdm_media_gallerie_image', array(
+    if (isset($representationPart->uri)) {
+      $profile_image = theme('cdm_media_gallerie_image', array(
         'mediaRepresentationPart' => $representationPart,
         'maxExtend' => $taxon_profile_image_settings['maxextend'],
         'addPassePartout' => FALSE,
         'attributes' => $attributes,
-    ));
-    // NOTE: style="width:${maxextend}px' is needed for IE8 !!!
-    $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $taxon_profile_image_settings['maxextend'] . 'px">' . $profile_image. '</div>', -101);
+      ));
+      // NOTE: style="width:${maxextend}px' is needed for IE8 !!!
+      $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $taxon_profile_image_settings['maxextend'] . 'px">' . $profile_image . '</div>',
+        -101);
+    }
   }
 
 

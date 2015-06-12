@@ -5,7 +5,8 @@
  */
 
 /**
- * Implements hook_install(). */
+ * Implements hook_install().
+ */
 function cdm_dataportal_install() {
   db_update('system')
     ->fields(array(
@@ -16,7 +17,8 @@ function cdm_dataportal_install() {
 }
 
 /**
- * Implements hook_uninstall(). */
+ * Implements hook_uninstall().
+ */
 function cdm_dataportal_uninstall() {
   // Delete all nodes with a cdm content type from the node table.
   // Comment @WA: you also may want to delete these content types from the
@@ -311,6 +313,23 @@ function cdm_dataportal_update_7305() {
   return join(', ',$tasks_performed);
 }
 
+  /**
+   * update for RELEASE 3.7.0:
+   *  - add 'custom_placeholder_enabled' to  'cdm_taxon_profile_image'
+   */
+  function cdm_dataportal_update_7306() {
+    $tasks_performed = array();
+
+    $cdm_taxon_profile_image = variable_get('cdm_taxon_profile_image');
+    if(!isset($cdm_taxon_profile_image['custom_placeholder_enabled'])){
+      $cdm_taxon_profile_image['custom_placeholder_enabled'] = 1;
+    }
+
+    $tasks_performed[] = _create_variable('cdm_taxon_profile_image', $cdm_taxon_profile_image);
+
+    return join(', ',$tasks_performed);
+  }
+
 
 /* ======================================================================== */
 
@@ -381,7 +400,8 @@ function _modify_variable($name, $value_override) {
    )
    * -----> solutions merge arrays !!!
    */
-  return _create_variable($name, $value_override);
+  _create_variable($name, $value_override);
+  return "Variable '$name' updated with value: '$value_override'. ";
 }
 
 

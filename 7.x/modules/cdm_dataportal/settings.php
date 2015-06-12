@@ -85,6 +85,7 @@
           'show' => 0,
           'maxextend' => 184,
           'media_uri_query' => '',
+          'custom_placeholder_enabled' => 1,
           'custom_placeholder_image_on' => 0,
           'custom_placeholder_image_fid' => ''
       )
@@ -1607,6 +1608,10 @@ function cdm_settings_layout_taxon() {
   //  enable file module in profile and in update,(a.kohlbecker, 4.9.2014: is this still an open issue?)
 
   $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
+  #TODO remove after release 3.7.0 - #3470
+  if(!isset($taxon_profile_image_settings['custom_placeholder_enabled'])){
+    $taxon_profile_image_settings['custom_placeholder_enabled'] = 1;
+  }
   /*
    * 'show' => 1,
    * 'maxextend' => 184,
@@ -1643,6 +1648,13 @@ function cdm_settings_layout_taxon() {
           . 'profile image. E.g.: <code>width=400&height=300&quality=95&format=jpeg</code>.'
           . 'The query parameters will be appended to the uri of the media representation part'
           . ' as stored in the cdm. The query parameter string must not start with a \'&\' or  \'?\'')
+  );
+
+  $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show the placeholder image'),
+    '#description' => t("If not taxon profile picture is available a placeholder image is shown instead."),
+    '#default_value' => $taxon_profile_image_settings['custom_placeholder_enabled']
   );
 
   $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_image_on'] = array(
