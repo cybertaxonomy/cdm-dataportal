@@ -19,7 +19,6 @@ define('CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS', 'portal/name/$0/typeDesignations')
 define('CDM_WS_TAXON', 'taxon');
 define('CDM_WS_TAXON_CLASSIFICATIONS', 'taxon/$0/classifications');
 define('CDM_WS_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'taxon/findByDescriptionElementFullText');
-define('CDM_WS_TAXON_FINDBESTMATCHINGTAXON', '/taxon/bestMatchingTaxon/$0');
 /**
  * Parameter $0 : the taxon uuid.
  *
