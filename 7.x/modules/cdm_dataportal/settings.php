@@ -1908,18 +1908,19 @@ function cdm_settings_layout_taxon() {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#type' => 'fieldset',
-    '#description' => t('Select if you want to sort or not the distribution text
-      located below the distribution map.'),
   );
 
   $form['taxon_profile']['distribution_layout']['distribution_sort'] = array(
     '#type' => 'radios',
-    '#title' => t('Sort') . ':',
+    '#title' => t('Order mode') . ':',
     '#default_value' => variable_get('distribution_sort', 'NO_SORT'),
     '#options' => array(
       'NO_SORT' => t('Standard (No sort)'),
-      'HIDE_TDWG2' => t('Sorted without TDWG Level 2'),
+      'HIDE_TDWG2' => t('Ordered hierarchically'),
     ),
+    '#description' => t('The order mode defines if the taxon distribution areas
+    are displayed as alphabetically ordered list or in the hierarchical of the parent
+    area and subarea relationship.'),
   );
 
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] = array(
