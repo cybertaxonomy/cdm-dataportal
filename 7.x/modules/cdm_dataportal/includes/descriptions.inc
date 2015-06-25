@@ -741,8 +741,46 @@ function cdm_create_description_element_footnotes($description_element, $separat
     $map_render_element = compose_distribution_map($taxon, $distribution_map_query_parameters);
     $block->content[] = $map_render_element;
 
-    // --- tree or list
     $dto_out_array = array();
+
+    // --- Condensed Distribution
+    if(variable_get(DISTRIBUTION_CONDENSED) && isset($descriptionElements['DistributionInfoDTO']->condensedDistribution)){
+      $condensed_distribution_markup = '<p class="condensed_distribution">';
+
+      $isFirst = true;
+      if(isset($descriptionElements['DistributionInfoDTO']->condensedDistribution->indigenous[0])){
+        foreach($descriptionElements['DistributionInfoDTO']->condensedDistribution->indigenous as $cdItem){
+          if(!$isFirst){
+            $condensed_distribution_markup .= ' ';
+          }
+          $condensed_distribution_markup .= '<span class="status_' . $cdItem->status->idInVocabulary . '">'
+          . $cdItem->areaStatusLabel . '</span>';
+          $isFirst = false;
+        }
+      }
+
+      if(isset($descriptionElements['DistributionInfoDTO']->condensedDistribution->foreign[0])) {
+        if(!$isFirst){
+          $condensed_distribution_markup .= ' ';
+        }
+        $isFirst = TRUE;
+        $condensed_distribution_markup .= '[';
+        foreach ($descriptionElements['DistributionInfoDTO']->condensedDistribution->foreign as $cdItem) {
+          if (!$isFirst) {
+            $condensed_distribution_markup .= ' ';
+          }
+          $condensed_distribution_markup .= '<span class="status_' . $cdItem->status->titleCache . '">'
+            . $cdItem->areaStatusLabel . '</span>';
+          $isFirst = false;
+        }
+        $condensed_distribution_markup .= ']';
+      }
+
+      $condensed_distribution_markup .= '</p>';
+      $dto_out_array[] = $condensed_distribution_markup;
+    }
+
+    // --- tree or list
     if (isset($descriptionElements['DistributionInfoDTO'])) {
       $distribution_info_dto = $descriptionElements['DistributionInfoDTO'];
 

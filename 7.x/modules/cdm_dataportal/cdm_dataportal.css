@@ -192,6 +192,13 @@ li .taxon {
   clear: both;
 }
 
+/* Distribution */
+.condensed_distribution .status_n, /* native */
+.condensed_distribution .status_ne /* native: formerly native */
+{
+    font-weight: bold;
+}
+
 /*
  * ======= synonymy =======
  */

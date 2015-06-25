@@ -624,6 +624,9 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
       // 3. get the distributionInfoDTO
       $query_parameters = cdm_distribution_filter_query();
       $query_parameters['part'] = array('mapUriParams');
+      if(variable_get(DISTRIBUTION_CONDENSED)){
+        $query_parameters['part'][] = 'condensedDistribution';
+      }
       if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
         $query_parameters['part'][] = 'tree';
       }

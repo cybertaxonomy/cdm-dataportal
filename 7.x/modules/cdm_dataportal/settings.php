@@ -91,6 +91,7 @@
       )
     )
   );
+  define('DISTRIBUTION_CONDENSED', 'distribution_condensed');
   define('FEATURE_BLOCK_SETTINGS', 'feature_block_settings');
 
   define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
@@ -1909,6 +1910,15 @@ function cdm_settings_layout_taxon() {
     '#collapsed' => FALSE,
     '#type' => 'fieldset',
   );
+
+  $form['taxon_profile']['distribution_layout'][DISTRIBUTION_CONDENSED] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Condensed distribution'),
+    '#default_value' => variable_get(DISTRIBUTION_CONDENSED, 0),
+    '#description' => 'This option enables the display of a very compact representation
+    of the distribution which includes also information on the status.',
+  );
+
 
   $form['taxon_profile']['distribution_layout']['distribution_sort'] = array(
     '#type' => 'radios',
