@@ -776,6 +776,16 @@ function cdm_create_description_element_footnotes($description_element, $separat
         $condensed_distribution_markup .= ']';
       }
 
+      $condensed_distribution_markup .= '&nbsp;' . l(
+          font_awesome_icon_markup(
+            'fa-info-circle',
+            array(
+              'alt'=>'help',
+              'class' => array('superscript')
+            )
+          ),
+          'cdm_dataportal/help/condensed_distribution',
+          array('html' => TRUE));
       $condensed_distribution_markup .= '</p>';
       $dto_out_array[] = $condensed_distribution_markup;
     }

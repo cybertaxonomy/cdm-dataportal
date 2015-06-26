@@ -1,20 +1,21 @@
 <?php
-/**
+  /**
  * @file
  * Adds helpful messages for website administrators
  * and provides documentation in /admin/help.
  */
 
-// Html paths for differents documentation sections:
-define('HELP_OVERVIEW', drupal_get_path('module', 'cdm_dataportal') . '/help/overview.html');
+  // Html paths for differents documentation sections:
+  define('HELP_OVERVIEW', drupal_get_path('module', 'cdm_dataportal') . '/help/overview.html');
 
-// Comment @WA: @todo: fill these html files with help texts.
-// But why to use different help texts here from the ones used in
-// the settings forms?
-define('HELP_SETTINGS_GENERAL', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_general.html');
-define('HELP_SETTINGS_GEO', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_geo.html');
-define('HELP_SETTINGS_LAYOUT', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_layout.html');
-define('HELP_SETTINGS_CACHE', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_cache.html');
+  // Comment @WA: @todo: fill these html files with help texts.
+  // But why to use different help texts here from the ones used in
+  // the settings forms?
+  define('HELP_SETTINGS_GENERAL', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_general.html');
+  define('HELP_SETTINGS_GEO', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_geo.html');
+  define('HELP_SETTINGS_LAYOUT', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_layout.html');
+  define('HELP_SETTINGS_CACHE', drupal_get_path('module', 'cdm_dataportal') . '/help/settings_cache.html');
+  define('HELP_CONDENSED_DISTRIBUTION', drupal_get_path('module', 'cdm_dataportal') . '/help/condensed_distribution.html');
 
 /**
  * Used in cdm_dataportal.module.
@@ -51,6 +52,14 @@ function cdm_dataportal_menu_help(&$items) {
     'page arguments' => array(HELP_SETTINGS_CACHE),
     'access callback' => 'user_is_logged_in',
     'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['cdm_dataportal/help/condensed_distribution'] = array(
+    'title' => 'Condensed distribution representation',
+    'page callback' => 'cdm_dataportal_file_get_content',
+    'page arguments' => array(HELP_CONDENSED_DISTRIBUTION),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
   );
 }
 
