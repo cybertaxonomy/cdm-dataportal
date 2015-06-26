@@ -455,8 +455,8 @@
          */
         var addLegendAsElement= function(legendSrcUrl){
 
-            mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
-            mapElement.next('.openlayers_legend').css('opacity', opts.legendOpacity).find('img').load(function () {
+            var legendElement = $('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
+            legendElement.css('opacity', opts.legendOpacity).find('img').load(function () {
                 jQuery(this).parent()
                 .css('position', 'relative')
                 .css('z-index', '1002')
@@ -464,6 +464,8 @@
                 .css('left', mapElement.width()- jQuery(this).width())
                 .width(jQuery(this).width());
             });
+
+            mapElement.after(legendElement);
         };
 
 
