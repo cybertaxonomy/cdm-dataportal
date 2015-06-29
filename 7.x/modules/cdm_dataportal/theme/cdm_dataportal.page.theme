@@ -158,7 +158,14 @@ function theme_cdm_taxon_page_synonymy($variables) {
       'refenceLink' => $referenceUri,
       ));
 
-    // handle annotations of the name and taxon
+    $name_relationships = cdm_name_relationships_of($taxon);
+    // Render relationships of accepted name.
+    if($name_relationships){
+
+      $accepted_name .= ' <span class="name_relationships">' . $name_relationships . '</span>';
+    }
+
+      // handle annotations of the name and taxon
     $special_annotations_array = array();
     $special_annotations_array[] = $taxon->name;
     $special_annotations_array[] = $taxon;

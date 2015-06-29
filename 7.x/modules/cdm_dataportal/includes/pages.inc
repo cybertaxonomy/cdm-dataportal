@@ -514,9 +514,6 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
     }
     $addAcceptedTaxon = variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
 
-    // Render relationships of accpted name.
-    $synonymy_html .= cdm_name_relationships_of($taxon);
-
     $synonymy_html .= theme('cdm_taxon_page_synonymy', array('taxon' => $taxon, 'addAcceptedTaxon' => $addAcceptedTaxon));
 
     $synonymy_html .= '</div>';
