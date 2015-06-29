@@ -287,6 +287,88 @@ function theme_cdm_homotypicSynonymLine($variables) {
   return $out;
 }
 
+  /**
+   * Renders the string of Homonyms for a given taxon.
+   *
+   * @param $taxon
+   *    A CDM Taxon instance
+   * @return String
+   *    The string of homomyns
+   *
+   * @throws \Exception
+   */
+  function cdm_name_relationships_of($taxon) {
+// =========== START OF HOMONYMS ========== //
+    RenderHints::pushToRenderStack('homonym');
+    // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
+
+    // Later homonym or treated as later homonym AND bloking names.
+    // TODO apply filter ? $name_rels_to_show = variable_get('name_relationships_to_show', NULL);
+    $from_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS,
+      $taxon->uuid);
+    $to_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS,
+      $taxon->uuid);
+    $name_relations = array_merge($from_name_relations, $to_name_relations);
+
+    $homonyms_array = array();
+
+    if ($name_relations) {
+      foreach ($name_relations as $element) {
+        $taxon_html = NULL;
+        switch ($element->type->uuid) {
+          case UUID_LATER_HOMONYM :
+            $elementTaxonBasesUuid = isset ($element->toName->taxonBases [0]->uuid) ? $element->toName->taxonBases [0]->uuid : '';
+
+            //from relation ships -> only shown at fromName-synonym
+            if ($taxon->name->uuid == $element->fromName->uuid) {
+              $taxon_html = theme('cdm_taxonName', array(
+                'taxonName' => $element->toName,
+                'nameLink' => url(path_to_name($element->toName->uuid,
+                  $taxon->uuid, $elementTaxonBasesUuid))
+              ));
+            }
+            break;
+          case UUID_TREATED_AS_LATER_HOMONYM :
+            $elementTaxonBasesUuid = isset ($element->toName->taxonBases [0]->uuid) ? $element->toName->taxonBases [0]->uuid : '';
+
+            //from relation ships -> only shown at fromName-synonym
+            if ($taxon->name->uuid == $element->fromName->uuid) {
+              $taxon_html = theme('cdm_taxonName', array(
+                'taxonName' => $element->toName,
+                'nameLink' => url(path_to_name($element->toName->uuid))
+              ));
+            }
+            break;
+          case UUID_BLOCKING_NAME_FOR :
+            $elementTaxonBasesUuid = isset ($element->fromName->taxonBases [0]->uuid) ? $element->fromName->taxonBases [0]->uuid : '';
+
+            //to relation ships -> only shown at toName-synonym
+            if ($taxon->name->uuid == $element->toName->uuid) {
+              $taxon_html = theme('cdm_taxonName', array(
+                'taxonName' => $element->fromName,
+                'nameLink' => url(path_to_name($element->fromName->uuid,
+                  $taxon->uuid, $elementTaxonBasesUuid))
+              ));
+            }
+            break;
+          default:
+            $taxon_html = NULL;
+        }
+        if (isset($taxon_html) && $taxon_html) {
+          if (count($homonyms_array)) {
+            $homonyms_array [] = 'nec ' . $taxon_html;
+          }
+          else {
+            $homonyms_array [] = 'non ' . $taxon_html;
+          }
+        }
+      }
+    }
+
+    RenderHints::popFromRenderStack();
+    return (count($homonyms_array) ?'[' . trim(join(" ", $homonyms_array)) . ']' : '');
+  }
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354

@@ -511,76 +511,11 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   if ($showSecReference) {
     $out_taxon_part .= ' sec. ' . theme('cdm_reference', array('reference' => $taxon->sec));
   }
-
-
-  // =========== START OF HOMONYMS ========== //
-  RenderHints::pushToRenderStack('homonym');
-  // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
-
-  // Later homonym or treated as later homonym AND bloking names.
-  // TODO apply filter ? $name_rels_to_show = variable_get('name_relationships_to_show', NULL);
-  $from_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
-  $to_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
-  $name_relations  = array_merge($from_name_relations, $to_name_relations);
-
-  $homonyms_array = array();
-
-  if ($name_relations) {
-    foreach ( $name_relations as $element ) {
-      $taxon_html = null;
-      switch ($element->type->uuid) {
-          case UUID_LATER_HOMONYM :
-              $elementTaxonBasesUuid = isset ($element->toName->taxonBases [0]->uuid) ? $element->toName->taxonBases [0]->uuid : '';
-
-              //from relation ships -> only shown at fromName-synonym
-              if ($taxon->name->uuid == $element->fromName->uuid) {
-                  $taxon_html = theme('cdm_taxonName', array(
-                      'taxonName' => $element->toName,
-                      'nameLink' => url(path_to_name($element->toName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
-                  ));
-              }
-              break;
-          case UUID_TREATED_AS_LATER_HOMONYM :
-              $elementTaxonBasesUuid = isset ($element->toName->taxonBases [0]->uuid) ? $element->toName->taxonBases [0]->uuid : '';
-
-              //from relation ships -> only shown at fromName-synonym
-              if ($taxon->name->uuid == $element->fromName->uuid) {
-                  $taxon_html = theme('cdm_taxonName', array(
-                      'taxonName' => $element->toName,
-                      'nameLink' => url(path_to_name($element->toName->uuid))
-                  ));
-              }
-              break;
-          case UUID_BLOCKING_NAME_FOR :
-              $elementTaxonBasesUuid = isset ($element->fromName->taxonBases [0]->uuid) ? $element->fromName->taxonBases [0]->uuid : '';
-
-              //to relation ships -> only shown at toName-synonym
-              if ($taxon->name->uuid == $element->toName->uuid) {
-                  $taxon_html = theme('cdm_taxonName', array(
-                      'taxonName' => $element->fromName,
-                      'nameLink' => url(path_to_name($element->fromName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
-                  ));
-              }
-              break;
-          default:
-              $taxon_html = null;
-      }
-      if (isset($taxon_html) && $taxon_html) {
-        if (count ( $homonyms_array )) {
-          $homonyms_array [] = 'nec ' . $taxon_html;
-        } else {
-          $homonyms_array [] = 'non ' . $taxon_html;
-        }
-      }
-    }
-  }
-
-  RenderHints::popFromRenderStack();
-  // =========== END OF HOMONYMS ========== //
+  $homonyms = cdm_name_relationships_of($taxon);
 
   $out = '<span class="relation_sign" title="' . $reltype_representation . '">' . $relsign . '</span>'
       . $name_prefix . $out_taxon_part . $name_postfix . ' '
-      . (count($homonyms_array) ?'[' . trim(join(" ", $homonyms_array)) . ']' : '');
+      . $homonyms;
 
   $out = uuid_anchor($taxon->uuid, $out);
 
@@ -589,7 +524,8 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   return $out;
 }
 
-/**
+
+  /**
  * @todo document this function.
  */
 function theme_cdm_taxon_list_thumbnails($variables) {
