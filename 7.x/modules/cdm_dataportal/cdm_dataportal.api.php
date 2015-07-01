@@ -92,6 +92,22 @@ function hook_cdm_feature_node_block_content_alter(&$block_content, $feature, &$
     }
 }
 
+/*
+ * Alter the merged feature tree for a taxon profile page.
+ *
+ * @param $merged_tree
+ *   The $merged_tree as produced by merged_taxon_feature_tree($taxon)
+ * @param $taxon
+ *   A CDM Taxon instance
+ */
+function hook_merged_taxon_feature_tree_alter($taxon, &$merged_tree){
+
+  // find the distribution feature node
+  $distribution_node =& cdm_feature_tree_find_node($merged_tree->root->childNodes, UUID_DISTRIBUTION);
+  // remove all TextData
+  $distribution_node->descriptionElements['TextData'] = array();
+}
+
 /**
  * @} End of "addtogroup hooks".
  */

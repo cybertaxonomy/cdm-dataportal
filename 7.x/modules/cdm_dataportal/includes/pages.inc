@@ -605,69 +605,6 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   return $render_array;
 }
 
-  /**
-   * TODO move into description.inc or in cdm_api.module?
-   *
-   * @param $taxon
-   * @param $distribution_node
-   * @return array
-   */
-  function merged_taxon_feature_tree($taxon) {
-
-    // 1. fetch descriptions_by_featuretree but exclude the distribution feature
-    $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_feature_tree(), $taxon->uuid, array(UUID_DISTRIBUTION));
-
-
-    // 2. find the distribution feature node
-    $distribution_node =& cdm_feature_tree_find_node($merged_tree->root->childNodes, UUID_DISTRIBUTION);
-
-    if ($distribution_node) {
-      // 3. get the distributionInfoDTO
-      $query_parameters = cdm_distribution_filter_query();
-      $query_parameters['part'] = array('mapUriParams');
-      if(variable_get(DISTRIBUTION_CONDENSED)){
-        $query_parameters['part'][] = 'condensedDistribution';
-      }
-      if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
-        $query_parameters['part'][] = 'tree';
-      }
-      else {
-        $query_parameters['part'][] = 'elements';
-      }
-      $query_parameters['omitLevels'] = array(UUID_NAMEDAREALEVEL_TDWGLEVEL_2);
-      $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
-      if ($customStatusColorsJson) {
-        $query_parameters['statusColors'] = $customStatusColorsJson;
-      }
-
-      $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
-      // 4. get distribution TextData is there are any
-      $distribution_text_data = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
-        array(
-          'taxon' => $taxon->uuid,
-          'type' => 'TextData',
-          'features' => UUID_DISTRIBUTION
-        )
-      );
-
-      // 5. put all distribution data into the distribution feature node
-      if ($distribution_text_data //if text data exists
-        || ($distribution_info_dto && isset($distribution_info_dto->tree) && $distribution_info_dto->tree->rootElement->numberOfChildren > 0) // OR if tree element has distribution elements
-        || ($distribution_info_dto && !empty($distribution_info_dto->elements))
-      ) { // OR if DTO has distribution elements
-        $distribution_node->descriptionElements = array('#type' => 'DTO');
-        if ($distribution_text_data) {
-          $distribution_node->descriptionElements['TextData'] = $distribution_text_data;
-        }
-        if ($distribution_info_dto) {
-          $distribution_node->descriptionElements['DistributionInfoDTO'] = $distribution_info_dto;
-        }
-      }
-    }
-    return $merged_tree;
-  }
-
-
 /**
  * TODO should this function really be a compose function?
  *     For a compose function must there always be a theme function with the same name? (ak 8.8.2013)

@@ -1427,8 +1427,6 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid, $exclude
     return FALSE;
   }
 
-  $merged_trees = array();
-
   $description_elements = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
       array(
       'taxon' => $taxon_uuid,
@@ -1437,7 +1435,7 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid, $exclude
       'POST'
   );
 
-  // Combine all descripions into one feature tree.
+  // Combine all descriptions into one feature tree.
   $merged_nodes = _mergeFeatureTreeDescriptions($feature_tree->root->childNodes, $description_elements);
   $feature_tree->root->childNodes = $merged_nodes;
 
