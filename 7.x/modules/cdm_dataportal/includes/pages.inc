@@ -678,14 +678,12 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
  *  - 'taxon_description_features'
  *
  *
- * @param array $variables
- *   An associative array containing:
- *   - taxon
- *   - mergedTrees
- *   - media
+ * @param taxon
+ * @param mergedTrees
+ * @param media
  *
  * @return array
- *   A Drupal reder array with the following elements:
+ *   A Drupal render array with the following elements:
  *     - 'taxon_profile_image'
  *     - 'taxon_description_feature_toc'
  *     - 'taxon_description_features'
