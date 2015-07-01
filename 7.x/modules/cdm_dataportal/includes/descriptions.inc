@@ -668,6 +668,9 @@ function cdm_create_description_element_footnotes($description_element, $separat
    *   - 'DistributionInfoDTO': a CDM DistributionInfoDTO object as returned by the DistributionInfo web service
    * @param $feature
    *
+   * @return array
+   *  A drupal render array
+   *
    * @ingroup compose
    */
   function compose_feature_block_distribution($taxon, $descriptionElements, $feature) {
@@ -1299,8 +1302,19 @@ function cdm_create_description_element_footnotes($description_element, $separat
         UUID_DISTRIBUTION
       );
 
-      $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid . '">'
-        . $descriptionElement->area->representation_L10n;
+
+      $status_label = '';
+      if(isset($descriptionElement->status)){
+        $status_label =   $descriptionElement->status->representation_L10n;
+        $status_markup = ' <span class="distributionStatus distributionStatus-' . $descriptionElement->status->idInVocabulary . '">'
+        . $status_label . '</span> ';
+
+      };
+
+      $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid
+        . ' " title="' . $status_label. '">'
+        . $descriptionElement->area->representation_L10n
+        . $status_markup;
       if(!empty($annotations_and_sources['source_references'])){
         $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
       }
