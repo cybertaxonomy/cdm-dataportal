@@ -1316,7 +1316,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
         . $descriptionElement->area->representation_L10n
         . $status_markup;
       if(!empty($annotations_and_sources['source_references'])){
-        $out .= join(' ', $annotations_and_sources['source_references'] );
+        $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
       }
       $out .= $annotations_and_sources['foot_note_keys']   . ' </' . $enclosingTag . '>';
     }
