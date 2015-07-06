@@ -32,4 +32,8 @@ if [ -n $2 ]; then
   CONF_FILE_OPTION="-Ddataportal.test.conf=$2"
 fi
 
+echo "cleaning up old screenshots"
+rm -fr screenshots
+mkdir screenshots
+
 mvn -Dwebdriver.firefox.bin=${FIREFOX_BIN} -DargLine="${CONF_FILE_OPTION}" clean test
