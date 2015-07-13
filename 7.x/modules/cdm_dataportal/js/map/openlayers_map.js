@@ -464,9 +464,10 @@
                 .css('top', -mapElement.height());
             legendImage.load(function () {
                 jQuery(this).parent()
-                    .css('left', mapElement.width()- jQuery(this).width())
+                    .css('left', mapWidth - jQuery(this).width())
                     .width(jQuery(this).width());
-                mapElement.parent().css('margin-bottom', -jQuery(this).height());
+                // reset height to original value
+                mapElement.parent().css('height', mapHeight);
             });
             legendElement.html(legendImage);
             mapElement.after(legendElement);
@@ -486,7 +487,7 @@
 
 //              createLegendLayer();
 //              // 2. create the Legend Layer
-                //TODO createLegendLayer as inner fiinction seems like an error
+                //TODO createLegendLayer as inner function seems like an error
 //              var createLegendLayer = function(){
                 //
                 //
