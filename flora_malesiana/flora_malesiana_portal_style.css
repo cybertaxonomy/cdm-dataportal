@@ -1,0 +1,201 @@
+/**
+ * Customizations for the Flora Malesiana portal theme overriding the 
+ * Garland_cichorieae theme css.
+ *
+ * Note: To inherit the parent theme stylesheets, the child theme should have
+ * at least one own stylesheet defined, and it should be named differently
+ * from the stylesheets in the parent theme, otherwise it will override
+ * the parent stylesheet. See also: http://drupal.org/node/225125.
+ */
+ 
+ /**
+ * Overrides for Garland_cichorieae style.css
+ */
+ul li, ul.menu li,
+.item-list ul li,
+li.leaf {
+  background: none;
+  /* background: transparent url(images/menu-leaf.gif) no-repeat 1px .35em; */
+}
+ul li.expanded {
+  background: none;
+  /* background: transparent url(images/menu-expanded.gif) no-repeat 1px .35em; */
+}
+ul li.collapsed {
+  background: none;
+  /* background: transparent url(images/menu-collapsed.gif) no-repeat 0px .35em; */
+}
+.description {
+  line-height: 150%;
+}
+
+/**
+ * Layout
+ */
+#header-region {
+  background: #d2e6f3;
+  /* background: #d2e6f3 url(images/bg-navigation.png) repeat-x 50% 100%; */
+}
+#wrapper {
+    background: #edf5fa;
+  /* background: #edf5fa url(images/body.png) repeat-x 50% 0; */
+}
+
+/**
+ * Primary navigation
+ */
+ul.primary-links li a, 
+ul.primary-links li a:link, 
+ul.primary-links li a:visited {
+  background: none;
+  /* background: transparent url(images/bg-navigation-item.png) no-repeat 50% 0; */
+}
+ul.primary-links li a:hover, 
+ul.primary-links li a.active {
+  background: none;
+  /* background: transparent url(images/bg-navigation-item-hover.png) no-repeat 50% 0; */
+}
+
+/**
+ * Nodes & comments
+ */
+#comments h2.comments {
+  background: #fff;
+  /* background: #fff url(images/gradient-inner.png) repeat-x 0 0; */
+}
+.node .content, .comment .content {
+  line-height: 1.3em;
+}
+
+/**
+ * Color.module
+ */
+#palette .item-selected {
+  background: #fff;
+  /* background: #fff url(images/gradient-inner.png) repeat-x 0 0; */
+}
+
+/**
+ * Poll.module
+ */
+.poll .bar {
+  background: #fff;
+  /* background: #fff url(images/bg-bar-white.png) repeat-x 0 0; */
+}
+.poll .bar .foreground {
+  background: #71a7cc;
+  /* background: #71a7cc url(images/bg-bar.png) repeat-x 0 100%; */
+}
+
+/**
+ * Collapsible fieldsets
+ */
+fieldset {
+  background: #fff;
+  /* background: #fff url(images/gradient-inner.png) repeat-x 0 0; */
+}
+html.js fieldset.collapsible legend a {
+  background: none;
+  /* background: url(images/menu-expanded.gif) no-repeat 0% 50%; */
+}
+html.js fieldset.collapsed legend a {
+  background: none;
+  /* background: url(images/menu-collapsed.gif) no-repeat 0% 50%; */
+}
+
+/**
+ * Admin Styles
+ */
+div.admin-panel {
+  background: #fff;
+  /* background: #fff url(images/gradient-inner.png) repeat-x 0 0; */
+}
+
+/********************************************************************/
+/**
+ * Overrides for Garland_cichorieae styleOverride.css
+ */
+body {
+  background: #f9f9f7;
+  /* background:#F9F9F7 url(images/a1.gif) repeat-x scroll 0 0; */
+}
+
+#edit-logo {
+  margin-right: 7px;
+  background: url(images/logo.png);
+}
+
+#splash {
+  /*
+  background:#EAEAE2 url(images/splashChichorium_wide.jpg) no-repeat scroll 0 0;
+  */
+  background: #eaeae2 url(images/banner.jpg) no-repeat scroll 0 0;
+  float: none;
+  /* float:left; */
+  width: 780px;
+}
+
+#wrapper #container #header #logo-floater {
+  background: #663350;
+  /* background:#663350 url(images/a8.gif) repeat-x scroll 0 0; */
+  height: 40px;
+  padding-left:0;
+  margin-left:0;
+  margin-top:5px;
+  width: 100%;
+  z-index: 10;
+}
+
+#wrapper #container #header #logo-floater h1 {
+  margin-left: 15px;
+  padding-top: 5px;
+}
+
+#wrapper {
+  background: #fff;
+  /* background:#FFFFFF url(images/abg-left.gif) repeat-y scroll left top; */
+}
+
+#wrapper #contento {
+  margin-top: -5px;
+}
+
+#container {
+  background: none;
+  /*background:transparent url(images/abg-right.gif) repeat-y scroll right top;*/
+}
+
+.page-node #block-system-main div.content {
+  margin-top: 0;
+}
+
+#menu{
+  /*margin-top: 40px;*/
+}
+
+ul.primary-links {
+  background: #663350;
+  /* background:#663350 url(images/a16.gif) repeat-x scroll 0 0; */
+  margin:0;
+  height: 40px;
+}
+
+ul.primary-links li a:hover, 
+ul.primary-links li a.active {
+  background: #fff;
+  /* background:#FFFFFF url(images/a18.gif) repeat-x scroll center top; */
+}
+
+.heterotypicSynonymyGroup li.footnotes,
+.homotypicSynonymyGroup li.footnotes,
+.homotypicSynonyms li.footnotes,
+.misapplied li.footnotes,
+.content li.descriptionText {
+  background-image: none;
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  margin-left: 0px;
+  margin-top: 10px;
+  padding-left: 0px;
+}

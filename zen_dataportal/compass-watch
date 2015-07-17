@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+# check for compatible compass version
+is_compatible=$(compass --version | grep "0.12.7")
+
+if [[ -z "$is_compatible" ]]
+then
+    echo "incompatible version of compass found: $(compass --version | head -n 1 - )"
+    echo "install version 0.12.7 by"
+    echo "  sudo gem uninstall compass --all"
+    echo "  sudo gem install compass --version 0.12.7"
+    exit -1
+fi
+
+# no need to specify the set the --debug-info here since we are 
+# using the development configuration file
+compass clean
+compass watch -c config-dev.rb   ./
+
