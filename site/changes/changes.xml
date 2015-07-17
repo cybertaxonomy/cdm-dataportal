@@ -1,0 +1,17 @@
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+	<properties>
+		<title>CDM Data Portal Releases</title>
+		<author email="f.revilla@bgbm.org">Francisco Revilla</author>
+	</properties>
+	<body>
+
+		<release version="3.0.0.beta" date="2010-09-07" description="Version 3.0 pre-release">
+			<action dev="f.revilla" type="fix">
+				Test
+	      </action>
+		</release>
+
+	</body>
+</document>

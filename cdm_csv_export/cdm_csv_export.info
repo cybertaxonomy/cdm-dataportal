@@ -1,0 +1,17 @@
+; $Id: csv_export.info 2012-12-01 a.oppermann$
+name = CDM CSV Export
+description = Export of cdm structured data into a flat csv file format
+package = "CDM"
+core = 7.x
+dependencies[] = cdm_dataportal
+dependencies[] = cdm_api
+
+version = "7.x-0.1"
+
+stylesheets[all][] = css/cdm_csv_export.css
+
+scripts[] = js/jquery.cookie.js
+scripts[] = js/jquery.blockUI.js  
+scripts[] = js/cdm_csv_export.js
+
+configure = admin/config/cdm_dataportal/csvexport
