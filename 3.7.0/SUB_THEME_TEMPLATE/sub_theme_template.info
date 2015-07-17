@@ -1,0 +1,7 @@
+name = SUB_THEME_TEMPLATE
+description = Subtheme from Garland Cichorieae for SUB_THEME_TEMPLATE
+package = CDM_Portal
+base theme = garland_cichorieae
+version = 1.0
+core = 7.x
+stylesheets[all][] = SUB_THEME_TEMPLATE.css
