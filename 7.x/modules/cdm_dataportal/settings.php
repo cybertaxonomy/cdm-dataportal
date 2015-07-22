@@ -1002,6 +1002,9 @@ function cdm_settings_general() {
       '#collapsible' => FALSE,
       '#description' => 'This section covers general settings regarding distributions, map related settings are found in the '
           . l('geo & map tab', 'admin/config/cdm_dataportal/settings/geo') .
+          '. Further settings regarding the Distribution feature block can be found in the Layout/Taxon tab at two distinct places: '
+          . l('Distribution appearance', 'admin/config/cdm_dataportal/settings/layout/taxon', array('fragment' => 'edit-distribution-layout')) .', '
+          . l('Taxon profile feature block settings', 'admin/config/cdm_dataportal/settings/layout/taxon', array('fragment' => 'edit-feature-block-settings')) .
           '<p>
           </p>',
   );
@@ -1909,6 +1912,18 @@ function cdm_settings_layout_taxon() {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#type' => 'fieldset',
+    '#description' => 'This section covers general settings regarding the textual representation of distributions.
+        Map related settings are found in the '
+      . l('geo & map tab', 'admin/config/cdm_dataportal/settings/geo') .
+      '. Further settings regarding the distribution feature block can be found in above in this tab at '
+      . l(
+        'Taxon profile feature block settings', 'admin/config/cdm_dataportal/settings/layout/taxon',
+        array('fragment' => 'edit-feature-block-settings')
+      )
+      . ' More general settings regrading the filtering of Distributions are found at '
+      . l('Distribution appearance', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-distribution'))
+      . '. (These settings here will be merged in future releases into the feature block settings)',
+
   );
 
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_CONDENSED] = array(
