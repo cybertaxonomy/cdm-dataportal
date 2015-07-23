@@ -79,11 +79,11 @@ function cdm_distribution_filter_query() {
   if ($cdm_distribution_filter['filter_rules']['subAreaPreference']) {
     $query['subAreaPreference'] = 1;
   }
-  if (is_array($cdm_distribution_filter['hideMarkedAreas']) && count($cdm_distribution_filter['hideMarkedAreas']) > 0) {
-    $query['hideMarkedAreas'] = '';
-    foreach ($cdm_distribution_filter['hideMarkedAreas'] as $marker_type => $enabled) {
+  if (is_array($cdm_distribution_filter['hiddenAreaMarkerType']) && count($cdm_distribution_filter['hiddenAreaMarkerType']) > 0) {
+    $query['hiddenAreaMarkerType'] = '';
+    foreach ($cdm_distribution_filter['hiddenAreaMarkerType'] as $marker_type => $enabled) {
       if ($enabled) {
-        $query['hideMarkedAreas'] .= ($query['hideMarkedAreas'] ? ',' : '') . $marker_type;
+        $query['hiddenAreaMarkerType'] .= ($query['hiddenAreaMarkerType'] ? ',' : '') . $marker_type;
       }
     }
   }

@@ -272,7 +272,7 @@ define('CDM_DISTRIBUTION_FILTER_DEFAULT', serialize(
         'statusOrderPreference' => 0,
         'subAreaPreference' => 0,
       ),
-      'hideMarkedAreas' => array()
+      'hiddenAreaMarkerType' => array()
      )
 ));
 
@@ -1035,10 +1035,10 @@ function cdm_settings_general() {
   );
 
   $marker_type_options = cdm_terms_as_options( cdm_ws_fetch_all('term', array('class' => 'MarkerType' )) );
-  $form['distribution'][CDM_DISTRIBUTION_FILTER]['hideMarkedAreas'] = array(
+  $form['distribution'][CDM_DISTRIBUTION_FILTER]['hiddenAreaMarkerType'] = array(
       '#type' => 'checkboxes',
       '#title' => 'Hide marked area filter',
-      '#default_value' => $cdm_distribution_filter['hideMarkedAreas'],
+      '#default_value' => $cdm_distribution_filter['hiddenAreaMarkerType'],
       '#options' => $marker_type_options,
       '#description' => 'Check one or more MarkerTypes to define the "hide marked area" filter .',
   );
