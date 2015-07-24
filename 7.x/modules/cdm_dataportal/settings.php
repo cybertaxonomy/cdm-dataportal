@@ -216,6 +216,7 @@ define('CDM_SEARCH_TAXA_MODE_DEFAULT', serialize(
 );
 
 define('SIMPLE_SEARCH_USE_LUCENE_BACKEND', 'simple_search_use_lucene_backend');
+define('SIMPLE_SEARCH_IGNORE_CLASSIFICATION', 'simple_search_ignore_classification');
 
 /* Gallery variables. */
 $gallery_settings = array(
@@ -2163,20 +2164,19 @@ function cdm_settings_layout_search() {
          site at <a href="./?q=admin/build/block">Administer&#45&#62Site building&#45&#62Blocks</a></p> '),
   );
 
-  $form['search_settings']['simple_search_ignore_classification'] = array(
+  $form['search_settings'][SIMPLE_SEARCH_IGNORE_CLASSIFICATION] = array(
       '#type' => 'checkbox',
       '#title' => t('Ignore the chosen classification in simple search'),
-      '#default_value' => variable_get('simple_search_ignore_classification', TRUE),
+      '#default_value' => variable_get(SIMPLE_SEARCH_IGNORE_CLASSIFICATION, 0),
       '#description' => t('The simple search, which can be executed via the search block,
-          will by default search on all classifications. Remove the tick if you want your
-          portal to search on the classification selected in the classification browser
-          selector.'),
+          will by default search on the classification selected in the classification browser
+          selector. Set the tick if you want your portal to search on all classifications.'),
   );
 
   $form['search_settings'][SIMPLE_SEARCH_USE_LUCENE_BACKEND] = array(
     '#type' => 'checkbox',
     '#title' => t('Run simple search with free-text search backend.'),
-    '#default_value' => variable_get(SIMPLE_SEARCH_USE_LUCENE_BACKEND, FALSE),
+    '#default_value' => variable_get(SIMPLE_SEARCH_USE_LUCENE_BACKEND, 0),
     '#description' => t('The simple search uses by default another search
       backend as the advances search. By checking this option the simple search can be
       configured to also use the free-text search backend.'),

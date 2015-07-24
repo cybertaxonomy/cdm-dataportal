@@ -487,8 +487,8 @@ function cdm_dataportal_search_form_request() {
 
   // Simple search will not submit a 'tree' query parameter,
   // so we add it here from what is stored in the session unless
-  // 'simple_search_ignore_classification' is checked in the settings.
-  if (!isset($form_params['tree']) && !variable_get('simple_search_ignore_classification', 1)) {
+  // SIMPLE_SEARCH_IGNORE_CLASSIFICATION is checked in the settings.
+  if (!isset($form_params['tree']) && !variable_get(SIMPLE_SEARCH_IGNORE_CLASSIFICATION, 0)) {
     $form_params['tree'] = get_taxonomictree_uuid_selected();
   }
   // If the 'NONE' classification has been chosen (adanced search)
