@@ -186,13 +186,13 @@ function theme_cdm_taggedtext2html($variables) {
  * @ingroup themeable
  */
 function theme_cdm_annotations_as_footnotekeys($variables) {
-  $cdmBase_list = $variables['cdmBase_list'];
+  $cdm_entities = $variables['cdmBase_list'];
   $footnote_list_key = $variables['footnote_list_key'];
   if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
   }
   $out = '';
-  $footNoteKeys = cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key);
+  $footNoteKeys = cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key);
   foreach ($footNoteKeys as $a) {
     // $out .= theme('cdm_footnote_key', $a, $a->footnoteListKey, (isset($out)?
     // ',' : ''));

@@ -86,9 +86,6 @@ function cdm_dataportal_theme() {
         'image_sources' => NULL,
         'asListElement' => NULL,
     )),
-    'cdm_description_ordered_distributions' => array('variables' => array(
-        'distribution_tree' => NULL,
-    )),
     'cdm_IdentificationKey' => array('variables' => array(
         'identificationKey' => NULL,
         'doLinkToKeyPage' => TRUE,

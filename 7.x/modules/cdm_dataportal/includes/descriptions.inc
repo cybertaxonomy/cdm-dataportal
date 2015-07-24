@@ -799,7 +799,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
       // --- tree
       if (is_object($distribution_info_dto->tree)) {
-        $dto_out_array[] = theme('cdm_description_ordered_distributions', array('distribution_tree' => $distribution_info_dto->tree));
+        $dto_out_array[] = drupal_render(compose_distribution_hierarchy($distribution_info_dto->tree, $feature_block_settings));
       }
 
       // --- sorted element list
@@ -1303,13 +1303,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
       );
 
 
-      $status_label = '';
-      if(isset($descriptionElement->status)){
-        $status_label =   $descriptionElement->status->representation_L10n;
-        $status_markup = '<span class="distributionStatus distributionStatus-' . $descriptionElement->status->idInVocabulary . '"> '
-        . $status_label . ' </span>';
-
-      };
+      list($status_label, $status_markup) = distribution_status_label_and_markup($descriptionElement);
 
       $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid
         . ' " title="' . $status_label. '">'
@@ -1323,6 +1317,23 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
     RenderHints::popFromRenderStack();
     return markup_to_render_array($out);
+  }
+
+  /**
+   * @param $descriptionElement
+   * @return array
+   */
+  function distribution_status_label_and_markup($descriptionElement) {
+    $status_markup = '';
+    $status_label = '';
+
+    if (isset($descriptionElement->status)) {
+      $status_label = $descriptionElement->status->representation_L10n;
+      $status_markup = '<span class="distributionStatus distributionStatus-' . $descriptionElement->status->idInVocabulary . '"> '
+        . $status_label . ' </span>';
+
+    };
+    return array($status_label, $status_markup);
   }
 
 
@@ -1401,6 +1412,166 @@ function cdm_create_description_element_footnotes($description_element, $separat
     drupal_alter('merged_taxon_feature_tree', $taxon, $merged_tree);
 
     return $merged_tree;
+  }
+
+
+  function compose_distribution_hierarchy($distribution_tree, $feature_block_settings){
+
+    static $hierarchy_style;
+    // TODO expose $hierarchy_style to administration of provide a hook
+    if( !isset($hierarchy_style)){
+      $hierarchy_style = array(
+        // level 2
+        array(
+          'label_suffix' => '',
+          'element_glue' => ', ',
+          'element_set_pre' => '(',
+          'element_set_post' => ')'
+        ),
+        // level 1
+        array(
+          'label_suffix' => '',
+          'element_glue' => '; ',
+          'element_set_pre' => '',
+          'element_set_post' => ''
+        ),
+        // level 0
+        array(
+          'label_suffix' => ':',
+          'element_glue' => '',
+          'element_set_pre' => '',
+          'element_set_post' => ''
+        ),
+      );
+    }
+
+    $render_array = array();
+
+    RenderHints::pushToRenderStack('descriptionElementDistribution');
+    RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+
+    // Returning NULL if there are no description elements.
+    if ($distribution_tree == null) {
+      return $render_array;
+    }
+    // for now we are not using a render array internally to avoid performance problems
+    $markup = '';
+    if (isset($distribution_tree->rootElement->children)) {
+      $tree_nodes = $distribution_tree->rootElement->children;
+      _compose_distribution_hierarchy($tree_nodes, $feature_block_settings, $markup, $hierarchy_style);
+    }
+
+    $render_array['distribution_hierarchy'] = markup_to_render_array(
+      $markup,
+      0,
+      '<div id="distribution_hierarchy" class="distribution_hierarchy">',
+      '</div>'
+    );
+
+    return $render_array;
+  }
+
+  /**
+   * this function should produce markup as the compose_cdm_descriptionElement_Distribution()
+   * function.
+   *
+   * @see compose_cdm_descriptionElement_Distribution()
+   *
+   * @param $distribution_tree
+   * @param $feature_block_settings
+   * @param $tree_nodes
+   * @param $markup
+   * @param $hierarchy_style
+   */
+  function _compose_distribution_hierarchy($tree_nodes, $feature_block_settings, &$markup, $hierarchy_style, $level_index = -1){
+
+    $level_index++;
+    static $enclosingTag = "span";
+
+    $level_style = array_pop($hierarchy_style);
+
+    $node_index = -1;
+    $per_node_markup = array();
+    foreach ($tree_nodes as $node){
+
+      $per_node_markup[++$node_index] = '';
+
+      $label = $node->nodeId->representation_L10n;
+
+      $distributions = $node->data;
+      $distribution_uuids = array();
+      $distribution_aggregate = NULL;
+        foreach($distributions as $distribution){
+
+          $distribution_uuids[] = $distribution->uuid;
+
+          // if there is more than one distribution we aggregate the sources and
+          // annotations into a synthetic distribution so that the footnote keys
+          // can be rendered consistently
+          if(!$distribution_aggregate) {
+            $distribution_aggregate = $distribution;
+            if(!isset($distribution_aggregate->sources[0])){
+              $distribution_aggregate->sources = array();
+            }
+            if(!isset($distribution_aggregate->annotations[0])){
+              $distribution_aggregate->annotations = array();
+            }
+          } else {
+            if(isset($distribution->sources[0])) {
+              $distribution_aggregate->sources = array_merge($distribution_aggregate->sources,
+                $distribution->sources);
+            }
+            if(isset($distribution->annotations[0])) {
+              $distribution_aggregate->annotations = array_merge($distribution_aggregate->annotations,
+                $distribution->annotations);
+            }
+          }
+        }
+
+      $status_label= '';
+      $status_markup = '';
+      if($distribution_aggregate) {
+        $annotations_and_sources = handle_annotations_and_sources(
+          $distribution_aggregate,
+          $feature_block_settings,
+          $label,
+          UUID_DISTRIBUTION
+        );
+
+        list($status_label, $status_markup) = distribution_status_label_and_markup($distribution);
+      }
+
+      $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement'
+        . join(' descriptionElement-', $distribution_uuids)
+        . ' level_index_' . $level_index
+        . ' " title="' . $status_label . '">'
+        . '<span class="area_label">' . $label
+        . $level_style['label_suffix'] . ' </span>'
+        .  $status_markup
+      ;
+
+      if($annotations_and_sources){
+        if(!empty($annotations_and_sources['source_references'])){
+          $per_node_markup[$node_index] .= ' ' .$annotations_and_sources['source_references'];
+        }
+        if($annotations_and_sources['foot_note_keys']) {
+          $per_node_markup[$node_index] .= $annotations_and_sources['foot_note_keys'];
+        }
+      }
+
+      if(isset($node->children[0])){
+        _compose_distribution_hierarchy(
+          $node->children,
+          $feature_block_settings,
+          $per_node_markup[$node_index],
+          $hierarchy_style,
+          $level_index
+        );
+      }
+
+      $per_node_markup[$node_index] .= '</' . $enclosingTag . '>';
+    }
+    $markup .= $level_style['element_set_pre']  . join( $level_style['element_glue'], $per_node_markup) . $level_style['element_set_post'];
   }
 
 

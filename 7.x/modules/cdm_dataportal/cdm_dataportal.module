@@ -1081,24 +1081,34 @@ function convert_to_array($object) {
 /**
  * Wraps the given $html string into a render array suitable for drupal_render()
  *
- * @param string $html
+ * @param $html
  *   the html string, see
  *   http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#markup
- * @param number $weight
+ * @param $weight
  *   A positive or negative number (integer or decimal).
  *   see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#weightval
+ * @param $prefix
+ *   Optional markup for the '#prefix' element of the render array
+ * @param $suffix
+ *   Optional markup for the '#suffix' element of the render array
  *
- * @return
+ * @return array
  *   A render array
  *
  */
-function markup_to_render_array($html, $weight = FALSE) {
+function markup_to_render_array($html, $weight = FALSE, $prefix = NULL, $suffix = NULL) {
   $render_array = array(
     '#markup' => $html
       );
   if (is_numeric($weight)) {
     $render_array['#weight'] = $weight;
-}
+  }
+  if($prefix){
+    $render_array['#prefix'] = $prefix;
+  }
+  if($suffix) {
+    $render_array['#suffix'] = $suffix;
+  }
   return $render_array;
 }
 
@@ -2113,13 +2123,13 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  *
- * @param array $cdmBase_list
+ * @param array $cdm_entities
  *   An array of CdmBase instances or a single instance.
  * @param string $footnote_list_key_suggestion
  *
  * @return unknown
  */
-function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key_suggestion = NULL) {
+function cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key_suggestion = NULL) {
 
    static $annotations_types_filter = null;
    if(!$annotations_types_filter) {
@@ -2129,12 +2139,12 @@ function cdm_annotations_as_footnotekeys($cdmBase_list, $footnote_list_key_sugge
   $footNoteKeys = array();
 
   // Is argument cdmBase an array?
-  if (!is_array($cdmBase_list)) {
+  if (!is_array($cdm_entities)) {
     $cdmBase_array = array();
-    $cdmBase_array[] = $cdmBase_list;
+    $cdmBase_array[] = $cdm_entities;
   }
   else {
-    $cdmBase_array = $cdmBase_list;
+    $cdmBase_array = $cdm_entities;
   }
 
   // Getting the key for the footnotemanager.
