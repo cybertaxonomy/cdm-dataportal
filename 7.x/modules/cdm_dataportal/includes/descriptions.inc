@@ -685,8 +685,8 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
     $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
 
-    // TODO use feature_block_settings instead of 'distribution_sort'
-    if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
+    // TODO use feature_block_settings instead of DISTRIBUTION_ORDER_MODE
+    if (variable_get(DISTRIBUTION_ORDER_MODE, 'FLAT_ALPHA') != 'FLAT_ALPHA') {
       $distribution_glue = '';
       $distribution_enclosingTag = 'dl';
     } else {
@@ -1176,24 +1176,6 @@ function cdm_create_description_element_footnotes($description_element, $separat
      */
     $feature_block_has_content = false;
 
-    /*
-    $userDefined = mixed_variable_get(LAYOUT_SETTING_PREFIX . $feature_uuid, FEATURE_TREE_LAYOUT_DEFAULTS);
-    if(variable_get('distribution_sort',
-        'NO_SORT') != 'NO_SORT'){
-        $glue = '';
-        $enclosingTag = 'dl';
-        $entryEnclosingTag = NULL;
-    } else if($userDefined &&
-        $userDefined['enabled']){
-      $glue = $userDefined['glue'];
-      $enclosingTag =  $userDefined['enclosingTag'];
-      $entryEnclosingTag = $userDefined['entryEnclosingTag'];
-    } else { // TODO remove once  LAYOUT_SETTING_PREFIX-{uuid} setting are configured to work for all portals(selenium test still missing!!!)
-      $glue = ''; $enclosingTag = 'ul';
-      $entryEnclosingTag = NULL ;
-    }
-    */
-
     RenderHints::pushToRenderStack($feature->uuid);
 
     if (is_array($descriptionElements)) {
@@ -1371,13 +1353,18 @@ function cdm_create_description_element_footnotes($description_element, $separat
       if(variable_get(DISTRIBUTION_CONDENSED)){
         $query_parameters['part'][] = 'condensedDistribution';
       }
-      if (variable_get('distribution_sort', 'NO_SORT') != 'NO_SORT') {
+      if (variable_get(DISTRIBUTION_ORDER_MODE, 'FLAT_ALPHA') != 'FLAT_ALPHA') {
         $query_parameters['part'][] = 'tree';
       }
       else {
         $query_parameters['part'][] = 'elements';
       }
-      $query_parameters['omitLevels'] = variable_get(DISTRIBUTION_TREE_OMIT_LEVELS);
+      $query_parameters['omitLevels'] = array();
+      foreach(variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $uuid){
+        if(is_uuid($uuid)){
+          $query_parameters['omitLevels'][] = $uuid;
+        }
+      }
       $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
       if ($customStatusColorsJson) {
         $query_parameters['statusColors'] = $customStatusColorsJson;

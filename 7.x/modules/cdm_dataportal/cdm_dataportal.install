@@ -339,7 +339,7 @@ function cdm_dataportal_update_7305() {
     $tasks_performed = array();
 
     // replace distribution_sort with new variable
-    $distribution_sort = variable_get('distribution_sort');
+    $distribution_sort = variable_get(DISTRIBUTION_ORDER_MODE);
     $distribution_order_mode = 'FLAT_ALPHA';
     $distribution_tree_omit_levels = array();
     if($distribution_sort == 'HIDE_TDWG2'){

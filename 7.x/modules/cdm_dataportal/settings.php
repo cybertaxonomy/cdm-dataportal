@@ -1957,8 +1957,8 @@ function cdm_settings_layout_taxon() {
     '#title' => 'Omit area levels',
     '#options' => $level_options,
     '#default_value' => variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()),
-    '#description' => 'This option ins only applicable when distributions are hierachically orderd (see option above)!.
-    Areas which belong to the selected area levels will be hidde in the portal.',
+    '#description' => 'This option ins only applicable when distributions are hierachically orderd (see option above)!
+    Areas which belong to the selected area levels will be hidden in the portal.',
   );
 
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] = array(
