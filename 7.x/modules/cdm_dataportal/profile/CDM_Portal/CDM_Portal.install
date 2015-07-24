@@ -156,7 +156,6 @@ function CDM_Portal_install() {
    ****************************************/
 
   variable_set('cdm_webservice_cache', 0);
-  variable_set(DISTRIBUTION_ORDER_MODE, 'TREE');
 
   variable_set('baselayers', array(
     'metacarta_vmap0' => 'metacarta_vmap0',

@@ -1941,7 +1941,7 @@ function cdm_settings_layout_taxon() {
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_ORDER_MODE] = array(
     '#type' => 'radios',
     '#title' => t('Order mode') . ':',
-    '#default_value' => variable_get(DISTRIBUTION_ORDER_MODE, 'FLAT_ALPHA'),
+    '#default_value' => variable_get(DISTRIBUTION_ORDER_MODE, 'TREE'),
     '#options' => array(
       'FLAT_ALPHA' => t('Flat list'),
       'TREE' => t('Hierarchically ordered'),

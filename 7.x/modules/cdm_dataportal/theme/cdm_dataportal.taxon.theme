@@ -84,7 +84,10 @@ function theme_cdm_taxonRelationships($variables) {
   ksort($joinedAuthorTeams);
   foreach ($joinedAuthorTeams as $authorteam => $sensuCitation) {
     $footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensuCitation);
-    $joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu ' . $authorteam . theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey)) . '</span>';
+    $joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu '
+      . $authorteam
+      . theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey))
+      . '</span>';
   }
 
   // ---- Generate output ---- //
@@ -500,7 +503,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
     'is_type_designation' => FALSE,
     'skiptags' => $skiptags,
     ));
-  $out_taxon_part .= theme('cdm_annotations_as_footnotekeys',
+  $taxon_footnotes = theme('cdm_annotations_as_footnotekeys',
        array('cdmBase_list' => array(
          $taxon->name,
          $taxon,
@@ -514,7 +517,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   $homonyms = cdm_name_relationships_of($taxon);
 
   $out = '<span class="relation_sign" title="' . $reltype_representation . '">' . $relsign . '</span>'
-      . $name_prefix . $out_taxon_part . $name_postfix . ' '
+      . $name_prefix . $out_taxon_part . $name_postfix . $taxon_footnotes . ' '
       . $homonyms;
 
   $out = uuid_anchor($taxon->uuid, $out);

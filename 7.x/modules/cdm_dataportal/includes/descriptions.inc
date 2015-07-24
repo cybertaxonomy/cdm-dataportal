@@ -686,7 +686,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
     $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
 
     // TODO use feature_block_settings instead of DISTRIBUTION_ORDER_MODE
-    if (variable_get(DISTRIBUTION_ORDER_MODE, 'FLAT_ALPHA') != 'FLAT_ALPHA') {
+    if (variable_get(DISTRIBUTION_ORDER_MODE, 'TREE') != 'TREE') {
       $distribution_glue = '';
       $distribution_enclosingTag = 'dl';
     } else {
@@ -1353,7 +1353,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
       if(variable_get(DISTRIBUTION_CONDENSED)){
         $query_parameters['part'][] = 'condensedDistribution';
       }
-      if (variable_get(DISTRIBUTION_ORDER_MODE, 'FLAT_ALPHA') != 'FLAT_ALPHA') {
+      if (variable_get(DISTRIBUTION_ORDER_MODE, 'TREE') != 'TREE') {
         $query_parameters['part'][] = 'tree';
       }
       else {
