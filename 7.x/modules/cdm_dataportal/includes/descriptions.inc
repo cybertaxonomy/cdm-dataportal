@@ -1377,7 +1377,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
       else {
         $query_parameters['part'][] = 'elements';
       }
-      $query_parameters['omitLevels'] = array(UUID_NAMEDAREALEVEL_TDWGLEVEL_2);
+      $query_parameters['omitLevels'] = variable_get(DISTRIBUTION_TREE_OMIT_LEVELS);
       $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
       if ($customStatusColorsJson) {
         $query_parameters['statusColors'] = $customStatusColorsJson;

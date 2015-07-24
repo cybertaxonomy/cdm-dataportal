@@ -330,6 +330,32 @@ function cdm_dataportal_update_7305() {
     return join(', ',$tasks_performed);
   }
 
+  /**
+   * update for RELEASE 3.8.0:
+   *  - replace variable 'distribution_sort' with new 'distribution_order_mode'
+   *  - add variable distribution_tree_omit_levels and set TDWG2 if required
+   */
+  function cdm_dataportal_update_7307() {
+    $tasks_performed = array();
+
+    // replace distribution_sort with new variable
+    $distribution_sort = variable_get('distribution_sort');
+    $distribution_order_mode = 'FLAT_ALPHA';
+    $distribution_tree_omit_levels = array();
+    if($distribution_sort == 'HIDE_TDWG2'){
+      $distribution_order_mode = 'TREE';
+      $distribution_tree_omit_levels[] = UUID_NAMEDAREALEVEL_TDWGLEVEL_2;
+
+    }
+    $tasks_performed[] = _remove_variable('distribution_sort');
+    $tasks_performed[] = _create_variable(DISTRIBUTION_ORDER_MODE, $distribution_order_mode);
+
+    // add variable distribution_tree_omit_levels and set TDWG2 if required
+    $tasks_performed[] = _create_variable(DISTRIBUTION_TREE_OMIT_LEVELS, $distribution_tree_omit_levels);
+
+    return join(', ',$tasks_performed);
+  }
+
 
 /* ======================================================================== */
 

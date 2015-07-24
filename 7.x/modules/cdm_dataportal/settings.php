@@ -95,6 +95,8 @@
   define('FEATURE_BLOCK_SETTINGS', 'feature_block_settings');
 
   define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
+  define('DISTRIBUTION_ORDER_MODE', 'distribution_order_mode');
+  define('DISTRIBUTION_TREE_OMIT_LEVELS', 'distribution_tree_omit_levels');
 
 /**
  * Returns the array of implemented taxon page tabs.
@@ -1935,17 +1937,28 @@ function cdm_settings_layout_taxon() {
   );
 
 
-  $form['taxon_profile']['distribution_layout']['distribution_sort'] = array(
+  $form['taxon_profile']['distribution_layout'][DISTRIBUTION_ORDER_MODE] = array(
     '#type' => 'radios',
     '#title' => t('Order mode') . ':',
-    '#default_value' => variable_get('distribution_sort', 'NO_SORT'),
+    '#default_value' => variable_get(DISTRIBUTION_ORDER_MODE, 'FLAT_ALPHA'),
     '#options' => array(
-      'NO_SORT' => t('Standard (No sort)'),
-      'HIDE_TDWG2' => t('Ordered hierarchically'),
+      'FLAT_ALPHA' => t('Flat list'),
+      'TREE' => t('Hierarchically ordered'),
     ),
-    '#description' => t('The order mode defines if the taxon distribution areas
-    are displayed as alphabetically ordered list or in the hierarchical of the parent
+    '#description' => t('Taxon distribution information is displayed with
+    focus on the area of the distribution. The list of areas can either be shown
+    as flat list alphabetically ordered or in the hierarchical of the parent
     area and subarea relationship.'),
+  );
+
+  $level_options = cdm_Vocabulary_as_option(UUID_NAMED_AREA_LEVEL, NULL, FALSE, SORT_ASC);
+  $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TREE_OMIT_LEVELS] = array(
+    '#type' => 'checkboxes',
+    '#title' => 'Omit area levels',
+    '#options' => $level_options,
+    '#default_value' => variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()),
+    '#description' => 'This option ins only applicable when distributions are hierachically orderd (see option above)!.
+    Areas which belong to the selected area levels will be hidde in the portal.',
   );
 
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] = array(

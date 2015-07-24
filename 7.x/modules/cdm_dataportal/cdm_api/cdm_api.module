@@ -1286,14 +1286,19 @@ function cdm_terms_as_options($terms, $sort_by = SORT_ORDER_ID, $term_label_call
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL) {
+function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL, $default_option = FALSE, $sort_by = SORT_ORDER_ID) {
   static $vocabularyOptions = array();
 
   if (!isset($vocabularyOptions[$vocabularyUuid])) {
     $terms = cdm_ws_fetch_all('termVocabulary/' . $vocabularyUuid . '/terms');
-    $vocabularyOptions[$vocabularyUuid] = cdm_terms_as_options($terms, SORT_ORDER_ID, $term_label_callback);
+    $vocabularyOptions[$vocabularyUuid] = cdm_terms_as_options($terms, $sort_by, $term_label_callback);
   }
-  return $vocabularyOptions[$vocabularyUuid];
+
+  $options = $vocabularyOptions[$vocabularyUuid];
+  if($default_option !== FALSE){
+    array_unshift ($options, "");
+  }
+  return $options;
 }
 
 /**
@@ -1346,8 +1351,7 @@ function cdm_terms_by_type_as_option($term_type, $sort_by = SORT_ORDER_ID, $term
  * @see http://drupal.org/node/1354
  */
 function cdm_rankVocabulary_as_option() {
-  $options = cdm_Vocabulary_as_option(UUID_RANK);
-  array_unshift ($options, "");
+  $options = cdm_Vocabulary_as_option(UUID_RANK, NULL, "");
   return $options;
 }
 
