@@ -1616,10 +1616,7 @@ function cdm_settings_layout_taxon() {
   //  enable file module in profile and in update,(a.kohlbecker, 4.9.2014: is this still an open issue?)
 
   $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
-  #TODO remove after release 3.7.0 - #3470
-  if(!isset($taxon_profile_image_settings['custom_placeholder_enabled'])){
-    $taxon_profile_image_settings['custom_placeholder_enabled'] = 1;
-  }
+
   /*
    * 'show' => 1,
    * 'maxextend' => 184,

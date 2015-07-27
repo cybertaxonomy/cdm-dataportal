@@ -654,10 +654,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
       }
     }
     else {
-      if (
-        isset($taxon_profile_image_settings['custom_placeholder_enabled']) && #TODO remove this line after release 3.7.0 - #3470
-        $taxon_profile_image_settings['custom_placeholder_enabled']
-      ) {
+      if ($taxon_profile_image_settings['custom_placeholder_enabled']) {
         // show placeholder image instead
         if (!empty($taxon_profile_image_settings['custom_placeholder_image_on']) && !empty($taxon_profile_image_settings['custom_placeholder_image_fid'])) {
           // use the user provided image
