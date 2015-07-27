@@ -147,8 +147,8 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
             assertEquals(0, featureBlock.getOriginalSourcesSections().size());
     //        assertEquals("Expecting 7 FootnoteKeys", 7, featureBlock.getFootNoteKeys().size()); //original version
     //        assertEquals("Expecting 6 FootnoteKeys", 6, featureBlock.getFootNoteKeys().size());   //version after bug #3475
-            assertEquals("Expecting 8 FootnoteKeys", 8, featureBlock.getFootNoteKeys().size()); // new version #3475 fixed
-            assertEquals("Expecting 7 Footnotes", 7, featureBlock.getFootNotes().size());
+            assertEquals("Expecting 8 FootnoteKeys", 8, featureBlock.countFootNoteKeys()); // new version #3475 fixed
+            assertEquals("Expecting 7 Footnotes", 7, featureBlock.countFootNotes());
         }
 
         assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers_map")));
@@ -172,8 +172,8 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         assertEquals(blockTextFull, featureBlock.getText());
         featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-        assertEquals("Expecting no FootnoteKeys", 0, featureBlock.getFootNoteKeys().size());
-        assertEquals("Expecting no Footnotes", 0, featureBlock.getFootNotes().size());
+        assertEquals("Expecting no FootnoteKeys", 0, featureBlock.countFootNoteKeys());
+        assertEquals("Expecting no Footnotes", 0, featureBlock.countFootNotes());
 
 
         /* Common names */
@@ -201,8 +201,8 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         assertEquals(blockTextFull, featureBlock.getText());
         featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-        assertEquals("Expecting no FootnoteKeys", 0, featureBlock.getFootNoteKeys().size());
-        assertEquals("Expecting no Footnotes", 0, featureBlock.getFootNotes().size());
+        assertEquals("Expecting no FootnoteKeys", 0, featureBlock.countFootNoteKeys());
+        assertEquals("Expecting no Footnotes", 0, featureBlock.countFootNotes());
 
     }
 

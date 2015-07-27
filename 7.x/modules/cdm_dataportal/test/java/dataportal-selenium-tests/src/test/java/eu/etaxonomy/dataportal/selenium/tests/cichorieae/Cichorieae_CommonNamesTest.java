@@ -14,13 +14,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
@@ -53,11 +51,10 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
         FeatureBlock distributionBlock = p.getFeatureBlockAt(2, "distribution", "div", "dd");
         assertNotNull(distributionBlock);
 
-        List<BaseElement> footnotes = distributionBlock.getFootNotes();
-        assertTrue("footnotes must not be empty", footnotes.size() > 0);
+        assertTrue("footnotes must not be empty", distributionBlock.countFootNotes() > 0);
         // testing for the duplicate footnotes named below in the  FIXME (related to #4383 )
-        assertEquals("AN. Komarov, V. L., Flora SSSR 29. 1964", footnotes.get(39).getText());
-        assertEquals("AQ. Komarov, V. L., Flora SSSR 29. 1964 (as Lactuca altaica)", footnotes.get(42).getText());
+        assertEquals("AN. Komarov, V. L., Flora SSSR 29. 1964", distributionBlock.getFootNote(39).getText());
+        assertEquals("AQ. Komarov, V. L., Flora SSSR 29. 1964 (as Lactuca altaica)", distributionBlock.getFootNote(42).getText());
 
 
         FeatureBlock commonNamesBlock = p.getFeatureBlockAt(3, "common_names", "div", "span");

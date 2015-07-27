@@ -9,7 +9,10 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -103,7 +106,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 
         assertEquals("Distribution\nDivision 2A,B\nA. R. D. Meikle, Flora of Cyprus 2. 1985, B. R. Hand, Supplementary notes to the flora of Cyprus VI. in Willdenowia 39. 2009", featureBlock.getText());
         assertEquals("Distribution", featureBlock.getHeader());
-        assertEquals("expecting two footnote keys", 2, featureBlock.getFootNoteKeys().size());
+        assertEquals("expecting two footnote keys", 2, featureBlock.countFootNoteKeys());
 
 //        ------- prepared for  bibliography ---------
 //        FeatureBlock bibliography = p.getFeatureBlockAt(5, "bibliography", "div", "div");
@@ -111,8 +114,8 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 //        assertEquals("A. R. D. Meikle, Flora of Cyprus 2. 1985", bibliographyEntries.get(1));
 //        assertEquals("B. R. Hand, Supplementary notes to the flora of Cyprus VI. in Willdenowia 39. 2009", bibliographyEntries.get(1));
 
-        LinkElement footNoteKey_1 = featureBlock.getFootNoteKeys().get(0);
-        BaseElement footNote_1 = featureBlock.getFootNotes().get(0);
+        LinkElement footNoteKey_1 = featureBlock.getFootNoteKey(0);
+        BaseElement footNote_1 = featureBlock.getFootNote(0);
         assertTrue("expecting one footnote 0 to be the footnote for key 0",footNote_1.getText().startsWith(footNoteKey_1.getText()));
 
         p.hover(footNoteKey_1.getElement());

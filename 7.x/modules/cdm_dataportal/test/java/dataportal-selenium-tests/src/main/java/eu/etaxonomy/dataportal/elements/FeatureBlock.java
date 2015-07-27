@@ -26,9 +26,9 @@ import org.openqa.selenium.WebElement;
  */
 public class FeatureBlock extends DrupalBlock {
 
-    private List<LinkElement> footNoteKeys = null;
+    private List<WebElement> footNoteKeyElements = null;
 
-    private List<BaseElement> footNotes = null;
+    private List<WebElement> footNoteElements = null;
 
     private List<BaseElement> originalSources = null;
 
@@ -37,16 +37,21 @@ public class FeatureBlock extends DrupalBlock {
     private String featureType = null;
 
 
-    public List<LinkElement> getFootNoteKeys() {
-        if(footNoteKeys == null) {
+    /**
+     *
+     * @param index 0 based
+     * @return
+     */
+    public LinkElement getFootNoteKey(int index) {
+        if(footNoteKeyElements == null) {
             initFootNoteKeys();
         }
-        return footNoteKeys;
+        return new LinkElement(footNoteKeyElements.get(index));
     }
 
     public boolean hasFootNoteKeys() {
-        if(footNoteKeys != null) {
-            return footNoteKeys.size() > 0;
+        if(footNoteKeyElements != null) {
+            return footNoteKeyElements.size() > 0;
         } else {
             try {
                 getElement().findElement(By.className("footnote-key"));
@@ -57,16 +62,28 @@ public class FeatureBlock extends DrupalBlock {
         }
     }
 
-    public List<BaseElement> getFootNotes() {
-        if(footNotes == null) {
+    public int countFootNoteKeys() {
+        if(footNoteKeyElements == null) {
+            initFootNoteKeys();
+        }
+        return footNoteKeyElements.size();
+    }
+
+    /**
+     *
+     * @param index 0 based
+     * @return
+     */
+    public BaseElement getFootNote(int index) {
+        if(footNoteElements == null) {
             initFootNotes();
         }
-        return footNotes;
+        return new BaseElement(footNoteElements.get(index));
     }
 
     public boolean hasFootNotes() {
-        if(footNotes != null) {
-            return footNotes.size() > 0;
+        if(footNoteElements != null) {
+            return footNoteElements.size() > 0;
         } else {
             try {
                 getElement().findElement(By.className("footnote"));
@@ -75,6 +92,13 @@ public class FeatureBlock extends DrupalBlock {
                 return false;
             }
         }
+    }
+
+    public int countFootNotes() {
+        if(footNoteElements == null) {
+            initFootNotes();
+        }
+        return footNoteElements.size();
     }
 
     public List<BaseElement> getOriginalSourcesSections() {
@@ -153,22 +177,15 @@ public class FeatureBlock extends DrupalBlock {
      * @param element
      */
     private void initFootNotes() {
-        footNotes = new ArrayList<BaseElement>();
-        List<WebElement> fnList = getElement().findElements(By.className("footnote"));
-        for(WebElement fn : fnList) {
-            footNotes.add(new BaseElement(fn));
-        }
+        footNoteElements = getElement().findElements(By.cssSelector("span.footnote"));
     }
 
     /**
      * @param element
      */
     private void initFootNoteKeys() {
-        footNoteKeys = new ArrayList<LinkElement>();
-        List<WebElement> fnkList = getElement().findElements(By.className("footnote-key"));
-        for(WebElement fnk : fnkList) {
-            footNoteKeys.add(new LinkElement(fnk.findElement(By.tagName("a"))));
-        }
+        footNoteKeyElements = getElement().findElements(By.cssSelector("span.footnote-key"));
+
     }
 
     /**
