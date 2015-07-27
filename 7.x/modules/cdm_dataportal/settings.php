@@ -96,6 +96,7 @@
 
   define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
   define('DISTRIBUTION_ORDER_MODE', 'distribution_order_mode');
+  define('DISTRIBUTION_ORDER_MODE_DEFAULT', 'TREE');
   define('DISTRIBUTION_TREE_OMIT_LEVELS', 'distribution_tree_omit_levels');
 
 /**
@@ -1941,7 +1942,7 @@ function cdm_settings_layout_taxon() {
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_ORDER_MODE] = array(
     '#type' => 'radios',
     '#title' => t('Order mode') . ':',
-    '#default_value' => variable_get(DISTRIBUTION_ORDER_MODE, 'TREE'),
+    '#default_value' => variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT),
     '#options' => array(
       'FLAT_ALPHA' => t('Flat list'),
       'TREE' => t('Hierarchically ordered'),

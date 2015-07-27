@@ -686,7 +686,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
     $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
 
     // TODO use feature_block_settings instead of DISTRIBUTION_ORDER_MODE
-    if (variable_get(DISTRIBUTION_ORDER_MODE, 'TREE') != 'TREE') {
+    if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) != 'TREE') {
       $distribution_glue = '';
       $distribution_enclosingTag = 'dl';
     } else {
@@ -799,7 +799,8 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
       // --- tree
       if (is_object($distribution_info_dto->tree)) {
-        $dto_out_array[] = drupal_render(compose_distribution_hierarchy($distribution_info_dto->tree, $feature_block_settings));
+        $distribution_tree_render_array = compose_distribution_hierarchy($distribution_info_dto->tree, $feature_block_settings);
+        $dto_out_array[] = drupal_render($distribution_tree_render_array);
       }
 
       // --- sorted element list
@@ -1353,7 +1354,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
       if(variable_get(DISTRIBUTION_CONDENSED)){
         $query_parameters['part'][] = 'condensedDistribution';
       }
-      if (variable_get(DISTRIBUTION_ORDER_MODE, 'TREE') != 'TREE') {
+      if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
         $query_parameters['part'][] = 'tree';
       }
       else {
@@ -1537,9 +1538,9 @@ function cdm_create_description_element_footnotes($description_element, $separat
         .  $status_markup
       ;
 
-      if($annotations_and_sources){
+      if(isset($annotations_and_sources)){
         if(!empty($annotations_and_sources['source_references'])){
-          $per_node_markup[$node_index] .= ' ' .$annotations_and_sources['source_references'];
+          $per_node_markup[$node_index] .= ' ' . join(', ' , $annotations_and_sources['source_references']);
         }
         if($annotations_and_sources['foot_note_keys']) {
           $per_node_markup[$node_index] .= $annotations_and_sources['foot_note_keys'];
