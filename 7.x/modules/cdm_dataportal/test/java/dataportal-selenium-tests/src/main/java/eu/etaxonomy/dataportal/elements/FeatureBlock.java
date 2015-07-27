@@ -9,19 +9,15 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static junit.framework.Assert.*;
-import static org.junit.Assert.assertEquals;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WebElement;
-
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 /**
  * @author andreas
@@ -30,26 +26,61 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
  */
 public class FeatureBlock extends DrupalBlock {
 
-    private List<LinkElement> footNoteKeys = new ArrayList<LinkElement>();
+    private List<LinkElement> footNoteKeys = null;
 
-    private List<BaseElement> footNotes = new ArrayList<BaseElement>();
+    private List<BaseElement> footNotes = null;
 
-    private List<BaseElement> originalSources = new ArrayList<BaseElement>();
+    private List<BaseElement> originalSources = null;
 
-    private List<DescriptionElementRepresentation> descriptionElements = new ArrayList<DescriptionElementRepresentation>();
+    private final List<DescriptionElementRepresentation> descriptionElements = new ArrayList<DescriptionElementRepresentation>();
 
     private String featureType = null;
 
 
     public List<LinkElement> getFootNoteKeys() {
+        if(footNoteKeys == null) {
+            initFootNoteKeys();
+        }
         return footNoteKeys;
     }
 
+    public boolean hasFootNoteKeys() {
+        if(footNoteKeys != null) {
+            return footNoteKeys.size() > 0;
+        } else {
+            try {
+                getElement().findElement(By.className("footnote-key"));
+                return true;
+            } catch (NoSuchElementException  e) {
+                return false;
+            }
+        }
+    }
+
     public List<BaseElement> getFootNotes() {
+        if(footNotes == null) {
+            initFootNotes();
+        }
         return footNotes;
     }
 
+    public boolean hasFootNotes() {
+        if(footNotes != null) {
+            return footNotes.size() > 0;
+        } else {
+            try {
+                getElement().findElement(By.className("footnote"));
+                return true;
+            } catch (NoSuchElementException  e) {
+                return false;
+            }
+        }
+    }
+
     public List<BaseElement> getOriginalSourcesSections() {
+        if(originalSources == null) {
+            initSources();
+        }
         return originalSources;
     }
 
@@ -68,21 +99,6 @@ public class FeatureBlock extends DrupalBlock {
      */
     public FeatureBlock(WebElement element, String enclosingTag, String ... elementTags) {
         super(element);
-
-        List<WebElement> fnkList = element.findElements(By.className("footnote-key"));
-        for(WebElement fnk : fnkList) {
-            footNoteKeys.add(new LinkElement(fnk.findElement(By.tagName("a"))));
-        }
-
-        List<WebElement> fnList = element.findElements(By.className("footnote"));
-        for(WebElement fn : fnList) {
-            footNotes.add(new BaseElement(fn));
-        }
-
-        List<WebElement> sourcesList = element.findElements(By.className("sources"));
-        for(WebElement source : sourcesList) {
-            originalSources.add(new BaseElement(source));
-        }
 
         WebElement descriptionElementsRepresentation =  element.findElement(By.className("feature-block-elements"));
         featureType = descriptionElementsRepresentation.getAttribute("id");
@@ -120,6 +136,39 @@ public class FeatureBlock extends DrupalBlock {
             }
         }
 
+    }
+
+    /**
+     * @param element
+     */
+    private void initSources() {
+        originalSources = new ArrayList<BaseElement>();
+        List<WebElement> sourcesList = getElement().findElements(By.className("sources"));
+        for(WebElement source : sourcesList) {
+            originalSources.add(new BaseElement(source));
+        }
+    }
+
+    /**
+     * @param element
+     */
+    private void initFootNotes() {
+        footNotes = new ArrayList<BaseElement>();
+        List<WebElement> fnList = getElement().findElements(By.className("footnote"));
+        for(WebElement fn : fnList) {
+            footNotes.add(new BaseElement(fn));
+        }
+    }
+
+    /**
+     * @param element
+     */
+    private void initFootNoteKeys() {
+        footNoteKeys = new ArrayList<LinkElement>();
+        List<WebElement> fnkList = getElement().findElements(By.className("footnote-key"));
+        for(WebElement fnk : fnkList) {
+            footNoteKeys.add(new LinkElement(fnk.findElement(By.tagName("a"))));
+        }
     }
 
     /**
