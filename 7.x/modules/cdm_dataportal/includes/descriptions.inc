@@ -1426,7 +1426,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
         // level 0
         array(
           'label_suffix' => ':',
-          'element_glue' => '',
+          'element_glue' => ' ',
           'element_set_pre' => '',
           'element_set_post' => ''
         ),
@@ -1477,6 +1477,10 @@ function cdm_create_description_element_footnotes($description_element, $separat
     static $enclosingTag = "span";
 
     $level_style = array_pop($hierarchy_style);
+    if(count($hierarchy_style) == 0){
+      // lowest defined level style will be reused for all following levels
+      $hierarchy_style[] = $level_style;
+    }
 
     $node_index = -1;
     $per_node_markup = array();
