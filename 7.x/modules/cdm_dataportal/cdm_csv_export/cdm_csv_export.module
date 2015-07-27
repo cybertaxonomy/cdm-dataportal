@@ -18,11 +18,9 @@
  *
  */
 
-define('CDM_WS_TERM', 'term/$0');
 define('CDM_CSV_FEATURETREE_UUID', 'cdm_csv_featuretree_uuid');
 
-
-
+  
 /**
  *
  * @param unknown $path
