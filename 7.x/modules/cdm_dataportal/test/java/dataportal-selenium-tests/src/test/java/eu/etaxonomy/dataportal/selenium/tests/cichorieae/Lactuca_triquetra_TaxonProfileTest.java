@@ -141,7 +141,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         if(is4411_OK ) {
             assertEquals(blockTextFull, relaxedBlockText);
 
-            MultipartDescriptionElementRepresentation descriptionElement = (MultipartDescriptionElementRepresentation) featureBlock.getDescriptionElements().get(0);
+            MultipartDescriptionElementRepresentation descriptionElement = (MultipartDescriptionElementRepresentation) featureBlock.getDescriptionElement(0);
             logger.info(descriptionElement.getText());
             featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
             assertEquals(0, featureBlock.getOriginalSourcesSections().size());

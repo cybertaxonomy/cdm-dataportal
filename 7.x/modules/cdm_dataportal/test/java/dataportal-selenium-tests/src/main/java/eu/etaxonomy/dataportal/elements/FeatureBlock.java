@@ -43,9 +43,11 @@ public class FeatureBlock extends DrupalBlock {
 
     private List<BaseElement> originalSources = null;
 
-    private final List<DescriptionElementRepresentation> descriptionElements = new ArrayList<DescriptionElementRepresentation>();
-
     private String featureType = null;
+
+    private final String[] elementTags;
+
+    private final List<WebElement> descriptionItemElements;
 
 
     /**
@@ -101,8 +103,18 @@ public class FeatureBlock extends DrupalBlock {
     }
 
 
-    public List<DescriptionElementRepresentation> getDescriptionElements() {
-        return descriptionElements;
+    public DescriptionElementRepresentation getDescriptionElement(int index) {
+        WebElement descriptionElement = descriptionItemElements.get(index);
+        if(descriptionElement != null) {
+            if(elementTags.length > 1){
+                // it is a multipart element e.g. <dt></dt><dd></dd>
+                return new MultipartDescriptionElementRepresentation(
+                        descriptionItemElements.toArray(new WebElement[descriptionItemElements.size()]));
+            } else {
+                return new DescriptionElementRepresentation(descriptionElement);
+            }
+        }
+        return null;
     }
 
     public String getFeatureType() {
@@ -121,6 +133,7 @@ public class FeatureBlock extends DrupalBlock {
         logger.trace("FeatureBlock() - constructor after super()");
 
         this.driver = driver;
+        this.elementTags = elementTags;
 
         WebElement descriptionElementsRepresentation =  element.findElement(By.className("feature-block-elements"));
         featureType = descriptionElementsRepresentation.getAttribute("id");
@@ -129,6 +142,7 @@ public class FeatureBlock extends DrupalBlock {
         assertEquals("Unexpected tag enclosing description element representations", enclosingTag, descriptionElementsRepresentation.getTagName());
 
         logger.trace("FeatureBlock() - loading all elements ...");
+        descriptionItemElements = new ArrayList<WebElement>();
         if(elementTags.length > 1){
 
             // handle multipart elements e.g. <dt></dt><dd></dd>
@@ -144,18 +158,18 @@ public class FeatureBlock extends DrupalBlock {
             }
 
             for (int descriptionElementIndex = 0; descriptionElementIndex < lastSize; descriptionElementIndex++){
-                List<WebElement> elementsByIndex = new ArrayList<WebElement>();
                 for (String elementTag : elementTags) {
-                    elementsByIndex.add(elementsByTag.get(elementTag).get(descriptionElementIndex));
+                    descriptionItemElements.add(elementsByTag.get(elementTag).get(descriptionElementIndex));
                 }
-                descriptionElements.add(new MultipartDescriptionElementRepresentation(elementsByIndex.toArray(new WebElement[elementsByIndex.size()])));
+//                descriptionElements.add(new MultipartDescriptionElementRepresentation(descriptionItemElements.toArray(new WebElement[descriptionItemElements.size()])));
 
             }
         } else {
             // handle single elements
             String elementTag = elementTags[0];
             for(WebElement el : descriptionElementsRepresentation.findElements(By.tagName( elementTag ))) {
-                descriptionElements.add(new DescriptionElementRepresentation(el));
+                descriptionItemElements.add(el);
+//                descriptionElements.add(new DescriptionElementRepresentation(el));
             }
         }
         logger.trace("FeatureBlock() - loading all elements DONE");
@@ -238,7 +252,7 @@ public class FeatureBlock extends DrupalBlock {
     public void testDescriptionElementLayout(int descriptionElementId, int indent, int computedFontSize
             , String expectedCssDisplay, String expectedListStyleType, String expectedListStylePosition, String expectedListStyleImage) {
 
-        DescriptionElementRepresentation firstDescriptionElement = getDescriptionElements().get(descriptionElementId);
+        DescriptionElementRepresentation firstDescriptionElement = getDescriptionElement(descriptionElementId);
 
         if(firstDescriptionElement instanceof MultipartDescriptionElementRepresentation){
             int multipartElementIndex = 0;
