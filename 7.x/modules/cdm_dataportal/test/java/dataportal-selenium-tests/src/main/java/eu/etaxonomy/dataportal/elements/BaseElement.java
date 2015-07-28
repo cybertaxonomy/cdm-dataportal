@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -36,7 +37,7 @@ public class BaseElement {
      */
     protected static final double PIXEL_TOLERANCE = 0.5;
 
-    private WebElement element;
+    private final WebElement element;
 
     private List<String> classAttributes = null;
 
@@ -52,6 +53,9 @@ public class BaseElement {
     }
 
     public String getText() {
+        if(text == null) {
+            text = element.getText();
+        }
         return text;
     }
 
@@ -144,15 +148,15 @@ public class BaseElement {
      */
     public BaseElement(WebElement element) {
 
+        logger.setLevel(Level.TRACE);
+        logger.trace("BaseElement() - constructor");
         this.element = element;
-
-        // read text
-        text = element.getText();
 
         // read and tokenize the class attribute
         if (element.getAttribute("class") != null) {
             String[] classTokens = element.getAttribute("class").split("\\s");
             setClassAttributes(Arrays.asList(classTokens));
+            logger.trace("BaseElement() - class attribute loaded");
         }
     }
 

@@ -15,8 +15,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -26,9 +29,17 @@ import org.openqa.selenium.WebElement;
  */
 public class FeatureBlock extends DrupalBlock {
 
-    private List<WebElement> footNoteKeyElements = null;
+    /**
+     * JQuery Selector for footnotekeys
+     */
+    private static final String SELECTOR_FOOTNOTE_KEY = "span.footnote-key";
 
-    private List<WebElement> footNoteElements = null;
+    /**
+     * JQuery Selector for footnotes
+     */
+    private static final String SELECTOR_FOOTNOTE = "span.footnote";
+
+    private final WebDriver driver;
 
     private List<BaseElement> originalSources = null;
 
@@ -43,30 +54,16 @@ public class FeatureBlock extends DrupalBlock {
      * @return
      */
     public LinkElement getFootNoteKey(int index) {
-        if(footNoteKeyElements == null) {
-            initFootNoteKeys();
-        }
-        return new LinkElement(footNoteKeyElements.get(index));
+        WebElement footNoteKeyElement = jsGetElement(String.format("%s:nth-child(%d)", SELECTOR_FOOTNOTE_KEY, index));
+        return new LinkElement(footNoteKeyElement);
     }
 
     public boolean hasFootNoteKeys() {
-        if(footNoteKeyElements != null) {
-            return footNoteKeyElements.size() > 0;
-        } else {
-            try {
-                getElement().findElement(By.className("footnote-key"));
-                return true;
-            } catch (NoSuchElementException  e) {
-                return false;
-            }
-        }
+        return countFootNoteKeys() > 0;
     }
 
-    public int countFootNoteKeys() {
-        if(footNoteKeyElements == null) {
-            initFootNoteKeys();
-        }
-        return footNoteKeyElements.size();
+    public long countFootNoteKeys() {
+        return jsCountElements(SELECTOR_FOOTNOTE_KEY);
     }
 
     /**
@@ -75,30 +72,17 @@ public class FeatureBlock extends DrupalBlock {
      * @return
      */
     public BaseElement getFootNote(int index) {
-        if(footNoteElements == null) {
-            initFootNotes();
-        }
-        return new BaseElement(footNoteElements.get(index));
+        WebElement footNoteElement = jsGetElement(String.format("%s:nth-child(%d)", SELECTOR_FOOTNOTE, index));
+        return new BaseElement(footNoteElement);
+    }
+
+
+    public long countFootNotes() {
+        return jsCountElements(SELECTOR_FOOTNOTE);
     }
 
     public boolean hasFootNotes() {
-        if(footNoteElements != null) {
-            return footNoteElements.size() > 0;
-        } else {
-            try {
-                getElement().findElement(By.className("footnote"));
-                return true;
-            } catch (NoSuchElementException  e) {
-                return false;
-            }
-        }
-    }
-
-    public int countFootNotes() {
-        if(footNoteElements == null) {
-            initFootNotes();
-        }
-        return footNoteElements.size();
+        return countFootNotes() > 0;
     }
 
     public List<BaseElement> getOriginalSourcesSections() {
@@ -119,10 +103,16 @@ public class FeatureBlock extends DrupalBlock {
 
 
     /**
+     * @param driver TODO
      * @param element
      */
-    public FeatureBlock(WebElement element, String enclosingTag, String ... elementTags) {
+    public FeatureBlock(WebDriver driver, WebElement element, String enclosingTag, String ... elementTags) {
+
         super(element);
+        logger.setLevel(Level.TRACE);
+        logger.trace("FeatureBlock() - constructor after super()");
+
+        this.driver = driver;
 
         WebElement descriptionElementsRepresentation =  element.findElement(By.className("feature-block-elements"));
         featureType = descriptionElementsRepresentation.getAttribute("id");
@@ -130,6 +120,7 @@ public class FeatureBlock extends DrupalBlock {
         //TODO throw exception instead of making an assertion! selenium should have appropriate exceptions
         assertEquals("Unexpected tag enclosing description element representations", enclosingTag, descriptionElementsRepresentation.getTagName());
 
+        logger.trace("FeatureBlock() - loading all elements ...");
         if(elementTags.length > 1){
 
             // handle multipart elements e.g. <dt></dt><dd></dd>
@@ -159,7 +150,60 @@ public class FeatureBlock extends DrupalBlock {
                 descriptionElements.add(new DescriptionElementRepresentation(el));
             }
         }
+        logger.trace("FeatureBlock() - loading all elements DONE");
 
+    }
+
+    /**
+     * @return
+     */
+    private Long jsCountElements(String jQuerySelector) {
+        if(driver instanceof JavascriptExecutor) {
+            String blockId = getElement().getAttribute("id");
+            if(!blockId.startsWith("block-cdm-dataportal-feature-")) {
+                throw new IllegalStateException("The block with id " + blockId + " is not a proper feature block");
+            }
+            // NOTE: jQuery(document).ready() must not be used here, otherwise
+            // the executeScript() function will return null
+            String js = "var elementCnt = jQuery('#" + blockId + "')."
+                    + "    find('" + jQuerySelector + "').length;"
+//                    + "  // console.log('count is ' + elementCnt);"
+                    + "return elementCnt;";
+            Object resultO  = ((JavascriptExecutor) driver).executeScript(js);
+            logger.debug("FootNoteKeys count is " + resultO);
+            if(resultO !=  null) {
+                return Long.valueOf(resultO.toString());
+            }
+            return null;
+        }
+        throw new IllegalStateException("The driver must be a JavascriptExecutor");
+    }
+
+    /**
+     * @return
+     */
+    private WebElement jsGetElement(String jQuerySelector) {
+        if(driver instanceof JavascriptExecutor) {
+            String blockId = getElement().getAttribute("id");
+            if(!blockId.startsWith("block-cdm-dataportal-feature-")) {
+                throw new IllegalStateException("The block with id " + blockId + " is not a proper feature block");
+            }
+            // NOTE: jQuery(document).ready() must not be used here, otherwise
+            // the executeScript() function will return null
+            String js = "var elements = jQuery('#" + blockId + "')."
+                    + "   find('" + jQuerySelector + "');"
+                    + "return elements[0];";
+            Object resultO  = ((JavascriptExecutor) driver).executeScript(js);
+            logger.debug("FootNoteKeys count is " + resultO);
+            if(resultO instanceof WebElement) {
+                return (WebElement)resultO;
+            }
+            if(resultO instanceof List) {
+                throw new IllegalStateException("The selector '" + jQuerySelector + "' matches multiple elements, this is not allowed.");
+            }
+            return null;
+        }
+        throw new IllegalStateException("The driver must be a JavascriptExecutor");
     }
 
     /**
@@ -171,21 +215,6 @@ public class FeatureBlock extends DrupalBlock {
         for(WebElement source : sourcesList) {
             originalSources.add(new BaseElement(source));
         }
-    }
-
-    /**
-     * @param element
-     */
-    private void initFootNotes() {
-        footNoteElements = getElement().findElements(By.cssSelector("span.footnote"));
-    }
-
-    /**
-     * @param element
-     */
-    private void initFootNoteKeys() {
-        footNoteKeyElements = getElement().findElements(By.cssSelector("span.footnote-key"));
-
     }
 
     /**

@@ -53,6 +53,7 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
 
         assertTrue("footnotes must not be empty", distributionBlock.countFootNotes() > 0);
         // testing for the duplicate footnotes named below in the  FIXME (related to #4383 )
+
         assertEquals("AN. Komarov, V. L., Flora SSSR 29. 1964", distributionBlock.getFootNote(39).getText());
         assertEquals("AQ. Komarov, V. L., Flora SSSR 29. 1964 (as Lactuca altaica)", distributionBlock.getFootNote(42).getText());
 

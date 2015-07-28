@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.openqa.selenium.By;
@@ -155,11 +156,14 @@ public class TaxonProfilePage extends PortalPage {
      */
     public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String elementTag){
 
+        logger.setLevel(Level.TRACE);
+        logger.trace("getFeatureBlockAt()");
         List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm-dataportal-feature"));
         Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
         for(WebElement b : featureBlocks){
             if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + normalizeClassAttribute(featureName))){
-                return new FeatureBlock( b, enclosingTag, elementTag);
+                logger.trace("getFeatureBlockAt() - block found, will be instantiated ...");
+                return new FeatureBlock( driver, b, enclosingTag, elementTag);
             }
         }
         return null;
@@ -172,7 +176,7 @@ public class TaxonProfilePage extends PortalPage {
         Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
         for(WebElement b : featureBlocks){
             if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + normalizeClassAttribute(featureName))){
-                return new FeatureBlock( b, enclosingTag, elementTag);
+                return new FeatureBlock( driver, b, enclosingTag, elementTag);
             }
         }
         return null;

@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
+import org.apache.log4j.Level;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -32,11 +33,16 @@ public class DrupalBlock extends BaseElement {
 
 		super(element);
 
+		logger.setLevel(Level.TRACE);
+        logger.trace("DrupalBlock() - constructor after super()");
+
 		content = element.findElement(By.className("content"));
 
+		logger.trace("DrupalBlock() - block content loaded");
 		try {
 			WebElement headerElement = element.findElement(By.tagName("h2"));
 			header = headerElement.getText();
+			logger.trace("DrupalBlock() - header text ready");
 		} catch (NoSuchElementException e){
 			// IGNORE //
 		}
