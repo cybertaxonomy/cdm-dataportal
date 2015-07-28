@@ -116,6 +116,8 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 
         LinkElement footNoteKey_1 = featureBlock.getFootNoteKey(0);
         BaseElement footNote_1 = featureBlock.getFootNote(0);
+        assertNotNull(footNoteKey_1);
+        assertNotNull(footNote_1);
         assertTrue("expecting one footnote 0 to be the footnote for key 0",footNote_1.getText().startsWith(footNoteKey_1.getText()));
 
         p.hover(footNoteKey_1.getElement());

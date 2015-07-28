@@ -10,6 +10,7 @@
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -87,7 +88,7 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
         // see  #2288 (Cyprus: ChromosomeNumbers: formating nameInSource)
         assertEquals("Chromosome numbers\n2n = 18 (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus in Candollea 48. 1993 (as Cistus creticus L.)) (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus. 2 in Acta Univ. Carol., Biol. 46. 2002 (as Cistus creticus L.))", featureBlock.getText());
 
-        assertTrue("expecting no footnote keys", featureBlock.hasFootNoteKeys());
+        assertFalse("expecting no footnote keys", featureBlock.hasFootNoteKeys());
         List<WebElement> linksInFeatureBlock = featureBlock.getElement().findElements(By.tagName("a"));
         assertEquals("Expecting 3 anchor tags in \"Chromosome Numbers\"", 5, linksInFeatureBlock.size());
         assertEquals("chromosome_numbers", linksInFeatureBlock.get(0).getAttribute("name"));

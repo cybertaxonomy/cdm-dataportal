@@ -32,7 +32,7 @@ public class FeatureBlock extends DrupalBlock {
     /**
      * JQuery Selector for footnotekeys
      */
-    private static final String SELECTOR_FOOTNOTE_KEY = "span.footnote-key";
+    private static final String SELECTOR_FOOTNOTE_KEY = "span.footnote-key a";
 
     /**
      * JQuery Selector for footnotes
@@ -54,8 +54,12 @@ public class FeatureBlock extends DrupalBlock {
      * @return
      */
     public LinkElement getFootNoteKey(int index) {
-        WebElement footNoteKeyElement = jsGetElement(String.format("%s:nth-child(%d)", SELECTOR_FOOTNOTE_KEY, index));
-        return new LinkElement(footNoteKeyElement);
+        WebElement footNoteKeyElement = jsGetElement(SELECTOR_FOOTNOTE_KEY, index);
+        if(footNoteKeyElement != null) {
+            return new LinkElement(footNoteKeyElement);
+        } else {
+            return null;
+        }
     }
 
     public boolean hasFootNoteKeys() {
@@ -72,8 +76,12 @@ public class FeatureBlock extends DrupalBlock {
      * @return
      */
     public BaseElement getFootNote(int index) {
-        WebElement footNoteElement = jsGetElement(String.format("%s:nth-child(%d)", SELECTOR_FOOTNOTE, index));
-        return new BaseElement(footNoteElement);
+        WebElement footNoteElement = jsGetElement(SELECTOR_FOOTNOTE, index);
+        if(footNoteElement != null) {
+            return new BaseElement(footNoteElement);
+        } else {
+            return null;
+        }
     }
 
 
@@ -180,9 +188,10 @@ public class FeatureBlock extends DrupalBlock {
     }
 
     /**
+     * @param elementIndex TODO
      * @return
      */
-    private WebElement jsGetElement(String jQuerySelector) {
+    private WebElement jsGetElement(String jQuerySelector, int elementIndex) {
         if(driver instanceof JavascriptExecutor) {
             String blockId = getElement().getAttribute("id");
             if(!blockId.startsWith("block-cdm-dataportal-feature-")) {
@@ -191,8 +200,9 @@ public class FeatureBlock extends DrupalBlock {
             // NOTE: jQuery(document).ready() must not be used here, otherwise
             // the executeScript() function will return null
             String js = "var elements = jQuery('#" + blockId + "')."
-                    + "   find('" + jQuerySelector + "');"
-                    + "return elements[0];";
+                            + "   find('" + jQuerySelector + "');"
+//                            + "console.log(elements.length);"
+                            + "return elements[" + elementIndex +"];";
             Object resultO  = ((JavascriptExecutor) driver).executeScript(js);
             logger.debug("FootNoteKeys count is " + resultO);
             if(resultO instanceof WebElement) {

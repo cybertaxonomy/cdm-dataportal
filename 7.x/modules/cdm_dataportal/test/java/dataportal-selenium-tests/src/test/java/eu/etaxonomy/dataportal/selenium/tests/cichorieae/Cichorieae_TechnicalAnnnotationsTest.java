@@ -10,6 +10,7 @@
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
@@ -56,8 +57,8 @@ public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
         FeatureBlock creditsBlock = p.getFeatureBlockAt(1, "credits", "div", "div");
         //testing this is not possible due to SCHROTT-CODE // assertEquals("expecting 1 DescriptionElements in citation", 1, creditsBlock.getDescriptionElements().size());
         assertEquals("Credits\nBoufford D. E. 2009: Images (12 added)\nSmalla M. 2009: Images (1 added)\nSun H. 2009: Images (3 added)\nYue J. 2009: Images (1 added)\nZhang J. 2009: Images (1 added).", creditsBlock.getText());
-        assertTrue("expecting no footnoteKeys", creditsBlock.hasFootNoteKeys());
-        assertTrue("expecting no footnotes", creditsBlock.hasFootNotes());
+        assertFalse("expecting no footnoteKeys", creditsBlock.hasFootNoteKeys());
+        assertFalse("expecting no footnotes", creditsBlock.hasFootNotes());
     }
 
     @Test
