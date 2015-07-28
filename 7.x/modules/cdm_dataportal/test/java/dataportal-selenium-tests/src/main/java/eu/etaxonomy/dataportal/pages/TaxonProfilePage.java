@@ -64,6 +64,8 @@ public class TaxonProfilePage extends PortalPage {
     @CacheLookup
     private WebElement tableOfContent;
 
+    private List<LinkElement> tableOfContentLinks = null;
+
 
 
     /**
@@ -121,15 +123,16 @@ public class TaxonProfilePage extends PortalPage {
     }
 
     public List<LinkElement> getTableOfContentLinks() {
-        List<LinkElement> linkList = null;
-        if(tableOfContent != null) {
-            linkList = new ArrayList<LinkElement>();
-            List<WebElement> listItems = tableOfContent.findElements(By.tagName("a"));
-            for (WebElement li : listItems) {
-                linkList.add( new LinkElement( li) );
+        if(tableOfContentLinks == null) {
+            tableOfContentLinks = new ArrayList<LinkElement>();
+            if(tableOfContent != null) {
+                List<WebElement> listItems = tableOfContent.findElements(By.tagName("a"));
+                for (WebElement li : listItems) {
+                    tableOfContentLinks.add( new LinkElement( li) );
+                }
             }
         }
-        return linkList;
+        return tableOfContentLinks;
     }
 
     /**
