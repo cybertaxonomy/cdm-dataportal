@@ -1021,9 +1021,16 @@ function cdm_settings_general() {
       '#tree' => TRUE,
       '#description' => 'The Distribution filter offers the following options
       <ul>
-      <li><strong>Status order preference rule:</strong> In case of multiple distribution status (PresenceAbsenceTermBase) for the same area the status with the highest order is preferred, see OrderedTermBase.compareTo(OrderedTermBase).</li>
-      <li><strong>Sub area preference rule:</strong>If there is an area with a direct sub area and both areas have the same computed status only the information on the sub area should be reported, whereas the super area should be ignored.</li>
-      <li><strong>Marked area filter:</strong>Skip distributions where the area has a Marker with one of the specified MarkerTypes</li>
+      <li><strong>Status order preference rule:</strong> In case of multiple distribution status (PresenceAbsenceTermBase) for
+        the same area the status with the highest order is preferred, see OrderedTermBase.compareTo(OrderedTermBase).</li>
+      <li><strong>Sub area preference rule:</strong>If there is an area with a direct sub area and both areas have the same
+        computed status only the information on the sub area should be reported, whereas the super area should be ignored.</li>
+      <li><strong>Marked area filter:</strong>Skip distributions for areas having a TRUE Marker with one of the specified MarkerTypes.
+        Existing sub-areas of a marked area must also be marked with the same marker type, otherwise the marked
+        area acts as a fallback area for the sub areas. An area is a <em>fallback area</em> if it is marked to
+        be hidden and if it has at least one of sub area which is not marked to be hidden. The <em>fallback area</em>
+        will be show if there is no Distribution for any of the non hidden sub-areas. For more detailed discussion on
+        <em>fallback area</em> see https://dev.e-taxonomy.eu/trac/ticket/4408.</li>
       </ul>'
   );
 
@@ -1944,10 +1951,13 @@ function cdm_settings_layout_taxon() {
       'FLAT_ALPHA' => t('Flat list'),
       'TREE' => t('Hierarchically ordered'),
     ),
-    '#description' => t('Taxon distribution information is displayed with
+    '#description' => 'Taxon distribution information is displayed with
     focus on the area of the distribution. The list of areas can either be shown
-    as flat list alphabetically ordered or in the hierarchical of the parent
-    area and subarea relationship.'),
+    as flat list ordered alphabetically or in the hierarchical of the parent
+    area and subarea relationship. Fall back areas areas with no Distribution data
+    are hidden from the area hierarchy so that their sub areas will move one level up.
+    See ' . l('Distribution appearance', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-distribution')) .
+    ' for details on the <em>Maked area filter</em>.',
   );
 
   $level_options = cdm_Vocabulary_as_option(UUID_NAMED_AREA_LEVEL, NULL, FALSE, SORT_ASC);
