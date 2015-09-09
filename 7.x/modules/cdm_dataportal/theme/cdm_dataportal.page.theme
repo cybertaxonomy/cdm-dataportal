@@ -35,6 +35,7 @@ function theme_cdm_taxon_page_title($variables) {
 
   $out .= theme('cdm_taxonName', array(
     'taxonName' => $taxon->name,
+    'sec' => $taxon->sec,
     'nameLink' => NULL,
     'refenceLink' => $referenceUri,
     'show_annotations' => FALSE,
@@ -154,6 +155,7 @@ function theme_cdm_taxon_page_synonymy($variables) {
     $accepted_name = '<div class="accepted-name">';
     $accepted_name .= theme('cdm_taxonName', array(
       'taxonName' => $taxon->name,
+      'sec' => $taxon->sec,
       'nameLink' => NULL,
       'refenceLink' => $referenceUri,
       ));

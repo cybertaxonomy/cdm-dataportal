@@ -141,6 +141,7 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
         'namePart' => array('name' => TRUE),
         'nameAuthorPart' => array('name' => TRUE),
         'referencePart' => array('authors' => TRUE),
+        'secReferencePart' => array('secReference' => TRUE,),
         'microreferencePart' => array('microreference' => TRUE),
         'statusPart' => array('status' => TRUE),
         'descriptionPart' => array('description' => TRUE),
@@ -149,6 +150,7 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
         'namePart' => array('name' => TRUE),
         'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
         'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
+        'secReferencePart' => array('secReference' => TRUE,),
         'referenceYearPart' => array('reference.year' => TRUE),
         'statusPart' => array('status' => TRUE),
         'descriptionPart' => array('description' => TRUE),
@@ -161,17 +163,20 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
             'name' => TRUE,
             'authors' => TRUE
         ),
-        'referencePart' => array(
-            'reference' => TRUE
+       'referencePart' => array(
+         'reference' => TRUE
         ),
-        'microreferencePart' => array(
-            'microreference' => TRUE,
+       'secReferencePart' => array(
+         'secReference' => TRUE,
+       ),
+       'microreferencePart' => array(
+          'microreference' => TRUE,
         ),
-        'statusPart' => array(
-            'status' => TRUE,
+       'statusPart' => array(
+          'status' => TRUE,
         ),
-        'descriptionPart' => array(
-            'description' => TRUE,
+       'descriptionPart' => array(
+          'description' => TRUE,
         ),
       )
     )
@@ -183,12 +188,19 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
      'taxon_page_title,polytomousKey'=> array(
           'namePart' => array('#uri' => TRUE),
         ),
-      'taxon_page_synonymy,related_taxon'=> array(
+      'taxon_page_synonymy'=> array(
           'nameAuthorPart' => array('#uri' => TRUE),
           'referencePart' => TRUE,
           'statusPart' => TRUE,
           'descriptionPart' => TRUE,
         ),
+       'related_taxon'=> array(
+         'nameAuthorPart' => array('#uri' => TRUE),
+         'referencePart' => TRUE,
+         'secReferencePart' => TRUE,
+         'statusPart' => TRUE,
+         'descriptionPart' => TRUE,
+       ),
        'homonym'=> array(
             'nameAuthorPart' => array('#uri' => TRUE),
             'referenceYearPart' => TRUE,
@@ -1296,15 +1308,20 @@ function cdm_settings_layout() {
 
   $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
 
+  $default_part_definition_json = json_encode($default_part_definitions);
+  $current_part_definition_json = json_encode(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
+  $is_custom_part_definition = $default_part_definition_json != $current_part_definition_json;
   $form['taxon_name'][CDM_PART_DEFINITIONS] = array(
       '#type' => 'textarea',
       '#title' => t('Part definitions'),
       '#element_validate' => array('form_element_validate_json'),
-      '#default_value' =>  json_encode(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions)),
+      '#default_value' =>  $current_part_definition_json,
       '#description' => '
           <p>
-          (Clearing the text area will reset it to the default)
-          </p>
+          ' . ($is_custom_part_definition ?
+              '<span style="color:#ff7800; font-weight: bold;">(This is a custom part definition, clearing the text area and and submitting the form will reset it to the default)</span>':
+              '(This is the default part definition.)')
+        . '</p>
           <p>
            The part definitions define the specific parts of which a rendered taxon name plus additional information will consist.
           </p>
@@ -1373,6 +1390,9 @@ function cdm_settings_layout() {
                 "reference": true,
                 "microreference": true
               },
+              "secReferencePart": {
+                "secReference": true
+              },
               "statusPart": {
                 "status": true
               },
@@ -1385,7 +1405,9 @@ function cdm_settings_layout() {
   );
 
   $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
-
+  $default_render_templates_json = json_encode($default_render_templates);
+  $custom_render_templates_json = json_encode(variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates));
+  $is_custom_render_templates = $default_render_templates_json != $custom_render_templates_json;
   $form['taxon_name'][CDM_NAME_RENDER_TEMPLATES] = array(
       '#type' => 'textarea',
       '#title' => t('Name render templates'),
@@ -1393,8 +1415,10 @@ function cdm_settings_layout() {
       '#default_value' =>  json_encode(variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates)),
       '#description' => '
           <p>
-          (Clearing the text area will reset it to the default)
-          </p>
+          ' . ($is_custom_render_templates ?
+          '<span style="color:#ff7800; font-weight: bold;">(These are custom render templates, clearing the text area and and submitting the form will reset it to the default)</span>':
+          '(These are the default render templates.)')
+        . '</p>
           <p>
           The render templates array contains one or more name render templates to be used within the page areas identified by the
           render path. The render path is used as key of the array sub subelements whereas the name render template array is set as value.
@@ -1419,7 +1443,8 @@ function cdm_settings_layout() {
           definitions array. See <a href="#edit-cdm-part-definitions">Part definitions</a> above for more information.
           <p>
           The value of the render template element must be set to TRUE in order to let this part being rendered.
-          The namePart, nameAuthorPart and referencePart can also hold an associative array with a single
+          For some parts can <strong>links</strong> can be created which lead to the accoring intity page:</br>
+          The <strong>namePart</strong>, <strong>nameAuthorPart</strong>, <strong>referencePart</strong> and <strong>secReferencePart</strong> can also hold an associative array with a single
           element: array(\'#uri\' => TRUE). The value of the #uri element will be replaced by the according
           links if the paramters $nameLink or $refenceLink are given to the name render function
           (this is hard coded and cannot be configured here).',

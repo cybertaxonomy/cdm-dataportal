@@ -75,7 +75,7 @@ function theme_cdm_taxonRelationships($variables) {
       else {
         // All relationsship types but misapplied_name_for
         // invalid_designation_for.
-        $taxon_relationships_lines[] = cdm_taxonRelationship($taxonRelation, TRUE, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon), TRUE);
+        $taxon_relationships_lines[] = cdm_taxonRelationship($taxonRelation, TRUE, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon));
       }
     }
   }
@@ -247,7 +247,7 @@ function theme_cdm_list_of_taxa($variables) {
     $itemCnt++;
     if (isset($table_of_accepted[$taxon->uuid])) {
       // Its a synonym or misapplied name.
-      $is_synonym = isset($synonym_uuids[$taxon->uuid]);
+      $is_synonym = isset($synonym_uuids[$taxon->uuid]); //TODO better use the $taxon->class attribute?
       $taxon_type = $is_synonym ? "Synonym" : "misapplied-name";
 
       $acceptedTaxa = $table_of_accepted[$taxon->uuid];
@@ -262,12 +262,10 @@ function theme_cdm_list_of_taxa($variables) {
         }
         $out .= '<li class="' . $taxon_type . '">' . theme('cdm_taxonName', array(
           'taxonName' => $taxon->name,
+          'sec' => !$is_synonym ? $taxon->sec : NULL,
           'nameLink' => $taxonUri,
           'refenceLink' => $referenceUri,
           ));
-        if (!$is_synonym) {
-          $out .= '<span class="sensu"> sensu ' . theme('cdm_reference', array('reference' => $taxon->sec)) . '</span>';
-        }
         if ($show_classification) {
           $classifications = get_classifications_for_taxon($taxon);
           $classification_titles = array();
@@ -295,6 +293,7 @@ function theme_cdm_list_of_taxa($variables) {
             // taxon name as label:
             theme('cdm_taxonName', array(
               'taxonName' => $taxon->name,
+              'sec' => $taxon->sec,
               'nameLink' => NULL,
               'refenceLink' => NULL,
               'show_annotations' => FALSE,
@@ -324,6 +323,7 @@ function theme_cdm_list_of_taxa($variables) {
       }
       $out .= '<li class="Taxon">' . theme('cdm_taxonName', array(
         'taxonName' => $taxon->name,
+        'sec' => $taxon->sec,
         'nameLink' => $taxonUri,
         'refenceLink' => $referenceUri,
         ));
@@ -390,12 +390,10 @@ function theme_cdm_list_of_taxa($variables) {
  *     whether to create a link to the related taxon
  * @param boolean $inverse
  *     whether the $taxonRelationship should be treaded as invers relation
- * @param unknown_type $showSecReference
- *     whether the secundum reference for the related taxon should be shown
  *
  * @return void|string
  */
-function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $inverse = FALSE, $showSecReference = FALSE) {
+function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $inverse = FALSE) {
 
   // Validate object.
   if (!(isset($taxonRelationship->toTaxon) && isset($taxonRelationship->fromTaxon) && isset($taxonRelationship->type))) {
@@ -415,7 +413,7 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $invers
     $reltype_representation = $taxonRelationType->representation_L10n;
   }
 
-  return cdm_related_taxon($toTaxon, NULL, $relsign, $reltype_representation, $taxonRelationship->doubtful, $doLinkTaxon, $showSecReference);
+  return cdm_related_taxon($toTaxon, NULL, $relsign, $reltype_representation, $taxonRelationship->doubtful, $doLinkTaxon);
 }
 
 /**
@@ -423,7 +421,7 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $invers
  *
  * According name relationships are also being rendered.
  */
-function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $reltype_representation = NULL, $doubtful=false, $doLinkTaxon = FALSE, $showSecReference = FALSE) {
+function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $reltype_representation = NULL, $doubtful=false, $doLinkTaxon = FALSE) {
   static $relsign_homo = '≡';
   static $relsign_hetero = '=';
   static $relsign_invalid = '&ndash;';
@@ -497,6 +495,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   }
   $out_taxon_part = theme('cdm_taxonName', array(
     'taxonName' => $taxon->name,
+    'sec' => $taxon->sec,
     'nameLink' => $taxonUri,
     'refenceLink' => $referenceUri,
     'show_annotations' => TRUE,

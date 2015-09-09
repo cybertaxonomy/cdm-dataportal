@@ -49,7 +49,7 @@ function theme_cdm_reference_pager($variables) {
 }
 
 /**
- * Returns HTML for a reference.
+ * Creates a HTML representations for a CDM Reference instance..
  *
  * Used by:
  * - theme_cdm_typedesignations
@@ -63,7 +63,11 @@ function theme_cdm_reference_pager($variables) {
  *   - doLink:
  *      Whether to create a link to the reference page, links to the reference URI or DOI are always
  *      created when this data is available
- *   - referenceStyle
+ *   - referenceStyle: the value "zoology" will cause a specific rendeting of the
+ *      reference suitable for zoological publications.
+ *
+ * @return string
+ *    the markup for the reference
  *
  * @ingroup themeable
  */

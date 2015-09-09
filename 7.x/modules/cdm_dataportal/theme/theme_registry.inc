@@ -142,6 +142,7 @@ function cdm_dataportal_theme() {
     // Themes in cdm_dataportal.name.theme.
     'cdm_taxonName' => array('variables' => array(
         'taxonName' => NULL,
+        'sec' => NULL,
         'nameLink' => NULL,
         'refenceLink' => NULL,
         'show_annotations' => TRUE,

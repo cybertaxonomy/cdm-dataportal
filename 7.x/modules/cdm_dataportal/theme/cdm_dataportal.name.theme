@@ -671,7 +671,6 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $refenceLink = NU
  *  );
  * @endcode
  *
- * @todo document this function.
  */
 function get_partDefinition($taxonNameType) {
 
@@ -694,20 +693,31 @@ function get_partDefinition($taxonNameType) {
 }
 
 /**
+ * Renders the markup for a CDM TaxonName instance.
+ *
+ * The layout of the name representation is configured by the
+ * part_definitions and render_templates (see get_partDefinition() and
+ * get_nameRenderTemplate())
+ *
  * @param $variables
  *    - taxonName : cdm TaxonNameBase instance
+ *    - sec : the sec reference of a taxon having this name (optional)
  *    - nameLink: URI to the taxon, @see path_to_taxon(), must be processed by url() before passing to this method
  *    - refenceLink: URI to the reference, @see path_to_reference(), must be processed by url() before passing to this method
- *    - show_annotations: ...
- *    - is_type_designation: ...
- *    - skiptags: an array of tags to skip ....
+ *    - show_annotations: turns the display of annotations on
+ *    - is_type_designation: To indicate that the supplied taxon name is a name type designation.
+ *    - skiptags: an array of name elements tags like 'name', 'rank' to skip. The name part
+ *          'authors' will not ber affected by this filter. This part is managed though the render template
+ *          mechanism.
  *
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * @return string
+ *  The markup for a taxon name.
+ *
  */
 function theme_cdm_taxonName($variables) {
 
   $taxonName = $variables['taxonName'];
+  $sec_reference = $variables['sec'];
   $nameLink = $variables['nameLink'];
   $refenceLink = $variables['refenceLink'];
   $show_annotations = $variables['show_annotations'];
@@ -837,6 +847,12 @@ function theme_cdm_taxonName($variables) {
     if(isset($taxonName->nomenclaturalReference->datePublished)){
       $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxonName->nomenclaturalReference->datePublished) . '</span>';
       array_setr('reference.year', $referenceArray, $renderTemplate);
+    }
+  }
+
+  if (isset($renderTemplate['secReferencePart'])){
+    if(isset($sec_reference)){
+      array_setr('secReference', ' <span class="sec_reference">sec. ' . theme('cdm_reference', array('reference' => $sec_reference)) . '</span>', $renderTemplate);
     }
   }
 
