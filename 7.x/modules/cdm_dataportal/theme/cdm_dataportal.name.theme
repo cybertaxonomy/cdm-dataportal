@@ -315,11 +315,9 @@ function theme_cdm_homotypicSynonymLine($variables) {
 
             //from relation ships -> only shown at fromName-synonym
             if ($taxon->name->uuid == $element->fromName->uuid) {
-              $taxon_html = theme('cdm_taxonName', array(
-                'taxonName' => $element->toName,
-                'nameLink' => url(path_to_name($element->toName->uuid,
-                  $taxon->uuid, $elementTaxonBasesUuid))
-              ));
+              $taxon_html =render_taxon_or_name($element->toName,
+                url(path_to_name($element->toName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
+              );
             }
             break;
           case UUID_TREATED_AS_LATER_HOMONYM :
@@ -335,11 +333,9 @@ function theme_cdm_homotypicSynonymLine($variables) {
 
             //to relation ships -> only shown at toName-synonym
             if ($taxon->name->uuid == $element->toName->uuid) {
-              $taxon_html = theme('cdm_taxonName', array(
-                'taxonName' => $element->fromName,
-                'nameLink' => url(path_to_name($element->fromName->uuid,
-                  $taxon->uuid, $elementTaxonBasesUuid))
-              ));
+              $taxon_html = render_taxon_or_name($element->fromName,
+                url(path_to_name($element->fromName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
+              );
             }
             break;
           default:

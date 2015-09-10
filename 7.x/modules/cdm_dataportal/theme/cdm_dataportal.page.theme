@@ -91,12 +91,9 @@ function theme_cdm_name_page_title($variables) {
     $referenceUri = url(path_to_reference($taxon_name->nomenclaturalReference->uuid));
   }
 
-  $out = '<span class="' . $taxon_name->class . '">' . theme('cdm_taxonName', array(
-    'taxonName' => $taxon_name,
-    'nameLink' => NULL,
-    'refenceLink' => $referenceUri,
-    'show_annotations' => FALSE,
-  )) . '</span>';
+  $out = '<span class="' . $taxon_name->class . '">'
+    . render_taxon_or_name($taxon_name, NULL, $referenceUri, FALSE)
+    . '</span>';
   RenderHints::popFromRenderStack();
   return $out;
 }

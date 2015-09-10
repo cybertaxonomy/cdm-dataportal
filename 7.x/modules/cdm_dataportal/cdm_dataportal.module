@@ -1278,7 +1278,7 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
       drupal_set_message(format_plural(count($trees),
           'This concept of the taxon !taxonname is not contained as an accepted taxon in currently chosen classification, but in this one: !trees',
           'This concept of the taxon !taxonname is not contained as an accepted taxon in currently chosen classification, but in one of these: !trees',
-          array('!taxonname' => theme('cdm_taxonName', array('taxonName' => $taxon->name)), '!trees' => $trees)) , 'warning');
+          array('!taxonname' => render_taxon_or_name($taxon), '!trees' => $trees)) , 'warning');
     }
   }
 

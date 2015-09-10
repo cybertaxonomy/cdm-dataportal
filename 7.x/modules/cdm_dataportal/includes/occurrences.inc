@@ -425,7 +425,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
             case 'storedUnder':
-              @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), theme('cdm_taxonName', $value));
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), render_taxon_or_name($value));
               break;
 
 

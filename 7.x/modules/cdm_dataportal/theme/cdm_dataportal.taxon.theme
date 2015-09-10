@@ -256,12 +256,10 @@ function theme_cdm_list_of_taxa($variables) {
         if (isset($acceptedTaxon->name->nomenclaturalReference)) {
           $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
         }
-        $out .= '<li class="' . $taxon_type . '">' . theme('cdm_taxonName', array(
-          'taxonName' => $taxon->name,
-          'sec' => !$is_synonym ? $taxon->sec : NULL,
-          'nameLink' => $taxonUri,
-          'refenceLink' => $referenceUri,
-          ));
+        $taxon_or_name = $is_synonym ? $taxon->name : $taxon;
+        // $taxon_or_name this is a trick to suppress the sec reference for sysnonyms
+        // supplying the name will cause render_taxon_or_name() to not show the sec reference
+        $out .= '<li class="' . $taxon_type . '">' . render_taxon_or_name($taxon_or_name, $taxonUri, $referenceUri);
         if ($show_classification) {
           $classifications = get_classifications_for_taxon($taxon);
           $classification_titles = array();
@@ -311,12 +309,7 @@ function theme_cdm_list_of_taxa($variables) {
       if (isset($taxon->name->nomenclaturalReference)) {
         $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
       }
-      $out .= '<li class="Taxon">' . theme('cdm_taxonName', array(
-        'taxonName' => $taxon->name,
-        'sec' => $taxon->sec,
-        'nameLink' => $taxonUri,
-        'refenceLink' => $referenceUri,
-        ));
+      $out .= '<li class="Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri);
       if ($show_classification) {
         $classifications = get_classifications_for_taxon($taxon);
         $classification_titles = array();
