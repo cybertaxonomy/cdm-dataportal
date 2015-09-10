@@ -1264,7 +1264,7 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
     $classifications = get_classifications_for_taxon($taxon);
     if (count($classifications) == 0) {
       drupal_set_message(check_plain(t('This concept of the taxon !taxonname is not contained as an accepted taxon in currently chosen classification.', array(
-        '!taxonname' => theme('cdm_taxonName', array('taxonName' => $taxon->name)),
+        '!taxonname' => render_taxon_or_name($taxon->name),
       ))), 'warning');
     }
     else {
@@ -1798,12 +1798,18 @@ function html_class_attribute_ref($cdmEntity) {
 }
 
 /**
- * Preprocess the taggedName to normalize newly introduced
- * tagtypes like hybridSign, separator, .. more?
+ * Preprocess the taggedTitle arrays.
  *
- * @param unknown_type $taggedTextList
+ * Step 1: Turns 'newly' introduces tag types ("hybridSign")
+ * into tag type "name"
+ *
+ * Step 2: Two taggedTexts which have the same type and which have
+ * a separator between them are merged together.
+ *
+ * @param array $taggedTextList
+ *    An array of TaggedText objects
  */
-function normalize_TaggedName(&$taggedTextList) {
+function normalize_tagged_title(&$taggedTextList) {
 
   if (is_array($taggedTextList)) {
 
@@ -1820,7 +1826,6 @@ function normalize_TaggedName(&$taggedTextList) {
     for ($i = 0; $i < count($taggedTextList); $i++) {
 
       if ($i + 1 < count($taggedTextList) && $taggedTextList[$i + 1]->type == "separator") {
-
         if ($taggedTextList[$i]->type == $taggedTextList[$i + 2]->type) {
           $taggedName = $taggedTextList[$i];
           $taggedName->text = $taggedName->text . $taggedTextList[$i + 1]->text . $taggedTextList[$i + 2]->text;
@@ -1837,6 +1842,21 @@ function normalize_TaggedName(&$taggedTextList) {
   }
 }
 
+function split_secref_from_tagged_title(&$taggedTextList) {
+
+  $secref_tt = array();
+  if (is_array($taggedTextList)) {
+    for ($i = 0; $i < count($taggedTextList) - 1; $i++) {
+      if ($taggedTextList[$i + 1]->type == "secReference" && $taggedTextList[$i]->type == "separator"){
+        $secref_tt[0] = $taggedTextList[$i];
+        $secref_tt[1] = $taggedTextList[$i + 1];
+        unset($taggedTextList[$i]);
+        unset($taggedTextList[$i + 1]);
+      }
+    }
+  }
+  return $secref_tt;
+}
 /**
  * Creates a short taxonname.
  *
@@ -1852,7 +1872,7 @@ function normalize_TaggedName(&$taggedTextList) {
 function cdm_dataportal_shortname_of($name) {
   $nameStr = '';
 
-  normalize_TaggedName($name->taggedTitle);
+  normalize_tagged_title($name->taggedTitle);
 
   // Get all tagged text tokens of the scientific name.
   foreach ($name->taggedTitle as $tagtxt) {

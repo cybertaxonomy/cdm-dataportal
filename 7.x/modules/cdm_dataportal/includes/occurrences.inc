@@ -356,12 +356,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
                     $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
                     $name_link = path_to_taxon($determinationEvent->taxon->uuid);
                 }
-                $taxon_html = theme('cdm_taxonName',
-                     array(
-                       'taxonName' => $taxon_name,
-                        'nameLink' => $name_link,
-                     )
-                 );
+                $taxon_html = render_taxon_or_name($taxon_name, $name_link);
                 $dd_elements[$weight] = $taxon_html;
                 if (isset($determinationEvent->modifier)) {
                     $dd_elements[$weight] .= cdm_term_representation($determinationEvent->modifier);

@@ -33,13 +33,7 @@ function theme_cdm_taxon_page_title($variables) {
     $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
   }
 
-  $out .= theme('cdm_taxonName', array(
-    'taxonName' => $taxon->name,
-    'sec' => $taxon->sec,
-    'nameLink' => NULL,
-    'refenceLink' => $referenceUri,
-    'show_annotations' => FALSE,
-  ));
+  $out .= render_taxon_or_name($taxon, NULL, $referenceUri, FALSE);
   RenderHints::popFromRenderStack();
 
   return '<span class="' . $taxon->class . '">' . $out . '</span>';
@@ -153,12 +147,7 @@ function theme_cdm_taxon_page_synonymy($variables) {
     }
 
     $accepted_name = '<div class="accepted-name">';
-    $accepted_name .= theme('cdm_taxonName', array(
-      'taxonName' => $taxon->name,
-      'sec' => $taxon->sec,
-      'nameLink' => NULL,
-      'refenceLink' => $referenceUri,
-      ));
+    $accepted_name .= render_taxon_or_name($taxon, NULL, $referenceUri);
 
     $name_relationships = cdm_name_relationships_of($taxon);
     // Render relationships of accepted name.

@@ -363,13 +363,7 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
   }
 
   if(isset($element->taxon2)){
-    $out = theme('cdm_taxonName',
-        array(
-            'taxonName' => $element->taxon2->name,
-            'sec' => $element->taxon2->sec,
-            'nameLink' => url(path_to_taxon($element->taxon2->uuid))
-        )
-      );
+    $out = render_taxon_or_name($element->taxon2, url(path_to_taxon($element->taxon2->uuid)));
   }
 
   $feature_block_settings = get_feature_block_settings($element->feature->uuid);
@@ -605,7 +599,7 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
           if (isset($taxonChild->modifyingText)) {
             $out .= theme('cdm_poytomousKeyNode_modifyingText', array('modifyingText' => $taxonChild->modifyingText));
           }
-          $out .= theme("cdm_taxonName", array('taxonName' => $taxonChild->taxon->name, 'nameLink' => url(path_to_taxon($taxonChild->taxon->uuid))));
+          $out .= render_taxon_or_name($taxonChild->taxon->name, url(path_to_taxon($taxonChild->taxon->uuid)));
           $out .= '</div>';
         }
 

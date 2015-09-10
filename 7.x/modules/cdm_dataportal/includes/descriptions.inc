@@ -991,9 +991,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
       if($suppress_for_shown_taxon && $taxon_page_accepted_name == $plaintext){
         return $name_in_source_render_array; // SKIP this name
       }
-      $markup = theme('cdm_taxonName', array(
-        'taxonName' => $source->nameUsedInSource
-      ));
+      $markup = render_taxon_or_name($source->nameUsedInSource);
       if ($do_link_to_name_used_in_source) {
         $markup = l(
           $markup,

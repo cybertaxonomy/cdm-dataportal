@@ -115,39 +115,6 @@ function tagNameParts($name, $numOfNameTokens) {
 }
 */
 
-/**
- * Returns HTML for an array of TaggedText items.
- *
- * Converts an array of TaggedText items into a sequence of corresponding html
- * tags whereas each item will provided with a class attribute which set to
- * the key of the TaggedText item.
- *
- * @param array $variables
- *   An associative array containing:
- *   - taggedtxt: The array to format into html.
- *   - tag: The html tag to use.
- *   - glue: The string by which the chained text tokens are
- *     concatenated together. Default is a blank character.
- *   - skiptags: tags to skip.
- *
- * @ingroup themeable
- */
-function theme_cdm_taggedtext2html($variables) {
-
-  $taggedtxt = $variables['taggedtxt'];
-  $tag = $variables['tag'];
-  $glue = $variables['glue'];
-  $skiptags = $variables['skiptags'];
-  $out = '';
-  $i = 0;
-  foreach ($taggedtxt as $tt) {
-    if (!in_array($tt->type, $skiptags) && strlen($tt->text) > 0) {
-      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt) ? $glue : '') . '<' . $tag . ' class="' . $tt->type . '">' . t($tt->text) . '</' . $tag . '>';
-    }
-  }
-  return $out;
-}
-
 /* ============================ annotations ============================= */
 
 /**

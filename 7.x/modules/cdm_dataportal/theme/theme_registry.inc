@@ -37,12 +37,6 @@ function cdm_dataportal_theme() {
     'radio_options_suffix' => array('render element' => 'element'),
 
     // Themes in cdm_dataportal.common.theme.
-    'cdm_taggedtext2html' => array('variables' => array(
-        'taggedtxt' => array(),
-        'tag' => 'span',
-        'glue' => ' ',
-        'skiptags' => array(),
-    )),
     'cdm_annotations_as_footnotekeys' => array('variables' => array('cdmBase_list' => NULL, 'footnote_list_key' => NULL)),
     'cdm_annotation_footnotes' => array('variables' => array('footnoteListKey' => NULL, 'enclosingTag' => 'span')),
     'cdm_annotation_content' => array('variables' => array('AnnotationTO' => NULL)),
@@ -140,15 +134,6 @@ function cdm_dataportal_theme() {
     )),
     'cdm_openlayers_image' => array('variables' => array('mediaRepresentationPart' => NULL, 'maxExtend' => NULL)),
     // Themes in cdm_dataportal.name.theme.
-    'cdm_taxonName' => array('variables' => array(
-        'taxonName' => NULL,
-        'sec' => NULL,
-        'nameLink' => NULL,
-        'refenceLink' => NULL,
-        'show_annotations' => TRUE,
-        'is_type_designation' => FALSE,
-        'skiptags' => array(),
-    )),
     'cdm_typedesignations' => array('variables' => array('typeDesignations' => array())),
     'cdm_nameRelationships' => array('variables' => array('nameRelationships' => NULL, 'skipTypes' => FALSE)),
     'cdm_homotypicSynonymLine' => array('variables' => array('taxon' => NULL)),

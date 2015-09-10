@@ -151,13 +151,7 @@ function theme_cdm_typedesignations($variables) {
         if (isset($typeDesignation->typeName->nomenclaturalReference)) {
           $referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
         }
-        $out .= ': ' . theme('cdm_taxonName', array(
-          'taxonName' => $typeDesignation->typeName,
-          'nameLink' => $link_to_name_page,
-          'refenceLink' => $referenceUri,
-          'show_annotations' => TRUE,
-          'is_type_designation' => TRUE,
-          ));
+        $out .= ': ' . render_taxon_or_name($typeDesignation->typeName, $link_to_name_page, $referenceUri, TRUE, TRUE);
       }
     }
   }
@@ -333,10 +327,7 @@ function theme_cdm_homotypicSynonymLine($variables) {
 
             //from relation ships -> only shown at fromName-synonym
             if ($taxon->name->uuid == $element->fromName->uuid) {
-              $taxon_html = theme('cdm_taxonName', array(
-                'taxonName' => $element->toName,
-                'nameLink' => url(path_to_name($element->toName->uuid))
-              ));
+              $taxon_html = render_taxon_or_name($element->toName, url(path_to_name($element->toName->uuid)));
             }
             break;
           case UUID_BLOCKING_NAME_FOR :
@@ -699,14 +690,20 @@ function get_partDefinition($taxonNameType) {
  * part_definitions and render_templates (see get_partDefinition() and
  * get_nameRenderTemplate())
  *
- * @param $variables
- *    - taxonName : cdm TaxonNameBase instance
- *    - sec : the sec reference of a taxon having this name (optional)
- *    - nameLink: URI to the taxon, @see path_to_taxon(), must be processed by url() before passing to this method
- *    - refenceLink: URI to the reference, @see path_to_reference(), must be processed by url() before passing to this method
- *    - show_annotations: turns the display of annotations on
- *    - is_type_designation: To indicate that the supplied taxon name is a name type designation.
- *    - skiptags: an array of name elements tags like 'name', 'rank' to skip. The name part
+ * @param $taxonName
+ *    cdm TaxonNameBase instance
+ * @param $sec
+ *    the sec reference of a taxon having this name (optional)
+ * @param $nameLink
+ *    URI to the taxon, @see path_to_taxon(), must be processed by url() before passing to this method
+ * @param $refenceLink
+ *    URI to the reference, @see path_to_reference(), must be processed by url() before passing to this method
+ * @param $show_annotations
+ *    turns the display of annotations on
+ * @param $is_type_designation
+ *    To indicate that the supplied taxon name is a name type designation.
+ * @param $skiptags
+ *    an array of name elements tags like 'name', 'rank' to skip. The name part
  *          'authors' will not ber affected by this filter. This part is managed though the render template
  *          mechanism.
  *
@@ -714,15 +711,19 @@ function get_partDefinition($taxonNameType) {
  *  The markup for a taxon name.
  *
  */
-function theme_cdm_taxonName($variables) {
+function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refenceLink = NULL,
+  $show_annotations = true, $is_type_designation = false, $skiptags = array()) {
 
-  $taxonName = $variables['taxonName'];
-  $sec_reference = $variables['sec'];
-  $nameLink = $variables['nameLink'];
-  $refenceLink = $variables['refenceLink'];
-  $show_annotations = $variables['show_annotations'];
-  $is_type_designation = $variables['is_type_designation'];
-  $skiptags = $variables['skiptags'];
+  if($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym'){
+    $taxonName = $taxon_name_or_taxon_base->name;
+    // use the TaxonBase.taggedTitle so we have the secRef
+    $taggedTitle = $taxon_name_or_taxon_base->taggedTitle;
+  } else {
+    // assuming this is a TaxonNameBase
+    $taxonName = $taxon_name_or_taxon_base;
+    $taggedTitle = $taxon_name_or_taxon_base->taggedName;
+  }
+
 
   $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
   $partDefinition = get_partDefinition($taxonName->class);
@@ -738,15 +739,23 @@ function theme_cdm_taxonName($variables) {
     }
   }
 
-  normalize_TaggedName($taxonName->taggedName);
+  $secref_tagged_text = split_secref_from_tagged_title($taggedTitle);
+  normalize_tagged_title($taggedTitle);
 
-  $firstEntryIsValidNamePart = isset($taxonName->taggedName) && is_array($taxonName->taggedName) && isset($taxonName->taggedName[0]->text) && is_string($taxonName->taggedName[0]->text) && $taxonName->taggedName[0]->text != '' && isset($taxonName->taggedName[0]->type) && $taxonName->taggedName[0]->type == 'name';
+  $firstEntryIsValidNamePart =
+    isset($taggedTitle)
+    && is_array($taggedTitle)
+    && isset($taggedTitle[0]->text)
+    && is_string($taggedTitle[0]->text)
+    && $taggedTitle[0]->text != ''
+    && isset($taggedTitle[0]->type)
+    && $taggedTitle[0]->type == 'name';
   $lastAuthorElementString = FALSE;
 
   // Got to use second entry as first one, see ToDo comment below ...
   if ($firstEntryIsValidNamePart) {
 
-    $taggedName = $taxonName->taggedName;
+    $taggedName = $taggedTitle;
     $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
     $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
 
@@ -772,12 +781,7 @@ function theme_cdm_taxonName($variables) {
       }
       $taggedName = $taggedNameNew;
     }
-    $name = '<span class="' . $taxonName->class . '">' . theme('cdm_taggedtext2html', array(
-      'taggedtxt' => $taggedName,
-      'tag' => 'span',
-      'glue' => ' ',
-      'skiptags' => $skiptags,
-      )) . '</span>';
+    $name = '<span class="' . $taxonName->class . '">' . cdm_taggedtext2html($taggedName, 'span', ' ', $skiptags) . '</span>';
   }
   else {
     $name = '<span class="' . $taxonName->class . '_titleCache">' . $taxonName->titleCache . '</span>';
@@ -843,16 +847,23 @@ function theme_cdm_taxonName($variables) {
       array_setr('authors', $referenceArray, $renderTemplate);
     }
   }
+
+  $is_reference_year = false;
   if (isset($renderTemplate['referenceYearPart']['reference.year'])) {
     if(isset($taxonName->nomenclaturalReference->datePublished)){
       $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxonName->nomenclaturalReference->datePublished) . '</span>';
       array_setr('reference.year', $referenceArray, $renderTemplate);
+      $is_reference_year = true;
     }
   }
 
   if (isset($renderTemplate['secReferencePart'])){
-    if(isset($sec_reference)){
-      array_setr('secReference', ' <span class="sec_reference">sec. ' . theme('cdm_reference', array('reference' => $sec_reference)) . '</span>', $renderTemplate);
+    if(isset($secref_tagged_text[1])){
+      array_setr('secReference',
+        $is_reference_year ? '.': ''
+          . ' <span class="sec_reference">'
+          . $secref_tagged_text[0]->text . $secref_tagged_text[1]->text
+          . '</span>', $renderTemplate);
     }
   }
 
