@@ -182,6 +182,49 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
     )
   )
 );
+  define('CDM_PART_DEFINITIONS_DEFAULT_PRE_380', serialize(
+    array(
+      'ZoologicalName' => array(
+        'namePart' => array('name' => TRUE),
+        'nameAuthorPart' => array('name' => TRUE),
+        'referencePart' => array('authors' => TRUE),
+        'microreferencePart' => array('microreference' => TRUE),
+        'statusPart' => array('status' => TRUE),
+        'descriptionPart' => array('description' => TRUE),
+      ),
+      'BotanicalName'=> array(
+        'namePart' => array('name' => TRUE),
+        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
+        'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
+        'referenceYearPart' => array('reference.year' => TRUE),
+        'statusPart' => array('status' => TRUE),
+        'descriptionPart' => array('description' => TRUE),
+      ),
+      '#DEFAULT' => array(
+        'namePart' => array(
+          'name' => TRUE
+        ),
+        'nameAuthorPart' => array(
+          'name' => TRUE,
+          'authors' => TRUE
+        ),
+        'referencePart' => array(
+          'reference' => TRUE
+        ),
+        'microreferencePart' => array(
+          'microreference' => TRUE,
+        ),
+        'statusPart' => array(
+          'status' => TRUE,
+        ),
+        'descriptionPart' => array(
+          'description' => TRUE,
+        ),
+      )
+    )
+  )
+  );
+
 define('CDM_NAME_RENDER_TEMPLATES', 'cdm-name-render-templates');
 define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
    array (
@@ -215,6 +258,31 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
        )
     )
 ));
+  define('CDM_NAME_RENDER_TEMPLATES_DEFAULT_PRE_380', serialize(
+    array (
+      'taxon_page_title,polytomousKey'=> array(
+        'namePart' => array('#uri' => TRUE),
+      ),
+      'taxon_page_synonymy,related_taxon'=> array(
+        'nameAuthorPart' => array('#uri' => TRUE),
+        'referencePart' => TRUE,
+        'statusPart' => TRUE,
+        'descriptionPart' => TRUE,
+      ),
+      'homonym'=> array(
+        'nameAuthorPart' => array('#uri' => TRUE),
+        'referenceYearPart' => TRUE,
+      ),
+      'acceptedFor,typedesignations,list_of_taxa' => array(
+        'nameAuthorPart' => array('#uri' => TRUE),
+        'referencePart' => TRUE,
+      ),
+      '#DEFAULT' => array(
+        'nameAuthorPart' => array('#uri' => TRUE),
+        'referencePart' => TRUE,
+      )
+    )
+  ));
 
 define('CDM_SEARCH_TAXA_MODE','cdm_search_taxa_mode');
 define('CDM_SEARCH_TAXA_MODE_DEFAULT', serialize(
@@ -1307,21 +1375,25 @@ function cdm_settings_layout() {
   );
 
   $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
-
+  $default_part_definitions_pre_380_json = json_encode(unserialize(CDM_PART_DEFINITIONS_DEFAULT_PRE_380));
   $default_part_definition_json = json_encode($default_part_definitions);
   $current_part_definition_json = json_encode(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
-  $is_custom_part_definition = $default_part_definition_json != $current_part_definition_json;
+
+  if($default_part_definition_json != $current_part_definition_json){
+    $which_version_message = '<span style="color:#ff7800; font-weight: bold;">(This are custom part definitions, clearing the text area and and submitting the form will reset it to the default)</span>';
+  } else if($default_part_definitions_pre_380_json == $current_part_definition_json){
+    $which_version_message = '<span style="color:#ff0000; font-weight: bold;">(These are the old default part definition from before EDIT platform release 3.8.0, you may want to reset these by clearing the text area and and submitting the form.)</span>';
+  } else {
+    $which_version_message = '(These are the default part definition.)';
+  }
+
   $form['taxon_name'][CDM_PART_DEFINITIONS] = array(
       '#type' => 'textarea',
       '#title' => t('Part definitions'),
       '#element_validate' => array('form_element_validate_json'),
       '#default_value' =>  $current_part_definition_json,
       '#description' => '
-          <p>
-          ' . ($is_custom_part_definition ?
-              '<span style="color:#ff7800; font-weight: bold;">(This is a custom part definition, clearing the text area and and submitting the form will reset it to the default)</span>':
-              '(This is the default part definition.)')
-        . '</p>
+          <p>' . $which_version_message . '</p>
           <p>
            The part definitions define the specific parts of which a rendered taxon name plus additional information will consist.
           </p>
@@ -1405,20 +1477,25 @@ function cdm_settings_layout() {
   );
 
   $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
+  $default_render_templates_pre_380_json = json_encode(unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT_PRE_380));
   $default_render_templates_json = json_encode($default_render_templates);
-  $custom_render_templates_json = json_encode(variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates));
-  $is_custom_render_templates = $default_render_templates_json != $custom_render_templates_json;
+  $current_render_templates_json = json_encode(variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates));
+
+  if($default_render_templates_json != $current_render_templates_json){
+    $which_version_message = '<span style="color:#ff7800; font-weight: bold;">(These are custom render templates, clearing the text area and and submitting the form will reset it to the default)</span>';
+  } else if($default_render_templates_pre_380_json == $current_render_templates_json){
+    $which_version_message = '<span style="color:#ff0000; font-weight: bold;">(These are the old default render templates from before EDIT platform release 3.8.0, you may want to reset these by clearing the text area and and submitting the form.)</span>';
+  } else {
+    $which_version_message = '(These are the default render templates.)';
+  }
+
   $form['taxon_name'][CDM_NAME_RENDER_TEMPLATES] = array(
       '#type' => 'textarea',
       '#title' => t('Name render templates'),
       '#element_validate' => array('form_element_validate_json'),
-      '#default_value' =>  json_encode(variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates)),
+      '#default_value' =>  $current_render_templates_json,
       '#description' => '
-          <p>
-          ' . ($is_custom_render_templates ?
-          '<span style="color:#ff7800; font-weight: bold;">(These are custom render templates, clearing the text area and and submitting the form will reset it to the default)</span>':
-          '(These are the default render templates.)')
-        . '</p>
+          <p>' . $which_version_message . '</p>
           <p>
           The render templates array contains one or more name render templates to be used within the page areas identified by the
           render path. The render path is used as key of the array sub subelements whereas the name render template array is set as value.
