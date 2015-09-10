@@ -1379,11 +1379,11 @@ function cdm_settings_layout() {
   $default_part_definition_json = json_encode($default_part_definitions);
   $current_part_definition_json = json_encode(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
 
-  if($default_part_definition_json != $current_part_definition_json){
-    $which_version_message = '<span style="color:#ff7800; font-weight: bold;">(This are custom part definitions, clearing the text area and and submitting the form will reset it to the default)</span>';
-  } else if($default_part_definitions_pre_380_json == $current_part_definition_json){
+  if($default_part_definitions_pre_380_json == $current_part_definition_json){
     $which_version_message = '<span style="color:#ff0000; font-weight: bold;">(These are the old default part definition from before EDIT platform release 3.8.0, you may want to reset these by clearing the text area and and submitting the form.)</span>';
-  } else {
+  } else if($default_part_definition_json != $current_part_definition_json){
+    $which_version_message = '<span style="color:#ff7800; font-weight: bold;">(This are custom part definitions, clearing the text area and and submitting the form will reset it to the default)</span>';
+  } else  {
     $which_version_message = '(These are the default part definition.)';
   }
 
@@ -1481,10 +1481,10 @@ function cdm_settings_layout() {
   $default_render_templates_json = json_encode($default_render_templates);
   $current_render_templates_json = json_encode(variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates));
 
-  if($default_render_templates_json != $current_render_templates_json){
-    $which_version_message = '<span style="color:#ff7800; font-weight: bold;">(These are custom render templates, clearing the text area and and submitting the form will reset it to the default)</span>';
-  } else if($default_render_templates_pre_380_json == $current_render_templates_json){
+  if($default_render_templates_pre_380_json == $current_render_templates_json){
     $which_version_message = '<span style="color:#ff0000; font-weight: bold;">(These are the old default render templates from before EDIT platform release 3.8.0, you may want to reset these by clearing the text area and and submitting the form.)</span>';
+  } else if($default_render_templates_json != $current_render_templates_json){
+    $which_version_message = '<span style="color:#ff7800; font-weight: bold;">(These are custom render templates, clearing the text area and and submitting the form will reset it to the default)</span>';
   } else {
     $which_version_message = '(These are the default render templates.)';
   }
