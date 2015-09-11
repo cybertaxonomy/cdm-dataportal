@@ -74,17 +74,29 @@
  */
 function get_nameRenderTemplate($renderPath, $nameLink = NULL, $referenceLink = NULL) {
 
-  $template = NULL;
-
   static $default_render_templates = NULL;
+  static $split_render_templates = NULL;
+
+
   if (!isset($default_render_templates)) {
     $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
   }
-  static $render_templates = NULL;
-  if($render_templates == NULL) {
+  if($split_render_templates == NULL) {
     $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
     // needs to be converted to an array
-    $render_templates = convert_to_array($render_templates);
+    $render_templates = (convert_to_array($render_templates));
+
+    // separate render templates which are combined with a comma
+    $split_render_templates = array();
+    foreach($render_templates as $key => $template){
+      if(strpos($key, ',')){
+        foreach(explode(',', $key) as $path){
+          $split_render_templates[$path] = $template;
+        }
+      } else {
+        $split_render_templates[$key] = $template;
+      }
+    }
   }
 
   // get the base element of the renderPath
@@ -94,35 +106,30 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $referenceLink = 
     $renderPath_base = $renderPath;
   }
 
+  $template = NULL;
   // 1. try to find a template using the render path base element
-  if(array_key_exists($renderPath_base, $render_templates)){
-    $template = (array)$render_templates[$renderPath_base];
+  if(array_key_exists($renderPath_base, $split_render_templates)){
+    $template = (array)$split_render_templates[$renderPath_base];
   }
 
   // 2. Find best matching default RenderTemplate in theme
   // by stripping the dot separated render path element by element
   // is no matching template is found the DEFAULT will be used.
   while (!is_array($template) && strlen($renderPath) > 0) {
-
-    foreach ($render_templates as $k => $t) {
-      if (strpos(',' . $k . ',', $renderPath ) !== FALSE) {
+    foreach ($split_render_templates as $path => $t) {
+      if ($path == $renderPath) {
         $template = $t;
         break;
       }
     }
-
     // shorten by one element
-    $renderPath = substr($renderPath, 0, strrpos($renderPath, '.'));
-    /*
-    if(!is_array($template)){
-      echo "<br/>->".$renderPath;
-    }
-    */
+    $renderPath = substr($renderPath, strrpos($renderPath, '.') + 1, strlen($renderPath));
   }
+
 
   // 3. Otherwise get default RenderTemplate from theme.
   if (!is_array($template)) {
-    $template = $render_templates['#DEFAULT'];
+    $template = $split_render_templates['#DEFAULT'];
   }
 
   // --- set the link uris to the according template fields if they exist
