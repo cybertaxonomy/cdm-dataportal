@@ -139,6 +139,11 @@ function theme_cdm_taxon_page_synonymy($variables) {
   // homotypic group and accepted taxon should have the same footnote key
   $referenceUri = '';
   if ($addAcceptedTaxon) {
+    // remember the last part of the render path
+    $synonymy_render_path = RenderHints::getRenderPath();
+    // set new render path for the accepted taxon so
+    // it can be styled differently via the name render part definitions
+    RenderHints::pushToRenderStack('accepted_taxon');
     if (isset($taxon->name->nomenclaturalReference)) {
       $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
     }
@@ -159,9 +164,10 @@ function theme_cdm_taxon_page_synonymy($variables) {
     $special_annotations_array[] = $taxon;
     $accepted_name .= theme('cdm_annotations_as_footnotekeys', array(
         'cdmBase_list' => $special_annotations_array,
-        'footnote_list_key' => RenderHints::getRenderPath() . '-annotations')
+        'footnote_list_key' => $synonymy_render_path . '-annotations')
       );
     $accepted_name .= '</div>';
+    RenderHints::popFromRenderStack();
   }
 
   // --- Render homotypic synonymy group
