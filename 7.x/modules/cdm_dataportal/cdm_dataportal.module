@@ -1079,6 +1079,53 @@ function convert_to_array($object) {
 }
 
 /**
+ * Searches the $collection for the cdm entitiy given as $element.
+ *
+ * The elements are compared by their UUID.
+ *
+ * @param $element
+ *  the CDM entitiy to search for
+ * @param $collection
+ *  the list of CDM entities to search in
+ *
+ * @return boolean TRUE if the $collection contains the $element, otheriwse FALSE
+ *
+ */
+function contains_cdm_entitiy($element, $collection) {
+  $result = FALSE;
+  foreach ($collection as $a) {
+    if ($a->uuid == $element->uuid) {
+      $result = TRUE;
+    }
+  }
+  return $result;
+}
+
+/**
+ * Fiters the array $entity_list of CDM entities by the list
+ * of $excludes. Any element contained in the $excludes will be removed
+ * from included int the retuned list.
+ *
+ * If the $entity_list is not an array the $excludes will be returned.
+ */
+function filter_cdm_entity_list($entity_list, $excludes) {
+  if (is_array($entity_list)) {
+    $result = $entity_list;
+    if ($excludes) {
+      foreach ($excludes as $exclude) {
+        if (!contains_cdm_entitiy($exclude, $entity_list)) {
+          $result[] = $exclude;
+        }
+      }
+    }
+  }
+  else {
+    $result = $excludes;
+  }
+  return $result;
+}
+
+/**
  * Wraps the given $html string into a render array suitable for drupal_render()
  *
  * @param $html
