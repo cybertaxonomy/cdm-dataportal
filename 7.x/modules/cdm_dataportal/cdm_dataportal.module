@@ -1875,7 +1875,7 @@ function normalize_tagged_title(&$taggedTextList) {
 
       if ($i + 1 < count($taggedTextList) && $taggedTextList[$i + 1]->type == "separator") {
         if ($taggedTextList[$i]->type == $taggedTextList[$i + 2]->type) {
-          $taggedName = $taggedTextList[$i];
+          $taggedName = clone $taggedTextList[$i];
           $taggedName->text = $taggedName->text . $taggedTextList[$i + 1]->text . $taggedTextList[$i + 2]->text;
           $taggedNameListNew[] = $taggedName;
           ++$i;
