@@ -2391,3 +2391,54 @@ function cdm_check_valid_portal_page(){
     exit('HTTP 404');
   }
 }
+
+/**
+ * Generates the diff of the texts and presents it in a HTML diff viewer.
+ *
+ * @param $text_a
+ * @param $text_b
+ * @return string
+ */
+function diff_viewer($text_a, $text_b) {
+
+  static $diff_viewer_count = 0;
+
+  $element_id = 'part_definitions_diff_' . $diff_viewer_count++;
+
+  // http://code.stephenmorley.org/php/diff-implementation/
+  module_load_include('php', 'cdm_dataportal', 'lib/class.Diff');
+  drupal_add_css(drupal_get_path('module',
+      'cdm_dataportal') . '/css/diff.css');
+  drupal_add_css(drupal_get_path('module',
+      'cdm_dataportal') . '/js/jquery-ui-1.8.24/themes/base/jquery.ui.all.css');
+  drupal_add_js(drupal_get_path('module',
+      'cdm_dataportal') . '/js/jquery-ui-1.8.24/ui/jquery-ui.js',
+    array(
+      'type' => 'file',
+      'weight' => JS_LIBRARY,
+      'cache' => TRUE,
+      'preprocess' => FALSE
+    )
+  );
+  drupal_add_js(
+    'jQuery(document).ready( function(){
+        jQuery(\'#' . $element_id . '\').accordion({
+        collapsible: true,
+        active: false,
+        fillSpace: true,
+        }).children(\'div\').css({ \'height\': \'auto\' });
+        jQuery(\'#' . $element_id . ' table.diff\').prepend(\'<thead><tr><th>Default</th><th>User defined<th></th><tr></thead>\');
+     });'
+    , array(
+    'type' => 'inline',
+    'scope' => 'footer'
+  ));
+
+  $diff = Diff::compare($text_a,
+    $text_b);
+  $diff_viewer_markup = '<div id="' . $element_id . '"><h3>View Diff</h3><div>'
+    . Diff::toTable($diff, '', '')
+    . '</div></div>';
+  return $diff_viewer_markup;
+}
+
