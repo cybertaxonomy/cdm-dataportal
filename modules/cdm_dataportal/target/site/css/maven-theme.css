@@ -1,0 +1,250 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    background: #eee;
+}
+body, td, select, input, li {
+    color: #666;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    font-size: 12px;
+}
+code, pre {
+    font-family: Courier, monospace;
+    font-size: 13px;
+    margin: 1em 0px;
+	white-space: pre;
+}
+a {
+    text-decoration: none;
+}
+a:link, a:visited {
+    color: #36a;
+    text-decoration: none;
+}
+a:active, a:hover {
+    color:#69c;
+    text-decoration: underline;
+}
+#legend li.externalLink {
+    background: url(../images/external.png) left top no-repeat;
+    padding-left: 18px;
+}
+a.externalLink, a.externalLink:link, a.externalLink:visited, a.externalLink:active, a.externalLink:hover {
+    background: url(../images/external.png) right center no-repeat;
+	padding-right: 14px;
+	padding-top: 1px;
+}
+#legend li.newWindow {
+    background: url(../images/newwindow.png) left top no-repeat;
+    padding-left: 18px;
+}
+a.newWindow, a.newWindow:link, a.newWindow:visited, a.newWindow:active, a.newWindow:hover {
+    background: url(../images/newwindow.png) right center no-repeat;
+    padding-right: 14px;
+	padding-top: 1px;
+}
+h1 {
+    color: #666;
+    font-size: 23px;
+    font-weight: normal;
+}
+h2 {
+    color: #399;
+    font-size: 20px;
+    font-weight: normal;
+    line-height: 24px;
+    margin: 0px;
+    padding: 10px 0px 0px;
+    padding-top: 10px;
+}
+h3 {
+    color: #096;
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 22px;
+    margin: 0px;
+    padding: 10px 0px 0px;
+    padding-top: 10px;
+}
+h5 {
+    padding: 4px 4px 4px 6px;
+    color: #900;
+    font-size: 12px;
+}
+p {
+    color: #666;
+    font-size: 12px;
+    line-height: 18px;
+    margin: 0px;
+    padding-bottom: 10px;
+    padding: 5px 0px 10px;
+    padding-top: 5px;
+    text-align: left;
+}
+
+#wrapper {
+    width: 100%;
+    background: #fff;
+}
+#content {
+    margin: 0px auto;
+    padding: 10px 10px 120px 10px;
+    width: 1050px;
+    background: #fff;
+}
+#banner {
+    background: url(../images/header.png) no-repeat;
+    height: 93px;
+    margin: 10px 0px 0px;
+}
+#bannerLeft, #bannerRight {
+    font-size: 40px;
+    font-weight: normal;
+    padding: 40px 0px 6px;
+}
+#breadcrumbs {
+    font-size: 12px;
+    margin-left: 98px;
+    padding: 0px;
+    border-bottom: 1px solid #E1E1E1;
+}
+#breadcrumbs .externalLink {
+    background: none;
+    padding: 0px;
+}
+#leftColumn {
+    margin: 20px 0px 0px 98px;
+    border: none;
+    background: none;
+    width: 160px;
+}
+#navcolumn {
+    padding: 0px;
+}
+#navcolumn h5 {
+    font-size: 14px;
+    font-weight: normal;
+    border-bottom: 1px solid #E1E1E1;
+    padding-top: 0px;
+    padding-bottom: 2px;
+    color: #666;
+/* text-transform: uppercase; */
+}
+#navcolumn ul {
+    margin: 6px 0px 9px 0px;
+    padding: 0px;
+}
+#navcolumn li {
+    padding-bottom: 3px;
+    font-size: 12px;
+}
+#bodyColumn {
+    margin: 4px 0px 0px 286px;
+}
+table.bodyTable th {
+    color: white;
+    background-color: #bbb;
+    text-align: left;
+    font-weight: bold;
+}
+table.bodyTable th, table.bodyTable td {
+    font-size: 12px;
+}
+table.bodyTable tr.a {
+    background-color: #ddd;
+}
+table.bodyTable tr.b {
+    background-color: #eee;
+}
+.source {
+    margin: 1em 0px;
+	border:none;
+	background: #dedede;
+	overflow: auto;
+}
+.section {
+	padding: 0px;
+}
+.section ul, .section ol {
+	margin: 0px;
+}
+#contentBox li {
+	padding: 2px 0px 1px;
+}
+
+#contentBox li ul, #contentBox li ol {
+	padding-left: 16px;
+}
+dl {
+    background: none;
+    border: none;
+    padding: 4px 0px 4px;
+}
+dt {
+	color: #666;
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 22px;
+}
+dd {
+    margin: 0px;
+    margin: 0px 0px 4px;
+}
+hr {
+	border: none;
+}
+#organizationLogo img, #projectLogo img, #projectLogo span {
+    margin: 8px;
+}
+#banner {
+    border-bottom: 1px solid #fff;
+}
+.errormark, .warningmark, .donemark, .infomark {
+    background: url(../images/icon_error_sml.gif) no-repeat;
+}
+.warningmark {
+    background-image: url(../images/icon_warning_sml.gif);
+}
+.donemark {
+    background-image: url(../images/icon_success_sml.gif);
+}
+.infomark {
+    background-image: url(../images/icon_info_sml.gif);
+}
+#footerWrapper {
+    width: 100%;
+    border-top: 1px solid #ddd;
+}
+#footer {
+    margin: 10px auto 0px;
+    border-top: none;
+    padding: 0px 3px 80px;
+    font-size: 12px;
+    width: 1050px;
+}
+#logoEdit {
+    margin-left: 98px;
+}
+.footerLogo {
+    float: left;
+    padding: 10px 20px;
+}
+.additionalLinks {
+    float:left;
+    margin-left: 114px;
+}
+.additionalLinks ul {
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
+}
+.additionalLinks li {
+    padding-bottom: 2px;
+}
+.copyright {
+    float: right;
+}

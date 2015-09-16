@@ -1,6 +1,0 @@
-name = Expertsdb Address Field Mexican Support
-description = Adds support for Mexican States.
-dependencies = content expertsdb_address
-package = EDIT CCK
-project = "expertsdb_address_extensions"
-

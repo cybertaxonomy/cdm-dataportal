@@ -1,0 +1,429 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  cdm_dataportal.theme.php: n/a
+#  cdm_dataportal.module: n/a
+#  cdm_dataportal.info: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2009-12-08 11:42+0100\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: cdm_dataportal.theme.php:181
+msgid "Save annotation"
+msgstr ""
+
+#: cdm_dataportal.theme.php:362
+msgid "Title"
+msgstr ""
+
+#: cdm_dataportal.theme.php:367
+msgid "Description"
+msgstr ""
+
+#: cdm_dataportal.theme.php:373
+msgid "Artist"
+msgstr "Author"
+
+#: cdm_dataportal.theme.php:393
+msgid "Location"
+msgstr ""
+
+#: cdm_dataportal.theme.php:414
+msgid "License"
+msgstr ""
+
+#: cdm_dataportal.theme.php:578
+msgid "more in gallery"
+msgstr ""
+
+#: cdm_dataportal.theme.php:580
+msgid "open gallery"
+msgstr ""
+
+#: cdm_dataportal.theme.php:781
+msgid "Part"
+msgstr ""
+
+#: cdm_dataportal.theme.php:785
+msgid "Duration"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1329
+msgid "Click for accepted taxon"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1418;1418 cdm_dataportal.module:234
+msgid "Print this page"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1418
+msgid " Print this page"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1529
+msgid "is accepted for "
+msgstr ""
+
+#: cdm_dataportal.theme.php:1546
+msgid "Back to search result"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1557
+msgid "Back to Images"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1626
+msgid "Images"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1635
+msgid "Synonymy"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1736
+msgid "open Image"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1751
+msgid "Bibliographic Index"
+msgstr ""
+
+#: cdm_dataportal.theme.php:1816
+msgid "to"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2050
+msgid "not designated"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2088
+msgid "designated by"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2096 cdm_mediauri/cdm_mediauri.module:243
+msgid "Type"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2118
+msgid "Show media"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2154
+msgid "web application"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2193
+msgid "Content"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2404
+msgid "Search Results"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2408
+msgid "Show Thumbnails"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2426
+msgid "« first"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2427
+msgid "‹ previous"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2443
+msgid "next ›"
+msgstr ""
+
+#: cdm_dataportal.theme.php:2444
+msgid "last »"
+msgstr ""
+
+#: cdm_dataportal.module:32 cdm_dataportal.info:0
+msgid "The dataportal publishes CDM data hosted in a CommunityStore on the web."
+msgstr ""
+
+#: cdm_dataportal.module:64 cdm_dataportal.info:0
+msgid "CDM Dataportal"
+msgstr ""
+
+#: cdm_dataportal.module:65
+msgid "Setting for the CDM Dataportal"
+msgstr ""
+
+#: cdm_dataportal.module:216
+msgid "CDM DataPortal Credits"
+msgstr ""
+
+#: cdm_dataportal.module:217
+msgid "CDM Search Taxa"
+msgstr ""
+
+#: cdm_dataportal.module:219
+msgid "CDM Dataportal Print"
+msgstr ""
+
+#: cdm_dataportal.module:225
+msgid "Credits"
+msgstr ""
+
+#: cdm_dataportal.module:229;665
+msgid "Search Taxa"
+msgstr ""
+
+#: cdm_dataportal.module:250
+msgid "The URL to the CDM Web Service must end with a slash: '/'."
+msgstr ""
+
+#: cdm_dataportal.module:311
+msgid "Enter the name or part of a name you wish to search for. The asterisk  character * can always be used as wildcard"
+msgstr ""
+
+#: cdm_dataportal.module:319
+msgid "Options"
+msgstr ""
+
+#: cdm_dataportal.module:350
+msgid "Search for accepted taxa"
+msgstr ""
+
+#: cdm_dataportal.module:356
+msgid "Search for synonyms"
+msgstr ""
+
+#: cdm_dataportal.module:362
+msgid "Search for common names"
+msgstr ""
+
+#: cdm_dataportal.module:371
+msgid "Geographic range"
+msgstr ""
+
+#: cdm_dataportal.module:376
+msgid "Select a TDWG distribution level and code:"
+msgstr ""
+
+#: cdm_dataportal.module:379
+msgid "TDWG level-1, i.e. a continent"
+msgstr ""
+
+#: cdm_dataportal.module:380
+msgid "TDWG level-2"
+msgstr ""
+
+#: cdm_dataportal.module:381
+msgid "TDWG level-3, i.e. a country"
+msgstr ""
+
+#: cdm_dataportal.module:382
+msgid "TDWG level-4"
+msgstr ""
+
+#: cdm_dataportal.module:404
+msgid "TDWG level"
+msgstr ""
+
+#: cdm_dataportal.module:457
+msgid "Search"
+msgstr ""
+
+#: cdm_dataportal.module:540
+msgid "CDM DataPortal"
+msgstr ""
+
+#: cdm_dataportal.module:559
+msgid "Available taxonomic views"
+msgstr ""
+
+#: cdm_dataportal.module:562
+msgid "Select a taxonomic view for this webservice."
+msgstr ""
+
+#: cdm_dataportal.module:574
+msgid "Feature Tree"
+msgstr ""
+
+#: cdm_dataportal.module:581
+msgid "Available FeatureTrees"
+msgstr ""
+
+#: cdm_dataportal.module:593
+msgid "Layout"
+msgstr ""
+
+#: cdm_dataportal.module:600
+msgid "Taxon name type"
+msgstr ""
+
+#: cdm_dataportal.module:602
+msgid "BotanicalName"
+msgstr ""
+
+#: cdm_dataportal.module:602
+msgid "ZoologicalName"
+msgstr ""
+
+#: cdm_dataportal.module:603;619;626;659;675;682;690;697;704;711
+msgid ""
+msgstr ""
+
+#: cdm_dataportal.module:608
+msgid "Hide full nomenclatural reference in title"
+msgstr ""
+
+#: cdm_dataportal.module:610
+msgid "Uncheck this, if you want the title of a taxon page consisting of name and author plus publication year only.\n    \t\t\t\t\tIf not checked, the first homotypic taxon is a repetition of the accepted taxon with\n    \t\t\t\t\tthe full nomenclatural reference."
+msgstr ""
+
+#: cdm_dataportal.module:617
+msgid "Show name relations of accepted taxa on taxon page"
+msgstr ""
+
+#: cdm_dataportal.module:624
+msgid "Exclude the basionym relationship type from the taxon page"
+msgstr ""
+
+#: cdm_dataportal.module:631
+msgid "Tabbed taxon page"
+msgstr ""
+
+#: cdm_dataportal.module:633
+msgid "Split the taxon page into individual tabs for description, images, synonymy"
+msgstr ""
+
+#: cdm_dataportal.module:638
+msgid "Search Page Size"
+msgstr ""
+
+#: cdm_dataportal.module:640
+msgid "Number of Names to display per page in search results."
+msgstr ""
+
+#: cdm_dataportal.module:645
+msgid "Separate Desriptions"
+msgstr ""
+
+#: cdm_dataportal.module:656
+msgid "Hide Images for Taxa above"
+msgstr ""
+
+#: cdm_dataportal.module:673
+msgid "Show media thumbnails for accepted taxa"
+msgstr ""
+
+#: cdm_dataportal.module:680
+msgid "Show media thumbnails for syonyms"
+msgstr ""
+
+#: cdm_dataportal.module:688
+msgid "Show captions under thumbnails"
+msgstr ""
+
+#: cdm_dataportal.module:695
+msgid "Maximum extend of Images"
+msgstr ""
+
+#: cdm_dataportal.module:702
+msgid "Number of columns"
+msgstr ""
+
+#: cdm_dataportal.module:709
+msgid "Maximum number of rows"
+msgstr ""
+
+#: cdm_dataportal.module:720
+msgid "Geoservice"
+msgstr ""
+
+#: cdm_dataportal.module:727
+msgid "OpenLayers Viewer"
+msgstr ""
+
+#: cdm_dataportal.module:729
+msgid "Display the maps in an interactive viewer which allows zooming and panning."
+msgstr ""
+
+#: cdm_dataportal.module:734
+msgid "Geoservice Access Point"
+msgstr ""
+
+#: cdm_dataportal.module:736
+msgid "Base URL of the geoservice to be used by this portal"
+msgstr ""
+
+#: cdm_dataportal.module:741
+msgid "Geoservice Display Width"
+msgstr ""
+
+#: cdm_dataportal.module:743
+msgid "Width of the image generated by geoservice"
+msgstr ""
+
+#: cdm_dataportal.module:748
+msgid "Fixed Geoservice Bounding Box"
+msgstr ""
+
+#: cdm_dataportal.module:750
+msgid "Define urrounding of area to be displayed in maps. Use \"-180,-90,180,90\" for the whole world. Leave <strong>empty</strong> to let the map <strong>automatically zoom</strong> to the distribution area."
+msgstr ""
+
+#: cdm_dataportal.module:756
+msgid "Display Country Labels"
+msgstr ""
+
+#: cdm_dataportal.module:758
+msgid "Check this if you like country names to be displayed in the maps. "
+msgstr ""
+
+#: cdm_dataportal.module:764
+msgid "Display a map legend"
+msgstr ""
+
+#: cdm_dataportal.module:766
+msgid "Check this if you like a legend to be displayed with the maps. "
+msgstr ""
+
+#: cdm_dataportal.module:772
+msgid "Map Caption"
+msgstr ""
+
+#: cdm_dataportal.module:774
+msgid "Define a caption for the map."
+msgstr ""
+
+#: cdm_dataportal.module:886
+msgid "Taxon does not exist"
+msgstr ""
+
+#: cdm_dataportal.module:900
+msgid "Advanced Search"
+msgstr ""
+
+#: cdm_dataportal.module:47
+msgid "administer cdm_dataportal"
+msgstr ""
+
+#: cdm_dataportal.module:48
+msgid "cdm_dataportal view notes"
+msgstr ""
+
+#: cdm_dataportal.module:0
+msgid "cdm_dataportal"
+msgstr ""
+
+#: cdm_dataportal.info:0 cdm_api/cdm_api.info:0 cdm_mediauri/cdm_mediauri.info:0 cdm_taxontree/cdm_taxontree.info:0 ext_links/ext_links.info:0
+msgid "CDM"
+msgstr ""
