@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# --debug-info option set for FireSass for Firebug
-compass watch --debug-info ./zen_dataportal/
-
