@@ -1,1 +1,0 @@
-This sniff ruleset is from the drupal module coder-7.x-2.0
