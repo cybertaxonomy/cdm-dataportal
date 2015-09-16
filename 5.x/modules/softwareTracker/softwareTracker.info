@@ -1,5 +1,0 @@
-; $Id: softwareTracker.module, v 1.0 2007/05/02, Andreas Kohlbecker - http://www.bgbm.org/BioDivInf/default.htm $
-name = Software Tracker
-description = "Note Type for a Software Tracker Application. Software (applications, services etc) can be categorized and described by means of this node type."
-version = 5.1-5.x
-dependencies = taxonomy search

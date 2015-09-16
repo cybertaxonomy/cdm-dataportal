@@ -1,5 +1,0 @@
-name = Expertsdb Add Node Widget
-description = "Allows a user to choose to create a new node, rather than select one from a node-reference list. (subform version)"
-dependencies = content subform_element
-version = "5.x-1.2"
-package = EDIT CCK

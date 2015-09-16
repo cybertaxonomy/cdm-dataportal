@@ -1,6 +1,0 @@
-name = Expertsdb Link
-description = Defines a link field type with optional title field. Data will be integrated as serialized array into the according content type database.
-dependencies = content
-package = EDIT CCK
-
-
