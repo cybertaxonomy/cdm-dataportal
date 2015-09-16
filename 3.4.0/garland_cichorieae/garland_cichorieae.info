@@ -1,8 +1,0 @@
-name = Garland Cichorieae
-description = Subtheme from Garland for Cichorieae
-package = CDM_Portal
-base theme = garland
-version = 1.0
-core = 7.x
-stylesheets[all][] = style.css
-stylesheets[all][] = styleOverride.css
