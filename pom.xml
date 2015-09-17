@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>eu.etaxonomy</groupId>
+    <artifactId>cdm_dataportal</artifactId>
+    <packaging>pom</packaging>
+    <version>3.9.0</version>
+
+    <distributionManagement>
+        <site>
+            <id>wp5.e-taxonomy.eu</id>
+            <url>
+                scpexe://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/portal/
+            </url>
+        </site>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>wp5.e-taxonomy.eu</id>
+            <name>Edit Maven Repository</name>
+            <url>
+                scpexe://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/mavenrepo
+            </url>
+        </repository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+            </plugin>
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>1.0-m6</version>
+                <configuration>
+                    <pushHotfixes>true</pushHotfixes>
+                    <pushReleases>true</pushReleases>
+                    <enableSshAgent>true</enableSshAgent>
+                    <allowSnapshots>true</allowSnapshots>
+                    <allowUntracked>true</allowUntracked>
+                </configuration>
+                <dependencies>
+                    <!--
+                          upgrading dependency jsch.agent.version of jgit-flow plugin to 0.1.53
+                          in order have ssl key exchange algorithms compatible with openssh 6.7
+                       -->
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.53</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+        <!-- EXTENSIONS -->
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-scm</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+            <extension>
+                <groupId>org.apache.maven.scm</groupId>
+                <artifactId>maven-scm-manager-plexus</artifactId>
+                <version>1.0</version>
+            </extension>
+            <extension>
+                <groupId>org.apache.maven.scm</groupId>
+                <artifactId>maven-scm-provider-svnexe</artifactId>
+                <version>1.0</version>
+            </extension>
+            <!-- WebDAV plugin to upload snapshots -->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
+    </build>
+
+</project>
