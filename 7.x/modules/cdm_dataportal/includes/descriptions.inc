@@ -1550,13 +1550,17 @@ function cdm_create_description_element_footnotes($description_element, $separat
       }
 
       if(isset($node->children[0])){
-        _compose_distribution_hierarchy(
-          $node->children,
-          $feature_block_settings,
-          $per_node_markup[$node_index],
-          $hierarchy_style,
-          $level_index
-        );
+        if(counct($node->children) > 1 || $label != $node->children[0]->nodeId->representation_L10n) {
+          //FIXME: the above if statement is a hack, remove it once #4411 is decided and fully solved
+          _compose_distribution_hierarchy(
+            $node->children,
+            $feature_block_settings,
+            $per_node_markup[$node_index],
+            $hierarchy_style,
+            $level_index
+          );
+        }
+
       }
 
       $per_node_markup[$node_index] .= '</' . $enclosingTag . '>';
