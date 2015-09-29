@@ -98,13 +98,6 @@
       selenium 2 webdriver, see
       http://seleniumhq.org/docs/03_webdriver.html#with-maven
     -->
-    <!--
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-parent</artifactId>
-      <version>${selenium-version}</version>
-    </dependency>
-     -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-firefox-driver</artifactId>

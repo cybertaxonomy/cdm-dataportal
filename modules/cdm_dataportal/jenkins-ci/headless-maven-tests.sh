@@ -1,10 +1,14 @@
 #!/bin/bash -x
 #
 # USAGE:
-#     bash -ex /usr/lib/selenium/headlessSelenium.sh MODULE_ROOT
-# whereas MODULE_ROOT points to the cdm_dataportal folder in the jenkins workspace
+#     bash -ex /usr/lib/selenium/headlessSelenium.sh [WORKSPACE_ROOT]
+# whereas WORKSPACE_ROOT points to workspace root in the jenkins workspace
+# which contains the whole project
 #
-MODULE_ROOT=$1
+if [ -z "$WORKSPACE_ROOT" ]; then
+    WORKSPACE_ROOT=$1
+fi
+
 FIREFOX_BIN="/usr/lib/iceweasel/firefox-bin"
 
 DISPLAY=":99"
@@ -26,7 +30,7 @@ else
 fi
 export DISPLAY
 
-cd $MODULE_ROOT/test/java/dataportal-selenium-tests/
+cd $WORKSPACE_ROOT
 
 if [ -n $2 ]; then
   CONF_FILE_OPTION="-Ddataportal.test.conf=$2"
