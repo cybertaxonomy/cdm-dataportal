@@ -2236,8 +2236,8 @@ ie	introduced: formerly introduced
   // --- MEDIA GALLERY ---- //
   $form_name = CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB;
   $form_title = 'Media gallery (tab)';
-  $form_description = '<p>This section covers the settings related to the taxon <strong>media</strong> tab.
-   Taxa may have media (usually images) and they are as thumbnails displayed. It is possible to configure
+  $form_description = '<p>This section covers the settings related to the taxon <strong>images</strong> tab.
+   Taxa may have media (usually images) and they are displayed as thumbnails. It is possible to configure
    the thumbnails gallery here, however for configuring how a single media should be displayed please go to
    <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a></p>
    <p><strong>Note:</strong> These settings are only taken into account when the standard
