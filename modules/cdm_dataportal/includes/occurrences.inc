@@ -75,8 +75,6 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     $types = "";
     if (isset($preservedSpecimenDTO->types)) {
         //typed taxa
-        $detail_html .= "<br>";
-        $detail_html .= create_label("Type Designations");
         if(sizeof($preservedSpecimenDTO->types)>1){
             $detail_html .= "<br>";
         }
@@ -133,7 +131,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
 
     if ($types) {
         $detail_html .= $isSpecimenPage?"<br>":"";
-        $detail_html .= create_label("Types") . $types . "<br>";
+        $detail_html .= create_label("Type(s)") . $types . "<br>";
     }
     if ($specimenScans and !$isSpecimenPage) {
         $detail_html .= $isSpecimenPage?"<br>":"";

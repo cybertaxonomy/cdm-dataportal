@@ -378,13 +378,14 @@ function create_links($linkTextPairList)
     if ($linkTextPairList) {
         foreach ($linkTextPairList as $linkTextPair) {
             if($linkTextPair->first!=""){
-            $html .= '<a href="' . $linkTextPair->first . '">' . $linkTextPair->second . "</a>";
+            $html .= '<a href="' . $linkTextPair->first . '">' . $linkTextPair->second . ", </a>";
         	}
             else{
-                $html .= $linkTextPair->second;
+                $html .= $linkTextPair->second.", ";
             }
         }
     }
+    $html = rtrim($html, ", ");
     return $html;
 }
 /**
