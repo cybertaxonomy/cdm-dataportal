@@ -1275,7 +1275,7 @@ function cdm_settings_layout() {
 
   $form['footnotes']['cdm_dataportal_annotations_footnotes'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Do not show annotations footnotes'),
+    '#title' => t('Do not show annotation footnotes'),
     '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
     '#description' => t('Check this if you do not want to show annotation footnotes'),
   );
