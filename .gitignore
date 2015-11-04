@@ -5,8 +5,10 @@
 /.project
 /.settings
 /target
+/screenshots
 
 .idea/
 .classpath
 .settings/
 
+C:\\nppdf32Log\\debuglog.txt
