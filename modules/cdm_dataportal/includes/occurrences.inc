@@ -513,7 +513,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
               }
               @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingAreas'), implode(', ', $area_representations));
             }
-            if (isset($value->exactLocation)) {
+            if (isset($value->exactLocation) && $value->exactLocation->sexagesimalString) {
               $sub_dl_groups = array();
               @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('errorRadius'), $value->exactLocation->errorRadius, ' m', 1);
               @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('longitude'), round($value->exactLocation->longitude, 7), '°', 2);
