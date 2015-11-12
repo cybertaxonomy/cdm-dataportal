@@ -178,15 +178,9 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
 
   $out = '';
   $type_representation = NULL;
+  $min_max = min_max_array();
 
-  // FIXME use UUIDs instead? how about idInVocab?
-  $min_max = array(
-    'Extreme Min' => NULL,
-    'Min' => NULL,
-    'Average' => NULL,
-    'Max' => NULL,
-    'Extreme Max' => NULL,
-  );
+
   $other_values = array();
 
   if (isset($element->statisticalValues)) {
@@ -212,46 +206,10 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
       }
     } // end of loop over statisticalValues
 
-    // create min-max string
-    if ($min_max['Min'] !== NULL && $min_max['Max'] !== NULL && $min_max['Min']->_value == $min_max['Max']->_value) {
-      $min_max['Average'] = $min_max['Min'];
-      $min_max['Min'] = NULL;
-      $min_max['Max'] = NULL;
-    }
-
-    // check for inconsistent cases, eg. only Max and average given
-    if ($min_max['Min'] === NULL && $min_max['Max'] !== NULL) {
-      $min_max['Min'] = '?';
-    }
-    if ($min_max['Min'] !== NULL && $min_max['Max'] === NULL) {
-      $min_max['Max'] = '?';
-    }
-
     // create markup
-    $min_max_markup = '';
 
-    foreach ($min_max as $key => $statistical_val) {
-      if ($statistical_val !== NULL) {
+    $min_max_markup = min_max_markup($min_max);
 
-        if ($statistical_val == '?') {
-          $value_markup = $statistical_val;
-        }
-        else {
-          $value_markup = '<span class="'
-            . html_class_attribute_ref($statistical_val) . ' '
-            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ">'
-            . $statistical_val->_value . '</span>';
-        }
-
-        if (strlen($min_max_markup)) {
-          $min_max_markup .= '–';
-        }
-        if (str_beginsWith($key, 'Extreme')) {
-          $value_markup = "($value_markup)";
-        }
-        $min_max_markup .= $value_markup;
-      }
-    }
 
     foreach ($other_values as $statistical_val) {
       $statistical_val_type_representation = NULL;
@@ -299,6 +257,7 @@ function theme_cdm_descriptionElement_QuantitativeData($variables) {
   return $out . $annotations_and_sources['foot_note_keys'];
 
 }
+
 
 /**
  * Renders CDM DescriptionElements of the type IndividualsAssociations.

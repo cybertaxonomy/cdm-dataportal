@@ -165,3 +165,71 @@ function oder_sources($sources, $do_theme = false){
     }
     return $res;
   }
+
+
+/**
+ * Creates an array suitable to be used in min_max_markup()
+ *
+ * @return array
+ */
+function min_max_array()
+{
+// FIXME use UUIDs instead? how about idInVocab?
+  $min_max = array(
+      'Extreme Min' => NULL,
+      'Min' => NULL,
+      'Average' => NULL,
+      'Max' => NULL,
+      'Extreme Max' => NULL,
+  );
+  return $min_max;
+}
+
+/**
+ * NOTE: use  min_max_array() to create an appropriate array
+ *
+ * @param $min_max
+ * @return string
+ */
+function min_max_markup($min_max) {
+
+  $min_max_markup = '';
+  // create min-max string
+  if ($min_max['Min'] !== NULL && $min_max['Max'] !== NULL && $min_max['Min']->_value == $min_max['Max']->_value) {
+    $min_max['Average'] = $min_max['Min'];
+    $min_max['Min'] = NULL;
+    $min_max['Max'] = NULL;
+  }
+
+  // check for inconsistent cases, eg. only Max and average given
+  if ($min_max['Min'] === NULL && $min_max['Max'] !== NULL) {
+    $min_max['Min'] = '?';
+  }
+  if ($min_max['Min'] !== NULL && $min_max['Max'] === NULL) {
+    $min_max['Max'] = '?';
+  }
+
+
+  foreach ($min_max as $key => $statistical_val) {
+    if ($statistical_val !== NULL) {
+
+      if ($statistical_val == '?') {
+        $val_markup = $statistical_val;
+      } else {
+        $val_markup = '<span class="'
+            . html_class_attribute_ref($statistical_val) . ' '
+            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ">'
+            . $statistical_val->_value . '</span>';
+      }
+
+      if (strlen($min_max_markup)) {
+        $min_max_markup .= '–';
+      }
+      if (str_beginsWith($key, 'Extreme')) {
+        $val_markup = "($val_markup)";
+      }
+      $min_max_markup .= $val_markup;
+    }
+  }
+  return $min_max_markup;
+}

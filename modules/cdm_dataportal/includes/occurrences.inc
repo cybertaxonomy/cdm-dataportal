@@ -448,10 +448,64 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality->text);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $value->absoluteElevation, ' m');
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevationError'), $value->absoluteElevationError, ' m');
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $value->distanceToGround, ' m');
-            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $value->distanceToWaterSurface, ' m');
+            if (isset($value->absoluteElevation)) {
+                $min_max_array = min_max_array();
+                if(is_numeric($value->absoluteElevation)){
+                    $min_max_array['Min'] = new stdClass();
+                    $min_max_array['Min']->_value = $value->absoluteElevation . ' m';
+                }
+                if(is_numeric($value->absoluteElevation)){
+                    $min_max_array['Max'] = new stdClass();
+                    $min_max_array['Max']->_value = $value->absoluteElevationMax . ' m';
+                }
+                $min_max_markup = min_max_markup($min_max_array);
+                if(isset($value->absoluteElevationError)){
+                    $min_max_markup .= ' +/-' .  $value->absoluteElevationError . ' m';
+                }
+                if(is_string($value->absoluteElevationText)){
+                    $min_max_markup .= ' ' . $value->absoluteElevationText;
+                }
+                @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup);
+            }
+            if (isset($value->distanceToGround)) {
+              $min_max_array = min_max_array();
+              if(is_numeric($value->distanceToGround)){
+                  $min_max_array['Min'] = new stdClass();
+                  $min_max_array['Min']->_value = $value->distanceToGround . ' m';
+              }
+              if(is_numeric($value->distanceToGround)){
+                  $min_max_array['Max'] = new stdClass();
+                  $min_max_array['Max']->_value = $value->distanceToGroundMax . ' m';
+              }
+              $min_max_markup = min_max_markup($min_max_array);
+              if(isset($value->distanceToGroundError)){
+                  $min_max_markup .= ' +/-' .  $value->distanceToGroundError . ' m';
+              }
+              if(is_string($value->distanceToGroundText)){
+                  $min_max_markup .= ' ' . $value->distanceToGroundText;
+              }
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $min_max_markup);
+            }
+            if (isset($value->distanceToWaterSurface)) {
+              $min_max_array = min_max_array();
+              if(is_numeric($value->distanceToWaterSurface)){
+                  $min_max_array['Min'] = new stdClass();
+                  $min_max_array['Min']->_value = $value->distanceToWaterSurface . ' m';
+              }
+              if(is_numeric($value->distanceToWaterSurface)){
+                  $min_max_array['Max'] = new stdClass();
+                  $min_max_array['Max']->_value = $value->distanceToWaterSurfaceMax . ' m';
+              }
+              $min_max_markup = min_max_markup($min_max_array);
+              if(isset($value->distanceToWaterSurfaceError)){
+                  $min_max_markup .= ' +/-' .  $value->distanceToWaterSurfaceError . ' m';
+              }
+              if(is_string($value->distanceToWaterSurfaceText)){
+                  $min_max_markup .= ' ' . $value->distanceToWaterSurfaceText;
+              }
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup);
+            }
+
             if (isset($value->collectingAreas)) {
               $area_representations = array();
               foreach($value->collectingAreas as $area) {
