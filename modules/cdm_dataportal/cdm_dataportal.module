@@ -488,7 +488,7 @@ function cdm_dataportal_menu() {
       'type' => MENU_CALLBACK,
       'weight' => 1,
       'page arguments' => array(2, "description")
-      , // Expected callback arguments: name_uuid.
+      , // Expected callback arguments: taxon_uuid.
     );
 
     $items['cdm_dataportal/taxon/%/all'] = array(
@@ -498,7 +498,7 @@ function cdm_dataportal_menu() {
       'type' => MENU_CALLBACK,
       'weight' => 2,
       'page arguments' => array(2, "all")
-      , // Expected callback arguments: name_uuid.
+      , // Expected callback arguments: taxon_uuid.
     );
 
     $items['cdm_dataportal/taxon/%/description'] = array(
@@ -508,7 +508,7 @@ function cdm_dataportal_menu() {
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => 2,
       'page arguments' => array(2, "description")
-      , // Expected callback arguments: name_uuid.
+      , // Expected callback arguments: taxon_uuid.
     );
 
     $items['cdm_dataportal/taxon/%/synonymy'] = array(
@@ -518,7 +518,7 @@ function cdm_dataportal_menu() {
       'type' => MENU_LOCAL_TASK,
       'weight' => 4,
       'page arguments' => array(2, "synonymy", 4)
-      , // Expected callback arguments: name_uuid.
+      , // Expected callback arguments: taxon_uuid and ...
     );
     $items['cdm_dataportal/taxon/%/images'] = array(
       'title' => theme('cdm_taxonpage_tab', array('tabname' => 'Images')),
@@ -527,7 +527,7 @@ function cdm_dataportal_menu() {
       'type' => MENU_LOCAL_TASK,
       'weight' => 5,
       'page arguments' => array(2, "images")
-      , // Expected callback arguments: name_uuid.
+      , // Expected callback arguments: taxon_uuid.
     );
 
     $items['cdm_dataportal/taxon/%/specimens'] = array(
@@ -537,7 +537,7 @@ function cdm_dataportal_menu() {
       'type' => MENU_LOCAL_TASK,
       'weight' => 6,
       'page arguments' => array(2, "specimens")
-      , // Expected callback arguments: name_uuid.
+      , // Expected callback arguments: taxon_uuid.
     );
 
     $items['cdm_dataportal/taxon/%/keys'] = array(
@@ -547,7 +547,17 @@ function cdm_dataportal_menu() {
       'type' => MENU_LOCAL_TASK,
       'weight' => 6,
       'page arguments' => array(2, "keys")
-      , // Expected callback arguments: name_uuid.
+      , // Expected callback arguments: taxon_uuid.
+    );
+
+    $items['cdm_dataportal/taxon/%/experts'] = array(
+        'title' => theme('cdm_taxonpage_tab', array('tabname' => 'Experts')),
+        'page callback' => 'cdm_dataportal_taxon_page_view',
+        'access arguments' => array('access content'),
+        'type' => MENU_LOCAL_TASK,
+        'weight' => 6,
+        'page arguments' => array(2, "experts")
+    , // Expected callback arguments: taxon_uuid.
     );
   }
 
@@ -805,7 +815,7 @@ function cdm_taxonomictree_selector_form($form, &$form_state) {
   $form['val'] = array(
     '#type' => 'select',
     '#title' => t('Available classifications'),
-    '#default_value' => get_taxonomictree_uuid_selected(),
+    '#default_value' => get_current_classification_uuid(),
     '#options' => $options,
     '#attributes' => array('class' => array('highlite-first-child'))
   );
@@ -1306,9 +1316,9 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
   ));
 
   // Check if the taxon id contained in the currently selected tree.
-  $taxon_in_current_tree = taxon_in_current_tree($uuid);
+  $taxon_in_current_classification = taxon_in_current_classification($uuid);
 
-  if (!$taxon_in_current_tree) {
+  if (!$taxon_in_current_classification) {
     $classifications = get_classifications_for_taxon($taxon);
     if (count($classifications) == 0) {
       drupal_set_message(check_plain(t('This concept of the taxon !taxonname is not contained as an accepted taxon in currently chosen classification.', array(
@@ -1464,7 +1474,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highli
   $name_cache = cdm_ws_get(CDM_WS_NAME_NAMECAHE, array($taxon_name_uuid));
   $request_params = array();
   $request_params['query'] = $name_cache;
-  $request_params['tree'] = get_taxonomictree_uuid_selected();
+  $request_params['tree'] = get_current_classification_uuid();
   $request_params['doTaxa'] = 1;
   $request_params['doSynonyms'] = 1;
   $request_params['doTaxaByCommonNames'] = 0;
@@ -1482,7 +1492,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highli
     $singleTaxon = array_pop($taxon_pager->records);
     if ($singleTaxon->class != "Taxon") {
       // It is a Synonym -> look for the accepted.
-      $accepted_taxa = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid, get_taxonomictree_uuid_selected()));
+      $accepted_taxa = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid, get_current_classification_uuid()));
       if (!empty($highlite_synonym_uuid)) {
         drupal_goto('cdm_dataportal/taxon/' . $accepted_taxa[0]->uuid . '/synonymy', array('query' => array('highlite' => $highlite_synonym_uuid)));
       }
@@ -1967,7 +1977,7 @@ function cdm_dataportal_shortname_of($name) {
  */
 function _cdm_dataportal_acceptedByCurrentView($taxon) {
 
-  $defaultTreeUuid = get_taxonomictree_uuid_selected();
+  $defaultTreeUuid = get_current_classification_uuid();
 
   if (isset($taxon->taxonNodes)) {
     $taxonNodes = $taxon->taxonNodes;

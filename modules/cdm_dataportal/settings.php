@@ -111,6 +111,7 @@ function get_taxon_tabs_list() {
     2 => 'Images',
     3 => 'Specimens',
     4 => 'Keys',
+    5 => 'Experts',
   );
 }
 

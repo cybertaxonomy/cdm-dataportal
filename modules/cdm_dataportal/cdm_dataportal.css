@@ -713,6 +713,19 @@ div.cdm_media_viewer_image {
 }
 
 /*
+ * ======= Experts =======
+ */
+
+#experts table {
+    width: 100%;
+}
+
+#experts table td, #experts table th {
+    text-align: left;
+    padding: 0px 1em;
+}
+
+/*
  * Overriding default style from drupal?
  * This prohibits select elements from overflowing the parent container
  */

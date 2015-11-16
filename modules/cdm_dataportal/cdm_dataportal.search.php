@@ -187,7 +187,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
     //
 
     // Get presets from settings.
-    $preset_classification_uuid = get_taxonomictree_uuid_selected();
+    $preset_classification_uuid = get_current_classification_uuid();
 
     // Overwrite presets by user choice stored in session.
     if (isset($_SESSION['cdm']['search'])) {
@@ -205,7 +205,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
         '#title' => t('Classification'),
         '#weight' => 1,
         '#type' => 'select',
-        '#default_value' => get_taxonomictree_uuid_selected(),
+        '#default_value' => get_current_classification_uuid(),
         '#options' => cdm_get_taxontrees_as_options(TRUE),
         '#description' => t('A filter to limit the search to a specific classification. Choosing <em>--ALL (incl. w/o classification)--</em> will disable this filter.'),
       );
@@ -401,7 +401,7 @@ function cdm_dataportal_search_taxon_by_description_form() {
   $form['search']['tree'] = array(
     '#weight' => -1,
     '#type' => 'hidden',
-    '#value' => get_taxonomictree_uuid_selected(),
+    '#value' => get_current_classification_uuid(),
   );
 
   $form['search']['hl'] = array(
@@ -489,7 +489,7 @@ function cdm_dataportal_search_form_request() {
   // so we add it here from what is stored in the session unless
   // SIMPLE_SEARCH_IGNORE_CLASSIFICATION is checked in the settings.
   if (!isset($form_params['tree']) && !variable_get(SIMPLE_SEARCH_IGNORE_CLASSIFICATION, 0)) {
-    $form_params['tree'] = get_taxonomictree_uuid_selected();
+    $form_params['tree'] = get_current_classification_uuid();
   }
   // If the 'NONE' classification has been chosen (adanced search)
   // delete the tree information to avoid unknown uuid exceptions in the

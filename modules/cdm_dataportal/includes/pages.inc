@@ -451,7 +451,20 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
     taxon_page_tabs_hidden('keys');
   }
 
-  if ($tabsToDisplay["Synonymy"] == '0') {
+    // --- GET TaxonNodeAgentRelations --- //
+    $current_classification_uuid = get_current_classification_uuid();
+    $taxon_node_agent_relations_pager = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODEAGENTRELATIONS,
+        array(
+            $taxon->uuid,
+            $current_classification_uuid,
+        ),
+        "pageSize=1&pageIndex=0"// we are only interested into the count so we are fetching only one item, o is not possible!
+    );
+    if (!$taxon_node_agent_relations_pager || $taxon_node_agent_relations_pager->count == 0){
+        taxon_page_tabs_hidden('experts');
+    }
+
+    if ($tabsToDisplay["Synonymy"] == '0') {
     taxon_page_tabs_hidden('synonymy');
   }
 
@@ -545,6 +558,17 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
     $render_array['keys'] = markup_to_render_array($keys_html, $weight++);
   }
 
+  // --- PAGE PART: EXPERTS --- //
+
+  if (array_search('experts', taxon_page_tabs_hidden()) === FALSE && ($page_part == 'experts' || $page_part == 'all')) {
+    $render_array['experts'] = array(
+        '#prefix' => '<div id="experts" class="page-part">' . ($page_part == 'all' ? '<h2>' . t('Experts') . '</h2>' : ''),
+        'content' => compose_cdm_taxon_page_experts($taxon), // returns render array
+        '#suffix' => '</div>',
+    );
+  }
+
+  // ------------------ END OF PARTS -------------- //
 
   // adjust weights of page and toc elements according to the settings
   $taxontabs_weights = get_array_variable_merged('cdm_taxonpage_tabs_weight', CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
@@ -730,9 +754,56 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
   return $render_array;
 }
 
+function compose_cdm_taxon_page_experts($taxon){
+
+  $render_array = array();
+  if(!isset($taxon->uuid)){
+    return $render_array;
+  }
+
+  $current_classification_uuid = get_current_classification_uuid();
+  // TODO use cdm_ws_fetchall below but this failes! needs fix!
+  $taxon_node_agent_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODEAGENTRELATIONS,
+    array(
+      $taxon->uuid,
+      $current_classification_uuid
+    )
+  );
+
+
+  $header = array(
+    array('data' => t('Expert')),
+    array('data' => t('Role'))
+  );
+  $rows = array();
+
+
+  foreach($taxon_node_agent_relations->records as $taxon_node_agent_relation){
+    $rows[] = array(
+
+        'data' => array(
+          $taxon_node_agent_relation->agent->titleCache,
+          $taxon_node_agent_relation->type->representation_L10n
+        ),
+        //'class' => array(html_class_attribute_ref($taxon_node_agent_relation->agent)),
+      
+    );
+  }
+
+
+  $render_array['experts_table'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+  );
+
+
+  return $render_array;
+}
+
 
 /**
- * Manages the tab to be hidden in the taxon page.
+ * Manages the tabs to be hidden in the taxon page.
  *
  * The tabs are identified by their last menu link path element:
  *  - description
@@ -745,7 +816,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
  * managed by drupal_static().
  *
  * @param string $add_tab
- *   Optinal parameter. The given string will be added to the array of tabs
+ *   Optional parameter. The given string will be added to the array of tabs
  *
  * @return
  *   The array of tabs

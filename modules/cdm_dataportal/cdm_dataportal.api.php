@@ -33,7 +33,7 @@ function hook_cdm_feature_node_blocks_alter(&$block_list, $taxon = NULL) {
         // taxon is only given if called from within the taxon general page part
         $numberOfChildren = count(
           cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON,
-              array (get_taxonomictree_uuid_selected(),
+              array (get_current_classification_uuid(),
               $taxon->uuid
               )
           )
