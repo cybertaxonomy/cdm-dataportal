@@ -116,7 +116,14 @@ function get_taxon_tabs_list() {
 }
 
 define('CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT', serialize(
-  array('general' => '-3', 'synonymy' => '-2', 'images' => '0', 'specimens' => '1', 'keys' => '3')
+  array(
+    'general' => '-3',
+    'synonymy' => '-2',
+    'images' => '0',
+    'specimens' => '1',
+    'keys' => '3',
+    'experts' => '5',
+    )
 ));
 
 $taxon_tab_options = get_taxon_tabs_list();

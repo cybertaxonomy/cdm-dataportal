@@ -166,10 +166,10 @@ function theme_description_list($variables) {
  * Adds one term and one description entry to the given description_list_group $group.
  *
  * Creation of a new entry does not take place if the $description is a string
- * which can be trimmed to an empty string. The $group array will be associating in order to
- * ease aplphabetical ordering of the enties.
+ * which can be trimmed to an empty string. The $group array will be associative in order to
+ * ease alphabetical ordering of the entries.
  *
- * NOTE: To be used onyl for themable description_list as proposed in
+ * NOTE: To be used only for themable description_list as proposed in
  * http://drupal.org/node/54898 see includes/pre-drupal8.inc
  *
  * @param array $groups
@@ -222,5 +222,5 @@ function _description_list_group_add(&$groups, $term, $description, $suffix = ''
 }
 
 /******************************************************************************
- * add an other one below this comment if needed
+ * add another one below this comment if needed
  *****************************************************************************/

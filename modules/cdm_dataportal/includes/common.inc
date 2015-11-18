@@ -233,3 +233,216 @@ function min_max_markup($min_max) {
   }
   return $min_max_markup;
 }
+
+// TODO  move below code into new file: agent.inc
+
+/*
+ * Compose an render array from a CDM TaxonNodeAgentRelation object as Taxon Expert.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $taxon_node_agent_relation
+ *   CDM instance of type TaxonNodeAgentRelation
+ * @return array
+ *   A drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_cdm_taxon_expert($taxon_node_agent_relation) {
+
+  $label_suffix = ':';
+
+  if($taxon_node_agent_relation->class == 'DefaultPagerImpl'){
+    // oops this is a pager
+    // this situation will occur when this compose is executed
+    // through the proxy_content() method
+    $taxon_node_agent_relation = $taxon_node_agent_relation->records[0];
+
+  }
+
+  if(is_object($taxon_node_agent_relation->agent)) {
+    $agent_details = compose_cdm_team_or_person_base($taxon_node_agent_relation->agent);
+    // all data will be added to the groups of the agent_details render array
+    $groups = &$agent_details[0]['#groups'];
+
+    @_description_list_group_add($groups, t('Expert role'). $label_suffix, $taxon_node_agent_relation->type->representation_L10n);
+
+    $family_tnars = cdm_ws_fetch_all(CDM_WS_PORTAL_AGENT . '/' . $taxon_node_agent_relation->agent->uuid . '/taxonNodeAgentRelations', array("rank"=>"Familia"));
+
+    $taxa_markup = array(
+      '#theme_wrappers' => array('container'),
+      '#attributes' => array('class' => array('managed_taxa')),
+      '#wrapper_attributes' => array('class' => 'sublist-container')
+      );
+    foreach($family_tnars as $tnar){
+      if(is_object($tnar->taxonNode->taxon)){
+        $taxa_markup[$tnar->taxonNode->taxon->titleCache] = markup_to_render_array(render_taxon_or_name($tnar->taxonNode->taxon, path_to_taxon($tnar->taxonNode->taxon->uuid)));
+      }
+    }
+    ksort($taxa_markup);
+
+    @_description_list_group_add($groups, t('Families'). $label_suffix, array($taxa_markup));
+
+  }
+
+  return $agent_details;
+}
+
+
+/*
+ * Compose an render array from a CDM TeamOrPersonBase object.
+ *
+ * compose_hook() implementation
+ *
+ * TODO: currently mainly implemented for Agent, add Team details
+ *
+ * @param object $team_or_person
+ *   CDM instance of type TeamOrPersonBase
+ * @return array
+ *   A drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
+
+  $groups = array();
+
+  $label_suffix = ':';
+
+  // $weight = 0;
+  if($team_or_person){
+
+    if(is_object($team_or_person->lifespan)){
+      // ToDo render as date* - date† ?
+      @_description_list_group_add($groups, t('Lifespan'). $label_suffix, timePeriodToString($team_or_person->lifespan) /*, '' , $weight++ */);
+    }
+
+    // nomenclaturalTitle
+    @_description_list_group_add($groups, "Nomenclatural Title". $label_suffix, $team_or_person->nomenclaturalTitle);
+    // collectorTitle
+    @_description_list_group_add($groups, "Collector Title". $label_suffix, $team_or_person->collectorTitle);
+
+    // institutionalMemberships
+    if(is_array($team_or_person->institutionalMemberships)){
+
+      $institutes_ra =  array();
+      foreach($team_or_person->institutionalMemberships as $membership) {
+        $membership_groups = array();
+        @_description_list_group_add($membership_groups, t('Department'). $label_suffix, $membership->department);
+        @_description_list_group_add($membership_groups, t('Role'). $label_suffix, $membership->role);
+        if(is_object($membership->period)){
+          @_description_list_group_add($membership_groups, t('Period'). $label_suffix, timePeriodToString($membership->period));
+        }
+        if(is_object($membership->institute->contact)){
+          $institute_contact_details = compose_cdm_contact($membership->institute->contact, $membership->institute->titleCache);
+          if(is_array($institute_contact_details[0]['#groups'])){
+            $membership_groups = array_merge($membership_groups, $institute_contact_details[0]['#groups']);
+          }
+        }
+        if(count($membership_groups) > 0){
+          $institutes_ra[]  = array(
+            '#title' => $membership->institute->titleCache,
+            '#theme' => 'description_list',
+            '#groups' => $membership_groups,
+            '#attributes' => array('class' => html_class_attribute_ref($membership)),
+            '#wrapper_attributes' => array('class' => 'sublist-container')
+          );
+        } else {
+          // no further details for the membership, display the title
+          $institutes_ra[] = markup_to_render_array('<h3>' . $membership->institute->titleCache . '</h3>');
+        }
+
+      }
+
+      $label = count($institutes_ra) > 1 ? t('Institutes'):  t('Institute');
+      @_description_list_group_add($groups, $label. $label_suffix, $institutes_ra /*, '' , $weight++ */);
+    }
+
+
+    // Contact
+    $agent_contact_details = compose_cdm_contact($team_or_person->contact, $team_or_person->titleCache);
+    if(is_array($agent_contact_details[0]['#groups'])){
+      $groups = array_merge($groups, $agent_contact_details[0]['#groups']);
+    }
+
+    // additional data
+    foreach($data as $key=>$value){
+      @_description_list_group_add($sub_dl_groups, t($key), $value /*, '' , $weight++ */);
+    }
+
+  }
+
+  $team_or_person_details = array(
+    '#title' => $team_or_person->titleCache,
+    '#theme' => 'description_list',
+    '#groups' => $groups,
+    '#attributes' => array('class' => html_class_attribute_ref($team_or_person)),
+  );
+  return array($team_or_person_details);
+}
+
+
+/*
+ * Compose an render array from a CDM Contact object.
+ *
+ * compose_hook() implementation
+ *
+ * TODO: currently mainly implemented for Agent, add Team details
+ *
+ * @param object $contact
+ *   CDM instance of type Contact
+ * @param $title
+ *   The title for the description list header
+ * @param $weight
+ *   Optional weight for the description list entries
+ * @return array
+ *   A drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_cdm_contact($contact, $title, $weight = 0)
+{
+
+  $groups = array();
+
+  $label_suffix = ':';
+
+  $contact_field_names_map = array(
+    'emailAddresses' => t('Email'),
+    'urls' => t('Urls'),
+    'phoneNumbers' => t('Phone'),
+    'faxNumbers' => t('Fax'),
+  );
+
+  // Contact
+  if(is_object($contact)){
+    if(isset($contact->addresses)){
+      // TODO ....
+      // $sub_groups = array();
+      // foreach($contact->addresses as $address){
+      //   @_description_list_group_add($sub_groups, $label, $contact->$fieldName, '', $weight++);
+      // }
+    }
+    foreach($contact_field_names_map as $fieldName => $label){
+      if(is_array($contact->$fieldName)){
+        @_description_list_group_add($groups, $label . $label_suffix, $contact->$fieldName, '', $weight++);
+      }
+    }
+    $contact_details = array(
+      '#title' => $title,
+      '#theme' => 'description_list',
+      '#groups' => $groups
+    );
+
+
+  } else if(is_string($title)) {
+    // if the contact entity is empty but the title is given anyway
+    // we are only adding the title, using the description_list
+    // structure is not possible since it would be empty due to
+    // missing group data
+    $contact_details = array('#markup' => '<h3>' . $title . '</h3>');
+  }
+
+  return array($contact_details);
+
+}

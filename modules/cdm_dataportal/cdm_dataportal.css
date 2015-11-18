@@ -62,8 +62,20 @@
  * indented
  * Used in occurence details.
  */
-dl dl {
+dl  {
     margin: 0 0 0 2em;
+}
+dd.sublist-container div {
+    /* background-color: #ebffff; */
+    border: #444444 1px dotted;
+    clear:both;
+    color: #444444;
+    margin-left: 2em;
+}
+/* sublist-containers are currently only used for taxonomic experts */
+dd.sublist-container div dl , dd.sublist-container div h3 {
+    margin: 0px 0px 0px 0px;
+    padding-left: 0.4em;
 }
 
 #block-system-main div.content {
@@ -724,6 +736,18 @@ div.cdm_media_viewer_image {
     text-align: left;
     padding: 0px 1em;
 }
+
+#experts .managed_taxa {
+    margin-left: 2em;
+    height: 20em;
+    overflow: auto;
+}
+
+#experts .managed_taxa .cdm\:Taxon {
+    display: block;
+}
+
+
 
 /*
  * Overriding default style from drupal?

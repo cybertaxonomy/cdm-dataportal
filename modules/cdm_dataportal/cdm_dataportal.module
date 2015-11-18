@@ -2245,11 +2245,12 @@ function cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key_sugge
   return $footNoteKeys;
 }
 
-// @WA Comment: should this not be a theme function?
+
 /**
- *  Creates a CDM Dynabox.
+ * Creates a CDM Dynabox.
+ *
  * @param string $dynabox_id
- *   a uninque name for tha dynabox, using a cdm entity uuid herefore is good pratice.
+ *   a uninque name for tha dynabox, using a cdm entity uuid as id is good practice.
  * @param string $label
  *   The clickable text to show.
  * @param string $content_url
@@ -2264,17 +2265,25 @@ function cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key_sugge
  *   An array with two elements: $enclosingtags[0] will be used for the dynabox
  *   element itself, $enclosingtags[1] is the tag to be used for the
  *   dynabox_content (optional)
+ * @param array $attributes
+ * @param $content_element_selector
+ *   Optional jQuery selector which can be used to reference a dom element which should
+ *   be used as container for the content to be shown. The dynabox-<dynabox id>-content
+ *  element will be placed in this container.
+ *
  * @param string $open_callback
  *   optional javascript call back function to be triggered after toggling the box to
  *   the open state.
  * @param string $close_callback
  *   optional javascript call back function to be triggered after toggling the box to
  *   the closed state.
- *
- * @return string
- *   Returns HTML for a dynabox.
+ * @return string Returns HTML for a dynabox.
+ * Returns HTML for a dynabox.
  */
-function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, $enclosingtags = array('li', 'ul'), $attributes = array(), $open_callback = 'function(){}', $close_callback = 'function(){}') {
+function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text,
+                     $enclosingtags = array('li', 'ul'), $attributes = array(),
+                     $content_element_selector = null,
+                     $open_callback = 'function(){}', $close_callback = 'function(){}' ) {
   $out = '';
 
   // check for plain class attribute string
@@ -2283,7 +2292,7 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
   if(!array_key_exists('class', $attributes)) {
     $attributes['class'] = array();
   }
-  $attributes['class'][] = 'dynabox-' . $dynabox_id;
+  $attributes['id'][] = 'dynabox-' . $dynabox_id;
   $dynabox_attributes = drupal_attributes($attributes);
 
 
@@ -2295,7 +2304,8 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
         dynabox('". $dynabox_id ."',
           {
             open_callback: " . $open_callback .",
-            close_callback: " . $close_callback ."
+            close_callback: " . $close_callback .
+            ($content_element_selector ? ",\n content_container_selector: '" . $content_element_selector . "'" : "") . "
           }
         );
       }
@@ -2310,11 +2320,10 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text, 
   $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/$theme");
   $out .= '<!-- dynabox for ' . $content_url . ' -->';
   $out .= '<' . $enclosingtags[0] . ' ' .  $dynabox_attributes. '><a href="' . $cdm_proxy_url . '" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
-  // TODO stop using the title attribute, the label href now contains the same url!
-  $out .= '<' . $enclosingtags[1] . ' class="dynabox-' . $dynabox_id . '-content" title="' . $cdm_proxy_url . '">';
-  $out .= '<' . $enclosingtags[0] . ' class="dynabox-content-inner">' . loading_image_html() . '</' . $enclosingtags[0] . '>';
-  $out .= '</' . $enclosingtags[1] . '>';
-  $out .= '</' . $enclosingtags[0] . '>';
+  $out .= '  <' . $enclosingtags[1] . ' id="dynabox-' . $dynabox_id . '-content">';
+  $out .= '    <' . $enclosingtags[0] . ' class="dynabox-content-inner">' . loading_image_html() . '</' . $enclosingtags[0] . '>';
+  $out .= '    </' . $enclosingtags[1] . '>';
+  $out .= '  </' . $enclosingtags[0] . '>';
   $out .= '<!-- dynabox end -->';
   return $out;
 }

@@ -1,8 +1,10 @@
 /**
- * Expected dom structure:
- *  <li class="dynabox">
-      <div class="dynabox_label"><span class="label">Label Text</span>
-      <ul class="dynabox_content" title="{url-to-content}"><li> ...... </li></ul>
+ * The dynabox supports
+ * Expected dom structure, the element tags are variable:
+ *
+     <li id="dynabox_${dynabox_id}">
+      <div class="dynabox_label"><a class="label" href="${url-to-content}">Label Text</span>
+      <ul id="dynabox_${dynabox_id}_content" ><li> ...... </li></ul>
     </li>
  */
 
@@ -14,28 +16,42 @@
 
   // Default options for the plugin as a simple object
   var defaults = {
-      open_callback: function(){},
-      close_callback: function(){}
+    open_callback: function(){},
+    close_callback: function(){},
+    content_container_selector: null // optional selector for a container into which the dynabox content should be placed
   };
 
   this.dynabox = function(dynabox_id, options) {
 
     // Merge the options given by the user with the defaults
-      this.options = $.extend({}, defaults, options);
+    this.options = $.extend({}, defaults, options);
 
-    $('.dynabox-' + dynabox_id + ' .label').click(function(event) {
+    // get hold of the dom elements and attributed needed later on
+    var dynabox_container =  $('#dynabox-' + dynabox_id);
+    var dynabox_trigger = dynabox_container.children('.label');
+    var dynabox_content = $('#dynabox-' + dynabox_id + '-content');
+
+    var url = dynabox_trigger.attr('href');
+
+    if(options.content_container_selector != null) {
+      // move the content into the element specified by the
+      // optional 'content_container_selector'
+      dynabox_content.detach().appendTo(options.content_container_selector);
+    }
+
+    // register events
+    dynabox_trigger.click(function(event) {
       loadContent(event);
     }).bind("contextmenu",function(e){
         e.preventDefault(); // disable context menu to avoid opening in new tab or window
     });
 
-    $('.dynabox-' + dynabox_id).find('.dynabox-' + dynabox_id + '-content').click(function(event){event.stopPropagation();});
+    dynabox_content.click(function(event){event.stopPropagation();});
 
-    //$('li.dynabox> span').click(function(event){event.stopPropagation();});
+    // ----- private functions ------ //
 
     var loadContent = function(event) {
       event.preventDefault(); //Cancel the default action (navigation) of the click.
-      var dynabox_content = $(event.target).parents('.dynabox-' + dynabox_id).find('.dynabox-' + dynabox_id + '-content');
 
       if(dynabox_content.find('.content').length > 0) {
         // content has already been loaded
@@ -45,8 +61,6 @@
         );
       } else {
         // no content so far, so load it
-        // TODO stop using the title attribute, the label href now contains the same url!
-        var url = dynabox_content.attr('title');
         if(url !== undefined && url.length > 1){
           dynabox_content.removeAttr('title').find('.loading').slideDown('fast',
             function(){
@@ -54,7 +68,7 @@
             }
           );
           $.get(url, function(html){
-            dynabox_content.find('.loading').remove()
+            dynabox_content.find('.loading').remove();
             dynabox_content.find('.dynabox-content-inner').html('<div class="content">' + html + '</div>').triggerElementsAdded();
           });
         }
@@ -64,7 +78,7 @@
     };
 
     /**
-     * toggles the closed/open state of the supplied dynabox
+     * toggles the closed/open state of the dynabox
      */
     var toggleState = function(dynabox_content) {
       if (dynabox_content.css('display') == 'none'){

@@ -468,7 +468,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   }
 
   // Render.
-  $out = '<span data-cdm-ref="/name/' . $taxonName->uuid . '">';
+  $out = '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base). '" data-cdm-ref="/name/' . $taxonName->uuid . '">';
 
   foreach ($renderTemplate as $partName => $part) {
     $separator = '';

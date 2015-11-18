@@ -3,7 +3,7 @@
  * @file
  * CDM Server URI definitions.
  */
-
+define('CDM_WS_PORTAL_AGENT', 'portal/agent');
 define('CDM_WS_REFERENCE', 'reference');
 define('CDM_WS_REFERENCE_AUTHORTEAM', 'reference/$0/authorship');
 define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCitation');

@@ -280,15 +280,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
                 $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
                 $label_html = cdm_dynabox(
-                    $specimenOrObservation->uuid,
-                    $type_label . $specimenOrObservation->titleCache,
-                    $derived_unit_ws_request,
-                    'cdm_specimenOrObservation', // the theme or compose function to use
-                    'Click for details',
-                    array('div','div'),
-                    array(),
-                    'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', // open_callback
-                    'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
+                  $specimenOrObservation->uuid, $type_label . $specimenOrObservation->titleCache, $derived_unit_ws_request, 'cdm_specimenOrObservation', 'Click for details', array('div', 'div'), array(), 'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', 'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
                 );
 
                 // --- Render associated media.
@@ -770,7 +762,6 @@ function compose_cdm_taxon_page_experts($taxon){
     )
   );
 
-
   $header = array(
     array('data' => t('Expert')),
     array('data' => t('Role'))
@@ -779,15 +770,49 @@ function compose_cdm_taxon_page_experts($taxon){
 
 
   foreach($taxon_node_agent_relations->records as $taxon_node_agent_relation){
-    $rows[] = array(
 
-        'data' => array(
-          $taxon_node_agent_relation->agent->titleCache,
-          $taxon_node_agent_relation->type->representation_L10n
-        ),
-        //'class' => array(html_class_attribute_ref($taxon_node_agent_relation->agent)),
-      
+
+    $expert_role_id = $taxon_node_agent_relation->agent->uuid . '-' . $taxon_node_agent_relation->type->uuid;
+    $expert_details_container_id = 'expert_details_' . $expert_role_id;
+
+    $agent_label_markup = cdm_dynabox(
+      'expert_' . $expert_role_id,
+      $taxon_node_agent_relation->agent->titleCache,
+      // specifying both ends of the relationship will return only one record in the pager
+      cdm_compose_url(CDM_WS_PORTAL_AGENT,
+         array($taxon_node_agent_relation->agent->uuid, 'taxonNodeAgentRelations'),
+        'taxon_uuid=' . $taxon->uuid . '&relType_uuid=' . $taxon_node_agent_relation->type->uuid),
+      'cdm_taxon_expert',
+      'Click for details',
+      array('div', 'div'),
+      array(), // attributes
+      '#' . $expert_details_container_id //
     );
+
+    // Expert and Role
+    $rows[] = array(
+      'data' => array(
+        array(
+          'data' => $agent_label_markup,
+          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->agent))
+        ),
+        array(
+          'data' => $taxon_node_agent_relation->type->representation_L10n,
+          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->type))
+        )
+      )
+    );
+    // Agent details
+    $rows[] = array(
+      'data' => array(
+        array(
+          'data' => '<!-- expert_details_container -->',
+          'id' => $expert_details_container_id,
+          'colspan' => 2
+        )
+      )
+    );
+
   }
 
 
