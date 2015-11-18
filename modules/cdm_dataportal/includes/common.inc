@@ -265,7 +265,7 @@ function compose_cdm_taxon_expert($taxon_node_agent_relation) {
     // all data will be added to the groups of the agent_details render array
     $groups = &$agent_details[0]['#groups'];
 
-    @_description_list_group_add($groups, t('Expert role'). $label_suffix, $taxon_node_agent_relation->type->representation_L10n);
+    @_description_list_group_add($groups, t('Role'). $label_suffix, $taxon_node_agent_relation->type->representation_L10n);
 
     $family_tnars = cdm_ws_fetch_all(CDM_WS_PORTAL_AGENT . '/' . $taxon_node_agent_relation->agent->uuid . '/taxonNodeAgentRelations', array("rank"=>"Familia"));
 
