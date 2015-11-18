@@ -240,12 +240,19 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
      'taxon_page_title,polytomousKey'=> array(
           'namePart' => array('#uri' => TRUE),
         ),
-      'taxon_page_synonymy,accepted_taxon.taxon_page_synonymy,related_taxon'=> array(
+      'taxon_page_synonymy,accepted_taxon.taxon_page_synonymy'=> array(
           'nameAuthorPart' => array('#uri' => TRUE),
           'referencePart' => TRUE,
           'statusPart' => TRUE,
           'descriptionPart' => TRUE,
         ),
+       'related_taxon'=> array(
+         'nameAuthorPart' => array('#uri' => TRUE),
+         'referencePart' => TRUE,
+         'statusPart' => TRUE,
+         'secReferencePart' => TRUE,
+         'descriptionPart' => TRUE,
+       ),
        'homonym'=> array(
             'nameAuthorPart' => array('#uri' => TRUE),
             'referenceYearPart' => TRUE,
