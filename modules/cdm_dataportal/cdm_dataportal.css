@@ -739,7 +739,7 @@ div.cdm_media_viewer_image {
 
 #experts .managed_taxa {
     margin-left: 2em;
-    height: 20em;
+    max-height: 20em;
     overflow: auto;
 }
 
