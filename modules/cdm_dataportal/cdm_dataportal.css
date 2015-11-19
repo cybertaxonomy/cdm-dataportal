@@ -426,10 +426,18 @@ a.label:visited {
  * ==== Maps ====
  */
 
-#openlayers {
-  /* Should match the margin-bottom of .description. */
-  margin-bottom: 0.75em;
+#openlayers_container {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0.75em; /* Should match the margin-bottom of .description. */
+  width: 100%;
 }
+
+#cdm-settings-geo #openlayers_container {
+    max-width: 50em; /* avoid too big maps in the settings */
+
+}
+
 #openlayers_map {
   width: 100%;
   height: 200px;
@@ -469,10 +477,6 @@ the image viewer
 */
 div.cdm_media_viewer_image {
   /* position: absolute; */
-  z-index: 1;
-}
-#openlayers {
-  position: relative;
   z-index: 1;
 }
 

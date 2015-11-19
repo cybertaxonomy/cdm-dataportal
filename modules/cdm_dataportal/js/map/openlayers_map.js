@@ -25,6 +25,7 @@
             distributionOpacity: 0.75,
             legendOpacity: 0.75,
             boundingBox: "-180,-90,180,90",
+            aspectRatio: 2, // w/h
             showLayerSwitcher: false,
             baseLayerNames: ["osgeo_vmap0"],
             defaultBaseLayerName: 'osgeo_vmap0',
@@ -131,8 +132,8 @@
         var baseLayers = [];
         var defaultBaseLayer = null;
 
-        var mapHeight = mapElement.height();
-        var mapWidth = mapElement.width();
+        /* this is usually the <div id="openlayers"> element */
+        var mapContainerElement = mapElement.parent();
 
         var defaultControls = [
                                new OpenLayers.Control.PanZoom(),
@@ -151,6 +152,17 @@
          *
          */
         this.init = function(){ // public function
+
+            // set the height of the container element
+            adjustHeight();
+
+            // register for resize events to be able to adjust the map aspect ratio and legend position
+            jQuery( window ).resize(function() {
+              adjustHeight();
+              adjustLegendAsElementPosition();
+            });
+
+
 
             createLayers(opts.baseLayerNames, opts.defaultBaseLayerName, opts.customWMSBaseLayerData);
 
@@ -212,6 +224,18 @@
 
         };
 
+        var getHeight = function(){
+          return mapContainerElement.width() / opts.aspectRatio;
+        };
+
+        var getWidth = function(){
+          return mapContainerElement.width();
+        };
+
+        var adjustHeight = function() {
+          mapContainerElement.css("height", getHeight());
+        };
+
         /**
          * public function
          */
@@ -229,6 +253,8 @@
         this.getMap = function(){
             return map;
         };
+
+
 
         /**
          * Prints info on the current map into the jQuery element
@@ -248,9 +274,9 @@
                 info += "<dt>map resolution:<dt><dd>" + map.getResolution() + "</dd>";
                 info += "<dt>map max resolution:<dt><dd>" + map.getMaxResolution() + "</dd>";
                 info += "<dt>map scale:<dt><dd>" + map.getScale() + "</dd>";
-                info += "<dt>map extent bbox:<dt><dd>" + map.getExtent().toBBOX() + " (" + mapExtendDegree.toBBOX() + ")</dd>";
+                info += "<dt>map extent bbox:<dt><dd>" + map.getExtent().toBBOX() + ", <strong>degree:</strong> " + mapExtendDegree.toBBOX() + "</dd>";
                 info += "<dt>map maxExtent bbox:<dt><dd>" + map.getMaxExtent().toBBOX() + "</dd>";
-                info += "<dt>baselayer extent bbox:<dt><dd>" + map.baseLayer.getExtent().toBBOX() + " (" + map.baseLayer.getExtent().clone().transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326); ")</dd>";
+                info += "<dt>baselayer extent bbox:<dt><dd>" + map.baseLayer.getExtent().toBBOX() + ", <strong>degree:</strong> <span style=color:green;'>" + map.baseLayer.getExtent().clone().transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326) + "</span></dd>"
                 info += "<dt>baselayer projection:<dt><dd>" + map.baseLayer.projection.getCode() + "</dd>";
             } else {
                 info += "<dt>bbox:<dt><dd>" + mapExtendDegree.toBBOX() + "</dd>";
@@ -269,19 +295,17 @@
          */
         var initMap = function(){
 
-
             if(opts.showLayerSwitcher === true){
                 defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
             }
 
-
-//          var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, mapWidth/mapHeight);
+//          var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, getWidth/getHeight);
             var maxResolution = null;
             // gmaps has no maxExtent at this point, need to check for null
             if(defaultBaseLayer.maxExtent != null){
                 maxResolution = Math[(opts.displayOutsideMaxExtent ? 'max' : 'min')](
-                        defaultBaseLayer.maxExtent.getWidth() / mapWidth,
-                        defaultBaseLayer.maxExtent.getHeight() / mapHeight
+                        defaultBaseLayer.maxExtent.getWidth() / getWidth(),
+                        defaultBaseLayer.maxExtent.getHeight() / getHeight()
                 );
             }
             console.log("mapOptions.maxResolution: " + maxResolution);
@@ -310,7 +334,7 @@
                         // Setting the map.fractionalZoom property to true allows zooming to an arbitrary level
                         // (between the min and max resolutions).
                         // fractional tiles are not supported by XYZ layers like OSM so this option would
-                        // however break the tile retrieval for OSM (e.g.: tile for frational zoom level
+                        // break the tile retrieval for OSM (e.g.: tile for fractional zoom level
                         // 1.2933333333333332 = http://b.tile.openstreetmap.org/1.2933333333333332/1/0.png)
                         fractionalZoom: defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.OSM" && defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.XYZ",
 
@@ -464,20 +488,27 @@
                 .css('top', -mapElement.height());
             legendImage.load(function () {
                 jQuery(this).parent()
-                    .css('left', mapWidth - jQuery(this).width())
+                    .css('left', getWidth() - jQuery(this).width())
                     .width(jQuery(this).width());
                 // reset height to original value
-                mapElement.parent().css('height', mapHeight);
+                adjustHeight();
             });
             legendElement.html(legendImage);
             mapElement.after(legendElement);
         };
 
+         var adjustLegendAsElementPosition = function (){
+           var legendContainer = mapContainerElement.children('.openlayers_legend');
+           var legendImage = legendContainer.children('img');
+           legendContainer.css('top', -mapElement.height())
+             .css('left', getWidth() - legendImage.width());
+         };
+
 
         var addLegendAsLayer= function(legendSrcUrl, map){
             var w, h;
 
-            // 1. download imge to find height and width
+            // 1. download image to find height and width
             mapElement.after('<div class="openlayers_legend"><img src="' + legendSrcUrl + '"></div>');
             mapElement.next('.openlayers_legend').css('display', 'none').css('opacity', opts.legendOpacity).find('img').load(function () {
 
@@ -581,7 +612,7 @@
          * @param OpenLayers.Bounds b
          * @param float aspectRatio width/height
          *
-         * @return the bounds croped to the given aspectRatio
+         * @return the bounds cropped to the given aspectRatio
          */
         var cropBoundsToAspectRatio = function (b, aspectRatio){
 

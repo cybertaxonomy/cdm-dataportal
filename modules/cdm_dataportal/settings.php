@@ -382,8 +382,9 @@ define('CDM_TAXON_MEDIA_FILTER_DEFAULT', serialize(
 define('CDM_MAP_DISTRIBUTION', 'cdm_map_distribution');
 define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
   // needs to be merged with user setting by drupal_array_merge_deep()
-  'width' => 512, // optimum size for OSM layers is 512
-  'height' => 512 / 2, // optimum size for OSM layers 256
+  // 'width' => 512, // optimum size for OSM layers is 512
+  // 'height' => 512 / 2, // optimum size for OSM layers 256
+  'aspect_ratio' => 2,
   'bbox' => '', // empty to allow automatic zooming to extend
   'show_labels' => FALSE,
   'caption' => '',
@@ -2449,6 +2450,7 @@ function cdm_settings_geo($form, &$form_state) {
       '#description' => t('The version of the EDIT map services'),
   );
 
+  /*
   $localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
   $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
   $form['gmap_api_key'] = array(
@@ -2462,7 +2464,7 @@ function cdm_settings_geo($form, &$form_state) {
       is the default key for the localhost (127.0.0.1).',
       array('!localhostkey' => $localhostkey)),
   );
-
+ */
 
   /*
    * MAP SETTINGS
@@ -2481,34 +2483,29 @@ function cdm_settings_geo($form, &$form_state) {
    * settings for the distribution map are used also for specimens map!!!!
    */
 
-  $form[CDM_MAP_DISTRIBUTION]['width'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Width',
-    '#default_value' => $map_distribution['width'],
-    '#maxlength' => 4,
-    '#size' => 4,
-    '#description' => 'Width of the map. To allow OSM baselayers to zoom out to the full extend of the world the map width must be
-      a multiple of 256px since the osm tiles from tile.openstreetmap.org have a size of 256px x 256px and frational zoom
-      levels are not possible in this case.',
-  );
-  $form[CDM_MAP_DISTRIBUTION]['height'] = array(
+  $form[CDM_MAP_DISTRIBUTION]['aspect_ratio'] = array(
       '#type' => 'textfield',
-      '#title' => 'Height',
-      '#default_value' => $map_distribution['height'],
+      '#title' => 'Aspect ratio',
+      '#default_value' => $map_distribution['aspect_ratio'],
       '#maxlength' => 4,
       '#size' => 4,
-      '#description' => 'Height of the map. Depending on the chosen base layer you may want to choose the height equal
-      to the width or half of the width. Any other aspect ratio is also possible if desired.',
+      '#description' => 'The ratio of width to height of the map. Instead of expressing the aspect ratio as usually as
+      two numbers separated by a colon (x:y), this field requires a the value which is the result of the division of the
+      width by the height:</br>
+      <pre>aspect ratio = w / h</pre>
+      For a landscape oriented map with an aspect ratio of 2:1 use <strong>2</strong> as value,</br>
+      for a square map use <strong>1</strong>.',
   );
 
   $form[CDM_MAP_DISTRIBUTION]['bbox'] = array(
     '#type' => 'textfield',
     '#title' => 'Bounding box',
     '#default_value' => $map_distribution['bbox'],
-    '#description' => t('The bounding box (left, bottom, right, top) defines the area to be initially displayed in maps.
+    '#description' => t('The bounding box (left, bottom, right, top) in degree defines the area to be initially displayed in maps.
       Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong>
       to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.</p>
-      <strong>TIP: </strong>You can use the map preview above to choose a bbox from the map. Maybe you need to change the map type to OpeLayers.
+      <strong>TIP:</strong> You can use the map preview above to choose the <strong>baselayer extent bbox</strong> in <strong>degree</strong> from the map.
+      (Maybe you need to change the map base layer to OpeLayers.)
       Hold down Strg and drag with your mouse to select a bbox to zoom to. The bbox of the visible area of the map is always displayed
       below the map from where you can copy the bbox string.</p>'),
   );
@@ -2531,8 +2528,8 @@ function cdm_settings_geo($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => 'Distribution layer opacity',
     '#default_value' => $map_distribution['distribution_opacity'],
-    '#description' => t('Valid values range from 0.0 to 1.0. Value 1.0 means the distributions (the countries or regions) will
-                           fully visible, while a value near to 0.0 will be not much visible.'),
+    '#description' => t('Valid values range from 0.0 to 1.0. Value 1.0 means the distributions
+    (the countries or regions) will fully visible, while a value near to 0.0 will be not much visible.'),
   );
 
   $form[CDM_MAP_DISTRIBUTION]['map_type'] = array(
@@ -2568,6 +2565,26 @@ function cdm_settings_geo($form, &$form_state) {
     $form[CDM_MAP_DISTRIBUTION]['image_map']['#description'] = '<div class="messages warning">' . t("The chosen EDIT map service version ($edit_mapserver_version) is too low, it must be at least 1.1") . '</div>'
       . $form[CDM_MAP_DISTRIBUTION]['image_map']['#description'];
   }
+
+  $form[CDM_MAP_DISTRIBUTION]['image_map']['width'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Width',
+    '#default_value' => $map_distribution['image_map']['width'],
+    '#maxlength' => 4,
+    '#size' => 4,
+    '#description' => 'Width of the map. To allow OSM baselayers to zoom out to the full extend of the world the map width must be
+      a multiple of 256px since the osm tiles from tile.openstreetmap.org have a size of 256px x 256px and frational zoom
+      levels are not possible in this case.',
+  );
+  $form[CDM_MAP_DISTRIBUTION]['image_map']['height'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Height',
+    '#default_value' => $map_distribution['image_map']['height'],
+    '#maxlength' => 4,
+    '#size' => 4,
+    '#description' => 'Height of the map. Depending on the chosen base layer you may want to choose the height equal
+      to the width or half of the width. Any other aspect ratio is also possible if desired.',
+  );
 
   $form[CDM_MAP_DISTRIBUTION]['image_map']['base_layer'] = array(
     '#type' => 'textfield',
@@ -2655,9 +2672,9 @@ function cdm_settings_geo($form, &$form_state) {
     'mapquest_open' => "MapQuest",
     'mapquest_sat' => "MapQuest Sattelite",
 //     'osmarender' => 'OpenStreetMap (Tiles@home)',
-    'gmap' => 'Google Streets',
-    'gsat' => 'Google Satellite',
-    'ghyb' => 'Google Hybrid',
+//    'gmap' => 'Google Streets',
+//    'gsat' => 'Google Satellite',
+//    'ghyb' => 'Google Hybrid',
 //     'veroad' => 'Virtual Earth Roads',
 //     'veaer' => 'Virtual Earth Aerial',
 //     'vehyb' => 'Virtual Earth Hybrid',

@@ -356,6 +356,38 @@ function cdm_dataportal_update_7305() {
     return join(', ',$tasks_performed);
   }
 
+/**
+ * update for RELEASE 3.12:
+ *  - move values for map width and height into 'image_map' settings
+ *  - set map aspect ratio based on the old width and height values
+ */
+function cdm_dataportal_update_7308() {
+
+  $tasks_performed = array();
+  //  move values for map width and height into 'image_map' settings
+  //  and
+  //  set map aspect ratio based on the old width and height values
+  $map_distribution = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+
+  $w = 512 * 2;
+  $h = 512;
+  if(isset($map_distribution['width'])) {
+    $w = $map_distribution['width'];
+    unset($map_distribution['width']);
+  }
+  if(isset($map_distribution['height'])) {
+    $h = $map_distribution['height'];
+    unset($map_distribution['height']);
+  }
+  $map_distribution['image_map']['height'] = $w;
+  $map_distribution['image_map']['width'] = $h;
+  $map_distribution['aspect_ratio'] = $w / $h;
+
+  $tasks_performed[] = _modify_variable(CDM_MAP_DISTRIBUTION, $map_distribution);
+
+  return join(', ',$tasks_performed);
+}
+
 
 /* ======================================================================== */
 

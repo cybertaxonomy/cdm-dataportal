@@ -54,8 +54,6 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL, $lege
     $map_settings['bbox'] = $bbox;
     if ($map_settings['map_type'] == 1) {
     $map_html = get_openlayers_map(
-        $map_settings['width'],
-        $map_settings['height'],
         $map_settings['bbox'],
         $occurrence_query,
         $distribution_query,
@@ -66,8 +64,8 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL, $lege
     }
      else {
       $map_html = get_image_map(
-        $map_settings['width'],
-        $map_settings['height'],
+        $map_settings['image_map']['width'],
+        $map_settings['image_map']['height'],
         $map_settings['bbox'],
         $occurrence_query,
         $distribution_query,
@@ -100,7 +98,7 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
 
   $edit_map_service = get_edit_map_service_settings();
 
-  $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
+  // $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_map.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_layers.js');
@@ -108,6 +106,7 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
   $cdm_openlayers_options = array(
       'legendPosition'  => '3',
       'boundingBox' => $map_settings['bbox'],
+      'aspectRatio' => $map_settings['aspect_ratio'],
       'distributionOpacity' => $map_settings['distribution_opacity'],
       'legendOpacity' => $map_settings['legend']['opacity'],
       'showLayerSwitcher' => $map_settings['openlayers']['show_layer_switcher']  ==  1,
@@ -129,6 +128,7 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
 
     $cdm_openlayers_options['baseLayerNames'] = array_values($layer_names);
 
+    /*
     if (isset($layer_names['gmap']) || isset($layer_names['gsat']) || isset($layer_names['ghyb'])) {
       // gmaps version 2 (needs api key)
       drupal_add_js('http://maps.google.com/maps?file=api&v=2&key=' . $gmap_api_key . '', array('type' => 'external'));
@@ -136,6 +136,7 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
   //     drupal_add_js('http://maps.google.com/maps?file=api&v=3&sensor=false', array('type' => 'external'));
       drupal_add_js('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1', array('type' => 'external'));
     }
+    */
 
   }
 
@@ -183,7 +184,6 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
 /**
  * @todo Enter description here ...
  *
- * @param unknown_type $width
  * @param unknown_type $bounding_box
  * @param unknown_type $occurrenceQuery
  * @param unknown_type $distributionQuery
@@ -205,23 +205,21 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
  * @return String
  *    rendered html
  */
-function get_openlayers_map($width, $height, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array()) {
+function get_openlayers_map($bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array()) {
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
   _add_js_openlayers_map($map_settings, $event_listeners);
 
-  $out = '<div id="openlayers">';
-  $out .= '<div id="openlayers_map" class="smallmap"';
-  if($width) {
-    if(!$height){
-      $height = $width / 2;
-    }
-    $out .= ' style="width: ' . $width . 'px; height:' . $height . 'px"';
-  }
+  $out = '<div id="openlayers_container" class="openlayers_width" style="width: 100%;">';
+  $out .= '<div id="openlayers_map" class="smallmap" style="width:100%; height:100%;"';
 
   // Additional query parameters as set in the data portal admin section.
   $labels_on = $map_settings['show_labels'];
+
+  // need to set the ms parameter to some value in order to satisfy the
+  // map service even if this value should not be required:
+  $width = 512;
 
   $openlayers_map_query_string = '&img=false&ms=' . $width
   . ($bounding_box ? '&bbox=' . $bounding_box : '')
@@ -318,8 +316,6 @@ function compose_distribution_map($taxon, $query_string) {
       . "&SLD=";
 
     $out .= get_openlayers_map(
-        $map_settings['width'],
-        $map_settings['height'],
         $map_settings['bbox'],
         NULL,
         $query_string,
@@ -330,8 +326,8 @@ function compose_distribution_map($taxon, $query_string) {
   else {
     $legendFormatQueryStr = '';
     $out = get_image_map(
-        $map_settings['width'],
-        $map_settings['height'],
+        $map_settings['image_map']['width'],
+        $map_settings['image_map']['height'],
         $map_settings['bbox'],
         NULL,
         $query_string,

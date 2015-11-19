@@ -48,12 +48,12 @@
                 );
 
          /**
-          * TODO unused, can be deleted?
+          * ETOPO1 Global Relief Model
           */
          case 'edit-etopo1':
             return  new OpenLayers.Layer.WMS(
                   "ETOPO1 Global Relief Model",
-                  "http://edit.br.fgov.be:8080/geoserver/wms",
+                  "http://edit.africamuseum.be:8080/geoserver/wms",
                   {layers: 'topp:color_etopo1_ice_full', format:"image/png"},
                   {
                     maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
@@ -62,21 +62,6 @@
                     displayInLayerSwitcher: true
                   }
                 );
-
-        /**
-         * TODO unused, can be deleted?
-         */
-        case 'edit-vmap0_world_basic':
-            return  new OpenLayers.Layer.WMS(
-                  "EDIT Vmap0",
-                  "http://edit.br.fgov.be:8080/geoserver/wms",
-                  {layers: 'vmap0_world_basic', format:"image/png"},
-                  {
-                    maxExtent: window.CdmOpenLayers.mapExtends.epsg_900913,
-                    isBaseLayer: true,
-                    displayInLayerSwitcher: true
-                  }
-            );
 
           /*
            * OSM Layers:
@@ -129,7 +114,8 @@
                           transitionEffect: "resize"
                       }
                   );
-
+          /*
+          ALl GOOGLE LAYERS DISABELED until the new map api is integrated
           // create Google Mercator layers
           case 'gmap':
             return  new OpenLayers.Layer.Google(
@@ -171,6 +157,7 @@
                           numZoomLevels: 22
                       }
                   );
+          */
           /*
            * FIXME: apiKey needs to be specified
           case 'veroad':
