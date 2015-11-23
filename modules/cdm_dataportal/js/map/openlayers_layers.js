@@ -53,7 +53,7 @@
          case 'edit-etopo1':
             return  new OpenLayers.Layer.WMS(
                   "ETOPO1 Global Relief Model",
-                  "http://edit.africamuseum.be:8080/geoserver/wms",
+                  "http://edit.africamuseum.be/geoserver/topp/wms",
                   {layers: 'topp:color_etopo1_ice_full', format:"image/png"},
                   {
                     maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
