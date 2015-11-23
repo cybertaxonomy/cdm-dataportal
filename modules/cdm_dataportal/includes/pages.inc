@@ -280,7 +280,16 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
                 $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
                 $label_html = cdm_dynabox(
-                  $specimenOrObservation->uuid, $type_label . $specimenOrObservation->titleCache, $derived_unit_ws_request, 'cdm_specimenOrObservation', 'Click for details', array('div', 'div'), array(), 'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', 'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
+                  $specimenOrObservation->uuid,
+                  $type_label . $specimenOrObservation->titleCache,
+                  $derived_unit_ws_request,
+                  'cdm_specimenOrObservation',
+                  'Click for details',
+                  array('div', 'div'),
+                  array(),
+                  null, // $content_element_selector
+                  'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', // open_callback
+                  'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
                 );
 
                 // --- Render associated media.
@@ -786,7 +795,7 @@ function compose_cdm_taxon_page_experts($taxon){
       'Click for details',
       array('div', 'div'),
       array(), // attributes
-      '#' . $expert_details_container_id //
+      '#' . $expert_details_container_id // $content_element_selector
     );
 
     // Expert and Role
