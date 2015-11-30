@@ -737,8 +737,8 @@ function cdm_dataportal_block_view($delta) {
       // t('Funded by EDIT');
       $text = '<none>';
       $block['subject'] = $text;
-      $img_tag = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/funded_by_EDIT.png' . '" alt="' . $text . '"/>';
-      $block['content'] = l($img_tag, "http://www.e-taxonomy.eu/", array(
+      $img_tag = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/powered_by_edit.png' . '" alt="' . $text . '"/>';
+      $block['content'] = l($img_tag, "http://cybertaxonomy.org/", array(
         'attributes' => array("target" => "EDIT"),
         'absolute' => TRUE,
         'html' => TRUE,
