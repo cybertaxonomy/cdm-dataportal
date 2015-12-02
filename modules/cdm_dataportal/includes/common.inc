@@ -276,7 +276,7 @@ function compose_cdm_taxon_expert($taxon_node_agent_relation) {
       );
     foreach($family_tnars as $tnar){
       if(is_object($tnar->taxonNode->taxon)){
-        $taxa_markup[$tnar->taxonNode->taxon->titleCache] = markup_to_render_array(render_taxon_or_name($tnar->taxonNode->taxon, path_to_taxon($tnar->taxonNode->taxon->uuid)));
+        $taxa_markup[$tnar->taxonNode->taxon->titleCache] = markup_to_render_array(render_taxon_or_name($tnar->taxonNode->taxon, url(path_to_taxon($tnar->taxonNode->taxon->uuid))));
       }
     }
     ksort($taxa_markup);
