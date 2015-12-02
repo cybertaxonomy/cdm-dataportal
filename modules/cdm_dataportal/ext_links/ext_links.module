@@ -771,7 +771,7 @@ function ext_links_theme() {
  */
 function ext_links_get_default() {
   $ext_links_default["gbif"] = array(
-    'link_default_value' => 'http://data.gbif.org/species/',
+    'link_default_value' => 'http://www.gbif.org/species/search?q=',
     'text_default_value' => 'Search GBIF...',
     'category_default_value' => 'Specimens/Occurrences',
   );
