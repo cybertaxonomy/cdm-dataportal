@@ -1209,3 +1209,7 @@ table.system-status-report tr.ok th {
 #cdm-dataportal-search-taxon-form .form-item .description {
     display:none;
 }
+
+#block-cdm-dataportal-feature-bibliography .footnote {
+    margin-left: 0px;
+}
