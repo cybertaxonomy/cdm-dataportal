@@ -47,6 +47,25 @@
                   }
                 );
 
+          case 'mapproxy_vmap0':
+            /**
+             * Available Projections:
+             *    EPSG:4269
+             EPSG:4326
+             EPSG:900913
+             */
+            return  new OpenLayers.Layer.WMS(
+              "OSGEO Vmap0 via mapproxy",
+              "http://cybertaxonomy.org:8082/mapproxy/service",
+              {layers: 'vmap0', format:"image/png"},
+              {
+                maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
+                projection: new OpenLayers.Projection("EPSG:4326"),
+                isBaseLayer: true,
+                displayInLayerSwitcher: true
+              }
+            );
+
          /**
           * ETOPO1 Global Relief Model
           */
