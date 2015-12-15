@@ -82,6 +82,22 @@
                   }
                 );
 
+        /**
+         * ETOPO1 Global Relief Model
+         */
+          case 'mapproxy_etopo1':
+            return  new OpenLayers.Layer.WMS(
+              "ETOPO1 Global Relief Model via mapproxy",
+              "http://cybertaxonomy.org:8082/mapproxy/service",
+              {layers: 'etopo1', format:"image/png"},
+              {
+                maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
+                projection: new OpenLayers.Projection("EPSG:4326"),
+                isBaseLayer: true,
+                displayInLayerSwitcher: true
+              }
+            );
+
           /*
            * OSM Layers:
            *

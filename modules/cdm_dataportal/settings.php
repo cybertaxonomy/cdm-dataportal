@@ -2663,12 +2663,12 @@ function cdm_settings_geo($form, &$form_state) {
    NOTICE: must correspond to the layers defined in
    js/openlayers_,ap.js#getLayersByName()
    */
-    'osgeo_vmap0' => "Metacarta Vmap0 (OSGeo server) - not recommendet!", // EPSG:4326: EPSG:900913
-    'metacarta_vmap0' => "Metacarta Vmap0 (MetaCarta Labs server)  - not recommendet!", // EPSG:4326, EPSG:900913
-    'mapproxy_vmap0' => "Metacarta Vmap0 (OSGeo server via EDIT mapproxy) - RECOMMENDET! ",
-    // all others EPSG:900913
-    // 'edit-vmap0_world_basic' => 'EDIT Vmap0',
+    'osgeo_vmap0' => "Metacarta Vmap0 (OSGeo server) - instable!", // EPSG:4326: EPSG:900913
+    'metacarta_vmap0' => "Metacarta Vmap0 (MetaCarta Labs server)  - instable!", // EPSG:4326, EPSG:900913
+    'mapproxy_vmap0' => "Metacarta Vmap0 (OSGeo server) - via fast EDIT MapProxy",
+    'mapproxy_etopo1' => "ETOPO1 Global Relief Model - via fast EDIT MapProxy",
     'edit-etopo1' => "ETOPO1 Global Relief Model",
+    // all others EPSG:900913
     'mapnik' => 'OpenStreetMap',
     'mapquest_open' => "MapQuest",
     'mapquest_sat' => "MapQuest Sattelite",
