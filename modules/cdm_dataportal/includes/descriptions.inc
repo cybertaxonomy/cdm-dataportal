@@ -1239,6 +1239,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
       if (isset($image_sources)) {
         $elements_out_array[] = theme('cdm_description_element_image_source', array('image_sources' => $image_sources, 'asListElement' => TRUE));
+        $feature_block_has_content = true;
       }
     } // END normal description element arrays
 
