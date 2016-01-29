@@ -1408,8 +1408,8 @@ function cdm_descriptionElementTypes_as_option($prependEmptyElement = FALSE) {
 
 
 /**
- * Fetches all TaxonDescription descriptions elements wich are accociated to the
- * Taxon specified by the $taxon_uuid and megres the elements into the given
+ * Fetches all TaxonDescription descriptions elements which are associated to the
+ * Taxon specified by the $taxon_uuid and merges the elements into the given
  * feature tree.
  * @param $feature_tree
  *     The CDM FeatureTree to be used as template
@@ -1418,9 +1418,9 @@ function cdm_descriptionElementTypes_as_option($prependEmptyElement = FALSE) {
  * @param $excludes
  *     UUIDs of features to be excluded
  * @return$feature_tree
- *     The CDM FeatureTree wich was given as parameter merged tree wheras the
- *     CDM FeatureNodes are extended by an additinal field 'descriptionElements'
- *     witch will hold the accoding $descriptionElements.
+ *     The CDM FeatureTree which was given as parameter merged tree whereas the
+ *     CDM FeatureNodes are extended by an additional field 'descriptionElements'
+ *     witch will hold the according $descriptionElements.
  */
 function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid, $exclude_uuids = array()) {
 
