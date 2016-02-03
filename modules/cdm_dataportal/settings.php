@@ -2209,7 +2209,7 @@ ie	introduced: formerly introduced
 
     $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Show specimen derivates in a compressed table'),
+        '#title' => t('Show specimen derivatives in a compressed table'),
         '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE),
         '#description' => t('If checked, the specimen will be listed in a table. Every row represents
         a collection and it can be expanded to get an overview of the specimens and their derivates.'),
