@@ -1,5 +1,7 @@
 package eu.etaxonomy.dataportal.pages;
 
+import static org.junit.Assert.assertNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -98,6 +100,10 @@ public abstract class  PortalPage {
     @CacheLookup
     protected WebElement classificationBrowserBlock;
 
+    @FindBy(className="messages_error")
+    @CacheLookup
+    protected WebElement messagesError;
+
     /**
      * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
      * implementing the method {@link #getDrupalPageBase()}. The constructor argument <code>pagePathSuffix</code>
@@ -133,6 +139,8 @@ public abstract class  PortalPage {
 
         // This call sets the WebElement fields.
         PageFactory.initElements(driver, this);
+
+        assertNull("The page must not show an error box", messagesError);
 
         logger.info("loading " + pageUrl);
 
