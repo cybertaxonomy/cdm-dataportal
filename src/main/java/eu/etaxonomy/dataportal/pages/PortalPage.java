@@ -140,7 +140,12 @@ public abstract class  PortalPage {
         // This call sets the WebElement fields.
         PageFactory.initElements(driver, this);
 
-        assertNull("The page must not show an error box", messagesError);
+
+        try {
+            assertNull("The page must not show an error box", messagesError.getText());
+        } catch (NoSuchElementException e) {
+            //IGNORE since this is expected!
+        }
 
         logger.info("loading " + pageUrl);
 
