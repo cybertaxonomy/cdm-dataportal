@@ -40,8 +40,10 @@
  *      - #execute:
  *            force execution of the given callback after registration of the event handlers
  *   see http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html#OpenLayers.Map.events for more
- * @param string $bbox
- *   Can be used to override the bbox setting stored in the settings variable CDM_MAP_DISTRIBUTION
+ * @param string $force_map_type
+ *   Can be used to override the map_type setting stored in the settings variable CDM_MAP_DISTRIBUTION
+ *   - 1: openlayers_map
+ *   - 0: image_map
  *
  * @return array
  *    A drupal render array
@@ -50,15 +52,17 @@
  *
  * @ingroup compose
  */
-function compose_map($occurrence_query = NULL, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = array(), $bbox = NULL) {
+function compose_map($occurrence_query = NULL, $distribution_query = NULL,
+                     $legend_format_query = NULL, array $event_listeners = array(),
+                     $force_map_type = NULL) {
 
     $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
-    if($bbox){
-      $map_settings['bbox'] = $bbox;
+    if($force_map_type === NULL){
+      $force_map_type = $map_settings['map_type'];
     }
 
-    if ($map_settings['map_type'] == 1) {
+    if ($force_map_type == 1) {
     $map_html = get_openlayers_map(
         $map_settings['bbox'],
         $occurrence_query,

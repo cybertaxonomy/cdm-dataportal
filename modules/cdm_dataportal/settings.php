@@ -2412,13 +2412,17 @@ function cdm_settings_geo($form, &$form_state) {
            ' may not be accurate in case of image maps, please check the map display in the taxon pages.':
            '.<br/>Hold down Strg and drag with your mouse to select a bbox to zoom to. <br/>The bbox of the visible area of the map is always displayed below the map.')
   );
-  $form['map_preview']['map'] = compose_map(NULL, $dummy_distribution_query, NULL,
-      array(
-          'move' => "this.cdmOpenlayersMap.printInfo",
-          '#execute' => "this.cdmOpenlayersMap.printInfo"
-      )
+  $form['map_preview']['openlayers_map'] = compose_map(NULL, $dummy_distribution_query, NULL,
+    array(
+      'move' => "this.cdmOpenlayersMap.printInfo",
+      '#execute' => "this.cdmOpenlayersMap.printInfo"
+    )//,
+    //1 // openlayers_map
   );
-
+  /*
+  $form['map_preview']['map'] = compose_map(NULL, $dummy_distribution_query, NULL, array(), 0 // force image map
+  );
+  */
 
   /*
    * GEO SERVER
@@ -2460,6 +2464,23 @@ function cdm_settings_geo($form, &$form_state) {
     '#collapsed' => TRUE,
     '#description' => t('General configuration for all map types.'),
   );
+
+  $form[CDM_MAP_DISTRIBUTION]['map_type'] = array(
+    '#type' => 'radios',
+    '#title' => 'Map types',
+    '#options' => array(
+      1 => "OpenLayers dynamic map viewer",
+      0 => "Plain image",
+    ),
+    '#default_value' => $map_distribution['map_type'],
+    '#description' => 'Two different map types are available :
+      <ul><li><em>OpenLayers</em>: Display the maps in an interactive viewer
+      which allows zooming and panning. If enabled you can configure the default layer
+      (background of your maps) below.</li>
+      <li><em>Plain image</em>: The map will be static non interactive
+      image.</li></ul>',
+  );
+  $open_layers_is_enabled = $map_distribution['map_type'] == 1;
 
   /*
    * settings for the distribution map are used also for specimens map!!!!
@@ -2514,24 +2535,6 @@ function cdm_settings_geo($form, &$form_state) {
     '#description' => t('Valid values range from 0.0 to 1.0. Value 1.0 means the distributions
     (the countries or regions) will fully visible, while a value near to 0.0 will be not much visible.'),
   );
-
-  $form[CDM_MAP_DISTRIBUTION]['map_type'] = array(
-    '#type' => 'radios',
-    '#title' => 'Map types',
-    '#options' => array(
-      1 => "OpenLayers dynamic map viewer",
-      0 => "Plain image",
-    ),
-    '#default_value' => $map_distribution['map_type'],
-    '#description' => 'Two different map types are available :
-      <ul><li><em>OpenLayers</em>: Display the maps in an interactive viewer
-      which allows zooming and panning. If enabled you can configure the default layer
-      (background of your maps) below.</li>
-      <li><em>Plain image</em>: The map will be static non interactive
-      image.</li></ul>',
-  );
-  $open_layers_is_enabled = $map_distribution['map_type'] == 1;
-
 
   // --- Plain Image Settings --- //
   $form[CDM_MAP_DISTRIBUTION]['image_map'] = array(
