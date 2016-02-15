@@ -56,7 +56,7 @@
              */
             return  new OpenLayers.Layer.WMS(
               "OSGEO Vmap0 via mapproxy",
-              "http://cybertaxonomy.org:8082/mapproxy/service",
+              "http://geo.cybertaxonomy.org/mapproxy/service",
               {layers: 'vmap0', format:"image/png"},
               {
                 maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
