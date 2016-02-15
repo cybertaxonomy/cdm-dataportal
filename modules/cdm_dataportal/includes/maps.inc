@@ -51,7 +51,9 @@
 function compose_map($occurrence_query = NULL, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = array(), $bbox = NULL) {
 
     $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
-    $map_settings['bbox'] = $bbox;
+    if($bbox){
+      $map_settings['bbox'] = $bbox;
+    }
     if ($map_settings['map_type'] == 1) {
     $map_html = get_openlayers_map(
         $map_settings['bbox'],

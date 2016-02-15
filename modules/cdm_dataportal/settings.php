@@ -2392,15 +2392,13 @@ function cdm_settings_geo($form, &$form_state) {
 
   $current_geoserver_settings = get_edit_map_service_settings();
   $map_distribution = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
-  // The default layer must always be enabled
-  $preferred_layer = $map_distribution['openlayers']['base_layers']['PREFERRED'];
-  $map_distribution['openlayers']['base_layers'][$preferred_layer] = $preferred_layer;
+
 
   $form = array();
 
   $dummy_distribution_query = NULL;
   if($map_distribution['map_type'] != 1){
-    // we need to apply a dummy query since the map serice requires for image maps
+    // we need to apply a dummy query since the map service requires for image maps
     // at least as and ad to be defined
     $dummy_distribution_query = "as=a:339966&ad=tdwg1:a:1,2,3,4,5,6,7,8,9";
   }
@@ -2411,7 +2409,7 @@ function cdm_settings_geo($form, &$form_state) {
       '#collapsible' => FALSE,
       '#description' => 'The preview of the map'
        . ($dummy_distribution_query != null ?
-           ' may not be accurate in case if image maps, please check the map display in the taxon pages.':
+           ' may not be accurate in case of image maps, please check the map display in the taxon pages.':
            '.<br/>Hold down Strg and drag with your mouse to select a bbox to zoom to. <br/>The bbox of the visible area of the map is always displayed below the map.')
   );
   $form['map_preview']['map'] = compose_map(NULL, $dummy_distribution_query, NULL,
@@ -2489,6 +2487,7 @@ function cdm_settings_geo($form, &$form_state) {
       '#default_value' => $map_distribution['aspect_ratio'],
       '#maxlength' => 4,
       '#size' => 4,
+      '#element_validate' => array('element_validate_number'),
       '#description' => 'The ratio of width to height of the map. Instead of expressing the aspect ratio as usually as
       two numbers separated by a colon (x:y), this field requires a the value which is the result of the division of the
       width by the height:</br>
@@ -2658,6 +2657,10 @@ function cdm_settings_geo($form, &$form_state) {
         . $form[CDM_MAP_DISTRIBUTION]['openlayers']['#description'];
   }
 
+  // The default layer must always be enabled
+  $preferred_layer = $map_distribution['openlayers']['base_layers']['PREFERRED'];
+  $map_distribution['openlayers']['base_layers'][$preferred_layer] = $preferred_layer;
+
   $baselayer_options = array(
     /*
    NOTICE: must correspond to the layers defined in
@@ -2714,7 +2717,7 @@ function cdm_settings_geo($form, &$form_state) {
       '#title' => 'WMS url',
       // Only line color by now.
       '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['url'],
-      '#description' => 'Base url for the WMS (e.g.  http://wms.jpl.nasa.gov/wms.cgi)'
+      '#description' => 'Base url for the WMS (e.g.  http://edit.africamuseum.be/geoserver/topp/wms, http://wms.jpl.nasa.gov/wms.cgi)'
   );
   $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['params'] = array(
       '#type' => 'textarea',
@@ -2866,6 +2869,7 @@ function cdm_settings_geo($form, &$form_state) {
 
   return system_settings_form($form);
 }
+
 
 /**
  * @todo document this function.

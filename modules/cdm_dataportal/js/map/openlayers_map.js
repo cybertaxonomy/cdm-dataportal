@@ -713,18 +713,24 @@
                 maxExtent.transform(CdmOpenLayers.projections.epsg_4326, projection);
             }
 
-            return  new OpenLayers.Layer.WMS(
-                    name,
-                    url,
-                    params,
-                    {
-                        maxExtent: maxExtent,
-                        projection: projection,
-                        units: units,
-                        isBaseLayer: true,
-                        displayInLayerSwitcher: true
-                    }
-            );
+          wmsLayer = new OpenLayers.Layer.WMS(
+            name,
+            url,
+            params,
+            {
+              maxExtent: maxExtent,
+              projection: projection,
+              units: units,
+              isBaseLayer: true,
+              displayInLayerSwitcher: true
+            }
+          );
+
+          if(wmsLayer == null){
+            console.log("Error creating WMSBaseLayer");
+          }
+
+          return  wmsLayer;
         };
 
     }; // end of CdmOpenLayers.Map
