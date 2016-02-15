@@ -40,6 +40,8 @@
  *      - #execute:
  *            force execution of the given callback after registration of the event handlers
  *   see http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html#OpenLayers.Map.events for more
+ * @param string $bbox
+ *   Can be used to override the bbox setting stored in the settings variable CDM_MAP_DISTRIBUTION
  *
  * @return array
  *    A drupal render array
@@ -51,9 +53,11 @@
 function compose_map($occurrence_query = NULL, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = array(), $bbox = NULL) {
 
     $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+
     if($bbox){
       $map_settings['bbox'] = $bbox;
     }
+
     if ($map_settings['map_type'] == 1) {
     $map_html = get_openlayers_map(
         $map_settings['bbox'],
@@ -65,17 +69,18 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL, $lege
     );
     }
      else {
+      $map_height = round($map_settings['image_map']['width'] / (float)$map_settings['aspect_ratio']);
       $map_html = get_image_map(
         $map_settings['image_map']['width'],
-        $map_settings['image_map']['height'],
+        $map_height,
         $map_settings['bbox'],
         $occurrence_query,
         $distribution_query,
         $legend_format_query,
         $map_settings['caption']
-     );
+      );
      }
-  return markup_to_render_array($map_html, 0);
+  return markup_to_render_array($map_html);
 }
 
 /**
@@ -99,8 +104,6 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
   _add_js_openlayers();
 
   $edit_map_service = get_edit_map_service_settings();
-
-  // $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
 
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_map.js');
   drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_layers.js');
@@ -129,16 +132,6 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
     }
 
     $cdm_openlayers_options['baseLayerNames'] = array_values($layer_names);
-
-    /*
-    if (isset($layer_names['gmap']) || isset($layer_names['gsat']) || isset($layer_names['ghyb'])) {
-      // gmaps version 2 (needs api key)
-      drupal_add_js('http://maps.google.com/maps?file=api&v=2&key=' . $gmap_api_key . '', array('type' => 'external'));
-      // gmaps version 3 (does not need api key)
-  //     drupal_add_js('http://maps.google.com/maps?file=api&v=3&sensor=false', array('type' => 'external'));
-      drupal_add_js('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1', array('type' => 'external'));
-    }
-    */
 
   }
 
@@ -317,27 +310,32 @@ function compose_distribution_map($taxon, $query_string) {
       . ";fontSize" . urlencode(':') .  $map_settings['legend']['font_size']
       . "&SLD=";
 
-    $out .= get_openlayers_map(
+    /*$out .= get_openlayers_map(
         $map_settings['bbox'],
         NULL,
         $query_string,
         $legendFormatQueryStr,
         $map_settings['caption']
     );
+    */
   }
   else {
     $legendFormatQueryStr = '';
-    $out = get_image_map(
-        $map_settings['image_map']['width'],
-        $map_settings['image_map']['height'],
-        $map_settings['bbox'],
-        NULL,
-        $query_string,
-        $legendFormatQueryStr,
-        $map_settings['caption']
-    );
+    /*
+        get_image_map(
+            $map_settings['image_map']['width'],
+            $map_settings['image_map']['height'],
+            $map_settings['bbox'],
+            NULL,
+            $query_string,
+            $legendFormatQueryStr,
+            $map_settings['caption']
+        );
+    */
   }
-  return markup_to_render_array($out);
+  $out = compose_map(NULL, $query_string, $legendFormatQueryStr);
+
+  return $out;
 }
 
 

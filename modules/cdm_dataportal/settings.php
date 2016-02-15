@@ -2449,22 +2449,6 @@ function cdm_settings_geo($form, &$form_state) {
   );
 
   /*
-  $localhostkey = 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ';
-  $gmap_api_key = variable_get('gmap_api_key', 'ABQIAAAAFho6eHAcUOTHLmH9IYHAeBRi_j0U6kJrkFvY4-OX2XYmEAa76BTsyMmEq-tn6nFNtD2UdEGvfhvoCQ');
-  $form['gmap_api_key'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Google maps API key') . ':',
-      '#default_value' => variable_get('gmap_api_key', $gmap_api_key),
-      '#description' => t('If you want to use the Google Maps Layer, a key is
-      needed. If you need a key, visit
-      <a href="http://code.google.com/intl/en/apis/maps/signup.html">google maps api key</a>.
-      <br/><strong>Note:</strong> The following key: <code>!localhostkey</code>
-      is the default key for the localhost (127.0.0.1).',
-      array('!localhostkey' => $localhostkey)),
-  );
- */
-
-  /*
    * MAP SETTINGS
    */
 
@@ -2571,18 +2555,7 @@ function cdm_settings_geo($form, &$form_state) {
     '#default_value' => $map_distribution['image_map']['width'],
     '#maxlength' => 4,
     '#size' => 4,
-    '#description' => 'Width of the map. To allow OSM baselayers to zoom out to the full extend of the world the map width must be
-      a multiple of 256px since the osm tiles from tile.openstreetmap.org have a size of 256px x 256px and frational zoom
-      levels are not possible in this case.',
-  );
-  $form[CDM_MAP_DISTRIBUTION]['image_map']['height'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Height',
-    '#default_value' => $map_distribution['image_map']['height'],
-    '#maxlength' => 4,
-    '#size' => 4,
-    '#description' => 'Height of the map. Depending on the chosen base layer you may want to choose the height equal
-      to the width or half of the width. Any other aspect ratio is also possible if desired.',
+    '#description' => 'Width of the map. The height is calculated from the <strong>Aspect ratio</strong> set in the section above. ',
   );
 
   $form[CDM_MAP_DISTRIBUTION]['image_map']['base_layer'] = array(
