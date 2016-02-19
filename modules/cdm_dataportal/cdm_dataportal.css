@@ -647,6 +647,19 @@ div.cdm_media_viewer_image {
   margin: 0;
 }
 
+#cdm-settings-geo .map_info{
+    font-size: 95%;
+    font-family: monospace;
+}
+
+#cdm-settings-geo .map-extent-bbox .degree-value {
+    color: forestgreen;
+}
+
+#cdm-settings-geo .baselayer-extent-bbox .degree-value {
+    color: royalblue;
+}
+
 /*
  * ======= specimens =======
  */
