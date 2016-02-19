@@ -40,6 +40,8 @@
  *      - #execute:
  *            force execution of the given callback after registration of the event handlers
  *   see http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html#OpenLayers.Map.events for more
+ * @param bool $resizable
+ *    only possible for openlayers_map
  * @param string $force_map_type
  *   Can be used to override the map_type setting stored in the settings variable CDM_MAP_DISTRIBUTION
  *   - 1: openlayers_map
@@ -53,7 +55,7 @@
  * @ingroup compose
  */
 function compose_map($occurrence_query = NULL, $distribution_query = NULL,
-                     $legend_format_query = NULL, array $event_listeners = array(),
+                     $legend_format_query = NULL, array $event_listeners = array(), $resizable = false,
                      $force_map_type = NULL) {
 
     $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
@@ -63,13 +65,15 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL,
     }
 
     if ($force_map_type == 1) {
+      _add_jquery_ui();
     $map_html = get_openlayers_map(
         $map_settings['bbox'],
         $occurrence_query,
         $distribution_query,
         $legend_format_query,
         $map_settings['caption'],
-        $event_listeners
+        $event_listeners,
+        $resizable
     );
     }
      else {
@@ -102,8 +106,10 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL,
  *      - #execute:
  *            force execution of the given callback after registration of the event handlers
  *   see http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html#OpenLayers.Map.events for more
+ * @param bool $resizable
+ *   The map is made resizable when set to true
  */
-function _add_js_openlayers_map($map_settings, array $event_listeners = array()) {
+function _add_js_openlayers_map($map_settings, array $event_listeners = array(), $resizable = false) {
 
   _add_js_openlayers();
 
@@ -120,6 +126,7 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
       'legendOpacity' => $map_settings['legend']['opacity'],
       'showLayerSwitcher' => $map_settings['openlayers']['show_layer_switcher']  ==  1,
       'displayOutsideMaxExtent' => $map_settings['openlayers']['display_outside_max_extent'] == 1,
+      'resizable' => $resizable
 //       'imgPath' => drupal_get_path('module', 'cdm_dataportal') . '/js/map/OpenLayers-2.13.1/img/' // path to the control icons
       // if no baseLayerNames or defaultBaseLayerName are not defined
       // the defaults in cdm_openlayers.js will be used
@@ -163,17 +170,19 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
   // Query(document).ready - is executed much earlier, when the DOM is loaded
   drupal_add_js("
           jQuery(document).ready(function() {
-                window.onload = function () {
+                jQuery(window).load(function () {
                   var map_container = jQuery('#openlayers_map').cdm_openlayers_map(
                    '" . $edit_map_service['base_uri'] . "',
                    '" . $edit_map_service['version'] . "',
                    " .  json_encode($cdm_openlayers_options) . "
                 );
                 map_container.each(function(){
-                        this.cdmOpenlayersMap.registerEvents({" . $event_listeners_js . "});
+                        this.cdmOpenlayersMap.registerEvents({" . "
+                        " . $event_listeners_js . "
+                        });
                 });
                 " . $execute_handler . "
-        };
+        });
       });
     ", array('type' => 'inline'));
 
@@ -204,14 +213,16 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array())
  * @return String
  *    rendered html
  */
-function get_openlayers_map($bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array()) {
+function get_openlayers_map($bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE,
+                            $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array(),
+                            $resizable = false) {
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
-  _add_js_openlayers_map($map_settings, $event_listeners);
+  _add_js_openlayers_map($map_settings, $event_listeners, $resizable);
 
-  $out = '<div id="openlayers_container" class="openlayers_width" style="width: 100%;">';
-  $out .= '<div id="openlayers_map" class="smallmap" style="width:100%; height:100%;"';
+  $out = '<div id="openlayers_container" class="openlayers_width ui-widget-content" style="width: 100%;">';
+  $out .= '<div id="openlayers_map" class="smallmap" style="width:100%; height:100%; margin: 10px;"';
 
   // Additional query parameters as set in the data portal admin section.
   $labels_on = $map_settings['show_labels'];

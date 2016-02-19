@@ -20,44 +20,47 @@
 })(jQuery, document, window, undefined);
 
 (function($){
-    $.fn.cdm_openlayers_map.defaults = {  // set up default options
-            legendPosition:  null,      // 1,2,3,4,5,6 = display a legend in the corner specified by the number
-            distributionOpacity: 0.75,
-            legendOpacity: 0.75,
-            boundingBox: "-180,-90,180,90",
-            aspectRatio: 2, // w/h
-            showLayerSwitcher: false,
-            baseLayerNames: ["osgeo_vmap0"],
-            defaultBaseLayerName: 'osgeo_vmap0',
-            maxZoom: 4,
-            minZoom: 0,
-            debug: true,
-            /**
-             * allows the map to display parts of the layers which are outside
-             * the maxExtent if the aspect ratio of the map and of the baselayer
-             * are not equal
-             */
-            displayOutsideMaxExtent: false,
-            customWMSBaseLayerData: {
-                name: null,
-                url: null,
-                params: null,
-                projection: null,
-                max_extent: null,
-                units: null
-            }
-//  customWMSBaseLayerData: {
-//  name: "Euro+Med",
-//  url: "http://edit.africamuseum.be/geoserver/topp/wms",
-//  params: {layers: "topp:em_tiny_jan2003", format:"image/png", tiled: true},
-//  projection: "EPSG:7777777",
-//  maxExtent: "-1600072.75, -1800000, 5600000, 5850093",
-//  units: 'm'
-//  }
-    };
+  $.fn.cdm_openlayers_map.defaults = {  // set up default options
+    legendPosition:  null,      // 1,2,3,4,5,6 = display a legend in the corner specified by the number
+    distributionOpacity: 0.75,
+    legendOpacity: 0.75,
+    boundingBox: "-180,-90,180,90",
+    aspectRatio: 2, // w/h
+    showLayerSwitcher: false,
+    baseLayerNames: ["osgeo_vmap0"],
+    defaultBaseLayerName: 'osgeo_vmap0',
+    maxZoom: 4,
+    minZoom: 0,
+    debug: true,
+    /**
+     * allows the map to display parts of the layers which are outside
+     * the maxExtent if the aspect ratio of the map and of the baselayer
+     * are not equal
+     */
+    displayOutsideMaxExtent: false,
+    //  customWMSBaseLayerData: {
+    //  name: "Euro+Med",
+    //  url: "http://edit.africamuseum.be/geoserver/topp/wms",
+    //  params: {layers: "topp:em_tiny_jan2003", format:"image/png", tiled: true},
+    //  projection: "EPSG:7777777",
+    //  maxExtent: "-1600072.75, -1800000, 5600000, 5850093",
+    //  units: 'm'
+    //  }
+    customWMSBaseLayerData: {
+        name: null,
+        url: null,
+        params: null,
+        projection: null,
+        max_extent: null,
+        units: null
+    },
+    /**
+     * when true the map is made resizable by adding the jQueryUI widget resizable
+     * to the map container. This feature requires that the jQueryUI is loaded
+     */
+    resizable: false
+  };
 })(jQuery);
-
-
 
 /**************************************************************************
  *                          CdmOpenLayers
@@ -91,7 +94,8 @@
         return {
             projections: projections,
             mapExtends: mapExtends,
-            getLayerByName: function(layerName){} // initially empty fuction, will be populated by openlayers_layers.js
+            getMap: function (){},
+            getLayerByName: function(layerName){} // initially empty function, will be populated by openlayers_layers.js
         };
 
     })(); // end of namespace definition for CdmOpenLayers
@@ -147,6 +151,16 @@
                 tdwg3: 'topp:tdwg_level_3',
                 tdwg4: 'topp:tdwg_level_4'
         };
+
+        if(opts.resizable == true) {
+          // resizable requires jQueryUI to  be loaded!!!
+          mapContainerElement.resizable({
+            resize: function( event, ui ) {
+              map.updateSize();
+              //   this.printInfo();
+            }
+          });
+        }
 
         /**
          *
@@ -220,8 +234,6 @@
                     }
                 });
             }
-
-
         };
 
         var getHeight = function(){
@@ -247,14 +259,13 @@
             }
         };
 
+
         /**
          * public function
          */
         this.getMap = function(){
             return map;
         };
-
-
 
         /**
          * Prints info on the current map into the jQuery element
@@ -274,9 +285,12 @@
                 info += "<dt>map resolution:<dt><dd>" + map.getResolution() + "</dd>";
                 info += "<dt>map max resolution:<dt><dd>" + map.getMaxResolution() + "</dd>";
                 info += "<dt>map scale:<dt><dd>" + map.getScale() + "</dd>";
-                info += "<dt>map extent bbox:<dt><dd>" + map.getExtent().toBBOX() + ", <strong>degree:</strong> " + mapExtendDegree.toBBOX() + "</dd>";
+                info += "<dt>map width, height:<dt><dd>" + mapContainerElement.width() +  ", " + mapContainerElement.height() + "</dd>";
+                info += "<dt>map aspect ratio:<dt><dd>" + mapContainerElement.width() / mapContainerElement.height() + "</dd>";
+                info += "<dt>map extent bbox:<dt><dd class=\"map-extent-bbox\">" + map.getExtent().toBBOX() + ", <strong>degree:</strong> <span class=\"degree-value\">" + mapExtendDegree.toBBOX() + "</span></dd>";
                 info += "<dt>map maxExtent bbox:<dt><dd>" + map.getMaxExtent().toBBOX() + "</dd>";
-                info += "<dt>baselayer extent bbox:<dt><dd>" + map.baseLayer.getExtent().toBBOX() + ", <strong>degree:</strong> <span style=color:green;'>" + map.baseLayer.getExtent().clone().transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326) + "</span></dd>"
+                info += "<dt>baselayer extent bbox:<dt><dd class=\"baselayer-extent-bbox\">" + map.baseLayer.getExtent().toBBOX() + ", <strong>degree:</strong> <span class=\"degree-value\">"
+                  + map.baseLayer.getExtent().clone().transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326) + "</span></dd>"
                 info += "<dt>baselayer projection:<dt><dd>" + map.baseLayer.projection.getCode() + "</dd>";
             } else {
                 info += "<dt>bbox:<dt><dd>" + mapExtendDegree.toBBOX() + "</dd>";
@@ -363,6 +377,7 @@
 //          } else if(map.getZoom() < opts.minZoom){
 //          map.zoomTo(opts.minZoom);
 //          }
+
 
         };
 

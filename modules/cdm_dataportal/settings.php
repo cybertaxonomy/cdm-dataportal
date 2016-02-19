@@ -2402,6 +2402,7 @@ function cdm_settings_geo($form, &$form_state) {
     // at least as and ad to be defined
     $dummy_distribution_query = "as=a:339966&ad=tdwg1:a:1,2,3,4,5,6,7,8,9";
   }
+
   $form['map_preview'] = array(
       '#type' => 'fieldset',
       '#tree' => FALSE,
@@ -2416,9 +2417,10 @@ function cdm_settings_geo($form, &$form_state) {
     array(
       'move' => "this.cdmOpenlayersMap.printInfo",
       '#execute' => "this.cdmOpenlayersMap.printInfo"
-    )//,
-    //1 // openlayers_map
+    ),
+    true // resizable
   );
+
   /*
   $form['map_preview']['map'] = compose_map(NULL, $dummy_distribution_query, NULL, array(), 0 // force image map
   );
@@ -2508,7 +2510,7 @@ function cdm_settings_geo($form, &$form_state) {
     '#description' => t('The bounding box (left, bottom, right, top) in degree defines the area to be initially displayed in maps.
       Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong>
       to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.</p>
-      <strong>TIP:</strong> You can use the map preview above to choose the <strong>baselayer extent bbox</strong> in <strong>degree</strong> from the map.
+      <strong>TIP:</strong> You can use the map preview above to choose the <span class="map-extent-bbox"><strong>map extent bbox</strong> in <strong class="degree-value"">degree</strong></span> from the map.
       (Maybe you need to change the map base layer to OpeLayers.)
       Hold down Strg and drag with your mouse to select a bbox to zoom to. The bbox of the visible area of the map is always displayed
       below the map from where you can copy the bbox string.</p>'),

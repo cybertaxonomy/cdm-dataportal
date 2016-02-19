@@ -282,6 +282,21 @@
     drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/domEvent.js');
   }
 
+  function _add_jquery_ui()
+  {
+    drupal_add_css(drupal_get_path('module',
+        'cdm_dataportal') . '/js/jquery-ui-1.8.24/themes/base/jquery.ui.all.css');
+    drupal_add_js(drupal_get_path('module',
+        'cdm_dataportal') . '/js/jquery-ui-1.8.24/ui/jquery-ui.js',
+      array(
+        'type' => 'file',
+        'weight' => JS_LIBRARY,
+        'cache' => TRUE,
+        'preprocess' => FALSE
+      )
+    );
+  }
+
   /**
    * Provides the markup for an font awesome icon.
    *
@@ -2431,17 +2446,7 @@ function diff_viewer($text_a, $text_b) {
   module_load_include('php', 'cdm_dataportal', 'lib/class.Diff');
   drupal_add_css(drupal_get_path('module',
       'cdm_dataportal') . '/css/diff.css');
-  drupal_add_css(drupal_get_path('module',
-      'cdm_dataportal') . '/js/jquery-ui-1.8.24/themes/base/jquery.ui.all.css');
-  drupal_add_js(drupal_get_path('module',
-      'cdm_dataportal') . '/js/jquery-ui-1.8.24/ui/jquery-ui.js',
-    array(
-      'type' => 'file',
-      'weight' => JS_LIBRARY,
-      'cache' => TRUE,
-      'preprocess' => FALSE
-    )
-  );
+  _add_jquery_ui();
   drupal_add_js(
     'jQuery(document).ready( function(){
         jQuery(\'#' . $element_id . '\').accordion({
@@ -2463,4 +2468,5 @@ function diff_viewer($text_a, $text_b) {
     . '</div></div>';
   return $diff_viewer_markup;
 }
+
 
