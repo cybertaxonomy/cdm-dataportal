@@ -108,8 +108,20 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $by_associatedtaxon_query = http_build_query($associatedFieldUnitsQuery_parameters);
         $pagerFieldUnits = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'associatedFieldUnits'), $by_associatedtaxon_query);
         // get icon images
-        $expand_icon = '<img class="expand_icon" title="Show details" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/btn_expand.gif' . '"/>';
-        $collapse_icon = '<img class="collapse_icon" title="Hide details" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/btn_collapse.gif' . '"/>';
+        $expand_icon = font_awesome_icon_markup(
+            'fa-plus-square-o',
+            array(
+                'alt'=>'Show details',
+                'class' => array('expand_icon')
+            )
+        );
+        $collapse_icon = font_awesome_icon_markup(
+            'fa-minus-square-o',
+            array(
+                'alt'=>'Show details',
+                'class' => array('collapse_icon')
+            )
+        );
         $detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
         $checked_box_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/step_done.gif' . '"/>';
         $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
