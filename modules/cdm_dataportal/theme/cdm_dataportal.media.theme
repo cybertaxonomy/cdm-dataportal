@@ -305,7 +305,7 @@ function theme_cdm_media_caption($variables) {
  *      - "LIGHTBOX": open the link in a light box,
  *      - "NORMAL": link to the image page or to the $alternativeMediaUri if
  *        it is defined.
- *   - alternativeMediaUri: An array of alternative URIs to link the images
+ *   - alternativeMediaUri: A fix string or an array of alternative URIs to link the images
  *     which will overwrite the URIs of the media parts.
  *     The order of URI in this array must correspond with the order of
  *     images in $mediaList.
@@ -413,7 +413,6 @@ function theme_cdm_media_gallerie($variables) {
         // $preferred_media_representation->parts[0]->uri =
         // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
         $contentTypeDirectory = media_content_type_dir($preferred_media_representation, 'application');
-        $mediaIndex++;
 
          $mediaPartHtml = theme('cdm_media_gallerie_' . $contentTypeDirectory, array(
             'mediaRepresentationPart' => $preferred_media_representation->parts[0],
@@ -433,6 +432,7 @@ function theme_cdm_media_gallerie($variables) {
         else {
           $mediaLinkUri = $preferred_media_representation->parts[0]->uri;
         }
+        $mediaIndex++;
 
         // media captions will be loaded via AHAH
         _add_js_ahah();

@@ -181,19 +181,32 @@ function addImageGallery($galleryName, $imageUuids){
     foreach ($imageUuids as $uuid) {
         $images[] = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $uuid);
     }
-    $gallery_variables = array(
-        'mediaList' => $images,
-        'galleryName' => $galleryName,
-        'maxExtend' => 120,
-        'cols' => 5,
-        'maxRows' => 2,
-        'showCaption' => true,
-        'captionElements' => array('title', 'description', 'file', 'filename'),
-        'mediaLinkType' => 'LIGHTBOX',
-        'alternativeMediaUri' => NULL,
-        'galleryLinkUri' => NULL
-    );
-    return "<br>".create_label($galleryName)."<br>".theme_cdm_media_gallerie($gallery_variables);
+
+    $gallery_html = '';
+    if (count($imageUuids) > 0) {
+        $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+        $captionElements = array(
+            'title',
+            'rights',
+        );
+        $alternativeMediaUris = array();
+        foreach($images as $image){
+            $alternativeMediaUris[] = path_to_media($image->uuid);
+        }
+
+        $gallery_html = theme('cdm_media_gallerie', array(
+            'mediaList' => $images,
+            'galleryName' => $galleryName,
+            'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+            'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+            'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
+            'captionElements' => $captionElements,
+            'mediaLinkType' => 'LIGHTBOX',
+            'alternativeMediaUri' => $alternativeMediaUris,
+            'galleryLinkUri' => NULL,
+        ));
+    }
+    return "<br>".create_label($galleryName)."<br>".$gallery_html;
 }
 
 
