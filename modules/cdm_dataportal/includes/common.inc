@@ -141,6 +141,51 @@ function oder_sources($sources, $do_theme = false){
     return array_values ($sort_array);
 }
 
+/**
+ * Compare callback to be used in usort to sort image sources of CDM OriginalSource instances.
+ *
+ * TODO the compare strategy implemnted in oder_sources() is probably better but is not taking the
+ * originalName into account.
+ *
+ * @param $a
+ * @param $b
+ */
+function compare_original_sources($a, $b){
+
+  $a_string = $a->citation->titleCache;
+  if((isset($a->nameUsedInSource))){
+    $a_string .= $a->nameUsedInSource->titleCache;
+  } elseif (isset($a->originalNameString)){
+    $a_string .= $a->originalNameString;
+  }
+
+  $b_string = $b->citation->titleCache;
+  if((isset($b->nameUsedInSource))){
+    $b_string .= $b->nameUsedInSource->titleCache;
+  } elseif (isset($b->originalNameString)){
+    $b_string .= $b->originalNameString;
+  }
+
+  if ($a_string == $b_string) {
+    return 0;
+  }
+  return ($a_string < $b_string) ? -1 : 1;
+}
+
+/**
+ * Compare callback to be used in usort to sort image sources of CDM Media instances.
+ *
+ * @param $a
+ * @param $b
+ */
+function compare_image_sources($a, $b) {
+
+  if ($a->multilanguageText_L10n->text == $b->multilanguageText_L10n->text) {
+    return 0;
+  }
+  return ($a->multilanguageText_L10n->text < $b->multilanguageText_L10n->text) ? -1 : 1;
+}
+
   /**
    * Compare two different footnotes objects.
    *

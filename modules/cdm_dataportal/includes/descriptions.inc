@@ -325,6 +325,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
   $bibliography_settings = get_bibliography_settings();
   $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause original_source_footnote_list_key to use the default
 
+  usort($description_element->sources, 'compare_original_sources');
   foreach ($description_element->sources as $source) {
     if (_is_original_source_type($source)) {
       $fn_key = FootnoteManager::addNewFootnote(
@@ -376,6 +377,8 @@ function cdm_create_description_element_footnotes($description_element, $separat
       'source_references' => array(),
       'names_used_in_source' => array()
     );
+
+    usort($element->sources, 'compare_original_sources');
 
     if ($feature_block_settings['sources_as_content'] == 1) {
       foreach ($element->sources as $source) {
@@ -1521,6 +1524,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
       $status_label= '';
       $status_markup = '';
+      $annotations_and_sources =  null;
       if($distribution_aggregate) {
         $annotations_and_sources = handle_annotations_and_sources(
           $distribution_aggregate,

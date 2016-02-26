@@ -340,16 +340,6 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
 
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function compare_image_sources($a, $b) {
-  if ($a->multilanguageText_L10n->text == $b->multilanguageText_L10n->text) {
-    return 0;
-  }
-  return ($a->multilanguageText_L10n->text < $b->multilanguageText_L10n->text) ? -1 : 1;
-}
 
 /**
  * @todo Please document this function.
@@ -364,7 +354,7 @@ function theme_cdm_description_element_image_source($variables) {
   RenderHints::setFootnoteListKey(UUID_IMAGE_SOURCES);
 
   // Sorting the image sources.
-  usort($image_sources, "compare_image_sources");
+  usort($image_sources, 'compare_image_sources');
   // Generate the footnotes.
   foreach ($image_sources as $image_source) {
     $footNoteKeys = cdm_annotations_as_footnotekeys($image_source);
@@ -414,6 +404,7 @@ function theme_cdm_IdentificationKey($variables) {
   }
   if (isset($identificationKey->sources) && is_array($identificationKey->sources)) {
     // order and display sources.
+    //TODO can the method handle_annotations_and_sources() be used here?
     $sources = oder_sources($identificationKey->sources, TRUE);
     $out .= '<div class="sources">';
     $out .=  implode('', $sources);

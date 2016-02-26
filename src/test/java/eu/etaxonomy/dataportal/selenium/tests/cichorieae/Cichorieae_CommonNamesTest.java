@@ -17,6 +17,8 @@ import java.net.MalformedURLException;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
@@ -54,8 +56,24 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
         assertTrue("footnotes must not be empty", distributionBlock.countFootNotes() > 0);
         // testing for the duplicate footnotes named below in the  FIXME (related to #4383 )
 
-        assertEquals("AN. Komarov, V. L., Flora SSSR 29. 1964", distributionBlock.getFootNote(39).getText());
-        assertEquals("AQ. Komarov, V. L., Flora SSSR 29. 1964 (as Lactuca altaica)", distributionBlock.getFootNote(42).getText());
+        /* expecting the sources of "North Caucasus AN,AO,AP,AQ,AR" to be sorted
+         * alphabetically, by the citation titleCache:
+         *
+         * class="descriptionElement617733b9-d59d-4215-9e77-728a5f60e627 level_index_1"
+         *
+         * AN. Galuško, A. I., Flora severnogo Kavkaza 3. 1980,
+         * AO. Galuško, A. I., Flora severnogo Kavkaza 3. 1980 (as Lactuca altaica),
+         * AP. Grossgejm, A. A., Flora kavkaza 4. 1934,
+         * AQ. Komarov, V. L., Flora SSSR 29. 1964 (as Lactuca altaica),
+         * AR. Komarov, V. L., Flora SSSR 29. 1964,
+        */
+        WebElement northCaucasus = distributionBlock.getContent().findElement(By.className("descriptionElement617733b9-d59d-4215-9e77-728a5f60e627"));
+        assertEquals("North Caucasus AN,AO,AP,AQ,AR", northCaucasus.getText());
+        assertEquals("AN. Galuško, A. I., Flora severnogo Kavkaza 3. 1980", distributionBlock.getFootNote(39).getText());
+        assertEquals("AO. Galuško, A. I., Flora severnogo Kavkaza 3. 1980 (as Lactuca altaica)", distributionBlock.getFootNote(40).getText());
+        assertEquals("AP. Grossgejm, A. A., Flora kavkaza 4. 1934", distributionBlock.getFootNote(41).getText());
+        assertEquals("AQ. Komarov, V. L., Flora SSSR 29. 1964", distributionBlock.getFootNote(42).getText());
+        assertEquals("AR. Komarov, V. L., Flora SSSR 29. 1964 (as Lactuca altaica)", distributionBlock.getFootNote(43).getText());
 
 
         FeatureBlock commonNamesBlock = p.getFeatureBlockAt(3, "common_names", "div", "span");
