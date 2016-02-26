@@ -553,7 +553,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
             if(isset($taxon) ) {
               $taxon_uuid = $taxon->uuid;
             }
-            $elements_render_array = compose_cdm_descriptionElements($node->descriptionElements, $node->feature, $taxon_uuid);
+            $elements_render_array = compose_description_elements($node->descriptionElements, $node->feature, $taxon_uuid);
             $block_content_is_empty = empty($elements_render_array);
             $block->content[] = $elements_render_array;
           }
@@ -573,7 +573,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
               if (isset($child->descriptionElements) && is_array($child->descriptionElements)) {
                 foreach ($child->descriptionElements as $element) {
 
-                  //TODO it woud be better if we could use compose_cdm_descriptionElements() directly instead of the below stuff
+                  //TODO it woud be better if we could use compose_description_elements() directly instead of the below stuff
 
                   if (is_array($element->media)) {
                     // Append media of subordinate elements to list of main
@@ -583,7 +583,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
                   switch ($element->class) {
                     case 'TextData':
-                      // FIXME use compose_cdm_descriptionElementTextData()
+                      // FIXME use compose_description_element_textdata()
                       if(isset($element->multilanguageText_L10n->text)){
                         $out_child_elements = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
                       }
@@ -664,6 +664,8 @@ function cdm_create_description_element_footnotes($description_element, $separat
   }
 
   /**
+   * Composes the distribution feature block for a taxon
+   *
    * @param $taxon
    * @param $descriptionElements
    *   an associative array with two elements:
@@ -712,7 +714,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
       // --- TextData
       foreach ($descriptionElements['TextData'] as $text_data_element) {
         $asListElement = FALSE;
-        $text_data_render_array = compose_cdm_descriptionElementTextData($text_data_element, $asListElement, $text_data_element->feature->uuid);
+        $text_data_render_array = compose_description_element_textdata($text_data_element, $asListElement, $text_data_element->feature->uuid);
         $repr = drupal_render($text_data_render_array);
 
         if (!array_search($repr, $text_data_out_array)) { // de-duplication !!
@@ -815,7 +817,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
           }
         }
         ksort($distributionElements);
-        $distribution_element_render_array = compose_cdm_descriptionElement_Distribution($distributionElements);
+        $distribution_element_render_array = compose_description_element_distribution($distributionElements);
         $dto_out_array[] = drupal_render($distribution_element_render_array);
 
       }
@@ -869,7 +871,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
    *
    * @ingroup compose
    */
-  function compose_cdm_descriptionElementTextData($element, $asListElement, $feature_uuid) {
+  function compose_description_element_textdata($element, $asListElement, $feature_uuid) {
 
     $footnote_list_key_suggestion = $feature_uuid;
 
@@ -923,11 +925,10 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
 
   /**
-   * Returns HTML for the texts in a description $elements.
+   * Creates a render array for string representations of description elements for the given feature.
    *
-   * Joins the texts in $elements and encloses with a HTML tag.
-   *
-   * @param  $elements
+   * @param array $elements
+   *   An array of strings. Can be plaintext or markup.
    * @param  feature:
    *  The feature to which the elements given in $elements are belonging to.
    * @param  glue:
@@ -938,7 +939,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
    *
    * @ingroup compose
    */
-  function compose_cdm_feature_block_elements($elements, $feature, $glue = '', $sort = FALSE, $enclosing_tag = 'ul') {
+  function compose_cdm_feature_block_elements(array $elements, $feature, $glue = '', $sort = FALSE, $enclosing_tag = 'ul') {
 
     $feature_block_settings = get_feature_block_settings($feature->uuid);
     if($feature_block_settings['as_list']){
@@ -1026,124 +1027,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
     return $name_in_source_render_array;
   }
 
-  /**
-   * Composes block of common names for the given DescriptionElements $elements which must be of the feature CommonName
-   *
-   * @parameter $elements
-   *  an array of CDM DescriptionElements either of type CommonName or TextData
-   * @parameter $feature
-   *  the common feature of all $elements, must be CommonName
-   *
-   * @return
-   *   A drupal render array
-   *
-   * @ingroup compose
-   */
-  function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
 
-    $common_name_out = '';
-    $common_name_feature_elements = array();
-    $textData_commonNames = array();
-
-    $footnote_key_suggestion = 'common-names-feature-block';
-
-    $feature_block_settings = get_feature_block_settings(UUID_COMMON_NAME);
-
-    $element_tag_name = cdm_feature_block_element_tag_name($feature_block_settings);
-
-    if (is_array($elements)) {
-      foreach ($elements as $element) {
-
-        if ($element->class == 'CommonTaxonName') {
-
-          // common name without a language or area, should not happen but is possible
-          $language_area_key = '';
-          if (isset($element->language->representation_L10n)) {
-            $language_area_key .= '<b>' . $element->language->representation_L10n . '</b>';
-          }
-          if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
-            $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->titleCache . ')';
-          }
-
-          if(isset($common_names[$language_area_key][$element->name])) {
-            // same name already exists for language and areae combination, se we merge the description elements
-            cdm_merge_description_elements($common_names[$language_area_key][$element->name], $element);
-          } else{
-            // otherwise add as new entry
-            $common_names[$language_area_key][$element->name] = $element;
-          }
-
-        }
-        elseif ($element->class == 'TextData') {
-          $textData_commonNames[] = $element;
-        }
-      }
-    }
-    // Handling common names.
-    if (isset($common_names) && count($common_names) > 0) {
-      // Sorting the array based on the key (language, + area if set).
-      // Comment @WA there are common names without a language, so this sorting
-      // can give strange results.
-      ksort($common_names);
-
-      // loop over set of elements per language area
-      foreach ($common_names as $language_area_key => $elements) {
-        ksort($elements); // sort names alphabetically
-        $per_language_area_out = array();
-        // loop over set of individual elements
-        foreach ($elements as $element) {
-          if ($element->name) {
-            $annotations_and_sources = handle_annotations_and_sources($element, $feature_block_settings, $element->name, $footnote_key_suggestion);
-            $source_references_markup = '';
-            if(!empty($annotations_and_sources['source_references'])){
-              $source_references_markup = ' ' . join(', ', $annotations_and_sources['source_references']);
-            }
-            $per_language_area_out[] = '<' . $element_tag_name. ' class="' . html_class_attribute_ref($element) . '">'
-              . $element->name . $source_references_markup . $annotations_and_sources['foot_note_keys'] . '</' . $element_tag_name. '>';
-          }
-        } // End of loop over set of individual elements
-        $common_name_feature_elements[] = ($language_area_key ? $language_area_key . ': ' : '' ) . join(', ', $per_language_area_out);
-      } // End of loop over set of elements per language area
-
-
-      $common_name_feature_elements_render_array = compose_cdm_feature_block_elements(
-        $common_name_feature_elements,
-        $feature,
-        '; ',
-        FALSE,
-        $feature_block_settings['as_list']
-      );
-      $common_name_out .= $common_name_feature_elements_render_array['#markup'];
-
-    }
-
-    // Handling commons names as text data.
-    $text_data_out = array();
-
-    foreach ($textData_commonNames as $text_data_element) {
-      /* footnotes are not handled correctly in compose_cdm_descriptionElementTextData,
-         need to set 'common-names-feature-block' as $footnote_key_suggestion */
-      RenderHints::setFootnoteListKey($footnote_key_suggestion);
-      $text_data_render_array = compose_cdm_descriptionElementTextData($text_data_element, TRUE, $text_data_element->feature->uuid);
-      $text_data_out[] = drupal_render($text_data_render_array);
-    }
-
-    $common_name_out_text_data = compose_cdm_feature_block_elements(
-      $text_data_out,
-      $feature
-    );
-
-    $footnotes = theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . $footnote_key_suggestion));
-    $footnotes .= theme('cdm_footnotes', array('footnoteListKey' => $footnote_key_suggestion)); // FIXME is this needed at all?
-    $footnotes .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnote_key_suggestion));
-
-    return  markup_to_render_array(
-      '<div class="common_names_as_common_names">' . $common_name_out . '</div>'
-      .'<div class="common_names_as_text_data">' . $common_name_out_text_data['#markup'] . '</div>'
-      .$footnotes,
-      $weight
-    );
-  }
 
   /**
    * Return HTML for a list of description elements.
@@ -1164,7 +1048,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
    *
    * @ingroup compose
    */
-  function compose_cdm_descriptionElements($descriptionElements, $feature) {
+  function compose_description_elements($descriptionElements, $feature) {
 
     $render_array = array();
     $elements_out_array = array();
@@ -1204,7 +1088,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
           $asListElement  = $feature_block_settings['as_list'] == 'ul';
           switch ($descriptionElement->class) {
             case 'TextData':
-              $text_data_render_array = compose_cdm_descriptionElementTextData($descriptionElement, $asListElement, $descriptionElement->feature->uuid);
+              $text_data_render_array = compose_description_element_textdata($descriptionElement, $asListElement, $descriptionElement->feature->uuid);
               $feature_block_has_content = $feature_block_has_content || !empty($text_data_render_array['#value']);
               $elements_out_array[] = drupal_render($text_data_render_array);
               break;
@@ -1257,6 +1141,124 @@ function cdm_create_description_element_footnotes($description_element, $separat
     return $render_array;
   }
 
+/**
+ * Composes block of common names for the given DescriptionElements $elements which must be of the feature CommonName
+ *
+ * @parameter $elements
+ *  an array of CDM DescriptionElements either of type CommonName or TextData
+ * @parameter $feature
+ *  the common feature of all $elements, must be CommonName
+ *
+ * @return
+ *   A drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
+
+  $common_name_out = '';
+  $common_name_feature_elements = array();
+  $textData_commonNames = array();
+
+  $footnote_key_suggestion = 'common-names-feature-block';
+
+  $feature_block_settings = get_feature_block_settings(UUID_COMMON_NAME);
+
+  $element_tag_name = cdm_feature_block_element_tag_name($feature_block_settings);
+
+  if (is_array($elements)) {
+    foreach ($elements as $element) {
+
+      if ($element->class == 'CommonTaxonName') {
+
+        // common name without a language or area, should not happen but is possible
+        $language_area_key = '';
+        if (isset($element->language->representation_L10n)) {
+          $language_area_key .= '<b>' . $element->language->representation_L10n . '</b>';
+        }
+        if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
+          $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->titleCache . ')';
+        }
+
+        if(isset($common_names[$language_area_key][$element->name])) {
+          // same name already exists for language and areae combination, se we merge the description elements
+          cdm_merge_description_elements($common_names[$language_area_key][$element->name], $element);
+        } else{
+          // otherwise add as new entry
+          $common_names[$language_area_key][$element->name] = $element;
+        }
+
+      }
+      elseif ($element->class == 'TextData') {
+        $textData_commonNames[] = $element;
+      }
+    }
+  }
+  // Handling common names.
+  if (isset($common_names) && count($common_names) > 0) {
+    // Sorting the array based on the key (language, + area if set).
+    // Comment @WA there are common names without a language, so this sorting
+    // can give strange results.
+    ksort($common_names);
+
+    // loop over set of elements per language area
+    foreach ($common_names as $language_area_key => $elements) {
+      ksort($elements); // sort names alphabetically
+      $per_language_area_out = array();
+      // loop over set of individual elements
+      foreach ($elements as $element) {
+        if ($element->name) {
+          $annotations_and_sources = handle_annotations_and_sources($element, $feature_block_settings, $element->name, $footnote_key_suggestion);
+          $source_references_markup = '';
+          if(!empty($annotations_and_sources['source_references'])){
+            $source_references_markup = ' ' . join(', ', $annotations_and_sources['source_references']);
+          }
+          $per_language_area_out[] = '<' . $element_tag_name. ' class="' . html_class_attribute_ref($element) . '">'
+            . $element->name . $source_references_markup . $annotations_and_sources['foot_note_keys'] . '</' . $element_tag_name. '>';
+        }
+      } // End of loop over set of individual elements
+      $common_name_feature_elements[] = ($language_area_key ? $language_area_key . ': ' : '' ) . join(', ', $per_language_area_out);
+    } // End of loop over set of elements per language area
+
+
+    $common_name_feature_elements_render_array = compose_cdm_feature_block_elements(
+      $common_name_feature_elements,
+      $feature,
+      '; ',
+      FALSE,
+      $feature_block_settings['as_list']
+    );
+    $common_name_out .= $common_name_feature_elements_render_array['#markup'];
+
+  }
+
+  // Handling commons names as text data.
+  $text_data_out = array();
+
+  foreach ($textData_commonNames as $text_data_element) {
+    /* footnotes are not handled correctly in compose_description_element_textdata,
+       need to set 'common-names-feature-block' as $footnote_key_suggestion */
+    RenderHints::setFootnoteListKey($footnote_key_suggestion);
+    $text_data_render_array = compose_description_element_textdata($text_data_element, TRUE, $text_data_element->feature->uuid);
+    $text_data_out[] = drupal_render($text_data_render_array);
+  }
+
+  $common_name_out_text_data = compose_cdm_feature_block_elements(
+    $text_data_out,
+    $feature
+  );
+
+  $footnotes = theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . $footnote_key_suggestion));
+  $footnotes .= theme('cdm_footnotes', array('footnoteListKey' => $footnote_key_suggestion)); // FIXME is this needed at all?
+  $footnotes .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnote_key_suggestion));
+
+  return  markup_to_render_array(
+    '<div class="common_names_as_common_names">' . $common_name_out . '</div>'
+    .'<div class="common_names_as_text_data">' . $common_name_out_text_data['#markup'] . '</div>'
+    .$footnotes,
+    $weight
+  );
+}
 
   /**
    * Composes the render array for a CDM Distribution element
@@ -1271,7 +1273,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
    *
    * @ingroup compose
    */
-  function compose_cdm_descriptionElement_Distribution($descriptionElements, $enclosingTag = "span"){
+  function compose_description_element_distribution($descriptionElements, $enclosingTag = "span"){
 
     $out = '';
     RenderHints::pushToRenderStack('descriptionElementDistribution');
@@ -1462,10 +1464,10 @@ function cdm_create_description_element_footnotes($description_element, $separat
   }
 
   /**
-   * this function should produce markup as the compose_cdm_descriptionElement_Distribution()
+   * this function should produce markup as the compose_description_element_distribution()
    * function.
    *
-   * @see compose_cdm_descriptionElement_Distribution()
+   * @see compose_description_element_distribution()
    *
    * @param $distribution_tree
    * @param $feature_block_settings

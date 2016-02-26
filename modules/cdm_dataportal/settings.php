@@ -563,7 +563,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
   function get_feature_block_settings($feature_uuid = 'DEFAULT') {
     // the default must conform to the default parameter values of
     // compose_cdm_feature_block_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
-    // compose_cdm_descriptionElementTextData() : asListElement = NULL
+    // compose_description_element_textdata() : asListElement = NULL
 
     // see #3257 (implement means to define the features to show up in the taxonprofile and in the specimen descriptions)
 

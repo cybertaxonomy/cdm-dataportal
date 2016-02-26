@@ -2304,7 +2304,7 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text,
  *
  * @TODO this function may have become obsolete by the new method of detecting empty blocks,
  *       see $block_content_is_not_empty in compose_cdm_feature_nodes() and
- *       $feature_block_has_content in compose_cdm_descriptionElements
+ *       $feature_block_has_content in compose_description_elements
  */
 function has_feature_node_description_elements($featureNode) {
 
