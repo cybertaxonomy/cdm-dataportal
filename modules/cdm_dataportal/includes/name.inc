@@ -417,9 +417,11 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   }
 
   // Fill with status.
-  if (isset($nom_status_tagged_text[0])) {
-    if (array_setr('status', TRUE, $renderTemplate)) {
-      array_setr('status', '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, '', array('postSeparator')) . '</span>', $renderTemplate);
+  if(isset($renderTemplate['statusPart'])){
+    if (isset($nom_status_tagged_text[0])) {
+      if (array_setr('status', TRUE, $renderTemplate)) {
+        array_setr('status', '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, 'span', '', array('postSeparator')) . '</span>', $renderTemplate);
+      }
     }
   }
 
@@ -432,7 +434,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
       array_setr('secReference',
         $post_separator_markup
           . ' <span class="sec_reference">'
-          . $secref_tagged_text[0]->text . $secref_tagged_text[1]->text
+          . join(' ', cdm_tagged_text_values($secref_tagged_text))
           . '</span>', $renderTemplate);
     }
   }

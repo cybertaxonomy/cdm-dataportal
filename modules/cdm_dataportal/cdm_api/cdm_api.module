@@ -264,41 +264,45 @@ function normalize_tagged_text(&$taggedTextList) {
   }
 }
 
-function split_secref_from_tagged_text(&$taggedTextList) {
+function split_secref_from_tagged_text(&$tagged_text) {
 
-  $secref_tt = array();
-  if (is_array($taggedTextList)) {
-    for ($i = 0; $i < count($taggedTextList) - 1; $i++) {
-      if ($taggedTextList[$i + 1]->type == "secReference" && $taggedTextList[$i]->type == "separator"){
-        $secref_tt[0] = $taggedTextList[$i];
-        $secref_tt[1] = $taggedTextList[$i + 1];
-        unset($taggedTextList[$i]);
-        unset($taggedTextList[$i + 1]);
+  $extracted_tt = array();
+  if (is_array($tagged_text)) {
+    for ($i = 0; $i < count($tagged_text) - 1; $i++) {
+      if ($tagged_text[$i + 1]->type == "secReference" && $tagged_text[$i]->type == "separator"){
+        $extracted_tt[0] = $tagged_text[$i];
+        $extracted_tt[1] = $tagged_text[$i + 1];
+        unset($tagged_text[$i]);
+        unset($tagged_text[$i + 1]);
+        break;
       }
-      break;
     }
   }
-  return $secref_tt;
+  return $extracted_tt;
 }
 
 
-function split_nomstatus_from_tagged_text(&$taggedTextList) {
+function split_nomstatus_from_tagged_text(&$tagged_text) {
 
-  $secref_tt = array();
-  if (is_array($taggedTextList)) {
-    for ($i = 0; $i < count($taggedTextList) - 1; $i++) {
-      if ($taggedTextList[$i]->type == "nomStatus"){
-        unset($taggedTextList[$i]);
-        $secref_tt[0] = $taggedTextList[$i];
-        if($taggedTextList[$i +1 ]->type == "postSeparator"){
-          unset($taggedTextList[$i + 1]);
-          $secref_tt[1] = $taggedTextList[$i + 1];
+  $extracted_tt = array();
+  if (is_array($tagged_text)) {
+    for ($i = 0; $i < count($tagged_text) - 1; $i++) {
+      if ($tagged_text[$i]->type == "nomStatus"){
+        $extracted_tt[] = $tagged_text[$i];
+        if(isset($tagged_text[$i + 1]) && $tagged_text[$i + 1]->type == "postSeparator"){
+          $extracted_tt[] = $tagged_text[$i + 1];
+          unset($tagged_text[$i + 1]);
         }
+        if ($tagged_text[$i - 1]->type == "separator"){
+          array_unshift($extracted_tt, $tagged_text[$i - 1]);
+          unset($tagged_text[$i - 1]);
+        }
+        unset($tagged_text[$i]);
+        break;
       }
-      break;
     }
   }
-  return $secref_tt;
+  return $extracted_tt;
 }
 
 function find_tagged_text_elements($taggedTextList, $type){
