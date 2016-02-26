@@ -1,6 +1,7 @@
 package eu.etaxonomy.dataportal.pages;
 
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,9 +101,17 @@ public abstract class  PortalPage {
     @CacheLookup
     protected WebElement classificationBrowserBlock;
 
+//    @FindBys({
+//        @FindBy(className="messages"),
+//        @FindBy(className="error")}
+//        )
+    @FindBy(className="messages")
+    @CacheLookup
+    protected WebElement messagesErrorCichorieaeTheme;
+
     @FindBy(className="messages_error")
     @CacheLookup
-    protected WebElement messagesError;
+    protected WebElement messagesErrorOtherThemes;
 
     /**
      * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
@@ -142,7 +151,12 @@ public abstract class  PortalPage {
 
 
         try {
-            assertNull("The page must not show an error box", messagesError.getText());
+            assertTrue("The page must not show an error box", !messagesErrorCichorieaeTheme.getAttribute("class").contains("error") && messagesErrorCichorieaeTheme.getText() == null);
+        } catch (NoSuchElementException e) {
+            //IGNORE since this is expected!
+        }
+        try {
+            assertNull("The page must not show an error box", messagesErrorOtherThemes.getText());
         } catch (NoSuchElementException e) {
             //IGNORE since this is expected!
         }
