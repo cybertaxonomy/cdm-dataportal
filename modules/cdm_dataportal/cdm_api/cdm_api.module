@@ -163,6 +163,8 @@ function cdm_api_permission() {
   );
 }
 
+// ===================== Tagged Text functions ================== //
+
 /**
  * Converts an array of TaggedText items into corresponding html tags.
  *
@@ -180,7 +182,7 @@ function cdm_api_permission() {
  * @return string
  *   A string with HTML.
  */
-function cdm_taggedtext2html(array $taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()) {
+function cdm_tagged_text_to_markup(array $taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()) {
   $out = '';
   $i = 0;
   foreach ($taggedtxt as $tt) {
@@ -194,7 +196,7 @@ function cdm_taggedtext2html(array $taggedtxt, $tag = 'span', $glue = ' ', $skip
 /**
  * Finds the text tagged with $tag_type in an array of taggedText instances.
  *
- * Comment @WA: this function seems unused.
+ * Note: This function is currently unused.
  *
  * @param array $taggedtxt
  *   Array with text items.
@@ -204,7 +206,7 @@ function cdm_taggedtext2html(array $taggedtxt, $tag = 'span', $glue = ' ', $skip
  * @return array
  *   An array with the texts mapped by $tag_type.
  */
-function cdm_taggedtext_values(array $taggedtxt, $tag_type) {
+function cdm_tagged_text_values(array $taggedtxt, $tag_type) {
   $tokens = array();
   if (!empty($taggedtxt)) {
     foreach ($taggedtxt as $tagtxt) {
@@ -215,6 +217,103 @@ function cdm_taggedtext_values(array $taggedtxt, $tag_type) {
   }
   return $tokens;
 }
+
+
+/**
+ * Preprocess the taggedTitle arrays.
+ *
+ * Step 1: Turns 'newly' introduces tag types ("hybridSign")
+ * into tag type "name"
+ *
+ * Step 2: Two taggedTexts which have the same type and which have
+ * a separator between them are merged together.
+ *
+ * @param array $taggedTextList
+ *    An array of TaggedText objects
+ */
+function normalize_tagged_text(&$taggedTextList) {
+
+  if (is_array($taggedTextList)) {
+
+    // First pass: rename.
+    for ($i = 0; $i < count($taggedTextList); $i++) {
+
+      if ($taggedTextList[$i]->type == "hybridSign") {
+        $taggedTextList[$i]->type = "name";
+      }
+    }
+
+    // Second pass: resolve separators.
+    $taggedNameListNew = array();
+    for ($i = 0; $i < count($taggedTextList); $i++) {
+
+      // elements of the same type concatenated by a separator should be merged together
+      if (isset($taggedTextList[$i + 2]) && $taggedTextList[$i + 1]->type == "separator" && $taggedTextList[$i]->type == $taggedTextList[$i + 2]->type) {
+        $taggedName = clone $taggedTextList[$i];
+        $taggedName->text = $taggedName->text . $taggedTextList[$i + 1]->text . $taggedTextList[$i + 2]->text;
+        $taggedNameListNew[] = $taggedName;
+        ++$i;
+        ++$i;
+        continue;
+      }
+      // no special handling
+      $taggedNameListNew[] = $taggedTextList[$i];
+
+    }
+    $taggedTextList = $taggedNameListNew;
+  }
+}
+
+function split_secref_from_tagged_text(&$taggedTextList) {
+
+  $secref_tt = array();
+  if (is_array($taggedTextList)) {
+    for ($i = 0; $i < count($taggedTextList) - 1; $i++) {
+      if ($taggedTextList[$i + 1]->type == "secReference" && $taggedTextList[$i]->type == "separator"){
+        $secref_tt[0] = $taggedTextList[$i];
+        $secref_tt[1] = $taggedTextList[$i + 1];
+        unset($taggedTextList[$i]);
+        unset($taggedTextList[$i + 1]);
+      }
+      break;
+    }
+  }
+  return $secref_tt;
+}
+
+
+function split_nomstatus_from_tagged_text(&$taggedTextList) {
+
+  $secref_tt = array();
+  if (is_array($taggedTextList)) {
+    for ($i = 0; $i < count($taggedTextList) - 1; $i++) {
+      if ($taggedTextList[$i]->type == "nomStatus"){
+        unset($taggedTextList[$i]);
+        $secref_tt[0] = $taggedTextList[$i];
+        if($taggedTextList[$i +1 ]->type == "postSeparator"){
+          unset($taggedTextList[$i + 1]);
+          $secref_tt[1] = $taggedTextList[$i + 1];
+        }
+      }
+      break;
+    }
+  }
+  return $secref_tt;
+}
+
+function find_tagged_text_elements($taggedTextList, $type){
+  $matching_elements = array();
+  if (is_array($taggedTextList)) {
+    for ($i = 0; $i < count($taggedTextList) - 1; $i++) {
+      if($taggedTextList[$i]->type == $type){
+        $matching_elements[] = $taggedTextList[$i];
+      }
+    }
+  }
+  return $matching_elements;
+}
+
+// ===================== END of Tagged Text functions ================== //
 
 /**
  * Returns the currently classification tree in use.

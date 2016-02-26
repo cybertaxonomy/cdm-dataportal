@@ -296,8 +296,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     }
   }
 
-  $secref_tagged_text = split_secref_from_tagged_title($taggedTitle);
-  normalize_tagged_title($taggedTitle);
+  $secref_tagged_text = split_secref_from_tagged_text($taggedTitle);
+  $nom_status_tagged_text = split_nomstatus_from_tagged_text($taggedTitle);
+  normalize_tagged_text($taggedTitle);
 
   $firstEntryIsValidNamePart =
     isset($taggedTitle)
@@ -337,8 +338,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
         }
       }
       $taggedName = $taggedNameNew;
+      unset($taggedNameNew);
     }
-    $name = '<span class="' . $taxonName->class . '">' . cdm_taggedtext2html($taggedName, 'span', ' ', $skiptags) . '</span>';
+    $name = '<span class="' . $taxonName->class . '">' . cdm_tagged_text_to_markup($taggedName, 'span', ' ', $skiptags) . '</span>';
   }
   else {
     $name = '<span class="' . $taxonName->class . '_titleCache">' . $taxonName->titleCache . '</span>';
@@ -414,28 +416,28 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     }
   }
 
+  // Fill with status.
+  $statusHtml = '';
+  if (isset($nom_status_tagged_text[0])) {
+    if (array_setr('status', TRUE, $renderTemplate)) {
+      array_setr('status', '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text) . '</span>', $renderTemplate);
+    }
+  }
+
   if (isset($renderTemplate['secReferencePart'])){
     if(isset($secref_tagged_text[1])){
+      $post_separator_markup = $is_reference_year ? '.': '';
+      if(isset($nom_status_tagged_text[count($nom_status_tagged_text -1 )]) && $nom_status_tagged_text[count($nom_status_tagged_text -1 )]->type ==  'postSeparator'){
+        $post_separator_markup = cdm_tagged_text_to_markup(array($nom_status_tagged_text[count($nom_status_tagged_text -1 )]));
+      };
       array_setr('secReference',
-        $is_reference_year ? '.': ''
+        $post_separator_markup
           . ' <span class="sec_reference">'
           . $secref_tagged_text[0]->text . $secref_tagged_text[1]->text
           . '</span>', $renderTemplate);
     }
   }
 
-  // Fill with status.
-  $statusHtml = '';
-  if (isset($taxonName->status) && is_array($taxonName->status)) {
-    if (array_setr('status', TRUE, $renderTemplate)) {
-      if (isset($taxonName->status[0])) {
-        foreach ($taxonName->status as $status) {
-          $statusHtml .= ', ' . $status->type->representation_L10n_abbreviatedLabel;
-        }
-      }
-      array_setr('status', '<span class="nomenclatural_status">' . $statusHtml . '</span>', $renderTemplate);
-    }
-  }
 
   // Fill with protologues etc...
   $descriptionHtml = '';

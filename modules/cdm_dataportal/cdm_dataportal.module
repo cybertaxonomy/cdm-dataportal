@@ -1873,72 +1873,13 @@ function html_class_attribute_ref($cdmEntity) {
   }
 }
 
-/**
- * Preprocess the taggedTitle arrays.
- *
- * Step 1: Turns 'newly' introduces tag types ("hybridSign")
- * into tag type "name"
- *
- * Step 2: Two taggedTexts which have the same type and which have
- * a separator between them are merged together.
- *
- * @param array $taggedTextList
- *    An array of TaggedText objects
- */
-function normalize_tagged_title(&$taggedTextList) {
 
-  if (is_array($taggedTextList)) {
-
-    // First pass: rename.
-    for ($i = 0; $i < count($taggedTextList); $i++) {
-
-      if ($taggedTextList[$i]->type == "hybridSign") {
-        $taggedTextList[$i]->type = "name";
-      }
-    }
-
-    // Second pass: resolve separators.
-    $taggedNameListNew = array();
-    for ($i = 0; $i < count($taggedTextList); $i++) {
-
-      if ($i + 1 < count($taggedTextList) && $taggedTextList[$i + 1]->type == "separator") {
-        if ($taggedTextList[$i]->type == $taggedTextList[$i + 2]->type) {
-          $taggedName = clone $taggedTextList[$i];
-          $taggedName->text = $taggedName->text . $taggedTextList[$i + 1]->text . $taggedTextList[$i + 2]->text;
-          $taggedNameListNew[] = $taggedName;
-          ++$i;
-          ++$i;
-        }
-      }
-      else {
-        $taggedNameListNew[] = $taggedTextList[$i];
-      }
-    }
-    $taggedTextList = $taggedNameListNew;
-  }
-}
-
-function split_secref_from_tagged_title(&$taggedTextList) {
-
-  $secref_tt = array();
-  if (is_array($taggedTextList)) {
-    for ($i = 0; $i < count($taggedTextList) - 1; $i++) {
-      if ($taggedTextList[$i + 1]->type == "secReference" && $taggedTextList[$i]->type == "separator"){
-        $secref_tt[0] = $taggedTextList[$i];
-        $secref_tt[1] = $taggedTextList[$i + 1];
-        unset($taggedTextList[$i]);
-        unset($taggedTextList[$i + 1]);
-      }
-    }
-  }
-  return $secref_tt;
-}
 /**
  * Creates a short taxonname.
  *
- * The short name is created by using the taggename field of
+ * The short name is created by using the taggedTitle field of
  * NameSTO or NameTO instances.
- * If the taggename if empty the fullname will be returned.
+ * If the taggedTitle if empty the fullname will be returned.
  *
  * @param unknown_type $name
  *   Name or TreeNode.
@@ -1948,7 +1889,7 @@ function split_secref_from_tagged_title(&$taggedTextList) {
 function cdm_dataportal_shortname_of($name) {
   $nameStr = '';
 
-  normalize_tagged_title($name->taggedTitle);
+  normalize_tagged_text($name->taggedTitle);
 
   // Get all tagged text tokens of the scientific name.
   foreach ($name->taggedTitle as $tagtxt) {
