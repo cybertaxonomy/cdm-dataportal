@@ -363,10 +363,27 @@ function cdm_create_description_element_footnotes($description_element, $separat
  * @param $element_markup
  * @param $footnote_list_key_suggestion
  */
-function cdm_description_element_render_array_add_annotations_and_sources(&$render_array, $element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion)
+function compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion)
 {
+
+  $render_array = array(
+    '#type' => 'html_tag',
+    '#tag' => cdm_feature_block_element_tag_name($feature_block_settings),
+
+    '#attributes' => array(
+      'class' => 'DescriptionElement DescriptionElement-' . $element->class . '
+      ' .  html_class_attribute_ref($element)
+    ),
+
+    '#value' => '',
+    '#value_suffix' => NULL
+
+  );
+
   $annotations_and_sources = handle_annotations_and_sources($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion);
 
+  // handle the special case were the TextData is used as container for original source with name
+  // used in source information without any text stored in it.
   $names_used_in_source_markup = '';
   if (!empty($annotations_and_sources['names_used_in_source']) && empty($element_markup)) {
     // $element_text ==  NULL  usually occurs only in the case of CITATIONS!!!
@@ -380,6 +397,8 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
 
   $render_array['#value'] = $names_used_in_source_markup . $element_markup . $source_references_markup;
   $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
+
+  return $render_array;
 }
 
 
@@ -608,7 +627,7 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
 
                   switch ($element->class) {
                     case 'TextData':
-                      // FIXME use compose_description_element_textdata()
+                      // FIXME use compose_description_element_text_data()
                       if(isset($element->multilanguageText_L10n->text)){
                         $out_child_elements = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
                       }
@@ -738,8 +757,7 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
     if (isset($descriptionElements['TextData'])) {
       // --- TextData
       foreach ($descriptionElements['TextData'] as $text_data_element) {
-        $asListElement = FALSE;
-        $text_data_render_array = compose_description_element_textdata($text_data_element, $asListElement, $text_data_element->feature->uuid);
+        $text_data_render_array = compose_description_element_text_data($text_data_element, $text_data_element->feature->uuid, $feature_block_settings);
         $repr = drupal_render($text_data_render_array);
 
         if (!array_search($repr, $text_data_out_array)) { // de-duplication !!
@@ -867,11 +885,7 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
    * Composes a drupal render array for single CDM TextData description element.
    *
    * @param $element
-   *    The CDN TextData  description element.
-   * @param $asListElement
-   *    A boolean which determines whether the citations should
-   *     be rendered as a list or not.
-   *    TODO remove and replace $asListElement by $feature_block_settings['as_list']
+   *    The CDM TextData description element.
    *  @param $feature_uuid
    *
    * @return array
@@ -884,13 +898,11 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
    *
    * @ingroup compose
    */
-  function compose_description_element_textdata($element, $asListElement, $feature_uuid) {
+  function compose_description_element_text_data($element, $feature_uuid, $feature_block_settings) {
 
     $footnote_list_key_suggestion = $feature_uuid;
 
-    // FIXME $feature_block_settings should be passed as parameter!!!!!
-    $feature_block_settings = get_feature_block_settings($feature_uuid);
-
+    /*
     // FIXME remove this hack ---------------------------
     $default_theme = variable_get('theme_default', NULL);
     if($default_theme == 'garland_cichorieae' || $default_theme == 'cyprus'
@@ -898,25 +910,15 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
       $asListElement = $feature_block_settings['as_list'] == 'ul';
     }
     // --------------------------------------------------
+    */
 
-    $render_array = array(
-      '#type' => 'html_tag',
-      '#tag' => $asListElement ? 'li' : 'span',
-      '#attributes' => array(
-        'class' => 'DescriptionElement DescriptionElement-' . $element->class . '
-      ' .  html_class_attribute_ref($element)
-      ),
-      '#value' => '',
-      '#value_suffix' => NULL
-    );
-
-    $element_text = '';
+    $element_markup = '';
     if (isset($element->multilanguageText_L10n->text)) {
       // TODO replacement of \n by <br> should be configurable
-      $element_text = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+      $element_markup = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
     }
 
-    cdm_description_element_render_array_add_annotations_and_sources($render_array, $element, $feature_block_settings, $element_text, $footnote_list_key_suggestion);
+    $render_array = compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion);
 
     return $render_array;
   }
@@ -1037,7 +1039,6 @@ function compose_description_element_categorical_data($element, $feature_block_s
 
     }
   }
-
 
   $out = '<span class="' . html_class_attribute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
 
@@ -1197,12 +1198,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
   {
 
     $feature_block_settings = get_feature_block_settings($feature->uuid);
-    if($feature_block_settings['as_list']){
-      $enclosing_tag = $feature_block_settings['as_list'];
-    } else {
-      $out = "ERROR</body></html>";
-      return;
-    }
+    $enclosing_tag = $feature_block_settings['as_list'];
 
     $out = '<' . $enclosing_tag . ' class="feature-block-elements" id="' . $feature->representation_L10n . '">';
 
@@ -1335,8 +1331,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
           $feature_block_settings = get_feature_block_settings($descriptionElement->feature->uuid);
         switch ($descriptionElement->class) {
             case 'TextData':
-              $asListElement  = $feature_block_settings['as_list'] == 'ul';
-              $text_data_render_array = compose_description_element_textdata($descriptionElement, $asListElement, $descriptionElement->feature->uuid);
+              $text_data_render_array = compose_description_element_text_data($descriptionElement, $descriptionElement->feature->uuid, $feature_block_settings);
               $feature_block_has_content = $feature_block_has_content || !empty($text_data_render_array['#value']);
               $elements_out_array[] = drupal_render($text_data_render_array);
               break;
@@ -1367,7 +1362,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
 
       // If feature = CITATION sort the list of sources.
       // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
-      if ($descriptionElement->feature->uuid == UUID_CITATION) {
+      if (isset($descriptionElement) && $descriptionElement->feature->uuid == UUID_CITATION) {
         sort($elements_out_array);
       }
     }
@@ -1473,10 +1468,10 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
   $text_data_out = array();
 
   foreach ($textData_commonNames as $text_data_element) {
-    /* footnotes are not handled correctly in compose_description_element_textdata,
+    /* footnotes are not handled correctly in compose_description_element_text_data,
        need to set 'common-names-feature-block' as $footnote_key_suggestion */
     RenderHints::setFootnoteListKey($footnote_key_suggestion);
-    $text_data_render_array = compose_description_element_textdata($text_data_element, TRUE, $text_data_element->feature->uuid);
+    $text_data_render_array = compose_description_element_text_data($text_data_element, $text_data_element->feature->uuid, $feature_block_settings);
     $text_data_out[] = drupal_render($text_data_render_array);
   }
 
