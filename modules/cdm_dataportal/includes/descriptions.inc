@@ -529,7 +529,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
          * Content/COMMON_NAME.
          */
         else if ($node->feature->uuid == UUID_COMMON_NAME) {
-          $common_names_render_array = compose_cdm_common_names($node->descriptionElements, $node->feature);
+          $common_names_render_array = compose_description_elements_common_name($node->descriptionElements, $node->feature);
           $block->content[] = $common_names_render_array;
           $block_content_is_empty = FALSE;
         }
@@ -817,7 +817,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
           }
         }
         ksort($distributionElements);
-        $distribution_element_render_array = compose_description_element_distribution($distributionElements);
+        $distribution_element_render_array = compose_description_elements_distribution($distributionElements);
         $dto_out_array[] = drupal_render($distribution_element_render_array);
 
       }
@@ -1146,7 +1146,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
  *
  * @ingroup compose
  */
-function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
+function compose_description_elements_common_name($elements, $feature, $weight = FALSE) {
 
   $common_name_out = '';
   $common_name_feature_elements = array();
@@ -1265,13 +1265,14 @@ function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
    *
    * @ingroup compose
    */
-  function compose_description_element_distribution($descriptionElements, $enclosingTag = "span"){
+  function compose_description_elements_distribution($descriptionElements){
 
     $out = '';
     RenderHints::pushToRenderStack('descriptionElementDistribution');
     RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 
     $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
+    $enclosingTag = cdm_feature_block_element_tag_name($feature_block_settings);
 
     foreach ($descriptionElements as $descriptionElement) {
       $annotations_and_sources = handle_annotations_and_sources(
@@ -1456,10 +1457,10 @@ function compose_cdm_common_names($elements, $feature, $weight = FALSE) {
   }
 
   /**
-   * this function should produce markup as the compose_description_element_distribution()
+   * this function should produce markup as the compose_description_elements_distribution()
    * function.
    *
-   * @see compose_description_element_distribution()
+   * @see compose_description_elements_distribution()
    *
    * @param $distribution_tree
    * @param $feature_block_settings
