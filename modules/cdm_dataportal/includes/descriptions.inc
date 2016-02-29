@@ -926,6 +926,45 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
 
 
 /**
+ * Theme function to render CDM DescriptionElements of the type TaxonInteraction.
+ *
+ * @param $element
+ *  The CDM TaxonInteraction entity
+ *
+ * @return
+ *  A drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_description_element_taxon_interaction($element, $feature_block_settings) {
+
+  $out = '';
+  $enclosing_tag = cdm_feature_block_element_tag_name($feature_block_settings);
+
+  if (isset($element->description_L10n)) {
+    $out .=  ' ' . $element->description_L10n;
+  }
+
+  if(isset($element->taxon2)){
+    $out = render_taxon_or_name($element->taxon2, url(path_to_taxon($element->taxon2->uuid)));
+  }
+
+  $annotations_and_sources = handle_annotations_and_sources(
+    $element,
+    $feature_block_settings,
+    $out, // the description element text
+    $element->feature->uuid
+  );
+
+  if(!empty($annotations_and_sources['source_references'])){
+    $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+  }
+  return '<' . $enclosing_tag . '>' . $out . $annotations_and_sources['foot_note_keys'] . '</' . $enclosing_tag . '>';
+
+}
+
+
+/**
  * Renders a single instance of the type IndividualsAssociations.
  *
  * @param $element
@@ -1143,7 +1182,7 @@ function compose_description_element_individuals_association($element, $feature_
               break;
             case 'TaxonInteraction':
               $feature_block_has_content = true;
-              $elements_out_array[] = theme('cdm_descriptionElement_TaxonInteraction', array('element' => $descriptionElement));
+              $elements_out_array[] = compose_description_element_taxon_interaction($descriptionElement, $feature_block_settings);
               break;
             case 'Uses':
               /* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */

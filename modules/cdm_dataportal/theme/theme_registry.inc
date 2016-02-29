@@ -72,7 +72,6 @@ function cdm_dataportal_theme() {
     'FeatureTree_hierarchy' => array('variables' => array('FeatureTreeUuid' => NULL)),
     'FeatureTree_hierarchy_children' => array('variables' => array('node' => NULL)),
     'cdm_descriptionElement_CategoricalData' => array('render element' => 'element'),
-    'cdm_descriptionElement_TaxonInteraction' => array('render element' => 'element'),
     'cdm_descriptionElement_QuantitativeData' => array('render element' => 'element'),
     'cdm_common_names' => array('render element' => 'elements', 'variables' => array('feature' => null) ),
     'cdm_description_element_image_source' => array('variables' => array(
