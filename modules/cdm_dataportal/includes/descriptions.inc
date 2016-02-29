@@ -1065,13 +1065,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
     RenderHints::pushToRenderStack($feature->uuid);
 
     if (is_array($descriptionElements)) {
-      // --- normal description element arrays
       foreach ($descriptionElements as $descriptionElement) {
-
-        // --- USE TEXTDATA --- //
-        if ($descriptionElement->feature->uuid == UUID_USE) {
-          // Do nothing to avoid rendering.
-        } else {
           /* decide based on the description element class
            *
            * Features handled here:
@@ -1111,7 +1105,6 @@ function cdm_create_description_element_footnotes($description_element, $separat
               $feature_block_has_content = true;
               $elements_out_array[] = '<li>No method for rendering unknown description class: ' . $descriptionElement->class . '</li>';
           }
-        }
       } // --- END loop over normal description element arrays
 
       // If feature = CITATION sort the list of sources.
