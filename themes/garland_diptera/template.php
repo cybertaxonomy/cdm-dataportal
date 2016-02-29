@@ -204,7 +204,7 @@ function garland_diptera_cdm_descriptionElements($descriptionElements){
   // FIXME the below line was plain wrong before refactoring from theme to compose function
   // it was like theme('compose_feature_block_elements', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
   // which could never have worked
-  return compose_feature_block_elements($outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+  return compose_feature_block_elements($outArray, $feature, $glue, $sortOutArray);
 }
 
 /**

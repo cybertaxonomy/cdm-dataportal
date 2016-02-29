@@ -184,7 +184,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكانG,2\nG. Nehmé, M., Dictionnaire Etymologique de la Flore du Liban. 2000 (as Scariola triquetra (Labill.) Soják)\n2. recommended";
 
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "li");
+        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
 
         assertEquals(blockTextFull, featureBlock.getText());
 

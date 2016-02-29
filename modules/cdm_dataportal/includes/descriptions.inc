@@ -355,6 +355,34 @@ function cdm_create_description_element_footnotes($description_element, $separat
 }
 
 
+
+/**
+ * @param $render_array
+ * @param $element
+ * @param $feature_block_settings
+ * @param $element_markup
+ * @param $footnote_list_key_suggestion
+ */
+function cdm_description_element_render_array_add_annotations_and_sources(&$render_array, $element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion)
+{
+  $annotations_and_sources = handle_annotations_and_sources($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion);
+
+  $names_used_in_source_markup = '';
+  if (!empty($annotations_and_sources['names_used_in_source']) && empty($element_markup)) {
+    // $element_text ==  NULL  usually occurs only in the case of CITATIONS!!!
+    $names_used_in_source_markup = join(', ', $annotations_and_sources['names_used_in_source']) . ': ';
+  }
+
+  $source_references_markup = '';
+  if (!empty($annotations_and_sources['source_references'])) {
+    $source_references_markup = '<span class="sources">' . join(' ', $annotations_and_sources['source_references']) . '<span>';
+  }
+
+  $render_array['#value'] = $names_used_in_source_markup . $element_markup . $source_references_markup;
+  $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
+}
+
+
   /**
    * @param $element
    * @param $feature_block_settings
@@ -573,7 +601,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
               if (isset($child->descriptionElements) && is_array($child->descriptionElements)) {
                 foreach ($child->descriptionElements as $element) {
 
-                  //TODO it woud be better if we could use compose_feature_block_items_generic() directly instead of the below stuff
+                  //TODO it would be better if we could use compose_feature_block_items_generic() directly instead of the below stuff
 
                   if (is_array($element->media)) {
                     // Append media of subordinate elements to list of main
@@ -733,11 +761,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
     if ($text_data_out_array && variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
       $block->content[] = compose_feature_block_elements(
-        $text_data_out_array,
-        $feature,
-        $text_data_glue,
-        $text_data_sortOutArray,
-        $text_data_enclosingTag
+        $text_data_out_array, $feature, $text_data_glue, $text_data_sortOutArray
       );
     }
 
@@ -823,22 +847,14 @@ function cdm_create_description_element_footnotes($description_element, $separat
       }
       //
       $block->content[] = compose_feature_block_elements(
-        $dto_out_array,
-        $feature,
-        $distribution_glue,
-        $distribution_sortOutArray,
-        $distribution_enclosingTag
+        $dto_out_array, $feature, $distribution_glue, $distribution_sortOutArray
       );
     }
 
     // --- TextData at the bottom
     if ($text_data_out_array && !variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
       $block->content[] = compose_feature_block_elements(
-        $text_data_out_array,
-        $feature,
-        $text_data_glue,
-        $text_data_sortOutArray,
-        $text_data_enclosingTag
+        $text_data_out_array, $feature, $text_data_glue, $text_data_sortOutArray
       );
     }
 
@@ -903,47 +919,78 @@ function cdm_create_description_element_footnotes($description_element, $separat
       $element_text = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
     }
 
-    $annotations_and_sources = handle_annotations_and_sources($element, $feature_block_settings, $element_text, $footnote_list_key_suggestion);
-
-    $names_used_in_source_markup = '';
-    if (!empty($annotations_and_sources['names_used_in_source']) && empty($element_text)) {
-      // $element_text ==  NULL  usually occurs only in the case of CITATIONS!!!
-      $names_used_in_source_markup = join(', ', $annotations_and_sources['names_used_in_source']) . ': ';
-    }
-
-    $source_references_markup = '';
-    if(!empty($annotations_and_sources['source_references'])){
-      $source_references_markup = '<span class="sources">'. join(' ', $annotations_and_sources['source_references']) . '<span>';
-    }
-
-    $render_array['#value'] = $names_used_in_source_markup . $element_text . $source_references_markup;
-    $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
+    cdm_description_element_render_array_add_annotations_and_sources($render_array, $element, $feature_block_settings, $element_text, $footnote_list_key_suggestion);
 
     return $render_array;
   }
 
 
+/**
+ * Renders a single instance of the type IndividualsAssociations.
+ *
+ * @param $element
+ *   The CDM IndividualsAssociations entity.
+ * @param $feature_block_settings
+ *
+ * @return array
+ *   Drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_description_element_individuals_association($element, $feature_block_settings) {
 
-  /**
-   * Creates a render array for string representations of description elements for the given feature.
-   *
-   * @param array $elements
-   *   An array of strings. Can be plaintext or markup.
-   * @param  feature:
-   *  The feature to which the elements given in $elements are belonging to.
-   * @param  glue:
-   *  Defaults to empty string.
-   * @param $sort
-   *   Boolean Whether to sort the $elements alphabetically, default is FALSE
-   * @param  $enclosing_tag
-   *
-   * @ingroup compose
-   */
-  function compose_feature_block_elements(array $elements, $feature, $glue = '', $sort = FALSE, $enclosing_tag = 'ul') {
+  $out = '';
+  $enclosing_tag = cdm_feature_block_element_tag_name($feature_block_settings);
+
+  $render_array = compose_cdm_specimenOrObservation($element->associatedSpecimenOrObservation);
+
+  if (isset($element->description_L10n)) {
+    $out .=  ' ' . $element->description_L10n;
+  }
+
+  $out .= drupal_render($render_array);
+
+  $annotations_and_sources = handle_annotations_and_sources(
+    $element,
+    $feature_block_settings,
+    $out, // the description element text
+    $element->feature->uuid
+  );
+
+  if(!empty($annotations_and_sources['source_references'])){
+    $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+  }
+  return '<' . $enclosing_tag . '>' . $out . $annotations_and_sources['foot_note_keys'] . '</' . $enclosing_tag . '>';
+
+
+}
+
+
+/**
+ * Creates a render array for string representations of description elements for the given feature.
+ *
+ * @param array $elements
+ *   An array of strings. Can be plaintext or markup.
+ * @param  $feature :
+ *  The feature to which the elements given in $elements are belonging to.
+ * @param string $glue :
+ *  Defaults to empty string.
+ * @param bool $sort
+ *   Boolean Whether to sort the $elements alphabetically, default is FALSE
+ *
+ * @return array|void
+ *
+ * @ingroup compose
+ */
+  function compose_feature_block_elements(array $elements, $feature, $glue = '', $sort = FALSE)
+  {
 
     $feature_block_settings = get_feature_block_settings($feature->uuid);
     if($feature_block_settings['as_list']){
       $enclosing_tag = $feature_block_settings['as_list'];
+    } else {
+      $out = "ERROR</body></html>";
+      return;
     }
 
     $out = '<' . $enclosing_tag . ' class="feature-block-elements" id="' . $feature->representation_L10n . '">';
@@ -953,7 +1000,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
     }
 
     //TODO it would be nice if any element would get "feature-block-element" as additional class attribute
-    //     this will become possible once all $elemets are real Drupal render arrays
+    //     this will become possible once all $elements are real Drupal render arrays
     $out .= join($glue, $elements) ;
 
     $out .= '</' . $enclosing_tag . '>';
@@ -1092,7 +1139,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
               break;
             case 'IndividualsAssociation':
               $feature_block_has_content = true;
-              $elements_out_array[] = theme('cdm_descriptionElement_IndividualsAssociation', array('element' => $descriptionElement));
+              $elements_out_array[] = compose_description_element_individuals_association($descriptionElement, $feature_block_settings);
               break;
             case 'TaxonInteraction':
               $feature_block_has_content = true;
@@ -1116,8 +1163,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
     if($feature_block_has_content){
       $render_array = compose_feature_block_elements(
-        $elements_out_array,
-        $feature
+        $elements_out_array, $feature
       );
     }
 
@@ -1206,11 +1252,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
 
 
     $common_name_feature_elements_render_array = compose_feature_block_elements(
-      $common_name_feature_elements,
-      $feature,
-      '; ',
-      FALSE,
-      $feature_block_settings['as_list']
+      $common_name_feature_elements, $feature, '; ', FALSE
     );
     $common_name_out .= $common_name_feature_elements_render_array['#markup'];
 
@@ -1228,8 +1270,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
   }
 
   $common_name_out_text_data = compose_feature_block_elements(
-    $text_data_out,
-    $feature
+    $text_data_out, $feature
   );
 
   $footnotes = theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . $footnote_key_suggestion));
@@ -1247,7 +1288,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
   /**
    * Composes the render array for a CDM Distribution description element
    *
-   * @param array $descriptionElements
+   * @param array $description_elements
    *   Array of CDM Distribution instances
    * @param $enclosingTag
    *   The html tag to be use for the enclosing element
@@ -1257,7 +1298,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
    *
    * @ingroup compose
    */
-  function compose_description_elements_distribution($descriptionElements){
+  function compose_description_elements_distribution($description_elements){
 
     $out = '';
     RenderHints::pushToRenderStack('descriptionElementDistribution');
@@ -1266,20 +1307,20 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
     $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
     $enclosingTag = cdm_feature_block_element_tag_name($feature_block_settings);
 
-    foreach ($descriptionElements as $descriptionElement) {
+    foreach ($description_elements as $description_element) {
       $annotations_and_sources = handle_annotations_and_sources(
-        $descriptionElement,
+        $description_element,
         $feature_block_settings,
-        $descriptionElement->area->representation_L10n,
+        $description_element->area->representation_L10n,
         UUID_DISTRIBUTION
       );
 
 
-      list($status_label, $status_markup) = distribution_status_label_and_markup($descriptionElement);
+      list($status_label, $status_markup) = distribution_status_label_and_markup($description_element);
 
-      $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $descriptionElement->uuid
+      $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
         . ' " title="' . $status_label. '">'
-        . $descriptionElement->area->representation_L10n
+        . $description_element->area->representation_L10n
         . $status_markup;
       if(!empty($annotations_and_sources['source_references'])){
         $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
