@@ -529,7 +529,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
          * Content/COMMON_NAME.
          */
         else if ($node->feature->uuid == UUID_COMMON_NAME) {
-          $common_names_render_array = compose_description_elements_common_name($node->descriptionElements, $node->feature);
+          $common_names_render_array = compose_feature_block_items_feature_common_name($node->descriptionElements, $node->feature);
           $block->content[] = $common_names_render_array;
           $block_content_is_empty = FALSE;
         }
@@ -553,7 +553,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
             if(isset($taxon) ) {
               $taxon_uuid = $taxon->uuid;
             }
-            $elements_render_array = compose_description_elements_other_features($node->descriptionElements, $node->feature, $taxon_uuid);
+            $elements_render_array = compose_feature_block_items_generic($node->descriptionElements, $node->feature, $taxon_uuid);
             $block_content_is_empty = empty($elements_render_array);
             $block->content[] = $elements_render_array;
           }
@@ -573,7 +573,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
               if (isset($child->descriptionElements) && is_array($child->descriptionElements)) {
                 foreach ($child->descriptionElements as $element) {
 
-                  //TODO it woud be better if we could use compose_description_elements_other_features() directly instead of the below stuff
+                  //TODO it woud be better if we could use compose_feature_block_items_generic() directly instead of the below stuff
 
                   if (is_array($element->media)) {
                     // Append media of subordinate elements to list of main
@@ -851,10 +851,10 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
 
   /**
-   * Composes a drupal render array for CDM TextData description elements.
+   * Composes a drupal render array for single CDM TextData description element.
    *
    * @param $element
-   *    The CDM TextData description element which contains the textual  information.
+   *    The CDN TextData  description element.
    * @param $asListElement
    *    A boolean which determines whether the citations should
    *     be rendered as a list or not.
@@ -1048,7 +1048,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
    *
    * @ingroup compose
    */
-  function compose_description_elements_other_features($descriptionElements, $feature) {
+  function compose_feature_block_items_generic($descriptionElements, $feature) {
 
     $render_array = array();
     $elements_out_array = array();
@@ -1138,7 +1138,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
  *
  * @ingroup compose
  */
-function compose_description_elements_common_name($elements, $feature, $weight = FALSE) {
+function compose_feature_block_items_feature_common_name($elements, $feature, $weight = FALSE) {
 
   $common_name_out = '';
   $common_name_feature_elements = array();
@@ -1245,10 +1245,10 @@ function compose_description_elements_common_name($elements, $feature, $weight =
 }
 
   /**
-   * Composes the render array for a CDM Distribution element
+   * Composes the render array for a CDM Distribution description element
    *
-   * @param $descriptionElements
-   *   The CDM Distribution element
+   * @param array $descriptionElements
+   *   Array of CDM Distribution instances
    * @param $enclosingTag
    *   The html tag to be use for the enclosing element
    *
