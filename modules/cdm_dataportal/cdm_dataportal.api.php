@@ -51,7 +51,7 @@ function hook_cdm_feature_node_blocks_alter(&$block_list, $taxon = NULL) {
         }
         if ($numberOfChildren > 0) {
             $block = feature_block('Number of Taxa');
-            // FIXME use compose_cdm_feature_block_elements() in next line
+            // FIXME use compose_feature_block_elements() in next line
             $block->content = array(markup_to_render_array(
                 '<ul class="feature-block-elements"><li>'
                 . $numberOfChildren . " " . $subRank

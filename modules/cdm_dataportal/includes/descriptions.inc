@@ -496,7 +496,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
    *
    * @ingroup compose
    */
-  function compose_cdm_feature_nodes($mergedFeatureNodes, $taxon) {
+  function compose_feature_blocks($mergedFeatureNodes, $taxon) {
 
     $block_list = array();
 
@@ -553,7 +553,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
             if(isset($taxon) ) {
               $taxon_uuid = $taxon->uuid;
             }
-            $elements_render_array = compose_description_elements($node->descriptionElements, $node->feature, $taxon_uuid);
+            $elements_render_array = compose_description_elements_other_features($node->descriptionElements, $node->feature, $taxon_uuid);
             $block_content_is_empty = empty($elements_render_array);
             $block->content[] = $elements_render_array;
           }
@@ -573,7 +573,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
               if (isset($child->descriptionElements) && is_array($child->descriptionElements)) {
                 foreach ($child->descriptionElements as $element) {
 
-                  //TODO it woud be better if we could use compose_description_elements() directly instead of the below stuff
+                  //TODO it woud be better if we could use compose_description_elements_other_features() directly instead of the below stuff
 
                   if (is_array($element->media)) {
                     // Append media of subordinate elements to list of main
@@ -719,7 +719,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
         if (!array_search($repr, $text_data_out_array)) { // de-duplication !!
           $text_data_out_array[] = $repr;
-          // TODO HINT: sorting in compose_cdm_feature_block_elements will
+          // TODO HINT: sorting in compose_feature_block_elements will
           // not work since this array contains html attributes with uuids
           // and what is about cases like the bibliography where
           // any content can be prefixed with some foot-note anchors?
@@ -732,7 +732,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
 
     if ($text_data_out_array && variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-      $block->content[] = compose_cdm_feature_block_elements(
+      $block->content[] = compose_feature_block_elements(
         $text_data_out_array,
         $feature,
         $text_data_glue,
@@ -822,7 +822,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
       }
       //
-      $block->content[] = compose_cdm_feature_block_elements(
+      $block->content[] = compose_feature_block_elements(
         $dto_out_array,
         $feature,
         $distribution_glue,
@@ -833,7 +833,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
 
     // --- TextData at the bottom
     if ($text_data_out_array && !variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-      $block->content[] = compose_cdm_feature_block_elements(
+      $block->content[] = compose_feature_block_elements(
         $text_data_out_array,
         $feature,
         $text_data_glue,
@@ -939,7 +939,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
    *
    * @ingroup compose
    */
-  function compose_cdm_feature_block_elements(array $elements, $feature, $glue = '', $sort = FALSE, $enclosing_tag = 'ul') {
+  function compose_feature_block_elements(array $elements, $feature, $glue = '', $sort = FALSE, $enclosing_tag = 'ul') {
 
     $feature_block_settings = get_feature_block_settings($feature->uuid);
     if($feature_block_settings['as_list']){
@@ -1048,7 +1048,7 @@ function cdm_create_description_element_footnotes($description_element, $separat
    *
    * @ingroup compose
    */
-  function compose_description_elements($descriptionElements, $feature) {
+  function compose_description_elements_other_features($descriptionElements, $feature) {
 
     $render_array = array();
     $elements_out_array = array();
@@ -1112,11 +1112,10 @@ function cdm_create_description_element_footnotes($description_element, $separat
       if ($descriptionElement->feature->uuid == UUID_CITATION) {
         sort($elements_out_array);
       }
-
-    } // END normal description element arrays
+    }
 
     if($feature_block_has_content){
-      $render_array = compose_cdm_feature_block_elements(
+      $render_array = compose_feature_block_elements(
         $elements_out_array,
         $feature
       );
@@ -1206,7 +1205,7 @@ function compose_description_elements_common_name($elements, $feature, $weight =
     } // End of loop over set of elements per language area
 
 
-    $common_name_feature_elements_render_array = compose_cdm_feature_block_elements(
+    $common_name_feature_elements_render_array = compose_feature_block_elements(
       $common_name_feature_elements,
       $feature,
       '; ',
@@ -1228,7 +1227,7 @@ function compose_description_elements_common_name($elements, $feature, $weight =
     $text_data_out[] = drupal_render($text_data_render_array);
   }
 
-  $common_name_out_text_data = compose_cdm_feature_block_elements(
+  $common_name_out_text_data = compose_feature_block_elements(
     $text_data_out,
     $feature
   );

@@ -729,7 +729,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
 
 
   // Render the sections for each feature
-  $render_array['taxon_description_features'] = compose_cdm_feature_nodes($merged_tree->root->childNodes, $taxon);
+  $render_array['taxon_description_features'] = compose_feature_blocks($merged_tree->root->childNodes, $taxon);
 
   $bibliography_settings = get_bibliography_settings();
   if($bibliography_settings['enabled'] == 1){
