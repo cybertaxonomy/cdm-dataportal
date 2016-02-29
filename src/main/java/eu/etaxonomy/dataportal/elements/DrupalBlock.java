@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
+import java.util.List;
+
 import org.apache.log4j.Level;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -26,6 +28,8 @@ public class DrupalBlock extends BaseElement {
 
 	protected WebElement content;
 
+	protected List<WebElement> featureBlockelements;
+
 	/**
 	 * @param element
 	 */
@@ -37,6 +41,7 @@ public class DrupalBlock extends BaseElement {
         logger.trace("DrupalBlock() - constructor after super()");
 
 		content = element.findElement(By.className("content"));
+		featureBlockelements = element.findElements(By.className("feature-block-elements"));
 
 		logger.trace("DrupalBlock() - block content loaded");
 		try {
@@ -55,5 +60,9 @@ public class DrupalBlock extends BaseElement {
 	public WebElement getContent() {
 		return content;
 	}
+
+	public List<WebElement> getFeatureBlockElements() {
+        return featureBlockelements;
+    }
 
 }

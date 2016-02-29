@@ -1068,12 +1068,8 @@ function cdm_create_description_element_footnotes($description_element, $separat
       // --- normal description element arrays
       foreach ($descriptionElements as $descriptionElement) {
 
-        // --- IMAGE_SOURCES --- //
-        if ($descriptionElement->feature->uuid == UUID_IMAGE_SOURCES) {
-          $image_sources[] = $descriptionElement;
-        }
         // --- USE TEXTDATA --- //
-        elseif ($descriptionElement->feature->uuid == UUID_USE) {
+        if ($descriptionElement->feature->uuid == UUID_USE) {
           // Do nothing to avoid rendering.
         } else {
           /* decide based on the description element class
@@ -1124,10 +1120,6 @@ function cdm_create_description_element_footnotes($description_element, $separat
         sort($elements_out_array);
       }
 
-      if (isset($image_sources)) {
-        $elements_out_array[] = theme('cdm_description_element_image_source', array('image_sources' => $image_sources, 'asListElement' => TRUE));
-        $feature_block_has_content = true;
-      }
     } // END normal description element arrays
 
     if($feature_block_has_content){
