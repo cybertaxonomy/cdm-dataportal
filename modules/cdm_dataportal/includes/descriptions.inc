@@ -539,6 +539,7 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
           has_feature_node_description_elements($node)) && $node->feature->uuid != UUID_IMAGE) { // skip empty or supressed features
 
         $feature_name = cdm_term_representation($node->feature, 'Unnamed Feature');
+        $feature_block_settings = get_feature_block_settings($node->feature->uuid);
 
         $block = feature_block($feature_name, $node->feature);
         $block->content = array();
@@ -577,11 +578,7 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
           $out_child_elements = '';
 
           if (isset($node->descriptionElements)) {
-            $taxon_uuid = NULL;
-            if(isset($taxon) ) {
-              $taxon_uuid = $taxon->uuid;
-            }
-            $elements_render_array = compose_feature_block_items_generic($node->descriptionElements, $node->feature, $taxon_uuid);
+            $elements_render_array = compose_feature_block_items_generic($node->descriptionElements, $node->feature);
             $block_content_is_empty = empty($elements_render_array);
             $block->content[] = $elements_render_array;
           }
@@ -619,7 +616,7 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
                       break;
                     case 'CategoricalData':
                       $out_child_elements  = '<em>' . $child->feature->representation_L10n . '</em> '
-                        . theme('cdm_descriptionElement_CategoricalData', array('element' => $element));
+                        . compose_description_element_categorical_data($element, $feature_block_settings);
                       break;
                     case 'QuantitativeData':
                       $out_child_elements = '<em>' . $child->feature->representation_L10n . '</em> '
@@ -1004,6 +1001,57 @@ function compose_description_element_individuals_association($element, $feature_
 
 }
 
+/**
+ * Renders a single instance of the type CategoricalData.
+ *
+ * @param $element
+ *  The CDM CategoricalData entity
+ *
+ * @return string
+ *   a html representation of the given CategoricalData element
+ *
+ * @ingroup compose
+ */
+function compose_description_element_categorical_data($element, $feature_block_settings) {
+
+  $state_data_strings = array();
+  if (isset($element->stateData)) {
+    foreach ($element->stateData as $state_data) {
+
+      $state  = NULL;
+
+      if (isset($state_data->state)) {
+        $state = cdm_term_representation($state_data->state);
+      }
+
+      if (isset($state_data->modifyingText_L10n)) {
+        $state = ' ' . $state_data->modifyingText_L10n;
+      }
+
+      $modifiers_strings = cdm_modifers_representations($state_data);
+
+      $state_data_strings[] = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
+
+    }
+  }
+
+
+  $out = '<span class="' . html_class_attribute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
+
+  $feature_block_settings = get_feature_block_settings($element->feature->uuid);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $element,
+    $feature_block_settings,
+    $out, // The description element text.
+    $element->feature->uuid
+  );
+
+  if (!empty($annotations_and_sources['source_references'])) {
+    $out .= ' ' . implode(' ', $annotations_and_sources['source_references']);
+  }
+  return $out . $annotations_and_sources['foot_note_keys'];
+}
+
 
 /**
  * Creates a render array for string representations of description elements for the given feature.
@@ -1161,16 +1209,16 @@ function compose_description_element_individuals_association($element, $feature_
            * TODO provide api_hook as extension point for this?
            */
           $feature_block_settings = get_feature_block_settings($descriptionElement->feature->uuid);
-          $asListElement  = $feature_block_settings['as_list'] == 'ul';
-          switch ($descriptionElement->class) {
+        switch ($descriptionElement->class) {
             case 'TextData':
+              $asListElement  = $feature_block_settings['as_list'] == 'ul';
               $text_data_render_array = compose_description_element_textdata($descriptionElement, $asListElement, $descriptionElement->feature->uuid);
               $feature_block_has_content = $feature_block_has_content || !empty($text_data_render_array['#value']);
               $elements_out_array[] = drupal_render($text_data_render_array);
               break;
             case 'CategoricalData':
               $feature_block_has_content = true;
-              $elements_out_array[] = theme('cdm_descriptionElement_CategoricalData', array('element' => $descriptionElement));
+              $elements_out_array[] = compose_description_element_categorical_data($descriptionElement, $feature_block_settings);
               break;
             case 'QuantitativeData':
               $feature_block_has_content = true;
