@@ -62,12 +62,12 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
         // associated taxa
         if($preservedSpecimenDTO->associatedTaxa){
             $detail_html .= "<br>";
-            $detail_html .= create_label("Determined as");
+            $detail_html .= create_label("Associated with");
                 if(sizeof($preservedSpecimenDTO->associatedTaxa)>1){
                     $detail_html .= "<br>";
                 }
             foreach($preservedSpecimenDTO->associatedTaxa as $associatedTaxon){
-                $detail_html .= $associatedTaxon."<br>";
+                $detail_html .= l($associatedTaxon->second, path_to_taxon($associatedTaxon->first, "specimens"));//$associatedTaxon->second."<br>";
             }
         }
     }
