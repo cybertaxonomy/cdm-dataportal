@@ -2217,9 +2217,8 @@ ie	introduced: formerly introduced
     
     $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_show_determined_as'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Show "Determined as" in specimen table.'),
-        '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS),
-        '#description' => t('Note: only the current determination will be shown.'),
+        '#title' => t('Show "Associated with" in specimen table.'),
+        '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS)
     );
 
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
