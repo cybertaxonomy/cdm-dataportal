@@ -178,7 +178,7 @@ function compare_original_sources($a, $b){
  * @param $a
  * @param $b
  */
-function compare_image_sources($a, $b) {
+function compare_text_data($a, $b) {
 
   if ($a->multilanguageText_L10n->text == $b->multilanguageText_L10n->text) {
     return 0;

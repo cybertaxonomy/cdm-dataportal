@@ -341,46 +341,6 @@ function theme_cdm_descriptionElement_TaxonInteraction($variables) {
 }
 
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_description_element_image_source($variables) {
-  $image_sources = $variables['image_sources'];
-  $asListElement = $variables['asListElement'];
-  $out = '';
-  $separator = ',';
-  RenderHints::pushToRenderStack('descriptionElementImageSource');
-  RenderHints::setFootnoteListKey(UUID_IMAGE_SOURCES);
-
-  // Sorting the image sources.
-  usort($image_sources, 'compare_image_sources');
-  // Generate the footnotes.
-  foreach ($image_sources as $image_source) {
-    $footNoteKeys = cdm_annotations_as_footnotekeys($image_source);
-    foreach ($image_source->sources as $source) {
-      if (_is_original_source_type($source)) {
-        $fn_key = FootnoteManager::addNewFootnote(original_source_footnote_list_key(), theme('cdm_OriginalSource', array(
-          'source' => $source,
-          'doLink' => FALSE,
-        )));
-        // Ensure uniqueness of the footnote keys.
-        cdm_add_footnote_to_array($footNoteKeys, $fn_key);
-      }
-    }
-    // Sort and render footnote keys.
-    $footnote_key_list_str = '';
-    asort($footNoteKeys);
-    foreach ($footNoteKeys as $footNoteKey) {
-      $footnote_key_list_str .= theme('cdm_footnote_key', array('footnoteKey' => $footNoteKey, 'separator' => ($footnote_key_list_str ? $separator : '')));
-    }
-    // Return value!
-    $out .= '<span class="descriptionElement descriptionElement-' . $image_source->uuid . '">' . $image_source->multilanguageText_L10n->text . $footnote_key_list_str . '; </span>';
-  }
-
-  RenderHints::popFromRenderStack();
-  return $out;
-}
 
 /**
  * @todo Please document this function.
