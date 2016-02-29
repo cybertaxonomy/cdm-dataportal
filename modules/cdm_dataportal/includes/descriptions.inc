@@ -620,7 +620,7 @@ function cdm_description_element_render_array_add_annotations_and_sources(&$rend
                       break;
                     case 'QuantitativeData':
                       $out_child_elements = '<em>' . $child->feature->representation_L10n . '</em> '
-                        . theme('cdm_descriptionElement_QuantitativeData', array('element' => $element));
+                        . compose_description_element_quantitative_data($element, $feature_block_settings);
 
                   }
 
@@ -1005,7 +1005,8 @@ function compose_description_element_individuals_association($element, $feature_
  * Renders a single instance of the type CategoricalData.
  *
  * @param $element
- *  The CDM CategoricalData entity
+ *  The CDM CategoricalData entity#
+ * @param $feature_block_settings
  *
  * @return string
  *   a html representation of the given CategoricalData element
@@ -1013,6 +1014,8 @@ function compose_description_element_individuals_association($element, $feature_
  * @ingroup compose
  */
 function compose_description_element_categorical_data($element, $feature_block_settings) {
+
+  $enclosing_tag = cdm_feature_block_element_tag_name($feature_block_settings);
 
   $state_data_strings = array();
   if (isset($element->stateData)) {
@@ -1049,7 +1052,128 @@ function compose_description_element_categorical_data($element, $feature_block_s
   if (!empty($annotations_and_sources['source_references'])) {
     $out .= ' ' . implode(' ', $annotations_and_sources['source_references']);
   }
+  return '<' . $enclosing_tag . '>' . $out . $annotations_and_sources['foot_note_keys'] . '</' . $enclosing_tag . '>';
+}
+
+
+/**
+ * Theme function to render CDM DescriptionElements of the type QuantitativeData.
+ *
+ * The function renders the statisticalValues contained in the QuantitativeData
+ * entity according to the following scheme:
+ *
+ * (ExtremeMin)-Min-Average-Max-(ExtremeMax)
+ *
+ * All modifiers of these values are appended.
+ *
+ * If the QuantitativeData is containing more statisticalValues with further
+ * statisticalValue types, these additional measures will be appended to the
+ * above string separated by whitespace.
+ *
+ * Special cases;
+ * 1. Min==Max: this will be interpreted as Average
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *    - element: the QuantitativeData element
+ *
+ * @return string
+ *   a html representation of the given QuantitativeData element
+ *
+ * @ingroup themeable
+ */
+function compose_description_element_quantitative_data($element, $feature_block_settings) {
+  /*
+   * - statisticalValues
+   *   - value
+   *   - modifiers
+   *   - type
+   * - unit->representation_L10n
+   * - modifyingText
+   * - modifiers
+   * - sources
+   */
+
+  $out = '';
+  $type_representation = NULL;
+  $min_max = min_max_array();
+
+
+  $other_values = array();
+
+  if (isset($element->statisticalValues)) {
+    $other_values_markup = array();
+    foreach ($element->statisticalValues as $statistical_val) {
+
+      // compile the full value string which also may contain modifiers
+      if (isset($statistical_val->value)) {
+        $statistical_val->_value = $statistical_val->value;
+      }
+      $val_modifiers_strings = cdm_modifers_representations($statistical_val);
+      if ($val_modifiers_strings) {
+        $statistical_val->_value = ' ' . $val_modifiers_strings . ' ' . $statistical_val->_value;
+      }
+
+      // either put into min max array or into $other_values
+      // for generic output to be appended to 'min-max' string
+      if (array_key_exists($statistical_val->type->titleCache, $min_max)) {
+        $min_max[$statistical_val->type->titleCache] = $statistical_val;
+      }
+      else {
+        $other_values[] = $statistical_val;
+      }
+    } // end of loop over statisticalValues
+
+    // create markup
+
+    $min_max_markup = min_max_markup($min_max);
+
+
+    foreach ($other_values as $statistical_val) {
+      $statistical_val_type_representation = NULL;
+      if (isset($statistical_val->type)) {
+        $statistical_val_type_representation = cdm_term_representation($statistical_val->type);
+        // $statistical_val->type->termType;
+        // $statistical_val->type->userFriendlyTypeName;
+      }
+      $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
+        . $statistical_val->_value . '</span>';
+      $value_markup = $value_markup .
+        ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '');
+      $other_values_markup[] = $value_markup;
+    }
+
+
+    $out .= $min_max_markup . ' ' . implode($other_values_markup, ', ');
+  }
+
+  if (isset($element->unit)) {
+    $out .= ' <span class="unit" title="'
+      . cdm_term_representation($element->unit) . '">'
+      . cdm_term_representation_abbreviated($element->unit)
+      . '</span>';
+  }
+
+  // modifiers of the description element itself
+  $modifier_string = cdm_modifers_representations($element);
+  $out .= ($modifier_string ? ' ' . $modifier_string : '');
+  if (isset($element->modifyingText_L10n)) {
+    $out = $element->modifyingText_L10n . ' ' . $out;
+  }
+
+  $feature_block_settings = get_feature_block_settings($element->feature->uuid);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $element,
+    $feature_block_settings,
+    $out, // the description element text
+    $element->feature->uuid
+  );
+
+  if (!empty($annotations_and_sources['source_references'])) {
+    $out .= ' ' . implode(' ', $annotations_and_sources['source_references']);
+  }
   return $out . $annotations_and_sources['foot_note_keys'];
+
 }
 
 
@@ -1222,7 +1346,7 @@ function compose_description_element_categorical_data($element, $feature_block_s
               break;
             case 'QuantitativeData':
               $feature_block_has_content = true;
-              $elements_out_array[] = theme('cdm_descriptionElement_QuantitativeData', array('element' => $descriptionElement));
+              $elements_out_array[] = compose_description_element_quantitative_data($descriptionElement, $feature_block_settings);
               break;
             case 'IndividualsAssociation':
               $feature_block_has_content = true;
