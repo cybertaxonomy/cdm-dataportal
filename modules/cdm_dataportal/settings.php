@@ -513,7 +513,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    * @return array
    *  an associative array of settings, with the following fields:
    *    - as_list: string
-   *        this setting will be used in compose_feature_block_elements() as $enclosing_tag
+   *        this setting will be used in compose_feature_block_wrap_elements() as $enclosing_tag
    *        possible values are:
    *          div: not as list,
    *          ul: as bullet list,
@@ -549,7 +549,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *        possible values are the constants SORT_ASC, SORT_DESC, NULL,
    *        some feature types (Distribution) also support: SORT_HIERARCHICAL (
    *        TODO option to exclude levels, put in special?,
-   *        TODO make use of this setting in compose_feature_block_elements())
+   *        TODO make use of this setting in compose_feature_block_wrap_elements())
    *    - element_tag
    *        specifies the tag to be used for creating the elements, only applies if "as_list" == 'div'
    *        possible values are span | div. the proper inner tag name can be retrieved by the function
@@ -562,7 +562,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    */
   function get_feature_block_settings($feature_uuid = 'DEFAULT') {
     // the default must conform to the default parameter values of
-    // compose_feature_block_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
+    // compose_feature_block_wrap_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
     // compose_description_element_text_data() : asListElement = NULL
 
     // see #3257 (implement means to define the features to show up in the taxonprofile and in the specimen descriptions)

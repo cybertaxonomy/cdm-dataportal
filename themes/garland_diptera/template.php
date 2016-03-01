@@ -202,9 +202,9 @@ function garland_diptera_cdm_descriptionElements($descriptionElements){
 
   $feature = NULL;
   // FIXME the below line was plain wrong before refactoring from theme to compose function
-  // it was like theme('compose_feature_block_elements', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
+  // it was like theme('compose_feature_block_wrap_elements', $outArray, $feature, $glue, $sortOutArray, $enclosingHtml);
   // which could never have worked
-  return compose_feature_block_elements($outArray, $feature, $glue, $sortOutArray);
+  return compose_feature_block_wrap_elements($outArray, $feature, $glue, $sortOutArray);
 }
 
 /**

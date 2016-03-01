@@ -197,6 +197,10 @@ li .taxon {
     font-weight: normal;
 }
 
+.nested-feature-tree-feature-label {
+    font-style: italic;
+}
+
 /*
  * ======= synonymy =======
  */

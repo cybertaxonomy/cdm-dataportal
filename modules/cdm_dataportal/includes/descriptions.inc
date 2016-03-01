@@ -377,7 +377,7 @@ function compare_description_element_render_arrays($a, $b){
  * @param $element_markup
  * @param $footnote_list_key_suggestion
  */
-function compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion)
+function compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion, $prepend_feature_label = FALSE)
 {
 
   $render_array = array(
@@ -412,7 +412,11 @@ function compose_description_element($element, $feature_block_settings, $element
     $source_references_markup = '<span class="sources">' . join(' ', $annotations_and_sources['source_references']) . '<span>';
   }
 
-  $render_array['#value'] = $names_used_in_source_markup . $element_markup . $source_references_markup;
+  $feature_label = '';
+  if ($prepend_feature_label) {
+    $feature_label = '<span class="nested-feature-tree-feature-label">' . $element->feature->representation_L10n . ':</span> ';
+  }
+  $render_array['#value'] = $feature_label . $names_used_in_source_markup . $element_markup . $source_references_markup;
   $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
 
   return $render_array;
@@ -572,7 +576,7 @@ function compose_description_element($element, $feature_block_settings, $element
     foreach ($mergedFeatureNodes as $node) {
 
       if ((isset($node->descriptionElements['#type']) ||
-          has_feature_node_description_elements($node)) && $node->feature->uuid != UUID_IMAGE) { // skip empty or supressed features
+          has_feature_node_description_elements($node)) && $node->feature->uuid != UUID_IMAGE) { // skip empty or suppressed features
 
         $feature_name = cdm_term_representation($node->feature, 'Unnamed Feature');
         $feature_block_settings = get_feature_block_settings($node->feature->uuid);
@@ -580,7 +584,6 @@ function compose_description_element($element, $feature_block_settings, $element
         $block = feature_block($feature_name, $node->feature);
         $block->content = array();
         $block_content_is_empty = TRUE;
-        $block_content_weight = 0;
 
         /*
          * Content/DISTRIBUTION.
@@ -611,72 +614,32 @@ function compose_description_element($element, $feature_block_settings, $element
         else {
 
           $media_list = array();
-          $out_child_elements = '';
+          $elements_render_array = array();
+          $child_elements_render_array = null;
 
-          if (isset($node->descriptionElements)) {
+          if (isset($node->descriptionElements[0])) {
             $elements_render_array = compose_feature_block_items_generic($node->descriptionElements, $node->feature);
-            $block_content_is_empty = empty($elements_render_array);
-            $block->content[] = $elements_render_array;
           }
 
           // Content/ALL OTHER FEATURES/Subordinate Features
           // subordinate features are printed inline in one floating text,
           // it is expected hat subordinate features can "contain" TextData,
-          // Qualitative- and Qualitative- DescriptioneElements
+          // Qualitative- and Qualitative- DescriptionElements
           if (isset($node->childNodes[0])) {
-
-            // TODO support more than one level of children.
-            // can this be solved by recursively calling this function?
-            // @see http://dev.e-taxonomy.eu/trac/ticket/2393
-            $text = '';
-            foreach ($node->childNodes as $child) {
-
-              if (isset($child->descriptionElements) && is_array($child->descriptionElements)) {
-                foreach ($child->descriptionElements as $element) {
-
-                  //TODO it would be better if we could use compose_feature_block_items_generic() directly instead of the below stuff
-
-                  if (is_array($element->media)) {
-                    // Append media of subordinate elements to list of main
-                    // feature.
-                    $media_list = array_merge($media_list, $element->media);
-                  }
-
-                  switch ($element->class) {
-                    case 'TextData':
-                      // FIXME use compose_description_element_text_data()
-                      if(isset($element->multilanguageText_L10n->text)){
-                        $out_child_elements = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
-                      }
-                      $out_child_elements = str_replace($child->feature->titleCache, '<em>' . $child->feature->representation_L10n . '</em>', $out_child_elements);
-                      break;
-                    case 'CategoricalData':
-                      $out_child_elements  = '<em>' . $child->feature->representation_L10n . '</em> '
-                        . compose_description_element_categorical_data($element, $feature_block_settings);
-                      break;
-                    case 'QuantitativeData':
-                      $out_child_elements = '<em>' . $child->feature->representation_L10n . '</em> '
-                        . compose_description_element_quantitative_data($element, $feature_block_settings);
-
-                  }
-
-                }
-                $text .= " " . $out_child_elements;
-                $out_child_elements = '';
-              }
-            }
-            $block_content_is_empty = $block_content_is_empty && empty($text);
-            $block->content[] = markup_to_render_array('<div id="Description" class="feature-block-elements"><div>' . $text . '</div></div>');
-            $block_content_is_empty = $block_content_is_empty && empty($media_list);
+            $child_elements_render_array = compose_feature_block_items_nested($node, $media_list, $feature_block_settings);
+            $elements_render_array = array_merge($elements_render_array, $child_elements_render_array);
           }
-
-          $block->content[] = compose_feature_media_gallery($node, $media_list, $gallery_settings);
-          /*
-           * Footnotes for the feature block
-           */
-          $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . $node->feature->uuid)));
-          $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => $node->feature->uuid)));
-          $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => $node->feature->uuid)));
+          $block_content_is_empty = $block_content_is_empty && empty($media_list) && empty($elements_render_array);
+          if(!$block_content_is_empty){
+            $block->content[] = compose_feature_block_wrap_elements($elements_render_array, $node->feature);
+            $block->content[] = compose_feature_media_gallery($node, $media_list, $gallery_settings);
+            /*
+             * Footnotes for the feature block
+             */
+            $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . $node->feature->uuid)));
+            $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => $node->feature->uuid)));
+            $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => $node->feature->uuid)));
+          }
         } // END all other features
 
         // allows modifying the block contents via a the hook_cdm_feature_node_block_content_alter
@@ -686,7 +649,7 @@ function compose_description_element($element, $feature_block_settings, $element
           $block_list[] = $block;
           cdm_toc_list_add_item(cdm_term_representation($node->feature), $node->feature->uuid);
         } // END: skip empty block content
-      } // END: skip empty or supressed features
+      } // END: skip empty or suppressed features
     } // END: creating a block per feature
 
     drupal_alter('cdm_feature_node_blocks', $block_list, $taxon);
@@ -696,11 +659,84 @@ function compose_description_element($element, $feature_block_settings, $element
     return _block_get_renderable_array($block_list);
   }
 
+/**
+ * Creates a render array of description elements  held by child nodes of the given feature node.
+ *
+ * This function is called recursively!
+ *
+ * @param $node
+ *   The feature node.
+ * @param array $media_list
+ *   List of CDM Media entities. All media of subordinate elements should be passed to the main feature.ä
+ * @param $feature_block_settings
+ *   The feature block settings.
+ * @param $main_feature
+ *  Only used internally in recursive calls.
+ *
+ * @return array
+ *  A Drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_feature_block_items_nested($node, &$media_list, $feature_block_settings, $main_feature = NULL)
+{
+
+  if(!$main_feature){
+    $main_feature = $node->feature;
+  }
+  /*
+   * TODO should be configurable, options; YES, NO, AUTOMATIC
+   * (automatic will only place the label if the first word of the description element text is not the same)
+   */
+  $prepend_feature_label = false;
+
+  $render_arrays = array();
+  foreach ($node->childNodes as $child_node) {
+    if (isset($child_node->descriptionElements[0])) {
+      foreach ($child_node->descriptionElements as $element) {
+
+        if (isset($element->media[0])) {
+          // Append media of subordinate elements to list of main
+          // feature.
+          $media_list = array_merge($media_list, $element->media);
+        }
+
+        $child_node_element = null;
+        switch ($element->class) {
+          case 'TextData':
+            $child_node_element = compose_description_element_text_data($element, $element->feature->uuid, $feature_block_settings, $prepend_feature_label);
+            break;
+          case 'CategoricalData':
+            $child_node_element = compose_description_element_categorical_data($element, $feature_block_settings, $prepend_feature_label);
+            break;
+          case 'QuantitativeData':
+            $child_node_element = compose_description_element_quantitative_data($element, $feature_block_settings, $prepend_feature_label);
+
+        }
+        if (is_array($child_node_element)) {
+          $render_arrays[] = $child_node_element;
+        }
+      }
+    }
+
+    if(isset($child_node->childNodes[0])){
+      $render_arrays = array_merge($render_arrays, compose_feature_block_items_nested($child_node, $media_list, $feature_block_settings, $main_feature ));
+    }
+  }
+
+  return $render_arrays;
+}
+
   /**
+   *
    * @param $node
+   *  The merged feature three node which potentially contains media in its description elements.
    * @param $media_list
+   *    Additional media to be merged witht the media contained in the nodes description elements
    * @param $gallery_settings
    * @return array
+   *
+   * @ingroup compose
    */
   function compose_feature_media_gallery($node, $media_list, $gallery_settings) {
 
@@ -779,7 +815,7 @@ function compose_description_element($element, $feature_block_settings, $element
 
         if (!array_search($repr, $text_data_out_array)) { // de-duplication !!
           $text_data_out_array[] = $repr;
-          // TODO HINT: sorting in compose_feature_block_elements will
+          // TODO HINT: sorting in compose_feature_block_wrap_elements will
           // not work since this array contains html attributes with uuids
           // and what is about cases like the bibliography where
           // any content can be prefixed with some foot-note anchors?
@@ -792,7 +828,7 @@ function compose_description_element($element, $feature_block_settings, $element
 
 
     if ($text_data_out_array && variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-      $block->content[] = compose_feature_block_elements(
+      $block->content[] = compose_feature_block_wrap_elements(
         $text_data_out_array, $feature, $text_data_glue, $text_data_sortOutArray
       );
     }
@@ -878,14 +914,14 @@ function compose_description_element($element, $feature_block_settings, $element
 
       }
       //
-      $block->content[] = compose_feature_block_elements(
+      $block->content[] = compose_feature_block_wrap_elements(
         $dto_out_array, $feature, $distribution_glue, $distribution_sortOutArray
       );
     }
 
     // --- TextData at the bottom
     if ($text_data_out_array && !variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0)) {
-      $block->content[] = compose_feature_block_elements(
+      $block->content[] = compose_feature_block_wrap_elements(
         $text_data_out_array, $feature, $text_data_glue, $text_data_sortOutArray
       );
     }
@@ -904,6 +940,8 @@ function compose_description_element($element, $feature_block_settings, $element
    * @param $element
    *    The CDM TextData description element.
    *  @param $feature_uuid
+   * @param bool $prepend_feature_label
+   *   Used in nested feature trees to put the feature as label in front of the description element text representation.
    *
    * @return array
    *   A drupal render array with the following elements being used:
@@ -915,19 +953,9 @@ function compose_description_element($element, $feature_block_settings, $element
    *
    * @ingroup compose
    */
-  function compose_description_element_text_data($element, $feature_uuid, $feature_block_settings) {
+  function compose_description_element_text_data($element, $feature_uuid, $feature_block_settings, $prepend_feature_label = FALSE) {
 
     $footnote_list_key_suggestion = $feature_uuid;
-
-    /*
-    // FIXME remove this hack ---------------------------
-    $default_theme = variable_get('theme_default', NULL);
-    if($default_theme == 'garland_cichorieae' || $default_theme == 'cyprus'
-      || $default_theme == 'flore_afrique_centrale' || $default_theme == 'flora_malesiana' || $default_theme == 'flore_gabon' ){
-      $asListElement = $feature_block_settings['as_list'] == 'ul';
-    }
-    // --------------------------------------------------
-    */
 
     $element_markup = '';
     if (isset($element->multilanguageText_L10n->text)) {
@@ -935,7 +963,7 @@ function compose_description_element($element, $feature_block_settings, $element
       $element_markup = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
     }
 
-    $render_array = compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion);
+    $render_array = compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion, $prepend_feature_label);
 
     return $render_array;
   }
@@ -1005,15 +1033,19 @@ function compose_description_element_individuals_association($element, $feature_
  * Renders a single instance of the type CategoricalData.
  *
  * @param $element
- *  The CDM CategoricalData entity#
+ *  The CDM CategoricalData entity
+ *
  * @param $feature_block_settings
+ *
+ * @param bool $prepend_feature_label
+ *   Used in nested feature trees to put the feature as label in front of the description element text representation.
  *
  * @return string
  *   a html representation of the given CategoricalData element
  *
  * @ingroup compose
  */
-function compose_description_element_categorical_data($element, $feature_block_settings) {
+function compose_description_element_categorical_data($element, $feature_block_settings, $prepend_feature_label = FALSE) {
 
   $enclosing_tag = cdm_feature_block_element_tag_name($feature_block_settings);
 
@@ -1040,7 +1072,7 @@ function compose_description_element_categorical_data($element, $feature_block_s
 
   $out = '<span class="' . html_class_attribute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
 
-  $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid);
+  $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
 
   return $render_array;
 }
@@ -1063,16 +1095,21 @@ function compose_description_element_categorical_data($element, $feature_block_s
  * Special cases;
  * 1. Min==Max: this will be interpreted as Average
  *
- * @param array $variables
- *   An associative array containing:
- *    - element: the QuantitativeData element
+ * @param $element
+ *  The CDM QuantitativeData entity
+ *
+ * @param $feature_block_settings
+ *
+ * @param bool $prepend_feature_label
+ *   Used in nested feature trees to put the feature as label in front of the description element text representation.
+ *
  *
  * @return string
  *   a html representation of the given QuantitativeData element
  *
  * @ingroup themeable
  */
-function compose_description_element_quantitative_data($element, $feature_block_settings) {
+function compose_description_element_quantitative_data($element, $feature_block_settings, $prepend_feature_label = FALSE) {
   /*
    * - statisticalValues
    *   - value
@@ -1151,16 +1188,18 @@ function compose_description_element_quantitative_data($element, $feature_block_
     $out = $element->modifyingText_L10n . ' ' . $out;
   }
 
-  $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid);
+  $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
 
   return $render_array;
 }
 
 
 /**
- * Creates a render array for string representations of description elements for the given feature.
+ * Wraps the render array for the given feature into an enclosing html tag.
  *
- * @param array $elements
+ * Optionally the elements can be sorted and glued together by a separator string.
+ *
+ * @param array $description_element_render_arrays
  *   An list of render arrays. Which are usually are produced by the compose_description_element()
  *   function. The render arrays should be of #type=html_tag, so that they can understand the #attribute property.
  * @param  $feature :
@@ -1170,22 +1209,23 @@ function compose_description_element_quantitative_data($element, $feature_block_
  * @param bool $sort
  *   Boolean Whether to sort the $elements alphabetically, default is FALSE
  *
- * @return array|void
+ * @return array
+ *    A Drupal render array
  *
  * @ingroup compose
  */
-  function compose_feature_block_elements(array $elements, $feature, $glue = '', $sort = FALSE)
+  function compose_feature_block_wrap_elements(array $description_element_render_arrays, $feature, $glue = '', $sort = FALSE)
   {
 
     $feature_block_settings = get_feature_block_settings($feature->uuid);
     $enclosing_tag = $feature_block_settings['as_list'];
 
     if ($sort) { // TODO remove parameter and replace by $feature_block_settings['sort_elements']
-      usort($elements, 'compare_description_element_render_arrays');
+      usort($description_element_render_arrays, 'compare_description_element_render_arrays');
     }
 
     $is_first = true;
-    foreach($elements as &$element_render_array){
+    foreach($description_element_render_arrays as &$element_render_array){
       if(!is_array($element_render_array)){
         $element_render_array = markup_to_render_array($element_render_array);
       }
@@ -1202,7 +1242,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
       $is_first = false;
     }
 
-    $render_array['elements']['children'] = $elements;
+    $render_array['elements']['children'] = $description_element_render_arrays;
 
     $render_array['elements']['#prefix'] = '<' . $enclosing_tag . ' class="feature-block-elements" id="' . $feature->representation_L10n . '">';
     $render_array['elements']['#suffix'] = '</' . $enclosing_tag . '>';
@@ -1284,7 +1324,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
    *
    * Usually these are of a specific feature type.
    *
-   * @param $descriptionElements
+   * @param $description_elements
    *   array of descriptionElements which belong to the same feature.
    *   These descriptions elements of a Description must be ordered by the chosen feature tree by
    *   calling the function _mergeFeatureTreeDescriptions().
@@ -1298,9 +1338,8 @@ function compose_description_element_quantitative_data($element, $feature_block_
    *
    * @ingroup compose
    */
-  function compose_feature_block_items_generic($descriptionElements, $feature) {
+  function compose_feature_block_items_generic($description_elements, $feature) {
 
-    $render_array = array();
     $elements_out_array = array();
     $distribution_tree = null;
 
@@ -1312,10 +1351,8 @@ function compose_description_element_quantitative_data($element, $feature_block_
      */
     $feature_block_has_content = false;
 
-    RenderHints::pushToRenderStack($feature->uuid);
-
-    if (is_array($descriptionElements)) {
-      foreach ($descriptionElements as $descriptionElement) {
+    if (is_array($description_elements)) {
+      foreach ($description_elements as $description_element) {
           /* decide based on the description element class
            *
            * Features handled here:
@@ -1323,29 +1360,29 @@ function compose_description_element_quantitative_data($element, $feature_block_
            *
            * TODO provide api_hook as extension point for this?
            */
-        $feature_block_settings = get_feature_block_settings($descriptionElement->feature->uuid);
-        switch ($descriptionElement->class) {
+        $feature_block_settings = get_feature_block_settings($description_element->feature->uuid);
+        switch ($description_element->class) {
           case 'TextData':
-            $elements_out_array[] = compose_description_element_text_data($descriptionElement, $descriptionElement->feature->uuid, $feature_block_settings);
+            $elements_out_array[] = compose_description_element_text_data($description_element, $description_element->feature->uuid, $feature_block_settings);
             break;
           case 'CategoricalData':
-            $elements_out_array[] = compose_description_element_categorical_data($descriptionElement, $feature_block_settings);
+            $elements_out_array[] = compose_description_element_categorical_data($description_element, $feature_block_settings);
             break;
           case 'QuantitativeData':
-            $elements_out_array[] = compose_description_element_quantitative_data($descriptionElement, $feature_block_settings);
+            $elements_out_array[] = compose_description_element_quantitative_data($description_element, $feature_block_settings);
             break;
           case 'IndividualsAssociation':
-            $elements_out_array[] = compose_description_element_individuals_association($descriptionElement, $feature_block_settings);
+            $elements_out_array[] = compose_description_element_individuals_association($description_element, $feature_block_settings);
             break;
           case 'TaxonInteraction':
-            $elements_out_array[] = compose_description_element_taxon_interaction($descriptionElement, $feature_block_settings);
+            $elements_out_array[] = compose_description_element_taxon_interaction($description_element, $feature_block_settings);
             break;
           case 'Uses':
             /* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
             break;
           default:
             $feature_block_has_content = true;
-            $elements_out_array[] = markup_to_render_array('<li>No method for rendering unknown description class: ' . $descriptionElement->class . '</li>');
+            $elements_out_array[] = markup_to_render_array('<li>No method for rendering unknown description class: ' . $description_element->class . '</li>');
         }
         $elements_out_array_last_item = $elements_out_array[count($elements_out_array) - 1];
         // considering not empty as long as the last item added is a render array
@@ -1354,19 +1391,12 @@ function compose_description_element_quantitative_data($element, $feature_block_
 
       // If feature = CITATION sort the list of sources.
       // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
-      if (isset($descriptionElement) && $descriptionElement->feature->uuid == UUID_CITATION) {
+      if (isset($description_element) && $description_element->feature->uuid == UUID_CITATION) {
         sort($elements_out_array);
       }
     }
 
-    if($feature_block_has_content){
-      $render_array = compose_feature_block_elements(
-        $elements_out_array, $feature
-      );
-    }
-
-    RenderHints::popFromRenderStack();
-    return $render_array;
+    return $elements_out_array;
   }
 
 /**
@@ -1449,7 +1479,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
     } // End of loop over set of elements per language area
 
 
-    $common_name_feature_elements_render_array = compose_feature_block_elements(
+    $common_name_feature_elements_render_array = compose_feature_block_wrap_elements(
       $common_name_feature_elements, $feature, '; ', FALSE
     );
     $common_name_out .= drupal_render($common_name_feature_elements_render_array); // FIXME should this be a render array instead?
@@ -1467,7 +1497,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
     $text_data_out[] = drupal_render($text_data_render_array);
   }
 
-  $common_name_out_text_data = compose_feature_block_elements(
+  $common_name_out_text_data = compose_feature_block_wrap_elements(
     $text_data_out, $feature
   );
 

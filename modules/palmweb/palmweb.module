@@ -40,7 +40,7 @@
       }
       if ($numberOfChildren > 0) {
         $block = feature_block('Number of Taxa');
-        // FIXME use compose_feature_block_elements() in next line
+        // FIXME use compose_feature_block_wrap_elements() in next line
         $block->content = array(markup_to_render_array('<ul class="feature-block-elements"><li>' . $numberOfChildren . " " . $subRank . '</li></ul>'));
         array_unshift($block_list, $block);
         cdm_toc_list_add_item('Number of Taxa', 'number-of-taxa', NULL, TRUE);
