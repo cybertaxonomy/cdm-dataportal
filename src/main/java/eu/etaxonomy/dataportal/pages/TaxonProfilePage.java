@@ -164,8 +164,11 @@ public class TaxonProfilePage extends PortalPage {
         List<WebElement> featureBlocks = portalContent.findElements(By.className("block-cdm-dataportal-feature"));
         Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
         for(WebElement b : featureBlocks){
+            if(logger.isTraceEnabled()) {
+                logger.trace("getFeatureBlockAt() - checking block '" + b.getAttribute("id") + "");
+            }
             if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + normalizeClassAttribute(featureName))){
-                logger.trace("getFeatureBlockAt() - block found, will be instantiated ...");
+                logger.debug("getFeatureBlockAt() - block found, will be instantiated ...");
                 return new FeatureBlock( driver, b, enclosingTag, elementTag);
             }
         }

@@ -666,7 +666,7 @@ function compose_description_element($element, $feature_block_settings, $element
               }
             }
             $block_content_is_empty = $block_content_is_empty && empty($text);
-            $block->content[] = markup_to_render_array($text);
+            $block->content[] = markup_to_render_array('<div id="Description" class="feature-block-elements"><div>' . $text . '</div></div>');
             $block_content_is_empty = $block_content_is_empty && empty($media_list);
           }
 

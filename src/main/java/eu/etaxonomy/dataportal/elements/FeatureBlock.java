@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Level;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -129,7 +128,7 @@ public class FeatureBlock extends DrupalBlock {
     public FeatureBlock(WebDriver driver, WebElement element, String enclosingTag, String ... elementTags) {
 
         super(element);
-        logger.setLevel(Level.TRACE);
+//        logger.setLevel(Level.TRACE);
         logger.trace("FeatureBlock() - constructor after super()");
 
         this.driver = driver;
