@@ -149,6 +149,7 @@ public abstract class  PortalPage {
         // This call sets the WebElement fields.
         PageFactory.initElements(driver, this);
 
+        logger.info("loading " + pageUrl);
 
         try {
             assertTrue("The page must not show an error box", !messagesErrorCichorieaeTheme.getAttribute("class").contains("error") && messagesErrorCichorieaeTheme.getText() == null);
@@ -160,8 +161,6 @@ public abstract class  PortalPage {
         } catch (NoSuchElementException e) {
             //IGNORE since this is expected!
         }
-
-        logger.info("loading " + pageUrl);
 
     }
 

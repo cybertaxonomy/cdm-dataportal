@@ -79,6 +79,7 @@ public class PolytomousKeyPage extends PortalPage {
 		String edgeText = null;
 		LinkClass linkClass = null;
 		String linkText = null;
+        String suffix = "";
 
 
 		public String getNodeNumber() {
@@ -97,12 +98,32 @@ public class PolytomousKeyPage extends PortalPage {
 			return linkText;
 		}
 
+		public String getLinkTextWithSuffix() {
+            return linkText + (suffix != null ? suffix : "");
+        }
+
 		public KeyLineData(String nodeNumber, String edgeText, LinkClass linkClass, String linkText) {
 			this.nodeNumber = nodeNumber;
 			this.edgeText = edgeText;
 			this.linkClass = linkClass;
 			this.linkText = linkText;
 		}
+
+		/**
+		 *
+		 * @param nodeNumber
+		 * @param edgeText
+		 * @param linkClass
+		 * @param linkText
+		 * @param suffix In cases where the linkText is a taxonName the link may be suffixed with the nomenclatural reference.
+		 */
+		public KeyLineData(String nodeNumber, String edgeText, LinkClass linkClass, String linkText, String suffix) {
+            this.nodeNumber = nodeNumber;
+            this.edgeText = edgeText;
+            this.linkClass = linkClass;
+            this.linkText = linkText;
+            this.suffix = suffix;
+        }
 	}
 
 	public enum LinkClass {
@@ -115,7 +136,7 @@ public class PolytomousKeyPage extends PortalPage {
 		keyTableRows = keyTable.findElements(By.xpath("tbody/tr"));
 		WebElement keyEntry = keyTableRows.get(lineIndex);
 		Assert.assertEquals("node number", data.nodeNumber, keyEntry.findElement(By.className("nodeNumber")).getText());
-		Assert.assertEquals("edge text", data.edgeText + "\n" + data.linkText, keyEntry.findElement(By.className("edge")).getText());
+		Assert.assertEquals("edge text", composeFullEdgeText(data), keyEntry.findElement(By.className("edge")).getText());
 		WebElement linkContainer = keyEntry.findElement(By.className(data.linkClass.name()));
 		WebElement link = linkContainer.findElement(By.tagName("a"));
 		Assert.assertEquals("link text", data.linkText, link.getText());
@@ -141,6 +162,14 @@ public class PolytomousKeyPage extends PortalPage {
 
 		return nextPage;
 	}
+
+    /**
+     * @param data
+     * @return
+     */
+    private String composeFullEdgeText(KeyLineData data) {
+        return data.edgeText + "\n" + data.getLinkTextWithSuffix();
+    }
 
 
 
