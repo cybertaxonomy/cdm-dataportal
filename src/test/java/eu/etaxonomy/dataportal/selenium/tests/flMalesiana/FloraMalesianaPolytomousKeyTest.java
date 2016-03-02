@@ -30,6 +30,25 @@ import eu.etaxonomy.dataportal.pages.PortalPage;
 @DataPortalContexts({ DataPortalContext.floramalesiana })
 public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 
+    /**
+     * NOTE:
+     *
+     * This test expects 'Show Taxon name display' different from the production site:
+     *
+     * <h6>Name render templates:</h6>
+     *
+     * <pre>
+     "taxon_page_title,polytomousKey": {
+        "nameAuthorPart": {
+            "#uri": true
+        },
+        "referencePart": true
+      },
+    </pre>
+     *
+     *
+     * @throws Exception
+     */
     @Test
     public void key_to_Malaysian_Sapindaceae_Genera() throws Exception {
 
