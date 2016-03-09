@@ -115,7 +115,11 @@ function theme_cdm_reference($variables) {
   }
 
   if (isset($reference->doi) && !empty($reference->doi)) {
-    $doi_resolve_uri = str_replace('doi:', 'http://doi.org/', $reference->doi);
+
+    $doi_resolve_uri = 'http://doi.org/' . $reference->doi->prefix;
+    if(isset($reference->doi->suffix)){
+      $doi_resolve_uri .= '/' . $reference->doi->suffix;
+    }
     $out .= l(font_awesome_icon_markup('fa-external-link-square', array('class' => array('superscript'))), $doi_resolve_uri, array('html' => TRUE));
   }
   if (isset($reference->uri) && !empty($reference->uri)) {
