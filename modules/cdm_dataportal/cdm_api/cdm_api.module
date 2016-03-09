@@ -193,6 +193,7 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $tag = 'span', $glue = ' ',
   return $out;
 }
 
+
 /**
  * Finds the text tagged with $tag_type in an array of taggedText instances.
  *
@@ -201,23 +202,23 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $tag = 'span', $glue = ' ',
  * @param array $taggedtxt
  *   Array with text items.
  * @param string $tag_type
- *   The type of tag for which to find text items in the $taggedtxt array.
+ *   The type of tag for which to find text items in the $taggedtxt array, or NULL
+ *   to return all texts.
  *
  * @return array
  *   An array with the texts mapped by $tag_type.
  */
-function cdm_tagged_text_values(array $taggedtxt, $tag_type) {
+function cdm_tagged_text_values(array $taggedtxt, $tag_type = NULL) {
   $tokens = array();
   if (!empty($taggedtxt)) {
     foreach ($taggedtxt as $tagtxt) {
-      if ($tagtxt->type == $tag_type) {
+      if ($tag_type === NULL || $tagtxt->type == $tag_type) {
         $tokens[] = $tagtxt->text;
       }
     }
   }
   return $tokens;
 }
-
 
 /**
  * Preprocess the taggedTitle arrays.
