@@ -403,9 +403,15 @@ function compose_description_element($element, $feature_block_settings, $element
   // used in source information without any text stored in it.
   $names_used_in_source_markup = '';
   if (!empty($annotations_and_sources['names_used_in_source']) && empty($element_markup)) {
-    // $element_text ==  NULL  usually occurs only in the case of CITATIONS!!!
     $names_used_in_source_markup = join(', ', $annotations_and_sources['names_used_in_source']) . ': ';
+    // remove all <span class="nameUsedInSource">...</span> from all source_references
+    // these are expected to be at the end of the strings
+    $pattern = '/ <span class="nameUsedInSource">.*$/';
+    foreach( $annotations_and_sources['source_references'] as &$source_reference){
+      $source_reference = preg_replace($pattern , '', $source_reference);
+    }
   }
+
 
   $source_references_markup = '';
   if (!empty($annotations_and_sources['source_references'])) {
