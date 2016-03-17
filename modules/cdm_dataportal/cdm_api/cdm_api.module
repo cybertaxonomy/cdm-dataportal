@@ -996,7 +996,7 @@ function setvalue_session() {
   else {
     return;
   }
-  $val = $_REQUEST['val'] ? $_REQUEST['val'] : NULL;
+  $val = isset($_REQUEST['val']) ? $_REQUEST['val'] : NULL;
 
   // Prevent from malicous tags.
   $val = strip_tags($val);

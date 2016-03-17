@@ -216,7 +216,8 @@ function theme_cdm_taxon_page_synonymy($variables) {
  *
  * @ingroup themeable
  */
-function theme_cdm_search_results($variables) {
+function theme_cdm_search_results($variables)
+{
   $pager = $variables['pager'];
   $path = $variables['path'];
 
@@ -240,7 +241,7 @@ function theme_cdm_search_results($variables) {
     $pager->records = $taxa;
   }
 
-  $out = '';
+
   // Add thumbnails checkbox and refine search link.
   $out = '<div class="page_options">';
   if (isset($_REQUEST['ws'])) {
@@ -248,7 +249,9 @@ function theme_cdm_search_results($variables) {
       $out .= '<div id="backButton">' . l(t('Modify search'), cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
     }
   }
-  $out .= '<form name="pageoptions"><div id="showThumbnails"><input type="checkbox" name="showThumbnails" ' . (do_showThumbnails() == 1 ? 'checked="checked"' : '') . '> ' . t('Show Thumbnails') . '</div></form>';
+  if (variable_get(SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX, SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX_DEFAULT)) {
+    $out .= '<form name="pageoptions"><div id="showThumbnails"><input class="showThumbnails" type="checkbox" name="showThumbnails" ' . (do_showThumbnails() == 1 ? 'checked="checked"' : '') . '> ' . t('Display Image Thumbnails') . '</div></form>';
+  }
   $out .= '</div>';
 
   $classification = cdm_dataportal_searched_in_classification();

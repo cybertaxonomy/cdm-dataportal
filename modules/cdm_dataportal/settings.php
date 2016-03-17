@@ -15,6 +15,10 @@
   define('SORT_HIERARCHICAL', 9);
 
   define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
+
+  define('SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX_DEFAULT', 1);
+  define('SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX', 'search_results_show_thumbnail_checkbox');
+
   define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 1);
@@ -2311,6 +2315,13 @@ function cdm_settings_layout_search() {
     '#title' => t('Results per page') . ':',
     '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
     '#description' => t('Number of results to display per page.'),
+  );
+
+  $form['search_settings'][SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show the <i>Show Image Thumbnails</i> button') . ':',
+    '#default_value' => variable_get(SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX, SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX_DEFAULT),
+    '#description' => t('The search results page will offer a button to toggle the display of image thumbnails.'),
   );
 
   $search_mode_default = get_array_variable_merged(CDM_SEARCH_TAXA_MODE, CDM_SEARCH_TAXA_MODE_DEFAULT);

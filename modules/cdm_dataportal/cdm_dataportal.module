@@ -1577,24 +1577,25 @@ function cdm_dataportal_view_search_results_taxon() {
 
       // init
       if(' . $showThumbnails . ' == 1){
-      jQuery(\'.media_gallery\').show(20);
-  } else {
-      jQuery(\'.media_gallery\').hide(20);
-  }
-      // add change hander
-      jQuery(\'#showThumbnails\').change(
+          jQuery(\'.media_gallery\').show(20);
+      } else {
+          jQuery(\'.media_gallery\').hide(20);
+      }
+
+      // add change handler
+      jQuery(\'#showThumbnails input.showThumbnails\').change(
       function(event){
-      var state = 0;
-      if(jQuery(this).is(\':checked\')){
-      jQuery(\'.media_gallery\').show(20);
-      state = 1;
-  } else {
-      jQuery(\'.media_gallery\').hide(20);
-  }
-      // store state in session variable
-      var uri = \'' . $setSessionUri . '\' + state;
-      jQuery.get(uri);
-  });
+        var state = 0;
+        if(jQuery(this).is(\':checked\')){
+          jQuery(\'.media_gallery\').show(20);
+          state = 1;
+        } else {
+          jQuery(\'.media_gallery\').hide(20);
+        }
+        // store state in session variable
+        var uri = \'' . $setSessionUri . '\' + state;
+        jQuery.get(uri);
+      });
   });',
   array('type' => "inline", 'scope' => JS_DEFAULT));
 
