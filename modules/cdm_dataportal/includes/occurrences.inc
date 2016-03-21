@@ -134,7 +134,6 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
         $detail_html .= create_label("Type(s)") . $types . "<br>";
     }
     if ($specimenScans and !$isSpecimenPage) {
-        $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= create_label("Specimen Scans") . $specimenScans . "<br>";
     }
     //specimen scan image gallery
@@ -148,7 +147,6 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     }
 
     if ($detailImages and !$isSpecimenPage) {
-        $detail_html .= $isSpecimenPage?"<br>":"";
         $detail_html .= create_label("Detail Images") . $detailImages . "<br>";
     }
 
