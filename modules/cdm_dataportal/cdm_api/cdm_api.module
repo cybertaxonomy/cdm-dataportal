@@ -1721,11 +1721,11 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
 }
 
 /**
- * Sends a GET or POST request to a CDM RESTService and returns a deserialized object.
+ * Sends a GET or POST request to a CDM RESTService and returns a de-serialized object.
  *
  * The response from the HTTP GET request is returned as object.
  * The response objects coming from the webservice configured in the
- * 'cdm_webservice_url' variable are beeing cached in a level 1 (L1) and / or
+ * 'cdm_webservice_url' variable are being cached in a level 1 (L1) and / or
  *  in a level 2 (L2) cache.
  *
  * Since the L1 cache is implemented as static variable of the cdm_ws_get()
@@ -1737,7 +1737,7 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
  * Objects stored in this L2 cache are serialized and stored
  * using the drupal cache in the '{prefix}cache_cdm_ws' cache table. So the
  * objects that are stored in the database will persist as
- * long as the drupal cache is not beeing cleared and are available across
+ * long as the drupal cache is not being cleared and are available across
  * multiple script executions.
  *
  * @param string $uri
@@ -1752,7 +1752,7 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
  *   TRUE when the URL should be treated as absolute URL.
  *
  * @return object
- *   The deserialized webservice response object.
+ *   The de-serialized webservice response object.
  */
 function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "GET", $absoluteURI = FALSE) {
 
@@ -1771,7 +1771,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
   }
 
   // read request parameter 'cacheL2_refresh'
-  // which allows refreshig the level 2 cache
+  // which allows refreshing the level 2 cache
   $do_cacheL2_refresh = isset($_REQUEST['cacheL2_refresh']) && $_REQUEST['cacheL2_refresh'] == 1;
 
   $is_cdm_ws_uri = _is_cdm_ws_uri($uri);
