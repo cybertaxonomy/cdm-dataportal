@@ -399,6 +399,22 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $invers
  * Renders a representation of the given taxon relationship.
  *
  * According name relationships are also being rendered.
+ *
+ * @param $taxon
+ *  The CDM TaxonBase entity
+ * @param $reltype_uuid
+ *  The UUID of the TaxonRelationshipType
+ * @param $relsign
+ *  Optional. Can be  used to override the internal decision strategy on finding a suitable icon for the relationship
+ * @param $reltype_representation
+ *   Optional: Defines the value for the title attribute of the html element enclosing the relsign
+ * @param $doubtful
+ *   TODO
+ * @param $doLinkTaxon
+ *   The taxon will be rendered as clickable link when true.
+ *
+ * @return string
+ *   Markup for the taxon relationship.
  */
 function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $reltype_representation = NULL, $doubtful=false, $doLinkTaxon = FALSE) {
   static $relsign_homo = '≡';
@@ -414,10 +430,9 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   // 'taxonRelationships';
   $footnoteListKey = NULL;
 
-  $name_prefix = '';
-  $name_postfix = '';
+  $skip_tags = array();
 
-  $skiptags = array();
+  $is_invalid = false;
 
   if (!$relsign) {
 
@@ -433,11 +448,10 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
 
       case UUID_MISAPPLIED_NAME_FOR:
       case UUID_INVALID_DESIGNATION_FOR:
-//      case UUID_COMB
-        $skiptags[] = 'authors';
+        $skip_tags[] = 'authors';
+        $is_invalid = true;
         $relsign = $relsign_invalid;
-        $name_prefix = '"';
-        $name_postfix = '"';
+
         break;
 
       default:
@@ -478,7 +492,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   if (!isset($referenceUri)) {
     $referenceUri = FALSE;
   }
-  $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skiptags);
+  $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_tags, $is_invalid);
   $taxon_footnotes = theme('cdm_annotations_as_footnotekeys',
        array('cdmBase_list' => array(
          $taxon->name,
@@ -490,8 +504,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   $homonyms = cdm_name_relationships_of($taxon);
 
   $out = '<span class="relation_sign" title="' . $reltype_representation . '">' . $relsign . '</span>'
-      . $name_prefix . $out_taxon_part . $name_postfix . $taxon_footnotes . ' '
-      . $homonyms;
+      . $out_taxon_part . $taxon_footnotes . ' '  . $homonyms;
 
   $out = uuid_anchor($taxon->uuid, $out);
 

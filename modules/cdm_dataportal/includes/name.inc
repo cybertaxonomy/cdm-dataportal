@@ -263,13 +263,16 @@ function get_partDefinition($taxonNameType) {
  *    an array of name elements tags like 'name', 'rank' to skip. The name part
  *          'authors' will not ber affected by this filter. This part is managed though the render template
  *          mechanism.
+ * @param $is_invalid
+ *   Indicates that this taxon is invalid. In this case the name part will be shown in double quotes.
+ *   This is useful when rendering taxon relation ships.
  *
  * @return string
  *  The markup for a taxon name.
  *
  */
 function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refenceLink = NULL,
-  $show_annotations = true, $is_type_designation = false, $skiptags = array()) {
+  $show_annotations = true, $is_type_designation = false, $skiptags = array(), $is_invalid = false) {
 
   if($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym'){
     $taxonName = $taxon_name_or_taxon_base->name;
@@ -298,6 +301,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
 
   $secref_tagged_text = split_secref_from_tagged_text($taggedTitle);
   $nom_status_tagged_text = split_nomstatus_from_tagged_text($taggedTitle);
+  $appended_phrase_tagged_text = array(); // this is filled later
+
   normalize_tagged_text($taggedTitle);
 
   $firstEntryIsValidNamePart =
@@ -310,12 +315,20 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     && $taggedTitle[0]->type == 'name';
   $lastAuthorElementString = FALSE;
 
+  $name_encasement = $is_invalid ? '"' : '';
+
+  // split off all appendedPhrase item  from the end of the array (usually there only should  be one)
+  while($taggedTitle[count($taggedTitle)-1]->type == "appendedPhrase"){
+    $appended_phrase_tagged_text[] = array_pop($taggedTitle);
+  }
+
   // Got to use second entry as first one, see ToDo comment below ...
   if ($firstEntryIsValidNamePart) {
 
     $taggedName = $taggedTitle;
     $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
     $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
+
 
     if (!(($hasNamePart_with_Authors) || ($hasNameAuthorPart_with_Authors))) {
       // Find author and split off from name.
@@ -340,14 +353,19 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
       $taggedName = $taggedNameNew;
       unset($taggedNameNew);
     }
-    $name = '<span class="' . $taxonName->class . '">' . cdm_tagged_text_to_markup($taggedName, 'span', ' ', $skiptags) . '</span>';
+    $name = '<span class="' . $taxonName->class . '">' . $name_encasement . cdm_tagged_text_to_markup($taggedName, 'span', ' ', $skiptags) . $name_encasement . '</span>';
   }
   else {
-    $name = '<span class="' . $taxonName->class . '_titleCache">' . $taxonName->titleCache . '</span>';
+    $name = '<span class="' . $taxonName->class . '_titleCache">' . $name_encasement . $taxonName->titleCache . $name_encasement . '</span>';
+  }
+
+
+  if(isset($appended_phrase_tagged_text[0])){
+    $name .= ' '. cdm_tagged_text_to_markup($appended_phrase_tagged_text);
   }
 
   // Fill name into $renderTemplate.
-  array_setr('name', $name, $renderTemplate);
+  array_setr('name', $name , $renderTemplate);
 
   // Fill with authorTeam.
   /*
