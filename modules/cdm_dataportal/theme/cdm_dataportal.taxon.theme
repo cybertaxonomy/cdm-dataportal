@@ -404,6 +404,12 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   static $relsign_homo = '≡';
   static $relsign_hetero = '=';
   static $relsign_invalid = '&ndash;';
+  static $nom_status_invalid_type_uuids =  array(
+      UUID_NOMENCLATURALSTATUS_TYPE_INVALID,
+      UUID_NOMENCLATURALSTATUS_TYPE_NUDUM,
+      UUID_NOMENCLATURALSTATUS_TYPE_COMBINATIONINVALID,
+      UUID_NOMENCLATURALSTATUS_TYPE_PROVISIONAL
+  );
 
   // 'taxonRelationships';
   $footnoteListKey = NULL;
@@ -414,8 +420,6 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   $skiptags = array();
 
   if (!$relsign) {
-
-    $relsign = '';
 
     switch ($reltype_uuid) {
       case UUID_HETEROTYPIC_SYNONYM_OF:
@@ -429,6 +433,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
 
       case UUID_MISAPPLIED_NAME_FOR:
       case UUID_INVALID_DESIGNATION_FOR:
+//      case UUID_COMB
         $skiptags[] = 'authors';
         $relsign = $relsign_invalid;
         $name_prefix = '"';
@@ -452,8 +457,9 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   */
   if (isset($taxon->name->status) && is_array($taxon->name->status)) {
     foreach ($taxon->name->status as $status) {
-      if ($status->type->uuid == UUID_NOMENCLATURALSTATUS_TYPE_INVALID || $status->type->uuid == UUID_NOMENCLATURALSTATUS_TYPE_NUDUM) {
+      if (in_array($status->type->uuid , $nom_status_invalid_type_uuids)) {
         $relsign = $relsign_invalid;
+        break;
       }
     }
   }
