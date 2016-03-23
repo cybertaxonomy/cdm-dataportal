@@ -9,9 +9,9 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.net.MalformedURLException;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -60,8 +60,15 @@ public class Cichorieae_NamePageTest extends CdmDataPortalTestBase{
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + lapsana_zacintha_Uuid);
         assertEquals(getContext().prepareTitle("Crepis zacintha"), p.getTitle());
         TaxonSynonymyPage synonymyPage = new TaxonSynonymyPage(driver, getContext());
+
+        assertEquals("≡ Lapsana zacintha L., Sp. Pl.: 811. 1753", synonymyPage.getHomotypicalGroupSynonymName(1));
         WebElement lapsana_zacintha_synonym = synonymyPage.getHomotypicalGroupSynonym(1);
         assertNotNull("Synonym 'Lapsana zacintha L.' should be highlighted", lapsana_zacintha_synonym.findElement(By.className("highlite")));
+
+        assertEquals("≡ Rhagadiolus zacintha (L.) All., Fl. Pedem. 1: 227. 1785", synonymyPage.getHomotypicalGroupSynonymName(2));
+        assertEquals("≡ Zacintha verrucosa Gaertn., Fruct. Sem. Pl. 2: 358. 1791, nom. nov.", synonymyPage.getHomotypicalGroupSynonymName(3));
+
+
     }
 
 
