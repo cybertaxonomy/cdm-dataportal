@@ -177,6 +177,10 @@ li .taxon {
   clear: both;
 }
 
+.language-label {
+    font-weight: bold;
+}
+
 /* Distribution */
 .condensed_distribution .status_n, /* native */
 .condensed_distribution .status_ne /* native: formerly native */

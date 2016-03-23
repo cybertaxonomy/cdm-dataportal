@@ -989,7 +989,7 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
 function compose_description_element_taxon_interaction($element, $feature_block_settings) {
 
   $out = '';
-  $enclosing_tag = cdm_feature_block_element_tag_name($feature_block_settings);
+
 
   if (isset($element->description_L10n)) {
     $out .=  ' ' . $element->description_L10n;
@@ -1020,7 +1020,6 @@ function compose_description_element_taxon_interaction($element, $feature_block_
 function compose_description_element_individuals_association($element, $feature_block_settings) {
 
   $out = '';
-  $enclosing_tag = cdm_feature_block_element_tag_name($feature_block_settings);
 
   $render_array = compose_cdm_specimenOrObservation($element->associatedSpecimenOrObservation);
 
@@ -1383,6 +1382,9 @@ function compose_description_element_quantitative_data($element, $feature_block_
           case 'TaxonInteraction':
             $elements_out_array[] = compose_description_element_taxon_interaction($description_element, $feature_block_settings);
             break;
+          case 'CommonTaxonName':
+            $elements_out_array[] = compose_description_element_common_taxon_name($description_element, $feature_block_settings);
+            break;
           case 'Uses':
             /* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
             break;
@@ -1428,8 +1430,6 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
 
   $feature_block_settings = get_feature_block_settings(UUID_COMMON_NAME);
 
-  $element_tag_name = cdm_feature_block_element_tag_name($feature_block_settings);
-
   if (is_array($elements)) {
     foreach ($elements as $element) {
 
@@ -1438,7 +1438,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
         // common name without a language or area, should not happen but is possible
         $language_area_key = '';
         if (isset($element->language->representation_L10n)) {
-          $language_area_key .= '<b>' . $element->language->representation_L10n . '</b>';
+          $language_area_key .= '<span class="language-label">' . $element->language->representation_L10n . '</span>';
         }
         if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
           $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->titleCache . ')';
@@ -1469,18 +1469,19 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
     foreach ($common_names as $language_area_key => $elements) {
       ksort($elements); // sort names alphabetically
       $per_language_area_out = array();
-      // loop over set of individual elements
+
       foreach ($elements as $element) {
-        if ($element->name) {
-          $annotations_and_sources = handle_annotations_and_sources($element, $feature_block_settings, $element->name, $footnote_key_suggestion);
-          $source_references_markup = '';
-          if(!empty($annotations_and_sources['source_references'])){
-            $source_references_markup = ' ' . join(', ', $annotations_and_sources['source_references']);
-          }
-          $per_language_area_out[] = '<' . $element_tag_name. ' class="' . html_class_attribute_ref($element) . '">'
-            . $element->name . $source_references_markup . $annotations_and_sources['foot_note_keys'] . '</' . $element_tag_name. '>';
+        $common_name_render_array = compose_description_element_common_taxon_name($element, $feature_block_settings, $footnote_key_suggestion);
+        $common_name_markup = drupal_render($common_name_render_array);
+        // IMPORTANT!
+        // during the above drupal_render the theme_html_tag function is executed, which adds a "\n" character to the end of the markup
+        // this is an error and the trailing whitespace needs to be removed
+        if(str_endsWith($common_name_markup, "\n")){
+          $common_name_markup = substr($common_name_markup, 0, strlen($common_name_markup) - 1);
         }
-      } // End of loop over set of individual elements
+        $per_language_area_out[] = $common_name_markup;
+      }
+
       $common_name_feature_elements[] = ($language_area_key ? $language_area_key . ': ' : '' ) . join(', ', $per_language_area_out);
     } // End of loop over set of elements per language area
 
@@ -1512,59 +1513,91 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
   $footnotes .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnote_key_suggestion));
 
   return  markup_to_render_array(  // FIXME markup_to_render_array should no longer be needed
-    '<div class="common_names_as_common_names">' . $common_name_out . '</div>'
-    .'<div class="common_names_as_text_data">' . drupal_render($common_name_out_text_data) . '</div>'
+    '<div class="common-taxon-name">' . $common_name_out . '</div>'
+    .'<div class="text-data">' . drupal_render($common_name_out_text_data) . '</div>'
     .$footnotes,
     $weight
   );
 }
 
-  /**
-   * Composes the render array for a CDM Distribution description element
-   *
-   * @param array $description_elements
-   *   Array of CDM Distribution instances
-   * @param $enclosingTag
-   *   The html tag to be use for the enclosing element
-   *
-   * @return array
-   *   A Drupal render array
-   *
-   * @ingroup compose
-   */
-  function compose_description_elements_distribution($description_elements){
+/**
+ * Renders a single instance of the type CommonTaxonName.
+ *
+ * @param $element
+ *   The CDM CommonTaxonName entity.
+ * @param $feature_block_settings
+ *
+ * @param $footnote_key_suggestion
+ *
+ * @param $element_tag_name
+ *
+ * @return array
+ *   Drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_description_element_common_taxon_name($element, $feature_block_settings, $footnote_key_suggestion = NULL)
+{
 
-    $out = '';
-    RenderHints::pushToRenderStack('descriptionElementDistribution');
-    RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
-
-    $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
-    $enclosingTag = cdm_feature_block_element_tag_name($feature_block_settings);
-
-    foreach ($description_elements as $description_element) {
-      $annotations_and_sources = handle_annotations_and_sources(
-        $description_element,
-        $feature_block_settings,
-        $description_element->area->representation_L10n,
-        UUID_DISTRIBUTION
-      );
-
-
-      list($status_label, $status_markup) = distribution_status_label_and_markup($description_element);
-
-      $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
-        . ' " title="' . $status_label. '">'
-        . $description_element->area->representation_L10n
-        . $status_markup;
-      if(!empty($annotations_and_sources['source_references'])){
-        $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
-      }
-      $out .= $annotations_and_sources['foot_note_keys']   . ' </' . $enclosingTag . '>';
-    }
-
-    RenderHints::popFromRenderStack();
-    return markup_to_render_array($out);
+  if(!$footnote_key_suggestion) {
+    $footnote_key_suggestion = $element->feature->uuid;
   }
+
+  $name = '';
+  if(isset($element->name)){
+    $name = $element->name;
+  }
+
+
+  return compose_description_element($element, $feature_block_settings, $name, $footnote_key_suggestion);
+}
+
+/**
+ * Composes the render array for a CDM Distribution description element
+ *
+ * @param array $description_elements
+ *   Array of CDM Distribution instances
+ * @param $enclosingTag
+ *   The html tag to be use for the enclosing element
+ *
+ * @return array
+ *   A Drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_description_elements_distribution($description_elements){
+
+  $out = '';
+  RenderHints::pushToRenderStack('descriptionElementDistribution');
+  RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
+
+  $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
+  $enclosingTag = cdm_feature_block_element_tag_name($feature_block_settings);
+
+  foreach ($description_elements as $description_element) {
+    $annotations_and_sources = handle_annotations_and_sources(
+      $description_element,
+      $feature_block_settings,
+      $description_element->area->representation_L10n,
+      UUID_DISTRIBUTION
+    );
+
+
+    list($status_label, $status_markup) = distribution_status_label_and_markup($description_element);
+
+    $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
+      . ' " title="' . $status_label. '">'
+      . $description_element->area->representation_L10n
+      . $status_markup;
+    if(!empty($annotations_and_sources['source_references'])){
+      $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+    }
+    $out .= $annotations_and_sources['foot_note_keys']   . ' </' . $enclosingTag . '>';
+  }
+
+  RenderHints::popFromRenderStack();
+  return markup_to_render_array($out);
+}
 
   /**
    * @param $descriptionElement
