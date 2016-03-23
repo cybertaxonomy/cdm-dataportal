@@ -13,7 +13,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- for the latest version see http://docs.seleniumhq.org/download/#client-drivers -->
-        <selenium-version>2.53.0</selenium-version>
+        <selenium.version>2.53.0</selenium.version>
+        <!-- 
+            from WebDriver 2.53.0 HTMLUnit is no longer distributed with Selenium WebDriver
+            https://github.com/SeleniumHQ/htmlunit-driver
+            need to bring in the htmlunit driver on its own
+            https://github.com/SeleniumHQ/selenium/blob/master/java/CHANGELOG 
+        -->
+        <selenium.htmlunit.version>2.52.0</selenium.htmlunit.version>
     </properties>
 
     <mailingLists>
@@ -192,39 +199,38 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
-            <version>${selenium-version}</version>
+            <version>${selenium.version}</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
-            <version>${selenium-version}</version>
+            <version>${selenium.version}</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
-            <version>${selenium-version}</version>
+            <version>${selenium.version}</version>
         </dependency>
         <dependency>
             <!-- Selenese emulation -->
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>${selenium-version}</version>
+            <version>${selenium.version}</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>${selenium-version}</version>
+            <version>${selenium.version}</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-ie-driver</artifactId>
-            <version>${selenium-version}</version>
+            <version>${selenium.version}</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-htmlunit-driver</artifactId>
-            <version>${selenium-version}</version>
+            <version>${selenium.htmlunit.version}</version>
         </dependency>
     </dependencies>
-
 </project>
