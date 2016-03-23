@@ -274,8 +274,11 @@ function get_partDefinition($taxonNameType) {
 function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refenceLink = NULL,
   $show_annotations = true, $is_type_designation = false, $skiptags = array(), $is_invalid = false) {
 
+  $is_doubtful = false;
+
   if($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym'){
     $taxonName = $taxon_name_or_taxon_base->name;
+    $is_doubtful = $taxon_name_or_taxon_base->doubtful;
     // use the TaxonBase.taggedTitle so we have the secRef
     $taggedTitle = $taxon_name_or_taxon_base->taggedTitle;
   } else {
@@ -316,6 +319,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   $lastAuthorElementString = FALSE;
 
   $name_encasement = $is_invalid ? '"' : '';
+  $doubtful_marker = $is_doubtful ? '? ' : '';
 
   // split off all appendedPhrase item  from the end of the array (usually there only should  be one)
   while($taggedTitle[count($taggedTitle)-1]->type == "appendedPhrase"){
@@ -353,10 +357,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
       $taggedName = $taggedNameNew;
       unset($taggedNameNew);
     }
-    $name = '<span class="' . $taxonName->class . '">' . $name_encasement . cdm_tagged_text_to_markup($taggedName, 'span', ' ', $skiptags) . $name_encasement . '</span>';
+    $name = '<span class="' . $taxonName->class . '">' . $doubtful_marker . $name_encasement . cdm_tagged_text_to_markup($taggedName, 'span', ' ', $skiptags) . $name_encasement . '</span>';
   }
   else {
-    $name = '<span class="' . $taxonName->class . '_titleCache">' . $name_encasement . $taxonName->titleCache . $name_encasement . '</span>';
+    $name = '<span class="' . $taxonName->class . '_titleCache">' . $doubtful_marker . $name_encasement . $taxonName->titleCache . $name_encasement . '</span>';
   }
 
 
