@@ -112,3 +112,124 @@ function cdm_rights_as_dl_groups($rights_list) {
 function media_feature_icon($feature, $media_url = NULL) {
   return font_awesome_icon_markup('fa-book', array('alt' => $feature->representation_L10n));
 }
+
+/**
+ * Gets the metadata info such as title or artist of a media file.
+ *
+ * The function tries at first to get all the info from the file metadata
+ * and if it is not available look at the media file info stored at the database.
+ *
+ * @param mixed $media
+ *   The media file object for which to get the metadata.
+ *
+ * @return array
+ *   The array with the available specified metadata info.
+ */
+function read_media_metadata($media) {
+
+  $metadata_caption = array(
+    'title' => '',// Media_metadata and media.
+    'artist' => '',// Media_metadata and media.
+    'rights',// Media_metadata and media.
+    'location',// Media_metadata.
+    'filename' => '',// Media.
+    'mediacreated' => '',// Media.
+    'description' => '',
+  );// Media.
+
+  // Getting the media metadata.
+  $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
+  $media_metadata_aux = (array) $media_metadata;
+
+  // Filename.
+  if (!empty($media->representations[0]->parts[0]->uri)) {
+    $fileUri = $media->representations[0]->parts[0]->uri;
+    $filename = substr($fileUri, strrpos($fileUri, "/") + 1);
+    $metadata_caption['filename'] = $filename;
+  }
+  else {
+    $metadata_caption['filename'] = '';
+  }
+
+  // Title.
+  if (!empty($media_metadata->ObjectName)) {
+    $metadata_caption['title'] = $media_metadata->ObjectName;
+  }
+  elseif (!empty($media_metadata_aux['Object Name'])) {
+    $metadata_caption['title'] = $media_metadata_aux['Object Name'];
+  }
+  elseif (!empty($media->title_L10n)) {
+    $metadata_caption['title'] = $media->title_L10n;
+  }
+  elseif (!empty($media->titleCache)) {
+    $metadata_caption['title'] = $media->titleCache;
+  }
+
+  // Append description to title.
+  if (!empty($media->description_L10n)) {
+    $metadata_caption['title'] .= '<span class="media-description">' . $media->description_L10n . '<span>';
+  }
+
+  // Artist.
+  if (!empty($media_metadata->Artist)) {
+    $metadata_caption['artist'] = '' . $media_metadata->Artist;
+  }
+  elseif (!empty($media->artist->titleCache)) {
+    $metadata_caption['artist'] = $media->artist->titleCache;
+  }
+
+  // Copyright.
+  $metadata_caption['rights'] = array(
+    'copyright' => array('agentNames' => array()),
+    'license' => array(
+      'agentNames' => array(),
+      'types' => array(),
+      'abbreviatedTexts' => array(),
+      'uris' => array(),
+    ),
+  );
+  if (!empty($media_metadata->Copyright)) {
+    $metadata_caption['rights']['copyright']['agentNames'][] = $media_metadata->Copyright;
+  }
+  elseif (isset($media->rights) && is_array($media->rights)) {
+    foreach ($media->rights as $right) {
+      if(isset($right->term)){
+        switch ($right->type->uuid) {
+          case UUID_RIGHTS_LICENCE:
+            $metadata_caption['rights']['license']['agentNames'][] = ($right->agent ? '' . $right->agent->firstname . ' ' . $right->agent->lastname : '');
+            $metadata_caption['rights']['license']['types'][] = ($right->representation_L10n ? '' . $right->representation_L10n : '');
+            $metadata_caption['rights']['license']['abbreviatedTexts'][] = ($right->abbreviatedText ? '' . $right->abbreviatedText : '');
+            $metadata_caption['rights']['license']['uris'][] = ($right->uri ? '' . $right->uri : '');
+            break;
+          case UUID_RIGHTS_COPYRIGHT:
+            $metadata_caption['rights']['copyright']['agentNames'][] = $right->agent->firstname . ' ' . $right->agent->lastname;
+            break;
+        }
+      }
+    }
+  }
+  else {
+    $metadata_caption['rights']['agentNames'][] = '';
+  }
+
+  // Filling the description (though there is no description in the db???).
+  // $metadata_caption['description'] = $media->description_L10n;
+
+  // Location.
+  $metadata_caption['location'] = array();
+  $metadata_caption['location']['sublocation'] = !empty($media_metadata->Sublocation) ? $media_metadata->Sublocation : FALSE;
+  $metadata_caption['location']['city'] = !empty($media_metadata->City) ? $media_metadata->City : FALSE;
+  $metadata_caption['location']['province'] = !empty($media_metadata->Province) ? $media_metadata->Province : FALSE;
+  $metadata_caption['location']['country'] = !empty($media_metadata->Country)? $media_metadata->Country : FALSE;
+
+  /*
+   // Creation date.
+   if($media_metadata["Modify Date"])
+   $metadata_caption['mediacreated'] = $media_metadata["Modify Date"];
+   else
+   $metadata_caption['mediacreated'] = $media->created;
+   */
+
+  // Returned value.
+  return $metadata_caption;
+}

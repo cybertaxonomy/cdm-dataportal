@@ -144,7 +144,7 @@ function palmweb_2_cdm_media_caption($variables){
   $media = $variables['media'];
   $elements = $variables['elements'];
 
-  $media_metadata = cdm_read_media_metadata($media);
+  $media_metadata = read_media_metadata($media);
 
   $doTitle = !$elements || array_search('title', $elements) !== FALSE;
   $doDescription = !$elements || array_search('description', $elements) !== FALSE;

@@ -577,7 +577,7 @@ function theme_cdm_media_page($variables) {
     $partIdx = $partId;
   }
 
-  $media_metadata = cdm_read_media_metadata($media);
+  $media_metadata = read_media_metadata($media);
   // $title = $media->titleCache;
   $title = $media_metadata['title'];
 

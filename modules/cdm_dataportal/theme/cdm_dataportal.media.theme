@@ -188,7 +188,7 @@ function theme_cdm_media_mime_text($variables) {
 function theme_cdm_media_caption($variables) {
   $media = $variables['media'];
   $elements = $variables['elements'];
-  $media_metadata = cdm_read_media_metadata($media);
+  $media_metadata = read_media_metadata($media);
 
   $doTitle = !$elements || array_search('title', $elements) !== FALSE;
   $doDescription = !$elements || array_search('description', $elements) !== FALSE;
@@ -206,7 +206,7 @@ function theme_cdm_media_caption($variables) {
       $descriptionPrefix = "- ";
     }
     elseif (!($doDescription && $media_metadata['description'])) {
-      // Use filename as fallbackoption if no description will be shown.
+      // Use filename as fallback option if no description will be shown.
       $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['filename'] . '</dd>';
       $descriptionPrefix = "- ";
     }
@@ -274,7 +274,7 @@ function theme_cdm_media_caption($variables) {
       $out .= $rights . '</dt>';
     }
   }
-  // TODO add all other metadata elemenst generically.
+  // TODO add all other metadata elements generically.
   $out .= '</dl>';
   // Return value,
   return $out;
@@ -642,7 +642,7 @@ function theme_cdm_media_gallerie_text($variables) {
       // Do not add margins if no pass partout is shown.
       $margins = '';
     }
-    $out .= '<div class="appication">Web Application</div>';
+    $out .= '<div class="application">Web Application</div>';
 
     if ($addPassePartout) {
       $out .= '</div>';
