@@ -440,9 +440,11 @@
 
                 } else {
                     // it is a response from for a distribution map
+                    console.log("start with adding distribution layers :");
                     for ( var i in mapResponseObj.layers) {
                         var layerData = mapResponseObj.layers[i];
 
+                        console.log(" " + i +" -> " + layerData.tdwg);
                         layer = new OpenLayers.Layer.WMS(
                                 layerData.tdwg,
                                 mapResponseObj.geoserver + "/wms",
@@ -456,6 +458,16 @@
                         layer.params.SLD = layerData.sld;
                         layer.setOpacity(opts.distributionOpacity);
                         map.addLayers([layer]);
+                        // hack for cuba
+                        if(layerData.tdwg == "flora_cuba_2016_regions"){
+                          map.setLayerZIndex(layer, 5);
+                        }
+                        if(layerData.tdwg == "flora_cuba_2016_provinces"){
+                          map.setLayerZIndex(layer, 6);
+                        }
+                        if(layerData.tdwg == "flora_cuba_2016_world"){
+                          map.setLayerZIndex(layer, 4);
+                        }
 
                     }
 
