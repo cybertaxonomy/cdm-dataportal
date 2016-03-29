@@ -785,9 +785,6 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
     $pathParameters = array();
   }
 
-  $request_params = '';
-  $path_params = '';
-
   // (1)
   // Substitute all place holders ($0, $1, ..) in the $uri_pattern by the
   // according element of the $pathParameters array.
@@ -800,9 +797,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
   $i = 0;
   while (strpos($uri_pattern, "$" . $i) !== FALSE) {
     if (count($pathParameters) <= $i) {
-      if (module_exists("user") && user_access('administer')) {
-        drupal_set_message(t('cdm_compose_url(): missing pathParameters'), 'debug');
-      }
+        drupal_set_message(t('cdm_compose_url(): missing pathParameter ' . $i .  ' for ' . $uri_pattern), 'error');
       break;
     }
     $uri_pattern = str_replace("$" . $i, rawurlencode($pathParameters[$i]), $uri_pattern);
