@@ -717,6 +717,10 @@ function cdm_dataportal_block_info() {
     $block["4"]["info"] = t("CDM Dataportal Print");
     $block["keys"]["info"] = t("CDM identification keys");
     $block["fundedByEDIT"]["info"] = t('Funded by EDIT');
+    $block["classification_breadcrumbs"] =  array(
+        'info' => t('Classification breadcrumbs'),
+        'cache' => DRUPAL_CACHE_PER_PAGE
+      );
 
     return $block;
 }
@@ -759,6 +763,13 @@ function cdm_dataportal_block_view($delta) {
         'html' => TRUE,
       ));
       return $block;
+    case 'classification_breadcrumbs':
+      if (arg(1) == 'taxon' && is_uuid(arg(2))) {
+        $block['subject'] = '<none>';
+        $block['content'] = compose_classification_breadcrumbs(arg(2));
+        return $block;
+      }
+      break;
   }
 }
 

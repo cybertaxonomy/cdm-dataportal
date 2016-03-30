@@ -767,6 +767,16 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
   return $render_array;
 }
 
+/**
+ * composes and returns an render array for the experts associated with the given taxon
+ *
+ * @param taxon
+ *
+ * @return array
+ *   A Drupal render array for a table with the experts
+ *
+ * @ingroup compose
+ */
 function compose_cdm_taxon_page_experts($taxon){
 
   $render_array = array();
@@ -930,4 +940,46 @@ function cdm_dataportal_preprocess_menu_local_task(&$variables) {
 
     $variables['element']['#link'] = $link;
   }
+}
+
+/* =================== block composition ===================== */
+
+/**
+ * composes and returns an render array for the classification breadcrumbs of the given taxon
+ *
+ * @param taxon
+ *
+ * @return array
+ *   A Drupal render array for a table with the experts
+ *
+ * @ingroup compose
+ */
+function compose_classification_breadcrumbs($taxon_uuid) {
+
+  $render_array = array();
+  if(!is_uuid($taxon_uuid)){
+    return $render_array;
+  }
+
+  $render_array['#theme'] = 'item_list';
+  $render_array['#type'] = 'ul';
+  $render_array['#attributes'] = array(
+    'id' => 'classification-breadcrumbs',
+    'class' => 'breadcrumbs inline',
+  );
+
+  $items = array();
+  $parent_taxon_nodes = cdm_ws_taxonomy_pathFromRoot($taxon_uuid);
+  foreach ($parent_taxon_nodes as $node){
+
+    $is_first_item = count($items) == 0;
+    $node_name = cdm_dataportal_shortname_of($node);
+    $path = path_to_taxon($node->taxonUuid);
+
+    $items[] = ($is_first_item ? '': ' > ') . l($node_name, $path);
+  }
+  $render_array['#items'] = $items;
+
+  return $render_array;
+
 }
