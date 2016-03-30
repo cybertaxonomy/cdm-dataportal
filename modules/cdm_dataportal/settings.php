@@ -97,6 +97,8 @@
     )
   );
   define('DISTRIBUTION_CONDENSED', 'distribution_condensed');
+  define('DISTRIBUTION_CONDENSED_INFO_PATH', 'distribution_condensed_info_path');
+  define('DISTRIBUTION_CONDENSED_INFO_PATH_DEFAULT', 'cdm_dataportal/help/condensed_distribution');
   define('FEATURE_BLOCK_SETTINGS', 'feature_block_settings');
 
   define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
@@ -2061,6 +2063,14 @@ function cdm_settings_layout_taxon() {
     '#default_value' => variable_get(DISTRIBUTION_CONDENSED, 0),
     '#description' => 'This option enables the display of a very compact representation
     of the distribution which includes also information on the status.',
+  );
+
+  $form['taxon_profile']['distribution_layout'][DISTRIBUTION_CONDENSED_INFO_PATH] = array(
+    '#type' => 'textfield',
+    '#title' => t('Condensed distribution info path'),
+    '#default_value' => variable_get(DISTRIBUTION_CONDENSED_INFO_PATH, DISTRIBUTION_CONDENSED_INFO_PATH_DEFAULT),
+    '#description' => 'By default the help page ' .l(DISTRIBUTION_CONDENSED_INFO_PATH_DEFAULT, DISTRIBUTION_CONDENSED_INFO_PATH_DEFAULT)
+      . ' is used as target for the info link which is shown at the end of the condensed distribution string.',
   );
 
 

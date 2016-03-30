@@ -890,7 +890,7 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
               'class' => array('superscript')
             )
           ),
-          'cdm_dataportal/help/condensed_distribution',
+          variable_get(DISTRIBUTION_CONDENSED_INFO_PATH, DISTRIBUTION_CONDENSED_INFO_PATH_DEFAULT) ,
           array('html' => TRUE));
       $condensed_distribution_markup .= '</p>';
       $dto_out_array[] = $condensed_distribution_markup;
