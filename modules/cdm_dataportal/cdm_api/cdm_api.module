@@ -2031,6 +2031,10 @@ function cdm_load_obj($response_body) {
 function cdm_http_request($uri, $method = "GET", $data = NULL) {
   static $acceptLanguage = NULL;
   $header = array();
+  
+  if(!$acceptLanguage && module_exists('i18n')){
+    $acceptLanguage = i18n_language_content()->language;
+  }
 
   if (!$acceptLanguage) {
     if (function_exists('apache_request_headers')) {
@@ -2038,10 +2042,6 @@ function cdm_http_request($uri, $method = "GET", $data = NULL) {
       if (isset($headers['Accept-Language'])) {
         $acceptLanguage = $headers['Accept-Language'];
       }
-    }
-    if (!$acceptLanguage) {
-      // DEFAULT TODO make configurable.
-      $acceptLanguage = "en";
     }
   }
 
