@@ -73,6 +73,9 @@ function cdm_distribution_filter_query() {
   $cdm_distribution_filter = get_array_variable_merged(CDM_DISTRIBUTION_FILTER, CDM_DISTRIBUTION_FILTER_DEFAULT);
   $query = array();
 
+  // new default, TODO put into settings #5677
+  $query['distributionOrder'] = 'AREA_ORDER';
+
   if ($cdm_distribution_filter['filter_rules']['statusOrderPreference']) {
     $query['statusOrderPreference'] = 1;
   }
