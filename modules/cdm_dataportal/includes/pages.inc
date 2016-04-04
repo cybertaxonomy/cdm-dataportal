@@ -945,7 +945,7 @@ function cdm_dataportal_preprocess_menu_local_task(&$variables) {
 /* =================== block composition ===================== */
 
 /**
- * composes and returns an render array for the classification breadcrumbs of the given taxon
+ * Composes and returns an render array for the classification breadcrumbs of the given taxon.
  *
  * @param taxon
  *
@@ -970,6 +970,10 @@ function compose_classification_breadcrumbs($taxon_uuid) {
 
   $items = array();
   $parent_taxon_nodes = cdm_ws_taxonomy_pathFromRoot($taxon_uuid);
+
+  // remove the current taxon from the list
+  array_pop($parent_taxon_nodes);
+
   foreach ($parent_taxon_nodes as $node){
 
     $is_first_item = count($items) == 0;
