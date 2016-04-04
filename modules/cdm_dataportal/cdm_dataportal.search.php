@@ -410,14 +410,14 @@ function cdm_dataportal_search_taxon_by_description_form() {
     '#value' => 1,
   );
 
-  // Only avaiable to admins:
+  // Only available to admins:
   if (!isset($_SESSION['cdm']['search']['clazz'])) {
     $_SESSION['cdm']['search']['clazz'] = '';
   }
   if (module_exists("user") && user_access('administer')) {
     $form['search']['clazz'] = array(
       '#type' => 'select',
-      '#title' => t('Limit to DescriptionElement type'),
+      '#title' => t('Limit to description item type'),
       '#default_value' => $_SESSION['cdm']['search']['clazz'],
       '#options' => cdm_descriptionElementTypes_as_option(TRUE),
     );
