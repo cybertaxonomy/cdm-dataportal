@@ -382,7 +382,7 @@ function cdm_dataportal_search_taxon_by_description_form() {
     $query_field_default_value,
     t("Enter the text you wish to search for. The asterisk character * can be
         used as wildcard. Terms can be combined with 'AND'. To search for a
-        full phrase enclose the terms in parentheses. For more syntactial
+        full phrase enclose the terms in parentheses. For more syntactical
         options please refer to the !link.",
       array(
         '!link' => l(
