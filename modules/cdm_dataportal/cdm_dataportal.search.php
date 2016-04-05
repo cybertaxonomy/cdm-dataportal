@@ -294,7 +294,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
     );
     $form['search']['areas']['areas_filter'] = array(
       '#type' => 'textfield',
-      '#description' => 'Enter an area name or abbreviation to filter the areas listed below.',
+      '#description' => t('Enter an area name or abbreviation to filter the areas listed below.'),
     );
     $vocab_cnt = 0;
     $areas_defaults = array();
