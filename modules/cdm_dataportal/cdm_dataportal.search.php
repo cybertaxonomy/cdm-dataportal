@@ -152,7 +152,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
     $search_service_endpoint,
     $query_field_default_value,
     t('Enter the name or part of a name you wish to search for.
-      The asterisk  character * can always be used as wildcard.'),
+      The asterisk  character * can be used as wildcard.'),
       NULL
   );
 
@@ -294,7 +294,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
     );
     $form['search']['areas']['areas_filter'] = array(
       '#type' => 'textfield',
-      '#description' => 'Type an area name to filter the areas listed below.',
+      '#description' => 'Enter an area name or abbreviation to filter the areas listed below.',
     );
     $vocab_cnt = 0;
     $areas_defaults = array();
