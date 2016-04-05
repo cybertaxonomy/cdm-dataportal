@@ -73,10 +73,14 @@ function cdm_distribution_filter_query() {
   $cdm_distribution_filter = get_array_variable_merged(CDM_DISTRIBUTION_FILTER, CDM_DISTRIBUTION_FILTER_DEFAULT);
   $query = array();
 
-  // new default, TODO put into settings #5677
-  $query['distributionOrder'] = 'AREA_ORDER';
+  $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
+  if($feature_block_settings['sort_elements'] == SORT_HIERARCHICAL){
+    $query['distributionOrder'] = 'AREA_ORDER';
+  }
 
   $query['recipe'] = variable_get(DISTRIBUTION_CONDENSED_RECIPE, DISTRIBUTION_CONDENSED_RECIPE_DEFAULT);
+
+
 
   if ($cdm_distribution_filter['filter_rules']['statusOrderPreference']) {
     $query['statusOrderPreference'] = 1;

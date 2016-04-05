@@ -1997,9 +1997,15 @@ function cdm_settings_layout_taxon() {
             NO_SORT => 'No sorting',
             SORT_ASC => 'Ascending',
             SORT_DESC => 'Descending',
-            SORT_HIERARCHICAL => 'Hierachical'
+            SORT_HIERARCHICAL => 'Hierarchical'
           ),
-          '#description' => 'NOT YET USED! only in preparation',
+          '#description' => 'NOT YET FULLY USED! only in preparation (works partially for distributions)
+          <dl>
+          <dr><dt>No sorting</dt><dd>Sorting undefined</dd></dr>
+          <dr><dt>Ascending</dt><dd>Alphabetically in ascending order</dd></dr>
+          <dr><dt>Descending</dt><dd>Alphabetically in descending order</dd></dr>
+          <dr><dt>Hierarchical</dt><dd>Use the order of items and their hierarchy. This is not possible for all feature and item types.</dd></dr>
+          </dl>',
         );
 
         $form_feature_block_layout[$subform_id]['element_tag'] = array(
@@ -2090,7 +2096,7 @@ function cdm_settings_layout_taxon() {
 
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_ORDER_MODE] = array(
     '#type' => 'radios',
-    '#title' => t('Order mode') . ':',
+    '#title' => t('Textal distribution mode') . ':',
     '#default_value' => variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT),
     '#options' => array(
       'FLAT_ALPHA' => t('Flat list'),
