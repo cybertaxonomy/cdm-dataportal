@@ -7,6 +7,8 @@
 DRUPAL_VERSION="7"
 SVN_USER="edit-jenkins"
 
+GIT_REPO_URL="edit-git:/var/git/cdm-dataportal.git"
+
 
 ##############################################################
 # NOTE: the ssh host should be configured in the ~/.ssh/config:
@@ -44,15 +46,10 @@ if [ -z "$WORKSPACE" ]; then
   exit -1
 fi
 
-# check if tag exists
-set +e # turn of "exit script on failure", since we expect that svn tags may not always exist
-TAG_EXISTS=(`svn info http://dev.e-taxonomy.eu/svn/tags/drupal/module-cdm_dataportal/$VERSION 2> /dev/null | grep URL`)
-set -e # turn on again "exit script on failure"
-
-
+TAG_EXISTS=$(git ls-remote --heads --tags $GIT_REPO_URL | grep "refs/tags/$VERSION")
 
 if [ -z "$TAG_EXISTS" ]; then
-	# it is a new version number ...
+  # it is a new release
 
   #
   # compile the sass files to css in the zen_dataportal theme
