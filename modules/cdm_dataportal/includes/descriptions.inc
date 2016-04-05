@@ -76,6 +76,8 @@ function cdm_distribution_filter_query() {
   // new default, TODO put into settings #5677
   $query['distributionOrder'] = 'AREA_ORDER';
 
+  $query['recipe'] = variable_get(DISTRIBUTION_CONDENSED_RECIPE, DISTRIBUTION_CONDENSED_RECIPE_DEFAULT);
+
   if ($cdm_distribution_filter['filter_rules']['statusOrderPreference']) {
     $query['statusOrderPreference'] = 1;
   }

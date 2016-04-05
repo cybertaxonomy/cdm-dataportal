@@ -96,15 +96,21 @@
       )
     )
   );
-  define('DISTRIBUTION_CONDENSED', 'distribution_condensed');
-  define('DISTRIBUTION_CONDENSED_INFO_PATH', 'distribution_condensed_info_path');
-  define('DISTRIBUTION_CONDENSED_INFO_PATH_DEFAULT', 'cdm_dataportal/help/condensed_distribution');
-  define('FEATURE_BLOCK_SETTINGS', 'feature_block_settings');
 
-  define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
-  define('DISTRIBUTION_ORDER_MODE', 'distribution_order_mode');
-  define('DISTRIBUTION_ORDER_MODE_DEFAULT', 'TREE');
-  define('DISTRIBUTION_TREE_OMIT_LEVELS', 'distribution_tree_omit_levels');
+
+define('FEATURE_BLOCK_SETTINGS', 'feature_block_settings');
+
+define('DISTRIBUTION_CONDENSED', 'distribution_condensed');
+define('DISTRIBUTION_CONDENSED_INFO_PATH', 'distribution_condensed_info_path');
+define('DISTRIBUTION_CONDENSED_INFO_PATH_DEFAULT', 'cdm_dataportal/help/condensed_distribution');
+define('DISTRIBUTION_CONDENSED_RECIPE', 'distribution_condensed_recipe');
+define('DISTRIBUTION_CONDENSED_RECIPE_DEFAULT', 'EuroPlusMed');
+
+
+define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
+define('DISTRIBUTION_ORDER_MODE', 'distribution_order_mode');
+define('DISTRIBUTION_ORDER_MODE_DEFAULT', 'TREE');
+define('DISTRIBUTION_TREE_OMIT_LEVELS', 'distribution_tree_omit_levels');
 
 /**
  * Returns the array of implemented taxon page tabs.
@@ -2063,6 +2069,14 @@ function cdm_settings_layout_taxon() {
     '#default_value' => variable_get(DISTRIBUTION_CONDENSED, 0),
     '#description' => 'This option enables the display of a very compact representation
     of the distribution which includes also information on the status.',
+  );
+
+  $form['taxon_profile']['distribution_layout'][DISTRIBUTION_CONDENSED_RECIPE] = array(
+    '#type' => 'select',
+    '#title' => t('Condensed distribution recipe'),
+    '#default_value' => variable_get(DISTRIBUTION_CONDENSED_RECIPE, DISTRIBUTION_CONDENSED_RECIPE_DEFAULT),
+    '#options' => array('EuroPlusMed' => 'Euro+Med', 'FloraCuba' => 'Flora of Cuba'),
+    '#description' => 'Recipe for creating the condensed distribution.',
   );
 
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_CONDENSED_INFO_PATH] = array(
