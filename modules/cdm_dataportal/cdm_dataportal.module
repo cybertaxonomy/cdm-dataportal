@@ -314,13 +314,13 @@
    *    the markup for the icon in an <i> tag
    *
    */
-  function font_awesome_icon_markup($icon_name, $attributes = array()){
+  function font_awesome_icon_markup($icon_name = NULL, $attributes = array()){
 
 
     //<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
-    $font_awesome_css_uri=drupal_get_path('module', 'cdm_dataportal').'/font-awesome/4.2.0/css/font-awesome.min.css';
-    $font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css";
+    $font_awesome_css_uri=drupal_get_path('module', 'cdm_dataportal').'/font-awesome/4.5.0/css/font-awesome.min.css';
+    $font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
 
     drupal_add_html_head_link(
       array(
@@ -329,13 +329,17 @@
       )
     );
 
-    if(!isset($attributes['class'])){
-      $attributes['class'] = array();
-    }
-    $attributes['class'][] = 'fa';
-    $attributes['class'][] = $icon_name;
+    if($icon_name){
+      if(!isset($attributes['class'])){
+        $attributes['class'] = array();
+      }
+      $attributes['class'][] = 'fa';
+      $attributes['class'][] = $icon_name;
 
-    return '<i ' . drupal_attributes($attributes) . '></i>';
+      return '<i ' . drupal_attributes($attributes) . '></i>';
+    }
+
+    return '';
   }
 
 
