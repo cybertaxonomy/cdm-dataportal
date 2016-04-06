@@ -313,6 +313,8 @@
                 defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
             }
 
+            defaultControls.unshift(layerLoadingControl()); // as first control, needs to be below all others!
+
 //          var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, getWidth/getHeight);
             var maxResolution = null;
             // gmaps has no maxExtent at this point, need to check for null
@@ -760,8 +762,86 @@
           return  wmsLayer;
         };
 
+        var layerLoadingControl = function() {
+
+          var control = new OpenLayers.Control();
+
+          OpenLayers.Util.extend(control, {
+
+            LAYERS_LOADING: 0,
+
+            updateState: function () {
+              if(this.div != null){
+                if (this.LAYERS_LOADING > 0) {
+                  this.div.style.display = "block";
+                } else {
+                  this.div.style.display = "none";
+                }
+              }
+            },
+
+            updateSize: function () {
+              this.div.style.width = this.map.size.w + "px";
+              this.div.style.height = this.map.size.h  + "px";
+              this.div.style.textAlign = "center";
+              this.div.style.lineHeight = this.map.size.h  + "px";
+            },
+
+            counterIncrease: function () {
+              this.LAYERS_LOADING++;
+              this.updateState();
+            },
+
+            counterDecrease: function () {
+              this.LAYERS_LOADING--;
+              this.updateState();
+            },
+
+            draw: function () {
+
+              // call the default draw function to initialize this.div
+              OpenLayers.Control.prototype.draw.apply(this, arguments);
+
+              this.map.events.register('updatesize', this, function(e){
+                  this.updateSize();
+                }
+              );
+
+              var loadingIcon = document.createElement("i");
+              var fa_class = document.createAttribute("class");
+              // fa-circle-o-notch fa-spin
+              // fa-spinner fa-pulse
+              // fa-refresh
+              fa_class.value = "fa fa-refresh fa-spin fa-5x";
+              loadingIcon.attributes.setNamedItem(fa_class);
+
+              this.updateSize();
+
+              this.div.appendChild(loadingIcon);
+
+              this.registerEvents();
+
+              return this.div;
+            },
+
+            registerEvents: function() {
+
+              this.map.events.register('preaddlayer', this, function(e){
+                e.layer.events.register('loadstart', this, this.counterIncrease);
+                e.layer.events.register('loadend', this, this.counterDecrease);
+              });
+            }
+
+          });
+
+          return control;
+        }
+
     }; // end of CdmOpenLayers.Map
 })();
+
+
+
 
 
 

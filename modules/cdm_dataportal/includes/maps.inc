@@ -111,6 +111,8 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL,
  */
 function _add_js_openlayers_map($map_settings, array $event_listeners = array(), $resizable = false) {
 
+  font_awesome_icon_markup(); // no icon specified, only used to add the font and styles
+
   _add_js_openlayers();
 
   $edit_map_service = get_edit_map_service_settings();
