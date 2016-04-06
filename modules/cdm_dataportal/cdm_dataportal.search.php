@@ -289,12 +289,13 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
       '#type' => 'fieldset',
       '#title' => t('Filter by distribution areas'),
       '#description' => t('The search will return taxa having distribution
-        information for at least one of the chosen areas. The areas are grouped
-        by the vocabularies to which the highest level areas belong.'),
+        information for at least one of the selected areas.') . ' '
+        .(count($term_tree) > 1 ? t('The areas are grouped
+        by the vocabularies to which the highest level areas belong.') : ''),
     );
     $form['search']['areas']['areas_filter'] = array(
       '#type' => 'textfield',
-      '#description' => t('Enter an area name or abbreviation to filter the areas listed below.'),
+      '#description' => t('Type to filter the areas listed below.'),
     );
     $vocab_cnt = 0;
     $areas_defaults = array();

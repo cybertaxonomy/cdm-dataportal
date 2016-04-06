@@ -457,7 +457,7 @@ function cdm_dataportal_menu() {
   );
 
   $items['cdm_dataportal/search/taxon_by_description'] = array(
-    'title' => 'By description full text',
+    'title' => 'By factual data',
     'page callback' => 'cdm_dataportal_view_search_taxon_by_description',
     'access arguments' => array('access content'),
     'type' => MENU_LOCAL_TASK,
