@@ -2108,7 +2108,7 @@ function cdm_settings_layout_taxon() {
     area and subarea relationship. Fall back areas areas with no Distribution data
     are hidden from the area hierarchy so that their sub areas will move one level up.
     See ' . l('Distribution appearance', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-distribution')) .
-    ' for details on the <em>Maked area filter</em>.',
+    ' for details on the <em>Marked area filter</em>.',
   );
 
   $level_options = cdm_Vocabulary_as_option(UUID_NAMED_AREA_LEVEL, NULL, FALSE, SORT_ASC);
