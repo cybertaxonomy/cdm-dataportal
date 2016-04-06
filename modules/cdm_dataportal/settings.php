@@ -2096,7 +2096,7 @@ function cdm_settings_layout_taxon() {
 
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_ORDER_MODE] = array(
     '#type' => 'radios',
-    '#title' => t('Textal distribution mode') . ':',
+    '#title' => t('Display mode') . ':',
     '#default_value' => variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT),
     '#options' => array(
       'FLAT_ALPHA' => t('Flat list'),
