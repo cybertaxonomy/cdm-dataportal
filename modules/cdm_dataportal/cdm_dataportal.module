@@ -450,14 +450,14 @@ function cdm_dataportal_menu() {
   );
 
   $items['cdm_dataportal/search/advanced'] = array(
-    'title' => 'Advanced',
+    'title' => t('Advanced'),
     'page callback' => 'cdm_dataportal_view_search_advanced',
     'access arguments' => array('access content'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
 
   $items['cdm_dataportal/search/taxon_by_description'] = array(
-    'title' => 'By factual data',
+    'title' => t('By factual data'),
     'page callback' => 'cdm_dataportal_view_search_taxon_by_description',
     'access arguments' => array('access content'),
     'type' => MENU_LOCAL_TASK,
