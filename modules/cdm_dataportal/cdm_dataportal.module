@@ -1571,7 +1571,7 @@ function cdm_dataportal_view_search_advanced() {
  * Creates a page with the search form for searching by taxon descriptions.
  */
 function cdm_dataportal_view_search_taxon_by_description() {
-  drupal_set_title(t('Search by description full text'), PASS_THROUGH);
+  drupal_set_title(t('Search by factual data'), PASS_THROUGH);
   return drupal_get_form('cdm_dataportal_search_taxon_by_description_form');
 }
 
