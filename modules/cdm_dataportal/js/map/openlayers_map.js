@@ -136,6 +136,11 @@
         var baseLayers = [];
         var defaultBaseLayer = null;
 
+        var zoomToBounds = null;
+        var zoomToClosestLevel = true;
+
+        var LAYER_DATA_CNT = 0;
+
         /* this is usually the <div id="openlayers"> element */
         var mapContainerElement = mapElement.parent();
 
@@ -176,9 +181,7 @@
               adjustLegendAsElementPosition();
             });
 
-
-
-            createLayers(opts.baseLayerNames, opts.defaultBaseLayerName, opts.customWMSBaseLayerData);
+            createBaseLayers(opts.baseLayerNames, opts.defaultBaseLayerName, opts.customWMSBaseLayerData);
 
             initMap();
 
@@ -200,11 +203,14 @@
 
                 mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + distributionQuery;
 
+                LAYER_DATA_CNT++;
                 jQuery.ajax({
                     url: mapServiceRequest,
                     dataType: "jsonp",
                     success: function(data){
-                        addDataLayer(data, "AREA");
+                        var layers = createDataLayer(data, "AREA");
+                        addLayers(layers);
+                        layerDataLoaded();
                     }
                 });
             }
@@ -226,14 +232,56 @@
 
                 mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + occurrenceQuery;
 
+                LAYER_DATA_CNT++;
                 jQuery.ajax({
                     url: mapServiceRequest,
                     dataType: "jsonp",
                     success: function(data){
-                        addDataLayer(data, "POINT");
+                        var layers = createDataLayer(data, "POINT");
+                        addLayers(layers);
+                        layerDataLoaded();
                     }
                 });
             }
+
+        };
+
+        var layerDataLoaded = function() {
+          LAYER_DATA_CNT--;
+          if(LAYER_DATA_CNT == 0){
+            initPostDataLoaded();
+          }
+        };
+
+        var initPostDataLoaded = function () {
+          // all layers prepared, make the visible
+          map.layers.forEach(function(layer){
+
+            // hack for cuba
+            if(layer.name == "flora_cuba_2016_regions"){
+              map.setLayerZIndex(layer, 5);
+            }
+            if(layer.name == "flora_cuba_2016_provinces"){
+              map.setLayerZIndex(layer, 6);
+            }
+            if(layer.name == "flora_cuba_2016_world"){
+              map.setLayerZIndex(layer, 4);
+            }
+
+            layer.setVisibility(true);
+          });
+
+          // zoom to the zoomToBounds
+          log(" > starting zoomToExtend " + zoomToBounds, true);
+          map.zoomToExtent(zoomToBounds, zoomToClosestLevel);
+
+          if(map.getZoom() > opts.maxZoom){
+            map.zoomTo(opts.maxZoom);
+          } else if(map.getZoom() < opts.minZoom){
+            map.zoomTo(opts.minZoom);
+          }
+
+          log(" > zoomToExtend done", true);
         };
 
         var getHeight = function(){
@@ -362,25 +410,24 @@
             );
 
             //add the base layers
-            map.addLayers(baseLayers);
+
+            addLayers(baseLayers);
             map.setBaseLayer(defaultBaseLayer);
 
             // calculate the bounds to zoom to
             zoomToBounds = zoomToBoundsFor(opts.boundingBox, defaultBaseLayer);
             zoomToBounds = cropBoundsToAspectRatio(zoomToBounds, map.getSize().w / map.getSize().h);
-            console.log("zoomToBounds: " + zoomToBounds);
+            console.log("baselayer zoomToBounds: " + zoomToBounds);
 
-            // zoom to the extent of the bbox
-            map.zoomToExtent(zoomToBounds, true);
+        };
 
-            // readjust if the zoom level is out side of the min max
-//          if(map.getZoom() > opts.maxZoom){
-//          map.zoomTo(opts.maxZoom);
-//          } else if(map.getZoom() < opts.minZoom){
-//          map.zoomTo(opts.minZoom);
-//          }
+        var addLayers = function(layers){
 
+          layers.forEach(function(layer){
+            // layer.setVisibility(false);
+          });
 
+          map.addLayers(layers);
         };
 
         /**
@@ -391,7 +438,7 @@
          * @param dataType
          *   either "AREA" or "POINT"
          */
-        var addDataLayer = function(mapResponseObj, dataType){
+        var createDataLayer = function(mapResponseObj, dataType){
 
             console.log("creating data layer of type " + dataType);
 
@@ -402,44 +449,42 @@
                     displayOutsideMaxExtent: true
             };
 
-            var layer;
+            var layers = [];
             // add additional layers, get them from the mapResponseObj
             if(mapResponseObj !== undefined){
                 if(dataType == "POINT" && mapResponseObj.points_sld !== undefined){
+                  var pointLayer;
+                  // it is a response for an point map
+                  var geoserverUri;
+                  if(mapResponseObj.geoserver) {
+                      geoserverUri = mapResponseObj.geoserver;
+                  } else {
+                      // it is an old service which is not providing the corresponding geoserver URI, so we guess it
+                      geoserverUri = mapserverBaseUrl + "/geoserver/wms";
+                  }
 
-                    // it is a response for an point map
-                    var geoserverUri;
-                    if(mapResponseObj.geoserver) {
-                        geoserverUri = mapResponseObj.geoserver;
-                    } else {
-                        // it is an old servive which is not providing the corresponding geoserver URI, so we guess it
-                        geoserverUri = mapserverBaseUrl + "/geoserver/wms";
-                    }
+                  //TODO points_sld should be renamed to sld in response + fill path to sld should be given
+                  pointLayer = new OpenLayers.Layer.WMS(
+                          'points',
+                          geoserverUri,
+                          {
+                              layers: 'topp:rest_points',
+                              transparent:"true",
+                              format:"image/png"
+                          },
+                          dataLayerOptions
+                  );
 
-                    //TODO points_sld should be renamed to sld in response + fill path to sld should be given
-                    layer = new OpenLayers.Layer.WMS(
-                            'points',
-                            geoserverUri,
-                            {
-                                layers: 'topp:rest_points',
-                                transparent:"true",
-                                format:"image/png"
-                            },
-                            dataLayerOptions
-                    );
+                  var sld = mapResponseObj.points_sld;
+                  if(sld.indexOf("http://") !== 0){
+                      // it is an old servive which is not providing the full sdl URI, so we guess it
+                      //  http://edit.africamuseum.be/synthesys/www/v1/sld/
+                      //  http://edit.br.fgov.be/synthesys/www/v1/sld/
+                      sld =  mapserverBaseUrl + "/synthesys/www/v1/sld/" + sld;
+                  }
+                  pointLayer.params.SLD = sld;
 
-                    var sld = mapResponseObj.points_sld;
-                    if(sld.indexOf("http://") !== 0){
-                        // it is an old servive which is not providing the full sdl URI, so we guess it
-                        //  http://edit.africamuseum.be/synthesys/www/v1/sld/
-                        //  http://edit.br.fgov.be/synthesys/www/v1/sld/
-                        sld =  mapserverBaseUrl + "/synthesys/www/v1/sld/" + sld;
-
-                    }
-
-                    layer.params.SLD = sld;
-                    map.addLayers([layer]);
-
+                  layers.push(pointLayer);
                 } else {
                     // it is a response from for a distribution map
                     console.log("start with adding distribution layers :");
@@ -447,7 +492,7 @@
                         var layerData = mapResponseObj.layers[i];
 
                         console.log(" " + i +" -> " + layerData.tdwg);
-                        layer = new OpenLayers.Layer.WMS(
+                        var layer = new OpenLayers.Layer.WMS(
                                 layerData.tdwg,
                                 mapResponseObj.geoserver + "/wms",
                                 {
@@ -459,39 +504,28 @@
                                 );
                         layer.params.SLD = layerData.sld;
                         layer.setOpacity(opts.distributionOpacity);
-                        map.addLayers([layer]);
-                        // hack for cuba
-                        if(layerData.tdwg == "flora_cuba_2016_regions"){
-                          map.setLayerZIndex(layer, 5);
-                        }
-                        if(layerData.tdwg == "flora_cuba_2016_provinces"){
-                          map.setLayerZIndex(layer, 6);
-                        }
-                        if(layerData.tdwg == "flora_cuba_2016_world"){
-                          map.setLayerZIndex(layer, 4);
-                        }
 
+                        layers.push(layer);
                     }
-
                 }
 
-                // zoom to the required area
-                if(mapResponseObj.bbox !== undefined){
+                if(layers.length > 0) {
+                  // calculate zoomBounds for the using the first layer
+                  if(mapResponseObj.bbox !== undefined){
                     var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
-                    newBounds.transform(layer.projection, map.getProjectionObject());
+                    newBounds.transform(layers[0].projection, map.getProjectionObject());
                     if(dataBounds !== null){
-                        dataBounds.extend(newBounds);
+                      dataBounds.extend(newBounds);
                     } else if(newBounds !== undefined){
-                        dataBounds = newBounds;
+                      dataBounds = newBounds;
                     }
-                    map.zoomToExtent(dataBounds, false);
 
-                    if(map.getZoom() > opts.maxZoom){
-                        map.zoomTo(opts.maxZoom);
-                    } else if(map.getZoom() < opts.minZoom){
-                        map.zoomTo(opts.minZoom);
-                    }
+                    zoomToBounds = dataBounds;
+                    console.log("data layer zoomToBounds: " + zoomToBounds);
+                    zoomToClosestLevel = false;
+                  }
                 }
+
 
 
                 if(legendImgSrc != null && opts.legendPosition !== undefined && mapResponseObj.legend !== undefined){
@@ -499,6 +533,8 @@
                     addLegendAsElement(legendSrcUrl);
                     //addLegendAsLayer(legendSrcUrl, map);
                 }
+
+                return layers;
             }
 
         };
@@ -586,7 +622,7 @@
         /**
          *
          */
-        var createLayers = function( baseLayerNames, defaultBaseLayerName, customWMSBaseLayerData){
+        var createBaseLayers = function( baseLayerNames, defaultBaseLayerName, customWMSBaseLayerData){
 
             for(var i = 0; i <  baseLayerNames.length; i++) {
                 // create the layer
@@ -612,7 +648,7 @@
         };
 
         /**
-         * returns the intersction of the bounds b1 and b2.
+         * returns the intersection of the bounds b1 and b2.
          * The b1 and b2 do not intersect b1 will be returned.
          *
          * @param OpenLayers.Bounds b1
@@ -716,6 +752,15 @@
             }
         };
 
+        var log = function(message, addTimeStamp){
+          var timestamp = '';
+          if(addTimeStamp == true){
+            var time = new Date();
+            timestamp = time.getSeconds() + '.' + time.getMilliseconds() + 's';
+          }
+          console.log(timestamp + message);
+        };
+
         /**
          * Creates a WMS Base layer
          * @param String name
@@ -787,14 +832,16 @@
               this.div.style.lineHeight = this.map.size.h  + "px";
             },
 
-            counterIncrease: function () {
-              this.LAYERS_LOADING++;
-              this.updateState();
+            counterIncrease: function (layer) {
+              this.control.LAYERS_LOADING++;
+              log(' > loading start : ' + this.layer.name + ' ' + this.control.LAYERS_LOADING, true);
+              this.control.updateState();
             },
 
-            counterDecrease: function () {
-              this.LAYERS_LOADING--;
-              this.updateState();
+            counterDecrease: function (layer) {
+              this.control.LAYERS_LOADING--;
+              log(' > loading end : ' + this.layer.name + ' ' + this.control.LAYERS_LOADING, true);
+              this.control.updateState();
             },
 
             draw: function () {
@@ -827,8 +874,9 @@
             registerEvents: function() {
 
               this.map.events.register('preaddlayer', this, function(e){
-                e.layer.events.register('loadstart', this, this.counterIncrease);
-                e.layer.events.register('loadend', this, this.counterDecrease);
+                console.log(" > preaddlayer " + e.layer.name);
+                e.layer.events.register('loadstart', {control: this, layer: e.layer}, this.counterIncrease);
+                e.layer.events.register('loadend', {control: this, layer: e.layer}, this.counterDecrease);
               });
             }
 
