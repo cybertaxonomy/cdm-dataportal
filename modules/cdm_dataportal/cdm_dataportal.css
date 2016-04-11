@@ -114,8 +114,8 @@ select.highlite-first-child option:first-child {
 
 .render-path {
     color: white;
-    border: 1px solid #060cff ;
-    background-color: #ff2300   ;
+    border: 2px solid #ff2300;
+    background-color: #ff2300;
 }
 
 /*

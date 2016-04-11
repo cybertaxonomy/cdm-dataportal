@@ -583,8 +583,6 @@ function compose_description_element($element, $feature_block_settings, $element
 
     $block_list = array();
 
-    RenderHints::pushToRenderStack('feature_nodes');
-
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
     // Create a drupal block for each feature
@@ -668,9 +666,7 @@ function compose_description_element($element, $feature_block_settings, $element
     } // END: creating a block per feature
 
     drupal_alter('cdm_feature_node_blocks', $block_list, $taxon);
-
-    RenderHints::popFromRenderStack();
-
+    
     return _block_get_renderable_array($block_list);
   }
 

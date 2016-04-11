@@ -34,19 +34,17 @@
 /**
  * Provides the name render template to be used within the page elements identified the the $renderPath.
  *
- * The render templates arrays contains one or more name render template to be used within the page elements identified the the
+ * The render templates arrays contains one or more name render templates to be used within the page elements identified the the
  * renderPath. The renderPath is the key of the subelements whereas the value is the name render template.
- * The following keys are curretly recogized:
  *
- *   - list_of_taxa:
- *   - acceptedFor:
- *   - taxon_page_synonymy
- *   - typedesignations
- *   - taxon_page_title
- *   - polytomousKey
- *   - na: name + authorship
- *   - nar:name + authorship + reference
- *   - #DEFAULT
+ * The render paths used for a cdm_dataportal page can be visualized by supplying the HTTP query parameter RENDER_PATH=1.
+ *
+ * It will be tried to find  the best matching default RenderTemplate by stripping the dot separated render path
+ * element by element. If no matching template is found the DEFAULT will be used:
+ *
+ * - related_taxon.heterotypicSynonymyGroup.taxon_page_synonymy
+ * - related_taxon.heterotypicSynonymyGroup.taxon_page_synonymy
+ * - related_taxon.heterotypicSynonymyGroup.taxon_page_synonymy
  *
  * A single render template can be used for multiple render paths. In this case the according key of the render templates
  * array element should be the list of these render paths concatenated by ONLY a comma character without any whitespace.
@@ -60,7 +58,7 @@
  * element: array('#uri' => TRUE). The value of the #uri element will be replaced by the according
  * links if the parameters $nameLink or $refenceLink are set.
  *
- * @param string $renderPath
+ * @param string $render_path
  *   The render path can consist of multiple dot separated elements
  *   @see RenderHints::getRenderPath()
  * @param string $nameLink
@@ -72,7 +70,7 @@
  * @return array
  *   An associative array, the render template
  */
-function get_nameRenderTemplate($renderPath, $nameLink = NULL, $referenceLink = NULL) {
+function get_nameRenderTemplate($render_path, $nameLink = NULL, $referenceLink = NULL) {
 
   static $default_render_templates = NULL;
   static $split_render_templates = NULL;
@@ -100,10 +98,10 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $referenceLink = 
   }
 
   // get the base element of the renderPath
-  if (($separatorPos = strpos($renderPath, '.')) > 0) {
-    $renderPath_base = substr($renderPath, 0, $separatorPos);
+  if (($separatorPos = strpos($render_path, '.')) > 0) {
+    $renderPath_base = substr($render_path, 0, $separatorPos);
   } else {
-    $renderPath_base = $renderPath;
+    $renderPath_base = $render_path;
   }
 
   $template = NULL;
@@ -112,18 +110,18 @@ function get_nameRenderTemplate($renderPath, $nameLink = NULL, $referenceLink = 
     $template = (array)$split_render_templates[$renderPath_base];
   }
 
-  // 2. Find best matching default RenderTemplate in theme
+  // 2. Find best matching default RenderTemplate
   // by stripping the dot separated render path element by element
-  // is no matching template is found the DEFAULT will be used.
-  while (!is_array($template) && strlen($renderPath) > 0) {
+  // if no matching template is found the DEFAULT will be used.
+  while (!is_array($template) && strlen($render_path) > 0) {
     foreach ($split_render_templates as $path => $t) {
-      if ($path == $renderPath) {
+      if ($path == $render_path) {
         $template = $t;
         break;
       }
     }
     // shorten by one element
-    $renderPath = substr($renderPath, strrpos($renderPath, '.') + 1, strlen($renderPath));
+    $render_path = substr($render_path, strrpos($render_path, '.') + 1, strlen($render_path));
   }
 
 
