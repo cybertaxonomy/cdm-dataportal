@@ -112,6 +112,12 @@ select.highlite-first-child option:first-child {
   font-weight: bold;
 }
 
+.render-path {
+    color: white;
+    border: 1px solid #060cff ;
+    background-color: #ff2300   ;
+}
+
 /*
  * ======= Search-Form =======
  */

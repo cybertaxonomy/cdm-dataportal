@@ -461,7 +461,6 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     }
   }
 
-
   // Fill with protologues etc...
   $descriptionHtml = '';
   if (array_setr('description', TRUE, $renderTemplate)) {
@@ -493,7 +492,13 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   }
 
   // Render.
-  $out = '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base). '" data-cdm-ref="/name/' . $taxonName->uuid . '">';
+  $out = '';
+  if(isset($_REQUEST['RENDER_PATH'])){
+    // developer option to show the render path with each taxon name
+    $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
+  }
+  $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base)
+    . '" data-cdm-ref="/name/' . $taxonName->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
 
   foreach ($renderTemplate as $partName => $part) {
     $separator = '';
@@ -546,11 +551,12 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
  * @throws \Exception
  */
 function cdm_name_relationships_of($taxon) {
-// =========== START OF HOMONYMS ========== //
+
+  // =========== START OF HOMONYMS ========== //
   RenderHints::pushToRenderStack('homonym');
   // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
 
-  // Later homonym or treated as later homonym AND bloking names.
+  // Later homonym or treated as later homonym AND blocking names.
   // TODO apply filter ? $name_rels_to_show = variable_get('name_relationships_to_show', NULL);
   $from_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS,
     $taxon->uuid);
@@ -579,7 +585,8 @@ function cdm_name_relationships_of($taxon) {
 
           //from relation ships -> only shown at fromName-synonym
           if ($taxon->name->uuid == $element->fromName->uuid) {
-            $taxon_html = render_taxon_or_name($element->toName, url(path_to_name($element->toName->uuid)));
+            $taxon_html = render_taxon_or_name($element->toName,
+              url(path_to_name($element->toName->uuid)));  // FIXME highlite in synonymy as in the other cases
           }
           break;
         case UUID_BLOCKING_NAME_FOR :
@@ -597,9 +604,9 @@ function cdm_name_relationships_of($taxon) {
       }
       if (isset($taxon_html) && $taxon_html) {
         if (count($homonyms_array)) {
+          // lat: "non nec" == german: "weder noch"
           $homonyms_array [] = 'nec ' . $taxon_html;
-        }
-        else {
+        } else {
           $homonyms_array [] = 'non ' . $taxon_html;
         }
       }

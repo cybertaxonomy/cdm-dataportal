@@ -1530,8 +1530,10 @@ function cdm_settings_layout() {
           <p>' . $which_version_message . '</p>
           <p>
           The render templates array contains one or more name render templates to be used within the page areas identified by the
-          render path. The render path is used as key of the array sub subelements whereas the name render template array is set as value.
-          The following render Path keys are curretly recognized:
+          render path. The render path of taxon names can be made visible by adding the URI query parameter 
+          <strong><code>RENDER_PATH=1</code></strong> to the page request.<br />
+          The render path is used as key of the array sub subelements whereas the name render template array is set as value.
+          The following render Path keys are currently recognized:
           <ul>
             <li>list_of_taxa</li>
             <li>acceptedFor</li>
