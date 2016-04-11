@@ -162,8 +162,8 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
         'namePart' => array('name' => TRUE),
         'nameAuthorPart' => array('name' => TRUE),
         'referencePart' => array('authors' => TRUE),
-        'secReferencePart' => array('secReference' => TRUE,),
         'microreferencePart' => array('microreference' => TRUE),
+        'secReferencePart' => array('secReference' => TRUE,),
         'statusPart' => array('status' => TRUE),
         'descriptionPart' => array('description' => TRUE),
       ),
@@ -248,62 +248,68 @@ define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
 
 define('CDM_NAME_RENDER_TEMPLATES', 'cdm-name-render-templates');
 define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
-   array (
-     'taxon_page_title,polytomousKey'=> array(
-          'namePart' => array('#uri' => TRUE),
-        ),
-      'taxon_page_synonymy,accepted_taxon.taxon_page_synonymy'=> array(
-          'nameAuthorPart' => array('#uri' => TRUE),
-          'referencePart' => TRUE,
-          'statusPart' => TRUE,
-          'descriptionPart' => TRUE,
-        ),
-       'related_taxon'=> array(
-         'nameAuthorPart' => array('#uri' => TRUE),
-         'referencePart' => TRUE,
-         'statusPart' => TRUE,
-         'secReferencePart' => TRUE,
-         'descriptionPart' => TRUE,
-       ),
-       'homonym'=> array(
-            'nameAuthorPart' => array('#uri' => TRUE),
-            'referenceYearPart' => TRUE,
-        ),
-      'acceptedFor,typedesignations,list_of_taxa' => array(
-          'nameAuthorPart' => array('#uri' => TRUE),
-          'referencePart' => TRUE,
-        ),
-      '#DEFAULT' => array(
-          'nameAuthorPart' => array('#uri' => TRUE),
-          'referencePart' => TRUE,
-       )
-    )
-));
-  define('CDM_NAME_RENDER_TEMPLATES_DEFAULT_PRE_380', serialize(
-    array (
-      'taxon_page_title,polytomousKey'=> array(
+  array (
+    'taxon_page_title,polytomousKey'=> array(
         'namePart' => array('#uri' => TRUE),
       ),
-      'taxon_page_synonymy,related_taxon'=> array(
-        'nameAuthorPart' => array('#uri' => TRUE),
-        'referencePart' => TRUE,
-        'statusPart' => TRUE,
-        'descriptionPart' => TRUE,
-      ),
-      'homonym'=> array(
+    'not_in_current_classification' => array(
+     'nameAuthorPart' => TRUE,
+     'referencePart' => TRUE,
+     'statusPart' => TRUE,
+     'secReferencePart' => TRUE,
+    ),
+    'taxon_page_synonymy,accepted_taxon.taxon_page_synonymy'=> array(
+      'nameAuthorPart' => array('#uri' => TRUE),
+      'referencePart' => TRUE,
+      'statusPart' => TRUE,
+      'descriptionPart' => TRUE,
+    ),
+    'related_taxon'=> array(
+      'nameAuthorPart' => array('#uri' => TRUE),
+      'referencePart' => TRUE,
+      'statusPart' => TRUE,
+      'secReferencePart' => TRUE,
+      'descriptionPart' => TRUE,
+    ),
+    'homonym'=> array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referenceYearPart' => TRUE,
-      ),
-      'acceptedFor,typedesignations,list_of_taxa' => array(
+    ),
+    'acceptedFor,typedesignations,list_of_taxa' => array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
       ),
-      '#DEFAULT' => array(
+    '#DEFAULT' => array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
-      )
+     )
+  )
+));
+define('CDM_NAME_RENDER_TEMPLATES_DEFAULT_PRE_380', serialize(
+  array (
+    'taxon_page_title,polytomousKey'=> array(
+      'namePart' => array('#uri' => TRUE),
+    ),
+    'taxon_page_synonymy,related_taxon'=> array(
+      'nameAuthorPart' => array('#uri' => TRUE),
+      'referencePart' => TRUE,
+      'statusPart' => TRUE,
+      'descriptionPart' => TRUE,
+    ),
+    'homonym'=> array(
+      'nameAuthorPart' => array('#uri' => TRUE),
+      'referenceYearPart' => TRUE,
+    ),
+    'acceptedFor,typedesignations,list_of_taxa' => array(
+      'nameAuthorPart' => array('#uri' => TRUE),
+      'referencePart' => TRUE,
+    ),
+    '#DEFAULT' => array(
+      'nameAuthorPart' => array('#uri' => TRUE),
+      'referencePart' => TRUE,
     )
-  ));
+  )
+));
 
 define('CDM_SEARCH_TAXA_MODE','cdm_search_taxa_mode');
 define('CDM_SEARCH_TAXA_MODE_DEFAULT', serialize(

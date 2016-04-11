@@ -192,7 +192,6 @@ li .taxon {
     display: none;
 }
 
-
 #distribution_hierarchy .level_index_0 .area_label{
     font-weight: bold;
 }
@@ -553,6 +552,10 @@ div.cdm_media_viewer_image {
 
 #classification-breadcrumbs li {
 
+}
+
+.messages .cdm\:Taxon { /* taxa in warning box */
+    font-weight: bold;
 }
 
 /*
