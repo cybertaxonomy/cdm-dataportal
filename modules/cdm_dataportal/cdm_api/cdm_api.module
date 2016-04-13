@@ -1746,7 +1746,7 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
  * @param bool $absoluteURI
  *   TRUE when the URL should be treated as absolute URL.
  *
- * @return object
+ * @return object| array
  *   The de-serialized webservice response object.
  */
 function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "GET", $absoluteURI = FALSE) {
