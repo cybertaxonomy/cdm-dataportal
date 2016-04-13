@@ -12,6 +12,7 @@ define('CDM_WS_NAME', 'name');
 define('CDM_WS_NAME_NAMECAHE', 'name/$0/nameCache');
 define('CDM_WS_NAME_TYPEDESIGNATIONS', 'name/$0/typeDesignations');
 
+define('CDM_WS_PORTAL_NAME', 'portal/name');
 define('CDM_WS_PORTAL_NAME_FINDBYNAME', 'name/findByName/');
 define('CDM_WS_PORTAL_NAME_DESCRIPTIONS', 'portal/name/$0/taxonNameDescriptions');
 define('CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS', 'portal/name/$0/typeDesignations');
