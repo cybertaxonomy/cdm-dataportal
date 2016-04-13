@@ -2280,7 +2280,7 @@ function cdm_check_valid_taxon_page($chapter){
 
   if(!in_array($chapter, $taxon_tabs)){
     // oops this is not a valid chapter name
-    http_send_status(404); // 404 = Not Found
+    http_response_code(404); // 404 = Not Found
   }
 
 }
@@ -2295,7 +2295,7 @@ function cdm_check_valid_portal_page(){
   $ends_with_file_suffix_pattern = '/\/[^\.\/]*[\.][^\.\/]*$/';
   if(preg_match($ends_with_file_suffix_pattern, $_GET['q'])){
     // oops this urls ends with a file_suffix and thus does not refer to a portal page
-    http_send_status(404); // 404 = Not Found
+    http_response_code(404); // 404 = Not Found
     exit('HTTP 404');
   }
 }
