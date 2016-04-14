@@ -601,7 +601,6 @@ function compose_description_element($element, $feature_block_settings, $element
         /*
          * Content/DISTRIBUTION.
          */
-
         if ($node->feature->uuid == UUID_DISTRIBUTION) {
           $block = compose_feature_block_distribution($taxon, $node->descriptionElements, $node->feature);
           $block_content_is_empty = FALSE;
@@ -666,7 +665,7 @@ function compose_description_element($element, $feature_block_settings, $element
     } // END: creating a block per feature
 
     drupal_alter('cdm_feature_node_blocks', $block_list, $taxon);
-    
+
     return _block_get_renderable_array($block_list);
   }
 

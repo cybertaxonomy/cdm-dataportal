@@ -348,6 +348,7 @@ define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name
 // define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_2', array("default" => t('Display all')));
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
+
 /**
  * The drupal variable key for the array containing the uuids of the taxon relationship types to display in
  * the snonymy.
@@ -355,6 +356,17 @@ define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
  * @var string
  */
 define('CDM_TAXON_RELATIONSHIP_TYPES', 'cdm_taxon_relationship_types');
+
+define('CDM_NAME_RELATIONSHIP_TYPES', 'cdm_name_relationship_types');
+define('CDM_NAME_RELATIONSHIP_TYPES_DEFAULT', serialize(
+    array(
+      UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
+      UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
+      UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
+    )
+  )
+);
+
 /**
  * The drupal variable for the configuration of the information aggregation along
  * the taxon relation ships. The mapped arrayis associative and holds two elements:
@@ -1679,7 +1691,7 @@ function cdm_settings_layout_taxon() {
     '#type' => 'fieldset',
     '#title' => t('Taxon tabs'),
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
+    '#collapsed' => TRUE,
     '#description' => t('If tabbed taxon page is enabled the taxon profile will
       be splitted in four diferent tabs; General, Synonymy, Images and
       Specimens. If the taxon has no information for any of the tabs/sections
@@ -1740,7 +1752,7 @@ function cdm_settings_layout_taxon() {
     '#description' => t('<p>This section covers the settings related to the taxon
       profile tab, also known as the <strong>"General"</strong> tab.</p>'),
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
+    '#collapsed' => TRUE,
   );
 
   // ---- PROFILE PICTURE ----//
@@ -1770,15 +1782,15 @@ function cdm_settings_layout_taxon() {
    */
   $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['show'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Enable profil picture'),
-    '#description' => t('Show the profil picture.'),
+    '#title' => t('Enable profile picture'),
+    '#description' => t('Show the profile picture.'),
     '#default_value' => $taxon_profile_image_settings['show'],
   );
 
   $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['maxextend'] = array(
       '#type' => 'textfield',
       '#tree' => TRUE,
-      '#title' => t('Profil picture maximum extend'),
+      '#title' => t('Profile picture maximum extend'),
       '#default_value' =>  $taxon_profile_image_settings['maxextend'],
       '#field_suffix' => 'px',
       '#maxlength' => 4,
@@ -2220,7 +2232,14 @@ ie	introduced: formerly introduced
   );
  */
 
-  $form['taxon_synonymy'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
+  $form['taxon_synonymy']['taxon_relations'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Taxon relationships'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE
+  );
+
+  $form['taxon_synonymy']['taxon_relations'][CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS] = array(
     '#type' => 'checkbox',
     '#title' => t('Show taxon relations ships of accepted taxon'),
     '#default_value' => variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
@@ -2229,7 +2248,7 @@ ie	introduced: formerly introduced
   );
 
   $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
-  $form['taxon_synonymy'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
+  $form['taxon_synonymy']['taxon_relations'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Taxon relationship types') . ':',
     '#description' => t('Only taxon relationships of the selected type will be
@@ -2237,6 +2256,23 @@ ie	introduced: formerly introduced
     '#options' => $taxonRelationshipTypeOptions,
     '#default_value' => variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT)),
     '#disabled' => !variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
+  );
+
+  $form['taxon_synonymy']['name_relations'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Name relationships'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE
+  );
+
+  $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
+  $form['taxon_synonymy']['name_relations'][CDM_NAME_RELATIONSHIP_TYPES] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Name relationship types') . ':',
+    '#description' => t('Only name relationships of the selected type will be
+      displayed'),
+    '#options' => $taxonRelationshipTypeOptions,
+    '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_TYPES, unserialize(CDM_NAME_RELATIONSHIP_TYPES_DEFAULT)),
   );
 
   // ====== SPECIMENS ====== //

@@ -128,7 +128,7 @@ function theme_cdm_taxon_page_synonymy($variables) {
 
   $synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, $taxon->uuid);
   $skip = array(
-    UUID_BASIONYM,
+    UUID_NAMERELATIONSHIPTYPE_BASIONYM,
   );
   $out = '';
 

@@ -126,7 +126,7 @@ function theme_cdm_taxonRelationships($variables) {
   $footnotes = theme('cdm_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
   $footnotes .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
 
-// AK: why splitting footnotes at the sennsu string ??? this is weired and hacky
+// AK: why splitting footnotes at the sensu string ??? this is weired and hacky
 //     TODO remove below dead code
 //   $tr_footnotes_exploded = explode('sensu', $tr_footnotes);
 //   $tr_footnotes_aux = '';
