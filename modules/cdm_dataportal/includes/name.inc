@@ -584,11 +584,12 @@ function cdm_name_relationships_of($taxon) {
             url(path_to_name($element->fromName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
           );
         }
+
       } else {
         $elementTaxonBasesUuid = isset ($element->toName->taxonBases [0]->uuid) ? $element->toName->taxonBases [0]->uuid : '';
         //from relation ships -> only shown at fromName-synonym
         if ($taxon->name->uuid == $element->fromName->uuid) {
-          $taxon_html =render_taxon_or_name($element->toName,
+          $taxon_html = render_taxon_or_name($element->toName,
             url(path_to_name($element->toName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
           );
         }
