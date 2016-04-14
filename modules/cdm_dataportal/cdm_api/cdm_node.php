@@ -24,6 +24,9 @@ function cdm_dataportal_node_view($node, $view_mode = 'full') {
   // See cdm_add_node_content.
   switch ($node->type) {
     case 'cdm_' . NODETYPE_TAXON:
+    case 'cdm_' . NODETYPE_NAME:
+    case 'cdm_' . NODETYPE_REFERENCE:
+    case 'cdm_' . NODETYPE_MEDIA:
       if (!isset($node->cdm) && arg(0) == 'node') {
         // If a node page is loaded directly, e.g. node/%nid instead of
         // cdm_dataportal/taxon/%uuid, try to load the taxon page content
@@ -224,15 +227,9 @@ function cdm_add_node_content(&$node, $content) {
     $cdm_content = markup_to_render_array( $content, variable_get('cdm_content_weight', -1));
   }
 
-  // Comment @WA: for some reason $node->content is lost or recreated in
-  //   node_show($node) in D7, so we attach to $node->cdm here and re-attach to
-  //   $node->content in hook_node_view.
-  //
-  // Followup by @AK:
-  //   $node->content is removed in node_build_content() we need to
-  //   implement the 'view' hook in order to set the  $node->content
-  //   properly in the drupal way. => TODO
-  //
+  //  $node->content is cleared in node_build_content() therefore we need to
+  //  implement the 'view' hook in order to set the  $node->content
+  //  properly => cdm_dataportal_node_view()
   $node->cdm = $cdm_content;
 }
 
