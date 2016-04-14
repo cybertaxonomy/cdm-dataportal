@@ -567,12 +567,14 @@ function cdm_name_relationships_of($taxon) {
   $homonyms_array = array();
 
   if ($name_relations) {
+
     foreach ($name_relations as $element) {
+
       if(!isset($selected_name_rel_uuids[$element->type->uuid])){
         // skip if not selected in the settings
         continue;
       }
-
+      $taxon_html = null;
       if(isset($inverse_name_rels_uuids[$element->type->uuid])) {
         // case of UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
         //to relation ships -> only shown at toName-synonym
@@ -592,11 +594,13 @@ function cdm_name_relationships_of($taxon) {
         }
       }
 
-      if (count($homonyms_array)) {
-        // lat: "non nec" == german: "weder noch"
-        $homonyms_array [] = 'nec ' . $taxon_html;
-      } else {
-        $homonyms_array [] = 'non ' . $taxon_html;
+      if($taxon_html){
+        if (count($homonyms_array)) {
+          // lat: "non nec" == german: "weder noch"
+          $homonyms_array [] = 'nec ' . $taxon_html;
+        } else {
+          $homonyms_array [] = 'non ' . $taxon_html;
+        }
       }
 
     }
