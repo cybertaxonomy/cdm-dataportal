@@ -570,7 +570,7 @@ function cdm_name_relationships_of($taxon) {
 
     foreach ($name_relations as $element) {
 
-      if(!isset($selected_name_rel_uuids[$element->type->uuid])){
+      if(!(isset($selected_name_rel_uuids[$element->type->uuid]) && $selected_name_rel_uuids[$element->type->uuid])){
         // skip if not selected in the settings
         continue;
       }
