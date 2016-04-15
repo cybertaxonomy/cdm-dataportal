@@ -575,7 +575,7 @@ function cdm_name_relationships_of($taxon) {
         continue;
       }
       $taxon_html = null;
-      if(isset($inverse_name_rels_uuids[$element->type->uuid])) {
+      if(isset($inverse_name_rels_uuids[$element->type->uuid]) && $inverse_name_rels_uuids[$element->type->uuid]) {
         // case of UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
         //to relation ships -> only shown at toName-synonym
         $elementTaxonBasesUuid = isset ($element->fromName->taxonBases [0]->uuid) ? $element->fromName->taxonBases [0]->uuid : '';
