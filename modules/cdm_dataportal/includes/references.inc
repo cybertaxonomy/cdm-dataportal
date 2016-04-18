@@ -30,3 +30,35 @@
  * which is used in the proxy_content() function.
  * @}
  */
+
+/**
+ * Cleanup of the textual short form of an author team.
+ *
+ * The cdm fails to create correct representations of author teams.
+ * The '&' gluing the authors together need to be cleaned up.
+ *
+ * @param $author_team
+ *  the authorTeam string
+ *
+ * @return string
+
+ */
+function _short_form_of_author_team($author_team) {
+  $number_of_authors = substr_count($author_team, ' & ') + 1;
+  // var_dump($author_team);
+  // var_dump($number_of_authors);
+  switch ($number_of_authors) {
+    case 1:
+      $result = $author_team;
+      break;
+
+    case 2:
+      $result = str_replace(' & ', ' and ', $author_team);
+      break;
+
+    default:
+      $result_parts = explode(' & ', $author_team);
+      $result = $result_parts[0] . ' et al.';
+  }
+  return $result;
+}
