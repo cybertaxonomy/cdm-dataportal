@@ -1261,7 +1261,7 @@ function cdm_settings_general() {
     '#type' => 'checkbox',
     '#title' => 'Create drupal nodes',
     '#default_value' => variable_get(CDM_DRUPAL_NODE_CREATION, FALSE),
-    '#description' => 'The content of the pages created by the cdm_dataportal module is directly retrieved from the 
+    '#description' => 'Content für cdm_dataportal pages is directly retrieved from the 
     CDM webservice configured above. In order to use other drupal modules like the "Comments" module together with the 
     cdm pages it is required that drupal nodes are created and stored in the database.'
   );
