@@ -4,6 +4,17 @@
  * CDM Node functions.
  */
 
+
+define('CDM_DRUPAL_NODE_CREATION', 'cdm_drupal_node_creation');
+
+function do_create_drupal_nodes(){
+  static $value = null;
+  if($value === NULL){
+    $value = variable_get(CDM_DRUPAL_NODE_CREATION, FALSE);
+  }
+  return $value;
+}
+
 /**
  * Implements hook_node_view().
  *
@@ -104,53 +115,54 @@ function cdm_load_node($nodetype, $uuid, $title) {
     $title = substr($title, 0, 128);
     $node->title = $title;
 
-    // Comment @WA: this was used in the D5 module version.
-    // Remove this to change it to the current user.
-    $node->uid = 0;
+    if(do_create_drupal_nodes()){
+      // using the system admin user for all new nodes
+      $node->uid = 0;
 
-    // 2 = comments on, 1 = comments off.
-    $node->comment = variable_get('comment_' . $node->type);
+      // 2 = comments on, 1 = comments off.
+      $node->comment = variable_get('comment_' . $node->type);
 
-    // Preserve the current messages but before saving the node.
-    $messages = drupal_set_message();
+      // Preserve the current messages but before saving the node.
+      $messages = drupal_set_message();
 
-    if ($node = node_submit($node)) {
-      // Prepare node for saving by populating author and creation date.
-      // Comment @WA: Note that node_save is using a helper function to save a
-      // revision with the uid of the current user so the revision will not
-      // have uid = 0 but the uid of the current user.
-      // I guess that is not a problem so I leave it like this. Remedy would be
-      // to alter that revision entry afterwards.
-      // Will create a watchdog log entry if it fails to create the node.
-      node_save($node);
+      if ($node = node_submit($node)) {
+        // Prepare node for saving by populating author and creation date.
+        // Comment @WA: Note that node_save is using a helper function to save a
+        // revision with the uid of the current user so the revision will not
+        // have uid = 0 but the uid of the current user.
+        // I guess that is not a problem so I leave it like this. Remedy would be
+        // to alter that revision entry afterwards.
+        // Will create a watchdog log entry if it fails to create the node.
+        node_save($node);
+      }
+
+      // Restore the messages.
+      $_SESSION['messages'] = $messages;
+
+      // Comment @WA: I think http://dev.e-taxonomy.eu/trac/ticket/2964 is not
+      // relevant here anymore, since node_save will roll_back if node cannot be
+      // created.
+      if (!isset($node->nid)) {
+        $message = t('Could not create node for !nodetype (!title).', array(
+          '!nodetype' => $nodetype,
+          '!title' => $title,
+        ));
+        drupal_set_message($message, 'error');
+        watchdog('content', $message, WATCHDOG_ERROR);
+        return NULL;
+      }
+
+      // Hash as a 32-character hexadecimal number.
+      $hash = md5(variable_get('cdm_webservice_url') . $uuid);
+
+      $id = db_insert('node_cdm')->fields(array(
+        'nid' => $node->nid,
+        'wsuri' => variable_get('cdm_webservice_url'),
+        'hash' => $hash,
+        'cdmtype' => $nodetype,
+        'uuid' => $uuid,
+      ))->execute();
     }
-
-    // Restore the messages.
-    $_SESSION['messages'] = $messages;
-
-    // Comment @WA: I think http://dev.e-taxonomy.eu/trac/ticket/2964 is not
-    // relevant here anymore, since node_save will roll_back if node cannot be
-    // created.
-    if (!isset($node->nid)) {
-      $message = t('Could not create node for !nodetype (!title).', array(
-        '!nodetype' => $nodetype,
-        '!title' => $title,
-      ));
-      drupal_set_message($message, 'error');
-      watchdog('content', $message, WATCHDOG_ERROR);
-      return NULL;
-    }
-
-    // Hash as a 32-character hexadecimal number.
-    $hash = md5(variable_get('cdm_webservice_url') . $uuid);
-
-    $id = db_insert('node_cdm')->fields(array(
-      'nid' => $node->nid,
-      'wsuri' => variable_get('cdm_webservice_url'),
-      'hash' => $hash,
-      'cdmtype' => $nodetype,
-      'uuid' => $uuid,
-    ))->execute();
   }
 
   return $node;
@@ -189,7 +201,15 @@ function cdm_node_show($cdm_node_type, $uuid, $title, $content) {
   drupal_set_title($title, PASS_THROUGH);
 
   cdm_add_node_content($node, $content);
-  return node_show($node);
+
+  if(do_create_drupal_nodes()){
+    // use the full node_show()
+    $nodes = node_show($node);
+  } else {
+    // only use a part of the methods called in the node_show() method
+    $nodes = node_view_multiple(array($node->nid => $node), 'full');
+  }
+  return $nodes;
 }
 
 /**

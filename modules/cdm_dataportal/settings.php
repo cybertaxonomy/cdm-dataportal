@@ -1248,7 +1248,41 @@ function cdm_settings_general() {
       '#default_value' => $aggregate_by_taxon_relationships['invers'],
   );
 
-  // ----------------------
+  $form['drupal_integration'] = array(
+    '#type' => 'fieldset',
+    '#attributes' => array('class'=>array('clearfix')),
+    '#title' => t('Drupal integration'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#tree' => FALSE
+  );
+
+  $form['drupal_integration'][CDM_DRUPAL_NODE_CREATION] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Create drupal nodes',
+    '#default_value' => variable_get(CDM_DRUPAL_NODE_CREATION, FALSE),
+    '#description' => 'The content of the pages created by the cdm_dataportal module is directly retrieved from the 
+    CDM webservice configured above. In order to use other drupal modules like the "Comments" module together with the 
+    cdm pages it is required that drupal nodes are created and stored in the database.'
+  );
+
+
+
+  $form['drupal_integration']['drop_all_cdm_nodes_warning_pre'] = array(
+    '#markup' => '<h6 style="color:red;">WARNING:</h6>
+    <div class="description">Using this button, you will lose all content associated with the cdm drupal nodes which is stored in the drupal data base.</div>',
+  );
+  $form['drupal_integration']['drop_all_cdm_nodes'] = array(
+    '#type' => 'submit',
+    '#value' => t('Drop all cdm nodes'),
+    '#submit' => array('drop_all_cdm_nodes_submit')
+  );
+
+  $form['drupal_integration']['drop_all_cdm_nodes_warning_post'] = array(
+    '#markup' => '<div class="description">All Drupal nodes created for cdm content can be deleted at once using this button.</div>',
+  );
+
+    // ----------------------
   $form['cdm_js_devel_mode'] = array(
       '#type' => 'checkbox',
       '#title' => 'Java-script developer mode',
@@ -1283,6 +1317,16 @@ function cdm_settings_general() {
   $form['#submit'][] = 'cdm_settings_general_submit';
 
   return system_settings_form($form);
+}
+
+/**
+ * Submit callback; drops all cdm nodes.
+ *
+ * @ingroup forms
+ */
+function drop_all_cdm_nodes_submit($form, &$form_state) {
+  cdm_delete_all_cdm_nodes();
+  drupal_set_message(t('All cdm nodes dropped.'));
 }
 
 
