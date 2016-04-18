@@ -173,7 +173,6 @@ function cdm_dataportal_theme() {
         'pager' => NULL,
         'path' => NULL
     )),
-    'cdm_taxonRelationships' => array('variables' => array('taxonRelationships' => NULL, 'focusedTaxon' => NULL)),
     'cdm_acceptedFor' => array('variables' => array('acceptedFor' => NULL)),
     'cdm_list_of_taxa' => array('variables' => array('records' => NULL, 'freetextSearchResults' => array(), 'show_classification' => FALSE)),
     'cdm_taxon_list_thumbnails' => array('variables' => array('taxon' => NULL)),

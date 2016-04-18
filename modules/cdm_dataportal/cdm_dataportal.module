@@ -24,6 +24,8 @@
 
   module_load_include('inc', 'cdm_dataportal', 'includes/common');
   module_load_include('inc', 'cdm_dataportal', 'includes/name');
+  module_load_include('inc', 'cdm_dataportal', 'includes/taxon');
+  module_load_include('inc', 'cdm_dataportal', 'includes/references');
   module_load_include('inc', 'cdm_dataportal', 'includes/pages');
   module_load_include('inc', 'cdm_dataportal', 'includes/media');
   module_load_include('inc', 'cdm_dataportal', 'includes/maps');

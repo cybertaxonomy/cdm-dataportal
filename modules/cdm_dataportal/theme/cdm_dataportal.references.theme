@@ -54,7 +54,7 @@ function theme_cdm_reference_pager($variables) {
  * Used by:
  * - theme_cdm_typedesignations
  * - theme_cdm_reference_pager
- * - theme_cdm_taxonRelationships
+ * - cdm_taxonRelationships
  *
  * @param array $variables
  *   An associative array containing:
@@ -130,8 +130,16 @@ function theme_cdm_reference($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Cleanup of the textual short form of an author team.
+ *
+ * The cdm fails to create correct representations of author teams.
+ * The '&' gluing the authors together need to be cleaned up.
+ *
+ * @param $author_team
+ *  the authorTeam string
+ *
+ * @return string
+
  */
 function _short_form_of_author_team($author_team) {
   $number_of_authors = substr_count($author_team, ' & ') + 1;

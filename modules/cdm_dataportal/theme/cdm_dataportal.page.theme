@@ -196,7 +196,7 @@ function theme_cdm_taxon_page_synonymy($variables) {
   // Render taxon relationships.
   if (variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)) {
     $taxonRelationships = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, $taxon->uuid);
-    $out .= theme('cdm_taxonRelationships', array('taxonRelationships' => $taxonRelationships, 'focusedTaxon' => $taxon));
+    $out .= cdm_taxonRelationships($taxonRelationships, $taxon);
   }
 
   RenderHints::popFromRenderStack();
