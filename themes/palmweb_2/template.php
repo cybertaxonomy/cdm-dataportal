@@ -123,7 +123,7 @@ function palmweb_2_cdm_search_results($variables){
   $out .= '> ' . t('Show Image Thumbnails') . '</form></div>';
   if (!empty($pager) && count($pager->records) > 0) {
       $out .= '<div id="search_results">';
-    $out .= theme('cdm_list_of_taxa', array('records' => $pager->records));
+    $out .= drupal_render(compose_list_of_taxa($pager->records));
     $out .= '</div>';
     $out .= theme('cdm_pager', array(
       'pager' => $pager,

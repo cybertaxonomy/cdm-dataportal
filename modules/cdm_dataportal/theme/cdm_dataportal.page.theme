@@ -272,13 +272,7 @@ function theme_cdm_search_results($variables)
   // List results.
   if (isset($pager->records) && count($pager->records) > 0) {
     $out .= '<div id="search_results">';
-    $out .= theme('cdm_list_of_taxa',
-        array(
-          'records' => $pager->records,
-          'freetextSearchResults' => $freetextSearchResults,
-          'show_classification' => $classification === NULL
-        )
-      );
+    $out .= drupal_render(compose_list_of_taxa($pager->records, $freetextSearchResults, $classification === NULL));
     $out .= '</div>';
     $out .= theme('cdm_pager', array(
         'pager' => $pager,

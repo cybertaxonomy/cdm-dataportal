@@ -14,11 +14,12 @@
  */
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates markup for a taxon which is the accepted of another one
+ *
+ * @param $accepted_for_uuid
+ *   The uuid of the accepted taxon
  */
-function theme_cdm_acceptedFor($variables) {
-  $accepted_for_uuid = $variables['acceptedFor'];
+function cdm_accepted_for($accepted_for_uuid) {
 
   if(!is_uuid($accepted_for_uuid)){
     return '';
@@ -43,29 +44,28 @@ function theme_cdm_acceptedFor($variables) {
 }
 
 /**
- * @todo document this function.
+ * Compose function for a list of taxa.
+ *
+ * This function is for example used toi display search results or the taxa for a taxon name in the name page.
+ *
+ * @param $taxon_list array
+ *   The list of CDM Taxon entities. e.g. The records array as contained in a pager object.
+ * @param $freetext_search_results array
+ * @param $show_classification boolean
+ *
+ * @ingroup compose
+ *
  */
-function theme_cdm_list_of_taxa($variables) {
+function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $show_classification = false) {
 
   $unclassified_snippet = '<span class="unclassified">' . t('unclassified') . '</span>';
 
-  $records = $variables['records'];
-  $freetextSearchResults = $variables['freetextSearchResults'];
-  $show_classification = $variables['show_classification'];
-
   RenderHints::pushToRenderStack('list_of_taxa');
 
-  $form_name = 'search_gallery';
-  // $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
-  // $gallery_settings = variable_get($form_name, $default_values);
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
 
   $showMedia_taxa = $gallery_settings['cdm_dataportal_show_taxon_thumbnails'];
   $showMedia_synonyms = $gallery_settings['cdm_dataportal_show_synonym_thumbnails'];
-  // $showMedia_taxa =
-  // variable_get('cdm_dataportal_findtaxa_show_taxon_thumbnails', 1);
-  // $showMedia_synonyms =
-  // variable_get('cdm_dataportal_findtaxa_show_synonym_thumbnails', 0);
   $searched_in_classification = cdm_dataportal_searched_in_classification();
   $searched_in_classification_uuid = null;
   if(isset($searched_in_classification->uuid)){
@@ -75,7 +75,7 @@ function theme_cdm_list_of_taxa($variables) {
   // .. Well, for sure not as performant as before, but better than nothing.
   $synonym_uuids = array();
   $misappied_uuids = array();
-  foreach ($records as $taxon) {
+  foreach ($taxon_list as $taxon) {
     if ($taxon->class == "Synonym") {
       if (!array_key_exists($taxon->uuid, $synonym_uuids)) {
         $synonym_uuids[$taxon->uuid] = $taxon->uuid;
@@ -113,7 +113,7 @@ function theme_cdm_list_of_taxa($variables) {
 
   $out = '<ul class="cdm_names" style="background-image: none;">';
   $itemCnt = -1;
-  foreach ($records as $taxon) {
+  foreach ($taxon_list as $taxon) {
     $itemCnt++;
     if (isset($table_of_accepted[$taxon->uuid])) {
       // Its a synonym or misapplied name.
@@ -205,16 +205,16 @@ function theme_cdm_list_of_taxa($variables) {
      * WildcardQueries, since these are  constant score by default
      * since Lucene 2.9
      */
-    if(isset($freetextSearchResults[$itemCnt]) && $freetextSearchResults[$itemCnt]->score && $freetextSearchResults[$itemCnt]->maxScore){
-      $percentage =  ( $freetextSearchResults[$itemCnt]->score / $freetextSearchResults[$itemCnt]->maxScore ) * 100;
+    if(isset($freetext_search_results[$itemCnt]) && $freetext_search_results[$itemCnt]->score && $freetext_search_results[$itemCnt]->maxScore){
+      $percentage =  ( $freetext_search_results[$itemCnt]->score / $freetext_search_results[$itemCnt]->maxScore ) * 100;
       $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . $percentage .'% "></div></div>';
       $out .= '<div class="score-bar-value">' . number_format($percentage, 2) .'%</div>';
     }
 
     // Render highlighted fragments, these are made available by free text
     // searches.
-    if (isset($freetextSearchResults[$itemCnt]->fieldHighlightMap)) {
-      $field_fragments = (array) $freetextSearchResults[$itemCnt]->fieldHighlightMap;
+    if (isset($freetext_search_results[$itemCnt]->fieldHighlightMap)) {
+      $field_fragments = (array) $freetext_search_results[$itemCnt]->fieldHighlightMap;
       if (count($field_fragments) > 0) {
         $fragments_out = '';
         foreach ($field_fragments as $fieldName => $fragments) {
@@ -230,7 +230,7 @@ function theme_cdm_list_of_taxa($variables) {
   $out .= '</ul>';
   RenderHints::popFromRenderStack();
 
-  return $out;
+  return markup_to_render_array($out); // TODO create render array of all list items in function
 }
 
   /**
