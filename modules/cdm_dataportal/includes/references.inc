@@ -62,3 +62,44 @@ function _short_form_of_author_team($author_team) {
   }
   return $result;
 }
+
+/**
+ * Creates a pager widget for the given CDM Pager containing CDM Reference entities.
+ *
+ * @param $referencePager object
+ *    A CDM Pager  containing CDM Reference entities
+ * @param $path
+ *    The base path to be used when generating the pager item links
+ * @$parameters
+ *
+ * @return string
+ *   Markup
+ */
+function cdm_reference_pager($referencePager, $path, $parameters) {
+
+  drupal_set_title(t('Bibliographic index'), PASS_THROUGH);
+  $out = '';
+  if (count($referencePager->records) > 0) {
+    $out .= '<ul>';
+    foreach ($referencePager->records as $reference) {
+      // FIXME remove hack.
+      $reference->fullCitation = $reference->titleCache;
+      // For matching cdm entity to STO.
+      $out .= '<li>' . theme('cdm_reference', array(
+          'reference' => $reference,
+          'microReference' => NULL,
+          'doLink' => TRUE,
+        )) . '</li>';
+    }
+    $out .= '</ul>';
+    $out .= theme('cdm_pager', array(
+      'pager' => $referencePager,
+      'path' => $path,
+      'parameters' => $parameters,
+    ));
+  }
+  else {
+    $out = '<h4 class="error">Sorry, this page contains not entries.</h4>';
+  }
+  return $out;
+}
