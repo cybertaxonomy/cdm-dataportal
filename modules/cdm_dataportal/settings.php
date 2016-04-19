@@ -28,7 +28,7 @@
   define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
 
   /* annotationTypeKeys */
-  $annotationTypeKeys = array_keys(cdm_Vocabulary_as_option(UUID_ANNOTATION_TYPE));
+  $annotationTypeKeys = array_keys(cdm_vocabulary_as_option(UUID_ANNOTATION_TYPE));
   if (in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
     $annotationTypeKeys = array_flip($annotationTypeKeys);
 
@@ -1164,7 +1164,7 @@ function cdm_settings_general() {
       ),
   );
 
-  $marker_type_options = cdm_terms_as_options( cdm_ws_fetch_all('term', array('class' => 'MarkerType' )) );
+  $marker_type_options = cdm_terms_by_type_as_option('MarkerType');
   $form['distribution'][CDM_DISTRIBUTION_FILTER]['hiddenAreaMarkerType'] = array(
       '#type' => 'checkboxes',
       '#title' => 'Hide marked area filter',
@@ -1232,7 +1232,7 @@ function cdm_settings_general() {
           and for the inverse.'),
   );
 
-  $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
+  $taxonRelationshipTypeOptions = cdm_vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
   $aggregate_by_taxon_relationships = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
 
   $form['aggregation']['aggregate_by_taxon_relationships'][CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS]['direct'] = array(
@@ -1370,7 +1370,7 @@ function cdm_settings_layout() {
     '#description' => t('Check this if you do not want to show annotation footnotes'),
   );
 
-  $annotationTypeOptions = cdm_terms_by_type_as_option('AnnotationType', SORT_ASC);
+  $annotationTypeOptions = cdm_terms_by_type_as_option('AnnotationType');
   // Additional option for the NULL case.
   $annotationTypeOptions['NULL_VALUE'] = t('untyped');
   $form['footnotes']['annotations_types_as_footnotes'] = array(
@@ -2175,7 +2175,7 @@ function cdm_settings_layout_taxon() {
     ' for details on the <em>Marked area filter</em>.',
   );
 
-  $level_options = cdm_Vocabulary_as_option(UUID_NAMED_AREA_LEVEL, NULL, FALSE, SORT_ASC);
+  $level_options = cdm_vocabulary_as_option(UUID_NAMED_AREA_LEVEL, NULL, FALSE, SORT_ASC);
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TREE_OMIT_LEVELS] = array(
     '#type' => 'checkboxes',
     '#title' => 'Omit area levels',
@@ -2265,7 +2265,7 @@ ie	introduced: formerly introduced
   );
 
   /* === currently unused ===
-  $nameRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE);
+  $nameRelationshipTypeOptions = cdm_vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE);
   $form['taxon_synonymy']['name_relationships']['name_relationships_to_show'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Display name relationships') . ':',
@@ -2291,7 +2291,7 @@ ie	introduced: formerly introduced
       below selected taxon relationships of accepted taxa.'),
   );
 
-  $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
+  $taxonRelationshipTypeOptions = cdm_vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
   $form['taxon_synonymy']['taxon_relations'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Taxon relationship types') . ':',
@@ -2309,7 +2309,7 @@ ie	introduced: formerly introduced
     '#collapsed' => FALSE
   );
 
-  $taxonRelationshipTypeOptions = cdm_Vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
+  $taxonRelationshipTypeOptions = cdm_vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
   $form['taxon_synonymy']['name_relations'][CDM_NAME_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Name relationship types') . ':',

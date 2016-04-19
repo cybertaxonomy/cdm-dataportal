@@ -37,7 +37,42 @@
    */
   define('CDM_HTTP_REQUEST_TIMEOUT', 90.0);
 
-  define('SORT_ORDER_ID', 'sort_by_order_id');
+
+
+/**
+ * orderBy webservice query parameter value
+ */
+define('CDM_ORDER_BY_ID_ASC', 'ORDER_BY_ID_ASC');
+
+/**
+ * orderBy webservice query parameter value
+ */
+define('CDM_ORDER_BY_ID_DESC', 'ORDER_BY_ID_DESC');
+/**
+ * orderBy webservice query parameter value
+ */
+define('CDM_ORDER_BY_TITLE_CACHE_ASC', 'ORDER_BY_TITLE_CACHE_ASC');
+/**
+ * orderBy webservice query parameter value
+ */
+define('CDM_ORDER_BY_TITLE_CACHE_DESC', 'ORDER_BY_TITLE_CACHE_DESC');
+/**
+ * orderBy webservice query parameter value
+ */
+define('CDM_NOMENCLATURAL_SORT_ORDER_ASC', 'NOMENCLATURAL_SORT_ORDER_ASC');
+/**
+ * orderBy webservice query parameter value
+ */
+define('CDM_NOMENCLATURAL_SORT_DESC', 'NOMENCLATURAL_SORT_ORDER_DESC');
+/**
+ * orderBy webservice query parameter value
+ */
+define('CDM_ORDER_BY_ORDER_INDEX_ASC', 'BY_ORDER_INDEX_ASC');
+/**
+ * orderBy webservice query parameter value
+ */
+define('CDM_ORDER_BY_ORDER_INDEX_DESC', 'BY_ORDER_INDEX_DESC');
+
 
 /**
  * Implements hook_menu().
@@ -1350,20 +1385,16 @@ function cdm_term_representation_abbreviated($definedTermBase, $default_represen
  * @param array $terms
  *   a list of CDM DefinedTermBase instances
  *
- * @param $sort_by
- *  Optionally sort option SORT_ORDER_ID (default: sorts after the cdm order index ),
- *  to sort alphabetically: SORT_ASC, SORT_DESC
- *
  * @param $term_label_callback
  *   A callback function to override the term representations
  *
  * @return array
  *   the terms in an array as options for a form element that allows multiple choices.
  */
-function cdm_terms_as_options($terms, $sort_by = SORT_ORDER_ID, $term_label_callback = NULL){
+function cdm_terms_as_options($terms, $term_label_callback = NULL){
   $options = array();
-  if(isset($terms) && is_array($terms)){
-    foreach ($terms as $term){
+  if(isset($terms) && is_array($terms)) {
+    foreach ($terms as $term) {
       if ($term_label_callback && function_exists($term_label_callback)) {
         $options[$term->uuid] = call_user_func($term_label_callback, $term);
       } else {
@@ -1372,28 +1403,36 @@ function cdm_terms_as_options($terms, $sort_by = SORT_ORDER_ID, $term_label_call
       }
     }
   }
-  switch($sort_by){
-    case SORT_ORDER_ID: array_reverse($options);
-      break;
-    default: array_multisort($options, SORT_ASC);
-  }
 
   return $options;
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates and array of options for drupal select form elements.
+ *
+ * @param $vocabulary_uuid
+ *   The UUID of the CDM Term Vocabulary
+ * @param $term_label_callback
+ *   An optional call back function which can be used to modify the term label
+ * @param $default_option
+ *   An additional element do be placed at the beginning og the list. This element will be the default option.
+ *   In order to put an empty element the begining of the options pass an " " as argument.
+ * @param $order_by
+ *   One of the order by constants defined in this file
  */
-function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL, $default_option = FALSE, $sort_by = SORT_ORDER_ID) {
+function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL, $default_option = FALSE, $order_by = CDM_ORDER_BY_ORDER_INDEX_ASC) {
   static $vocabularyOptions = array();
 
-  if (!isset($vocabularyOptions[$vocabularyUuid])) {
-    $terms = cdm_ws_fetch_all('termVocabulary/' . $vocabularyUuid . '/terms');
-    $vocabularyOptions[$vocabularyUuid] = cdm_terms_as_options($terms, $sort_by, $term_label_callback);
+  if (!isset($vocabularyOptions[$vocabulary_uuid])) {
+    $terms = cdm_ws_fetch_all('termVocabulary/' . $vocabulary_uuid . '/terms',
+      array(
+        'orderBy' => $order_by
+      )
+    );
+    $vocabularyOptions[$vocabulary_uuid] = cdm_terms_as_options($terms, $term_label_callback);
   }
 
-  $options = $vocabularyOptions[$vocabularyUuid];
+  $options = $vocabularyOptions[$vocabulary_uuid];
   if($default_option !== FALSE){
     array_unshift ($options, "");
   }
@@ -1439,10 +1478,26 @@ function cdm_Vocabulary_as_option($vocabularyUuid, $term_label_callback = NULL, 
  *  - TextFormat
  *  - DeterminationModifier
  *  - DnaMarker
+ *
+ * @param  $order_by
+ *  Optionally sort option (default: CDM_ORDER_BY_TITLE_CACHE_ASC)
+ *  possible values:
+ *    - CDM_ORDER_BY_ID_ASC
+ *    - CDM_ORDER_BY_ID_DESC
+ *    - CDM_ORDER_BY_TITLE_CACHE_ASC
+ *    - CDM_ORDER_BY_TITLE_CACHE_DESC
+ *    - CDM_ORDER_BY_ORDER_INDEX_ASC (can only be used with OrderedTerms!!)
+ *    - CDM_ORDER_BY_ORDER_INDEX_DESC (can only be used with OrderedTerms!!)
  */
-function cdm_terms_by_type_as_option($term_type, $sort_by = SORT_ORDER_ID, $term_label_callback = NULL){
-  $terms = cdm_ws_fetch_all(CDM_WS_TERM, array('class' => $term_type));
-  return cdm_terms_as_options($terms, $sort_by, $term_label_callback);
+function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_CACHE_ASC, $term_label_callback = NULL){
+  $terms = cdm_ws_fetch_all(
+    CDM_WS_TERM,
+    array(
+      'class' => $term_type,
+      'orderBy' => $order_by
+    )
+  );
+  return cdm_terms_as_options($terms, $term_label_callback);
 }
 
 /**
@@ -1450,7 +1505,7 @@ function cdm_terms_by_type_as_option($term_type, $sort_by = SORT_ORDER_ID, $term
  * @see http://drupal.org/node/1354
  */
 function cdm_rankVocabulary_as_option() {
-  $options = cdm_Vocabulary_as_option(UUID_RANK, NULL, "");
+  $options = cdm_vocabulary_as_option(UUID_RANK, NULL, "");
   return $options;
 }
 
