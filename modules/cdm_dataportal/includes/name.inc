@@ -437,11 +437,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   }
 
   // Fill with status.
-  if(isset($renderTemplate['statusPart'])){
+  if(isset($renderTemplate['statusPart']['status'])){
     if (isset($nom_status_tagged_text[0])) {
-      if (array_setr('status', TRUE, $renderTemplate)) {
         array_setr('status', '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, 'span', '', array('postSeparator')) . '</span>', $renderTemplate);
-      }
     }
   }
 
