@@ -1757,6 +1757,8 @@ function compose_description_elements_distribution($description_elements){
       '</div>'
     );
 
+    RenderHints::popFromRenderStack();
+
     return $render_array;
   }
 
