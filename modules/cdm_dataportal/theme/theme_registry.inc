@@ -155,11 +155,6 @@ function cdm_dataportal_theme() {
     'cdm_taxonpage_tab' => array('variables' => array('tabname' => NULL)),
 
     // Themes in cdm_dataportal.references.theme.
-    'cdm_reference_pager' => array('variables' => array(
-        'referencePager' => NULL,
-        'path' => NULL,
-        'parameters' => array(),
-    )),
     'cdm_reference' => array('variables' => array(
         'reference' => NULL,
         'microReference' => NULL,

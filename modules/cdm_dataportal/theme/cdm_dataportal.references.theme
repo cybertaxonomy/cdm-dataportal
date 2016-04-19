@@ -14,13 +14,19 @@
  */
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates a pager widget for the given CDM Pager containing CDM Reference entities.
+ *
+ * @param $referencePager object
+ *    A CDM Pager  containing CDM Reference entities
+ * @param $path
+ *    The base path to be used when generating the pager item links
+ * @$parameters
+ *
+ * @return string
+ *   Markup
  */
-function theme_cdm_reference_pager($variables) {
-  $referencePager = $variables['referencePager'];
-  $path = $variables['path'];
-  $parameters = $variables['parameters'];
+function cdm_reference_pager($referencePager, $path, $parameters) {
+
   drupal_set_title(t('Bibliographic index'), PASS_THROUGH);
   $out = '';
   if (count($referencePager->records) > 0) {
@@ -53,7 +59,7 @@ function theme_cdm_reference_pager($variables) {
  *
  * Used by:
  * - theme_cdm_typedesignations
- * - theme_cdm_reference_pager
+ * - cdm_reference_pager
  * - cdm_taxonRelationships
  *
  * @param array $variables
