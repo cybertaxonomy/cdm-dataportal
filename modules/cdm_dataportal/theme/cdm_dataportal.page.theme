@@ -542,7 +542,7 @@ function theme_cdm_reference_page($variables) {
   ));
 
   if($reference->referenceAbstract){
-    $out .= '<div class="abstract">' . $reference->referenceAbstract . '</div>';
+    $out .= '<h2 class="block-title">Abstract</h2><div class="abstract">' . $reference->referenceAbstract . '</div>';
   }
 
   // Annotations below the table.
