@@ -80,19 +80,57 @@ function theme_cdm_reference($variables) {
     $out .= ": " . $microReference;
   }
 
-  if (isset($reference->doi) && !empty($reference->doi)) {
-
-    $doi_resolve_uri = 'http://doi.org/' . $reference->doi->prefix;
-    if(isset($reference->doi->suffix)){
-      $doi_resolve_uri .= '/' . $reference->doi->suffix;
-    }
-    $out .= l(font_awesome_icon_markup('fa-external-link-square', array('class' => array('superscript'))), $doi_resolve_uri, array('html' => TRUE));
+  if(isset($reference->doi)){
+    $out .= cdm_doi($reference->doi);
   }
-  if (isset($reference->uri) && !empty($reference->uri)) {
-    $out .= l(font_awesome_icon_markup('fa-external-link', array('class' => array('superscript'))), $reference->uri, array('html' => TRUE));
+
+  if (isset($reference->uri)){
+    $out .= cdm_external_uri($reference->uri);
   }
 
   return $out;
+}
+
+/**
+ * @param $reference
+ * @param $out
+ * @return string
+ */
+function cdm_external_uri($uri, $iconified = true)
+{
+  if (!empty($uri)) {
+    if($iconified){
+      return l(font_awesome_icon_markup('fa-external-link', array('class' => array('superscript'))), $uri, array('html' => TRUE));
+    } else {
+      return l($uri, $uri);
+    }
+  }
+}
+
+/**
+ * Creates markup for a CDM Doi entity.
+ *
+ * @param $doi
+ *  The CDM DOI
+ *
+ * @return string
+ *  Markup
+ */
+function cdm_doi($doi, $iconified = true) {
+
+  if (!empty($doi)) {
+
+    $doi_resolve_uri = 'http://doi.org/' . $doi->prefix;
+    if (isset($doi->suffix)) {
+      $doi_resolve_uri .= '/' . $doi->suffix;
+    }
+    if($iconified){
+      return l(font_awesome_icon_markup('fa-external-link-square', array('class' => array('superscript'))), $doi_resolve_uri, array('html' => TRUE));
+    } else {
+      return l($doi_resolve_uri, $doi_resolve_uri);
+    }
+  }
+
 }
 
 /**

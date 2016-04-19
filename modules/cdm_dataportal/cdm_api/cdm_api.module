@@ -765,11 +765,15 @@ function partialToDate($partial, $stripZeros = TRUE, $format= "YYYY-MM-DD") {
  */
 function timePeriodToString($period, $stripZeros = TRUE, $format = "YYYY-MM-DD") {
   $dateString = '';
-  if ($period->start) {
-    $dateString = partialToDate($period->start, $stripZeros, $format);
-  }
-  if ($period->end) {
-    $dateString .= (strlen($dateString) > 0 ? ' ' . t('to') . ' ' : '') . partialToDate($period->end, $stripZeros, $format);
+  if($period->freeText){
+    $dateString = $period->freeText;
+  } else {
+    if ($period->start) {
+      $dateString = partialToDate($period->start, $stripZeros, $format);
+    }
+    if ($period->end) {
+      $dateString .= (strlen($dateString) > 0 ? ' ' . t('to') . ' ' : '') . partialToDate($period->end, $stripZeros, $format);
+    }
   }
   return $dateString;
 }

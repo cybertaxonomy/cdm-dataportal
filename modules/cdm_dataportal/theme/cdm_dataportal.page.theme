@@ -396,7 +396,8 @@ function theme_cdm_reference_page($variables) {
 
   $field_order = array(
     "title",
-    // "titleCache",
+    "abbrevTitle",
+    // "titleCache" abbrevTitleCache
     // "citation",
     "authorship",
     "editor",
@@ -418,13 +419,10 @@ function theme_cdm_reference_page($variables) {
     "previousVersion",
     "isbn",// Class Book.
     "issn",// Class Journal.
-    "uri",
+    "doi",
+    "uri"
   );
 
-  $header = array(
-    t('Field'),
-    t('Value'),
-  );
   $table_rows = array();
 
   if (!isset($reference->authorship)) {
@@ -448,12 +446,24 @@ function theme_cdm_reference_page($variables) {
         $datePublished = timePeriodToString($period);
         if (isset($datePublished) && $datePublished != '') {
           $table_rows[] = array(
-            t(ucfirst(strtolower($fieldname))),
+            t("Date published"),
             $datePublished,
           );
         }
         // $datePublished = array(t(ucfirst(strtolower($fieldname))),
         // $datePublished);
+      }
+      elseif ($fieldname == "doi" && is_object($reference->doi)) {
+        $table_rows[] = array(
+          t(ucfirst(strtolower($fieldname))),
+          cdm_doi($reference->doi, false)
+        );
+      }
+      elseif ($fieldname == "uri" && isset($reference->uri) && $reference->uri) {
+        $table_rows[] = array(
+          t(ucfirst(strtolower($fieldname))),
+          cdm_external_uri($reference->uri, false)
+        );
       }
       elseif (is_object($reference->$fieldname)) {
         if ($fieldname == "authorship") {
@@ -498,12 +508,15 @@ function theme_cdm_reference_page($variables) {
         else {
           $value = $reference->$fieldname->titleCache;
         }
+
+
         if (isset($value) && $value != '') {
           $table_rows[] = array(
             t(ucfirst(strtolower($fieldname))),
             $value,
           );
         }
+
       }
       else {
         if (isset($reference->$fieldname) && $reference->$fieldname != '') {
@@ -519,12 +532,18 @@ function theme_cdm_reference_page($variables) {
   $out = theme_table(array(
       'header' => array(),
       'rows' => $table_rows,
-      'attributes' => array(),
+      'attributes' => array(
+        'class' => html_class_attribute_ref($reference)
+      ),
       'caption' => NULL,
       'colgroups' => NULL,
       'sticky' => NULL,
-     'empty' => NULL,
+      'empty' => NULL,
   ));
+
+  if($reference->referenceAbstract){
+    $out .= '<div class="abstract">' . $reference->referenceAbstract . '</div>';
+  }
 
   // Annotations below the table.
   $annotations = cdm_ws_getAnnotationsFor($reference);

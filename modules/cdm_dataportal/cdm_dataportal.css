@@ -539,6 +539,13 @@ div.cdm_media_viewer_image {
   background-color: #eee;
 }
 
+/*
+ * ======= Reference Page =======
+ */
+
+table.cdm\:Reference {
+    width: 100%;
+}
 
 /*
  * ======= specific blocks =======
