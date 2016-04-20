@@ -244,6 +244,11 @@
                 });
             }
 
+            if(LAYER_DATA_CNT == 0) {
+              // a map only with base layer
+              initPostDataLoaded();
+            }
+
         };
 
         var layerDataLoaded = function() {
@@ -320,12 +325,16 @@
          * as set in the options (opts.infoElement)
          * public function
          *
-         * @param jQuery $element
          */
         this.printInfo = function(){
 
-            var mapExtendDegree = map.getExtent().clone();
-            mapExtendDegree.transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326);
+
+            var mapExtendDegree = null;
+            if(map.getExtent() != null){
+              // If the baselayer is not yet set, getExtent() returns null.
+              mapExtendDegree = map.getExtent().clone();
+              mapExtendDegree.transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326);
+            }
 
             var info = "<dl>";
             info += "<dt>zoom:<dt><dd>" + map.getZoom() + "</dd>";
@@ -335,13 +344,15 @@
                 info += "<dt>map scale:<dt><dd>" + map.getScale() + "</dd>";
                 info += "<dt>map width, height:<dt><dd>" + mapContainerElement.width() +  ", " + mapContainerElement.height() + "</dd>";
                 info += "<dt>map aspect ratio:<dt><dd>" + mapContainerElement.width() / mapContainerElement.height() + "</dd>";
-                info += "<dt>map extent bbox:<dt><dd class=\"map-extent-bbox\">" + map.getExtent().toBBOX() + ", <strong>degree:</strong> <span class=\"degree-value\">" + mapExtendDegree.toBBOX() + "</span></dd>";
-                info += "<dt>map maxExtent bbox:<dt><dd>" + map.getMaxExtent().toBBOX() + "</dd>";
-                info += "<dt>baselayer extent bbox:<dt><dd class=\"baselayer-extent-bbox\">" + map.baseLayer.getExtent().toBBOX() + ", <strong>degree:</strong> <span class=\"degree-value\">"
-                  + map.baseLayer.getExtent().clone().transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326) + "</span></dd>"
-                info += "<dt>baselayer projection:<dt><dd>" + map.baseLayer.projection.getCode() + "</dd>";
+                if(map.getExtent() != null){
+                  info += "<dt>map extent bbox:<dt><dd class=\"map-extent-bbox\">" + map.getExtent().toBBOX() + ", <strong>degree:</strong> <span class=\"degree-value\">" + mapExtendDegree.toBBOX() + "</span></dd>";
+                  info += "<dt>map maxExtent bbox:<dt><dd>" + map.getMaxExtent().toBBOX() + "</dd>";
+                  info += "<dt>baselayer extent bbox:<dt><dd class=\"baselayer-extent-bbox\">" +  map.baseLayer.getExtent().toBBOX() + ", <strong>degree:</strong> <span class=\"degree-value\">"
+                    + map.baseLayer.getExtent().clone().transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326) + "</span></dd>"
+                  info += "<dt>baselayer projection:<dt><dd>" + map.baseLayer.projection.getCode() + "</dd>";
+                }
             } else {
-                info += "<dt>bbox:<dt><dd>" + mapExtendDegree.toBBOX() + "</dd>";
+                info += "<dt>bbox:<dt><dd>" + (mapExtendDegree != null ? mapExtendDegree.toBBOX() : 'NULL') + "</dd>";
             }
             info += "</dl>";
 
@@ -361,7 +372,7 @@
                 defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
             }
 
-            defaultControls.unshift(layerLoadingControl()); // as first control, needs to be below all others!
+            // defaultControls.unshift(layerLoadingControl()); // as first control, needs to be below all others!
 
 //          var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, getWidth/getHeight);
             var maxResolution = null;
