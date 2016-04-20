@@ -8,12 +8,17 @@
 
     $.fn.cdm_openlayers_map = function(mapserverBaseUrl, mapserverVersion, options) {
 
-        var opts = $.extend({},$.fn.cdm_openlayers_map.defaults, options);
+      var opts = $.extend({},$.fn.cdm_openlayers_map.defaults, options);
 
-        return this.each(function(){
-            this.cdmOpenlayersMap = new CdmOpenLayers.Map($(this), mapserverBaseUrl, mapserverVersion, opts);
-            this.cdmOpenlayersMap.init();
-        }); // END each
+      // sanitize invalid opts.boundingBox
+      if(opts.boundingBox &&  !( typeof opts.boundingBox  == 'string' && opts.boundingBox .length > 6)) {
+        opts.boundingBox = null;
+      }
+
+      return this.each(function(){
+          this.cdmOpenlayersMap = new CdmOpenLayers.Map($(this), mapserverBaseUrl, mapserverVersion, opts);
+          this.cdmOpenlayersMap.init();
+      }); // END each
 
     }; // END cdm_openlayers_map
 
@@ -24,7 +29,8 @@
     legendPosition:  null,      // 1,2,3,4,5,6 = display a legend in the corner specified by the number
     distributionOpacity: 0.75,
     legendOpacity: 0.75,
-    boundingBox: "-180,-90,180,90",
+    // These are bounds in the epsg_4326 projection in degree
+    boundingBox: null,
     aspectRatio: 2, // w/h
     showLayerSwitcher: false,
     baseLayerNames: ["osgeo_vmap0"],
@@ -110,139 +116,197 @@
      */
     window.CdmOpenLayers.Map = function(mapElement, mapserverBaseUrl, mapserverVersion, opts){
 
-        var mapServicePath = '/edit_wp5';
+      var mapServicePath = '/edit_wp5';
 
-        // firebug console stub (avoids errors if firebug is not active)
-        if(typeof console === "undefined") {
-            console = { log: function() { } };
-        }
+      // firebug console stub (avoids errors if firebug is not active)
+      if(typeof console === "undefined") {
+          console = { log: function() { } };
+      }
 
-        // sanitize given options
-        try {
-            opts.customWMSBaseLayerData.max_extent = OpenLayers.Bounds.fromString(opts.customWMSBaseLayerData.max_extent);
-        } catch(e){
-            opts.customWMSBaseLayerData.max_extent = null;
-        }
-
-
-        var legendImgSrc = null;
-
-        var map = null;
-
-        var infoElement = null;
-
-        var dataBounds = null;
-
-        var baseLayers = [];
-        var defaultBaseLayer = null;
-
-        var zoomToBounds = null;
-        var zoomToClosestLevel = true;
-
-        var LAYER_DATA_CNT = 0;
-
-        /* this is usually the <div id="openlayers"> element */
-        var mapContainerElement = mapElement.parent();
-
-        var defaultControls = [
-                               new OpenLayers.Control.PanZoom(),
-                               new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
-                               ];
+      // sanitize given options
+      try {
+          opts.customWMSBaseLayerData.max_extent = OpenLayers.Bounds.fromString(opts.customWMSBaseLayerData.max_extent);
+      } catch(e){
+          opts.customWMSBaseLayerData.max_extent = null;
+      }
 
 
-        var layerByNameMap = {
-                tdwg1: 'topp:tdwg_level_1',
-                tdwg2: 'topp:tdwg_level_2',
-                tdwg3: 'topp:tdwg_level_3',
-                tdwg4: 'topp:tdwg_level_4'
-        };
+      var legendImgSrc = null;
 
-        if(opts.resizable == true) {
-          // resizable requires jQueryUI to  be loaded!!!
-          mapContainerElement.resizable({
-            resize: function( event, ui ) {
-              map.updateSize();
-              //   this.printInfo();
-            }
-          });
-        }
+      var map = null;
+
+      var infoElement = null;
+
+      var baseLayers = [];
+
+      var defaultBaseLayer = null;
+
+      /**
+       * Default bounding box for map viewport in the projection of the base layer.
+       * as defined by the user, can be null.
+       *
+       * These are bounds in the epsg_4326 projection, and will be transformed to the baselayer projection.
+       *
+       * @type string
+       */
+      var defaultBaseLayerBoundingBox = "-180,-90,180,90";
+
+      /**
+       * bounding box for map viewport as defined by the user, can be null.
+       *
+       * These are bounds in the projection of the base layer.
+       *
+       * @type string
+       */
+      var boundingBox = null;
+
+      /**
+       * Bounds for the view port calculated from the data layer responses.
+       * These are either calculated by the minimum bounding box which
+       * encloses the data in the data layers, or it is equal to the
+       * boundingBox as defined by the user.
+       *
+       * These are bounds in the projection of the base layer.
+       *
+       * @see boundingBox
+       *
+       * @type OpenLayers.Bounds
+       */
+      var dataBounds = null;
+
+      /**
+       * Final value for the view port, calculated from the other bounds.
+       *
+       * These are bounds in the projection of the base layer.
+       *
+       * @type OpenLayers.Bounds
+       */
+      var zoomToBounds = null;
+
+      var zoomToClosestLevel = true;
+
+      var LAYER_DATA_CNT = 0;
+
+      /* this is usually the <div id="openlayers"> element */
+      var mapContainerElement = mapElement.parent();
+
+      var defaultControls = [
+         new OpenLayers.Control.PanZoom(),
+         new OpenLayers.Control.Navigation(
+           {
+             zoomWheelEnabled: false,
+             handleRightClicks:true,
+             zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL
+           }
+         )
+      ];
+
+
+      var layerByNameMap = {
+              tdwg1: 'topp:tdwg_level_1',
+              tdwg2: 'topp:tdwg_level_2',
+              tdwg3: 'topp:tdwg_level_3',
+              tdwg4: 'topp:tdwg_level_4'
+      };
+
+      if(opts.resizable == true) {
+        // resizable requires jQueryUI to  be loaded!!!
+        mapContainerElement.resizable({
+          resize: function( event, ui ) {
+            map.updateSize();
+            //   this.printInfo();
+          }
+        });
+      }
 
         /**
          *
          */
         this.init = function(){ // public function
 
-            // set the height of the container element
+          // set the height of the container element
+          adjustHeight();
+
+          // register for resize events to be able to adjust the map aspect ratio and legend position
+          jQuery( window ).resize(function() {
             adjustHeight();
+            adjustLegendAsElementPosition();
+          });
 
-            // register for resize events to be able to adjust the map aspect ratio and legend position
-            jQuery( window ).resize(function() {
-              adjustHeight();
-              adjustLegendAsElementPosition();
-            });
+          createBaseLayers(opts.baseLayerNames, opts.defaultBaseLayerName, opts.customWMSBaseLayerData);
 
-            createBaseLayers(opts.baseLayerNames, opts.defaultBaseLayerName, opts.customWMSBaseLayerData);
+          initMap();
 
-            initMap();
+          // now it is
+          if(opts.boundingBox){
+            boundingBox = OpenLayers.Bounds.fromString(opts.boundingBox);
+            boundingBox.transform(CdmOpenLayers.projections.epsg_4326, map.getProjectionObject());
+          }
 
-            // -- Distribution Layer --
-            var mapServiceRequest;
-            var distributionQuery = mapElement.attr('distributionQuery');
+          // -- Distribution Layer --
+          var mapServiceRequest;
+          var distributionQuery = mapElement.attr('distributionQuery');
 
-            if(distributionQuery !== undefined){
-                distributionQuery = mergeQueryStrings(distributionQuery, '&recalculate=false');
-                if(typeof legendPosition == 'number'){
-                    distributionQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + opts.legendPosition);
-                }
-
-                distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
-                var legendFormatQuery = mapElement.attr('legendFormatQuery');
-                if(legendFormatQuery !== undefined){
-                    legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
-                }
-
-                mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + distributionQuery;
-
-                LAYER_DATA_CNT++;
-                jQuery.ajax({
-                    url: mapServiceRequest,
-                    dataType: "jsonp",
-                    success: function(data){
-                        var layers = createDataLayer(data, "AREA");
-                        addLayers(layers);
-                        layerDataLoaded();
-                    }
-                });
+          if(distributionQuery !== undefined){
+            distributionQuery = mergeQueryStrings(distributionQuery, '&recalculate=false');
+            if(typeof legendPosition == 'number'){
+              distributionQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + opts.legendPosition);
+            }
+            if(opts.boundingBox){
+              distributionQuery = mergeQueryStrings(distributionQuery, 'bbox=' + boundingBox);
             }
 
-            // -- Occurrence Layer --
-            var occurrenceQuery = mapElement.attr('occurrenceQuery');
-            if(occurrenceQuery !== undefined){
-                occurrenceQuery = mergeQueryStrings(occurrenceQuery, '&recalculate=false');
+            distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
+            var legendFormatQuery = mapElement.attr('legendFormatQuery');
+            if(legendFormatQuery !== undefined){
+              legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
+            }
+
+            mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + distributionQuery;
+
+            LAYER_DATA_CNT++;
+            jQuery.ajax({
+              url: mapServiceRequest,
+              dataType: "jsonp",
+              success: function(data){
+                  var layers = createDataLayer(data, "AREA");
+                  addLayers(layers);
+                  layerDataLoaded();
+              }
+            });
+          }
+
+          // -- Occurrence Layer --
+          var occurrenceQuery = mapElement.attr('occurrenceQuery');
+          if(occurrenceQuery !== undefined){
+            occurrenceQuery = mergeQueryStrings(occurrenceQuery, '&recalculate=false');
 //              if(typeof legendPosition == 'number'){
 //              occurrenceQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + opts.legendPosition);
 //              }
 
 
-                occurrenceQuery = mergeQueryStrings(occurrenceQuery, 'callback=?');
+            occurrenceQuery = mergeQueryStrings(occurrenceQuery, 'callback=?');
 //              var legendFormatQuery = mapElement.attr('legendFormatQuery');
 //              if(legendFormatQuery !== undefined){
 //              legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
 //              }
-
-                mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + occurrenceQuery;
-
-                LAYER_DATA_CNT++;
-                jQuery.ajax({
-                    url: mapServiceRequest,
-                    dataType: "jsonp",
-                    success: function(data){
-                        var layers = createDataLayer(data, "POINT");
-                        addLayers(layers);
-                        layerDataLoaded();
-                    }
-                });
+            if(opts.boundingBox){
+              occurrenceQuery = mergeQueryStrings(occurrenceQuery, 'bbox=' + boundingBox);
             }
+
+            mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + occurrenceQuery;
+
+            LAYER_DATA_CNT++;
+            jQuery.ajax({
+              url: mapServiceRequest,
+              dataType: "jsonp",
+              success: function(data){
+                  var layers = createDataLayer(data, "POINT");
+                  addLayers(layers);
+                  layerDataLoaded();
+              }
+            });
+          }
 
             if(LAYER_DATA_CNT == 0) {
               // a map only with base layer
@@ -426,7 +490,7 @@
             map.setBaseLayer(defaultBaseLayer);
 
             // calculate the bounds to zoom to
-            zoomToBounds = zoomToBoundsFor(opts.boundingBox, defaultBaseLayer);
+            zoomToBounds = zoomToBoundsFor(opts.boundingBox ? opts.boundingBox : defaultBaseLayerBoundingBox, defaultBaseLayer);
             zoomToBounds = cropBoundsToAspectRatio(zoomToBounds, map.getSize().w / map.getSize().h);
             console.log("baselayer zoomToBounds: " + zoomToBounds);
 
@@ -521,8 +585,9 @@
                 }
 
                 if(layers.length > 0) {
-                  // calculate zoomBounds for the using the first layer
+                  // calculate zoomBounds using the first layer
                   if(mapResponseObj.bbox !== undefined){
+                    // mapResponseObj.bbox are bounds for the projection of the specific layer
                     var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
                     newBounds.transform(layers[0].projection, map.getProjectionObject());
                     if(dataBounds !== null){
@@ -717,38 +782,6 @@
         };
 
         /**
-         * returns the zoom to bounds.
-         *
-         * @param bboxString
-         *     a string representation of the bounds in degree
-         * @param layer
-         *     the Openlayers.Layer
-         *
-         * @return the bboxstring projected onto the layer and intersected with the maximum extent of the layer
-         */
-        var zoomToBoundsFor = function(bboxString, layer){
-            var zoomToBounds;
-            if(typeof bboxString == 'string' && bboxString.length > 6) {
-                zoomToBounds = OpenLayers.Bounds.fromString(bboxString);
-                // transform bounding box given in degree values to the projection of the base layer
-                zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, layer.projection);
-            } else if(layer.maxExtent) {
-                zoomToBounds = layer.maxExtent;
-                // no need to transform since the bounds are obtained from the layer
-            } else {
-                zoomToBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
-                // transform bounding box given in degree values to the projection of the base layer
-                zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, layer.projection);
-            }
-
-            zoomToBounds = intersectionOfBounds(layer.maxExtent, zoomToBounds);
-
-            return zoomToBounds;
-        };
-
-
-
-        /**
          * returns the version number contained in the version string:
          *   v1.1 --> 1.1
          *   v1.2_dev --> 1.2
@@ -762,6 +795,40 @@
                 return null;
             }
         };
+
+
+
+      /**
+       * returns the zoom to bounds.
+       *
+       * NOTE: only used for the base layer
+       *
+       * @param bboxString
+       *     a string representation of the bounds in degree for epsg_4326
+       * @param layer
+       *     the Openlayers.Layer
+       *
+       * @return the bboxstring projected onto the layer and intersected with the maximum extent of the layer
+       */
+      var zoomToBoundsFor = function(bboxString, layer){
+        var zoomToBounds;
+        if(bboxString) {
+          zoomToBounds = OpenLayers.Bounds.fromString(bboxString);
+          // transform bounding box given in degree values to the projection of the base layer
+          zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, layer.projection);
+        } else if(layer.maxExtent) {
+          zoomToBounds = layer.maxExtent;
+          // no need to transform since the bounds are obtained from the layer
+        } else {
+          zoomToBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
+          // transform bounding box given in degree values to the projection of the base layer
+          zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, layer.projection);
+        }
+
+        zoomToBounds = intersectionOfBounds(layer.maxExtent, zoomToBounds);
+
+        return zoomToBounds;
+      };
 
         var log = function(message, addTimeStamp){
           var timestamp = '';

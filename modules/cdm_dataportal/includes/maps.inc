@@ -67,7 +67,6 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL,
     if ($force_map_type == 1) {
       _add_jquery_ui();
     $map_html = get_openlayers_map(
-        $map_settings['bbox'],
         $occurrence_query,
         $distribution_query,
         $legend_format_query,
@@ -81,7 +80,6 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL,
       $map_html = get_image_map(
         $map_settings['image_map']['width'],
         $map_height,
-        $map_settings['bbox'],
         $occurrence_query,
         $distribution_query,
         $legend_format_query,
@@ -215,7 +213,7 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
  * @return String
  *    rendered html
  */
-function get_openlayers_map($bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE,
+function get_openlayers_map($occurrenceQuery = FALSE, $distributionQuery = FALSE,
                             $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array(),
                             $resizable = false) {
 
@@ -234,7 +232,6 @@ function get_openlayers_map($bounding_box = FALSE, $occurrenceQuery = FALSE, $di
   $width = 512;
 
   $openlayers_map_query_string = '&img=false&ms=' . $width
-  . ($bounding_box ? '&bbox=' . $bounding_box : '')
   . ($labels_on ? '&label=' . $labels_on : '');
 
   if ($occurrenceQuery) {
@@ -362,7 +359,6 @@ function compose_distribution_map($taxon, $query_string) {
  * @todo Enter description here ...
  *
  * @param unknown_type $width
- * @param unknown_type $bounding_box
  * @param unknown_type $occurrenceQuery
  * @param unknown_type $distributionQuery
  * @param unknown_type $legendFormatQuery
@@ -371,7 +367,7 @@ function compose_distribution_map($taxon, $query_string) {
 * @return String
  *    rendered html
  */
-function get_image_map($width, $height= NULL, $bounding_box = FALSE, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE) {
+function get_image_map($width, $height= NULL, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE) {
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
@@ -382,7 +378,7 @@ function get_image_map($width, $height= NULL, $bounding_box = FALSE, $occurrence
 
   $query_string = '&img=true&recalculate=false&ms=' . $width . ($height ? ',' . $height : '')
   // Additional query parameters as set in the data portal admin section.
-  . ($bounding_box ? '&bbox=' . $bounding_box : '')
+  . ($map_settings['bbox'] ? '&bbox=' . $map_settings['bbox'] : '')
   . ($map_settings['show_labels'] ? '&label=' . $map_settings['show_labels'] : '');
 
   if ($map_caption) {
