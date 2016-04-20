@@ -7,7 +7,7 @@
 
 define('CDM_DRUPAL_NODE_CREATION', 'cdm_drupal_node_creation');
 
-function do_create_drupal_nodes(){
+function do_persist_drupal_nodes(){
   static $value = null;
   if($value === NULL){
     $value = variable_get(CDM_DRUPAL_NODE_CREATION, FALSE);
@@ -115,7 +115,8 @@ function cdm_load_node($nodetype, $uuid, $title) {
     $title = substr($title, 0, 128);
     $node->title = $title;
 
-    if(do_create_drupal_nodes()){
+    if(do_persist_drupal_nodes()){
+
       // using the system admin user for all new nodes
       $node->uid = 0;
 
@@ -162,6 +163,10 @@ function cdm_load_node($nodetype, $uuid, $title) {
         'cdmtype' => $nodetype,
         'uuid' => $uuid,
       ))->execute();
+    } else {
+      // Drupal node is not persisted
+      // need to create fake nid
+      $node->nid = 0;
     }
   }
 
@@ -202,7 +207,7 @@ function cdm_node_show($cdm_node_type, $uuid, $title, $content) {
 
   cdm_add_node_content($node, $content);
 
-  if(do_create_drupal_nodes()){
+  if(do_persist_drupal_nodes()){
     // use the full node_show()
     $nodes = node_show($node);
   } else {
