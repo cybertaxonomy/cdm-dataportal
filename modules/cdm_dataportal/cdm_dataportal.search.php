@@ -566,14 +566,14 @@ function cdm_dataportal_search_execute() {
   // Validate the search webservice parameter:
   if (!isset($_REQUEST['ws'])) {
     drupal_set_message(
-      t("Invalid search webservice parameter  'ws' given"), 'warning'
+      t("Invalid search webservice parameter 'ws' given"), 'warning'
     );
     return NULL;
   }
   if (!cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) {
     // Endpoint is unknown.
     drupal_set_message(
-      t("Invalid search webservice parameter  'ws' given"), 'warning'
+      t("Invalid search webservice parameter 'ws' given"), 'warning'
     );
     return NULL;
   }
