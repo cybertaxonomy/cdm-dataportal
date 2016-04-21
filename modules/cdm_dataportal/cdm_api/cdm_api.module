@@ -59,11 +59,11 @@ define('CDM_ORDER_BY_TITLE_CACHE_DESC', 'BY_TITLE_CACHE_DESC');
 /**
  * orderBy webservice query parameter value
  */
-define('CDM_NOMENCLATURAL_SORT_ORDER_ASC', 'BY_NOMENCLATURAL_ORDER_ASC');
+define('CDM_ORDER_BY_NOMENCLATURAL_ORDER_ASC', 'BY_NOMENCLATURAL_ORDER_ASC');
 /**
  * orderBy webservice query parameter value
  */
-define('CDM_NOMENCLATURAL_SORT_DESC', 'BY_NOMENCLATURAL_ORDER_DESC');
+define('CDM_ORDER_BY_NOMENCLATURAL_ORDER_DESC', 'BY_NOMENCLATURAL_ORDER_DESC');
 /**
  * orderBy webservice query parameter value
  */
