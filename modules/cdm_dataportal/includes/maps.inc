@@ -259,9 +259,7 @@ function get_openlayers_map($occurrenceQuery = FALSE, $distributionQuery = FALSE
 
   // Showing map caption.
   if ($map_caption) {
-    // FIXME: replace <br> by according css style.
-    $out .= '<div class="distribution_map_caption">' . $map_caption . '</div>' . '<br />';
-    $out .= '</div>';
+    $out .= '<div class="distribution_map_caption">' . $map_caption . '</div>';
   }
   return $out;
 }
@@ -287,7 +285,6 @@ function get_openlayers_map($occurrenceQuery = FALSE, $distributionQuery = FALSE
 function compose_distribution_map($taxon, $query_string) {
 
   $out = '';
-  $settings = get_edit_map_service_settings();
 
   $fontStyles = array(
       0 => "plane",
@@ -367,7 +364,8 @@ function compose_distribution_map($taxon, $query_string) {
 * @return String
  *    rendered html
  */
-function get_image_map($width, $height= NULL, $occurrenceQuery = FALSE, $distributionQuery = FALSE, $legendFormatQuery = FALSE, $map_caption = FALSE) {
+function get_image_map($width, $height= NULL, $occurrenceQuery = FALSE, $distributionQuery = FALSE,
+                       $legendFormatQuery = FALSE, $map_caption = FALSE) {
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
@@ -494,9 +492,7 @@ function get_image_map($width, $height= NULL, $occurrenceQuery = FALSE, $distrib
   $out = '<img class="distribution_map" src="' . $mapUri . '" alt="Map" />';
   // Showing map caption.
   if ($map_caption) {
-    // FIXME: replace <br> by according css style.
-    $out .= '<div class="distribution_map_caption">' . $map_caption . '</div>' . '<br />';
-    $out .= '</div>';
+    $out .= '<div class="distribution_map_caption">' . $map_caption . '</div>';
   }
 
   return $out;

@@ -463,8 +463,9 @@ a.label:visited {
 }
 
 .distribution_map_caption {
-  font-size: 90%;
-  font-style: italic;
+    font-size: 90%;
+    font-style: italic;
+    margin-bottom: 0.75em;
 }
 
 
