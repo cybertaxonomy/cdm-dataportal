@@ -42,28 +42,28 @@
 /**
  * orderBy webservice query parameter value
  */
-define('CDM_ORDER_BY_ID_ASC', 'ORDER_BY_ID_ASC');
+define('CDM_ORDER_BY_ID_ASC', 'BY_ID_ASC');
 
 /**
  * orderBy webservice query parameter value
  */
-define('CDM_ORDER_BY_ID_DESC', 'ORDER_BY_ID_DESC');
+define('CDM_ORDER_BY_ID_DESC', 'BY_ID_DESC');
 /**
  * orderBy webservice query parameter value
  */
-define('CDM_ORDER_BY_TITLE_CACHE_ASC', 'ORDER_BY_TITLE_CACHE_ASC');
+define('CDM_ORDER_BY_TITLE_CACHE_ASC', 'BY_TITLE_CACHE_ASC');
 /**
  * orderBy webservice query parameter value
  */
-define('CDM_ORDER_BY_TITLE_CACHE_DESC', 'ORDER_BY_TITLE_CACHE_DESC');
+define('CDM_ORDER_BY_TITLE_CACHE_DESC', 'BY_TITLE_CACHE_DESC');
 /**
  * orderBy webservice query parameter value
  */
-define('CDM_NOMENCLATURAL_SORT_ORDER_ASC', 'NOMENCLATURAL_SORT_ORDER_ASC');
+define('CDM_NOMENCLATURAL_SORT_ORDER_ASC', 'BY_NOMENCLATURAL_ORDER_ASC');
 /**
  * orderBy webservice query parameter value
  */
-define('CDM_NOMENCLATURAL_SORT_DESC', 'NOMENCLATURAL_SORT_ORDER_DESC');
+define('CDM_NOMENCLATURAL_SORT_DESC', 'BY_NOMENCLATURAL_ORDER_DESC');
 /**
  * orderBy webservice query parameter value
  */
