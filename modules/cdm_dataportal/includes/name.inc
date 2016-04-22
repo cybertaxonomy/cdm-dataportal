@@ -317,7 +317,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   $lastAuthorElementString = FALSE;
 
   $name_encasement = $is_invalid ? '"' : '';
-  $doubtful_marker = $is_doubtful ? '? ' : '';
+  $doubtful_marker = $is_doubtful ? '?&#8239;' : ''; //	&#8239; =  NARROW NO-BREAK SPACE
 
   // split off all appendedPhrase item  from the end of the array (usually there only should  be one)
   while($taggedTitle[count($taggedTitle)-1]->type == "appendedPhrase"){
