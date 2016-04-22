@@ -410,6 +410,27 @@ define('CDM_DISTRIBUTION_FILTER_DEFAULT', serialize(
      )
 ));
 
+define('DISTRIBUTION_HIERARCHY_STYLE', 'distribution_hierarchy_style');
+define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
+  "level_0" => array(
+    'label_suffix' => ':',
+    'item_glue' => ' ',
+    'item_group_prefix' => '',
+    'item_group_postfix' => ''
+  ),
+  "level_1" => array(
+    'label_suffix' => '',
+    'item_glue' => '; ',
+    'item_group_prefix' => ', ',
+    'item_group_postfix' => ''
+  ),
+  "level_2" => array(
+    'label_suffix' => '',
+    'item_glue' => ', ',
+    'item_group_prefix' => ' (',
+    'item_group_postfix' => ')'
+  )
+)));
 
 define('CDM_TAXON_MEDIA_FILTER', 'cdm_taxon_media_filter');
 define('CDM_TAXON_MEDIA_FILTER_DEFAULT', serialize(
@@ -1231,7 +1252,7 @@ function cdm_settings_general() {
 
   $form['aggregation']['aggregate_by_taxon_relationships'][CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS] = array(
       '#type' => 'fieldset',
-      '#attributes' => array('class'=>array('clearfix')),
+      '#attributes' => array('class' => array('clearfix')),
       '#title' => t('Aggregation via taxon relationsships'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
@@ -1261,7 +1282,7 @@ function cdm_settings_general() {
 
   $form['drupal_integration'] = array(
     '#type' => 'fieldset',
-    '#attributes' => array('class'=>array('clearfix')),
+    '#attributes' => array('class'=> array('clearfix')),
     '#title' => t('Drupal integration'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
@@ -2185,6 +2206,31 @@ function cdm_settings_layout_taxon() {
     See ' . l('Distribution appearance', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-distribution')) .
     ' for details on the <em>Marked area filter</em>.',
   );
+
+  $form['taxon_profile']['distribution_layout'][DISTRIBUTION_HIERARCHY_STYLE] = array(
+    '#type' => 'fieldset',
+    '#tree' => true,
+    '#title' => t('Distribution hierarchy style')
+  );
+
+  $hierarchy_styles = get_array_variable_merged(DISTRIBUTION_HIERARCHY_STYLE, DISTRIBUTION_HIERARCHY_STYLE_DEFAULT);
+  foreach(array_keys($hierarchy_styles) as $level) {
+    $form['taxon_profile']['distribution_layout'][DISTRIBUTION_HIERARCHY_STYLE][$level] = array(
+      '#type' => 'fieldset',
+      '#tree' => true,
+      '#title' => t(drupal_ucfirst((str_replace('_', ' ', $level)))),
+      '#attributes' => array('class' => array('fieldset-float'))
+    );
+    foreach ($hierarchy_styles[$level] as $key => $value) {
+      $form['taxon_profile']['distribution_layout'][DISTRIBUTION_HIERARCHY_STYLE][$level][$key] = array(
+        '#type' => 'textfield',
+        '#title' => t(drupal_ucfirst((str_replace('_', ' ', $key)))),
+        '#default_value' => $hierarchy_styles[$level][$key],
+        '#maxlength' => 4,
+        '#size' => 4
+      );
+    }
+  }
 
   $level_options = cdm_vocabulary_as_option(UUID_NAMED_AREA_LEVEL, NULL, FALSE, SORT_ASC);
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TREE_OMIT_LEVELS] = array(

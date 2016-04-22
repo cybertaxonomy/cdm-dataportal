@@ -1614,7 +1614,7 @@ function compose_description_elements_distribution($description_elements){
     if (isset($descriptionElement->status)) {
       $status_label = $descriptionElement->status->representation_L10n;
       $status_markup = '<span class="distributionStatus distributionStatus-' . $descriptionElement->status->idInVocabulary . '"> '
-        . $status_label . ' </span>';
+        . $status_label . '</span>';
 
     };
     return array($status_label, $status_markup);
@@ -1707,31 +1707,9 @@ function compose_description_elements_distribution($description_elements){
   function compose_distribution_hierarchy($distribution_tree, $feature_block_settings){
 
     static $hierarchy_style;
-    // TODO expose $hierarchy_style to administration of provide a hook
+    // TODO expose $hierarchy_style to administration or provide a hook
     if( !isset($hierarchy_style)){
-      $hierarchy_style = array(
-        // level 2
-        array(
-          'label_suffix' => '',
-          'element_glue' => ', ',
-          'element_set_pre' => '(',
-          'element_set_post' => ')'
-        ),
-        // level 1
-        array(
-          'label_suffix' => '',
-          'element_glue' => '; ',
-          'element_set_pre' => '',
-          'element_set_post' => ''
-        ),
-        // level 0
-        array(
-          'label_suffix' => ':',
-          'element_glue' => ' ',
-          'element_set_pre' => '',
-          'element_set_post' => ''
-        ),
-      );
+      $hierarchy_style = get_array_variable_merged(DISTRIBUTION_HIERARCHY_STYLE, DISTRIBUTION_HIERARCHY_STYLE_DEFAULT);
     }
 
     $render_array = array();
@@ -1779,7 +1757,7 @@ function compose_description_elements_distribution($description_elements){
     $level_index++;
     static $enclosingTag = "span";
 
-    $level_style = array_pop($hierarchy_style);
+    $level_style = array_shift($hierarchy_style);
     if(count($hierarchy_style) == 0){
       // lowest defined level style will be reused for all following levels
       $hierarchy_style[] = $level_style;
@@ -1842,7 +1820,7 @@ function compose_description_elements_distribution($description_elements){
         . ' level_index_' . $level_index
         . ' " title="' . $status_label . '">'
         . '<span class="area_label">' . $label
-        . $level_style['label_suffix'] . ' </span>'
+        . $level_style['label_suffix'] . '</span>'
         .  $status_markup
       ;
 
@@ -1867,7 +1845,7 @@ function compose_description_elements_distribution($description_elements){
 
       $per_node_markup[$node_index] .= '</' . $enclosingTag . '>';
     }
-    $markup .= $level_style['element_set_pre']  . join( $level_style['element_glue'], $per_node_markup) . $level_style['element_set_post'];
+    $markup .= $level_style['item_group_prefix']  . join( $level_style['item_glue'], $per_node_markup) . $level_style['item_group_postfix'];
   }
 
 

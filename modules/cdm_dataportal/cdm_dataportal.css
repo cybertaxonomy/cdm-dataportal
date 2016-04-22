@@ -689,6 +689,10 @@ table.cdm\:Reference {
     color: royalblue;
 }
 
+.fieldset-float {
+    float: left;
+}
+
 /*
  * ======= specimens =======
  */
