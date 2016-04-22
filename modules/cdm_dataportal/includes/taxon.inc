@@ -111,14 +111,18 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
 
   // Sort the joinedAuthorTeams and create footnotes and footnotekeys.
   ksort($joinedAuthorTeams);
+  $author_team_cnt = 0;
   foreach ($joinedAuthorTeams as $authorteam => $sensuCitation) {
     $footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensuCitation);
 
-      $joinedAuthorTeams[$authorteam] = '<span class="sensu">'
-        . ($authorteam != $NULL_AUTHORTEAM ? 'sensu '. $authorteam : '')
-        . theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey))
-        . '</span>';
+    $sensu = ++$author_team_cnt == 0 ? '' : 'sensu ';
 
+    $joinedAuthorTeams[$authorteam] =  sprintf(
+        '<span class="sensu">%s%s%s</span>',
+        $sensu,
+        ($authorteam != $NULL_AUTHORTEAM ? $authorteam : ''),
+        theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey))
+      );
   }
 
   // ---- Generate output ---- //
