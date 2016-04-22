@@ -45,12 +45,14 @@
  */
 function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
 
+  static $NULL_AUTHORTEAM = 'NULL_AUTHORTEAM';
+
   if (!$taxonRelationships) {
     return null;
   }
 
-  RenderHints::pushToRenderStack('taxonRelationships');
-  $footnoteListKey = 'taxonRelationships';
+  RenderHints::pushToRenderStack('taxon_relationships');
+  $footnoteListKey = 'taxon_relationships';
   RenderHints::setFootnoteListKey($footnoteListKey);
 
   $misapplied = array();
@@ -63,7 +65,10 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
 
     if (in_array($taxonRelation->type->uuid, $taxon_relationship_types)) {
 
+
       if ($taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR) {
+
+        RenderHints::pushToRenderStack('misapplied_name_for'); // TODO the render path string should in future come from $taxonRelation->type->...
 
         $name = $taxonRelation->fromTaxon->name->titleCache;
 
@@ -71,6 +76,9 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
           // taxa not always are have a sec reference (e.g. doubtful taxa)
           $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
           $authorteam = $authorteam->titleCache;
+          if(!$authorteam){
+            $authorteam = $NULL_AUTHORTEAM;
+          }
         }
 
         if (!isset($misapplied[$name])) {
@@ -78,7 +86,7 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
           $misapplied[$name]['out'] = cdm_related_taxon($taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR);
         }
         else {
-          // We need to add the anchors for all of the other mispplied names not
+          // We need to add the anchors for all of the other misapplied names not
           // being rendered explicitly.
           $misapplied[$name]['out'] = uuid_anchor($taxonRelation->fromTaxon->uuid, $misapplied[$name]['out']);
         }
@@ -88,12 +96,16 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
           $misapplied[$name]['authorteam'][$authorteam] = '';
           $joinedAuthorTeams[$authorteam] = 'sensu ' . theme('cdm_reference', array('reference' => $taxonRelation->fromTaxon->sec));
         }
+
       }
       else {
+        RenderHints::pushToRenderStack('other_taxon_relationship');
         // All relationsship types but misapplied_name_for
         // invalid_designation_for.
         $taxon_relationships_lines[] = cdm_taxonRelationship($taxonRelation, TRUE, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon));
       }
+
+      RenderHints::popFromRenderStack();
     }
   }
 
@@ -101,10 +113,12 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
   ksort($joinedAuthorTeams);
   foreach ($joinedAuthorTeams as $authorteam => $sensuCitation) {
     $footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensuCitation);
-    $joinedAuthorTeams[$authorteam] = '<span class="sensu">sensu '
-      . $authorteam
-      . theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey))
-      . '</span>';
+
+      $joinedAuthorTeams[$authorteam] = '<span class="sensu">'
+        . ($authorteam != $NULL_AUTHORTEAM ? 'sensu '. $authorteam : '')
+        . theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey))
+        . '</span>';
+
   }
 
   // ---- Generate output ---- //
