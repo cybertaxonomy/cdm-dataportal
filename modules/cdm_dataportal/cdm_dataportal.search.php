@@ -465,7 +465,8 @@ function cdm_dataportal_search_taxon_by_description_form() {
  *   the processed request parameters submitted by the search form and
  *   also stores them in $_SESSION['cdm']['search']
  */
-function cdm_dataportal_search_form_request() {
+function cdm_dataportal_search_form_request()
+{
 
   $form_params = array();
 
@@ -483,7 +484,9 @@ function cdm_dataportal_search_form_request() {
   // Split of geographic range.
   unset($form_params['areas']);
 
-  $area_filter_preset = explode(',', variable_get(CDM_SEARCH_AREA_FILTER_PRESET, ''));
+  if (variable_get(CDM_SEARCH_AREA_FILTER_PRESET, '')) {
+    $area_filter_preset = explode(',', variable_get(CDM_SEARCH_AREA_FILTER_PRESET, ''));
+  }
 
   if($area_filter_preset){
     $area_uuids = $area_filter_preset;
