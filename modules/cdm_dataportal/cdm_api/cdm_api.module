@@ -1299,7 +1299,7 @@ function cdm_ws_taxonomy_root_level($taxon_uuid = NULL) {
  *
  * @param string $taxon_uuid
  *
- * @return unknown
+ * @return array
  */
 function cdm_ws_taxonomy_pathFromRoot($taxon_uuid) {
   $view_uuid = get_current_classification_uuid();
