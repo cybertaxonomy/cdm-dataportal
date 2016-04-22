@@ -323,6 +323,8 @@ define('CDM_SEARCH_TAXA_MODE_DEFAULT', serialize(
   )
 );
 
+define('CDM_SEARCH_AREA_FILTER_PRESET', 'cdm_search_area_filter_preset');
+
 define('SIMPLE_SEARCH_USE_LUCENE_BACKEND', 'simple_search_use_lucene_backend');
 define('SIMPLE_SEARCH_IGNORE_CLASSIFICATION', 'simple_search_ignore_classification');
 
@@ -2453,6 +2455,14 @@ function cdm_settings_layout_search() {
       '#options' => drupal_map_assoc(array_keys(unserialize(CDM_SEARCH_TAXA_MODE_DEFAULT))),
       '#default_value' => $search_mode_default
       );
+
+  $form['search_settings'][CDM_SEARCH_AREA_FILTER_PRESET] = array(
+    '#type' => 'textfield',
+    '#title' => t('area_filter_preset') . ':',
+    '#default_value' => variable_get(CDM_SEARCH_AREA_FILTER_PRESET, ''), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
+
+    '#description' => t('Area uuids, comma separated, no whitespace. EXPERIMENTAL!!!!'),
+  );
 
   // --- SEARCH TAXA GALLERY ---- //
   $items = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);

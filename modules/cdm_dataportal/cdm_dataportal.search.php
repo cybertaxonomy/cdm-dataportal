@@ -278,41 +278,45 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
       }
     }
 
-    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/search_area_filter.js');
+    $show_area_filter = ! variable_get(CDM_SEARCH_AREA_FILTER_PRESET, '');
 
-    drupal_add_js('jQuery(document).ready(function() {
+    if($show_area_filter){
+      drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/search_area_filter.js');
+
+      drupal_add_js('jQuery(document).ready(function() {
         jQuery(\'#edit-search-areas\').search_area_filter(\'#edit-search-areas-areas-filter\');
       });
       ', array('type' => 'inline'));
 
-    $form['search']['areas'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Filter by distribution areas'),
-      '#description' => t('The search will return taxa having distribution
+      $form['search']['areas'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Filter by distribution areas'),
+        '#description' => t('The search will return taxa having distribution
         information for at least one of the selected areas.') . ' '
-        .(count($term_tree) > 1 ? t('The areas are grouped
+          .(count($term_tree) > 1 ? t('The areas are grouped
         by the vocabularies to which the highest level areas belong.') : ''),
-    );
-    $form['search']['areas']['areas_filter'] = array(
-      '#type' => 'textfield',
-      '#description' => t('Type to filter the areas listed below.'),
-    );
-    $vocab_cnt = 0;
-    $areas_defaults = array();
-    if (isset($_SESSION['cdm']['search']['area'])) {
-      $areas_defaults = explode(',', $_SESSION['cdm']['search']['area']);
-    }
-    foreach ($term_tree as $vocab_uuid => $term_dto_tree) {
-      $vocabulary = cdm_ws_get(CDM_WS_TERMVOCABULARY, array($vocab_uuid));
-      $areas_options = term_tree_as_options($term_dto_tree);
-      $form['search']['areas']['area'][$vocab_cnt++] = array(
-        '#prefix' => '<strong>' . $vocabulary->representation_L10n
-          . (isset($mixed_vocabularies[$vocab_uuid]) ? ' <span title="Contains terms of at least one other area vocabulary.">(' . t('mixed') . ')</span>': '')
-          . '</strong>',
-        '#type' => 'checkboxes',
-        '#default_value' => $areas_defaults,
-        '#options' => $areas_options,
       );
+      $form['search']['areas']['areas_filter'] = array(
+        '#type' => 'textfield',
+        '#description' => t('Type to filter the areas listed below.'),
+      );
+      $vocab_cnt = 0;
+      $areas_defaults = array();
+      if (isset($_SESSION['cdm']['search']['area'])) {
+        $areas_defaults = explode(',', $_SESSION['cdm']['search']['area']);
+      }
+      foreach ($term_tree as $vocab_uuid => $term_dto_tree) {
+        $vocabulary = cdm_ws_get(CDM_WS_TERMVOCABULARY, array($vocab_uuid));
+        $areas_options = term_tree_as_options($term_dto_tree);
+        $form['search']['areas']['area'][$vocab_cnt++] = array(
+          '#prefix' => '<strong>' . $vocabulary->representation_L10n
+            . (isset($mixed_vocabularies[$vocab_uuid]) ? ' <span title="Contains terms of at least one other area vocabulary.">(' . t('mixed') . ')</span>': '')
+            . '</strong>',
+          '#type' => 'checkboxes',
+          '#default_value' => $areas_defaults,
+          '#options' => $areas_options,
+        );
+      }
     }
 
   }
@@ -478,11 +482,19 @@ function cdm_dataportal_search_form_request() {
   // --- handle geographic range
   // Split of geographic range.
   unset($form_params['areas']);
-  if (isset($_REQUEST['search']['areas']['area']) && is_array($_REQUEST['search']['areas']['area'])) {
+
+  $area_filter_preset = explode(',', variable_get(CDM_SEARCH_AREA_FILTER_PRESET, ''));
+
+  if($area_filter_preset){
+    $area_uuids = $area_filter_preset;
+  }
+  elseif (isset($_REQUEST['search']['areas']['area']) && is_array($_REQUEST['search']['areas']['area'])) {
     $area_uuids = array();
     foreach ($_REQUEST['search']['areas']['area'] as $areas) {
       $area_uuids = array_merge($area_uuids, $areas);
     }
+  }
+  if(isset($area_uuids[0])){
     $form_params['area'] = implode(',', $area_uuids);
   }
 
