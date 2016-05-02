@@ -262,7 +262,12 @@
           dropShadow: false,
           cluetipClass: 'rounded'
         });
-      });", array('type' => 'inline'));
+      });",
+      array(
+        'type' => 'inline',
+        'scope' => 'footer'
+      )
+    );
   }
 
   /**
@@ -274,6 +279,19 @@
     _add_js_domEvent(); // requires domEvent.js
     drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/ahah-content.js');
   }
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function _add_js_taxonomic_children($jquery_selector) {
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/taxonomic_children.js');
+
+  drupal_add_js('jQuery(document).ready(function() {
+        jQuery(\'' . $jquery_selector . '\').taxonomic_children();
+      });
+      ', array('type' => 'inline'));
+}
 
   /**
    * Adds the external javascript file for domEvent.js.

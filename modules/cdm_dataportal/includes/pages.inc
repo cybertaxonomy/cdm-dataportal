@@ -956,6 +956,8 @@ function cdm_dataportal_preprocess_menu_local_task(&$variables) {
  */
 function compose_classification_breadcrumbs($taxon_uuid) {
 
+  _add_js_taxonomic_children('#classification-breadcrumbs .taxonomic-children');
+
   $render_array = array();
   if(!is_uuid($taxon_uuid)){
     return $render_array;
@@ -980,7 +982,8 @@ function compose_classification_breadcrumbs($taxon_uuid) {
     $node_name = cdm_dataportal_shortname_of($node);
     $path = path_to_taxon($node->taxonUuid);
 
-    $items[] = ($is_first_item ? '': ' > ') . l($node_name, $path);
+    $items[] = ($is_first_item ? '':  ' ' . '<span class="taxonomic-children" data-cdm-taxon-uuid="'. $node->taxonUuid. '" > &gt; </span>' . ' ')
+      . l($node_name, $path);
   }
   $render_array['#items'] = $items;
 
