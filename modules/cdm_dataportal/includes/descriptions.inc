@@ -1821,7 +1821,7 @@ function compose_description_elements_distribution($description_elements){
         . ' " title="' . $status_label . '">'
         . '<span class="area_label">' . $label
         . $level_style['label_suffix'] . '</span>'
-        .  $status_markup
+        . $status_markup
       ;
 
       if(isset($annotations_and_sources)){

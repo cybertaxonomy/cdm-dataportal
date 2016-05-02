@@ -2232,7 +2232,7 @@ function cdm_settings_layout_taxon() {
     }
   }
 
-  $level_options = cdm_vocabulary_as_option(UUID_NAMED_AREA_LEVEL, NULL, FALSE, SORT_ASC);
+  $level_options = cdm_vocabulary_as_option(UUID_NAMED_AREA_LEVEL, NULL, FALSE, CDM_ORDER_BY_ORDER_INDEX_ASC);
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TREE_OMIT_LEVELS] = array(
     '#type' => 'checkboxes',
     '#title' => 'Omit area levels',
