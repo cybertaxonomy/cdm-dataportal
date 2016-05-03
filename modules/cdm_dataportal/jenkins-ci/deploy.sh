@@ -91,9 +91,9 @@ ssh ${SSH_HOST} "rm -rf /var/www/download/dataportal/$VERSION"
 ssh ${SSH_HOST} "mkdir /var/www/download/dataportal/$VERSION"
 ssh ${SSH_HOST} "rm -r /var/www/download/dataportal/stable"
 ssh ${SSH_HOST} "ln -s /var/www/download/dataportal/$VERSION /var/www/download/dataportal/stable"
-scp cdm_dataportal-${VERSION}.tar.gz ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
+scp target/cdm_dataportal-${VERSION}.tar.gz ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
 if $DO_CREATE_DRUPAL_INSTALLER ; then
-  scp drupal${DRUPAL_VERSION}-cdm_dataportal-${VERSION}.tar.gz ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
+  scp target/drupal${DRUPAL_VERSION}-cdm_dataportal-${VERSION}.tar.gz ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
 fi
   
 # DONE
