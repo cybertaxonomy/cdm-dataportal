@@ -30,7 +30,7 @@ fi
 #
 
 git checkout release/$VERSION
-git pull --rebase
+git pull --rebase origin release/$VERSION
 
 compass clean $WORKSPACE/themes/zen_dataportal/
 compass compile $WORKSPACE/themes/zen_dataportal/
