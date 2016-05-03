@@ -28,20 +28,15 @@ fi
 # compile the sass files to css in the zen_dataportal theme
 # this will create the versions needed for production
 #
-if [ -x "$COMPASS" ]; then 
-  
-  git checkout release/$VERSION
-  git pull --rebase
 
-  $COMPASS clean $WORKSPACE/themes/zen_dataportal/
-  $COMPASS compile $WORKSPACE/themes/zen_dataportal/
-  
-  git push origin release/$VERSION
-  
-else 
-  echo "ERROR on sass compilation since the evnvironment variable COMPASS is either missing or not the file "$COMPASS" is not executable."
-  exit 1
-fi
+git checkout release/$VERSION
+git pull --rebase
+
+compass clean $WORKSPACE/themes/zen_dataportal/
+compass compile $WORKSPACE/themes/zen_dataportal/
+
+git push origin release/$VERSION
+
 
 echo "cdm_dataportal release preparation done!"
 
