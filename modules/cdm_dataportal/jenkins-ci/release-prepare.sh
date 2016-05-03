@@ -5,7 +5,7 @@
 # Performes preparation tasks for the release of the cdm-dataportal project:
 # 
 # 1. compile the SASS code to css without development features
-# 2. commit and push the the production ready css
+# 2. commit and push the the production level css
 #
 ###############################################################################
 
@@ -34,6 +34,9 @@ git pull --rebase origin release/$VERSION
 
 compass clean $WORKSPACE/themes/zen_dataportal/
 compass compile $WORKSPACE/themes/zen_dataportal/
+
+git add -A $WORKSPACE/themes/zen_dataportal/css/
+git commit -m "release-preparation: production level css"
 
 git push origin release/$VERSION
 
