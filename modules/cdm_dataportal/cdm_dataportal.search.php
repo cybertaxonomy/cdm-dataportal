@@ -152,7 +152,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
     $search_service_endpoint,
     $query_field_default_value,
     t('Enter the name or part of a name you wish to search for.
-      The asterisk  character * can be used as wildcard.'),
+      The asterisk  character * can be used as wildcard, but must not be used as first character.'),
       NULL
   );
 
@@ -386,7 +386,7 @@ function cdm_dataportal_search_taxon_by_description_form() {
     CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT,
     $query_field_default_value,
     t("Enter the text you wish to search for. The asterisk character * can be
-        used as wildcard. Terms can be combined with 'AND'. To search for a
+        used as wildcard, but must not be used as first character. Terms can be combined with 'AND'. To search for a
         full phrase enclose the terms in parentheses. For more syntactical
         options please refer to the !link.",
       array(
