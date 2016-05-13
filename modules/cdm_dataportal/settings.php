@@ -2512,7 +2512,7 @@ function cdm_settings_layout_search() {
       );
 
   $form['search_settings'][CDM_SEARCH_AREA_FILTER_PRESET] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('area_filter_preset') . ':',
     '#default_value' => variable_get(CDM_SEARCH_AREA_FILTER_PRESET, ''), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
 
