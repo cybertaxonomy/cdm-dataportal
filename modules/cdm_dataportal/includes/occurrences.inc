@@ -58,6 +58,9 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
             $detail_html .= "<br>".create_label("Citation") . $preservedSpecimenDTO->citation . "<br>";
         }
     }
+    if($preservedSpecimenDTO->preferredStableUri){
+        $detail_html .= "<br>".create_label("Preferred stable URI") . l($preservedSpecimenDTO->preferredStableUri, $preservedSpecimenDTO->preferredStableUri) . "<br>";
+    }
     if($isSpecimenPage){
         // associated taxa
         if($preservedSpecimenDTO->associatedTaxa){
