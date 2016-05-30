@@ -5,7 +5,7 @@
  *
  * <div id="cdm_taxontree_parent">
  *      <div class="cdm_taxontree_scroller_xy">
- *              <ul class="cdm_taxontree">
+ *              <ul class="taxon-nodes">
  *                  <li class="leaf filter_included">
  *                      <a href="/d7/test/cdm_dataportal/taxon/996dc2b4-e73d-4d40-99f9-fac18b503d1c"></a>
  *                  </li>
@@ -23,7 +23,7 @@
     var vertical_scroller_selector = 'cdm_taxontree_scroller_xy';
 
     var cdm_taxontree_parent = $(this);
-    var cdm_taxontree_list = cdm_taxontree_parent.find('ul.cdm_taxontree');
+    var cdm_taxontree_list = cdm_taxontree_parent.find('ul.taxon-nodes');
 
       /* ----------- magicbox ---------- */
       if (opts.magicbox) {
