@@ -821,8 +821,6 @@ function cdm_taxontree_add_js($parent_element_selector, $magicbox_enable = FALSE
   drupal_add_js($path_preferred_module . '/js/jquery.dimensions.pack.js');
   drupal_add_js($path_cdm_taxontree . '/js/cdm_taxontree.js');
 
-  _add_js_lib_scrollTo();
-
   drupal_add_js('
       jQuery(document).ready(function()
       {

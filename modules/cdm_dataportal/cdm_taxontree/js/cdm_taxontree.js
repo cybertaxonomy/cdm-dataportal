@@ -164,7 +164,7 @@
             var lineHeight = focusedElement.css('line-height');
             lineHeight = lineHeight.replace('px', '');
             lineHeight = lineHeight.length == 0 ? 18 : lineHeight;
-            cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTo(focusedElement, {duration: 400, axis:'y', offset:-2 * lineHeight});
+            cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTop(focusedElement.position().top - (4 * lineHeight));
         }
 
     }
