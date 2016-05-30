@@ -1674,6 +1674,12 @@ function cdm_load_annotations(&$annotatable_entity) {
  *   a NomenclaturalReference.
  */
 function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference) {
+
+  // TODO the below statement avoids error boxes due to #4644 remove it once this ticket is solved
+  if(is_array($microreference) || is_object($microreference)) {
+    return '';
+  }
+
   $obj = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array(
     $referenceUuid,
   ), "microReference=" . urlencode($microreference));
