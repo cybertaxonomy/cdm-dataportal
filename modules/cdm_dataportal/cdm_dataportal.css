@@ -593,6 +593,10 @@ table.cdm\:Reference {
     cursor: pointer;
 }
 
+#classification-breadcrumbs .taxonomic-children-button i:hover {
+    color: #8a918e;
+}
+
 #classification-breadcrumbs .taxonomic_children ul.taxon-nodes{
     background: inherit;
     margin: 0;
