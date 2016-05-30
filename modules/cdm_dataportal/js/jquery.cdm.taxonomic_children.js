@@ -169,7 +169,7 @@
 
        this works at earliest with v1.7, with 1.4.4 we need to use bind:
        */
-      plugin.$element.bind('click', function() {
+      plugin.$element.bind('mouseenter', function() { // 'mouseenter' or 'click' are appropriate candidates
         /*
          Use the "call" method so that inside of the method being
          called, ie: "someOtherFunction", the "this" keyword refers
@@ -227,7 +227,7 @@
       this.log('baseHeight: ' + this.baseHeight);
       this.log('lineHeight: ' + this.lineHeight);
 
-      this.offset_container_top = this.baseHeight - trigger_position.top;
+      this.offset_container_top = this.lineHeight - trigger_position.top;
 
       this.container
         .css('top', - this.offset_container_top + 'px')
@@ -246,6 +246,7 @@
     },
 
     hideChildren: function(){
+      // return;
       this.container
         .detach();
     },
