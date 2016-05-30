@@ -956,7 +956,7 @@ function cdm_dataportal_preprocess_menu_local_task(&$variables) {
  */
 function compose_classification_breadcrumbs($taxon_uuid) {
 
-  _add_js_taxonomic_children('#classification-breadcrumbs .taxonomic-children');
+  _add_js_taxonomic_children('#classification-breadcrumbs .taxonomic-children-button');
 
   $render_array = array();
   if(!is_uuid($taxon_uuid)){
@@ -973,18 +973,26 @@ function compose_classification_breadcrumbs($taxon_uuid) {
   $items = array();
   $parent_taxon_nodes = cdm_ws_taxonomy_pathFromRoot($taxon_uuid);
 
-  // remove the current taxon from the list
-  array_pop($parent_taxon_nodes);
-
   foreach ($parent_taxon_nodes as $node){
 
     $is_first_item = count($items) == 0;
     $node_name = cdm_dataportal_shortname_of($node);
     $path = path_to_taxon($node->taxonUuid);
 
-    $items[] = ($is_first_item ? '':  ' ' . '<span class="taxonomic-children" data-cdm-taxon-uuid="'. $node->taxonUuid. '" > &gt; </span>' . ' ')
-      . l($node_name, $path);
+    $children_indicator = '';
+    if($node->taxonomicChildrenCount){
+      $children_indicator =  '<span class="taxonomic-children-button" data-cdm-taxon-uuid="'. $node->taxonUuid. '" > '
+        . font_awesome_icon_markup('fa-chevron-right')
+        . ' </span>';
+    }
+
+    $items[] =
+      ($is_first_item ? '':  ' ')
+      . l($node_name, $path)
+      . $children_indicator;
   }
+
+
   $render_array['#items'] = $items;
 
   return $render_array;

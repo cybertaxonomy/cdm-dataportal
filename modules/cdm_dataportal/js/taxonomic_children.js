@@ -15,8 +15,12 @@
 
   // Default options for the plugin as a simple object
   var defaults = {
+    hoverClass: undefined,
+    activeClass: undefined
   };
 
+  // Plugin constructor
+  // This is the boilerplate to set up the plugin to keep our actual logic in one place
   function Plugin(element, options) {
 
     this.element = element;
@@ -38,10 +42,6 @@
 
     this._defaults = defaults;
 
-    this.container;
-    this.children;
-    this.loading;
-
     var meta = this.$el.data(name + '-opts');
     this.opts = $.extend(this._defaults, options, meta);
 
@@ -60,24 +60,8 @@
 
     init: function () {
       // Plugin initializer - prepare your plugin
-      this.$el.click(this.createContainer());
-    },
+      this.$el.click(handleShowChildren);
 
-    createContainer: function () {
-      var trigger_position =  trigger_element.position();
-      this.log('trigger-position: ' + trigger_position.top + ', ' + trigger_position.left);
-
-      container = $('<div class="' + pluginName + ' clearfix"></div>')
-        .css('background-color', 'red')
-        .css('position', 'absolute')
-        .css('top', trigger_position.top)
-        .css('left', trigger_position.left);
-      children = $('<div>CHILDREN</div><ul class="children"></ul>');
-      loading = $('<i class="fa-spinner fa-2x" />').hide();
-
-      container.append(children).append(loading);
-      trigger_element.append(container);
-      
     },
 
     log: function (msg) {
@@ -94,6 +78,40 @@
         $.data(this, 'plugin_' + pluginName, new Plugin(this, options));
       }
     });
+  };
+
+  // Private variables
+  var container, children, loading;
+
+  // Private functions that are only called by the plugin
+  var createContainer = function (trigger_el) {
+
+    container = $('<div class="' + pluginName + ' clearfix"></div>')
+      .css('background-color', 'red')
+      .css('position', 'absolute')
+      .hide();
+    children = $('<div>CHILDREN</div><ul class="children"></ul>');
+    loading = $('<i class="fa-spinner fa-2x" />').hide();
+
+    container.append(children).append(loading);
+    trigger_el.append(container);
+  };
+
+  var handleShowChildren = function(){
+
+    var trigger_el = $(this);
+    var trigger_position =  trigger_el.position();
+
+    if(container == undefined){
+      createContainer(trigger_el);
+    }
+
+    trigger_el.addClass(this.options.hoverClass);
+    container
+      .css('top', trigger_position.top + trigger_el.height())
+      .css('left', trigger_position.left)
+      .show();
+    loading.hide();
   };
 
 })(jQuery, document, window);

@@ -285,10 +285,22 @@
  * @see http://drupal.org/node/1354
  */
 function _add_js_taxonomic_children($jquery_selector) {
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/taxonomic_children.js');
+
+  global $base_url;
+
+
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/jquery.cdm.taxonomic_children.js');
+  _add_js_lib_scrollTo();
 
   drupal_add_js('jQuery(document).ready(function() {
-        jQuery(\'' . $jquery_selector . '\').taxonomic_children();
+        jQuery(\'' . $jquery_selector . '\').taxonomic_children({
+          hoverClass: "fa-rotate-90",
+          activeClass: "fa-rotate-90",
+          classificationUuid: "' . get_current_classification_uuid() . '",
+          cdmwebappBaseUri: "' . variable_get('cdm_webservice_url', '') . '",
+          proxyBaseUri: "' . $base_url . '",
+          
+        });
       });
       ', array('type' => 'inline'));
 }
@@ -300,6 +312,11 @@ function _add_js_taxonomic_children($jquery_selector) {
    */
   function _add_js_domEvent() {
     drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/domEvent.js');
+  }
+
+  function _add_js_lib_scrollTo() {
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/jquery.scrollTo-1.4.3.1'
+      . (variable_get('cdm_js_devel_mode', FALSE) ? '-min' : '') . '.js');
   }
 
   function _add_jquery_ui()

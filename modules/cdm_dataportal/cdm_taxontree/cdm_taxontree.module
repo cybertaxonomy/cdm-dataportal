@@ -820,7 +820,9 @@ function cdm_taxontree_add_js($parent_element_selector, $magicbox_enable = FALSE
   drupal_add_css($path_cdm_taxontree . '/cdm_taxontree.css');
   drupal_add_js($path_preferred_module . '/js/jquery.dimensions.pack.js');
   drupal_add_js($path_cdm_taxontree . '/js/cdm_taxontree.js');
-  drupal_add_js($path_cdm_taxontree . '/js/jquery.scrollTo-1.4.3.1-min.js');
+
+  _add_js_lib_scrollTo();
+
   drupal_add_js('
       jQuery(document).ready(function()
       {
@@ -937,7 +939,7 @@ function theme_cdm_taxontree($variables) {
 
   if (!is_array($tree)) {
     /*
-    $out = '<ul class="cdm_taxontree">';
+    $out = '<ul class="taxon-nodes">';
     $out .= '<li>----------------------------NO TREE---------------------------------------</li>';
     $out .= '</ul>';
     return $out;
@@ -951,7 +953,7 @@ function theme_cdm_taxontree($variables) {
   }
 
   // Append element name to get multiple taxontrees on one page working.
-  $out = '<ul class="cdm_taxontree' . (($element_name) ? ' ' . $element_name : '') . '">';
+  $out = '<ul class="taxon-nodes ' . (($element_name) ? ' ' . $element_name : '') . '">';
   foreach ($tree as $node) {
     $out .= theme('cdm_taxontree_node', array(
       'node' => $node,

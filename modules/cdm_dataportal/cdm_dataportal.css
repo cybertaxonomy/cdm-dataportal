@@ -118,6 +118,25 @@ select.highlite-first-child option:first-child {
     background-color: #ff2300;
 }
 
+.box-shadow-rb-5-0 {
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.3);
+}
+
+.box-shadow-b-5-1 {
+    -webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.3);
+}
+
+
+.box-shadow-border {
+    border-color: rgb(85,85,85); /* color should match shadow in box-shadow-rb */
+    border-width: 1px;
+    border-style: solid;
+}
+
 /*
  * ======= Search-Form =======
  */
@@ -564,8 +583,24 @@ table.cdm\:Reference {
   text-decoration: underline;
 }
 
-#classification-breadcrumbs li {
+#classification-breadcrumbs .taxonomic_children .children {
+    padding-right: 1em;
+    background: inherit;
+    white-space: nowrap;
+}
 
+#classification-breadcrumbs .taxonomic-children-button i {
+    cursor: pointer;
+}
+
+#classification-breadcrumbs .taxonomic_children ul.taxon-nodes{
+    background: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+#classification-breadcrumbs .taxonomic_children ul.taxon-nodes  li {
+    display: list-item;
 }
 
 .messages .cdm\:Taxon { /* taxa in warning box */
