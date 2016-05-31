@@ -82,6 +82,10 @@ function theme_cdm_reference($variables) {
 
   if(isset($reference->doi)){
     $out .= cdm_doi($reference->doi);
+    $doi_resolve_uri = 'http://doi.org/' . $reference->doi->prefix;
+    if(isset($reference->doi->suffix)){
+      $doi_resolve_uri .= '/' . $reference->doi->suffix;
+    }
   }
 
   if (isset($reference->uri)){
