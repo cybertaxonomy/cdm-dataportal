@@ -318,6 +318,11 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
 
   $name_encasement = $is_invalid ? '"' : '';
   $doubtful_marker = $is_doubtful ? '&#65110;&#8239;' : ''; // &#65110; = SMALL QUESTION MARK	&#8239; =  NARROW NO-BREAK SPACE
+  $doubtful_marker_markup = '';
+
+  if($doubtful_marker){
+    $doubtful_marker_markup = '<span class="doubtful">' . $doubtful_marker . '</span>';
+  }
 
   // split off all appendedPhrase item  from the end of the array (usually there only should  be one)
   while($taggedTitle[count($taggedTitle)-1]->type == "appendedPhrase"){
@@ -355,10 +360,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
       $taggedName = $taggedNameNew;
       unset($taggedNameNew);
     }
-    $name = '<span class="' . $taxonName->class . '">' . $doubtful_marker . $name_encasement . cdm_tagged_text_to_markup($taggedName, 'span', ' ', $skiptags) . $name_encasement . '</span>';
+    $name = '<span class="' . $taxonName->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName, 'span', ' ', $skiptags) . $name_encasement . '</span>';
   }
   else {
-    $name = '<span class="' . $taxonName->class . '_titleCache">' . $doubtful_marker . $name_encasement . $taxonName->titleCache . $name_encasement . '</span>';
+    $name = '<span class="' . $taxonName->class . '_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxonName->titleCache . $name_encasement . '</span>';
   }
 
 
