@@ -127,7 +127,8 @@ function theme_cdm_typedesignations($variables) {
         }
 
         $typeReference .= '&nbsp;(' . t('designated by');
-        $typeReference .= '&nbsp;<span class="typeReference ' . ($missingShortCitation ? '' : 'cluetip') . ' no-print" title="' . htmlspecialchars('|' . theme('cdm_reference', array('reference' => $std->citation)) . '|') . '">';
+        $typeReference .= '&nbsp;<span class="typeReference ' . ($missingShortCitation ? '' : 'cluetip') . ' no-print" title="'
+          . htmlspecialchars('|' . theme('cdm_reference', array('reference' => $std->citation)) . '|') . '">';
         $typeReference .= $shortCitation . '</span>';
         if (!empty($std->citationMicroReference)) {
           $typeReference .= ':' . $std->citationMicroReference;
@@ -151,14 +152,14 @@ function theme_cdm_typedesignations($variables) {
       $out .= '<span class="status">'
         . ((isset($std->typeStatus->representation_L10n)) ? $std->typeStatus->representation_L10n : t('Type'))
         . $typeReference
-        . '</span>: ';
+        . '</span>';
 
 
       if (isset($std->typeSpecimen)) {
         $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std->typeSpecimen->uuid);
       }
       if ( isset($derivedUnitFacadeInstance ) ){
-        $out .= $derivedUnitFacadeInstance->titleCache; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
+        $out .= ': ' . $derivedUnitFacadeInstance->titleCache; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
       }
 
       // Footnotes for collection acronyms.
