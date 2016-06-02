@@ -57,7 +57,7 @@ sed -i -e 's/^version.*$/version = 7.x-'$VERSION'/g' $WORKSPACE/modules/cdm_data
 mkdir -p target
 
 echo "creating the module-cdm_dataportal archive: cdm_dataportal-$VERSION.tar.gz"
-tar czf target/cdm_dataportal-$VERSION.tar.gz $WORKSPACE/modules/cdm_dataportal
+tar -C $WORKSPACE -czf target/cdm_dataportal-$VERSION.tar.gz modules/cdm_dataportal
 
 if $DO_CREATE_DRUPAL_INSTALLER ; then  
 
