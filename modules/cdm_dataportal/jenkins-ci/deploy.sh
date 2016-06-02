@@ -13,7 +13,7 @@ DO_CREATE_DRUPAL_INSTALLER=false
 #     HostName <ip ot host name>
 #     User <deployment-user>
 # 
-# At the server to be delpoyed to you need to setup and configure the 
+# At the server to be deployed to you need to setup and configure the
 
 # 1. create the <deployment-user> 
 #
@@ -23,7 +23,7 @@ DO_CREATE_DRUPAL_INSTALLER=false
 #   
 # 3. user 'www-data' must be member of the group of the <deployment-user>
 #
-# 4. The permissions of the folders to delpoyed to must be set to 775 ownership must be adjusted:
+# 4. The permissions of the folders to deployed to must be set to 775 ownership must be adjusted:
 #   chmod -R 775 <the folders>
 #   chown -R www-data:deploy <the folders> 
 # 
@@ -42,6 +42,13 @@ if [ -z "$WORKSPACE" ]; then
   echo "ERROR: environment variable WORKSPACE should be set by jenkins but is missing."
   exit -1
 fi
+
+#
+# set version for release
+#
+
+sed -i -e 's/^version.*$/version = 7.x-'$VERSION'/g' $WORKSPACE/modules/cdm_dataportal/cdm_dataportal.info
+
 
 #
 # pack and deploy the cdm_dataportal module
