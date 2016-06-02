@@ -317,7 +317,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   $lastAuthorElementString = FALSE;
 
   $name_encasement = $is_invalid ? '"' : '';
-  $doubtful_marker = $is_doubtful ? '&#65110;&#8239;' : ''; // &#65110; = SMALL QUESTION MARK	&#8239; =  NARROW NO-BREAK SPACE
+  $doubtful_marker = $is_doubtful ? '?&#8239;' : ''; // 	&#8239; =  NARROW NO-BREAK SPACE
   $doubtful_marker_markup = '';
 
   if($doubtful_marker){
@@ -368,7 +368,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
 
 
   if(isset($appended_phrase_tagged_text[0])){
-    $name .= ' '. cdm_tagged_text_to_markup($appended_phrase_tagged_text);
+    $name .= ' <span class="appended-phrase">'. cdm_tagged_text_to_markup($appended_phrase_tagged_text) . '</span>';
   }
 
   // Fill name into $renderTemplate.
