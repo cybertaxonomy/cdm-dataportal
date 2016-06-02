@@ -1,6 +1,6 @@
 name = "CDM Dataportal"
 description = "The dataportal publishes CDM data hosted in a CommunityStore on the web."
-version = 7.x-3.x
+version = 7.x-4.x-SNAPSHOT
 package = "CDM"
 dependencies[] = cdm_api
 dependencies[] = cdm_taxontree
