@@ -242,7 +242,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
       array('includeAllParents' => 'true')
     );
 
-    // create map: parent_term_uuid => term
+    // create map: term_uuid => term
     $term_map = array();
     foreach ($area_term_dtos as $term_dto) {
       $term_map[$term_dto->uuid] = $term_dto;
@@ -250,7 +250,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
 
     $term_tree = array();
     // mixed_vocabularies will contain the uuid vocabularies which
-    // also contain terms of foreign vocabuaries due to the term
+    // also contain terms of foreign vocabularies due to the term
     // hierarchy
     $mixed_vocabularies = array();
 
