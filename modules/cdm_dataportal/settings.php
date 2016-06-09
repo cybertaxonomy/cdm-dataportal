@@ -7,7 +7,8 @@
 
   // TODO Genus UUID.
 
-  define('DEFAULT_TAXONTREE_RANKLIMIT', '1b11c34c-48a8-4efa-98d5-84f7f66ef43a');
+  define('TAXONTREE_RANKLIMIT', 'cdm_taxontree_ranklimit');
+  define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
   define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
   define('CDM_TAXONTREE_INCLUDES', 'taxontree_includes');
 
@@ -1130,11 +1131,11 @@ function cdm_settings_general() {
       with a manual user change.'),
   );
 
-  $form['taxon_tree']['taxontree_ranklimit'] = array(
+  $form['taxon_tree'][TAXONTREE_RANKLIMIT] = array(
     '#type' => 'select',
     '#title' => t('Rank of highest displayed taxon') . ':',
      // Before DEFAULT_TAXONTREE_RANKLIMIT_UUID.
-    '#default_value' => variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT),
+    '#default_value' => variable_get(TAXONTREE_RANKLIMIT, TAXONTREE_RANKLIMIT_DEFAULT),
     '#options' => cdm_rankVocabulary_as_option(),
     '#description' => t('This is the rank of the highest displayed taxon in the
       <em>taxon tree</em>. You can select here which rank should be at the top

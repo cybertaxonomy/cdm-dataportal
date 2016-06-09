@@ -1210,14 +1210,15 @@ function cdm_ws_taxonomy_compose_resourcePath($path = NULL){
  * @param string $ignore_rank_limit
  *   Whether to ignore the variable 'taxontree_ranklimit' set by admin in the settings
  *
- * @return A cdm REST service URL path to a Classification
+ * @return string
+ *   A cdm REST service URL path to a Classification
  */
 function cdm_compose_taxonomy_root_level_path($taxon_uuid = FALSE, $ignore_rank_limit = FALSE) {
 
   $view_uuid = get_current_classification_uuid();
   $rank_uuid = NULL;
   if (!$ignore_rank_limit) {
-    $rank_uuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
+    $rank_uuid = variable_get(TAXONTREE_RANKLIMIT, TAXONTREE_RANKLIMIT_DEFAULT);
   }
 
   if (!empty($taxon_uuid)) {
@@ -1227,7 +1228,7 @@ function cdm_compose_taxonomy_root_level_path($taxon_uuid = FALSE, $ignore_rank_
     ));
   }
   else {
-    if (!empty($rank_uuid)) {
+    if (is_uuid($rank_uuid)) {
       return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK, array(
         $view_uuid,
         $rank_uuid,
@@ -1301,18 +1302,22 @@ function cdm_ws_taxonomy_root_level($taxon_uuid = NULL) {
 }
 
 /**
- * @todo Enter description here...
+ * Determines the tree path of the taxon given as uuid to the root of the classification tree.
+ * 
+ * The root either is the absolute root of the tree or a rank specific root if the TAXONTREE_RANKLIMIT
+ * variable is set.
  *
  * @param string $taxon_uuid
  *
  * @return array
+ *   An array of CDM TaxonNodeDTO objects
  */
 function cdm_ws_taxonomy_pathFromRoot($taxon_uuid) {
   $view_uuid = get_current_classification_uuid();
-  $rank_uuid = variable_get('taxontree_ranklimit', DEFAULT_TAXONTREE_RANKLIMIT);
+  $rank_uuid = variable_get(TAXONTREE_RANKLIMIT, TAXONTREE_RANKLIMIT_DEFAULT);
 
   $response = NULL;
-  if ($rank_uuid) {
+  if (is_uuid($rank_uuid)) {
     $response = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK, array(
       $view_uuid,
       $taxon_uuid,
