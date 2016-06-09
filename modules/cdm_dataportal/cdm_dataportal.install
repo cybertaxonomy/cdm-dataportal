@@ -388,6 +388,17 @@ function cdm_dataportal_update_7308() {
   return join(', ',$tasks_performed);
 }
 
+/**
+ * update for RELEASE 4.2:
+ *  -  rename variable taxontree_ranklimit to cdm_taxontree_ranklimit
+ */
+function cdm_dataportal_update_7309() {
+
+  $tasks_performed = array();
+  $tasks_performed[] = _rename_variable('taxontree_ranklimit', 'cdm_taxontree_ranklimit');
+  return join(', ',$tasks_performed);
+}
+
 
 /* ======================================================================== */
 
@@ -409,7 +420,12 @@ function _rename_variable($old_name, $new_name) {
     $success = TRUE;
   }
 
-  return "Variable '$old_name' to '$new_name' renamed. ";
+  if($success){
+    return "Variable '$old_name' to '$new_name' renamed. ";
+  } else {
+    return "ERROR: Renaming variable '$old_name' to '$new_name'. ";
+  }
+
 }
 
 /**
