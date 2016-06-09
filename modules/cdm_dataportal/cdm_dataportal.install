@@ -270,7 +270,7 @@ function cdm_dataportal_update_7304() {
 
     // OpenLayers
     $cdm_map_distribution['openlayers'] = array();
-    $cdm_map_distribution['openlayers']['base_layers'] = variable_get('baselayers', array('osgeo_vmap0' => 'osgeo_vmap0', 'PREFERRED' => 'osgeo_vmap0'));
+    $cdm_map_distribution['openlayers']['base_layers'] = variable_get('baselayers', array('mapproxy_vmap0' => 'mapproxy_vmap0', 'PREFERRED' => 'mapproxy_vmap0'));
     _remove_variable('baselayers');
 
     $cdm_map_distribution['openlayers']['show_layer_switcher'] = variable_get('cdm_dataportal_geoservice_showLayerSwitcher', TRUE);
