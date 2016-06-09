@@ -462,10 +462,10 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
     'base_layers' =>  array(
       // A layer MUST NOT BE SET in the defaults,
       // otherwise it can not be overidden by the user settings:
-      // 'osgeo_vmap0' => 'osgeo_vmap0',
+      // 'mapproxy_vmap0' => 'mapproxy_vmap0',
       // it is sufficient to define the preferred layer,
       // since it will automatically be enabled:
-      'PREFERRED' => 'osgeo_vmap0'),
+      'PREFERRED' => 'mapproxy_vmap0'),
     'custom_wms_base_layer' => array(
       'name' => NULL,
       'url' => NULL,
