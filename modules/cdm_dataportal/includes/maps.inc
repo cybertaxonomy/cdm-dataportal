@@ -137,12 +137,17 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
 
     $layer_names = $map_settings['openlayers']['base_layers'];
 
-    if(isset($layer_names['PREFERRED'])){
+    $cdm_openlayers_options['baseLayerNames'] = array_values($layer_names);
+
+    if(isset($cdm_openlayers_options['PREFERRED'])){
       $cdm_openlayers_options['defaultBaseLayerName'] = $layer_names['PREFERRED'];
-      unset($layer_names['PREFERRED']);
+      unset($cdm_openlayers_options['PREFERRED']);
+      if(!array_search($cdm_openlayers_options['defaultBaseLayerName'], $cdm_openlayers_options['baseLayerNames'])){
+        // the default layer mus also  be in the list of base layers 
+        $cdm_openlayers_options['baseLayerNames'][] = $cdm_openlayers_options['defaultBaseLayerName'];
+      }
     }
 
-    $cdm_openlayers_options['baseLayerNames'] = array_values($layer_names);
 
   }
 

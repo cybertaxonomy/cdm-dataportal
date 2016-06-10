@@ -33,8 +33,8 @@
     boundingBox: null,
     aspectRatio: 2, // w/h
     showLayerSwitcher: false,
-    baseLayerNames: ["osgeo_vmap0"],
-    defaultBaseLayerName: 'osgeo_vmap0',
+    baseLayerNames: ["mapproxy_vmap0"],
+    defaultBaseLayerName: 'mapproxy_vmap0',
     maxZoom: 4,
     minZoom: 0,
     debug: true,
