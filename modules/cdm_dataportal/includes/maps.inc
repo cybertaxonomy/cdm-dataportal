@@ -139,11 +139,11 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
 
     $cdm_openlayers_options['baseLayerNames'] = array_values($layer_names);
 
-    if(isset($cdm_openlayers_options['PREFERRED'])){
+    if($layer_names['PREFERRED']){
       $cdm_openlayers_options['defaultBaseLayerName'] = $layer_names['PREFERRED'];
-      unset($cdm_openlayers_options['PREFERRED']);
+      unset($layer_names['PREFERRED']); // why is this needed?
       if(!array_search($cdm_openlayers_options['defaultBaseLayerName'], $cdm_openlayers_options['baseLayerNames'])){
-        // the default layer mus also  be in the list of base layers 
+        // the default layer must also  be in the list of base layers
         $cdm_openlayers_options['baseLayerNames'][] = $cdm_openlayers_options['defaultBaseLayerName'];
       }
     }
