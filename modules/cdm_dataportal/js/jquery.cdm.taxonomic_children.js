@@ -133,6 +133,8 @@
       this.$element = $(this.element);
 
       this.taxonUuid = this.$element.attr('data-cdm-taxon-uuid');
+      this.rankLimitUuid = this.$element.attr('data-rank-limit-uuid');
+
 
       var nextLiElement = this.$element.parent('li').next();
       if(nextLiElement != undefined){
@@ -286,11 +288,31 @@
     requestURI: function(pageIndex, pageSize){
 
       // pageIndex, pageSize are not yet used, prepared for future though
-      var contentRequest =
-        this.options.cdmwebappBaseUri
-        + this.options.cdmwebappRequest
-          .replace('{classificationUuid}', this.options.classificationUuid)
-          .replace('{taxonUuid}', this.taxonUuid);
+      var contentRequest;
+
+      if(!pageIndex){
+        pageIndex = 0;
+      }
+      if(!pageSize) {
+        pageSize = 100;
+      }
+
+      if(this.taxonUuid){
+        contentRequest =
+          this.options.cdmWebappBaseUri
+          + this.options.cdmWebappTaxonChildrenRequest
+            .replace('{classificationUuid}', this.options.classificationUuid)
+            .replace('{taxonUuid}', this.taxonUuid);
+
+      } else if(this.rankLimitUuid){
+        contentRequest =
+          this.options.cdmWebappBaseUri
+          + this.options.cdmWebappClassificationChildnodesAtRequest
+            .replace('{classificationUuid}', this.options.classificationUuid)
+            .replace('{rankUuid}', this.rankLimitUuid);
+      } else {
+
+      }
 
       this.log("contentRequest: " + contentRequest);
 
@@ -350,9 +372,11 @@
     hoverClass: undefined,
     activeClass: undefined,
     classificationUuid: undefined,
-    cdmwebappBaseUri: undefined,
+    cdmWebappBaseUri: undefined,
     proxyBaseUri: undefined,
-    cdmwebappRequest: "portal/classification/{classificationUuid}/childNodesOf/{taxonUuid}",
+    cdmWebappTaxonChildrenRequest: "portal/classification/{classificationUuid}/childNodesOf/{taxonUuid}",
+    cdmWebappClassificationChildnodesAtRequest: "portal/classification/{classificationUuid}/childNodesAt/{rankUuid}.json",
+    cdmWebappClassificationRootRequest: "portal/classification/{classificationUuid}/childNodes.json",
     proxyRequest: "cdm_api/proxy/{contentRequest}/{renderFunction}",
     renderFunction: "cdm_taxontree",
     viewPortRows: {min: 5, max: 5}

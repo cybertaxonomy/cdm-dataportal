@@ -959,9 +959,6 @@ function compose_classification_breadcrumbs($taxon_uuid) {
   _add_js_taxonomic_children('#classification-breadcrumbs .taxonomic-children-button');
 
   $render_array = array();
-  if(!is_uuid($taxon_uuid)){
-    return $render_array;
-  }
 
   $render_array['#theme'] = 'item_list';
   $render_array['#type'] = 'ul';
@@ -971,26 +968,66 @@ function compose_classification_breadcrumbs($taxon_uuid) {
   );
 
   $items = array();
-  $parent_taxon_nodes = cdm_ws_taxonomy_pathFromRoot($taxon_uuid);
 
-  foreach ($parent_taxon_nodes as $node){
-
-    $is_first_item = count($items) == 0;
-    $node_name = cdm_dataportal_shortname_of($node);
-    $path = path_to_taxon($node->taxonUuid);
-
-    $children_indicator = '';
-    if($node->taxonomicChildrenCount){
-      $children_indicator =  '<span class="taxonomic-children-button" data-cdm-taxon-uuid="'. $node->taxonUuid. '" > '
-        . font_awesome_icon_markup('fa-chevron-right')
-        . ' </span>';
-    }
-
-    $items[] =
-      ($is_first_item ? '':  ' ')
-      . l($node_name, $path)
-      . $children_indicator;
+  $parent_taxon_nodes = null;
+  if($taxon_uuid){
+    $parent_taxon_nodes = cdm_ws_taxonomy_pathFromRoot($taxon_uuid);
   }
+
+  $classifications = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXONOMY);
+  // find current classification in list
+  $classification = null;
+  $current_classification_uuid = get_current_classification_uuid();
+  foreach ($classifications as $classification){
+    if($classification->uuid == $current_classification_uuid){
+      break;
+    }
+  }
+
+  $node_name = '';
+  if(count($classifications) > 1 ){
+    // need to add the current classification as first label
+    $node_name = '<span '. html_class_attribute_ref($classification) .'>'
+      . $classification->titleCache . '</span>';
+  }
+
+  $rank_limit_uuid = variable_get(TAXONTREE_RANKLIMIT, TAXONTREE_RANKLIMIT_DEFAULT);
+
+  /*
+  if($parent_taxon_nodes) {
+    // the path to root never contains the classification->root, by asking for
+    // the parent node we either get this or the predecessor of the virtual root node.
+    $root_parent_taxon_node_dto = cdm_ws_get(CDM_WS_TAXONNODE_PARENT, array($parent_taxon_nodes[0]->uuid));
+  } else {
+
+
+  }*/
+
+  $children_indicator =  '<span class="taxonomic-children-button" data-classification-uuid="'. $current_classification_uuid
+    . '" data-rank-limit-uuid="'. $rank_limit_uuid . '" > '
+    . font_awesome_icon_markup('fa-chevron-right')
+    . ' </span>';
+
+  $items[] = $node_name . $children_indicator;
+
+    foreach ($parent_taxon_nodes as $node){
+
+      $is_first_item = count($items) == 0;
+      $node_name = cdm_dataportal_shortname_of($node);
+      $path = path_to_taxon($node->taxonUuid);
+
+      $children_indicator = '';
+      if($node->taxonomicChildrenCount){
+        $children_indicator =  '<span class="taxonomic-children-button" data-cdm-taxon-uuid="'. $node->taxonUuid. '" > '
+          . font_awesome_icon_markup('fa-chevron-right')
+          . ' </span>';
+      }
+
+      $items[] =
+        ($is_first_item ? '':  ' ')
+        . l($node_name, $path)
+        . $children_indicator;
+    }
 
 
   $render_array['#items'] = $items;

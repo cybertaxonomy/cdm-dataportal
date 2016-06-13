@@ -934,13 +934,12 @@ function theme_cdm_taxontree($variables) {
   $tree_node_callback = $variables['tree_node_callback'];
   $element_name = $variables['element_name'];
 
+  if(isset($tree->records)){
+    // unwrap from pager object
+    $tree = $tree->records;
+  }
+
   if (!is_array($tree)) {
-    /*
-    $out = '<ul class="taxon-nodes">';
-    $out .= '<li>----------------------------NO TREE---------------------------------------</li>';
-    $out .= '</ul>';
-    return $out;
-    */
     return FALSE;
   }
 
@@ -952,6 +951,9 @@ function theme_cdm_taxontree($variables) {
   // Append element name to get multiple taxontrees on one page working.
   $out = '<ul class="taxon-nodes ' . (($element_name) ? ' ' . $element_name : '') . '">';
   foreach ($tree as $node) {
+    if($node == null){
+      continue;
+    }
     $out .= theme('cdm_taxontree_node', array(
       'node' => $node,
       'filterIncludes' => $filterIncludes,

@@ -82,6 +82,8 @@ define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM', 'portal/classification/$0/pathFrom/$1
 define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK', 'portal/classification/$0/pathFrom/$1/toRank/$2');
 define('CDM_WS_PORTAL_TAXONOMY_MEDIA', 'portal/classification/$0/$1');
 
+define('CDM_WS_TAXONNODE_PARENT', 'taxonNode/$0/parent');
+
 define('CDM_WS_TERMVOCABULARY', 'termVocabulary/$0');
 
 define('CDM_WS_TERM_COMPARE', 'term/$0/compareTo/$1');

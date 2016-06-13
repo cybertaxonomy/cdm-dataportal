@@ -296,7 +296,7 @@ function _add_js_taxonomic_children($jquery_selector) {
           hoverClass: "fa-rotate-90",
           activeClass: "fa-rotate-90",
           classificationUuid: "' . get_current_classification_uuid() . '",
-          cdmwebappBaseUri: "' . variable_get('cdm_webservice_url', '') . '",
+          cdmWebappBaseUri: "' . variable_get('cdm_webservice_url', '') . '",
           proxyBaseUri: "' . $base_url . '",
           
         });
@@ -828,12 +828,14 @@ function cdm_dataportal_block_view($delta) {
       ));
       return $block;
     case 'classification_breadcrumbs':
+      $taxon_uuid = null;
       if (arg(1) == 'taxon' && is_uuid(arg(2))) {
-        $block['subject'] = '<none>';
-        $block['content'] = compose_classification_breadcrumbs(arg(2));
-        return $block;
+        $taxon_uuid = arg(2);
       }
-      break;
+      $block['subject'] = '<none>';
+      $block['content'] = compose_classification_breadcrumbs($taxon_uuid);
+      return $block;
+    
   }
 }
 
