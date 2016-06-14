@@ -992,17 +992,6 @@ function compose_classification_breadcrumbs($taxon_uuid) {
   }
 
   $rank_limit_uuid = variable_get(TAXONTREE_RANKLIMIT, TAXONTREE_RANKLIMIT_DEFAULT);
-
-  /*
-  if($parent_taxon_nodes) {
-    // the path to root never contains the classification->root, by asking for
-    // the parent node we either get this or the predecessor of the virtual root node.
-    $root_parent_taxon_node_dto = cdm_ws_get(CDM_WS_TAXONNODE_PARENT, array($parent_taxon_nodes[0]->uuid));
-  } else {
-
-
-  }*/
-
   $children_indicator =  '<span class="taxonomic-children-button" data-classification-uuid="'. $current_classification_uuid
     . '" data-rank-limit-uuid="'. $rank_limit_uuid . '" > '
     . font_awesome_icon_markup('fa-chevron-right')

@@ -175,15 +175,22 @@
 
        this works at earliest with v1.7, with 1.4.4 we need to use bind:
        */
-      plugin.$element.bind('mouseenter', function() { // 'mouseenter' or 'click' are appropriate candidates
-        /*
-         Use the "call" method so that inside of the method being
-         called, ie: "someOtherFunction", the "this" keyword refers
-         to the plugin instance, not the event handler.
+      /*plugin.$element.bind('mouseenter', function() { // 'mouseenter' or 'click' are appropriate candidates
+        plugin.showChildren.call(plugin);
+      });
+      */
 
-         More: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call
-         */
-        plugin.showChildren.call(plugin); // TODO? why can't handleShowChildren(plugin) be used?
+      plugin.$element.bind('click', function (event){
+        plugin.showChildren.call(plugin);
+        event.stopPropagation();
+      });
+
+      plugin.container.mouseleave(function (){
+        plugin.hideChildren.call(plugin);
+      });
+
+      $(document).click(function (){
+        plugin.hideChildren.call(plugin);
       });
 
       plugin.$element.children('i.fa').hover(
@@ -194,14 +201,6 @@
           this.removeClass(this.options.hoverClass);
         }
       );
-      
-      plugin.container.mouseleave(function (){
-        plugin.hideChildren.call(plugin);
-      });
-
-      $(document).click(function (){
-        plugin.hideChildren.call(plugin);
-      });
 
     },
 
