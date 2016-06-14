@@ -1010,6 +1010,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
 
   $items[] = $node_name . $children_indicator;
 
+  if($parent_taxon_nodes){
     foreach ($parent_taxon_nodes as $node){
 
       $is_first_item = count($items) == 0;
@@ -1028,7 +1029,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
         . l($node_name, $path)
         . $children_indicator;
     }
-
+  }
 
   $render_array['#items'] = $items;
 

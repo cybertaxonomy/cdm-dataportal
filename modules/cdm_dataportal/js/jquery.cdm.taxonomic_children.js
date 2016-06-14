@@ -236,6 +236,7 @@
         .css('left', trigger_position.left + 'px')
         .css('padding-left', this.$element.width() + 'px')
         .css('padding-right', this.$element.width() + 'px')
+        .css('z-index', 10)
         .show();
 
       if(!this.isDataLoaded){
@@ -243,6 +244,7 @@
           plugin.handleDataLoaded(html);
         });
       } else {
+        this.adjustHeight();
         this.scrollToSelected();
       }
     },
@@ -259,18 +261,34 @@
       this.isDataLoaded = true;
       var listContainer = $(html);
       this.children.append(listContainer);
-      var itemsCount = listContainer.children().length;
+      this.itemsCount = listContainer.children().length;
 
-      // adjust heights
-      var viewPortRows = (itemsCount > this.options.viewPortRows.min ? this.options.viewPortRows.max : this.options.viewPortRows.min);
+      this.adjustHeight();
+      this.scrollToSelected();
+    },
+
+    calculateViewPortRows: function() {
+
+      var max;
+      if(this.options.viewPortRows.max) {
+        max = this.options.viewPortRows.max;
+      } else {
+        // no absolute maximum defined: calculate the current max based on the window viewport
+        max = Math.floor( ($(window).height() - this.element.getBoundingClientRect().top) / this.lineHeight) - 2;
+        this.log('max: ' + max);
+      }
+      return (this.itemsCount > this.options.viewPortRows.min ? max : this.options.viewPortRows.min);
+    },
+
+    adjustHeight: function(itemsCount){
+
+      var viewPortRows = this.calculateViewPortRows(itemsCount); //(itemsCount > this.options.viewPortRows.min ? this.options.viewPortRows.max : this.options.viewPortRows.min);
       this.log('itemsCount: ' + itemsCount + ' => viewPortRows: ' + viewPortRows);
 
       this.container.css('height', viewPortRows * this.lineHeight + 'px');
       this.children
-       .css('padding-top', this.lineHeight + 'px') // one row above current
-       .css('padding-bottom', (viewPortRows - 2) * this.lineHeight + 'px'); // subtract 2 lines (current + one above)
-
-      this.scrollToSelected(viewPortRows);
+        .css('padding-top', this.lineHeight + 'px') // one row above current
+        .css('padding-bottom', (viewPortRows - 2) * this.lineHeight + 'px'); // subtract 2 lines (current + one above)
     },
 
     scrollToSelected: function () {
@@ -379,7 +397,7 @@
     cdmWebappClassificationRootRequest: "portal/classification/{classificationUuid}/childNodes.json",
     proxyRequest: "cdm_api/proxy/{contentRequest}/{renderFunction}",
     renderFunction: "cdm_taxontree",
-    viewPortRows: {min: 5, max: 5}
+    viewPortRows: {min: 5, max: undefined}
   };
 
 })( jQuery, window, document );
