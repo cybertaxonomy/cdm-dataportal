@@ -194,10 +194,15 @@
           this.removeClass(this.options.hoverClass);
         }
       );
-
+      
       plugin.container.mouseleave(function (){
         plugin.hideChildren.call(plugin);
       });
+
+      $(document).click(function (){
+        plugin.hideChildren.call(plugin);
+      });
+
     },
 
     // Unbind events that trigger methods
