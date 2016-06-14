@@ -134,6 +134,10 @@
 
       this.taxonUuid = this.$element.attr('data-cdm-taxon-uuid');
       this.rankLimitUuid = this.$element.attr('data-rank-limit-uuid');
+      if(this.rankLimitUuid == '0'){
+        // '0' is used in the cdm_dataportal settings as value for 'no rank limit'
+        this.rankLimitUuid = undefined;
+      }
 
 
       var nextLiElement = this.$element.parent('li').next();
@@ -329,7 +333,10 @@
             .replace('{classificationUuid}', this.options.classificationUuid)
             .replace('{rankUuid}', this.rankLimitUuid);
       } else {
-
+        contentRequest =
+          this.options.cdmWebappBaseUri
+          + this.options.cdmWebappClassificationRootRequest
+            .replace('{classificationUuid}', this.options.classificationUuid);
       }
 
       this.log("contentRequest: " + contentRequest);
@@ -397,7 +404,8 @@
     cdmWebappClassificationRootRequest: "portal/classification/{classificationUuid}/childNodes.json",
     proxyRequest: "cdm_api/proxy/{contentRequest}/{renderFunction}",
     renderFunction: "cdm_taxontree",
-    viewPortRows: {min: 5, max: undefined}
+    // viewPortRows: if max is 'undefined' the height will be adapted to the window viewport
+    viewPortRows: {min: 3, max: undefined}
   };
 
 })( jQuery, window, document );
