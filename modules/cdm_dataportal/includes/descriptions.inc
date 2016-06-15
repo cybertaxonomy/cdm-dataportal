@@ -1282,9 +1282,10 @@ function compose_description_element_quantitative_data($element, $feature_block_
     $name_in_source_render_array = array();
 
     static $taxon_page_accepted_name = '';
-    if($suppress_for_shown_taxon && arg(1) == 'taxon' && empty($taxon_page_accepted_name)){
+    $taxon_uuid = get_current_taxon_uuid();
+    if($suppress_for_shown_taxon && $taxon_uuid && empty($taxon_page_accepted_name)){
 
-      $current_taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, arg(2));
+      $current_taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxon_uuid);
       $taxon_page_accepted_name = $current_taxon->name->titleCache;
     }
 

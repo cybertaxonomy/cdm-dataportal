@@ -395,8 +395,8 @@ function ext_links_block_view($delta) {
     case '0':
       $block['subject'] = 'External links';
 
-      if (arg(0) == "cdm_dataportal" && arg(1) == "taxon" && arg(2) !== 0) {
-        $uuid = arg(2);
+      $uuid = get_current_taxon_uuid();
+      if ($uuid) {
         $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $uuid);
 
         // $taxon->titleCache;

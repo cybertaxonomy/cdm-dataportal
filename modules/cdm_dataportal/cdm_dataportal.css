@@ -92,6 +92,10 @@ dd.sublist-container div dl , dd.sublist-container div h3 {
   font-style: normal;
 }
 
+.focused {
+    font-weight: bold;
+}
+
 .relation_sign {
   margin-left: -1em; /* Same as ul.typeDesignations. */
   margin-right: 0.3em;
@@ -584,6 +588,16 @@ table.cdm\:Reference {
   text-decoration: underline;
 }
 
+#classification-breadcrumbs .children ul{
+    background: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+#classification-breadcrumbs .children li {
+    display: list-item;
+}
+
 #classification-breadcrumbs .taxonomic_children .children {
     padding-right: 1em;
     background: inherit;
@@ -598,15 +612,8 @@ table.cdm\:Reference {
     color: #8a918e;
 }
 
-#classification-breadcrumbs .taxonomic_children ul.taxon-nodes{
-    background: inherit;
-    margin: 0;
-    padding: 0;
-}
 
-#classification-breadcrumbs .taxonomic_children ul.taxon-nodes  li {
-    display: list-item;
-}
+
 
 .messages .cdm\:Taxon { /* taxa in warning box */
     font-weight: bold;

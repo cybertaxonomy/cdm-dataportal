@@ -356,18 +356,6 @@ function find_tagged_text_elements($taggedTextList, $type){
 // ===================== END of Tagged Text functions ================== //
 
 /**
- * Returns the currently classification tree in use.
- */
-function get_current_classification_uuid() {
-  if (isset($_SESSION['cdm']['taxonomictree_uuid']) && is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
-    return $_SESSION['cdm']['taxonomictree_uuid'];
-  }
-  else {
-    return variable_get(CDM_TAXONOMICTREE_UUID, FALSE);
-  }
-}
-
-/**
  * Lists the classifications a taxon belongs to
  *
  * @param CDM type Taxon $taxon
@@ -463,21 +451,6 @@ function get_structured_description_featureTree() {
   return $structured_description_featureTree;
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function switch_to_taxonomictree_uuid($taxonomictree_uuid) {
-  $_SESSION['cdm']['taxonomictree_uuid'] = $taxonomictree_uuid;
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function reset_taxonomictree_uuid($taxonomictree_uuid) {
-  unset($_SESSION['cdm']['taxonomictree_uuid']);
-}
 
 /**
  * @todo Please document this function.
@@ -932,18 +905,24 @@ function proxy_content($uri, $hook = NULL) {
     // $hook has been supplied
     // handle $hook either as compose ot theme hook
     // pass through theme or comose hook
+    // compose hooks can be called without data, therefore
+    // passing the $uri in this case is not always a requirement
 
+    if($uri && $uri != 'NULL') {
     // do a security check since the $uri will be passed
     // as absolute URI to cdm_ws_get()
-    if( !_is_cdm_ws_uri($uri)) {
-      drupal_set_message(
-      'Invalid call of proxy_content() with callback parameter \'' . $hook . '\' and URI:' . $uri,
-      'error'
-          );
-          return '';
-    }
+      if (!_is_cdm_ws_uri($uri)) {
+        drupal_set_message(
+          'Invalid call of proxy_content() with callback parameter \'' . $hook . '\' and URI:' . $uri,
+          'error'
+        );
+        return '';
+      }
 
-    $obj = cdm_ws_get($uri, NULL, $post_data, $request_method, TRUE);
+      $obj = cdm_ws_get($uri, NULL, $post_data, $request_method, TRUE);
+    } else {
+      $obj = NULL;
+    }
 
     $reponse_data = NULL;
 
@@ -1024,8 +1003,8 @@ function proxy_content($uri, $hook = NULL) {
  */
 function setvalue_session() {
   if ($_REQUEST['var'] && strlen($_REQUEST['var']) > 4) {
-    $keys = substr($_REQUEST['var'], 1, strlen($_REQUEST['var']) - 2);
-    $keys = explode('][', $keys);
+    $var_keys = substr($_REQUEST['var'], 1, strlen($_REQUEST['var']) - 2);
+    $var_keys = explode('][', $var_keys);
   }
   else {
     return;
@@ -1035,16 +1014,16 @@ function setvalue_session() {
   // Prevent from malicous tags.
   $val = strip_tags($val);
 
-  $var = &$_SESSION;
-  $i = 0;
-  foreach ($keys as $key) {
-    $hasMoreKeys = ++$i < count($var);
-    if ($hasMoreKeys && (!isset($var[$key]) || !is_array($var[$key]))) {
-      $var[$key] = array();
+  $session_var = &$_SESSION;
+  //$i = 0;
+  foreach ($var_keys as $key) {
+    // $hasMoreKeys = ++$i < count($session);
+    if (!isset($session_var[$key]) || !is_array($session_var[$key])) {
+      $session_var[$key] = array();
     }
-    $var = &$var[$key];
+    $session_var = &$session_var[$key];
   }
-  $var = $val;
+  $session_var = $val;
   if (isset($_REQUEST['destination'])) {
     drupal_goto($_REQUEST['destination']);
   }
@@ -1333,19 +1312,19 @@ function cdm_ws_taxonomy_pathFromRoot($taxon_uuid) {
 
   if ($response == NULL) {
     // Error handing.
-    if (is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
-      // Delete the session value and try again with the default.
-      unset($_SESSION['cdm']['taxonomictree_uuid']);
-      return cdm_ws_taxonomy_pathFromRoot($taxon_uuid);
-    }
-    else {
+//    if (is_uuid($_SESSION['cdm']['taxonomictree_uuid'])) {
+//      // Delete the session value and try again with the default.
+//      unset($_SESSION['cdm']['taxonomictree_uuid']);
+//      return cdm_ws_taxonomy_pathFromRoot($taxon_uuid);
+//    }
+//    else {
       // Check if taxonomictree_uuid is valid.
       $test = cdm_ws_get(cdm_compose_taxonomy_root_level_path(), NULL, NULL, 'GET', TRUE);
       if ($test == NULL) {
         // The default set by the admin seems to be invalid or is not even set.
         drupal_set_message(_no_classfication_uuid_message(), 'warning');
       }
-    }
+//    }
   }
 
   return $response;
@@ -2286,7 +2265,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
 }
 
 /**
- * Provides the list of availbale classifications in form of an options array.
+ * Provides the list of available classifications in form of an options array.
  *
  * The options array is suitable for drupal form API elements that allow multiple choices.
  * @see http://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7#options

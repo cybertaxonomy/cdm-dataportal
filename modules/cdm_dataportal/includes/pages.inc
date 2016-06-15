@@ -987,38 +987,82 @@ function compose_classification_breadcrumbs($taxon_uuid) {
   $node_name = '';
   if(count($classifications) > 1 ){
     // need to add the current classification as first label
-    $node_name = '<span '. html_class_attribute_ref($classification) .'>'
-      . $classification->titleCache . '</span>';
+
+    $label = $classification->titleCache;
+    if(strlen($label) > 20){
+      $label = substr($label, 0, strpos($label, ' ', 15)) . '...';
+    }
+    $node_name = font_awesome_icon_markup('fa-th-list')  . ' ' . l($label, '#', array(
+      'attributes' => array(
+        'class' => 'taxonomic-children-button classification-chooser',
+        'data-destination-uri' => drupal_get_destination(),
+        'data-cdm-align-with' => array('prev')
+      ),
+      'html' => true
+    ));
   }
 
   $rank_limit_uuid = variable_get(TAXONTREE_RANKLIMIT, TAXONTREE_RANKLIMIT_DEFAULT);
-  $children_indicator =  '<span class="taxonomic-children-button" data-classification-uuid="'. $current_classification_uuid
-    . '" data-rank-limit-uuid="'. $rank_limit_uuid . '" > '
+
+  $rank_separator = '<span> '
     . font_awesome_icon_markup('fa-chevron-right')
     . ' </span>';
+  $more_children_icon = font_awesome_icon_markup('fa-sitemap fa-rotate-270');
 
-  $items[] = $node_name . $children_indicator;
+  $items[] = $node_name;
 
+  $more_children_for = null;
   if($parent_taxon_nodes){
-    foreach ($parent_taxon_nodes as $node){
+    foreach ($parent_taxon_nodes as $node) {
 
       $is_first_item = count($items) == 0;
+      $is_last_item = count($items) == count($parent_taxon_nodes);
       $node_name = cdm_dataportal_shortname_of($node);
       $path = path_to_taxon($node->taxonUuid);
 
-      $children_indicator = '';
-      if($node->taxonomicChildrenCount){
-        $children_indicator =  '<span class="taxonomic-children-button" data-cdm-taxon-uuid="'. $node->taxonUuid. '" > '
-          . font_awesome_icon_markup('fa-chevron-right')
-          . ' </span>';
+      if($node->taxonomicChildrenCount > 0) {
+        $more_children_for = $node->taxonUuid;
+      } else {
+        $more_children_for = null;
       }
 
+      // 'fa-sitemap'
+
       $items[] =
-        ($is_first_item ? '':  ' ')
-        . l($node_name, $path)
-        . $children_indicator;
+        ($is_first_item ? '' : ' ')
+        . $rank_separator
+        . l(
+          $node_name,
+          $path,
+          array(
+            'attributes' => array(
+              'class' => array('taxonomic-children-button'),
+              'data-cdm-taxon-uuid' => array($node->taxonUuid),
+              'data-cdm-classification-mode' => array('siblings'),
+              'data-cdm-align-with' => array('prev')
+            )
+          )
+        );
+      }
     }
+
+  // add more button to the end
+  if(!$parent_taxon_nodes) {
+    // not taxon focused yet, adding button to make  the root nodes available
+    $items[] = '<span class="taxonomic-children-button" data-classification-uuid="' . $current_classification_uuid
+      . '" data-rank-limit-uuid="' . $rank_limit_uuid . '" > '
+      . $more_children_icon
+      . '&nbsp;</span>';
+  } else if($more_children_for){
+    // last parent item has child taxon nodes
+    $items[] = ' <span class="taxonomic-children-button" data-cdm-taxon-uuid="' .$more_children_for
+      . '" data-cdm-classification-mode="children" >'
+      . $more_children_icon
+      . '&nbsp;</span>';
+
   }
+
+
 
   $render_array['#items'] = $items;
 

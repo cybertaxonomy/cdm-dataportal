@@ -460,7 +460,6 @@ function cdm_taxontree_get_parents($uuid) {
  * When building the tree, the instances are extended by some fields:
  *  - $node->filter: values ( 'on', 'excluded', 'included' )
  *  - $node->expanded: values ( 'expanded', 'collapsed' )
- *    $node->focused: values ( TRUE, FALSE )
  *
  * @param string $taxonUuid
  *
@@ -500,7 +499,7 @@ function cdm_taxontree_build_tree($taxonUuid = NULL, $hideOtherConcepts = TRUE, 
   if ($taxonUuid) {
     $taxon_in_current_tree = taxon_in_current_classification($taxonUuid);
     if ($taxon_in_current_tree) {
-      $branch = cdm_taxontree_build_path($taxonUuid, NULL, (cdm_taxontree_filters_active() ? NULL : TRUE), TRUE);
+      $branch = cdm_taxontree_build_path($taxonUuid, NULL, (cdm_taxontree_filters_active() ? NULL : TRUE));
       $root_tree = _cdm_taxontree_merge($root_tree, $branch);
     }
   }
@@ -538,13 +537,11 @@ function cdm_taxontree_build_tree($taxonUuid = NULL, $hideOtherConcepts = TRUE, 
  *   Whether the upmost node of this path is mapped by an active filter.
  * @param bool $is_expanded
  *   Whether all nodes along the tree are expanded.
- * @param bool $is_focused
- *   Whether to upper most element of this branch is set as filter.
  *
  * @return mixed
  *   A subtree.
  */
-function cdm_taxontree_build_path($taxonUuid, $is_filter_path = NULL, $is_expanded = NULL, $is_focused = FALSE) {
+function cdm_taxontree_build_path($taxonUuid, $is_filter_path = NULL, $is_expanded = NULL) {
 
   $branch_path = array();
 
@@ -561,10 +558,6 @@ function cdm_taxontree_build_path($taxonUuid, $is_filter_path = NULL, $is_expand
   $lastParent = NULL;
 
   foreach ($parents as $pnode) {
-    $pnode->focused = FALSE;
-
-    // TODO to be replaced by ($pnode->taxonUuid == $taxonUuid); ??
-    // compare usage of $is_focused.
     if ($lastParent) {
       $pnode->children = array($lastParent->taxonUuid => $lastParent);
       if (!is_null($is_filter_path)) {
@@ -579,8 +572,6 @@ function cdm_taxontree_build_path($taxonUuid, $is_filter_path = NULL, $is_expand
       if (!is_null($is_filter_path)) {
         $pnode->filter = ($is_filter_path ? 'on' : 'includes');
       }
-      // Uppermost node is always expanded if it has children.
-      $pnode->focused = $is_focused;
       $pnode->expanded = ($pnode->taxonomicChildrenCount ? 'expanded' : 'collapsed');
     }
     $lastParent = $pnode;
@@ -737,13 +728,6 @@ function _cdm_taxontree_merge($tree, $branch) {
       }
       elseif (isset($branch[$uuid]->expanded)) {
         $tree[$uuid]->expanded = $branch[$uuid]->expanded;
-      }
-      // Preserve focused property.
-      if (isset($tree[$uuid]->focused)) {
-        $branch[$uuid]->focused = $tree[$uuid]->focused;
-      }
-      elseif (isset($branch[$uuid]->focused)) {
-        $tree[$uuid]->focused = $branch[$uuid]->focused;
       }
       // $Uuid exists check if the node in tree1 or tree2 contains children.
       if (isset($branch[$uuid]->children) && is_array($branch[$uuid]->children) && isset($tree[$uuid]->children) && is_array($tree[$uuid]->children)) {
@@ -958,7 +942,7 @@ function theme_cdm_taxontree($variables) {
       'node' => $node,
       'filterIncludes' => $filterIncludes,
       'show_filter_switch' => $show_filter_switch,
-      'tree_node_callback' => $tree_node_callback,
+      'tree_node_callback' => $tree_node_callback
       ));
   }
   $out .= '</ul>';
@@ -974,8 +958,11 @@ function theme_cdm_taxontree_node($variables) {
   $filterIncludes = $variables['filterIncludes'];
   $show_filter_switch = $variables['show_filter_switch'];
   $tree_node_callback = $variables['tree_node_callback'];
+
   $is_leaf = !$node->taxonomicChildrenCount || $node->taxonomicChildrenCount == 0;
   $is_expanded = isset($node->expanded) && $node->expanded = 'expanded';
+
+  $focused_taxon_uuid = get_current_taxon_uuid();
 
   if (isset($node->tid)) {
     $node_name = $node->name;
@@ -1006,7 +993,7 @@ function theme_cdm_taxontree_node($variables) {
       $filter_class = 'filter_on';
     }
     else {
-      $name .= $node_name;
+      $name = $node_name;
       $filter_class = 'filter_excluded';
     }
   }
@@ -1025,7 +1012,7 @@ function theme_cdm_taxontree_node($variables) {
 
   // List item.
   $out = '<li class="'
-    . (isset($node->focused) && $node->focused === TRUE ? 'focused ' : '')
+    . ($node->taxonUuid == $focused_taxon_uuid ? 'focused ' : '')
     . ($is_leaf ? 'leaf ' : ($is_expanded ? 'expanded ' : 'collapsed '))
     . $filter_class . '"'
     . ($ahah_url ? ' data-cdm-ahah-url="' . $ahah_url . '"' : '')
@@ -1137,7 +1124,7 @@ function cdm_taxontree_theme() {
       'filterIncludes' => NULL,
       'show_filter_switch' => FALSE,
       'tree_node_callback' => FALSE,
-      'element_name' => FALSE,
+      'element_name' => FALSE
       )),
     'cdm_taxontree_block' => array('variables' => array(
       'tree' => NULL,
@@ -1151,7 +1138,7 @@ function cdm_taxontree_theme() {
       'node' => NULL,
       'filterIncludes' => NULL,
       'show_filter_switch' => FALSE,
-      'tree_node_callback' => FALSE,
+      'tree_node_callback' => FALSE
       )),
     'cdm_taxontree_node_concept_switch' => array('variables' => array('node' => NULL)),
     'cdm_taxontree_node_filter_switch' => array('variables' => array('node' => NULL, 'filter_class' => NULL)),
@@ -1284,15 +1271,17 @@ function cdm_taxontree_filters_remove($taxonUuid) {
  *
  * @return string
  *   The taxon id found, or FALSE.
+ *
+ * @deprecated use get_current_taxon_uuid() instead
  */
 function _cdm_get_taxonuuid() {
-  // TODO Make the path configurable.
+
   if (arg(0) == "cdm_dataportal" && arg(1) == "taxon" && arg(2) !== 0) {
     $taxon_uuid = arg(2);
   }
   else {
     $taxon_uuid = FALSE;
-
+    // TODO is this SESSION variable ['cdm_dataportal']['tree']['taxon_uuid'] use at all?
     if (isset($_SESSION['cdm_dataportal']['tree']['taxon_uuid'])) {
       $taxon_uuid = $_SESSION['cdm_dataportal']['tree']['taxon_uuid'];
     }

@@ -96,7 +96,6 @@
        method below).
        */
       this.isDataLoaded = false;
-      this.subTaxonName = undefined;
       this.buildCache();
       this.bindEvents();
     },
@@ -138,11 +137,24 @@
         // '0' is used in the cdm_dataportal settings as value for 'no rank limit'
         this.rankLimitUuid = undefined;
       }
+      if(this.$element.hasClass('classification-chooser')){
+        this.classificationChooser = true;
+      }
+      this.destinationUri = this.$element.attr('data-destination-uri');
 
+      this.classificationMode =  this.$element.attr('data-cdm-classification-mode');
 
-      var nextLiElement = this.$element.parent('li').next();
-      if(nextLiElement != undefined){
-        this.subTaxonName = nextLiElement.children('a').text();
+      if (this.$element.attr('data-cdm-align-with') == 'prev') {
+        var prev = this.$element.prev();
+        this.alignOffset = {
+          'padding': prev.width(),
+          'left' : prev.width()
+        }
+      } else {
+        this.alignOffset = {
+          'padding': this.$element.width(),
+          'left' : '0'
+        }
       }
 
       // Create new elements
@@ -175,14 +187,18 @@
 
        this works at earliest with v1.7, with 1.4.4 we need to use bind:
        */
-      /*plugin.$element.bind('mouseenter', function() { // 'mouseenter' or 'click' are appropriate candidates
+      plugin.$element.bind('mouseenter', function() { // 'mouseenter' or 'click' are appropriate candidates
         plugin.showChildren.call(plugin);
-      });
-      */
+       });
 
       plugin.$element.bind('click', function (event){
-        plugin.showChildren.call(plugin);
+        if(event.target == this){
+          // prevents eg from executing clicks if the
+          // trigger element is an <a href=""> element
+          event.preventDefault();
+        }
         event.stopPropagation();
+        plugin.showChildren.call(plugin);
       });
 
       plugin.container.mouseleave(function (){
@@ -193,6 +209,7 @@
         plugin.hideChildren.call(plugin);
       });
 
+      /*
       plugin.$element.children('i.fa').hover(
         function(){
           this.addClass(this.options.hoverClass);
@@ -201,7 +218,7 @@
           this.removeClass(this.options.hoverClass);
         }
       );
-
+      */
     },
 
     // Unbind events that trigger methods
@@ -211,9 +228,10 @@
        to "this.$element".
 
        this works at earliest with v1.7, with 1.4.4 we need to unbind without
-       namespace specifity
+       namespace specificity
        */
       this.$element.unbind('click');
+      // TODO complete this ...
     },
 
     log: function (msg) {
@@ -223,6 +241,7 @@
     showChildren: function(){
 
       var plugin = this;
+
       var trigger_position =  this.$element.position();
 
       this.log('trigger_position: ' + trigger_position.top + ', ' + trigger_position.left);
@@ -237,13 +256,13 @@
       this.log('baseHeight: ' + this.baseHeight);
       this.log('lineHeight: ' + this.lineHeight);
 
-      this.offset_container_top = this.lineHeight - trigger_position.top;
+      this.offset_container_top = this.lineHeight - trigger_position.top  + 1;
 
       this.container
         .css('top', - this.offset_container_top + 'px')
-        .css('left', trigger_position.left + 'px')
-        .css('padding-left', this.$element.width() + 'px')
-        .css('padding-right', this.$element.width() + 'px')
+        .css('left', (trigger_position.left - this.alignOffset.left) + 'px')
+        .css('padding-left', this.alignOffset.padding + 'px')
+        .css('padding-right', this.alignOffset.padding + 'px')
         .css('z-index', 10)
         .show();
 
@@ -258,7 +277,7 @@
     },
 
     hideChildren: function(){
-      // return;
+      //return; // uncomment for debugging
       this.container
         .detach();
     },
@@ -268,6 +287,11 @@
       this.loading.hide();
       this.isDataLoaded = true;
       var listContainer = $(html);
+      if(listContainer[0].tagName != 'UL'){
+        // unwrap from potential enclosing div, this is
+        // necessary in case of compose_classification_selector
+        listContainer = listContainer.children('ul');
+      }
       this.children.append(listContainer);
       this.itemsCount = listContainer.children().length;
 
@@ -285,13 +309,16 @@
         max = Math.floor( ($(window).height() - this.element.getBoundingClientRect().top) / this.lineHeight) - 2;
         this.log('max: ' + max);
       }
-      return (this.itemsCount > this.options.viewPortRows.min ? max : this.options.viewPortRows.min);
+      var rows = Math.max(this.itemsCount, this.options.viewPortRows.min);
+      rows = Math.min(rows, max);
+      this.log('rows: ' + max);
+      return rows;
     },
 
-    adjustHeight: function(itemsCount){
+    adjustHeight: function(){
 
-      var viewPortRows = this.calculateViewPortRows(itemsCount); //(itemsCount > this.options.viewPortRows.min ? this.options.viewPortRows.max : this.options.viewPortRows.min);
-      this.log('itemsCount: ' + itemsCount + ' => viewPortRows: ' + viewPortRows);
+      var viewPortRows = this.calculateViewPortRows(this.itemsCount); //(itemsCount > this.options.viewPortRows.min ? this.options.viewPortRows.max : this.options.viewPortRows.min);
+      this.log('itemsCount: ' + this.itemsCount + ' => viewPortRows: ' + viewPortRows);
 
       this.container.css('height', viewPortRows * this.lineHeight + 'px');
       this.children
@@ -301,21 +328,21 @@
 
     scrollToSelected: function () {
 
-      if(this.subTaxonName){
-        var scrollTarget = this.children
-          .find("a:contains('" + this.subTaxonName + "')")
-          .css('font-weight', 'bold');
+      var scrollTarget = this.children.find(".focused");
+      if(scrollTarget){
         var scroll_target_offset_top = scrollTarget.position().top;
         this.log("scroll_target_offset_top: " + scroll_target_offset_top + ", offset_container_top: " + this.offset_container_top);
-        this.container.scrollTop(scroll_target_offset_top - this.lineHeight);
+        this.container.scrollTop(scroll_target_offset_top - this.lineHeight + 1); // +1 yields a better result
       }
     },
 
     requestURI: function(pageIndex, pageSize){
 
-      // pageIndex, pageSize are not yet used, prepared for future though
       var contentRequest;
+      var renderFunction;
+      var proxyRequestQuery= '';
 
+      // pageIndex, pageSize are not yet used, prepared for future though
       if(!pageIndex){
         pageIndex = 0;
       }
@@ -323,33 +350,51 @@
         pageSize = 100;
       }
 
-      if(this.taxonUuid){
-        contentRequest =
-          this.options.cdmWebappBaseUri
-          + this.options.cdmWebappTaxonChildrenRequest
-            .replace('{classificationUuid}', this.options.classificationUuid)
-            .replace('{taxonUuid}', this.taxonUuid);
+      if(this.classificationChooser){
+        renderFunction = this.options.renderFunction.classifications + '?destination=' + this.destinationUri;
+        contentRequest = 'NULL'; // using the plain compose function which does not require any data to be passes as parameter
 
-      } else if(this.rankLimitUuid){
-        contentRequest =
-          this.options.cdmWebappBaseUri
-          + this.options.cdmWebappClassificationChildnodesAtRequest
-            .replace('{classificationUuid}', this.options.classificationUuid)
-            .replace('{rankUuid}', this.rankLimitUuid);
       } else {
-        contentRequest =
-          this.options.cdmWebappBaseUri
-          + this.options.cdmWebappClassificationRootRequest
-            .replace('{classificationUuid}', this.options.classificationUuid);
+        renderFunction = this.options.renderFunction.taxonNodes;
+        proxyRequestQuery = '?currentTaxon=' + this.taxonUuid;
+        if(this.taxonUuid) {
+          if(this.classificationMode == 'siblings') {
+            contentRequest =
+              this.options.cdmWebappBaseUri
+              + this.options.cdmWebappRequests.taxonSiblings
+                .replace('{classificationUuid}', this.options.classificationUuid)
+                .replace('{taxonUuid}', this.taxonUuid);
+          } else {
+            // default mode is 'children'
+            contentRequest =
+              this.options.cdmWebappBaseUri
+              + this.options.cdmWebappRequests.taxonChildren
+                .replace('{classificationUuid}', this.options.classificationUuid)
+                .replace('{taxonUuid}', this.taxonUuid);
+          }
+        } else if(this.rankLimitUuid){
+          contentRequest =
+            this.options.cdmWebappBaseUri
+            + this.options.cdmWebappRequests.childNodesAt
+              .replace('{classificationUuid}', this.options.classificationUuid)
+              .replace('{rankUuid}', this.rankLimitUuid);
+        } else {
+          contentRequest =
+            this.options.cdmWebappBaseUri
+            + this.options.cdmWebappRequests.classificationRoot
+              .replace('{classificationUuid}', this.options.classificationUuid);
+        }
       }
+
+
 
       this.log("contentRequest: " + contentRequest);
 
       var proxyRequest = this.options.proxyRequest
         .replace('{contentRequest}', encodeURIComponent(encodeURIComponent(contentRequest)))
-        .replace('{renderFunction}', this.options.renderFunction);
+        .replace('{renderFunction}', renderFunction);
 
-      var request = this.options.proxyBaseUri + '/' + proxyRequest;
+      var request = this.options.proxyBaseUri + '/' + proxyRequest + proxyRequestQuery;
       this.log("finalRequest: " + request);
 
       return request;
@@ -385,29 +430,31 @@
     return this;
   };
 
-  /*
-   Attach the default plugin options directly to the plugin object. This
-   allows users to override default plugin options globally, instead of
-   passing the same option(s) every time the plugin is initialized.
 
-   For example, the user could set the "property" value once for all
-   instances of the plugin with
-   "$.fn.pluginName.defaults.property = 'myValue';". Then, every time
-   plugin is initialized, "property" will be set to "myValue".
-
-   More: http://learn.jquery.com/plugins/advanced-plugin-concepts/
-   */
   $.fn[pluginName].defaults = {
     hoverClass: undefined,
     activeClass: undefined,
+    /**
+     * uuid of the current classification - required
+     */
     classificationUuid: undefined,
+    /**
+     * uuid of the current taxon - required
+     */
+    taxonUuid: undefined,
     cdmWebappBaseUri: undefined,
     proxyBaseUri: undefined,
-    cdmWebappTaxonChildrenRequest: "portal/classification/{classificationUuid}/childNodesOf/{taxonUuid}",
-    cdmWebappClassificationChildnodesAtRequest: "portal/classification/{classificationUuid}/childNodesAt/{rankUuid}.json",
-    cdmWebappClassificationRootRequest: "portal/classification/{classificationUuid}/childNodes.json",
+    cdmWebappRequests: {
+      taxonChildren: "portal/classification/{classificationUuid}/childNodesOf/{taxonUuid}",
+      taxonSiblings: "portal/classification/{classificationUuid}/siblingsOf/{taxonUuid}",
+      childNodesAt: "portal/classification/{classificationUuid}/childNodesAt/{rankUuid}.json",
+      classificationRoot: "portal/classification/{classificationUuid}/childNodes.json"
+    },
     proxyRequest: "cdm_api/proxy/{contentRequest}/{renderFunction}",
-    renderFunction: "cdm_taxontree",
+    renderFunction: {
+      taxonNodes: "cdm_taxontree",
+      classifications: "classification_selector"
+    },
     // viewPortRows: if max is 'undefined' the height will be adapted to the window viewport
     viewPortRows: {min: 3, max: undefined}
   };
