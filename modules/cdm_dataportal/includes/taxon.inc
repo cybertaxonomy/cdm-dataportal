@@ -72,13 +72,14 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
 
         $name = $taxonRelation->fromTaxon->name->titleCache;
 
+        $authorteam = $NULL_AUTHORTEAM;
         if(isset($taxonRelation->fromTaxon->sec)) {
           // taxa not always are have a sec reference (e.g. doubtful taxa)
           $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
           $authorteam = $authorteam->titleCache;
-          if(!$authorteam){
+          /*if(!$authorteam){
             $authorteam = $NULL_AUTHORTEAM;
-          }
+          }*/
         }
 
         if (!isset($misapplied[$name])) {
@@ -92,7 +93,7 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
         }
 
         // Collect all authors for this fullname.
-        if (isset($authorteam)) {
+        if (isset($authorteam) && $authorteam != $NULL_AUTHORTEAM) {
           $misapplied[$name]['authorteam'][$authorteam] = '';
           $joinedAuthorTeams[$authorteam] = 'sensu ' . theme('cdm_reference', array('reference' => $taxonRelation->fromTaxon->sec));
         }
