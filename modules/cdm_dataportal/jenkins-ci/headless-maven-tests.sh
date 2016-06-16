@@ -9,7 +9,7 @@ if [ -z "$WORKSPACE_ROOT" ]; then
     WORKSPACE_ROOT=$1
 fi
 
-FIREFOX_BIN="/usr/lib/iceweasel/firefox-bin"
+FIREFOX_BIN="/usr/lib/firefox-esr/firefox-bin"
 
 DISPLAY=":99"
 
