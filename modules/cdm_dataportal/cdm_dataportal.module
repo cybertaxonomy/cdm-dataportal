@@ -610,6 +610,12 @@ function cdm_dataportal_menu() {
         'page arguments' => array(2, "experts")
     , // Expected callback arguments: taxon_uuid.
     );
+
+    $items['cdm_dataportal/taxonSearch/autocomplete'] = array(
+        'page callback' => 'cdm_dataportal_taxaon_search_autocomplete',
+        'access arguments' => array('access taxon search autocomplete'),
+        'type' => MENU_CALLBACK
+    );
   }
 
   // --- refresh link for all cdmnode types

@@ -90,9 +90,10 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
     '#description' => $query_field_description,
     '#value' => $query_field_default_value,
     // '#description' => $query_field_description,
+    '#autocomplete_path' => 'cdm_dataportal/taxonSearch/autocomplete'
   );
 
-  $form['search'] = array(
+    $form['search'] = array(
     '#weight' => 3,
     '#tree' => TRUE,
     // '#type' => $advanced_form ? 'fieldset': 'hidden',
@@ -118,7 +119,30 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
   return $form;
 }
 
-/**
+function cdm_dataportal_taxaon_search_autocomplete($string) {
+  $matches = array();
+
+  $queryParams = array();
+  $queryParams['query'] = $string."*";
+  $queryParams['pageNumber'] = '0';
+  $queryParams['pageSize'] = '100';
+  $queryParams['doTaxa'] = true;
+  $queryParams['doSynonyms'] = true;
+  $queryParams['doMisappliedNames'] = true;
+  $queryParams['doTaxaByCommonNames'] = true;
+
+  $search_results = cdm_ws_get(CDM_WS_TAXON_SEARCH, NULL, queryString($queryParams));
+  foreach($search_results->records as $record){
+      $titleCache = $record->entity->titleCache;
+      preg_match('/(.*) sec.*/', $titleCache, $trimmedTitle);//remove sec reference
+      $trimmedTitle = trim($trimmedTitle[1]);
+      $matches[$trimmedTitle] = $trimmedTitle;
+  }
+  drupal_json_output($matches);
+}
+
+
+  /**
  * Creates a search form for searching on taxa.
  *
  * If advanced $advanced_form id TRUE the form will offer additional choices
