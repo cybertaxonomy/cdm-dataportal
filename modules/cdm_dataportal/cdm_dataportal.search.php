@@ -508,6 +508,7 @@ function cdm_dataportal_search_form_request()
   // Split of geographic range.
   unset($form_params['areas']);
 
+  $area_filter_preset = null;
   if (variable_get(CDM_SEARCH_AREA_FILTER_PRESET, '')) {
     $area_filter_preset = explode(',', variable_get(CDM_SEARCH_AREA_FILTER_PRESET, ''));
   }

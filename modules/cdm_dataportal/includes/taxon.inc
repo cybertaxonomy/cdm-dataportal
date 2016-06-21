@@ -440,7 +440,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       if (count($acceptedTaxa) == 1) {
 
         $acceptedTaxon = $acceptedTaxa[0];
-        $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid, 'synonymy');
+        $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
         $referenceUri = '';
         if (isset($acceptedTaxon->name->nomenclaturalReference)) {
           $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
