@@ -119,7 +119,7 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
   return $form;
 }
 
-function cdm_dataportal_taxaon_search_autocomplete($string) {
+function cdm_dataportal_taxon_search_autocomplete($string) {
   $matches = array();
 
   $queryParams = array();

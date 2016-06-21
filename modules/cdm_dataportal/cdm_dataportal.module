@@ -612,7 +612,7 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxonSearch/autocomplete'] = array(
-        'page callback' => 'cdm_dataportal_taxaon_search_autocomplete',
+        'page callback' => 'cdm_dataportal_taxon_search_autocomplete',
         'access arguments' => array('access taxon search autocomplete'),
         'type' => MENU_CALLBACK
     );
