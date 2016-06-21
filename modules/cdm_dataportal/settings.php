@@ -22,6 +22,7 @@
 
   define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
+  define('CDM_DATAPORTAL_TAXON_AUTO_SUGGEST', 0);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 1);
   define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
   define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
@@ -1070,6 +1071,14 @@ function cdm_settings_general() {
     . '<div id="index-progress"></div></div>',
   );
   _add_js_cdm_ws_progressbar(".index-trigger", "#index-progress");
+
+    $form['cdm_webservice']['freetext_index']['cdm_dataportal_taxon_auto_suggest'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Enable auto-suggest for taxon search'),
+        '#default_value' => variable_get('cdm_dataportal_taxon_auto_suggest', CDM_DATAPORTAL_TAXON_AUTO_SUGGEST),
+        '#description' => t('If enabled, the taxon search field will suggest taxon names while typing in a search query.
+        This function works on indexed taxon names. If you experience any delay maybe you have to reindex (see above).'),
+    );
 
   $form['cdm_webservice']['proxy'] = array(
     '#type' => 'fieldset',
