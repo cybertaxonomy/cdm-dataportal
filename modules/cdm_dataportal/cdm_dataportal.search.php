@@ -513,16 +513,16 @@ function cdm_dataportal_search_form_request()
     $area_filter_preset = explode(',', variable_get(CDM_SEARCH_AREA_FILTER_PRESET, ''));
   }
 
+  $area_uuids = array();
   if($area_filter_preset){
     $area_uuids = $area_filter_preset;
   }
   elseif (isset($_REQUEST['search']['areas']['area']) && is_array($_REQUEST['search']['areas']['area'])) {
-    $area_uuids = array();
     foreach ($_REQUEST['search']['areas']['area'] as $areas) {
       $area_uuids = array_merge($area_uuids, $areas);
     }
   }
-  if(isset($area_uuids[0])){
+  if(count($area_uuids) > 0){
     $form_params['area'] = implode(',', $area_uuids);
   }
 
