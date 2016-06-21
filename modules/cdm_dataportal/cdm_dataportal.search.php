@@ -134,7 +134,7 @@ function cdm_dataportal_taxon_search_autocomplete($string) {
   $search_results = cdm_ws_get(CDM_WS_TAXON_SEARCH, NULL, queryString($queryParams));
   foreach($search_results->records as $record){
       $titleCache = $record->entity->titleCache;
-      preg_match('/(.*) sec.*/', $titleCache, $trimmedTitle);//remove sec reference
+      preg_match('/(.*) sec.*/', $titleCache, $trimmedTitle); //remove sec reference
       $trimmedTitle = trim($trimmedTitle[1]);
       $matches[$trimmedTitle] = $trimmedTitle;
   }
@@ -154,7 +154,7 @@ function cdm_dataportal_taxon_search_autocomplete($string) {
  * @param bool $advanced_form
  *   default is FALSE
  * @param bool $classification_select
- *   set TRUE to offer a classifiaction selector in the form - default is FALSE
+ *   set TRUE to offer a classification selector in the form - default is FALSE
  *   if only available in the advanced mode
  *
  * @return array
