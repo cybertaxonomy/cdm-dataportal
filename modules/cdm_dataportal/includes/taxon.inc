@@ -77,9 +77,6 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
           // taxa not always are have a sec reference (e.g. doubtful taxa)
           $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
           $authorteam = $authorteam->titleCache;
-          /*if(!$authorteam){
-            $authorteam = $NULL_AUTHORTEAM;
-          }*/
         }
 
         if (!isset($misapplied[$name])) {
