@@ -585,14 +585,19 @@ function compose_description_element($element, $feature_block_settings, $element
 
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
+
+    RenderHints::pushToRenderStack('feature_block');
     // Create a drupal block for each feature
     foreach ($mergedFeatureNodes as $node) {
 
       if ((isset($node->descriptionElements['#type']) ||
           has_feature_node_description_elements($node)) && $node->feature->uuid != UUID_IMAGE) { // skip empty or suppressed features
 
+        RenderHints::pushToRenderStack($node->feature->uuid);
+          
         $feature_name = cdm_term_representation($node->feature, 'Unnamed Feature');
         $feature_block_settings = get_feature_block_settings($node->feature->uuid);
+        
 
         $block = feature_block($feature_name, $node->feature);
         $block->content = array();
@@ -662,7 +667,10 @@ function compose_description_element($element, $feature_block_settings, $element
           cdm_toc_list_add_item(cdm_term_representation($node->feature), $node->feature->uuid);
         } // END: skip empty block content
       } // END: skip empty or suppressed features
+      RenderHints::popFromRenderStack();
     } // END: creating a block per feature
+
+    RenderHints::popFromRenderStack();
 
     drupal_alter('cdm_feature_node_blocks', $block_list, $taxon);
 
