@@ -351,7 +351,7 @@ function _add_js_taxonomic_children($jquery_selector) {
 
     //<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
-    $font_awesome_css_uri=drupal_get_path('module', 'cdm_dataportal').'/fonts/font-awesome-4.6.3/css/font-awesome.min.css';
+    $font_awesome_css_uri = base_path() . drupal_get_path('module', 'cdm_dataportal').'/fonts/font-awesome-4.6.3/css/font-awesome.min.css';
     //$font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
 
     drupal_add_html_head_link(
@@ -1447,7 +1447,7 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
  *   Name of the part to display, valid values are:
  *   'description', 'images', 'synonymy', 'specimens', 'all'.
  *
- * @return unknown_type
+ * @return string
  */
 function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid = NULL) {
 
@@ -1458,9 +1458,9 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid =
     drupal_set_message(t('The !url1 is enabled.
         WARNING: this is a performance penalty and must be turned off on production websites.', array(
           '!url1' => l('java-script development mode', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-cdm-js-devel-mode'))
-    )),
-    'warning'
-        );
+        )),
+        'warning'
+    );
   }
 
   // Display the page for the taxon defined by $uuid.
