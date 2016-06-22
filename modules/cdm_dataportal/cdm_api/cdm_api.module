@@ -310,6 +310,11 @@ function split_secref_from_tagged_text(&$tagged_text) {
         $extracted_tt[1] = $tagged_text[$i + 1];
         unset($tagged_text[$i]);
         unset($tagged_text[$i + 1]);
+        // also get the microfererence which could be in $tagged_text[$i + 3]
+        if(isset($tagged_text[$i + 3])  && $tagged_text[$i + 2]->type == "separator" && $tagged_text[$i + 3]->type == "secReference"){
+          $extracted_tt[2] = $tagged_text[$i + 2];
+          $extracted_tt[3] = $tagged_text[$i + 3];
+        }
         break;
       }
     }
