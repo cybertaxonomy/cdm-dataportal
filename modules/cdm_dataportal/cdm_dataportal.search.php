@@ -92,7 +92,7 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
     // '#description' => $query_field_description,
   );
   if(variable_get('cdm_dataportal_taxon_auto_suggest')){
-      $form['query']['#autocomplete_path'] = 'cdm_dataportal/taxonSearch/autocomplete';
+      $form['query']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest';
   }
 
     $form['search'] = array(
@@ -121,13 +121,22 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
   return $form;
 }
 
-function cdm_dataportal_taxon_search_autocomplete($string) {
+function cdm_dataportal_taxon_autosuggest($string, $treeUuid = NULL, $areaUuid = NULL, $status = NULL) {
   $matches = array();
 
   $queryParams = array();
-  $queryParams['query'] = $string."*";
+  $queryParams['query'] = $string.'*';
+  if($treeUuid){
+    $queryParams['tree'] = $treeUuid;
+  }
+  if($areaUuid){
+    $queryParams['area'] = $areaUuid;
+  }
+  if($status){
+    $queryParams['status'] = $status ;
+  }
   $queryParams['pageNumber'] = '0';
-  $queryParams['pageSize'] = '100';
+  $queryParams['pageSize'] = '10';
   $queryParams['doTaxa'] = true;
   $queryParams['doSynonyms'] = true;
   $queryParams['doMisappliedNames'] = true;
