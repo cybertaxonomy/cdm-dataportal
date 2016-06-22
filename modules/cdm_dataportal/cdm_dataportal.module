@@ -351,8 +351,8 @@ function _add_js_taxonomic_children($jquery_selector) {
 
     //<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
-    $font_awesome_css_uri=drupal_get_path('module', 'cdm_dataportal').'/font-awesome/4.5.0/css/font-awesome.min.css';
-    $font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
+    $font_awesome_css_uri=drupal_get_path('module', 'cdm_dataportal').'/fonts/font-awesome-4.6.3/css/font-awesome.min.css';
+    //$font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
 
     drupal_add_html_head_link(
       array(

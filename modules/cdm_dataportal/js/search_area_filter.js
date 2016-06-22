@@ -156,7 +156,7 @@
                 var matching_label = $(this).find('.child-label');
                 var matching_snippet = matching_label.text().match(rexgexp);
                 if(matching_snippet.length > 0){
-                    // NOTE this will only hightlite the fist match in the string
+                    // NOTE this will only highlite the first match in the string
                     matching_label.html(matching_label.text().replace(matching_snippet[0], '<span class="highlite">' + matching_snippet[0] + '</span>'));
                 }
             });
