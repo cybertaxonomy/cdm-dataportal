@@ -613,6 +613,16 @@ table.cdm\:Reference {
 }
 
 
+#block-cdm-dataportal-taxonomic-children  .content {
+    max-height: 20em;
+    -moz-column-count: 3;
+    -webkit-column-count: 3;
+    column-count: 3;
+    overflow: auto;
+}
+#block-cdm-dataportal-taxonomic-children li {
+    background: none;
+}
 
 
 .messages .cdm\:Taxon { /* taxa in warning box */

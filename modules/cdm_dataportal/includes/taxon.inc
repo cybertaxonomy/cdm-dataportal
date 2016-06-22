@@ -361,7 +361,7 @@ function cdm_accepted_for($accepted_for_uuid) {
 /**
  * Compose function for a list of taxa.
  *
- * This function is for example used toi display search results or the taxa for a taxon name in the name page.
+ * This function is for example used to display search results or the taxa for a taxon name in the name page.
  *
  * @param $taxon_list array
  *   The list of CDM Taxon entities. e.g. The records array as contained in a pager object.
@@ -546,5 +546,21 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   RenderHints::popFromRenderStack();
 
   return markup_to_render_array($out); // TODO create render array of all list items in function
+}
+
+
+function compose_taxonomic_children($taxon_uuid){
+
+  $render_array = array();
+
+  $children = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array(
+    get_current_classification_uuid(),
+    $taxon_uuid
+    ));
+  if($children){
+    $taxonomic_children = theme('cdm_taxontree', array('tree' => $children));
+    $render_array = markup_to_render_array($taxonomic_children);
+  }
+  return $render_array;
 }
 

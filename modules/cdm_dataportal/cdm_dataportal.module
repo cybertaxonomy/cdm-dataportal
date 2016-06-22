@@ -792,6 +792,10 @@ function cdm_dataportal_block_info() {
         'info' => t('Classification breadcrumbs'),
         'cache' => DRUPAL_CACHE_PER_PAGE
       );
+    $block["taxonomic_children"] =  array(
+      'info' => t('Taxonomic children'),
+      'cache' => DRUPAL_CACHE_PER_PAGE
+    );
 
     return $block;
 }
@@ -839,7 +843,11 @@ function cdm_dataportal_block_view($delta) {
       $block['subject'] = '<none>';
       $block['content'] = compose_classification_breadcrumbs($taxon_uuid);
       return $block;
-    
+    case 'taxonomic_children':
+      $taxon_uuid = get_current_taxon_uuid();
+      $block['subject'] = '<none>';
+      $block['content'] = compose_taxonomic_children($taxon_uuid);
+      return $block;
   }
 }
 
