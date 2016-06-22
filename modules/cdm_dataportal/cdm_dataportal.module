@@ -619,9 +619,9 @@ function cdm_dataportal_menu() {
     , // Expected callback arguments: taxon_uuid.
     );
 
-    $items['cdm_dataportal/taxonSearch/autocomplete'] = array(
-        'page callback' => 'cdm_dataportal_taxon_search_autocomplete',
-        'access arguments' => array('access taxon search autocomplete'),
+    $items['cdm_dataportal/taxon/autosuggest'] = array(
+        'page callback' => 'cdm_dataportal_taxon_autosuggest',
+        'access arguments' => array('access taxon autosuggest'),
         'type' => MENU_CALLBACK
     );
   }
