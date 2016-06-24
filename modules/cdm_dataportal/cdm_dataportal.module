@@ -533,7 +533,8 @@ function cdm_dataportal_menu() {
   // --- tabbed taxon page
   if (variable_get('cdm_dataportal_taxonpage_tabs', 1)) {
     $items['cdm_dataportal/taxon/%'] = array(
-      'title' => theme('cdm_taxonpage_tab', array('tabname' => 'General')),
+      'title' => '@tabname',
+      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'General'))),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
@@ -543,7 +544,8 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxon/%/all'] = array(
-      'title' => theme('cdm_taxonpage_tab', array('tabname' => 'General')),
+      'title' => '@tabname',
+      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'General'))),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
@@ -553,7 +555,8 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxon/%/description'] = array(
-      'title' => theme('cdm_taxonpage_tab', array('tabname' => 'General')),
+      'title' => '@tabname',
+      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'General'))),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access content'),
       'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -563,7 +566,8 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxon/%/synonymy'] = array(
-      'title' => theme('cdm_taxonpage_tab', array('tabname' => 'Synonymy')),
+      'title' => '@tabname',
+      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Synonymy'))),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access content'),
       'type' => MENU_LOCAL_TASK,
@@ -571,8 +575,9 @@ function cdm_dataportal_menu() {
       'page arguments' => array(2, "synonymy", 4)
       , // Expected callback arguments: taxon_uuid and ...
     );
-    $items['cdm_dataportal/taxon/%/images'] = array(
-      'title' => theme('cdm_taxonpage_tab', array('tabname' => 'Images')),
+    $items['cdm_dataportal/taxon/%/images'] = array( // Images
+      'title' => '@tabname',
+      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Images'))),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access content'),
       'type' => MENU_LOCAL_TASK,
@@ -581,8 +586,9 @@ function cdm_dataportal_menu() {
       , // Expected callback arguments: taxon_uuid.
     );
 
-    $items['cdm_dataportal/taxon/%/specimens'] = array(
-      'title' => theme('cdm_taxonpage_tab', array('tabname' => 'Specimens')),
+    $items['cdm_dataportal/taxon/%/specimens'] = array( // Specimens
+      'title' => '@tabname',
+      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Specimens'))),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access content'),
       'type' => MENU_LOCAL_TASK,
@@ -591,8 +597,9 @@ function cdm_dataportal_menu() {
       , // Expected callback arguments: taxon_uuid.
     );
 
-    $items['cdm_dataportal/taxon/%/keys'] = array(
-      'title' => theme('cdm_taxonpage_tab', array('tabname' => 'Keys')),
+    $items['cdm_dataportal/taxon/%/keys'] = array( // Keys
+      'title' => '@tabname',
+      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Keys'))),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access content'),
       'type' => MENU_LOCAL_TASK,
@@ -601,13 +608,14 @@ function cdm_dataportal_menu() {
       , // Expected callback arguments: taxon_uuid.
     );
 
-    $items['cdm_dataportal/taxon/%/experts'] = array(
-        'title' => theme('cdm_taxonpage_tab', array('tabname' => 'Experts')),
-        'page callback' => 'cdm_dataportal_taxon_page_view',
-        'access arguments' => array('access content'),
-        'type' => MENU_LOCAL_TASK,
-        'weight' => 6,
-        'page arguments' => array(2, "experts")
+    $items['cdm_dataportal/taxon/%/experts'] = array( // Experts
+      'title' => '@tabname',
+      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Experts'))),
+      'page callback' => 'cdm_dataportal_taxon_page_view',
+      'access arguments' => array('access content'),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 6,
+      'page arguments' => array(2, "experts")
     , // Expected callback arguments: taxon_uuid.
     );
 
@@ -621,7 +629,7 @@ function cdm_dataportal_menu() {
   // --- refresh link for all cdmnode types
   foreach (cdm_get_nodetypes() as $type=>$name) {
     $items['cdm_dataportal/' . $name . '/%/refresh'] = array(
-        'title' => t('Refresh'),
+        'title' => 'Refresh',
         'page callback' => 'cdm_dataportal_refresh_node',
         'access arguments' => array('administer cdm_dataportal'),
         'type' => MENU_LOCAL_TASK,
@@ -2329,7 +2337,7 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text,
 
   $cdm_proxy_url = url('cdm_api/proxy/' . urlencode($content_url) . "/$theme");
   $out .= '<!-- dynabox for ' . $content_url . ' -->';
-  $out .= '<' . $enclosingtags[0] . ' ' .  $dynabox_attributes. '><a href="' . $cdm_proxy_url . '" class="label" alt="' . t($link_alt_text) . '">' . $label . '</a>';
+  $out .= '<' . $enclosingtags[0] . ' ' .  $dynabox_attributes. '><a href="' . $cdm_proxy_url . '" class="label" alt="' . t('@link-alt-text', array('@link-alt-text' => $link_alt_text)) . '">' . $label . '</a>';
   $out .= '  <' . $enclosingtags[1] . ' id="dynabox-' . $dynabox_id . '-content">';
   $out .= '    <' . $enclosingtags[0] . ' class="dynabox-content-inner">' . loading_image_html() . '</' . $enclosingtags[0] . '>';
   $out .= '    </' . $enclosingtags[1] . '>';

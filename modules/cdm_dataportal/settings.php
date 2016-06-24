@@ -151,7 +151,7 @@ define('CDM_DATAPORTAL_DEFAULT_TAXON_TAB', serialize($taxon_tab_options));
 function get_taxon_options_list() {
   $taxon_tab_options = array_flip(get_taxon_tabs_list());
   foreach ($taxon_tab_options as $key => $value) {
-    $taxon_tab_options[$key] = t($key);
+    $taxon_tab_options[$key] = t('@key', array('@key' => $key));
   }
   return $taxon_tab_options;
 
@@ -1050,9 +1050,11 @@ function cdm_settings_general() {
   if (isset($portNumberMatch[1]) && $portNumberMatch[1] != '80') {
     $form['cdm_webservice']['freetext_index']['message'] = array(
       '#markup' => "<div class=\"description\">"
-      . t("The CDM web service URL contains a portnumber other than standart HTTP port 80: '!port'."
-      . " Due to this the reindex and purge fuctions may not be working if there is a firewall in between you and the CDM Server."
-      . " You may want to contact the maintainer of the according CDM Server in order to solve this problem.", array('!port' => $portNumberMatch[1][0]))
+      . t("The CDM web service URL contains a portnumber other than standart HTTP port 80: '!port'
+           Due to this the reindex and purge fuctions may not be working if there is a firewall in between you and the CDM Server.
+           You may want to contact the maintainer of the according CDM Server in order to solve this problem.",
+          array('!port' => $portNumberMatch[1][0])
+        )
       . "</div>",
     );
   };
@@ -1477,9 +1479,9 @@ function cdm_settings_layout() {
       '#title' => t('Taxon name display'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-      '#description' => t('The display of taxon names is configured by two parts.'
-          . 'The <srong>name render templates</strong> define the parts of the name to be displayed in the different areas of the data portal pages.'
-          . 'The name parts are defined in the <stong>part definitions</strong>'),
+      '#description' => t('The display of taxon names is configured by two parts.
+          The <srong>name render templates</strong> define the parts of the name to be displayed in the different areas of the data portal pages.
+          The name parts are defined in the <stong>part definitions</strong>'),
   );
 
   $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
@@ -1681,11 +1683,11 @@ function cdm_settings_layout() {
 function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description = '') {
   $form[$form_name] = array(
     '#type' => 'fieldset',
-    '#title' => t($form_title),
+    '#title' => t('@form-title', array('@form-title' => $form_title)),
     '#collapsible' => TRUE,
     '#collapsed' => $collapsed,
     '#tree' => TRUE,
-    '#description' => t($form_description),
+    '#description' => t('@$form-description', array('@$form-description' => $form_description)),
   );
 
   $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
@@ -1881,7 +1883,7 @@ function cdm_settings_layout_taxon() {
       '#field_suffix' => 'px',
       '#maxlength' => 4,
       '#size' => 4,
-      '#description' => t('The maximum extend in either dimension, width or height, of the profil picture in pixels.')
+      '#description' => t('The maximum extend in either dimension, width or height, of the profile picture in pixels.')
   );
 
   $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['media_uri_query'] = array(
@@ -1891,10 +1893,10 @@ function cdm_settings_layout_taxon() {
       '#default_value' =>  $taxon_profile_image_settings['media_uri_query'],
       '#maxlength' => 1024,
       '#size' => 60,
-      '#description' => t('Additional query parameters to be used when requesting for the '
-          . 'profile image. E.g.: <code>width=400&height=300&quality=95&format=jpeg</code>.'
-          . 'The query parameters will be appended to the uri of the media representation part'
-          . ' as stored in the cdm. The query parameter string must not start with a \'&\' or  \'?\'')
+      '#description' => t('Additional query parameters to be used when requesting for the  
+            profile image. E.g.: <code>width=400&height=300&quality=95&format=jpeg</code>.
+            The query parameters will be appended to the uri of the media representation part
+            as stored in the cdm. The query parameter string must not start with a \'&\' or  \'?\'')
   );
 
   $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_enabled'] = array(
@@ -2228,13 +2230,13 @@ function cdm_settings_layout_taxon() {
     $form['taxon_profile']['distribution_layout'][DISTRIBUTION_HIERARCHY_STYLE][$level] = array(
       '#type' => 'fieldset',
       '#tree' => true,
-      '#title' => t(drupal_ucfirst((str_replace('_', ' ', $level)))),
+      '#title' => t('@area-level', array('@area-level' => drupal_ucfirst((str_replace('_', ' ', $level))))),
       '#attributes' => array('class' => array('fieldset-float'))
     );
     foreach ($hierarchy_styles[$level] as $key => $value) {
       $form['taxon_profile']['distribution_layout'][DISTRIBUTION_HIERARCHY_STYLE][$level][$key] = array(
         '#type' => 'textfield',
-        '#title' => t(drupal_ucfirst((str_replace('_', ' ', $key)))),
+        '#title' => t('@area-level-style', array('@area-level-style' => drupal_ucfirst((str_replace('_', ' ', $key))))),
         '#default_value' => $hierarchy_styles[$level][$key],
         '#maxlength' => 4,
         '#size' => 4
@@ -2753,7 +2755,9 @@ function cdm_settings_geo($form, &$form_state) {
   );
   $edit_mapserver_version = get_edit_map_service_version_number();
   if ($edit_mapserver_version < 1.1) {
-    $form[CDM_MAP_DISTRIBUTION]['image_map']['#description'] = '<div class="messages warning">' . t("The chosen EDIT map service version ($edit_mapserver_version) is too low, it must be at least 1.1") . '</div>'
+    $form[CDM_MAP_DISTRIBUTION]['image_map']['#description'] = '<div class="messages warning">'
+      . t("The chosen EDIT map service version (@edit-mapserver-version) is too low, it must be at least 1.1",
+        array('@edit_mapserver_version' => '$edit_mapserver_version')) . '</div>'
       . $form[CDM_MAP_DISTRIBUTION]['image_map']['#description'];
   }
 
@@ -3336,7 +3340,7 @@ function checkboxes_preferred_expand($element, &$form_state, $form) {
   foreach ($children as $key) {
     $odd_even = $weight % 4 == 0 ? 'odd' : 'even';
     $element[$key]['#weight'] = $weight;
-    $element[$key]['#prefix'] = '<tr class="' . $odd_even . '"><td>' . t($element['#options'][$key]) . '</td><td>';
+    $element[$key]['#prefix'] = '<tr class="' . $odd_even . '"><td>' . t('@row-label', array('@row-label' => $element['#options'][$key])) . '</td><td>';
     $element[$key]['#suffix'] = '</td>';
     unset($element[$key]['#title']);
     $weight += 2;
@@ -3483,7 +3487,10 @@ function form_element_validate_json($element, &$form_state, $form) {
    if (!empty($element['#value'])) {
      json_decode($element['#value']);
      if(json_last_error() != JSON_ERROR_NONE){
-       form_error($element, t('The form element %title contains invalid JSON. You can check the syntax with ', array('%title' => $element['#title'])) . l('JSONLint', 'http://jsonlint.com/'));
+       form_error($element,
+         t('The form element %title contains invalid JSON. You can check the syntax with ', array('%title' => $element['#title']))
+         . l('JSONLint', 'http://jsonlint.com/')
+       );
      }
    }
 }

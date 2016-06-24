@@ -32,7 +32,7 @@
  */
 function theme_cdm_feature_name($variables) {
   $feature_name = $variables['feature_name'];
-  return t($feature_name);
+  return t('@feature-name', array('@feature-name' => $feature_name));
 }
 
 
@@ -348,7 +348,7 @@ function theme_cdm_block_IdentificationKeys($variables) {
       continue;
     }
     $out .= '<div class="' . $type . '">';
-    $out .= '<h3>' . t($label) . "</h3>";
+    $out .= '<h3>' . t('@label', array('@label' => $label)) . "</h3>";
     $out .= $keylist;
     $out .= '</div>';
   }

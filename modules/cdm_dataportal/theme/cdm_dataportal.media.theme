@@ -132,8 +132,7 @@ function theme_cdm_media_mime_image($variables) {
       ));
     }
     else {
-      // Comment @WA: should this really be an empty link?
-      $out .= l(t(''), $part->uri, array(
+      $out .= l('', $part->uri, array(
         'attributes' => $attributes,
         'absolute' => TRUE,
       ));

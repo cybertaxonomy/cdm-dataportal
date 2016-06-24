@@ -418,7 +418,7 @@ function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
 
     // additional data
     foreach($data as $key=>$value){
-      @_description_list_group_add($sub_dl_groups, t($key), $value /*, '' , $weight++ */);
+      @_description_list_group_add($sub_dl_groups, t('@key', array('@key' => $key)), $value /*, '' , $weight++ */);
     }
 
   }

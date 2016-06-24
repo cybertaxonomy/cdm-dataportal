@@ -149,7 +149,7 @@ function cdm_load_node($nodetype, $uuid, $title) {
           '!title' => $title,
         ));
         drupal_set_message($message, 'error');
-        watchdog('content', $message, WATCHDOG_ERROR);
+        watchdog('content', '@message', array('@message' => $message), WATCHDOG_ERROR);
         return NULL;
       }
 

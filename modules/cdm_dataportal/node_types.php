@@ -32,7 +32,7 @@ function cdm_dataportal_node_info() {
   $nodeinfo = array();
   foreach (cdm_get_nodetypes() as $nodeType => $type) {
     $nodeinfo[$nodeType] = array(
-      'name' => t(ucfirst($type)),
+      'name' => t('@type-name', array('@type-name' => ucfirst($type))),
       'has_title' => TRUE,
       'base' => 'cdm_dataportal',
       'description' => t(
@@ -52,10 +52,16 @@ function cdm_dataportal_form(&$node) {
   $type = node_type_get_type($node);
 
   if (is_numeric($node->nid)) {
-    $cdm_node_notice = t('In order to edit CDM content, please use the ') . l(t('Taxonomic Editor'), 'http://dev.e-taxonomy.eu/trac/wiki/TaxonomicEditor', array('fragment' => TRUE));
+    $cdm_node_notice = t(
+      'In order to edit CDM content, please use the !taxEditor',
+      array(
+        '!taxEditor' => l(t('Taxonomic Editor'), 'http://dev.e-taxonomy.eu/trac/wiki/TaxonomicEditor', array('fragment' => TRUE))
+      )
+    );
   }
   else {
-    $cdm_node_notice = t('You cannot manually create a node of type ') . $type->name . '. ' . t('This node type is only created internally');
+    $cdm_node_notice = t('You cannot manually create a node of type @type-name. This node type is only created internally'
+      , array('@type-name' => $type->name));
   }
   $form['cdm'] = array(
     '#value' => '<div class="cdm_node_notice warning">' . $cdm_node_notice . '</div>',
