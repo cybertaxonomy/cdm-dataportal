@@ -1,0 +1,10 @@
+The translations can be named as $langcode.po or with names ending with $langcode.po.
+
+Translations are only automatically imported during the installation of the module for
+all the languages already set up on the site,
+see https://api.drupal.org/api/drupal/includes!locale.inc/function/locale_batch_by_component/8.x for details.
+
+If the module is already enabled you need to disable and re-enable it. Alternatively you can use the following drush command:
+
+drush php-eval "locale_system_update(array('yourmodule_name'));drush_backend_batch_process();"
+
