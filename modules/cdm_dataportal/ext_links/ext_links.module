@@ -260,22 +260,22 @@ function ext_links_admin($form, &$form_state) {
   for ($i = 0; $i < sizeof($ext_links); $i++) {
     $form[$ext_links[$i]['form']] = array(
       '#type' => 'fieldset',
-      '#title' => t($ext_links[$i]['form_title']),
+      '#title' => t('@title', array('@title' => $ext_links[$i]['form_title'])),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
     $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_check'] = array(
       '#type' => 'checkbox',
-      '#title' => t($ext_links[$i]['check_title']),
+      '#title' => t('@title', array('@title' => $ext_links[$i]['check_title'])),
       '#default_value' => variable_get('ext_links_' . $ext_links[$i]['form'] . '_check', 1),
     );
     $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_link'] = array(
       '#type' => 'textfield',
-      '#title' => t($ext_links[$i]['link_title']) . ':',
+      '#title' => t('@title :', array('@title' => $ext_links[$i]['link_title'])),
       '#default_value' => variable_get('ext_links_' . $ext_links[$i]['form'] . '_link', $ext_links_default[$ext_links[$i]['form']]['link_default_value']),
       '#size' => 70,
       '#maxlength' => 255,
-      '#description' => t($ext_links[$i]['link_description']),
+      '#description' => t('@description', array('@description' => $ext_links[$i]['link_description'])),
     );
     $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_concat'] = array(
       '#type' => 'textfield',
@@ -287,19 +287,19 @@ function ext_links_admin($form, &$form_state) {
     );
     $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_text'] = array(
       '#type' => 'textfield',
-      '#title' => t($ext_links[$i]['text_title']) . ':',
+      '#title' => t('@title :', array('@title' => $ext_links[$i]['text_title'])),
       '#default_value' => variable_get('ext_links_' . $ext_links[$i]['form'] . '_text', $ext_links_default[$ext_links[$i]['form']]['text_default_value']),
       '#size' => 70,
       '#maxlength' => 255,
-      '#description' => t($ext_links[$i]['text_description']),
+      '#description' => t('@description', array('@description' => $ext_links[$i]['text_description'])),
     );
     $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_category'] = array(
       '#type' => 'textfield',
-      '#title' => t($ext_links[$i]['category']) . ':',
+      '#title' => t('@title :', array('@title' => $ext_links[$i]['category'])),
       '#default_value' => variable_get('ext_links_' . $ext_links[$i]['form'] . '_category', $ext_links_default[$ext_links[$i]['form']]['category_default_value']),
       '#size' => 70,
       '#maxlength' => 255,
-      '#description' => t($ext_links[$i]['category']),
+      '#description' => t('@description', array('@description' => $ext_links[$i]['category'])),
     );
   }
   $form['ext_links_options'] = array(

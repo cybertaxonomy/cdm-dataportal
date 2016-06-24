@@ -222,7 +222,10 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $tag = 'span', $glue = ' ',
   $i = 0;
   foreach ($taggedtxt as $tt) {
     if (!in_array($tt->type, $skiptags) && strlen($tt->text) > 0) {
-      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt) ? $glue : '') . '<' . $tag . ' class="' . $tt->type . '">' . t($tt->text) . '</' . $tag . '>';
+      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt) ? $glue : '')
+        . '<' . $tag . ' class="' . $tt->type . '">'
+        . t('@text', array('@text' => $tt->text))
+        . '</' . $tag . '>';
     }
   }
   return $out;
@@ -814,7 +817,10 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
   $i = 0;
   while (strpos($uri_pattern, "$" . $i) !== FALSE) {
     if (count($pathParameters) <= $i) {
-        drupal_set_message(t('cdm_compose_url(): missing pathParameter ' . $i .  ' for ' . $uri_pattern), 'error');
+        drupal_set_message(
+          t('cdm_compose_url(): missing pathParameter @index for !uri_pattern',
+            array('@index' => $i, '!uri-pattern' => $uri_pattern )),
+          'error');
       break;
     }
     $uri_pattern = str_replace("$" . $i, rawurlencode($pathParameters[$i]), $uri_pattern);
@@ -1398,7 +1404,7 @@ function cdm_terms_as_options($terms, $term_label_callback = NULL){
         $options[$term->uuid] = call_user_func($term_label_callback, $term);
       } else {
         //TODO use cdm_term_representation() here?
-        $options[$term->uuid] = t($term->representation_L10n);
+        $options[$term->uuid] = t('@term', array('@term' => $term->representation_L10n));
       }
     }
   }
@@ -1514,10 +1520,11 @@ function cdm_rankVocabulary_as_option() {
  */
 function _cdm_relationship_type_term_label_callback($term) {
   if (isset($term->representation_L10n_abbreviatedLabel)) {
-    return $term->representation_L10n_abbreviatedLabel . ' : ' . t($term->representation_L10n);
+    return $term->representation_L10n_abbreviatedLabel . ' : '
+    . t('@term', array('@term' => $term->representation_L10n));
   }
 else {
-    return t($term->representation_L10n);
+    return t('@term', array('@term' => $term->representation_L10n));
   }
 }
 

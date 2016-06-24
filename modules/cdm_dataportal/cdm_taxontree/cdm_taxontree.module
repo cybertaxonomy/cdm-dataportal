@@ -896,10 +896,10 @@ function theme_cdm_taxontree_controller($variables) {
   $out = '<div class="settings">';
   foreach ($modes as $mode) {
     if ($compact_mode == $mode) {
-      $out .= t($mode);
+      $out .= t('@mode', array('@mode' => $mode));
     }
     else {
-      $out .= l(t($mode), 'cdm_taxontree/set/compact_mode/' . $mode, array('query' => drupal_get_destination()));
+      $out .= l(t('@mode', array('@mode' => $mode)), 'cdm_taxontree/set/compact_mode/' . $mode, array('query' => drupal_get_destination()));
     }
     $out .= ' ';
   }
