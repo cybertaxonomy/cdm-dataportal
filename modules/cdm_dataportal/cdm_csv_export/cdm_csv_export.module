@@ -81,113 +81,120 @@ function cdm_csv_export_block_view($delta='') {
  *
  */
 function cdm_csv_export_my_form($form_state) {
-  $form['combobox'] = array(
-    '#type' => 'select',
-    '#title' => t('Classification').':',
-    '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, FALSE),
-    '#options' => cdm_get_taxontrees_as_options(),
-    '#attributes' => array(
-         'name' => 'classification',
-          'onchange' => 'return validateForm()'),
-  );
+    $form['combobox'] = array(
+        '#type' => 'select',
+        '#title' => t('Classification').':',
+        '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, FALSE),
+        '#options' => cdm_get_taxontrees_as_options(),
+        '#attributes' => array(
+            'name' => 'classification',
+            'onchange' => 'return validateForm()'),
+    );
+    $form['taxon_select'] = array(
+        '#title' => t('Taxon'),
+        '#type' => 'textfield',
+    );
+    if(variable_get('cdm_dataportal_taxon_auto_suggest')){
+        $form['taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest';
+    }
 
-  $form['redListField'] = array(
-      '#type' => 'fieldset',
-      '#title'	=>t('Redlist Attributes'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+    $form['redListField'] = array(
+        '#type' => 'fieldset',
+        '#title'	=>t('Redlist Attributes'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
     );
 
-  $form['redListField']['csvExportOptions'] = array(
-      '#type'=>'checkboxes',
-      '#options' => array(),
-  );
+    $form['redListField']['csvExportOptions'] = array(
+        '#type'=>'checkboxes',
+        '#options' => array(),
+    );
 
-   // ---- LAYOUT PER FEATURE ---- //
-$feature_tree = get_csv_featureTree();
-  if (isset($feature_tree->root->childNodes)) {
-    foreach ($feature_tree->root->childNodes as $featureNode) {
-      if (isset($featureNode->feature)) {
+    // ---- LAYOUT PER FEATURE ---- //
+    $feature_tree = get_csv_featureTree();
+    if (isset($feature_tree->root->childNodes)) {
+        foreach ($feature_tree->root->childNodes as $featureNode) {
+            if (isset($featureNode->feature)) {
 
-       // Must not exceed 45 characters !!!
-        $subform_id =  $featureNode->feature->uuid; //LAYOUT_SETTING_PREFIX .
-//        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
-//        $systemDefaults = unserialize(FEATURE_TREE_LAYOUT_DEFAULTS);
-        $form['redListField']['csvExportOptions'][$subform_id] = array(
-          '#type' => 'checkbox',
-          '#title' => $featureNode->feature->representation_L10n,
-          '#default_value' => $featureNode->feature->uuid,//$settings,
-          '#attributes' => array('value' => $featureNode->feature->uuid,
-                                  'name' => 'features'
+                // Must not exceed 45 characters !!!
+                $subform_id =  $featureNode->feature->uuid; //LAYOUT_SETTING_PREFIX .
+                //        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
+                //        $systemDefaults = unserialize(FEATURE_TREE_LAYOUT_DEFAULTS);
+                $form['redListField']['csvExportOptions'][$subform_id] = array(
+                    '#type' => 'checkbox',
+                    '#title' => $featureNode->feature->representation_L10n,
+                    '#default_value' => $featureNode->feature->uuid,//$settings,
+                    '#attributes' => array('value' => $featureNode->feature->uuid,
+                        'name' => 'features'
+                    ),
+                );
+            }
+        }
+    }
+
+    $form['downloadTokenValueId'] = array(
+        '#type' => 'hidden',
+        '#attributes' => array('name' => 'downloadTokenValueId',
+            'id' => 'downloadTokenValueId',
+        ),
+    );
+
+    $form['dialogMessage'] = array(
+        '#type' => 'hidden',
+        '#attributes' => array(
+            'name' => 'dialogMessage',
+            'id' => 'dialogMessage',
+        ),
+    );
+
+    $country = variable_get('area_filter_country');
+    $state = variable_get('area_filter_state');
+    if($country != null || $state != null){
+        $form['regionFilter'] = array(
+            '#type' => 'fieldset',
+            '#title' => t('Geographical filter'),
+            '#collapsible' => TRUE,
+            '#collapsed' => TRUE,
+        );
+    }
+
+    $term = cdm_ws_get(CDM_WS_TERM, $country);
+    $cdmRepresentationTitleCache = cdm_term_representation($term);
+    if($country != null){
+        $form['regionFilter']['country'] = array (
+            '#type' => 'checkbox',
+            '#title' => t($cdmRepresentationTitleCache),
+            '#attributes' => array('name' => 'area',
+                'id' => 'checkall',
+                'value' =>  $country
             ),
         );
-      }
     }
-  }
 
-  $form['downloadTokenValueId'] = array(
-    '#type' => 'hidden',
-    '#attributes' => array('name' => 'downloadTokenValueId',
-                           'id' => 'downloadTokenValueId',
-      ),
-    );
-
-  $form['dialogMessage'] = array(
-    '#type' => 'hidden',
-    '#attributes' => array(
-      'name' => 'dialogMessage',
-      'id' => 'dialogMessage',
-    ),
-  );
-
-  $country = variable_get('area_filter_country');
-  $state = variable_get('area_filter_state');
-if($country != null || $state != null){
-  $form['regionFilter'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Geographical filter'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
- }
-
-  $term = cdm_ws_get(CDM_WS_TERM, $country);
-  $cdmRepresentationTitleCache = cdm_term_representation($term);
-  if($country != null){
-  $form['regionFilter']['country'] = array (
-    '#type' => 'checkbox',
-    '#title' => t($cdmRepresentationTitleCache),
-    '#attributes' => array('name' => 'area',
-                            'id' => 'checkall',
-                            'value' =>  $country
-     ),
-    );
-  }
-
-  //GermanFederalStates
-  if($state != null){
-  $nameRelationshipTypeOptions = cdm_vocabulary_as_option($state);
-  asort($nameRelationshipTypeOptions);
-  $form['regionFilter']['area'] = array(
-    '#type' => 'checkboxes',
-    '#description' =>t('Select an area to filter the list of taxa'),
-    '#options' => $nameRelationshipTypeOptions,
-    '#attributes' => array('name' => 'area',
-                            'id' => 'area',
-      ),
-    );
-  }
+    //GermanFederalStates
+    if($state != null){
+        $nameRelationshipTypeOptions = cdm_vocabulary_as_option($state);
+        asort($nameRelationshipTypeOptions);
+        $form['regionFilter']['area'] = array(
+            '#type' => 'checkboxes',
+            '#description' =>t('Select an area to filter the list of taxa'),
+            '#options' => $nameRelationshipTypeOptions,
+            '#attributes' => array('name' => 'area',
+                'id' => 'area',
+            ),
+        );
+    }
 
   $form['button'] = array(
-    '#type'  => 'submit',
-    '#value' => 'Export',
+        '#type'  => 'submit',
+        '#value' => 'Export',
     );
 
-  $form['#action'] = url(variable_get('cdm_csv_export_webservice_url'));
-  $form['#attributes'] = array(
-                 'name' => 'exportForm',
-                 'onsubmit' => 'return blockUIForDownload()');
- return $form;
+    $form['#action'] = url(variable_get('cdm_csv_export_webservice_url'));
+    $form['#attributes'] = array(
+        'name' => 'exportForm',
+        'onsubmit' => 'return blockUIForDownload()');
+    return $form;
 }
 
 
