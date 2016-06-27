@@ -87,7 +87,7 @@ function cdm_csv_export_my_form($form_state) {
         '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, FALSE),
         '#options' => cdm_get_taxontrees_as_options(),
         '#attributes' => array(
-            'name' => 'classification',
+            'name' => 'taxonNode',
             'onchange' => 'return validateForm()'),
     );
     $form['taxon_select'] = array(
