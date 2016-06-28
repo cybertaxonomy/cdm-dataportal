@@ -121,7 +121,7 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
   return $form;
 }
 
-function cdm_dataportal_taxon_autosuggest($string, $treeUuid = NULL, $areaUuid = NULL, $status = NULL) {
+function cdm_dataportal_taxon_autosuggest($treeUuid = NULL, $areaUuid = NULL, $status = NULL, $string) {
   $matches = array();
 
   $queryParams = array();
@@ -136,7 +136,7 @@ function cdm_dataportal_taxon_autosuggest($string, $treeUuid = NULL, $areaUuid =
     $queryParams['status'] = $status ;
   }
   $queryParams['pageNumber'] = '0';
-  $queryParams['pageSize'] = '10';
+  $queryParams['pageSize'] = '100';
   $queryParams['doTaxa'] = true;
   $queryParams['doSynonyms'] = true;
   $queryParams['doMisappliedNames'] = true;
@@ -147,7 +147,7 @@ function cdm_dataportal_taxon_autosuggest($string, $treeUuid = NULL, $areaUuid =
       $titleCache = $record->entity->titleCache;
       preg_match('/(.*) sec.*/', $titleCache, $trimmedTitle); //remove sec reference
       $trimmedTitle = trim($trimmedTitle[1]);
-      $matches[$trimmedTitle] = $trimmedTitle;
+      $matches[$trimmedTitle] = check_plain($trimmedTitle);
   }
   drupal_json_output($matches);
 }
