@@ -121,13 +121,13 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
   return $form;
 }
 
-function cdm_dataportal_taxon_autosuggest($treeUuid = NULL, $areaUuid = NULL, $status = NULL, $string) {
+function cdm_dataportal_taxon_autosuggest($classificationNodeUuid = NULL, $areaUuid = NULL, $status = NULL, $string) {
   $matches = array();
 
   $queryParams = array();
   $queryParams['query'] = $string.'*';
-  if($treeUuid){
-    $queryParams['tree'] = $treeUuid;
+  if($classificationNodeUuid){
+    $queryParams['classificationNodeUuid'] = $classificationNodeUuid;
   }
   if($areaUuid){
     $queryParams['area'] = $areaUuid;
