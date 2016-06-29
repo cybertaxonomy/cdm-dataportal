@@ -1938,11 +1938,11 @@ msgstr ""
 
 #: theme/cdm_dataportal.common.theme:374
 msgid "« first"
-msgstr ""
+msgstr "« primera"
 
 #: theme/cdm_dataportal.common.theme:382
 msgid "‹ previous"
-msgstr ""
+msgstr "‹ anterior"
 
 #: theme/cdm_dataportal.common.theme:406
 msgid "next ›"
@@ -2043,6 +2043,10 @@ msgstr "Resultados para"
 #: theme/cdm_dataportal.page.theme:267
 msgid "any classification"
 msgstr ""
+
+#: theme/cdm_dataportal.page.theme:284
+msgid "Sorry, no matching entries found."
+msgstr "Lo sentimos, no encontramos coincidencia."
 
 #: theme/cdm_dataportal.page.theme:320
 msgid "open Image"

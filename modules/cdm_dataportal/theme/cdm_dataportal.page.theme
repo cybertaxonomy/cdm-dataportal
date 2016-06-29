@@ -281,7 +281,7 @@ function theme_cdm_search_results($variables)
         'parameters' => $_REQUEST,
     ));
   } else {
-    $out .= '<h4 class="error">Sorry, no matching entries found.</h4>';
+    $out .= '<h4 class="error">' . t('Sorry, no matching entries found.') . '</h4>';
   }
   return $out;
 }
