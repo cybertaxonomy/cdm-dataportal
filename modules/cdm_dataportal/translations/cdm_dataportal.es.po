@@ -65,6 +65,8 @@ msgstr "Búsqueda"
 #: cdm_dataportal.search.php:180
 msgid "Enter the name or part of a name you wish to search for.\n      The asterisk  character * can be used as wildcard, but must not be used as first character."
 msgstr ""
+"Ingrese nombre o parte del nombre."
+"No se permite usar el asterisco como comodín al inicio."
 
 #: cdm_dataportal.search.php:231 cdm_csv_export/cdm_csv_export.module:86 cdm_taxontree/cdm_taxontree.module:70
 msgid "Classification"
@@ -77,12 +79,12 @@ msgstr ""
 "Seleccionando <em>--- ALL ---</em> se deshabilita el filtro."
 
 #: cdm_dataportal.search.php:244;250;256;262
-msgid "Search for"
-msgstr "Buscar"
+msgid "Include"
+msgstr "Incluir"
 
 #: cdm_dataportal.search.php:244
 msgid "accepted taxa"
-msgstr "taxones aceptados"
+msgstr "taxónes (nombres aceptados)"
 
 #: cdm_dataportal.search.php:250
 msgid "synonyms"
@@ -94,7 +96,7 @@ msgstr "nombres mal aplicados"
 
 #: cdm_dataportal.search.php:262
 msgid "common names"
-msgstr ""
+msgstr "nombres comunes"
 
 #: cdm_dataportal.search.php:319
 msgid "Filter by distribution areas"
@@ -125,6 +127,10 @@ msgstr "Nombres mal aplicados"
 #: cdm_dataportal.search.php:414
 msgid "Enter the text you wish to search for. The asterisk character * can be\n        used as wildcard, but must not be used as first character. Terms can be combined with 'AND'. To search for a\n        full phrase enclose the terms in parentheses. For more syntactical\n        options please refer to the !link."
 msgstr ""
+"Introduzca el texto que desea buscar. No se permite usar el asterisco "
+"como comodín al inicio. Pueden combinarse palabras usando ‘AND’. "
+"Para buscar una phrase completa delimítela con paréntesis. "
+"Para más opciones refierase a la !link."
 
 #: cdm_dataportal.search.php:420
 msgid "Apache Lucene - Query Parser Syntax"
@@ -264,7 +270,7 @@ msgstr ""
 
 #: settings.php:1137 cdm_dataportal.module:970
 msgid "Available classifications"
-msgstr ""
+msgstr "Clasificaciones disponibles"
 
 #: settings.php:1140
 msgid "Select the default taxa classification for your\n      <em>taxon tree</em>, the other classifications will be also available but\n      with a manual user change."
@@ -2032,7 +2038,7 @@ msgstr ""
 
 #: theme/cdm_dataportal.page.theme:263
 msgid "results for"
-msgstr ""
+msgstr "Resultados para"
 
 #: theme/cdm_dataportal.page.theme:267
 msgid "any classification"

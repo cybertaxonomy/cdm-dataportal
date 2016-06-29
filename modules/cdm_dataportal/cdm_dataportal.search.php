@@ -250,25 +250,25 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
     $form['search']['doTaxa'] = array(
       '#weight' => 2,
       '#type' => 'checkbox',
-      '#title' => t('Search for') . ' ' . t('accepted taxa'),
+      '#title' => t('Include') . ' ' . t('accepted taxa'),
       '#value' => $preset_do_taxa,
     );
     $form['search']['doSynonyms'] = array(
       '#weight' => 3,
       '#type' => 'checkbox',
-      '#title' => t('Search for') . ' ' . t('synonyms'),
+      '#title' => t('Include') . ' ' . t('synonyms'),
       '#value' => $preset_do_synonyms,
     );
     $form['search']['doMisappliedNames'] = array(
       '#weight' => 4,
       '#type' => 'checkbox',
-      '#title' => t('Search for') . ' ' . t('misapplied names'),
+      '#title' => t('Include') . ' ' . t('misapplied names'),
       '#value' => $preset_do_misapplied_names,
     );
     $form['search']['doTaxaByCommonNames'] = array(
       '#weight' => 5,
       '#type' => 'checkbox',
-      '#title' => t('Search for') . ' ' . t('common names'),
+      '#title' => t('Include') . ' ' . t('common names'),
       '#value' => $preset_do_taxa_by_common_names,
     );
 
