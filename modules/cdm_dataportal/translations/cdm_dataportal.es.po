@@ -41,18 +41,19 @@
 #  theme/cdm_dataportal.occurrence.theme: n/a
 #  theme/cdm_dataportal.references.theme: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2016-06-24 11:17+0200\n"
-"PO-Revision-Date: 2016-06-24 11:17+0200\n"
+"PO-Revision-Date: 2016-06-30 16:56+0100\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: Spanish\n"
 
 #: cdm_dataportal.search.php:102
 msgid "Options"
@@ -63,20 +64,26 @@ msgid "Search"
 msgstr "Búsqueda"
 
 #: cdm_dataportal.search.php:180
-msgid "Enter the name or part of a name you wish to search for.\n      The asterisk  character * can be used as wildcard, but must not be used as first character."
+msgid ""
+"Enter the name or part of a name you wish to search for.\n"
+"      The asterisk  character * can be used as wildcard, but must not be "
+"used as first character."
 msgstr ""
-"Ingrese nombre o parte del nombre."
-"No se permite usar el asterisco como comodín al inicio."
+"Ingrese nombre o parte del nombre.No se permite usar el asterisco como "
+"comodín al inicio."
 
-#: cdm_dataportal.search.php:231 cdm_csv_export/cdm_csv_export.module:86 cdm_taxontree/cdm_taxontree.module:70
+#: cdm_dataportal.search.php:231 cdm_csv_export/cdm_csv_export.module:86
+#: cdm_taxontree/cdm_taxontree.module:70
 msgid "Classification"
 msgstr "Clasificación"
 
 #: cdm_dataportal.search.php:236
-msgid "A filter to limit the search to a specific classification. Choosing <em>--- ALL ---</em> will disable this filter."
+msgid ""
+"A filter to limit the search to a specific classification. Choosing <em>--- "
+"ALL ---</em> will disable this filter."
 msgstr ""
-"Un filtro  para buscar en una clasificación específica. "
-"Seleccionando <em>--- ALL ---</em> se deshabilita el filtro."
+"Un filtro  para buscar en una clasificación específica. Seleccionando "
+"<em>--- ALL ---</em> se deshabilita el filtro."
 
 #: cdm_dataportal.search.php:244;250;256;262
 msgid "Include"
@@ -103,13 +110,17 @@ msgid "Filter by distribution areas"
 msgstr "Filtrar por áreas de distribución"
 
 #: cdm_dataportal.search.php:320
-msgid "The search will return taxa having distribution\n        information for at least one of the selected areas."
+msgid ""
+"The search will return taxa having distribution\n"
+"        information for at least one of the selected areas."
 msgstr ""
-"La búsqueda resulta en la enumeración de los taxones mencionados "
-"para una o más de las áreas seleccionadas."
+"La búsqueda resulta en la enumeración de los taxones mencionados para una o "
+"más de las áreas seleccionadas."
 
 #: cdm_dataportal.search.php:322
-msgid "The areas are grouped\n        by the vocabularies to which the highest level areas belong."
+msgid ""
+"The areas are grouped\n"
+"        by the vocabularies to which the highest level areas belong."
 msgstr ""
 
 #: cdm_dataportal.search.php:327
@@ -125,12 +136,17 @@ msgid "Misapplied names"
 msgstr "Nombres mal aplicados"
 
 #: cdm_dataportal.search.php:414
-msgid "Enter the text you wish to search for. The asterisk character * can be\n        used as wildcard, but must not be used as first character. Terms can be combined with 'AND'. To search for a\n        full phrase enclose the terms in parentheses. For more syntactical\n        options please refer to the !link."
+msgid ""
+"Enter the text you wish to search for. The asterisk character * can be\n"
+"        used as wildcard, but must not be used as first character. Terms can "
+"be combined with 'AND'. To search for a\n"
+"        full phrase enclose the terms in parentheses. For more syntactical\n"
+"        options please refer to the !link."
 msgstr ""
-"Introduzca el texto que desea buscar. No se permite usar el asterisco "
-"como comodín al inicio. Pueden combinarse palabras usando ‘AND’. "
-"Para buscar una phrase completa delimítela con paréntesis. "
-"Para más opciones refierase a la !link."
+"Introduzca el texto que desea buscar. No se permite usar el asterisco como "
+"comodín al inicio. Pueden combinarse palabras usando ‘AND’. Para buscar una "
+"phrase completa delimítela con paréntesis. Para más opciones refierase a la !"
+"link."
 
 #: cdm_dataportal.search.php:420
 msgid "Apache Lucene - Query Parser Syntax"
@@ -165,7 +181,9 @@ msgid "@type-name"
 msgstr ""
 
 #: node_types.php:38
-msgid "This node type is being used internally to create peer nodes\n         in drupal for cdm entities of the type !type."
+msgid ""
+"This node type is being used internally to create peer nodes\n"
+"         in drupal for cdm entities of the type !type."
 msgstr ""
 
 #: node_types.php:55
@@ -177,7 +195,9 @@ msgid "Taxonomic Editor"
 msgstr ""
 
 #: node_types.php:63
-msgid "You cannot manually create a node of type @type-name. This node type is only created internally"
+msgid ""
+"You cannot manually create a node of type @type-name. This node type is only "
+"created internally"
 msgstr ""
 
 #: settings.php:154 includes/common.inc:421
@@ -197,7 +217,11 @@ msgid "CDM Server"
 msgstr ""
 
 #: settings.php:1022
-msgid "The <em>CDM Server</em> exposes data stored in a\n        CDM data base to the web via RESTful web services and thus is the source of the data\n        to be displayed by a CDM DataPotal."
+msgid ""
+"The <em>CDM Server</em> exposes data stored in a\n"
+"        CDM data base to the web via RESTful web services and thus is the "
+"source of the data\n"
+"        to be displayed by a CDM DataPotal."
 msgstr ""
 
 #: settings.php:1029 cdm_api/cdm_api.module:2592
@@ -205,7 +229,9 @@ msgid "CDM web service URL"
 msgstr ""
 
 #: settings.php:1030
-msgid "This is the URL to the CDM-Server exposing your data\n      e.g. <em>\"http://myserver.net/cdmserver/myproject\"</em>"
+msgid ""
+"This is the URL to the CDM-Server exposing your data\n"
+"      e.g. <em>\"http://myserver.net/cdmserver/myproject\"</em>"
 msgstr ""
 
 #: settings.php:1043
@@ -213,7 +239,13 @@ msgid "Freetext index"
 msgstr ""
 
 #: settings.php:1053
-msgid "The CDM web service URL contains a portnumber other than standart HTTP port 80: '!port'\n           Due to this the reindex and purge fuctions may not be working if there is a firewall in between you and the CDM Server.\n           You may want to contact the maintainer of the according CDM Server in order to solve this problem."
+msgid ""
+"The CDM web service URL contains a portnumber other than standart HTTP port "
+"80: '!port'\n"
+"           Due to this the reindex and purge fuctions may not be working if "
+"there is a firewall in between you and the CDM Server.\n"
+"           You may want to contact the maintainer of the according CDM "
+"Server in order to solve this problem."
 msgstr ""
 
 #: settings.php:1069
@@ -233,7 +265,11 @@ msgid "Enable auto-suggest for taxon search"
 msgstr ""
 
 #: settings.php:1081
-msgid "If enabled, the taxon search field will suggest taxon names while typing in a search query.\n        This function works on indexed taxon names. If you experience any delay maybe you have to reindex (see above)."
+msgid ""
+"If enabled, the taxon search field will suggest taxon names while typing in "
+"a search query.\n"
+"        This function works on indexed taxon names. If you experience any "
+"delay maybe you have to reindex (see above)."
 msgstr ""
 
 #: settings.php:1087
@@ -245,7 +281,10 @@ msgid "Proxy URL"
 msgstr ""
 
 #: settings.php:1095
-msgid "If this proxy url is set the cdm api tries\n    to connect the web service over the given proxy server.\n    Otherwise proxy usage is deactivated."
+msgid ""
+"If this proxy url is set the cdm api tries\n"
+"    to connect the web service over the given proxy server.\n"
+"    Otherwise proxy usage is deactivated."
 msgstr ""
 
 #: settings.php:1103
@@ -265,7 +304,17 @@ msgid "Taxon Tree"
 msgstr ""
 
 #: settings.php:1126
-msgid "<p>When you explore your collection, you can navigate\n      it through a tree structure also called <em>Taxon Tree</em>.</p><p>To be\n      able to navigate through your collection the\n      <a href=\"http://drupal.org/handbook/blocks\">drupal block</a>\n      <em>CDM Taxon Tree</em> should be visible for users. Enable the block at\n      <a href=\"./?q=admin/build/block\">Administer&#45&#62Site building&#45&#62Blocks\n      </a></p>"
+msgid ""
+"<p>When you explore your collection, you can navigate\n"
+"      it through a tree structure also called <em>Taxon Tree</em>.</p><p>To "
+"be\n"
+"      able to navigate through your collection the\n"
+"      <a href=\"http://drupal.org/handbook/blocks\">drupal block</a>\n"
+"      <em>CDM Taxon Tree</em> should be visible for users. Enable the block "
+"at\n"
+"      <a href=\"./?q=admin/build/block\">Administer&#45&#62Site "
+"building&#45&#62Blocks\n"
+"      </a></p>"
 msgstr ""
 
 #: settings.php:1137 cdm_dataportal.module:970
@@ -273,7 +322,11 @@ msgid "Available classifications"
 msgstr "Clasificaciones disponibles"
 
 #: settings.php:1140
-msgid "Select the default taxa classification for your\n      <em>taxon tree</em>, the other classifications will be also available but\n      with a manual user change."
+msgid ""
+"Select the default taxa classification for your\n"
+"      <em>taxon tree</em>, the other classifications will be also available "
+"but\n"
+"      with a manual user change."
 msgstr ""
 
 #: settings.php:1147
@@ -281,7 +334,11 @@ msgid "Rank of highest displayed taxon"
 msgstr ""
 
 #: settings.php:1151
-msgid "This is the rank of the highest displayed taxon in the\n      <em>taxon tree</em>. You can select here which rank should be at the top\n      level of the tree structure."
+msgid ""
+"This is the rank of the highest displayed taxon in the\n"
+"      <em>taxon tree</em>. You can select here which rank should be at the "
+"top\n"
+"      level of the tree structure."
 msgstr ""
 
 #: settings.php:1160
@@ -289,7 +346,9 @@ msgid "Included Classifications"
 msgstr ""
 
 #: settings.php:1163
-msgid "Only the checked classifications will be avaliable in the classification chooser."
+msgid ""
+"Only the checked classifications will be avaliable in the classification "
+"chooser."
 msgstr ""
 
 #: settings.php:1168
@@ -305,7 +364,9 @@ msgid "Media aggregation"
 msgstr ""
 
 #: settings.php:1251
-msgid "The media aggregation is also affected by the settigs in \"<strong>Aggregation via taxon relationsships</strong>\" below."
+msgid ""
+"The media aggregation is also affected by the settigs in "
+"\"<strong>Aggregation via taxon relationsships</strong>\" below."
 msgstr ""
 
 #: settings.php:1256
@@ -313,7 +374,10 @@ msgid "Aggregation of taxon pictures"
 msgstr ""
 
 #: settings.php:1262
-msgid "Choose whether to include the images of the taxonomic children. This will affect the <em>Images</em> tab and image tumbnails like in the search results."
+msgid ""
+"Choose whether to include the images of the taxonomic children. This will "
+"affect the <em>Images</em> tab and image tumbnails like in the search "
+"results."
 msgstr ""
 
 #: settings.php:1268
@@ -321,7 +385,15 @@ msgid "Aggregation via taxon relationsships"
 msgstr ""
 
 #: settings.php:1272
-msgid "Information on taxa will be aggregated along the below chosen\n          taxon relation ships. This will affect images and occurrences (specimens).\n          Taxon relation ships are directed and point form one taxon to another. The taxon\n          relationships to be taken into accunt can therefore configured for the direct direction\n          and for the inverse."
+msgid ""
+"Information on taxa will be aggregated along the below chosen\n"
+"          taxon relation ships. This will affect images and occurrences "
+"(specimens).\n"
+"          Taxon relation ships are directed and point form one taxon to "
+"another. The taxon\n"
+"          relationships to be taken into accunt can therefore configured for "
+"the direct direction\n"
+"          and for the inverse."
 msgstr ""
 
 #: settings.php:1284
@@ -340,7 +412,8 @@ msgstr ""
 msgid "Drop all cdm nodes"
 msgstr ""
 
-#: settings.php:1357;1667;2456;2545;2587;3051;3096 cdm_mediauri/cdm_mediauri.module:379 ext_links/ext_links.module:315
+#: settings.php:1357;1667;2456;2545;2587;3051;3096
+#: cdm_mediauri/cdm_mediauri.module:379 ext_links/ext_links.module:315
 msgid "Reset to defaults"
 msgstr ""
 
@@ -353,7 +426,10 @@ msgid "Portal Layout"
 msgstr ""
 
 #: settings.php:1387
-msgid "This settings contains the general configurations\n      layout. If you want to configure the specific sites layout visit the\n      respective configuration site for taxon, search or media."
+msgid ""
+"This settings contains the general configurations\n"
+"      layout. If you want to configure the specific sites layout visit the\n"
+"      respective configuration site for taxon, search or media."
 msgstr ""
 
 #: settings.php:1395
@@ -361,7 +437,11 @@ msgid "Footnotes"
 msgstr ""
 
 #: settings.php:1398
-msgid "Taxa data such authors, synonyms names, descriptions,\n      media or distribution areas may have annotations or footnotes. When the\n      footnotes are enabled they will be visible (if they exist)."
+msgid ""
+"Taxa data such authors, synonyms names, descriptions,\n"
+"      media or distribution areas may have annotations or footnotes. When "
+"the\n"
+"      footnotes are enabled they will be visible (if they exist)."
 msgstr ""
 
 #: settings.php:1405
@@ -389,7 +469,9 @@ msgid "Annotation types as footnotes"
 msgstr ""
 
 #: settings.php:1423
-msgid "Only annotations of the selected type will be displayed\n       as footnotes. You may want to turn 'technical annotations' off."
+msgid ""
+"Only annotations of the selected type will be displayed\n"
+"       as footnotes. You may want to turn 'technical annotations' off."
 msgstr ""
 
 #: settings.php:1436
@@ -401,7 +483,10 @@ msgid "Original Source in bibliography"
 msgstr ""
 
 #: settings.php:1447
-msgid "Show original source citations in bibliography block, instead of rendering them with other\n       annotations in each feature block."
+msgid ""
+"Show original source citations in bibliography block, instead of rendering "
+"them with other\n"
+"       annotations in each feature block."
 msgstr ""
 
 #: settings.php:1453
@@ -417,7 +502,9 @@ msgid "Show advanced search link"
 msgstr ""
 
 #: settings.php:1473
-msgid "Check this box if the link to advanced search should be show below the search box."
+msgid ""
+"Check this box if the link to advanced search should be show below the "
+"search box."
 msgstr ""
 
 #: settings.php:1479
@@ -425,7 +512,11 @@ msgid "Taxon name display"
 msgstr ""
 
 #: settings.php:1482
-msgid "The display of taxon names is configured by two parts.\n          The <srong>name render templates</strong> define the parts of the name to be displayed in the different areas of the data portal pages.\n          The name parts are defined in the <stong>part definitions</strong>"
+msgid ""
+"The display of taxon names is configured by two parts.\n"
+"          The <srong>name render templates</strong> define the parts of the "
+"name to be displayed in the different areas of the data portal pages.\n"
+"          The name parts are defined in the <stong>part definitions</strong>"
 msgstr ""
 
 #: settings.php:1513
@@ -469,7 +560,9 @@ msgid "Number of columns"
 msgstr ""
 
 #: settings.php:1740
-msgid "Group the thumbnails in columns: select how many\n        columns the gallery should display."
+msgid ""
+"Group the thumbnails in columns: select how many\n"
+"        columns the gallery should display."
 msgstr ""
 
 #: settings.php:1748
@@ -477,7 +570,11 @@ msgid "Maximum number of rows"
 msgstr ""
 
 #: settings.php:1750
-msgid "You can group the thumbnails in rows, select in how\n        many rows should be the thumbnails grouped.<br/><strong>Note:</strong>\n        If you want an unlimited number of rows please set to 0."
+msgid ""
+"You can group the thumbnails in rows, select in how\n"
+"        many rows should be the thumbnails grouped.<br/><strong>Note:</"
+"strong>\n"
+"        If you want an unlimited number of rows please set to 0."
 msgstr ""
 
 #: settings.php:1770
@@ -485,7 +582,11 @@ msgid "Show <em>Back to search results</em> link at the taxon site."
 msgstr ""
 
 #: settings.php:1772
-msgid "<p>If checked the link to search results is rendered at\n       the top of the taxon site. Clicking on the link the last search performed\n       is rendered again.</p>"
+msgid ""
+"<p>If checked the link to search results is rendered at\n"
+"       the top of the taxon site. Clicking on the link the last search "
+"performed\n"
+"       is rendered again.</p>"
 msgstr ""
 
 #: settings.php:1780
@@ -493,7 +594,12 @@ msgid "Taxon tabs"
 msgstr ""
 
 #: settings.php:1783
-msgid "If tabbed taxon page is enabled the taxon profile will\n      be splitted in four diferent tabs; General, Synonymy, Images and\n      Specimens. If the taxon has no information for any of the tabs/sections\n      such tab will be not displayed."
+msgid ""
+"If tabbed taxon page is enabled the taxon profile will\n"
+"      be splitted in four diferent tabs; General, Synonymy, Images and\n"
+"      Specimens. If the taxon has no information for any of the tabs/"
+"sections\n"
+"      such tab will be not displayed."
 msgstr ""
 
 #: settings.php:1791
@@ -501,7 +607,11 @@ msgid "Tabbed taxon page"
 msgstr ""
 
 #: settings.php:1793
-msgid "<p>If selected split the taxon page into individual\n      tabs for description, images, synonymy and specimens. If not the taxon\n      data is rendered as a long single page without tabs.</p>"
+msgid ""
+"<p>If selected split the taxon page into individual\n"
+"      tabs for description, images, synonymy and specimens. If not the "
+"taxon\n"
+"      data is rendered as a long single page without tabs.</p>"
 msgstr ""
 
 #: settings.php:1800
@@ -517,7 +627,13 @@ msgid "Default tab to display"
 msgstr ""
 
 #: settings.php:1829
-msgid "<p>Select the default tab to display when visiting a\n      taxon page. Only available if Tabbed Taxon Page is enable.</p>\n      <strong>Note:</strong> After performing a search and clicking in any\n      synonym, the taxon tab to be rendered will be the synonymy of the accepted\n      taxon and not the above selected tab."
+msgid ""
+"<p>Select the default tab to display when visiting a\n"
+"      taxon page. Only available if Tabbed Taxon Page is enable.</p>\n"
+"      <strong>Note:</strong> After performing a search and clicking in any\n"
+"      synonym, the taxon tab to be rendered will be the synonymy of the "
+"accepted\n"
+"      taxon and not the above selected tab."
 msgstr ""
 
 #: settings.php:1839
@@ -525,7 +641,9 @@ msgid "Taxon profile (tab)"
 msgstr ""
 
 #: settings.php:1840
-msgid "<p>This section covers the settings related to the taxon\n      profile tab, also known as the <strong>\"General\"</strong> tab.</p>"
+msgid ""
+"<p>This section covers the settings related to the taxon\n"
+"      profile tab, also known as the <strong>\"General\"</strong> tab.</p>"
 msgstr ""
 
 #: settings.php:1851
@@ -533,7 +651,9 @@ msgid "Taxon profile picture"
 msgstr ""
 
 #: settings.php:1854
-msgid "This sections allows configuring the display of the so called taxon profile image which is displayed in the taxon profile tab."
+msgid ""
+"This sections allows configuring the display of the so called taxon profile "
+"image which is displayed in the taxon profile tab."
 msgstr ""
 
 #: settings.php:1873
@@ -549,7 +669,9 @@ msgid "Profile picture maximum extend"
 msgstr ""
 
 #: settings.php:1886
-msgid "The maximum extend in either dimension, width or height, of the profile picture in pixels."
+msgid ""
+"The maximum extend in either dimension, width or height, of the profile "
+"picture in pixels."
 msgstr ""
 
 #: settings.php:1892
@@ -557,7 +679,14 @@ msgid "Additional URI query parameter"
 msgstr ""
 
 #: settings.php:1896
-msgid "Additional query parameters to be used when requesting for the  \n            profile image. E.g.: <code>width=400&height=300&quality=95&format=jpeg</code>.\n            The query parameters will be appended to the uri of the media representation part\n            as stored in the cdm. The query parameter string must not start with a '&' or  '?'"
+msgid ""
+"Additional query parameters to be used when requesting for the  \n"
+"            profile image. E.g.: "
+"<code>width=400&height=300&quality=95&format=jpeg</code>.\n"
+"            The query parameters will be appended to the uri of the media "
+"representation part\n"
+"            as stored in the cdm. The query parameter string must not start "
+"with a '&' or  '?'"
 msgstr ""
 
 #: settings.php:1904
@@ -565,7 +694,9 @@ msgid "Show the placeholder image"
 msgstr ""
 
 #: settings.php:1905
-msgid "If not taxon profile picture is available a placeholder image is shown instead."
+msgid ""
+"If not taxon profile picture is available a placeholder image is shown "
+"instead."
 msgstr ""
 
 #: settings.php:1911
@@ -573,7 +704,8 @@ msgid "Use a custom placeholder image"
 msgstr ""
 
 #: settings.php:1912
-msgid "This image is shown as replacement if no image of the taxon is available."
+msgid ""
+"This image is shown as replacement if no image of the taxon is available."
 msgstr ""
 
 #: settings.php:1919
@@ -585,7 +717,9 @@ msgid "Hide profile picture for higher ranks"
 msgstr ""
 
 #: settings.php:1948
-msgid "The taxon profile picture will not be shown for taxa with rank higher that the selected."
+msgid ""
+"The taxon profile picture will not be shown for taxa with rank higher that "
+"the selected."
 msgstr ""
 
 #: settings.php:1960
@@ -593,7 +727,10 @@ msgid "Feature Blocks"
 msgstr ""
 
 #: settings.php:1963
-msgid "This section covers settings related to the taxon's\n      <em>Feature Tree</em>. The <em>feature tree</em> are the taxon's\n      features such as description, distribution, common names"
+msgid ""
+"This section covers settings related to the taxon's\n"
+"      <em>Feature Tree</em>. The <em>feature tree</em> are the taxon's\n"
+"      features such as description, distribution, common names"
 msgstr ""
 
 #: settings.php:1975
@@ -601,7 +738,10 @@ msgid "Taxon profile feature tree"
 msgstr ""
 
 #: settings.php:1980
-msgid "The Feature Tree selected here define the feature blocks which are visible in the taxon\n      profile page."
+msgid ""
+"The Feature Tree selected here define the feature blocks which are visible "
+"in the taxon\n"
+"      profile page."
 msgstr ""
 
 #: settings.php:1993
@@ -629,7 +769,10 @@ msgid "Natural language representation of structured descriptions"
 msgstr ""
 
 #: settings.php:2152
-msgid "Taxon descriptions can be stored in a highly structured\n      form. The feature tree selected here will be used to generate textual\n      representation in natural language."
+msgid ""
+"Taxon descriptions can be stored in a highly structured\n"
+"      form. The feature tree selected here will be used to generate textual\n"
+"      representation in natural language."
 msgstr ""
 
 #: settings.php:2162
@@ -677,7 +820,12 @@ msgid "Show TextData elements on top of the map"
 msgstr ""
 
 #: settings.php:2261
-msgid "Check this if you want to appear all <code>TextData</code>\n      elements on top of the map. Otherwise all <code>TextData</code>\n      distribution elements will be listed below the other area elements.\n      This option is useful if you need to have descriptive texts for each\n      distribution map."
+msgid ""
+"Check this if you want to appear all <code>TextData</code>\n"
+"      elements on top of the map. Otherwise all <code>TextData</code>\n"
+"      distribution elements will be listed below the other area elements.\n"
+"      This option is useful if you need to have descriptive texts for each\n"
+"      distribution map."
 msgstr ""
 
 #: settings.php:2270
@@ -685,7 +833,42 @@ msgid "Custom status colors"
 msgstr ""
 
 #: settings.php:2273
-msgid "<strong>EXPERIMENTAL!</strong><br/>This may be changed in the next release without notification.\n          A json map object with StatusTerm.idInVocabulary as key and a hex color as value. e.g: <code>{\"n\":\"#ff0000\",\"p\":\"#00ff00\"}</code>.\n          reference list of the idInVocabulary values of absence and presence terms:\n<pre>\nPresence Term\np\tpresent\npd\tpresent: doubtfully present\nn\tnative\nnq\tnative: presence questionable\nnd\tnative: doubtfully native\nc\tcultivated\ni\tintroduced\niq\tintroduced: presence questionable\nid\tintroduced: doubtfully introduced (perhaps cultivated only)\nip\tintroduced: uncertain degree of naturalisation\nia\tintroduced: adventitious (casual)\nin\tintroduced: naturalized\nic\tintroduced: cultivated\ne\tendemic for the relevant area\nna\tnaturalised\niv\tinvasive\n\nAbsenceTerm\na\tabsent\nf\treported in error\nnf\tnative: reported in error\nif\tintroduced: reported in error\ncf\tcultivated: reported in error\nne\tnative: formerly native\nie\tintroduced: formerly introduced\n\n</pre>"
+msgid ""
+"<strong>EXPERIMENTAL!</strong><br/>This may be changed in the next release "
+"without notification.\n"
+"          A json map object with StatusTerm.idInVocabulary as key and a hex "
+"color as value. e.g: <code>{\"n\":\"#ff0000\",\"p\":\"#00ff00\"}</code>.\n"
+"          reference list of the idInVocabulary values of absence and "
+"presence terms:\n"
+"<pre>\n"
+"Presence Term\n"
+"p\tpresent\n"
+"pd\tpresent: doubtfully present\n"
+"n\tnative\n"
+"nq\tnative: presence questionable\n"
+"nd\tnative: doubtfully native\n"
+"c\tcultivated\n"
+"i\tintroduced\n"
+"iq\tintroduced: presence questionable\n"
+"id\tintroduced: doubtfully introduced (perhaps cultivated only)\n"
+"ip\tintroduced: uncertain degree of naturalisation\n"
+"ia\tintroduced: adventitious (casual)\n"
+"in\tintroduced: naturalized\n"
+"ic\tintroduced: cultivated\n"
+"e\tendemic for the relevant area\n"
+"na\tnaturalised\n"
+"iv\tinvasive\n"
+"\n"
+"AbsenceTerm\n"
+"a\tabsent\n"
+"f\treported in error\n"
+"nf\tnative: reported in error\n"
+"if\tintroduced: reported in error\n"
+"cf\tcultivated: reported in error\n"
+"ne\tnative: formerly native\n"
+"ie\tintroduced: formerly introduced\n"
+"\n"
+"</pre>"
 msgstr ""
 
 #: settings.php:2311
@@ -693,7 +876,9 @@ msgid "Taxon synonymy (tab)"
 msgstr ""
 
 #: settings.php:2314
-msgid "This section covers the settings related to the taxon\n      <strong>synonymy</strong> tab."
+msgid ""
+"This section covers the settings related to the taxon\n"
+"      <strong>synonymy</strong> tab."
 msgstr ""
 
 #: settings.php:2320
@@ -701,15 +886,24 @@ msgid "Show accepted taxon on top of the synonymy"
 msgstr ""
 
 #: settings.php:2322
-msgid "If checked, the first homotypic taxon is a repetition\n      of the accepted taxon most likely with the full nomenclatural reference\n      (depending on the currently chosen theme)."
+msgid ""
+"If checked, the first homotypic taxon is a repetition\n"
+"      of the accepted taxon most likely with the full nomenclatural "
+"reference\n"
+"      (depending on the currently chosen theme)."
 msgstr ""
 
 #: settings.php:2329
-msgid "Display <em>is accepted for ...</em> on taxon pages when\n      coming from a synonym link."
+msgid ""
+"Display <em>is accepted for ...</em> on taxon pages when\n"
+"      coming from a synonym link."
 msgstr ""
 
 #: settings.php:2332
-msgid "Check this if after doing a search and clicking on a\n      synonym you want to see the \"accept of\" text for the accepted synonym."
+msgid ""
+"Check this if after doing a search and clicking on a\n"
+"      synonym you want to see the \"accept of\" text for the accepted "
+"synonym."
 msgstr ""
 
 #: settings.php:2350
@@ -721,7 +915,9 @@ msgid "Show taxon relations ships of accepted taxon"
 msgstr ""
 
 #: settings.php:2359
-msgid "If this option is enabled the synonymy will show the\n      below selected taxon relationships of accepted taxa."
+msgid ""
+"If this option is enabled the synonymy will show the\n"
+"      below selected taxon relationships of accepted taxa."
 msgstr ""
 
 #: settings.php:2366
@@ -729,7 +925,9 @@ msgid "Taxon relationship types"
 msgstr ""
 
 #: settings.php:2367
-msgid "Only taxon relationships of the selected type will be\n      displayed"
+msgid ""
+"Only taxon relationships of the selected type will be\n"
+"      displayed"
 msgstr ""
 
 #: settings.php:2376
@@ -741,7 +939,9 @@ msgid "Name relationship types"
 msgstr ""
 
 #: settings.php:2385
-msgid "Only name relationships of the selected type will be\n      displayed"
+msgid ""
+"Only name relationships of the selected type will be\n"
+"      displayed"
 msgstr ""
 
 #: settings.php:2394
@@ -749,7 +949,9 @@ msgid "Taxon specimens (tab)"
 msgstr ""
 
 #: settings.php:2397
-msgid "This section covers the settings related to the taxon\n      <strong>specimens</strong> tab."
+msgid ""
+"This section covers the settings related to the taxon\n"
+"      <strong>specimens</strong> tab."
 msgstr ""
 
 #: settings.php:2403
@@ -757,7 +959,10 @@ msgid "Show specimen derivatives in a compressed table"
 msgstr ""
 
 #: settings.php:2405
-msgid "If checked, the specimen will be listed in a table. Every row represents\n        a collection and it can be expanded to get an overview of the specimens and their derivates."
+msgid ""
+"If checked, the specimen will be listed in a table. Every row represents\n"
+"        a collection and it can be expanded to get an overview of the "
+"specimens and their derivates."
 msgstr ""
 
 #: settings.php:2411
@@ -769,7 +974,9 @@ msgid "Specimen description feature tree"
 msgstr ""
 
 #: settings.php:2427
-msgid "Select the feature tree to be used for displaying specimen descriptions. Click \"Show Details\" to see the Feature Tree elements."
+msgid ""
+"Select the feature tree to be used for displaying specimen descriptions. "
+"Click \"Show Details\" to see the Feature Tree elements."
 msgstr ""
 
 #: settings.php:2432
@@ -777,7 +984,12 @@ msgid "Specimen media"
 msgstr ""
 
 #: settings.php:2433
-msgid "Specimens may have media which is displayed at the\n     Specimen tab/section as a gallery. It is possible to configure the\n     thumbnails gallery here, however for configuring how a single media should\n     be displayed please go to !url.</p>"
+msgid ""
+"Specimens may have media which is displayed at the\n"
+"     Specimen tab/section as a gallery. It is possible to configure the\n"
+"     thumbnails gallery here, however for configuring how a single media "
+"should\n"
+"     be displayed please go to !url.</p>"
 msgstr ""
 
 #: settings.php:2438
@@ -789,7 +1001,15 @@ msgid "Taxa Search"
 msgstr ""
 
 #: settings.php:2476
-msgid "<p>The data portal allows the users to perform searchs.</p><p>To perform searchs\n         the block <em>CDM Taxon Search</em> should be enabled and visible for users\n         where they can write the text to be searched. You can find Drupal block configuration\n         site at <a href=\"./?q=admin/build/block\">Administer&#45&#62Site building&#45&#62Blocks</a></p> "
+msgid ""
+"<p>The data portal allows the users to perform searchs.</p><p>To perform "
+"searchs\n"
+"         the block <em>CDM Taxon Search</em> should be enabled and visible "
+"for users\n"
+"         where they can write the text to be searched. You can find Drupal "
+"block configuration\n"
+"         site at <a href=\"./?q=admin/build/block\">Administer&#45&#62Site "
+"building&#45&#62Blocks</a></p> "
 msgstr ""
 
 #: settings.php:2484
@@ -797,7 +1017,12 @@ msgid "Ignore the chosen classification in simple search"
 msgstr ""
 
 #: settings.php:2486
-msgid "The simple search, which can be executed via the search block,\n          will by default search on the classification selected in the classification browser\n          selector. Set the tick if you want your portal to search on all classifications."
+msgid ""
+"The simple search, which can be executed via the search block,\n"
+"          will by default search on the classification selected in the "
+"classification browser\n"
+"          selector. Set the tick if you want your portal to search on all "
+"classifications."
 msgstr ""
 
 #: settings.php:2493
@@ -805,7 +1030,11 @@ msgid "Run simple search with free-text search backend."
 msgstr ""
 
 #: settings.php:2495
-msgid "The simple search uses by default another search\n      backend as the advances search. By checking this option the simple search can be\n      configured to also use the free-text search backend."
+msgid ""
+"The simple search uses by default another search\n"
+"      backend as the advances search. By checking this option the simple "
+"search can be\n"
+"      configured to also use the free-text search backend."
 msgstr ""
 
 #: settings.php:2502
@@ -821,7 +1050,9 @@ msgid "Show the <i>Show Image Thumbnails</i> button"
 msgstr ""
 
 #: settings.php:2511
-msgid "The search results page will offer a button to toggle the display of image thumbnails."
+msgid ""
+"The search results page will offer a button to toggle the display of image "
+"thumbnails."
 msgstr ""
 
 #: settings.php:2528
@@ -857,7 +1088,9 @@ msgid "EDIT map service"
 msgstr ""
 
 #: settings.php:2643
-msgid "Configuration and selection of your geo server.\n      The Geo Server is responsible for generating the maps."
+msgid ""
+"Configuration and selection of your geo server.\n"
+"      The Geo Server is responsible for generating the maps."
 msgstr ""
 
 #: settings.php:2652
@@ -881,7 +1114,20 @@ msgid "General configuration for all map types."
 msgstr ""
 
 #: settings.php:2715
-msgid "The bounding box (left, bottom, right, top) in degree defines the area to be initially displayed in maps.\n      Use \"-180,-90,180,90\" for the whole world. Leave <strong>empty</strong>\n      to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.</p>\n      <strong>TIP:</strong> You can use the map preview above to choose the <span class=\"map-extent-bbox\"><strong>map extent bbox</strong> in <strong class=\"degree-value\"\">degree</strong></span> from the map.\n      (Maybe you need to change the map base layer to OpeLayers.)\n      Hold down Strg and drag with your mouse to select a bbox to zoom to. The bbox of the visible area of the map is always displayed\n      below the map from where you can copy the bbox string.</p>"
+msgid ""
+"The bounding box (left, bottom, right, top) in degree defines the area to be "
+"initially displayed in maps.\n"
+"      Use \"-180,-90,180,90\" for the whole world. Leave <strong>empty</"
+"strong>\n"
+"      to let the map <strong>automatically zoom</strong> to the bounds "
+"enclosing the shown data.</p>\n"
+"      <strong>TIP:</strong> You can use the map preview above to choose the "
+"<span class=\"map-extent-bbox\"><strong>map extent bbox</strong> in <strong "
+"class=\"degree-value\"\">degree</strong></span> from the map.\n"
+"      (Maybe you need to change the map base layer to OpeLayers.)\n"
+"      Hold down Strg and drag with your mouse to select a bbox to zoom to. "
+"The bbox of the visible area of the map is always displayed\n"
+"      below the map from where you can copy the bbox string.</p>"
 msgstr ""
 
 #: settings.php:2728
@@ -893,11 +1139,16 @@ msgid "The caption will be shown below the map."
 msgstr ""
 
 #: settings.php:2742
-msgid "Valid values range from 0.0 to 1.0. Value 1.0 means the distributions\n    (the countries or regions) will fully visible, while a value near to 0.0 will be not much visible."
+msgid ""
+"Valid values range from 0.0 to 1.0. Value 1.0 means the distributions\n"
+"    (the countries or regions) will fully visible, while a value near to 0.0 "
+"will be not much visible."
 msgstr ""
 
 #: settings.php:2759
-msgid "The chosen EDIT map service version (@edit-mapserver-version) is too low, it must be at least 1.1"
+msgid ""
+"The chosen EDIT map service version (@edit-mapserver-version) is too low, it "
+"must be at least 1.1"
 msgstr ""
 
 #: settings.php:2777
@@ -905,7 +1156,10 @@ msgid "Background layer. For available layers inspect !url1 or !url2."
 msgstr ""
 
 #: settings.php:2822
-msgid "Allows the map to display parts of the layers which are outside\n         the max extent if the aspect ratio of the map and of the baselayer\n         are not equal."
+msgid ""
+"Allows the map to display parts of the layers which are outside\n"
+"         the max extent if the aspect ratio of the map and of the baselayer\n"
+"         are not equal."
 msgstr ""
 
 #: settings.php:3068
@@ -913,7 +1167,13 @@ msgid "Cache Settings"
 msgstr ""
 
 #: settings.php:3071
-msgid "<p>When caching is enabled all single taxon sites are\n      stored in an internal drupal cache doing the portal response of taxa pages\n      faster. This is possible because the sites are loaded from the cache and\n      are not created from scratch.</p>"
+msgid ""
+"<p>When caching is enabled all single taxon sites are\n"
+"      stored in an internal drupal cache doing the portal response of taxa "
+"pages\n"
+"      faster. This is possible because the sites are loaded from the cache "
+"and\n"
+"      are not created from scratch.</p>"
 msgstr ""
 
 #: settings.php:3079
@@ -921,7 +1181,15 @@ msgid "<strong>Enable caching</strong>"
 msgstr ""
 
 #: settings.php:3082
-msgid "<p>Enable drupal to load taxa pages from the cache.</p>\n       <p><strong>Note:</strong> If taxa are modified by the editor or any other\n       application the changes will be not visible till the cache is erased.\n       Therefore developers should deactived this feature when they are working\n       on the CDM Dataportal Module.</p>"
+msgid ""
+"<p>Enable drupal to load taxa pages from the cache.</p>\n"
+"       <p><strong>Note:</strong> If taxa are modified by the editor or any "
+"other\n"
+"       application the changes will be not visible till the cache is "
+"erased.\n"
+"       Therefore developers should deactived this feature when they are "
+"working\n"
+"       on the CDM Dataportal Module.</p>"
 msgstr ""
 
 #: settings.php:3118
@@ -929,7 +1197,9 @@ msgid "<p><strong>Cache all taxon pages</strong></p>"
 msgstr ""
 
 #: settings.php:3124
-msgid "This caching process may take long time and could cause heavy load on your server"
+msgid ""
+"This caching process may take long time and could cause heavy load on your "
+"server"
 msgstr ""
 
 #: settings.php:3133
@@ -957,7 +1227,8 @@ msgid "@row-label"
 msgstr ""
 
 #: settings.php:3491
-msgid "The form element %title contains invalid JSON. You can check the syntax with "
+msgid ""
+"The form element %title contains invalid JSON. You can check the syntax with "
 msgstr ""
 
 #: cdm_dataportal.module:390
@@ -977,7 +1248,9 @@ msgid "TODO Add a description for 'cdm_dataportal view notes'"
 msgstr ""
 
 #: cdm_dataportal.module:671
-msgid "The level 2 cache has been cleared for all tabs of this taxon page at once, please click here to return to the tabbed page: "
+msgid ""
+"The level 2 cache has been cleared for all tabs of this taxon page at once, "
+"please click here to return to the tabbed page: "
 msgstr ""
 
 #: cdm_dataportal.module:675
@@ -993,11 +1266,18 @@ msgid "Activate user default configuration"
 msgstr ""
 
 #: cdm_dataportal.module:702
-msgid "Check this if you want configure your own default tab from the below menu."
+msgid ""
+"Check this if you want configure your own default tab from the below menu."
 msgstr ""
 
 #: cdm_dataportal.module:710
-msgid "<p>Select the default tab to display when visiting a taxon page. Only available if Tabbed Taxon Page is enable.</p>\n              <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab\n              to be rendered will be the synonymy of the accepted taxon and not the above selected tab."
+msgid ""
+"<p>Select the default tab to display when visiting a taxon page. Only "
+"available if Tabbed Taxon Page is enable.</p>\n"
+"              <strong>Note:</strong> After performing a search and clicking "
+"in any synonym, the taxon tab\n"
+"              to be rendered will be the synonymy of the accepted taxon and "
+"not the above selected tab."
 msgstr ""
 
 #: cdm_dataportal.module:720
@@ -1009,7 +1289,8 @@ msgid "Display the render path for each taxon name."
 msgstr ""
 
 #: cdm_dataportal.module:727
-msgid "This option is very helpful if you are editing the !link for taxon names."
+msgid ""
+"This option is very helpful if you are editing the !link for taxon names."
 msgstr ""
 
 #: cdm_dataportal.module:738
@@ -1025,7 +1306,10 @@ msgid "The user default tab has been changed to: !tab for the user !user"
 msgstr ""
 
 #: cdm_dataportal.module:772
-msgid "The user default tab wont be used for\n        the next taxon site, check the box if you want to use the user default configuration."
+msgid ""
+"The user default tab wont be used for\n"
+"        the next taxon site, check the box if you want to use the user "
+"default configuration."
 msgstr ""
 
 #: cdm_dataportal.module:780
@@ -1069,7 +1353,9 @@ msgid "Identification Keys"
 msgstr ""
 
 #: cdm_dataportal.module:1080
-msgid "<h3>Sorry, the name list feature is not yet available in this version of the DataPortal software<h3>"
+msgid ""
+"<h3>Sorry, the name list feature is not yet available in this version of the "
+"DataPortal software<h3>"
 msgstr ""
 
 #: cdm_dataportal.module:1389;1393
@@ -1077,7 +1363,10 @@ msgid "invalid type given."
 msgstr ""
 
 #: cdm_dataportal.module:1466;1568
-msgid "The !url1 is enabled.\n        WARNING: this is a performance penalty and must be turned off on production websites."
+msgid ""
+"The !url1 is enabled.\n"
+"        WARNING: this is a performance penalty and must be turned off on "
+"production websites."
 msgstr ""
 
 #: cdm_dataportal.module:1508
@@ -1085,7 +1374,9 @@ msgid "Taxon does not exist"
 msgstr ""
 
 #: cdm_dataportal.module:1526
-msgid "This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification."
+msgid ""
+"This concept of the taxon !taxonname is not contained as an accepted taxon "
+"in the currently chosen classification."
 msgstr ""
 
 #: cdm_dataportal.module:1595
@@ -1109,8 +1400,12 @@ msgid "@link-alt-text"
 msgstr ""
 
 #: cdm_dataportal.module:1540
-msgid "This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification, but in this one: !trees"
-msgid_plural "This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification, but in one of these: !trees"
+msgid ""
+"This concept of the taxon !taxonname is not contained as an accepted taxon "
+"in the currently chosen classification, but in this one: !trees"
+msgid_plural ""
+"This concept of the taxon !taxonname is not contained as an accepted taxon "
+"in the currently chosen classification, but in one of these: !trees"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1126,7 +1421,8 @@ msgstr "Por datos concretos"
 msgid "cdm_dataportal"
 msgstr ""
 
-#: cdm_dataportal.module:536;547;558;569;579;590;601;612 theme/cdm_dataportal.page.theme:700
+#: cdm_dataportal.module:536;547;558;569;579;590;601;612
+#: theme/cdm_dataportal.page.theme:700
 msgid "@tabname"
 msgstr ""
 
@@ -1139,15 +1435,21 @@ msgid "CDM Dataportal"
 msgstr ""
 
 #: cdm_dataportal.info:0
-msgid "The dataportal publishes CDM data hosted in a CommunityStore on the web."
+msgid ""
+"The dataportal publishes CDM data hosted in a CommunityStore on the web."
 msgstr ""
 
-#: cdm_dataportal.info:0 cdm_api/cdm_api.info:0 cdm_csv_export/cdm_csv_export.info:0 cdm_mediauri/cdm_mediauri.info:0 cdm_taxontree/cdm_taxontree.info:0 ext_links/ext_links.info:0 fsi_gallery/fsi_gallery.info:0
+#: cdm_dataportal.info:0 cdm_api/cdm_api.info:0
+#: cdm_csv_export/cdm_csv_export.info:0 cdm_mediauri/cdm_mediauri.info:0
+#: cdm_taxontree/cdm_taxontree.info:0 ext_links/ext_links.info:0
+#: fsi_gallery/fsi_gallery.info:0
 msgid "CDM"
 msgstr ""
 
 #: cdm_api/cdm_node.php:93
-msgid "Something is wrong with the record for uuid=%uuid,\n      please contact the helpdesk."
+msgid ""
+"Something is wrong with the record for uuid=%uuid,\n"
+"      please contact the helpdesk."
 msgstr ""
 
 #: cdm_api/cdm_node.php:147
@@ -1227,7 +1529,10 @@ msgid "@term"
 msgstr ""
 
 #: cdm_api/cdm_api.module:1588
-msgid "No 'FeatureTree' has been set so far.\n      In order to see the species profiles of your taxa, please select a\n      'FeatureTree' in the !settings"
+msgid ""
+"No 'FeatureTree' has been set so far.\n"
+"      In order to see the species profiles of your taxa, please select a\n"
+"      'FeatureTree' in the !settings"
 msgstr ""
 
 #: cdm_api/cdm_api.module:1590
@@ -1247,7 +1552,8 @@ msgid "DEFAULT CLASSIFICATION"
 msgstr ""
 
 #: cdm_api/cdm_api.module:2592
-msgid "This DataPortal is not configured properly or the CDM-Server may be absent."
+msgid ""
+"This DataPortal is not configured properly or the CDM-Server may be absent."
 msgstr ""
 
 #: cdm_api/cdm_api.module:2592;2594
@@ -1275,7 +1581,11 @@ msgid "CDM CSV Export Help"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:36
-msgid "In order\n    to export the data with special export options, it is essential\n    to configure a feature tree with the desired features. Then set\n    this feature tree as the default feature tree for this portal."
+msgid ""
+"In order\n"
+"    to export the data with special export options, it is essential\n"
+"    to configure a feature tree with the desired features. Then set\n"
+"    this feature tree as the default feature tree for this portal."
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:54
@@ -1307,7 +1617,9 @@ msgid "CDM CSV Export web service"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:227
-msgid "<em>CDM Server</em> makes the dialogue possible with\n      <em>CDM Data Portal</em> thanks to its web services."
+msgid ""
+"<em>CDM Server</em> makes the dialogue possible with\n"
+"      <em>CDM Data Portal</em> thanks to its web services."
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:233
@@ -1315,7 +1627,9 @@ msgid "CSV Export web service URL"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:234
-msgid "This is the URL to the CDM-Server webservice exposing its controller\n      e.g. <em>\"http://localhost:8080/csv/exportRedlist\"</em>"
+msgid ""
+"This is the URL to the CDM-Server webservice exposing its controller\n"
+"      e.g. <em>\"http://localhost:8080/csv/exportRedlist\"</em>"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:242
@@ -1323,7 +1637,13 @@ msgid "CDM CSV Export Area Filter"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:245
-msgid "The <em>Area Filter</em> can be freely configured to the need\n       of the specific <em>CDM Data Portal</em> and its catchment area. Right now it will\n       be only distinguished between two levels. If necessary it can be programmatically\n       extended for a third level e.g. \"continent level\"."
+msgid ""
+"The <em>Area Filter</em> can be freely configured to the need\n"
+"       of the specific <em>CDM Data Portal</em> and its catchment area. "
+"Right now it will\n"
+"       be only distinguished between two levels. If necessary it can be "
+"programmatically\n"
+"       extended for a third level e.g. \"continent level\"."
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:253
@@ -1331,7 +1651,11 @@ msgid "Country Level"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:254
-msgid "This is the UUID for the country level, in order to be able to filter Germany,\n      you should paste e.g. <em>\"7b7c2db5-aa44-4302-bdec-6556fd74b0b9\"</em> in the above text field"
+msgid ""
+"This is the UUID for the country level, in order to be able to filter "
+"Germany,\n"
+"      you should paste e.g. <em>\"7b7c2db5-aa44-4302-bdec-6556fd74b0b9\"</"
+"em> in the above text field"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:261
@@ -1339,7 +1663,11 @@ msgid "State Level"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:262
-msgid "This is the UUID for the state level, in order to be able to filter the german federal states,\n      you should paste e.g. <em>\"44a448f9-f4ca-49f6-b58c-d27d8a69efdb\"</em> in the above text field"
+msgid ""
+"This is the UUID for the state level, in order to be able to filter the "
+"german federal states,\n"
+"      you should paste e.g. <em>\"44a448f9-f4ca-49f6-b58c-d27d8a69efdb\"</"
+"em> in the above text field"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:270
@@ -1347,7 +1675,12 @@ msgid "Features"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:273
-msgid "This section covers settings related to the taxon's\n      <em>Feature Tree</em>. The <em>feature tree</em> are the taxon's\n      features such as description, distribution, common names, etc. that Drupal\n      will render at the taxon profile page."
+msgid ""
+"This section covers settings related to the taxon's\n"
+"      <em>Feature Tree</em>. The <em>feature tree</em> are the taxon's\n"
+"      features such as description, distribution, common names, etc. that "
+"Drupal\n"
+"      will render at the taxon profile page."
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:282
@@ -1355,10 +1688,13 @@ msgid "CSV Export Feature Tree sections"
 msgstr ""
 
 #: cdm_csv_export/cdm_csv_export.module:287
-msgid "Select the Feature Tree to be displayed at the taxon\n      profile. Click \"Show Details\" to see the Feature Tree elements."
+msgid ""
+"Select the Feature Tree to be displayed at the taxon\n"
+"      profile. Click \"Show Details\" to see the Feature Tree elements."
 msgstr ""
 
-#: cdm_csv_export/cdm_csv_export.module:205 cdm_csv_export/cdm_csv_export.info:0
+#: cdm_csv_export/cdm_csv_export.module:205
+#: cdm_csv_export/cdm_csv_export.info:0
 msgid "CDM CSV Export"
 msgstr ""
 
@@ -1391,7 +1727,9 @@ msgid "delete"
 msgstr ""
 
 #: cdm_mediauri/cdm_mediauri.module:110
-msgid "There are no existing media uri conversion rules. You may add some rule: <a href=\"@add\">add rule</a>"
+msgid ""
+"There are no existing media uri conversion rules. You may add some rule: <a "
+"href=\"@add\">add rule</a>"
 msgstr ""
 
 #: cdm_mediauri/cdm_mediauri.module:150
@@ -1667,7 +2005,8 @@ msgid "A block module for listing external links to taxa information."
 msgstr ""
 
 #: fsi_gallery/fsi_gallery.module:43 fsi_gallery/fsi_gallery.info:0
-msgid "An optional media gallery for the CDM DataPortal based on the FSI viewer"
+msgid ""
+"An optional media gallery for the CDM DataPortal based on the FSI viewer"
 msgstr ""
 
 #: fsi_gallery/fsi_gallery.module:55
@@ -1675,7 +2014,11 @@ msgid "FSI Viewer query"
 msgstr ""
 
 #: fsi_gallery/fsi_gallery.module:59
-msgid "You must at least add {name}, to search images\n       matching a specific taxon name. You also can add other search terms which\n       can be combined with 'AND' or 'OR'."
+msgid ""
+"You must at least add {name}, to search images\n"
+"       matching a specific taxon name. You also can add other search terms "
+"which\n"
+"       can be combined with 'AND' or 'OR'."
 msgstr ""
 
 #: fsi_gallery/fsi_gallery.module:62
@@ -1703,7 +2046,8 @@ msgid "FSI Gallery"
 msgstr ""
 
 #: fsi_gallery/fsi_gallery.module:91
-msgid "An optional media gallery for the CDM DataPortal based on the FSI viewer."
+msgid ""
+"An optional media gallery for the CDM DataPortal based on the FSI viewer."
 msgstr ""
 
 #: ide/CodeSniffer/Drupal/drupalcs.info:0
@@ -2079,4 +2423,3 @@ msgstr ""
 #: theme/cdm_dataportal.references.theme:159
 msgid "as"
 msgstr ""
-
