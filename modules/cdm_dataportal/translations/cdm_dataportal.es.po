@@ -69,7 +69,7 @@ msgid ""
 "      The asterisk  character * can be used as wildcard, but must not be "
 "used as first character."
 msgstr ""
-"Ingrese nombre o parte del nombre.No se permite usar el asterisco como "
+"Ingrese nombre o parte del nombre. No se permite usar el asterisco como "
 "comodín al inicio."
 
 #: cdm_dataportal.search.php:231 cdm_csv_export/cdm_csv_export.module:86
