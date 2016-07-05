@@ -97,9 +97,8 @@ function theme_cdm_specimen($variables) {
 
 /**
  *
- * @param unknown_type $field
+ * @param string $field
  *
- * @todo turn into theme function
  */
 function cdm_occurrence_field_name_label($field){
 
