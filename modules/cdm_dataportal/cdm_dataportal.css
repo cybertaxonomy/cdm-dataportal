@@ -613,7 +613,7 @@ table.cdm\:Reference {
 }
 
 
-#block-cdm-dataportal-taxonomic-children  .content {
+#block-cdm-dataportal-taxonomic-children  ul {
     max-height: 20em;
     -moz-column-count: 3;
     -webkit-column-count: 3;
