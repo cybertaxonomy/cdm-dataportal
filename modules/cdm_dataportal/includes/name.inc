@@ -457,7 +457,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
       array_setr('secReference',
         $post_separator_markup
           . ' <span class="sec_reference">'
-          . join(' ', cdm_tagged_text_values($secref_tagged_text))
+          . join('', cdm_tagged_text_values($secref_tagged_text))
           . '</span>', $renderTemplate);
     }
   }
