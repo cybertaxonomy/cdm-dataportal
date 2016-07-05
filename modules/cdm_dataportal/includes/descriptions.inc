@@ -1622,7 +1622,7 @@ function compose_description_elements_distribution($description_elements){
 
     if (isset($descriptionElement->status)) {
       $status_label = $descriptionElement->status->representation_L10n;
-      $status_markup =  '<span class="distributionStatus distributionStatus-' . $descriptionElement->status->idInVocabulary . '"> &#8210; '
+      $status_markup =  '<span class="distributionStatus distributionStatus-' . $descriptionElement->status->idInVocabulary . '"> '
         . $status_label . '</span>';
 
     };
