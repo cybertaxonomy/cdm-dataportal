@@ -36,15 +36,6 @@ function validateForm(){
     if(classification_select.value==null || classification_select.value == -1|| classification_select.value==""){
         classification_select.selectedIndex = 0;
     }
-    var taxon_select = document.getElementById("edit-csv-export-taxon-select");
-    var taxon_uuid = document.getElementById("taxonUuid");
-    var selectedTaxon = taxon_select.value.toString();
-    if(selectedTaxon!=null){
-        uuid = selectedTaxon.substring(selectedTaxon.indexOf("[[")+2);
-		selectedTaxon = selectedTaxon.substring(0, selectedTaxon.indexOf("[["));
-        taxon_select.value = selectedTaxon;
-        taxon_uuid.value = uuid;
-    }
 }
 
 

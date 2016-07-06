@@ -147,7 +147,7 @@ function cdm_dataportal_taxon_autosuggest($classificationNodeUuid = NULL, $areaU
       $titleCache = $record->entity->titleCache;
       preg_match('/(.*) sec.*/', $titleCache, $trimmedTitle); //remove sec reference
       $trimmedTitle = trim($trimmedTitle[1]);
-      $matches[$trimmedTitle.'[['.$record->entity->uuid] = check_plain($trimmedTitle).'[['.$record->entity->uuid;
+      $matches[$trimmedTitle] = check_plain($trimmedTitle);
   }
   drupal_json_output($matches);
 }
