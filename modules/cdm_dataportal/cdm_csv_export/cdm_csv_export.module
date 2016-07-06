@@ -73,12 +73,12 @@ function cdm_csv_export_block_view($delta='') {
   return $block;
 }
 
-function taxon_selection_update($form, &$form_state) {
-  unset($form_state['input']['taxon_select'], $form_state['values']['taxon_select']);
-  $tree = $form_state['input']['taxonNode'];
-  $form['taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest/'.$tree.'///';
-  $form['taxon_select']['#value'] = '';
-  return form_builder($form['#id'], $form['taxon_select'], $form_state);
+function update_classification_selected($form, &$form_state) {
+  unset($form_state['input']['csv_export_taxon_select'], $form_state['values']['csv_export_taxon_select']);
+  $tree = $form_state['input']['classificationUuid'];
+  $form['csv_export_taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest/'.$tree.'///';
+  $form['csv_export_taxon_select']['#value'] = '';
+    return form_builder($form['#id'], $form['csv_export_taxon_select'], $form_state);
 }
 
 /**
@@ -90,17 +90,17 @@ function taxon_selection_update($form, &$form_state) {
  */
 function cdm_csv_export_my_form($form_state) {
     $tree = variable_get(CDM_TAXONOMICTREE_UUID, FALSE);
-    $form['combobox'] = array(
+    $form['csv_export_classification_select'] = array(
         '#type' => 'select',
         '#title' => t('Classification').':',
         '#default_value' => $tree,
         '#options' => cdm_get_taxontrees_as_options(FALSE, TRUE),
         '#attributes' => array(
-            'name' => 'taxonNode',
+            'name' => 'classificationUuid',
             'onchange' => 'return validateForm()'
         ),
         '#ajax' => array(
-          'callback' => 'taxon_selection_update',
+          'callback' => 'update_classification_selected',
           'wrapper' => 'taxon-selection',
           'progress' => array(
             'message' => '',
@@ -108,15 +108,26 @@ function cdm_csv_export_my_form($form_state) {
           ),
         )
     );
-    $form['taxon_select'] = array(
+    $form['csv_export_taxon_select'] = array(
         '#title' => t('Taxon'),
         '#type' => 'textfield',
         '#prefix' => '<div id="taxon-selection">',
-        '#suffix' => '</div>'
+        '#suffix' => '</div>',
+        '#attributes' => array(
+            'onchange' => 'return validateForm()'
+        ),
     );
     if(variable_get('cdm_dataportal_taxon_auto_suggest')){
-        $form['taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest////';
+        $form['csv_export_taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest////';
     }
+    $form['taxonUuidStore'] = array(
+        '#type' => 'hidden',
+        '#value' => '',
+        '#name' => taxonUuid,
+        '#attributes' => array(
+            'id' => 'taxonUuid',
+        )
+    );
 
     $form['redListField'] = array(
         '#type' => 'fieldset',
