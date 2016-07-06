@@ -1616,14 +1616,17 @@ function compose_description_elements_distribution($description_elements){
    * @param $descriptionElement
    * @return array
    */
-  function distribution_status_label_and_markup($descriptionElement) {
+  function distribution_status_label_and_markup($descriptionElement, $status_glue = '&#8210; ') {
     $status_markup = '';
     $status_label = '';
 
     if (isset($descriptionElement->status)) {
       $status_label = $descriptionElement->status->representation_L10n;
-      $status_markup =  '<span class="distributionStatus distributionStatus-' . $descriptionElement->status->idInVocabulary . '"> '
-        . $status_label . '</span>';
+      $status_markup =  '<span class="distributionStatus"> '
+        . $status_glue
+        . '<span class="distributionStatus-' . $descriptionElement->status->idInVocabulary . '">'
+        . $status_label
+        . '</span></span>';
 
     };
     return array($status_label, $status_markup);
@@ -1821,7 +1824,7 @@ function compose_description_elements_distribution($description_elements){
           UUID_DISTRIBUTION
         );
 
-        list($status_label, $status_markup) = distribution_status_label_and_markup($distribution);
+        list($status_label, $status_markup) = distribution_status_label_and_markup($distribution, $level_style['status_glue']);
       }
 
       $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement'
