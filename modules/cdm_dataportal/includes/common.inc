@@ -152,14 +152,20 @@ function oder_sources($sources, $do_theme = false){
  */
 function compare_original_sources($a, $b){
 
-  $a_string = $a->citation->titleCache;
+  $a_string = '';
+  if(isset($a->citation->titleCache)) {
+    $a_string = $a->citation->titleCache;
+  }
   if((isset($a->nameUsedInSource))){
     $a_string .= $a->nameUsedInSource->titleCache;
   } elseif (isset($a->originalNameString)){
     $a_string .= $a->originalNameString;
   }
 
-  $b_string = $b->citation->titleCache;
+  $b_string = '';
+  if(isset($b->citation->titleCache)) {
+    $b_string = $b->citation->titleCache;
+  };
   if((isset($b->nameUsedInSource))){
     $b_string .= $b->nameUsedInSource->titleCache;
   } elseif (isset($b->originalNameString)){
@@ -412,7 +418,7 @@ function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
 
     // additional data
     foreach($data as $key=>$value){
-      @_description_list_group_add($sub_dl_groups, t($key), $value /*, '' , $weight++ */);
+      @_description_list_group_add($sub_dl_groups, t('@key', array('@key' => $key)), $value /*, '' , $weight++ */);
     }
 
   }

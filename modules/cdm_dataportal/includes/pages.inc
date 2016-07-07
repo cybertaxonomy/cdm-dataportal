@@ -601,7 +601,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
         if($tab_key != 'general'){
           // add entry for page part
           $toc_elements[] = array(
-              'data' => l(t(ucfirst($tab_key)), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
+              'data' => l(t('@tab-name', array('@tab-name' => ucfirst($tab_key))), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
               'class' => array('page-part-toc-item-' . $tab_key)
           );
         } else {

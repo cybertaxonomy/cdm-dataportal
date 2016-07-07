@@ -456,13 +456,13 @@ function theme_cdm_reference_page($variables) {
       }
       elseif ($fieldname == "doi" && is_object($reference->doi)) {
         $table_rows[] = array(
-          t(ucfirst(strtolower($fieldname))),
+          t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
           cdm_doi($reference->doi, false)
         );
       }
       elseif ($fieldname == "uri" && isset($reference->uri) && $reference->uri) {
         $table_rows[] = array(
-          t(ucfirst(strtolower($fieldname))),
+          t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
           cdm_external_uri($reference->uri, false)
         );
       }
@@ -513,7 +513,7 @@ function theme_cdm_reference_page($variables) {
 
         if (isset($value) && $value != '') {
           $table_rows[] = array(
-            t(ucfirst(strtolower($fieldname))),
+            t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
             $value,
           );
         }
@@ -522,7 +522,7 @@ function theme_cdm_reference_page($variables) {
       else {
         if (isset($reference->$fieldname) && $reference->$fieldname != '') {
           $table_rows[] = array(
-            t(ucfirst(strtolower($fieldname))),
+            t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
             $reference->$fieldname,
           );
         }
@@ -697,6 +697,6 @@ function theme_cdm_taxonpage_tab($variables) {
   // TODO replace by using translations or theme the menue tabs itself instead?
   switch ($tabname) {
     default:
-      return t($tabname);
+      return t('@tabname', array('@tabname' => $tabname));
   }
 }

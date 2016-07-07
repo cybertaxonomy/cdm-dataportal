@@ -123,7 +123,7 @@ function cdm_occurrence_field_name_label($field){
       },
       $field);
 
-  return t(ucfirst($field)) . ':';
+  return t('@field-name :', array('@field-name' => ucfirst($field)));
 }
 
 
