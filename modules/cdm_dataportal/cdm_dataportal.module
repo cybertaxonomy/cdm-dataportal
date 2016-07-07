@@ -611,17 +611,18 @@ function cdm_dataportal_menu() {
     $items['cdm_dataportal/taxon/%/experts'] = array( // Experts
       'title' => '@tabname',
       'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Experts'))),
-      'page callback' => 'cdm_dataportal_taxon_page_view',
-      'access arguments' => array('access content'),
-      'type' => MENU_LOCAL_TASK,
-      'weight' => 6,
-      'page arguments' => array(2, "experts")
+        'page callback' => 'cdm_dataportal_taxon_page_view',
+        'access arguments' => array('access content'),
+        'type' => MENU_LOCAL_TASK,
+        'weight' => 6,
+        'page arguments' => array(2, "experts")
     , // Expected callback arguments: taxon_uuid.
     );
 
-    $items['cdm_dataportal/taxon/autosuggest'] = array(
+    $items['cdm_dataportal/taxon/autosuggest/%/%/%/'] = array(
         'page callback' => 'cdm_dataportal_taxon_autosuggest',
         'access arguments' => array('access taxon autosuggest'),
+        'page arguments' => array(3,4,5),
         'type' => MENU_CALLBACK
     );
   }
@@ -1466,9 +1467,9 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid =
     drupal_set_message(t('The !url1 is enabled.
         WARNING: this is a performance penalty and must be turned off on production websites.', array(
           '!url1' => l('java-script development mode', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-cdm-js-devel-mode'))
-        )),
-        'warning'
-    );
+    )),
+    'warning'
+        );
   }
 
   // Display the page for the taxon defined by $uuid.

@@ -77,6 +77,7 @@ define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
  */
 define('CDM_WS_PORTAL_TAXONOMY', 'portal/classification');
 define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES', 'portal/classification/$0/childNodes');
+define('CDM_WS_PORTAL_TAXONOMY_CLASSIFICATION_ROOT_NODE', 'portal/classification/$0/classificationRootNode');
 define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK', 'portal/classification/$0/childNodesAt/$1');
 define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON', 'portal/classification/$0/childNodesOf/$1');
 define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM', 'portal/classification/$0/pathFrom/$1');

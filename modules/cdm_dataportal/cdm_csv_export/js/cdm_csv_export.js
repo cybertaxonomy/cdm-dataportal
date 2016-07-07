@@ -32,12 +32,10 @@ function finishDownload() {
  * 
  */
 function validateForm(){
-	var select = document.getElementById("edit-combobox");
-	if(select.value==null || select.value == -1|| select.value==""){
-		//alert('Please select a valid classification');
-		//jQuery('#edit-combobox').addClass("error");
-		select.selectedIndex = 0;
-	}
+    var classification_select = document.getElementById("edit-csv-export-classification-select");
+    if(classification_select.value==null || classification_select.value == -1|| classification_select.value==""){
+        classification_select.selectedIndex = 0;
+    }
 }
 
 
