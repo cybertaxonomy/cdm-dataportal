@@ -92,7 +92,7 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
     // '#description' => $query_field_description,
   );
   if(variable_get('cdm_dataportal_taxon_auto_suggest')){
-      $form['query']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest';
+      $form['query']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest////';
   }
 
     $form['search'] = array(
@@ -121,13 +121,16 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
   return $form;
 }
 
-function cdm_dataportal_taxon_autosuggest($classificationNodeUuid = NULL, $areaUuid = NULL, $status = NULL, $string) {
+function cdm_dataportal_taxon_autosuggest($classificationUuid = NULL, $areaUuid = NULL, $status = NULL, $string) {
   $matches = array();
 
   $queryParams = array();
   $queryParams['query'] = $string.'*';
-  if($classificationNodeUuid){
-    $queryParams['classificationNodeUuid'] = $classificationNodeUuid;
+  if((is_null($classificationUuid) || $classificationUuid=='') && isset($_SESSION['cdm']['taxonomictree_uuid'])){
+    $classificationUuid = $_SESSION['cdm']['taxonomictree_uuid'];// if no classification uuid is set use the current one
+  }
+  if($classificationUuid){
+    $queryParams['classificationUuid'] = $classificationUuid;
   }
   if($areaUuid){
     $queryParams['area'] = $areaUuid;

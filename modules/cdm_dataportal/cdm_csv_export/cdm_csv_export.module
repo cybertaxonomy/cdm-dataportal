@@ -74,10 +74,10 @@ function cdm_csv_export_block_view($delta='') {
 }
 
 function update_classification_selected($form, &$form_state) {
-  unset($form_state['input']['csv_export_taxon_select'], $form_state['values']['csv_export_taxon_select']);
-  $tree = $form_state['input']['classificationUuid'];
-  $form['csv_export_taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest/'.$tree.'///';
-  $form['csv_export_taxon_select']['#value'] = '';
+    unset($form_state['input']['csv_export_taxon_select'], $form_state['values']['csv_export_taxon_select']);
+    $tree = $form_state['input']['classificationUuid'];
+    $form['csv_export_taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest/'.$tree.'///';
+    $form['csv_export_taxon_select']['#value'] = '';
     return form_builder($form['#id'], $form['csv_export_taxon_select'], $form_state);
 }
 
@@ -94,7 +94,7 @@ function cdm_csv_export_my_form($form_state) {
         '#type' => 'select',
         '#title' => t('Classification').':',
         '#default_value' => $tree,
-        '#options' => cdm_get_taxontrees_as_options(FALSE, TRUE),
+        '#options' => cdm_get_taxontrees_as_options(FALSE),
         '#attributes' => array(
             'name' => 'classificationUuid',
             'onchange' => 'return validateForm()'
@@ -116,7 +116,7 @@ function cdm_csv_export_my_form($form_state) {
         '#suffix' => '</div>',
     );
     if(variable_get('cdm_dataportal_taxon_auto_suggest')){
-        $form['csv_export_taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest////';
+        $form['csv_export_taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest/'.$tree.'///';
     }
 
     $form['redListField'] = array(
