@@ -98,14 +98,14 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     }
     $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
     // - specimen scans
-    $specimenScans = create_links($derivateDataDTO->specimenScans);
+    $specimenScans = create_html_links($derivateDataDTO->specimenScans, true);
     // - molecular data
     $molecularData = "";
     if ($derivateDataDTO->molecularDataList) {
         foreach ($derivateDataDTO->molecularDataList as $molecular) {
             //provider link
             if (isset($molecular->providerLink)) {
-                $molecularData .= create_html_link($molecular->providerLink);
+                $molecularData .= create_html_link($molecular->providerLink, true);
             }
             //contig link
             if (isset($molecular->contigFiles[0])) {//FIXME check if empty
@@ -114,10 +114,10 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
                     foreach ($molecular->contigFiles as $contigFile) {
                         if (isset($contigFile->contigLink)){
                             if(isset($contigFile->contigLink->uri) and $contigFile->contigLink->uri!=null) {
-                               $molecularData .= create_html_link($contigFile->contigLink)." ";
+                               $molecularData .= create_html_link($contigFile->contigLink, true)." ";
                             }
                             //primer links
-                            $molecularData .= create_html_links($contigFile->primerLinks);
+                            $molecularData .= create_html_links($contigFile->primerLinks, true);
                         }
                     }
                 } else {
@@ -130,7 +130,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
         }
     }
     // - detail images
-    $detailImages = create_links($derivateDataDTO->detailImages);
+    $detailImages = create_html_links($derivateDataDTO->detailImages, true);
 
     if ($types) {
         $detail_html .= $isSpecimenPage?"<br>":"";

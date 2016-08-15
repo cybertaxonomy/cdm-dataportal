@@ -353,10 +353,14 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     return $render_array;
 }
  
-function create_html_link($link){
+function create_html_link($link, $openInExternalWindow=false){
     $html = "";
-    if($link->uri!=""){
-        $html .= '<a href="' . $link->uri . '">' . $link->linkText . "</a>";
+    if($link->uri && $link->uri!=""){
+        $html .= '<a  href="' . $link->uri . '"';
+        if($openInExternalWindow){
+            $html .= ' target="_blank"';
+        }
+        $html .= '>' . $link->linkText . '</a>';
     }
     else{
         $html .= $link->linkText;
@@ -365,42 +369,22 @@ function create_html_link($link){
 }
 
 /**
- * Creates HTML links from the given link list concatenated by a white space.
+ * Creates HTML links from the given link list concatenated by default by a comma.
  * @param $linkList the list with Link objects having "uri" and "linkText" as members
  * @return string the assembled HTML string containing the links
  */
-function create_html_links($linkList)
+function create_html_links($linkList, $openInExternalWindow=false, $separator=", ")
 {
     $html = "";
     if ($linkList) {
         foreach ($linkList as $link) {
-            $html .= create_html_link($link)." ";
+            $html .= create_html_link($link, $openInExternalWindow).$separator;
         }
+        $html = rtrim($html, $separator);
     }
     return $html;
 }
 
-/**
- * Creates HTML links from the given pair list concatenated by a white space.
- * @param $linkTextPairList the list with pairs which hold the uri as "first" and uriText as "second"
- * @return string the assembled HTML string containing the links
- */
-function create_links($linkTextPairList)
-{
-    $html = "";
-    if ($linkTextPairList) {
-        foreach ($linkTextPairList as $linkTextPair) {
-            if($linkTextPair->first!=""){
-            $html .= '<a href="' . $linkTextPair->first . '">' . $linkTextPair->second . ", </a>";
-        	}
-            else{
-                $html .= $linkTextPair->second.", ";
-            }
-        }
-    }
-    $html = rtrim($html, ", ");
-    return $html;
-}
 /**
  * Composes a taxon page which can consist of multiple parts like
  * 'General', 'Synonymy', 'Images', 'Keys'. These parts can be displayed
