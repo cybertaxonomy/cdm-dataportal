@@ -192,7 +192,13 @@ function addImageGallery($galleryName, $imageUuids){
         );
         $alternativeMediaUris = array();
         foreach($images as $image){
+          $mediaUri = getMediaUri($image);
+          if($mediaUri){
+            $alternativeMediaUris[] = $mediaUri;
+          }
+          else{
             $alternativeMediaUris[] = path_to_media($image->uuid);
+          }
         }
 
         $gallery_html = theme('cdm_media_gallerie', array(
@@ -208,6 +214,15 @@ function addImageGallery($galleryName, $imageUuids){
         ));
     }
     return "<br>".create_label($galleryName)."<br>".$gallery_html;
+}
+
+function getMediaUri($media){
+  if(isset($media->representations) && sizeof($media->representations)==1
+    && isset($media->representations[0]->parts) &&
+    sizeof($media->representations[0]->parts)==1) {
+    return $media->representations[0]->parts[0]->uri;
+  }
+  return null;
 }
 
 
