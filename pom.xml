@@ -14,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- for the latest version see http://docs.seleniumhq.org/download/#client-drivers -->
-        <selenium.version>2.53.1</selenium.version>
+        <selenium.version>2.53.0</selenium.version>
         <!-- 
             from WebDriver 2.53.0 HTMLUnit is no longer distributed with Selenium WebDriver
             https://github.com/SeleniumHQ/htmlunit-driver
@@ -87,6 +87,14 @@
             </url>
         </repository>
     </distributionManagement>
+
+    <repositories>
+        <!-- The EDIT repository is needed for the maven site skin -->
+        <repository>
+            <id>EditRepository</id>
+            <url>http://wp5.e-taxonomy.eu/mavenrepo/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

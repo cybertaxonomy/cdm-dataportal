@@ -31,4 +31,9 @@
 			<item name="License" href="license.html"/>
 		</menu>
 	</body>
+
+    <poweredBy>
+        <logo name="PhpStorm" href="https://www.jetbrains.com/phpstorm/"
+              img="images/logo_PhpStorm.png" height="30px" />
+    </poweredBy>
 </project>
