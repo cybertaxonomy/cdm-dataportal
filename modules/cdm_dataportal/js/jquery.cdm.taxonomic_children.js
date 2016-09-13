@@ -332,7 +332,12 @@
 
       var scrollTarget = this.children.find(".focused");
       if(scrollTarget){
-        var scroll_target_offset_top = scrollTarget.position().top;
+        var position = scrollTarget.position();
+        if(position == undefined){
+          // fix for IE >= 9
+          position = scrollTarget.offset();
+        }
+        var scroll_target_offset_top = position.top;
         this.log("scroll_target_offset_top: " + scroll_target_offset_top + ", offset_container_top: " + this.offset_container_top);
         this.container.scrollTop(scroll_target_offset_top - this.lineHeight + 1); // +1 yields a better result
       }
