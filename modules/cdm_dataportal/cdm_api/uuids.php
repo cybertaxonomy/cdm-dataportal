@@ -23,8 +23,7 @@
   define('UUID_NAMED_AREA_LEVEL', '49034253-27c8-4219-97e8-f8d987d3d122');
   define('UUID_FEATURE', 'b187d555-f06f-4d65-9e53-da7c93f8eaa8');
   define('UUID_TDWG_AREA', '1fb40504-d1d7-44b0-9731-374fbe6cac77');
-  define('UUID_PRESENCE_TERM', 'adbbbe15-c4d3-47b7-80a8-c7d104e53a05');
-  define('UUID_ABSENCE_TERM', '5cd438c8-a8a1-4958-842e-169e83e2ceee');
+  define('UUID_PRESENCE_ABSENCE_TERM', 'adbbbe15-c4d3-47b7-80a8-c7d104e53a05');
   define('UUID_SEX', '9718b7dd-8bc0-4cad-be57-3c54d4d432fe');
   define('UUID_DERIVATION_EVENT_TYPE', '398b50bb-348e-4fe0-a7f5-a75afd846d1f');
   define('UUID_PRESERVATION_METHOD', 'a7dc20c9-e6b3-459e-8f05-8d6d8fceb465');

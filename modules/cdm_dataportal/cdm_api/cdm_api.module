@@ -1419,13 +1419,20 @@ function cdm_terms_as_options($terms, $term_label_callback = NULL){
  *   The UUID of the CDM Term Vocabulary
  * @param $term_label_callback
  *   An optional call back function which can be used to modify the term label
- * @param $default_option
+ * @param bool $default_option
  *   An additional element do be placed at the beginning og the list. This element will be the default option.
  *   In order to put an empty element the begining of the options pass an " " as argument.
- * @param $order_by
+ * @param array $include_filter
+ *   An associative array consisting of a field name an regular expression. All term matching
+ *   these filter are included. The value of the field is converted to a String by var_export()
+ *   so a boolean 'true' can be matched by '/true/'
+ * @param string $order_by
  *   One of the order by constants defined in this file
+ * @return mixed
  */
-function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL, $default_option = FALSE, $order_by = CDM_ORDER_BY_ORDER_INDEX_ASC) {
+function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL, $default_option = FALSE,
+                                  array $include_filter = null, $order_by = CDM_ORDER_BY_ORDER_INDEX_ASC) {
+
   static $vocabularyOptions = array();
 
   if (!isset($vocabularyOptions[$vocabulary_uuid])) {
@@ -1434,6 +1441,28 @@ function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL,
         'orderBy' => $order_by
       )
     );
+
+    // apply the include filter
+    if($include_filter != null){
+      $included_terms = array();
+
+      foreach ($terms as $term){
+        $include = true;
+        foreach ($include_filter as $field=>$regex){
+          $include =  preg_match($regex, var_export($term->$field, true)) === 1;
+          if(!$include){
+            break;
+          }
+        }
+        if($include){
+          $included_terms[] = $term;
+        }
+      }
+
+      $terms = $included_terms;
+    }
+
+    // make options list
     $vocabularyOptions[$vocabulary_uuid] = cdm_terms_as_options($terms, $term_label_callback);
   }
 

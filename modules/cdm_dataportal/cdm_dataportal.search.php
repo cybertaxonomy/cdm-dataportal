@@ -503,7 +503,7 @@ function cdm_dataportal_search_taxon_by_description_form() {
  *   the processed request parameters submitted by the search form and
  *   also stores them in $_SESSION['cdm']['search']
  */
-function cdm_dataportal_search_form_request()
+function cdm_dataportal_search_request()
 {
 
   $form_params = array();
@@ -535,6 +535,10 @@ function cdm_dataportal_search_form_request()
     foreach ($_REQUEST['search']['areas']['area'] as $areas) {
       $area_uuids = array_merge($area_uuids, $areas);
     }
+    // The area filter is limited to areas with non absent distribution status
+    $presence_terms_options = cdm_vocabulary_as_option(UUID_PRESENCE_ABSENCE_TERM, null, FALSE, array('absenceTerm' => '/false/'));
+    $presence_term_uuids = array_keys($presence_terms_options);
+    $form_params['status'] = $presence_term_uuids;
   }
   if(count($area_uuids) > 0){
     $form_params['area'] = implode(',', $area_uuids);
@@ -546,7 +550,7 @@ function cdm_dataportal_search_form_request()
   if (!isset($form_params['tree']) && !variable_get(SIMPLE_SEARCH_IGNORE_CLASSIFICATION, 0)) {
     $form_params['tree'] = get_current_classification_uuid();
   }
-  // If the 'NONE' classification has been chosen (adanced search)
+  // If the 'NONE' classification has been chosen (advanced search)
   // delete the tree information to avoid unknown uuid exceptions in the
   // cdm service.
   if (isset($form_params['tree'])
@@ -569,7 +573,7 @@ function cdm_dataportal_search_form_request()
  * Provides the classification to which the last search has been limited to..
  *
  * This function should only be used after the cdm_dataportal_search_execute()
- * handler has been run, otherwise it will return the infomation from the last
+ * handler has been run, otherwise it will return the information from the last
  * search executed. The information is retrieved from
  * the $_SESSION variable:  $_SESSION['cdm']['search']['tree']
  *
@@ -607,10 +611,10 @@ function cdm_dataportal_search_process($form, &$form_state) {
  * Sends a search request at the cdm web server.
  *
  * The parameters to build the query are taken obtained by calling
- * cdm_dataportal_search_form_request() which reads the query parameters
+ * cdm_dataportal_search_request() which reads the query parameters
  * from $_REQUEST and add additional query parameters if nessecary.
  *
- * @see cdm_dataportal_search_form_request()
+ * @see cdm_dataportal_search_request()
  */
 function cdm_dataportal_search_execute() {
 
@@ -634,7 +638,7 @@ function cdm_dataportal_search_execute() {
 
   // Read the query parameters from $_REQUEST and add additional query
   // parameters if necessary.
-  $request_params = cdm_dataportal_search_form_request();
+  $request_params = cdm_dataportal_search_request();
 
   $taxon_pager = cdm_ws_get($_REQUEST['ws'], NULL, queryString($request_params));
 
