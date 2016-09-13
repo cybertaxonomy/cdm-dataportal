@@ -334,7 +334,7 @@
       if(scrollTarget){
         var position = scrollTarget.position();
         if(position == undefined){
-          // fix for IE >= 9
+          // fix for IE >= 9 and Edge
           position = scrollTarget.offset();
         }
         var scroll_target_offset_top = position.top;
