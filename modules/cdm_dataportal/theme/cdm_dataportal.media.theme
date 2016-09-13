@@ -109,21 +109,28 @@ function theme_cdm_media_mime_application($variables) {
   return $out;
 }
 
+
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates the markup for a CDM Media instance.
+ *
+ * (This method is currently only called from within theme_cdm_media())
+ *
+ * @param $variables
+ *    An associative array
+ * @return string
+ *    The markup
  */
 function theme_cdm_media_mime_image($variables) {
-  $mediaRepresentation = $variables['mediaRepresentation'];
+  $media_representation = $variables['mediaRepresentation'];
   $feature = $variables['feature'];
   $out = '';
   // TODO thickbox is not used anymore -> delete?
   $attributes = array(
     'class' => 'thickbox',
-    'rel' => 'representation-' . $representation->uuid,
+    'rel' => 'representation-' . $media_representation->uuid,
     'title' => $feature->representation_L10n,
   );
-  for ($i = 0; $part = $representation->representationParts[$i]; $i++) {
+  for ($i = 0; $part = $media_representation->parts[$i]; $i++) {
     if ($i == 0) {
       $out .= l(media_feature_icon($feature, $part->uri), $part->uri, array(
         'attributes' => $attributes,
