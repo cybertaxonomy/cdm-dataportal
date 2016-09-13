@@ -293,8 +293,8 @@ function _add_js_taxonomic_children($jquery_selector) {
   
   drupal_add_js('jQuery(document).ready(function() {
         jQuery(\'' . $jquery_selector . '\').taxonomic_children({
-          hoverClass: "fa-rotate-90",
-          activeClass: "fa-rotate-90",
+          // hoverClass: "fa-rotate-90",
+          // activeClass: "fa-rotate-90",
           classificationUuid: "' . get_current_classification_uuid() . '",
           taxonUuid: "' . get_current_taxon_uuid() . '",
           cdmWebappBaseUri: "' . variable_get('cdm_webservice_url', '') . '",

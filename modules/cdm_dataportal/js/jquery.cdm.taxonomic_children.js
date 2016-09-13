@@ -246,7 +246,9 @@
 
       this.log('trigger_position: ' + trigger_position.top + ', ' + trigger_position.left);
 
-      this.$element.addClass(this.options.activeClass);
+      // Unused; TODO when re-enabling this needs to be fixed
+      //         when using rotate, in IE and edge the child element are also rotated, need to reset child elements.
+      // this.$element.addClass(this.options.activeClass);
 
       this.$element.append(this.container);
 
@@ -432,8 +434,8 @@
 
 
   $.fn[pluginName].defaults = {
-    hoverClass: undefined,
-    activeClass: undefined,
+    hoverClass: undefined, // unused
+    activeClass: undefined, // unused
     /**
      * uuid of the current classification - required
      */
