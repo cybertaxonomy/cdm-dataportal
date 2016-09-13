@@ -146,18 +146,25 @@
 
         if(entered_text.length > 0){
 
+            var rexgexp = new RegExp(entered_text , 'i');
+
             var matching_items = form_items.filter(function(){
-                return $(this).text().toLowerCase().contains(entered_text.toLowerCase());
+                return $(this).text().match(rexgexp);
             });
 
             // --- highlite the matching text
-            var rexgexp = new RegExp(entered_text, 'i');
             matching_items.each(function(){
                 var matching_label = $(this).find('.child-label');
                 var matching_snippet = matching_label.text().match(rexgexp);
                 if(matching_snippet.length > 0){
                     // NOTE this will only highlite the first match in the string
                     matching_label.html(matching_label.text().replace(matching_snippet[0], '<span class="highlite">' + matching_snippet[0] + '</span>'));
+                }
+                var matching_label_abbrev = $(this).find('.child-label-abbreviated');
+                matching_snippet = matching_label_abbrev.text().match(rexgexp);
+                if(matching_snippet.length > 0){
+                  // NOTE this will only highlite the first match in the string
+                  matching_label_abbrev.html(matching_label_abbrev.text().replace(matching_snippet[0], '<span class="highlite">' + matching_snippet[0] + '</span>'));
                 }
             });
             matching_items.show();
