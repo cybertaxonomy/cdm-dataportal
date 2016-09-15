@@ -674,17 +674,18 @@ function cdm_dataportal_search_execute() {
  */
 function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '') {
 
+  uasort($term_dto_tree, 'compare_terms_by_representationL10n');
   foreach ($term_dto_tree as $uuid => $dto) {
     $label = $prefix . '<span class="child-label">'
       .  $dto->representation_L10n
       . '</span><span class="child-label-abbreviated"> (' . $dto->representation_L10n_abbreviatedLabel . ')</span>';
     $options[$uuid] = $label;
     if (isset($dto->children) && is_array($dto->children)) {
-      uasort($dto->children, 'compare_terms_by_representationL10n');
       term_tree_as_options(
         $dto->children,
         $options, $prefix
-          . '<span data-cdm-parent="' . $uuid . '" class="parent"></span>');
+          . '<span data-cdm-parent="' . $uuid . '" class="parent"></span>'
+      );
     }
   }
 
