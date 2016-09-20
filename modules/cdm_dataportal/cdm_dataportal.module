@@ -123,6 +123,29 @@
     );
   }
 
+  function _add_js_resizable_element($selector, $y_axis_only) {
+
+    _add_jquery_ui();
+    $options = "";
+    if($y_axis_only) {
+      $options = "resize: function(event, ui) {
+        ui.size.width = ui.originalSize.width;
+        },
+        handles: \"s\"";
+
+    }
+    drupal_add_js("
+          jQuery(document).ready(function() {
+             jQuery('" . $selector . "').resizable({". $options ."});
+          });
+        ",
+      array(
+        'type' => 'inline',
+        'scope' => 'footer'
+      )
+    );
+  }
+
   function _add_js_openlayers() {
 
     $openlayers = '/js/map/OpenLayers-2.13.1/OpenLayers.js';

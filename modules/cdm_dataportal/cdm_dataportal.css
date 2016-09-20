@@ -148,8 +148,29 @@ select.highlite-first-child option:first-child {
  */
 
 #edit-search-areas-area, #edit-search-areas-area-0, #edit-search-areas-area-1, #edit-search-areas-area-2, #edit-search-areas-area-3 {
-  max-height: 10em;
+  height: 100%;
   overflow: auto;
+}
+
+.resizable-container {
+    /* fixed height
+    height: 15em;  */
+}
+
+.resizable-box {
+    /* resizable with initial height */
+    height: 20em;
+    min-height: 5em;
+}
+
+.resizable-container .ui-resizable-s {
+    /* stolen from system.base.css .resizable-textarea .grippie */
+    background: #eee url(../../misc/grippie.png) no-repeat center 2px;
+    border: 1px solid #ddd;
+    border-top-width: 0;
+    cursor: s-resize;
+    height: 9px;
+    overflow: hidden;
 }
 
 #edit-search-areas .parent {
