@@ -552,14 +552,16 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
 function compose_taxonomic_children($taxon_uuid){
 
   $render_array = array();
-
-  $children = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array(
-    get_current_classification_uuid(),
-    $taxon_uuid
-    ));
-  if($children){
-    $taxonomic_children = theme('cdm_taxontree', array('tree' => $children));
-    $render_array = markup_to_render_array($taxonomic_children);
+  
+  if($taxon_uuid) {
+    $children = cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array(
+      get_current_classification_uuid(),
+      $taxon_uuid
+      ));
+    if($children){
+      $taxonomic_children = theme('cdm_taxontree', array('tree' => $children));
+      $render_array = markup_to_render_array($taxonomic_children);
+    }
   }
   return $render_array;
 }
