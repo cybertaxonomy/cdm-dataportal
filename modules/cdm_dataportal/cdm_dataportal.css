@@ -165,12 +165,14 @@ select.highlite-first-child option:first-child {
 
 .resizable-container .ui-resizable-s {
     /* stolen from system.base.css .resizable-textarea .grippie */
-    background: #eee url(../../misc/grippie.png) no-repeat center 2px;
+    background: #eee url(../../../../misc/grippie.png) no-repeat center 2px;
     border: 1px solid #ddd;
     border-top-width: 0;
     cursor: s-resize;
     height: 9px;
     overflow: hidden;
+    /* override position: absolute from .ui-resizable-handle */
+    position: relative;
 }
 
 #edit-search-areas .parent {
