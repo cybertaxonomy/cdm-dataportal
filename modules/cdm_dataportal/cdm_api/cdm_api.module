@@ -2535,6 +2535,27 @@ function compare_terms_by_representationL10n($term1, $term2) {
   return strcmp($term1->representation_L10n, $term2->representation_L10n);
 }
 
+function compare_terms_by_order_index($term1, $term2) {
+
+
+  if (!isset($term1->orderIndex)) {
+    $a = 0;
+  } else {
+    $a = $term1->orderIndex;
+  }
+  if (!isset($term2->orderIndex)) {
+    $b = 0;
+  } else {
+    $b = $term2->orderIndex;
+  }
+
+  if ($a == $b) {
+    return 0;
+  }
+  return ($a < $b) ? -1 : 1;
+
+}
+
 
 /**
  * Make a 'deep copy' of an array.

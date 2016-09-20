@@ -676,7 +676,7 @@ function cdm_dataportal_search_execute() {
  */
 function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '') {
 
-  uasort($term_dto_tree, 'compare_terms_by_representationL10n');
+  uasort($term_dto_tree, 'compare_terms_by_order_index');
   foreach ($term_dto_tree as $uuid => $dto) {
     $label = $prefix . '<span class="child-label">'
       .  $dto->representation_L10n
