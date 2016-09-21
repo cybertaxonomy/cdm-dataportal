@@ -1079,7 +1079,7 @@ function cdm_settings_general() {
 
     $form['cdm_webservice']['freetext_index']['cdm_dataportal_taxon_auto_suggest'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Enable auto-suggest for taxon search'),
+        '#title' => t('(EXPERIMENTAL) Enable auto-suggest for taxon search'),
         '#default_value' => variable_get('cdm_dataportal_taxon_auto_suggest', CDM_DATAPORTAL_TAXON_AUTO_SUGGEST),
         '#description' => t('If enabled, the taxon search field will suggest taxon names while typing in a search query.
         This function works on indexed taxon names. If you experience any delay maybe you have to reindex (see above).'),
