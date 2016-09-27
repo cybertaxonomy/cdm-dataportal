@@ -1421,7 +1421,7 @@ function cdm_terms_as_options($terms, $term_label_callback = NULL){
  *   An optional call back function which can be used to modify the term label
  * @param bool $default_option
  *   An additional element do be placed at the beginning og the list. This element will be the default option.
- *   In order to put an empty element the begining of the options pass an " " as argument.
+ *   In order to put an empty element the beginning of the options pass an " " as argument.
  * @param array $include_filter
  *   An associative array consisting of a field name an regular expression. All term matching
  *   these filter are included. The value of the field is converted to a String by var_export()
@@ -1539,7 +1539,7 @@ function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_
  * @see http://drupal.org/node/1354
  */
 function cdm_rankVocabulary_as_option() {
-  $options = cdm_vocabulary_as_option(UUID_RANK, NULL, "");
+  $options = cdm_vocabulary_as_option(UUID_RANK, NULL, false);
   return $options;
 }
 
