@@ -431,9 +431,16 @@ function compose_description_element($element, $feature_block_settings, $element
   if ($prepend_feature_label) {
     $feature_label = '<span class="nested-feature-tree-feature-label">' . $element->feature->representation_L10n . ':</span> ';
   }
-  $render_array['#value'] = $feature_label . $names_used_in_source_markup . $element_markup . $source_references_markup;
-  $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
+  $content_markup = $names_used_in_source_markup . $element_markup . $source_references_markup;
 
+  if(!$content_markup && $feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1){
+    // no textual content, so skip this element completely, even if there could be an footnote key
+    // see #4379
+    return null;
+  }
+
+    $render_array['#value'] = $feature_label . $content_markup;
+    $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
   return $render_array;
 }
 
@@ -1414,6 +1421,15 @@ function compose_description_element_quantitative_data($element, $feature_block_
       // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
       if (isset($description_element) && $description_element->feature->uuid == UUID_CITATION) {
         sort($elements_out_array);
+      }
+    }
+
+    // sanitize: remove empty and NULL items from the render array
+    $tmp_out_array = $elements_out_array;
+    $elements_out_array = array();
+    foreach($tmp_out_array as $item){
+      if(is_array($item) && isset($item[0])){
+        $elements_out_array[] = $item;
       }
     }
 
