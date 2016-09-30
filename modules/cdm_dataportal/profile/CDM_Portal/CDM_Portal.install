@@ -191,7 +191,6 @@ function CDM_Portal_install() {
     'administer themes',
     'administer users',
     'bypass node access',
-    'cdm_dataportal view notes',
     'create article content',
     'create page content',
     'create url aliases',

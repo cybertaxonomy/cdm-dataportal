@@ -1239,13 +1239,6 @@ msgstr ""
 msgid "TODO Add a description for 'administer cdm_dataportal'"
 msgstr ""
 
-#: cdm_dataportal.module:394
-msgid "cdm_dataportal view notes"
-msgstr ""
-
-#: cdm_dataportal.module:395
-msgid "TODO Add a description for 'cdm_dataportal view notes'"
-msgstr ""
 
 #: cdm_dataportal.module:671
 msgid ""

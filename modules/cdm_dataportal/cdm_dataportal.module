@@ -405,20 +405,14 @@ function _add_js_taxonomic_children($jquery_selector) {
    * Valid permissions for this module.
    *
    * @return array
-   *   An array of valid permissions for the portfolio module.
+   *   An array of valid permissions for the cdm_dataportal module.
    */
   function cdm_dataportal_permission() {
     return array(
       'administer cdm_dataportal' => array(
-        'title' => t('administer cdm_dataportal'),
-        'description' => t("TODO Add a description for 'administer cdm_dataportal'"),
-      ),
-      'cdm_dataportal view notes' => array(
-        'title' => t('cdm_dataportal view notes'),
-        'description' => t("TODO Add a description for 'cdm_dataportal view notes'"),
-      ),
-      // TODO Which other permissions are required?
-      // -> check the WP6 requirements document.
+        'title' => t('Administer CDM DataPortal settings'),
+        'description' => t("Access the settings pages specific for the cdm_dataportal module"),
+      )
     );
   }
 
