@@ -319,23 +319,6 @@ function ext_links_admin($form, &$form_state) {
   return system_settings_form($form);
 } // function ext_links_admin()
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function ext_links_permission() {
-
-  return array(
-    'access extlinks content' => array(
-      'title' => t('access extlinks content'),
-      'description' => t("TODO Add a description for 'access extlinks content'"),
-    ),
-    'administer extlinks' => array(
-      'title' => t('administer extlinks'),
-      'description' => t("TODO Add a description for 'administer extlinks'"),
-    ),
-  );
-} /* function ext_links_permission() */
 
 /**
  * Implements hook_menu().

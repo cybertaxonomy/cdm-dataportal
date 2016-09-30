@@ -1961,22 +1961,6 @@ msgstr ""
 msgid "Enable sorted list with headings"
 msgstr ""
 
-#: ext_links/ext_links.module:330
-msgid "access extlinks content"
-msgstr ""
-
-#: ext_links/ext_links.module:331
-msgid "TODO Add a description for 'access extlinks content'"
-msgstr ""
-
-#: ext_links/ext_links.module:334
-msgid "administer extlinks"
-msgstr ""
-
-#: ext_links/ext_links.module:335
-msgid "TODO Add a description for 'administer extlinks'"
-msgstr ""
-
 #: ext_links/ext_links.module:384
 msgid "External Taxon Links"
 msgstr ""

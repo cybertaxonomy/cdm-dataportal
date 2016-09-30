@@ -180,12 +180,10 @@ function CDM_Portal_install() {
     'access content',
     'access cdm content',
     'access content overview',
-    'access extlinks content',
     'access site in maintenance mode',
     'administer blocks',
     'administer cdm_dataportal',
     'administer content types',
-    'administer extlinks',
     'administer menu',
     'administer nodes',
     'administer site configuration',
@@ -224,8 +222,7 @@ function CDM_Portal_install() {
 
   // additional permission for the anonymous user	authenticated user roles
   $additional_default_permissions = array(
-    'access cdm content',
-    'access extlinks content'
+    'access cdm content'
   );
   user_role_grant_permissions(1, $additional_default_permissions); // anonymous user
   user_role_grant_permissions(2, $additional_default_permissions); // authenticated user
