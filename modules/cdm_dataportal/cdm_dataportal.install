@@ -177,7 +177,7 @@ function cdm_dataportal_update_7304() {
 
     if(is_object($cdm_admin_role)) {
       // make sure admin is member of role CDM admin
-      if (!isset($admin_user->roles[$admin_role->rid])) {
+      if (!isset($admin_user->roles[$cdm_admin_role->rid])) {
         user_multiple_role_edit(array(1), 'add_role', $cdm_admin_role->rid);
         $tasks_performed[] = 'admin user (uid=1) added to role ' . $cdm_admin_role->name;
       }
@@ -191,7 +191,7 @@ function cdm_dataportal_update_7304() {
     $admin_role = user_role_load_by_name("admin"); // Drupal 5
 
     if(is_object($admin_role)){
-      $admin_role->name == 'administrator';
+      $admin_role->name = 'administrator';
       user_role_save($admin_role);
       $tasks_performed[] = 'administrator role name harmonized';
     } else {
@@ -399,6 +399,21 @@ function cdm_dataportal_update_7309() {
   return join(', ',$tasks_performed);
 }
 
+/**
+ * update for RELEASE 4.4:
+ *  -  grant new permission 'access cdm content' to default roles
+ */
+function cdm_dataportal_update_7400() {
+  // additional permission for the anonymous user	authenticated user roles
+  $additional_default_permissions = array(
+    'access cdm content',
+    'access extlinks content'
+  );
+  user_role_grant_permissions(1, $additional_default_permissions); // anonymous user
+  user_role_grant_permissions(2, $additional_default_permissions); // authenticated user
+  $tasks_performed = array();
+  $tasks_performed[] = "grant new permission 'access cdm content' to default roles";
+}
 
 /* ======================================================================== */
 

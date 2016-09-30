@@ -172,12 +172,13 @@ function CDM_Portal_install() {
   user_role_save($admin_role);
 
   // Make sure these permissions are present, e.g. that the modules defining these permissions are installed.
-  // This because user_role_grant_permissions() will create the permission in the role_permision table if it does not
+  // This because user_role_grant_permissions() will create the permission in the role_permission table if it does not
   // exist, and for that it needs to find a module that defines the permission (there is a module column in this table).
   $permissions = array(
     'access administration menu',
     'access administration pages',
     'access content',
+    'access cdm content',
     'access content overview',
     'access extlinks content',
     'access site in maintenance mode',
@@ -220,6 +221,15 @@ function CDM_Portal_install() {
   db_insert('users_roles')
     ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
     ->execute();
+
+  // additional permission for the anonymous user	authenticated user roles
+  $additional_default_permissions = array(
+    'access cdm content',
+    'access extlinks content'
+  );
+  user_role_grant_permissions(1, $additional_default_permissions); // anonymous user
+  user_role_grant_permissions(2, $additional_default_permissions); // authenticated user
+
 
   /****************************************
    *  Blocks
