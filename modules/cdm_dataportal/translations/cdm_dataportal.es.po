@@ -1493,14 +1493,6 @@ msgstr ""
 msgid "CDM Debug"
 msgstr ""
 
-#: cdm_api/cdm_api.module:195
-msgid "administer cdm_api"
-msgstr ""
-
-#: cdm_api/cdm_api.module:196
-msgid "TODO Add a description for 'administer cdm_api'"
-msgstr ""
-
 #: cdm_api/cdm_api.module:227
 msgid "@text"
 msgstr ""

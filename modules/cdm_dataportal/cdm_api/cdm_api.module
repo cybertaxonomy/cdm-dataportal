@@ -185,19 +185,6 @@ function cdm_api_cron() {
   cache_clear_all(NULL, 'cache_cdm_ws');
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function cdm_api_permission() {
-  return array(
-    'administer cdm_api' => array(
-      'title' => t('Administer the cdm_api module'),
-      'description' => t("Access the settings page for the  cdm_api module"),
-    ),
-  );
-}
-
 // ===================== Tagged Text functions ================== //
 
 /**
