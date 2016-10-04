@@ -1428,7 +1428,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
     $tmp_out_array = $elements_out_array;
     $elements_out_array = array();
     foreach($tmp_out_array as $item){
-      if(is_array($item) && isset($item[0])){
+      if(is_array($item) && count($item) > 0){
         $elements_out_array[] = $item;
       }
     }
