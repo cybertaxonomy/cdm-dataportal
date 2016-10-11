@@ -52,17 +52,23 @@ function getimagesize_remote($image_url) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates the markup for the media associated a DescriptionElement instance.
+ *
+ * @param $descriptionElement
+ *    the DescriptionElement instance
+ * @param $mimeTypePreference array
+ *    An array of mime type strings. the order of the mimetpes is the oerder of preference.
+ *    E.g.: array('application/pdf','image/jpeg')
+ *
+ * @return string
+ *    The markup
  */
-function theme_cdm_media($variables) {
-  $descriptionElement = $variables['descriptionElement'];
-  $mimeTypePreference = $variables['mimeTypePreference'];
+function cdm_description_element_media($descriptionElement, $mimeTypePreference) {
+
   $out = '';
 
   _add_js_thickbox();
 
-  $uuid = $descriptionElement->uuid;
   $feature = $descriptionElement->feature;
   $medias = $descriptionElement->media;
 
@@ -76,8 +82,10 @@ function theme_cdm_media($variables) {
       $out .= theme('cdm_media_mime_' . $contentTypeDirectory, array('mediaRepresentation' => $mediaRepresentation, 'feature' => $feature));
     }
     else {
-      // No media available, so display just the type term.
-      $out .= $feature->representation_L10n;
+      // Media has empty or corrupt representation
+      if(user_is_logged_in()){
+        drupal_set_message('The media entity (' . l($media->uuid, path_to_media($media->uuid)) .') has empty or corrupt representation parts. Maybe the URI is empty.' , 'warning');
+      }
     }
   }
   return $out;

@@ -474,16 +474,15 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
             $second_citation = '[& ' . $description_element->multilanguageText_L10n->text . '].';
           }
           $descriptionHtml .= $second_citation;
-          $descriptionHtml .= theme("cdm_media", array(
-              'descriptionElement' => $description_element,
-              'mimeTypePreference' => array(
+          $descriptionHtml .= cdm_description_element_media(
+              $description_element,
+              array(
                 'application/pdf',
                 'image/png',
                 'image/jpeg',
                 'image/gif',
                 'text/html',
               )
-            )
           );
 
         }
