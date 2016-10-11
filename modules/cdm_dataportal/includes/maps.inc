@@ -166,10 +166,10 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
     }
   }
 
-//   // combine keys and values
-//   foreach($cdm_openlayers_options as $key=>&$val){
-//     $val = $key . ": " . $val;
-//   };
+  $mapserver_base_uri = $edit_map_service['base_uri'];
+  $is_https = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on';
+  $http_protocol = $is_https ? 'https' : 'http';
+  $mapserver_base_uri = preg_replace('/^https?:/', $http_protocol . ':', $mapserver_base_uri);
 
   // window.onload - is executed when the document and images etc is fully loaded
   // Query(document).ready - is executed much earlier, when the DOM is loaded
@@ -177,7 +177,7 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
           jQuery(document).ready(function() {
                 jQuery(window).load(function () {
                   var map_container = jQuery('#openlayers_map').cdm_openlayers_map(
-                   '" . $edit_map_service['base_uri'] . "',
+                   '" . $mapserver_base_uri . "',
                    '" . $edit_map_service['version'] . "',
                    " .  json_encode($cdm_openlayers_options) . "
                 );
@@ -296,13 +296,9 @@ function compose_distribution_map($taxon, $query_string) {
       1 => "italic",
   );
 
-//   // Query cdm server for map service uri parameters.
-//   $query_string = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid, queryString(cdm_distribution_filter_query()));
-//   $query_string = $query_string->String;
-  $out .= "<!-- map_data_parameters:" . print_r($query_string, TRUE) . " -->";
   if (!$query_string) {
     // The $query_string is empty if there are no distribution areas defined.
-    return;
+    return null;
   }
 
   /* ------ choose the display mode, either openlayers or static image ------ */
