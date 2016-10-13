@@ -63,7 +63,6 @@ function cdm_dataportal_theme() {
         'parameters' => array(),
         'attributes' => NULL,
     )),
-    'cdm_back_to_search_result_button' => array('variables' => array()),
     'cdm_back_to_image_gallery_button' => array('variables' => array()),
     'cdm_print_button' => array('variables' => array()),
 

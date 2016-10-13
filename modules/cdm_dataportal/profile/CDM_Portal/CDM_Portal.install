@@ -45,7 +45,7 @@ function CDM_Portal_install() {
   // After the standard_install() the dataportal
   // customization can be applied
 
-  include_once DRUPAL_ROOT . '/profiles/standard/standard.install';
+  require_once DRUPAL_ROOT . '/profiles/standard/standard.install';
   standard_install();
 
   // >>> admin/appearance/settings
@@ -260,39 +260,60 @@ function CDM_Portal_install() {
   )
   ->execute();
 
-  $new_blocks = array(
-      // enable "CDM Search Taxa" block for all themes
-      array(
-          'block' => array(
-              'module' => 'cdm_dataportal',
-              'delta' => '2',
-              'theme' => $default_theme,
-              'status' => 1,
-              'weight' => -11,
-              'region' => 'sidebar_first',
-              'pages' => '',
-              'cache' => -1,
-          )
-      ),
-      // CDM web service debug block
-      array(
-          'block' => array(
-              'module' => 'cdm_api',
-              'delta' => 'cdm_ws_debug',
-              'theme' => $default_theme,
-              'status' => 1,
-              'weight' => -50,
-              'region' => 'sidebar_first',
-              'pages' => '',
-              'cache' => -1,
-          ),
-          'block_role' => array(
-              'module' => 'cdm_api',
-              'delta' => 'cdm_ws_debug',
-              'rid' => $admin_role->rid
-          )
+  $new_blocks = array();
+
+;
+  // enable "CDM Search Taxa" block for all themes
+  $block_search_taxa = cdm_dataportal_block_info()["2"];
+  $block_search_taxa= array_merge($block_search_taxa, array(
+    'module' => 'cdm_dataportal',
+    'delta' => '2',
+    'theme' => $default_theme,
+    'status' => 1,
+    'weight' => -11,
+    'region' => 'sidebar_first',
+    'pages' => '',
+  ));
+  $new_blocks[] = array(
+      'block' => $block_search_taxa
+  );
+
+  $block_back_to_search_results = cdm_dataportal_block_info()["back_to_search_results"];
+  $block_back_to_search_results= array_merge($block_back_to_search_results, array(
+    'module' => 'cdm_dataportal',
+    'delta' => 'back_to_search_results',
+    'theme' => $default_theme,
+    'status' => 1,
+    'weight' => 10,
+    'region' => 'navigation'
+  ));
+  $new_blocks[] = array(
+    'block' => $block_back_to_search_results
+  );
+
+  // CDM web service debug block
+  $block_cdm_ws_debug = cdm_api_block_info()['cdm_ws_debug'];
+  $block_cdm_ws_debug= array_merge($block_cdm_ws_debug, array(
+    'module' => 'cdm_api',
+    'delta' => 'cdm_ws_debug',
+    'theme' => $default_theme,
+    'status' => 1,
+    'weight' => -50,
+    'region' => 'sidebar_first',
+    'pages' => '',
+  ));
+
+  $new_blocks[] = array(
+      'block' => $block_cdm_ws_debug,
+      'block_role' => array(
+          'module' => 'cdm_api',
+          'delta' => 'cdm_ws_debug',
+          'rid' => $admin_role->rid
       )
   );
+
+  // TODO consider using block_flush_caches() to initially populate the block table with blocks from contributed
+  //      modules, and only update the blocks afterwards with block_save()?
   $block_insert = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
   $block_role_insert = db_insert('block_role')->fields(array('module', 'delta', 'rid'));
   foreach ($new_blocks as $block) {

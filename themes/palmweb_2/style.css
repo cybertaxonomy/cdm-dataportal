@@ -730,11 +730,6 @@ ul.secondary, ul.secondary li {
   position: relative;
 }
 
-#backButton {
-  margin: 0 0 10px;
-  font-size: 80%;
-}
-
 #funded-by {
   text-align: center;
 }

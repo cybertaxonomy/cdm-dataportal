@@ -12,7 +12,7 @@ $page-part-margin: $base-line-height * 1;
 
 /*  style links only for content in blocks and node and backbutton
     added also #identificationKey since there are not yet drupal nodes */
-.block, .node, #backButton, #identificationKey {
+.block, .node, #identificationKey {
   @include cdm-link-style;
 }
 
@@ -44,11 +44,6 @@ $page-part-margin: $base-line-height * 1;
   dl dl {
     margin: 0; /* reset default from cdm_dataportal.css */
   }
-}
-
-
-#backButton {
-  text-align: right;
 }
 
 .breadcrumbs li {

@@ -467,8 +467,6 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
   // -------------------------------------------- //
 
-  $render_array['back_to_search'] = markup_to_render_array(theme('cdm_back_to_search_result_button'), -103);
-
   if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR) && isset($_REQUEST['acceptedFor'])) {
     $render_array['accepted_for'] = markup_to_render_array(cdm_accepted_for($_REQUEST['acceptedFor']), $weight++);
   }

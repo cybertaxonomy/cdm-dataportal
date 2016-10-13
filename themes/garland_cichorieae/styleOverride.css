@@ -339,15 +339,8 @@ li.ui-tabs-selected {
   padding: 0.4em 0;
 }
 
-span.acceptedFor,
-#backButton {
+span.acceptedFor {
   font-size: 0.9em;
-}
-
-#backButton {
-/* Renders the link unusable because it is overlayed by tabs-wrapper. */
-/* margin-top: -2em; */
-  margin-top:-0.4em;
 }
 
 #cdm-dataportal-settings .form-item fieldset {

@@ -32,6 +32,10 @@
   padding: 0;
 }
 
+#block-cdm-dataportal-back-to-search-results {
+  float: right;
+}
+
 #cdm-ws-debug-table {
   width: 100%;
 }

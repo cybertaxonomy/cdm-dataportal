@@ -811,20 +811,27 @@ function cdm_dataportal_block_info() {
     // $block[0]["info"] = t("CDM DataPortal DevLinks");
     // $block[1]["info"] = t("CDM DataPortal Credits");
     $block["2"] = array(
-        "info" => t("CDM Search Taxa"),
+        "info" => t("CDM - Search Taxa"),
         "cache" => DRUPAL_NO_CACHE
       );
     // $block[3]["info"] = t("CDM Filters");
-    $block["4"]["info"] = t("CDM Dataportal Print");
-    $block["keys"]["info"] = t("CDM identification keys");
+    $block["4"]["info"] = t("CDM  - Dataportal Print");
+    $block["keys"]["info"] = t("CDM - Identification keys");
     $block["fundedByEDIT"]["info"] = t('Funded by EDIT');
     $block["classification_breadcrumbs"] =  array(
-        'info' => t('Classification breadcrumbs'),
+        'info' => t('CDM - Classification breadcrumbs'),
         'cache' => DRUPAL_CACHE_PER_PAGE
       );
     $block["taxonomic_children"] =  array(
-      'info' => t('Taxonomic children'),
+      'info' => t('CDM - Taxonomic children'),
       'cache' => DRUPAL_CACHE_PER_PAGE
+    );
+    $block["back_to_search_results"] =  array(
+      'title' => '<none>',
+      'info' => t('CDM - Back to search Results'),
+      'cache' => DRUPAL_CACHE_PER_PAGE,
+      'visibility' => BLOCK_VISIBILITY_LISTED,
+      'pages' => "cdm_dataportal/taxon/*", // multiple page paths separated by "\n"!!!
     );
 
     return $block;
@@ -878,6 +885,14 @@ function cdm_dataportal_block_view($delta) {
       $block['subject'] = '<none>';
       $block['content'] = compose_taxonomic_children($taxon_uuid);
       return $block;
+    case 'back_to_search_results':
+      $block['subject'] = '<none>';
+      if (isset($_SESSION['cdm']['search'])) {
+        $block['content'] = l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search']);
+      }
+      return $block;
+    default:
+      return null;
   }
 }
 

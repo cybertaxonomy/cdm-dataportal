@@ -395,14 +395,45 @@ function cdm_dataportal_update_7309() {
  *  -  grant new permission 'access cdm content' to default roles
  */
 function cdm_dataportal_update_7400() {
+
+  $tasks_performed = array();
+
   // additional permission for the anonymous user	authenticated user roles
   $additional_default_permissions = array(
     'access cdm content'
   );
   user_role_grant_permissions(1, $additional_default_permissions); // anonymous user
   user_role_grant_permissions(2, $additional_default_permissions); // authenticated user
-  $tasks_performed = array();
   $tasks_performed[] = "grant new permission 'access cdm content' to default roles";
+
+  // enable the back_to_search_results block
+  $show_button = variable_get('cdm_dataportal_show_back_to_search_results');
+  if(isset($show_button) &&  $show_button == 1) {
+    $default_theme = variable_get('theme_default', 'zen_dataportal');
+    _block_rehash($default_theme); // ensure the block table is up to date
+    db_update('block')
+      ->fields(array(
+        'weight' => 20,
+        'region' => 'navigation',
+        'status' => 1,
+      ))
+      ->condition('delta', 'back_to_search_results')
+      ->condition('theme', 'zen_dataportal')
+      ->execute();
+      db_update('block')
+        ->fields(array(
+          'weight' => -20,
+          'region' => 'content',
+          'status' => 1,
+        ))
+        ->condition('delta', 'back_to_search_results')
+        ->condition('theme', 'zen_dataportal', '<>')
+        ->execute();
+    $tasks_performed[] = "back_to_search_results block enabled";
+  }
+  // $tasks_performed[] = _remove_variable('cdm_dataportal_show_back_to_search_results');
+
+  return join(', ',$tasks_performed);
 }
 
 /* ======================================================================== */

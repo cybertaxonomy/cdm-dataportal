@@ -1768,15 +1768,6 @@ function cdm_settings_layout_taxon() {
 
   $form['#submit'][] = 'cdm_settings_layout_taxon_submit';
 
-  $form['cdm_dataportal_show_back_to_search_results'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Show <em>Back to search results</em> link at the taxon site.'),
-      '#default_value' => variable_get('cdm_dataportal_show_back_to_search_results', 1),
-      '#description' => t('<p>If checked the link to search results is rendered at
-       the top of the taxon site. Clicking on the link the last search performed
-       is rendered again.</p>'),
-  );
-
   // --------- TABBED TAXON ------- //
   $form['taxon_tabs'] = array(
     '#type' => 'fieldset',
