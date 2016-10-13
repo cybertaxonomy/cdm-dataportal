@@ -4,18 +4,16 @@
 package eu.etaxonomy.dataportal.selenium;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import eu.etaxonomy.dataportal.Browser;
-import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.SystemUtils;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 
@@ -70,7 +68,16 @@ public class WebDriverFactory {
 
 
     private static WebDriver initChromeDriver() {
-        return new ChromeDriver();
+
+        ChromeOptions options = new ChromeOptions();
+
+        String chromeBinary = System.getProperty("webdriver.chrome.bin");
+        if(chromeBinary != null) {
+            CdmDataPortalTestBase.logger.info(("webdriver.chrome.bin = " + chromeBinary));
+            options.setBinary(chromeBinary);
+
+        }
+        return new ChromeDriver(options);
     }
 
     private static WebDriver initInternetExplorerDriver() {

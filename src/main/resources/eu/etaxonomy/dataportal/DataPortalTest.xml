@@ -38,7 +38,15 @@
 
   -->
   <!-- <entry key="webdriver.firefox.bin"></entry> -->
-  <!-- <entry key="webdriver.chrome.bin"></entry> -->
+<!-- 
+      NOTE: install the chromedriver from https://sites.google.com/a/chromium.org/chromedriver/downloads 
+   -->
+  <!-- <entry key="webdriver.chrome.driver">/opt/chromedriver/chromedriver</entry> -->
+  <!-- 
+      Use this setting if the chrome browser is not found automatically 
+   -->
+  <!-- <entry key="webdriver.chrome.bin">/path/to/my/chromium-browser</entry> -->
+  <!-- <entry key="webdriver.gecko.driver"></entry> -->
   <!--
     The browser to be used for testing (defaults to firefox)
   -->
