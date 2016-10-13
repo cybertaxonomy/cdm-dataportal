@@ -392,7 +392,9 @@ function cdm_dataportal_update_7309() {
 
 /**
  * update for RELEASE 4.4:
- *  -  grant new permission 'access cdm content' to default roles
+ *  - grant new permission 'access cdm content' to default roles
+ *  - enable back_to_search_results block if show_back_to_search_results was enabled
+ *  - remove the variable 'cdm_dataportal_show_back_to_search_results'
  */
 function cdm_dataportal_update_7400() {
 
