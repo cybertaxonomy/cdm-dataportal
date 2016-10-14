@@ -260,4 +260,23 @@ public class TaxonSynonymyPage extends PortalPage {
         return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
     }
 
+    public WebElement getTaxonRelationships() {
+        WebElement taxonRelationships = synonymy.findElement(
+                By.xpath("./div[contains(@class,'taxon-relationships')]")
+        );
+        return taxonRelationships;
+    }
+
+    /**
+     * @param heterotypicalGroupIndex
+     *              the 1-based index of the misapplied names
+     * @return
+     */
+    public WebElement getMisappliedName(Integer misappliedNameIndex) {
+        WebElement misappliedName = getTaxonRelationships().findElement(
+                By.xpath("./ul[contains(@class,'misapplied')]/li[" + misappliedNameIndex + "]")
+        );
+        return misappliedName;
+    }
+
 }

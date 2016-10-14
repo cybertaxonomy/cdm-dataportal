@@ -20,10 +20,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.GalleryImage;
 import eu.etaxonomy.dataportal.elements.LinkElement;
-import eu.etaxonomy.dataportal.pages.PortalPage;
 import eu.etaxonomy.dataportal.selenium.AllTrue;
 import eu.etaxonomy.dataportal.selenium.ChildElementVisible;
-import eu.etaxonomy.dataportal.selenium.JUnitWebDriverWait;
 
 /**
  * @author andreas
@@ -110,6 +108,23 @@ public class ElementUtils {
         }
 
         return galleryImageRows;
+    }
+
+    /**
+     * Expected DOM:
+     *
+     * <ul class="footnotes">
+     *   <li class="footnotes footnotes-taxon_relationships "><span class="footnote footnote-1">...</span></li>
+     *   <li class="footnotes footnotes-taxon_relationships-annotations ">...</li>
+     * </ul>
+     * @param element
+     * @return
+     */
+    public static List<BaseElement> findFootNotes(WebElement element){
+        List<WebElement> fnListElements = element.findElements(
+                By.xpath("./ul[contains(@class,'footnotes')]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
+        );
+        return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
     }
 
 

@@ -5,6 +5,7 @@ package eu.etaxonomy.dataportal.junit;
 
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
@@ -17,7 +18,7 @@ import eu.etaxonomy.dataportal.selenium.WebDriverFactory;
  *
  */
 @RunWith(DataPortalContextSuite.class)
-public abstract class CdmDataPortalTestBase {
+public abstract class CdmDataPortalTestBase extends Assert{
 
 	public static final Logger logger = Logger.getLogger(CdmDataPortalTestBase.class);
 

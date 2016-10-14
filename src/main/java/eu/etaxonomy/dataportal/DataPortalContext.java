@@ -24,7 +24,8 @@ public enum DataPortalContext {
     cichorieae,
     palmae,
     cyprus,
-    floramalesiana;
+    floramalesiana,
+    reference;
 
     URI baseUri;
     URI cdmServerUri;
