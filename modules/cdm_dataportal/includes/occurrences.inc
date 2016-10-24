@@ -106,22 +106,27 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
             //provider link
             if (isset($molecular->providerLink)) {
                 $molecularData .= create_html_link($molecular->providerLink, true);
+            } else {
+                $molecularData .= "[no provider]";
             }
             //contig link
-            if (isset($molecular->contigFiles[0])) {//FIXME check if empty
+            if (isset($molecular->contigFiles)) {
                 $molecularData .= "[";
-                if (isset($molecular->contigFiles)) {
+                if (sizeof($molecular->contigFiles) > 0) {
                     foreach ($molecular->contigFiles as $contigFile) {
-                        if (isset($contigFile->contigLink)){
-                            if(isset($contigFile->contigLink->uri) and $contigFile->contigLink->uri!=null) {
-                               $molecularData .= create_html_link($contigFile->contigLink, true)." ";
+                        if (isset($contigFile->contigLink)) {
+                            if (isset($contigFile->contigLink->uri) and $contigFile->contigLink->uri != null) {
+                                $molecularData .= create_html_link($contigFile->contigLink, true) . " ";
                             }
-                            //primer links
+                        }
+                        else {
+                            $molecularData .= "no contig ";
+                        }
+                        //primer links
+                        if(isset($contigFile->primerLinks)) {
                             $molecularData .= create_html_links($contigFile->primerLinks, true);
                         }
                     }
-                } else {
-                    $molecularData .= "no contig";
                 }
                 $molecularData = rtrim($molecularData, " ");
                 $molecularData .= "]";
