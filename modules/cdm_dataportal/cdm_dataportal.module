@@ -1494,7 +1494,7 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
  *
  * @return string
  */
-function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid = NULL) {
+function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all') {
 
   cdm_check_valid_taxon_page($chapter);
   cdm_dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
@@ -1510,7 +1510,7 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid =
 
   // Display the page for the taxon defined by $uuid.
   // set_last_taxon_page_tab(arg(3));
-  $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter, $synonym_uuid);
+  $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter);
   if (!empty($taxonpage)) {
     cdm_dd("END OF TAXON PAGE [" . $chapter . "] " . $uuid);
     return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title, $taxonpage->content);
@@ -1533,7 +1533,7 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all', $synonym_uuid =
  *   Name of the part to display, valid values are:
  *   'description', 'images', 'synonymy', 'all'.
  *
- * @return taxonpage object with the following fields:
+ * @return object with the following fields:
  *   - title : the title of the page
  *   - content: the content of the page
  *
