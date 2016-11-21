@@ -27,7 +27,7 @@ define('CDM_WS_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'taxon/findByDescripti
  * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
  * accepted taxon, this one will be returned.
  */
-define('CDM_WS_PORTAL_TAXON_ACCEPTED', 'portal/taxon/$0/accepted/$1');
+define('CDM_WS_PORTAL_TAXON_ACCEPTED', 'portal/taxon/$0/accepted');
 
 define('CDM_WS_PORTAL_TAXON', 'portal/taxon');
 define('CDM_WS_PORTAL_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');

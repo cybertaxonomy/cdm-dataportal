@@ -437,10 +437,10 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   $table_of_accepted = array();
 
   foreach ($synonym_uuids as $relatedUuid) {
-    $table_of_accepted[$relatedUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array(
-      $relatedUuid,
-      $searched_in_classification_uuid,
-    ));
+    $table_of_accepted[$relatedUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED,
+      array($relatedUuid),
+      'classificationFilter=' . $searched_in_classification_uuid
+    );
   }
 
   foreach ($misappied_uuids as $relatedUuid) {
@@ -463,11 +463,10 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       $is_synonym = isset($synonym_uuids[$taxon->uuid]); //TODO better use the $taxon->class attribute?
       $taxon_type = $is_synonym ? "Synonym" : "misapplied-name";
 
-      $acceptedTaxa = $table_of_accepted[$taxon->uuid];
+      $acceptedTaxon = $table_of_accepted[$taxon->uuid];
 
-      if (count($acceptedTaxa) == 1) {
+      if (is_object($acceptedTaxon)) {
 
-        $acceptedTaxon = $acceptedTaxa[0];
         $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
         $referenceUri = '';
         if (isset($acceptedTaxon->name->nomenclaturalReference)) {
@@ -485,7 +484,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
               $classification_titles[] = $classification->titleCache;
             }
           }
-          if(count($classification_titles) == 0){
+          if (count($classification_titles) == 0) {
             $classification_titles[] = $unclassified_snippet;
           }
           $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
@@ -494,25 +493,6 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
         if ($showMedia_synonyms) {
           $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
         }
-      }
-      else {
-
-        // TODO avoid using Ajax in the cdm_dynabox .... why?
-        // TODO add media.
-        $out .= cdm_dynabox(
-          $taxon->uuid,
-          render_taxon_or_name($taxon->name, NULL, NULL, FALSE),
-          cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED,
-            array(
-              $taxon->uuid,
-              $searched_in_classification_uuid
-            )
-          ),
-          'cdm_list_of_taxa',
-          'show accepted taxa of this ' . $taxon_type,
-          array('li', 'ul'),
-          array('class' => array($taxon_type))
-        );
       }
     }
     else {
