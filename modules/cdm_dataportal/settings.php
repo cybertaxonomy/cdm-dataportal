@@ -2855,10 +2855,9 @@ function cdm_settings_geo($form, &$form_state) {
     'mapnik' => 'OpenStreetMap',
     'mapquest_open' => "MapQuest",
     'mapquest_sat' => "MapQuest Sattelite",
-//     'osmarender' => 'OpenStreetMap (Tiles@home)',
     'groadmap' => 'Google Roadmap',
     'gsatellite' => 'Google Satellite',
-    'ghybrid' => 'Google Hybrid', // TODO: is not working
+    'ghybrid' => 'Google Hybrid',
     'gterrain' => 'Google Terrain',
 //     'veroad' => 'Virtual Earth Roads',
 //     'veaer' => 'Virtual Earth Aerial',
