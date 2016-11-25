@@ -77,7 +77,7 @@ define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
  */
 define('CDM_WS_PORTAL_TAXONOMY', 'portal/classification');
 /**
- * TODO: harmonize return type, the REST service should return TaxonNodeDto
+ * TODO: harmonize return type, the REST service should return TaxonNodeDto, see #6222
  *
  * returns list of TaxonNode
  */
