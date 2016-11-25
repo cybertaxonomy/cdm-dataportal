@@ -2091,24 +2091,25 @@ function html_class_attribute_ref($cdmEntity) {
 
 
 /**
- * Creates a short taxonname.
+ * Creates a short version of a taxonname.
  *
  * The short name is created by using the taggedTitle field of
- * NameSTO or NameTO instances.
+ * TaxonNodeDTO instances.
  * If the taggedTitle if empty the fullname will be returned.
  *
- * @param unknown_type $name
- *   Name or TreeNode.
+ * @param object $taxonNodeDTO
+ *   A TaxonNodeDTO object
  *
  * @return string
  */
-function cdm_dataportal_shortname_of($name) {
+function cdm_dataportal_shortname_of($taxonNodeDTO) {
+
   $nameStr = '';
 
-  normalize_tagged_text($name->taggedTitle);
+  normalize_tagged_text($taxonNodeDTO->taggedTitle);
 
   // Get all tagged text tokens of the scientific name.
-  foreach ($name->taggedTitle as $tagtxt) {
+  foreach ($taxonNodeDTO->taggedTitle as $tagtxt) {
     if ($tagtxt->type == 'name' || $tagtxt->type == 'rank') {
       $nameStr .= ($nameStr ? ' ' : '') . $tagtxt->text;
     }
@@ -2118,7 +2119,7 @@ function cdm_dataportal_shortname_of($name) {
   if ($nameStr) {
 
     // Do not return short names for these.
-    if ($name->unplaced || $name->excluded) {
+    if ($taxonNodeDTO->unplaced || $taxonNodeDTO->excluded) {
       return $nameStr;
     }
 
@@ -2138,7 +2139,7 @@ function cdm_dataportal_shortname_of($name) {
     }
   }
   else {
-    return $name->titleCache;
+    return $taxonNodeDTO->titleCache;
   }
 }
 

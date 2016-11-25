@@ -76,11 +76,27 @@ define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
  * stub: treenode_root
  */
 define('CDM_WS_PORTAL_TAXONOMY', 'portal/classification');
+/**
+ * TODO: harmonize return type, the REST service should return TaxonNodeDto
+ *
+ * returns list of TaxonNode
+ */
 define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES', 'portal/classification/$0/childNodes');
-define('CDM_WS_PORTAL_TAXONOMY_CLASSIFICATION_ROOT_NODE', 'portal/classification/$0/classificationRootNode');
+/**
+ * returns list of TaxonNodeDto
+ */
 define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK', 'portal/classification/$0/childNodesAt/$1');
+/**
+ * returns list of TaxonNodeDto
+ */
 define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON', 'portal/classification/$0/childNodesOf/$1');
+/**
+ * returns list of TaxonNodeDto
+ */
 define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM', 'portal/classification/$0/pathFrom/$1');
+/**
+ * returns list of TaxonNodeDto
+ */
 define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK', 'portal/classification/$0/pathFrom/$1/toRank/$2');
 define('CDM_WS_PORTAL_TAXONOMY_MEDIA', 'portal/classification/$0/$1');
 

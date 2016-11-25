@@ -1157,7 +1157,7 @@ function cdm_taxontree_theme() {
  *   Problem is, that the dependency is the other way round.
  * @param string $taxonUuid
  *
- * @return unknown
+ * @return string
  */
 function cdm_taxontree_view_filter($op, $taxonUuid = NULL) {
 
