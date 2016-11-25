@@ -137,6 +137,19 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
 
     $layer_names = $map_settings['openlayers']['base_layers'];
 
+    foreach($layer_names as $name){
+      if(str_beginsWith($name, 'g')){
+        if( isset($map_settings['openlayers']['google_maps_api_key']) && strlen($map_settings['openlayers']['google_maps_api_key']) == 39) {
+          // google layer detected
+          drupal_add_js("https://maps.googleapis.com/maps/api/js?key=" . $map_settings['openlayers']['google_maps_api_key'] . "&callback=initMap", 'external');
+        } else {
+          drupal_set_message('A Google Maps layer is configured but the API key is either missing or invalid. 
+          Please set your Google Maps API key in the '  . l('Geo & Map Settings', 'admin/config/cdm_dataportal/settings/geo') .'.', 'warning');
+        }
+
+      }
+    }
+
     $cdm_openlayers_options['baseLayerNames'] = array_values($layer_names);
 
     if($layer_names['PREFERRED']){

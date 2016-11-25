@@ -480,7 +480,8 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
       'units' => NULL
     ),
     'show_layer_switcher' => TRUE,
-    'display_outside_max_extent' => FALSE
+    'display_outside_max_extent' => FALSE,
+    'google_maps_api_key' => NULL,
   ),
   'legend' => array(
     'show' => TRUE,
@@ -2855,9 +2856,10 @@ function cdm_settings_geo($form, &$form_state) {
     'mapquest_open' => "MapQuest",
     'mapquest_sat' => "MapQuest Sattelite",
 //     'osmarender' => 'OpenStreetMap (Tiles@home)',
-//    'gmap' => 'Google Streets',
-//    'gsat' => 'Google Satellite',
-//    'ghyb' => 'Google Hybrid',
+    'groadmap' => 'Google Roadmap',
+    'gsatellite' => 'Google Satellite',
+    'ghybrid' => 'Google Hybrid', // TODO: is not working
+    'gterrain' => 'Google Terrain',
 //     'veroad' => 'Virtual Earth Roads',
 //     'veaer' => 'Virtual Earth Aerial',
 //     'vehyb' => 'Virtual Earth Hybrid',
@@ -2873,6 +2875,18 @@ function cdm_settings_geo($form, &$form_state) {
     '#options' => $baselayer_options,
     '#default_value' =>  $map_distribution['openlayers']['base_layers'],
     '#description' => 'Choose the baselayer layer you prefer to use as map background in the OpenLayers dynamic mapviewer.',
+  );
+
+  $google_maps_api_key = null;
+  if(isset($map_distribution['openlayers']['google_maps_api_key'])){
+    $google_maps_api_key = $map_distribution['openlayers']['google_maps_api_key'];
+  }
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['google_maps_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Google Maps API Key',
+    '#default_value' => $google_maps_api_key,
+    '#description' => 'In order to use any of the Google map layers you need to provide 
+        your <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">Google Maps API Key</a>. ',
   );
 
   $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer'] = array(
