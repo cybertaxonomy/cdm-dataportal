@@ -861,8 +861,9 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
     // --- Distribution map
     $distribution_map_query_parameters = NULL;
 
-    if(variable_get(DISTRIBUTION_MAP_VISIBILITY) == 'always' ||
-        variable_get(DISTRIBUTION_MAP_VISIBILITY) == 'automatic' && isset($descriptionElements['DistributionInfoDTO']->mapUriParams)
+    $map_visibility = variable_get(DISTRIBUTION_MAP_VISIBILITY, DISTRIBUTION_MAP_VISIBILITY_DEFAULT);
+    if(variable_get(DISTRIBUTION_MAP_VISIBILITY, DISTRIBUTION_MAP_VISIBILITY_DEFAULT) == 'always' ||
+        $map_visibility == 'automatic' && isset($descriptionElements['DistributionInfoDTO']->mapUriParams)
       )
     {
       $distribution_map_query_parameters = $descriptionElements['DistributionInfoDTO']->mapUriParams;

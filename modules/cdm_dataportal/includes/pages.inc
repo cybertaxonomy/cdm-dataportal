@@ -90,8 +90,9 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     if (count($specimensOrObservations) > 0) {
         $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
 
-      if(variable_get(SPECIMEN_MAP_VISIBILITY) == 'always' ||
-        variable_get(SPECIMEN_MAP_VISIBILITY) == 'automatic' &&
+      $map_visibility = variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT);
+      if($map_visibility == 'always' ||
+        variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT) == 'automatic' &&
           (isset($occurrence_queryDto->fieldUnitPoints[0]) || isset($occurrence_queryDto->derivedUnitPoints[0]))
         )
       {
