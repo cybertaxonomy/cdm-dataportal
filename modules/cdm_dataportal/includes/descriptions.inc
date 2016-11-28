@@ -863,7 +863,7 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
     if (isset($descriptionElements['DistributionInfoDTO'])) {
       $distribution_map_query_parameters = $descriptionElements['DistributionInfoDTO']->mapUriParams;
     }
-    $map_render_element = compose_distribution_map($taxon, $distribution_map_query_parameters);
+    $map_render_element = compose_distribution_map($distribution_map_query_parameters);
     $block->content[] = $map_render_element;
 
     $dto_out_array = array();

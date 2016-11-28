@@ -2613,12 +2613,10 @@ function cdm_settings_geo($form, &$form_state) {
            ' may not be accurate in case of image maps, please check the map display in the taxon pages.':
            '.<br/>Hold down Strg and drag with your mouse to select a bbox to zoom to. <br/>The bbox of the visible area of the map is always displayed below the map.')
   );
-  $form['map_preview']['openlayers_map'] = compose_map(NULL, $dummy_distribution_query, NULL,
-    array(
-      'move' => "this.cdmOpenlayersMap.printInfo",
-      '#execute' => "this.cdmOpenlayersMap.printInfo"
-    ),
-    true // resizable
+  $form['map_preview']['openlayers_map'] = compose_map(NULL, NULL, $dummy_distribution_query, NULL, array(
+    'move' => "this.cdmOpenlayersMap.printInfo",
+    '#execute' => "this.cdmOpenlayersMap.printInfo"
+  ), true // resizable
   );
 
   /*

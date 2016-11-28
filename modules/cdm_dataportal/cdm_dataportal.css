@@ -491,7 +491,7 @@ a.label:visited {
  * ==== Maps ====
  */
 
-#openlayers_container {
+.openlayers-container {
   position: relative;
   z-index: 1;
   margin-bottom: 0.75em; /* Should match the margin-bottom of .description. */
