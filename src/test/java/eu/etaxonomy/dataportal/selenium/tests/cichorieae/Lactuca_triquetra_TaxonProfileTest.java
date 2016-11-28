@@ -146,7 +146,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
             assertEquals("Expecting 7 Footnotes", 7, featureBlock.countFootNotes());
         }
 
-        assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers_map")));
+        assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers-map-distribution")));
         WebElement mapCaptionElement = null;
         try {
             mapCaptionElement = featureBlock.getElement().findElement(By.className("distribution_map_caption"));

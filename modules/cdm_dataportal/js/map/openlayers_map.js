@@ -432,67 +432,67 @@
          */
         var initMap = function(){
 
-            if(opts.showLayerSwitcher === true){
-                defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
-            }
+          if(opts.showLayerSwitcher === true){
+              defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
+          }
 
-            // defaultControls.unshift(layerLoadingControl()); // as first control, needs to be below all others!
+          // defaultControls.unshift(layerLoadingControl()); // as first control, needs to be below all others!
 
 //          var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, getWidth/getHeight);
-            var maxResolution = null;
-            // gmaps has no maxExtent at this point, need to check for null
-            if(defaultBaseLayer.maxExtent != null){
-                maxResolution = Math[(opts.displayOutsideMaxExtent ? 'max' : 'min')](
-                        defaultBaseLayer.maxExtent.getWidth() / getWidth(),
-                        defaultBaseLayer.maxExtent.getHeight() / getHeight()
-                );
-            }
-            console.log("mapOptions.maxResolution: " + maxResolution);
-            console.log("mapOptions.restrictedExtent: " + defaultBaseLayer.maxExtent);
+          var maxResolution = null;
+          // gmaps has no maxExtent at this point, need to check for null
+          if(defaultBaseLayer.maxExtent != null){
+              maxResolution = Math[(opts.displayOutsideMaxExtent ? 'max' : 'min')](
+                      defaultBaseLayer.maxExtent.getWidth() / getWidth(),
+                      defaultBaseLayer.maxExtent.getHeight() / getHeight()
+              );
+          }
+          console.log("mapOptions.maxResolution: " + maxResolution);
+          console.log("mapOptions.restrictedExtent: " + defaultBaseLayer.maxExtent);
 
-            map = new OpenLayers.Map(
-                    "openlayers_map",
-                    {
-                        // defines the map ui elements and interaction features
-                        controls: defaultControls,
+          map = new OpenLayers.Map(
+            mapElement.attr('id'),
+            {
+              // defines the map ui elements and interaction features
+              controls: defaultControls,
 
-                        // maxResolution determines the lowest zoom level and thus places the map
-                        // in its maximum extent into the available view port so that no additinal
-                        // gutter is visible and no parts of the map are hidden
-                        // see http://trac.osgeo.org/openlayers/wiki/SettingZoomLevels
-                        // IMPORTANT!!!
-                        // the maxResulution set here will be overwritten if the baselayers maxResolution
-                        // it is set
-                        maxResolution: maxResolution,
+              // maxResolution determines the lowest zoom level and thus places the map
+              // in its maximum extent into the available view port so that no additinal
+              // gutter is visible and no parts of the map are hidden
+              // see http://trac.osgeo.org/openlayers/wiki/SettingZoomLevels
+              // IMPORTANT!!!
+              // the maxResulution set here will be overwritten if the baselayers maxResolution
+              // it is set
+              maxResolution: maxResolution,
 
-                        // setting restrictedExtent the the maxExtent prevents from panning the
-                        // map out of its bounds
-                        restrictedExtent: defaultBaseLayer.maxExtent,
+              // setting restrictedExtent the the maxExtent prevents from panning the
+              // map out of its bounds
+              restrictedExtent: defaultBaseLayer.maxExtent,
 //                      maxExtent: defaultBaseLayer.maxExtent,
 
-                        // Setting the map.fractionalZoom property to true allows zooming to an arbitrary level
-                        // (between the min and max resolutions).
-                        // fractional tiles are not supported by XYZ layers like OSM so this option would
-                        // break the tile retrieval for OSM (e.g.: tile for fractional zoom level
-                        // 1.2933333333333332 = http://b.tile.openstreetmap.org/1.2933333333333332/1/0.png)
-                        fractionalZoom: defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.OSM" && defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.XYZ",
+              // Setting the map.fractionalZoom property to true allows zooming to an arbitrary level
+              // (between the min and max resolutions).
+              // fractional tiles are not supported by XYZ layers like OSM so this option would
+              // break the tile retrieval for OSM (e.g.: tile for fractional zoom level
+              // 1.2933333333333332 = http://b.tile.openstreetmap.org/1.2933333333333332/1/0.png)
+              fractionalZoom: defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.OSM" && defaultBaseLayer.CLASS_NAME != "OpenLayers.Layer.XYZ",
 
-                        eventListeners: opts.eventListeners,
-                        // creating the map with a null theme, since we include the stylesheet directly in the page
-                        theme: null
+              eventListeners: opts.eventListeners,
+              // creating the map with a null theme, since we include the stylesheet directly in the page
+              theme: null
 
-                    }
-            );
+            }
+          );
 
-            //add the base layers
+          //add the base layers
 
-            addLayers(baseLayers);
-            map.setBaseLayer(defaultBaseLayer);
+          addLayers(baseLayers);
+          map.setBaseLayer(defaultBaseLayer);
 
-            // calculate the bounds to zoom to
-            zoomToBounds = zoomToBoundsFor(opts.boundingBox ? opts.boundingBox : defaultBaseLayerBoundingBox, defaultBaseLayer);
-            zoomToBounds = cropBoundsToAspectRatio(zoomToBounds, map.getSize().w / map.getSize().h);
-            console.log("baselayer zoomToBounds: " + zoomToBounds);
+          // calculate the bounds to zoom to
+          zoomToBounds = zoomToBoundsFor(opts.boundingBox ? opts.boundingBox : defaultBaseLayerBoundingBox, defaultBaseLayer);
+          zoomToBounds = cropBoundsToAspectRatio(zoomToBounds, map.getSize().w / map.getSize().h);
+          console.log("baselayer zoomToBounds: " + zoomToBounds);
 
         };
 

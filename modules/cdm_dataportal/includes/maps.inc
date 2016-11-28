@@ -89,6 +89,7 @@ function compose_map($map_id, $occurrence_query = NULL, $distribution_query = NU
  * Adds the javascript for a openlayers map to the page as well as all javascript libs.
  *
  *
+ * @param $map_id
  * @param $map_settings
  *   The map settings array as retrieved by e.g. get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
  * @param array $event_listeners
@@ -106,7 +107,7 @@ function compose_map($map_id, $occurrence_query = NULL, $distribution_query = NU
  * @param bool $resizable
  *   The map is made resizable when set to true
  */
-function _add_js_openlayers_map($map_settings, array $event_listeners = array(), $resizable = false) {
+function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners = array(), $resizable = false) {
 
   font_awesome_icon_markup(); // no icon specified, only used to add the font and styles
 
@@ -200,7 +201,7 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
   drupal_add_js("
           jQuery(document).ready(function() {
                 jQuery(window).load(function () {
-                  var map_container = jQuery('#openlayers_map').cdm_openlayers_map(
+                  var map_container = jQuery('#openlayers-map-" . $map_id . "').cdm_openlayers_map(
                    '" . $mapserver_base_uri . "',
                    '" . $edit_map_service['version'] . "',
                    " .  json_encode($cdm_openlayers_options) . "
@@ -249,13 +250,13 @@ function cdm_map_openlayers($map_id, $occurrenceQuery = FALSE, $distributionQuer
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
   if($map_id == NULL){
-    $map_id = "openlayers-container-" . sha1($occurrenceQuery . $distributionQuery);
+    $map_id = sha1($occurrenceQuery . $distributionQuery);
   }
 
-  _add_js_openlayers_map($map_settings, $event_listeners, $resizable);
+  _add_js_openlayers_map($map_id, $map_settings, $event_listeners, $resizable);
 
-  $out = '<div id="' . $map_id . '" class="openlayers-container openlayers_width ui-widget-content" style="width: 100%;">';
-  $out .= '<div id="openlayers_map" class="smallmap" style="width:100%; height:100%; margin: 10px;"';
+  $out = '<div id=""openlayers-container-' . $map_id . '" class="openlayers-container openlayers_width ui-widget-content" style="width: 100%;">';
+  $out .= '<div id="openlayers-map-' . $map_id . '" class="smallmap" style="width:100%; height:100%; margin: 10px;"';
 
   // Additional query parameters as set in the data portal admin section.
   $labels_on = $map_settings['show_labels'];
