@@ -210,11 +210,11 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
 /**
  * @todo Enter description here ...
  *
- * @param unknown_type $bounding_box
- * @param unknown_type $occurrenceQuery
- * @param unknown_type $distributionQuery
- * @param unknown_type $legendFormatQuery
- * @param unknown_type $map_caption
+ * @param string $bounding_box
+ * @param string $occurrenceQuery
+ * @param string $distributionQuery
+ * @param string $legendFormatQuery
+ * @param string $map_caption
  * @param array $event_listeners
  *   An associative array of with OpenLayers.Map event names as key and corresponding js callbacks.
  *   In addition to the event names '#execute' as key is also allowed.
