@@ -59,7 +59,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
         }
     }
     if($preservedSpecimenDTO->preferredStableUri){
-        $detail_html .= "<br>".create_label("Preferred stable URI") . l($preservedSpecimenDTO->preferredStableUri, $preservedSpecimenDTO->preferredStableUri) . "<br>";
+        $detail_html .= "<br>".create_label("Preferred stable URI") . cdm_external_uri($preservedSpecimenDTO->preferredStableUri) . "<br>";
     }
     if($isSpecimenPage){
         // associated taxa
@@ -354,6 +354,11 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
           case 'definition':
             // TODO
+            break;
+
+          case 'preferredStableUri':
+
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(array('#markup' => cdm_external_uri($value, false))));
             break;
 
           case 'specimenTypeDesignations':

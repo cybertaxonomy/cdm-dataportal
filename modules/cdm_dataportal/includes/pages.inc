@@ -180,7 +180,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     if (variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as') && $derivateHierarchy->taxonName) {
                         $detail_html .= create_label("Associated with") . $derivateHierarchy->taxonName . "<br>";
                     }
-                    // - prtologue
+                    // - protologue
                     if ($derivateHierarchy->protologue) {
                         //$detail_html .= "<strong>Protologue:</strong> " . $derivateHierarchy->protologue . "<br>"
                     }
