@@ -108,7 +108,6 @@ define('DISTRIBUTION_CONDENSED_INFO_PATH_DEFAULT', 'cdm_dataportal/help/condense
 define('DISTRIBUTION_CONDENSED_RECIPE', 'distribution_condensed_recipe');
 define('DISTRIBUTION_CONDENSED_RECIPE_DEFAULT', 'EuroPlusMed');
 
-
 define('DISTRIBUTION_STATUS_COLORS', 'distribution_status_colors');
 define('DISTRIBUTION_ORDER_MODE', 'distribution_order_mode');
 define('DISTRIBUTION_ORDER_MODE_DEFAULT', 'TREE');
@@ -436,6 +435,28 @@ define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
     'item_group_postfix' => ')'
   )
 )));
+
+/**
+ * Constant for the drupal variable key distribution_map_visibility
+ *
+ * possible values:
+ *  - never
+ *  - automatic
+ *  - always
+ */
+define('DISTRIBUTION_MAP_VISIBILITY', 'distribution_map_visibility');
+define('DISTRIBUTION_MAP_VISIBILITY_DEFAULT', 'automatic');
+
+/**
+ * Constant for the drupal variable key specimen_map_visibility
+ *
+ * possible values:
+ *  - never
+ *  - automatic
+ *  - always
+ */
+define('SPECIMEN_MAP_VISIBILITY', 'specimen_map_visibility');
+define('SPECIMEN_MAP_VISIBILITY_DEFAULT', 'automatic');
 
 define('CDM_TAXON_MEDIA_FILTER', 'cdm_taxon_media_filter');
 define('CDM_TAXON_MEDIA_FILTER_DEFAULT', serialize(
@@ -2158,8 +2179,8 @@ function cdm_settings_layout_taxon() {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#type' => 'fieldset',
-    '#description' => 'This section covers general settings regarding the textual representation of distributions.
-        Map related settings are found in the '
+    '#description' => 'This section covers general settings regarding the textual representation of distributions and the visibility of the map.
+        Map settings regarding the geometry, layers, etc are found in the '
       . l('geo & map tab', 'admin/config/cdm_dataportal/settings/geo') .
       '. Further settings regarding the distribution feature block can be found in above in this tab at '
       . l(
@@ -2171,6 +2192,8 @@ function cdm_settings_layout_taxon() {
       . '. (These settings here will be merged in future releases into the feature block settings)',
 
   );
+
+  $form['taxon_profile']['distribution_layout'][DISTRIBUTION_MAP_VISIBILITY] = _cdm_map_visibility_setting('distribution');
 
   $form['taxon_profile']['distribution_layout'][DISTRIBUTION_CONDENSED] = array(
     '#type' => 'checkbox',
@@ -2393,19 +2416,21 @@ ie	introduced: formerly introduced
       <strong>specimens</strong> tab.'),
   );
 
-    $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Show specimen derivatives in a compressed table'),
-        '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE),
-        '#description' => t('If checked, the specimen will be listed in a table. Every row represents
-        a collection and it can be expanded to get an overview of the specimens and their derivates.'),
-    );
-    
-    $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_show_determined_as'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Show "Associated with" in specimen table.'),
-        '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS)
-    );
+  $form['taxon_specimens'][SPECIMEN_MAP_VISIBILITY]  = _cdm_map_visibility_setting('specimen');
+
+  $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show specimen derivatives in a compressed table'),
+    '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE),
+    '#description' => t('If checked, the specimen will be listed in a table. Every row represents
+    a collection and it can be expanded to get an overview of the specimens and their derivates.'),
+  );
+
+  $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_show_determined_as'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show "Associated with" in specimen table.'),
+    '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS)
+  );
 
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
   $profile_feature_tree_uuid = variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
@@ -2413,14 +2438,14 @@ ie	introduced: formerly introduced
     $profile_feature_tree_uuid = UUID_DEFAULT_FEATURETREE;
   }
   $form['taxon_specimens']['feature_trees'][CDM_OCCURRENCE_FEATURETREE_UUID] = array(
-      '#type' => 'radios',
-      '#title' => t('Specimen description feature tree') . ':',
-      '#default_value' => $profile_feature_tree_uuid,
-      '#options' =>  $featureTrees['options'],
-      '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
-      '#options_suffixes' => $featureTrees['treeRepresentations'],
-      '#description' => t('Select the feature tree to be used for displaying specimen descriptions. Click "Show Details" to see the Feature Tree elements.'
-      ),
+    '#type' => 'radios',
+    '#title' => t('Specimen description feature tree') . ':',
+    '#default_value' => $profile_feature_tree_uuid,
+    '#options' =>  $featureTrees['options'],
+    '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
+    '#options_suffixes' => $featureTrees['treeRepresentations'],
+    '#description' => t('Select the feature tree to be used for displaying specimen descriptions. Click "Show Details" to see the Feature Tree elements.'
+    ),
   );
 
   $form_name = CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME;
@@ -2452,6 +2477,25 @@ ie	introduced: formerly introduced
     '#weight' => 1000,
   );
   return system_settings_form($form);
+}
+
+/**
+ * Creates a form element for the constants DISTRIBUTION_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY.
+ *
+ * @param $map_id
+ * @param $form
+ * @return mixed
+ */
+function _cdm_map_visibility_setting($map_id)
+{
+  return array(
+    '#type' => 'select',
+    '#title' => t(ucfirst($map_id) . ' map visibility'),
+    '#default_value' => variable_get(constant(strtoupper($map_id) . '_MAP_VISIBILITY'), constant(strtoupper($map_id) . '_MAP_VISIBILITY_DEFAULT')),
+    '#options' => array('always' => 'always', 'automatic' => 'automatic', 'never' => 'never'),
+    '#description' => "The visibility of the map can managed <b>automatically</b> depending on whether there is data to show or not. 
+        The map also can forced to show up <b>always</b> or <b>never</b>."
+  );
 }
 
 /**

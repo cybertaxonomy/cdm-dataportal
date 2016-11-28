@@ -90,12 +90,16 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     if (count($specimensOrObservations) > 0) {
         $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
 
-        if( isset($occurrence_queryDto->occurrenceQuery) ) {
-            $occurrence_query = $occurrence_queryDto->occurrenceQuery;
-            $legend_format_query = null;
-            $distribution_query = NULL;
-            $render_array['map'] = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
-        }
+      if(variable_get(SPECIMEN_MAP_VISIBILITY) == 'always' ||
+        variable_get(SPECIMEN_MAP_VISIBILITY) == 'automatic' &&
+          (isset($occurrence_queryDto->fieldUnitPoints[0]) || isset($occurrence_queryDto->derivedUnitPoints[0]))
+        )
+      {
+        $occurrence_query = $occurrence_queryDto->occurrenceQuery;
+        $legend_format_query = null;
+        $distribution_query = NULL;
+        $render_array['map'] = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
+      }
     }
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 

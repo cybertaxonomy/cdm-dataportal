@@ -860,7 +860,11 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
 
     // --- Distribution map
     $distribution_map_query_parameters = NULL;
-    if (isset($descriptionElements['DistributionInfoDTO'])) {
+
+    if(variable_get(DISTRIBUTION_MAP_VISIBILITY) == 'always' ||
+        variable_get(DISTRIBUTION_MAP_VISIBILITY) == 'automatic' && isset($descriptionElements['DistributionInfoDTO']->mapUriParams)
+      )
+    {
       $distribution_map_query_parameters = $descriptionElements['DistributionInfoDTO']->mapUriParams;
     }
     $map_render_element = compose_distribution_map($distribution_map_query_parameters);
