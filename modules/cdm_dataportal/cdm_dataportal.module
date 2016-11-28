@@ -161,7 +161,8 @@
     drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers,
       array(
         'type' => 'file',
-        'weight' => JS_LIBRARY,
+        'group' => JS_LIBRARY,
+        'weight' => 0,
         'cache' => TRUE,
         'preprocess' => FALSE
       )
@@ -172,7 +173,8 @@
     drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $proj4js,
       array(
         'type' => 'file',
-        'weight' => JS_LIBRARY,
+        'group' => JS_LIBRARY,
+        'weight' => -1, // before open layers
         'cache' => TRUE,
       )
     );
@@ -182,7 +184,8 @@
     $openlayers_imp_path = drupal_get_path('module', 'cdm_dataportal') . '/js/map/img/dark/';
     drupal_add_js('OpenLayers.ImgPath="' . base_path() . $openlayers_imp_path . '";', array(
         'type' => 'inline',
-        'weight' => JS_LIBRARY,
+        'group' => JS_LIBRARY,
+        'weight' => 1, // after openlayers
         'cache' => TRUE,
         'preprocess' => FALSE
       ));

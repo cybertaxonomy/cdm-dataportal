@@ -114,8 +114,22 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
 
   $edit_map_service = get_edit_map_service_settings();
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_map.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_layers.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_map.js',
+    array(
+      'type' => 'file',
+      'group' => JS_DEFAULT, //  module-layer JavaScript.
+      'weight' => 0,
+      'cache' => TRUE,
+      'preprocess' => FALSE
+  ));
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_layers.js',
+    array(
+      'type' => 'file',
+      'group' => JS_DEFAULT,
+       'weight' => 1, // after openlayers_map.js
+      'cache' => TRUE,
+      'preprocess' => FALSE
+  ));
 
   $cdm_openlayers_options = array(
       'legendPosition'  => '3',
@@ -145,7 +159,6 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
           drupal_set_message('A Google Maps layer is configured but the API key is either missing or invalid. 
           Please set your Google Maps API key in the '  . l('Geo & Map Settings', 'admin/config/cdm_dataportal/settings/geo') .'.', 'warning');
         }
-
       }
     }
 
@@ -159,7 +172,6 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
         $cdm_openlayers_options['baseLayerNames'][] = $cdm_openlayers_options['defaultBaseLayerName'];
       }
     }
-
 
   }
 
@@ -360,7 +372,7 @@ function compose_distribution_map($query_string) {
         );
     */
   }
-  $out = compose_map(NULL, NULL, $query_string, $legendFormatQueryStr);
+  $out = compose_map('distribution', NULL, $query_string, $legendFormatQueryStr);
 
   return $out;
 }
