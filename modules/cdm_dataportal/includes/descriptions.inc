@@ -1154,7 +1154,6 @@ function compose_description_element_quantitative_data($element, $feature_block_
   $type_representation = NULL;
   $min_max = min_max_array();
 
-
   $other_values = array();
 
   if (isset($element->statisticalValues)) {
