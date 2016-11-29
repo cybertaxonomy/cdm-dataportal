@@ -97,7 +97,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Type: \"Habitat in Europae frigidioris pratis asperis.\"", typeDesignations.get(0).getText());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(1).getTypeDesignationType());
-        assertEquals("Lectotype (designated by Iamonico 2012:??1): [s. loc.], Herb. Linnaeus, no. 959.1", typeDesignations.get(1).getText());
+        assertEquals("Lectotype (designated by D. Iamonico 2012: ??1): [s. loc.], Herb. Linnaeus, no. 959.1", typeDesignations.get(1).getText());
     }
 
     @Test
