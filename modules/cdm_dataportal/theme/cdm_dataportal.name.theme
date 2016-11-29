@@ -127,8 +127,7 @@ function theme_cdm_typedesignations($variables) {
         }
 
         $typeReference .= '&nbsp;(' . t('designated by');
-        $typeReference .= '&nbsp;<span class="typeReference ' . ($missingShortCitation ? '' : 'cluetip') . ' no-print" title="'
-          . htmlspecialchars('|' . theme('cdm_reference', array('reference' => $std->citation)) . '|') . '">';
+        $typeReference .= '&nbsp;<span class="typeReference">';
         $typeReference .= $shortCitation . '</span>';
         if (!empty($std->citationMicroReference)) {
           $typeReference .= ':' . $std->citationMicroReference;

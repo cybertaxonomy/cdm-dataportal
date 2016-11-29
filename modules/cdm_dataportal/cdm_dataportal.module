@@ -267,39 +267,6 @@
    * @todo Please document this function.
    * @see http://drupal.org/node/1354
    */
-  function _add_js_cluetip() {
-
-    // TODO replace by
-    // @see http://www.socialembedded.com/labs/jQuery-Tooltip-Plugin/jQuery-Tooltip-Plugin.html
-    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.min.js');
-    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/jquery.dimensions.js');
-    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.hoverIntent.js');
-    if(variable_get('cdm_js_devel_mode', FALSE)){
-      drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.js');
-    }
-    drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/js/cluetip/jquery.cluetip.css');
-    drupal_add_js("jQuery(document).ready(function(){
-        jQuery('.cluetip').css({color: '#0062C2'}).cluetip({
-          splitTitle: '|',
-          showTitle: true,
-          activation: 'hover',
-          sicky: true,
-          arrows: true,
-          dropShadow: false,
-          cluetipClass: 'rounded'
-        });
-      });",
-      array(
-        'type' => 'inline',
-        'scope' => 'footer'
-      )
-    );
-  }
-
-  /**
-   * @todo Please document this function.
-   * @see http://drupal.org/node/1354
-   */
   function _add_js_ahah() {
 
     _add_js_domEvent(); // requires domEvent.js
