@@ -84,6 +84,7 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
         $sensu_citation_footnote_str = null;
 
         if(isset($taxonRelation->fromTaxon->sec)) {
+
           $sensu_citation_footnote_str = theme('cdm_reference', array('reference' => $taxonRelation->fromTaxon->sec));
           $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
 

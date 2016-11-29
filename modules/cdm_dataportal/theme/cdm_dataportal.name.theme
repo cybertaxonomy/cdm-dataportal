@@ -76,12 +76,12 @@ function theme_cdm_typedesignations($variables) {
   $out = '<ul class="typeDesignations">';
   $typeDesignation_footnotes = FALSE;
   $is_lectotype = FALSE;
-  $specimenTypeDesignations = array();
+  $specimen_type_designations = array();
   $separator = ',';
   foreach ($typeDesignations as $typeDesignation) {
     if ($typeDesignation->class == 'SpecimenTypeDesignation') {
       // SpecimenTypeDesignations should be ordered. Collect theme here only.
-      $specimenTypeDesignations[] = $typeDesignation;
+      $specimen_type_designations[] = $typeDesignation;
     }
     // It is a lectotype?
     else {
@@ -109,53 +109,62 @@ function theme_cdm_typedesignations($variables) {
     }
   }
 
-  if (!empty($specimenTypeDesignations)) {
+  if (!empty($specimen_type_designations)) {
     // Sorting might be different for dataportals so this has to be
     // parameterized.
-    usort($specimenTypeDesignations, "compare_specimenTypeDesignationStatus");
-    foreach ($specimenTypeDesignations as $std) {
+    usort($specimen_type_designations, "compare_specimenTypeDesignationStatus");
+    foreach ($specimen_type_designations as $type_designation) {
       $typeReference = '';
-      if (!empty($std->citation)) {
-        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std->citation->uuid);
-        $shortCitation = $author_team->titleCache;
 
-        $shortCitation .= (strlen($shortCitation) > 0 ? ' ' : '') . partialToYear($std->citation->datePublished->start);
-        $missingShortCitation = FALSE;
-        if (strlen($shortCitation) == 0) {
-          $shortCitation = theme('cdm_reference', array('reference' => $std->citation));
-          $missingShortCitation = TRUE;
+      if (!empty($type_designation->citation)) {
+
+        $citation_footnote_str = theme('cdm_reference', array('reference' => $type_designation->citation));
+        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $type_designation->citation->uuid);
+
+        if(isset($author_team->titleCache)){
+          $authorteam_str = $author_team->titleCache . partialToYear($type_designation->citation->datePublished->start);
+          if($authorteam_str == $type_designation->citation->titleCache){
+            $citation_footnote_str = '';
+          }
+        } else {
+          $authorteam_str = $citation_footnote_str;
+          // no need for a footnote in case in case it is used as replacement for missing author teams
+          $citation_footnote_str = '';
         }
 
-        $typeReference .= '&nbsp;(' . t('designated by');
-        $typeReference .= '&nbsp;<span class="typeReference">';
-        $typeReference .= $shortCitation . '</span>';
-        if (!empty($std->citationMicroReference)) {
-          $typeReference .= ':' . $std->citationMicroReference;
-        }
-        $typeReference .= ')';
+        $footnote_key_markup = '';
+        if($citation_footnote_str) {
+          // footnotes should be rendered in the parent element so we
+          // are relying on the FootnoteListKey set there
+          $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $citation_footnote_str);
+          $footnote_key_markup = theme('cdm_footnote_key', array(
+            'footnoteKey' => $_fkey2,
+            'separator' => $separator,
+            'highlightable' => TRUE,
+            'separator_off' => TRUE,
+           ));
 
-        // footnotes should be rendered in the parent element so we
-        // are relying on the FootnoteListKey set there
-        $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $std->citation->titleCache);
-        $typeReference .= theme('cdm_footnote_key', array(
-          'footnoteKey' => $_fkey2,
-          'separator' => $separator,
-          'highlightable' => TRUE,
-          'separator_off' => TRUE,
-         ));
+        }
+
+        $typeReference .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">'. $authorteam_str . '</span>';
+        if (!empty($type_designation->citationMicroReference)) {
+          $typeReference .= ':' . $type_designation->citationMicroReference;
+        }
+        $typeReference .= $footnote_key_markup . ')';
+
       }
 
       $derivedUnitFacadeInstance = null;
 
       $out .= '<li class="specimenTypeDesignation">';
       $out .= '<span class="status">'
-        . ((isset($std->typeStatus->representation_L10n)) ? $std->typeStatus->representation_L10n : t('Type'))
+        . ((isset($type_designation->typeStatus->representation_L10n)) ? $type_designation->typeStatus->representation_L10n : t('Type'))
         . $typeReference
         . '</span>';
 
 
-      if (isset($std->typeSpecimen)) {
-        $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std->typeSpecimen->uuid);
+      if (isset($type_designation->typeSpecimen)) {
+        $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $type_designation->typeSpecimen->uuid);
       }
       if ( isset($derivedUnitFacadeInstance ) ){
         $out .= ': ' . $derivedUnitFacadeInstance->titleCache; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
