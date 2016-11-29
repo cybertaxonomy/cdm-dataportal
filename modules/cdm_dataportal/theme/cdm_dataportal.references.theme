@@ -52,8 +52,8 @@ function theme_cdm_reference($variables) {
 
   if ($referenceStyle == "zoology") {
     $year = '';
-    if (isset($reference->datePublished->start)) {
-      $year = partialToYear($reference->datePublished->start);
+    if (isset($reference->datePublished)) {
+      $year = timePeriodToString($reference->datePublished, true, 'YYYY');
     }
     $citation = $author_team->titleCache . (!empty($year) ? '. ' . $year : '');
   }

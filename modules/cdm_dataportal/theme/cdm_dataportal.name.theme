@@ -122,7 +122,8 @@ function theme_cdm_typedesignations($variables) {
         $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $type_designation->citation->uuid);
 
         if(isset($author_team->titleCache)){
-          $authorteam_str = $author_team->titleCache . partialToYear($type_designation->citation->datePublished->start);
+          $year = timePeriodToString($type_designation->citation->datePublished, true, 'YYYY');
+          $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
           if($authorteam_str == $type_designation->citation->titleCache){
             $citation_footnote_str = '';
           }
@@ -148,7 +149,7 @@ function theme_cdm_typedesignations($variables) {
 
         $typeReference .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">'. $authorteam_str . '</span>';
         if (!empty($type_designation->citationMicroReference)) {
-          $typeReference .= ':' . $type_designation->citationMicroReference;
+          $typeReference .= ': ' . trim($type_designation->citationMicroReference);
         }
         $typeReference .= $footnote_key_markup . ')';
 

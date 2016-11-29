@@ -261,8 +261,8 @@ function xxx_palmweb_2_cdm_reference($variables) {
   }
 
   $year = '';
-  if (isset($reference->datePublished->start)) {
-    $year = partialToYear($reference->datePublished->start);
+  if (isset($reference->datePublished)) {
+    $year = timePeriodToString($reference->datePublished, true, 'YYYY');
   }
   if(isset($author_team->titleCache)){
     $citation = _short_form_of_author_team ($author_team->titleCache) . (!empty($year) ? '. ' . $year : '');

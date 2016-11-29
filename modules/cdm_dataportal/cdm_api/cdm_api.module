@@ -587,7 +587,7 @@ function partialToYear($partial) {
       return $year;
     }
   }
-  return;
+  return '';
 }
 
 /**
@@ -610,7 +610,7 @@ function partialToMonth($partial) {
       return $month;
     }
   }
-  return;
+  return '';
 }
 
 /**
@@ -633,7 +633,7 @@ function partialToDay($partial) {
       return $day;
     }
   }
-  return;
+  return '';
 }
 
 /**
@@ -682,7 +682,7 @@ function partialToDate($partial, $stripZeros = TRUE, $format= "YYYY-MM-DD") {
   $date = '';
 
   if ($y == '00' && $stripZeros) {
-    return;
+    return '';
   }
   else {
     $date = $y;
