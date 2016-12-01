@@ -8,6 +8,7 @@ define('NODETYPE_TAXON', 'taxon');
 define('NODETYPE_MEDIA', 'media');
 define('NODETYPE_REFERENCE', 'reference');
 define('NODETYPE_NAME', 'name');
+define('NODETYPE_NAMED_AREA', 'named_area');
 
 /**
  * Implements hook_cdm_nodetypes().
@@ -20,6 +21,7 @@ function cdm_dataportal_cdm_nodetypes() {
       'cdm_' . NODETYPE_TAXON => NODETYPE_TAXON,
       'cdm_' . NODETYPE_MEDIA => NODETYPE_MEDIA,
       'cdm_' . NODETYPE_NAME => NODETYPE_NAME,
+      'cdm_' . NODETYPE_NAMED_AREA => NODETYPE_NAMED_AREA,
     );
   }
   return $nodetypes;

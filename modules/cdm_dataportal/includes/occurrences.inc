@@ -18,72 +18,54 @@
 
 
 /**
- * @param $preservedSpecimenDTO
- * @param $detail_html
+ * Provides the HTML markup for a specimen page
+ *
+ * @param $specimen
+ *
  * @return string
+ *  The markup for a specimen page
  */
-function compose_cdm_specimen_page($specimenUuid)
-{
-    drupal_set_title("Specimen Details");
-    $preservedSpecimenDTO = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimenUuid, 'specimenDerivates'));
-
-    $render_array = array();
-    RenderHints::pushToRenderStack('specimen_page');
-
-    $detail_html = compose_cdm_specimen_page_html($preservedSpecimenDTO, true);
-    $render_array['specimen_html'] = array(
-        '#markup' => $detail_html
-    );
-
-    RenderHints::popFromRenderStack();
-    return $render_array;
-}
-
-/**
- * @param $preservedSpecimenDTO
- * @return string
- */
-function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage = false)
+function render_cdm_specimen_page($specimen, $is_specimen_page = false)
 {
     $detail_html = "";
     //link to specimen page
-    $pathToSpecimen = path_to_specimen($preservedSpecimenDTO->uuid);
-    if (!$isSpecimenPage) {
-        $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, $pathToSpecimen, array('attributes' => array('target' => '_blank')));
+    $pathToSpecimen = path_to_specimen($specimen->uuid);
+    if (!$is_specimen_page) {
+        $specimenPageLink = l($specimen->accessionNumber, $pathToSpecimen, array('attributes' => array('target' => '_blank')));
         $detail_html .= "<strong>$specimenPageLink</strong><br>";
     }
 
-    if($isSpecimenPage) {
-        if($preservedSpecimenDTO->citation){
-            $detail_html .= "<br>".create_label("Citation") . $preservedSpecimenDTO->citation . "<br>";
+    if($is_specimen_page) {
+        if($specimen->citation){
+            $detail_html .= "<br>".create_label("Citation") . $specimen->citation . "<br>";
         }
     }
-    if($preservedSpecimenDTO->preferredStableUri){
-        $detail_html .= "<br>".create_label("Preferred stable URI") . cdm_external_uri($preservedSpecimenDTO->preferredStableUri) . "<br>";
+    if($specimen->preferredStableUri){
+        $detail_html .= "<br>".create_label("Preferred stable URI") . cdm_external_uri($specimen->preferredStableUri) . "<br>";
     }
-    if($isSpecimenPage){
+    if($is_specimen_page){
         // associated taxa
-        if($preservedSpecimenDTO->associatedTaxa){
+        if($specimen->associatedTaxa){
             $detail_html .= "<br>";
             $detail_html .= create_label("Associated with");
-                if(sizeof($preservedSpecimenDTO->associatedTaxa)>1){
+                if(sizeof($specimen->associatedTaxa)>1){
                     $detail_html .= "<br>";
                 }
-            foreach($preservedSpecimenDTO->associatedTaxa as $associatedTaxon){
+            foreach($specimen->associatedTaxa as $associatedTaxon){
                 $detail_html .= l($associatedTaxon->second, path_to_taxon($associatedTaxon->first, "specimens"));//$associatedTaxon->second."<br>";
             }
         }
     }
     // - type information
     $types = "";
-    if (isset($preservedSpecimenDTO->types)) {
+    if (isset($specimen->types)) {
         //typed taxa
-        if(sizeof($preservedSpecimenDTO->types)>1){
+        if(sizeof($specimen->types)>1){
             $detail_html .= "<br>";
         }
-        foreach ($preservedSpecimenDTO->types as $typeStatus => $typedTaxa) {
-            if($isSpecimenPage){
-                if($preservedSpecimenDTO->types){
+        foreach ($specimen->types as $typeStatus => $typedTaxa) {
+            if($is_specimen_page){
+                if($specimen->types){
                     $detail_html .= "<i>".$typeStatus."</i>: ";
                     foreach($typedTaxa as $typedTaxon){
                         $detail_html .= $typedTaxon." ";
@@ -96,7 +78,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
             }
         }
     }
-    $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
+    $derivateDataDTO = $specimen->derivateDataDTO;
     // - specimen scans
     $specimenScans = create_html_links($derivateDataDTO->specimenScans, true);
     // - molecular data
@@ -138,38 +120,38 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     $detailImages = create_html_links($derivateDataDTO->detailImages, true);
 
     if ($types) {
-        $detail_html .= $isSpecimenPage?"<br>":"";
+        $detail_html .= $is_specimen_page?"<br>":"";
         $detail_html .= create_label("Type(s)") . $types . "<br>";
     }
-    if ($specimenScans and !$isSpecimenPage) {
+    if ($specimenScans and !$is_specimen_page) {
         $detail_html .= create_label("Specimen Scans") . $specimenScans . "<br>";
     }
     //specimen scan image gallery
-    if($isSpecimenPage and isset($derivateDataDTO->specimenScanUuids) and !empty($derivateDataDTO->specimenScanUuids)) {
+    if($is_specimen_page and isset($derivateDataDTO->specimenScanUuids) and !empty($derivateDataDTO->specimenScanUuids)) {
         $detail_html .= addImageGallery("Specimen scans", $derivateDataDTO->specimenScanUuids);
     }
 
     if ($molecularData) {
-        $detail_html .= $isSpecimenPage?"<br>":"";
+        $detail_html .= $is_specimen_page?"<br>":"";
         $detail_html .= create_label("Molecular Data") . $molecularData . "<br>";
     }
 
-    if ($detailImages and !$isSpecimenPage) {
+    if ($detailImages and !$is_specimen_page) {
         $detail_html .= create_label("Detail Images") . $detailImages . "<br>";
     }
 
     //detail image gallery
-    if($isSpecimenPage and isset($derivateDataDTO->detailImageUuids) and !empty($derivateDataDTO->detailImageUuids)){
+    if($is_specimen_page and isset($derivateDataDTO->detailImageUuids) and !empty($derivateDataDTO->detailImageUuids)){
         $detail_html .= addImageGallery("Detail Images", $derivateDataDTO->detailImageUuids);
     }
 
     //character data
-    if ($preservedSpecimenDTO->characterData) {
-        $detail_html .= $isSpecimenPage?"<br>":"";
+    if ($specimen->characterData) {
+        $detail_html .= $is_specimen_page?"<br>":"";
         $detail_html .= create_label("Character Data");
-        if($isSpecimenPage) {
+        if($is_specimen_page) {
             $detail_html .= "<br>";
-            foreach ($preservedSpecimenDTO->characterData as $characterStatePair) {
+            foreach ($specimen->characterData as $characterStatePair) {
                 $detail_html .= "<i>" . $characterStatePair->first . "</i>:" . $characterStatePair->second;
                 $detail_html .= "<br>";
             }
@@ -504,9 +486,13 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             if (isset($value->collectingAreas)) {
               $area_representations = array();
               foreach ($value->collectingAreas as $area) {
-                $area_representations[] = $area->representation_L10n;
+                $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
               }
-              @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingAreas'), implode(', ', $area_representations));
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingAreas'),
+                array(
+                  array('#markup' => implode(', ', $area_representations))
+                )
+              );
             }
             if (isset($value->exactLocation) && $value->exactLocation->sexagesimalString) {
               $sub_dl_groups = array();

@@ -197,7 +197,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     if($derivateHierarchy->preservedSpecimenDTOs){
                         foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
                             $detail_html .= "<br>";
-                            $detail_html .= compose_cdm_specimen_page_html($preservedSpecimenDTO);
+                            $detail_html .= render_cdm_specimen_page($preservedSpecimenDTO);
                         }
                     }
                     $detail_html .= "<br>";
@@ -1049,10 +1049,66 @@ function compose_classification_breadcrumbs($taxon_uuid) {
 
   }
 
-
-
   $render_array['#items'] = $items;
 
   return $render_array;
+}
 
+/**
+ * @param $specimen_uuid
+ * @return array
+ *    The drupal render array for the page
+ *
+ * @ingroup compose
+ */
+function compose_cdm_specimen_page($specimen_uuid)
+{
+  drupal_set_title("Specimen Details");
+  $specimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimen_uuid, 'specimenDerivates'));
+
+  $render_array = array();
+  RenderHints::pushToRenderStack('specimen_page');
+
+  $detail_html = render_cdm_specimen_page($specimen, true);
+  $render_array['specimen_html'] = array(
+    '#markup' => $detail_html
+  );
+
+  RenderHints::popFromRenderStack();
+  return $render_array;
+}
+
+/**
+ * @param $named_area_uuid
+ * @return array
+ *    The drupal render array for the page
+ *
+ * @ingroup compose
+ */
+function compose_cdm_named_area_page($named_area_uuid)
+{
+
+  $named_area = cdm_ws_get(CDM_WS_PORTAL_TERM, array($named_area_uuid));
+
+  $render_array = array();
+  RenderHints::pushToRenderStack('named_area_page');
+
+  $groups = array();
+  @_description_list_group_add($groups, t('Name') . ':', $named_area->representation_L10n);
+  @_description_list_group_add($groups, t('IdInVocabulary') . ':', $named_area->idInVocabulary);
+  if(isset($named_area->level)) {
+    @_description_list_group_add($groups, t('Level') . ':', $named_area->level->representation_L10n);
+  }
+
+  $name_area_details_elements = array(
+   // '#title' => $title,
+    '#theme' => 'description_list',
+    '#groups' => $groups,
+    '#attributes' => array('class' => html_class_attribute_ref($named_area)),
+  );
+
+  $render_array[] = $name_area_details_elements;
+
+  RenderHints::popFromRenderStack();
+  return $render_array;
 }
