@@ -250,7 +250,11 @@
       //         when using rotate, in IE and edge the child element are also rotated, need to reset child elements.
       // this.$element.addClass(this.options.activeClass);
 
-      this.$element.append(this.container);
+      this.container.hide();
+      if(!this.container.parent() || this.container.parent().length == 0){
+        // first time this container is used
+        this.$element.append(this.container);
+      }
 
       this.baseHeight = this.$element.parent().height();
       this.lineHeight = this.$element.parent().css('line-height').replace('px', ''); // TODO use regex fur replace
@@ -273,6 +277,7 @@
           plugin.handleDataLoaded(html);
         });
       } else {
+        this.container.slideDown();
         this.adjustHeight();
         this.scrollToSelected();
       }
@@ -280,8 +285,8 @@
 
     hideChildren: function(){
       //return; // uncomment for debugging
-      this.container
-        .detach();
+      this.container.slideUp();
+      //this.container.detach();
     },
 
     handleDataLoaded: function(html){
@@ -294,9 +299,11 @@
         // necessary in case of compose_classification_selector
         listContainer = listContainer.children('ul');
       }
+      this.container.hide();
       this.children.append(listContainer);
       this.itemsCount = listContainer.children().length;
 
+      this.container.show();
       this.adjustHeight();
       this.scrollToSelected();
     },
@@ -330,8 +337,10 @@
 
     scrollToSelected: function () {
 
+      // first reset the scroll position to 0 so that all calculation are using the same reference position
+      this.container.scrollTop(0);
       var scrollTarget = this.children.find(".focused");
-      if(scrollTarget){
+      if(scrollTarget && scrollTarget.length > 0){
         var position = scrollTarget.position();
         if(position == undefined){
           // fix for IE >= 9 and Edge
@@ -392,8 +401,6 @@
               .replace('{classificationUuid}', this.options.classificationUuid);
         }
       }
-
-
 
       this.log("contentRequest: " + contentRequest);
 

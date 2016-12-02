@@ -995,6 +995,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
     . font_awesome_icon_markup('fa-chevron-right')
     . ' </span>';
   $more_children_icon = font_awesome_icon_markup('fa-sitemap fa-rotate-270');
+  $more_children_label = '...';
 
   $items[] = $node_name;
 
@@ -1036,16 +1037,18 @@ function compose_classification_breadcrumbs($taxon_uuid) {
   // add more button to the end
   if(!$parent_taxon_nodes) {
     // not taxon focused yet, adding button to make  the root nodes available
-    $items[] = '<span class="taxonomic-children-button" data-classification-uuid="' . $current_classification_uuid
-      . '" data-rank-limit-uuid="' . $rank_limit_uuid . '" > '
-      . $more_children_icon
-      . '&nbsp;</span>';
+    $items[] = '<span>'
+      . $more_children_icon . '&nbsp;' .
+      '<span class="taxonomic-children-button" data-classification-uuid="' . $current_classification_uuid
+      . '" data-rank-limit-uuid="' . $rank_limit_uuid . '" > ' . $more_children_label . '<span>'
+      . '</span>';
   } else if($more_children_for){
     // last parent item has child taxon nodes
-    $items[] = ' <span class="taxonomic-children-button" data-cdm-taxon-uuid="' .$more_children_for
-      . '" data-cdm-classification-mode="children" >'
-      . $more_children_icon
-      . '&nbsp;</span>';
+    $items[] = ' <span>'
+      . $more_children_icon . '&nbsp;' .
+      '<span class="taxonomic-children-button" data-cdm-taxon-uuid="' .$more_children_for
+      . '" data-cdm-classification-mode="children" >' . $more_children_label . '</span>'
+      . '</span>';
 
   }
 
@@ -1053,6 +1056,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
 
   return $render_array;
 }
+
 
 /**
  * @param $specimen_uuid
