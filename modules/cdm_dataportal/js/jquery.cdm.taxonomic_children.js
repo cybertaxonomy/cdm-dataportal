@@ -164,11 +164,13 @@
         .css('overflow', 'auto');
       this.children = $('<div class="children"></div>');
 
-      this.loading = $('<i class="fa-spinner fa-2x" />')
-        .css('position', 'absolute')
-        .hide();
+      this.loading_class_attr = 'fa fa-spinner fa-pulse';
+      // used to preserve the class attributes of the icon
+      this.icon_class_attr = null;
 
-      this.container.append(this.children).append(this.loading);
+      this.container.append(this.children);
+
+
     },
 
     // Bind events that trigger methods
@@ -273,13 +275,17 @@
         .show();
 
       if(!this.isDataLoaded){
+        this.icon_class_attr = this.$element.prev('i').attr('class'),
+        this.$element.prev('i').attr('class', this.loading_class_attr);
         $.get(this.requestURI(undefined, undefined), function(html){
           plugin.handleDataLoaded(html);
         });
       } else {
-        this.container.slideDown();
-        this.adjustHeight();
-        this.scrollToSelected();
+        if(this.container.find('ul').length > 0) {
+          this.container.show();
+          this.adjustHeightAndMaxWidth();
+          this.scrollToSelected();
+        }
       }
     },
 
@@ -291,21 +297,27 @@
 
     handleDataLoaded: function(html){
 
-      this.loading.hide();
       this.isDataLoaded = true;
       var listContainer = $(html);
-      if(listContainer[0].tagName != 'UL'){
+      if(listContainer[0].tagName != 'UL') {
         // unwrap from potential enclosing div, this is
         // necessary in case of compose_classification_selector
         listContainer = listContainer.children('ul');
       }
-      this.container.hide();
-      this.children.append(listContainer);
-      this.itemsCount = listContainer.children().length;
 
-      this.container.show();
-      this.adjustHeight();
-      this.scrollToSelected();
+      this.container.hide();
+
+      if(listContainer.children().length > 0) {
+        this.children.append(listContainer);
+        this.itemsCount = listContainer.children().length;
+
+        this.container.show();
+        this.adjustHeightAndMaxWidth();
+        this.scrollToSelected();
+        this.checkMouseOver();
+      }
+
+      this.$element.prev('i').attr('class', this.icon_class_attr);
     },
 
     calculateViewPortRows: function() {
@@ -324,8 +336,9 @@
       return rows;
     },
 
-    adjustHeight: function(){
+    adjustHeightAndMaxWidth: function(){
 
+      // adjustHeightAndMaxWidth
       var viewPortRows = this.calculateViewPortRows(this.itemsCount); //(itemsCount > this.options.viewPortRows.min ? this.options.viewPortRows.max : this.options.viewPortRows.min);
       this.log('itemsCount: ' + this.itemsCount + ' => viewPortRows: ' + viewPortRows);
 
@@ -333,6 +346,11 @@
       this.children
         .css('padding-top', this.lineHeight + 'px') // one row above current
         .css('padding-bottom', (viewPortRows - 2) * this.lineHeight + 'px'); // subtract 2 lines (current + one above)
+
+      // adjust width to avoid the container hang out of the viewport
+      max_width = Math.floor($(window).width() - this.element.getBoundingClientRect().left - 40);
+      this.log('max_width: ' + max_width);
+      this.container.css('max-width', max_width + 'px');
     },
 
     scrollToSelected: function () {
@@ -412,6 +430,18 @@
       this.log("finalRequest: " + request);
 
       return request;
+    },
+
+    monitorMouseOver: function() {
+      while(this.container.delay(100).is(':visible')){
+        this.checkMouseOver();
+      }
+    },
+
+    checkMouseOver: function(){
+      if(this.container.find(':hover').length == 0){
+        this.hideChildren();
+      }
     }
 
   });
