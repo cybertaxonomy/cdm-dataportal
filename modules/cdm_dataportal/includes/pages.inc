@@ -1040,14 +1040,14 @@ function compose_classification_breadcrumbs($taxon_uuid) {
     $items[] = '<span>'
       . $more_children_icon . '&nbsp;' .
       '<span class="taxonomic-children-button" data-classification-uuid="' . $current_classification_uuid
-      . '" data-rank-limit-uuid="' . $rank_limit_uuid . '" > ' . $more_children_label . '<span>'
+      . '" data-rank-limit-uuid="' . $rank_limit_uuid . '" data-cdm-align-with="prev"> ' . $more_children_label . '<span>'
       . '</span>';
   } else if($more_children_for){
     // last parent item has child taxon nodes
     $items[] = ' <span>'
       . $more_children_icon . '&nbsp;' .
       '<span class="taxonomic-children-button" data-cdm-taxon-uuid="' .$more_children_for
-      . '" data-cdm-classification-mode="children" >' . $more_children_label . '</span>'
+      . '" data-cdm-classification-mode="children" data-cdm-align-with="prev"> ' . $more_children_label . '</span>'
       . '</span>';
 
   }

@@ -314,7 +314,16 @@
         this.container.show();
         this.adjustHeightAndMaxWidth();
         this.scrollToSelected();
-        this.checkMouseOver();
+
+        // data loading may take quite long
+        // need to check asynchronously if the
+        // mouse still is hovering
+        var this_plugin = this;
+        setTimeout(function() {
+          this_plugin.checkMouseOver();
+        },
+        300);
+
       }
 
       this.$element.prev('i').attr('class', this.icon_class_attr);
@@ -432,14 +441,13 @@
       return request;
     },
 
-    monitorMouseOver: function() {
-      while(this.container.delay(100).is(':visible')){
-        this.checkMouseOver();
-      }
-    },
-
     checkMouseOver: function(){
-      if(this.container.find(':hover').length == 0){
+      // see http://stackoverflow.com/questions/6035137/jquery-check-hover-status-before-start-trigger/6035278#6035278
+      //
+      // this.container.find(':hover').length == 0
+      // is(':hover')
+      //this.log('>>>> hover: ' + this.container.find(':hover').length + ' | ' +  this.container.is(':hover') );
+      if(!this.container.is(':hover')){
         this.hideChildren();
       }
     }
