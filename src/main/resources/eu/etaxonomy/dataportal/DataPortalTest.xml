@@ -32,13 +32,28 @@
   <entry key="dataPortalContext.floramalesiana.classificationUUID">ca4e4bcb-a1d1-4124-a358-a3d3c41dd450</entry>
   <entry key="dataPortalContext.floramalesiana.themeName"></entry>
   <entry key="dataPortalContext.floramalesiana.siteName">Flora Malesiana</entry>
+  
+  <entry key="dataPortalContext.reference.baseUri">http://int.e-taxonomy.eu/dataportal/integration/reference</entry>
+  <entry key="dataPortalContext.reference.cdmServerUri">http://127.0.0.1:8080</entry>
+  <entry key="dataPortalContext.reference.classificationUUID">2ab81d37-125d-47e6-8450-6aafd5f4b043</entry>
+  <entry key="dataPortalContext.reference.themeName"></entry>
+  <entry key="dataPortalContext.reference.siteName">Integration test reference</entry>
+  
   <!--
 
     Selenium WebDriver settings
 
   -->
   <!-- <entry key="webdriver.firefox.bin"></entry> -->
-  <!-- <entry key="webdriver.chrome.bin"></entry> -->
+<!-- 
+      NOTE: install the chromedriver from https://sites.google.com/a/chromium.org/chromedriver/downloads 
+   -->
+  <!-- <entry key="webdriver.chrome.driver">/opt/chromedriver/chromedriver</entry> -->
+  <!-- 
+      Use this setting if the chrome browser is not found automatically 
+   -->
+  <!-- <entry key="webdriver.chrome.bin">/path/to/my/chromium-browser</entry> -->
+  <!-- <entry key="webdriver.gecko.driver"></entry> -->
   <!--
     The browser to be used for testing (defaults to firefox)
   -->

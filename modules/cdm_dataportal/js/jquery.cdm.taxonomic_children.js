@@ -164,11 +164,13 @@
         .css('overflow', 'auto');
       this.children = $('<div class="children"></div>');
 
-      this.loading = $('<i class="fa-spinner fa-2x" />')
-        .css('position', 'absolute')
-        .hide();
+      this.loading_class_attr = 'fa fa-spinner fa-pulse';
+      // used to preserve the class attributes of the icon
+      this.icon_class_attr = null;
 
-      this.container.append(this.children).append(this.loading);
+      this.container.append(this.children);
+
+
     },
 
     // Bind events that trigger methods
@@ -250,7 +252,11 @@
       //         when using rotate, in IE and edge the child element are also rotated, need to reset child elements.
       // this.$element.addClass(this.options.activeClass);
 
-      this.$element.append(this.container);
+      this.container.hide();
+      if(!this.container.parent() || this.container.parent().length == 0){
+        // first time this container is used
+        this.$element.append(this.container);
+      }
 
       this.baseHeight = this.$element.parent().height();
       this.lineHeight = this.$element.parent().css('line-height').replace('px', ''); // TODO use regex fur replace
@@ -269,36 +275,58 @@
         .show();
 
       if(!this.isDataLoaded){
+        this.icon_class_attr = this.$element.prev('i').attr('class'),
+        this.$element.prev('i').attr('class', this.loading_class_attr);
         $.get(this.requestURI(undefined, undefined), function(html){
           plugin.handleDataLoaded(html);
         });
       } else {
-        this.adjustHeight();
-        this.scrollToSelected();
+        if(this.container.find('ul').length > 0) {
+          this.container.show();
+          this.adjustHeightAndMaxWidth();
+          this.scrollToSelected();
+        }
       }
     },
 
     hideChildren: function(){
       //return; // uncomment for debugging
-      this.container
-        .detach();
+      this.container.slideUp();
+      //this.container.detach();
     },
 
     handleDataLoaded: function(html){
 
-      this.loading.hide();
       this.isDataLoaded = true;
       var listContainer = $(html);
-      if(listContainer[0].tagName != 'UL'){
+      if(listContainer[0].tagName != 'UL') {
         // unwrap from potential enclosing div, this is
         // necessary in case of compose_classification_selector
         listContainer = listContainer.children('ul');
       }
-      this.children.append(listContainer);
-      this.itemsCount = listContainer.children().length;
 
-      this.adjustHeight();
-      this.scrollToSelected();
+      this.container.hide();
+
+      if(listContainer.children().length > 0) {
+        this.children.append(listContainer);
+        this.itemsCount = listContainer.children().length;
+
+        this.container.show();
+        this.adjustHeightAndMaxWidth();
+        this.scrollToSelected();
+
+        // data loading may take quite long
+        // need to check asynchronously if the
+        // mouse still is hovering
+        var this_plugin = this;
+        setTimeout(function() {
+          this_plugin.checkMouseOver();
+        },
+        300);
+
+      }
+
+      this.$element.prev('i').attr('class', this.icon_class_attr);
     },
 
     calculateViewPortRows: function() {
@@ -317,8 +345,9 @@
       return rows;
     },
 
-    adjustHeight: function(){
+    adjustHeightAndMaxWidth: function(){
 
+      // adjustHeightAndMaxWidth
       var viewPortRows = this.calculateViewPortRows(this.itemsCount); //(itemsCount > this.options.viewPortRows.min ? this.options.viewPortRows.max : this.options.viewPortRows.min);
       this.log('itemsCount: ' + this.itemsCount + ' => viewPortRows: ' + viewPortRows);
 
@@ -326,12 +355,19 @@
       this.children
         .css('padding-top', this.lineHeight + 'px') // one row above current
         .css('padding-bottom', (viewPortRows - 2) * this.lineHeight + 'px'); // subtract 2 lines (current + one above)
+
+      // adjust width to avoid the container hang out of the viewport
+      max_width = Math.floor($(window).width() - this.element.getBoundingClientRect().left - 40);
+      this.log('max_width: ' + max_width);
+      this.container.css('max-width', max_width + 'px');
     },
 
     scrollToSelected: function () {
 
+      // first reset the scroll position to 0 so that all calculation are using the same reference position
+      this.container.scrollTop(0);
       var scrollTarget = this.children.find(".focused");
-      if(scrollTarget){
+      if(scrollTarget && scrollTarget.length > 0){
         var position = scrollTarget.position();
         if(position == undefined){
           // fix for IE >= 9 and Edge
@@ -393,8 +429,6 @@
         }
       }
 
-
-
       this.log("contentRequest: " + contentRequest);
 
       var proxyRequest = this.options.proxyRequest
@@ -405,6 +439,17 @@
       this.log("finalRequest: " + request);
 
       return request;
+    },
+
+    checkMouseOver: function(){
+      // see http://stackoverflow.com/questions/6035137/jquery-check-hover-status-before-start-trigger/6035278#6035278
+      //
+      // this.container.find(':hover').length == 0
+      // is(':hover')
+      //this.log('>>>> hover: ' + this.container.find(':hover').length + ' | ' +  this.container.is(':hover') );
+      if(!this.container.is(':hover')){
+        this.hideChildren();
+      }
     }
 
   });

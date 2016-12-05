@@ -18,72 +18,54 @@
 
 
 /**
- * @param $preservedSpecimenDTO
- * @param $detail_html
+ * Provides the HTML markup for a specimen page
+ *
+ * @param $specimen
+ *
  * @return string
+ *  The markup for a specimen page
  */
-function compose_cdm_specimen_page($specimenUuid)
-{
-    drupal_set_title("Specimen Details");
-    $preservedSpecimenDTO = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimenUuid, 'specimenDerivates'));
-
-    $render_array = array();
-    RenderHints::pushToRenderStack('specimen_page');
-
-    $detail_html = compose_cdm_specimen_page_html($preservedSpecimenDTO, true);
-    $render_array['specimen_html'] = array(
-        '#markup' => $detail_html
-    );
-
-    RenderHints::popFromRenderStack();
-    return $render_array;
-}
-
-/**
- * @param $preservedSpecimenDTO
- * @return string
- */
-function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage = false)
+function render_cdm_specimen_page($specimen, $is_specimen_page = false)
 {
     $detail_html = "";
     //link to specimen page
-    $pathToSpecimen = path_to_specimen($preservedSpecimenDTO->uuid);
-    if (!$isSpecimenPage) {
-        $specimenPageLink = l($preservedSpecimenDTO->accessionNumber, $pathToSpecimen, array('attributes' => array('target' => '_blank')));
+    $pathToSpecimen = path_to_specimen($specimen->uuid);
+    if (!$is_specimen_page) {
+        $specimenPageLink = l($specimen->accessionNumber, $pathToSpecimen, array('attributes' => array('target' => '_blank')));
         $detail_html .= "<strong>$specimenPageLink</strong><br>";
     }
 
-    if($isSpecimenPage) {
-        if($preservedSpecimenDTO->citation){
-            $detail_html .= "<br>".create_label("Citation") . $preservedSpecimenDTO->citation . "<br>";
+    if($is_specimen_page) {
+        if($specimen->citation){
+            $detail_html .= "<br>".create_label("Citation") . $specimen->citation . "<br>";
         }
     }
-    if($preservedSpecimenDTO->preferredStableUri){
-        $detail_html .= "<br>".create_label("Preferred stable URI") . l($preservedSpecimenDTO->preferredStableUri, $preservedSpecimenDTO->preferredStableUri) . "<br>";
+    if($specimen->preferredStableUri){
+        $detail_html .= "<br>".create_label("Preferred stable URI") . cdm_external_uri($specimen->preferredStableUri) . "<br>";
     }
-    if($isSpecimenPage){
+    if($is_specimen_page){
         // associated taxa
-        if($preservedSpecimenDTO->associatedTaxa){
+        if($specimen->associatedTaxa){
             $detail_html .= "<br>";
             $detail_html .= create_label("Associated with");
-                if(sizeof($preservedSpecimenDTO->associatedTaxa)>1){
+                if(sizeof($specimen->associatedTaxa)>1){
                     $detail_html .= "<br>";
                 }
-            foreach($preservedSpecimenDTO->associatedTaxa as $associatedTaxon){
+            foreach($specimen->associatedTaxa as $associatedTaxon){
                 $detail_html .= l($associatedTaxon->second, path_to_taxon($associatedTaxon->first, "specimens"));//$associatedTaxon->second."<br>";
             }
         }
     }
     // - type information
     $types = "";
-    if (isset($preservedSpecimenDTO->types)) {
+    if (isset($specimen->types)) {
         //typed taxa
-        if(sizeof($preservedSpecimenDTO->types)>1){
+        if(sizeof($specimen->types)>1){
             $detail_html .= "<br>";
         }
-        foreach ($preservedSpecimenDTO->types as $typeStatus => $typedTaxa) {
-            if($isSpecimenPage){
-                if($preservedSpecimenDTO->types){
+        foreach ($specimen->types as $typeStatus => $typedTaxa) {
+            if($is_specimen_page){
+                if($specimen->types){
                     $detail_html .= "<i>".$typeStatus."</i>: ";
                     foreach($typedTaxa as $typedTaxon){
                         $detail_html .= $typedTaxon." ";
@@ -96,7 +78,7 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
             }
         }
     }
-    $derivateDataDTO = $preservedSpecimenDTO->derivateDataDTO;
+    $derivateDataDTO = $specimen->derivateDataDTO;
     // - specimen scans
     $specimenScans = create_html_links($derivateDataDTO->specimenScans, true);
     // - molecular data
@@ -106,22 +88,27 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
             //provider link
             if (isset($molecular->providerLink)) {
                 $molecularData .= create_html_link($molecular->providerLink, true);
+            } else {
+                $molecularData .= "[no provider]";
             }
             //contig link
-            if (isset($molecular->contigFiles[0])) {//FIXME check if empty
+            if (isset($molecular->contigFiles)) {
                 $molecularData .= "[";
-                if (isset($molecular->contigFiles)) {
+                if (sizeof($molecular->contigFiles) > 0) {
                     foreach ($molecular->contigFiles as $contigFile) {
-                        if (isset($contigFile->contigLink)){
-                            if(isset($contigFile->contigLink->uri) and $contigFile->contigLink->uri!=null) {
-                               $molecularData .= create_html_link($contigFile->contigLink, true)." ";
+                        if (isset($contigFile->contigLink)) {
+                            if (isset($contigFile->contigLink->uri) and $contigFile->contigLink->uri != null) {
+                                $molecularData .= create_html_link($contigFile->contigLink, true) . " ";
                             }
-                            //primer links
+                        }
+                        else {
+                            $molecularData .= "no contig ";
+                        }
+                        //primer links
+                        if(isset($contigFile->primerLinks)) {
                             $molecularData .= create_html_links($contigFile->primerLinks, true);
                         }
                     }
-                } else {
-                    $molecularData .= "no contig";
                 }
                 $molecularData = rtrim($molecularData, " ");
                 $molecularData .= "]";
@@ -133,38 +120,38 @@ function compose_cdm_specimen_page_html($preservedSpecimenDTO, $isSpecimenPage =
     $detailImages = create_html_links($derivateDataDTO->detailImages, true);
 
     if ($types) {
-        $detail_html .= $isSpecimenPage?"<br>":"";
+        $detail_html .= $is_specimen_page?"<br>":"";
         $detail_html .= create_label("Type(s)") . $types . "<br>";
     }
-    if ($specimenScans and !$isSpecimenPage) {
+    if ($specimenScans and !$is_specimen_page) {
         $detail_html .= create_label("Specimen Scans") . $specimenScans . "<br>";
     }
     //specimen scan image gallery
-    if($isSpecimenPage and isset($derivateDataDTO->specimenScanUuids) and !empty($derivateDataDTO->specimenScanUuids)) {
+    if($is_specimen_page and isset($derivateDataDTO->specimenScanUuids) and !empty($derivateDataDTO->specimenScanUuids)) {
         $detail_html .= addImageGallery("Specimen scans", $derivateDataDTO->specimenScanUuids);
     }
 
     if ($molecularData) {
-        $detail_html .= $isSpecimenPage?"<br>":"";
+        $detail_html .= $is_specimen_page?"<br>":"";
         $detail_html .= create_label("Molecular Data") . $molecularData . "<br>";
     }
 
-    if ($detailImages and !$isSpecimenPage) {
+    if ($detailImages and !$is_specimen_page) {
         $detail_html .= create_label("Detail Images") . $detailImages . "<br>";
     }
 
     //detail image gallery
-    if($isSpecimenPage and isset($derivateDataDTO->detailImageUuids) and !empty($derivateDataDTO->detailImageUuids)){
+    if($is_specimen_page and isset($derivateDataDTO->detailImageUuids) and !empty($derivateDataDTO->detailImageUuids)){
         $detail_html .= addImageGallery("Detail Images", $derivateDataDTO->detailImageUuids);
     }
 
     //character data
-    if ($preservedSpecimenDTO->characterData) {
-        $detail_html .= $isSpecimenPage?"<br>":"";
+    if ($specimen->characterData) {
+        $detail_html .= $is_specimen_page?"<br>":"";
         $detail_html .= create_label("Character Data");
-        if($isSpecimenPage) {
+        if($is_specimen_page) {
             $detail_html .= "<br>";
-            foreach ($preservedSpecimenDTO->characterData as $characterStatePair) {
+            foreach ($specimen->characterData as $characterStatePair) {
                 $detail_html .= "<i>" . $characterStatePair->first . "</i>:" . $characterStatePair->second;
                 $detail_html .= "<br>";
             }
@@ -227,7 +214,7 @@ function getMediaUri($media){
 
 
 /**
- * Formats the given string to a label for displaying key-value pairs in HTML
+ * Formats the given string to a label for displaying key-object pairs in HTML
  * @return string
  */
 function create_label($label)
@@ -259,7 +246,6 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
   if (!isset($exclude_occurrence_fields)) {
      $exclude_occurrence_fields = array(
         'derivationEvents',
-        'extensions', // TODO ignored for now, how to handle extensions?
         'titleCache',
         'protectedTitleCache',
         'derivedUnitMedia',
@@ -298,16 +284,16 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
     if (isset($specimenOrObservation->specimenTypeDesignations)) {
       $type_status = array();
       foreach ($specimenOrObservation->specimenTypeDesignations as $typeDesignation) {
-        if (isset($typeDesignation->typeStatus->representation_L10n)){
+        if (isset($typeDesignation->typeStatus->representation_L10n)) {
           $type_status[] = $typeDesignation->typeStatus->representation_L10n;
         }
       }
-      if (count($type_status) > 0){
+      if (count($type_status) > 0) {
         $type_label = implode(', ', $type_status);
       }
     }
 
-    $title = $type_label . ': '. $specimenOrObservation->titleCache;
+    $title = $type_label . ': ' . $specimenOrObservation->titleCache;
 
     $groups = array();
     // --- add initialized fields
@@ -317,10 +303,10 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
           /* ---- java.lang.Object --- */
           case 'class':
-            if($value != '' /* FieldUnit' */){
+            if ($value != '' /* FieldUnit' */) {
               @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
             }
-          break;
+            break;
 
           case 'markers':
             $dd_elements = array();
@@ -351,12 +337,17 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             // TODO
             break;
 
+          case 'preferredStableUri':
+
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(array('#markup' => cdm_external_uri($value, false))));
+            break;
+
           case 'specimenTypeDesignations':
             @_description_list_group_add(
               $groups,
               cdm_occurrence_field_name_label($field),
               array(
-                '#markup'=>theme('cdm_typedesignations', array('typeDesignations' => $value)),
+                '#markup' => theme('cdm_typedesignations', array('typeDesignations' => $value)),
               )
             );
             break;
@@ -365,45 +356,47 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             $dd_elements = array();
             $glue = ', ';
 
-            foreach  ($value as $determinationEvent){
-                $timeperiod_string = NULL;
-                if (isset($determinationEvent->timeperiod)) {
-                    $timeperiod_string = timePeriodToString($determinationEvent->timeperiod);
-                }
-                $weight = isset($determinationEvent->preferred) && $determinationEvent->preferred == 1 ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
-                // check key exists
-                while (array_key_exists($weight, $dd_elements)) {
-                    $weight .= '0';
-                }
-                if($determinationEvent->taxonName){
-                    $taxon_name = $determinationEvent->taxonName;
-                    $name_link = "";
-                }
-                else if($determinationEvent->taxon){
-                    $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
-                    $name_link = path_to_taxon($determinationEvent->taxon->uuid);
-                }
+            foreach ($value as $determinationEvent) {
+              $timeperiod_string = NULL;
+              if (isset($determinationEvent->timeperiod)) {
+                $timeperiod_string = timePeriodToString($determinationEvent->timeperiod);
+              }
+              $weight = isset($determinationEvent->preferred) && $determinationEvent->preferred == 1 ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
+              // check key exists
+              while (array_key_exists($weight, $dd_elements)) {
+                $weight .= '0';
+              }
+
+              $taxon_name = '';
+              $name_link = '';
+              if ($determinationEvent->taxonName) {
+                $taxon_name = $determinationEvent->taxonName;
+              } else if ($determinationEvent->taxon) {
+                $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
+                $name_link = path_to_taxon($determinationEvent->taxon->uuid);
+              }
+              if ($taxon_name) {
                 $taxon_html = render_taxon_or_name($taxon_name, $name_link);
                 $dd_elements[$weight] = $taxon_html;
-                if (isset($determinationEvent->modifier)) {
-                    $dd_elements[$weight] .= cdm_term_representation($determinationEvent->modifier);
-                }
-                if ($timeperiod_string) {
-                    $dd_elements[$weight] .= $glue . $timeperiod_string;
-                }
-                if (isset($determinationEvent->actor->titleCache)) {
-                    $dd_elements[$weight] .= $glue . $determinationEvent->actor->titleCache;
-                }
-                if (isset($determinationEvent->description)) {
-                    $dd_elements[$weight] .= $glue . $determinationEvent->description;
-                }
+              }
+              if (isset($determinationEvent->modifier)) {
+                $dd_elements[$weight] .= cdm_term_representation($determinationEvent->modifier);
+              }
+              if ($timeperiod_string) {
+                $dd_elements[$weight] .= $glue . $timeperiod_string;
+              }
+              if (isset($determinationEvent->actor->titleCache)) {
+                $dd_elements[$weight] .= $glue . $determinationEvent->actor->titleCache;
+              }
+              if (isset($determinationEvent->description)) {
+                $dd_elements[$weight] .= $glue . $determinationEvent->description;
+              }
             }
             ksort($dd_elements);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('determinations'), $dd_elements);
             break;
 
           case 'descriptions':
-            $descriptions = $value;
             $occurrence_featureTree = cdm_get_occurrence_featureTree();
             $dd_elements = array();
 
@@ -421,12 +414,12 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             break;
 
           case 'sources':
-              $dd_elements = array();
-              foreach ($value as $identifiable_source) {
-                $dd_elements[] = theme('cdm_OriginalSource', array('source' => $identifiable_source));
-              }
-              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
-              break;
+            $dd_elements = array();
+            foreach ($value as $identifiable_source) {
+              $dd_elements[] = theme('cdm_OriginalSource', array('source' => $identifiable_source));
+            }
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+            break;
 
 
           /* ---- DerivedUnitBase --- */
@@ -437,36 +430,36 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
           case 'collection':
             $sub_dl_groups = array();
             @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('code'), $value->code, NULL, 1);
-            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('codeStandard'),  $value->codeStandard, NULL, 2);
+            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('codeStandard'), $value->codeStandard, NULL, 2);
             @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('institute'), $value->institute, NULL, 3);
             @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('townOrLocation'), $value->townOrLocation, NULL, 4);
             // TODO "superCollection"
             // TODO may have media
 
             @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
-                array(
-                    array('#markup' => $value->titleCache),
-                    array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
-                )
+              array(
+                array('#markup' => $value->titleCache),
+                array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
+              )
             );
             break;
 
-            case 'storedUnder':
-              @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), render_taxon_or_name($value));
-              break;
-
-
-            /* ---- Specimen --- */
-            case 'sequences':
-              $dd_elements = array();
-              foreach ($value as $sequence) {
-                $dd_elements[] = compose_cdm_sequence($sequence);
-              }
-              @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+          case 'storedUnder':
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), render_taxon_or_name($value));
             break;
 
-            // TODO preservation
-            // TODO exsiccatum
+
+          /* ---- Specimen --- */
+          case 'sequences':
+            $dd_elements = array();
+            foreach ($value as $sequence) {
+              $dd_elements[] = compose_cdm_sequence($sequence);
+            }
+            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+            break;
+
+          // TODO preservation
+          // TODO exsiccatum
 
 
           /* ---- FieldObservation --- */
@@ -478,69 +471,28 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n);
             @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
             if (isset($value->absoluteElevation)) {
-                $min_max_array = min_max_array();
-                if(is_numeric($value->absoluteElevation)){
-                    $min_max_array['Min'] = new stdClass();
-                    $min_max_array['Min']->_value = $value->absoluteElevation . ' m';
-                }
-                if(is_numeric($value->absoluteElevation)){
-                    $min_max_array['Max'] = new stdClass();
-                    $min_max_array['Max']->_value = $value->absoluteElevationMax . ' m';
-                }
-                $min_max_markup = min_max_markup($min_max_array);
-                if(isset($value->absoluteElevationError)){
-                    $min_max_markup .= ' +/-' .  $value->absoluteElevationError . ' m';
-                }
-                if(is_string($value->absoluteElevationText)){
-                    $min_max_markup .= ' ' . $value->absoluteElevationText;
-                }
-                @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup);
+              $min_max_markup = min_max_measure($value, 'absoluteElevation');
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup);
             }
             if (isset($value->distanceToGround)) {
-              $min_max_array = min_max_array();
-              if(is_numeric($value->distanceToGround)){
-                  $min_max_array['Min'] = new stdClass();
-                  $min_max_array['Min']->_value = $value->distanceToGround . ' m';
-              }
-              if(is_numeric($value->distanceToGround)){
-                  $min_max_array['Max'] = new stdClass();
-                  $min_max_array['Max']->_value = $value->distanceToGroundMax . ' m';
-              }
-              $min_max_markup = min_max_markup($min_max_array);
-              if(isset($value->distanceToGroundError)){
-                  $min_max_markup .= ' +/-' .  $value->distanceToGroundError . ' m';
-              }
-              if(is_string($value->distanceToGroundText)){
-                  $min_max_markup .= ' ' . $value->distanceToGroundText;
-              }
+              $min_max_markup = min_max_measure($value, 'distanceToGround');
               @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $min_max_markup);
             }
             if (isset($value->distanceToWaterSurface)) {
-              $min_max_array = min_max_array();
-              if(is_numeric($value->distanceToWaterSurface)){
-                  $min_max_array['Min'] = new stdClass();
-                  $min_max_array['Min']->_value = $value->distanceToWaterSurface . ' m';
-              }
-              if(is_numeric($value->distanceToWaterSurface)){
-                  $min_max_array['Max'] = new stdClass();
-                  $min_max_array['Max']->_value = $value->distanceToWaterSurfaceMax . ' m';
-              }
-              $min_max_markup = min_max_markup($min_max_array);
-              if(isset($value->distanceToWaterSurfaceError)){
-                  $min_max_markup .= ' +/-' .  $value->distanceToWaterSurfaceError . ' m';
-              }
-              if(is_string($value->distanceToWaterSurfaceText)){
-                  $min_max_markup .= ' ' . $value->distanceToWaterSurfaceText;
-              }
+              $min_max_markup = min_max_measure($value, 'distanceToWaterSurface');
               @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup);
             }
 
             if (isset($value->collectingAreas)) {
               $area_representations = array();
-              foreach($value->collectingAreas as $area) {
-                $area_representations[] = $area->representation_L10n;
+              foreach ($value->collectingAreas as $area) {
+                $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
               }
-              @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingAreas'), implode(', ', $area_representations));
+              @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingAreas'),
+                array(
+                  array('#markup' => implode(', ', $area_representations))
+                )
+              );
             }
             if (isset($value->exactLocation) && $value->exactLocation->sexagesimalString) {
               $sub_dl_groups = array();
@@ -552,19 +504,19 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
               }
 
               @_description_list_group_add($groups, cdm_occurrence_field_name_label('exactLocation'),
+                array(
+                  array('#markup' => $value->exactLocation->sexagesimalString),
                   array(
-                      array('#markup' => $value->exactLocation->sexagesimalString),
-                      array(
-                          '#theme' => 'description_list',
-                          '#groups' => $sub_dl_groups
-                      ),
-                  )
+                    '#theme' => 'description_list',
+                    '#groups' => $sub_dl_groups
+                  ),
+                )
               );
             }
             break;
 
           default:
-            if(is_object($value) || is_array($value)){
+            if (is_object($value) || is_array($value)) {
               drupal_set_message("Unhandled type in compose_cdm_specimenOrObservation() for field " . $field, "warning");
             } else {
               _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
@@ -574,6 +526,16 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
       }
     } // END of loop over $derivedUnitFacade fields
+
+    // Extensions
+    $extensions = cdm_ws_fetch_all(CDM_WS_PORTAL_OCCURRENCE . '/'  . $specimenOrObservation->uuid . '/extensions', array($specimenOrObservation->uuid));
+    if ($extensions && count($extensions)) {
+
+      $extensions_render_array = compose_extensions($extensions);
+      @_description_list_group_add($groups, t('Extensions') . ':',
+        $extensions_render_array,
+        '', 100);
+    }
 
 
     // template_preprocess_description_list() is not worting by weight so we do it right here
@@ -630,6 +592,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
   return $derivatives;
 }
+
 
 /**
  * Compose an render array from a CDM Sequence object.

@@ -25,6 +25,7 @@
  *
  * compose_hook() implementation
  *
+ * @param $map_id
  * @param string $occurrence_query
  * @param string $distribution_query
  * @param string $legend_format_query
@@ -46,17 +47,11 @@
  *   Can be used to override the map_type setting stored in the settings variable CDM_MAP_DISTRIBUTION
  *   - 1: openlayers_map
  *   - 0: image_map
- *
- * @return array
- *    A drupal render array
- *
- * Similar compose function compose_distribution_map()
- *
+ * @return array A drupal render array
+ * A drupal render array
  * @ingroup compose
  */
-function compose_map($occurrence_query = NULL, $distribution_query = NULL,
-                     $legend_format_query = NULL, array $event_listeners = array(), $resizable = false,
-                     $force_map_type = NULL) {
+function compose_map($map_id, $occurrence_query = NULL, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = array(), $resizable = false, $force_map_type = NULL) {
 
     $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
@@ -66,18 +61,19 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL,
 
     if ($force_map_type == 1) {
       _add_jquery_ui();
-    $map_html = get_openlayers_map(
+      $map_html = cdm_map_openlayers(
+        $map_id,
         $occurrence_query,
         $distribution_query,
         $legend_format_query,
         $map_settings['caption'],
         $event_listeners,
         $resizable
-    );
+      );
     }
      else {
       $map_height = round($map_settings['image_map']['width'] / (float)$map_settings['aspect_ratio']);
-      $map_html = get_image_map(
+      $map_html = cdm_map_plain_image(
         $map_settings['image_map']['width'],
         $map_height,
         $occurrence_query,
@@ -90,6 +86,10 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL,
 }
 
 /**
+ * Adds the javascript for a openlayers map to the page as well as all javascript libs.
+ *
+ *
+ * @param $map_id
  * @param $map_settings
  *   The map settings array as retrieved by e.g. get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
  * @param array $event_listeners
@@ -107,7 +107,7 @@ function compose_map($occurrence_query = NULL, $distribution_query = NULL,
  * @param bool $resizable
  *   The map is made resizable when set to true
  */
-function _add_js_openlayers_map($map_settings, array $event_listeners = array(), $resizable = false) {
+function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners = array(), $resizable = false) {
 
   font_awesome_icon_markup(); // no icon specified, only used to add the font and styles
 
@@ -115,8 +115,22 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
 
   $edit_map_service = get_edit_map_service_settings();
 
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_map.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_layers.js');
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_map.js',
+    array(
+      'type' => 'file',
+      'group' => JS_DEFAULT, //  module-layer JavaScript.
+      'weight' => 0,
+      'cache' => TRUE,
+      'preprocess' => FALSE
+  ));
+  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/map/openlayers_layers.js',
+    array(
+      'type' => 'file',
+      'group' => JS_DEFAULT,
+       'weight' => 1, // after openlayers_map.js
+      'cache' => TRUE,
+      'preprocess' => FALSE
+  ));
 
   $cdm_openlayers_options = array(
       'legendPosition'  => '3',
@@ -137,6 +151,18 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
 
     $layer_names = $map_settings['openlayers']['base_layers'];
 
+    foreach($layer_names as $name){
+      if(str_beginsWith($name, 'g')){
+        if( isset($map_settings['openlayers']['google_maps_api_key']) && strlen($map_settings['openlayers']['google_maps_api_key']) == 39) {
+          // google layer detected
+          drupal_add_js("https://maps.googleapis.com/maps/api/js?key=" . $map_settings['openlayers']['google_maps_api_key'] . "&callback=initMap", 'external');
+        } else {
+          drupal_set_message('A Google Maps layer is configured but the API key is either missing or invalid. 
+          Please set your Google Maps API key in the '  . l('Geo & Map Settings', 'admin/config/cdm_dataportal/settings/geo') .'.', 'warning');
+        }
+      }
+    }
+
     $cdm_openlayers_options['baseLayerNames'] = array_values($layer_names);
 
     if($layer_names['PREFERRED']){
@@ -147,7 +173,6 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
         $cdm_openlayers_options['baseLayerNames'][] = $cdm_openlayers_options['defaultBaseLayerName'];
       }
     }
-
 
   }
 
@@ -166,18 +191,18 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
     }
   }
 
-//   // combine keys and values
-//   foreach($cdm_openlayers_options as $key=>&$val){
-//     $val = $key . ": " . $val;
-//   };
+  $mapserver_base_uri = $edit_map_service['base_uri'];
+  $is_https = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on';
+  $http_protocol = $is_https ? 'https' : 'http';
+  $mapserver_base_uri = preg_replace('/^https?:/', $http_protocol . ':', $mapserver_base_uri);
 
   // window.onload - is executed when the document and images etc is fully loaded
   // Query(document).ready - is executed much earlier, when the DOM is loaded
   drupal_add_js("
           jQuery(document).ready(function() {
                 jQuery(window).load(function () {
-                  var map_container = jQuery('#openlayers_map').cdm_openlayers_map(
-                   '" . $edit_map_service['base_uri'] . "',
+                  var map_container = jQuery('#openlayers-map-" . $map_id . "').cdm_openlayers_map(
+                   '" . $mapserver_base_uri . "',
                    '" . $edit_map_service['version'] . "',
                    " .  json_encode($cdm_openlayers_options) . "
                 );
@@ -195,13 +220,13 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
 
 
 /**
- * @todo Enter description here ...
+ * Creates markup for an openlayers based dynamic map.
  *
- * @param unknown_type $bounding_box
- * @param unknown_type $occurrenceQuery
- * @param unknown_type $distributionQuery
- * @param unknown_type $legendFormatQuery
- * @param unknown_type $map_caption
+ * @param string $bounding_box
+ * @param string $occurrenceQuery
+ * @param string $distributionQuery
+ * @param string $legendFormatQuery
+ * @param string $map_caption
  * @param array $event_listeners
  *   An associative array of with OpenLayers.Map event names as key and corresponding js callbacks.
  *   In addition to the event names '#execute' as key is also allowed.
@@ -216,18 +241,22 @@ function _add_js_openlayers_map($map_settings, array $event_listeners = array(),
  *   see http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html#OpenLayers.Map.events for more
  *
  * @return String
- *    rendered html
+ *    The markup for the map
  */
-function get_openlayers_map($occurrenceQuery = FALSE, $distributionQuery = FALSE,
+function cdm_map_openlayers($map_id, $occurrenceQuery = FALSE, $distributionQuery = FALSE,
                             $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array(),
                             $resizable = false) {
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
-  _add_js_openlayers_map($map_settings, $event_listeners, $resizable);
+  if($map_id == NULL){
+    $map_id = sha1($occurrenceQuery . $distributionQuery);
+  }
 
-  $out = '<div id="openlayers_container" class="openlayers_width ui-widget-content" style="width: 100%;">';
-  $out .= '<div id="openlayers_map" class="smallmap" style="width:100%; height:100%; margin: 10px;"';
+  _add_js_openlayers_map($map_id, $map_settings, $event_listeners, $resizable);
+
+  $out = '<div id=""openlayers-container-' . $map_id . '" class="openlayers-container openlayers_width ui-widget-content" style="width: 100%;">';
+  $out .= '<div id="openlayers-map-' . $map_id . '" class="smallmap" style="width:100%; height:100%; margin: 10px;"';
 
   // Additional query parameters as set in the data portal admin section.
   $labels_on = $map_settings['show_labels'];
@@ -271,15 +300,16 @@ function get_openlayers_map($occurrenceQuery = FALSE, $distributionQuery = FALSE
 
 
 /**
- * Composes the render array for a distribution map of the given taxon.
+ * Composes the render array for a distribution map using the given distribution query string.
  *
  * The distribution map can either be a plain image or a dynamic open layers map
  * depending on the settings.
  *
  * compose_hook() implementation
  *
- * @param $taxon
- *   The CDM Taxon instance to create the distribution map for.
+ * @param string $query_string
+ *    An EDIT map services distribution query string
+ *
  * @return array
  *    A drupal render array
  *
@@ -287,22 +317,16 @@ function get_openlayers_map($occurrenceQuery = FALSE, $distributionQuery = FALSE
  *
  * @ingroup compose
  */
-function compose_distribution_map($taxon, $query_string) {
-
-  $out = '';
+function compose_distribution_map($query_string) {
 
   $fontStyles = array(
       0 => "plane",
       1 => "italic",
   );
 
-//   // Query cdm server for map service uri parameters.
-//   $query_string = cdm_ws_get(CDM_WS_GEOSERVICE_DISTRIBUTIONMAP, $taxon->uuid, queryString(cdm_distribution_filter_query()));
-//   $query_string = $query_string->String;
-  $out .= "<!-- map_data_parameters:" . print_r($query_string, TRUE) . " -->";
   if (!$query_string) {
     // The $query_string is empty if there are no distribution areas defined.
-    return;
+    return null;
   }
 
   /* ------ choose the display mode, either openlayers or static image ------ */
@@ -326,7 +350,7 @@ function compose_distribution_map($taxon, $query_string) {
       . ";fontSize" . urlencode(':') .  $map_settings['legend']['font_size']
       . "&SLD=";
 
-    /*$out .= get_openlayers_map(
+    /*$out .= cdm_map_openlayers(
         $map_settings['bbox'],
         NULL,
         $query_string,
@@ -338,7 +362,7 @@ function compose_distribution_map($taxon, $query_string) {
   else {
     $legendFormatQueryStr = '';
     /*
-        get_image_map(
+        cdm_map_plain_image(
             $map_settings['image_map']['width'],
             $map_settings['image_map']['height'],
             $map_settings['bbox'],
@@ -349,7 +373,7 @@ function compose_distribution_map($taxon, $query_string) {
         );
     */
   }
-  $out = compose_map(NULL, $query_string, $legendFormatQueryStr);
+  $out = compose_map('distribution', NULL, $query_string, $legendFormatQueryStr);
 
   return $out;
 }
@@ -358,19 +382,19 @@ function compose_distribution_map($taxon, $query_string) {
 
 
 /**
- * @todo Enter description here ...
+ * Composes the markup for a plain image map.
  *
- * @param unknown_type $width
- * @param unknown_type $occurrenceQuery
- * @param unknown_type $distributionQuery
- * @param unknown_type $legendFormatQuery
- * @param unknown_type $map_caption
+ * @param int $width
+ * @param string $occurrenceQuery
+ * @param string $distributionQuery
+ * @param string $legendFormatQuery
+ * @param string $map_caption
  *
 * @return String
  *    rendered html
  */
-function get_image_map($width, $height= NULL, $occurrenceQuery = FALSE, $distributionQuery = FALSE,
-                       $legendFormatQuery = FALSE, $map_caption = FALSE) {
+function cdm_map_plain_image($width, $height= NULL, $occurrenceQuery = FALSE, $distributionQuery = FALSE,
+                             $legendFormatQuery = FALSE, $map_caption = FALSE) {
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 

@@ -128,10 +128,8 @@ function theme_cdm_taxon_page_synonymy($variables) {
   // both should have the same footnote key
   RenderHints::setFootnoteListKey(RenderHints::getRenderPath());
 
-  $synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, $taxon->uuid);
-  $skip = array(
-    UUID_NAMERELATIONSHIPTYPE_BASIONYM,
-  );
+  $synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, array($taxon->uuid));
+
   $out = '';
 
   // Render accepted taxon.

@@ -32,6 +32,10 @@
   padding: 0;
 }
 
+#block-cdm-dataportal-back-to-search-results {
+  float: right;
+}
+
 #cdm-ws-debug-table {
   width: 100%;
 }
@@ -487,7 +491,7 @@ a.label:visited {
  * ==== Maps ====
  */
 
-#openlayers_container {
+.openlayers-container {
   position: relative;
   z-index: 1;
   margin-bottom: 0.75em; /* Should match the margin-bottom of .description. */

@@ -416,10 +416,6 @@ msgstr ""
 msgid "administer cdm_dataportal"
 msgstr ""
 
-#: cdm_dataportal.module:48
-msgid "cdm_dataportal view notes"
-msgstr ""
-
 #: cdm_dataportal.module:0
 msgid "cdm_dataportal"
 msgstr ""

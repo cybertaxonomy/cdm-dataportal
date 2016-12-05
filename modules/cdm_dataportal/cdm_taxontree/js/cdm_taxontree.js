@@ -18,6 +18,11 @@
 
     $.fn.cdm_taxontree = function(options) {
 
+    // firebug console stub (avoids errors if firebug is not active)
+    if(typeof console === "undefined") {
+      console = { log: function() { } };
+    }
+
     var opts = $.extend({}, $.fn.cdm_taxontree.defaults, options);
 
     var vertical_scroller_selector = 'cdm_taxontree_scroller_xy';
@@ -36,7 +41,7 @@
               handle_taxon_node_click(event);
           }
       );
-      // Stop event propagation for links (unclear why this is nessecary,
+      // Stop event propagation for links (unclear why this is necessary,
       // was this needed for the filter buttons?)
       cdm_taxontree_list.delegate("li a", "click", function(event) {
               event.stopPropagation();
@@ -161,10 +166,17 @@
     function scrollToFocused() {
         var focusedElement = cdm_taxontree_parent.find('.focused');
         if(focusedElement.length > 0){
-            var lineHeight = focusedElement.css('line-height');
-            lineHeight = lineHeight.replace('px', '');
-            lineHeight = lineHeight.length == 0 ? 18 : lineHeight;
-            cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTop(focusedElement.position().top - (4 * lineHeight));
+          var lineHeight = focusedElement.css('line-height');
+          lineHeight = lineHeight.replace('px', '');
+          lineHeight = lineHeight.length == 0 ? 18 : lineHeight;
+          console.log("cdm_taxontree.scrollToFocused() - lineHeight:" + lineHeight);
+          console.log("cdm_taxontree.scrollToFocused() -  focusedElement.position().top: " + focusedElement.position().top);
+
+          // IMPORTANT !!!!!!
+          // In some cases (cichorieae theme related?) the scroll to moves the div to a wrong position
+          // Doing it twice, solves the problem
+          cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTop(focusedElement.position().top - (4 * lineHeight));
+          cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTop(focusedElement.position().top - (4 * lineHeight));
         }
 
     }

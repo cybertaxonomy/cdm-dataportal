@@ -9,11 +9,13 @@
         see also  maven-jar-plugin & maven-deploy-plugin where artifact are skipped
     -->
     <packaging>jar</packaging>
-    <version>4.3.0</version>
+    <version>4.4.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- for the latest version see http://docs.seleniumhq.org/download/#client-drivers -->
+        <!-- 
+			for the latest version see http://docs.seleniumhq.org/download/#client-drivers 
+		-->
         <selenium.version>2.53.0</selenium.version>
         <!-- 
             from WebDriver 2.53.0 HTMLUnit is no longer distributed with Selenium WebDriver
@@ -133,7 +135,8 @@
                     <locales>en</locales>
                     <outputEncoding>UTF-8</outputEncoding>
                     <siteDirectory>${basedir}/site</siteDirectory>
-                    <!-- chmod: not not use chmod, rather adapt the umask
+                    <!-- 
+						chmod: not not use chmod, rather adapt the umask
                         of the user at the server to which the site is deployed
                     -->
                     <chmod>false</chmod>

@@ -108,7 +108,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "World Checklist of Monocotyledons", this.getContext().getBaseUri().toString()));
         assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(1).getLinksInElement().get(0), "T. Evans et al. 2002", this.getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
 
-        assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers_map")));
+        assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers-map-distribution")));
         assertEquals("Map accurate to TDWG level 3 distributions", featureBlock.getElement().findElement(By.className("distribution_map_caption")).getText());
 
 

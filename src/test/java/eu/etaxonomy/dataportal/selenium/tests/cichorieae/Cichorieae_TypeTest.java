@@ -9,8 +9,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
@@ -34,13 +32,15 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 @DataPortalContexts( { DataPortalContext.cichorieae })
 public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
 
-
     static UUID cichorium_uuid = UUID.fromString("21d7161a-455e-4f4d-9d61-7f0100c38ff3");
 
     static UUID scorzonera_tuzgoluensis_Uuid = UUID.fromString("296b4758-048a-47bb-a394-affca64dfc40");
 
     static UUID lactuca_glandulifera_Uuid = UUID.fromString("6ece0be7-ba4a-4363-b103-4e60429988e5");
 
+    static UUID hypochaeris_uuid = UUID.fromString("79d6b29a-7a73-42b6-a024-2ab35fbd60ff");
+
+    static UUID hypochaeris_maculata_uuid = UUID.fromString("90943959-f2ef-4a3a-8744-c8bcd935c8c2");
 
     @Test
     public void cichorium() throws MalformedURLException {
@@ -85,8 +85,36 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals("Syntype: [Cameroon], Maitland 226", typeDesignations.get(0).getText());
         assertEquals("Syntype: [Cameroon], Mildbraed 10814", typeDesignations.get(1).getText());
         assertEquals("Syntype: [Cameroon] \"Cameroons Mt., 6,000 ft.\", Dunlap 47", typeDesignations.get(2).getText());
+    }
 
+    @Test
+    public void hypochaeris_maculata() throws MalformedURLException {
+        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), hypochaeris_maculata_uuid);
+        assertEquals(getContext().prepareTitle("Hypochaeris maculata"), driver.getTitle());
+        assertEquals("Hypochaeris maculata L., Sp. Pl.: 810. 1753", p.getAcceptedNameText());
+        List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
+        assertEquals("Expecting two Typedesignation", 2, typeDesignations.size());
+        assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
+        assertEquals("Type: \"Habitat in Europae frigidioris pratis asperis.\"", typeDesignations.get(0).getText());
+        assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(1).getTypeDesignationType());
+        assertEquals("Lectotype (designated by D. Iamonico 2012: ??1): [s. loc.], Herb. Linnaeus, no. 959.1", typeDesignations.get(1).getText());
+    }
 
+    @Test
+    public void hypochaeris() throws MalformedURLException {
+        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), hypochaeris_uuid);
+        assertEquals(getContext().prepareTitle("Hypochaeris"), driver.getTitle());
+        assertEquals("Hypochaeris L., Sp. Pl.: 810. 17531", p.getAcceptedNameText());
+
+        List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
+        assertEquals("Expecting two Typedesignation", 1, typeDesignations.size());
+        assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
+        assertEquals("Lectotype (designated by M. L. Green: 1783): Hypochaeris radicata L.", typeDesignations.get(0).getText());
+
+        typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
+        assertEquals("Expecting two Typedesignation", 1, typeDesignations.size());
+        assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
+        assertEquals("Lectotype (designated by Steudel 1841: 5685): Seriola laevigata L.", typeDesignations.get(0).getText());
     }
 
 }

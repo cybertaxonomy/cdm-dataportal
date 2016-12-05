@@ -27,7 +27,7 @@ define('CDM_WS_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'taxon/findByDescripti
  * parameter taxonUuid. If the taxon specified by taxonUuid is itself the
  * accepted taxon, this one will be returned.
  */
-define('CDM_WS_PORTAL_TAXON_ACCEPTED', 'portal/taxon/$0/accepted/$1');
+define('CDM_WS_PORTAL_TAXON_ACCEPTED', 'portal/taxon/$0/accepted');
 
 define('CDM_WS_PORTAL_TAXON', 'portal/taxon');
 define('CDM_WS_PORTAL_TAXON_SYNONYMY', 'portal/taxon/$0/synonymy');
@@ -76,11 +76,27 @@ define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
  * stub: treenode_root
  */
 define('CDM_WS_PORTAL_TAXONOMY', 'portal/classification');
+/**
+ * TODO: harmonize return type, the REST service should return TaxonNodeDto, see #6222
+ *
+ * returns list of TaxonNode
+ */
 define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES', 'portal/classification/$0/childNodes');
-define('CDM_WS_PORTAL_TAXONOMY_CLASSIFICATION_ROOT_NODE', 'portal/classification/$0/classificationRootNode');
+/**
+ * returns list of TaxonNodeDto
+ */
 define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK', 'portal/classification/$0/childNodesAt/$1');
+/**
+ * returns list of TaxonNodeDto
+ */
 define('CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON', 'portal/classification/$0/childNodesOf/$1');
+/**
+ * returns list of TaxonNodeDto
+ */
 define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM', 'portal/classification/$0/pathFrom/$1');
+/**
+ * returns list of TaxonNodeDto
+ */
 define('CDM_WS_PORTAL_TAXONOMY_PATH_FROM_TO_RANK', 'portal/classification/$0/pathFrom/$1/toRank/$2');
 define('CDM_WS_PORTAL_TAXONOMY_MEDIA', 'portal/classification/$0/$1');
 
@@ -90,6 +106,7 @@ define('CDM_WS_TERMVOCABULARY', 'termVocabulary/$0');
 
 define('CDM_WS_TERM_COMPARE', 'term/$0/compareTo/$1');
 define('CDM_WS_TERM', 'term');
+define('CDM_WS_PORTAL_TERM', 'portal/term/$0');
 
 /**
  * Returns FeatureTrees that are stored in this community store.

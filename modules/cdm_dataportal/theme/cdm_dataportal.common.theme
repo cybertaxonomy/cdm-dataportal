@@ -448,22 +448,6 @@ function theme_cdm_pager_link($variables) {
 }
 
 /* ============================ special buttons ============================= */
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_back_to_search_result_button() {
-  $out = '';
-
-  $show_button = variable_get('cdm_dataportal_show_back_to_search_results');
-  if (isset($_SESSION['cdm']['search']) && isset($show_button) &&  $show_button == 1) {
-    /* ['cdm']['last_search'] */
-    // $out .= '<div id="backButton">'.l(t('Back to search result'), $_SESSION
-    // ).'</div>';
-    $out .= '<div id="backButton" class="clearfix">' . l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search']) . '</div>';
-  }
-  return $out;
-}
 
 /**
  * @todo Please document this function.

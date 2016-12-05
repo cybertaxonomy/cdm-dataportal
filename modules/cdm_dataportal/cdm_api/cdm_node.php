@@ -200,6 +200,11 @@ function cdm_load_node($nodetype, $uuid, $title) {
  *     A $page element suitable for use by drupal_render().
  */
 function cdm_node_show($cdm_node_type, $uuid, $title, $content) {
+
+  if(!user_access('access cdm content')){
+    drupal_access_denied();
+  }
+
   // tell drupal code to load the node
   $node = cdm_load_node($cdm_node_type, $uuid, $title);
   // set the title coming supplied by a cdm_dataportal_{CDM_NODE_TYPE}_view function

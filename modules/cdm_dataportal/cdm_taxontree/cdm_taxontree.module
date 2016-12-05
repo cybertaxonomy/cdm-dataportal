@@ -26,19 +26,19 @@ function cdm_taxontree_menu() {
 
   $items['cdm_taxontree/set'] = array(
     'page callback' => 'cdm_taxontree_set',
-    'access arguments' => array('access content'),
+    'access arguments' => array('access cdm content'),
     'type' => MENU_CALLBACK,
   );
 
   $items['cdm_taxontree/filter'] = array(
     'page callback' => 'cdm_taxontree_view_filter',
-    'access arguments' => array('access content'),
+    'access arguments' => array('access cdm content'),
     'type' => MENU_CALLBACK,
   );
 
   $items['cdm_taxontree/taxonomy/children'] = array(
     'page callback' => 'cdm_taxontree_taxonomy_children',
-    'access arguments' => array('access content'),
+    'access arguments' => array('access cdm content'),
     'type' => MENU_CALLBACK,
   );
 
@@ -1157,7 +1157,7 @@ function cdm_taxontree_theme() {
  *   Problem is, that the dependency is the other way round.
  * @param string $taxonUuid
  *
- * @return unknown
+ * @return string
  */
 function cdm_taxontree_view_filter($op, $taxonUuid = NULL) {
 

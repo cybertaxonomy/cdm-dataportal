@@ -1239,13 +1239,6 @@ msgstr ""
 msgid "TODO Add a description for 'administer cdm_dataportal'"
 msgstr ""
 
-#: cdm_dataportal.module:394
-msgid "cdm_dataportal view notes"
-msgstr ""
-
-#: cdm_dataportal.module:395
-msgid "TODO Add a description for 'cdm_dataportal view notes'"
-msgstr ""
 
 #: cdm_dataportal.module:671
 msgid ""
@@ -1498,14 +1491,6 @@ msgstr ""
 
 #: cdm_api/cdm_api.module:167
 msgid "CDM Debug"
-msgstr ""
-
-#: cdm_api/cdm_api.module:195
-msgid "administer cdm_api"
-msgstr ""
-
-#: cdm_api/cdm_api.module:196
-msgid "TODO Add a description for 'administer cdm_api'"
 msgstr ""
 
 #: cdm_api/cdm_api.module:227
@@ -1966,22 +1951,6 @@ msgstr ""
 
 #: ext_links/ext_links.module:307
 msgid "Enable sorted list with headings"
-msgstr ""
-
-#: ext_links/ext_links.module:330
-msgid "access extlinks content"
-msgstr ""
-
-#: ext_links/ext_links.module:331
-msgid "TODO Add a description for 'access extlinks content'"
-msgstr ""
-
-#: ext_links/ext_links.module:334
-msgid "administer extlinks"
-msgstr ""
-
-#: ext_links/ext_links.module:335
-msgid "TODO Add a description for 'administer extlinks'"
 msgstr ""
 
 #: ext_links/ext_links.module:384

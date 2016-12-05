@@ -149,29 +149,28 @@
                           transitionEffect: "resize"
                       }
                   );
-          /*
-          ALl GOOGLE LAYERS DISABELED until the new map api is integrated
+
           // create Google Mercator layers
-          case 'gmap':
+          case 'gmroadmap':
             return  new OpenLayers.Layer.Google(
-                      "Google Streets",
+                      "Google Roadmap",
                       {
-                          // the default type
+                          type: 'roadmap',
                           projection: window.CdmOpenLayers.projections.epsg_900913,
                           // Allow user to pan forever east/west
                           // Setting this to false only restricts panning if sphericalMercator is true.
                           wrapDateLine: false,
                           sphericalMercator: true,
-                          numZoomLevels: 21,
+                          numZoomLevels: 21
                       }
                   );
 
-          case 'gsat':
+          case 'gsatellite':
               // FIMXE: layer distorted, use OpenLayers.Layer.Google.v3?
             return  new OpenLayers.Layer.Google(
                       "Google Satellite",
                       {
-                        type: G_SATELLITE_MAP,
+                        type: 'satellite',
                         projection: window.CdmOpenLayers.projections.epsg_900913,
                         // Allow user to pan forever east/west
                         // Setting this to false only restricts panning if sphericalMercator is true.
@@ -179,12 +178,11 @@
                         numZoomLevels: 22
                       }
                   );
-          case 'ghyb':
-              // FIMXE: layer not working, use OpenLayers.Layer.Google.v3?
+          case 'ghybrid':
             return  new OpenLayers.Layer.Google(
                       "Google Hybrid",
                       {
-                          type: G_HYBRID_MAP,
+                          type: 'hybrid',
                           projection: window.CdmOpenLayers.projections.epsg_900913,
                           // Allow user to pan forever east/west
                           // Setting this to false only restricts panning if sphericalMercator is true.
@@ -192,7 +190,20 @@
                           numZoomLevels: 22
                       }
                   );
-          */
+
+          case 'gterrain':
+            return  new OpenLayers.Layer.Google(
+              "Google Terrain",
+              {
+                type: 'terrain',
+                projection: window.CdmOpenLayers.projections.epsg_900913,
+                // Allow user to pan forever east/west
+                // Setting this to false only restricts panning if sphericalMercator is true.
+                wrapDateLine: false,
+                numZoomLevels: 22
+              }
+            );
+
           /*
            * FIXME: apiKey needs to be specified
           case 'veroad':

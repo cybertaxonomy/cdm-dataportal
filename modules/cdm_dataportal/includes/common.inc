@@ -237,16 +237,22 @@ function min_max_array()
 }
 
 /**
+ * Creates markup from a min max array.
+ *
  * NOTE: use  min_max_array() to create an appropriate array
  *
  * @param $min_max
+ *  the min-max array
+ * @param $unit
+ *  Defaults to no unit
  * @return string
  */
-function min_max_markup($min_max) {
+function min_max_markup($min_max, $unit = '') {
 
   $min_max_markup = '';
   // create min-max string
   if ($min_max['Min'] !== NULL && $min_max['Max'] !== NULL && $min_max['Min']->_value == $min_max['Max']->_value) {
+    // min and max are identical
     $min_max['Average'] = $min_max['Min'];
     $min_max['Min'] = NULL;
     $min_max['Max'] = NULL;
@@ -254,9 +260,11 @@ function min_max_markup($min_max) {
 
   // check for inconsistent cases, eg. only Max and average given
   if ($min_max['Min'] === NULL && $min_max['Max'] !== NULL) {
+    // min missing
     $min_max['Min'] = '?';
   }
   if ($min_max['Min'] !== NULL && $min_max['Max'] === NULL) {
+    // max missing
     $min_max['Max'] = '?';
   }
 
@@ -281,6 +289,51 @@ function min_max_markup($min_max) {
       }
       $min_max_markup .= $val_markup;
     }
+  }
+  return $min_max_markup . ' ' . $unit;
+}
+
+/**
+ * Creates min max markup to represent a min-average-max measure optionally with an error value.
+ *
+ * The fields that are taken into account are:
+ * - field_base_name = min
+ * - field_base_nameMax = max
+ * - field_base_nameText = free text
+ * - field_base_nameError = error value
+ *
+ * @param $object
+ *    The object having min max measurement fields
+ * @param string $field_base_name
+ *    The base name for all measurement fields. This name is at the same time the full name of the
+ *    min value.
+ * @return array
+ *   the resulting min max array
+ */
+function min_max_measure($object, $field_base_name)
+{
+  static $default_unit = 'm';
+
+  $min_max_array = min_max_array();
+  if (@is_numeric($object->$field_base_name)) {
+    $min_max_array['Min'] = new stdClass();
+    $min_max_array['Min']->_value = $object->$field_base_name;
+  }
+
+  $field_name = $field_base_name . 'Max';
+  if (@is_numeric($object->$field_name)) {
+    $min_max_array['Max'] = new stdClass();
+    $min_max_array['Max']->_value = $object->$field_name;
+  }
+  $min_max_markup = min_max_markup($min_max_array, $default_unit);
+
+  $field_name = $field_base_name . 'Error';
+  if (@is_numeric($object->$field_name )) {
+    $min_max_markup .= ' +/- ' . $object->$field_name . ' ' . $default_unit;
+  }
+  $field_name = $field_base_name . 'Text';
+  if (@is_string($object->$field_name)) {
+    $min_max_markup .= ' ' . $object->$field_name;
   }
   return $min_max_markup;
 }
@@ -456,6 +509,8 @@ function compose_cdm_contact($contact, $title, $weight = 0)
 
   $groups = array();
 
+  $contact_details = null;
+
   $label_suffix = ':';
 
   $contact_field_names_map = array(
@@ -496,4 +551,40 @@ function compose_cdm_contact($contact, $title, $weight = 0)
 
   return array($contact_details);
 
+}
+
+/**
+ * Compose an render array from a CDM Extension objects.
+ *
+ * @param $extensions
+ *    An array of CDM Extension objects
+ * @return array
+ *   A render array containing the fields of the supplied $sequence
+ *
+ * @ingroup compose
+ */
+function compose_extensions($extensions)
+{
+  $extensions_render_array= null;
+  $extensions_by_type = array();
+  foreach ($extensions as $extension) {
+    if (@is_string($extension->value)) {
+      if (!isset($extensions_by_type[$extension->type->representation_L10n])) {
+        $extensions_by_type[$extension->type->representation_L10n] = array();
+      }
+      $extensions_by_type[$extension->type->representation_L10n][] = markup_to_render_array($extension->value);
+    }
+  }
+
+  if (count($extensions_by_type)) {
+    $sub_dl_groups = array();
+    foreach ($extensions_by_type as $type_label => $text_list) {
+      @_description_list_group_add($sub_dl_groups, $type_label . ':', $text_list);
+    }
+    $extensions_render_array = array(
+      array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
+    );
+    return $extensions_render_array;
+  }
+  return $extensions_render_array;
 }

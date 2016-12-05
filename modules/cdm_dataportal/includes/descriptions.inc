@@ -431,9 +431,16 @@ function compose_description_element($element, $feature_block_settings, $element
   if ($prepend_feature_label) {
     $feature_label = '<span class="nested-feature-tree-feature-label">' . $element->feature->representation_L10n . ':</span> ';
   }
-  $render_array['#value'] = $feature_label . $names_used_in_source_markup . $element_markup . $source_references_markup;
-  $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
+  $content_markup = $names_used_in_source_markup . $element_markup . $source_references_markup;
 
+  if(!$content_markup && $feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1){
+    // no textual content, so skip this element completely, even if there could be an footnote key
+    // see #4379
+    return null;
+  }
+
+    $render_array['#value'] = $feature_label . $content_markup;
+    $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
   return $render_array;
 }
 
@@ -853,10 +860,15 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
 
     // --- Distribution map
     $distribution_map_query_parameters = NULL;
-    if (isset($descriptionElements['DistributionInfoDTO'])) {
+
+    $map_visibility = variable_get(DISTRIBUTION_MAP_VISIBILITY, DISTRIBUTION_MAP_VISIBILITY_DEFAULT);
+    if(variable_get(DISTRIBUTION_MAP_VISIBILITY, DISTRIBUTION_MAP_VISIBILITY_DEFAULT) == 'always' ||
+        $map_visibility == 'automatic' && isset($descriptionElements['DistributionInfoDTO']->mapUriParams)
+      )
+    {
       $distribution_map_query_parameters = $descriptionElements['DistributionInfoDTO']->mapUriParams;
     }
-    $map_render_element = compose_distribution_map($taxon, $distribution_map_query_parameters);
+    $map_render_element = compose_distribution_map($distribution_map_query_parameters);
     $block->content[] = $map_render_element;
 
     $dto_out_array = array();
@@ -1142,7 +1154,6 @@ function compose_description_element_quantitative_data($element, $feature_block_
   $type_representation = NULL;
   $min_max = min_max_array();
 
-
   $other_values = array();
 
   if (isset($element->statisticalValues)) {
@@ -1414,6 +1425,15 @@ function compose_description_element_quantitative_data($element, $feature_block_
       // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
       if (isset($description_element) && $description_element->feature->uuid == UUID_CITATION) {
         sort($elements_out_array);
+      }
+    }
+
+    // sanitize: remove empty and NULL items from the render array
+    $tmp_out_array = $elements_out_array;
+    $elements_out_array = array();
+    foreach($tmp_out_array as $item){
+      if(is_array($item) && count($item) > 0){
+        $elements_out_array[] = $item;
       }
     }
 

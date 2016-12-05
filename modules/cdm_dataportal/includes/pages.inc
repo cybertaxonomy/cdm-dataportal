@@ -90,12 +90,17 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     if (count($specimensOrObservations) > 0) {
         $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
 
-        if( isset($occurrence_queryDto->occurrenceQuery) ) {
-            $occurrence_query = $occurrence_queryDto->occurrenceQuery;
-            $legend_format_query = null;
-            $distribution_query = NULL;
-            $render_array['map'] = compose_map($occurrence_query, $distribution_query, $legend_format_query, array());
-        }
+      $map_visibility = variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT);
+      if($map_visibility == 'always' ||
+        variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT) == 'automatic' &&
+          (isset($occurrence_queryDto->fieldUnitPoints[0]) || isset($occurrence_queryDto->derivedUnitPoints[0]))
+        )
+      {
+        $occurrence_query = $occurrence_queryDto->occurrenceQuery;
+        $legend_format_query = null;
+        $distribution_query = NULL;
+        $render_array['map'] = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
+      }
     }
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 
@@ -180,7 +185,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     if (variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as') && $derivateHierarchy->taxonName) {
                         $detail_html .= create_label("Associated with") . $derivateHierarchy->taxonName . "<br>";
                     }
-                    // - prtologue
+                    // - protologue
                     if ($derivateHierarchy->protologue) {
                         //$detail_html .= "<strong>Protologue:</strong> " . $derivateHierarchy->protologue . "<br>"
                     }
@@ -192,7 +197,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     if($derivateHierarchy->preservedSpecimenDTOs){
                         foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
                             $detail_html .= "<br>";
-                            $detail_html .= compose_cdm_specimen_page_html($preservedSpecimenDTO);
+                            $detail_html .= render_cdm_specimen_page($preservedSpecimenDTO);
                         }
                     }
                     $detail_html .= "<br>";
@@ -466,8 +471,6 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // -------------------------------------------- //
-
-  $render_array['back_to_search'] = markup_to_render_array(theme('cdm_back_to_search_result_button'), -103);
 
   if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR) && isset($_REQUEST['acceptedFor'])) {
     $render_array['accepted_for'] = markup_to_render_array(cdm_accepted_for($_REQUEST['acceptedFor']), $weight++);
@@ -992,6 +995,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
     . font_awesome_icon_markup('fa-chevron-right')
     . ' </span>';
   $more_children_icon = font_awesome_icon_markup('fa-sitemap fa-rotate-270');
+  $more_children_label = '...';
 
   $items[] = $node_name;
 
@@ -1033,23 +1037,82 @@ function compose_classification_breadcrumbs($taxon_uuid) {
   // add more button to the end
   if(!$parent_taxon_nodes) {
     // not taxon focused yet, adding button to make  the root nodes available
-    $items[] = '<span class="taxonomic-children-button" data-classification-uuid="' . $current_classification_uuid
-      . '" data-rank-limit-uuid="' . $rank_limit_uuid . '" > '
-      . $more_children_icon
-      . '&nbsp;</span>';
+    $items[] = '<span>'
+      . $more_children_icon . '&nbsp;' .
+      '<span class="taxonomic-children-button" data-classification-uuid="' . $current_classification_uuid
+      . '" data-rank-limit-uuid="' . $rank_limit_uuid . '" data-cdm-align-with="prev"> ' . $more_children_label . '<span>'
+      . '</span>';
   } else if($more_children_for){
     // last parent item has child taxon nodes
-    $items[] = ' <span class="taxonomic-children-button" data-cdm-taxon-uuid="' .$more_children_for
-      . '" data-cdm-classification-mode="children" >'
-      . $more_children_icon
-      . '&nbsp;</span>';
+    $items[] = ' <span>'
+      . $more_children_icon . '&nbsp;' .
+      '<span class="taxonomic-children-button" data-cdm-taxon-uuid="' .$more_children_for
+      . '" data-cdm-classification-mode="children" data-cdm-align-with="prev"> ' . $more_children_label . '</span>'
+      . '</span>';
 
   }
-
-
 
   $render_array['#items'] = $items;
 
   return $render_array;
+}
 
+
+/**
+ * @param $specimen_uuid
+ * @return array
+ *    The drupal render array for the page
+ *
+ * @ingroup compose
+ */
+function compose_cdm_specimen_page($specimen_uuid)
+{
+  drupal_set_title("Specimen Details");
+  $specimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimen_uuid, 'specimenDerivates'));
+
+  $render_array = array();
+  RenderHints::pushToRenderStack('specimen_page');
+
+  $detail_html = render_cdm_specimen_page($specimen, true);
+  $render_array['specimen_html'] = array(
+    '#markup' => $detail_html
+  );
+
+  RenderHints::popFromRenderStack();
+  return $render_array;
+}
+
+/**
+ * @param $named_area_uuid
+ * @return array
+ *    The drupal render array for the page
+ *
+ * @ingroup compose
+ */
+function compose_cdm_named_area_page($named_area_uuid)
+{
+
+  $named_area = cdm_ws_get(CDM_WS_PORTAL_TERM, array($named_area_uuid));
+
+  $render_array = array();
+  RenderHints::pushToRenderStack('named_area_page');
+
+  $groups = array();
+  @_description_list_group_add($groups, t('Name') . ':', $named_area->representation_L10n);
+  @_description_list_group_add($groups, t('IdInVocabulary') . ':', $named_area->idInVocabulary);
+  if(isset($named_area->level)) {
+    @_description_list_group_add($groups, t('Level') . ':', $named_area->level->representation_L10n);
+  }
+
+  $name_area_details_elements = array(
+   // '#title' => $title,
+    '#theme' => 'description_list',
+    '#groups' => $groups,
+    '#attributes' => array('class' => html_class_attribute_ref($named_area)),
+  );
+
+  $render_array[] = $name_area_details_elements;
+
+  RenderHints::popFromRenderStack();
+  return $render_array;
 }

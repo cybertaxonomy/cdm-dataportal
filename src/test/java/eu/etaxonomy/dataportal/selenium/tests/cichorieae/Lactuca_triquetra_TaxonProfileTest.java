@@ -9,11 +9,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
@@ -151,7 +146,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
             assertEquals("Expecting 7 Footnotes", 7, featureBlock.countFootNotes());
         }
 
-        assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers_map")));
+        assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers-map-distribution")));
         WebElement mapCaptionElement = null;
         try {
             mapCaptionElement = featureBlock.getElement().findElement(By.className("distribution_map_caption"));
@@ -189,7 +184,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         assertEquals(blockTextFull, featureBlock.getText());
 
 
-        /* Uses */
+        /* Credits */
         featureClass = "credits";
         featureLabel = "Credits";
         blockTextFull = featureLabel + "\nChristodoulou C. S. 2009: Images (1 added).\nMakris C. 2009: Images (1 added).";

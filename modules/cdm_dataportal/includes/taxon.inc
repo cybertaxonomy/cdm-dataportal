@@ -61,10 +61,19 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
   $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
 
   // Aggregate misapplied names having the same fullname:
+  //  - deduplicate misapplied names, so that the same name it not shown multiple times in case it
+  //    the duplicates only have different sensu references/author teams (see #5647)
+  //  - show the author team as sec reference
+  //  - show the according reference as footnote to this author team
+  //  - if the sec reference has no author team it should show instead the title cache
+  //
+  // Example:
+  // "Xenoxylum foobar" sensu Grumbach¹; sensu Lem²
+  //    1. Novel marsian species, Grumbach, 2022
+  //    2. Flora solaris, Lem, 2019
   foreach ($taxonRelationships as $taxonRelation) {
 
     if (in_array($taxonRelation->type->uuid, $taxon_relationship_types)) {
-
 
       if ($taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR) {
 
@@ -72,11 +81,28 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
 
         $name = $taxonRelation->fromTaxon->name->titleCache;
 
-        $authorteam = $NULL_AUTHORTEAM;
+        $sensu_citation_footnote_str = null;
+
         if(isset($taxonRelation->fromTaxon->sec)) {
-          // taxa not always are have a sec reference (e.g. doubtful taxa)
+
+          $sensu_citation_footnote_str = theme('cdm_reference', array('reference' => $taxonRelation->fromTaxon->sec));
           $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
-          $authorteam = $authorteam->titleCache;
+
+          if(isset($authorteam->titleCache)){
+            $authorteam_str = $authorteam->titleCache;
+            if($taxonRelation->fromTaxon->sec->titleCache == $authorteam->titleCache){
+              // no need for a footnote in case the reference only consists of the author team
+              $sensu_citation_footnote_str = '';
+            }
+          } else {
+            $authorteam_str = $sensu_citation_footnote_str;
+            // no need for a footnote in case in case it is used as replacement for missing author teams
+            $sensu_citation_footnote_str = '';
+          }
+        } else {
+          // taxa not always are have a sec reference (e.g. doubtful taxa)
+          // use the NULL_AUTHORTEAM in this case
+          $authorteam_str = $NULL_AUTHORTEAM;
         }
 
         if (!isset($misapplied[$name])) {
@@ -90,9 +116,12 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
         }
 
         // Collect all authors for this fullname.
-        if (isset($authorteam) && $authorteam != $NULL_AUTHORTEAM) {
-          $misapplied[$name]['authorteam'][$authorteam] = '';
-          $joinedAuthorTeams[$authorteam] = 'sensu ' . theme('cdm_reference', array('reference' => $taxonRelation->fromTaxon->sec));
+        if (isset($authorteam_str) && $authorteam_str != $NULL_AUTHORTEAM) {
+          // prepare entry for the footnote key of the sensu citation footnote
+          $misapplied[$name]['authorteam'][$authorteam_str] = '';
+          // map sensu citation footnote to the authorteam string
+          $joinedAuthorTeams[$authorteam_str] = $sensu_citation_footnote_str;
+
         }
 
       }
@@ -110,17 +139,17 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
   // Sort the joinedAuthorTeams and create footnotes and footnotekeys.
   ksort($joinedAuthorTeams);
   $author_team_cnt = 0;
-  foreach ($joinedAuthorTeams as $authorteam => $sensuCitation) {
-    $footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensuCitation);
-
-    $sensu = ++$author_team_cnt == 0 ? '' : 'sensu ';
-
-    $joinedAuthorTeams[$authorteam] =  sprintf(
-        '<span class="sensu">%s%s%s</span>',
-        $sensu,
-        ($authorteam != $NULL_AUTHORTEAM ? $authorteam : ''),
-        theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey))
-      );
+  foreach ($joinedAuthorTeams as $authorteam_str => $sensu_citation) {
+    $footnoteKey = '';
+    if(!empty($sensu_citation)) {
+      $footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, 'sensu ' . $sensu_citation);
+      $footnoteKey = theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey));
+    }
+    $sensu = '';
+    if($authorteam_str != $NULL_AUTHORTEAM){
+      $sensu = ++$author_team_cnt == 0 ? '' : 'sensu ' . $authorteam_str;
+    }
+    $joinedAuthorTeams[$authorteam_str] = '<span class="sensu">' . $sensu . $footnoteKey .'</span>';
   }
 
   // ---- Generate output ---- //
@@ -134,8 +163,8 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
 
       if (isset($misapplied_name['authorteam'])) {
         // Fill authors with the renderedFootnoteKey and sorting 'em.
-        foreach ($misapplied_name['authorteam'] as $authorteam => &$renderedFootnoteKey) {
-          $renderedFootnoteKey = $joinedAuthorTeams[$authorteam];
+        foreach ($misapplied_name['authorteam'] as $authorteam_str => &$renderedFootnoteKey) {
+          $renderedFootnoteKey = $joinedAuthorTeams[$authorteam_str];
         }
         ksort($misapplied_name['authorteam']);
         $out .= join('; ', $misapplied_name['authorteam']);
@@ -178,7 +207,7 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
  *
  * According name relationships are also being rendered.
  *
- * @param unknown_type $taxonRelationship
+ * @param $taxonRelationship
  * @param boolean $doLinkTaxon
  *     whether to create a link to the related taxon
  * @param boolean $inverse
@@ -409,10 +438,10 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   $table_of_accepted = array();
 
   foreach ($synonym_uuids as $relatedUuid) {
-    $table_of_accepted[$relatedUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array(
-      $relatedUuid,
-      $searched_in_classification_uuid,
-    ));
+    $table_of_accepted[$relatedUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED,
+      array($relatedUuid),
+      'classificationFilter=' . $searched_in_classification_uuid
+    );
   }
 
   foreach ($misappied_uuids as $relatedUuid) {
@@ -435,11 +464,10 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       $is_synonym = isset($synonym_uuids[$taxon->uuid]); //TODO better use the $taxon->class attribute?
       $taxon_type = $is_synonym ? "Synonym" : "misapplied-name";
 
-      $acceptedTaxa = $table_of_accepted[$taxon->uuid];
+      $acceptedTaxon = $table_of_accepted[$taxon->uuid];
 
-      if (count($acceptedTaxa) == 1) {
+      if (is_object($acceptedTaxon)) {
 
-        $acceptedTaxon = $acceptedTaxa[0];
         $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
         $referenceUri = '';
         if (isset($acceptedTaxon->name->nomenclaturalReference)) {
@@ -457,7 +485,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
               $classification_titles[] = $classification->titleCache;
             }
           }
-          if(count($classification_titles) == 0){
+          if (count($classification_titles) == 0) {
             $classification_titles[] = $unclassified_snippet;
           }
           $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
@@ -466,25 +494,6 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
         if ($showMedia_synonyms) {
           $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
         }
-      }
-      else {
-
-        // TODO avoid using Ajax in the cdm_dynabox .... why?
-        // TODO add media.
-        $out .= cdm_dynabox(
-          $taxon->uuid,
-          render_taxon_or_name($taxon->name, NULL, NULL, FALSE),
-          cdm_compose_url(CDM_WS_PORTAL_TAXON_ACCEPTED,
-            array(
-              $taxon->uuid,
-              $searched_in_classification_uuid
-            )
-          ),
-          'cdm_list_of_taxa',
-          'show accepted taxa of this ' . $taxon_type,
-          array('li', 'ul'),
-          array('class' => array($taxon_type))
-        );
       }
     }
     else {
