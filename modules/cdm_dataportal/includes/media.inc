@@ -28,8 +28,8 @@
  *   the render array of the groups for the HTML description list
  */
 function cdm_rights_as_dl_groups($rights_list) {
-
   $copyrights = array();
+
   $licenses = array();
   $access_rights = array();
   $unknown = array();
@@ -42,13 +42,15 @@ function cdm_rights_as_dl_groups($rights_list) {
     switch ($type_uuid) {
 
       case UUID_RIGHTS_COPYRIGHT:
-        if (isset($right->agent[0]) ){
-          $agent_names = array();
-          foreach ($right->agent as $agent) {
-            $agent_names[] = $agent->titleCache;
-          }
-          $copyrights[] = implode(', ', $agent_names);
+        $text = '';
+        if (isset($right->text) ){
+          // sanitize potential '(c)' away
+          $text  = preg_replace('/^\(c\)/', '', $right->text);
+        } if (isset($right->agent) ){
+          $text  .= (strlen($text) > 0 ? ', ' : '') . $right->agent;
         }
+
+        $copyrights[] = array('#markup' => '&copy; ' . $text);
         break;
 
       case UUID_RIGHTS_LICENCE:
@@ -67,30 +69,30 @@ function cdm_rights_as_dl_groups($rights_list) {
         if (strlen($license_str) > 0 && isset($right->text)) {
           $license_str .= ': ' . $right->text;
         }
-        $licenses[] = $license_str;
+        $licenses[] = array('#markup' => $license_str);
         break;
 
       case UUID_RIGHTS_ACCESS_RIGHTS:
-        $access_rights[] = $right->text . $right->uuid;
+        $access_rights[] = array('#markup' => $right->text);
         break;
 
       default:
-        $unknown_groups[] = $right->text . $right->uuid; // TODO !
+        $unknown_groups[] = array('#markup' => $right->text);
     }
   }
 
   $groups = array();
   if (count($copyrights) > 0) {
-    _description_list_group_add($groups, t('Copyright'), $copyrights);
+    _description_list_group_add($groups, t('Copyright') . ':', $copyrights);
   }
   if (count($licenses) > 0) {
-    _description_list_group_add($groups, t('Licenses'), $licenses);
+    _description_list_group_add($groups, t('Licenses') . ':', $licenses);
   }
   if (count($access_rights) > 0) {
-    _description_list_group_add($groups, t('Access rights'), $access_rights);
+    _description_list_group_add($groups, t('Access rights') . ':', $access_rights);
   }
   if (count($unknown) > 0) {
-    _description_list_group_add($groups, t('Rights (untyped)'), $unknown);
+    _description_list_group_add($groups, t('Rights') . ':', $unknown);
   }
 
   return $groups;
@@ -178,38 +180,19 @@ function read_media_metadata($media) {
     $metadata_caption['artist'] = $media->artist->titleCache;
   }
 
-  // Copyright.
-  $metadata_caption['rights'] = array(
-    'copyright' => array('agentNames' => array()),
-    'license' => array(
-      'agentNames' => array(),
-      'types' => array(),
-      'abbreviatedTexts' => array(),
-      'uris' => array(),
-    ),
-  );
+  // Rights
+  $metadata_caption['rights'] = array();
   if (!empty($media_metadata->Copyright)) {
-    $metadata_caption['rights']['copyright']['agentNames'][] = $media_metadata->Copyright;
+    $rightsObj =  new stdClass();
+    $rightsObj->type = new stdClass();
+    $rightsObj->type->uuid = UUID_RIGHTS_COPYRIGHT;
+    $rightsObj->type->titleCache = 'copyright';
+    $rightsObj->type->representation_L10n = 'copyright';
+    $rightsObj->type->text = $media_metadata->Copyright;
+    $metadata_caption['rights'][] = $rightsObj;
   }
-  elseif (isset($media->rights) && is_array($media->rights)) {
-    foreach ($media->rights as $right) {
-      if(isset($right->term)){
-        switch ($right->type->uuid) {
-          case UUID_RIGHTS_LICENCE:
-            $metadata_caption['rights']['license']['agentNames'][] = ($right->agent ? '' . $right->agent->firstname . ' ' . $right->agent->lastname : '');
-            $metadata_caption['rights']['license']['types'][] = ($right->representation_L10n ? '' . $right->representation_L10n : '');
-            $metadata_caption['rights']['license']['abbreviatedTexts'][] = ($right->abbreviatedText ? '' . $right->abbreviatedText : '');
-            $metadata_caption['rights']['license']['uris'][] = ($right->uri ? '' . $right->uri : '');
-            break;
-          case UUID_RIGHTS_COPYRIGHT:
-            $metadata_caption['rights']['copyright']['agentNames'][] = $right->agent->firstname . ' ' . $right->agent->lastname;
-            break;
-        }
-      }
-    }
-  }
-  else {
-    $metadata_caption['rights']['agentNames'][] = '';
+  if(isset($media->rights) && is_array($media->rights)) {
+    $metadata_caption['rights'] = array_merge($metadata_caption['rights'], $media->rights);
   }
 
   // Filling the description (though there is no description in the db???).

@@ -707,10 +707,11 @@ function compose_cdm_sequence($sequence) {
             NULL,
             7
           );
+          break;
 
         case 'rights':
           array_merge($groups, cdm_rights_as_dl_groups($value));
-        break;
+          break;
 
         case 'annotations':
           $dd_elements = array();

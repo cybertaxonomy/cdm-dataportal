@@ -198,6 +198,8 @@ function theme_cdm_media_mime_text($variables) {
  *
  * @return string
  *   the themed html output
+ *
+ * TODO turn into compose method
  */
 function theme_cdm_media_caption($variables) {
   $media = $variables['media'];
@@ -216,7 +218,7 @@ function theme_cdm_media_caption($variables) {
   // Title.
   if ($doTitle) {
     if ($media_metadata['title']) {
-      $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
+      $out .= '<dt class = "title">' . t('Title')  . ':'. '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
       $descriptionPrefix = "- ";
     }
     elseif (!($doDescription && $media_metadata['description'])) {
@@ -227,11 +229,11 @@ function theme_cdm_media_caption($variables) {
   }
   // Description.
   if ($media_metadata['description'] && $doDescription) {
-    $out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $descriptionPrefix . $media_metadata['description'] . '</dd>';
+    $out .= '<dt class = "description">' . t('Description')  . ':'. '</dt> <dd class = "description">' . $descriptionPrefix . $media_metadata['description'] . '</dd>';
   }
   // Artist.
   if ($media_metadata['artist'] && $doArtist) {
-    $out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $media_metadata['artist'] . '</dd>';
+    $out .= '<dt class = "artist">' . t('Artist')  . ':' . '</dt> <dd class = "artist">' . $media_metadata['artist'] . '</dd>';
   }
   // Location.
   if ($doLocation) {
@@ -252,41 +254,16 @@ function theme_cdm_media_caption($variables) {
       $location .= $media_metadata['location']['country'];
     }
     if ($location) {
-      $out .= '<dt class = "location">' . t('Location') . '</dt> <dd class = "location">' . $location . '</dd>';
+      $out .= '<dt class = "location">' . t('Location') . ':' . '</dt> <dd class = "location">' . $location . '</dd>';
     }
   }
   // Rights.
   if ($doRights) {
-    $rights = '';
-    // TODO use cdm_rights_as_dl_groups() to create dl entries
-
-    // Copyrights.
-    $cnt = count($media_metadata['rights']['copyright']['agentNames']);
-    if ($cnt > 0) {
-      $rights .= '<dt class="rights">&copy;</dt> <dd class="rights"> ';
-      for ($i = 0; $i < $cnt; $i++) {
-        $rights .= $media_metadata['rights']['copyright']['agentNames'][$i];
-        if ($i + 1 < $cnt) {
-          $rights .= ' / ';
-        }
-      }
-      $rights .= '</dd>';
-    }
-    // License.
-    $cnt = count($media_metadata['rights']['license']['agentNames']);
-    if ($cnt > 0) {
-      $rights .= '<dt class ="license">' . t('License') . '</dt> <dd class = "license">';
-      for ($i = 0; $i < $cnt; $i++) {
-        $rights .= $media_metadata['rights']['license']['agentNames'][$i];
-        if ($i + 1 < $cnt) {
-          $rights .= ' / ';
-        }
-      }
-      $rights .= '</dd>';
-    }
-    if ($rights) {
-      $out .= $rights . '</dt>';
-    }
+    $rights_render_item = array(
+      '#theme' => 'description_list',
+      '#groups' => cdm_rights_as_dl_groups($media_metadata['rights'])
+    );
+   $out .= drupal_render($rights_render_item);
   }
   // TODO add all other metadata elements generically.
   $out .= '</dl>';
