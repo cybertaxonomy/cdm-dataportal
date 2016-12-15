@@ -2064,7 +2064,7 @@ function path_to_media($uuid, $representaion_uuid = FALSE, $partId = FALSE) {
   $out = 'cdm_dataportal/media/' . $uuid;
   if ($representaion_uuid) {
     $out .= '/' . $representaion_uuid;
-    if ($partId !== FALSE) {
+    if (is_numeric($partId)) {
       $out .= '/' . $partId;
     }
   }

@@ -556,6 +556,7 @@ function theme_cdm_reference_page($variables) {
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_media_page($variables) {
+
   $media = $variables['media'];
   $mediarepresentation_uuid = $variables['mediarepresentation_uuid'];
   $partId = $variables['partId'];
@@ -563,27 +564,24 @@ function theme_cdm_media_page($variables) {
   // Determine which representation and which part to show.
   $representationIdx = 0;
   if ($mediarepresentation_uuid) {
-    $i = 0;
+    $p_i = 0;
     foreach ($media->representations as $representation) {
       if ($representation->uuid == $mediarepresentation_uuid) {
-        $representationIdx = $i;
+        $representationIdx = $p_i;
       }
-      $i++;
+      $p_i++;
     }
-  }
-  else {
-    $mediarepresentation_uuid = $media->representations[0]->uuid;
   }
 
   $partIdx = 0;
   if (!is_numeric($partId)) {
     // Assuming it is an uuid.
-    $i = 0;
+    $p_i = 0;
     foreach ($media->representations[$representationIdx]->parts as $part) {
       if ($part->uuid == $partId) {
-        $partIdx = $i;
+        $partIdx = $p_i;
       }
-      $i++;
+      $p_i++;
     }
   }
   else {
@@ -622,37 +620,45 @@ function theme_cdm_media_page($variables) {
   $out .= $metadataToPrint;
 
   // Tabs for the different representations.
-  // ul.secondary
-  $out .= '<ul class="primary">';
+  // Representation(-part) specific metadata.
+  $thumbnailMaxExtend = 100;
+  $out .= '<h3>' .t('Media representations') .'</h3><ul id="media-representations">';
+  $r_i = 0;
   foreach ($media->representations as $representation) {
-    $out .= '<li>' . l($media->representations[$representationIdx]->mimeType, path_to_media($media->uuid, $mediarepresentation_uuid, $partIdx)) . '</li>';
+    $out .= '<li><strong>'. t('Representation') . ' ' . $r_i . "</strong> ($representation->mimeType)" ;
+    // parts
+    $p_i = 0;
+    $table_class_attribute = '';
+    if($partIdx == $p_i && $representationIdx == $r_i ){
+      $table_class_attribute = 'class="active"';
+    }
+    $out .= "<table $table_class_attribute>";
+    foreach ($representation->parts as $part) {
+      $out .= '<tr><th>' . t('Part') . ' ' . ($p_i + 1) . '</th></tr><tr><td>';
+      switch ($part->class) {
+        case 'ImageFile':
+          $out .= $part->width . 'x' . $part->height . ' px - ' . $part->size . ' kB';
+          break;
+        case 'AudioFile':
+        case 'MovieFile':
+          $out .= t('Duration') . ': ' . $part->duration . 's - ' . $part->size . ' kB';
+          break;
+        default:
+          $out .= $part->size . 'k';
+      }
+
+      $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $representation->uuid, $p_i)) . '">'
+        . theme('cdm_media_gallerie_image', array('mediaRepresentationPart' => $part, 'maxExtend' => $thumbnailMaxExtend, 'addPassePartout' => TRUE));
+      $p_i++;
+    }
+    $out .= '</table>';
+    $out .=  '</li>';
+    $r_i++;
   }
   $out .= '</ul>';
 
-  // Representation(-part) specific metadata.
-  $thumbnailMaxExtend = 100;
-  $out .= '<table>';
-  $i = 0;
-  foreach ($media->representations[$representationIdx]->parts as $part) {
-    $out .= '<tr><th>' . t('Part') . ' ' . ($i + 1) . '</th><td>';
-    switch ($part->class) {
-      case 'ImageFile':
-        $out .= $part->width . ' x ' . $part->height . ' - ' . $part->size . 'k';
-        break;
-      case 'AudioFile':
-      case 'MovieFile':
-        $out .= t('Duration') . ': ' . $part->duration . 's - ' . $part->size . 'k';
-        break;
-      default:
-        $out .= $part->size . 'k';
-    }
 
-    $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $mediarepresentation_uuid, $i)) . '">' . theme('cdm_media_gallerie_image', array('mediaRepresentationPart' => $part, 'maxExtend' => $thumbnailMaxExtend, 'addPassePartout' => TRUE));
-    $i++;
-  }
-  $out .= '</table>';
   $out .= '</div>';
-
   return $out;
 }
 

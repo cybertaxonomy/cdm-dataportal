@@ -592,6 +592,10 @@ div.cdm_media_viewer_image {
   background-color: #eee;
 }
 
+#media-representations table.active {
+    border: black solid 1px;
+}
+
 /*
  * ======= Reference Page =======
  */
