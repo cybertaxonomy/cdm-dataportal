@@ -1024,7 +1024,7 @@ function theme_cdm_taxontree_node($variables) {
   }
 
   // Taxon name.
-  $out .= $name;
+  $out .= '<span class="' . html_class_attribute_ref($node) . '">' . $name . '</span>';
 
   // Concept_switch or other theme callbacks.
   if ($tree_node_callback) {

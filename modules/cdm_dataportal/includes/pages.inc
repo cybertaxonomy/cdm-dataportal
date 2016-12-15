@@ -1020,7 +1020,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
         ($is_first_item ? '' : ' ')
         . $rank_separator
         . l(
-          $node_name,
+          '<span class="' . html_class_attribute_ref($node) . '">' . $node_name . '</span>',
           $path,
           array(
             'attributes' => array(
@@ -1028,7 +1028,8 @@ function compose_classification_breadcrumbs($taxon_uuid) {
               'data-cdm-taxon-uuid' => array($node->taxonUuid),
               'data-cdm-classification-mode' => array('siblings'),
               'data-cdm-align-with' => array('prev')
-            )
+            ),
+            'html' => true
           )
         );
       }
