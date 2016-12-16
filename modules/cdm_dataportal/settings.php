@@ -1838,6 +1838,8 @@ function cdm_settings_layout_taxon() {
   $taxon_tabs_weights = get_array_variable_merged(CDM_TAXONPAGE_TAB_WEIGHT, CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
   $form['taxon_tabs'][CDM_TAXONPAGE_TAB_WEIGHT] = array(
     '#title'  => 'Tabs order',
+    '#type' => 'fieldset',
+    '#collapsible' => false,
     '#tree' => true,
     '#description' => 'The weight value defines the order of the tabs or of the respective content block on the 
         taxon page when it is the tabless mode.'
@@ -1858,6 +1860,8 @@ function cdm_settings_layout_taxon() {
   $taxon_tabs_labels = get_array_variable_merged(CDM_TAXONPAGE_TAB_LABELS, CDM_TAXONPAGE_TAB_LABELS_DEFAULT);
   $form['taxon_tabs'][CDM_TAXONPAGE_TAB_LABELS] = array(
     '#title'  => 'Tab label override',
+    '#type' => 'fieldset',
+    '#collapsible' => false,
     '#tree' => true,
     '#description' => 'Setting a label for a tab will override the default label.'
   );
