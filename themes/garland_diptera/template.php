@@ -212,6 +212,7 @@ function garland_diptera_cdm_descriptionElements($descriptionElements){
  *
  * @param $tabname
  * @return unknown_type
+ * FIXME the theme hoock cdm_taxonpage_tab no linger exists use the settings instead
  */
 function garland_diptera_cdm_taxonpage_tab($tabname){
   switch($tabname){

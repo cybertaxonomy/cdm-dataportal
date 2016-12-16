@@ -150,7 +150,6 @@ function cdm_dataportal_theme() {
         'partId' => FALSE,
     )),
     'cdm_polytomousKey_page' => array('variables' => array('polytomousKey' => NULL)),
-    'cdm_taxonpage_tab' => array('variables' => array('tabname' => NULL)),
 
     // Themes in cdm_dataportal.references.theme.
     'cdm_reference' => array('variables' => array(
