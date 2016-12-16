@@ -492,11 +492,12 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   if (array_search('images', taxon_page_tabs_hidden()) === FALSE && ($page_part == 'images' || $page_part == 'all')) {
     $images_html = '<div id="images" class="page-part">';
     if ($page_part == 'all') {
-      $images_html .= '<h2>' . t('Images') . '</h2>';
+      $images_html .= '<h2>' . t(cdm_taxonpage_tab_label('Images')) . '</h2>';
     }
     // Get the image gallery as configured by the admin.
     $default_image_gallery = 'default';
     $configured_image_gallery_viewer = variable_get('image_gallery_viewer', 'default');
+    $taxon_image_gallery = '<div class="error">No image gallery viewer configured</div>';
     if($configured_image_gallery_viewer == $default_image_gallery || $configured_image_gallery_viewer == 'fsi'){
       // the fsi_gallery requires a flash plugin, in case the client browser is not supporting
       // flash we also need to provide an the default gallery as alternative
@@ -524,7 +525,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   if (($page_part == 'synonymy' || $page_part == 'all')) {
     $synonymy_html = '<div id="synonymy" class="page-part">';
     if ($page_part == 'all') {
-      $synonymy_html .= '<h2>' . t('Synonymy') . '</h2>';
+      $synonymy_html .= '<h2>' . t(cdm_taxonpage_tab_label('Synonymy')) . '</h2>';
     }
     $addAcceptedTaxon = variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
 
@@ -538,7 +539,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   // --- PAGE PART: SPECIMENS --- //
   if ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')) {
     $render_array['specimens'] = array(
-        '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t('Specimens') . '</h2>' : ''),
+        '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
         'content' => cdm_dataportal_taxon_page_specimens($taxon), // returns render array
         '#suffix' => '</div>',
     );
@@ -551,7 +552,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   else if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
     $keys_html = '<div id="keys" class="page-part">';
     if ($page_part == 'all') {
-      $keys_html .= '<h2>' . t('Keys') . '</h2>';
+      $keys_html .= '<h2>' . t(cdm_taxonpage_tab_label('Keys')) . '</h2>';
     }
     $keys_html .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
     $keys_html .= '</div>';
@@ -562,7 +563,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
   if (array_search('experts', taxon_page_tabs_hidden()) === FALSE && ($page_part == 'experts' || $page_part == 'all')) {
     $render_array['experts'] = array(
-        '#prefix' => '<div id="experts" class="page-part">' . ($page_part == 'all' ? '<h2>' . t('Experts') . '</h2>' : ''),
+        '#prefix' => '<div id="experts" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Experts')) . '</h2>' : ''),
         'content' => compose_cdm_taxon_page_experts($taxon), // returns render array
         '#suffix' => '</div>',
     );
@@ -571,7 +572,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   // ------------------ END OF PARTS -------------- //
 
   // adjust weights of page and toc elements according to the settings
-  $taxontabs_weights = get_array_variable_merged('cdm_taxonpage_tabs_weight', CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
+  $taxontabs_weights = get_array_variable_merged(CDM_TAXONPAGE_TAB_WEIGHT, CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
   foreach($taxontabs_weights as $tab_key => $weight){
     if(isset($render_array[$tab_key])){
       $render_array[$tab_key]['#weight'] = $weight;
@@ -588,7 +589,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
         if($tab_key != 'general'){
           // add entry for page part
           $toc_elements[] = array(
-              'data' => l(t('@tab-name', array('@tab-name' => ucfirst($tab_key))), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
+              'data' => l(t(cdm_taxonpage_tab_label(ucfirst($tab_key))), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
               'class' => array('page-part-toc-item-' . $tab_key)
           );
         } else {
@@ -1116,4 +1117,22 @@ function compose_cdm_named_area_page($named_area_uuid)
 
   RenderHints::popFromRenderStack();
   return $render_array;
+}
+
+/**
+ * Provides the the label string for taxon page tabs.
+ *
+ * The $tabname as passed to the method will be returned if no override
+ * label is configured in the settings.
+ */
+function cdm_taxonpage_tab_label($tabname) {
+  static $taxon_tabs_labels = null;
+  if($taxon_tabs_labels == null){
+    $taxon_tabs_labels = get_array_variable_merged(CDM_TAXONPAGE_TAB_LABELS, CDM_TAXONPAGE_TAB_LABELS_DEFAULT);
+  }
+  $tabname_key = strtolower($tabname);
+  if(isset($taxon_tabs_labels[$tabname_key]) && $taxon_tabs_labels[$tabname_key]){
+    return $taxon_tabs_labels[$tabname_key];
+  }
+  return $tabname;
 }

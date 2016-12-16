@@ -684,23 +684,3 @@ function theme_cdm_polytomousKey_page($variables) {
    */
   return '<div id="identificationKey">' . $out . '</div>';
 }
-
-/**
- * Returns HTML for taxon page tabs.
- *
- * Allows theming of the taxon page tabs.
- *
- * @param array $variables
- *   An associative array containing:
- *   - tabname
- *
- * @ingroup themeable
- */
-function theme_cdm_taxonpage_tab($variables) {
-  $tabname = $variables['tabname'];
-  // TODO replace by using translations or theme the menue tabs itself instead?
-  switch ($tabname) {
-    default:
-      return t('@tabname', array('@tabname' => $tabname));
-  }
-}
