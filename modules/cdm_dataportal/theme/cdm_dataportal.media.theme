@@ -288,8 +288,8 @@ function theme_cdm_media_caption($variables) {
  *          1) Show 'title', 'description', 'file', 'filename' in the caption:
  *            array('title', 'description', 'file', 'filename'),
  *          2) To add an addtional link at the bottom of  the caption:
- *            array('titlecache', '#uri'=>t('open Image')) this will cause a link
- *            to be rendered with label 'open Image' which will open the according
+ *            array('titlecache', '#uri'=>t('Open Image')) this will cause a link
+ *            to be rendered with label 'Open image' which will open the according
  *            media object.
  *   - mediaLinkType: Valid values:
  *      - "NONE": do not link the images,

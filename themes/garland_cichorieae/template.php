@@ -74,7 +74,7 @@ function phptemplate_menu_local_tasks() {
  * Returns HTML for taxon list thumbnails.
  *
  * Theme specific mods:
- * $captionElements = array('title', '#uri'=>t('open Image'));
+ * $captionElements = array('title', '#uri'=>t('Open image'));
  * $mediaLinkType:
  * "NORMAL": link to the image page or to the $alternativeMediaUri if it is
  * defined instead of
@@ -98,7 +98,7 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($variables) {
   $showCaption = $gallery_settings['cdm_dataportal_show_thumbnail_captions'];
   $captionElements = array();
   if ($showCaption) {
-    $captionElements = array('title', '#uri' => t('open Image'));
+    $captionElements = array('title', '#uri' => t('Open image'));
   }
 
   $gallery_name = $taxon->uuid;

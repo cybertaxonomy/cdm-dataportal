@@ -93,7 +93,7 @@ msgid "Synonymy"
 msgstr ""
 
 #: cdm_dataportal.theme.php:1736
-msgid "open Image"
+msgid "Open image"
 msgstr ""
 
 #: cdm_dataportal.theme.php:1751

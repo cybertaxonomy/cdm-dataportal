@@ -2362,7 +2362,7 @@ msgid "Sorry, no matching entries found."
 msgstr "Lo sentimos, no encontramos coincidencia."
 
 #: theme/cdm_dataportal.page.theme:320
-msgid "open Image"
+msgid "Open image"
 msgstr ""
 
 #: theme/cdm_dataportal.page.theme:367

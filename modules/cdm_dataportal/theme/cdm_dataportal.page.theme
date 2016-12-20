@@ -306,7 +306,7 @@ function taxon_image_gallery_default($taxon, $media) {
     $captionElements = array(
       'title',
       'rights',
-      '#uri' => t('open Image'),
+      '#uri' => t('Open Image'),
     );
     */
     $captionElements = array(
@@ -315,7 +315,7 @@ function taxon_image_gallery_default($taxon, $media) {
       'artist',
       'location',
       'rights',
-      '#uri' => t('open Image'),
+      '#uri' => t('Open image'),
     );
     $gallery_name = $taxon->uuid;
     $mediaLinkType = 'LIGHTBOX';
