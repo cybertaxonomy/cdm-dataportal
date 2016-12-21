@@ -2183,7 +2183,7 @@ msgstr ""
 
 #: includes/pages.inc:508
 msgid "Images"
-msgstr ""
+msgstr "Imágenes"
 
 #: includes/pages.inc:540
 msgid "Synonymy"
@@ -2363,7 +2363,7 @@ msgstr "Lo sentimos, no encontramos coincidencia."
 
 #: theme/cdm_dataportal.page.theme:320
 msgid "Open image"
-msgstr ""
+msgstr "Abrir imagen"
 
 #: theme/cdm_dataportal.page.theme:367
 msgid "In order to use the FSI gallery you must enable the according "
