@@ -63,15 +63,19 @@ function phycobank_registration_data(){
 
   if(isset($extensions->records[0])){
     $data = json_decode($extensions->records[0]->value);
-    $groups = array();
-    _description_list_group_add($groups, 'ID:', $data->regId);
-    _description_list_group_add($groups, 'Date:', $data->date);
-    _description_list_group_add($groups, 'Office:', $data->office);
-    @_description_list_group_add($groups, 'Form number:', $data->formNumber);
+    $rows = array(
+      '#no_striping' => true
+    );
+    $rows[] = array('ID:', $data->regId);
+    $rows[] = array('Date:', $data->date);
+    $rows[] = array('Office:', $data->office);
+    if(isset($data->formNumber)) {
+      $rows[] = array('Form number', $data->formNumber);
+    }
 
     $data_elements = array(
-      '#theme' => 'description_list',
-      '#groups' => $groups
+      '#theme' => 'table',
+      '#rows' => $rows,
     );
     return $data_elements;
   }
