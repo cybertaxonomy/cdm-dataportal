@@ -488,7 +488,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
           if (count($classification_titles) == 0) {
             $classification_titles[] = $unclassified_snippet;
           }
-          $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
+          $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
         }
         $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
         if ($showMedia_synonyms) {
@@ -515,7 +515,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
         if(count($classification_titles) == 0){
           $classification_titles[] = $unclassified_snippet;
         }
-        $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
+        $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
       }
       $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
 
