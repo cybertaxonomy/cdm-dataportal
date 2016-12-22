@@ -1471,10 +1471,13 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
         // common name without a language or area, should not happen but is possible
         $language_area_key = '';
         if (isset($element->language->representation_L10n)) {
-          $language_area_key .= '<span class="language-label">' . $element->language->representation_L10n . '</span>';
+          $language_area_key .= $element->language->representation_L10n ;
         }
         if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
           $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->titleCache . ')';
+        }
+        if($language_area_key){
+          $language_area_key = '<span class="language-area-label">' . $language_area_key . '<span class="separator">: </span></span>';
         }
 
         if(isset($common_names[$language_area_key][$element->name])) {
@@ -1515,7 +1518,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
         $per_language_area_out[] = $common_name_markup;
       }
 
-      $common_name_feature_elements[] = ($language_area_key ? $language_area_key . ': ' : '' ) . join(', ', $per_language_area_out);
+      $common_name_feature_elements[] = $language_area_key . join(', ', $per_language_area_out);
     } // End of loop over set of elements per language area
 
 
