@@ -1046,7 +1046,7 @@ msgid "Number of results to display per page."
 msgstr ""
 
 #: settings.php:2509
-msgid "Show the <i>Show Image Thumbnails</i> button"
+msgid "Show the"
 msgstr ""
 
 #: settings.php:2511
@@ -2346,8 +2346,8 @@ msgid "Modify search"
 msgstr "Modificar búsqueda"
 
 #: theme/cdm_dataportal.page.theme:255
-msgid "Display Image Thumbnails"
-msgstr ""
+msgid "Display image thumbnails"
+msgstr "Muestra miniaturas de imágenes"
 
 #: theme/cdm_dataportal.page.theme:263
 msgid "results for"

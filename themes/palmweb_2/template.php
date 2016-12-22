@@ -120,7 +120,7 @@ function palmweb_2_cdm_search_results($variables){
   $out .= '<form name="pageoptions">';
   $out .= '<input id="showThumbnails" type="checkbox" name="showThumbnails" ';
   $out .= $showThumbnails == 1 ? 'checked="checked"' : '';
-  $out .= '> ' . t('Show Image Thumbnails') . '</form></div>';
+  $out .= '> ' . t('Display image thumbnails') . '</form></div>';
   if (!empty($pager) && count($pager->records) > 0) {
       $out .= '<div id="search_results">';
     $list_of_taxa = compose_list_of_taxa($pager->records);

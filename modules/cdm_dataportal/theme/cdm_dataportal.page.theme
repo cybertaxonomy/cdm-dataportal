@@ -250,7 +250,7 @@ function theme_cdm_search_results($variables)
     }
   }
   if (variable_get(SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX, SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX_DEFAULT)) {
-    $out .= '<form name="pageoptions"><div id="showThumbnails"><input class="showThumbnails" type="checkbox" name="showThumbnails" ' . (do_showThumbnails() == 1 ? 'checked="checked"' : '') . '> ' . t('Display Image Thumbnails') . '</div></form>';
+    $out .= '<form name="pageoptions"><div id="showThumbnails"><input class="showThumbnails" type="checkbox" name="showThumbnails" ' . (do_showThumbnails() == 1 ? 'checked="checked"' : '') . '> ' . t('Display image thumbnails') . '</div></form>';
   }
   $out .= '</div>';
 

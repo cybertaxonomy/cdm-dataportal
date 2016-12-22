@@ -2582,7 +2582,7 @@ function cdm_settings_layout_search() {
 
   $form['search_settings'][SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show the <i>Show Image Thumbnails</i> button') . ':',
+    '#title' => t('Show the') .  ' <i>' . t('Display image thumbnails') . '</i>' . t('button') . ':',
     '#default_value' => variable_get(SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX, SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX_DEFAULT),
     '#description' => t('The search results page will offer a button to toggle the display of image thumbnails.'),
   );

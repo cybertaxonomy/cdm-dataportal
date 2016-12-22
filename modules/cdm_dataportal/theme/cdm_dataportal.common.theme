@@ -356,6 +356,7 @@ function theme_cdm_marker($variables) {
 }
 
 /* ============================ pager ============================= */
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -371,7 +372,7 @@ function theme_cdm_pager($variables) {
     $out .= '<div class="pager">';
     if ($pager->currentIndex > 0) {
       $out .= theme('cdm_pager_link', array(
-        'text' => t('« first'),
+        'text' => '« ' . t('First'),
         'linkIndex' => 0,
         'pager' => $pager,
         'path' => $path,
@@ -379,7 +380,7 @@ function theme_cdm_pager($variables) {
         'attributes' => array('class' => array('pager-first')),
         ));
       $out .= theme('cdm_pager_link', array(
-        'text' => t('‹ previous'),
+        'text' => '‹ ' . t('Previous'),
         'linkIndex' => $pager->currentIndex - 1,
         'pager' => $pager,
         'path' => $path,
@@ -403,12 +404,32 @@ function theme_cdm_pager($variables) {
     }
 
     if ($pager->nextIndex) {
-      $out .= theme('cdm_pager_link', array('text' => t('next ›'), 'linkIndex' => $pager->nextIndex, 'pager' => $pager, 'path' => $path, 'parameters' => $parameters, 'attributes' => array(
-  'class' => array('pager-next'),
-)));
-      $out .= theme('cdm_pager_link', array('text' => t('last »'), 'linkIndex' => $pager->pagesAvailable - 1, 'pager' => $pager, 'path' => $path, 'parameters' => $parameters, 'attributes' => array(
-  'class' => array('pager-last'),
-)));
+      $out .= theme(
+        'cdm_pager_link',
+        array(
+          'text' => t('Next') . ' ›',
+          'linkIndex' => $pager->nextIndex,
+          'pager' => $pager,
+          'path' => $path,
+          'parameters' => $parameters,
+          'attributes' => array(
+            'class' => array('pager-next'),
+          )
+        )
+      );
+      $out .= theme(
+        'cdm_pager_link',
+        array(
+          'text' => t('Last') . ' »',
+          'linkIndex' => $pager->pagesAvailable - 1,
+          'pager' => $pager,
+          'path' => $path,
+          'parameters' => $parameters,
+          'attributes' => array(
+            'class' => array('pager-last'),
+          )
+        )
+      );
     }
     $out .= '</div>';
 
