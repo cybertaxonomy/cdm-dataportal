@@ -303,7 +303,8 @@ function theme_cdm_media_caption($variables) {
  *   - galleryLinkUri: An URI to link the the hint on more images to;
  *     if NULL no link is created.
  *
- * @return the image gallery HTML
+ * @return string
+ *   The image gallery HTML
  * @ingroup: themeable
  */
 function theme_cdm_media_gallerie($variables) {
@@ -312,7 +313,7 @@ function theme_cdm_media_gallerie($variables) {
 
   // Do not show an empty gallery.
   if (count($mediaList) == 0) {
-    return;
+    return '';
   }
 
   $galleryName = $variables['galleryName'];
@@ -541,7 +542,7 @@ function theme_cdm_media_gallerie_image($variables) {
       $w = $imageDimensions[0];
       $h = $imageDimensions[1];
     }
-    $margins = '0 0 0 0';
+
     $ratio = $w / $h;
     if ($ratio > 1) {
       $displayHeight = round($maxExtend / $ratio);
@@ -583,8 +584,9 @@ function theme_cdm_media_gallerie_image($variables) {
     if ($addPassePartout) {
       $out .= '</div>';
     }
-    return $out;
   }
+
+  return $out;
 }
 
 /**
@@ -597,22 +599,20 @@ function theme_cdm_media_gallerie_application($variables) {
   $addPassePartout = $variables['addPassePartout'];
   $attributes = $variables['attributes'];
   $out = '';
+
   if (isset($mediaRepresentationPart)) {
 
     if ($addPassePartout) {
       $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
-    }
-    else {
-      // Do not add margins if no pass partout is shown.
-      $margins = '';
     }
     $out .= '<div class="appication">Web Application</div>';
 
     if ($addPassePartout) {
       $out .= '</div>';
     }
-    return $out;
   }
+
+  return $out;
 }
 
 /**
@@ -624,22 +624,22 @@ function theme_cdm_media_gallerie_text($variables) {
   $maxExtend = $variables['maxExtend'];
   $addPassePartout = $variables['addPassePartout'];
   $attributes = $variables['attributes'];
-  if (isset($mediaRepresentationPart)) {
 
+  $out = '';
+
+  if (isset($mediaRepresentationPart)) {
     if ($addPassePartout) {
       $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
     }
-    else {
-      // Do not add margins if no pass partout is shown.
-      $margins = '';
-    }
+
     $out .= '<div class="application">Web Application</div>';
 
     if ($addPassePartout) {
       $out .= '</div>';
     }
-    return $out;
   }
+
+  return $out;
 }
 
 /**
@@ -679,19 +679,16 @@ function theme_cdm_openlayers_image($variables) {
     $h = $imageDimensions[1];
   }
 
-  // Calculate maxResolution (default is 360 deg / 256 px) and the bounds.
+  // Calculate maxResolution
   if ($w > $h) {
-    $lat = 90;
-    $lon = 90 * ($h / $w);
     $maxRes = $w / $maxExtend;
   }
   else {
-    $lat = 90 * ($w / $h);
-    $lon = 90;
     $maxRes = $h / $maxExtend;
   }
 
   $maxRes *= 1;
+
   drupal_add_js('
  var map;
 
