@@ -111,7 +111,10 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         }
 
         $by_associatedtaxon_query = http_build_query($associatedFieldUnitsQuery_parameters);
-        $pagerFieldUnits = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'associatedFieldUnits'), $by_associatedtaxon_query);
+        $pagerFieldUnits = cdm_ws_get(CDM_WS_PORTAL_TAXON,
+            array($taxon->uuid, 'associatedFieldUnits'),
+            $by_associatedtaxon_query . '&pageSize=' . variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size')
+        );
         // get icon images
         $expand_icon = font_awesome_icon_markup(
             'fa-plus-square-o',

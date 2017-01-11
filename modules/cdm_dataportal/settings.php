@@ -22,6 +22,7 @@
 
   define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
+  define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE', 50);
   define('CDM_DATAPORTAL_TAXON_AUTO_SUGGEST', 0);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 1);
   define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
@@ -2462,6 +2463,12 @@ ie	introduced: formerly introduced
     '#description' => t('If checked, the specimen will be listed in a table. Every row represents
     a collection and it can be expanded to get an overview of the specimens and their derivates.'),
   );
+
+    $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_page_size'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Number of records per page') . ':',
+        '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE),
+    );
 
   $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_show_determined_as'] = array(
     '#type' => 'checkbox',
