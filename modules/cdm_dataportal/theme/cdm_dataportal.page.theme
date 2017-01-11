@@ -325,7 +325,7 @@ function taxon_image_gallery_default($taxon, $media) {
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB);
 
     $out = '<div class="image-gallerie">';
-    $out .= theme('cdm_media_gallerie', array(
+    $out .= compose_cdm_media_gallerie(array(
       'mediaList' => $media,
       'galleryName' => $gallery_name,
       'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -605,17 +605,10 @@ function theme_cdm_media_page($variables) {
 
   $out .= theme('cdm_back_to_image_gallery_button', array());
   $out .= '<div class="viewer">';
-  $out .= theme('cdm_openlayers_image', array('mediaRepresentationPart' => $media->representations[$representationIdx]->parts[$partIdx], 'maxExtend' => $imageMaxExtend));
+  $out .= cdm_openlayers_image($media->representations[$representationIdx]->parts[$partIdx], $imageMaxExtend);
   $out .= '</div>';
 
   // General media metadata.
-  /*
-  $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
-  vardump("PRINTING MEDIA METADATA");
-  vardump($media_metadata);
-  vardump("PRINTING MEDIA");
-  vardump($media);
-  */
   $metadataToPrint = theme('cdm_media_caption', array('media' => $media));
   $out .= $metadataToPrint;
 
@@ -648,7 +641,7 @@ function theme_cdm_media_page($variables) {
       }
 
       $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $representation->uuid, $p_i)) . '">'
-        . theme('cdm_media_gallerie_image', array('mediaRepresentationPart' => $part, 'maxExtend' => $thumbnailMaxExtend, 'addPassePartout' => TRUE));
+        . cdm_media_gallerie_image($part, $thumbnailMaxExtend, TRUE);
       $p_i++;
     }
     $out .= '</table>';

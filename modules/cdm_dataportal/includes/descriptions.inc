@@ -772,7 +772,7 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
     $captionElements = array('title', 'rights');
 
     if (isset($media_list[0]) && isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
-      $gallery = theme('cdm_media_gallerie', array(
+      $gallery = compose_cdm_media_gallerie(array(
         'mediaList' => $media_list,
         'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $node->feature->uuid,
         'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],

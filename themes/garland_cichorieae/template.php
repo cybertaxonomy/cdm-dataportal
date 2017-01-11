@@ -107,7 +107,7 @@ function garland_cichorieae_cdm_taxon_list_thumbnails($variables) {
 
   $mediaList = $mediaList = _load_media_for_taxon($taxon);
 
-  $out .= theme('cdm_media_gallerie', array(
+  $out .= compose_cdm_media_gallerie(array(
     'mediaList' => $mediaList,
     'galleryName' => $gallery_name,
     'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],

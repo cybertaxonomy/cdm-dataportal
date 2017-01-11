@@ -188,7 +188,7 @@ function addImageGallery($galleryName, $imageUuids){
           }
         }
 
-        $gallery_html = theme('cdm_media_gallerie', array(
+        $gallery_html = compose_cdm_media_gallerie(array(
             'mediaList' => $images,
             'galleryName' => $galleryName,
             'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -733,7 +733,7 @@ function compose_cdm_sequence($sequence) {
         case 'chromatograms':
           @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
               array(
-                  '#markup'=>theme('cdm_media_gallerie', array('medialist'=>$value)),
+                  '#markup'=>compose_cdm_media_gallerie(array('medialist'=>$value)),
               ),
               NULL,
               11);

@@ -320,7 +320,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                         '#uri' => t('open media'),
                     );
 
-                    $gallery_html = theme('cdm_media_gallerie', array(
+                    $gallery_html = compose_cdm_media_gallerie(array(
                         'mediaList' => $mediaList,
                         'galleryName' => $gallery_name,
                         'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -706,12 +706,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
     }
 
     if (isset($representationPart->uri)) {
-      $profile_image = theme('cdm_media_gallerie_image', array(
-        'mediaRepresentationPart' => $representationPart,
-        'maxExtend' => $taxon_profile_image_settings['maxextend'],
-        'addPassePartout' => FALSE,
-        'attributes' => $attributes,
-      ));
+      $profile_image = cdm_media_gallerie_image($representationPart, $taxon_profile_image_settings['maxextend'], FALSE, $attributes);
       // NOTE: style="width:${maxextend}px' is needed for IE8 !!!
       $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $taxon_profile_image_settings['maxextend'] . 'px">' . $profile_image . '</div>',
         -101);

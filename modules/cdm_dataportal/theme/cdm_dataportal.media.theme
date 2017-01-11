@@ -274,7 +274,7 @@ function theme_cdm_media_caption($variables) {
 /**
  * Return HTML for a media gallery
  *
- * @param array $variables
+ * @param array $configuration
  *   An associative array containing:
  *   - mediaList: An array of Media entities.
  *   - maxExtend
@@ -303,28 +303,28 @@ function theme_cdm_media_caption($variables) {
  *   - galleryLinkUri: An URI to link the the hint on more images to;
  *     if NULL no link is created.
  *
- * @return string
- *   The image gallery HTML
- * @ingroup: themeable
+ * @return array
+ *   A render array for the image gallery
+ * @ingroup: compose
  */
-function theme_cdm_media_gallerie($variables) {
+function compose_cdm_media_gallerie($configuration) {
 
-  $mediaList = $variables['mediaList'];
+  $mediaList = $configuration['mediaList'];
 
   // Do not show an empty gallery.
   if (count($mediaList) == 0) {
     return '';
   }
 
-  $galleryName = $variables['galleryName'];
-  $maxExtend = $variables['maxExtend'];
-  $cols = $variables['cols'];
-  $maxRows = $variables['maxRows'];
-  $captionElements = $variables['captionElements'];
-  $mediaLinkType = $variables['mediaLinkType'];
-  $alternativeMediaUri = $variables['alternativeMediaUri'];
-  $galleryLinkUri = $variables['galleryLinkUri'];
-  $showCaption = $variables['showCaption'];
+  $galleryName = $configuration['galleryName'];
+  $maxExtend = $configuration['maxExtend'];
+  $cols = $configuration['cols'];
+  $maxRows = $configuration['maxRows'];
+  $captionElements = $configuration['captionElements'];
+  $mediaLinkType = $configuration['mediaLinkType'];
+  $alternativeMediaUri = $configuration['alternativeMediaUri'];
+  $galleryLinkUri = $configuration['galleryLinkUri'];
+  $showCaption = $configuration['showCaption'];
 
   $caption_link_uri = '';
   if(isset($captionElements['#uri'])){
@@ -406,11 +406,10 @@ function theme_cdm_media_gallerie($variables) {
         // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
         $contentTypeDirectory = media_content_type_dir($preferred_media_representation, 'application');
 
-         $mediaPartHtml = theme('cdm_media_gallerie_' . $contentTypeDirectory, array(
-            'mediaRepresentationPart' => $preferred_media_representation->parts[0],
-            'maxExtend' => $maxExtend,
-            'addPassePartout' => TRUE,
-         ));
+         $mediaPartHtml = call_user_func_array(
+           'cdm_media_gallerie_' . $contentTypeDirectory,
+           array( $preferred_media_representation->parts[0], $maxExtend, TRUE)
+         );
         // --- Compose Media Link.
         $mediaLinkUri = FALSE;
         if ($alternativeMediaUri) {
@@ -514,16 +513,18 @@ function theme_cdm_media_gallerie($variables) {
   $out .= '</table>';
   return $out;
 }
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_media_gallerie_image($variables) {
 
-  $mediaRepresentationPart = $variables['mediaRepresentationPart'];
-  $maxExtend = $variables['maxExtend'];
-  $addPassePartout = $variables['addPassePartout'];
-  $attributes = $variables['attributes'];
+/**
+ * Creates markup for a CDM MediaRepresentation which is referencing an image.
+ *
+ * @param $mediaRepresentationPart
+ * @param $maxExtend
+ * @param $addPassePartout
+ * @param $attributes
+ * @return string
+ *   The markup for the media representation
+ */
+function cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
 
   $out = '';
 
@@ -590,14 +591,17 @@ function theme_cdm_media_gallerie_image($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates markup for a CDM MediaRepresentation which is referencing an web application.
+ *
+ * @param $mediaRepresentationPart
+ * @param $maxExtend
+ * @param $addPassePartout
+ * @param $attributes
+ * @return string
+ *   The markup for the media representation
  */
-function theme_cdm_media_gallerie_application($variables) {
-  $mediaRepresentationPart = $variables['mediaRepresentationPart'];
-  $maxExtend = $variables['maxExtend'];
-  $addPassePartout = $variables['addPassePartout'];
-  $attributes = $variables['attributes'];
+function cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
+
   $out = '';
 
   if (isset($mediaRepresentationPart)) {
@@ -605,7 +609,7 @@ function theme_cdm_media_gallerie_application($variables) {
     if ($addPassePartout) {
       $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
     }
-    $out .= '<div class="appication">Web Application</div>';
+    $out .= '<div class="application">Web Application</div>';
 
     if ($addPassePartout) {
       $out .= '</div>';
@@ -616,14 +620,16 @@ function theme_cdm_media_gallerie_application($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates markup for a CDM MediaRepresentation which is referencing an web application.
+ *
+ * @param $mediaRepresentationPart
+ * @param $maxExtend
+ * @param $addPassePartout
+ * @param $attributes
+ * @return string
+ *   The markup for the media representation
  */
-function theme_cdm_media_gallerie_text($variables) {
-  $mediaRepresentationPart = $variables['mediaRepresentationPart'];
-  $maxExtend = $variables['maxExtend'];
-  $addPassePartout = $variables['addPassePartout'];
-  $attributes = $variables['attributes'];
+function cdm_media_gallerie_text($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
 
   $out = '';
 
@@ -656,9 +662,7 @@ function theme_cdm_media_gallerie_text($variables) {
  *   - mediaRepresentationPart: The CDM MediaRepresentationPart instance to be displayed.
  *   - maxExtend: The maximum extend of the image viewer view port.
  */
-function theme_cdm_openlayers_image($variables) {
-  $mediaRepresentationPart = $variables['mediaRepresentationPart'];
-  $maxExtend = $variables['maxExtend'];
+function cdm_openlayers_image($mediaRepresentationPart, $maxExtend) {
 
   _add_js_openlayers();
 
