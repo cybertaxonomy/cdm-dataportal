@@ -316,6 +316,22 @@ function compose_cdm_media_gallerie($configuration) {
     return '';
   }
 
+  // merge with default
+  $configuration = array_merge(
+    array(
+      'mediaList' => NULL,
+      'galleryName' => NULL,
+      'maxExtend' => 150,
+      'cols' => 4,
+      'maxRows' => FALSE,
+      'captionElements' => array('title'),
+      'mediaLinkType' => 'LIGHTBOX',
+      'alternativeMediaUri' => NULL,
+      'galleryLinkUri' => NULL,
+      'showCaption' => TRUE,
+    ),
+    $configuration);
+
   $galleryName = $configuration['galleryName'];
   $maxExtend = $configuration['maxExtend'];
   $cols = $configuration['cols'];
