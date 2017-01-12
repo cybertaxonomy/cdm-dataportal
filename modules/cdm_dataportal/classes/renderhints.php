@@ -54,6 +54,13 @@ class RenderHints {
   /**
    * @todo document this function.
    */
+  public static function clearFootnoteListKey() {
+    self::$footnoteListKey = FALSE;
+  }
+
+  /**
+   * @todo document this function.
+   */
   public static function pushToRenderStack($pathelement) {
     array_push(self::$renderStack, $pathelement);
   }

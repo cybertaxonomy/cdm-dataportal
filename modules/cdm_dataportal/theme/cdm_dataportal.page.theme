@@ -609,7 +609,7 @@ function theme_cdm_media_page($variables) {
   $out .= '</div>';
 
   // General media metadata.
-  $metadataToPrint = theme('cdm_media_caption', array('media' => $media));
+  $metadataToPrint = theme('cdm_media_caption', array('media' => $media, 'sources_as_content' => true));
   $out .= $metadataToPrint;
 
   // Tabs for the different representations.

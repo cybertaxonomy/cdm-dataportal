@@ -90,6 +90,7 @@ function cdm_dataportal_theme() {
     'cdm_media_caption' => array('variables' => array(
         'media' => NULL,
         'elements' => array('title', 'description', 'artist', 'location', 'rights'),
+        'sources_as_content' => FALSE
     )),
     // Themes in cdm_dataportal.name.theme.
     'cdm_typedesignations' => array('variables' => array('typeDesignations' => array())),

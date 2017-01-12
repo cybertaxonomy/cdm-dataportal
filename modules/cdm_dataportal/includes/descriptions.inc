@@ -502,6 +502,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
   $config = $feature_block_settings;
   unset($config['sources_as_content_to_bibliography']);
+  $config['add_footnote_keys'] = 0;
   if($feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1) {
     $config['add_footnote_keys'] = 1;
   }

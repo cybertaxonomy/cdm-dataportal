@@ -397,7 +397,7 @@ function compose_cdm_media_gallerie($configuration) {
 
         // preparing the part link (= click on image iteself) which can be handled in two ways
         //
-        //  1. open image in lightbox, the captions in the lighhtbox will be loaded via AHAH
+        //  1. open image in lightbox, the captions in the lightbox will be loaded via AHAH
         //  2. open the media in a new window with target 'specimen'
         if ($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image') {
           $mediaPartLinkAttributes['class'] = array('lightbox');
@@ -474,6 +474,7 @@ function compose_cdm_media_gallerie($configuration) {
     $out .= '<tr><td colspan="' . $cols . '">' . $moreHtml . '</td></tr>';
   }
   $out .= '</table>';
+
   return $out;
 }
 

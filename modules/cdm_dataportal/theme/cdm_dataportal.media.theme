@@ -62,6 +62,8 @@ function getimagesize_remote($image_url) {
  *
  * @return string
  *    The markup
+ *
+ * FIXME: move to descriptions.inc
  */
 function cdm_description_element_media($descriptionElement, $mimeTypePreference) {
 
@@ -205,6 +207,7 @@ function theme_cdm_media_caption($variables) {
 
   $media = $variables['media'];
   $elements = $variables['elements'];
+  $sources_as_content = $variables['sources_as_content'];
   $media_metadata = read_media_metadata($media);
 
   $doTitle = !$elements || array_search('title', $elements) !== FALSE;
@@ -217,25 +220,25 @@ function theme_cdm_media_caption($variables) {
   $footnote_list_key = 'media-' . $media->uuid;
 
   // handle sources and annotations
-  cdm_lazyload_array_field('media', 'sources', $media);
   cdm_lazyload_array_field('media', 'annotations', $media);
   $annotations_and_sources = handle_annotations_and_sources(
     $media,
     array(
-      'sources_as_content' => $doTitle ? 0 : 1,
+      'sources_as_content' => $sources_as_content,
       'link_to_name_used_in_source' => 1,
       'link_to_reference' => 0,
-      'add_footnote_keys' => 1
+      'add_footnote_keys' => $sources_as_content ? 0 : 1
     ),
-     $doTitle ? $media_metadata['title'] : NULL,
-    $footnote_list_key
+     NULL,
+     $footnote_list_key
   );
 
   $out = '';
 
   // Title.
   if ($doTitle) {
-    $title_string = $media_metadata['title'] . ' ' . join(', ', $annotations_and_sources['source_references']) . $annotations_and_sources['foot_note_keys'];
+    $title_string = $media_metadata['title']
+      . $annotations_and_sources['foot_note_keys']; // placing the footnote keys here is not optimal, see #6329 A.1.
     $title_string = trim($title_string);
     if (empty($title_string) && !($doDescription && $media_metadata['description'])) {
       // Use filename as fallback option if no description and no source citations are available.
@@ -245,15 +248,16 @@ function theme_cdm_media_caption($variables) {
     $descriptionPrefix = "- ";
   }
 
+  $groups = array();
 
-  $out .= '<dl class="media-caption">'; // FIXME rename to media-details
+  $out .= '<dl class="media-caption">';
   // Description.
   if ($media_metadata['description'] && $doDescription) {
-    $out .= '<dt class = "description">' . t('Description')  . ':'. '</dt> <dd class = "description">' . $descriptionPrefix . $media_metadata['description'] . '</dd>';
+    _description_list_group_add($groups, t('Description') . ':', $descriptionPrefix . $media_metadata['description'] );
   }
   // Artist.
   if ($media_metadata['artist'] && $doArtist) {
-    $out .= '<dt class = "artist">' . t('Artist')  . ':' . '</dt> <dd class = "artist">' . $media_metadata['artist'] . '</dd>';
+    _description_list_group_add($groups, t('Artist') . ':', $media_metadata['artist'] );
   }
   // Location.
   if ($doLocation) {
@@ -274,19 +278,26 @@ function theme_cdm_media_caption($variables) {
       $location .= $media_metadata['location']['country'];
     }
     if ($location) {
-      $out .= '<dt class = "location">' . t('Location') . ':' . '</dt> <dd class = "location">' . $location . '</dd>';
+      _description_list_group_add($groups, t('Location') . ':', $location );
     }
   }
   // Rights.
   if ($doRights) {
-    $rights_render_item = array(
-      '#theme' => 'description_list',
-      '#groups' => cdm_rights_as_dl_groups($media_metadata['rights'])
-    );
-   $out .= drupal_render($rights_render_item);
+    $groups = array_merge($groups, cdm_rights_as_dl_groups($media_metadata['rights']));
   }
+
+  if(!empty($annotations_and_sources['source_references'])){
+    _description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources['source_references']) );
+  }
+
   // TODO add all other metadata elements generically.
-  $out .= '</dl>';
+
+  $description_list_item = array(
+    '#theme' => 'description_list',
+    '#groups' => $groups,
+    '#attributes' => array('class' => 'media-caption')
+  );
+  $out .= drupal_render($description_list_item);
 
   $out .= theme('cdm_footnotes', array('footnoteListKey' => $footnote_list_key));
 
