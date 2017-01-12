@@ -386,7 +386,7 @@ function cdm_create_footnotes(
         $original_source_footnote_tag
       );
       // Ensure uniqueness of the footnote keys.
-gca       cdm_add_footnote_to_array($footNoteKeys, $fn_key);
+      cdm_add_footnote_to_array($footNoteKeys, $fn_key);
     }
   }
   // Sort and render footnote keys.
