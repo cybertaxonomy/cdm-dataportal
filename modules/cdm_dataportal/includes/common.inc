@@ -144,7 +144,7 @@ function oder_sources($sources, $do_theme = false){
 /**
  * Compare callback to be used in usort to sort image sources of CDM OriginalSource instances.
  *
- * TODO the compare strategy implemnted in oder_sources() is probably better but is not taking the
+ * TODO the compare strategy implemented in oder_sources() is probably better but is not taking the
  * originalName into account.
  *
  * @param $a

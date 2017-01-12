@@ -202,6 +202,7 @@ function theme_cdm_media_mime_text($variables) {
  * TODO turn into compose method
  */
 function theme_cdm_media_caption($variables) {
+
   $media = $variables['media'];
   $elements = $variables['elements'];
   $media_metadata = read_media_metadata($media);
@@ -213,20 +214,39 @@ function theme_cdm_media_caption($variables) {
   $doRights = !$elements || array_search('rights', $elements) !== FALSE;
 
   $descriptionPrefix = "";
+  $footnote_list_key = 'media-' . $media->uuid;
 
-  $out = '<dl class="media-caption">';
+  // handle sources and annotations
+  cdm_lazyload_array_field('media', 'sources', $media);
+  cdm_lazyload_array_field('media', 'annotations', $media);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $media,
+    array(
+      'sources_as_content' => $doTitle ? 0 : 1,
+      'link_to_name_used_in_source' => 1,
+      'link_to_reference' => 0,
+      'add_footnote_keys' => 1
+    ),
+     $doTitle ? $media_metadata['title'] : NULL,
+    $footnote_list_key
+  );
+
+  $out = '';
+
   // Title.
   if ($doTitle) {
-    if ($media_metadata['title']) {
-      $out .= '<dt class = "title">' . t('Title')  . ':'. '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
-      $descriptionPrefix = "- ";
+    $title_string = $media_metadata['title'] . ' ' . join(', ', $annotations_and_sources['source_references']) . $annotations_and_sources['foot_note_keys'];
+    $title_string = trim($title_string);
+    if (empty($title_string) && !($doDescription && $media_metadata['description'])) {
+      // Use filename as fallback option if no description and no source citations are available.
+      $title_string = $media_metadata['filename'];
     }
-    elseif (!($doDescription && $media_metadata['description'])) {
-      // Use filename as fallback option if no description will be shown.
-      $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['filename'] . '</dd>';
-      $descriptionPrefix = "- ";
-    }
+    $out .= '<div class="title">' . $title_string . '</div>';
+    $descriptionPrefix = "- ";
   }
+
+
+  $out .= '<dl class="media-caption">'; // FIXME rename to media-details
   // Description.
   if ($media_metadata['description'] && $doDescription) {
     $out .= '<dt class = "description">' . t('Description')  . ':'. '</dt> <dd class = "description">' . $descriptionPrefix . $media_metadata['description'] . '</dd>';
@@ -267,7 +287,9 @@ function theme_cdm_media_caption($variables) {
   }
   // TODO add all other metadata elements generically.
   $out .= '</dl>';
-  // Return value,
+
+  $out .= theme('cdm_footnotes', array('footnoteListKey' => $footnote_list_key));
+
   return $out;
 }
 
