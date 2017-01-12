@@ -330,14 +330,12 @@ function cdm_create_description_element_footnotes(
     )
 {
 
-  $bibliography_settings = get_bibliography_settings();
-
   return cdm_create_footnotes($description_element,
     $separator,
-    original_source_footnote_list_key($footnote_list_key_suggestion),
+    $footnote_list_key_suggestion,
     $do_link_to_reference,
     $do_link_to_name_used_in_source,
-    $bibliography_settings['enabled'] == 1 ? 'div' : null // null will cause original_source_footnote_list_key to use the default
+    true
 
   );
 }
@@ -362,21 +360,31 @@ function cdm_create_description_element_footnotes(
 function cdm_create_footnotes(
     $description_element,
     $separator = ',',
-    $footnote_list_key = null,
+    $footnote_list_key_suggestion = null,
     $do_link_to_reference = FALSE,
     $do_link_to_name_used_in_source = FALSE,
-    $original_source_footnote_tag = NULL
+    $is_bibliography_aware = FALSE
   ){
 
   // Annotations as footnotes.
-  $footNoteKeys = cdm_annotations_as_footnotekeys($description_element, $footnote_list_key);
+  $footNoteKeys = cdm_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
 
   // Source references as footnotes.
+
+  if($is_bibliography_aware){
+    $bibliography_settings = get_bibliography_settings();
+    $sources_footnote_list_key = original_source_footnote_list_key($footnote_list_key_suggestion);
+    $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause original_source_footnote_list_key to use the default
+  } else {
+    $sources_footnote_list_key = $footnote_list_key_suggestion;
+    $original_source_footnote_tag = NULL;
+  }
+
   usort($description_element->sources, 'compare_original_sources');
   foreach ($description_element->sources as $source) {
     if (_is_original_source_type($source)) {
       $fn_key = FootnoteManager::addNewFootnote(
-        $footnote_list_key,
+        $sources_footnote_list_key,
         theme('cdm_OriginalSource', array(
           'source' => $source,
           'doLink' => $do_link_to_reference,
