@@ -499,12 +499,15 @@ function cdm_dataportal_search_taxon_by_description_form() {
  *    ignored (parameter value = 'IGNORE')
  *  - and more
  *
- *
+ * @param $search_endpoint string
+ *    The web service endpoint which will be used for executing the search.
+ *    Usually one of CDM_WS_PORTAL_TAXON_SEARCH, CDM_WS_PORTAL_TAXON_FIND,
+ *    CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT.
  * @return array
  *   the processed request parameters submitted by the search form and
  *   also stores them in $_SESSION['cdm']['search']
  */
-function cdm_dataportal_search_request()
+function cdm_dataportal_search_request($search_endpoint)
 {
 
   $form_params = array();
@@ -518,6 +521,16 @@ function cdm_dataportal_search_request()
   }
 
   $form_params['query'] = trim($_REQUEST['query']);
+
+  if($search_endpoint == CDM_WS_PORTAL_TAXON_SEARCH){
+    // lucene based taxon search always as phrase search: enclose it in "
+    if(!str_beginsWith($form_params['query'], '"')){
+      $form_params['query'] = '"' . $form_params['query'];
+    }
+    if(!str_endsWith($form_params['query'], '"')){
+      $form_params['query'] = $form_params['query'] . '"' ;
+    }
+  }
 
   // --- handle geographic range
   // Split of geographic range.
@@ -639,7 +652,7 @@ function cdm_dataportal_search_execute() {
 
   // Read the query parameters from $_REQUEST and add additional query
   // parameters if necessary.
-  $request_params = cdm_dataportal_search_request();
+  $request_params = cdm_dataportal_search_request($_REQUEST['ws']);
 
   $taxon_pager = cdm_ws_get($_REQUEST['ws'], NULL, queryString($request_params));
 
