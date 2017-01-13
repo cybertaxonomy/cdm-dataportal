@@ -242,7 +242,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
         '#title' => t('Classification'),
         '#weight' => 1,
         '#type' => 'select',
-        '#default_value' => get_current_classification_uuid(),
+        '#default_value' => $preset_classification_uuid,
         '#options' => cdm_get_taxontrees_as_options(TRUE),
         '#description' => t('A filter to limit the search to a specific classification. Choosing <em>--- ALL ---</em> will disable this filter.'),
       );
@@ -558,6 +558,11 @@ function cdm_dataportal_search_request($search_endpoint)
     $form_params['area'] = implode(',', $area_uuids);
   }
 
+  // Store in session.
+  $_SESSION['cdm']['search'] = $form_params;
+
+  // ----------- further processing that must not be store in the session --------- //
+
   // Simple search will not submit a 'tree' query parameter,
   // so we add it here from what is stored in the session unless
   // SIMPLE_SEARCH_IGNORE_CLASSIFICATION is checked in the settings.
@@ -577,8 +582,6 @@ function cdm_dataportal_search_request($search_endpoint)
   //   $form_params['ignore_classification'] =  NULL;
   // }
 
-  // Store in session.
-  $_SESSION['cdm']['search'] = $form_params;
 
   return $form_params;
 }
