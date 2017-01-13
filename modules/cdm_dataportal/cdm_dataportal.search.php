@@ -32,10 +32,9 @@ function cdm_dataportal_search_form_path_for_ws($ws_endpoint) {
  * Prepares a form array for a general purpose search form.
  *
  * The form is used for general purpose search functionality in the
- * dataportal. The form returned is populated with all nessecary fields
+ * dataportal. The form returned is populated with all necessary fields
  * for internal processing and has the textfield element $form['query']
  * which holds the query term.
- * he sub tree array can be extended to contain additional search parameters.
  *
  * @param string $action_path
  *   The Drupal path to be put into the action url to which the form will
@@ -492,7 +491,7 @@ function cdm_dataportal_search_taxon_by_description_form() {
  * Processes the query parameters of the search form.
  *
  * Reads the query parameters from $_REQUEST and modifies and adds additional
- * query parameters if nessecary.
+ * query parameters if necessary.
  *
  *  - Filters $_REQUEST by a list of valid request parameters
  *  - modifies geographic_range parameters
@@ -610,7 +609,7 @@ function cdm_dataportal_search_process($form, &$form_state) {
 }
 
 /**
- * Sends a search request at the cdm web server.
+ * Sends a search request to the cdm server.
  *
  * The parameters to build the query are taken obtained by calling
  * cdm_dataportal_search_request() which reads the query parameters
@@ -626,7 +625,7 @@ function cdm_dataportal_search_execute() {
   // Validate the search webservice parameter:
   if (!isset($_REQUEST['ws'])) {
     drupal_set_message(
-      t("Invalid search webservice parameter 'ws' given"), 'warning'
+      t("Invalid search, webservice parameter 'ws' is missing"), 'warning'
     );
     return NULL;
   }
