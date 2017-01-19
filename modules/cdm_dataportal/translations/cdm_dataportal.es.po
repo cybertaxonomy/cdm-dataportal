@@ -1046,7 +1046,7 @@ msgid "Number of results to display per page."
 msgstr ""
 
 #: settings.php:2509
-msgid "Show the <i>Show Image Thumbnails</i> button"
+msgid "Show the"
 msgstr ""
 
 #: settings.php:2511
@@ -2131,11 +2131,11 @@ msgstr ""
 
 #: includes/media.inc:84
 msgid "Copyright"
-msgstr ""
+msgstr "Copyright"
 
 #: includes/media.inc:87
 msgid "Licenses"
-msgstr ""
+msgstr "Licencias"
 
 #: includes/media.inc:90
 msgid "Access rights"
@@ -2183,7 +2183,7 @@ msgstr ""
 
 #: includes/pages.inc:508
 msgid "Images"
-msgstr ""
+msgstr "Imágenes"
 
 #: includes/pages.inc:540
 msgid "Synonymy"
@@ -2271,7 +2271,7 @@ msgstr "Regresar a los resultados de la búsqueda"
 
 #: theme/cdm_dataportal.common.theme:473
 msgid "Back to Images"
-msgstr ""
+msgstr "Regresar a imágenes"
 
 #: theme/cdm_dataportal.common.theme:489;489
 msgid "Print this page"
@@ -2287,15 +2287,15 @@ msgstr ""
 
 #: theme/cdm_dataportal.media.theme:204;209
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 #: theme/cdm_dataportal.media.theme:215
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #: theme/cdm_dataportal.media.theme:219
 msgid "Artist"
-msgstr ""
+msgstr "Artista"
 
 #: theme/cdm_dataportal.media.theme:240
 msgid "Location"
@@ -2346,8 +2346,8 @@ msgid "Modify search"
 msgstr "Modificar búsqueda"
 
 #: theme/cdm_dataportal.page.theme:255
-msgid "Display Image Thumbnails"
-msgstr ""
+msgid "Display image thumbnails"
+msgstr "Muestra miniaturas de imágenes"
 
 #: theme/cdm_dataportal.page.theme:263
 msgid "results for"
@@ -2362,8 +2362,8 @@ msgid "Sorry, no matching entries found."
 msgstr "Lo sentimos, no encontramos coincidencia."
 
 #: theme/cdm_dataportal.page.theme:320
-msgid "open Image"
-msgstr ""
+msgid "Open image"
+msgstr "Abrir imagen"
 
 #: theme/cdm_dataportal.page.theme:367
 msgid "In order to use the FSI gallery you must enable the according "

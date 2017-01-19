@@ -90,38 +90,8 @@ function cdm_dataportal_theme() {
     'cdm_media_caption' => array('variables' => array(
         'media' => NULL,
         'elements' => array('title', 'description', 'artist', 'location', 'rights'),
+        'sources_as_content' => FALSE
     )),
-    'cdm_media_gallerie' => array('variables' => array(
-        'mediaList' => NULL,
-        'galleryName' => NULL,
-        'maxExtend' => 150,
-        'cols' => 4,
-        'maxRows' => FALSE,
-        'captionElements' => array('title'),
-        'mediaLinkType' => 'LIGHTBOX',
-        'alternativeMediaUri' => NULL,
-        'galleryLinkUri' => NULL,
-        'showCaption' => TRUE,
-    )),
-    'cdm_media_gallerie_image' => array('variables' => array(
-        'mediaRepresentationPart' => NULL,
-        'maxExtend' => NULL,
-        'addPassePartout' => FALSE,
-        'attributes' => NULL,
-    )),
-    'cdm_media_gallerie_application' => array('variables' => array(
-        'mediaRepresentationPart' => NULL,
-        'maxExtend' => NULL,
-        'addPassePartout' => FALSE,
-        'attributes' => NULL,
-    )),
-    'cdm_media_gallerie_text' => array('variables' => array(
-        'mediaRepresentationPart' => NULL,
-        'maxExtend' => NULL,
-        'addPassePartout' => FALSE,
-        'attributes' => NULL,
-    )),
-    'cdm_openlayers_image' => array('variables' => array('mediaRepresentationPart' => NULL, 'maxExtend' => NULL)),
     // Themes in cdm_dataportal.name.theme.
     'cdm_typedesignations' => array('variables' => array('typeDesignations' => array())),
     'cdm_nameRelationships' => array('variables' => array('nameRelationships' => NULL, 'skipTypes' => FALSE)),
@@ -150,7 +120,6 @@ function cdm_dataportal_theme() {
         'partId' => FALSE,
     )),
     'cdm_polytomousKey_page' => array('variables' => array('polytomousKey' => NULL)),
-    'cdm_taxonpage_tab' => array('variables' => array('tabname' => NULL)),
 
     // Themes in cdm_dataportal.references.theme.
     'cdm_reference' => array('variables' => array(

@@ -38,7 +38,7 @@ function theme_cdm_taxon_list_thumbnails($variables) {
 
   $galleryLinkUri = path_to_taxon($taxon->uuid, 'images');
 
-  $out .= theme('cdm_media_gallerie', array(
+  $out .= compose_cdm_media_gallerie(array(
     'mediaList' => $mediaList,
     'galleryName' => $gallery_name,
     'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],

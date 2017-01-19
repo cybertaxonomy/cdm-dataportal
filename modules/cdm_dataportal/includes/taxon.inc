@@ -438,9 +438,14 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   $table_of_accepted = array();
 
   foreach ($synonym_uuids as $relatedUuid) {
-    $table_of_accepted[$relatedUuid] = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED,
+    $classification_filter = '';
+    if($searched_in_classification_uuid){
+      $classification_filter = 'classificationFilter=' . $searched_in_classification_uuid;
+    }
+    $table_of_accepted[$relatedUuid] = cdm_ws_get(
+      CDM_WS_PORTAL_TAXON_ACCEPTED,
       array($relatedUuid),
-      'classificationFilter=' . $searched_in_classification_uuid
+      $classification_filter
     );
   }
 
@@ -488,7 +493,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
           if (count($classification_titles) == 0) {
             $classification_titles[] = $unclassified_snippet;
           }
-          $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
+          $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
         }
         $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
         if ($showMedia_synonyms) {
@@ -515,7 +520,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
         if(count($classification_titles) == 0){
           $classification_titles[] = $unclassified_snippet;
         }
-        $out .= ' : <span class="classifications">' . implode(', ', $classification_titles) . '</span>';
+        $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
       }
       $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
 

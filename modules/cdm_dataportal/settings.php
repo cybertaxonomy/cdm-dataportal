@@ -22,6 +22,7 @@
 
   define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
+  define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE', 50);
   define('CDM_DATAPORTAL_TAXON_AUTO_SUGGEST', 0);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 1);
   define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
@@ -128,6 +129,7 @@ function get_taxon_tabs_list() {
   );
 }
 
+define('CDM_TAXONPAGE_TAB_WEIGHT', 'cdm_taxonpage_tab_weight');
 define('CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT', serialize(
   array(
     'general' => '-3',
@@ -137,6 +139,20 @@ define('CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT', serialize(
     'keys' => '3',
     'experts' => '5',
     )
+));
+
+
+// CDM_TAXONPAGE_TAB_LABELS_DEFAULT
+define('CDM_TAXONPAGE_TAB_LABELS', 'cdm_taxonpage_tab_labels');
+define('CDM_TAXONPAGE_TAB_LABELS_DEFAULT', serialize(
+  array(
+    'general' => null,
+    'synonymy' => null,
+    'images' => null,
+    'specimens' => null,
+    'keys' => null,
+    'experts' => null,
+  )
 ));
 
 $taxon_tab_options = get_taxon_tabs_list();
@@ -1820,20 +1836,42 @@ function cdm_settings_layout_taxon() {
   );
 
   // WEIGHT
-  $taxontabs_weights = get_array_variable_merged('cdm_taxonpage_tabs_weight', CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
-  $form['taxon_tabs']['cdm_taxonpage_tabs_weight'] = array(
-      '#tree' => true
+  $taxon_tabs_weights = get_array_variable_merged(CDM_TAXONPAGE_TAB_WEIGHT, CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
+  $form['taxon_tabs'][CDM_TAXONPAGE_TAB_WEIGHT] = array(
+    '#title'  => 'Tabs order',
+    '#type' => 'fieldset',
+    '#collapsible' => false,
+    '#tree' => true,
+    '#description' => 'The weight value defines the order of the tabs or of the respective content block on the 
+        taxon page when it is the tabless mode.'
   );
   // Weights range from -delta to +delta, so delta should be at least half
   // of the amount of tabs present.
   $tab_weight_delta = round(count(get_taxon_tabs_list()) / 2) + 1;
   foreach (get_taxon_tabs_list() as $label) {
     $key = strtolower($label); // turn in to string, since we need to use strings as keys
-    $form['taxon_tabs']['cdm_taxonpage_tabs_weight'][$key] = array(
+    $form['taxon_tabs'][CDM_TAXONPAGE_TAB_WEIGHT][$key] = array(
         '#title' => $label,
         '#type'  => 'weight',
-        '#default_value' => $taxontabs_weights[$key],
+        '#default_value' => $taxon_tabs_weights[$key],
         '#delta' => $tab_weight_delta
+    );
+  }
+
+  $taxon_tabs_labels = get_array_variable_merged(CDM_TAXONPAGE_TAB_LABELS, CDM_TAXONPAGE_TAB_LABELS_DEFAULT);
+  $form['taxon_tabs'][CDM_TAXONPAGE_TAB_LABELS] = array(
+    '#title'  => 'Tab label override',
+    '#type' => 'fieldset',
+    '#collapsible' => false,
+    '#tree' => true,
+    '#description' => 'Setting a label for a tab will override the default label.'
+  );
+  foreach (get_taxon_tabs_list() as $label) {
+    $key = strtolower($label); // turn in to string, since we need to use strings as keys
+    $form['taxon_tabs'][CDM_TAXONPAGE_TAB_LABELS][$key] = array(
+      '#title' => $label,
+      '#type'  => 'textfield',
+      '#default_value' => $taxon_tabs_labels[$key]
     );
   }
 
@@ -2426,6 +2464,12 @@ ie	introduced: formerly introduced
     a collection and it can be expanded to get an overview of the specimens and their derivates.'),
   );
 
+    $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_page_size'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Number of records per page') . ':',
+        '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE),
+    );
+
   $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_show_determined_as'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show "Associated with" in specimen table.'),
@@ -2545,7 +2589,7 @@ function cdm_settings_layout_search() {
 
   $form['search_settings'][SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show the <i>Show Image Thumbnails</i> button') . ':',
+    '#title' => t('Show the') .  ' <i>' . t('Display image thumbnails') . '</i>' . t('button') . ':',
     '#default_value' => variable_get(SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX, SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX_DEFAULT),
     '#description' => t('The search results page will offer a button to toggle the display of image thumbnails.'),
   );

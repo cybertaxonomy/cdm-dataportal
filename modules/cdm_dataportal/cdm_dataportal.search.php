@@ -32,10 +32,9 @@ function cdm_dataportal_search_form_path_for_ws($ws_endpoint) {
  * Prepares a form array for a general purpose search form.
  *
  * The form is used for general purpose search functionality in the
- * dataportal. The form returned is populated with all nessecary fields
+ * dataportal. The form returned is populated with all necessary fields
  * for internal processing and has the textfield element $form['query']
  * which holds the query term.
- * he sub tree array can be extended to contain additional search parameters.
  *
  * @param string $action_path
  *   The Drupal path to be put into the action url to which the form will
@@ -243,7 +242,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
         '#title' => t('Classification'),
         '#weight' => 1,
         '#type' => 'select',
-        '#default_value' => get_current_classification_uuid(),
+        '#default_value' => $preset_classification_uuid,
         '#options' => cdm_get_taxontrees_as_options(TRUE),
         '#description' => t('A filter to limit the search to a specific classification. Choosing <em>--- ALL ---</em> will disable this filter.'),
       );
@@ -492,7 +491,7 @@ function cdm_dataportal_search_taxon_by_description_form() {
  * Processes the query parameters of the search form.
  *
  * Reads the query parameters from $_REQUEST and modifies and adds additional
- * query parameters if nessecary.
+ * query parameters if necessary.
  *
  *  - Filters $_REQUEST by a list of valid request parameters
  *  - modifies geographic_range parameters
@@ -500,12 +499,15 @@ function cdm_dataportal_search_taxon_by_description_form() {
  *    ignored (parameter value = 'IGNORE')
  *  - and more
  *
- *
+ * @param $search_endpoint string
+ *    The web service endpoint which will be used for executing the search.
+ *    Usually one of CDM_WS_PORTAL_TAXON_SEARCH, CDM_WS_PORTAL_TAXON_FIND,
+ *    CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT.
  * @return array
  *   the processed request parameters submitted by the search form and
  *   also stores them in $_SESSION['cdm']['search']
  */
-function cdm_dataportal_search_request()
+function cdm_dataportal_search_request($search_endpoint)
 {
 
   $form_params = array();
@@ -519,6 +521,16 @@ function cdm_dataportal_search_request()
   }
 
   $form_params['query'] = trim($_REQUEST['query']);
+
+  if($search_endpoint == CDM_WS_PORTAL_TAXON_SEARCH){
+    // lucene based taxon search always as phrase search: enclose it in "
+    if(!str_beginsWith($form_params['query'], '"')){
+      $form_params['query'] = '"' . $form_params['query'];
+    }
+    if(!str_endsWith($form_params['query'], '"')){
+      $form_params['query'] = $form_params['query'] . '"' ;
+    }
+  }
 
   // --- handle geographic range
   // Split of geographic range.
@@ -546,6 +558,11 @@ function cdm_dataportal_search_request()
     $form_params['area'] = implode(',', $area_uuids);
   }
 
+  // Store in session.
+  $_SESSION['cdm']['search'] = $form_params;
+
+  // ----------- further processing that must not be store in the session --------- //
+
   // Simple search will not submit a 'tree' query parameter,
   // so we add it here from what is stored in the session unless
   // SIMPLE_SEARCH_IGNORE_CLASSIFICATION is checked in the settings.
@@ -565,8 +582,6 @@ function cdm_dataportal_search_request()
   //   $form_params['ignore_classification'] =  NULL;
   // }
 
-  // Store in session.
-  $_SESSION['cdm']['search'] = $form_params;
 
   return $form_params;
 }
@@ -610,7 +625,7 @@ function cdm_dataportal_search_process($form, &$form_state) {
 }
 
 /**
- * Sends a search request at the cdm web server.
+ * Sends a search request to the cdm server.
  *
  * The parameters to build the query are taken obtained by calling
  * cdm_dataportal_search_request() which reads the query parameters
@@ -626,7 +641,7 @@ function cdm_dataportal_search_execute() {
   // Validate the search webservice parameter:
   if (!isset($_REQUEST['ws'])) {
     drupal_set_message(
-      t("Invalid search webservice parameter 'ws' given"), 'warning'
+      t("Invalid search, webservice parameter 'ws' is missing"), 'warning'
     );
     return NULL;
   }
@@ -640,7 +655,7 @@ function cdm_dataportal_search_execute() {
 
   // Read the query parameters from $_REQUEST and add additional query
   // parameters if necessary.
-  $request_params = cdm_dataportal_search_request();
+  $request_params = cdm_dataportal_search_request($_REQUEST['ws']);
 
   $taxon_pager = cdm_ws_get($_REQUEST['ws'], NULL, queryString($request_params));
 

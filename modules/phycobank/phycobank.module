@@ -1,0 +1,92 @@
+<?php
+/**
+ * @file
+ * Extensions to the cdm dataportal module specific for the Palmweb project
+ *
+ * @copyright
+ *   (C) 2016 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.e-taxonomy.eu
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * @author
+ *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
+ */
+
+
+/**
+ * Implements hook_block_info().
+ */
+function phycobank_block_info() {
+
+  // $block[0]["info"] = t("CDM DataPortal DevLinks");
+  // $block[1]["info"] = t("CDM DataPortal Credits");
+  $block['registration_data'] = array(
+    'info' => t('Phycobank - Registration data'),
+    'cache' => DRUPAL_NO_CACHE,
+    'visibility' => BLOCK_VISIBILITY_LISTED,
+    'pages' => "cdm_dataportal/taxon/*"
+  );
+
+  return $block;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function phycobank_block_view($delta)
+{
+  switch ($delta) {
+    // case 'delta-1':
+    // $block['subject'] = t('Credits');
+    // $block['content'] = theme('cdm_credits');
+    // return $block;
+    case 'registration_data':
+      $block['subject'] = t('Registration data');
+      $block['content'] = phycobank_registration_data();
+      return $block;
+      break;
+  }
+}
+
+function phycobank_registration_data(){
+
+  if(! (arg(0) == 'cdm_dataportal' && arg(1) == 'taxon' &&  is_uuid(arg(2))) ) {
+    return markup_to_render_array("<span class='error'>This block can only be used on cdm_dataportal/taxon/* pages. Please check the block settings.</span>");
+  }
+  $taxon_uuid = arg(2);
+  $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxon_uuid);
+  $extensions = cdm_ws_get(CDM_WS_NAME . '/' . $taxon->name->uuid . '/extensions');
+
+  if(isset($extensions->records[0])){
+    $data = json_decode($extensions->records[0]->value);
+    $rows = array();
+    $rows[] = array(
+      'data' => array('ID:', $data->regId),
+      'no_striping' => true
+    );
+    $rows[] = array(
+      'data' => array('Date:', preg_replace('/^(.*?\.)(97|98|99)$/', '${1}19$2', $data->date)),
+        'no_striping' => true
+      );
+    $rows[] = array(
+      'data' => array('Office:', $data->office),
+      'no_striping' => true
+    );
+    if(isset($data->formNumber)) {
+      $rows[] = array(
+        'data' => array('Form number', $data->formNumber),
+        'no_striping' => true
+      );
+    }
+
+    $data_elements = array(
+      '#theme' => 'table',
+      '#rows' => $rows,
+    );
+    return $data_elements;
+  }
+}

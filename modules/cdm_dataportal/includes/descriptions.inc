@@ -321,24 +321,70 @@ function toc_list_item($label, $attributes = array(), $fragment = null) {
  * @return String
  *   The foot note keys
  */
-function cdm_create_description_element_footnotes($description_element, $separator = ',',
-          $footnote_list_key_suggestion = null, $do_link_to_reference = FALSE,
+function cdm_create_description_element_footnotes(
+          $description_element,
+          $separator = ',',
+          $footnote_list_key_suggestion = null,
+          $do_link_to_reference = FALSE,
           $do_link_to_name_used_in_source = FALSE
-    ){
+    )
+{
 
+  return cdm_create_footnotes($description_element,
+    $separator,
+    $footnote_list_key_suggestion,
+    $do_link_to_reference,
+    $do_link_to_name_used_in_source,
+    true
+
+  );
+}
+
+/**
+ * Creates the footnotes for the given CDM instance.
+ *
+ * Footnotes are created for annotations and original sources.
+ *
+ * @param $descriptionElement
+ *   A CDM DescriptionElement instance
+ * @param $separator
+ *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
+ * @param $footnote_list_key_suggestion
+ *   will be overridden for original sources if the bibliography block is enabled
+ * @$original_source_footnote_tag
+ *    null will cause original_source_footnote_list_key to use the default
+ *
+ * @return String
+ *   The foot note keys
+ */
+function cdm_create_footnotes(
+    $description_element,
+    $separator = ',',
+    $footnote_list_key_suggestion = null,
+    $do_link_to_reference = FALSE,
+    $do_link_to_name_used_in_source = FALSE,
+    $is_bibliography_aware = FALSE
+  ){
 
   // Annotations as footnotes.
   $footNoteKeys = cdm_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
 
   // Source references as footnotes.
-  $bibliography_settings = get_bibliography_settings();
-  $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause original_source_footnote_list_key to use the default
+
+  if($is_bibliography_aware){
+    $bibliography_settings = get_bibliography_settings();
+    $sources_footnote_list_key = original_source_footnote_list_key($footnote_list_key_suggestion);
+    $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause original_source_footnote_list_key to use the default
+  } else {
+    $sources_footnote_list_key = $footnote_list_key_suggestion;
+    $original_source_footnote_tag = NULL;
+  }
 
   usort($description_element->sources, 'compare_original_sources');
   foreach ($description_element->sources as $source) {
     if (_is_original_source_type($source)) {
       $fn_key = FootnoteManager::addNewFootnote(
-        original_source_footnote_list_key($footnote_list_key_suggestion),
+        $sources_footnote_list_key,
         theme('cdm_OriginalSource', array(
           'source' => $source,
           'doLink' => $do_link_to_reference,
@@ -406,7 +452,12 @@ function compose_description_element($element, $feature_block_settings, $element
 
   );
 
-  $annotations_and_sources = handle_annotations_and_sources($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $element,
+    handle_annotations_and_sources_config($feature_block_settings),
+    $element_markup,
+    $footnote_list_key_suggestion
+  );
 
   // handle the special case were the TextData is used as container for original source with name
   // used in source information without any text stored in it.
@@ -444,13 +495,46 @@ function compose_description_element($element, $feature_block_settings, $element
   return $render_array;
 }
 
+/**
+ * Creates a handle_annotations_and_sources configuration array from feature_block_settings.
+ *
+ * The handle_annotations_and_sources configuration array is meant to be used for the
+ * method handle_annotations_and_sources().
+ *
+ * @param $feature_block_settings array
+ *
+ * @return array
+ *   The configuration array for handle_annotations_and_sources()
+ */
+function handle_annotations_and_sources_config($feature_block_settings){
+
+  $config = $feature_block_settings;
+  unset($config['sources_as_content_to_bibliography']);
+  $config['add_footnote_keys'] = 0;
+  if($feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1) {
+    $config['add_footnote_keys'] = 1;
+  }
+  $config['bibliography_aware'] = 1;
+
+  return $config;
+}
 
   /**
-   * @param $element
-   * @param $feature_block_settings
-   * @param $element_text
-   *   used to decide if the source references should be enclosed in brackets or not
+   * @param $entity
+   * @param $config array
+   *   An associative array to configure the display of the annotations and sources.
+   *   The array has the following keys
+   *   - sources_as_content
+   *   - link_to_name_used_in_source
+   *   - link_to_reference
+   *   - add_footnote_keys
+   *   - bibliography_aware
+   *   Valid values are 1 or 0.
+   * @param $inline_text_prefix
+   *   Only used to decide if the source references should be enclosed in brackets or not when displayed inline.
+   *   This text will not be included into the response.
    * @param $footnote_list_key_suggestion
+   *
    * @return array
    *   an associative array with the following elements:
    *   - foot_note_keys: all footnote keys as markup
@@ -458,41 +542,40 @@ function compose_description_element($element, $feature_block_settings, $element
    *   - names used in source: an associative array of the names in source,
    *        the name in source strings are de-duplicated
    *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
-   *
-   *
    */
-  function handle_annotations_and_sources($element, $feature_block_settings, $element_text, $footnote_list_key_suggestion) {
+  function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $footnote_list_key_suggestion) {
+
     $annotations_and_sources = array(
       'foot_note_keys' => NULL,
       'source_references' => array(),
       'names_used_in_source' => array()
     );
 
-    usort($element->sources, 'compare_original_sources');
+    usort($entity->sources, 'compare_original_sources');
 
-    if ($feature_block_settings['sources_as_content'] == 1) {
-      foreach ($element->sources as $source) {
+    if ($config['sources_as_content'] == 1) {
+      foreach ($entity->sources as $source) {
 
-        $referenceCitation = theme('cdm_OriginalSource',
+        $reference_citation = theme('cdm_OriginalSource',
           array(
             'source' => $source,
-            'doLink' => $feature_block_settings['link_to_reference'] == 1,
-            'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1,
+            'doLink' => $config['link_to_reference'] == 1,
+            'do_link_to_name_used_in_source' => $config['link_to_name_used_in_source'] == 1,
           )
         );
 
-        if ($referenceCitation) {
-          if (empty($element_text)) {
-            $annotations_and_sources['source_references'][] = $referenceCitation;
+        if ($reference_citation) {
+          if (empty($inline_text_prefix)) {
+            $annotations_and_sources['source_references'][] = $reference_citation;
           }
           else {
-            $annotations_and_sources['source_references'][] = ' (' . $referenceCitation . ')';
+            $annotations_and_sources['source_references'][] = ' (' . $reference_citation . ')';
           }
         }
 
         $name_in_source_render_array = compose_name_in_source(
           $source,
-          $feature_block_settings['link_to_name_used_in_source'] == 1
+          $config['link_to_name_used_in_source'] == 1
         );
 
         if(!empty($name_in_source_render_array)){
@@ -503,21 +586,30 @@ function compose_description_element($element, $feature_block_settings, $element
       // annotations footnotes separate.
       $annotations_and_sources['foot_note_keys'] = theme('cdm_annotations_as_footnotekeys',
         array(
-          'cdmBase_list' => $element,
+          'cdmBase_list' => $entity,
           'footnote_list_key' => $footnote_list_key_suggestion,
         )
       );
 
     } // END of references inline
 
-    // put sources into bibliography if requested ...
-    if ($feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1) {
-      $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes(
-        $element, ',',
-        $footnote_list_key_suggestion,
-        $feature_block_settings['link_to_reference'] == 1,
-        $feature_block_settings['link_to_name_used_in_source'] == 1
-      );
+    // sources as footnotes or put into into bibliography if requested ...
+    if ($config['add_footnote_keys'] == 1) {
+      if(empty($config['bibliography_aware'])) {
+        $annotations_and_sources['foot_note_keys'] = cdm_create_footnotes(
+          $entity, ',',
+          $footnote_list_key_suggestion,
+          $config['link_to_reference'] == 1,
+          $config['link_to_name_used_in_source'] == 1
+        );
+      } else {
+        $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes(
+          $entity, ',',
+          $footnote_list_key_suggestion,
+          $config['link_to_reference'] == 1,
+          $config['link_to_name_used_in_source'] == 1
+        );
+      }
     }
 
     return $annotations_and_sources;
@@ -772,7 +864,7 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
     $captionElements = array('title', 'rights');
 
     if (isset($media_list[0]) && isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
-      $gallery = theme('cdm_media_gallerie', array(
+      $gallery = compose_cdm_media_gallerie(array(
         'mediaList' => $media_list,
         'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $node->feature->uuid,
         'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -1471,10 +1563,13 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
         // common name without a language or area, should not happen but is possible
         $language_area_key = '';
         if (isset($element->language->representation_L10n)) {
-          $language_area_key .= '<span class="language-label">' . $element->language->representation_L10n . '</span>';
+          $language_area_key .= $element->language->representation_L10n ;
         }
         if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
           $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->titleCache . ')';
+        }
+        if($language_area_key){
+          $language_area_key = '<span class="language-area-label">' . $language_area_key . '<span class="separator">: </span></span>';
         }
 
         if(isset($common_names[$language_area_key][$element->name])) {
@@ -1515,7 +1610,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
         $per_language_area_out[] = $common_name_markup;
       }
 
-      $common_name_feature_elements[] = ($language_area_key ? $language_area_key . ': ' : '' ) . join(', ', $per_language_area_out);
+      $common_name_feature_elements[] = $language_area_key . join(', ', $per_language_area_out);
     } // End of loop over set of elements per language area
 
 
@@ -1610,7 +1705,7 @@ function compose_description_elements_distribution($description_elements){
   foreach ($description_elements as $description_element) {
     $annotations_and_sources = handle_annotations_and_sources(
       $description_element,
-      $feature_block_settings,
+      handle_annotations_and_sources_config($feature_block_settings),
       $description_element->area->representation_L10n,
       UUID_DISTRIBUTION
     );
@@ -1839,7 +1934,7 @@ function compose_description_elements_distribution($description_elements){
       if($distribution_aggregate) {
         $annotations_and_sources = handle_annotations_and_sources(
           $distribution_aggregate,
-          $feature_block_settings,
+          handle_annotations_and_sources_config($feature_block_settings),
           $label,
           UUID_DISTRIBUTION
         );

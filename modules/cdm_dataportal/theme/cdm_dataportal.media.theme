@@ -62,6 +62,8 @@ function getimagesize_remote($image_url) {
  *
  * @return string
  *    The markup
+ *
+ * FIXME: move to descriptions.inc
  */
 function cdm_description_element_media($descriptionElement, $mimeTypePreference) {
 
@@ -198,10 +200,14 @@ function theme_cdm_media_mime_text($variables) {
  *
  * @return string
  *   the themed html output
+ *
+ * TODO turn into compose method
  */
 function theme_cdm_media_caption($variables) {
+
   $media = $variables['media'];
   $elements = $variables['elements'];
+  $sources_as_content = $variables['sources_as_content'];
   $media_metadata = read_media_metadata($media);
 
   $doTitle = !$elements || array_search('title', $elements) !== FALSE;
@@ -211,27 +217,47 @@ function theme_cdm_media_caption($variables) {
   $doRights = !$elements || array_search('rights', $elements) !== FALSE;
 
   $descriptionPrefix = "";
+  $footnote_list_key = 'media-' . $media->uuid;
 
-  $out = '<dl class="media-caption">';
+  // handle sources and annotations
+  cdm_lazyload_array_field('media', 'annotations', $media);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $media,
+    array(
+      'sources_as_content' => $sources_as_content,
+      'link_to_name_used_in_source' => 1,
+      'link_to_reference' => 0,
+      'add_footnote_keys' => $sources_as_content ? 0 : 1
+    ),
+     NULL,
+     $footnote_list_key
+  );
+
+  $out = '';
+
   // Title.
   if ($doTitle) {
-    if ($media_metadata['title']) {
-      $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['title'] . '</dd>';
-      $descriptionPrefix = "- ";
+    $title_string = $media_metadata['title']
+      . $annotations_and_sources['foot_note_keys']; // placing the footnote keys here is not optimal, see #6329 A.1.
+    $title_string = trim($title_string);
+    if (empty($title_string) && !($doDescription && $media_metadata['description'])) {
+      // Use filename as fallback option if no description and no source citations are available.
+      $title_string = $media_metadata['filename'];
     }
-    elseif (!($doDescription && $media_metadata['description'])) {
-      // Use filename as fallback option if no description will be shown.
-      $out .= '<dt class = "title">' . t('Title') . '</dt> <dd class = "title">' . $media_metadata['filename'] . '</dd>';
-      $descriptionPrefix = "- ";
-    }
+    $out .= '<div class="title">' . $title_string . '</div>';
+    $descriptionPrefix = "- ";
   }
+
+  $groups = array();
+
+  $out .= '<dl class="media-caption">';
   // Description.
   if ($media_metadata['description'] && $doDescription) {
-    $out .= '<dt class = "description">' . t('Description') . '</dt> <dd class = "description">' . $descriptionPrefix . $media_metadata['description'] . '</dd>';
+    _description_list_group_add($groups, t('Description') . ':', $descriptionPrefix . $media_metadata['description'] );
   }
   // Artist.
   if ($media_metadata['artist'] && $doArtist) {
-    $out .= '<dt class = "artist">' . t('Artist') . '</dt> <dd class = "astist">' . $media_metadata['artist'] . '</dd>';
+    _description_list_group_add($groups, t('Artist') . ':', $media_metadata['artist'] );
   }
   // Location.
   if ($doLocation) {
@@ -252,504 +278,29 @@ function theme_cdm_media_caption($variables) {
       $location .= $media_metadata['location']['country'];
     }
     if ($location) {
-      $out .= '<dt class = "location">' . t('Location') . '</dt> <dd class = "location">' . $location . '</dd>';
+      _description_list_group_add($groups, t('Location') . ':', $location );
     }
   }
   // Rights.
   if ($doRights) {
-    $rights = '';
-    // TODO use cdm_rights_as_dl_groups() to create dl entries
-
-    // Copyrights.
-    $cnt = count($media_metadata['rights']['copyright']['agentNames']);
-    if ($cnt > 0) {
-      $rights .= '<dt class="rights">&copy;</dt> <dd class="rights"> ';
-      for ($i = 0; $i < $cnt; $i++) {
-        $rights .= $media_metadata['rights']['copyright']['agentNames'][$i];
-        if ($i + 1 < $cnt) {
-          $rights .= ' / ';
-        }
-      }
-      $rights .= '</dd>';
-    }
-    // License.
-    $cnt = count($media_metadata['rights']['license']['agentNames']);
-    if ($cnt > 0) {
-      $rights .= '<dt class ="license">' . t('License') . '</dt> <dd class = "license">';
-      for ($i = 0; $i < $cnt; $i++) {
-        $rights .= $media_metadata['rights']['license']['agentNames'][$i];
-        if ($i + 1 < $cnt) {
-          $rights .= ' / ';
-        }
-      }
-      $rights .= '</dd>';
-    }
-    if ($rights) {
-      $out .= $rights . '</dt>';
-    }
+    $groups = array_merge($groups, cdm_rights_as_dl_groups($media_metadata['rights']));
   }
+
+  if(!empty($annotations_and_sources['source_references'])){
+    _description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources['source_references']) );
+  }
+
   // TODO add all other metadata elements generically.
-  $out .= '</dl>';
-  // Return value,
-  return $out;
-}
 
-/**
- * Return HTML for a media gallery
- *
- * @param array $variables
- *   An associative array containing:
- *   - mediaList: An array of Media entities.
- *   - maxExtend
- *   - cols
- *   - maxRows
- *   - showCaption:  boolean value, whether to show captions or not.
- *   - captionElements: An array of caption elements to be shown. In case the array
- *        is empty of NULL  all available caption elements will be show. In order to
- *        supress all captions  set 'showCaption' to FALSE
- *        example:
- *          1) Show 'title', 'description', 'file', 'filename' in the caption:
- *            array('title', 'description', 'file', 'filename'),
- *          2) To add an addtional link at the bottom of  the caption:
- *            array('titlecache', '#uri'=>t('open Image')) this will cause a link
- *            to be rendered with label 'open Image' which will open the according
- *            media object.
- *   - mediaLinkType: Valid values:
- *      - "NONE": do not link the images,
- *      - "LIGHTBOX": open the link in a light box,
- *      - "NORMAL": link to the image page or to the $alternativeMediaUri if
- *        it is defined.
- *   - alternativeMediaUri: A fix string or an array of alternative URIs to link the images
- *     which will overwrite the URIs of the media parts.
- *     The order of URI in this array must correspond with the order of
- *     images in $mediaList.
- *   - galleryLinkUri: An URI to link the the hint on more images to;
- *     if NULL no link is created.
- *
- * @return the image gallery HTML
- * @ingroup: themeable
- */
-function theme_cdm_media_gallerie($variables) {
+  $description_list_item = array(
+    '#theme' => 'description_list',
+    '#groups' => $groups,
+    '#attributes' => array('class' => 'media-caption')
+  );
+  $out .= drupal_render($description_list_item);
 
-  $mediaList = $variables['mediaList'];
+  $out .= theme('cdm_footnotes', array('footnoteListKey' => $footnote_list_key));
 
-  // Do not show an empty gallery.
-  if (count($mediaList) == 0) {
-    return;
-  }
-
-  $galleryName = $variables['galleryName'];
-  $maxExtend = $variables['maxExtend'];
-  $cols = $variables['cols'];
-  $maxRows = $variables['maxRows'];
-  $captionElements = $variables['captionElements'];
-  $mediaLinkType = $variables['mediaLinkType'];
-  $alternativeMediaUri = $variables['alternativeMediaUri'];
-  $galleryLinkUri = $variables['galleryLinkUri'];
-  $showCaption = $variables['showCaption'];
-
-  $caption_link_uri = '';
-  if(isset($captionElements['#uri'])){
-    $caption_link_uri = $captionElements['#uri'];
-    unset($captionElements['#uri']);
-  }
-  if (!is_array($captionElements) || count($captionElements) == 0) {
-    $captionElements = NULL;
-  }
-
-  // TODO correctly handle multiple media representation parts
-  $_SESSION['cdm']['last_gallery'] = current_path();
-  // Prevent from errors.
-  if (!isset($mediaList[0])) {
-   // return;
-  }
-
-  // --- Duplicate supression: media can be reused but should only be shown
-  // once.
-  $tempMediaList = array();
-  $tempMediaUuids = array();
-  foreach ($mediaList as $media) {
-    if (!in_array($media->uuid, $tempMediaUuids)) {
-      $tempMediaList[] = $media;
-      $tempMediaUuids[] = $media->uuid;
-    }
-  }
-  $mediaList = $tempMediaList;
-
-  // ---
-  $galleryID = "media_gallery_" . $galleryName;
-
-  $mediaPartLinkAttributes = array();
-  $openMediaLinkAttributes = array();
-
-  // Prepare media links.
-  $doLink = FALSE;
-  if ($mediaLinkType != 'NONE') {
-    $doLink = TRUE;
-  }
-  if ($mediaLinkType == 'LIGHTBOX') {
-    $doLink = TRUE;
-    _add_js_lightbox($galleryID);
-  }
-
-  // Render the media gallery grid.
-  $out = '<table id="' . $galleryID . '" class="media_gallery">';
-  $out .= '<colgroup>';
-  for ($c = 0; $c < $cols; $c++) {
-    $out .= '<col style="width:' . (100 / $cols) . '%;">';
-  }
-  $out .= '</colgroup>';
-
-  for ($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++) {
-    $captionParts = array();
-    $mediaIndex = 0;
-    $out .= '<tr>';
-    for ($c = 0; $c < $cols; $c++) {
-      $media = array_shift($mediaList);
-
-      if (isset($media->representations[0]->parts[0])) {
-
-        //
-        // Find preferred representation.
-        //
-        $preferred_media_representations_list = cdm_preferred_media_representations($media, array(
-          'image/jpg',
-          'image/jpeg',
-          'image/png',
-          'image/gif',
-        ), $maxExtend, $maxExtend);
-        if (count($preferred_media_representations_list) == 0) {
-          // Fallback to using the first one in the list.
-          $preferred_media_representations_list = $media->representations;
-        }
-        $preferred_media_representation = array_shift($preferred_media_representations_list);
-
-        // $preferred_media_representation->parts[0]->uri =
-        // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
-        $contentTypeDirectory = media_content_type_dir($preferred_media_representation, 'application');
-
-         $mediaPartHtml = theme('cdm_media_gallerie_' . $contentTypeDirectory, array(
-            'mediaRepresentationPart' => $preferred_media_representation->parts[0],
-            'maxExtend' => $maxExtend,
-            'addPassePartout' => TRUE,
-         ));
-        // --- Compose Media Link.
-        $mediaLinkUri = FALSE;
-        if ($alternativeMediaUri) {
-          if (isset($alternativeMediaUri[$mediaIndex])) {
-            $mediaLinkUri = $alternativeMediaUri[$mediaIndex];
-          }
-          if (is_string($alternativeMediaUri)) {
-            $mediaLinkUri = $alternativeMediaUri;
-          }
-        }
-        else {
-          $mediaLinkUri = $preferred_media_representation->parts[0]->uri;
-        }
-        $mediaIndex++;
-
-        // media captions will be loaded via AHAH
-        _add_js_ahah();
-        $content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
-        $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
-        $ahah_media_caption =  '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
-          . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
-
-        // preparing the part link (= click on image iteself) which can be handled in two ways
-        //
-        //  1. open image in lightbox, the captions in the lighhtbox will be loaded via AHAH
-        //  2. open the media in a new window with target 'specimen'
-        if ($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image') {
-          $mediaPartLinkAttributes['class'] = array('lightbox');
-        }
-        else {
-          $mediaPartLinkAttributes['target'] = "specimen";
-          $openMediaLinkAttributes['target'] = "specimen";
-        }
-        $mediaPartLinkAttributes['alt'] = htmlentities($ahah_media_caption);
-
-        // --- preparing the media caption
-
-        /* old comment: "no caption elements to show up here except the $caption_link_uri, if at all"
-         *
-         * a.kohlbecker 2013-03-14 :
-         *   It is unclear why no caption elements should be shown, Was it a technical reason?
-         *   see commit r16723 740177eb-a1d8-4ec3-a630-accd905eb3da
-         *   If not problems arise with this remove it after some weeks
-         */
-        $captionPartHtml = $ahah_media_caption;
-
-        if ($caption_link_uri) {
-          if ($contentTypeDirectory == 'image') {
-          // it is an image, so open it in the media page
-            $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, path_to_media($media->uuid), array(
-              'attributes' => array(), 'html' => TRUE,
-            )) . '</div>';
-          }
-          else {
-            // otherwise open it directly and let the the browser handle the media type
-            $openMediaLinkAttributes['absolute'] = TRUE;
-            $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, $mediaLinkUri, array(
-              'attributes' => $openMediaLinkAttributes, 'html' => TRUE,
-            )) . '</div>';
-          }
-        }
-
-        $captionParts[] = $captionPartHtml;
-
-        // --- Surround imagePart with link, this .
-        if ($doLink) {
-          $mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, array(
-            'attributes' => $mediaPartLinkAttributes, 'html' => TRUE,
-          ));
-        }
-      }
-      else {
-        $mediaPartHtml = '';
-        $captionParts[] = '';
-      }
-      $out .= '<td class="media">' . $mediaPartHtml . '</td>';
-    }
-    $out .= '</tr>'; // End of media parts.
-    if ($showCaption) {
-      if ( (is_array($captionElements) && count($captionElements) > 0) || $caption_link_uri) {
-        $out .= '<tr>';
-        // Add caption row.
-        foreach ($captionParts as $captionPartHtml) {
-          $out .= '<td class="caption">' . $captionPartHtml . '</td>';
-        }
-        $out .= '</tr>';
-      }
-    }
-  }
-
-  if ($galleryLinkUri) {
-    if (count($mediaList) > 0) {
-      $moreHtml = count($mediaList) . ' ' . t('more in gallery');
-    }
-    else {
-      $moreHtml = t('open gallery');
-    }
-    $moreHtml = l($moreHtml, $galleryLinkUri);
-    $out .= '<tr><td colspan="' . $cols . '">' . $moreHtml . '</td></tr>';
-  }
-  $out .= '</table>';
-  return $out;
-}
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_media_gallerie_image($variables) {
-
-  $mediaRepresentationPart = $variables['mediaRepresentationPart'];
-  $maxExtend = $variables['maxExtend'];
-  $addPassePartout = $variables['addPassePartout'];
-  $attributes = $variables['attributes'];
-
-  $out = '';
-
-  // TODO merge with theme_cdm_media_mime_image?
-  if (isset($mediaRepresentationPart)) {
-
-    $h = $mediaRepresentationPart->height;
-    $w = $mediaRepresentationPart->width;
-    if ($w == 0 || $h == 0) {
-      // Take url and replace spaces.
-      $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri);
-      $imageDimensions = getimagesize_remote($image_uri);
-      if (!$imageDimensions) {
-        return '<div>' . t('Image unavailable, uri: ') . $mediaRepresentationPart->uri . '</div>';
-      }
-      $w = $imageDimensions[0];
-      $h = $imageDimensions[1];
-    }
-    $margins = '0 0 0 0';
-    $ratio = $w / $h;
-    if ($ratio > 1) {
-      $displayHeight = round($maxExtend / $ratio);
-      $displayWidth = $maxExtend;
-      $m = round(($maxExtend - $displayHeight) / 2);
-      $margins = 'margin:' . $m . 'px 0 ' . $m . 'px 0;';
-    }
-    else {
-      $displayHeight = $maxExtend;
-      $displayWidth = round($maxExtend * $ratio);
-      $m = round(($maxExtend - $displayWidth) / 2);
-      $margins = 'margin:0 ' . $m . 'px 0 ' . $m . 'px;';
-    }
-
-    // Turn attributes array into string.
-    if(!is_array($attributes)){
-      $attributes = array();
-    }
-    if(!isset($attributes['alt'])){
-      $attributes['alt'] = check_plain($mediaRepresentationPart->uri);
-    }
-    $attrStr = ' ';
-    // $attributes['title'] = 'h:'.$h.', w:'.$w.',ratio:'.$ratio;
-    if (is_array($attributes)) {
-      foreach ($attributes as $name => $value) {
-        $attrStr .= $name . '="' . $value . '" ';
-      }
-    }
-
-    if ($addPassePartout) {
-      $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
-    }
-    else {
-      // Do not add margins if no pass partout is shown.
-      $margins = '';
-    }
-    $out .= '<img src="' . $mediaRepresentationPart->uri . '" width="' . $displayWidth . '" height="' . $displayHeight . '" style="' . $margins . '"' . $attrStr . ' />';
-
-    if ($addPassePartout) {
-      $out .= '</div>';
-    }
-    return $out;
-  }
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_media_gallerie_application($variables) {
-  $mediaRepresentationPart = $variables['mediaRepresentationPart'];
-  $maxExtend = $variables['maxExtend'];
-  $addPassePartout = $variables['addPassePartout'];
-  $attributes = $variables['attributes'];
-  $out = '';
-  if (isset($mediaRepresentationPart)) {
-
-    if ($addPassePartout) {
-      $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
-    }
-    else {
-      // Do not add margins if no pass partout is shown.
-      $margins = '';
-    }
-    $out .= '<div class="appication">Web Application</div>';
-
-    if ($addPassePartout) {
-      $out .= '</div>';
-    }
-    return $out;
-  }
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_media_gallerie_text($variables) {
-  $mediaRepresentationPart = $variables['mediaRepresentationPart'];
-  $maxExtend = $variables['maxExtend'];
-  $addPassePartout = $variables['addPassePartout'];
-  $attributes = $variables['attributes'];
-  if (isset($mediaRepresentationPart)) {
-
-    if ($addPassePartout) {
-      $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
-    }
-    else {
-      // Do not add margins if no pass partout is shown.
-      $margins = '';
-    }
-    $out .= '<div class="application">Web Application</div>';
-
-    if ($addPassePartout) {
-      $out .= '</div>';
-    }
-    return $out;
-  }
-}
-
-/**
- * Adds the OpenLayers based image viewer to the page.
- *
- * The OpenLayers based image viewer allows to zoom and pan the displayed image.
- *
- * Documentation related to using Openlayers in order to view images is found here:
- *  - @see http://trac.openlayers.org/wiki/UsingCustomTiles#UsingTilesWithoutaProjection
- *  - @see http://trac.openlayers.org/wiki/SettingZoomLevels
- *
- * @param array $variables
- *   An associative array of theme variables:
- *   - mediaRepresentationPart: The CDM MediaRepresentationPart instance to be displayed.
- *   - maxExtend: The maximum extend of the image viewer view port.
- */
-function theme_cdm_openlayers_image($variables) {
-  $mediaRepresentationPart = $variables['mediaRepresentationPart'];
-  $maxExtend = $variables['maxExtend'];
-
-  _add_js_openlayers();
-
-  // TODO merge code below with code from theme_cdm_media_gallerie_image
-  // var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
-  // TODO merge code below with code from theme_cdm_media_gallerie_image
-  $w = $mediaRepresentationPart->width;
-  $h = $mediaRepresentationPart->height;
-
-  if ($w == 0 || $h == 0) {
-    // Take url and replace spaces.
-    $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri);
-    $imageDimensions = getimagesize_remote($image_uri);
-    if (!$imageDimensions) {
-      return '<div>' . t('Image unavailable, uri:') . $mediaRepresentationPart->uri . '</div>';
-    }
-    $w = $imageDimensions[0];
-    $h = $imageDimensions[1];
-  }
-
-  // Calculate maxResolution (default is 360 deg / 256 px) and the bounds.
-  if ($w > $h) {
-    $lat = 90;
-    $lon = 90 * ($h / $w);
-    $maxRes = $w / $maxExtend;
-  }
-  else {
-    $lat = 90 * ($w / $h);
-    $lon = 90;
-    $maxRes = $h / $maxExtend;
-  }
-
-  $maxRes *= 1;
-  drupal_add_js('
- var map;
-
- var imageLayerOptions={
-     maxResolution: ' . $maxRes . ',
-     maxExtent: new OpenLayers.Bounds(0, 0, ' . $w . ', ' . $h . ')
-  };
-  var mapOptions={
-      controls:
-       [
-         new OpenLayers.Control.PanZoom(),
-         new OpenLayers.Control.Navigation({zoomWheelEnabled: false, handleRightClicks:true, zoomBoxKeyMask: OpenLayers.Handler.MOD_CTRL})
-       ],
-     restrictedExtent:  new OpenLayers.Bounds(0, 0, ' . $w . ', ' . $h . ')
-  };
-
- var graphic = new OpenLayers.Layer.Image(
-          \'Image Title\',
-          \'' . $mediaRepresentationPart->uri . '\',
-          new OpenLayers.Bounds(0, 0, ' . $w . ', ' . $h . '),
-          new OpenLayers.Size(' . $w . ', ' . $h . '),
-          imageLayerOptions
-          );
-
- function init() {
-   map = new OpenLayers.Map(\'openlayers_image\', mapOptions);
-   map.addLayers([graphic]);
-   map.setCenter(new OpenLayers.LonLat(0, 0), 1);
-   map.zoomToMaxExtent();
- }
-
-jQuery(document).ready(function(){
-  init();
-});', array('type' => 'inline'));
-  $out = '<div id="openlayers_image" class="image_viewer" style="width: ' . $maxExtend . 'px; height:' . ($maxExtend) . 'px"></div>';
   return $out;
 }
 

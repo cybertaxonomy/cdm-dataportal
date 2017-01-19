@@ -948,17 +948,17 @@ function proxy_content($uri, $hook = NULL) {
 
         case 'cdm_media_caption':
           $variables = array(
-          'media' => $obj,
-          // $args[0] is set in taxon_image_gallery_default in
-          // cdm_dataportal.page.theme.
-          'elements' => isset($args[0]) ? $args[0] : array(
-          'title',
-          'description',
-          'artist',
-          'location',
-          'rights',
+            'media' => $obj,
+            // $args[0] is set in taxon_image_gallery_default in
+            // cdm_dataportal.page.theme.
+            'elements' => isset($args[0]) ? $args[0] : array(
+            'title',
+            'description',
+            'artist',
+            'location',
+            'rights',
           ),
-          'fileUri' => isset($args[1]) ? $args[1] : NULL,
+            'sources_as_content' =>  isset($args[1]) ? $args[1] : FALSE
           );
           $reponse_data = theme($hook, $variables);
           break;
@@ -1666,6 +1666,24 @@ function cdm_load_annotations(&$annotatable_entity) {
     }
   }
 }
+
+/**
+ * Extends the $cdm_entity object by the field if it is not already existing.
+ *
+ * This function can only be used for fields with 1 to many relations.
+  *
+ * @param $cdm_base_type
+ * @param $field_name
+ * @param $cdm_entity
+ */
+function cdm_lazyload_array_field($cdm_base_type, $field_name, &$cdm_entity)
+{
+  if (!isset($cdm_entity->$field_name)) {
+    $items = cdm_ws_fetch_all('portal/' . $cdm_base_type . '/' . $cdm_entity->uuid . '/' . $field_name);
+    $cdm_entity->$field_name = $items;
+  }
+}
+
 
 /**
  * Get a NomenclaturalReference string.

@@ -529,8 +529,7 @@ function cdm_dataportal_menu() {
   // --- tabbed taxon page
   if (variable_get('cdm_dataportal_taxonpage_tabs', 1)) {
     $items['cdm_dataportal/taxon/%'] = array(
-      'title' => '@tabname',
-      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'General'))),
+      'title' => cdm_taxonpage_tab_label('General'),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access cdm content'),
       'type' => MENU_CALLBACK,
@@ -540,8 +539,7 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxon/%/all'] = array(
-      'title' => '@tabname',
-      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'General'))),
+      'title' => cdm_taxonpage_tab_label('General'),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access cdm content'),
       'type' => MENU_CALLBACK,
@@ -551,8 +549,7 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxon/%/description'] = array(
-      'title' => '@tabname',
-      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'General'))),
+      'title' => cdm_taxonpage_tab_label('General'),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access cdm content'),
       'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -562,8 +559,7 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxon/%/synonymy'] = array(
-      'title' => '@tabname',
-      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Synonymy'))),
+      'title' => cdm_taxonpage_tab_label('Synonymy'),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access cdm content'),
       'type' => MENU_LOCAL_TASK,
@@ -572,8 +568,7 @@ function cdm_dataportal_menu() {
       , // Expected callback arguments: taxon_uuid and ...
     );
     $items['cdm_dataportal/taxon/%/images'] = array( // Images
-      'title' => '@tabname',
-      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Images'))),
+      'title' => cdm_taxonpage_tab_label('Images'),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access cdm content'),
       'type' => MENU_LOCAL_TASK,
@@ -583,8 +578,7 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxon/%/specimens'] = array( // Specimens
-      'title' => '@tabname',
-      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Specimens'))),
+      'title' => cdm_taxonpage_tab_label('Specimens'),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access cdm content'),
       'type' => MENU_LOCAL_TASK,
@@ -594,8 +588,7 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxon/%/keys'] = array( // Keys
-      'title' => '@tabname',
-      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Keys'))),
+      'title' => cdm_taxonpage_tab_label('Keys'),
       'page callback' => 'cdm_dataportal_taxon_page_view',
       'access arguments' => array('access cdm content'),
       'type' => MENU_LOCAL_TASK,
@@ -605,8 +598,7 @@ function cdm_dataportal_menu() {
     );
 
     $items['cdm_dataportal/taxon/%/experts'] = array( // Experts
-      'title' => '@tabname',
-      'title arguments' => array('@tabname' => theme('cdm_taxonpage_tab', array('tabname' => 'Experts'))),
+      'title' => cdm_taxonpage_tab_label('Experts'),
         'page callback' => 'cdm_dataportal_taxon_page_view',
         'access arguments' => array('access cdm content'),
         'type' => MENU_LOCAL_TASK,
@@ -2064,7 +2056,7 @@ function path_to_media($uuid, $representaion_uuid = FALSE, $partId = FALSE) {
   $out = 'cdm_dataportal/media/' . $uuid;
   if ($representaion_uuid) {
     $out .= '/' . $representaion_uuid;
-    if ($partId !== FALSE) {
+    if (is_numeric($partId)) {
       $out .= '/' . $partId;
     }
   }
@@ -2101,19 +2093,32 @@ function rank_compare($thisRankUuid, $thatRankUuid) {
 
 /**
  * Composes an HTML element class attribute value composed of
- * the shortname of the cdm class and the uuid of the entity.
- * This class attribute should be used whereever an cdm-entity is rendered.
+ * the short-name of the cdm class and the uuid of the entity.
+ * This class attribute should be used wherever an cdm-entity is rendered.
+ *
+ * In case of Taxon entities or TaxonNodeDTOs the secReference is also added
+ * to the class attributes as 'sec_uuid:<uuid>'. In case of TaxonNodeDTOs the
+ * Taxon uuid is added also as taxon_uuid:<uuid>
  *
  * These according class selectors in css must be escaped, eg:
  *    .cdm\:TextData
  *
  * @param $cdmEntity
+ *    A CDM entity or TaxonNodeDTO
  */
 function html_class_attribute_ref($cdmEntity) {
 
+  $attributes = '';
   if (is_cdm_entity($cdmEntity)) {
-    return "cdm:" . $cdmEntity->class . " uuid:" . $cdmEntity->uuid;
+    $attributes =  "cdm:" . $cdmEntity->class . " uuid:" . $cdmEntity->uuid;
   }
+  if($cdmEntity->class == 'TaxonNodeDto'){
+    $attributes .= " taxon_uuid:"  . $cdmEntity->taxonUuid . " sec_uuid:"  . $cdmEntity->secUuid;;
+  }
+  if($cdmEntity->class == 'Taxon' && isset($cdmEntity->sec->uuid)){
+    $attributes .= " sec_uuid:"  . $cdmEntity->sec->uuid;
+  }
+  return $attributes;
 }
 
 

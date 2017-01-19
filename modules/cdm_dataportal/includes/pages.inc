@@ -111,7 +111,10 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         }
 
         $by_associatedtaxon_query = http_build_query($associatedFieldUnitsQuery_parameters);
-        $pagerFieldUnits = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxon->uuid, 'associatedFieldUnits'), $by_associatedtaxon_query);
+        $pagerFieldUnits = cdm_ws_get(CDM_WS_PORTAL_TAXON,
+            array($taxon->uuid, 'associatedFieldUnits'),
+            $by_associatedtaxon_query . '&pageSize=' . variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size')
+        );
         // get icon images
         $expand_icon = font_awesome_icon_markup(
             'fa-plus-square-o',
@@ -317,7 +320,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                         '#uri' => t('open media'),
                     );
 
-                    $gallery_html = theme('cdm_media_gallerie', array(
+                    $gallery_html = compose_cdm_media_gallerie(array(
                         'mediaList' => $mediaList,
                         'galleryName' => $gallery_name,
                         'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -492,11 +495,12 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   if (array_search('images', taxon_page_tabs_hidden()) === FALSE && ($page_part == 'images' || $page_part == 'all')) {
     $images_html = '<div id="images" class="page-part">';
     if ($page_part == 'all') {
-      $images_html .= '<h2>' . t('Images') . '</h2>';
+      $images_html .= '<h2>' . t(cdm_taxonpage_tab_label('Images')) . '</h2>';
     }
     // Get the image gallery as configured by the admin.
     $default_image_gallery = 'default';
     $configured_image_gallery_viewer = variable_get('image_gallery_viewer', 'default');
+    $taxon_image_gallery = '<div class="error">No image gallery viewer configured</div>';
     if($configured_image_gallery_viewer == $default_image_gallery || $configured_image_gallery_viewer == 'fsi'){
       // the fsi_gallery requires a flash plugin, in case the client browser is not supporting
       // flash we also need to provide an the default gallery as alternative
@@ -524,7 +528,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   if (($page_part == 'synonymy' || $page_part == 'all')) {
     $synonymy_html = '<div id="synonymy" class="page-part">';
     if ($page_part == 'all') {
-      $synonymy_html .= '<h2>' . t('Synonymy') . '</h2>';
+      $synonymy_html .= '<h2>' . t(cdm_taxonpage_tab_label('Synonymy')) . '</h2>';
     }
     $addAcceptedTaxon = variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
 
@@ -538,7 +542,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   // --- PAGE PART: SPECIMENS --- //
   if ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')) {
     $render_array['specimens'] = array(
-        '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t('Specimens') . '</h2>' : ''),
+        '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
         'content' => cdm_dataportal_taxon_page_specimens($taxon), // returns render array
         '#suffix' => '</div>',
     );
@@ -551,7 +555,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   else if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
     $keys_html = '<div id="keys" class="page-part">';
     if ($page_part == 'all') {
-      $keys_html .= '<h2>' . t('Keys') . '</h2>';
+      $keys_html .= '<h2>' . t(cdm_taxonpage_tab_label('Keys')) . '</h2>';
     }
     $keys_html .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
     $keys_html .= '</div>';
@@ -562,7 +566,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
   if (array_search('experts', taxon_page_tabs_hidden()) === FALSE && ($page_part == 'experts' || $page_part == 'all')) {
     $render_array['experts'] = array(
-        '#prefix' => '<div id="experts" class="page-part">' . ($page_part == 'all' ? '<h2>' . t('Experts') . '</h2>' : ''),
+        '#prefix' => '<div id="experts" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Experts')) . '</h2>' : ''),
         'content' => compose_cdm_taxon_page_experts($taxon), // returns render array
         '#suffix' => '</div>',
     );
@@ -571,7 +575,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   // ------------------ END OF PARTS -------------- //
 
   // adjust weights of page and toc elements according to the settings
-  $taxontabs_weights = get_array_variable_merged('cdm_taxonpage_tabs_weight', CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
+  $taxontabs_weights = get_array_variable_merged(CDM_TAXONPAGE_TAB_WEIGHT, CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
   foreach($taxontabs_weights as $tab_key => $weight){
     if(isset($render_array[$tab_key])){
       $render_array[$tab_key]['#weight'] = $weight;
@@ -588,7 +592,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
         if($tab_key != 'general'){
           // add entry for page part
           $toc_elements[] = array(
-              'data' => l(t('@tab-name', array('@tab-name' => ucfirst($tab_key))), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
+              'data' => l(t(cdm_taxonpage_tab_label(ucfirst($tab_key))), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
               'class' => array('page-part-toc-item-' . $tab_key)
           );
         } else {
@@ -702,12 +706,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
     }
 
     if (isset($representationPart->uri)) {
-      $profile_image = theme('cdm_media_gallerie_image', array(
-        'mediaRepresentationPart' => $representationPart,
-        'maxExtend' => $taxon_profile_image_settings['maxextend'],
-        'addPassePartout' => FALSE,
-        'attributes' => $attributes,
-      ));
+      $profile_image = cdm_media_gallerie_image($representationPart, $taxon_profile_image_settings['maxextend'], FALSE, $attributes);
       // NOTE: style="width:${maxextend}px' is needed for IE8 !!!
       $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $taxon_profile_image_settings['maxextend'] . 'px">' . $profile_image . '</div>',
         -101);
@@ -1020,7 +1019,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
         ($is_first_item ? '' : ' ')
         . $rank_separator
         . l(
-          $node_name,
+          '<span class="' . html_class_attribute_ref($node) . '">' . $node_name . '</span>',
           $path,
           array(
             'attributes' => array(
@@ -1028,7 +1027,8 @@ function compose_classification_breadcrumbs($taxon_uuid) {
               'data-cdm-taxon-uuid' => array($node->taxonUuid),
               'data-cdm-classification-mode' => array('siblings'),
               'data-cdm-align-with' => array('prev')
-            )
+            ),
+            'html' => true
           )
         );
       }
@@ -1115,4 +1115,22 @@ function compose_cdm_named_area_page($named_area_uuid)
 
   RenderHints::popFromRenderStack();
   return $render_array;
+}
+
+/**
+ * Provides the the label string for taxon page tabs.
+ *
+ * The $tabname as passed to the method will be returned if no override
+ * label is configured in the settings.
+ */
+function cdm_taxonpage_tab_label($tabname) {
+  static $taxon_tabs_labels = null;
+  if($taxon_tabs_labels == null){
+    $taxon_tabs_labels = get_array_variable_merged(CDM_TAXONPAGE_TAB_LABELS, CDM_TAXONPAGE_TAB_LABELS_DEFAULT);
+  }
+  $tabname_key = strtolower($tabname);
+  if(isset($taxon_tabs_labels[$tabname_key]) && $taxon_tabs_labels[$tabname_key]){
+    return $taxon_tabs_labels[$tabname_key];
+  }
+  return $tabname;
 }

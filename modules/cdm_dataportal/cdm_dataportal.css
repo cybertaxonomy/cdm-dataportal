@@ -235,7 +235,7 @@ li .taxon {
   clear: both;
 }
 
-.language-label {
+.language-area-label {
     font-weight: bold;
 }
 
@@ -592,6 +592,10 @@ div.cdm_media_viewer_image {
   background-color: #eee;
 }
 
+#media-representations table.active {
+    border: black solid 1px;
+}
+
 /*
  * ======= Reference Page =======
  */
@@ -655,6 +659,10 @@ table.cdm\:Reference {
 
 .messages .cdm\:Taxon { /* taxa in warning box */
     font-weight: bold;
+}
+
+#block-phycobank-registration-data table {
+    width: 100%;
 }
 
 /*
