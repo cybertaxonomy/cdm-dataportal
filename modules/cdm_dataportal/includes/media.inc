@@ -168,10 +168,7 @@ function read_media_metadata($media) {
     $metadata['title'] = $media->titleCache;
   }
 
-  // Append description to title.
-  if (!empty($media->description_L10n)) {
-    $metadata['title'] .= '<span class="media-description">' . $media->description_L10n . '<span>';
-  }
+  $metadata['description'] = $media->description_L10n;
 
   // Artist.
   if (!empty($media_metadata->Artist)) {
