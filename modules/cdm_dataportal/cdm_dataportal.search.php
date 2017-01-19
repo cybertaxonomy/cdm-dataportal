@@ -558,17 +558,17 @@ function cdm_dataportal_search_request($search_endpoint)
     $form_params['area'] = implode(',', $area_uuids);
   }
 
-  // Store in session.
-  $_SESSION['cdm']['search'] = $form_params;
-
-  // ----------- further processing that must not be store in the session --------- //
-
   // Simple search will not submit a 'tree' query parameter,
   // so we add it here from what is stored in the session unless
   // SIMPLE_SEARCH_IGNORE_CLASSIFICATION is checked in the settings.
   if (!isset($form_params['tree']) && !variable_get(SIMPLE_SEARCH_IGNORE_CLASSIFICATION, 0)) {
     $form_params['tree'] = get_current_classification_uuid();
   }
+  // Store in session.
+  $_SESSION['cdm']['search'] = $form_params;
+
+  // ----------- further processing that must not be store in the session --------- //
+
   // If the 'NONE' classification has been chosen (advanced search)
   // delete the tree information to avoid unknown uuid exceptions in the
   // cdm service.
