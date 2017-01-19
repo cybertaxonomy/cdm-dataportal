@@ -245,16 +245,16 @@ function theme_cdm_media_caption($variables) {
       $title_string = $media_metadata['filename'];
     }
     $out .= '<div class="title">' . $title_string . '</div>';
-    $descriptionPrefix = "- ";
+  }
+
+  // Description.
+  if ($media_metadata['description'] && $doDescription) {
+    $out .= '<p class="description">' . $media_metadata['description'] . '</p>';
   }
 
   $groups = array();
 
   $out .= '<dl class="media-caption">';
-  // Description.
-  if ($media_metadata['description'] && $doDescription) {
-    _description_list_group_add($groups, t('Description') . ':', $descriptionPrefix . $media_metadata['description'] );
-  }
   // Artist.
   if ($media_metadata['artist'] && $doArtist) {
     _description_list_group_add($groups, t('Artist') . ':', $media_metadata['artist'] );
