@@ -522,15 +522,6 @@ function cdm_dataportal_search_request($search_endpoint)
 
   $form_params['query'] = trim($_REQUEST['query']);
 
-  if($search_endpoint == CDM_WS_PORTAL_TAXON_SEARCH){
-    // lucene based taxon search always as phrase search: enclose it in "
-    if(!str_beginsWith($form_params['query'], '"')){
-      $form_params['query'] = '"' . $form_params['query'];
-    }
-    if(!str_endsWith($form_params['query'], '"')){
-      $form_params['query'] = $form_params['query'] . '"' ;
-    }
-  }
 
   // --- handle geographic range
   // Split of geographic range.
@@ -568,6 +559,16 @@ function cdm_dataportal_search_request($search_endpoint)
   $_SESSION['cdm']['search'] = $form_params;
 
   // ----------- further processing that must not be store in the session --------- //
+
+  if($search_endpoint == CDM_WS_PORTAL_TAXON_SEARCH){
+    // lucene based taxon search always as phrase search: enclose it in "
+    if(!str_beginsWith($form_params['query'], '"')){
+      $form_params['query'] = '"' . $form_params['query'];
+    }
+    if(!str_endsWith($form_params['query'], '"')){
+      $form_params['query'] = $form_params['query'] . '"' ;
+    }
+  }
 
   // If the 'NONE' classification has been chosen (advanced search)
   // delete the tree information to avoid unknown uuid exceptions in the
