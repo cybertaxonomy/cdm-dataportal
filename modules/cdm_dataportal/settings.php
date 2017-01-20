@@ -1864,7 +1864,8 @@ function cdm_settings_layout_taxon() {
     '#type' => 'fieldset',
     '#collapsible' => false,
     '#tree' => true,
-    '#description' => 'Setting a label for a tab will override the default label.'
+    '#description' => 'Setting a label for a tab will override the default label. 
+      Please enter the label text in the default language of the portal.'
   );
   foreach (get_taxon_tabs_list() as $label) {
     $key = strtolower($label); // turn in to string, since we need to use strings as keys
@@ -3245,10 +3246,13 @@ function cdm_settings_layout_taxon_submit($form, &$form_state){
       file_usage_add($file, 'cdm_dataportal', CDM_TAXON_PROFILE_IMAGE, 0);
     }
   }
-  // rebuild the menu if the show tabs setting has changed, otherwise the change will not have a consistent effect
-  if(variable_get('cdm_dataportal_taxonpage_tabs', 1) != $form_state['values']['cdm_dataportal_taxonpage_tabs']){
+  // rebuild the menu if the specific tabs setting have changed, otherwise the change will not have a consistent effect
+  $tab_lables_modified = serialize(get_array_variable_merged(CDM_TAXONPAGE_TAB_LABELS, CDM_TAXONPAGE_TAB_LABELS_DEFAULT)) != serialize($form_state['values'][CDM_TAXONPAGE_TAB_LABELS]);
+  $tabs_enabled_modified = variable_get('cdm_dataportal_taxonpage_tabs', 1) != $form_state['values']['cdm_dataportal_taxonpage_tabs'];
+  if($tab_lables_modified || $tabs_enabled_modified){
     // we first need to set the variable to persist the changes setting
     variable_set('cdm_dataportal_taxonpage_tabs', $form_state['values']['cdm_dataportal_taxonpage_tabs']);
+    variable_set(CDM_TAXONPAGE_TAB_LABELS, $form_state['values'][CDM_TAXONPAGE_TAB_LABELS]);
     menu_rebuild();
   }
 }
