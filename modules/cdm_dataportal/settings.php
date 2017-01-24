@@ -1103,7 +1103,7 @@ function cdm_settings_general() {
   $frontentURL = urlencode(variable_get('cdm_webservice_url', ''));
   $trigger_link_options = array(
     'attributes' => array(
-      'class' => 'index-trigger',
+      'class' => 'index-trigger'
     ),
   );
   $form['cdm_webservice']['freetext_index']['operations'] = array(
@@ -1112,6 +1112,30 @@ function cdm_settings_general() {
         '!url2' => l(t("Reindex"), cdm_compose_url(CDM_WS_MANAGE_REINDEX, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
       ))
     . '<div id="index-progress"></div></div>',
+  );
+
+  $form['cdm_webservice']['freetext_index']['cdm_login'] = array(
+    // this must not be stored, it is only used by the _add_js_cdm_ws_progressbar
+    '#type' => 'textfield',
+    '#title' => t('Login'),
+    '#description' => t('Your cdm user credentials in the following form: <code>user:password</code>')
+  );
+  drupal_add_js('
+        jQuery(document).ready(function() {
+             jQuery("#edit-cdm-login").change(function (e) {
+                var login = jQuery(e.target).val();
+                jQuery("#edit-freetext-index .index-trigger").each(function(index){
+                   var url = jQuery(this).attr("href");
+                   url = url.replace(/:\/\/[^@]+@|:\/\//, "://" + login + "@");
+                   jQuery(this).attr("href", url);
+                });
+            });
+        });
+      ',
+    array(
+      'type' => 'inline',
+      'scope' => 'footer'
+    )
   );
   _add_js_cdm_ws_progressbar(".index-trigger", "#index-progress");
 
@@ -3294,6 +3318,7 @@ function cdm_settings_general_validate($form, &$form_state) {
 function cdm_settings_general_submit($form, &$form_state){
   // clear the [cdm][taxonomictree_uuid] session variable since this taxonomictree_uuid might no longer bee valid
   unset($_SESSION['cdm']['taxonomictree_uuid']);
+  unset($_SESSION['cdm_login']);
 }
 
 /**
