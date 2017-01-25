@@ -164,19 +164,22 @@
      *
      */
     function scrollToFocused() {
+
         var focusedElement = cdm_taxontree_parent.find('.focused');
         if(focusedElement.length > 0){
-          var lineHeight = focusedElement.css('line-height');
+          var lineHeight = focusedElement.children('span').css('line-height');
           lineHeight = lineHeight.replace('px', '');
           lineHeight = lineHeight.length == 0 ? 18 : lineHeight;
-          console.log("cdm_taxontree.scrollToFocused() - lineHeight:" + lineHeight);
-          console.log("cdm_taxontree.scrollToFocused() -  focusedElement.position().top: " + focusedElement.position().top);
 
-          // IMPORTANT !!!!!!
-          // In some cases (cichorieae theme related?) the scroll to moves the div to a wrong position
-          // Doing it twice, solves the problem
-          cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTop(focusedElement.position().top - (4 * lineHeight));
-          cdm_taxontree_parent.find('div.' + vertical_scroller_selector).scrollTop(focusedElement.position().top - (4 * lineHeight));
+          scroller = cdm_taxontree_parent.find('div.' + vertical_scroller_selector);
+          scrollBy =  focusedElement.offset().top - scroller.offset().top;
+          // console.log("cdm_taxontree.scrollToFocused() - lineHeight:" + lineHeight);
+          //console.log("cdm_taxontree.scrollToFocused() -  scrollBy: " + scrollBy);
+
+          byLinesDown = 3;
+
+          isCichorieseTheme = $('div#header').length == 1;
+          scroller.scrollTop(scrollBy - (byLinesDown * lineHeight));
         }
 
     }

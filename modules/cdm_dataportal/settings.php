@@ -1103,7 +1103,7 @@ function cdm_settings_general() {
   $frontentURL = urlencode(variable_get('cdm_webservice_url', ''));
   $trigger_link_options = array(
     'attributes' => array(
-      'class' => 'index-trigger',
+      'class' => 'index-trigger'
     ),
   );
   $form['cdm_webservice']['freetext_index']['operations'] = array(
@@ -1112,6 +1112,30 @@ function cdm_settings_general() {
         '!url2' => l(t("Reindex"), cdm_compose_url(CDM_WS_MANAGE_REINDEX, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
       ))
     . '<div id="index-progress"></div></div>',
+  );
+
+  $form['cdm_webservice']['freetext_index']['cdm_login'] = array(
+    // this must not be stored, it is only used by the _add_js_cdm_ws_progressbar
+    '#type' => 'textfield',
+    '#title' => t('Login'),
+    '#description' => t('Your cdm user credentials in the following form: <code>user:password</code>')
+  );
+  drupal_add_js('
+        jQuery(document).ready(function() {
+             jQuery("#edit-cdm-login").change(function (e) {
+                var login = jQuery(e.target).val();
+                jQuery("#edit-freetext-index .index-trigger").each(function(index){
+                   var url = jQuery(this).attr("href");
+                   url = url.replace(/:\/\/[^@]+@|:\/\//, "://" + login + "@");
+                   jQuery(this).attr("href", url);
+                });
+            });
+        });
+      ',
+    array(
+      'type' => 'inline',
+      'scope' => 'footer'
+    )
   );
   _add_js_cdm_ws_progressbar(".index-trigger", "#index-progress");
 
@@ -1864,7 +1888,8 @@ function cdm_settings_layout_taxon() {
     '#type' => 'fieldset',
     '#collapsible' => false,
     '#tree' => true,
-    '#description' => 'Setting a label for a tab will override the default label.'
+    '#description' => 'Setting a label for a tab will override the default label. 
+      Please enter the label text in the default language of the portal.'
   );
   foreach (get_taxon_tabs_list() as $label) {
     $key = strtolower($label); // turn in to string, since we need to use strings as keys
@@ -3245,10 +3270,13 @@ function cdm_settings_layout_taxon_submit($form, &$form_state){
       file_usage_add($file, 'cdm_dataportal', CDM_TAXON_PROFILE_IMAGE, 0);
     }
   }
-  // rebuild the menu if the show tabs setting has changed, otherwise the change will not have a consistent effect
-  if(variable_get('cdm_dataportal_taxonpage_tabs', 1) != $form_state['values']['cdm_dataportal_taxonpage_tabs']){
+  // rebuild the menu if the specific tabs setting have changed, otherwise the change will not have a consistent effect
+  $tab_lables_modified = serialize(get_array_variable_merged(CDM_TAXONPAGE_TAB_LABELS, CDM_TAXONPAGE_TAB_LABELS_DEFAULT)) != serialize($form_state['values'][CDM_TAXONPAGE_TAB_LABELS]);
+  $tabs_enabled_modified = variable_get('cdm_dataportal_taxonpage_tabs', 1) != $form_state['values']['cdm_dataportal_taxonpage_tabs'];
+  if($tab_lables_modified || $tabs_enabled_modified){
     // we first need to set the variable to persist the changes setting
     variable_set('cdm_dataportal_taxonpage_tabs', $form_state['values']['cdm_dataportal_taxonpage_tabs']);
+    variable_set(CDM_TAXONPAGE_TAB_LABELS, $form_state['values'][CDM_TAXONPAGE_TAB_LABELS]);
     menu_rebuild();
   }
 }
@@ -3290,6 +3318,7 @@ function cdm_settings_general_validate($form, &$form_state) {
 function cdm_settings_general_submit($form, &$form_state){
   // clear the [cdm][taxonomictree_uuid] session variable since this taxonomictree_uuid might no longer bee valid
   unset($_SESSION['cdm']['taxonomictree_uuid']);
+  unset($_SESSION['cdm_login']);
 }
 
 /**

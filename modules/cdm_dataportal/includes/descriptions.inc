@@ -198,7 +198,8 @@ function feature_block($feature_name, $feature = NULL) {
   $block->module = 'cdm_dataportal';
   $block->delta = generalizeString($feature_name);
   $block->region = NULL;
-  $block->subject = '<a name="' . $block->delta . '"></a><span class="' . html_class_attribute_ref($feature) . '">'
+  $class_attribute = $feature ? html_class_attribute_ref($feature) : '';
+  $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '">'
     . theme('cdm_feature_name', array('feature_name' => $feature_name))
     . '</span>';
   $block->module = "cdm_dataportal-feature";

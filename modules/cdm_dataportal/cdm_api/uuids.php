@@ -101,7 +101,7 @@
   define('UUID_CHROMOSOMES', 'c4a60319-4978-4692-9545-58d60cf8379e');
   define('UUID_CHROMOSOMES_NUMBERS', '6f677e98-d8d5-4bc5-80bf-affdb7e3945a');
 
-  define('UUID_USE_RECORD', '8125a59d-b4d5-4485-89ea-67306297b599');
+  define('UUID_USE_RECORD', 'e5374d39-b210-47c7-bec1-bee05b5f1cb6');
   define('UUID_USE', '6acb0348-c070-4512-a37c-67bcac016279');
 
   // SpecimenTypeDesignationStatus.
