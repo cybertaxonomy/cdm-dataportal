@@ -485,8 +485,8 @@ function compose_description_element($element, $feature_block_settings, $element
   }
   $content_markup = $names_used_in_source_markup . $element_markup . $source_references_markup;
 
-  if(!$content_markup && $feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1){
-    // no textual content, so skip this element completely, even if there could be an footnote key
+  if(!$content_markup && $feature_block_settings['sources_as_content'] !== 1){
+    // no textual content? So skip this element completely, even if there could be an footnote key
     // see #4379
     return null;
   }
