@@ -387,7 +387,6 @@ function theme_cdm_UseDescription($variables) {
     }
     // uses will be ordered by source
     foreach ($description->sources as $source) {
-      $is_about_current_taxon = FALSE;
       $originalTaxonUsedInSource = NULL;
       $originalTaxonPager = NULL;
       if ($source->originalNameString) {
@@ -500,7 +499,7 @@ function theme_cdm_block_Uses($variables) {
   $out = '';
   $markerTypes = array();
   $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
-  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxonUuid, queryString($markerTypes));
+  $useDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxonUuid . '/descriptions', $markerTypes);
   if (!empty($useDescriptions)) {
     // FIXME use theme_block instaed of hardcoding the block html here !!!!
     $out .= '<div id="block-cdm_dataportal-feature-description" class="clear-block block block-cdm_dataportal-feature"><H2><a name="userecords"> </a> Uses </H2>';
