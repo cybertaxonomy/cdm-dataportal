@@ -374,7 +374,7 @@ function theme_cdm_UseDescription($variables) {
     return '';
   }
 
-  $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION); //FIXME wrong UUID here
+  $feature_block_settings = get_feature_block_settings(UUID_USE_RECORD);
 
   $descriptionSynonyms = '';
   $descriptionOut = '';

@@ -8,23 +8,15 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.palmae;
 
-import static org.junit.Assert.*;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.elements.BaseElement;
-import eu.etaxonomy.dataportal.elements.DescriptionElementRepresentation;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
@@ -77,7 +69,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
 
 
     @Test
-    @Ignore /* ignoring until the change of T. Evans et al. 2002 to T. Evans, K. Sengdala, B. Thammavong, O.V. Viengkham and J. Dransfield. 2002 is clarified */
+    //@Ignore /* ignoring until the change of T. Evans et al. 2002 to T. Evans, K. Sengdala, B. Thammavong, O.V. Viengkham and J. Dransfield. 2002 is clarified */
     public void testFeatures() {
         assertEquals("Content", p.getTableOfContentHeader());
         List<LinkElement> links = p.getTableOfContentLinks();
@@ -96,10 +88,10 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         /* distribution */
         String featureClass = "distribution";
         String featureLabel = "Distribution";
-        String blockTextFull = featureLabel + "\n\n\nMap accurate to TDWG level 3 distributions\n\nAssam, China South-Central, China Southeast, East Himalaya, India, Laos, Myanmar, Nepal, Thailand, Tibet (World Checklist of Monocotyledons)\nIndia (North-east), Bhutan, Myanmar, China (Tibet, South-east and South Yunnan), Thailand (North) and Laos (North). (T. Evans et al. 2002)";
+        String blockTextFull = featureLabel + "\n\n\nMap uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)\n\nAssam, China South-Central, China Southeast, East Himalaya, India, Laos, Myanmar, Nepal, Thailand, Tibet (World Checklist of Monocotyledons)\nIndia (North-east), Bhutan, Myanmar, China (Tibet, South-east and South Yunnan), Thailand (North) and Laos (North). (T. Evans et al. 2002)";
 
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "p", "span");
+        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
 
         assertEquals(blockTextFull, featureBlock.getText());
         featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
@@ -108,7 +100,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(1).getLinksInElement().get(0), "T. Evans et al. 2002", this.getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
 
         assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers-map-distribution")));
-        assertEquals("Map accurate to TDWG level 3 distributions", featureBlock.getElement().findElement(By.className("distribution_map_caption")).getText());
+        assertEquals("Map uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)", featureBlock.getElement().findElement(By.className("distribution_map_caption")).getText());
 
 
         /* Biology And Ecology */
