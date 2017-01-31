@@ -487,32 +487,3 @@ function theme_cdm_UseDescription($variables) {
 
   return $out;
 }
-
-
-/**
- * Provides the content for a block of Uses Descriptions for a given taxon.
- *
- * Fetches the list of TaxonDescriptions tagged with the MARKERTYPE_USE
- * and passes them to the theme function theme_cdm_UseDescription().
- *
- * @param string $taxon_uuid
- *   The uuid of the Taxon
- *
- * @return array
- *   A drupal render array
- */
-function cdm_block_use_description_content($taxon_uuid) {
-
-  $use_description_content = '';
-
-  if (is_uuid($taxon_uuid )) {
-    $markerTypes = array();
-    $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
-    $useDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon_uuid . '/descriptions', $markerTypes);
-    if (!empty($useDescriptions)) {
-      $use_description_content = theme('cdm_UseDescription', array('description' => $useDescriptions, 'taxonUuid' => $taxon_uuid));
-    }
-  }
-
-  return markup_to_render_array($use_description_content);
-}
