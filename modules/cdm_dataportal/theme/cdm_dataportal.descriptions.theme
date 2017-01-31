@@ -363,14 +363,18 @@ function theme_cdm_block_IdentificationKeys($variables) {
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_UseDescription($variables) {
+
+
+  RenderHints::pushToRenderStack('block_Uses');
+
   $descriptions = $variables['description'];
   $taxonUuid = $variables['taxonUuid'];
-  $out = '<div id="content"><ul id="Description" class ="description">';
+  $out = '<ul id="Description" class ="description">';
   if ($descriptions == NULL) {
-    return;
+    return '';
   }
 
-  $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
+  $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION); //FIXME wrong UUID here
 
   $descriptionSynonyms = '';
   $descriptionOut = '';
@@ -478,36 +482,37 @@ function theme_cdm_UseDescription($variables) {
   }
   $out .= $descriptionOut . $synonymOut;
   $out .= "</ul></div>";
+
+  RenderHints::popFromRenderStack();
+
   return $out;
 }
 
 
 /**
- * The theming function for a block of Uses Descriptions for a given taxon.
+ * Provides the content for a block of Uses Descriptions for a given taxon.
  *
- * The Uses block has been removed from the code but the according theme function
- * is kept for compatibility reasons with existing code regarding palmweb.
+ * Fetches the list of TaxonDescriptions tagged with the MARKERTYPE_USE
+ * and passes them to the theme function theme_cdm_UseDescription().
  *
+ * @param string $taxon_uuid
+ *   The uuid of the Taxon
+ *
+ * @return array
+ *   A drupal render array
  */
-function theme_cdm_block_Uses($variables) {
-  $taxonUuid = $variables['taxonUuid'];
-  RenderHints::pushToRenderStack('block_Uses');
+function cdm_block_use_description_content($taxon_uuid) {
 
-  if ($taxonUuid == NULL) {
-    return;
-  }
-  $out = '';
-  $markerTypes = array();
-  $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
-  $useDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxonUuid . '/descriptions', $markerTypes);
-  if (!empty($useDescriptions)) {
-    // FIXME use theme_block instaed of hardcoding the block html here !!!!
-    $out .= '<div id="block-cdm_dataportal-feature-description" class="clear-block block block-cdm_dataportal-feature"><H2><a name="userecords"> </a> Uses </H2>';
-    $formatUseDescriptions = theme('cdm_UseDescription', array('description' => $useDescriptions, 'taxonUuid' => $taxonUuid));
+  $use_description_content = '';
 
-    $out .= $formatUseDescriptions;
-    $out .= "</div>";
+  if (is_uuid($taxon_uuid )) {
+    $markerTypes = array();
+    $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
+    $useDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon_uuid . '/descriptions', $markerTypes);
+    if (!empty($useDescriptions)) {
+      $use_description_content = theme('cdm_UseDescription', array('description' => $useDescriptions, 'taxonUuid' => $taxon_uuid));
+    }
   }
 
-  return $out;
+  return markup_to_render_array($use_description_content);
 }

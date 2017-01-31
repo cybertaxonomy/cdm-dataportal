@@ -89,6 +89,10 @@
   define('UUID_CITATION', '99b2842f-9aa7-42fa-bd5f-7285311e0101');
   define('UUID_ADDITIONAL_PUBLICATION', 'cb2eab09-6d9d-4e43-8ad2-873f23400930');
   define('UUID_USES', 'e5374d39-b210-47c7-bec1-bee05b5f1cb6');
+  define('UUID_USE_SUMMARY', 'e6bd0bb0-7b1a-11e0-819a-0800200c9a66');
+  define('UUID_USE', '6acb0348-c070-4512-a37c-67bcac016279');
+  define('UUID_USE_RECORD', '8125a59d-b4d5-4485-89ea-67306297b599');
+
   define('UUID_CONSERVATION', '4518fc20-2492-47de-b345-777d2b83c9cf');
   define('UUID_CULTIVATION', 'e28965b2-a367-48c5-b954-8afc8ac2c69b');
   define('UUID_INTRODUCTION', 'e75255ca-8ff4-4905-baad-f842927fe1d3');
@@ -101,8 +105,6 @@
   define('UUID_CHROMOSOMES', 'c4a60319-4978-4692-9545-58d60cf8379e');
   define('UUID_CHROMOSOMES_NUMBERS', '6f677e98-d8d5-4bc5-80bf-affdb7e3945a');
 
-  define('UUID_USE_RECORD', 'e5374d39-b210-47c7-bec1-bee05b5f1cb6');
-  define('UUID_USE', '6acb0348-c070-4512-a37c-67bcac016279');
 
   // SpecimenTypeDesignationStatus.
   define('UUID_STD_HOLOTYPE', 'a407dbc7-e60c-46ff-be11-eddf4c5a970d');

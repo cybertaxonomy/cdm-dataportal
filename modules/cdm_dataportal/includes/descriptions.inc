@@ -685,6 +685,8 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
+    $use_description_features = array(UUID_USE);
+
 
     RenderHints::pushToRenderStack('feature_block');
     // Create a drupal block for each feature
@@ -703,6 +705,14 @@ function handle_annotations_and_sources_config($feature_block_settings){
         $block->content = array();
         $block_content_is_empty = TRUE;
 
+        if(array_search($node->feature->uuid, $use_description_features) !== false) {
+          // do not show features which belong to the UseDescriptions, these are
+          // handled by theme_cdm_block_Uses where the according descriptions are
+          // fetched again separately.
+          // UseDescriptions are a feature special to palmweb
+          continue;
+        }
+
         /*
          * Content/DISTRIBUTION.
          */
@@ -710,6 +720,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
           $block = compose_feature_block_distribution($taxon, $node->descriptionElements, $node->feature);
           $block_content_is_empty = FALSE;
         }
+
         /*
          * Content/COMMON_NAME.
          */
@@ -719,9 +730,11 @@ function handle_annotations_and_sources_config($feature_block_settings){
           $block_content_is_empty = FALSE;
         }
 
+        /*
+         * Contend/Use Description (Use + UseRecord)
+         */
         else if ($node->feature->uuid == UUID_USE_RECORD) {
-          $block_uses_content_html = theme('cdm_block_Uses', array('taxonUuid' => $taxon->uuid));
-          $block->content[] = markup_to_render_array($block_uses_content_html);
+          $block->content[] = cdm_block_use_description_content($taxon->uuid);
           $block_content_is_empty = FALSE;
         }
 
@@ -1752,11 +1765,11 @@ function compose_description_elements_distribution($description_elements){
   /**
    * Provides the merged feature tree for a taxon profile page.
    *
-   * The merging of the profile feature tree is actully done in
+   * The merging of the profile feature tree is actually done in
    * _mergeFeatureTreeDescriptions(). See this method  for details
    * on the structure of the merged tree.
    *
-   * This method provides t hook which can be used to modify the
+   * This method provides a hook which can be used to modify the
    * merged feature tree after it has been created, see
    * hook_merged_taxon_feature_tree_alter()
    *
