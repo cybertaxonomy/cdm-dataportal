@@ -102,6 +102,10 @@ div.error{
   margin-bottom: 0;
 }
 
+#block-cdm-dataportal-feature-distribution .content {
+    padding-left: 23px; /* this should match the sum of the indents of ul.padding-left (1em) + li.padding-left (6px) of other block contents*/
+}
+
 div.error, .error {
   color: #f00;
 }
