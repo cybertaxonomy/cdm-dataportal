@@ -10,6 +10,7 @@
 package eu.etaxonomy.dataportal.elements;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.openqa.selenium.WebElement;
 
@@ -55,9 +56,16 @@ public class LinkElement extends BaseElement {
 		return testIfLinkElement(element.getElement(), text, href);
 	}
 
-	public static boolean testIfLinkElement(WebElement element, String text, String href) {
+	/**
+	 * @param element
+	 * @param text
+	 * @param hrefEndsWith
+	 *   The actual link is must end with this. The full URL works of course also.
+	 * @return
+	 */
+	public static boolean testIfLinkElement(WebElement element, String text, String hrefEndsWith) {
 		assertEquals("a", element.getTagName());
-		assertEquals(href, element.getAttribute("href"));
+		assertTrue(element.getAttribute("href").endsWith(hrefEndsWith));
 		assertEquals(text, element.getText());
 		return true;
 	}

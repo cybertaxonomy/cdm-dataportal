@@ -61,6 +61,7 @@ function theme_cdm_reference($variables) {
     $citation = $reference->titleCache;
   }
 
+  $citation = trim($citation);
   if (isset($doLink) && $doLink === TRUE) {
     $out = '<span class="reference">';
     $out .= l($citation, path_to_reference($reference->uuid), array(
