@@ -58,7 +58,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
     @Test
     public void testTitleAndTabs() {
 
-        assertEquals(getContext().prepareTitle("Calamus acanthospathus Griff., Calcutta J. Nat. Hist. 5: 39. 1845"), p.getTitle());
+        assertEquals(getContext().prepareTitle("Calamus acanthospathus Griff., Calcutta J. Nat. Hist. 5: 39. 1845"), driver.getTitle());
         assertNull("Authorship information should be hidden", p.getAuthorInformationText());
 
         List<LinkElement> primaryTabs = p.getPrimaryTabs();
@@ -75,7 +75,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
     public void testProfileImage() {
         ImgElement profileImage = p.getProfileImage();
         assertNotNull("Expecting profile images to be switched on", profileImage);
-        assertTrue("Expoecting image palm_tc_29336_1.jpg", profileImage.getSrcUrl().toString().endsWith("/palm_tc_29336_1.jpg"));
+        assertTrue("Expecting image palm_tc_29336_1.jpg", profileImage.getSrcUrl().toString().endsWith("/palm_tc_29336_1.jpg"));
     }
 
 

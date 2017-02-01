@@ -685,6 +685,18 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'sort_elements' => NO_SORT,
         'glue' => '',
         'element_tag' => NULL
+      ),
+      // settings for pseudo feature bibliography
+      // only hard coded here
+      'BIBLIOGRAPHY' => array(
+        'as_list' => 'div',
+        'link_to_reference' => 0,
+        'link_to_name_used_in_source' => 1,
+        'sources_as_content' => 0,
+        'sources_as_content_to_bibliography' => 0,
+        'sort_elements' => NO_SORT,
+        'glue' => '',
+        'element_tag' => NULL
       )
     );
 
@@ -833,7 +845,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
       'sources_as_content' => 0,
       'sources_as_content_to_bibliography' => 0,
       'sort_elements' => NO_SORT, // will cause ...
-      'glue' => '',
+      'glue' => ' ',
       'element_tag' => 'div',
       'special' => array()
     );
@@ -861,6 +873,9 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
       default:
         $settings_for_theme = $other_themes_default;
     }
+    // add pseudo feature settings
+    $settings_for_theme['BIBLIOGRAPHY'] = $default['BIBLIOGRAPHY'];
+
     // ---- END of DEFAULTS
 
     $saved_settings = variable_get(FEATURE_BLOCK_SETTINGS, NULL);
@@ -889,7 +904,8 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
 
     return $feature_block_setting;
 }
-  /**
+
+/**
  * returns the current setting for the original source bibliography
  *
  * Caches internally
