@@ -1709,7 +1709,7 @@ function compose_description_element_common_taxon_name($element, $feature_block_
  */
 function compose_description_elements_distribution($description_elements){
 
-  $out = '';
+  $markup_array = array();
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 
@@ -1727,6 +1727,7 @@ function compose_description_elements_distribution($description_elements){
 
     list($status_label, $status_markup) = distribution_status_label_and_markup($description_element);
 
+    $out = '';
     $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
       . ' " title="' . $status_label. '">'
       . $description_element->area->representation_L10n
@@ -1734,11 +1735,12 @@ function compose_description_elements_distribution($description_elements){
     if(!empty($annotations_and_sources['source_references'])){
       $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
     }
-    $out .= $annotations_and_sources['foot_note_keys']   . ' </' . $enclosingTag . '>';
+    $out .= $annotations_and_sources['foot_note_keys']   . '</' . $enclosingTag . '>';
+    $markup_array[] = $out;
   }
 
   RenderHints::popFromRenderStack();
-  return markup_to_render_array($out);
+  return markup_to_render_array(join('<span class="separator">' . $feature_block_settings['glue'] . '</span>', $markup_array));
 }
 
   /**

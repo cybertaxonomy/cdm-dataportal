@@ -819,8 +819,8 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
         'sources_as_content' => 1, // FIXME seems to have no effect see Acanthophoenix rousselii (palmae)
         'sources_as_content_to_bibliography' => 1,
         'sort_elements' => NO_SORT, // will cause ...
-        'glue' => '',
-        'element_tag' => 'div',
+        'glue' => ', ',
+        'element_tag' => 'span',
         'special' => array()
       ),
     );
