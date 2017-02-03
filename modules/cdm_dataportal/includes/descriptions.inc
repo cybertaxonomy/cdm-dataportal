@@ -679,11 +679,13 @@ function handle_annotations_and_sources_config($feature_block_settings){
    *
    * @ingroup compose
    */
-  function compose_feature_blocks($mergedFeatureNodes, $taxon) {
+  function make_feature_block_list($mergedFeatureNodes, $taxon) {
 
     $block_list = array();
 
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
+
+    $use_description_features = array(UUID_USE);
 
 
     RenderHints::pushToRenderStack('feature_block');
@@ -703,6 +705,14 @@ function handle_annotations_and_sources_config($feature_block_settings){
         $block->content = array();
         $block_content_is_empty = TRUE;
 
+        if(array_search($node->feature->uuid, $use_description_features) !== false) {
+          // do not show features which belong to the UseDescriptions, these are
+          // handled by compose_feature_block_items_use_records() where the according descriptions are
+          // fetched again separately.
+          // UseDescriptions are a special feature introduced for palmweb
+          continue;
+        }
+
         /*
          * Content/DISTRIBUTION.
          */
@@ -710,6 +720,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
           $block = compose_feature_block_distribution($taxon, $node->descriptionElements, $node->feature);
           $block_content_is_empty = FALSE;
         }
+
         /*
          * Content/COMMON_NAME.
          */
@@ -719,9 +730,11 @@ function handle_annotations_and_sources_config($feature_block_settings){
           $block_content_is_empty = FALSE;
         }
 
+        /*
+         * Content/Use Description (Use + UseRecord)
+         */
         else if ($node->feature->uuid == UUID_USE_RECORD) {
-          $block_uses_content_html = theme('cdm_block_Uses', array('taxonUuid' => $taxon->uuid));
-          $block->content[] = markup_to_render_array($block_uses_content_html);
+          $block->content[] = cdm_block_use_description_content($taxon->uuid, $node->feature);
           $block_content_is_empty = FALSE;
         }
 
@@ -774,7 +787,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
     drupal_alter('cdm_feature_node_blocks', $block_list, $taxon);
 
-    return _block_get_renderable_array($block_list);
+    return  $block_list;
   }
 
 /**
@@ -1503,7 +1516,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
             $elements_out_array[] = compose_description_element_common_taxon_name($description_element, $feature_block_settings);
             break;
           case 'Uses':
-            /* IGNORE Uses classes, these are handled completely in theme_cdm_UseDescription */
+            /* IGNORE Uses classes, these are handled completely in compose_feature_block_items_use_records()  */
             break;
           default:
             $feature_block_has_content = true;
@@ -1696,7 +1709,7 @@ function compose_description_element_common_taxon_name($element, $feature_block_
  */
 function compose_description_elements_distribution($description_elements){
 
-  $out = '';
+  $markup_array = array();
   RenderHints::pushToRenderStack('descriptionElementDistribution');
   RenderHints::setFootnoteListKey(UUID_DISTRIBUTION);
 
@@ -1714,6 +1727,7 @@ function compose_description_elements_distribution($description_elements){
 
     list($status_label, $status_markup) = distribution_status_label_and_markup($description_element);
 
+    $out = '';
     $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
       . ' " title="' . $status_label. '">'
       . $description_element->area->representation_L10n
@@ -1721,11 +1735,12 @@ function compose_description_elements_distribution($description_elements){
     if(!empty($annotations_and_sources['source_references'])){
       $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
     }
-    $out .= $annotations_and_sources['foot_note_keys']   . ' </' . $enclosingTag . '>';
+    $out .= $annotations_and_sources['foot_note_keys']   . '</' . $enclosingTag . '>';
+    $markup_array[] = $out;
   }
 
   RenderHints::popFromRenderStack();
-  return markup_to_render_array($out);
+  return markup_to_render_array(join('<span class="separator">' . $feature_block_settings['glue'] . '</span>', $markup_array));
 }
 
   /**
@@ -1752,11 +1767,11 @@ function compose_description_elements_distribution($description_elements){
   /**
    * Provides the merged feature tree for a taxon profile page.
    *
-   * The merging of the profile feature tree is actully done in
+   * The merging of the profile feature tree is actually done in
    * _mergeFeatureTreeDescriptions(). See this method  for details
    * on the structure of the merged tree.
    *
-   * This method provides t hook which can be used to modify the
+   * This method provides a hook which can be used to modify the
    * merged feature tree after it has been created, see
    * hook_merged_taxon_feature_tree_alter()
    *
@@ -1975,5 +1990,53 @@ function compose_description_elements_distribution($description_elements){
     }
     $markup .= $level_style['item_group_prefix']  . join( $level_style['item_glue'], $per_node_markup) . $level_style['item_group_postfix'];
   }
+
+
+/**
+ * Provides the content for a block of Uses Descriptions for a given taxon.
+ *
+ * Fetches the list of TaxonDescriptions tagged with the MARKERTYPE_USE
+ * and passes them to the theme function theme_cdm_UseDescription().
+ *
+ * @param string $taxon_uuid
+ *   The uuid of the Taxon
+ *
+ * @return array
+ *   A drupal render array
+ */
+function cdm_block_use_description_content($taxon_uuid, $feature) {
+
+  $use_description_content = array();
+
+  if (is_uuid($taxon_uuid )) {
+    $markerTypes = array();
+    $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
+    $useDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon_uuid . '/descriptions', $markerTypes);
+    if (!empty($useDescriptions)) {
+      $use_description_content = compose_feature_block_items_use_records($useDescriptions, $taxon_uuid, $feature);
+    }
+  }
+
+  return $use_description_content;
+}
+
+/**
+ * Creates a trunk of a feature object which can be used to build pseudo feature blocks like the Bibliography.
+ *
+ * @param $representation_L10n
+ * @param String $pseudo_feature_key
+ *    Will be set as uuid but should be one of 'BIBLIOGRAPHY', ... more to come. See also get_feature_block_settings()
+ *
+ * @return object
+ *  The feature object
+ */
+function make_pseudo_feature($representation_L10n, $pseudo_feature_key = null){
+  $feature = new stdClass;
+  $feature->representation_L10n = $representation_L10n;
+  $feature->uuid = $pseudo_feature_key;
+
+  return $feature;
+
+}
 
 

@@ -80,7 +80,7 @@ class FootnoteManager {
   /**
    * Render a footnote list
    *
-   * @param array $footnoteListKey
+   * @param string $footnoteListKey
    * @param string $separator
    *
    * @return string

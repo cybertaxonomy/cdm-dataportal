@@ -262,6 +262,11 @@ li .taxon {
     font-style: italic;
 }
 
+.use-records th {
+    font-weight: normal;
+}
+
+
 /*
  * ======= synonymy =======
  */
@@ -706,9 +711,6 @@ table.cdm\:Reference {
     font-size: 100%; /* reset fontsize */
 }
 
-#useRecords th {
-  font-weight: normal;
-}
 
 /* for compatibility with d5 themes */
 .block-cdm-dataportal-feature ul {

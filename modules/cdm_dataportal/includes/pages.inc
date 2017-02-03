@@ -713,30 +713,35 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
     }
   }
 
+  $pseudo_feature_blocks = array();
+  $pseudo_feature_block_toc_items = array();
 
-  // Render the sections for each feature
-  $render_array['taxon_description_features'] = compose_feature_blocks($merged_tree->root->childNodes, $taxon);
 
+  // Render the sections for each real feature
+  $feature_block_list = make_feature_block_list($merged_tree->root->childNodes, $taxon);
+
+  // Bibliography
   $bibliography_settings = get_bibliography_settings();
   if($bibliography_settings['enabled'] == 1){
-    $bibliography_block = feature_block(t('Bibliography'));
-    $bibliography_block->content = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', '');
+    $feature_bibliography = make_pseudo_feature('Bibliography', 'BIBLIOGRAPHY');
+    $bibliography_block = feature_block(t('Bibliography'), $feature_bibliography);
+    $bibliography_item = markup_to_render_array(FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', ''));
+    $bibliography_block->content[] = compose_feature_block_wrap_elements(array($bibliography_item), $feature_bibliography);
 
     if(!empty($bibliography_block->content)){
-      $render_array['taxon_description_bibliography'] =  markup_to_render_array(
-        theme('block',
-          array(
-            'elements' => array(
-              '#block' => $bibliography_block,
-              '#children' => $bibliography_block->content,
-            )
-          )
-        ),
-        100 // weight
-      );
-      cdm_toc_list_add_item('Bibliography', 'bibliography');
+      $pseudo_feature_block_toc_items['Bibliography']= 'bibliography';
+      $pseudo_feature_blocks[] = $bibliography_block;
     }
+  }
 
+  $render_array['taxon_description_features'] = _block_get_renderable_array(
+    array_merge($feature_block_list, $pseudo_feature_blocks)
+  );
+
+  if($pseudo_feature_block_toc_items){
+    foreach ($pseudo_feature_block_toc_items as $label=>$fragment){
+      cdm_toc_list_add_item($label, $fragment);
+    }
   }
 
   // create the table of content

@@ -8,23 +8,15 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.palmae;
 
-import static org.junit.Assert.*;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.elements.BaseElement;
-import eu.etaxonomy.dataportal.elements.DescriptionElementRepresentation;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
@@ -42,12 +34,23 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
 
     static UUID taxonUuid = UUID.fromString("bb340c78-880e-4dd0-91ff-81788a482b31");
 
-    TaxonProfilePage p = null;
+    static TaxonProfilePage p = null;
+
+    /**
+     * NOTE
+     *
+     * This was formerly formated as '" + evans_et_al_referenceCitation + "' by special citation
+     * string generation in the drupal code which need to be removed
+     * in order to retain the maintainability of the code.
+     */
+    String evans_et_al_referenceCitation = "T. Evans & K. Sengdala & B. Thammavong & O.V. Viengkham & J. Dransfield, A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina. 2002";
 
     @Before
     public void setUp() throws MalformedURLException {
 
-        p = new TaxonProfilePage(driver, getContext(), taxonUuid);
+        if(p == null){
+            p = new TaxonProfilePage(driver, getContext(), taxonUuid);
+        }
 
     }
 
@@ -55,7 +58,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
     @Test
     public void testTitleAndTabs() {
 
-        assertEquals(getContext().prepareTitle("Calamus acanthospathus Griff., Calcutta J. Nat. Hist. 5: 39. 1845"), p.getTitle());
+        assertEquals(getContext().prepareTitle("Calamus acanthospathus Griff., Calcutta J. Nat. Hist. 5: 39. 1845"), driver.getTitle());
         assertNull("Authorship information should be hidden", p.getAuthorInformationText());
 
         List<LinkElement> primaryTabs = p.getPrimaryTabs();
@@ -72,23 +75,26 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
     public void testProfileImage() {
         ImgElement profileImage = p.getProfileImage();
         assertNotNull("Expecting profile images to be switched on", profileImage);
-        assertTrue("Expoecting image palm_tc_29336_1.jpg", profileImage.getSrcUrl().toString().endsWith("/palm_tc_29336_1.jpg"));
+        assertTrue("Expecting image palm_tc_29336_1.jpg", profileImage.getSrcUrl().toString().endsWith("/palm_tc_29336_1.jpg"));
     }
 
 
     @Test
-    @Ignore /* ignoring until the change of T. Evans et al. 2002 to T. Evans, K. Sengdala, B. Thammavong, O.V. Viengkham and J. Dransfield. 2002 is clarified */
-    public void testFeatures() {
+    public void testFeatureToc() {
+
         assertEquals("Content", p.getTableOfContentHeader());
         List<LinkElement> links = p.getTableOfContentLinks();
         assertNotNull("Expecting a list of TOC links in the profile page.", links);
+    }
 
-        FeatureBlock featureBlock;
+    @Test
+    public void testFeatureDistribution() {
+
         int featureId = 0;
 
         int descriptionElementFontSize = 11;
-        String expectedCssDisplay = "inline";
         String expectedListStyleType = "none";
+        String expectedCssDisplay = "inline";
         String expectedListStylePosition = "outside";
         String expectedListStyleImage = "none";
         int indent = 23;
@@ -96,116 +102,178 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         /* distribution */
         String featureClass = "distribution";
         String featureLabel = "Distribution";
-        String blockTextFull = featureLabel + "\n\n\nMap accurate to TDWG level 3 distributions\n\nAssam, China South-Central, China Southeast, East Himalaya, India, Laos, Myanmar, Nepal, Thailand, Tibet (World Checklist of Monocotyledons)\nIndia (North-east), Bhutan, Myanmar, China (Tibet, South-east and South Yunnan), Thailand (North) and Laos (North). (T. Evans et al. 2002)";
+        String blockTextFull = featureLabel + "\n\n\n\n\nMap uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)\nAssam (World Checklist of Arecaceae), China South-Central (World Checklist of Arecaceae), China Southeast (World Checklist of Arecaceae), East Himalaya (World Checklist of Arecaceae), India (World Checklist of Arecaceae), Laos (World Checklist of Arecaceae), Myanmar (World Checklist of Arecaceae), Nepal (World Checklist of Arecaceae), Thailand (World Checklist of Arecaceae), Tibet (World Checklist of Arecaceae)\nIndia (North-east), Bhutan, Myanmar, China (Tibet, South-east and South Yunnan), Thailand (North) and Laos (North). (T. Evans & K. Sengdala & B. Thammavong & O.V. Viengkham & J. Dransfield, A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina. 2002)";
 
-        p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "p", "span");
+        p.testTableOfContentEntry(featureId, featureLabel, featureClass);
+        FeatureBlock featureBlockDistribution = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
 
-        assertEquals(blockTextFull, featureBlock.getText());
-        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-        assertEquals(2, featureBlock.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "World Checklist of Monocotyledons", this.getContext().getBaseUri().toString()));
-        assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(1).getLinksInElement().get(0), "T. Evans et al. 2002", this.getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(blockTextFull, featureBlockDistribution.getText());
+        featureBlockDistribution.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(1, featureBlockDistribution.getOriginalSourcesSections().size());
+        // NOTE: the first source has been deleted in latest data
+        // assertTrue(LinkElement.testIfLinkElement(featureBlockDistribution.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "World Checklist of Monocotyledons", getContext().getBaseUri().toString()));
+        assertTrue(LinkElement.testIfLinkElement(featureBlockDistribution.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
 
-        assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers-map-distribution")));
-        assertEquals("Map accurate to TDWG level 3 distributions", featureBlock.getElement().findElement(By.className("distribution_map_caption")).getText());
+        assertNotNull("Expecting an OpenLayers map", featureBlockDistribution.getElement().findElement(By.id("openlayers-map-distribution")));
+        assertEquals("Map uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)", featureBlockDistribution.getElement().findElement(By.className("distribution_map_caption")).getText());
 
+    }
+
+    @Test
+    public void testFeatureBiologyAndEcology() {
+
+        int featureId = 2;
+        int descriptionElementFontSize = 11;
+        String expectedCssDisplay = "inline";
+        String expectedListStyleType = "none";
+        String expectedListStylePosition = "outside";
+        String expectedListStyleImage = "none";
+        int indent = 23;
 
         /* Biology And Ecology */
-        featureClass = "biology-and-ecology";
-        featureLabel = "Biology And Ecology";
-        blockTextFull = featureLabel + "\nEvergreen forest. In Laos at 1800 m, in Thailand at 1500 - 1700 m, in South Yunnan at 1600 m. (T. Evans et al. 2002)";
+        String featureClass = "biology-and-ecology";
+        String featureLabel = "Biology And Ecology";
+        String blockTextFull = featureLabel + "\nEvergreen forest. In Laos at 1800 m, in Thailand at 1500 - 1700 m, in South Yunnan at 1600 m. (" + evans_et_al_referenceCitation + ")";
         expectedCssDisplay = "list-item";
         expectedListStyleType = "none";
 
-        p.testTableOfContentEntry(featureId++,featureLabel, featureClass);
-        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
+        p.testTableOfContentEntry(featureId,featureLabel, featureClass);
+        FeatureBlock featureBlockBioEco = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
 
-        assertEquals(blockTextFull, featureBlock.getText());
-        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-        assertEquals(1, featureBlock.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "T. Evans et al. 2002", getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(blockTextFull, featureBlockBioEco.getText());
+        featureBlockBioEco.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(1, featureBlockBioEco.getOriginalSourcesSections().size());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockBioEco.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+    }
 
+    @Test
+    public void testFeatureConservation() {
+
+        int featureId = 3;
+        int descriptionElementFontSize = 11;
+        String expectedListStyleType = "none";
+        String expectedCssDisplay = "list-item";
+        String expectedListStylePosition = "outside";
+        String expectedListStyleImage = "none";
+        int indent = 23;
 
         /* Conservation */
-        featureClass = "conservation";
-        featureLabel = "Conservation";
-        blockTextFull = featureLabel + "\nOf moderate concern. In Indochina it apparently produces at most one or two additional stems and so probably regenerates poorly after harvesting, putting it at elevated risk even though it is widespread and occurs in high altitude forests, which are less threatened by agriculture and logging. It had declined severely due to harvesting in Sikkim over 100 years ago (Anderson 1869). (T. Evans et al. 2002)";
-        expectedCssDisplay = "list-item";
-        expectedListStyleType = "none";
+        String featureClass = "conservation";
+        String featureLabel = "Conservation";
+        String blockTextFull = featureLabel + "\nOf moderate concern. In Indochina it apparently produces at most one or two additional stems and so probably regenerates poorly after harvesting, putting it at elevated risk even though it is widespread and occurs in high altitude forests, which are less threatened by agriculture and logging. It had declined severely due to harvesting in Sikkim over 100 years ago (Anderson 1869). (" + evans_et_al_referenceCitation + ")";
 
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
+        FeatureBlock featureBlockConservation = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
 
-        assertEquals(blockTextFull, featureBlock.getText());
-        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-        assertEquals(1, featureBlock.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "T. Evans et al. 2002", getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(blockTextFull, featureBlockConservation.getText());
+        featureBlockConservation.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(1, featureBlockConservation.getOriginalSourcesSections().size());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockConservation.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+    }
+
+    @Test
+    public void testFeatureCommonName() {
+
+        int featureId = 4;
+        String expectedCssDisplay = "list-item";
+        String expectedListStyleType = "none";
+        int descriptionElementFontSize = 11;
+        String expectedListStylePosition = "outside";
+        String expectedListStyleImage = "none";
+        int indent = 23;
 
         /* Common Name */
-        featureClass = "common-name";
-        featureLabel = "Common Name";
-        blockTextFull = featureLabel + "\nwai hom (Lao Loum), blong eur (Khamu), wai hawm (Thailand) (T. Evans et al. 2002)";
-        expectedCssDisplay = "list-item";
-        expectedListStyleType = "none";
+        String featureClass = "common-name";
+        String featureLabel = "Common Name";
+        String blockTextFull = featureLabel + "\nwai hom (Lao Loum), blong eur (Khamu), wai hawm (Thailand) (" + evans_et_al_referenceCitation + ")";
 
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
+        FeatureBlock featureBlockCommonName = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
 
-        assertEquals(blockTextFull, featureBlock.getText());
-        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-        assertEquals(1, featureBlock.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "T. Evans et al. 2002", getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(blockTextFull, featureBlockCommonName.getText());
+        featureBlockCommonName.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(1, featureBlockCommonName.getOriginalSourcesSections().size());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockCommonName.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+
+    }
+
+    @Test
+    public void testFeatureUses() {
+
+        int featureId = 5;
+        String expectedCssDisplay = "list-item";
+        String expectedListStyleType = "none";
+        int descriptionElementFontSize = 11;
+        String expectedListStylePosition = "outside";
+        String expectedListStyleImage = "none";
+        int indent = 23;
 
         /* Uses */
-        featureClass = "uses";
-        featureLabel = "Uses";
-        blockTextFull = featureLabel + "\nThis species is highly valued for its excellent quality small-diameter cane throughout its range. There are small trial plantations in South Yunnan. (T. Evans et al. 2002)";
-        expectedCssDisplay = "list-item";
-        expectedListStyleType = "none";
+        String featureClass = "uses";
+        String featureLabel = "Uses";
+        String  blockTextFull = featureLabel + "\nThis species is highly valued for its excellent quality small-diameter cane throughout its range. There are small trial plantations in South Yunnan. (" + evans_et_al_referenceCitation + ")";
 
-        p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
+        p.testTableOfContentEntry(featureId, featureLabel, featureClass);
+        FeatureBlock featureBlockUses = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
 
-        assertEquals(blockTextFull, featureBlock.getText());
-        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-        assertEquals(1, featureBlock.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "T. Evans et al. 2002", getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(blockTextFull, featureBlockUses.getText());
+        featureBlockUses.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(1, featureBlockUses.getOriginalSourcesSections().size());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockUses.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+    }
+
+    @Test
+    public void testFeatureDiscussion() {
+
+        int featureId = 1;
+        String expectedCssDisplay = "list-item";
+        String expectedListStyleType = "none";
+        int descriptionElementFontSize = 11;
+        String expectedListStylePosition = "outside";
+        String expectedListStyleImage = "none";
+        int indent = 23;
 
         /* Discussion */
-        featureClass = "discussion";
-        featureLabel = "Discussion";
+        String featureClass = "discussion";
+        String featureLabel = "Discussion";
         String blockTextBegin = featureLabel + "\nBeccari (1908) confidently synonymised C. montanus under C. acanthospathus on the basis of the protologue and some detached fruits at K. They match well but";
-        String blockTextEnd = "represent arbitrary divisions in a continuum between more and less robust individuals. There is no doubt about their identity with C. acanthospathus, a conclusion also reached by Wei (1986). (T. Evans et al. 2002)";
-        expectedCssDisplay = "list-item";
-        expectedListStyleType = "none";
+        String blockTextEnd = "represent arbitrary divisions in a continuum between more and less robust individuals. There is no doubt about their identity with C. acanthospathus, a conclusion also reached by Wei (1986). (" + evans_et_al_referenceCitation + ")";
+
+        p.testTableOfContentEntry(featureId, featureLabel, featureClass);
+        FeatureBlock featureBlockDiscussion = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
+
+        assertTrue(featureBlockDiscussion.getText().startsWith(blockTextBegin));
+        assertTrue(featureBlockDiscussion.getText().endsWith(blockTextEnd));
+        featureBlockDiscussion.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(1, featureBlockDiscussion.getOriginalSourcesSections().size());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockDiscussion.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+    }
+
+    @Test
+    public void testFeatureMaterialsExamined() {
+
+        int featureId = 6;
+        String expectedCssDisplay = "list-item";
+        String expectedListStyleType = "none";
+        int descriptionElementFontSize = 11;
+        String expectedListStylePosition = "outside";
+        String expectedListStyleImage = "none";
+        int indent = 23;
+
+        /* Materials Examined */
+        String featureClass = "materials-examined";
+        String featureLabel = "Materials Examined";
+        String blockTextBegin = featureLabel + "\nINDIA (NORTH-EAST): Sikkim, undated, (fr.), Hooker s.n. E72 (K); Khasia, undated, (pist.), Griffith 503 (K). BHUTAN: Sarbhang Distr., 2.5 km below Getchu on Chirang Road, 12 March 1982, (ster.)";
+        String blockTextEnd = "A. 5293 (K, BM, BK). LAOS (NORTH): Huaphanh Province, Viengthong Distr., Ban Sakok, Phou Loeuy Noy, 21 June 1999, (fr.), Oulathong OL 231 (FRCL, K). (" + evans_et_al_referenceCitation + ")";
 
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
+        FeatureBlock featureBlockMaterials = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
 
-        assertTrue(featureBlock.getText().startsWith(blockTextBegin));
-        assertTrue(featureBlock.getText().endsWith(blockTextEnd));
-        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-        assertEquals(1, featureBlock.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "T. Evans et al. 2002", getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
-
-        /* Discussion */
-        featureClass = "materials-examined";
-        featureLabel = "Materials Examined";
-        blockTextBegin = featureLabel + "\nINDIA (NORTH-EAST): Sikkim, undated, (fr.), Hooker s.n. E72 (K); Khasia, undated, (pist.), Griffith 503 (K). BHUTAN: Sarbhang Distr., 2.5 km below Getchu on Chirang Road, 12 March 1982, (ster.)";
-        blockTextEnd = "A. 5293 (K, BM, BK). LAOS (NORTH): Huaphanh Province, Viengthong Distr., Ban Sakok, Phou Loeuy Noy, 21 June 1999, (fr.), Oulathong OL 231 (FRCL, K). (T. Evans et al. 2002)";
-        expectedCssDisplay = "list-item";
-        expectedListStyleType = "none";
-
-        p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
-        featureBlock = p.getFeatureBlockAt(featureId, featureClass, "ul", "li");
-
-        assertTrue(featureBlock.getText().startsWith(blockTextBegin));
-        assertTrue(featureBlock.getText().endsWith(blockTextEnd));
-        featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
-        assertEquals(1, featureBlock.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlock.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "T. Evans et al. 2002", getContext().getBaseUri().toString() + "?q=cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
-
+        assertTrue(featureBlockMaterials.getText().startsWith(blockTextBegin));
+        assertTrue(featureBlockMaterials.getText().endsWith(blockTextEnd));
+        featureBlockMaterials.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
+        assertEquals(1, featureBlockMaterials.getOriginalSourcesSections().size());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockMaterials.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
     }
 
 }

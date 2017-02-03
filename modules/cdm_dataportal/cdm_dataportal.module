@@ -2431,7 +2431,7 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text,
  *   source reference is considered to be not empty.
  *
  * @TODO this function may have become obsolete by the new method of detecting empty blocks,
- *       see $block_content_is_not_empty in compose_feature_blocks() and
+ *       see $block_content_is_not_empty in make_feature_block_list() and
  *       $feature_block_has_content in compose_feature_block_items_generic
  */
 function has_feature_node_description_elements($featureNode) {

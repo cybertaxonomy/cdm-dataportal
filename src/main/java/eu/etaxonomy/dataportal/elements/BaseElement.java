@@ -88,7 +88,7 @@ public class BaseElement {
                 linksInElement.add(new LinkElement(getElement()));
             } else {
                 // look for links in sub elements
-                List<WebElement> links = getElement().findElements(By.xpath("./a[@href]"));
+                List<WebElement> links = getElement().findElements(By.xpath(".//a[@href]"));
                 for (WebElement link : links) {
                     linksInElement.add(new LinkElement(link));
                 }

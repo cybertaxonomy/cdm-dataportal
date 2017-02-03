@@ -8,10 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
@@ -80,7 +76,11 @@ public class Bassia_indica_TaxonProfileTest extends CdmDataPortalTestBase{
 
         featureBlock = p.getFeatureBlockAt(2, "distribution", "div", "span");
 
-        assertEquals("Distribution\nDivision 4A Division 5B Division 6C\nThe record for division 5 may refer to division 6.\nA. J. Chrtek & B. Slavík, Contribution to the flora of Cyprus. 4. in Fl. Medit. 10. 2001, B. A. Della & G. Iatrou, New plant records from Cyprus in Kew Bull. 50. 1995, C. R. Hand, Supplementary notes to the flora of Cyprus III. in Willdenowia 33. 2003", featureBlock.getText());
+        assertEquals("Distribution\n"
+                + "Division 4A\n"
+                + "Division 5B\n"
+                + "Division 6C\n"
+                + "The record for division 5 may refer to division 6.\nA. J. Chrtek & B. Slavík, Contribution to the flora of Cyprus. 4. in Fl. Medit. 10. 2001, B. A. Della & G. Iatrou, New plant records from Cyprus in Kew Bull. 50. 1995, C. R. Hand, Supplementary notes to the flora of Cyprus III. in Willdenowia 33. 2003", featureBlock.getText());
         assertEquals("Distribution", featureBlock.getHeader());
         assertEquals("expecting two footnote keys", 3, featureBlock.countFootNoteKeys());
 

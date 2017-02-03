@@ -357,24 +357,33 @@ function theme_cdm_block_IdentificationKeys($variables) {
 }
 
 /**
- * This theming function formats the use description and use record list for
- * these descriptions.
+ * Composes block of USE_RECORD and USES feature elements for the given TaxonDescriptions.
  *
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_UseDescription($variables) {
-  $descriptions = $variables['description'];
-  $taxonUuid = $variables['taxonUuid'];
-  $out = '<div id="content"><ul id="Description" class ="description">';
+ * @param $descriptions
+ *   The set of TaxonDescriptions
+ * @param $taxonUuid
+ *   UUID of the taxon to which the descriptions belong
+* @return array
+ *    A Drupal render array
+ *
+ * @see cdm_block_use_description_content()
+ *
+ * @ingroup compose
+*/
+  function compose_feature_block_items_use_records($descriptions, $taxonUuid, $feature) {
+
+
+  RenderHints::pushToRenderStack('block_Uses');
+
   if ($descriptions == NULL) {
-    return;
+    return null;
   }
 
-  $feature_block_settings = get_feature_block_settings(UUID_DISTRIBUTION);
+  $feature_block_settings = get_feature_block_settings(UUID_USE_RECORD);
 
-  $descriptionSynonyms = '';
-  $descriptionOut = '';
-  $synonymOut = '';
+  $on_current_taxon = array();
+  $on_other_taxa = array();
+
   $currentTaxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxonUuid);
 
   foreach ($descriptions as $description) {
@@ -386,13 +395,12 @@ function theme_cdm_UseDescription($variables) {
       }
     }
     // uses will be ordered by source
-    foreach ($description->sources as $source) {
-      $is_about_current_taxon = FALSE;
+    foreach ($description->sources as $description_source) {
       $originalTaxonUsedInSource = NULL;
       $originalTaxonPager = NULL;
-      if ($source->originalNameString) {
+      if ($description_source->originalNameString) {
         $request_params = array();
-        $request_params['query'] = $source->originalNameString;
+        $request_params['query'] = $description_source->originalNameString;
         $request_params['matchMode'] = "EXACT";
         $originalTaxonPager = cdm_ws_get(CDM_WS_PORTAL_NAME_FINDBYNAME, NULL, queryString($request_params));
         if ($originalTaxonPager->count > 0) {
@@ -406,109 +414,48 @@ function theme_cdm_UseDescription($variables) {
         $originalTaxonUsedInSource = $currentTaxon->name;
       }
 
-      $is_about_current_taxon = $currentTaxon->name->uuid == $originalTaxonUsedInSource->uuid;
-
-      if (!$is_about_current_taxon) {
-        $descriptionOut .= '<li class="descriptionText DescriptionElement">';
-        $name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid), array(
-          'absolute' => TRUE,
-          'html' => TRUE,
-        ));
-        $descriptionOut .= $name_used_in_source_link_to_show_use . ': ';
-        $descriptionOut .= $useSummary;
-        foreach ($description->sources as $source) {
-          $descriptionOut .= " (" . theme('cdm_OriginalSource', array(
-              'source' => $source,
-              'doLink' => $feature_block_settings['link_to_reference'] == 1,
-              'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1)) . ")";
-        }
-        $hasUseRecords = FALSE;
-        $descriptionUseRecordOut = '<div id=useRecords><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
-        foreach ($description->elements as $descriptionElement) {
-          if ($descriptionElement->feature->uuid == UUID_USE_RECORD) {
-            $hasUseRecords = TRUE;
-            // FIXME localization hardcoded to English
-            $useRecordTags = explode(';', $descriptionElement->modifyingText_l10n);
-            $descriptionUseRecordOut .= '<tr>';
-            $descriptionUseRecordOut .= '<td>' . $useRecordTags[0] . '</td>' . '<td>' . $useRecordTags[1] . '</td>' . '<td>' . $useRecordTags[3] . '</td>' . '<td>' . $useRecordTags[4] . '</td>' . '<td>' . $useRecordTags[5] . '</td>' . '<td>' . $useRecordTags[2] . '</td>';
-            $descriptionUseRecordOut .= '</tr>';
-          }
-        }
-        $descriptionUseRecordOut .= '</table></div>';
-        if ($hasUseRecords) {
-          $descriptionOut .= $descriptionUseRecordOut . '</li>';
+      $markup = '<li class="descriptionText DescriptionElement">';
+      $name_used_in_source_link_to_show_use = l($description_source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid), array(
+        'absolute' => TRUE,
+        'html' => TRUE,
+      ));
+      $markup .= $name_used_in_source_link_to_show_use . ': ';
+      $markup .= $useSummary;
+      foreach ($description->sources as $element_source) {
+        $markup .= " (" . theme('cdm_OriginalSource', array(
+            'source' => $element_source,
+            'doLink' => $feature_block_settings['link_to_reference'] == 1,
+            'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1)) . ")";
+      }
+      $hasUseRecords = FALSE;
+      $descriptionUseRecordOut = '<div class="use-records"><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
+      foreach ($description->elements as $descriptionElement) {
+        if ($descriptionElement->feature->uuid == UUID_USE_RECORD) {
+          $hasUseRecords = TRUE;
+          $useRecordTags = explode(';', $descriptionElement->modifyingText_l10n);
+          $descriptionUseRecordOut .= '<tr>';
+          $descriptionUseRecordOut .= '<td>' . $useRecordTags[0] . '</td>' . '<td>' . $useRecordTags[1] . '</td>' . '<td>' . $useRecordTags[3] . '</td>' . '<td>' . $useRecordTags[4] . '</td>' . '<td>' . $useRecordTags[5] . '</td>' . '<td>' . $useRecordTags[2] . '</td>';
+          $descriptionUseRecordOut .= '</tr>';
         }
       }
-      else {
-        // TODO +/- duplicate of above, unify this code
-        $synonymOut .= '<li class="descriptionText DescriptionElement">';
-        $name_used_in_source_link_to_show_use = l($source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid), array(
-          'absolute' => TRUE,
-          'html' => TRUE,
-        ));
-
-        $synonymOut .= $name_used_in_source_link_to_show_use . ': ';
-        $synonymOut .= $useSummary;
-        foreach ($description->sources as $source) {
-          $synonymOut .= " (" . theme('cdm_OriginalSource', array(
-              'source' => $source,
-              'doLink' => $feature_block_settings['link_to_reference'] == 1,
-              'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1
-            )) . ")";
-        }
-
-        $hasUseRecords = FALSE;
-        $useRecordTableOut = '<div id=useRecords><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';
-        foreach ($description->elements as $descriptionElement) {
-          if ($descriptionElement->feature->uuid == UUID_USE_RECORD) {
-            $hasUseRecords = TRUE;
-            $useRecordTags = explode(';', $descriptionElement->modifyingText_l10n);
-            $useRecordTableOut .= '<tr>';
-            $useRecordTableOut .= '<td>' . $useRecordTags[0] . '</td>' . '<td>' . $useRecordTags[1] . '</td>' . '<td>' . $useRecordTags[3] . '</td>' . '<td>' . $useRecordTags[4] . '</td>' . '<td>' . $useRecordTags[5] . '</td>' . '<td>' . $useRecordTags[2] . '</td>';
-            $useRecordTableOut .= '</tr>';
-          }
-        }
-        $useRecordTableOut .= '</table></div>';
-        if ($hasUseRecords) {
-          $synonymOut .= $useRecordTableOut . '</li>';
-        }
+      $descriptionUseRecordOut .= '</table></div>';
+      if ($hasUseRecords) {
+        $markup .= $descriptionUseRecordOut . '</li>';
       }
 
-      // }
+      $is_about_current_taxon_name = $currentTaxon->name->uuid == $originalTaxonUsedInSource->uuid;
+      if ($is_about_current_taxon_name) {
+        $on_current_taxon[] = markup_to_render_array($markup);
+      } else {
+        $on_other_taxa[] = markup_to_render_array($markup);
+      }
+
     }
   }
-  $out .= $descriptionOut . $synonymOut;
-  $out .= "</ul></div>";
-  return $out;
-}
 
+  $render_array = compose_feature_block_wrap_elements(array_merge($on_current_taxon, $on_other_taxa), $feature);
 
-/**
- * The theming function for a block of Uses Descriptions for a given taxon.
- *
- * The Uses block has been removed from the code but the according theme function
- * is kept for compatibility reasons with existing code regarding palmweb.
- *
- */
-function theme_cdm_block_Uses($variables) {
-  $taxonUuid = $variables['taxonUuid'];
-  RenderHints::pushToRenderStack('block_Uses');
+  RenderHints::popFromRenderStack();
 
-  if ($taxonUuid == NULL) {
-    return;
-  }
-  $out = '';
-  $markerTypes = array();
-  $markerTypes['markerTypes'] = UUID_MARKERTYPE_USE;
-  $useDescriptions = cdm_ws_get(CDM_WS_PORTAL_TAXON_DESCRIPTIONS, $taxonUuid, queryString($markerTypes));
-  if (!empty($useDescriptions)) {
-    // FIXME use theme_block instaed of hardcoding the block html here !!!!
-    $out .= '<div id="block-cdm_dataportal-feature-description" class="clear-block block block-cdm_dataportal-feature"><H2><a name="userecords"> </a> Uses </H2>';
-    $formatUseDescriptions = theme('cdm_UseDescription', array('description' => $useDescriptions, 'taxonUuid' => $taxonUuid));
-
-    $out .= $formatUseDescriptions;
-    $out .= "</div>";
-  }
-
-  return $out;
+  return $render_array;
 }

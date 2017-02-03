@@ -80,8 +80,6 @@ function cdm_dataportal_theme() {
     'cdm_poytomousKeyNode_modifyingText' => array('variables' => array('modifyingText' => NULL)),
     'cdm_list_IdentificationKeys' => array('variables' => array('type' => NULL, 'taxonUuid' => NULL)),
     'cdm_block_IdentificationKeys' => array('variables' => array('taxonUuid' => NULL)),
-    'cdm_UseDescription' => array('variables' => array('description' => NULL, 'taxonUuid' => NULL)),
-    'cdm_block_Uses' => array('variables' => array('taxonUuid' => NULL)),
 
     // Themes in cdm_dataportal.media.theme.
     'cdm_media_mime_application' => array('variables' => array('mediaRepresentation' => NULL, 'feature' => NULL)),

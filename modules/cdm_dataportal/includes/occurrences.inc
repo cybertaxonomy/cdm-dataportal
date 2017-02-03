@@ -406,7 +406,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 //                 continue;
 //               }
               $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->childNodes, $description->elements);
-              $description_render_elements = compose_feature_blocks($elements_by_feature, null);
+              $description_render_elements = _block_get_renderable_array(make_feature_block_list($elements_by_feature, null));
               $dd_elements[] = $description_render_elements;
             }
 
