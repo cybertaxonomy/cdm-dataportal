@@ -47,7 +47,7 @@ function cdm_rights_as_dl_groups($rights_list) {
           // sanitize potential '(c)' away
           $text  = preg_replace('/^\(c\)/', '', $right->text);
         } if (isset($right->agent) ){
-          $text  .= (strlen($text) > 0 ? ', ' : '') . $right->agent;
+          $text  .= (strlen($text) > 0 ? ', ' : '') . $right->agent->titleCache;
         }
 
         $copyrights[] = array('#markup' => '&copy; ' . $text);
@@ -168,7 +168,9 @@ function read_media_metadata($media) {
     $metadata['title'] = $media->titleCache;
   }
 
-  $metadata['description'] = $media->description_L10n;
+  if(!empty($media->description_L10n)){
+    $metadata['description'] = $media->description_L10n;
+  }
 
   // Artist.
   if (!empty($media_metadata->Artist)) {
