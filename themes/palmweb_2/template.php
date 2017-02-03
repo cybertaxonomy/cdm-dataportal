@@ -141,7 +141,7 @@ function palmweb_2_cdm_search_results($variables){
 /**
  * @todo Please document this function.
  */
-function palmweb_2_cdm_media_caption($variables){
+function xxx_palmweb_2_cdm_media_caption($variables){
   $media = $variables['media'];
   $elements = $variables['elements'];
 
