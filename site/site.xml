@@ -10,7 +10,7 @@
 			<item name="Overview" href="index.html"/>
 			<item name="Screenshots" href="screenshots.html"/>
 			<item name="Dataportal Installation" href="installation.html"/>
-			<item name="Releases" href="http://dev.e-taxonomy.eu/trac/wiki/CdmPlatformRoadmap"/>
+			<item name="Releases" href="https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmPlatformRoadmap"/>
 			<item name="Download" href="http://cybertaxonomy.eu/download/dataportal/"/>
 
 		</menu>
@@ -21,13 +21,13 @@
 
 		<menu name="Developer">
 			<item name="Getting started" href="getting-started.html"/>
-			<item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/CdmDataportalDev"/>
+			<item name="Wiki" href="https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmDataportalDev"/>
 		</menu>
 
 		<menu name="Project">
 			<item name="Mailing Lists" href="mail-lists.html"/>
-			<item name="Issue Tracking" href="http://dev.e-taxonomy.eu/trac/"/>
-			<item name="Source Repository" href="http://dev.e-taxonomy.eu/trac/browser/trunk/drupal"/>
+			<item name="Issue Tracking" href="https://dev.e-taxonomy.eu/redmine/projects/edit"/>
+			<item name="Source Repository" href="source-repository.html"/>
 			<item name="License" href="license.html"/>
 		</menu>
 	</body>
