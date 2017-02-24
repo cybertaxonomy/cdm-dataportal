@@ -635,11 +635,13 @@ function cdm_dataportal_menu() {
  *
  */
 function cdm_dataportal_init() {
-  //FIXME To add CSS or JS that should be present on all pages, modules
-  //      should not implement this hook, but declare these files in their .info file.
-  drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal.css');
-  // drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
-  drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal_screen.css', array('type' => 'screen'));
+  if (!path_is_admin(current_path())) {
+    //FIXME To add CSS or JS that should be present on all pages, modules
+    //      should not implement this hook, but declare these files in their .info file.
+    drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal.css');
+    // drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
+    drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal_screen.css', array('type' => 'screen'));
+  }
 
   if(variable_get('cdm_debug_mode', FALSE)){
     $file = 'temporary://drupal_debug.txt';
