@@ -85,7 +85,7 @@ public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
         /* distribution */
         String featureClass = "distribution";
         String featureLabel = "Distribution";
-        String blockTextFull = featureLabel + "\n\n\n\nMap uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)\n"
+        String blockTextFull = featureLabel + "\n\n\n\n\nMap uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)\n"
                 + "Bolivia (World Checklist of Arecaceae), Brazil North (World Checklist of Arecaceae), Colombia (World Checklist of Arecaceae), Costa Rica (World Checklist of Arecaceae), Ecuador (World Checklist of Arecaceae), Nicaragua (World Checklist of Arecaceae), Panamá (World Checklist of Arecaceae), Peru (World Checklist of Arecaceae), Venezuela (World Checklist of Arecaceae)\n"
                 + "Central America to Ecuador W of the Andes, and in the W part of the Amazon region from Venezuela to Bolivia. Perhaps the most common native tree species in Ecuador, occurring in all provinces that include moist lowland areas. (Borchsenius F., Borgtoft-Pedersen H. and Baslev H. 1998. Manual to the Palms of Ecuador. AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Catalica del Ecuador)";
 
