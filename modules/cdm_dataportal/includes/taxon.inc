@@ -142,7 +142,7 @@ function cdm_taxonRelationships($taxonRelationships, $focusedTaxon){
   foreach ($joinedAuthorTeams as $authorteam_str => $sensu_citation) {
     $footnoteKey = '';
     if(!empty($sensu_citation)) {
-      $footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, 'sensu ' . $sensu_citation);
+      $footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensu_citation);
       $footnoteKey = theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey));
     }
     $sensu = '';
