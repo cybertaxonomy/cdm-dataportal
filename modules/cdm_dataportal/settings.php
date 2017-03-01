@@ -2216,7 +2216,8 @@ function cdm_settings_layout_taxon() {
           '#title' => t('Element tag'),
           '#options' => array(
             'span' => 'span',
-            'div' => 'div'
+            'div' => 'div',
+            'p' => 'p'
           ),
           '#default_value' => $feature_block_setting['element_tag'],
         );
