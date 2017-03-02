@@ -629,7 +629,7 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
    *    - link_to_reference: boolean,
    *        render the reference as link, ignored if the element is NOT a DescriptionElementSource
    *    - link_to_name_used_in_source": boolean
-   *        whether to show name is source information as link which will point to the according name page
+   *        whether to show name in source information as link which will point to the according name page
    *    - sources_as_content (boolean)
    *        TRUE (int: 1):
    *          1. If element is of the CDM type TextData and the text is not empty the source references will be
@@ -2093,13 +2093,13 @@ function cdm_settings_layout_taxon() {
       The subforms have the following settings in common:<br />
       <h6>List type:</h6><div>Whether the description elements are displayed as list or not. Three different list types are available</div>
       <h6>Link to reference:</h6><div>Render the reference as link, ignored if the element is NOT a DescriptionElementSource</div>
-      <h6>Link to name used in source:</h6><div>Whether to show name is source information as link which will point to the according name page</div>
+      <h6>Link to name used in source:</h6><div>Whether to show name in source information as link which will point to the according name page</div>
       <h6>Sources as content:</h6><div><strong>If enabled:</strong><br />
             <ol>
-            <li>If element is of the CDM type TextData and the text is not empty the source references will be
+            <li>If the element is a CDM TextData instance and if the text is not empty the source references will be
                 appended in brackets like "text (source references)". If the original source has name in source
                 information it will be appended to the citation string,
-                like : "(citation, as name in source; citation, as name in source)"</li>
+                like : "(citation-A, as name-in-source-A; citation-B, as name-in-source-B)"</li>
              <li>if the text of the TextData is empty, the original source citations are the only content
                 (e.g. use case CITATION) and are not put into brackets. In this case the nameInSource is
                 prepended to the citation string like: "name in source: citation"</li>
