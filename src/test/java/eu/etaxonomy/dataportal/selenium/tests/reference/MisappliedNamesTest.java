@@ -52,7 +52,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         assertEquals("–\n\"Ossaea glomerata\" sensu Species solaris; sensu A&S; sensu Lem1", misappliedName.getText());
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(1, footnotes.size());
-        assertEquals("1. sensu Lem, New Species in the solar system", footnotes.get(0).getText());
+        assertEquals("1. Lem, New Species in the solar system", footnotes.get(0).getText());
 
     }
 
