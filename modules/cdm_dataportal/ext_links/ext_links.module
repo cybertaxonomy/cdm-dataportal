@@ -389,7 +389,10 @@ function ext_links_block_view($delta) {
           $speciesName = getSpeciesName($taxon);
 
           $genus = $taxon->name->taggedName[0]->text;
-          $species = $taxon->name->taggedName[1]->text;
+          $species = null;
+          if(isset($taxon->name->taggedName[1])){
+            $species = $taxon->name->taggedName[1]->text;
+          }
           $block_content = '';
           $listOption = variable_get("ext_links_options", 0);
           if (isset($listOption)) {
