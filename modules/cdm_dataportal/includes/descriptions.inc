@@ -2034,6 +2034,7 @@ function make_pseudo_feature($representation_L10n, $pseudo_feature_key = null){
   $feature = new stdClass;
   $feature->representation_L10n = $representation_L10n;
   $feature->uuid = $pseudo_feature_key;
+  $feature->class = 'PseudoFeature';
 
   return $feature;
 
