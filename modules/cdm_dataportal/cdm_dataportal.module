@@ -641,6 +641,8 @@ function cdm_dataportal_init() {
     drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal.css');
     // drupal_add_css(drupal_get_path('module', 'cdm_dataportal').'/cdm_dataportal_print.css', 'print');
     drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal_screen.css', array('type' => 'screen'));
+  } else {
+    drupal_add_css(drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal_settings.css');
   }
 
   if(variable_get('cdm_debug_mode', FALSE)){

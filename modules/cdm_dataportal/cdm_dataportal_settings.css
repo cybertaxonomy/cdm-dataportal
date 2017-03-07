@@ -1,0 +1,70 @@
+
+/**
+ * ======= Settings forms =======
+ */
+
+/* Do not display the descriptions indented in the setup forms, D5 style. */
+#cdm-settings-general .form-type-radio .description,
+#cdm-settings-general .form-type-checkbox .description,
+#cdm-settings-geo .form-type-radio .description,
+#cdm-settings-geo .form-type-checkbox .description,
+#cdm-settings-layout .form-type-radio .description,
+#cdm-settings-layout .form-type-checkbox .description,
+#cdm-settings-layout-taxon .form-type-radio .description,
+#cdm-settings-layout-taxon .form-type-checkbox .description,
+#cdm-settings-layout-search .form-type-radio .description,
+#cdm-settings-layout-search .form-type-checkbox .description,
+#cdm-settings-layout-media .form-type-radio .description,
+#cdm-settings-layout-media .form-type-checkbox .description,
+#cdm-settings-cache .form-type-radio .description,
+#cdm-settings-cache .form-type-checkbox .description,
+#cdm-settings-layout-media .form-type-radio .description,
+#cdm-settings-layout-media .form-type-checkbox .description,
+#ext-links-admin .form-type-radio .description,
+#ext-links-admin .form-type-checkbox .description,
+#cdm-mediauri-rule-add .form-type-radio .description,
+#cdm-mediauri-rule-add .form-type-checkbox .description {
+    margin-left: 0;
+}
+/* Align checkboxes and radios as D5 style. */
+#cdm-settings-general input.form-checkbox, input.form-radio,
+#cdm-settings-geo input.form-checkbox, input.form-radio,
+#cdm-settings-layout input.form-checkbox, input.form-radio,
+#cdm-settings-layout-taxon input.form-checkbox, input.form-radio,
+#cdm-settings-layout-search input.form-checkbox, input.form-radio,
+#cdm-settings-layout-media input.form-checkbox, input.form-radio,
+#cdm-settings-cache input.form-checkbox, input.form-radio,
+#cdm-settings-layout-media input.form-checkbox, input.form-radio,
+#ext-links-admin input.form-checkbox, input.form-radio,
+#cdm-mediauri-rule-add input.form-checkbox, input.form-radio {
+    vertical-align: baseline;
+}
+
+/* Custom style for the more-help links on the cdm settings pages. */
+.cdm-dataportal-settings-more-help-link {
+    font-size: 0.85em;
+}
+.cdm-dataportal-settings-more-help-link a {
+    background-image: none;
+    padding: 0;
+}
+#block-system-help .content {
+    margin: 0;
+}
+
+#cdm-settings-geo .map_info{
+    font-size: 95%;
+    font-family: monospace;
+}
+
+#cdm-settings-geo .map-extent-bbox .degree-value {
+    color: forestgreen;
+}
+
+#cdm-settings-geo .baselayer-extent-bbox .degree-value {
+    color: royalblue;
+}
+
+.fieldset-float {
+    float: left;
+}

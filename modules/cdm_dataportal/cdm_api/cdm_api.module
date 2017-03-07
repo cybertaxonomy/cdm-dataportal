@@ -163,15 +163,20 @@ function cdm_api_block_view($delta) {
 
     $block['subject'] = ''; // no subject, title in content for having a defined element id
     // otherwise it would depend on the theme
-    $block['content'] =
-        '<h4 id="cdm-ws-debug-button">' . t('CDM Debug') . '</h4>'
-          // cannot use theme_table() since table footer is not jet supported in D7
+    $block['content'] = array(
+      '#markup' => '<h4 id="cdm-ws-debug-button">' . t('CDM Debug') . '</h4>'
+        // cannot use theme_table() since table footer is not jet supported in D7
         . '<div id="cdm-ws-debug-table-container"><table id="cdm-ws-debug-table">'
         . $header
         . '<tbody>' . join('', $rows) . '</tbody>'
         . $footer
-        . '</table></div>';
-
+        . '</table></div>',
+      '#attached' => array(
+        'css' => array(
+          drupal_get_path('module', 'cdm_dataportal') . '/cdm_dataportal_ws_debug.css'
+        )
+      )
+    );
     return $block;
   }
 }

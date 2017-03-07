@@ -1,4 +1,3 @@
-
 /**
  * ======= General styles =======
  *
@@ -7,57 +6,14 @@
  * See also http://groups.drupal.org/node/6355.
  */
 
-
 .superscript {
     vertical-align: super;
     font-size: 80%;
     line-height: 100%;
 }
 
-#block-cdm-api-cdm-ws-debug {
-  background-color: #373737;
-  color: #fff;
-  border: 1px solid #fff;
-  -moz-box-shadow: inset 0 0 3px 2px #fff;
-  -webkit-box-shadow: inset 0 0 3px 2px #fff;
-  box-shadow: inset 0 0 3px 2px #fff;
-}
-
-#cdm-ws-debug-table-container {
-  display: none;
-}
-
-#block-cdm-api-cdm-ws-debug h4 {
-  margin: 3px;
-  padding: 0;
-}
-
 #block-cdm-dataportal-back-to-search-results {
   float: right;
-}
-
-#cdm-ws-debug-table {
-  width: 100%;
-}
-
-#cdm-ws-debug-table code {
-  font-weight: normal;
-}
-
-#cdm-ws-debug-table td.data_links a {
-  color: #999;
-}
-#cdm-ws-debug-table tr.valid td.data_links a {
-  color: #1bdf00;
-}
-#cdm-ws-debug-table tr.invalid td.data_links a {
-  color: #f3000a;
-}
-#cdm-ws-debug-table tr.cacheL1, #cdm-ws-debug-table tr.cacheL2 {
-  color: #999;
-}
-#cdm-ws-debug-table .ws_uri {
-  width: 50%;
 }
 
 /*
@@ -649,7 +605,6 @@ table.cdm\:Reference {
     color: #8a918e;
 }
 
-
 #block-cdm-dataportal-taxonomic-children  ul {
     max-height: 20em;
     -moz-column-count: 3;
@@ -660,7 +615,6 @@ table.cdm\:Reference {
 #block-cdm-dataportal-taxonomic-children li {
     background: none;
 }
-
 
 .messages .cdm\:Taxon { /* taxa in warning box */
     font-weight: bold;
@@ -716,76 +670,6 @@ table.cdm\:Reference {
 .block-cdm-dataportal-feature ul {
   margin: 0;
   padding: 0 0 0.25em 1em;
-}
-
-/**
- * ======= Settings forms =======
- */
-
-/* Do not display the descriptions indented in the setup forms, D5 style. */
-#cdm-settings-general .form-type-radio .description,
-#cdm-settings-general .form-type-checkbox .description,
-#cdm-settings-geo .form-type-radio .description,
-#cdm-settings-geo .form-type-checkbox .description,
-#cdm-settings-layout .form-type-radio .description,
-#cdm-settings-layout .form-type-checkbox .description,
-#cdm-settings-layout-taxon .form-type-radio .description,
-#cdm-settings-layout-taxon .form-type-checkbox .description,
-#cdm-settings-layout-search .form-type-radio .description,
-#cdm-settings-layout-search .form-type-checkbox .description,
-#cdm-settings-layout-media .form-type-radio .description,
-#cdm-settings-layout-media .form-type-checkbox .description,
-#cdm-settings-cache .form-type-radio .description,
-#cdm-settings-cache .form-type-checkbox .description,
-#cdm-settings-layout-media .form-type-radio .description,
-#cdm-settings-layout-media .form-type-checkbox .description,
-#ext-links-admin .form-type-radio .description,
-#ext-links-admin .form-type-checkbox .description,
-#cdm-mediauri-rule-add .form-type-radio .description,
-#cdm-mediauri-rule-add .form-type-checkbox .description {
-  margin-left: 0;
-}
-/* Align checkboxes and radios as D5 style. */
-#cdm-settings-general input.form-checkbox, input.form-radio,
-#cdm-settings-geo input.form-checkbox, input.form-radio,
-#cdm-settings-layout input.form-checkbox, input.form-radio,
-#cdm-settings-layout-taxon input.form-checkbox, input.form-radio,
-#cdm-settings-layout-search input.form-checkbox, input.form-radio,
-#cdm-settings-layout-media input.form-checkbox, input.form-radio,
-#cdm-settings-cache input.form-checkbox, input.form-radio,
-#cdm-settings-layout-media input.form-checkbox, input.form-radio,
-#ext-links-admin input.form-checkbox, input.form-radio,
-#cdm-mediauri-rule-add input.form-checkbox, input.form-radio {
-  vertical-align: baseline;
-}
-
-/* Custom style for the more-help links on the cdm settings pages. */
-.cdm-dataportal-settings-more-help-link {
-  font-size: 0.85em;
-}
-.cdm-dataportal-settings-more-help-link a {
-  background-image: none;
-  padding: 0;
-}
-#block-system-help .content {
-  margin: 0;
-}
-
-#cdm-settings-geo .map_info{
-    font-size: 95%;
-    font-family: monospace;
-}
-
-#cdm-settings-geo .map-extent-bbox .degree-value {
-    color: forestgreen;
-}
-
-#cdm-settings-geo .baselayer-extent-bbox .degree-value {
-    color: royalblue;
-}
-
-.fieldset-float {
-    float: left;
 }
 
 /*
