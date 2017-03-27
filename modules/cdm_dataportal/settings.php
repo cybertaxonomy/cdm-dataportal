@@ -1756,10 +1756,13 @@ function cdm_settings_layout() {
 }
 
 
-
-  /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+/**
+ * @param $form_name
+ * @param $form_title
+ * @param $collapsed
+ * @param string $form_description
+ *   The description for the fieldset of the gallery setting.
+ * @return mixed
  */
 function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description = '') {
   $form[$form_name] = array(
@@ -1768,7 +1771,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $c
     '#collapsible' => TRUE,
     '#collapsed' => $collapsed,
     '#tree' => TRUE,
-    '#description' => t('@$form-description', array('@$form-description' => $form_description)),
+    '#description' => $form_description,
   );
 
   $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
