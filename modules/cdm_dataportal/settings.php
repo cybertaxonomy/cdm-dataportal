@@ -3019,109 +3019,26 @@ function cdm_settings_geo($form, &$form_state) {
         your <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">Google Maps API Key</a>. ',
   );
 
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer'] = array(
-      '#type' => 'fieldset',
-      '#title' => 'Custom WMS base layer',
-      '#tree' => TRUE,
-      '#collapsible' => FALSE,
-      '#collapsed' => FALSE,
-      '#description' => 'Here you an define a custom wms layer as additional base layer.',
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer'] = wms_layer_settings(
+    $map_distribution['openlayers']['custom_wms_base_layer'],
+    'Custom WMS base layer',
+    'Here you an define a custom wms layer as additional base layer. You need to enable this layer in the base layers section above.',
+    true // add projection settings
+    );
+
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['wms_overlay_layer'] = wms_layer_settings(
+    $map_distribution['openlayers']['wms_overlay_layer'],
+    'WMS overlay layer',
+    'Here you an define a wms layer which will overlay all other layers in the map viewer. 
+                You can actually combine multiple layers for this overlay. 
+                For details please refer to the wms query parameter <code>Layers</code> .'
   );
 
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['name'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Layer name',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['name'],
-      '#description' => 'A arbitrary name for the layer.',
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['url'] = array(
-      '#type' => 'textfield',
-      '#title' => 'WMS url',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['url'],
-      '#description' => 'Base url for the WMS (e.g.  http://edit.africamuseum.be/geoserver/topp/wms, http://wms.jpl.nasa.gov/wms.cgi)'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['params'] = array(
-      '#type' => 'textarea',
-      '#title' => 'WMS parameters',
-      '#element_validate' => array('form_element_validate_json'),
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['params'],
-      '#description' => 'An javasript object with key/value pairs representing the GetMap query string parameters and parameter values, entered in valid JSON. For example:
-<pre> {
-  "Layers": "topp:em_tiny_jan2003",
-  "Format": "image/png",
-  "BGCOLOR": "0xe0faff"
-}
-</pre>'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['projection'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Projection',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['projection'],
-      '#description' => 'The desired projection for the layer (e.g. EPSG:4326, EPSG:900913, EPSG:3857)'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['proj4js_def'] = array(
-      '#type' => 'textfield',
-      '#maxlength' => 256,
-      '#title' => 'proj4js definition',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['proj4js_def'],
-      '#description' => 'The <a href="http://trac.osgeo.org/openlayers/wiki/Documentation/Dev/proj4js">proj4js definition</a> for the projection named above.
-            The definitions for
-            EPSG:102067, EPSG:102757, EPSG:102758, EPSG:21781, EPSG:26591, EPSG:26912, EPSG:27200, EPSG:27563, EPSG:3857,
-            EPSG:41001, EPSG:4139, EPSG:4181, EPSG:42304, EPSG:4272, EPSG:4302, EPSG:900913
-            are already predefined and must be added here again.  If your dont know the defintion of your desired projection,
-            go to  <a href="http://spatialreference.org/">http://spatialreference.org/</a>, search for your projection and
-            choose to display the proj4js definition string.
-            <h5>Quick Reference on the commion proj4js definition parameters:</h5>
-            <pre>
-+a         Semimajor radius of the ellipsoid axis
-+alpha     ? Used with Oblique Mercator and possibly a few others
-+axis      Axis orientation (new in 4.8.0)
-+b         Semiminor radius of the ellipsoid axis
-+datum     Datum name (see `proj -ld`)
-+ellps     Ellipsoid name (see `proj -le`)
-+k         Scaling factor (old name)
-+k_0       Scaling factor (new name)
-+lat_0     Latitude of origin
-+lat_1     Latitude of first standard parallel
-+lat_2     Latitude of second standard parallel
-+lat_ts    Latitude of true scale
-+lon_0     Central meridian
-+lonc      ? Longitude used with Oblique Mercator and possibly a few others
-+lon_wrap  Center longitude to use for wrapping (see below)
-+nadgrids  Filename of NTv2 grid file to use for datum transforms (see below)
-+no_defs   Don\'t use the /usr/share/proj/proj_def.dat defaults file
-+over      Allow longitude output outside -180 to 180 range, disables wrapping (see below)
-+pm        Alternate prime meridian (typically a city name, see below)
-+proj      Projection name (see `proj -l`)
-+south     Denotes southern hemisphere UTM zone
-+to_meter  Multiplier to convert map units to 1.0m
-+towgs84   3 or 7 term datum transform parameters (see below)
-+units     meters, US survey feet, etc.
-+vto_meter vertical conversion to meters.
-+vunits    vertical units.
-+x_0       False easting
-+y_0       False northing
-+zone      UTM zone
-            </pre>
-          For the full reference please refer to <a href="http://trac.osgeo.org/proj/wiki/GenParms">http://trac.osgeo.org/proj/wiki/GenParms</a>.'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['max_extent'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Maximum extent',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['max_extent'],
-      '#description' => 'The maximum extent of the map as bounding box (left, bottom, right, top) in the units of the map.'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['units'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Units',
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['units'],
-      '#description' => 'The layer map units.  Defaults to null.  Possible values are ‘degrees’ (or ‘dd’), ‘m’, ‘ft’, ‘km’, ‘mi’, ‘inches’.  Normally taken from the projection.  Only required if both map and layers do not define a projection, or if they define a projection which does not define units.'
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['wms_overlay_layer']['is_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Enable overlay layer',
+    '#weight' => -100,
+    '#default_value' => $map_distribution['openlayers']['wms_overlay_layer']['is_enabled'] === 1  ? 1 : 0
   );
 
   /*
@@ -3191,6 +3108,130 @@ function cdm_settings_geo($form, &$form_state) {
   );
 
   return system_settings_form($form);
+}
+
+/**
+ * @param $default_settings
+ * @param $title
+ * @param $description
+ * @param bool $add_projection_settings
+ * @return array
+ */
+function wms_layer_settings($default_settings, $title, $description, $add_projection_settings = false)
+{
+  $form_elements = array(
+    '#type' => 'fieldset',
+    '#title' => $title,
+    '#tree' => TRUE,
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#description' => $description,
+  );
+
+  $form_elements['name'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Layer name',
+    // Only line color by now.
+    '#default_value' => $default_settings['name'],
+    '#description' => 'A arbitrary name for the layer.',
+  );
+  $form_elements['url'] = array(
+    '#type' => 'textfield',
+    '#title' => 'WMS url',
+    // Only line color by now.
+    '#default_value' => $default_settings['url'],
+    '#description' => 'Base url for the WMS (e.g.  http://edit.africamuseum.be/geoserver/topp/wms, http://wms.jpl.nasa.gov/wms.cgi)'
+  );
+  $form_elements['params'] = array(
+    '#type' => 'textarea',
+    '#title' => 'WMS parameters',
+    '#element_validate' => array('form_element_validate_json'),
+    // Only line color by now.
+    '#default_value' => $default_settings['params'],
+    '#description' => 'An javasript object with key/value pairs representing the GetMap query string parameters and parameter values ('
+      .l('Geoserver WMS parameter reference', 'http://docs.geoserver.org/stable/en/user/services/wms/reference.html#getmap' )
+      . '), entered in valid JSON. For example:
+<pre> {
+  "Layers": "topp:em_tiny_jan2003",
+  "Format": "image/png",
+  "BGCOLOR": "0xe0faff"
+}
+</pre>
+    You can supply and web accessible SLD file by using the <code>sld</code> or <coded>sld_body</coded> parameters.'
+  );
+
+  if($add_projection_settings){
+
+    $form_elements['projection'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Projection',
+      // Only line color by now.
+      '#default_value' => $default_settings['projection'],
+      '#description' => 'The desired projection for the layer (e.g. EPSG:4326, EPSG:900913, EPSG:3857)'
+    );
+    $form_elements['proj4js_def'] = array(
+      '#type' => 'textfield',
+      '#maxlength' => 256,
+      '#title' => 'proj4js definition',
+      // Only line color by now.
+      '#default_value' => $default_settings['proj4js_def'],
+      '#description' => 'The <a href="http://trac.osgeo.org/openlayers/wiki/Documentation/Dev/proj4js">proj4js definition</a> for the projection named above.
+              The definitions for
+              EPSG:102067, EPSG:102757, EPSG:102758, EPSG:21781, EPSG:26591, EPSG:26912, EPSG:27200, EPSG:27563, EPSG:3857,
+              EPSG:41001, EPSG:4139, EPSG:4181, EPSG:42304, EPSG:4272, EPSG:4302, EPSG:900913
+              are already predefined and must NOT be added here again.  If your dont know the defintion of your desired projection,
+              go to  <a href="http://spatialreference.org/">http://spatialreference.org/</a>, search for your projection and
+              choose to display the proj4js definition string.
+              <h5>Quick Reference on the common proj4js definition parameters:</h5>
+              <pre>
+  +a         Semimajor radius of the ellipsoid axis
+  +alpha     ? Used with Oblique Mercator and possibly a few others
+  +axis      Axis orientation (new in 4.8.0)
+  +b         Semiminor radius of the ellipsoid axis
+  +datum     Datum name (see `proj -ld`)
+  +ellps     Ellipsoid name (see `proj -le`)
+  +k         Scaling factor (old name)
+  +k_0       Scaling factor (new name)
+  +lat_0     Latitude of origin
+  +lat_1     Latitude of first standard parallel
+  +lat_2     Latitude of second standard parallel
+  +lat_ts    Latitude of true scale
+  +lon_0     Central meridian
+  +lonc      ? Longitude used with Oblique Mercator and possibly a few others
+  +lon_wrap  Center longitude to use for wrapping (see below)
+  +nadgrids  Filename of NTv2 grid file to use for datum transforms (see below)
+  +no_defs   Don\'t use the /usr/share/proj/proj_def.dat defaults file
+  +over      Allow longitude output outside -180 to 180 range, disables wrapping (see below)
+  +pm        Alternate prime meridian (typically a city name, see below)
+  +proj      Projection name (see `proj -l`)
+  +south     Denotes southern hemisphere UTM zone
+  +to_meter  Multiplier to convert map units to 1.0m
+  +towgs84   3 or 7 term datum transform parameters (see below)
+  +units     meters, US survey feet, etc.
+  +vto_meter vertical conversion to meters.
+  +vunits    vertical units.
+  +x_0       False easting
+  +y_0       False northing
+  +zone      UTM zone
+              </pre>
+            For the full reference please refer to <a href="http://proj4.org/parameters.html">http://proj4.org/parameters.html</a>.'
+    );
+    $form_elements['max_extent'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Maximum extent',
+      // Only line color by now.
+      '#default_value' => $default_settings['max_extent'],
+      '#description' => 'The maximum extent of the map as bounding box (left, bottom, right, top) in the units of the map.'
+    );
+    $form_elements['units'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Units',
+      '#default_value' => $default_settings['units'],
+      '#description' => 'The layer map units.  Defaults to null.  Possible values are ‘degrees’ (or ‘dd’), ‘m’, ‘ft’, ‘km’, ‘mi’, ‘inches’.  Normally taken from the projection.  Only required if both map and layers do not define a projection, or if they define a projection which does not define units.'
+    );
+
+  }
+  return $form_elements;
 }
 
 

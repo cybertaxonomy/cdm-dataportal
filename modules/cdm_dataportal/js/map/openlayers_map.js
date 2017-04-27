@@ -17,7 +17,7 @@
 
       return this.each(function(){
           this.cdmOpenlayersMap = new CdmOpenLayers.Map($(this), mapserverBaseUrl, mapserverVersion, opts);
-          this.cdmOpenlayersMap.init();
+          this.cdmOpenlayersMap.create();
       }); // END each
 
     }; // END cdm_openlayers_map
@@ -57,8 +57,14 @@
         url: null,
         params: null,
         projection: null,
+        proj4js_def: null,
         max_extent: null,
         units: null
+    },
+    wmsOverlayLayerData: {
+      name: null,
+      url: null,
+      params: null
     },
     /**
      * when true the map is made resizable by adding the jQueryUI widget resizable
@@ -222,7 +228,7 @@
         /**
          *
          */
-        this.init = function(){ // public function
+        this.create = function(){ // public function
 
           // set the height of the container element
           adjustHeight();
@@ -249,7 +255,7 @@
 
           if(distributionQuery !== undefined){
             distributionQuery = mergeQueryStrings(distributionQuery, '&recalculate=false');
-            if(typeof legendPosition == 'number'){
+            if(typeof legendPosition === 'number'){
               distributionQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + opts.legendPosition);
             }
             if(opts.boundingBox){
@@ -308,16 +314,41 @@
             });
           }
 
-            if(LAYER_DATA_CNT == 0) {
-              // a map only with base layer
-              initPostDataLoaded();
+          if(LAYER_DATA_CNT === 0) {
+            // a map only with base layer
+            initPostDataLoaded();
+          }
+
+          // -- Overlay Layer --
+          if(opts.wmsOverlayLayerData.params){
+            overlay_layer_params = opts.wmsOverlayLayerData.params;
+            overlay_layer_params.transparent=true;
+            wmsOverlay = createWMSLayer(
+              opts.wmsOverlayLayerData.name,
+              opts.wmsOverlayLayerData.url,
+              overlay_layer_params,
+              null,
+              null,
+              null,
+              null
+            );
+
+            if(map.addLayer(wmsOverlay)){
+              // map.setLayerZIndex(wmsOverlay, 100);
+              wmsOverlay.setVisibility(true);
+              log("Overlay wms added");
+            } else {
+              log("ERROR adding overlay wms layer")
             }
+          }
+
+          log("Map viewer creation complete.");
 
         };
 
         var layerDataLoaded = function() {
           LAYER_DATA_CNT--;
-          if(LAYER_DATA_CNT == 0){
+          if(LAYER_DATA_CNT === 0){
             initPostDataLoaded();
           }
         };
@@ -327,13 +358,13 @@
           map.layers.forEach(function(layer){
 
             // hack for cuba
-            if(layer.name == "flora_cuba_2016_regions"){
+            if(layer.name === "flora_cuba_2016_regions"){
               map.setLayerZIndex(layer, 5);
             }
-            if(layer.name == "flora_cuba_2016_provinces"){
+            if(layer.name === "flora_cuba_2016_provinces"){
               map.setLayerZIndex(layer, 6);
             }
-            if(layer.name == "flora_cuba_2016_world"){
+            if(layer.name === "flora_cuba_2016_world"){
               map.setLayerZIndex(layer, 4);
             }
 
@@ -702,8 +733,8 @@
 
             for(var i = 0; i <  baseLayerNames.length; i++) {
                 // create the layer
-                if (baseLayerNames[i] == "custom_wms_base_layer_1"){
-                    baseLayers[i] = createWMSBaseLayer(
+                if (baseLayerNames[i] === "custom_wms_base_layer_1"){
+                    wmsBaseLayer =createWMSLayer(
                             customWMSBaseLayerData.name,
                             customWMSBaseLayerData.url,
                             customWMSBaseLayerData.params,
@@ -712,11 +743,13 @@
                             customWMSBaseLayerData.units,
                             customWMSBaseLayerData.max_extent
                     );
+                  wmsBaseLayer.setIsBaseLayer(true);
+                  baseLayers[i] = wmsBaseLayer;
                 } else {
                     baseLayers[i] = window.CdmOpenLayers.getLayerByName(baseLayerNames[i]);
                 }
                 // set default baselayer
-                if(baseLayerNames[i] == defaultBaseLayerName){
+                if(baseLayerNames[i] === defaultBaseLayerName){
                     defaultBaseLayer = baseLayers[i];
                 }
 
@@ -850,9 +883,9 @@
          * @param Object projection
          *    A OpenLayers.Projection object
          */
-        var createWMSBaseLayer= function(name, url, params, projection, proj4js_def, units, maxExtent){
+        var createWMSLayer= function(name, url, params, projection, proj4js_def, units, maxExtent){
 
-            console.log("creating WMSBaseLayer");
+            console.log("creating WMS Layer " + name);
 
             if(projection && proj4js_def){
                 // in case projection has been defined for the layer and if there is also
@@ -860,7 +893,7 @@
                 Proj4js.defs[projection] = proj4js_def;
             }
 
-            if(maxExtent == null){
+            if(maxExtent === null){
                 maxExtent = CdmOpenLayers.mapExtends.epsg_4326.clone();
                 maxExtent.transform(CdmOpenLayers.projections.epsg_4326, projection);
             }
@@ -873,13 +906,13 @@
               maxExtent: maxExtent,
               projection: projection,
               units: units,
-              isBaseLayer: true,
+              isBaseLayer: false,
               displayInLayerSwitcher: true
             }
           );
 
-          if(wmsLayer == null){
-            console.log("Error creating WMSBaseLayer");
+          if(wmsLayer === null){
+            console.log("Error creating WMS Layer");
           }
 
           return  wmsLayer;
