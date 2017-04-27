@@ -334,7 +334,7 @@
             );
 
             if(map.addLayer(wmsOverlay)){
-              // map.setLayerZIndex(wmsOverlay, 100);
+              map.setLayerIndex(wmsOverlay, 100);
               wmsOverlay.setVisibility(true);
               log("Overlay wms added");
             } else {
@@ -546,103 +546,99 @@
          */
         var createDataLayer = function(mapResponseObj, dataType){
 
-            console.log("creating data layer of type " + dataType);
+          console.log("creating data layer of type " + dataType);
 
-            var dataLayerOptions = {
-                    isBaseLayer: false,
-                    displayInLayerSwitcher: true,
-                    maxExtent: map.maxExtent.clone().transform(new OpenLayers.Projection("EPSG:4326"), map.baseLayer.projection),
-                    displayOutsideMaxExtent: true
-            };
+          dataLayerOptions = makeWMSLayerOptions();
+          dataLayerOptions.displayOutsideMaxExtent = true; // move into makeWMSLayerOptions?
 
-            var layers = [];
-            // add additional layers, get them from the mapResponseObj
-            if(mapResponseObj !== undefined){
-                if(dataType == "POINT" && mapResponseObj.points_sld !== undefined){
-                  var pointLayer;
-                  // it is a response for an point map
-                  var geoserverUri;
-                  if(mapResponseObj.geoserver) {
-                      geoserverUri = mapResponseObj.geoserver;
-                  } else {
-                      // it is an old service which is not providing the corresponding geoserver URI, so we guess it
-                      geoserverUri = mapserverBaseUrl + "/geoserver/wms";
-                  }
+          var layers = [];
+          // add additional layers, get them from the mapResponseObj
+          if(mapResponseObj !== undefined){
+            if(dataType === "POINT" && mapResponseObj.points_sld !== undefined){
+              var pointLayer;
+              // it is a response for an point map
+              var geoserverUri;
+              if(mapResponseObj.geoserver) {
+                  geoserverUri = mapResponseObj.geoserver;
+              } else {
+                  // it is an old service which is not providing the corresponding geoserver URI, so we guess it
+                  geoserverUri = mapserverBaseUrl + "/geoserver/wms";
+              }
 
-                  //TODO points_sld should be renamed to sld in response + fill path to sld should be given
-                  pointLayer = new OpenLayers.Layer.WMS(
-                          'points',
-                          geoserverUri,
-                          {
-                              layers: 'topp:rest_points',
-                              transparent:"true",
-                              format:"image/png"
-                          },
-                          dataLayerOptions
+              //TODO points_sld should be renamed to sld in response + fill path to sld should be given
+              pointLayer = new OpenLayers.Layer.WMS(
+                'points',
+                geoserverUri,
+                {
+                    layers: 'topp:rest_points',
+                    transparent:"true",
+                    format:"image/png"
+                },
+                dataLayerOptions
+              );
+
+              var sld = mapResponseObj.points_sld;
+              if(sld.indexOf("http://") !== 0){
+                  // it is an old servive which is not providing the full sdl URI, so we guess it
+                  //  http://edit.africamuseum.be/synthesys/www/v1/sld/
+                  //  http://edit.br.fgov.be/synthesys/www/v1/sld/
+                  sld =  mapserverBaseUrl + "/synthesys/www/v1/sld/" + sld;
+              }
+              pointLayer.params.SLD = sld;
+
+              layers.push(pointLayer);
+            } else {
+              // it is a response from for a distribution map
+              console.log("start with adding distribution layers :");
+              for ( var i in mapResponseObj.layers) {
+                var layerData = mapResponseObj.layers[i];
+
+                console.log(" " + i +" -> " + layerData.tdwg);
+                var layer = new OpenLayers.Layer.WMS(
+                  layerData.tdwg,
+                  mapResponseObj.geoserver + "/wms",
+                  {
+                      layers: layerByNameMap[layerData.tdwg],
+                      transparent:"true",
+                      format:"image/png"
+                  },
+                  dataLayerOptions
                   );
+                layer.params.SLD = layerData.sld;
+                layer.setOpacity(opts.distributionOpacity);
 
-                  var sld = mapResponseObj.points_sld;
-                  if(sld.indexOf("http://") !== 0){
-                      // it is an old servive which is not providing the full sdl URI, so we guess it
-                      //  http://edit.africamuseum.be/synthesys/www/v1/sld/
-                      //  http://edit.br.fgov.be/synthesys/www/v1/sld/
-                      sld =  mapserverBaseUrl + "/synthesys/www/v1/sld/" + sld;
-                  }
-                  pointLayer.params.SLD = sld;
-
-                  layers.push(pointLayer);
-                } else {
-                    // it is a response from for a distribution map
-                    console.log("start with adding distribution layers :");
-                    for ( var i in mapResponseObj.layers) {
-                        var layerData = mapResponseObj.layers[i];
-
-                        console.log(" " + i +" -> " + layerData.tdwg);
-                        var layer = new OpenLayers.Layer.WMS(
-                                layerData.tdwg,
-                                mapResponseObj.geoserver + "/wms",
-                                {
-                                    layers: layerByNameMap[layerData.tdwg],
-                                    transparent:"true",
-                                    format:"image/png"
-                                },
-                                dataLayerOptions
-                                );
-                        layer.params.SLD = layerData.sld;
-                        layer.setOpacity(opts.distributionOpacity);
-
-                        layers.push(layer);
-                    }
-                }
-
-                if(layers.length > 0) {
-                  // calculate zoomBounds using the first layer
-                  if(mapResponseObj.bbox !== undefined){
-                    // mapResponseObj.bbox are bounds for the projection of the specific layer
-                    var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
-                    newBounds.transform(layers[0].projection, map.getProjectionObject());
-                    if(dataBounds !== null){
-                      dataBounds.extend(newBounds);
-                    } else if(newBounds !== undefined){
-                      dataBounds = newBounds;
-                    }
-
-                    zoomToBounds = dataBounds;
-                    console.log("data layer zoomToBounds: " + zoomToBounds);
-                    zoomToClosestLevel = false;
-                  }
-                }
-
-
-
-                if(legendImgSrc != null && opts.legendPosition !== undefined && mapResponseObj.legend !== undefined){
-                    var legendSrcUrl = mapResponseObj.geoserver + legendImgSrc + mapResponseObj.legend;
-                    addLegendAsElement(legendSrcUrl);
-                    //addLegendAsLayer(legendSrcUrl, map);
-                }
-
-                return layers;
+                layers.push(layer);
+              }
             }
+
+            if(layers.length > 0) {
+              // calculate zoomBounds using the first layer
+              if(mapResponseObj.bbox !== undefined){
+                // mapResponseObj.bbox are bounds for the projection of the specific layer
+                var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
+                newBounds.transform(layers[0].projection, map.getProjectionObject());
+                if(dataBounds !== null){
+                  dataBounds.extend(newBounds);
+                } else if(newBounds !== undefined){
+                  dataBounds = newBounds;
+                }
+
+                zoomToBounds = dataBounds;
+                console.log("data layer zoomToBounds: " + zoomToBounds);
+                zoomToClosestLevel = false;
+              }
+            }
+
+
+
+            if(legendImgSrc != null && opts.legendPosition !== undefined && mapResponseObj.legend !== undefined){
+                var legendSrcUrl = mapResponseObj.geoserver + legendImgSrc + mapResponseObj.legend;
+                addLegendAsElement(legendSrcUrl);
+                //addLegendAsLayer(legendSrcUrl, map);
+            }
+
+            return layers;
+          }
 
         };
 
@@ -863,52 +859,69 @@
         return zoomToBounds;
       };
 
-        var log = function(message, addTimeStamp){
-          var timestamp = '';
-          if(addTimeStamp == true){
-            var time = new Date();
-            timestamp = time.getSeconds() + '.' + time.getMilliseconds() + 's';
-          }
-          console.log(timestamp + message);
+      var log = function(message, addTimeStamp){
+        var timestamp = '';
+        if(addTimeStamp == true){
+          var time = new Date();
+          timestamp = time.getSeconds() + '.' + time.getMilliseconds() + 's';
+        }
+        console.log(timestamp + message);
+      };
+
+      var makeWMSLayerOptions = function(projection, proj4js_def, maxExtent, units){
+        wmsOptions = {
+          isBaseLayer: false,
+          displayInLayerSwitcher: true
         };
 
-        /**
-         * Creates a WMS Base layer
-         * @param String name
-         *     A name for the layer
-         * @param String url
-         *     Base url for the WMS (e.g.  http://wms.jpl.nasa.gov/wms.cgi)
-         * @param Object params
-         *     An object with key/value pairs representing the GetMap query string parameters and parameter values.
-         * @param Object projection
-         *    A OpenLayers.Projection object
-         */
-        var createWMSLayer= function(name, url, params, projection, proj4js_def, units, maxExtent){
+        if (projection) {
+          if (proj4js_def) {
+            // in case projection has been defined for the layer and if there is also
+            // a Proj4js.defs, add it!
+            Proj4js.defs[projection] = proj4js_def;
+          }
+          wmsOptions.projection = projection;
+          if (maxExtent === null) {
+            maxExtent = CdmOpenLayers.mapExtends.epsg_4326.clone();
+            maxExtent.transform(CdmOpenLayers.projections.epsg_4326, projection);
+          }
+        } else {
+          // use the projection and maxextent of the base layer
+          maxExtent = map.baseLayer.maxExtent;
+        }
 
-            console.log("creating WMS Layer " + name);
+        if (maxExtent) {
+          wmsOptions.maxExtent = maxExtent;
+        }
 
-            if(projection && proj4js_def){
-                // in case projection has been defined for the layer and if there is also
-                // a Proj4js.defs, add it!
-                Proj4js.defs[projection] = proj4js_def;
-            }
+        if (units) {
+          wmsOptions.units = units;
+        }
+        return wmsOptions;
+      };
 
-            if(maxExtent === null){
-                maxExtent = CdmOpenLayers.mapExtends.epsg_4326.clone();
-                maxExtent.transform(CdmOpenLayers.projections.epsg_4326, projection);
-            }
+      /**
+       * Creates a WMS Base layer
+       * @param String name
+       *     A name for the layer
+       * @param String url
+       *     Base url for the WMS (e.g.  http://wms.jpl.nasa.gov/wms.cgi)
+       * @param Object params
+       *     An object with key/value pairs representing the GetMap query string parameters and parameter values.
+       * @param Object projection
+       *    A OpenLayers.Projection object
+       */
+      var createWMSLayer= function(name, url, params, projection, proj4js_def, units, maxExtent){
 
-          wmsLayer = new OpenLayers.Layer.WMS(
+        console.log("creating WMS Layer " + name);
+
+        wmsOptions = makeWMSLayerOptions(projection, proj4js_def, maxExtent, units);
+
+        wmsLayer = new OpenLayers.Layer.WMS(
             name,
             url,
             params,
-            {
-              maxExtent: maxExtent,
-              projection: projection,
-              units: units,
-              isBaseLayer: false,
-              displayInLayerSwitcher: true
-            }
+            wmsOptions
           );
 
           if(wmsLayer === null){
