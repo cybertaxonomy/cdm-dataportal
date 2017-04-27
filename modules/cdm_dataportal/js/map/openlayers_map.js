@@ -148,6 +148,13 @@
       var defaultBaseLayer = null;
 
       /**
+       * The top most layer which will be places above all data layers
+       *
+       * @type {null}
+       */
+      var wmsOverlay = null;
+
+      /**
        * Default bounding box for map viewport in the projection of the base layer.
        * as defined by the user, can be null.
        *
@@ -334,8 +341,8 @@
             );
 
             if(map.addLayer(wmsOverlay)){
-              map.setLayerIndex(wmsOverlay, 100);
               wmsOverlay.setVisibility(true);
+              map.setLayerIndex(wmsOverlay, 100);
               log("Overlay wms added");
             } else {
               log("ERROR adding overlay wms layer")
@@ -356,18 +363,6 @@
         var initPostDataLoaded = function () {
           // all layers prepared, make the visible
           map.layers.forEach(function(layer){
-
-            // hack for cuba
-            if(layer.name === "flora_cuba_2016_regions"){
-              map.setLayerZIndex(layer, 5);
-            }
-            if(layer.name === "flora_cuba_2016_provinces"){
-              map.setLayerZIndex(layer, 6);
-            }
-            if(layer.name === "flora_cuba_2016_world"){
-              map.setLayerZIndex(layer, 4);
-            }
-
             layer.setVisibility(true);
           });
 
@@ -379,6 +374,11 @@
             map.zoomTo(opts.maxZoom);
           } else if(map.getZoom() < opts.minZoom){
             map.zoomTo(opts.minZoom);
+          }
+
+          // make sure the wmsOverlay is still on top
+          if(wmsOverlay){
+            map.setLayerIndex(wmsOverlay, 100);
           }
 
           log(" > zoomToExtend done", true);
