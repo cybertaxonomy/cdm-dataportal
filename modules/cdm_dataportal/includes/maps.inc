@@ -185,7 +185,7 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
 
 
   // --- wms_overlay_layer
-  if($map_settings['openlayers']['wms_overlay_layer']['is_enabled']) {
+  if(isset($map_settings['openlayers']['wms_overlay_layer']) && $map_settings['openlayers']['wms_overlay_layer']['is_enabled']) {
     $map_settings['openlayers']['wms_overlay_layer']['params'] = json_decode($map_settings['openlayers']['wms_overlay_layer']['params']);
     $cdm_openlayers_options['wmsOverlayLayerData'] = $map_settings['openlayers']['wms_overlay_layer'];
   }
