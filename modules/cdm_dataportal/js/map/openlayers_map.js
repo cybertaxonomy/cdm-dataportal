@@ -95,8 +95,10 @@
         };
         var mapExtends = {
                 epsg_4326: new OpenLayers.Bounds(-180, -90, 180, 90),
-                epsg_900913: new OpenLayers.Bounds(-180, -90, 180, 90),
-                epsg_3857: new OpenLayers.Bounds(-180, -90, 180, 90)
+                //  Spherical Mercator epsg_900913 is not suppporting the whole marble
+                epsg_900913: new OpenLayers.Bounds(-179, -85, 179, 85),
+                //  Spherical Mercator
+                epsg_3857: new OpenLayers.Bounds(-179, -85, 179, 85)
         };
         // transform epsg_900913 to units meter
         mapExtends.epsg_900913.transform(projections.epsg_4326, projections.epsg_900913);
@@ -222,7 +224,7 @@
               tdwg4: 'topp:tdwg_level_4'
       };
 
-      if(opts.resizable == true) {
+      if(opts.resizable === true) {
         // resizable requires jQueryUI to  be loaded!!!
         mapContainerElement.resizable({
           resize: function( event, ui ) {
@@ -384,6 +386,31 @@
           log(" > zoomToExtend done", true);
         };
 
+      /**
+       * Returns  the projection of the defaultBaseLayer which is the
+       * the projection to which all other layers and locations must be transformed.
+       */
+      var referenceProjection = function() {
+        if(defaultBaseLayer){
+          return defaultBaseLayer.projection;
+        } else {
+          log("Error - referenceProjection() defaultBaseLayer not set");
+          return null;
+        }
+      };
+
+      /**
+       * Returns the maxExtent of the defaultBaseLayer.
+       */
+      var referenceMaxExtent = function() {
+        if(defaultBaseLayer){
+          return defaultBaseLayer.maxExtent;
+        } else {
+          log("Error - referenceMaxExtent() defaultBaseLayer not set");
+          return null;
+        }
+      };
+
         var getHeight = function(){
           return mapContainerElement.width() / opts.aspectRatio;
         };
@@ -447,11 +474,11 @@
                   info += "<dt>baselayer projection:<dt><dd>" + map.baseLayer.projection.getCode() + "</dd>";
                 }
             } else {
-                info += "<dt>bbox:<dt><dd>" + (mapExtendDegree != null ? mapExtendDegree.toBBOX() : 'NULL') + "</dd>";
+                info += "<dt>bbox:<dt><dd>" + (mapExtendDegree !== null ? mapExtendDegree.toBBOX() : 'NULL') + "</dd>";
             }
             info += "</dl>";
 
-            if(infoElement == null){
+            if(infoElement === null){
                 infoElement = jQuery('<div class="map_info"></div>');
                 mapElement.parent().after(infoElement);
             }
@@ -472,14 +499,14 @@
 //          var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, getWidth/getHeight);
           var maxResolution = null;
           // gmaps has no maxExtent at this point, need to check for null
-          if(defaultBaseLayer.maxExtent != null){
+          if(referenceMaxExtent() !== null){
               maxResolution = Math[(opts.displayOutsideMaxExtent ? 'max' : 'min')](
-                      defaultBaseLayer.maxExtent.getWidth() / getWidth(),
-                      defaultBaseLayer.maxExtent.getHeight() / getHeight()
+                referenceMaxExtent().getWidth() / getWidth(),
+                referenceMaxExtent().getHeight() / getHeight()
               );
           }
           console.log("mapOptions.maxResolution: " + maxResolution);
-          console.log("mapOptions.restrictedExtent: " + defaultBaseLayer.maxExtent);
+          console.log("mapOptions.restrictedExtent: " + referenceMaxExtent());
 
           map = new OpenLayers.Map(
             mapElement.attr('id'),
@@ -498,8 +525,8 @@
 
               // setting restrictedExtent the the maxExtent prevents from panning the
               // map out of its bounds
-              restrictedExtent: defaultBaseLayer.maxExtent,
-//                      maxExtent: defaultBaseLayer.maxExtent,
+              restrictedExtent: referenceMaxExtent(),
+//                      maxExtent: referenceMaxExtent(),
 
               // Setting the map.fractionalZoom property to true allows zooming to an arbitrary level
               // (between the min and max resolutions).
@@ -521,8 +548,8 @@
           map.setBaseLayer(defaultBaseLayer);
 
           // calculate the bounds to zoom to
-          zoomToBounds = zoomToBoundsFor(opts.boundingBox ? opts.boundingBox : defaultBaseLayerBoundingBox, defaultBaseLayer);
-          zoomToBounds = cropBoundsToAspectRatio(zoomToBounds, map.getSize().w / map.getSize().h);
+          zoomToBounds = calculateZoomToBounds(opts.boundingBox ? opts.boundingBox : defaultBaseLayerBoundingBox);
+          // zoomToBounds = cropBoundsToAspectRatio(zoomToBounds, map.getSize().w / map.getSize().h);
           console.log("baselayer zoomToBounds: " + zoomToBounds);
 
         };
@@ -779,8 +806,8 @@
 
         /**
          *
-         * @param OpenLayers.Bounds b
-         * @param float aspectRatio width/height
+         * @param b OpenLayers.Bounds to crop
+         * @param aspectRatio as fraction of width/height as float value
          *
          * @return the bounds cropped to the given aspectRatio
          */
@@ -788,22 +815,23 @@
 
             var cropedB = b.clone();
 
-            if(aspectRatio == 1){
+            if(aspectRatio === 1){
                 return cropedB;
             }
 
             /*
              * LonLat:
-             *   lon {Float} The x-axis coodinate in map units
+             *   lon {Float} The x-axis coordinate in map units
              *   lat {Float} The y-axis coordinate in map units
              */
             var center = cropedB.getCenterLonLat();
+            var dist;
             if(aspectRatio < 1){
-                var dist = (b.getHeight() / 2) * aspectRatio;
+                dist = (b.getHeight() / 2) * aspectRatio;
                 cropedB.top = center.lat + dist;
                 cropedB.cropedBottom = center.lat - dist;
             } else if(aspectRatio > 1){
-                var dist = (b.getWidth() / 2) / aspectRatio;
+                dist = (b.getWidth() / 2) / aspectRatio;
                 cropedB.left = center.lon - dist;
                 cropedB.right = center.lon + dist;
             }
@@ -830,38 +858,54 @@
       /**
        * returns the zoom to bounds.
        *
-       * NOTE: only used for the base layer
-       *
        * @param bboxString
        *     a string representation of the bounds in degree for epsg_4326
-       * @param layer
-       *     the Openlayers.Layer
        *
        * @return the bboxstring projected onto the layer and intersected with the maximum extent of the layer
        */
-      var zoomToBoundsFor = function(bboxString, layer){
+      var calculateZoomToBounds = function(bboxString){
         var zoomToBounds;
         if(bboxString) {
           zoomToBounds = OpenLayers.Bounds.fromString(bboxString);
+          if(referenceProjection().proj.projName){
+            // SpericalMercator is not supporting the full extent -180,-90,180,90
+            // crop if need to -179, -85, 179, 85
+            if(zoomToBounds.left < -179){
+              zoomToBounds.left =  -179;
+            }
+            if(zoomToBounds.bottom < -85){
+              zoomToBounds.bottom =  -85;
+            }
+            if(zoomToBounds.right > 179){
+              zoomToBounds.right =  179;
+            }
+            if(zoomToBounds.top > 85){
+              zoomToBounds.top = 85;
+            }
+          }
           // transform bounding box given in degree values to the projection of the base layer
-          zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, layer.projection);
-        } else if(layer.maxExtent) {
-          zoomToBounds = layer.maxExtent;
+          zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, referenceProjection());
+        } else if(referenceMaxExtent()) {
+          zoomToBounds = referenceMaxExtent();
           // no need to transform since the bounds are obtained from the layer
         } else {
-          zoomToBounds = new OpenLayers.Bounds(-180, -90, 180, 90);
+          // use the more narrow bbox of the SphericalMercator to avoid reprojection problems
+          // SpericalMercator is not supporting the full extent!
+          zoomToBounds = CdmOpenLayers.mapExtends.epsg_900913;
           // transform bounding box given in degree values to the projection of the base layer
-          zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, layer.projection);
+          zoomToBounds.transform(CdmOpenLayers.projections.epsg_4326, referenceProjection());
         }
 
-        zoomToBounds = intersectionOfBounds(layer.maxExtent, zoomToBounds);
+        zoomToBounds = intersectionOfBounds(referenceMaxExtent(), zoomToBounds);
+
+        log("zoomBounds calculated: " + zoomToBounds.toString());
 
         return zoomToBounds;
       };
 
       var log = function(message, addTimeStamp){
         var timestamp = '';
-        if(addTimeStamp == true){
+        if(addTimeStamp === true){
           var time = new Date();
           timestamp = time.getSeconds() + '.' + time.getMilliseconds() + 's';
         }
@@ -887,7 +931,7 @@
           }
         } else {
           // use the projection and maxextent of the base layer
-          maxExtent = map.baseLayer.maxExtent;
+          maxExtent = referenceMaxExtent();
         }
 
         if (maxExtent) {
