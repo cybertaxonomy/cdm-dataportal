@@ -61,8 +61,7 @@
    */
   define('EDIT_MAPSERVER_URI', serialize(
       array(
-        'http://edit.africamuseum.be'=>'Primary (http://edit.africamuseum.be)',
-        'http://edit.br.fgov.be'=>'Secondary (http://edit.br.fgov.be)',
+        'http://edit.africamuseum.be'=>'Primary (http://edit.africamuseum.be)'
       )
     )
   );
