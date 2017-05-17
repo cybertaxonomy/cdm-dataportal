@@ -488,6 +488,7 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
   // 'height' => 512 / 2, // optimum size for OSM layers 256
   'aspect_ratio' => 2,
   'bbox' => '', // empty to allow automatic zooming to extend
+  'maxZoom' => 15, // corresponds to the default in cdm_openlayers_map.defaults
   'show_labels' => FALSE,
   'caption' => '',
   'distribution_opacity' => '0.5',
@@ -2842,6 +2843,13 @@ function cdm_settings_geo($form, &$form_state) {
       (Maybe you need to change the map base layer to OpeLayers.)
       Hold down Strg and drag with your mouse to select a bbox to zoom to. The bbox of the visible area of the map is always displayed
       below the map from where you can copy the bbox string.</p>'),
+  );
+
+  $form[CDM_MAP_DISTRIBUTION]['maxZoom'] = array(
+    '#type' => 'select',
+    '#title' => 'Max zoom level',
+    '#default_value' => $map_distribution['maxZoom'],
+    '#options' => array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
   );
 
   $form[CDM_MAP_DISTRIBUTION]['show_labels'] = array(

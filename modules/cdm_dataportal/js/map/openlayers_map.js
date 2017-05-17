@@ -35,7 +35,7 @@
     showLayerSwitcher: false,
     baseLayerNames: ["mapproxy_vmap0"],
     defaultBaseLayerName: 'mapproxy_vmap0',
-    maxZoom: 4,
+    maxZoom: 15,
     minZoom: 0,
     debug: true,
     /**
@@ -369,8 +369,9 @@
           });
 
           // zoom to the zoomToBounds
-          log(" > starting zoomToExtend " + zoomToBounds, true);
+          log(" > starting zoomToExtend: " + zoomToBounds + ", zoomToClosestLevel: " + zoomToClosestLevel, true);
           map.zoomToExtent(zoomToBounds, zoomToClosestLevel);
+
 
           if(map.getZoom() > opts.maxZoom){
             map.zoomTo(opts.maxZoom);

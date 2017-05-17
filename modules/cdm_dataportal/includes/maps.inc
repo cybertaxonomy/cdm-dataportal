@@ -135,6 +135,7 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
   $cdm_openlayers_options = array(
       'legendPosition'  => '3',
       'boundingBox' => $map_settings['bbox'],
+      'maxZoom' => $map_settings['maxZoom'],
       'aspectRatio' => $map_settings['aspect_ratio'],
       'distributionOpacity' => $map_settings['distribution_opacity'],
       'legendOpacity' => $map_settings['legend']['opacity'],
