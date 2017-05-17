@@ -53,8 +53,7 @@
   define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
 
 
-
-    /* ---- MAP SETTING CONSTANTS ---- */
+  /* ---- MAP SETTING CONSTANTS ---- */
   /**
    * @var array of URIs eg. http://edit.africamuseum.be"
    *   An options array
