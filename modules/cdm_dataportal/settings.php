@@ -276,23 +276,23 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
     'taxon_page_synonymy,accepted_taxon.taxon_page_synonymy'=> array(
       'nameAuthorPart' => array('#uri' => TRUE),
       'referencePart' => TRUE,
-      'statusPart' => TRUE,
       'descriptionPart' => TRUE,
+      'statusPart' => TRUE,
     ),
     'related_taxon.other_taxon_relationship.taxon_relationships.taxon_page_synonymy'=> array(
       'nameAuthorPart' => array('#uri' => TRUE),
       'referencePart' => TRUE,
+      'descriptionPart' => TRUE,
       'statusPart' => TRUE,
       'secReferencePart' => TRUE,
-      'descriptionPart' => TRUE,
     ),
     'related_taxon.misapplied_name_for.taxon_relationships.taxon_page_synonymy' => array(
       'nameAuthorPart' => array('#uri' => TRUE),
       'referencePart' => TRUE,
+      'descriptionPart' => TRUE,
       'statusPart' => TRUE,
       /* no sec ref in this case, misapplied names are
        * de-duplicated and the sec ref is shown as footnote */
-      'descriptionPart' => TRUE,
     ),
     'homonym'=> array(
         'nameAuthorPart' => array('#uri' => TRUE),
