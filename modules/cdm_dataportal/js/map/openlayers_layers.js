@@ -151,11 +151,11 @@
                   );
 
           // create Google Mercator layers
-          case 'gmroadmap':
+          case 'groadmap':
             return  new OpenLayers.Layer.Google(
                       "Google Roadmap",
                       {
-                          type: 'roadmap',
+                          // rooad map is default
                           projection: window.CdmOpenLayers.projections.epsg_900913,
                           // Allow user to pan forever east/west
                           // Setting this to false only restricts panning if sphericalMercator is true.
@@ -171,10 +171,11 @@
                       "Google Satellite",
                       {
                         type: 'satellite',
-                        projection: window.CdmOpenLayers.projections.epsg_900913,
+                        //projection: window.CdmOpenLayers.projections.epsg_900913,
                         // Allow user to pan forever east/west
                         // Setting this to false only restricts panning if sphericalMercator is true.
                         wrapDateLine: false,
+                        sphericalMercator: true,
                         numZoomLevels: 22
                       }
                   );
@@ -187,6 +188,7 @@
                           // Allow user to pan forever east/west
                           // Setting this to false only restricts panning if sphericalMercator is true.
                           wrapDateLine: false,
+                          sphericalMercator: true,
                           numZoomLevels: 22
                       }
                   );
@@ -195,8 +197,8 @@
             return  new OpenLayers.Layer.Google(
               "Google Terrain",
               {
-                type: 'terrain',
-                projection: window.CdmOpenLayers.projections.epsg_900913,
+                type: google.maps.MapTypeId.TERRAIN,
+                // projection: window.CdmOpenLayers.projections.epsg_900913,
                 // Allow user to pan forever east/west
                 // Setting this to false only restricts panning if sphericalMercator is true.
                 wrapDateLine: false,

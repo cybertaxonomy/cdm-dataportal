@@ -250,7 +250,7 @@
 
           createBaseLayers(opts.baseLayerNames, opts.defaultBaseLayerName, opts.customWMSBaseLayerData);
 
-          initMap();
+          initializeMap();
 
           // now it is
           if(opts.boundingBox){
@@ -489,7 +489,7 @@
         /**
          * Initialize the Openlayers Map with the base layer
          */
-        var initMap = function(){
+        var initializeMap = function(){
 
           if(opts.showLayerSwitcher === true){
               defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
