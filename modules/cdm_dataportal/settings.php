@@ -1524,7 +1524,10 @@ function cdm_settings_layout() {
       '#title' => t('Original Source in bibliography'),
       '#default_value' => $bibliography_settings['enabled'],
       '#description' => t('Show original source citations in bibliography block, instead of rendering them with other
-       annotations in each feature block.'),
+       annotations in each feature block.<br/><br/>Whether the Original Source reference of a Feature Block is actually put 
+       into the bibliography also depends on the settings in the ' .
+        l("Taxon profile feature block settings", "settings/layout/taxon") .
+        '. For more information please refer to the description on the settings "<em>Sources as content</em>" & "<em>Sources as content to bibliography</em>" in that settings page.'),
   );
 
   $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE]['key_format'] = array(
