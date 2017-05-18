@@ -155,7 +155,7 @@
             return  new OpenLayers.Layer.Google(
                       "Google Roadmap",
                       {
-                          // rooad map is default
+                          // road map is default
                           projection: window.CdmOpenLayers.projections.epsg_900913,
                           // Allow user to pan forever east/west
                           // Setting this to false only restricts panning if sphericalMercator is true.
@@ -171,7 +171,7 @@
                       "Google Satellite",
                       {
                         type: 'satellite',
-                        //projection: window.CdmOpenLayers.projections.epsg_900913,
+                        projection: window.CdmOpenLayers.projections.epsg_900913,
                         // Allow user to pan forever east/west
                         // Setting this to false only restricts panning if sphericalMercator is true.
                         wrapDateLine: false,
@@ -198,10 +198,11 @@
               "Google Terrain",
               {
                 type: google.maps.MapTypeId.TERRAIN,
-                // projection: window.CdmOpenLayers.projections.epsg_900913,
+                //projection: window.CdmOpenLayers.projections.epsg_900913,
                 // Allow user to pan forever east/west
                 // Setting this to false only restricts panning if sphericalMercator is true.
-                wrapDateLine: false,
+                // wrapDateLine: false,
+                //sphericalMercator: true,
                 numZoomLevels: 22
               }
             );

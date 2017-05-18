@@ -156,15 +156,15 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
       if(str_beginsWith($name, 'g')){
         if( isset($map_settings['openlayers']['google_maps_api_key']) && strlen($map_settings['openlayers']['google_maps_api_key']) == 39) {
           // google layer detected
-          drupal_add_js("https://maps.googleapis.com/maps/api/js?key=" . $map_settings['openlayers']['google_maps_api_key'] . "&callback=initMap",
+          //drupal_add_js("https://maps.googleapis.com/maps/api/js?key=" . $map_settings['openlayers']['google_maps_api_key'],
           //drupal_add_js("https://maps.google.com/maps/api/js?callback=initMap&key=" . $map_settings['openlayers']['google_maps_api_key'],
+          drupal_add_js("http://maps.google.com/maps/api/js?v=3&key=" . $map_settings['openlayers']['google_maps_api_key'],
           array(
             'type' => 'external',
             'defer' => true
             ));
 
           //drupal_add_js("http://maps.google.com/maps/api/js?callback=initMap&key=" . $map_settings['openlayers']['google_maps_api_key'], 'external');
-          //drupal_add_js("http://maps.google.com/maps/api/js?v=3&amp;sensor=false", 'external');
         } else {
           drupal_set_message('A Google Maps layer is configured but the API key is either missing or invalid. 
           Please set your Google Maps API key in the '  . l('Geo & Map Settings', 'admin/config/cdm_dataportal/settings/geo') .'.', 'warning');

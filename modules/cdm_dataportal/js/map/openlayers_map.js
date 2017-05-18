@@ -641,7 +641,7 @@
 
             if(layers.length > 0) {
               // calculate zoomBounds using the first layer
-              if(mapResponseObj.bbox !== undefined){
+              if(mapResponseObj.bbox !== undefined && mapResponseObj.bbox){
                 // mapResponseObj.bbox are bounds for the projection of the specific layer
                 var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
                 newBounds.transform(layers[0].projection, map.getProjectionObject());
