@@ -116,6 +116,40 @@
           case 'mapnik':
               return  new OpenLayers.Layer.OSM();
 
+          case 'stamen_terrain':
+            // see http://developer.mapquest.com/web/products/open/map
+            return new OpenLayers.Layer.XYZ(
+              "Stamen Terrain",
+              [
+                "https://stamen-tiles.a.ssl.fastly.net/terrain/${z}/${x}/${y}.jpg"
+              ],
+              {
+                // If using the MapQuest-OSM tiles, OpenStreetMap must be given credit for the data
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+                transitionEffect: "resize",
+                sphericalMercator: true
+              }
+            );
+
+          case 'open_topomap':
+            // see http://developer.mapquest.com/web/products/open/map
+            return new OpenLayers.Layer.XYZ(
+              "OpenTopoMap",
+              [
+                "http://a.tile.opentopomap.org/${z}/${x}/${y}.png",
+                "http://b.tile.opentopomap.org/${z}/${x}/${y}.png",
+                "http://c.tile.opentopomap.org/${z}/${x}/${y}.png"
+              ],
+              {
+                // If using the MapQuest-OSM tiles, OpenStreetMap must be given credit for the data
+                attribution: 'Kartendaten: © <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Kartendarstellung: © <a href="http://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+                transitionEffect: "resize",
+                sphericalMercator: true
+              }
+            );
+
+            //
+
           case 'mapquest_open':
               // see http://developer.mapquest.com/web/products/open/map
               return new OpenLayers.Layer.XYZ(

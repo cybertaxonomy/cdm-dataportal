@@ -95,7 +95,7 @@
         };
         var mapExtends = {
                 epsg_4326: new OpenLayers.Bounds(-180, -90, 180, 90),
-                //  Spherical Mercator epsg_900913 is not suppporting the whole marble
+                //  Spherical Mercator epsg_900913 is not supporting the whole marble
                 epsg_900913: new OpenLayers.Bounds(-179, -85, 179, 85),
                 //  Spherical Mercator
                 epsg_3857: new OpenLayers.Bounds(-179, -85, 179, 85)

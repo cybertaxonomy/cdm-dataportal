@@ -2991,9 +2991,12 @@ function cdm_settings_geo($form, &$form_state) {
     'mapproxy_etopo1' => "ETOPO1 Global Relief Model - via fast EDIT MapProxy",
     'edit-etopo1' => "ETOPO1 Global Relief Model",
     // all others EPSG:900913
-    'mapnik' => 'OpenStreetMap',
-    'mapquest_open' => "MapQuest",
-    'mapquest_sat' => "MapQuest Sattelite",
+    'mapnik' => 'OpenStreetMap (mapnik)',
+    'stamen_terrain' => 'Stamen Terrain',
+    'open_topomap' => 'OpenTopoMap',
+    // map quest is no longer free. it is required to sign up for a test plan.
+    // 'mapquest_open' => "MapQuest",
+    // 'mapquest_sat' => "MapQuest Sattelite",
     'groadmap' => 'Google Roadmap',
     'gsatellite' => 'Google Satellite',
     'ghybrid' => 'Google Hybrid',
