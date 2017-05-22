@@ -262,7 +262,20 @@ function CDM_Portal_install() {
 
   $new_blocks = array();
 
-;
+  // Powered by EDIT
+  $block_powered_by_edit = cdm_dataportal_block_info()["fundedByEDIT"];
+  $block_powered_by_edit= array_merge($block_powered_by_edit, array(
+    'module' => 'cdm_dataportal',
+    'delta' => 'fundedByEDIT',
+    'theme' => $default_theme,
+    'status' => 1,
+    'weight' => 0,
+    'region' => 'footer'
+  ));
+  $new_blocks[] = array(
+    'block' => $block_powered_by_edit
+  );
+
   // enable "CDM Search Taxa" block for all themes
   $block_search_taxa = cdm_dataportal_block_info()["2"];
   $block_search_taxa= array_merge($block_search_taxa, array(

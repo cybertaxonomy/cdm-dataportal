@@ -135,6 +135,7 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
   $cdm_openlayers_options = array(
       'legendPosition'  => '3',
       'boundingBox' => $map_settings['bbox'],
+      'maxZoom' => $map_settings['maxZoom'],
       'aspectRatio' => $map_settings['aspect_ratio'],
       'distributionOpacity' => $map_settings['distribution_opacity'],
       'legendOpacity' => $map_settings['legend']['opacity'],
@@ -149,9 +150,9 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
   // --- setting the base layer options
   if (is_array($map_settings['openlayers']['base_layers']) && count($map_settings['openlayers']['base_layers']) > 0) {
 
-    $layer_names = $map_settings['openlayers']['base_layers'];
+    $base_layer_names = $map_settings['openlayers']['base_layers'];
 
-    foreach($layer_names as $name){
+    foreach($base_layer_names as $name){
       if(str_beginsWith($name, 'g')){
         if( isset($map_settings['openlayers']['google_maps_api_key']) && strlen($map_settings['openlayers']['google_maps_api_key']) == 39) {
           // google layer detected
@@ -163,14 +164,17 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
       }
     }
 
-    $cdm_openlayers_options['baseLayerNames'] = array_values($layer_names);
+    // get default layer and remove the 'PREFERRED' from the list to avoid duplicate layers
+    $preferred_baseLayer = $base_layer_names['PREFERRED'];
+    unset($base_layer_names['PREFERRED']);
 
-    if($layer_names['PREFERRED']){
-      $cdm_openlayers_options['defaultBaseLayerName'] = $layer_names['PREFERRED'];
-      unset($layer_names['PREFERRED']); // why is this needed?
-      if(!array_search($cdm_openlayers_options['defaultBaseLayerName'], $cdm_openlayers_options['baseLayerNames'])){
+    $cdm_openlayers_options['baseLayerNames'] = array_values($base_layer_names);
+
+    if($preferred_baseLayer){
+      $cdm_openlayers_options['defaultBaseLayerName'] = $preferred_baseLayer;
+      if(array_search($preferred_baseLayer, $cdm_openlayers_options['baseLayerNames']) === false){
         // the default layer must also  be in the list of base layers
-        $cdm_openlayers_options['baseLayerNames'][] = $cdm_openlayers_options['defaultBaseLayerName'];
+        $cdm_openlayers_options['baseLayerNames'][] = $preferred_baseLayer;
       }
     }
 
@@ -179,6 +183,13 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
   // --- custom wms base layer
   $map_settings['openlayers']['custom_wms_base_layer']['params'] = json_decode($map_settings['openlayers']['custom_wms_base_layer']['params']);
   $cdm_openlayers_options['customWMSBaseLayerData'] = $map_settings['openlayers']['custom_wms_base_layer'];
+
+
+  // --- wms_overlay_layer
+  if(isset($map_settings['openlayers']['wms_overlay_layer']) && $map_settings['openlayers']['wms_overlay_layer']['is_enabled']) {
+    $map_settings['openlayers']['wms_overlay_layer']['params'] = json_decode($map_settings['openlayers']['wms_overlay_layer']['params']);
+    $cdm_openlayers_options['wmsOverlayLayerData'] = $map_settings['openlayers']['wms_overlay_layer'];
+  }
 
   // --- eventhandlers
   $event_listeners_js = '';

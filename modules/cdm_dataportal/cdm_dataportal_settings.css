@@ -68,3 +68,7 @@
 .fieldset-float {
     float: left;
 }
+
+#edit-map-preview .openlayers_width {
+    max-width: 700px;
+}

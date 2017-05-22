@@ -102,12 +102,14 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         /* distribution */
         String featureClass = "distribution";
         String featureLabel = "Distribution";
-        String blockTextFull = featureLabel + "\n\n\n\n\nMap uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)\nAssam (World Checklist of Arecaceae), China South-Central (World Checklist of Arecaceae), China Southeast (World Checklist of Arecaceae), East Himalaya (World Checklist of Arecaceae), India (World Checklist of Arecaceae), Laos (World Checklist of Arecaceae), Myanmar (World Checklist of Arecaceae), Nepal (World Checklist of Arecaceae), Thailand (World Checklist of Arecaceae), Tibet (World Checklist of Arecaceae)\nIndia (North-east), Bhutan, Myanmar, China (Tibet, South-east and South Yunnan), Thailand (North) and Laos (North). (T. Evans & K. Sengdala & B. Thammavong & O.V. Viengkham & J. Dransfield, A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina. 2002)";
+        String contentTextFull = "Map uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)\nAssam (World Checklist of Arecaceae), China South-Central (World Checklist of Arecaceae), China Southeast (World Checklist of Arecaceae), East Himalaya (World Checklist of Arecaceae), India (World Checklist of Arecaceae), Laos (World Checklist of Arecaceae), Myanmar (World Checklist of Arecaceae), Nepal (World Checklist of Arecaceae), Thailand (World Checklist of Arecaceae), Tibet (World Checklist of Arecaceae)\nIndia (North-east), Bhutan, Myanmar, China (Tibet, South-east and South Yunnan), Thailand (North) and Laos (North). (T. Evans & K. Sengdala & B. Thammavong & O.V. Viengkham & J. Dransfield, A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina. 2002)";
 
         p.testTableOfContentEntry(featureId, featureLabel, featureClass);
         FeatureBlock featureBlockDistribution = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
 
-        assertEquals(blockTextFull, featureBlockDistribution.getText());
+        assertEquals(featureLabel, featureBlockDistribution.getTitle().getText());
+        assertEquals(contentTextFull, featureBlockDistribution.getContent().getText().trim());
+
         featureBlockDistribution.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(1, featureBlockDistribution.getOriginalSourcesSections().size());
         // NOTE: the first source has been deleted in latest data

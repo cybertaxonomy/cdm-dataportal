@@ -788,7 +788,7 @@ function cdm_dataportal_block_info() {
     // $block[3]["info"] = t("CDM Filters");
     $block["4"]["info"] = t("CDM  - Dataportal Print");
     $block["keys"]["info"] = t("CDM - Identification keys");
-    $block["fundedByEDIT"]["info"] = t('Funded by EDIT');
+    $block["fundedByEDIT"]["info"] = t('CDM - Powered by EDIT');
     $block["classification_breadcrumbs"] =  array(
         'info' => t('CDM - Classification breadcrumbs'),
         'cache' => DRUPAL_CACHE_PER_PAGE

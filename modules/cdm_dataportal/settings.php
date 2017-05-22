@@ -53,16 +53,14 @@
   define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(array(UUID_MISAPPLIED_NAME_FOR, UUID_INVALID_DESIGNATION_FOR)));
 
 
-
-    /* ---- MAP SETTING CONSTANTS ---- */
+  /* ---- MAP SETTING CONSTANTS ---- */
   /**
    * @var array of URIs eg. http://edit.africamuseum.be"
    *   An options array
    */
   define('EDIT_MAPSERVER_URI', serialize(
       array(
-        'http://edit.africamuseum.be'=>'Primary (http://edit.africamuseum.be)',
-        'http://edit.br.fgov.be'=>'Secondary (http://edit.br.fgov.be)',
+        'http://edit.africamuseum.be'=>'Primary (http://edit.africamuseum.be)'
       )
     )
   );
@@ -278,23 +276,23 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
     'taxon_page_synonymy,accepted_taxon.taxon_page_synonymy'=> array(
       'nameAuthorPart' => array('#uri' => TRUE),
       'referencePart' => TRUE,
-      'statusPart' => TRUE,
       'descriptionPart' => TRUE,
+      'statusPart' => TRUE,
     ),
     'related_taxon.other_taxon_relationship.taxon_relationships.taxon_page_synonymy'=> array(
       'nameAuthorPart' => array('#uri' => TRUE),
       'referencePart' => TRUE,
+      'descriptionPart' => TRUE,
       'statusPart' => TRUE,
       'secReferencePart' => TRUE,
-      'descriptionPart' => TRUE,
     ),
     'related_taxon.misapplied_name_for.taxon_relationships.taxon_page_synonymy' => array(
       'nameAuthorPart' => array('#uri' => TRUE),
       'referencePart' => TRUE,
+      'descriptionPart' => TRUE,
       'statusPart' => TRUE,
       /* no sec ref in this case, misapplied names are
        * de-duplicated and the sec ref is shown as footnote */
-      'descriptionPart' => TRUE,
     ),
     'homonym'=> array(
         'nameAuthorPart' => array('#uri' => TRUE),
@@ -490,6 +488,7 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
   // 'height' => 512 / 2, // optimum size for OSM layers 256
   'aspect_ratio' => 2,
   'bbox' => '', // empty to allow automatic zooming to extend
+  'maxZoom' => 15, // corresponds to the default in cdm_openlayers_map.defaults
   'show_labels' => FALSE,
   'caption' => '',
   'distribution_opacity' => '0.5',
@@ -600,309 +599,308 @@ function get_default_taxon_tab($returnTabIndex = FALSE) {
   }
 }
 
+/**
+ * Provides the feature block settings for a specific feature which matches the $feature_uuid parameter.
+ *
+ * In case specifically configured settings array, like these which are stored in the drupal variables, is missing
+ * one or more fields these fields are taken from the default. That is the specific settings are always merges
+ * with the default.
+ *
+ * Note: These settings only apply to feature blocks which do not have a special rendering
+ * the specially handled features (e.g.: Distribution, CommonNames) may make use of the
+ * 'special' element of the settings
+ *
+ * @param $feature_uuid
+ *   The uuid string representation of the feature to return the settings for
+ *
+ * @return array
+ *  an associative array of settings, with the following fields:
+ *    - as_list: string
+ *        this setting will be used in compose_feature_block_wrap_elements() as $enclosing_tag
+ *        possible values are:
+ *          div: not as list,
+ *          ul: as bullet list,
+ *          ol: as numbered list,
+ *          dl: as definition list
+ *        The tag used for the inner element, thus depends on the value of this field. The
+ *        inner tag name can be retrieved by the function cdm_feature_block_element_tag_name()
+ *    - link_to_reference: boolean,
+ *        render the reference as link, ignored if the element is NOT a DescriptionElementSource
+ *    - link_to_name_used_in_source": boolean
+ *        whether to show name in source information as link which will point to the according name page
+ *    - sources_as_content (boolean)
+ *        TRUE (int: 1):
+ *          1. If element is of the CDM type TextData and the text is not empty the source references will be
+ *             appended in brackets like "text (source references)". If the original source has name in source
+ *             information it will be appended to the citation string,
+ *             like : "(citation, as name in source; citation, as name in source)"
+ *          2. if the text of the TextData is empty, the original source citations are the only content
+ *             (e.g. use case CITATION) and are not put into brackets. In this case the nameInSource is
+ *             prepended to the citation string like: "name in source: citation"
+ *        FALSE (int: 0):
+ *          Original sources are put into the bibliography(=references) pseudo feature block. If the original source
+ *          citations are the only content, the resulting feature block content would only consist of footnotes.
+ *          In this case the display of the respective feature block is suppressed.
+ *          TODO if the bibliography is not enabled the sources will be treated as footnotes like annotations,
+ *               in future however they will in this case be shown in a separate references section for each
+ *               feature block.
+ *    - sources_as_content_to_bibliography  (boolean)
+ *        Only valid if sources_as_content == TRUE, will cause the sources to be also shown
+ *        in the bibliography.
+ *    - sort_elements
+ *        whether and how to sort the elements
+ *        possible values are the constants SORT_ASC, SORT_DESC, NULL,
+ *        some feature types (Distribution) also support: SORT_HIERARCHICAL (
+ *        TODO option to exclude levels, put in special?,
+ *        TODO make use of this setting in compose_feature_block_wrap_elements())
+ *    - element_tag
+ *        specifies the tag to be used for creating the elements, only applies if "as_list" == 'div'
+ *        possible values are span | div. the proper inner tag name can be retrieved by the function
+ *        cdm_feature_block_element_tag_name()
+ *    - special: array()
+ *        an array with further settings, this field can be used for special
+ *        settings for specialized rendering like for distributions
+ *  }
+ *
+ */
+function get_feature_block_settings($feature_uuid = 'DEFAULT') {
+  // the default must conform to the default parameter values of
+  // compose_feature_block_wrap_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
+  // compose_description_element_text_data() : asListElement = NULL
 
-  /**
-   * Provides the feature block settings for a specific feature which matches the $feature_uuid parameter.
-   *
-   * In case specifically configured settings array, like these which are stored in the drupal variables, is missing
-   * one or more fields these fields are taken from the default. That is the specific settings are always merges
-   * with the default.
-   *
-   * Note: These settings only apply to feature blocks which do not have a special rendering
-   * the specially handled features (e.g.: Distribution, CommonNames) may make use of the
-   * 'special' element of the settings
-   *
-   * @param $feature_uuid
-   *   The uuid string representation of the feature to return the settings for
-   *
-   * @return array
-   *  an associative array of settings, with the following fields:
-   *    - as_list: string
-   *        this setting will be used in compose_feature_block_wrap_elements() as $enclosing_tag
-   *        possible values are:
-   *          div: not as list,
-   *          ul: as bullet list,
-   *          ol: as numbered list,
-   *          dl: as definition list
-   *        The tag used for the inner element, thus depends on the value of this field. The
-   *        inner tag name can be retrieved by the function cdm_feature_block_element_tag_name()
-   *    - link_to_reference: boolean,
-   *        render the reference as link, ignored if the element is NOT a DescriptionElementSource
-   *    - link_to_name_used_in_source": boolean
-   *        whether to show name in source information as link which will point to the according name page
-   *    - sources_as_content (boolean)
-   *        TRUE (int: 1):
-   *          1. If element is of the CDM type TextData and the text is not empty the source references will be
-   *             appended in brackets like "text (source references)". If the original source has name in source
-   *             information it will be appended to the citation string,
-   *             like : "(citation, as name in source; citation, as name in source)"
-   *          2. if the text of the TextData is empty, the original source citations are the only content
-   *             (e.g. use case CITATION) and are not put into brackets. In this case the nameInSource is
-   *             prepended to the citation string like: "name in source: citation"
-   *        FALSE (int: 0):
-   *          Original sources are put into the bibliography(=references) pseudo feature block. If the original source
-   *          citations are the only content, the resulting feature block content would only consist of footnotes.
-   *          In this case the display of the respective feature block is suppressed.
-   *          TODO if the bibliography is not enabled the sources will be treated as footnotes like annotations,
-   *               in future however they will in this case be shown in a separate references section for each
-   *               feature block.
-   *    - sources_as_content_to_bibliography  (boolean)
-   *        Only valid if sources_as_content == TRUE, will cause the sources to be also shown
-   *        in the bibliography.
-   *    - sort_elements
-   *        whether and how to sort the elements
-   *        possible values are the constants SORT_ASC, SORT_DESC, NULL,
-   *        some feature types (Distribution) also support: SORT_HIERARCHICAL (
-   *        TODO option to exclude levels, put in special?,
-   *        TODO make use of this setting in compose_feature_block_wrap_elements())
-   *    - element_tag
-   *        specifies the tag to be used for creating the elements, only applies if "as_list" == 'div'
-   *        possible values are span | div. the proper inner tag name can be retrieved by the function
-   *        cdm_feature_block_element_tag_name()
-   *    - special: array()
-   *        an array with further settings, this field can be used for special
-   *        settings for specialized rendering like for distributions
-   *  }
-   *
-   */
-  function get_feature_block_settings($feature_uuid = 'DEFAULT') {
-    // the default must conform to the default parameter values of
-    // compose_feature_block_wrap_elements() : $glue = '', $sort = FALSE, $enclosing_tag = 'ul'
-    // compose_description_element_text_data() : asListElement = NULL
+  // see #3257 (implement means to define the features to show up in the taxonprofile and in the specimen descriptions)
 
-    // see #3257 (implement means to define the features to show up in the taxonprofile and in the specimen descriptions)
+  // ---- DEFAULTS settings
 
-    // ---- DEFAULTS settings
+  // only needed as final option, when the settings are not having a default
+  $default = array(
+    'DEFAULT' => array(
+      'as_list' => 'div',
+      'link_to_reference' => 0,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 0,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => NO_SORT,
+      'glue' => '',
+      'element_tag' => NULL
+    ),
+    // settings for pseudo feature bibliography
+    // only hard coded here
+    'BIBLIOGRAPHY' => array(
+      'as_list' => 'div',
+      'link_to_reference' => 0,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 0,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => NO_SORT,
+      'glue' => '',
+      'element_tag' => NULL
+    )
+  );
 
-    // only needed as final option, when the settings are not having a default
-    $default = array(
-      'DEFAULT' => array(
-        'as_list' => 'div',
-        'link_to_reference' => 0,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 0,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => NO_SORT,
-        'glue' => '',
-        'element_tag' => NULL
-      ),
-      // settings for pseudo feature bibliography
-      // only hard coded here
-      'BIBLIOGRAPHY' => array(
-        'as_list' => 'div',
-        'link_to_reference' => 0,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 0,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => NO_SORT,
-        'glue' => '',
-        'element_tag' => NULL
-      )
-    );
-
-    // will be used as preset in the settings
-    $other_themes_default = array(
-      'DEFAULT' => array(
-        'as_list' => 'div',
-        'link_to_reference' => 0,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 0,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => NO_SORT,
-        'glue' => '',
-        'element_tag' => NULL
-      ),
-      UUID_CITATION => array(
-        'as_list' => 'div',
-        'link_to_reference' => 0,
-        'link_to_name_used_in_source' => 0,
-        'sources_as_content' => 1,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => SORT_ASC,
-        'glue' => '',
-        'element_tag' => 'div'
-      ),
-      UUID_DISTRIBUTION => array(
-        'as_list' => 'div', // currently ignored
-        'link_to_reference' => 0,
-        'link_to_name_used_in_source' => 0,
-        'sources_as_content' => 0,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => NO_SORT, // will cause ...
-        'glue' => '',
-        'element_tag' => 'div',
-        'special' => array()
-      ),
-      UUID_COMMON_NAME => array(
-        'as_list' => 'div',
-        'link_to_reference' => 0,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 0,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => NO_SORT,
-        'glue' => '',
-        'element_tag' => 'span'
-      ),
-    );
-
-    // ---- Special DEFAULTS for existing portals
-    // TODO:
-    // this can be removed once the feature block
-    // settings have been deployed for the first time to these portals
-
-    $cichorieae_default = array(
-      'DEFAULT' => array(
-        'as_list' => 'div',
-        'link_to_reference' => 1,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 1,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => NO_SORT,
-        'glue' => '',
-        'element_tag' => 'div'
-      ),
-      UUID_CITATION => array(
-        'as_list' => 'div',
-        'link_to_reference' => 0,
-        'link_to_name_used_in_source' => 0,
-        'sources_as_content' => 1,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => SORT_ASC,
-        'glue' => '',
-        'element_tag' => 'div'
-      ),
-      UUID_CHROMOSOMES_NUMBERS => array(
-        'as_list' => 'ul',
-        'link_to_reference' => 1,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 1,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => NO_SORT,
-        'glue' => '',
-        'element_tag' => 'div'
-      ),
-      UUID_CHROMOSOMES => array(
-        'as_list' => 'ul',
-        'link_to_reference' => 0,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 1,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => NO_SORT,
-        'glue' => '',
-        'element_tag' => 'div'
-      ),
-      UUID_COMMON_NAME => array(
-        'as_list' => 'div',
-        'link_to_reference' => 0,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 0,
-        'sources_as_content_to_bibliography' => 0,
-        'sort_elements' => NO_SORT,
-        'glue' => '',
-        'element_tag' => 'span'
-      ),
-    );
-
-    $palmweb_default = array(
-      'DEFAULT' => array(
-        'as_list' => 'ul',
-        'link_to_reference' => 1,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 1,
-        'sources_as_content_to_bibliography' => 1,
-        'sort_elements' => NO_SORT,
-        'glue' => '',
-        'element_tag' => NULL
-      ),
-      UUID_CITATION => array(
-        'as_list' => 'ul',
-        'link_to_reference' => 1,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 0,
-        'sources_as_content_to_bibliography' => 1,
-        'sort_elements' => SORT_ASC,
-        'glue' => '',
-        'element_tag' => 'div'
-      ),
-      UUID_DISTRIBUTION => array(
-        'as_list' => 'div', // currently ignored
-        'link_to_reference' => 1,
-        'link_to_name_used_in_source' => 1,
-        'sources_as_content' => 1, // FIXME seems to have no effect see Acanthophoenix rousselii (palmae)
-        'sources_as_content_to_bibliography' => 1,
-        'sort_elements' => NO_SORT, // will cause ...
-        'glue' => ', ',
-        'element_tag' => 'span',
-        'special' => array()
-      ),
-    );
-
-    $cyprus_default = $cichorieae_default;
-    $cyprus_default[UUID_DISTRIBUTION] = array(
+  // will be used as preset in the settings
+  $other_themes_default = array(
+    'DEFAULT' => array(
+      'as_list' => 'div',
+      'link_to_reference' => 0,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 0,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => NO_SORT,
+      'glue' => '',
+      'element_tag' => NULL
+    ),
+    UUID_CITATION => array(
+      'as_list' => 'div',
+      'link_to_reference' => 0,
+      'link_to_name_used_in_source' => 0,
+      'sources_as_content' => 1,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => SORT_ASC,
+      'glue' => '',
+      'element_tag' => 'div'
+    ),
+    UUID_DISTRIBUTION => array(
       'as_list' => 'div', // currently ignored
       'link_to_reference' => 0,
       'link_to_name_used_in_source' => 0,
       'sources_as_content' => 0,
       'sources_as_content_to_bibliography' => 0,
       'sort_elements' => NO_SORT, // will cause ...
-      'glue' => ' ',
+      'glue' => '',
       'element_tag' => 'div',
       'special' => array()
-    );
+    ),
+    UUID_COMMON_NAME => array(
+      'as_list' => 'div',
+      'link_to_reference' => 0,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 0,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => NO_SORT,
+      'glue' => '',
+      'element_tag' => 'span'
+    ),
+  );
 
-    $default_theme = variable_get('theme_default', NULL);
+  // ---- Special DEFAULTS for existing portals
+  // TODO:
+  // this can be removed once the feature block
+  // settings have been deployed for the first time to these portals
 
-    switch ($default_theme) {
-      case 'garland_cichorieae':
-        $settings_for_theme = $cichorieae_default;
-        break;
-      case 'cyprus':
-        // cyprus: no longer used in production,
-        // but is required for selenium tests see class eu.etaxonomy.dataportal.pages.PortalPage
-        $settings_for_theme = $cyprus_default;
-        break;
-      case 'flore_afrique_centrale':
-      case 'flora_malesiana':
-      case 'flore_gabon':
-        $settings_for_theme = $cichorieae_default;
-        $settings_for_theme[UUID_CITATION]['as_list'] = 'ul';
-        break;
-      case 'palmweb_2':
-        $settings_for_theme = $palmweb_default;
-        break;
-      default:
-        $settings_for_theme = $other_themes_default;
-    }
-    // add pseudo feature settings
-    $settings_for_theme['BIBLIOGRAPHY'] = $default['BIBLIOGRAPHY'];
+  $cichorieae_default = array(
+    'DEFAULT' => array(
+      'as_list' => 'div',
+      'link_to_reference' => 1,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 1,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => NO_SORT,
+      'glue' => '',
+      'element_tag' => 'div'
+    ),
+    UUID_CITATION => array(
+      'as_list' => 'div',
+      'link_to_reference' => 0,
+      'link_to_name_used_in_source' => 0,
+      'sources_as_content' => 1,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => SORT_ASC,
+      'glue' => '',
+      'element_tag' => 'div'
+    ),
+    UUID_CHROMOSOMES_NUMBERS => array(
+      'as_list' => 'ul',
+      'link_to_reference' => 1,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 1,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => NO_SORT,
+      'glue' => '',
+      'element_tag' => 'div'
+    ),
+    UUID_CHROMOSOMES => array(
+      'as_list' => 'ul',
+      'link_to_reference' => 0,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 1,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => NO_SORT,
+      'glue' => '',
+      'element_tag' => 'div'
+    ),
+    UUID_COMMON_NAME => array(
+      'as_list' => 'div',
+      'link_to_reference' => 0,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 0,
+      'sources_as_content_to_bibliography' => 0,
+      'sort_elements' => NO_SORT,
+      'glue' => '',
+      'element_tag' => 'span'
+    ),
+  );
 
-    // ---- END of DEFAULTS
+  $palmweb_default = array(
+    'DEFAULT' => array(
+      'as_list' => 'ul',
+      'link_to_reference' => 1,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 1,
+      'sources_as_content_to_bibliography' => 1,
+      'sort_elements' => NO_SORT,
+      'glue' => '',
+      'element_tag' => NULL
+    ),
+    UUID_CITATION => array(
+      'as_list' => 'ul',
+      'link_to_reference' => 1,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 0,
+      'sources_as_content_to_bibliography' => 1,
+      'sort_elements' => SORT_ASC,
+      'glue' => '',
+      'element_tag' => 'div'
+    ),
+    UUID_DISTRIBUTION => array(
+      'as_list' => 'div', // currently ignored
+      'link_to_reference' => 1,
+      'link_to_name_used_in_source' => 1,
+      'sources_as_content' => 1, // FIXME seems to have no effect see Acanthophoenix rousselii (palmae)
+      'sources_as_content_to_bibliography' => 1,
+      'sort_elements' => NO_SORT, // will cause ...
+      'glue' => ', ',
+      'element_tag' => 'span',
+      'special' => array()
+    ),
+  );
 
-    $saved_settings = variable_get(FEATURE_BLOCK_SETTINGS, NULL);
+  $cyprus_default = $cichorieae_default;
+  $cyprus_default[UUID_DISTRIBUTION] = array(
+    'as_list' => 'div', // currently ignored
+    'link_to_reference' => 0,
+    'link_to_name_used_in_source' => 0,
+    'sources_as_content' => 0,
+    'sources_as_content_to_bibliography' => 0,
+    'sort_elements' => NO_SORT, // will cause ...
+    'glue' => ' ',
+    'element_tag' => 'div',
+    'special' => array()
+  );
 
-    $feature_block_setting = null;
+  $default_theme = variable_get('theme_default', NULL);
 
-    if (isset($saved_settings[$feature_uuid])) {
-      $feature_block_setting = $saved_settings[$feature_uuid];
-    }
-    else if (isset($settings_for_theme[$feature_uuid])) {
-      $feature_block_setting = $settings_for_theme[$feature_uuid];
-    }
-    else if (isset($settings_for_theme['DEFAULT'])) {
-      $feature_block_setting = $settings_for_theme['DEFAULT'];
-    }
+  switch ($default_theme) {
+    case 'garland_cichorieae':
+      $settings_for_theme = $cichorieae_default;
+      break;
+    case 'cyprus':
+      // cyprus: no longer used in production,
+      // but is required for selenium tests see class eu.etaxonomy.dataportal.pages.PortalPage
+      $settings_for_theme = $cyprus_default;
+      break;
+    case 'flore_afrique_centrale':
+    case 'flora_malesiana':
+    case 'flore_gabon':
+      $settings_for_theme = $cichorieae_default;
+      $settings_for_theme[UUID_CITATION]['as_list'] = 'ul';
+      break;
+    case 'palmweb_2':
+      $settings_for_theme = $palmweb_default;
+      break;
+    default:
+      $settings_for_theme = $other_themes_default;
+  }
+  // add pseudo feature settings
+  $settings_for_theme['BIBLIOGRAPHY'] = $default['BIBLIOGRAPHY'];
 
-    // now merge the default and specific settings
-    $settings_to_merge = array($default['DEFAULT']);
-    if(is_array($saved_settings)){
-      $settings_to_merge[] = $saved_settings['DEFAULT'];
-    }
-    if(isset($feature_block_setting)){
-      $settings_to_merge[] = $feature_block_setting;
-    }
-    $feature_block_setting = drupal_array_merge_deep_array($settings_to_merge);
+  // ---- END of DEFAULTS
 
-    return $feature_block_setting;
+  $saved_settings = variable_get(FEATURE_BLOCK_SETTINGS, NULL);
+
+  $feature_block_setting = null;
+
+  if (isset($saved_settings[$feature_uuid])) {
+    $feature_block_setting = $saved_settings[$feature_uuid];
+  }
+  else if (isset($settings_for_theme[$feature_uuid])) {
+    $feature_block_setting = $settings_for_theme[$feature_uuid];
+  }
+  else if (isset($settings_for_theme['DEFAULT'])) {
+    $feature_block_setting = $settings_for_theme['DEFAULT'];
+  }
+
+  // now merge the default and specific settings
+  $settings_to_merge = array($default['DEFAULT']);
+  if(is_array($saved_settings)){
+    $settings_to_merge[] = $saved_settings['DEFAULT'];
+  }
+  if(isset($feature_block_setting)){
+    $settings_to_merge[] = $feature_block_setting;
+  }
+  $feature_block_setting = drupal_array_merge_deep_array($settings_to_merge);
+
+  return $feature_block_setting;
 }
 
 /**
@@ -1526,7 +1524,10 @@ function cdm_settings_layout() {
       '#title' => t('Original Source in bibliography'),
       '#default_value' => $bibliography_settings['enabled'],
       '#description' => t('Show original source citations in bibliography block, instead of rendering them with other
-       annotations in each feature block.'),
+       annotations in each feature block.<br/><br/>Whether the Original Source reference of a Feature Block is actually put 
+       into the bibliography also depends on the settings in the ' .
+        l("Taxon profile feature block settings", "settings/layout/taxon") .
+        '. For more information please refer to the description on the settings "<em>Sources as content</em>" & "<em>Sources as content to bibliography</em>" in that settings page.'),
   );
 
   $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE]['key_format'] = array(
@@ -1756,10 +1757,13 @@ function cdm_settings_layout() {
 }
 
 
-
-  /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+/**
+ * @param $form_name
+ * @param $form_title
+ * @param $collapsed
+ * @param string $form_description
+ *   The description for the fieldset of the gallery setting.
+ * @return mixed
  */
 function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description = '') {
   $form[$form_name] = array(
@@ -1768,7 +1772,7 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $c
     '#collapsible' => TRUE,
     '#collapsed' => $collapsed,
     '#tree' => TRUE,
-    '#description' => t('@$form-description', array('@$form-description' => $form_description)),
+    '#description' => $form_description,
   );
 
   $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
@@ -2844,6 +2848,13 @@ function cdm_settings_geo($form, &$form_state) {
       below the map from where you can copy the bbox string.</p>'),
   );
 
+  $form[CDM_MAP_DISTRIBUTION]['maxZoom'] = array(
+    '#type' => 'select',
+    '#title' => 'Max zoom level',
+    '#default_value' => $map_distribution['maxZoom'],
+    '#options' => array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+  );
+
   $form[CDM_MAP_DISTRIBUTION]['show_labels'] = array(
     '#type' => 'checkbox',
     '#title' => 'Display area labels',
@@ -2980,9 +2991,12 @@ function cdm_settings_geo($form, &$form_state) {
     'mapproxy_etopo1' => "ETOPO1 Global Relief Model - via fast EDIT MapProxy",
     'edit-etopo1' => "ETOPO1 Global Relief Model",
     // all others EPSG:900913
-    'mapnik' => 'OpenStreetMap',
-    'mapquest_open' => "MapQuest",
-    'mapquest_sat' => "MapQuest Sattelite",
+    'mapnik' => 'OpenStreetMap (mapnik)',
+    'stamen_terrain' => 'Stamen Terrain',
+    'open_topomap' => 'OpenTopoMap',
+    // map quest is no longer free. it is required to sign up for a test plan.
+    // 'mapquest_open' => "MapQuest",
+    // 'mapquest_sat' => "MapQuest Sattelite",
     'groadmap' => 'Google Roadmap',
     'gsatellite' => 'Google Satellite',
     'ghybrid' => 'Google Hybrid',
@@ -3016,109 +3030,26 @@ function cdm_settings_geo($form, &$form_state) {
         your <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">Google Maps API Key</a>. ',
   );
 
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer'] = array(
-      '#type' => 'fieldset',
-      '#title' => 'Custom WMS base layer',
-      '#tree' => TRUE,
-      '#collapsible' => FALSE,
-      '#collapsed' => FALSE,
-      '#description' => 'Here you an define a custom wms layer as additional base layer.',
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer'] = wms_layer_settings(
+    $map_distribution['openlayers']['custom_wms_base_layer'],
+    'Custom WMS base layer',
+    'Here you an define a custom wms layer as additional base layer. You need to enable this layer in the base layers section above.',
+    true // add projection settings
+    );
+
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['wms_overlay_layer'] = wms_layer_settings(
+    $map_distribution['openlayers']['wms_overlay_layer'],
+    'WMS overlay layer',
+    'Here you an define a wms layer which will overlay all other layers in the map viewer. 
+                You can actually combine multiple layers for this overlay. 
+                For details please refer to the wms query parameter <code>Layers</code> .'
   );
 
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['name'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Layer name',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['name'],
-      '#description' => 'A arbitrary name for the layer.',
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['url'] = array(
-      '#type' => 'textfield',
-      '#title' => 'WMS url',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['url'],
-      '#description' => 'Base url for the WMS (e.g.  http://edit.africamuseum.be/geoserver/topp/wms, http://wms.jpl.nasa.gov/wms.cgi)'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['params'] = array(
-      '#type' => 'textarea',
-      '#title' => 'WMS parameters',
-      '#element_validate' => array('form_element_validate_json'),
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['params'],
-      '#description' => 'An javasript object with key/value pairs representing the GetMap query string parameters and parameter values, entered in valid JSON. For example:
-<pre> {
-  "Layers": "topp:em_tiny_jan2003",
-  "Format": "image/png",
-  "BGCOLOR": "0xe0faff"
-}
-</pre>'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['projection'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Projection',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['projection'],
-      '#description' => 'The desired projection for the layer (e.g. EPSG:4326, EPSG:900913, EPSG:3857)'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['proj4js_def'] = array(
-      '#type' => 'textfield',
-      '#maxlength' => 256,
-      '#title' => 'proj4js definition',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['proj4js_def'],
-      '#description' => 'The <a href="http://trac.osgeo.org/openlayers/wiki/Documentation/Dev/proj4js">proj4js definition</a> for the projection named above.
-            The definitions for
-            EPSG:102067, EPSG:102757, EPSG:102758, EPSG:21781, EPSG:26591, EPSG:26912, EPSG:27200, EPSG:27563, EPSG:3857,
-            EPSG:41001, EPSG:4139, EPSG:4181, EPSG:42304, EPSG:4272, EPSG:4302, EPSG:900913
-            are already predefined and must be added here again.  If your dont know the defintion of your desired projection,
-            go to  <a href="http://spatialreference.org/">http://spatialreference.org/</a>, search for your projection and
-            choose to display the proj4js definition string.
-            <h5>Quick Reference on the commion proj4js definition parameters:</h5>
-            <pre>
-+a         Semimajor radius of the ellipsoid axis
-+alpha     ? Used with Oblique Mercator and possibly a few others
-+axis      Axis orientation (new in 4.8.0)
-+b         Semiminor radius of the ellipsoid axis
-+datum     Datum name (see `proj -ld`)
-+ellps     Ellipsoid name (see `proj -le`)
-+k         Scaling factor (old name)
-+k_0       Scaling factor (new name)
-+lat_0     Latitude of origin
-+lat_1     Latitude of first standard parallel
-+lat_2     Latitude of second standard parallel
-+lat_ts    Latitude of true scale
-+lon_0     Central meridian
-+lonc      ? Longitude used with Oblique Mercator and possibly a few others
-+lon_wrap  Center longitude to use for wrapping (see below)
-+nadgrids  Filename of NTv2 grid file to use for datum transforms (see below)
-+no_defs   Don\'t use the /usr/share/proj/proj_def.dat defaults file
-+over      Allow longitude output outside -180 to 180 range, disables wrapping (see below)
-+pm        Alternate prime meridian (typically a city name, see below)
-+proj      Projection name (see `proj -l`)
-+south     Denotes southern hemisphere UTM zone
-+to_meter  Multiplier to convert map units to 1.0m
-+towgs84   3 or 7 term datum transform parameters (see below)
-+units     meters, US survey feet, etc.
-+vto_meter vertical conversion to meters.
-+vunits    vertical units.
-+x_0       False easting
-+y_0       False northing
-+zone      UTM zone
-            </pre>
-          For the full reference please refer to <a href="http://trac.osgeo.org/proj/wiki/GenParms">http://trac.osgeo.org/proj/wiki/GenParms</a>.'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['max_extent'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Maximum extent',
-      // Only line color by now.
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['max_extent'],
-      '#description' => 'The maximum extent of the map as bounding box (left, bottom, right, top) in the units of the map.'
-  );
-  $form[CDM_MAP_DISTRIBUTION]['openlayers']['custom_wms_base_layer']['units'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Units',
-      '#default_value' => $map_distribution['openlayers']['custom_wms_base_layer']['units'],
-      '#description' => 'The layer map units.  Defaults to null.  Possible values are ‘degrees’ (or ‘dd’), ‘m’, ‘ft’, ‘km’, ‘mi’, ‘inches’.  Normally taken from the projection.  Only required if both map and layers do not define a projection, or if they define a projection which does not define units.'
+  $form[CDM_MAP_DISTRIBUTION]['openlayers']['wms_overlay_layer']['is_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Enable overlay layer',
+    '#weight' => -100,
+    '#default_value' => $map_distribution['openlayers']['wms_overlay_layer']['is_enabled'] === 1  ? 1 : 0
   );
 
   /*
@@ -3188,6 +3119,130 @@ function cdm_settings_geo($form, &$form_state) {
   );
 
   return system_settings_form($form);
+}
+
+/**
+ * @param $default_settings
+ * @param $title
+ * @param $description
+ * @param bool $add_projection_settings
+ * @return array
+ */
+function wms_layer_settings($default_settings, $title, $description, $add_projection_settings = false)
+{
+  $form_elements = array(
+    '#type' => 'fieldset',
+    '#title' => $title,
+    '#tree' => TRUE,
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#description' => $description,
+  );
+
+  $form_elements['name'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Layer name',
+    // Only line color by now.
+    '#default_value' => $default_settings['name'],
+    '#description' => 'A arbitrary name for the layer.',
+  );
+  $form_elements['url'] = array(
+    '#type' => 'textfield',
+    '#title' => 'WMS url',
+    // Only line color by now.
+    '#default_value' => $default_settings['url'],
+    '#description' => 'Base url for the WMS (e.g.  http://edit.africamuseum.be/geoserver/topp/wms, http://wms.jpl.nasa.gov/wms.cgi)'
+  );
+  $form_elements['params'] = array(
+    '#type' => 'textarea',
+    '#title' => 'WMS parameters',
+    '#element_validate' => array('form_element_validate_json'),
+    // Only line color by now.
+    '#default_value' => $default_settings['params'],
+    '#description' => 'An javasript object with key/value pairs representing the GetMap query string parameters and parameter values ('
+      .l('Geoserver WMS parameter reference', 'http://docs.geoserver.org/stable/en/user/services/wms/reference.html#getmap' )
+      . '), entered in valid JSON. For example:
+<pre> {
+  "Layers": "topp:em_tiny_jan2003",
+  "Format": "image/png",
+  "BGCOLOR": "0xe0faff"
+}
+</pre>
+    You can supply and web accessible SLD file by using the <code>sld</code> or <coded>sld_body</coded> parameters.'
+  );
+
+  if($add_projection_settings){
+
+    $form_elements['projection'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Projection',
+      // Only line color by now.
+      '#default_value' => $default_settings['projection'],
+      '#description' => 'The desired projection for the layer (e.g. EPSG:4326, EPSG:900913, EPSG:3857)'
+    );
+    $form_elements['proj4js_def'] = array(
+      '#type' => 'textfield',
+      '#maxlength' => 256,
+      '#title' => 'proj4js definition',
+      // Only line color by now.
+      '#default_value' => $default_settings['proj4js_def'],
+      '#description' => 'The <a href="http://trac.osgeo.org/openlayers/wiki/Documentation/Dev/proj4js">proj4js definition</a> for the projection named above.
+              The definitions for
+              EPSG:102067, EPSG:102757, EPSG:102758, EPSG:21781, EPSG:26591, EPSG:26912, EPSG:27200, EPSG:27563, EPSG:3857,
+              EPSG:41001, EPSG:4139, EPSG:4181, EPSG:42304, EPSG:4272, EPSG:4302, EPSG:900913
+              are already predefined and must NOT be added here again.  If your dont know the defintion of your desired projection,
+              go to  <a href="http://spatialreference.org/">http://spatialreference.org/</a>, search for your projection and
+              choose to display the proj4js definition string.
+              <h5>Quick Reference on the common proj4js definition parameters:</h5>
+              <pre>
+  +a         Semimajor radius of the ellipsoid axis
+  +alpha     ? Used with Oblique Mercator and possibly a few others
+  +axis      Axis orientation (new in 4.8.0)
+  +b         Semiminor radius of the ellipsoid axis
+  +datum     Datum name (see `proj -ld`)
+  +ellps     Ellipsoid name (see `proj -le`)
+  +k         Scaling factor (old name)
+  +k_0       Scaling factor (new name)
+  +lat_0     Latitude of origin
+  +lat_1     Latitude of first standard parallel
+  +lat_2     Latitude of second standard parallel
+  +lat_ts    Latitude of true scale
+  +lon_0     Central meridian
+  +lonc      ? Longitude used with Oblique Mercator and possibly a few others
+  +lon_wrap  Center longitude to use for wrapping (see below)
+  +nadgrids  Filename of NTv2 grid file to use for datum transforms (see below)
+  +no_defs   Don\'t use the /usr/share/proj/proj_def.dat defaults file
+  +over      Allow longitude output outside -180 to 180 range, disables wrapping (see below)
+  +pm        Alternate prime meridian (typically a city name, see below)
+  +proj      Projection name (see `proj -l`)
+  +south     Denotes southern hemisphere UTM zone
+  +to_meter  Multiplier to convert map units to 1.0m
+  +towgs84   3 or 7 term datum transform parameters (see below)
+  +units     meters, US survey feet, etc.
+  +vto_meter vertical conversion to meters.
+  +vunits    vertical units.
+  +x_0       False easting
+  +y_0       False northing
+  +zone      UTM zone
+              </pre>
+            For the full reference please refer to <a href="http://proj4.org/parameters.html">http://proj4.org/parameters.html</a>.'
+    );
+    $form_elements['max_extent'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Maximum extent',
+      // Only line color by now.
+      '#default_value' => $default_settings['max_extent'],
+      '#description' => 'The maximum extent of the map as bounding box (left, bottom, right, top) in the units of the map.'
+    );
+    $form_elements['units'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Units',
+      '#default_value' => $default_settings['units'],
+      '#description' => 'The layer map units.  Defaults to null.  Possible values are ‘degrees’ (or ‘dd’), ‘m’, ‘ft’, ‘km’, ‘mi’, ‘inches’.  Normally taken from the projection.  Only required if both map and layers do not define a projection, or if they define a projection which does not define units.'
+    );
+
+  }
+  return $form_elements;
 }
 
 

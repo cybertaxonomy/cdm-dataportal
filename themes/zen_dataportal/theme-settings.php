@@ -64,7 +64,7 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
           '#type' => 'fieldset',
           '#weight' => -10,
           '#title' => t('Miscellaneous settings'),
-          '#description' => t('Miscellaneous settings for the DataPoral Zen theme.')
+          '#description' => t('Miscellaneous settings for the DataPortal Zen theme.')
   );
   $form['zen_dataportal_misc']['site_name_position'] = array(
     '#type'          => 'select',

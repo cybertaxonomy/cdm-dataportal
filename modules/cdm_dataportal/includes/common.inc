@@ -21,7 +21,7 @@
  * @{
  * Functions which are composing Drupal render arays
  *
- * The cdm_dataporal module needs to compose rather complex render arrays from
+ * The cdm_dataportal module needs to compose rather complex render arrays from
  * the data returned by the CDM REST service. The compose functions are
  * responsible for creating the render arrays.
  *

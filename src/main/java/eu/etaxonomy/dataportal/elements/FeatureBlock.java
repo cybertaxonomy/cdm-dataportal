@@ -47,6 +47,10 @@ public class FeatureBlock extends DrupalBlock {
 
     private final List<WebElement> descriptionItemElements;
 
+    private WebElement titleElement;
+
+    private WebElement contentContainer;
+
 
     /**
      *
@@ -119,6 +123,15 @@ public class FeatureBlock extends DrupalBlock {
         return featureType;
     }
 
+    public WebElement getTitle() {
+        return titleElement;
+    }
+
+    @Override
+    public WebElement getContent() {
+        return contentContainer;
+    }
+
 
     /**
      * @param driver TODO
@@ -132,6 +145,10 @@ public class FeatureBlock extends DrupalBlock {
 
         this.driver = driver;
         this.elementTags = elementTags;
+
+        titleElement =  element.findElement(By.className("title"));
+
+        contentContainer = element.findElement(By.className("content"));
 
         WebElement descriptionElementsRepresentation =  element.findElement(By.className("feature-block-elements"));
         featureType = descriptionElementsRepresentation.getAttribute("id");
