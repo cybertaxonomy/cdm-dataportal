@@ -513,7 +513,14 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
       'projection' => NULL,
       'proj4js_def' => NULL,
       'max_extent' => NULL,
-      'units' => NULL
+      'units' => NULL,
+      'untiled' => FALSE
+    ),
+    'wms_overlay_layer' => array(
+      'name' => NULL,
+      'url' => NULL,
+      'params' =>  NULL,
+      'untiled' => FALSE
     ),
     'show_layer_switcher' => TRUE,
     'display_outside_max_extent' => FALSE,
@@ -3142,22 +3149,25 @@ function wms_layer_settings($default_settings, $title, $description, $add_projec
   $form_elements['name'] = array(
     '#type' => 'textfield',
     '#title' => 'Layer name',
-    // Only line color by now.
     '#default_value' => $default_settings['name'],
     '#description' => 'A arbitrary name for the layer.',
   );
   $form_elements['url'] = array(
     '#type' => 'textfield',
     '#title' => 'WMS url',
-    // Only line color by now.
     '#default_value' => $default_settings['url'],
     '#description' => 'Base url for the WMS (e.g.  http://edit.africamuseum.be/geoserver/topp/wms, http://wms.jpl.nasa.gov/wms.cgi)'
+  );
+  $form_elements['untiled'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Untiled',
+    '#default_value' => $default_settings['untiled'],
+    '#description' => 'If the layer contains labels you may want to check this option to avoid label duplication or erratic invisibility.'
   );
   $form_elements['params'] = array(
     '#type' => 'textarea',
     '#title' => 'WMS parameters',
     '#element_validate' => array('form_element_validate_json'),
-    // Only line color by now.
     '#default_value' => $default_settings['params'],
     '#description' => 'An javasript object with key/value pairs representing the GetMap query string parameters and parameter values ('
       .l('Geoserver WMS parameter reference', 'http://docs.geoserver.org/stable/en/user/services/wms/reference.html#getmap' )
@@ -3176,7 +3186,6 @@ function wms_layer_settings($default_settings, $title, $description, $add_projec
     $form_elements['projection'] = array(
       '#type' => 'textfield',
       '#title' => 'Projection',
-      // Only line color by now.
       '#default_value' => $default_settings['projection'],
       '#description' => 'The desired projection for the layer (e.g. EPSG:4326, EPSG:900913, EPSG:3857)'
     );
@@ -3184,7 +3193,6 @@ function wms_layer_settings($default_settings, $title, $description, $add_projec
       '#type' => 'textfield',
       '#maxlength' => 256,
       '#title' => 'proj4js definition',
-      // Only line color by now.
       '#default_value' => $default_settings['proj4js_def'],
       '#description' => 'The <a href="http://trac.osgeo.org/openlayers/wiki/Documentation/Dev/proj4js">proj4js definition</a> for the projection named above.
               The definitions for
@@ -3230,7 +3238,6 @@ function wms_layer_settings($default_settings, $title, $description, $add_projec
     $form_elements['max_extent'] = array(
       '#type' => 'textfield',
       '#title' => 'Maximum extent',
-      // Only line color by now.
       '#default_value' => $default_settings['max_extent'],
       '#description' => 'The maximum extent of the map as bounding box (left, bottom, right, top) in the units of the map.'
     );
