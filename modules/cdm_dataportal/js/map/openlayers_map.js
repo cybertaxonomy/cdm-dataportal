@@ -59,12 +59,14 @@
         projection: null,
         proj4js_def: null,
         max_extent: null,
-        units: null
+        units: null,
+        untiled: null
     },
     wmsOverlayLayerData: {
       name: null,
       url: null,
-      params: null
+      params: null,
+      untiled: null
     },
     /**
      * when true the map is made resizable by adding the jQueryUI widget resizable
@@ -339,7 +341,8 @@
               null,
               null,
               null,
-              null
+              null,
+              opts.wmsOverlayLayerData.untiled
             );
 
             if(map.addLayer(wmsOverlay)){
@@ -765,7 +768,8 @@
                             customWMSBaseLayerData.projection,
                             customWMSBaseLayerData.proj4js_def,
                             customWMSBaseLayerData.units,
-                            customWMSBaseLayerData.max_extent
+                            customWMSBaseLayerData.max_extent,
+                            customWMSBaseLayerData.untiled
                     );
                   wmsBaseLayer.setIsBaseLayer(true);
                   baseLayers[i] = wmsBaseLayer;
@@ -913,8 +917,8 @@
         console.log(timestamp + message);
       };
 
-      var makeWMSLayerOptions = function(projection, proj4js_def, maxExtent, units){
-        wmsOptions = {
+      var makeWMSLayerOptions = function(projection, proj4js_def, maxExtent, units, untiled) {
+        var wmsOptions = {
           isBaseLayer: false,
           displayInLayerSwitcher: true
         };
@@ -942,6 +946,12 @@
         if (units) {
           wmsOptions.units = units;
         }
+
+        if (untiled) {
+          wmsOptions.singleTile = true;
+          wmsOptions.ratio = 1;
+        }
+
         return wmsOptions;
       };
 
@@ -956,13 +966,13 @@
        * @param Object projection
        *    A OpenLayers.Projection object
        */
-      var createWMSLayer= function(name, url, params, projection, proj4js_def, units, maxExtent){
+      var createWMSLayer= function(name, url, params, projection, proj4js_def, units, maxExtent, untiled){
 
         console.log("creating WMS Layer " + name);
 
-        wmsOptions = makeWMSLayerOptions(projection, proj4js_def, maxExtent, units);
+        var wmsOptions = makeWMSLayerOptions(projection, proj4js_def, maxExtent, units, untiled);
 
-        wmsLayer = new OpenLayers.Layer.WMS(
+        var wmsLayer = new OpenLayers.Layer.WMS(
             name,
             url,
             params,
