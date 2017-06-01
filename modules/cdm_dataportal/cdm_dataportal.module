@@ -1774,7 +1774,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highli
       $taxon_name_page->content = compose_list_of_taxa($taxon_pager->records);
     }
     else {
-      $taxon_name_page->content = 'This name has no taxa';
+      $taxon_name_page->content = 'This name is not assigned to a taxon.';
     }
     return $taxon_name_page;
   }
