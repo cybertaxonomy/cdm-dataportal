@@ -675,6 +675,28 @@ function cdm_dataportal_refresh_node($cdm_node_name, $uuid, $parameters = array(
 }
 
 /**
+ * Implements hook_requirements($phase)
+ */
+function cdm_dataportal_requirements($phase) {
+    $requirements = array();
+    if($phase == 'runtime'){
+
+      // Check valid name render part definitions
+      $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
+      $current_part_definition = variable_get(CDM_PART_DEFINITIONS, $default_part_definitions);
+      if(isset($current_part_definition['ZoologicalName']) || isset($current_part_definition['BotanicalName']) || isset($current_part_definition['#DEFAULT'])){
+        $requirements[] = array(
+          'title' => 'Name render part definitions',
+          'description' => 'The ' . l(' name render part definitions ', 'admin/config/cdm_dataportal/settings/layout') . ' from before EDIT platform release 4.8.0',
+          'severity' => REQUIREMENT_ERROR
+        );
+      }
+    }
+    return $requirements;
+}
+
+
+/**
  * The function generate form for own user cdm dataportal configurations.
  */
 function cdm_dataportal_user_form($form, &$form_state) {
@@ -1665,7 +1687,7 @@ function cdm_dataportal_named_area_page_view($uuid) {
  * with such taxon. Name on the tree already in use.
  *
  * @param UUID $taxon_name_uuid
- *   The uuid of the CDM TaxonNameBase to show a name page for
+ *   The uuid of the CDM TaxonName to show a name page for
  * @param UUID $taxon_to_hide_uuid
  *   A taxon which should not be displayed in the taxon list
  * @param UUID $highlite_synonym_uuid
@@ -1691,7 +1713,7 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $s
 }
 
 /**
- * View function for a TaxonNameBase page.
+ * View function for a TaxonName page.
  *
  * The name page lists all taxa for which the name specified by the
  * $taxon_name_uuid is being used. I case there is only one name the
@@ -1705,7 +1727,7 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $s
  *
  *
  * @param UUID $taxon_name_uuid
- *   The uuid of the CDM TaxonNameBase to show a name page for
+ *   The uuid of the CDM TaxonName to show a name page for
  * @param UUID $taxon_to_hide_uuid
  *   A taxon which should not be displayed in the taxon list
  * @param UUID $highlite_synonym_uuid
@@ -2024,7 +2046,7 @@ function path_to_reference($uuid) {
  * Creates the path to a cdm_dataportal taxon name page.
  *
  * @param UUID $taxon_name_uuid
- *   The uuid of the CDM TaxonNameBase to show a name page for
+ *   The uuid of the CDM TaxonName to show a name page for
  * @param UUID $taxon_to_hide_uuid
  *   A taxon which should not be displayed in the taxon list
  * @param UUID $highlite_synonym_uuid

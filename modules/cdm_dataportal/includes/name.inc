@@ -246,7 +246,7 @@ function get_partDefinition($taxonNameType) {
  * get_nameRenderTemplate())
  *
  * @param $taxonName
- *    cdm TaxonNameBase instance
+ *    cdm TaxonName instance
  * @param $sec
  *    the sec reference of a taxon having this name (optional)
  * @param $nameLink
@@ -280,7 +280,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     // use the TaxonBase.taggedTitle so we have the secRef
     $taggedTitle = $taxon_name_or_taxon_base->taggedTitle;
   } else {
-    // assuming this is a TaxonNameBase
+    // assuming this is a TaxonName
     $taxonName = $taxon_name_or_taxon_base;
     $taggedTitle = $taxon_name_or_taxon_base->taggedName;
   }

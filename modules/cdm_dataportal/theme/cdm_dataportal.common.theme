@@ -133,7 +133,7 @@ function tagNameParts($name, $numOfNameTokens) {
  * - Media
  * - Sequence
  * - TaxonBase
- * - TaxonNameBase
+ * - TaxonName
  * - TaxonomicTree
  * - TermBase
  * - LanguageStringBase
