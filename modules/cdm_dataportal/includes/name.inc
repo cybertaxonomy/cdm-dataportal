@@ -229,8 +229,11 @@ function get_partDefinition($taxonNameType) {
     $part_definitions = convert_to_array(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
   }
 
+  $dtype = nameTypeToDTYPE($taxonNameType);
   if (array_key_exists($taxonNameType, $part_definitions)) {
     return $part_definitions[$taxonNameType];
+  } else if (array_key_exists($dtype, $part_definitions)) {
+    return $part_definitions[$dtype];
   } else {
     return $part_definitions['#DEFAULT']; // covers ViralNames and general NonViralNames
   }
@@ -287,7 +290,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
 
 
   $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
-  $partDefinition = get_partDefinition($taxonName->class);
+  $partDefinition = get_partDefinition($taxonName->nameType);
 
   // Apply definitions to template.
   foreach ($renderTemplate as $part => $uri) {
@@ -682,4 +685,21 @@ function &get_preceding_contentElementKey($contentElementKey, array &$renderTemp
     }
   }
   return $res;
+}
+
+function nameTypeToDTYPE($dtype){
+  static $nameTypeLabelMap = array(
+    "ICNB" => "BacterialName",
+    "ICNAFP" => "BotanicalName",
+    "ICNCP" => "CultivarPlantName",
+    "ICZN" => "ZoologicalName",
+    "ICVCN" => "ViralName",
+    "Any taxon name" => "TaxonName",
+    "NonViral" => "TaxonName",
+    "Fungus" => "BotanicalName",
+    "Plant" => "BotanicalName",
+    "Algae" => "BotanicalName",
+  );
+  return $nameTypeLabelMap[$dtype];
+
 }
