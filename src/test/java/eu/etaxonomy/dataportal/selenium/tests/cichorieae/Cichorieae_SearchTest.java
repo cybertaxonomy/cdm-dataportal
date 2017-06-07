@@ -8,13 +8,8 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.List;
 import java.util.UUID;
-
-import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +26,7 @@ import eu.etaxonomy.dataportal.pages.GenericPortalPage;
 import eu.etaxonomy.dataportal.pages.PortalPage;
 import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
+import junit.framework.Assert;
 
 @DataPortalContexts( { DataPortalContext.cichorieae })
 public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
@@ -57,7 +53,7 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
 
         assertEquals("Lapsana communis L., Sp. Pl.: 811. 1753", lapsanaCommunnis.getFullTaxonName());
 
-        WebElement nameElement = lapsanaCommunnis.getElement().findElement(By.className("BotanicalName"));
+        WebElement nameElement = lapsanaCommunnis.getElement().findElement(By.className("TaxonName"));
 
         WebElement namePart1 = nameElement.findElement(By.xpath("span[1]"));
         Assert.assertEquals("Lapsana", namePart1.getText());
