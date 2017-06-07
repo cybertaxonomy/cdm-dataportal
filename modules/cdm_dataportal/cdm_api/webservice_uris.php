@@ -140,6 +140,7 @@ define('CDM_WS_MULTIACCESSKEY', 'multiAccessKey');
 define('CDM_WS_POLYTOMOUSKEY', 'polytomousKey');
 define('CDM_WS_POLYTOMOUSKEY_NODE', 'polytomousKeyNode');
 
+define('CDM_WS_MEDIA', 'media');
 define('CDM_WS_PORTAL_MEDIA', 'portal/media');
 
 define('CDM_WS_MEDIA_METADATA', 'media/$0/metadata');
