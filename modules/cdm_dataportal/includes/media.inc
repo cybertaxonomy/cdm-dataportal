@@ -155,16 +155,15 @@ function read_media_metadata($media) {
   }
 
   // Title.
-  if (!empty($media_metadata->ObjectName)) {
-    $metadata['title'] = $media_metadata->ObjectName;
-  }
-  elseif (!empty($media_metadata_aux['Object Name'])) {
-    $metadata['title'] = $media_metadata_aux['Object Name'];
-  }
-  elseif (!empty($media->title_L10n)) {
+  if (!empty($media->title_L10n)) {
     $metadata['title'] = $media->title_L10n;
-  }
-  elseif (!empty($media->titleCache)) {
+  } else if ($media->protectedTitleCache && !empty($media->titleCache)) {
+    $metadata['title'] = $media->titleCache;
+  } else if (!empty($media_metadata->ObjectName)) {
+    $metadata['title'] = $media_metadata->ObjectName;
+  } else  if (!empty($media_metadata_aux['Object Name'])) {
+    $metadata['title'] = $media_metadata_aux['Object Name'];
+  } else if (!empty($media->titleCache)) {
     $metadata['title'] = $media->titleCache;
   }
 
