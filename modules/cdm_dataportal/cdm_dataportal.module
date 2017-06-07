@@ -681,16 +681,6 @@ function cdm_dataportal_requirements($phase) {
     $requirements = array();
     if($phase == 'runtime'){
 
-      // Check valid name render part definitions
-      $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
-      $current_part_definition = variable_get(CDM_PART_DEFINITIONS, $default_part_definitions);
-      if(isset($current_part_definition['ZoologicalName']) || isset($current_part_definition['BotanicalName']) || isset($current_part_definition['#DEFAULT'])){
-        $requirements[] = array(
-          'title' => 'Name render part definitions',
-          'description' => 'The ' . l(' name render part definitions ', 'admin/config/cdm_dataportal/settings/layout') . ' from before EDIT platform release 4.8.0',
-          'severity' => REQUIREMENT_ERROR
-        );
-      }
     }
     return $requirements;
 }

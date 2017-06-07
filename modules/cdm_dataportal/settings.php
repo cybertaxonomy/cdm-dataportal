@@ -173,21 +173,6 @@ function get_taxon_options_list() {
 define('CDM_PART_DEFINITIONS', 'cdm-part-definitions');
 define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
     array(
-      'TaxonName'=> array(
-        'namePart' => array('name' => TRUE),
-        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
-        'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
-        'microreferencePart' => array('microreference' => TRUE),
-        'secReferencePart' => array('secReference' => TRUE,),
-        'referenceYearPart' => array('reference.year' => TRUE),
-        'statusPart' => array('status' => TRUE),
-        'descriptionPart' => array('description' => TRUE)
-      )
-    )
-  )
-);
-define('CDM_PART_DEFINITIONS_DEFAULT_PRE_480', serialize(
-  array(
       'ZoologicalName' => array(
         'namePart' => array('name' => TRUE),
         'nameAuthorPart' => array('name' => TRUE),
@@ -1590,23 +1575,14 @@ function cdm_settings_layout() {
 
   $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
   $default_part_definitions_pre_380_json = json_encode(unserialize(CDM_PART_DEFINITIONS_DEFAULT_PRE_380), JSON_PRETTY_PRINT);
-  $default_part_definitions_pre_480_json = json_encode(unserialize(CDM_PART_DEFINITIONS_DEFAULT_PRE_480), JSON_PRETTY_PRINT);
   $default_part_definition_json = json_encode($default_part_definitions, JSON_PRETTY_PRINT);
   $current_part_definition_json = json_encode(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions), JSON_PRETTY_PRINT);
 
   $is_custom_part_definition = $default_part_definition_json != $current_part_definition_json;
   if($default_part_definitions_pre_380_json == $current_part_definition_json){
     $which_version_message = '(These are the old default part definition from before EDIT platform release 3.8.0, you may want to reset these by clearing the text area and and submitting the form.)';
-  } if($default_part_definitions_pre_480_json == $current_part_definition_json){
-    $which_version_message = '(These are the old default part definition from before EDIT platform release 4.8.0, you may want to reset these by clearing the text area and and submitting the form.)';
   } else if($is_custom_part_definition){
-    if(isset($current_part_definition['ZoologicalName']) || isset($current_part_definition['BotanicalName']) || isset($current_part_definition['#DEFAULT'])){
-      // see also cdm_dataportal_requirements($phase)
-      $which_version_message = '(This are invalid custom part definitions from before EDIT platform release 4.8.0. Please use the diff function to review the changes and update the definition. 
-      Clearing the text area and and submitting the form will reset it to the default)';
-    } else {
       $which_version_message = '(This are custom part definitions, clearing the text area and and submitting the form will reset it to the default)';
-    }
   } else  {
     $which_version_message = '(These are the default part definition.)';
   }
