@@ -561,17 +561,23 @@ function theme_cdm_media_page($variables) {
   $mediarepresentation_uuid = $variables['mediarepresentation_uuid'];
   $partId = $variables['partId'];
   $out = '';
-  // Determine which representation and which part to show.
+
+  // Determine which representation and which part to show
   $representationIdx = 0;
-  if ($mediarepresentation_uuid) {
-    $p_i = 0;
-    foreach ($media->representations as $representation) {
-      if ($representation->uuid == $mediarepresentation_uuid) {
-        $representationIdx = $p_i;
-      }
-      $p_i++;
-    }
+
+  if (!$mediarepresentation_uuid) {
+    $representations = cdm_preferred_media_representations($media, array('image/png', 'image/jpeg', 'image/gif'), null, null);
+    $mediarepresentation_uuid = isset($representations[0]) ? $representations[0]->uuid : null;
   }
+
+  $p_i = 0;
+  foreach ($media->representations as $representation) {
+    if ($representation->uuid == $mediarepresentation_uuid) {
+      $representationIdx = $p_i;
+    }
+    $p_i++;
+  }
+
 
   $partIdx = 0;
   if (!is_numeric($partId)) {
