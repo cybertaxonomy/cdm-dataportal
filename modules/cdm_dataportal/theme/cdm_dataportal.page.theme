@@ -563,36 +563,38 @@ function theme_cdm_media_page($variables) {
   $out = '';
 
   // Determine which representation and which part to show
-  $representationIdx = 0;
+  $active_representation_index = 0;
 
   if (!$mediarepresentation_uuid) {
+    // no representation requested by the method parameters, find the best one
     $representations = cdm_preferred_media_representations($media, array('image/png', 'image/jpeg', 'image/gif'), null, null);
-    $mediarepresentation_uuid = isset($representations[0]) ? $representations[0]->uuid : null;
-  }
-
-  $p_i = 0;
-  foreach ($media->representations as $representation) {
-    if ($representation->uuid == $mediarepresentation_uuid) {
-      $representationIdx = $p_i;
+    if($representations  && count($representations) > 0){
+      $preferred_representation = array_shift($representations);
+      $mediarepresentation_uuid = $preferred_representation->uuid;
     }
-    $p_i++;
   }
 
-
-  $partIdx = 0;
-  if (!is_numeric($partId)) {
-    // Assuming it is an uuid.
-    $p_i = 0;
-    foreach ($media->representations[$representationIdx]->parts as $part) {
-      if ($part->uuid == $partId) {
-        $partIdx = $p_i;
+  if($mediarepresentation_uuid){
+    foreach ($media->representations as $representation) {
+      if ($representation->uuid == $mediarepresentation_uuid) {
+        break;
       }
-      $p_i++;
+      $active_representation_index++;
     }
   }
-  else {
-    // Assuming it is an index.
-    $partIdx = $partId;
+
+
+  $active_part_index = 0;
+  if (is_uuid($partId)) {
+    foreach ($media->representations[$active_representation_index]->parts as $part) {
+      if ($part->uuid == $partId) {
+        break;
+      }
+      $active_part_index++;
+    }
+  }
+  else if(is_numeric($partId)){
+    $active_part_index = $partId;
   }
 
   $media_metadata = read_media_metadata($media);
@@ -611,7 +613,7 @@ function theme_cdm_media_page($variables) {
 
   $out .= theme('cdm_back_to_image_gallery_button', array());
   $out .= '<div class="viewer">';
-  $out .= cdm_openlayers_image($media->representations[$representationIdx]->parts[$partIdx], $imageMaxExtend);
+  $out .= cdm_openlayers_image($media->representations[$active_representation_index]->parts[$active_part_index], $imageMaxExtend);
   $out .= '</div>';
 
   // General media metadata.
@@ -626,14 +628,14 @@ function theme_cdm_media_page($variables) {
   foreach ($media->representations as $representation) {
     $out .= '<li><strong>'. t('Representation') . ' ' . $r_i . "</strong> ($representation->mimeType)" ;
     // parts
-    $p_i = 0;
+    $active_part_index = 0;
     $table_class_attribute = '';
-    if($partIdx == $p_i && $representationIdx == $r_i ){
+    if($partIdx == $active_part_index && $active_representation_index == $r_i ){
       $table_class_attribute = 'class="active"';
     }
     $out .= "<table $table_class_attribute>";
     foreach ($representation->parts as $part) {
-      $out .= '<tr><th>' . t('Part') . ' ' . ($p_i + 1) . '</th></tr><tr><td>';
+      $out .= '<tr><th>' . t('Part') . ' ' . ($active_part_index + 1) . '</th></tr><tr><td>';
       switch ($part->class) {
         case 'ImageFile':
           $out .= $part->width . 'x' . $part->height . ' px - ' . $part->size . ' kB';
@@ -646,9 +648,9 @@ function theme_cdm_media_page($variables) {
           $out .= $part->size . 'k';
       }
 
-      $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $representation->uuid, $p_i)) . '">'
+      $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $representation->uuid, $active_part_index)) . '">'
         . cdm_media_gallerie_image($part, $thumbnailMaxExtend, TRUE);
-      $p_i++;
+      $active_part_index++;
     }
     $out .= '</table>';
     $out .=  '</li>';
