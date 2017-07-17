@@ -2187,7 +2187,7 @@ msgstr "Imágenes"
 
 #: includes/pages.inc:540
 msgid "Synonymy"
-msgstr "Sinonimia"
+msgstr "Sinonimía"
 
 #: includes/pages.inc:554
 msgid "Specimens"
