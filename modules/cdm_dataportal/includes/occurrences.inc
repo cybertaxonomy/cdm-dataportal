@@ -48,16 +48,17 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
         // associated taxa
         if($specimen->associatedTaxa){
             $detail_html .= "<br>";
-            $detail_html .= create_label("Associated with");
-                if(sizeof($specimen->associatedTaxa)>1){
-                    $detail_html .= "<br>";
-                }
-            foreach($specimen->associatedTaxa as $associatedTaxon){
-                $detail_html .= l($associatedTaxon->second, path_to_taxon($associatedTaxon->first, "specimens"));//$associatedTaxon->second."<br>";
-            }
+          $detail_html .= create_label("Associated with");
+          if(sizeof($specimen->associatedTaxa)>1){
+            $detail_html .= "<br>";
+          }
+          foreach($specimen->associatedTaxa as $associatedTaxon){
+            $detail_html .= l($associatedTaxon->second, path_to_taxon($associatedTaxon->first, "specimens"));//$associatedTaxon->second."<br>";
+          }
+          $detail_html .= "<br>";
         }
     }
-    // - type information
+  // - type information
     $types = "";
     if (isset($specimen->types)) {
         //typed taxa
