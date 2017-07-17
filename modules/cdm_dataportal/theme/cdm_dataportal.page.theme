@@ -55,19 +55,33 @@ function theme_cdm_specimen_page_title($variables) {
     $referenceUri = '';
     $out = '';
 
-    $title = "";
+
+    if($specimen->collection->code){
+      $collection = $specimen->collection->code;
+    }
+    elseif($specimen->collection->name){
+      $collection = $specimen->collection->name;
+    }
     if($specimen->accessionNumber){
-        $title = $specimen->accessionNumber;
+        $specimenID = $specimen->accessionNumber;
     }
     elseif($specimen->barcode){
-        $title = $specimen->barcode;
+      $specimenID = $specimen->barcode;
     }
     elseif($specimen->catalogNumber) {
-        $title = $specimen->catalogNumber;
+      $specimenID = $specimen->catalogNumber;
+    }
+    if(!isset($specimenID) and !isset($collection)){
+      $specimenID = $specimen->uuid;
     }
 
 
-  $out .= $title;
+  $out .= "Specimen ";
+  if($collection){
+    $out .= $collection." ";
+  }
+  $out .= $specimenID;
+
   RenderHints::popFromRenderStack();
 
   return '<span class="' . $specimen->class . '">' . $out . '</span>';

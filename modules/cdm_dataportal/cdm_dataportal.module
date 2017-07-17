@@ -1610,7 +1610,7 @@ function cdm_dataportal_specimen_page_view($uuid) {
  * @return array|string
  */
 function cdm_dataportal_specimen_view($uuid) {
-    $specimen = cdm_ws_get(CDM_WS_OCCURRENCE, $uuid);
+    $specimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, $uuid);
     if (empty($specimen)) {
         drupal_set_title(t('Specimen does not exist'), PASS_THROUGH);
         return FALSE;

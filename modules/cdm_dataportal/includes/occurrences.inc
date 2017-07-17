@@ -42,7 +42,7 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
     }
     if($specimen->preferredStableUri){
         $stableIdentifierLink  = l($specimen->preferredStableUri, $specimen->preferredStableUri, array('attributes' => array('target' => '_blank')));
-        $detail_html .= "<br>".create_label("Preferred stable URI") . $stableIdentifierLink . "<br>";
+        $detail_html .= create_label("Preferred stable URI") . $stableIdentifierLink . "<br>";
     }
     if($is_specimen_page){
         // associated taxa
@@ -62,9 +62,6 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
     $types = "";
     if (isset($specimen->types)) {
         //typed taxa
-        if(sizeof($specimen->types)>1){
-            $detail_html .= "<br>";
-        }
         foreach ($specimen->types as $typeStatus => $typedTaxa) {
             if($is_specimen_page){
                 if($specimen->types){
