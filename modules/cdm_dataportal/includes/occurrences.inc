@@ -41,7 +41,8 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
         }
     }
     if($specimen->preferredStableUri){
-        $detail_html .= "<br>".create_label("Preferred stable URI") . cdm_external_uri($specimen->preferredStableUri) . "<br>";
+        $stableIdentifierLink  = l($specimen->preferredStableUri, $specimen->preferredStableUri, array('attributes' => array('target' => '_blank')));
+        $detail_html .= "<br>".create_label("Preferred stable URI") . $stableIdentifierLink . "<br>";
     }
     if($is_specimen_page){
         // associated taxa
