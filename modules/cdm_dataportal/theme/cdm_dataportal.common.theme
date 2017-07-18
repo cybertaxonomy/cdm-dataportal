@@ -474,15 +474,6 @@ function theme_cdm_pager_link($variables) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_back_to_image_gallery_button() {
-  $out = '<div id="backToGalleryButton">' . l(t('Back to Images'), $_SESSION['cdm']['last_gallery']) . '</div>';
-  return $out;
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
 function theme_cdm_print_button() {
 
   drupal_add_js('jQuery(document).ready(function() {

@@ -625,7 +625,9 @@ function theme_cdm_media_page($variables) {
 
   $out .= '<div class="media cdm_media_viewer_image">';
 
-  $out .= theme('cdm_back_to_image_gallery_button', array());
+  if(preg_match('/cdm_dataportal\/taxon\//', $_SERVER['HTTP_REFERER']) ){
+    $out .= '<div id="backToGalleryButton">' . l(t('Back to Images'), $_SESSION['cdm']['last_gallery']) . '</div>';
+  }
   $out .= '<div class="viewer">';
   $out .= cdm_openlayers_image($media->representations[$active_representation_index]->parts[$active_part_index], $imageMaxExtend);
   $out .= '</div>';
