@@ -431,6 +431,11 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
   $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
 
+  $synonymy_as_tab = variable_get(CDM_SYNONYMY_AS_TAB, CDM_SYNONYMY_AS_TAB_DEFAULT) === 1;
+  if(!$synonymy_as_tab){
+    unset($tabsToDisplay["Synonymy"]);
+  }
+
   $media = _load_media_for_taxon($taxon);
 
 
@@ -456,20 +461,20 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
     taxon_page_tabs_hidden('keys');
   }
 
-    // --- GET TaxonNodeAgentRelations --- //
-    $current_classification_uuid = get_current_classification_uuid();
-    $taxon_node_agent_relations_pager = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODEAGENTRELATIONS,
-        array(
-            $taxon->uuid,
-            $current_classification_uuid,
-        ),
-        "pageSize=1&pageIndex=0"// we are only interested into the count so we are fetching only one item, o is not possible!
-    );
-    if (!$taxon_node_agent_relations_pager || $taxon_node_agent_relations_pager->count == 0){
-        taxon_page_tabs_hidden('experts');
-    }
+  // --- GET TaxonNodeAgentRelations --- //
+  $current_classification_uuid = get_current_classification_uuid();
+  $taxon_node_agent_relations_pager = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODEAGENTRELATIONS,
+      array(
+          $taxon->uuid,
+          $current_classification_uuid,
+      ),
+      "pageSize=1&pageIndex=0"// we are only interested into the count so we are fetching only one item, o is not possible!
+  );
+  if (!$taxon_node_agent_relations_pager || $taxon_node_agent_relations_pager->count == 0){
+      taxon_page_tabs_hidden('experts');
+  }
 
-    if ($tabsToDisplay["Synonymy"] == '0') {
+  if (!isset($tabsToDisplay["Synonymy"]) || $tabsToDisplay["Synonymy"] == '0') {
     taxon_page_tabs_hidden('synonymy');
   }
 
@@ -485,7 +490,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
     $merged_tree = merged_taxon_feature_tree($taxon);
 
 
-    $render_array['general'] = compose_cdm_taxon_page_profile($taxon, $merged_tree, $media);
+    $render_array['general'] = compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, !$synonymy_as_tab);
     $render_array['general']['#weight'] = $weight++;
     $render_array['general']['#prefix'] = '<div id="general" class="page-part">';
     $render_array['general']['#suffix'] = '</div>';
@@ -525,7 +530,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: SYNONYMY --- //
-  if (($page_part == 'synonymy' || $page_part == 'all')) {
+  if ((($page_part == 'synonymy' || $page_part == 'all') && $synonymy_as_tab)) {
     $synonymy_html = '<div id="synonymy" class="page-part">';
     if ($page_part == 'all') {
       $synonymy_html .= '<h2>' . t(cdm_taxonpage_tab_label('Synonymy')) . '</h2>';
@@ -656,7 +661,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
  *
  * @ingroup compose
  */
-function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
+function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synonymy) {
 
   $render_array = array();
 
@@ -711,6 +716,13 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media) {
       $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $taxon_profile_image_settings['maxextend'] . 'px">' . $profile_image . '</div>',
         -101);
     }
+  }
+
+  if($add_synonymy){
+    $render_array['synonymy'] = markup_to_render_array(
+      theme('cdm_taxon_page_synonymy', array('taxon' => $taxon, 'addAcceptedTaxon' => true)),
+      -102
+    );
   }
 
   $pseudo_feature_blocks = array();

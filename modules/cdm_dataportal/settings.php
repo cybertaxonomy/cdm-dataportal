@@ -112,12 +112,15 @@ define('DISTRIBUTION_ORDER_MODE', 'distribution_order_mode');
 define('DISTRIBUTION_ORDER_MODE_DEFAULT', 'TREE');
 define('DISTRIBUTION_TREE_OMIT_LEVELS', 'distribution_tree_omit_levels');
 
+define('CDM_SYNONYMY_AS_TAB', 'cdm_synonymy_as_tab');
+define('CDM_SYNONYMY_AS_TAB_DEFAULT', 1);
+
 /**
  * Returns the array of implemented taxon page tabs.
  * The array has fixed integer keys which must not be changed.
  */
 function get_taxon_tabs_list() {
-  return array(
+  $opts = array(
     0 => 'General',
     1 => 'Synonymy',
     2 => 'Images',
@@ -125,6 +128,11 @@ function get_taxon_tabs_list() {
     4 => 'Keys',
     5 => 'Experts',
   );
+  if(variable_get(CDM_SYNONYMY_AS_TAB, CDM_SYNONYMY_AS_TAB_DEFAULT) !== 1){
+    // skip the Synonymy if it is shown in  the general tab
+    unset($opts[1]);
+  }
+  return $opts;
 }
 
 define('CDM_TAXONPAGE_TAB_WEIGHT', 'cdm_taxonpage_tab_weight');
@@ -1873,9 +1881,17 @@ function cdm_settings_layout_taxon() {
     '#type' => 'checkbox',
     '#title' => t('Tabbed taxon page'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
-    '#description' => t('<p>If selected split the taxon page into individual
+    '#description' => t('If selected split the taxon page into individual
       tabs for description, images, synonymy and specimens. If not the taxon
-      data is rendered as a long single page without tabs.</p>'),
+      data is rendered as a long single page without tabs.'),
+  );
+
+  $form['taxon_tabs'][CDM_SYNONYMY_AS_TAB] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Synonymy as tab'),
+    '#default_value' => variable_get(CDM_SYNONYMY_AS_TAB, CDM_SYNONYMY_AS_TAB_DEFAULT),
+    '#description' => t('The synonymy can be moved to its own tab. This is only applicable when the tabbed taxon page option is activated.'),
+    '#disabled' =>  variable_get('cdm_dataportal_taxonpage_tabs', 1) !== 1
   );
 
   $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array(
