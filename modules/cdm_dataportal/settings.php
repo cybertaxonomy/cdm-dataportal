@@ -1873,19 +1873,14 @@ function cdm_settings_layout_taxon() {
     '#title' => t('Taxon tabs'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
-    '#description' => t('If tabbed taxon page is enabled the taxon profile will
-      be splitted in four diferent tabs; General, Synonymy, Images and
-      Specimens. If the taxon has no information for any of the tabs/sections
-      such tab will be not displayed.'),
+    '#description' => 'A taxon page consists of various sections, that is content blocks, each displaying a different kind of information.'
   );
 
   $form['taxon_tabs']['cdm_dataportal_taxonpage_tabs'] = array(
     '#type' => 'checkbox',
     '#title' => t('Tabbed taxon page'),
     '#default_value' => variable_get('cdm_dataportal_taxonpage_tabs', 1),
-    '#description' => t('If selected split the taxon page into individual
-      tabs for description, images, synonymy and specimens. If not the taxon
-      data is rendered as a long single page without tabs.'),
+    '#description' => t('If enabled the sections of a taxon page will be displayed as individual tabs'),
   );
 
   $form['taxon_tabs'][CDM_SYNONYMY_AS_TAB] = array(
@@ -1898,21 +1893,19 @@ function cdm_settings_layout_taxon() {
 
   $form['taxon_tabs']['cdm_taxonpage_tabs_visibility'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Tabs visibility options') . ':',
+    '#title' => t('Section/Tab visibility') . ':',
     '#default_value' => variable_get('cdm_taxonpage_tabs_visibility', get_taxon_options_list()),
-    '#options' => get_taxon_options_list(),
-    '#description' => t('Enable or disable Tabs in the Tabbed page display'),
+    '#options' => get_taxon_options_list()
   );
 
   // WEIGHT
   $taxon_tabs_weights = get_array_variable_merged(CDM_TAXONPAGE_TAB_WEIGHT, CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
   $form['taxon_tabs'][CDM_TAXONPAGE_TAB_WEIGHT] = array(
-    '#title'  => 'Tabs order',
+    '#title'  => 'Section/Tab order',
     '#type' => 'fieldset',
     '#collapsible' => false,
     '#tree' => true,
-    '#description' => 'The weight value defines the order of the tabs or of the respective content block on the 
-        taxon page when it is the tabless mode.'
+    '#description' => 'The weight value defines the order of the section/tab.'
   );
   // Weights range from -delta to +delta, so delta should be at least half
   // of the amount of tabs present.
@@ -1929,11 +1922,11 @@ function cdm_settings_layout_taxon() {
 
   $taxon_tabs_labels = get_array_variable_merged(CDM_TAXONPAGE_TAB_LABELS, CDM_TAXONPAGE_TAB_LABELS_DEFAULT);
   $form['taxon_tabs'][CDM_TAXONPAGE_TAB_LABELS] = array(
-    '#title'  => 'Tab label override',
+    '#title'  => 'Section/Tab label override',
     '#type' => 'fieldset',
     '#collapsible' => false,
     '#tree' => true,
-    '#description' => 'Setting a label for a tab will override the default label. 
+    '#description' => 'Setting a label for a section/tab will override the default label. 
       Please enter the label text in the default language of the portal.'
   );
   foreach (get_taxon_tabs_list() as $label) {
