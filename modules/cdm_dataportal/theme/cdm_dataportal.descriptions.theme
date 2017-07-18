@@ -453,7 +453,7 @@ function theme_cdm_block_IdentificationKeys($variables) {
     }
   }
 
-  $render_array = compose_feature_block_wrap_elements(array_merge($on_current_taxon, $on_other_taxa), $feature);
+  $render_array = compose_feature_block_wrap_elements(array_merge($on_current_taxon, $on_other_taxa), $feature, $feature_block_settings['glue']);
 
   RenderHints::popFromRenderStack();
 

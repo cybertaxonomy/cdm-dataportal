@@ -761,7 +761,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
           }
           $block_content_is_empty = $block_content_is_empty && empty($media_list) && empty($elements_render_array);
           if(!$block_content_is_empty){
-            $block->content[] = compose_feature_block_wrap_elements($elements_render_array, $node->feature);
+            $block->content[] = compose_feature_block_wrap_elements($elements_render_array, $node->feature, $feature_block_settings['glue']);
             $block->content[] = compose_feature_media_gallery($node, $media_list, $gallery_settings);
             /*
              * Footnotes for the feature block

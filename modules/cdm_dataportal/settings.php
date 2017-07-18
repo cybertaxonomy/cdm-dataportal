@@ -2129,7 +2129,10 @@ function cdm_settings_layout_taxon() {
            some feature types (Distribution) also support: SORT_HIERARCHICAL</div>
       <h6>Element tag:</h6><div>The tag to be used for creating the elements, only applies if "List type" is set to <em>No list</em>
            possible values are span or div. Developers: The proper inner tag name can be retrieved by the function
-           cdm_feature_block_element_tag_name()</div>',
+           cdm_feature_block_element_tag_name()</div>
+       <h6>Element glue:</h6><div>This string is used to concatenate individual items together. The glue is ignored when the items are displayed 
+           as list.<b>NOTE:</b>The glue is not yet fully implemented for all features and thus may not work as expected, see '
+           . l('#6831', 'https://dev.e-taxonomy.eu/redmine/issues/6831') . '</div>',
     );
 
 
@@ -2232,6 +2235,13 @@ function cdm_settings_layout_taxon() {
           ),
           '#default_value' => $feature_block_setting['element_tag'],
         );
+        $form_feature_block_layout[$subform_id]['glue'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Element glue'),
+          '#default_value' => $feature_block_setting['glue'],
+          '#size' => 10
+      );
+
       }
       $form['taxon_profile']['feature_blocks'][FEATURE_BLOCK_SETTINGS] = $form_feature_block_layout;
     }
