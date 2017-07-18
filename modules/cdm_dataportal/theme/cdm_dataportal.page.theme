@@ -634,44 +634,46 @@ function theme_cdm_media_page($variables) {
   $metadataToPrint = theme('cdm_media_caption', array('media' => $media, 'sources_as_content' => true));
   $out .= $metadataToPrint;
 
-  // Tabs for the different representations.
-  // Representation(-part) specific metadata.
-  $thumbnailMaxExtend = 100;
-  $out .= '<h3>' .t('Media representations') .'</h3><ul id="media-representations">';
-  $r_i = 0;
-  foreach ($media->representations as $representation) {
-    $out .= '<li><strong>'. t('Representation') . ' ' . $r_i . "</strong> ($representation->mimeType)" ;
-    // parts
-    $active_part_index = 0;
-    $table_class_attribute = '';
-    if($partIdx == $active_part_index && $active_representation_index == $r_i ){
-      $table_class_attribute = 'class="active"';
-    }
-    $out .= "<table $table_class_attribute>";
-    foreach ($representation->parts as $part) {
-      $out .= '<tr><th>' . t('Part') . ' ' . ($active_part_index + 1) . '</th></tr><tr><td>';
-      switch ($part->class) {
-        case 'ImageFile':
-          $out .= $part->width . 'x' . $part->height . ' px - ' . $part->size . ' kB';
-          break;
-        case 'AudioFile':
-        case 'MovieFile':
-          $out .= t('Duration') . ': ' . $part->duration . 's - ' . $part->size . ' kB';
-          break;
-        default:
-          $out .= $part->size . 'k';
+  $cdm_standard_image_viewer_settings = get_array_variable_merged(CDM_STANDARD_IMAGE_VIEWER, CDM_STANDARD_IMAGE_VIEWER_DEFAULT);
+  if ($cdm_standard_image_viewer_settings['media_representation_details_enabled'] == 1){
+    // Tabs for the different representations.
+    // Representation(-part) specific metadata.
+    $thumbnailMaxExtend = 100;
+    $out .= '<h3>' .t('Media representations') .'</h3><ul id="media-representations">';
+    $r_i = 0;
+    foreach ($media->representations as $representation) {
+      $out .= '<li><strong>'. t('Representation') . ' ' . $r_i . "</strong> ($representation->mimeType)" ;
+      // parts
+      $active_part_index = 0;
+      $table_class_attribute = '';
+      if($partIdx == $active_part_index && $active_representation_index == $r_i ){
+        $table_class_attribute = 'class="active"';
       }
+      $out .= "<table $table_class_attribute>";
+      foreach ($representation->parts as $part) {
+        $out .= '<tr><th>' . t('Part') . ' ' . ($active_part_index + 1) . '</th></tr><tr><td>';
+        switch ($part->class) {
+          case 'ImageFile':
+            $out .= $part->width . 'x' . $part->height . ' px - ' . $part->size . ' kB';
+            break;
+          case 'AudioFile':
+          case 'MovieFile':
+            $out .= t('Duration') . ': ' . $part->duration . 's - ' . $part->size . ' kB';
+            break;
+          default:
+            $out .= $part->size . 'k';
+        }
 
-      $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $representation->uuid, $active_part_index)) . '">'
-        . cdm_media_gallerie_image($part, $thumbnailMaxExtend, TRUE);
-      $active_part_index++;
+        $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $representation->uuid, $active_part_index)) . '">'
+          . cdm_media_gallerie_image($part, $thumbnailMaxExtend, TRUE);
+        $active_part_index++;
+      }
+      $out .= '</table>';
+      $out .=  '</li>';
+      $r_i++;
     }
-    $out .= '</table>';
-    $out .=  '</li>';
-    $r_i++;
+    $out .= '</ul>';
   }
-  $out .= '</ul>';
-
 
   $out .= '</div>';
   return $out;

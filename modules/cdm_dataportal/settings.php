@@ -374,7 +374,6 @@ define('TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT', serialize(get_taxon_options_list(
 define('CDM_DATAPORTAL_GALLERY_SETTINGS', serialize($gallery_settings));
 define('CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME', 'specimen_gallery');
 define('CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME', "description_gallery");
-define('CDM_DATAPORTAL_MEDIA_GALLERY_NAME', "media_gallery");
 define('CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB', "taxon_tab_media_gallery");
 define('CDM_DATAPORTAL_SEARCH_GALLERY_NAME', "search_gallery");
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS', 'cdm_dataportal_display_taxon_relationships');
@@ -382,6 +381,11 @@ define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS', 'cdm_dataportal_display_name
 // define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_2', array("default" => t('Display all')));
 define('CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT', 1);
 define('CDM_DATAPORTAL_DISPLAY_NAME_RELATIONSHIPS_DEFAULT', 1);
+
+define('CDM_STANDARD_IMAGE_VIEWER', "cdm_standard_image_viewer");
+define('CDM_STANDARD_IMAGE_VIEWER_DEFAULT', serialize(array(
+  'media_representation_details_enabled' => 0
+)));
 
 /**
  * The drupal variable key for the array containing the uuids of the taxon relationship types to display in
@@ -1832,15 +1836,13 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $c
     '#description' => t('Select the size of each individual thumbnail.'),
   );
 
-  if ($form_name != CDM_DATAPORTAL_MEDIA_GALLERY_NAME) {
-    $form[$form_name]['cdm_dataportal_media_cols'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Number of columns') . ':',
-      '#default_value' => $gallery_settings['cdm_dataportal_media_cols'],
-      '#description' => t('Group the thumbnails in columns: select how many
-        columns the gallery should display.'),
-    );
-  }
+  $form[$form_name]['cdm_dataportal_media_cols'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of columns') . ':',
+    '#default_value' => $gallery_settings['cdm_dataportal_media_cols'],
+    '#description' => t('Group the thumbnails in columns: select how many
+      columns the gallery should display.'),
+  );
 
   if ($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME) {
     $form[$form_name]['cdm_dataportal_media_maxRows'] = array(
@@ -2736,12 +2738,25 @@ function cdm_settings_layout_media() {
     ),
   );
 
-  // --- MEDIA GALLERY ---- //
-  $form_name = CDM_DATAPORTAL_MEDIA_GALLERY_NAME;
-  $form_title = 'Standard viewer';
-  $form_description = '<p>Configure the standard image viewer.</p><p><strong>Note:</strong> the image viewer should selected otherwise settings are not taking into account.</p>';
-  // $form[] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed);
-  $form['media_settings'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, FALSE, $form_description);
+  // --- STANDARD_IMAGE_VIEWER ---- //
+  if(variable_get('image_gallery_viewer', 'default') == 'default') {
+    $form['media_settings'][CDM_STANDARD_IMAGE_VIEWER] = array(
+      '#type' => 'fieldset',
+      '#tree' => true,
+      '#title' => t('Standard image viewer settings'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+      );
+
+    $cdm_standard_image_viewer_settings = get_array_variable_merged(CDM_STANDARD_IMAGE_VIEWER, CDM_STANDARD_IMAGE_VIEWER_DEFAULT);
+    $form['media_settings'][CDM_STANDARD_IMAGE_VIEWER]['media_representation_details_enabled'] = array (
+      '#type' => 'checkbox',
+      '#title' => 'Show media representations',
+      '#default_value' => $cdm_standard_image_viewer_settings['media_representation_details_enabled']
+
+    );
+  }
+
 
   // @WA: D7 form api does not support reset buttons,
   // so to mimic the D5 reset button we add one like this.
