@@ -303,7 +303,7 @@ function compose_cdm_media_gallerie($configuration) {
     // return;
   }
 
-  // --- Duplicate supression: media can be reused but should only be shown
+  // --- Duplicate suppression: media can be reused but should only be shown
   // once.
   $tempMediaList = array();
   $tempMediaUuids = array();
@@ -393,14 +393,13 @@ function compose_cdm_media_gallerie($configuration) {
         $ahah_media_caption =  '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
           . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
 
-        // preparing the part link (= click on image iteself) which can be handled in two ways
+        // preparing the part link (= click on image itself) which can be handled in two ways
         //
         //  1. open image in lightbox, the captions in the lightbox will be loaded via AHAH
         //  2. open the media in a new window with target 'specimen'
         if ($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image') {
           $mediaPartLinkAttributes['class'] = array('lightbox');
-        }
-        else {
+        } else {
           $mediaPartLinkAttributes['target'] = "specimen";
           $openMediaLinkAttributes['target'] = "specimen";
         }
