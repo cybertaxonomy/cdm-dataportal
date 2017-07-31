@@ -45,23 +45,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2016-06-24 11:17+0200\n"
-"PO-Revision-Date: 2017-07-21 14:55+0100\n"
+"PO-Revision-Date: 2017-07-31 16:43+0200\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: German <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.4\n"
-"Language: German\n"
+"X-Generator: Poedit 2.0.3\n"
+"Language: de\n"
 
 #: cdm_dataportal.search.php:102
+#, fuzzy
 msgid "Options"
-msgstr ""
+msgstr "Optionen"
 
 #: cdm_dataportal.search.php:118
 msgid "Search"
-msgstr ""
+msgstr "Suche"
 
 #: cdm_dataportal.search.php:180
 msgid ""
@@ -69,47 +70,56 @@ msgid ""
 "      The asterisk  character * can be used as wildcard, but must not be "
 "used as first character."
 msgstr ""
+"Geben Sie den Namen oder einen Teil des Namens ein, den Sie suchen wollen.\n"
+"Das Asterisk Zeichen * kann als Platzhalter verwendet werden, darf aber "
+"nicht am Anfang stehen."
 
 #: cdm_dataportal.search.php:231 cdm_csv_export/cdm_csv_export.module:86
 #: cdm_taxontree/cdm_taxontree.module:70
 msgid "Classification"
-msgstr ""
+msgstr "Klassifikation"
 
 #: cdm_dataportal.search.php:236
 msgid ""
 "A filter to limit the search to a specific classification. Choosing <em>--- "
 "ALL ---</em> will disable this filter."
 msgstr ""
+"Filter, um die Suche auf eine spezifische Klassifikation zu beschränken. "
+"<em>--- ALL ---</em> schaltet den Filter aus."
 
 #: cdm_dataportal.search.php:244;250;256;262
+#, fuzzy
 msgid "Include"
-msgstr ""
+msgstr "Schließe ein"
 
 #: cdm_dataportal.search.php:244
 msgid "accepted taxa"
-msgstr ""
+msgstr "Akzeptierte Taxa"
 
 #: cdm_dataportal.search.php:250
 msgid "synonyms"
-msgstr ""
+msgstr "Synonyme"
 
 #: cdm_dataportal.search.php:256
+#, fuzzy
 msgid "misapplied names"
-msgstr ""
+msgstr "Misapplikationen"
 
 #: cdm_dataportal.search.php:262
 msgid "common names"
-msgstr ""
+msgstr "Trivialnamen"
 
 #: cdm_dataportal.search.php:319
 msgid "Filter by distribution areas"
-msgstr ""
+msgstr "Filter nach Verbreitungsgebieten"
 
 #: cdm_dataportal.search.php:320
 msgid ""
 "The search will return taxa having distribution\n"
 "        information for at least one of the selected areas."
 msgstr ""
+"Die Suche gibt Taxa zurück, die Verbreitungsdaten\n"
+"        für mindestens eins der gewählten Gebiete haben."
 
 #: cdm_dataportal.search.php:322
 msgid ""
@@ -118,8 +128,9 @@ msgid ""
 msgstr ""
 
 #: cdm_dataportal.search.php:327
+#, fuzzy
 msgid "Type to filter the areas listed below."
-msgstr ""
+msgstr "Tippen Sie, um die unten aufgelisteten Gebiete zu filtern."
 
 #: cdm_dataportal.search.php:339
 msgid "mixed"
@@ -127,7 +138,7 @@ msgstr ""
 
 #: cdm_dataportal.search.php:371
 msgid "Misapplied names"
-msgstr ""
+msgstr "Misapplikationen"
 
 #: cdm_dataportal.search.php:414
 msgid ""
@@ -137,6 +148,12 @@ msgid ""
 "        full phrase enclose the terms in parentheses. For more syntactical\n"
 "        options please refer to the !link."
 msgstr ""
+"Geben Sie den Text ein, nach dem Sie suchen wollen. Das Asterisk Zeichen * "
+"kann als\n"
+"        Platzhalter verwendet werden, jedoch nicht am Anfang. Begriffe "
+"können mit 'AND' kombiniert werden. Um nach einer kompletten Phrase\n"
+"        zu suchen verwenden Sie Klammern. Weitere syntaktische Hinweise und\n"
+"        Optionen entnehmen Sie bitte !link."
 
 #: cdm_dataportal.search.php:420
 msgid "Apache Lucene - Query Parser Syntax"
@@ -148,7 +165,7 @@ msgstr ""
 
 #: cdm_dataportal.search.php:462;470
 msgid "Limit to selected features"
-msgstr ""
+msgstr "Auf ausgewählte Merkmale begrenzen"
 
 #: cdm_dataportal.search.php:611;618
 msgid "Invalid search webservice parameter 'ws' given"
@@ -309,7 +326,7 @@ msgstr ""
 
 #: settings.php:1137 cdm_dataportal.module:970
 msgid "Available classifications"
-msgstr ""
+msgstr "Verfügbare Klassifikationen"
 
 #: settings.php:1140
 msgid ""
@@ -485,7 +502,7 @@ msgstr ""
 
 #: settings.php:1465 cdm_dataportal.module:1739
 msgid "Advanced search"
-msgstr ""
+msgstr "Fortgeschrittene Suche"
 
 #: settings.php:1471
 msgid "Show advanced search link"
@@ -1324,11 +1341,11 @@ msgstr ""
 
 #: cdm_dataportal.module:822
 msgid "Search taxa"
-msgstr ""
+msgstr "Suche Taxa"
 
 #: cdm_dataportal.module:827
 msgid "Advanced Search"
-msgstr ""
+msgstr "Fortgeschrittene Suche"
 
 #: cdm_dataportal.module:835
 msgid "Identification Keys"
@@ -1371,11 +1388,11 @@ msgstr ""
 
 #: cdm_dataportal.module:1747
 msgid "Search by factual data"
-msgstr ""
+msgstr "Suche nach Faktendaten"
 
 #: cdm_dataportal.module:1790
 msgid "Search results"
-msgstr ""
+msgstr "Suchergebnisse"
 
 #: cdm_dataportal.module:2340
 msgid "@link-alt-text"
@@ -1393,11 +1410,11 @@ msgstr[1] ""
 
 #: cdm_dataportal.module:485
 msgid "Advanced"
-msgstr ""
+msgstr "Fortgeschritten"
 
 #: cdm_dataportal.module:492
 msgid "By factual data"
-msgstr ""
+msgstr "Nach Faktendaten"
 
 #: cdm_dataportal.module:514
 msgid "cdm_dataportal"
@@ -2120,11 +2137,11 @@ msgstr ""
 
 #: includes/media.inc:84
 msgid "Copyright"
-msgstr ""
+msgstr "Copyright"
 
 #: includes/media.inc:87
 msgid "Licenses"
-msgstr ""
+msgstr "Lizenzen"
 
 #: includes/media.inc:90
 msgid "Access rights"
@@ -2172,11 +2189,11 @@ msgstr ""
 
 #: includes/pages.inc:508
 msgid "Images"
-msgstr ""
+msgstr "Bilder"
 
 #: includes/pages.inc:540
 msgid "Synonymy"
-msgstr ""
+msgstr "Synonymie"
 
 #: includes/pages.inc:554
 msgid "Specimens"
@@ -2196,7 +2213,7 @@ msgstr ""
 
 #: includes/pages.inc:635;760
 msgid "Content"
-msgstr ""
+msgstr "Inhalt"
 
 #: includes/pages.inc:736
 msgid "Bibliography"
@@ -2240,11 +2257,11 @@ msgstr ""
 
 #: theme/cdm_dataportal.common.theme:374
 msgid "« first"
-msgstr ""
+msgstr "« erster"
 
 #: theme/cdm_dataportal.common.theme:382
 msgid "‹ previous"
-msgstr ""
+msgstr "‹ vorheriger"
 
 #: theme/cdm_dataportal.common.theme:406
 msgid "next ›"
@@ -2256,11 +2273,11 @@ msgstr ""
 
 #: theme/cdm_dataportal.common.theme:463
 msgid "Back to search result"
-msgstr ""
+msgstr "Zurück zum Suchergebnis"
 
 #: theme/cdm_dataportal.common.theme:473
 msgid "Back to Images"
-msgstr ""
+msgstr "Zurück zu Bildern"
 
 #: theme/cdm_dataportal.common.theme:489;489
 msgid "Print this page"
@@ -2276,15 +2293,15 @@ msgstr ""
 
 #: theme/cdm_dataportal.media.theme:204;209
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: theme/cdm_dataportal.media.theme:215
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: theme/cdm_dataportal.media.theme:219
 msgid "Artist"
-msgstr ""
+msgstr "Künstler"
 
 #: theme/cdm_dataportal.media.theme:240
 msgid "Location"
@@ -2292,7 +2309,7 @@ msgstr ""
 
 #: theme/cdm_dataportal.media.theme:263
 msgid "License"
-msgstr ""
+msgstr "Lizenz"
 
 #: theme/cdm_dataportal.media.theme:513
 msgid "more in gallery"
@@ -2332,15 +2349,15 @@ msgstr ""
 
 #: theme/cdm_dataportal.page.theme:251
 msgid "Modify search"
-msgstr ""
+msgstr "Suche ändern"
 
 #: theme/cdm_dataportal.page.theme:255
 msgid "Display image thumbnails"
-msgstr ""
+msgstr "Miniaturbilder anzeigen"
 
 #: theme/cdm_dataportal.page.theme:263
 msgid "results for"
-msgstr ""
+msgstr "Ergebnisse für"
 
 #: theme/cdm_dataportal.page.theme:267
 msgid "any classification"
@@ -2348,11 +2365,11 @@ msgstr ""
 
 #: theme/cdm_dataportal.page.theme:284
 msgid "Sorry, no matching entries found."
-msgstr ""
+msgstr "Leider keine Treffer gefunden."
 
 #: theme/cdm_dataportal.page.theme:320
 msgid "Open image"
-msgstr ""
+msgstr "Bild öffnen"
 
 #: theme/cdm_dataportal.page.theme:367
 msgid "In order to use the FSI gallery you must enable the according "
@@ -2376,7 +2393,7 @@ msgstr ""
 
 #: theme/cdm_dataportal.page.theme:646
 msgid "Duration"
-msgstr ""
+msgstr "Dauer"
 
 #: theme/cdm_dataportal.references.theme:159
 msgid "as"
