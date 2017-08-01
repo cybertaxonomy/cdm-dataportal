@@ -351,25 +351,39 @@ function compose_cdm_media_gallerie($configuration) {
         //
         // Find preferred representation.
         //
-        $preferred_media_representations_list = cdm_preferred_media_representations($media, array(
-          'image/jpg',
-          'image/jpeg',
-          'image/png',
-          'image/gif',
-        ), $maxExtend, $maxExtend);
-        if (count($preferred_media_representations_list) == 0) {
+        $thumbnail_representations = cdm_preferred_media_representations($media, array(
+            'image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+          ),
+          $maxExtend,
+          $maxExtend
+        );
+        $full_size_representations = cdm_preferred_media_representations($media, array(
+            'image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+          ),
+          2000, // better obtain from client
+          1000
+        );
+        if (count($thumbnail_representations) == 0) {
           // Fallback to using the first one in the list.
-          $preferred_media_representations_list = $media->representations;
+          $thumbnail_representations = $media->representations;
+          $full_size_representations = $media->representations;
         }
-        $preferred_media_representation = array_shift($preferred_media_representations_list);
+        $thumbnail_representation = array_shift($thumbnail_representations);
+        $full_size_representation = array_shift($full_size_representations);
 
         // $preferred_media_representation->parts[0]->uri =
         // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
-        $contentTypeDirectory = media_content_type_dir($preferred_media_representation, 'application');
+        $contentTypeDirectory = media_content_type_dir($thumbnail_representation, 'application');
 
         $mediaPartHtml = call_user_func_array(
           'cdm_media_gallerie_' . $contentTypeDirectory,
-          array( $preferred_media_representation->parts[0], $maxExtend, TRUE)
+          array( $thumbnail_representation->parts[0], $maxExtend, TRUE)
         );
         // --- Compose Media Link.
         $mediaLinkUri = FALSE;
@@ -382,7 +396,7 @@ function compose_cdm_media_gallerie($configuration) {
           }
         }
         else {
-          $mediaLinkUri = $preferred_media_representation->parts[0]->uri;
+          $mediaLinkUri = $full_size_representation->parts[0]->uri;
         }
         $mediaIndex++;
 
