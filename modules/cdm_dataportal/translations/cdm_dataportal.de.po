@@ -45,7 +45,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2016-06-24 11:17+0200\n"
-"PO-Revision-Date: 2017-07-31 16:43+0200\n"
+"PO-Revision-Date: 2017-08-01 10:22+0200\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: German <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr "Optionen"
 
 #: cdm_dataportal.search.php:118
 msgid "Search"
-msgstr "Suche"
+msgstr "Suchen"
 
 #: cdm_dataportal.search.php:180
 msgid ""
@@ -88,9 +88,8 @@ msgstr ""
 "<em>--- ALL ---</em> schaltet den Filter aus."
 
 #: cdm_dataportal.search.php:244;250;256;262
-#, fuzzy
 msgid "Include"
-msgstr "Schließe ein"
+msgstr "Berücksichtige"
 
 #: cdm_dataportal.search.php:244
 msgid "accepted taxa"
@@ -502,7 +501,7 @@ msgstr ""
 
 #: settings.php:1465 cdm_dataportal.module:1739
 msgid "Advanced search"
-msgstr "Fortgeschrittene Suche"
+msgstr "Erweiterte Suche"
 
 #: settings.php:1471
 msgid "Show advanced search link"
@@ -1345,7 +1344,7 @@ msgstr "Suche Taxa"
 
 #: cdm_dataportal.module:827
 msgid "Advanced Search"
-msgstr "Fortgeschrittene Suche"
+msgstr "Erweiterte Suche"
 
 #: cdm_dataportal.module:835
 msgid "Identification Keys"
@@ -1410,7 +1409,7 @@ msgstr[1] ""
 
 #: cdm_dataportal.module:485
 msgid "Advanced"
-msgstr "Fortgeschritten"
+msgstr "Erweitert"
 
 #: cdm_dataportal.module:492
 msgid "By factual data"
