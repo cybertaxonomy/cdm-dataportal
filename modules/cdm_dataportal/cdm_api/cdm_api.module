@@ -487,7 +487,7 @@ function get_last_taxon_page_tab() {
  * @return array
  *   An array with preferred media representations or else an empty array.
  */
-function cdm_preferred_media_representations($media, array $mimeTypes, $width = 400, $height = 300) {
+function cdm_preferred_media_representations($media, array $mimeTypes, $width = NULL, $height = NULL) {
   $prefRepr = array();
   if (!isset($media->representations[0])) {
     return $prefRepr;
