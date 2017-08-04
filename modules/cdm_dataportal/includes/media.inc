@@ -303,7 +303,7 @@ function compose_cdm_media_gallerie($configuration) {
     // return;
   }
 
-  // --- Duplicate supression: media can be reused but should only be shown
+  // --- Duplicate suppression: media can be reused but should only be shown
   // once.
   $tempMediaList = array();
   $tempMediaUuids = array();
@@ -351,25 +351,41 @@ function compose_cdm_media_gallerie($configuration) {
         //
         // Find preferred representation.
         //
-        $preferred_media_representations_list = cdm_preferred_media_representations($media, array(
-          'image/jpg',
-          'image/jpeg',
-          'image/png',
-          'image/gif',
-        ), $maxExtend, $maxExtend);
-        if (count($preferred_media_representations_list) == 0) {
+        $thumbnail_representations = cdm_preferred_media_representations($media, array(
+            'image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+          ),
+          $maxExtend,
+          $maxExtend
+        );
+        // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
+        // which only contains the thumbnail representation even if the height and width filters are not set.
+        // to get hold of the full resolution images we send a separate request :
+        $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
+        $full_size_representations = cdm_preferred_media_representations($complete_media, array(
+            'image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+          )
+        );
+        if (count($thumbnail_representations) == 0) {
           // Fallback to using the first one in the list.
-          $preferred_media_representations_list = $media->representations;
+          $thumbnail_representations = $media->representations;
+          $full_size_representations = $media->representations;
         }
-        $preferred_media_representation = array_shift($preferred_media_representations_list);
+        $thumbnail_representation = array_shift($thumbnail_representations);
+        $full_size_representation = array_shift($full_size_representations);
 
         // $preferred_media_representation->parts[0]->uri =
         // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
-        $contentTypeDirectory = media_content_type_dir($preferred_media_representation, 'application');
+        $contentTypeDirectory = media_content_type_dir($thumbnail_representation, 'application');
 
         $mediaPartHtml = call_user_func_array(
           'cdm_media_gallerie_' . $contentTypeDirectory,
-          array( $preferred_media_representation->parts[0], $maxExtend, TRUE)
+          array( $thumbnail_representation->parts[0], $maxExtend, TRUE)
         );
         // --- Compose Media Link.
         $mediaLinkUri = FALSE;
@@ -382,7 +398,7 @@ function compose_cdm_media_gallerie($configuration) {
           }
         }
         else {
-          $mediaLinkUri = $preferred_media_representation->parts[0]->uri;
+          $mediaLinkUri = $full_size_representation->parts[0]->uri;
         }
         $mediaIndex++;
 
@@ -393,14 +409,13 @@ function compose_cdm_media_gallerie($configuration) {
         $ahah_media_caption =  '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
           . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
 
-        // preparing the part link (= click on image iteself) which can be handled in two ways
+        // preparing the part link (= click on image itself) which can be handled in two ways
         //
         //  1. open image in lightbox, the captions in the lightbox will be loaded via AHAH
         //  2. open the media in a new window with target 'specimen'
         if ($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image') {
           $mediaPartLinkAttributes['class'] = array('lightbox');
-        }
-        else {
+        } else {
           $mediaPartLinkAttributes['target'] = "specimen";
           $openMediaLinkAttributes['target'] = "specimen";
         }

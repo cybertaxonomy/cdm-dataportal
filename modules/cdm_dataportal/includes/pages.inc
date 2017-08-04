@@ -434,6 +434,10 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   $synonymy_as_tab = variable_get(CDM_SYNONYMY_AS_TAB, CDM_SYNONYMY_AS_TAB_DEFAULT) === 1;
   if(!$synonymy_as_tab){
     unset($tabsToDisplay["Synonymy"]);
+    // the synonymy is located in the general part in this case
+    if($page_part == 'synonymy'){
+      $page_part = 'description';
+    }
   }
 
   $media = _load_media_for_taxon($taxon);

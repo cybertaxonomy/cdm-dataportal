@@ -84,10 +84,17 @@ $arial:           Arial, Helvetica, "Nimbus Sans L", sans-serif;
 // http://meyerweb.com/eric/thoughts/2010/02/12/fixed-monospace-sizing/
 $courier:         "Courier New", "DejaVu Sans Mono", monospace, sans-serif;
 
+// for the cdm_dataportal base theme we serve the DejaVu Sans as webfont
+$droid-sans:          "droid_sansregular", sans-serif;
+$droid-sans-mono:         "droid_sans_monoregular", monospace, sans-serif;
+
+@import "../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css";
+@import "../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css";
+
 // Now create some variables for the font stacks we want to use on this site.
-$base-font-family: $verdana; // The font family set on the html element.
-$font-body:        $verdana;
-$font-monospace:   $courier;
+$base-font-family: $droid-sans; // The font family set on the html element.
+$font-body:        $droid-sans;
+$font-monospace:   $droid-sans-mono;
 
 
 //
