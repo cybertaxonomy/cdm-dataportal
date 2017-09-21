@@ -57,32 +57,63 @@ function phycobank_registration_data(){
   if(! (arg(0) == 'cdm_dataportal' && arg(1) == 'taxon' &&  is_uuid(arg(2))) ) {
     return markup_to_render_array("<span class='error'>This block can only be used on cdm_dataportal/taxon/* pages. Please check the block settings.</span>");
   }
+  $rows = array();
   $taxon_uuid = arg(2);
   $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxon_uuid);
-  $extensions = cdm_ws_get(CDM_WS_NAME . '/' . $taxon->name->uuid . '/extensions');
 
-  if(isset($extensions->records[0])){
-    $data = json_decode($extensions->records[0]->value);
-    $rows = array();
-    $rows[] = array(
-      'data' => array('ID:', $data->regId),
-      'no_striping' => true
-    );
-    $rows[] = array(
-      'data' => array('Date:', preg_replace('/^(.*?\.)(97|98|99)$/', '${1}19$2', $data->date)),
-        'no_striping' => true
-      );
-    $rows[] = array(
-      'data' => array('Office:', $data->office),
-      'no_striping' => true
-    );
-    if(isset($data->formNumber)) {
-      $rows[] = array(
-        'data' => array('Form number', $data->formNumber),
-        'no_striping' => true
-      );
+  // read registrations
+  $registrations = cdm_ws_get(CDM_WS_NAME . '/' . $taxon->name->uuid . '/registrations');
+  if($registrations && count($registrations) > 0){
+    foreach($registrations as $reg){
+      if($reg->status == "PUBLISHED" && strpos($reg->identifier, "http://phycobank.org") == 0) {
+        $rows[] = array(
+          'data' => array('ID:', $reg->identifier),
+          'no_striping' => true
+        );
+        $rows[] = array(
+          'data' => array('Date:', preg_replace('/^([^T]*)(.*)$/', '${1}', $reg->registrationDate)),
+          'no_striping' => true
+        );
+        if(isset($reg->institution->titleCache)){
+          $rows[] = array(
+            'data' => array('Office:', $reg->institution->titleCache),
+
+            'no_striping' => true
+          );
+        }
+        break;
+      }
     }
 
+  } else {
+    // read extensions
+    $extensions = cdm_ws_get(CDM_WS_NAME . '/' . $taxon->name->uuid . '/extensions');
+
+    if(isset($extensions->records[0])){
+      $data = json_decode($extensions->records[0]->value);
+
+      $rows[] = array(
+        'data' => array('ID:', $data->regId),
+        'no_striping' => true
+      );
+      $rows[] = array(
+        'data' => array('Date:', preg_replace('/^(.*?\.)(97|98|99)$/', '${1}19$2', $data->date)),
+          'no_striping' => true
+        );
+      $rows[] = array(
+        'data' => array('Office:', $data->office),
+        'no_striping' => true
+      );
+      if(isset($data->formNumber)) {
+        $rows[] = array(
+          'data' => array('Form number', $data->formNumber),
+          'no_striping' => true
+        );
+      }
+    }
+
+  }
+  if(count($rows) > 0){
     $data_elements = array(
       '#theme' => 'table',
       '#rows' => $rows,
