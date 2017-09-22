@@ -362,6 +362,7 @@ function compose_cdm_media_gallerie($configuration) {
         );
         // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
         // which only contains the thumbnail representation even if the height and width filters are not set.
+        // --> #6970
         // to get hold of the full resolution images we send a separate request :
         $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
         $full_size_representations = cdm_preferred_media_representations($complete_media, array(
