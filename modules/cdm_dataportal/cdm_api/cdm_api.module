@@ -480,9 +480,9 @@ function get_last_taxon_page_tab() {
  *    an array of mimetypes in their order of preference. e.g:
  *    array('application/pdf', 'image/png', 'image/jpeg', 'image/gif', 'text/html')
  * @param int $width
- *    The width of the optimal image. If null, the method will return the representation with the biggest expanse
+ *    The width of the optimal image. If null, the method will return the representation with the biggest expansion
  * @param int $height
- *    The height of the optimal image. If null, the method will return the representation with the biggest expanse
+ *    The height of the optimal image. If null, the method will return the representation with the biggest expansion
  *
  * @return array
  *   An array with preferred media representations or else an empty array.
@@ -509,7 +509,7 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
         // Preferred mimetype found -> erase all remaining mimetypes
         // to end loop.
         $mimeTypes = array();
-        $expanseDeltaSum = 0;
+        $expansionDeltaSum = 0;
         $valid_parts_cnt = 0;
         // Look for part with the best matching size.
         foreach ($representation->parts as $part) {
@@ -518,25 +518,25 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
             continue;
           }
           $valid_parts_cnt++;
-          $expanseDelta = PHP_INT_MAX; // biggest delta for unkown sizes
+          $expansionDelta = PHP_INT_MAX; // biggest delta for unkown sizes
 
           // determine the optimal size
           if (isset($part->width) && isset($part->height)) {
-            $expanse = $part->width * $part->height;
+            $expansion = $part->width * $part->height;
             if ($width != null && $height != null) {
-              $optimalExpanse = $height * $width;
+              $optimalExpansion = $height * $width;
             } else {
-              $optimalExpanse = PHP_INT_MAX;
+              $optimalExpansion = PHP_INT_MAX;
             }
             // determine the difference
-            $expanseDelta = $expanse > $optimalExpanse ? $expanse - $optimalExpanse : $optimalExpanse - $expanse;
+            $expansionDelta = $expansion > $optimalExpansion ? $expansion - $optimalExpansion : $optimalExpansion - $expansion;
           }
-          // sum up the expanseDeltas of all parts contained in the representation
-          $expanseDeltaSum += $expanseDelta;
+          // sum up the expansionDeltas of all parts contained in the representation
+          $expansionDeltaSum += $expansionDelta;
         }
         if($valid_parts_cnt > 0){
-          $expanseDeltaSum = $expanseDeltaSum / $valid_parts_cnt;
-          $prefRepr[$expanseDeltaSum . '_'] = $representation;
+          $expansionDeltaSum = $expansionDeltaSum / $valid_parts_cnt;
+          $prefRepr[$expansionDeltaSum] = $representation;
         }
       }
     }

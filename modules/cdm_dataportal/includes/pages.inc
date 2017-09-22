@@ -684,7 +684,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
     if (isset($media[0])) {
       // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
       // which only contains the thumbnail representation even if the height and width filters are not set.
-      // --> #6970
+      // -->
       $preferred_media = cdm_ws_get(CDM_WS_MEDIA, $media[0]->uuid);
       $preferred_representations = cdm_preferred_media_representations($preferred_media, array(
         'image/jpg',
