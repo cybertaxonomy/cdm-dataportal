@@ -158,7 +158,7 @@ function theme_cdm_OriginalSource($variables) {
 
     $id_with_namespace = '';
     if( isset($source->idNamespace) && $source->idNamespace ) {
-      $id_with_namespace = $source->idNamespace . '/';
+      $id_with_namespace = $source->idNamespace . ' ';
     }
     if( isset($source->idInSource) && $source->idInSource ) {
       $id_with_namespace .= $source->idInSource;
