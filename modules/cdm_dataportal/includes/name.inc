@@ -388,6 +388,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   // Fill with reference.
   if (isset($renderTemplate['referencePart']) && !$is_type_designation) {
 
+    $registrations = cdm_ws_get(CDM_WS_NAME, array($taxonName->uuid, "registrations"));
+    $registration_markup = render_registrations($registrations);
+
     // default separator
     $separator = '';
 
@@ -414,7 +417,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
 
 
       $referenceArray['#separator'] = $separator;
-      $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>';
+      $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
       array_setr('reference', $referenceArray, $renderTemplate);
     }
 
@@ -423,7 +426,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     // out of the reference.
     if (isset($renderTemplate['referencePart']['authors']) && $lastAuthorElementString) {
       // If the nomenclaturalReference citation is not included in the
-      // reference part but diplay of the microreference
+      // reference part but display of the microreference
       // is wanted, append the microreference to the authorTeam.
       $citation = '';
       if (!isset($renderTemplate['referencePart']['reference']) && isset($renderTemplate['referencePart']['microreference'])) {
@@ -541,6 +544,24 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     // $out .= theme('cdm_annotations_as_footnotekeys', $taxonName);
   }
   return $out;
+}
+
+/**
+ * @param $registrations
+ * @return string
+ */
+function render_registrations($registrations)
+{
+  $registration_markup = '';
+  $registration_markup_array = array();
+  if ($registrations) {
+    foreach ($registrations as $reg) {
+      $registration_markup_array[] = render_registration($reg);
+    }
+    $registration_markup = " Registration" . (count($registration_markup_array) > 1 ? 's: ' : ': ')
+      . join(', ', $registration_markup_array);
+  }
+  return $registration_markup;
 }
 
 /**
