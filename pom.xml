@@ -109,8 +109,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -262,6 +262,11 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-htmlunit-driver</artifactId>
             <version>${selenium.htmlunit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.etaxonomy</groupId>
+            <artifactId>cdmlib-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -8,9 +8,12 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+
+import eu.etaxonomy.dataportal.CdmEntityClassAttributes;
 
 /**
  * @author andreas
@@ -19,11 +22,13 @@ import org.openqa.selenium.WebElement;
  */
 public class TypeDesignationElement extends BaseElement {
 
+    private static final Logger logger = Logger.getLogger(TypeDesignationElement.class);
+
     private final WebElement status;
 
     private WebElement nameDescription = null;
 
-    private final TypeDesignationType typeDesignationType;
+    private TypeDesignationType typeDesignationType = null;
 
     public TypeDesignationElement(WebElement element) {
         super(element);
@@ -33,7 +38,14 @@ public class TypeDesignationElement extends BaseElement {
         } catch (NoSuchElementException e) {
             // IGNORE
         }
-        typeDesignationType = TypeDesignationType.valueOf(element.getAttribute("class"));
+        CdmEntityClassAttributes attr;
+        try {
+            attr = new CdmEntityClassAttributes(element.getAttribute("class"));
+            typeDesignationType = TypeDesignationType.valueOfCdmClass(attr.getCdmType());
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
     }
 
     public String statusToString(){
