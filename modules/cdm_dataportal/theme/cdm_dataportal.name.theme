@@ -67,7 +67,7 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
  *   - typeDesignations: an array of cdm TypeDesignation entities to render
  */
 function theme_cdm_typedesignations($variables) {
-  $typeDesignations = $variables['typeDesignations'];
+  $type_designations = $variables['typeDesignations'];
 
   // need to add element to render path since type designations
   // need other name render template
@@ -78,33 +78,33 @@ function theme_cdm_typedesignations($variables) {
   $is_lectotype = FALSE;
   $specimen_type_designations = array();
   $separator = ',';
-  foreach ($typeDesignations as $typeDesignation) {
-    if ($typeDesignation->class == 'SpecimenTypeDesignation') {
+  foreach ($type_designations as $type_designation) {
+    if ($type_designation->class == 'SpecimenTypeDesignation') {
       // SpecimenTypeDesignations should be ordered. Collect theme here only.
-      $specimen_type_designations[] = $typeDesignation;
+      $specimen_type_designations[] = $type_designation;
     }
     // It is a lectotype?
     else {
-      if (isset($typeDesignation->typeStatus->uuid) && $typeDesignation->typeStatus->uuid == UUID_NTD_LECTOTYPE) {
+      if (isset($type_designation->typeStatus->uuid) && $type_designation->typeStatus->uuid == UUID_NTD_LECTOTYPE) {
         $is_lectotype = TRUE;
       }
       // It's a NameTypeDesignation.
-      if ($typeDesignation->notDesignated) {
-        $out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated') . '</li>';
+      if ($type_designation->notDesignated) {
+        $out .= '<li class="' . html_class_attribute_ref($type_designation) . '"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated') . '</li>';
       }
-      elseif ($typeDesignation->typeName) {
-        $link_to_name_page = url(path_to_name($typeDesignation->typeName->uuid));
-        $out .= '<li class="nameTypeDesignation"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
+      elseif ($type_designation->typeName) {
+        $link_to_name_page = url(path_to_name($type_designation->typeName->uuid));
+        $out .= '<li class="' . html_class_attribute_ref($type_designation) . '"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
 
-        if ($typeDesignation->citation) {
-          $out .= type_designation_citation_layout($typeDesignation, $separator);
+        if ($type_designation->citation) {
+          $out .= type_designation_citation_layout($type_designation, $separator);
 
         }
         $referenceUri = '';
-        if (isset($typeDesignation->typeName->nomenclaturalReference)) {
-          $referenceUri = url(path_to_reference($typeDesignation->typeName->nomenclaturalReference->uuid));
+        if (isset($type_designation->typeName->nomenclaturalReference)) {
+          $referenceUri = url(path_to_reference($type_designation->typeName->nomenclaturalReference->uuid));
         }
-        $out .= ': ' . render_taxon_or_name($typeDesignation->typeName, $link_to_name_page, $referenceUri, TRUE, TRUE);
+        $out .= ': ' . render_taxon_or_name($type_designation->typeName, $link_to_name_page, $referenceUri, TRUE, TRUE);
       }
     }
   }
@@ -263,11 +263,11 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
   RenderHints::setFootnoteListKey($footnoteListKey);
 
   $is_first_entry = TRUE;
-  $typeDesignations = NULL;
+  $type_designations = NULL;
   foreach ($homotypicalGroup as $synonym) {
     if ($is_first_entry) {
       $is_first_entry = FALSE;
-      $typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
+      $type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
       // Is first list entry.
       $out .= '<li class="firstentry synonym">' . cdm_related_taxon($synonym, UUID_HETEROTYPIC_SYNONYM_OF) . '</li>';
     }
@@ -276,8 +276,8 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
     }
   }
 
-  if ($typeDesignations) {
-    $out .= theme('cdm_typedesignations', array('typeDesignations' => $typeDesignations));
+  if ($type_designations) {
+    $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
   }
   $out .= '</ul>';
 
