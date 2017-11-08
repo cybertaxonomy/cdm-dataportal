@@ -24,7 +24,7 @@ import eu.etaxonomy.dataportal.selenium.ChildElementVisible;
 
 /**
  * @author andreas
- * @date Sep 16, 2011
+ * @since Sep 16, 2011
  *
  */
 public class ElementUtils {
@@ -32,10 +32,7 @@ public class ElementUtils {
 
     public static final Logger logger = Logger.getLogger(ElementUtils.class);
 
-    /**
-     * @param fnListElements
-     * @return
-     */
+
     public static List<BaseElement> baseElementsFromFootNoteListElements(List<WebElement> fnListElements) {
         List<BaseElement> footNotes = new ArrayList<BaseElement>();
         for(WebElement fn : fnListElements) {
@@ -44,10 +41,7 @@ public class ElementUtils {
         return footNotes;
     }
 
-    /**
-     * @param fnkListElements
-     * @return
-     */
+
     public static List<LinkElement> linkElementsFromFootNoteKeyListElements(List<WebElement> fnkListElements) {
         List<LinkElement> footNoteKeys = new ArrayList<LinkElement>();
         for(WebElement fnk : fnkListElements) {
@@ -57,7 +51,6 @@ public class ElementUtils {
     }
 
     /**
-     * @param wait
      * @return a two dimensional array representing the media items in the gallery, or null if no gallery exists.
      */
     public static List<List<GalleryImage>> getGalleryImages(WebElement webElement, WebDriverWait wait) {
@@ -116,8 +109,6 @@ public class ElementUtils {
      *   <li class="footnotes footnotes-taxon_relationships "><span class="footnote footnote-1">...</span></li>
      *   <li class="footnotes footnotes-taxon_relationships-annotations ">...</li>
      * </ul>
-     * @param element
-     * @return
      */
     public static List<BaseElement> findFootNotes(WebElement element){
         List<WebElement> fnListElements = element.findElements(

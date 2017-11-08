@@ -8,17 +8,15 @@
 */
 package eu.etaxonomy.dataportal;
 
-import java.net.URISyntaxException;
-
 /**
  * @author andreas
- * @date Aug 29, 2011
+ * @since Aug 29, 2011
  *
  */
 public class TestConfigurationException extends Exception {
 
 	/**
-	 * @param string
+	 * @param message
 	 * @param e
 	 */
 	public TestConfigurationException(String message, Exception e) {
@@ -26,7 +24,7 @@ public class TestConfigurationException extends Exception {
 	}
 
 	/**
-	 * @param string
+	 * @param message
 	 */
 	public TestConfigurationException(String message) {
 		super(message);

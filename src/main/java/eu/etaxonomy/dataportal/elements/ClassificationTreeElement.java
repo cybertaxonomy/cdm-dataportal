@@ -13,7 +13,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * @author andreas
- * @date May 21, 2012
+ * @since May 21, 2012
  *
  */
 public class ClassificationTreeElement extends BaseElement {

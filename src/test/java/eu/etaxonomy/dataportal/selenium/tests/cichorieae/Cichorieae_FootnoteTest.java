@@ -8,23 +8,16 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.elements.BaseElement;
-import eu.etaxonomy.dataportal.elements.FeatureBlock;
-import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
-import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
@@ -43,7 +36,6 @@ public class Cichorieae_FootnoteTest extends CdmDataPortalTestBase{
     /**
      * test for issue #2772 (some footnotes in synonymy missing)
      *
-     * @throws MalformedURLException
      */
     @Test
     public void crepidiastrum_chelidoniifolium_issue_2772() throws MalformedURLException {

@@ -8,10 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.MalformedURLException;
 import java.util.UUID;
 
@@ -41,7 +37,6 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
     /**
      * regression test for issue ##3160 (Cichorieae Portal: Common names not correctly ordered)
      *
-     * @throws MalformedURLException
      */
     @Test
     public void lactuca_serriola() throws MalformedURLException {

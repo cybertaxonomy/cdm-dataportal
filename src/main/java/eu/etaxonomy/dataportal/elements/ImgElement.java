@@ -36,8 +36,7 @@ public class ImgElement extends BaseElement {
 	}
 
 	/**
-	 * Returns the image source URL from the src attribute
-	 * @return
+	 * @return the image source URL from the src attribute
 	 */
 	public URL getSrcUrl() {
 		return srcUrl;

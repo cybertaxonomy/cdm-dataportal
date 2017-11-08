@@ -36,7 +36,7 @@ import eu.etaxonomy.dataportal.elements.LinkElement;
  * TODO: subpages like /cdm_dataportal/taxon/{uuid}/images are not jet suported, implement means to handle page parts
  *
  * @author andreas
- * @date Jul 1, 2011
+ * @since Jul 1, 2011
  *
  */
 public class TaxonProfilePage extends PortalPage {
@@ -147,14 +147,13 @@ public class TaxonProfilePage extends PortalPage {
      *    &lt;/div&gt;
      * </pre>
      *
-     * The DescriptionElements can be get from the <code>FeatureBlock</code> by {@link FeatureBlock#getDescriptionElements()}.
+     * The DescriptionElements can be get from the <code>FeatureBlock</code> by {@link FeatureBlock#getDescriptionElement(int)}.
      *
      * @param position Zero based index of position in list of feature blocks
      * 			(only used to check against total number of feature blocks)
      * @param featureName the feature name as it is used in the class attribute: <code>block-cdm-dataportal-feature-${featureName}</code>
      * @param enclosingTag
      * @param elementTag
-     * @return
      */
     public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String elementTag){
 

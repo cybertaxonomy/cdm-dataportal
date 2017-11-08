@@ -8,14 +8,9 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
-import static org.junit.Assert.assertNull;
-
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.elements.TaxonListElement;
@@ -44,7 +39,6 @@ public class CyprusSearchTest extends CdmDataPortalTestBase{
 
 	/**
 	 * see http://dev.e-taxonomy.eu/trac/ticket/2350
-	 * @throws Exception
 	 */
 	@Test
 	public void searchResultsWithoutAnnotationFootnotes() throws Exception{

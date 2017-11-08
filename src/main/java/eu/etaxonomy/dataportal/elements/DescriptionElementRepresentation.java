@@ -22,9 +22,7 @@ public class DescriptionElementRepresentation extends BaseElement{
 		return sources;
 	}
 
-	/**
-	 * @param element
-	 */
+
 	public DescriptionElementRepresentation(WebElement element) {
 		super(element);
 

@@ -20,7 +20,7 @@ import org.openqa.selenium.remote.RemoteWebElement;
  * <ul class="cdm_taxontree"><li
  *
  * @author andreas
- * @date May 21, 2012
+ * @since May 21, 2012
  *
  */
 public class ClassificationTreeBlock extends DrupalBlock {

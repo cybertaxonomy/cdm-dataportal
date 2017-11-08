@@ -10,7 +10,7 @@ package eu.etaxonomy.dataportal.elements;
 
 /**
  * @author andreas
- * @date Aug 29, 2011
+ * @since Aug 29, 2011
  *
  */
 public enum TaxonType {

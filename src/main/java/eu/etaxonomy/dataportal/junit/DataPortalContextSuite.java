@@ -52,10 +52,7 @@ public class DataPortalContextSuite extends Suite{
 
 		private final DataPortalContext context;
 
-		/**
-		 * @param klass
-		 * @throws InitializationError
-		 */
+
 		public TestClassRunnerWithDataPortalContext(Class<?> klass, DataPortalContext context) throws InitializationError {
 			super(klass);
 			this.context = context;

@@ -27,7 +27,7 @@ import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 
 /**
  * @author andreas
- * @date Aug 12, 2011
+ * @since Aug 12, 2011
  *
  */
 public class TaxonSearchResultPage extends GenericPortalPage {
@@ -62,7 +62,6 @@ public class TaxonSearchResultPage extends GenericPortalPage {
     /**
      * @param driver
      * @param context
-     * @throws Exception
      */
     public TaxonSearchResultPage(WebDriver driver, DataPortalContext context) throws Exception {
         super(driver, context);
@@ -74,7 +73,7 @@ public class TaxonSearchResultPage extends GenericPortalPage {
      * The item can be specified by the index paramter.
      * @param index 1-based index to identify the resultset item.
      * This index will be used in a xpath query.
-     * @return
+
      */
     public TaxonListElement getResultItem(int index) {
 
@@ -85,7 +84,6 @@ public class TaxonSearchResultPage extends GenericPortalPage {
 
     /**
      * Find and returns all items of the result list.
-     * @return
      */
     public List<TaxonListElement> getResultItems() {
 
@@ -107,7 +105,7 @@ public class TaxonSearchResultPage extends GenericPortalPage {
         LinkElement taxonlink = new LinkElement(taxonListElement.getElement().findElement(By.tagName("a")));
         logger.debug("taxonlink to click: " + taxonlink.toString() + " [" + taxonlink.getElement().toString() + "]");
         logger.debug("  waiting for visibility of css selector: .page-cdm-dataportal-taxon-" + taxonUuid.toString() + " ...");
-        return (T) clickLink(taxonlink, new VisibilityOfElementLocated(By.cssSelector(".page-cdm-dataportal-taxon-" + taxonUuid.toString())),
+        return clickLink(taxonlink, new VisibilityOfElementLocated(By.cssSelector(".page-cdm-dataportal-taxon-" + taxonUuid.toString())),
                     pageClass, 2l, TimeUnit.MINUTES);
 
     }

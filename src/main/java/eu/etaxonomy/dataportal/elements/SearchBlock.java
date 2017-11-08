@@ -15,7 +15,7 @@ import eu.etaxonomy.dataportal.pages.PortalPage;
 
 /**
  * @author andreas
- * @date Aug 12, 2011
+ * @since Aug 12, 2011
  *
  */
 public class SearchBlock extends DrupalBlock {

@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * Example:
  * <code>
  * cdm:SpecimenTypeDesignation uuid:35d876b0-8a13-44db-a66d-94acdd319c01
- * <code>
+ * </code>
  *
  * @author a.kohlbecker
  * @since Oct 10, 2017

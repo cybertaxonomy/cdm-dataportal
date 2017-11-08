@@ -25,7 +25,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * @author Andreas Kohlbecker
- * @date Jul 1, 2011
+ * @since Jul 1, 2011
  *
  */
 public class BaseElement {
@@ -100,7 +100,7 @@ public class BaseElement {
     /**
      *
      * @param driver the currently used  WebDriver instance
-     * @return
+     * @return list of linktargets
      */
     public List<String> getLinkTargets(WebDriver driver){
 
@@ -142,9 +142,7 @@ public class BaseElement {
         return linkTargets;
     }
 
-    /**
-     * @param element
-     */
+
     public BaseElement(WebElement element) {
 
         logger.setLevel(Level.TRACE);
@@ -159,18 +157,12 @@ public class BaseElement {
         }
     }
 
-    /**
-     * @return
-     */
+
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "<" + this.getElement().getTagName() + ">" ;
     }
 
-    /**
-     *
-     * @return
-     */
     public String toStringWithLinks() {
 
         StringBuilder links = new StringBuilder();

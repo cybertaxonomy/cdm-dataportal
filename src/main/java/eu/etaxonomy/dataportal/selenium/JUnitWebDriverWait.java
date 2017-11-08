@@ -13,10 +13,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class JUnitWebDriverWait extends WebDriverWait {
 
 
-    /**
-     * @param driver
-     * @param timeOutInSeconds
-     */
     public JUnitWebDriverWait(WebDriver driver, long timeOutInSeconds) {
         super(driver, timeOutInSeconds);
     }
