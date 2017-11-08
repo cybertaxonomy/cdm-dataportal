@@ -51,11 +51,6 @@ public class PolytomousKeyPage extends PortalPage {
 		super(driver, context, keyUuid.toString());
 	}
 
-	/**
-	 * @param driver
-	 * @param context
-	 * @throws Exception
-	 */
 	public PolytomousKeyPage(WebDriver driver, DataPortalContext context) throws Exception {
 		super(driver, context);
 	}
@@ -110,11 +105,6 @@ public class PolytomousKeyPage extends PortalPage {
 		}
 
 		/**
-		 *
-		 * @param nodeNumber
-		 * @param edgeText
-		 * @param linkClass
-		 * @param linkText
 		 * @param suffix In cases where the linkText is a taxonName the link may be suffixed with the nomenclatural reference.
 		 */
 		public KeyLineData(String nodeNumber, String edgeText, LinkClass linkClass, String linkText, String suffix) {
@@ -163,10 +153,7 @@ public class PolytomousKeyPage extends PortalPage {
 		return nextPage;
 	}
 
-    /**
-     * @param data
-     * @return
-     */
+
     private String composeFullEdgeText(KeyLineData data) {
         return data.edgeText + "\n" + data.getLinkTextWithSuffix();
     }

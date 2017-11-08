@@ -31,7 +31,7 @@ import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
  * TODO: subpages like /cdm_dataportal/taxon/{uuid}/images are not jet suported, implement means to handle page parts
  *
  * @author andreas
- * @date Jul 1, 2011
+ * @since Jul 1, 2011
  *
  */
 public class TaxonSynonymyPage extends PortalPage {
@@ -60,7 +60,6 @@ public class TaxonSynonymyPage extends PortalPage {
      * @param driver
      * @param context
      * @param taxonUuid
-     * @throws MalformedURLException
      */
     public TaxonSynonymyPage(WebDriver driver, DataPortalContext context, UUID taxonUuid) throws MalformedURLException {
 
@@ -73,24 +72,15 @@ public class TaxonSynonymyPage extends PortalPage {
     /**
      * @param driver
      * @param context
-     * @throws Exception
      */
     public TaxonSynonymyPage(WebDriver driver, DataPortalContext context) throws Exception {
         super(driver, context);
     }
 
-
-
-    /**
-     * @return
-     */
     public String getAcceptedNameText() {
         return getAcceptedName().getText();
     }
 
-    /**
-     * @return
-     */
     public WebElement getAcceptedName() {
         WebElement acceptedName = synonymy.findElement(
                 By.xpath("./div[contains(@class,'accepted-name')]")
@@ -101,7 +91,6 @@ public class TaxonSynonymyPage extends PortalPage {
     /**
      * TypeDesignation of the accepted name are found in the HomotypicalGroup block element
      * thus this method will delegate to {@link #getHomotypicalGroupTypeDesignations()}
-     * @return
      * @deprecated use {@link #getHomotypicalGroupTypeDesignations()} instead
      */
     @Deprecated
@@ -123,8 +112,6 @@ public class TaxonSynonymyPage extends PortalPage {
      * Footnotes of the accepted name are found in the HomotypicalGroup block element
      * thus this method will delegate to {@link #getHomotypicalGroupFootNotes()}
      *
-     * @return
-     * @deprecated
      */
     @Deprecated
     public List<BaseElement> getAcceptedNameFootNotes() {
@@ -151,7 +138,6 @@ public class TaxonSynonymyPage extends PortalPage {
 
     /**
      * @param synonymIndex the 1-based index of the synonym in the group
-     * @return
      */
     public WebElement getHomotypicalGroupSynonym(Integer synonymIndex) {
         WebElement synonym = synonymy.findElement(
@@ -160,9 +146,6 @@ public class TaxonSynonymyPage extends PortalPage {
         return synonym;
     }
 
-    /**
-     * @return
-     */
     public List<TypeDesignationElement> getHomotypicalGroupTypeDesignations() {
         List<WebElement> typeDesignationElements = synonymy.findElements(By
                 .xpath("./div[contains(@class,'homotypic-synonymy-group')]/ul[contains(@class,'homotypicSynonyms')]/ul[contains(@class,'typeDesignations')]/li"));
@@ -212,7 +195,6 @@ public class TaxonSynonymyPage extends PortalPage {
      * @param synonymIndex
      *            the 1-based position of the synonym in the list specified
      *            group of heterotypical synonyms
-     * @return
      */
     public WebElement getHeterotypicalGroupSynonym(Integer heterotypicalGroupIndex, Integer synonymIndex) {
         WebElement synonym = synonymy.findElement(By.xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/li[" + synonymIndex + "]"));
@@ -222,7 +204,6 @@ public class TaxonSynonymyPage extends PortalPage {
     /**
      * @param heterotypicalGroupIndex
      *            the 1-based index of the heterotypical group
-     * @return
      */
     public List<TypeDesignationElement> getHeterotypicalGroupTypeDesignations(Integer heterotypicalGroupIndex) {
         List<WebElement> typeDesignationElements = synonymy.findElements(By
@@ -238,7 +219,6 @@ public class TaxonSynonymyPage extends PortalPage {
     /**
      * @param heterotypicalGroupIndex
      * 				the 1-based index of the heterotypical group
-     * @return
      */
     public List<LinkElement> getHeterotypicalGroupFootNoteKeys(Integer heterotypicalGroupIndex) {
         List<WebElement> fnkListElements = synonymy.findElements(
@@ -250,7 +230,6 @@ public class TaxonSynonymyPage extends PortalPage {
     /**
      * @param heterotypicalGroupIndex
      * 				the 1-based index of the heterotypical group
-     * @return
      */
     public List<BaseElement> getHeterotypicalGroupFootNotes(Integer heterotypicalGroupIndex) {
         List<WebElement> fnListElements = synonymy.findElements(
@@ -266,11 +245,6 @@ public class TaxonSynonymyPage extends PortalPage {
         return taxonRelationships;
     }
 
-    /**
-     * @param heterotypicalGroupIndex
-     *              the 1-based index of the misapplied names
-     * @return
-     */
     public WebElement getMisappliedName(Integer misappliedNameIndex) {
         WebElement misappliedName = getTaxonRelationships().findElement(
                 By.xpath("./ul[contains(@class,'misapplied')]/li[" + misappliedNameIndex + "]")

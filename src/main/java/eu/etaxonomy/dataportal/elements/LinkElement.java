@@ -16,7 +16,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * @author andreas
- * @date Jul 1, 2011
+ * @since Jul 1, 2011
  *
  */
 public class LinkElement extends BaseElement {
@@ -57,11 +57,8 @@ public class LinkElement extends BaseElement {
 	}
 
 	/**
-	 * @param element
-	 * @param text
 	 * @param hrefEndsWith
 	 *   The actual link is must end with this. The full URL works of course also.
-	 * @return
 	 */
 	public static boolean testIfLinkElement(WebElement element, String text, String hrefEndsWith) {
 		assertEquals("a", element.getTagName());

@@ -69,7 +69,6 @@ public abstract class  PortalPage {
      * path to the Drupal page. This path will usally have the form
      * <code>cdm_dataportal/{nodetype}</code>. For example the taxon pages all
      * have the page base <code>cdm_dataportal/taxon</code>
-     * @return
      */
     protected abstract String getDrupalPageBase();
 
@@ -123,11 +122,6 @@ public abstract class  PortalPage {
      * </ol>
      * Both are combined to form the URL pathelement <code>/cdm_dataportal/taxon/7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code>
      *
-     *
-     * @param driver
-     * @param context
-     * @param pagePathSuffix
-     * @throws MalformedURLException
      */
     public PortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix) throws MalformedURLException {
 
@@ -168,10 +162,6 @@ public abstract class  PortalPage {
      * Creates a new PortaPage at given URL location. An Exception is thrown if
      * this URL is not matching the expected URL for the specific page type.
      *
-     * @param driver
-     * @param context
-     * @param url
-     * @throws Exception
      */
     public PortalPage(WebDriver driver, DataPortalContext context, URL url) throws Exception {
 
@@ -205,9 +195,6 @@ public abstract class  PortalPage {
      * Creates a new PortaPage at the WebDrivers current URL location. An Exception is thrown if
      * driver.getCurrentUrl() is not matching the expected URL for the specific page type.
      *
-     * @param driver
-     * @param context
-     * @throws Exception
      */
     public PortalPage(WebDriver driver, DataPortalContext context) throws Exception {
 
@@ -237,9 +224,7 @@ public abstract class  PortalPage {
 
     }
 
-    /**
-     * @return
-     */
+
     protected boolean isOnPage() {
         return driver.getCurrentUrl().startsWith(pageUrl.toString());
     }
@@ -271,7 +256,7 @@ public abstract class  PortalPage {
     /**
      *
      * @return the page title
-     * @deprecated use {@link driver#getTitle()}
+     * @deprecated use {@link WebDriver#getTitle()}
      */
     @Deprecated
     public String getTitle() {
@@ -279,16 +264,14 @@ public abstract class  PortalPage {
     }
 
     /**
-     * returns the warning messages from the Drupal message box
-     * @return
+     * @return the warning messages from the Drupal message box
      */
     public String getWarnings() {
         return null; //TODO unimplemented
     }
 
     /**
-     * returns the error messages from the Drupal message box
-     * @return
+     * @return the error messages from the Drupal message box
      */
     public String getErrors() {
         return null; //TODO unimplemented
@@ -337,8 +320,7 @@ public abstract class  PortalPage {
 
 
     /**
-     * Returns the current URL string from the {@link WebDriver}
-     * @return
+     * @return the current URL string from the {@link WebDriver}
      */
     public URL getPageURL() {
         return pageUrl;
@@ -346,8 +328,7 @@ public abstract class  PortalPage {
 
 
     /**
-     * return the <code>scheme://domain:port</code> part of the initial url of this page.
-     * @return
+     * @return the <code>scheme://domain:port</code> part of the initial url of this page.
      */
     public String getInitialUrlBase() {
         return pageUrl.getProtocol() + "://" + pageUrl.getHost() + pageUrl.getPort();
@@ -366,14 +347,11 @@ public abstract class  PortalPage {
 
 
     /**
-     * @param <T>
-     * @param link the link to click
      * @param isTrue see {@link org.openqa.selenium.support.ui.FluentWait#until(Function)}
      * @param pageType the return type
      * @param duration may be null, if this in null <code>waitUnit</code> will be ignored.
-     * @param waitUnit may be null, is ignored if <code>duration</code> is null defaults to {@link TimeUnit.SECONDS}
-     * @return
-     * @throws SecurityException
+     * @param waitUnit may be null, is ignored if <code>duration</code> is null defaults to {@link TimeUnit#SECONDS}
+
      */
     public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> pageType, Long duration, TimeUnit waitUnit) {
 
@@ -424,11 +402,9 @@ public abstract class  PortalPage {
 
 
     /**
-     * @param <T>
-     * @param link the link to click
      * @param isTrue see {@link org.openqa.selenium.support.ui.FluentWait#until(Function)}
      * @param type the return type
-     * @return
+
      */
     public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> type) {
         return clickLink(element, isTrue, type, null, null);
@@ -437,9 +413,6 @@ public abstract class  PortalPage {
 
     /**
      * replaces all underscores '_' by hyphens '-'
-     *
-     * @param featureName
-     * @return
      */
     protected String normalizeClassAttribute(String featureName) {
         return featureName.replace('_', '-');
@@ -474,7 +447,6 @@ public abstract class  PortalPage {
      *
      * If no test class is found it will fall back to using
      * "noTest" as folder name and a timestamp as filename.
-     * @return
      */
     private File fileForTestMethod(File targetFolder){
 

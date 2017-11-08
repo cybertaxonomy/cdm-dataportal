@@ -40,7 +40,6 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
     /**
      * Test for correct sensu representation of misapplied names, see #5676
-     * @throws MalformedURLException
      */
     @Test
     public void testTitleAndTabs() throws MalformedURLException {

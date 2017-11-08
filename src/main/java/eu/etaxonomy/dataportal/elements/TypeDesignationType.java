@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 
 /**
  * @author andreas
- * @date Jul 30, 2012
+ * @since Jul 30, 2012
  *
  */
 public enum TypeDesignationType {

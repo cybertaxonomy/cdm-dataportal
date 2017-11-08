@@ -89,7 +89,6 @@ public class WebDriverFactory {
      *
      * See http://code.google.com/p/selenium/wiki/FirefoxDriverInternals
      *
-     * @return
      */
     private static WebDriver initFirefoxDriver() {
 

@@ -18,7 +18,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * @author andreas
- * @date Jul 4, 2011
+ * @since Jul 4, 2011
  *
  */
 public class DrupalBlock extends BaseElement {
@@ -29,9 +29,7 @@ public class DrupalBlock extends BaseElement {
 
 	protected List<WebElement> featureBlockelements;
 
-	/**
-	 * @param element
-	 */
+
 	public DrupalBlock(WebElement element) {
 
 		super(element);

@@ -17,7 +17,7 @@ import eu.etaxonomy.dataportal.CdmEntityClassAttributes;
 
 /**
  * @author andreas
- * @date Jul 30, 2012
+ * @since Jul 30, 2012
  *
  */
 public class TypeDesignationElement extends BaseElement {

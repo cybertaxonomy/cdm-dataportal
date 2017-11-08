@@ -22,7 +22,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * @author andreas
- * @date Jul 4, 2011
+ * @since Jul 4, 2011
  *
  */
 public class FeatureBlock extends DrupalBlock {
@@ -55,7 +55,6 @@ public class FeatureBlock extends DrupalBlock {
     /**
      *
      * @param index 0 based
-     * @return
      */
     public LinkElement getFootNoteKey(int index) {
         WebElement footNoteKeyElement = jsGetElement(SELECTOR_FOOTNOTE_KEY, index);
@@ -77,7 +76,6 @@ public class FeatureBlock extends DrupalBlock {
     /**
      *
      * @param index 0 based
-     * @return
      */
     public BaseElement getFootNote(int index) {
         WebElement footNoteElement = jsGetElement(SELECTOR_FOOTNOTE, index);
@@ -133,10 +131,6 @@ public class FeatureBlock extends DrupalBlock {
     }
 
 
-    /**
-     * @param driver TODO
-     * @param element
-     */
     public FeatureBlock(WebDriver driver, WebElement element, String enclosingTag, String ... elementTags) {
 
         super(element);
@@ -191,9 +185,7 @@ public class FeatureBlock extends DrupalBlock {
 
     }
 
-    /**
-     * @return
-     */
+
     private Long jsCountElements(String jQuerySelector) {
         if(driver instanceof JavascriptExecutor) {
             String blockId = getElement().getAttribute("id");
@@ -216,10 +208,7 @@ public class FeatureBlock extends DrupalBlock {
         throw new IllegalStateException("The driver must be a JavascriptExecutor");
     }
 
-    /**
-     * @param elementIndex TODO
-     * @return
-     */
+
     private WebElement jsGetElement(String jQuerySelector, int elementIndex) {
         if(driver instanceof JavascriptExecutor) {
             String blockId = getElement().getAttribute("id");
@@ -245,9 +234,7 @@ public class FeatureBlock extends DrupalBlock {
         throw new IllegalStateException("The driver must be a JavascriptExecutor");
     }
 
-    /**
-     * @param element
-     */
+
     private void initSources() {
         originalSources = new ArrayList<BaseElement>();
         List<WebElement> sourcesList = getElement().findElements(By.className("sources"));
@@ -257,9 +244,9 @@ public class FeatureBlock extends DrupalBlock {
     }
 
     /**
-     * @param indent
-     * @param computedFontSize
-     * @param expectedCssDisplay
+     * @param indent TODO
+     * @param computedFontSize TODO
+     * @param expectedCssDisplay TODO
      * @param expectedListStyleType only applies if cssDisplay equals list-item
      * @param expectedListStylePosition only applies if cssDisplay equals list-item
      * @param expectedListStyleImage only applies if cssDisplay equals list-item
