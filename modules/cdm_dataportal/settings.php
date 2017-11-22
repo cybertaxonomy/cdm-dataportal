@@ -1232,12 +1232,12 @@ function cdm_settings_general() {
 
   $form['taxon_tree'][CDM_TAXONOMICTREE_UUID] = array(
     '#type' => 'select',
-    '#title' => t('Available classifications') . ':',
+    '#title' => t('Default classification') . ':',
     '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, FALSE),
     '#options' => cdm_get_taxontrees_as_options(),
-    '#description' => t('Select the default taxa classification for your
-      <em>taxon tree</em>, the other classifications will be also available but
-      with a manual user change.'),
+    '#description' => t('The default taxa classification to be used in the whole portal. 
+      This affects most obviously the classification browser and the search in case is is restricted 
+      to a specific classification. See also <i>Included Classifications</i> below.'),
   );
 
   $form['taxon_tree'][TAXONTREE_RANKLIMIT] = array(
@@ -1258,7 +1258,7 @@ function cdm_settings_general() {
       '#title' => t('Included Classifications') . ':',
       '#default_value' => variable_get(CDM_TAXONTREE_INCLUDES, $taxontree_includes_default),
       '#options' => cdm_get_taxontrees_as_options(),
-      '#description' => t('Only the checked classifications will be avaliable in the classification chooser.'),
+      '#description' => t('Only the checked classifications will be available in the classification chooser.'),
   );
 
   $form['distribution'] = array(
