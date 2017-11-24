@@ -172,11 +172,11 @@ function read_media_metadata($media) {
   }
 
   // Artist.
-  if (!empty($media_metadata->Artist)) {
-    $metadata['artist'] = '' . $media_metadata->Artist;
-  }
-  elseif (!empty($media->artist->titleCache)) {
+  if (!empty($media->artist->titleCache)) {
     $metadata['artist'] = $media->artist->titleCache;
+  }
+  else if (!empty($media_metadata->Artist)) {
+    $metadata['artist'] = '' . $media_metadata->Artist;
   }
 
   // Rights
