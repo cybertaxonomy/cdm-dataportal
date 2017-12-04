@@ -556,31 +556,31 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
     if ($config['sources_as_content'] == 1) {
       foreach ($entity->sources as $source) {
+        if (_is_original_source_type($source)) {
+          $reference_citation = theme('cdm_OriginalSource',
+            array(
+              'source' => $source,
+              'doLink' => $config['link_to_reference'] == 1,
+              'do_link_to_name_used_in_source' => $config['link_to_name_used_in_source'] == 1,
+            )
+          );
 
-        $reference_citation = theme('cdm_OriginalSource',
-          array(
-            'source' => $source,
-            'doLink' => $config['link_to_reference'] == 1,
-            'do_link_to_name_used_in_source' => $config['link_to_name_used_in_source'] == 1,
-          )
-        );
-
-        if ($reference_citation) {
-          if (empty($inline_text_prefix)) {
-            $annotations_and_sources['source_references'][] = $reference_citation;
+          if ($reference_citation) {
+            if (empty($inline_text_prefix)) {
+              $annotations_and_sources['source_references'][] = $reference_citation;
+            } else {
+              $annotations_and_sources['source_references'][] = ' (' . $reference_citation . ')';
+            }
           }
-          else {
-            $annotations_and_sources['source_references'][] = ' (' . $reference_citation . ')';
+
+          $name_in_source_render_array = compose_name_in_source(
+            $source,
+            $config['link_to_name_used_in_source'] == 1
+          );
+
+          if (!empty($name_in_source_render_array)) {
+            $annotations_and_sources['names_used_in_source'][$name_in_source_render_array['#_plaintext']] = drupal_render($name_in_source_render_array);
           }
-        }
-
-        $name_in_source_render_array = compose_name_in_source(
-          $source,
-          $config['link_to_name_used_in_source'] == 1
-        );
-
-        if(!empty($name_in_source_render_array)){
-          $annotations_and_sources['names_used_in_source'][$name_in_source_render_array['#_plaintext']] = drupal_render($name_in_source_render_array);
         }
       } // END of loop over sources
 
