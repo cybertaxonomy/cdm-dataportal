@@ -518,7 +518,7 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
             continue;
           }
           $valid_parts_cnt++;
-          $expansionDelta = PHP_INT_MAX; // biggest delta for unkown sizes
+          $expansionDelta = PHP_INT_MAX; // biggest delta for unknown sizes
 
           // determine the optimal size
           if (isset($part->width) && isset($part->height)) {
