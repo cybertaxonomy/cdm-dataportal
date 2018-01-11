@@ -1,0 +1,4 @@
+This is swfobjects derived from a fork (https://github.com/VoiSmart/swfobject).
+The original repository is no longer being maintained.
+The bug reported in issue #57 (https://github.com/swfobject/swfobject/issues/57) broke flash movies in chrome and edge.
+This bug has been fixed in this fork.
