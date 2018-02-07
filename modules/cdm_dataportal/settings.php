@@ -1172,14 +1172,6 @@ function cdm_settings_general() {
   );
   _add_js_cdm_ws_progressbar(".index-trigger", "#index-progress");
 
-    $form['cdm_webservice']['freetext_index']['cdm_dataportal_taxon_auto_suggest'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('(EXPERIMENTAL) Enable auto-suggest for taxon search'),
-        '#default_value' => variable_get('cdm_dataportal_taxon_auto_suggest', CDM_DATAPORTAL_TAXON_AUTO_SUGGEST),
-        '#description' => t('If enabled, the taxon search field will suggest taxon names while typing in a search query.
-        This function works on indexed taxon names. If you experience any delay maybe you have to reindex (see above).'),
-    );
-
   $form['cdm_webservice']['proxy'] = array(
     '#type' => 'fieldset',
     '#title' => t('Proxy'),
@@ -2661,6 +2653,14 @@ function cdm_settings_layout_search() {
     '#description' => t('Number of results to display per page.'),
   );
 
+  $form['search_settings']['freetext_index']['cdm_dataportal_taxon_auto_suggest'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('(EXPERIMENTAL) Enable auto-suggest for taxon search'),
+    '#default_value' => variable_get('cdm_dataportal_taxon_auto_suggest', CDM_DATAPORTAL_TAXON_AUTO_SUGGEST),
+    '#description' => t('If enabled, the taxon search field will suggest taxon names while typing in a search query.
+    This function works on indexed taxon names. If you experience any delay maybe you have to reindex (see above).'),
+  );
+    
   $form['search_settings'][SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX] = array(
     '#type' => 'checkbox',
     '#title' => t('Show the') .  ' <i>' . t('Display image thumbnails') . '</i>' . t('button') . ':',
