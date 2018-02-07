@@ -23,7 +23,6 @@
   define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE', 50);
-  define('CDM_DATAPORTAL_TAXON_AUTO_SUGGEST', 0);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 0);
   define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
   define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
@@ -359,6 +358,7 @@ define('CDM_SEARCH_AREA_FILTER_PRESET', 'cdm_search_area_filter_preset');
 
 define('SIMPLE_SEARCH_USE_LUCENE_BACKEND', 'simple_search_use_lucene_backend');
 define('SIMPLE_SEARCH_IGNORE_CLASSIFICATION', 'simple_search_ignore_classification');
+define('SIMPLE_SEARCH_AUTO_SUGGEST', 'cdm_search_taxa_auto_suggest');
 
 /* Gallery variables. */
 $gallery_settings = array(
@@ -2646,19 +2646,19 @@ function cdm_settings_layout_search() {
       configured to also use the free-text search backend.'),
   );
 
+  $form['search_settings'][SIMPLE_SEARCH_AUTO_SUGGEST] = array(
+    '#type' => 'checkbox',
+    '#title' => t('(EXPERIMENTAL) Enable auto-suggest for taxon search'),
+    '#default_value' => variable_get(SIMPLE_SEARCH_AUTO_SUGGEST, 0),
+    '#description' => t('If enabled, the taxon search field will suggest taxon names while typing in a search query.
+    This function works on indexed taxon names. If you experience any delay maybe you have to reindex (see above).'),
+  );
+
   $form['search_settings']['cdm_dataportal_search_items_on_page'] = array(
     '#type' => 'textfield',
     '#title' => t('Results per page') . ':',
     '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
     '#description' => t('Number of results to display per page.'),
-  );
-
-  $form['search_settings']['freetext_index']['cdm_dataportal_taxon_auto_suggest'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('(EXPERIMENTAL) Enable auto-suggest for taxon search'),
-    '#default_value' => variable_get('cdm_dataportal_taxon_auto_suggest', CDM_DATAPORTAL_TAXON_AUTO_SUGGEST),
-    '#description' => t('If enabled, the taxon search field will suggest taxon names while typing in a search query.
-    This function works on indexed taxon names. If you experience any delay maybe you have to reindex (see above).'),
   );
     
   $form['search_settings'][SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX] = array(

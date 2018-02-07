@@ -90,7 +90,7 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
     '#value' => $query_field_default_value,
     // '#description' => $query_field_description,
   );
-  if(variable_get('cdm_dataportal_taxon_auto_suggest')){
+  if(variable_get(SIMPLE_SEARCH_AUTO_SUGGEST)){
       $form['query']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest////';
   }
 

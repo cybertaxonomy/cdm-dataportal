@@ -115,7 +115,7 @@ function cdm_csv_export_my_form($form_state) {
         '#prefix' => '<div id="taxon-selection">',
         '#suffix' => '</div>',
     );
-    if(variable_get('cdm_dataportal_taxon_auto_suggest')){
+    if(variable_get(SIMPLE_SEARCH_AUTO_SUGGEST)){
         $form['csv_export_taxon_select']['#autocomplete_path'] = 'cdm_dataportal/taxon/autosuggest/'.$tree.'///';
     }
 
