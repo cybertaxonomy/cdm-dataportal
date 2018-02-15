@@ -250,8 +250,6 @@ function get_partDefinition($taxonNameType) {
  *
  * @param $taxonName
  *    cdm TaxonName instance
- * @param $sec
- *    the sec reference of a taxon having this name (optional)
  * @param $nameLink
  *    URI to the taxon, @see path_to_taxon(), must be processed by url() before passing to this method
  * @param $refenceLink

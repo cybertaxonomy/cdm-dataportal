@@ -31,6 +31,8 @@
  * @}
  */
 
+define('TAXON_TYPE_SYNONYM', 'Synonym');
+define('TAXON_TYPE_MISAPPLIEDNAME', 'misapplied-name');
 
 /**
  * Returns HTML for misapplied names and invalid designations.
@@ -467,37 +469,51 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
     if (isset($table_of_accepted[$taxon->uuid])) {
       // Its a synonym or misapplied name.
       $is_synonym = isset($synonym_uuids[$taxon->uuid]); //TODO better use the $taxon->class attribute?
-      $taxon_type = $is_synonym ? "Synonym" : "misapplied-name";
+      $taxon_type = $is_synonym ? TAXON_TYPE_SYNONYM :TAXON_TYPE_MISAPPLIEDNAME;
 
-      $acceptedTaxon = $table_of_accepted[$taxon->uuid];
+      $acceptedTaxa = $table_of_accepted[$taxon->uuid];
 
-      if (is_object($acceptedTaxon)) {
+      if (!is_array($acceptedTaxa)) {
+        $acceptedTaxa = array($acceptedTaxa);
+      }
 
-        $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
-        $referenceUri = '';
-        if (isset($acceptedTaxon->name->nomenclaturalReference)) {
-          $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
-        }
-        $taxon_or_name = $is_synonym ? $taxon->name : $taxon;
-        // $taxon_or_name this is a trick to suppress the sec reference for sysnonyms
-        // supplying the name will cause render_taxon_or_name() to not show the sec reference
-        $out .= '<li class="' . $taxon_type . '">' . render_taxon_or_name($taxon_or_name, $taxonUri, $referenceUri);
-        if ($show_classification) {
-          $classifications = get_classifications_for_taxon($taxon);
-          $classification_titles = array();
-          foreach ($classifications as $classification) {
-            if (isset($classification->titleCache)) {
-              $classification_titles[] = $classification->titleCache;
+      foreach ($acceptedTaxa as $acceptedTaxon) {
+        if (is_object($acceptedTaxon)) {
+
+          $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
+          $referenceUri = '';
+          if (isset($acceptedTaxon->name->nomenclaturalReference)) {
+            $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
+          }
+          $taxon_or_name = $is_synonym ? $taxon->name : $taxon;
+          // $taxon_or_name this is a trick to suppress the sec reference for synonyms
+          // supplying the name will cause render_taxon_or_name() to not show the sec reference
+          $out .= '<li class="' . $taxon_type . '">' . render_taxon_or_name($taxon_or_name, $taxonUri, $referenceUri);
+          if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME){
+            if(isset($taxon->sec->authorship)){
+              $authorship = $taxon->sec->authorship->titleCache;
+            } else {
+              $authorship = $taxon->sec->titleCache;
             }
+            $out .=  ' sensu ' . $authorship;
           }
-          if (count($classification_titles) == 0) {
-            $classification_titles[] = $unclassified_snippet;
+          if ($show_classification) {
+            $classifications = get_classifications_for_taxon($taxon);
+            $classification_titles = array();
+            foreach ($classifications as $classification) {
+              if (isset($classification->titleCache)) {
+                $classification_titles[] = $classification->titleCache;
+              }
+            }
+            if (count($classification_titles) == 0) {
+              $classification_titles[] = $unclassified_snippet;
+            }
+            $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
           }
-          $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
-        }
-        $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
-        if ($showMedia_synonyms) {
-          $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
+          $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
+          if ($showMedia_synonyms) {
+            $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
+          }
         }
       }
     }
