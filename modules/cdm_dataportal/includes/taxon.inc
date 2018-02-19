@@ -489,7 +489,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
           // $taxon_or_name this is a trick to suppress the sec reference for synonyms
           // supplying the name will cause render_taxon_or_name() to not show the sec reference
           $out .= '<li class="' . $taxon_type . '">' . render_taxon_or_name($taxon_or_name, $taxonUri, $referenceUri);
-          if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME){
+          if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && is_object($taxon->sec)){
             if(isset($taxon->sec->authorship)){
               $authorship = $taxon->sec->authorship->titleCache;
             } else {
