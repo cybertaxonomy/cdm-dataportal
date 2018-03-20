@@ -1319,7 +1319,7 @@ msgstr ""
 
 #: cdm_dataportal.module:797
 msgid "CDM identification keys"
-msgstr ""
+msgstr "CDM Claves de identificación"
 
 #: cdm_dataportal.module:798
 msgid "Funded by EDIT"
@@ -1343,7 +1343,7 @@ msgstr "Búsqueda avanzada"
 
 #: cdm_dataportal.module:835
 msgid "Identification Keys"
-msgstr ""
+msgstr "Claves de identificación"
 
 #: cdm_dataportal.module:1080
 msgid ""
@@ -2195,7 +2195,7 @@ msgstr ""
 
 #: includes/pages.inc:567
 msgid "Keys"
-msgstr ""
+msgstr "Claves de identificación"
 
 #: includes/pages.inc:578
 msgid "Experts"
