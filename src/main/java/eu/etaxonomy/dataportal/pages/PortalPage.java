@@ -30,7 +30,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.google.common.base.Function;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.ClassificationTreeBlock;
 import eu.etaxonomy.dataportal.elements.LinkElement;
@@ -391,7 +390,7 @@ public abstract class  PortalPage {
         Constructor<T> constructor;
         T pageInstance;
         try {
-            constructor = pageType.getConstructor(WebDriver.class, DataPortalSite.class);
+            constructor = pageType.getConstructor(WebDriver.class, DataPortalContext.class);
             pageInstance = constructor.newInstance(driver, context);
         } catch (Exception e) {
             throw new RuntimeException(e);
