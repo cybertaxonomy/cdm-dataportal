@@ -14,7 +14,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
@@ -28,7 +28,7 @@ import eu.etaxonomy.dataportal.pages.PortalPage;
  *
  */
 
-@DataPortalContexts({ DataPortalContext.cyprus })
+@DataPortalContexts({ DataPortalSite.cyprus })
 public class CyprusPolytomousKeyTest extends CdmDataPortalTestBase {
 
 

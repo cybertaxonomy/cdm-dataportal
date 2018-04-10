@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.ElementUtils;
 import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -28,7 +28,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.reference })
+@DataPortalContexts( { DataPortalSite.reference })
 public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
     static final UUID miconia_cubacinerea_Uuid = UUID.fromString("c6716cee-2039-4ba8-a239-4b1b353f9c84");

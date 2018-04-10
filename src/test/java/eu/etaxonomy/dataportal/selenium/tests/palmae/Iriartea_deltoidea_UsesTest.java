@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -29,7 +29,7 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.palmae })
+@DataPortalContexts( { DataPortalSite.palmae })
 public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
 
     static UUID taxonUuid = UUID.fromString("ce870eca-0422-4a3c-b849-0f5ca0370b1f");

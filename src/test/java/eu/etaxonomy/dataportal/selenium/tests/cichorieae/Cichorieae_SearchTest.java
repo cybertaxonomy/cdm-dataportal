@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.ElementUtils;
 import eu.etaxonomy.dataportal.elements.GalleryImage;
 import eu.etaxonomy.dataportal.elements.TaxonListElement;
@@ -28,7 +28,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 import junit.framework.Assert;
 
-@DataPortalContexts( { DataPortalContext.cichorieae })
+@DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
 
     private static final UUID UUID_L_COMMUNIS = UUID.fromString("5d65f017-0c23-43e4-888d-9649de50dd45");

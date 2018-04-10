@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
@@ -29,7 +29,7 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.palmae })
+@DataPortalContexts( { DataPortalSite.palmae })
 public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBase{
 
     static UUID taxonUuid = UUID.fromString("bb340c78-880e-4dd0-91ff-81788a482b31");

@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.ClassificationTreeBlock;
 import eu.etaxonomy.dataportal.elements.ClassificationTreeElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -30,7 +30,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.cyprus })
+@DataPortalContexts( { DataPortalSite.cyprus })
 public class Cyprus_HybridTest extends CdmDataPortalTestBase{
 
 

@@ -21,6 +21,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 
 
 /**
@@ -39,10 +40,10 @@ public class DataPortalContextSuite extends Suite{
 	@Inherited
 	public @interface DataPortalContexts {
 		/**
-		 * @return an array of DataPortalContext to which the annotated test
+		 * @return an array of DataPortalSite to which the annotated test
 		 *         class is applicable
 		 */
-		DataPortalContext[] value();
+		DataPortalSite[] value();
 	}
 
 	private final List<Runner> runners = new ArrayList<Runner>();
@@ -67,12 +68,12 @@ public class DataPortalContextSuite extends Suite{
 
 		@Override
 		protected String getName() {
-			return String.format("%s@%s", getTestClass().getName(), context.name());
+			return String.format("%s@%s", getTestClass().getName(), context.getSiteLabel());
 		}
 
 		@Override
 		protected String testName(final FrameworkMethod method) {
-			return String.format("%s@%s", method.getName(), context.name());
+			return String.format("%s@%s", method.getName(), context.getSiteLabel());
 
 		}
 
@@ -102,8 +103,8 @@ public class DataPortalContextSuite extends Suite{
 	public DataPortalContextSuite(Class<?> klass) throws InitializationError {
 		super(klass, Collections.<Runner>emptyList());
 		DataPortalContexts dataPortalContextsAnotation = getTestClass().getJavaClass().getAnnotation(DataPortalContexts.class);
-		for (DataPortalContext cntxt : dataPortalContextsAnotation.value()) {
-			runners.add(new TestClassRunnerWithDataPortalContext(klass, cntxt));
+		for (DataPortalSite dataPortalSite : dataPortalContextsAnotation.value()) {
+			runners.add(new TestClassRunnerWithDataPortalContext(klass, dataPortalSite.getContext()));
 		}
 	}
 

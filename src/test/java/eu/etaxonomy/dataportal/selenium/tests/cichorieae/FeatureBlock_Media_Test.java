@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.ElementUtils;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.GalleryImage;
@@ -30,7 +30,7 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
  * @author a.kohlbecker
  *
  */
-@DataPortalContexts( { DataPortalContext.cichorieae })
+@DataPortalContexts( { DataPortalSite.cichorieae })
 public class FeatureBlock_Media_Test extends CdmDataPortalTestBase {
 
     static UUID erythroseris_amabilis_Uuid = UUID.fromString("b335ceee-d6c1-4c93-841d-3b4bd279d855");

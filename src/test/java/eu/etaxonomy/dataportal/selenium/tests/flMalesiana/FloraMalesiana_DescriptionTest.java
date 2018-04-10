@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -32,7 +32,7 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.floramalesiana})
+@DataPortalContexts( { DataPortalSite.floramalesiana})
 public class FloraMalesiana_DescriptionTest extends CdmDataPortalTestBase{
 
     private static final UUID tristiropsis_acutangula_uuid = UUID.fromString("87e76e43-e4b7-44a1-a195-2c36a63b34bb");

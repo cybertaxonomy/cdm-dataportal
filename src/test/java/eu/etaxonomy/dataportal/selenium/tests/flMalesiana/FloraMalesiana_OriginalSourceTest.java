@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.elements.TaxonListElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -33,7 +33,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.floramalesiana})
+@DataPortalContexts( { DataPortalSite.floramalesiana})
 public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
 
     private static final UUID UUID_ILLICIUM = UUID.fromString("502e28ca-23d0-44a8-9c13-85fb3d076bff");

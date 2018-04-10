@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
@@ -26,7 +26,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.cichorieae })
+@DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_FootnoteTest extends CdmDataPortalTestBase{
 
 

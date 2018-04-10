@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
@@ -25,7 +25,7 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
  * @author a.kohlbecker
  *
  */
-@DataPortalContexts( { DataPortalContext.cichorieae })
+@DataPortalContexts( { DataPortalSite.cichorieae })
 public class Chichorieae_Feature_ImageSourcesTest extends CdmDataPortalTestBase {
 
     static UUID hieracium_bupleuroides_aggr = UUID.fromString("f85a5f90-fc61-4622-939f-ba6e50500b0d");

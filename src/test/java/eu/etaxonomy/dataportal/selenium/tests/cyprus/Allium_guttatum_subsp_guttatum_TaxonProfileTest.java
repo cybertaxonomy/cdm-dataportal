@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.ImgElement;
@@ -37,7 +37,7 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.cyprus })
+@DataPortalContexts( { DataPortalSite.cyprus })
 public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPortalTestBase{
 
     static UUID taxonUuid = UUID.fromString("6d04598b-3852-4038-91c9-13c7581b21a6");

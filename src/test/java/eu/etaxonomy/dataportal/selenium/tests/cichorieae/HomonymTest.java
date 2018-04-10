@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
@@ -26,7 +26,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.cichorieae })
+@DataPortalContexts( { DataPortalSite.cichorieae })
 public class HomonymTest extends CdmDataPortalTestBase{
 
     static UUID pilosella_guthnikiana_Uuid = UUID.fromString("6d711fa0-77c3-42df-9d44-83fdc78f3482");

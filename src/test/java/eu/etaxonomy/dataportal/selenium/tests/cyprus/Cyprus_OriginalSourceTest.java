@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -31,7 +31,7 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.cyprus })
+@DataPortalContexts( { DataPortalSite.cyprus })
 public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
 
     // Taxon Cistus creticus subsp. creticus

@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.selenium.WebDriverFactory;
 
 /**
@@ -50,10 +51,10 @@ public abstract class CdmDataPortalTestBase extends Assert{
 	}
 
 	/**
-	 * Return the {@link DataPortalContext#getBaseUri()} of the currently active
+	 * Return the {@link DataPortalSite#getBaseUri()} of the currently active
 	 * context as String
 	 *
-	 * @return string representatoin of the DataPortal base URI
+	 * @return string representation of the DataPortal base URI
 	 */
 	public String getBaseUrl() {
 		return context.getBaseUri().toString();

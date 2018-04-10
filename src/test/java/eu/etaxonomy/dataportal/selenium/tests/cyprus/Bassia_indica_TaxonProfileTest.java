@@ -16,7 +16,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -28,7 +28,7 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.cyprus })
+@DataPortalContexts( { DataPortalSite.cyprus })
 public class Bassia_indica_TaxonProfileTest extends CdmDataPortalTestBase{
 
     static UUID taxonUuid = UUID.fromString("5250a30a-9e6f-4f2f-9663-93127a1a3829");

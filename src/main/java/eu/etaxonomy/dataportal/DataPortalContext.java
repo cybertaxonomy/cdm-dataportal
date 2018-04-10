@@ -11,46 +11,26 @@ package eu.etaxonomy.dataportal;
 import java.net.URI;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
-
 /**
  *
  * @author a.kohlbecker
  *
  */
-public enum DataPortalContext {
-
-    cichorieae,
-    palmae,
-    cyprus,
-    floramalesiana,
-    reference;
+public class DataPortalContext {
 
     URI baseUri;
     URI cdmServerUri;
     UUID classificationUUID;
     String siteName; //TODO could be read with drush: $ drush vget site_name
     String themeName;
+    private String siteLabel;
 
-
-    public final Logger logger = Logger.getLogger(DataPortalContext.class);
-
-    private DataPortalContext() {
-
-        try {
-            this.baseUri = TestConfiguration.getProperty(composePropertyKey("baseUri"), URI.class, true);
-            this.cdmServerUri = TestConfiguration.getProperty(composePropertyKey("cdmServerUri"), URI.class, false);
-            this.classificationUUID = TestConfiguration.getProperty(composePropertyKey("classificationUUID"), UUID.class, true);
-            this.siteName = TestConfiguration.getProperty(composePropertyKey("siteName"));
-        } catch (TestConfigurationException e) {
-            logger.error("Configuration Error: ", e);
-            System.exit(-1);
-        }
-    }
-
-    private String composePropertyKey(String fieldName) {
-        String key = this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1) + "." + this.name() + "." + fieldName;
-        return key;
+    public DataPortalContext(URI baseUri, URI cdmServerUri, UUID classificationUUID, String siteName, String siteLabel) {
+            this.baseUri = baseUri;
+            this.cdmServerUri = cdmServerUri;
+            this.classificationUUID = classificationUUID;
+            this.siteName = siteName;
+            this.siteLabel = siteLabel;
     }
 
     public URI getBaseUri() {
@@ -69,6 +49,18 @@ public enum DataPortalContext {
         return siteName;
     }
 
+    public String getSiteLabel() {
+        return siteLabel;
+    }
+
+
+
+    /**
+     *
+     * @param pageHeader
+     *
+     * @return The drupal site title as it is produced by drupal
+     */
     public String prepareTitle(String pageHeader) {
         return pageHeader + " | " + getSiteName();
     }

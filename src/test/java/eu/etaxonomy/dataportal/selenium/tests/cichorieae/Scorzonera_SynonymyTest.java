@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
 import eu.etaxonomy.dataportal.elements.TypeDesignationType;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -29,7 +29,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.cichorieae })
+@DataPortalContexts( { DataPortalSite.cichorieae })
 public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
 
     static UUID scorzonera_Uuid = UUID.fromString("c1e8a3f2-2b65-4aad-ad25-1cf9df92e290");

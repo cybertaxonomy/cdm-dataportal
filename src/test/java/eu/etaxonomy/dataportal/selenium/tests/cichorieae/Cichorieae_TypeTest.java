@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
 import eu.etaxonomy.dataportal.elements.TypeDesignationType;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -28,7 +28,7 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  *
  */
 
-@DataPortalContexts( { DataPortalContext.cichorieae })
+@DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
 
     static UUID cichorium_uuid = UUID.fromString("21d7161a-455e-4f4d-9d61-7f0100c38ff3");
