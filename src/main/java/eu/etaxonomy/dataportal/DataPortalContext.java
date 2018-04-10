@@ -37,10 +37,18 @@ public class DataPortalContext {
         return baseUri;
     }
 
+    /**
+     * <code>UNUSED</code>
+     * @return
+     */
     public URI getCdmServerUri() {
         return cdmServerUri;
     }
 
+    /**
+     * <code>UNUSED</code>
+     * @return
+     */
     public UUID getClassificationUUID() {
         return classificationUUID;
     }

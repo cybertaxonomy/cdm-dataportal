@@ -8,6 +8,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +23,10 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
+import eu.etaxonomy.dataportal.DataPortalContextProvider;
 import eu.etaxonomy.dataportal.DataPortalSite;
+import eu.etaxonomy.dataportal.DataPortalSiteContextProvider;
+import eu.etaxonomy.dataportal.DataPortalsListContextProvider;
 
 
 /**
@@ -29,6 +34,8 @@ import eu.etaxonomy.dataportal.DataPortalSite;
  *
  */
 public class DataPortalContextSuite extends Suite{
+
+    public static final String SYSTEM_PROPERTY_SITE_LIST_URL = "SiteListUrl";
 
 	/**
 	 * Only to be used for test classes which extend {@link CdmDataPortalTestBase}
@@ -39,11 +46,21 @@ public class DataPortalContextSuite extends Suite{
 	@Target(ElementType.TYPE)
 	@Inherited
 	public @interface DataPortalContexts {
+
 		/**
 		 * @return an array of DataPortalSite to which the annotated test
 		 *         class is applicable
 		 */
-		DataPortalSite[] value();
+		DataPortalSite[] value() default {};
+
+		/**
+		 * Alternative configuration option to the default {@link #value()}.
+		 *
+		 * In case this mode is active the system property <code>SiteListUrl</code> must contain a URL which
+		 * points to a resource containing a list of Data Portals base URLs to be tested. Each dataportal URL must be in a
+		 * separate line of the text returned by the URL in <code>SiteListUrl</code.
+		 */
+		boolean siteListUrl() default false;
 	}
 
 	private final List<Runner> runners = new ArrayList<Runner>();
@@ -103,8 +120,25 @@ public class DataPortalContextSuite extends Suite{
 	public DataPortalContextSuite(Class<?> klass) throws InitializationError {
 		super(klass, Collections.<Runner>emptyList());
 		DataPortalContexts dataPortalContextsAnotation = getTestClass().getJavaClass().getAnnotation(DataPortalContexts.class);
-		for (DataPortalSite dataPortalSite : dataPortalContextsAnotation.value()) {
-			runners.add(new TestClassRunnerWithDataPortalContext(klass, dataPortalSite.getContext()));
+		DataPortalContextProvider contextProvider = null;
+
+		if(dataPortalContextsAnotation.siteListUrl()){
+            String siteListUrlString = System.getProperty(SYSTEM_PROPERTY_SITE_LIST_URL);
+            if(System.getProperty(SYSTEM_PROPERTY_SITE_LIST_URL) == null) {
+                throw new RuntimeException("The system property " + SYSTEM_PROPERTY_SITE_LIST_URL + " must be set if 'siteListUrl' is enabled");
+            }
+            try {
+                contextProvider = new DataPortalsListContextProvider(new URL(siteListUrlString));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Error parsing the provided URL", e);
+            }
+		} else {
+		    contextProvider = new DataPortalSiteContextProvider(dataPortalContextsAnotation.value());
+		}
+
+		assert contextProvider != null;
+		for (DataPortalContext dataPortalContext : contextProvider.contexts()) {
+		    runners.add(new TestClassRunnerWithDataPortalContext(klass, dataPortalContext));
 		}
 	}
 
