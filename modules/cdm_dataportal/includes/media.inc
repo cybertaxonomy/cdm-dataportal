@@ -127,7 +127,8 @@ function media_feature_icon($feature, $media_url = NULL) {
  * @return array
  *   The array with the available specified metadata info.
  */
-function read_media_metadata($media) {
+function read_media_metadata($media)
+{
 
   $metadata = array(
     'title' => '',// Media_metadata and media.
@@ -141,7 +142,7 @@ function read_media_metadata($media) {
 
   // Getting the media metadata.
   $media_metadata = cdm_ws_get(CDM_WS_MEDIA_METADATA, array($media->uuid));
-  $media_metadata_aux = (array) $media_metadata;
+  $media_metadata_aux = (array)$media_metadata;
 
 
   // Filename.
@@ -149,8 +150,7 @@ function read_media_metadata($media) {
     $fileUri = $media->representations[0]->parts[0]->uri;
     $filename = substr($fileUri, strrpos($fileUri, "/") + 1);
     $metadata['filename'] = $filename;
-  }
-  else {
+  } else {
     $metadata['filename'] = '';
   }
 
@@ -161,28 +161,27 @@ function read_media_metadata($media) {
     $metadata['title'] = $media->titleCache;
   } else if (!empty($media_metadata->ObjectName)) {
     $metadata['title'] = $media_metadata->ObjectName;
-  } else  if (!empty($media_metadata_aux['Object Name'])) {
+  } else if (!empty($media_metadata_aux['Object Name'])) {
     $metadata['title'] = $media_metadata_aux['Object Name'];
   } else if (!empty($media->titleCache)) {
     $metadata['title'] = $media->titleCache;
   }
 
-  if(!empty($media->description_L10n)){
+  if (!empty($media->description_L10n)) {
     $metadata['description'] = $media->description_L10n;
   }
 
   // Artist.
   if (!empty($media->artist->titleCache)) {
     $metadata['artist'] = $media->artist->titleCache;
-  }
-  else if (!empty($media_metadata->Artist)) {
+  } else if (!empty($media_metadata->Artist)) {
     $metadata['artist'] = '' . $media_metadata->Artist;
   }
 
   // Rights
   $metadata['rights'] = array();
   if (!empty($media_metadata->Copyright)) {
-    $rightsObj =  new stdClass();
+    $rightsObj = new stdClass();
     $rightsObj->type = new stdClass();
     $rightsObj->type->uuid = UUID_RIGHTS_COPYRIGHT;
     $rightsObj->type->titleCache = 'copyright';
@@ -190,7 +189,7 @@ function read_media_metadata($media) {
     $rightsObj->type->text = $media_metadata->Copyright;
     $metadata['rights'][] = $rightsObj;
   }
-  if(isset($media->rights) && is_array($media->rights)) {
+  if (isset($media->rights) && is_array($media->rights)) {
     $metadata['rights'] = array_merge($metadata['rights'], $media->rights);
   }
 
@@ -202,15 +201,17 @@ function read_media_metadata($media) {
   $metadata['location']['sublocation'] = !empty($media_metadata->Sublocation) ? $media_metadata->Sublocation : FALSE;
   $metadata['location']['city'] = !empty($media_metadata->City) ? $media_metadata->City : FALSE;
   $metadata['location']['province'] = !empty($media_metadata->Province) ? $media_metadata->Province : FALSE;
-  $metadata['location']['country'] = !empty($media_metadata->Country)? $media_metadata->Country : FALSE;
+  $metadata['location']['country'] = !empty($media_metadata->Country) ? $media_metadata->Country : FALSE;
 
   /*
    // Creation date.
    if($media_metadata["Modify Date"])
    $metadata_caption['mediacreated'] = $media_metadata["Modify Date"];
    else
-   $metadata_caption['mediacreated'] = $media->created;
    */
+  if (!empty($media->mediaCreated)) {
+    $metadata_caption['mediacreated'] =  timePeriodToString($media->mediaCreated);
+  }
 
   return $metadata;
 }

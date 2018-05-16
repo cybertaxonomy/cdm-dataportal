@@ -259,6 +259,10 @@ function theme_cdm_media_caption($variables) {
   if ($media_metadata['artist'] && $doArtist) {
     _description_list_group_add($groups, t('Artist') . ':', $media_metadata['artist'] );
   }
+  // MediaCreated
+  if ($media_metadata['mediacreated'] && $doArtist) {
+    _description_list_group_add($groups, t('Created') . ':', $media_metadata['mediacreated'] );
+  }
   // Location.
   if ($doLocation) {
     $location = '';
