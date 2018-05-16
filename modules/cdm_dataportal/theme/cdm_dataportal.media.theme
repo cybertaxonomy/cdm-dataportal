@@ -213,6 +213,7 @@ function theme_cdm_media_caption($variables) {
   $doTitle = !$elements || array_search('title', $elements) !== FALSE;
   $doDescription = !$elements || array_search('description', $elements) !== FALSE;
   $doArtist = !$elements || array_search('artist', $elements) !== FALSE;
+  $doMediacreated = true; //!$elements || array_search('mediacreated', $elements) !== FALSE;
   $doLocation = !$elements || array_search('location', $elements) !== FALSE;
   $doRights = !$elements || array_search('rights', $elements) !== FALSE;
 
@@ -260,7 +261,7 @@ function theme_cdm_media_caption($variables) {
     _description_list_group_add($groups, t('Artist') . ':', $media_metadata['artist'] );
   }
   // MediaCreated
-  if ($media_metadata['mediacreated'] && $doArtist) {
+  if ($media_metadata['mediacreated'] && $doMediacreated) {
     _description_list_group_add($groups, t('Created') . ':', $media_metadata['mediacreated'] );
   }
   // Location.
