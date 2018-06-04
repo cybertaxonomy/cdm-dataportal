@@ -222,37 +222,37 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     $rowcount++;
                 }
             }
+
+            $tableId = "derivate_hierarchy_table";
+            $derivateHierarchyTable = array(
+                "#theme" => "table",
+                "#weight" => 2,
+                "#header" => array(
+                    array(
+                        'data' => "",
+                        'class' => array('expand_column')
+                    ),
+                    "Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivatives"),
+                "#rows" => $rows,
+                "#attributes" => array(
+                    "id" => $tableId,
+                    "border" => 2
+                )
+            );
+
+            //add toggle functionality to derivate hierarchy table
+            drupal_add_js_rowToggle("#".$tableId);
+
+            $render_array['derivate_hierarchy_table'] = $derivateHierarchyTable;
+            $render_array['pager'] = markup_to_render_array(
+                theme('cdm_pager', array(
+                    'pager' => $pagerFieldUnits,
+                    'path' => $_REQUEST['q'],
+                    'parameters' => $_REQUEST
+                )),
+                10 // weight
+            );
         }
-
-        $tableId = "derivate_hierarchy_table";
-        $derivateHierarchyTable = array(
-            "#theme" => "table",
-            "#weight" => 2,
-            "#header" => array(
-                array(
-                    'data' => "",
-                    'class' => array('expand_column')
-                ),
-                "Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivatives"),
-            "#rows" => $rows,
-            "#attributes" => array(
-                "id" => $tableId,
-                "border" => 2
-            )
-        );
-
-        //add toggle functionality to derivate hierarchy table
-        drupal_add_js_rowToggle("#".$tableId);
-
-        $render_array['derivate_hierarchy_table'] = $derivateHierarchyTable;
-        $render_array['pager'] = markup_to_render_array(
-            theme('cdm_pager', array(
-                'pager' => $pagerFieldUnits,
-                'path' => $_REQUEST['q'],
-                'parameters' => $_REQUEST
-            )),
-            10 // weight
-        );
     }
     else{
         //BOTTOM-UP-SPECIMEN-TABLE
