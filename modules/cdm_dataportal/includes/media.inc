@@ -206,11 +206,11 @@ function read_media_metadata($media)
   /*
    // Creation date.
    if($media_metadata["Modify Date"])
-   $metadata_caption['mediacreated'] = $media_metadata["Modify Date"];
+   $metadata['mediacreated'] = $media_metadata["Modify Date"];
    else
    */
   if (!empty($media->mediaCreated)) {
-    $metadata_caption['mediacreated'] =  timePeriodToString($media->mediaCreated);
+    $metadata['mediacreated'] =  timePeriodToString($media->mediaCreated);
   }
 
   return $metadata;
