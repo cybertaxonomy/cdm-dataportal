@@ -63,17 +63,12 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
     if (isset($specimen->types)) {
         //typed taxa
         foreach ($specimen->types as $typeStatus => $typedTaxa) {
-            if($is_specimen_page){
-                if($specimen->types){
-                    $detail_html .= "<i>".$typeStatus."</i>: ";
-                    foreach($typedTaxa as $typedTaxon){
-                        $detail_html .= $typedTaxon." ";
-                    }
-                    $detail_html .= "<br>";
+            if($specimen->types){
+                $detail_html .= "<i>".$typeStatus."</i> of ";
+                foreach($typedTaxa as $typedTaxon){
+                    $detail_html .= $typedTaxon." ";
                 }
-            }
-            else{
-                $types .= $typeStatus." ";
+                $detail_html .= "<br>";
             }
         }
     }
