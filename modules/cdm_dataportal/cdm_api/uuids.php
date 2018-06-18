@@ -38,9 +38,15 @@
   define('UUID_NAMEDAREALEVEL_TDWGLEVEL_4', '160ff2c8-9bfc-49c2-9afd-049c21a91695');
 
   // Taxon RelationshipTypes.
-  define('UUID_TAXONOMICALLY_INCLUDED_IN', 'd13fecdf-eb44-4dd7-9244-26679c05df1c');
+  // (default)
   define('UUID_MISAPPLIED_NAME_FOR', '1ed87175-59dd-437e-959e-0d71583d8417');
+  define('UUID_PROPARTE_MISAPPLIEDNAME_FOR', 'b59b4bd2-11ff-45d1-bae2-146efdeee206');
+  define('UUID_PARTIAL_MISAPPLIEDNAME_FOR', '859fb615-b0e8-440b-866e-8a19f493cd36');
+  define('UUID_PROPARTE_SYNONYM_FOR', '8a896603-0fa3-44c6-9cd7-df2d8792e577');
+  define('UUID_PARTIAL_SYNONYM_FOR', ' 9d7a5e56-973c-474c-b6c3-a1cb00833a3c');
   define('UUID_INVALID_DESIGNATION_FOR', '605b1d01-f2b1-4544-b2e0-6f08def3d6ed');
+  // (optional)
+  define('UUID_TAXONOMICALLY_INCLUDED_IN', 'd13fecdf-eb44-4dd7-9244-26679c05df1c');
   define('UUID_CONTRADICTION', 'a8f03491-2ad6-4fae-a04c-2a4c117a2e9b');
   define('UUID_CONGRUENT_TO', '60974c98-64ab-4574-bb5c-c110f6db634d');
   define('UUID_INCLUDES', '0501c385-cab1-4fbe-b945-fc747419bb13');
