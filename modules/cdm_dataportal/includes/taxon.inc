@@ -228,12 +228,12 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $invers
 
   if ($inverse) {
     $toTaxon = $taxonRelationship->fromTaxon;
-    $relsign = $taxonRelationType->inverseRepresentation_L10n_abbreviatedLabel;
+    $relsign = $taxonRelationType->inverseSymbol;
     $reltype_representation = $taxonRelationType->inverseRepresentation_L10n;
   }
   else {
     $toTaxon = $taxonRelationship->toTaxon;
-    $relsign = $taxonRelationType->representation_L10n_abbreviatedLabel;
+    $relsign = $taxonRelationType->symbol;
     $reltype_representation = $taxonRelationType->representation_L10n;
   }
 
