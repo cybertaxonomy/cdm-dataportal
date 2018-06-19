@@ -51,12 +51,12 @@
   /* taxonRelationshipTypes */
   define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(
     array(
-      UUID_MISAPPLIED_NAME_FOR,
-      UUID_PROPARTE_MISAPPLIEDNAME_FOR,
-      UUID_PARTIAL_MISAPPLIEDNAME_FOR,
-      UUID_PROPARTE_SYNONYM_FOR,
-      UUID_PARTIAL_SYNONYM_FOR,
-      UUID_INVALID_DESIGNATION_FOR
+      UUID_MISAPPLIED_NAME_FOR => UUID_MISAPPLIED_NAME_FOR,
+      UUID_PROPARTE_MISAPPLIEDNAME_FOR => UUID_PROPARTE_MISAPPLIEDNAME_FOR,
+      UUID_PARTIAL_MISAPPLIEDNAME_FOR => UUID_PARTIAL_MISAPPLIEDNAME_FOR,
+      UUID_PROPARTE_SYNONYM_FOR => UUID_PROPARTE_SYNONYM_FOR,
+      UUID_PARTIAL_SYNONYM_FOR => UUID_PARTIAL_SYNONYM_FOR,
+      UUID_INVALID_DESIGNATION_FOR => UUID_INVALID_DESIGNATION_FOR
     )
   ));
 
@@ -2491,14 +2491,15 @@ ie	introduced: formerly introduced
       below selected taxon relationships of accepted taxa.'),
   );
 
-  $taxonRelationshipTypeOptions = cdm_vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
+  $taxon_relationship_type_options = cdm_vocabulary_as_option(UUID_TAXON_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
+  $taxon_relationship_type_defaults = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
   $form['taxon_synonymy']['taxon_relations'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Taxon relationship types') . ':',
     '#description' => t('Only taxon relationships of the selected type will be
       displayed'),
-    '#options' => $taxonRelationshipTypeOptions,
-    '#default_value' => variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT)),
+    '#options' => $taxon_relationship_type_options,
+    '#default_value' => $taxon_relationship_type_defaults,
     '#disabled' => !variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
   );
 
@@ -2509,13 +2510,13 @@ ie	introduced: formerly introduced
     '#collapsed' => FALSE
   );
 
-  $taxonRelationshipTypeOptions = cdm_vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
+  $name_relationship_type_options = cdm_vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
   $form['taxon_synonymy']['name_relations'][CDM_NAME_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Name relationship types') . ':',
     '#description' => t('Only name relationships of the selected type will be
       displayed'),
-    '#options' => $taxonRelationshipTypeOptions,
+    '#options' => $name_relationship_type_options,
     '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_TYPES, unserialize(CDM_NAME_RELATIONSHIP_TYPES_DEFAULT)),
   );
 

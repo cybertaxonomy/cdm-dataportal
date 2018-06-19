@@ -455,7 +455,7 @@ function cdm_dataportal_update_7500()
     UUID_PROPARTE_SYNONYM_FOR,
     UUID_PARTIAL_SYNONYM_FOR
   );
-  $taxonRelTypes = variable_get(CDM_TAXON_RELATIONSHIP_TYPES);
+  $taxonRelTypes = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
   foreach($new_defaults as $default_uuid){
     $taxonRelTypes[$default_uuid] = $default_uuid;
   }
