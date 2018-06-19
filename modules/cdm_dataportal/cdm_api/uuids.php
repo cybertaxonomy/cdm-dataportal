@@ -57,11 +57,10 @@
   define('UUID_NOT_INCLUDED_IN', '89dffa4e-e004-4d42-b0d1-ae1827529e43');
   define('UUID_NOT_CONGRUENT_TO', '6c16c33b-cfc5-4a00-92bd-a9f9e448f389');
 
-  // SynonymRelationshipTypes. // TODO  see #7493
-  //   all unused terms are commented below:
-  // define('UUID_SYNONYM_OF', '1afa5429-095a-48da-8877-836fa4fe709e');
-  // define('UUID_PRO_PARTE_SYNONYM_OF', '130b752d-2eff-4a62-a132-104ed8d13e5e');
-  // define('UUID_PARTIAL_SYNONYM_OF', '8b0d1d34-cc00-47cb-999d-b67f98d1af6e');
+  // SynonymTypes.
+  define('UUID_SYNONYM_OF', '1afa5429-095a-48da-8877-836fa4fe709e');
+  define('UUID_PRO_PARTE_SYNONYM_OF', '130b752d-2eff-4a62-a132-104ed8d13e5e');
+  define('UUID_PARTIAL_SYNONYM_OF', '8b0d1d34-cc00-47cb-999d-b67f98d1af6e');
   define('UUID_HOMOTYPIC_SYNONYM_OF', '294313a9-5617-4ed5-ae2d-c57599907cb2');
   define('UUID_HETEROTYPIC_SYNONYM_OF', '4c1e2c59-ca55-41ac-9a82-676894976084');
 
