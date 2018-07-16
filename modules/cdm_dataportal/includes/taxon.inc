@@ -579,6 +579,16 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
 }
 
 
+/**
+ * Compose function for the taxonomic children
+ *
+ * @param $taxon_uuid
+ *    The uuuid of the taxon to compose the list of taxonomic children for
+ * @return
+ *   A drupal render array.
+ *
+ * @ingroup compose
+ */
 function compose_taxonomic_children($taxon_uuid){
 
   $render_array = array();
