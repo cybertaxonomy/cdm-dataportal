@@ -214,8 +214,12 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $tag = 'span', $glue = ' ',
   $i = 0;
   foreach ($taggedtxt as $tt) {
     if (!in_array($tt->type, $skiptags) && strlen($tt->text) > 0) {
+      $class_attr = $tt->type;
+      if(isset($tt->entityReference)){
+        $class_attr .= " " . html_class_attribute_ref($tt->entityReference);
+      }
       $out .= (strlen($out) > 0 && ++$i < count($taggedtxt) ? $glue : '')
-        . '<' . $tag . ' class="' . $tt->type . '">'
+        . '<' . $tag . ' class="' . $class_attr . '">'
         . t('@text', array('@text' => $tt->text))
         . '</' . $tag . '>';
     }
