@@ -392,7 +392,10 @@ function cdm_accepted_for($accepted_for_uuid) {
 /**
  * Compose function for a list of taxa.
  *
- * This function is for example used to display search results or the taxa for a taxon name in the name page.
+ * This function is for used to:
+ *
+ * 1. Display search results
+ * 2. List the taxa for a taxon name in the name page.
  *
  * @param $taxon_list array
  *   The list of CDM Taxon entities. e.g. The records array as contained in a pager object.
@@ -462,7 +465,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
     }
   }
 
-  $out = '<ul class="cdm_names" style="background-image: none;">';
+  $out = '<div class="cdm-item-list" style="background-image: none;">';
   $itemCnt = -1;
   foreach ($taxon_list as $taxon) {
     $itemCnt++;
@@ -488,7 +491,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
           $taxon_or_name = $is_synonym ? $taxon->name : $taxon;
           // $taxon_or_name this is a trick to suppress the sec reference for synonyms
           // supplying the name will cause render_taxon_or_name() to not show the sec reference
-          $out .= '<li class="' . $taxon_type . '">' . render_taxon_or_name($taxon_or_name, $taxonUri, $referenceUri);
+          $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon_or_name, $taxonUri, $referenceUri);
           if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && is_object($taxon->sec)){
             if(isset($taxon->sec->authorship)){
               $authorship = $taxon->sec->authorship->titleCache;
@@ -524,7 +527,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       if (isset($taxon->name->nomenclaturalReference)) {
         $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
       }
-      $out .= '<li class="Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri);
+      $out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri);
       if ($show_classification) {
         $classifications = get_classifications_for_taxon($taxon);
         $classification_titles = array();
@@ -569,10 +572,10 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       }
     }
 
-    $out .= '</li>';
+    $out .= '</div>';
   }
 
-  $out .= '</ul>';
+  $out .= '</div>';
   RenderHints::popFromRenderStack();
 
   return markup_to_render_array($out); // TODO create render array of all list items in function

@@ -2205,7 +2205,7 @@ tr.selected td {
 }
 
 /* line 66, ../sass/cdm.scss */
-ul.cdm_names li, div.pager_records div.item {
+div.cdm-item-list div.item {
   margin: 9px 0;
 }
 

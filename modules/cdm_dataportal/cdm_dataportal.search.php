@@ -826,7 +826,7 @@ function cdm_dataportal_search_registration_form($form, &$form_state) {
 function compose_registrations_search_results($registration_pager){
 
   $render_array = array();
-  $render_array['pre'] = markup_to_render_array("<div class=\"pager_records\">");
+  $render_array['pre'] = markup_to_render_array("<div class=\"cdm-item-list\">");
   if($registration_pager != null){
     $items_render_array = array();
     foreach($registration_pager->records as $registration) {

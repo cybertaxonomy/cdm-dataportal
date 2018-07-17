@@ -334,18 +334,13 @@ ul li.synonym {
   background-image: none;
 }
 
+/* .heterotypic-synonymy-group */
 li.firstentry {
   margin-left: 6px;
 }
 
-ul.cdm_names, ul.cdm_names li{
-  background-image: none;
-  list-style-type: none;
-  list-style-image: none;
-}
 
-
-ul.cdm_names .dynabox_content {
+div.cdm-item-list .dynabox_content {
   margin-top:-1em;
 }
 

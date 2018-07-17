@@ -140,10 +140,6 @@ body.mceContentBody {
   margin-top: 0;
 }
 
-ul.cdm_names li {
-  padding-left: 0;
-}
-
 div.cdm_taxontree_scroller_y {
   background-color: #efefef;
   border: 1px solid transparent;
