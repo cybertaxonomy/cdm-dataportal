@@ -834,7 +834,7 @@ function compose_registrations_search_results($registration_pager){
       $items_render_array[]  = markup_to_render_array(
         "<div class=\"item\"><div class=\"" . html_class_attribute_ref(new TypedEntityReference("Registration", $registration->uuid)) . "\">"
           . "<div class=\"identifier\">"
-          . l($registration->identifier, $registration->identifier, array('absolute' => true, 'attributes' => array('class' => array('identifier'))))
+          . l($registration->identifier, path_to_registration($registration->identifier), array('absolute' => true, 'attributes' => array('class' => array('identifier'))))
           . "</div>"
           . $summary_markup
           . "</div></div>"

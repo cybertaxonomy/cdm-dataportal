@@ -223,6 +223,20 @@ function cdm_node_show($cdm_node_type, $uuid, $title, $content) {
 }
 
 /**
+ * Simulates the influence on the page layout by cdm_node_show().
+ *
+ * Adds a div as first element for the general part, which usually is empty in dataporal pages.
+ *
+ * @param $content
+ */
+function cdm_node_show_simulate($content)
+{
+  array_unshift($content, array("general-part" => markup_to_render_array("<div id=\"general\" class=\"page-part\"></div>")));
+  return drupal_render($content);
+}
+
+
+/**
  * Sets the $content given a paramater to the $node object
  *
  * The $content can either be a string or an array.
