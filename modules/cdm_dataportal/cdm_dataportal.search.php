@@ -48,25 +48,14 @@ function cdm_dataportal_search_form_path_for_ws($ws_endpoint) {
  *   A default text for the query field
  * @param string $query_field_description
  *   The description text for the query field
- * @param string $process
- *   The value for #process, if NULL (default), 'cdm_dataportal_search_process'
- *   is used. - TODO not used, remove?
  *
  * @return array
  *   The prepared form array.
  */
-function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $query_field_default_value, $query_field_description, $process = NULL) {
+function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $query_field_default_value, $query_field_description) {
 
-  //if ($process == NULL) {
-  //  $process = 'cdm_dataportal_search_process';
-  //}
 
   $form['#method'] = 'get';
-  //
-  //  $form['#process'] = array(
-  //  $process => array(),
-  //  );
-  //
   $form['#action'] = url($action_path, array(
     'absolute' => TRUE,
   ));
@@ -590,7 +579,7 @@ function cdm_dataportal_search_request($search_endpoint)
 /**
  * Provides the classification to which the last search has been limited to..
  *
- * This function should only be used after the cdm_dataportal_search_execute()
+ * This function should only be used after the cdm_dataportal_search_taxon_execute()
  * handler has been run, otherwise it will return the information from the last
  * search executed. The information is retrieved from
  * the $_SESSION variable:  $_SESSION['cdm']['search']['tree']
@@ -614,16 +603,6 @@ function cdm_dataportal_searched_in_classification() {
   }
 
   return $classification !== FALSE ? $classification : NULL;
-}
-
-/**
- * Removes Drupal internal form elements from query.
- * FIXME remove since unused?
- */
-function cdm_dataportal_search_process($form, &$form_state) {
-  unset($form['form_id']);
-  unset($form['form_token']);
-  return $form;
 }
 
 /**
@@ -656,7 +635,7 @@ function remove_drupal_form_params($request) {
  *
  * @see cdm_dataportal_search_request()
  */
-function cdm_dataportal_search_execute() {
+function cdm_dataportal_search_taxon_execute() {
 
   // Store as last search in session.
   $_SESSION['cdm']['last_search'] = $_SERVER['REQUEST_URI'];
@@ -844,7 +823,7 @@ function cdm_dataportal_search_registration_form($form, &$form_state) {
  *
  * TODO compose function into search.inc ?
  */
-function compose_registrations_pager($registration_pager){
+function compose_registrations_search_results($registration_pager){
 
   $render_array = array();
   $render_array['pre'] = markup_to_render_array("<div class=\"pager_records\">");

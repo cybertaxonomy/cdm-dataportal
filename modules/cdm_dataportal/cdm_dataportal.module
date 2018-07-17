@@ -1832,7 +1832,7 @@ function cdm_dataportal_view_search_taxon_by_description() {
  */
 function cdm_dataportal_view_search_results_taxon() {
 
-  $taxonPager = cdm_dataportal_search_execute();
+  $taxonPager = cdm_dataportal_search_taxon_execute();
 
   $showThumbnails = do_showThumbnails();
 
@@ -1886,7 +1886,7 @@ function cdm_dataportal_view_search_registrations_results() {
 
   drupal_set_title(t('Search registrations'), PASS_THROUGH);
 
-  $registrations_pager_array = compose_registrations_pager($registration_pager);
+  $registrations_pager_array = compose_registrations_search_results($registration_pager);
 
   $render_array = array_merge($render_array, $registrations_pager_array);
 
