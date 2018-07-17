@@ -77,7 +77,7 @@ function xxx_palmweb_2_cdm_descriptionElement_Distribution($variables) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function palmweb_2_cdm_search_results($variables){
+function palmweb_2_cdm_search_taxa_results($variables){
   $pager = $variables['pager'];
   $path = $variables['path'];
   $out = '';

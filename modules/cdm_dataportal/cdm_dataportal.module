@@ -1868,7 +1868,7 @@ function cdm_dataportal_view_search_results_taxon() {
 
   drupal_set_title(t('Search results'), PASS_THROUGH);
 
-  return theme('cdm_search_results', array(
+  return theme('cdm_search_taxa_results', array(
     'pager' => $taxonPager,
     'path' => 'cdm_dataportal/search/results/taxon',
     ));

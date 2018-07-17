@@ -230,7 +230,7 @@ function theme_cdm_taxon_page_synonymy($variables) {
  *
  * @ingroup themeable
  */
-function theme_cdm_search_results($variables)
+function theme_cdm_search_taxa_results($variables)
 {
   $pager = $variables['pager'];
   $path = $variables['path'];
