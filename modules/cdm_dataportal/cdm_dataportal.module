@@ -496,6 +496,12 @@ function cdm_dataportal_menu() {
     'access arguments' => array('access cdm content'),
     'type' => MENU_CALLBACK,
   );
+  $items['cdm_dataportal/search/registration'] = array(
+    'page callback' => 'cdm_dataportal_view_search_registrations_results',
+    'access arguments' => array('access cdm content'),
+    'type' => MENU_CALLBACK,
+  );
+
   /*
    $items['cdm/xml2json'] = array(
    'page callback' => 'cdm_view_xml2json',
@@ -816,6 +822,13 @@ function cdm_dataportal_block_info() {
       'visibility' => BLOCK_VISIBILITY_LISTED,
       'pages' => "cdm_dataportal/taxon/*", // multiple page paths separated by "\n"!!!
     );
+  $block['registrations_search_filter'] =  array(
+    'title' => '<none>',
+    'info' => t('CDM - Registrations search filter'),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+    'visibility' => BLOCK_VISIBILITY_LISTED,
+    'pages' => "cdm_dataportal/search/registration\ncdm_dataportal/search/registration/*", // multiple page paths separated by "\n"!!!
+  );
 
     return $block;
 }
@@ -873,6 +886,10 @@ function cdm_dataportal_block_view($delta) {
       if (isset($_SESSION['cdm']['search'])) {
         $block['content'] = l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search']);
       }
+      return $block;
+    case 'registrations_search_filter':
+      $block['subject'] = '<none>';
+      $block['content'] = $form = drupal_get_form('cdm_dataportal_search_registration_form'); // see cdm_dataportal_search_registration_form($form, &$form_state)
       return $block;
     default:
       return null;
@@ -1858,6 +1875,26 @@ function cdm_dataportal_view_search_results_taxon() {
 }
 
 /**
+ * Executes the search for registrations and generates the result list..
+ */
+function cdm_dataportal_view_search_registrations_results() {
+
+  $block = block_load('cdm_dataportal', 'registrations_search_filter');
+  $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
+
+  $registration_pager = cdm_dataportal_search_registrations_execute();
+
+  drupal_set_title(t('Search registrations'), PASS_THROUGH);
+
+  $registrations_pager_array = compose_registrations_pager($registration_pager);
+
+  $render_array = array_merge($render_array, $registrations_pager_array);
+
+  return $render_array;
+}
+
+
+/**
  * Provides the standart image wich indicated a loading process
  *
  * @return string
@@ -1902,6 +1939,7 @@ function do_showThumbnails() {
 
   return $showThumbnails;
 }
+
 
 
 /* ====================== other functions ====================== */
@@ -2119,20 +2157,22 @@ function rank_compare($thisRankUuid, $thatRankUuid) {
  * These according class selectors in css must be escaped, eg:
  *    .cdm\:TextData
  *
- * @param $cdmEntity
- *    A CDM entity or TaxonNodeDTO
+ * @param $cdm_entity
+ *    A CDM entity, TaxonNodeDTO or TypedEntityReference
  */
-function html_class_attribute_ref($cdmEntity) {
+function html_class_attribute_ref($cdm_entity) {
 
   $attributes = '';
-  if (is_cdm_entity($cdmEntity)) {
-    $attributes =  "cdm:" . $cdmEntity->class . " uuid:" . $cdmEntity->uuid;
+  if (is_cdm_entity($cdm_entity)) {
+    $attributes =  "cdm:" . $cdm_entity->class . " uuid:" . $cdm_entity->uuid;
+  } else if($cdm_entity->class == 'TypedEntityReference') {
+    $attributes =  "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
   }
-  if($cdmEntity->class == 'TaxonNodeDto'){
-    $attributes .= " taxon_uuid:"  . $cdmEntity->taxonUuid . " sec_uuid:"  . $cdmEntity->secUuid;;
+  if($cdm_entity->class == 'TaxonNodeDto'){
+    $attributes .= " taxon_uuid:"  . $cdm_entity->taxonUuid . " sec_uuid:"  . $cdm_entity->secUuid;;
   }
-  if($cdmEntity->class == 'Taxon' && isset($cdmEntity->sec->uuid)){
-    $attributes .= " sec_uuid:"  . $cdmEntity->sec->uuid;
+  if($cdm_entity->class == 'Taxon' && isset($cdm_entity->sec->uuid)){
+    $attributes .= " sec_uuid:"  . $cdm_entity->sec->uuid;
   }
   return $attributes;
 }

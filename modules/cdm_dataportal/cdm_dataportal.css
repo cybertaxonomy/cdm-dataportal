@@ -103,6 +103,10 @@ select.highlite-first-child option:first-child {
     border-style: solid;
 }
 
+.fa-icon {
+    font-family: 'FontAwesome';
+}
+
 /*
  * ======= Search-Form =======
  */
@@ -149,6 +153,13 @@ select.highlite-first-child option:first-child {
     background-color: #eeeeee;
 }
 
+.search-filter .form-item{
+    display: inline-block;
+    vertical-align: top;
+}
+.search-filter .form-submit {
+    display: inline-block;
+}
 /*
  * ======= Search-Results =======
  */
@@ -333,12 +344,13 @@ ul.cdm_names, ul.cdm_names li{
   list-style-image: none;
 }
 
-.dynabox .label:hover {
-  color: #0174bb;
-}
 
 ul.cdm_names .dynabox_content {
   margin-top:-1em;
+}
+
+.dynabox .label:hover {
+  color: #0174bb;
 }
 
 .tickbox_content {

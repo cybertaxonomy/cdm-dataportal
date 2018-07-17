@@ -9,6 +9,7 @@ files[] = classes/footnote.php
 files[] = classes/footnotekey.php
 files[] = classes/footnotemanager.php
 files[] = classes/renderhints.php
+files[] = classes/TypedEntityReference.php
 
 
 configure = admin/config/cdm_dataportal/settings

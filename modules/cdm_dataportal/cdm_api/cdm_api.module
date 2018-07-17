@@ -1385,10 +1385,13 @@ function cdm_term_representation_abbreviated($definedTermBase, $default_represen
  * @param $term_label_callback
  *   A callback function to override the term representations
  *
+ * @param bool $empty_option
+ *   An additional element do be placed at the beginning og the list. This element will be the default option.
+ *
  * @return array
  *   the terms in an array as options for a form element that allows multiple choices.
  */
-function cdm_terms_as_options($terms, $term_label_callback = NULL){
+function cdm_terms_as_options($terms, $term_label_callback = NULL, $empty_option = FALSE){
   $options = array();
   if(isset($terms) && is_array($terms)) {
     foreach ($terms as $term) {
@@ -1401,6 +1404,10 @@ function cdm_terms_as_options($terms, $term_label_callback = NULL){
     }
   }
 
+  if($empty_option !== FALSE){
+    array_unshift ($options, "");
+  }
+
   return $options;
 }
 
@@ -1411,9 +1418,8 @@ function cdm_terms_as_options($terms, $term_label_callback = NULL){
  *   The UUID of the CDM Term Vocabulary
  * @param $term_label_callback
  *   An optional call back function which can be used to modify the term label
- * @param bool $default_option
+ * @param bool $empty_option
  *   An additional element do be placed at the beginning og the list. This element will be the default option.
- *   In order to put an empty element the beginning of the options pass an " " as argument.
  * @param array $include_filter
  *   An associative array consisting of a field name an regular expression. All term matching
  *   these filter are included. The value of the field is converted to a String by var_export()
@@ -1422,7 +1428,7 @@ function cdm_terms_as_options($terms, $term_label_callback = NULL){
  *   One of the order by constants defined in this file
  * @return mixed
  */
-function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL, $default_option = FALSE,
+function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL, $empty_option = FALSE,
                                   array $include_filter = null, $order_by = CDM_ORDER_BY_ORDER_INDEX_ASC) {
 
   static $vocabularyOptions = array();
@@ -1455,18 +1461,16 @@ function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL,
     }
 
     // make options list
-    $vocabularyOptions[$vocabulary_uuid] = cdm_terms_as_options($terms, $term_label_callback);
+    $vocabularyOptions[$vocabulary_uuid] = cdm_terms_as_options($terms, $term_label_callback, $empty_option);
   }
 
   $options = $vocabularyOptions[$vocabulary_uuid];
-  if($default_option !== FALSE){
-    array_unshift ($options, "");
-  }
+
   return $options;
 }
 
 /**
- * @param $term_type one of
+ * @param $term_type string one of
  *  - Unknown
  *  - Language
  *  - NamedArea
@@ -1514,8 +1518,10 @@ function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL,
  *    - CDM_ORDER_BY_TITLE_CACHE_DESC
  *    - CDM_ORDER_BY_ORDER_INDEX_ASC (can only be used with OrderedTerms!!)
  *    - CDM_ORDER_BY_ORDER_INDEX_DESC (can only be used with OrderedTerms!!)
+ * @param bool $empty_option
+ *   An additional element do be placed at the beginning og the list. This element will be the default option.
  */
-function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_CACHE_ASC, $term_label_callback = NULL){
+function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_CACHE_ASC, $term_label_callback = NULL, $empty_option = FALSE){
   $terms = cdm_ws_fetch_all(
     CDM_WS_TERM,
     array(
@@ -1523,7 +1529,7 @@ function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_
       'orderBy' => $order_by
     )
   );
-  return cdm_terms_as_options($terms, $term_label_callback);
+  return cdm_terms_as_options($terms, $term_label_callback, $empty_option);
 }
 
 /**
@@ -2452,7 +2458,9 @@ function is_uuid($str) {
  *   True if the object is a cdm entity.
  */
 function is_cdm_entity($object) {
-  return isset($object->class) && is_string($object->class) && strlen($object->class) > 2 && is_string($object->uuid) && is_uuid($object->uuid);
+  return
+    isset($object->class) && is_string($object->class) && strlen($object->class) > 2 && $object->class != 'TypedEntityReference'
+    && is_string($object->uuid) && is_uuid($object->uuid);
 }
 
 /**
