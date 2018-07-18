@@ -111,10 +111,16 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         }
 
         $by_associatedtaxon_query = http_build_query($associatedFieldUnitsQuery_parameters);
-        $pagerFieldUnits = cdm_ws_get(CDM_WS_PORTAL_TAXON,
+        $pager_field_units = cdm_ws_get(CDM_WS_PORTAL_TAXON,
             array($taxon->uuid, 'associatedFieldUnits'),
             $by_associatedtaxon_query . '&pageSize=' . variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size')
         );
+        if (isset($pager_field_units->records[0])) {
+          $field_unit_uuids = array();
+          foreach ($pager_field_units->records as $field_unit) {
+            $field_unit_uuids[] = $field_unit->uuid;
+          }
+        }
         // get icon images
         $expand_icon = font_awesome_icon_markup(
             'fa-plus-square-o',
@@ -135,91 +141,83 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
         $character_data_icon = '<img title="Character Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/character_data_derivate-16x16-32.png' . '"/>';
         if (isset($pagerFieldUnits->records[0])) {
-            $rowcount = 0;
-            foreach ($pagerFieldUnits->records as $fieldUnit) {
-                //get derivate hierarchy for the FieldUnit
-                $derivateHierarchy = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($fieldUnit->uuid, 'derivateHierarchy'), 'taxonUuid=' . $taxon->uuid);
-                if($derivateHierarchy){
-                    //summary row
-                    $rows[] = array(
-                        'data' => array(
-                            array(
-                                'data' => $expand_icon . $collapse_icon,
-                                'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
-                            ),
-                            array(
-                                'data' => $derivateHierarchy->country,
-                                'class' => array('summary_row_cell')
-                            ),
-                            array(
-                                'data' => $derivateHierarchy->date,
-                                'class' => array('summary_row_cell')
-                            ),
-                            array(
-                                'data' => $derivateHierarchy->collection,
-                                'class' => array('summary_row_cell')
-                            ),
-                            array(
-                                'data' => $derivateHierarchy->herbarium,
-                                'class' => array('summary_row_cell')
-                            ),
-                            array(
-                                'data' => $derivateHierarchy->hasType? $checked_box_icon:"",
-                                'class' => array('summary_row_cell', 'summary_row_icon')
-                            ),
-                            array(
-                                'data' => $derivateHierarchy->hasSpecimenScan? $checked_box_icon:"",
-                                'class' => array('summary_row_cell', 'summary_row_icon')
-                            ),
-                            array(
-                                'data' => ($derivateHierarchy->hasDna? $sequence_icon :"")." "
-                                    .($derivateHierarchy->hasDetailImage?$detail_image_icon:"")." "
-                                    .($derivateHierarchy->hasCharacterData?$character_data_icon:""),
-                                'class' => array('summary_row_cell', 'summary_row_icon')
-                            )
+        $rowcount = 0;
+        foreach ($field_unit_uuids as $field_unit_uuid) {
+            //get derivate hierarchy for the FieldUnit
+            $derivateHierarchy = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($field_unit_uuid, 'derivateHierarchy'));
+            if($derivateHierarchy){
+                //summary row
+                $rows[] = array(
+                    'data' => array(
+                        array(
+                            'data' => $expand_icon . $collapse_icon,
+                            'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
                         ),
-                        'id' => ('derivate_summary' . $rowcount), // summary row id
-                        'class' => array('summary_row'),
-                    );
+                        array(
+                            'data' => $derivateHierarchy->country,
+                            'class' => array('summary_row_cell')
+                        ),
+                        array(
+                            'data' => $derivateHierarchy->date,
+                            'class' => array('summary_row_cell')
+                        ),
+                        array(
+                            'data' => $derivateHierarchy->collection,
+                            'class' => array('summary_row_cell')
+                        ),
+                        array(
+                            'data' => $derivateHierarchy->herbarium,
+                            'class' => array('summary_row_cell')
+                        ),
+                        array(
+                            'data' => $derivateHierarchy->hasType? $checked_box_icon:"",
+                            'class' => array('summary_row_cell', 'summary_row_icon')
+                        ),
+                        array(
+                            'data' => $derivateHierarchy->hasSpecimenScan? $checked_box_icon:"",
+                            'class' => array('summary_row_cell', 'summary_row_icon')
+                        ),
+                        array(
+                            'data' => ($derivateHierarchy->hasDna? $sequence_icon :"")." "
+                                .($derivateHierarchy->hasDetailImage?$detail_image_icon:"")." "
+                                .($derivateHierarchy->hasCharacterData?$character_data_icon:""),
+                            'class' => array('summary_row_cell', 'summary_row_icon')
+                        )
+                    ),
+                    'id' => ('derivate_summary' . $rowcount), // summary row id
+                    'class' => array('summary_row'),
+                );
 
-                    //assemble field unit details
-                    $detail_html = "";
-                    // - taxon name
-                    if (variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as') && $derivateHierarchy->taxonName) {
-                        $detail_html .= create_label("Associated with") . $derivateHierarchy->taxonName . "<br>";
+                //assemble field unit details
+                $detail_html = "";
+                // - citation
+                if ($derivateHierarchy->citation) {
+                    $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
+                }
+                //assemble specimen details
+                if($derivateHierarchy->preservedSpecimenDTOs){
+                    foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
+                        $detail_html .= "<br>";
+                        $detail_html .= render_cdm_specimen_page($preservedSpecimenDTO);
                     }
-                    // - protologue
-                    if ($derivateHierarchy->protologue) {
-                        //$detail_html .= "<strong>Protologue:</strong> " . $derivateHierarchy->protologue . "<br>"
-                    }
-                    // - citation
-                    if ($derivateHierarchy->citation) {
-                        $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
-                    }
-                    //assemble specimen details
-                    if($derivateHierarchy->preservedSpecimenDTOs){
-                        foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
-                            $detail_html .= "<br>";
-                            $detail_html .= render_cdm_specimen_page($preservedSpecimenDTO);
-                        }
-                    }
-                    $detail_html .= "<br>";
-                    //detail row resp. one BIG detail cell
-                    $rows[] = array(
-                        'data' => array(
-                            array(
-                                'data' => "", //empty first column
-                                'class' => array('expand_column')
-                            ),
-                            array(
-                                'data' => $detail_html,
-                                'colspan' => 7,
-                            ),
+                }
+                $detail_html .= "<br>";
+                //detail row resp. one BIG detail cell
+                $rows[] = array(
+                    'data' => array(
+                        array(
+                            'data' => "", //empty first column
+                            'class' => array('expand_column')
                         ),
-                        'id' => ('derivate_details' . $rowcount),//details row ID
-                        'class' => array('detail_row'),
-                    );
-                    $rowcount++;
+                        array(
+                            'data' => $detail_html,
+                            'colspan' => 7,
+                        ),
+                    ),
+                    'id' => ('derivate_details' . $rowcount),//details row ID
+                    'class' => array('detail_row'),
+                );
+                $rowcount++;
                 }
             }
 
@@ -246,7 +244,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             $render_array['derivate_hierarchy_table'] = $derivateHierarchyTable;
             $render_array['pager'] = markup_to_render_array(
                 theme('cdm_pager', array(
-                    'pager' => $pagerFieldUnits,
+                    'pager' => $pager_field_units,
                     'path' => $_REQUEST['q'],
                     'parameters' => $_REQUEST
                 )),

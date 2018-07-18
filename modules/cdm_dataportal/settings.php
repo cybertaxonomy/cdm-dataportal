@@ -2540,16 +2540,10 @@ ie	introduced: formerly introduced
     a collection and it can be expanded to get an overview of the specimens and their derivates.'),
   );
 
-    $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_page_size'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Number of records per page') . ':',
-        '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE),
-    );
-
-  $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_show_determined_as'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show "Associated with" in specimen table.'),
-    '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_show_determined_as', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS)
+  $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_page_size'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Number of records per page') . ':',
+      '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE),
   );
 
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
