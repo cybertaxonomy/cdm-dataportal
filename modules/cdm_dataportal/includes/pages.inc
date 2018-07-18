@@ -115,142 +115,24 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             array($taxon->uuid, 'associatedFieldUnits'),
             $by_associatedtaxon_query . '&pageSize=' . variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size')
         );
+
         if (isset($pager_field_units->records[0])) {
           $field_unit_uuids = array();
           foreach ($pager_field_units->records as $field_unit) {
             $field_unit_uuids[] = $field_unit->uuid;
           }
         }
-        // get icon images
-        $expand_icon = font_awesome_icon_markup(
-            'fa-plus-square-o',
-            array(
-                'alt'=>'Show details',
-                'class' => array('expand_icon')
-            )
+
+        $render_array['derivate_hierarchy_table'] = render_derivate_hierarchy_table($field_unit_uuids);
+
+        $render_array['pager'] = markup_to_render_array(
+            theme('cdm_pager', array(
+                'pager' => $pager_field_units,
+                'path' => $_REQUEST['q'],
+                'parameters' => $_REQUEST
+            )),
+            10 // weight
         );
-        $collapse_icon = font_awesome_icon_markup(
-            'fa-minus-square-o',
-            array(
-                'alt'=>'Show details',
-                'class' => array('collapse_icon')
-            )
-        );
-        $detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
-        $checked_box_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/step_done.gif' . '"/>';
-        $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
-        $character_data_icon = '<img title="Character Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/character_data_derivate-16x16-32.png' . '"/>';
-        if (isset($pagerFieldUnits->records[0])) {
-        $rowcount = 0;
-        foreach ($field_unit_uuids as $field_unit_uuid) {
-            //get derivate hierarchy for the FieldUnit
-            $derivateHierarchy = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($field_unit_uuid, 'derivateHierarchy'));
-            if($derivateHierarchy){
-                //summary row
-                $rows[] = array(
-                    'data' => array(
-                        array(
-                            'data' => $expand_icon . $collapse_icon,
-                            'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
-                        ),
-                        array(
-                            'data' => $derivateHierarchy->country,
-                            'class' => array('summary_row_cell')
-                        ),
-                        array(
-                            'data' => $derivateHierarchy->date,
-                            'class' => array('summary_row_cell')
-                        ),
-                        array(
-                            'data' => $derivateHierarchy->collection,
-                            'class' => array('summary_row_cell')
-                        ),
-                        array(
-                            'data' => $derivateHierarchy->herbarium,
-                            'class' => array('summary_row_cell')
-                        ),
-                        array(
-                            'data' => $derivateHierarchy->hasType? $checked_box_icon:"",
-                            'class' => array('summary_row_cell', 'summary_row_icon')
-                        ),
-                        array(
-                            'data' => $derivateHierarchy->hasSpecimenScan? $checked_box_icon:"",
-                            'class' => array('summary_row_cell', 'summary_row_icon')
-                        ),
-                        array(
-                            'data' => ($derivateHierarchy->hasDna? $sequence_icon :"")." "
-                                .($derivateHierarchy->hasDetailImage?$detail_image_icon:"")." "
-                                .($derivateHierarchy->hasCharacterData?$character_data_icon:""),
-                            'class' => array('summary_row_cell', 'summary_row_icon')
-                        )
-                    ),
-                    'id' => ('derivate_summary' . $rowcount), // summary row id
-                    'class' => array('summary_row'),
-                );
-
-                //assemble field unit details
-                $detail_html = "";
-                // - citation
-                if ($derivateHierarchy->citation) {
-                    $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
-                }
-                //assemble specimen details
-                if($derivateHierarchy->preservedSpecimenDTOs){
-                    foreach($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
-                        $detail_html .= "<br>";
-                        $detail_html .= render_cdm_specimen_page($preservedSpecimenDTO);
-                    }
-                }
-                $detail_html .= "<br>";
-                //detail row resp. one BIG detail cell
-                $rows[] = array(
-                    'data' => array(
-                        array(
-                            'data' => "", //empty first column
-                            'class' => array('expand_column')
-                        ),
-                        array(
-                            'data' => $detail_html,
-                            'colspan' => 7,
-                        ),
-                    ),
-                    'id' => ('derivate_details' . $rowcount),//details row ID
-                    'class' => array('detail_row'),
-                );
-                $rowcount++;
-                }
-            }
-
-            $tableId = "derivate_hierarchy_table";
-            $derivateHierarchyTable = array(
-                "#theme" => "table",
-                "#weight" => 2,
-                "#header" => array(
-                    array(
-                        'data' => "",
-                        'class' => array('expand_column')
-                    ),
-                    "Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivatives"),
-                "#rows" => $rows,
-                "#attributes" => array(
-                    "id" => $tableId,
-                    "border" => 2
-                )
-            );
-
-            //add toggle functionality to derivate hierarchy table
-            drupal_add_js_rowToggle("#".$tableId);
-
-            $render_array['derivate_hierarchy_table'] = $derivateHierarchyTable;
-            $render_array['pager'] = markup_to_render_array(
-                theme('cdm_pager', array(
-                    'pager' => $pager_field_units,
-                    'path' => $_REQUEST['q'],
-                    'parameters' => $_REQUEST
-                )),
-                10 // weight
-            );
-        }
     }
     else{
         //BOTTOM-UP-SPECIMEN-TABLE
@@ -258,7 +140,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $specimen_table = array(
             '#theme' => 'table',
             '#weight' => 2,
-            // prefix attributes and rows with '#' to let it pass to the theme function,
+            // prefix attributes and rows with '#' to let it pass toF the theme function,
             // otherwise it is handled as child render array
             '#attributes' => array('class' => 'specimens'),
             '#rows' => array(),
@@ -358,7 +240,146 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     RenderHints::popFromRenderStack();
     return $render_array;
 }
- 
+
+/**
+ * Creates the drupal render array for the derivate_hierarchy_table
+ *
+ * @param $field_unit_uuids array
+ *  An array of uuids for cdm FieldUnit entities.
+ *
+ * @return array
+ *  A drupal render array for a table
+ *
+ * @ingroup compose
+ */
+function compose_derivate_hierarchy_table($field_unit_uuids)
+{
+// get icon images
+  $expand_icon = font_awesome_icon_markup(
+    'fa-plus-square-o',
+    array(
+      'alt' => 'Show details',
+      'class' => array('expand_icon')
+    )
+  );
+  $collapse_icon = font_awesome_icon_markup(
+    'fa-minus-square-o',
+    array(
+      'alt' => 'Show details',
+      'class' => array('collapse_icon')
+    )
+  );
+  $detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
+  $checked_box_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/step_done.gif' . '"/>';
+  $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
+  $character_data_icon = '<img title="Character Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/character_data_derivate-16x16-32.png' . '"/>';
+
+  $rowcount = 0;
+  $rows = array();
+
+  foreach ($field_unit_uuids as $field_unit_uuid) {
+
+    //get derivate hierarchy for the FieldUnit
+    $derivateHierarchy = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($field_unit_uuid, 'derivateHierarchy'));
+    if ($derivateHierarchy) {
+      //summary row
+      $rows[] = array(
+        'data' => array(
+          array(
+            'data' => $expand_icon . $collapse_icon,
+            'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+          ),
+          array(
+            'data' => $derivateHierarchy->country,
+            'class' => array('summary_row_cell')
+          ),
+          array(
+            'data' => $derivateHierarchy->date,
+            'class' => array('summary_row_cell')
+          ),
+          array(
+            'data' => $derivateHierarchy->collection,
+            'class' => array('summary_row_cell')
+          ),
+          array(
+            'data' => $derivateHierarchy->herbarium,
+            'class' => array('summary_row_cell')
+          ),
+          array(
+            'data' => $derivateHierarchy->hasType ? $checked_box_icon : "",
+            'class' => array('summary_row_cell', 'summary_row_icon')
+          ),
+          array(
+            'data' => $derivateHierarchy->hasSpecimenScan ? $checked_box_icon : "",
+            'class' => array('summary_row_cell', 'summary_row_icon')
+          ),
+          array(
+            'data' => ($derivateHierarchy->hasDna ? $sequence_icon : "") . " "
+              . ($derivateHierarchy->hasDetailImage ? $detail_image_icon : "") . " "
+              . ($derivateHierarchy->hasCharacterData ? $character_data_icon : ""),
+            'class' => array('summary_row_cell', 'summary_row_icon')
+          )
+        ),
+        'id' => ('derivate_summary' . $rowcount), // summary row id
+        'class' => array('summary_row'),
+      );
+
+      //assemble field unit details
+      $detail_html = "";
+      // - citation
+      if ($derivateHierarchy->citation) {
+        $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
+      }
+      //assemble specimen details
+      if ($derivateHierarchy->preservedSpecimenDTOs) {
+        foreach ($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
+          $detail_html .= "<br>";
+          $detail_html .= render_cdm_specimen_page($preservedSpecimenDTO);
+        }
+      }
+      $detail_html .= "<br>";
+      //detail row resp. one BIG detail cell
+      $rows[] = array(
+        'data' => array(
+          array(
+            'data' => "", //empty first column
+            'class' => array('expand_column')
+          ),
+          array(
+            'data' => $detail_html,
+            'colspan' => 7,
+          ),
+        ),
+        'id' => ('derivate_details' . $rowcount),//details row ID
+        'class' => array('detail_row'),
+      );
+      $rowcount++;
+    }
+  }
+
+  $tableId = "derivate_hierarchy_table";
+  $derivateHierarchyTable = array(
+    "#theme" => "table",
+    "#weight" => 2,
+    "#header" => array(
+      array(
+        'data' => "",
+        'class' => array('expand_column')
+      ),
+      "Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivatives"),
+    "#rows" => $rows,
+    "#attributes" => array(
+      "id" => $tableId,
+      "border" => 2
+    )
+  );
+
+  //add toggle functionality to derivate hierarchy table
+  drupal_add_js_rowToggle("#" . $tableId);
+
+  return $derivateHierarchyTable;
+}
+
 function create_html_link($link, $openInExternalWindow=false){
     $html = "";
     if($link->uri && $link->uri!=""){
