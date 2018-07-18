@@ -77,7 +77,7 @@ public class TaxonSearchResultPage extends GenericPortalPage {
      */
     public TaxonListElement getResultItem(int index) {
 
-        TaxonListElement entry = new TaxonListElement(searchResults.findElement(By.xpath("ul/li[" + index + "]")));
+        TaxonListElement entry = new TaxonListElement(searchResults.findElement(By.xpath("div/div[" + index + "]")));
 
         return entry;
     }
