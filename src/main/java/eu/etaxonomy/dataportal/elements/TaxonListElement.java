@@ -28,7 +28,7 @@ public class TaxonListElement extends BaseElement {
 	 */
 	public TaxonListElement(WebElement element) {
 		super(element);
-		type = TaxonType.valueOf( element.getAttribute("class") );
+		type = TaxonType.valueOf( element.getAttribute("class").replace("item ", "") );
 		fullTaxonName = element.findElement(By.tagName("span")).getText();
 	}
 
