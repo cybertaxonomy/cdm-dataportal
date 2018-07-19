@@ -1020,16 +1020,17 @@ function theme_cdm_taxontree_node($variables) {
     $node_name = "module cdm_dataportal missing";
     $path = "";
   }
-
+  // cannot use l() since it would add class="active to all root nodes in case of 'search_registrations'
+  $name_link =  '<a href="' . check_plain(url($path, array('query' => $query))). '">' . check_plain($node_name) . '</a>';
   if ($filterIncludes) {
-    $name = l($node_name, $path, array('query' => $query));
+    $name = $name_link;
     // No names for terms in filter widget; as discussed with A. Müller.
     // $name = '';
     $filter_class = 'filter_included';
   }
   else {
     if ($node->filter == 'on') {
-      $name = l($node_name, $path, array('query' => $query));
+      $name = $name_link;
       $filter_class = 'filter_on';
     }
     else {
