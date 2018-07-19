@@ -99,9 +99,13 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $occurrence_query = $occurrence_queryDto->occurrenceQuery;
         $legend_format_query = null;
         $distribution_query = NULL;
-        $render_array['map'] = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
+        $map_render_array = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
       }
     }
+
+    // -------------------------------------------------------
+    $render_array['map'] = $map_render_array;
+
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE

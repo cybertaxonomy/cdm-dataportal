@@ -1318,13 +1318,15 @@ function mixed_variable_get($variableKey, $defaultValueString) {
  * also subordinate objects will be converted.
  *
  * @param object $object
- * @return the array
+ *  the object to be converted
+ * @return array
+ *  The array
  */
-function convert_to_array($object) {
+function object_to_array($object) {
   if(is_object($object) || is_array($object)) {
     $array = (array)$object;
     foreach ($array as $key=>$value){
-      $array[$key] = convert_to_array($value);
+      $array[$key] = object_to_array($value);
     }
     return $array;
   } else {
@@ -1847,14 +1849,15 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
       . "</br>&nbsp;</div>");
     $render_array['summary'] = markup_to_render_array("<div>" . cdm_tagged_text_to_markup($registration_dto->summaryTaggedText) . "</div>");
 
-//    $registration = cdm_ws_get("registration/identifier/" . $registration_identifier_encoded);
-//    if(is_array($registration->typeDesignations)){
-//      $type_designations_markup = "";
-//      foreach ($registration->typeDesignations as $type_designation){
-//        $type_designations_markup .= render_cdm_specimen($type_designation);
-//      }
-//      $render_array['type_designations'] = markup_to_render_array($type_designations_markup);
-//    }
+    if(is_object($registration_dto->orderdTypeDesignationWorkingSets)){
+
+      $field_unit_uuids = array();
+      foreach((array)$registration_dto->orderdTypeDesignationWorkingSets as $field_unit_ref => $obj){
+        $tokens = explode("#", $field_unit_ref);
+        $field_unit_uuids[] = $tokens[1];
+      }
+      $render_array['specimen_table'] = compose_derivate_hierarchy_table($field_unit_uuids);
+    }
 
   } else {
     drupal_set_title(t('Registration not found'), PASS_THROUGH);

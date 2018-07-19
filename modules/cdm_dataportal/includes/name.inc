@@ -82,7 +82,7 @@ function get_nameRenderTemplate($render_path, $nameLink = NULL, $referenceLink =
   if($split_render_templates == NULL) {
     $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
     // needs to be converted to an array
-    $render_templates = (convert_to_array($render_templates));
+    $render_templates = (object_to_array($render_templates));
 
     // separate render templates which are combined with a comma
     $split_render_templates = array();
@@ -226,7 +226,7 @@ function get_partDefinition($taxonNameType) {
 
   static $part_definitions = null;
   if (!isset($part_definitions)) {
-    $part_definitions = convert_to_array(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
+    $part_definitions = object_to_array(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
   }
 
   $dtype = nameTypeToDTYPE($taxonNameType);
