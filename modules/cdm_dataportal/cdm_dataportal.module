@@ -1843,7 +1843,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
   if($registration_dto){
     drupal_set_title(t('Registration') . ' ' . $registration_identifier, PASS_THROUGH);
 
-    array_merge($render_array, compose_registation_dto($registration_dto));
+    $render_array = compose_registation_dto($registration_dto);
 
     if(is_object($registration_dto->orderdTypeDesignationWorkingSets)){
       $field_unit_uuids = array();
@@ -1863,15 +1863,21 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
 }
 
 /**
+ * Composes information for a registation from a dtp object
+ *
  * @param $registration_dto
+ *
  * @return array
+ *    A drupal render array
+ *
+ * @ingroup compose
  */
 function compose_registation_dto($registration_dto, $with_citation = true, $with_identifier = false)
 {
   $render_array = array();
   if ($with_citation) {
     $render_array['citation'] = markup_to_render_array("<div class=\"" . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
-      . l($registration_dto->bibliographicCitationString, path_to_registration_workingset($registration_dto->citationUuid))
+      . l($registration_dto->bibliographicCitationString, path_to_reference($registration_dto->citationUuid))
       . "</br>&nbsp;</div>");
   }
   $registation_markup = cdm_tagged_text_to_markup($registration_dto->summaryTaggedText);
@@ -2160,21 +2166,6 @@ function path_to_reference($uuid) {
 function path_to_registration($identifier) {
 
   return 'cdm_dataportal/registration/' . urlencode($identifier);
-}
-
-
-/**
- * Composes the drupal path to the reference identified by the uuid.
- *
- * @param $uuid string
- *    The uuid of the reference which is the base entity for registration workingset..
- *
- * @return string
- *  The drupal path
- */
-function path_to_registration_workingset($identifier) {
-
-  return 'cdm_dataportal/reference/' . urlencode($identifier);
 }
 
 /**

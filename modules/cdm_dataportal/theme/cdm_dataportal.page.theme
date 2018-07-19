@@ -418,7 +418,7 @@ function taxon_image_gallery_fsi($taxon, $media) {
  *
  * @return array
  *  A drupal render array
- * 
+ *
  * @throws Exception
  *
  * @ingroup compose
