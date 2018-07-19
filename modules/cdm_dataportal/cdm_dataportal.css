@@ -156,9 +156,14 @@ select.highlite-first-child option:first-child {
 .search-filter .form-item{
     display: inline-block;
     vertical-align: top;
+    margin-bottom: 0;
 }
+
 .search-filter .form-submit {
     display: inline-block;
+    margin-top: 1.5em; /* same as for .form-item */
+    margin-bottom: 4px;
+    vertical-align: bottom;
 }
 /*
  * ======= Search-Results =======

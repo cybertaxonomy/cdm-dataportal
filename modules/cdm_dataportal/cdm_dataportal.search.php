@@ -802,8 +802,8 @@ function cdm_dataportal_search_registration_form($form, &$form_state) {
     '#type' => 'submit',
     '#attributes' => array('class' => array('fa-icon'), 'title' => t('Search')),
     '#value' => decode_entities('&#xf002;'), // fontawesome search icon
-    '#prefix' => "<div class=\"form-item\"><label>&nbsp</label>",
-    '#suffix' => "</div>"
+//    '#prefix' => "<div class=\"form-item\"><label>&nbsp</label>",
+//    '#suffix' => "</div>"
 
   );
   return $form;
