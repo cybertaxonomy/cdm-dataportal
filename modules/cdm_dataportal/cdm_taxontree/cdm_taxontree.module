@@ -17,6 +17,8 @@
  *   - Wouter Addink <w.addink@eti.uva.nl> (migration from Drupal 5 to Drupal7)
  */
 
+const CDM_TAXONTREE_LINK_TYPE = 'cdm_taxontree_link_type';
+
 /**
  * Implements hook_menu() 
  */
@@ -98,7 +100,7 @@ function cdm_taxontree_block_view($delta) {
       // cdm tree for a drupal taxonomy
       $block['subject'] = t('Taxonomy tree');
       $term_inFocus = arg(0) == 'taxonomy' && arg(1) == 'term' ? arg(2) : 0;
-      $tree = cdm_taxontree_build_tree($term_inFocus, TRUE, variable_get('cdm_taxontree_block_1_vid', 0));
+      $tree = cdm_taxontree_build_tree($term_inFocus, TRUE);
       $block['content'] = theme('cdm_taxontree_block', array(
         'tree' => $tree,
         'delta' => $delta,
@@ -118,6 +120,14 @@ function cdm_taxontree_block_configure($delta) {
   $form = array();
     switch ($delta) {
       case 'cdm_tree':
+
+        $form[CDM_TAXONTREE_LINK_TYPE] = array(
+          '#type' => 'radios',
+          '#title' => t('Link to '),
+          '#default_value' => variable_get(CDM_TAXONTREE_LINK_TYPE,  'taxon_page'),
+          '#options' => array('taxon_page' => 'Taxon pages', 'search_registrations' =>'Registration search page' ),
+        );
+
         /* TODO The option to use the cdm_taxontree for drupal vocabulaties also has been removed, the below code should be
            removed, see #7565
         $vocs = taxonomy_get_vocabularies();
@@ -140,14 +150,17 @@ function cdm_taxontree_block_configure($delta) {
  * Implements hook_block_save().
  */
 function cdm_taxontree_block_save($delta, $edit) {
-  // TODO Rename block deltas (e.g. '1') to readable strings.
-  if (TRUE) {
+
     switch ($delta) {
-      case '1':
+      case 'cdm_tree':
+        variable_set(CDM_TAXONTREE_LINK_TYPE,  $edit[CDM_TAXONTREE_LINK_TYPE]);
+        /* TODO The option to use the cdm_taxontree for drupal vocabulaties also has been removed, the below code should be
+           removed, see #7565
         variable_set('cdm_taxontree_block_1_vid', $edit['vid']);
         return;
+        */
     }
-  }
+
 }
 
 /**
@@ -977,7 +990,10 @@ function theme_cdm_taxontree_node($variables) {
 
   $focused_taxon_uuid = get_current_taxon_uuid();
 
+  $path = '';
+  $query = array();
   if (isset($node->tid)) {
+    //  TODO remove case, see #7565
     $node_name = $node->name;
     $path = "taxonomy/term/" . $node->tid;
     // disable filterswitch
@@ -987,7 +1003,18 @@ function theme_cdm_taxontree_node($variables) {
   }
   elseif (module_exists('cdm_dataportal')) {
     $node_name = cdm_dataportal_shortname_of($node);
-    $path = path_to_taxon($node->taxonUuid);
+    $link_type = variable_get(CDM_TAXONTREE_LINK_TYPE,  'taxon_page');
+    switch($link_type){
+      case 'taxon_page':
+        $path = path_to_taxon($node->taxonUuid);
+        break;
+      case 'search_registrations':
+        $path = "cdm_dataportal/search/registration";
+        $query['taxon_name'] = $node->titleCache;
+        break;
+      default:
+        $path = "invalid_cdm_taxontree_linktype";
+    }
   }
   else {
     $node_name = "module cdm_dataportal missing";
@@ -995,14 +1022,14 @@ function theme_cdm_taxontree_node($variables) {
   }
 
   if ($filterIncludes) {
-    $name = l($node_name, $path);
+    $name = l($node_name, $path, array('query' => $query));
     // No names for terms in filter widget; as discussed with A. Müller.
     // $name = '';
     $filter_class = 'filter_included';
   }
   else {
     if ($node->filter == 'on') {
-      $name = l($node_name, $path);
+      $name = l($node_name, $path, array('query' => $query));
       $filter_class = 'filter_on';
     }
     else {
