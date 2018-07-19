@@ -385,6 +385,8 @@ function cdm_taxontree_terms2treenodes(&$terms) {
  * @param unknown_type $tid
  * @param unknown_type $vid
  * @param unknown_type $theme
+ *
+ * * TODO remove method, see #7565
  */
 function cdm_taxontree_taxonomy_children($tid, $vid, $theme) {
   $args = func_get_args();
@@ -403,6 +405,7 @@ function cdm_taxontree_taxonomy_children($tid, $vid, $theme) {
  */
 function cdm_taxontree_get_root($vid = NULL) {
   if (is_numeric($vid)) {
+    //  TODO remove case, see #7565
     // vid, $parent = 0, $depth = -1, $max_depth = NULL) {
     $terms = taxonomy_get_tree($vid, 0, 1);
     return cdm_taxontree_terms2treenodes($terms);
@@ -423,6 +426,7 @@ function cdm_taxontree_get_root($vid = NULL) {
 function cdm_taxontree_get_children($uuid, $vid = NULL) {
 
   if (is_numeric($vid)) {
+    //  TODO remove case, see #7565
     $terms = taxonomy_get_children($uuid, $vid);
     return cdm_taxontree_terms2treenodes($terms);
   }
@@ -443,6 +447,7 @@ function cdm_taxontree_get_parents($uuid) {
 
   if (!is_uuid($uuid)) {
     // Using Drupal taxonomy.
+    //  TODO remove case, see #7565
     $terms = taxonomy_get_parents($uuid);
     array_push($terms, taxonomy_term_load($uuid));
     $terms = array_reverse($terms);
@@ -473,6 +478,7 @@ function cdm_taxontree_get_parents($uuid) {
 function cdm_taxontree_build_tree($taxonUuid = NULL, $hideOtherConcepts = TRUE, $vid = NULL) {
   // TODO Remove $hideOtherConcepts from method signature.
   if (is_null($vid)) {
+    //  TODO remove case, see #7565
     if ($taxonUuid) {
       $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxonUuid);
     }
@@ -481,7 +487,8 @@ function cdm_taxontree_build_tree($taxonUuid = NULL, $hideOtherConcepts = TRUE, 
   }
   // Valid compact_modes: 'expanded', 'compact', 'flattened'.
   // Get the root level.
-  $root_tree = cdm_taxontree_get_root($vid);
+
+  $root_tree = cdm_taxontree_get_root($vid); //  TODO remove $vid, see #7565 ?
   /*
   if(!$root_tree || !is_array($root_tree)){
     return array();
