@@ -388,21 +388,22 @@ function taxon_image_gallery_fsi($taxon, $media) {
 }
 
 /**
- * Returns HTML for a single reference page.
+ * Returns a drupal render array for a single reference page.
  *
- * Renders a page with all data on a single reference.
+ * Composes a page with all data on a single reference.
  *
- * @param array $variables
- *   An associative array containing:
- *   - reference: Object.
+ * @param string $uuid
+ *   An uuid for a cdm reference.
  *
- * @ingroup themeable
+ * @return array
+ *  A drupal render array
+ *
+ * @ingroup compose
  */
-function theme_cdm_reference_page($variables) {
-  $reference = $variables['reference'];
+function compose_cdm_reference_page($uuid) {
 
   $out = '';
-
+  $reference = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
   if (isset($reference->titleCache)) {
     drupal_set_title($reference->titleCache, PASS_THROUGH);
   }
@@ -558,11 +559,20 @@ function theme_cdm_reference_page($variables) {
     $out .= '<h2 class="block-title">Abstract</h2><div class="abstract">' . $reference->referenceAbstract . '</div>';
   }
 
+
   // Annotations below the table.
   $annotations = cdm_ws_getAnnotationsFor($reference);
   $out .= theme("cdm_annotations", array('annotations' => $annotations));
 
-  return $out;
+  $registration_working_set = cdm_ws_get("registrationWorkingSetDTO", array($uuid));
+  if($registration_working_set && count($registration_working_set->registrationDTOs) > 0){
+    $out .= "<h3>Nomenclatural acts:</h3>";
+    foreach($registration_working_set->registrationDTOs as $registration_dto){
+      $out .= drupal_render(compose_registation_dto($registration_dto, false, true));
+    }
+  }
+
+  return markup_to_render_array($out);
 }
 
 /**

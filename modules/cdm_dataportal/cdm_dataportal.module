@@ -1141,8 +1141,7 @@ function cdm_dataportal_view_reference($uuid, $arg2 = NULL) {
 
   cdm_check_valid_portal_page();
 
-  $reference = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
-  return theme('cdm_reference_page', array('reference' => $reference));
+  return compose_cdm_reference_page($uuid);
 }
 
 /**
@@ -1838,19 +1837,15 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
   $registration_identifier = urldecode($registration_identifier_encoded);
 
 
-  $render_array = array();
 
+  $render_array = array();
   $registration_dto = cdm_ws_get("registrationDTO/identifier/" . $registration_identifier_encoded);
   if($registration_dto){
     drupal_set_title(t('Registration') . ' ' . $registration_identifier, PASS_THROUGH);
 
-    $render_array['citation'] = markup_to_render_array("<div class=\"" . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
-      . l($registration_dto->bibliographicCitationString, path_to_registration_workingset($registration_dto->citationUuid))
-      . "</br>&nbsp;</div>");
-    $render_array['summary'] = markup_to_render_array("<div>" . cdm_tagged_text_to_markup($registration_dto->summaryTaggedText) . "</div>");
+    array_merge($render_array, compose_registation_dto($registration_dto));
 
     if(is_object($registration_dto->orderdTypeDesignationWorkingSets)){
-
       $field_unit_uuids = array();
       foreach((array)$registration_dto->orderdTypeDesignationWorkingSets as $field_unit_ref => $obj){
         $tokens = explode("#", $field_unit_ref);
@@ -1867,6 +1862,25 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
   return $render_array ;
 }
 
+/**
+ * @param $registration_dto
+ * @return array
+ */
+function compose_registation_dto($registration_dto, $with_citation = true, $with_identifier = false)
+{
+  $render_array = array();
+  if ($with_citation) {
+    $render_array['citation'] = markup_to_render_array("<div class=\"" . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
+      . l($registration_dto->bibliographicCitationString, path_to_registration_workingset($registration_dto->citationUuid))
+      . "</br>&nbsp;</div>");
+  }
+  $registation_markup = cdm_tagged_text_to_markup($registration_dto->summaryTaggedText);
+  if($with_identifier){
+    $registation_markup .= " " . l ($registration_dto->identifier, $registration_dto->identifier);
+  }
+  $render_array['summary'] = markup_to_render_array("<div>" . $registation_markup . "</div>");
+  return $render_array;
+}
 
 
 /**
