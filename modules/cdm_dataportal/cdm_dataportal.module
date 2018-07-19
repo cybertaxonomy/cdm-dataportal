@@ -830,10 +830,10 @@ function cdm_dataportal_block_info() {
       'pages' => "cdm_dataportal/taxon/*", // multiple page paths separated by "\n"!!!
     );
   $block['registrations_search_filter'] =  array(
-    'title' => '<none>',
+    'title' => 'Search registrations',
     'info' => t('CDM - Registrations search filter'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
-    'visibility' => BLOCK_VISIBILITY_LISTED,
+    'visibility' => BLOCK_VISIBILITY_NOTLISTED,
     'pages' => "cdm_dataportal/search/registration\ncdm_dataportal/search/registration/*", // multiple page paths separated by "\n"!!!
   );
 

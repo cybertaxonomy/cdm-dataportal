@@ -773,7 +773,7 @@ function cdm_dataportal_search_registration_form($form, &$form_state) {
 
   $filter_presets = (isset($_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER]) ? $_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER] : array());
   $filter_presets = array_merge($filter_presets, remove_drupal_form_params($_REQUEST));
-
+  $form['#action'] = 'cdm_dataportal/search/registration/';
   $form['#method'] = 'get';
   $form['#attributes'] = array('class' => array('search-filter'));
   $form['identifier'] = array(
