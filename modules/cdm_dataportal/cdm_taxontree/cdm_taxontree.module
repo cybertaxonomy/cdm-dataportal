@@ -114,10 +114,12 @@ function cdm_taxontree_block_view($delta) {
  * Implements hook_block_configure().
  */
 function cdm_taxontree_block_configure($delta) {
-  // TODO Rename block deltas (e.g. '1') to readable strings.
-  if (TRUE) {
+
+  $form = array();
     switch ($delta) {
-      case '1':
+      case 'cdm_tree':
+        /* TODO The option to use the cdm_taxontree for drupal vocabulaties also has been removed, the below code should be
+           removed, see #7565
         $vocs = taxonomy_get_vocabularies();
         $options = array();
         foreach ($vocs as $voc) {
@@ -129,9 +131,9 @@ function cdm_taxontree_block_configure($delta) {
           '#default_value' => variable_get('cdm_taxontree_block_1_vid', 0),
           '#options' => $options,
         );
-        return $form;
+        */
     }
-  }
+  return $form;
 }
 
 /**
@@ -189,6 +191,7 @@ function cdm_taxontree_field_formatter_info() {
  */
 function cdm_taxontree_field_formatter($field, $item, $formatter, $node) {
   switch ($formatter) {
+    // TODO remove case, see #7565
     case 'link':
       $term = taxonomy_term_load($item['tid']);
       $taxa = db_query('SELECT name FROM {taxonomy_vocabulary} WHERE vid = :vid', array(':vid' => $term->vid))->fetchField();
@@ -364,6 +367,8 @@ function _get_compact_mode() {
  * alternativeConceptRefs
  *
  * @param array $terms
+ *
+ * TODO remove method, see #7565
  */
 function cdm_taxontree_terms2treenodes(&$terms) {
   foreach ($terms as &$term) {
@@ -608,6 +613,7 @@ function cdm_taxontree_populate($tree, $expand_excluded, $filter_default = NULL)
     if (isset($tree[$uuid]->expanded) && $tree[$uuid]->expanded == 'expanded' && ($expand_excluded || $tree[$uuid]->filter != 'excluded')) {
 
       if (isset($tree[$uuid]->vid)) {
+        //  TODO remove case, see #7565
         $children = cdm_taxontree_get_children($uuid, $tree[$uuid]->vid);
       }
       else {
@@ -1002,6 +1008,7 @@ function theme_cdm_taxontree_node($variables) {
   $ahah_url = FALSE;
   if (!$is_leaf && !$is_expanded && $filter_class != 'filter_excluded') {
     if (isset($node->tid)) {
+      //  TODO remove case, see #7565
       $ahah_url = url('cdm_taxontree/taxonomy/children/' . $node->tid . '/' . $node->vid . '/cdm_taxontree/' . ($nextLevelIncluded ? 1 : 0) . '/' . ($show_filter_switch ? 1 : 0) . '/' . $tree_node_callback);
     }
     elseif (module_exists('cdm_dataportal')) {
