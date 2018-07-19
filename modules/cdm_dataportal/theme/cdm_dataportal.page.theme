@@ -22,6 +22,9 @@
  *   - taxon: The taxon name being formatted for the title.
  *   - uuid: UUID for the taxon.
  *
+ * @return string
+ *  Markup for a taxon page title
+ *
  * @ingroup themeable
  */
 function theme_cdm_taxon_page_title($variables) {
@@ -47,15 +50,19 @@ function theme_cdm_taxon_page_title($variables) {
  *   An associative array containing:
  *   - specimen: The specimen being formatted for the title.
  *
+ * @return string
+ *  Markup for the title of a specimen page
+ *
  * @ingroup themeable
  */
 function theme_cdm_specimen_page_title($variables) {
+
     $specimen = $variables['specimen'];
     RenderHints::pushToRenderStack('specimen_page_title');
     $referenceUri = '';
     $out = '';
 
-
+    $collection = null;
     if($specimen->collection->code){
       $collection = $specimen->collection->code;
     }
@@ -96,6 +103,9 @@ function theme_cdm_specimen_page_title($variables) {
  *   An associative array containing:
  *   - taxon_name: The taxon name object.
  *
+ * @return string
+ *  Markup for the title of a name page
+ *
  * @ingroup themeable
  */
 function theme_cdm_name_page_title($variables) {
@@ -115,9 +125,6 @@ function theme_cdm_name_page_title($variables) {
 }
 
 
-
-
-
 /**
  * Returns HTML containing the synonymy for the accepted taxon.
  *
@@ -129,6 +136,11 @@ function theme_cdm_name_page_title($variables) {
  *   An associative array containing:
  *   - taxon
  *   - addAcceptedTaxon
+ *
+ * @return string
+ *  Markup for the synonymy
+ *
+ * @throws Exception
  *
  * @ingroup themeable
  */
@@ -228,6 +240,11 @@ function theme_cdm_taxon_page_synonymy($variables) {
  *   - path: The target path for the pager links, this will usually point to
  *     'cdm_dataportal/search/results/taxon'
  *
+ * @return string
+ *  Markup for the result page
+ *
+ * @throws Exception
+ *
  * @ingroup themeable
  */
 function theme_cdm_search_taxa_results($variables)
@@ -302,10 +319,11 @@ function theme_cdm_search_taxa_results($variables)
 /**
  * TODO Implementation of Hook taxon_image_gallery()
  *
- * @param unknown_type $taxon
- * @param unknown_type $media
+ * @param object $taxon
+ * @param object $media
  *
- * @return unknown_type
+ * @return string
+ *  Markup for the default media gallery
  */
 function taxon_image_gallery_default($taxon, $media) {
   $hasImages = isset($media[0]);
@@ -362,10 +380,13 @@ function taxon_image_gallery_default($taxon, $media) {
 /**
  * TODO Implementation of Hook taxon_image_gallery()
  *
- * @param unknown_type $taxon
- * @param unknown_type $media
+ * @param object $taxon
+ * @param object $media
  *
- * @return unknown_type
+ * @return string
+ *  Markup for the fsi media gallery
+ *
+ * @throws Exception
  */
 function taxon_image_gallery_fsi($taxon, $media) {
   $flashLink = isset($media[0]);
@@ -397,6 +418,8 @@ function taxon_image_gallery_fsi($taxon, $media) {
  *
  * @return array
  *  A drupal render array
+ * 
+ * @throws Exception
  *
  * @ingroup compose
  */

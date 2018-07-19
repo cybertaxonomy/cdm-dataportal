@@ -216,6 +216,9 @@ function get_nameRenderTemplate($render_path, $nameLink = NULL, $referenceLink =
  *  );
  * @endcode
  *
+ * @param object $taxonNameType
+ *    A cdm TaxonNameType entity
+ *
  */
 function get_partDefinition($taxonNameType) {
 
@@ -569,8 +572,6 @@ function render_registrations($registrations)
  *    A CDM Taxon instance
  * @return String
  *    The string of homomyns
- *
- * @throws \Exception
  */
 function cdm_name_relationships_of($taxon) {
 
