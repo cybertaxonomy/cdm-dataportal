@@ -1151,7 +1151,7 @@ function compose_description_element_individuals_association($element, $feature_
 
   $out = '';
 
-  $render_array = compose_cdm_specimenOrObservation($element->associatedSpecimenOrObservation);
+  $render_array = compose_cdm_specimen_or_observation($element->associatedSpecimenOrObservation);
 
   if (isset($element->description_L10n)) {
     $out .=  ' ' . $element->description_L10n;

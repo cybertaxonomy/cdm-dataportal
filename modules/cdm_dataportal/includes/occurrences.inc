@@ -234,7 +234,7 @@ function create_label($label)
  *
  * @ingroup compose
  */
-function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives = null) {
+function compose_cdm_specimen_or_observation($specimenOrObservation, &$derivatives = null) {
 
   $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
   if (!isset($exclude_occurrence_fields)) {
@@ -511,7 +511,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
           default:
             if (is_object($value) || is_array($value)) {
-              drupal_set_message("Unhandled type in compose_cdm_specimenOrObservation() for field " . $field, "warning");
+              drupal_set_message("Unhandled type in compose_cdm_specimen_or_observation() for field " . $field, "warning");
             } else {
               _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
             }
@@ -577,7 +577,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
           );
         }
         foreach ($derivedFrom->originals as $original) {
-          compose_cdm_specimenOrObservation($original, $derivatives);
+          compose_cdm_specimen_or_observation($original, $derivatives);
         }
       }
     }

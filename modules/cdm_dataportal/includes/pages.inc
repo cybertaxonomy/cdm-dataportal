@@ -187,7 +187,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                   $specimenOrObservation->uuid,
                   $type_label . $specimenOrObservation->titleCache,
                   $derived_unit_ws_request,
-                  'cdm_specimenOrObservation',
+                  'cdm_specimen_or_observation',
                   'Click for details',
                   array('div', 'div'),
                   array(),
