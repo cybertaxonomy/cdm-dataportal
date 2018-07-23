@@ -1246,7 +1246,7 @@ function cdm_settings_general() {
     '#title' => t('Rank of highest displayed taxon') . ':',
      // Before DEFAULT_TAXONTREE_RANKLIMIT_UUID.
     '#default_value' => variable_get(TAXONTREE_RANKLIMIT, TAXONTREE_RANKLIMIT_DEFAULT),
-    '#options' => cdm_rankVocabulary_as_option(),
+    '#options' => cdm_vocabulary_as_option(UUID_RANK, null, true),
     '#description' => t('This is the rank of the highest displayed taxon in the
       <em>taxon tree</em>. You can select here which rank should be at the top
       level of the tree structure.'),
@@ -2056,7 +2056,7 @@ function cdm_settings_layout_taxon() {
     );
   }
 
-  $options = cdm_rankVocabulary_as_option();
+  $options = cdm_vocabulary_as_option(UUID_RANK, null, true);
   array_unshift($options, '-- DISABLED --');
   $form['taxon_profile']['picture']['image_hide_rank'] = array(
     '#type' => 'select',

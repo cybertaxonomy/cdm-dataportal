@@ -1520,6 +1520,8 @@ function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL,
  *    - CDM_ORDER_BY_ORDER_INDEX_DESC (can only be used with OrderedTerms!!)
  * @param bool $empty_option
  *   An additional element do be placed at the beginning og the list. This element will be the default option.
+ * @return array
+ *    the terms in an array as options for a form element that allows multiple choices.
  */
 function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_CACHE_ASC, $term_label_callback = NULL, $empty_option = FALSE){
   $terms = cdm_ws_fetch_all(
@@ -1532,14 +1534,6 @@ function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_
   return cdm_terms_as_options($terms, $term_label_callback, $empty_option);
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function cdm_rankVocabulary_as_option() {
-  $options = cdm_vocabulary_as_option(UUID_RANK, NULL, false);
-  return $options;
-}
 
 /**
  * @todo Please document this function.
