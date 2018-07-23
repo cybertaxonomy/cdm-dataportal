@@ -1851,7 +1851,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
         $tokens = explode("#", $field_unit_ref);
         $field_unit_uuids[] = $tokens[1];
       }
-      $render_array['specimen_table'] = compose_derivate_hierarchy_table($field_unit_uuids);
+      $render_array['specimen_table'] = compose_specimen_table($field_unit_uuids);
     }
 
   } else {

@@ -127,7 +127,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
           }
         }
 
-        $render_array['derivate_hierarchy_table'] = render_derivate_hierarchy_table($field_unit_uuids);
+        $render_array['derivate_hierarchy_table'] = compose_specimen_table($field_unit_uuids);
 
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
@@ -246,7 +246,8 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 }
 
 /**
- * Creates the drupal render array for the derivate_hierarchy_table
+ * Creates the drupal render array for the table showing all derivated which are
+ * derive from a common gathering event.
  *
  * @param $field_unit_uuids array
  *  An array of uuids for cdm FieldUnit entities.
@@ -256,7 +257,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
  *
  * @ingroup compose
  */
-function compose_derivate_hierarchy_table($field_unit_uuids)
+function compose_specimen_table($field_unit_uuids)
 {
 // get icon images
   $expand_icon = font_awesome_icon_markup(
