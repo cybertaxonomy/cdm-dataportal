@@ -50,15 +50,17 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
     $by_associatedtaxon_query = http_build_query($by_associatedtaxon_query_parameters);
 
-    $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
-        null,
-        $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
-    );
+    $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
 
-    $specimensOrObservations = array();
-    if(isset($pager->records[0])){
-        $specimensOrObservations =  $pager->records;
-    }
+     // cdm_ws_get(CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON,
+     // null,
+     // $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
+    // );
+
+   // $specimensOrObservations = array();
+   // if(isset($pager->records[0])){
+    //    $specimensOrObservations =  $pager->records;
+   // }
 
     // order occurrences by date but types should be on top of the list
     $type_specimens = array();
@@ -75,20 +77,32 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
     // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
     // $occurrence->_fieldObjectMedia
-    foreach ($specimensOrObservations as &$occurrence) {
-        $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-            $occurrence->uuid,
-            'fieldObjectMedia',
-        ));
-        $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-            $occurrence->uuid,
-            'derivedUnitMedia',
-        ));
-    }
+   // foreach ($specimensOrObservations as &$occurrence) {
+    //    $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+    //        $occurrence->uuid,
+    //        'fieldObjectMedia',
+    //    ));
+    //    $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+    //        $occurrence->uuid,
+    //        'derivedUnitMedia',
+    //    ));
+    //}
 
     // --- get map service HTTP query parameters
+
     if (count($specimensOrObservations) > 0) {
-        $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
+        //the information about the points are already available
+        $points = array();
+        foreach ($specimensOrObservations as &$occurrence) {
+            if ($occurrence != null) {
+                $points[] = $occurrence->uuid;
+            }
+        }
+
+        $parameterFieldUnitUuids = 'fieldUnitUuidList=' . urlencode(implode(',', $points));
+     //   $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
+
+       $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP_FOR_FIELDUNITS, null, $parameterFieldUnitUuids);
 
       $map_visibility = variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT);
       if($map_visibility == 'always' ||
@@ -155,10 +169,10 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             foreach ($specimensOrObservations as $specimenOrObservation) {
 
                 $mediaList = array();
-                if (is_array($specimenOrObservation->_fieldObjectMedia)) {
-                    $mediaList = array_merge($mediaList, $specimenOrObservation->_fieldObjectMedia);
+                if (is_array($specimenOrObservation->listOfMedia)) {
+                    $mediaList = array_merge($mediaList, $specimenOrObservation->listOfMedia);
                 }
-                if (is_array($specimenOrObservation->_derivedUnitMedia)) {
+               if (is_array($specimenOrObservation->_derivedUnitMedia)) {
                     $mediaList = array_merge($mediaList, $specimenOrObservation->_derivedUnitMedia);
                 }
 
@@ -182,7 +196,9 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                 //     -> Dynabox for the specimenOrObservation
                 $gallery_name = $specimenOrObservation->uuid;
 
-                $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
+                $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE,  array( $specimenOrObservation->taxonRelatedDerivedUnits[0], 'occurrencesDTO') );
+
+                //here we should use the data we already have
                 $label_html = cdm_dynabox(
                   $specimenOrObservation->uuid,
                   $type_label . $specimenOrObservation->titleCache,
@@ -472,9 +488,9 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- GET specimensOrObservations --- //
-  $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
+  $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservationsCount'));
 
-  $specimensOrObservationsCount = is_array($specimensOrObservations) ? count($specimensOrObservations) : 0;
+  $specimensOrObservationsCount = $specimensOrObservations != null ? $specimensOrObservations->result : 0;
   if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
     taxon_page_tabs_hidden('specimens');
   }

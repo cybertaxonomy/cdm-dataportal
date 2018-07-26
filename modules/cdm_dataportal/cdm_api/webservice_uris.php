@@ -115,6 +115,7 @@ define('CDM_WS_FEATURETREE', 'portal/featureTree/$0');
 define('CDM_WS_FEATURETREES', 'portal/featureTree');
 // define('CDM_WS_FEATURETREE_CHILDREN', 'featureTree/$0/children');
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'ext/edit/mapServiceParameters/taxonDistributionFor/$0');
+define('CDM_WS_GEOSERVICE_OCCURRENCEMAP_FOR_FIELDUNITS', 'ext/edit/mapServiceParameters/taxonOccurrencesForX');
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');
 
 define('CDM_WS_OCCURRENCE', 'occurrence');
@@ -131,7 +132,7 @@ define('CDM_WS_PORTAL_OCCURRENCE', 'portal/occurrence');
  * @var unknown_type
  */
 define('CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON', 'occurrence/byAssociatedTaxon');
-
+define('CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON', 'occurrence/specimensOrObservationsByAssociatedTaxon');
 define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedUnitFacade/$0');
 
 define('CDM_WS_IDENTIFICATIONKEY', 'identificationKey');
