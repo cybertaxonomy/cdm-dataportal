@@ -1877,7 +1877,8 @@ function compose_registation_dto($registration_dto, $with_citation = true, $with
 {
   $render_array = array();
 
-  $registation_markup = cdm_tagged_text_to_markup($registration_dto->summaryTaggedText);
+  $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
+  $registation_markup = cdm_tagged_text_to_markup($taggged_text_expanded);
   if($with_identifier){
     $registation_markup .= " " . l ($registration_dto->identifier, $registration_dto->identifier);
   }
