@@ -236,31 +236,45 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
  *
  * @param array $taggedtxt
  *   Array with text items to convert.
- * @param string $tag
- *   Html tag name to convert the items into, default is 'span'.
- * @param string $glue
- *   The string by which the chained text tokens are concatenated together.
- *   Default is a blank character.
+ * @param array $skiptags
+ *   Array of tag names to skip
  *
  * @return string
  *   A string with HTML.
  */
-function cdm_tagged_text_to_markup(array $taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()) {
+function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array()) {
+
+  $tag = 'span';
   $out = '';
-  $i = 0;
+  $was_separator = false;
   foreach ($taggedtxt as $tt) {
-    if (!in_array($tt->type, $skiptags) && strlen($tt->text) > 0) {
+    if (!in_array($tt->type, $skiptags) && $tt->text) {
       $class_attr = $tt->type;
+
       if(isset($tt->entityReference)){
         $class_attr .= " " . html_class_attribute_ref($tt->entityReference);
       }
-      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt) ? $glue : '')
-        . '<' . $tag . ' class="' . $class_attr . '">'
+      $is_separator = is_tagged_text_sepatator_type($tt->type);
+      $glue = !$is_separator && !$was_separator ? ' ' : '';
+      $out .= '<' . $tag . ' class="' . $class_attr . '">'
         . t('@text', array('@text' => $tt->text))
-        . '</' . $tag . '>';
+        . '</' . $tag . '>'
+        . $glue;
+      $was_separator = $is_separator;
     }
   }
   return $out;
+}
+
+/**
+ * See cdmlib: boolean eu.etaxonomy.cdm.strategy.cache.TagEnum.isSeparator();
+ *
+ * @return bool
+ */
+function is_tagged_text_sepatator_type($tagged_text_type){
+    static $separator_names = array('separator', 'postSeparator');
+		$result = array_search($tagged_text_type, $separator_names) !== false;
+    return $result;
 }
 
 
