@@ -1136,6 +1136,7 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
+ * @throws Exception
  */
 function cdm_dataportal_view_reference($uuid, $arg2 = NULL) {
 

@@ -751,7 +751,8 @@ function timePeriodToString($period, $stripZeros = TRUE, $format = "YYYY-MM-DD")
       $dateString = partialToDate($period->start, $stripZeros, $format);
     }
     if ($period->end) {
-      $dateString .= (strlen($dateString) > 0 ? ' ' . t('to') . ' ' : '') . partialToDate($period->end, $stripZeros, $format);
+      $end_str = partialToDate($period->end, $stripZeros, $format);
+      $dateString .= ($dateString && $end_str > 0 ? ' ' . t('to') . ' ' : '') . $end_str;
     }
   }
   return $dateString;
