@@ -1875,16 +1875,19 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
 function compose_registation_dto($registration_dto, $with_citation = true, $with_identifier = false)
 {
   $render_array = array();
-  if ($with_citation) {
-    $render_array['citation'] = markup_to_render_array("<div class=\"" . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
-      . l($registration_dto->bibliographicCitationString, path_to_reference($registration_dto->citationUuid))
-      . "</br>&nbsp;</div>");
-  }
+
   $registation_markup = cdm_tagged_text_to_markup($registration_dto->summaryTaggedText);
   if($with_identifier){
     $registation_markup .= " " . l ($registration_dto->identifier, $registration_dto->identifier);
   }
   $render_array['summary'] = markup_to_render_array("<div>" . $registation_markup . "</div>");
+
+  if ($with_citation) {
+    $render_array['citation'] = markup_to_render_array("<div class=\"" . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
+      . l($registration_dto->bibliographicCitationString, path_to_reference($registration_dto->citationUuid))
+      . "</br>&nbsp;</div>");
+  }
+
   return $render_array;
 }
 
