@@ -244,7 +244,8 @@ function compose_cdm_specimen_or_observation($specimenOrObservation, &$derivativ
     $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
     if (!isset($exclude_occurrence_fields)) {
         $exclude_occurrence_fields = array(
-            // 'derivationEvents',
+            'derivationEvent',
+            'taxonRelatedDerivedUnits',
             'titleCache',
             'protectedTitleCache',
             'derivedUnitMedia',
@@ -253,7 +254,7 @@ function compose_cdm_specimen_or_observation($specimenOrObservation, &$derivativ
             'updated',
             'class',
             'uuid',
-            ''
+            'collectionDTO'
         );
     }
 
