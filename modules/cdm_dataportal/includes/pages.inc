@@ -65,7 +65,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     // order occurrences by date but types should be on top of the list
     $type_specimens = array();
     $other_occurrences = array();
-    foreach ($specimensOrObservations as &$occurrence) {
+    foreach ($specimensOrObservations as $occurrence) {
         $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
         if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
             $type_specimens[] = $occurrence;

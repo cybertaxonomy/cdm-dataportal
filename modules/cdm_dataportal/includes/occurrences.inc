@@ -63,14 +63,6 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
     if (isset($specimen->types)) {
         //typed taxa
         foreach ($specimen->types as $typeStatus => $typedTaxa) {
-/* Updated upstream
-            if($specimen->types){
-                $detail_html .= "<i>".$typeStatus."</i> of ";
-                foreach($typedTaxa as $typedTaxon){
-                    $detail_html .= $typedTaxon." ";
-                }
-                $detail_html .= "<br>";
-*/
             if ($is_specimen_page) {
                 if ($specimen->types) {
                     $detail_html .= "<i>" . $typeStatus . "</i>: ";
@@ -246,42 +238,9 @@ function create_label($label)
  *
  * @ingroup compose
  */
-/*<<<<<<< Updated upstream
-function compose_cdm_specimen_or_observation($specimenOrObservation, &$derivatives = null) {
 
-  $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
-  if (!isset($exclude_occurrence_fields)) {
-     $exclude_occurrence_fields = array(
-        'derivationEvents',
-        'titleCache',
-        'protectedTitleCache',
-        'derivedUnitMedia',
-        'created',
-        'publish',
-        'updated',
-        'class',
-        'uuid',
-       ''
-    );
-  }
-
-
-  // only show uuid it the user is logged in
-  if(user_is_logged_in() && ($a_idx = array_search('uuid', $exclude_occurrence_fields)) !== FALSE ) {
-    unset($exclude_occurrence_fields[$a_idx]);
-  }
-
-  if (!isset($derivatives)) {
-    $derivatives = array();
-  }
-
-  $descriptions = null;
-  $derivedFrom = null;
-=======*/
-function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives = null)
+function compose_cdm_specimen_or_observation($specimenOrObservation, &$derivatives = null)
 {
-
-//>>>>>>> Stashed changes
     $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
     if (!isset($exclude_occurrence_fields)) {
         $exclude_occurrence_fields = array(
@@ -320,21 +279,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
         $type_label = $specimenOrObservation->recordBase;
         RenderHints::setFootnoteListKey($type_label . '-' . $specimenOrObservation->uuid);
-        /*
-         * $label_html = cdm_dynabox(
-                          $specimenOrObservation->uuid,
-                          $type_label . $specimenOrObservation->titleCache,
-                          $derived_unit_ws_request, //cdm_ws_get("portal/" . CDM_WS_OCCURRENCE, $specimenOrObservation->uuid);
-                          'cdm_specimenOrObservation',
-                          'Click for details',
-                          array('div', 'div'),
-                          array(),
-                          null, // $content_element_selector
-                          'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', // open_callback
-                          'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
-                        );
 
-         */
         // collect typeStatus as label
         if (isset($specimenOrObservation->specimenTypeDesignations)) {
             $type_status = array();
@@ -622,15 +567,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
                 }
 
-/*
- *
-          default:
-            if (is_object($value) || is_array($value)) {
-              drupal_set_message("Unhandled type in compose_cdm_specimen_or_observation() for field " . $field, "warning");
-            } else {
-              _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
-*/
-// Stashed changes
+
             }
         } // END of loop over $derivedUnitFacade fields
 
@@ -672,7 +609,7 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
         }
 
         if (isset($derivates)) {
-            if (isset($derivedFrom->originals)) {
+            if (isset($derivates->originals)) {
                 $derived_from_label = t('derivated');
                 // $preposition = t('from');
                 if (isset($derivedFrom->type)) {
@@ -698,16 +635,13 @@ function compose_cdm_specimenOrObservation($specimenOrObservation, &$derivatives
 
             }
         }
-/*<<<<<<< Updated upstream
-        foreach ($derivedFrom->originals as $original) {
-          compose_cdm_specimen_or_observation($original, $derivatives);
-=======*/
+
         if (isset($derivates )) {
 
             foreach ($derivates as $derivate){
-                compose_cdm_specimenOrObservation($derivate, $derivatives);
+                compose_cdm_specimen_or_observation($derivate, $derivatives);
             }
-//>>>>>>> Stashed changes
+
         }
 
     } // END of $specimenOrObservation exists
