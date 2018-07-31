@@ -247,6 +247,7 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array()) {
   $tag = 'span';
   $out = '';
   $was_separator = false;
+  $i = 0;
   foreach ($taggedtxt as $tt) {
     if (!in_array($tt->type, $skiptags) && $tt->text) {
       $class_attr = $tt->type;
@@ -254,14 +255,16 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array()) {
       if(isset($tt->entityReference)){
         $class_attr .= " " . html_class_attribute_ref($tt->entityReference);
       }
+      $is_last = $i + 1 == count($taggedtxt);
       $is_separator = is_tagged_text_sepatator_type($tt->type);
-      $glue = !$is_separator && !$was_separator ? ' ' : '';
+      $glue = !$is_separator && !$was_separator && !$is_last ? ' ' : '';
       $out .= '<' . $tag . ' class="' . $class_attr . '">'
         . t('@text', array('@text' => $tt->text))
         . '</' . $tag . '>'
         . $glue;
       $was_separator = $is_separator;
     }
+    $i++;
   }
   return $out;
 }
