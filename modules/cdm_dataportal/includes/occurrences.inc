@@ -477,7 +477,7 @@ function compose_cdm_specimen_or_observation($specimenOrObservation, &$derivativ
               @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup);
             }
 
-            if (isset($value->collectingAreas)) {
+            if (isset($value->collectingAreas) && count($value->collectingAreas) > 0) {
               $area_representations = array();
               foreach ($value->collectingAreas as $area) {
                 $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
