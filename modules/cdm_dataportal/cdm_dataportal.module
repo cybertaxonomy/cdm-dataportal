@@ -340,19 +340,8 @@ function _add_js_taxonomic_children($jquery_selector) {
    *
    */
   function font_awesome_icon_markup($icon_name = NULL, $attributes = array()){
+    _add_font_awesome_font();
 
-
-    //<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-
-    $font_awesome_css_uri = base_path() . drupal_get_path('module', 'cdm_dataportal').'/fonts/font-awesome-4.6.3/css/font-awesome.min.css';
-    //$font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
-
-    drupal_add_html_head_link(
-      array(
-        'href' => $font_awesome_css_uri,
-        'rel' => 'stylesheet'
-      )
-    );
 
     if($icon_name){
       if(!isset($attributes['class'])){
@@ -367,8 +356,26 @@ function _add_js_taxonomic_children($jquery_selector) {
     return '';
   }
 
+/**
+ * Adds the css  containing the font awesome icons to the html header.
+ */
+function _add_font_awesome_font()
+{
+//<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
-  /* ====================== hook implementations ====================== */
+  $font_awesome_css_uri = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/fonts/font-awesome-4.6.3/css/font-awesome.min.css';
+  //$font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
+
+  drupal_add_html_head_link(
+    array(
+      'href' => $font_awesome_css_uri,
+      'rel' => 'stylesheet'
+    )
+  );
+}
+
+
+/* ====================== hook implementations ====================== */
   /**
    * Implements hook_permission().
    *
