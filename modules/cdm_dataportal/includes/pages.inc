@@ -119,7 +119,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
     // -------------------------------------------------------
     $render_array['map'] = $map_render_array;
-
+    $cdm_dataportal_list_view = true;
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
@@ -151,6 +151,12 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             )),
             10 // weight
         );
+    }
+    else if($cdm_dataportal_list_view){
+        $specimen_array = create_specimen_array($specimensOrObservations);
+        $render_array['specimen_list'] = array('#theme'=>'item_list', '#items'=>$specimen_array, '#type'=>'ul');
+      //  $render_array['specimen_list'] = $specimen_array;
+
     }
     else{
         //BOTTOM-UP-SPECIMEN-TABLE
@@ -197,7 +203,26 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                 $gallery_name = $specimenOrObservation->uuid;
 
                 $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE,  array( $specimenOrObservation->taxonRelatedDerivedUnits[0], 'occurrencesDTO') );
+                // --- Render associated media.
+                $gallery_html = '';
+                if (count($mediaList) > 0) {
+                    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+                    $captionElements = array(
+                        '#uri' => t('open media'),
+                    );
 
+                    $gallery_html = compose_cdm_media_gallerie(array(
+                        'mediaList' => $mediaList,
+                        'galleryName' => $gallery_name,
+                        'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+                        'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+                        'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
+                        'captionElements' => $captionElements,
+                        'mediaLinkType' => 'LIGHTBOX',
+                        'alternativeMediaUri' => NULL,
+                        'galleryLinkUri' => NULL,
+                    ));
+                }
                 //here we should use the data we already have
                 $label_html = cdm_dynabox(
                   $specimenOrObservation->uuid,

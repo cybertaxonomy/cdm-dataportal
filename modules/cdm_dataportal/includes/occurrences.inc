@@ -817,5 +817,426 @@ function compose_cdm_sequence($sequence)
 
     return $sequence_elements;
 }
+/**
+ * Creates an array from a list of FieldUnitDTOs.
+ *
+ *
+ * @param object $specimenOrObservations
+ *   list of FieldUnitDTOs
+ * @return array
+ *   An array containing the hierarchy of the field units corresponding to the taxon
+ *
+ * @ingroup compose
+ */
+function create_specimen_array(array $specimenOrObservations){
+    $items_specimen = array();
+    $items = array();
+    $children = array();
+    //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
+    foreach ($specimenOrObservations as &$specimenOrObservation) {
+        $items['data'] = $specimenOrObservation->titleCache;
+        $specimen = create_cdm_specimen_or_observation($specimenOrObservation);
+        $children = array();
+        $child = array();
+        $child['data'] =$specimen;
+       // $children[] = create_specimen_array($specimenOrObservation->derivates);
+       if (isset($specimenOrObservation->derivates) && sizeof($specimenOrObservation->derivates) > 0){
+           $child['children']= create_specimen_array($specimenOrObservation->derivates);
+       }
+       $children[]=$child;
+       $items['children'] = $children;
+       $items_specimen[] = $items;
+    }
+    return $items_specimen;
+}
 
+
+/**
+ * Compose an render array from a CDM DerivedUnitFacade object.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $specimenOrObservation
+ *   the CDM instance of type SpecimenOrObservation to compose
+ *   the render array for
+ * @param array $derivatives
+ *   the render array which contains the compositions of the derivatives
+ *   of the supplied $specimenOrObservation
+ *
+ * @return array
+ *   the supplied render array $derivatives to which the composition of the supplied
+ *   $specimenOrObservation has been added to
+ *
+ * @ingroup compose
+ */
+
+function create_cdm_specimen_or_observation($specimenOrObservation)
+{
+    $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
+    if (!isset($exclude_occurrence_fields)) {
+        $exclude_occurrence_fields = array(
+            'type',
+            'derivationEvent',
+            'taxonRelatedDerivedUnits',
+            'titleCache',
+            'protectedTitleCache',
+            'derivedUnitMedia',
+            'created',
+            'publish',
+            'updated',
+            'class',
+            'uuid',
+            'collectionDTO'
+        );
+    }
+    $items = array();
+
+    // only show uuid it the user is logged in
+    if (user_is_logged_in() && ($a_idx = array_search('uuid', $exclude_occurrence_fields)) !== FALSE) {
+      //  unset($exclude_occurrence_fields[$a_idx]);
+    }
+
+
+    if (is_object($specimenOrObservation)) {
+
+        $type_label = $specimenOrObservation->recordBase;
+        RenderHints::setFootnoteListKey($type_label . '-' . $specimenOrObservation->uuid);
+
+        // collect typeStatus as label
+        if (isset($specimenOrObservation->specimenTypeDesignations)) {
+            $type_status = array();
+            foreach ($specimenOrObservation->specimenTypeDesignations as $typeDesignation) {
+                if (isset($typeDesignation->typeStatus->representation_L10n)) {
+                    $type_status[] = $typeDesignation->typeStatus->representation_L10n;
+                }
+            }
+            if (count($type_status) > 0) {
+                $type_label = implode(', ', $type_status);
+            }
+        }
+
+        $title = $type_label . ': ' . $specimenOrObservation->titleCache;
+        $items['data'] = title;
+
+        $groups = array();
+        $items['children'] = $groups;
+        $children_items = array();
+        // --- add initialized fields
+        foreach (get_object_vars($specimenOrObservation) as $field => $value) {
+            $child_item = array();
+
+            if (!in_array($field, $exclude_occurrence_fields) && ($value && (!is_object($value) || isset($value->class)))) {
+                switch ($field) {
+//            case 'recordBasis':
+//                if ($value != '' /* FieldUnit' */) {
+//                    @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
+//                }
+//                break;
+                    /* ---- java.lang.Object --- */
+                    case 'class':
+                        if ($value != '' /* FieldUnit' */) {
+                        //    @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
+                        }
+
+                        break;
+
+                    case 'markers':
+                       /* $dd_elements = array();
+                        foreach ($value as $marker) {
+                            $dd_elements[] = compose_cdm_marker($marker);
+                        }
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+                       */
+                       break;
+
+
+                    case 'annotations':
+                        /*$dd_elements = array();
+                        foreach ($value as $annotation) {
+                            // TODO respect annotation type filter settings
+                            $dd_elements[] = $annotation->text;
+                        }
+                        @_description_list_group_add($groups, t('Notes'), $dd_elements);
+                        */
+                        break;
+
+                    /* ---- SpecimenOrObservationBase --- */
+                    case 'sex':
+                    case 'lifeStage':
+                    case 'kindOfUnit':
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->representation_L10n, NULL, 1);
+                        break;
+
+                    case 'definition':
+                        // TODO
+                        break;
+
+                    case 'preferredStableUri':
+
+                       // @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(array('#markup' => cdm_external_uri($value, false))));
+                        break;
+
+                    case 'specimenTypeDesignations':
+                      /*     $groups,
+                            cdm_occurrence_field_name_label($field),
+                            array(
+                                '#markup' => theme('cdm_typedesignations', array('typeDesignations' => $value)),
+                            )
+                        );
+                      */
+                        break;
+
+                    case 'determinations':
+                        /*$dd_elements = array();
+                        $glue = ', ';
+
+                        foreach ($value as $determinationEvent) {
+                            $timeperiod_string = NULL;
+                            if (isset($determinationEvent->timeperiod)) {
+                                $timeperiod_string = timePeriodToString($determinationEvent->timeperiod);
+                            }
+                            $weight = isset($determinationEvent->preferred) && $determinationEvent->preferred == 1 ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
+                            // check key exists
+                            while (array_key_exists($weight, $dd_elements)) {
+                                $weight .= '0';
+                            }
+
+                            $taxon_name = '';
+                            $name_link = '';
+                            if ($determinationEvent->taxonName) {
+                                $taxon_name = $determinationEvent->taxonName;
+                            } else if ($determinationEvent->taxon) {
+                                $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
+                                $name_link = path_to_taxon($determinationEvent->taxon->uuid);
+                            }
+                            if ($taxon_name) {
+                                $taxon_html = render_taxon_or_name($taxon_name, $name_link);
+                                $dd_elements[$weight] = $taxon_html;
+                            }
+                            if (isset($determinationEvent->modifier)) {
+                                $dd_elements[$weight] .= cdm_term_representation($determinationEvent->modifier);
+                            }
+                            if ($timeperiod_string) {
+                                $dd_elements[$weight] .= $glue . $timeperiod_string;
+                            }
+                            if (isset($determinationEvent->actor->titleCache)) {
+                                $dd_elements[$weight] .= $glue . $determinationEvent->actor->titleCache;
+                            }
+                            if (isset($determinationEvent->description)) {
+                                $dd_elements[$weight] .= $glue . $determinationEvent->description;
+                            }
+                        }
+                        ksort($dd_elements);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('determinations'), $dd_elements);
+                        */
+                        break;
+
+                    case 'descriptions':
+                        /*
+                        $occurrence_featureTree = cdm_get_occurrence_featureTree();
+                        $dd_elements = array();
+
+                        foreach ($value as $description) {
+                            $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, $description->uuid);
+//               if($description->imageGallery == TRUE) {
+//                 continue;
+//               }
+                            $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->childNodes, $description->elements);
+                            $description_render_elements = _block_get_renderable_array(make_feature_block_list($elements_by_feature, null));
+                            $dd_elements[] = $description_render_elements;
+                            if ($description->isImageGallery) {
+                                $mediaList = array();
+                                if (is_array($description->elements)) {
+                                    $mediaList = $description->elements;
+                                }
+                                $gallery_html = '';
+                                if (count($mediaList) > 0) {
+                                    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+                                    $captionElements = array(
+                                        '#uri' => t('open media'),
+                                    );
+
+                                    $gallery_html = compose_cdm_media_gallerie(array(
+                                        'mediaList' => $mediaList,
+                                        'galleryName' => $gallery_name,
+                                        'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+                                        'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+                                        'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
+                                        'captionElements' => $captionElements,
+                                        'mediaLinkType' => 'LIGHTBOX',
+                                        'alternativeMediaUri' => NULL,
+                                        'galleryLinkUri' => NULL,
+                                    ));
+                                }
+
+                            }
+                        }
+
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
+                        */
+                        break;
+
+                    case 'sources':
+                        /*
+                        $dd_elements = array();
+                        foreach ($value as $identifiable_source) {
+                            $dd_elements[] = theme('cdm_OriginalSource', array('source' => $identifiable_source));
+                        }
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements, NULL, 10);
+                        */
+                        break;
+
+
+                    /* ---- DerivedUnitBase --- */
+
+
+                    case 'collection':
+                        /*
+                        $sub_dl_groups = array();
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('code'), $value->code, NULL, 1);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('codeStandard'), $value->codeStandard, NULL, 2);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('institute'), $value->institute, NULL, 3);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('townOrLocation'), $value->townOrLocation, NULL, 4);
+                        // TODO "superCollection"
+                        // TODO may have media
+
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
+                            array(
+                                array('#markup' => $value->titleCache),
+                                array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
+                            )
+                        );
+                        */
+                        break;
+
+                    case 'storedUnder':
+
+                        //@_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), render_taxon_or_name($value));
+                        break;
+
+
+                    /* ---- Specimen --- */
+                    case 'sequences':
+                        /*
+                        $dd_elements = array();
+                        foreach ($value as $sequence) {
+                            $dd_elements[] = compose_cdm_sequence($sequence);
+                        }
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+                        */
+                        break;
+
+                    // TODO preservation
+                    // TODO exsiccatum
+
+
+                    /* ---- FieldObservation --- */
+                    case 'gatheringEvent':
+
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('collector'), $value->actor->titleCache);
+                        @_description_list_group_add($groups, t('Gathering time'), timePeriodToString($value->timeperiod));
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('description'), $value->description);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality->text);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
+                        if (isset($value->absoluteElevation)) {
+                            $min_max_markup = min_max_measure($value, 'absoluteElevation');
+                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup);
+                        }
+                        if (isset($value->distanceToGround)) {
+                            $min_max_markup = min_max_measure($value, 'distanceToGround');
+                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $min_max_markup);
+                        }
+                        if (isset($value->distanceToWaterSurface)) {
+                            $min_max_markup = min_max_measure($value, 'distanceToWaterSurface');
+                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup);
+                        }
+
+                        if (isset($value->collectingAreas)) {
+                            $area_representations = array();
+                            foreach ($value->collectingAreas as $area) {
+                                $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
+                            }
+                            if (!empty($area_representations))
+                                @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingAreas'),
+                                    array(
+                                        array('#markup' => implode(', ', $area_representations))
+                                    )
+                                );
+                        }
+                        if (isset($value->exactLocation)  && $value->exactLocation->sexagesimalString) {
+                            $sub_dl_groups = array();
+                            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('errorRadius'), $value->exactLocation->errorRadius, ' m', 1);
+                            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('longitude'), round($value->exactLocation->longitude, 7), '°', 2);
+                            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('latitude'), round($value->exactLocation->latitude, 7), '°', 3);
+                            if (isset($value->exactLocation->referenceSystem)) {
+                                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('referenceSystem'), $value->exactLocation->referenceSystem->representation_L10n, '', 4);
+                            }
+
+                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('exactLocation'),
+                                array(
+                                    array('#markup' => $value->exactLocation->sexagesimalString),
+                                    array(
+                                        '#theme' => 'description_list',
+                                        '#groups' => $sub_dl_groups
+                                    ),
+                                )
+                            );
+                        }
+
+                        break;
+
+                    /* ---- DerivationEvent --- */
+                    case 'derivationEvents':
+                        //@_description_list_group_add($groups, t('Association type'), $value->description);
+                        break;
+
+
+                    default:
+                        if (is_object($value) || is_array($value)) {
+                           // drupal_set_message("Unhandled type in compose_cdm_specimenOrObservation() for field " . $field, "warning");
+                        } else {
+                            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
+                        }
+
+                }
+
+
+            }
+        } // END of loop over $derivedUnitFacade fields
+
+        // Extensions
+       /* $extensions = cdm_ws_fetch_all(CDM_WS_PORTAL_OCCURRENCE . '/' . $specimenOrObservation->uuid . '/extensions', array($specimenOrObservation->uuid));
+        if ($extensions && count($extensions)) {
+
+            $extensions_render_array = compose_extensions($extensions);
+            @_description_list_group_add($groups, t('Extensions') . ':',
+                $extensions_render_array,
+                '', 100);
+        }
+*/
+
+        // template_preprocess_description_list() is not worting by weight so we do it right here
+        uasort($groups, 'element_sort');
+
+        $occurrence_elements = array(
+           // '#title' => $title,
+            '#theme' => 'description_list',
+            '#groups' => $groups,
+            '#attributes' => array('class' => html_class_attribute_ref($specimenOrObservation)),
+        );
+        $output = drupal_render($occurrence_elements);
+
+
+
+
+
+
+
+
+    } // END of $specimenOrObservation exists
+
+    return $output;
+}
 
