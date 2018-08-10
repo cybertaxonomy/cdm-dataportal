@@ -49,8 +49,15 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     }
 
     $by_associatedtaxon_query = http_build_query($by_associatedtaxon_query_parameters);
+    $cdm_dataportal_list_view = false;
+    $ws_string = 'specimensOrObservation';
+    if ($cdm_dataportal_list_view){
+        $ws_string .= "DTOs";
+    }else{
+        $ws_string .= "s";
+    }
 
-    $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
+    $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, $ws_string));
 
      // cdm_ws_get(CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON,
      // null,
@@ -91,6 +98,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     // --- get map service HTTP query parameters
 
     if (count($specimensOrObservations) > 0) {
+        $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
         //the information about the points are already available
         $points = array();
         foreach ($specimensOrObservations as &$occurrence) {
@@ -119,7 +127,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
     // -------------------------------------------------------
     $render_array['map'] = $map_render_array;
-    $cdm_dataportal_list_view = false;
+
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
