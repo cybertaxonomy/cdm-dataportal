@@ -834,7 +834,7 @@ function create_specimen_array(array $specimenOrObservations){
     $children = array();
     //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
     foreach ($specimenOrObservations as &$specimenOrObservation) {
-        $items['data'] = $specimenOrObservation->titleCache;
+        $items['data'] = $specimenOrObservation->listLabel;
         $specimen = create_cdm_specimen_or_observation($specimenOrObservation);
         $children = array();
         $child = array();
@@ -878,7 +878,9 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
             'type',
             'derivationEvent',
             'taxonRelatedDerivedUnits',
+            'label',
             'titleCache',
+            'listLabel',
             'protectedTitleCache',
             'derivedUnitMedia',
             'created',
@@ -916,7 +918,7 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
         }
 
         $title = $type_label . ': ' . $specimenOrObservation->titleCache;
-        $items['data'] = title;
+        $items['data'] = $title;
 
         $groups = array();
         $items['children'] = $groups;
@@ -933,12 +935,6 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
 //                }
 //                break;
                     /* ---- java.lang.Object --- */
-                    case 'class':
-                        if ($value != '' /* FieldUnit' */) {
-                        //    @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
-                        }
-
-                        break;
 
                     case 'markers':
                        /* $dd_elements = array();
@@ -973,7 +969,7 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
 
                     case 'preferredStableUri':
 
-                       // @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(array('#markup' => cdm_external_uri($value, false))));
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(array('#markup' => cdm_external_uri($value, false))));
                         break;
 
                     case 'specimenTypeDesignations':
@@ -1014,7 +1010,6 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
                                 $dd_elements[$weight] = $taxon_html;
                             }
                             if (isset($determinationEvent->modifier)) {
-                                $dd_elements[$weight] .= cdm_term_representation($determinationEvent->modifier);
                             }
                             if ($timeperiod_string) {
                                 $dd_elements[$weight] .= $glue . $timeperiod_string;
@@ -1031,51 +1026,25 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
                         */
                         break;
 
-                    case 'descriptions':
-                        /*
-                        $occurrence_featureTree = cdm_get_occurrence_featureTree();
-                        $dd_elements = array();
+                    case 'listOfMedia':
+                        $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+                        $captionElements = array(
+                            '#uri' => t('open media'),
+                        );
+                        $gallery_html = compose_cdm_media_gallerie(array(
+                            'mediaList' => $value,
+                            'galleryName' => $specimenOrObservation->label,
+                            'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+                            'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+                            'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
+                            'captionElements' => $captionElements,
+                            'mediaLinkType' => 'LIGHTBOX',
+                            'alternativeMediaUri' => NULL,
+                            'galleryLinkUri' => NULL,
+                        ));
 
-                        foreach ($value as $description) {
-                            $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, $description->uuid);
-//               if($description->imageGallery == TRUE) {
-//                 continue;
-//               }
-                            $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->childNodes, $description->elements);
-                            $description_render_elements = _block_get_renderable_array(make_feature_block_list($elements_by_feature, null));
-                            $dd_elements[] = $description_render_elements;
-                            if ($description->isImageGallery) {
-                                $mediaList = array();
-                                if (is_array($description->elements)) {
-                                    $mediaList = $description->elements;
-                                }
-                                $gallery_html = '';
-                                if (count($mediaList) > 0) {
-                                    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
-                                    $captionElements = array(
-                                        '#uri' => t('open media'),
-                                    );
-
-                                    $gallery_html = compose_cdm_media_gallerie(array(
-                                        'mediaList' => $mediaList,
-                                        'galleryName' => $gallery_name,
-                                        'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
-                                        'cols' => $gallery_settings['cdm_dataportal_media_cols'],
-                                        'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
-                                        'captionElements' => $captionElements,
-                                        'mediaLinkType' => 'LIGHTBOX',
-                                        'alternativeMediaUri' => NULL,
-                                        'galleryLinkUri' => NULL,
-                                    ));
-                                }
-
-                            }
-                        }
-
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
-                        */
-                        break;
+                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
+                         break;
 
                     case 'sources':
                         /*
@@ -1092,7 +1061,7 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
 
 
                     case 'collection':
-                        /*
+
                         $sub_dl_groups = array();
                         @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('code'), $value->code, NULL, 1);
                         @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('codeStandard'), $value->codeStandard, NULL, 2);
@@ -1107,7 +1076,7 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
                                 array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
                             )
                         );
-                        */
+
                         break;
 
                     case 'storedUnder':

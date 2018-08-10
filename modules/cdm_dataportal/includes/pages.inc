@@ -76,17 +76,17 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
 
     // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
-    // $occurrence->_fieldObjectMedia
-   // foreach ($specimensOrObservations as &$occurrence) {
-    //    $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-    //        $occurrence->uuid,
-    //        'fieldObjectMedia',
-    //    ));
-    //    $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-    //        $occurrence->uuid,
-    //        'derivedUnitMedia',
-    //    ));
-    //}
+     $occurrence->_fieldObjectMedia;
+    foreach ($specimensOrObservations as &$occurrence) {
+        $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+            $occurrence->uuid,
+            'fieldObjectMedia',
+        ));
+        $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+            $occurrence->uuid,
+            'derivedUnitMedia',
+        ));
+    }
 
     // --- get map service HTTP query parameters
 
@@ -119,7 +119,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
 
     // -------------------------------------------------------
     $render_array['map'] = $map_render_array;
-    $cdm_dataportal_list_view = true;
+    $cdm_dataportal_list_view = false;
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
@@ -153,8 +153,33 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         );
     }
     else if($cdm_dataportal_list_view){
+        $specimen_table = array(
+            '#theme' => 'table',
+            '#weight' => 2,
+            // prefix attributes and rows with '#' to let it pass toF the theme function,
+            // otherwise it is handled as child render array
+            '#attributes' => array('class' => 'specimens'),
+            '#rows' => array(),
+        );
         $specimen_array = create_specimen_array($specimensOrObservations);
-        $render_array['specimen_list'] = array('#theme'=>'item_list', '#items'=>$specimen_array, '#type'=>'ul');
+
+        foreach($specimen_array as $value){
+            $renderArray = array(
+                '#theme' => 'item_list',
+                '#items' => array($value),
+                '#type' => 'ul');
+            $output = drupal_render($renderArray);
+            $specimen_table['#rows'][] = array(
+                // An array of table rows. Every row is an array of cells, or an associative array
+                'data' => array($output),
+                'class' =>  array(
+                    'descriptionElement',
+                    'descriptionElement_IndividualsAssociation'
+                ),
+            );
+        }
+
+        $render_array['specimen_list'] = $specimen_table;
       //  $render_array['specimen_list'] = $specimen_array;
 
     }
@@ -282,6 +307,14 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             10 // weight
         );
     }
+    $render_array['pager'] = markup_to_render_array(
+        theme('cdm_pager', array(
+            'pager' => $pager,
+            'path' => $_REQUEST['q'],
+            'parameters' => $_REQUEST,
+        )),
+        10 // weight
+    );
     RenderHints::popFromRenderStack();
     return $render_array;
 }
