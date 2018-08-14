@@ -346,13 +346,14 @@ function compose_cdm_media_gallerie($configuration) {
     $out .= '<tr>';
     for ($c = 0; $c < $cols; $c++) {
       $media = array_shift($mediaList);
-
-      if (isset($media->representations[0]->parts[0])) {
+        $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
+      if (isset($complete_media->representations[0]->parts[0])) {
 
         //
         // Find preferred representation.
         //
-        $thumbnail_representations = cdm_preferred_media_representations($media, array(
+
+        $thumbnail_representations = cdm_preferred_media_representations($complete_media, array(
             'image/jpg',
             'image/jpeg',
             'image/png',
@@ -365,7 +366,7 @@ function compose_cdm_media_gallerie($configuration) {
         // which only contains the thumbnail representation even if the height and width filters are not set.
         // --> #6970
         // to get hold of the full resolution images we send a separate request :
-        $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
+       // $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
         $full_size_representations = cdm_preferred_media_representations($complete_media, array(
             'image/jpg',
             'image/jpeg',

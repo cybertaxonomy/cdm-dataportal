@@ -28,6 +28,7 @@
   define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
   define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
   define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
+  define('CDM_DATAPORTAL_SPECIMEN_DERIVATE_TREE', 0);
 
   /* annotationTypeKeys */
   $annotationTypeKeys = array_keys(cdm_vocabulary_as_option(UUID_ANNOTATION_TYPE));
@@ -2546,7 +2547,15 @@ ie	introduced: formerly introduced
       '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE),
   );
 
-  $featureTrees = cdm_get_featureTrees_as_options(TRUE);
+    $form['taxon_specimens']['cdm_dataportal_specimen_derivate_tree'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show specimen derivatives in a tree view'),
+        '#default_value' => variable_get('cdm_dataportal_specimen_derivate_tree', CDM_DATAPORTAL_SPECIMEN_DERIVATE_TREE),
+        '#description' => t('If checked, the specimen will be listed in a tree view.'),
+    );
+
+
+    $featureTrees = cdm_get_featureTrees_as_options(TRUE);
   $profile_feature_tree_uuid = variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
   if(!isset($featureTrees['options'][$profile_feature_tree_uuid])) {
     $profile_feature_tree_uuid = UUID_DEFAULT_FEATURETREE;
@@ -2664,7 +2673,7 @@ function cdm_settings_layout_search() {
     '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
     '#description' => t('Number of results to display per page.'),
   );
-    
+
   $form['search_settings'][SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX] = array(
     '#type' => 'checkbox',
     '#title' => t('Show the') .  ' <i>' . t('Display image thumbnails') . '</i>' . t('button') . ':',

@@ -773,7 +773,7 @@ function compose_cdm_sequence($sequence)
 function create_specimen_array(array $specimenOrObservations){
     $items_specimen = array();
     $items = array();
-    $children = array();
+
     //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
     foreach ($specimenOrObservations as &$specimenOrObservation) {
         $items['data'] = $specimenOrObservation->listLabel;
@@ -824,10 +824,6 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
             'titleCache',
             'listLabel',
             'protectedTitleCache',
-            'derivedUnitMedia',
-            'created',
-            'publish',
-            'updated',
             'class',
             'uuid',
             'collectionDTO'
@@ -985,7 +981,7 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
                             'galleryLinkUri' => NULL,
                         ));
 
-                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
+                         //@_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
                          break;
 
                     case 'sources':
@@ -1055,11 +1051,11 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
                             $min_max_markup = min_max_measure($value, 'absoluteElevation');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup);
                         }
-                        if (isset($value->distanceToGround)) {
+                        if (isset($value->distanceToGround) && $value->distanceToGround >0) {
                             $min_max_markup = min_max_measure($value, 'distanceToGround');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $min_max_markup);
                         }
-                        if (isset($value->distanceToWaterSurface)) {
+                        if (isset($value->distanceToWaterSurface) && $value->distanceToWaterSurface > 0) {
                             $min_max_markup = min_max_measure($value, 'distanceToWaterSurface');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup);
                         }
@@ -1138,6 +1134,7 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
             '#attributes' => array('class' => html_class_attribute_ref($specimenOrObservation)),
         );
         $output = drupal_render($occurrence_elements);
+        $output .= $gallery_html;
 
 
 
