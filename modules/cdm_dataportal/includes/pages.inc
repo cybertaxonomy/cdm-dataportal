@@ -336,8 +336,8 @@ function compose_specimen_table($field_unit_uuids)
         $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
       }
       //assemble specimen details
-      if ($derivateHierarchy->preservedSpecimenDTOs) {
-        foreach ($derivateHierarchy->preservedSpecimenDTOs as $preservedSpecimenDTO) {
+      if ($derivateHierarchy->derivates) {
+        foreach ($derivateHierarchy->derivates as $preservedSpecimenDTO) {
           $detail_html .= "<br>";
           $detail_html .= render_cdm_specimen_page($preservedSpecimenDTO);
         }
