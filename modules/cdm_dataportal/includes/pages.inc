@@ -87,7 +87,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     foreach ($specimensOrObservations as &$occurrence) {
         $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
             $occurrence->uuid,
-            'fieldObjectMedia',
+            'fieldObjectMediaDTO',
         ));
         $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
             $occurrence->uuid,

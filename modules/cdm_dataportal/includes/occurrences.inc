@@ -776,7 +776,8 @@ function create_specimen_array(array $specimenOrObservations){
 
     //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
     foreach ($specimenOrObservations as &$specimenOrObservation) {
-        $items['data'] = $specimenOrObservation->listLabel;
+
+        $items['data'] = $specimenOrObservation->listLabel ;
         $specimen = create_cdm_specimen_or_observation($specimenOrObservation);
         $children = array();
         $child = array();
@@ -1135,6 +1136,9 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
         );
         $output = drupal_render($occurrence_elements);
         $output .= $gallery_html;
+        $pathToSpecimen = path_to_specimen($specimenOrObservation->uuid);
+        $output .=  l("detail page", $pathToSpecimen, array('attributes' => array('target' => '_blank')));
+
 
 
 
