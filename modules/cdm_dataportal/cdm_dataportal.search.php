@@ -713,7 +713,13 @@ function cdm_dataportal_search_registrations_execute()
       || (isset($request_params['typeDesignationStatusUuids'][0]) && !$request_params['typeDesignationStatusUuids'][0])){
       unset($request_params['typeDesignationStatusUuids']);
     }
-
+  }
+  if(isset($request_params['taxonNameFilterPattern'])){
+    // trim and remove empty taxon name query strings
+    $request_params['taxonNameFilterPattern'] = trim($request_params['taxonNameFilterPattern']);
+    if(!$request_params['taxonNameFilterPattern']){
+      unset($request_params['taxonNameFilterPattern']);
+    }
   }
 
   $registration_pager = cdm_ws_get('registrationDTO/find', NULL, queryString($request_params));
@@ -770,6 +776,8 @@ function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '')
 
 
 function cdm_dataportal_search_registration_form($form, &$form_state) {
+
+  _add_font_awesome_font();
 
   $filter_presets = (isset($_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER]) ? $_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER] : array());
   $filter_presets = array_merge($filter_presets, remove_drupal_form_params($_REQUEST));

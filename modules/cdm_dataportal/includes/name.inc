@@ -364,7 +364,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
       $taggedName = $taggedNameNew;
       unset($taggedNameNew);
     }
-    $name = '<span class="' . $taxonName->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName, 'span', ' ', $skiptags) . $name_encasement . '</span>';
+    $name = '<span class="' . $taxonName->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName, $skiptags) . $name_encasement . '</span>';
   }
   else {
     $name = '<span class="' . $taxonName->class . '_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxonName->titleCache . $name_encasement . '</span>';
@@ -451,7 +451,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   // Fill with status.
   if(isset($renderTemplate['statusPart']['status'])){
     if (isset($nom_status_tagged_text[0])) {
-        array_setr('status', '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, 'span', '', array('postSeparator')) . '</span>', $renderTemplate);
+        array_setr('status', '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator')) . '</span>', $renderTemplate);
     }
   }
 

@@ -93,17 +93,29 @@ function theme_cdm_reference($variables) {
 }
 
 /**
- * @param $reference
- * @param $out
+ * Creates a anchor tag as clickable link to an external resource, either as text link or as icon.
+ * The resulting link will have no 'target' attribute, so the link will open in the same tab by default.
+ * So the users can decide.
+ *
+ * @param $uri
+ *    The uri to link to
+ * @param $iconified
+ *    The link will be rendered as icon of this is true.
  * @return string
+ *
  */
 function cdm_external_uri($uri, $iconified = true)
 {
+  $options = array(
+    'external' => true,
+    'html' => false,
+    );
   if (!empty($uri)) {
     if($iconified){
-      return l(font_awesome_icon_markup('fa-external-link', array('class' => array('superscript'))), $uri, array('html' => TRUE));
+      $options['html'] = true;
+      return l(font_awesome_icon_markup('fa-external-link', array('class' => array('superscript'))), $uri, $options);
     } else {
-      return l($uri, $uri);
+      return l($uri, $uri, $options);
     }
   }
 }

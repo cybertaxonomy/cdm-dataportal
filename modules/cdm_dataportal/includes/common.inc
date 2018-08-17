@@ -307,34 +307,32 @@ function min_max_markup($min_max, $unit = '') {
  * @param string $field_base_name
  *    The base name for all measurement fields. This name is at the same time the full name of the
  *    min value.
- * @return array
- *   the resulting min max array
+ * @return string
+ *   The markup for the min max
  */
 function min_max_measure($object, $field_base_name)
 {
   static $default_unit = 'm';
 
-  $min_max_array = min_max_array();
-  if (@is_numeric($object->$field_base_name)) {
-    $min_max_array['Min'] = new stdClass();
-    $min_max_array['Min']->_value = $object->$field_base_name;
-  }
-
-  $field_name = $field_base_name . 'Max';
-  if (@is_numeric($object->$field_name)) {
-    $min_max_array['Max'] = new stdClass();
-    $min_max_array['Max']->_value = $object->$field_name;
-  }
-  $min_max_markup = min_max_markup($min_max_array, $default_unit);
-
-  $field_name = $field_base_name . 'Error';
-  if (@is_numeric($object->$field_name )) {
-    $min_max_markup .= ' +/- ' . $object->$field_name . ' ' . $default_unit;
-  }
   $field_name = $field_base_name . 'Text';
   if (@is_string($object->$field_name)) {
-    $min_max_markup .= ' ' . $object->$field_name;
+    // Freetext overrides all other data
+    $min_max_markup = ' ' . $object->$field_name;
+  } else {
+    // create markup for the atomized min max data
+    $min_max_array = min_max_array();
+    if (@is_numeric($object->$field_base_name)) {
+      $min_max_array['Min'] = new stdClass();
+      $min_max_array['Min']->_value = $object->$field_base_name;
+    }
+    $field_name = $field_base_name . 'Max';
+    if (@is_numeric($object->$field_name)) {
+      $min_max_array['Max'] = new stdClass();
+      $min_max_array['Max']->_value = $object->$field_name;
+    }
+    $min_max_markup = min_max_markup($min_max_array, $default_unit);
   }
+
   return $min_max_markup;
 }
 

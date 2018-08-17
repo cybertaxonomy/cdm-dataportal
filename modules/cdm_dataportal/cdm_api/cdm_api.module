@@ -193,6 +193,42 @@ function cdm_api_cron() {
 // ===================== Tagged Text functions ================== //
 
 /**
+ * Walks the passed TaggedText array to find all elements which have a
+ * TaggedText->entityReference. For each of these the taggedTexts is loaded
+ * from the webservice and the original enty in the TaggedText array will be
+ * replaced by the newly loaded array.
+ *
+ * @param array $taggedtxt
+ *    The original TaggedText array
+ * @param array $skiptags
+ *    Optional list of tag names to skip
+ * @return array
+ *    The new tagged text with all TaggedText->entityReference objects expanded
+ */
+function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = array()) {
+  $tagged_text_expanded = array();
+  foreach ($taggedtxt as $tt) {
+    if (isset($tt->entityReference) && !in_array($tt->type, $skiptags)) {
+      $base_uri = cdm_ws_base_uri($tt->entityReference->type);
+      if($base_uri){
+        $tagged_text_method = "/taggedText";
+        if($base_uri == CDM_WS_NAME){
+          $tagged_text_method = "/taggedName";
+        }
+        $referenced_tt = cdm_ws_get($base_uri . "/" . $tt->entityReference->uuid . $tagged_text_method);
+        if($referenced_tt){
+          $tagged_text_expanded = array_merge($tagged_text_expanded, $referenced_tt);
+          continue;
+        }
+      }
+    }
+    // default case
+    $tagged_text_expanded[] = $tt;
+  }
+  return $tagged_text_expanded;
+}
+
+/**
  * Converts an array of TaggedText items into corresponding html tags.
  *
  * Each item is provided with a class attribute which is set to the key of the
@@ -200,31 +236,48 @@ function cdm_api_cron() {
  *
  * @param array $taggedtxt
  *   Array with text items to convert.
- * @param string $tag
- *   Html tag name to convert the items into, default is 'span'.
- * @param string $glue
- *   The string by which the chained text tokens are concatenated together.
- *   Default is a blank character.
+ * @param array $skiptags
+ *   Array of tag names to skip
  *
  * @return string
  *   A string with HTML.
  */
-function cdm_tagged_text_to_markup(array $taggedtxt, $tag = 'span', $glue = ' ', $skiptags = array()) {
+function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array()) {
+
+  $tag = 'span';
   $out = '';
+  $was_separator = false;
   $i = 0;
   foreach ($taggedtxt as $tt) {
-    if (!in_array($tt->type, $skiptags) && strlen($tt->text) > 0) {
+    if (!in_array($tt->type, $skiptags) && $tt->text) {
       $class_attr = $tt->type;
+
       if(isset($tt->entityReference)){
         $class_attr .= " " . html_class_attribute_ref($tt->entityReference);
       }
-      $out .= (strlen($out) > 0 && ++$i < count($taggedtxt) ? $glue : '')
-        . '<' . $tag . ' class="' . $class_attr . '">'
+      $is_last = $i + 1 == count($taggedtxt);
+      $is_separator = is_tagged_text_sepatator_type($tt->type);
+      $glue = !$is_separator && !$was_separator && !$is_last ? ' ' : '';
+      $out .= '<' . $tag . ' class="' . $class_attr . '">'
         . t('@text', array('@text' => $tt->text))
-        . '</' . $tag . '>';
+        . '</' . $tag . '>'
+        . $glue;
+      $was_separator = $is_separator;
     }
+    $i++;
   }
   return $out;
+}
+
+/**
+ * See cdmlib: boolean eu.etaxonomy.cdm.strategy.cache.TagEnum.isSeparator();
+ *
+ * @return bool
+ */
+function is_tagged_text_sepatator_type($tagged_text_type){
+    static $separator_names = array('separator', 'postSeparator');
+		$result = array_search($tagged_text_type, $separator_names) !== false;
+    return $result;
 }
 
 
@@ -751,7 +804,8 @@ function timePeriodToString($period, $stripZeros = TRUE, $format = "YYYY-MM-DD")
       $dateString = partialToDate($period->start, $stripZeros, $format);
     }
     if ($period->end) {
-      $dateString .= (strlen($dateString) > 0 ? ' ' . t('to') . ' ' : '') . partialToDate($period->end, $stripZeros, $format);
+      $end_str = partialToDate($period->end, $stripZeros, $format);
+      $dateString .= ($dateString && $end_str > 0 ? ' ' . t('to') . ' ' : '') . $end_str;
     }
   }
   return $dateString;
@@ -1057,12 +1111,34 @@ function uri_uriByProxy($uri, $theme = FALSE) {
  *   The CDM entity to construct the annotations pager uri for
  */
 function cdm_compose_annotations_uri($cdmBase) {
+
   if (!$cdmBase->uuid) {
     return;
   }
 
+  $ws_base_uri = cdm_ws_base_uri($cdmBase->class);
+
+  if($ws_base_uri === null){
+      trigger_error(check_plain('Unsupported CDM Class - no annotations available for ' . $cdmBase->class), E_USER_ERROR);
+  }
+  return cdm_compose_url($ws_base_uri, array(
+    $cdmBase->uuid,
+    'annotations',
+  ));
+}
+
+/**
+ * Provides the base URI of the cdm REST service responsible for the passed simple name
+ * of a CDM java class. For example 'TaxonName' is the simple name of 'eu.etaxonomy.cdm.model.name.TaxonName'
+ *
+ * @param $cdm_type_simple
+ *    simple name of a CDM java class
+ * @return null|string
+ */
+function cdm_ws_base_uri($cdm_type_simple)
+{
   $ws_base_uri = NULL;
-  switch ($cdmBase->class) {
+  switch ($cdm_type_simple) {
     case 'TaxonBase':
     case 'Taxon':
     case 'Synonym':
@@ -1086,7 +1162,6 @@ function cdm_compose_annotations_uri($cdmBase) {
     case 'TaxonInteraction':
     case 'QuantitativeData':
     case 'IndividualsAssociation':
-    case 'Distribution':
     case 'CommonTaxonName':
     case 'CategoricalData':
       $ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
@@ -1095,18 +1170,14 @@ function cdm_compose_annotations_uri($cdmBase) {
     case 'PolytomousKey':
     case 'MediaKey':
     case 'MultiAccessKey':
-      $ws_base_uri = $cdmBase->class;
+      $ws_base_uri = $cdm_type_simple;
       $ws_base_uri{0} = strtolower($ws_base_uri{0});
       break;
 
     default:
-      trigger_error(check_plain('Unsupported CDM Class - no annotations available for ' . $cdmBase->class), E_USER_ERROR);
-      return;
+      $ws_base_uri = null;
   }
-  return cdm_compose_url($ws_base_uri, array(
-    $cdmBase->uuid,
-    'annotations',
-  ));
+  return $ws_base_uri;
 }
 
 /**

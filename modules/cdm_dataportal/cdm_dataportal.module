@@ -340,19 +340,8 @@ function _add_js_taxonomic_children($jquery_selector) {
    *
    */
   function font_awesome_icon_markup($icon_name = NULL, $attributes = array()){
+    _add_font_awesome_font();
 
-
-    //<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-
-    $font_awesome_css_uri = base_path() . drupal_get_path('module', 'cdm_dataportal').'/fonts/font-awesome-4.6.3/css/font-awesome.min.css';
-    //$font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
-
-    drupal_add_html_head_link(
-      array(
-        'href' => $font_awesome_css_uri,
-        'rel' => 'stylesheet'
-      )
-    );
 
     if($icon_name){
       if(!isset($attributes['class'])){
@@ -367,8 +356,26 @@ function _add_js_taxonomic_children($jquery_selector) {
     return '';
   }
 
+/**
+ * Adds the css  containing the font awesome icons to the html header.
+ */
+function _add_font_awesome_font()
+{
+//<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
-  /* ====================== hook implementations ====================== */
+  $font_awesome_css_uri = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/fonts/font-awesome-4.6.3/css/font-awesome.min.css';
+  //$font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
+
+  drupal_add_html_head_link(
+    array(
+      'href' => $font_awesome_css_uri,
+      'rel' => 'stylesheet'
+    )
+  );
+}
+
+
+/* ====================== hook implementations ====================== */
   /**
    * Implements hook_permission().
    *
@@ -1136,6 +1143,7 @@ function cdm_dataportal_view_names($beginsWith = 'A', $page = 1, $onlyAccepted =
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
+ * @throws Exception
  */
 function cdm_dataportal_view_reference($uuid, $arg2 = NULL) {
 
@@ -1875,16 +1883,33 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
 function compose_registation_dto($registration_dto, $with_citation = true, $with_identifier = false)
 {
   $render_array = array();
+  $media_link_map = array();
+  $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
+  foreach ($taggged_text_expanded  as $tagged_text){
+    if(isset($tagged_text->entityReference->type) && $tagged_text->entityReference->type == 'SpecimenTypeDesignation') {
+      $mediaDTOs = cdm_ws_get('typedesignation/$0/media', array($tagged_text->entityReference->uuid));
+      if(isset($mediaDTOs[0]->uri)){
+          $media_url_key = '{link-' . $mediaDTOs[0]->uuid . '}';
+          $tagged_text->text = str_replace('[icon]', '[icon]' . $media_url_key, $tagged_text->text);
+          $media_link_map[$media_url_key] =  cdm_external_uri($mediaDTOs[0]->uri, true);
+      }
+    }
+  }
+  $registation_markup = cdm_tagged_text_to_markup($taggged_text_expanded);
+  foreach($media_link_map as $media_url_key => $link){
+    $registation_markup = str_replace($media_url_key, $link, $registation_markup);
+  }
+  if($with_identifier){
+    $registation_markup .= " " . l ($registration_dto->identifier, $registration_dto->identifier);
+  }
+  $render_array['summary'] = markup_to_render_array("<div>" . $registation_markup . "</div>");
+
   if ($with_citation) {
     $render_array['citation'] = markup_to_render_array("<div class=\"" . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
       . l($registration_dto->bibliographicCitationString, path_to_reference($registration_dto->citationUuid))
       . "</br>&nbsp;</div>");
   }
-  $registation_markup = cdm_tagged_text_to_markup($registration_dto->summaryTaggedText);
-  if($with_identifier){
-    $registation_markup .= " " . l ($registration_dto->identifier, $registration_dto->identifier);
-  }
-  $render_array['summary'] = markup_to_render_array("<div>" . $registation_markup . "</div>");
+
   return $render_array;
 }
 
