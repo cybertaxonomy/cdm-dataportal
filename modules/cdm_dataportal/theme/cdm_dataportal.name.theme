@@ -317,7 +317,7 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
 
   $homonym_typeDesignations = NULL;
 
-  // TODO improve typeDesignations retrieval: wouldn't it be suffcient to retrieve all typeDesignations
+  // TODO improve typeDesignations retrieval: wouldn't it be sufficient to retrieve all typeDesignations
   // only from the accepted taxon?
   $accepted_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $accepted_taxon_name_uuid);
 
