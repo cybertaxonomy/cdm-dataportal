@@ -125,9 +125,9 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
           foreach ($pager_field_units->records as $field_unit) {
             $field_unit_uuids[] = $field_unit->uuid;
           }
-        }
 
-        $render_array['derivate_hierarchy_table'] = compose_specimen_table($field_unit_uuids);
+          $render_array['derivate_hierarchy_table'] = compose_specimen_table($field_unit_uuids);
+        }
 
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
@@ -468,7 +468,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
 
   if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
-    taxon_page_tabs_hidden('images');
+    taxon_page_tabs_hidden_add('images');
   }
 
   // --- GET specimensOrObservations --- //
@@ -476,7 +476,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
   $specimensOrObservationsCount = is_array($specimensOrObservations) ? count($specimensOrObservations) : 0;
   if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
-    taxon_page_tabs_hidden('specimens');
+    taxon_page_tabs_hidden_add('specimens');
   }
 
   // --- GET polytomousKeys --- //
@@ -486,7 +486,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
     $identificationKeyCount += $polytomousKeysPager->count;
   }
   if ($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')) {
-    taxon_page_tabs_hidden('keys');
+    taxon_page_tabs_hidden_add('keys');
   }
 
   // --- GET TaxonNodeAgentRelations --- //
@@ -499,11 +499,11 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
       "pageSize=1&pageIndex=0"// we are only interested into the count so we are fetching only one item, o is not possible!
   );
   if (!$taxon_node_agent_relations_pager || $taxon_node_agent_relations_pager->count == 0){
-      taxon_page_tabs_hidden('experts');
+      taxon_page_tabs_hidden_add('experts');
   }
 
   if (!isset($tabsToDisplay["Synonymy"]) || $tabsToDisplay["Synonymy"] == '0') {
-    taxon_page_tabs_hidden('synonymy');
+    taxon_page_tabs_hidden_add('synonymy');
   }
 
   // -------------------------------------------- //
@@ -513,7 +513,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: DESCRIPTION --- //
-  if ($page_part == 'description' || $page_part == 'all') {
+  if (!taxon_page_tabs_hidden_check('description') && ($page_part == 'description' || $page_part == 'all')) {
 
     $merged_tree = merged_taxon_feature_tree($taxon);
 
@@ -525,7 +525,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: IMAGES --- //
-  if (array_search('images', taxon_page_tabs_hidden()) === FALSE && ($page_part == 'images' || $page_part == 'all')) {
+  if (!taxon_page_tabs_hidden_check('images') && ($page_part == 'images' || $page_part == 'all')) {
     $images_html = '<div id="images" class="page-part">';
     if ($page_part == 'all') {
       $images_html .= '<h2>' . t(cdm_taxonpage_tab_label('Images')) . '</h2>';
@@ -558,7 +558,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: SYNONYMY --- //
-  if ((($page_part == 'synonymy' || $page_part == 'all') && $synonymy_as_tab)) {
+  if (!taxon_page_tabs_hidden_check('synonymy') && (($page_part == 'synonymy' || $page_part == 'all') && $synonymy_as_tab)) {
     $synonymy_html = '<div id="synonymy" class="page-part">';
     if ($page_part == 'all') {
       $synonymy_html .= '<h2>' . t(cdm_taxonpage_tab_label('Synonymy')) . '</h2>';
@@ -573,7 +573,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: SPECIMENS --- //
-  if ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all')) {
+  if (!taxon_page_tabs_hidden_check('specimens') && ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all'))) {
     $render_array['specimens'] = array(
         '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
         'content' => cdm_dataportal_taxon_page_specimens($taxon), // returns render array
@@ -582,22 +582,24 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
   // --- PAGE PART: KEYS --- //
-  if ($identificationKeyCount == 1 && $page_part == 'keys'){
-    drupal_goto(path_to_key($polytomousKeysPager->records[0]->class, $polytomousKeysPager->records[0]->uuid));
-  }
-  else if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
-    $keys_html = '<div id="keys" class="page-part">';
-    if ($page_part == 'all') {
-      $keys_html .= '<h2>' . t(cdm_taxonpage_tab_label('Keys')) . '</h2>';
+  if(!taxon_page_tabs_hidden_check('keys')){
+    if ($identificationKeyCount == 1 && $page_part == 'keys'){
+      drupal_goto(path_to_key($polytomousKeysPager->records[0]->class, $polytomousKeysPager->records[0]->uuid));
     }
-    $keys_html .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
-    $keys_html .= '</div>';
-    $render_array['keys'] = markup_to_render_array($keys_html, $weight++);
+    else if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
+      $keys_html = '<div id="keys" class="page-part">';
+      if ($page_part == 'all') {
+        $keys_html .= '<h2>' . t(cdm_taxonpage_tab_label('Keys')) . '</h2>';
+      }
+      $keys_html .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon->uuid));
+      $keys_html .= '</div>';
+      $render_array['keys'] = markup_to_render_array($keys_html, $weight++);
+    }
   }
 
   // --- PAGE PART: EXPERTS --- //
 
-  if (array_search('experts', taxon_page_tabs_hidden()) === FALSE && ($page_part == 'experts' || $page_part == 'all')) {
+  if (!taxon_page_tabs_hidden_check('experts') && ($page_part == 'experts' || $page_part == 'all')) {
     $render_array['experts'] = array(
         '#prefix' => '<div id="experts" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Experts')) . '</h2>' : ''),
         'content' => compose_cdm_taxon_page_experts($taxon), // returns render array
@@ -677,15 +679,18 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
  *  - 'taxon_description_features'
  *
  *
- * @param taxon
- * @param mergedTrees
- * @param media
+ * @param object taxon
+ * @param object $merged_tree
+ * @param object media
+ * @param bool $add_synonymy
  *
  * @return array
  *   A Drupal render array with the following elements:
  *     - 'taxon_profile_image'
  *     - 'taxon_description_feature_toc'
  *     - 'taxon_description_features'
+ *
+ * @throws Exception
  *
  * @ingroup compose
  */
@@ -780,12 +785,13 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   // Bibliography
   $bibliography_settings = get_bibliography_settings();
   if($bibliography_settings['enabled'] == 1){
-    $feature_bibliography = make_pseudo_feature('Bibliography', 'BIBLIOGRAPHY');
-    $bibliography_block = feature_block(t('Bibliography'), $feature_bibliography);
-    $bibliography_item = markup_to_render_array(FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', ''));
-    $bibliography_block->content[] = compose_feature_block_wrap_elements(array($bibliography_item), $feature_bibliography);
+    $bibliography_markup = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', '');
+    if($bibliography_markup) {
+      $feature_bibliography = make_pseudo_feature('Bibliography', 'BIBLIOGRAPHY');
+      $bibliography_block = feature_block(t('Bibliography'), $feature_bibliography);
+      $bibliography_item = markup_to_render_array($bibliography_markup);
+      $bibliography_block->content[] = compose_feature_block_wrap_elements(array($bibliography_item), $feature_bibliography);
 
-    if(!empty($bibliography_block->content)){
       $pseudo_feature_block_toc_items['Bibliography']= 'bibliography';
       $pseudo_feature_blocks[] = $bibliography_block;
     }
@@ -818,7 +824,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
 /**
  * composes and returns an render array for the experts associated with the given taxon
  *
- * @param taxon
+ * @param object taxon
  *
  * @return array
  *   A Drupal render array for a table with the experts
@@ -925,8 +931,8 @@ function compose_cdm_taxon_page_experts($taxon){
  * @return
  *   The array of tabs
  */
-function taxon_page_tabs_hidden($add_tab = NULL) {
-  $tabs = &drupal_static(__FUNCTION__);
+function taxon_page_tabs_hidden_add($add_tab = NULL) {
+  $tabs = &drupal_static('taxon_page_tabs_hidden');
 
   if(!isset($tabs)){
     $tabs = array();
@@ -940,9 +946,39 @@ function taxon_page_tabs_hidden($add_tab = NULL) {
 }
 
 /**
+ * Manages the tabs to be hidden in the taxon page.
+ *
+ * The tabs names are identified by their last menu link path element:
+ *  - description
+ *  - synonymy
+ *  - images
+ *  - specimens
+ *  - key
+ *
+ * Internally the tabs are stored in a static variable which is
+ * managed by drupal_static().
+ *
+ * @param string $tabname
+ *   The name of the tab to check
+ *
+ * @return boolean
+ *   True if the tab or section is to be hidden
+ */
+function taxon_page_tabs_hidden_check($tabname) {
+
+  $tabs = &drupal_static('taxon_page_tabs_hidden');
+
+  if(!isset($tabs)){
+    $tabs = array();
+  }
+
+  return array_search($tabname, $tabs) !== FALSE;
+}
+
+/**
  * Implements the hook_preprocess_HOOK() for theme_menu_local_tasks()
  *
- *  - Removes the tabs to be hidden, @see taxon_page_tabs_hidden()
+ *  - Removes the tabs to be hidden, @see taxon_page_tabs_hidden_add()
  *  - Renames tabs according to the settings // TODO (this will replace the theme_cdm_taxonpage_tab() function !!!)
  *
  * @param array $variables
@@ -950,7 +986,7 @@ function taxon_page_tabs_hidden($add_tab = NULL) {
  */
 function cdm_dataportal_preprocess_menu_local_tasks(&$variables) {
 
-  $hidden_tabs = taxon_page_tabs_hidden();
+  $hidden_tabs = taxon_page_tabs_hidden_add();
 
   if (is_array($variables['primary'])) {
     foreach ($variables['primary'] as $key => &$element) {

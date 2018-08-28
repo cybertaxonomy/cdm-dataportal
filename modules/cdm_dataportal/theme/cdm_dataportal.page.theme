@@ -663,7 +663,13 @@ function theme_cdm_media_page($variables) {
   $out .= '<div class="media cdm_media_viewer_image">';
 
   if(preg_match('/cdm_dataportal\/taxon\//', $_SERVER['HTTP_REFERER']) ){
-    $out .= '<div id="backToGalleryButton">' . l(t('Back to Images'), $_SESSION['cdm']['last_gallery']) . '</div>';
+    if(variable_get('cdm_dataportal_taxonpage_tabs', 1)){
+      // taxon page with tabs
+      $out .= '<div id="backToGalleryButton">' . l(t('Back to images'), $_SESSION['cdm']['last_gallery']) . '</div>';
+    } else {
+      // tabless mode
+      $out .= '<div id="backToGalleryButton">' . l(t('Back to taxon page'), $_SESSION['cdm']['last_gallery']) . '</div>';
+    }
   }
   $out .= '<div class="viewer">';
   $out .= cdm_openlayers_image($media->representations[$active_representation_index]->parts[$active_part_index], $imageMaxExtend);
