@@ -679,15 +679,18 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
  *  - 'taxon_description_features'
  *
  *
- * @param taxon
- * @param mergedTrees
- * @param media
+ * @param object taxon
+ * @param object $merged_tree
+ * @param object media
+ * @param bool $add_synonymy
  *
  * @return array
  *   A Drupal render array with the following elements:
  *     - 'taxon_profile_image'
  *     - 'taxon_description_feature_toc'
  *     - 'taxon_description_features'
+ *
+ * @throws Exception
  *
  * @ingroup compose
  */
@@ -820,7 +823,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
 /**
  * composes and returns an render array for the experts associated with the given taxon
  *
- * @param taxon
+ * @param object taxon
  *
  * @return array
  *   A Drupal render array for a table with the experts
