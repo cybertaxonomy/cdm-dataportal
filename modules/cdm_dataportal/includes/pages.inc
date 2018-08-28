@@ -785,12 +785,13 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   // Bibliography
   $bibliography_settings = get_bibliography_settings();
   if($bibliography_settings['enabled'] == 1){
-    $feature_bibliography = make_pseudo_feature('Bibliography', 'BIBLIOGRAPHY');
-    $bibliography_block = feature_block(t('Bibliography'), $feature_bibliography);
-    $bibliography_item = markup_to_render_array(FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', ''));
-    $bibliography_block->content[] = compose_feature_block_wrap_elements(array($bibliography_item), $feature_bibliography);
+    $bibliography_markup = FootnoteManager::renderFootnoteList('BIBLIOGRAPHY', '');
+    if($bibliography_markup) {
+      $feature_bibliography = make_pseudo_feature('Bibliography', 'BIBLIOGRAPHY');
+      $bibliography_block = feature_block(t('Bibliography'), $feature_bibliography);
+      $bibliography_item = markup_to_render_array($bibliography_markup);
+      $bibliography_block->content[] = compose_feature_block_wrap_elements(array($bibliography_item), $feature_bibliography);
 
-    if(!empty($bibliography_block->content)){
       $pseudo_feature_block_toc_items['Bibliography']= 'bibliography';
       $pseudo_feature_blocks[] = $bibliography_block;
     }
