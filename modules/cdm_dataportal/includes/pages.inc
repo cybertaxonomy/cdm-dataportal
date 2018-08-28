@@ -125,9 +125,9 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
           foreach ($pager_field_units->records as $field_unit) {
             $field_unit_uuids[] = $field_unit->uuid;
           }
-        }
 
-        $render_array['derivate_hierarchy_table'] = compose_specimen_table($field_unit_uuids);
+          $render_array['derivate_hierarchy_table'] = compose_specimen_table($field_unit_uuids);
+        }
 
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
