@@ -120,15 +120,15 @@ define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOc
 define('CDM_WS_OCCURRENCE', 'occurrence');
 define('CDM_WS_PORTAL_OCCURRENCE', 'portal/occurrence');
 /**
- * url query paramaters:
+ * url query parameters:
  *
- * @param taxonUuid
- * @param relationshipUuids e.g. CongruentTo;  "60974c98-64ab-4574-bb5c-c110f6db634d"
- * @param relationshipInversUuids
- * @param maxDepth null for unlimited
- * @param pageNumber
- * @param pageSize
- * @var unknown_type
+ * - taxonUuid
+ * - relationshipUuids e.g. CongruentTo;  "60974c98-64ab-4574-bb5c-c110f6db634d"
+ * - relationshipInversUuids
+ * - maxDepth null for unlimited
+ * - pageNumber
+ * - pageSize
+ * - unknown_type
  */
 define('CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON', 'occurrence/byAssociatedTaxon');
 
