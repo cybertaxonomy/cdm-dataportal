@@ -32,7 +32,7 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
     $pathToSpecimen = path_to_specimen($specimen->uuid);
     if (!$is_specimen_page) {
         $specimenPageLink = l($specimen->accessionNumber, $pathToSpecimen, array('attributes' => array('target' => '_blank')));
-        $detail_html .= "<strong>$specimenPageLink</strong><br>";
+        $detail_html .= "<strong>Specimen page: $specimenPageLink</strong><br>";
     }
 
     if($is_specimen_page) {
