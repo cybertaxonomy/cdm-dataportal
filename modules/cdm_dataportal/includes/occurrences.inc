@@ -64,7 +64,12 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
         //typed taxa
         foreach ($specimen->types as $typeStatus => $typedTaxa) {
             if($specimen->types){
-                $detail_html .= "<i>".$typeStatus."</i> of ";
+                if($typeStatus == NULL){
+                    $detail_html .= "<i>no type status set:</i> ";
+                }
+                else{
+                    $detail_html .= "<i>".$typeStatus."</i> of ";
+                }
                 foreach($typedTaxa as $typedTaxon){
                     $detail_html .= $typedTaxon." ";
                 }
