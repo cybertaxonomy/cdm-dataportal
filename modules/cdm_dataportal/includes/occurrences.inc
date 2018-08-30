@@ -37,7 +37,7 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
 
     if($is_specimen_page) {
         if($specimen->citation){
-            $detail_html .= "<br>".create_label("Citation") . $specimen->citation . "<br>";
+            $detail_html .= "<br>".$specimen->citation."<br>";
         }
     }
     if($specimen->preferredStableUri){
