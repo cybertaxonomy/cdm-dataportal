@@ -64,10 +64,10 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
         //typed taxa
         foreach ($specimen->types as $typeStatus => $typedTaxa) {
             if($specimen->types){
-                if($typeStatus){
-                    $detail_html .= "<i>".$typeStatus."</i> of ";
-                } else {
+                if(empty($typeStatus) || $typeStatus == "_empty_"|| $typeStatus == ""){
                     $detail_html .= "<i>no type status set:</i> ";
+                } else {
+                    $detail_html .= "<i>".$typeStatus."</i> of ";
                 }
                 foreach($typedTaxa as $typedTaxon){
                     $detail_html .= $typedTaxon." ";
