@@ -22,6 +22,15 @@
             https://github.com/SeleniumHQ/htmlunit-driver
             need to bring in the htmlunit driver on its own
             https://github.com/SeleniumHQ/selenium/blob/master/java/CHANGELOG 
+            
+            The version 2.52.0 of html unit is at least compatible with firefox 45.0.2 which 
+            can be downloaded from https://ftp.mozilla.org/pub/firefox/releases/45.0.2/
+            
+            In order to use this version for example in /home/andreas/opt/firefox-45.0.2
+            and configure the ~/.cdmLibrary/DataPortalTest.xml like
+            <entry key="webdriver.firefox.bin">/home/andreas/opt/firefox-45.0.2/firefox</entry>
+            <entry key="browser">firefox</entry>
+            
         -->
         <selenium.htmlunit.version>2.52.0</selenium.htmlunit.version>
     </properties>
