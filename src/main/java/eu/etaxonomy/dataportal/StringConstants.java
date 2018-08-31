@@ -18,6 +18,6 @@ public class StringConstants {
     /**
      * SMALL QUESTION MARK + NARROW NO-BREAK
      */
-    public static final String DOUBTFULMARKER_SPACE = "/uFE56/u8239";
+    public static final String DOUBTFULMARKER_SPACE = "?\u202F";
 
 }

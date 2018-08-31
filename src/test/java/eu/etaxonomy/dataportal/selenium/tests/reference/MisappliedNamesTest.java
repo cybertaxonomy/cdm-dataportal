@@ -62,10 +62,11 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         WebElement misappliedName = p.getMisappliedName(1);
         assertNotNull(misappliedName);
-        assertEquals("–\n\"Ossaea glomerata\" sensu Species solaris; sensu A&S; sensu Lem1", misappliedName.getText());
+        assertEquals("–\n\"Ossaea glomerata\" sensu Species solaris; sensu A&S1; sensu Lem2", misappliedName.getText());
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
-        assertEquals(1, footnotes.size());
-        assertEquals("1. Lem, New Species in the solar system", footnotes.get(0).getText());
+        assertEquals(2, footnotes.size());
+        assertEquals("1. A&S, Plantas vasculares de Oz", footnotes.get(0).getText());
+        assertEquals("2. Lem, New Species in the solar system", footnotes.get(1).getText());
 
     }
 
@@ -90,7 +91,6 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(1, footnotes.size());
         assertEquals("1. Greuter, W. & Rankin Rodríguez, R, Plantas vasculares de Cuba: inventario preliminar. Tercera edición, actualizada. Vascular plants of Cuba: a preliminary checklist. Third updated edition.", footnotes.get(0).getText());
-
     }
 
 
