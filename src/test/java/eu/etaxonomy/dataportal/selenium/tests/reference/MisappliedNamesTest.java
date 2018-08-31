@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
@@ -28,8 +29,9 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  * Issues to be covered by this TestClass:
  *
  * #5676
- * #5647 - OK
- * #5492 - OK
+ * #5647
+ * #5492
+ * #7658 + #6682
  *
  * @author a.kohlbecker
  *
@@ -40,8 +42,11 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
     static final UUID miconia_cubacinerea_Uuid = UUID.fromString("c6716cee-2039-4ba8-a239-4b1b353f9c84");
 
-
     static final UUID trichocentrum_undulatum_Uuid = UUID.fromString("7e86b2a4-ba71-4494-b544-ae5656e02ed2");
+
+    static final UUID nepenthes_abalata_Uuid = UUID.fromString("9b588d8a-c4fa-430a-b9c7-026bf715ecf6");
+
+
 
     @Before
     public void setUp() throws Exception {
@@ -93,6 +98,28 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         assertEquals("1. Greuter, W. & Rankin Rodríguez, R, Plantas vasculares de Cuba: inventario preliminar. Tercera edición, actualizada. Vascular plants of Cuba: a preliminary checklist. Third updated edition.", footnotes.get(0).getText());
     }
 
+    /**
+     * https://dev.e-taxonomy.eu/redmine/issues/7658
+     * https://dev.e-taxonomy.eu/redmine/issues/6682
+     */
+    @Test
+    @Ignore
+    public void testIssue7658() throws MalformedURLException {
 
+
+        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), nepenthes_abalata_Uuid);
+
+        WebElement misappliedName1 = p.getMisappliedName(1);
+        assertNotNull(misappliedName1);
+        assertEquals("–\n\"Nepenthes alata\" pro parte, sensu Cheek, Jebb 20011, non Blanco, err. sec. Cheek, Jebb 2013", misappliedName1.getText());
+
+        WebElement misappliedName2 = p.getMisappliedName(2);
+        assertNotNull(misappliedName2);
+        assertEquals("–\n\"Nepenthes blancoi\" pro parte, sensu Macfarlane 19082, non Blume, err. sec. Cheek, Jebb 2013", misappliedName2.getText());
+
+
+        List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
+        assertEquals(1, footnotes.size());
+   }
 
 }
