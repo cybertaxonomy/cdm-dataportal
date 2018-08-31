@@ -43,7 +43,7 @@ define('TAXON_TYPE_MISAPPLIEDNAME', 'misapplied-name');
  *   A TaxonRelationshipsDTO, see taxon/{uuid}/taxonRelationshipsDTO
  *
  * @param object focusedTaxon
- *  The taxon being in the focus of the applicaton
+ *  The taxon being in the focus of the application
  *
  * @return string
  *    the rendered html
@@ -63,6 +63,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
   $misapplied = array();
   $joinedAuthorTeams = array();
 
+  $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
 
   // Aggregate misapplied names having the same fullname:
   //  - deduplicate misapplied names, so that the same name it not shown multiple times in case it
@@ -75,48 +76,42 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
   // "Xenoxylum foobar" sensu Grumbach¹; sensu Lem²
   //    1. Novel marsian species, Grumbach, 2022
   //    2. Flora solaris, Lem, 2019
-  if (is_array($taxonRelationshipsDTO->misapplications) && count($taxonRelationshipsDTO->misapplications) > 0 ) {
-    for ($taxonRelationshipsDTO->misapplications as $misapplication_tagged_title){
+  if (isset($taxonRelationshipsDTO->relations[0])) {
+    foreach($taxonRelationshipsDTO->relations as $taxon_relation){
 
-      if (in_array($taxonRelation->type->uuid, $taxon_relationship_types)) {
+      if (in_array($taxon_relation->type->uuid, $taxon_relationship_types)) {
 
-        if ($taxonRelation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxonRelation->type->uuid == UUID_INVALID_DESIGNATION_FOR) {
+        if ($taxon_relation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxon_relation->type->uuid == UUID_INVALID_DESIGNATION_FOR) {
 
           RenderHints::pushToRenderStack('misapplied_name_for'); // TODO the render path string should in future come from $taxonRelation->type->...
 
-          $name = $taxonRelation->fromTaxon->name->titleCache;
+          $name = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('name')));
 
           $sensu_citation_footnote_str = null;
 
-          if (isset($taxonRelation->fromTaxon->sec)) {
-
-            $sensu_citation_footnote_str = theme('cdm_reference', array('reference' => $taxonRelation->fromTaxon->sec));
-            $authorteam = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $taxonRelation->fromTaxon->sec->uuid);
-
-            if (isset($authorteam->titleCache)) {
-              $authorteam_str = $authorteam->titleCache;
-              if ($taxonRelation->fromTaxon->sec->titleCache == $authorteam->titleCache) {
-                // no need for a footnote in case the reference only consists of the author team
-                $sensu_citation_footnote_str = '';
-              }
-            } else {
-              $authorteam_str = $sensu_citation_footnote_str;
-              // no need for a footnote in case in case it is used as replacement for missing author teams
-              $sensu_citation_footnote_str = '';
-            }
-          } else {
-            // taxa not always are have a sec reference (e.g. doubtful taxa)
-            // use the NULL_AUTHORTEAM in this case
-            $authorteam_str = $NULL_AUTHORTEAM;
-          }
-
           if (!isset($misapplied[$name])) {
             // Render the first name found as representative for all others.
-            $misapplied[$name]['out'] = cdm_related_taxon($taxonRelation->fromTaxon, UUID_MISAPPLIED_NAME_FOR);
+
+            //###OLD: $misapplied[$name]['out'] = cdm_related_taxon($taxon_relation->fromTaxon, UUID_MISAPPLIED_NAME_FOR);
+            $name_tagged_text = array();
+            $secref_tagged_text = null;
+            foreach($taxon_relation->taggedText as $tt){
+              if($tt->type !== 'secReference' && !$secref_tagged_text){
+                $name_tagged_text[] = $tt;
+              } else {
+                if(!$secref_tagged_text){
+                  // initialize $secref_tagged_text
+                  $secref_tagged_text = array();
+                  $secref_tagged_text[] = array_pop($name_tagged_text); // remmove last elemetn wich is a separator in this case
+                }
+                $secref_tagged_text[] = $tt;
+              }
+            }
+            $misapplied[$name]['out'] = cdm_tagged_text_to_markup($name_tagged_text);
           } else {
             // We need to add the anchors for all of the other misapplied names not
             // being rendered explicitly.
-            $misapplied[$name]['out'] = uuid_anchor($taxonRelation->fromTaxon->uuid, $misapplied[$name]['out']);
+            $misapplied[$name]['out'] = uuid_anchor($taxon_relation->taxonUuid, $misapplied[$name]['out']);
           }
 
           // Collect all authors for this fullname.
@@ -125,14 +120,12 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
             $misapplied[$name]['authorteam'][$authorteam_str] = '';
             // map sensu citation footnote to the authorteam string
             $joinedAuthorTeams[$authorteam_str] = $sensu_citation_footnote_str;
-
           }
 
         } else {
           RenderHints::pushToRenderStack('other_taxon_relationship');
-          // All relationsship types but misapplied_name_for
-          // invalid_designation_for.
-          $taxon_relationships_lines[] = cdm_taxonRelationship($taxonRelation, TRUE, _is_invers_taxonRelationship($taxonRelation, $focusedTaxon));
+          // All relationship types except misapplied_name_for and invalid_designation_for.
+          $taxon_relationships_lines[] = cdm_taxonRelationship($taxon_relation, TRUE, _is_invers_taxonRelationship($taxon_relation, $focusedTaxon));
         }
 
         RenderHints::popFromRenderStack();
@@ -217,7 +210,8 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
  * @param boolean $inverse
  *     whether the $taxonRelationship should be treaded as invers relation
  *
- * @return void|string
+ * @return string
+ *
  */
 function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $inverse = FALSE) {
 
@@ -262,6 +256,8 @@ function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $invers
  *
  * @return string
  *   Markup for the taxon relationship.
+ *
+ * @throws Exception
  */
 function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $reltype_representation = NULL, $doubtful=false, $doLinkTaxon = FALSE) {
   static $relsign_homo = '≡';

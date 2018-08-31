@@ -284,22 +284,21 @@ function is_tagged_text_sepatator_type($tagged_text_type){
 /**
  * Finds the text tagged with $tag_type in an array of taggedText instances.
  *
- * Note: This function is currently unused.
  *
  * @param array $taggedtxt
  *   Array with text items.
- * @param string $tag_type
- *   The type of tag for which to find text items in the $taggedtxt array, or NULL
+ * @param array $include_tag_types
+ *   Array of the tag types for which to find text items in the $taggedtxt array, or NULL
  *   to return all texts.
  *
  * @return array
  *   An array with the texts mapped by $tag_type.
  */
-function cdm_tagged_text_values(array $taggedtxt, $tag_type = NULL) {
+function cdm_tagged_text_values(array $taggedtxt, $include_tag_types = NULL) {
   $tokens = array();
   if (!empty($taggedtxt)) {
     foreach ($taggedtxt as $tagtxt) {
-      if ($tag_type === NULL || $tagtxt->type == $tag_type) {
+      if ($include_tag_types === NULL || array_search($tagtxt->type, $include_tag_types) !== false) {
         $tokens[] = $tagtxt->text;
       }
     }
