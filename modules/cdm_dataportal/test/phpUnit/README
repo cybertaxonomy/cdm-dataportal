@@ -55,7 +55,7 @@ based on http://pkp.sfu.ca/wiki/index.php/Configure_Eclipse_for_PHPUnit#Configur
 	After returning to the preferences page click the "Add external folder..." button
 	Find your PEAR folder (usually you find it in your PHP directory, as
 	in our case of  php5.2 installed manually where it is /usr/share/php52/pear.
-	In some distributions it is the php folder itseld rather than the PEAR folder
+	In some distributions it is the php folder itself rather than the PEAR folder
 	as most PEAR packages (including PHPUnit) are directly installed into /usr/share/php.)
 	Return to the preferences page and click "Ok"
 
