@@ -304,8 +304,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     }
   }
 
-  $secref_tagged_text = split_secref_from_tagged_text($taggedTitle);
-  $nom_status_tagged_text = split_nomstatus_from_tagged_text($taggedTitle);
+  $secref_tagged_text = tagged_text_extract_secref($taggedTitle);
+  $nom_status_tagged_text = tagged_text_extract_nomstatus($taggedTitle);
   $appended_phrase_tagged_text = array(); // this is filled later
 
   normalize_tagged_text($taggedTitle);

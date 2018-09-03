@@ -323,9 +323,7 @@ ul.typeDesignations li {
 .misapplied .name {
   /* font-style: normal; */
 }
-.misapplied .authors {
-  display: none;
-}
+
 #edit-search-domisappliednames {
   vertical-align:baseline;
 }

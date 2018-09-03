@@ -101,6 +101,9 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
     /**
      * https://dev.e-taxonomy.eu/redmine/issues/7658
      * https://dev.e-taxonomy.eu/redmine/issues/6682
+     *
+     * TODO 1b) Der Buchlink verweist auf den Protolog von N. blancoi Blume – der hat ja aber gerade nichts mit dieser Namensanwendung zu tun (also: Protologbildlinks müssen bei MAN weggelassen werden oder der Link muss nach dem <non Blume>
+eingefügt werden)
      */
     @Test
     @Ignore

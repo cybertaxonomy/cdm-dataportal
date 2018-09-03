@@ -50,27 +50,24 @@ define('TAXON_TYPE_MISAPPLIEDNAME', 'misapplied-name');
  */
 function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
-  static $NULL_AUTHORTEAM = 'NULL_AUTHORTEAM';
-
   if (!$taxonRelationshipsDTO || $taxonRelationshipsDTO->size < 1) {
     return null;
   }
 
   RenderHints::pushToRenderStack('taxon_relationships');
-  $footnoteListKey = 'taxon_relationships';
-  RenderHints::setFootnoteListKey($footnoteListKey);
+  $footnote_list_key = 'taxon_relationships';
+  RenderHints::setFootnoteListKey($footnote_list_key);
 
   $misapplied = array();
-  $joinedAuthorTeams = array();
+  $joined_sensu_refs = array();
 
   $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
 
   // Aggregate misapplied names having the same fullname:
   //  - deduplicate misapplied names, so that the same name it not shown multiple times in case it
   //    the duplicates only have different sensu references/author teams (see #5647)
-  //  - show the author team as sec reference
-  //  - show the according reference as footnote to this author team
-  //  - if the sec reference has no author team it should show instead the title cache
+  //  - show only the author team as short citation for the sec reference
+  //  - show the according reference as footnote to this short citation
   //
   // Example:
   // "Xenoxylum foobar" sensu Grumbach¹; sensu Lem²
@@ -85,87 +82,112 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
           RenderHints::pushToRenderStack('misapplied_name_for'); // TODO the render path string should in future come from $taxonRelation->type->...
 
-          $name = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('name')));
+          // using name tags + author as full name key
+          $full_name_key = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('name', 'authors')));
 
-          $sensu_citation_footnote_str = null;
+          // Render the first name found as representative for all others.
+          //###OLD: $misapplied[$name]['out'] = cdm_related_taxon($taxon_relation->fromTaxon, UUID_MISAPPLIED_NAME_FOR);
+          $sensu_tagged_text = tagged_text_extract_secref($taxon_relation->taggedText, "secReference", true);
+          $relsec_tagged_text = tagged_text_extract_secref($taxon_relation->taggedText, "relSecReference", true);
 
-          if (!isset($misapplied[$name])) {
-            // Render the first name found as representative for all others.
+          if (isset($sensu_tagged_text[1])) {
+            array_shift($sensu_tagged_text); // remove first element which contains the "sensu", this will be added later in this code
+            $sensu_citation_short_markup = cdm_tagged_text_to_markup($sensu_tagged_text);
+            $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text);
+            $sensu_uuid = $sensu_tagged_text[0]->entityReference->uuid;
+            $misapplied[$full_name_key]['sensu_uuids'][] = $sensu_uuid;
+            if (!isset($joined_sensu_refs[$sensu_uuid])) {
+              $joined_sensu_refs[$sensu_uuid] = array(
+                'short_citation' => $sensu_citation_short,
+                'markup' => $sensu_citation_short_markup // to be expanded later as short_citation + footnote key
+              );
+            }
 
-            //###OLD: $misapplied[$name]['out'] = cdm_related_taxon($taxon_relation->fromTaxon, UUID_MISAPPLIED_NAME_FOR);
-            $name_tagged_text = array();
-            $secref_tagged_text = null;
-            foreach($taxon_relation->taggedText as $tt){
-              if($tt->type !== 'secReference' && !$secref_tagged_text){
-                $name_tagged_text[] = $tt;
-              } else {
-                if(!$secref_tagged_text){
-                  // initialize $secref_tagged_text
-                  $secref_tagged_text = array();
-                  $secref_tagged_text[] = array_pop($name_tagged_text); // remmove last elemetn wich is a separator in this case
-                }
-                $secref_tagged_text[] = $tt;
+            if (isset($relsec_tagged_text[1])) {
+              array_shift($relsec_tagged_text); // remove first element which contains the "err. sec", this will be added later in this code
+              $relsec_citation_short_markup = cdm_tagged_text_to_markup($relsec_tagged_text);
+              $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text);
+              $relsec_uuid = $relsec_tagged_text[0]->entityReference->uuid;
+              $misapplied[$full_name_key]['relsec_uuids'][] = $relsec_uuid;
+              if (!isset($joined_sensu_refs[$relsec_uuid])) {
+                $joined_sensu_refs[$relsec_uuid] = array(
+                  'short_citation' => $relsec_citation_short,
+                  'markup' => $relsec_citation_short_markup // to be expanded later as short_citation + footnote key
+                );
               }
             }
-            $misapplied[$name]['out'] = cdm_tagged_text_to_markup($name_tagged_text);
+
+            if (!isset($misapplied[$full_name_key]['out'])) {
+              $misapplied[$full_name_key]['out'] = cdm_tagged_text_to_markup($taxon_relation->taggedText);
+            } else {
+              // We need to add the anchors for all of the other misapplied names not
+              // being rendered explicitly.
+              $misapplied[$full_name_key]['out'] = uuid_anchor($taxon_relation->taxonUuid, $misapplied[$full_name_key]['out']);
+            }
           } else {
-            // We need to add the anchors for all of the other misapplied names not
-            // being rendered explicitly.
-            $misapplied[$name]['out'] = uuid_anchor($taxon_relation->taxonUuid, $misapplied[$name]['out']);
+            RenderHints::pushToRenderStack('other_taxon_relationship');
+            // All relationship types except misapplied_name_for and invalid_designation_for.
+            $taxon_relationships_lines[] = cdm_taxonRelationship($taxon_relation, TRUE, _is_invers_taxonRelationship($taxon_relation, $focusedTaxon));
           }
 
-          // Collect all authors for this fullname.
-          if (isset($authorteam_str) && $authorteam_str != $NULL_AUTHORTEAM) {
-            // prepare entry for the footnote key of the sensu citation footnote
-            $misapplied[$name]['authorteam'][$authorteam_str] = '';
-            // map sensu citation footnote to the authorteam string
-            $joinedAuthorTeams[$authorteam_str] = $sensu_citation_footnote_str;
-          }
-
-        } else {
-          RenderHints::pushToRenderStack('other_taxon_relationship');
-          // All relationship types except misapplied_name_for and invalid_designation_for.
-          $taxon_relationships_lines[] = cdm_taxonRelationship($taxon_relation, TRUE, _is_invers_taxonRelationship($taxon_relation, $focusedTaxon));
+          RenderHints::popFromRenderStack();
         }
-
-        RenderHints::popFromRenderStack();
       }
-    }
+    } // END loop over $taxonRelationshipsDTO->relations
   }
 
-  // Sort the joinedAuthorTeams and create footnotes and footnotekeys.
-  ksort($joinedAuthorTeams);
-  $author_team_cnt = 0;
-  foreach ($joinedAuthorTeams as $authorteam_str => $sensu_citation) {
-    $footnoteKey = '';
-    if(!empty($sensu_citation)) {
-      $footnoteKey = FootnoteManager::addNewFootnote($footnoteListKey, $sensu_citation);
-      $footnoteKey = theme('cdm_footnote_key', array('footnoteKey' => $footnoteKey));
+  // Sort the $joined_sensu_refs and create footnotes and footnote keys.
+  uasort($joined_sensu_refs, function($a, $b) {
+    if ($a['short_citation'] == $b['short_citation']) {
+      return 0;
     }
-    $sensu = '';
-    if($authorteam_str != $NULL_AUTHORTEAM){
-      $sensu = ++$author_team_cnt == 0 ? '' : 'sensu ' . $authorteam_str;
+    return ($a['short_citation'] < $b['short_citation']) ? -1 : 1;
+  });
+
+
+  foreach ($joined_sensu_refs as $sensu_uuid => $sensu_strings) {
+    $footnote_key = '';
+    if(!empty($sensu_strings)) {
+      $sensu_reference = cdm_ws_get(CDM_WS_REFERENCE, $sensu_uuid);
+      if(!$sensu_reference){
+        drupal_set_message("Problem fetching sensu reference with uuid " . $sensu_uuid, 'error');
+      }
+      $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference->titleCache);
+      $footnote_key = theme('cdm_footnote_key', array('footnoteKey' => $footnote_key));
     }
-    $joinedAuthorTeams[$authorteam_str] = '<span class="sensu">' . $sensu . $footnoteKey .'</span>';
+    $joined_sensu_refs[$sensu_uuid]['markup'] = '<span class="sensu">' . $sensu_strings['markup'] . $footnote_key . '</span>';
   }
 
   // ---- Generate output ---- //
-
   $out = '<div class="taxon-relationships">';
   if (is_array($misapplied) && count($misapplied) > 0) {
+    ksort($misapplied); // order the misapplied by scientific name
     $out .= '<ul class="misapplied">';
+
     foreach ($misapplied as $misapplied_name) {
+      $misapplied_name_markup = $misapplied_name['out'];
 
-      $out .= '<li class="synonym"><span class="misapplied">' . $misapplied_name['out'] . ' </span>';
-
-      if (isset($misapplied_name['authorteam'])) {
-        // Fill authors with the renderedFootnoteKey and sorting 'em.
-        foreach ($misapplied_name['authorteam'] as $authorteam_str => &$renderedFootnoteKey) {
-          $renderedFootnoteKey = $joinedAuthorTeams[$authorteam_str];
+      if (isset($misapplied_name['sensu_uuids'])) {
+        $sensu_refs_with_fkey = array();
+        foreach ($misapplied_name['sensu_uuids'] as $sensu_uuid) {
+          $sensu_refs_with_fkey[$joined_sensu_refs[$sensu_uuid]['short_citation']] = $joined_sensu_refs[$sensu_uuid]['markup'];
         }
-        ksort($misapplied_name['authorteam']);
-        $out .= join('; ', $misapplied_name['authorteam']);
+        ksort($sensu_refs_with_fkey);
+        $sensu_refs_with_fkey_markup = join('; ', $sensu_refs_with_fkey);
+        $misapplied_name_markup = str_replace('{PLACEHOLDER_secReference}', ' sensu ' . $sensu_refs_with_fkey_markup, $misapplied_name_markup);
       }
+
+      if (isset($misapplied_name['relsec_uuids'])) {
+        $relsec_refs_with_fkey = array();
+        foreach ($misapplied_name['relsec_uuids'] as $relsec_uuid) {
+          $relsec_refs_with_fkey[$joined_sensu_refs[$relsec_uuid]['short_citation']] = $joined_sensu_refs[$relsec_uuid]['markup'];
+        }
+        ksort($relsec_refs_with_fkey);
+        $relsec_refs_with_fkey_markup = join('; ', $relsec_refs_with_fkey);
+        $misapplied_name_markup = str_replace('{PLACEHOLDER_relSecReference}', ', err. sec. ' . $relsec_refs_with_fkey_markup, $misapplied_name_markup);
+      }
+
+      $out .= '<li class="synonym"><span class="misapplied">' . $misapplied_name_markup . ' </span>';
       $out .= '</li>';
     }
     $out .= '</ul>';
@@ -179,19 +201,10 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
     $out .= '</ul>';
   }
 
-  $footnotes = theme('cdm_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
-  $footnotes .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnoteListKey, 'enclosingTag' => 'li'));
-
-// AK: why splitting footnotes at the sensu string ??? this is weired and hacky
-//     TODO remove below dead code
-//   $tr_footnotes_exploded = explode('sensu', $tr_footnotes);
-//   $tr_footnotes_aux = '';
-//   foreach ($tr_footnotes_exploded as $element) {
-//     $tr_footnotes_aux .= $element;
-//   }
+  $footnotes = theme('cdm_footnotes', array('footnoteListKey' => $footnote_list_key, 'enclosingTag' => 'li'));
+  $footnotes .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnote_list_key, 'enclosingTag' => 'li'));
 
   $out .= '<ul class="footnotes">' . $footnotes . '</ul>';
-
   $out .= '</div>';
 
   RenderHints::popFromRenderStack();
