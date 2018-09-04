@@ -70,20 +70,22 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals("Expecting 7 Typedesignation", 7, typeDesignations.size());
 
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-        assertEquals("Syntype: [Cameroon] \"Bamenda\", Ledermann 1889", typeDesignations.get(0).getText());
-        assertEquals("Syntype: [Tanzania] \"Kilimandscharo\", Volkens 1238", typeDesignations.get(1).getText());
-        assertEquals("Syntype: [Malawi] \"Kyimbila\", Stolz 306", typeDesignations.get(2).getText());
-        assertEquals("Syntype: [Kenya] \"Mt. Aberdare: Ostseite\", 12 Mar 1922, R. E. Fries 2172", typeDesignations.get(3).getText());
-        assertEquals("Syntype: [Kenya] \"Mt. Kenia: Nordostseite bei Meru\", 17 Feb 1922, R. E. Fries 1677", typeDesignations.get(4).getText());
-        assertEquals("Syntype: [Tanzania] \"Karagwe\", Stuhlmann 1660", typeDesignations.get(5).getText());
-        assertEquals("Syntype: \"Uganda\", Scott Elliot 7328", typeDesignations.get(6).getText());
+        int i = 0;
+        assertEquals("Syntype: [Cameroon] \"Bamenda\", Ledermann 1889", typeDesignations.get(i++).getText());
+        assertEquals("Syntype: [Kenya] \"Mt. Aberdare: Ostseite\", 12 Mar 1922, R. E. Fries 2172", typeDesignations.get(i++).getText());
+        assertEquals("Syntype: [Kenya] \"Mt. Kenia: Nordostseite bei Meru\", 17 Feb 1922, R. E. Fries 1677", typeDesignations.get(i++).getText());
+        assertEquals("Syntype: [Malawi] \"Kyimbila\", Stolz 306", typeDesignations.get(i++).getText());
+        assertEquals("Syntype: [Tanzania] \"Karagwe\", Stuhlmann 1660", typeDesignations.get(i++).getText());
+        assertEquals("Syntype: [Tanzania] \"Kilimandscharo\", Volkens 1238", typeDesignations.get(i++).getText());
+        assertEquals("Syntype: \"Uganda\", Scott Elliot 7328", typeDesignations.get(i++).getText());
 
         typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
         assertEquals("Expecting 3 Typedesignation", 3, typeDesignations.size());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-        assertEquals("Syntype: [Cameroon], Maitland 226", typeDesignations.get(0).getText());
-        assertEquals("Syntype: [Cameroon], Mildbraed 10814", typeDesignations.get(1).getText());
-        assertEquals("Syntype: [Cameroon] \"Cameroons Mt., 6,000 ft.\", Dunlap 47", typeDesignations.get(2).getText());
+        i = 0;
+        assertEquals("Syntype: [Cameroon] \"Cameroons Mt., 6,000 ft.\", Dunlap 47", typeDesignations.get(i++).getText());
+        assertEquals("Syntype: [Cameroon], Maitland 226", typeDesignations.get(i++).getText());
+        assertEquals("Syntype: [Cameroon], Mildbraed 10814", typeDesignations.get(i++).getText());
     }
 
     @Test

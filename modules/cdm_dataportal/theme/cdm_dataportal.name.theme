@@ -112,7 +112,7 @@ function theme_cdm_typedesignations($variables) {
   if (!empty($specimen_type_designations)) {
     // Sorting might be different for dataportals so this has to be
     // parameterized.
-    usort($specimen_type_designations, "compare_specimenTypeDesignationStatus");
+    usort($specimen_type_designations, "compare_specimen_type_designation");
     foreach ($specimen_type_designations as $type_designation) {
       $typeReference = '';
 
@@ -201,12 +201,12 @@ function theme_cdm_typedesignations($variables) {
  * just didn't know where to put it right now.
  * Compares the status of two SpecimenTypeDesignations
  *
- * @param string $a
- *   A SpecimenTypeDesignations.
- * @param string $b
- *   SpecimenTypeDesignations.
+ * @param object $a
+ *   A SpecimenTypeDesignation.
+ * @param object $b
+ *   SpecimenTypeDesignation.
  */
-function compare_specimenTypeDesignationStatus($a, $b) {
+function compare_specimen_type_designation($a, $b) {
   /*
   This is the desired sort order as of now: Holotype Isotype Lectotype
   Isolectotype Syntype.
@@ -232,7 +232,9 @@ function compare_specimenTypeDesignationStatus($a, $b) {
   }
   if ($aQuantifier == $bQuantifier) {
     // Sort alphabetically.
-    return (isset($a->typeStatus->label) && isset($b->typeStatus->label) && $a->typeStatus->label < $b->typeStatus->label) ? -1 : 1;
+    $a_text =  isset($a->typeSpecimen->titleCache) ? preg_replace('/[\[\]\"]/', '', $a->typeSpecimen->titleCache) : '';
+    $b_text =  isset($b->typeSpecimen->titleCache) ? preg_replace('/[\[\]\"]/', '', $b->typeSpecimen->titleCache) : '';
+    return strcasecmp($a_text, $b_text);
   }
   return ($aQuantifier < $bQuantifier) ? -1 : 1;
 }
