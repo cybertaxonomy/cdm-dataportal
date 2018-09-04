@@ -605,7 +605,7 @@ function compose_cdm_specimen_or_observation($specimenOrObservation, &$derivativ
  *
  * @ingroup compose
  */
-function compose_cdm_sequence($sequence)
+function compose_cdm_sequence($sequence, $isSpecimenPage = false)
 {
 
     $exclude_sequence_fields = &drupal_static(__FUNCTION__);
@@ -617,6 +617,7 @@ function compose_cdm_sequence($sequence)
             'created',
             'updated',
             'class',
+            'dnaMarker'
         );
     }
 
@@ -635,40 +636,36 @@ function compose_cdm_sequence($sequence)
             switch ($field) {
 
                 case 'geneticAccessionNumber';
-                    $dd_elements = array();
-                    foreach ($value as $accession) {
-                        if (isset($accession->uri)) {
-                            $dd_elements[] = l($accession->accessionNumber, $accession->uri);
-                        } else {
-                            $dd_elements[] = $accession->accessionNumber;
-                        }
-                    }
-                    @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements, NULL, 2);
+
+                    @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 2);
                     break;
 
 
-                case 'locus': // FIXME 3.3 now dnaMarker (DefinedTerm)  if multiple amplifications where used to build this consensus sequence it may be the super set of the markers used in amplification.
-                    if (isset($value->name)) {
+                /*case 'dnaMarker': // FIXME 3.3 now dnaMarker (DefinedTerm)  if multiple amplifications where used to build this consensus sequence it may be the super set of the markers used in amplification.
+                    /*if (isset($value->name)) {
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->name, NULL, 3);
                     }
                     if (isset($value->description)) {
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field) . ' ' . t('description'), $value->description, NULL, 4);
                     }
+                    @_description_list_group_add($groups, cdm_occurrence_field_name_label($field) , $value, NULL, 4);
                     break;
-
+                */
                 case 'consensusSequence':
                     // format in genbank style, force linebreaks after each 70 nucleotites
                     // see also http://stackoverflow.com/questions/499137/css-how-can-i-force-a-long-string-without-any-blank-to-be-wrapped-in-xul-and
-                    @_description_list_group_add(
-                        $groups,
-                        cdm_occurrence_field_name_label($field),
-                        array(
+                    if ($value->length > 0) {
+                        @_description_list_group_add(
+                            $groups,
+                            cdm_occurrence_field_name_label($field),
                             array(
-                                '#markup' => '<div class="sequence-length">' . $value->length . ' ' . t('pb') . '</div><div>' . wordwrap($value->string, 70, '</br>', TRUE) . '</div>',
-                                '#wrapper_attributes' => array('class' => 'dna-sequence')
-                            )
-                        ),
-                        5);
+                                array(
+                                    '#markup' => '<div class="sequence-length">' . $value->length . ' ' . t('pb') . '</div><div>' . wordwrap($value->string, 70, '</br>', TRUE) . '</div>',
+                                    '#wrapper_attributes' => array('class' => 'dna-sequence')
+                                )
+                            ),
+                            5);
+                    }
                     break;
 
                 case 'dnaSample': // FIXME 3.3 implement
@@ -751,11 +748,19 @@ function compose_cdm_sequence($sequence)
 
     // template_preprocess_description_list() is not worting by weight so we do it right here
     uasort($groups, 'element_sort');
-
-    $sequence_elements = array(
-        '#theme' => 'description_list',
-        '#groups' => $groups
-    );
+    if ($isSpecimenPage) {
+        $sequence_elements = array(
+            '#title' => $sequence->dnaMarker,
+            '#theme' => 'description_list',
+            '#groups' => $groups
+        );
+    } else{
+        $sequence_elements = array(
+            '#title' => $sequence->dnaMarker -> titleCache,
+            '#theme' => 'description_list',
+            '#groups' => $groups
+        );
+    }
 
     return $sequence_elements;
 }
@@ -827,7 +832,8 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
             'protectedTitleCache',
             'class',
             'uuid',
-            'collectionDTO'
+            'collectionDTO',
+            'derivates'
         );
     }
     $items = array();
@@ -899,7 +905,7 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
                     case 'sex':
                     case 'lifeStage':
                     case 'kindOfUnit':
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->representation_L10n, NULL, 1);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 1);
                         break;
 
                     case 'definition':
@@ -1026,13 +1032,12 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
 
                     /* ---- Specimen --- */
                     case 'sequences':
-                        /*
                         $dd_elements = array();
                         foreach ($value as $sequence) {
-                            $dd_elements[] = compose_cdm_sequence($sequence);
+                            $dd_elements[] = compose_cdm_sequence($sequence, true);
+                            $dd_elements[] = "";
                         }
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
-                        */
                         break;
 
                     // TODO preservation
@@ -1042,11 +1047,11 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
                     /* ---- FieldObservation --- */
                     case 'gatheringEvent':
 
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('collector'), $value->actor->titleCache);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('collector'), $value->collector);
                         @_description_list_group_add($groups, t('Gathering time'), timePeriodToString($value->timeperiod));
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('description'), $value->description);
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality->text);
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country);
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
                         if (isset($value->absoluteElevation)) {
                             $min_max_markup = min_max_measure($value, 'absoluteElevation');
@@ -1064,7 +1069,8 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
                         if (isset($value->collectingAreas)) {
                             $area_representations = array();
                             foreach ($value->collectingAreas as $area) {
-                                $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
+                               // $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
+                                $area_representations[] = $area;
                             }
                             if (!empty($area_representations))
                                 @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingAreas'),
@@ -1103,7 +1109,7 @@ function create_cdm_specimen_or_observation($specimenOrObservation)
 
                     default:
                         if (is_object($value) || is_array($value)) {
-                           // drupal_set_message("Unhandled type in compose_cdm_specimenOrObservation() for field " . $field, "warning");
+                            drupal_set_message("Unhandled type in compose_cdm_specimenOrObservation() for field " . $field, "warning");
                         } else {
                             _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
                         }

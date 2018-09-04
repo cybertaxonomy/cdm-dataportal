@@ -210,7 +210,10 @@ function _description_list_group_add(&$groups, $term, $description, $suffix = ''
     } else {
       $term_elements = $term;
     }
-
+    if (strpos($description, 'http:') !== false && !is_array($description)){
+        //make links for urls
+        $description = l($description, $description);
+    }
     $groups[$term] = array(
         'term' => $term_elements,
         'description' => $description,

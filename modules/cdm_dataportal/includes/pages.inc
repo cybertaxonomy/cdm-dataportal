@@ -167,6 +167,11 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                 '#items' => array($value),
                 '#type' => 'ul');
             $output = drupal_render($renderArray);
+//            $specimen_table['#rows'][] = array(
+//                // An array of table rows. collabsible row
+//                'data' => "",
+//                'class' => array('expand_column')
+//            );
             $specimen_table['#rows'][] = array(
                 // An array of table rows. Every row is an array of cells, or an associative array
                 'data' => array($output),
@@ -175,10 +180,12 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                     'descriptionElement_IndividualsAssociation'
                 ),
             );
+
+
         }
 
         $render_array['specimen_list'] = $specimen_table;
-      //  $render_array['specimen_list'] = $specimen_array;
+
 
     }
     else{
