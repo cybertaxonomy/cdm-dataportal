@@ -32,12 +32,14 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
     $pathToSpecimen = path_to_specimen($specimen->uuid);
     if (!$is_specimen_page) {
         $specimenPageLink = l($specimen->accessionNumber, $pathToSpecimen, array('attributes' => array('target' => '_blank')));
-        $detail_html .= "<strong>$specimenPageLink</strong><br>";
+        $detail_html .= "<strong>Specimen page: $specimenPageLink</strong><br>";
     }
 
-    if ($is_specimen_page) {
-        if ($specimen->citation) {
-            $detail_html .= "<br>" . create_label("Citation") . $specimen->citation . "<br>";
+
+    if($is_specimen_page) {
+        if($specimen->citation){
+            $detail_html .= "<br>".$specimen->citation."<br>";
+
         }
     }
     if ($specimen->preferredStableUri) {
@@ -63,13 +65,15 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
     if (isset($specimen->types)) {
         //typed taxa
         foreach ($specimen->types as $typeStatus => $typedTaxa) {
-            if ($is_specimen_page) {
-                if ($specimen->types) {
-                    $detail_html .= "<i>" . $typeStatus . "</i>: ";
-                    foreach ($typedTaxa as $typedTaxon) {
-                        $detail_html .= $typedTaxon . " ";
-                    }
-                    $detail_html .= "<br>";
+            if($specimen->types){
+                if(empty($typeStatus) || $typeStatus == "_empty_"|| $typeStatus == ""){
+                    $detail_html .= "<i>no type status set:</i> ";
+                } else {
+                    $detail_html .= "<i>".$typeStatus."</i> of ";
+                }
+                foreach($typedTaxa as $typedTaxon){
+                    $detail_html .= $typedTaxon." ";
+
                 }
             } else {
                 $types .= $typeStatus . " ";

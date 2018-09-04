@@ -777,10 +777,16 @@ function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '')
 
 function cdm_dataportal_search_registration_form($form, &$form_state) {
 
+  static $filter_presets_empty = array(
+    'identifier'=> null,
+    'taxon_name'=> null,
+    'type_designation_status' => null
+  );
+
   _add_font_awesome_font();
 
   $filter_presets = (isset($_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER]) ? $_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER] : array());
-  $filter_presets = array_merge($filter_presets, remove_drupal_form_params($_REQUEST));
+  $filter_presets = array_merge($filter_presets_empty, $filter_presets, remove_drupal_form_params($_REQUEST));
   $form['#action'] =  url('/cdm_dataportal/search/registration/');
   $form['#method'] = 'get';
   $form['#attributes'] = array('class' => array('search-filter'));
