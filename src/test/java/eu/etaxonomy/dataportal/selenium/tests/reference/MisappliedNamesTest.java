@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
@@ -67,7 +66,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         WebElement misappliedName = p.getMisappliedName(1);
         assertNotNull(misappliedName);
-        assertEquals("–\n\"Ossaea glomerata\" sensu Species solaris; sensu A&S1; sensu Lem2", misappliedName.getText());
+        assertEquals("–\n\"Ossaea glomerata\" sensu A&S1; Lem2; Species solaris", misappliedName.getText());
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
         assertEquals("1. A&S, Plantas vasculares de Oz", footnotes.get(0).getText());
@@ -86,11 +85,12 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         WebElement misappliedName1 = p.getMisappliedName(1);
         assertNotNull(misappliedName1);
-        assertEquals("–\n\"Oncidium guttatum\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName1.getText());
+        assertEquals("–\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Oncidium carthaginense\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName1.getText());
 
         WebElement misappliedName2 = p.getMisappliedName(2);
         assertNotNull(misappliedName2);
-        assertEquals("–\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Oncidium carthaginense\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName2.getText());
+        assertEquals("–\n\"Oncidium guttatum\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName2.getText());
+
 
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
@@ -102,11 +102,11 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
      * https://dev.e-taxonomy.eu/redmine/issues/7658
      * https://dev.e-taxonomy.eu/redmine/issues/6682
      *
-     * TODO 1b) Der Buchlink verweist auf den Protolog von N. blancoi Blume – der hat ja aber gerade nichts mit dieser Namensanwendung zu tun (also: Protologbildlinks müssen bei MAN weggelassen werden oder der Link muss nach dem <non Blume>
-eingefügt werden)
+     * TODO 1b) Der Buchlink verweist auf den Protolog von N. blancoi Blume – der hat ja aber gerade nichts mit
+     * dieser Namensanwendung zu tun (also: Protologbildlinks müssen bei MAN weggelassen werden oder der Link
+     * muss nach dem <non Blume> eingefügt werden)
      */
     @Test
-    @Ignore
     public void testIssue7658() throws MalformedURLException {
 
 
@@ -114,15 +114,14 @@ eingefügt werden)
 
         WebElement misappliedName1 = p.getMisappliedName(1);
         assertNotNull(misappliedName1);
-        assertEquals("–\n\"Nepenthes alata\" pro parte, sensu Cheek, Jebb 20011, non Blanco, err. sec. Cheek, Jebb 2013", misappliedName1.getText());
+        assertEquals("–\n\"Nepenthes alata\" pro parte, sensu Cheek, M.R. & Jebb, M.H.P. 20011, non Blanco, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName1.getText());
 
         WebElement misappliedName2 = p.getMisappliedName(2);
         assertNotNull(misappliedName2);
-        assertEquals("–\n\"Nepenthes blancoi\" pro parte, sensu Macfarlane 19082, non Blume, err. sec. Cheek, Jebb 2013", misappliedName2.getText());
-
+        assertEquals("–\n\"Nepenthes blancoi\" pro parte, sensu Macfarlane 19083, non Blume, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName2.getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
-        assertEquals(1, footnotes.size());
+        assertEquals(3, footnotes.size());
    }
 
 }

@@ -71,6 +71,9 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
  * taggedText->type wrapped in curly brackets: '{'. $tt->text . '}' is used as text.
  * see tagged_text_extract_secref()
  *
+ * The algorithm of this functions is basically the same as for
+ * eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper.createString(List<TaggedText> tags, HTMLTagRules htmlRules)
+ *
  * @param array $taggedtxt
  *   Array with text items to convert.
  * @param array $skiptags
@@ -79,31 +82,37 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
  * @return string
  *   The markup.
  */
-function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array()) {
+function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag = 'span') {
 
-  $tag = 'span';
   $out = '';
   $was_separator = false;
+  $last_type = null;
   $i = 0;
   foreach ($taggedtxt as $tt) {
     if (!in_array($tt->type, $skiptags) && $tt->text) {
-      $class_attr = $tt->type;
-
       if(isset($tt->entityReference)){
-        $class_attr .= " " . html_class_attribute_ref($tt->entityReference);
+        $class_attr = $tt->type . " " . html_class_attribute_ref($tt->entityReference);
+      } else {
+        $class_attr = $tt->type;
       }
-      $is_last = $i + 1 == count($taggedtxt);
+      $is_first = $i == 0;
       $is_separator = is_tagged_text_sepatator_type($tt->type);
-      $glue = !$is_separator && !$was_separator && !$is_last ? ' ' : '';
       if(str_beginsWith($tt->type, 'PLACEHOLDER_')){
         $out .=  '{'. $tt->type . '}';
       } else {
-        $out .= '<' . $tag . ' class="' . $class_attr . '">'
-          . t('@text', array('@text' => $tt->text))
-          . '</' . $tag . '>'
-          . $glue;
+        if(($last_type && $last_type != $tt->type) && $tag) {
+          $out .= '</' . $tag . '>';
+        }
+        if((!$last_type || $last_type != $tt->type) && $tag){
+          $out .= '<' . $tag . ' class="' . $class_attr . '">';
+        }
+        if(!$is_separator && !$was_separator && !$is_first){
+          $out .= " ";
+        }
+        $out .= t('@text', array('@text' => $tt->text));
+        $was_separator = $is_separator;
+        $last_type = $tt->type;
       }
-      $was_separator = $is_separator;
     }
     $i++;
   }
@@ -116,6 +125,9 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array()) {
  * Each item is provided with a class attribute which is set to the key of the
  * TaggedText item.
  *
+ * The algorithm of this functions is basically the same as for
+ * eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper.createString(List<TaggedText> tags)
+ *
  * @param array $taggedtxt
  *   Array with text items to convert.
  * @param array $skiptags
@@ -126,20 +138,20 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array()) {
  */
 function cdm_tagged_text_to_string(array $taggedtxt, $skiptags = array()) {
 
-  $out = '';
-  $was_separator = false;
-  $i = 0;
-  foreach ($taggedtxt as $tt) {
-    if (!in_array($tt->type, $skiptags) && $tt->text) {
-      $is_last = $i + 1 == count($taggedtxt);
-      $is_separator = is_tagged_text_sepatator_type($tt->type);
-      $glue = !$is_separator && !$was_separator && !$is_last ? ' ' : '';
-      $out .= t('@text', array('@text' => $tt->text)) . $glue;
-      $was_separator = $is_separator;
-    }
-    $i++;
-  }
-  return $out;
+//  $out = '';
+//  $was_separator = false;
+//  $i = 0;
+//  foreach ($taggedtxt as $tt) {
+//    if (!in_array($tt->type, $skiptags) && $tt->text) {
+//      $is_last = $i + 1 == count($taggedtxt);
+//      $is_separator = is_tagged_text_sepatator_type($tt->type);
+//      $glue = !$is_separator && !$was_separator && !$is_last ? ' ' : '';
+//      $out .= t('@text', array('@text' => $tt->text)) . $glue;
+//      $was_separator = $is_separator;
+//    }
+//    $i++;
+//  }
+  return cdm_tagged_text_to_markup($taggedtxt, $skiptags, null);
 }
 
 /**

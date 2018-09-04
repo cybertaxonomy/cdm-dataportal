@@ -59,7 +59,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
   RenderHints::setFootnoteListKey($footnote_list_key);
 
   $misapplied = array();
-  $joined_sensu_refs = array();
+  $joined_refs = array();
 
   $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
 
@@ -96,10 +96,10 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
             $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text);
             $sensu_uuid = $sensu_tagged_text[0]->entityReference->uuid;
             $misapplied[$full_name_key]['sensu_uuids'][] = $sensu_uuid;
-            if (!isset($joined_sensu_refs[$sensu_uuid])) {
-              $joined_sensu_refs[$sensu_uuid] = array(
-                'short_citation' => $sensu_citation_short,
-                'markup' => $sensu_citation_short_markup // to be expanded later as short_citation + footnote key
+            if (!isset($joined_refs[$sensu_uuid])) {
+              $joined_refs[$sensu_uuid] = array(
+                'order_by_key' => $sensu_citation_short,
+                'markup' => $sensu_citation_short_markup // the footnote key will be appended later
               );
             }
 
@@ -109,10 +109,10 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
               $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text);
               $relsec_uuid = $relsec_tagged_text[0]->entityReference->uuid;
               $misapplied[$full_name_key]['relsec_uuids'][] = $relsec_uuid;
-              if (!isset($joined_sensu_refs[$relsec_uuid])) {
-                $joined_sensu_refs[$relsec_uuid] = array(
-                  'short_citation' => $relsec_citation_short,
-                  'markup' => $relsec_citation_short_markup // to be expanded later as short_citation + footnote key
+              if (!isset($joined_refs[$relsec_uuid])) {
+                $joined_refs[$relsec_uuid] = array(
+                  'order_by_key' => $relsec_citation_short,
+                  'markup' => $relsec_citation_short_markup // the footnote key will be appended later
                 );
               }
             }
@@ -136,26 +136,29 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
     } // END loop over $taxonRelationshipsDTO->relations
   }
 
-  // Sort the $joined_sensu_refs and create footnotes and footnote keys.
-  uasort($joined_sensu_refs, function($a, $b) {
-    if ($a['short_citation'] == $b['short_citation']) {
+  // Sort the $joined_refs and create footnotes and footnote keys.
+  uasort($joined_refs, function($a, $b) {
+    if ($a['order_by_key'] == $b['order_by_key']) {
       return 0;
     }
-    return ($a['short_citation'] < $b['short_citation']) ? -1 : 1;
+    return ($a['order_by_key'] < $b['order_by_key']) ? -1 : 1;
   });
 
 
-  foreach ($joined_sensu_refs as $sensu_uuid => $sensu_strings) {
+  foreach ($joined_refs as $sensu_uuid => $sensu_strings) {
     $footnote_key = '';
     if(!empty($sensu_strings)) {
       $sensu_reference = cdm_ws_get(CDM_WS_REFERENCE, $sensu_uuid);
       if(!$sensu_reference){
         drupal_set_message("Problem fetching sensu reference with uuid " . $sensu_uuid, 'error');
       }
-      $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference->titleCache);
-      $footnote_key = theme('cdm_footnote_key', array('footnoteKey' => $footnote_key));
+      if($sensu_strings['order_by_key'] != $sensu_reference->titleCache){
+        $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference->titleCache);
+        $footnote_key = theme('cdm_footnote_key', array('footnoteKey' => $footnote_key));
+
+        $joined_refs[$sensu_uuid]['markup'] = '<span class="sensu">' . $sensu_strings['markup'] . $footnote_key . '</span>';
+      }
     }
-    $joined_sensu_refs[$sensu_uuid]['markup'] = '<span class="sensu">' . $sensu_strings['markup'] . $footnote_key . '</span>';
   }
 
   // ---- Generate output ---- //
@@ -170,7 +173,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
       if (isset($misapplied_name['sensu_uuids'])) {
         $sensu_refs_with_fkey = array();
         foreach ($misapplied_name['sensu_uuids'] as $sensu_uuid) {
-          $sensu_refs_with_fkey[$joined_sensu_refs[$sensu_uuid]['short_citation']] = $joined_sensu_refs[$sensu_uuid]['markup'];
+          $sensu_refs_with_fkey[$joined_refs[$sensu_uuid]['order_by_key']] = $joined_refs[$sensu_uuid]['markup'];
         }
         ksort($sensu_refs_with_fkey);
         $sensu_refs_with_fkey_markup = join('; ', $sensu_refs_with_fkey);
@@ -180,7 +183,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
       if (isset($misapplied_name['relsec_uuids'])) {
         $relsec_refs_with_fkey = array();
         foreach ($misapplied_name['relsec_uuids'] as $relsec_uuid) {
-          $relsec_refs_with_fkey[$joined_sensu_refs[$relsec_uuid]['short_citation']] = $joined_sensu_refs[$relsec_uuid]['markup'];
+          $relsec_refs_with_fkey[$joined_refs[$relsec_uuid]['order_by_key']] = $joined_refs[$relsec_uuid]['markup'];
         }
         ksort($relsec_refs_with_fkey);
         $relsec_refs_with_fkey_markup = join('; ', $relsec_refs_with_fkey);
