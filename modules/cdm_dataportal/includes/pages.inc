@@ -232,7 +232,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
                 //     -> Dynabox for the specimenOrObservation
                 $gallery_name = $specimenOrObservation->uuid;
 
-                $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE,  array( $specimenOrObservation->taxonRelatedDerivedUnits[0], 'occurrencesDTO') );
+                $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array( $specimenOrObservation->uuid));
                 // --- Render associated media.
                 $gallery_html = '';
                 if (count($mediaList) > 0) {
