@@ -346,7 +346,10 @@ function compose_cdm_media_gallerie($configuration) {
     $out .= '<tr>';
     for ($c = 0; $c < $cols; $c++) {
       $media = array_shift($mediaList);
-        $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
+      if(!$media){
+        continue;
+      }
+      $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
       if (isset($complete_media->representations[0]->parts[0])) {
 
         //
