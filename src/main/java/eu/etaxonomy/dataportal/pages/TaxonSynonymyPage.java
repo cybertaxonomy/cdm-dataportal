@@ -103,7 +103,7 @@ public class TaxonSynonymyPage extends PortalPage {
      */
     public List<LinkElement> getAcceptedNameFootNoteKeys() {
         List<WebElement> fnkListElements = synonymy.findElements(
-                By.xpath("./div[contains(@class,'accepted-name')]/span[contains(@class, 'footnote-key')]/a")
+                By.xpath("./div[contains(@class,'accepted-name')]/span/span[contains(@class, 'footnote-key')]/a")
         );
         return ElementUtils.linkElementsFromFootNoteKeyListElements(fnkListElements);
     }
@@ -222,7 +222,7 @@ public class TaxonSynonymyPage extends PortalPage {
      */
     public List<LinkElement> getHeterotypicalGroupFootNoteKeys(Integer heterotypicalGroupIndex) {
         List<WebElement> fnkListElements = synonymy.findElements(
-                By.xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex + "]/ul/*/*/span[contains(@class, 'footnote-key')]/a")
+                By.xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex + "]/ul[@class = 'heterotypicSynonymyGroup']/li/span/span/span/span[contains(@class, 'footnote-key')]/a")
          );
         return ElementUtils.linkElementsFromFootNoteKeyListElements(fnkListElements);
     }
