@@ -56,14 +56,10 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
         WebElement nameElement = lapsanaCommunnis.getElement().findElement(By.className("TaxonName"));
 
         WebElement namePart1 = nameElement.findElement(By.xpath("span[1]"));
-        Assert.assertEquals("Lapsana", namePart1.getText());
+        Assert.assertEquals("Lapsana communis", namePart1.getText());
         Assert.assertEquals("italic", namePart1.getCssValue("font-style"));
 
-        WebElement namePart2 = nameElement.findElement(By.xpath("span[2]"));
-        Assert.assertEquals("communis", namePart2.getText());
-        Assert.assertEquals("italic", namePart2.getCssValue("font-style"));
-
-        WebElement authorPart = nameElement.findElement(By.xpath("span[3]"));
+        WebElement authorPart = nameElement.findElement(By.xpath("span[2]"));
         Assert.assertEquals("L.", authorPart.getText());
         Assert.assertEquals("normal", authorPart.getCssValue("font-style"));
 
