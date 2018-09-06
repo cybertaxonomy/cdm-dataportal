@@ -57,14 +57,16 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $ws_string .= "s";
     }
 
-   // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, $ws_string));
-    $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
-        null,
-        $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
-    );
-    $specimensOrObservations = array();
-    if(isset($pager->records[0])){
-        $specimensOrObservations =  $pager->records;
+    $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, $ws_string));
+    if(!variable_get('cdm_dataportal_specimen_derivate_tree')) {
+        $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+            null,
+            $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
+        );
+        $specimensOrObservations = array();
+        if (isset($pager->records[0])) {
+            $specimensOrObservations = $pager->records;
+        }
     }
      // cdm_ws_get(CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON,
      // null,
