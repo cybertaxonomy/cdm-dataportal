@@ -57,8 +57,15 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         $ws_string .= "s";
     }
 
-    $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, $ws_string));
-
+   // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, $ws_string));
+    $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+        null,
+        $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
+    );
+    $specimensOrObservations = array();
+    if(isset($pager->records[0])){
+        $specimensOrObservations =  $pager->records;
+    }
      // cdm_ws_get(CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON,
      // null,
      // $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
@@ -83,7 +90,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
 
     // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
-     $occurrence->_fieldObjectMedia;
+
     foreach ($specimensOrObservations as &$occurrence) {
         $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
             $occurrence->uuid,
@@ -205,12 +212,13 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             foreach ($specimensOrObservations as $specimenOrObservation) {
 
                 $mediaList = array();
-                if (is_array($specimenOrObservation->listOfMedia)) {
-                    $mediaList = array_merge($mediaList, $specimenOrObservation->listOfMedia);
+                if (is_array($specimenOrObservation->_fieldObjectMedia)) {
+                    $mediaList = array_merge($mediaList, $specimenOrObservation->_fieldObjectMedia);
                 }
-               if (is_array($specimenOrObservation->_derivedUnitMedia)) {
+                if (is_array($specimenOrObservation->_derivedUnitMedia)) {
                     $mediaList = array_merge($mediaList, $specimenOrObservation->_derivedUnitMedia);
                 }
+
 
                 // typelabel will contain the typeStatus
                 $type_label = '';
