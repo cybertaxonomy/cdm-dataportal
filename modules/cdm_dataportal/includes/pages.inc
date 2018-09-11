@@ -107,25 +107,23 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     // --- get map service HTTP query parameters
 
     if (count($specimensOrObservations) > 0) {
-        if (count($specimensOrObservations) > 0) {
-            $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid,  $by_associatedtaxon_query);
 
-            $map_visibility = variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT);
-            if($map_visibility == 'always' ||
-                variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT) == 'automatic' &&
-                (isset($occurrence_queryDto->fieldUnitPoints[0]) || isset($occurrence_queryDto->derivedUnitPoints[0]))
-            )
-            {
-                $occurrence_query = $occurrence_queryDto->occurrenceQuery;
-                $legend_format_query = null;
-                $distribution_query = NULL;
-                $map_render_array = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
-            }
+        $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid, $by_associatedtaxon_query);
+
+        $map_visibility = variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT);
+        if ($map_visibility == 'always' ||
+            variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT) == 'automatic' &&
+            (isset($occurrence_queryDto->fieldUnitPoints[0]) || isset($occurrence_queryDto->derivedUnitPoints[0]))) {
+            $occurrence_query = $occurrence_queryDto->occurrenceQuery;
+            $legend_format_query = null;
+            $distribution_query = NULL;
+            $render_array['map'] = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
         }
     }
 
     // -------------------------------------------------------
-    $render_array['map'] = $map_render_array;
+
+
 
     if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
 
@@ -168,7 +166,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             '#attributes' => array('class' => 'specimens'),
             '#rows' => array(),
         );
-        $specimen_array = create_specimen_array($specimensOrObservations);
+        $specimen_array = compose_specimen_array($specimensOrObservations);
 
         foreach($specimen_array as $value){
             $renderArray = array(
@@ -322,14 +320,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
             10 // weight
         );
     }
-    $render_array['pager'] = markup_to_render_array(
-        theme('cdm_pager', array(
-            'pager' => $pager,
-            'path' => $_REQUEST['q'],
-            'parameters' => $_REQUEST,
-        )),
-        10 // weight
-    );
+
     RenderHints::popFromRenderStack();
     return $render_array;
 }
