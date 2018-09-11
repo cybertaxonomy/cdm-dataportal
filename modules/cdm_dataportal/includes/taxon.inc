@@ -82,15 +82,24 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
           RenderHints::pushToRenderStack('misapplied_name_for'); // TODO the render path string should in future come from $taxonRelation->type->...
 
-          // using name tags + author as full name key
-          $full_name_key = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('name', 'authors')));
+          // full name with relation symbol, rel sec as deduplication key
+          // the sensu part will be removed from the key below in case it is present
+          $symbol_text = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('symbol')));
+          $name_text = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('name')));
+          // remove quotes surrounding the name
+          $name_text = str_replace('"', '', $name_text);
+          $name_text = str_replace('&quot;', '', $name_text);
+          $full_name_key = $name_text . ' ' . cdm_tagged_text_to_string($taxon_relation->taggedText, array('name', 'symbol')) . " " . $symbol_text;
 
           // Render the first name found as representative for all others.
           //###OLD: $misapplied[$name]['out'] = cdm_related_taxon($taxon_relation->fromTaxon, UUID_MISAPPLIED_NAME_FOR);
           $sensu_tagged_text = tagged_text_extract_secref($taxon_relation->taggedText, "secReference", true);
           $relsec_tagged_text = tagged_text_extract_secref($taxon_relation->taggedText, "relSecReference", true);
 
+
           if (isset($sensu_tagged_text[1])) {
+            // everything else needs to be equal except for MAN.sec and MAN.secDetail. see #7658#note-21
+            $full_name_key = str_replace(cdm_tagged_text_to_string($sensu_tagged_text), ' ', $full_name_key);
             array_shift($sensu_tagged_text); // remove first element which contains the "sensu", this will be added later in this code
             $sensu_citation_short_markup = cdm_tagged_text_to_markup($sensu_tagged_text);
             $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text);

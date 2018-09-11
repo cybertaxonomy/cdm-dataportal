@@ -53,9 +53,10 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
     }
 
     /**
-     * Test for correct sensu representation of misapplied names, see #5676 and #5647
+     * Test for correct sensu representation of misapplied names, see #5676, #5647 and #7658
      *
      * https://dev.e-taxonomy.eu/redmine/issues/5647
+     * https://dev.e-taxonomy.eu/redmine/issues/7658
      *
      * NOTE: Species solaris has no authorship!!
      */
@@ -64,11 +65,14 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
 
-        WebElement misappliedName = p.getMisappliedName(1);
-        assertNotNull(misappliedName);
-        assertEquals("–\n\"Ossaea glomerata\" sensu A&S1; Lem2; Species solaris", misappliedName.getText());
+
+        assertEquals("–\n\"Ossaea glomerata\" sensu A&S1; Lem2; Species solaris", p.getMisappliedName(1).getText());
+        // with appended phrase
+        assertEquals("–\n\"Ossaea glomerata\" appended_phrase sensu A&S1", p.getMisappliedName(2).getText());
+        // with doubtful flag
+        assertEquals("–\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(3).getText());
         // Test also invalid designation which is rendered with the misapplied names
-        assertEquals("–\nOssaea maculata sensu Lem2, err. sec. A&S1", p.getMisappliedName(2).getText());
+        assertEquals("–\nOssaea maculata sensu Lem2, err. sec. A&S1", p.getMisappliedName(4).getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
