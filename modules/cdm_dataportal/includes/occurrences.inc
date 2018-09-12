@@ -956,7 +956,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimenOrObservation)
                             $dd_elements[] = compose_cdm_sequence($sequence, true);
                             $dd_elements[] = "";
                         }
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements,'', 100);
                         break;
 
                     // TODO preservation
@@ -1055,9 +1055,11 @@ function compose_cdm_specimen_or_observation_tree_entry($specimenOrObservation)
         if (isset($gallery_html)){
             $output .= $gallery_html;
         }
+        if (!($specimenOrObservation->type == 'FieldUnit')){
+            $pathToSpecimen = path_to_specimen($specimenOrObservation->uuid);
+            $output .=  l("detail page", $pathToSpecimen, array('attributes' => array('target' => '_blank')));
+        }
 
-        $pathToSpecimen = path_to_specimen($specimenOrObservation->uuid);
-        $output .=  l("detail page", $pathToSpecimen, array('attributes' => array('target' => '_blank')));
 
 
 
