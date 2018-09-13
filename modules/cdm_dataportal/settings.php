@@ -12,6 +12,8 @@
   define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
   define('CDM_TAXONTREE_INCLUDES', 'taxontree_includes');
 
+  define('CDM_SUB_TREE_FILTER_UUID', 'cdm_sub_tree_filter_uuid');
+
   define('NO_SORT', -1);
   define('SORT_HIERARCHICAL', 9);
 
@@ -1214,6 +1216,29 @@ function cdm_settings_general() {
     '#type' => 'textfield',
     '#title' => t('Password') . ':',
     '#default_value' => variable_get('cdm_webservice_proxy_pwd', FALSE),
+  );
+
+  $form['sub_tree_filter'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Subtree filter'),
+    '#collapsible' => FALSE,
+    '#collapsed' => TRUE,
+    '#description' => t('The Data Portal can be restricted to the taxa which belong to a specific classification subtree. Other taxa will not be shown or accessible otherwise.'),
+  );
+
+  $sub_tree_filter_uuid_value = variable_get(CDM_SUB_TREE_FILTER_UUID, FALSE);
+  $taxon_node_info = '';
+  if($sub_tree_filter_uuid_value){
+    $taxon_node_dto = cdm_ws_get(CDM_WS_TAXONNODE, array($sub_tree_filter_uuid_value));
+    if($taxon_node_dto){
+      $taxon_node_info = " Current taxon node: <strong>" . cdm_tagged_text_to_markup($taxon_node_dto->taggedTitle) . " [" . $taxon_node_dto->treeIndex . "]</strong>";
+    }
+  }
+  $form['sub_tree_filter'][CDM_SUB_TREE_FILTER_UUID] = array(
+    '#type' => 'textfield',
+    '#title' => t('Taxon Node UUID') . ':',
+    '#default_value' => variable_get(CDM_SUB_TREE_FILTER_UUID, FALSE),
+    '#description' => "The uuid of the TaxonNode entity to be used as filter." . $taxon_node_info
   );
 
   // TODO: settings are still incomplete, compare with

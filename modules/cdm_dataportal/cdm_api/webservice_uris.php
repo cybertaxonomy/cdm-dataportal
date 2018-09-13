@@ -53,6 +53,9 @@ define('CDM_WS_PORTAL_TAXON_SEARCH', 'portal/taxon/search');
 define('CDM_WS_TAXON_SEARCH', 'taxon/search');
 define('CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'portal/taxon/findByDescriptionElementFullText');
 
+
+define('CDM_WS_TAXONNODE', 'taxonNode/$0');
+
 /**
  * /description/{uuid}/naturalLanguageDescription/{featuretree_uuid}
  */

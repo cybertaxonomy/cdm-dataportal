@@ -1720,6 +1720,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
   if (!$absoluteURI) {
     $uri = cdm_compose_url($uri, $pathParameters, $query);
   }
+  cdm_ws_apply_classification_subtree_filter($uri);
 
   // read request parameter 'cacheL2_refresh'
   // which allows refreshing the level 2 cache
@@ -1819,6 +1820,38 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
   return $obj;
 }
 
+function cdm_ws_apply_classification_subtree_filter(&$uri){
+
+  $classification_subtree_filter_patterns = &drupal_static('classification_subtree_filter_patterns', array(
+    "#/classification/[0-9a-f\-]{36}/childNodes#",
+    "#/classification/[0-9a-f\-]{36}/childNodesAt/{rankUuid}#",
+    "#/portal/classification/[0-9a-f\-]{36}/childNodes#",
+    "#/portal/classification/[0-9a-f\-]{36}/childNodesAt/[0-9a-f\-]{36}#",
+    "#/portal/taxon/search#",
+    "#/portal/taxon/find#",
+    "#/portal/taxon/findByDescriptionElementFullText#",
+    "#/portal/taxon/findByFullText#",
+    "#/portal/taxon/findByEverythingFullText#",
+    "#/portal/taxon/findByIdentifier#",
+    "#/portal/taxon/findByMarker#"
+  ));
+
+  $sub_tree_filter_uuid_value = variable_get(CDM_SUB_TREE_FILTER_UUID, FALSE);
+  if(is_uuid($sub_tree_filter_uuid_value)){
+    foreach($classification_subtree_filter_patterns as $preg_pattern){
+      if(preg_match($preg_pattern, $uri)){
+        // no need to take care for uri fragments with ws uris!
+        if(strpos( $uri, '?')){
+          $uri .= '&subtree=' . $sub_tree_filter_uuid_value;
+        } else {
+          $uri .= '?subtree='. $sub_tree_filter_uuid_value;
+        }
+        break;
+      }
+    }
+  }
+
+}
 /**
  * Processes and stores the given information in $_SESSION['cdm']['ws_debug'] as table row.
  *
