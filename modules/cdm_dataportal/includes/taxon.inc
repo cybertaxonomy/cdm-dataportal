@@ -145,7 +145,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
         } else {
           RenderHints::pushToRenderStack('other_taxon_relationship');
           // All relationship types except misapplied_name_for and invalid_designation_for.
-          $taxon_relationships_lines[] = cdm_taxonRelationship($taxon_relation, TRUE, _is_invers_taxonRelationship($taxon_relation, $focusedTaxon));
+          $taxon_relationships_lines[] = cdm_tagged_text_to_markup($taxon_relation->taggedText);
         }
         RenderHints::popFromRenderStack();
       }
@@ -234,44 +234,6 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
   RenderHints::popFromRenderStack();
   return $out;
-}
-
-
-/**
- * Renders a representation of the given taxon relationship.
- *
- * According name relationships are also being rendered.
- *
- * @param $taxonRelationship
- * @param boolean $doLinkTaxon
- *     whether to create a link to the related taxon
- * @param boolean $inverse
- *     whether the $taxonRelationship should be treaded as invers relation
- *
- * @return string
- *
- */
-function cdm_taxonRelationship($taxonRelationship, $doLinkTaxon = FALSE, $inverse = FALSE) {
-
-  // Validate object.
-  if (!(isset($taxonRelationship->toTaxon) && isset($taxonRelationship->fromTaxon) && isset($taxonRelationship->type))) {
-    return null;
-  }
-
-  $taxonRelationType = $taxonRelationship->type;
-
-  if ($inverse) {
-    $toTaxon = $taxonRelationship->fromTaxon;
-    $relsign = $taxonRelationType->inverseSymbol;
-    $reltype_representation = $taxonRelationType->inverseRepresentation_L10n;
-  }
-  else {
-    $toTaxon = $taxonRelationship->toTaxon;
-    $relsign = $taxonRelationType->symbol;
-    $reltype_representation = $taxonRelationType->representation_L10n;
-  }
-
-  return cdm_related_taxon($toTaxon, NULL, $relsign, $reltype_representation, $taxonRelationship->doubtful, $doLinkTaxon);
 }
 
 /**

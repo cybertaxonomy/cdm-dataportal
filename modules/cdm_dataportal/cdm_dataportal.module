@@ -2434,15 +2434,6 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
   }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _is_invers_taxonRelationship($taxonRelationship, $focusedTaxon) {
-  return $taxonRelationship->toTaxon->uuid == $focusedTaxon->uuid;
-}
-
-
-/**
  * Collects all the media from a list of description elements.
  *
  * @param array $descriptionElements
