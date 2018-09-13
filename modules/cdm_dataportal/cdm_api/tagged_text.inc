@@ -116,6 +116,9 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
     }
     $i++;
   }
+  if($tag) {
+    $out .= '</' . $tag . '>';
+  }
   return $out;
 }
 
@@ -138,19 +141,6 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
  */
 function cdm_tagged_text_to_string(array $taggedtxt, $skiptags = array()) {
 
-//  $out = '';
-//  $was_separator = false;
-//  $i = 0;
-//  foreach ($taggedtxt as $tt) {
-//    if (!in_array($tt->type, $skiptags) && $tt->text) {
-//      $is_last = $i + 1 == count($taggedtxt);
-//      $is_separator = is_tagged_text_sepatator_type($tt->type);
-//      $glue = !$is_separator && !$was_separator && !$is_last ? ' ' : '';
-//      $out .= t('@text', array('@text' => $tt->text)) . $glue;
-//      $was_separator = $is_separator;
-//    }
-//    $i++;
-//  }
   return cdm_tagged_text_to_markup($taggedtxt, $skiptags, null);
 }
 
@@ -265,7 +255,7 @@ function tagged_text_extract_secref(&$tagged_text, $ref_tag_type = "secReference
         }
         unset($tagged_text[$i + 1]);
         // also get the microreference which could be in $tagged_text[$i + 3]
-        if(isset($tagged_text[$i + 3])  && $tagged_text[$i + 2]->type == "separator" && $tagged_text[$i + 3]->type == $ref_tag_type){
+        if(isset($tagged_text[$i + 3])  && $tagged_text[$i + 2]->type == "separator" && $tagged_text[$i + 3]->type == "secMicroReference"){
           $extracted_tt[2] = $tagged_text[$i + 2];
           $extracted_tt[3] = $tagged_text[$i + 3];
           unset($tagged_text[$i + 2]);
@@ -299,15 +289,30 @@ function tagged_text_extract_nomstatus(&$tagged_text) {
       }
     }
   }
+  $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
   return $extracted_tt;
 }
 
-function find_tagged_text_elements($taggedTextList, $type){
+function tagged_text_extract(&$tagged_text, $type) {
   $matching_elements = array();
-  if (is_array($taggedTextList)) {
-    for ($i = 0; $i < count($taggedTextList) - 1; $i++) {
-      if($taggedTextList[$i]->type == $type){
-        $matching_elements[] = $taggedTextList[$i];
+  if (is_array($tagged_text)) {
+    for ($i = 0; $i < count($tagged_text) - 1; $i++) {
+      if($tagged_text[$i]->type == $type){
+        $matching_elements[] = $tagged_text[$i];
+        unset($tagged_text[$i]);
+      }
+    }
+  }
+  $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  return $matching_elements;
+}
+
+function find_tagged_text_elements(&$tagged_text, $type){
+  $matching_elements = array();
+  if (is_array($tagged_text)) {
+    for ($i = 0; $i < count($tagged_text) - 1; $i++) {
+      if($tagged_text[$i]->type == $type){
+        $matching_elements[] = $tagged_text[$i];
       }
     }
   }

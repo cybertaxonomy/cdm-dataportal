@@ -66,18 +66,17 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
 
 
-        assertEquals("–\n\"Ossaea glomerata\" sensu A&S1; Lem2; Species solaris", p.getMisappliedName(1).getText());
-        // with appended phrase
-        assertEquals("–\n\"Ossaea glomerata\" appended_phrase sensu A&S1", p.getMisappliedName(2).getText());
+        assertEquals("–\n\"Ossaea glomerata\" sensu A&S1; sensu A&S: 221; sensu A&S: 331; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(1).getText());
         // with doubtful flag
-        assertEquals("–\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(3).getText());
+        assertEquals("–\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(2).getText());
         // Test also invalid designation which is rendered with the misapplied names
-        assertEquals("–\nOssaea maculata sensu Lem2, err. sec. A&S1", p.getMisappliedName(4).getText());
+        assertEquals("–\nOssaea maculata sec. Lem2, err. sec. A&S1", p.getMisappliedName(3).getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
         assertEquals("1. A&S, Plantas vasculares de Oz", footnotes.get(0).getText());
         assertEquals("2. Lem, New Species in the solar system", footnotes.get(1).getText());
+        // "Species solaris" must not be in the footnotes as it has the same title as the short citation
 
     }
 
