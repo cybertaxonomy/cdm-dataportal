@@ -67,7 +67,7 @@ function render_cdm_specimen_page($specimen, $is_specimen_page = false)
         foreach ($specimen->types as $typeStatus => $typedTaxa) {
             if($specimen->types){
                 if(empty($typeStatus) || $typeStatus == "_empty_"|| $typeStatus == ""){
-                    $detail_html .= "<i>no type status set:</i> ";
+                    $detail_html .= "<i>Type for:</i> ";
                 } else {
                     $detail_html .= "<i>".$typeStatus."</i> of ";
                 }
