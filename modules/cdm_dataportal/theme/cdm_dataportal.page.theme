@@ -55,7 +55,8 @@ function theme_cdm_taxon_page_title($variables) {
  *
  * @ingroup themeable
  */
-function theme_cdm_specimen_page_title($variables) {
+function theme_cdm_specimen_page_title($variables)
+{
 
     $specimen = $variables['specimen'];
     RenderHints::pushToRenderStack('specimen_page_title');
@@ -63,11 +64,12 @@ function theme_cdm_specimen_page_title($variables) {
     $out = '';
 
     $collection = null;
-    if($specimen->collection->code){
-      $collection = $specimen->collection->code;
-    }
-    elseif($specimen->collection->name){
-      $collection = $specimen->collection->name;
+    if ($specimen->collection) {
+        if ($specimen->collection->code) {
+            $collection = $specimen->collection->code;
+        } elseif ($specimen->collection->name) {
+            $collection = $specimen->collection->name;
+        }
     }
     if($specimen->accessionNumber){
         $specimenID = $specimen->accessionNumber;
