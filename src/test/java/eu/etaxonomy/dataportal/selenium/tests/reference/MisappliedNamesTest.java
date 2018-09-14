@@ -70,7 +70,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         // with doubtful flag
         assertEquals("–\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(2).getText());
         // Test also invalid designation which is rendered with the misapplied names
-        assertEquals("–\nOssaea maculata sec. Lem2, err. sec. A&S1", p.getMisappliedName(3).getText());
+        assertEquals("–\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(3).getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
