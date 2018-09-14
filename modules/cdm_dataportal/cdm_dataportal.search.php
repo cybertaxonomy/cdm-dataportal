@@ -550,12 +550,14 @@ function cdm_dataportal_search_request($search_endpoint)
   // ----------- further processing that must not be store in the session --------- //
 
   if($search_endpoint == CDM_WS_PORTAL_TAXON_SEARCH){
-    // lucene based taxon search always as phrase search: enclose it in "
-    if(!str_beginsWith($form_params['query'], '"')){
-      $form_params['query'] = '"' . $form_params['query'];
-    }
-    if(!str_endsWith($form_params['query'], '"')){
-      $form_params['query'] = $form_params['query'] . '"' ;
+    // lucene based taxon search always as phrase search if the query string contains a whitespace --> enclose it in "
+    if(preg_match("/\s+/", $form_params['query'])){
+      if(!str_beginsWith($form_params['query'], '"')){
+        $form_params['query'] = '"' . $form_params['query'];
+      }
+      if(!str_endsWith($form_params['query'], '"')){
+        $form_params['query'] = $form_params['query'] . '"' ;
+      }
     }
   }
 
