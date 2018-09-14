@@ -120,7 +120,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
           }
 
           if (isset($relsec_tagged_text[1])) {
-            array_shift($relsec_tagged_text); // remove first element which contains the "err. sec", this will be added later in this code
+            //array_shift($relsec_tagged_text); // remove first element which contains the "err. sec", this will be added later in this code
             $relsec_citation_detail = trim(join(' ', cdm_tagged_text_values($relsec_tagged_text, array('secMicroReference'))));
             $relsec_citation_short_markup = cdm_tagged_text_to_markup($relsec_tagged_text);
             $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text);
@@ -145,6 +145,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
         } else {
           RenderHints::pushToRenderStack('other_taxon_relationship');
           // All relationship types except misapplied_name_for and invalid_designation_for.
+
           $taxon_relationships_lines[] = cdm_tagged_text_to_markup($taxon_relation->taggedText);
         }
         RenderHints::popFromRenderStack();
@@ -210,7 +211,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
         }
         ksort($relsec_refs_with_fkey);
         $relsec_refs_with_fkey_markup = join('; ', $relsec_refs_with_fkey);
-        $misapplied_name_markup = str_replace('{PLACEHOLDER_relSecReference}', ', err. sec. ' . $relsec_refs_with_fkey_markup, $misapplied_name_markup);
+        $misapplied_name_markup = str_replace('{PLACEHOLDER_relSecReference}', $relsec_refs_with_fkey_markup, $misapplied_name_markup);
       }
       // final line
       $out .= '<li class="synonym"><span class="misapplied">' . $misapplied_name_markup . ' </span></li>';
