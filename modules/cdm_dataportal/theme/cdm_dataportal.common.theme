@@ -50,8 +50,10 @@ function absolute_path_to_drupal() {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Checks if the taxon specified by the uuid is contained in the currently focused classification.
+ *
+ * @param $taxon_uuid
+ * @return bool
  */
 function taxon_in_current_classification($taxon_uuid) {
   $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon_uuid);

@@ -1824,16 +1824,30 @@ function cdm_ws_apply_classification_subtree_filter(&$uri){
 
   $classification_subtree_filter_patterns = &drupal_static('classification_subtree_filter_patterns', array(
     "#/classification/[0-9a-f\-]{36}/childNodes#",
-    "#/classification/[0-9a-f\-]{36}/childNodesAt/{rankUuid}#",
+    /* covered by above pattern:
+    "#/classification/[0-9a-f\-]{36}/childNodesAt/[0-9a-f\-]{36}#",
+    '#/classification/[0-9a-f\-]{36}/childNodesOf/[0-9a-f\-]{36}#',
+    */
     "#/portal/classification/[0-9a-f\-]{36}/childNodes#",
+    /* covered by above pattern:
     "#/portal/classification/[0-9a-f\-]{36}/childNodesAt/[0-9a-f\-]{36}#",
+    '#/portal/classification/[0-9a-f\-]{36}/childNodesOf/[0-9a-f\-]{36}#',
+    */
     "#/portal/taxon/search#",
     "#/portal/taxon/find#",
+    /* covered by above pattern:
     "#/portal/taxon/findByDescriptionElementFullText#",
     "#/portal/taxon/findByFullText#",
     "#/portal/taxon/findByEverythingFullText#",
     "#/portal/taxon/findByIdentifier#",
-    "#/portal/taxon/findByMarker#"
+    "#/portal/taxon/findByMarker#",
+    "#/portal/taxon/findByMarker#",
+    "#/portal/taxon/findByMarker#",
+    */
+    "#/portal/taxon/[0-9a-f\-]{36}#"
+    /* covered by above pattern:
+    "#/portal/taxon/[0-9a-f\-]{36}/taxonNodes#",
+    */
   ));
 
   $sub_tree_filter_uuid_value = variable_get(CDM_SUB_TREE_FILTER_UUID, FALSE);
