@@ -78,6 +78,9 @@ function theme_cdm_specimen_page_title($variables) {
     elseif($specimen->catalogNumber) {
       $specimenID = $specimen->catalogNumber;
     }
+    elseif($specimen->titleCache) {
+        $specimenID = $specimen->titleCache;
+    }
     if(!isset($specimenID) and !isset($collection)){
       $specimenID = $specimen->uuid;
     }
