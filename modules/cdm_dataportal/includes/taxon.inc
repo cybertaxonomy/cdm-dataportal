@@ -54,6 +54,13 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
     return null;
   }
 
+  static $dedup_rel_type_uuids = array(
+    UUID_MISAPPLIED_NAME_FOR,
+    UUID_INVALID_DESIGNATION_FOR,
+    UUID_PARTIAL_MISAPPLIEDNAME_FOR,
+    UUID_PROPARTE_MISAPPLIEDNAME_FOR
+  );
+
   RenderHints::pushToRenderStack('taxon_relationships');
   $footnote_list_key = 'taxon_relationships';
   RenderHints::setFootnoteListKey($footnote_list_key);
@@ -78,7 +85,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
       if (in_array($taxon_relation->type->uuid, $taxon_relationship_types)) {
 
-        if ($taxon_relation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $taxon_relation->type->uuid == UUID_INVALID_DESIGNATION_FOR) {
+        if (in_array($taxon_relation->type->uuid, $dedup_rel_type_uuids)) {
 
           RenderHints::pushToRenderStack('misapplied_name_for'); // TODO the render path string should in future come from $taxonRelation->type->...
 

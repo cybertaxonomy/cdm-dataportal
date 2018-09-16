@@ -71,8 +71,15 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         assertEquals("–\n\"Ossaea glomerata\" sensu A&S1; sensu A&S: 221; sensu A&S: 331; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(2).getText());
         // with doubtful flag
         assertEquals("–\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(3).getText());
+
+        assertEquals("p.p.MAN\nOssaea glomerata sec. A&S1; sec. Species solaris", p.getMisappliedName(4).getText());
+
+        assertEquals("partial MAN\nOssaea glomerata sec. A&S: 331; auct. sec. A&S1", p.getMisappliedName(5).getText());
         // Test also invalid designation which is rendered with the misapplied names
-        assertEquals("–\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(4).getText());
+        assertEquals("–\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(6).getText());
+
+
+
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
