@@ -152,7 +152,14 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
         }
         ksort($sensu_refs_with_fkey);
         $sensu_refs_with_fkey_markup = join('; ', $sensu_refs_with_fkey);
-        $misapplied_name_markup = str_replace('{PLACEHOLDER_secReference}', $sensu_refs_with_fkey_markup, $misapplied_name_markup);
+        if(strpos($misapplied_name_markup, '{PLACEHOLDER_secReference}') !== false){
+          $misapplied_name_markup = str_replace('{PLACEHOLDER_secReference}', $sensu_refs_with_fkey_markup, $misapplied_name_markup);
+          // just remove the appendedPhrase placeholder as was included in the sensu_refs_with_fkey_markup
+          $misapplied_name_markup = str_replace('{PLACEHOLDER_appendedPhrase}', '', $misapplied_name_markup);
+        } else {
+          // no sec ref so there could only be the appended phrase
+          $misapplied_name_markup = str_replace('{PLACEHOLDER_appendedPhrase}', $sensu_refs_with_fkey_markup, $misapplied_name_markup);
+        }
       }
 
       // append the err. sec. if there is any for this MAN
@@ -201,7 +208,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misapplied, &$joined_refs, $name_dedup_key = null) {
   $appended_phrase_text = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('appendedPhrase')));
   // remove/extract appendedPhrase, secReference, relSecReference and add placeholders if needed
-  tagged_text_extract($taxon_relation->taggedText, 'appendedPhrase');
+  tagged_text_extract($taxon_relation->taggedText, 'appendedPhrase', true);
   $sensu_tagged_text = tagged_text_extract_secref($taxon_relation->taggedText, "secReference", true);
   $relsec_tagged_text = tagged_text_extract_secref($taxon_relation->taggedText, "relSecReference", true);
 

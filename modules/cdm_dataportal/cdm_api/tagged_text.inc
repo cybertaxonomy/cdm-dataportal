@@ -293,13 +293,18 @@ function tagged_text_extract_nomstatus(&$tagged_text) {
   return $extracted_tt;
 }
 
-function tagged_text_extract(&$tagged_text, $type) {
+function tagged_text_extract(&$tagged_text, $type, $replace_with_placeholder = false) {
   $matching_elements = array();
   if (is_array($tagged_text)) {
     for ($i = 0; $i < count($tagged_text) - 1; $i++) {
       if($tagged_text[$i]->type == $type){
         $matching_elements[] = $tagged_text[$i];
-        unset($tagged_text[$i]);
+        if($replace_with_placeholder){
+          // text must not be null, see cdm_tagged_text_to_markup()
+          $tagged_text[$i] = tagged_text_new("PLACEHOLDER_" . $type, "PLACEHOLDER_" . $type);
+        } else {
+          unset($tagged_text[$i]);
+        }
       }
     }
   }
