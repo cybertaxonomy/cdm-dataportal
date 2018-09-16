@@ -45,7 +45,7 @@ public class Cichorieae_FootnoteTest extends CdmDataPortalTestBase{
 
         assertEquals("expecting one footnoteKey", 1, p.getHeterotypicalGroupFootNoteKeys(2).size());
         List<BaseElement> footNotes = p.getHeterotypicalGroupFootNotes(2);
-        assertEquals("expecting one footnotw", 1, footNotes.size());
+        assertEquals("expecting one footnote", 1, footNotes.size());
         String first100Chars = footNotes.get(0).getText().substring(0, 100);
         assertEquals("1. As has been noted first by Sennikov (in Bot Zhurn. 82(5): 114. 1997), the names Lactuca saxatilis", first100Chars);
     }
