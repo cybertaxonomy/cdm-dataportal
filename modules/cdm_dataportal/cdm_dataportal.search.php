@@ -550,6 +550,8 @@ function cdm_dataportal_search_request($search_endpoint)
   // ----------- further processing that must not be store in the session --------- //
 
   if($search_endpoint == CDM_WS_PORTAL_TAXON_SEARCH){
+    // HACK to allow using dot characters
+    $form_params['query'] = str_replace('.', '*', $form_params['query']);
     // lucene based taxon search always as phrase search if the query string contains a whitespace --> enclose it in "
     if(preg_match("/\s+/", $form_params['query'])){
       if(!str_beginsWith($form_params['query'], '"')){
