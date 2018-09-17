@@ -255,7 +255,8 @@ function tagged_text_extract_secref(&$tagged_text, $ref_tag_type = "secReference
         }
         unset($tagged_text[$i + 1]);
         // also get the microreference which could be in $tagged_text[$i + 3]
-        if(isset($tagged_text[$i + 3])  && $tagged_text[$i + 2]->type == "separator" && $tagged_text[$i + 3]->type == "secMicroReference"){
+        // HOTFIX to circumvent problems due to #7767 is to check for secMicroReference + microReference + secReference:
+        if(isset($tagged_text[$i + 3])  && $tagged_text[$i + 2]->type == "separator" && ($tagged_text[$i + 3]->type == "secMicroReference" || $tagged_text[$i + 3]->type == "microreference" || $tagged_text[$i + 3]->type == "secReference")){
           $extracted_tt[2] = $tagged_text[$i + 2];
           $extracted_tt[3] = $tagged_text[$i + 3];
           unset($tagged_text[$i + 2]);
