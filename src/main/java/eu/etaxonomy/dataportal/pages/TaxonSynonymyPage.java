@@ -252,6 +252,13 @@ public class TaxonSynonymyPage extends PortalPage {
         return taxonRelationships;
     }
 
+    public WebElement getTaxonRelationships(Integer relatedTaxonIndex) {
+        WebElement taxonRelationships = synonymy.findElement(
+                By.xpath("./div[contains(@class,'taxon-relationships')]/ul[contains(@class,'taxonRelationships')]/li[" + relatedTaxonIndex + "]")
+        );
+        return taxonRelationships;
+    }
+
     public WebElement getMisappliedName(Integer misappliedNameIndex) {
         WebElement misappliedName = getTaxonRelationships().findElement(
                 By.xpath("./ul[contains(@class,'misapplied')]/li[" + misappliedNameIndex + "]")
