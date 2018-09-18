@@ -79,7 +79,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         // Test also invalid designation which is rendered with the misapplied names
         assertEquals("–\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(6).getText());
 
-        assertEquals("≜⊃\nTrichocentrum undulatum (Sw.) Ackerman & M. W. Chase sec. My Classification3", p.getTaxonRelationships(1).getText());
+        assertEquals("≜⊃\nTrichocentrum undulatum (Sw.) Ackerman & M. W. Chase sec. Kohlbecker 2016-20183", p.getTaxonRelationships(1).getText());
         assertEquals("∅ Achilllea santolina Lag. sec. Testor 2018+4", p.getTaxonRelationships(1).getText());
 
 
