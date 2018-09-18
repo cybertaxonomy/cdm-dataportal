@@ -79,16 +79,10 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         // Test also invalid designation which is rendered with the misapplied names
         assertEquals("–\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(6).getText());
 
-        assertEquals("≜⊃\nTrichocentrum undulatum (Sw.) Ackerman & M. W. Chase sec. Kohlbecker 2016-20183", p.getTaxonRelationships(1).getText());
-        assertEquals("∅ Achilllea santolina Lag. sec. Testor 2018+4", p.getTaxonRelationships(1).getText());
-
-
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
-        assertEquals(4, footnotes.size());
+        assertEquals(2, footnotes.size());
         assertEquals("1. A&S, Plantas vasculares de Oz", footnotes.get(0).getText());
         assertEquals("2. Lem, New Species in the solar system", footnotes.get(1).getText());
-        assertEquals("3. Kohlbecker, .....TODO .... 2016-2018", footnotes.get(0).getText());
-        assertEquals("4. Testor ... TODO ... 2018+", footnotes.get(1).getText());
         // "Species solaris" must not be in the footnotes as it has the same title as the short citation
 
     }
