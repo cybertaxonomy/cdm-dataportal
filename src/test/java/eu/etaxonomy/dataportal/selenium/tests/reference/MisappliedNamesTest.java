@@ -21,6 +21,7 @@ import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.ElementUtils;
 import eu.etaxonomy.dataportal.StringConstants;
 import eu.etaxonomy.dataportal.elements.BaseElement;
+import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
@@ -112,6 +113,26 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
     }
 
+    /**
+     * https://dev.e-taxonomy.eu/redmine/issues/7778
+     *
+     * @throws MalformedURLException
+     */
+    @Test
+    @Ignore
+    public void tesIssue7778() throws MalformedURLException {
+
+        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
+
+        List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
+        BaseElement footNote = footnotes.get(0);
+        assertEquals("1. A&S, Plantas vasculares de Oz", footNote.getText());
+        List<LinkElement> links = footNote.getLinksInElement();
+        assertEquals(1, links.size());
+        assertEquals("http://onlinelibrary.wiley.com/doi/10.1111/j.1756-1051.2999.00012.x/full", links.get(0).getUrl());
+
+    }
+
 
     /**
      * https://dev.e-taxonomy.eu/redmine/issues/5492
@@ -128,8 +149,6 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         WebElement misappliedName2 = p.getMisappliedName(2);
         assertNotNull(misappliedName2);
         assertEquals("–\n\"Oncidium guttatum\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName2.getText());
-
-
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(1, footnotes.size());
