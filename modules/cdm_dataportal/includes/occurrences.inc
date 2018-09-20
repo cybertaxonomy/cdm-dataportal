@@ -744,10 +744,12 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
                     if (is_object($value) || is_array($value)) {
                         drupal_set_message("Unhandled type in compose_cdm_sequence() for field " . $field, "warning");
                     } else {
-//                        if (!is_array($value) && strpos($value, 'http:') !== false ){
-//                            //make links for urls
-//                            $value = l($value, $value, array('attributes' => array('target' => '_blank')));
-//                        }
+                        if (!is_array($value) && strpos($value, 'http:') !== false ){
+                            //make links for urls
+                            $value = l($value, $value, array('attributes' => array('target' => '_blank')));
+                            $value = markup_to_render_array($value);
+                        }
+
                        _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 20);
                     }
             }
