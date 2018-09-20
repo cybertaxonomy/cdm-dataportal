@@ -430,7 +430,6 @@ function taxon_image_gallery_fsi($taxon, $media) {
  */
 function compose_cdm_reference_page($uuid) {
 
-  $out = '';
   $reference = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
   if (isset($reference->titleCache)) {
     drupal_set_title($reference->titleCache, PASS_THROUGH);
@@ -596,10 +595,12 @@ function compose_cdm_reference_page($uuid) {
   if($registration_working_set && count($registration_working_set->registrationDTOs) > 0){
     $out .= "<h3>Nomenclatural acts:</h3><div class=\"cdm-item-list\">";
     foreach($registration_working_set->registrationDTOs as $registration_dto){
-      $registration_render_a = compose_registation_dto($registration_dto, false, true);
-      $registration_render_a["#prefix"] = "<div class=\"item\">";
-      $registration_render_a["#suffix"] = "</div>";
-      $out .= drupal_render($registration_render_a);
+      if($registration_dto->status == "PUBLISHED"){
+        $registration_render_a = compose_registation_dto($registration_dto, false, true);
+        $registration_render_a["#prefix"] = "<div class=\"item\">";
+        $registration_render_a["#suffix"] = "</div>";
+        $out .= drupal_render($registration_render_a);
+      }
     }
     $out .= "</div>";
   }
