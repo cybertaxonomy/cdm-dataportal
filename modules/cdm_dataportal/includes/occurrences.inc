@@ -744,11 +744,11 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
                     if (is_object($value) || is_array($value)) {
                         drupal_set_message("Unhandled type in compose_cdm_sequence() for field " . $field, "warning");
                     } else {
-                        if (!is_array($value) && strpos($value, 'http:') !== false ){
-                            //make links for urls
-                            $value = l($value, $value, array('attributes' => array('target' => '_blank')));
-                        }
-                       _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 20, null, false);
+//                        if (!is_array($value) && strpos($value, 'http:') !== false ){
+//                            //make links for urls
+//                            $value = l($value, $value, array('attributes' => array('target' => '_blank')));
+//                        }
+                       _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 20);
                     }
             }
         }
@@ -826,7 +826,7 @@ function compose_specimen_array(array $specimenOrObservations){
  * @ingroup compose
  */
 
-function compose_cdm_specimen_or_observation_tree_entry($specimenOrObservation)
+function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation)
 {
     $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
     if (!isset($exclude_occurrence_fields)) {
@@ -852,15 +852,15 @@ function compose_cdm_specimen_or_observation_tree_entry($specimenOrObservation)
     }
 
 
-    if (is_object($specimenOrObservation)) {
+    if (is_object($specimen_or_observation)) {
 
-        $type_label = $specimenOrObservation->recordBase;
-        RenderHints::setFootnoteListKey($type_label . '-' . $specimenOrObservation->uuid);
+        $type_label = $specimen_or_observation->recordBase;
+        RenderHints::setFootnoteListKey($type_label . '-' . $specimen_or_observation->uuid);
 
         // collect typeStatus as label
-        if (isset($specimenOrObservation->specimenTypeDesignations)) {
+        if (isset($specimen_or_observation->specimenTypeDesignations)) {
             $type_status = array();
-            foreach ($specimenOrObservation->specimenTypeDesignations as $typeDesignation) {
+            foreach ($specimen_or_observation->specimenTypeDesignations as $typeDesignation) {
                 if (isset($typeDesignation->typeStatus->representation_L10n)) {
                     $type_status[] = $typeDesignation->typeStatus->representation_L10n;
                 }
@@ -870,14 +870,14 @@ function compose_cdm_specimen_or_observation_tree_entry($specimenOrObservation)
             }
         }
 
-        $title = $type_label . ': ' . $specimenOrObservation->titleCache;
+        $title = $type_label . ': ' . $specimen_or_observation->titleCache;
         $items['data'] = $title;
 
         $groups = array();
         $items['children'] = $groups;
         $children_items = array();
         // --- add initialized fields
-        foreach (get_object_vars($specimenOrObservation) as $field => $value) {
+        foreach (get_object_vars($specimen_or_observation) as $field => $value) {
             $child_item = array();
 
             if (!in_array($field, $exclude_occurrence_fields) && ($value && (!is_object($value) || isset($value->class)))) {
@@ -914,7 +914,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimenOrObservation)
                         );
                         $gallery_html = compose_cdm_media_gallerie(array(
                             'mediaList' => $value,
-                            'galleryName' => $specimenOrObservation->label,
+                            'galleryName' => $specimen_or_observation->label,
                             'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
                             'cols' => $gallery_settings['cdm_dataportal_media_cols'],
                             'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
@@ -1054,14 +1054,14 @@ function compose_cdm_specimen_or_observation_tree_entry($specimenOrObservation)
            // '#title' => $title,
             '#theme' => 'description_list',
             '#groups' => $groups,
-            '#attributes' => array('class' => html_class_attribute_ref($specimenOrObservation)),
+            '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation)),
         );
         $output = drupal_render($occurrence_elements);
         if (isset($gallery_html)){
             $output .= $gallery_html;
         }
-        if (!($specimenOrObservation->type == 'FieldUnit')){
-            $pathToSpecimen = path_to_specimen($specimenOrObservation->uuid);
+        if (!($specimen_or_observation->type == 'FieldUnit')){
+            $pathToSpecimen = path_to_specimen($specimen_or_observation->uuid);
             $output .=  l("detail page", $pathToSpecimen, array('attributes' => array('target' => '_blank')));
         }
 
