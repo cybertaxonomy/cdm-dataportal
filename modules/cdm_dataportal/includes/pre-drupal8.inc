@@ -189,10 +189,15 @@ function theme_description_list($variables) {
  *   an array of attributes of the DT element
  *
  */
-function _description_list_group_add(&$groups, $term, $description, $suffix = '', $weight=NULL, array $dt_attributes=NULL) {
+function _description_list_group_add(&$groups, $term, $description, $suffix = '', $weight=NULL, array $dt_attributes=NULL, $isremoveDrupalHtml=true) {
 
-  if (!is_array($description)) {
+  if (!is_array($description)&& $isremoveDrupalHtml) {
+
     $description = trim(drupal_html_to_text($description));
+//    if (!is_array($description) && strpos($description, 'http:') !== false ){
+//        //make links for urls
+//        $description = l($description, $description, array('attributes' => array('target' => '_blank')));
+//    }
   }
 
   if ($description) {
@@ -210,10 +215,7 @@ function _description_list_group_add(&$groups, $term, $description, $suffix = ''
     } else {
       $term_elements = $term;
     }
-    if (strpos($description, 'http:') !== false && !is_array($description)){
-        //make links for urls
-        $description = l($description, $description);
-    }
+
     $groups[$term] = array(
         'term' => $term_elements,
         'description' => $description,

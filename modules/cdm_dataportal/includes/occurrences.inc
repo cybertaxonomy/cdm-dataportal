@@ -744,7 +744,11 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
                     if (is_object($value) || is_array($value)) {
                         drupal_set_message("Unhandled type in compose_cdm_sequence() for field " . $field, "warning");
                     } else {
-                        _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 20);
+                        if (!is_array($value) && strpos($value, 'http:') !== false ){
+                            //make links for urls
+                            $value = l($value, $value, array('attributes' => array('target' => '_blank')));
+                        }
+                       _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 20, null, false);
                     }
             }
         }
@@ -892,14 +896,15 @@ function compose_cdm_specimen_or_observation_tree_entry($specimenOrObservation)
                         break;
 
                     case 'specimenTypeDesignations':
-                      /*     $groups,
+                        @_description_list_group_add(
+                            $groups,
                             cdm_occurrence_field_name_label($field),
                             array(
                                 '#markup' => theme('cdm_typedesignations', array('typeDesignations' => $value)),
                             )
                         );
-                      */
                         break;
+
 
 
                     case 'listOfMedia':
