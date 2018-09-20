@@ -119,7 +119,6 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
      * @throws MalformedURLException
      */
     @Test
-    @Ignore
     public void tesIssue7778() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
@@ -129,7 +128,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         assertEquals("1. A&S, Plantas vasculares de Oz", footNote.getText());
         List<LinkElement> links = footNote.getLinksInElement();
         assertEquals(1, links.size());
-        assertEquals("http://onlinelibrary.wiley.com/doi/10.1111/j.1756-1051.2999.00012.x/full", links.get(0).getUrl());
+        assertEquals("http://doi.org/10.1111/j.1756-1051.2012.00012.x", links.get(0).getUrl());
 
     }
 

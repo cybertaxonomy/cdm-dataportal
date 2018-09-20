@@ -49,7 +49,6 @@ function theme_cdm_reference($variables) {
   else {
     $author_team = $reference->authorship;
   }
-
   if ($referenceStyle == "zoology") {
     $year = '';
     if (isset($reference->datePublished)) {
