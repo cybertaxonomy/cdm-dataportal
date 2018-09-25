@@ -1887,11 +1887,11 @@ function compose_registation_dto($registration_dto, $with_citation = true, $with
   $render_array = array();
   $media_link_map = array();
   if($registration_dto->registrationDate){
-    if($registration_dto->institution){
+    if(isset($registration_dto->institutionTitleCache)){
       $registration_date_insitute_markup =
         t("Registration at @date in @institution", array(
           '@date' => $registration_dto->registrationDate,
-          '@institution' => $registration_dto->institution,
+          '@institution' => $registration_dto->institutionTitleCache,
         ));
     } else {
       $registration_date_insitute_markup =
