@@ -421,6 +421,19 @@ function infer_mime_type($filepath) {
 }
 
 /**
+ * Formats a mysql datatime as string
+ *
+ * @param $datetime
+ * @param string $format
+ *
+ * @return
+ *  the formatted string representation of the $datetime
+ */
+function format_datetime($datetime, $format = 'Y-m-d H:i:s'){
+  return date($format, strtotime($datetime));
+}
+
+/**
  * Converts an ISO 8601 org.joda.time.Partial to a year.
  *
  * The function expects an ISO 8601 time representation of a

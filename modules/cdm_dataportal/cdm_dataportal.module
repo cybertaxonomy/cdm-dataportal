@@ -1887,19 +1887,20 @@ function compose_registation_dto($registration_dto, $with_citation = true, $with
   $render_array = array();
   $media_link_map = array();
   if($registration_dto->registrationDate){
+    $date_string = format_datetime($registration_dto->registrationDate);
     if(isset($registration_dto->institutionTitleCache)){
       $registration_date_insitute_markup =
         t("Registration at @date in @institution", array(
-          '@date' => $registration_dto->registrationDate,
+          '@date' => $date_string,
           '@institution' => $registration_dto->institutionTitleCache,
         ));
     } else {
       $registration_date_insitute_markup =
         t("Registration at @date", array(
-          '@date' => $registration_dto->registrationDate
+          '@date' => $date_string
         ));
     }
-    $render_array['publication_date_and_office'] = markup_to_render_array($registration_date_insitute_markup);
+    $render_array['publication_date_and_office'] = markup_to_render_array('<p>'.$registration_date_insitute_markup . '</p>');
   }
   $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
   foreach ($taggged_text_expanded  as $tagged_text){
