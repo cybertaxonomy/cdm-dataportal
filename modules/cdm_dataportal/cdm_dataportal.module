@@ -1900,7 +1900,7 @@ function compose_registation_dto($registration_dto, $with_citation = true, $with
           '@date' => $date_string
         ));
     }
-    $render_array['publication_date_and_office'] = markup_to_render_array('<p>'.$registration_date_insitute_markup . '</p>');
+    $render_array['publication_date_and_office'] = markup_to_render_array('<p>'.$registration_date_insitute_markup . '</p>', -100);
   }
   $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
   foreach ($taggged_text_expanded  as $tagged_text){
