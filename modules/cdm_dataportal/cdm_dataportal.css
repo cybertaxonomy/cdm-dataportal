@@ -243,6 +243,10 @@ li .taxon {
  * ======= synonymy =======
  */
 
+#synonymy .secReference {
+    margin-bottom: 0.5em;
+}
+
 #synonymy ul {
     margin: 0;
 }

@@ -27,6 +27,9 @@
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE', 50);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 0);
   define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
+  define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE', 'cdm_synonymy_accepted_taxon_sec_separate');
+  define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL', 'cdm_synonymy_accepted_taxon_sec_separate_label');
+  define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT', 'Source');
   define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
   define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
   define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
@@ -2474,12 +2477,29 @@ ie	introduced: formerly introduced
 
   $form['taxon_synonymy']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show accepted taxon on top of the synonymy'),
+    '#title' => t('Accepted taxon on top of the synonymy'),
     '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE),
     '#description' => t('If checked, the first homotypic taxon is a repetition
-      of the accepted taxon most likely with the full nomenclatural reference
-      (depending on the currently chosen theme).'),
+      of the accepted taxon most likely with the full nomenclatural reference, 
+      depending on the ' . l('Name render templates', 'admin/config/cdm_dataportal/settings/layout') . '.'),
   );
+
+  $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Secundum referenence as separate line above the accepted taxon.'),
+    '#default_value' => variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0),
+    '#description' => t('You may want to remove the <code>"secReferencePart": true,</code> entry from <code>"accepted_taxon.taxon_page_synonymy"{</code> the in the '
+      . l('Name render templates', 'admin/config/cdm_dataportal/settings/layout')
+      . ' (Only applicable when the "Show accepted taxon on top of the synonymy" option above is enabled.)'),
+    '#disabled' =>  !variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE)
+  );
+
+  $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL] = array(
+    '#type' => 'textfield',
+    '#description' => 'Label for the secundum referenence.',
+    '#default_value' => variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT),
+    '#disabled' =>  !variable_get('cdm_dataportal_nomref_in_title', 0)
+    );
 
   $form['taxon_synonymy']['cdm_dataportal_display_is_accepted_for'] = array(
     '#type' => 'checkbox',

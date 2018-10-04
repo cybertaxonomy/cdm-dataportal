@@ -137,21 +137,17 @@ function theme_cdm_name_page_title($variables) {
  * The synonymy list is headed by the complete scientific name
  * of the accepted taxon with nomenclatural reference.
  *
- * @param array $variables
- *   An associative array containing:
- *   - taxon
- *   - addAcceptedTaxon
+ * @param object $taxon
+ * @param boolean $add_accepted_taxon
  *
- * @return string
- *  Markup for the synonymy
+ * @return array
+ *  Drupal render array for the synonymy
  *
  * @throws Exception
  *
- * @ingroup themeable
+ * @ingroup compose
  */
-function theme_cdm_taxon_page_synonymy($variables) {
-  $taxon = $variables['taxon'];
-  $addAcceptedTaxon = $variables['addAcceptedTaxon'];
+function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
 
   RenderHints::pushToRenderStack('taxon_page_synonymy');
 
@@ -169,17 +165,22 @@ function theme_cdm_taxon_page_synonymy($variables) {
   // even if there are not synonyms in the homotypic group
   // homotypic group and accepted taxon should have the same footnote key
   $referenceUri = '';
-  if ($addAcceptedTaxon) {
+  if ($add_accepted_taxon) {
     // remember the last part of the render path
     $synonymy_render_path = RenderHints::getRenderPath();
     // set new render path for the accepted taxon so
     // it can be styled differently via the name render part definitions
     RenderHints::pushToRenderStack('accepted_taxon');
+    $accepted_name = '';
+    if (variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0)) {
+      $label = variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT);
+      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon->sec->titleCache . '</div>';
+    }
     if (isset($taxon->name->nomenclaturalReference)) {
       $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
     }
 
-    $accepted_name = '<div class="accepted-name">';
+    $accepted_name .= '<div class="accepted-name">';
     $accepted_name .= render_taxon_or_name($taxon, NULL, $referenceUri);
 
     $name_relationships = cdm_name_relationships_of($taxon);
@@ -230,7 +231,7 @@ function theme_cdm_taxon_page_synonymy($variables) {
 
   RenderHints::popFromRenderStack();
 
-  return $out;
+  return markup_to_render_array($out);
 }
 
 

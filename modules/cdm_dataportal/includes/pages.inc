@@ -645,7 +645,8 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
     }
     $addAcceptedTaxon = variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
 
-    $synonymy_html .= theme('cdm_taxon_page_synonymy', array('taxon' => $taxon, 'addAcceptedTaxon' => $addAcceptedTaxon));
+    $synonym_a = compose_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon);
+    $synonymy_html .= drupal_render($synonym_a);
 
     $synonymy_html .= '</div>';
     $render_array['synonymy'] = markup_to_render_array($synonymy_html, $weight++);
@@ -849,10 +850,9 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   }
 
   if($add_synonymy){
-    $render_array['synonymy'] = markup_to_render_array(
-      theme('cdm_taxon_page_synonymy', array('taxon' => $taxon, 'addAcceptedTaxon' => true)),
-      -102
-    );
+    $synonymy_a = compose_cdm_taxon_page_synonymy($taxon, true);
+    $synonymy_a['#weight'] = -102;
+    $render_array['synonymy'] = $synonymy_a;
   }
 
   $pseudo_feature_blocks = array();
