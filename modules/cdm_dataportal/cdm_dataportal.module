@@ -497,17 +497,45 @@ function cdm_dataportal_menu() {
     'access arguments' => array('access cdm content'),
     'type' => MENU_LOCAL_TASK,
   );
-
   $items['cdm_dataportal/search/results/taxon'] = array(
     'page callback' => 'cdm_dataportal_view_search_results_taxon',
     'access arguments' => array('access cdm content'),
     'type' => MENU_CALLBACK,
   );
-  $items['cdm_dataportal/search/registration'] = array(
+  /*
+   * MENU_CALLBACK at cdm_dataportal/registration-search is needed to make the
+   * tabs in the subordinate paths work, accessing this 'page' will cause the
+   * MENU_DEFAULT_LOCAL_TASK being displayed
+   */
+  $items['cdm_dataportal/registration-search'] = array(
+    'title' => 'Search', // will be passed through t()
     'page callback' => 'cdm_dataportal_view_search_registrations_results',
+    'page arguments' => array("filter"),
     'access arguments' => array('access cdm content'),
     'type' => MENU_CALLBACK,
   );
+  /*
+   * the MENU_DEFAULT_LOCAL_TASK creates a tab for the MENU_CALLBACK
+   * defined at a higher level of the path (cdm_dataportal/registration-search)
+   */
+  $items['cdm_dataportal/registration-search/filter'] = array(
+    'title' => 'Search', // will be passed through t()
+    'page callback' => 'cdm_dataportal_view_search_registrations_results',
+    'page arguments' => array("filter"),
+    'access arguments' => array('access cdm content'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  /*
+   * the MENU_LOCAL_TASK creates another tab
+   */
+  $items['cdm_dataportal/registration-search/taxongraph'] = array(
+    'title' => 'Taxonomic search', // will be passed through t()
+    'page callback' => 'cdm_dataportal_view_search_registrations_results',
+    'page arguments' => array("taxongraph"),
+    'access arguments' => array('access cdm content'),
+    'type' => MENU_LOCAL_TASK,
+  );
+
   // Optional callback arguments: page.
   $items['cdm_dataportal/registration'] = array(
     'page callback' => 'cdm_dataportal_registration_page_view',
@@ -841,10 +869,16 @@ function cdm_dataportal_block_info() {
     'info' => t('CDM - Registrations search filter'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
     'visibility' => BLOCK_VISIBILITY_NOTLISTED,
-    'pages' => "cdm_dataportal/search/registration\ncdm_dataportal/search/registration/*", // multiple page paths separated by "\n"!!!
+    'pages' => "cdm_dataportal/search-registration\ncdm_dataportal/search-registration/*", // multiple page paths separated by "\n"!!!
   );
-
-    return $block;
+  $block['registrations_search_taxongraph'] =  array(
+    'title' => 'Taxonomic registration search',
+    'info' => t('CDM - Registrations search by taxon graph'),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+    'visibility' => BLOCK_VISIBILITY_NOTLISTED,
+    'pages' => "cdm_dataportal/search-registration\ncdm_dataportal/search-registration/*", // multiple page paths separated by "\n"!!!
+  );
+  return $block;
 }
 
 /**
@@ -903,7 +937,11 @@ function cdm_dataportal_block_view($delta) {
       return $block;
     case 'registrations_search_filter':
       $block['subject'] = '<none>';
-      $block['content'] = $form = drupal_get_form('cdm_dataportal_search_registration_form'); // see cdm_dataportal_search_registration_form($form, &$form_state)
+      $block['content'] = drupal_get_form('cdm_dataportal_search_registration_filter_form'); // see cdm_dataportal_search_registration_filter_form($form, &$form_state)
+      return $block;
+    case 'registrations_search_taxongraph':
+      $block['subject'] = '<none>';
+      $block['content'] = drupal_get_form('cdm_dataportal_search_registration_taxongraph_form'); // see cdm_dataportal_search_registration_taxongraph_form($form, &$form_state)
       return $block;
     default:
       return null;
@@ -2000,17 +2038,24 @@ function cdm_dataportal_view_search_results_taxon() {
 /**
  * Executes the search for registrations and generates the result list..
  */
-function cdm_dataportal_view_search_registrations_results() {
+function cdm_dataportal_view_search_registrations_results($mode = 'filter') {
 
-  $block = block_load('cdm_dataportal', 'registrations_search_filter');
-  $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
-
-  $registration_pager = cdm_dataportal_search_registrations_execute();
+  switch($mode ){
+    case 'taxongraph':
+      $block = block_load('cdm_dataportal', 'registrations_search_taxongraph');
+      $registration_pager = cdm_dataportal_search_registrations_taxongraph_execute();
+      break;
+    case 'filter':
+    default:
+      $block = block_load('cdm_dataportal', 'registrations_search_filter');
+      $registration_pager = cdm_dataportal_search_registrations_filter_execute();
+  }
+  $block->title = null;
 
   drupal_set_title(t('Search registrations'), PASS_THROUGH);
 
+  $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
   $registrations_pager_array = compose_registrations_search_results($registration_pager);
-
   $render_array = array_merge($render_array, $registrations_pager_array);
 
   return $render_array;

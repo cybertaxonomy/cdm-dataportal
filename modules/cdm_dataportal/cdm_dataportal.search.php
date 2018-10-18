@@ -5,6 +5,7 @@
  */
 
 define("SESSION_KEY_SEARCH_REGISTRATION_FILTER", "SESSION_KEY_SEARCH_REGISTRATION_FILTER");
+define('SESSION_KEY_SEARCH_TAXONGRAPH_FOR_REGISTRATION_FILTER', 'SESSION_KEY_SEARCH_TAXONGRAPH_FOR_REGISTRATION_FILTER');
 
 /**
  * Returns a Drupal path to a search form for a CDM webservice.
@@ -670,9 +671,9 @@ function cdm_dataportal_search_taxon_execute() {
 
 
 /**
- * Sends a request to search for registrations to the cdm server.
+ * Sends a request for a registrations filter search to the cdm server.
  */
-function cdm_dataportal_search_registrations_execute()
+function cdm_dataportal_search_registrations_filter_execute()
 {
 
   static $query_param_map = array(
@@ -681,34 +682,8 @@ function cdm_dataportal_search_registrations_execute()
     'type_designation_status' => 'typeDesignationStatusUuids',
   );
 
-  // Read the query parameters from $_REQUEST and add additional query
-  // parameters if necessary.
-  $request_params = array();
-
-  $request = remove_drupal_form_params($_REQUEST);
-
-  if(count($request) > 0){
-    $_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER] = $request;
-    foreach ($query_param_map as $filter_key => $query_param){
-      if (isset($request[$filter_key])) {
-        $request_params[$query_param] = $request[$filter_key];
-      }
-    }
-    if(isset($request['pager']['pageNumber'])){
-      $request_params['pageNumber'] = $request['pager']['pageNumber'];
-    }
-  }
-
-  if(count($request_params) == 0 && isset($_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER])){
-    foreach ($query_param_map as $filter_key => $query_param){
-      if (isset($_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER][$filter_key])) {
-        $request_params[$query_param] = $_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER][$filter_key];
-      }
-    }
-    if(isset($_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER]['pager']['pageNumber'])){
-      $request_params['pageNumber'] = $_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER]['pager']['pageNumber'];
-    }
-  }
+  $session_key = SESSION_KEY_SEARCH_REGISTRATION_FILTER;
+  $request_params = cdm_dataportal_search_request_params($session_key, $query_param_map);
 
   // cleanup
   if(isset($request_params['typeDesignationStatusUuids'])){
@@ -729,6 +704,71 @@ function cdm_dataportal_search_registrations_execute()
   $registration_pager = cdm_ws_get('registrationDTO/find', NULL, queryString($request_params));
 
   return $registration_pager;
+}
+
+/**
+ * Sends a request for a registrations taxongraph search to the cdm server.
+ */
+function cdm_dataportal_search_registrations_taxongraph_execute()
+{
+
+  static $query_param_map = array(
+    'taxon_name'=> 'taxonNameFilter'
+  );
+
+  $session_key = SESSION_KEY_SEARCH_TAXONGRAPH_FOR_REGISTRATION_FILTER;
+  $request_params = cdm_dataportal_search_request_params($session_key, $query_param_map);
+
+  // cleanup
+  if(isset($request_params['taxonNameFilter'])){
+    // trim and remove empty taxon name query strings
+    $request_params['taxonNameFilter'] = trim($request_params['taxonNameFilter']);
+    if(!$request_params['taxonNameFilter']){
+      unset($request_params['taxonNameFilter']);
+    }
+  }
+
+  $registration_pager = cdm_ws_get('registrationDTO/findInTaxonGraph', NULL, queryString($request_params));
+
+  return $registration_pager;
+}
+
+/**
+ * @param $session_key
+ * @param $query_param_map
+ * @return array
+ */
+function cdm_dataportal_search_request_params($session_key, $query_param_map)
+{
+  // Read the query parameters from $_REQUEST and add additional query
+  // parameters if necessary.
+  $request_params = array();
+
+  $request = remove_drupal_form_params($_REQUEST);
+
+  if (count($request) > 0) {
+    $_SESSION['cdm'][$session_key] = $request;
+    foreach ($query_param_map as $filter_key => $query_param) {
+      if (isset($request[$filter_key])) {
+        $request_params[$query_param] = $request[$filter_key];
+      }
+    }
+    if (isset($request['pager']['pageNumber'])) {
+      $request_params['pageNumber'] = $request['pager']['pageNumber'];
+    }
+  }
+
+  if (count($request_params) == 0 && isset($_SESSION['cdm'][$session_key])) {
+    foreach ($query_param_map as $filter_key => $query_param) {
+      if (isset($_SESSION['cdm'][$session_key][$filter_key])) {
+        $request_params[$query_param] = $_SESSION['cdm'][$session_key][$filter_key];
+      }
+    }
+    if (isset($_SESSION['cdm'][$session_key]['pager']['pageNumber'])) {
+      $request_params['pageNumber'] = $_SESSION['cdm'][$session_key]['pager']['pageNumber'];
+    }
+  }
+  return $request_params;
 }
 
 /**
@@ -779,7 +819,7 @@ function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '')
 }
 
 
-function cdm_dataportal_search_registration_form($form, &$form_state) {
+function cdm_dataportal_search_registration_filter_form($form, &$form_state) {
 
   static $filter_presets_empty = array(
     'identifier'=> null,
@@ -789,9 +829,15 @@ function cdm_dataportal_search_registration_form($form, &$form_state) {
 
   _add_font_awesome_font();
 
+  if($_REQUEST['q'] == 'cdm_dataportal/registration-search/filter' || $_REQUEST['q'] == 'cdm_dataportal/registration-search'){
+    // read the $request_params only if it was send from this form
+    $request_params = remove_drupal_form_params($_REQUEST);
+  } else {
+    $request_params = array();
+  }
   $filter_presets = (isset($_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER]) ? $_SESSION['cdm'][SESSION_KEY_SEARCH_REGISTRATION_FILTER] : array());
-  $filter_presets = array_merge($filter_presets_empty, $filter_presets, remove_drupal_form_params($_REQUEST));
-  $form['#action'] =  url('/cdm_dataportal/search/registration/');
+  $filter_presets = array_merge($filter_presets_empty, $filter_presets, $request_params);
+  $form['#action'] =  url('/cdm_dataportal/registration-search/filter');
   $form['#method'] = 'get';
   $form['#attributes'] = array('class' => array('search-filter'));
   $form['identifier'] = array(
@@ -828,6 +874,45 @@ function cdm_dataportal_search_registration_form($form, &$form_state) {
 }
 
 
+function cdm_dataportal_search_registration_taxongraph_form($form, &$form_state) {
+
+  static $filter_presets_empty = array(
+    'taxon_name'=> null
+  );
+
+  _add_font_awesome_font();
+
+  if($_REQUEST['q']  == 'cdm_dataportal/registration-search/taxongraph'){
+    // read the $request_params only if it was send from this form
+    $request_params = remove_drupal_form_params($_REQUEST);
+  } else {
+    $request_params = array();
+  }
+  $filter_presets = (isset($_SESSION['cdm'][SESSION_KEY_SEARCH_TAXONGRAPH_FOR_REGISTRATION_FILTER]) ? $_SESSION['cdm'][SESSION_KEY_SEARCH_TAXONGRAPH_FOR_REGISTRATION_FILTER] : array());
+  $filter_presets = array_merge($filter_presets_empty, $filter_presets, $request_params);
+
+  $form['#action'] =  url('/cdm_dataportal/registration-search/taxongraph');
+  $form['#method'] = 'get';
+  $form['#attributes'] = array('class' => array('search-filter'));
+  $form['taxon_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Scientific name'),
+    '#default_value' => $filter_presets['taxon_name'],
+    '#size' => 20,
+    '#maxlength' => 128
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#attributes' => array('class' => array('fa-icon'), 'title' => t('Search')),
+    '#value' => decode_entities('&#xf002;'), // fontawesome search icon
+//    '#prefix' => "<div class=\"form-item\"><label>&nbsp</label>",
+//    '#suffix' => "</div>"
+
+  );
+  return $form;
+}
+
 /**
  * Compose the result set of a registration search from a pager object
  *
@@ -859,10 +944,11 @@ function compose_registrations_search_results($registration_pager){
         );
       ;
     }
+
     $render_array['items'] = $items_render_array;
     $render_array['pager'] =  markup_to_render_array(theme('cdm_pager', array(
           'pager' => $registration_pager,
-          'path' => "cdm_dataportal/search/registration",
+          'path' => $_REQUEST['q'], // stay on same page
           'parameters' => $_REQUEST,
         )));
 
