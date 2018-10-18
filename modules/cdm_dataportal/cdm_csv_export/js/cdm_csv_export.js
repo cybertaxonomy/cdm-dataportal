@@ -7,16 +7,18 @@ var fileDownloadCheckTimer;
  * 
  */
 function blockUIForDownload() {
-	
-  var token = new Date().getTime()/1000|0;//'1234'; //use the current timestamp as the token value
-  jQuery('#downloadTokenValueId').val(token);
-  jQuery.blockUI( { message:'</br><h1><img src="../css/jquery-ui/images/ajax-loader.png">Please wait until the file is ready to download...</h1><br/>'});
-  fileDownloadCheckTimer = window.setInterval(function () {
-    var cookieValue = jQuery.cookie('fileDownloadToken');
-    if (cookieValue == token)
-     finishDownload();
-  }, 1000);
-}
+    
+    var token = new Date().getTime()/1000|0;//'1234'; //use the current timestamp as the token value
+    jQuery('#downloadTokenValueId').val(token);
+      fileDownloadCheckTimer = window.setInterval(function () {
+          var cookieValue = jQuery.cookie('fileDownloadToken');
+          if (cookieValue == token) {
+              finishDownload();
+          }
+
+      }, 1000);
+      jQuery.blockUI( { message:'</br><h1><img src="../css/jquery-ui/images/ajax-loader.png">Please wait until the file is ready to download...</h1><br/>'});
+  }
 
 function finishDownload() {
   window.clearInterval(fileDownloadCheckTimer);
