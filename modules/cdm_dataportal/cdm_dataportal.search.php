@@ -829,7 +829,7 @@ function cdm_dataportal_search_registration_filter_form($form, &$form_state) {
 
   _add_font_awesome_font();
 
-  if($_REQUEST['q'] == 'cdm_dataportal/registration-search/filter' || $_REQUEST['q'] == 'cdm_dataportal/registration-search'){
+  if(isset($_REQUEST['q']) && ($_REQUEST['q'] == 'cdm_dataportal/registration-search/filter' || $_REQUEST['q'] == 'cdm_dataportal/registration-search')){
     // read the $request_params only if it was send from this form
     $request_params = remove_drupal_form_params($_REQUEST);
   } else {
@@ -882,7 +882,7 @@ function cdm_dataportal_search_registration_taxongraph_form($form, &$form_state)
 
   _add_font_awesome_font();
 
-  if($_REQUEST['q']  == 'cdm_dataportal/registration-search/taxongraph'){
+  if(isset($_REQUEST['q']) && $_REQUEST['q']  == 'cdm_dataportal/registration-search/taxongraph'){
     // read the $request_params only if it was send from this form
     $request_params = remove_drupal_form_params($_REQUEST);
   } else {
