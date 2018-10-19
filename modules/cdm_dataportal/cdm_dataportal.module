@@ -322,6 +322,15 @@ function _add_js_taxonomic_children($jquery_selector) {
     );
   }
 
+  function _add_js_ui_accordion(){
+    _add_jquery_ui();
+    drupal_add_js('jQuery(document).ready(function() {
+        jQuery( "#accordion" ).accordion();
+      });',
+      array('type' => 'inline')
+    );
+  }
+
   /**
    * Provides the markup for an font awesome icon.
    *
@@ -865,18 +874,25 @@ function cdm_dataportal_block_info() {
       'pages' => "cdm_dataportal/taxon/*", // multiple page paths separated by "\n"!!!
     );
   $block['registrations_search_filter'] =  array(
-    'title' => 'Search registrations',
+    'title' => 'Filter registrations',
     'info' => t('CDM - Registrations search filter'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
     'visibility' => BLOCK_VISIBILITY_NOTLISTED,
-    'pages' => "cdm_dataportal/search-registration\ncdm_dataportal/search-registration/*", // multiple page paths separated by "\n"!!!
+    'pages' => "cdm_dataportal/registration-search\ncdm_dataportal/registration-search/*", // multiple page paths separated by "\n"!!!
   );
   $block['registrations_search_taxongraph'] =  array(
     'title' => 'Taxonomic registration search',
     'info' => t('CDM - Registrations search by taxon graph'),
     'cache' => DRUPAL_CACHE_PER_PAGE,
     'visibility' => BLOCK_VISIBILITY_NOTLISTED,
-    'pages' => "cdm_dataportal/search-registration\ncdm_dataportal/search-registration/*", // multiple page paths separated by "\n"!!!
+    'pages' => "cdm_dataportal/registration-search\ncdm_dataportal/registration-search/*", // multiple page paths separated by "\n"!!!
+  );
+  $block['registrations_search'] =  array(
+    'title' => 'Search',
+    'info' => t('CDM - Registrations search combining filter and taxon graph search' ),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+    'visibility' => BLOCK_VISIBILITY_NOTLISTED,
+    'pages' => "cdm_dataportal/registration-search\ncdm_dataportal/registration-search/*", // multiple page paths separated by "\n"!!!
   );
   return $block;
 }
@@ -943,6 +959,30 @@ function cdm_dataportal_block_view($delta) {
       $block['subject'] = '<none>';
       $block['content'] = drupal_get_form('cdm_dataportal_search_registration_taxongraph_form'); // see cdm_dataportal_search_registration_taxongraph_form($form, &$form_state)
       return $block;
+    case 'registrations_search':
+      _add_js_ui_accordion();
+      _add_font_awesome_font();
+      $block['subject'] = '<none>';
+      $filter_form = drupal_get_form('cdm_dataportal_search_registration_filter_form');
+      $filter_form['#prefix'] = '<div>';
+      $filter_form['#suffix'] = '</div>';
+      $taxongraph_form = drupal_get_form('cdm_dataportal_search_registration_taxongraph_form');
+      $taxongraph_form['#prefix'] = '<div>';
+      $taxongraph_form['#suffix'] = '</div>';
+      $block['content'] = array(
+        'accordion' => array(
+          '#markup' => '',
+          '#prefix' => '<div id="accordion">',
+          '#suffix' => '</div>',
+          'content' => array(
+            array('#markup' => '<h3>Filter</h3>'),
+            $filter_form,
+            array('#markup' => '<h3>Taxon graph</h3>'),
+            $taxongraph_form,
+          )
+        )
+    );
+       return $block;
     default:
       return null;
   }

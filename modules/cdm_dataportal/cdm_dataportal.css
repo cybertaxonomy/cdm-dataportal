@@ -1,3 +1,4 @@
+@import "./css/jquery_ui.css";
 /**
  * ======= General styles =======
  *
@@ -104,7 +105,7 @@ select.highlite-first-child option:first-child {
 }
 
 .fa-icon {
-    font-family: 'FontAwesome';
+    font-family: 'FontAwesome' !important;
 }
 
 /*
@@ -153,10 +154,14 @@ select.highlite-first-child option:first-child {
     background-color: #eeeeee;
 }
 
-.search-filter .form-item{
+.search-filter .form-item {
     display: inline-block;
     vertical-align: top;
     margin-bottom: 0;
+}
+
+#accordion .search-filter .form-item {
+    display: block;
 }
 
 .search-filter .form-submit {
@@ -165,6 +170,12 @@ select.highlite-first-child option:first-child {
     margin-bottom: 4px;
     vertical-align: bottom;
 }
+
+#accordion .search-filter .form-submit {
+    float: right;
+    margin-top: .5em;
+}
+
 /*
  * ======= Search-Results =======
  */

@@ -1,0 +1,31 @@
+/**
+ * Overrides jQuery_ui presets
+ */
+
+
+#page .block #accordion .ui-state-default, #page .block #accordion  .ui-state-active {
+    background: #cdcdcd;
+}
+#page .block #accordion .ui-accordion-header {
+    border: none;
+    padding-left: .5em;
+    line-height: 2em;
+}
+#page .block #accordion .ui-accordion-header .ui-icon {
+    left: auto;
+    right: .5em;
+}
+
+#page .block #accordion .ui-accordion-content, #page .block #accordion .ui-widget-content {
+    padding-left: .5em;
+    padding-right: .5em;
+    padding-top: 0;
+    padding-bottom: 0;
+    border: none;
+    background: #e9e9e9;
+}
+#page .block #accordion .ui-accordion-content form {
+    background: #e9e9e9;
+}
+
+
