@@ -930,7 +930,8 @@ function compose_registrations_search_results($registration_pager){
 
   $render_array = array();
   $render_array['pre'] = markup_to_render_array("<div class=\"cdm-item-list\">");
-  if($registration_pager != null){
+
+  if($registration_pager != null && count($registration_pager->records) > 0){
     $items_render_array = array();
     foreach($registration_pager->records as $registration) {
       $summary_markup = cdm_tagged_text_to_markup($registration->summaryTaggedText);
@@ -953,7 +954,11 @@ function compose_registrations_search_results($registration_pager){
         )));
 
   } else {
-    $render_array['items'] = markup_to_render_array("No results! Please use the search filter.");
+    if($registration_pager != null && $registration_pager->count > 0 && count($registration_pager->records) == 0){
+      $render_array['items'] = markup_to_render_array("<div id=\"no_results\">Result page out of range.</div>");
+    } else {
+      $render_array['items'] = markup_to_render_array("<div id=\"no_results\">No results found.</div>");
+    }
   }
   $render_array['post'] = markup_to_render_array("</div>");
 

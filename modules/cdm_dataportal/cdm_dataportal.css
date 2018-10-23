@@ -179,6 +179,14 @@ select.highlite-first-child option:first-child {
 /*
  * ======= Search-Results =======
  */
+
+#no_results {
+    font-size: 150%;
+    text-align: center;
+    padding-top: 2em;
+    padding-bottom: 5em;
+}
+
 #block-cdm-dataportal-2 .description {
   display: none;
 }
