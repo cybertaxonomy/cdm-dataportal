@@ -2049,7 +2049,7 @@ function cdm_settings_layout_taxon() {
   $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['custom_placeholder_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show the placeholder image'),
-    '#description' => t("If not taxon profile picture is available a placeholder image is shown instead."),
+    '#description' => t("A placeholder image will be shown if no taxon profile picture is available."),
     '#default_value' => $taxon_profile_image_settings['custom_placeholder_enabled']
   );
 
