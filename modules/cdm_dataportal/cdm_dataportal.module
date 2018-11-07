@@ -1789,11 +1789,11 @@ function cdm_dataportal_named_area_page_view($uuid) {
  * The node page shows the taxon name title and the list of taxon related
  * with such taxon. Name on the tree already in use.
  *
- * @param UUID $taxon_name_uuid
+ * @param string $taxon_name_uuid
  *   The uuid of the CDM TaxonName to show a name page for
- * @param UUID $taxon_to_hide_uuid
+ * @param string $taxon_to_hide_uuid
  *   A taxon which should not be displayed in the taxon list
- * @param UUID $highlite_synonym_uuid
+ * @param string $highlite_synonym_uuid
  *   Optinal parameter wich takes another taxon uuid, if given the
  *   target taxon pages will show the syonymy tab where the taxon
  *   refenrenced by the $highlite_synonym_uuid will be highlighted
@@ -1829,11 +1829,11 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $s
  * name page.
  *
  *
- * @param UUID $taxon_name_uuid
+ * @param string $taxon_name_uuid
  *   The uuid of the CDM TaxonName to show a name page for
- * @param UUID $taxon_to_hide_uuid
+ * @param string $taxon_to_hide_uuid
  *   A taxon which should not be displayed in the taxon list
- * @param UUID $highlite_synonym_uuid
+ * @param string $highlite_synonym_uuid
  *   Optinal parameter wich takes another taxon uuid, if given the
  *   target taxon pages will show the syonymy tab where the taxon
  *   refenrenced by the $highlite_synonym_uuid will be highlighted
@@ -1932,6 +1932,11 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
     drupal_set_title(t('Registration') . ' ' . $registration_identifier, PASS_THROUGH);
 
     $render_array = compose_registation_dto($registration_dto);
+
+    if($registration_dto->nameRef){
+      $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
+      $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null));
+    }
 
     if(is_object($registration_dto->orderdTypeDesignationWorkingSets)){
       $field_unit_uuids = array();
@@ -2303,7 +2308,7 @@ function path_to_registration($identifier) {
  *   The uuid as string of the CDM TaxonName to show a name page for
  * @param string $taxon_to_hide_uuid
  *   The uuid as string of a taxon which should not be displayed in the taxon list
- * @param string $highlite_synonym_uuid
+ * @param string $highlited_synonym_uuid
  *   Optional parameter which takes another taxon uuid, if given the
  *   target taxon pages will show the synonymy tab where the taxon
  *   referenced by the $highlite_synonym_uuid will be highlighted
@@ -2312,15 +2317,15 @@ function path_to_registration($identifier) {
  * @return string
  *  URI path element as string
  */
-function path_to_name($name_uuid, $taxon_to_hide_uuid = NULL, $synonym_uuid  = NULL) {
+function path_to_name($name_uuid, $taxon_to_hide_uuid = NULL, $highlited_synonym_uuid  = NULL) {
   $res = FALSE;
   if ($name_uuid) {
     $res = 'cdm_dataportal/name/' . $name_uuid;
   }
   if($taxon_to_hide_uuid){
     $res .= '/' . $taxon_to_hide_uuid;
-    if($synonym_uuid){
-      $res .= '/' . $synonym_uuid;
+    if($highlited_synonym_uuid){
+      $res .= '/' . $highlited_synonym_uuid;
     }
   }
   return $res;

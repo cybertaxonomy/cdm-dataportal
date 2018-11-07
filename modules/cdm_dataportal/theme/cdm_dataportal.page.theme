@@ -183,7 +183,8 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     $accepted_name .= '<div class="accepted-name">';
     $accepted_name .= render_taxon_or_name($taxon, NULL, $referenceUri);
 
-    $name_relationships = cdm_name_relationships_of($taxon);
+    $name_relations = cdm_name_relationships_for_taxon($taxon);
+    $name_relationships = render_name_relationships_of($name_relations, $taxon->name, $taxon);
     // Render relationships of accepted name.
     if($name_relationships){
 

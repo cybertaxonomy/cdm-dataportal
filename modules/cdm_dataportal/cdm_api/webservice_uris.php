@@ -16,6 +16,7 @@ define('CDM_WS_PORTAL_NAME', 'portal/name');
 define('CDM_WS_PORTAL_NAME_FINDBYNAME', 'name/findByName/');
 define('CDM_WS_PORTAL_NAME_DESCRIPTIONS', 'portal/name/$0/taxonNameDescriptions');
 define('CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS', 'portal/name/$0/typeDesignations');
+define('CDM_WS_PORTAL_NAME_NAME_RELATIONS', 'portal/name/$0/nameRelations');
 
 define('CDM_WS_TAXON', 'taxon');
 define('CDM_WS_TAXON_CLASSIFICATIONS', 'taxon/$0/classifications');

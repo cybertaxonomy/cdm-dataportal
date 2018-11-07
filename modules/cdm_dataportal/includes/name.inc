@@ -566,66 +566,61 @@ function render_registrations($registrations)
 }
 
 /**
- * Renders the string of Homonyms for a given taxon.
+ * Renders the name relationships.
  *
- * @param $taxon
- *    A CDM Taxon instance
+ * @param $name_relations
+ *    The list of CDM NameRelationsips
+ * @param $current_name_uuid
+ *    The Uuid of the name for which the relations are to be rendered
+ * @param $current_taxon_uuid
+ *    The taxon to be omitted from related taxa. This is only used to create links, see path_to_name()
  * @return String
- *    The string of homomyns
+ *    The markup for the name relationships
  */
-function cdm_name_relationships_of($taxon) {
+function render_name_relationships_of($name_relations, $current_name_uuid, $current_taxon_uuid) {
 
   static $inverse_name_rels_uuids = array(UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR);
 
-  // =========== START OF HOMONYMS ========== //
   RenderHints::pushToRenderStack('homonym');
   // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
 
   $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_TYPES, unserialize(CDM_NAME_RELATIONSHIP_TYPES_DEFAULT));
 
-  $from_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS,
-    $taxon->uuid);
-  $to_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS,
-    $taxon->uuid);
-  $name_relations = array_merge($from_name_relations, $to_name_relations);
-
-  $homonyms_array = array();
+  $relations_array = array();
 
   if ($name_relations) {
-
-    foreach ($name_relations as $element) {
-
-      if(!(isset($selected_name_rel_uuids[$element->type->uuid]) && $selected_name_rel_uuids[$element->type->uuid])){
+    foreach ($name_relations as $name_rel) {
+      if(!(isset($selected_name_rel_uuids[$name_rel->type->uuid]) && $selected_name_rel_uuids[$name_rel->type->uuid])){
         // skip if not selected in the settings
         continue;
       }
-      $taxon_html = null;
-      if(array_search($element->type->uuid, $inverse_name_rels_uuids) !== false) {
+      $relationship_markup = null;
+      if(array_search($name_rel->type->uuid, $inverse_name_rels_uuids) !== false) {
         // case of UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
         //to relation ships -> only shown at toName-synonym
-        $elementTaxonBasesUuid = isset ($element->fromName->taxonBases [0]->uuid) ? $element->fromName->taxonBases [0]->uuid : '';
-        if ($taxon->name->uuid == $element->toName->uuid) {
-          $taxon_html = render_taxon_or_name($element->fromName,
-            url(path_to_name($element->fromName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
+        $highlited_synonym_uuid = isset ($name_rel->fromName->taxonBases[0]->uuid) ? $name_rel->fromName->taxonBases[0]->uuid : '';
+        if (true|| $current_name_uuid == $name_rel->toName->uuid) {
+          $relationship_markup = render_taxon_or_name($name_rel->fromName,
+            url(path_to_name($name_rel->fromName->uuid, $current_taxon_uuid, $highlited_synonym_uuid))
           );
         }
 
       } else {
-        $elementTaxonBasesUuid = isset ($element->toName->taxonBases [0]->uuid) ? $element->toName->taxonBases [0]->uuid : '';
+        $highlited_synonym_uuid = isset ($name_rel->toName->taxonBases[0]->uuid) ? $name_rel->toName->taxonBases[0]->uuid : '';
         //from relation ships -> only shown at fromName-synonym
-        if ($taxon->name->uuid == $element->fromName->uuid) {
-          $taxon_html = render_taxon_or_name($element->toName,
-            url(path_to_name($element->toName->uuid, $taxon->uuid, $elementTaxonBasesUuid))
+        if (true ||$current_name_uuid == $name_rel->fromName->uuid) {
+          $relationship_markup = render_taxon_or_name($name_rel->toName,
+            url(path_to_name($name_rel->toName->uuid, $current_taxon_uuid, $highlited_synonym_uuid))
           );
         }
       }
 
-      if($taxon_html){
-        if (count($homonyms_array)) {
+      if($relationship_markup){
+        if (count($relations_array)) {
           // lat: "non nec" == german: "weder noch"
-          $homonyms_array [] = 'nec ' . $taxon_html;
+          $relations_array [] = 'nec ' . $relationship_markup;
         } else {
-          $homonyms_array [] = 'non ' . $taxon_html;
+          $relations_array [] = 'non ' . $relationship_markup;
         }
       }
 
@@ -633,11 +628,23 @@ function cdm_name_relationships_of($taxon) {
   }
 
   RenderHints::popFromRenderStack();
-  return (count($homonyms_array) ?'[' . trim(join(" ", $homonyms_array)) . ']' : '');
+  return (count($relations_array) ?'[' . trim(join(" ", $relations_array)) . ']' : '');
+}
+
+/**
+ * @param $taxon
+ * @return array
+ */
+function cdm_name_relationships_for_taxon($taxon)
+{
+  $from_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon->uuid);
+  $to_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon->uuid);
+  $name_relations = array_merge($from_name_relations, $to_name_relations);
+  return $name_relations;
 }
 
 
-  /**
+/**
  * Recursively searches the array for the $key and sets the given value.
  *
  * @param mixed $key
