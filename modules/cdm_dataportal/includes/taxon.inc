@@ -382,7 +382,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
 
 
   $name_relations = cdm_name_relationships_for_taxon($taxon);
-  $homonyms = render_name_relationships_of($name_relations, $taxon->name, $taxon);
+  $homonyms = render_name_relationships_of($name_relations, $taxon->name->uuid, $taxon->uuid);
 
   $out = '<span class="relation_sign" title="' . $reltype_representation . '">' . $relsign . '</span>'
     . $out_taxon_part . $taxon_footnotes . ' '  . $homonyms;

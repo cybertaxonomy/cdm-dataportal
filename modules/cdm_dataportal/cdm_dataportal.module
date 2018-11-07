@@ -1935,7 +1935,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
 
     if($registration_dto->nameRef){
       $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
-      $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null));
+      $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null, false));
     }
 
     if(is_object($registration_dto->orderdTypeDesignationWorkingSets)){

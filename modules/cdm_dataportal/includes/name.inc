@@ -571,13 +571,19 @@ function render_registrations($registrations)
  * @param $name_relations
  *    The list of CDM NameRelationsips
  * @param $current_name_uuid
- *    The Uuid of the name for which the relations are to be rendered
+ *    The Uuid of the name for which the relations are to be rendered, the current name will be hidden when
+ *    rendering the relation an only the other name is shown. Parameter is REQUIRED.
+ * @param $suppress_if_current_name_is_source
+ *    The display of the relation will be
+ *    suppressed is the current name is on the source of the relation edge.
+ *    That is if it is on the from side of the relation. Except for 'blocking name for' which is
+ *    an inverse relation. For this relation type the toName is taken in to account.
  * @param $current_taxon_uuid
  *    The taxon to be omitted from related taxa. This is only used to create links, see path_to_name()
  * @return String
  *    The markup for the name relationships
  */
-function render_name_relationships_of($name_relations, $current_name_uuid, $current_taxon_uuid) {
+function render_name_relationships_of($name_relations, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source = true) {
 
   static $inverse_name_rels_uuids = array(UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR);
 
@@ -590,31 +596,27 @@ function render_name_relationships_of($name_relations, $current_name_uuid, $curr
 
   if ($name_relations) {
     foreach ($name_relations as $name_rel) {
-      if(!(isset($selected_name_rel_uuids[$name_rel->type->uuid]) && $selected_name_rel_uuids[$name_rel->type->uuid])){
+      if (!(isset($selected_name_rel_uuids[$name_rel->type->uuid]) && $selected_name_rel_uuids[$name_rel->type->uuid])) {
         // skip if not selected in the settings
         continue;
       }
+      $is_inverse_relation = array_search($name_rel->type->uuid, $inverse_name_rels_uuids) !== false;
+      $is_current_name_to_name = $current_name_uuid == $name_rel->toName->uuid;
+      $is_current_name_from_name = $current_name_uuid == $name_rel->fromName->uuid;
       $relationship_markup = null;
-      if(array_search($name_rel->type->uuid, $inverse_name_rels_uuids) !== false) {
-        // case of UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
-        //to relation ships -> only shown at toName-synonym
+
+      if($is_current_name_to_name && ($suppress_if_current_name_is_source && $is_inverse_relation || !$suppress_if_current_name_is_source)){
         $highlited_synonym_uuid = isset ($name_rel->fromName->taxonBases[0]->uuid) ? $name_rel->fromName->taxonBases[0]->uuid : '';
-        if (true|| $current_name_uuid == $name_rel->toName->uuid) {
-          $relationship_markup = render_taxon_or_name($name_rel->fromName,
-            url(path_to_name($name_rel->fromName->uuid, $current_taxon_uuid, $highlited_synonym_uuid))
-          );
-        }
-
-      } else {
+        $relationship_markup = render_taxon_or_name($name_rel->fromName,
+          url(path_to_name($name_rel->fromName->uuid, $current_taxon_uuid, $highlited_synonym_uuid))
+        );
+      } else if($is_current_name_from_name && ($suppress_if_current_name_is_source && !$is_inverse_relation || !$suppress_if_current_name_is_source)){
         $highlited_synonym_uuid = isset ($name_rel->toName->taxonBases[0]->uuid) ? $name_rel->toName->taxonBases[0]->uuid : '';
-        //from relation ships -> only shown at fromName-synonym
-        if (true ||$current_name_uuid == $name_rel->fromName->uuid) {
-          $relationship_markup = render_taxon_or_name($name_rel->toName,
-            url(path_to_name($name_rel->toName->uuid, $current_taxon_uuid, $highlited_synonym_uuid))
-          );
-        }
+        $relationship_markup = render_taxon_or_name($name_rel->toName,
+          url(path_to_name($name_rel->toName->uuid, $current_taxon_uuid, $highlited_synonym_uuid))
+        );
       }
-
+        
       if($relationship_markup){
         if (count($relations_array)) {
           // lat: "non nec" == german: "weder noch"
