@@ -64,31 +64,41 @@ function theme_cdm_specimen_page_title($variables)
     $out = '';
 
     $collection = null;
-    if ($specimen->collection) {
-        if ($specimen->collection->code) {
-            $collection = $specimen->collection->code;
-        } elseif ($specimen->collection->name) {
-            $collection = $specimen->collection->name;
+    if (!($specimen->class == 'FieldUnit')) {
+        if ($specimen->collection) {
+            if ($specimen->collection->code) {
+                $collection = $specimen->collection->code;
+            } elseif ($specimen->collection->name) {
+                $collection = $specimen->collection->name;
+            }
+        }
+        if ($specimen->accessionNumber) {
+            $specimenID = $specimen->accessionNumber;
+        } elseif ($specimen->barcode) {
+            $specimenID = $specimen->barcode;
+        } elseif ($specimen->catalogNumber) {
+            $specimenID = $specimen->catalogNumber;
+        } elseif ($specimen->titleCache) {
+            $specimenID = $specimen->titleCache;
+        }
+        if (!isset($specimenID) and !isset($collection)) {
+            $specimenID = $specimen->uuid;
+        }
+    }else{
+        if ($specimen->titleCache) {
+            $specimenID = $specimen->titleCache;
+        }
+        if (!isset($specimenID) and !isset($collection)) {
+            $specimenID = $specimen->uuid;
         }
     }
-    if($specimen->accessionNumber){
-        $specimenID = $specimen->accessionNumber;
-    }
-    elseif($specimen->barcode){
-      $specimenID = $specimen->barcode;
-    }
-    elseif($specimen->catalogNumber) {
-      $specimenID = $specimen->catalogNumber;
-    }
-    elseif($specimen->titleCache) {
-        $specimenID = $specimen->titleCache;
-    }
-    if(!isset($specimenID) and !isset($collection)){
-      $specimenID = $specimen->uuid;
+
+    if ($specimen ->class == 'FieldUnit'){
+        $out .= "FieldUnit ";
+    }else{
+        $out .= "Specimen ";
     }
 
-
-  $out .= "Specimen ";
   if($collection){
     $out .= $collection." ";
   }

@@ -258,9 +258,10 @@ function compose_cdm_media_gallerie($configuration) {
   $mediaList = $configuration['mediaList'];
 
   // Do not show an empty gallery.
-  if (count($mediaList) == 0) {
-    return '';
-  }
+    if (!is_array($mediaList) || count($mediaList) == 0){
+        return '';
+    }
+
 
   // merge with default
   $configuration = array_merge(

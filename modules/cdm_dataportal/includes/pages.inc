@@ -92,16 +92,17 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
 
     // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
-
-    foreach ($specimensOrObservations as &$occurrence) {
-        $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-            $occurrence->uuid,
-            'fieldObjectMediaDTO',
-        ));
-        $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-            $occurrence->uuid,
-            'derivedUnitMedia',
-        ));
+    if (!variable_get('cdm_dataportal_specimen_derivate_tree')) {
+        foreach ($specimensOrObservations as &$occurrence) {
+            $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+                $occurrence->uuid,
+                'fieldObjectMediaDTO',
+            ));
+            $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+                $occurrence->uuid,
+                'derivedUnitMedia',
+            ));
+        }
     }
 
     // --- get map service HTTP query parameters
@@ -420,7 +421,7 @@ function compose_specimen_table($field_unit_uuids)
         foreach ($derivateHierarchy->derivates as $preservedSpecimenDTO) {
           $detail_html .= "<br>";
           $detail_html .= render_cdm_specimen_page($preservedSpecimenDTO);
-        }
+      }
       }
       $detail_html .= "<br>";
       //detail row resp. one BIG detail cell
@@ -1243,19 +1244,22 @@ function compose_classification_breadcrumbs($taxon_uuid) {
  *
  * @ingroup compose
  */
-function compose_cdm_specimen_page($specimen_uuid)
+function compose_cdm_specimen_page($specimen)
 {
   drupal_set_title("Specimen Details");
-  $specimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimen_uuid, 'specimenDerivates'));
-
   $render_array = array();
   RenderHints::pushToRenderStack('specimen_page');
+  if (variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
+      $specimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimen_uuid, 'specimenDerivates'));
 
-  $detail_html = render_cdm_specimen_page($specimen, true);
-  $render_array['specimen_html'] = array(
-    '#markup' => $detail_html
-  );
-
+      $detail_html = render_cdm_specimen_page($specimen, true);
+      $render_array['specimen_html'] = array(
+          '#markup' => $detail_html
+      );
+  }else{
+      $detail_html = compose_cdm_specimen_or_observation($specimen, true);
+      $render_array['markup'] =  $detail_html;
+  }
   RenderHints::popFromRenderStack();
   return $render_array;
 }

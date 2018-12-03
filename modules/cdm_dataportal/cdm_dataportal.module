@@ -1723,6 +1723,7 @@ function cdm_dataportal_specimen_page_view($uuid) {
  * @return array|string
  */
 function cdm_dataportal_specimen_view($uuid) {
+    //TODO: get the derivateDTO and don't call the webservice a second time in compose_cdm_specimen_page
     $specimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, $uuid);
     if (empty($specimen)) {
         drupal_set_title(t('Specimen does not exist'), PASS_THROUGH);
@@ -1735,7 +1736,7 @@ function cdm_dataportal_specimen_view($uuid) {
     ));
 
     // Render the specimen page.
-    $render_array = compose_cdm_specimen_page($uuid);
+    $render_array = compose_cdm_specimen_page($specimen);
     $specimenpage->content = drupal_render($render_array);
 
     return $specimenpage;
