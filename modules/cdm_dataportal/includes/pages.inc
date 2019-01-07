@@ -406,7 +406,7 @@ function compose_specimen_table($field_unit_uuids)
             'class' => array('summary_row_cell', 'summary_row_icon')
           )
         ),
-        'id' => ('derivate_summary' . $rowcount), // summary row id
+        'id' => 'derivate_summary' . $rowcount, // summary row id
         'class' => array('summary_row'),
       );
 
@@ -420,7 +420,7 @@ function compose_specimen_table($field_unit_uuids)
       if ($derivateHierarchy->derivates) {
         foreach ($derivateHierarchy->derivates as $preservedSpecimenDTO) {
           $detail_html .= "<br>";
-          $detail_html .= render_cdm_specimen_page($preservedSpecimenDTO);
+          $detail_html .= render_cdm_specimenDTO_page($preservedSpecimenDTO);
       }
       }
       $detail_html .= "<br>";
@@ -436,7 +436,7 @@ function compose_specimen_table($field_unit_uuids)
             'colspan' => 7,
           ),
         ),
-        'id' => ('derivate_details' . $rowcount),//details row ID
+        'id' => 'derivate_details' . $rowcount,//details row ID
         'class' => array('detail_row'),
       );
       $rowcount++;
