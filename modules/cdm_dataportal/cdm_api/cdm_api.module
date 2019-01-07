@@ -758,8 +758,8 @@ function proxy_content($uri, $hook = NULL) {
     exit(); // leave drupal here
   } else {
     // $hook has been supplied
-    // handle $hook either as compose ot theme hook
-    // pass through theme or comose hook
+    // handle $hook either as compose or theme hook
+    // pass through theme or compose hook
     // compose hooks can be called without data, therefore
     // passing the $uri in this case is not always a requirement
 
