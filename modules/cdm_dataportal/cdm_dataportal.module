@@ -1928,7 +1928,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
 
 
   $render_array = array();
-  $registration_dto = cdm_ws_get("registrationDTO/identifier/" . $registration_identifier_encoded);
+  $registration_dto = cdm_ws_get(CDM_WS_REGISTRATION_DTO_BY_IDENTIFIER . $registration_identifier_encoded);
   if($registration_dto){
     drupal_set_title(t('Registration') . ' ' . $registration_identifier, PASS_THROUGH);
 
@@ -1949,15 +1949,26 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
     }
 
   } else {
-    drupal_set_title(t('Registration not found'), PASS_THROUGH);
-    $render_array['error'] = markup_to_render_array("A registration with the identifier  " . $registration_identifier . " does not exist.");
+    $status_text = cdm_ws_get(CDM_WS_REGISTRATION_STATUS_BY_IDENTIFIER, array($registration_identifier));
+    if($status_text) {
+      $status_text = strtolower($status_text->String);
+      if($status_text == 'preparation' || $status_text == 'curation'){
+        $status_text = 'in ' . $status_text;
+      }
+      drupal_set_title(t('Registration ' . $status_text), PASS_THROUGH);
+      //$status_message;
+      $render_array['error'] = markup_to_render_array("A registration with the identifier  " . $registration_identifier . " is " . $status_text);
+    } else {
+      drupal_set_title(t('Registration not found'), PASS_THROUGH);
+      $render_array['error'] = markup_to_render_array("A registration with the identifier  " . $registration_identifier . " does not exist.");
+    }
   }
 
   return $render_array ;
 }
 
 /**
- * Composes information for a registation from a dtp object
+ * Composes information for a registation from a dto object
  *
  * @param $registration_dto
  *
