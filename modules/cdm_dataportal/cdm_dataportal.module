@@ -1941,11 +1941,24 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
 
     if(is_object($registration_dto->orderdTypeDesignationWorkingSets)){
       $field_unit_uuids = array();
+      $name_type_designation_refs = array();
       foreach((array)$registration_dto->orderdTypeDesignationWorkingSets as $field_unit_ref => $obj){
         $tokens = explode("#", $field_unit_ref);
-        $field_unit_uuids[] = $tokens[1];
+        if($tokens[0] == 'NameTypeDesignation') {
+          foreach($obj as $type_status => $entity_reference){
+            // NOTE: there is always only one element, since we use the foreach to extract the field name an value
+            $name_type_designation_refs[$type_status] = $entity_reference[0];
+          }
+        } else {
+         $field_unit_uuids[] = $tokens[1];
+        }
       }
-      $render_array['specimen_table'] = compose_specimen_table($field_unit_uuids);
+      if(count($name_type_designation_refs) > 0){
+        $render_array['name_type_designations'] = compose_name_type_designations($name_type_designation_refs);
+      }
+      if(count($field_unit_uuids) > 0){
+        $render_array['specimen_table'] = compose_specimen_table($field_unit_uuids);
+      }
     }
 
   } else {

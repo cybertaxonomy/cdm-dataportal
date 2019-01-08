@@ -565,6 +565,24 @@ function render_registrations($registrations)
   return $registration_markup;
 }
 
+
+/**
+ * Composes the TypedEntityReference to name type designations passed as associatve array.
+ *
+ * @param $name_type_designations array
+ *   an associative array of name type type => TypedEntityReference for name type designations as
+ *   produced by the eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager
+ *
+ * @ingroup compose
+ */
+function compose_name_type_designations($type_entity_refs){
+  $render_array = array();
+  foreach($type_entity_refs as $type_status => $name_type){
+    $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type)  . '"><span class="type_status">'. ucfirst($type_status) . "</span>: " . $name_type->label . '</div>');
+  }
+  return $render_array;
+}
+
 /**
  * Renders the name relationships.
  *
