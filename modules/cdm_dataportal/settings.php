@@ -46,6 +46,8 @@
     // Additional value for the NULL case.
     $annotationTypeKeys[] = 'NULL_VALUE';
   }
+
+  define('ANNOTATION_TYPES_VISIBLE', 'annotations_types_as_footnotes');
   define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
 
   define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE', 'bibliography_for_original_source');
@@ -1542,20 +1544,26 @@ function cdm_settings_layout() {
     '#description' => t('Check this if you do not want to show annotation footnotes'),
   );
 
+  $form['annotations'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Annotations'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#description' => t('This sections allows configuring global settings regarding annotations and thus will affect annotations dispayed as footnote and others.'),
+  );
+
   $annotationTypeOptions = cdm_terms_by_type_as_option('AnnotationType');
   // Additional option for the NULL case.
   $annotationTypeOptions['NULL_VALUE'] = t('untyped');
-  $form['footnotes']['annotations_types_as_footnotes'] = array(
+  $annotationsTypesAsFootnotes = variable_get(ANNOTATION_TYPES_VISIBLE, unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT));
+  $form['annotations'][ANNOTATION_TYPES_VISIBLE] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Annotation types as footnotes'),
-    '#description' => t("Only annotations of the selected type will be displayed
-       as footnotes. You may want to turn 'technical annotations' off."),
+    '#title' => t('Visbility of annotation types'),
+    '#description' => t("Only annotations of the selected type will be displayed. You may want to turn 'technical annotations' off."),
     '#options' => $annotationTypeOptions,
+    '#default_value' => $annotationsTypesAsFootnotes
   );
-  $annotationsTypesAsFootnotes = variable_get('annotations_types_as_footnotes', unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT));
-  if (!empty($annotationsTypesAsFootnotes)) {
-    $form['footnotes']['annotations_types_as_footnotes']['#default_value'] = $annotationsTypesAsFootnotes;
-  }
+
 
   // ---- original source --- //
   $form[BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE] = array(

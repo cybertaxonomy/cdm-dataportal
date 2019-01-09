@@ -1530,7 +1530,27 @@ function cdm_ws_getAnnotationsFor(&$cdmBase, $includeTypes = FALSE) {
 }
 
 /**
+ * Provides the list of visible annotations for the $cdmBase.
+ *
+ * @param $cdmBase
+ *     The annotatable CDM entity
+ *
+ * @return array of the annotations which are visible according to the settings as stored in ANNOTATION_TYPES_VISIBLE
+ */
+function cdm_fetch_visible_annotations($cdmBase){
+
+  static $annotations_types_filter = null;
+  if(!$annotations_types_filter) {
+    $annotations_types_filter = unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT);
+  }
+  return cdm_ws_getAnnotationsFor($cdmBase, variable_get(ANNOTATION_TYPES_VISIBLE, $annotations_types_filter));
+}
+
+/**
  * Loads the annotations from the REST service an adds them as field to the given $annotatable_entity.
+ *
+ * NOTE: The annotations are not filtered by the ANNOTATION_TYPES_VISIBLE settings since this method is meant to act
+ * like the annotations have been fetched in the ORM-framework in the service.
  *
  * @param object $annotatable_entity
  *   The CDM AnnotatableEntity to load annotations for

@@ -442,6 +442,8 @@ function taxon_image_gallery_fsi($taxon, $media) {
  */
 function compose_cdm_reference_page($uuid) {
 
+  $pathelement = "reference_page";
+  RenderHints::pushToRenderStack($pathelement);
   $reference = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
   if (isset($reference->titleCache)) {
     drupal_set_title($reference->titleCache, PASS_THROUGH);
@@ -594,13 +596,13 @@ function compose_cdm_reference_page($uuid) {
       'empty' => NULL,
   ));
 
-  if($reference->referenceAbstract){
+  if(isset($reference->referenceAbstract)){
     $out .= '<h2 class="block-title">Abstract</h2><div class="abstract">' . $reference->referenceAbstract . '</div>';
   }
 
 
-  // Annotations below the table.
-  $annotations = cdm_ws_getAnnotationsFor($reference);
+  // Annotations below the table
+  $annotations = cdm_fetch_visible_annotations($reference);
   $out .= theme("cdm_annotations", array('annotations' => $annotations));
 
   $registration_working_set = cdm_ws_get("registrationWorkingSetDTO", array($uuid));
@@ -616,6 +618,8 @@ function compose_cdm_reference_page($uuid) {
     }
     $out .= "</div>";
   }
+
+  RenderHints::popFromRenderStack();
 
   return markup_to_render_array($out);
 }

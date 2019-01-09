@@ -2593,21 +2593,19 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Fetches the list of visible annotations for each of the cdm entities and returns the footnote keys for them.
+ *
+ * The footnotes are passed to the FootnoteManager in order to store the annotations and to create the footnote keys.
+ *
+ * @see cdm_fetch_visible_annotations()
  *
  * @param array $cdm_entities
  *   An array of CdmBase instances or a single instance.
  * @param string $footnote_list_key_suggestion
  *
- * @return unknown
+ * @return array of footnote keys
  */
 function cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key_suggestion = NULL) {
-
-   static $annotations_types_filter = null;
-   if(!$annotations_types_filter) {
-     $annotations_types_filter = unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT);
-   }
 
   $footNoteKeys = array();
 
@@ -2630,7 +2628,7 @@ function cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key_sugge
 
   // Adding the footnotes keys.
   foreach ($cdmBase_array as $cdmBase_element) {
-    $annotations = cdm_ws_getAnnotationsFor($cdmBase_element, variable_get('annotations_types_as_footnotes', $annotations_types_filter));
+    $annotations = cdm_fetch_visible_annotations($cdmBase_element);
     if (is_array($annotations)) {
       foreach ($annotations as $annotation) {
         $footNoteKeys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation->text);
