@@ -505,8 +505,6 @@ function compose_cdm_reference_page($uuid) {
             $datePublished,
           );
         }
-        // $datePublished = array(t(ucfirst(strtolower($fieldname))),
-        // $datePublished);
       }
       elseif ($fieldname == "doi" && is_object($reference->doi)) {
         $table_rows[] = array(

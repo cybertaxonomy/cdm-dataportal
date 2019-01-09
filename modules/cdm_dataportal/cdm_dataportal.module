@@ -1998,13 +1998,13 @@ function compose_registation_dto($registration_dto, $with_citation = true, $with
     $date_string = format_datetime($registration_dto->registrationDate);
     if(isset($registration_dto->institutionTitleCache)){
       $registration_date_insitute_markup =
-        t("Registration at @date in @institution", array(
+        t("Registration on @date in @institution", array(
           '@date' => $date_string,
           '@institution' => $registration_dto->institutionTitleCache,
         ));
     } else {
       $registration_date_insitute_markup =
-        t("Registration at @date", array(
+        t("Registration on @date", array(
           '@date' => $date_string
         ));
     }
