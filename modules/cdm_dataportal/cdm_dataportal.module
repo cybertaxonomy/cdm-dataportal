@@ -1963,7 +1963,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
 
   } else {
     $status_text = cdm_ws_get(CDM_WS_REGISTRATION_STATUS_BY_IDENTIFIER, array($registration_identifier));
-    if($status_text) {
+    if(isset($status_text->String)) {
       $status_text = strtolower($status_text->String);
       if($status_text == 'preparation' || $status_text == 'curation'){
         $status_text = 'in ' . $status_text;
