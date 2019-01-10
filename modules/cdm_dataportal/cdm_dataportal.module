@@ -1925,8 +1925,6 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
 
   $registration_identifier = urldecode($registration_identifier_encoded);
 
-
-
   $render_array = array();
   $registration_dto = cdm_ws_get(CDM_WS_REGISTRATION_DTO_BY_IDENTIFIER . $registration_identifier_encoded);
   if($registration_dto){
@@ -1937,6 +1935,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
     if($registration_dto->nameRef){
       $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
       $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null, false));
+      $render_array['name_relations']['#weight'] = 11;
     }
 
     if(is_object($registration_dto->orderdTypeDesignationWorkingSets)){
@@ -1955,9 +1954,12 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
       }
       if(count($name_type_designation_refs) > 0){
         $render_array['name_type_designations'] = compose_name_type_designations($name_type_designation_refs);
+        $render_array['name_type_designations']['#weight'] = 12;
       }
       if(count($field_unit_uuids) > 0){
         $render_array['specimen_table'] = compose_specimen_table($field_unit_uuids);
+        // below citation (weight=20)
+        $render_array['specimen_table']['#weight'] = 30;
       }
     }
 
@@ -1986,7 +1988,10 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
  * @param $registration_dto
  *
  * @return array
- *    A drupal render array
+ *    A drupal render array with the elements:
+ *    - 'publication_date_and_office' (weight=-100)
+ *    - 'summary' (weight=0)
+ *    - 'citation'(weight=20)
  *
  * @ingroup compose
  */
@@ -2028,12 +2033,14 @@ function compose_registation_dto($registration_dto, $with_citation = true, $with
   if($with_identifier){
     $registation_markup .= " " . l ($registration_dto->identifier, $registration_dto->identifier);
   }
-  $render_array['summary'] = markup_to_render_array("<div>" . $registation_markup . "</div>");
+  $render_array['summary'] = markup_to_render_array("<div>" . $registation_markup . "</div>", 0);
 
   if ($with_citation) {
-    $render_array['citation'] = markup_to_render_array("<div class=\"" . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
+    $render_array['citation'] = markup_to_render_array(
+      "<div class=\"citation " . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
       . l($registration_dto->bibliographicCitationString, path_to_reference($registration_dto->citationUuid))
-      . "</br>&nbsp;</div>");
+      . "</div>",
+      20);
   }
 
   return $render_array;

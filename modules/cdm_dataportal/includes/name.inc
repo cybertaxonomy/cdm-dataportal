@@ -648,7 +648,7 @@ function render_name_relationships_of($name_relations, $current_name_uuid, $curr
   }
 
   RenderHints::popFromRenderStack();
-  return (count($relations_array) ?'[' . trim(join(" ", $relations_array)) . ']' : '');
+  return (count($relations_array) ?'<div class="name-relationships">[' . trim(join(" ", $relations_array)) . ']</div>' : '');
 }
 
 /**
