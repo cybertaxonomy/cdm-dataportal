@@ -608,7 +608,7 @@ function compose_cdm_reference_page($uuid) {
     $out .= "<h3>Nomenclatural acts:</h3><div class=\"cdm-item-list\">";
     foreach($registration_working_set->registrationDTOs as $registration_dto){
       if($registration_dto->status == "PUBLISHED"){
-        $registration_render_a = compose_registation_dto($registration_dto, false, true);
+        $registration_render_a = compose_registration_dto($registration_dto, false, true);
         $registration_render_a["#prefix"] = "<div class=\"item\">";
         $registration_render_a["#suffix"] = "</div>";
         $out .= drupal_render($registration_render_a);
