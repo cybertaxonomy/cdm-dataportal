@@ -1980,32 +1980,7 @@ function compose_registration_dto($registration_dto, $with_citation = true, $wit
   $render_array = array();
   $media_link_map = array();
 
-  // registration date and office
-  if($registration_dto->registrationDate){
-    $date_string = format_datetime($registration_dto->registrationDate);
-    if(isset($registration_dto->institutionTitleCache) && $registration_dto->institutionTitleCache){
-      $registration_date_insitute_markup =
-        t("Registration on @date in @institution", array(
-          '@date' => $date_string,
-          '@institution' => $registration_dto->institutionTitleCache,
-        ));
-    } else {
-      $registration_date_insitute_markup =
-        t("Registration on @date", array(
-          '@date' => $date_string
-        ));
-    }
-    $render_array['publication_date_and_office'] = markup_to_render_array('<p class"date-and-institute">'.$registration_date_insitute_markup . '</p>', -100);
-  }
 
-  // citation
-  if ($with_citation) {
-    $render_array['citation'] = markup_to_render_array(
-      "<p class=\"citation " . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
-      . l($registration_dto->bibliographicInRefCitationString, path_to_reference($registration_dto->citationUuid))
-      . "</p>",
-      0);
-  }
 
   if($with_compact_summary){
     // summary
@@ -2027,15 +2002,15 @@ function compose_registration_dto($registration_dto, $with_citation = true, $wit
     if($with_identifier){
       $registation_markup .= " " . l ($registration_dto->identifier, $registration_dto->identifier);
     }
-    $render_array['summary'] = markup_to_render_array("<div>" . $registation_markup . "</div>", 20);
+    $render_array['summary'] = markup_to_render_array("<div>" . $registation_markup . "</div>", 0);
   } else {
     // name and typedesignation in detail
     if($registration_dto->nameRef){
       $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
-      $render_array['name'] = markup_to_render_array(render_taxon_or_name($name), 20);
+      $render_array['name'] = markup_to_render_array(render_taxon_or_name($name), 0);
       $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
       $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null, false));
-      $render_array['name_relations']['#weight'] = 21;
+      $render_array['name_relations']['#weight'] = 10;
     }
     if(is_object($registration_dto->orderdTypeDesignationWorkingSets)) {
       $field_unit_uuids = array();
@@ -2062,15 +2037,44 @@ function compose_registration_dto($registration_dto, $with_citation = true, $wit
         $render_array['name_type_designations'] = compose_name_type_designations($name_type_designation_refs);
         $render_array['name_type_designations']['#prefix'] = '<p class="name_type_designations">';
         $render_array['name_type_designations']['#suffix'] = '</p>';
-        $render_array['name_type_designations']['#weight'] = 22;
+        $render_array['name_type_designations']['#weight'] = 20;
       }
       if (count($field_unit_uuids) > 0) {
         $render_array['specimen_type_designations'] = compose_specimen_type_designations($specimen_type_designation_refs);
         // $render_array['specimen_table'] = compose_specimen_table($field_unit_uuids);
         // below citation (weight=20)
-        $render_array['specimen_table']['#weight'] = 30;
+        $render_array['specimen_table']['#weight'] = 21;
       }
     }
+  }
+
+  // citation
+  if ($with_citation) {
+    $render_array['citation'] = markup_to_render_array(
+      "<p class=\"citation " . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
+      . l($registration_dto->bibliographicInRefCitationString, path_to_reference($registration_dto->citationUuid))
+      . "</p>",
+      50);
+  }
+
+  // registration date and office
+  if($registration_dto->registrationDate){
+    $date_string = format_datetime($registration_dto->registrationDate);
+    if(isset($registration_dto->institutionTitleCache) && $registration_dto->institutionTitleCache){
+      $registration_date_insitute_markup =
+        t("Registration on @date in @institution", array(
+          '@date' => $date_string,
+          '@institution' => $registration_dto->institutionTitleCache,
+        ));
+    } else {
+      $registration_date_insitute_markup =
+        t("Registration on @date", array(
+          '@date' => $date_string
+        ));
+    }
+    $render_array['publication_date_and_office'] = markup_to_render_array(
+      '<p class"date-and-institute">'.$registration_date_insitute_markup . '</p>',
+      100);
   }
 
   return $render_array;
