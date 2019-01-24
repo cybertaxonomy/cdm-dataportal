@@ -18,6 +18,8 @@ define('CDM_WS_PORTAL_NAME_DESCRIPTIONS', 'portal/name/$0/taxonNameDescriptions'
 define('CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS', 'portal/name/$0/typeDesignations');
 define('CDM_WS_PORTAL_NAME_NAME_RELATIONS', 'portal/name/$0/nameRelations');
 
+define('CDM_TYPEDESIGNATION', 'typedesignation/$0');
+
 define('CDM_WS_TAXON', 'taxon');
 define('CDM_WS_TAXON_CLASSIFICATIONS', 'taxon/$0/classifications');
 define('CDM_WS_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'taxon/findByDescriptionElementFullText');

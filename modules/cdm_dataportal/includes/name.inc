@@ -569,7 +569,7 @@ function render_registrations($registrations)
 /**
  * Composes the TypedEntityReference to name type designations passed as associatve array.
  *
- * @param $name_type_designations array
+ * @param $$type_entity_refs array
  *   an associative array of name type type => TypedEntityReference for name type designations as
  *   produced by the eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager
  *
@@ -578,7 +578,41 @@ function render_registrations($registrations)
 function compose_name_type_designations($type_entity_refs){
   $render_array = array();
   foreach($type_entity_refs as $type_status => $name_type){
-    $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type)  . '"><span class="type_status">'. ucfirst($type_status) . "</span>: " . $name_type->label . '</div>');
+    $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($name_type->uuid, 'preferredUri'));
+    if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
+      $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
+    }
+    $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type)  . '"><span class="type_status">'. ucfirst($type_status) . "</span>: "
+      . $name_type->label
+      . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
+      . '</div>');
+  }
+  return $render_array;
+}
+
+/**
+ * Composes the TypedEntityReference to specimen type designations passed as associatve array.
+ *
+ * @param $type_entity_refs array
+ *   an associative array of specimen type type => TypedEntityReference for specimen type designations as
+ *   produced by the eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager
+ *
+ * @ingroup compose
+ */
+function compose_specimen_type_designations($type_entity_refs){
+  $render_array = array();
+  foreach($type_entity_refs as $type_status => $specimen_type){
+    $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($specimen_type->uuid));
+    $preferredStableUri = '';
+    if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
+      $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
+    }
+    $render_array[] = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '"><span class="type_status">'
+      . ucfirst($type_status)
+      . "</span>: "
+      . $specimen_type->label
+      . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
+      . '</div>');
   }
   return $render_array;
 }

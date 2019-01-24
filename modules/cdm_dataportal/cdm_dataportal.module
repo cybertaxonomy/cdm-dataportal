@@ -2039,16 +2039,23 @@ function compose_registration_dto($registration_dto, $with_citation = true, $wit
     }
     if(is_object($registration_dto->orderdTypeDesignationWorkingSets)) {
       $field_unit_uuids = array();
+      $specimen_type_designation_refs = array();
       $name_type_designation_refs = array();
       foreach ((array)$registration_dto->orderdTypeDesignationWorkingSets as $field_unit_ref => $obj) {
         $tokens = explode("#", $field_unit_ref);
+        foreach ($obj as $type_status => $entity_reference_list) {
+          // NOTE: there is always only one element, since we use the foreach to extract the objects field name and value
+          $entity_reference = $entity_reference_list[0];
+        }
         if ($tokens[0] == 'NameTypeDesignation') {
-          foreach ($obj as $type_status => $entity_reference) {
-            // NOTE: there is always only one element, since we use the foreach to extract the field name an value
-            $name_type_designation_refs[$type_status] = $entity_reference[0];
+          foreach ($obj as $type_status => $entity_reference_list) {
+            $name_type_designation_refs[$type_status] = $entity_reference;
           }
-        } else {
+        } else if ($tokens[0] == 'FieldUnit'){
           $field_unit_uuids[] = $tokens[1];
+          $specimen_type_designation_refs[$type_status] = $entity_reference;
+        } else {
+          drupal_set_message("Unimplemented type: " . $tokens[0], 'error');
         }
       }
       if (count($name_type_designation_refs) > 0) {
@@ -2058,7 +2065,8 @@ function compose_registration_dto($registration_dto, $with_citation = true, $wit
         $render_array['name_type_designations']['#weight'] = 22;
       }
       if (count($field_unit_uuids) > 0) {
-        $render_array['specimen_table'] = compose_specimen_table($field_unit_uuids);
+        $render_array['specimen_type_designations'] = compose_specimen_type_designations($specimen_type_designation_refs);
+        // $render_array['specimen_table'] = compose_specimen_table($field_unit_uuids);
         // below citation (weight=20)
         $render_array['specimen_table']['#weight'] = 30;
       }
