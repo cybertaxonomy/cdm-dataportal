@@ -2002,12 +2002,12 @@ function compose_registration_dto($registration_dto, $with_citation = true, $wit
     if($with_identifier){
       $registation_markup .= " " . l ($registration_dto->identifier, $registration_dto->identifier);
     }
-    $render_array['summary'] = markup_to_render_array("<div>" . $registation_markup . "</div>", 0);
+    $render_array['summary'] = markup_to_render_array('<p class="registration-summary">' . $registation_markup . "</p>", 0);
   } else {
     // name and typedesignation in detail
     if($registration_dto->nameRef){
       $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
-      $render_array['name'] = markup_to_render_array(render_taxon_or_name($name), 0);
+      $render_array['name'] = markup_to_render_array('<p class="name">' . render_taxon_or_name($name) . '</p>', 0);
       $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
       $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null, false));
       $render_array['name_relations']['#weight'] = 10;
