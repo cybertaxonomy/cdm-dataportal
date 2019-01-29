@@ -600,18 +600,63 @@ function compose_name_type_designations($type_entity_refs){
  * @ingroup compose
  */
 function compose_specimen_type_designations($type_entity_refs){
+
   $render_array = array();
+
   foreach($type_entity_refs as $type_status => $specimen_type){
     $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($specimen_type->uuid));
+
     $preferredStableUri = '';
+    $citation_markup = '';
+    $media = '';
+
+    // preferredStableUri
     if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
       $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
     }
-    $render_array[] = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '"><span class="type_status">'
-      . ucfirst($type_status)
-      . "</span>: "
+
+    $mediaSpecimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($type_designation->typeSpecimen->uuid, 'mediaSpecimen'));
+    if($mediaSpecimen){
+      // compose output
+      // mediaURI
+      if(isset($mediaSpecimen->representations[0])) {
+        $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+        $captionElements = array(
+          '#uri' => t('open media'),
+          'elements' => array('-none-'),
+          'sources_as_content' => true
+        );
+        $media = compose_cdm_media_gallerie(array(
+          'mediaList' => array($mediaSpecimen),
+          'galleryName' => CDM_DATAPORTAL_TYPE_SPECIMEN_GALLERY_NAME . '_' . $specimen_type->uuid,
+          'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+          'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+          'captionElements' => $captionElements,
+        ));
+      }
+      // citation and detail
+      $annotations_and_sources = handle_annotations_and_sources(
+          $mediaSpecimen,
+          array(
+              'sources_as_content' => true,
+              'link_to_name_used_in_source' => false,
+              'link_to_reference' => true,
+              'add_footnote_keys' => false,
+              'bibliography_aware' => false),
+          '',
+          null
+      );
+      if(is_array( $annotations_and_sources['source_references'])){
+        $citation_markup = join(', ', $annotations_and_sources['source_references']);
+      }
+    }
+
+    $render_array[] = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '">
+        <span class="type_status">' . ucfirst($type_status) . "</span>: "
       . $specimen_type->label
+      . ($citation_markup ? ' '. $citation_markup : '')
       . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
+      . $media
       . '</div>');
   }
   return $render_array;

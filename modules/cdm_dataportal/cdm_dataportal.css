@@ -794,6 +794,13 @@ table.cdm\:Reference {
 }
 
 /*
+ * ======= Regisrtration page =======
+ */
+
+.registration .specimen_type_designation .media_gallery {
+    margin-left: 2em;
+}
+/*
  * ======= Experts =======
  */
 
