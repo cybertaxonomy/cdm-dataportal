@@ -516,9 +516,9 @@ function cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPass
   // TODO merge with theme_cdm_media_mime_image?
   if (isset($mediaRepresentationPart)) {
 
-    $h = $mediaRepresentationPart->height;
-    $w = $mediaRepresentationPart->width;
-    if ($w == 0 || $h == 0) {
+    $h = @$mediaRepresentationPart->height;
+    $w = @$mediaRepresentationPart->width;
+    if (!($w && $h)) {
       // Take url and replace spaces.
       $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri);
       $imageDimensions = getimagesize_remote($image_uri);
@@ -654,10 +654,10 @@ function cdm_openlayers_image($mediaRepresentationPart, $maxExtend) {
   // TODO merge code below with code from theme_cdm_media_gallerie_image
   // var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
   // TODO merge code below with code from theme_cdm_media_gallerie_image
-  $w = $mediaRepresentationPart->width;
-  $h = $mediaRepresentationPart->height;
+  $w = @$mediaRepresentationPart->width;
+  $h = @$mediaRepresentationPart->height;
 
-  if ($w == 0 || $h == 0) {
+  if (!($w && $h)) {
     // Take url and replace spaces.
     $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri);
     $imageDimensions = getimagesize_remote($image_uri);
