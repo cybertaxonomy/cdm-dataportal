@@ -1774,8 +1774,8 @@ msgid "Preview Quality"
 msgstr ""
 
 #: cdm_mediauri/cdm_mediauri.module:285
-msgid "Web Application"
-msgstr ""
+msgid "Link to external media resource or web application"
+msgstr "Vínculo – servidor de multimedia externo"
 
 #: cdm_mediauri/cdm_mediauri.module:287
 msgid "The type media representation."

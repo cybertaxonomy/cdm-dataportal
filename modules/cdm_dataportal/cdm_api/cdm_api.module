@@ -813,19 +813,9 @@ function proxy_content($uri, $hook = NULL) {
             break;
 
         case 'cdm_media_caption':
-          $variables = array(
-            'media' => $obj,
-            // $args[0] is set in taxon_image_gallery_default in
-            // cdm_dataportal.page.theme.
-            'elements' => isset($args[0]) ? $args[0] : array(
-            'title',
-            'description',
-            'artist',
-            'location',
-            'rights',
-          ),
-            'sources_as_content' =>  isset($args[1]) ? $args[1] : FALSE
-          );
+          $variables = $arg;
+          $variables['media'] = $obj;
+
           $reponse_data = theme($hook, $variables);
           break;
 

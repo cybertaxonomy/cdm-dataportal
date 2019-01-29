@@ -505,6 +505,7 @@ function compose_cdm_media_gallerie($configuration) {
  * @param $maxExtend
  * @param $addPassePartout
  * @param $attributes
+ *   An array of attributes for the img tag.
  * @return string
  *   The markup for the media representation
  */
@@ -593,7 +594,7 @@ function cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $a
     if ($addPassePartout) {
       $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
     }
-    $out .= '<div class="application">Web Application</div>';
+    $out .= '<div class="application">Link to external media resource or web application</div>';
 
     if ($addPassePartout) {
       $out .= '</div>';
