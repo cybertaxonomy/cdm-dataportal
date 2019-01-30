@@ -1928,7 +1928,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
   $render_array = array();
   $registration_dto = cdm_ws_get(CDM_WS_REGISTRATION_DTO_BY_IDENTIFIER . $registration_identifier_encoded);
   if($registration_dto){
-    drupal_set_title(t('Registration') . ' ' . $registration_identifier, PASS_THROUGH);
+    drupal_set_title(t('Registration Id') . ' ' . $registration_identifier, PASS_THROUGH);
 
     $render_array = compose_registration_dto($registration_dto, true, false, false);
 
