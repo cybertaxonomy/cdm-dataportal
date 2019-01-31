@@ -587,17 +587,4 @@ function compose_extensions($extensions)
   return $extensions_render_array;
 }
 
-function render_registration($registration){
-  $markup = '';
 
-  if(isset($registration->identifier) && $registration->status == 'PUBLISHED'){
-    $office_class_attribute = '';
-    if(isset($registration->institution->titleCache)){
-      $office_class_attribute = 'registration-' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '-', $registration->institution->titleCache));
-    }
-    $markup = "<span class=\"registration $office_class_attribute\">" . l($registration->identifier, $registration->identifier) . ', '
-      .  preg_replace('/^([^T]*)(.*)$/', '${1}', $registration->registrationDate)
-    . '</span>';
-  }
-  return $markup;
-}
