@@ -39,7 +39,10 @@ function getimagesize_remote($image_url) {
     return FALSE;
   }
 
-  $im = @ImageCreateFromString($contents); // Using @ to avoid php warnings.
+  $last_level = error_reporting (E_ERROR); // suppress warnings from the imagecreatefromstring() method,
+  $im = imagecreatefromstring($contents);
+  error_reporting($last_level); // reset the error_reporting level
+
   if (!$im) {
     return FALSE;
   }
