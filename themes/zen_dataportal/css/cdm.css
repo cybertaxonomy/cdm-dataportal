@@ -273,16 +273,21 @@ dl.media-caption {
   color: #999999;
 }
 
+/* line 186, ../sass/cdm.scss */
+.registration-summary .label {
+  font-weight: bold;
+}
+
 /*
  * Theme settings page
  */
-/* line 191, ../sass/cdm.scss */
+/* line 195, ../sass/cdm.scss */
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-/* line 195, ../sass/cdm.scss */
+/* line 199, ../sass/cdm.scss */
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */
@@ -293,14 +298,14 @@ dl.media-caption {
  *
  * using the same media queries here as in layout/_responsive.scss
  *****************************************************************************************/
-/* line 208, ../sass/cdm.scss */
+/* line 212, ../sass/cdm.scss */
 #classification-breadcrumbs {
   font-size: 1.5em;
   line-height: 1.5em;
 }
 
 @media all and (min-width: 960px) {
-  /* line 219, ../sass/cdm.scss */
+  /* line 223, ../sass/cdm.scss */
   #classification-breadcrumbs {
     font-size: 1em;
   }
