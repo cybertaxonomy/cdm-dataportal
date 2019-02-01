@@ -26,10 +26,52 @@ function tagged_text_new($tag_type, $text = null){
 }
 
 /**
+ * Adds an array of render options to specific tagged text elements.
+ *
+ * The attributes are added as $tagged_text_item['attributes']. Existing 'attributes' are
+ * preserved by merging new ones  to the existing array.
+ *
+ * @param array $taggedtxt
+ * @param array $attributes_map array
+ *   An array of arrays with following elements in each element array:
+ *    - 'filter-type': the tagged text type to which the attributes are applicable
+ *    - 'filter-uuid': (optional) and optional filter to only match a specific uuid.
+ *    - 'attributes': array of attributes as accepted by drupal_attributes()
+ *    - 'prefix': like the drupal_render() '#prefix' option
+ *    - 'suffix': like the drupal_render() '#prefix' option
+ */
+function cdm_tagged_text_add_options(array &$taggedtxt, array $attributes_map){
+
+  foreach ($attributes_map as $attribute_data){
+    foreach ($taggedtxt as &$tt){
+      if($tt->type == $attribute_data['filter-type']){
+        if(isset($attribute_data['filter-uuid'])){
+          if($tt->uuid !== $attribute_data['filter-uuid']){
+            // ignore
+            continue;
+          }
+        }
+        // $tt matched type and filter-uuid if set, apply options
+        foreach (array('attributes', 'prefix', 'suffix') as $key ){
+          if(isset($attribute_data[$key])){
+            $tt->$key = $attribute_data[$key];
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
  * Walks the passed TaggedText array to find all elements which have a
  * TaggedText->entityReference. For each of these the taggedTexts is loaded
  * from the webservice and the original entry in the TaggedText array will be
  * replaced by the newly loaded array.
+ *
+ * Existing 'attributes' (@see cdm_tagged_text_add_options()) fields will be preserved by
+ * copying them to each of the replacement tagged text items. 'prefix' will be added to
+ * the first of the replace items and 'suffix' to the last one.
+ *
  *
  * @param array $taggedtxt
  *    The original TaggedText array
@@ -50,6 +92,17 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
         }
         $referenced_tt = cdm_ws_get($base_uri . "/" . $tt->entityReference->uuid . $tagged_text_method);
         if($referenced_tt){
+          if(isset($tt->attributes)){
+            foreach($referenced_tt as $reftt){
+              $reftt->attributes = $tt->attributes;
+            }
+          }
+          if(isset($tt->prefix)){
+            $referenced_tt[0]->prefix = $tt->prefix;
+          }
+          if(isset($tt->suffix)){
+            $referenced_tt[count($referenced_tt)-1]->suffix = $tt->suffix;
+          }
           $tagged_text_expanded = array_merge($tagged_text_expanded, $referenced_tt);
           continue;
         }
@@ -71,6 +124,12 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
  * taggedText->type wrapped in curly brackets: '{'. $tt->text . '}' is used as text.
  * see tagged_text_extract_secref()
  *
+ * In addition to the tagged text element fields as defined in the cdm this method also recognizes:
+ *    - 'attributes': array of attributes as accepted by drupal_attributes()
+ *    - 'prefix': like the drupal_render() '#prefix' option
+ *    - 'suffix': like the drupal_render() '#prefix' option
+ * See also cdm_tagged_text_add_options()
+ *
  * The algorithm of this functions is basically the same as for
  * eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper.createString(List<TaggedText> tags, HTMLTagRules htmlRules)
  *
@@ -87,24 +146,45 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
   $out = '';
   $was_separator = false;
   $last_type = null;
+  $last_suffix = '';
   $i = 0;
   foreach ($taggedtxt as $tt) {
     if (!in_array($tt->type, $skiptags) && $tt->text) {
-      if(isset($tt->entityReference)){
-        $class_attr = $tt->type . " " . html_class_attribute_ref($tt->entityReference);
-      } else {
-        $class_attr = $tt->type;
-      }
+
       $is_first = $i == 0;
       $is_separator = is_tagged_text_sepatator_type($tt->type);
       if(str_beginsWith($tt->type, 'PLACEHOLDER_')){
         $out .=  '{'. $tt->type . '}';
       } else {
-        if(($last_type && $last_type != $tt->type) && $tag) {
-          $out .= '</' . $tag . '>';
+
+        // attributes
+        $attributes = array();
+        if(isset($tt->attributes)){
+          $attributes = $tt->attributes;
         }
-        if((!$last_type || $last_type != $tt->type) && $tag){
-          $out .= '<' . $tag . ' class="' . $class_attr . '">';
+        if(!isset($attributes['class'])){
+          $attributes['class'] = array();
+        }
+        $attributes['class'][] = $tt->type;
+        if(isset($tt->entityReference)){
+          $attributes['class'][] = html_class_attribute_ref($tt->entityReference);
+        }
+
+        // prefix and suffix
+        $prefix = '';
+        $suffix = '';
+        if(isset($tt->prefix)){
+          $prefix = $tt->prefix;
+        }
+        if(isset($tt->suffix)){
+          $suffix = $tt->suffix;
+        }
+
+        if(($last_suffix || $last_type && $last_type != $tt->type) && $tag) {
+          $out .= '</' . $tag . '>' . $last_suffix;
+        }
+        if(($prefix || !$last_type || $last_type != $tt->type) && $tag){
+          $out .= $prefix . '<' . $tag . drupal_attributes($attributes) . '>';
         }
         if(!$is_separator && !$was_separator && !$is_first){
           $out .= " ";
@@ -112,6 +192,7 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
         $out .= t('@text', array('@text' => $tt->text));
         $was_separator = $is_separator;
         $last_type = $tt->type;
+        $last_suffix = $suffix;
       }
     }
     $i++;

@@ -180,11 +180,19 @@ dl.media-caption {
 }
 
 .registration-date-and-institute {
-  color: #999999;
+  color: #999;
 }
 
-.registration-summary .label {
-  font-weight: bold;
+.registration-summary {
+  .registered_name .name {
+    font-weight: bold;
+  }
+  .referenced_typified_name {
+    color: #999;
+  }
+  .label {
+    font-weight: bold;
+  }
 }
 
 /*

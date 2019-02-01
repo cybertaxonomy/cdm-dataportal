@@ -666,6 +666,21 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
   $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto, 'span');
   $itentifier_markup = l($registration_dto->identifier, $registration_dto->identifier, array('attributes' => array('class' => array('identifier'))));
 
+  $tagged_text_options = array();
+  if(isset($registration_dto->nameRef)){
+    $tagged_text_options[] = array(
+      'filter-type' => 'name',
+      'prefix' => '<span class="registered_name">',
+      'suffix' => '</span>',
+    );
+  } else {
+    $tagged_text_options[] = array(
+      'filter-type' => 'name',
+      'prefix' => '<span class="referenced_typified_name">',
+      'suffix' => '</span>',
+    );
+  }
+  cdm_tagged_text_add_options($registration_dto->summaryTaggedText, $tagged_text_options);
   $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
   foreach ($taggged_text_expanded  as $tagged_text){
     if(isset($tagged_text->entityReference->type) && $tagged_text->entityReference->type == 'SpecimenTypeDesignation') {
@@ -686,7 +701,7 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
   } else {
     $render_array['registration-metadata'] = markup_to_render_array('<div class="registration-metadata">' . $itentifier_markup . ' ' . $registration_date_insitute_markup. "</div>", -10);
   }
-  $render_array['summary'] = markup_to_render_array('<' . $tag_enclosing_summary . ' class="registration-summary">' . $registation_markup . "</' . $tag_enclosing_summary . '>", 0);
+  $render_array['summary'] = markup_to_render_array('<' . $tag_enclosing_summary . ' class="registration-summary">' . $registation_markup . '</' . $tag_enclosing_summary . '>', 0);
 
   return $render_array;
 }

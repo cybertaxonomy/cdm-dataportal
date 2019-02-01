@@ -937,7 +937,7 @@ function compose_registrations_search_results($registration_pager){
 
       $items_render_array[]  = array(
         '#prefix' => "<div class=\"item\"><div class=\"" . html_class_attribute_ref(new TypedEntityReference("Registration", $registration_dto->uuid)) . "\">",
-         'item_data' => compose_registration_dto_compact($registration_dto, 'item-style'),
+         'item_data' => compose_registration_dto_compact($registration_dto, 'item-style', 'div'),
         '#suffix' => "</div></div>"
         );
       ;

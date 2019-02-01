@@ -270,10 +270,18 @@ dl.media-caption {
 
 /* line 182, ../sass/cdm.scss */
 .registration-date-and-institute {
-  color: #999999;
+  color: #999;
 }
 
-/* line 186, ../sass/cdm.scss */
+/* line 187, ../sass/cdm.scss */
+.registration-summary .registered_name .name {
+  font-weight: bold;
+}
+/* line 190, ../sass/cdm.scss */
+.registration-summary .referenced_typified_name {
+  color: #999;
+}
+/* line 193, ../sass/cdm.scss */
 .registration-summary .label {
   font-weight: bold;
 }
@@ -281,13 +289,13 @@ dl.media-caption {
 /*
  * Theme settings page
  */
-/* line 195, ../sass/cdm.scss */
+/* line 203, ../sass/cdm.scss */
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-/* line 199, ../sass/cdm.scss */
+/* line 207, ../sass/cdm.scss */
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */
@@ -298,14 +306,14 @@ dl.media-caption {
  *
  * using the same media queries here as in layout/_responsive.scss
  *****************************************************************************************/
-/* line 212, ../sass/cdm.scss */
+/* line 220, ../sass/cdm.scss */
 #classification-breadcrumbs {
   font-size: 1.5em;
   line-height: 1.5em;
 }
 
 @media all and (min-width: 960px) {
-  /* line 223, ../sass/cdm.scss */
+  /* line 231, ../sass/cdm.scss */
   #classification-breadcrumbs {
     font-size: 1em;
   }
