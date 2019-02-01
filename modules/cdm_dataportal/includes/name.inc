@@ -626,7 +626,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   }
 
   // registration date and office
-  $registration_date_insitute_markup = render_registration_date_and_intitute($registration_dto);
+  $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto);
   if($registration_date_insitute_markup){
     $render_array['registration_date_and_institute'] = markup_to_render_array(
       $registration_date_insitute_markup . '</p>',
@@ -663,7 +663,7 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
     return $render_array;
   }
 
-  $registration_date_insitute_markup = render_registration_date_and_intitute($registration_dto, 'span');
+  $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto, 'span');
   $itentifier_markup = l($registration_dto->identifier, $registration_dto->identifier, array('attributes' => array('class' => array('identifier'))));
 
   $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
@@ -686,7 +686,7 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
   } else {
     $render_array['registration-metadata'] = markup_to_render_array('<div class="registration-metadata">' . $itentifier_markup . ' ' . $registration_date_insitute_markup. "</div>", -10);
   }
-  $render_array['summary'] = markup_to_render_array('<' . $tag_enclosing_summary . 'class="registration-summary">' . $registation_markup . "</' . $tag_enclosing_summary . '>", 0);
+  $render_array['summary'] = markup_to_render_array('<' . $tag_enclosing_summary . ' class="registration-summary">' . $registation_markup . "</' . $tag_enclosing_summary . '>", 0);
 
   return $render_array;
 }
@@ -699,25 +699,25 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
  * @return string
  *    The markup or an empty string
  */
-function render_registration_date_and_intitute($registration_dto, $enclosing_tag = 'p') {
-  $registration_date_insitute_markup = '';
+function render_registration_date_and_institute($registration_dto, $enclosing_tag = 'p') {
+  $registration_date_institute_markup = '';
   if ($registration_dto->registrationDate) {
     $date_string = format_datetime($registration_dto->registrationDate);
     if (isset($registration_dto->institutionTitleCache) && $registration_dto->institutionTitleCache) {
-      $registration_date_insitute_markup =
+      $registration_date_institute_markup =
         t("Registration on @date in @institution", array(
           '@date' => $date_string,
           '@institution' => $registration_dto->institutionTitleCache,
         ));
     } else {
-      $registration_date_insitute_markup =
+      $registration_date_institute_markup =
         t("Registration on @date", array(
           '@date' => $date_string
         ));
     }
-    $registration_date_insitute_markup = '<' .$enclosing_tag . ' class="registration-date-and-institute">'. $registration_date_insitute_markup . '</' .$enclosing_tag . '>';
+    $registration_date_institute_markup = '<' .$enclosing_tag . ' class="registration-date-and-institute">'. $registration_date_institute_markup . '</' .$enclosing_tag . '>';
   }
-  return $registration_date_insitute_markup;
+  return $registration_date_institute_markup;
 }
 
 
