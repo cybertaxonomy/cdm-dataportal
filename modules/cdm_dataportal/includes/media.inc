@@ -301,9 +301,9 @@ function compose_cdm_media_gallerie($configuration) {
   // TODO correctly handle multiple media representation parts
   $_SESSION['cdm']['last_gallery'] = current_path();
   // Prevent from errors.
-  if (!isset($mediaList[0])) {
-    // return;
-  }
+  //if (!isset($mediaList[0])) {
+   // return;
+  //}
 
   // --- Duplicate suppression: media can be reused but should only be shown
   // once.
