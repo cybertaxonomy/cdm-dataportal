@@ -933,15 +933,12 @@ function compose_registrations_search_results($registration_pager){
 
   if($registration_pager != null && count($registration_pager->records) > 0){
     $items_render_array = array();
-    foreach($registration_pager->records as $registration) {
-      $summary_markup = cdm_tagged_text_to_markup($registration->summaryTaggedText);
-      $items_render_array[]  = markup_to_render_array(
-        "<div class=\"item\"><div class=\"" . html_class_attribute_ref(new TypedEntityReference("Registration", $registration->uuid)) . "\">"
-          . "<div class=\"identifier\">"
-          . l($registration->identifier, path_to_registration($registration->identifier), array('absolute' => true, 'attributes' => array('class' => array('identifier'))))
-          . "</div>"
-          . $summary_markup
-          . "</div></div>"
+    foreach($registration_pager->records as $registration_dto) {
+
+      $items_render_array[]  = array(
+        '#prefix' => "<div class=\"item\"><div class=\"" . html_class_attribute_ref(new TypedEntityReference("Registration", $registration_dto->uuid)) . "\">",
+         'item_data' => compose_registration_dto_compact($registration_dto, 'item-style'),
+        '#suffix' => "</div></div>"
         );
       ;
     }

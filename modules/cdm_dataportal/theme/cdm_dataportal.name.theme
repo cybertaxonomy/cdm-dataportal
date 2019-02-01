@@ -134,7 +134,7 @@ function theme_cdm_typedesignations($variables) {
         }
 
         // to be registered a typedesignation MUS HAVE a citation, so it is save to handle the
-        // Registration ouput in if condition checking if the citation is present
+        // Registration output in if condition checking if the citation is present
         $registration_markup = render_registrations($type_designation->registrations);
         $citation_footnote_str .= ($citation_footnote_str ? ' ' : '') . $registration_markup;
 

@@ -794,12 +794,17 @@ table.cdm\:Reference {
 }
 
 /*
- * ======= Regisrtration page =======
+ * ======= Registration page and registration items =======
  */
 
 .registration .specimen_type_designation .media_gallery {
     margin-left: 2em;
 }
+
+.registration-item-list .registration-item .date-and-institute {
+
+}
+
 /*
  * ======= Experts =======
  */

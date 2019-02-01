@@ -2322,23 +2322,28 @@ dl.media-caption {
 }
 
 /*
- * Registration page
+ * Registration page & items
  */
 /* line 178, ../sass/cdm.scss */
 .name_type_designation .type_status {
   font-weight: bold;
 }
 
+/* line 182, ../sass/cdm.scss */
+.registration-date-and-institute {
+  color: #999999;
+}
+
 /*
  * Theme settings page
  */
-/* line 187, ../sass/cdm.scss */
+/* line 191, ../sass/cdm.scss */
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-/* line 191, ../sass/cdm.scss */
+/* line 195, ../sass/cdm.scss */
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */
@@ -2349,14 +2354,14 @@ dl.media-caption {
  *
  * using the same media queries here as in layout/_responsive.scss
  *****************************************************************************************/
-/* line 204, ../sass/cdm.scss */
+/* line 208, ../sass/cdm.scss */
 #classification-breadcrumbs {
   font-size: 1.5em;
   line-height: 1.5em;
 }
 
 @media all and (min-width: 960px) {
-  /* line 215, ../sass/cdm.scss */
+  /* line 219, ../sass/cdm.scss */
   #classification-breadcrumbs {
     font-size: 1em;
   }

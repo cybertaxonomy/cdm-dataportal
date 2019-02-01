@@ -1930,7 +1930,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
   if($registration_dto){
     drupal_set_title(t('Registration Id:') . ' ' . $registration_identifier, PASS_THROUGH);
 
-    $render_array = compose_registration_dto($registration_dto, true, false, false);
+    $render_array = compose_registration_dto_full($registration_dto, true);
 
   } else {
     $status_text = cdm_ws_get(CDM_WS_REGISTRATION_STATUS_BY_IDENTIFIER, array($registration_identifier));

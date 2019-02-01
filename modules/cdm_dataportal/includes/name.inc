@@ -550,91 +550,69 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
 
 
 /**
- * Composes information for a registration from a dto object
+ * Composes information for a registration from a dto object.
+ *
+ * Registrations which are not yet published are suppressed.
  *
  * @param $registration_dto
  * @param $with_citation
  *   Whether to show the citation.
- * @param $with_identifier
- *   Whether to add the identifier to the summary (in enabled)
- * @param $with_compact_summary
- *   Whether to display the name and type designations as compact summary or in extended form.
  *
  * @return array
  *    A drupal render array with the elements:
- *    - 'publication_date_and_office'
+ *    - 'name'
+ *    - 'name-relations'
+ *    - 'specimen_type_designations'
+ *    - 'name_type_designations'
  *    - 'citation'
- *    - 'summary' OR  'name', 'name-relations', 'name_type_designations', 'specimen_table' (depending on parameter $with_compact_summary)
+ *    - 'registration_date_and_institute'
  * @ingroup compose
  */
-function compose_registration_dto($registration_dto, $with_citation = true, $with_identifier = false, $with_compact_summary = true)
+function compose_registration_dto_full($registration_dto, $with_citation = true)
 {
   $render_array = array();
-  $media_link_map = array();
 
-  if($with_compact_summary){
-    // summary
-    $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
-    foreach ($taggged_text_expanded  as $tagged_text){
-      if(isset($tagged_text->entityReference->type) && $tagged_text->entityReference->type == 'SpecimenTypeDesignation') {
-        $mediaDTOs = cdm_ws_get('typedesignation/$0/media', array($tagged_text->entityReference->uuid));
-        if(isset($mediaDTOs[0]->uri)){
-          $media_url_key = '{link-' . $mediaDTOs[0]->uuid . '}';
-          $tagged_text->text = str_replace('[icon]', '[icon]' . $media_url_key, $tagged_text->text);
-          $media_link_map[$media_url_key] =  cdm_external_uri($mediaDTOs[0]->uri, true);
-        }
+  if(!(isset($registration_dto->identifier) && $registration_dto->status == 'PUBLISHED')){
+    return $render_array;
+  }
+
+  // name and typedesignation in detail
+  if($registration_dto->nameRef){
+    $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
+    $render_array['name'] = markup_to_render_array('<p class="name">' . render_taxon_or_name($name) . '</p>', 0);
+    $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
+    $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null, false));
+    $render_array['name_relations']['#weight'] = 10;
+  }
+  if(is_object($registration_dto->orderdTypeDesignationWorkingSets)) {
+    $field_unit_uuids = array();
+    $specimen_type_designation_refs = array();
+    $name_type_designation_refs = array();
+    foreach ((array)$registration_dto->orderdTypeDesignationWorkingSets as $field_unit_ref => $obj) {
+      $tokens = explode("#", $field_unit_ref);
+      foreach ($obj as $type_status => $entity_reference_list) {
+        // NOTE: there is always only one element, since we use the foreach to extract the objects field name and value
+        $entity_reference = $entity_reference_list[0];
       }
-    }
-    $registation_markup = cdm_tagged_text_to_markup($taggged_text_expanded);
-    foreach($media_link_map as $media_url_key => $link){
-      $registation_markup = str_replace($media_url_key, $link, $registation_markup);
-    }
-    if($with_identifier){
-      $registation_markup .= " " . l ($registration_dto->identifier, $registration_dto->identifier);
-    }
-    $render_array['summary'] = markup_to_render_array('<p class="registration-summary">' . $registation_markup . "</p>", 0);
-  } else {
-    // name and typedesignation in detail
-    if($registration_dto->nameRef){
-      $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
-      $render_array['name'] = markup_to_render_array('<p class="name">' . render_taxon_or_name($name) . '</p>', 0);
-      $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
-      $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null, false));
-      $render_array['name_relations']['#weight'] = 10;
-    }
-    if(is_object($registration_dto->orderdTypeDesignationWorkingSets)) {
-      $field_unit_uuids = array();
-      $specimen_type_designation_refs = array();
-      $name_type_designation_refs = array();
-      foreach ((array)$registration_dto->orderdTypeDesignationWorkingSets as $field_unit_ref => $obj) {
-        $tokens = explode("#", $field_unit_ref);
+      if ($tokens[0] == 'NameTypeDesignation') {
         foreach ($obj as $type_status => $entity_reference_list) {
-          // NOTE: there is always only one element, since we use the foreach to extract the objects field name and value
-          $entity_reference = $entity_reference_list[0];
+          $name_type_designation_refs[$type_status] = $entity_reference;
         }
-        if ($tokens[0] == 'NameTypeDesignation') {
-          foreach ($obj as $type_status => $entity_reference_list) {
-            $name_type_designation_refs[$type_status] = $entity_reference;
-          }
-        } else if ($tokens[0] == 'FieldUnit'){
-          $field_unit_uuids[] = $tokens[1];
-          $specimen_type_designation_refs[$type_status] = $entity_reference;
-        } else {
-          drupal_set_message("Unimplemented type: " . $tokens[0], 'error');
-        }
+      } else if ($tokens[0] == 'FieldUnit'){
+        $field_unit_uuids[] = $tokens[1];
+        $specimen_type_designation_refs[$type_status] = $entity_reference;
+      } else {
+        drupal_set_message("Unimplemented type: " . $tokens[0], 'error');
       }
-      if (count($name_type_designation_refs) > 0) {
-        $render_array['name_type_designations'] = compose_name_type_designations($name_type_designation_refs);
-        $render_array['name_type_designations']['#prefix'] = '<p class="name_type_designations">';
-        $render_array['name_type_designations']['#suffix'] = '</p>';
-        $render_array['name_type_designations']['#weight'] = 20;
-      }
-      if (count($field_unit_uuids) > 0) {
-        $render_array['specimen_type_designations'] = compose_specimen_type_designations($specimen_type_designation_refs);
-        // $render_array['specimen_table'] = compose_specimen_table($field_unit_uuids);
-        // below citation (weight=20)
-        $render_array['specimen_table']['#weight'] = 21;
-      }
+    }
+    if (count($name_type_designation_refs) > 0) {
+      $render_array['name_type_designations'] = compose_name_type_designations($name_type_designation_refs);
+      $render_array['name_type_designations']['#prefix'] = '<p class="name_type_designations">';
+      $render_array['name_type_designations']['#suffix'] = '</p>';
+      $render_array['name_type_designations']['#weight'] = 20;
+    }
+    if (count($field_unit_uuids) > 0) {
+      $render_array['specimen_type_designations'] = compose_specimen_type_designations($specimen_type_designation_refs);
     }
   }
 
@@ -648,9 +626,84 @@ function compose_registration_dto($registration_dto, $with_citation = true, $wit
   }
 
   // registration date and office
-  if($registration_dto->registrationDate){
+  $registration_date_insitute_markup = render_registration_date_and_intitute($registration_dto);
+  if($registration_date_insitute_markup){
+    $render_array['registration_date_and_institute'] = markup_to_render_array(
+      $registration_date_insitute_markup . '</p>',
+      100);
+  }
+
+  return $render_array;
+}
+
+
+/**
+ * Composes a compact representation for a registrationDTO object
+ *
+ * Registrations which are not yet published are suppressed.
+ *
+ * @param $registration_dto
+ * @param $style string
+ *   The style of how to compose the 'identifier' and 'registration_date_and_institute' part with the summary
+ *   - 'citation': Similar to the arrearance of nomenclatural acts in print media
+ *   - 'list-item' : style suitable for result lists etc
+ *
+ * @return array
+ *    A drupal render array with the elements:
+ *    - 'registration-metadata' when $style == 'list-item'
+ *    - 'summary'
+ * @ingroup compose
+ */
+function compose_registration_dto_compact($registration_dto, $style = 'citation', $tag_enclosing_summary = 'p')
+{
+  $render_array = array();
+  $media_link_map = array();
+
+  if(!(isset($registration_dto->identifier) && $registration_dto->status == 'PUBLISHED')){
+    return $render_array;
+  }
+
+  $registration_date_insitute_markup = render_registration_date_and_intitute($registration_dto, 'span');
+  $itentifier_markup = l($registration_dto->identifier, $registration_dto->identifier, array('attributes' => array('class' => array('identifier'))));
+
+  $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
+  foreach ($taggged_text_expanded  as $tagged_text){
+    if(isset($tagged_text->entityReference->type) && $tagged_text->entityReference->type == 'SpecimenTypeDesignation') {
+      $mediaDTOs = cdm_ws_get('typedesignation/$0/media', array($tagged_text->entityReference->uuid));
+      if(isset($mediaDTOs[0]->uri)){
+        $media_url_key = '{link-' . $mediaDTOs[0]->uuid . '}';
+        $tagged_text->text = str_replace('[icon]', '[icon]' . $media_url_key, $tagged_text->text);
+        $media_link_map[$media_url_key] =  cdm_external_uri($mediaDTOs[0]->uri, true);
+      }
+    }
+  }
+  $registation_markup = cdm_tagged_text_to_markup($taggged_text_expanded);
+  foreach($media_link_map as $media_url_key => $link){
+    $registation_markup = str_replace($media_url_key, $link, $registation_markup);
+  }
+  if($style == 'citation') {
+    $registation_markup = $registation_markup . ' ' . $itentifier_markup . ' ' . $registration_date_insitute_markup;
+  } else {
+    $render_array['registration-metadata'] = markup_to_render_array('<div class="registration-metadata">' . $itentifier_markup . ' ' . $registration_date_insitute_markup. "</div>", -10);
+  }
+  $render_array['summary'] = markup_to_render_array('<' . $tag_enclosing_summary . 'class="registration-summary">' . $registation_markup . "</' . $tag_enclosing_summary . '>", 0);
+
+  return $render_array;
+}
+
+
+/**
+ * Renders the registrationDate and institutionTitleCache of the $registration_dto as markup.
+ *
+ * @param $registration_dto
+ * @return string
+ *    The markup or an empty string
+ */
+function render_registration_date_and_intitute($registration_dto, $enclosing_tag = 'p') {
+  $registration_date_insitute_markup = '';
+  if ($registration_dto->registrationDate) {
     $date_string = format_datetime($registration_dto->registrationDate);
-    if(isset($registration_dto->institutionTitleCache) && $registration_dto->institutionTitleCache){
+    if (isset($registration_dto->institutionTitleCache) && $registration_dto->institutionTitleCache) {
       $registration_date_insitute_markup =
         t("Registration on @date in @institution", array(
           '@date' => $date_string,
@@ -662,12 +715,9 @@ function compose_registration_dto($registration_dto, $with_citation = true, $wit
           '@date' => $date_string
         ));
     }
-    $render_array['publication_date_and_office'] = markup_to_render_array(
-      '<p class"date-and-institute">'.$registration_date_insitute_markup . '</p>',
-      100);
+    $registration_date_insitute_markup = '<' .$enclosing_tag . ' class="registration-date-and-institute">'. $registration_date_insitute_markup . '</' .$enclosing_tag . '>';
   }
-
-  return $render_array;
+  return $registration_date_insitute_markup;
 }
 
 
@@ -693,6 +743,7 @@ function render_registrations($registrations)
 /**
  * Renders a registration
  *
+ * TODO replace by compose_registration_dto_compact
  * @param $registration
  */
 function render_registration($registration){
@@ -701,13 +752,28 @@ function render_registration($registration){
   if(isset($registration->identifier) && $registration->status == 'PUBLISHED'){
     $office_class_attribute = '';
     if(isset($registration->institution->titleCache)){
-      $office_class_attribute = 'registration-' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '-', $registration->institution->titleCache));
+      $office_class_attribute = registration_intitute_class_attribute($registration);
     }
     $markup = "<span class=\"registration $office_class_attribute\">" . l($registration->identifier, $registration->identifier) . ', '
       .  preg_replace('/^([^T]*)(.*)$/', '${1}', $registration->registrationDate)
       . '</span>';
   }
   return $markup;
+}
+
+/**
+ * @param $registration
+ * @return string
+ */
+function registration_intitute_class_attribute($registration_dto)
+{
+  if(isset($registration_dto->institutionTitleCache)){
+    $institutionTitleCache = $registration_dto->institutionTitleCache;
+  } else {
+    // fall back option to also support cdm entities
+    $institutionTitleCache = @$registration_dto->institution->titleCache;
+  }
+  return $institutionTitleCache ? 'registration-' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '-', $institutionTitleCache)) : '';
 }
 
 
