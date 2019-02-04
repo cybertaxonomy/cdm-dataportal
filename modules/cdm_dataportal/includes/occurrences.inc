@@ -433,6 +433,8 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         break;
 
                     case 'specimenTypeDesignations':
+
+                        //TODO: better display of details!!
                         @_description_list_group_add(
                             $groups,
                             cdm_occurrence_field_name_label($field),
@@ -988,7 +990,8 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
             'protectedTitleCache',
             'class',
             'uuid',
-            'derivates'
+            'derivates',
+            'collection'
         );
     }
     $items = array();
