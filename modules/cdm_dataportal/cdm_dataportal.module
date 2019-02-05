@@ -1941,15 +1941,15 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
       }
       drupal_set_title(t('Registration ' . $status_text), PASS_THROUGH);
       //$status_message;
-      $render_array['error'] = markup_to_render_array("A registration with the identifier  " . $registration_identifier . " is " . $status_text);
+      drupal_set_message("A registration with the identifier  " . $registration_identifier . " is " . $status_text, "status");
     } else {
       drupal_set_title(t('Registration not found'), PASS_THROUGH);
-      $render_array['error'] = markup_to_render_array("A registration with the identifier  " . $registration_identifier . " does not exist.");
+      drupal_set_message("A registration with the identifier  " . $registration_identifier . " is " . $status_text, "warning");
     }
   }
 
   $render_array = array(
-    '#prefix' => '<div class="registration">',
+    '#prefix' => '<div id="registration">',
     'registration' => $render_array,
     '#suffix' => '</div>',
   );
