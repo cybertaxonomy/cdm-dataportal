@@ -803,6 +803,7 @@ function registration_intitute_class_attribute($registration_dto)
  */
 function compose_name_type_designations($type_entity_refs){
   $render_array = array();
+  $preferredStableUri = '';
   foreach($type_entity_refs as $type_status => $name_type){
     $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($name_type->uuid, 'preferredUri'));
     if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
