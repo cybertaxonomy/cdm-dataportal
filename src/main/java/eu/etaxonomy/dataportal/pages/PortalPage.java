@@ -1,6 +1,5 @@
 package eu.etaxonomy.dataportal.pages;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -42,7 +41,7 @@ import eu.etaxonomy.dataportal.selenium.UrlLoaded;
  * @author a.kohlbecker
  *
  */
-public abstract class  PortalPage {
+public abstract class PortalPage {
 
     /**
      *
@@ -52,6 +51,8 @@ public abstract class  PortalPage {
     public static final Logger logger = Logger.getLogger(PortalPage.class);
 
     protected final static String DRUPAL_PAGE_QUERY_BASE = "?q=";
+
+    public enum MessageType {status, warning, error} // needs to be lowercase
 
     protected WebDriver driver;
 
@@ -100,17 +101,9 @@ public abstract class  PortalPage {
     @CacheLookup
     protected WebElement classificationBrowserBlock;
 
-//    @FindBys({
-//        @FindBy(className="messages"),
-//        @FindBy(className="error")}
-//        )
     @FindBy(className="messages")
     @CacheLookup
-    protected WebElement messagesErrorCichorieaeTheme;
-
-    @FindBy(className="messages_error")
-    @CacheLookup
-    protected WebElement messagesErrorOtherThemes;
+    protected List<WebElement> messages;
 
     /**
      * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
@@ -146,12 +139,7 @@ public abstract class  PortalPage {
         logger.info("loading " + pageUrl);
 
         try {
-            assertTrue("The page must not show an error box", !messagesErrorCichorieaeTheme.getAttribute("class").contains("error") && messagesErrorCichorieaeTheme.getText() == null);
-        } catch (NoSuchElementException e) {
-            //IGNORE since this is expected!
-        }
-        try {
-            assertNull("The page must not show an error box", messagesErrorOtherThemes.getText());
+            assertTrue("The page must not show an error box", getErrors() == null);
         } catch (NoSuchElementException e) {
             //IGNORE since this is expected!
         }
@@ -263,18 +251,29 @@ public abstract class  PortalPage {
         return driver.getTitle();
     }
 
+    public String getMessages(MessageType messageType){
+        if(messages != null){
+            for(WebElement m : messages){
+                if(m.getAttribute("class").contains(messageType.name())){
+                    return m.getText();
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * @return the warning messages from the Drupal message box
      */
     public String getWarnings() {
-        return null; //TODO unimplemented
+        return getMessages(MessageType.warning);
     }
 
     /**
      * @return the error messages from the Drupal message box
      */
     public String getErrors() {
-        return null; //TODO unimplemented
+        return getMessages(MessageType.error);
     }
 
     public String getAuthorInformationText() {
