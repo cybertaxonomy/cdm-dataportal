@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 
@@ -28,6 +29,7 @@ import eu.etaxonomy.dataportal.pages.RegistrationPage;
  *
  */
 @DataPortalContexts( { DataPortalSite.reference })
+@Ignore
 public class RegistrationPageTest extends CdmDataPortalTestBase {
 
     private static final String planothidium_victori_id = "http://testbank.org/100001";
