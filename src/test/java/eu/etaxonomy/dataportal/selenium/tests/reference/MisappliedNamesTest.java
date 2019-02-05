@@ -39,7 +39,6 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  */
 
 @DataPortalContexts( { DataPortalSite.reference })
-@Ignore
 public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
     static final UUID miconia_cubacinerea_Uuid = UUID.fromString("c6716cee-2039-4ba8-a239-4b1b353f9c84");
