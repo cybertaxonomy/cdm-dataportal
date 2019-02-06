@@ -12,7 +12,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 
@@ -29,7 +28,6 @@ import eu.etaxonomy.dataportal.pages.RegistrationPage;
  *
  */
 @DataPortalContexts( { DataPortalSite.reference })
-@Ignore
 public class RegistrationPageTest extends CdmDataPortalTestBase {
 
     private static final String planothidium_victori_id = "http://testbank.org/100001";
@@ -62,9 +60,15 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals("Registration Id: http://testbank.org/100001" + titleSuffix, driver.getTitle());
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
-        assertEquals("Planothidium victori Braidwood, J. & Kilroy, C. in Phytotaxa 64. 2012", regItem.getNameElement().getText());
-        assertEquals("Braidwood, J. & Kilroy, C., Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species. in Phytotaxa 64: 11-45. 2012", regItem.getCitation().getText());
-        assertEquals("Registration on 2019-02-04 18:01:53", regItem.getMetadata().getText());
+        assertEquals(
+                "Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 2012",
+                regItem.getNameElement().getText());
+        assertEquals(
+                "Novis, P. M., Braidwood, J. & Kilroy, C., Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species in Phytotaxa 64: 11-45. 2012",
+                regItem.getCitation().getText());
+        assertEquals(
+                "Registration on 2019-02-06 14:21:52",
+                regItem.getMetadata().getText());
     }
 
     @Test
@@ -75,9 +79,15 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals("Registration Id: http://testbank.org/100002" + titleSuffix, driver.getTitle());
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
-        assertEquals("Epitype: (B 40 0040871).", regItem.getSpecimenTypeDesignations().get(0).getText());
-        assertEquals("Jahn, R, Abarca, N, Gemeinholzer, B & al., Planothidium lanceolatum and Planothicium frequentissimum reinvestigated wieht molecular methods and morphology: four new species and the taxonomic importance of the sinus and cavum in Diatom Research 32: 75-107. 2017", regItem.getCitation().getText());
-        assertEquals("Registration on 2019-02-05 15:18:16", regItem.getMetadata().getText());
+        assertEquals(
+                "Epitype: (B 40 0040871).",
+                regItem.getSpecimenTypeDesignations().get(0).getText());
+        assertEquals(
+                "Jahn, R., Abarca, N., Gemeinholzer, B. & al., Planothidium lanceolatum and Planothicium frequentissimum reinvestigated wieht molecular methods and morphology: four new species and the taxonomic importance of the sinus and cavum in Diatom Research 32: 75-107. 2017",
+                regItem.getCitation().getText());
+        assertEquals(
+                "Registration on 2019-02-06 14:20:51",
+                regItem.getMetadata().getText());
     }
 
     @Test
@@ -92,7 +102,9 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         } catch(NoSuchElementException e) {/* IGNORE */}
         assertNull(regItem);
 
-        assertEquals("Status message\nA registration with the identifier http://testbank.org/100003 is in preparation", p.getMessages(MessageType.status));
+        assertEquals(
+                "Status message\nA registration with the identifier http://testbank.org/100003 is in preparation",
+                p.getMessages(MessageType.status));
     }
 
 
@@ -104,10 +116,18 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals("Registration Id: http://testbank.org/100004" + titleSuffix, driver.getTitle());
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
-        assertEquals("Nodosilinea radiophila Heidari, F., Zima, J., Riahi, H. & Hauer, T. in Fottea 18(2): 142. fig. 5C, D. 1.11.2018", regItem.getNameElement().getText());
-        assertEquals("Holotype: (CBFS A–83–1).", regItem.getSpecimenTypeDesignations().get(0).getText());
-        assertEquals("Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018: 142. fig. 5C, D", regItem.getCitation().getText());
-        assertEquals("Registration on 2019-02-05 15:16:08", regItem.getMetadata().getText());
+        assertEquals(
+                "Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1.11.2018",
+                regItem.getNameElement().getText());
+        assertEquals(
+                "Holotype: (CBFS A–83–1).",
+                regItem.getSpecimenTypeDesignations().get(0).getText());
+        assertEquals(
+                "Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
+                regItem.getCitation().getText());
+        assertEquals(
+                "Registration on 2019-02-06 14:16:45",
+                regItem.getMetadata().getText());
     }
 
     @Test
@@ -118,10 +138,18 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals("Registration Id: http://testbank.org/100005" + titleSuffix, driver.getTitle());
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
-        assertEquals("Ramsaria Heidari, F. & Hauer, T. in Fottea 18(2): 146. 1.11.2018", regItem.getNameElement().getText());
-        assertEquals("Orig. des.: Ramsaria avicennae Heidari, F. & Hauer, T. Heidari, F. & Hauer, T. - in Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018:146", regItem.getNameTypeDesignations().get(0).getText());
-        assertEquals("Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018", regItem.getCitation().getText());
-        assertEquals("Registration on 2019-02-05 15:16:14", regItem.getMetadata().getText());
+        assertEquals(
+                "Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1.11.2018",
+                regItem.getNameElement().getText());
+        assertEquals(
+                "Orig. des.: Ramsaria avicennae Heidari & Hauer Heidari, F. & Hauer, T. - in Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018:146",
+                regItem.getNameTypeDesignations().get(0).getText());
+        assertEquals(
+                "Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
+                regItem.getCitation().getText());
+        assertEquals(
+                "Registration on 2019-02-06 13:54:35",
+                regItem.getMetadata().getText());
     }
 
     @Test
@@ -132,10 +160,18 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals("Registration Id: http://testbank.org/100006" + titleSuffix, driver.getTitle());
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
-        assertEquals("Ramsaria avicennae Heidari, F. & Hauer, T. in Fottea 18(2): 146, fig. 3F, G. 1.11.2018", regItem.getNameElement().getText());
-        assertEquals("Holotype: (CBFS A–087–1).", regItem.getSpecimenTypeDesignations().get(0).getText());
-        assertEquals("Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018", regItem.getCitation().getText());
-        assertEquals("Registration on 2019-02-05 15:16:23", regItem.getMetadata().getText());
+        assertEquals(
+                "Ramsaria avicennae Heidari & Hauer in Fottea 18(2): 146, fig. 3F, G. 1.11.2018",
+                regItem.getNameElement().getText());
+        assertEquals(
+                "Holotype: (CBFS A–087–1).",
+                regItem.getSpecimenTypeDesignations().get(0).getText());
+        assertEquals(
+                "Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
+                regItem.getCitation().getText());
+        assertEquals(
+                "Registration on 2019-02-06 13:54:29",
+                regItem.getMetadata().getText());
     }
 
 
