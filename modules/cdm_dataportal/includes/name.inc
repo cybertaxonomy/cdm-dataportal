@@ -583,6 +583,10 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
     $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null, false));
     $render_array['name_relations']['#weight'] = 10;
+  } else {
+    // in this case the registration must have a
+    $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->typifiedNameRef->uuid);
+    $render_array['typified_name'] = markup_to_render_array('<p class="typified-name">for ' . render_taxon_or_name($name) . '</p>', 40);
   }
   if(is_object($registration_dto->orderdTypeDesignationWorkingSets)) {
     $field_unit_uuids = array();
