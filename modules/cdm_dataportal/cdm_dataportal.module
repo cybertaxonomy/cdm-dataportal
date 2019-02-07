@@ -1944,7 +1944,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
       drupal_set_message("A registration with the identifier  " . $registration_identifier . " is " . $status_text, "status");
     } else {
       drupal_set_title(t('Registration not found'), PASS_THROUGH);
-      drupal_set_message("A registration with the identifier  " . $registration_identifier . " is " . $status_text, "warning");
+      drupal_set_message("A registration with the identifier  " . $registration_identifier . " does not exist", "warning");
     }
   }
 
