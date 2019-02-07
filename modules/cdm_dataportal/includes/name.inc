@@ -579,7 +579,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   // name and typedesignation in detail
   if($registration_dto->nameRef){
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
-    $render_array['name'] = markup_to_render_array('<p class="name">' . render_taxon_or_name($name) . '</p>', 0);
+    $render_array['published_name'] = markup_to_render_array('<p class="published-name">' . render_taxon_or_name($name) . '</p>', 0);
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
     $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null, false));
     $render_array['name_relations']['#weight'] = 10;

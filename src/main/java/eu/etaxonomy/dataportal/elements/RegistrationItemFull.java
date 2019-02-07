@@ -30,6 +30,10 @@ public class RegistrationItemFull extends RegistrationItem{
         return nameElement;
     }
 
+    public WebElement getTypifiedNameElement() {
+        return typifiedNameElement;
+    }
+
     public List<WebElement> getSpecimenTypeDesignations() {
         return specimenTypeDesignations;
     }

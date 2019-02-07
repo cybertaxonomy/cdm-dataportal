@@ -38,6 +38,7 @@ abstract public class RegistrationItem extends BaseElement {
     protected WebElement metadata;
     protected WebElement identifier;
     protected WebElement nameElement;
+    protected WebElement typifiedNameElement;
     protected WebElement summaryElement;
 
     /**"
@@ -56,8 +57,15 @@ abstract public class RegistrationItem extends BaseElement {
 
         if(style == null){
             try {
-                nameElement = containerElement.findElement(By.cssSelector(".name"));
-            } catch (Exception e) { /* IGNORE */}
+                nameElement = containerElement.findElement(By.cssSelector(".published-name"));
+            } catch (Exception e) {
+                try {
+                    typifiedNameElement = containerElement.findElement(By.cssSelector(".typified-name"));
+                } catch (Exception e2) {
+                    // typifiedNameElement must exist whennameElement is not present, so we throw the  Exception in this case:
+                    throw e2;
+                }
+            }
             try{
                 specimenTypeDesignations = containerElement.findElements(By.cssSelector(".specimen_type_designation"));
             } catch (Exception e) { /* IGNORE */}

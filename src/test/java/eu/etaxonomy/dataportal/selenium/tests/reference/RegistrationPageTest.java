@@ -83,6 +83,9 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Epitype: (B 40 0040871).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
+                "for Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 2012",
+                regItem.getTypifiedNameElement().getText());
+        assertEquals(
                 "Jahn, R., Abarca, N., Gemeinholzer, B. & al., Planothidium lanceolatum and Planothicium frequentissimum reinvestigated wieht molecular methods and morphology: four new species and the taxonomic importance of the sinus and cavum in Diatom Research 32: 75-107. 2017",
                 regItem.getCitation().getText());
         assertEquals(
