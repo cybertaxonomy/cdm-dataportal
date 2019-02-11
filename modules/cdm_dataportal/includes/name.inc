@@ -816,15 +816,17 @@ function registration_intitute_class_attribute($registration_dto)
 function compose_name_type_designations($type_entity_refs){
   $render_array = array();
   $preferredStableUri = '';
-  foreach($type_entity_refs as $type_status => $name_type){
-    $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($name_type->uuid, 'preferredUri'));
-    if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
-      $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
-    }
-    $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type)  . '"><span class="type_status">'. ucfirst($type_status) . "</span>: "
-      . $name_type->label
-      . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
-      . '</div>');
+  foreach($type_entity_refs as $type_status => $name_types){
+    foreach ($name_types as $name_type){
+      $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($name_type->uuid, 'preferredUri'));
+      if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
+        $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
+      }
+      $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type)  . '"><span class="type_status">'. ucfirst($type_status) . "</span>: "
+        . $name_type->label
+        . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
+        . '</div>');
+      }
   }
   return $render_array;
 }
