@@ -592,19 +592,27 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     $field_unit_uuids = array();
     $specimen_type_designation_refs = array();
     $name_type_designation_refs = array();
-    foreach ((array)$registration_dto->orderdTypeDesignationWorkingSets as $field_unit_ref => $obj) {
-      $tokens = explode("#", $field_unit_ref);
-      foreach ($obj as $type_status => $entity_reference_list) {
-        // NOTE: there is always only one element, since we use the foreach to extract the objects field name and value
-        $entity_reference = $entity_reference_list[0];
-      }
+    foreach ((array)$registration_dto->orderdTypeDesignationWorkingSets as $workingset_ref => $obj) {
+      $tokens = explode("#", $workingset_ref);
+      $types_in_fieldunit = get_object_vars($obj); // convert into associative array
+
       if ($tokens[0] == 'NameTypeDesignation') {
-        foreach ($obj as $type_status => $entity_reference_list) {
-          $name_type_designation_refs[$type_status] = $entity_reference;
+        foreach ($types_in_fieldunit as $type_status => $entity_reference_list) {
+          if(!isset($name_type_designation_refs[$type_status])){
+            $name_type_designation_refs[$type_status]  = $entity_reference_list;
+          } else {
+            array_push($name_type_designation_refs[$type_status] ,$entity_reference_list);
+          }
         }
       } else if ($tokens[0] == 'FieldUnit'){
         $field_unit_uuids[] = $tokens[1];
-        $specimen_type_designation_refs[$type_status] = $entity_reference;
+        foreach ($types_in_fieldunit as $type_status => $entity_reference_list) {
+          if(!isset($specimen_type_designation_refs[$type_status])){
+            $specimen_type_designation_refs[$type_status] =  $entity_reference_list;
+          } else {
+            array_push($specimen_type_designation_refs[$type_status], $entity_reference_list);
+          }
+        }
       } else {
         drupal_set_message("Unimplemented type: " . $tokens[0], 'error');
       }
@@ -834,61 +842,64 @@ function compose_specimen_type_designations($type_entity_refs){
 
   $render_array = array();
 
-  foreach($type_entity_refs as $type_status => $specimen_type){
-    $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($specimen_type->uuid));
+  foreach($type_entity_refs as $type_status => $specimen_types){
+    foreach($specimen_types as $specimen_type){
 
-    $preferredStableUri = '';
-    $citation_markup = '';
-    $media = '';
+      $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($specimen_type->uuid));
 
-    // preferredStableUri
-    if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
-      $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
-    }
+      $preferredStableUri = '';
+      $citation_markup = '';
+      $media = '';
 
-    $mediaSpecimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($type_designation->typeSpecimen->uuid, 'mediaSpecimen'));
-    if($mediaSpecimen){
-      // compose output
-      // mediaURI
-      if(isset($mediaSpecimen->representations[0])) {
-        $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
-        $captionElements = array(
-          '#uri' => t('open media'),
-          'elements' => array('-none-'),
-          'sources_as_content' => true
+      // preferredStableUri
+      if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
+        $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
+      }
+
+      $mediaSpecimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($type_designation->typeSpecimen->uuid, 'mediaSpecimen'));
+      if($mediaSpecimen){
+        // compose output
+        // mediaURI
+        if(isset($mediaSpecimen->representations[0])) {
+          $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+          $captionElements = array(
+            '#uri' => t('open media'),
+            'elements' => array('-none-'),
+            'sources_as_content' => true
+          );
+          $media = compose_cdm_media_gallerie(array(
+            'mediaList' => array($mediaSpecimen),
+            'galleryName' => CDM_DATAPORTAL_TYPE_SPECIMEN_GALLERY_NAME . '_' . $specimen_type->uuid,
+            'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+            'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+            'captionElements' => $captionElements,
+          ));
+        }
+        // citation and detail
+        $annotations_and_sources = handle_annotations_and_sources(
+            $mediaSpecimen,
+            array(
+                'sources_as_content' => true,
+                'link_to_name_used_in_source' => false,
+                'link_to_reference' => true,
+                'add_footnote_keys' => false,
+                'bibliography_aware' => false),
+            '',
+            null
         );
-        $media = compose_cdm_media_gallerie(array(
-          'mediaList' => array($mediaSpecimen),
-          'galleryName' => CDM_DATAPORTAL_TYPE_SPECIMEN_GALLERY_NAME . '_' . $specimen_type->uuid,
-          'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
-          'cols' => $gallery_settings['cdm_dataportal_media_cols'],
-          'captionElements' => $captionElements,
-        ));
+        if(is_array( $annotations_and_sources['source_references'])){
+          $citation_markup = join(', ', $annotations_and_sources['source_references']);
+        }
       }
-      // citation and detail
-      $annotations_and_sources = handle_annotations_and_sources(
-          $mediaSpecimen,
-          array(
-              'sources_as_content' => true,
-              'link_to_name_used_in_source' => false,
-              'link_to_reference' => true,
-              'add_footnote_keys' => false,
-              'bibliography_aware' => false),
-          '',
-          null
-      );
-      if(is_array( $annotations_and_sources['source_references'])){
-        $citation_markup = join(', ', $annotations_and_sources['source_references']);
-      }
-    }
 
-    $render_array[] = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '">
-        <span class="type_status">' . ucfirst($type_status) . "</span>: "
-      . $specimen_type->label
-      . ($citation_markup ? ' '. $citation_markup : '')
-      . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
-      . $media
-      . '</div>');
+      $render_array[] = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '">
+          <span class="type_status">' . ucfirst($type_status) . "</span>: "
+        . $specimen_type->label
+        . ($citation_markup ? ' '. $citation_markup : '')
+        . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
+        . $media
+        . '</div>');
+    }
   }
   return $render_array;
 }
