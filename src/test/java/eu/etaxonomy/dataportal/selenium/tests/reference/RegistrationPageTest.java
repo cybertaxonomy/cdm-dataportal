@@ -10,12 +10,15 @@ package eu.etaxonomy.dataportal.selenium.tests.reference;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
+import eu.etaxonomy.dataportal.ElementUtils;
+import eu.etaxonomy.dataportal.elements.GalleryImage;
 import eu.etaxonomy.dataportal.elements.RegistrationItemFull;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
@@ -41,6 +44,8 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
     private static final String ramsaria_id = "http://testbank.org/100005";
 
     private static final String ramsaria_avicennae_id = "http://testbank.org/100006";
+
+    private static final String glenodinium_apiculatum_types_id = "http://testbank.org/100008";
 
     String titleSuffix = " | Integration test reference";
 
@@ -174,6 +179,48 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 13:54:29",
+                regItem.getMetadata().getText());
+    }
+
+
+
+    @Test
+    public void test100008() throws MalformedURLException, UnsupportedEncodingException{
+
+        RegistrationPage p = new RegistrationPage(driver, getContext(),  glenodinium_apiculatum_types_id);
+
+        assertEquals("Registration Id: http://testbank.org/100008" + titleSuffix, driver.getTitle());
+        RegistrationItemFull regItem = p.getRegistrationItem();
+        assertNotNull(regItem);
+        assertEquals(
+                "Lectotype: [icon] (BHUPM 671).\nopen media",
+                regItem.getSpecimenTypeDesignations().get(0).getText());
+        List<List<GalleryImage>> galleryImages = ElementUtils.getGalleryImages(regItem.getSpecimenTypeDesignations().get(0).getElement(), p.getWait());
+        assertEquals("Expecting one row of images", 1, galleryImages.size());
+        assertEquals("Expecting 1 image in row", 1, galleryImages.get(0).size());
+        assertEquals(
+                "http://download.naturkundemuseum-berlin.de/Ehrenberg/Ec%20Drawings/Ec%20draw%20001-999/Ec%20draw%20600-699/ECdraw671.jpg",
+                galleryImages.get(0).get(0).getImageLink().getUrl());
+        assertEquals(
+                "Isolectotype: (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
+                regItem.getSpecimenTypeDesignations().get(1).getText());
+        assertEquals(
+                "http://herbarium.bgbm.org/object/B400042045",
+                regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(0).getText());
+        assertEquals(
+                "http://herbarium.bgbm.org/object/B400042045",
+                regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(0).getUrl());
+        assertEquals(
+                "Epitype: (CEDiT 2017E68).",
+                regItem.getSpecimenTypeDesignations().get(2).getText());
+        assertEquals(
+                "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24.7.1838-8.1838",
+                regItem.getTypifiedNameElement().getText());
+        assertEquals(
+                "Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H., Still curling after all these years: Glenodinium apiculatum Ehrenb. (Peridiniales, Dinophyceae) repeatedly found at its type locality in Berlin (Germany) in Systematics and Biodiversity. 2017",
+                regItem.getCitation().getText());
+        assertEquals(
+                "Registration on 2019-02-12 09:08:29",
                 regItem.getMetadata().getText());
     }
 

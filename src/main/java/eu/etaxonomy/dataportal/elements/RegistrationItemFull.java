@@ -34,11 +34,11 @@ public class RegistrationItemFull extends RegistrationItem{
         return typifiedNameElement;
     }
 
-    public List<WebElement> getSpecimenTypeDesignations() {
+    public List<BaseElement> getSpecimenTypeDesignations() {
         return specimenTypeDesignations;
     }
 
-    public List<WebElement> getNameTypeDesignations() {
+    public List<BaseElement> getNameTypeDesignations() {
         return nameTypeDesignations;
     }
 

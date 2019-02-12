@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -32,8 +33,8 @@ abstract public class RegistrationItem extends BaseElement {
     }
 
     protected Style style = null;
-    protected List<WebElement> specimenTypeDesignations;
-    protected List<WebElement> nameTypeDesignations;
+    protected List<BaseElement> specimenTypeDesignations;
+    protected List<BaseElement> nameTypeDesignations;
     protected WebElement citation;
     protected WebElement metadata;
     protected WebElement identifier;
@@ -67,10 +68,18 @@ abstract public class RegistrationItem extends BaseElement {
                 }
             }
             try{
-                specimenTypeDesignations = containerElement.findElements(By.cssSelector(".specimen_type_designation"));
+                List<WebElement> std = containerElement.findElements(By.cssSelector(".specimen_type_designation"));
+                specimenTypeDesignations = new ArrayList<BaseElement>(std.size());
+                for(WebElement we : std){
+                    specimenTypeDesignations.add(new BaseElement(we));
+                }
             } catch (Exception e) { /* IGNORE */}
             try {
-                nameTypeDesignations = containerElement.findElements(By.cssSelector(".name_type_designation"));
+                List<WebElement> ntd = containerElement.findElements(By.cssSelector(".name_type_designation"));
+                nameTypeDesignations = new ArrayList<BaseElement>(ntd.size());
+                for(WebElement we : ntd){
+                    nameTypeDesignations.add(new BaseElement(we));
+                }
             } catch (Exception e) { /* IGNORE */}
             try {
                 citation = containerElement.findElement(By.cssSelector(".citation"));

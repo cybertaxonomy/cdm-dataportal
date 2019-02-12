@@ -51,6 +51,7 @@ public class ElementUtils {
     }
 
     /**
+     * @param webElement the element containing the media gallery. The gallery must have the class attribute <code>media_gallery</code>.
      * @return a two dimensional array representing the media items in the gallery, or null if no gallery exists.
      */
     public static List<List<GalleryImage>> getGalleryImages(WebElement webElement, WebDriverWait wait) {
