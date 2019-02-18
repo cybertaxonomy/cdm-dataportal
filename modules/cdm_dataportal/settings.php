@@ -1870,9 +1870,9 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $c
 
   $form[$form_name]['cdm_dataportal_media_maxextend'] = array(
     '#type' => 'textfield',
-    '#title' => t('Thumbnail size') . ':',
+    '#title' => t('Thumbnail size (max of width or height)') . ':',
     '#default_value' => $gallery_settings['cdm_dataportal_media_maxextend'],
-    '#description' => t('Select the size of each individual thumbnail.'),
+    '#description' => t('The maximum extend in either dimension, width or height, in pixels for the thumbnail images in the gallery.'),
   );
 
   $form[$form_name]['cdm_dataportal_media_cols'] = array(
@@ -2107,7 +2107,7 @@ function cdm_settings_layout_taxon() {
   // -- MEDIA THUMBNAILS -- //
   $form_name = CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME;
   $form_title = 'Taxon Profile Images';
-  $form_description = '<p>The different section in the taxon  profile can have images associated with them. These images are displayed in a gallery of thumbnails wich can be configuered here:</p>';
+  $form_description = '<p>The different sections in the taxon  profile can have images associated with them. These images are displayed in a gallery of thumbnails wich can be configuered here:</p>';
   $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
 
   // ---- FEATURE TREE BLOCKS ---- //
