@@ -561,18 +561,6 @@ function cdm_dataportal_menu() {
    );
    */
 
-  // if (arg(0)=='user' && ($uid=arg(1)) && is_numeric($uid)) {
-  // User configuration of cdm_dataportal.
-  $items['user/%/cdm_dataportal'] = array(
-    'title' => 'cdm_dataportal',
-    'access arguments' => array('access cdm content'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('cdm_dataportal_user_form'),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 10,
-  );
-  // }
-
   // 'May not cache' in D5.
   $items['cdm_dataportal/name/%'] = array(
     // 'page callback' => 'cdm_dataportal_view_name',
@@ -740,107 +728,6 @@ function cdm_dataportal_requirements($phase) {
 
     }
     return $requirements;
-}
-
-
-/**
- * The function generate form for own user cdm dataportal configurations.
- */
-function cdm_dataportal_user_form($form, &$form_state) {
-
-  global $user;
-  $checkbox_value = 'cdm_dataportal_' . $user->uid . '_default_tab_active';
-
-  $form['taxon_page_tabs'] = array(
-      '#type' => 'fieldset',
-      '#tree' => true,
-      '#title' => t('Taxon page tabs'),
-  );
-
-  $form['taxon_page_tabs']['user_defined'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Activate user default configuration'),
-    '#default_value' => variable_get($checkbox_value, 0),
-    '#description' => t('Check this if you want configure your own default tab from the below menu.'),
-  );
-
-  $form['taxon_page_tabs']['default_tab'] = array(
-    '#type' => 'select',
-    '#title' => t('Default tab to display'),
-    '#default_value' => get_default_taxon_tab(TRUE),
-    '#options' => unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB),
-    '#description' => t('<p>Select the default tab to display when visiting a taxon page. Only available if Tabbed Taxon Page is enable.</p>
-              <strong>Note:</strong> After performing a search and clicking in any synonym, the taxon tab
-              to be rendered will be the synonymy of the accepted taxon and not the above selected tab.'),
-  );
-
-
-  if(false){
-    $form['developer_options'] = array(
-        '#type' => 'fieldset',
-        '#tree' => true,
-        '#title' => t('Developer options'),
-    );
-
-    $form['developer_options']['show_render_path'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Display the render path for each taxon name.'),
-      '#default_value' => variable_get($checkbox_value, 0),
-      '#description' => t('This option is very helpful if you are editing the !link for taxon names.',
-        array(
-            '!link' => l(
-              'render template', 'admin/config/cdm_dataportal/settings/layout', array('fragment' => 'edit-cdm-name-render-templates'))
-            )
-        ),
-    );
-  }
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Submit'),
-  );
-
-  return $form;
-}
-
-/**
- * Form submission handler for user_form().
- *
- * Submits the user cdm dataportal configurations.
- */
-function cdm_dataportal_user_form_submit($form, &$form_state) {
-  global $user;
-  $msg_type = 'status';
-  $username = $user->name;
-  $variable_to_use = 'cdm_dataportal_' . $user->uid . '_default_tab';
-
-  // FIXME: this is completely wrong, see user_profile_form_submit()
-
-  // it is only possible to change own user settings
-  if (arg(0) == 'user' && is_numeric(arg(1)) && $user->uid == arg(1)) {
-
-    // DEFAULT_TAXON_TAB
-    $variable = unserialize(CDM_DATAPORTAL_DEFAULT_TAXON_TAB);
-    variable_set($variable_to_use . '_active', $form_state['values']['taxon_page_tabs']['user_defined']);
-    variable_set($variable_to_use, $form_state['values']['taxon_page_tabs']['default_tab']);
-    if ($form_state['values']['taxon_page_tabs']['user_defined']) {
-      drupal_set_message(check_plain(t('The user default tab will be used for the next taxon site visit.')));
-      drupal_set_message(check_plain(t('The user default tab has been changed to: !tab for the user !user', array(
-        '!tab' => $variable[variable_get($variable_to_use, 0)],
-        '!user' => $username,
-      ))), $msg_type);
-    }
-    else {
-      drupal_set_message(check_plain(t('The user default tab wont be used for
-        the next taxon site, check the box if you want to use the user default configuration.')));
-    }
-
-  }
-  else {
-    // Problem with the user id => variables wont be saved.
-    $msg_type = 'warning';
-    drupal_set_message(check_plain(t('Default tab has not been saved due to user id problems')), $msg_type);
-  }
 }
 
 /**
