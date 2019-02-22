@@ -35,6 +35,8 @@
   define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
   define('CDM_DATAPORTAL_SPECIMEN_DERIVATE_TREE', 0);
 
+  define('CDM_REGISTRATION_PRESISTENT_IDENTIFIER_AS_LINK', 'cdm_registration_presistent_identifier_as_link');
+
   /* annotationTypeKeys */
   $annotationTypeKeys = array_keys(cdm_vocabulary_as_option(UUID_ANNOTATION_TYPE));
   if (in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
@@ -1611,6 +1613,20 @@ function cdm_settings_layout() {
       '#title' => t('Show advanced search link'),
       '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
       '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
+  );
+
+  // --- Registrations --- //
+  $form['registrations'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Registrations'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+  $form['registrations']['cdm_registration_presistent_identifier_as_link'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use the persistent http identifier as link'),
+    '#default_value' => variable_get('cdm_registration_presistent_identifier_as_link', 0),
+    '#description' => t('Switch the portal from using the drupal path <code>registration/{url encoded persistent http identifier}</code> to using the persistent http identifier directly as link.'),
   );
 
   // ---- Taxon Name Rendering --- //

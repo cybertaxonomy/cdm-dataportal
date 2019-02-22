@@ -2128,7 +2128,11 @@ function path_to_reference($uuid) {
  */
 function path_to_registration($identifier) {
 
-  return 'cdm_dataportal/registration/' . urlencode($identifier);
+  if(variable_get(CDM_REGISTRATION_PRESISTENT_IDENTIFIER_AS_LINK)){
+    return $identifier;
+  } else {
+    return 'cdm_dataportal/registration/' . urlencode($identifier);
+  }
 }
 
 /**
