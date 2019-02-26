@@ -460,6 +460,11 @@ function compose_description_element($element, $feature_block_settings, $element
     $footnote_list_key_suggestion
   );
 
+  $timescope_markup = '';
+  if(isset($element->timeperiod)){
+    $timescope_markup = ' ' . timePeriodToString($element->timeperiod, false);
+  }
+
   // handle the special case were the TextData is used as container for original source with name
   // used in source information without any text stored in it.
   $names_used_in_source_markup = '';
@@ -473,7 +478,6 @@ function compose_description_element($element, $feature_block_settings, $element
     }
   }
 
-
   $source_references_markup = '';
   if (!empty($annotations_and_sources['source_references'])) {
     $source_references_markup = '<span class="sources">' . join(' ', $annotations_and_sources['source_references']) . '<span>';
@@ -483,7 +487,7 @@ function compose_description_element($element, $feature_block_settings, $element
   if ($prepend_feature_label) {
     $feature_label = '<span class="nested-feature-tree-feature-label">' . $element->feature->representation_L10n . ':</span> ';
   }
-  $content_markup = $names_used_in_source_markup . $element_markup . $source_references_markup;
+  $content_markup = $names_used_in_source_markup . $element_markup . $timescope_markup . $source_references_markup;
 
   if(!$content_markup && $feature_block_settings['sources_as_content'] !== 1){
     // no textual content? So skip this element completely, even if there could be an footnote key
