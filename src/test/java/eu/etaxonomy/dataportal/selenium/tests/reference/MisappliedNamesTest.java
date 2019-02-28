@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.ElementUtils;
 import eu.etaxonomy.dataportal.StringConstants;
@@ -47,8 +48,6 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
     static final UUID nepenthes_abalata_Uuid = UUID.fromString("9b588d8a-c4fa-430a-b9c7-026bf715ecf6");
 
-
-
     @Before
     public void setUp() throws Exception {
         driver.get(getContext().getBaseUri().toString());
@@ -68,17 +67,17 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
 
         // no sensu but with Combination Authors:
-        assertEquals("–\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(1).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(1).getText());
         //
-        assertEquals("–\n\"Ossaea glomerata\" sensu A&S1; sensu A&S: 221; sensu A&S: 331; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(2).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S1; sensu A&S: 221; sensu A&S: 331; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(2).getText());
         // with doubtful flag
-        assertEquals("–\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(3).getText());
+        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(3).getText());
 
-        assertEquals("p.p.MAN\nOssaea glomerata sec. A&S1; sec. Species solaris", p.getMisappliedName(4).getText());
+        assertEquals(UTF8.EM_DASH_DOUBLE + "(p.p.)\nOssaea glomerata sec. A&S1; sec. Species solaris", p.getMisappliedName(4).getText());
 
-        assertEquals("partial MAN\nOssaea glomerata sec. A&S: 331; auct. sec. A&S1", p.getMisappliedName(5).getText());
+        assertEquals(UTF8.EM_DASH_DOUBLE + "(part.)\nOssaea glomerata sec. A&S: 331; auct. sec. A&S1", p.getMisappliedName(5).getText());
         // Test also invalid designation which is rendered with the misapplied names
-        assertEquals("–\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(6).getText());
+        assertEquals(UTF8.EN_DASH + "\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(6).getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
@@ -143,11 +142,11 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         WebElement misappliedName1 = p.getMisappliedName(1);
         assertNotNull(misappliedName1);
-        assertEquals("–\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Oncidium carthaginense\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName1.getText());
+        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Oncidium carthaginense\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName1.getText());
 
         WebElement misappliedName2 = p.getMisappliedName(2);
         assertNotNull(misappliedName2);
-        assertEquals("–\n\"Oncidium guttatum\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName2.getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Oncidium guttatum\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName2.getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(1, footnotes.size());
@@ -170,11 +169,11 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         WebElement misappliedName1 = p.getMisappliedName(1);
         assertNotNull(misappliedName1);
-        assertEquals("–\n\"Nepenthes alata\" pro parte, sensu Cheek, M.R. & Jebb, M.H.P. 20011, non Blanco, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName1.getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Nepenthes alata\" pro parte, sensu Cheek, M.R. & Jebb, M.H.P. 20011, non Blanco, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName1.getText());
 
         WebElement misappliedName2 = p.getMisappliedName(2);
         assertNotNull(misappliedName2);
-        assertEquals("–\n\"Nepenthes blancoi\" pro parte, sensu Macfarlane 19083, non Blume, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName2.getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Nepenthes blancoi\" pro parte, sensu Macfarlane 19083, non Blume, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName2.getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(3, footnotes.size());
