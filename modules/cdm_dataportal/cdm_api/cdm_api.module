@@ -447,7 +447,7 @@ function format_datetime($datetime, $format = 'Y-m-d H:i:s'){
  */
 function partialToYear($partial) {
   if (is_string($partial)) {
-    $year = substr($partial, 0, 4);
+    $year = drupal_substr($partial, 0, 4);
     if (preg_match("/[0-9][0-9][0-9][0-9]/", $year)) {
       return $year;
     }
@@ -470,7 +470,7 @@ function partialToYear($partial) {
  */
 function partialToMonth($partial) {
   if (is_string($partial)) {
-    $month = substr($partial, 5, 2);
+    $month = drupal_substr($partial, 5, 2);
     if (preg_match("/[0-9][0-9]/", $month)) {
       return $month;
     }
@@ -493,7 +493,7 @@ function partialToMonth($partial) {
  */
 function partialToDay($partial) {
   if (is_string($partial)) {
-    $day = substr($partial, 8, 2);
+    $day = drupal_substr($partial, 8, 2);
     if (preg_match("/[0-9][0-9]/", $day)) {
       return $day;
     }
@@ -597,7 +597,7 @@ function timePeriodToString($period, $stripZeros = TRUE, $format = "YYYY-MM-DD")
     }
     if ($period->end) {
       $end_str = partialToDate($period->end, $stripZeros, $format);
-      $dateString .= ($dateString && $end_str > 0 ? ' ' . t('to') . ' ' : '') . $end_str;
+      $dateString .= ($dateString && $end_str ? ' ' . t('to') . ' ' : '') . $end_str;
     }
   }
   return $dateString;

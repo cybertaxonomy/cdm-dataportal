@@ -126,7 +126,7 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
                 $detail_html .= "<br>";
             }
             foreach ($specimen->associatedTaxa as $associatedTaxon) {
-                $detail_html .= l($associatedTaxon->second, path_to_taxon($associatedTaxon->first, "specimens"));//$associatedTaxon->second."<br>";
+                $detail_html .= l($associatedTaxon->value, path_to_taxon($associatedTaxon->key, "specimens"));//$associatedTaxon->second."<br>";
             }
             $detail_html .= "<br>";
         }
@@ -337,9 +337,9 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
 
 
     // only show uuid it the user is logged in
-    if(user_is_logged_in() && ($a_idx = array_search('uuid', $exclude_occurrence_fields)) !== FALSE ) {
-        unset($exclude_occurrence_fields[$a_idx]);
-    }
+ //   if(user_is_logged_in() && ($a_idx = array_search('uuid', $exclude_occurrence_fields)) !== FALSE ) {
+  //      unset($exclude_occurrence_fields[$a_idx]);
+  //  }
 
     if (!isset($derivatives)) {
         $derivatives = array();
@@ -692,13 +692,13 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
         uasort($groups, 'element_sort');
 
         $occurrence_elements = array(
-            '#title' => $title,
+           // '#title' => $title,
             '#theme' => 'description_list',
             '#groups' => $groups,
             '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation)),
         );
 
-        $derivatives[] = $occurrence_elements;
+        $derivatives[] = drupal_render($occurrence_elements);
         // all footnotes which has been assembled so far (e.g. from typeDesignations) to here
         $foonote_li_elements = theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey(), 'enclosingTag' => 'span'));
         if (!empty($foonote_li_elements)) {

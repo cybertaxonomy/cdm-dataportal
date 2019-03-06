@@ -676,7 +676,7 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
   }
 
   $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto, 'span');
-  $itentifier_markup = l($registration_dto->identifier, $registration_dto->identifier, array('attributes' => array('class' => array('identifier'))));
+  $itentifier_markup = l($registration_dto->identifier, path_to_registration($registration_dto->identifier), array('attributes' => array('class' => array('identifier'))));
 
   $tagged_text_options = array();
   if(isset($registration_dto->nameRef)){
@@ -781,7 +781,7 @@ function render_registration($registration){
     if(isset($registration->institution->titleCache)){
       $office_class_attribute = registration_intitute_class_attribute($registration);
     }
-    $markup = "<span class=\"registration $office_class_attribute\">" . l($registration->identifier, $registration->identifier) . ', '
+    $markup = "<span class=\"registration $office_class_attribute\">" . l($registration->identifier, path_to_registration($registration->identifier)) . ', '
       .  preg_replace('/^([^T]*)(.*)$/', '${1}', $registration->registrationDate)
       . '</span>';
   }

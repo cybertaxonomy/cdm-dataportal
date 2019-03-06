@@ -1244,22 +1244,41 @@ function compose_classification_breadcrumbs($taxon_uuid) {
  *
  * @ingroup compose
  */
-function compose_cdm_specimen_page($specimen)
+function compose_cdm_specimen_page($specimen_uuid)
 {
   drupal_set_title("Specimen Details");
   $render_array = array();
   RenderHints::pushToRenderStack('specimen_page');
-  if (variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
-      $specimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($specimen_uuid, 'specimenDerivates'));
 
-      $detail_html = render_cdm_specimen_page($specimen, true);
-      $render_array['specimen_html'] = array(
-          '#markup' => $detail_html
-      );
-  }else{
-      $detail_html = compose_cdm_specimen_or_observation($specimen, true);
-      $render_array['markup'] =  $detail_html;
-  }
+  $specimen_table = array(
+      '#theme' => 'table',
+      '#weight' => 2,
+      // prefix attributes and rows with '#' to let it pass toF the theme function,
+      // otherwise it is handled as child render array
+      '#attributes' => array('class' => 'specimens'),
+      '#rows' => array(),
+  );
+  $specimen = compose_cdm_specimen_or_observation($specimen_uuid, true);
+  $renderArray = array(
+          '#theme' => 'item_list',
+          '#items' => array($specimen),
+          '#type' => 'ul');
+  $output = drupal_render($renderArray);
+
+  $specimen_table['#rows'][] = array(
+          // An array of table rows. Every row is an array of cells, or an associative array
+          'data' => array($output),
+          'class' =>  array(
+              'descriptionElement',
+              'descriptionElement_IndividualsAssociation'
+          ),
+  );
+
+
+ // $detail_html = compose_cdm_specimen_or_observation($specimen_uuid, true);
+  $render_array['markup'] =  $specimen_table;
+
+
   RenderHints::popFromRenderStack();
   return $render_array;
 }
