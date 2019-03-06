@@ -1255,8 +1255,10 @@ function compose_cdm_specimen_page($specimen_uuid)
       '#weight' => 2,
       // prefix attributes and rows with '#' to let it pass toF the theme function,
       // otherwise it is handled as child render array
-      '#attributes' => array('class' => 'specimens'),
+
+    '#attributes' => array('class' => 'specimens'),
       '#rows' => array(),
+
   );
   $specimen = compose_cdm_specimen_or_observation($specimen_uuid, true);
   $renderArray = array(
@@ -1272,12 +1274,16 @@ function compose_cdm_specimen_page($specimen_uuid)
               'descriptionElement',
               'descriptionElement_IndividualsAssociation'
           ),
+
   );
 
 
  // $detail_html = compose_cdm_specimen_or_observation($specimen_uuid, true);
-  $render_array['markup'] =  $specimen_table;
-
+    $render_array['markup'] = array(
+        '#prefix' => '<div id="specimens" class="page">',
+        'content' => $specimen_table,
+        '#suffix' => '</div>',
+    );
 
   RenderHints::popFromRenderStack();
   return $render_array;
