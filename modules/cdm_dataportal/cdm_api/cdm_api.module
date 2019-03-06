@@ -1661,32 +1661,32 @@ function &cdm_feature_tree_find_node($feature_tree_nodes, $feature_uuid){
  */
 function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
 
-  foreach ($featureNodes as &$node) {
+  foreach ($featureNodes as &$feature_node) {
     // since the $featureNodes array is reused for each description
     // it is necessary to clear the custom node fields in advance
-    if(isset($node->descriptionElements)){
-      unset($node->descriptionElements);
+    if(isset($feature_node->descriptionElements)){
+      unset($feature_node->descriptionElements);
     }
 
     // Append corresponding elements to an additional node field:
     // $node->descriptionElements.
     foreach ($descriptionElements as $element) {
-      if ($element->term->uuid == $node->term->uuid) {
-        if (!isset($node->descriptionElements)) {
-          $node->descriptionElements = array();
+      if ($element->feature->uuid == $feature_node->term->uuid) {
+        if (!isset($feature_node->descriptionElements)) {
+          $feature_node->descriptionElements = array();
         }
-        $node->descriptionElements[] = $element;
+        $feature_node->descriptionElements[] = $element;
       }
     }
 
     // Recurse into node children.
-    if (isset($node->childNodes[0])) {
-      $mergedChildNodes = _mergeFeatureTreeDescriptions($node->childNodes, $descriptionElements);
-      $node->childNodes = $mergedChildNodes;
+    if (isset($feature_node->childNodes[0])) {
+      $mergedChildNodes = _mergeFeatureTreeDescriptions($feature_node->childNodes, $descriptionElements);
+      $feature_node->childNodes = $mergedChildNodes;
     }
 
-    if(!isset($node->descriptionElements) && !isset($node->childNodes[0])){
-      unset($node);
+    if(!isset($feature_node->descriptionElements) && !isset($feature_node->childNodes[0])){
+      unset($feature_node);
     }
 
   }
