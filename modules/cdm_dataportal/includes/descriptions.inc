@@ -694,22 +694,22 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
     RenderHints::pushToRenderStack('feature_block');
     // Create a drupal block for each feature
-    foreach ($mergedFeatureNodes as $node) {
+    foreach ($mergedFeatureNodes as $feature_node) {
 
-      if ((isset($node->descriptionElements['#type']) ||
-          has_feature_node_description_elements($node)) && $node->feature->uuid != UUID_IMAGE) { // skip empty or suppressed features
+      if ((isset($feature_node->descriptionElements['#type']) ||
+          has_feature_node_description_elements($feature_node)) && $feature_node->term->uuid != UUID_IMAGE) { // skip empty or suppressed features
 
-        RenderHints::pushToRenderStack($node->feature->uuid);
+        RenderHints::pushToRenderStack($feature_node->term->uuid);
           
-        $feature_name = cdm_term_representation($node->feature, 'Unnamed Feature');
-        $feature_block_settings = get_feature_block_settings($node->feature->uuid);
+        $feature_name = cdm_term_representation($feature_node->term, 'Unnamed Feature');
+        $feature_block_settings = get_feature_block_settings($feature_node->term->uuid);
         
 
-        $block = feature_block($feature_name, $node->feature);
+        $block = feature_block($feature_name, $feature_node->term);
         $block->content = array();
         $block_content_is_empty = TRUE;
 
-        if(array_search($node->feature->uuid, $use_description_features) !== false) {
+        if(array_search($feature_node->term->uuid, $use_description_features) !== false) {
           // do not show features which belong to the UseDescriptions, these are
           // handled by compose_feature_block_items_use_records() where the according descriptions are
           // fetched again separately.
@@ -720,16 +720,16 @@ function handle_annotations_and_sources_config($feature_block_settings){
         /*
          * Content/DISTRIBUTION.
          */
-        if ($node->feature->uuid == UUID_DISTRIBUTION) {
-          $block = compose_feature_block_distribution($taxon, $node->descriptionElements, $node->feature);
+        if ($feature_node->term->uuid == UUID_DISTRIBUTION) {
+          $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node->term);
           $block_content_is_empty = FALSE;
         }
 
         /*
          * Content/COMMON_NAME.
          */
-        else if ($node->feature->uuid == UUID_COMMON_NAME) {
-          $common_names_render_array = compose_feature_block_items_feature_common_name($node->descriptionElements, $node->feature);
+        else if ($feature_node->term->uuid == UUID_COMMON_NAME) {
+          $common_names_render_array = compose_feature_block_items_feature_common_name($feature_node->descriptionElements, $feature_node->term);
           $block->content[] = $common_names_render_array;
           $block_content_is_empty = FALSE;
         }
@@ -737,8 +737,8 @@ function handle_annotations_and_sources_config($feature_block_settings){
         /*
          * Content/Use Description (Use + UseRecord)
          */
-        else if ($node->feature->uuid == UUID_USE_RECORD) {
-          $block->content[] = cdm_block_use_description_content($taxon->uuid, $node->feature);
+        else if ($feature_node->term->uuid == UUID_USE_RECORD) {
+          $block->content[] = cdm_block_use_description_content($taxon->uuid, $feature_node->term);
           $block_content_is_empty = FALSE;
         }
 
@@ -751,37 +751,37 @@ function handle_annotations_and_sources_config($feature_block_settings){
           $elements_render_array = array();
           $child_elements_render_array = null;
 
-          if (isset($node->descriptionElements[0])) {
-            $elements_render_array = compose_feature_block_items_generic($node->descriptionElements, $node->feature);
+          if (isset($feature_node->descriptionElements[0])) {
+            $elements_render_array = compose_feature_block_items_generic($feature_node->descriptionElements, $feature_node->term);
           }
 
           // Content/ALL OTHER FEATURES/Subordinate Features
           // subordinate features are printed inline in one floating text,
           // it is expected hat subordinate features can "contain" TextData,
           // Qualitative- and Qualitative- DescriptionElements
-          if (isset($node->childNodes[0])) {
-            $child_elements_render_array = compose_feature_block_items_nested($node, $media_list, $feature_block_settings);
+          if (isset($feature_node->childNodes[0])) {
+            $child_elements_render_array = compose_feature_block_items_nested($feature_node, $media_list, $feature_block_settings);
             $elements_render_array = array_merge($elements_render_array, $child_elements_render_array);
           }
           $block_content_is_empty = $block_content_is_empty && empty($media_list) && empty($elements_render_array);
           if(!$block_content_is_empty){
-            $block->content[] = compose_feature_block_wrap_elements($elements_render_array, $node->feature, $feature_block_settings['glue']);
-            $block->content[] = compose_feature_media_gallery($node, $media_list, $gallery_settings);
+            $block->content[] = compose_feature_block_wrap_elements($elements_render_array, $feature_node->term, $feature_block_settings['glue']);
+            $block->content[] = compose_feature_media_gallery($feature_node, $media_list, $gallery_settings);
             /*
              * Footnotes for the feature block
              */
-            $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . $node->feature->uuid)));
-            $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => $node->feature->uuid)));
-            $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => $node->feature->uuid)));
+            $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . $feature_node->term->uuid)));
+            $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => $feature_node->term->uuid)));
+            $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => $feature_node->term->uuid)));
           }
         } // END all other features
 
         // allows modifying the block contents via a the hook_cdm_feature_node_block_content_alter
-        drupal_alter('cdm_feature_node_block_content', $block->content, $node->feature, $node->descriptionElements);
+        drupal_alter('cdm_feature_node_block_content', $block->content, $feature_node->term, $feature_node->descriptionElements);
 
         if(!$block_content_is_empty){ // skip empty block content
           $block_list[] = $block;
-          cdm_toc_list_add_item(cdm_term_representation($node->feature), $node->feature->uuid);
+          cdm_toc_list_add_item(cdm_term_representation($feature_node->term), $feature_node->term->uuid);
         } // END: skip empty block content
       } // END: skip empty or suppressed features
       RenderHints::popFromRenderStack();
@@ -799,7 +799,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
  *
  * This function is called recursively!
  *
- * @param $node
+ * @param $feature_node
  *   The feature node.
  * @param array $media_list
  *   List of CDM Media entities. All media of subordinate elements should be passed to the main feature.ä
@@ -813,11 +813,11 @@ function handle_annotations_and_sources_config($feature_block_settings){
  *
  * @ingroup compose
  */
-function compose_feature_block_items_nested($node, &$media_list, $feature_block_settings, $main_feature = NULL)
+function compose_feature_block_items_nested($feature_node, &$media_list, $feature_block_settings, $main_feature = NULL)
 {
 
   if(!$main_feature){
-    $main_feature = $node->feature;
+    $main_feature = $feature_node->term;
   }
   /*
    * TODO should be configurable, options; YES, NO, AUTOMATIC
@@ -826,7 +826,7 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
   $prepend_feature_label = false;
 
   $render_arrays = array();
-  foreach ($node->childNodes as $child_node) {
+  foreach ($feature_node->childNodes as $child_node) {
     if (isset($child_node->descriptionElements[0])) {
       foreach ($child_node->descriptionElements as $element) {
 
@@ -864,7 +864,7 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
 
   /**
    *
-   * @param $node
+   * @param $feature_node
    *  The merged feature three node which potentially contains media in its description elements.
    * @param $media_list
    *    Additional media to be merged witht the media contained in the nodes description elements
@@ -873,10 +873,10 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
    *
    * @ingroup compose
    */
-  function compose_feature_media_gallery($node, $media_list, $gallery_settings) {
+  function compose_feature_media_gallery($feature_node, $media_list, $gallery_settings) {
 
-    if (isset($node->descriptionElements)) {
-      $media_list = array_merge($media_list, cdm_dataportal_media_from_descriptionElements($node->descriptionElements));
+    if (isset($feature_node->descriptionElements)) {
+      $media_list = array_merge($media_list, cdm_dataportal_media_from_descriptionElements($feature_node->descriptionElements));
     }
 
     $captionElements = array('title', 'rights');
@@ -884,7 +884,7 @@ function compose_feature_block_items_nested($node, &$media_list, $feature_block_
     if (isset($media_list[0]) && isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
       $gallery = compose_cdm_media_gallerie(array(
         'mediaList' => $media_list,
-        'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $node->feature->uuid,
+        'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $feature_node->term->uuid,
         'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
         'cols' => $gallery_settings['cdm_dataportal_media_cols'],
         'captionElements' => $captionElements,

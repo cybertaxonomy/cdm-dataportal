@@ -2206,29 +2206,29 @@ function cdm_settings_layout_taxon() {
 
     // creating helper object to retrieve the default settings
     $featureNode = new stdClass();
-    $featureNode->feature = new stdClass();
-    $featureNode->feature->uuid="DEFAULT";
-    $featureNode->feature->representation_L10n = "Default";
+    $featureNode->term = new stdClass();
+    $featureNode->term->uuid="DEFAULT";
+    $featureNode->term->representation_L10n = "Default";
     array_unshift($profile_feature_tree->root->childNodes, $featureNode);
 
     foreach ($profile_feature_tree->root->childNodes as $featureNode) {
 
-      if (!$feature_list_layout_settings_disabled && isset($featureNode->feature)) {
+      if (!$feature_list_layout_settings_disabled && isset($featureNode->term)) {
 
         // $subform_id must not exceed 45 characters, a uuid has 36 characters
-        $subform_id = $featureNode->feature->uuid;
-        $feature_block_setting = get_feature_block_settings($featureNode->feature->uuid);
+        $subform_id = $featureNode->term->uuid;
+        $feature_block_setting = get_feature_block_settings($featureNode->term->uuid);
 
 //        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
 
         $form_feature_block_layout[$subform_id] = array(
           '#type' => 'fieldset',
           '#tree' => TRUE,
-          '#title' => $featureNode->feature->representation_L10n,
+          '#title' => $featureNode->term->representation_L10n,
           '#collapsible' => FALSE,
           '#collapsed' => FALSE,
         );
-        if($featureNode->feature->uuid == "DEFAULT"){
+        if($featureNode->term->uuid == "DEFAULT"){
           $form_feature_block_layout[$subform_id]['#description']='These are the defaults which apply to
           all feature blocks for which no specific settings have been defined. for consistency enabling links for <em>source
           references</em> and <em>names in source</em> is only possible in the defaults';
@@ -2246,7 +2246,7 @@ function cdm_settings_layout_taxon() {
           ),
         );
 
-        if($featureNode->feature->uuid == "DEFAULT"){
+        if($featureNode->term->uuid == "DEFAULT"){
           $form_feature_block_layout[$subform_id]['link_to_reference'] = array(
             '#type' => 'checkbox',
             '#title' => t('Link to reference'),

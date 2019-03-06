@@ -137,17 +137,17 @@ function cdm_csv_export_my_form($form_state) {
     $feature_tree = get_csv_featureTree();
     if (isset($feature_tree->root->childNodes)) {
         foreach ($feature_tree->root->childNodes as $featureNode) {
-            if (isset($featureNode->feature)) {
+            if (isset($featureNode->term)) {
 
                 // Must not exceed 45 characters !!!
-                $subform_id =  $featureNode->feature->uuid; //LAYOUT_SETTING_PREFIX .
+                $subform_id =  $featureNode->term->uuid; //LAYOUT_SETTING_PREFIX .
                 //        $settings = mixed_variable_get($subform_id, FEATURE_TREE_LAYOUT_DEFAULTS);
                 //        $systemDefaults = unserialize(FEATURE_TREE_LAYOUT_DEFAULTS);
                 $form['redListField']['csvExportOptions'][$subform_id] = array(
                     '#type' => 'checkbox',
-                    '#title' => $featureNode->feature->representation_L10n,
-                    '#default_value' => $featureNode->feature->uuid,//$settings,
-                    '#attributes' => array('value' => $featureNode->feature->uuid,
+                    '#title' => $featureNode->term->representation_L10n,
+                    '#default_value' => $featureNode->term->uuid,//$settings,
+                    '#attributes' => array('value' => $featureNode->term->uuid,
                         'name' => 'features'
                     ),
                 );

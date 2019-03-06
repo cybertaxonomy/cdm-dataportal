@@ -68,14 +68,14 @@ function theme_FeatureTree_hierarchy($variables) {
  */
 function theme_FeatureTree_hierarchy_children($variables) {
 
-  $node = $variables['node'];
+  $feature_node = $variables['node'];
   $out = '';
-  if (isset($node->childNodes)) {
+  if (isset($feature_node->childNodes)) {
 
-    foreach ($node->childNodes as $child_node) {
-      $out .= '<li>' . check_plain($child_node->feature->representation_L10n);
-      if (isset($child_node->childNodes) && count($child_node->childNodes) > 0) {
-        $out .= '<ul>' . theme('FeatureTree_hierarchy_children', array('node' => $child_node)) . '</ul>';
+    foreach ($feature_node->childNodes as $child_feature_node) {
+      $out .= '<li>' . check_plain($child_feature_node->term->representation_L10n);
+      if (isset($child_feature_node->childNodes) && count($child_feature_node->childNodes) > 0) {
+        $out .= '<ul>' . theme('FeatureTree_hierarchy_children', array('node' => $child_feature_node)) . '</ul>';
       }
       $out .= '</li>';
     }

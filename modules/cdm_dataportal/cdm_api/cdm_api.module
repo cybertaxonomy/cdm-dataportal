@@ -1619,7 +1619,7 @@ function &cdm_feature_tree_find_node($feature_tree_nodes, $feature_uuid){
 
   // 1. scan this level
   foreach ($feature_tree_nodes as $node){
-    if($node->feature->uuid == $feature_uuid){
+    if($node->term->uuid == $feature_uuid){
       return $node;
     }
   }
@@ -1671,7 +1671,7 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
     // Append corresponding elements to an additional node field:
     // $node->descriptionElements.
     foreach ($descriptionElements as $element) {
-      if ($element->feature->uuid == $node->feature->uuid) {
+      if ($element->term->uuid == $node->term->uuid) {
         if (!isset($node->descriptionElements)) {
           $node->descriptionElements = array();
         }
@@ -2121,8 +2121,8 @@ function cdm_featureTree_elements_toString($root_node, $separator = ', ', $field
 
   foreach ($root_node->childNodes as $feature_node) {
     $out .= ($out ? $separator : '');
-    if(!in_array($feature_node->feature->$field_name, $excludes)) {
-      $out .= $feature_node->feature->$field_name;
+    if(!in_array($feature_node->term->$field_name, $excludes)) {
+      $out .= $feature_node->term->$field_name;
       if (is_array($feature_node->childNodes) && count($feature_node->childNodes) > 0) {
         $childlabels = cdm_featureTree_elements_toString($feature_node, $separator, $field_name);
         if (strlen($childlabels)) {
@@ -2157,7 +2157,7 @@ function _featureTree_nodes_as_feature_options($rootNode, $node_char = "&#9500;&
     if ($childIndent) {
       $indent_prefix = $childIndent . $node_char . " ";
     }
-    $options[$featureNode->feature->uuid] = $indent_prefix . $featureNode->feature->representation_L10n;
+    $options[$featureNode->term->uuid] = $indent_prefix . $featureNode->term->representation_L10n;
     if (isset($featureNode->childNodes) && is_array($featureNode->childNodes)) {
       // Foreach ($featureNode->childNodes as $childNode){
       $childList = _featureTree_nodes_as_feature_options($featureNode, $node_char, $childIndentStr, $childIndent . $childIndentStr);
