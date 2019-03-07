@@ -726,7 +726,11 @@ table.cdm\:Reference {
     padding: 0;
 }
 
-.specimens ul {
+#specimens ul {
+    list-style-type: none;
+    list-style-image: none;
+}
+#specimens .item-list ul{
     list-style-type: none;
     list-style-image: none;
 }

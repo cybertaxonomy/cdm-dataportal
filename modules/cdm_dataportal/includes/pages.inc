@@ -1279,12 +1279,12 @@ function compose_cdm_specimen_page($specimen_uuid)
 
 
  // $detail_html = compose_cdm_specimen_or_observation($specimen_uuid, true);
-//    $render_array['markup'] = array(
-//        '#prefix' => '<div id="specimens" class="page">',
-//        'content' => $specimen_table,
-//        '#suffix' => '</div>',
-//    );
-    $render_array['markup'] =  $specimen_table;
+    $render_array['markup'] = array(
+        '#prefix' => '<div id="specimens" class="page">',
+        'content' => $specimen_table,
+        '#suffix' => '</div>',
+    );
+    //$render_array['markup'] =  $specimen_table;
 
   RenderHints::popFromRenderStack();
   return $render_array;
