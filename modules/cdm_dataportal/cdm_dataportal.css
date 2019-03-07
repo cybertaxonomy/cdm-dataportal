@@ -26,6 +26,8 @@
 dl  {
     margin: 0 0 0 2em;
 }
+
+
 dd.sublist-container div {
     /* background-color: #ebffff; */
     border: #444444 1px dotted;
@@ -724,13 +726,12 @@ table.cdm\:Reference {
     padding: 0;
 }
 
-#specimens ul {
+.specimens ul {
     list-style-type: none;
     list-style-image: none;
-
 }
-#specimens .item-list li{
 
+#specimens .item-list li{
     padding: 0 ;
 }
 

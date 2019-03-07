@@ -700,12 +700,12 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
 
         $derivatives[] = drupal_render($occurrence_elements);
         // all footnotes which has been assembled so far (e.g. from typeDesignations) to here
-        $foonote_li_elements = theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey(), 'enclosingTag' => 'span'));
-        if (!empty($foonote_li_elements)) {
-            $derivatives[] =  array(
-                '#markup' =>  '<div class="footnotes">' . $foonote_li_elements . '</div>',
-            );
-        }
+//       $foonote_li_elements = theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey(), 'enclosingTag' => 'span'));
+//        if (!empty($foonote_li_elements)) {
+//            $derivatives[] =  array(
+//                '#markup' =>  '<div class="footnotes">' . $foonote_li_elements . '</div>',
+//            );
+//        }
 
         // --- recurse into originals
         if (!isset($derivedFrom)  && !$isSpecimen_page) {
