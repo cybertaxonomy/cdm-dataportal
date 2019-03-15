@@ -430,7 +430,7 @@ function cdm_dataportal_menu() {
     // Expected callback arguments: uuid.
   );
 
-  $items['cdm_dataportal/specimen'] = array(
+  $items['cdm_dataportal/occurrence'] = array(
       'page callback' => 'cdm_dataportal_specimen_page_view',
       'access arguments' => array('access cdm content'),
       'type' => MENU_CALLBACK,
@@ -500,6 +500,13 @@ function cdm_dataportal_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
 
+    $items['cdm_dataportal/search/blast'] = array(
+        'title' => 'Blast', // will be passed through t()
+        'page callback' => 'cdm_dataportal_view_search_blast',
+        'access arguments' => array('access cdm content'),
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+    );
+
   $items['cdm_dataportal/search/taxon_by_description'] = array(
     'title' => 'By content category', // will be passed through t()
     'page callback' => 'cdm_dataportal_view_search_taxon_by_description',
@@ -511,6 +518,13 @@ function cdm_dataportal_menu() {
     'access arguments' => array('access cdm content'),
     'type' => MENU_CALLBACK,
   );
+
+
+    $items['cdm_dataportal/search/results/specimen'] = array(
+        'page callback' => 'cdm_dataportal_view_search_results_specimen',
+        'access arguments' => array('access cdm content'),
+        'type' => MENU_CALLBACK,
+    );
   /*
    * MENU_CALLBACK at cdm_dataportal/registration-search is needed to make the
    * tabs in the subordinate paths work, accessing this 'page' will cause the
@@ -801,6 +815,7 @@ function cdm_dataportal_block_view($delta) {
 
       if (variable_get('cdm_dataportal_show_advanced_search', 1)) {
         $block['content'] .= '<div>' . l(t('Advanced Search'), 'cdm_dataportal/search') . '</div>';
+       // $block['content'] .= '<div>' . l(t('Blast Search'), 'cdm_dataportal/search/blast') . '</div>';
       }
       return $block;
     case '4':
@@ -1850,9 +1865,24 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
  *
  * NOTE: The advance search form allows searching for taxa.
  */
-function cdm_dataportal_view_search_advanced() {
+function cdm_dataportal_view_search_advanced($arg) {
+    if (isset($arg)){
+        if ($arg == 'blast'){
+            return cdm_dataportal_view_search_blast();
+        }
+    }
   drupal_set_title(t('Advanced search'), PASS_THROUGH);
   return drupal_get_form('cdm_dataportal_search_taxon_form_advanced');
+}
+
+/**
+ * Creates a page with the blast search form.
+ *
+ * NOTE: The advance search form allows searching for specimen in blast DB.
+ */
+function cdm_dataportal_view_search_blast() {
+    drupal_set_title(t('Blast search'), PASS_THROUGH);
+    return drupal_get_form('cdm_dataportal_search_blast_form');
 }
 
 /**
@@ -1909,6 +1939,20 @@ function cdm_dataportal_view_search_results_taxon() {
     'path' => 'cdm_dataportal/search/results/taxon',
     ));
 }
+
+/**
+ * Executes the blast search and generates the result list of specimen.
+ */
+function cdm_dataportal_view_search_results_specimen() {
+
+    $specimenPager = cdm_dataportal_search_blast_execute();
+
+    return theme('cdm_search_specimen_results', array(
+        'pager' => $specimenPager,
+        'path' => 'cdm_dataportal/search/results/specimen',
+    ));
+}
+
 
 /**
  * Executes the search for registrations and generates the result list..
@@ -2037,7 +2081,7 @@ function path_to_specimen($uuid) {
         return FALSE;
     }
     else {
-        return 'cdm_dataportal/specimen/' . $uuid;
+        return 'cdm_dataportal/occurrence/' . $uuid;
     }
 }
 
