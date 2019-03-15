@@ -529,11 +529,20 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
 
                         break;
                     case 'sources':
-                        $dd_elements = array();
-                        foreach ($value as $identifiable_source) {
-                            $dd_elements[] = theme('cdm_OriginalSource', array('source' => $identifiable_source));
+                        $annotations_and_sources = handle_annotations_and_sources(
+                            $specimen_or_observation,
+                            array(
+                                'sources_as_content' => true,
+                                'link_to_name_used_in_source' => 1,
+                                'link_to_reference' => 0,
+                                'add_footnote_keys' => 0
+                            ),
+                            NULL,
+                            ''
+                        );
+                        if(!empty($annotations_and_sources['source_references'])){
+                            @_description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources['source_references']),'',12 );
                         }
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
                         break;
 
 
@@ -549,9 +558,14 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 }
 
                                 $originals[] = markup_to_render_array(l($description . $original->titleCache, $pathToSpecimen, array('attributes' => array('target' => '_blank'))));
-                                @_description_list_group_add($groups, t('Originals') . ':',
+                                if ($original->class == 'FieldUnit'){
+                                    $label = t('Field data');
+                                }else{
+                                    $label = t('Derived from');
+                                }
+                                @_description_list_group_add($groups, $label . ':',
                                     $originals,
-                                    '', 1);
+                                    '', 13);
                             }
                         }
                         break;
@@ -667,7 +681,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         if (is_object($value) || is_array($value)) {
                             drupal_set_message("Unhandled type in compose_cdm_specimen_or_observation() for field " . $field, "warning");
                         } else {
-                            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
+                            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), cdm_occurrence_field_name_label($value));
                         }
 
                 }

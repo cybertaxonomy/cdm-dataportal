@@ -22,7 +22,7 @@ function cdm_occurrence_field_name_label($field){
 
   static $field_labels = array(
       'class' => 'Basis of Record',
-      'fieldNumber' => 'Collectors number',
+      'fieldNumber' => 'Collecting number',
       'absoluteElevation' => 'Altitude',
       'absoluteElevationMinimum' => 'Altitude maximum',
       'absoluteElevationMaximum' => 'Altitude minimum',
