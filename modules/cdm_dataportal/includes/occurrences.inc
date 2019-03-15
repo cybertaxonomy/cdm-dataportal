@@ -522,7 +522,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 'alternativeMediaUri' => NULL,
                                 'galleryLinkUri' => NULL,
                             ));
-                            @_description_list_group_add($groups, "Detail Images:" , markup_to_render_array($gallery_html));
+                            @_description_list_group_add($groups, "Detail Images:" , markup_to_render_array($gallery_html),'',20);
                         }
 
                        // $dd_elements[] = markup_to_render_array($gallery_html);
@@ -613,26 +613,25 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
 
                     /* ---- FieldObservation --- */
                     case 'gatheringEvent':
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('collector'), $value->actor->titleCache);
-                        @_description_list_group_add($groups, t('Gathering time'), timePeriodToString($value->timeperiod));
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('description'), $value->description);
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality->text);
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n);
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('collector'), $value->actor->titleCache, '', 1);
+                        @_description_list_group_add($groups, t('Gathering date'), timePeriodToString($value->timeperiod), '', 2);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('description'), $value->description, '', 3);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality->text, '', 10);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n, '', 4);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod,'',5);
                         if (isset($value->absoluteElevation)) {
                             $min_max_markup = min_max_measure($value, 'absoluteElevation');
-                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup);
+                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup, '',6);
                         }
                         if (isset($value->distanceToGround)) {
                             $min_max_markup = min_max_measure($value, 'distanceToGround');
-                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $min_max_markup);
+                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $min_max_markup,'',7);
                         }
                         if (isset($value->distanceToWaterSurface)) {
                             $min_max_markup = min_max_measure($value, 'distanceToWaterSurface');
-                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup);
+                            @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup, '',8);
                         }
-
-            if (isset($value->collectingAreas) && count($value->collectingAreas) > 0) {
+                        if (isset($value->collectingAreas) && count($value->collectingAreas) > 0) {
                             $area_representations = array();
                             foreach ($value->collectingAreas as $area) {
                                 $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
@@ -640,7 +639,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingAreas'),
                                 array(
                                     array('#markup' => implode(', ', $area_representations))
-                                )
+                                ),'',9
                             );
                         }
                         if (isset($value->exactLocation) && $value->exactLocation->sexagesimalString) {
@@ -659,7 +658,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                         '#theme' => 'description_list',
                                         '#groups' => $sub_dl_groups
                                     ),
-                                )
+                                ),'',11
                             );
                         }
                         break;
@@ -1124,9 +1123,9 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                     case 'gatheringEvent':
 
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('collector'), $value->collector);
-                        @_description_list_group_add($groups, t('Gathering time'), timePeriodToString($value->timeperiod));
+                        @_description_list_group_add($groups, t('Gathering date'), timePeriodToString($value->timeperiod));
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('description'), $value->description);
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality, '', 10);
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country);
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
                         if (isset($value->absoluteElevation)) {
@@ -1171,7 +1170,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                                             '#theme' => 'description_list',
                                             '#groups' => $sub_dl_groups
                                         ),
-                                    )
+                                    ), '', 11
                                 );
                             }
                         }
