@@ -353,116 +353,123 @@ function compose_cdm_media_gallerie($configuration) {
       $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
       if (isset($complete_media->representations[0]->parts[0])) {
 
-        //
-        // Find preferred representation.
-        //
+          //
+          // Find preferred representation.
+          //
 
-        $thumbnail_representations = cdm_preferred_media_representations($complete_media, array(
-            'image/jpg',
-            'image/jpeg',
-            'image/png',
-            'image/gif',
+          $thumbnail_representations = cdm_preferred_media_representations($complete_media, array(
+              'image/jpg',
+              'image/jpeg',
+              'image/png',
+              'image/gif',
           ),
-          $maxExtend,
-          $maxExtend
-        );
-        // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
-        // which only contains the thumbnail representation even if the height and width filters are not set.
-        // --> #6970
-        // to get hold of the full resolution images we send a separate request :
-       // $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
-        $full_size_representations = cdm_preferred_media_representations($complete_media, array(
-            'image/jpg',
-            'image/jpeg',
-            'image/png',
-            'image/gif',
-          )
-        );
-        if (count($thumbnail_representations) == 0) {
-          // Fallback to using the first one in the list.
-          $thumbnail_representations = $media->representations;
-          $full_size_representations = $media->representations;
-        }
-        $thumbnail_representation = array_shift($thumbnail_representations);
-        $full_size_representation = array_shift($full_size_representations);
-
-        // $preferred_media_representation->parts[0]->uri =
-        // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
-        $contentTypeDirectory = media_content_type_dir($thumbnail_representation, 'application');
-
-        $mediaPartHtml = call_user_func_array(
-          'cdm_media_gallerie_' . $contentTypeDirectory,
-          array( $thumbnail_representation->parts[0], $maxExtend, TRUE)
-        );
-        // --- Compose Media Link.
-        $mediaLinkUri = FALSE;
-        if ($alternativeMediaUri) {
-          if (isset($alternativeMediaUri[$mediaIndex])) {
-            $mediaLinkUri = $alternativeMediaUri[$mediaIndex];
+              $maxExtend,
+              $maxExtend
+          );
+          // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
+          // which only contains the thumbnail representation even if the height and width filters are not set.
+          // --> #6970
+          // to get hold of the full resolution images we send a separate request :
+          // $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
+          $full_size_representations = cdm_preferred_media_representations($complete_media, array(
+                  'image/jpg',
+                  'image/jpeg',
+                  'image/png',
+                  'image/gif',
+              )
+          );
+          if (count($thumbnail_representations) == 0) {
+              // Fallback to using the first one in the list.
+              $thumbnail_representations = $media->representations;
+              $full_size_representations = $media->representations;
           }
-          if (is_string($alternativeMediaUri)) {
-            $mediaLinkUri = $alternativeMediaUri;
+          $thumbnail_representation = array_shift($thumbnail_representations);
+          $full_size_representation = array_shift($full_size_representations);
+
+          // $preferred_media_representation->parts[0]->uri =
+          // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
+          $contentTypeDirectory = media_content_type_dir($thumbnail_representation, 'application');
+
+          $mediaPartHtml = call_user_func_array(
+              'cdm_media_gallerie_' . $contentTypeDirectory,
+              array($thumbnail_representation->parts[0], $maxExtend, TRUE)
+          );
+          // --- Compose Media Link.
+          $mediaLinkUri = FALSE;
+          if ($alternativeMediaUri) {
+              if (isset($alternativeMediaUri[$mediaIndex])) {
+                  $mediaLinkUri = $alternativeMediaUri[$mediaIndex];
+              }
+              if (is_string($alternativeMediaUri)) {
+                  $mediaLinkUri = $alternativeMediaUri;
+              }
+          } else {
+              $mediaLinkUri = $full_size_representation->parts[0]->uri;
           }
-        }
-        else {
-          $mediaLinkUri = $full_size_representation->parts[0]->uri;
-        }
-        $mediaIndex++;
+          $mediaIndex++;
 
-        // media captions will be loaded via AHAH
-        _add_js_ahah();
-        $content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
-        $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
-        $ahah_media_caption =  '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
-          . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
+          // media captions will be loaded via AHAH
+          _add_js_ahah();
+          $content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
+          //if $captionElements == null, set $captionPartHtml = '' otherwise the loading image is shown but nothing is loaded.
+          if ($captionElements) {
 
-        // preparing the part link (= click on image itself) which can be handled in two ways
-        //
-        //  1. open image in lightbox, the captions in the lightbox will be loaded via AHAH
-        //  2. open the media in a new window with target 'specimen'
-        if ($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image') {
-          $mediaPartLinkAttributes['class'] = array('lightbox');
-        } else {
-          $mediaPartLinkAttributes['target'] = "specimen";
-          $openMediaLinkAttributes['target'] = "specimen";
-        }
-        $mediaPartLinkAttributes['alt'] = htmlentities($ahah_media_caption);
+              $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
+              $ahah_media_caption = '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
+                  . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
 
-        // --- preparing the media caption
+            // preparing the part link (= click on image itself) which can be handled in two ways
+            //
+            //  1. open image in lightbox, the captions in the lightbox will be loaded via AHAH
+            //  2. open the media in a new window with target 'specimen'
+            if ($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image') {
+              $mediaPartLinkAttributes['class'] = array('lightbox');
+            } else {
+              $mediaPartLinkAttributes['target'] = "specimen";
+              $openMediaLinkAttributes['target'] = "specimen";
+            }
+            $mediaPartLinkAttributes['alt'] = htmlentities($ahah_media_caption);
 
-        /* old comment: "no caption elements to show up here except the $caption_link_uri, if at all"
-         *
-         * a.kohlbecker 2013-03-14 :
-         *   It is unclear why no caption elements should be shown, Was it a technical reason?
-         *   see commit r16723 740177eb-a1d8-4ec3-a630-accd905eb3da
-         *   If not problems arise with this remove it after some weeks
-         */
-        $captionPartHtml = $ahah_media_caption;
+            // --- preparing the media caption
 
-        if ($caption_link_uri) {
-          if ($contentTypeDirectory == 'image') {
-            // it is an image, so open it in the media page
-            $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, path_to_media($media->uuid), array(
-                'attributes' => array(), 'html' => TRUE,
-              )) . '</div>';
+            /* old comment: "no caption elements to show up here except the $caption_link_uri, if at all"
+             *
+             * a.kohlbecker 2013-03-14 :
+             *   It is unclear why no caption elements should be shown, Was it a technical reason?
+             *   see commit r16723 740177eb-a1d8-4ec3-a630-accd905eb3da
+             *   If not problems arise with this remove it after some weeks
+             */
+            $captionPartHtml = $ahah_media_caption;
+          }else{
+              $captionPartHtml = '';
           }
-          else {
-            // otherwise open it directly and let the the browser handle the media type
-            $openMediaLinkAttributes['absolute'] = TRUE;
-            $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, $mediaLinkUri, array(
-                'attributes' => $openMediaLinkAttributes, 'html' => TRUE,
-              )) . '</div>';
+          if ($caption_link_uri) {
+              if ($contentTypeDirectory == 'image') {
+                // it is an image, so open it in the media page
+
+                $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, path_to_media($media->uuid), array(
+                    'attributes' => array(), 'html' => TRUE,
+                        )) . '</div>';
+
+
+              }
+              else {
+                // otherwise open it directly and let the the browser handle the media type
+                $openMediaLinkAttributes['absolute'] = TRUE;
+                $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, $mediaLinkUri, array(
+                    'attributes' => $openMediaLinkAttributes, 'html' => TRUE,
+                  )) . '</div>';
+              }
           }
-        }
 
-        $captionParts[] = $captionPartHtml;
+          $captionParts[] = $captionPartHtml;
 
-        // --- Surround imagePart with link, this .
-        if ($doLink) {
-          $mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, array(
-            'attributes' => $mediaPartLinkAttributes, 'html' => TRUE,
-          ));
-        }
+            // --- Surround imagePart with link, this .
+          if ($doLink) {
+            $mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, array(
+                'attributes' => $mediaPartLinkAttributes, 'html' => TRUE,
+            ));
+          }
       }
       else {
         $mediaPartHtml = '';

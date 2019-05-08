@@ -57,6 +57,7 @@ define('CDM_WS_TAXON_SEARCH', 'taxon/search');
 define('CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'portal/taxon/findByDescriptionElementFullText');
 
 
+
 define('CDM_WS_TAXONNODE', 'taxonNode/$0');
 
 /**
@@ -127,6 +128,7 @@ define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOc
 
 define('CDM_WS_OCCURRENCE', 'occurrence');
 define('CDM_WS_PORTAL_OCCURRENCE', 'portal/occurrence');
+define('CDM_WS_OCCURRENCE_ACCESSION_NUMBER', 'occurrence/byGeneticAccessionNumber');
 /**
  * url query parameters:
  *

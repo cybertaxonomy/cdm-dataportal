@@ -41,6 +41,7 @@ function render_cdm_specimen_page($specimen)
     ));
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
     $captionElements = array(
+        'title',
         '#uri' => t('open media'),
     );
     if (isset($specimen->fieldObjectMediaDTO) ) {
@@ -260,6 +261,8 @@ function addImageGallery($galleryName, $imageUuids)
             }
         }
 
+
+
         $gallery_html = compose_cdm_media_gallerie(array(
             'mediaList' => $images,
             'galleryName' => $galleryName,
@@ -268,7 +271,8 @@ function addImageGallery($galleryName, $imageUuids)
             'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
             'captionElements' => $captionElements,
             'mediaLinkType' => 'LIGHTBOX',
-            'alternativeMediaUri' => $alternativeMediaUris,
+          // 'alternativeMediaUri' => $alternativeMediaUris,
+            'alternativeMediaUri' => NULL,
             'galleryLinkUri' => NULL,
         ));
     }
@@ -462,10 +466,12 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             $taxon_name = '';
                             $name_link = '';
                             if ($determinationEvent->taxonName) {
-                                $taxon_name = $determinationEvent->taxonName;
-                            } else if ($determinationEvent->taxon) {
-                                $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
-                                $name_link = path_to_taxon($determinationEvent->taxon->uuid);
+                                $taxon_name = cdm_ws_get(CDM_WS_NAME, $determinationEvent->taxonName->uuid);
+                                $taxon_name->taggedName = cdm_ws_get(CDM_WS_NAME, array($determinationEvent->taxonName->uuid, "taggedName"));
+                                $name_link = path_to_name($determinationEvent->taxonName->uuid);
+                            }else if ($determinationEvent->taxon) {
+                                 $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
+                                 $name_link = path_to_taxon($determinationEvent->taxon->uuid);
                             }
                             if ($taxon_name) {
                                 $taxon_html = render_taxon_or_name($taxon_name, $name_link);
@@ -1033,7 +1039,12 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
             }
         }
 
-        $title = $type_label . ': ' . $specimen_or_observation->titleCache;
+        if (isset($typeDesignation)){
+            $title = $type_label . ' for: ' . $typeDesignation->typifiedNames;
+        }else{
+            $title = $type_label;
+        }
+
         $items['data'] = $title;
 
         $groups = array();
@@ -1074,7 +1085,9 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
                     case 'listOfMedia':
                         $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+
                         $captionElements = array(
+                            'title',
                             '#uri' => t('open media'),
                         );
                         $gallery_html = compose_cdm_media_gallerie(array(
@@ -1087,6 +1100,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                             'mediaLinkType' => 'LIGHTBOX',
                             'alternativeMediaUri' => NULL,
                             'galleryLinkUri' => NULL,
+                            'showCaption' => true
                         ));
 
                          //@_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
@@ -1231,4 +1245,53 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
     return $output;
 }
+
+function compose_table_of_blast_result(array $data){
+
+    foreach ($data as $row_data){
+        $pathToSpecimen = path_to_specimen_by_accession_number($row_data['id']);
+        $specimenPageLink = l($row_data['id'], $pathToSpecimen, array('attributes' => array('target' => '_blank')));
+
+        $rows[] =  array(
+            'data' => array(
+                array(
+                    'data' => $row_data['def'],
+                ),
+                array(
+                    'data' => $specimenPageLink,
+                ),
+                array(
+                    'data' => $row_data['hsp_align_length'],
+                ),
+              //  array(
+              //     'data' => $row_data['midline'],
+              //  ),
+                array(
+                    'data' => $row_data['hsp_evalue'],
+                )
+            )
+        );
+    }
+    $tableId = "blast_result_table";
+    $blast_result_table = array(
+        "#theme" => "table",
+        "#weight" => 2,
+        "#header" => array(
+                        "Name", "id", "Align Length", "e Value"),
+        "#rows" => $rows,
+        "#attributes" => array(
+            "id" => $tableId,
+            "border" => 2
+        )
+    );
+
+    drupal_add_js_rowToggle("#".$tableId);
+
+    $render_array['content'] = $blast_result_table;
+    $out = drupal_render($render_array);
+   //$blast_result_page-> content = drupal_render($render_array);
+   return $out;
+}
+
+
 

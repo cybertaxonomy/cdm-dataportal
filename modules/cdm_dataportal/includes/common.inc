@@ -587,4 +587,16 @@ function compose_extensions($extensions)
   return $extensions_render_array;
 }
 
+function formatParams($params) {
+    if (is_array($params)){
+        $keys =array_keys($params);
+        $paramString = '';
+        foreach ($keys as $k ){
+            if ($k != 'pageNumber' && $k != 'pageSize'){
+                $paramString .= ' -'.$k.'='.urlencode($params[$k]);
+            }
+        }
+    }
+    return $paramString;
+}
 

@@ -35,6 +35,7 @@ function cdm_dataportal_node_view($node, $view_mode = 'full') {
   // See cdm_add_node_content.
   switch ($node->type) {
     case 'cdm_' . NODETYPE_TAXON:
+    case 'cdm_' . NODETYPE_SPECIMEN:
     case 'cdm_' . NODETYPE_NAME:
     case 'cdm_' . NODETYPE_REFERENCE:
     case 'cdm_' . NODETYPE_MEDIA:

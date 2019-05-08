@@ -9,7 +9,7 @@ define('NODETYPE_MEDIA', 'media');
 define('NODETYPE_REFERENCE', 'reference');
 define('NODETYPE_NAME', 'name');
 define('NODETYPE_NAMED_AREA', 'named_area');
-
+define('NODETYPE_SPECIMEN', 'specimen');
 /**
  * Implements hook_cdm_nodetypes().
  */
@@ -22,6 +22,7 @@ function cdm_dataportal_cdm_nodetypes() {
       'cdm_' . NODETYPE_MEDIA => NODETYPE_MEDIA,
       'cdm_' . NODETYPE_NAME => NODETYPE_NAME,
       'cdm_' . NODETYPE_NAMED_AREA => NODETYPE_NAMED_AREA,
+      'cdm_' . NODETYPE_SPECIMEN => NODETYPE_SPECIMEN,
     );
   }
   return $nodetypes;
