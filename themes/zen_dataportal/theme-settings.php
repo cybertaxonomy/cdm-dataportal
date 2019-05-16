@@ -23,7 +23,7 @@ function _zen_dataportal_imagenames() {
  *   A keyed array containing the current state of the form.
  */
 function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $form_id = NULL)  {
-  global $base_root;
+  global $base_url;
 
   // Work-around for a core bug affecting admin themes. See issue #943212.
   if (isset($form_id)) {
@@ -39,10 +39,10 @@ function zen_dataportal_form_system_theme_settings_alter(&$form, &$form_state, $
 
   // check browser compatibility requirements
   $browser_compatibility_issues = array();
-  $response = drupal_http_request($base_root . POLYFILL_TEST_URL, array("method"=>"HEAD"));
+  $response = drupal_http_request($base_url . POLYFILL_TEST_URL, array("method"=>"HEAD"));
   // preprocess-css
   if($response->code != 200){
-    $browser_compatibility_issues[] = 'The ' . l('polyfills folder' ,'/polyfills/', array('external'=>TRUE))
+    $browser_compatibility_issues[] = 'The ' . l('polyfills folder' ,$base_url . '/polyfills/', array('external'=>TRUE))
         .' is not found.'
         . 'Please read the installation instructions in the ' .l('README', $path_to_theme . '/README.txt') .' of this theme.';
   }
