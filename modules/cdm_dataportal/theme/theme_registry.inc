@@ -127,6 +127,10 @@ function cdm_dataportal_theme() {
         'pager' => NULL,
         'path' => NULL
     )),
+    'cdm_search_specimen_results' => array('variables' => array(
+        'pager' => NULL,
+        'path' => NULL
+    )),
     'cdm_taxon_list_thumbnails' => array('variables' => array('taxon' => NULL)),
 
     // Themes in includes/pre-drupal8.inc

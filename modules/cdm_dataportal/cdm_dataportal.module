@@ -431,12 +431,18 @@ function cdm_dataportal_menu() {
   );
 
   $items['cdm_dataportal/occurrence'] = array(
-      'page callback' => 'cdm_dataportal_specimen_page_view',
-      'access arguments' => array('access cdm content'),
-      'type' => MENU_CALLBACK,
-      // Expected callback arguments: uuid.
-  );
+        'page callback' => 'cdm_dataportal_specimen_page_view',
+        'access arguments' => array('access cdm content'),
+        'type' => MENU_CALLBACK,
+        // Expected callback arguments: uuid.
+    );
 
+    $items['cdm_dataportal/specimen/accession_number'] = array(
+        'page callback' => 'cdm_dataportal_specimen_by_accession_number_page_view',
+        'access arguments' => array('access cdm content'),
+        'type' => MENU_CALLBACK,
+        // Expected callback arguments: accession number.
+    );
   $items['cdm_dataportal/named_area'] = array(
     'page callback' => 'cdm_dataportal_named_area_page_view',
     'access arguments' => array('access cdm content'),
@@ -499,14 +505,14 @@ function cdm_dataportal_menu() {
     'access arguments' => array('access cdm content'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
-
+if (variable_get(CDM_BLAST)) {
     $items['cdm_dataportal/search/blast'] = array(
         'title' => 'Blast', // will be passed through t()
         'page callback' => 'cdm_dataportal_view_search_blast',
         'access arguments' => array('access cdm content'),
         'type' => MENU_DEFAULT_LOCAL_TASK,
     );
-
+}
   $items['cdm_dataportal/search/taxon_by_description'] = array(
     'title' => 'By content category', // will be passed through t()
     'page callback' => 'cdm_dataportal_view_search_taxon_by_description',
@@ -815,7 +821,9 @@ function cdm_dataportal_block_view($delta) {
 
       if (variable_get('cdm_dataportal_show_advanced_search', 1)) {
         $block['content'] .= '<div>' . l(t('Advanced Search'), 'cdm_dataportal/search') . '</div>';
-       // $block['content'] .= '<div>' . l(t('Blast Search'), 'cdm_dataportal/search/blast') . '</div>';
+      }
+      if (variable_get(CDM_BLAST)){
+          $block['content'] .= '<div>' . l(t('Blast Search'), 'cdm_dataportal/search/blast') . '</div>';
       }
       return $block;
     case '4':
@@ -1588,7 +1596,17 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
 
   return $taxonpage;
 }
+function cdm_dataportal_specimen_by_accession_number_page_view($accession_number)
+{
+    if (isset($accession_number)) {
+        $specimen_or_observation = cdm_ws_get(CDM_WS_OCCURRENCE_ACCESSION_NUMBER, null, 'accessionNumber=' . $accession_number);
 
+        if (isset($specimen_or_observation) && $specimen_or_observation){
+            cdm_dataportal_specimen_page_view($specimen_or_observation->uuid, $specimen_or_observation);
+        }
+
+    }
+}
 /**
  * Creates a specimen page view.
  * @param string $uuid the UUID of the specimen
@@ -2082,6 +2100,16 @@ function path_to_specimen($uuid) {
     }
     else {
         return 'cdm_dataportal/occurrence/' . $uuid;
+    }
+}
+
+function path_to_specimen_by_accession_number($accession_number) {
+
+    if (!$accession_number) {
+        return FALSE;
+    }
+    else {
+        return 'cdm_dataportal/specimen/accession_number/' . $accession_number;
     }
 }
 

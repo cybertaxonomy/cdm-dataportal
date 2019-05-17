@@ -334,6 +334,65 @@ function theme_cdm_search_taxa_results($variables)
 
 
 /**
+ * Returns HTML for the given result page including a pager.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - pager: TODO
+ *   - path: The target path for the pager links, this will usually point to
+ *     'cdm_dataportal/search/results/taxon'
+ *
+ * @return string
+ *  Markup for the result page
+ *
+ * @throws Exception
+ *
+ * @ingroup themeable
+ */
+function theme_cdm_search_specimen_results($variables)
+{
+    $pager = $variables['pager'];
+    $path = $variables['path'];
+
+
+
+    // Add thumbnails checkbox and refine search link.
+    $out = '<div class="page_options">';
+    //if (isset($_REQUEST['ws'])) {
+     //   if (cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) {
+     //       $out .= '<div id="backButton">' . l(t('Modify search'), cdm_dataportal_search_form_path_for_ws($_REQUEST['ws'])) . '</div>';
+     //   }
+    //}
+    if (variable_get(SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX, SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX_DEFAULT)) {
+        $out .= '<form name="pageoptions"><div id="showThumbnails"><input class="showThumbnails" type="checkbox" name="showThumbnails" ' . (do_showThumbnails() == 1 ? 'checked="checked"' : '') . '> ' . t('Display image thumbnails') . '</div></form>';
+    }
+    $out .= '</div>';
+
+
+
+
+
+
+    // List results.
+    if (isset($pager->data) ) {
+        $data = json_decode($pager->data, true);
+        $out .= '<div id="search_results">';
+        $list_of_result = compose_table_of_blast_result($data);
+        $out .= $list_of_result;
+        $out .= '</div>';
+       // $out .= theme('cdm_pager', array(
+       //     'pager' => $pager,
+       //     'path' => $path,
+       //     'parameters' => $_REQUEST,
+        //));
+    } else {
+        $out .= '<h4 class="error">' . t('Sorry, no matching entries found.') . '</h4>';
+    }
+    return $out;
+}
+
+
+/**
  * TODO Implementation of Hook taxon_image_gallery()
  *
  * @param object $taxon
