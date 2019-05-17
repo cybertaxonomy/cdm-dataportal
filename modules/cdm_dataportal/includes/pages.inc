@@ -388,7 +388,7 @@ function compose_specimen_table($field_unit_uuids)
             'class' => array('summary_row_cell')
           ),
           @array(
-            'data' => $derivateHierarchy->herbarium,
+            'data' => $derivateHierarchy->collection,
             'class' => array('summary_row_cell')
           ),
           array(
