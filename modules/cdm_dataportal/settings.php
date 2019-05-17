@@ -35,6 +35,8 @@
   define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
   define('CDM_DATAPORTAL_SPECIMEN_DERIVATE_TREE', 0);
 
+  define('CDM_WS_PORTAL_BLAST', 'http://127.0.0.1:9001/api/sequence');
+  define('CDM_BLAST', 0);
   define('CDM_REGISTRATION_PRESISTENT_IDENTIFIER_AS_LINK', 'cdm_registration_presistent_identifier_as_link');
 
   /* annotationTypeKeys */
@@ -2770,6 +2772,33 @@ function cdm_settings_layout_search() {
 
     '#description' => t('Area uuids, comma separated, no whitespace. EXPERIMENTAL!!!!'),
   );
+
+    $form['blast_search_settings'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Blast Search'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#description' => t('<p>To perform blast searchs
+         the block <em>CDM Taxon Search</em> should be enabled and visible for users
+         where they can write the text to be searched. You can find Drupal block configuration
+         site at <a href="./?q=admin/build/block">Administer&#45&#62Site building&#45&#62Blocks</a></p>
+         <p>To perform a blast search a blast database for the cdm instance is needed.</p> '),
+    );
+
+    $form['blast_search_settings'][CDM_BLAST] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Activate Blast search') . ':',
+        '#default_value' => variable_get(CDM_BLAST, 0), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
+
+        '#description' => t('Activate the blast search for this portal, this works only with an existing blast database!'),
+    );
+    $form['blast_search_settings'][CDM_WS_PORTAL_BLAST] = array(
+        '#type' => 'textfield',
+        '#title' => t('Webservice URL for blast search') . ':',
+        '#default_value' => variable_get(CDM_WS_PORTAL_BLAST, 'http://127.0.0.1:9001/api/sequence'), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
+
+        '#description' => t('Enter the webservice URL for blast search'),
+    );
 
   // --- SEARCH TAXA GALLERY ---- //
   $items = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);

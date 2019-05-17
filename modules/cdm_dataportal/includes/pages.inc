@@ -82,11 +82,11 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     $type_specimens = array();
     $other_occurrences = array();
     foreach ($specimensOrObservations as $occurrence) {
-        $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
+       $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
         if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
             $type_specimens[] = $occurrence;
-        } else {
-            $other_occurrences[] = $occurrence;
+       } else {
+           $other_occurrences[] = $occurrence;
         }
     }
     $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
@@ -384,11 +384,11 @@ function compose_specimen_table($field_unit_uuids)
             'class' => array('summary_row_cell')
           ),
           array(
-            'data' => $derivateHierarchy->collection,
+            'data' => $derivateHierarchy->collectingString,
             'class' => array('summary_row_cell')
           ),
           @array(
-            'data' => $derivateHierarchy->herbarium,
+            'data' => $derivateHierarchy->collection,
             'class' => array('summary_row_cell')
           ),
           array(
