@@ -1387,6 +1387,36 @@ function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_
   return cdm_terms_as_options($terms, $term_label_callback, $empty_option);
 }
 
+/**
+ * @param array $none_option
+ *    Will add a filter option to search for NULL values
+ * @param $with_empty_option
+ *    Will add an empty option to the beginning. Choosing this option will disable the filtering.
+ * @return array
+ *   An array of options with uuids as key and the localized term representation as value
+ */
+function cdm_type_designation_status_filter_terms_as_options($none_option_label, $with_empty_option = false){
+  $filter_terms = cdm_ws_get(CDM_WS_TYPE_DESIGNATION_STATUS_FILTER_TERMS);
+
+  if(isset($filter_terms) && is_array($filter_terms)) {
+    foreach ($filter_terms as $filter_term) {
+      $options[join(',', $filter_term->uuids)] = $filter_term->label;
+    }
+  }
+
+  if(is_string($none_option_label)){
+    $options = array_merge(array('NULL' => $none_option_label), $options);
+  }
+
+  if($with_empty_option !== FALSE){
+    array_unshift ($options, "");
+  }
+
+
+  return $options;
+}
+
+
 
 /**
  * @todo Please document this function.

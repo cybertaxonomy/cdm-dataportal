@@ -11,6 +11,7 @@ define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCit
 define('CDM_WS_NAME', 'name');
 define('CDM_WS_NAME_NAMECAHE', 'name/$0/nameCache');
 define('CDM_WS_NAME_TYPEDESIGNATIONS', 'name/$0/typeDesignations');
+define('CDM_WS_TYPE_DESIGNATION_STATUS_FILTER_TERMS', 'name/typeDesignationStatusFilterTerms');
 
 define('CDM_WS_PORTAL_NAME', 'portal/name');
 define('CDM_WS_PORTAL_NAME_FINDBYNAME', 'name/findByName/');

@@ -950,7 +950,7 @@ function cdm_dataportal_search_registrations_filter_execute()
   static $query_param_map = array(
     'identifier' => 'identifierFilterPattern',
     'taxon_name'=> 'taxonNameFilterPattern',
-    'type_designation_status' => 'typeDesignationStatusUuids',
+    'type_designation_status_uuids' => 'typeDesignationStatusUuids',
   );
 
   $session_key = SESSION_KEY_SEARCH_REGISTRATION_FILTER;
@@ -1095,7 +1095,7 @@ function cdm_dataportal_search_registration_filter_form($form, &$form_state) {
   static $filter_presets_empty = array(
     'identifier'=> null,
     'taxon_name'=> null,
-    'type_designation_status' => null
+    'type_designation_status_uuids' => null
   );
 
   _add_font_awesome_font();
@@ -1125,12 +1125,13 @@ function cdm_dataportal_search_registration_filter_form($form, &$form_state) {
     '#size' => 20,
     '#maxlength' => 128
   );
-  $form['type_designation_status'] = array(
+  $form['type_designation_status_uuids'] = array(
     '#type' => 'select',
     '#title' => t('Type designation status'),
     '#multiple' => true,
-    '#options' => cdm_terms_by_type_as_option('TypeDesignationStatusBase', null, null, TRUE),
-    '#default_value' => $filter_presets['type_designation_status']
+    '#options' => cdm_type_designation_status_filter_terms_as_options('- none -'),
+    '#default_value' => $filter_presets['type_designation_status_uuids'],
+    "#description" => '<i>' . t('Ctrl + Click to unselect') . '</i>'
   );
 
   $form['submit'] = array(
