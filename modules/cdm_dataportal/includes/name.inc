@@ -581,7 +581,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
     $render_array['published_name'] = markup_to_render_array('<p class="published-name">' . render_taxon_or_name($name) . '</p>', 0);
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
-    $render_array['name_relations'] = markup_to_render_array(render_name_relationships_of($name_relations, $registration_dto->nameRef->uuid, null, false));
+    $render_array['name_relations'] = markup_to_render_array(render_name_relationships_inline($name_relations, $registration_dto->nameRef->uuid, null, false));
     $render_array['name_relations']['#weight'] = 10;
   } else {
     // in this case the registration must have a
@@ -907,7 +907,9 @@ function compose_specimen_type_designations($type_entity_refs){
 }
 
 /**
- * Renders the name relationships.
+ * Renders an inline representation of the name relationships.
+ *
+ * The output of this function usually will be appended to taxon name representations.
  *
  * @param $name_relations
  *    The list of CDM NameRelationsips
@@ -924,7 +926,7 @@ function compose_specimen_type_designations($type_entity_refs){
  * @return String
  *    The markup for the name relationships
  */
-function render_name_relationships_of($name_relations, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source = true) {
+function render_name_relationships_inline($name_relations, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source = true) {
 
   static $inverse_name_rels_uuids = array(UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR);
 
