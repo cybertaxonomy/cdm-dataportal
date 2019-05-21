@@ -2576,7 +2576,8 @@ ie	introduced: formerly introduced
       false,
       array('uuid' => '/' .UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM . '|'
         . UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM . '|'
-        . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '/' )
+        . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '|'
+        . UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT . '/' )
   );
   $form['taxon_synonymy']['name_relations'][CDM_NAME_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',

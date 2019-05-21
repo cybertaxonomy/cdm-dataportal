@@ -909,7 +909,12 @@ function compose_specimen_type_designations($type_entity_refs){
 /**
  * Renders an inline representation of the name relationships.
  *
- * The output of this function usually will be appended to taxon name representations.
+ * The output of this function will be usually appended to taxon name representations.
+ *
+ * Related issues:
+ *   - https://dev.e-taxonomy.eu/redmine/issues/5697 "Show name conserved against as [non xxx]"
+ *   - https://dev.e-taxonomy.eu/redmine/issues/6678 "How to correctly show name relationship "orth. var." in dataportal"
+ *   - https://dev.e-taxonomy.eu/redmine/issues/5857
  *
  * @param $name_relations
  *    The list of CDM NameRelationsips
@@ -961,12 +966,17 @@ function render_name_relationships_inline($name_relations, $current_name_uuid, $
       }
         
       if($relationship_markup){
-        if (count($relations_array)) {
-          // lat: "non nec" == german: "weder noch"
-          $relations_array [] = 'nec ' . $relationship_markup;
+        if($name_rel->type->uuid == UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT){
+          $prefix = 'ort. var.';
         } else {
-          $relations_array [] = 'non ' . $relationship_markup;
+          if (count($relations_array)) {
+            // lat: "non nec" == german: "weder noch"
+            $prefix = 'nec';
+          } else {
+            $prefix = 'non';
+          }
         }
+        $relations_array [] = $prefix . ' ' . $relationship_markup;
       }
 
     }
