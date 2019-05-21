@@ -2168,7 +2168,7 @@ function cdm_settings_layout_taxon() {
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
       '#description' => 'This section let\'s you define how each of the feature blocks is displayed.
-      A sub form is for each of the features of currently selected feature tree allows to configre each feature block individually.
+      A sub form for each of the the currently selected feature tree allows to configure each feature block individually.
       The subforms have the following settings in common:<br />
       <h6>List type:</h6><div>Whether the description elements are displayed as list or not. Three different list types are available</div>
       <h6>Link to reference:</h6><div>Render the reference as link, ignored if the element is NOT a DescriptionElementSource</div>
@@ -2537,18 +2537,6 @@ ie	introduced: formerly introduced
       synonym you want to see the "accept of" text for the accepted synonym.'),
   );
 
-  /* === currently unused ===
-  $nameRelationshipTypeOptions = cdm_vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE);
-  $form['taxon_synonymy']['name_relationships']['name_relationships_to_show'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Display name relationships') . ':',
-    '#default_value' => variable_get('name_relationships_to_show', 0),
-    '#options' => $nameRelationshipTypeOptions,
-    '#description' => t('Select the name relationships you want to show for the
-      accepted taxa.'),
-  );
- */
-
   $form['taxon_synonymy']['taxon_relations'] = array(
     '#type' => 'fieldset',
     '#title' => t('Taxon relationships'),
@@ -2569,8 +2557,7 @@ ie	introduced: formerly introduced
   $form['taxon_synonymy']['taxon_relations'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Taxon relationship types') . ':',
-    '#description' => t('Only taxon relationships of the selected type will be
-      displayed'),
+    '#description' => 'Only taxon relationships of the selected type will be displayed',
     '#options' => $taxon_relationship_type_options,
     '#default_value' => $taxon_relationship_type_defaults,
     '#disabled' => !variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
@@ -2583,12 +2570,19 @@ ie	introduced: formerly introduced
     '#collapsed' => FALSE
   );
 
-  $name_relationship_type_options = cdm_vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
+  $name_relationship_type_options = cdm_vocabulary_as_option(
+      UUID_NAME_RELATIONSHIP_TYPE,
+      '_cdm_relationship_type_term_inverse_label_callback',
+      false,
+      array('uuid' => '/' .UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM . '|'
+        . UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM . '|'
+        . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '/' )
+  );
   $form['taxon_synonymy']['name_relations'][CDM_NAME_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Name relationship types') . ':',
-    '#description' => t('Only name relationships of the selected type will be
-      displayed'),
+    '#description' => 'This setting only affects specific types of name relations which are displayed appended to scientific name. 
+    A full listing of all name relationships for a scientific name is provided by the taxon ' . l('name page', 'admin/config/cdm_dataportal/settings/layout/name-page') . '.',
     '#options' => $name_relationship_type_options,
     '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_TYPES, unserialize(CDM_NAME_RELATIONSHIP_TYPES_DEFAULT)),
   );

@@ -1419,8 +1419,13 @@ function cdm_type_designation_status_filter_terms_as_options($none_option_label,
 
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Callback function which provides the localized representation of a cdm term.
+ *
+ * The representation is build by concatenating the abbreviated label with the label
+ * and thus is especially useful for relationship terms
+ * The localized representation provided by the cdm can be overwritten by
+ * providing a drupal translation.
+ *
  */
 function _cdm_relationship_type_term_label_callback($term) {
   if (isset($term->representation_L10n_abbreviatedLabel)) {
@@ -1429,6 +1434,25 @@ function _cdm_relationship_type_term_label_callback($term) {
   }
 else {
     return t('@term', array('@term' => $term->representation_L10n));
+  }
+}
+
+/**
+ * Callback function which provides the localized inverse representation of a cdm term.
+ *
+ * The representation is build by concatenating the abbreviated label with the label
+ * and thus is especially useful for relationship terms
+ * The localized representation provided by the cdm can be overwritten by
+ * providing a drupal translation.
+ *
+ */
+function _cdm_relationship_type_term_inverse_label_callback($term) {
+  if (isset($term->inverseRepresentation_L10n_abbreviatedLabel)) {
+    return $term->inverseRepresentation_L10n_abbreviatedLabel . ' : '
+      . t('@term', array('@term' => $term->inverseRepresentation_L10n));
+  }
+  else {
+    return t('@term', array('@term' => $term->inverseRepresentation_L10n));
   }
 }
 
