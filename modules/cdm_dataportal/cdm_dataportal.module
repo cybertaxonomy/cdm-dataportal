@@ -505,14 +505,14 @@ function cdm_dataportal_menu() {
     'access arguments' => array('access cdm content'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
-if (variable_get(CDM_BLAST)) {
+  if (variable_get(CDM_SEARCH_BLAST_ENABLED)) {
     $items['cdm_dataportal/search/blast'] = array(
         'title' => 'Blast', // will be passed through t()
         'page callback' => 'cdm_dataportal_view_search_blast',
         'access arguments' => array('access cdm content'),
-        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'type' => MENU_LOCAL_TASK,
     );
-}
+  }
   $items['cdm_dataportal/search/taxon_by_description'] = array(
     'title' => 'By content category', // will be passed through t()
     'page callback' => 'cdm_dataportal_view_search_taxon_by_description',
@@ -526,11 +526,12 @@ if (variable_get(CDM_BLAST)) {
   );
 
 
-    $items['cdm_dataportal/search/results/specimen'] = array(
-        'page callback' => 'cdm_dataportal_view_search_results_specimen',
-        'access arguments' => array('access cdm content'),
-        'type' => MENU_CALLBACK,
-    );
+  $items['cdm_dataportal/search/results/specimen'] = array(
+      'page callback' => 'cdm_dataportal_view_search_results_specimen',
+      'access arguments' => array('access cdm content'),
+      'type' => MENU_CALLBACK,
+  );
+
   /*
    * MENU_CALLBACK at cdm_dataportal/registration-search is needed to make the
    * tabs in the subordinate paths work, accessing this 'page' will cause the
@@ -822,7 +823,7 @@ function cdm_dataportal_block_view($delta) {
       if (variable_get('cdm_dataportal_show_advanced_search', 1)) {
         $block['content'] .= '<div>' . l(t('Advanced Search'), 'cdm_dataportal/search') . '</div>';
       }
-      if (variable_get(CDM_BLAST)){
+      if (variable_get(CDM_SEARCH_BLAST_ENABLED)){
           $block['content'] .= '<div>' . l(t('Blast Search'), 'cdm_dataportal/search/blast') . '</div>';
       }
       return $block;
@@ -1883,12 +1884,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
  *
  * NOTE: The advance search form allows searching for taxa.
  */
-function cdm_dataportal_view_search_advanced($arg) {
-    if (isset($arg)){
-        if ($arg == 'blast'){
-            return cdm_dataportal_view_search_blast();
-        }
-    }
+function cdm_dataportal_view_search_advanced() {
   drupal_set_title(t('Advanced search'), PASS_THROUGH);
   return drupal_get_form('cdm_dataportal_search_taxon_form_advanced');
 }

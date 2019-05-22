@@ -35,8 +35,8 @@
   define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
   define('CDM_DATAPORTAL_SPECIMEN_DERIVATE_TREE', 0);
 
-  define('CDM_WS_PORTAL_BLAST', 'http://127.0.0.1:9001/api/sequence');
-  define('CDM_BLAST', 0);
+  define('CDM_SEARCH_BLAST_SERVICE_URI', 'http://127.0.0.1:9001/api/sequence');
+  define('CDM_SEARCH_BLAST_ENABLED', 0);
   define('CDM_REGISTRATION_PRESISTENT_IDENTIFIER_AS_LINK', 'cdm_registration_presistent_identifier_as_link');
 
   /* annotationTypeKeys */

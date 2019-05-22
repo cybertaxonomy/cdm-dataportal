@@ -412,7 +412,7 @@ function cdm_dataportal_search_blast_form($form, &$form_state) {
 
     $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
 
-    $search_service_endpoint = CDM_WS_PORTAL_BLAST;
+    $search_service_endpoint = CDM_SEARCH_BLAST_SERVICE_URI;
 
 
     $form = cdm_dataportal_search_blast_form_prepare(
