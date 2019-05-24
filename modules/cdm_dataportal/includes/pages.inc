@@ -1070,12 +1070,14 @@ function cdm_dataportal_preprocess_menu_local_tasks(&$variables) {
   $hidden_tabs = taxon_page_tabs_hidden_add();
 
   if (!variable_get(CDM_SEARCH_BLAST_ENABLED)) {
-      foreach ($variables['primary'] as $key => &$element) {
-          if ($element['#link']['path'] == 'cdm_dataportal/search/blast' ) {
-            // remove the tab
-            unset($variables['primary'][$key]);
-          }
+      if (is_array($variables['primary'])) {
+          foreach ($variables['primary'] as $key => &$element) {
+              if ($element['#link']['path'] == 'cdm_dataportal/search/blast') {
+                  // remove the tab
+                  unset($variables['primary'][$key]);
+              }
 
+          }
       }
   }
   if (is_array($variables['primary'])) {
