@@ -2587,10 +2587,11 @@ ie	introduced: formerly introduced
 
   $name_relationship_type_options = cdm_vocabulary_as_option(
       UUID_NAME_RELATIONSHIP_TYPE,
-      '_cdm_relationship_type_term_inverse_label_callback',
+      '_cdm_relationship_type_term_label_callback',
       false,
       array('uuid' => '/' .UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM . '|'
         . UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM . '|'
+        . UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST . '|'
         . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '|'
         . UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT . '/' )
   );

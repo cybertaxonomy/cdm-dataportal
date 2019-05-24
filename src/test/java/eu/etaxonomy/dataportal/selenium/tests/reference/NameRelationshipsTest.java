@@ -38,6 +38,8 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
     private static final UUID taxon_nodosilinea_sensensia_uuid = UUID.fromString("7094ea13-2a95-46d9-bfca-8c0e0848e44c");
 
+    private static final UUID taxon_bulbostylis_pauciflora_uuid = UUID.fromString("27f2ad59-0e11-44f4-a931-c69053260321");
+
     String titleSuffix = " | Integration test reference";
 
     @Before
@@ -85,11 +87,28 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensensia_uuid);
 
         WebElement accName = p.getAcceptedName();
-        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1\n[non Nodosilinea sensensia nec Nodosilinea sensensia nec Nodosilinea blockensis orth. var. Nodosilinea sensensi1, 2 ]", accName.getText());
+        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1 [non Nodosilinea sensensia nec Nodosilinea sensensia nec Nodosilinea blockensis orth. var. Nodosilinea sensensi1, 2 ]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
         assertEquals("1. Art. 88.9 Turland, Wiersema, Barrie, Greuter, D.Hawksw., Herend., S.Knapp, Kusber, D.Z.Li, Marhold, T.W.May, McNeill, A.M.Monro, J.Prado, M.J.Price & Gideon F.Sm., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33", footnotes.get(0).getText());
         assertEquals("2. Lem, Nonsens species of the developers Vol1", footnotes.get(1).getText());
+
+    }
+
+    /**
+     * Test for https://dev.e-taxonomy.eu/redmine/issues/5697
+     *
+     * @throws MalformedURLException
+     * @throws UnsupportedEncodingException
+     */
+    @Test
+    public void testIssue5697() throws MalformedURLException, UnsupportedEncodingException {
+
+        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_bulbostylis_pauciflora_uuid);
+
+        WebElement accName = p.getAcceptedName();
+        assertEquals("Bulbostylis pauciflora (Liebm.) C. B. Clarke, nom. cons. [non Bulbostylis pauciflora (Kunth) D.C. ]", accName.getText());
+        assertEquals("is conserved against", accName.findElement(By.className("symbol")).getAttribute("title"));
 
     }
 

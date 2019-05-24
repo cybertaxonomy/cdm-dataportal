@@ -986,8 +986,8 @@ function compose_name_relationships_inline($name_relations, $current_name_uuid, 
 
   $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, unserialize(CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT));
 
-  $list_prefix = '<div class="name-relationships">[';
-  $list_suffix = ']</div>';
+  $list_prefix = '<span class="name_relationships">[';
+  $list_suffix = ']</span>';
   $item_prefix = '<span class="item">';
   $item_suffix = '</span> ';
   $show_relationship_symbol = true;
@@ -1062,6 +1062,7 @@ function compose_name_relationships($name_relations, $selected_name_rel_uuids, $
 {
   $non_nec_name_reltype_uuids = array(UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
     UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
+    UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST,
     UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR);
 
   $render_array = array(

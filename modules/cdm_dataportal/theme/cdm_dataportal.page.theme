@@ -197,7 +197,7 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     $name_relationships = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
     // Render relationships of accepted name.
     if(isset($name_relationships['list']['items'][0])){
-      $accepted_name .= ' <span class="name_relationships">' . drupal_render($name_relationships) . '</span>';
+      $accepted_name .= ' ' . drupal_render($name_relationships);
     }
 
       // handle annotations of the name and taxon
