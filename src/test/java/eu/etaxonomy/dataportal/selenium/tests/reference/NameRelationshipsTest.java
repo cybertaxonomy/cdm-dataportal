@@ -40,6 +40,8 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
     private static final UUID taxon_bulbostylis_pauciflora_uuid = UUID.fromString("27f2ad59-0e11-44f4-a931-c69053260321");
 
+    private static final UUID taxon_nepenthes_gracilis_uuid = UUID.fromString("5d9af5a8-c8ad-45e8-85df-ce6a01011fb9");
+
     String titleSuffix = " | Integration test reference";
 
     @Before
@@ -87,7 +89,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensensia_uuid);
 
         WebElement accName = p.getAcceptedName();
-        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1 [non Nodosilinea sensensia nec Nodosilinea sensensia nec Nodosilinea blockensis orth. var. Nodosilinea sensensi1, 2 ]", accName.getText());
+        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1 [non Nodosilinea sensensia nec Nodosilinea sensensia nec Nodosilinea blockensis orth. var. Nodosilinea sensensi1, 2]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
         assertEquals("1. Art. 88.9 Turland, Wiersema, Barrie, Greuter, D.Hawksw., Herend., S.Knapp, Kusber, D.Z.Li, Marhold, T.W.May, McNeill, A.M.Monro, J.Prado, M.J.Price & Gideon F.Sm., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33", footnotes.get(0).getText());
@@ -107,8 +109,30 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_bulbostylis_pauciflora_uuid);
 
         WebElement accName = p.getAcceptedName();
-        assertEquals("Bulbostylis pauciflora (Liebm.) C. B. Clarke, nom. cons. [non Bulbostylis pauciflora (Kunth) D.C. ]", accName.getText());
+        assertEquals("Bulbostylis pauciflora (Liebm.) C. B. Clarke, nom. cons. [non Bulbostylis pauciflora (Kunth) D.C.]", accName.getText());
         assertEquals("is conserved against", accName.findElement(By.className("symbol")).getAttribute("title"));
+
+    }
+
+    /**
+     * Test for https://dev.e-taxonomy.eu/redmine/issues/6523
+     *
+     * @throws MalformedURLException
+     * @throws UnsupportedEncodingException
+     */
+    @Test
+    public void testIssue6523() throws MalformedURLException, UnsupportedEncodingException {
+
+        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nepenthes_gracilis_uuid);
+
+        WebElement accName = p.getAcceptedName();
+        assertEquals("Nepenthes gracilis Korth., Verh. Nat. Gesch. Ned. Bezitt., Bot. 19: 22, t. 1 & 4. 1840", accName.getText());
+
+        WebElement synonym1 = p.getHeterotypicalGroupSynonym(1, 1);
+        assertEquals("=\nNepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858", synonym1.getText());
+        WebElement synonym2 = p.getHeterotypicalGroupSynonym(1, 2);
+        assertEquals("≡\nNepenthes tupmanniana Bonstedt in Parey Blumeng. 1: 663. 1931 [non Nepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858]", synonym2.getText());
+        assertEquals("is misspelling for", synonym2.findElement(By.className("symbol")).getAttribute("title"));
 
     }
 

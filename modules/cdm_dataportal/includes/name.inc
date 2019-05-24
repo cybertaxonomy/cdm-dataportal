@@ -985,13 +985,26 @@ function compose_name_relationships_inline($name_relations, $current_name_uuid, 
   // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
 
   $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, unserialize(CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT));
+  $name_rel_type_filter = array('direct' => array(), 'inverse' => array());
+  foreach ($selected_name_rel_uuids as $uuid){
+    $name_rel_type_filter['direct'][$uuid] = $uuid;
+    if($uuid != UUID_NAMERELATIONSHIPTYPE_MISSPELLING){
+      $name_rel_type_filter['inverse'][$uuid] = $uuid;
+    }
+  }
 
   $list_prefix = '<span class="name_relationships">[';
   $list_suffix = ']</span>';
   $item_prefix = '<span class="item">';
   $item_suffix = '</span> ';
   $show_relationship_symbol = true;
-  $render_array = compose_name_relationships($name_relations, $selected_name_rel_uuids, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
+  $render_array = compose_name_relationships($name_relations, $name_rel_type_filter, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
+
+  // remove the glue space from the last item element which has been added by the $item_suffix = '</span> '
+  $items_ctn = count($render_array['list']['items']);
+  if($items_ctn){
+    $render_array['list']['items'][$items_ctn - 1]['#suffix'] = '</span>';
+  }
 
   RenderHints::popFromRenderStack();
   return $render_array;
@@ -1028,6 +1041,11 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
   // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
 
   $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, unserialize(CDM_NAME_RELATIONSHIP_LIST_TYPES_DEFAULT));
+  $name_rel_type_filter = array('direct' => array(), 'inverse' => array());
+  foreach ($selected_name_rel_uuids as $uuid){
+    $name_rel_type_filter['direct'][$uuid] = $uuid;
+    $name_rel_type_filter['inverse'][$uuid] = $uuid;
+  }
 
   $list_prefix = '<div class="relationships_list name_relationships">';
   $list_suffix = '</div>';
@@ -1035,7 +1053,7 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
   $item_suffix = '</div>';
   $show_relationship_symbol = true;
 
-  $render_array = compose_name_relationships($name_relations, $selected_name_rel_uuids, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
+  $render_array = compose_name_relationships($name_relations, $name_rel_type_filter, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
 
   RenderHints::popFromRenderStack();
   $render_array['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
@@ -1046,7 +1064,10 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
 
 /**
  * @param $name_relations
- * @param $selected_name_rel_uuids
+ * @param $name_rel_type_filter
+ *   Associative array with two keys:
+ *   - 'direct': the relationship type uuids for the direct direction of the relation edge to be included
+ *   - 'inverse': the relationship type uuids for the direct direction of the relation edge to be included
  * @param $current_name_uuid
  * @param $current_taxon_uuid
  * @param $show_relationship_symbol
@@ -1058,11 +1079,13 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
  *
  * @ingroup Compose
  */
-function compose_name_relationships($name_relations, $selected_name_rel_uuids, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix)
+function compose_name_relationships($name_relations, $name_rel_type_filter, $current_name_uuid, $current_taxon_uuid,
+                                    $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix)
 {
   $non_nec_name_reltype_uuids = array(UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
     UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
     UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST,
+    UUID_NAMERELATIONSHIPTYPE_MISSPELLING,
     UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR);
 
   $render_array = array(
@@ -1084,7 +1107,10 @@ function compose_name_relationships($name_relations, $selected_name_rel_uuids, $
     $orthographic_variants = array();
     foreach ($name_relations as $name_rel) {
       $rel_type_uuid = $name_rel->type->uuid;
-      if (isset($selected_name_rel_uuids[$rel_type_uuid]) && $selected_name_rel_uuids[$rel_type_uuid]) {
+      $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
+      if ((!$is_inverse_relation && isset($name_rel_type_filter['direct'][$rel_type_uuid]) && $name_rel_type_filter['direct'][$rel_type_uuid])
+        ||($is_inverse_relation && isset($name_rel_type_filter['inverse'][$rel_type_uuid]) && $name_rel_type_filter['inverse'][$rel_type_uuid])) {
+
         if (array_search($rel_type_uuid, $non_nec_name_reltype_uuids) !== false && (
             $current_name_uuid == $name_rel->fromName->uuid && $rel_type_uuid != UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
             || $current_name_uuid == $name_rel->toName->uuid && $rel_type_uuid == UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
@@ -1103,6 +1129,7 @@ function compose_name_relationships($name_relations, $selected_name_rel_uuids, $
 
     usort($name_relations, 'compare_name_relations_by_term_order_index');
 
+    // compose
     foreach ($name_relations as $name_rel) {
 
       $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
