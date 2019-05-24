@@ -581,7 +581,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
     $render_array['published_name'] = markup_to_render_array('<p class="published-name">' . render_taxon_or_name($name) . '</p>', 0);
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
-    $render_array['name_relations'] = compose_name_relationships_list($name_relations, $registration_dto->nameRef->uuid, null, false);
+    $render_array['name_relations'] = compose_name_relationships_list($name_relations, $registration_dto->nameRef->uuid, null);
     $render_array['name_relations']['#weight'] = 10;
   } else {
     // in this case the registration must have a
@@ -915,7 +915,7 @@ function compose_specimen_type_designations($type_entity_refs){
  *    The nameCache will be shown instead of the titleCache if this parameter is true.
  * @return null|string
  */
-function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source, $show_name_cache_only = false){
+function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, $show_name_cache_only = false){
 
   $relationship_markup = null;
 
@@ -945,7 +945,7 @@ function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_
 
 
 /**
- * Renders an inline representation of selected name relationships
+ * Composes an inline representation of selected name relationships
  *
  * The output of this function will be usually appended to taxon name representations.
  * Only the following types are displayed: LATER_HOMONYM, TREATED_AS_LATER_HOMONYM, BLOCKING_NAME_FOR, ORTHOGRAPHIC_VARIANT
@@ -974,46 +974,27 @@ function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_
  *    an inverse relation. For this relation type the toName is taken in to account.
  * @param $current_taxon_uuid
  *    The taxon to be omitted from related taxa. This is only used to create links, see path_to_name()
- * @return String
- *    The markup for the name relationships
+ * @return array
+ *    A drupal render array
+ *
+ * @ingroup Compose
  */
-function render_name_relationships_inline($name_relations, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source = true) {
+function compose_name_relationships_inline($name_relations, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source = true) {
 
   RenderHints::pushToRenderStack('homonym');
   // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
 
   $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, unserialize(CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT));
 
-  $relations_array = array();
-
-  if ($name_relations) {
-    foreach ($name_relations as $name_rel) {
-      if (!(isset($selected_name_rel_uuids[$name_rel->type->uuid]) && $selected_name_rel_uuids[$name_rel->type->uuid])) {
-        // skip if not selected in the settings
-        continue;
-      }
-
-      $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source);
-        
-      if($relationship_markup){
-        if($name_rel->type->uuid == UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT){
-          $prefix = 'ort. var.';
-        } else {
-          if (count($relations_array)) {
-            // lat: "non nec" == german: "weder noch"
-            $prefix = 'nec';
-          } else {
-            $prefix = 'non';
-          }
-        }
-        $relations_array [] = $prefix . ' ' . $relationship_markup;
-      }
-
-    }
-  }
+  $list_prefix = '<div class="name-relationships">[';
+  $list_suffix = ']</div>';
+  $item_prefix = '<span class="item">';
+  $item_suffix = '</span> ';
+  $show_relationship_symbol = true;
+  $render_array = compose_name_relationships($name_relations, $selected_name_rel_uuids, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
 
   RenderHints::popFromRenderStack();
-  return (count($relations_array) ?'<div class="name-relationships">[' . trim(join(" ", $relations_array)) . ']</div>' : '');
+  return $render_array;
 }
 
 /**
@@ -1031,11 +1012,6 @@ function render_name_relationships_inline($name_relations, $current_name_uuid, $
  * @param $current_name_uuid
  *    The Uuid of the name for which the relations are to be rendered, the current name will be hidden when
  *    rendering the relation an only the other name is shown. Parameter is REQUIRED.
- * @param $suppress_if_current_name_is_source
- *    The display of the relation will be
- *    suppressed is the current name is on the source of the relation edge.
- *    That is if it is on the from side of the relation. Except for 'blocking name for' which is
- *    an inverse relation. For this relation type the toName is taken in to account.
  * @param $current_taxon_uuid
  *    The taxon to be omitted from related taxa. This is only used to create links, see path_to_name()
  * @return array
@@ -1043,11 +1019,8 @@ function render_name_relationships_inline($name_relations, $current_name_uuid, $
  *
  * @ingroup Compose
  */
-function compose_name_relationships_list($name_relations, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source = true) {
+function compose_name_relationships_list($name_relations, $current_name_uuid, $current_taxon_uuid) {
 
-  $non_nec_name_reltype_uuids = array(UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
-    UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
-    UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR);
   // $ordered_name_relation_type_uuids = array_keys(cdm_terms_by_type_as_option('NameRelationshipType', CDM_ORDER_BY_ORDER_INDEX_ASC));
 
   RenderHints::pushToRenderStack('name_relationships');
@@ -1056,30 +1029,71 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
 
   $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, unserialize(CDM_NAME_RELATIONSHIP_LIST_TYPES_DEFAULT));
 
+  $list_prefix = '<div class="relationships_list name_relationships">';
+  $list_suffix = '</div>';
+  $item_prefix = '<div class="item">';
+  $item_suffix = '</div>';
+  $show_relationship_symbol = true;
+
+  $render_array = compose_name_relationships($name_relations, $selected_name_rel_uuids, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
+
+  RenderHints::popFromRenderStack();
+  $render_array['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
+  RenderHints::clearFootnoteListKey();
+
+  return $render_array;
+}
+
+/**
+ * @param $name_relations
+ * @param $selected_name_rel_uuids
+ * @param $current_name_uuid
+ * @param $current_taxon_uuid
+ * @param $show_relationship_symbol
+ * @param $list_prefix
+ * @param $list_suffix
+ * @param $item_prefix
+ * @param $item_suffix
+ * @return array
+ *
+ * @ingroup Compose
+ */
+function compose_name_relationships($name_relations, $selected_name_rel_uuids, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix)
+{
+  $non_nec_name_reltype_uuids = array(UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
+    UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
+    UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR);
+
   $render_array = array(
     'list' => array(
-      '#prefix' => '<div class="relationships_list name_relationships">',
-      '#suffix' => '</div>',
+      '#prefix' => $list_prefix,
+      '#suffix' => $list_suffix,
       'items' => array()
     ),
     'footnotes' => array()
   );
 
-  if($name_relations) {
+  if ($name_relations) {
 
     // remove all relations which are not selected in the settings and
-    // sepearate all LATER_HOMONYM, TREATED_AS_LATER_HOMONYM, BLOCKING_NAME_FOR relations and ORTHOGRAPHIC_VARIANTs
+    // separate all LATER_HOMONYM, TREATED_AS_LATER_HOMONYM, BLOCKING_NAME_FOR relations and ORTHOGRAPHIC_VARIANTs
     // for special handling
     $filtered_name_rels = array();
     $non_nec_name_rels = array();
     $orthographic_variants = array();
-    foreach($name_relations as $name_rel) {
-      if (isset($selected_name_rel_uuids[$name_rel->type->uuid]) && $selected_name_rel_uuids[$name_rel->type->uuid]) {
-        if(array_search($name_rel->type->uuid, $non_nec_name_reltype_uuids) !== false){
+    foreach ($name_relations as $name_rel) {
+      $rel_type_uuid = $name_rel->type->uuid;
+      if (isset($selected_name_rel_uuids[$rel_type_uuid]) && $selected_name_rel_uuids[$rel_type_uuid]) {
+        if (array_search($rel_type_uuid, $non_nec_name_reltype_uuids) !== false && (
+            $current_name_uuid == $name_rel->fromName->uuid && $rel_type_uuid != UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
+            || $current_name_uuid == $name_rel->toName->uuid && $rel_type_uuid == UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
+          )
+        ){
           $non_nec_name_rels[] = $name_rel;
-        } else if(UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT == $name_rel->type->uuid) {
+        } else if (UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT == $rel_type_uuid) {
           $orthographic_variants[] = $name_rel;
         } else {
+
           $filtered_name_rels[] = $name_rel;
         }
       }
@@ -1088,65 +1102,66 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
 
     usort($name_relations, 'compare_name_relations_by_term_order_index');
 
-    foreach($name_relations as $name_rel) {
+    foreach ($name_relations as $name_rel) {
 
-      $current_name_is_toName = $current_name_uuid == $name_rel->toName->uuid;
+      $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
 
       $footnote_key_markup = name_relationship_footnote_markup($name_rel);
-      $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source);
-      $is_inverse_relation = $current_name_is_toName;
+      $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
 
       $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
       $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
-
-      $relationship_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span> ' . $relationship_markup . $footnote_key_markup;
-      if($relationship_markup){
+      $symbol_markup = $show_relationship_symbol ? '<span class="symbol" title="' . $label . '">' . $symbol . '</span> ' : '';
+      $relationship_markup = $symbol_markup . $relationship_markup . $footnote_key_markup;
+      if ($relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
           null,
-          '<div class="item">',
-          '</div>');
+          $item_prefix,
+          $item_suffix);
       }
     }
 
     // name relationships to be displayed as non nec
-    if(count($non_nec_name_rels) > 0){
+    if (count($non_nec_name_rels) > 0) {
       $non_nec_markup = '';
-      foreach($non_nec_name_rels as $name_rel){
+      foreach ($non_nec_name_rels as $name_rel) {
+        $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
         $footnote_key_markup = name_relationship_footnote_markup($name_rel);
-        $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source);
+        $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
+        $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = $non_nec_markup ? ' nec ' : 'non';
-        $non_nec_markup .= '<span class="symbol" title="' . $label . '">' . $symbol . '</span> ' . $relationship_markup . $footnote_key_markup;
+        $symbol_markup = $show_relationship_symbol ? '<span class="symbol" title="' . $label . '">' . $symbol . '</span> ' : '';
+        $non_nec_markup .= $symbol_markup . $relationship_markup . $footnote_key_markup;
       }
-       if($non_nec_markup){
-         $render_array['list']['items'][] = markup_to_render_array($non_nec_markup,
-           null,
-           '<div class="item">',
-           '</div>');
-       }
+      if ($non_nec_markup) {
+        $render_array['list']['items'][] = markup_to_render_array($non_nec_markup,
+          null,
+          $item_prefix,
+          $item_suffix);
+      }
     }
 
     // orthographic variants
-    if(count($orthographic_variants) > 0){
-      foreach($orthographic_variants as $name_rel){
+    if (count($orthographic_variants) > 0) {
+      foreach ($orthographic_variants as $name_rel) {
+
+        $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
         $footnote_key_markup = name_relationship_footnote_markup($name_rel);
         $footnote_key_markup .= ($footnote_key_markup ? ', ' : '') . nomenclatural_reference_footnote_markup($name_rel->toName);
-        $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source, TRUE);
+        $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, TRUE);
+        $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
-        $relationship_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span> ' . $relationship_markup . $footnote_key_markup;
+        $symbol_markup = $show_relationship_symbol ? '<span class="symbol" title="' . $label . '">' . $symbol . '</span> ' : '';
+        $relationship_markup = $symbol_markup . $relationship_markup . $footnote_key_markup;
       }
-      if($relationship_markup){
+      if ($relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
           null,
-          '<div class="item">',
-          '</div>');
+          $item_prefix,
+          $item_suffix);
       }
     }
   }
-
-  RenderHints::popFromRenderStack();
-  $render_array['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
-  RenderHints::clearFootnoteListKey();
-
   return $render_array;
 }
 
