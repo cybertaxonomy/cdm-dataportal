@@ -417,12 +417,27 @@ define('CDM_STANDARD_IMAGE_VIEWER_DEFAULT', serialize(array(
  */
 define('CDM_TAXON_RELATIONSHIP_TYPES', 'cdm_taxon_relationship_types');
 
-define('CDM_NAME_RELATIONSHIP_TYPES', 'cdm_name_relationship_types');
-define('CDM_NAME_RELATIONSHIP_TYPES_DEFAULT', serialize(
+define('CDM_NAME_RELATIONSHIP_INLINE_TYPES', 'cdm_name_relationship_types');
+define('CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT', serialize(
     array(
       UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
       UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
       UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR => UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
+    )
+  )
+);
+
+define('CDM_NAME_RELATIONSHIP_LIST_TYPES', 'cdm_name_relationship_list_types');
+define('CDM_NAME_RELATIONSHIP_LIST_TYPES_DEFAULT', serialize(
+    array(
+      UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
+      UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
+      UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR => UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR,
+      UUID_NAMERELATIONSHIPTYPE_BASIONYM => UUID_NAMERELATIONSHIPTYPE_BASIONYM,
+      UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT => UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT,
+      UUID_NAMERELATIONSHIPTYPE_VALIDATED_BY_NAME => UUID_NAMERELATIONSHIPTYPE_VALIDATED_BY_NAME,
+      UUID_NAMERELATIONSHIPTYPE_LATER_VALIDATED_BY_NAME => UUID_NAMERELATIONSHIPTYPE_LATER_VALIDATED_BY_NAME,
+      UUID_NAMERELATIONSHIPTYPE_REPLACED_SYNONYM => UUID_NAMERELATIONSHIPTYPE_REPLACED_SYNONYM
     )
   )
 );
@@ -2579,13 +2594,13 @@ ie	introduced: formerly introduced
         . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '|'
         . UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT . '/' )
   );
-  $form['taxon_synonymy']['name_relations'][CDM_NAME_RELATIONSHIP_TYPES] = array(
+  $form['taxon_synonymy']['name_relations'][CDM_NAME_RELATIONSHIP_INLINE_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Name relationship types') . ':',
     '#description' => 'This setting only affects specific types of name relations which are displayed appended to scientific name. 
     A full listing of all name relationships for a scientific name is provided by the taxon ' . l('name page', 'admin/config/cdm_dataportal/settings/layout/name-page') . '.',
     '#options' => $name_relationship_type_options,
-    '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_TYPES, unserialize(CDM_NAME_RELATIONSHIP_TYPES_DEFAULT)),
+    '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, unserialize(CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT)),
   );
 
   // ====== SPECIMENS ====== //
@@ -2780,17 +2795,17 @@ function cdm_settings_layout_search() {
          <p>To perform a blast search a blast database for the cdm instance is needed.</p> '),
     );
 
-    $form['blast_search_settings'][CDM_BLAST] = array(
+    $form['blast_search_settings'][CDM_SEARCH_BLAST_ENABLED] = array(
         '#type' => 'checkbox',
         '#title' => t('Activate Blast search') . ':',
-        '#default_value' => variable_get(CDM_BLAST, 0), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
+        '#default_value' => variable_get(CDM_SEARCH_BLAST_ENABLED, 0), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
 
         '#description' => t('Activate the blast search for this portal, this works only with an existing blast database!'),
     );
-    $form['blast_search_settings'][CDM_WS_PORTAL_BLAST] = array(
+    $form['blast_search_settings'][CDM_SEARCH_BLAST_SERVICE_URI] = array(
         '#type' => 'textfield',
         '#title' => t('Webservice URL for blast search') . ':',
-        '#default_value' => variable_get(CDM_WS_PORTAL_BLAST, 'http://127.0.0.1:9001/api/sequence'), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
+        '#default_value' => variable_get(CDM_SEARCH_BLAST_SERVICE_URI, 'http://127.0.0.1:9001/api/sequence'), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
 
         '#description' => t('Enter the webservice URL for blast search'),
     );
