@@ -930,12 +930,12 @@ function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_
   $highlited_synonym_uuid = isset ($name->taxonBases[0]->uuid) ? $name->taxonBases[0]->uuid : '';
   if(!$show_name_cache_only){
     $relationship_markup = render_taxon_or_name($name,
-      url(path_to_name($name->uuid, $current_taxon_uuid, $highlited_synonym_uuid))
+      url(path_to_name($name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false))
     );
   } else {
     $relationship_markup = l(
       '<span class="' . html_class_attribute_ref($name) . '"">' . $name->nameCache . '</span>',
-      path_to_name($name->uuid, $current_taxon_uuid, $highlited_synonym_uuid),
+      path_to_name($name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
       array('html' => true)
     );
   }
