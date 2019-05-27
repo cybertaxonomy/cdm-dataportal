@@ -570,7 +570,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
  */
 function compose_registration_dto_full($registration_dto, $with_citation = true)
 {
-  $render_array = array();
+  $render_array = array(
+    '#prefix' => '<div class="registration">',
+    '#suffix' => '</div>'
+  );
 
   if(!(isset($registration_dto->identifier) && $registration_dto->status == 'PUBLISHED')){
     return $render_array;
@@ -579,14 +582,14 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   // name and typedesignation in detail
   if($registration_dto->nameRef){
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
-    $render_array['published_name'] = markup_to_render_array('<p class="published-name">' . render_taxon_or_name($name) . '</p>', 0);
+    $render_array['published_name'] = markup_to_render_array('<p class="published-name">' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</p>', 0);
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
     $render_array['name_relations'] = compose_name_relationships_list($name_relations, $registration_dto->nameRef->uuid, null);
     $render_array['name_relations']['#weight'] = 10;
   } else {
     // in this case the registration must have a
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->typifiedNameRef->uuid);
-    $render_array['typified_name'] = markup_to_render_array('<p class="typified-name">for ' . render_taxon_or_name($name) . '</p>', 40);
+    $render_array['typified_name'] = markup_to_render_array('<p class="typified-name">for ' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</p>', 40);
   }
   if(is_object($registration_dto->orderdTypeDesignationWorkingSets)) {
     $field_unit_uuids = array();
