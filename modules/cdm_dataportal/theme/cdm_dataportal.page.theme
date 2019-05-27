@@ -132,7 +132,7 @@ function theme_cdm_name_page_title($variables) {
     $referenceUri = url(path_to_reference($taxon_name->nomenclaturalReference->uuid));
   }
 
-  $out = '<span class="' . $taxon_name->class . '">'
+  $out = '<span class="' . html_class_attribute_ref($taxon_name) . '">'
     . render_taxon_or_name($taxon_name, NULL, $referenceUri, FALSE)
     . '</span>';
   RenderHints::popFromRenderStack();

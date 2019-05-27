@@ -1831,10 +1831,16 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     $taxon_name_page->title = theme('cdm_name_page_title', array('taxon_name' => $taxon_name));
     $content = array();
 
+    $content['taxon_name'] = markup_to_render_array(render_taxon_or_name($taxon_name));
+
     // name relationships
-    // TODO ....
+    $name_relations = cdm_ws_fetch_all(str_replace("$0", $taxon_name->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
+    if(count($name_relations) > 0){
+      $content['name_relationships'] = compose_name_relationships_list($name_relations, $taxon_name->uuid, null);
+    }
     // related taxa
     if ($taxon_pager->records) {
+      $content['related_taxa_header'] = markup_to_render_array("<h5>Taxa for this name:</h5>");
       $content['related_taxa'] = compose_list_of_taxa($taxon_pager->records);
     }
     else {
