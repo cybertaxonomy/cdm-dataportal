@@ -1208,7 +1208,7 @@ function name_relationship_footnote_markup($name_rel)
     $footnote_markup = '<span class="rule_considered">' . $name_rel->ruleConsidered . '</span> ';
   }
   if (isset($name_rel->citation)) {
-    $footnote_markup .= '<span class="reference">' . $name_rel->citation->abbrevTitleCache . '</span>';
+    $footnote_markup .= '<span class="reference">' . $name_rel->citation->titleCache . '</span>';
   }
   if (isset($name_rel->citationMicroReference)) {
     $footnote_markup .= (isset($name_rel->citation) ? ':' : '') . '<span class="reference_detail">' . $name_rel->citationMicroReference . '</span>';
