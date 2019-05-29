@@ -1727,13 +1727,15 @@ function cdm_dataportal_named_area_page_view($uuid) {
  * @return mixed
  *   The formatted name page as node.
  */
-function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = NULL, $redirect_to_taxon = '') {
+function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = NULL, $redirect_to_taxon = false) {
 
   cdm_check_valid_portal_page();
 
-  // redirect_to_taxon is a path element of the name page path, see path_to_name()
-  $do_redirect_to_taxon = $redirect_to_taxon == 'redirect_to_taxon';
-  $taxonname_page = cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $do_redirect_to_taxon, $synonym_uuid);
+  $taxonname_page = cdm_dataportal_name_view(
+    is_uuid($taxon_name_uuid) ? $taxon_name_uuid : null,
+    is_uuid($taxon_to_hide_uuid) ? $taxon_to_hide_uuid : null,
+    $redirect_to_taxon == 'redirect_to_taxon',
+    is_uuid($synonym_uuid) ? $synonym_uuid : null);
   if (!empty($taxonname_page)) {
     return cdm_node_show(NODETYPE_NAME, $taxon_name_uuid, $taxonname_page->title, $taxonname_page->content);
   }
